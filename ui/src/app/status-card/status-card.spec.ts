@@ -26,6 +26,7 @@ import { RadioHandoff } from '../radio-handoff';
 import { ProviderPreferences } from '../audio-embeds/provider-preferences';
 import { LocalModeration } from '../local-moderation';
 import { StatusCard } from './status-card';
+import { SpeechReader } from '../speech/speech-reader';
 import { BlueskyApi } from '../providers/bluesky/bluesky-api';
 import { of, throwError } from 'rxjs';
 import {
@@ -281,6 +282,36 @@ describe('StatusCard', () => {
   }
 
   const awaitRequest = (url: string) => vi.waitFor(() => httpMock.expectOne(url));
+
+  it('offers Embed post and Read aloud in the ••• menu of a public post', () => {
+    const reader = TestBed.inject(SpeechReader);
+    Object.defineProperty(reader, 'supported', { value: true });
+    const speak = vi.spyOn(reader, 'speak').mockImplementation(() => undefined);
+    const fixture = setUp(
+      makeStatus({ url: 'https://example.social/@a/1', content: '<p>Hello there</p>' }),
+    );
+    const el = fixture.nativeElement as HTMLElement;
+    const item = (label: string) =>
+      [...el.querySelectorAll<HTMLButtonElement>('.danger-menu-panel button')].find(
+        (b) => b.textContent?.trim() === label,
+      );
+    expect(item('Embed post…')).toBeTruthy();
+    item('Read aloud')!.click();
+    expect(speak).toHaveBeenCalledWith('1', 'Hello there', undefined);
+    item('Embed post…')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-post-embed-dialog')).not.toBeNull();
+  });
+
+  it('offers no Embed post for a followers-only post', () => {
+    const fixture = setUp(
+      makeStatus({ url: 'https://example.social/@a/1', visibility: 'private' }),
+    );
+    const labels = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.danger-menu-panel button'),
+    ].map((b) => b.textContent?.trim());
+    expect(labels).not.toContain('Embed post…');
+  });
 
   it('offers a portable Radio link for continuous audio and removes it for private posts, video and inline-only players', () => {
     const status = makeStatus({

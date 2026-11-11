@@ -32,6 +32,7 @@ import { PostConfirmation } from '../post-confirmation';
 import { VisibilityState, VISIBILITIES } from './visibility-state';
 import { altTextMessage, mediaTypeOf, undescribedIndexes } from './alt-text';
 import { extractImageDescription } from './image-description';
+import { ImageDescriber } from '../image-describer/image-describer';
 import { LinkShortening } from './link-shortening';
 import { TagHelperDialog } from './tag-helper-dialog/tag-helper-dialog';
 import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
@@ -454,7 +455,11 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.allowMultiple: Allow multiple
 // i18n compose.altPlaceholder: Describe for the visually impaired
 // i18n compose.altFromMetadata: Filled in from the description saved in this image. Check it still fits before posting.
+// i18n compose.altFromAi: Written by AI from the image. Check it is accurate before posting.
+// i18n compose.describeWithAi: Describe this image with AI (OpenRouter)
+// i18n compose.describingWithAi: Describing…
 // i18n compose.attachMedia: Attach media — or paste / drag & drop an image
+// i18n compose.takePhoto: Take a photo or video
 // i18n compose.blueskyLimit: Bluesky limit
 // i18n compose.cancel: Cancel
 // i18n compose.clear: Clear
@@ -1115,6 +1120,11 @@ export class Compose implements OnDestroy {
    * and not edited since, by media id. Drives the "check it" note.
    */
   protected metadataDescribed = signal<ReadonlySet<string>>(new Set());
+  /** Attachments whose description the AI wrote and the writer hasn't edited. */
+  protected aiDescribed = signal<ReadonlySet<string>>(new Set());
+  /** Attachments with an AI description request in flight. */
+  protected describing = signal<ReadonlySet<string>>(new Set());
+  protected readonly imageDescriber = inject(ImageDescriber);
   /**
    * Why an attachment was refused or trimmed, when one was.
    *
@@ -1173,6 +1183,13 @@ export class Compose implements OnDestroy {
   protected pollExpiresIn = signal<number>(86400);
 
   /** Media and polls are mutually exclusive, matching Mastodon. */
+  /**
+   * Camera capture (`capture="environment"`) only means something on phones and
+   * tablets; desktop browsers ignore it and open the ordinary file picker, so
+   * the button is offered on touch-first devices only.
+   */
+  protected readonly cameraCapture = cameraCaptureSupport();
+
   protected canAttachMedia = computed(
     () => !this.targetIncludesPaste() && !this.targetIncludesBlog() && !this.pollOpen(),
   );
@@ -1808,6 +1825,11 @@ export class Compose implements OnDestroy {
     this.langMismatch.set(null);
   }
 
+  /** A photo or video straight from the camera joins the draft like any attachment. */
+  onCameraCapture(event: Event): void {
+    this.onFilesSelected(event);
+  }
+
   onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = Array.from(input.files ?? []);
@@ -2045,6 +2067,52 @@ export class Compose implements OnDestroy {
       const next = new Set(this.metadataDescribed());
       next.delete(id);
       this.metadataDescribed.set(next);
+    }
+    if (id && this.aiDescribed().has(id)) {
+      const next = new Set(this.aiDescribed());
+      next.delete(id);
+      this.aiDescribed.set(next);
+    }
+  }
+
+  /**
+   * Offer AI description for an image whose text the writer hasn't written
+   * themselves: empty, or prefilled from metadata or an earlier AI attempt.
+   */
+  protected canDescribeWithAi(item: PendingMedia): boolean {
+    if (!this.imageDescriber.available() || item.media.type !== 'image') return false;
+    const id = item.media.id;
+    return (
+      !item.description.trim() || this.metadataDescribed().has(id) || this.aiDescribed().has(id)
+    );
+  }
+
+  /** Ask OpenRouter for alt text; it lands in the field for review, never posted unseen. */
+  protected async describeWithAi(index: number): Promise<void> {
+    const item = this.media()[index];
+    if (!item || this.describing().has(item.media.id)) return;
+    const id = item.media.id;
+    this.describing.set(new Set(this.describing()).add(id));
+    this.mediaNotice.set('');
+    try {
+      const source = item.file ?? item.media.preview_url ?? item.media.url;
+      const text = await this.imageDescriber.describe(source, this.postLanguage() || null);
+      const at = this.media().findIndex((m) => m.media.id === id);
+      if (at < 0) return;
+      const current = this.media()[at];
+      // The writer typed while we waited: keep their words.
+      if (current.description.trim() && !this.canDescribeWithAi(current)) return;
+      this.media.update((list) => list.map((m, i) => (i === at ? { ...m, description: text } : m)));
+      const meta = new Set(this.metadataDescribed());
+      meta.delete(id);
+      this.metadataDescribed.set(meta);
+      this.aiDescribed.set(new Set(this.aiDescribed()).add(id));
+    } catch (error: unknown) {
+      this.mediaNotice.set(error instanceof Error ? error.message : String(error));
+    } finally {
+      const next = new Set(this.describing());
+      next.delete(id);
+      this.describing.set(next);
     }
   }
 
@@ -3340,4 +3408,20 @@ export class Compose implements OnDestroy {
     }
     this.drafts.clearAutosave(this.contextKey());
   }
+}
+
+/**
+ * What the camera button may ask for, or null where it shouldn't be offered.
+ * iOS Safari lets the camera switch between photo and video; Android's camera
+ * intent only opens for one kind, so it gets photos.
+ */
+export function cameraCaptureSupport(
+  win: Pick<Window, 'matchMedia' | 'navigator'> | undefined = typeof window === 'undefined'
+    ? undefined
+    : window,
+): { accept: string } | null {
+  if (!win?.matchMedia?.('(pointer: coarse)').matches) return null;
+  const ua = win.navigator.userAgent;
+  const iosSafari = /iPad|iPhone|iPod/u.test(ua) && !/CriOS|FxiOS|EdgiOS/u.test(ua);
+  return { accept: iosSafari ? 'image/*,video/*' : 'image/*' };
 }

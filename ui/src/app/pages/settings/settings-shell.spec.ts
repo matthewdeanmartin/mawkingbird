@@ -93,6 +93,8 @@ describe('SettingsShell', () => {
         // vocabulary is configurable without a server identity.
         'Writing',
         'Appearance',
+        // Installing the web app needs no account.
+        'Install app',
         'Internationalization',
         'Local storage',
         'Endorsements',

@@ -1,5 +1,26 @@
 # Sprint 6 opening consolidation audit
 
+## Install app and share target, 2026-11-10
+
+Reviewed 1,790 source files and 622 candidate files. One candidate is added:
+`pages/settings/app/settings-app.ts` (MbSettingsRow, one MbButton), adopted
+scope. `shell/app-footer/app-footer.ts` gains one plain footer link matching its
+existing rows. `app-install/share-target.ts` has no template and
+`app-install/app-install.ts` is a service. No shared widget changed.
+
+## Phanpy parity: bio translation, camera, read aloud, AI alt text, 2026-11-10
+
+Reviewed 1,787 source files and 621 candidate files. One candidate is added:
+`pages/profile/bio-translation/bio-translation.ts` (small outline MbButtons),
+adopted scope. `compose/compose.html` gains an MbPostAction camera button with
+a hidden capture input beside the existing 📎 pair, and a small outline MbButton
+(✨) per image attachment. `status-card/status-card.html` gains an MbMenuItem
+(Read aloud) in each ••• menu. `lightbox/lightbox.html` gains native pill
+buttons for AI description and reading the description, styled for the dark
+overlay like its existing close and navigation buttons (stays as classified).
+`speech/speech-reader.ts` and `image-describer/image-describer.ts` are services
+with no controls. No shared widget changed.
+
 ## Phanpy parity: profile images, collections, annual reports, 2026-11-10
 
 Reviewed 1,784 source files and 620 candidate files. Two candidates are added,

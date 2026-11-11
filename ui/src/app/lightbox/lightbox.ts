@@ -1,6 +1,8 @@
-import { Component, HostListener, computed, input, output, signal } from '@angular/core';
+import { Component, HostListener, computed, inject, input, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FocusTrap } from '../a11y/focus-trap';
+import { ImageDescriber } from '../image-describer/image-describer';
+import { SpeechReader } from '../speech/speech-reader';
 import { MediaAttachment, Status } from '../models';
 import { VideoPlayerHost as VideoPlayer } from '../video-player/video-player-host';
 import { attachmentSource, mediaUrl, VideoSource, watchParams } from '../video-player/media-source';
@@ -9,6 +11,11 @@ import { attachmentSource, mediaUrl, VideoSource, watchParams } from '../video-p
 // i18n lightbox.close: Close
 // i18n lightbox.previous: Previous image
 // i18n lightbox.next: Next image
+// i18n lightbox.describe: ✨ Describe with AI
+// i18n lightbox.describing: Describing…
+// i18n lightbox.aiCaption: AI description (may be wrong):
+// i18n lightbox.readDescription: 🔊 Read description
+// i18n lightbox.stopReading: ⏹ Stop reading
 
 /**
  * How far a finger must travel to count as a swipe rather than a tap that
@@ -50,6 +57,44 @@ export class Lightbox {
   }
 
   protected current = computed(() => this.items()[this.index()] ?? null);
+
+  protected readonly describer = inject(ImageDescriber);
+  protected readonly speech = inject(SpeechReader);
+  /** AI descriptions by media id: shown for this viewing only, never saved. */
+  protected aiDescriptions = signal<Record<string, string>>({});
+  protected describingId = signal<string | null>(null);
+  protected describeError = signal('');
+
+  /** The author's description, or the one generated here. */
+  protected spokenDescription(m: MediaAttachment): string {
+    return m.description?.trim() || this.aiDescriptions()[m.id] || '';
+  }
+
+  protected async describe(m: MediaAttachment, event: Event): Promise<void> {
+    event.stopPropagation();
+    if (this.describingId()) return;
+    this.describingId.set(m.id);
+    this.describeError.set('');
+    try {
+      const text = await this.describer.describe(m.url || m.preview_url);
+      this.aiDescriptions.update((all) => ({ ...all, [m.id]: text }));
+    } catch (error: unknown) {
+      this.describeError.set(error instanceof Error ? error.message : String(error));
+    } finally {
+      this.describingId.set(null);
+    }
+  }
+
+  protected toggleSpeech(m: MediaAttachment, event: Event): void {
+    event.stopPropagation();
+    const key = `media:${m.id}`;
+    if (this.speech.speaking() === key) this.speech.stop();
+    else this.speech.speak(key, this.spokenDescription(m));
+  }
+
+  protected isSpeaking(m: MediaAttachment): boolean {
+    return this.speech.speaking() === `media:${m.id}`;
+  }
   protected hasMultiple = computed(() => this.items().length > 1);
 
   prev(event: Event): void {

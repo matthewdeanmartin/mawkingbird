@@ -48,6 +48,16 @@
       "nextStep": "Forum's discussion list: Page Header with a help link, Field/Control for the source picker, MbButton for Scan, the Recent/Popular toggle (aria-pressed), Stop and Scan deeper, Badge for question and partial markers in each card's footer, and Content State for empty and Mastodon-only states. Roots reuse StatusCard; each footer's stats line is the native link into the discussion. One persistent sr-only status announces scan start and end, never the call counter. Preserve the 16px inset, Stop keeping found results, stable row order with an explicit re-sort, and the ceiling on Scan deeper choices."
     },
     {
+      "file": "ui/src/app/pages/settings/app/settings-app.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Settings → Install app: MbSettingsRow sections, one MbButton for Chrome/Edge's deferred install prompt, plain text instructions for iOS, Mac Safari and other browsers. Preserve that the browser's own mini-infobar stays suppressed and that nothing prompts unasked."
+    },
+    {
+      "file": "ui/src/app/pages/profile/bio-translation/bio-translation.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Profile bio translation (Phanpy parity 17): small outline MbButtons for Translate bio, source-language choices and Hide translation; the original bio stays visible above. Preserve the no-server routing (Mastodon only translates statuses) and the field-per-line synthetic post."
+    },
+    {
       "file": "ui/src/app/collection-settings-dialog/collection-settings-dialog.html",
       "disposition": "adopted scope",
       "nextStep": "Collection create/edit (Phanpy parity 25a): MbDialog, Field/Control for name, description and a language select, MbCheckbox for sensitive and discoverable, MbButton actions, MbNotice errors. Preserve the explicit sensitive/discoverable defaults on create (mastodon.social 422s without them) and the 40/100-character limits."

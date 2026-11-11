@@ -18,7 +18,8 @@ import { BlueskyLinkCard } from '../providers/bluesky/bluesky-link-card';
 import { BlueskyPostControls } from '../providers/bluesky/bluesky-post-controls';
 import { CorsProxySettings } from '../providers/cors-proxy/cors-proxy-settings';
 import { ShortenerSettings } from '../providers/shortener/shortener-settings';
-import { Compose, PostTarget, describePostFailure } from './compose';
+import { Compose, cameraCaptureSupport, PostTarget, describePostFailure } from './compose';
+import { ImageDescriber } from '../image-describer/image-describer';
 import { MataroaSettings } from '../providers/mataroa/mataroa-settings';
 import { BloggerSession } from '../providers/blogger/blogger-session';
 import { HugoSettings } from '../providers/hugo/hugo-settings';
@@ -47,6 +48,8 @@ interface ComposeInternals {
   metadataDescribed: Signal<ReadonlySet<string>>;
   setMediaDescription(index: number, description: string): void;
   prefillDescription(file: File, embedded: Promise<string | null>): Promise<void>;
+  aiDescribed: Signal<ReadonlySet<string>>;
+  describeWithAi(index: number): Promise<void>;
   mediaNotice: WritableSignal<string>;
   uploadFiles(files: File[]): void;
   pollOpen: WritableSignal<boolean>;
@@ -310,6 +313,53 @@ describe('Compose', () => {
       internals(f).setMediaDescription(0, 'A grey heron on a mooring post');
       f.detectChanges();
       expect(el.querySelector('.alt-from-metadata')).toBeNull();
+    });
+
+    it('describes an image with AI on request, for review, and never over typed text', async () => {
+      const describer = TestBed.inject(ImageDescriber);
+      vi.spyOn(describer, 'available').mockReturnValue(true);
+      const describe = vi.spyOn(describer, 'describe').mockResolvedValue('A heron on a post');
+      const f = setUp();
+      const file = new File(['x'], 'a.jpg', { type: 'image/jpeg' });
+      internals(f).media.set([
+        { media: { id: 'm1', type: 'image', preview_url: 'p' } as never, description: '', file },
+      ]);
+      f.detectChanges();
+      const el = f.nativeElement as HTMLElement;
+      expect(el.querySelector('.describe-ai')).not.toBeNull();
+      await internals(f).describeWithAi(0);
+      f.detectChanges();
+      expect(describe.mock.calls[0][0]).toBe(file);
+      expect(internals(f).media()[0].description).toBe('A heron on a post');
+      expect(el.querySelector('.alt-from-metadata')?.textContent).toContain('Written by AI');
+      // Still offered (to try again) until the writer edits it themselves.
+      expect(el.querySelector('.describe-ai')).not.toBeNull();
+      internals(f).setMediaDescription(0, 'A grey heron');
+      f.detectChanges();
+      expect(internals(f).aiDescribed().size).toBe(0);
+      expect(el.querySelector('.describe-ai')).toBeNull();
+    });
+
+    it('shows nothing AI-related when OpenRouter is not configured', () => {
+      const f = setUp();
+      internals(f).media.set([{ media: { id: 'm1', type: 'image' } as never, description: '' }]);
+      f.detectChanges();
+      expect((f.nativeElement as HTMLElement).querySelector('.describe-ai')).toBeNull();
+    });
+
+    it('offers the camera only on touch-first devices', () => {
+      const win = (coarse: boolean, ua: string) =>
+        ({
+          matchMedia: () => ({ matches: coarse }),
+          navigator: { userAgent: ua },
+        }) as unknown as Window;
+      expect(cameraCaptureSupport(win(false, 'Mozilla/5.0 (Windows NT 10.0)'))).toBeNull();
+      expect(cameraCaptureSupport(win(true, 'Mozilla/5.0 (Linux; Android 14)'))).toEqual({
+        accept: 'image/*',
+      });
+      expect(
+        cameraCaptureSupport(win(true, 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0) Safari/604.1')),
+      ).toEqual({ accept: 'image/*,video/*' });
     });
 
     it('never overwrites a description the writer already typed', async () => {

@@ -139,6 +139,7 @@ import { StatusActions } from '../providers/status-actions';
 import { ReportDialog } from '../report-dialog/report-dialog';
 import { PostEmbedDialog } from '../post-embed/post-embed-dialog';
 import { canEmbedPost } from '../post-embed/post-embed';
+import { SpeechReader, speechText } from '../speech/speech-reader';
 import { statusHashtags } from '../hashtag';
 import { TagMuteMenu } from '../tag-filter-dialog/tag-mute-menu';
 import { MediaDownloadMenuItem } from '../media-download/media-download-menu-item';
@@ -275,6 +276,9 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.blockAccount: Block @{{acct}}
 // i18n statusCard.reportPost: Report post
 // i18n statusCard.embedPost: Embed post…
+// i18n statusCard.readAloud: Read aloud
+// i18n statusCard.stopReading: Stop reading
+// i18n statusCard.imageSpoken: Image
 // i18n statusCard.postDeletedDiscard: Post deleted — edit below and repost, or
 // i18n statusCard.discard: discard
 // i18n statusCard.editAndRepost: Edit and repost
@@ -1090,6 +1094,7 @@ export class StatusCard {
   protected reported = signal(false);
   /** The "Embed post" portable-HTML dialog. */
   protected showEmbed = signal(false);
+  protected readonly speech = inject(SpeechReader);
 
   protected editing = signal(false);
   protected editText = signal('');
@@ -1260,6 +1265,37 @@ export class StatusCard {
   /** Public Mastodon posts can be exported as portable HTML. */
   protected get canEmbed(): boolean {
     return canEmbedPost(this.display);
+  }
+
+  /** Browser speech is available and there is something to say. */
+  protected get canReadAloud(): boolean {
+    if (!this.speech.supported) return false;
+    // Cheap test: this runs on every render of every card's menu.
+    const post = this.display.reblog ?? this.display;
+    return (
+      !!post.content?.trim() ||
+      !!post.spoiler_text?.trim() ||
+      post.media_attachments?.some((m) => !!m.description?.trim())
+    );
+  }
+
+  protected isReadingAloud(): boolean {
+    return this.speech.speaking() === this.display.id;
+  }
+
+  /** Read this post aloud, or stop if it is the one being read. */
+  toggleReadAloud(event: Event): void {
+    this.closeMenu(event);
+    if (this.isReadingAloud()) {
+      this.speech.stop();
+      return;
+    }
+    const post = this.display.reblog ?? this.display;
+    this.speech.speak(
+      this.display.id,
+      speechText(post, this.transloco.translate('statusCard.imageSpoken')),
+      post.language,
+    );
   }
 
   openEmbed(event: Event): void {

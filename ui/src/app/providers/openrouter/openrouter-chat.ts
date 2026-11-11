@@ -170,6 +170,68 @@ export class OpenRouterChat {
     };
   }
 
+  /**
+   * Describe an image as alt text, with the chosen model.
+   *
+   * `imageUrl` is an https URL or a `data:` URL. The model must accept image
+   * input; OpenRouter refuses a text-only model, which is reported as such so
+   * the reader knows to pick another model rather than retry.
+   *
+   * Returns **untrusted plain text**, trimmed and capped at Mastodon's
+   * 1,500-character description limit.
+   */
+  async describeImage(imageUrl: string, language: string): Promise<string> {
+    const key = this.session.apiKey();
+    if (!key) {
+      throw new Error('Connect OpenRouter first.');
+    }
+    const prompt =
+      `Write alt text for this image for a social media post, in the language with code "${language}". ` +
+      'Describe what matters for someone who cannot see it: the subject, setting and any ' +
+      'visible text, quoted exactly. One to three plain sentences. ' +
+      'Do not start with "Image of" or "Alt text:". Reply with the description only.';
+    let response: Response;
+    try {
+      response = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: this.choice.modelId(),
+          max_tokens: 400,
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: prompt },
+                { type: 'image_url', image_url: { url: imageUrl } },
+              ],
+            },
+          ],
+        }),
+      });
+    } catch {
+      throw new Error("Couldn't reach OpenRouter.");
+    }
+    if (!response.ok) {
+      const body = await response
+        .clone()
+        .text()
+        .catch(() => '');
+      if (
+        /image|vision|modalit/iu.test(body) &&
+        response.status !== 401 &&
+        response.status !== 402
+      ) {
+        throw new Error(
+          "Your chosen OpenRouter model can't read images. Pick one that accepts images in Settings → Connections → OpenRouter.",
+        );
+      }
+      throw new Error(await this.describeFailure(response));
+    }
+    const content = ((await response.json()) as ChatResponse).choices?.[0]?.message?.content;
+    return cleanAltText(typeof content === 'string' ? content : '');
+  }
+
   private async attempt(
     key: string,
     options: SuggestOptions,
@@ -243,4 +305,16 @@ function isRetryable(error: unknown): boolean {
     return true;
   }
   return error instanceof Error && /response_format|json_schema|400/i.test(error.message);
+}
+
+/** Tidy a model's alt text: no wrapping quotes, labels, markdown or runaway length. */
+export function cleanAltText(raw: string): string {
+  const text = raw
+    .trim()
+    .replace(/^(?:alt[\s-]*text|description)\s*:\s*/iu, '')
+    .replace(/^["'“”‘’]+|["'“”‘’]+$/gu, '')
+    .replace(/[*_`#]+/gu, '')
+    .replace(/\s+/gu, ' ')
+    .trim();
+  return text.length > 1500 ? text.slice(0, 1500) : text;
 }

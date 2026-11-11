@@ -222,6 +222,31 @@
             (ngModelChange)="setMediaDescription(i, $event)"
             [placeholder]="'compose.altPlaceholder' | transloco"
           />
+          @if (canDescribeWithAi(m)) {
+            <button
+              type="button"
+              mbButton
+              variant="outline"
+              size="small"
+              class="describe-ai"
+              [disabled]="describing().has(m.media.id)"
+              (click)="describeWithAi(i)"
+              [title]="
+                (describing().has(m.media.id)
+                  ? 'compose.describingWithAi'
+                  : 'compose.describeWithAi'
+                ) | transloco
+              "
+              [attr.aria-label]="
+                (describing().has(m.media.id)
+                  ? 'compose.describingWithAi'
+                  : 'compose.describeWithAi'
+                ) | transloco
+              "
+            >
+              <span aria-hidden="true">{{ describing().has(m.media.id) ? '…' : '✨' }}</span>
+            </button>
+          }
           <button
             type="button"
             mbButton
@@ -237,6 +262,10 @@
         @if (metadataDescribed().has(m.media.id)) {
           <p class="alt-from-metadata muted small" role="status">
             {{ 'compose.altFromMetadata' | transloco }}
+          </p>
+        } @else if (aiDescribed().has(m.media.id)) {
+          <p class="alt-from-metadata muted small" role="status">
+            {{ 'compose.altFromAi' | transloco }}
           </p>
         }
       }
@@ -539,6 +568,28 @@
             [disabled]="!canAttachMedia()"
             (change)="onFilesSelected($event)"
           />
+          @if (cameraCapture; as camera) {
+            <button
+              mbPostAction
+              type="button"
+              class="camera-capture"
+              [disabled]="!canAttachMedia()"
+              [title]="'compose.takePhoto' | transloco"
+              [attr.aria-label]="'compose.takePhoto' | transloco"
+              (click)="cameraInput.click()"
+            >
+              <span aria-hidden="true">📷</span>
+            </button>
+            <input
+              #cameraInput
+              type="file"
+              hidden
+              capture="environment"
+              [accept]="camera.accept"
+              [disabled]="!canAttachMedia()"
+              (change)="onCameraCapture($event)"
+            />
+          }
 
           <button
             type="button"

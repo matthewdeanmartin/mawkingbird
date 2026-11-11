@@ -134,3 +134,31 @@
   width: min(80vw, 1100px);
   color: #fff;
 }
+
+.lightbox-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.lightbox-tool {
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.lightbox-tool:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.ai-label {
+  font-weight: 600;
+  margin-inline-end: 4px;
+}

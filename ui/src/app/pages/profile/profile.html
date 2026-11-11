@@ -819,6 +819,9 @@
           }
         </div>
       }
+      @if (!isSelf() && !isRss()) {
+        <app-bio-translation [account]="a" />
+      }
       <div class="stats muted">
         <span
           ><strong>{{ a.statuses_count | humanCount }}</strong>

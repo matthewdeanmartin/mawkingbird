@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Lightbox } from './lightbox';
+import { ImageDescriber } from '../image-describer/image-describer';
 import { MediaAttachment } from '../models';
 
 /**
@@ -132,6 +133,30 @@ describe('Lightbox', () => {
     fixture.nativeElement.querySelector('.lightbox-overlay').append(player);
     control.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
     fixture.detectChanges();
+    expect(counter()).toBe('1 / 3');
+  });
+
+  it('describes an undescribed image with AI on request and labels it as AI text', async () => {
+    // The beforeEach viewer was built before availability was stubbed.
+    fixture.destroy();
+    const describer = TestBed.inject(ImageDescriber);
+    vi.spyOn(describer, 'available').mockReturnValue(true);
+    const describe = vi.spyOn(describer, 'describe').mockResolvedValue('A red door');
+    fixture = TestBed.createComponent(Lightbox);
+    fixture.componentRef.setInput('items', [media('a'), media('b'), media('c')]);
+    fixture.detectChanges();
+    await Promise.resolve();
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const button = [...el.querySelectorAll<HTMLButtonElement>('.lightbox-tool')].find((b) =>
+      b.textContent?.includes('Describe with AI'),
+    )!;
+    button.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(describe).toHaveBeenCalledWith('https://example.test/a.jpg');
+    expect(el.querySelector('.lightbox-caption')?.textContent).toContain('AI description');
+    expect(el.querySelector('.lightbox-caption')?.textContent).toContain('A red door');
     expect(counter()).toBe('1 / 3');
   });
 });

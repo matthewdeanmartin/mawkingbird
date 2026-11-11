@@ -61,6 +61,7 @@ import { ReportDialog } from '../../report-dialog/report-dialog';
 import { AccountNoteDialog } from '../../account-note-dialog/account-note-dialog';
 import { ProfileQrDialog } from '../../profile-qr/profile-qr-dialog';
 import { FamiliarFollowers } from './familiar-followers/familiar-followers';
+import { BioTranslation } from './bio-translation/bio-translation';
 import { ListDialog } from '../../list-dialog/list-dialog';
 import { VerifiedBadge } from '../../verified-badge/verified-badge';
 import { HumanCountPipe } from '../../human-count.pipe';
@@ -297,6 +298,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     AccountNoteDialog,
     ProfileQrDialog,
     FamiliarFollowers,
+    BioTranslation,
     ListDialog,
     VerifiedBadge,
     HumanCountPipe,

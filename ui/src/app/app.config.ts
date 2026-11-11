@@ -1,5 +1,11 @@
 import { proxyLimitInterceptor } from './providers/cors-proxy/proxy-limit.interceptor';
-import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  ErrorHandler,
+  inject,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import {
   provideRouter,
   TitleStrategy,
@@ -22,6 +28,7 @@ import { rateLimitInterceptor } from './rate-limit.interceptor';
 import { plusTokenInterceptor } from './providers/account/plus-token.interceptor';
 import { PageTitleStrategy } from './a11y/page-title-strategy';
 import { provideI18nForApp } from './i18n/i18n.config';
+import { AppInstall } from './app-install/app-install';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,6 +36,10 @@ export const appConfig: ApplicationConfig = {
     // so a failed dynamic import (a rejected promise) reaches GlobalErrorHandler.
     provideBrowserGlobalErrorListeners(),
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    // Chrome fires its one install prompt early; catch it before any page asks.
+    provideAppInitializer(() => {
+      inject(AppInstall);
+    }),
     // Interface language. Dictionaries load at runtime from i18n/{lang}.json;
     // see i18n/i18n.config.ts for why this is not @angular/localize.
     provideI18nForApp(),

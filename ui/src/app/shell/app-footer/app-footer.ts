@@ -8,6 +8,7 @@ import { BUILD_INFO } from '../../build-info';
 import { Hotkeys } from '../../hotkeys';
 import { Server } from '../../server';
 import { LocalePicker } from '../../locale-picker/locale-picker';
+import { AppInstall } from '../../app-install/app-install';
 
 /**
  * The end-of-feed footer. Feeds here are finite, so there is a bottom — and a
@@ -36,6 +37,8 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
 // i18n footer.end: You reached the end. That's allowed here.
 // i18n footer.builtAt: Built {{date}} UTC
 // i18n footer.buildLog: build log
+// i18n footer.installApp: Install the app
+// i18n footer.installApp.title: Open Mawkingbird in its own window and share links to it from other apps
 @Component({
   selector: 'app-app-footer',
   imports: [DatePipe, RouterLink, BugReportDialog, TranslocoPipe, LocalePicker],
@@ -113,6 +116,13 @@ import { LocalePicker } from '../../locale-picker/locale-picker';
         </button>
       </p>
       <app-locale-picker [footer]="true" />
+      @if (!install.installed()) {
+        <p class="footer-row">
+          <a routerLink="/settings/app" [title]="'footer.installApp.title' | transloco">{{
+            'footer.installApp' | transloco
+          }}</a>
+        </p>
+      }
       <p class="footer-note">{{ 'footer.end' | transloco }}</p>
     </footer>
     @if (reporting()) {
@@ -166,6 +176,8 @@ export class AppFooter {
   private server = inject(Server);
   /** Opens the same shortcut-help overlay the ? key does (rendered by Shell). */
   protected hotkeys = inject(Hotkeys);
+  /** The install link hides once Mawkingbird is running as an installed app. */
+  protected install = inject(AppInstall);
 
   /** CI-stamped build metadata; the placeholder (null builtAt) hides the line. */
   protected build = BUILD_INFO;

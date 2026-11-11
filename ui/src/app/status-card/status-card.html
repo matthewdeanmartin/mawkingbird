@@ -1436,6 +1436,14 @@
                         {{ 'statusCard.embedPost' | transloco }}
                       </button>
                     }
+                    @if (canReadAloud) {
+                      <button type="button" mbMenuItem (click)="toggleReadAloud($event)">
+                        {{
+                          (isReadingAloud() ? 'statusCard.stopReading' : 'statusCard.readAloud')
+                            | transloco
+                        }}
+                      </button>
+                    }
                     @if (downloadable(); as posts) {
                       <app-media-download-menu-item
                         [statuses]="posts"
@@ -1615,6 +1623,14 @@
                       {{ 'statusCard.embedPost' | transloco }}
                     </button>
                   }
+                  @if (canReadAloud) {
+                    <button type="button" mbMenuItem (click)="toggleReadAloud($event)">
+                      {{
+                        (isReadingAloud() ? 'statusCard.stopReading' : 'statusCard.readAloud')
+                          | transloco
+                      }}
+                    </button>
+                  }
                   @if (downloadable(); as posts) {
                     <app-media-download-menu-item
                       [statuses]="posts"
@@ -1742,6 +1758,14 @@
                 @if (canEmbed) {
                   <button type="button" mbMenuItem (click)="openEmbed($event)">
                     {{ 'statusCard.embedPost' | transloco }}
+                  </button>
+                }
+                @if (canReadAloud) {
+                  <button type="button" mbMenuItem (click)="toggleReadAloud($event)">
+                    {{
+                      (isReadingAloud() ? 'statusCard.stopReading' : 'statusCard.readAloud')
+                        | transloco
+                    }}
                   </button>
                 }
                 @if (downloadable(); as posts) {

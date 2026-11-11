@@ -139,7 +139,7 @@ Sources: [Phanpy familiar-followers utility](../../REFERENCE/phanpy/src/utils/fa
 
 Sources: [Phanpy composer](../../REFERENCE/phanpy/src/components/compose.jsx), [open-compose utility](../../REFERENCE/phanpy/src/utils/open-compose.js); [mawkingbird composer](../ui/src/app/compose/compose.ts), [hotkeys](../ui/src/app/hotkeys.ts).
 
-### 11. Receive operating-system shares into a composition — missing
+### 11. Receive operating-system shares into a composition — done 2026-11-10 (links and text; files not yet)
 
 **Phanpy:** Declares a PWA Web Share Target for title, text, URL and image/video/audio files. Its service worker receives the multipart share and hands the data to the app's composer.
 
@@ -148,6 +148,8 @@ Sources: [Phanpy composer](../../REFERENCE/phanpy/src/components/compose.jsx), [
 **Completion criterion:** On a supported installed-web-app platform, select mawkingbird in another app's Share sheet and receive the shared text/link/media in an unsent composition. Do not publish automatically.
 
 Sources: [Phanpy manifest configuration](../../REFERENCE/phanpy/vite.config.js), [share-target handler](../../REFERENCE/phanpy/public/sw.js), [app handoff](../../REFERENCE/phanpy/src/app.jsx); [mawkingbird manifest](../ui/public/site.webmanifest), [outgoing share dialog](../ui/src/app/share-dialog/share-dialog.ts).
+
+**Implemented:** `ui/public/site.webmanifest` now has a name, `id`/`start_url`/`scope` (relative, so canary works), the site description and a GET `share_target` for `title`/`text`/`url`. `/share` joins them (each piece once), parks an unsent draft through the composer handoff and replaces itself with Home. No service worker: sharing **files** is not supported (owner decision 2026-11-10), and iOS has no Web Share Target at all. Install entry points: Settings → Install app (Chrome/Edge install button from the deferred `beforeinstallprompt`; written instructions for iOS, Mac Safari and other browsers) and a footer link beneath the other footer rows, both hidden when already running installed. The browser's automatic mini-infobar is suppressed.
 
 ### 12. Integrated GIF search and attachment — missing
 
@@ -159,7 +161,7 @@ Sources: [Phanpy manifest configuration](../../REFERENCE/phanpy/vite.config.js),
 
 Sources: [Phanpy GIF picker](../../REFERENCE/phanpy/src/components/gif-picker-modal.jsx), [composer](../../REFERENCE/phanpy/src/components/compose.jsx); [mawkingbird composer](../ui/src/app/compose/compose.ts).
 
-### 13. Explicit camera capture from the composer — missing
+### 13. Explicit camera capture from the composer — done 2026-11-10
 
 **Phanpy:** Provides “Take photo or video” through a capability-gated file input using `capture="environment"`.
 
@@ -168,6 +170,8 @@ Sources: [Phanpy GIF picker](../../REFERENCE/phanpy/src/components/gif-picker-mo
 **Completion criterion:** Offer capture on supported devices and place the resulting photo/video into the current draft. Keep ordinary file upload available.
 
 Sources: [Phanpy camera input](../../REFERENCE/phanpy/src/components/camera-capture-input.jsx), [composer](../../REFERENCE/phanpy/src/components/compose.jsx); [mawkingbird composer template](../ui/src/app/compose/compose.html).
+
+**Implemented:** a 📷 button beside 📎 on touch-first devices (`pointer: coarse`) opens a `capture="environment"` input. iOS Safari may take a photo or video; other phones take photos, because Android's camera intent opens for only one kind. The capture goes through the ordinary attach path (upload, metadata alt text, Bluesky rules). Desktop browsers, which ignore `capture`, don't get the button; ordinary upload is unchanged.
 
 ### 14. Prefill image descriptions from embedded metadata — done 2026-11-10
 
@@ -181,7 +185,7 @@ Sources: [Phanpy extraction utility](../../REFERENCE/phanpy/src/utils/extract-im
 
 **Implemented:** `compose/image-description.ts` reads IPTC Caption/Abstract, then XMP `dc:description` (x-default first), then EXIF ImageDescription from JPEG, PNG (`tEXt`/`iTXt` Description, XMP, `eXIf`) and WebP, locally and before upload. Camera placeholders (e.g. "OLYMPUS DIGITAL CAMERA", "DSC_0042") are ignored; text is capped at 1,500 characters. Only an attachment whose description is still empty is filled, and a note asks the writer to check it until they edit it. Not read: HEIC/AVIF and compressed PNG text.
 
-### 15. Generate descriptions for uploaded or viewed images — missing, conditional in Phanpy
+### 15. Generate descriptions for uploaded or viewed images — done 2026-11-10 (OpenRouter only)
 
 **Phanpy:** With its image-description generator setting and `IMG_ALT_API_URL` configured, it can generate an editable attachment description. The media viewer can also describe an existing image. This is not an unconditional capability of every Phanpy deployment.
 
@@ -191,9 +195,11 @@ Sources: [Phanpy extraction utility](../../REFERENCE/phanpy/src/utils/extract-im
 
 Sources: [Phanpy attachment generator](../../REFERENCE/phanpy/src/components/media-attachment.jsx), [viewer action](../../REFERENCE/phanpy/src/components/media-modal.jsx), [settings](../../REFERENCE/phanpy/src/pages/settings.jsx); [mawkingbird composer](../ui/src/app/compose/compose.ts), [lightbox](../ui/src/app/lightbox).
 
+**Implemented:** only when AI features are on and OpenRouter is connected. In the composer, ✨ beside an image's alt field asks the chosen model for a description: a local file is downscaled to 1,024 px first, otherwise the uploaded preview URL is sent. The text lands in the field with a "Written by AI… check it" note and is never posted without being shown, and the button never replaces words the writer typed. In the lightbox, "✨ Describe with AI" captions an undescribed image for this viewing only, labelled as AI text. A text-only model gets a clear "pick a model that reads images" error. Not counted against the AI translation budget.
+
 ## Post and profile tools
 
-### 16. Read post text and media descriptions aloud — missing
+### 16. Read post text and media descriptions aloud — done 2026-11-10
 
 **Phanpy:** Exposes “Speak” for post text and media descriptions using browser speech synthesis when available.
 
@@ -203,7 +209,9 @@ Sources: [Phanpy attachment generator](../../REFERENCE/phanpy/src/components/med
 
 Sources: [Phanpy speech utility](../../REFERENCE/phanpy/src/utils/speech.js), [post actions](../../REFERENCE/phanpy/src/components/status.jsx), [media-description dialog](../../REFERENCE/phanpy/src/components/media-alt-modal.jsx); [mawkingbird status card](../ui/src/app/status-card/status-card.ts), [lightbox](../ui/src/app/lightbox).
 
-### 17. Translate profile biography and metadata fields — partial
+**Implemented:** ••• → Read aloud / Stop reading on every post, using the browser's speech synthesis in the post's language (a local voice preferred). It reads the content warning, text (links as site names), image descriptions and poll choices. The lightbox has "🔊 Read description". One thing speaks at a time; nothing leaves the device. Hidden where the browser has no speech synthesis.
+
+### 17. Translate profile biography and metadata fields — done 2026-11-10
 
 **Phanpy:** “Translate bio” includes the biography and profile field names/values in a translation workflow.
 
@@ -212,6 +220,8 @@ Sources: [Phanpy speech utility](../../REFERENCE/phanpy/src/utils/speech.js), [p
 **Completion criterion:** Request a translation of a profile biography and fields while retaining access to the original. Reuse the existing translation choices where appropriate.
 
 Sources: [Phanpy translated-bio sheet](../../REFERENCE/phanpy/src/components/translated-bio-sheet.jsx), [related actions](../../REFERENCE/phanpy/src/components/related-actions.jsx); [mawkingbird profile](../ui/src/app/pages/profile/profile.ts), [translation router](../ui/src/app/translation/translation-router.ts).
+
+**Implemented:** "Translate bio" under another person's bio translates the bio plus each "Label: value" field through the existing chain (browser → MyMemory → Apertium → AI as configured; not the server, which only translates statuses). The original stays visible, the result has Hide, and an unsure language offers source choices.
 
 ### 18. Describe and remove profile images — done 2026-11-10
 

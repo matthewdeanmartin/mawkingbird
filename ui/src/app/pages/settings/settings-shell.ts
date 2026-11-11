@@ -66,6 +66,7 @@ interface SettingsNavGroup {
 // i18n settings.nav.writing: Writing
 // i18n settings.nav.homeAlgo: Home and Algo
 // i18n settings.nav.appearance: Appearance
+// i18n settings.nav.installApp: Install app
 // i18n settings.nav.internationalization: Internationalization
 // i18n settings.nav.localStorage: Local storage
 // i18n settings.nav.endorsements: Endorsements
@@ -239,6 +240,7 @@ export class SettingsShell {
       // against any instance; the page hides its server-backed rows off-mock itself.
       { labelKey: 'settings.nav.homeAlgo', path: 'home-algo', exact: true, anonymous: true },
       { labelKey: 'settings.nav.appearance', path: 'appearance', exact: true, anonymous: true },
+      { labelKey: 'settings.nav.installApp', path: 'app', exact: true, anonymous: true },
       { labelKey: 'settings.nav.internationalization', path: 'i18n', exact: true, anonymous: true },
       { labelKey: 'settings.nav.localStorage', path: 'storage', exact: true, anonymous: true },
       // Path is 'spotlight' on purpose — see the route's comment in app.routes.ts.

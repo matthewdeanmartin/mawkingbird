@@ -56,6 +56,35 @@
       }
       @if (m.description) {
         <figcaption class="lightbox-caption">{{ m.description }}</figcaption>
+      } @else if (aiDescriptions()[m.id]; as generated) {
+        <figcaption class="lightbox-caption">
+          <span class="ai-label">{{ 'lightbox.aiCaption' | transloco }}</span>
+          {{ generated }}
+        </figcaption>
+      }
+      <div class="lightbox-tools">
+        @if (
+          m.type === 'image' && !m.description && !aiDescriptions()[m.id] && describer.available()
+        ) {
+          <button
+            type="button"
+            class="lightbox-tool"
+            [disabled]="describingId() === m.id"
+            (click)="describe(m, $event)"
+          >
+            {{
+              (describingId() === m.id ? 'lightbox.describing' : 'lightbox.describe') | transloco
+            }}
+          </button>
+        }
+        @if (speech.supported && spokenDescription(m)) {
+          <button type="button" class="lightbox-tool" (click)="toggleSpeech(m, $event)">
+            {{ (isSpeaking(m) ? 'lightbox.stopReading' : 'lightbox.readDescription') | transloco }}
+          </button>
+        }
+      </div>
+      @if (describeError()) {
+        <p class="lightbox-caption" role="alert">{{ describeError() }}</p>
       }
       @if (hasMultiple()) {
         <div class="lightbox-counter">{{ index() + 1 }} / {{ items().length }}</div>

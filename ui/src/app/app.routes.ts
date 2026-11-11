@@ -751,6 +751,14 @@ export const routes: Routes = [
               import('./pages/settings/privacy/settings-privacy').then((m) => m.SettingsPrivacy),
           },
           {
+            // Install as an app (PWA) and the Share-menu note. Works signed out.
+            path: 'app',
+            title: 'Install app',
+            data: { preloadSettings: true },
+            loadComponent: () =>
+              import('./pages/settings/app/settings-app').then((m) => m.SettingsApp),
+          },
+          {
             path: 'appearance',
             title: 'Appearance',
             data: { preloadSettings: true },
@@ -1261,6 +1269,13 @@ export const routes: Routes = [
         path: 'credits',
         title: 'Credits',
         loadComponent: () => import('./pages/credits/credits').then((m) => m.Credits),
+      },
+      {
+        // The web app manifest's share_target: another app's Share menu opens
+        // this with title/text/url. It fills an unsent post and goes Home.
+        path: 'share',
+        title: 'Share',
+        loadComponent: () => import('./app-install/share-target').then((m) => m.ShareTarget),
       },
       {
         path: 'drafts',
