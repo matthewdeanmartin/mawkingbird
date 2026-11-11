@@ -98,15 +98,16 @@ export class LoginMisskey implements OnInit {
       void this.complete(session);
       return;
     }
-    this.adding = params.has('add');
+    // Someone already signed in who opens this page wants another Misskey
+    // account or the visitor: it is always "adding", never a bounce back home.
+    // (Bouncing them home sent the owner straight back to their account when
+    // they came to look around misskey.io, 2026-11-10.)
+    this.adding = params.has('add') || this.auth.isAuthenticated;
     this.visiting.set(params.has('visit'));
     // Sent here from the Mastodon door with the server already typed.
     const server = params.get('server');
     if (server) this.server.set(server);
     this.destination = loginDestination(params.get('next'));
-    if (this.auth.isAuthenticated && !this.adding && !this.visiting()) {
-      void this.router.navigateByUrl(this.destination, { replaceUrl: true });
-    }
   }
 
   private async loadSuggestions(): Promise<void> {

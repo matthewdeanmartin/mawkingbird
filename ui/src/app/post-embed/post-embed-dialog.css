@@ -1,0 +1,31 @@
+.small {
+  font-size: 13px;
+}
+.embed-heading {
+  margin: 14px 0 6px;
+  font-size: 14px;
+}
+.embed-code {
+  font:
+    12px/1.4 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+  resize: vertical;
+}
+mb-field {
+  display: block;
+  margin-top: 14px;
+}
+.embed-preview {
+  box-sizing: border-box;
+  width: 100%;
+  height: 260px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+}
+.copy-failed {
+  color: var(--danger, #c0392b);
+}

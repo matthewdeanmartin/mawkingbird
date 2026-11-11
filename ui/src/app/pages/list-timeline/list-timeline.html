@@ -100,6 +100,11 @@
       <mb-help [label]="'lists.listOnlyHelp' | transloco">
         <p>{{ 'lists.listOnlyExplanation' | transloco }}</p>
       </mb-help>
+      @if (!auth.isAnonymous) {
+        <button mbButton variant="outline" type="button" (click)="editingList.set(true)">
+          {{ 'listTimeline.editList' | transloco }}
+        </button>
+      }
     }
     <button class="btn btn-outline" (click)="showBulk.set(true)">
       {{ 'listTimeline.addPeopleByName' | transloco }}
@@ -195,5 +200,12 @@
     [target]="bulkTarget()"
     (confirmed)="confirmBulk()"
     (cancelled)="cancelBulk()"
+  />
+}
+@if (editingList() && list(); as currentList) {
+  <app-list-settings-dialog
+    [list]="currentList"
+    (closed)="editingList.set(false)"
+    (saved)="onListSaved($event)"
   />
 }

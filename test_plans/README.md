@@ -19,6 +19,9 @@ anything that went wrong under **Findings**.
 | [Sprint 5: discovery](bsky-parity-sprint-5-discovery.md) | Starter packs, suggestions, show more / less like this | Not run |
 | [Write and Drafts](write-drafts-2026-11.md) | Autosave, versions, shortcuts, quote dialog, scheduling and parking | Not run |
 | [Translation fallback](translation-fallback-2026-11.md) | Pair pre-check, browser translator, MyMemory, Apertium, source-language picker | Not run |
+| [Phanpy parity 1](phanpy-parity-1-mastodon-2026-11.md) | Private account notes, report rules and forwarding, list rename and replies, profile QR, embed post | Not run |
+| [Phanpy parity 2](phanpy-parity-2-mastodon-2026-11.md) | Feature accounts on your profile, familiar followers, alt text from image metadata | Not run |
+| [Phanpy parity 3](phanpy-parity-3-mastodon-2026-11.md) | Profile image descriptions and removal, collection language/sensitivity and reporting, server annual reports | Not run |
 
 The roadmap these come from is `sprint/november_2026_bsky_parity.md`.
 

@@ -49,6 +49,7 @@
 
 .new-list {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
@@ -61,6 +62,15 @@
   border-bottom: 1px solid var(--border);
   color: #e0245e;
   font-size: 13px;
+}
+
+.new-list-replies {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg, inherit);
+  color: inherit;
+  max-width: 100%;
 }
 
 .new-list input {

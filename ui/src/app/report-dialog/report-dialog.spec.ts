@@ -114,6 +114,11 @@ describe('ReportDialog', () => {
     const select = el.querySelector('select')!;
     select.value = 'violation';
     select.dispatchEvent(new Event('change'));
+    // Choosing "violation" asks the server for its rules; this one has none.
+    http.expectOne('/api/v1/instance/rules').flush(null, { status: 404, statusText: 'Not Found' });
+    http
+      .expectOne('/api/v1/instance/terms_of_service')
+      .flush(null, { status: 404, statusText: 'Not Found' });
     const comment = el.querySelector('textarea')!;
     comment.value = ' Keep this comment ';
     comment.dispatchEvent(new Event('input'));
@@ -146,6 +151,98 @@ describe('ReportDialog', () => {
     expect(retry.request.body).toEqual(expected);
     retry.flush({});
     expect(submitted).toHaveBeenCalledOnce();
+  });
+
+  function setUpMastodon(acct: string): ComponentFixture<ReportDialog> {
+    const f = TestBed.createComponent(ReportDialog);
+    f.componentRef.setInput('username', acct.split('@')[0]);
+    f.componentRef.setInput('accountId', '7');
+    f.componentRef.setInput('provider', 'mastodon');
+    f.componentRef.setInput('account', { id: '7', acct, username: acct.split('@')[0] } as never);
+    f.detectChanges();
+    return f;
+  }
+
+  function chooseViolation(f: ComponentFixture<ReportDialog>): void {
+    const select = (f.nativeElement as HTMLElement).querySelector('select')!;
+    select.value = 'violation';
+    select.dispatchEvent(new Event('change'));
+    http.expectOne('/api/v1/instance/rules').flush([
+      { id: 'r1', text: 'No spam', hint: '' },
+      { id: 'r2', text: 'No harassment', hint: 'Be kind' },
+    ]);
+    http
+      .expectOne('/api/v1/instance/terms_of_service')
+      .flush(null, { status: 404, statusText: 'Not Found' });
+    f.detectChanges();
+  }
+
+  it('sends the chosen server rule ids with a violation report', () => {
+    const f = setUpMastodon('local');
+    chooseViolation(f);
+    const boxes = (f.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>(
+      '.report-rules input[type="checkbox"]',
+    );
+    expect(boxes.length).toBe(2);
+    boxes[1].click();
+    f.detectChanges();
+    f.componentInstance.submit();
+    const request = http.expectOne('/api/v1/reports');
+    expect(request.request.body).toEqual({
+      account_id: '7',
+      category: 'violation',
+      rule_ids: ['r2'],
+    });
+    request.flush({});
+  });
+
+  it('requires a rule before sending a violation report when the server has rules', () => {
+    const f = setUpMastodon('local');
+    chooseViolation(f);
+    f.componentInstance.submit();
+    f.detectChanges();
+    expect(
+      (f.nativeElement as HTMLElement).querySelector('mb-notice [role="alert"]')?.textContent,
+    ).toContain('Choose at least one rule');
+    http.expectNone('/api/v1/reports');
+  });
+
+  it('offers forwarding only for remote accounts and sends it only when chosen', () => {
+    const local = setUpMastodon('local');
+    expect((local.nativeElement as HTMLElement).textContent).not.toContain('anonymous copy');
+
+    const f = setUpMastodon('them@remote.example');
+    const el = f.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('Also send an anonymous copy to remote.example');
+    f.componentInstance.submit();
+    const first = http.expectOne('/api/v1/reports');
+    expect(first.request.body).toEqual({ account_id: '7', category: 'spam' });
+    first.flush({});
+
+    const forwardBox = el.querySelector<HTMLInputElement>('mb-checkbox input[type="checkbox"]')!;
+    forwardBox.click();
+    f.detectChanges();
+    f.componentInstance.submit();
+    const second = http.expectOne('/api/v1/reports');
+    expect(second.request.body).toEqual({ account_id: '7', category: 'spam', forward: true });
+    second.flush({});
+  });
+
+  it('attaches the collection being reported', () => {
+    const f = setUpMastodon('curator@remote.example');
+    f.componentRef.setInput('collectionId', 'col-7');
+    f.detectChanges();
+    expect((f.nativeElement as HTMLElement).textContent).toContain(
+      'Reporting a specific collection.',
+    );
+    f.componentInstance.submit();
+    const request = http.expectOne('/api/v1/reports');
+    expect(request.request.body).toEqual({
+      account_id: '7',
+      category: 'spam',
+      collection_ids: ['col-7'],
+    });
+    request.flush({});
   });
 
   it('refuses a Bluesky post report without its exact reference', () => {

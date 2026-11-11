@@ -105,6 +105,19 @@
         (keyup.enter)="create()"
         [placeholder]="'pages.lists.serverList.newNamePlaceholder' | transloco"
       />
+      @if (!auth.isAnonymous) {
+        <select
+          class="new-list-replies"
+          [attr.aria-label]="'pages.lists.serverList.repliesPolicyLabel' | transloco"
+          [title]="'pages.lists.serverList.repliesPolicyLabel' | transloco"
+          [ngModel]="newRepliesPolicy()"
+          (ngModelChange)="newRepliesPolicy.set($event)"
+        >
+          @for (policy of repliesPolicies; track policy) {
+            <option [value]="policy">{{ 'listSettings.policy.' + policy | transloco }}</option>
+          }
+        </select>
+      }
       <button class="btn" [disabled]="!newTitle().trim()" (click)="create()">
         {{ 'pages.lists.create' | transloco }}
       </button>
@@ -556,6 +569,14 @@
           <button class="btn" [disabled]="!newCollectionName().trim()" (click)="createCollection()">
             {{ 'pages.lists.create' | transloco }}
           </button>
+          <button
+            class="btn btn-outline"
+            type="button"
+            [title]="'pages.lists.collections.moreOptionsTitle' | transloco"
+            (click)="creatingCollection.set(true)"
+          >
+            {{ 'pages.lists.collections.moreOptions' | transloco }}
+          </button>
         </div>
 
         @if (collectionsLoading()) {
@@ -929,5 +950,12 @@
     [confirmLabel]="'pages.collection.removeMe' | transloco"
     (confirmed)="leaveCollection()"
     (cancelled)="collectionToLeave.set(null)"
+  />
+}
+@if (creatingCollection()) {
+  <app-collection-settings-dialog
+    [initialName]="newCollectionName()"
+    (closed)="creatingCollection.set(false)"
+    (saved)="onCollectionCreated($event)"
   />
 }

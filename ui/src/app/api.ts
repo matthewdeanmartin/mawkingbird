@@ -1,6 +1,6 @@
 import { AppDialogs } from './app-dialogs';
 import { TranslocoService } from '@jsverse/transloco';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import {
   EMPTY,
@@ -14,6 +14,7 @@ import {
   reduce,
   switchMap,
   tap,
+  throwError,
 } from 'rxjs';
 import { accountScopeSuffix } from './account-scope';
 import { PrivateMedia } from './private-media';
@@ -56,6 +57,11 @@ import {
   TermsOfService,
   Translation,
   UserList,
+  ListRepliesPolicy,
+  FamiliarFollowers,
+  OwnProfile,
+  AnnualReports,
+  AnnualReportState,
 } from './models';
 import { TrendLanguageFilter } from './trend-language-filter';
 import { PeopleCursorSource, nextMaxIdFrom, peopleCursorFrom } from './people-cursor';
@@ -86,6 +92,16 @@ export interface AccountStatusesOptions {
   onlyMedia?: boolean;
   maxId?: string;
   limit?: number;
+}
+
+/** Editable Mastodon collection fields (4.6+). */
+export interface CollectionSettings {
+  name?: string;
+  description?: string;
+  discoverable?: boolean;
+  sensitive?: boolean;
+  /** ISO 639-1 code; omit to leave the server default. */
+  language?: string;
 }
 
 /**
@@ -214,6 +230,37 @@ export class Api {
   }
 
   /** Accounts this account features on its profile ("collections"; Mastodon 4.4+). */
+  /**
+   * Feature (endorse) an account you follow on your own profile. Mastodon 4.4
+   * renamed `/pin` to `/endorse`; older servers only know `/pin`, so a 404 or
+   * 405 from the new route retries the old one.
+   */
+  setAccountFeatured(id: string, featured: boolean): Observable<Relationship> {
+    const [current, legacy] = featured ? ['endorse', 'pin'] : ['unendorse', 'unpin'];
+    return this.http
+      .post<Relationship>(`/api/v1/accounts/${id}/${current}`, {})
+      .pipe(
+        catchError((error: unknown) =>
+          error instanceof HttpErrorResponse && (error.status === 404 || error.status === 405)
+            ? this.http.post<Relationship>(`/api/v1/accounts/${id}/${legacy}`, {})
+            : throwError(() => error),
+        ),
+      );
+  }
+
+  /**
+   * Accounts the viewer follows that also follow `id` (Mastodon 3.5+). Not the
+   * same thing as a mutual follow between the viewer and `id`.
+   */
+  familiarFollowers(id: string): Observable<Account[]> {
+    return this.http
+      .get<FamiliarFollowers[]>('/api/v1/accounts/familiar_followers', {
+        params: new HttpParams().append('id[]', id),
+        context: serverRole('background'),
+      })
+      .pipe(map((rows) => rows.find((row) => row.id === id)?.accounts ?? []));
+  }
+
   accountEndorsements(id: string): Observable<Account[]> {
     return this.http.get<Account[]>(`/api/v1/accounts/${id}/endorsements`);
   }
@@ -318,6 +365,14 @@ export class Api {
       this.http.post<Relationship>(`/api/v1/accounts/${id}/unfollow`, {}),
       'profile',
     );
+  }
+
+  /**
+   * Set the viewer's private note about an account; an empty comment clears it.
+   * Mastodon stores the note server-side and shows it only to its author.
+   */
+  setAccountNote(id: string, comment: string): Observable<Relationship> {
+    return this.http.post<Relationship>(`/api/v1/accounts/${id}/note`, { comment });
   }
 
   removeFollower(id: string): Observable<Relationship> {
@@ -835,17 +890,32 @@ export class Api {
   }
 
   // create_list / update_list take form-encoded params, not JSON.
-  createList(title: string): Observable<UserList> {
-    const body = new HttpParams().set('title', title);
+  createList(title: string, repliesPolicy?: ListRepliesPolicy): Observable<UserList> {
+    let body = new HttpParams().set('title', title);
+    if (repliesPolicy) {
+      body = body.set('replies_policy', repliesPolicy);
+    }
     return this.http.post<UserList>('/api/v1/lists', body);
   }
 
   /** Preserve the list title and reply policy when changing Home visibility. */
   updateList(list: UserList, exclusive: boolean): Observable<UserList> {
+    return this.editList(list, { exclusive });
+  }
+
+  /**
+   * Rename a list, change its reply policy, or toggle exclusivity. Mastodon's
+   * PUT resets omitted fields to their defaults, so each unchanged field is
+   * resent from `list`. Membership is a separate resource and is untouched.
+   */
+  editList(
+    list: UserList,
+    changes: { title?: string; replies_policy?: ListRepliesPolicy; exclusive?: boolean },
+  ): Observable<UserList> {
     const body = new HttpParams()
-      .set('title', list.title)
-      .set('replies_policy', list.replies_policy ?? 'list')
-      .set('exclusive', String(exclusive));
+      .set('title', changes.title ?? list.title)
+      .set('replies_policy', changes.replies_policy ?? list.replies_policy ?? 'list')
+      .set('exclusive', String(changes.exclusive ?? !!list.exclusive));
     return this.http.put<UserList>(`/api/v1/lists/${list.id}`, body);
   }
 
@@ -911,19 +981,30 @@ export class Api {
     return this.http.get<CollectionWithAccounts>(`/api/v1/collections/${id}`);
   }
 
-  createCollection(name: string, description?: string): Observable<{ collection: Collection }> {
+  createCollection(
+    name: string,
+    description?: string,
+    options: Pick<CollectionSettings, 'sensitive' | 'discoverable' | 'language'> = {},
+  ): Observable<{ collection: Collection }> {
     // mastodon.social rejects the create (422) unless `sensitive` and
     // `discoverable` are present, so send explicit defaults (verified live).
-    const body: Record<string, unknown> = { name, sensitive: false, discoverable: false };
+    const body: Record<string, unknown> = {
+      name,
+      sensitive: options.sensitive ?? false,
+      discoverable: options.discoverable ?? false,
+    };
     if (description?.trim()) {
       body['description'] = description.trim();
+    }
+    if (options.language) {
+      body['language'] = options.language;
     }
     return this.http.post<{ collection: Collection }>('/api/v1/collections', body);
   }
 
   updateCollection(
     id: string,
-    changes: { name?: string; description?: string; discoverable?: boolean },
+    changes: CollectionSettings,
   ): Observable<{ collection: Collection }> {
     return this.http.patch<{ collection: Collection }>(`/api/v1/collections/${id}`, changes);
   }
@@ -984,6 +1065,7 @@ export class Api {
     category: string,
     comment: string,
     statusIds?: string[],
+    options: { ruleIds?: string[]; forward?: boolean; collectionIds?: string[] } = {},
   ): Observable<unknown> {
     const body: Record<string, unknown> = { account_id: accountId, category };
     if (comment.trim()) {
@@ -991,6 +1073,16 @@ export class Api {
     }
     if (statusIds?.length) {
       body['status_ids'] = statusIds;
+    }
+    // Rule ids only mean something on a rule-violation report.
+    if (category === 'violation' && options.ruleIds?.length) {
+      body['rule_ids'] = options.ruleIds;
+    }
+    if (options.forward) {
+      body['forward'] = true;
+    }
+    if (options.collectionIds?.length) {
+      body['collection_ids'] = options.collectionIds;
     }
     return this.http.post('/api/v1/reports', body);
   }
@@ -1024,6 +1116,52 @@ export class Api {
   }
 
   // --- profile / settings ---
+  // --- server annual reports ("Wrapstodon") ---
+
+  /** Every report the server has generated for you (Mastodon 4.3+). */
+  annualReports(): Observable<AnnualReports> {
+    return this.http.get<AnnualReports>('/api/v1/annual_reports');
+  }
+
+  /** One year's report (Mastodon 4.4+); 404 when there is none. */
+  annualReport(year: number): Observable<AnnualReports> {
+    return this.http.get<AnnualReports>(`/api/v1/annual_reports/${year}`);
+  }
+
+  /** Whether a report for `year` exists or can be generated (Mastodon 4.6+). */
+  annualReportState(year: number): Observable<AnnualReportState> {
+    return this.http
+      .get<{ state: AnnualReportState }>(`/api/v1/annual_reports/${year}/state`, {
+        context: serverRole('background'),
+      })
+      .pipe(map((body) => body.state));
+  }
+
+  /** Ask the server to build the report; it is ready later, not in the response. */
+  generateAnnualReport(year: number): Observable<unknown> {
+    return this.http.post(`/api/v1/annual_reports/${year}/generate`, {});
+  }
+
+  /**
+   * The Profile API (Mastodon 4.6, API version 8+; image descriptions from 9).
+   * Older servers 404, which callers treat as "not available".
+   */
+  ownProfile(): Observable<OwnProfile> {
+    return this.http.get<OwnProfile>('/api/v1/profile', { context: serverRole('background') });
+  }
+
+  /** Set avatar/header descriptions through the Profile API. */
+  updateProfileImageDescriptions(
+    changes: Partial<Pick<OwnProfile, 'avatar_description' | 'header_description'>>,
+  ): Observable<OwnProfile> {
+    return this.http.patch<OwnProfile>('/api/v1/profile', changes);
+  }
+
+  /** Remove the avatar or header without uploading a replacement (Mastodon 4.2+). */
+  deleteProfileImage(which: 'avatar' | 'header'): Observable<Account> {
+    return this.http.delete<Account>(`/api/v1/profile/${which}`);
+  }
+
   updateCredentials(form: FormData): Observable<Account> {
     return this.http.patch<Account>('/api/v1/accounts/update_credentials', form);
   }

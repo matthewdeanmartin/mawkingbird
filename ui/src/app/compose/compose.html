@@ -234,6 +234,11 @@
             <span aria-hidden="true">✕</span>
           </button>
         </div>
+        @if (metadataDescribed().has(m.media.id)) {
+          <p class="alt-from-metadata muted small" role="status">
+            {{ 'compose.altFromMetadata' | transloco }}
+          </p>
+        }
       }
     </div>
     @if (altTextNote(); as note) {

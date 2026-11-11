@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  padding-bottom: 24px;
+}
+mb-section {
+  display: block;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.back-link,
+.share {
+  font-size: 14px;
+}
+.share {
+  padding: 0 16px;
+}
+.report-text {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+.report-pairs {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 4px 0 0;
+}
+.report-pairs dt {
+  color: var(--muted);
+}
+.report-pairs dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.table-wrap {
+  overflow-x: auto;
+}
+.report-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+.report-table th,
+.report-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+}
+.report-table .numeric {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+.report-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: inherit;
+}
+.report-account img {
+  border-radius: 50%;
+}
+.status-label {
+  font-size: 14px;
+  margin: 12px 0 4px;
+}
+.state {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.state p {
+  margin: 0;
+}
+.report-list {
+  margin: 4px 0 0;
+  padding-inline-start: 20px;
+}

@@ -314,6 +314,31 @@ describe('ListTimeline', () => {
     httpMock.expectOne((r) => r.url === `/api/v1/timelines/list/${id}`).flush([]);
   }
 
+  it('renames a server list and reloads its posts when the reply policy changes', () => {
+    const fixture = setUpWithList('exclusive');
+    const list = { id: 'exclusive', title: 'Friends', replies_policy: 'list', exclusive: true };
+    httpMock.expectOne('/api/v1/lists/exclusive').flush(list);
+    httpMock.expectOne((r) => r.url === '/api/v1/timelines/list/exclusive').flush([]);
+    internals(fixture).setTab('members');
+    httpMock.expectOne('/api/v1/lists/exclusive/accounts').flush([]);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const edit = Array.from(el.querySelectorAll('button')).find((b) =>
+      b.textContent?.includes('Rename / replies'),
+    )!;
+    edit.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-list-settings-dialog')).not.toBeNull();
+    const updated = { ...list, title: 'Pals', replies_policy: 'none' };
+    (fixture.componentInstance as unknown as { onListSaved(list: unknown): void }).onListSaved(
+      updated,
+    );
+    fixture.detectChanges();
+    expect(el.querySelector('app-list-settings-dialog')).toBeNull();
+    expect(internals(fixture).title()).toBe('Pals');
+    httpMock.expectOne((r) => r.url === '/api/v1/timelines/list/exclusive').flush([]);
+  });
+
   it('saves List only for the whole list while preserving its reply policy', () => {
     const fixture = setUpWithList('exclusive');
     const list = { id: 'exclusive', title: 'Friends', replies_policy: 'none', exclusive: false };

@@ -31,6 +31,7 @@ import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { PostConfirmation } from '../post-confirmation';
 import { VisibilityState, VISIBILITIES } from './visibility-state';
 import { altTextMessage, mediaTypeOf, undescribedIndexes } from './alt-text';
+import { extractImageDescription } from './image-description';
 import { LinkShortening } from './link-shortening';
 import { TagHelperDialog } from './tag-helper-dialog/tag-helper-dialog';
 import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
@@ -452,6 +453,7 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.addPoll: Add poll
 // i18n compose.allowMultiple: Allow multiple
 // i18n compose.altPlaceholder: Describe for the visually impaired
+// i18n compose.altFromMetadata: Filled in from the description saved in this image. Check it still fits before posting.
 // i18n compose.attachMedia: Attach media — or paste / drag & drop an image
 // i18n compose.blueskyLimit: Bluesky limit
 // i18n compose.cancel: Cancel
@@ -1108,6 +1110,11 @@ export class Compose implements OnDestroy {
 
   // Media.
   protected media = signal<PendingMedia[]>([]);
+  /**
+   * Attachments whose description was prefilled from the image's own metadata
+   * and not edited since, by media id. Drives the "check it" note.
+   */
+  protected metadataDescribed = signal<ReadonlySet<string>>(new Set());
   /**
    * Why an attachment was refused or trimmed, when one was.
    *
@@ -1992,12 +1999,16 @@ export class Compose implements OnDestroy {
 
   private attachFiles(files: File[]): void {
     for (const file of files) {
+      // Read embedded metadata from the original bytes, in parallel with the
+      // upload; it is applied once the attachment exists.
+      const embedded = extractImageDescription(file);
       // Bluesky-only: there is no Mastodon post to attach this to, so uploading
       // it there would spend a call and store a file nothing will reference.
       // Held locally instead and sent to Bluesky at submit time, which is when
       // the blob has to exist in that repo anyway.
       if (this.targetIncludesBsky() && !this.targetIncludesFedi()) {
         this.media.update((list) => [...list, { media: localMedia(file), description: '', file }]);
+        void this.prefillDescription(file, embedded);
         continue;
       }
       this.pendingUploads++;
@@ -2005,6 +2016,7 @@ export class Compose implements OnDestroy {
       this.api.uploadMedia(file).subscribe({
         next: (media) => {
           this.media.update((list) => [...list, { media, description: '', file }]);
+          void this.prefillDescription(file, embedded);
           this.settleUpload();
         },
         error: (error: unknown) => {
@@ -2027,7 +2039,32 @@ export class Compose implements OnDestroy {
   }
 
   setMediaDescription(index: number, description: string): void {
+    const id = this.media()[index]?.media.id;
     this.media.update((list) => list.map((m, i) => (i === index ? { ...m, description } : m)));
+    if (id && this.metadataDescribed().has(id)) {
+      const next = new Set(this.metadataDescribed());
+      next.delete(id);
+      this.metadataDescribed.set(next);
+    }
+  }
+
+  /**
+   * Offer the image's embedded description as its alt text. Never overwrites
+   * anything the writer has typed: only an attachment still without a
+   * description is filled.
+   */
+  private async prefillDescription(file: File, embedded: Promise<string | null>): Promise<void> {
+    const description = await embedded;
+    if (!description) return;
+    let filled: string | undefined;
+    this.media.update((list) =>
+      list.map((m) => {
+        if (m.file !== file || m.description.trim()) return m;
+        filled = m.media.id;
+        return { ...m, description };
+      }),
+    );
+    if (filled) this.metadataDescribed.set(new Set(this.metadataDescribed()).add(filled));
   }
 
   /** Ids of the attachments the composer will publish, for hosts that supply them. */

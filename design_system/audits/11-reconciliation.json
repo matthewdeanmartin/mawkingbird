@@ -48,6 +48,41 @@
       "nextStep": "Forum's discussion list: Page Header with a help link, Field/Control for the source picker, MbButton for Scan, the Recent/Popular toggle (aria-pressed), Stop and Scan deeper, Badge for question and partial markers in each card's footer, and Content State for empty and Mastodon-only states. Roots reuse StatusCard; each footer's stats line is the native link into the discussion. One persistent sr-only status announces scan start and end, never the call counter. Preserve the 16px inset, Stop keeping found results, stable row order with an explicit re-sort, and the ceiling on Scan deeper choices."
     },
     {
+      "file": "ui/src/app/collection-settings-dialog/collection-settings-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Collection create/edit (Phanpy parity 25a): MbDialog, Field/Control for name, description and a language select, MbCheckbox for sensitive and discoverable, MbButton actions, MbNotice errors. Preserve the explicit sensitive/discoverable defaults on create (mastodon.social 422s without them) and the 40/100-character limits."
+    },
+    {
+      "file": "ui/src/app/pages/annual-report/annual-report.html",
+      "disposition": "adopted scope",
+      "nextStep": "Server annual report (Phanpy parity 25c): MbPageHeader, MbSection per report key, MbContentState for loading/unsupported/missing/error, MbButton for generate and re-check, MbNotice for failures; native tables for report series. Preserve the 4.3 list fallback, schema-agnostic rendering and no polling after generate."
+    },
+    {
+      "file": "ui/src/app/account-note-dialog/account-note-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Private account note (Phanpy parity 7): MbDialog, Field/Control textarea with a visible character count, MbButton for Delete note, Cancel and Save, MbNotice for failures. Preserve the typed note on failure, the 2,000-character limit, and that an empty save clears the server note."
+    },
+    {
+      "file": "ui/src/app/list-settings-dialog/list-settings-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Server list rename and reply policy (Phanpy parity 23): MbDialog, Field/Control name, MbRadioGroup for the three Mastodon reply policies with hints, MbButton actions and MbNotice errors. Preserve exclusivity and membership (Api.editList resends unchanged fields)."
+    },
+    {
+      "file": "ui/src/app/post-embed/post-embed-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Embed post (Phanpy parity 20): MbDialog (wide), Field/Control read-only code textarea, MbButton Copy/Close, and a permissionless sandboxed iframe preview. Preserve the empty sandbox, no-referrer preview and the copy-failure message."
+    },
+    {
+      "file": "ui/src/app/post-embed/post-embed.ts",
+      "disposition": "lexical only",
+      "nextStep": "The details/figure tags are strings in the generated portable HTML, not app controls. Keep the allow-list rebuild and escaping; add tests before widening allowed tags."
+    },
+    {
+      "file": "ui/src/app/profile-qr/profile-qr-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Profile QR (Phanpy parity 21): MbDialog, MbButton for Scan, Copy link, Show my code and Open profile, MbNotice for camera and lookup errors; a native muted inline video is the camera preview. Preserve camera teardown on close and that scanned links resolve through the signed-in server."
+    },
+    {
       "file": "ui/src/app/pages/misskey-search/misskey-search.html",
       "disposition": "adopted scope",
       "nextStep": "Misskey search: Field/Control search input, MbButton submit and load more, MbToolbar/MbToolbarButton for Notes, People and Hashtags (pressed state, not pills). Preserve the URL-held query and type, the note-search-unavailable message, and the @user@host lookup."
@@ -1265,7 +1300,7 @@
     {
       "file": "ui/src/app/report-dialog/report-dialog.html",
       "disposition": "partial adoption",
-      "nextStep": "Sprint 13 adopts modal, fields, controls, error notice and Cancel. Preserve the existing red Confirm report action until a shared destructive variant is reviewed; owned by the next contributor changing destructive actions and their maintainer reviewer."
+      "nextStep": "Sprint 13 adopts modal, fields, controls, error notice and Cancel; Phanpy parity 24 adds MbCheckbox for server rules and the opt-in remote forward. Preserve the existing red Confirm report action until a shared destructive variant is reviewed; owned by the next contributor changing destructive actions and their maintainer reviewer."
     },
     {
       "file": "ui/src/app/search-server-discovery/search-server-discovery.html",

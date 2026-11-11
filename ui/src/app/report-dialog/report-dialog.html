@@ -8,6 +8,9 @@
   @if (statusId()) {
     <p class="muted small">{{ 'report.specificPost' | transloco }}</p>
   }
+  @if (collectionId()) {
+    <p class="muted small">{{ 'report.specificCollection' | transloco }}</p>
+  }
   <p class="muted small">
     {{ 'report.review' | transloco }}
   </p>
@@ -16,12 +19,34 @@
   }
 
   <mb-field [label]="'report.category' | transloco">
-    <select mbControl [ngModel]="category()" (ngModelChange)="category.set($event)">
+    <select mbControl [ngModel]="category()" (ngModelChange)="setCategory($event)">
       @for (c of categories; track c) {
         <option [value]="c">{{ c }}</option>
       }
     </select>
   </mb-field>
+
+  @if (category() === 'violation' && provider() !== 'bluesky') {
+    <fieldset class="report-rules">
+      <legend>{{ 'report.rules' | transloco }}</legend>
+      @if (serverAbout.rules(); as rules) {
+        @for (rule of rules; track rule.id) {
+          <mb-checkbox
+            [label]="rule.text"
+            [hint]="rule.hint"
+            [checked]="ruleIds().has(rule.id)"
+            (checkedChange)="toggleRule(rule.id, $event)"
+          />
+        } @empty {
+          <p class="muted small">{{ 'report.rulesNone' | transloco }}</p>
+        }
+      } @else if (serverAbout.loading()) {
+        <p class="muted small">{{ 'report.rulesLoading' | transloco }}</p>
+      } @else {
+        <p class="muted small">{{ 'report.rulesNone' | transloco }}</p>
+      }
+    </fieldset>
+  }
 
   <mb-field [label]="'report.comment' | transloco">
     <textarea
@@ -32,6 +57,15 @@
       [placeholder]="'report.placeholder' | transloco"
     ></textarea>
   </mb-field>
+
+  @if (remoteHost(); as host) {
+    <mb-checkbox
+      [label]="'report.forward' | transloco: { host }"
+      [hint]="'report.forwardHint' | transloco"
+      [checked]="forward()"
+      (checkedChange)="forward.set($event)"
+    />
+  }
 
   @if (error()) {
     <mb-notice tone="error" announcement="alert">{{ error() }}</mb-notice>

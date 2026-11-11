@@ -1,4 +1,5 @@
 import { BlueskySession } from '../providers/bluesky/bluesky-session';
+import { forgetLoadedDictionaries } from '../learn/dictionary/dictionary-registry';
 import { BlueskyFeeds } from '../providers/bluesky/bluesky-feeds';
 import { BlueskyModeration } from '../providers/bluesky/bluesky-moderation';
 import { BlueskyPostControls } from '../providers/bluesky/bluesky-post-controls';
@@ -3452,6 +3453,7 @@ describe('StatusCard — link preview', () => {
 // ---------------------------------------------------------------- tap a word (L1)
 
 describe('StatusCard tap a word (L1)', () => {
+  afterEach(() => forgetLoadedDictionaries());
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
@@ -3491,6 +3493,12 @@ describe('StatusCard tap a word (L1)', () => {
     await vi.waitFor(() => {
       fixture.detectChanges();
       expect(el.querySelector('.word-lookup .words')?.textContent).toContain('寿司');
+    });
+    // Let the panel's dictionary load settle (the stubbed fetch has no data),
+    // so nothing is still loading when this test's environment closes.
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(el.textContent).toContain('not available yet');
     });
     vi.unstubAllGlobals();
   });

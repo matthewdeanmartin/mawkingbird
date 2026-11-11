@@ -449,6 +449,10 @@ textarea {
   margin-bottom: 0;
 }
 
+.alt-from-metadata {
+  margin: 4px 0 0 72px;
+}
+
 .poll-builder {
   display: flex;
   flex-direction: column;

@@ -1,0 +1,48 @@
+:root { color-scheme: light; --ink: #24372f; --muted: #67776d; --accent: #256b50; --line: #dce3da; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 2rem; }
+body { margin: 0; color: var(--ink); background: #f5f6f0; font: 16px/1.75 system-ui, sans-serif; }
+a { color: var(--accent); text-underline-offset: .2em; overflow-wrap: anywhere; }
+a:hover { color: #123f2c; }
+a:focus-visible, input:focus-visible { outline: 3px solid #c28b2d; outline-offset: 4px; }
+.site-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 4vw; border-bottom: 1px solid var(--line); background: #fffefa; }
+.site-header a { text-decoration: none; font-size: 25px; font-weight: 750; letter-spacing: -.06em; }
+.badge, .eyebrow { font-size: 11px; letter-spacing: .15em; font-weight: 700; color: var(--muted); }
+.badge { border: 1px solid var(--line); border-radius: 20px; padding: 5px 12px; }
+.layout { display: grid; grid-template-columns: 240px minmax(0, 960px); gap: 42px; max-width: 1330px; margin: 44px auto; padding: 0 28px; }
+.library .layout { display: block; max-width: 1180px; }
+.library aside { display: none; }
+aside { position: sticky; top: 24px; align-self: start; max-height: calc(100vh - 48px); overflow: auto; font-size: 13px; }
+.back { display: block; margin-bottom: 32px; text-decoration: none; font-weight: 650; }
+.toc ul { list-style: none; padding-left: 12px; }
+.toc > ul { padding: 0; }
+.toc li { margin: 8px 0; }
+.toc a { color: var(--muted); text-decoration: none; }
+.toc a:hover { color: var(--accent); }
+main { min-width: 0; background: #fffefa; padding: clamp(24px, 4vw, 56px); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 8px 30px #20382b06; }
+.document-meta { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+h1, h2, h3, h4 { line-height: 1.25; letter-spacing: -.025em; scroll-margin-top: 24px; }
+h1 { font-size: clamp(30px, 4vw, 46px); margin-top: 18px; }
+h2 { font-size: 26px; margin-top: 2.4em; padding-top: 22px; border-top: 1px solid var(--line); }
+h3 { font-size: 21px; margin-top: 2em; }
+p, li { overflow-wrap: anywhere; }
+li + li { margin-top: 6px; }
+pre { padding: 20px; overflow-x: auto; background: #eff2eb; border-radius: 8px; font-size: 13px; line-height: 1.6; }
+code { font-family: ui-monospace, Consolas, monospace; background: #eff2eb; padding: .1em .25em; border-radius: 3px; font-size: .88em; }
+pre code { padding: 0; font-size: inherit; }
+table { display: block; overflow-x: auto; border-collapse: collapse; width: 100%; font-size: 14px; margin: 24px 0; }
+th, td { padding: 12px 14px; text-align: left; border: 1px solid var(--line); min-width: 120px; vertical-align: top; }
+th { background: #edf2e9; }
+blockquote { margin-left: 0; padding: 4px 22px; border-left: 3px solid #86a58e; color: var(--muted); }
+img { max-width: 100%; height: auto; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-top: 28px; }
+.card { display: block; padding: 22px; text-decoration: none; border: 1px solid var(--line); border-radius: 10px; background: #fafbf6; }
+.card:hover { border-color: #83a28b; background: #f0f5eb; }
+.card strong { display: block; line-height: 1.4; margin-bottom: 12px; }
+.card small { color: var(--muted); display: block; font-size: 11px; }
+.search { width: 100%; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; font: inherit; background: white; }
+[hidden] { display: none !important; }
+footer { max-width: 1274px; margin: 45px auto; padding: 0 28px; color: var(--muted); font-size: 11px; letter-spacing: .08em; }
+footer span { margin-left: 18px; letter-spacing: 0; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); margin-top: 24px; padding: 0 16px; gap: 20px; } aside { position: static; max-height: none; } aside .toc, aside .eyebrow { display: none; } .back { margin: 0; } }
+@media print { aside, footer, .site-header, .search { display: none; } .layout { display: block; margin: 0; padding: 0; } main { border: 0; box-shadow: none; padding: 0; } pre { white-space: pre-wrap; } }

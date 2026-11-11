@@ -58,6 +58,9 @@ import {
 } from './profile-search';
 import { StatusCard } from '../../status-card/status-card';
 import { ReportDialog } from '../../report-dialog/report-dialog';
+import { AccountNoteDialog } from '../../account-note-dialog/account-note-dialog';
+import { ProfileQrDialog } from '../../profile-qr/profile-qr-dialog';
+import { FamiliarFollowers } from './familiar-followers/familiar-followers';
 import { ListDialog } from '../../list-dialog/list-dialog';
 import { VerifiedBadge } from '../../verified-badge/verified-badge';
 import { HumanCountPipe } from '../../human-count.pipe';
@@ -142,6 +145,17 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.actions.hide: Hide
 // i18n pages.profile.actions.removeFollower: Remove follower
 // i18n pages.profile.actions.reportAccount: Report account
+// i18n pages.profile.actions.addNote: Add private note
+// i18n pages.profile.actions.editNote: Edit private note
+// i18n pages.profile.actions.qrCode: QR code
+// i18n pages.profile.actions.annualReport: Annual report from your server
+// i18n pages.profile.actions.feature: Feature on my profile
+// i18n pages.profile.actions.unfeature: Stop featuring on my profile
+// i18n pages.profile.actions.featureFailed: Could not change whether this account is featured on your profile.
+// i18n pages.profile.featured.unfeature: Remove
+// i18n pages.profile.featured.unfeatureTitle: Stop featuring @{{acct}} on your profile
+// i18n pages.profile.note.label: Your private note
+// i18n pages.profile.note.edit: Edit
 // i18n pages.profile.actions.reportSubmitted: Report submitted. A moderator will review it; reports cannot be undone.
 // i18n pages.profile.actions.moreAccountActions: More account actions
 // i18n pages.profile.actions.cancel: Cancel
@@ -280,6 +294,9 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     MbMenuItem,
     StatusCard,
     ReportDialog,
+    AccountNoteDialog,
+    ProfileQrDialog,
+    FamiliarFollowers,
     ListDialog,
     VerifiedBadge,
     HumanCountPipe,
@@ -1042,6 +1059,12 @@ export class Profile implements OnInit, OnDestroy {
   });
 
   protected showReport = signal(false);
+  protected showNote = signal(false);
+  protected showQr = signal(false);
+  /** People the viewer follows who follow this account (not mutuals). */
+  protected familiarFollowers = signal<Account[]>([]);
+  protected featureBusy = signal(false);
+  protected featureError = signal<string | null>(null);
   protected showLists = signal(false);
   protected reportDone = signal(false);
   protected showBlockConfirm = signal(false);
@@ -1501,6 +1524,7 @@ export class Profile implements OnInit, OnDestroy {
       this.routeLoadSub.add(
         this.api.relationships([id]).subscribe((rels) => this.relationship.set(rels[0] ?? null)),
       );
+      this.loadFamiliarFollowers(id);
     }
     this.loadFeatured(id);
   }
@@ -1587,6 +1611,7 @@ export class Profile implements OnInit, OnDestroy {
                 .relationships([resolved.id])
                 .subscribe((rels) => this.relationship.set(rels[0] ?? null)),
             );
+            this.loadFamiliarFollowers(resolved.id);
           }
           this.loadFeatured(resolved.id);
         },
@@ -2385,6 +2410,62 @@ export class Profile implements OnInit, OnDestroy {
       : status.id;
   }
 
+  /** Mastodon familiar followers. Skipped on your own profile; old servers just show nothing. */
+  private loadFamiliarFollowers(id: string): void {
+    this.familiarFollowers.set([]);
+    if (id === this.auth.account()?.id) return;
+    this.routeLoadSub.add(
+      this.api.familiarFollowers(id).subscribe({
+        next: (accounts) => this.familiarFollowers.set(accounts),
+        error: () => {
+          // Pre-3.5 servers have no endpoint; the line simply doesn't render.
+        },
+      }),
+    );
+  }
+
+  /** Featuring needs a Mastodon relationship and an existing follow. */
+  protected canFeature(): boolean {
+    return this.canEditNote() && !!this.relationship()?.following;
+  }
+
+  protected toggleFeatured(): void {
+    const account = this.account();
+    const relationship = this.relationship();
+    if (!account || !relationship || this.featureBusy()) return;
+    this.featureBusy.set(true);
+    this.featureError.set(null);
+    this.api.setAccountFeatured(account.id, !relationship.endorsed).subscribe({
+      next: (updated) => {
+        this.featureBusy.set(false);
+        this.relationship.update((current) =>
+          current ? { ...current, endorsed: !!updated.endorsed } : updated,
+        );
+      },
+      error: () => {
+        this.featureBusy.set(false);
+        this.featureError.set(this.transloco.translate('pages.profile.actions.featureFailed'));
+      },
+    });
+  }
+
+  /** On your own profile: take someone out of your featured accounts. */
+  protected unfeature(target: Account): void {
+    if (this.featureBusy()) return;
+    this.featureBusy.set(true);
+    this.featureError.set(null);
+    this.api.setAccountFeatured(target.id, false).subscribe({
+      next: () => {
+        this.featureBusy.set(false);
+        this.featured.update((list) => list.filter((a) => a.id !== target.id));
+      },
+      error: () => {
+        this.featureBusy.set(false);
+        this.featureError.set(this.transloco.translate('pages.profile.actions.featureFailed'));
+      },
+    });
+  }
+
   private loadFeatured(id: string): void {
     this.featured.set([]);
     this.featuredFollowing.set(new Set());
@@ -2844,6 +2925,31 @@ export class Profile implements OnInit, OnDestroy {
   onDeleted(removed: Status): void {
     this.statuses.update((list) => list.filter((s) => s.id !== removed.id));
     this.pinnedStatuses.update((list) => list.filter((s) => s.id !== removed.id));
+  }
+
+  /**
+   * Private account notes are a Mastodon relationship field, so they need a
+   * signed-in Mastodon token and a Mastodon relationship to hang off.
+   */
+  protected canEditNote(): boolean {
+    return (
+      this.capabilities.canUseServerActions &&
+      !this.isSelf() &&
+      !this.isBluesky() &&
+      !this.isMisskey() &&
+      !this.isTwitter() &&
+      !this.isRss() &&
+      !this.isEliza() &&
+      !this.isOpenRouter() &&
+      !!this.relationship()
+    );
+  }
+
+  protected onNoteSaved(relationship: Relationship): void {
+    this.showNote.set(false);
+    this.relationship.update((current) =>
+      current ? { ...current, note: relationship.note ?? '' } : relationship,
+    );
   }
 
   onReported(): void {

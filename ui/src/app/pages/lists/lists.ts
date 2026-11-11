@@ -18,7 +18,14 @@ import {
 } from '@angular/router';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
-import { Collection, FeaturedTag, Tag, UserList } from '../../models';
+import {
+  Collection,
+  FeaturedTag,
+  LIST_REPLIES_POLICIES,
+  ListRepliesPolicy,
+  Tag,
+  UserList,
+} from '../../models';
 import { ConfirmDialog } from '../../confirm-dialog/confirm-dialog';
 import { AnonymousLists } from '../../providers/anonymous/anonymous-lists';
 import { AnonymousTags } from '../../providers/anonymous/anonymous-tags';
@@ -44,6 +51,7 @@ import { SupporterStatus } from '../../providers/account/supporter-status';
 import { writeBlockMessage } from '../../providers/account/write-block';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PeopleListsPanel } from '../../lists/people-lists-panel';
+import { CollectionSettingsDialog } from '../../collection-settings-dialog/collection-settings-dialog';
 import { VideoSubscriptions } from '../../providers/videos/video-subscriptions';
 import { VideoSubscriptionsPanel } from '../videos/video-subscriptions-panel';
 
@@ -88,6 +96,9 @@ import { MisskeyFeedSections } from './misskey-feed-sections';
 // i18n pages.lists.sections.all: All
 // i18n pages.lists.sections.featuredTags: Your Featured Hashtags
 // i18n pages.lists.create: Create
+// i18n pages.lists.collections.moreOptions: More options…
+// i18n pages.lists.collections.moreOptionsTitle: Create with a description, language, sensitivity or discovery setting
+// i18n pages.lists.serverList.repliesPolicyLabel: Replies to show in the new list
 // i18n pages.lists.loading: Loading…
 // i18n pages.lists.emptyCreateAbove: None yet — create one above.
 // i18n pages.lists.serverList.newNamePlaceholder: New list name
@@ -218,6 +229,7 @@ import { MisskeyFeedSections } from './misskey-feed-sections';
     TranslocoPipe,
     PeopleListsPanel,
     VideoSubscriptionsPanel,
+    CollectionSettingsDialog,
   ],
   templateUrl: './lists.html',
   styleUrl: './lists.css',
@@ -535,6 +547,9 @@ export class Lists implements OnInit {
   protected lists = signal<UserList[]>([]);
   protected loading = signal(true);
   protected newTitle = signal('');
+  /** Reply policy for a new server list; Mastodon's own default is "list". */
+  protected newRepliesPolicy = signal<ListRepliesPolicy>('list');
+  protected readonly repliesPolicies = LIST_REPLIES_POLICIES;
 
   /**
    * Browser-local lists, available in every session.
@@ -967,11 +982,12 @@ export class Lists implements OnInit {
       this.newTitle.set('');
       return;
     }
-    this.api.createList(title).subscribe({
+    this.api.createList(title, this.newRepliesPolicy()).subscribe({
       next: (list) => {
         this.diagnostics.info('Lists', 'create-list:success', { id: list.id });
         this.lists.update((l) => [...l, list]);
         this.newTitle.set('');
+        this.newRepliesPolicy.set('list');
       },
       // Keep the typed title on a failure: clearing the box would destroy the
       // user's input and leave no list to show for it.
@@ -1016,6 +1032,19 @@ export class Lists implements OnInit {
         );
       },
     });
+  }
+
+  /** The full create dialog (description, language, sensitivity, discovery). */
+  protected creatingCollection = signal(false);
+
+  protected onCollectionCreated(collection: Collection): void {
+    this.creatingCollection.set(false);
+    this.newCollectionName.set('');
+    if (collection?.id) {
+      this.collections.update((c) => [...c, collection]);
+    } else {
+      this.loadCollections();
+    }
   }
 
   createCollection(): void {

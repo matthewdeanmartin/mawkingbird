@@ -1,0 +1,47 @@
+.qr {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin: 0;
+}
+/* The code needs a light quiet zone to scan, whatever the theme. */
+.qr img,
+.qr-placeholder {
+  width: min(240px, 70vw);
+  height: auto;
+  aspect-ratio: 1;
+  background: #fff;
+  border-radius: 8px;
+  image-rendering: pixelated;
+}
+.qr figcaption {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+.qr-url {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+}
+.small {
+  font-size: 13px;
+}
+.scanner:not([hidden]) {
+  display: grid;
+  gap: 10px;
+}
+.scanner video {
+  width: 100%;
+  max-height: 60vh;
+  border-radius: 8px;
+  background: #000;
+  object-fit: cover;
+  display: none;
+}
+.scanner video.live {
+  display: block;
+}
+.scan-result {
+  overflow-wrap: anywhere;
+  margin: 0;
+}

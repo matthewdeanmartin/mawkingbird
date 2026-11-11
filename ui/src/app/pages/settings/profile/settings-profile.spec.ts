@@ -96,6 +96,7 @@ describe('SettingsProfile', () => {
     const fixture = TestBed.createComponent(SettingsProfile);
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/accounts/verify_credentials').flush(makeAccount());
+    httpMock.expectOne('/api/v1/profile').flush(null, { status: 404, statusText: 'Not Found' });
     return fixture;
   }
 
@@ -181,6 +182,7 @@ describe('SettingsProfile', () => {
     httpMock
       .expectOne('/api/v1/accounts/verify_credentials')
       .flush({ ...makeAccount(), note: '<p>Visit <a href="https://example.org">my site</a></p>' });
+    httpMock.expectOne('/api/v1/profile').flush(null, { status: 404, statusText: 'Not Found' });
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.profile-bio a').href).toBe('https://example.org/');
     expect(fixture.nativeElement.querySelector('textarea')).toBeNull();
@@ -215,6 +217,7 @@ describe('SettingsProfile', () => {
     httpMock
       .expectOne('/api/v1/accounts/verify_credentials')
       .flush({ ...makeAccount(), bot: true });
+    httpMock.expectOne('/api/v1/profile').flush(null, { status: 404, statusText: 'Not Found' });
     const c = internals(fixture);
     expect(c.bot()).toBe(true);
     for (const bot of [false, true]) {
@@ -412,5 +415,100 @@ describe('SettingsProfile', () => {
     expect(c.saving()).toBe(false);
     expect(auth.account()?.display_name).toBe('Alice B.');
     expect(httpMock.match('/api/v1/accounts/update_credentials')).toHaveLength(0);
+  });
+
+  describe('profile images on Mastodon', () => {
+    const withImages = () => ({
+      ...makeAccount(),
+      avatar: 'https://files.example/avatars/me.png',
+      header: 'https://files.example/headers/original/missing.png',
+    });
+
+    function open(profile: object): ComponentFixture<SettingsProfile> {
+      const fixture = TestBed.createComponent(SettingsProfile);
+      fixture.detectChanges();
+      httpMock.expectOne('/api/v1/accounts/verify_credentials').flush(withImages());
+      httpMock.expectOne('/api/v1/profile').flush(profile);
+      fixture.detectChanges();
+      return fixture;
+    }
+
+    function button(fixture: ComponentFixture<SettingsProfile>, label: string) {
+      return [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+        (b) => b.textContent?.trim() === label,
+      );
+    }
+
+    it('shows the current avatar, treats the default header as none, and hides descriptions on API version 8', () => {
+      const fixture = open({ id: '1', avatar: 'a', header: null });
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelectorAll('.image-current')).toHaveLength(1);
+      expect(button(fixture, 'Remove avatar')).toBeTruthy();
+      expect(button(fixture, 'Remove header')).toBeUndefined();
+      expect(el.querySelector('input[data-kind="avatar"]')).toBeNull();
+    });
+
+    it('loads image descriptions and saves only the changed one after the profile', async () => {
+      const fixture = open({
+        id: '1',
+        avatar: 'a',
+        header: null,
+        avatar_description: 'A heron',
+        header_description: '',
+      });
+      await fixture.whenStable();
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      const avatarAlt = el.querySelector<HTMLInputElement>('input[data-kind="avatar"]')!;
+      expect(avatarAlt.value).toBe('A heron');
+      expect(el.querySelector<HTMLImageElement>('.image-current')!.alt).toBe('A heron');
+      const headerAlt = el.querySelector<HTMLInputElement>('input[data-kind="header"]')!;
+      headerAlt.value = 'Fog over a harbour ';
+      headerAlt.dispatchEvent(new Event('input'));
+
+      internals(fixture).saveProfile();
+      httpMock.expectOne('/api/v1/accounts/update_credentials').flush(withImages());
+      const patch = httpMock.expectOne('/api/v1/profile');
+      expect(patch.request.method).toBe('PATCH');
+      expect(patch.request.body).toEqual({ header_description: 'Fog over a harbour' });
+      patch.flush({
+        id: '1',
+        avatar_description: 'A heron',
+        header_description: 'Fog over a harbour',
+      });
+      expect(internals(fixture).saved()).toBe(true);
+
+      internals(fixture).saveProfile();
+      httpMock.expectOne('/api/v1/accounts/update_credentials').flush(withImages());
+      httpMock.expectNone('/api/v1/profile');
+    });
+
+    it('removes the avatar after confirmation and clears its description', () => {
+      const fixture = open({
+        id: '1',
+        avatar: 'a',
+        header: null,
+        avatar_description: 'A heron',
+        header_description: '',
+      });
+      button(fixture, 'Remove avatar')!.click();
+      fixture.detectChanges();
+      httpMock.expectNone('/api/v1/profile/avatar');
+      (fixture.componentInstance as unknown as { removeImage(k: string): void }).removeImage(
+        'avatar',
+      );
+      const remove = httpMock.expectOne('/api/v1/profile/avatar');
+      expect(remove.request.method).toBe('DELETE');
+      remove.flush({
+        ...withImages(),
+        avatar: 'https://files.example/avatars/original/missing.png',
+      });
+      const clear = httpMock.expectOne('/api/v1/profile');
+      expect(clear.request.body).toEqual({ avatar_description: '' });
+      clear.flush({ id: '1', avatar_description: '', header_description: '' });
+      fixture.detectChanges();
+      expect(button(fixture, 'Remove avatar')).toBeUndefined();
+      expect((fixture.nativeElement as HTMLElement).querySelector('.image-current')).toBeNull();
+    });
   });
 });

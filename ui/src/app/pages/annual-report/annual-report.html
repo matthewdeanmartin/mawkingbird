@@ -1,0 +1,150 @@
+@if (year(); as y) {
+  <mb-page-header [title]="'annualReport.yearTitle' | transloco: { year: y }">
+    <a class="back-link" routerLink="/annual-report">{{ 'annualReport.allReports' | transloco }}</a>
+  </mb-page-header>
+} @else {
+  <mb-page-header
+    [title]="'annualReport.title' | transloco"
+    [description]="'annualReport.intro' | transloco"
+  />
+}
+
+@if (loading()) {
+  <mb-content-state kind="loading" [title]="'annualReport.loading' | transloco" />
+} @else if (unsupported()) {
+  <mb-content-state [title]="'annualReport.unsupported' | transloco" />
+} @else if (error()) {
+  <mb-content-state kind="error" announcement="alert" [title]="error()">
+    <button mbButton variant="outline" type="button" (click)="refresh()">
+      {{ 'annualReport.refresh' | transloco }}
+    </button>
+  </mb-content-state>
+} @else if (year() !== null) {
+  @if (report(); as r) {
+    @if (r.share_url) {
+      <p class="share">
+        <a [href]="r.share_url" target="_blank" rel="noopener noreferrer">{{
+          'annualReport.share' | transloco
+        }}</a>
+      </p>
+    }
+    @for (section of sections(); track section.key) {
+      <mb-section [title]="section.label">
+        @switch (section.kind) {
+          @case ('text') {
+            <p class="report-text">{{ section.text }}</p>
+          }
+          @case ('pairs') {
+            <dl class="report-pairs">
+              @for (row of section.rows; track row.label) {
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              }
+            </dl>
+          }
+          @case ('table') {
+            <div class="table-wrap">
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    @for (column of section.columns; track $index) {
+                      <th scope="col">{{ column }}</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of section.rows; track $index) {
+                    <tr>
+                      @for (cell of row; track $index) {
+                        @switch (cell.kind) {
+                          @case ('account') {
+                            <td>
+                              <a
+                                class="report-account"
+                                [routerLink]="accountProfilePath(cell.account)"
+                              >
+                                <img
+                                  [ngSrc]="
+                                    cell.account.avatar_static ||
+                                    cell.account.avatar ||
+                                    'favicon-32x32.png'
+                                  "
+                                  alt=""
+                                  width="24"
+                                  height="24"
+                                />
+                                {{ cell.account.display_name || cell.account.username }}
+                              </a>
+                            </td>
+                          }
+                          @case ('missing-account') {
+                            <td class="muted">{{ 'annualReport.unknownAccount' | transloco }}</td>
+                          }
+                          @default {
+                            <td [class.numeric]="cell.numeric">{{ cell.text }}</td>
+                          }
+                        }
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+          @case ('statuses') {
+            @for (item of section.items; track item.label) {
+              <h3 class="status-label">{{ item.label }}</h3>
+              <app-status-card [status]="item.status" />
+            }
+          }
+        }
+      </mb-section>
+    }
+  } @else {
+    <mb-content-state [title]="'annualReport.missing' | transloco: { year: year() }" />
+  }
+} @else {
+  @if (state(); as s) {
+    @if (!hasReportFor(stateYear)) {
+      <div class="state">
+        @switch (s) {
+          @case ('eligible') {
+            <p>{{ 'annualReport.state.eligible' | transloco: { year: stateYear } }}</p>
+            <button mbButton type="button" [disabled]="generating()" (click)="generate()">
+              {{ 'annualReport.generate' | transloco: { year: stateYear } }}
+            </button>
+          }
+          @case ('generating') {
+            <p>{{ 'annualReport.state.generating' | transloco: { year: stateYear } }}</p>
+            <button mbButton variant="outline" type="button" (click)="refresh()">
+              {{ 'annualReport.refresh' | transloco }}
+            </button>
+          }
+          @case ('ineligible') {
+            <p class="muted">
+              {{ 'annualReport.state.ineligible' | transloco: { year: stateYear } }}
+            </p>
+          }
+        }
+        @if (generateError()) {
+          <mb-notice tone="error" announcement="alert">{{ generateError() }}</mb-notice>
+        }
+      </div>
+    }
+  }
+  @if (reports().length) {
+    <mb-section [title]="'annualReport.reports' | transloco">
+      <ul class="report-list">
+        @for (r of reports(); track r.year) {
+          <li>
+            <a [routerLink]="['/annual-report', r.year]">{{
+              'annualReport.thisYear' | transloco: { year: r.year }
+            }}</a>
+          </li>
+        }
+      </ul>
+    </mb-section>
+  } @else {
+    <mb-content-state [title]="'annualReport.none' | transloco" />
+  }
+}

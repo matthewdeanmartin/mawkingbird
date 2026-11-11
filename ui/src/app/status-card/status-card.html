@@ -1431,6 +1431,11 @@
                       <app-tag-mute-menu [tags]="postTags()" />
                     }
                     <app-code-menu-items [content]="display.content" />
+                    @if (canEmbed) {
+                      <button type="button" mbMenuItem (click)="openEmbed($event)">
+                        {{ 'statusCard.embedPost' | transloco }}
+                      </button>
+                    }
                     @if (downloadable(); as posts) {
                       <app-media-download-menu-item
                         [statuses]="posts"
@@ -1605,6 +1610,11 @@
                     <app-tag-mute-menu [tags]="postTags()" />
                   }
                   <app-code-menu-items [content]="display.content" />
+                  @if (canEmbed) {
+                    <button type="button" mbMenuItem (click)="openEmbed($event)">
+                      {{ 'statusCard.embedPost' | transloco }}
+                    </button>
+                  }
                   @if (downloadable(); as posts) {
                     <app-media-download-menu-item
                       [statuses]="posts"
@@ -1729,6 +1739,11 @@
                   <app-tag-mute-menu [tags]="postTags()" />
                 }
                 <app-code-menu-items [content]="display.content" />
+                @if (canEmbed) {
+                  <button type="button" mbMenuItem (click)="openEmbed($event)">
+                    {{ 'statusCard.embedPost' | transloco }}
+                  </button>
+                }
                 @if (downloadable(); as posts) {
                   <app-media-download-menu-item
                     [statuses]="posts"
@@ -1964,6 +1979,10 @@
       <ng-content select="[status-footer]" />
     </div>
   </article>
+
+  @if (showEmbed()) {
+    <app-post-embed-dialog [status]="display" (closed)="showEmbed.set(false)" />
+  }
 
   @if (showReport()) {
     <app-report-dialog

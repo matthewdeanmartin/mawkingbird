@@ -36,6 +36,13 @@ export function dictionaryFor(language: string): Promise<LanguageDictionary> | n
   if (!dictionary) {
     dictionary = loader();
     loaded.set(code, dictionary);
+    // A failed load (offline, a deploy in progress) may be retried later.
+    dictionary.catch(() => loaded.delete(code));
   }
   return dictionary;
+}
+
+/** Forget loaded languages. For tests, which must not share a load between environments. */
+export function forgetLoadedDictionaries(): void {
+  loaded.clear();
 }

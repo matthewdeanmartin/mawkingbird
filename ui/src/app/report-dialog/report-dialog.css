@@ -5,4 +5,17 @@ mb-field {
   display: block;
   margin: 14px 0;
 }
+.report-rules {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+  padding: 0;
+  border: 0;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.report-rules legend {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
 /* Preserve the existing destructive action pending the shared danger variant. */

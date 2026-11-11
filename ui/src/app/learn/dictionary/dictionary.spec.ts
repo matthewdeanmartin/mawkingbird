@@ -1,6 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DictEntry, dictionaryShard, LanguageDictionary, NO_DEINFLECTION } from './dictionary';
-import { dictionaryFor, hasDictionary } from './dictionary-registry';
+import { dictionaryFor, forgetLoadedDictionaries, hasDictionary } from './dictionary-registry';
 import { JAPANESE_DEINFLECTOR } from './languages/japanese-deinflect';
 import { ShardedDictionary } from './sharded-dictionary';
 import { lookupAt, segmentWords } from './word-lookup';
@@ -150,6 +150,9 @@ describe('Word lookup', () => {
 });
 
 describe('Dictionary registry', () => {
+  // Spec files share one module registry: start from no loaded languages.
+  beforeEach(() => forgetLoadedDictionaries());
+
   it('knows Japanese and Chinese, by bare code, and nothing else yet', () => {
     expect(hasDictionary('ja')).toBe(true);
     expect(hasDictionary('zh-Hant')).toBe(true);

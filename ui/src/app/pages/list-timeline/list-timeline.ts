@@ -11,6 +11,7 @@ import { Api } from '../../api';
 import { describeHttpError, PageDiagnostics, statusOf } from '../../page-diagnostics';
 import { Account, Status, UserList } from '../../models';
 import { MbHelp } from '../../design-system/help/help';
+import { ListSettingsDialog } from '../../list-settings-dialog/list-settings-dialog';
 import { StatusCard } from '../../status-card/status-card';
 import { BulkAddDialog } from '../../bulk-add-dialog/bulk-add-dialog';
 import { BulkActionId, BulkActions, BulkTarget } from '../../bulk-actions';
@@ -50,6 +51,7 @@ const SAMPLE_PAGE_SIZE = 40;
 // i18n listTimeline.noStatuses: No statuses in this list yet.
 // i18n listTimeline.loadMore: Load more
 // i18n listTimeline.addPeopleByName: Add people by name
+// i18n listTimeline.editList: Rename / replies…
 // i18n listTimeline.unfollowEveryone: Unfollow everyone
 // i18n listTimeline.noMembers: No members in this list yet. Add people from the menu on their profile, or with “Add people by name” above.
 // i18n listTimeline.removeFromList: Remove from list
@@ -78,6 +80,7 @@ const SAMPLE_PAGE_SIZE = 40;
     FeedAnalytics,
     BulkActionsDialog,
     BulkProgress,
+    ListSettingsDialog,
     TranslocoPipe,
   ],
   templateUrl: './list-timeline.html',
@@ -101,6 +104,8 @@ export class ListTimeline implements OnInit {
   protected list = signal<UserList | null>(null);
   protected exclusiveBusy = signal(false);
   protected exclusiveError = signal('');
+  /** The rename / reply-policy dialog (server lists only). */
+  protected editingList = signal(false);
   protected statuses = signal<Status[]>([]);
   /** The generated same-server list hides boosts whose displayed author is remote. */
   protected displayedStatuses = computed(() => {
@@ -226,6 +231,18 @@ export class ListTimeline implements OnInit {
         }
       },
     });
+  }
+
+  /** A saved rename or reply-policy change; a new policy changes which posts belong. */
+  protected onListSaved(updated: UserList): void {
+    const previous = this.list();
+    this.editingList.set(false);
+    if (this.listId() !== updated.id) return;
+    this.list.set(updated);
+    this.title.set(updated.title);
+    if ((previous?.replies_policy ?? 'list') !== (updated.replies_policy ?? 'list')) {
+      this.fetchMastodonPage(false);
+    }
   }
 
   loadMore(): void {

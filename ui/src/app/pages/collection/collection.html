@@ -7,6 +7,9 @@
 } @else if (data(); as d) {
   <div class="page-head page-head-actions">
     <span>{{ d.collection.name }}</span>
+    @if (d.collection.sensitive) {
+      <span class="badge sensitive-badge">{{ 'pages.collection.sensitive' | transloco }}</span>
+    }
     @if (!shipped()) {
       <button class="btn btn-outline btn-sm" [disabled]="converting()" (click)="convertToList()">
         {{
@@ -85,6 +88,9 @@
         </button>
       }
       @if (isOwner()) {
+        <button class="btn btn-outline" (click)="editing.set(true)">
+          {{ 'pages.collection.editCollection' | transloco }}
+        </button>
         <button class="btn btn-outline" (click)="showBulk.set(true)">
           {{ 'pages.collection.addPeopleByName' | transloco }}
         </button>
@@ -100,7 +106,15 @@
           {{ 'pages.collection.removeMe' | transloco }}
         </button>
       }
+      @if (canReport() && !reported()) {
+        <button class="btn btn-outline danger" (click)="showReport.set(true)">
+          {{ 'pages.collection.report' | transloco }}
+        </button>
+      }
     </div>
+    @if (reported()) {
+      <p class="muted small" role="status">{{ 'pages.collection.reported' | transloco }}</p>
+    }
     @if (leaveMessage(); as message) {
       <p class="muted small" role="status">{{ message }}</p>
     }
@@ -310,6 +324,24 @@
       [targetName]="d.collection.name"
       (added)="onBulkAdded()"
       (closed)="showBulk.set(false)"
+    />
+  }
+  @if (showReport() && curator(); as c) {
+    <app-report-dialog
+      [account]="c"
+      [username]="c.username"
+      [accountId]="c.id"
+      [collectionId]="d.collection.id"
+      provider="mastodon"
+      (closed)="showReport.set(false)"
+      (submitted)="onReported()"
+    />
+  }
+  @if (editing() && isOwner()) {
+    <app-collection-settings-dialog
+      [collection]="d.collection"
+      (closed)="editing.set(false)"
+      (saved)="onCollectionSaved($event)"
     />
   }
   @if (showDeleteConfirm()) {

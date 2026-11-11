@@ -31,3 +31,26 @@
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
+
+.image-control {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.image-current {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.image-current-header {
+  width: min(240px, 100%);
+  height: 80px;
+}
+
+.image-control mb-field {
+  width: 100%;
+}

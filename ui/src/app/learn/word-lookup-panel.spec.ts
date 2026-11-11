@@ -5,6 +5,7 @@ import { Status } from '../models';
 import { OpenRouterChat } from '../providers/openrouter/openrouter-chat';
 import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
 import { dictionaryShard } from './dictionary/dictionary';
+import { forgetLoadedDictionaries } from './dictionary/dictionary-registry';
 import { WordLookupPanel } from './word-lookup-panel';
 
 const SHARDS = 4;
@@ -56,7 +57,10 @@ describe('WordLookupPanel (L1)', () => {
     });
   });
 
-  afterEach(() => vi.unstubAllGlobals());
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    forgetLoadedDictionaries();
+  });
 
   function open() {
     const fixture = TestBed.createComponent(WordLookupPanel);

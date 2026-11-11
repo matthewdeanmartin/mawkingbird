@@ -1,5 +1,53 @@
 # Sprint 6 opening consolidation audit
 
+## Phanpy parity: profile images, collections, annual reports, 2026-11-10
+
+Reviewed 1,784 source files and 620 candidate files. Two candidates are added,
+both adopted scope: `collection-settings-dialog/collection-settings-dialog.html`
+(Dialog, Field/Control name, description and language select, MbCheckbox for
+sensitive and discoverable, MbButton, MbNotice) and
+`pages/annual-report/annual-report.html` (MbPageHeader, MbSection, MbContentState,
+MbButton, MbNotice, native report tables). Existing candidates:
+`pages/settings/profile/settings-profile.html` gains current-image previews,
+Field/Control image descriptions, small outline MbButtons to remove an image and
+an app-confirm-dialog (stays as classified); `pages/collection/collection.html`
+gains native Edit collection and Report collection buttons matching its existing
+action row and a sensitivity badge; `pages/lists/lists.html` gains a native
+"More options…" button beside the existing native create row (stays backlog);
+`report-dialog/report-dialog.html` gains one text line; `pages/profile/profile.html`
+gains one native menu link. No shared widget changed.
+
+## Phanpy parity: featuring, familiar followers, image metadata, 2026-11-10
+
+Reviewed 1,778 source files and 618 candidate files; none added or removed.
+`pages/profile/familiar-followers/familiar-followers.ts` and
+`compose/image-description.ts` have no control candidates (links and a
+parser). `pages/profile/profile.html` gains a native ••• menu button (feature
+or stop featuring) matching its existing panel and a native Remove button per
+featured row on your own profile, styled like the existing featured follow
+buttons. `compose/compose.html` gains a status note under a prefilled alt-text
+field. Existing candidates otherwise shift lines only. No shared widget changed.
+
+## Phanpy parity: notes, reports, lists, QR, embed, 2026-11-10
+
+Reviewed 1,776 source files and 618 candidate files. Five candidates are
+added: `account-note-dialog/account-note-dialog.ts` (Dialog, Field/Control
+textarea, MbButton, MbNotice), `list-settings-dialog/list-settings-dialog.ts`
+(Dialog, Field/Control, MbRadioGroup for the list reply policy, MbButton,
+MbNotice), `post-embed/post-embed-dialog.html` (wide Dialog, read-only
+Field/Control, MbButton, sandboxed preview iframe) and
+`profile-qr/profile-qr-dialog.html` (Dialog, MbButton, MbNotice, native camera
+video) are adopted scope. `post-embed/post-embed.ts` is lexical only: its
+`<details>` and `<figure>` are strings in the exported HTML. Existing
+candidates: `report-dialog/report-dialog.html` gains MbCheckbox rows for server
+rules and remote forwarding (stays partial adoption);
+`pages/list-timeline/list-timeline.html` gains one MbButton;
+`pages/lists/lists.html` gains a native reply-policy select beside the existing
+native create input (stays backlog); `pages/profile/profile.html` gains native
+menu buttons matching its existing ••• panel and a private-note edit button;
+`status-card/status-card.html` gains an MbMenuItem in each ••• menu. No shared
+widget changed.
+
 ## Misskey search and hashtag pages (M3), 2026-11-10
 
 Reviewed 1,754 source files and 611 candidate files. Two candidates are added:

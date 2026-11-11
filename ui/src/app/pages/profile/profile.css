@@ -352,6 +352,43 @@
 
 /* Blocked state: turn the (outline) Block button into a clear danger affordance. */
 
+.private-note {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.private-note-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.private-note-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.private-note-edit {
+  border: 0;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  padding: 2px 4px;
+}
+
+.private-note-text {
+  margin: 4px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .report-done {
   margin-top: 10px;
   padding: 8px 12px;

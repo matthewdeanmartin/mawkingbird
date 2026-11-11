@@ -104,3 +104,42 @@ describe('LoginMisskey', () => {
     expect(TestBed.inject(Auth).kind()).toBeNull();
   });
 });
+
+describe('LoginMisskey, opened while signed in', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        Auth,
+        Server,
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: MisskeyAuth,
+          useValue: { checkServer: vi.fn(), begin: vi.fn(), complete: vi.fn() },
+        },
+      ],
+    });
+  });
+
+  it('stays, so the reader can add an account or look around (no bounce home)', () => {
+    withQuery({});
+    const key = saveMisskeyIdentity(
+      {
+        server: 'https://misskey.design',
+        userId: 'u1',
+        username: 'matt',
+        name: null,
+        avatarUrl: null,
+      },
+      { token: 'tok' },
+    );
+    TestBed.inject(Auth).enterMisskey(key);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl');
+    const fixture = TestBed.createComponent(LoginMisskey);
+    fixture.detectChanges();
+    expect(navigate).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('input[name="misskeyServer"]')).not.toBeNull();
+  });
+});

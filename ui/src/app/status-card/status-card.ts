@@ -137,6 +137,8 @@ import { PrivateLikeButton } from '../private-like-button';
 import { nitterHost, toNitterUrl } from '../providers/twitter/nitter';
 import { StatusActions } from '../providers/status-actions';
 import { ReportDialog } from '../report-dialog/report-dialog';
+import { PostEmbedDialog } from '../post-embed/post-embed-dialog';
+import { canEmbedPost } from '../post-embed/post-embed';
 import { statusHashtags } from '../hashtag';
 import { TagMuteMenu } from '../tag-filter-dialog/tag-mute-menu';
 import { MediaDownloadMenuItem } from '../media-download/media-download-menu-item';
@@ -272,6 +274,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.muteAccountFor: Mute @{{acct}} for…
 // i18n statusCard.blockAccount: Block @{{acct}}
 // i18n statusCard.reportPost: Report post
+// i18n statusCard.embedPost: Embed post…
 // i18n statusCard.postDeletedDiscard: Post deleted — edit below and repost, or
 // i18n statusCard.discard: discard
 // i18n statusCard.editAndRepost: Edit and repost
@@ -465,6 +468,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
     RouterLink,
     AccountHoverCard,
     ReportDialog,
+    PostEmbedDialog,
     TagMuteMenu,
     MediaDownloadMenuItem,
     AccountListDialog,
@@ -1084,6 +1088,8 @@ export class StatusCard {
 
   protected showReport = signal(false);
   protected reported = signal(false);
+  /** The "Embed post" portable-HTML dialog. */
+  protected showEmbed = signal(false);
 
   protected editing = signal(false);
   protected editText = signal('');
@@ -1251,6 +1257,16 @@ export class StatusCard {
    * that can cover its own ••• trigger, so an explicit row is the dependable way
    * out; elsewhere it is simply next to the trigger. Focus returns to the •••.
    */
+  /** Public Mastodon posts can be exported as portable HTML. */
+  protected get canEmbed(): boolean {
+    return canEmbedPost(this.display);
+  }
+
+  openEmbed(event: Event): void {
+    this.closeMenu(event);
+    this.showEmbed.set(true);
+  }
+
   closeMenu(event: Event): void {
     event.stopPropagation();
     const menu = (event.target as HTMLElement).closest('details');

@@ -162,18 +162,73 @@
     }
 
     <div class="ssection">
-      <div class="srow">
-        <span class="slabel">{{ 'settings.profile.avatar' | transloco }}</span>
-        <div class="scontrol">
-          <input type="file" accept="image/*" (change)="onAvatar($event)" />
+      @for (kind of imageKinds; track kind) {
+        <div class="srow">
+          <span class="slabel">{{
+            (kind === 'avatar' ? 'settings.profile.avatar' : 'settings.profile.header') | transloco
+          }}</span>
+          <div class="scontrol image-control">
+            @if (editsServerImages && currentImages()[kind]; as src) {
+              <img
+                class="image-current"
+                [class.image-current-header]="kind === 'header'"
+                [src]="src"
+                [alt]="
+                  descriptions()[kind] ||
+                  ((kind === 'avatar'
+                    ? 'settings.profile.avatarCurrent'
+                    : 'settings.profile.headerCurrent'
+                  ) | transloco)
+                "
+              />
+            }
+            <input
+              type="file"
+              accept="image/*"
+              (change)="kind === 'avatar' ? onAvatar($event) : onHeader($event)"
+            />
+            @if (editsServerImages && descriptionsAvailable()) {
+              <mb-field
+                [label]="
+                  (kind === 'avatar'
+                    ? 'settings.profile.avatarDescription'
+                    : 'settings.profile.headerDescription'
+                  ) | transloco
+                "
+                [hint]="'settings.profile.imageDescription.hint' | transloco"
+              >
+                <input
+                  mbControl
+                  type="text"
+                  maxlength="150"
+                  [name]="kind + '_description'"
+                  [attr.data-kind]="kind"
+                  [ngModel]="descriptions()[kind]"
+                  (ngModelChange)="setDescription(kind, $event)"
+                />
+              </mb-field>
+            }
+            @if (editsServerImages && currentImages()[kind]) {
+              <button
+                mbButton
+                type="button"
+                variant="outline"
+                size="small"
+                class="image-remove"
+                [disabled]="removing() || saving()"
+                (click)="confirmRemove.set(kind)"
+              >
+                {{
+                  (kind === 'avatar'
+                    ? 'settings.profile.removeAvatar'
+                    : 'settings.profile.removeHeader'
+                  ) | transloco
+                }}
+              </button>
+            }
+          </div>
         </div>
-      </div>
-      <div class="srow">
-        <span class="slabel">{{ 'settings.profile.header' | transloco }}</span>
-        <div class="scontrol">
-          <input type="file" accept="image/*" (change)="onHeader($event)" />
-        </div>
-      </div>
+      }
     </div>
 
     @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
@@ -226,5 +281,25 @@
     [canAdd]="canAddLink() && !saving()"
     (added)="addLink($event)"
     (closed)="linkDialog.set(null)"
+  />
+}
+@if (confirmRemove(); as kind) {
+  <app-confirm-dialog
+    [title]="
+      (kind === 'avatar' ? 'settings.profile.removeAvatar' : 'settings.profile.removeHeader')
+        | transloco
+    "
+    [message]="
+      (kind === 'avatar'
+        ? 'settings.profile.removeAvatar.confirm'
+        : 'settings.profile.removeHeader.confirm'
+      ) | transloco
+    "
+    [confirmLabel]="
+      (kind === 'avatar' ? 'settings.profile.removeAvatar' : 'settings.profile.removeHeader')
+        | transloco
+    "
+    (confirmed)="removeImage(kind)"
+    (cancelled)="confirmRemove.set(null)"
   />
 }

@@ -164,6 +164,11 @@
                     localFollowCount('rss')
                   }})
                 </button>
+                @if (capabilities.canUseServerActions && !auth.isBlueskyPrimary) {
+                  <a routerLink="/annual-report">{{
+                    'pages.profile.actions.annualReport' | transloco
+                  }}</a>
+                }
                 @if (canShowMedia() && !auth.isAnonymous) {
                   <app-media-download-menu-item
                     scope="profile"
@@ -171,6 +176,11 @@
                     [loadPage]="mediaDownloadLoader()"
                     [archiveName]="a.acct + '-media'"
                   />
+                }
+                @if (a.url) {
+                  <button type="button" (click)="showQr.set(true)">
+                    {{ 'pages.profile.actions.qrCode' | transloco }}
+                  </button>
                 }
                 @if (localActionError()) {
                   <p class="menu-note" role="alert">
@@ -513,6 +523,31 @@
                     }}
                   </button>
                 }
+                @if (canFeature()) {
+                  <button type="button" [disabled]="featureBusy()" (click)="toggleFeatured()">
+                    {{
+                      (relationship()?.endorsed
+                        ? 'pages.profile.actions.unfeature'
+                        : 'pages.profile.actions.feature'
+                      ) | transloco
+                    }}
+                  </button>
+                }
+                @if (canEditNote()) {
+                  <button type="button" (click)="showNote.set(true)">
+                    {{
+                      (relationship()?.note
+                        ? 'pages.profile.actions.editNote'
+                        : 'pages.profile.actions.addNote'
+                      ) | transloco
+                    }}
+                  </button>
+                }
+                @if (a.url) {
+                  <button type="button" (click)="showQr.set(true)">
+                    {{ 'pages.profile.actions.qrCode' | transloco }}
+                  </button>
+                }
                 @if (canShowMedia()) {
                   <app-media-download-menu-item
                     scope="profile"
@@ -702,7 +737,22 @@
         }
       </h2>
       <div class="acct muted">&#64;{{ a.acct }}</div>
+      @if (canEditNote() && relationship()?.note; as note) {
+        <!-- Only the viewer sees this: Mastodon keeps account notes private to their author. -->
+        <section class="private-note" [attr.aria-label]="'pages.profile.note.label' | transloco">
+          <div class="private-note-head">
+            <span class="private-note-label">{{ 'pages.profile.note.label' | transloco }}</span>
+            <button type="button" class="private-note-edit" (click)="showNote.set(true)">
+              {{ 'pages.profile.note.edit' | transloco }}
+            </button>
+          </div>
+          <p class="private-note-text">{{ note }}</p>
+        </section>
+      }
       @if (followError(); as error) {
+        <div class="action-error" role="alert">{{ error }}</div>
+      }
+      @if (featureError(); as error) {
         <div class="action-error" role="alert">{{ error }}</div>
       }
       @if (twitterError(); as error) {
@@ -802,6 +852,9 @@
           }
         }
       </div>
+      @if (!isSelf()) {
+        <app-familiar-followers [accounts]="familiarFollowers()" />
+      }
     </header>
     @if (profileImageIndex() !== null) {
       <app-lightbox
@@ -848,7 +901,17 @@
               <span class="featured-display">{{ f.display_name || f.username }}</span>
               <span class="muted">&#64;{{ f.acct }}</span>
             </a>
-            @if (featuredFollowing().has(f.id)) {
+            @if (isSelf() && capabilities.canUseServerActions) {
+              <button
+                type="button"
+                class="btn btn-outline featured-follow"
+                [disabled]="featureBusy()"
+                [title]="'pages.profile.featured.unfeatureTitle' | transloco: { acct: f.acct }"
+                (click)="unfeature(f)"
+              >
+                {{ 'pages.profile.featured.unfeature' | transloco }}
+              </button>
+            } @else if (featuredFollowing().has(f.id)) {
               <button type="button" class="btn featured-follow" disabled>
                 {{ 'pages.profile.relationship.following' | transloco }}
               </button>
@@ -1341,6 +1404,18 @@
       }
     }
 
+    @if (showNote()) {
+      <app-account-note-dialog
+        [accountId]="a.id"
+        [acct]="a.acct"
+        [initial]="relationship()?.note ?? ''"
+        (closed)="showNote.set(false)"
+        (saved)="onNoteSaved($event)"
+      />
+    }
+    @if (showQr() && a.url) {
+      <app-profile-qr-dialog [url]="a.url" [acct]="a.acct" (closed)="showQr.set(false)" />
+    }
     @if (showReport()) {
       <app-report-dialog
         [account]="a"

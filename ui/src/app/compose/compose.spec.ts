@@ -44,6 +44,9 @@ interface ComposeInternals {
   // `file` is the original bytes, kept so a Bluesky leg can upload them to its
   // own repo — Mastodon's upload is not reusable there.
   media: WritableSignal<{ media: { id: string }; description: string; file?: File }[]>;
+  metadataDescribed: Signal<ReadonlySet<string>>;
+  setMediaDescription(index: number, description: string): void;
+  prefillDescription(file: File, embedded: Promise<string | null>): Promise<void>;
   mediaNotice: WritableSignal<string>;
   uploadFiles(files: File[]): void;
   pollOpen: WritableSignal<boolean>;
@@ -274,6 +277,52 @@ describe('Compose', () => {
   });
 
   describe('alt text', () => {
+    /** A minimal JPEG whose EXIF ImageDescription is the given text. */
+    function jpegDescribed(text: string): Uint8Array<ArrayBuffer> {
+      const value = [...new TextEncoder().encode(text), 0];
+      const le16 = (n: number) => [n & 255, (n >> 8) & 255];
+      const le32 = (n: number) => [...le16(n), (n >> 16) & 255, (n >>> 24) & 255];
+      const chars = (t: string) => Array.from(t, (c) => c.charCodeAt(0));
+      const tiff = [...chars('II'), ...le16(42), ...le32(8), ...le16(1), ...le16(0x010e)];
+      tiff.push(...le16(2), ...le32(value.length), ...le32(26), ...le32(0), ...value);
+      const app1 = [...chars('Exif'), 0, 0, ...tiff];
+      const len = app1.length + 2;
+      return Uint8Array.from([0xff, 0xd8, 0xff, 0xe1, len >> 8, len & 255, ...app1, 0xff, 0xda]);
+    }
+
+    it('prefills alt text from the image metadata and drops the note once edited', async () => {
+      const f = setUp();
+      const file = new File([jpegDescribed('A heron on a post')], 'heron.jpg', {
+        type: 'image/jpeg',
+      });
+      internals(f).uploadFiles([file]);
+      await vi.waitFor(() =>
+        httpMock
+          .expectOne('/api/v2/media')
+          .flush({ id: 'm9', type: 'image', url: 'u', preview_url: 'p', description: null }),
+      );
+      await vi.waitFor(() => expect(internals(f).media()[0].description).toBe('A heron on a post'));
+      f.detectChanges();
+      const el = f.nativeElement as HTMLElement;
+      expect(el.querySelector('.alt-from-metadata')?.textContent).toContain(
+        'Filled in from the description saved in this image',
+      );
+      internals(f).setMediaDescription(0, 'A grey heron on a mooring post');
+      f.detectChanges();
+      expect(el.querySelector('.alt-from-metadata')).toBeNull();
+    });
+
+    it('never overwrites a description the writer already typed', async () => {
+      const f = setUp();
+      const file = new File(['x'], 'a.jpg', { type: 'image/jpeg' });
+      internals(f).media.set([
+        { media: { id: 'm1', type: 'image' } as never, description: 'Mine', file },
+      ]);
+      await internals(f).prefillDescription(file, Promise.resolve('From metadata'));
+      expect(internals(f).media()[0].description).toBe('Mine');
+      expect(internals(f).metadataDescribed().size).toBe(0);
+    });
+
     function attach(f: ComponentFixture<Compose>, type: string, description = ''): void {
       internals(f).media.set([
         { media: { id: 'm1', type, description: null } as never, description },

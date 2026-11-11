@@ -7,7 +7,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
-import { Account, CollectionWithAccounts, Status } from '../../models';
+import { Account, Collection, CollectionWithAccounts, Status } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 import { BulkAddDialog } from '../../bulk-add-dialog/bulk-add-dialog';
 import { BulkActions, BulkTarget } from '../../bulk-actions';
@@ -27,6 +27,8 @@ import {
   shippedStarterKitCollection,
   ShippedStarterKit,
 } from '../../starter-kits';
+import { CollectionSettingsDialog } from '../../collection-settings-dialog/collection-settings-dialog';
+import { ReportDialog } from '../../report-dialog/report-dialog';
 
 /**
  * Where to read a shipped member's posts from, or null for a local account.
@@ -73,6 +75,10 @@ interface Member {
 // i18n pages.collection.followedSummary: Followed {{followed}} of {{total}}
 // i18n pages.collection.addPeopleByName: Add people by name
 // i18n pages.collection.deleteCollection: Delete collection
+// i18n pages.collection.editCollection: Edit collection…
+// i18n pages.collection.sensitive: Sensitive
+// i18n pages.collection.report: Report collection
+// i18n pages.collection.reported: Report sent. Your server's moderators will review it.
 // i18n pages.collection.removeMe: Remove me from this collection
 // i18n pages.collection.leaveConfirm: Remove your account from this collection? You can still browse it afterwards.
 // i18n pages.collection.leaveFailed: Could not remove you. Your server must support collections and your sign-in must allow writing collections. You can retry or open the collection on your server.
@@ -125,6 +131,8 @@ interface Member {
     BulkActionsDialog,
     BulkProgress,
     AvatarFallback,
+    CollectionSettingsDialog,
+    ReportDialog,
     TranslocoPipe,
   ],
   // Component-scoped, so a bulk follow started here tracks this collection only.
@@ -164,6 +172,37 @@ export class CollectionPage implements OnInit {
   // Dialog state
   protected showBulk = signal(false);
   protected showDeleteConfirm = signal(false);
+  /** Owner's edit dialog: name, description, language, sensitivity, discovery. */
+  protected editing = signal(false);
+  protected showReport = signal(false);
+  protected reported = signal(false);
+
+  /**
+   * Someone else's real server collection, seen while signed in to Mastodon.
+   * Reports need the curator's account id alongside the collection id.
+   */
+  protected canReport(): boolean {
+    return (
+      !this.isOwner() &&
+      !this.shipped() &&
+      !this.auth.isAnonymous &&
+      !this.auth.isBlueskyPrimary &&
+      !this.auth.isMisskeyPrimary &&
+      !!this.curator()
+    );
+  }
+
+  protected onReported(): void {
+    this.showReport.set(false);
+    this.reported.set(true);
+  }
+
+  protected onCollectionSaved(collection: Collection): void {
+    this.editing.set(false);
+    this.data.update((current) =>
+      current ? { ...current, collection: { ...current.collection, ...collection } } : current,
+    );
+  }
   protected showLeaveConfirm = signal(false);
   protected leaving = signal(false);
   protected leaveMessage = signal('');

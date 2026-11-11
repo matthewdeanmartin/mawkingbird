@@ -334,6 +334,43 @@ export interface Relationship {
   muting: boolean;
   /** Whether boosts/retweets from this followed account appear in home. */
   showing_reblogs?: boolean;
+  /** The viewer's private note about this account (Mastodon account notes). */
+  note?: string;
+  /** Whether the viewer features this account on their own profile. */
+  endorsed?: boolean;
+}
+
+/** One year of a server-generated annual report. `data` varies by `schema_version`. */
+export interface AnnualReport {
+  year: number;
+  schema_version?: number | null;
+  share_url?: string | null;
+  data: Record<string, unknown> | null;
+}
+
+/** `GET /api/v1/annual_reports` and `.../:year`: reports plus the entities they mention. */
+export interface AnnualReports {
+  annual_reports: AnnualReport[];
+  accounts: Account[];
+  statuses: Status[];
+}
+
+export type AnnualReportState = 'available' | 'generating' | 'eligible' | 'ineligible';
+
+/** The parts of `GET /api/v1/profile` (Mastodon 4.6+) this client uses. */
+export interface OwnProfile {
+  id: string;
+  avatar: string | null;
+  header: string | null;
+  /** API version 9+. Absent on API version 8. */
+  avatar_description?: string;
+  header_description?: string;
+}
+
+/** `GET /api/v1/accounts/familiar_followers`: people you follow who follow `id`. */
+export interface FamiliarFollowers {
+  id: string;
+  accounts: Account[];
 }
 
 export interface MastodonNotification {
@@ -399,11 +436,17 @@ export interface SearchResults {
   hashtags: Hashtag[];
 }
 
+/** Which replies a Mastodon list timeline shows. */
+export type ListRepliesPolicy = 'followed' | 'list' | 'none';
+
+/** Every list reply policy, Mastodon's default (`list`) first. */
+export const LIST_REPLIES_POLICIES: readonly ListRepliesPolicy[] = ['list', 'followed', 'none'];
+
 export interface UserList {
   id: string;
   title: string;
   exclusive?: boolean;
-  replies_policy?: 'followed' | 'list' | 'none';
+  replies_policy?: ListRepliesPolicy;
 }
 
 /** A single membership entry inside a Collection (Mastodon 4.6+). */

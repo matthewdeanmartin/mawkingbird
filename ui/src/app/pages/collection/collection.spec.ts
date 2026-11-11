@@ -491,6 +491,46 @@ describe('CollectionPage', () => {
     flushLoad(fixture);
   });
 
+  it('lets the owner edit the collection and shows the saved sensitivity', () => {
+    TestBed.inject(Auth).token.set('collection-test-token');
+    TestBed.inject(Auth).account.set(makeAccount(OWNER));
+    const fixture = setUp();
+    flushLoad(fixture);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const buttons = () => [...el.querySelectorAll('button')].map((b) => b.textContent?.trim());
+    expect(buttons()).toContain('Edit collection…');
+    expect(buttons()).not.toContain('Report collection');
+    [...el.querySelectorAll('button')]
+      .find((b) => b.textContent?.includes('Edit collection'))!
+      .click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-collection-settings-dialog')).not.toBeNull();
+    (
+      fixture.componentInstance as unknown as { onCollectionSaved(c: unknown): void }
+    ).onCollectionSaved({ id: 'C1', name: 'Renamed', sensitive: true, language: 'en' });
+    fixture.detectChanges();
+    expect(el.querySelector('app-collection-settings-dialog')).toBeNull();
+    expect(el.querySelector('.page-head')?.textContent).toContain('Renamed');
+    expect(el.querySelector('.sensitive-badge')?.textContent?.trim()).toBe('Sensitive');
+  });
+
+  it('offers a signed-in non-owner a report that names this collection', () => {
+    TestBed.inject(Auth).token.set('collection-test-token');
+    TestBed.inject(Auth).account.set(makeAccount('Z'));
+    const fixture = setUp();
+    flushLoad(fixture);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    [...el.querySelectorAll('button')]
+      .find((b) => b.textContent?.includes('Report collection'))!
+      .click();
+    fixture.detectChanges();
+    const dialog = el.querySelector('app-report-dialog');
+    expect(dialog).not.toBeNull();
+    expect(dialog?.textContent).toContain('Reporting a specific collection.');
+  });
+
   // ---------------------------------------------------------------- non-owner
 
   it('a featured non-owner finds myItem and revokeSelf POSTs .../revoke', () => {

@@ -21,6 +21,8 @@ import {
   misskeyIdentity,
   misskeyIdentityKeyActive,
   misskeyIdentityPresent,
+  misskeyVisitorServer,
+  MK_ACTIVE_IDENTITY_KEY,
   setActiveMisskeyIdentity,
 } from './providers/misskey/misskey-identity-store';
 import {
@@ -348,6 +350,29 @@ export class Auth {
   private misskeyKey = signal<string | null>(
     this.kind() === 'misskey' ? misskeyIdentityKeyActive() : null,
   );
+  /**
+   * One console line at startup saying which Misskey identity this load chose
+   * and why: the stored pointer, whether the visitor exists, every saved
+   * identity key (never a token). Added to diagnose the visitor switching
+   * back to a signed-in account on the owner's browser (2026-11-10).
+   */
+  private readonly misskeyStartup = (() => {
+    if (this.kind() !== 'misskey') return null;
+    let pointer: string | null = null;
+    try {
+      pointer = localStorage.getItem(MK_ACTIVE_IDENTITY_KEY);
+    } catch {
+      // Logged as null.
+    }
+    const details = {
+      pointer,
+      chosen: this.misskeyKey(),
+      visitorServer: misskeyVisitorServer(),
+      identities: misskeyIdentities().map((identity) => identity.key),
+    };
+    this.diagnostics.info('misskey-startup', details);
+    return details;
+  })();
   readonly account = linkedSignal(() => {
     if (this.kind() === 'anonymous') {
       return this.anonymous.account();
@@ -908,6 +933,8 @@ export class Auth {
     this.server.setBaseUrl('');
     this.diagnostics.transition('enter-misskey', saved, this.sessions().length, {
       handle: identity.account.acct,
+      // What the shared pointer says right after the switch (see misskeyStartup).
+      pointer: localStorage.getItem(MK_ACTIVE_IDENTITY_KEY),
     });
     return true;
   }

@@ -1,0 +1,80 @@
+<mb-dialog
+  [title]="(mode() === 'show' ? 'profileQr.title' : 'profileQr.scanTitle') | transloco"
+  [closeLabel]="'profileQr.close' | transloco"
+  [closeOnBackdrop]="true"
+  (dismissed)="closed.emit()"
+>
+  @if (mode() === 'show') {
+    <figure class="qr">
+      @if (qrImage()) {
+        <img
+          [src]="qrImage()"
+          width="240"
+          height="240"
+          [alt]="'profileQr.alt' | transloco: { url: url() }"
+        />
+      } @else {
+        <div class="qr-placeholder" aria-hidden="true"></div>
+      }
+      <figcaption>
+        <span class="qr-url">{{ url() }}</span>
+        <span class="muted small">{{ 'profileQr.caption' | transloco: { acct: acct() } }}</span>
+      </figcaption>
+    </figure>
+  }
+  <div class="scanner" [hidden]="mode() !== 'scan'">
+    <!-- muted + playsinline: iOS refuses to autoplay a camera preview otherwise. -->
+    <video #video muted playsinline [class.live]="cameraState() === 'live'"></video>
+    @switch (cameraState()) {
+      @case ('starting') {
+        <p class="muted small">{{ 'profileQr.starting' | transloco }}</p>
+      }
+      @case ('error') {
+        <mb-notice tone="error" announcement="alert">{{
+          'profileQr.cameraError' | transloco
+        }}</mb-notice>
+      }
+      @default {
+        @if (!scanned()) {
+          <p class="muted small">{{ 'profileQr.pointCamera' | transloco }}</p>
+        } @else if (scannedQuery()) {
+          <p class="scan-result" aria-live="polite">
+            {{ 'profileQr.found' | transloco: { text: scanned() } }}
+          </p>
+        } @else {
+          <p class="scan-result muted" aria-live="polite">
+            {{ 'profileQr.notProfile' | transloco: { text: scanned() } }}
+          </p>
+        }
+      }
+    }
+    @if (openError()) {
+      <mb-notice tone="error" announcement="alert">{{ openError() }}</mb-notice>
+    }
+  </div>
+
+  <ng-container mbDialogActions>
+    @if (mode() === 'show') {
+      @if (canScan) {
+        <button mbButton type="button" variant="outline" (click)="startScan()">
+          {{ 'profileQr.scan' | transloco }}
+        </button>
+      }
+      <button mbButton type="button" variant="outline" (click)="copy()">
+        {{ (copied() ? 'profileQr.copied' : 'profileQr.copy') | transloco }}
+      </button>
+    } @else {
+      <button mbButton type="button" variant="outline" (click)="showCode()">
+        {{ 'profileQr.back' | transloco }}
+      </button>
+      <button
+        mbButton
+        type="button"
+        [disabled]="!scannedQuery() || opening()"
+        (click)="openScanned()"
+      >
+        {{ (opening() ? 'profileQr.opening' : 'profileQr.openProfile') | transloco }}
+      </button>
+    }
+  </ng-container>
+</mb-dialog>

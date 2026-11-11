@@ -4,20 +4,23 @@ Things only you can do, newest first. Tick them off or delete them as you go.
 
 ## Now
 
-- [ ] **Push** the fixes from 2026-11-10 (visitor switch-back, design
-      formatting). The last push failed "Validate client builds" only because
-      `design_system/audits/06-consolidation.md` had two stray blank lines
-      (from the Ukrainian topic notes); that is fixed in the working tree.
-- [ ] **Close every tab on the site root (mawkingbird.com, not /canary/)**
-      and other /canary/ tabs before trying the Misskey visitor again, or
-      deploy production too. Most likely cause of the switch-back (not proven
-      on your browser; the flow works on the live canary in a clean one):
-      tabs share the "which Misskey account is active" pointer, and the code
-      deployed until now rewrote it to your misskey.design account whenever it
-      did not recognise the value, so another open tab could undo the switch
-      the moment you made it. The fix stops that, once deployed everywhere.
-- [ ] Then retry: Sign in with Misskey → misskey.io → **Look around without an
-      account**. Tested working on the live canary in a clean browser.
+- [ ] **Push** (second round of visitor fixes, 2026-11-10 afternoon). Then wait
+      for "Deploy Mawkingbird Canary" (~6 minutes).
+- [ ] **Retry the Misskey visitor on /canary/** with only one mawkingbird.com
+      tab open. Two causes fixed so far:
+      1. Opening "Sign in with Misskey" from the sign-in page while already
+         signed in bounced you straight back to Home as matt. It now stays,
+         so you can pick a server and press **Look around without an
+         account**.
+      2. Tabs no longer overwrite each other's choice of Misskey account.
+      Both the sign-in path and the account-menu path work on the live canary
+      in a clean browser (matt → Misskey visitor → "Visiting misskey.io").
+- [ ] **If it still goes back to matt**: open DevTools → Console, reload, and
+      send me the lines starting `misskey-startup` and `enter-misskey` (they
+      show which account the page chose and why; no tokens). Settings →
+      Local storage → the `mockingbird_misskey_*` rows help too (copy the key
+      names and the `_visitor` / `_active_identity` values, not the
+      credentials).
 
 ## Manual test plans (test_plans/)
 
@@ -43,10 +46,6 @@ Things only you can do, newest first. Tick them off or delete them as you go.
 - [ ] `npm run check:static` fails on formatting in 26 files committed earlier
       (account-tab-guard, bookmarks, home.spec, …), none from the Misskey or
       L1 work. `cd ui && npm run format` fixes them; review the diff first.
-- [ ] Protected test baseline: `make test` lists two tests removed in earlier
-      commits (command-bar "authenticated Fedi control…", bookmarks "Native
-      bookmarks 20 at a time…"). If removing them was intended,
-      `npm run test:audit:update`; otherwise restore them.
 
 ## Decisions waiting on you
 

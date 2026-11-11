@@ -1,0 +1,68 @@
+<mb-dialog
+  [title]="
+    (creating() ? 'collectionSettings.createTitle' : 'collectionSettings.editTitle') | transloco
+  "
+  [closeLabel]="'collectionSettings.cancel' | transloco"
+  [busy]="saving()"
+  (dismissed)="closed.emit()"
+>
+  <mb-field [label]="'collectionSettings.name' | transloco">
+    <input
+      mbControl
+      type="text"
+      [attr.maxlength]="nameMax"
+      [ngModel]="name()"
+      (ngModelChange)="name.set($event)"
+    />
+  </mb-field>
+  <mb-field [label]="'collectionSettings.description' | transloco">
+    <input
+      mbControl
+      type="text"
+      [attr.maxlength]="descriptionMax"
+      [ngModel]="description()"
+      (ngModelChange)="description.set($event)"
+    />
+  </mb-field>
+  <mb-field
+    [label]="'collectionSettings.language' | transloco"
+    [hint]="'collectionSettings.languageHint' | transloco"
+  >
+    <select mbControl [ngModel]="language()" (ngModelChange)="language.set($event)">
+      <option value="">{{ 'collectionSettings.languageUnset' | transloco }}</option>
+      @for (l of languageOptions(); track l.code) {
+        <option [value]="l.code">{{ l.name }}</option>
+      }
+    </select>
+  </mb-field>
+  <mb-checkbox
+    [label]="'collectionSettings.sensitive' | transloco"
+    [hint]="'collectionSettings.sensitiveHint' | transloco"
+    [checked]="sensitive()"
+    (checkedChange)="sensitive.set($event)"
+  />
+  <mb-checkbox
+    [label]="'collectionSettings.discoverable' | transloco"
+    [hint]="'collectionSettings.discoverableHint' | transloco"
+    [checked]="discoverable()"
+    (checkedChange)="discoverable.set($event)"
+  />
+  @if (error()) {
+    <mb-notice tone="error" announcement="alert">{{ error() }}</mb-notice>
+  }
+  <ng-container mbDialogActions>
+    <button mbButton type="button" variant="outline" (click)="closed.emit()">
+      {{ 'collectionSettings.cancel' | transloco }}
+    </button>
+    <button mbButton type="button" [disabled]="!canSave()" (click)="save()">
+      {{
+        (saving()
+          ? 'collectionSettings.saving'
+          : creating()
+            ? 'collectionSettings.create'
+            : 'collectionSettings.save'
+        ) | transloco
+      }}
+    </button>
+  </ng-container>
+</mb-dialog>

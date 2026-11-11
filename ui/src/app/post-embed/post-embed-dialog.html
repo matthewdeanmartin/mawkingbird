@@ -1,0 +1,46 @@
+<mb-dialog
+  [title]="'postEmbed.title' | transloco"
+  [closeLabel]="'postEmbed.close' | transloco"
+  size="wide"
+  [closeOnBackdrop]="true"
+  (dismissed)="closed.emit()"
+>
+  <p class="muted small">{{ 'postEmbed.intro' | transloco }}</p>
+
+  <mb-field [label]="'postEmbed.code' | transloco">
+    <textarea
+      mbControl
+      class="embed-code"
+      readonly
+      rows="8"
+      dir="ltr"
+      spellcheck="false"
+      [value]="html()"
+      (focus)="selectAll($event)"
+    ></textarea>
+  </mb-field>
+  @if (copyState() === 'failed') {
+    <p class="small copy-failed" role="alert">{{ 'postEmbed.copyFailed' | transloco }}</p>
+  }
+
+  <h3 class="embed-heading">{{ 'postEmbed.preview' | transloco }}</h3>
+  <iframe
+    class="embed-preview"
+    sandbox=""
+    referrerpolicy="no-referrer"
+    [title]="'postEmbed.previewTitle' | transloco"
+    [srcdoc]="previewDoc()"
+  ></iframe>
+  @if (hasMedia()) {
+    <p class="muted small">{{ 'postEmbed.mediaNote' | transloco }}</p>
+  }
+
+  <ng-container mbDialogActions>
+    <button mbButton type="button" variant="outline" (click)="closed.emit()">
+      {{ 'postEmbed.close' | transloco }}
+    </button>
+    <button mbButton type="button" (click)="copy()">
+      {{ (copyState() === 'copied' ? 'postEmbed.copied' : 'postEmbed.copy') | transloco }}
+    </button>
+  </ng-container>
+</mb-dialog>

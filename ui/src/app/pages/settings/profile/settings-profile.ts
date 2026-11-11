@@ -3,8 +3,8 @@ import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { MbSettingsRow } from '../../../design-system/settings-row/settings-row';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslocoPipe } from '@jsverse/transloco';
-import { firstValueFrom } from 'rxjs';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { firstValueFrom, map, of, switchMap } from 'rxjs';
 import { Api } from '../../../api';
 import { Auth } from '../../../auth';
 import { AccountField } from '../../../models';
@@ -21,7 +21,16 @@ import { ProfileLinkDialog } from './profile-link-dialog';
 import { ProfileBioDialog } from './profile-bio-dialog';
 import { renderStatusText } from '../../../compose/status-text';
 import { CustomEmojiPipe } from '../../../custom-emoji.pipe';
-import { CustomEmoji } from '../../../models';
+import { Account, CustomEmoji } from '../../../models';
+import { ConfirmDialog } from '../../../confirm-dialog/confirm-dialog';
+import { describeHttpError } from '../../../page-diagnostics';
+
+type ProfileImage = 'avatar' | 'header';
+
+/** Mastodon serves this placeholder when an account has no avatar or header. */
+function realImage(url: string | null | undefined): string {
+  return url && !/\/missing\.png(?:$|\?)/u.test(url) ? url : '';
+}
 
 /** Public profile: display name, bio, metadata fields, avatar/header. */
 /** English source strings; see scripts/extract-i18n.mjs. */
@@ -52,6 +61,17 @@ import { CustomEmoji } from '../../../models';
 // i18n settings.profile.avatar: Avatar
 // i18n settings.profile.header: Header
 // i18n settings.profile.resetLocal: Reset local profile
+// i18n settings.profile.avatarDescription: Describe your avatar
+// i18n settings.profile.headerDescription: Describe your header
+// i18n settings.profile.imageDescription.hint: Read by screen readers. Up to 150 characters.
+// i18n settings.profile.avatarCurrent: Your current avatar
+// i18n settings.profile.headerCurrent: Your current header
+// i18n settings.profile.removeAvatar: Remove avatar
+// i18n settings.profile.removeHeader: Remove header
+// i18n settings.profile.removeAvatar.confirm: Remove your avatar? Your profile will show the server's default picture until you upload a new one.
+// i18n settings.profile.removeHeader.confirm: Remove your header image? Your profile will show a plain header until you upload a new one.
+// i18n settings.profile.removeFailed: Could not remove that image. {{detail}}
+// i18n settings.profile.descriptionsFailed: Your profile was saved, but the image descriptions were not. {{detail}}
 @Component({
   selector: 'app-settings-profile',
   imports: [
@@ -66,6 +86,7 @@ import { CustomEmoji } from '../../../models';
     ProfileLinkDialog,
     ProfileBioDialog,
     CustomEmojiPipe,
+    ConfirmDialog,
   ],
   templateUrl: './settings-profile.html',
   styleUrl: './settings-profile.css',
@@ -78,6 +99,7 @@ export class SettingsProfile implements OnInit {
   private diagnostics = inject(PageDiagnostics);
   private blueskyApi = inject(BlueskyApi);
   private blueskySession = inject(BlueskySession);
+  private transloco = inject(TranslocoService);
 
   protected displayName = signal('');
   protected username = signal('');
@@ -95,6 +117,15 @@ export class SettingsProfile implements OnInit {
   );
   protected avatar = signal<File | null>(null);
   protected header = signal<File | null>(null);
+  protected readonly imageKinds: readonly ProfileImage[] = ['avatar', 'header'];
+  /** The server's current images ('' when there is none). Mastodon only. */
+  protected currentImages = signal<Record<ProfileImage, string>>({ avatar: '', header: '' });
+  /** True when the server's Profile API supports image descriptions (Mastodon 4.6+). */
+  protected descriptionsAvailable = signal(false);
+  protected descriptions = signal<Record<ProfileImage, string>>({ avatar: '', header: '' });
+  private savedDescriptions: Record<ProfileImage, string> = { avatar: '', header: '' };
+  protected confirmRemove = signal<ProfileImage | null>(null);
+  protected removing = signal(false);
   protected saving = signal(false);
   protected saved = signal(false);
   protected saveError = signal<string | null>(null);
@@ -136,7 +167,94 @@ export class SettingsProfile implements OnInit {
       });
       return;
     }
-    this.api.verifyCredentials().subscribe((acc) => this.loadAccount(acc));
+    this.api.verifyCredentials().subscribe((acc) => {
+      this.loadAccount(acc);
+      this.setCurrentImages(acc);
+      this.loadImageDescriptions();
+    });
+  }
+
+  /** Mastodon accounts edit server images; Anonymous and Bluesky have their own paths. */
+  protected get editsServerImages(): boolean {
+    return !this.auth.isAnonymous && !this.auth.isBlueskyPrimary;
+  }
+
+  private setCurrentImages(acc: Pick<Account, 'avatar' | 'header'>): void {
+    this.currentImages.set({ avatar: realImage(acc.avatar), header: realImage(acc.header) });
+  }
+
+  /** Probe the Profile API; a 404 (pre-4.6) just leaves descriptions hidden. */
+  private loadImageDescriptions(): void {
+    this.api.ownProfile().subscribe({
+      next: (profile) => {
+        if (profile.avatar_description === undefined && profile.header_description === undefined) {
+          return; // API version 8: profile endpoint, but no descriptions yet.
+        }
+        this.savedDescriptions = {
+          avatar: profile.avatar_description ?? '',
+          header: profile.header_description ?? '',
+        };
+        this.descriptions.set({ ...this.savedDescriptions });
+        this.descriptionsAvailable.set(true);
+      },
+      error: () => this.descriptionsAvailable.set(false),
+    });
+  }
+
+  protected setDescription(kind: ProfileImage, value: string): void {
+    this.descriptions.update((current) => ({ ...current, [kind]: value }));
+    this.saved.set(false);
+  }
+
+  /** Remove an image without uploading a replacement, after confirmation. */
+  protected removeImage(kind: ProfileImage): void {
+    this.confirmRemove.set(null);
+    if (this.removing()) return;
+    this.removing.set(true);
+    this.saveError.set(null);
+    this.api.deleteProfileImage(kind).subscribe({
+      next: (acc) => {
+        this.auth.setAccount(acc);
+        this.setCurrentImages(acc);
+        this.removing.set(false);
+        if (this.descriptionsAvailable() && this.savedDescriptions[kind]) {
+          // A description of an image that no longer exists would mislead.
+          const key = kind === 'avatar' ? 'avatar_description' : 'header_description';
+          this.api.updateProfileImageDescriptions({ [key]: '' }).subscribe({
+            next: () => {
+              this.savedDescriptions = { ...this.savedDescriptions, [kind]: '' };
+              this.descriptions.update((current) => ({ ...current, [kind]: '' }));
+            },
+            error: () => undefined,
+          });
+        }
+      },
+      error: (error: unknown) => {
+        this.removing.set(false);
+        this.saveError.set(
+          this.transloco.translate('settings.profile.removeFailed', {
+            detail: describeHttpError(error),
+          }),
+        );
+      },
+    });
+  }
+
+  /** Changed descriptions, in the Profile API's field names; null when nothing changed. */
+  private changedDescriptions(): {
+    avatar_description?: string;
+    header_description?: string;
+  } | null {
+    if (!this.descriptionsAvailable()) return null;
+    const now = this.descriptions();
+    const changes: { avatar_description?: string; header_description?: string } = {};
+    if (now.avatar.trim() !== this.savedDescriptions.avatar.trim()) {
+      changes.avatar_description = now.avatar.trim();
+    }
+    if (now.header.trim() !== this.savedDescriptions.header.trim()) {
+      changes.header_description = now.header.trim();
+    }
+    return Object.keys(changes).length ? changes : null;
   }
 
   private loadBlueskyProfile(profile: BskyProfile): void {
@@ -254,15 +372,45 @@ export class SettingsProfile implements OnInit {
       form.append('header', this.header()!);
     }
 
-    this.api.updateCredentials(form).subscribe({
-      next: (acc) => {
-        this.auth.setAccount(acc);
-        this.renderedNote.set(acc.note || renderStatusText(this.note(), acc.emojis));
-        this.saving.set(false);
-        this.saved.set(true);
-      },
-      error: () => this.saving.set(false),
-    });
+    const descriptionChanges = this.changedDescriptions();
+    let profileSaved = false;
+    this.api
+      .updateCredentials(form)
+      .pipe(
+        switchMap((acc) => {
+          this.auth.setAccount(acc);
+          this.setCurrentImages(acc);
+          this.renderedNote.set(acc.note || renderStatusText(this.note(), acc.emojis));
+          profileSaved = true;
+          if (!descriptionChanges) return of(true);
+          // Descriptions live on the Profile API, after the images they describe.
+          return this.api.updateProfileImageDescriptions(descriptionChanges).pipe(
+            map((profile) => {
+              this.savedDescriptions = {
+                avatar: profile.avatar_description ?? this.descriptions().avatar.trim(),
+                header: profile.header_description ?? this.descriptions().header.trim(),
+              };
+              return true;
+            }),
+          );
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.saved.set(true);
+        },
+        error: (error: unknown) => {
+          this.saving.set(false);
+          if (profileSaved && descriptionChanges) {
+            this.saveError.set(
+              this.transloco.translate('settings.profile.descriptionsFailed', {
+                detail: describeHttpError(error),
+              }),
+            );
+          }
+        },
+      });
   }
 
   private async saveBlueskyProfile(): Promise<void> {

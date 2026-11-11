@@ -1321,6 +1321,23 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/server-feed/server-feed').then((m) => m.ServerFeed),
       },
       {
+        // The server's year-in-review ("Wrapstodon"). Needs a Mastodon account.
+        path: 'annual-report',
+        title: 'Annual report',
+        canActivate: [anonymousUnavailableGuard],
+        data: { anonymousFeature: 'Annual reports' },
+        loadComponent: () =>
+          import('./pages/annual-report/annual-report').then((m) => m.AnnualReportPage),
+      },
+      {
+        path: 'annual-report/:year',
+        title: 'Annual report',
+        canActivate: [anonymousUnavailableGuard],
+        data: { anonymousFeature: 'Annual reports' },
+        loadComponent: () =>
+          import('./pages/annual-report/annual-report').then((m) => m.AnnualReportPage),
+      },
+      {
         path: 'endorsed/:accountId',
         title: 'Endorsed accounts',
         loadComponent: () =>
