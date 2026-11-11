@@ -17,15 +17,15 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { of, Subject } from "rxjs";
-import { ClientListPage } from "../../ui/src/app/pages/client-list/client-list-page";
-import { ClientLists } from "../../ui/src/app/lists/client-lists";
-import { ProfileLists } from "../../ui/src/app/providers/account/profile-lists";
-import { ListFeedResolver } from "../../ui/src/app/lists/list-feed-resolver";
-import { PageDiagnostics } from "../../ui/src/app/page-diagnostics";
-import { Account } from "../../ui/src/app/models";
-import { HistoryDialog } from "../../ui/src/app/history-dialog/history-dialog";
-import { Api } from "../../ui/src/app/api";
-import { AnonymousPublicApi } from "../../ui/src/app/providers/anonymous/anonymous-public-api";
+import { ClientListPage } from "../../ui/src/app/feeds/client-list/client-list-page";
+import { ClientLists } from "../../ui/src/app/feeds/lists/client-lists";
+import { ProfileLists } from "../../ui/src/app/accounts/mawkingbird/profile-lists";
+import { ListFeedResolver } from "../../ui/src/app/feeds/lists/list-feed-resolver";
+import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
+import { Account } from "../../ui/src/app/platform/api/models";
+import { HistoryDialog } from "../../ui/src/app/posts/history-dialog/history-dialog";
+import { Api } from "../../ui/src/app/platform/api/api";
+import { AnonymousPublicApi } from "../../ui/src/app/accounts/anonymous/anonymous-public-api";
 import {
   MbToolbar,
   MbToolbarButton,

@@ -12,12 +12,12 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { of, timer, mergeMap, throwError } from "rxjs";
-import { SettingsPrivacy } from "../../ui/src/app/pages/settings/privacy/settings-privacy";
+import { SettingsPrivacy } from "../../ui/src/app/settings/privacy/settings-privacy";
 import { AdminAnnouncements } from "../../ui/src/app/admin/announcements/admin-announcements";
-import { Api } from "../../ui/src/app/api";
+import { Api } from "../../ui/src/app/platform/api/api";
 import { AdminApi } from "../../ui/src/app/admin/admin-api";
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
-import { AppDialogs } from "../../ui/src/app/app-dialogs";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
+import { AppDialogs } from "../../ui/src/app/shell/app-dialogs";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 @Injectable()

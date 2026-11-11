@@ -13,7 +13,7 @@ import {
   IpBlock,
   Status,
   TrendingTag,
-} from '../models';
+} from '../platform/api/models';
 
 /** Wrapper over the /api/v1/admin/* moderation surface. */
 @Injectable({ providedIn: 'root' })

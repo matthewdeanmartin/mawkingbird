@@ -3,9 +3,9 @@ import { of, Subject } from 'rxjs';
 import { vi } from 'vitest';
 import { AdminAnnouncements } from './admin-announcements';
 import { AdminApi } from '../admin-api';
-import { AppDialogs } from '../../app-dialogs';
-import { Announcement } from '../../models';
-import { Server } from '../../server';
+import { AppDialogs } from '../../shell/app-dialogs';
+import { Announcement } from '../../platform/api/models';
+import { Server } from '../../platform/http/server';
 
 describe('AdminAnnouncements shared publish checkbox', () => {
   it('submits the chosen publish value and keeps the draft available after failure', async () => {

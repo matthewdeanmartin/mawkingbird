@@ -7,13 +7,13 @@ import {
   withInterceptors,
   HttpResponse,
 } from "../../ui/src/app/testing/storybook-http";
-import { Notifications } from "../../ui/src/app/pages/notifications/notifications";
-import { Auth } from "../../ui/src/app/auth";
-import { Streaming } from "../../ui/src/app/streaming";
+import { Notifications } from "../../ui/src/app/feeds/notifications/notifications";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { Streaming } from "../../ui/src/app/platform/api/streaming";
 import { FakeStreaming } from "../../ui/src/app/testing/fake-streaming";
-import { BlueskySession } from "../../ui/src/app/providers/bluesky/bluesky-session";
+import { BlueskySession } from "../../ui/src/app/connections/bluesky/bluesky-session";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
-import { Account, Status } from "../../ui/src/app/models";
+import { Account, Status } from "../../ui/src/app/platform/api/models";
 const account: Account = {
   id: "reader",
   username: "reader",

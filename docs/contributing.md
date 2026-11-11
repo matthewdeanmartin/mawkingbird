@@ -53,9 +53,9 @@ explains storage, credentials, and browser security boundaries.
 Run these commands from `ui/`. During development, run the affected spec or area:
 
 ```bash
-npm run test:subset -- src/app/compose/compose.spec.ts
+npm run test:subset -- src/app/publishing/compose/compose.spec.ts
 # Or an entire area:
-npm run test:subset -- src/app/pages/search
+npm run test:subset -- src/app/discovery/search
 ```
 
 Before handing off a client change, run the full test gate, lint, and standalone

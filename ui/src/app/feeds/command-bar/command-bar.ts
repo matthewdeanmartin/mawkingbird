@@ -1,0 +1,399 @@
+import { Component, computed, inject, input, output } from '@angular/core';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
+import { MbPostAction } from '../../design-system/post-actions/post-actions';
+import { RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { Auth } from '../../platform/session/auth';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { PrivateFollows } from '../../accounts/private-follows';
+import { FeatureFlags } from '../../platform/build/feature-flags';
+import { ProviderId } from '../../platform/api/models';
+import { ProviderRegistry } from '../../connections/provider-registry';
+
+/** What the host page is showing in place of its timeline. */
+export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles';
+
+// i18n commandBar.myTags: My tags
+// i18n commandBar.myTagsHint: Show only posts with hashtags I follow
+// i18n commandBar.textFocus.label: Text
+// i18n commandBar.video: Video
+// i18n commandBar.tweetView: Tweets
+// i18n commandBar.doctor: Doctor
+// i18n commandBar.textFocus.turnOff: Turn off text-focus and show images
+// i18n commandBar.textFocus.turnOn: Turn on text-focus: show image icons and alt text
+
+/**
+ * The timeline command bar: Go Live (owned by the host page), plus the global
+ * feed toggles — Reader mode, images on/off, and text size (shown in reader).
+ * Reader/images are ClientPrefs, so every timeline honours them at once.
+ * Pages that merge foreign providers (home) also get per-provider filter chips.
+ */
+@Component({
+  selector: 'app-command-bar',
+  imports: [RouterLink, TranslocoPipe, MbToolbar, MbToolbarButton, MbPostAction],
+  template: `
+    <div class="command-bar" role="group" aria-label="Feed controls">
+      <div class="command-row action-row" role="group" aria-label="Feed actions">
+        @if (showRefresh() || showFeedViews()) {
+          <mb-toolbar label="Feed actions" density="compact" embedded>
+            @if (showRefresh()) {
+              <!-- After a refresh that found nothing, the arrow briefly becomes a
+                   check instead of a sentence pushing the feed down. The host
+                   page announces the result to screen readers. -->
+              <button
+                mbToolbarButton
+                class="refresh-button"
+                [class.refresh-done]="refreshDone()"
+                (click)="refresh.emit()"
+                [title]="
+                  refreshDone()
+                    ? ('pages.home.noNewPosts' | transloco)
+                    : 'Reload the feed from the newest posts'
+                "
+              >
+                {{ refreshDone() ? '✅' : '🔄' }} More
+              </button>
+            }
+            @if (showFeedViews()) {
+              <button
+                mbToolbarButton
+                [pressed]="view() === 'feed'"
+                (click)="viewChange.emit('feed')"
+              >
+                {{ 'commandBar.tweetView' | transloco }}
+              </button>
+              <button
+                mbToolbarButton
+                [pressed]="view() === 'members'"
+                (click)="setView('members')"
+                title="Who is in this feed — the accounts whose posts are loaded"
+              >
+                👥 Members</button
+              ><button
+                mbToolbarButton
+                [pressed]="view() === 'analytics'"
+                (click)="setView('analytics')"
+                title="Analytics for the posts currently loaded in this feed"
+              >
+                📊 Analytics
+              </button>
+            }
+          </mb-toolbar>
+        }
+        @if (showFeedDoctor()) {
+          <a
+            mbPostAction
+            class="command-item"
+            routerLink="/feed-doctor"
+            title="Why is this feed like this — who is flooding it, and why it ended"
+          >
+            🩺 {{ 'commandBar.doctor' | transloco }}
+          </a>
+        }
+      </div>
+      <div class="presentation-controls">
+        <mb-toolbar
+          class="command-row presentation-row"
+          label="Feed presentation"
+          density="compact"
+        >
+          <button
+            mbToolbarButton
+            [pressed]="prefs.feedReader()"
+            (click)="toggleReader()"
+            title="Reader mode for the feed: reader typography, no pictures"
+          >
+            📖 Reader
+          </button>
+          @if (showImages()) {
+            <button
+              mbToolbarButton
+              [pressed]="imagesHidden()"
+              (click)="toggleImages()"
+              [title]="
+                (imagesHidden() ? 'commandBar.textFocus.turnOff' : 'commandBar.textFocus.turnOn')
+                  | transloco
+              "
+            >
+              Aa {{ 'commandBar.textFocus.label' | transloco }}
+            </button>
+          }
+          @if (showFeedViews()) {
+            <button
+              mbToolbarButton
+              [pressed]="view() === 'media'"
+              (click)="setView('media')"
+              title="Pictures and videos from the posts currently loaded"
+            >
+              🖼️ Media
+            </button>
+            @if (showVideo()) {
+              <button
+                type="button"
+                mbToolbarButton
+                [pressed]="view() === 'video'"
+                (click)="setView('video')"
+              >
+                🎬 {{ 'commandBar.video' | transloco }}
+              </button>
+            }
+            @if (showMyTags()) {
+              <button
+                mbToolbarButton
+                [pressed]="myTags()"
+                (click)="viewChange.emit('feed'); myTagsChange.emit(!myTags())"
+                [title]="'commandBar.myTagsHint' | transloco"
+              >
+                # {{ 'commandBar.myTags' | transloco }}
+              </button>
+            }
+            <button
+              mbToolbarButton
+              [pressed]="view() === 'articles'"
+              (click)="setView('articles')"
+              title="Article links from the posts currently loaded"
+            >
+              🔗 Articles
+            </button>
+          }
+          @if (prefs.feedReader() && showReaderControls()) {
+            <span class="font-controls">
+              <button
+                mbToolbarButton
+                (click)="prefs.setReaderFontSize(prefs.readerFontSize() - 1)"
+                title="Smaller text"
+              >
+                A−
+              </button>
+              <button
+                mbToolbarButton
+                (click)="prefs.setReaderFontSize(prefs.readerFontSize() + 1)"
+                title="Larger text"
+              >
+                A+
+              </button>
+            </span>
+          }
+        </mb-toolbar>
+        <ng-content select="[presentationControl]" />
+      </div>
+      @if (providerChips() || showFilters()) {
+        <div class="command-row filter-row" role="group" aria-label="Feed filters">
+          <ng-content />
+          @if (providerChips() && showSourceSwitcher()) {
+            <!-- WHAT: networks included in this feed. The label is intentionally a
+             code comment rather than visible toolbar furniture. -->
+            <mb-toolbar class="provider-group" label="Feed sources" density="compact" embedded>
+              @if ((!auth.isAnonymous && !auth.isForeignPrimary) || privateFedi()) {
+                <button
+                  mbToolbarButton
+                  [pressed]="prefs.isProviderVisible('mastodon')"
+                  (click)="toggleProvider('mastodon')"
+                  title="Show or hide Mastodon posts"
+                >
+                  🦣 Fedi
+                </button>
+              }
+              @if (anonymousFedi()) {
+                <button
+                  mbToolbarButton
+                  [pressed]="prefs.isProviderVisible('anonymous-mastodon')"
+                  (click)="toggleProvider('anonymous-mastodon')"
+                  title="Show or hide Fediverse posts"
+                >
+                  🦣 Fedi
+                </button>
+              }
+              @for (p of sourceProviders(); track p.id) {
+                <button
+                  mbToolbarButton
+                  [pressed]="prefs.isProviderVisible(p.id)"
+                  (click)="toggleProvider(p.id)"
+                  [title]="'Show or hide ' + p.label + ' posts'"
+                >
+                  {{ p.badge }}
+                </button>
+              }
+            </mb-toolbar>
+          }
+        </div>
+      }
+    </div>
+  `,
+  styles: `
+    .presentation-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    div.command-row {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+    .filter-row,
+    .action-row {
+      padding: 3px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .font-controls {
+      display: inline-flex;
+      gap: 2px;
+    }
+  `,
+})
+export class CommandBar {
+  protected readonly auth = inject(Auth);
+  protected readonly prefs = inject(ClientPrefs);
+  protected readonly registry = inject(ProviderRegistry);
+
+  /** WHAT row in its deliberate network order; utility providers are not feed networks. */
+  private privateFollows = inject(PrivateFollows);
+  private flags = inject(FeatureFlags);
+  protected readonly privateFedi = computed(
+    () =>
+      this.privateFollows
+        .current()
+        ?.follows()
+        .some((follow) => follow.network === 'mastodon') ?? false,
+  );
+
+  protected readonly sourceProviders = computed(() => {
+    const order = new Map<ProviderId, number>([
+      ['bluesky', 0],
+      ['rss', 1],
+      ['twitter', 2],
+    ]);
+    const providers: { id: ProviderId; label: string; badge: string }[] = this.registry
+      .linked()
+      .filter((provider) => order.has(provider.id))
+      .sort((a, b) => (order.get(a.id) ?? 99) - (order.get(b.id) ?? 99));
+    if (
+      !providers.some((provider) => provider.id === 'bluesky') &&
+      this.flags.enabled('connector-bluesky') &&
+      this.privateFollows
+        .current()
+        ?.follows()
+        .some((follow) => follow.network === 'bluesky')
+    ) {
+      providers.unshift({ id: 'bluesky', label: 'Bluesky', badge: '🦋 Bsky' });
+    }
+    return providers;
+  });
+
+  /** Anonymous Mastodon is the Fedi network too; only the storage id differs. */
+  protected readonly anonymousFedi = computed(() =>
+    this.registry.linked().some((provider) => provider.id === 'anonymous-mastodon'),
+  );
+
+  /** Provider ids behind each Feed sources button, in the order they render. */
+  protected readonly sourceIds = computed<ProviderId[]>(() => {
+    const ids: ProviderId[] = [];
+    if ((!this.auth.isAnonymous && !this.auth.isForeignPrimary) || this.privateFedi()) {
+      ids.push('mastodon');
+    }
+    if (this.anonymousFedi()) ids.push('anonymous-mastodon');
+    for (const provider of this.sourceProviders()) ids.push(provider.id);
+    return ids;
+  });
+
+  /**
+   * A one-button switcher (just Fedi, say) switches nothing, and on a phone the
+   * row costs scarce height. It still shows when that one source is turned
+   * off, because that button is the only way to turn it back on.
+   */
+  protected readonly showSourceSwitcher = computed(() => {
+    const ids = this.sourceIds();
+    if (ids.length > 1) return true;
+    return ids.length === 1 && !this.prefs.isProviderVisible(ids[0]);
+  });
+
+  /**
+   * Whether to show a manual refresh button — for pages where live streaming
+   * is off by default and re-clicking the nav link is the only other way to
+   * fetch newer posts.
+   */
+  readonly showRefresh = input(false);
+  /** Briefly true after a refresh that brought nothing new: the arrow shows a check. */
+  readonly refreshDone = input(false);
+  /** Whether this page merges foreign providers (home) — shows the filter chips. */
+  readonly providerChips = input(false);
+  readonly showFilters = input(false);
+  /** Show the text-focus toggle independently of the Media layout. */
+  readonly showImages = input(true);
+  /** Home owns a fourth, full Reader row; compact feed bars retain these buttons. */
+  readonly showReaderControls = input(true);
+  /** Show the 👥 Members / 📊 Analytics view toggles (Home). */
+  readonly showFeedViews = input(false);
+  /**
+   * Whether to offer Feed Doctor. Off by default: the Doctor diagnoses the
+   * browser-local Home feed, so it means nothing on a hashtag or list timeline
+   * that has no follow sources to report on.
+   */
+  readonly showFeedDoctor = input(false);
+  /** Which view the host page is currently showing. */
+  readonly view = input<FeedView>('feed');
+  readonly showVideo = input(false);
+  readonly showMyTags = input(false);
+  readonly myTags = input(false);
+  readonly myTagsChange = output<boolean>();
+  /** Home can keep its text presentation local, without changing other accounts/pages. */
+  readonly localTextFocus = input<boolean | null>(null);
+  readonly textFocusChange = output<boolean>();
+  readonly refresh = output<void>();
+  /** A source filter changed; merged feeds need to refetch their active sources. */
+  readonly providerVisibilityChanged = output<void>();
+  /** The viewer picked a different view of the feed. */
+  readonly viewChange = output<FeedView>();
+
+  /** Clicking the active view returns to the feed, so both buttons toggle. */
+  protected toggleReader(): void {
+    const enabled = !this.prefs.feedReader();
+    this.viewChange.emit('feed');
+    this.prefs.setFeedReader(enabled);
+  }
+
+  protected setView(view: FeedView): void {
+    if (view === 'media' || view === 'video') this.prefs.setFeedReader(false);
+    this.viewChange.emit(this.view() === view ? 'feed' : view);
+  }
+
+  protected toggleProvider(id: ProviderId): void {
+    this.prefs.toggleProvider(id);
+    this.providerVisibilityChanged.emit();
+  }
+
+  /**
+   * Images are effectively hidden when the viewer turned them off OR reader mode
+   * is on (reader mode suppresses pictures). The button reflects reality so it
+   * never looks inert.
+   */
+  protected imagesHidden(): boolean {
+    if (this.localTextFocus() !== null) return this.localTextFocus()!;
+    return !this.prefs.showImages() || this.prefs.feedReader();
+  }
+
+  /**
+   * One button, always recoverable: if images are hidden for any reason, reveal
+   * them — turning images on AND leaving reader mode (whose whole point is no
+   * pictures). Otherwise hide them. This avoids the trap where reader mode
+   * silently overrode the images toggle, leaving no obvious way back.
+   */
+  protected toggleImages(): void {
+    if (this.localTextFocus() !== null) {
+      this.textFocusChange.emit(!this.localTextFocus());
+      return;
+    }
+    if (this.imagesHidden()) {
+      this.prefs.setShowImages(true);
+      if (this.prefs.feedReader()) {
+        this.prefs.setFeedReader(false);
+      }
+    } else {
+      this.prefs.setShowImages(false);
+    }
+  }
+}

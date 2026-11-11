@@ -1,5 +1,5 @@
-import { RailOutlet } from '../rail-outlet';
-import { PlusCatalogue } from '../providers/account/plus-catalogue';
+import { RailOutlet } from './rail-outlet';
+import { PlusCatalogue } from '../accounts/mawkingbird/plus-catalogue';
 import { fakePlusCatalogue } from '../testing/plus-catalogue';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -7,28 +7,28 @@ import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Auth } from '../auth';
-import { MenuIndicators } from '../menu-indicators';
+import { Auth } from '../platform/session/auth';
+import { MenuIndicators } from './menu-indicators';
 
 function fakeIndicators() {
   return { start: vi.fn(), ordinary: signal(false), chat: signal(false) };
 }
-import { Hotkeys } from '../hotkeys';
-import { ClientPrefs } from '../client-prefs';
-import { PreviewSeed } from '../first-run/preview-seed';
+import { Hotkeys } from './hotkeys';
+import { ClientPrefs } from '../platform/storage/client-prefs';
+import { PreviewSeed } from '../accounts/first-run/preview-seed';
 import { stubLocation } from '../testing/stub-location';
-import { saveMisskeyIdentity } from '../providers/misskey/misskey-identity-store';
-import { Server } from '../server';
-import { serverInterceptor } from '../server.interceptor';
-import { WritingZen } from '../writing-zen';
+import { saveMisskeyIdentity } from '../connections/misskey/misskey-identity-store';
+import { Server } from '../platform/http/server';
+import { serverInterceptor } from '../platform/http/server.interceptor';
+import { WritingZen } from '../publishing/writing-zen';
 import { Shell, VERIFY_RETRY_DELAYS_MS } from './shell';
-import { OnboardingLauncher } from '../onboarding/onboarding-launcher';
+import { OnboardingLauncher } from '../accounts/onboarding/onboarding-launcher';
 import {
   PlusBadgeEntitlement,
   type PlusBadgeState,
-} from '../providers/account/plus-badge-entitlement';
-import { FeatureFlags } from '../feature-flags';
-import { AppModeService } from '../app-mode';
+} from '../accounts/mawkingbird/plus-badge-entitlement';
+import { FeatureFlags } from '../platform/build/feature-flags';
+import { AppModeService } from '../platform/build/app-mode';
 
 class FakePlusBadgeEntitlement {
   readonly state = signal<PlusBadgeState>('free');

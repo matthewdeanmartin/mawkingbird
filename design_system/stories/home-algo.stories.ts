@@ -4,13 +4,13 @@ import {
   type Meta,
   type StoryObj,
 } from "@storybook/angular";
-import { SettingsHomeAlgo } from "../../ui/src/app/pages/settings/home-algo/settings-home-algo";
+import { SettingsHomeAlgo } from "../../ui/src/app/settings/home-algo/settings-home-algo";
 import {
   HomeAlgoSettings,
   HOME_FACTORY,
-} from "../../ui/src/app/home-algo-settings";
-import { HomeDefaults } from "../../ui/src/app/home-defaults";
-import { HomeFeedCatalog } from "../../ui/src/app/home-feed-catalog";
+} from "../../ui/src/app/feeds/home-algo-settings";
+import { HomeDefaults } from "../../ui/src/app/feeds/home-defaults";
+import { HomeFeedCatalog } from "../../ui/src/app/feeds/home-feed-catalog";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 @Component({

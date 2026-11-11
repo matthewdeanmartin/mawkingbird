@@ -3,7 +3,7 @@ import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 import {
   PostPermissions,
   PostPermissionsValue,
-} from "../../ui/src/app/post-permissions/post-permissions";
+} from "../../ui/src/app/publishing/post-permissions/post-permissions";
 import { MbButton } from "../../ui/src/app/design-system/button/button";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 

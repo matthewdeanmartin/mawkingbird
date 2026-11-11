@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { AdminApi } from './admin-api';
-import { AdminAccount, AdminReport, DomainBlock } from '../models';
+import { AdminAccount, AdminReport, DomainBlock } from '../platform/api/models';
 
 /**
  * Unit tests for {@link AdminApi} — verifies the HTTP method, URL, and request

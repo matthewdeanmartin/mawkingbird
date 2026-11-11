@@ -30,7 +30,7 @@ const pages = [
   ...LANGUAGE_INDEXES.map(languageFolder),
   ...focusedTools.map((tool) => tool.path),
 ];
-// Focused mini-app entry pages (src/app/focused-tools.json): the heading and a
+// Focused mini-app entry pages (src/app/public-pages/focused-tools.json): the heading and a
 // phrase from the signed-out copy. Their tools are deferred and signed-in only,
 // so none may prerender.
 const tools = new Map(focusedTools.map((tool) => [tool.path, tool.prerenderCheck]));
@@ -64,10 +64,10 @@ const kitSlugs = (await readdir(path.join(root, 'follow'), { withFileTypes: true
   .sort();
 assert.ok(kitSlugs.length > 0, 'at least one starter kit is published');
 pages.push('follow', ...kitSlugs.map((slug) => `follow/${slug}`));
-// Feed Builder topic pages and their hub (src/app/pages/feed-builder/).
+// Feed Builder topic pages and their hub (src/app/feeds/feed-builder/).
 const feedPaths = JSON.parse(
   await readFile(
-    path.resolve(import.meta.dirname, '../src/app/pages/feed-builder/feed-builder-paths.json'),
+    path.resolve(import.meta.dirname, '../src/app/feeds/feed-builder/feed-builder-paths.json'),
     'utf8',
   ),
 );
@@ -88,7 +88,7 @@ const feedAlternates = (entry) => {
 const feedHubs = Object.entries(
   JSON.parse(
     await readFile(
-      path.resolve(import.meta.dirname, '../src/app/pages/feed-builder/feed-builder-hubs.json'),
+      path.resolve(import.meta.dirname, '../src/app/feeds/feed-builder/feed-builder-hubs.json'),
       'utf8',
     ),
   ),
@@ -178,7 +178,7 @@ for (const page of pages) {
       await readFile(
         path.resolve(
           import.meta.dirname,
-          `../src/app/pages/feed-builder/data/${entry.topic}.${entry.lang}.json`,
+          `../src/app/feeds/feed-builder/data/${entry.topic}.${entry.lang}.json`,
         ),
         'utf8',
       ),

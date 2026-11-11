@@ -1,4 +1,4 @@
-import { SubmittedReports } from "../../ui/src/app/report-history/report-history";
+import { SubmittedReports } from "../../ui/src/app/moderation/report-history/report-history";
 import {
   Component,
   Injectable,
@@ -12,11 +12,11 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { Observable } from "rxjs";
-import { Api } from "../../ui/src/app/api";
-import { BlueskyApi } from "../../ui/src/app/providers/bluesky/bluesky-api";
-import { BskyRef } from "../../ui/src/app/providers/bluesky/bluesky-types";
-import { ReportDialog } from "../../ui/src/app/report-dialog/report-dialog";
-import { BookmarkProviderDialog } from "../../ui/src/app/bookmark-provider-dialog/bookmark-provider-dialog";
+import { Api } from "../../ui/src/app/platform/api/api";
+import { BlueskyApi } from "../../ui/src/app/connections/bluesky/bluesky-api";
+import { BskyRef } from "../../ui/src/app/connections/bluesky/bluesky-types";
+import { ReportDialog } from "../../ui/src/app/moderation/report-dialog/report-dialog";
+import { BookmarkProviderDialog } from "../../ui/src/app/posts/bookmark-provider-dialog/bookmark-provider-dialog";
 import {
   MbToolbar,
   MbToolbarButton,

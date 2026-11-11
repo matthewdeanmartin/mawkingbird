@@ -4,7 +4,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
-import { DomainBlock } from '../../models';
+import { DomainBlock } from '../../platform/api/models';
 
 // i18n adminDomains.placeholder: domain to block (e.g. spam.example)
 // i18n adminDomains.silence: silence

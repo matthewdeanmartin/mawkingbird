@@ -4,10 +4,10 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, UrlTree } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { Api } from '../api';
-import { Auth } from '../auth';
-import { Account, Role } from '../models';
-import { Server } from '../server';
+import { Api } from '../platform/api/api';
+import { Auth } from '../platform/session/auth';
+import { Account, Role } from '../platform/api/models';
+import { Server } from '../platform/http/server';
 import { adminGuard } from './admin.guard';
 
 /** Minimal Account stub with a role field. */

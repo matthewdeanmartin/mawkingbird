@@ -1,7 +1,7 @@
 import { Component, computed, ElementRef, inject, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { APP_MODES, AppModeService } from '../app-mode';
+import { APP_MODES, AppModeService } from '../platform/build/app-mode';
 import { MbMenuItem } from '../design-system/menu/menu-item';
 import { MB_MENU_SURFACE, MbMenuSurface } from '../design-system/menu/menu-surface';
 import { MbPopover } from '../design-system/popover/popover';

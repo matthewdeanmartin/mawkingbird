@@ -6,34 +6,34 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { of, throwError, delay } from "rxjs";
-import { ConnectionBlogger } from "../../ui/src/app/pages/settings/connections/blogger/connection-blogger";
-import { ConnectionHugo } from "../../ui/src/app/pages/settings/connections/hugo/connection-hugo";
-import { ConnectionMataroa } from "../../ui/src/app/pages/settings/connections/mataroa/connection-mataroa";
-import { ConnectionPastes } from "../../ui/src/app/pages/settings/connections/pastes/connection-pastes";
-import { BloggerSession } from "../../ui/src/app/providers/blogger/blogger-session";
-import { BloggerApi } from "../../ui/src/app/providers/blogger/blogger-api";
-import { MataroaSettings } from "../../ui/src/app/providers/mataroa/mataroa-settings";
-import { MataroaApi } from "../../ui/src/app/providers/mataroa/mataroa-api";
+import { ConnectionBlogger } from "../../ui/src/app/settings/connections/blogger/connection-blogger";
+import { ConnectionHugo } from "../../ui/src/app/settings/connections/hugo/connection-hugo";
+import { ConnectionMataroa } from "../../ui/src/app/settings/connections/mataroa/connection-mataroa";
+import { ConnectionPastes } from "../../ui/src/app/settings/connections/pastes/connection-pastes";
+import { BloggerSession } from "../../ui/src/app/connections/blogger/blogger-session";
+import { BloggerApi } from "../../ui/src/app/connections/blogger/blogger-api";
+import { MataroaSettings } from "../../ui/src/app/connections/mataroa/mataroa-settings";
+import { MataroaApi } from "../../ui/src/app/connections/mataroa/mataroa-api";
 import {
   HugoSettings,
   type HugoRepo,
-} from "../../ui/src/app/providers/hugo/hugo-settings";
-import { HugoValidate } from "../../ui/src/app/providers/hugo/hugo-validate";
-import { HugoPosts } from "../../ui/src/app/providers/hugo/hugo-posts";
-import { HugoFeed } from "../../ui/src/app/providers/hugo/hugo-feed";
-import { HugoEditSession } from "../../ui/src/app/providers/hugo/hugo-edit-session";
-import { GitHubSession } from "../../ui/src/app/providers/github/github-session";
-import { PasteSettings } from "../../ui/src/app/providers/paste/paste-settings";
-import { PasteProviderRegistry } from "../../ui/src/app/providers/paste/paste-provider-registry";
-import { PasteFeedSubscriptions } from "../../ui/src/app/providers/paste/paste-feed-subscriptions";
-import { PasteFeedFetch } from "../../ui/src/app/providers/paste/paste-feed-fetch";
-import { CorsProxy } from "../../ui/src/app/providers/cors-proxy/cors-proxy";
-import { ProxyConsent } from "../../ui/src/app/providers/proxy-consent-store";
-import { VaultBridge } from "../../ui/src/app/providers/vault/vault-bridge";
-import { PageDiagnostics } from "../../ui/src/app/page-diagnostics";
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
-import { Drafts } from "../../ui/src/app/drafts";
-import { Terminology } from "../../ui/src/app/terminology";
+} from "../../ui/src/app/connections/hugo/hugo-settings";
+import { HugoValidate } from "../../ui/src/app/connections/hugo/hugo-validate";
+import { HugoPosts } from "../../ui/src/app/connections/hugo/hugo-posts";
+import { HugoFeed } from "../../ui/src/app/connections/hugo/hugo-feed";
+import { HugoEditSession } from "../../ui/src/app/connections/hugo/hugo-edit-session";
+import { GitHubSession } from "../../ui/src/app/connections/github/github-session";
+import { PasteSettings } from "../../ui/src/app/connections/paste/paste-settings";
+import { PasteProviderRegistry } from "../../ui/src/app/connections/paste/paste-provider-registry";
+import { PasteFeedSubscriptions } from "../../ui/src/app/connections/paste/paste-feed-subscriptions";
+import { PasteFeedFetch } from "../../ui/src/app/connections/paste/paste-feed-fetch";
+import { CorsProxy } from "../../ui/src/app/connections/cors-proxy/cors-proxy";
+import { ProxyConsent } from "../../ui/src/app/connections/proxy-consent-store";
+import { VaultBridge } from "../../ui/src/app/connections/vault/vault-bridge";
+import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
+import { Drafts } from "../../ui/src/app/publishing/drafts";
+import { Terminology } from "../../ui/src/app/i18n/terminology";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 export default {

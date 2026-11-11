@@ -3,8 +3,8 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Account } from '../../models';
-import { BlueskySession } from '../../providers/bluesky/bluesky-session';
+import { Account } from '../../platform/api/models';
+import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { LeftRail } from './left-rail';
 
 describe('LeftRail', () => {

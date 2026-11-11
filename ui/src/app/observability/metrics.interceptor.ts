@@ -1,13 +1,13 @@
 import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { tap } from 'rxjs';
-import { EXTERNAL_FETCH } from '../providers/external-fetch';
-import { Server } from '../server';
+import { EXTERNAL_FETCH } from '../platform/http/external-fetch';
+import { Server } from '../platform/http/server';
 import { ApiMetrics } from './api-metrics';
 import { BillingTier, MawkingbirdMetrics, mawkingbirdService } from './mawkingbird-metrics';
-import { CorsProxySettings } from '../providers/cors-proxy/cors-proxy-settings';
+import { CorsProxySettings } from '../connections/cors-proxy/cors-proxy-settings';
 import { PUBLISHING_REQUEST, PublishingMetrics } from './publishing-metrics';
-import { DiagnosticLog } from '../diagnostic-log';
+import { DiagnosticLog } from '../platform/diagnostics/diagnostic-log';
 
 /**
  * Times every instance API call and folds it into {@link ApiMetrics} for the

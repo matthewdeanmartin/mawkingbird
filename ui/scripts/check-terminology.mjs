@@ -2,7 +2,7 @@
  * Fail the build when a template hardcodes a word the user can rename.
  *
  * "Some things are called reblogs when the setting says Tweets" is a class of
- * bug, not an instance. `src/app/terminology.ts` lets a reader pick posts /
+ * bug, not an instance. `src/app/i18n/terminology.ts` lets a reader pick posts /
  * tweets / florps, and the visible buttons were already routed through it — it
  * was the strings nobody re-reads that were wrong: `aria-label`, `title`, and
  * `sr-only` text. Sweeping them once fixed the day this was written; this
@@ -34,17 +34,17 @@ const NOUNS = ['posts', 'post', 'boosts', 'boost', 'reposts', 'repost', 'reblogs
  */
 const ALLOWED = [
   {
-    file: 'pages/settings/blue/blue-controls.html',
+    file: 'settings/blue/blue-controls.html',
     contains: 'Posts &amp; boosts (Mastodon)',
     why: 'Names the vocabulary options themselves.',
   },
   {
-    file: 'pages/settings/blue/blue-controls.html',
+    file: 'settings/blue/blue-controls.html',
     contains: 'Tweets &amp; retweets (like the bird site)',
     why: 'Names the vocabulary options themselves.',
   },
   {
-    file: 'pages/settings/blue/blue-controls.html',
+    file: 'settings/blue/blue-controls.html',
     contains: "Florps &amp; reflorps (nobody else's word)",
     why: 'Names the vocabulary options themselves.',
   },

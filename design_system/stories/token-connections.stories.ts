@@ -6,15 +6,15 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { of, throwError, delay } from "rxjs";
-import { ConnectionGitHub } from "../../ui/src/app/pages/settings/connections/github/connection-github";
-import { ConnectionGist } from "../../ui/src/app/pages/settings/connections/gist/connection-gist";
-import { ConnectionRaindrop } from "../../ui/src/app/pages/settings/connections/raindrop/connection-raindrop";
-import { GitHubSession } from "../../ui/src/app/providers/github/github-session";
-import { GistSettings } from "../../ui/src/app/providers/paste/gist-settings";
-import { GistProvider } from "../../ui/src/app/providers/paste/gist-provider";
-import { RaindropSession } from "../../ui/src/app/providers/raindrop/raindrop-session";
-import { VaultBridge } from "../../ui/src/app/providers/vault/vault-bridge";
-import { PageDiagnostics } from "../../ui/src/app/page-diagnostics";
+import { ConnectionGitHub } from "../../ui/src/app/settings/connections/github/connection-github";
+import { ConnectionGist } from "../../ui/src/app/settings/connections/gist/connection-gist";
+import { ConnectionRaindrop } from "../../ui/src/app/settings/connections/raindrop/connection-raindrop";
+import { GitHubSession } from "../../ui/src/app/connections/github/github-session";
+import { GistSettings } from "../../ui/src/app/connections/paste/gist-settings";
+import { GistProvider } from "../../ui/src/app/connections/paste/gist-provider";
+import { RaindropSession } from "../../ui/src/app/connections/raindrop/raindrop-session";
+import { VaultBridge } from "../../ui/src/app/connections/vault/vault-bridge";
+import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 function session() {

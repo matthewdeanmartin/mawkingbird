@@ -1,0 +1,347 @@
+import {
+  afterNextRender,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { catchError, of } from 'rxjs';
+import { Api } from '../platform/api/api';
+import { Auth } from '../platform/session/auth';
+import { MbBadge } from '../design-system/badge/badge';
+import { MbButton } from '../design-system/button/button';
+import { MbContentState } from '../design-system/content-state/content-state';
+import { MbControl, MbField } from '../design-system/field/field';
+import { MbPageHeader } from '../design-system/page-header/page-header';
+import {
+  compareSummaries,
+  DiscussionSummary,
+  FORUM_FILTERS,
+  ForumFilter,
+  ForumSort,
+  Participant,
+  personKey,
+} from './discussion';
+import {
+  DEEPER_STEPS,
+  ForumScan,
+  ForumSource,
+  MAX_SCAN_CALLS,
+  parseSource,
+  sourceParam,
+} from './forum-scan';
+import { MbDisclosure } from '../design-system/disclosure/disclosure';
+import { FacetChoice, FACET_KINDS, hasFacets } from './discussion-facets';
+import { ForumView } from './forum-view';
+import { HumanTimePipe } from '../i18n/human-time.pipe';
+import { UserList } from '../platform/api/models';
+import { StatusCard } from '../posts/status-card/status-card';
+import { ForumFacets } from './forum-facets';
+import { ForumMembers } from './forum-members';
+import { useForumRails } from './forum-rails';
+
+// i18n forum.title: Forum
+// i18n forum.help: How Forum works
+// i18n forum.intro.talk: Conversations in your feed, traced back to where they started.
+// i18n forum.intro.asked: Discussions that start with a question.
+// i18n forum.intro.friends: Discussions started by people you follow.
+// i18n forum.intro.mine: Discussions you started.
+// i18n forum.intro.joined: Discussions you replied to.
+// i18n forum.source.label: Look in
+// i18n forum.source.home: Home timeline
+// i18n forum.source.me: My posts and mentions
+// i18n forum.source.tag: A hashtag
+// i18n forum.source.list: List: {{title}}
+// i18n forum.source.tagLabel: Hashtag
+// i18n forum.source.scan: Scan
+// i18n forum.sort.label: Sort
+// i18n forum.sort.recent: Recent
+// i18n forum.sort.popular: Popular
+// i18n forum.progress: {{posts}} posts read · {{discussions}} discussions · {{calls}} of {{allowance}} calls
+// i18n forum.elsewhereOne: {{calls}} more on 1 other server
+// i18n forum.elsewhereOther: {{calls}} more on {{servers}} other servers
+// i18n forum.scanning: Looking for discussions…
+// i18n forum.stop: Stop
+// i18n forum.foundOne: 1 discussion found.
+// i18n forum.foundOther: {{count}} discussions found.
+// i18n forum.deeper: Scan deeper (+{{count}} calls)
+// i18n forum.deeperTitle: Spend up to {{count}} more calls on this feed. A scan stops at {{max}}.
+// i18n forum.state.stopped: Stopped. Showing what was found so far.
+// i18n forum.state.spent: Calls used up for now.
+// i18n forum.state.ceiling: This scan has used its {{max}} calls.
+// i18n forum.state.exhausted: Nothing more to find in this feed.
+// i18n forum.state.rateLimited: Your server asked to slow down. Showing what was found so far.
+// i18n forum.state.failed: Couldn't read this feed.
+// i18n forum.resort: Sort the list again
+// i18n forum.empty.title: No discussions here yet
+// i18n forum.empty.description: A discussion needs at least two people. Scanning deeper reads more of the feed.
+// i18n forum.empty.filtered: None of the discussions found so far fit this tab.
+// i18n forum.empty.faceted: None of the discussions found so far match these filters.
+// i18n forum.filters: Filters
+// i18n forum.people: People
+// i18n forum.mastodonOnly: Forum needs a Mastodon account: it follows replies across servers.
+// i18n forum.card.question: Question
+// i18n forum.card.partial: Partial thread
+// i18n forum.card.partialTitle: The start of this conversation could not be reached.
+// i18n forum.card.repliesOne: 1 reply
+// i18n forum.card.repliesOther: {{count}} replies
+// i18n forum.card.people: {{count}} people
+// i18n forum.card.friendsOne: 1 friend replied
+// i18n forum.card.friendsOther: {{count}} friends replied
+// i18n forum.card.latest: Latest {{time}}
+// i18n forum.card.open: Open discussion
+// i18n forum.card.participants: People in this discussion
+
+const SORTS: readonly ForumSort[] = ['recent', 'popular'];
+
+function asFilter(value: string | null): ForumFilter {
+  return FORUM_FILTERS.includes(value as ForumFilter) ? (value as ForumFilter) : 'talk';
+}
+
+function asSort(value: string | null): ForumSort {
+  return SORTS.includes(value as ForumSort) ? (value as ForumSort) : 'recent';
+}
+
+/**
+ * Forum mode's list: discussions found by a budgeted scan of one feed. The
+ * tabs in the mode nav are this page's filters (`?filter=`). See spec/forum.md.
+ */
+@Component({
+  selector: 'app-forum-page',
+  imports: [
+    FormsModule,
+    RouterLink,
+    TranslocoPipe,
+    MbBadge,
+    MbButton,
+    MbContentState,
+    MbControl,
+    MbField,
+    MbPageHeader,
+    HumanTimePipe,
+    StatusCard,
+    MbDisclosure,
+    ForumFacets,
+    ForumMembers,
+  ],
+  templateUrl: './forum-page.html',
+  styleUrl: './forum-page.css',
+})
+export class ForumPage {
+  protected scan = inject(ForumScan);
+  protected auth = inject(Auth);
+  private api = inject(Api);
+  private transloco = inject(TranslocoService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
+  protected readonly maxCalls = MAX_SCAN_CALLS;
+  protected readonly sorts = SORTS;
+
+  private params = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
+  protected filter = computed(() => asFilter(this.params().get('filter')));
+  protected sort = computed(() => asSort(this.params().get('sort')));
+  private source = computed(() => parseSource(this.params().get('source')));
+  private choice = computed<FacetChoice>(() => {
+    const params = this.params();
+    return Object.fromEntries(
+      FACET_KINDS.map((kind) => [kind, params.getAll(kind)]),
+    ) as unknown as FacetChoice;
+  });
+  protected faceted = computed(() => hasFacets(this.choice()));
+  private view = inject(ForumView);
+  /** The rails' contents, offered inline when the window hides the rails. */
+  protected rails = useForumRails();
+
+  /** The picker's draft, applied by Scan. */
+  protected draftKind = signal<'home' | 'tag' | string>('home');
+  protected draftTag = signal('');
+  protected lists = toSignal(this.api.lists().pipe(catchError(() => of([] as UserList[]))), {
+    initialValue: [] as UserList[],
+  });
+
+  /** Every discussion in this tab, in its ideal order. */
+  private ideal = computed(() => [...this.view.visible()].sort(compareSummaries(this.sort())));
+  /**
+   * The order on screen. Results land while the reader is looking, so rows
+   * already shown keep their place and new ones join at the end; "Sort the
+   * list again" restores the ideal order (spec/forum.md, Budget).
+   */
+  private order = signal<string[]>([]);
+  protected shown = computed(() => {
+    const byKey = new Map(this.ideal().map((summary) => [summary.discussion.key, summary]));
+    return this.order()
+      .map((key) => byKey.get(key))
+      .filter((summary): summary is DiscussionSummary => !!summary);
+  });
+  protected unsorted = computed(() => {
+    const ideal = this.ideal().map((summary) => summary.discussion.key);
+    const order = this.order();
+    return ideal.length === order.length && ideal.some((key, index) => key !== order[index]);
+  });
+
+  /** Scan deeper's choices, each capped by what the ceiling leaves; no repeats. */
+  protected deeperOptions = computed(() => [
+    ...new Set(DEEPER_STEPS.map((step) => Math.min(step, this.scan.headroom()))),
+  ]);
+
+  /** What the live region says: the scan starting, or how it ended and what it found. */
+  protected announcement = computed(() => {
+    if (this.scan.scanning()) return this.transloco.translate('forum.scanning');
+    const message = this.stateMessage();
+    if (!message) return '';
+    const count = this.scan.summaries().length;
+    return `${this.transloco.translate(message, { max: MAX_SCAN_CALLS })} ${this.transloco.translate(
+      count === 1 ? 'forum.foundOne' : 'forum.foundOther',
+      { count },
+    )}`;
+  });
+
+  protected stateMessage = computed(() => {
+    switch (this.scan.state()) {
+      case 'stopped':
+        return 'forum.state.stopped';
+      case 'spent':
+        return this.scan.headroom() > 0 ? 'forum.state.spent' : 'forum.state.ceiling';
+      case 'exhausted':
+        return 'forum.state.exhausted';
+      case 'rateLimited':
+        return 'forum.state.rateLimited';
+      case 'failed':
+        return 'forum.state.failed';
+      default:
+        return null;
+    }
+  });
+
+  constructor() {
+    // The rails sit outside the router outlet; tell them what this page shows.
+    effect(() => {
+      const filter = this.filter();
+      const choice = this.choice();
+      untracked(() => {
+        this.view.filter.set(filter);
+        this.view.choice.set(choice);
+        this.view.focus.set(null);
+      });
+    });
+    // Back from a discussion returns here: remember the query, and put the
+    // reader back where they were once the router's scroll-to-top has run.
+    effect(() => {
+      const params = this.params();
+      untracked(() => {
+        this.scan.listParams = Object.fromEntries(
+          params.keys.map((key) => [key, params.getAll(key)]),
+        );
+      });
+    });
+    const returnTo = this.scan.listScroll;
+    afterNextRender(() => {
+      if (returnTo) requestAnimationFrame(() => window.scrollTo(0, returnTo));
+    });
+    inject(DestroyRef).onDestroy(() => (this.scan.listScroll = window.scrollY));
+    // The scan outlives the page: switching tabs or coming back is free. Only
+    // a different source starts over.
+    effect(() => {
+      const source = this.source();
+      untracked(() => {
+        this.syncDraft(source);
+        const current = this.scan.source();
+        if (this.auth.lacksMastodonToken) return;
+        if (!current || sourceParam(current) !== sourceParam(source)) this.scan.start(source);
+      });
+    });
+    // Tab or sort changed: show the ideal order.
+    effect(() => {
+      this.filter();
+      this.sort();
+      this.scan.source();
+      untracked(() => this.resort());
+    });
+    // A scan step ended while the reader was still at the top: nothing they
+    // were looking at can move under them, so show the ideal order.
+    let wasScanning = false;
+    effect(() => {
+      const scanning = this.scan.scanning();
+      untracked(() => {
+        if (wasScanning && !scanning && window.scrollY === 0) this.resort();
+        wasScanning = scanning;
+      });
+    });
+    // New results: keep what is shown in place, append the rest.
+    effect(() => {
+      const ideal = this.ideal().map((summary) => summary.discussion.key);
+      untracked(() => {
+        const present = new Set(ideal);
+        const kept = this.order().filter((key) => present.has(key));
+        const keptSet = new Set(kept);
+        this.order.set([...kept, ...ideal.filter((key) => !keptSet.has(key))]);
+      });
+    });
+  }
+
+  protected resort(): void {
+    this.order.set(this.ideal().map((summary) => summary.discussion.key));
+  }
+
+  private syncDraft(source: ForumSource): void {
+    if (source.kind === 'tag') {
+      this.draftKind.set('tag');
+      this.draftTag.set(source.name);
+    } else {
+      this.draftKind.set(sourceParam(source));
+    }
+  }
+
+  protected applySource(): void {
+    const kind = this.draftKind();
+    const tag = this.draftTag().trim().replace(/^#/, '');
+    const source: ForumSource =
+      kind === 'tag' && tag
+        ? { kind: 'tag', name: tag }
+        : parseSource(kind === 'tag' ? 'home' : kind);
+    const param = sourceParam(source);
+    if (
+      param === this.params().get('source') ||
+      (!this.params().get('source') && param === 'home')
+    ) {
+      // Same source asked for again: a fresh scan, as the button promises.
+      this.scan.start(source);
+      return;
+    }
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { source: param === 'home' ? null : param },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  protected setSort(sort: ForumSort): void {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { sort: sort === 'recent' ? null : sort },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  /** Up to five faces, people I follow first. */
+  protected faces(summary: DiscussionSummary): Participant[] {
+    const following = this.scan.following();
+    return [...summary.participants]
+      .sort(
+        (left, right) =>
+          Number(following.has(personKey(right.account))) -
+          Number(following.has(personKey(left.account))),
+      )
+      .slice(0, 5);
+  }
+}

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { OpenRouterChat } from '../providers/openrouter/openrouter-chat';
-import { TranslationUsage } from '../translation-usage';
+import { OpenRouterChat } from '../connections/openrouter/openrouter-chat';
+import { TranslationUsage } from './translation-usage';
 import { AiBatchTranslator, BATCH_MAX_ITEMS, batchPrompt, parseBatchReply } from './ai-batch';
 
 describe('AiBatchTranslator', () => {

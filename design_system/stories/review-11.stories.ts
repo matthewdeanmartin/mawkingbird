@@ -1,4 +1,4 @@
-import { ReaderToolbar } from "../../ui/src/app/reader-toolbar/reader-toolbar";
+import { ReaderToolbar } from "../../ui/src/app/reading/reader-toolbar/reader-toolbar";
 import {
   Component,
   Injectable,
@@ -22,12 +22,12 @@ import {
   withInterceptors,
   HttpResponse,
 } from "../../ui/src/app/testing/storybook-http";
-import { StatusCard } from "../../ui/src/app/status-card/status-card";
-import { Status } from "../../ui/src/app/models";
-import { Auth } from "../../ui/src/app/auth";
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
-import { FeatureFlags } from "../../ui/src/app/feature-flags";
-import { StatusActions } from "../../ui/src/app/providers/status-actions";
+import { StatusCard } from "../../ui/src/app/posts/status-card/status-card";
+import { Status } from "../../ui/src/app/platform/api/models";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
+import { FeatureFlags } from "../../ui/src/app/platform/build/feature-flags";
+import { StatusActions } from "../../ui/src/app/connections/status-actions";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 import {
   MbToolbar,

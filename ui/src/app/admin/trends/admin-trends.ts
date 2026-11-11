@@ -3,8 +3,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { AdminApi, AdminLinkPublisher, AdminTrendLink } from '../admin-api';
-import { Status, TrendingTag } from '../../models';
-import { StatusCard } from '../../status-card/status-card';
+import { Status, TrendingTag } from '../../platform/api/models';
+import { StatusCard } from '../../posts/status-card/status-card';
 
 // i18n adminTrends.hashtags: Trending hashtags
 // i18n adminTrends.emptyTags: No trending tags.

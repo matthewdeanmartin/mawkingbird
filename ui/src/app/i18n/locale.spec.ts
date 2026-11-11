@@ -3,7 +3,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@jsverse/transloco';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ClientPrefs } from '../client-prefs';
+import { ClientPrefs } from '../platform/storage/client-prefs';
 import {
   FALLBACK_LOCALE,
   negotiateLocale,

@@ -52,7 +52,7 @@ it is shared mutable state that outlives the file that touched it.
 
 Two specs replaced `window.location` and never put it back:
 
-- `pages/login/login.spec.ts` swapped in `{ set href(v) {…} }` to observe the
+- `accounts/sign-in/login/login.spec.ts` swapped in `{ set href(v) {…} }` to observe the
   OAuth redirect without navigating. That object has no `origin`.
 - `update-recovery.spec.ts` used `{ ...window.location, reload: spy }` to stop a
   real reload. The spread copies **nothing** (see the jsdom trap below), so that

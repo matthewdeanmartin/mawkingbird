@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Overwrite ui/src/app/build-info.ts with real build metadata. CI runs this
+// Overwrite ui/src/app/platform/build/build-info.ts with real build metadata. CI runs this
 // right before building (see .github/workflows/mockingbird-pages.yml); it is
 // deliberately not wired into any npm script so local builds keep the
 // checked-in placeholder and working trees stay clean.
@@ -20,7 +20,15 @@ const info = {
   runUrl: runId ? `${server}/${repo}/actions/runs/${runId}` : null,
 };
 
-const target = join(dirname(fileURLToPath(import.meta.url)), '..', 'src', 'app', 'build-info.ts');
+const target = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '..',
+  'src',
+  'app',
+  'platform',
+  'build',
+  'build-info.ts',
+);
 writeFileSync(
   target,
   `// Stamped by ui/scripts/gen-build-info.mjs — build artifact, do not commit.

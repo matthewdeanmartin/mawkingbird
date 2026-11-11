@@ -1,0 +1,196 @@
+import { accountProfilePath } from '../../accounts/account-route';
+import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { StarterPackTextPipe } from '../starter-pack-text';
+import { firstValueFrom, Subscription, from, concatMap, catchError, of, finalize } from 'rxjs';
+import { FeedAnalytics } from '../../feeds/feed-analytics/feed-analytics';
+import { FeedSource } from '../../feeds/feed-sample';
+import { StatusCard } from '../../posts/status-card/status-card';
+import { FollowButton } from '../../accounts/follow-button/follow-button';
+import { Api } from '../../platform/api/api';
+import { Auth } from '../../platform/session/auth';
+import { ImportFollows } from '../../accounts/import-follows';
+import { Account, Status } from '../../platform/api/models';
+import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
+import { anonymousAccountRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
+import { starterKit, StarterAccount, starterKitText } from '../starter-collection';
+import { UiLocale } from '../../i18n/locale';
+
+// i18n starterCollection.heading: A timeline in one click
+// i18n starterCollection.followingProgress: Following… {{completed}}/{{total}}
+// i18n starterCollection.followed.one: Followed {{count}} account
+// i18n starterCollection.followed.other: Followed {{count}} accounts
+// i18n starterCollection.followAll: Follow all {{count}}
+// i18n starterCollection.membersAria: {{title}} accounts
+// i18n starterCollection.opening: Opening…
+// i18n starterCollection.lookingUp: Looking up…
+// i18n starterCollection.followingRow: Following…
+// i18n starterCollection.followingDone: Following ✓
+// i18n starterCollection.notFound: Not found
+// i18n starterCollection.couldNotFollow: Could not follow
+// i18n starterCollection.tabs.members: Members
+// i18n starterCollection.tabs.posts: Posts
+// i18n starterCollection.tabs.analytics: Analytics
+// i18n starterCollection.posts.more: Load more posts
+// i18n starterCollection.posts.loading: Loading posts…
+// i18n starterCollection.posts.empty: No public posts found in this sample.
+// i18n starterCollection.posts.errors: Some accounts could not be reached.
+// i18n starterCollection.findFriends: Find friends another way
+// i18n starterCollection.unavailable: This starter kit is no longer available. Browse the current kits to find people to follow.
+// i18n starterCollection.browse: Browse starter kits
+@Component({
+  selector: 'app-starter-collection',
+  imports: [RouterLink, StarterPackTextPipe, FeedAnalytics, StatusCard, FollowButton],
+  templateUrl: './starter-collection.html',
+  styleUrl: './starter-collection.css',
+})
+export class StarterCollection implements OnInit, OnDestroy {
+  protected importer = inject(ImportFollows);
+  private api = inject(Api);
+  private auth = inject(Auth);
+  private anonymousPublic = inject(AnonymousPublicApi);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  protected kit = starterKit(this.route.snapshot.paramMap.get('slug') ?? 'starter');
+  protected copyLanguage =
+    this.kit?.lang ??
+    /^catalog-([a-z]{2,3}(?:-[A-Z][a-z]{3})?)-/.exec(
+      this.route.snapshot.paramMap.get('slug') ?? '',
+    )?.[1];
+  protected accounts = this.kit?.accounts ?? [];
+  private locale = inject(UiLocale);
+  protected text = computed(() =>
+    this.kit ? starterKitText(this.kit, this.locale.active()) : { title: '', blurb: '' },
+  );
+  protected opening = signal<string | null>(null);
+  protected readonly view = signal<'members' | 'posts' | 'analytics'>('members');
+  protected readonly posts = signal<Status[]>([]);
+  protected readonly postsLoading = signal(false);
+  protected readonly postsError = signal(false);
+  protected readonly sampled = signal(0);
+  private sampleRequest?: Subscription;
+  protected readonly feedSource = computed<FeedSource>(() => ({
+    type: 'starter pack',
+    query: this.text().title,
+    posts: this.posts(),
+  }));
+
+  setView(view: 'members' | 'posts' | 'analytics'): void {
+    this.view.set(view);
+    if (view !== 'members' && this.sampled() === 0) this.loadPosts();
+  }
+
+  loadPosts(): void {
+    if (this.postsLoading() || this.sampled() >= this.accounts.length) return;
+    const batch = this.accounts.slice(this.sampled(), this.sampled() + 5);
+    this.sampled.update((count) => count + batch.length);
+    this.postsLoading.set(true);
+    this.postsError.set(false);
+    this.sampleRequest = from(batch)
+      .pipe(
+        concatMap((item) =>
+          this.anonymousPublic
+            .getAccountStatuses(
+              { server: this.serverFor(item.handle), id: item.account.id },
+              { limit: 3 },
+            )
+            .pipe(
+              catchError(() => {
+                this.postsError.set(true);
+                return of([] as Status[]);
+              }),
+            ),
+        ),
+        finalize(() => this.postsLoading.set(false)),
+      )
+      .subscribe((rows) => {
+        this.posts.update((posts) =>
+          [...new Map([...posts, ...rows].map((post) => [post.id, post])).values()].sort(
+            (a, b) => Date.parse(b.created_at) - Date.parse(a.created_at),
+          ),
+        );
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.sampleRequest?.unsubscribe();
+  }
+  protected completed = computed(
+    () =>
+      this.importer
+        .rows()
+        .filter((row) => !['pending', 'resolving', 'following'].includes(row.status)).length,
+  );
+  protected followed = computed(
+    () => this.importer.rows().filter((row) => row.status === 'followed').length,
+  );
+
+  ngOnInit(): void {
+    this.importer.reset();
+    if (this.auth.isAnonymous) {
+      this.importer.loadResolved(this.accounts);
+    } else {
+      this.importer.load(this.accounts.map((account) => account.handle));
+    }
+  }
+
+  followAll(): void {
+    void this.importer.start();
+  }
+
+  status(handle: string): string {
+    return this.importer.rows().find((row) => row.handle === handle)?.status ?? 'pending';
+  }
+
+  async openAccount(item: StarterAccount): Promise<void> {
+    if (this.opening()) return;
+    this.opening.set(item.handle);
+    try {
+      const resolved = this.importer.rows().find((row) => row.handle === item.handle)?.account;
+      const account =
+        resolved ?? (this.auth.isAnonymous ? item.account : await this.resolveAccount(item.handle));
+      if (!account) return;
+      if (this.auth.isAnonymous) {
+        const server = this.serverFor(item.handle);
+        await this.router.navigate([
+          '/accounts',
+          anonymousAccountRouteRef({
+            server,
+            id: account.id,
+            ...(account.url ? { originalUrl: account.url } : {}),
+          }),
+        ]);
+      } else {
+        await this.router.navigate(accountProfilePath(account));
+      }
+    } catch {
+      // Leave the row usable so a transient lookup failure can be retried.
+    } finally {
+      this.opening.set(null);
+    }
+  }
+
+  private async resolveAccount(handle: string): Promise<Account | null> {
+    const username = handle.split('@')[0];
+    const results = this.auth.isAnonymous
+      ? await firstValueFrom(
+          this.anonymousPublic.search(this.serverFor(handle), username, 'accounts'),
+        )
+      : await firstValueFrom(this.api.search(handle, 'accounts', { resolve: true, limit: 5 }));
+    const normalized = handle.toLowerCase();
+    return (
+      results.accounts.find(
+        (account) =>
+          account.acct.toLowerCase() === normalized ||
+          account.username.toLowerCase() === username.toLowerCase(),
+      ) ??
+      results.accounts[0] ??
+      null
+    );
+  }
+
+  private serverFor(handle: string): string {
+    const host = handle.split('@').at(-1);
+    return `https://${host}`;
+  }
+}

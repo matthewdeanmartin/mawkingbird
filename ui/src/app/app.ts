@@ -1,16 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { AnalyticsTracker } from './analytics-tracker';
-import { ClientPrefs } from './client-prefs';
-import { FailWhale } from './fail-whale/fail-whale';
-import { InstanceStatus } from './instance-status';
+import { AnalyticsTracker } from './platform/diagnostics/analytics-tracker';
+import { ClientPrefs } from './platform/storage/client-prefs';
+import { FailWhale } from './shell/fail-whale/fail-whale';
+import { InstanceStatus } from './platform/http/instance-status';
 import { RouteLog } from './observability/route-log';
-import { ServerHealth } from './server-health';
-import { UpdateOverlay } from './update-overlay/update-overlay';
-import { UpdateRecovery } from './update-recovery';
-import { ConfigSync } from './config-sync';
-import { ProfileSyncStarter } from './providers/account/profile-sync-starter';
-import { ActionTracker } from './action-tracker';
+import { ServerHealth } from './platform/http/server-health';
+import { UpdateOverlay } from './shell/update-overlay/update-overlay';
+import { UpdateRecovery } from './platform/build/update-recovery';
+import { ConfigSync } from './platform/storage/config-sync';
+import { ProfileSyncStarter } from './accounts/mawkingbird/profile-sync-starter';
+import { ActionTracker } from './platform/diagnostics/action-tracker';
 
 @Component({
   selector: 'app-root',

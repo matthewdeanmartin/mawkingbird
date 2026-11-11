@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Api } from '../api';
-import { externalFetch } from '../providers/external-fetch';
-import { Server } from '../server';
+import { Api } from '../platform/api/api';
+import { externalFetch } from '../platform/http/external-fetch';
+import { Server } from '../platform/http/server';
 import { bareLanguage, toIso6393 } from './language-codes';
 
 export const PAIR_CACHE_KEY = 'mockingbird_translation_pairs_cache';

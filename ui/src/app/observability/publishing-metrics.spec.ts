@@ -2,11 +2,11 @@ import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { DiagnosticLog } from '../diagnostic-log';
+import { DiagnosticLog } from '../platform/diagnostics/diagnostic-log';
 import { metricsInterceptor } from './metrics.interceptor';
 import { publishingFetch, PublishingMetrics } from './publishing-metrics';
 import { ApiMetrics } from './api-metrics';
-import { CorsProxySettings } from '../providers/cors-proxy/cors-proxy-settings';
+import { CorsProxySettings } from '../connections/cors-proxy/cors-proxy-settings';
 import { MawkingbirdMetrics } from './mawkingbird-metrics';
 
 describe('Publishing request diagnostics', () => {

@@ -1,4 +1,4 @@
-import { accountProfilePath } from '../../account-route';
+import { accountProfilePath } from '../../accounts/account-route';
 import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +6,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { AdminApi } from '../admin-api';
-import { AdminReport } from '../../models';
+import { AdminReport } from '../../platform/api/models';
 
 // i18n adminReports.tabs.open: Open
 // i18n adminReports.tabs.resolved: Resolved

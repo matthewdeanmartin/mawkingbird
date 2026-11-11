@@ -18,13 +18,13 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { Observable } from "rxjs";
-import { Api } from "../../ui/src/app/api";
-import { Auth } from "../../ui/src/app/auth";
-import { Terminology } from "../../ui/src/app/terminology";
-import { AnonymousPublicApi } from "../../ui/src/app/providers/anonymous/anonymous-public-api";
-import { AccountListDialog } from "../../ui/src/app/account-list-dialog/account-list-dialog";
-import { HistoryDialog } from "../../ui/src/app/history-dialog/history-dialog";
-import { SignInPrompt } from "../../ui/src/app/sign-in-prompt/sign-in-prompt";
+import { Api } from "../../ui/src/app/platform/api/api";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { Terminology } from "../../ui/src/app/i18n/terminology";
+import { AnonymousPublicApi } from "../../ui/src/app/accounts/anonymous/anonymous-public-api";
+import { AccountListDialog } from "../../ui/src/app/posts/account-list-dialog/account-list-dialog";
+import { HistoryDialog } from "../../ui/src/app/posts/history-dialog/history-dialog";
+import { SignInPrompt } from "../../ui/src/app/posts/sign-in-prompt/sign-in-prompt";
 import { MbDialog } from "../../ui/src/app/design-system/dialog/dialog";
 import { MbButton } from "../../ui/src/app/design-system/button/button";
 import {

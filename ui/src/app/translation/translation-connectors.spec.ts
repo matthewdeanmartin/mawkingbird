@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { portableKeys } from '../portable-config';
-import { classifyStorageKey } from '../storage-registry';
+import { portableKeys } from '../platform/storage/portable-config';
+import { classifyStorageKey } from '../platform/storage/storage-registry';
 import {
   DEFAULT_MYMEMORY_HARD_LIMIT,
   MYMEMORY_EMAIL_DAILY_CHARS,
   TranslationUsage,
-} from '../translation-usage';
+} from './translation-usage';
 import { BrowserTranslator } from './browser-translator';
 import { APERTIUM_KEY, MYMEMORY_KEY, TranslationConnectors } from './translation-connectors';
 

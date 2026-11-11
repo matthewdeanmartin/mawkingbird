@@ -3,7 +3,7 @@
   "filesScanned": 169,
   "findings": [
     {
-      "file": "ui/src/app/account-analytics/account-analytics.css",
+      "file": "ui/src/app/accounts/account-analytics/account-analytics.css",
       "line": 49,
       "column": 10,
       "rule": "color-no-hex",
@@ -11,7 +11,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/account-analytics/account-analytics.css",
+      "file": "ui/src/app/accounts/account-analytics/account-analytics.css",
       "line": 53,
       "column": 15,
       "rule": "color-no-hex",
@@ -19,7 +19,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/account-analytics/account-analytics.css",
+      "file": "ui/src/app/accounts/account-analytics/account-analytics.css",
       "line": 57,
       "column": 15,
       "rule": "color-no-hex",
@@ -27,7 +27,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/account-analytics/account-analytics.css",
+      "file": "ui/src/app/accounts/account-analytics/account-analytics.css",
       "line": 61,
       "column": 15,
       "rule": "color-no-hex",
@@ -35,7 +35,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/account-analytics/account-analytics.css",
+      "file": "ui/src/app/accounts/account-analytics/account-analytics.css",
       "line": 75,
       "column": 10,
       "rule": "color-no-hex",
@@ -43,7 +43,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/account-analytics/account-analytics.css",
+      "file": "ui/src/app/accounts/account-analytics/account-analytics.css",
       "line": 79,
       "column": 10,
       "rule": "color-no-hex",
@@ -51,7 +51,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/account-list-dialog/account-list-dialog.css",
+      "file": "ui/src/app/posts/account-list-dialog/account-list-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -291,7 +291,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bookmark-provider-dialog/bookmark-provider-dialog.css",
+      "file": "ui/src/app/posts/bookmark-provider-dialog/bookmark-provider-dialog.css",
       "line": 8,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -299,7 +299,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/bookmark-provider-dialog/bookmark-provider-dialog.css",
+      "file": "ui/src/app/posts/bookmark-provider-dialog/bookmark-provider-dialog.css",
       "line": 18,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -307,7 +307,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/bug-report-dialog/bug-report-dialog.css",
+      "file": "ui/src/app/shell/bug-report-dialog/bug-report-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -315,7 +315,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.css",
+      "file": "ui/src/app/accounts/bulk-actions-dialog/bulk-actions-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -323,7 +323,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.css",
+      "file": "ui/src/app/accounts/bulk-actions-dialog/bulk-actions-dialog.css",
       "line": 64,
       "column": 10,
       "rule": "color-no-hex",
@@ -331,7 +331,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.css",
+      "file": "ui/src/app/accounts/bulk-actions-dialog/bulk-actions-dialog.css",
       "line": 69,
       "column": 10,
       "rule": "color-no-hex",
@@ -339,7 +339,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.css",
+      "file": "ui/src/app/accounts/bulk-actions-dialog/bulk-actions-dialog.css",
       "line": 82,
       "column": 15,
       "rule": "color-no-hex",
@@ -347,7 +347,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.css",
+      "file": "ui/src/app/accounts/bulk-actions-dialog/bulk-actions-dialog.css",
       "line": 83,
       "column": 17,
       "rule": "color-no-hex",
@@ -355,7 +355,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.css",
+      "file": "ui/src/app/accounts/bulk-actions-dialog/bulk-actions-dialog.css",
       "line": 84,
       "column": 10,
       "rule": "color-no-hex",
@@ -363,7 +363,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-actions-dialog/bulk-actions-dialog.css",
+      "file": "ui/src/app/accounts/bulk-actions-dialog/bulk-actions-dialog.css",
       "line": 88,
       "column": 15,
       "rule": "color-no-hex",
@@ -371,7 +371,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-add-dialog/bulk-add-dialog.css",
+      "file": "ui/src/app/feeds/lists/bulk-add-dialog/bulk-add-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -379,7 +379,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/bulk-add-dialog/bulk-add-dialog.css",
+      "file": "ui/src/app/feeds/lists/bulk-add-dialog/bulk-add-dialog.css",
       "line": 79,
       "column": 10,
       "rule": "color-no-hex",
@@ -387,7 +387,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-add-dialog/bulk-add-dialog.css",
+      "file": "ui/src/app/feeds/lists/bulk-add-dialog/bulk-add-dialog.css",
       "line": 84,
       "column": 10,
       "rule": "color-no-hex",
@@ -395,7 +395,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-progress/bulk-progress.css",
+      "file": "ui/src/app/accounts/bulk-progress/bulk-progress.css",
       "line": 12,
       "column": 17,
       "rule": "color-no-hex",
@@ -403,7 +403,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-progress/bulk-progress.css",
+      "file": "ui/src/app/accounts/bulk-progress/bulk-progress.css",
       "line": 42,
       "column": 15,
       "rule": "color-no-hex",
@@ -411,7 +411,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-progress/bulk-progress.css",
+      "file": "ui/src/app/accounts/bulk-progress/bulk-progress.css",
       "line": 82,
       "column": 10,
       "rule": "color-no-hex",
@@ -419,7 +419,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/bulk-progress/bulk-progress.css",
+      "file": "ui/src/app/accounts/bulk-progress/bulk-progress.css",
       "line": 87,
       "column": 10,
       "rule": "color-no-hex",
@@ -427,7 +427,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 8,
       "column": 37,
       "rule": "color-no-hex",
@@ -435,7 +435,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 11,
       "column": 34,
       "rule": "function-disallowed-list",
@@ -443,7 +443,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 164,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -451,7 +451,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 296,
       "column": 31,
       "rule": "color-no-hex",
@@ -459,7 +459,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 297,
       "column": 24,
       "rule": "color-no-hex",
@@ -467,7 +467,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 354,
       "column": 21,
       "rule": "color-no-hex",
@@ -475,7 +475,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 357,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -483,7 +483,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 358,
       "column": 10,
       "rule": "color-no-hex",
@@ -491,7 +491,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 417,
       "column": 21,
       "rule": "color-no-hex",
@@ -499,7 +499,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 419,
       "column": 10,
       "rule": "color-no-hex",
@@ -507,7 +507,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 508,
       "column": 10,
       "rule": "color-no-hex",
@@ -515,7 +515,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/compose.css",
+      "file": "ui/src/app/publishing/compose/compose.css",
       "line": 605,
       "column": 31,
       "rule": "color-no-hex",
@@ -523,7 +523,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/tag-helper-dialog/tag-helper-dialog.css",
+      "file": "ui/src/app/publishing/compose/tag-helper-dialog/tag-helper-dialog.css",
       "line": 8,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -531,7 +531,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/compose/tag-helper-dialog/tag-helper-dialog.css",
+      "file": "ui/src/app/publishing/compose/tag-helper-dialog/tag-helper-dialog.css",
       "line": 26,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -539,7 +539,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/compose/tag-helper-dialog/tag-helper-dialog.css",
+      "file": "ui/src/app/publishing/compose/tag-helper-dialog/tag-helper-dialog.css",
       "line": 51,
       "column": 10,
       "rule": "color-no-hex",
@@ -547,7 +547,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/compose/translate-dialog/translate-dialog.css",
+      "file": "ui/src/app/publishing/compose/translate-dialog/translate-dialog.css",
       "line": 10,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -555,7 +555,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/compose/translate-dialog/translate-dialog.css",
+      "file": "ui/src/app/publishing/compose/translate-dialog/translate-dialog.css",
       "line": 28,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -563,7 +563,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/compose/translate-dialog/translate-dialog.css",
+      "file": "ui/src/app/publishing/compose/translate-dialog/translate-dialog.css",
       "line": 78,
       "column": 10,
       "rule": "color-no-hex",
@@ -571,7 +571,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/confirm-dialog/confirm-dialog.css",
+      "file": "ui/src/app/shell/confirm-dialog/confirm-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -579,7 +579,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/confirm-dialog/confirm-dialog.css",
+      "file": "ui/src/app/shell/confirm-dialog/confirm-dialog.css",
       "line": 21,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -587,7 +587,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/confirm-dialog/confirm-dialog.css",
+      "file": "ui/src/app/shell/confirm-dialog/confirm-dialog.css",
       "line": 53,
       "column": 10,
       "rule": "color-no-hex",
@@ -595,7 +595,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/confirm-dialog/confirm-dialog.css",
+      "file": "ui/src/app/shell/confirm-dialog/confirm-dialog.css",
       "line": 54,
       "column": 17,
       "rule": "color-no-hex",
@@ -603,7 +603,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/effective-audience-dialog/effective-audience-dialog.css",
+      "file": "ui/src/app/accounts/effective-audience-dialog/effective-audience-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -611,7 +611,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/effective-audience-dialog/effective-audience-dialog.css",
+      "file": "ui/src/app/accounts/effective-audience-dialog/effective-audience-dialog.css",
       "line": 111,
       "column": 29,
       "rule": "color-no-hex",
@@ -619,7 +619,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/effective-audience-dialog/effective-audience-dialog.css",
+      "file": "ui/src/app/accounts/effective-audience-dialog/effective-audience-dialog.css",
       "line": 116,
       "column": 15,
       "rule": "color-no-hex",
@@ -627,7 +627,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/effective-audience-dialog/effective-audience-dialog.css",
+      "file": "ui/src/app/accounts/effective-audience-dialog/effective-audience-dialog.css",
       "line": 187,
       "column": 10,
       "rule": "color-no-hex",
@@ -635,7 +635,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/fail-whale/fail-whale.css",
+      "file": "ui/src/app/shell/fail-whale/fail-whale.css",
       "line": 12,
       "column": 25,
       "rule": "color-no-hex",
@@ -643,7 +643,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/fail-whale/fail-whale.css",
+      "file": "ui/src/app/shell/fail-whale/fail-whale.css",
       "line": 13,
       "column": 22,
       "rule": "color-no-hex",
@@ -651,7 +651,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/feed-analytics/feed-analytics.css",
+      "file": "ui/src/app/feeds/feed-analytics/feed-analytics.css",
       "line": 41,
       "column": 10,
       "rule": "color-no-hex",
@@ -659,7 +659,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/feed-language-picker/feed-language-picker.css",
+      "file": "ui/src/app/feeds/feed-language-picker/feed-language-picker.css",
       "line": 43,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -667,7 +667,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/feed-members/feed-members.css",
+      "file": "ui/src/app/feeds/feed-members/feed-members.css",
       "line": 41,
       "column": 10,
       "rule": "color-no-hex",
@@ -675,7 +675,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/first-run/first-run-modal.css",
+      "file": "ui/src/app/accounts/first-run/first-run-modal.css",
       "line": 17,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -683,7 +683,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/first-run/first-run-modal.css",
+      "file": "ui/src/app/accounts/first-run/first-run-modal.css",
       "line": 28,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -691,7 +691,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/first-run/first-run-modal.css",
+      "file": "ui/src/app/accounts/first-run/first-run-modal.css",
       "line": 43,
       "column": 23,
       "rule": "color-no-hex",
@@ -699,7 +699,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/first-run/first-run-modal.css",
+      "file": "ui/src/app/accounts/first-run/first-run-modal.css",
       "line": 62,
       "column": 31,
       "rule": "color-no-hex",
@@ -707,7 +707,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/first-run/first-run-modal.css",
+      "file": "ui/src/app/accounts/first-run/first-run-modal.css",
       "line": 63,
       "column": 29,
       "rule": "color-no-hex",
@@ -715,7 +715,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/first-run/first-run-modal.css",
+      "file": "ui/src/app/accounts/first-run/first-run-modal.css",
       "line": 64,
       "column": 10,
       "rule": "color-no-hex",
@@ -723,7 +723,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/first-run/first-run-modal.css",
+      "file": "ui/src/app/accounts/first-run/first-run-modal.css",
       "line": 104,
       "column": 23,
       "rule": "color-no-hex",
@@ -731,7 +731,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/first-run/first-run-modal.css",
+      "file": "ui/src/app/accounts/first-run/first-run-modal.css",
       "line": 111,
       "column": 23,
       "rule": "color-no-hex",
@@ -739,7 +739,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/friend-feeds-dialog/friend-feeds-dialog.css",
+      "file": "ui/src/app/reading/friend-feeds-dialog/friend-feeds-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -747,7 +747,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/friend-feeds-dialog/friend-feeds-dialog.css",
+      "file": "ui/src/app/reading/friend-feeds-dialog/friend-feeds-dialog.css",
       "line": 77,
       "column": 29,
       "rule": "color-no-hex",
@@ -755,7 +755,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/history-dialog/history-dialog.css",
+      "file": "ui/src/app/posts/history-dialog/history-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -763,7 +763,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/leave-dialog/leave-dialog.css",
+      "file": "ui/src/app/shell/leave-dialog/leave-dialog.css",
       "line": 6,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -771,7 +771,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/leave-dialog/leave-dialog.css",
+      "file": "ui/src/app/shell/leave-dialog/leave-dialog.css",
       "line": 23,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -779,7 +779,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/leave-dialog/leave-dialog.css",
+      "file": "ui/src/app/shell/leave-dialog/leave-dialog.css",
       "line": 78,
       "column": 31,
       "rule": "color-no-hex",
@@ -787,7 +787,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/leave-dialog/leave-dialog.css",
+      "file": "ui/src/app/shell/leave-dialog/leave-dialog.css",
       "line": 83,
       "column": 10,
       "rule": "color-no-hex",
@@ -795,7 +795,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/leave-dialog/leave-dialog.css",
+      "file": "ui/src/app/shell/leave-dialog/leave-dialog.css",
       "line": 95,
       "column": 10,
       "rule": "color-no-hex",
@@ -803,7 +803,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 9,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -811,7 +811,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 29,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -819,7 +819,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 33,
       "column": 10,
       "rule": "color-no-hex",
@@ -827,7 +827,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 40,
       "column": 10,
       "rule": "color-no-hex",
@@ -835,7 +835,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 49,
       "column": 21,
       "rule": "color-no-hex",
@@ -843,7 +843,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 50,
       "column": 15,
       "rule": "color-no-hex",
@@ -851,7 +851,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 51,
       "column": 10,
       "rule": "color-no-hex",
@@ -859,7 +859,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 61,
       "column": 15,
       "rule": "color-no-hex",
@@ -867,7 +867,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 65,
       "column": 22,
       "rule": "color-no-hex",
@@ -875,7 +875,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 71,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -883,7 +883,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 72,
       "column": 10,
       "rule": "color-no-hex",
@@ -891,7 +891,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 84,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -899,7 +899,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/lightbox/lightbox.css",
+      "file": "ui/src/app/posts/lightbox/lightbox.css",
       "line": 116,
       "column": 17,
       "rule": "function-disallowed-list",
@@ -907,7 +907,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/list-dialog/list-dialog.css",
+      "file": "ui/src/app/feeds/lists/list-dialog/list-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -915,7 +915,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/list-dialog/list-dialog.css",
+      "file": "ui/src/app/feeds/lists/list-dialog/list-dialog.css",
       "line": 50,
       "column": 28,
       "rule": "color-no-hex",
@@ -923,7 +923,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/list-dialog/list-dialog.css",
+      "file": "ui/src/app/feeds/lists/list-dialog/list-dialog.css",
       "line": 51,
       "column": 10,
       "rule": "color-no-hex",
@@ -931,7 +931,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/list-dialog/list-dialog.css",
+      "file": "ui/src/app/feeds/lists/list-dialog/list-dialog.css",
       "line": 99,
       "column": 10,
       "rule": "color-no-hex",
@@ -939,7 +939,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lists/people-lists-panel.css",
+      "file": "ui/src/app/feeds/lists/people-lists-panel.css",
       "line": 42,
       "column": 24,
       "rule": "color-no-hex",
@@ -947,7 +947,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/lists/people-lists-panel.css",
+      "file": "ui/src/app/feeds/lists/people-lists-panel.css",
       "line": 47,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -955,7 +955,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/onboarding/onboarding-card.css",
+      "file": "ui/src/app/accounts/onboarding/onboarding-card.css",
       "line": 23,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -963,7 +963,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/onboarding/onboarding-card.css",
+      "file": "ui/src/app/accounts/onboarding/onboarding-card.css",
       "line": 172,
       "column": 15,
       "rule": "color-no-hex",
@@ -971,7 +971,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/onboarding/onboarding-card.css",
+      "file": "ui/src/app/accounts/onboarding/onboarding-card.css",
       "line": 220,
       "column": 24,
       "rule": "color-no-hex",
@@ -979,7 +979,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/onboarding/onboarding-card.css",
+      "file": "ui/src/app/accounts/onboarding/onboarding-card.css",
       "line": 247,
       "column": 10,
       "rule": "color-no-hex",
@@ -987,7 +987,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/bluesky-oauth-callback/bluesky-oauth-callback.css",
+      "file": "ui/src/app/accounts/sign-in/bluesky-oauth-callback/bluesky-oauth-callback.css",
       "line": 23,
       "column": 28,
       "rule": "color-no-hex",
@@ -995,7 +995,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/bluesky-oauth-callback/bluesky-oauth-callback.css",
+      "file": "ui/src/app/accounts/sign-in/bluesky-oauth-callback/bluesky-oauth-callback.css",
       "line": 31,
       "column": 10,
       "rule": "color-named",
@@ -1003,7 +1003,7 @@
       "message": "Use a semantic theme token instead of a named color. transparent and currentColor remain valid. (color-named)"
     },
     {
-      "file": "ui/src/app/pages/bluesky-oauth-callback/bluesky-oauth-callback.css",
+      "file": "ui/src/app/accounts/sign-in/bluesky-oauth-callback/bluesky-oauth-callback.css",
       "line": 32,
       "column": 33,
       "rule": "color-no-hex",
@@ -1011,7 +1011,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/bookmarks/bookmarks.css",
+      "file": "ui/src/app/reading/bookmarks/bookmarks.css",
       "line": 24,
       "column": 34,
       "rule": "color-no-hex",
@@ -1019,7 +1019,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/bookmarks/bookmarks.css",
+      "file": "ui/src/app/reading/bookmarks/bookmarks.css",
       "line": 28,
       "column": 34,
       "rule": "color-no-hex",
@@ -1027,7 +1027,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/bundled-starter-kits/bundled-starter-kits.css",
+      "file": "ui/src/app/discovery/bundled-starter-kits/bundled-starter-kits.css",
       "line": 34,
       "column": 10,
       "rule": "color-no-hex",
@@ -1035,7 +1035,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/collection/collection.css",
+      "file": "ui/src/app/discovery/collection/collection.css",
       "line": 29,
       "column": 10,
       "rule": "color-no-hex",
@@ -1043,7 +1043,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/collection/collection.css",
+      "file": "ui/src/app/discovery/collection/collection.css",
       "line": 118,
       "column": 10,
       "rule": "color-no-hex",
@@ -1051,7 +1051,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 176,
       "column": 23,
       "rule": "color-no-hex",
@@ -1059,7 +1059,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 180,
       "column": 15,
       "rule": "color-no-hex",
@@ -1067,7 +1067,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 181,
       "column": 10,
       "rule": "color-no-hex",
@@ -1075,7 +1075,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 185,
       "column": 15,
       "rule": "color-no-hex",
@@ -1083,7 +1083,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 186,
       "column": 10,
       "rule": "color-no-hex",
@@ -1091,7 +1091,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 275,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -1099,7 +1099,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 309,
       "column": 49,
       "rule": "color-no-hex",
@@ -1107,7 +1107,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 309,
       "column": 58,
       "rule": "color-no-hex",
@@ -1115,7 +1115,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 309,
       "column": 72,
       "rule": "color-no-hex",
@@ -1123,7 +1123,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 309,
       "column": 86,
       "rule": "color-no-hex",
@@ -1131,7 +1131,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 310,
       "column": 10,
       "rule": "color-no-hex",
@@ -1139,7 +1139,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 312,
       "column": 28,
       "rule": "color-no-hex",
@@ -1147,7 +1147,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 434,
       "column": 25,
       "rule": "color-no-hex",
@@ -1155,7 +1155,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 535,
       "column": 15,
       "rule": "color-no-hex",
@@ -1163,7 +1163,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 536,
       "column": 10,
       "rule": "color-no-hex",
@@ -1171,7 +1171,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 592,
       "column": 21,
       "rule": "function-disallowed-list",
@@ -1179,7 +1179,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/conversations/conversations.css",
+      "file": "ui/src/app/publishing/conversations/conversations.css",
       "line": 593,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1187,7 +1187,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/drafts/drafts-page.css",
+      "file": "ui/src/app/publishing/drafts/drafts-page.css",
       "line": 49,
       "column": 10,
       "rule": "color-no-hex",
@@ -1195,7 +1195,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/drafts/drafts-page.css",
+      "file": "ui/src/app/publishing/drafts/drafts-page.css",
       "line": 136,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -1203,7 +1203,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/drafts/drafts-page.css",
+      "file": "ui/src/app/publishing/drafts/drafts-page.css",
       "line": 174,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1211,7 +1211,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/drafts/drafts-page.css",
+      "file": "ui/src/app/publishing/drafts/drafts-page.css",
       "line": 188,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -1219,7 +1219,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 12,
       "column": 23,
       "rule": "color-no-hex",
@@ -1227,7 +1227,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 36,
       "column": 54,
       "rule": "color-no-hex",
@@ -1235,7 +1235,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 37,
       "column": 10,
       "rule": "color-no-hex",
@@ -1243,7 +1243,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 63,
       "column": 23,
       "rule": "color-no-hex",
@@ -1251,7 +1251,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 89,
       "column": 23,
       "rule": "color-no-hex",
@@ -1259,7 +1259,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 96,
       "column": 29,
       "rule": "color-no-hex",
@@ -1267,7 +1267,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 135,
       "column": 23,
       "rule": "color-no-hex",
@@ -1275,7 +1275,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 162,
       "column": 28,
       "rule": "color-no-hex",
@@ -1283,7 +1283,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 226,
       "column": 28,
       "rule": "color-no-hex",
@@ -1291,7 +1291,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 262,
       "column": 10,
       "rule": "color-no-hex",
@@ -1299,7 +1299,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 284,
       "column": 10,
       "rule": "color-no-hex",
@@ -1307,7 +1307,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/explore/explore.css",
+      "file": "ui/src/app/discovery/explore/explore.css",
       "line": 295,
       "column": 23,
       "rule": "color-no-hex",
@@ -1315,7 +1315,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/feed-doctor/feed-doctor-page.css",
+      "file": "ui/src/app/feeds/feed-doctor/feed-doctor-page.css",
       "line": 47,
       "column": 10,
       "rule": "color-no-hex",
@@ -1323,7 +1323,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/home/home.css",
+      "file": "ui/src/app/feeds/home/home.css",
       "line": 33,
       "column": 10,
       "rule": "color-no-hex",
@@ -1331,7 +1331,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/home/home.css",
+      "file": "ui/src/app/feeds/home/home.css",
       "line": 123,
       "column": 23,
       "rule": "color-no-hex",
@@ -1339,7 +1339,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/home/home.css",
+      "file": "ui/src/app/feeds/home/home.css",
       "line": 136,
       "column": 23,
       "rule": "color-no-hex",
@@ -1347,7 +1347,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/home/home.css",
+      "file": "ui/src/app/feeds/home/home.css",
       "line": 176,
       "column": 10,
       "rule": "color-named",
@@ -1355,7 +1355,7 @@
       "message": "Use a semantic theme token instead of a named color. transparent and currentColor remain valid. (color-named)"
     },
     {
-      "file": "ui/src/app/pages/home/home.css",
+      "file": "ui/src/app/feeds/home/home.css",
       "line": 223,
       "column": 34,
       "rule": "function-disallowed-list",
@@ -1363,7 +1363,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/invites/invites.css",
+      "file": "ui/src/app/accounts/invites/invites.css",
       "line": 64,
       "column": 10,
       "rule": "color-no-hex",
@@ -1371,7 +1371,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/invites/invites.css",
+      "file": "ui/src/app/accounts/invites/invites.css",
       "line": 68,
       "column": 10,
       "rule": "function-disallowed-list",
@@ -1379,7 +1379,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/invites/invites.css",
+      "file": "ui/src/app/accounts/invites/invites.css",
       "line": 207,
       "column": 10,
       "rule": "color-no-hex",
@@ -1387,7 +1387,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/invites/invites.css",
+      "file": "ui/src/app/accounts/invites/invites.css",
       "line": 276,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1395,7 +1395,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/links/links-page.css",
+      "file": "ui/src/app/publishing/links/links-page.css",
       "line": 167,
       "column": 10,
       "rule": "color-no-hex",
@@ -1403,7 +1403,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/links/links-page.css",
+      "file": "ui/src/app/publishing/links/links-page.css",
       "line": 168,
       "column": 17,
       "rule": "color-no-hex",
@@ -1411,7 +1411,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/list-timeline/list-timeline.css",
+      "file": "ui/src/app/feeds/list-timeline/list-timeline.css",
       "line": 86,
       "column": 10,
       "rule": "color-no-hex",
@@ -1419,7 +1419,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/list-timeline/list-timeline.css",
+      "file": "ui/src/app/feeds/list-timeline/list-timeline.css",
       "line": 100,
       "column": 10,
       "rule": "color-no-hex",
@@ -1427,7 +1427,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/list-timeline/list-timeline.css",
+      "file": "ui/src/app/feeds/list-timeline/list-timeline.css",
       "line": 101,
       "column": 17,
       "rule": "color-no-hex",
@@ -1435,7 +1435,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/list-timeline/list-timeline.css",
+      "file": "ui/src/app/feeds/list-timeline/list-timeline.css",
       "line": 109,
       "column": 10,
       "rule": "color-no-hex",
@@ -1443,7 +1443,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/list-timeline/list-timeline.css",
+      "file": "ui/src/app/feeds/list-timeline/list-timeline.css",
       "line": 114,
       "column": 15,
       "rule": "color-no-hex",
@@ -1451,7 +1451,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/list-timeline/list-timeline.css",
+      "file": "ui/src/app/feeds/list-timeline/list-timeline.css",
       "line": 115,
       "column": 10,
       "rule": "color-no-hex",
@@ -1459,7 +1459,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/lists/lists.css",
+      "file": "ui/src/app/feeds/lists/lists.css",
       "line": 62,
       "column": 10,
       "rule": "color-no-hex",
@@ -1467,7 +1467,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/lists/lists.css",
+      "file": "ui/src/app/feeds/lists/lists.css",
       "line": 108,
       "column": 10,
       "rule": "color-no-hex",
@@ -1475,7 +1475,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/lists/lists.css",
+      "file": "ui/src/app/feeds/lists/lists.css",
       "line": 143,
       "column": 24,
       "rule": "color-no-hex",
@@ -1483,7 +1483,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/login-bluesky/login-bluesky.css",
+      "file": "ui/src/app/accounts/sign-in/login-bluesky/login-bluesky.css",
       "line": 27,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -1491,7 +1491,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/login-bluesky/login-bluesky.css",
+      "file": "ui/src/app/accounts/sign-in/login-bluesky/login-bluesky.css",
       "line": 97,
       "column": 28,
       "rule": "color-no-hex",
@@ -1499,7 +1499,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/login-bluesky/login-bluesky.css",
+      "file": "ui/src/app/accounts/sign-in/login-bluesky/login-bluesky.css",
       "line": 146,
       "column": 33,
       "rule": "color-no-hex",
@@ -1507,7 +1507,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/login-bluesky/login-bluesky.css",
+      "file": "ui/src/app/accounts/sign-in/login-bluesky/login-bluesky.css",
       "line": 148,
       "column": 10,
       "rule": "color-no-hex",
@@ -1515,7 +1515,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/login-chooser/login-chooser.css",
+      "file": "ui/src/app/accounts/sign-in/login-chooser/login-chooser.css",
       "line": 65,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -1523,7 +1523,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/login/login.css",
+      "file": "ui/src/app/accounts/sign-in/login/login.css",
       "line": 63,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -1531,7 +1531,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/login/login.css",
+      "file": "ui/src/app/accounts/sign-in/login/login.css",
       "line": 308,
       "column": 23,
       "rule": "color-no-hex",
@@ -1539,7 +1539,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/login/login.css",
+      "file": "ui/src/app/accounts/sign-in/login/login.css",
       "line": 355,
       "column": 10,
       "rule": "color-no-hex",
@@ -1547,7 +1547,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/login/login.css",
+      "file": "ui/src/app/accounts/sign-in/login/login.css",
       "line": 436,
       "column": 10,
       "rule": "color-no-hex",
@@ -1555,7 +1555,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/login/login.css",
+      "file": "ui/src/app/accounts/sign-in/login/login.css",
       "line": 449,
       "column": 10,
       "rule": "color-no-hex",
@@ -1563,7 +1563,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/login/login.css",
+      "file": "ui/src/app/accounts/sign-in/login/login.css",
       "line": 553,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -1571,7 +1571,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/message/message.css",
+      "file": "ui/src/app/publishing/message/message.css",
       "line": 16,
       "column": 23,
       "rule": "color-no-hex",
@@ -1579,7 +1579,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/message/message.css",
+      "file": "ui/src/app/publishing/message/message.css",
       "line": 26,
       "column": 23,
       "rule": "color-no-hex",
@@ -1587,7 +1587,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/message/message.css",
+      "file": "ui/src/app/publishing/message/message.css",
       "line": 30,
       "column": 24,
       "rule": "color-no-hex",
@@ -1595,7 +1595,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/notifications/notifications.css",
+      "file": "ui/src/app/feeds/notifications/notifications.css",
       "line": 19,
       "column": 24,
       "rule": "color-no-hex",
@@ -1603,7 +1603,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/notifications/notifications.css",
+      "file": "ui/src/app/feeds/notifications/notifications.css",
       "line": 20,
       "column": 48,
       "rule": "color-no-hex",
@@ -1611,7 +1611,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/notifications/notifications.css",
+      "file": "ui/src/app/feeds/notifications/notifications.css",
       "line": 26,
       "column": 48,
       "rule": "color-no-hex",
@@ -1619,7 +1619,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/notifications/notifications.css",
+      "file": "ui/src/app/feeds/notifications/notifications.css",
       "line": 82,
       "column": 24,
       "rule": "color-no-hex",
@@ -1627,7 +1627,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/diagnostics-shared.css",
+      "file": "ui/src/app/observability/diagnostics-shared.css",
       "line": 144,
       "column": 10,
       "rule": "color-no-hex",
@@ -1635,7 +1635,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/diagnostics-shared.css",
+      "file": "ui/src/app/observability/diagnostics-shared.css",
       "line": 149,
       "column": 34,
       "rule": "color-no-hex",
@@ -1643,7 +1643,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/diagnostics-shared.css",
+      "file": "ui/src/app/observability/diagnostics-shared.css",
       "line": 172,
       "column": 10,
       "rule": "color-no-hex",
@@ -1651,7 +1651,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/diagnostics-shared.css",
+      "file": "ui/src/app/observability/diagnostics-shared.css",
       "line": 173,
       "column": 17,
       "rule": "color-no-hex",
@@ -1659,7 +1659,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/diagnostics-shared.css",
+      "file": "ui/src/app/observability/diagnostics-shared.css",
       "line": 177,
       "column": 15,
       "rule": "color-no-hex",
@@ -1667,7 +1667,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/diagnostics-shared.css",
+      "file": "ui/src/app/observability/diagnostics-shared.css",
       "line": 178,
       "column": 10,
       "rule": "color-no-hex",
@@ -1675,7 +1675,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 2,
       "column": 10,
       "rule": "color-no-hex",
@@ -1683,7 +1683,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 89,
       "column": 9,
       "rule": "color-no-hex",
@@ -1691,7 +1691,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 128,
       "column": 28,
       "rule": "color-no-hex",
@@ -1699,7 +1699,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 144,
       "column": 11,
       "rule": "color-no-hex",
@@ -1707,7 +1707,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 152,
       "column": 9,
       "rule": "color-no-hex",
@@ -1715,7 +1715,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 174,
       "column": 15,
       "rule": "color-no-hex",
@@ -1723,7 +1723,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 211,
       "column": 11,
       "rule": "color-no-hex",
@@ -1731,7 +1731,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 249,
       "column": 34,
       "rule": "color-no-hex",
@@ -1739,7 +1739,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 254,
       "column": 34,
       "rule": "color-no-hex",
@@ -1747,7 +1747,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 258,
       "column": 34,
       "rule": "color-no-hex",
@@ -1755,7 +1755,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 287,
       "column": 10,
       "rule": "color-no-hex",
@@ -1763,7 +1763,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 292,
       "column": 10,
       "rule": "color-no-hex",
@@ -1771,7 +1771,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 331,
       "column": 10,
       "rule": "color-no-hex",
@@ -1779,7 +1779,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 335,
       "column": 10,
       "rule": "color-no-hex",
@@ -1787,7 +1787,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 410,
       "column": 10,
       "rule": "color-no-hex",
@@ -1795,7 +1795,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/observability/observability.css",
+      "file": "ui/src/app/observability/observability.css",
       "line": 442,
       "column": 10,
       "rule": "color-no-hex",
@@ -1803,7 +1803,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/offsite-directories/offsite-directories.css",
+      "file": "ui/src/app/discovery/offsite-directories/offsite-directories.css",
       "line": 47,
       "column": 10,
       "rule": "color-no-hex",
@@ -1811,7 +1811,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/pastes/pastes-page.css",
+      "file": "ui/src/app/publishing/pastes/pastes-page.css",
       "line": 14,
       "column": 23,
       "rule": "color-no-hex",
@@ -1819,7 +1819,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/pastes/pastes-page.css",
+      "file": "ui/src/app/publishing/pastes/pastes-page.css",
       "line": 101,
       "column": 24,
       "rule": "color-no-hex",
@@ -1827,7 +1827,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/posse/posse-page.css",
+      "file": "ui/src/app/publishing/posse/posse-page.css",
       "line": 111,
       "column": 24,
       "rule": "color-no-hex",
@@ -1835,7 +1835,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/copy-account-dialog/copy-account-dialog.css",
+      "file": "ui/src/app/accounts/profile/copy-account-dialog/copy-account-dialog.css",
       "line": 8,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1843,7 +1843,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/copy-account-dialog/copy-account-dialog.css",
+      "file": "ui/src/app/accounts/profile/copy-account-dialog/copy-account-dialog.css",
       "line": 26,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -1851,7 +1851,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/copy-account-dialog/copy-account-dialog.css",
+      "file": "ui/src/app/accounts/profile/copy-account-dialog/copy-account-dialog.css",
       "line": 67,
       "column": 10,
       "rule": "color-no-hex",
@@ -1859,7 +1859,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-media-grid.css",
+      "file": "ui/src/app/accounts/profile/media/profile-media-grid.css",
       "line": 52,
       "column": 10,
       "rule": "color-no-hex",
@@ -1867,7 +1867,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-media-grid.css",
+      "file": "ui/src/app/accounts/profile/media/profile-media-grid.css",
       "line": 53,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1875,7 +1875,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-media-grid.css",
+      "file": "ui/src/app/accounts/profile/media/profile-media-grid.css",
       "line": 64,
       "column": 10,
       "rule": "color-no-hex",
@@ -1883,7 +1883,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-media-grid.css",
+      "file": "ui/src/app/accounts/profile/media/profile-media-grid.css",
       "line": 65,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -1891,7 +1891,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 10,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1899,7 +1899,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 16,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1907,7 +1907,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 30,
       "column": 10,
       "rule": "color-no-hex",
@@ -1915,7 +1915,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 31,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1923,7 +1923,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 38,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1931,7 +1931,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 81,
       "column": 10,
       "rule": "function-disallowed-list",
@@ -1939,7 +1939,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 90,
       "column": 10,
       "rule": "color-no-hex",
@@ -1947,7 +1947,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 91,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1955,7 +1955,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 92,
       "column": 22,
       "rule": "function-disallowed-list",
@@ -1963,7 +1963,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 109,
       "column": 10,
       "rule": "color-no-hex",
@@ -1971,7 +1971,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 110,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1979,7 +1979,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 117,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -1987,7 +1987,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 135,
       "column": 10,
       "rule": "function-disallowed-list",
@@ -1995,7 +1995,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 299,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -2003,7 +2003,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 320,
       "column": 10,
       "rule": "color-no-hex",
@@ -2011,7 +2011,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/media/profile-photo-view.css",
+      "file": "ui/src/app/accounts/profile/media/profile-photo-view.css",
       "line": 332,
       "column": 10,
       "rule": "color-no-hex",
@@ -2019,7 +2019,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 107,
       "column": 34,
       "rule": "color-no-hex",
@@ -2027,7 +2027,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 136,
       "column": 10,
       "rule": "color-no-hex",
@@ -2035,7 +2035,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 261,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -2043,7 +2043,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 287,
       "column": 10,
       "rule": "color-no-hex",
@@ -2051,7 +2051,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 293,
       "column": 10,
       "rule": "color-no-hex",
@@ -2059,7 +2059,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 338,
       "column": 10,
       "rule": "color-no-hex",
@@ -2067,7 +2067,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 339,
       "column": 17,
       "rule": "color-no-hex",
@@ -2075,7 +2075,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 345,
       "column": 15,
       "rule": "color-no-hex",
@@ -2083,7 +2083,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 346,
       "column": 21,
       "rule": "color-no-hex",
@@ -2091,7 +2091,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 524,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2099,7 +2099,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 532,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -2107,7 +2107,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/profile/profile.css",
+      "file": "ui/src/app/accounts/profile/profile.css",
       "line": 658,
       "column": 10,
       "rule": "color-no-hex",
@@ -2115,7 +2115,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/read/document-search/document-search-dialog.css",
+      "file": "ui/src/app/reading/read/document-search/document-search-dialog.css",
       "line": 20,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -2123,7 +2123,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/read/library-panel/library-panel.css",
+      "file": "ui/src/app/reading/read/library-panel/library-panel.css",
       "line": 178,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -2131,7 +2131,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/read/library-panel/library-panel.css",
+      "file": "ui/src/app/reading/read/library-panel/library-panel.css",
       "line": 193,
       "column": 48,
       "rule": "color-no-hex",
@@ -2139,7 +2139,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/read/notes-rail/notes-rail.css",
+      "file": "ui/src/app/reading/read/notes-rail/notes-rail.css",
       "line": 106,
       "column": 48,
       "rule": "color-no-hex",
@@ -2147,7 +2147,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/read/read-page.css",
+      "file": "ui/src/app/reading/read/read-page.css",
       "line": 117,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -2155,7 +2155,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/read/read-toolbar/read-toolbar.css",
+      "file": "ui/src/app/reading/read/read-toolbar/read-toolbar.css",
       "line": 187,
       "column": 31,
       "rule": "color-no-hex",
@@ -2163,7 +2163,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/read/reader-core/reader-core.css",
+      "file": "ui/src/app/reading/read/reader-core/reader-core.css",
       "line": 189,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -2171,7 +2171,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/read/selection-tools/selection-tools.css",
+      "file": "ui/src/app/reading/read/selection-tools/selection-tools.css",
       "line": 25,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -2179,7 +2179,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/rss/add-feed-dialog/add-feed-dialog.css",
+      "file": "ui/src/app/reading/rss/add-feed-dialog/add-feed-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2187,7 +2187,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/rss/add-feed-dialog/add-feed-dialog.css",
+      "file": "ui/src/app/reading/rss/add-feed-dialog/add-feed-dialog.css",
       "line": 41,
       "column": 10,
       "rule": "color-no-hex",
@@ -2195,7 +2195,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/account-result-card.css",
+      "file": "ui/src/app/discovery/search/account-result-card.css",
       "line": 120,
       "column": 22,
       "rule": "color-no-hex",
@@ -2203,7 +2203,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/account-result-card.css",
+      "file": "ui/src/app/discovery/search/account-result-card.css",
       "line": 151,
       "column": 22,
       "rule": "color-no-hex",
@@ -2211,7 +2211,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/account-result-card.css",
+      "file": "ui/src/app/discovery/search/account-result-card.css",
       "line": 190,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -2219,7 +2219,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/search/account-result-card.css",
+      "file": "ui/src/app/discovery/search/account-result-card.css",
       "line": 210,
       "column": 24,
       "rule": "color-no-hex",
@@ -2227,7 +2227,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/account-result-card.css",
+      "file": "ui/src/app/discovery/search/account-result-card.css",
       "line": 226,
       "column": 31,
       "rule": "color-no-hex",
@@ -2235,7 +2235,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/account-result-card.css",
+      "file": "ui/src/app/discovery/search/account-result-card.css",
       "line": 227,
       "column": 24,
       "rule": "color-no-hex",
@@ -2243,7 +2243,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/bluesky-search-panel.css",
+      "file": "ui/src/app/discovery/search/bluesky-search-panel.css",
       "line": 190,
       "column": 24,
       "rule": "color-no-hex",
@@ -2251,7 +2251,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search-helper-dialog/search-helper-dialog.css",
+      "file": "ui/src/app/discovery/search/search-helper-dialog/search-helper-dialog.css",
       "line": 8,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2259,7 +2259,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/search/search-helper-dialog/search-helper-dialog.css",
+      "file": "ui/src/app/discovery/search/search-helper-dialog/search-helper-dialog.css",
       "line": 26,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -2267,7 +2267,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/search/search-helper-dialog/search-helper-dialog.css",
+      "file": "ui/src/app/discovery/search/search-helper-dialog/search-helper-dialog.css",
       "line": 78,
       "column": 10,
       "rule": "color-no-hex",
@@ -2275,7 +2275,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search-refine.css",
+      "file": "ui/src/app/discovery/search/search-refine.css",
       "line": 169,
       "column": 24,
       "rule": "color-no-hex",
@@ -2283,7 +2283,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search-refine.css",
+      "file": "ui/src/app/discovery/search/search-refine.css",
       "line": 210,
       "column": 23,
       "rule": "color-no-hex",
@@ -2291,7 +2291,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 151,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -2299,7 +2299,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 190,
       "column": 23,
       "rule": "color-no-hex",
@@ -2307,7 +2307,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 198,
       "column": 10,
       "rule": "color-no-hex",
@@ -2315,7 +2315,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 223,
       "column": 35,
       "rule": "color-no-hex",
@@ -2323,7 +2323,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 256,
       "column": 23,
       "rule": "color-no-hex",
@@ -2331,7 +2331,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 264,
       "column": 10,
       "rule": "color-no-hex",
@@ -2339,7 +2339,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 270,
       "column": 23,
       "rule": "color-no-hex",
@@ -2347,7 +2347,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 462,
       "column": 24,
       "rule": "color-no-hex",
@@ -2355,7 +2355,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 553,
       "column": 23,
       "rule": "color-no-hex",
@@ -2363,7 +2363,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 582,
       "column": 25,
       "rule": "function-disallowed-list",
@@ -2371,7 +2371,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/search/search.css",
+      "file": "ui/src/app/discovery/search/search.css",
       "line": 676,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -2379,7 +2379,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/account-list/settings-account-list.css",
+      "file": "ui/src/app/settings/account-list/settings-account-list.css",
       "line": 97,
       "column": 40,
       "rule": "color-no-hex",
@@ -2387,7 +2387,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/account-list/settings-account-list.css",
+      "file": "ui/src/app/settings/account-list/settings-account-list.css",
       "line": 112,
       "column": 10,
       "rule": "color-no-hex",
@@ -2395,7 +2395,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/account-list/settings-account-list.css",
+      "file": "ui/src/app/settings/account-list/settings-account-list.css",
       "line": 113,
       "column": 17,
       "rule": "color-no-hex",
@@ -2403,7 +2403,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/account-list/settings-account-list.css",
+      "file": "ui/src/app/settings/account-list/settings-account-list.css",
       "line": 117,
       "column": 15,
       "rule": "color-no-hex",
@@ -2411,7 +2411,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/account-list/settings-account-list.css",
+      "file": "ui/src/app/settings/account-list/settings-account-list.css",
       "line": 118,
       "column": 10,
       "rule": "color-no-hex",
@@ -2419,7 +2419,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/account-list/settings-account-list.css",
+      "file": "ui/src/app/settings/account-list/settings-account-list.css",
       "line": 151,
       "column": 10,
       "rule": "color-no-hex",
@@ -2427,7 +2427,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/accounts/settings-accounts.css",
+      "file": "ui/src/app/settings/accounts/settings-accounts.css",
       "line": 87,
       "column": 10,
       "rule": "color-no-hex",
@@ -2435,7 +2435,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/accounts/settings-accounts.css",
+      "file": "ui/src/app/settings/accounts/settings-accounts.css",
       "line": 117,
       "column": 10,
       "rule": "color-no-hex",
@@ -2443,7 +2443,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/accounts/settings-accounts.css",
+      "file": "ui/src/app/settings/accounts/settings-accounts.css",
       "line": 118,
       "column": 17,
       "rule": "color-no-hex",
@@ -2451,7 +2451,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/bulk-actions/settings-bulk-actions.css",
+      "file": "ui/src/app/settings/bulk-actions/settings-bulk-actions.css",
       "line": 23,
       "column": 36,
       "rule": "color-no-hex",
@@ -2459,7 +2459,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/bulk-actions/settings-bulk-actions.css",
+      "file": "ui/src/app/settings/bulk-actions/settings-bulk-actions.css",
       "line": 76,
       "column": 10,
       "rule": "color-no-hex",
@@ -2467,7 +2467,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/bulk-actions/settings-bulk-actions.css",
+      "file": "ui/src/app/settings/bulk-actions/settings-bulk-actions.css",
       "line": 77,
       "column": 17,
       "rule": "color-no-hex",
@@ -2475,7 +2475,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/bulk-actions/settings-bulk-actions.css",
+      "file": "ui/src/app/settings/bulk-actions/settings-bulk-actions.css",
       "line": 81,
       "column": 15,
       "rule": "color-no-hex",
@@ -2483,7 +2483,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/bulk-actions/settings-bulk-actions.css",
+      "file": "ui/src/app/settings/bulk-actions/settings-bulk-actions.css",
       "line": 82,
       "column": 10,
       "rule": "color-no-hex",
@@ -2491,7 +2491,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/config/settings-config.css",
+      "file": "ui/src/app/settings/config/settings-config.css",
       "line": 95,
       "column": 26,
       "rule": "color-no-hex",
@@ -2499,7 +2499,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/config/settings-config.css",
+      "file": "ui/src/app/settings/config/settings-config.css",
       "line": 96,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2507,7 +2507,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/config/settings-config.css",
+      "file": "ui/src/app/settings/config/settings-config.css",
       "line": 97,
       "column": 10,
       "rule": "color-no-hex",
@@ -2515,7 +2515,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/config/settings-config.css",
+      "file": "ui/src/app/settings/config/settings-config.css",
       "line": 101,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2523,7 +2523,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/config/settings-config.css",
+      "file": "ui/src/app/settings/config/settings-config.css",
       "line": 102,
       "column": 10,
       "rule": "color-no-hex",
@@ -2531,7 +2531,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/bluesky/connection-bluesky.css",
+      "file": "ui/src/app/settings/connections/bluesky/connection-bluesky.css",
       "line": 25,
       "column": 15,
       "rule": "color-no-hex",
@@ -2539,7 +2539,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/connection-page.css",
+      "file": "ui/src/app/settings/connections/connection-page.css",
       "line": 37,
       "column": 10,
       "rule": "color-no-hex",
@@ -2547,7 +2547,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/connection-page.css",
+      "file": "ui/src/app/settings/connections/connection-page.css",
       "line": 42,
       "column": 10,
       "rule": "color-no-hex",
@@ -2555,7 +2555,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/connection-page.css",
+      "file": "ui/src/app/settings/connections/connection-page.css",
       "line": 56,
       "column": 26,
       "rule": "color-no-hex",
@@ -2563,7 +2563,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/connection-page.css",
+      "file": "ui/src/app/settings/connections/connection-page.css",
       "line": 57,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2571,7 +2571,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 29,
       "column": 21,
       "rule": "function-disallowed-list",
@@ -2579,7 +2579,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 31,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2587,7 +2587,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 51,
       "column": 17,
       "rule": "function-disallowed-list",
@@ -2595,7 +2595,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 57,
       "column": 17,
       "rule": "function-disallowed-list",
@@ -2603,7 +2603,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 92,
       "column": 10,
       "rule": "color-no-hex",
@@ -2611,7 +2611,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 96,
       "column": 10,
       "rule": "color-no-hex",
@@ -2619,7 +2619,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 100,
       "column": 10,
       "rule": "color-no-hex",
@@ -2627,7 +2627,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 134,
       "column": 10,
       "rule": "color-no-hex",
@@ -2635,7 +2635,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/doctor/connection-doctor-page.css",
+      "file": "ui/src/app/settings/connections/doctor/connection-doctor-page.css",
       "line": 207,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2643,7 +2643,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/dropbox/connection-dropbox.css",
+      "file": "ui/src/app/settings/connections/dropbox/connection-dropbox.css",
       "line": 15,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2651,7 +2651,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/dropbox/connection-dropbox.css",
+      "file": "ui/src/app/settings/connections/dropbox/connection-dropbox.css",
       "line": 27,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -2659,7 +2659,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/github/connection-github.css",
+      "file": "ui/src/app/settings/connections/github/connection-github.css",
       "line": 31,
       "column": 21,
       "rule": "function-disallowed-list",
@@ -2667,7 +2667,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/github/connection-github.css",
+      "file": "ui/src/app/settings/connections/github/connection-github.css",
       "line": 33,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2675,7 +2675,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/openrouter/connection-openrouter.css",
+      "file": "ui/src/app/settings/connections/openrouter/connection-openrouter.css",
       "line": 107,
       "column": 17,
       "rule": "function-disallowed-list",
@@ -2683,7 +2683,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/openrouter/connection-openrouter.css",
+      "file": "ui/src/app/settings/connections/openrouter/connection-openrouter.css",
       "line": 108,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2691,7 +2691,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/openrouter/connection-openrouter.css",
+      "file": "ui/src/app/settings/connections/openrouter/connection-openrouter.css",
       "line": 109,
       "column": 10,
       "rule": "color-no-hex",
@@ -2699,7 +2699,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "file": "ui/src/app/settings/connections/settings-connections.css",
       "line": 67,
       "column": 31,
       "rule": "color-no-hex",
@@ -2707,7 +2707,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "file": "ui/src/app/settings/connections/settings-connections.css",
       "line": 68,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2715,7 +2715,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "file": "ui/src/app/settings/connections/settings-connections.css",
       "line": 135,
       "column": 17,
       "rule": "function-disallowed-list",
@@ -2723,7 +2723,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "file": "ui/src/app/settings/connections/settings-connections.css",
       "line": 136,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2731,7 +2731,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "file": "ui/src/app/settings/connections/settings-connections.css",
       "line": 137,
       "column": 10,
       "rule": "color-no-hex",
@@ -2739,7 +2739,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "file": "ui/src/app/settings/connections/settings-connections.css",
       "line": 148,
       "column": 17,
       "rule": "function-disallowed-list",
@@ -2747,7 +2747,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "file": "ui/src/app/settings/connections/settings-connections.css",
       "line": 149,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2755,7 +2755,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/settings-connections.css",
+      "file": "ui/src/app/settings/connections/settings-connections.css",
       "line": 150,
       "column": 10,
       "rule": "color-no-hex",
@@ -2763,7 +2763,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/twitter/connection-twitter.css",
+      "file": "ui/src/app/settings/connections/twitter/connection-twitter.css",
       "line": 41,
       "column": 48,
       "rule": "color-no-hex",
@@ -2771,7 +2771,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/twitter/connection-twitter.css",
+      "file": "ui/src/app/settings/connections/twitter/connection-twitter.css",
       "line": 42,
       "column": 48,
       "rule": "color-no-hex",
@@ -2779,7 +2779,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/twitter/connection-twitter.css",
+      "file": "ui/src/app/settings/connections/twitter/connection-twitter.css",
       "line": 128,
       "column": 34,
       "rule": "color-no-hex",
@@ -2787,7 +2787,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/connections/twitter/connection-twitter.css",
+      "file": "ui/src/app/settings/connections/twitter/connection-twitter.css",
       "line": 129,
       "column": 34,
       "rule": "color-no-hex",
@@ -2795,7 +2795,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/development/settings-development.css",
+      "file": "ui/src/app/settings/development/settings-development.css",
       "line": 9,
       "column": 35,
       "rule": "color-no-hex",
@@ -2803,7 +2803,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/filters/settings-filter-edit.css",
+      "file": "ui/src/app/settings/filters/settings-filter-edit.css",
       "line": 40,
       "column": 10,
       "rule": "color-no-hex",
@@ -2811,7 +2811,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/filters/settings-filters.css",
+      "file": "ui/src/app/settings/filters/settings-filters.css",
       "line": 59,
       "column": 15,
       "rule": "color-no-hex",
@@ -2819,7 +2819,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/filters/settings-filters.css",
+      "file": "ui/src/app/settings/filters/settings-filters.css",
       "line": 60,
       "column": 10,
       "rule": "color-no-hex",
@@ -2827,7 +2827,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/filters/settings-filters.css",
+      "file": "ui/src/app/settings/filters/settings-filters.css",
       "line": 87,
       "column": 17,
       "rule": "color-no-hex",
@@ -2835,7 +2835,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/filters/settings-filters.css",
+      "file": "ui/src/app/settings/filters/settings-filters.css",
       "line": 88,
       "column": 10,
       "rule": "color-no-hex",
@@ -2843,7 +2843,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/import-export/settings-import-export.css",
+      "file": "ui/src/app/settings/import-export/settings-import-export.css",
       "line": 91,
       "column": 24,
       "rule": "color-no-hex",
@@ -2851,7 +2851,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/import-export/settings-import-export.css",
+      "file": "ui/src/app/settings/import-export/settings-import-export.css",
       "line": 239,
       "column": 34,
       "rule": "color-no-hex",
@@ -2859,7 +2859,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/import-export/settings-import-export.css",
+      "file": "ui/src/app/settings/import-export/settings-import-export.css",
       "line": 243,
       "column": 34,
       "rule": "color-no-hex",
@@ -2867,7 +2867,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/import-export/settings-import-export.css",
+      "file": "ui/src/app/settings/import-export/settings-import-export.css",
       "line": 247,
       "column": 34,
       "rule": "color-no-hex",
@@ -2875,7 +2875,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/import-export/settings-import-export.css",
+      "file": "ui/src/app/settings/import-export/settings-import-export.css",
       "line": 251,
       "column": 34,
       "rule": "color-no-hex",
@@ -2883,7 +2883,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/invites/settings-invites.css",
+      "file": "ui/src/app/settings/invites/settings-invites.css",
       "line": 16,
       "column": 42,
       "rule": "color-no-hex",
@@ -2891,7 +2891,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/mawkingbird-plus/adoption-dialog/adoption-dialog.css",
+      "file": "ui/src/app/settings/mawkingbird-plus/adoption-dialog/adoption-dialog.css",
       "line": 10,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2899,7 +2899,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/mawkingbird-plus/adoption-dialog/adoption-dialog.css",
+      "file": "ui/src/app/settings/mawkingbird-plus/adoption-dialog/adoption-dialog.css",
       "line": 28,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -2907,7 +2907,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/mawkingbird-plus/plus-welcome-dialog/plus-welcome-dialog.css",
+      "file": "ui/src/app/settings/mawkingbird-plus/plus-welcome-dialog/plus-welcome-dialog.css",
       "line": 8,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -2915,7 +2915,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/mawkingbird-plus/plus-welcome-dialog/plus-welcome-dialog.css",
+      "file": "ui/src/app/settings/mawkingbird-plus/plus-welcome-dialog/plus-welcome-dialog.css",
       "line": 25,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -2923,7 +2923,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/settings/mawkingbird-plus/settings-mawkingbird-plus.css",
+      "file": "ui/src/app/settings/mawkingbird-plus/settings-mawkingbird-plus.css",
       "line": 103,
       "column": 24,
       "rule": "color-no-hex",
@@ -2931,7 +2931,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/profile/settings-profile.css",
+      "file": "ui/src/app/settings/profile/settings-profile.css",
       "line": 9,
       "column": 17,
       "rule": "color-no-hex",
@@ -2939,7 +2939,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/profile/settings-profile.css",
+      "file": "ui/src/app/settings/profile/settings-profile.css",
       "line": 13,
       "column": 10,
       "rule": "color-no-hex",
@@ -2947,7 +2947,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/rss/settings-rss.css",
+      "file": "ui/src/app/settings/rss/settings-rss.css",
       "line": 13,
       "column": 10,
       "rule": "color-no-hex",
@@ -2955,7 +2955,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/server/settings-server.css",
+      "file": "ui/src/app/settings/server/settings-server.css",
       "line": 20,
       "column": 10,
       "rule": "color-no-hex",
@@ -2963,7 +2963,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/server/settings-server.css",
+      "file": "ui/src/app/settings/server/settings-server.css",
       "line": 26,
       "column": 10,
       "rule": "color-no-hex",
@@ -2971,7 +2971,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/server/settings-server.css",
+      "file": "ui/src/app/settings/server/settings-server.css",
       "line": 31,
       "column": 10,
       "rule": "color-no-hex",
@@ -2979,7 +2979,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/server/settings-server.css",
+      "file": "ui/src/app/settings/server/settings-server.css",
       "line": 41,
       "column": 10,
       "rule": "color-no-hex",
@@ -2987,7 +2987,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/settings-shell.css",
+      "file": "ui/src/app/settings/settings-shell.css",
       "line": 120,
       "column": 10,
       "rule": "color-no-hex",
@@ -2995,7 +2995,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/settings-shell.css",
+      "file": "ui/src/app/settings/settings-shell.css",
       "line": 124,
       "column": 10,
       "rule": "color-no-hex",
@@ -3003,7 +3003,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/storage/settings-storage.css",
+      "file": "ui/src/app/settings/storage/settings-storage.css",
       "line": 111,
       "column": 24,
       "rule": "color-no-hex",
@@ -3011,7 +3011,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/storage/settings-storage.css",
+      "file": "ui/src/app/settings/storage/settings-storage.css",
       "line": 119,
       "column": 10,
       "rule": "color-no-hex",
@@ -3019,7 +3019,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/settings/storage/settings-storage.css",
+      "file": "ui/src/app/settings/storage/settings-storage.css",
       "line": 120,
       "column": 17,
       "rule": "color-no-hex",
@@ -3027,7 +3027,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/thread/thread.css",
+      "file": "ui/src/app/reading/thread/thread.css",
       "line": 148,
       "column": 24,
       "rule": "color-no-hex",
@@ -3035,7 +3035,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/thread/thread.css",
+      "file": "ui/src/app/reading/thread/thread.css",
       "line": 339,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -3043,7 +3043,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/welcome-back/welcome-back.css",
+      "file": "ui/src/app/accounts/sign-in/welcome-back/welcome-back.css",
       "line": 57,
       "column": 10,
       "rule": "color-no-hex",
@@ -3051,7 +3051,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/write/board/write-board.css",
+      "file": "ui/src/app/publishing/write/board/write-board.css",
       "line": 179,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -3059,7 +3059,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/write/write-editor.css",
+      "file": "ui/src/app/publishing/write/write-editor.css",
       "line": 126,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -3067,7 +3067,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/write/write-editor.css",
+      "file": "ui/src/app/publishing/write/write-editor.css",
       "line": 217,
       "column": 10,
       "rule": "color-no-hex",
@@ -3075,7 +3075,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/write/write-editor.css",
+      "file": "ui/src/app/publishing/write/write-editor.css",
       "line": 230,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3083,7 +3083,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/write/write-overlays.css",
+      "file": "ui/src/app/publishing/write/write-overlays.css",
       "line": 59,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3091,7 +3091,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/pages/write/write-overlays.css",
+      "file": "ui/src/app/publishing/write/write-overlays.css",
       "line": 92,
       "column": 10,
       "rule": "color-no-hex",
@@ -3099,7 +3099,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/write/write-overlays.css",
+      "file": "ui/src/app/publishing/write/write-overlays.css",
       "line": 93,
       "column": 17,
       "rule": "color-no-hex",
@@ -3107,7 +3107,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/write/write-overlays.css",
+      "file": "ui/src/app/publishing/write/write-overlays.css",
       "line": 155,
       "column": 17,
       "rule": "color-no-hex",
@@ -3115,7 +3115,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/pages/write/write-workspace.css",
+      "file": "ui/src/app/publishing/write/write-workspace.css",
       "line": 220,
       "column": 10,
       "rule": "color-no-hex",
@@ -3123,7 +3123,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/people-browser/people-browser.css",
+      "file": "ui/src/app/accounts/people-browser/people-browser.css",
       "line": 88,
       "column": 10,
       "rule": "color-no-hex",
@@ -3131,7 +3131,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/people-browser/people-browser.css",
+      "file": "ui/src/app/accounts/people-browser/people-browser.css",
       "line": 109,
       "column": 17,
       "rule": "color-no-hex",
@@ -3139,7 +3139,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/people-browser/people-browser.css",
+      "file": "ui/src/app/accounts/people-browser/people-browser.css",
       "line": 110,
       "column": 10,
       "rule": "color-no-hex",
@@ -3147,7 +3147,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/providers/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
+      "file": "ui/src/app/connections/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3155,7 +3155,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/providers/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
+      "file": "ui/src/app/connections/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
       "line": 32,
       "column": 10,
       "rule": "color-no-hex",
@@ -3163,7 +3163,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/providers/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
+      "file": "ui/src/app/connections/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
       "line": 56,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3171,7 +3171,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/providers/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
+      "file": "ui/src/app/connections/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
       "line": 104,
       "column": 10,
       "rule": "color-no-hex",
@@ -3179,7 +3179,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/providers/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
+      "file": "ui/src/app/connections/shortener/proxy-consent-dialog/proxy-consent-dialog.css",
       "line": 105,
       "column": 17,
       "rule": "color-no-hex",
@@ -3187,7 +3187,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/report-dialog/report-dialog.css",
+      "file": "ui/src/app/moderation/report-dialog/report-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3195,7 +3195,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/report-dialog/report-dialog.css",
+      "file": "ui/src/app/moderation/report-dialog/report-dialog.css",
       "line": 54,
       "column": 24,
       "rule": "color-no-hex",
@@ -3203,7 +3203,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/report-dialog/report-dialog.css",
+      "file": "ui/src/app/moderation/report-dialog/report-dialog.css",
       "line": 59,
       "column": 15,
       "rule": "color-no-hex",
@@ -3211,7 +3211,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/report-dialog/report-dialog.css",
+      "file": "ui/src/app/moderation/report-dialog/report-dialog.css",
       "line": 63,
       "column": 15,
       "rule": "color-no-hex",
@@ -3219,7 +3219,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/server-discovery/server-discovery.css",
+      "file": "ui/src/app/discovery/server-discovery/server-discovery.css",
       "line": 64,
       "column": 10,
       "rule": "color-no-hex",
@@ -3227,7 +3227,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/server-picker/server-picker.css",
+      "file": "ui/src/app/discovery/server-picker/server-picker.css",
       "line": 33,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -3235,7 +3235,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/share-dialog/share-dialog.css",
+      "file": "ui/src/app/posts/share-dialog/share-dialog.css",
       "line": 9,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3243,7 +3243,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/share-dialog/share-dialog.css",
+      "file": "ui/src/app/posts/share-dialog/share-dialog.css",
       "line": 30,
       "column": 27,
       "rule": "function-disallowed-list",
@@ -3251,7 +3251,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/share-dialog/share-dialog.css",
+      "file": "ui/src/app/posts/share-dialog/share-dialog.css",
       "line": 150,
       "column": 10,
       "rule": "color-no-hex",
@@ -3259,7 +3259,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/share-dialog/share-dialog.css",
+      "file": "ui/src/app/posts/share-dialog/share-dialog.css",
       "line": 179,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -3443,7 +3443,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/sign-in-prompt/sign-in-prompt.css",
+      "file": "ui/src/app/posts/sign-in-prompt/sign-in-prompt.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3451,7 +3451,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 50,
       "column": 36,
       "rule": "color-no-hex",
@@ -3459,7 +3459,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 84,
       "column": 10,
       "rule": "color-no-hex",
@@ -3467,7 +3467,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 292,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3475,7 +3475,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 293,
       "column": 10,
       "rule": "color-no-hex",
@@ -3483,7 +3483,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 304,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3491,7 +3491,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 310,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3499,7 +3499,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 655,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -3507,7 +3507,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 692,
       "column": 10,
       "rule": "color-no-hex",
@@ -3515,7 +3515,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 746,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -3523,7 +3523,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 783,
       "column": 10,
       "rule": "color-no-hex",
@@ -3531,7 +3531,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 857,
       "column": 10,
       "rule": "color-no-hex",
@@ -3539,7 +3539,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 879,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3547,7 +3547,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 947,
       "column": 26,
       "rule": "function-disallowed-list",
@@ -3555,7 +3555,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/status-card/status-card.css",
+      "file": "ui/src/app/posts/status-card/status-card.css",
       "line": 964,
       "column": 32,
       "rule": "function-disallowed-list",
@@ -3563,7 +3563,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/unreachable-server-dialog/unreachable-server-dialog.css",
+      "file": "ui/src/app/accounts/sign-in/unreachable-server-dialog/unreachable-server-dialog.css",
       "line": 4,
       "column": 15,
       "rule": "function-disallowed-list",
@@ -3571,7 +3571,7 @@
       "message": "Use a semantic theme token instead of a literal color function; token-based color-mix() is allowed. (function-disallowed-list)"
     },
     {
-      "file": "ui/src/app/update-overlay/update-overlay.css",
+      "file": "ui/src/app/shell/update-overlay/update-overlay.css",
       "line": 12,
       "column": 25,
       "rule": "color-no-hex",
@@ -3579,7 +3579,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/update-overlay/update-overlay.css",
+      "file": "ui/src/app/shell/update-overlay/update-overlay.css",
       "line": 13,
       "column": 22,
       "rule": "color-no-hex",
@@ -3587,7 +3587,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/update-overlay/update-overlay.css",
+      "file": "ui/src/app/shell/update-overlay/update-overlay.css",
       "line": 30,
       "column": 35,
       "rule": "color-no-hex",
@@ -3595,7 +3595,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/update-overlay/update-overlay.css",
+      "file": "ui/src/app/shell/update-overlay/update-overlay.css",
       "line": 31,
       "column": 35,
       "rule": "color-no-hex",
@@ -3603,7 +3603,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/update-overlay/update-overlay.css",
+      "file": "ui/src/app/shell/update-overlay/update-overlay.css",
       "line": 57,
       "column": 35,
       "rule": "color-no-hex",
@@ -3611,7 +3611,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/update-overlay/update-overlay.css",
+      "file": "ui/src/app/shell/update-overlay/update-overlay.css",
       "line": 59,
       "column": 29,
       "rule": "color-no-hex",
@@ -3619,7 +3619,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/update-overlay/update-overlay.css",
+      "file": "ui/src/app/shell/update-overlay/update-overlay.css",
       "line": 60,
       "column": 10,
       "rule": "color-no-hex",
@@ -3627,7 +3627,7 @@
       "message": "Use a theme token such as var(--text), var(--muted), or var(--ds-error-text). Define palette values only in design_system/tokens.css. (color-no-hex)"
     },
     {
-      "file": "ui/src/app/update-overlay/update-overlay.css",
+      "file": "ui/src/app/shell/update-overlay/update-overlay.css",
       "line": 72,
       "column": 22,
       "rule": "color-no-hex",

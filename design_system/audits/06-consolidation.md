@@ -2254,3 +2254,15 @@ Concurrent translation edits landed during the SIG check: final regeneration sca
 ### Ukrainian Culture and Hobbies — 2026-11-09
 
 Reviewed regeneration: 1748 to 1749 scanned source files for the new lazy topic copy. All 609 candidate records are identical to the pre-integration inventory. No added/removed candidate files or reconciliation edits required. Existing controls and Ukrainian hub reused.
+
+### App namespace moves (2026-11-11)
+
+Reviewed regeneration after spec/namespace_fixes.md steps 1-3. The `ui/src/app`
+root modules and every `pages/*` route folder moved into domain folders
+(`feeds/`, `publishing/`, `reading/`, `discovery/`, `accounts/`, `settings/`,
+`public-pages/` and others), and `providers/` split into `connections/`,
+`accounts/` and `reading/`. Paths in this log above are the paths at the time
+of each entry. The inventory, reconciliation, legacy-colour and adoption-status
+files were rewritten path-for-path. No candidate file was added or removed, and
+no control or shared widget implementation changed. The other inventory edits
+are line shifts from re-wrapped import paths.

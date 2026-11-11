@@ -1,4 +1,4 @@
-import { Account } from '../../../models';
+import { Account } from '../../../platform/api/models';
 
 /** One figure under a card's name, e.g. "Followers 1.2K". */
 export interface RailProfileStat {

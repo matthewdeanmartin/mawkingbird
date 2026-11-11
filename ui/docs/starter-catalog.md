@@ -54,7 +54,7 @@ snapshot does not carry those flags. Only the hand-picked bundled kits get publi
   `mawkingbird_starters/data/taxonomy.json`. This is hand-maintained source data;
   `starters.packs.write_catalog` copies it into the regenerated pack files. Do not
   translate `catalog/packs/` or `starter-catalog.generated.json` by hand.
-- **Pack controls:** `src/app/starter-pack-ui.json` is a small, hand-maintained
+- **Pack controls:** `src/app/discovery/starter-pack-ui.json` is a small, hand-maintained
   dictionary shared by every pack. It is independent of global UI dictionaries and
   is never rewritten by catalogue refreshes. `StarterPackTextPipe` reads it without
   switching Transloco's active language, fetching dictionaries, or changing preferences.
@@ -80,7 +80,7 @@ intentional uncommitted changes; do not reset it or recrawl just to update UI da
    again. This refreshes generated pack copy offline while preserving the snapshot
    date, membership, ranks and profiles. `--check` detects stale copy without writing.
    For membership changes use the source repository's normal catalogue assembly.
-4. Fill missing starter controls in `src/app/starter-pack-ui.json`, preserving all
+4. Fill missing starter controls in `src/app/discovery/starter-pack-ui.json`, preserving all
    `{{placeholders}}`. Existing global UI translations can be copied once when
    applicable; subsequent catalogue updates do not overwrite this dictionary.
    Preserve `zh-Hant` throughout import, copy lookup, filtering and removed links.

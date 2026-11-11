@@ -2,13 +2,13 @@ import { DatePipe } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Auth } from '../../auth';
-import { BugReportDialog } from '../../bug-report-dialog/bug-report-dialog';
-import { BUILD_INFO } from '../../build-info';
-import { Hotkeys } from '../../hotkeys';
-import { Server } from '../../server';
-import { LocalePicker } from '../../locale-picker/locale-picker';
-import { AppInstall } from '../../app-install/app-install';
+import { Auth } from '../../platform/session/auth';
+import { BugReportDialog } from '../bug-report-dialog/bug-report-dialog';
+import { BUILD_INFO } from '../../platform/build/build-info';
+import { Hotkeys } from '../hotkeys';
+import { Server } from '../../platform/http/server';
+import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
+import { AppInstall } from '../app-install/app-install';
 
 /**
  * The end-of-feed footer. Feeds here are finite, so there is a bottom — and a

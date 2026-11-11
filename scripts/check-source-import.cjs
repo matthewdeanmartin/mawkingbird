@@ -18,7 +18,7 @@ for (const [index, entry] of entries.entries()) {
 const intended = new Set([
   'ui/.gitignore', 'ui/Makefile', 'ui/README.md', 'ui/angular.json',
   'ui/scripts/gen-api-docs.mjs', 'ui/scripts/gen-build-info.mjs',
-  'ui/src/app/bug-report.ts', 'ui/src/app/bug-report.spec.ts',
+  'ui/src/app/platform/diagnostics/bug-report.ts', 'ui/src/app/platform/diagnostics/bug-report.spec.ts',
 ]);
 const unexpected = changed.filter(file => !intended.has(file));
 if (unexpected.length) throw new Error(`Unexpected import changes: ${unexpected.join(', ')}`);

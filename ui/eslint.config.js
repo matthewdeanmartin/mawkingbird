@@ -29,7 +29,7 @@ module.exports = defineConfig([
     rules: { 'mb/no-pill-in-toolbar': 'error', 'mb/require-shared-post-action': 'error' },
   },
   {
-    files: ['**/pages/client-list/client-list-page.html'],
+    files: ['**/feeds/client-list/client-list-page.html'],
     rules: { 'mb/prefer-shared-local-tabs': 'error' },
   },
   {

@@ -4,7 +4,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
-import { EmailDomainBlock } from '../../models';
+import { EmailDomainBlock } from '../../platform/api/models';
 
 // i18n adminEmailBlocks.placeholder: email domain to block (e.g. mailinator.com)
 // i18n adminEmailBlocks.block: Block

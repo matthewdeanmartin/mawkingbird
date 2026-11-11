@@ -9,7 +9,7 @@ import {
   ImportReport,
   Invite,
   MockSettings,
-} from './models';
+} from './platform/api/models';
 
 /**
  * Mocking Bird stub for {@link MockApi}. The mock-server control plane does not exist on

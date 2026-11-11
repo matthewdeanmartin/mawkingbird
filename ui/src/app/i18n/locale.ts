@@ -27,9 +27,9 @@
 import { DOCUMENT } from '@angular/common';
 import { computed, effect, inject, Injectable, Signal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
-import { ClientPrefs } from '../client-prefs';
-import { isCanaryBuild, isTestBuild } from '../build-flavor';
-import { PageLanguageState } from '../page-language';
+import { ClientPrefs } from '../platform/storage/client-prefs';
+import { isCanaryBuild, isTestBuild } from '../platform/build/build-flavor';
+import { PageLanguageState } from './page-language';
 
 /**
  * Locales this build ships a dictionary for.

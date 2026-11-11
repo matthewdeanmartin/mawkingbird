@@ -1,14 +1,14 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { defaultIfEmpty, firstValueFrom, map, Observable, Subject, takeUntil } from 'rxjs';
-import { Api } from '../api';
-import { Auth } from '../auth';
-import { LocalModeration } from '../local-moderation';
-import { SearchServer } from '../search-server';
-import { Context, Relationship, SearchResults, Status } from '../models';
-import { adaptAnonymousStatus } from '../providers/anonymous/anonymous-mastodon-provider';
-import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api';
-import { AnonymousPublicRef } from '../providers/anonymous/anonymous-route-ref';
-import { radioPostRef as mastodonPostRef } from '../radio-links';
+import { Api } from '../platform/api/api';
+import { Auth } from '../platform/session/auth';
+import { LocalModeration } from '../moderation/local-moderation';
+import { SearchServer } from '../platform/http/search-server';
+import { Context, Relationship, SearchResults, Status } from '../platform/api/models';
+import { adaptAnonymousStatus } from '../accounts/anonymous/anonymous-mastodon-provider';
+import { AnonymousPublicApi } from '../accounts/anonymous/anonymous-public-api';
+import { AnonymousPublicRef } from '../accounts/anonymous/anonymous-route-ref';
+import { radioPostRef as mastodonPostRef } from '../reading/radio-links';
 import {
   Candidate,
   combine,

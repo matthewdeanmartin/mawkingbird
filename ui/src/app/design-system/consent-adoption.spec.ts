@@ -1,11 +1,11 @@
 import { Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ProxyConsentDialog } from '../providers/shortener/proxy-consent-dialog/proxy-consent-dialog';
-import { TwitterConsentDialog } from '../providers/twitter/twitter-consent-dialog/twitter-consent-dialog';
-import { SHORTENER_CATALOG } from '../providers/shortener/shortener-catalog';
-import { CORS_PROXY_CATALOG } from '../providers/cors-proxy/cors-proxy-catalog';
-import { TWITTER_SOURCE_CATALOG } from '../providers/twitter/twitter-source';
+import { ProxyConsentDialog } from '../connections/shortener/proxy-consent-dialog/proxy-consent-dialog';
+import { TwitterConsentDialog } from '../connections/twitter/twitter-consent-dialog/twitter-consent-dialog';
+import { SHORTENER_CATALOG } from '../connections/shortener/shortener-catalog';
+import { CORS_PROXY_CATALOG } from '../connections/cors-proxy/cors-proxy-catalog';
+import { TWITTER_SOURCE_CATALOG } from '../connections/twitter/twitter-source';
 
 describe('Consent dialog adoption', () => {
   const descriptors = ['showModal', 'close'].map(

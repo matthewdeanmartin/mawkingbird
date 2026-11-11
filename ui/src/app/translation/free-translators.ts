@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom, timeout } from 'rxjs';
-import { externalFetch } from '../providers/external-fetch';
+import { externalFetch } from '../platform/http/external-fetch';
 import { APERTIUM_API } from './pair-catalog';
 
 export const MYMEMORY_API = 'https://api.mymemory.translated.net/get';

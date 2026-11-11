@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { BotPeers } from './bot-peers';
-import { ClientPrefs } from '../client-prefs';
-import { ElizaService } from '../eliza/eliza.service';
-import { ELIZA_PEER } from '../eliza/eliza-identity';
-import { OPENROUTER_PEER } from '../providers/openrouter/openrouter-identity';
+import { ClientPrefs } from '../platform/storage/client-prefs';
+import { ElizaService } from './eliza/eliza.service';
+import { ELIZA_PEER } from './eliza/eliza-identity';
+import { OPENROUTER_PEER } from '../connections/openrouter/openrouter-identity';
 
 describe('BotPeers', () => {
   let bots: BotPeers;

@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
 import { provideRouter, Route, RouterOutlet, TitleStrategy } from '@angular/router';
 import { provideServerRendering, RenderMode, withRoutes } from '@angular/ssr';
-import { PageTitleStrategy } from './app/a11y/page-title-strategy';
-import { Features } from './app/pages/features/features';
+import { PageTitleStrategy } from './app/shell/a11y/page-title-strategy';
+import { Features } from './app/public-pages/features/features';
 import {
   ABOUT_DESCRIPTION,
   APP_STRUCTURED_DATA,
@@ -13,7 +13,7 @@ import {
   TOOLS_DESCRIPTION,
   TOOLS_INDEX_ALTERNATES,
   TOOLS_INDEXES,
-} from './app/seo';
+} from './app/public-pages/seo';
 import { Type } from '@angular/core';
 import {
   FocusedTool,
@@ -22,34 +22,34 @@ import {
   toolAlternates,
   toolComponentName,
   toolLanguage,
-} from './app/focused-tools';
-import { FOCUSED_TOOLS } from './app/focused-tools-all';
-import { toolsResolver } from './app/tool-copy';
-import * as anonymousOnMastodonPage from './app/pages/anonymous-on-mastodon/anonymous-on-mastodon';
-import * as crosspostPage from './app/pages/crosspost/crosspost';
-import * as networkSearchPage from './app/pages/network-search/network-search';
-import * as downloadMastodonImagesPage from './app/pages/download-mastodon-images/download-mastodon-images';
-import * as mastodonSimilarHashtagsPage from './app/pages/mastodon-similar-hashtags/mastodon-similar-hashtags';
-import * as languageLandingPage from './app/pages/language-landing/language-landing';
-import * as exportMastodonBookmarksPage from './app/pages/export-mastodon-bookmarks/export-mastodon-bookmarks';
-import * as mastodonContentWarningsPage from './app/pages/mastodon-content-warnings/mastodon-content-warnings';
-import * as mastodonHandleGeneratorPage from './app/pages/mastodon-handle-generator/mastodon-handle-generator';
-import * as mastodonMuteBlockAmnestyPage from './app/pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
-import * as findContactsOnMastodonPage from './app/pages/find-contacts-on-mastodon/find-contacts-on-mastodon';
-import * as mastodonFriendsRssFeedsPage from './app/pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
-import * as friendBridgePage from './app/pages/friend-bridge/friend-bridge';
-import * as turnOffBoostsMastodonPage from './app/pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
-import * as githubToMastodonPage from './app/pages/github-to-mastodon/github-to-mastodon';
-import * as mastodonAnalyticsPage from './app/pages/mastodon-analytics/mastodon-analytics';
-import * as scheduleMastodonPostsPage from './app/pages/schedule-mastodon-posts/schedule-mastodon-posts';
-import * as twitterToMastodonPage from './app/pages/twitter-to-mastodon/twitter-to-mastodon';
-import { PublicArticle, PublicArticleKind } from './app/pages/features/public-article';
-import * as toolsIndexPage from './app/pages/tools/tools-index';
-import { ToolsIndex } from './app/pages/tools/tools-index';
-import { audienceRoutes } from './app/pages/features/audience-routes';
-import { followRoutes } from './app/pages/features/follow-routes';
-import { feedBuilderRoutes } from './app/pages/feed-builder/feed-builder-routes';
-import { providePublicPageUrls } from './app/public-page-urls';
+} from './app/public-pages/focused-tools';
+import { FOCUSED_TOOLS } from './app/public-pages/focused-tools-all';
+import { toolsResolver } from './app/public-pages/tool-copy';
+import * as anonymousOnMastodonPage from './app/accounts/anonymous-on-mastodon/anonymous-on-mastodon';
+import * as crosspostPage from './app/publishing/crosspost/crosspost';
+import * as networkSearchPage from './app/discovery/network-search/network-search';
+import * as downloadMastodonImagesPage from './app/reading/download-mastodon-images/download-mastodon-images';
+import * as mastodonSimilarHashtagsPage from './app/discovery/mastodon-similar-hashtags/mastodon-similar-hashtags';
+import * as languageLandingPage from './app/public-pages/language-landing/language-landing';
+import * as exportMastodonBookmarksPage from './app/reading/export-mastodon-bookmarks/export-mastodon-bookmarks';
+import * as mastodonContentWarningsPage from './app/moderation/mastodon-content-warnings/mastodon-content-warnings';
+import * as mastodonHandleGeneratorPage from './app/accounts/mastodon-handle-generator/mastodon-handle-generator';
+import * as mastodonMuteBlockAmnestyPage from './app/moderation/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty';
+import * as findContactsOnMastodonPage from './app/discovery/find-contacts-on-mastodon/find-contacts-on-mastodon';
+import * as mastodonFriendsRssFeedsPage from './app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds';
+import * as friendBridgePage from './app/discovery/friend-bridge/friend-bridge';
+import * as turnOffBoostsMastodonPage from './app/feeds/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
+import * as githubToMastodonPage from './app/publishing/github-to-mastodon/github-to-mastodon';
+import * as mastodonAnalyticsPage from './app/accounts/mastodon-analytics/mastodon-analytics';
+import * as scheduleMastodonPostsPage from './app/publishing/schedule-mastodon-posts/schedule-mastodon-posts';
+import * as twitterToMastodonPage from './app/discovery/twitter-to-mastodon/twitter-to-mastodon';
+import { PublicArticle, PublicArticleKind } from './app/public-pages/features/public-article';
+import * as toolsIndexPage from './app/public-pages/tools/tools-index';
+import { ToolsIndex } from './app/public-pages/tools/tools-index';
+import { audienceRoutes } from './app/public-pages/features/audience-routes';
+import { followRoutes } from './app/public-pages/features/follow-routes';
+import { feedBuilderRoutes } from './app/feeds/feed-builder/feed-builder-routes';
+import { providePublicPageUrls } from './app/public-pages/public-page-urls';
 
 // Only public content executes at build time. The browser still bootstraps the
 // normal client, including its existing root dispatcher. No account data or
@@ -246,9 +246,11 @@ export default (context: BootstrapContext) =>
               path: 'follow/:slug',
               renderMode: RenderMode.Prerender,
               getPrerenderParams: async () =>
-                (await import('./app/pages/features/follow-kits')).PUBLIC_KITS.map(({ slug }) => ({
-                  slug,
-                })),
+                (await import('./app/public-pages/features/follow-kits')).PUBLIC_KITS.map(
+                  ({ slug }) => ({
+                    slug,
+                  }),
+                ),
             },
             ...feedBuilderRoutes.map((route) => ({
               path: route.path ?? '',

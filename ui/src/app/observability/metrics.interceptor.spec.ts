@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { externalFetch } from '../providers/external-fetch';
-import { Server } from '../server';
+import { externalFetch } from '../platform/http/external-fetch';
+import { Server } from '../platform/http/server';
 import { ApiMetrics } from './api-metrics';
 import { MawkingbirdMetrics } from './mawkingbird-metrics';
-import { CorsProxySettings } from '../providers/cors-proxy/cors-proxy-settings';
+import { CorsProxySettings } from '../connections/cors-proxy/cors-proxy-settings';
 import { metricsInterceptor } from './metrics.interceptor';
-import { DiagnosticLog } from '../diagnostic-log';
+import { DiagnosticLog } from '../platform/diagnostics/diagnostic-log';
 
 describe('metricsInterceptor', () => {
   let http: HttpClient;

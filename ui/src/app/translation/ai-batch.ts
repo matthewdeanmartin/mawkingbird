@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { languageName } from '../ai-translate';
-import { OpenRouterChat } from '../providers/openrouter/openrouter-chat';
-import { TranslationUsage } from '../translation-usage';
+import { languageName } from './ai-translate';
+import { OpenRouterChat } from '../connections/openrouter/openrouter-chat';
+import { TranslationUsage } from './translation-usage';
 
 /**
  * Batched AI translation for automatic (as-you-scroll) mode.

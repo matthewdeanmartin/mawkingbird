@@ -10,13 +10,16 @@ import {
   type Meta,
   type StoryObj,
 } from "@storybook/angular";
-import { CommandBar, FeedView } from "../../ui/src/app/command-bar/command-bar";
-import { ReaderToolbar } from "../../ui/src/app/reader-toolbar/reader-toolbar";
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
-import { Auth } from "../../ui/src/app/auth";
-import { ProviderRegistry } from "../../ui/src/app/providers/provider-registry";
-import { PrivateFollows } from "../../ui/src/app/private-follows";
-import { FeatureFlags } from "../../ui/src/app/feature-flags";
+import {
+  CommandBar,
+  FeedView,
+} from "../../ui/src/app/feeds/command-bar/command-bar";
+import { ReaderToolbar } from "../../ui/src/app/reading/reader-toolbar/reader-toolbar";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { ProviderRegistry } from "../../ui/src/app/connections/provider-registry";
+import { PrivateFollows } from "../../ui/src/app/accounts/private-follows";
+import { FeatureFlags } from "../../ui/src/app/platform/build/feature-flags";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 // Real app components with in-memory service boundaries: no HTTP or storage writes.

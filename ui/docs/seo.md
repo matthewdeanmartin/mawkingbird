@@ -38,7 +38,7 @@ content is lazy-loaded and stays out of the app's initial bundle.
 
 Every public page is published as `<path>/index.html`, so GitHub Pages answers
 `/features` with a 301 to `/features/`. `PublicPageUrlSerializer`
-(`src/app/public-page-urls.ts`, provided in both `app.config.ts` and
+(`src/app/public-pages/public-page-urls.ts`, provided in both `app.config.ts` and
 `main.server.ts`) gives links to indexable routes (`seoIndexable` in `data` or
 `resolve`, except `seoCanonicalPath` routes such as `/home`) their trailing
 slash, and parses the slashed form back to the same route. App routes keep their
@@ -92,9 +92,9 @@ entry and HTML checks in sync.
 ## Project pages: About, Funding and About & legal
 
 `/about/`, `/funding/` and `/legal/` (About & legal, formerly `/blog/`) are prerendered by `PublicArticle`
-(`pages/features/public-article.ts`), registered only in `main.server.ts`. In the
+(`public-pages/features/public-article.ts`), registered only in `main.server.ts`. In the
 browser the same URLs belong to the signed-in shell and render the essays as
-virtual tweets; the essay text lives once in `pages/docs/public-copy.ts`, so the
+virtual tweets; the essay text lives once in `public-pages/docs/public-copy.ts`, so the
 indexed copy and the in-app copy cannot drift. Their browser routes carry
 `seoIndexable` and the same descriptions (from `seo.ts`), otherwise executing
 JavaScript would turn the prerendered page into `noindex`.
@@ -120,7 +120,7 @@ the app footer links About & legal next to Privacy.
 ## Starter kits: /follow/
 
 `/follow/` and `/follow/<slug>/` are public pages built from the hand-picked
-bundled kits (`bundled-starter-kits.generated.ts`) by `pages/features/follow-kits.ts`.
+bundled kits (`bundled-starter-kits.generated.ts`) by `public-pages/features/follow-kits.ts`.
 They are routed outside the shell like `/features`, prerendered once per kit
 (`getPrerenderParams` in `main.server.ts`), and their per-kit titles and
 descriptions come from lazy resolvers so the data stays out of the startup bundle
@@ -143,7 +143,7 @@ UI snapshot does not carry the flags. Publishing it would need both changed.
 `/science-fiction-on-mastodon/`, `/de/science-fiction-auf-mastodon/`,
 `/it/fantascienza-su-mastodon/`, and so on, with the hub at `/communities/`
 (English). Internally the feature is called Feed Builder; the code lives in
-`src/app/pages/feed-builder/`. They differ from the `/follow/` lists: a topic
+`src/app/feeds/feed-builder/`. They differ from the `/follow/` lists: a topic
 page adds the hashtags worth following, new local hashtags to help start
 ("future tags"), people grouped by shelf (YouTube creators, well-known names,
 community voices), the servers where the community gathers, questions, and how
@@ -176,7 +176,7 @@ in the same change.
 ### Breadcrumbs
 
 Topic pages and `/follow/<slug>/` are schema.org `CollectionPage`s whose
-`breadcrumb` is a `BreadcrumbList` (`src/app/breadcrumbs.ts`): Mawkingbird ›
+`breadcrumb` is a `BreadcrumbList` (`src/app/public-pages/breadcrumbs.ts`): Mawkingbird ›
 hub › page. The people are the `mainEntity` list. `check-seo-build.mjs` checks
 both trails.
 
@@ -201,7 +201,7 @@ and Japanese did not meet the people floor and have no registered routes.
 
 - **Data** comes from the private data repository's export
   (`mawkingbird_starters/catalog/feedbuilder/`). `make feedbuilder-update`
-  imports it into `pages/feed-builder/data/<topic>.<lang>.json`; every field is
+  imports it into `feeds/feed-builder/data/<topic>.<lang>.json`; every field is
   allow-listed, so nothing beyond what the page shows can arrive, and drafts the
   owner has not approved are refused. `npm run feedbuilder:check` (run by every
   `prebuild`) validates the bundle offline and fails when a bundled page has no
@@ -326,7 +326,7 @@ Mastodon and Bluesky together), `/mastodon-analytics/`, `/github-to-mastodon/`,
 `group`; it is linked first on the in-app Docs page, from the blog article and
 from `/features`.
 
-**`src/app/focused-tools.json` is the list.** Each entry has the path, title,
+**`src/app/public-pages/focused-tools.json` is the list.** Each entry has the path, title,
 meta description, who signs in (`mastodon` or `any`), the nav tab, and the
 heading, phrase and tool selector `check-seo-build.mjs` expects of the
 prerender. Routes (`focusedAppRoutes`), the trimmed nav (`FOCUSED_APPS`), the
@@ -431,8 +431,8 @@ redirect.
 ## Pages in other languages
 
 English tools are `focused-tools.json`. A translation stores only what
-differs: its path in `tool-translations/paths.json` (by English id) and its
-title, description and prerender phrases in `tool-translations/<lang>.json`.
+differs: its path in `public-pages/tool-translations/paths.json` (by English id) and its
+title, description and prerender phrases in `public-pages/tool-translations/<lang>.json`.
 Tab, sign-in, group, sources and tool selector come from the original, and its
 id is `<original>-<lang>`. Only the paths load with the app (about a kilobyte
 per language), so routes, `hreflang`, the language switch and the sign-in
@@ -531,8 +531,8 @@ copy, checklist included, is in `language-landing.copy.ts`.
 1. `PageLanguage` (`focused-tools.ts`), its name in itself in `ENDONYMS` (`language-versions.ts`),
    and its words loader in `COPY` (`tool-copy.ts`) and `TOOL_COPY`
    (`focused-tools-all.ts`): one line each.
-2. `tool-translations/paths.json` (a slug per tool) and
-   `tool-translations/<lang>.json` (title, description, prerender phrases).
+2. `public-pages/tool-translations/paths.json` (a slug per tool) and
+   `public-pages/tool-translations/<lang>.json` (title, description, prerender phrases).
 3. A `<page>.<lang>.html` and a `<Class><Lang>` subclass for each tool page
    (generate them with the same pattern as the existing ones), and the
    language's entries in `download-mastodon-images.copy.ts` and

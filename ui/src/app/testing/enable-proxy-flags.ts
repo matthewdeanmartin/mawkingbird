@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { FeatureFlags } from '../feature-flags';
+import { FeatureFlags } from '../platform/build/feature-flags';
 
 /**
  * Turn the third-party CORS proxies back on for one spec.

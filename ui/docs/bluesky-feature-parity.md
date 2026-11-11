@@ -72,10 +72,10 @@ The exact shape can be split by domain. The important rule is that a page should
 
 Known protocol-unaware surfaces include:
 
-- `pages/settings/profile`: reads and writes Mastodon credentials;
-- `pages/settings/privacy`, `writing`, and the server-backed part of `i18n`;
-- `pages/favourites` and `pages/bookmarks`;
-- `pages/settings/account-list`, `follows`, `filters`, and `bulk-actions`;
+- `settings/profile`: reads and writes Mastodon credentials;
+- `settings/privacy`, `writing`, and the server-backed part of `i18n`;
+- `reading/favourites` and `reading/bookmarks`;
+- `settings/account-list`, `follows`, `filters`, and `bulk-actions`;
 - parts of import/export and friend discovery;
 - the left-rail suggestions, relationship checks, follow action, and Mastodon hashtag trends;
 - post controls that are hidden wholesale for a foreign provider rather than replaced with Bluesky equivalents.
@@ -336,20 +336,20 @@ Do not spend time making Bluesky pretend to be Mastodon where the product model 
 
 Mawkingbird implementation areas reviewed:
 
-- `src/app/providers/bluesky/bluesky-api.ts`
-- `src/app/providers/bluesky/bluesky-session.ts`
-- `src/app/providers/bluesky/bluesky-feeds.ts`
-- `src/app/providers/bluesky/bluesky-graph.ts`
-- `src/app/providers/bluesky/bluesky-chat-api.ts`
-- `src/app/providers/bluesky/bluesky-notifications.ts`
-- `src/app/providers/bluesky/bluesky-adapter.ts`
-- `src/app/compose/compose.ts`
-- `src/app/status-card/status-card.ts`
-- `src/app/pages/profile/profile.ts`
-- `src/app/pages/lists/lists.ts`
-- `src/app/pages/notifications/notifications.ts`
-- `src/app/pages/conversations/conversations.ts`
-- `src/app/pages/settings/`
+- `src/app/connections/bluesky/bluesky-api.ts`
+- `src/app/connections/bluesky/bluesky-session.ts`
+- `src/app/connections/bluesky/bluesky-feeds.ts`
+- `src/app/connections/bluesky/bluesky-graph.ts`
+- `src/app/connections/bluesky/bluesky-chat-api.ts`
+- `src/app/connections/bluesky/bluesky-notifications.ts`
+- `src/app/connections/bluesky/bluesky-adapter.ts`
+- `src/app/publishing/compose/compose.ts`
+- `src/app/posts/status-card/status-card.ts`
+- `src/app/accounts/profile/profile.ts`
+- `src/app/feeds/lists/lists.ts`
+- `src/app/feeds/notifications/notifications.ts`
+- `src/app/publishing/conversations/conversations.ts`
+- `src/app/settings/`
 - `src/app/app.routes.ts`
 
 Current upstream capability references:

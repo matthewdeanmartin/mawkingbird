@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { APP_MODES } from '../app-mode';
+import { APP_MODES } from '../platform/build/app-mode';
 import {
   FEED_BUILDER_HUBS,
   FEED_BUILDER_PAGES,
   feedBuilderHubFor,
-} from '../pages/feed-builder/feed-builder-registry';
+} from '../feeds/feed-builder/feed-builder-registry';
 import { FOCUSED_APPS, focusedAppFor, MODE_ENTRIES, MODE_NAV, suggestedMode } from './mode-nav';
 
 describe('MODE_NAV', () => {

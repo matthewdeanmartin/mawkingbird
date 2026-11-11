@@ -864,10 +864,16 @@ try {
   }
   // Ukrainian routes must keep their language after the client replaces the prerender.
   const ukrainianCopy = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/uk.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/uk.json', import.meta.url),
+      'utf8',
+    ),
   );
   const ukrainianPaths = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/paths.json', import.meta.url),
+      'utf8',
+    ),
   ).uk;
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
@@ -923,10 +929,16 @@ try {
   }
   // Hindi routes must keep their language after the client replaces the prerender.
   const hindiCopy = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/hi.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/hi.json', import.meta.url),
+      'utf8',
+    ),
   );
   const hindiPaths = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/paths.json', import.meta.url),
+      'utf8',
+    ),
   ).hi;
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
@@ -982,10 +994,16 @@ try {
   }
   // Dutch routes must keep their language after the client replaces the prerender.
   const dutchCopy = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/nl.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/nl.json', import.meta.url),
+      'utf8',
+    ),
   );
   const dutchPaths = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/paths.json', import.meta.url),
+      'utf8',
+    ),
   ).nl;
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
@@ -1041,10 +1059,16 @@ try {
   }
   // Indonesian routes must keep their language after the client replaces the prerender.
   const indonesianCopy = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/id.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/id.json', import.meta.url),
+      'utf8',
+    ),
   );
   const indonesianPaths = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/paths.json', import.meta.url),
+      'utf8',
+    ),
   ).id;
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
@@ -1100,10 +1124,16 @@ try {
   }
   // Russian routes must keep their language after the client replaces the prerender.
   const russianCopy = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/ru.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/ru.json', import.meta.url),
+      'utf8',
+    ),
   );
   const russianPaths = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/paths.json', import.meta.url),
+      'utf8',
+    ),
   ).ru;
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
@@ -1159,10 +1189,16 @@ try {
   }
   // Swedish routes must keep their language after the client replaces the prerender.
   const swedishCopy = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/sv.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/sv.json', import.meta.url),
+      'utf8',
+    ),
   );
   const swedishPaths = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/paths.json', import.meta.url),
+      'utf8',
+    ),
   ).sv;
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
@@ -1218,10 +1254,16 @@ try {
   }
   // Vietnamese routes must keep their language after the client replaces the prerender.
   const vietnameseCopy = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/vi.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/vi.json', import.meta.url),
+      'utf8',
+    ),
   );
   const vietnamesePaths = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/paths.json', import.meta.url),
+      'utf8',
+    ),
   ).vi;
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });
@@ -1277,10 +1319,16 @@ try {
   }
   // Turkish routes must keep their language after the client replaces the prerender.
   const turkishCopy = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/tr.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/tr.json', import.meta.url),
+      'utf8',
+    ),
   );
   const turkishPaths = JSON.parse(
-    await readFile(new URL('../src/app/tool-translations/paths.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/app/public-pages/tool-translations/paths.json', import.meta.url),
+      'utf8',
+    ),
   ).tr;
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled, locale: 'en-US' });

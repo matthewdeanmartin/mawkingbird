@@ -2,12 +2,12 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NEVER, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { Api } from '../api';
-import { LocalModeration } from '../local-moderation';
-import { SearchServer } from '../search-server';
-import { Auth } from '../auth';
-import { Account, Context, Status } from '../models';
-import { AnonymousPublicApi } from '../providers/anonymous/anonymous-public-api';
+import { Api } from '../platform/api/api';
+import { LocalModeration } from '../moderation/local-moderation';
+import { SearchServer } from '../platform/http/search-server';
+import { Auth } from '../platform/session/auth';
+import { Account, Context, Status } from '../platform/api/models';
+import { AnonymousPublicApi } from '../accounts/anonymous/anonymous-public-api';
 import { account, originCopy, post, reply, who } from '../testing/forum-fixtures';
 import {
   FIRST_SCAN_CALLS,

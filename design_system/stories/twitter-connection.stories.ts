@@ -6,21 +6,21 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { of, delay, throwError } from "rxjs";
-import { parseHandles } from "../../ui/src/app/providers/twitter/twitter-import";
-import { ConnectionTwitter } from "../../ui/src/app/pages/settings/connections/twitter/connection-twitter";
-import { TwitterSettings } from "../../ui/src/app/providers/twitter/twitter-settings";
-import { TwitterUsage } from "../../ui/src/app/providers/twitter/twitter-usage";
-import { TwitterFeed } from "../../ui/src/app/providers/twitter/twitter-feed";
-import { TwitterFollows } from "../../ui/src/app/providers/twitter/twitter-follows";
-import { TwitterReachability } from "../../ui/src/app/providers/twitter/twitter-reachability";
-import { TwitterApi } from "../../ui/src/app/providers/twitter/twitter-api";
-import { TwitterPacer } from "../../ui/src/app/providers/twitter/twitter-pacer";
-import { TwitterImport } from "../../ui/src/app/providers/twitter/twitter-import";
-import { CorsProxy } from "../../ui/src/app/providers/cors-proxy/cors-proxy";
-import { ProxyConsent } from "../../ui/src/app/providers/proxy-consent-store";
-import { VaultBridge } from "../../ui/src/app/providers/vault/vault-bridge";
-import { PageDiagnostics } from "../../ui/src/app/page-diagnostics";
-import { Terminology } from "../../ui/src/app/terminology";
+import { parseHandles } from "../../ui/src/app/connections/twitter/twitter-import";
+import { ConnectionTwitter } from "../../ui/src/app/settings/connections/twitter/connection-twitter";
+import { TwitterSettings } from "../../ui/src/app/connections/twitter/twitter-settings";
+import { TwitterUsage } from "../../ui/src/app/connections/twitter/twitter-usage";
+import { TwitterFeed } from "../../ui/src/app/connections/twitter/twitter-feed";
+import { TwitterFollows } from "../../ui/src/app/connections/twitter/twitter-follows";
+import { TwitterReachability } from "../../ui/src/app/connections/twitter/twitter-reachability";
+import { TwitterApi } from "../../ui/src/app/connections/twitter/twitter-api";
+import { TwitterPacer } from "../../ui/src/app/connections/twitter/twitter-pacer";
+import { TwitterImport } from "../../ui/src/app/connections/twitter/twitter-import";
+import { CorsProxy } from "../../ui/src/app/connections/cors-proxy/cors-proxy";
+import { ProxyConsent } from "../../ui/src/app/connections/proxy-consent-store";
+import { VaultBridge } from "../../ui/src/app/connections/vault/vault-bridge";
+import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
+import { Terminology } from "../../ui/src/app/i18n/terminology";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 export default {

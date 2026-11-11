@@ -2,14 +2,14 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Api } from '../src/app/api';
-import { Auth } from '../src/app/auth';
-import { authInterceptor } from '../src/app/auth.interceptor';
-import { Server } from '../src/app/server';
-import { serverInterceptor } from '../src/app/server.interceptor';
+import { Api } from '../src/app/platform/api/api';
+import { Auth } from '../src/app/platform/session/auth';
+import { authInterceptor } from '../src/app/platform/http/auth.interceptor';
+import { Server } from '../src/app/platform/http/server';
+import { serverInterceptor } from '../src/app/platform/http/server.interceptor';
 import { environment } from '../src/environments/environment';
 import { Buffer } from 'node:buffer';
-import { MediaAttachment } from '../src/app/models';
+import { MediaAttachment } from '../src/app/platform/api/models';
 
 describe('Mawkingbird client against the PyPI Mastodon mock', () => {
   let api: Api;

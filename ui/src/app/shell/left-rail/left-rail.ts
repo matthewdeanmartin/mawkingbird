@@ -1,20 +1,20 @@
-import { accountProfilePath } from '../../account-route';
-import { Server } from '../../server';
+import { accountProfilePath } from '../../accounts/account-route';
+import { Server } from '../../platform/http/server';
 import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbIdentityRow } from '../../design-system/identity/identity-row';
 import { MbButton } from '../../design-system/button/button';
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AccountPreview } from '../../account-hover-card/account-preview';
-import { Api } from '../../api';
-import { Auth } from '../../auth';
-import { Account, Tag } from '../../models';
-import { HomeTimelineFeed } from '../../home-timeline-feed';
-import { Terminology } from '../../terminology';
-import { AnonymousFollows } from '../../providers/anonymous/anonymous-follows';
-import { AnonymousAccount } from '../../providers/anonymous/anonymous-account';
+import { AccountPreview } from '../../accounts/account-hover-card/account-preview';
+import { Api } from '../../platform/api/api';
+import { Auth } from '../../platform/session/auth';
+import { Account, Tag } from '../../platform/api/models';
+import { HomeTimelineFeed } from '../../feeds/home-timeline-feed';
+import { Terminology } from '../../i18n/terminology';
+import { AnonymousFollows } from '../../accounts/anonymous/anonymous-follows';
+import { AnonymousAccount } from '../../accounts/anonymous/anonymous-account';
 import { ProfileStack } from './profile-stack/profile-stack';
-import { FollowState } from '../../follow-state';
+import { FollowState } from '../../accounts/follow-state';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 // i18n shell.left.whoToFollow: Who to follow

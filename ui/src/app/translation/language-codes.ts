@@ -1,4 +1,4 @@
-import { LANG_NAMES } from '../language-detect';
+import { LANG_NAMES } from '../language/language-detect';
 
 /** Normalize a tag ("en-US", "pt_BR", "EN") to its bare ISO 639-1 code ("en"). */
 export function bareLanguage(code: string | null | undefined): string {

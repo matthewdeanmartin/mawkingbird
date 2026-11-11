@@ -4,11 +4,11 @@ import {
   type Meta,
   type StoryObj,
 } from "@storybook/angular";
-import { ProxyConsentDialog } from "../../ui/src/app/providers/shortener/proxy-consent-dialog/proxy-consent-dialog";
-import { TwitterConsentDialog } from "../../ui/src/app/providers/twitter/twitter-consent-dialog/twitter-consent-dialog";
-import { SHORTENER_CATALOG } from "../../ui/src/app/providers/shortener/shortener-catalog";
-import { CORS_PROXY_CATALOG } from "../../ui/src/app/providers/cors-proxy/cors-proxy-catalog";
-import { TWITTER_SOURCE_CATALOG } from "../../ui/src/app/providers/twitter/twitter-source";
+import { ProxyConsentDialog } from "../../ui/src/app/connections/shortener/proxy-consent-dialog/proxy-consent-dialog";
+import { TwitterConsentDialog } from "../../ui/src/app/connections/twitter/twitter-consent-dialog/twitter-consent-dialog";
+import { SHORTENER_CATALOG } from "../../ui/src/app/connections/shortener/shortener-catalog";
+import { CORS_PROXY_CATALOG } from "../../ui/src/app/connections/cors-proxy/cors-proxy-catalog";
+import { TWITTER_SOURCE_CATALOG } from "../../ui/src/app/connections/twitter/twitter-source";
 import { MbButton } from "../../ui/src/app/design-system/button/button";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 

@@ -9,10 +9,10 @@
  * costs one edit here instead of one per spec.
  */
 
-import { Session } from '../auth';
-import { BskySession } from '../providers/bluesky/bluesky-session';
-import { saveBlueskyIdentity } from '../providers/bluesky/bluesky-identity-store';
-import { GitHubUser } from '../providers/github/github-session';
+import { Session } from '../platform/session/auth';
+import { BskySession } from '../connections/bluesky/bluesky-session';
+import { saveBlueskyIdentity } from '../connections/bluesky/bluesky-identity-store';
+import { GitHubUser } from '../connections/github/github-session';
 
 /** Seed a linked Bluesky account, writing the profile and JWTs to their own keys. */
 export function seedBskySession(session: BskySession, scopeSuffix = ''): void {

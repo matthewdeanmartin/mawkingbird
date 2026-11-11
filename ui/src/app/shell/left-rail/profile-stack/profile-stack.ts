@@ -3,15 +3,15 @@ import { MbRailCard } from '../../../design-system/identity/rail-card';
 import { MbButton } from '../../../design-system/button/button';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Auth } from '../../../auth';
-import { HumanCountPipe } from '../../../human-count.pipe';
-import { VerifiedBadge } from '../../../verified-badge/verified-badge';
-import { scopedKey } from '../../../account-scope';
+import { Auth } from '../../../platform/session/auth';
+import { HumanCountPipe } from '../../../i18n/human-count.pipe';
+import { VerifiedBadge } from '../../../accounts/verified-badge/verified-badge';
+import { scopedKey } from '../../../platform/session/account-scope';
 import { RailProfile } from './rail-profile';
 import { RailProfiles } from './rail-profiles';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { AppDialogs } from '../../../app-dialogs';
-import { SessionTeardown } from '../../../session-teardown';
+import { AppDialogs } from '../../app-dialogs';
+import { SessionTeardown } from '../../../platform/session/session-teardown';
 
 // i18n shell.profile.resetAnonymous: Reset Anonymous…
 // i18n shell.profile.resetAnonymousConfirm: Start Anonymous over? This clears the accounts and hashtags you follow, your lists, bookmarks, mutes and cached feeds in this browser. Your chosen server stays.

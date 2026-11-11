@@ -35,8 +35,8 @@ import {
   SUPPORTED_LOCALES,
   TranslocoLocaleSync,
 } from './locale';
-import { externalFetch } from '../providers/external-fetch';
-import { BUILD_INFO } from '../build-info';
+import { externalFetch } from '../platform/http/external-fetch';
+import { BUILD_INFO } from '../platform/build/build-info';
 
 /** Dictionaries and JS must belong to the same release, including on canary. */
 export function translationUrl(

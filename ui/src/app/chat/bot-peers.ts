@@ -1,11 +1,11 @@
 import { computed, inject, Injectable } from '@angular/core';
-import { Account } from '../models';
-import { AiAvailability } from '../ai-availability';
-import { ElizaService } from '../eliza/eliza.service';
-import { ELIZA_PEER } from '../eliza/eliza-identity';
-import { OpenRouterModelChoice } from '../providers/openrouter/openrouter-model-choice';
-import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
-import { OPENROUTER_PEER, openRouterAccount } from '../providers/openrouter/openrouter-identity';
+import { Account } from '../platform/api/models';
+import { AiAvailability } from '../platform/build/ai-availability';
+import { ElizaService } from './eliza/eliza.service';
+import { ELIZA_PEER } from './eliza/eliza-identity';
+import { OpenRouterModelChoice } from '../connections/openrouter/openrouter-model-choice';
+import { OpenRouterSession } from '../connections/openrouter/openrouter-session';
+import { OPENROUTER_PEER, openRouterAccount } from '../connections/openrouter/openrouter-identity';
 
 /** A browser-local correspondent you can hold conversations with. */
 export interface BotPeer {

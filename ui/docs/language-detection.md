@@ -178,7 +178,7 @@ Hebrew and other scripts also have users outside our supported language list;
 the existing unsupported-language vetoes are useful but not exhaustive.
 
 The core is one dependency-free TypeScript module, importing no Angular, DOM,
-storage, network, Node APIs, or app models. `src/app/language-detect.ts` is a
+storage, network, Node APIs, or app models. `src/app/language/language-detect.ts` is a
 compatibility re-export, so existing app imports remain stable. The offline
 audit loads the core directly without Angular. The UI-owned eligibility guard,
 preferences, quota checks and recovery actions remain outside it.

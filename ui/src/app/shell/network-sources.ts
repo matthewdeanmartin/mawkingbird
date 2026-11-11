@@ -36,9 +36,9 @@
  */
 
 import { inject } from '@angular/core';
-import { Auth } from '../auth';
-import { BlueskySession } from '../providers/bluesky/bluesky-session';
-import { MastodonConnector } from '../providers/mastodon/mastodon-connector';
+import { Auth } from '../platform/session/auth';
+import { BlueskySession } from '../connections/bluesky/bluesky-session';
+import { MastodonConnector } from '../connections/mastodon/mastodon-connector';
 
 /** The two predicates, as signals, for a component to hold. */
 export interface NetworkSources {

@@ -1,0 +1,2165 @@
+import { AppDialogs } from '../../shell/app-dialogs';
+import { By } from '@angular/platform-browser';
+import { Compose } from '../../publishing/compose/compose';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
+import { BehaviorSubject, EMPTY, firstValueFrom, of } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Account, Relationship, Status } from '../../platform/api/models';
+import { Profile } from './profile';
+import { Auth } from '../../platform/session/auth';
+import { AnonymousFollows } from '../anonymous/anonymous-follows';
+import { PrivateFollows } from '../private-follows';
+import { Pseudonymity } from '../pseudonymity';
+import { anonymousAccountRouteRef } from '../anonymous/anonymous-route-ref';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { RssProvider } from '../../reading/rss/rss-provider';
+import { AnonymousTags } from '../anonymous/anonymous-tags';
+import { AnonymousHomeFeedCache } from '../anonymous/anonymous-home-feed-cache';
+import { RssSubscriptions } from '../../reading/rss/rss-subscriptions';
+import { TwitterFollows } from '../../connections/twitter/twitter-follows';
+import { scopedKey } from '../../platform/session/account-scope';
+
+/** n bare statuses with descending ids starting at s<base> (timeline order). */
+function makeStatuses(n: number, base: number): Status[] {
+  return Array.from(
+    { length: n },
+    (_, i) =>
+      ({
+        id: `s${base + i}`,
+        content: `post ${base + i}`,
+        account: { id: '7', username: 'kay' },
+        media_attachments: [],
+      }) as unknown as Status,
+  );
+}
+
+/**
+ * Profile block/unblock wiring, isolated at the HTTP boundary — no live or mock server.
+ * We drive the component's toggleBlock() and assert it hits the right endpoint based on the
+ * current relationship, then reflects the server's updated relationship.
+ */
+beforeEach(() => {
+  vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+  // These component tests mount without route definitions; assert navigation rather than activating it.
+  vi.spyOn(Router.prototype, 'navigate').mockResolvedValue(true).mockClear();
+});
+
+/** jsdom has no modal dialogs; give MbDialog the two calls it makes. */
+function stubModalDialogs(): void {
+  const proto = HTMLDialogElement.prototype as unknown as Record<string, unknown>;
+  if (typeof proto['showModal'] === 'function') return;
+  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+    configurable: true,
+    value(this: HTMLDialogElement) {
+      this.open = true;
+    },
+  });
+  Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+    configurable: true,
+    value(this: HTMLDialogElement) {
+      this.open = false;
+    },
+  });
+}
+
+/** Open "More options…" from the profile's ••• menu and return the dialog's body. */
+function openMoreOptions(fixture: {
+  nativeElement: unknown;
+  detectChanges(): void;
+}): HTMLElement | null {
+  const root = fixture.nativeElement as HTMLElement;
+  stubModalDialogs();
+  const existing = root.querySelector<HTMLElement>('.more-options');
+  if (existing) return existing;
+  const more = [...root.querySelectorAll<HTMLButtonElement>('.account-danger-panel button')].find(
+    (button) => button.textContent?.trim() === 'More options…',
+  );
+  more?.click();
+  fixture.detectChanges();
+  return root.querySelector<HTMLElement>('.more-options');
+}
+
+describe('self profile local actions', () => {
+  const friend = {
+    id: '42',
+    username: 'friend',
+    acct: 'friend@example.social',
+    url: 'https://example.social/@friend',
+    fields: [],
+  } as unknown as Account;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { paramMap: EMPTY } },
+      ],
+    });
+  });
+
+  afterEach(() => {
+    TestBed.inject(HttpTestingController).verify();
+    localStorage.clear();
+  });
+
+  function setUp(anonymous: boolean) {
+    const auth = TestBed.inject(Auth);
+    if (anonymous) auth.enterAnonymous();
+    else {
+      auth.setToken('local-actions-token');
+      auth.account.set({ ...friend, id: '301226', username: 'me' });
+    }
+    const fixture = TestBed.createComponent(Profile);
+    fixture.componentInstance['account'].set(auth.account());
+    fixture.componentInstance['loading'].set(false);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it.each([true, false])(
+    'opens a Mastodon profile in Radio with its qualified account (anonymous=%s)',
+    (anonymous) => {
+      const fixture = setUp(anonymous);
+      fixture.componentInstance['account'].set({
+        ...friend,
+        acct: 'MaQuest',
+        username: 'MaQuest',
+        url: 'https://djs.social/@MaQuest',
+      });
+      fixture.detectChanges();
+      openMoreOptions(fixture);
+      const link = fixture.nativeElement.querySelector(
+        'a[mbMenuItem][href^="/radio?"]',
+      ) as HTMLAnchorElement;
+      expect(link.textContent).toContain('Open in Radio');
+      expect(new URL(link.href).searchParams.get('acct')).toBe('MaQuest@djs.social');
+      fixture.componentInstance['isBluesky'].set(true);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('a[href^="/radio?"]')).toBeNull();
+    },
+  );
+
+  it.each(['following', 'followers'] as const)(
+    'opens the %s badge destination and follows Back to posts',
+    (tab) => {
+      const params = new BehaviorSubject(convertToParamMap({ tab }));
+      TestBed.overrideProvider(ActivatedRoute, {
+        useValue: {
+          paramMap: EMPTY,
+          queryParamMap: params,
+          snapshot: { queryParamMap: params.value },
+        },
+      });
+      TestBed.overrideComponent(Profile, { set: { template: '' } });
+      const fixture = setUp(false);
+      expect(fixture.componentInstance['tab']()).toBe(tab);
+      params.next(convertToParamMap({}));
+      expect(fixture.componentInstance['tab']()).toBe('posts');
+    },
+  );
+
+  it('labels a disabled RSS subscription Unsubscribe and requires confirmation before removing it', async () => {
+    const url = 'https://example.com/feed?type=changes';
+    const subs = TestBed.inject(RssSubscriptions);
+    subs.add(url, 'Wikipedia recent changes');
+    subs.setEnabled(url, false);
+    const fixture = setUp(true);
+    fixture.componentInstance['isRss'].set(true);
+    fixture.componentInstance['rssFeedUrl'].set(url);
+    fixture.componentInstance['account'].set({
+      ...friend,
+      id: 'rss:' + url,
+      display_name: 'Wikipedia recent changes',
+    });
+    fixture.detectChanges();
+    const unsubscribe = [...fixture.nativeElement.querySelectorAll('button')].find(
+      (button) => (button as HTMLButtonElement).textContent?.trim() === 'Unsubscribe',
+    ) as HTMLButtonElement;
+    expect(unsubscribe).toBeDefined();
+    const reader = fixture.nativeElement.querySelector('a[href^="/rss?"]') as HTMLAnchorElement;
+    expect(reader.textContent).toContain('Open in Reader');
+    expect(new URL(reader.href).searchParams.get('feed')).toBe(url);
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(false);
+    unsubscribe.click();
+    await Promise.resolve();
+    expect(AppDialogs.prototype.confirm).toHaveBeenCalledWith(
+      expect.stringContaining('Wikipedia recent changes'),
+    );
+    expect(subs.has(url)).toBe(true);
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(true);
+    unsubscribe.click();
+    await Promise.resolve();
+    fixture.detectChanges();
+    expect(subs.has(url)).toBe(false);
+    expect(fixture.nativeElement.textContent).toContain('Subscribe');
+  });
+
+  it('offers four actions on the anonymous self profile and capitalized navigation labels', () => {
+    const fixture = setUp(true);
+    const el = fixture.nativeElement as HTMLElement;
+    const menu = el.querySelector('.account-danger-panel')!;
+    expect(menu.querySelector('a')?.textContent).toContain('Edit local profile');
+    const buttons = [...menu.querySelectorAll('button')];
+    expect(buttons).toHaveLength(4);
+    expect(buttons[0].textContent).toContain('View as Slide Show');
+    expect(buttons[0].disabled).toBe(false);
+    expect(buttons.slice(1).every((button) => button.disabled)).toBe(true);
+    expect(el.querySelector('[aria-label="Profile sections"]')?.textContent).toContain('Following');
+  });
+
+  it('clears anonymous friends, tags and RSS independently, persists and invalidates the feed', async () => {
+    const fixture = setUp(true);
+    const follows = TestBed.inject(AnonymousFollows);
+    const tags = TestBed.inject(AnonymousTags);
+    const rss = TestBed.inject(RssSubscriptions);
+    const twitter = TestBed.inject(TwitterFollows);
+    follows.follow(friend, 'https://example.social');
+    tags.follow('birds');
+    rss.add('https://example.com/feed', 'Feed');
+    twitter.add({ username: 'friend', displayName: 'Friend' });
+    const invalidate = vi.spyOn(TestBed.inject(AnonymousHomeFeedCache), 'invalidate');
+    fixture.detectChanges();
+    const buttons = [
+      ...fixture.nativeElement.querySelectorAll('.account-danger-panel button'),
+    ].slice(1);
+    buttons[0].click();
+    await Promise.resolve();
+    expect(follows.count()).toBe(0);
+    expect(twitter.follows()).toEqual([]);
+    expect(JSON.parse(localStorage.getItem('mockingbird_anonymous_follows')!).follows).toEqual([]);
+    expect(tags.count()).toBe(1);
+    expect(rss.feeds()).toHaveLength(1);
+    expect(invalidate).toHaveBeenCalled();
+    buttons[1].click();
+    await Promise.resolve();
+    expect(tags.count()).toBe(0);
+    expect(JSON.parse(localStorage.getItem('mockingbird_anonymous_tags')!).tags).toEqual([]);
+    expect(rss.feeds()).toHaveLength(1);
+    buttons[2].click();
+    await Promise.resolve();
+    expect(rss.feeds()).toEqual([]);
+    expect(JSON.parse(localStorage.getItem(scopedKey('mockingbird_rss_feeds'))!)).toEqual([]);
+    TestBed.inject(HttpTestingController).expectNone(() => true);
+  });
+
+  it('opens the profile photo and header full size in the image viewer', () => {
+    const fixture = setUp(false);
+    fixture.componentInstance['account'].update((account) => ({
+      ...account!,
+      avatar: 'https://example.social/avatar.png',
+      avatar_static: 'https://example.social/avatar.png',
+      header: 'https://example.social/header.png',
+    }));
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('app-lightbox')).toBeNull();
+    el.querySelector<HTMLButtonElement>('.avatar-zoom')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-lightbox')).not.toBeNull();
+    expect(fixture.componentInstance['profileImageIndex']()).toBe(0);
+    fixture.componentInstance['profileImageIndex'].set(null);
+    fixture.detectChanges();
+    el.querySelector<HTMLButtonElement>('.banner-zoom')!.click();
+    expect(fixture.componentInstance['profileImageIndex']()).toBe(1);
+  });
+
+  it('shows bot identity and opens the slideshow from the profile menu', () => {
+    const fixture = setUp(false);
+    fixture.componentInstance['account'].update((account) => ({ ...account!, bot: true }));
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('h2 > .badge')?.textContent).toContain('Bot');
+    const menu = el.querySelector('.account-danger-menu summary');
+    expect(menu?.textContent?.trim()).toBe('•••');
+    expect(menu?.getAttribute('aria-label')).toBe('More account actions');
+    el.querySelector<HTMLButtonElement>('.account-danger-panel button')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-profile-slideshow')).not.toBeNull();
+    const close = [...el.querySelectorAll<HTMLButtonElement>('app-profile-slideshow button')].find(
+      (button) => button.textContent?.trim() === 'Back to profile',
+    );
+    close!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-profile-slideshow')).toBeNull();
+    fixture.componentInstance['account'].update((account) => ({ ...account!, bot: false }));
+    fixture.detectChanges();
+    expect(el.querySelector('h2 > .badge')).toBeNull();
+  });
+
+  it('clears only the signed-in account local follows, preserving anonymous and other account data', async () => {
+    const fixture = setUp(false);
+    const anonymous = TestBed.inject(AnonymousFollows);
+    const tags = TestBed.inject(AnonymousTags);
+    const privateStore = TestBed.inject(PrivateFollows).current()!;
+    anonymous.follow(friend, 'https://example.social');
+    tags.follow('birds');
+    privateStore.follow(friend, 'https://example.social');
+    const otherKey = 'mockingbird_private_follows_other-account';
+    localStorage.setItem(otherKey, 'untouched');
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('a[href="/settings/profile"]')?.textContent).toContain('Edit profile');
+    const buttons = [
+      ...el.querySelectorAll<HTMLButtonElement>('.account-danger-panel button'),
+    ].slice(1);
+    expect(buttons[1].disabled).toBe(true);
+    buttons[0].click();
+    await Promise.resolve();
+    expect(privateStore.count()).toBe(0);
+    expect(anonymous.count()).toBe(1);
+    expect(tags.count()).toBe(1);
+    expect(localStorage.getItem(otherKey)).toBe('untouched');
+    TestBed.inject(HttpTestingController).expectNone(() => true);
+  });
+
+  it('preserves follows when cancelled and cannot clear from another profile', async () => {
+    const fixture = setUp(true);
+    const follows = TestBed.inject(AnonymousFollows);
+    follows.follow(friend, 'https://example.social');
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(false);
+    await fixture.componentInstance['clearLocalFollows']('friends');
+    expect(follows.count()).toBe(1);
+    vi.mocked(AppDialogs.prototype.confirm).mockResolvedValue(true);
+    fixture.componentInstance['account'].set(friend);
+    await fixture.componentInstance['clearLocalFollows']('friends');
+    expect(follows.count()).toBe(1);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Local profile actions');
+  });
+
+  it('reports storage failures and retains the local list', async () => {
+    const fixture = setUp(true);
+    const follows = TestBed.inject(AnonymousFollows);
+    follows.follow(friend, 'https://example.social');
+    const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Quota');
+    });
+    await fixture.componentInstance['clearLocalFollows']('friends');
+    expect(follows.count()).toBe(1);
+    expect(fixture.componentInstance['localActionError']()).toBe(true);
+    write.mockRestore();
+  });
+});
+
+describe('Profile block/unblock', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => localStorage.clear());
+
+  function setUp() {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id: '900' })) },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+
+    // load() fans out five requests; satisfy them so the component settles.
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush({ id: '900', username: 'eve', fields: [] } as unknown as Account);
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/900/statuses' && !r.params.has('pinned'))
+      .flush([]);
+    httpMock
+      .expectOne(
+        (r) => r.url === '/api/v1/accounts/900/statuses' && r.params.get('pinned') === 'true',
+      )
+      .flush([]);
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/familiar_followers')
+      .forEach((r) => r.flush([]));
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/relationships')
+      .flush([{ id: '900', blocking: false } as Relationship]);
+    httpMock.expectOne('/api/v1/accounts/900/featured_tags').flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/endorsements').flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/collections').flush({ collections: [] });
+
+    return fixture;
+  }
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+  });
+
+  it('blocks an un-blocked account via POST /block and stores the updated relationship', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    expect(cmp.relationship().blocking).toBe(false);
+    fixture.detectChanges();
+    const analyticsLabels = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('button'),
+    ].filter((button) => button.textContent?.trim() === 'Analytics');
+    expect(analyticsLabels).toHaveLength(1);
+
+    cmp.toggleBlock();
+
+    const req = httpMock.expectOne('/api/v1/accounts/900/block');
+    expect(req.request.method).toBe('POST');
+    req.flush({ id: '900', blocking: true } as Relationship);
+
+    expect(cmp.relationship().blocking).toBe(true);
+  });
+
+  it('mutes a signed-in Mastodon profile on the server only, never in the browser list', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+
+    cmp.mute(3600);
+
+    httpMock.expectOne('/api/v1/accounts/900/mute').flush({ id: '900', muting: true });
+    expect(cmp.relationship().muting).toBe(true);
+    expect(localStorage.getItem('mockingbird_anonymous_moderation')).toBeNull();
+    expect(cmp.localMuted()).toBe(false);
+  });
+
+  it('offers private follow in the profile menu without changing the public relationship', () => {
+    const fixture = setUp();
+    localStorage.setItem('mastodon_mock_token', 'profile-test-token');
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const button = Array.from(el.querySelectorAll('.account-danger-panel button')).find(
+      (b) => b.textContent?.trim() === 'Private follow',
+    ) as HTMLButtonElement;
+    expect(button).toBeDefined();
+    const before = (fixture.componentInstance as any).relationship();
+    button.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(PrivateFollows).current()!.count()).toBe(1);
+    expect((fixture.componentInstance as any).relationship()).toEqual(before);
+    expect(button.textContent?.trim()).toBe('Remove private follow');
+    button.click();
+    expect(TestBed.inject(PrivateFollows).current()!.count()).toBe(0);
+    httpMock.expectNone((r) => r.method !== 'GET');
+  });
+
+  it('offers private follow for a Bluesky profile without requiring a Bluesky connection', () => {
+    const fixture = setUp();
+    localStorage.setItem('mastodon_mock_token', 'profile-test-token');
+    TestBed.inject(Pseudonymity).setEnabled(true);
+    (fixture.componentInstance as any).account.set({
+      id: 'bsky:did:plc:other',
+      username: 'other',
+      acct: 'other.bsky.social',
+      fields: [],
+    });
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const button = Array.from(el.querySelectorAll('.account-danger-panel button')).find(
+      (b) => b.textContent?.trim() === 'Private follow',
+    ) as HTMLButtonElement;
+    expect(button).toBeDefined();
+    button.click();
+    expect(TestBed.inject(PrivateFollows).current()!.follows()[0].network).toBe('bluesky');
+    expect(el.textContent).toContain('without following on the network');
+    httpMock.expectNone((r) => r.method !== 'GET');
+  });
+
+  /**
+   * The relationship reads out of exactly one control.
+   *
+   * A mutual used to render twice: a "Mutuals" badge next to a "Following"
+   * button, saying the same thing in two places and spending the width of the
+   * button row to do it. The button now carries the mutual state and the badge
+   * stands down — but only for that case, because "Follows you" is genuinely
+   * something the button cannot say.
+   */
+  describe('the follow button and the follows-you badge', () => {
+    const labelsIn = (fixture: ReturnType<typeof setUp>) =>
+      [...(fixture.nativeElement as HTMLElement).querySelectorAll('.profile-buttons button')].map(
+        (button) => button.textContent?.trim(),
+      );
+
+    const badgeText = (fixture: ReturnType<typeof setUp>) =>
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('.badge.follows-you')
+        ?.textContent?.trim() ?? null;
+
+    it('says Mutuals on the button and drops the badge when the follow runs both ways', () => {
+      const fixture = setUp();
+      const cmp = fixture.componentInstance as any;
+      cmp.relationship.set({ id: '900', following: true, followed_by: true } as Relationship);
+      fixture.detectChanges();
+
+      expect(labelsIn(fixture)).toContain('Mutuals');
+      expect(labelsIn(fixture)).not.toContain('Following');
+      // The duplicate. Its absence is the whole point of the change.
+      expect(badgeText(fixture)).toBeNull();
+    });
+
+    it('keeps the badge when they follow you and you do not follow back', () => {
+      const fixture = setUp();
+      const cmp = fixture.componentInstance as any;
+      cmp.relationship.set({ id: '900', following: false, followed_by: true } as Relationship);
+      fixture.detectChanges();
+
+      // Here the badge earns its place: the button says "Follow", so without it
+      // there is nothing to distinguish a follower from a stranger.
+      expect(badgeText(fixture)).toBe('Follows you');
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('h2 .badge.follows-you'),
+      ).not.toBeNull();
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('.profile-buttons .badge.follows-you'),
+      ).toBeNull();
+      expect(labelsIn(fixture)).toContain('Follow');
+    });
+
+    it('says Following when you follow someone who does not follow back', () => {
+      const fixture = setUp();
+      const cmp = fixture.componentInstance as any;
+      cmp.relationship.set({ id: '900', following: true, followed_by: false } as Relationship);
+      fixture.detectChanges();
+
+      expect(labelsIn(fixture)).toContain('Following');
+      expect(labelsIn(fixture)).not.toContain('Mutuals');
+      expect(badgeText(fixture)).toBeNull();
+    });
+
+    it('still unfollows when the button is showing Mutuals', () => {
+      // The label changed; the action behind it must not have.
+      const fixture = setUp();
+      const cmp = fixture.componentInstance as any;
+      cmp.relationship.set({ id: '900', following: true, followed_by: true } as Relationship);
+      fixture.detectChanges();
+
+      cmp.requestUnfollow();
+      expect(cmp.showUnfollowConfirm()).toBe(true);
+      cmp.confirmUnfollow();
+      httpMock
+        .expectOne('/api/v1/accounts/900/unfollow')
+        .flush({ id: '900', following: false, followed_by: true } as Relationship);
+
+      // No longer mutual, so the badge comes back to carry the other direction.
+      fixture.detectChanges();
+      expect(badgeText(fixture)).toBe('Follows you');
+    });
+
+    it('shortens the list button so the row fits a phone', () => {
+      const fixture = setUp();
+      fixture.detectChanges();
+      expect(labelsIn(fixture)).not.toContain('Lists & collections');
+    });
+  });
+
+  it('requires confirmation before unfollowing', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    cmp.relationship.set({ id: '900', following: true } as Relationship);
+
+    cmp.requestUnfollow();
+    expect(cmp.showUnfollowConfirm()).toBe(true);
+    httpMock.expectNone('/api/v1/accounts/900/unfollow');
+
+    cmp.confirmUnfollow();
+    const request = httpMock.expectOne('/api/v1/accounts/900/unfollow');
+    expect(request.request.method).toBe('POST');
+    request.flush({ id: '900', following: false } as Relationship);
+
+    expect(cmp.showUnfollowConfirm()).toBe(false);
+    expect(cmp.relationship().following).toBe(false);
+  });
+
+  it('shows Requested after a locked account accepts a pending follow request', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    cmp.account.update((account: Account) => ({ ...account, locked: true }));
+    cmp.relationship.set({ id: '900', following: false, requested: false } as Relationship);
+    fixture.detectChanges();
+
+    cmp.toggleFollow();
+    const request = httpMock.expectOne('/api/v1/accounts/900/follow');
+    expect(request.request.method).toBe('POST');
+    request.flush({ id: '900', following: false, requested: true } as Relationship);
+    fixture.detectChanges();
+
+    const followButton = [
+      ...fixture.nativeElement.querySelectorAll('.profile-buttons button'),
+    ].find((button: HTMLButtonElement) => button.textContent.includes('Requested')) as
+      HTMLButtonElement | undefined;
+    expect(followButton?.textContent).toContain('Requested');
+    expect(followButton?.disabled).toBe(true);
+  });
+
+  it('removes a follower without blocking them', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    cmp.relationship.set({ id: '900', followed_by: true, blocking: false } as Relationship);
+    fixture.detectChanges();
+    expect(openMoreOptions(fixture)?.textContent).toContain('Remove follower');
+
+    cmp.requestRemoveFollower();
+    cmp.confirmRemoveFollower();
+    const request = httpMock.expectOne('/api/v1/accounts/900/remove_from_followers');
+    expect(request.request.method).toBe('POST');
+    request.flush({ id: '900', followed_by: false, blocking: false } as Relationship);
+
+    expect(cmp.relationship().followed_by).toBe(false);
+    expect(cmp.relationship().blocking).toBe(false);
+    httpMock.expectNone('/api/v1/accounts/900/block');
+  });
+
+  it('toggles boosts in the overflow menu and uses retweet terminology when configured', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    cmp.relationship.set({ id: '900', following: true, showing_reblogs: true } as Relationship);
+    fixture.detectChanges();
+    // Match on the panel's whole text rather than a positional selector: the menu's
+    // ordering is deliberate (keep-actions above the rule) and may grow entries.
+    const panelText = () =>
+      fixture.nativeElement.querySelector('.account-danger-panel').textContent ?? '';
+    expect(panelText()).toContain('Hide boosts');
+
+    cmp.toggleAccountBoosts();
+    const request = httpMock.expectOne('/api/v1/accounts/900/follow');
+    expect(request.request.body).toEqual({ reblogs: false });
+    request.flush({ id: '900', following: true, showing_reblogs: false } as Relationship);
+
+    TestBed.inject(ClientPrefs).setPostNoun('tweet');
+    fixture.detectChanges();
+    expect(panelText()).toContain('Show retweets');
+  });
+
+  it('follows locally in Anonymous without relationship mutation requests', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id: '900' })) },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    const target = {
+      id: '900',
+      username: 'eve',
+      acct: 'eve@example.social',
+      display_name: 'Eve',
+      note: '',
+      url: 'https://example.social/@eve',
+      avatar: '',
+      avatar_static: '',
+      header: '',
+      followers_count: 0,
+      following_count: 0,
+      statuses_count: 0,
+      bot: false,
+      locked: false,
+      fields: [],
+    } as Account;
+
+    httpMock.expectOne('/api/v1/accounts/900').flush(target);
+    httpMock
+      .expectOne(
+        (request) =>
+          request.url === '/api/v1/accounts/900/statuses' && !request.params.has('pinned'),
+      )
+      .flush([]);
+    httpMock
+      .expectOne(
+        (request) =>
+          request.url === '/api/v1/accounts/900/statuses' &&
+          request.params.get('pinned') === 'true',
+      )
+      .flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/featured_tags').flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/endorsements').flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/collections').flush({ collections: [] });
+    httpMock.expectNone((request) => request.url.includes('/relationships'));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Local lists');
+
+    (fixture.componentInstance as any).toggleFollow();
+
+    expect(TestBed.inject(AnonymousFollows).count()).toBe(1);
+    expect((fixture.componentInstance as any).relationship().following).toBe(true);
+    httpMock.expectNone((request) => /\/(follow|unfollow)$/.test(request.url));
+  });
+
+  it('loads a public profile and posts from the referenced instance in Anonymous', () => {
+    const routeId = anonymousAccountRouteRef({ server: 'https://social.example', id: '900' });
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id: routeId })) },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).enterAnonymous('https://home.example');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    const target = {
+      id: '900',
+      username: 'eve',
+      acct: 'eve',
+      display_name: 'Eve',
+      note: '',
+      url: 'https://social.example/@eve',
+      avatar: '',
+      avatar_static: '',
+      header: '',
+      followers_count: 0,
+      following_count: 0,
+      statuses_count: 1,
+      bot: false,
+      locked: false,
+      fields: [],
+    } as Account;
+    const post = {
+      id: '50',
+      created_at: '2026-01-01T00:00:00Z',
+      edited_at: null,
+      content: '<p>Public</p>',
+      spoiler_text: '',
+      visibility: 'public',
+      url: 'https://social.example/@eve/50',
+      account: target,
+      reblog: null,
+      quote: null,
+      in_reply_to_id: null,
+      replies_count: 0,
+      reblogs_count: 0,
+      favourites_count: 0,
+      favourited: false,
+      reblogged: false,
+      bookmarked: false,
+      muted: false,
+      pinned: false,
+      sensitive: false,
+      poll: null,
+      quote_approval_policy: null,
+      media_attachments: [],
+    } as Status;
+
+    httpMock.expectOne('https://social.example/api/v1/accounts/900').flush(target);
+    httpMock
+      .expectOne(
+        (request) =>
+          request.url === 'https://social.example/api/v1/accounts/900/statuses' &&
+          !request.params.has('pinned'),
+      )
+      .flush([post]);
+    httpMock
+      .expectOne(
+        (request) =>
+          request.url === 'https://social.example/api/v1/accounts/900/statuses' &&
+          request.params.get('max_id') === '50',
+      )
+      .flush([]);
+    httpMock
+      .expectOne(
+        (request) =>
+          request.url === 'https://social.example/api/v1/accounts/900/statuses' &&
+          request.params.get('pinned') === 'true',
+      )
+      .flush([]);
+    httpMock.expectOne('https://social.example/api/v1/accounts/900/collections').flush({
+      collections: [
+        {
+          id: 'collection-1',
+          account_id: '900',
+          name: 'Video makers',
+          description: 'People making great videos.',
+          discoverable: true,
+          sensitive: false,
+          local: true,
+          item_count: 25,
+          items: [],
+          created_at: '2026-01-01T00:00:00Z',
+          updated_at: '2026-01-01T00:00:00Z',
+          uri: 'https://social.example/ap/collections/collection-1',
+          url: 'https://social.example/collections/collection-1',
+        },
+      ],
+    });
+    fixture.detectChanges();
+
+    expect((fixture.componentInstance as any).account().acct).toBe('eve@social.example');
+    expect((fixture.componentInstance as any).statuses()[0].id).toBe(
+      'anonymous-mastodon:social.example:50',
+    );
+    const filters = fixture.nativeElement.querySelectorAll('.profile-filters button');
+    // Search joined this row rather than living in the ••• menu, where it sat
+    // among the moderation actions instead of with the other controls that
+    // change what the timeline shows. Four is this row's ceiling.
+    expect(filters).toHaveLength(4);
+    expect(
+      Array.from(filters).map((button) => (button as HTMLButtonElement).textContent?.trim()),
+    ).toEqual(['🔁 Boosts', '💬 Replies', '📌 Pinned', '🔍 Search']);
+    const collectionCount = fixture.nativeElement.querySelector(
+      '.collection-count-btn',
+    ) as HTMLButtonElement;
+    expect(collectionCount.textContent).toContain('Collections (1)');
+    expect(collectionCount.querySelector('strong')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.collection-row')).toBeNull();
+
+    (fixture.componentInstance as any).setTab('collections');
+    fixture.detectChanges();
+    const collection = fixture.nativeElement.querySelector('.collection-row') as HTMLAnchorElement;
+    expect(collection.textContent).toContain('Video makers');
+    expect(collection.getAttribute('href')).toBe('https://social.example/collections/collection-1');
+    httpMock.expectNone((request) => request.url.startsWith('/api/'));
+  });
+
+  it('does not show the Collections profile count when the account has none', () => {
+    const fixture = setUp();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.collection-count-btn')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.profile-collections')).toBeNull();
+  });
+
+  it('places the Anonymous login-to-post prompt in the self profile timeline', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id: 'anonymous' })),
+            snapshot: { queryParamMap: convertToParamMap({}) },
+          },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+
+    const loginPost = fixture.nativeElement.querySelector(
+      '.profile-login-post',
+    ) as HTMLAnchorElement;
+    expect(loginPost.textContent).toContain(
+      'Login or create an account to post content, reply and more',
+    );
+    expect(loginPost.getAttribute('href')).toBe('/login');
+  });
+
+  it('keeps paging older statuses until 20 accumulate (filtered pages come back short)', () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: '7' })) } },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    const cmp = fixture.componentInstance as any;
+
+    httpMock
+      .expectOne('/api/v1/accounts/7')
+      .flush({ id: '7', username: 'kay', fields: [] } as unknown as Account);
+    httpMock.expectOne((r) => r.params.get('pinned') === 'true').flush([]);
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/familiar_followers')
+      .forEach((r) => r.flush([]));
+    httpMock.expectOne((r) => r.url === '/api/v1/accounts/relationships').flush([]);
+    httpMock.expectOne('/api/v1/accounts/7/featured_tags').flush([]);
+    httpMock.expectOne('/api/v1/accounts/7/endorsements').flush([]);
+    httpMock.expectOne('/api/v1/accounts/7/collections').flush({ collections: [] });
+
+    // Page 1: defaults exclude replies but keep boosts; 5 of 20 requested survive.
+    const first = httpMock.expectOne(
+      (r) => r.url === '/api/v1/accounts/7/statuses' && !r.params.has('pinned'),
+    );
+    expect(first.request.params.get('exclude_replies')).toBe('true');
+    expect(first.request.params.get('exclude_reblogs')).toBeNull();
+    expect(first.request.params.get('limit')).toBe('20');
+    first.flush(makeStatuses(5, 100));
+
+    // Page 2 must resume from the oldest id of page 1.
+    const second = httpMock.expectOne(
+      (r) => r.url === '/api/v1/accounts/7/statuses' && !r.params.has('pinned'),
+    );
+    expect(second.request.params.get('max_id')).toBe('s104');
+    second.flush(makeStatuses(15, 200));
+
+    // 5 + 15 = 20: no third page.
+    httpMock.expectNone((r) => r.url === '/api/v1/accounts/7/statuses');
+    expect(cmp.statuses()).toHaveLength(20);
+    expect(cmp.statusesLoading()).toBe(false);
+  });
+
+  it('stops paging when the account runs out of statuses', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+
+    cmp.toggleReplies(); // Refetch, now including replies.
+    const first = httpMock.expectOne(
+      (r) => r.url === '/api/v1/accounts/900/statuses' && !r.params.has('pinned'),
+    );
+    expect(first.request.params.get('exclude_replies')).toBeNull();
+    first.flush(makeStatuses(3, 100));
+
+    const second = httpMock.expectOne(
+      (r) => r.url === '/api/v1/accounts/900/statuses' && !r.params.has('pinned'),
+    );
+    second.flush([]); // Exhausted.
+
+    httpMock.expectNone((r) => r.url === '/api/v1/accounts/900/statuses');
+    expect(cmp.statuses()).toHaveLength(3);
+    expect(cmp.statusesLoading()).toBe(false);
+  });
+
+  it('toggling boosts off refetches with exclude_reblogs', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+
+    cmp.toggleBoosts();
+    const req = httpMock.expectOne(
+      (r) => r.url === '/api/v1/accounts/900/statuses' && !r.params.has('pinned'),
+    );
+    expect(req.request.params.get('exclude_reblogs')).toBe('true');
+    req.flush([]);
+  });
+
+  it('renders custom profile fields, marking verified ones', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    cmp.account.set({
+      id: '900',
+      username: 'eve',
+      acct: 'eve',
+      display_name: 'Eve',
+      fields: [
+        { name: 'Blog', value: '<a href="https://eve.blog">eve.blog</a>', verified_at: null },
+        { name: 'Site', value: '<a href="https://eve.dev">eve.dev</a>', verified_at: '2026-01-01' },
+      ],
+    } as Account);
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    const rows = el.querySelectorAll('.profile-field');
+    expect(rows).toHaveLength(2);
+    expect(rows[0].textContent).toContain('Blog');
+    expect(rows[0].querySelector('a')?.getAttribute('href')).toBe('https://eve.blog');
+    expect(rows[0].classList.contains('verified')).toBe(false);
+    expect(rows[1].classList.contains('verified')).toBe(true);
+    expect(rows[1].querySelector('.field-check')).not.toBeNull();
+  });
+
+  it('hides pinned duplicates from the main list while the pinned strip is on', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+
+    const [a, b, c] = makeStatuses(3, 100);
+    cmp.statuses.set([a, b, c]);
+    cmp.pinnedStatuses.set([b]);
+
+    expect(cmp.visibleStatuses().map((s: Status) => s.id)).toEqual([a.id, c.id]);
+    cmp.togglePinned(); // Strip off: the post shows in its natural position again.
+    expect(cmp.visibleStatuses()).toHaveLength(3);
+  });
+
+  it('unblocks a blocked account via POST /unblock', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    // Pretend the account is already blocked.
+    cmp.relationship.set({ id: '900', blocking: true } as Relationship);
+
+    cmp.toggleBlock();
+
+    const req = httpMock.expectOne('/api/v1/accounts/900/unblock');
+    expect(req.request.method).toBe('POST');
+    req.flush({ id: '900', blocking: false } as Relationship);
+
+    expect(cmp.relationship().blocking).toBe(false);
+  });
+});
+
+/**
+ * Eliza's synthetic profile. She is served entirely from ElizaService with no
+ * network call, so the HTTP mock must see zero requests, and Follow toggles the
+ * browser-local relationship rather than hitting the follow API.
+ */
+describe('Profile — Eliza', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => localStorage.clear());
+
+  function setUp() {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id: 'eliza:self' })) },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    return fixture.componentInstance as unknown as {
+      account: () => Account | null;
+      statuses: () => Status[];
+      pinnedStatuses: () => Status[];
+      relationship: () => Relationship | null;
+      loading: () => boolean;
+      toggleFollow: () => void;
+    };
+  }
+
+  afterEach(() => httpMock.verify());
+
+  it('renders her account and timeline with zero HTTP requests', () => {
+    const cmp = setUp();
+    expect(cmp.loading()).toBe(false);
+    expect(cmp.account()?.id).toBe('eliza:self');
+    expect(cmp.statuses().length).toBeGreaterThan(0);
+    expect(cmp.pinnedStatuses().length).toBeGreaterThan(0);
+    httpMock.verify(); // no calls made
+  });
+
+  it('Follow toggles the local relationship without hitting the follow API', () => {
+    const cmp = setUp();
+    expect(cmp.relationship()?.following).toBe(false);
+    cmp.toggleFollow();
+    expect(cmp.relationship()?.following).toBe(true);
+    cmp.toggleFollow();
+    expect(cmp.relationship()?.following).toBe(false);
+    httpMock.verify(); // still no follow/unfollow calls
+  });
+});
+
+/**
+ * "Copy account" — the menu entry and, above all, the guard on it.
+ *
+ * The anonymous-only rule is a safety property, not unfinished scope: cloning
+ * twenty anonymous follows writes twenty localStorage rows, while the same button
+ * signed in would fire twenty POST /follow calls and look exactly like a
+ * follow-bot. A refactor that "tidies up" the guard must fail loudly here.
+ */
+describe('Profile — copy account', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    // These blocks configure inside setUp(), after the previous describe has
+    // already instantiated a module. Reset first, or configureTestingModule
+    // throws and poisons every spec that follows.
+    TestBed.resetTestingModule();
+  });
+  afterEach(() => httpMock.verify());
+
+  function setUp(options: { anonymous: boolean; followingCount?: number }) {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id: '900' })) },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    const auth = TestBed.inject(Auth);
+    if (options.anonymous) {
+      auth.enterAnonymous('https://mastodon.social');
+    } else {
+      auth.setToken('a-token');
+      auth.setAccount({ id: 'me', username: 'me' } as Account);
+    }
+
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+
+    httpMock.expectOne('/api/v1/accounts/900').flush({
+      id: '900',
+      username: 'eve',
+      acct: 'eve@mastodon.social',
+      fields: [],
+      following_count: options.followingCount ?? 40,
+    } as unknown as Account);
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/900/statuses' && !r.params.has('pinned'))
+      .flush([]);
+    // The remaining optional loads (pinned, relationships, collections, featured)
+    // differ by mode; drain whatever this configuration asked for.
+    for (const request of httpMock.match(() => true)) {
+      request.flush([]);
+    }
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  /** Copy account lives in "More options…", reached from the ••• menu. */
+  function menuHasClone(fixture: { nativeElement: unknown; detectChanges(): void }): boolean {
+    return !!openMoreOptions(fixture)?.textContent?.includes('Copy account');
+  }
+
+  it('offers the entry to an anonymous viewer', () => {
+    expect(menuHasClone(setUp({ anonymous: true }))).toBe(true);
+  });
+
+  it('does NOT offer it when signed in — bulk server-side following is the whole risk', () => {
+    const fixture = setUp({ anonymous: false });
+    const panel = (fixture.nativeElement as HTMLElement).querySelector('.account-danger-panel');
+
+    // Assert the menu is really there first: a test that passes because the whole
+    // panel is missing would prove nothing about the guard.
+    expect(panel?.textContent).toContain('Block account');
+    expect(menuHasClone(fixture)).toBe(false);
+  });
+
+  it('hides it when the account follows nobody, since there is nothing to clone', () => {
+    expect(menuHasClone(setUp({ anonymous: true, followingCount: 0 }))).toBe(false);
+  });
+
+  it('puts the constructive action above the ways to make someone disappear', () => {
+    const fixture = setUp({ anonymous: true });
+    const text =
+      (fixture.nativeElement as HTMLElement).querySelector('.account-danger-panel')?.textContent ??
+      '';
+
+    // In the menu, keeping (lists) comes before muting and blocking.
+    expect(text.indexOf('Local lists')).toBeGreaterThan(-1);
+    expect(text.indexOf('Local lists')).toBeLessThan(text.indexOf('Block account'));
+    expect(text.indexOf('Local lists')).toBeLessThan(text.indexOf('Mute for'));
+    // Copy account sits under "For this account", never beside the safety actions.
+    const more = openMoreOptions(fixture)?.textContent ?? '';
+    expect(more).toContain('Copy account');
+    expect(more).not.toContain('Block account');
+  });
+
+  /**
+   * The rule is what makes the ordering legible rather than merely correct. The
+   * entry was already first in this menu and still could not be found, because the
+   * panel read as one undifferentiated stack — see
+   * sprint/anon-office-1-copy-and-exit.md.
+   */
+  it('separates keeping from destroying with a real <hr>', () => {
+    const panel = (setUp({ anonymous: true }).nativeElement as HTMLElement).querySelector(
+      '.account-danger-panel',
+    );
+    const children = [...(panel?.children ?? [])];
+    const ruleAt = children.findIndex((el) => el.tagName === 'HR');
+    expect(ruleAt).toBeGreaterThan(-1);
+
+    const textUpTo = (end: number) =>
+      children
+        .slice(0, end)
+        .map((el) => el.textContent ?? '')
+        .join(' ');
+    expect(textUpTo(ruleAt)).toContain('Local lists');
+    expect(textUpTo(ruleAt)).not.toContain('Block account');
+  });
+});
+
+describe('Profile and connected blogs', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    sessionStorage.clear();
+    localStorage.setItem('mastodon_mock_token', 'token');
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+    sessionStorage.clear();
+  });
+
+  /**
+   * Blogs used to be folded into your own profile on request. With
+   * cross-posting that duplicated posts and made the list length match nothing,
+   * and Hugo's switch could outlive its token where no page showed it. The
+   * option is gone; settings written before then must not bring it back.
+   */
+  it('never mixes a connected blog into your own profile, whatever older settings say', () => {
+    const account = {
+      id: 'self',
+      username: 'kay',
+      acct: 'kay@example.social',
+      display_name: 'Kay',
+      note: '',
+      url: 'https://example.social/@kay',
+      avatar: '',
+      avatar_static: '',
+      header: '',
+      header_static: '',
+      followers_count: 0,
+      following_count: 0,
+      statuses_count: 1,
+      bot: false,
+      locked: false,
+      fields: [],
+    } as Account;
+    localStorage.setItem(
+      'mockingbird_mataroa_connection',
+      JSON.stringify({
+        apiKey: 'key',
+        blogUrl: 'https://writer.mataroa.blog/',
+        includeInProfile: true,
+      }),
+    );
+    localStorage.setItem(
+      'mockingbird_blogger_blog',
+      JSON.stringify({
+        blogId: '1',
+        blogName: 'Mine',
+        blogUrl: 'https://mine.blogspot.com/',
+        includeInProfile: true,
+      }),
+    );
+    // The reported case: Hugo's repo half remembered, its token long gone.
+    localStorage.setItem(
+      'mockingbird_hugo_repo',
+      JSON.stringify({
+        owner: 'mistersql',
+        repo: 'my-blog',
+        siteUrl: 'https://mistersql.github.io/my-blog/',
+        includeInProfile: true,
+      }),
+    );
+    const getFeed = vi.fn(() => of({ account, statuses: [] }));
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id: 'self' })) },
+        },
+        { provide: RssProvider, useValue: { getFeed } },
+      ],
+    });
+    TestBed.inject(Auth).token.set('profile-test-token');
+    TestBed.inject(Auth).setAccount(account);
+
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    httpMock = TestBed.inject(HttpTestingController);
+    httpMock.expectOne('/api/v1/accounts/self').flush(account);
+    const own = makeStatuses(1, 90)[0];
+    httpMock
+      .expectOne(
+        (request) =>
+          request.url === '/api/v1/accounts/self/statuses' && !request.params.has('pinned'),
+      )
+      .flush([own]);
+    // One post is short of a page, so the profile asks for older ones.
+    httpMock
+      .expectOne(
+        (request) =>
+          request.url === '/api/v1/accounts/self/statuses' &&
+          request.params.get('max_id') === own.id,
+      )
+      .flush([]);
+    httpMock
+      .expectOne(
+        (request) =>
+          request.url === '/api/v1/accounts/self/statuses' &&
+          request.params.get('pinned') === 'true',
+      )
+      .flush([]);
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/familiar_followers')
+      .forEach((r) => r.flush([]));
+    httpMock.expectOne((request) => request.url === '/api/v1/accounts/relationships').flush([]);
+    httpMock.expectOne('/api/v1/accounts/self/featured_tags').flush([]);
+    httpMock.expectOne('/api/v1/accounts/self/endorsements').flush([]);
+    httpMock.expectOne('/api/v1/accounts/self/collections').flush({ collections: [] });
+
+    expect(getFeed).not.toHaveBeenCalled();
+    const ids = ((fixture.componentInstance as any).visibleStatuses() as Status[]).map((s) => s.id);
+    expect(ids).toEqual([own.id]);
+  });
+});
+
+/**
+ * Account ids belong to the server that issued them. The same person is
+ * 109655875667638018 on mastodon.social and 109656717715863645 on fosstodon
+ * (verified against both), so opening a profile URL under a different server
+ * 404s — the reported "Loading… hangs forever" symptom, since the load had no
+ * error handler at all.
+ */
+describe('Profile cross-server recovery', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    // These blocks configure inside setUp(), after the previous describe has
+    // already instantiated a module. Reset first, or configureTestingModule
+    // throws and poisons every spec that follows.
+    TestBed.resetTestingModule();
+  });
+  afterEach(() => httpMock.verify());
+
+  interface ProfileInternals {
+    loading: () => boolean;
+    loadError: () => string | null;
+    recovering: () => boolean;
+    recoveryFailed: () => boolean;
+  }
+
+  /** Mount the profile for `id`, optionally carrying a `?handle=` hint. */
+  function setUp(id: string, handle?: string) {
+    const queryParamMap = convertToParamMap(handle ? { handle } : {});
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id })), snapshot: { queryParamMap } },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  /** Satisfy the sibling requests `load()` fires alongside the account fetch. */
+  function settleSiblings(id: string): void {
+    httpMock.match((r) => r.url === `/api/v1/accounts/${id}/statuses`).forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/familiar_followers')
+      .forEach((r) => r.flush([]));
+    httpMock.match((r) => r.url === '/api/v1/accounts/relationships').forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === `/api/v1/accounts/${id}/featured_tags`)
+      .forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === `/api/v1/accounts/${id}/endorsements`)
+      .forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === `/api/v1/accounts/${id}/collections`)
+      .forEach((r) => r.flush({ collections: [] }));
+  }
+
+  it('stops the spinner and explains a 404 instead of hanging', () => {
+    const fixture = setUp('900');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush('nope', { status: 404, statusText: 'Not Found' });
+    settleSiblings('900');
+    fixture.detectChanges();
+
+    const internals = fixture.componentInstance as unknown as ProfileInternals;
+    expect(internals.loading()).toBe(false);
+    expect(internals.loadError()).toContain('not on the server');
+  });
+
+  it('re-resolves by handle and redirects to the id this server issued', () => {
+    const fixture = setUp('109655875667638018', 'genxjamerican@hachyderm.io');
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    httpMock
+      .expectOne('/api/v1/accounts/109655875667638018')
+      .flush('nope', { status: 404, statusText: 'Not Found' });
+    settleSiblings('109655875667638018');
+
+    const lookup = httpMock.expectOne(
+      (r) =>
+        r.url === '/api/v1/accounts/lookup' &&
+        r.params.get('acct') === 'genxjamerican@hachyderm.io',
+    );
+    lookup.flush({ id: '109656717715863645', username: 'genxjamerican', fields: [] });
+    fixture.detectChanges();
+
+    // Navigating (not rendering in place) keeps the URL truthful: it ends up
+    // holding an id that actually works on this server — with the handle still
+    // in the path, so the next server change recovers the same way.
+    expect(navigate).toHaveBeenCalledWith(
+      ['/accounts', '109656717715863645', '@genxjamerican@hachyderm.io'],
+      expect.objectContaining({ replaceUrl: true }),
+    );
+  });
+
+  it('reports an honest dead end when the handle is unknown here too', () => {
+    const fixture = setUp('900', 'ghost@nowhere.example');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush('nope', { status: 404, statusText: 'Not Found' });
+    settleSiblings('900');
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/lookup')
+      .flush('nope', { status: 404, statusText: 'Not Found' });
+    const search = httpMock.expectOne(
+      (r) => r.url === '/api/v2/search' && r.params.get('resolve') === 'true',
+    );
+    expect(search.request.params.get('q')).toBe('ghost@nowhere.example');
+    search.flush({ accounts: [] });
+    fixture.detectChanges();
+
+    const internals = fixture.componentInstance as unknown as ProfileInternals;
+    expect(internals.recovering()).toBe(false);
+    expect(internals.recoveryFailed()).toBe(true);
+    expect(internals.loadError()).toContain('ghost@nowhere.example');
+  });
+
+  it('offers public Reply and private Chat with lists inside the overflow menu', () => {
+    const fixture = setUp('900');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush({ id: '900', acct: 'alice@example.social', username: 'alice', fields: [] });
+    settleSiblings('900');
+    fixture.detectChanges();
+    const actions = (fixture.nativeElement as HTMLElement).querySelector('.profile-buttons')!;
+    expect(actions.querySelectorAll('details button')[0]?.textContent).toContain('Lists');
+    expect(openMoreOptions(fixture)?.textContent).toContain('View as Slide Show');
+    fixture.componentInstance['moreOptionsOpen'].set(false);
+    fixture.detectChanges();
+    const reply = Array.from(actions.querySelectorAll('button')).find(
+      (b) => b.textContent?.trim() === 'Reply',
+    )!;
+    const chat = Array.from(actions.querySelectorAll('button')).find(
+      (b) => b.textContent?.trim() === 'Chat',
+    )!;
+    expect(reply.closest('details')).toBeNull();
+    expect(chat.closest('details')).toBeNull();
+    reply.click();
+    fixture.detectChanges();
+    const composer = fixture.debugElement.query(By.directive(Compose)).componentInstance as Compose;
+    expect(composer.initialText()).toBe('@alice@example.social ');
+    expect(composer.initialVisibility()).toBe('public');
+    expect(composer.initialTarget()).toBe('fedi');
+    fixture.componentInstance['showReply'].set(false);
+    fixture.detectChanges();
+    chat.click();
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/conversations'], {
+      queryParams: { open: 'priv:alice@example.social', with: '900', visibility: 'direct' },
+    });
+  });
+
+  it('offers Download media in the overflow menu, paging only_media posts without boosts', async () => {
+    const fixture = setUp('900');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush({ id: '900', acct: 'alice@example.social', username: 'alice', fields: [] });
+    settleSiblings('900');
+    fixture.detectChanges();
+    expect(
+      openMoreOptions(fixture)?.querySelector('app-media-download-menu-item')?.textContent,
+    ).toContain('Download media…');
+    const loader = fixture.componentInstance['mediaDownloadLoader']()!;
+    expect(loader).not.toBeNull();
+    const page = firstValueFrom(loader(undefined, false));
+    const request = httpMock.expectOne((r) => r.url === '/api/v1/accounts/900/statuses');
+    expect(request.request.params.get('only_media')).toBe('true');
+    expect(request.request.params.get('exclude_reblogs')).toBe('true');
+    request.flush([]);
+    expect(await page).toEqual([]);
+
+    const withBoosts = firstValueFrom(loader(undefined, true));
+    const boosted = httpMock.expectOne((r) => r.url === '/api/v1/accounts/900/statuses');
+    expect(boosted.request.params.has('only_media')).toBe(false);
+    expect(boosted.request.params.has('exclude_reblogs')).toBe(false);
+    boosted.flush([]);
+    await withBoosts;
+  });
+
+  it('retries a transient profile failure from the error screen', () => {
+    const fixture = setUp('900');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush('timeout', { status: 504, statusText: 'Timeout' });
+    settleSiblings('900');
+    fixture.detectChanges();
+    const retry = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('button'),
+    ).find((b) => b.textContent?.trim() === 'Retry');
+    expect(retry).toBeTruthy();
+    retry!.click();
+    httpMock.expectOne('/api/v1/accounts/900').flush({ id: '900', username: 'person', fields: [] });
+    settleSiblings('900');
+    fixture.detectChanges();
+    expect(fixture.componentInstance['account']()?.id).toBe('900');
+    expect(fixture.componentInstance['loadError']()).toBeNull();
+  });
+
+  it('resolves a previously unknown remote handle and keeps the followers tab', () => {
+    const fixture = setUp('900', 'alice@example.social');
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    httpMock.expectOne('/api/v1/accounts/900').flush('', { status: 404, statusText: 'Not Found' });
+    settleSiblings('900');
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/lookup')
+      .flush('', { status: 404, statusText: 'Not Found' });
+    const search = httpMock.expectOne((r) => r.url === '/api/v2/search');
+    expect(search.request.params.get('resolve')).toBe('true');
+    search.flush({ accounts: [{ id: '901', acct: 'alice@example.social', username: 'alice' }] });
+    fixture.detectChanges();
+    expect(navigate).toHaveBeenCalledWith(['/accounts', '901', '@alice@example.social'], {
+      replaceUrl: true,
+      queryParamsHandling: 'preserve',
+    });
+  });
+
+  it('does not attempt a lookup when the link carried no handle', () => {
+    const fixture = setUp('900');
+    httpMock
+      .expectOne('/api/v1/accounts/900')
+      .flush('nope', { status: 404, statusText: 'Not Found' });
+    settleSiblings('900');
+    fixture.detectChanges();
+
+    httpMock.expectNone((r) => r.url === '/api/v1/accounts/lookup');
+  });
+});
+
+/**
+ * The handle-in-path route (`/accounts/123/@alice@host`, Elk's shape).
+ *
+ * The failure this prevents is not a 404 — it is worse. Account ids are
+ * per-server and *short* ids frequently hit a real but different account on
+ * another server, so the page loads, the name is wrong, and nothing looks
+ * broken. The handle names exactly one person, so it outranks the id.
+ */
+describe('Profile handle-in-path route', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    // These blocks configure inside setUp(), after the previous describe has
+    // already instantiated a module. Reset first, or configureTestingModule
+    // throws and poisons every spec that follows.
+    TestBed.resetTestingModule();
+  });
+  afterEach(() => httpMock.verify());
+
+  function setUp(id: string, handle: string) {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id, handle })),
+            snapshot: { queryParamMap: convertToParamMap({}) },
+          },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  function settleSiblings(id: string): void {
+    httpMock.match((r) => r.url === `/api/v1/accounts/${id}/statuses`).forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/familiar_followers')
+      .forEach((r) => r.flush([]));
+    httpMock.match((r) => r.url === '/api/v1/accounts/relationships').forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === `/api/v1/accounts/${id}/featured_tags`)
+      .forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === `/api/v1/accounts/${id}/endorsements`)
+      .forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === `/api/v1/accounts/${id}/collections`)
+      .forEach((r) => r.flush({ collections: [] }));
+  }
+
+  it('keeps the id when it resolves to the person the handle names', () => {
+    const fixture = setUp('123', '@alice@example.social');
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    const alice = {
+      id: '123',
+      username: 'alice',
+      acct: 'alice@example.social',
+      url: 'https://example.social/@alice',
+      fields: [],
+    } as unknown as Account;
+    // Two reads of the same id: the ordinary load, and the verification pass.
+    httpMock.match('/api/v1/accounts/123').forEach((r) => r.flush(alice));
+    settleSiblings('123');
+    fixture.detectChanges();
+
+    // Agreement means no lookup and no redirect — the id is the fast path.
+    httpMock.expectNone((r) => r.url === '/api/v1/accounts/lookup');
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it('re-resolves when the id belongs to a different account on this server', () => {
+    const fixture = setUp('123', '@alice@example.social');
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    // The id is valid here — it just belongs to someone else entirely. This is
+    // the silent-wrong-person case: without the handle it renders as normal.
+    const someoneElse = {
+      id: '123',
+      username: 'bob',
+      acct: 'bob',
+      url: 'https://other.example/@bob',
+      fields: [],
+    } as unknown as Account;
+    httpMock.match('/api/v1/accounts/123').forEach((r) => r.flush(someoneElse));
+    settleSiblings('123');
+
+    httpMock
+      .expectOne(
+        (r) =>
+          r.url === '/api/v1/accounts/lookup' && r.params.get('acct') === 'alice@example.social',
+      )
+      .flush({ id: '456', username: 'alice', acct: 'alice@example.social', fields: [] });
+    fixture.detectChanges();
+
+    expect(navigate).toHaveBeenCalledWith(
+      ['/accounts', '456', '@alice@example.social'],
+      expect.objectContaining({ replaceUrl: true }),
+    );
+  });
+});
+
+/**
+ * Account search, at the HTTP boundary.
+ *
+ * The two halves are covered as pure functions in profile-search.spec.ts; what
+ * matters here is the wiring — that the server is asked with `from:`, that its
+ * answer is checked rather than trusted, and that the two merge.
+ */
+describe('Profile account search', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => localStorage.clear());
+  afterEach(() => httpMock.verify());
+
+  interface SearchInternals {
+    searchCriteria: { set(v: { words: string }): void };
+    searchResults(): Status[] | null;
+    searchUsedServer(): boolean;
+    runSearch(): Promise<void>;
+    statuses: { set(v: Status[]): void };
+    exhausted: { set(v: boolean): void };
+  }
+
+  function setUp() {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id: '900' })) },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+
+    httpMock.expectOne('/api/v1/accounts/900').flush({
+      id: '900',
+      username: 'eve',
+      acct: 'eve@remote.social',
+      url: 'https://remote.social/@eve',
+      fields: [],
+    } as unknown as Account);
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/900/statuses' && !r.params.has('pinned'))
+      .flush([]);
+    httpMock
+      .expectOne(
+        (r) => r.url === '/api/v1/accounts/900/statuses' && r.params.get('pinned') === 'true',
+      )
+      .flush([]);
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/familiar_followers')
+      .forEach((r) => r.flush([]));
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/relationships')
+      .flush([{ id: '900' } as Relationship]);
+    httpMock.expectOne('/api/v1/accounts/900/featured_tags').flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/endorsements').flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/collections').flush({ collections: [] });
+
+    return fixture;
+  }
+
+  function post(id: string, content: string, accountId = '900'): Status {
+    return {
+      id,
+      content: `<p>${content}</p>`,
+      created_at: `2026-06-${id.padStart(2, '0')}T00:00:00Z`,
+      account: { id: accountId, username: 'eve' },
+      media_attachments: [],
+      spoiler_text: '',
+      in_reply_to_id: null,
+      poll: null,
+    } as unknown as Status;
+  }
+
+  it('asks the server with from:, and merges its hits with the local scan', async () => {
+    const fixture = setUp();
+    const inner = fixture.componentInstance as unknown as SearchInternals;
+    // Already loaded locally, and the history ends here so no deepening runs.
+    inner.statuses.set([post('10', 'local angular note')]);
+    inner.exhausted.set(true);
+    inner.searchCriteria.set({ words: 'angular' });
+
+    const run = inner.runSearch();
+    // runSearch awaits the sample-deepening step before it asks the server, so
+    // the request does not exist until the microtask queue drains.
+    await Promise.resolve();
+    const req = httpMock.expectOne((r) => r.url === '/api/v2/search');
+    expect(req.request.params.get('q')).toBe('from:@eve@remote.social angular');
+    req.flush({ accounts: [], statuses: [post('20', 'server angular note')], hashtags: [] });
+    await run;
+
+    // Both halves, newest first.
+    expect(inner.searchResults()?.map((s) => s.id)).toEqual(['20', '10']);
+    expect(inner.searchUsedServer()).toBe(true);
+  });
+
+  it('drops server hits by other authors rather than trusting from:', async () => {
+    const fixture = setUp();
+    const inner = fixture.componentInstance as unknown as SearchInternals;
+    inner.statuses.set([]);
+    inner.exhausted.set(true);
+    inner.searchCriteria.set({ words: 'angular' });
+
+    const run = inner.runSearch();
+    await Promise.resolve();
+    // A server that ignores `from:` answers on the words alone; taking that at
+    // face value would show a stranger's posts on this profile.
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search')
+      .flush({
+        accounts: [],
+        statuses: [post('30', 'someone else', 'other-account')],
+        hashtags: [],
+      });
+    await run;
+
+    expect(inner.searchResults()).toEqual([]);
+  });
+
+  it('still searches locally when the server has no index to offer', async () => {
+    const fixture = setUp();
+    const inner = fixture.componentInstance as unknown as SearchInternals;
+    inner.statuses.set([post('10', 'local angular note'), post('11', 'unrelated')]);
+    inner.exhausted.set(true);
+    inner.searchCriteria.set({ words: 'angular' });
+
+    const run = inner.runSearch();
+    await Promise.resolve();
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search')
+      .flush('nope', { status: 404, statusText: 'Not Found' });
+    await run;
+
+    // The local half is the whole point of the hybrid.
+    expect(inner.searchResults()?.map((s) => s.id)).toEqual(['10']);
+    expect(inner.searchUsedServer()).toBe(false);
+  });
+});
+
+describe('Profile private account notes and QR', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => localStorage.clear());
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+  });
+
+  function setUp(note: string, familiar: Partial<Account>[] = [], following = true) {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: ActivatedRoute,
+          useValue: { paramMap: of(convertToParamMap({ id: '900' })) },
+        },
+      ],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/accounts/900').flush({
+      id: '900',
+      username: 'eve',
+      acct: 'eve@remote.example',
+      url: 'https://remote.example/@eve',
+      fields: [],
+    } as unknown as Account);
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/900/statuses' && !r.params.has('pinned'))
+      .flush([]);
+    httpMock
+      .expectOne(
+        (r) => r.url === '/api/v1/accounts/900/statuses' && r.params.get('pinned') === 'true',
+      )
+      .flush([]);
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/familiar_followers')
+      .flush([{ id: '900', accounts: familiar }]);
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/accounts/relationships')
+      .flush([{ id: '900', following, note } as Relationship]);
+    httpMock.expectOne('/api/v1/accounts/900/featured_tags').flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/endorsements').flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/collections').flush({ collections: [] });
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  /** An entry in the ••• menu, or else in its "More options…" dialog. */
+  function menuButton(fixture: { nativeElement: unknown; detectChanges(): void }, label: string) {
+    const find = (selector: string) =>
+      [
+        ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(selector),
+      ].find((button) => button.textContent?.trim() === label);
+    return (
+      find('.account-danger-panel button') ??
+      (openMoreOptions(fixture) ? find('.more-options button') : undefined)
+    );
+  }
+
+  it('shows the private note on the profile and offers to edit it', () => {
+    const fixture = setUp('Met at FOSDEM\nLikes birds');
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.private-note-text')?.textContent).toBe('Met at FOSDEM\nLikes birds');
+    expect(menuButton(fixture, 'Edit private note')).toBeTruthy();
+    expect(menuButton(fixture, 'QR code')).toBeTruthy();
+  });
+
+  it('offers to add a note when there is none and applies the saved relationship', () => {
+    const fixture = setUp('');
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.private-note')).toBeNull();
+    menuButton(fixture, 'Add private note')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-account-note-dialog')).not.toBeNull();
+    (fixture.componentInstance as any).onNoteSaved({ id: '900', note: 'New note' });
+    fixture.detectChanges();
+    expect(el.querySelector('app-account-note-dialog')).toBeNull();
+    expect(el.querySelector('.private-note-text')?.textContent).toBe('New note');
+    expect((fixture.componentInstance as any).relationship().following).toBe(true);
+  });
+
+  it('features and unfeatures a followed account, falling back to the pre-4.4 route', () => {
+    const fixture = setUp('');
+    menuButton(fixture, 'Feature on my profile')!.click();
+    const endorse = httpMock.expectOne('/api/v1/accounts/900/endorse');
+    expect(endorse.request.method).toBe('POST');
+    endorse.flush({ id: '900', following: true, endorsed: true } as Relationship);
+    fixture.detectChanges();
+    expect((fixture.componentInstance as any).relationship().endorsed).toBe(true);
+
+    menuButton(fixture, 'Stop featuring on my profile')!.click();
+    httpMock
+      .expectOne('/api/v1/accounts/900/unendorse')
+      .flush(null, { status: 404, statusText: 'Not Found' });
+    httpMock
+      .expectOne('/api/v1/accounts/900/unpin')
+      .flush({ id: '900', following: true, endorsed: false } as Relationship);
+    fixture.detectChanges();
+    expect(menuButton(fixture, 'Feature on my profile')).toBeTruthy();
+  });
+
+  it('does not offer featuring for an account you do not follow', () => {
+    const fixture = setUp('', [], false);
+    expect(menuButton(fixture, 'Feature on my profile')).toBeUndefined();
+  });
+
+  it('names people you follow who follow this account, linking each one', () => {
+    const fixture = setUp('', [
+      { id: '1', username: 'ann', acct: 'ann', display_name: 'Ann' },
+      { id: '2', username: 'bo', acct: 'bo@x.example', display_name: '' },
+      { id: '3', username: 'cy', acct: 'cy', display_name: 'Cy' },
+      { id: '4', username: 'di', acct: 'di', display_name: 'Di' },
+      { id: '5', username: 'ed', acct: 'ed', display_name: 'Ed' },
+    ]);
+    const section = (fixture.nativeElement as HTMLElement).querySelector('app-familiar-followers')!;
+    const links = [...section.querySelectorAll('a')].map((a) => a.textContent?.trim());
+    expect(links).toEqual(['Ann', 'bo', 'Cy']);
+    expect(section.textContent).toContain('Followed by people you follow');
+    expect(section.textContent).toContain('and 2 more you follow');
+  });
+});
+
+describe('Profile own featured accounts', () => {
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+  });
+
+  it('removes an account from your featured list on your own profile', () => {
+    const me = { id: 'me', username: 'me', acct: 'me', fields: [] } as unknown as Account;
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: 'me' })) } },
+      ],
+    });
+    TestBed.inject(Auth).token.set('profile-test-token');
+    TestBed.inject(Auth).setAccount(me);
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    httpMock = TestBed.inject(HttpTestingController);
+    httpMock.expectOne('/api/v1/accounts/me').flush(me);
+    httpMock.match((r) => r.url === '/api/v1/accounts/me/statuses').forEach((r) => r.flush([]));
+    httpMock.expectNone((r) => r.url === '/api/v1/accounts/familiar_followers');
+    httpMock.expectOne((r) => r.url === '/api/v1/accounts/relationships').flush([]);
+    httpMock.expectOne('/api/v1/accounts/me/featured_tags').flush([]);
+    httpMock.expectOne('/api/v1/accounts/me/endorsements').flush([
+      { id: '1', username: 'ann', acct: 'ann', display_name: 'Ann' },
+      { id: '2', username: 'bo', acct: 'bo', display_name: 'Bo' },
+    ]);
+    httpMock.match((r) => r.url === '/api/v1/accounts/relationships').forEach((r) => r.flush([]));
+    httpMock.expectOne('/api/v1/accounts/me/collections').flush({ collections: [] });
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    const remove = [...el.querySelectorAll<HTMLButtonElement>('.featured-row button')];
+    expect(remove.map((b) => b.textContent?.trim())).toEqual(['Remove', 'Remove']);
+    remove[0].click();
+    httpMock
+      .expectOne('/api/v1/accounts/1/unendorse')
+      .flush({ id: '1', following: true, endorsed: false });
+    fixture.detectChanges();
+    const names = [...el.querySelectorAll('.featured-display')].map((n) => n.textContent);
+    expect(names).toEqual(['Bo']);
+  });
+});
+
+describe('Profile featured hashtags and tagged posts', () => {
+  let httpMock: HttpTestingController;
+  const zoe = { id: 'z1', username: 'zoe', acct: 'zoe', fields: [] } as unknown as Account;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+  });
+
+  function setUp(query: Record<string, string> = {}) {
+    const queryParamMap = convertToParamMap(query);
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id: 'z1' })),
+            queryParamMap: of(queryParamMap),
+            snapshot: { queryParamMap },
+          },
+        },
+      ],
+    });
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    httpMock = TestBed.inject(HttpTestingController);
+    httpMock.expectOne('/api/v1/accounts/z1').flush(zoe);
+    return fixture;
+  }
+
+  function settle(): void {
+    for (const url of [
+      '/api/v1/accounts/familiar_followers',
+      '/api/v1/accounts/relationships',
+      '/api/v1/accounts/z1/endorsements',
+    ]) {
+      httpMock.match((r) => r.url === url).forEach((r) => r.flush([]));
+    }
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/z1/collections')
+      .forEach((r) => r.flush({ collections: [] }));
+  }
+
+  it("lists the account's featured hashtags as links to its tagged posts", () => {
+    const fixture = setUp();
+    httpMock.match((r) => r.url === '/api/v1/accounts/z1/statuses').forEach((r) => r.flush([]));
+    httpMock
+      .expectOne('/api/v1/accounts/z1/featured_tags')
+      .flush([{ id: 't1', name: 'Gardening', url: '', statuses_count: 12, last_status_at: null }]);
+    settle();
+    fixture.detectChanges();
+
+    const line = (fixture.nativeElement as HTMLElement).querySelector('.profile-featured-tags');
+    expect(line?.textContent).toContain('Featured hashtags:');
+    const link = line?.querySelector('a');
+    expect(link?.textContent?.trim()).toBe('#Gardening');
+    expect(link?.getAttribute('href')).toContain('tagged=Gardening');
+  });
+
+  it('asks the server for only the tagged posts and says how to see the rest', () => {
+    const fixture = setUp({ tagged: '#Gardening' });
+    const posts = httpMock.match(
+      (r) => r.url === '/api/v1/accounts/z1/statuses' && !r.params.has('pinned'),
+    );
+    expect(posts.length).toBeGreaterThan(0);
+    for (const request of posts) {
+      expect(request.request.params.get('tagged')).toBe('Gardening');
+      request.flush([]);
+    }
+    httpMock.match((r) => r.url === '/api/v1/accounts/z1/statuses').forEach((r) => r.flush([]));
+    httpMock.expectOne('/api/v1/accounts/z1/featured_tags').flush([]);
+    settle();
+    fixture.detectChanges();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('Showing only posts tagged #Gardening.');
+    expect(text).toContain('Show all posts');
+    expect(text).toContain('No posts tagged #Gardening here.');
+  });
+});
+
+describe('Profile block domain', () => {
+  let httpMock: HttpTestingController;
+  const zoe = {
+    id: 'z1',
+    username: 'zoe',
+    acct: 'zoe@far.example',
+    fields: [],
+  } as unknown as Account;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+  });
+
+  function setUp() {
+    const queryParamMap = convertToParamMap({});
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id: 'z1' })),
+            queryParamMap: of(queryParamMap),
+            snapshot: { queryParamMap },
+          },
+        },
+      ],
+    });
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    httpMock = TestBed.inject(HttpTestingController);
+    httpMock.expectOne('/api/v1/accounts/z1').flush(zoe);
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/z1/collections')
+      .forEach((r) => r.flush({ collections: [] }));
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/relationships')
+      .forEach((r) => r.flush([{ id: 'z1', following: false, followed_by: false }]));
+    httpMock.match(() => true).forEach((r) => r.flush([]));
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('blocks the whole server after saying how many follows and followers it cuts', async () => {
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+    confirm.mockClear();
+    const fixture = setUp();
+    const button = [...(openMoreOptions(fixture)?.querySelectorAll('button') ?? [])].find((b) =>
+      b.textContent?.includes('Block everyone on far.example'),
+    ) as HTMLButtonElement;
+    expect(button).toBeTruthy();
+
+    button.click();
+    const preview = await vi.waitFor(() =>
+      httpMock.expectOne((r) => r.url === '/api/v1/domain_blocks/preview'),
+    );
+    expect(preview.request.params.get('domain')).toBe('far.example');
+    preview.flush({ following_count: 2, followers_count: 5 });
+    await vi.waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+    expect(confirm.mock.calls[0][0]).toContain('lose 2 people you follow and 5 followers');
+    const block = await vi.waitFor(() =>
+      httpMock.expectOne((r) => r.url === '/api/v1/domain_blocks' && r.method === 'POST'),
+    );
+    block.flush({});
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.more-options')?.textContent).toContain(
+        'Blocked far.example.',
+      );
+    });
+  });
+
+  it('uses a plain warning on servers without the preview, and blocks nothing when cancelled', async () => {
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
+    confirm.mockClear();
+    const fixture = setUp();
+    (fixture.componentInstance as any).requestBlockDomain('far.example');
+    await vi.waitFor(() =>
+      httpMock
+        .expectOne((r) => r.url === '/api/v1/domain_blocks/preview')
+        .flush('', { status: 404, statusText: 'Not Found' }),
+    );
+    await vi.waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+    expect(confirm.mock.calls[0][0]).toContain('anyone you follow or who follows you there');
+    httpMock.expectNone((r) => r.url === '/api/v1/domain_blocks' && r.method === 'POST');
+  });
+});

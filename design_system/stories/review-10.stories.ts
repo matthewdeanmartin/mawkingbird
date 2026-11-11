@@ -1,5 +1,5 @@
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
-import { Streaming } from "../../ui/src/app/streaming";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
+import { Streaming } from "../../ui/src/app/platform/api/streaming";
 import {
   Component,
   Injectable,
@@ -31,10 +31,10 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { Observable, of, EMPTY } from "rxjs";
-import { PublicTimeline } from "../../ui/src/app/pages/public-timeline/public-timeline";
-import { ListTimeline } from "../../ui/src/app/pages/list-timeline/list-timeline";
-import { SettingsShell } from "../../ui/src/app/pages/settings/settings-shell";
-import { SettingsPreloading } from "../../ui/src/app/pages/settings/settings-preloading";
+import { PublicTimeline } from "../../ui/src/app/feeds/public-timeline/public-timeline";
+import { ListTimeline } from "../../ui/src/app/feeds/list-timeline/list-timeline";
+import { SettingsShell } from "../../ui/src/app/settings/settings-shell";
+import { SettingsPreloading } from "../../ui/src/app/settings/settings-preloading";
 import { MbPageHeader } from "../../ui/src/app/design-system/page-header/page-header";
 import {
   MbToolbar,
@@ -45,7 +45,7 @@ import {
   MbNavLink,
 } from "../../ui/src/app/design-system/navigation/navigation";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
-import { Status } from "../../ui/src/app/models";
+import { Status } from "../../ui/src/app/platform/api/models";
 
 // Retain the real preference API/defaults used by these deeply composed pages,
 // but let Storybook own theme/accent and keep preference edits in memory.

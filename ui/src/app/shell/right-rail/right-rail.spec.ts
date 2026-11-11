@@ -3,13 +3,13 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { Auth } from '../../auth';
-import { HouseAdStore } from '../../house-ad-store';
-import { HOUSE_ADS_SHOWN } from '../../house-ads';
-import { Account } from '../../models';
-import { Server } from '../../server';
-import { SearchServer } from '../../search-server';
-import { MastodonConnector } from '../../providers/mastodon/mastodon-connector';
+import { Auth } from '../../platform/session/auth';
+import { HouseAdStore } from '../house-ad-store';
+import { HOUSE_ADS_SHOWN } from '../house-ads';
+import { Account } from '../../platform/api/models';
+import { Server } from '../../platform/http/server';
+import { SearchServer } from '../../platform/http/search-server';
+import { MastodonConnector } from '../../connections/mastodon/mastodon-connector';
 import { seedBskyIdentity } from '../../testing/seed-storage';
 import { RightRail } from './right-rail';
 

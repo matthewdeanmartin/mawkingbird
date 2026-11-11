@@ -1,5 +1,5 @@
 import { Subscription } from 'rxjs';
-import { Streaming, StreamEvent, StreamKind } from '../streaming';
+import { Streaming, StreamEvent, StreamKind } from '../platform/api/streaming';
 
 /** A controllable fake of {@link Streaming}: tests push events to it by hand. */
 export class FakeStreaming {

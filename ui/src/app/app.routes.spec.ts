@@ -1,16 +1,16 @@
 import { Route } from '@angular/router';
 import { describe, expect, it } from 'vitest';
 import { routes, TOOL_PAGE_MODULES, toolPageLoader } from './app.routes';
-import { anonymousUnavailableGuard } from './providers/anonymous/anonymous-route.guard';
+import { anonymousUnavailableGuard } from './accounts/anonymous/anonymous-route.guard';
 import {
   TRANSLATED_PATHS,
   TranslatedLanguage,
   languageFolder,
   toolLanguage,
-} from './focused-tools';
-import { ToolsIndex } from './pages/tools/tools-index';
-import { FRONT_PAGE_TAGLINE, TOOLS_INDEXES } from './seo';
-import { FOCUSED_TOOLS } from './focused-tools-all';
+} from './public-pages/focused-tools';
+import { ToolsIndex } from './public-pages/tools/tools-index';
+import { FRONT_PAGE_TAGLINE, TOOLS_INDEXES } from './public-pages/seo';
+import { FOCUSED_TOOLS } from './public-pages/focused-tools-all';
 
 /**
  * The guarded shell — the `''` route that has children, as distinct from the

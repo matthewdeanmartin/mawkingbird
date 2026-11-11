@@ -4,7 +4,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
-import { CanonicalEmailBlock } from '../../models';
+import { CanonicalEmailBlock } from '../../platform/api/models';
 
 // i18n adminCanonical.placeholder: email to block (canonicalized + hashed)
 // i18n adminCanonical.block: Block

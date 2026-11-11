@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { existsSync, readdirSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import {
@@ -12,6 +13,17 @@ import {
 // GitHub Pages needs index.html at /. Preserve the client entry and its head
 // metadata, with a fallback visible only when JavaScript is disabled.
 // The separate prerendered /features/index.html remains unchanged.
+// Mini-app folders live under the domain that owns them (feeds/, publishing/, …),
+// named after the tool's path. Find the one folder with that name.
+function toolSourceDir(name) {
+  const app = fileURLToPath(new URL('../src/app/', import.meta.url));
+  const hits = readdirSync(app, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory() && existsSync(`${app}${entry.name}/${name}`))
+    .map((entry) => `src/app/${entry.name}/${name}/`);
+  if (hits.length !== 1)
+    throw new Error(`Expected one src/app/*/${name}/ folder, found ${hits.length}`);
+  return hits[0];
+}
 const root = new URL('../dist-mockingbird/browser/', import.meta.url);
 const html = await readFile(new URL('index.csr.html', root), 'utf8');
 // Tool pages come from the one registry the app's routes and prerendering use.
@@ -21,7 +33,7 @@ const registryFiles = await registrySources();
 // the hub at /communities/. Paths and their language sets come from one file.
 const feedPaths = JSON.parse(
   await readFile(
-    new URL('../src/app/pages/feed-builder/feed-builder-paths.json', import.meta.url),
+    new URL('../src/app/feeds/feed-builder/feed-builder-paths.json', import.meta.url),
     'utf8',
   ),
 );
@@ -32,7 +44,7 @@ const feedPages = Object.entries(feedPaths).flatMap(([topic, langs]) =>
 const feedHubs = Object.entries(
   JSON.parse(
     await readFile(
-      new URL('../src/app/pages/feed-builder/feed-builder-hubs.json', import.meta.url),
+      new URL('../src/app/feeds/feed-builder/feed-builder-hubs.json', import.meta.url),
       'utf8',
     ),
   ),
@@ -179,32 +191,37 @@ await writeFile(sitemapUrl, withLastmod(sitemap));
  * public page must be added here, or the build fails rather than guess a date.
  */
 function withLastmod(xml) {
-  const features = 'src/app/pages/features/';
-  const kitData = [`${features}follow-kits.ts`, 'src/app/bundled-starter-kits.generated.ts'];
+  const features = 'src/app/public-pages/features/';
+  const kitData = [
+    `${features}follow-kits.ts`,
+    'src/app/discovery/bundled-starter-kits.generated.ts',
+  ];
   const sources = (page) => {
     if (page === '') return ['src/index.html', 'scripts/prepare-seo-index.mjs'];
     if (page === 'features/') return [`${features}features.html`, `${features}features.ts`];
-    if (indexPages.includes(page)) return ['src/app/pages/tools/', ...registryFiles];
+    if (indexPages.includes(page)) return ['src/app/public-pages/tools/', ...registryFiles];
     if (page.startsWith('for/'))
       return [`${features}audience-content.ts`, `${features}audience-page.html`];
-    if (page === 'about/') return ['src/app/pages/about/', 'src/app/pages/docs/public-copy.ts'];
-    if (page === 'funding/') return ['src/app/pages/funding/', 'src/app/pages/docs/public-copy.ts'];
-    if (page === 'legal/') return ['src/app/pages/docs/'];
+    if (page === 'about/')
+      return ['src/app/public-pages/about/', 'src/app/public-pages/docs/public-copy.ts'];
+    if (page === 'funding/')
+      return ['src/app/public-pages/funding/', 'src/app/public-pages/docs/public-copy.ts'];
+    if (page === 'legal/') return ['src/app/public-pages/docs/'];
     // Mini-app pages: their own directory (or the one they share), the page
     // chrome they share, and the registry entry that titles and describes them.
     const tool = focusedTools.find((entry) => `${entry.path}/` === page);
     if (tool)
       return [
-        `src/app/pages/${tool.sources ?? tool.path}/`,
-        'src/app/pages/focused-apps/',
+        toolSourceDir(tool.sources ?? tool.path),
+        'src/app/public-pages/focused-apps/',
         // Its own entry: English, the paths (its hreflang set), its language's words.
-        'src/app/focused-tools.json',
-        'src/app/tool-translations/paths.json',
-        ...(tool.lang ? [`src/app/tool-translations/${tool.lang}.json`] : []),
+        'src/app/public-pages/focused-tools.json',
+        'src/app/public-pages/tool-translations/paths.json',
+        ...(tool.lang ? [`src/app/public-pages/tool-translations/${tool.lang}.json`] : []),
       ];
     if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
     if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];
-    const feed = 'src/app/pages/feed-builder/';
+    const feed = 'src/app/feeds/feed-builder/';
     if (feedHubs.some((hub) => `${hub.path}/` === page)) return [feed];
     const feedPage = feedPages.find((entry) => `${entry.path}/` === page);
     if (feedPage)

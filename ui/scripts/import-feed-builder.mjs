@@ -13,8 +13,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ui = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-export const DATA_DIR = join(ui, 'src/app/pages/feed-builder/data');
-export const PATHS_FILE = join(ui, 'src/app/pages/feed-builder/feed-builder-paths.json');
+export const DATA_DIR = join(ui, 'src/app/feeds/feed-builder/data');
+export const PATHS_FILE = join(ui, 'src/app/feeds/feed-builder/feed-builder-paths.json');
 
 const assert = (condition, message) => {
   if (!condition) throw new Error(message);

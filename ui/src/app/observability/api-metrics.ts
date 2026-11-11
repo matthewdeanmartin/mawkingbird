@@ -1,5 +1,5 @@
 import { Injectable, computed, inject, linkedSignal, signal } from '@angular/core';
-import { Server } from '../server';
+import { Server } from '../platform/http/server';
 import { documentedTemplate } from './api-docs';
 import {
   BUCKET_COUNT,

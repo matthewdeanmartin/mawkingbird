@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TranslationEngine } from '../translation-usage';
+import { TranslationEngine } from './translation-usage';
 
 /**
  * Translations already paid for, so seeing a post again costs nothing.

@@ -1,4 +1,4 @@
-import { Account, Status } from '../models';
+import { Account, Status } from '../platform/api/models';
 
 /** Posts and accounts for Forum specs: one id per minute, so order is by id. */
 export function account(id: string, acct = `u${id}`): Account {

@@ -4,7 +4,7 @@ import {
   DEFAULT_MYMEMORY_SOFT_LIMIT,
   MYMEMORY_EMAIL_DAILY_CHARS,
   TranslationUsage,
-} from '../translation-usage';
+} from './translation-usage';
 
 export const MYMEMORY_KEY = 'mockingbird_connector_mymemory';
 export const APERTIUM_KEY = 'mockingbird_connector_apertium';

@@ -1,13 +1,13 @@
 import { MbField, MbControl } from '../../design-system/field/field';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
-import { AppDialogs } from '../../app-dialogs';
+import { AppDialogs } from '../../shell/app-dialogs';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
-import { Announcement } from '../../models';
-import { Server } from '../../server';
+import { Announcement } from '../../platform/api/models';
+import { Server } from '../../platform/http/server';
 import { MbNotice } from '../../design-system/notice/notice';
 
 // i18n adminAnnouncements.placeholder: Announcement text (HTML allowed)

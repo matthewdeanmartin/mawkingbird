@@ -1,13 +1,13 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { BugReportDialog } from '../bug-report-dialog/bug-report-dialog';
-import { BugReport } from '../bug-report';
-import { ErrorLog } from '../error-log';
-import { DiagnosticLog } from '../diagnostic-log';
-import { PageDiagnostics } from '../page-diagnostics';
-import { BulkActionsDialog } from '../bulk-actions-dialog/bulk-actions-dialog';
-import { BulkActions } from '../bulk-actions';
+import { BugReportDialog } from '../shell/bug-report-dialog/bug-report-dialog';
+import { BugReport } from '../platform/diagnostics/bug-report';
+import { ErrorLog } from '../platform/diagnostics/error-log';
+import { DiagnosticLog } from '../platform/diagnostics/diagnostic-log';
+import { PageDiagnostics } from '../platform/diagnostics/page-diagnostics';
+import { BulkActionsDialog } from '../accounts/bulk-actions-dialog/bulk-actions-dialog';
+import { BulkActions } from '../accounts/bulk-actions';
 import { MbDialog } from './dialog/dialog';
 
 describe('Shared dialog adoption', () => {

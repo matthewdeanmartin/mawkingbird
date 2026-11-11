@@ -13,14 +13,17 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { Observable, of } from "rxjs";
-import { SettingsPrivacy } from "../../ui/src/app/pages/settings/privacy/settings-privacy";
-import { SettingsContent } from "../../ui/src/app/pages/settings/content/settings-content";
-import { Api } from "../../ui/src/app/api";
-import { Auth } from "../../ui/src/app/auth";
-import { Server } from "../../ui/src/app/server";
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
-import { TrustedAccounts, TrustLevel } from "../../ui/src/app/trusted-accounts";
-import { AppDialogs } from "../../ui/src/app/app-dialogs";
+import { SettingsPrivacy } from "../../ui/src/app/settings/privacy/settings-privacy";
+import { SettingsContent } from "../../ui/src/app/settings/content/settings-content";
+import { Api } from "../../ui/src/app/platform/api/api";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { Server } from "../../ui/src/app/platform/http/server";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
+import {
+  TrustedAccounts,
+  TrustLevel,
+} from "../../ui/src/app/accounts/trusted-accounts";
+import { AppDialogs } from "../../ui/src/app/shell/app-dialogs";
 import { HttpErrorResponse } from "../../ui/src/app/testing/http-error";
 import {
   MbToolbar,

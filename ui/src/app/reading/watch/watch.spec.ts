@@ -1,0 +1,391 @@
+import { Component, input, output, signal } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { By } from '@angular/platform-browser';
+import { BehaviorSubject } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { WatchQueue } from '../videos/watch-queue';
+import { Watch } from './watch';
+import { PartyConversation } from './party-conversation';
+import { WatchPartyPrefs } from '../videos/watch-party-prefs';
+import { ThreadLoader } from '../read/thread-loader';
+import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
+import { StatusCard } from '../../posts/status-card/status-card';
+import { Status } from '../../platform/api/models';
+import { Auth } from '../../platform/session/auth';
+import { Server } from '../../platform/http/server';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { StatusVisibility } from '../../moderation/status-visibility';
+import { TrustedAccounts } from '../../accounts/trusted-accounts';
+import { FollowTrust } from '../../accounts/follow-trust';
+import { ReadingZen } from '../reading-zen';
+
+@Component({ selector: 'app-status-card', template: '' })
+class CardStub {
+  readonly status = input<Status>();
+  readonly showMedia = input(true);
+  readonly partyTagsEnabled = input(false);
+  readonly partyTagAdded = output<string>();
+  readonly filterContext = input('thread');
+  readonly changed = output<Status>();
+  readonly deleted = output<Status>();
+  readonly replied = output<Status>();
+}
+
+@Component({ selector: 'app-party-conversation', template: '' })
+class PartyStub {
+  readonly root = input<Status | null>(null);
+  readonly comments = input<Status[]>([]);
+  readonly session = input('');
+  readonly initialTags = input<readonly string[]>([]);
+  readonly canReply = input(false);
+  readonly repliesDue = output<void>();
+  readonly changed = output<Status>();
+  readonly deleted = output<Status>();
+  readonly replied = output<Status>();
+}
+
+describe('Watch post access and reveal gates', () => {
+  let fixture: ComponentFixture<Watch>;
+  let params: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
+  let loader: {
+    status: ReturnType<typeof signal<Status | null>>;
+    descendants: ReturnType<typeof signal<Status[]>>;
+    loading: ReturnType<typeof signal<boolean>>;
+    loadError: ReturnType<typeof signal<string | null>>;
+    publicContextUnavailable: ReturnType<typeof signal<boolean>>;
+    isAnonymousPublic: ReturnType<typeof signal<boolean>>;
+    isTwitter: ReturnType<typeof signal<boolean>>;
+    isRss: ReturnType<typeof signal<boolean>>;
+    isMessageStatus: ReturnType<typeof signal<boolean>>;
+    refreshReplies: ReturnType<typeof vi.fn>;
+    load: ReturnType<typeof vi.fn>;
+    destroy: ReturnType<typeof vi.fn>;
+  };
+  let blocked: ReturnType<typeof signal<boolean>>;
+  let images: ReturnType<typeof signal<boolean>>;
+  const status = (): Status =>
+    ({
+      id: '1',
+      content: '',
+      spoiler_text: '',
+      sensitive: false,
+      account: { id: 'author' },
+      media_attachments: [
+        {
+          id: 'v1',
+          type: 'video',
+          url: 'https://media.test/private.mp4',
+          preview_url: '',
+          description: 'A video',
+        },
+      ],
+    }) as Status;
+
+  beforeEach(() => {
+    vi.spyOn(HTMLMediaElement.prototype, 'load').mockImplementation(() => undefined);
+    vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => undefined);
+    vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
+    params = new BehaviorSubject(
+      convertToParamMap({ post: '1', attachment: 'v1', server: 'https://home.test' }),
+    );
+    loader = {
+      status: signal<Status | null>(null),
+      descendants: signal<Status[]>([]),
+      loading: signal(false),
+      loadError: signal<string | null>(null),
+      publicContextUnavailable: signal(false),
+      isAnonymousPublic: signal(false),
+      isTwitter: signal(false),
+      isRss: signal(false),
+      isMessageStatus: signal(false),
+      refreshReplies: vi.fn(),
+      load: vi.fn(),
+      destroy: vi.fn(),
+    };
+    blocked = signal(false);
+    images = signal(true);
+    TestBed.configureTestingModule({
+      imports: [Watch],
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { queryParamMap: params } },
+        {
+          provide: Auth,
+          useValue: {
+            kind: signal('mastodon'),
+            token: signal('token'),
+            account: signal({ id: 'me' }),
+          },
+        },
+        { provide: Server, useValue: { baseUrl: signal('https://home.test') } },
+        {
+          provide: ClientPrefs,
+          useValue: {
+            showImages: images,
+            feedReader: signal(false),
+            autoLoadYoutubeWatch: signal(false),
+          },
+        },
+        {
+          provide: StatusVisibility,
+          useValue: { rendersNothing: () => blocked(), activeFilters: () => [] },
+        },
+        {
+          provide: TrustedAccounts,
+          useValue: { entries: signal({}), cwExpanded: () => false, sensitiveShown: () => false },
+        },
+        { provide: FollowTrust, useValue: { revision: signal(0) } },
+      ],
+    });
+    TestBed.overrideComponent(Watch, {
+      remove: { imports: [StatusCard, PartyConversation], providers: [ThreadLoader] },
+      add: {
+        imports: [CardStub, PartyStub],
+        providers: [{ provide: ThreadLoader, useValue: loader }],
+      },
+    });
+  });
+  afterEach(() => {
+    fixture?.destroy();
+    vi.restoreAllMocks();
+  });
+
+  function mount(): void {
+    fixture = TestBed.createComponent(Watch);
+    fixture.detectChanges();
+  }
+
+  describe('watch queue', () => {
+    const A = 'aaaaaaaaaaa';
+    const B = 'bbbbbbbbbbb';
+    const nextButton = () =>
+      [...(fixture.nativeElement as HTMLElement).querySelectorAll('.watch-queue button')].find(
+        (button) => button.textContent?.includes('Next'),
+      ) as HTMLButtonElement | undefined;
+
+    beforeEach(() => localStorage.clear());
+
+    it('plays the next queued video on request and retires the finished one', () => {
+      const queue = TestBed.inject(WatchQueue);
+      queue.add({ title: 'First', params: { youtube: A } });
+      queue.add({ title: 'Second', params: { youtube: B } });
+      params.next(convertToParamMap({ youtube: A, tags: 'Party' }));
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      mount();
+
+      expect(nextButton()?.textContent).toContain('Next: Second');
+      nextButton()!.click();
+
+      expect(queue.items().map((item) => item.title)).toEqual(['Second']);
+      expect(navigate).toHaveBeenCalledWith(['/watch'], { queryParams: { youtube: B } });
+    });
+
+    it('hands ?tags= to the party conversation, without counting them in the queue key', () => {
+      params.next(convertToParamMap({ youtube: A, tags: 'Debate,Live' }));
+      mount();
+      const party = fixture.debugElement.query(By.directive(PartyStub))
+        .componentInstance as PartyStub;
+      expect(party.initialTags()).toEqual(['Debate', 'Live']);
+      expect(fixture.componentInstance['currentKey']()).toBe('youtube:' + A);
+    });
+
+    it('never advances by itself and offers nothing when the queue is empty', () => {
+      params.next(convertToParamMap({ youtube: A }));
+      mount();
+      expect(nextButton()).toBeUndefined();
+      expect(fixture.nativeElement.querySelector('.watch-queue a')).toBeNull();
+    });
+
+    it('queues the video being watched from the header', () => {
+      params.next(convertToParamMap({ youtube: A }));
+      mount();
+      const queueButton = fixture.nativeElement.querySelector(
+        '.watch-queue app-queue-button button',
+      ) as HTMLButtonElement;
+      queueButton.click();
+      fixture.detectChanges();
+      expect(TestBed.inject(WatchQueue).has('youtube:' + A)).toBe(true);
+      expect(queueButton.getAttribute('aria-pressed')).toBe('true');
+      // The stage player does not repeat the control.
+      expect(fixture.nativeElement.querySelectorAll('app-queue-button')).toHaveLength(1);
+    });
+  });
+
+  it('holds the full viewport while open and releases the app chrome on leaving', () => {
+    const zen = TestBed.inject(ReadingZen);
+    mount();
+    expect(zen.active()).toBe(true);
+    expect(zen.chromeHidden()).toBe(true);
+    fixture.destroy();
+    expect(zen.active()).toBe(false);
+    expect(zen.chromeHidden()).toBe(false);
+  });
+
+  it('resolves the post through the existing loader and selects only its requested attachment', () => {
+    mount();
+    expect(loader.load).toHaveBeenCalledWith('1');
+    expect(fixture.nativeElement.querySelector('video')).toBeNull();
+    loader.status.set(status());
+    fixture.detectChanges();
+    const video = fixture.nativeElement.querySelector('video');
+    expect(video.src).toBe('https://media.test/private.mp4');
+    expect(video.autoplay).toBe(false);
+    expect(video.loop).toBe(false);
+    params.next(
+      convertToParamMap({ post: '1', attachment: 'not-in-post', server: 'https://home.test' }),
+    );
+    loader.status.set(status());
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).toBeNull();
+  });
+
+  it('refuses a server-local ID for another server without issuing a post request', () => {
+    params.next(
+      convertToParamMap({ post: '1', attachment: 'v1', server: 'https://elsewhere.test' }),
+    );
+    mount();
+    expect(loader.load).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('[role=alert]').textContent).toContain(
+      'Switch to the server',
+    );
+    expect(fixture.nativeElement.querySelector('video')).toBeNull();
+  });
+
+  it('lets Anonymous open a shared link to a post on another server', () => {
+    TestBed.overrideProvider(Auth, {
+      useValue: {
+        kind: signal('anonymous'),
+        token: signal(null),
+        account: signal(null),
+        isAnonymous: true,
+      },
+    });
+    params.next(
+      convertToParamMap({
+        post: '117583797572986016',
+        youtube: 'Usr4VpMQjQ0',
+        server: 'https://mstdn.social',
+      }),
+    );
+    mount();
+    expect(loader.load).toHaveBeenCalledWith(
+      anonymousStatusRouteRef({ server: 'https://mstdn.social', id: '117583797572986016' }),
+    );
+  });
+
+  it('still refuses Anonymous a non-https server for a server-local ID', () => {
+    TestBed.overrideProvider(Auth, {
+      useValue: {
+        kind: signal('anonymous'),
+        token: signal(null),
+        account: signal(null),
+        isAnonymous: true,
+      },
+    });
+    params.next(convertToParamMap({ post: '1', youtube: 'x', server: 'http://elsewhere.test' }));
+    mount();
+    expect(loader.load).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('[role=alert]').textContent).toContain(
+      'Switch to the server',
+    );
+  });
+
+  it('does not use a YouTube fallback to bypass an unavailable post', () => {
+    params.next(
+      convertToParamMap({ post: '1', youtube: 'dQw4w9WgXcQ', server: 'https://home.test' }),
+    );
+    mount();
+    loader.loadError.set('not authorized');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('app-video-player-controls')).toBeNull();
+    expect(fixture.nativeElement.querySelector('iframe')).toBeNull();
+  });
+
+  it('keeps sensitive and warned video unmounted until explicit reveal', () => {
+    mount();
+    loader.status.set({ ...status(), sensitive: true, spoiler_text: 'Warning' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).toBeNull();
+    const buttons = [...fixture.nativeElement.querySelectorAll('button')] as HTMLButtonElement[];
+    buttons.find((button) => button.textContent?.includes('Show video'))!.click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).not.toBeNull();
+    expect(HTMLMediaElement.prototype.play).not.toHaveBeenCalled();
+  });
+
+  it('allows explicit media opening in text mode without changing reading preferences', () => {
+    images.set(false);
+    mount();
+    loader.status.set(status());
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).toBeNull();
+    ([...fixture.nativeElement.querySelectorAll('button')] as HTMLButtonElement[])
+      .find((button) => button.textContent?.includes('Show video'))!
+      .click();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).not.toBeNull();
+    expect(images()).toBe(false);
+  });
+
+  it('removes playback when the author becomes suppressed', () => {
+    mount();
+    loader.status.set(status());
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).not.toBeNull();
+    blocked.set(true);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).toBeNull();
+  });
+
+  describe('party chat wiring', () => {
+    beforeEach(() => localStorage.clear());
+    const party = () =>
+      fixture.debugElement.query(By.directive(PartyStub)).componentInstance as PartyStub;
+
+    it('collapses the video post to a topic line in compact view and a card otherwise', () => {
+      mount();
+      loader.status.set({
+        ...status(),
+        content: '<p>Episode <b>one</b></p>',
+        account: { id: 'a', username: 'kat' },
+      } as Status);
+      fixture.detectChanges();
+      const topic = fixture.nativeElement.querySelector('.watch-topic summary');
+      expect(topic.textContent).toContain('<kat> Episode one');
+      expect(fixture.nativeElement.querySelector('.watch-root')).toBeNull();
+
+      TestBed.inject(WatchPartyPrefs).setView('cards');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.watch-topic')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.watch-root')).not.toBeNull();
+    });
+
+    it('shows a content warning, not the post text, in the topic line', () => {
+      mount();
+      loader.status.set({ ...status(), content: 'the twist', spoiler_text: 'finale' } as Status);
+      fixture.detectChanges();
+      const topic = fixture.nativeElement.querySelector('.watch-topic summary').textContent;
+      expect(topic).toContain('finale');
+      expect(topic).not.toContain('twist');
+    });
+
+    it('lets the chat reply only to a post on the signed-in server', () => {
+      mount();
+      loader.status.set(status());
+      fixture.detectChanges();
+      expect(party().canReply()).toBe(true);
+      loader.isAnonymousPublic.set(true);
+      fixture.detectChanges();
+      expect(party().canReply()).toBe(false);
+    });
+
+    it('re-reads replies when the chat asks for them', () => {
+      mount();
+      loader.status.set(status());
+      fixture.detectChanges();
+      party().repliesDue.emit();
+      expect(loader.refreshReplies).toHaveBeenCalledTimes(1);
+    });
+  });
+});

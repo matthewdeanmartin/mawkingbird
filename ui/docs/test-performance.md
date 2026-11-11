@@ -46,8 +46,8 @@ on production component boundaries and genuine DOM-test needs.
 
 ```bash
 npm test                                      # watch mode for an active coding session
-npm run test:subset -- src/app/pages/search  # one area
-npm run test:subset -- src/app/compose/compose.spec.ts
+npm run test:subset -- src/app/discovery/search  # one area
+npm run test:subset -- src/app/publishing/compose/compose.spec.ts
 npm run test:source-integrity                 # sub-second inventory/anti-cheating check
 make test                                     # full local test gate with coverage
 ```

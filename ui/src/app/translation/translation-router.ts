@@ -1,24 +1,24 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { AiTranslate, htmlToPlainText } from '../ai-translate';
-import { Api } from '../api';
-import { ClientPrefs } from '../client-prefs';
-import { Status, Translation } from '../models';
-import { FeedLanguageFilter } from '../trend-language-filter';
-import { TRANSLATION_ENGINES, TranslationEngine, TranslationUsage } from '../translation-usage';
+import { AiTranslate, htmlToPlainText } from './ai-translate';
+import { Api } from '../platform/api/api';
+import { ClientPrefs } from '../platform/storage/client-prefs';
+import { Status, Translation } from '../platform/api/models';
+import { FeedLanguageFilter } from '../language/trend-language-filter';
+import { TRANSLATION_ENGINES, TranslationEngine, TranslationUsage } from './translation-usage';
 import { BrowserTranslator } from './browser-translator';
 import { FreeTranslators, TranslatorRefusal } from './free-translators';
 import { bareLanguage } from './language-codes';
 import { TranslationPairCatalog } from './pair-catalog';
 import { resolveSource } from './source-language';
 import { TranslationConnectors } from './translation-connectors';
-import { Auth } from '../auth';
-import { MisskeyApi, MisskeyApiError } from '../providers/misskey/misskey-api';
+import { Auth } from '../platform/session/auth';
+import { MisskeyApi, MisskeyApiError } from '../connections/misskey/misskey-api';
 import { TranslationCache, translationCacheKey } from './translation-cache';
 import { AiBudget } from './ai-budget';
-import { AiAvailability } from '../ai-availability';
-import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
+import { AiAvailability } from '../platform/build/ai-availability';
+import { OpenRouterSession } from '../connections/openrouter/openrouter-session';
 import { AiBatchTranslator } from './ai-batch';
 
 /** Why an engine was passed over. Shown to the reader when every engine fails. */

@@ -7,7 +7,14 @@ import { fileURLToPath } from 'node:url';
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const candidatesPath = join(scriptDirectory, 'starter-kit-candidates.json');
 const reportPath = join(scriptDirectory, 'starter-kit-validation.json');
-const targetPath = join(scriptDirectory, '..', 'src', 'app', 'bundled-starter-kits.generated.ts');
+const targetPath = join(
+  scriptDirectory,
+  '..',
+  'src',
+  'app',
+  'discovery',
+  'bundled-starter-kits.generated.ts',
+);
 const candidates = JSON.parse(readFileSync(candidatesPath, 'utf8'));
 const checkOnly = process.argv.includes('--check');
 const requestTimeoutMs = 15_000;

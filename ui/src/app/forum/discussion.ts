@@ -1,4 +1,4 @@
-import { Account, Status } from '../models';
+import { Account, Status } from '../platform/api/models';
 import { hasHumanQuestion } from './question';
 
 /**

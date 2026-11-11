@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { OpenRouterModelChoice } from '../providers/openrouter/openrouter-model-choice';
-import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
+import { OpenRouterModelChoice } from '../connections/openrouter/openrouter-model-choice';
+import { OpenRouterSession } from '../connections/openrouter/openrouter-session';
 import { ConversationStore } from './conversation-store';
 
 const CHAT_URL = 'https://openrouter.ai/api/v1/chat/completions';

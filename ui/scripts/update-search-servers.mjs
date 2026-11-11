@@ -5,7 +5,7 @@
 // whole directory live: a live hunt probed server after server, minutes at a time,
 // to find what this snapshot can say up front — usually that none qualify.
 //
-// The bar mirrors src/app/search-server-probe.ts (keep them in step):
+// The bar mirrors src/app/discovery/search-server-probe.ts (keep them in step):
 //  - accounts: an account search (`type=accounts`) for a canary returns results.
 //  - posts: a common hashtag query returns posts, not just matching tag names.
 //  - tagsOnly: the hashtag query named the tag but returned no posts.

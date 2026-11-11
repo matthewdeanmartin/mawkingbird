@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { anonymousUnavailableGuard } from './providers/anonymous/anonymous-route.guard';
+import { anonymousUnavailableGuard } from './accounts/anonymous/anonymous-route.guard';
 
 /**
  * Routes that only make sense against the mock server (its `_mock/*` control plane).
@@ -31,7 +31,7 @@ export const mockOnlySettingsChildren: Routes = [
     canActivate: [anonymousUnavailableGuard],
     data: { anonymousFeature: 'Automatic post deletion', preloadSettings: true },
     loadComponent: () =>
-      import('./pages/settings/deletion/settings-deletion').then((m) => m.SettingsDeletion),
+      import('./settings/deletion/settings-deletion').then((m) => m.SettingsDeletion),
   },
   {
     path: 'account',
@@ -39,7 +39,7 @@ export const mockOnlySettingsChildren: Routes = [
     canActivate: [anonymousUnavailableGuard],
     data: { anonymousFeature: 'Account settings', preloadSettings: true },
     loadComponent: () =>
-      import('./pages/settings/account/settings-account').then((m) => m.SettingsAccount),
+      import('./settings/account/settings-account').then((m) => m.SettingsAccount),
   },
   {
     path: 'notifications',
@@ -47,7 +47,7 @@ export const mockOnlySettingsChildren: Routes = [
     canActivate: [anonymousUnavailableGuard],
     data: { anonymousFeature: 'Email notifications', preloadSettings: true },
     loadComponent: () =>
-      import('./pages/settings/notifications/settings-notifications').then(
+      import('./settings/notifications/settings-notifications').then(
         (m) => m.SettingsNotifications,
       ),
   },
@@ -57,7 +57,7 @@ export const mockOnlySettingsChildren: Routes = [
     canActivate: [anonymousUnavailableGuard],
     data: { anonymousFeature: 'Invites', preloadSettings: true },
     loadComponent: () =>
-      import('./pages/settings/invites/settings-invites').then((m) => m.SettingsInvites),
+      import('./settings/invites/settings-invites').then((m) => m.SettingsInvites),
   },
   {
     path: 'development',
@@ -65,9 +65,7 @@ export const mockOnlySettingsChildren: Routes = [
     canActivate: [anonymousUnavailableGuard],
     data: { anonymousFeature: 'Development settings', preloadSettings: true },
     loadComponent: () =>
-      import('./pages/settings/development/settings-development').then(
-        (m) => m.SettingsDevelopment,
-      ),
+      import('./settings/development/settings-development').then((m) => m.SettingsDevelopment),
   },
 ];
 
@@ -75,6 +73,6 @@ export const mockOnlyChildren: Routes = [
   {
     path: 'dev/faults',
     loadComponent: () =>
-      import('./pages/fault-injection/fault-injection').then((m) => m.FaultInjection),
+      import('./observability/fault-injection/fault-injection').then((m) => m.FaultInjection),
   },
 ];

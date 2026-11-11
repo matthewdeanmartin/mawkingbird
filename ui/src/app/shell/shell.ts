@@ -1,13 +1,13 @@
-import { BlueskyModeration } from '../providers/bluesky/bluesky-moderation';
-import { accountProfilePath } from '../account-route';
+import { BlueskyModeration } from '../connections/bluesky/bluesky-moderation';
+import { accountProfilePath } from '../accounts/account-route';
 import { MbContentState } from '../design-system/content-state/content-state';
 import { MbButton } from '../design-system/button/button';
 import { MbControl, MbField } from '../design-system/field/field';
-import { FeatureUseHistory } from '../feature-use-history';
-import { PlusPrice } from '../providers/account/plus-price';
-import { PlusPaywallDialog } from '../providers/account/plus-paywall-dialog';
+import { FeatureUseHistory } from '../feeds/feature-use-history';
+import { PlusPrice } from '../accounts/mawkingbird/plus-price';
+import { PlusPaywallDialog } from '../accounts/mawkingbird/plus-paywall-dialog';
 import { AiBudgetPrompt } from '../translation/ai-budget-prompt';
-import { ProxyLimitNotice } from '../providers/cors-proxy/proxy-limit-notice';
+import { ProxyLimitNotice } from '../connections/cors-proxy/proxy-limit-notice';
 import {
   Component,
   computed,
@@ -26,42 +26,42 @@ import { NgComponentOutlet, NgOptimizedImage } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { filter, map, MonoTypeOperatorFunction, retry, throwError, timer } from 'rxjs';
-import { Api } from '../api';
-import { MenuIndicators } from '../menu-indicators';
-import { AccountChoice, Auth, Session } from '../auth';
-import { ClientPrefs } from '../client-prefs';
+import { Api } from '../platform/api/api';
+import { MenuIndicators } from './menu-indicators';
+import { AccountChoice, Auth, Session } from '../platform/session/auth';
+import { ClientPrefs } from '../platform/storage/client-prefs';
 import { BotPeers } from '../chat/bot-peers';
 import { environment } from '../../environments/environment';
-import { brandLogoSrc, isCanaryBuild, isTestBuild } from '../build-flavor';
-import { Hotkeys } from '../hotkeys';
-import { ShortcutHelp } from '../shortcut-help/shortcut-help';
+import { brandLogoSrc, isCanaryBuild, isTestBuild } from '../platform/build/build-flavor';
+import { Hotkeys } from './hotkeys';
+import { ShortcutHelp } from './shortcut-help/shortcut-help';
 import { AppFooter } from './app-footer/app-footer';
 import { LeftRail } from './left-rail/left-rail';
 import { RightRail } from './right-rail/right-rail';
-import { ServerAbout } from '../server-about';
-import { FeatureFlags } from '../feature-flags';
-import { LeaveChoice, LeaveDialog } from '../leave-dialog/leave-dialog';
-import { WritingZen } from '../writing-zen';
-import { ReadingZen } from '../reading-zen';
+import { ServerAbout } from '../discovery/server-about';
+import { FeatureFlags } from '../platform/build/feature-flags';
+import { LeaveChoice, LeaveDialog } from './leave-dialog/leave-dialog';
+import { WritingZen } from '../publishing/writing-zen';
+import { ReadingZen } from '../reading/reading-zen';
 import {
   ACCOUNT_FILTER_THRESHOLD,
   AccountSwitcher,
   accountLabel,
   filterAccountChoices,
-} from '../account-switcher';
-import { Account } from '../models';
-import { FirstRunChoice, FirstRunModal } from '../first-run/first-run-modal';
-import { PreviewSeed } from '../first-run/preview-seed';
-import { OnboardingLauncher } from '../onboarding/onboarding-launcher';
-import { PlusBadgeEntitlement } from '../providers/account/plus-badge-entitlement';
-import { visiblePlusBenefits } from '../plus-benefits';
+} from '../accounts/account-switcher';
+import { Account } from '../platform/api/models';
+import { FirstRunChoice, FirstRunModal } from '../accounts/first-run/first-run-modal';
+import { PreviewSeed } from '../accounts/first-run/preview-seed';
+import { OnboardingLauncher } from '../accounts/onboarding/onboarding-launcher';
+import { PlusBadgeEntitlement } from '../accounts/mawkingbird/plus-badge-entitlement';
+import { visiblePlusBenefits } from '../platform/build/plus-benefits';
 import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
-import { AppModeService } from '../app-mode';
-import { RadioOutlet } from '../radio-outlet';
-import { RailOutlet } from '../rail-outlet';
+import { AppModeService } from '../platform/build/app-mode';
+import { RadioOutlet } from './radio-outlet';
+import { RailOutlet } from './rail-outlet';
 import { focusedAppFor, MODE_NAV, ModeNavItem } from './mode-nav';
 import { ModeSwitch } from './mode-switch';
-import { AccountTabBanner } from '../account-tab-guard/account-tab-banner';
+import { AccountTabBanner } from '../platform/session/account-tab-guard/account-tab-banner';
 
 // i18n shell.testDeployment: Test deployment — nothing here is real. Payments use Stripe's sandbox and no money moves. The real app is at
 // i18n shell.deployment.canary: Canary
@@ -234,7 +234,7 @@ export class Shell implements OnInit, AccountSwitcher {
   protected onboardingCard = signal<Type<unknown> | null>(null);
   private readonly loadOnboardingCard = effect(() => {
     if (this.onboarding.mode() && !this.onboardingCard()) {
-      void import('../onboarding/onboarding-card').then((m) =>
+      void import('../accounts/onboarding/onboarding-card').then((m) =>
         this.onboardingCard.set(m.OnboardingCard),
       );
     }

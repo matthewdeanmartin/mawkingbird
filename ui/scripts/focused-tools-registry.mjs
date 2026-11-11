@@ -8,11 +8,11 @@ const app = new URL('../src/app/', import.meta.url);
 const readJson = async (url) => JSON.parse(await readFile(url, 'utf8'));
 
 export async function loadFocusedTools() {
-  const english = await readJson(new URL('focused-tools.json', app));
-  const paths = await readJson(new URL('tool-translations/paths.json', app));
+  const english = await readJson(new URL('public-pages/focused-tools.json', app));
+  const paths = await readJson(new URL('public-pages/tool-translations/paths.json', app));
   const copies = {};
   for (const lang of Object.keys(paths))
-    copies[lang] = await readJson(new URL(`tool-translations/${lang}.json`, app));
+    copies[lang] = await readJson(new URL(`public-pages/tool-translations/${lang}.json`, app));
   return english.flatMap((tool) => [
     tool,
     ...Object.keys(paths)
@@ -36,16 +36,16 @@ export async function loadFocusedTools() {
 
 /** Every file the registry is read from, for dating the pages it lists. */
 export async function registrySources() {
-  const files = await readdir(new URL('tool-translations/', app));
+  const files = await readdir(new URL('public-pages/tool-translations/', app));
   return [
-    'src/app/focused-tools.json',
-    ...files.map((file) => `src/app/tool-translations/${file}`),
+    'src/app/public-pages/focused-tools.json',
+    ...files.map((file) => `src/app/public-pages/tool-translations/${file}`),
   ];
 }
 
 /** The languages tool pages are translated into; each has an index at /<lang>/. */
 export async function translatedLanguages() {
-  return Object.keys(await readJson(new URL('tool-translations/paths.json', app)));
+  return Object.keys(await readJson(new URL('public-pages/tool-translations/paths.json', app)));
 }
 
 /** A language's folder in URLs: its code in lower case (zh-Hant -> zh-hant). */

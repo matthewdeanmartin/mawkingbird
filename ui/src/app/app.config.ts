@@ -1,4 +1,4 @@
-import { proxyLimitInterceptor } from './providers/cors-proxy/proxy-limit.interceptor';
+import { proxyLimitInterceptor } from './connections/cors-proxy/proxy-limit.interceptor';
 import {
   ApplicationConfig,
   ErrorHandler,
@@ -16,19 +16,19 @@ import {
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
-import { providePublicPageUrls } from './public-page-urls';
-import { authInterceptor } from './auth.interceptor';
-import { healthInterceptor } from './health.interceptor';
-import { serverInterceptor } from './server.interceptor';
+import { providePublicPageUrls } from './public-pages/public-page-urls';
+import { authInterceptor } from './platform/http/auth.interceptor';
+import { healthInterceptor } from './platform/http/health.interceptor';
+import { serverInterceptor } from './platform/http/server.interceptor';
 import { metricsInterceptor } from './observability/metrics.interceptor';
-import { GlobalErrorHandler } from './global-error-handler';
-import { SettingsPreloading } from './pages/settings/settings-preloading';
-import { dedupeInterceptor } from './dedupe.interceptor';
-import { rateLimitInterceptor } from './rate-limit.interceptor';
-import { plusTokenInterceptor } from './providers/account/plus-token.interceptor';
-import { PageTitleStrategy } from './a11y/page-title-strategy';
+import { GlobalErrorHandler } from './platform/diagnostics/global-error-handler';
+import { SettingsPreloading } from './settings/settings-preloading';
+import { dedupeInterceptor } from './platform/http/dedupe.interceptor';
+import { rateLimitInterceptor } from './platform/http/rate-limit.interceptor';
+import { plusTokenInterceptor } from './accounts/mawkingbird/plus-token.interceptor';
+import { PageTitleStrategy } from './shell/a11y/page-title-strategy';
 import { provideI18nForApp } from './i18n/i18n.config';
-import { AppInstall } from './app-install/app-install';
+import { AppInstall } from './shell/app-install/app-install';
 
 export const appConfig: ApplicationConfig = {
   providers: [

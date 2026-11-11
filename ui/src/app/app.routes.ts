@@ -1,18 +1,21 @@
 import { inject, Type } from '@angular/core';
 import { CanActivateFn, CanMatchFn, ResolveFn, Route, Router, Routes } from '@angular/router';
-import { authGuard, mastodonSignedInMatch, signedInMatch } from './auth.guard';
+import { authGuard, mastodonSignedInMatch, signedInMatch } from './platform/session/auth.guard';
 import { adminGuard } from './admin/admin.guard';
 import {
   anonymousChatGuard,
   anonymousCollectionGuard,
   anonymousUnavailableGuard,
-} from './providers/anonymous/anonymous-route.guard';
-import { anonymousOnlyGuard } from './providers/anonymous/anonymous-only.guard';
-import { featureFlagGuard } from './feature-flag.guard';
-import { misskeyPrimaryMatch } from './providers/misskey/misskey-route.guard';
-import { forumThreadGuard } from './forum-thread.guard';
-import { inviteAccessGuard } from './invites/invite-access.guard';
-import { justMyServerUpdateCanDeactivate, justMyServerUpdateGuard } from './just-my-server.guard';
+} from './accounts/anonymous/anonymous-route.guard';
+import { anonymousOnlyGuard } from './accounts/anonymous/anonymous-only.guard';
+import { featureFlagGuard } from './platform/build/feature-flag.guard';
+import { misskeyPrimaryMatch } from './connections/misskey/misskey-route.guard';
+import { forumThreadGuard } from './forum/forum-thread.guard';
+import { inviteAccessGuard } from './accounts/invites/invite-access.guard';
+import {
+  justMyServerUpdateCanDeactivate,
+  justMyServerUpdateGuard,
+} from './feeds/just-my-server.guard';
 // Mock-only routes; file-replaced with an empty list in the Mocking Bird build.
 import { mockOnlyChildren, mockOnlySettingsChildren } from './mock-routes';
 import {
@@ -26,16 +29,16 @@ import {
   toolAlternates,
   toolComponentName,
   toolLanguage,
-} from './focused-tools';
-import { toolDescription, toolTitle, toolsResolver } from './tool-copy';
-import { audienceRoutes } from './pages/features/audience-routes';
-import { followRoutes } from './pages/features/follow-routes';
+} from './public-pages/focused-tools';
+import { toolDescription, toolTitle, toolsResolver } from './public-pages/tool-copy';
+import { audienceRoutes } from './public-pages/features/audience-routes';
+import { followRoutes } from './public-pages/features/follow-routes';
 import {
   feedBuilderPreviewRoutes,
   feedBuilderRoutes,
   feedBuilderSignedInChildren,
-} from './pages/feed-builder/feed-builder-routes';
-import { FEED_BUILDER_PAGES } from './pages/feed-builder/feed-builder-registry';
+} from './feeds/feed-builder/feed-builder-routes';
+import { FEED_BUILDER_PAGES } from './feeds/feed-builder/feed-builder-registry';
 import {
   ABOUT_DESCRIPTION,
   APP_STRUCTURED_DATA,
@@ -45,7 +48,7 @@ import {
   TOOLS_DESCRIPTION,
   TOOLS_INDEX_ALTERNATES,
   TOOLS_INDEXES,
-} from './seo';
+} from './public-pages/seo';
 
 /**
  * The three routes of a focused mini-app.
@@ -85,7 +88,7 @@ function focusedAppRoutes(app: {
         {
           path: 'invite',
           title: 'Invite friends',
-          loadComponent: () => import('./pages/invites/invites').then((m) => m.Invites),
+          loadComponent: () => import('./accounts/invites/invites').then((m) => m.Invites),
         },
       ],
     },
@@ -119,87 +122,87 @@ function focusedAppRoutes(app: {
  */
 export const TOOL_PAGE_MODULES: Record<string, ToolPageModule> = {
   'twitter-to-mastodon': {
-    load: () => import('./pages/twitter-to-mastodon/twitter-to-mastodon'),
+    load: () => import('./discovery/twitter-to-mastodon/twitter-to-mastodon'),
     component: 'TwitterToMastodon',
   },
-  crosspost: { load: () => import('./pages/crosspost/crosspost'), component: 'Crosspost' },
+  crosspost: { load: () => import('./publishing/crosspost/crosspost'), component: 'Crosspost' },
   'mastodon-analytics': {
-    load: () => import('./pages/mastodon-analytics/mastodon-analytics'),
+    load: () => import('./accounts/mastodon-analytics/mastodon-analytics'),
     component: 'MastodonAnalytics',
   },
   'github-to-mastodon': {
-    load: () => import('./pages/github-to-mastodon/github-to-mastodon'),
+    load: () => import('./publishing/github-to-mastodon/github-to-mastodon'),
     component: 'GithubToMastodon',
   },
   'schedule-mastodon-posts': {
-    load: () => import('./pages/schedule-mastodon-posts/schedule-mastodon-posts'),
+    load: () => import('./publishing/schedule-mastodon-posts/schedule-mastodon-posts'),
     component: 'ScheduleMastodonPosts',
   },
   'bluesky-to-mastodon': {
-    load: () => import('./pages/friend-bridge/friend-bridge'),
+    load: () => import('./discovery/friend-bridge/friend-bridge'),
     component: 'FriendBridge',
   },
   'mastodon-to-bluesky': {
-    load: () => import('./pages/friend-bridge/friend-bridge'),
+    load: () => import('./discovery/friend-bridge/friend-bridge'),
     component: 'FriendBridge',
   },
   'turn-off-boosts-mastodon': {
-    load: () => import('./pages/turn-off-boosts-mastodon/turn-off-boosts-mastodon'),
+    load: () => import('./feeds/turn-off-boosts-mastodon/turn-off-boosts-mastodon'),
     component: 'TurnOffBoostsMastodon',
   },
   'find-contacts-on-mastodon': {
-    load: () => import('./pages/find-contacts-on-mastodon/find-contacts-on-mastodon'),
+    load: () => import('./discovery/find-contacts-on-mastodon/find-contacts-on-mastodon'),
     component: 'FindContactsOnMastodon',
   },
   'mastodon-friends-rss-feeds': {
-    load: () => import('./pages/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds'),
+    load: () => import('./reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds'),
     component: 'MastodonFriendsRssFeeds',
   },
   'mastodon-mute-block-amnesty': {
-    load: () => import('./pages/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty'),
+    load: () => import('./moderation/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty'),
     component: 'MastodonMuteBlockAmnesty',
   },
   'how-to-be-anonymous-on-mastodon': {
-    load: () => import('./pages/anonymous-on-mastodon/anonymous-on-mastodon'),
+    load: () => import('./accounts/anonymous-on-mastodon/anonymous-on-mastodon'),
     component: 'AnonymousOnMastodon',
   },
   'mastodon-handle-generator': {
-    load: () => import('./pages/mastodon-handle-generator/mastodon-handle-generator'),
+    load: () => import('./accounts/mastodon-handle-generator/mastodon-handle-generator'),
     component: 'MastodonHandleGenerator',
   },
   'turn-off-content-warnings-mastodon': {
-    load: () => import('./pages/mastodon-content-warnings/mastodon-content-warnings'),
+    load: () => import('./moderation/mastodon-content-warnings/mastodon-content-warnings'),
     component: 'MastodonContentWarnings',
   },
   'export-mastodon-bookmarks': {
-    load: () => import('./pages/export-mastodon-bookmarks/export-mastodon-bookmarks'),
+    load: () => import('./reading/export-mastodon-bookmarks/export-mastodon-bookmarks'),
     component: 'ExportMastodonBookmarks',
   },
   'download-mastodon-images': {
-    load: () => import('./pages/download-mastodon-images/download-mastodon-images'),
+    load: () => import('./reading/download-mastodon-images/download-mastodon-images'),
     component: 'DownloadMastodonImages',
     oneForAll: true,
   },
   'mastodon-similar-hashtags': {
-    load: () => import('./pages/mastodon-similar-hashtags/mastodon-similar-hashtags'),
+    load: () => import('./discovery/mastodon-similar-hashtags/mastodon-similar-hashtags'),
     component: 'MastodonSimilarHashtags',
   },
   'mastodon-in-english': {
-    load: () => import('./pages/language-landing/language-landing'),
+    load: () => import('./public-pages/language-landing/language-landing'),
     component: 'LanguageLanding',
     oneForAll: true,
   },
   'learn-english-with-mastodon': {
-    load: () => import('./pages/language-landing/language-landing'),
+    load: () => import('./public-pages/language-landing/language-landing'),
     component: 'LanguageLanding',
     oneForAll: true,
   },
   'mastodon-search': {
-    load: () => import('./pages/network-search/network-search'),
+    load: () => import('./discovery/network-search/network-search'),
     component: 'NetworkSearch',
   },
   'bluesky-search': {
-    load: () => import('./pages/network-search/network-search'),
+    load: () => import('./discovery/network-search/network-search'),
     component: 'NetworkSearch',
   },
 };
@@ -241,7 +244,7 @@ export const routes: Routes = [
         'Explore Mawkingbird: Mastodon feeds, RSS and readable articles, bookmarks, writing and drafts, bulk actions and third-party integrations.',
       seoStructuredData: APP_STRUCTURED_DATA,
     },
-    loadComponent: () => import('./pages/features/features').then((m) => m.Features),
+    loadComponent: () => import('./public-pages/features/features').then((m) => m.Features),
   },
   // Every tool page, from focused-tools.json. Public and prerendered, like /features.
   {
@@ -253,7 +256,7 @@ export const routes: Routes = [
       lang: 'en',
       seoAlternates: TOOLS_INDEX_ALTERNATES,
     },
-    loadComponent: () => import('./pages/tools/tools-index').then((m) => m.ToolsIndex),
+    loadComponent: () => import('./public-pages/tools/tools-index').then((m) => m.ToolsIndex),
   },
   // Each language's index, which is also its folder's own page (/de/, /fr/, …).
   ...(Object.keys(TOOLS_INDEXES) as TranslatedLanguage[]).map((lang): Route => ({
@@ -268,7 +271,7 @@ export const routes: Routes = [
     },
     resolve: { tools: toolsResolver(lang) },
     loadComponent: () =>
-      import('./pages/tools/tools-index').then(
+      import('./public-pages/tools/tools-index').then(
         (m) =>
           (m as Record<string, Type<unknown>>)[
             toolComponentName({ component: 'ToolsIndex' }, lang)
@@ -280,13 +283,13 @@ export const routes: Routes = [
     path: 'connection-help',
     title: 'Connection help',
     loadComponent: () =>
-      import('./pages/connection-help/connection-help').then((m) => m.ConnectionHelp),
+      import('./accounts/sign-in/connection-help/connection-help').then((m) => m.ConnectionHelp),
   },
   {
     path: 'connection-doctor',
     title: 'Network Doctor',
     loadComponent: () =>
-      import('./pages/settings/connections/doctor/connection-doctor-page').then(
+      import('./settings/connections/doctor/connection-doctor-page').then(
         (m) => m.ConnectionDoctorPage,
       ),
   },
@@ -297,7 +300,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    loadComponent: () => import('./pages/entry/entry').then((m) => m.EntryPage),
+    loadComponent: () => import('./accounts/sign-in/entry/entry').then((m) => m.EntryPage),
     data: {
       seoIndexable: true,
       seoTagline: FRONT_PAGE_TAGLINE,
@@ -308,7 +311,7 @@ export const routes: Routes = [
     path: 'anonymous',
     title: 'Browse anonymously',
     loadComponent: () =>
-      import('./pages/anonymous-entry/anonymous-entry').then((m) => m.AnonymousEntry),
+      import('./accounts/sign-in/anonymous-entry/anonymous-entry').then((m) => m.AnonymousEntry),
   },
   // `/login` is the two-door chooser AND the Mastodon OAuth callback address —
   // instances have `<base href>login` registered as the redirect_uri, so it
@@ -317,17 +320,19 @@ export const routes: Routes = [
     path: 'login',
     pathMatch: 'full',
     title: 'Sign in',
-    loadComponent: () => import('./pages/login-chooser/login-chooser').then((m) => m.LoginChooser),
+    loadComponent: () =>
+      import('./accounts/sign-in/login-chooser/login-chooser').then((m) => m.LoginChooser),
   },
   {
     path: 'login/mastodon',
     title: 'Sign in with Mastodon',
-    loadComponent: () => import('./pages/login/login').then((m) => m.Login),
+    loadComponent: () => import('./accounts/sign-in/login/login').then((m) => m.Login),
   },
   {
     path: 'login/bluesky',
     title: 'Sign in with Bluesky',
-    loadComponent: () => import('./pages/login-bluesky/login-bluesky').then((m) => m.LoginBluesky),
+    loadComponent: () =>
+      import('./accounts/sign-in/login-bluesky/login-bluesky').then((m) => m.LoginBluesky),
   },
   // Both halves of Misskey's MiAuth round trip: the server form, and the
   // `?session=` callback that MiAuth sends the reader back to.
@@ -336,13 +341,14 @@ export const routes: Routes = [
     title: 'Sign in with Misskey',
     canActivate: [featureFlagGuard],
     data: { featureFlag: 'misskey' },
-    loadComponent: () => import('./pages/login-misskey/login-misskey').then((m) => m.LoginMisskey),
+    loadComponent: () =>
+      import('./accounts/sign-in/login-misskey/login-misskey').then((m) => m.LoginMisskey),
   },
   {
     path: 'oauth/bluesky/callback',
     title: 'Connecting Bluesky',
     loadComponent: () =>
-      import('./pages/bluesky-oauth-callback/bluesky-oauth-callback').then(
+      import('./accounts/sign-in/bluesky-oauth-callback/bluesky-oauth-callback').then(
         (m) => m.BlueskyOAuthCallback,
       ),
   },
@@ -350,12 +356,13 @@ export const routes: Routes = [
   {
     path: 'welcome-back',
     title: 'Welcome back',
-    loadComponent: () => import('./pages/welcome-back/welcome-back').then((m) => m.WelcomeBack),
+    loadComponent: () =>
+      import('./accounts/sign-in/welcome-back/welcome-back').then((m) => m.WelcomeBack),
   },
   {
     path: 'explore',
     title: 'Explore',
-    loadComponent: () => import('./pages/explore/explore').then((m) => m.Explore),
+    loadComponent: () => import('./discovery/explore/explore').then((m) => m.Explore),
   },
   // Public recruiting tool in the normal three-column shell. Fresh visitors
   // enter Anonymous against ?server.example (mastodon.social by default).
@@ -369,7 +376,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        loadComponent: () => import('./pages/invites/invites').then((m) => m.Invites),
+        loadComponent: () => import('./accounts/invites/invites').then((m) => m.Invites),
       },
     ],
   },
@@ -398,30 +405,36 @@ export const routes: Routes = [
   {
     path: 'message/:id',
     title: 'Shared message',
-    loadComponent: () => import('./pages/message/message').then((m) => m.MessagePage),
+    loadComponent: () => import('./publishing/message/message').then((m) => m.MessagePage),
   },
   {
     path: 'message',
     title: 'Shared message',
-    loadComponent: () => import('./pages/message/message').then((m) => m.MessagePage),
+    loadComponent: () => import('./publishing/message/message').then((m) => m.MessagePage),
   },
   {
     path: 'integrations/dropbox/callback',
     title: 'Connecting Dropbox',
     loadComponent: () =>
-      import('./pages/dropbox-callback/dropbox-callback').then((m) => m.DropboxCallback),
+      import('./connections/dropbox/dropbox-callback/dropbox-callback').then(
+        (m) => m.DropboxCallback,
+      ),
   },
   {
     path: 'integrations/blogger/callback',
     title: 'Connecting Blogger',
     loadComponent: () =>
-      import('./pages/blogger-callback/blogger-callback').then((m) => m.BloggerCallback),
+      import('./connections/blogger/blogger-callback/blogger-callback').then(
+        (m) => m.BloggerCallback,
+      ),
   },
   {
     path: 'integrations/openrouter/callback',
     title: 'Connecting OpenRouter',
     loadComponent: () =>
-      import('./pages/openrouter-callback/openrouter-callback').then((m) => m.OpenRouterCallback),
+      import('./connections/openrouter/openrouter-callback/openrouter-callback').then(
+        (m) => m.OpenRouterCallback,
+      ),
   },
   // The fail whale's way out: every saved account, outside the shell, so
   // nothing on the page asks the downed server for anything. The in-shell
@@ -430,13 +443,13 @@ export const routes: Routes = [
     path: 'choose-account',
     title: 'Switch account',
     loadComponent: () =>
-      import('./pages/account-picker/account-picker').then((m) => m.AccountPicker),
+      import('./accounts/sign-in/account-picker/account-picker').then((m) => m.AccountPicker),
   },
   {
     path: 'fail-whale',
     title: 'Something went wrong',
     loadComponent: () =>
-      import('./pages/fail-whale-demo/fail-whale-demo').then((m) => m.FailWhaleDemo),
+      import('./shell/fail-whale-demo/fail-whale-demo').then((m) => m.FailWhaleDemo),
   },
   {
     path: '',
@@ -456,7 +469,7 @@ export const routes: Routes = [
         // The tagline titles the page during the first-run preview, which is
         // what a crawler sees; see PageTitleStrategy.
         data: { seoIndexable: true, seoCanonicalPath: '/', seoTagline: FRONT_PAGE_TAGLINE },
-        loadComponent: () => import('./pages/home/home').then((m) => m.Home),
+        loadComponent: () => import('./feeds/home/home').then((m) => m.Home),
       },
       {
         // Not `accounts`: `/accounts/:id` is a profile. This is the full-page
@@ -464,7 +477,7 @@ export const routes: Routes = [
         path: 'switch-account',
         title: 'Switch account',
         loadComponent: () =>
-          import('./pages/account-picker/account-picker').then((m) => m.AccountPicker),
+          import('./accounts/sign-in/account-picker/account-picker').then((m) => m.AccountPicker),
       },
       // Bluesky's starter packs: open, follow from and make them. Distinct from
       // Mawkingbird's bundled Starter Kits, which have their own pages.
@@ -472,7 +485,7 @@ export const routes: Routes = [
         path: 'bluesky/starter-packs',
         title: 'Bluesky starter packs',
         loadComponent: () =>
-          import('./pages/bluesky-starter-packs/bluesky-starter-packs-page').then(
+          import('./discovery/bluesky-starter-packs/bluesky-starter-packs-page').then(
             (m) => m.BlueskyStarterPacksPage,
           ),
       },
@@ -480,20 +493,20 @@ export const routes: Routes = [
         path: 'bluesky/starter-packs/:actor/:rkey',
         title: 'Bluesky starter pack',
         loadComponent: () =>
-          import('./pages/bluesky-starter-packs/bluesky-starter-pack-page').then(
+          import('./discovery/bluesky-starter-packs/bluesky-starter-pack-page').then(
             (m) => m.BlueskyStarterPackPage,
           ),
       },
       {
         path: 'algo',
         title: 'Algo',
-        loadComponent: () => import('./pages/algo/algo').then((m) => m.Algo),
+        loadComponent: () => import('./feeds/algo/algo').then((m) => m.Algo),
       },
       {
         path: 'public',
         title: 'Public timeline',
         loadComponent: () =>
-          import('./pages/public-timeline/public-timeline').then((m) => m.PublicTimeline),
+          import('./feeds/public-timeline/public-timeline').then((m) => m.PublicTimeline),
       },
       {
         path: 'notifications',
@@ -501,7 +514,7 @@ export const routes: Routes = [
         canActivate: [anonymousUnavailableGuard],
         data: { anonymousFeature: 'Inbox' },
         loadComponent: () =>
-          import('./pages/notifications/notifications').then((m) => m.Notifications),
+          import('./feeds/notifications/notifications').then((m) => m.Notifications),
       },
       {
         path: 'conversations',
@@ -509,28 +522,26 @@ export const routes: Routes = [
         canActivate: [anonymousChatGuard],
         data: { anonymousFeature: 'Chat' },
         loadComponent: () =>
-          import('./pages/conversations/conversations').then((m) => m.Conversations),
+          import('./publishing/conversations/conversations').then((m) => m.Conversations),
       },
       {
         path: 'settings',
         title: 'Settings',
-        loadComponent: () => import('./pages/settings/settings-shell').then((m) => m.SettingsShell),
+        loadComponent: () => import('./settings/settings-shell').then((m) => m.SettingsShell),
         children: [
           { path: '', pathMatch: 'full', redirectTo: 'profile' },
           {
             path: 'home-algo',
             title: 'Home and Algo',
             loadComponent: () =>
-              import('./pages/settings/home-algo/settings-home-algo').then(
-                (m) => m.SettingsHomeAlgo,
-              ),
+              import('./settings/home-algo/settings-home-algo').then((m) => m.SettingsHomeAlgo),
           },
           {
             path: 'profile',
             title: 'Profile',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/profile/settings-profile').then((m) => m.SettingsProfile),
+              import('./settings/profile/settings-profile').then((m) => m.SettingsProfile),
           },
           {
             path: 'server',
@@ -538,7 +549,7 @@ export const routes: Routes = [
             canActivate: [anonymousOnlyGuard],
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/server/settings-server').then((m) => m.SettingsServer),
+              import('./settings/server/settings-server').then((m) => m.SettingsServer),
           },
           {
             path: 'anonymous',
@@ -551,7 +562,7 @@ export const routes: Routes = [
             title: 'Bluesky',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/blue/settings-blue').then((m) => m.SettingsBlue),
+              import('./settings/blue/settings-blue').then((m) => m.SettingsBlue),
           },
           {
             // Sign-in lands here already authenticated: the account service
@@ -562,7 +573,7 @@ export const routes: Routes = [
             canActivate: [featureFlagGuard],
             data: { featureFlag: 'mawkingbird-plus', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/mawkingbird-plus/settings-mawkingbird-plus').then(
+              import('./settings/mawkingbird-plus/settings-mawkingbird-plus').then(
                 (m) => m.SettingsMawkingbirdPlus,
               ),
           },
@@ -578,7 +589,7 @@ export const routes: Routes = [
                 path: '',
                 data: { preloadSettings: true },
                 loadComponent: () =>
-                  import('./pages/settings/connections/settings-connections').then(
+                  import('./settings/connections/settings-connections').then(
                     (m) => m.SettingsConnections,
                   ),
               },
@@ -586,7 +597,7 @@ export const routes: Routes = [
                 path: 'github',
                 title: 'GitHub',
                 loadComponent: () =>
-                  import('./pages/settings/connections/github/connection-github').then(
+                  import('./settings/connections/github/connection-github').then(
                     (m) => m.ConnectionGitHub,
                   ),
               },
@@ -594,7 +605,7 @@ export const routes: Routes = [
                 path: 'dropbox',
                 title: 'Dropbox',
                 loadComponent: () =>
-                  import('./pages/settings/connections/dropbox/connection-dropbox').then(
+                  import('./settings/connections/dropbox/connection-dropbox').then(
                     (m) => m.ConnectionDropbox,
                   ),
               },
@@ -602,7 +613,7 @@ export const routes: Routes = [
                 path: 'raindrop',
                 title: 'Raindrop',
                 loadComponent: () =>
-                  import('./pages/settings/connections/raindrop/connection-raindrop').then(
+                  import('./settings/connections/raindrop/connection-raindrop').then(
                     (m) => m.ConnectionRaindrop,
                   ),
               },
@@ -610,7 +621,7 @@ export const routes: Routes = [
                 path: 'openrouter',
                 title: 'OpenRouter',
                 loadComponent: () =>
-                  import('./pages/settings/connections/openrouter/connection-openrouter').then(
+                  import('./settings/connections/openrouter/connection-openrouter').then(
                     (m) => m.ConnectionOpenRouter,
                   ),
               },
@@ -619,7 +630,7 @@ export const routes: Routes = [
                 title: 'MyMemory',
                 data: { translator: 'mymemory' },
                 loadComponent: () =>
-                  import('./pages/settings/connections/free-translator/connection-free-translator').then(
+                  import('./settings/connections/free-translator/connection-free-translator').then(
                     (m) => m.ConnectionFreeTranslator,
                   ),
               },
@@ -628,7 +639,7 @@ export const routes: Routes = [
                 title: 'Apertium',
                 data: { translator: 'apertium' },
                 loadComponent: () =>
-                  import('./pages/settings/connections/free-translator/connection-free-translator').then(
+                  import('./settings/connections/free-translator/connection-free-translator').then(
                     (m) => m.ConnectionFreeTranslator,
                   ),
               },
@@ -636,7 +647,7 @@ export const routes: Routes = [
                 path: 'bluesky',
                 title: 'Bluesky',
                 loadComponent: () =>
-                  import('./pages/settings/connections/bluesky/connection-bluesky').then(
+                  import('./settings/connections/bluesky/connection-bluesky').then(
                     (m) => m.ConnectionBluesky,
                   ),
               },
@@ -644,7 +655,7 @@ export const routes: Routes = [
                 path: 'mastodon',
                 title: 'Mastodon',
                 loadComponent: () =>
-                  import('./pages/settings/connections/mastodon/connection-mastodon').then(
+                  import('./settings/connections/mastodon/connection-mastodon').then(
                     (m) => m.ConnectionMastodon,
                   ),
               },
@@ -652,7 +663,7 @@ export const routes: Routes = [
                 path: 'cors-proxy',
                 title: 'CORS proxy',
                 loadComponent: () =>
-                  import('./pages/settings/connections/cors-proxy/connection-cors-proxy').then(
+                  import('./settings/connections/cors-proxy/connection-cors-proxy').then(
                     (m) => m.ConnectionCorsProxy,
                   ),
               },
@@ -660,7 +671,7 @@ export const routes: Routes = [
                 path: 'pastes',
                 title: 'Paste services',
                 loadComponent: () =>
-                  import('./pages/settings/connections/pastes/connection-pastes').then(
+                  import('./settings/connections/pastes/connection-pastes').then(
                     (m) => m.ConnectionPastes,
                   ),
               },
@@ -668,7 +679,7 @@ export const routes: Routes = [
                 path: 'link-shortener',
                 title: 'Link shortener',
                 loadComponent: () =>
-                  import('./pages/settings/connections/link-shortener/connection-link-shortener').then(
+                  import('./settings/connections/link-shortener/connection-link-shortener').then(
                     (m) => m.ConnectionLinkShortener,
                   ),
               },
@@ -676,7 +687,7 @@ export const routes: Routes = [
                 path: 'twitter',
                 title: 'Twitter',
                 loadComponent: () =>
-                  import('./pages/settings/connections/twitter/connection-twitter').then(
+                  import('./settings/connections/twitter/connection-twitter').then(
                     (m) => m.ConnectionTwitter,
                   ),
               },
@@ -684,7 +695,7 @@ export const routes: Routes = [
                 path: 'mataroa',
                 title: 'Mataroa',
                 loadComponent: () =>
-                  import('./pages/settings/connections/mataroa/connection-mataroa').then(
+                  import('./settings/connections/mataroa/connection-mataroa').then(
                     (m) => m.ConnectionMataroa,
                   ),
               },
@@ -692,7 +703,7 @@ export const routes: Routes = [
                 path: 'gist',
                 title: 'GitHub Gist',
                 loadComponent: () =>
-                  import('./pages/settings/connections/gist/connection-gist').then(
+                  import('./settings/connections/gist/connection-gist').then(
                     (m) => m.ConnectionGist,
                   ),
               },
@@ -700,7 +711,7 @@ export const routes: Routes = [
                 path: 'blogger',
                 title: 'Blogger',
                 loadComponent: () =>
-                  import('./pages/settings/connections/blogger/connection-blogger').then(
+                  import('./settings/connections/blogger/connection-blogger').then(
                     (m) => m.ConnectionBlogger,
                   ),
               },
@@ -708,7 +719,7 @@ export const routes: Routes = [
                 path: 'hugo',
                 title: 'Hugo',
                 loadComponent: () =>
-                  import('./pages/settings/connections/hugo/connection-hugo').then(
+                  import('./settings/connections/hugo/connection-hugo').then(
                     (m) => m.ConnectionHugo,
                   ),
               },
@@ -719,7 +730,7 @@ export const routes: Routes = [
                 path: 'doctor',
                 title: 'Connection doctor',
                 loadComponent: () =>
-                  import('./pages/settings/connections/doctor/connection-doctor-page').then(
+                  import('./settings/connections/doctor/connection-doctor-page').then(
                     (m) => m.ConnectionDoctorPage,
                   ),
               },
@@ -729,8 +740,7 @@ export const routes: Routes = [
             path: 'rss',
             title: 'RSS',
             data: { preloadSettings: true },
-            loadComponent: () =>
-              import('./pages/settings/rss/settings-rss').then((m) => m.SettingsRss),
+            loadComponent: () => import('./settings/rss/settings-rss').then((m) => m.SettingsRss),
           },
           {
             path: 'pseudonymity',
@@ -738,7 +748,7 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Pseudonymity settings', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/pseudonymity/settings-pseudonymity').then(
+              import('./settings/pseudonymity/settings-pseudonymity').then(
                 (m) => m.SettingsPseudonymity,
               ),
           },
@@ -748,31 +758,28 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Privacy settings', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/privacy/settings-privacy').then((m) => m.SettingsPrivacy),
+              import('./settings/privacy/settings-privacy').then((m) => m.SettingsPrivacy),
           },
           {
             // Install as an app (PWA) and the Share-menu note. Works signed out.
             path: 'app',
             title: 'Install app',
             data: { preloadSettings: true },
-            loadComponent: () =>
-              import('./pages/settings/app/settings-app').then((m) => m.SettingsApp),
+            loadComponent: () => import('./settings/app/settings-app').then((m) => m.SettingsApp),
           },
           {
             path: 'appearance',
             title: 'Appearance',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/appearance/settings-appearance').then(
-                (m) => m.SettingsAppearance,
-              ),
+              import('./settings/appearance/settings-appearance').then((m) => m.SettingsAppearance),
           },
           {
             path: 'storage',
             title: 'Storage',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/storage/settings-storage').then((m) => m.SettingsStorage),
+              import('./settings/storage/settings-storage').then((m) => m.SettingsStorage),
           },
           {
             // 'spotlight', not 'ads': the rail's markup already dodges `ad-*`
@@ -783,9 +790,7 @@ export const routes: Routes = [
             title: 'Spotlight',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/spotlight/settings-spotlight').then(
-                (m) => m.SettingsSpotlight,
-              ),
+              import('./settings/spotlight/settings-spotlight').then((m) => m.SettingsSpotlight),
           },
           {
             // Account-level cleanup of saved credentials and their local data —
@@ -794,7 +799,7 @@ export const routes: Routes = [
             title: 'Accounts',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/accounts/settings-accounts').then((m) => m.SettingsAccounts),
+              import('./settings/accounts/settings-accounts').then((m) => m.SettingsAccounts),
           },
           {
             // The old "Posting defaults" page. Its rows now live on both
@@ -812,7 +817,7 @@ export const routes: Routes = [
             title: 'Writing',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/writing/settings-writing').then((m) => m.SettingsWriting),
+              import('./settings/writing/settings-writing').then((m) => m.SettingsWriting),
           },
           {
             path: 'follows',
@@ -820,7 +825,7 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Follow request approval', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/follows/settings-follows').then((m) => m.SettingsFollows),
+              import('./settings/follows/settings-follows').then((m) => m.SettingsFollows),
           },
           {
             // Bluesky's own moderation; works with a Bluesky connector under any
@@ -829,7 +834,7 @@ export const routes: Routes = [
             title: 'Bluesky moderation',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/bluesky-moderation/settings-bluesky-moderation').then(
+              import('./settings/bluesky-moderation/settings-bluesky-moderation').then(
                 (m) => m.SettingsBlueskyModeration,
               ),
           },
@@ -843,7 +848,7 @@ export const routes: Routes = [
               preloadSettings: true,
             },
             loadComponent: () =>
-              import('./pages/settings/account-list/settings-account-list').then(
+              import('./settings/account-list/settings-account-list').then(
                 (m) => m.SettingsAccountList,
               ),
           },
@@ -855,14 +860,14 @@ export const routes: Routes = [
             title: 'Trust: CW/Sensitive',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/content/settings-content').then((m) => m.SettingsContent),
+              import('./settings/content/settings-content').then((m) => m.SettingsContent),
           },
           {
             path: 'notification-preferences',
             title: 'Notifications',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/notifications/settings-notification-preferences').then(
+              import('./settings/notifications/settings-notification-preferences').then(
                 (m) => m.SettingsNotificationPreferences,
               ),
           },
@@ -874,7 +879,7 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Muted accounts', kind: 'mutes' },
             loadComponent: () =>
-              import('./pages/settings/account-list/settings-account-list').then(
+              import('./settings/account-list/settings-account-list').then(
                 (m) => m.SettingsAccountList,
               ),
           },
@@ -884,7 +889,7 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Blocked accounts', kind: 'blocks', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/account-list/settings-account-list').then(
+              import('./settings/account-list/settings-account-list').then(
                 (m) => m.SettingsAccountList,
               ),
           },
@@ -896,7 +901,7 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Bulk actions', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/bulk-actions/settings-bulk-actions').then(
+              import('./settings/bulk-actions/settings-bulk-actions').then(
                 (m) => m.SettingsBulkActions,
               ),
           },
@@ -906,7 +911,7 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Content filters', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/filters/settings-filters').then((m) => m.SettingsFilters),
+              import('./settings/filters/settings-filters').then((m) => m.SettingsFilters),
           },
           {
             path: 'filters/new',
@@ -914,9 +919,7 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Content filters', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/filters/settings-filter-edit').then(
-                (m) => m.SettingsFilterEdit,
-              ),
+              import('./settings/filters/settings-filter-edit').then((m) => m.SettingsFilterEdit),
           },
           {
             path: 'filters/:id',
@@ -924,9 +927,7 @@ export const routes: Routes = [
             canActivate: [anonymousUnavailableGuard],
             data: { anonymousFeature: 'Content filters', preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/filters/settings-filter-edit').then(
-                (m) => m.SettingsFilterEdit,
-              ),
+              import('./settings/filters/settings-filter-edit').then((m) => m.SettingsFilterEdit),
           },
           {
             // Reachable while anonymous, unlike its neighbours.
@@ -945,7 +946,7 @@ export const routes: Routes = [
             title: 'Import and export',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/import-export/settings-import-export').then(
+              import('./settings/import-export/settings-import-export').then(
                 (m) => m.SettingsImportExport,
               ),
           },
@@ -954,21 +955,21 @@ export const routes: Routes = [
             title: 'Config',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/config/settings-config').then((m) => m.SettingsConfig),
+              import('./settings/config/settings-config').then((m) => m.SettingsConfig),
           },
           {
             path: 'i18n',
             title: 'Languages',
             data: { preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/i18n/settings-i18n').then((m) => m.SettingsI18n),
+              import('./settings/i18n/settings-i18n').then((m) => m.SettingsI18n),
           },
           {
             path: 'feature-flags',
             title: 'Feature flags',
             data: { featureFlagSettings: true, preloadSettings: true },
             loadComponent: () =>
-              import('./pages/settings/feature-flags/settings-feature-flags').then(
+              import('./settings/feature-flags/settings-feature-flags').then(
                 (m) => m.SettingsFeatureFlags,
               ),
           },
@@ -980,7 +981,7 @@ export const routes: Routes = [
         path: 'offsite-directories',
         title: 'Offsite directories',
         loadComponent: () =>
-          import('./pages/offsite-directories/offsite-directories').then(
+          import('./discovery/offsite-directories/offsite-directories').then(
             (m) => m.OffsiteDirectories,
           ),
       },
@@ -993,7 +994,7 @@ export const routes: Routes = [
       {
         path: 'directory',
         title: 'Directory',
-        loadComponent: () => import('./pages/directory/directory').then((m) => m.Directory),
+        loadComponent: () => import('./discovery/directory/directory').then((m) => m.Directory),
       },
       // Both corpora — our starter kits and snapshots of other people's real
       // collections — now list together on one page. The distinction is real but
@@ -1005,7 +1006,7 @@ export const routes: Routes = [
         path: 'bundled-starter-kits',
         title: 'People to follow',
         loadComponent: () =>
-          import('./pages/bundled-starter-kits/bundled-starter-kits').then(
+          import('./discovery/bundled-starter-kits/bundled-starter-kits').then(
             (m) => m.BundledStarterKits,
           ),
       },
@@ -1019,36 +1020,36 @@ export const routes: Routes = [
       {
         path: 'feeds',
         title: 'Feeds',
-        loadComponent: () => import('./pages/lists/lists').then((m) => m.Lists),
+        loadComponent: () => import('./feeds/lists/lists').then((m) => m.Lists),
       },
       {
         path: 'feeds/servers',
         title: 'Other Servers',
         loadComponent: () =>
-          import('./pages/other-servers/other-servers').then((m) => m.OtherServersPage),
+          import('./feeds/other-servers/other-servers').then((m) => m.OtherServersPage),
       },
       {
         path: 'feeds/servers/:server',
         title: 'Server feeds',
         loadComponent: () =>
-          import('./pages/other-servers/other-servers').then((m) => m.OtherServersPage),
+          import('./feeds/other-servers/other-servers').then((m) => m.OtherServersPage),
       },
       {
         path: 'feeds/servers/:server/:feed',
         title: 'Server feed',
-        loadComponent: () => import('./pages/server-feed/server-feed').then((m) => m.ServerFeed),
+        loadComponent: () => import('./feeds/server-feed/server-feed').then((m) => m.ServerFeed),
       },
       {
         path: 'feeds/lists',
         title: 'Lists',
         data: { only: 'lists' },
-        loadComponent: () => import('./pages/lists/lists').then((m) => m.Lists),
+        loadComponent: () => import('./feeds/lists/lists').then((m) => m.Lists),
       },
       {
         path: 'feeds/tags',
         title: 'Tags',
         data: { only: 'tags' },
-        loadComponent: () => import('./pages/lists/lists').then((m) => m.Lists),
+        loadComponent: () => import('./feeds/lists/lists').then((m) => m.Lists),
       },
       // One saved Bluesky feed or list. `:ref` is `<kind>:<at-uri>`; it sits
       // above `feeds/:feed` for the same reason the two literals above do.
@@ -1056,7 +1057,7 @@ export const routes: Routes = [
         path: 'feeds/bluesky/:ref',
         title: 'Bluesky feed',
         loadComponent: () =>
-          import('./pages/bluesky-feed/bluesky-feed').then((m) => m.BlueskyFeedPage),
+          import('./feeds/bluesky-feed/bluesky-feed').then((m) => m.BlueskyFeedPage),
       },
       // Back-compat: the old top-level Lists/Tags entries now live under Feeds.
       { path: 'lists', pathMatch: 'full', redirectTo: 'feeds/lists' },
@@ -1068,17 +1069,17 @@ export const routes: Routes = [
       {
         path: 'rss',
         title: 'RSS',
-        loadComponent: () => import('./pages/rss/rss-page').then((m) => m.RssPage),
+        loadComponent: () => import('./reading/rss/rss-page').then((m) => m.RssPage),
       },
       {
         path: 'radio',
         title: 'Radio',
-        loadComponent: () => import('./pages/radio/radio-page').then((m) => m.RadioPage),
+        loadComponent: () => import('./reading/radio/radio-page').then((m) => m.RadioPage),
       },
       {
         path: 'radio/studio',
         title: 'Studio',
-        loadComponent: () => import('./pages/radio/studio-page').then((m) => m.StudioPage),
+        loadComponent: () => import('./reading/radio/studio-page').then((m) => m.StudioPage),
       },
       {
         // Discussions found by a budgeted scan of one feed; the mode's tabs
@@ -1087,7 +1088,7 @@ export const routes: Routes = [
         title: 'Forum',
         canActivate: [anonymousUnavailableGuard],
         data: { anonymousFeature: 'Forum' },
-        loadComponent: () => import('./pages/forum/forum-page').then((m) => m.ForumPage),
+        loadComponent: () => import('./forum/forum-page').then((m) => m.ForumPage),
       },
       {
         path: 'forum/d/:id',
@@ -1095,12 +1096,12 @@ export const routes: Routes = [
         canActivate: [anonymousUnavailableGuard],
         data: { anonymousFeature: 'Forum' },
         loadComponent: () =>
-          import('./pages/forum/forum-discussion-page').then((m) => m.ForumDiscussionPage),
+          import('./forum/forum-discussion-page').then((m) => m.ForumDiscussionPage),
       },
       {
         path: 'videos',
         title: 'Video feeds',
-        loadComponent: () => import('./pages/videos/videos-page').then((m) => m.VideosPage),
+        loadComponent: () => import('./reading/videos/videos-page').then((m) => m.VideosPage),
       },
       {
         // Home's own timeline, held in its Video view: the merged feed, paging
@@ -1109,13 +1110,13 @@ export const routes: Routes = [
         path: 'videos/fedi',
         title: 'Video posts',
         data: { videoOnly: true },
-        loadComponent: () => import('./pages/home/home').then((m) => m.Home),
+        loadComponent: () => import('./feeds/home/home').then((m) => m.Home),
       },
       {
         path: 'videos/search',
         title: 'Search video',
         loadComponent: () =>
-          import('./pages/videos/video-search-page').then((m) => m.VideoSearchPage),
+          import('./reading/videos/video-search-page').then((m) => m.VideoSearchPage),
       },
       {
         // A hashtag finder for watch parties, which Mastodon has only as a
@@ -1123,13 +1124,13 @@ export const routes: Routes = [
         path: 'videos/parties',
         title: 'Watch parties',
         loadComponent: () =>
-          import('./pages/videos/watch-parties-page').then((m) => m.WatchPartiesPage),
+          import('./reading/videos/watch-parties-page').then((m) => m.WatchPartiesPage),
       },
       {
         path: 'videos/queue',
         title: 'Watch queue',
         loadComponent: () =>
-          import('./pages/videos/watch-queue-page').then((m) => m.WatchQueuePage),
+          import('./reading/videos/watch-queue-page').then((m) => m.WatchQueuePage),
       },
       // A Misskey account searches its Misskey server (M3); everyone else
       // falls through to the shared search page below.
@@ -1138,12 +1139,12 @@ export const routes: Routes = [
         title: 'Search',
         canMatch: [misskeyPrimaryMatch],
         loadComponent: () =>
-          import('./pages/misskey-search/misskey-search').then((m) => m.MisskeySearch),
+          import('./discovery/misskey-search/misskey-search').then((m) => m.MisskeySearch),
       },
       {
         path: 'search',
         title: 'Search',
-        loadComponent: () => import('./pages/search/search').then((m) => m.Search),
+        loadComponent: () => import('./discovery/search/search').then((m) => m.Search),
       },
       {
         // Likes is a view of the Likes, bookmarks & history page now. The old path
@@ -1153,19 +1154,19 @@ export const routes: Routes = [
         title: 'Likes',
         canActivate: [anonymousUnavailableGuard, likesHubRedirect],
         data: { anonymousFeature: 'Likes' },
-        loadComponent: () => import('./pages/favourites/favourites').then((m) => m.Favourites),
+        loadComponent: () => import('./reading/favourites/favourites').then((m) => m.Favourites),
       },
       {
         path: 'bookmarks',
         title: 'Bookmarks',
-        loadComponent: () => import('./pages/bookmarks/bookmarks').then((m) => m.Bookmarks),
+        loadComponent: () => import('./reading/bookmarks/bookmarks').then((m) => m.Bookmarks),
       },
       {
         path: 'analytics',
         title: 'Analytics',
         canActivate: [anonymousUnavailableGuard],
         data: { anonymousFeature: 'Analytics' },
-        loadComponent: () => import('./pages/analytics/analytics').then((m) => m.Analytics),
+        loadComponent: () => import('./accounts/analytics/analytics').then((m) => m.Analytics),
       },
       {
         // Deliberately not anonymous-guarded: the browser-local feed is the only one
@@ -1173,7 +1174,7 @@ export const routes: Routes = [
         path: 'feed-doctor',
         title: 'Feed doctor',
         loadComponent: () =>
-          import('./pages/feed-doctor/feed-doctor-page').then((m) => m.FeedDoctorPage),
+          import('./feeds/feed-doctor/feed-doctor-page').then((m) => m.FeedDoctorPage),
       },
       {
         // The POSSE queue: interactions waiting to be recorded on the user's
@@ -1181,13 +1182,12 @@ export const routes: Routes = [
         // than under settings.
         path: 'posse',
         title: 'POSSE queue',
-        loadComponent: () => import('./pages/posse/posse-page').then((m) => m.PossePage),
+        loadComponent: () => import('./publishing/posse/posse-page').then((m) => m.PossePage),
       },
       {
         path: 'observability',
         title: 'Observability',
-        loadComponent: () =>
-          import('./pages/observability/observability').then((m) => m.Observability),
+        loadComponent: () => import('./observability/observability').then((m) => m.Observability),
       },
       {
         // Split out of Observability: an inventory of what is stored on this
@@ -1195,7 +1195,7 @@ export const routes: Routes = [
         path: 'storage-diagnostics',
         title: 'Storage Diagnostics',
         loadComponent: () =>
-          import('./pages/storage-diagnostics/storage-diagnostics').then(
+          import('./observability/storage-diagnostics/storage-diagnostics').then(
             (m) => m.StorageDiagnostics,
           ),
       },
@@ -1210,7 +1210,7 @@ export const routes: Routes = [
         title: 'About & legal',
         // Prerendered for search engines; see main.server.ts and docs/seo.md.
         data: { seoIndexable: true, seoDescription: LEGAL_DESCRIPTION },
-        loadComponent: () => import('./pages/docs/docs').then((m) => m.Docs),
+        loadComponent: () => import('./public-pages/docs/docs').then((m) => m.Docs),
       },
       {
         // "Design" — the project story, as a virtual tweet in the centre column.
@@ -1218,7 +1218,7 @@ export const routes: Routes = [
         title: 'About',
         // Prerendered for search engines; see main.server.ts and docs/seo.md.
         data: { seoIndexable: true, seoDescription: ABOUT_DESCRIPTION },
-        loadComponent: () => import('./pages/about/about').then((m) => m.About),
+        loadComponent: () => import('./public-pages/about/about').then((m) => m.About),
       },
       {
         // "Funding" — who pays for what, also a virtual tweet. Its own route
@@ -1227,7 +1227,7 @@ export const routes: Routes = [
         title: 'Funding',
         // Prerendered for search engines; see main.server.ts and docs/seo.md.
         data: { seoIndexable: true, seoDescription: FUNDING_DESCRIPTION },
-        loadComponent: () => import('./pages/funding/funding').then((m) => m.Funding),
+        loadComponent: () => import('./public-pages/funding/funding').then((m) => m.Funding),
       },
       {
         // "Plans" — the exhaustive free/signed-in/Plus reference. Deliberately
@@ -1242,7 +1242,7 @@ export const routes: Routes = [
         title: 'Plans',
         canActivate: [featureFlagGuard],
         data: { featureFlag: 'mawkingbird-plus' },
-        loadComponent: () => import('./pages/plans/plans').then((m) => m.Plans),
+        loadComponent: () => import('./public-pages/plans/plans').then((m) => m.Plans),
       },
       {
         // The server as a profile: its identity plus every announcement it has
@@ -1251,36 +1251,37 @@ export const routes: Routes = [
         path: 'server',
         title: 'This server',
         loadComponent: () =>
-          import('./pages/server-announcements/server-announcements').then(
+          import('./public-pages/server-announcements/server-announcements').then(
             (m) => m.ServerAnnouncements,
           ),
       },
       {
         path: 'server-rules',
         title: 'Server rules',
-        loadComponent: () => import('./pages/server-rules/server-rules').then((m) => m.ServerRules),
+        loadComponent: () =>
+          import('./public-pages/server-rules/server-rules').then((m) => m.ServerRules),
       },
       {
         path: 'terms',
         title: 'Terms',
-        loadComponent: () => import('./pages/terms/terms').then((m) => m.Terms),
+        loadComponent: () => import('./public-pages/terms/terms').then((m) => m.Terms),
       },
       {
         path: 'credits',
         title: 'Credits',
-        loadComponent: () => import('./pages/credits/credits').then((m) => m.Credits),
+        loadComponent: () => import('./public-pages/credits/credits').then((m) => m.Credits),
       },
       {
         // The web app manifest's share_target: another app's Share menu opens
         // this with title/text/url. It fills an unsent post and goes Home.
         path: 'share',
         title: 'Share',
-        loadComponent: () => import('./app-install/share-target').then((m) => m.ShareTarget),
+        loadComponent: () => import('./shell/app-install/share-target').then((m) => m.ShareTarget),
       },
       {
         path: 'drafts',
         title: 'Drafts',
-        loadComponent: () => import('./pages/drafts/drafts-page').then((m) => m.DraftsPage),
+        loadComponent: () => import('./publishing/drafts/drafts-page').then((m) => m.DraftsPage),
       },
       {
         path: 'write',
@@ -1288,39 +1289,40 @@ export const routes: Routes = [
         canDeactivate: [(page: { canLeave: () => boolean | Promise<boolean> }) => page.canLeave()],
         canActivate: [featureFlagGuard],
         data: { featureFlag: 'write' },
-        loadComponent: () => import('./pages/write/write-page').then((m) => m.WritePage),
+        loadComponent: () => import('./publishing/write/write-page').then((m) => m.WritePage),
       },
       {
         path: 'pastes',
         title: 'Pastes',
         canActivate: [featureFlagGuard],
         data: { featureFlag: 'pastebin' },
-        loadComponent: () => import('./pages/pastes/pastes-page').then((m) => m.PastesPage),
+        loadComponent: () => import('./publishing/pastes/pastes-page').then((m) => m.PastesPage),
       },
       {
         path: 'links',
         title: 'Links',
         canActivate: [featureFlagGuard],
         data: { featureFlag: 'links' },
-        loadComponent: () => import('./pages/links/links-page').then((m) => m.LinksPage),
+        loadComponent: () => import('./publishing/links/links-page').then((m) => m.LinksPage),
       },
       {
         // Posts sharing one trending link: `/link?url=…`.
         path: 'link',
         title: 'Posts about a link',
         loadComponent: () =>
-          import('./pages/link-timeline/link-timeline').then((m) => m.LinkTimeline),
+          import('./feeds/link-timeline/link-timeline').then((m) => m.LinkTimeline),
       },
       {
         path: 'find-friends',
         title: 'Find friends',
-        loadComponent: () => import('./pages/find-friends/find-friends').then((m) => m.FindFriends),
+        loadComponent: () =>
+          import('./discovery/find-friends/find-friends').then((m) => m.FindFriends),
       },
       {
         path: 'lists/:id',
         title: 'List',
         loadComponent: () =>
-          import('./pages/list-timeline/list-timeline').then((m) => m.ListTimeline),
+          import('./feeds/list-timeline/list-timeline').then((m) => m.ListTimeline),
       },
       {
         // Client-side lists work signed out as well as signed in, so this route is
@@ -1328,19 +1330,19 @@ export const routes: Routes = [
         path: 'client-lists/:id',
         title: 'List',
         loadComponent: () =>
-          import('./pages/client-list/client-list-page').then((m) => m.ClientListPage),
+          import('./feeds/client-list/client-list-page').then((m) => m.ClientListPage),
       },
       {
         // Tag timelines are readable anonymously, so bundles work in every session.
         path: 'tag-bundles/:id',
         title: 'Tag bundle',
         loadComponent: () =>
-          import('./pages/tag-bundle/tag-bundle-page').then((m) => m.TagBundlePage),
+          import('./feeds/tag-bundle/tag-bundle-page').then((m) => m.TagBundlePage),
       },
       {
         path: 'feeds/:feed',
         title: 'Feed',
-        loadComponent: () => import('./pages/server-feed/server-feed').then((m) => m.ServerFeed),
+        loadComponent: () => import('./feeds/server-feed/server-feed').then((m) => m.ServerFeed),
       },
       {
         // The server's year-in-review ("Wrapstodon"). Needs a Mastodon account.
@@ -1349,7 +1351,7 @@ export const routes: Routes = [
         canActivate: [anonymousUnavailableGuard],
         data: { anonymousFeature: 'Annual reports' },
         loadComponent: () =>
-          import('./pages/annual-report/annual-report').then((m) => m.AnnualReportPage),
+          import('./accounts/annual-report/annual-report').then((m) => m.AnnualReportPage),
       },
       {
         path: 'annual-report/:year',
@@ -1357,77 +1359,83 @@ export const routes: Routes = [
         canActivate: [anonymousUnavailableGuard],
         data: { anonymousFeature: 'Annual reports' },
         loadComponent: () =>
-          import('./pages/annual-report/annual-report').then((m) => m.AnnualReportPage),
+          import('./accounts/annual-report/annual-report').then((m) => m.AnnualReportPage),
       },
       {
         path: 'endorsed/:accountId',
         title: 'Endorsed accounts',
         loadComponent: () =>
-          import('./pages/endorsed-list/endorsed-list').then((m) => m.EndorsedList),
+          import('./discovery/endorsed-list/endorsed-list').then((m) => m.EndorsedList),
       },
       {
         path: 'collections/starter',
         title: 'Starter collections',
         loadComponent: () =>
-          import('./pages/starter-collection/starter-collection').then((m) => m.StarterCollection),
+          import('./discovery/starter-collection/starter-collection').then(
+            (m) => m.StarterCollection,
+          ),
       },
       {
         path: 'collections/starter/:slug',
         title: 'Starter collection',
         loadComponent: () =>
-          import('./pages/starter-collection/starter-collection').then((m) => m.StarterCollection),
+          import('./discovery/starter-collection/starter-collection').then(
+            (m) => m.StarterCollection,
+          ),
       },
       {
         path: 'collections/preview/:id',
         title: 'Collection preview',
-        loadComponent: () => import('./pages/collection/collection').then((m) => m.CollectionPage),
+        loadComponent: () =>
+          import('./discovery/collection/collection').then((m) => m.CollectionPage),
       },
       {
         path: 'collections/:id',
         title: 'Collection',
         canActivate: [anonymousCollectionGuard],
         data: { anonymousFeature: 'Collections' },
-        loadComponent: () => import('./pages/collection/collection').then((m) => m.CollectionPage),
+        loadComponent: () =>
+          import('./discovery/collection/collection').then((m) => m.CollectionPage),
       },
       {
         // A Misskey antenna, list, channel or clip, opened from Feeds (M3).
         path: 'misskey/:kind/:id',
         title: 'Misskey feed',
         canMatch: [misskeyPrimaryMatch],
-        loadComponent: () => import('./pages/misskey-feed/misskey-feed').then((m) => m.MisskeyFeed),
+        loadComponent: () => import('./feeds/misskey-feed/misskey-feed').then((m) => m.MisskeyFeed),
       },
       {
         path: 'tags/:tag',
         title: 'Tag',
         canMatch: [misskeyPrimaryMatch],
-        loadComponent: () => import('./pages/misskey-tag/misskey-tag').then((m) => m.MisskeyTag),
+        loadComponent: () => import('./feeds/misskey-tag/misskey-tag').then((m) => m.MisskeyTag),
       },
       {
         path: 'tags/:tag',
         title: 'Tag',
-        loadComponent: () => import('./pages/tag/tag').then((m) => m.Tag),
+        loadComponent: () => import('./feeds/tag/tag').then((m) => m.Tag),
       },
       {
         path: 'unavailable',
         title: 'Unavailable',
-        loadComponent: () => import('./pages/unavailable/unavailable').then((m) => m.Unavailable),
+        loadComponent: () => import('./shell/unavailable/unavailable').then((m) => m.Unavailable),
       },
       {
         path: 'listen',
         title: 'Listen',
-        loadComponent: () => import('./pages/radio/listen-page').then((m) => m.ListenPage),
+        loadComponent: () => import('./reading/radio/listen-page').then((m) => m.ListenPage),
       },
       {
         path: 'watch',
         title: 'Watch',
-        loadComponent: () => import('./pages/watch/watch').then((m) => m.Watch),
+        loadComponent: () => import('./reading/watch/watch').then((m) => m.Watch),
       },
       {
         path: 'statuses/:id',
         title: 'Post',
         // Opened from Forum, a post stays in Forum (its rails and menu).
         canActivate: [forumThreadGuard],
-        loadComponent: () => import('./pages/thread/thread').then((m) => m.Thread),
+        loadComponent: () => import('./reading/thread/thread').then((m) => m.Thread),
       },
       {
         // The reader: one document, the whole screen. Takes the same ids as
@@ -1440,7 +1448,7 @@ export const routes: Routes = [
         // already works without a session.
         path: 'read/:id',
         title: 'Reader',
-        loadComponent: () => import('./pages/read/read-page').then((m) => m.ReadPage),
+        loadComponent: () => import('./reading/read/read-page').then((m) => m.ReadPage),
       },
       {
         // Friendly alias for Eliza's synthetic profile (id `eliza:self`).
@@ -1482,14 +1490,14 @@ export const routes: Routes = [
         // survive truncation and hand-typed URLs, which a query param does not.
         path: 'accounts/:id/:handle',
         title: 'Profile',
-        loadComponent: () => import('./pages/profile/profile').then((m) => m.Profile),
+        loadComponent: () => import('./accounts/profile/profile').then((m) => m.Profile),
       },
       {
         // One segment: either a bare id (every existing link in the app) or a
         // bare `@user@host`. See `parseAccountRoute`.
         path: 'accounts/:id',
         title: 'Profile',
-        loadComponent: () => import('./pages/profile/profile').then((m) => m.Profile),
+        loadComponent: () => import('./accounts/profile/profile').then((m) => m.Profile),
       },
       {
         path: 'admin',

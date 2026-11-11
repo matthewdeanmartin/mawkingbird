@@ -1,0 +1,65 @@
+import { inject } from '@angular/core';
+import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
+import { Auth } from './auth';
+import { radioAccount, radioPostRef } from '../../reading/radio-links';
+import { Server } from '../http/server';
+
+/**
+ * Matches only a signed-in Mastodon account with its own token.
+ *
+ * For routes that have a public twin under the same path: everyone else —
+ * signed out, Anonymous, Bluesky-primary — falls through to the public route
+ * rather than being redirected away from the page they asked for.
+ */
+export const mastodonSignedInMatch: CanMatchFn = () => {
+  const auth = inject(Auth);
+  return !auth.lacksMastodonToken && !auth.isAnonymous;
+};
+
+/** Matches any signed-in identity, Mastodon or Bluesky; not Anonymous. Same fall-through. */
+export const signedInMatch: CanMatchFn = () => {
+  const auth = inject(Auth);
+  return auth.isAuthenticated && !auth.isAnonymous;
+};
+
+export const authGuard: CanActivateFn = (_route, state) => {
+  const auth = inject(Auth);
+  const router = inject(Router);
+  if (auth.isAuthenticated) {
+    return true;
+  }
+  // Public content links must also work on a fresh browser. Preserve a chosen
+  // instance for legacy numeric IDs; portable public references carry their own.
+  const link = new URL(state.url ?? '/', 'https://app.invalid');
+  const publicRadio =
+    link.pathname === '/radio' &&
+    !!(radioAccount(link.searchParams.get('acct')) || radioPostRef(link.searchParams.get('post')));
+  // The project's own pages are prerendered for search engines, and the public
+  // starter-kit pages link to the in-app kit. Sending either to `/` would make the
+  // dispatcher land a fresh visitor (or crawler) on /home instead.
+  const projectPage =
+    /^\/(about|funding|legal|blog|credits|collections\/starter(\/[\w-]+)?)\/?$/.test(link.pathname);
+  // Search works anonymously, and the /mastodon-search and /bluesky-search tool
+  // pages hand their query straight to it: a front page with a sign-in question
+  // in between is the distraction those pages exist to remove.
+  const search = link.pathname === '/search';
+  // A shared Watch link: a public post's video, or a bare YouTube video. The
+  // page itself loads the post from the server the link names.
+  const publicWatch =
+    link.pathname === '/watch' &&
+    (link.searchParams.has('post') || link.searchParams.has('youtube'));
+  if (
+    publicRadio ||
+    projectPage ||
+    search ||
+    publicWatch ||
+    /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
+  ) {
+    auth.enterAnonymous(inject(Server).baseUrl() || 'https://mastodon.social');
+    return true;
+  }
+  // The front page, not the login page: a stranger who has just arrived should
+  // see what this app is before being asked to choose a server and grant scopes.
+  // `/` offers both "log in" and "continue without logging in".
+  return router.parseUrl('/');
+};

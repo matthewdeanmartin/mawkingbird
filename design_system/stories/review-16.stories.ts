@@ -11,10 +11,10 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
-import { RssFeedActions } from "../../ui/src/app/pages/rss/feed-actions/feed-actions";
-import { RssSubscriptions } from "../../ui/src/app/providers/rss/rss-subscriptions";
-import { PollResults } from "../../ui/src/app/poll-results/poll-results";
-import { Poll, Status } from "../../ui/src/app/models";
+import { RssFeedActions } from "../../ui/src/app/reading/rss/feed-actions/feed-actions";
+import { RssSubscriptions } from "../../ui/src/app/reading/rss/rss-subscriptions";
+import { PollResults } from "../../ui/src/app/posts/poll-results/poll-results";
+import { Poll, Status } from "../../ui/src/app/platform/api/models";
 import {
   MbToolbar,
   MbToolbarButton,

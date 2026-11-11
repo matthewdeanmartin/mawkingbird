@@ -6,18 +6,18 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { defer, of, throwError, delay, tap } from "rxjs";
-import { ConnectionMastodon } from "../../ui/src/app/pages/settings/connections/mastodon/connection-mastodon";
-import { ConnectionBluesky } from "../../ui/src/app/pages/settings/connections/bluesky/connection-bluesky";
-import { ConnectionDropbox } from "../../ui/src/app/pages/settings/connections/dropbox/connection-dropbox";
-import { MastodonConnector } from "../../ui/src/app/providers/mastodon/mastodon-connector";
-import { BlueskySession } from "../../ui/src/app/providers/bluesky/bluesky-session";
-import { DropboxSession } from "../../ui/src/app/providers/dropbox/dropbox-session";
-import { AnonymousCapabilities } from "../../ui/src/app/providers/anonymous/anonymous-capabilities";
-import { Api } from "../../ui/src/app/api";
-import { Auth } from "../../ui/src/app/auth";
-import { Server } from "../../ui/src/app/server";
-import { MastodonServers } from "../../ui/src/app/mastodon-servers";
-import { PageDiagnostics } from "../../ui/src/app/page-diagnostics";
+import { ConnectionMastodon } from "../../ui/src/app/settings/connections/mastodon/connection-mastodon";
+import { ConnectionBluesky } from "../../ui/src/app/settings/connections/bluesky/connection-bluesky";
+import { ConnectionDropbox } from "../../ui/src/app/settings/connections/dropbox/connection-dropbox";
+import { MastodonConnector } from "../../ui/src/app/connections/mastodon/mastodon-connector";
+import { BlueskySession } from "../../ui/src/app/connections/bluesky/bluesky-session";
+import { DropboxSession } from "../../ui/src/app/connections/dropbox/dropbox-session";
+import { AnonymousCapabilities } from "../../ui/src/app/accounts/anonymous/anonymous-capabilities";
+import { Api } from "../../ui/src/app/platform/api/api";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { Server } from "../../ui/src/app/platform/http/server";
+import { MastodonServers } from "../../ui/src/app/discovery/mastodon-servers";
+import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 function mastodonProviders() {

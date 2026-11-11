@@ -103,13 +103,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     return [...array[1].matchAll(/'([^']+)'/g)].map((match) => match[1]);
   };
   const report = reconcileLocales({
-    catalog: read('src/app/starter-catalog.generated.json'),
+    catalog: read('src/app/discovery/starter-catalog.generated.json'),
     production: locales('PRODUCTION_LOCALES'),
     inProgress: locales('IN_PROGRESS_LOCALES'),
     dictionaries: readdirSync(join(ui, 'public/i18n'))
       .filter((f) => f.endsWith('.json'))
       .map((f) => f.slice(0, -5)),
-    controls: read('src/app/starter-pack-ui.json'),
+    controls: read('src/app/discovery/starter-pack-ui.json'),
   });
   const rendered = renderReport(report);
   const args = process.argv.slice(2);

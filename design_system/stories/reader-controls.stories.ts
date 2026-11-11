@@ -15,21 +15,21 @@ import {
   type Meta,
   type StoryObj,
 } from "@storybook/angular";
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
-import { ReadToolbar } from "../../ui/src/app/pages/read/read-toolbar/read-toolbar";
-import { SelectionTools } from "../../ui/src/app/pages/read/selection-tools/selection-tools";
+import { ReadToolbar } from "../../ui/src/app/reading/read/read-toolbar/read-toolbar";
+import { SelectionTools } from "../../ui/src/app/reading/read/selection-tools/selection-tools";
 import {
   NotesRail,
   type RailNote,
-} from "../../ui/src/app/pages/read/notes-rail/notes-rail";
-import { LibraryPanel } from "../../ui/src/app/pages/read/library-panel/library-panel";
-import { DocumentSearchDialog } from "../../ui/src/app/pages/read/document-search/document-search-dialog";
+} from "../../ui/src/app/reading/read/notes-rail/notes-rail";
+import { LibraryPanel } from "../../ui/src/app/reading/read/library-panel/library-panel";
+import { DocumentSearchDialog } from "../../ui/src/app/reading/read/document-search/document-search-dialog";
 import {
   ReaderLibrary,
   type LibraryEntry,
   type Shelf,
-} from "../../ui/src/app/providers/read/reader-library";
+} from "../../ui/src/app/reading/read/reader-library";
 
 function preferences() {
   const prefs = new ClientPrefs();

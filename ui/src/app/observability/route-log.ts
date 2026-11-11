@@ -1,7 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
-import { sanitizePath } from '../analytics-tracker';
+import { sanitizePath } from '../platform/diagnostics/analytics-tracker';
 
 /**
  * Per-route visit counts and time-on-page — analytics for an audience of one.

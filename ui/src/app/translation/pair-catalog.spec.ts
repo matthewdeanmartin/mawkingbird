@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { classifyStorageKey } from '../storage-registry';
+import { classifyStorageKey } from '../platform/storage/storage-registry';
 import { matchServerTarget, PAIR_CACHE_KEY, TranslationPairCatalog } from './pair-catalog';
 
 const LIST = '/api/v1/instance/translation_languages';

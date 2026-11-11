@@ -1,0 +1,363 @@
+import { TagMedia } from './tag-media';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TagActions } from '../../discovery/tag-actions/tag-actions';
+import { Component, computed, inject, DestroyRef, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { FormsModule } from '@angular/forms';
+import { MbButton } from '../../design-system/button/button';
+import { MbCheckbox } from '../../design-system/checkbox/checkbox';
+import { MbDisclosure } from '../../design-system/disclosure/disclosure';
+import { MbControl, MbField } from '../../design-system/field/field';
+import {
+  NO_REFINE,
+  parseTagList,
+  refineCount,
+  refineFromQuery,
+  refineToQuery,
+  sameRefine,
+  TAG_REFINE_LIMIT,
+  TagRefineState,
+} from './tag-refine';
+import { Api } from '../../platform/api/api';
+import { Status, Tag as TagEntity } from '../../platform/api/models';
+import { StatusCard } from '../../posts/status-card/status-card';
+import { FeedAnalytics } from '../feed-analytics/feed-analytics';
+import { FeedMembers } from '../feed-members/feed-members';
+import { FeedSource } from '../feed-sample';
+import { Auth } from '../../platform/session/auth';
+import { AnonymousTags } from '../../accounts/anonymous/anonymous-tags';
+import { AnonymousAccount } from '../../accounts/anonymous/anonymous-account';
+import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
+import { AnonymousProviderRef } from '../../accounts/anonymous/anonymous-mastodon-provider';
+import { Observable, Subscription } from 'rxjs';
+import { Terminology } from '../../i18n/terminology';
+
+/** Posts per request when sampling the tag — Mastodon's cap. */
+const SAMPLE_PAGE_SIZE = 40;
+
+// i18n pages.tag.following: Following
+// i18n pages.tag.follow: Follow
+// i18n pages.tag.featured: Featured
+// i18n pages.tag.feature: Feature
+// i18n pages.tag.inBundles.one: In {{count}} bundle
+// i18n pages.tag.inBundles.other: In {{count}} bundles
+// i18n pages.tag.addToBundle: Add to bundle
+// i18n pages.tag.full: · full
+// i18n pages.tag.noBundlesYet: No bundles yet — name one below.
+// i18n pages.tag.newBundleName: New bundle name
+// i18n pages.tag.createAndAdd: Create & add
+// i18n pages.tag.tabs.media: Media
+// i18n pages.tag.tabs.feed: Feed
+// i18n pages.tag.tabs.members: Members
+// i18n pages.tag.tabs.analytics: Analytics
+// i18n pages.tag.loading: Loading…
+// i18n pages.tag.noStatuses: No statuses tagged #{{tag}}.
+// i18n pages.tag.myPosts: My {{posts}}
+// i18n pages.tag.mine.summary: {{visible}} of the {{total}} loaded {{posts}}. Load more to search further back.
+// i18n pages.tag.mine.none: None of the {{total}} loaded {{posts}} are yours.
+// i18n pages.tag.loadMore: Load more
+// i18n pages.tag.refine.label: Refine
+// i18n pages.tag.refine.labelActive: Refine ({{count}} on)
+// i18n pages.tag.refine.any: Or any of these tags
+// i18n pages.tag.refine.all: And all of these tags
+// i18n pages.tag.refine.none: But none of these tags
+// i18n pages.tag.refine.hint: Up to {{limit}} tags, separated by spaces.
+// i18n pages.tag.refine.local: Only posts from this server
+// i18n pages.tag.refine.apply: Apply
+// i18n pages.tag.refine.clear: Clear
+// i18n pages.tag.refine.noMatches: No posts match #{{tag}} with these refinements.
+@Component({
+  selector: 'app-tag',
+  imports: [
+    TagMedia,
+    TagActions,
+    StatusCard,
+    FeedAnalytics,
+    FeedMembers,
+    TranslocoPipe,
+    FormsModule,
+    MbButton,
+    MbCheckbox,
+    MbDisclosure,
+    MbControl,
+    MbField,
+  ],
+  templateUrl: './tag.html',
+  styleUrl: './tag.css',
+})
+export class Tag implements OnInit {
+  private api = inject(Api);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
+  protected mediaVisited = signal(false);
+  protected auth = inject(Auth);
+  private anonymousTags = inject(AnonymousTags);
+  private anonymous = inject(AnonymousAccount);
+  private anonymousPublic = inject(AnonymousPublicApi);
+
+  /** post/tweet/florp, per the Blue setting. */
+  protected words = inject(Terminology).words;
+
+  protected tag = signal('');
+  protected tagInfo = signal<TagEntity | null>(null);
+  protected statuses = signal<Status[]>([]);
+  protected loading = signal(true);
+  protected loadingMore = signal(false);
+  protected exhausted = signal(false);
+  protected tab = signal<'posts' | 'media' | 'members' | 'analytics'>('posts');
+
+  /**
+   * The feed the Members and Analytics tabs sample. Rebuilt whenever the tag
+   * changes so both restart; pages at Mastodon's 40-post cap, so 100 posts
+   * costs three calls rather than five. Both tabs are only rendered once
+   * opened, so building this signal doesn't fetch anything on its own.
+   */
+  protected feedSource = computed<FeedSource>(() => {
+    const tag = this.tag();
+    return {
+      type: 'hashtag',
+      query: '#' + tag,
+      pageSize: SAMPLE_PAGE_SIZE,
+      fetch: (after: Status | null) =>
+        this.getTimeline(tag, after ? this.nativeStatusId(after) : undefined, SAMPLE_PAGE_SIZE),
+    };
+  });
+
+  ngOnInit(): void {
+    // Query params first, so the route's tag loads with any refinement already
+    // in the URL instead of loading twice.
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      this.query = params;
+      const tab = params.get('tab');
+      this.tab.set(tab === 'media' || tab === 'members' || tab === 'analytics' ? tab : 'posts');
+      if (tab === 'media') this.mediaVisited.set(true);
+      const tag = this.tag();
+      if (!tag) return;
+      const refine = this.offersRefine() ? refineFromQuery(params, tag) : NO_REFINE;
+      if (!sameRefine(refine, this.refine())) {
+        this.refine.set(refine);
+        this.loadTimeline(tag);
+      }
+    });
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const tag = params.get('tag');
+      if (tag) {
+        this.tag.set(tag);
+        this.mediaVisited.set(false);
+        this.tab.set('posts');
+        this.refine.set(
+          this.query && this.offersRefine() ? refineFromQuery(this.query, tag) : NO_REFINE,
+        );
+        this.load(tag);
+      }
+    });
+  }
+
+  // ------------------------------------------------------------- Refine
+
+  /** The latest query params, read when the route's tag arrives. */
+  private query: ParamMap | null = null;
+
+  /**
+   * Server-side any/all/none tags and "this server only". Signed-in Mastodon
+   * only: the anonymous path reads other servers' public timelines its own way.
+   */
+  protected offersRefine = computed(() => !this.auth.isAnonymous);
+  protected refine = signal<TagRefineState>(NO_REFINE);
+  protected refineCount = computed(() => refineCount(this.refine()));
+  protected refineOpen = signal(false);
+  protected anyText = signal('');
+  protected allText = signal('');
+  protected noneText = signal('');
+  protected localDraft = signal(false);
+  protected readonly refineLimit = TAG_REFINE_LIMIT;
+
+  /** Open or close the Refine panel, starting the fields from what is in force. */
+  protected setRefineOpen(open: boolean): void {
+    if (open && !this.refineOpen()) {
+      const refine = this.refine();
+      this.anyText.set(refine.any.join(' '));
+      this.allText.set(refine.all.join(' '));
+      this.noneText.set(refine.none.join(' '));
+      this.localDraft.set(refine.local);
+    }
+    this.refineOpen.set(open);
+  }
+
+  protected applyRefine(): void {
+    const tag = this.tag();
+    this.navigateRefine({
+      any: parseTagList(this.anyText(), tag),
+      all: parseTagList(this.allText(), tag),
+      none: parseTagList(this.noneText(), tag),
+      local: this.localDraft(),
+    });
+  }
+
+  protected clearRefine(): void {
+    this.anyText.set('');
+    this.allText.set('');
+    this.noneText.set('');
+    this.localDraft.set(false);
+    this.navigateRefine(NO_REFINE);
+  }
+
+  private navigateRefine(state: TagRefineState): void {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: refineToQuery(state),
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  setTab(tab: 'posts' | 'media' | 'members' | 'analytics'): void {
+    this.tab.set(tab);
+    if (tab === 'media') this.mediaVisited.set(true);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab: tab === 'posts' ? null : tab, photo: null },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  // ------------------------------------------------------------- "My posts"
+
+  /** Whether the feed is narrowed to the signed-in user's own posts. */
+  protected mineOnly = signal(false);
+
+  /**
+   * Offered only when there is a "me" to filter by.
+   *
+   * Anonymous sessions have no own-posts to find, so the control is hidden
+   * rather than shown returning nothing.
+   */
+  protected canFilterMine = computed(() => !this.auth.isAnonymous && !!this.auth.account());
+
+  protected toggleMine(): void {
+    this.mineOnly.update((on) => !on);
+  }
+
+  /**
+   * The posts to render: everything loaded, or only mine.
+   *
+   * Filtered client-side over what has been loaded rather than re-queried as
+   * `#tag from:me`. The search DSL does support `from:` — it is verified
+   * working on mastodon.social — but post search needs an index that most
+   * servers do not have and anonymous callers never get, so a search-backed
+   * version would work here and silently return nothing there. Filtering what
+   * we already hold works everywhere.
+   *
+   * The cost is that this searches the loaded window, not all of history, which
+   * is why the UI says so rather than implying completeness.
+   */
+  protected visibleStatuses = computed(() => {
+    if (!this.mineOnly()) {
+      return this.statuses();
+    }
+    const me = this.auth.account()?.id;
+    if (!me) {
+      return this.statuses();
+    }
+    // Compare against the *original* author for boosts: a post of mine that
+    // someone else boosted is still mine.
+    return this.statuses().filter((status) => (status.reblog ?? status).account?.id === me);
+  });
+
+  load(tag: string): void {
+    this.loading.set(true);
+    this.statuses.set([]);
+    this.exhausted.set(false);
+    this.getTag(tag).subscribe({
+      next: (info) =>
+        this.tagInfo.set({
+          ...info,
+          following: this.auth.isAnonymous ? this.anonymousTags.has(info.name) : info.following,
+        }),
+      error: () => {
+        if (this.auth.isAnonymous) {
+          this.tagInfo.set({
+            id: tag,
+            name: tag,
+            url: '',
+            history: [],
+            following: this.anonymousTags.has(tag),
+            featuring: false,
+          });
+        }
+      },
+    });
+    this.loadTimeline(tag);
+  }
+
+  /** (Re)load the first page of posts, e.g. after the refinement changes. */
+  private loadTimeline(tag: string): void {
+    this.timelineSub?.unsubscribe();
+    this.loading.set(true);
+    this.statuses.set([]);
+    this.exhausted.set(false);
+    this.timelineSub = this.getTimeline(tag).subscribe({
+      next: (s) => {
+        this.statuses.set(s);
+        this.exhausted.set(s.length < 20);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
+  }
+
+  private timelineSub: Subscription | null = null;
+
+  loadMore(): void {
+    const last = this.statuses().at(-1);
+    if (!last || this.loadingMore() || this.exhausted()) return;
+    this.loadingMore.set(true);
+    this.getTimeline(this.tag(), this.nativeStatusId(last)).subscribe({
+      next: (statuses) => {
+        const seen = new Set(this.statuses().map((status) => status.id));
+        this.statuses.update((current) => [
+          ...current,
+          ...statuses.filter((status) => !seen.has(status.id)),
+        ]);
+        this.exhausted.set(statuses.length < 20);
+        this.loadingMore.set(false);
+      },
+      error: () => this.loadingMore.set(false),
+    });
+  }
+
+  private getTag(name: string): Observable<TagEntity> {
+    return this.auth.isAnonymous
+      ? this.anonymousPublic.getTag(this.anonymous.server(), name)
+      : this.api.getTag(name);
+  }
+
+  private getTimeline(name: string, maxId?: string, limit?: number): Observable<Status[]> {
+    return this.auth.isAnonymous
+      ? this.anonymousPublic.getTagTimeline(this.anonymous.server(), name, maxId, limit)
+      : this.api.tagTimeline(name, maxId, limit, false, this.refine().any, this.refine());
+  }
+
+  private nativeStatusId(status: Status): string {
+    const ref = status.providerRef as Partial<AnonymousProviderRef> | undefined;
+    return status.provider === 'anonymous-mastodon' && typeof ref?.statusId === 'string'
+      ? ref.statusId
+      : status.id;
+  }
+
+  /**
+   * Replace a post by id rather than by row index.
+   *
+   * The rendered list can be a *filtered* view ("My posts"), so a card's index
+   * on screen is not its index in `statuses()` — updating by position would
+   * write the change onto whichever unrelated post happened to sit there.
+   */
+  onChanged(updated: Status): void {
+    this.statuses.update((list) => list.map((s) => (s.id === updated.id ? updated : s)));
+  }
+
+  onDeleted(removed: Status): void {
+    this.statuses.update((list) => list.filter((s) => s.id !== removed.id));
+  }
+}

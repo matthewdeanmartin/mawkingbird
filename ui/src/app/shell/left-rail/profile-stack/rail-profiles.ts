@@ -1,18 +1,18 @@
-import { accountProfilePath } from '../../../account-route';
+import { accountProfilePath } from '../../../accounts/account-route';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Api } from '../../../api';
-import { Auth } from '../../../auth';
-import { Terminology } from '../../../terminology';
-import { MastodonConnector } from '../../../providers/mastodon/mastodon-connector';
-import { AnonymousFollows } from '../../../providers/anonymous/anonymous-follows';
-import { AnonymousTags } from '../../../providers/anonymous/anonymous-tags';
-import { BlueskyApi } from '../../../providers/bluesky/bluesky-api';
-import { BlueskySession } from '../../../providers/bluesky/bluesky-session';
-import { BskyProfile } from '../../../providers/bluesky/bluesky-types';
+import { Api } from '../../../platform/api/api';
+import { Auth } from '../../../platform/session/auth';
+import { Terminology } from '../../../i18n/terminology';
+import { MastodonConnector } from '../../../connections/mastodon/mastodon-connector';
+import { AnonymousFollows } from '../../../accounts/anonymous/anonymous-follows';
+import { AnonymousTags } from '../../../accounts/anonymous/anonymous-tags';
+import { BlueskyApi } from '../../../connections/bluesky/bluesky-api';
+import { BlueskySession } from '../../../connections/bluesky/bluesky-session';
+import { BskyProfile } from '../../../connections/bluesky/bluesky-types';
 import { RailProfile } from './rail-profile';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, auditTime, expand, filter, groupBy, mergeMap, reduce } from 'rxjs';
-import { accountScopeSuffix } from '../../../account-scope';
+import { accountScopeSuffix } from '../../../platform/session/account-scope';
 
 /**
  * Assembles the left rail's stack of identity cards — one per network the

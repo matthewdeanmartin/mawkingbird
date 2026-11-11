@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { map, catchError, of } from 'rxjs';
-import { Api } from '../api';
-import { Auth } from '../auth';
+import { Api } from '../platform/api/api';
+import { Auth } from '../platform/session/auth';
 
 /** Allow only accounts whose role is staff (admin/moderator/owner). */
 export const adminGuard: CanActivateFn = () => {

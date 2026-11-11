@@ -39,7 +39,7 @@ test("reader consumers leave extracted presentation in the design system", () =>
     "notes-rail/notes-rail",
     "selection-tools/selection-tools",
   ]) {
-    const css = readFileSync(new URL(`pages/read/${file}.css`, root), "utf8");
+    const css = readFileSync(new URL(`reading/read/${file}.css`, root), "utf8");
     postcss.parse(css).walkRules((rule) => {
       for (const selector of rule.selectors) {
         if (

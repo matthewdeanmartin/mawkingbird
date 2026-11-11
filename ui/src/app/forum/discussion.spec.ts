@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Status } from '../models';
+import { Status } from '../platform/api/models';
 import { account, originCopy, post, reply, who } from '../testing/forum-fixtures';
 import {
   combine,

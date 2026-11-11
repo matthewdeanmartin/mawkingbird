@@ -15,7 +15,7 @@ import { of, timer, mergeMap, throwError } from "rxjs";
 import en from "../../ui/public/i18n/en.json";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 import { AdminApi } from "../../ui/src/app/admin/admin-api";
-import { AppDialogs } from "../../ui/src/app/app-dialogs";
+import { AppDialogs } from "../../ui/src/app/shell/app-dialogs";
 import { AdminAnnouncements } from "../../ui/src/app/admin/announcements/admin-announcements";
 import { AdminDomains } from "../../ui/src/app/admin/domains/admin-domains";
 import { AdminDomainAllows } from "../../ui/src/app/admin/domain-allows/admin-domain-allows";

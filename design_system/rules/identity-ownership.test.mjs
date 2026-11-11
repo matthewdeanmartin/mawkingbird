@@ -97,9 +97,9 @@ test("rails and server controls leave migrated appearance to shared widgets", ()
     "shell/left-rail/left-rail",
     "shell/right-rail/right-rail",
     "shell/left-rail/profile-stack/profile-stack",
-    "server-discovery/server-discovery",
-    "search-server-discovery/search-server-discovery",
-    "server-picker/server-picker",
+    "discovery/server-discovery/server-discovery",
+    "discovery/search-server-discovery/search-server-discovery",
+    "discovery/server-picker/server-picker",
   ]) {
     assert.deepEqual(
       appearanceCopies(readFileSync(new URL(`${file}.css`, root), "utf8")),

@@ -1,8 +1,8 @@
 import { HttpContextToken } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { DiagnosticLog } from '../diagnostic-log';
-import { externalFetch } from '../providers/external-fetch';
-import { PUBLISHING_ENDPOINTS } from '../providers/publishing-services';
+import { DiagnosticLog } from '../platform/diagnostics/diagnostic-log';
+import { externalFetch } from '../platform/http/external-fetch';
+import { PUBLISHING_ENDPOINTS } from '../connections/publishing-services';
 
 export const PUBLISHING_REQUEST = new HttpContextToken<{
   service: string;

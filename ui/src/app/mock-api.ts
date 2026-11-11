@@ -10,7 +10,7 @@ import {
   ImportReport,
   Invite,
   MockSettings,
-} from './models';
+} from './platform/api/models';
 
 /**
  * Mock-server-only control plane (`/api/v1/_mock/*`): dev login, sample-data seeding,

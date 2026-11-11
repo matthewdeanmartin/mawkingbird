@@ -13,16 +13,16 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { Observable, of, throwError } from "rxjs";
-import { Api } from "../../ui/src/app/api";
-import { Auth } from "../../ui/src/app/auth";
-import { Server } from "../../ui/src/app/server";
-import { Account } from "../../ui/src/app/models";
-import { PageDiagnostics } from "../../ui/src/app/page-diagnostics";
-import { ClientLists } from "../../ui/src/app/lists/client-lists";
-import { AnonymousAccount } from "../../ui/src/app/providers/anonymous/anonymous-account";
-import { AnonymousLists } from "../../ui/src/app/providers/anonymous/anonymous-lists";
-import { AnonymousFollows } from "../../ui/src/app/providers/anonymous/anonymous-follows";
-import { ListDialog } from "../../ui/src/app/list-dialog/list-dialog";
+import { Api } from "../../ui/src/app/platform/api/api";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { Server } from "../../ui/src/app/platform/http/server";
+import { Account } from "../../ui/src/app/platform/api/models";
+import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
+import { ClientLists } from "../../ui/src/app/feeds/lists/client-lists";
+import { AnonymousAccount } from "../../ui/src/app/accounts/anonymous/anonymous-account";
+import { AnonymousLists } from "../../ui/src/app/accounts/anonymous/anonymous-lists";
+import { AnonymousFollows } from "../../ui/src/app/accounts/anonymous/anonymous-follows";
+import { ListDialog } from "../../ui/src/app/feeds/lists/list-dialog/list-dialog";
 import { MbDialog } from "../../ui/src/app/design-system/dialog/dialog";
 import { MbButton } from "../../ui/src/app/design-system/button/button";
 import {

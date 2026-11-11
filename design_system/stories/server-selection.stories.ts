@@ -14,12 +14,12 @@ import {
   type Meta,
   type StoryObj,
 } from "@storybook/angular";
-import { ServerPicker } from "../../ui/src/app/server-picker/server-picker";
-import { ServerDiscovery } from "../../ui/src/app/server-discovery/server-discovery";
-import { SearchServerDiscovery } from "../../ui/src/app/search-server-discovery/search-server-discovery";
-import { MastodonServers } from "../../ui/src/app/mastodon-servers";
-import { SearchServerRejects } from "../../ui/src/app/search-server-rejects";
-import { Terminology } from "../../ui/src/app/terminology";
+import { ServerPicker } from "../../ui/src/app/discovery/server-picker/server-picker";
+import { ServerDiscovery } from "../../ui/src/app/discovery/server-discovery/server-discovery";
+import { SearchServerDiscovery } from "../../ui/src/app/discovery/search-server-discovery/search-server-discovery";
+import { MastodonServers } from "../../ui/src/app/discovery/mastodon-servers";
+import { SearchServerRejects } from "../../ui/src/app/discovery/search-server-rejects";
+import { Terminology } from "../../ui/src/app/i18n/terminology";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 @Injectable()

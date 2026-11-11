@@ -5,7 +5,7 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ui = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const target = join(ui, 'src/app/starter-catalog.generated.json');
+const target = join(ui, 'src/app/discovery/starter-catalog.generated.json');
 const args = process.argv.slice(2);
 const check = args.includes('--check');
 const source = resolve(

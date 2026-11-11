@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { AdminApi, AdminCohort, AdminDimension } from '../admin-api';
-import { AdminMeasure } from '../../models';
+import { AdminMeasure } from '../../platform/api/models';
 
 // i18n adminMetrics.intro: Server statistics over the last 30 days (the mock returns zero-valued measures).
 // i18n adminMetrics.loading: Loading…

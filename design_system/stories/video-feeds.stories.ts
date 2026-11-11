@@ -15,12 +15,12 @@ import {
   withInterceptors,
   HttpResponse,
 } from "../../ui/src/app/testing/storybook-http";
-import { VideosPage } from "../../ui/src/app/pages/videos/videos-page";
-import { VideoSubscriptions } from "../../ui/src/app/providers/videos/video-subscriptions";
-import { YoutubeFeeds } from "../../ui/src/app/providers/videos/youtube-feeds";
-import { parseFeed } from "../../ui/src/app/providers/rss/rss-parser";
-import { Auth } from "../../ui/src/app/auth";
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
+import { VideosPage } from "../../ui/src/app/reading/videos/videos-page";
+import { VideoSubscriptions } from "../../ui/src/app/reading/videos/video-subscriptions";
+import { YoutubeFeeds } from "../../ui/src/app/reading/videos/youtube-feeds";
+import { parseFeed } from "../../ui/src/app/reading/rss/rss-parser";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 const channels = [
   {

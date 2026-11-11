@@ -11,21 +11,27 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { delay, of, throwError } from "rxjs";
-import { BugReportDialog } from "../../ui/src/app/bug-report-dialog/bug-report-dialog";
-import { BulkAddDialog } from "../../ui/src/app/bulk-add-dialog/bulk-add-dialog";
-import { BulkActionsDialog } from "../../ui/src/app/bulk-actions-dialog/bulk-actions-dialog";
+import { BugReportDialog } from "../../ui/src/app/shell/bug-report-dialog/bug-report-dialog";
+import { BulkAddDialog } from "../../ui/src/app/feeds/lists/bulk-add-dialog/bulk-add-dialog";
+import { BulkActionsDialog } from "../../ui/src/app/accounts/bulk-actions-dialog/bulk-actions-dialog";
 import { MbButton } from "../../ui/src/app/design-system/button/button";
-import { BugReport, type BugReportInput } from "../../ui/src/app/bug-report";
-import { ErrorLog } from "../../ui/src/app/error-log";
-import { DiagnosticLog } from "../../ui/src/app/diagnostic-log";
-import { PageDiagnostics } from "../../ui/src/app/page-diagnostics";
-import { BulkActions, type BulkPreview } from "../../ui/src/app/bulk-actions";
-import { Api } from "../../ui/src/app/api";
-import { Auth } from "../../ui/src/app/auth";
-import { AnonymousAccount } from "../../ui/src/app/providers/anonymous/anonymous-account";
-import { AnonymousFollows } from "../../ui/src/app/providers/anonymous/anonymous-follows";
-import { AnonymousLists } from "../../ui/src/app/providers/anonymous/anonymous-lists";
-import { AnonymousPublicApi } from "../../ui/src/app/providers/anonymous/anonymous-public-api";
+import {
+  BugReport,
+  type BugReportInput,
+} from "../../ui/src/app/platform/diagnostics/bug-report";
+import { ErrorLog } from "../../ui/src/app/platform/diagnostics/error-log";
+import { DiagnosticLog } from "../../ui/src/app/platform/diagnostics/diagnostic-log";
+import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
+import {
+  BulkActions,
+  type BulkPreview,
+} from "../../ui/src/app/accounts/bulk-actions";
+import { Api } from "../../ui/src/app/platform/api/api";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { AnonymousAccount } from "../../ui/src/app/accounts/anonymous/anonymous-account";
+import { AnonymousFollows } from "../../ui/src/app/accounts/anonymous/anonymous-follows";
+import { AnonymousLists } from "../../ui/src/app/accounts/anonymous/anonymous-lists";
+import { AnonymousPublicApi } from "../../ui/src/app/accounts/anonymous/anonymous-public-api";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 @Injectable()

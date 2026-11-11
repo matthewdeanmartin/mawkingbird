@@ -1,0 +1,245 @@
+import { Server } from '../../platform/http/server';
+import { computed, inject, Injectable, linkedSignal, signal } from '@angular/core';
+import { Api } from '../../platform/api/api';
+import { Announcement } from '../../platform/api/models';
+import { networkSources } from '../../shell/network-sources';
+import { Auth } from '../../platform/session/auth';
+
+interface AnnouncementContext {
+  server: string;
+  token: string | null;
+  allowed: boolean;
+}
+
+/**
+ * localStorage key holding the ids the viewer has dismissed.
+ *
+ * The server-side dismiss endpoint isn't reachable on every instance (and
+ * doesn't hide the banner on refresh for the current session anyway), so we
+ * keep a client-side "seen it" list — the banner must be dismissable against
+ * mastodon.social. Unchanged from when this lived inside the banner component,
+ * so existing dismissals survive the move.
+ */
+const DISMISSED_KEY = 'mockingbird_dismissed_announcements';
+
+function readDismissed(): string[] {
+  try {
+    const raw = JSON.parse(localStorage.getItem(DISMISSED_KEY) ?? '[]') as unknown;
+    return Array.isArray(raw) ? raw.filter((x): x is string => typeof x === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * The server's announcements, and which ones this browser has seen.
+ *
+ * Shared because three surfaces now need the same answer and must not disagree:
+ * the banner above the timeline, the count on the server card in the rail, and
+ * the server's own page listing every announcement. When it lived inside the
+ * banner, the dismissed set was private to one component instance — a second
+ * reader of the same data would have shown a count that included things the
+ * reader had already dismissed.
+ *
+ * Fetched once per session on first request; `load()` is idempotent.
+ */
+@Injectable({ providedIn: 'root' })
+export class AnnouncementStore {
+  private api = inject(Api);
+  private server = inject(Server);
+  private auth = inject(Auth);
+  private usableMastodon = networkSources().usableMastodon;
+  private context = computed<AnnouncementContext>(() => ({
+    server: this.server.baseUrl(),
+    token: this.auth.token(),
+    allowed: !!this.auth.token() && !this.auth.isAnonymous && this.usableMastodon(),
+  }));
+
+  /** Everything the server published, dismissed or not. */
+  readonly all = linkedSignal<AnnouncementContext, Announcement[]>({
+    source: () => this.context(),
+    computation: () => [],
+  });
+  readonly loaded = linkedSignal({ source: () => this.context(), computation: () => false });
+
+  private dismissed = signal(new Set<string>(readDismissed()));
+
+  /** Not yet dismissed on this device — what the banner shows. */
+  readonly active = computed(() => this.all().filter((a) => !this.dismissed().has(a.id)));
+  readonly activeCount = computed(() => this.active().length);
+  readonly total = computed(() => this.all().length);
+
+  /**
+   * True when something is both undismissed and flagged by the server as new.
+   *
+   * `published` alone is not enough — every live announcement is published.
+   * Mastodon marks the ones a reader has not read yet, and that is the signal
+   * worth a callout; without it the badge would shout on every page load
+   * forever.
+   */
+  readonly hasUnread = computed(() => this.active().some((a) => a.read === false));
+
+  private loadingFor: AnnouncementContext | null = null;
+  private request = 0;
+
+  /**
+   * Announcements require both a usable Mastodon source and a user token.
+   *
+   * Announcements are a Mastodon-instance concept: there is no Bluesky
+   * equivalent, and no endpoint to call for one. A Bluesky-primary account that
+   * never opted into a Mastodon connector has no instance — so the relative
+   * `/api/v1/announcements` is not prefixed by `serverInterceptor` (there is no
+   * base URL to prefix it with) and resolves against the page's own origin
+   * instead. On mawkingbird.com that is a static GitHub Pages site, which
+   * answers the SPA 404 shim rather than JSON, and the client reports
+   * `request:failed … 422`.
+   *
+   * Guarding here rather than at each caller because `load()` is the choke
+   * point all three surfaces share — the banner over the timeline, the rail's
+   * server card, and the server's announcements page. The rail already checks
+   * `usableMastodon` before calling; the banner did not, and `home.html` gates
+   * it on `!auth.isAnonymous`, which was the same question only while every
+   * signed-in account was Mastodon-primary.
+   */
+  load(force = false): void {
+    const context = this.context();
+    if (this.loadingFor === context || (this.loaded() && !force)) {
+      return;
+    }
+    // No Mastodon source, no announcements to have. Settle as an empty,
+    // *loaded* store so the surfaces render their empty state instead of
+    // waiting forever on a request that is never coming.
+    // A public timeline source does not authorize the announcements endpoint.
+    // No request is made while signed out, anonymous, or lacking a connector token.
+    if (!context.allowed) {
+      this.loaded.set(true);
+      return;
+    }
+    this.loadingFor = context;
+    const request = ++this.request;
+    this.api.announcements().subscribe({
+      next: (list) => {
+        if (context !== this.context() || request !== this.request) return;
+        this.all.set(list);
+        this.loaded.set(true);
+        this.loadingFor = null;
+      },
+      error: () => {
+        if (context !== this.context() || request !== this.request) return;
+        // A server with announcements switched off answers 404; that is an
+        // empty list, not a failure worth surfacing.
+        this.loaded.set(true);
+        this.loadingFor = null;
+      },
+    });
+  }
+
+  isDismissed(id: string): boolean {
+    return this.dismissed().has(id);
+  }
+
+  dismiss(id: string): void {
+    if (this.dismissed().has(id)) {
+      return;
+    }
+    this.persist([...this.dismissed(), id]);
+    if (!this.context().allowed) return;
+    // Best-effort server dismiss; a failure is fine, the local flag holds.
+    this.api.dismissAnnouncement(id).subscribe({ error: () => undefined });
+  }
+
+  /** Dismiss everything currently active, in one gesture. */
+  dismissAll(): void {
+    const ids = this.active().map((a) => a.id);
+    if (!ids.length) {
+      return;
+    }
+    this.persist([...this.dismissed(), ...ids]);
+    if (!this.context().allowed) return;
+    for (const id of ids) {
+      this.api.dismissAnnouncement(id).subscribe({ error: () => undefined });
+    }
+  }
+
+  /** Put everything back — the escape hatch for a too-eager "dismiss all". */
+  restoreAll(): void {
+    this.persist([]);
+  }
+
+  toggleReaction(a: Announcement, name: string): void {
+    const context = this.context();
+    if (!context.allowed) return;
+    const mine = a.reactions.find((r) => r.name === name)?.me ?? false;
+    const call = mine
+      ? this.api.removeAnnouncementReaction(a.id, name)
+      : this.api.addAnnouncementReaction(a.id, name);
+    call.subscribe(() => {
+      if (context === this.context()) this.applyReaction(a.id, name, !mine);
+    });
+  }
+
+  /** Patch the local reaction list after a successful toggle (no refetch). */
+  private applyReaction(id: string, name: string, me: boolean): void {
+    this.all.update((list) =>
+      list.map((x) => {
+        if (x.id !== id) {
+          return x;
+        }
+        const reactions = [...x.reactions];
+        const idx = reactions.findIndex((r) => r.name === name);
+        if (idx === -1) {
+          reactions.push({ name, count: 1, me: true, url: null, static_url: null });
+        } else {
+          const count = reactions[idx].count + (me ? 1 : -1);
+          if (count <= 0) {
+            reactions.splice(idx, 1);
+          } else {
+            reactions[idx] = { ...reactions[idx], count, me };
+          }
+        }
+        return { ...x, reactions };
+      }),
+    );
+  }
+
+  private persist(ids: string[]): void {
+    const set = new Set(ids);
+    this.dismissed.set(set);
+    localStorage.setItem(DISMISSED_KEY, JSON.stringify([...set]));
+  }
+}
+
+/** The quick picks every announcement offers, whether or not anyone has used them yet. */
+export const QUICK_REACTIONS: readonly string[] = ['👍', '🎉', '❤️', '🚀'];
+
+/** One reaction button: an emoji (or custom emoji image) with its count. */
+export interface ReactionChip {
+  name: string;
+  count: number;
+  me: boolean;
+  /** Image for a custom emoji; null for unicode. */
+  url: string | null;
+}
+
+/**
+ * The server's reactions followed by any quick pick nobody has used yet, each
+ * with a count. One row, one button per emoji: quick picks used to sit beside
+ * the counted chips without numbers, so a server that returned no reactions
+ * looked like a client that forgot to show them.
+ */
+export function reactionChips(
+  a: Announcement,
+  quick: readonly string[] = QUICK_REACTIONS,
+): ReactionChip[] {
+  const chips: ReactionChip[] = (a.reactions ?? []).map((r) => ({
+    name: r.name,
+    count: typeof r.count === 'number' ? r.count : Number(r.count) || 0,
+    me: !!r.me,
+    url: r.static_url ?? r.url ?? null,
+  }));
+  for (const name of quick) {
+    if (!chips.some((chip) => chip.name === name))
+      chips.push({ name, count: 0, me: false, url: null });
+  }
+  return chips;
+}

@@ -3,10 +3,10 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AppDialogs } from '../../../app-dialogs';
-import { Auth } from '../../../auth';
-import { Account } from '../../../models';
-import { AnonymousAccount } from '../../../providers/anonymous/anonymous-account';
+import { AppDialogs } from '../../app-dialogs';
+import { Auth } from '../../../platform/session/auth';
+import { Account } from '../../../platform/api/models';
+import { AnonymousAccount } from '../../../accounts/anonymous/anonymous-account';
 import { seedBskySession } from '../../../testing/seed-storage';
 import { stubLocation } from '../../../testing/stub-location';
 import { ProfileStack } from './profile-stack';

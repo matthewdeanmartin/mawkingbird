@@ -1,23 +1,23 @@
-import { FocusTrap } from "../../ui/src/app/a11y/focus-trap";
+import { FocusTrap } from "../../ui/src/app/shell/a11y/focus-trap";
 import { Component, importProvidersFrom, inject, signal } from "@angular/core";
 import {
   applicationConfig,
   type Meta,
   type StoryObj,
 } from "@storybook/angular";
-import { AppDialogs } from "../../ui/src/app/app-dialogs";
-import { LeaveDialog } from "../../ui/src/app/leave-dialog/leave-dialog";
+import { AppDialogs } from "../../ui/src/app/shell/app-dialogs";
+import { LeaveDialog } from "../../ui/src/app/shell/leave-dialog/leave-dialog";
 import {
   TranslateDialog,
   TranslateResult,
-} from "../../ui/src/app/compose/translate-dialog/translate-dialog";
+} from "../../ui/src/app/publishing/compose/translate-dialog/translate-dialog";
 import { MbDialog } from "../../ui/src/app/design-system/dialog/dialog";
 import { MbButton } from "../../ui/src/app/design-system/button/button";
-import { Auth } from "../../ui/src/app/auth";
-import { SessionTeardown } from "../../ui/src/app/session-teardown";
-import { PageDiagnostics } from "../../ui/src/app/page-diagnostics";
-import { AiTranslate } from "../../ui/src/app/ai-translate";
-import { ClientPrefs } from "../../ui/src/app/client-prefs";
+import { Auth } from "../../ui/src/app/platform/session/auth";
+import { SessionTeardown } from "../../ui/src/app/platform/session/session-teardown";
+import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
+import { AiTranslate } from "../../ui/src/app/translation/ai-translate";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
 import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 
 @Component({

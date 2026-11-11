@@ -6,7 +6,7 @@ import ts from 'typescript';
 import { chromium } from '@playwright/test';
 
 const adapter = ts.transpileModule(
-  await fs.readFile('src/app/audio-embeds/widget-api.ts', 'utf8'),
+  await fs.readFile('src/app/reading/audio-embeds/widget-api.ts', 'utf8'),
   {
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ES2022 },
   },

@@ -1,0 +1,343 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Auth } from '../../platform/session/auth';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { PrivateFollows } from '../../accounts/private-follows';
+import { Account } from '../../platform/api/models';
+import { RssSubscriptions } from '../../reading/rss/rss-subscriptions';
+import { CommandBar } from './command-bar';
+
+describe('CommandBar', () => {
+  it('makes visual views and Reader mutually exclusive without changing image preferences', () => {
+    const fixture = setUp();
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.componentRef.setInput('showVideo', true);
+    const prefs = TestBed.inject(ClientPrefs);
+    const views: string[] = [];
+    fixture.componentInstance.viewChange.subscribe((view) => views.push(view));
+    fixture.detectChanges();
+    const button = (text: string) =>
+      [...fixture.nativeElement.querySelectorAll('button')].find((b) =>
+        (b as HTMLButtonElement).textContent?.includes(text),
+      ) as HTMLButtonElement;
+    for (const label of ['Media', 'Video']) {
+      prefs.setFeedReader(true);
+      button(label).click();
+      expect(prefs.feedReader()).toBe(false);
+      expect(prefs.showImages()).toBe(true);
+    }
+    fixture.componentRef.setInput('view', 'video');
+    fixture.detectChanges();
+    button('Reader').click();
+    expect(prefs.feedReader()).toBe(true);
+    expect(views.at(-1)).toBe('feed');
+    fixture.componentRef.setInput('view', 'analytics');
+    fixture.detectChanges();
+    button('Reader').click();
+    expect(views.at(-1)).toBe('feed');
+    expect(prefs.feedReader()).toBe(false);
+  });
+
+  it('offers Video next to Media on Home and emits local text focus without changing global preferences', () => {
+    const fixture = setUp();
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.componentRef.setInput('showVideo', true);
+    fixture.componentRef.setInput('localTextFocus', false);
+    fixture.detectChanges();
+    const views: string[] = [];
+    fixture.componentInstance.viewChange.subscribe((view) => views.push(view));
+    const focus: boolean[] = [];
+    fixture.componentInstance.textFocusChange.subscribe((value) => focus.push(value));
+    const row = fixture.nativeElement.querySelector('.presentation-row');
+    const buttons = [...row.querySelectorAll('button')] as HTMLButtonElement[];
+    const video = buttons.find((button) => button.textContent?.includes('Video'))!;
+    const media = buttons.find((button) => button.textContent?.includes('Media'))!;
+    expect(video.previousElementSibling).toBe(media);
+    video.click();
+    expect(views).toEqual(['video']);
+    buttons.find((button) => button.textContent?.includes('Text'))!.click();
+    expect(focus).toEqual([true]);
+    expect(TestBed.inject(ClientPrefs).showImages()).toBe(true);
+    fixture.componentRef.setInput('showMyTags', true);
+    fixture.componentRef.setInput('myTags', true);
+    fixture.componentRef.setInput('view', 'members');
+    fixture.detectChanges();
+    const tags: boolean[] = [];
+    fixture.componentInstance.myTagsChange.subscribe((value) => tags.push(value));
+    const tagButton = [...row.querySelectorAll('button')].find((button) =>
+      (button as HTMLButtonElement).textContent?.includes('My tags'),
+    ) as HTMLButtonElement;
+    tagButton.click();
+    expect(tags).toEqual([false]);
+    expect(views.at(-1)).toBe('feed');
+  });
+  it('uses independent toolbar focus groups and leaves navigation links outside them', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    // Two sources, so the Feed sources toolbar renders (one source hides it).
+    TestBed.inject(RssSubscriptions).add('https://a.example/feed', 'A');
+    const fixture = setUp(true);
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.componentRef.setInput('showFeedDoctor', true);
+    await fixture.whenStable();
+    const root: HTMLElement = fixture.nativeElement;
+    const toolbars = [...root.querySelectorAll('mb-toolbar')];
+    expect(toolbars).toHaveLength(3);
+    for (const toolbar of toolbars) {
+      expect(toolbar.getAttribute('role')).toBe('toolbar');
+      expect(toolbar.querySelectorAll('button[tabindex="0"]')).toHaveLength(1);
+      expect(toolbar.querySelectorAll('a, select, .btn')).toHaveLength(0);
+    }
+    expect(root.querySelector('a')?.getAttribute('href')).toBe('/feed-doctor');
+    expect(root.querySelector('a')?.closest('mb-toolbar')).toBeNull();
+    const reader = root.querySelector<HTMLButtonElement>('.presentation-row button')!;
+    reader.click();
+    await fixture.whenStable();
+    expect(reader.getAttribute('aria-pressed')).toBe('true');
+  });
+  it('offers an explicit way back from analytics to tweets', () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const fixture = setUp();
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.componentRef.setInput('view', 'analytics');
+    fixture.detectChanges();
+    const change = vi.fn();
+    fixture.componentInstance.viewChange.subscribe(change);
+    const button = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (item) => item.textContent?.trim() === 'Tweets',
+    )!;
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    button.click();
+    expect(change).toHaveBeenCalledWith('feed');
+  });
+  it('separates actions, presentation and filters in that order', () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    TestBed.inject(RssSubscriptions).add('https://a.example/feed', 'A');
+    const fixture = setUp(true);
+    for (const key of ['showRefresh', 'showFeedViews', 'showFeedDoctor']) {
+      fixture.componentRef.setInput(key, true);
+    }
+    fixture.detectChanges();
+    const rows = [...(fixture.nativeElement as HTMLElement).querySelectorAll('.command-row')];
+    const labels = (row: Element) =>
+      [...row.querySelectorAll('button, a')].map((b) => b.textContent?.trim());
+    expect(rows).toHaveLength(3);
+    expect(labels(rows[0])).toEqual([
+      '🔄 More',
+      'Tweets',
+      '👥 Members',
+      '📊 Analytics',
+      '🩺 Doctor',
+    ]);
+    expect(labels(rows[1])).toEqual(['📖 Reader', 'Aa Text', '🖼️ Media', '🔗 Articles']);
+    expect(labels(rows[2])).toEqual(['🦣 Fedi', '📡 RSS']);
+  });
+  beforeEach(() => {
+    localStorage.clear();
+    // The provider registry (filter chips) reaches HttpClient via RssFetch.
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+  });
+
+  function setUp(providerChips = false) {
+    const fixture = TestBed.createComponent(CommandBar);
+    fixture.componentRef.setInput('providerChips', providerChips);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('offers a Bluesky source filter for private follows without a linked Bluesky account', () => {
+    TestBed.inject(Auth).setToken('private-reader');
+    TestBed.inject(PrivateFollows)
+      .current()!
+      .follow(
+        { id: 'bsky:did:plc:reader', username: 'reader', acct: 'reader.bsky.social' } as Account,
+        '',
+      );
+    const fixture = setUp(true);
+    const buttons = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('.provider-group button'),
+    );
+    const bluesky = buttons.filter((button) => button.textContent?.includes('Bsky'));
+    expect(bluesky).toHaveLength(1);
+    (bluesky[0] as HTMLButtonElement).click();
+    expect(TestBed.inject(ClientPrefs).isProviderVisible('bluesky')).toBe(false);
+  });
+
+  it('turns the refresh arrow into a check while a refresh found nothing new', () => {
+    const fixture = setUp();
+    fixture.componentRef.setInput('showRefresh', true);
+    fixture.detectChanges();
+    const button = (fixture.nativeElement as HTMLElement).querySelector('.refresh-button')!;
+    expect(button.textContent?.trim()).toBe('🔄 More');
+    fixture.componentRef.setInput('refreshDone', true);
+    fixture.detectChanges();
+    expect(button.textContent?.trim()).toBe('✅ More');
+    expect(button.classList).toContain('refresh-done');
+  });
+
+  it('toggles feed reader mode via ClientPrefs (stamped on <html>)', () => {
+    const fixture = setUp();
+    const prefs = TestBed.inject(ClientPrefs);
+    const readerBtn = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (b) => b.textContent?.includes('Reader'),
+    )!;
+
+    readerBtn.click();
+    fixture.detectChanges();
+
+    expect(prefs.feedReader()).toBe(true);
+    expect(document.documentElement.getAttribute('data-feed-reader')).toBe('on');
+  });
+
+  it('toggles images off and shows A−/A+ only in reader mode', () => {
+    const fixture = setUp();
+    const prefs = TestBed.inject(ClientPrefs);
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.textContent).not.toContain('A+');
+    const imagesBtn = [...el.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Text'),
+    )!;
+    imagesBtn.click();
+    fixture.detectChanges();
+    expect(prefs.showImages()).toBe(false);
+    expect(document.documentElement.getAttribute('data-images')).toBe('off');
+
+    prefs.setFeedReader(true);
+    fixture.detectChanges();
+    expect(el.textContent).toContain('A+');
+  });
+
+  it('recovers images from reader mode with one click (turning reader off)', () => {
+    const fixture = setUp();
+    const prefs = TestBed.inject(ClientPrefs);
+    const el = fixture.nativeElement as HTMLElement;
+
+    // Reader mode also hides images, so Text is pressed.
+    prefs.setFeedReader(true);
+    fixture.detectChanges();
+    const imagesBtn = [...el.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Text'),
+    )!;
+    expect(imagesBtn.getAttribute('aria-pressed')).toBe('true');
+    expect(imagesBtn.hasAttribute('disabled')).toBe(false);
+
+    // One click brings images back AND leaves reader mode — always recoverable.
+    imagesBtn.click();
+    fixture.detectChanges();
+    expect(prefs.showImages()).toBe(true);
+    expect(prefs.feedReader()).toBe(false);
+    expect(document.documentElement.getAttribute('data-images')).toBe('on');
+  });
+
+  it('shows provider filter chips only on provider pages with a linked provider', () => {
+    // No chips without the input, even with feeds configured.
+    TestBed.inject(RssSubscriptions).add('https://a.example/feed', 'A');
+    let el = setUp(false).nativeElement as HTMLElement;
+    expect(el.textContent).not.toContain('Fedi');
+
+    // Chips with the input and a linked provider.
+    el = setUp(true).nativeElement as HTMLElement;
+    expect(el.textContent).toContain('🦣 Fedi');
+    expect(el.textContent).toContain('📡 RSS');
+  });
+
+  it('keeps text-focus reversible and independent of the Media view', () => {
+    const fixture = setUp();
+    fixture.componentRef.setInput('showFeedViews', true);
+    fixture.detectChanges();
+    const prefs = TestBed.inject(ClientPrefs);
+    const buttons = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')];
+    const textFocus = buttons.find((button) => button.textContent?.includes('Text'))!;
+    const media = buttons.find((button) => button.textContent?.includes('Media'))!;
+    const viewChanged = vi.fn();
+    fixture.componentInstance.viewChange.subscribe(viewChanged);
+    expect(textFocus.getAttribute('aria-pressed')).toBe('false');
+    textFocus.click();
+    fixture.detectChanges();
+    expect(textFocus.getAttribute('aria-pressed')).toBe('true');
+    expect(prefs.showImages()).toBe(false);
+    expect(viewChanged).not.toHaveBeenCalled();
+    textFocus.click();
+    fixture.detectChanges();
+    expect(prefs.showImages()).toBe(true);
+    expect(textFocus.getAttribute('aria-pressed')).toBe('false');
+    media.click();
+    expect(viewChanged).toHaveBeenCalledWith('media');
+    expect(prefs.showImages()).toBe(true);
+  });
+
+  it('hides a one-source switcher, since Fedi alone switches nothing', () => {
+    const el = setUp(true).nativeElement as HTMLElement;
+    expect(el.querySelector('.provider-group')).toBeNull();
+    expect(el.textContent).not.toContain('Fedi');
+  });
+
+  it('still shows a lone source that is turned off, so it can be turned back on', () => {
+    TestBed.inject(ClientPrefs).toggleProvider('mastodon');
+    const fixture = setUp(true);
+    const el = fixture.nativeElement as HTMLElement;
+    const fedi = [...el.querySelectorAll('.provider-group button')].find((b) =>
+      b.textContent?.includes('Fedi'),
+    ) as HTMLButtonElement;
+    expect(fedi).toBeTruthy();
+    expect(fedi.getAttribute('aria-pressed')).toBe('false');
+    fedi.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(ClientPrefs).isProviderVisible('mastodon')).toBe(true);
+    expect(el.querySelector('.provider-group')).toBeNull();
+  });
+
+  it('does not show an irrelevant Fedi control for Anonymous with no local source', () => {
+    TestBed.inject(Auth).enterAnonymous('https://social.example');
+    const el = setUp(true).nativeElement as HTMLElement;
+    expect(el.textContent).not.toContain('Fedi');
+  });
+
+  it('chips toggle provider visibility in ClientPrefs', () => {
+    TestBed.inject(RssSubscriptions).add('https://a.example/feed', 'A');
+    const fixture = setUp(true);
+    const prefs = TestBed.inject(ClientPrefs);
+    const rssChip = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (b) => b.textContent?.includes('RSS'),
+    )!;
+    const changed = vi.fn();
+    fixture.componentInstance.providerVisibilityChanged.subscribe(changed);
+
+    expect(prefs.isProviderVisible('rss')).toBe(true);
+    rssChip.click();
+    fixture.detectChanges();
+    expect(prefs.isProviderVisible('rss')).toBe(false);
+    rssChip.click();
+    expect(prefs.isProviderVisible('rss')).toBe(true);
+    expect(changed).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps all provider controls together in one source group', () => {
+    TestBed.inject(RssSubscriptions).add('https://a.example/feed', 'A');
+    const el = setUp(true).nativeElement as HTMLElement;
+    const group = el.querySelector('.provider-group');
+
+    expect(group?.getAttribute('aria-label')).toBe('Feed sources');
+    expect(group?.textContent).toContain('Fedi');
+    expect(group?.textContent).toContain('RSS');
+    expect(group?.querySelectorAll('button')).toHaveLength(2);
+  });
+
+  // "Go live" moved to Blue → "Auto-refresh timeline", opt-in and off by
+  // default. The toolbar must not offer it: this row's space is the whole
+  // reason it moved.
+  it('offers no live toggle — that setting lives in Blue now', () => {
+    const fixture = setUp();
+
+    const labels = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].map(
+      (b) => b.textContent ?? '',
+    );
+
+    expect(labels.some((text) => text.includes('Go live') || text.includes('● Live'))).toBe(false);
+  });
+});

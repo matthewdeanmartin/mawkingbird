@@ -1,11 +1,11 @@
-import { accountProfilePath } from '../../account-route';
+import { accountProfilePath } from '../../accounts/account-route';
 import { MbButton } from '../../design-system/button/button';
-import { AppDialogs } from '../../app-dialogs';
+import { AppDialogs } from '../../shell/app-dialogs';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AdminApi } from '../admin-api';
-import { AdminAccount } from '../../models';
+import { AdminAccount } from '../../platform/api/models';
 
 const STATUSES = ['active', 'pending', 'silenced', 'suspended', 'disabled'] as const;
 

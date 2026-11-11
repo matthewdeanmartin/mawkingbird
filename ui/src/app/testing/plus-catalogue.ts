@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { vi } from 'vitest';
-import { formatOffer, PlusOffer } from '../providers/account/plus-catalogue';
+import { formatOffer, PlusOffer } from '../accounts/mawkingbird/plus-catalogue';
 
 export const catalogueOffer: PlusOffer = {
   offer: 'plus',

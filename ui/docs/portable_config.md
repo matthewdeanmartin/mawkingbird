@@ -2,7 +2,7 @@
 
 Settings → Import/Export Config exports the browser-side Mockingbird setup to JSON, imports it by
 file, pasted JSON, or URL. The implementation
-lives in `portable-config.ts`, `config-sync.ts`, and `pages/settings/config/`.
+lives in `portable-config.ts`, `config-sync.ts`, and `settings/config/`.
 
 ## File format
 

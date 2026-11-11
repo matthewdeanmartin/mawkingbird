@@ -1,5 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
-import type { Tier } from '../providers/account/mawkingbird-session';
+import type { Tier } from '../accounts/mawkingbird/mawkingbird-session';
 
 /**
  * Calls this browser has made to Mawkingbird's own services, split by which

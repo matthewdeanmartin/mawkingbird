@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { scopedKey } from '../account-scope';
+import { scopedKey } from '../platform/session/account-scope';
 
 const BASE_KEY = 'mockingbird_conversations';
 const STATE_VERSION = 1;

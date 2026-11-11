@@ -11,7 +11,7 @@ const { detectLanguage, analyzeLanguage } = await import(
   `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
 );
 const corpus = JSON.parse(
-  readFileSync(new URL('src/app/language-detect.corpus.json', root), 'utf8'),
+  readFileSync(new URL('src/app/language/language-detect.corpus.json', root), 'utf8'),
 );
 let failures = 0;
 const unknownReasons = {};
@@ -68,7 +68,7 @@ detectLanguage('Unrecognized repeated content '.repeat(10000));
 console.log(
   JSON.stringify(
     {
-      corpus: fileURLToPath(new URL('src/app/language-detect.corpus.json', root)),
+      corpus: fileURLToPath(new URL('src/app/language/language-detect.corpus.json', root)),
       cases: corpus.length,
       failures,
       unknownReasons,

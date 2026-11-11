@@ -4,7 +4,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
-import { DomainAllow } from '../../models';
+import { DomainAllow } from '../../platform/api/models';
 
 // i18n adminDomainAllows.placeholder: domain to allow (e.g. friendly.example)
 // i18n adminDomainAllows.allow: Allow

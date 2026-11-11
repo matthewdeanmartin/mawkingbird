@@ -38,10 +38,10 @@ modules.
 | Removed module or helper | Evidence and retained behavior |
 | --- | --- |
 | `src/app/starter-kit-post/` | Only the removed component's specs imported it. Live starter collection and follow/import code remain. |
-| `src/app/pages/settings/anonymous/` | The old page was unused; `/settings/anonymous` already redirects to the live Server settings page. Shared age-setting translation declarations now live in `settings-server.ts`. Its default-age and select-change regression was transferred to `settings-server.spec.ts`. |
-| `src/app/pages/read/post-blocks.ts` | Only its obsolete specs imported `chainBlocks` and `splitPostHtml`. The reader uses `ReaderCore`; its existing rendered pagination regressions remain. |
-| `proxyRefusalReason` in `providers/cors-proxy/cors-proxy.ts` | No callers. The live `assertProxyable` and `canProxy` helpers remain. |
-| `followFromAccount` in `providers/twitter/twitter-feed.ts` | No callers. The active Twitter feed and follow storage remain. |
+| `src/app/settings/anonymous/` | The old page was unused; `/settings/anonymous` already redirects to the live Server settings page. Shared age-setting translation declarations now live in `settings-server.ts`. Its default-age and select-change regression was transferred to `settings-server.spec.ts`. |
+| `src/app/reading/read/post-blocks.ts` | Only its obsolete specs imported `chainBlocks` and `splitPostHtml`. The reader uses `ReaderCore`; its existing rendered pagination regressions remain. |
+| `proxyRefusalReason` in `connections/cors-proxy/cors-proxy.ts` | No callers. The live `assertProxyable` and `canProxy` helpers remain. |
+| `followFromAccount` in `connections/twitter/twitter-feed.ts` | No callers. The active Twitter feed and follow storage remain. |
 
 The 22 protected test identities belonging to the removed modules are recorded in
 [the retired inventory](dead-code-retired-tests.json). One age-setting test was

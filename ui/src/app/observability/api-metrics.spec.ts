@@ -13,7 +13,7 @@ import {
   normalizeEndpoint,
   normalizeErrorMessage,
 } from './api-metrics';
-import { Server } from '../server';
+import { Server } from '../platform/http/server';
 import { emptyHistogram } from './latency-histogram';
 
 function storageKey(server: string): string {

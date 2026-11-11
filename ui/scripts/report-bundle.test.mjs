@@ -23,7 +23,7 @@ function fixture() {
       },
       'kits.js': {
         bytes: 900,
-        inputs: { 'src/app/starter-kits.ts': { bytesInOutput: 850 } },
+        inputs: { 'src/app/discovery/starter-kits.ts': { bytesInOutput: 850 } },
         imports: [{ path: 'shared.js', kind: 'import-statement' }],
       },
     },
@@ -45,7 +45,7 @@ test('detects a transitive static import of optional collection data', () => {
   stats.outputs['shared.js'].imports.push({ path: 'kits.js', kind: 'import-statement' });
   const summary = summarizeBundle(stats);
   assert.equal(summary.bytes, 1070);
-  assert.deepEqual(summary.violations, ['src/app/starter-kits.ts']);
+  assert.deepEqual(summary.violations, ['src/app/discovery/starter-kits.ts']);
 });
 
 test('refuses an unrecognized build rather than reporting zero bytes', () => {

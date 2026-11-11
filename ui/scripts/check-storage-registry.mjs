@@ -4,7 +4,7 @@
  *
  * Settings export is aimed at publishing a setup to a public gist, so "is this
  * key safe to write to a file?" has to be answered for every key that exists —
- * not just the ones someone remembered. `src/app/storage-registry.ts` refuses
+ * not just the ones someone remembered. `src/app/platform/storage/storage-registry.ts` refuses
  * to export anything it does not recognise, which makes forgetting a key safe
  * but silent: the key just never gets exported, including keys that *should*
  * be. This script is the other half, turning the omission into a build failure.
@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const APP_DIR = join(ROOT, 'src', 'app');
-const REGISTRY = join(APP_DIR, 'storage-registry.ts');
+const REGISTRY = join(APP_DIR, 'platform', 'storage', 'storage-registry.ts');
 
 /**
  * Keys that no longer exist in the source but stay classified so that data
@@ -212,7 +212,7 @@ if (problems.length > 0) {
     console.error(`  - ${problem}`);
   }
   console.error(
-    '\nEvery localStorage key must be classified in src/app/storage-registry.ts so that\n' +
+    '\nEvery localStorage key must be classified in src/app/platform/storage/storage-registry.ts so that\n' +
       'settings export can never publish something it should not. See docs/security.md.\n',
   );
   process.exit(1);

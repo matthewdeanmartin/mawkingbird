@@ -4,7 +4,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
-import { IpBlock } from '../../models';
+import { IpBlock } from '../../platform/api/models';
 
 // i18n adminIpBlocks.ipPlaceholder: IP or CIDR (e.g. 203.0.113.0/24)
 // i18n adminIpBlocks.commentPlaceholder: comment (optional)

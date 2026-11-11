@@ -1,11 +1,11 @@
-import { AppMode } from '../app-mode';
-import { TOOL_PAGES } from '../focused-tools';
+import { AppMode } from '../platform/build/app-mode';
+import { TOOL_PAGES } from '../public-pages/focused-tools';
 import {
   feedBuilderHubFor,
   FEED_BUILDER_FLOODING,
   FEED_BUILDER_PAGES,
   FEED_BUILDER_PREVIEW,
-} from '../pages/feed-builder/feed-builder-registry';
+} from '../feeds/feed-builder/feed-builder-registry';
 
 // i18n shell.modeNav.rss.reader: Read
 // i18n shell.modeNav.rss.readLater: Later

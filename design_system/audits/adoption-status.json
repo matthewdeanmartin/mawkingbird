@@ -20,7 +20,7 @@
       "directCallSites": 3,
       "consumers": [
         {
-          "file": "list-dialog/list-dialog.html",
+          "file": "feeds/lists/list-dialog/list-dialog.html",
           "count": 3
         }
       ],
@@ -32,19 +32,19 @@
       "directCallSites": 272,
       "consumers": [
         {
-          "file": "account-analytics/account-analytics.html",
+          "file": "accounts/account-analytics/account-analytics.html",
           "count": 1
         },
         {
-          "file": "account-hover-card/account-hover-card.ts",
+          "file": "accounts/account-hover-card/account-hover-card.ts",
           "count": 3
         },
         {
-          "file": "account-hover-card/account-preview.ts",
+          "file": "accounts/account-hover-card/account-preview.ts",
           "count": 1
         },
         {
-          "file": "account-list-dialog/account-list-dialog.html",
+          "file": "posts/account-list-dialog/account-list-dialog.html",
           "count": 2
         },
         {
@@ -84,179 +84,179 @@
           "count": 4
         },
         {
-          "file": "bug-report-dialog/bug-report-dialog.html",
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
           "count": 3
         },
         {
-          "file": "bulk-actions-dialog/bulk-actions-dialog.html",
+          "file": "accounts/bulk-actions-dialog/bulk-actions-dialog.html",
           "count": 8
         },
         {
-          "file": "bulk-add-dialog/bulk-add-dialog.html",
+          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
           "count": 2
         },
         {
-          "file": "compose/compose.html",
+          "file": "publishing/compose/compose.html",
           "count": 16
         },
         {
-          "file": "compose/translate-dialog/translate-dialog.html",
+          "file": "publishing/compose/translate-dialog/translate-dialog.html",
           "count": 5
         },
         {
-          "file": "confirm-dialog/confirm-dialog.html",
+          "file": "shell/confirm-dialog/confirm-dialog.html",
           "count": 3
         },
         {
-          "file": "feed-analytics/feed-analytics.html",
+          "file": "feeds/feed-analytics/feed-analytics.html",
           "count": 2
         },
         {
-          "file": "feed-members/feed-members.html",
+          "file": "feeds/feed-members/feed-members.html",
           "count": 2
         },
         {
-          "file": "first-run/first-run-modal.html",
+          "file": "accounts/first-run/first-run-modal.html",
           "count": 2
         },
         {
-          "file": "follow-button/follow-button.ts",
+          "file": "accounts/follow-button/follow-button.ts",
           "count": 1
         },
         {
-          "file": "history-dialog/history-dialog.html",
+          "file": "posts/history-dialog/history-dialog.html",
           "count": 2
         },
         {
-          "file": "leave-dialog/leave-dialog.html",
+          "file": "shell/leave-dialog/leave-dialog.html",
           "count": 2
         },
         {
-          "file": "list-dialog/list-dialog.html",
+          "file": "feeds/lists/list-dialog/list-dialog.html",
           "count": 6
         },
         {
-          "file": "onboarding/onboarding-card.html",
+          "file": "accounts/onboarding/onboarding-card.html",
           "count": 7
         },
         {
-          "file": "pages/bluesky-oauth-callback/bluesky-oauth-callback.html",
+          "file": "accounts/sign-in/bluesky-oauth-callback/bluesky-oauth-callback.html",
           "count": 1
         },
         {
-          "file": "pages/list-timeline/list-timeline.html",
+          "file": "feeds/list-timeline/list-timeline.html",
           "count": 3
         },
         {
-          "file": "pages/login-bluesky/login-bluesky.html",
+          "file": "accounts/sign-in/login-bluesky/login-bluesky.html",
           "count": 3
         },
         {
-          "file": "pages/profile/profile.html",
+          "file": "accounts/profile/profile.html",
           "count": 1
         },
         {
-          "file": "pages/public-timeline/public-timeline.html",
+          "file": "feeds/public-timeline/public-timeline.html",
           "count": 1
         },
         {
-          "file": "pages/search/search.html",
+          "file": "discovery/search/search.html",
           "count": 25
         },
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 5
         },
         {
-          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "file": "settings/connections/bluesky/connection-bluesky.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "file": "settings/connections/dropbox/connection-dropbox.html",
           "count": 4
         },
         {
-          "file": "pages/settings/connections/gist/connection-gist.html",
+          "file": "settings/connections/gist/connection-gist.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/github/connection-github.html",
+          "file": "settings/connections/github/connection-github.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "file": "settings/connections/hugo/connection-hugo.html",
           "count": 7
         },
         {
-          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 6
         },
         {
-          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "file": "settings/connections/pastes/connection-pastes.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "file": "settings/connections/raindrop/connection-raindrop.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 20
         },
         {
-          "file": "pages/settings/filters/filter-wizard.ts",
+          "file": "settings/filters/filter-wizard.ts",
           "count": 5
         },
         {
-          "file": "pages/settings/import-export/settings-import-export.html",
+          "file": "settings/import-export/settings-import-export.html",
           "count": 39
         },
         {
-          "file": "pages/settings/profile/profile-link-dialog.html",
+          "file": "settings/profile/profile-link-dialog.html",
           "count": 2
         },
         {
-          "file": "pages/settings/profile/settings-profile.html",
+          "file": "settings/profile/settings-profile.html",
           "count": 4
         },
         {
-          "file": "pages/settings/writing/settings-writing.html",
+          "file": "settings/writing/settings-writing.html",
           "count": 2
         },
         {
-          "file": "pages/write/posting-language-dialog.ts",
+          "file": "publishing/write/posting-language-dialog.ts",
           "count": 1
         },
         {
-          "file": "pages/write/write-page.html",
+          "file": "publishing/write/write-page.html",
           "count": 2
         },
         {
-          "file": "people-browser/people-browser.html",
+          "file": "accounts/people-browser/people-browser.html",
           "count": 1
         },
         {
-          "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
           "count": 2
         },
         {
-          "file": "providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
           "count": 2
         },
         {
-          "file": "report-dialog/report-dialog.html",
+          "file": "moderation/report-dialog/report-dialog.html",
           "count": 1
         },
         {
-          "file": "search-server-discovery/search-server-discovery.html",
+          "file": "discovery/search-server-discovery/search-server-discovery.html",
           "count": 4
         },
         {
-          "file": "server-discovery/server-discovery.html",
+          "file": "discovery/server-discovery/server-discovery.html",
           "count": 4
         },
         {
@@ -276,7 +276,7 @@
           "count": 2
         },
         {
-          "file": "sign-in-prompt/sign-in-prompt.html",
+          "file": "posts/sign-in-prompt/sign-in-prompt.html",
           "count": 3
         }
       ],
@@ -292,59 +292,59 @@
           "count": 1
         },
         {
-          "file": "bug-report-dialog/bug-report-dialog.html",
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
           "count": 2
         },
         {
-          "file": "list-dialog/list-dialog.html",
+          "file": "feeds/lists/list-dialog/list-dialog.html",
           "count": 3
         },
         {
-          "file": "pages/login-chooser/login-chooser.html",
+          "file": "accounts/sign-in/login-chooser/login-chooser.html",
           "count": 1
         },
         {
-          "file": "pages/login/login.html",
+          "file": "accounts/sign-in/login/login.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "file": "settings/connections/hugo/connection-hugo.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "file": "settings/connections/pastes/connection-pastes.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 2
         },
         {
-          "file": "pages/settings/content/settings-content.html",
+          "file": "settings/content/settings-content.html",
           "count": 2
         },
         {
-          "file": "pages/settings/import-export/settings-import-export.html",
+          "file": "settings/import-export/settings-import-export.html",
           "count": 1
         },
         {
-          "file": "pages/settings/privacy/settings-privacy.html",
+          "file": "settings/privacy/settings-privacy.html",
           "count": 5
         },
         {
-          "file": "pages/settings/writing/settings-writing.html",
+          "file": "settings/writing/settings-writing.html",
           "count": 2
         },
         {
-          "file": "server-discovery/server-discovery.html",
+          "file": "discovery/server-discovery/server-discovery.html",
           "count": 1
         }
       ],
@@ -356,19 +356,19 @@
       "directCallSites": 14,
       "consumers": [
         {
-          "file": "account-list-dialog/account-list-dialog.html",
+          "file": "posts/account-list-dialog/account-list-dialog.html",
           "count": 3
         },
         {
-          "file": "history-dialog/history-dialog.html",
+          "file": "posts/history-dialog/history-dialog.html",
           "count": 3
         },
         {
-          "file": "pages/list-timeline/list-timeline.html",
+          "file": "feeds/list-timeline/list-timeline.html",
           "count": 5
         },
         {
-          "file": "pages/public-timeline/public-timeline.html",
+          "file": "feeds/public-timeline/public-timeline.html",
           "count": 3
         }
       ],
@@ -380,67 +380,67 @@
       "directCallSites": 19,
       "consumers": [
         {
-          "file": "account-list-dialog/account-list-dialog.html",
+          "file": "posts/account-list-dialog/account-list-dialog.html",
           "count": 1
         },
         {
-          "file": "bookmark-provider-dialog/bookmark-provider-dialog.html",
+          "file": "posts/bookmark-provider-dialog/bookmark-provider-dialog.html",
           "count": 1
         },
         {
-          "file": "bug-report-dialog/bug-report-dialog.html",
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
           "count": 1
         },
         {
-          "file": "bulk-actions-dialog/bulk-actions-dialog.html",
+          "file": "accounts/bulk-actions-dialog/bulk-actions-dialog.html",
           "count": 1
         },
         {
-          "file": "bulk-add-dialog/bulk-add-dialog.html",
+          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
           "count": 1
         },
         {
-          "file": "compose/translate-dialog/translate-dialog.html",
+          "file": "publishing/compose/translate-dialog/translate-dialog.html",
           "count": 1
         },
         {
-          "file": "confirm-dialog/confirm-dialog.html",
+          "file": "shell/confirm-dialog/confirm-dialog.html",
           "count": 1
         },
         {
-          "file": "history-dialog/history-dialog.html",
+          "file": "posts/history-dialog/history-dialog.html",
           "count": 1
         },
         {
-          "file": "leave-dialog/leave-dialog.html",
+          "file": "shell/leave-dialog/leave-dialog.html",
           "count": 1
         },
         {
-          "file": "list-dialog/list-dialog.html",
+          "file": "feeds/lists/list-dialog/list-dialog.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "file": "settings/connections/dropbox/connection-dropbox.html",
           "count": 1
         },
         {
-          "file": "pages/settings/profile/profile-link-dialog.html",
+          "file": "settings/profile/profile-link-dialog.html",
           "count": 1
         },
         {
-          "file": "pages/write/posting-language-dialog.ts",
+          "file": "publishing/write/posting-language-dialog.ts",
           "count": 1
         },
         {
-          "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
           "count": 1
         },
         {
-          "file": "providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
           "count": 1
         },
         {
-          "file": "report-dialog/report-dialog.html",
+          "file": "moderation/report-dialog/report-dialog.html",
           "count": 1
         },
         {
@@ -448,7 +448,7 @@
           "count": 2
         },
         {
-          "file": "sign-in-prompt/sign-in-prompt.html",
+          "file": "posts/sign-in-prompt/sign-in-prompt.html",
           "count": 1
         }
       ],
@@ -460,19 +460,19 @@
       "directCallSites": 4,
       "consumers": [
         {
-          "file": "bug-report-dialog/bug-report-dialog.html",
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 1
         },
         {
-          "file": "poll-results/poll-results.html",
+          "file": "posts/poll-results/poll-results.html",
           "count": 1
         }
       ],
@@ -508,91 +508,91 @@
           "count": 3
         },
         {
-          "file": "bug-report-dialog/bug-report-dialog.html",
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
           "count": 1
         },
         {
-          "file": "bulk-add-dialog/bulk-add-dialog.html",
+          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
           "count": 1
         },
         {
-          "file": "compose/translate-dialog/translate-dialog.html",
+          "file": "publishing/compose/translate-dialog/translate-dialog.html",
           "count": 2
         },
         {
-          "file": "confirm-dialog/confirm-dialog.html",
+          "file": "shell/confirm-dialog/confirm-dialog.html",
           "count": 1
         },
         {
-          "file": "list-dialog/list-dialog.html",
+          "file": "feeds/lists/list-dialog/list-dialog.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "file": "settings/connections/bluesky/connection-bluesky.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/gist/connection-gist.html",
+          "file": "settings/connections/gist/connection-gist.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/github/connection-github.html",
+          "file": "settings/connections/github/connection-github.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "file": "settings/connections/hugo/connection-hugo.html",
           "count": 5
         },
         {
-          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "file": "settings/connections/raindrop/connection-raindrop.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 8
         },
         {
-          "file": "pages/settings/filters/filter-wizard.ts",
+          "file": "settings/filters/filter-wizard.ts",
           "count": 3
         },
         {
-          "file": "pages/settings/notifications/settings-notification-preferences.html",
+          "file": "settings/notifications/settings-notification-preferences.html",
           "count": 4
         },
         {
-          "file": "pages/settings/privacy/settings-privacy.html",
+          "file": "settings/privacy/settings-privacy.html",
           "count": 2
         },
         {
-          "file": "pages/settings/profile/profile-link-dialog.html",
+          "file": "settings/profile/profile-link-dialog.html",
           "count": 5
         },
         {
-          "file": "pages/settings/profile/settings-profile.html",
+          "file": "settings/profile/settings-profile.html",
           "count": 2
         },
         {
-          "file": "pages/settings/writing/settings-writing.html",
+          "file": "settings/writing/settings-writing.html",
           "count": 1
         },
         {
-          "file": "pages/write/posting-language-dialog.ts",
+          "file": "publishing/write/posting-language-dialog.ts",
           "count": 2
         },
         {
-          "file": "report-dialog/report-dialog.html",
+          "file": "moderation/report-dialog/report-dialog.html",
           "count": 2
         },
         {
@@ -632,91 +632,91 @@
           "count": 3
         },
         {
-          "file": "bug-report-dialog/bug-report-dialog.html",
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
           "count": 1
         },
         {
-          "file": "bulk-add-dialog/bulk-add-dialog.html",
+          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
           "count": 1
         },
         {
-          "file": "compose/translate-dialog/translate-dialog.html",
+          "file": "publishing/compose/translate-dialog/translate-dialog.html",
           "count": 2
         },
         {
-          "file": "confirm-dialog/confirm-dialog.html",
+          "file": "shell/confirm-dialog/confirm-dialog.html",
           "count": 1
         },
         {
-          "file": "list-dialog/list-dialog.html",
+          "file": "feeds/lists/list-dialog/list-dialog.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "file": "settings/connections/bluesky/connection-bluesky.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/gist/connection-gist.html",
+          "file": "settings/connections/gist/connection-gist.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/github/connection-github.html",
+          "file": "settings/connections/github/connection-github.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "file": "settings/connections/hugo/connection-hugo.html",
           "count": 5
         },
         {
-          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "file": "settings/connections/raindrop/connection-raindrop.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 8
         },
         {
-          "file": "pages/settings/filters/filter-wizard.ts",
+          "file": "settings/filters/filter-wizard.ts",
           "count": 3
         },
         {
-          "file": "pages/settings/notifications/settings-notification-preferences.html",
+          "file": "settings/notifications/settings-notification-preferences.html",
           "count": 4
         },
         {
-          "file": "pages/settings/privacy/settings-privacy.html",
+          "file": "settings/privacy/settings-privacy.html",
           "count": 2
         },
         {
-          "file": "pages/settings/profile/profile-link-dialog.html",
+          "file": "settings/profile/profile-link-dialog.html",
           "count": 5
         },
         {
-          "file": "pages/settings/profile/settings-profile.html",
+          "file": "settings/profile/settings-profile.html",
           "count": 2
         },
         {
-          "file": "pages/settings/writing/settings-writing.html",
+          "file": "settings/writing/settings-writing.html",
           "count": 1
         },
         {
-          "file": "pages/write/posting-language-dialog.ts",
+          "file": "publishing/write/posting-language-dialog.ts",
           "count": 2
         },
         {
-          "file": "report-dialog/report-dialog.html",
+          "file": "moderation/report-dialog/report-dialog.html",
           "count": 2
         },
         {
@@ -732,7 +732,7 @@
       "directCallSites": 1,
       "consumers": [
         {
-          "file": "account-hover-card/account-hover-card.ts",
+          "file": "accounts/account-hover-card/account-hover-card.ts",
           "count": 1
         }
       ],
@@ -744,11 +744,11 @@
       "directCallSites": 2,
       "consumers": [
         {
-          "file": "search-server-discovery/search-server-discovery.html",
+          "file": "discovery/search-server-discovery/search-server-discovery.html",
           "count": 1
         },
         {
-          "file": "server-discovery/server-discovery.html",
+          "file": "discovery/server-discovery/server-discovery.html",
           "count": 1
         }
       ],
@@ -804,7 +804,7 @@
       "directCallSites": 1,
       "consumers": [
         {
-          "file": "server-picker/server-picker.html",
+          "file": "discovery/server-picker/server-picker.html",
           "count": 1
         }
       ],
@@ -816,11 +816,11 @@
       "directCallSites": 2,
       "consumers": [
         {
-          "file": "search-server-discovery/search-server-discovery.html",
+          "file": "discovery/search-server-discovery/search-server-discovery.html",
           "count": 1
         },
         {
-          "file": "server-discovery/server-discovery.html",
+          "file": "discovery/server-discovery/server-discovery.html",
           "count": 1
         }
       ],
@@ -844,11 +844,11 @@
       "directCallSites": 2,
       "consumers": [
         {
-          "file": "history-dialog/history-dialog.html",
+          "file": "posts/history-dialog/history-dialog.html",
           "count": 1
         },
         {
-          "file": "pages/client-list/client-list-page.html",
+          "file": "feeds/client-list/client-list-page.html",
           "count": 1
         }
       ],
@@ -860,59 +860,59 @@
       "directCallSites": 52,
       "consumers": [
         {
-          "file": "pages/client-list/client-list-page.html",
+          "file": "feeds/client-list/client-list-page.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 4
         },
         {
-          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "file": "settings/connections/bluesky/connection-bluesky.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "file": "settings/connections/dropbox/connection-dropbox.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/gist/connection-gist.html",
+          "file": "settings/connections/gist/connection-gist.html",
           "count": 7
         },
         {
-          "file": "pages/settings/connections/github/connection-github.html",
+          "file": "settings/connections/github/connection-github.html",
           "count": 4
         },
         {
-          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "file": "settings/connections/hugo/connection-hugo.html",
           "count": 6
         },
         {
-          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 4
         },
         {
-          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "file": "settings/connections/pastes/connection-pastes.html",
           "count": 5
         },
         {
-          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "file": "settings/connections/raindrop/connection-raindrop.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 7
         },
         {
-          "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
           "count": 5
         },
         {
-          "file": "providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
           "count": 3
         }
       ],
@@ -924,7 +924,7 @@
       "directCallSites": 3,
       "consumers": [
         {
-          "file": "pages/settings/settings-shell.html",
+          "file": "settings/settings-shell.html",
           "count": 1
         },
         {
@@ -940,7 +940,7 @@
       "directCallSites": 5,
       "consumers": [
         {
-          "file": "pages/settings/settings-shell.html",
+          "file": "settings/settings-shell.html",
           "count": 1
         },
         {
@@ -956,79 +956,79 @@
       "directCallSites": 61,
       "consumers": [
         {
-          "file": "compose/translate-dialog/translate-dialog.html",
+          "file": "publishing/compose/translate-dialog/translate-dialog.html",
           "count": 1
         },
         {
-          "file": "leave-dialog/leave-dialog.html",
+          "file": "shell/leave-dialog/leave-dialog.html",
           "count": 1
         },
         {
-          "file": "list-dialog/list-dialog.html",
+          "file": "feeds/lists/list-dialog/list-dialog.html",
           "count": 3
         },
         {
-          "file": "pages/list-timeline/list-timeline.html",
+          "file": "feeds/list-timeline/list-timeline.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "file": "settings/connections/bluesky/connection-bluesky.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "file": "settings/connections/dropbox/connection-dropbox.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/gist/connection-gist.html",
+          "file": "settings/connections/gist/connection-gist.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/github/connection-github.html",
+          "file": "settings/connections/github/connection-github.html",
           "count": 4
         },
         {
-          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "file": "settings/connections/hugo/connection-hugo.html",
           "count": 8
         },
         {
-          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 5
         },
         {
-          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "file": "settings/connections/pastes/connection-pastes.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "file": "settings/connections/raindrop/connection-raindrop.html",
           "count": 3
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 15
         },
         {
-          "file": "providers/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
           "count": 1
         },
         {
-          "file": "providers/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
           "count": 1
         },
         {
-          "file": "report-dialog/report-dialog.html",
+          "file": "moderation/report-dialog/report-dialog.html",
           "count": 1
         },
         {
-          "file": "status-card/status-card.html",
+          "file": "posts/status-card/status-card.html",
           "count": 2
         }
       ],
@@ -1040,59 +1040,59 @@
       "directCallSites": 14,
       "consumers": [
         {
-          "file": "pages/client-list/client-list-page.html",
+          "file": "feeds/client-list/client-list-page.html",
           "count": 1
         },
         {
-          "file": "pages/list-timeline/list-timeline.html",
+          "file": "feeds/list-timeline/list-timeline.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/bluesky/connection-bluesky.html",
+          "file": "settings/connections/bluesky/connection-bluesky.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/dropbox/connection-dropbox.html",
+          "file": "settings/connections/dropbox/connection-dropbox.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/gist/connection-gist.html",
+          "file": "settings/connections/gist/connection-gist.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/github/connection-github.html",
+          "file": "settings/connections/github/connection-github.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/hugo/connection-hugo.html",
+          "file": "settings/connections/hugo/connection-hugo.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/mastodon/connection-mastodon.html",
+          "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/mataroa/connection-mataroa.html",
+          "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "file": "settings/connections/pastes/connection-pastes.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/raindrop/connection-raindrop.html",
+          "file": "settings/connections/raindrop/connection-raindrop.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 1
         },
         {
-          "file": "pages/settings/notifications/settings-notification-preferences.html",
+          "file": "settings/notifications/settings-notification-preferences.html",
           "count": 1
         }
       ],
@@ -1118,15 +1118,15 @@
       "directCallSites": 3,
       "consumers": [
         {
-          "file": "compose/compose.html",
+          "file": "publishing/compose/compose.html",
           "count": 1
         },
         {
-          "file": "pages/rss/feed-actions/feed-actions.ts",
+          "file": "reading/rss/feed-actions/feed-actions.ts",
           "count": 1
         },
         {
-          "file": "status-card/status-card.html",
+          "file": "posts/status-card/status-card.html",
           "count": 1
         }
       ],
@@ -1138,71 +1138,71 @@
       "directCallSites": 94,
       "consumers": [
         {
-          "file": "command-bar/command-bar.ts",
+          "file": "feeds/command-bar/command-bar.ts",
           "count": 1
         },
         {
-          "file": "compose/compose.html",
+          "file": "publishing/compose/compose.html",
           "count": 12
         },
         {
-          "file": "feed-language-picker/feed-language-picker.html",
+          "file": "feeds/feed-language-picker/feed-language-picker.html",
           "count": 1
         },
         {
-          "file": "pages/algo/algo.html",
+          "file": "feeds/algo/algo.html",
           "count": 7
         },
         {
-          "file": "pages/drafts/drafts-page.html",
+          "file": "publishing/drafts/drafts-page.html",
           "count": 1
         },
         {
-          "file": "pages/read/document-search/document-search-dialog.html",
+          "file": "reading/read/document-search/document-search-dialog.html",
           "count": 1
         },
         {
-          "file": "pages/read/library-panel/library-panel.html",
+          "file": "reading/read/library-panel/library-panel.html",
           "count": 8
         },
         {
-          "file": "pages/read/notes-rail/notes-rail.html",
+          "file": "reading/read/notes-rail/notes-rail.html",
           "count": 4
         },
         {
-          "file": "pages/read/read-toolbar/read-toolbar.html",
+          "file": "reading/read/read-toolbar/read-toolbar.html",
           "count": 11
         },
         {
-          "file": "pages/read/save-to-library/save-to-library.html",
+          "file": "reading/read/save-to-library/save-to-library.html",
           "count": 1
         },
         {
-          "file": "pages/read/selection-tools/selection-tools.html",
+          "file": "reading/read/selection-tools/selection-tools.html",
           "count": 4
         },
         {
-          "file": "pages/rss/feed-actions/feed-actions.ts",
+          "file": "reading/rss/feed-actions/feed-actions.ts",
           "count": 2
         },
         {
-          "file": "pages/thread/thread.html",
+          "file": "reading/thread/thread.html",
           "count": 5
         },
         {
-          "file": "pages/write/write-page.html",
+          "file": "publishing/write/write-page.html",
           "count": 5
         },
         {
-          "file": "search-server-discovery/search-server-discovery.html",
+          "file": "discovery/search-server-discovery/search-server-discovery.html",
           "count": 2
         },
         {
-          "file": "server-discovery/server-discovery.html",
+          "file": "discovery/server-discovery/server-discovery.html",
           "count": 1
         },
         {
-          "file": "server-picker/server-picker.html",
+          "file": "discovery/server-picker/server-picker.html",
           "count": 1
         },
         {
@@ -1210,7 +1210,7 @@
           "count": 1
         },
         {
-          "file": "status-card/status-card.html",
+          "file": "posts/status-card/status-card.html",
           "count": 26
         }
       ],
@@ -1222,7 +1222,7 @@
       "directCallSites": 18,
       "consumers": [
         {
-          "file": "status-card/status-card.html",
+          "file": "posts/status-card/status-card.html",
           "count": 18
         }
       ],
@@ -1234,7 +1234,7 @@
       "directCallSites": 9,
       "consumers": [
         {
-          "file": "status-card/status-card.html",
+          "file": "posts/status-card/status-card.html",
           "count": 9
         }
       ],
@@ -1246,23 +1246,23 @@
       "directCallSites": 5,
       "consumers": [
         {
-          "file": "pages/settings/connections/blogger/connection-blogger.html",
+          "file": "settings/connections/blogger/connection-blogger.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/pastes/connection-pastes.html",
+          "file": "settings/connections/pastes/connection-pastes.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/twitter/connection-twitter.html",
+          "file": "settings/connections/twitter/connection-twitter.html",
           "count": 1
         },
         {
-          "file": "pages/settings/content/settings-content.html",
+          "file": "settings/content/settings-content.html",
           "count": 1
         },
         {
-          "file": "pages/settings/import-export/settings-import-export.html",
+          "file": "settings/import-export/settings-import-export.html",
           "count": 1
         }
       ],
@@ -1274,7 +1274,7 @@
       "directCallSites": 1,
       "consumers": [
         {
-          "file": "pages/read/read-toolbar/read-toolbar.html",
+          "file": "reading/read/read-toolbar/read-toolbar.html",
           "count": 1
         }
       ],
@@ -1286,7 +1286,7 @@
       "directCallSites": 1,
       "consumers": [
         {
-          "file": "pages/read/library-panel/library-panel.html",
+          "file": "reading/read/library-panel/library-panel.html",
           "count": 1
         }
       ],
@@ -1298,7 +1298,7 @@
       "directCallSites": 1,
       "consumers": [
         {
-          "file": "pages/read/document-search/document-search-dialog.html",
+          "file": "reading/read/document-search/document-search-dialog.html",
           "count": 1
         }
       ],
@@ -1310,11 +1310,11 @@
       "directCallSites": 2,
       "consumers": [
         {
-          "file": "pages/read/notes-rail/notes-rail.html",
+          "file": "reading/read/notes-rail/notes-rail.html",
           "count": 1
         },
         {
-          "file": "pages/read/selection-tools/selection-tools.html",
+          "file": "reading/read/selection-tools/selection-tools.html",
           "count": 1
         }
       ],
@@ -1326,11 +1326,11 @@
       "directCallSites": 4,
       "consumers": [
         {
-          "file": "pages/settings/privacy/settings-privacy.html",
+          "file": "settings/privacy/settings-privacy.html",
           "count": 2
         },
         {
-          "file": "pages/settings/writing/settings-writing.html",
+          "file": "settings/writing/settings-writing.html",
           "count": 1
         },
         {
@@ -1346,15 +1346,15 @@
       "directCallSites": 12,
       "consumers": [
         {
-          "file": "pages/settings/notifications/settings-notification-preferences.html",
+          "file": "settings/notifications/settings-notification-preferences.html",
           "count": 3
         },
         {
-          "file": "pages/settings/privacy/settings-privacy.html",
+          "file": "settings/privacy/settings-privacy.html",
           "count": 6
         },
         {
-          "file": "pages/settings/writing/settings-writing.html",
+          "file": "settings/writing/settings-writing.html",
           "count": 3
         }
       ],
@@ -1366,11 +1366,11 @@
       "directCallSites": 3,
       "consumers": [
         {
-          "file": "pages/client-list/client-list-page.html",
+          "file": "feeds/client-list/client-list-page.html",
           "count": 2
         },
         {
-          "file": "pages/settings/connections/settings-connections.html",
+          "file": "settings/connections/settings-connections.html",
           "count": 1
         }
       ],
@@ -1382,11 +1382,11 @@
       "directCallSites": 2,
       "consumers": [
         {
-          "file": "pages/client-list/client-list-page.html",
+          "file": "feeds/client-list/client-list-page.html",
           "count": 1
         },
         {
-          "file": "pages/settings/connections/settings-connections.html",
+          "file": "settings/connections/settings-connections.html",
           "count": 1
         }
       ],
@@ -1398,15 +1398,15 @@
       "directCallSites": 18,
       "consumers": [
         {
-          "file": "command-bar/command-bar.ts",
+          "file": "feeds/command-bar/command-bar.ts",
           "count": 13
         },
         {
-          "file": "pages/home/home.html",
+          "file": "feeds/home/home.html",
           "count": 3
         },
         {
-          "file": "reader-toolbar/reader-toolbar.ts",
+          "file": "reading/reader-toolbar/reader-toolbar.ts",
           "count": 2
         }
       ],
@@ -1418,15 +1418,15 @@
       "directCallSites": 5,
       "consumers": [
         {
-          "file": "command-bar/command-bar.ts",
+          "file": "feeds/command-bar/command-bar.ts",
           "count": 3
         },
         {
-          "file": "pages/home/home.html",
+          "file": "feeds/home/home.html",
           "count": 1
         },
         {
-          "file": "reader-toolbar/reader-toolbar.ts",
+          "file": "reading/reader-toolbar/reader-toolbar.ts",
           "count": 1
         }
       ],
