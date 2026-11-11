@@ -1,0 +1,1 @@
+var s="mockingbird_shortener",e=["tinyurl.com","is.gd","dub.sh","t.ly","rebrand.ly"];function i(){let n=[];try{let o=localStorage.getItem(s),r=o?JSON.parse(o).domains:null;for(let t of Object.values(r??{}))typeof t=="string"&&t.trim()&&n.push(t.trim())}catch{}return[...e,...n]}export{s as a,i as b};
