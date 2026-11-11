@@ -240,9 +240,24 @@
     "remove": "Remove"
   },
   "adminMetrics": {
+    "after1": "After 1 day",
+    "after7": "After 7 days",
+    "cohort": "Signed up",
+    "cohortSize": "People",
+    "dimension.languages": "Languages posted in",
+    "dimension.servers": "Busiest other servers",
+    "dimension.software_versions": "Software",
+    "dimension.sources": "Where sign-ups came from",
+    "dimension.space_usage": "Storage",
+    "dimensionEmpty": "Nothing recorded.",
+    "dimensions": "Breakdowns, last 30 days",
     "empty": "No measures.",
     "intro": "Server statistics over the last 30 days (the mock returns zero-valued measures).",
-    "loading": "Loading…"
+    "latest": "Latest",
+    "loading": "Loading…",
+    "retention": "Retention",
+    "retentionEmpty": "No sign-ups in the last 30 days.",
+    "retentionIntro": "Each row is the people who signed up that day, and the share of them still active after one day, a week and now."
   },
   "adminReports": {
     "actions.assignToMe": "Assign to me",
@@ -272,10 +287,23 @@
     "domainAllows": "Domain allows",
     "domainBlocks": "Domain blocks",
     "emailBlocks": "Email blocks",
+    "hashtags": "Hashtags",
     "ipBlocks": "IP blocks",
     "metrics": "Metrics",
     "reports": "Reports",
     "trends": "Trends"
+  },
+  "adminTags": {
+    "empty": "No hashtags yet.",
+    "failed": "Could not load hashtags.",
+    "intro": "How this server may use each hashtag. Unticking \"usable\" hides the tag from search and its timeline; \"trendable\" lets it trend; \"listable\" lets it appear in hashtag lists and the directory.",
+    "listable": "Listable",
+    "loadMore": "Load more",
+    "loading": "Loading hashtags…",
+    "needsReview": "Needs review",
+    "saveFailed": "Not saved; the switch is back where it was.",
+    "trendable": "Trendable",
+    "usable": "Usable"
   },
   "adminTrends": {
     "approve": "Approve",
@@ -707,6 +735,7 @@
     "drafts": "Drafts",
     "draftsTab": "📝 Drafts",
     "editing": "Editing",
+    "focusPoint": "Set the focus point",
     "fullscreenEdit": "Fullscreen edit",
     "fullscreenEditTitle": "Continue this post in Write, with more room. Your text, images and quote come with it.",
     "futureTagAdd": "Add #{{tag}}",
@@ -1356,6 +1385,15 @@
     "unifiedShare.label": "Unified share menu",
     "write.description": "The writing workspace at /write — drafts, editor and notes side by side, plus zen mode.",
     "write.label": "Write"
+  },
+  "focalPoint": {
+    "apply": "Use this point",
+    "cancel": "Cancel",
+    "intro": "Click the part of the picture that must stay visible when it is shown cropped, such as a face. Arrow keys move the point.",
+    "picker": "Focus point: {{x}}% from the left, {{y}}% from the top",
+    "preview": "How it looks cropped",
+    "reset": "Back to the centre",
+    "title": "Focus point"
   },
   "focusedNextSteps": {
     "features.body": "Bluesky and RSS, bookmarks, readable articles and writing tools.",
@@ -4777,6 +4815,11 @@
   },
   "pagesServerFeed": {
     "back": "← Server feeds",
+    "filters.label": "Narrow this feed",
+    "filters.onlyMedia": "🖼 Media only",
+    "filters.onlyMediaTitle": "Only posts with pictures, video or audio (filtered by your server)",
+    "filters.remoteOnly": "🌍 Other servers only",
+    "filters.remoteOnlyTitle": "Leave out this server's own posts (filtered by your server)",
     "loading": "Loading…",
     "members.empty": "No authors yet — load some posts first.",
     "members.summary.one": "Members are the {{count}} distinct author of the posts loaded so far. Load more posts to discover more.",
@@ -8316,6 +8359,7 @@
     "cancel": "Cancel",
     "cw": "Content warning",
     "cwHint": "Leave empty for none.",
+    "focusPoint": "Focus point",
     "language": "Language",
     "languageUnset": "Not specified",
     "loadFailed": "Could not load this post for editing. {{detail}}",
