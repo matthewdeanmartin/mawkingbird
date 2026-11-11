@@ -1,1 +1,0 @@
-import{a as e}from"./chunk-L3HHJEOV.js";function n(r){return{"@type":"BreadcrumbList",itemListElement:r.map((t,i)=>({"@type":"ListItem",position:i+1,name:t.name,item:`${e}/${t.path?`${t.path}/`:""}`}))}}export{n as a};
