@@ -8388,6 +8388,10 @@
     "title": "Edit post",
     "visibilityNote": "Who can see the post can't be changed by editing."
   },
+  "storage": {
+    "full": "This browser's storage for Mawkingbird was full, so your last change could not be saved. Cached data has been cleared to make room. Please try again. If it happens again, Settings → Local storage shows what is using the space.",
+    "fullNothingToFree": "This browser's storage for Mawkingbird is full, so your last change could not be saved. There was no cached data left to clear. Settings → Local storage shows what is using the space, and lets you remove it."
+  },
   "storageDiagnostics": {
     "backToObservability": "← Observability",
     "colChars": "Chars",
