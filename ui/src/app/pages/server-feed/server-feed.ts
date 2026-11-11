@@ -1,4 +1,5 @@
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -51,7 +52,7 @@ import { anonymousAccountRouteRef } from '../../providers/anonymous/anonymous-ro
  */
 @Component({
   selector: 'app-server-feed',
-  imports: [RouterLink, StatusCard, TranslocoPipe, MbButton],
+  imports: [RouterLink, StatusCard, TranslocoPipe, MbButton, MbToolbar, MbToolbarButton],
   templateUrl: './server-feed.html',
   styleUrl: './server-feed.css',
 })
@@ -157,14 +158,37 @@ export class ServerFeed implements OnInit {
     );
   }
 
+  // i18n pagesServerFeed.filters.label: Narrow this feed
+  // i18n pagesServerFeed.filters.remoteOnly: 🌍 Other servers only
+  // i18n pagesServerFeed.filters.remoteOnlyTitle: Leave out this server's own posts (filtered by your server)
+  // i18n pagesServerFeed.filters.onlyMedia: 🖼 Media only
+  // i18n pagesServerFeed.filters.onlyMediaTitle: Only posts with pictures, video or audio (filtered by your server)
+  /** Server-side narrowing of the home server's public timelines. */
+  protected remoteOnly = signal(false);
+  protected onlyMedia = signal(false);
+  protected offersFilters = computed(
+    () => !this.remoteHost() && (this.feed() === 'federated' || this.feed() === 'local'),
+  );
+
+  protected toggleRemoteOnly(): void {
+    this.remoteOnly.update((on) => !on);
+    this.load();
+  }
+
+  protected toggleOnlyMedia(): void {
+    this.onlyMedia.update((on) => !on);
+    this.load();
+  }
+
   private request(maxId?: string): Observable<Status[]> {
     const remote = this.remoteHost();
     if (remote) return this.remoteFeeds.statuses(remote, this.feed(), maxId);
+    const onlyMedia = this.onlyMedia();
     switch (this.feed()) {
       case 'federated':
-        return this.api.publicTimeline(false, maxId);
+        return this.api.publicTimeline(false, maxId, { remote: this.remoteOnly(), onlyMedia });
       case 'local':
-        return this.api.publicTimeline(true, maxId);
+        return this.api.publicTimeline(true, maxId, { onlyMedia });
       case 'trending':
       case 'news': // unused for news (handled in load), but keeps the switch total
         return this.api.trendingStatuses();

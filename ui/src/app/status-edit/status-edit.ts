@@ -1,3 +1,4 @@
+import { CENTRE, FocalPoint, focusParam, samePoint } from '../focal-point/focal-point';
 import { Poll } from '../models';
 
 /** Mastodon's shortest poll duration, in seconds. */
@@ -10,9 +11,14 @@ export interface EditMedia {
   id: string;
   type: string;
   previewUrl: string;
+  /** The uncropped image, for choosing a focus point. */
+  fullUrl?: string;
   description: string;
   /** The description the server already has, to send only real changes. */
   savedDescription: string;
+  /** Focal point now, and as the server has it (null = centre). */
+  focus?: FocalPoint | null;
+  savedFocus?: FocalPoint | null;
 }
 
 export interface EditPoll {
@@ -29,7 +35,7 @@ export interface StatusEditBody {
   sensitive: boolean;
   language?: string;
   media_ids: string[];
-  media_attributes?: { id: string; description: string }[];
+  media_attributes?: { id: string; description: string; focus?: string }[];
   poll?: { options: string[]; multiple: boolean; expires_in: number };
 }
 
@@ -80,9 +86,21 @@ export function buildEditBody(fields: {
     media_ids: fields.media.map((m) => m.id),
   };
   if (fields.language) body.language = fields.language;
+  // Mastodon updates each listed attachment's description and focus; list only
+  // the ones that changed, and send focus only when it moved.
   const changed = fields.media
-    .filter((m) => m.description.trim() !== m.savedDescription)
-    .map((m) => ({ id: m.id, description: m.description.trim() }));
+    .filter(
+      (m) =>
+        m.description.trim() !== m.savedDescription ||
+        !samePoint(m.focus ?? null, m.savedFocus ?? null),
+    )
+    .map((m) => ({
+      id: m.id,
+      description: m.description.trim(),
+      ...(samePoint(m.focus ?? null, m.savedFocus ?? null)
+        ? {}
+        : { focus: focusParam(m.focus ?? CENTRE) }),
+    }));
   if (changed.length) body.media_attributes = changed;
   if (fields.poll) {
     body.poll = {

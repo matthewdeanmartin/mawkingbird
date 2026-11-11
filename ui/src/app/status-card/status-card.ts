@@ -142,6 +142,7 @@ import { StatusEditDialog } from '../status-edit/status-edit-dialog';
 import { FilterPostDialog } from '../filter-post-dialog/filter-post-dialog';
 import { MbDialog } from '../design-system/dialog/dialog';
 import { extractCodeBlocks } from '../code-blocks/code-fences';
+import { focalPointOf, objectPosition } from '../focal-point/focal-point';
 import { canEmbedPost } from '../post-embed/post-embed';
 import { SpeechReader, speechText } from '../speech/speech-reader';
 import { statusHashtags } from '../hashtag';
@@ -1347,6 +1348,11 @@ export class StatusCard {
     const status = this.status();
     const add = (s: Status): Status => ({ ...s, filtered: [...(s.filtered ?? []), result] });
     this.changed.emit(status.reblog ? { ...add(status), reblog: add(status.reblog) } : add(status));
+  }
+
+  /** Crop thumbnails around the author's focal point rather than the middle. */
+  protected thumbPosition(media: MediaAttachment): string | null {
+    return objectPosition(focalPointOf(media));
   }
 
   protected openTools(event: Event): void {

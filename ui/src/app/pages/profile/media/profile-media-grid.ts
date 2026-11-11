@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { TrustedAccounts } from '../../../trusted-accounts';
 import { ProfileMediaItem } from './profile-media-item';
+import { objectPosition } from '../../../focal-point/focal-point';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
@@ -31,6 +32,11 @@ import { TranslocoPipe } from '@jsverse/transloco';
   styleUrl: './profile-media-grid.css',
 })
 export class ProfileMediaGrid {
+  /** Square tiles crop around the author's focal point. */
+  protected position(item: ProfileMediaItem): string | null {
+    return objectPosition(item.focus ?? null);
+  }
+
   private trusted = inject(TrustedAccounts);
 
   readonly items = input.required<ProfileMediaItem[]>();

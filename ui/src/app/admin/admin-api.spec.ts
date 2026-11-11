@@ -435,4 +435,32 @@ describe('AdminApi (HTTP isolated)', () => {
     expect(post.request.method).toBe('POST');
     post.flush({});
   });
+
+  it('metrics: POSTs dimensions and retention with their windows', () => {
+    api.dimensions(['languages'], 'a', 'b').subscribe();
+    const dims = httpMock.expectOne('/api/v1/admin/dimensions');
+    expect(dims.request.body).toEqual({
+      keys: ['languages'],
+      start_at: 'a',
+      end_at: 'b',
+      limit: 5,
+    });
+    dims.flush([]);
+    api.retention('a', 'b', 'day').subscribe();
+    const ret = httpMock.expectOne('/api/v1/admin/retention');
+    expect(ret.request.body).toEqual({ start_at: 'a', end_at: 'b', frequency: 'day' });
+    ret.flush([]);
+  });
+
+  it('tags: GETs a page and PUTs one switch', () => {
+    api.tags('9').subscribe();
+    const list = httpMock.expectOne((r) => r.url === '/api/v1/admin/tags');
+    expect(list.request.params.get('max_id')).toBe('9');
+    list.flush([]);
+    api.updateTag('4', { trendable: true }).subscribe();
+    const put = httpMock.expectOne('/api/v1/admin/tags/4');
+    expect(put.request.method).toBe('PUT');
+    expect(put.request.body).toEqual({ trendable: true });
+    put.flush({});
+  });
 });

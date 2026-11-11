@@ -190,6 +190,15 @@
     </div>
   }
 
+  @if (focusing() !== null && media()[focusing()!]; as item) {
+    <app-focal-point-dialog
+      [src]="item.media.url || item.media.preview_url"
+      [alt]="item.description"
+      [initial]="item.focus ?? null"
+      (applied)="setMediaFocus(focusing()!, $event)"
+      (closed)="focusing.set(null)"
+    />
+  }
   @if (media().length) {
     <div class="media-previews">
       @for (m of media(); track m.media.id; let i = $index) {
@@ -207,6 +216,7 @@
             <img
               [src]="m.media.preview_url || m.media.url"
               [alt]="m.description"
+              [style.object-position]="previewPosition(m)"
               loading="lazy"
               decoding="async"
             />
@@ -245,6 +255,21 @@
               "
             >
               <span aria-hidden="true">{{ describing().has(m.media.id) ? '…' : '✨' }}</span>
+            </button>
+          }
+          @if (canSetFocus(m)) {
+            <button
+              type="button"
+              mbButton
+              variant="outline"
+              size="small"
+              class="focus-point"
+              [class.on]="!!m.focus"
+              (click)="focusing.set(i)"
+              [title]="'compose.focusPoint' | transloco"
+              [attr.aria-label]="'compose.focusPoint' | transloco"
+            >
+              <span aria-hidden="true">🎯</span>
             </button>
           }
           <button

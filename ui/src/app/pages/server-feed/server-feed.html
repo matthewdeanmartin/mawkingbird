@@ -84,6 +84,34 @@
   </div>
 
   @if (tab() === 'posts') {
+    @if (offersFilters()) {
+      <mb-toolbar
+        class="feed-filters"
+        density="compact"
+        [label]="'pagesServerFeed.filters.label' | transloco"
+      >
+        @if (feed() === 'federated') {
+          <button
+            type="button"
+            mbToolbarButton
+            [pressed]="remoteOnly()"
+            [title]="'pagesServerFeed.filters.remoteOnlyTitle' | transloco"
+            (click)="toggleRemoteOnly()"
+          >
+            {{ 'pagesServerFeed.filters.remoteOnly' | transloco }}
+          </button>
+        }
+        <button
+          type="button"
+          mbToolbarButton
+          [pressed]="onlyMedia()"
+          [title]="'pagesServerFeed.filters.onlyMediaTitle' | transloco"
+          (click)="toggleOnlyMedia()"
+        >
+          {{ 'pagesServerFeed.filters.onlyMedia' | transloco }}
+        </button>
+      </mb-toolbar>
+    }
     @if (loading()) {
       <p class="muted center">{{ 'pagesServerFeed.loading' | transloco }}</p>
     } @else if (!statuses().length) {

@@ -853,6 +853,24 @@ describe('Compose', () => {
     req.flush({ id: '1' });
   });
 
+  it('saves a chosen focus point with the description before posting', () => {
+    const f = setUp();
+    internals(f).text.set('Photo post');
+    internals(f).media.set([
+      {
+        media: { id: 'media-1', type: 'image' },
+        description: 'A heron',
+        focus: { x: -0.4, y: 0.7 },
+      },
+    ] as never);
+    internals(f).submit();
+
+    const meta = httpMock.expectOne('/api/v1/media/media-1');
+    expect(meta.request.body).toEqual({ description: 'A heron', focus: '-0.4,0.7' });
+    meta.flush({ id: 'media-1' });
+    httpMock.expectOne('/api/v1/statuses').flush({ id: '1' });
+  });
+
   it('waits for every media description before creating a status', () => {
     const f = setUp();
     internals(f).text.set('Photo post');

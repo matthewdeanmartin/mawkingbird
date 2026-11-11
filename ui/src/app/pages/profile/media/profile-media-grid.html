@@ -32,6 +32,7 @@
             class="media-thumb"
             [src]="item.previewUrl"
             [alt]="item.description || ''"
+            [style.object-position]="position(item)"
             loading="lazy"
             decoding="async"
             (load)="onLoaded($event, item)"

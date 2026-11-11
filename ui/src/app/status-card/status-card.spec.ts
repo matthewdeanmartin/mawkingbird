@@ -2443,6 +2443,27 @@ describe('StatusCard', () => {
     expect(refresh()).toBeUndefined();
   });
 
+  it("crops a thumbnail around the author's focal point", () => {
+    const f = setUp(
+      makeStatus({
+        media_attachments: [
+          {
+            id: 'm1',
+            type: 'image',
+            url: 'https://cdn.example/a.jpg',
+            preview_url: 'https://cdn.example/a-small.jpg',
+            description: 'A face near the top',
+            meta: { focus: { x: 0.2, y: 0.6 } },
+          },
+        ] as Status['media_attachments'],
+      }),
+    );
+    const img = (f.nativeElement as HTMLElement).querySelector<HTMLImageElement>(
+      '.media-thumb img',
+    )!;
+    expect(img.style.objectPosition).toBe('60.0% 20.0%');
+  });
+
   it('pollPercent: returns 0 when total votes are 0', () => {
     const f = setUp();
     // No poll — votes_count defaults to 0.

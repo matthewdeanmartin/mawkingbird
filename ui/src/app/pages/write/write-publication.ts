@@ -1,6 +1,7 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../../api';
+import { focusParam } from '../../focal-point/focal-point';
 import { Auth } from '../../auth';
 import { Server } from '../../server';
 import { DraftMedia, DraftSnapshot } from '../../drafts';
@@ -140,7 +141,13 @@ export class WritePublication {
     try {
       for (const item of media) {
         checkContext();
-        await firstValueFrom(this.api.updateMedia(item.media.id, item.description));
+        await firstValueFrom(
+          this.api.updateMedia(
+            item.media.id,
+            item.description,
+            item.focus ? focusParam(item.focus) : undefined,
+          ),
+        );
       }
       while (operation.confirmed.length < parts.length) {
         checkContext();

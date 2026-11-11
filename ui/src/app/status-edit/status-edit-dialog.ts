@@ -12,6 +12,8 @@ import { LANG_NAMES, LangCode } from '../language-detect';
 import { MediaAttachment, Status } from '../models';
 import { describeHttpError } from '../page-diagnostics';
 import { KnownLanguages } from '../trend-language-filter';
+import { FocalPoint, focalPointOf, objectPosition } from '../focal-point/focal-point';
+import { FocalPointDialog } from '../focal-point/focal-point-dialog';
 import {
   buildEditBody,
   EditMedia,
@@ -73,6 +75,7 @@ const MAX_MEDIA = 4;
     MbDialog,
     MbField,
     MbNotice,
+    FocalPointDialog,
   ],
   templateUrl: './status-edit-dialog.html',
   styleUrl: './status-edit-dialog.css',
@@ -143,6 +146,19 @@ export class StatusEditDialog implements OnInit {
 
   protected setDescription(index: number, description: string): void {
     this.media.update((list) => list.map((m, i) => (i === index ? { ...m, description } : m)));
+  }
+
+  // i18n statusEdit.focusPoint: Focus point
+  /** Index of the image whose focus point is being chosen. */
+  protected readonly focusing = signal<number | null>(null);
+
+  protected setFocus(index: number, focus: FocalPoint): void {
+    this.media.update((list) => list.map((m, i) => (i === index ? { ...m, focus } : m)));
+    this.focusing.set(null);
+  }
+
+  protected thumbPosition(m: EditMedia): string | null {
+    return objectPosition(m.focus ?? null);
   }
 
   protected removeMedia(index: number): void {
@@ -252,11 +268,15 @@ class ProcessingTimeout extends Error {}
 
 function toEditMedia(media: MediaAttachment): EditMedia {
   const description = media.description ?? '';
+  const focus = focalPointOf(media);
   return {
     id: media.id,
     type: media.type,
     previewUrl: media.preview_url || media.url,
+    fullUrl: media.url || media.preview_url,
     description,
     savedDescription: description,
+    focus,
+    savedFocus: focus,
   };
 }

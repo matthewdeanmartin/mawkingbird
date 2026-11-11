@@ -39,6 +39,8 @@ import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
 import { AiAvailability } from '../ai-availability';
 import { TranslateDialog, TranslateResult } from './translate-dialog/translate-dialog';
 import { CustomEmojis } from '../custom-emojis';
+import { FocalPoint, focalPointOf, focusParam, objectPosition } from '../focal-point/focal-point';
+import { FocalPointDialog } from '../focal-point/focal-point-dialog';
 import {
   Draft,
   DraftMedia,
@@ -539,6 +541,7 @@ function dragHasFiles(event: DragEvent): boolean {
   selector: 'app-compose',
   imports: [
     BlueskyPostControlsDialog,
+    FocalPointDialog,
     PostPermissions,
     MbHelp,
     MbButton,
@@ -2066,6 +2069,25 @@ export class Compose implements OnDestroy {
     }
   }
 
+  // i18n compose.focusPoint: Set the focus point
+  /** Index of the image whose focus point is being chosen, if any. */
+  protected focusing = signal<number | null>(null);
+
+  /** Mastodon images only: Bluesky and local attachments have no focus point. */
+  protected canSetFocus(item: PendingMedia): boolean {
+    return item.media.type === 'image' && !isLocalMedia(item.media) && this.targetIncludesFedi();
+  }
+
+  /** The composer's thumbnail crops the way the timeline will. */
+  protected previewPosition(item: PendingMedia): string | null {
+    return objectPosition(item.focus ?? focalPointOf(item.media));
+  }
+
+  protected setMediaFocus(index: number, focus: FocalPoint): void {
+    this.media.update((list) => list.map((m, i) => (i === index ? { ...m, focus } : m)));
+    this.focusing.set(null);
+  }
+
   setMediaDescription(index: number, description: string): void {
     const id = this.media()[index]?.media.id;
     this.media.update((list) => list.map((m, i) => (i === index ? { ...m, description } : m)));
@@ -2664,11 +2686,19 @@ export class Compose implements OnDestroy {
       this.sendTimeline();
     };
     const descriptions = this.targetIncludesFedi()
-      ? this.media().filter((item) => !isLocalMedia(item.media) && item.description.trim())
+      ? this.media().filter(
+          (item) => !isLocalMedia(item.media) && (item.description.trim() || item.focus),
+        )
       : [];
     if (descriptions.length) {
       forkJoin(
-        descriptions.map((item) => this.api.updateMedia(item.media.id, item.description.trim())),
+        descriptions.map((item) =>
+          this.api.updateMedia(
+            item.media.id,
+            item.description.trim(),
+            item.focus ? focusParam(item.focus) : undefined,
+          ),
+        ),
       ).subscribe({
         next: sendUnchanged,
         error: (error: unknown) => {

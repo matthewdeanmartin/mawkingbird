@@ -1,3 +1,4 @@
+import { FocalPoint, focalPointOf } from '../../../focal-point/focal-point';
 import { MediaAttachment, Status } from '../../../models';
 
 /**
@@ -26,6 +27,8 @@ export interface ProfileMediaItem {
   indexInPost: number;
   /** Position of the owning post within the media set (0-based, ascending). */
   postIndex: number;
+  /** The author's focal point (Mastodon attachments only). */
+  focus?: FocalPoint | null;
 }
 
 /**
@@ -177,6 +180,7 @@ export function extractMedia(status: Status): ExtractedMedia[] {
     previewUrl: string,
     description: string | null,
     type: ExtractedMedia['type'],
+    focus: FocalPoint | null = null,
   ): void => {
     const normalized = url.trim();
     if (!normalized || seen.has(normalized)) {
@@ -189,6 +193,7 @@ export function extractMedia(status: Status): ExtractedMedia[] {
       description,
       type,
       indexInPost: found.length,
+      ...(focus ? { focus } : {}),
     });
   };
 
@@ -201,6 +206,7 @@ export function extractMedia(status: Status): ExtractedMedia[] {
       attachment.preview_url || attachment.url,
       attachment.description,
       attachment.type === 'video' || attachment.type === 'gifv' ? attachment.type : 'image',
+      focalPointOf(attachment),
     );
   }
 

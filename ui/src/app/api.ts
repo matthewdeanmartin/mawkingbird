@@ -482,11 +482,22 @@ export class Api {
       );
   }
 
-  publicTimeline(local: boolean, maxId?: string): Observable<Status[]> {
+  /**
+   * The public timeline. `remote` keeps only other servers' posts and
+   * `onlyMedia` only posts with attachments; both are filtered by the server.
+   */
+  publicTimeline(
+    local: boolean,
+    maxId?: string,
+    options: { remote?: boolean; onlyMedia?: boolean } = {},
+  ): Observable<Status[]> {
     let params = this.pageParams(maxId);
     if (local) {
       params = params.set('local', 'true');
+    } else if (options.remote) {
+      params = params.set('remote', 'true');
     }
+    if (options.onlyMedia) params = params.set('only_media', 'true');
     return this.http.get<Status[]>('/api/v1/timelines/public', { params });
   }
 
@@ -705,8 +716,12 @@ export class Api {
     return this.http.get<MediaAttachment>(`/api/v1/media/${id}`);
   }
 
-  updateMedia(id: string, description: string): Observable<MediaAttachment> {
-    return this.http.put<MediaAttachment>(`/api/v1/media/${id}`, { description });
+  /** Description, and optionally the focal point as "x,y" (crops centre on it). */
+  updateMedia(id: string, description: string, focus?: string): Observable<MediaAttachment> {
+    return this.http.put<MediaAttachment>(
+      `/api/v1/media/${id}`,
+      focus ? { description, focus } : { description },
+    );
   }
 
   // --- polls ---

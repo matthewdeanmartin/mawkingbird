@@ -220,6 +220,37 @@ describe('ServerFeed', () => {
     ).toEqual(['1']);
   });
 
+  it('narrows the federated feed to other servers and to media, on the server', () => {
+    const fixture = setUp('federated');
+    const first = http.expectOne((r) => r.url === '/api/v1/timelines/public');
+    expect(first.request.params.has('remote')).toBe(false);
+    first.flush([]);
+    fixture.detectChanges();
+    const toggles = () => [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+        '.feed-filters button',
+      ),
+    ];
+    expect(toggles().map((b) => b.textContent?.trim())).toEqual([
+      '🌍 Other servers only',
+      '🖼 Media only',
+    ]);
+
+    toggles()[0].click();
+    const remote = http.expectOne((r) => r.url === '/api/v1/timelines/public');
+    expect(remote.request.params.get('remote')).toBe('true');
+    expect(remote.request.params.has('only_media')).toBe(false);
+    remote.flush([]);
+
+    toggles()[1].click();
+    const both = http.expectOne((r) => r.url === '/api/v1/timelines/public');
+    expect(both.request.params.get('remote')).toBe('true');
+    expect(both.request.params.get('only_media')).toBe('true');
+    both.flush([]);
+    fixture.detectChanges();
+    expect(toggles()[0].getAttribute('aria-pressed')).toBe('true');
+  });
+
   it('federated shows a sign-in notice for anonymous sessions without fetching', () => {
     TestBed.inject(Auth).mode.set('anonymous');
     const fixture = setUp('federated');

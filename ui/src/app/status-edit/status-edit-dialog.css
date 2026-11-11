@@ -44,8 +44,14 @@
     grid-template-columns: 56px 1fr;
   }
 
-  .edit-media button {
+  .edit-media-actions {
     grid-column: 2;
     justify-self: start;
   }
+}
+
+.edit-media-actions {
+  display: flex;
+  gap: 6px;
+  align-items: start;
 }

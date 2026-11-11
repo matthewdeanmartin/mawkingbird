@@ -58,6 +58,16 @@
       "nextStep": "Profile bio translation (Phanpy parity 17): small outline MbButtons for Translate bio, source-language choices and Hide translation; the original bio stays visible above. Preserve the no-server routing (Mastodon only translates statuses) and the field-per-line synthetic post."
     },
     {
+      "file": "ui/src/app/focal-point/focal-point-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Focus point picker (Mastodon parity 7): wide MbDialog, a keyboard-operable two-axis slider over the uncropped image with a marker, wide and square cropped previews, MbButton link/outline/solid actions. Preserve Mastodon's coordinates (y up) and arrow-key steps of a tenth."
+    },
+    {
+      "file": "ui/src/app/admin/tags/admin-tags.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Hashtag review (Mastodon parity 16d): rows with three instant-apply MbCheckbox switches (usable, trendable, listable), a needs-review note and an outline MbButton Load more. Preserve reverting a refused switch."
+    },
+    {
       "file": "ui/src/app/pages/find-friends/server-suggestions.ts",
       "disposition": "adopted scope",
       "nextStep": "Server follow suggestions (Mastodon parity 10): reuses AccountResultCard rows (follow button, reason line) with a link-variant MbButton \"Not interested\". Preserve its place below the curated discovery ways and that dismissing calls DELETE /suggestions/:id."

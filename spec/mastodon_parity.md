@@ -67,7 +67,7 @@ Sources: [Mastodon link timeline](../../REFERENCE/mastodon/app/javascript/mastod
 
 **Owner decision (2026-11-10):** do this as a local/remote choice on the **Home** feed instead. Note that Mastodon itself has no Home equivalent: its local/remote choice is server-side (`local=true` / `remote=true`) and only on the Live feeds page. The Home filter is a mawkingbird idea; the Live-feeds version remains possible later.
 
-**Implemented:** Home's filter row has a compact 🌐 select (All servers / This server / Other servers) beside 📅, for signed-in Mastodon only. It filters loaded Home posts on the client (Mastodon's home timeline has no such parameter), judging a boost by the boosted post's author; other networks never count as "this server". It is session state, reset per account, and the end-of-feed "show hidden" offers include it. Not done: remote-only and media-only on the federated timeline itself.
+**Implemented:** Home's filter row has a compact 🌐 select (All servers / This server / Other servers) beside 📅, for signed-in Mastodon only. It filters loaded Home posts on the client (Mastodon's home timeline has no such parameter), judging a boost by the boosted post's author; other networks never count as "this server". It is session state, reset per account, and the end-of-feed "show hidden" offers include it. **Also done 2026-11-11:** the server-side version Mastodon itself has. On your own server's Fediverse feed, an MbToolbar offers "🌍 Other servers only" (`remote=true`) and "🖼 Media only" (`only_media=true`); the Local feed gets Media only. Some servers (mastodon.social among them) now restrict the federated timeline, which the feed already reports as a notice.
 
 Sources: [Mastodon firehose](../../REFERENCE/mastodon/app/javascript/mastodon/features/firehose/index.jsx); [mawkingbird `Api.publicTimeline`](../ui/src/app/api.ts), [public timeline page](../ui/src/app/pages/public-timeline).
 
@@ -121,13 +121,16 @@ Sources: [Mastodon picture-in-picture](../../REFERENCE/mastodon/app/javascript/m
 
 Sources: [Mastodon compose actions (`media_attributes`)](../../REFERENCE/mastodon/app/javascript/mastodon/actions/compose.js); [mawkingbird `saveEdit`](../ui/src/app/status-card/status-card.ts), [`Api.editStatus`](../ui/src/app/api.ts).
 
-### 7. Media focal point: missing
+### 7. Media focal point: done 2026-11-11
 
 **Mastodon:** The media description dialog includes a focal-point picker. The chosen point is saved with `focus=x,y` on `PUT /api/v1/media/:id`, or through `media_attributes` when editing, and timelines crop thumbnails around it.
 
 **Mawkingbird:** `Api.updateMedia` sends only `description`. There is no focal-point picker. Received posts may not crop around another author's focal point either; check this while doing the item.
 
 **Completion criterion:** Set and change a focal point before posting and while editing. Crop timeline thumbnails around `meta.focus` when it is present.
+
+
+**Implemented:** a shared `FocalPointDialog` (click the uncropped picture or use arrow keys; wide and square crop previews) behind a 🎯 button per Mastodon image in the composer and the edit dialog. The composer sends `focus` with the description before posting (`Api.updateMedia`); edits send it in `media_attributes` only when it moved. Post thumbnails, the composer's own previews, the edit dialog and the profile media grid crop around `meta.focus` with `object-position`.
 
 Sources: [Mastodon alt-text modal](../../REFERENCE/mastodon/app/javascript/mastodon/features/alt_text_modal/index.tsx); [mawkingbird `Api.updateMedia`](../ui/src/app/api.ts), [composer](../ui/src/app/compose/compose.ts).
 
@@ -243,7 +246,7 @@ Sources: [Mastodon about](../../REFERENCE/mastodon/app/javascript/mastodon/featu
 
 ## Administration
 
-### 16. Admin features the API supports but mawkingbird lacks: partial (16a, 16b, 16c done 2026-11-11)
+### 16. Admin features the API supports but mawkingbird lacks: done 2026-11-11
 
 The admin area covers the core moderation API. These operations are also supported by the API but not implemented:
 
@@ -259,7 +262,7 @@ The admin area covers the core moderation API. These operations are also support
 **Completion criterion:** Each sub-item works for a role with the matching permission and shows the server's 403 otherwise.
 
 
-**Implemented:** 16a: open reports have a compact category select (`PUT /admin/reports/:id`; a violation keeps its existing rules). 16b: assigned open reports offer Unassign. 16c: Admin → Trends adds Links and Publishers with approve/reject. **Correction:** 16f was already implemented (`AdminApi.deleteAccount`, used on the accounts page); this audit missed it. Not done: 16d hashtag review and 16e dashboard dimensions/retention.
+**Implemented:** 16a: open reports have a compact category select (`PUT /admin/reports/:id`; a violation keeps its existing rules). 16b: assigned open reports offer Unassign. 16c: Admin → Trends adds Links and Publishers with approve/reject. **Correction:** 16f was already implemented (`AdminApi.deleteAccount`, used on the accounts page); this audit missed it. 16d (done 2026-11-11): Admin → Hashtags lists the server's tags with instant usable / trendable / listable switches (`GET/PUT /api/v1/admin/tags`), flags ones needing review, and reverts a refused switch. 16e (done 2026-11-11): Admin → Metrics adds breakdowns (languages, sign-up sources, servers, software, storage; `POST /admin/dimensions`) and a daily retention table (`POST /admin/retention`); either hides itself if the role or server refuses it.
 
 Sources: [Mastodon API routes](../../REFERENCE/mastodon/config/routes/api.rb); [mawkingbird admin API](../ui/src/app/admin/admin-api.ts), [admin shell](../ui/src/app/admin/admin-shell/admin-shell.html).
 

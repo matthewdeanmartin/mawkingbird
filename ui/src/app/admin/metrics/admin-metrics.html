@@ -14,3 +14,53 @@
     </div>
   }
 }
+
+@if (dimensions().length) {
+  <h2 class="metrics-heading">{{ 'adminMetrics.dimensions' | transloco }}</h2>
+  @for (d of dimensions(); track d.key) {
+    <h3 class="metrics-subheading">{{ 'adminMetrics.dimension.' + d.key | transloco }}</h3>
+    @if (d.data.length) {
+      @for (row of d.data; track row.key) {
+        <div class="block-row">
+          <span>{{ row.human_key || row.key }}</span>
+          <strong>{{ row.human_value || row.value }}</strong>
+        </div>
+      }
+    } @else {
+      <p class="muted small metrics-empty">{{ 'adminMetrics.dimensionEmpty' | transloco }}</p>
+    }
+  }
+}
+
+@if (cohorts(); as rows) {
+  <h2 class="metrics-heading">{{ 'adminMetrics.retention' | transloco }}</h2>
+  <p class="muted small metrics-empty">{{ 'adminMetrics.retentionIntro' | transloco }}</p>
+  @if (rows.length) {
+    <div class="retention-scroll">
+      <table class="retention">
+        <thead>
+          <tr>
+            <th scope="col">{{ 'adminMetrics.cohort' | transloco }}</th>
+            <th scope="col">{{ 'adminMetrics.cohortSize' | transloco }}</th>
+            <th scope="col">{{ 'adminMetrics.after1' | transloco }}</th>
+            <th scope="col">{{ 'adminMetrics.after7' | transloco }}</th>
+            <th scope="col">{{ 'adminMetrics.latest' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of rows; track r.period) {
+            <tr>
+              <th scope="row">{{ r.period.slice(0, 10) }}</th>
+              <td>{{ r.size }}</td>
+              <td>{{ percent(r.after1) }}</td>
+              <td>{{ percent(r.after7) }}</td>
+              <td>{{ percent(r.latest) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p class="muted small metrics-empty">{{ 'adminMetrics.retentionEmpty' | transloco }}</p>
+  }
+}

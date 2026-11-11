@@ -84,6 +84,8 @@ export interface MediaAttachment {
   meta?: {
     original?: { width?: number; height?: number; duration?: number; aspect?: number };
     small?: { width?: number; height?: number };
+    /** Author's focal point, x and y in [-1, 1], y up. */
+    focus?: { x: number; y: number };
   };
 }
 

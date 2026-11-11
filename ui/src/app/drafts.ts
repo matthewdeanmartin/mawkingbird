@@ -1,3 +1,4 @@
+import type { FocalPoint } from './focal-point/focal-point';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { MediaAttachment, Status } from './models';
 import { accountScopeSuffix } from './account-scope';
@@ -72,6 +73,8 @@ export interface DraftMedia {
   description: string;
   /** Original bytes, needed when a Bluesky leg uploads its own blob. */
   file?: File;
+  /** Mastodon focal point chosen before publishing. */
+  focus?: FocalPoint;
 }
 
 /** A post handed from /drafts to the composer by "Edit for post". */

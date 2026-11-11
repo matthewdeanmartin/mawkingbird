@@ -239,6 +239,74 @@ export class AdminApi {
       end_at: endAt,
     });
   }
+
+  /** Breakdowns such as languages or servers (`POST /api/v1/admin/dimensions`). */
+  dimensions(
+    keys: string[],
+    startAt: string,
+    endAt: string,
+    limit = 5,
+  ): Observable<AdminDimension[]> {
+    return this.http.post<AdminDimension[]>('/api/v1/admin/dimensions', {
+      keys,
+      start_at: startAt,
+      end_at: endAt,
+      limit,
+    });
+  }
+
+  /** Sign-up cohorts and how many stayed (`POST /api/v1/admin/retention`). */
+  retention(startAt: string, endAt: string, frequency: 'day' | 'month'): Observable<AdminCohort[]> {
+    return this.http.post<AdminCohort[]>('/api/v1/admin/retention', {
+      start_at: startAt,
+      end_at: endAt,
+      frequency,
+    });
+  }
+
+  // --- hashtag review ---
+  /** The server's hashtags with their review switches (`GET /api/v1/admin/tags`). */
+  tags(maxId?: string): Observable<AdminTag[]> {
+    let params = new HttpParams().set('limit', '50');
+    if (maxId) params = params.set('max_id', maxId);
+    return this.http.get<AdminTag[]>('/api/v1/admin/tags', { params });
+  }
+
+  updateTag(
+    id: string,
+    changes: Partial<Pick<AdminTag, 'usable' | 'trendable' | 'listable'>>,
+  ): Observable<AdminTag> {
+    return this.http.put<AdminTag>(`/api/v1/admin/tags/${id}`, changes);
+  }
+}
+
+/** One `POST /api/v1/admin/dimensions` breakdown. */
+export interface AdminDimension {
+  key: string;
+  data: { key: string; human_key: string; value: string; unit?: string; human_value?: string }[];
+}
+
+/** One sign-up cohort from `POST /api/v1/admin/retention`. */
+export interface AdminCohort {
+  period: string;
+  frequency: 'day' | 'month';
+  /** First entry is the cohort itself (rate 1); later ones are who was still active. */
+  data: { date: string; rate: number; value: string }[];
+}
+
+/** `GET /api/v1/admin/tags`: a hashtag and how the server may use it. */
+export interface AdminTag {
+  id: string;
+  name: string;
+  url: string;
+  /** May appear in trends. */
+  trendable: boolean;
+  /** May be used in posts and searched. */
+  usable: boolean;
+  /** May appear in the profile directory and hashtag lists. */
+  listable: boolean;
+  requires_review: boolean;
+  history?: { day: string; uses: string; accounts: string }[];
 }
 
 /** `GET /api/v1/admin/trends/links`: a trending preview card awaiting review. */

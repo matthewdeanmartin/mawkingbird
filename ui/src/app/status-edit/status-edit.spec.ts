@@ -72,4 +72,24 @@ describe('status edit helpers', () => {
     expect(body.poll).toBeUndefined();
     expect(body.language).toBeUndefined();
   });
+
+  it('sends a moved focus point with the description it already has, and nothing for unmoved ones', () => {
+    const base = { type: 'image', previewUrl: '', description: 'heron', savedDescription: 'heron' };
+    const body = buildEditBody({
+      text: 'x',
+      spoilerText: '',
+      sensitive: false,
+      language: '',
+      media: [
+        { ...base, id: 'still', focus: { x: 0.2, y: 0.2 }, savedFocus: { x: 0.2, y: 0.2 } },
+        { ...base, id: 'moved', focus: { x: 0.25, y: 0.6 }, savedFocus: null },
+        { ...base, id: 'reset', focus: null, savedFocus: { x: 0.5, y: 0.5 } },
+      ],
+      poll: null,
+    });
+    expect(body.media_attributes).toEqual([
+      { id: 'moved', description: 'heron', focus: '0.25,0.6' },
+      { id: 'reset', description: 'heron', focus: '0,0' },
+    ]);
+  });
 });

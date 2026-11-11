@@ -30,13 +30,27 @@
       </select>
     </mb-field>
 
+    @if (focusing() !== null && media()[focusing()!]; as item) {
+      <app-focal-point-dialog
+        [src]="item.fullUrl || item.previewUrl"
+        [alt]="item.description"
+        [initial]="item.focus ?? null"
+        (applied)="setFocus(focusing()!, $event)"
+        (closed)="focusing.set(null)"
+      />
+    }
     @if (media().length || canAddMedia() || uploading()) {
       <fieldset class="edit-section">
         <legend>{{ 'statusEdit.media' | transloco }}</legend>
         @for (m of media(); track m.id; let i = $index) {
           <div class="edit-media">
             @if (m.previewUrl) {
-              <img class="edit-media-thumb" [src]="m.previewUrl" alt="" />
+              <img
+                class="edit-media-thumb"
+                [src]="m.previewUrl"
+                alt=""
+                [style.object-position]="thumbPosition(m)"
+              />
             } @else {
               <span class="edit-media-thumb muted" aria-hidden="true">{{ m.type }}</span>
             }
@@ -48,9 +62,23 @@
                 (ngModelChange)="setDescription(i, $event)"
               ></textarea>
             </mb-field>
-            <button mbButton variant="outline" type="button" (click)="removeMedia(i)">
-              {{ 'statusEdit.mediaRemove' | transloco }}
-            </button>
+            <div class="edit-media-actions">
+              @if (m.type === 'image') {
+                <button
+                  mbButton
+                  variant="outline"
+                  type="button"
+                  [title]="'statusEdit.focusPoint' | transloco"
+                  [attr.aria-label]="'statusEdit.focusPoint' | transloco"
+                  (click)="focusing.set(i)"
+                >
+                  <span aria-hidden="true">🎯</span>
+                </button>
+              }
+              <button mbButton variant="outline" type="button" (click)="removeMedia(i)">
+                {{ 'statusEdit.mediaRemove' | transloco }}
+              </button>
+            </div>
           </div>
         }
         @if (media().length) {

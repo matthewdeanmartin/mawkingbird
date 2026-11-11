@@ -58,3 +58,44 @@
 .intro {
   padding: 12px 16px 0;
 }
+
+.metrics-heading {
+  margin: 0;
+  padding: 20px 16px 4px;
+  font-size: 15px;
+}
+
+.metrics-subheading {
+  margin: 0;
+  padding: 12px 16px 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.metrics-empty {
+  margin: 0;
+  padding: 0 16px 8px;
+}
+
+.retention-scroll {
+  overflow-x: auto;
+  padding: 0 16px 16px;
+}
+
+.retention {
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.retention th,
+.retention td {
+  padding: 4px 10px;
+  text-align: end;
+  border-bottom: 1px solid var(--border);
+}
+
+.retention th[scope='row'],
+.retention thead th:first-child {
+  text-align: start;
+}

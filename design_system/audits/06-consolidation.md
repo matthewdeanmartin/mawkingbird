@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Focus points, federated feed filters, admin hashtags and metrics, 2026-11-11
+
+Two candidates are added, both adopted scope: `focal-point/focal-point-dialog.ts` (Dialog,
+two-axis slider, MbButton) and `admin/tags/admin-tags.ts` (MbCheckbox switches, MbButton).
+`compose/compose.html` and `status-edit/status-edit-dialog.html` gain an outline 🎯 MbButton
+per image beside the existing ones; `pages/server-feed/server-feed.html` gains an
+MbToolbar with two MbToolbarButton toggles (Other servers only, Media only);
+`admin/admin-shell/admin-shell.html` gains a Hashtags tab link; `admin/metrics/admin-metrics.html`
+gains breakdown rows and a native retention table. No shared widget changed.
+
 ## Bio globe, server suggestions, posting defaults, follow languages, admin triage, 2026-11-11
 
 Three candidates are added, all adopted scope: `pages/find-friends/server-suggestions.ts`

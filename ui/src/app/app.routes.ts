@@ -1554,6 +1554,11 @@ export const routes: Routes = [
             loadComponent: () => import('./admin/trends/admin-trends').then((m) => m.AdminTrends),
           },
           {
+            path: 'hashtags',
+            title: 'Hashtags',
+            loadComponent: () => import('./admin/tags/admin-tags').then((m) => m.AdminTags),
+          },
+          {
             path: 'metrics',
             title: 'Metrics',
             loadComponent: () =>

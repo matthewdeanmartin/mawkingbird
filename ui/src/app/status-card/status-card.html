@@ -448,6 +448,7 @@
                     <img
                       [src]="m.preview_url || m.url"
                       [alt]="m.description || ''"
+                      [style.object-position]="thumbPosition(m)"
                       loading="lazy"
                       decoding="async"
                     />
