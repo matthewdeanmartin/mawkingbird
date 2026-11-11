@@ -509,6 +509,22 @@ export interface InstanceRule {
   hint: string;
 }
 
+/** `GET /api/v1/instance/privacy_policy`. */
+export interface PrivacyPolicy {
+  updated_at: string;
+  /** HTML. */
+  content: string;
+}
+
+/** One entry of `GET /api/v1/instance/domain_blocks`. */
+export interface ModeratedServer {
+  /** May be partly obfuscated with `*` by the server. */
+  domain: string;
+  digest: string;
+  severity: 'silence' | 'suspend';
+  comment: string | null;
+}
+
 export interface TermsOfService {
   effective_date: string | null;
   effective: boolean;

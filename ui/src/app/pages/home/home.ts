@@ -1,6 +1,7 @@
 // i18n pages.home.sourceFailed: Could not load the selected Home source. Retry or choose another feed in Settings → Home and Algo.
 import { HomeSource } from '../../home-source';
 import { HomeSession } from '../../home-session';
+import { HomeOrigin, passesHomeOrigin } from '../../home-origin';
 import { MbButton } from '../../design-system/button/button';
 import { statusHashtags, normalizeHashtag } from '../../hashtag';
 import { reconcileStatus } from '../../reconcile-status';
@@ -182,6 +183,10 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.filters.window.today: Today
 // i18n pages.home.filters.window.week: This week
 // i18n pages.home.filters.window.all: Everything
+// i18n pages.home.filters.originAriaLabel: Which servers to show
+// i18n pages.home.filters.origin.all: All servers
+// i18n pages.home.filters.origin.local: This server
+// i18n pages.home.filters.origin.remote: Other servers
 // i18n pages.home.filters.calm.title: Calm mode: hide {{posts}} that read as inflammatory — heated wording, quote-dunks, and ratioed {{posts}} (all detected on-device)
 // i18n pages.home.filters.calm.label: Calm
 // i18n pages.home.articles.ariaLabel: Articles from the loaded feed
@@ -193,7 +198,7 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.allHidden.loaded.one: {{count}} post loaded, and your filters are hiding it.
 // i18n pages.home.allHidden.loaded.other: {{count}} posts loaded, and your filters are hiding them all.
 // i18n pages.home.allHidden.turnCalmOff: Turn Calm off to see {{count}}.
-// i18n pages.home.allHidden.showHidden: Show {{count}} hidden by Boosts/Replies.
+// i18n pages.home.allHidden.showHidden: Show {{count}} hidden by Boosts, Replies or Servers.
 // i18n pages.home.allHidden.languagePicker: The language picker at the top of the feed is what is holding them back.
 // i18n pages.home.noneVisible.findFriends: Find friends to follow →
 // i18n pages.home.feedCap.savedRule: —— some posts you saved for later ——
@@ -208,7 +213,7 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.windowEnd.everythingFrom: That’s everything from {{window}}. There are older posts.
 // i18n pages.home.windowEnd.loadOlder: Load older posts
 // i18n pages.home.feedEnd.matchingFilters: That’s everything matching your filters.
-// i18n pages.home.feedEnd.showHiddenByFilters: Show {{count}} more already loaded (hidden by Boosts/Replies).
+// i18n pages.home.feedEnd.showHiddenByFilters: Show {{count}} more already loaded (hidden by Boosts, Replies or Servers).
 // i18n pages.home.feedEnd.calmLettingThrough: That’s everything Calm mode is letting through.
 // i18n pages.home.feedEnd.showHiddenByCalm: Show {{count}} more already loaded (hidden by Calm).
 // i18n pages.home.feedEnd.chosenLanguages: That’s everything in your chosen languages.
@@ -218,7 +223,7 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.feedEnd.checkDoctor: Check the Feed Doctor.
 // i18n pages.home.feedEnd.failedSources: Your feed stopped with a source failure ({{sources}}). This is not proof that you are caught up.
 // i18n pages.home.feedEnd.retrySources: Retry feed sources
-// i18n pages.home.feedEnd.hiddenAtTop: {{count}} loaded posts are hidden by Retweets/Replies. You can change these filters at the top of the feed.
+// i18n pages.home.feedEnd.hiddenAtTop: {{count}} loaded posts are hidden by Boosts, Replies or Servers. You can change these filters at the top of the feed.
 // i18n pages.home.warnings.anonymousErrors.link: Review followed sources or retry the public API
 // i18n pages.home.twitterUnloaded.summary.one: {{count}} followed Twitter account has nothing saved yet, so it is not in this feed.
 // i18n pages.home.warnings.blueskyError: Bluesky could not load your feed. Retry the request. If your session has expired or access was revoked, sign in again.
@@ -952,7 +957,8 @@ export class Home implements OnInit, OnDestroy {
    * would be a different (and pushier) offer than "you have unread posts".
    */
   protected hiddenByFilters = computed(() => {
-    if (this.showBoosts() && this.showReplies()) {
+    const origin = this.homeSession.origin();
+    if (this.showBoosts() && this.showReplies() && origin === 'all') {
       return 0;
     }
     // Counted against the two chips alone, and only for posts the *other*
@@ -961,7 +967,8 @@ export class Home implements OnInit, OnDestroy {
     return this.statuses().filter((status) => {
       const hiddenByChip =
         (!this.showBoosts() && status.reblog !== null) ||
-        (!this.showReplies() && status.in_reply_to_id !== null);
+        (!this.showReplies() && status.in_reply_to_id !== null) ||
+        !passesHomeOrigin(status, origin);
       if (!hiddenByChip) {
         return false;
       }
@@ -995,6 +1002,7 @@ export class Home implements OnInit, OnDestroy {
       return (
         (this.showBoosts() || status.reblog === null) &&
         (this.showReplies() || status.in_reply_to_id === null) &&
+        passesHomeOrigin(status, this.homeSession.origin()) &&
         this.feedLangFilter.shouldShow(status)
       );
     }).length;
@@ -1015,6 +1023,7 @@ export class Home implements OnInit, OnDestroy {
       return (
         (this.showBoosts() || status.reblog === null) &&
         (this.showReplies() || status.in_reply_to_id === null) &&
+        passesHomeOrigin(status, this.homeSession.origin()) &&
         !(this.homeSession.calm() && this.calm.hidden(status))
       );
     }).length;
@@ -1037,10 +1046,18 @@ export class Home implements OnInit, OnDestroy {
     this.homeSession.calm.set(false);
   }
 
-  /** Turn both chips back on from the end-of-feed prompt, in one click. */
+  /** Turn both chips back on (and show every server) from the end-of-feed prompt, in one click. */
   protected showEverything(): void {
     this.showBoosts.set(true);
     this.showReplies.set(true);
+    this.homeSession.origin.set('all');
+  }
+
+  /** Only a signed-in Mastodon Home has a "this server" to compare against. */
+  protected readonly offersOrigin = computed(() => this.auth.kind() === 'mastodon');
+
+  protected setOrigin(origin: HomeOrigin): void {
+    this.homeSession.origin.set(origin);
   }
 
   protected imagesHidden(): boolean {
@@ -1075,6 +1092,7 @@ export class Home implements OnInit, OnDestroy {
           )) &&
         (this.showBoosts() || status.reblog === null) &&
         (this.showReplies() || status.in_reply_to_id === null) &&
+        passesHomeOrigin(status, this.homeSession.origin()) &&
         !(this.homeSession.calm() && this.calm.hidden(status)) &&
         this.feedLangFilter.shouldShow(status),
     );

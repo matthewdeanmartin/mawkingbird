@@ -46,7 +46,14 @@ import { Terminology } from '../../terminology';
 import { Auth } from '../../auth';
 import { LocalModeration } from '../../local-moderation';
 import { TrustedAccounts } from '../../trusted-accounts';
-import { Account, Collection, MediaAttachment, Relationship, Status } from '../../models';
+import {
+  Account,
+  Collection,
+  FeaturedTag,
+  MediaAttachment,
+  Relationship,
+  Status,
+} from '../../models';
 import { homeServerLink } from '../../home-server-link';
 import {
   emptyProfileSearch,
@@ -115,7 +122,7 @@ import { CopyAccountDialog } from './copy-account-dialog/copy-account-dialog';
 import { ProfileMediaGrid } from './media/profile-media-grid';
 import { ProfilePhotoView } from './media/profile-photo-view';
 import { buildMediaItems, ProfileMediaItem } from './media/profile-media-item';
-import { PageDiagnostics } from '../../page-diagnostics';
+import { describeHttpError, PageDiagnostics } from '../../page-diagnostics';
 import { RenderedHtmlLinks } from '../../rendered-html-links';
 
 /** Profile body tabs: the account's posts, who they follow, who follows them. */
@@ -202,6 +209,11 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.featured.followAll: Follow all ({{count}})
 // i18n pages.profile.featured.hint: A hand-picked collection of accounts this profile vouches for.
 // i18n pages.profile.featured.viewFeed: View as feed →
+// i18n pages.profile.featuredTags.label: Featured hashtags:
+// i18n pages.profile.featuredTags.count: {{count}} posts
+// i18n pages.profile.tagged.showing: Showing only posts tagged #{{tag}}.
+// i18n pages.profile.tagged.clear: Show all posts
+// i18n pages.profile.tagged.empty: No posts tagged #{{tag}} here.
 // i18n pages.profile.navigation.profileSections: Profile sections
 // i18n pages.profile.navigation.media: Media
 // i18n pages.profile.navigation.following: Following
@@ -1152,6 +1164,10 @@ export class Profile implements OnInit, OnDestroy {
 
   /** Accounts this profile features ("collections") — shown prominently up top. */
   protected featured = signal<Account[]>([]);
+  /** Hashtags this account features (Mastodon), each a way into its tagged posts. */
+  protected featuredTags = signal<FeaturedTag[]>([]);
+  /** `?tagged=`: the Posts tab narrowed to one hashtag, on the server. */
+  protected tagged = signal<string | null>(null);
   /** Ids among featured() the viewer already follows (or has requested). */
   protected featuredFollowing = signal<Set<string>>(new Set());
   protected featuredBusy = signal(false);
@@ -1185,6 +1201,8 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Read before the route loads its posts, so a shared tagged link loads once.
+    this.tagged.set(taggedParam(this.route.snapshot?.queryParamMap?.get('tagged')));
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.showSlideshow.set(false);
       const id = params.get('id');
@@ -1220,6 +1238,14 @@ export class Profile implements OnInit, OnDestroy {
     // returns to the posts tab. Reading the params here rather than only in the
     // click handlers is also what makes a pasted link open the right picture.
     this.route.queryParamMap?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const tagged = taggedParam(params.get('tagged'));
+      if (tagged !== this.tagged()) {
+        this.tagged.set(tagged);
+        const id = this.publicProfileRef?.id ?? this.account()?.id;
+        if (id && !this.isBluesky() && !this.isMisskey() && !this.isRss() && !this.isTwitter()) {
+          this.loadStatuses(id);
+        }
+      }
       const requestedTab = params.get('tab');
       if (requestedTab === 'following' || requestedTab === 'followers') {
         this.tab.set(requestedTab);
@@ -2176,6 +2202,7 @@ export class Profile implements OnInit, OnDestroy {
     const opts = {
       excludeReblogs: !this.showBoosts(),
       excludeReplies: !this.showReplies(),
+      tagged: this.tagged() ?? undefined,
       limit: Profile.TARGET_COUNT,
     };
     const fetchPage = (maxId: string | undefined, acc: Status[], page: number): void => {
@@ -2318,6 +2345,7 @@ export class Profile implements OnInit, OnDestroy {
           this.getAccountStatuses(id, {
             excludeReblogs: !this.showBoosts(),
             excludeReplies: !this.showReplies(),
+            tagged: this.tagged() ?? undefined,
             limit: Profile.TARGET_COUNT,
             maxId: this.nativeStatusId(last),
           }),
@@ -2368,6 +2396,7 @@ export class Profile implements OnInit, OnDestroy {
     this.getAccountStatuses(id, {
       excludeReblogs: !this.showBoosts(),
       excludeReplies: !this.showReplies(),
+      tagged: this.tagged() ?? undefined,
       limit: Profile.TARGET_COUNT,
       maxId: this.nativeStatusId(last),
     }).subscribe({
@@ -2469,6 +2498,14 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   private loadFeatured(id: string): void {
+    this.featuredTags.set([]);
+    this.routeLoadSub.add(
+      this.api.accountFeaturedTags(id).subscribe({
+        next: (tags) => this.featuredTags.set(tags),
+        // Old servers and other networks simply have none to show.
+        error: () => this.featuredTags.set([]),
+      }),
+    );
     this.featured.set([]);
     this.featuredFollowing.set(new Set());
     this.routeLoadSub.add(
@@ -2636,6 +2673,73 @@ export class Profile implements OnInit, OnDestroy {
 
   requestRemoveFollower(): void {
     this.showRemoveFollowerConfirm.set(true);
+  }
+
+  // i18n pages.profile.moreOptions.open: More options…
+  // i18n pages.profile.moreOptions.title: More options
+  // i18n pages.profile.moreOptions.close: Close
+  // i18n pages.profile.moreOptions.view: View and share
+  // i18n pages.profile.moreOptions.account: For this account
+  // i18n pages.profile.moreOptions.safety: Safety
+  // i18n pages.profile.actions.blockDomain: Block everyone on {{domain}}
+  // i18n pages.profile.domainBlock.confirm: Block everyone on {{domain}}? You will no longer see their posts or notifications, and you will lose {{following}} people you follow and {{followers}} followers there.
+  // i18n pages.profile.domainBlock.confirmPlain: Block everyone on {{domain}}? You will no longer see their posts or notifications, and anyone you follow or who follows you there will be removed.
+  // i18n pages.profile.domainBlock.done: Blocked {{domain}}. You can undo this in Settings → Blocks.
+  // i18n pages.profile.domainBlock.failed: Could not block {{domain}}. {{detail}}
+
+  /** Occasional profile actions, kept out of the ••• menu (see menu-budget.ts). */
+  protected moreOptionsOpen = signal(false);
+
+  protected openMoreOptions(event: Event): void {
+    const menu = (event.target as HTMLElement).closest('details');
+    if (menu) menu.open = false;
+    this.domainBlockNotice.set('');
+    this.moreOptionsOpen.set(true);
+  }
+
+  /** The server of a remote Mastodon account; none for local or other networks. */
+  protected remoteDomain = computed(() => {
+    const acct = this.account()?.acct ?? '';
+    if (this.isBluesky() || this.isMisskey() || this.publicProfileRef) return null;
+    const at = acct.indexOf('@');
+    return at > 0 ? acct.slice(at + 1) : null;
+  });
+  protected domainBlockBusy = signal(false);
+  protected domainBlockNotice = signal('');
+
+  /**
+   * Block a whole server, after saying what it costs. Mastodon 4.4+ reports
+   * how many follows and followers the block cuts; older servers get the plain
+   * warning instead of a made-up number.
+   */
+  protected async requestBlockDomain(domain: string): Promise<void> {
+    if (this.domainBlockBusy() || !this.capabilities.canManageRelationships) return;
+    this.domainBlockBusy.set(true);
+    this.domainBlockNotice.set('');
+    try {
+      const preview = await firstValueFrom(this.api.domainBlockPreview(domain)).catch(() => null);
+      const message = preview
+        ? this.transloco.translate('pages.profile.domainBlock.confirm', {
+            domain,
+            following: preview.following_count,
+            followers: preview.followers_count,
+          })
+        : this.transloco.translate('pages.profile.domainBlock.confirmPlain', { domain });
+      if (!(await this.dialogs.confirm(message))) return;
+      await firstValueFrom(this.api.blockDomain(domain));
+      this.domainBlockNotice.set(
+        this.transloco.translate('pages.profile.domainBlock.done', { domain }),
+      );
+    } catch (error: unknown) {
+      this.domainBlockNotice.set(
+        this.transloco.translate('pages.profile.domainBlock.failed', {
+          domain,
+          detail: describeHttpError(error),
+        }),
+      );
+    } finally {
+      this.domainBlockBusy.set(false);
+    }
   }
 
   confirmRemoveFollower(): void {
@@ -2997,4 +3101,9 @@ function twitterPlaceholderAccount(follow: {
 /** The bare minimum needed to fetch a handle nobody follows yet. */
 function fallbackFollow(handle: string) {
   return { username: handle, displayName: handle, addedAt: Date.now(), enabled: true };
+}
+
+/** A `?tagged=` value as Mastodon wants it: no `#`, or null when absent. */
+function taggedParam(value: string | null | undefined): string | null {
+  return value?.replace(/^#+/, '').trim() || null;
 }

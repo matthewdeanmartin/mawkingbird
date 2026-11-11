@@ -2,8 +2,23 @@ import { TagMedia } from './tag-media';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagActions } from '../../tag-actions/tag-actions';
 import { Component, computed, inject, DestroyRef, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { FormsModule } from '@angular/forms';
+import { MbButton } from '../../design-system/button/button';
+import { MbCheckbox } from '../../design-system/checkbox/checkbox';
+import { MbDisclosure } from '../../design-system/disclosure/disclosure';
+import { MbControl, MbField } from '../../design-system/field/field';
+import {
+  NO_REFINE,
+  parseTagList,
+  refineCount,
+  refineFromQuery,
+  refineToQuery,
+  sameRefine,
+  TAG_REFINE_LIMIT,
+  TagRefineState,
+} from './tag-refine';
 import { Api } from '../../api';
 import { Status, Tag as TagEntity } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
@@ -15,7 +30,7 @@ import { AnonymousTags } from '../../providers/anonymous/anonymous-tags';
 import { AnonymousAccount } from '../../providers/anonymous/anonymous-account';
 import { AnonymousPublicApi } from '../../providers/anonymous/anonymous-public-api';
 import { AnonymousProviderRef } from '../../providers/anonymous/anonymous-mastodon-provider';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Terminology } from '../../terminology';
 
 /** Posts per request when sampling the tag — Mastodon's cap. */
@@ -42,9 +57,32 @@ const SAMPLE_PAGE_SIZE = 40;
 // i18n pages.tag.mine.summary: {{visible}} of the {{total}} loaded {{posts}}. Load more to search further back.
 // i18n pages.tag.mine.none: None of the {{total}} loaded {{posts}} are yours.
 // i18n pages.tag.loadMore: Load more
+// i18n pages.tag.refine.label: Refine
+// i18n pages.tag.refine.labelActive: Refine ({{count}} on)
+// i18n pages.tag.refine.any: Or any of these tags
+// i18n pages.tag.refine.all: And all of these tags
+// i18n pages.tag.refine.none: But none of these tags
+// i18n pages.tag.refine.hint: Up to {{limit}} tags, separated by spaces.
+// i18n pages.tag.refine.local: Only posts from this server
+// i18n pages.tag.refine.apply: Apply
+// i18n pages.tag.refine.clear: Clear
+// i18n pages.tag.refine.noMatches: No posts match #{{tag}} with these refinements.
 @Component({
   selector: 'app-tag',
-  imports: [TagMedia, TagActions, StatusCard, FeedAnalytics, FeedMembers, TranslocoPipe],
+  imports: [
+    TagMedia,
+    TagActions,
+    StatusCard,
+    FeedAnalytics,
+    FeedMembers,
+    TranslocoPipe,
+    FormsModule,
+    MbButton,
+    MbCheckbox,
+    MbDisclosure,
+    MbControl,
+    MbField,
+  ],
   templateUrl: './tag.html',
   styleUrl: './tag.css',
 })
@@ -88,19 +126,89 @@ export class Tag implements OnInit {
   });
 
   ngOnInit(): void {
+    // Query params first, so the route's tag loads with any refinement already
+    // in the URL instead of loading twice.
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      this.query = params;
+      const tab = params.get('tab');
+      this.tab.set(tab === 'media' || tab === 'members' || tab === 'analytics' ? tab : 'posts');
+      if (tab === 'media') this.mediaVisited.set(true);
+      const tag = this.tag();
+      if (!tag) return;
+      const refine = this.offersRefine() ? refineFromQuery(params, tag) : NO_REFINE;
+      if (!sameRefine(refine, this.refine())) {
+        this.refine.set(refine);
+        this.loadTimeline(tag);
+      }
+    });
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const tag = params.get('tag');
       if (tag) {
         this.tag.set(tag);
         this.mediaVisited.set(false);
         this.tab.set('posts');
+        this.refine.set(
+          this.query && this.offersRefine() ? refineFromQuery(this.query, tag) : NO_REFINE,
+        );
         this.load(tag);
       }
     });
-    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const tab = params.get('tab');
-      this.tab.set(tab === 'media' || tab === 'members' || tab === 'analytics' ? tab : 'posts');
-      if (tab === 'media') this.mediaVisited.set(true);
+  }
+
+  // ------------------------------------------------------------- Refine
+
+  /** The latest query params, read when the route's tag arrives. */
+  private query: ParamMap | null = null;
+
+  /**
+   * Server-side any/all/none tags and "this server only". Signed-in Mastodon
+   * only: the anonymous path reads other servers' public timelines its own way.
+   */
+  protected offersRefine = computed(() => !this.auth.isAnonymous);
+  protected refine = signal<TagRefineState>(NO_REFINE);
+  protected refineCount = computed(() => refineCount(this.refine()));
+  protected refineOpen = signal(false);
+  protected anyText = signal('');
+  protected allText = signal('');
+  protected noneText = signal('');
+  protected localDraft = signal(false);
+  protected readonly refineLimit = TAG_REFINE_LIMIT;
+
+  /** Open or close the Refine panel, starting the fields from what is in force. */
+  protected setRefineOpen(open: boolean): void {
+    if (open && !this.refineOpen()) {
+      const refine = this.refine();
+      this.anyText.set(refine.any.join(' '));
+      this.allText.set(refine.all.join(' '));
+      this.noneText.set(refine.none.join(' '));
+      this.localDraft.set(refine.local);
+    }
+    this.refineOpen.set(open);
+  }
+
+  protected applyRefine(): void {
+    const tag = this.tag();
+    this.navigateRefine({
+      any: parseTagList(this.anyText(), tag),
+      all: parseTagList(this.allText(), tag),
+      none: parseTagList(this.noneText(), tag),
+      local: this.localDraft(),
+    });
+  }
+
+  protected clearRefine(): void {
+    this.anyText.set('');
+    this.allText.set('');
+    this.noneText.set('');
+    this.localDraft.set(false);
+    this.navigateRefine(NO_REFINE);
+  }
+
+  private navigateRefine(state: TagRefineState): void {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: refineToQuery(state),
+      queryParamsHandling: 'merge',
     });
   }
 
@@ -180,7 +288,16 @@ export class Tag implements OnInit {
         }
       },
     });
-    this.getTimeline(tag).subscribe({
+    this.loadTimeline(tag);
+  }
+
+  /** (Re)load the first page of posts, e.g. after the refinement changes. */
+  private loadTimeline(tag: string): void {
+    this.timelineSub?.unsubscribe();
+    this.loading.set(true);
+    this.statuses.set([]);
+    this.exhausted.set(false);
+    this.timelineSub = this.getTimeline(tag).subscribe({
       next: (s) => {
         this.statuses.set(s);
         this.exhausted.set(s.length < 20);
@@ -189,6 +306,8 @@ export class Tag implements OnInit {
       error: () => this.loading.set(false),
     });
   }
+
+  private timelineSub: Subscription | null = null;
 
   loadMore(): void {
     const last = this.statuses().at(-1);
@@ -217,7 +336,7 @@ export class Tag implements OnInit {
   private getTimeline(name: string, maxId?: string, limit?: number): Observable<Status[]> {
     return this.auth.isAnonymous
       ? this.anonymousPublic.getTagTimeline(this.anonymous.server(), name, maxId, limit)
-      : this.api.tagTimeline(name, maxId, limit);
+      : this.api.tagTimeline(name, maxId, limit, false, this.refine().any, this.refine());
   }
 
   private nativeStatusId(status: Status): string {

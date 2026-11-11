@@ -547,6 +547,33 @@ describe('Home', () => {
     ).toEqual(['original', 'reply']);
   });
 
+  it('narrows Home to this server or other servers from the 🌐 select', () => {
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/announcements').flush([]);
+    const local = makeStatus('local');
+    const remote = {
+      ...makeStatus('remote'),
+      account: { ...makeStatus('remote').account, acct: 'zoe@far.example' },
+    };
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [local, remote]);
+    fixture.detectChanges();
+    const ids = () =>
+      internals(fixture)
+        .visible()
+        .map((status) => status.id);
+    const select = (fixture.nativeElement as HTMLElement).querySelector<HTMLSelectElement>(
+      'select[aria-label="Which servers to show"]',
+    );
+    expect(select).not.toBeNull();
+    expect(ids()).toEqual(['local', 'remote']);
+
+    TestBed.inject(HomeSession).origin.set('local');
+    expect(ids()).toEqual(['local']);
+    TestBed.inject(HomeSession).origin.set('remote');
+    expect(ids()).toEqual(['remote']);
+  });
+
   it('does not fetch more just because a filter hides most of a page', () => {
     // Hiding replies is a display choice, not an instruction to go fetch more.
     // Auto-loading until the *visible* count reached feedMin turned a reply-heavy

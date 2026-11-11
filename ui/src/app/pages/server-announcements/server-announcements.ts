@@ -2,7 +2,9 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
-import { Announcement, InstanceInfo } from '../../models';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Announcement, InstanceInfo, ModeratedServer, PrivacyPolicy } from '../../models';
+import { MbDisclosure } from '../../design-system/disclosure/disclosure';
 import { SearchServer } from '../../search-server';
 import { Server } from '../../server';
 import { Api } from '../../api';
@@ -43,7 +45,7 @@ import {
  */
 @Component({
   selector: 'app-server-announcements',
-  imports: [DatePipe, TranslocoPipe, RouterLink],
+  imports: [DatePipe, TranslocoPipe, RouterLink, MbDisclosure],
   templateUrl: './server-announcements.html',
   styleUrl: './server-announcements.css',
 })
@@ -91,6 +93,57 @@ export class ServerAnnouncements implements OnInit {
     this.api.instanceInfo().subscribe({
       next: (info) => this.instance.set(info),
       error: () => this.instance.set(null),
+    });
+  }
+
+  // i18n serverAnnouncements.privacy.title: Privacy policy
+  // i18n serverAnnouncements.privacy.updated: Last updated {{date}}
+  // i18n serverAnnouncements.privacy.loading: Loading the privacy policy…
+  // i18n serverAnnouncements.privacy.none: This server has not published a privacy policy here.
+  // i18n serverAnnouncements.moderated.title: Moderated servers
+  // i18n serverAnnouncements.moderated.intro: Servers this one limits or suspends, as its moderators chose to publish them.
+  // i18n serverAnnouncements.moderated.loading: Loading moderated servers…
+  // i18n serverAnnouncements.moderated.none: This server lists no moderated servers.
+  // i18n serverAnnouncements.moderated.private: This server keeps its list of moderated servers private.
+  // i18n serverAnnouncements.moderated.unavailable: This server does not share a list of moderated servers.
+  // i18n serverAnnouncements.moderated.silence: Limited
+  // i18n serverAnnouncements.moderated.suspend: Suspended
+  // i18n serverAnnouncements.moderated.noReason: No reason given
+
+  /** Loaded the first time its section is opened, not on every visit. */
+  protected privacy = signal<PrivacyPolicy | null>(null);
+  protected privacyState = signal<'idle' | 'loading' | 'loaded' | 'none'>('idle');
+
+  protected openPrivacy(open: boolean): void {
+    if (!open || this.privacyState() !== 'idle') return;
+    this.privacyState.set('loading');
+    this.api.privacyPolicy().subscribe({
+      next: (policy) => {
+        this.privacy.set(policy?.content?.trim() ? policy : null);
+        this.privacyState.set(policy?.content?.trim() ? 'loaded' : 'none');
+      },
+      error: () => this.privacyState.set('none'),
+    });
+  }
+
+  protected moderated = signal<ModeratedServer[]>([]);
+  protected moderatedState = signal<'idle' | 'loading' | 'loaded' | 'private' | 'unavailable'>(
+    'idle',
+  );
+
+  /** A 401/403 is the admin's choice to keep the list private, not a failure. */
+  protected openModerated(open: boolean): void {
+    if (!open || this.moderatedState() !== 'idle') return;
+    this.moderatedState.set('loading');
+    this.api.moderatedServers().subscribe({
+      next: (list) => {
+        this.moderated.set(list ?? []);
+        this.moderatedState.set('loaded');
+      },
+      error: (error: unknown) => {
+        const status = error instanceof HttpErrorResponse ? error.status : 0;
+        this.moderatedState.set(status === 401 || status === 403 ? 'private' : 'unavailable');
+      },
     });
   }
 

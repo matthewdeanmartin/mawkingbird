@@ -160,6 +160,31 @@
       </p>
     </div>
 
+    @if (filteredPosts().length) {
+      <div class="ssection">
+        <h2>{{ 'settings.filters.posts' | transloco }}</h2>
+        <p class="hint">{{ 'settings.filters.postsHint' | transloco }}</p>
+        <ul class="filtered-posts">
+          @for (row of filteredPosts(); track row.id) {
+            <li>
+              <a [routerLink]="['/statuses', row.status_id]">{{
+                'settings.filters.viewPost' | transloco
+              }}</a>
+              <button
+                mbButton
+                variant="link"
+                type="button"
+                [disabled]="removingPost() === row.id"
+                (click)="removeFilteredPost(row)"
+              >
+                {{ 'settings.filters.removePost' | transloco }}
+              </button>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
     @if (error(); as message) {
       <p class="form-error">{{ message }}</p>
     }

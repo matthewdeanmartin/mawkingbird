@@ -131,6 +131,32 @@ describe('SettingsFilterEdit', () => {
     httpMock.expectNone('/api/v2/filters');
   });
 
+  it('lists posts filtered one by one and removes one without touching the filter', () => {
+    configure('42');
+    const fixture = TestBed.createComponent(SettingsFilterEdit);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v2/filters/42').flush({
+      ...makeFilter(),
+      statuses: [
+        { id: 'fs1', status_id: 's1' },
+        { id: 'fs2', status_id: 's2' },
+      ],
+    });
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const rows = () => [...el.querySelectorAll('.filtered-posts li')];
+    expect(rows()).toHaveLength(2);
+    expect(rows()[0].querySelector('a')?.getAttribute('href')).toBe('/statuses/s1');
+
+    (rows()[0].querySelector('button') as HTMLButtonElement).click();
+    const remove = httpMock.expectOne('/api/v2/filters/statuses/fs1');
+    expect(remove.request.method).toBe('DELETE');
+    remove.flush({});
+    fixture.detectChanges();
+    expect(rows()).toHaveLength(1);
+    expect(rows()[0].querySelector('a')?.getAttribute('href')).toBe('/statuses/s2');
+  });
+
   it('loads an existing filter and saves changes + keyword removals', () => {
     configure('42');
     const fixture = TestBed.createComponent(SettingsFilterEdit);

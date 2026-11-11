@@ -24,3 +24,21 @@
   flex-wrap: wrap;
   padding: 8px 12px;
 }
+
+/* Refine: any/all/none tags and local-only, folded under the tabs. */
+.tag-refine {
+  display: block;
+  padding: 4px 12px;
+}
+
+.tag-refine-form {
+  display: grid;
+  gap: 10px;
+  max-width: 32rem;
+}
+
+.tag-refine-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

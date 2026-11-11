@@ -1,0 +1,149 @@
+<mb-dialog
+  [title]="'statusEdit.title' | transloco"
+  [closeLabel]="'statusEdit.cancel' | transloco"
+  size="wide"
+  [busy]="saving()"
+  (dismissed)="close()"
+>
+  @if (loading()) {
+    <p class="muted" role="status">{{ 'statusEdit.loading' | transloco }}</p>
+  } @else {
+    <mb-field [label]="'statusEdit.cw' | transloco" [hint]="'statusEdit.cwHint' | transloco">
+      <input
+        mbControl
+        type="text"
+        [ngModel]="spoilerText()"
+        (ngModelChange)="spoilerText.set($event)"
+      />
+    </mb-field>
+
+    <mb-field [label]="'statusEdit.text' | transloco">
+      <textarea mbControl rows="6" [ngModel]="text()" (ngModelChange)="text.set($event)"></textarea>
+    </mb-field>
+
+    <mb-field [label]="'statusEdit.language' | transloco">
+      <select mbControl [ngModel]="language()" (ngModelChange)="language.set($event)">
+        <option value="">{{ 'statusEdit.languageUnset' | transloco }}</option>
+        @for (l of languageOptions(); track l.code) {
+          <option [value]="l.code">{{ l.name }}</option>
+        }
+      </select>
+    </mb-field>
+
+    @if (media().length || canAddMedia() || uploading()) {
+      <fieldset class="edit-section">
+        <legend>{{ 'statusEdit.media' | transloco }}</legend>
+        @for (m of media(); track m.id; let i = $index) {
+          <div class="edit-media">
+            @if (m.previewUrl) {
+              <img class="edit-media-thumb" [src]="m.previewUrl" alt="" />
+            } @else {
+              <span class="edit-media-thumb muted" aria-hidden="true">{{ m.type }}</span>
+            }
+            <mb-field density="compact" [label]="'statusEdit.mediaDescription' | transloco">
+              <textarea
+                mbControl
+                rows="2"
+                [ngModel]="m.description"
+                (ngModelChange)="setDescription(i, $event)"
+              ></textarea>
+            </mb-field>
+            <button mbButton variant="outline" type="button" (click)="removeMedia(i)">
+              {{ 'statusEdit.mediaRemove' | transloco }}
+            </button>
+          </div>
+        }
+        @if (media().length) {
+          <mb-checkbox
+            [label]="'statusEdit.sensitive' | transloco"
+            [checked]="sensitive()"
+            (checkedChange)="sensitive.set($event)"
+          />
+        }
+        @if (uploading()) {
+          <p class="muted small" role="status">{{ 'statusEdit.mediaUploading' | transloco }}</p>
+        }
+        @if (canAddMedia()) {
+          <input
+            #files
+            hidden
+            type="file"
+            accept="image/*,video/*,audio/*"
+            multiple
+            (change)="addFiles(files)"
+          />
+          <button mbButton variant="link" type="button" (click)="files.click()">
+            {{ 'statusEdit.mediaAdd' | transloco }}
+          </button>
+        }
+      </fieldset>
+    }
+
+    @if (poll(); as p) {
+      <fieldset class="edit-section">
+        <legend>{{ 'statusEdit.poll' | transloco }}</legend>
+        @for (option of p.options; track $index; let i = $index) {
+          <div class="edit-poll-option">
+            <mb-field density="compact" [label]="'statusEdit.pollOption' | transloco: { n: i + 1 }">
+              <input
+                mbControl
+                type="text"
+                [ngModel]="option"
+                (ngModelChange)="setOption(i, $event)"
+              />
+            </mb-field>
+            @if (p.options.length > 2) {
+              <button
+                mbButton
+                variant="link"
+                type="button"
+                [attr.aria-label]="'statusEdit.pollRemoveOption' | transloco: { n: i + 1 }"
+                (click)="removeOption(i)"
+              >
+                ✕
+              </button>
+            }
+          </div>
+        }
+        @if (p.options.length < maxPollOptions) {
+          <button mbButton variant="link" type="button" (click)="addOption()">
+            {{ 'statusEdit.pollAddOption' | transloco }}
+          </button>
+        }
+        <mb-checkbox
+          [label]="'statusEdit.pollMultiple' | transloco"
+          [checked]="p.multiple"
+          (checkedChange)="setMultiple($event)"
+        />
+        @if (votesReset()) {
+          <mb-notice>{{ 'statusEdit.pollReset' | transloco }}</mb-notice>
+        }
+        @if (reopensPoll()) {
+          <mb-notice>{{ 'statusEdit.pollReopens' | transloco }}</mb-notice>
+        }
+        <button mbButton variant="link" type="button" (click)="removePoll()">
+          {{ 'statusEdit.pollRemove' | transloco }}
+        </button>
+      </fieldset>
+    } @else if (!media().length) {
+      <button mbButton variant="link" type="button" (click)="addPoll()">
+        {{ 'statusEdit.pollAdd' | transloco }}
+      </button>
+    }
+
+    <p class="muted small">{{ 'statusEdit.visibilityNote' | transloco }}</p>
+  }
+
+  @if (error()) {
+    <mb-notice tone="error" announcement="alert">{{ error() }}</mb-notice>
+  }
+
+  <ng-container mbDialogActions>
+    <button mbButton type="button" variant="outline" [disabled]="saving()" (click)="close()">
+      {{ 'statusEdit.cancel' | transloco }}
+    </button>
+    <button mbButton type="button" [disabled]="!canSave()" (click)="save()">
+      {{ (saving() ? 'statusEdit.saving' : 'statusEdit.save') | transloco }}
+    </button>
+  </ng-container>
+</mb-dialog>

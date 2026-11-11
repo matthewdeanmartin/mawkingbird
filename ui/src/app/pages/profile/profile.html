@@ -506,30 +506,13 @@
                 •••
               </summary>
               <div class="account-danger-panel">
-                @if (radioHandle(); as handle) {
-                  <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
-                    'pages.profile.actions.openInRadio' | transloco
-                  }}</a>
-                }
-
-                <button type="button" (click)="showSlideshow.set(true)">
-                  {{ 'pages.profile.slideshow.open' | transloco }}
-                </button>
+                <!-- Kept to the menu budget (menu-budget.ts): everyday relationship and
+                   safety actions here; occasional ones in "More options…". -->
                 @if (capabilities.canManageLists) {
                   <button type="button" (click)="showLists.set(true)">
                     {{
                       (auth.isAnonymous ? 'pages.profile.lists.local' : 'pages.profile.lists.lists')
                         | transloco
-                    }}
-                  </button>
-                }
-                @if (canFeature()) {
-                  <button type="button" [disabled]="featureBusy()" (click)="toggleFeatured()">
-                    {{
-                      (relationship()?.endorsed
-                        ? 'pages.profile.actions.unfeature'
-                        : 'pages.profile.actions.feature'
-                      ) | transloco
                     }}
                   </button>
                 }
@@ -543,29 +526,6 @@
                     }}
                   </button>
                 }
-                @if (a.url) {
-                  <button type="button" (click)="showQr.set(true)">
-                    {{ 'pages.profile.actions.qrCode' | transloco }}
-                  </button>
-                }
-                @if (canShowMedia()) {
-                  <app-media-download-menu-item
-                    scope="profile"
-                    [statuses]="statuses()"
-                    [loadPage]="mediaDownloadLoader()"
-                    [archiveName]="a.acct + '-media'"
-                  />
-                }
-
-                <!-- Two groups, split by a rule: things that make something appear in
-                   your app, then things that make someone disappear. The split is
-                   load-bearing rather than decorative — this panel was a flush stack
-                   of same-weight buttons, and "Clone friends list" sat at the top of
-                   it for a week without being findable. See
-                   sprint/anon-office-1-copy-and-exit.md.
-
-                   "Hide boosts" counts as a keeping action: it tunes a relationship
-                   you are keeping rather than ending one. -->
                 <!-- The way out to the account's own server. Hidden when there is
                    no canonical URL to open (mock and browser-local accounts),
                    because an "open" that goes nowhere is worse than no link. -->
@@ -573,18 +533,6 @@
                   <a [href]="link.url" target="_blank" rel="noopener noreferrer">
                     {{ 'pages.profile.actions.openOn' | transloco: { host: link.host } }}
                   </a>
-                }
-                <!-- Anonymous only, and that is a safety property rather than an
-                   unfinished edge: an anonymous follow is a localStorage write, so
-                   copying twenty sends zero requests to anyone's server. The same
-                   button signed in would be twenty POST /follow calls back to back,
-                   which is indistinguishable from a follow-bot. Do not "finish"
-                   this by adding a delay and enabling it for authenticated users —
-                   see sprint/anonymous-great-2-clone-friends.md. -->
-                @if (canCopyAccount()) {
-                  <button type="button" (click)="openCopyAccount()">
-                    {{ 'pages.profile.actions.copyAccount' | transloco }}
-                  </button>
                 }
                 @if (capabilities.canManageRelationships || (isBluesky() && bskySession.linked())) {
                   @if (relationship()?.following) {
@@ -599,38 +547,7 @@
                     </button>
                   }
                 }
-                <hr class="menu-rule" />
-                <!-- The flipside of the two below: block and mute hide someone,
-                   trust stops their own warnings from hiding them from you. -->
                 <ng-container [ngTemplateOutlet]="privateFollowMenu" />
-                <button class="menu-trust" type="button" (click)="toggleTrust()">
-                  {{
-                    (isTrusted()
-                      ? 'pages.profile.moderation.stopTrusting'
-                      : 'pages.profile.moderation.trust'
-                    ) | transloco
-                  }}
-                </button>
-                <button class="menu-trust" type="button" (click)="toggleRetweetTrust()">
-                  {{
-                    (trustsRetweets()
-                      ? 'pages.profile.moderation.trustOnly'
-                      : 'pages.profile.moderation.trustRetweets'
-                    ) | transloco
-                  }}
-                </button>
-                @if (trustsRetweets()) {
-                  <div class="menu-note muted small">
-                    {{ 'pages.profile.moderation.retweetsOpen' | transloco }}
-                  </div>
-                }
-                <div class="menu-note muted small">
-                  {{
-                    isTrusted()
-                      ? ('pages.profile.moderation.cwsOpen' | transloco)
-                      : ('pages.profile.moderation.showCws' | transloco)
-                  }}
-                </div>
                 <hr class="menu-rule" />
                 @if (canModerate) {
                   @if (useLocalModeration ? localMuted() : relationship()?.muting) {
@@ -658,21 +575,161 @@
                     }}
                   </button>
                 }
-                <!-- Reporting and removing a follower keep their canManageRelationships
-                   guard; they sit last because they are the rarest, not because they
-                   matter least. -->
                 @if (capabilities.canManageRelationships) {
-                  @if (relationship()?.followed_by && !isBluesky()) {
-                    <button class="menu-danger" type="button" (click)="requestRemoveFollower()">
-                      {{ 'pages.profile.actions.removeFollower' | transloco }}
-                    </button>
-                  }
                   <button class="menu-danger" type="button" (click)="showReport.set(true)">
                     {{ 'pages.profile.actions.reportAccount' | transloco }}
                   </button>
                 }
+                <hr class="menu-rule" />
+                <button type="button" (click)="openMoreOptions($event)">
+                  {{ 'pages.profile.moreOptions.open' | transloco }}
+                </button>
               </div>
             </details>
+            @if (moreOptionsOpen()) {
+              <!-- Occasional profile actions, moved out of the ••• menu. -->
+              <mb-dialog
+                [title]="'pages.profile.moreOptions.title' | transloco"
+                [closeLabel]="'pages.profile.moreOptions.close' | transloco"
+                [closeOnBackdrop]="true"
+                (dismissed)="moreOptionsOpen.set(false)"
+              >
+                <div class="more-options">
+                  <h3 class="more-options-heading">
+                    {{ 'pages.profile.moreOptions.view' | transloco }}
+                  </h3>
+                  @if (radioHandle(); as handle) {
+                    <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                      'pages.profile.actions.openInRadio' | transloco
+                    }}</a>
+                  }
+                  <button
+                    type="button"
+                    mbMenuItem
+                    (click)="moreOptionsOpen.set(false); showSlideshow.set(true)"
+                  >
+                    {{ 'pages.profile.slideshow.open' | transloco }}
+                  </button>
+                  @if (a.url) {
+                    <button
+                      type="button"
+                      mbMenuItem
+                      (click)="moreOptionsOpen.set(false); showQr.set(true)"
+                    >
+                      {{ 'pages.profile.actions.qrCode' | transloco }}
+                    </button>
+                  }
+                  @if (canShowMedia()) {
+                    <app-media-download-menu-item
+                      scope="profile"
+                      [statuses]="statuses()"
+                      [loadPage]="mediaDownloadLoader()"
+                      [archiveName]="a.acct + '-media'"
+                    />
+                  }
+
+                  <h3 class="more-options-heading">
+                    {{ 'pages.profile.moreOptions.account' | transloco }}
+                  </h3>
+                  @if (canFeature()) {
+                    <button
+                      type="button"
+                      mbMenuItem
+                      [disabled]="featureBusy()"
+                      (click)="toggleFeatured()"
+                    >
+                      {{
+                        (relationship()?.endorsed
+                          ? 'pages.profile.actions.unfeature'
+                          : 'pages.profile.actions.feature'
+                        ) | transloco
+                      }}
+                    </button>
+                  }
+                  <!-- Anonymous only, and that is a safety property rather than an
+                     unfinished edge: an anonymous follow is a localStorage write, so
+                     copying twenty sends zero requests to anyone's server. The same
+                     button signed in would be twenty POST /follow calls back to back,
+                     which is indistinguishable from a follow-bot. Do not "finish"
+                     this by adding a delay and enabling it for authenticated users —
+                     see sprint/anonymous-great-2-clone-friends.md. -->
+                  @if (canCopyAccount()) {
+                    <button
+                      type="button"
+                      mbMenuItem
+                      (click)="moreOptionsOpen.set(false); openCopyAccount()"
+                    >
+                      {{ 'pages.profile.actions.copyAccount' | transloco }}
+                    </button>
+                  }
+                  <!-- The flipside of mute and block: trust stops this account's own
+                     warnings from hiding them from you. -->
+                  <button class="menu-trust" type="button" mbMenuItem (click)="toggleTrust()">
+                    {{
+                      (isTrusted()
+                        ? 'pages.profile.moderation.stopTrusting'
+                        : 'pages.profile.moderation.trust'
+                      ) | transloco
+                    }}
+                  </button>
+                  <button
+                    class="menu-trust"
+                    type="button"
+                    mbMenuItem
+                    (click)="toggleRetweetTrust()"
+                  >
+                    {{
+                      (trustsRetweets()
+                        ? 'pages.profile.moderation.trustOnly'
+                        : 'pages.profile.moderation.trustRetweets'
+                      ) | transloco
+                    }}
+                  </button>
+                  <p class="muted small">
+                    {{
+                      isTrusted()
+                        ? ('pages.profile.moderation.cwsOpen' | transloco)
+                        : ('pages.profile.moderation.showCws' | transloco)
+                    }}
+                    @if (trustsRetweets()) {
+                      {{ 'pages.profile.moderation.retweetsOpen' | transloco }}
+                    }
+                  </p>
+
+                  @if (capabilities.canManageRelationships && !isBluesky()) {
+                    @if (relationship()?.followed_by || remoteDomain()) {
+                      <h3 class="more-options-heading">
+                        {{ 'pages.profile.moreOptions.safety' | transloco }}
+                      </h3>
+                    }
+                    @if (relationship()?.followed_by) {
+                      <button
+                        class="menu-danger"
+                        type="button"
+                        mbMenuItem
+                        (click)="moreOptionsOpen.set(false); requestRemoveFollower()"
+                      >
+                        {{ 'pages.profile.actions.removeFollower' | transloco }}
+                      </button>
+                    }
+                    @if (remoteDomain(); as domain) {
+                      <button
+                        class="menu-danger"
+                        type="button"
+                        mbMenuItem
+                        [disabled]="domainBlockBusy()"
+                        (click)="requestBlockDomain(domain)"
+                      >
+                        {{ 'pages.profile.actions.blockDomain' | transloco: { domain } }}
+                      </button>
+                    }
+                  }
+                  @if (domainBlockNotice()) {
+                    <p class="small" role="status">{{ domainBlockNotice() }}</p>
+                  }
+                </div>
+              </mb-dialog>
+            }
             <ng-container [ngTemplateOutlet]="contactButtons" />
             <!-- Which way the relationship runs. "Following" only says what *you*
                did; without this there is no way to tell a mutual from someone who
@@ -857,6 +914,22 @@
       </div>
       @if (!isSelf()) {
         <app-familiar-followers [accounts]="familiarFollowers()" />
+      }
+      <!-- Plain text links: each narrows the Posts tab to that hashtag. -->
+      @if (featuredTags().length) {
+        <p class="profile-featured-tags small">
+          <span class="muted">{{ 'pages.profile.featuredTags.label' | transloco }}</span>
+          @for (t of featuredTags(); track t.id) {
+            <a
+              [routerLink]="[]"
+              [queryParams]="{ tagged: t.name, tab: null }"
+              queryParamsHandling="merge"
+              [attr.aria-current]="tagged()?.toLowerCase() === t.name.toLowerCase() ? 'true' : null"
+              [title]="'pages.profile.featuredTags.count' | transloco: { count: t.statuses_count }"
+              >#{{ t.name }}</a
+            >
+          }
+        </p>
       }
     </header>
     @if (profileImageIndex() !== null) {
@@ -1231,6 +1304,14 @@
           </button>
         </div>
       }
+      @if (tagged(); as tag) {
+        <p class="profile-tagged small" role="status">
+          {{ 'pages.profile.tagged.showing' | transloco: { tag } }}
+          <a [routerLink]="[]" [queryParams]="{ tagged: null }" queryParamsHandling="merge">{{
+            'pages.profile.tagged.clear' | transloco
+          }}</a>
+        </p>
+      }
 
       <!--
       Account search. Results render here, where the reverse-chron timeline
@@ -1360,7 +1441,8 @@
           <p class="muted center">{{ 'pages.profile.search.noMatches' | transloco }}</p>
         }
       } @else {
-        @if (showPinned()) {
+        <!-- Pinned posts are not narrowed by a hashtag, so they step aside. -->
+        @if (showPinned() && !tagged()) {
           @for (s of pinnedStatuses(); track s.id) {
             <div class="pinned-label muted">📌 {{ 'pages.profile.posts.pinned' | transloco }}</div>
             <app-status-card
@@ -1383,7 +1465,9 @@
               (deleted)="onDeleted($event)"
             />
           } @empty {
-            @if (!showPinned() || !pinnedStatuses().length) {
+            @if (tagged(); as tag) {
+              <p class="muted center">{{ 'pages.profile.tagged.empty' | transloco: { tag } }}</p>
+            } @else if (!showPinned() || !pinnedStatuses().length) {
               <p class="muted center">{{ 'pages.profile.posts.noMatchesFilters' | transloco }}</p>
             }
           }

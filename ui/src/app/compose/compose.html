@@ -872,12 +872,7 @@
     <div class="thread-hint muted">{{ 'compose.savedToDrafts' | transloco }}</div>
   }
   @if (draftSaveFailed()) {
-    <div class="post-error" role="alert">
-      <span class="post-error-text">{{ 'compose.draftUnsaved' | transloco }}</span>
-      <button mbButton variant="outline" size="small" type="button" (click)="downloadDraft()">
-        {{ 'compose.downloadDraft' | transloco }}
-      </button>
-    </div>
+    <div class="thread-hint muted" role="status">{{ 'compose.draftUnsaved' | transloco }}</div>
   }
 
   <!-- Publish-then-offer, never delete-then-publish: the private copy only goes

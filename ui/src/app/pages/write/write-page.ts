@@ -124,7 +124,7 @@ type DraftFilter = 'all' | DraftKind;
 const AUTOSAVE_DELAY_MS = 2000;
 
 // i18n pages.write.autosave.conflict: Autosave paused: this draft was changed in another tab. Choose Save draft to keep both versions.
-// i18n pages.write.autosave.failed: Autosave paused: this browser's storage is full. Your writing is still here; free some space and choose Save draft.
+// i18n pages.write.autosave.failed: Autosave is paused: this browser isn't accepting drafts right now. Choose Save draft to try again.
 // i18n pages.write.wordCount.one: {{count}} word
 // i18n pages.write.wordCount.other: {{count}} words
 // i18n pages.write.readingTime: {{minutes}} min read
@@ -659,9 +659,7 @@ export class WritePage implements OnInit, OnDestroy {
       target: 'fedi',
     });
     if (!outcome.durable) {
-      this.saveError.set(
-        'This note could not be saved in your browser. Your writing is still here.',
-      );
+      this.saveError.set("This note couldn't be saved in this browser.");
       return;
     }
     const id = outcome.id;
@@ -1332,9 +1330,7 @@ export class WritePage implements OnInit, OnDestroy {
       // copy is the only outcome that doesn't throw away what was just written.
       const saved = this.drafts.save(snapshot);
       if (!saved.durable) {
-        this.saveError.set(
-          'This draft could not be saved in your browser. Your writing is still here.',
-        );
+        this.saveError.set("This draft couldn't be saved in this browser.");
         if (quiet) this.autosavePaused.set(true);
         return;
       }
@@ -1350,9 +1346,7 @@ export class WritePage implements OnInit, OnDestroy {
     }
     const saved = this.drafts.save(snapshot);
     if (!saved.durable) {
-      this.saveError.set(
-        'This draft could not be saved in your browser. Your writing is still here.',
-      );
+      this.saveError.set("This draft couldn't be saved in this browser.");
       if (quiet) this.autosavePaused.set(true);
       return;
     }

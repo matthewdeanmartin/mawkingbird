@@ -58,6 +58,26 @@
       "nextStep": "Profile bio translation (Phanpy parity 17): small outline MbButtons for Translate bio, source-language choices and Hide translation; the original bio stays visible above. Preserve the no-server routing (Mastodon only translates statuses) and the field-per-line synthetic post."
     },
     {
+      "file": "ui/src/app/filter-post-dialog/filter-post-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Filter this post (Mastodon parity 12): MbDialog, Field/Control select of filters plus a new-filter name input, MbButton actions and MbNotice errors. Preserve that a new filter hides on home, public, thread and account, and that the card receives the result as a server-shaped filtered entry."
+    },
+    {
+      "file": "ui/src/app/menu-budget.ts",
+      "disposition": "lexical only",
+      "nextStep": "The ••• menu budget counter reads button and link elements in rendered menus; it renders no controls. Keep its counting rules (Close excluded, a mute-duration row counts once, dialogs excluded) in step with menu markup."
+    },
+    {
+      "file": "ui/src/app/status-edit/status-edit-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Full Mastodon post editing (Mastodon parity 6): MbDialog (wide), Field/Control for content warning, text, language select, attachment descriptions and poll choices, MbCheckbox for sensitive media and multiple choice, outline/link MbButtons for remove/add, MbNotice for vote-reset, poll-reopen and errors; native fieldsets group attachments and the poll, and a hidden file input sits behind an MbButton. Preserve re-sending the poll on every edit (Mastodon deletes an omitted poll), waiting for media processing, and attachments-or-poll exclusivity."
+    },
+    {
+      "file": "ui/src/app/pages/link-timeline/link-timeline.html",
+      "disposition": "adopted scope",
+      "nextStep": "Posts about a link (Mastodon parity 1): page-head title with native links to the story, MbContentState for loading, empty, not-trending/unsupported and error (with an MbButton Retry), StatusCard rows and an outline MbButton for Load more. Preserve the http(s)-only guard and the 404 split between not trending and an old server."
+    },
+    {
       "file": "ui/src/app/collection-settings-dialog/collection-settings-dialog.html",
       "disposition": "adopted scope",
       "nextStep": "Collection create/edit (Phanpy parity 25a): MbDialog, Field/Control for name, description and a language select, MbCheckbox for sensitive and discoverable, MbButton actions, MbNotice errors. Preserve the explicit sensitive/discoverable defaults on create (mastodon.social 422s without them) and the 40/100-character limits."

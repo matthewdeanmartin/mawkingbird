@@ -1,0 +1,47 @@
+<mb-dialog
+  [title]="'filterPost.title' | transloco"
+  [closeLabel]="'filterPost.cancel' | transloco"
+  [busy]="saving()"
+  (dismissed)="close()"
+>
+  <p class="muted small">{{ 'filterPost.intro' | transloco }}</p>
+
+  @if (loading()) {
+    <p class="muted" role="status">{{ 'filterPost.loading' | transloco }}</p>
+  } @else {
+    <mb-field [label]="'filterPost.choose' | transloco">
+      <select mbControl [ngModel]="choice()" (ngModelChange)="choice.set($event)">
+        @for (f of filters(); track f.id) {
+          <option [value]="f.id">{{ f.title }}</option>
+        }
+        <option [value]="newValue">{{ 'filterPost.newFilter' | transloco }}</option>
+      </select>
+    </mb-field>
+    @if (creating()) {
+      <mb-field
+        [label]="'filterPost.newTitle' | transloco"
+        [hint]="'filterPost.newHint' | transloco"
+      >
+        <input
+          mbControl
+          type="text"
+          [ngModel]="newTitle()"
+          (ngModelChange)="newTitle.set($event)"
+        />
+      </mb-field>
+    }
+  }
+
+  @if (error()) {
+    <mb-notice tone="error" announcement="alert">{{ error() }}</mb-notice>
+  }
+
+  <ng-container mbDialogActions>
+    <button mbButton type="button" variant="outline" [disabled]="saving()" (click)="close()">
+      {{ 'filterPost.cancel' | transloco }}
+    </button>
+    <button mbButton type="button" [disabled]="!canSave()" (click)="save()">
+      {{ (saving() ? 'filterPost.adding' : 'filterPost.add') | transloco }}
+    </button>
+  </ng-container>
+</mb-dialog>

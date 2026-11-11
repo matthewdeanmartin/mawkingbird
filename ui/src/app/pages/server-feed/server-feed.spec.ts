@@ -194,6 +194,22 @@ describe('ServerFeed', () => {
     // No statuses/timeline requests are made — verify() asserts this.
   });
 
+  it('links each home-server news story to the posts sharing it', () => {
+    const fixture = setUp('news');
+    http
+      .expectOne('/api/v1/trends/links')
+      .flush([
+        { url: 'https://x/1', title: 'Headline', description: '', provider_name: '' },
+      ] as TrendLink[]);
+    fixture.detectChanges();
+
+    const posts = (fixture.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>(
+      'a.news-posts',
+    );
+    expect(posts?.textContent).toContain('Posts about this');
+    expect(posts?.getAttribute('href')).toBe('/link?url=https:%2F%2Fx%2F1');
+  });
+
   it('federated fetches the public timeline when not anonymous', () => {
     const fixture = setUp('federated');
     http.expectOne((r) => r.url === '/api/v1/timelines/public').flush([makeStatus('1', 'a')]);

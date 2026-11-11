@@ -138,6 +138,10 @@ import { nitterHost, toNitterUrl } from '../providers/twitter/nitter';
 import { StatusActions } from '../providers/status-actions';
 import { ReportDialog } from '../report-dialog/report-dialog';
 import { PostEmbedDialog } from '../post-embed/post-embed-dialog';
+import { StatusEditDialog } from '../status-edit/status-edit-dialog';
+import { FilterPostDialog } from '../filter-post-dialog/filter-post-dialog';
+import { MbDialog } from '../design-system/dialog/dialog';
+import { extractCodeBlocks } from '../code-blocks/code-fences';
 import { canEmbedPost } from '../post-embed/post-embed';
 import { SpeechReader, speechText } from '../speech/speech-reader';
 import { statusHashtags } from '../hashtag';
@@ -191,6 +195,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.translating: Translating…
 // i18n statusCard.votes: {{count}} votes
 // i18n statusCard.vote: Vote
+// i18n statusCard.pollRefresh: Refresh
 // i18n statusCard.pollResult: {{percent}}% · {{count}} votes
 // i18n statusCard.countLabel: {{count}} {{label}}
 // i18n statusCard.closed: Closed
@@ -473,6 +478,9 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
     AccountHoverCard,
     ReportDialog,
     PostEmbedDialog,
+    StatusEditDialog,
+    FilterPostDialog,
+    MbDialog,
     TagMuteMenu,
     MediaDownloadMenuItem,
     AccountListDialog,
@@ -1298,6 +1306,54 @@ export class StatusCard {
     );
   }
 
+  // i18n statusCard.tools.open: More tools…
+  // i18n statusCard.tools.title: More tools
+  /** The occasional utilities, kept out of the ••• menu (see menu-budget.ts). */
+  protected toolsOpen = signal(false);
+
+  /** Whether "More tools…" would have anything in it for this post. */
+  protected hasPostTools = computed(
+    () =>
+      !!this.radioPost() ||
+      !!this.listenLink() ||
+      !!this.downloadable() ||
+      this.todosEnabled() ||
+      this.canEmbed ||
+      this.canReadAloud ||
+      extractCodeBlocks(this.display.content ?? '').length > 0,
+  );
+
+  // i18n statusCard.filterPost: Filter this post…
+  /** "Filter this post…": someone else's post on the signed-in Mastodon server. */
+  protected filterPostOpen = signal(false);
+
+  protected get canFilterPost(): boolean {
+    return (
+      !this.foreign &&
+      !this.isOwn() &&
+      !this.remoteMastodonReadOnly &&
+      this.capabilities.canManageRelationships
+    );
+  }
+
+  protected openFilterPost(event: Event): void {
+    this.closeMenu(event);
+    this.filterPostOpen.set(true);
+  }
+
+  /** The post joined a server filter: apply it now rather than on the next load. */
+  protected onPostFiltered(result: FilterResult): void {
+    this.filterPostOpen.set(false);
+    const status = this.status();
+    const add = (s: Status): Status => ({ ...s, filtered: [...(s.filtered ?? []), result] });
+    this.changed.emit(status.reblog ? { ...add(status), reblog: add(status.reblog) } : add(status));
+  }
+
+  protected openTools(event: Event): void {
+    this.closeMenu(event);
+    this.toolsOpen.set(true);
+  }
+
   openEmbed(event: Event): void {
     this.closeMenu(event);
     this.showEmbed.set(true);
@@ -1357,9 +1413,16 @@ export class StatusCard {
     this.localMod.clear(this.display.account);
   }
 
+  /** The full Mastodon editor (text, CW, language, media, poll) is open. */
+  protected fullEdit = signal(false);
+
   startEdit(event: Event): void {
     event.stopPropagation();
     if (this.saving() || this.editing()) return;
+    if (!this.display.provider) {
+      this.fullEdit.set(true);
+      return;
+    }
     if (this.display.provider === 'bluesky') {
       const ref = this.display.providerRef as BskyRef;
       this.blueskyApi.getPosts([ref.uri]).subscribe({
@@ -1374,10 +1437,12 @@ export class StatusCard {
       });
       return;
     }
-    this.api.getStatusSource(this.display.id).subscribe((src) => {
-      this.editText.set(src.text);
-      this.editing.set(true);
-    });
+  }
+
+  /** The full editor saved: show the server's version of the post. */
+  onEdited(updated: Status): void {
+    this.fullEdit.set(false);
+    this.changed.emit(updated);
   }
 
   cancelEdit(): void {
@@ -1435,22 +1500,10 @@ export class StatusCard {
     if (!text || this.saving()) {
       return;
     }
+    // Only Bluesky edits inline (a replace); Mastodon uses the full editor.
     if (this.display.provider === 'bluesky') {
       void this.saveBlueskyEdit(text);
-      return;
     }
-    this.saving.set(true);
-    // Reattach the existing media IDs: a text-only PUT can detach the images.
-    // Reusing the media objects also preserves their descriptions and focal points.
-    const mediaIds = this.display.media_attachments.map((media) => media.id);
-    this.api.editStatus(this.display.id, text, undefined, mediaIds).subscribe({
-      next: (updated) => {
-        this.saving.set(false);
-        this.editing.set(false);
-        this.changed.emit(updated);
-      },
-      error: () => this.saving.set(false),
-    });
   }
 
   async remove(event: Event): Promise<void> {
@@ -3171,6 +3224,27 @@ export class StatusCard {
       // Reflect the updated poll back onto the status for re-render.
       this.changed.emit({ ...this.display, poll: updated });
       this.pollSelection.set([]);
+    });
+  }
+
+  /** Mastodon polls that are still open can fetch fresh counts in place. */
+  protected canRefreshPoll = computed(() => {
+    const p = this.poll();
+    return !!p && !p.expired && !this.display.provider && this.capabilities.canUseServerActions;
+  });
+  protected pollRefreshing = signal(false);
+
+  refreshPoll(event: Event): void {
+    event.stopPropagation();
+    const p = this.poll();
+    if (!p || this.pollRefreshing()) return;
+    this.pollRefreshing.set(true);
+    this.api.getPoll(p.id).subscribe({
+      next: (updated) => {
+        this.pollRefreshing.set(false);
+        this.changed.emit({ ...this.display, poll: updated });
+      },
+      error: () => this.pollRefreshing.set(false),
     });
   }
 

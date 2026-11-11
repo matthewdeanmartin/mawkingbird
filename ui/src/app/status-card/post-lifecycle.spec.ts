@@ -11,6 +11,9 @@ import { Compose } from '../compose/compose';
 import { FollowTrust } from '../follow-trust';
 import { Account, MediaAttachment, Poll, Status } from '../models';
 import { StatusCard } from './status-card';
+import { By } from '@angular/platform-browser';
+import { StatusEditDialog } from '../status-edit/status-edit-dialog';
+import { remainingSeconds } from '../status-edit/status-edit';
 
 interface ComposerState {
   text: WritableSignal<string>;
@@ -27,10 +30,15 @@ interface ComposerState {
 }
 
 interface EditorState {
-  editing: WritableSignal<boolean>;
-  editText: WritableSignal<string>;
-  saving: WritableSignal<boolean>;
   actionError: WritableSignal<string | null>;
+}
+
+/** The full Mastodon edit dialog the card opens. */
+interface EditDialogState {
+  text: WritableSignal<string>;
+  saving: WritableSignal<boolean>;
+  save(): void;
+  close(): void;
 }
 
 const author: Account = {
@@ -127,6 +135,13 @@ describe('Post lifecycle through composer and status card', () => {
 
   const event = () => new Event('click');
   const editor = () => card.componentInstance as unknown as EditorState;
+  const editDialog = () =>
+    card.debugElement.query(By.directive(StatusEditDialog))?.componentInstance as
+      EditDialogState | undefined;
+  const editing = () => {
+    card.detectChanges();
+    return !!editDialog();
+  };
 
   beforeEach(() => {
     localStorage.clear();
@@ -210,23 +225,37 @@ describe('Post lifecycle through composer and status card', () => {
 
   function openEdit(source: string): void {
     card.componentInstance.startEdit(event());
+    card.detectChanges();
     const request = http.expectOne(`/api/v1/statuses/${current.id}/source`);
     expect(request.request.method).toBe('GET');
     request.flush({ id: current.id, text: source, spoiler_text: current.spoiler_text });
-    expect(editor().editText()).toBe(source);
-    expect(editor().editing()).toBe(true);
+    expect(editing()).toBe(true);
+    expect(editDialog()!.text()).toBe(source);
   }
 
   function saveRequest(text: string) {
-    editor().editText.set(text);
-    card.componentInstance.saveEdit();
+    editDialog()!.text.set(text);
+    editDialog()!.save();
     const request = http.expectOne(`/api/v1/statuses/${current.id}`);
     expect(request.request.method).toBe('PUT');
-    // Exact payload protects CW, sensitivity and poll votes from accidental
-    // empty/default replacements. Existing attachment IDs must remain ordered.
+    // Exact payload protects CW, sensitivity, language and the poll from
+    // accidental empty/default replacements: Mastodon deletes a poll an edit
+    // leaves out. Existing attachment IDs must remain ordered.
     expect(request.request.body).toEqual({
       status: text,
+      spoiler_text: current.spoiler_text,
+      sensitive: current.sensitive,
+      ...(current.language ? { language: current.language } : {}),
       media_ids: current.media_attachments.map((media) => media.id),
+      ...(current.poll
+        ? {
+            poll: {
+              options: current.poll.options.map((option) => option.title),
+              multiple: current.poll.multiple,
+              expires_in: remainingSeconds(current.poll),
+            },
+          }
+        : {}),
     });
     return request;
   }
@@ -235,15 +264,14 @@ describe('Post lifecycle through composer and status card', () => {
     const previous = current;
     openEdit(before);
     const request = saveRequest(after);
-    expect(editor().saving()).toBe(true);
+    expect(editDialog()!.saving()).toBe(true);
     expect(current).toBe(previous);
     const updated = { ...previous, content: `<p>${after}</p>`, edited_at: '2026-10-24T13:00:00Z' };
     request.flush(updated);
     card.detectChanges();
     expect(current).toEqual(updated);
     expect(card.componentInstance.display).toEqual(updated);
-    expect(editor().saving()).toBe(false);
-    expect(editor().editing()).toBe(false);
+    expect(editing()).toBe(false);
     expect(removed).toEqual([]);
   }
 
@@ -371,9 +399,9 @@ describe('Post lifecycle through composer and status card', () => {
   it('create -> cancel edit -> reopen uses the saved source, never the discarded text', async () => {
     await create(status({ media_attachments: images() }));
     openEdit('Original caption');
-    editor().editText.set('Discard this');
-    card.componentInstance.cancelEdit();
-    expect(editor().editing()).toBe(false);
+    editDialog()!.text.set('Discard this');
+    editDialog()!.close();
+    expect(editing()).toBe(false);
     expect(changes).toEqual([]);
     expect(current.content).toBe('<p>Original caption</p>');
     edit('Original caption', 'Keep this');
@@ -384,9 +412,9 @@ describe('Post lifecycle through composer and status card', () => {
     const original = current;
     openEdit('Original caption');
     saveRequest('Retry this caption').flush({}, { status: 503, statusText: 'Unavailable' });
-    expect(editor().editing()).toBe(true);
-    expect(editor().saving()).toBe(false);
-    expect(editor().editText()).toBe('Retry this caption');
+    expect(editing()).toBe(true);
+    expect(editDialog()!.saving()).toBe(false);
+    expect(editDialog()!.text()).toBe('Retry this caption');
     expect(current).toBe(original);
     expect(changes).toEqual([]);
     saveRequest('Retry this caption').flush({ ...original, content: '<p>Retry this caption</p>' });
@@ -398,10 +426,10 @@ describe('Post lifecycle through composer and status card', () => {
     await create();
     openEdit('Original caption');
     const request = saveRequest('Corrected caption');
-    card.componentInstance.saveEdit();
-    card.componentInstance.cancelEdit();
+    editDialog()!.save();
+    editDialog()!.close();
     http.expectNone(`/api/v1/statuses/${current.id}`);
-    expect(editor().editing()).toBe(true);
+    expect(editing()).toBe(true);
     request.flush({ ...current, content: '<p>Corrected caption</p>' });
     expect(changes).toHaveLength(1);
   });
@@ -475,11 +503,11 @@ describe('Post lifecycle through composer and status card', () => {
   it('create -> blank edit refuses the save and retains the saved post', async () => {
     await create();
     openEdit('Original caption');
-    editor().editText.set('   ');
-    card.componentInstance.saveEdit();
+    editDialog()!.text.set('   ');
+    editDialog()!.save();
     http.expectNone(`/api/v1/statuses/${current.id}`);
     expect(changes).toEqual([]);
-    expect(editor().editing()).toBe(true);
+    expect(editing()).toBe(true);
     expect(current.content).toBe('<p>Original caption</p>');
   });
 

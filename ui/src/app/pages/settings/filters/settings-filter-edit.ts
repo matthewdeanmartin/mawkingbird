@@ -3,10 +3,17 @@ import { FilterDraft, FilterWizard } from './filter-wizard';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, Observable, of } from 'rxjs';
 import { Api } from '../../../api';
-import { ContentFilter, FilterAction, FilterContext, FilterKeyword } from '../../../models';
+import {
+  ContentFilter,
+  FilterAction,
+  FilterContext,
+  FilterKeyword,
+  FilterStatus,
+} from '../../../models';
+import { MbButton } from '../../../design-system/button/button';
 import { BulkWordsDialog } from '../../../bulk-words-dialog/bulk-words-dialog';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 
@@ -62,6 +69,11 @@ interface KeywordRow {
 // i18n settings.filters.wholeWord.hint: Whole word: "cat" matches only the word cat, not "category". Existing keywords can be removed and re-added to change them.
 // i18n settings.filters.create: Create filter
 // i18n common.cancel: Cancel
+// i18n settings.filters.posts: Filtered posts
+// i18n settings.filters.postsHint: Posts added with "Filter this post…". Removing one shows it again.
+// i18n settings.filters.viewPost: View post
+// i18n settings.filters.removePost: Remove
+// i18n settings.filters.removePostFailed: Could not remove that post from the filter.
 @Component({
   selector: 'app-settings-filter-edit',
   imports: [
@@ -72,6 +84,7 @@ interface KeywordRow {
     FilterWizard,
     BulkWordsDialog,
     MbCheckbox,
+    MbButton,
   ],
   templateUrl: './settings-filter-edit.html',
   styleUrl: './settings-filter-edit.css',
@@ -89,6 +102,7 @@ export class SettingsFilterEdit implements OnInit {
     this.wizardOpen.set(false);
   }
   private api = inject(Api);
+  private transloco = inject(TranslocoService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -150,7 +164,27 @@ export class SettingsFilterEdit implements OnInit {
     });
   }
 
+  /** Posts attached to this filter one by one (`Filter this post…`). */
+  protected filteredPosts = signal<FilterStatus[]>([]);
+  protected removingPost = signal<string | null>(null);
+
+  protected removeFilteredPost(row: FilterStatus): void {
+    if (this.removingPost()) return;
+    this.removingPost.set(row.id);
+    this.api.removeFilterStatus(row.id).subscribe({
+      next: () => {
+        this.removingPost.set(null);
+        this.filteredPosts.update((list) => list.filter((r) => r.id !== row.id));
+      },
+      error: () => {
+        this.removingPost.set(null);
+        this.error.set(this.transloco.translate('settings.filters.removePostFailed'));
+      },
+    });
+  }
+
   private applyFilter(filter: ContentFilter): void {
+    this.filteredPosts.set(filter.statuses ?? []);
     this.title.set(filter.title);
     this.contexts.set(filter.context);
     this.action.set(filter.filter_action);

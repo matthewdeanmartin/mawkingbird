@@ -55,15 +55,22 @@
     }
   } @else {
     @for (link of links(); track link.url) {
-      <a class="news-card" [href]="link.url" target="_blank" rel="noopener noreferrer">
-        <span class="news-title">{{ link.title }}</span>
-        @if (link.description) {
-          <span class="news-desc muted">{{ link.description }}</span>
+      <div class="news-item">
+        <a class="news-card" [href]="link.url" target="_blank" rel="noopener noreferrer">
+          <span class="news-title">{{ link.title }}</span>
+          @if (link.description) {
+            <span class="news-desc muted">{{ link.description }}</span>
+          }
+          @if (link.provider_name) {
+            <span class="news-provider muted small">{{ link.provider_name }}</span>
+          }
+        </a>
+        @if (!remoteHost()) {
+          <a class="news-posts small" routerLink="/link" [queryParams]="{ url: link.url }">{{
+            'pagesServerFeed.news.posts' | transloco
+          }}</a>
         }
-        @if (link.provider_name) {
-          <span class="news-provider muted small">{{ link.provider_name }}</span>
-        }
-      </a>
+      </div>
     }
   }
 } @else {

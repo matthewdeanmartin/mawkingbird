@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClientPrefs } from '../client-prefs';
 import { Pseudonymity } from '../pseudonymity';
 import { Drafts, emptyDraftSnapshot } from '../drafts';
+import { PageDiagnostics } from '../page-diagnostics';
 import { Status } from '../models';
 import { Auth } from '../auth';
 import { Server } from '../server';
@@ -86,7 +87,6 @@ interface ComposeInternals {
   draftSaved: WritableSignal<boolean>;
   draftSaveFailed: WritableSignal<boolean>;
   saveDraft(): void;
-  downloadDraft(): void;
   deleteSelfDraftCopy(): void;
   showTargetPicker: Signal<boolean>;
   crossPostError: Signal<string | null>;
@@ -96,7 +96,6 @@ interface ComposeInternals {
   addPollOption(): void;
   removePollOption(index: number): void;
   setPollOption(index: number, value: string): void;
-  setMediaDescription(index: number, description: string): void;
   removeMedia(index: number): void;
   submit(): void;
   blogDraft: WritableSignal<boolean>;
@@ -2921,7 +2920,7 @@ describe('Compose', () => {
     expect(internals(f).text()).toBe('the only copy');
     expect(internals(f).draftSaved()).toBe(false);
     expect(internals(f).draftSaveFailed()).toBe(true);
-    expect(f.nativeElement.textContent).toContain('could not be saved');
+    expect(f.nativeElement.textContent).toContain("Drafts aren't being saved");
     expect(TestBed.inject(Drafts).drafts()).toEqual([]);
   });
 
@@ -2939,23 +2938,51 @@ describe('Compose', () => {
 
     expect(internals(f).text()).toBe('autosave must keep this');
     expect(internals(f).draftSaveFailed()).toBe(true);
-    expect(f.nativeElement.textContent).toContain('could not be saved');
+    // A quiet status line, not an alert, and no download fallback.
+    const hint = f.nativeElement.querySelector('[role="status"].thread-hint');
+    expect(hint?.textContent).toContain("Drafts aren't being saved");
+    expect(f.nativeElement.querySelector('[role="alert"]')).toBeNull();
+    expect(f.nativeElement.textContent).not.toContain('Download a copy');
   });
 
-  it('downloads the live editor as JSON without using localStorage', () => {
+  it('logs a failed autosave once with the browser reason', () => {
+    vi.useFakeTimers();
     const f = setUp();
-    internals(f).text.set('portable copy');
-    const downloads: HTMLAnchorElement[] = [];
-    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
-      this: HTMLAnchorElement,
-    ) {
-      downloads.push(this);
+    const warn = vi.spyOn(TestBed.inject(PageDiagnostics), 'warn');
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError');
     });
 
-    internals(f).downloadDraft();
+    internals(f).text.set('first');
+    f.detectChanges();
+    vi.advanceTimersByTime(500);
+    internals(f).text.set('second');
+    f.detectChanges();
+    vi.advanceTimersByTime(500);
 
-    expect(downloads[0].download).toMatch(/^mockingbird-draft-/);
-    expect(decodeURIComponent(downloads[0].href)).toContain('portable copy');
+    const failures = warn.mock.calls.filter(([, event]) => event === 'draft:storage-failed');
+    expect(failures).toHaveLength(1);
+    expect(failures[0][2]).toMatchObject({
+      action: 'autosave',
+      error: 'QuotaExceededError: quota',
+    });
+  });
+
+  it('never writes or warns for a reply holding only the seeded @handle', () => {
+    vi.useFakeTimers();
+    const f = setUp();
+    const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota', 'QuotaExceededError');
+    });
+    f.componentRef.setInput('inReplyToId', 's1');
+    f.componentRef.setInput('replyToHandle', 'alice@dmv.community');
+    f.detectChanges();
+    vi.advanceTimersByTime(500);
+    f.detectChanges();
+
+    expect(internals(f).text()).toBe('@alice@dmv.community ');
+    expect(setItem).not.toHaveBeenCalled();
+    expect(internals(f).draftSaveFailed()).toBe(false);
   });
 
   it('an opted-in composer still posts normally while the pref is off', () => {

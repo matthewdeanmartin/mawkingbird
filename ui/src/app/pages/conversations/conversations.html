@@ -339,6 +339,15 @@
           <details class="danger-menu">
             <summary [aria-label]="'pages.conversations.actionsAriaLabel' | transloco">•••</summary>
             <div class="danger-menu-panel">
+              @if (chat.kind === 'private' && chat.convIds.length) {
+                <button type="button" (click)="markUnread(chat)">
+                  {{ 'pages.conversations.markUnread' | transloco }}
+                </button>
+                <button type="button" (click)="removeChat(chat)">
+                  {{ 'pages.conversations.remove' | transloco }}
+                </button>
+                <hr class="menu-rule" />
+              }
               @for (a of chat.accounts; track a.id) {
                 <div class="menu-account">
                   <div class="menu-account-name muted small">&#64;{{ a.acct }}</div>
@@ -381,6 +390,11 @@
             {{ 'pages.conversations.requests.decline' | transloco }}
           </button>
         </div>
+      }
+      @if (convActionError()) {
+        <p class="muted small bsky-action-error" role="alert">
+          {{ 'pages.conversations.convActionFailed' | transloco }}
+        </p>
       }
       @if (chat.kind === 'bsky' && bskyActionError(); as errorKey) {
         <p class="muted small bsky-action-error" role="alert">{{ errorKey | transloco }}</p>

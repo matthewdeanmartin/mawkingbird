@@ -119,6 +119,7 @@ describe('Profile resolving a remote account through the home server', () => {
       )
       .flush([]);
     httpMock.expectOne('/api/v1/accounts/local-42/collections').flush({ collections: [] });
+    httpMock.expectOne('/api/v1/accounts/local-42/featured_tags').flush([]);
     httpMock.expectOne('/api/v1/accounts/local-42/endorsements').flush([]);
     httpMock
       .match((r) => r.url === '/api/v1/accounts/familiar_followers')

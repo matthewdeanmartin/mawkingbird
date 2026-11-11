@@ -13,7 +13,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Subscription, timeout } from 'rxjs';
+import { forkJoin, Subscription, timeout } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../api';
 import { Auth } from '../../auth';
@@ -1398,6 +1398,44 @@ export class Conversations implements OnInit, OnDestroy {
   // i18n pages.conversations.retry: Retry
 
   // ---------------------------------------------------------------- read state
+
+  // i18n pages.conversations.markUnread: Mark as unread
+  // i18n pages.conversations.remove: Remove from this list
+  // i18n pages.conversations.removeConfirm: Remove this conversation from your list? The messages are not deleted, and a new message brings it back.
+  // i18n pages.conversations.convActionFailed: That did not work. Try again.
+
+  /**
+   * Mark a Mastodon private chat unread and step out of it, since reading it
+   * here would mark it read again straight away.
+   */
+  protected markUnread(chat: Chat): void {
+    if (chat.kind !== 'private' || !chat.convIds.length) return;
+    forkJoin(chat.convIds.map((id) => this.api.markConversationUnread(id))).subscribe({
+      next: () => {
+        this.privateConvs.update((list) =>
+          list.map((c) => (chat.convIds.includes(c.id) ? { ...c, unread: true } : c)),
+        );
+        if (this.selectedKey() === chat.key) this.selectedKey.set(null);
+      },
+      error: () => this.convActionError.set(true),
+    });
+  }
+
+  /** Remove a Mastodon private chat from the list (`DELETE /conversations/:id`). */
+  protected async removeChat(chat: Chat): Promise<void> {
+    if (chat.kind !== 'private' || !chat.convIds.length) return;
+    if (!(await this.dialogs.confirm(this.i18n.translate('pages.conversations.removeConfirm'))))
+      return;
+    forkJoin(chat.convIds.map((id) => this.api.removeConversation(id))).subscribe({
+      next: () => {
+        this.privateConvs.update((list) => list.filter((c) => !chat.convIds.includes(c.id)));
+        if (this.selectedKey() === chat.key) this.selectedKey.set(null);
+      },
+      error: () => this.convActionError.set(true),
+    });
+  }
+
+  protected convActionError = signal(false);
 
   private markRead(chat: Chat): void {
     if (chat.kind === 'private') {

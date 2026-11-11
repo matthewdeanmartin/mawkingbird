@@ -5,6 +5,7 @@ import { BlueskyModeration } from '../providers/bluesky/bluesky-moderation';
 import { BlueskyPostControls } from '../providers/bluesky/bluesky-post-controls';
 import { FollowTrust } from '../follow-trust';
 import { By } from '@angular/platform-browser';
+import { StatusEditDialog } from '../status-edit/status-edit-dialog';
 import { Compose } from '../compose/compose';
 import { AppDialogs } from '../app-dialogs';
 import { provideHttpClient } from '@angular/common/http';
@@ -199,11 +200,42 @@ describe('StatusCard', () => {
     }
   });
 
+  /** Open "More tools…" from the post's ••• menu, if this post offers it. */
+  function stubModalDialogs(): void {
+    const proto = HTMLDialogElement.prototype as unknown as Record<string, unknown>;
+    if (typeof proto['showModal'] === 'function') return;
+    Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+      configurable: true,
+      value(this: HTMLDialogElement) {
+        this.open = true;
+      },
+    });
+    Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+      configurable: true,
+      value(this: HTMLDialogElement) {
+        this.open = false;
+      },
+    });
+  }
+
+  function openTools(fixture: ComponentFixture<StatusCard>): boolean {
+    stubModalDialogs();
+    const more = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+        '.danger-menu-panel button',
+      ),
+    ].find((b) => b.textContent?.trim() === 'More tools…');
+    more?.click();
+    fixture.detectChanges();
+    return !!more;
+  }
+
   it('offers Download media in the post menu only when the post carries media', () => {
     const rows = (status: Status) => {
       const fixture = setUp(status);
+      openTools(fixture);
       const found = (fixture.nativeElement as HTMLElement).querySelectorAll(
-        '.danger-menu-panel app-media-download-menu-item',
+        '.post-tools app-media-download-menu-item',
       ).length;
       fixture.destroy();
       return found;
@@ -291,8 +323,9 @@ describe('StatusCard', () => {
       makeStatus({ url: 'https://example.social/@a/1', content: '<p>Hello there</p>' }),
     );
     const el = fixture.nativeElement as HTMLElement;
+    expect(openTools(fixture)).toBe(true);
     const item = (label: string) =>
-      [...el.querySelectorAll<HTMLButtonElement>('.danger-menu-panel button')].find(
+      [...el.querySelectorAll<HTMLButtonElement>('.post-tools button')].find(
         (b) => b.textContent?.trim() === label,
       );
     expect(item('Embed post…')).toBeTruthy();
@@ -307,8 +340,11 @@ describe('StatusCard', () => {
     const fixture = setUp(
       makeStatus({ url: 'https://example.social/@a/1', visibility: 'private' }),
     );
+    openTools(fixture);
     const labels = [
-      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.danger-menu-panel button'),
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll(
+        '.danger-menu-panel button, .post-tools button',
+      ),
     ].map((b) => b.textContent?.trim());
     expect(labels).not.toContain('Embed post…');
   });
@@ -319,6 +355,7 @@ describe('StatusCard', () => {
       content: '<a href="https://soundcloud.com/singer/sea-shanty">Sea shanty</a>',
     });
     const fixture = setUp(status);
+    openTools(fixture);
     const link = () =>
       Array.from(fixture.nativeElement.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>).find(
         (a) => a.textContent?.includes('Open in Radio'),
@@ -1676,24 +1713,40 @@ describe('StatusCard', () => {
     expect(request).not.toHaveBeenCalled();
   });
 
+  /** Open the full Mastodon editor and answer its source request. */
+  function openEditor(f: ComponentFixture<StatusCard>, text = 'old', spoiler = '') {
+    f.componentInstance.startEdit(fakeEvent());
+    f.detectChanges();
+    httpMock.expectOne('/api/v1/statuses/1/source').flush({ id: '1', text, spoiler_text: spoiler });
+    f.detectChanges();
+    const dialog = f.debugElement.query(By.directive(StatusEditDialog));
+    return dialog.componentInstance as unknown as {
+      text: WritableSignal<string>;
+      spoilerText: WritableSignal<string>;
+      canSave: Signal<boolean>;
+      saving: Signal<boolean>;
+      error: Signal<string>;
+      save(): void;
+      closed: { emit(): void };
+    };
+  }
+
   it('startEdit: fetches status source and opens the edit field', () => {
     const f = setUp();
-    f.componentInstance.startEdit(fakeEvent());
+    const editor = openEditor(f, 'original text', 'a warning');
 
-    const req = httpMock.expectOne('/api/v1/statuses/1/source');
-    req.flush({ id: '1', text: 'original text', spoiler_text: '' });
-
-    expect(internals(f).editing()).toBe(true);
-    expect(internals(f).editText()).toBe('original text');
+    expect(editor.text()).toBe('original text');
+    expect(editor.spoilerText()).toBe('a warning');
+    expect(f.nativeElement.textContent).toContain('Edit post');
   });
 
   it('cancelEdit: closes the edit field', () => {
     const f = setUp();
-    f.componentInstance.startEdit(fakeEvent());
-    httpMock.expectOne('/api/v1/statuses/1/source').flush({ id: '1', text: 'x', spoiler_text: '' });
+    const editor = openEditor(f, 'x');
 
-    f.componentInstance.cancelEdit();
-    expect(internals(f).editing()).toBe(false);
+    editor.closed.emit();
+    f.detectChanges();
+    expect(f.debugElement.query(By.directive(StatusEditDialog))).toBeNull();
   });
 
   // ---------------------------------------------------------------- saveEdit
@@ -1702,34 +1755,30 @@ describe('StatusCard', () => {
     const changed: Status[] = [];
     const f = setUp();
     f.componentInstance.changed.subscribe((s) => changed.push(s));
+    const editor = openEditor(f);
 
-    // Open edit mode.
-    f.componentInstance.startEdit(fakeEvent());
-    httpMock
-      .expectOne('/api/v1/statuses/1/source')
-      .flush({ id: '1', text: 'old', spoiler_text: '' });
-
-    internals(f).editText.set('new content');
-    f.componentInstance.saveEdit();
+    editor.text.set('new content');
+    editor.save();
 
     const req = httpMock.expectOne('/api/v1/statuses/1');
     expect(req.request.method).toBe('PUT');
     expect(req.request.body.status).toBe('new content');
     const updated = makeStatus({ id: '1', content: '<p>new content</p>' });
     req.flush(updated);
+    f.detectChanges();
 
     expect(changed).toHaveLength(1);
     expect(changed[0].content).toBe('<p>new content</p>');
-    expect(internals(f).editing()).toBe(false);
+    expect(f.debugElement.query(By.directive(StatusEditDialog))).toBeNull();
   });
 
   it('saveEdit: does nothing when text is blank', () => {
     const f = setUp();
-    f.componentInstance.startEdit(fakeEvent());
-    httpMock.expectOne('/api/v1/statuses/1/source').flush({ id: '1', text: '', spoiler_text: '' });
+    const editor = openEditor(f, '');
 
-    internals(f).editText.set('   ');
-    f.componentInstance.saveEdit();
+    editor.text.set('   ');
+    expect(editor.canSave()).toBe(false);
+    editor.save();
 
     httpMock.expectNone('/api/v1/statuses/1');
   });
@@ -1742,18 +1791,16 @@ describe('StatusCard', () => {
     const f = setUp(makeStatus({ media_attachments: media }));
     const changed = vi.fn();
     f.componentInstance.changed.subscribe(changed);
-    f.componentInstance.startEdit(fakeEvent());
-    httpMock.expectOne('/api/v1/statuses/1/source').flush({
-      id: '1',
-      text: 'old',
-      spoiler_text: '',
-    });
-    f.detectChanges();
+    const editor = openEditor(f);
     expect(f.nativeElement.querySelectorAll('.media-thumb')).toHaveLength(2);
-    internals(f).editText.set('new content');
-    f.componentInstance.saveEdit();
+
+    editor.text.set('new content');
+    editor.save();
     const req = httpMock.expectOne('/api/v1/statuses/1');
-    expect(req.request.body).toEqual({ status: 'new content', media_ids: ['a', 'b'] });
+    // Both attachments are re-sent; unchanged descriptions are not.
+    expect(req.request.body.media_ids).toEqual(['a', 'b']);
+    expect(req.request.body.media_attributes).toBeUndefined();
+    expect(req.request.body.status).toBe('new content');
     // Model the server retaining only explicitly attached media.
     const updated = makeStatus({
       content: '<p>new content</p>',
@@ -1769,17 +1816,44 @@ describe('StatusCard', () => {
 
   it('saveEdit: clears saving flag on HTTP error', () => {
     const f = setUp();
-    f.componentInstance.startEdit(fakeEvent());
-    httpMock.expectOne('/api/v1/statuses/1/source').flush({ id: '1', text: 'x', spoiler_text: '' });
+    const editor = openEditor(f, 'x');
 
-    internals(f).editText.set('edited');
-    f.componentInstance.saveEdit();
+    editor.text.set('edited');
+    editor.save();
 
     httpMock
       .expectOne('/api/v1/statuses/1')
       .flush('', { status: 422, statusText: 'Unprocessable' });
 
-    expect(internals(f).saving()).toBe(false);
+    expect(editor.saving()).toBe(false);
+    expect(editor.error()).toContain('The edit was not saved.');
+  });
+
+  it('keeps the poll through a text edit, since Mastodon deletes a poll an edit leaves out', () => {
+    const poll = {
+      id: 'p1',
+      expires_at: new Date(Date.now() + 3600_000).toISOString(),
+      expired: false,
+      multiple: false,
+      votes_count: 2,
+      voters_count: 2,
+      options: [
+        { title: 'Tea', votes_count: 1 },
+        { title: 'Coffee', votes_count: 1 },
+      ],
+      voted: false,
+      own_votes: [],
+    };
+    const f = setUp(makeStatus({ poll }));
+    const editor = openEditor(f, 'Which?');
+
+    editor.text.set('Which one?');
+    editor.save();
+    const body = httpMock.expectOne('/api/v1/statuses/1').request.body;
+    expect(body.poll.options).toEqual(['Tea', 'Coffee']);
+    expect(body.poll.multiple).toBe(false);
+    expect(body.poll.expires_in).toBeGreaterThan(3500);
+    expect(body.poll.expires_in).toBeLessThanOrEqual(3600);
   });
 
   // ---------------------------------------------------------------- toggleReply / toggleQuote
@@ -2335,6 +2409,38 @@ describe('StatusCard', () => {
     );
     expect(f.componentInstance.pollPercent({ votes_count: 75 })).toBe(75);
     expect(f.componentInstance.pollPercent({ votes_count: 25 })).toBe(25);
+  });
+
+  it('refreshes an open Mastodon poll in place and offers no refresh once it closes', () => {
+    const poll = {
+      id: 'p9',
+      expires_at: null,
+      expired: false,
+      multiple: false,
+      votes_count: 1,
+      voters_count: 1,
+      options: [
+        { title: 'Tea', votes_count: 1 },
+        { title: 'Coffee', votes_count: 0 },
+      ],
+      voted: true,
+      own_votes: [0],
+    };
+    const f = setUp(makeStatus({ poll }));
+    const emitted: Status[] = [];
+    f.componentInstance.changed.subscribe((s: Status) => emitted.push(s));
+    const refresh = () =>
+      [
+        ...(f.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('.poll button'),
+      ].find((b) => b.textContent?.trim() === 'Refresh');
+
+    refresh()!.click();
+    httpMock.expectOne('/api/v1/polls/p9').flush({ ...poll, votes_count: 5 });
+    expect(emitted.at(-1)?.poll?.votes_count).toBe(5);
+
+    f.componentRef.setInput('status', makeStatus({ poll: { ...poll, expired: true } }));
+    f.detectChanges();
+    expect(refresh()).toBeUndefined();
   });
 
   it('pollPercent: returns 0 when total votes are 0', () => {

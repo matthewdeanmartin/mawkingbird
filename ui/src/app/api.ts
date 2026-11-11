@@ -38,6 +38,7 @@ import {
   FilterContext,
   FilterKeyword,
   FilterKeywordDraft,
+  FilterStatus,
   InstanceInfo,
   InstanceRule,
   TrendLink,
@@ -55,6 +56,8 @@ import {
   StatusSource,
   Tag,
   TermsOfService,
+  PrivacyPolicy,
+  ModeratedServer,
   Translation,
   UserList,
   ListRepliesPolicy,
@@ -65,10 +68,21 @@ import {
 } from './models';
 import { TrendLanguageFilter } from './trend-language-filter';
 import { PeopleCursorSource, nextMaxIdFrom, peopleCursorFrom } from './people-cursor';
+import type { StatusEditBody } from './status-edit/status-edit';
 
 // Re-exported: it lived here first and several specs and callers import it from
 // this module. Its home is now `people-cursor.ts`, beside the fallback that uses it.
 export { nextMaxIdFrom } from './people-cursor';
+
+/**
+ * Server-side narrowing of a hashtag timeline (Mastodon's `all[]`, `none[]`,
+ * `local`). The server reads at most four tags per list.
+ */
+export interface TagRefine {
+  all?: readonly string[];
+  none?: readonly string[];
+  local?: boolean;
+}
 
 export interface HomeTimelinePage {
   statuses: Status[];
@@ -90,6 +104,8 @@ export interface AccountStatusesOptions {
    * instead — see `pages/profile/media/profile-media-item.ts`.
    */
   onlyMedia?: boolean;
+  /** Only posts carrying this hashtag (`tagged=`, no `#`). */
+  tagged?: string;
   maxId?: string;
   limit?: number;
 }
@@ -186,6 +202,9 @@ export class Api {
     if (opts.onlyMedia) {
       params = params.set('only_media', 'true');
     }
+    if (opts.tagged) {
+      params = params.set('tagged', opts.tagged);
+    }
     if (opts.maxId) {
       params = params.set('max_id', opts.maxId);
     }
@@ -263,6 +282,11 @@ export class Api {
 
   accountEndorsements(id: string): Observable<Account[]> {
     return this.http.get<Account[]>(`/api/v1/accounts/${id}/endorsements`);
+  }
+
+  /** The hashtags an account features on its profile (`GET /accounts/:id/featured_tags`). */
+  accountFeaturedTags(id: string): Observable<FeaturedTag[]> {
+    return this.http.get<FeaturedTag[]>(`/api/v1/accounts/${id}/featured_tags`);
   }
 
   /** One page of an account's followers (Mastodon caps limit at 80). */
@@ -447,6 +471,16 @@ export class Api {
   }
 
   /**
+   * Posts sharing one link (`GET /api/v1/timelines/link`, Mastodon 4.3+).
+   * The server answers only for links it is currently trending; anything else
+   * is a 404, which callers should present as "no list for this link".
+   */
+  linkTimeline(url: string, maxId?: string): Observable<Status[]> {
+    const params = this.pageParams(maxId).set('url', url);
+    return this.http.get<Status[]>('/api/v1/timelines/link', { params });
+  }
+
+  /**
    * `limit` is capped at 40 by Mastodon; analytics pages at the cap to halve calls.
    * `any` widens the timeline to posts carrying any of those tags as well, one
    * stream for a union of hashtags (Mastodon's `any[]`).
@@ -457,6 +491,7 @@ export class Api {
     limit?: number,
     onlyMedia = false,
     any: readonly string[] = [],
+    refine: TagRefine = {},
   ): Observable<Status[]> {
     let params = this.pageParams(maxId);
     if (limit) {
@@ -464,6 +499,9 @@ export class Api {
     }
     if (onlyMedia) params = params.set('only_media', 'true');
     for (const other of any) params = params.append('any[]', other);
+    for (const other of refine.all ?? []) params = params.append('all[]', other);
+    for (const other of refine.none ?? []) params = params.append('none[]', other);
+    if (refine.local) params = params.set('local', 'true');
     return this.http.get<Status[]>(`/api/v1/timelines/tag/${encodeURIComponent(tag)}`, {
       params,
       context: serverRole('tag'),
@@ -642,11 +680,21 @@ export class Api {
     );
   }
 
+  /** One attachment; `url` stays null while the server is still processing it. */
+  getMedia(id: string): Observable<MediaAttachment> {
+    return this.http.get<MediaAttachment>(`/api/v1/media/${id}`);
+  }
+
   updateMedia(id: string, description: string): Observable<MediaAttachment> {
     return this.http.put<MediaAttachment>(`/api/v1/media/${id}`, { description });
   }
 
   // --- polls ---
+  /** Current counts for one poll (`GET /api/v1/polls/:id`). */
+  getPoll(pollId: string): Observable<Poll> {
+    return this.http.get<Poll>(`/api/v1/polls/${pollId}`);
+  }
+
   votePoll(pollId: string, choices: number[]): Observable<Poll> {
     return this.http.post<Poll>(`/api/v1/polls/${pollId}/votes`, { choices });
   }
@@ -675,6 +723,15 @@ export class Api {
       body['media_ids'] = mediaIds;
     }
     return this.http.put<Status>(`/api/v1/statuses/${id}`, body);
+  }
+
+  /**
+   * A full Mastodon edit (`PUT /api/v1/statuses/:id`). Send the poll again to
+   * keep it: Mastodon deletes a poll an edit leaves out.
+   */
+  updateStatus(id: string, body: StatusEditBody): Observable<Status> {
+    const status = this.pseudonymity.cleanLinks() ? cleanPostLinks(body.status).text : body.status;
+    return this.http.put<Status>(`/api/v1/statuses/${id}`, { ...body, status });
   }
 
   favourite(id: string): Observable<Status> {
@@ -1115,6 +1172,16 @@ export class Api {
     return this.http.post<Conversation>(`/api/v1/conversations/${id}/read`, {});
   }
 
+  /** `POST /api/v1/conversations/:id/unread` (Mastodon 4.4+). */
+  markConversationUnread(id: string): Observable<Conversation> {
+    return this.http.post<Conversation>(`/api/v1/conversations/${id}/unread`, {});
+  }
+
+  /** Drop a conversation from the list; its posts stay where they are. */
+  removeConversation(id: string): Observable<unknown> {
+    return this.http.delete(`/api/v1/conversations/${id}`);
+  }
+
   // --- profile / settings ---
   // --- server annual reports ("Wrapstodon") ---
 
@@ -1235,6 +1302,19 @@ export class Api {
    * encoding both it and real Mastodon accept. Succeeds even when the domain is
    * already blocked or doesn't exist; only a blank or malformed domain 422s.
    */
+  /**
+   * How many of your follows and followers a domain block would cut
+   * (`GET /api/v1/domain_blocks/preview`, Mastodon 4.4+).
+   */
+  domainBlockPreview(
+    domain: string,
+  ): Observable<{ following_count: number; followers_count: number }> {
+    return this.http.get<{ following_count: number; followers_count: number }>(
+      '/api/v1/domain_blocks/preview',
+      { params: new HttpParams().set('domain', domain) },
+    );
+  }
+
   blockDomain(domain: string): Observable<unknown> {
     const form = new FormData();
     form.append('domain', domain);
@@ -1404,6 +1484,23 @@ export class Api {
     });
   }
 
+  /** The server's privacy policy (`GET /api/v1/instance/privacy_policy`, 4.0+). */
+  privacyPolicy(): Observable<PrivacyPolicy> {
+    return this.http.get<PrivacyPolicy>('/api/v1/instance/privacy_policy', {
+      context: serverRole('background'),
+    });
+  }
+
+  /**
+   * Servers this one limits or suspends (`GET /api/v1/instance/domain_blocks`).
+   * Admins choose who may see it, so a 401/403 means "not public", not an error.
+   */
+  moderatedServers(): Observable<ModeratedServer[]> {
+    return this.http.get<ModeratedServer[]>('/api/v1/instance/domain_blocks', {
+      context: serverRole('background'),
+    });
+  }
+
   customEmojis(): Observable<CustomEmoji[]> {
     return this.http.get<CustomEmoji[]>('/api/v1/custom_emojis', {
       context: serverRole('background'),
@@ -1535,6 +1632,18 @@ export class Api {
 
   deleteFilterKeyword(keywordId: string): Observable<unknown> {
     return this.http.delete(`/api/v2/filters/keywords/${keywordId}`);
+  }
+
+  /** Filter one specific post (`POST /api/v2/filters/:id/statuses`). */
+  addFilterStatus(filterId: string, statusId: string): Observable<FilterStatus> {
+    return this.http.post<FilterStatus>(`/api/v2/filters/${filterId}/statuses`, {
+      status_id: statusId,
+    });
+  }
+
+  /** Stop filtering a post; `id` is the FilterStatus id, not the post's. */
+  removeFilterStatus(id: string): Observable<unknown> {
+    return this.http.delete(`/api/v2/filters/statuses/${id}`);
   }
 
   private pageParams(maxId?: string): HttpParams {

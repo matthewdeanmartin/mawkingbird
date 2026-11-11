@@ -47,6 +47,41 @@ beforeEach(() => {
   vi.spyOn(Router.prototype, 'navigate').mockResolvedValue(true).mockClear();
 });
 
+/** jsdom has no modal dialogs; give MbDialog the two calls it makes. */
+function stubModalDialogs(): void {
+  const proto = HTMLDialogElement.prototype as unknown as Record<string, unknown>;
+  if (typeof proto['showModal'] === 'function') return;
+  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', {
+    configurable: true,
+    value(this: HTMLDialogElement) {
+      this.open = true;
+    },
+  });
+  Object.defineProperty(HTMLDialogElement.prototype, 'close', {
+    configurable: true,
+    value(this: HTMLDialogElement) {
+      this.open = false;
+    },
+  });
+}
+
+/** Open "More options…" from the profile's ••• menu and return the dialog's body. */
+function openMoreOptions(fixture: {
+  nativeElement: unknown;
+  detectChanges(): void;
+}): HTMLElement | null {
+  const root = fixture.nativeElement as HTMLElement;
+  stubModalDialogs();
+  const existing = root.querySelector<HTMLElement>('.more-options');
+  if (existing) return existing;
+  const more = [...root.querySelectorAll<HTMLButtonElement>('.account-danger-panel button')].find(
+    (button) => button.textContent?.trim() === 'More options…',
+  );
+  more?.click();
+  fixture.detectChanges();
+  return root.querySelector<HTMLElement>('.more-options');
+}
+
 describe('self profile local actions', () => {
   const friend = {
     id: '42',
@@ -98,6 +133,7 @@ describe('self profile local actions', () => {
         url: 'https://djs.social/@MaQuest',
       });
       fixture.detectChanges();
+      openMoreOptions(fixture);
       const link = fixture.nativeElement.querySelector(
         'a[mbMenuItem][href^="/radio?"]',
       ) as HTMLAnchorElement;
@@ -350,6 +386,7 @@ describe('Profile block/unblock', () => {
     httpMock
       .expectOne((r) => r.url === '/api/v1/accounts/relationships')
       .flush([{ id: '900', blocking: false } as Relationship]);
+    httpMock.expectOne('/api/v1/accounts/900/featured_tags').flush([]);
     httpMock.expectOne('/api/v1/accounts/900/endorsements').flush([]);
     httpMock.expectOne('/api/v1/accounts/900/collections').flush({ collections: [] });
 
@@ -565,7 +602,7 @@ describe('Profile block/unblock', () => {
     const cmp = fixture.componentInstance as any;
     cmp.relationship.set({ id: '900', followed_by: true, blocking: false } as Relationship);
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Remove follower');
+    expect(openMoreOptions(fixture)?.textContent).toContain('Remove follower');
 
     cmp.requestRemoveFollower();
     cmp.confirmRemoveFollower();
@@ -646,6 +683,7 @@ describe('Profile block/unblock', () => {
           request.params.get('pinned') === 'true',
       )
       .flush([]);
+    httpMock.expectOne('/api/v1/accounts/900/featured_tags').flush([]);
     httpMock.expectOne('/api/v1/accounts/900/endorsements').flush([]);
     httpMock.expectOne('/api/v1/accounts/900/collections').flush({ collections: [] });
     httpMock.expectNone((request) => request.url.includes('/relationships'));
@@ -847,6 +885,7 @@ describe('Profile block/unblock', () => {
       .match((r) => r.url === '/api/v1/accounts/familiar_followers')
       .forEach((r) => r.flush([]));
     httpMock.expectOne((r) => r.url === '/api/v1/accounts/relationships').flush([]);
+    httpMock.expectOne('/api/v1/accounts/7/featured_tags').flush([]);
     httpMock.expectOne('/api/v1/accounts/7/endorsements').flush([]);
     httpMock.expectOne('/api/v1/accounts/7/collections').flush({ collections: [] });
 
@@ -1077,10 +1116,9 @@ describe('Profile — copy account', () => {
     return fixture;
   }
 
-  /** The menu is rendered inline, so the label is enough to assert presence. */
-  function menuHasClone(fixture: { nativeElement: unknown }): boolean {
-    const panel = (fixture.nativeElement as HTMLElement).querySelector('.account-danger-panel');
-    return !!panel?.textContent?.includes('Copy account');
+  /** Copy account lives in "More options…", reached from the ••• menu. */
+  function menuHasClone(fixture: { nativeElement: unknown; detectChanges(): void }): boolean {
+    return !!openMoreOptions(fixture)?.textContent?.includes('Copy account');
   }
 
   it('offers the entry to an anonymous viewer', () => {
@@ -1107,8 +1145,14 @@ describe('Profile — copy account', () => {
       (fixture.nativeElement as HTMLElement).querySelector('.account-danger-panel')?.textContent ??
       '';
 
-    expect(text.indexOf('Copy account')).toBeLessThan(text.indexOf('Block account'));
-    expect(text.indexOf('Copy account')).toBeLessThan(text.indexOf('Mute for'));
+    // In the menu, keeping (lists) comes before muting and blocking.
+    expect(text.indexOf('Local lists')).toBeGreaterThan(-1);
+    expect(text.indexOf('Local lists')).toBeLessThan(text.indexOf('Block account'));
+    expect(text.indexOf('Local lists')).toBeLessThan(text.indexOf('Mute for'));
+    // Copy account sits under "For this account", never beside the safety actions.
+    const more = openMoreOptions(fixture)?.textContent ?? '';
+    expect(more).toContain('Copy account');
+    expect(more).not.toContain('Block account');
   });
 
   /**
@@ -1130,7 +1174,7 @@ describe('Profile — copy account', () => {
         .slice(0, end)
         .map((el) => el.textContent ?? '')
         .join(' ');
-    expect(textUpTo(ruleAt)).toContain('Copy account');
+    expect(textUpTo(ruleAt)).toContain('Local lists');
     expect(textUpTo(ruleAt)).not.toContain('Block account');
   });
 });
@@ -1248,6 +1292,7 @@ describe('Profile and connected blogs', () => {
       .match((r) => r.url === '/api/v1/accounts/familiar_followers')
       .forEach((r) => r.flush([]));
     httpMock.expectOne((request) => request.url === '/api/v1/accounts/relationships').flush([]);
+    httpMock.expectOne('/api/v1/accounts/self/featured_tags').flush([]);
     httpMock.expectOne('/api/v1/accounts/self/endorsements').flush([]);
     httpMock.expectOne('/api/v1/accounts/self/collections').flush({ collections: [] });
 
@@ -1311,6 +1356,9 @@ describe('Profile cross-server recovery', () => {
       .match((r) => r.url === '/api/v1/accounts/familiar_followers')
       .forEach((r) => r.flush([]));
     httpMock.match((r) => r.url === '/api/v1/accounts/relationships').forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === `/api/v1/accounts/${id}/featured_tags`)
+      .forEach((r) => r.flush([]));
     httpMock
       .match((r) => r.url === `/api/v1/accounts/${id}/endorsements`)
       .forEach((r) => r.flush([]));
@@ -1389,10 +1437,10 @@ describe('Profile cross-server recovery', () => {
     settleSiblings('900');
     fixture.detectChanges();
     const actions = (fixture.nativeElement as HTMLElement).querySelector('.profile-buttons')!;
-    expect(actions.querySelectorAll('details button')[0]?.textContent).toContain(
-      'View as Slide Show',
-    );
-    expect(actions.querySelectorAll('details button')[1]?.textContent).toContain('Lists');
+    expect(actions.querySelectorAll('details button')[0]?.textContent).toContain('Lists');
+    expect(openMoreOptions(fixture)?.textContent).toContain('View as Slide Show');
+    fixture.componentInstance['moreOptionsOpen'].set(false);
+    fixture.detectChanges();
     const reply = Array.from(actions.querySelectorAll('button')).find(
       (b) => b.textContent?.trim() === 'Reply',
     )!;
@@ -1422,10 +1470,9 @@ describe('Profile cross-server recovery', () => {
       .flush({ id: '900', acct: 'alice@example.social', username: 'alice', fields: [] });
     settleSiblings('900');
     fixture.detectChanges();
-    const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('details app-media-download-menu-item')?.textContent).toContain(
-      'Download media…',
-    );
+    expect(
+      openMoreOptions(fixture)?.querySelector('app-media-download-menu-item')?.textContent,
+    ).toContain('Download media…');
     const loader = fixture.componentInstance['mediaDownloadLoader']()!;
     expect(loader).not.toBeNull();
     const page = firstValueFrom(loader(undefined, false));
@@ -1540,6 +1587,9 @@ describe('Profile handle-in-path route', () => {
       .match((r) => r.url === '/api/v1/accounts/familiar_followers')
       .forEach((r) => r.flush([]));
     httpMock.match((r) => r.url === '/api/v1/accounts/relationships').forEach((r) => r.flush([]));
+    httpMock
+      .match((r) => r.url === `/api/v1/accounts/${id}/featured_tags`)
+      .forEach((r) => r.flush([]));
     httpMock
       .match((r) => r.url === `/api/v1/accounts/${id}/endorsements`)
       .forEach((r) => r.flush([]));
@@ -1661,6 +1711,7 @@ describe('Profile account search', () => {
     httpMock
       .expectOne((r) => r.url === '/api/v1/accounts/relationships')
       .flush([{ id: '900' } as Relationship]);
+    httpMock.expectOne('/api/v1/accounts/900/featured_tags').flush([]);
     httpMock.expectOne('/api/v1/accounts/900/endorsements').flush([]);
     httpMock.expectOne('/api/v1/accounts/900/collections').flush({ collections: [] });
 
@@ -1791,18 +1842,23 @@ describe('Profile private account notes and QR', () => {
     httpMock
       .expectOne((r) => r.url === '/api/v1/accounts/relationships')
       .flush([{ id: '900', following, note } as Relationship]);
+    httpMock.expectOne('/api/v1/accounts/900/featured_tags').flush([]);
     httpMock.expectOne('/api/v1/accounts/900/endorsements').flush([]);
     httpMock.expectOne('/api/v1/accounts/900/collections').flush({ collections: [] });
     fixture.detectChanges();
     return fixture;
   }
 
-  function menuButton(fixture: { nativeElement: unknown }, label: string) {
-    return [
-      ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
-        '.account-danger-panel button',
-      ),
-    ].find((button) => button.textContent?.trim() === label);
+  /** An entry in the ••• menu, or else in its "More options…" dialog. */
+  function menuButton(fixture: { nativeElement: unknown; detectChanges(): void }, label: string) {
+    const find = (selector: string) =>
+      [
+        ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(selector),
+      ].find((button) => button.textContent?.trim() === label);
+    return (
+      find('.account-danger-panel button') ??
+      (openMoreOptions(fixture) ? find('.more-options button') : undefined)
+    );
   }
 
   it('shows the private note on the profile and offers to edit it', () => {
@@ -1899,6 +1955,7 @@ describe('Profile own featured accounts', () => {
     httpMock.match((r) => r.url === '/api/v1/accounts/me/statuses').forEach((r) => r.flush([]));
     httpMock.expectNone((r) => r.url === '/api/v1/accounts/familiar_followers');
     httpMock.expectOne((r) => r.url === '/api/v1/accounts/relationships').flush([]);
+    httpMock.expectOne('/api/v1/accounts/me/featured_tags').flush([]);
     httpMock.expectOne('/api/v1/accounts/me/endorsements').flush([
       { id: '1', username: 'ann', acct: 'ann', display_name: 'Ann' },
       { id: '2', username: 'bo', acct: 'bo', display_name: 'Bo' },
@@ -1917,5 +1974,192 @@ describe('Profile own featured accounts', () => {
     fixture.detectChanges();
     const names = [...el.querySelectorAll('.featured-display')].map((n) => n.textContent);
     expect(names).toEqual(['Bo']);
+  });
+});
+
+describe('Profile featured hashtags and tagged posts', () => {
+  let httpMock: HttpTestingController;
+  const zoe = { id: 'z1', username: 'zoe', acct: 'zoe', fields: [] } as unknown as Account;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+  });
+
+  function setUp(query: Record<string, string> = {}) {
+    const queryParamMap = convertToParamMap(query);
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id: 'z1' })),
+            queryParamMap: of(queryParamMap),
+            snapshot: { queryParamMap },
+          },
+        },
+      ],
+    });
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    httpMock = TestBed.inject(HttpTestingController);
+    httpMock.expectOne('/api/v1/accounts/z1').flush(zoe);
+    return fixture;
+  }
+
+  function settle(): void {
+    for (const url of [
+      '/api/v1/accounts/familiar_followers',
+      '/api/v1/accounts/relationships',
+      '/api/v1/accounts/z1/endorsements',
+    ]) {
+      httpMock.match((r) => r.url === url).forEach((r) => r.flush([]));
+    }
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/z1/collections')
+      .forEach((r) => r.flush({ collections: [] }));
+  }
+
+  it("lists the account's featured hashtags as links to its tagged posts", () => {
+    const fixture = setUp();
+    httpMock.match((r) => r.url === '/api/v1/accounts/z1/statuses').forEach((r) => r.flush([]));
+    httpMock
+      .expectOne('/api/v1/accounts/z1/featured_tags')
+      .flush([{ id: 't1', name: 'Gardening', url: '', statuses_count: 12, last_status_at: null }]);
+    settle();
+    fixture.detectChanges();
+
+    const line = (fixture.nativeElement as HTMLElement).querySelector('.profile-featured-tags');
+    expect(line?.textContent).toContain('Featured hashtags:');
+    const link = line?.querySelector('a');
+    expect(link?.textContent?.trim()).toBe('#Gardening');
+    expect(link?.getAttribute('href')).toContain('tagged=Gardening');
+  });
+
+  it('asks the server for only the tagged posts and says how to see the rest', () => {
+    const fixture = setUp({ tagged: '#Gardening' });
+    const posts = httpMock.match(
+      (r) => r.url === '/api/v1/accounts/z1/statuses' && !r.params.has('pinned'),
+    );
+    expect(posts.length).toBeGreaterThan(0);
+    for (const request of posts) {
+      expect(request.request.params.get('tagged')).toBe('Gardening');
+      request.flush([]);
+    }
+    httpMock.match((r) => r.url === '/api/v1/accounts/z1/statuses').forEach((r) => r.flush([]));
+    httpMock.expectOne('/api/v1/accounts/z1/featured_tags').flush([]);
+    settle();
+    fixture.detectChanges();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('Showing only posts tagged #Gardening.');
+    expect(text).toContain('Show all posts');
+    expect(text).toContain('No posts tagged #Gardening here.');
+  });
+});
+
+describe('Profile block domain', () => {
+  let httpMock: HttpTestingController;
+  const zoe = {
+    id: 'z1',
+    username: 'zoe',
+    acct: 'zoe@far.example',
+    fields: [],
+  } as unknown as Account;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+    localStorage.clear();
+  });
+
+  function setUp() {
+    const queryParamMap = convertToParamMap({});
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id: 'z1' })),
+            queryParamMap: of(queryParamMap),
+            snapshot: { queryParamMap },
+          },
+        },
+      ],
+    });
+    TestBed.inject(Auth).token.set('profile-test-token');
+    const fixture = TestBed.createComponent(Profile);
+    fixture.detectChanges();
+    httpMock = TestBed.inject(HttpTestingController);
+    httpMock.expectOne('/api/v1/accounts/z1').flush(zoe);
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/z1/collections')
+      .forEach((r) => r.flush({ collections: [] }));
+    httpMock
+      .match((r) => r.url === '/api/v1/accounts/relationships')
+      .forEach((r) => r.flush([{ id: 'z1', following: false, followed_by: false }]));
+    httpMock.match(() => true).forEach((r) => r.flush([]));
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('blocks the whole server after saying how many follows and followers it cuts', async () => {
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+    confirm.mockClear();
+    const fixture = setUp();
+    const button = [...(openMoreOptions(fixture)?.querySelectorAll('button') ?? [])].find((b) =>
+      b.textContent?.includes('Block everyone on far.example'),
+    ) as HTMLButtonElement;
+    expect(button).toBeTruthy();
+
+    button.click();
+    const preview = await vi.waitFor(() =>
+      httpMock.expectOne((r) => r.url === '/api/v1/domain_blocks/preview'),
+    );
+    expect(preview.request.params.get('domain')).toBe('far.example');
+    preview.flush({ following_count: 2, followers_count: 5 });
+    await vi.waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+    expect(confirm.mock.calls[0][0]).toContain('lose 2 people you follow and 5 followers');
+    const block = await vi.waitFor(() =>
+      httpMock.expectOne((r) => r.url === '/api/v1/domain_blocks' && r.method === 'POST'),
+    );
+    block.flush({});
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.more-options')?.textContent).toContain(
+        'Blocked far.example.',
+      );
+    });
+  });
+
+  it('uses a plain warning on servers without the preview, and blocks nothing when cancelled', async () => {
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
+    confirm.mockClear();
+    const fixture = setUp();
+    (fixture.componentInstance as any).requestBlockDomain('far.example');
+    await vi.waitFor(() =>
+      httpMock
+        .expectOne((r) => r.url === '/api/v1/domain_blocks/preview')
+        .flush('', { status: 404, statusText: 'Not Found' }),
+    );
+    await vi.waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+    expect(confirm.mock.calls[0][0]).toContain('anyone you follow or who follows you there');
+    httpMock.expectNone((r) => r.url === '/api/v1/domain_blocks' && r.method === 'POST');
   });
 });

@@ -1,0 +1,51 @@
+.edit-section {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.edit-section legend {
+  padding: 0 4px;
+  font-weight: 600;
+}
+
+.edit-media {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 10px;
+  align-items: start;
+}
+
+.edit-media-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+}
+
+.edit-poll-option {
+  display: flex;
+  gap: 8px;
+  align-items: end;
+}
+
+.edit-poll-option mb-field {
+  flex: 1;
+}
+
+@media (max-width: 480px) {
+  .edit-media {
+    grid-template-columns: 56px 1fr;
+  }
+
+  .edit-media button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}

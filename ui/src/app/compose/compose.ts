@@ -39,7 +39,14 @@ import { OpenRouterSession } from '../providers/openrouter/openrouter-session';
 import { AiAvailability } from '../ai-availability';
 import { TranslateDialog, TranslateResult } from './translate-dialog/translate-dialog';
 import { CustomEmojis } from '../custom-emojis';
-import { Draft, DraftMedia, DraftSnapshot, Drafts, draftHasContent } from '../drafts';
+import {
+  Draft,
+  DraftMedia,
+  DraftSnapshot,
+  DraftStorageOutcome,
+  Drafts,
+  draftHasContent,
+} from '../drafts';
 import { PkmKind, pkmKinds, pkmLabel } from '../pkm/pkm-tags';
 import { TargetAvailability, restorableTarget } from './post-targets';
 import { EmojiPicker } from '../emoji-picker/emoji-picker';
@@ -513,8 +520,7 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.publishAnyway: Publish anyway
 // i18n compose.notPosted: Not posted
 // i18n compose.savedToDrafts: Saved to drafts.
-// i18n compose.draftUnsaved: This draft could not be saved in your browser. Your writing is still here.
-// i18n compose.downloadDraft: Download a copy
+// i18n compose.draftUnsaved: Drafts aren't being saved in this browser right now.
 // i18n compose.changedBeforePublish: The post or account changed while attachments were being saved. Nothing new was published. Review your post and send it again.
 // i18n compose.warn.threadsNoSchedule: Threads can't be scheduled — remove the extra posts.
 
@@ -1025,8 +1031,8 @@ export class Compose implements OnDestroy {
       }
       this.autosaveTimer = setTimeout(() => {
         this.autosaveTimer = null;
-        const outcome = this.drafts.autosave(key, snapshot);
-        this.draftSaveFailed.set(!outcome.durable);
+        const outcome = this.drafts.autosave(key, this.autosaveSnapshot(snapshot));
+        this.noteDraftOutcome(outcome, 'autosave');
       }, 500);
     });
   }
@@ -2347,7 +2353,7 @@ export class Compose implements OnDestroy {
     if (draftHasContent(this.snapshot())) {
       const outcome = this.drafts.save(this.snapshot());
       if (!outcome.durable) {
-        this.draftSaveFailed.set(true);
+        this.noteDraftOutcome(outcome, 'swap');
         return;
       }
     }
@@ -2357,8 +2363,9 @@ export class Compose implements OnDestroy {
 
   /** Keep the named copy until the opened editor has a durable autosave. */
   private moveDraftToAutosave(id: string): void {
-    if (!this.drafts.autosave(this.contextKey(), this.snapshot()).durable) {
-      this.draftSaveFailed.set(true);
+    const outcome = this.drafts.autosave(this.contextKey(), this.snapshot());
+    if (!outcome.durable) {
+      this.noteDraftOutcome(outcome, 'open');
       return;
     }
     if (!this.drafts.remove(id).durable) {
@@ -2377,7 +2384,7 @@ export class Compose implements OnDestroy {
       // This editor is now the only copy. Leave every field intact and make the
       // non-durable state explicit instead of displaying the success flash.
       this.draftSaved.set(false);
-      this.draftSaveFailed.set(true);
+      this.noteDraftOutcome(outcome, 'save');
       return;
     }
     this.draftSaveFailed.set(false);
@@ -2389,13 +2396,39 @@ export class Compose implements OnDestroy {
     this.draftSavedTimer = setTimeout(() => this.draftSaved.set(false), 4000);
   }
 
-  /** Download the current editor without depending on browser storage. */
-  downloadDraft(): void {
-    const payload = JSON.stringify(this.snapshot(), null, 2);
-    const anchor = document.createElement('a');
-    anchor.href = `data:application/json;charset=utf-8,${encodeURIComponent(payload)}`;
-    anchor.download = `mockingbird-draft-${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
-    anchor.click();
+  /**
+   * What autosave should store. A reply box holding only the @handle we seeded
+   * is untouched, so it is stored as empty: nothing to save, nothing to warn about.
+   */
+  private autosaveSnapshot(snapshot: DraftSnapshot): DraftSnapshot {
+    const seed = this.previewSeed();
+    const untouched =
+      seed !== '' &&
+      snapshot.segments.length === 1 &&
+      snapshot.segments[0].trim() === seed &&
+      !snapshot.spoilerText.trim() &&
+      !snapshot.poll;
+    return untouched ? { ...snapshot, segments: [''] } : snapshot;
+  }
+
+  /**
+   * Record a draft write. A failure is logged once per composer (with the
+   * browser's reason) and shown as a quiet hint; the editor is never touched.
+   */
+  private noteDraftOutcome(outcome: DraftStorageOutcome, action: string): void {
+    if (outcome.durable) {
+      this.draftSaveFailed.set(false);
+      return;
+    }
+    if (!this.draftSaveFailed()) {
+      const error = outcome.error;
+      this.diagnostics.warn('Compose', 'draft:storage-failed', {
+        action,
+        context: this.contextKey(),
+        error: error instanceof Error ? `${error.name}: ${error.message}` : String(error),
+      });
+    }
+    this.draftSaveFailed.set(true);
   }
 
   // i18n compose.fullscreenEdit: Fullscreen edit

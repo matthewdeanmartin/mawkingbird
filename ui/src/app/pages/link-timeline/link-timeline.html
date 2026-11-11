@@ -1,0 +1,58 @@
+<div class="page-head">{{ 'pages.linkTimeline.title' | transloco }}</div>
+@if (host()) {
+  <p class="muted small page-sub">
+    <a [href]="url()" target="_blank" rel="noopener noreferrer">{{ host() }}</a>
+    ·
+    <a [href]="url()" target="_blank" rel="noopener noreferrer">{{
+      'pages.linkTimeline.open' | transloco
+    }}</a>
+  </p>
+}
+
+@if (notice()) {
+  <mb-content-state [title]="notice()" />
+} @else if (loading()) {
+  <mb-content-state
+    kind="loading"
+    announcement="status"
+    [title]="'pages.linkTimeline.loading' | transloco"
+  />
+} @else if (failed()) {
+  <mb-content-state
+    kind="error"
+    announcement="alert"
+    [title]="'pages.linkTimeline.failed' | transloco"
+  >
+    <button mbButton variant="outline" type="button" (click)="load()">
+      {{ 'pages.linkTimeline.retry' | transloco }}
+    </button>
+  </mb-content-state>
+} @else if (!statuses().length) {
+  <mb-content-state [title]="'pages.linkTimeline.empty' | transloco" />
+} @else {
+  @for (s of statuses(); track s.id; let i = $index) {
+    <app-status-card
+      [status]="s"
+      filterContext="public"
+      (changed)="onChanged(i, $event)"
+      (deleted)="onDeleted($event)"
+    />
+  }
+  @if (hasMore()) {
+    <div class="more">
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        [disabled]="loadingMore()"
+        (click)="loadMore()"
+      >
+        {{
+          loadingMore()
+            ? ('pages.linkTimeline.loading' | transloco)
+            : ('pages.linkTimeline.loadMore' | transloco)
+        }}
+      </button>
+    </div>
+  }
+}

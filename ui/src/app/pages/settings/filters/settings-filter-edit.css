@@ -46,3 +46,17 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+
+.filtered-posts {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.filtered-posts li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}

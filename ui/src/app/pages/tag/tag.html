@@ -17,6 +17,55 @@
   </button>
 </div>
 
+<!-- Server-side narrowing (Mastodon's any/all/none tags and local), folded away
+     so the page keeps its single row of controls. -->
+@if (tab() === 'posts' && offersRefine()) {
+  <mb-disclosure
+    class="tag-refine"
+    [label]="
+      refineCount()
+        ? ('pages.tag.refine.labelActive' | transloco: { count: refineCount() })
+        : ('pages.tag.refine.label' | transloco)
+    "
+    [expanded]="refineOpen()"
+    (expandedChange)="setRefineOpen($event)"
+  >
+    <form class="tag-refine-form" (ngSubmit)="applyRefine()">
+      <mb-field
+        density="compact"
+        [label]="'pages.tag.refine.any' | transloco"
+        [hint]="'pages.tag.refine.hint' | transloco: { limit: refineLimit }"
+      >
+        <input mbControl name="any" [ngModel]="anyText()" (ngModelChange)="anyText.set($event)" />
+      </mb-field>
+      <mb-field density="compact" [label]="'pages.tag.refine.all' | transloco">
+        <input mbControl name="all" [ngModel]="allText()" (ngModelChange)="allText.set($event)" />
+      </mb-field>
+      <mb-field density="compact" [label]="'pages.tag.refine.none' | transloco">
+        <input
+          mbControl
+          name="none"
+          [ngModel]="noneText()"
+          (ngModelChange)="noneText.set($event)"
+        />
+      </mb-field>
+      <mb-checkbox
+        [label]="'pages.tag.refine.local' | transloco"
+        [checked]="localDraft()"
+        (checkedChange)="localDraft.set($event)"
+      />
+      <div class="tag-refine-actions">
+        <button mbButton type="submit">{{ 'pages.tag.refine.apply' | transloco }}</button>
+        @if (refineCount()) {
+          <button mbButton variant="link" type="button" (click)="clearRefine()">
+            {{ 'pages.tag.refine.clear' | transloco }}
+          </button>
+        }
+      </div>
+    </form>
+  </mb-disclosure>
+}
+
 <!-- Mounting either component starts its own collection, so both stay off the
      Feed tab until opened. -->
 @if (mediaVisited()) {
@@ -31,7 +80,12 @@
 } @else if (loading()) {
   <p class="muted center">{{ 'pages.tag.loading' | transloco }}</p>
 } @else if (!statuses().length) {
-  <p class="muted center">{{ 'pages.tag.noStatuses' | transloco: { tag: tag() } }}</p>
+  <p class="muted center">
+    {{
+      (refineCount() ? 'pages.tag.refine.noMatches' : 'pages.tag.noStatuses')
+        | transloco: { tag: tag() }
+    }}
+  </p>
 } @else {
   @if (canFilterMine()) {
     <div class="tag-filter">

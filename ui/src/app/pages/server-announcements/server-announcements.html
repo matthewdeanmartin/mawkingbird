@@ -70,6 +70,75 @@
   </ul>
 </section>
 
+<!-- Folded and fetched on first open: most visits are for the announcements. -->
+<section class="server-policies">
+  <mb-disclosure
+    [label]="'serverAnnouncements.privacy.title' | transloco"
+    (expandedChange)="openPrivacy($event)"
+  >
+    @switch (privacyState()) {
+      @case ('loaded') {
+        @if (privacy(); as policy) {
+          <p class="muted small">
+            {{
+              'serverAnnouncements.privacy.updated'
+                | transloco: { date: (policy.updated_at | date) }
+            }}
+          </p>
+          <article class="server-policy" [innerHTML]="policy.content"></article>
+        }
+      }
+      @case ('none') {
+        <p class="muted small">{{ 'serverAnnouncements.privacy.none' | transloco }}</p>
+      }
+      @default {
+        <p class="muted small" role="status">
+          {{ 'serverAnnouncements.privacy.loading' | transloco }}
+        </p>
+      }
+    }
+  </mb-disclosure>
+
+  <mb-disclosure
+    [label]="'serverAnnouncements.moderated.title' | transloco"
+    (expandedChange)="openModerated($event)"
+  >
+    @switch (moderatedState()) {
+      @case ('loaded') {
+        @if (moderated().length) {
+          <p class="muted small">{{ 'serverAnnouncements.moderated.intro' | transloco }}</p>
+          <ul class="moderated-servers">
+            @for (m of moderated(); track m.digest) {
+              <li>
+                <span class="moderated-domain">{{ m.domain }}</span>
+                <span class="moderated-severity" [attr.data-severity]="m.severity">{{
+                  'serverAnnouncements.moderated.' + m.severity | transloco
+                }}</span>
+                <span class="muted small">{{
+                  m.comment || ('serverAnnouncements.moderated.noReason' | transloco)
+                }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="muted small">{{ 'serverAnnouncements.moderated.none' | transloco }}</p>
+        }
+      }
+      @case ('private') {
+        <p class="muted small">{{ 'serverAnnouncements.moderated.private' | transloco }}</p>
+      }
+      @case ('unavailable') {
+        <p class="muted small">{{ 'serverAnnouncements.moderated.unavailable' | transloco }}</p>
+      }
+      @default {
+        <p class="muted small" role="status">
+          {{ 'serverAnnouncements.moderated.loading' | transloco }}
+        </p>
+      }
+    }
+  </mb-disclosure>
+</section>
+
 <div class="server-announcement-actions">
   @if (store.activeCount()) {
     <button type="button" class="btn btn-outline btn-sm" (click)="store.dismissAll()">

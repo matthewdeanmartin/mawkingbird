@@ -133,6 +133,24 @@
   border-bottom: 1px solid var(--border);
 }
 
+/* Featured hashtags: a line of text links under the header counts. */
+.profile-featured-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 8px 0 0;
+}
+
+.profile-featured-tags a[aria-current='true'] {
+  font-weight: 700;
+}
+
+.profile-tagged {
+  margin: 0;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
 .profile-collections {
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
@@ -783,4 +801,21 @@ h2 {
 
 .profile-search-note {
   margin: 6px 0 0;
+}
+
+/* "More options…": occasional profile actions, grouped under quiet headings. */
+.more-options {
+  display: grid;
+  gap: 2px;
+}
+
+.more-options-heading {
+  margin: 12px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted, inherit);
+}
+
+.more-options-heading:first-child {
+  margin-top: 0;
 }

@@ -67,11 +67,15 @@ function makeTagEntity(name: string, overrides: Partial<TagEntity> = {}): TagEnt
 
 let httpMock: HttpTestingController;
 
-function setUpWithTag(tagName: string, prepare?: () => void): ComponentFixture<Tag> {
+function setUpWithTag(
+  tagName: string,
+  prepare?: () => void,
+  query: Record<string, string> = {},
+): ComponentFixture<Tag> {
   TestBed.overrideProvider(ActivatedRoute, {
     useValue: {
       paramMap: of(convertToParamMap({ tag: tagName })),
-      queryParamMap: of(convertToParamMap({})),
+      queryParamMap: of(convertToParamMap(query)),
     },
   });
   TestBed.inject(Auth).setToken('tag-test');
@@ -115,6 +119,55 @@ describe('Tag (timeline)', () => {
     expect(internals(fixture).tagInfo()?.name).toBe('cats');
     expect(internals(fixture).statuses()).toHaveLength(1);
     expect(internals(fixture).loading()).toBe(false);
+  });
+
+  it('sends the refinement in the URL to the server as any/all/none/local', () => {
+    const fixture = setUpWithTag('cats', undefined, {
+      any: 'kittens',
+      all: '#photo',
+      none: 'dogs cats',
+      local: '1',
+    });
+
+    httpMock.expectOne('/api/v1/tags/cats').flush(makeTagEntity('cats'));
+    const request = httpMock.expectOne((r) => r.url === '/api/v1/timelines/tag/cats');
+    expect(request.request.params.getAll('any[]')).toEqual(['kittens']);
+    expect(request.request.params.getAll('all[]')).toEqual(['photo']);
+    // The page's own tag is never sent as an exclusion.
+    expect(request.request.params.getAll('none[]')).toEqual(['dogs']);
+    expect(request.request.params.get('local')).toBe('true');
+    request.flush([]);
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Refine (4 on)');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+      'No posts match #cats with these refinements.',
+    );
+  });
+
+  it('applies the Refine fields by writing them into the URL', () => {
+    const fixture = setUpWithTag('cats');
+    httpMock.expectOne('/api/v1/tags/cats').flush(makeTagEntity('cats'));
+    httpMock.expectOne((r) => r.url.startsWith('/api/v1/timelines/tag/cats')).flush([]);
+    const page = fixture.componentInstance as unknown as {
+      setRefineOpen(open: boolean): void;
+      allText: { set(value: string): void };
+      localDraft: { set(value: boolean): void };
+      applyRefine(): void;
+    };
+
+    page.setRefineOpen(true);
+    page.allText.set('#art, Photo');
+    page.localDraft.set(true);
+    page.applyRefine();
+
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(
+      [],
+      expect.objectContaining({
+        queryParams: { any: null, all: 'art Photo', none: null, local: '1' },
+        queryParamsHandling: 'merge',
+      }),
+    );
   });
 
   it('loads an anonymous tag timeline from the selected public instance', () => {

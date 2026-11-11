@@ -37,8 +37,12 @@ import { cameraScanSupported, scannedAccountQuery } from './profile-qr';
 // i18n profileQr.opening: Looking it up…
 // i18n profileQr.notFound: Your server could not find that account.
 
-type DetectedCode = { rawValue: string };
-type Detector = { detect(source: CanvasImageSource): Promise<DetectedCode[]> };
+interface DetectedCode {
+  rawValue: string;
+}
+interface Detector {
+  detect(source: CanvasImageSource): Promise<DetectedCode[]>;
+}
 type DetectorConstructor = new (options: { formats: string[] }) => Detector;
 
 /** How often to look at a camera frame. Decoding every frame burns battery for nothing. */

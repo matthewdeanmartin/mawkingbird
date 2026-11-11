@@ -4,7 +4,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal } from '@angular/core';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { AppDialogs } from '../../app-dialogs';
 import { Auth } from '../../auth';
 import { ClientPrefs } from '../../client-prefs';
 import { Streaming, StreamEvent, StreamKind } from '../../streaming';
@@ -533,6 +534,40 @@ describe('Conversations', () => {
         .messages()
         .map((m) => m.id),
     ).toEqual(['s0', 's1']);
+  });
+
+  it('marks a private chat unread on the server and steps out of it', () => {
+    const status = makeStatus('s1');
+    const fixture = setUp([makeConversation('c1', { last_status: status })]);
+    const chat = realChats(fixture)[0];
+    fixture.componentInstance.select(chat);
+    httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });
+
+    (fixture.componentInstance as any).markUnread(chat);
+    const unread = httpMock.expectOne('/api/v1/conversations/c1/unread');
+    expect(unread.request.method).toBe('POST');
+    unread.flush(makeConversation('c1', { unread: true, last_status: status }));
+
+    expect(internals(fixture).privateConvs()[0].unread).toBe(true);
+    expect((fixture.componentInstance as any).selectedKey()).toBeNull();
+  });
+
+  it('removes a private chat from the list only after confirmation', async () => {
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
+    const status = makeStatus('s1');
+    const fixture = setUp([makeConversation('c1', { last_status: status })]);
+    const chat = realChats(fixture)[0];
+
+    await (fixture.componentInstance as any).removeChat(chat);
+    httpMock.expectNone('/api/v1/conversations/c1');
+    expect(confirm.mock.calls[0][0]).toContain('The messages are not deleted');
+
+    confirm.mockResolvedValue(true);
+    await (fixture.componentInstance as any).removeChat(chat);
+    const remove = httpMock.expectOne('/api/v1/conversations/c1');
+    expect(remove.request.method).toBe('DELETE');
+    remove.flush({});
+    expect(internals(fixture).privateConvs()).toEqual([]);
   });
 
   it('select on a public chat marks it read locally (no server call)', () => {

@@ -795,7 +795,6 @@
     "src/app/compose/compose.spec.ts :: Compose does not send edited text after a mention check started for an older reply",
     "src/app/compose/compose.spec.ts :: Compose does not warn about an untagged post",
     "src/app/compose/compose.spec.ts :: Compose does not warn when the user turned the warning off",
-    "src/app/compose/compose.spec.ts :: Compose downloads the live editor as JSON without using localStorage",
     "src/app/compose/compose.spec.ts :: Compose drops the mention hint once the seeded @handle is removed",
     "src/app/compose/compose.spec.ts :: Compose empty thread boxes are skipped when posting",
     "src/app/compose/compose.spec.ts :: Compose falls back to Fedi when a Bluesky-primary session cannot post",

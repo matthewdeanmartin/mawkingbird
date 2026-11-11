@@ -1,5 +1,48 @@
 # Sprint 6 opening consolidation audit
 
+## ••• menu budget, filter a post, conversations, domain block, server policies, 2026-11-11
+
+Two candidates are added: `filter-post-dialog/filter-post-dialog.html` (adopted
+scope: Dialog, Field/Control select and input, MbButton, MbNotice) and
+`menu-budget.ts` (lexical only: it counts menu controls, renders none). The ••• menus
+are consolidated to stay within ten options (`menu-budget.spec.ts` files):
+`status-card/status-card.html` moves Radio, Listen, code copy/save, Embed, Read aloud,
+Download media and Save as to-do from all three post menus into one MbDialog "More
+tools" (MbMenuItem rows), adds a "More tools…" and a "Filter this post…" MbMenuItem,
+and mounts the filter dialog; `pages/profile/profile.html` moves Radio, Slide show,
+QR, Download media, Feature, Copy account, both Trust toggles and Remove follower from
+the Mastodon account menu into an MbDialog "More options" with three headed groups
+(MbMenuItem rows), adding Block domain there. `pages/conversations/conversations.html`
+gains two native rows (Mark as unread, Remove from this list) matching its existing
+••• panel. `pages/server-announcements/server-announcements.html` gains two
+MbDisclosure sections (privacy policy, moderated servers).
+`pages/settings/filters/settings-filter-edit.html` gains a list of filtered posts with
+native links and link-variant MbButton Remove. No shared widget changed.
+
+## Mastodon parity: full post editing and poll refresh, 2026-11-11
+
+One candidate is added, adopted scope: `status-edit/status-edit-dialog.html`
+(wide Dialog, Field/Control, MbCheckbox, MbButton outline and link variants,
+MbNotice; native fieldsets and a hidden file input behind an MbButton).
+`status-card/status-card.html` gains a link-variant MbButton "Refresh" in the
+poll footer and mounts the edit dialog; its inline editor remains for Bluesky
+replace only. No shared widget changed.
+
+## Mastodon parity: link posts, Home origin, hashtag refine, featured hashtags, 2026-11-10
+
+Reviewed 1,794 source files and 623 candidate files. One candidate is added,
+adopted scope: `pages/link-timeline/link-timeline.html` (page head, MbContentState,
+MbButton, StatusCard). Existing candidates: `pages/home/home.html` gains a compact
+Field/Control select (🌐 which servers) beside the existing 📅 select, no new
+toolbar buttons (stays partial adoption); `pages/tag/tag.html` gains an
+MbDisclosure "Refine" panel with compact Field/Control inputs, an MbCheckbox and
+MbButton Apply / link-variant Clear (the file stays backlog for its older tabs and
+buttons); `pages/server-feed/server-feed.html` gains a native text link under each
+News card; `pages/profile/profile.html` gains a line of native hashtag links in the
+header and a status line with a native "Show all posts" link (no new buttons in
+the four-button filter row); `compose/compose.html` replaces the red draft-save
+alert and its Download button with a muted status line. No shared widget changed.
+
 ## Install app and share target, 2026-11-10
 
 Reviewed 1,790 source files and 622 candidate files. One candidate is added:

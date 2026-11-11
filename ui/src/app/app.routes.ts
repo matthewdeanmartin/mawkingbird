@@ -1305,6 +1305,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/links/links-page').then((m) => m.LinksPage),
       },
       {
+        // Posts sharing one trending link: `/link?url=…`.
+        path: 'link',
+        title: 'Posts about a link',
+        loadComponent: () =>
+          import('./pages/link-timeline/link-timeline').then((m) => m.LinkTimeline),
+      },
+      {
         path: 'find-friends',
         title: 'Find friends',
         loadComponent: () => import('./pages/find-friends/find-friends').then((m) => m.FindFriends),

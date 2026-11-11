@@ -338,8 +338,16 @@ export class AccountDrafts {
   autosave(contextKey: string, snapshot: DraftSnapshot): DraftStorageOutcome {
     const slots = loadJson<Record<string, DraftSnapshot>>(this.autosaveKey) ?? {};
     if (draftHasContent(snapshot)) {
+      // Unchanged text needs no write (a blur or re-render re-runs autosave).
+      if (slots[contextKey] && sameSnapshot(slots[contextKey], snapshot)) {
+        return { durable: true };
+      }
       slots[contextKey] = snapshot;
     } else {
+      // An empty box with nothing stored has nothing to save or clear.
+      if (!(contextKey in slots)) {
+        return { durable: true };
+      }
       delete slots[contextKey];
     }
     return storeJson(this.autosaveKey, slots);

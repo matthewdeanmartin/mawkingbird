@@ -334,6 +334,17 @@
             @if (p.expired) {
               <span>· {{ 'statusCard.closed' | transloco }}</span>
             }
+            @if (canRefreshPoll()) {
+              <button
+                mbButton
+                variant="link"
+                type="button"
+                [disabled]="pollRefreshing()"
+                (click)="refreshPoll($event)"
+              >
+                {{ 'statusCard.pollRefresh' | transloco }}
+              </button>
+            }
             @if (!pollClosed()) {
               <button
                 class="btn btn-sm"
@@ -1407,48 +1418,8 @@
                     •••
                   </summary>
                   <div class="danger-menu-panel">
-                    @if (radioPost(); as postUrl) {
-                      <a
-                        mbMenuItem
-                        routerLink="/radio"
-                        [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
-                        (click)="offerRadio(); closeMenu($event)"
-                      >
-                        {{ 'statusCard.openInRadio' | transloco }}
-                      </a>
-                    }
-                    @if (listenLink(); as params) {
-                      <a
-                        mbMenuItem
-                        routerLink="/listen"
-                        [queryParams]="params"
-                        (click)="closeMenu($event)"
-                      >
-                        {{ 'statusCard.openInListen' | transloco }}
-                      </a>
-                    }
                     @if (canMuteTags() && postTags().length) {
                       <app-tag-mute-menu [tags]="postTags()" />
-                    }
-                    <app-code-menu-items [content]="display.content" />
-                    @if (canEmbed) {
-                      <button type="button" mbMenuItem (click)="openEmbed($event)">
-                        {{ 'statusCard.embedPost' | transloco }}
-                      </button>
-                    }
-                    @if (canReadAloud) {
-                      <button type="button" mbMenuItem (click)="toggleReadAloud($event)">
-                        {{
-                          (isReadingAloud() ? 'statusCard.stopReading' : 'statusCard.readAloud')
-                            | transloco
-                        }}
-                      </button>
-                    }
-                    @if (downloadable(); as posts) {
-                      <app-media-download-menu-item
-                        [statuses]="posts"
-                        [archiveName]="'media-' + display.id"
-                      />
                     }
                     @if (display.provider !== 'bluesky') {
                       <button
@@ -1501,13 +1472,6 @@
                       {{ 'statusCard.muteThisPost' | transloco }}
                     </button>
                     <app-private-like-button [status]="display" />
-                    <!-- "Reply to this later." Parks a local draft; publishes
-                       nothing, so it works anonymously too. -->
-                    @if (todosEnabled()) {
-                      <button type="button" (click)="saveAsTodo($event)">
-                        {{ 'statusCard.saveAsTodo' | transloco }}
-                      </button>
-                    }
                     @if (display.url) {
                       <a
                         [href]="display.url"
@@ -1527,6 +1491,11 @@
                       >
                         {{ 'statusCard.openProfileOriginal' | transloco }}
                       </a>
+                    }
+                    @if (hasPostTools()) {
+                      <button type="button" mbMenuItem (click)="openTools($event)">
+                        {{ 'statusCard.tools.open' | transloco }}
+                      </button>
                     }
                     <button type="button" class="menu-close" (click)="closeMenu($event)">
                       {{ 'statusCard.closeMenu' | transloco }}
@@ -1594,57 +1563,10 @@
                       }}
                     </button>
                   }
-                  @if (radioPost(); as postUrl) {
-                    <a
-                      mbMenuItem
-                      routerLink="/radio"
-                      [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
-                      (click)="offerRadio(); closeMenu($event)"
-                    >
-                      {{ 'statusCard.openInRadio' | transloco }}
-                    </a>
-                  }
-                  @if (listenLink(); as params) {
-                    <a
-                      mbMenuItem
-                      routerLink="/listen"
-                      [queryParams]="params"
-                      (click)="closeMenu($event)"
-                    >
-                      {{ 'statusCard.openInListen' | transloco }}
-                    </a>
-                  }
                   @if (canMuteTags() && postTags().length) {
                     <app-tag-mute-menu [tags]="postTags()" />
                   }
-                  <app-code-menu-items [content]="display.content" />
-                  @if (canEmbed) {
-                    <button type="button" mbMenuItem (click)="openEmbed($event)">
-                      {{ 'statusCard.embedPost' | transloco }}
-                    </button>
-                  }
-                  @if (canReadAloud) {
-                    <button type="button" mbMenuItem (click)="toggleReadAloud($event)">
-                      {{
-                        (isReadingAloud() ? 'statusCard.stopReading' : 'statusCard.readAloud')
-                          | transloco
-                      }}
-                    </button>
-                  }
-                  @if (downloadable(); as posts) {
-                    <app-media-download-menu-item
-                      [statuses]="posts"
-                      [archiveName]="'media-' + display.id"
-                    />
-                  }
                   <app-private-like-button [status]="display" />
-                  <!-- "Reply to this later." Parks a local draft; publishes
-                       nothing, so it works anonymously too. -->
-                  @if (todosEnabled()) {
-                    <button type="button" (click)="saveAsTodo($event)">
-                      {{ 'statusCard.saveAsTodo' | transloco }}
-                    </button>
-                  }
                   @if (display.url) {
                     <a
                       [href]="display.url"
@@ -1672,6 +1594,11 @@
                   >
                     {{ 'statusCard.muteThisPost' | transloco }}
                   </button>
+                  @if (canFilterPost) {
+                    <button type="button" mbMenuItem (click)="openFilterPost($event)">
+                      {{ 'statusCard.filterPost' | transloco }}
+                    </button>
+                  }
                   <!-- Author mute/block: the Anonymous account's browser list, or the
                        reader's own server. Not offered where neither applies. -->
                   @if (authorBlockedLocally() || authorMutedLocally()) {
@@ -1700,6 +1627,11 @@
                   @if (canReport) {
                     <button type="button" class="destructive" (click)="openReport($event)">
                       {{ 'statusCard.reportPost' | transloco }}
+                    </button>
+                  }
+                  @if (hasPostTools()) {
+                    <button type="button" mbMenuItem (click)="openTools($event)">
+                      {{ 'statusCard.tools.open' | transloco }}
                     </button>
                   }
                   <button type="button" class="menu-close" (click)="closeMenu($event)">
@@ -1731,57 +1663,10 @@
                 •••
               </summary>
               <div class="danger-menu-panel">
-                @if (radioPost(); as postUrl) {
-                  <a
-                    mbMenuItem
-                    routerLink="/radio"
-                    [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
-                    (click)="offerRadio(); closeMenu($event)"
-                  >
-                    {{ 'statusCard.openInRadio' | transloco }}
-                  </a>
-                }
-                @if (listenLink(); as params) {
-                  <a
-                    mbMenuItem
-                    routerLink="/listen"
-                    [queryParams]="params"
-                    (click)="closeMenu($event)"
-                  >
-                    {{ 'statusCard.openInListen' | transloco }}
-                  </a>
-                }
                 @if (canMuteTags() && postTags().length) {
                   <app-tag-mute-menu [tags]="postTags()" />
                 }
-                <app-code-menu-items [content]="display.content" />
-                @if (canEmbed) {
-                  <button type="button" mbMenuItem (click)="openEmbed($event)">
-                    {{ 'statusCard.embedPost' | transloco }}
-                  </button>
-                }
-                @if (canReadAloud) {
-                  <button type="button" mbMenuItem (click)="toggleReadAloud($event)">
-                    {{
-                      (isReadingAloud() ? 'statusCard.stopReading' : 'statusCard.readAloud')
-                        | transloco
-                    }}
-                  </button>
-                }
-                @if (downloadable(); as posts) {
-                  <app-media-download-menu-item
-                    [statuses]="posts"
-                    [archiveName]="'media-' + display.id"
-                  />
-                }
                 <app-private-like-button [status]="display" />
-                <!-- "Reply to this later." Parks a local draft; publishes
-                       nothing, so it works anonymously too. -->
-                @if (todosEnabled()) {
-                  <button type="button" (click)="saveAsTodo($event)">
-                    {{ 'statusCard.saveAsTodo' | transloco }}
-                  </button>
-                }
                 @if (display.url) {
                   <a
                     [href]="display.url"
@@ -1835,6 +1720,11 @@
                 @if (canReport) {
                   <button type="button" class="destructive" (click)="openReport($event)">
                     {{ 'statusCard.reportPost' | transloco }}
+                  </button>
+                }
+                @if (hasPostTools()) {
+                  <button type="button" mbMenuItem (click)="openTools($event)">
+                    {{ 'statusCard.tools.open' | transloco }}
                   </button>
                 }
                 <button type="button" class="menu-close" (click)="closeMenu($event)">
@@ -2006,6 +1896,69 @@
 
   @if (showEmbed()) {
     <app-post-embed-dialog [status]="display" (closed)="showEmbed.set(false)" />
+  }
+  <!-- Occasional utilities, moved out of the ••• menu to keep it within its
+       budget (menu-budget.ts). Nested dialogs (download, code) stack on top. -->
+  @if (toolsOpen()) {
+    <mb-dialog
+      [title]="'statusCard.tools.title' | transloco"
+      [closeLabel]="'statusCard.closeMenu' | transloco"
+      [closeOnBackdrop]="true"
+      (dismissed)="toolsOpen.set(false)"
+    >
+      <div class="post-tools" (click)="$event.stopPropagation()">
+        @if (radioPost(); as postUrl) {
+          <a
+            mbMenuItem
+            routerLink="/radio"
+            [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
+            (click)="offerRadio(); toolsOpen.set(false)"
+          >
+            {{ 'statusCard.openInRadio' | transloco }}
+          </a>
+        }
+        @if (listenLink(); as params) {
+          <a mbMenuItem routerLink="/listen" [queryParams]="params" (click)="toolsOpen.set(false)">
+            {{ 'statusCard.openInListen' | transloco }}
+          </a>
+        }
+        <app-code-menu-items [content]="display.content" />
+        @if (canEmbed) {
+          <button type="button" mbMenuItem (click)="toolsOpen.set(false); openEmbed($event)">
+            {{ 'statusCard.embedPost' | transloco }}
+          </button>
+        }
+        @if (canReadAloud) {
+          <button type="button" mbMenuItem (click)="toggleReadAloud($event)">
+            {{ (isReadingAloud() ? 'statusCard.stopReading' : 'statusCard.readAloud') | transloco }}
+          </button>
+        }
+        @if (downloadable(); as posts) {
+          <app-media-download-menu-item [statuses]="posts" [archiveName]="'media-' + display.id" />
+        }
+        <!-- "Reply to this later." Parks a local draft; publishes nothing, so it
+             works anonymously too. -->
+        @if (todosEnabled()) {
+          <button type="button" mbMenuItem (click)="toolsOpen.set(false); saveAsTodo($event)">
+            {{ 'statusCard.saveAsTodo' | transloco }}
+          </button>
+        }
+      </div>
+    </mb-dialog>
+  }
+  @if (filterPostOpen()) {
+    <app-filter-post-dialog
+      [status]="display"
+      (filtered)="onPostFiltered($event)"
+      (closed)="filterPostOpen.set(false)"
+    />
+  }
+  @if (fullEdit()) {
+    <app-status-edit-dialog
+      [status]="display"
+      (saved)="onEdited($event)"
+      (closed)="fullEdit.set(false)"
+    />
   }
 
   @if (showReport()) {

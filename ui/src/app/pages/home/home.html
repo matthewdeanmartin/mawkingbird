@@ -227,6 +227,27 @@
           <option value="all">{{ 'pages.home.filters.window.all' | transloco }}</option>
         </select>
       </mb-field>
+      @if (offersOrigin()) {
+        <mb-field
+          hideLabel
+          density="compact"
+          [label]="'pages.home.filters.originAriaLabel' | transloco"
+        >
+          <span aria-hidden="true">🌐</span>
+          <select
+            mbControl
+            [ngModel]="homeSession.origin()"
+            (ngModelChange)="setOrigin($event)"
+            [attr.aria-label]="'pages.home.filters.originAriaLabel' | transloco"
+          >
+            @for (choice of ['all', 'local', 'remote']; track choice) {
+              <option [value]="choice">
+                {{ 'pages.home.filters.origin.' + choice | transloco }}
+              </option>
+            }
+          </select>
+        </mb-field>
+      }
       <app-feed-language-picker />
     </div>
   </app-command-bar>

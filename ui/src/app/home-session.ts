@@ -1,6 +1,7 @@
 import { effect, inject, Injectable, signal, untracked } from '@angular/core';
 import { HomeAlgoSettings } from './home-algo-settings';
 import { Auth } from './auth';
+import { HomeOrigin } from './home-origin';
 
 /** App-lifetime state: routing does not reset it; a fresh app/login does. */
 @Injectable({ providedIn: 'root' })
@@ -10,6 +11,8 @@ export class HomeSession {
   readonly calm = signal(false);
   readonly boosts = signal(true);
   readonly replies = signal(false);
+  /** All posts, only this server's, or only other servers'. Not a saved default. */
+  readonly origin = signal<HomeOrigin>('all');
   private identity = '';
   constructor() {
     this.ensure();
@@ -28,5 +31,6 @@ export class HomeSession {
     this.calm.set(defaults.calm);
     this.boosts.set(defaults.boosts);
     this.replies.set(defaults.replies);
+    this.origin.set('all');
   }
 }

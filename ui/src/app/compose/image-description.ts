@@ -63,8 +63,8 @@ export function descriptionFromBytes(bytes: Uint8Array): string | null {
 }
 
 function tidy(text: string | undefined): string | null {
-  // eslint-disable-next-line no-control-regex
   const value = text
+    // eslint-disable-next-line no-control-regex -- strips control characters from metadata
     ?.replace(/[\u0000-\u001f\u007f]+/gu, ' ')
     .replace(/\s+/gu, ' ')
     .trim();

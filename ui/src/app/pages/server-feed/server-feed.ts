@@ -24,6 +24,7 @@ import { anonymousAccountRouteRef } from '../../providers/anonymous/anonymous-ro
 // i18n pagesServerFeed.retry: Try again
 // i18n pagesServerFeed.pinFull: All recent feed slots are pinned. Unpin a feed in Feeds to make room.
 // i18n pagesServerFeed.news.empty: No trending news right now.
+// i18n pagesServerFeed.news.posts: Posts about this →
 // i18n pagesServerFeed.tabs.posts: Posts
 // i18n pagesServerFeed.tabs.members: Members
 // i18n pagesServerFeed.posts.empty: Nothing here right now.
