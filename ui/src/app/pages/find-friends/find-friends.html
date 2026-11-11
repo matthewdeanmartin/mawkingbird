@@ -31,6 +31,10 @@
     </a>
   }
 }
+@if (level() === 'basic' && offersSuggestions()) {
+  <!-- Secondary to the curated ways above (client-first positioning). -->
+  <app-server-suggestions />
+}
 @if (level() === 'basic') {
   <!-- Bluesky's own starter packs, beside Mawkingbird's kits: a different thing. -->
   <p class="ff-bluesky muted small">

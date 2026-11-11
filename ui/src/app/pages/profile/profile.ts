@@ -123,6 +123,7 @@ import { ProfileMediaGrid } from './media/profile-media-grid';
 import { ProfilePhotoView } from './media/profile-photo-view';
 import { buildMediaItems, ProfileMediaItem } from './media/profile-media-item';
 import { describeHttpError, PageDiagnostics } from '../../page-diagnostics';
+import { FollowLanguagesDialog } from './follow-languages-dialog';
 import { RenderedHtmlLinks } from '../../rendered-html-links';
 
 /** Profile body tabs: the account's posts, who they follow, who follows them. */
@@ -305,6 +306,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     FormsModule,
     RouterLink,
     MbMenuItem,
+    FollowLanguagesDialog,
     StatusCard,
     ReportDialog,
     AccountNoteDialog,
@@ -2689,6 +2691,8 @@ export class Profile implements OnInit, OnDestroy {
 
   /** Occasional profile actions, kept out of the ••• menu (see menu-budget.ts). */
   protected moreOptionsOpen = signal(false);
+  /** Which of a followed account's languages reach Home (Mastodon follow option). */
+  protected showFollowLanguages = signal(false);
 
   protected openMoreOptions(event: Event): void {
     const menu = (event.target as HTMLElement).closest('details');

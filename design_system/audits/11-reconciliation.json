@@ -58,6 +58,21 @@
       "nextStep": "Profile bio translation (Phanpy parity 17): small outline MbButtons for Translate bio, source-language choices and Hide translation; the original bio stays visible above. Preserve the no-server routing (Mastodon only translates statuses) and the field-per-line synthetic post."
     },
     {
+      "file": "ui/src/app/pages/find-friends/server-suggestions.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Server follow suggestions (Mastodon parity 10): reuses AccountResultCard rows (follow button, reason line) with a link-variant MbButton \"Not interested\". Preserve its place below the curated discovery ways and that dismissing calls DELETE /suggestions/:id."
+    },
+    {
+      "file": "ui/src/app/pages/profile/follow-languages-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Per-follow languages (Mastodon parity 9): MbDialog with an MbCheckbox per language, MbButton actions and MbNotice errors. Preserve re-following with the current boosts setting and sending null for every language."
+    },
+    {
+      "file": "ui/src/app/pages/settings/posting-defaults/posting-defaults.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Posting defaults (Mastodon parity 14): a plain-language summary plus a link-variant MbButton \"Change…\" opening the shared PostPermissions dialog in defaults mode, with MbSaveFeedback. Deliberately replaces the single public/unlisted/private dropdown; do not reintroduce it."
+    },
+    {
       "file": "ui/src/app/filter-post-dialog/filter-post-dialog.html",
       "disposition": "adopted scope",
       "nextStep": "Filter this post (Mastodon parity 12): MbDialog, Field/Control select of filters plus a new-filter name input, MbButton actions and MbNotice errors. Preserve that a new filter hides on home, public, thread and account, and that the card receives the result as a server-shaped filtered entry."

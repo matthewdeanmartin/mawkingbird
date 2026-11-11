@@ -58,16 +58,11 @@
         <div class="srow">
           <span class="slabel">{{ 'settings.writing.postingPrivacy' | transloco }}</span>
           <div class="scontrol">
-            <select [ngModel]="privacy()" (ngModelChange)="privacy.set($event)" name="privacy">
-              <option value="public">{{ 'settings.privacy.visibility.public' | transloco }}</option>
-              <option value="unlisted">
-                {{ 'settings.privacy.visibility.unlisted' | transloco }}
-              </option>
-              <option value="private">
-                {{ 'settings.privacy.visibility.private' | transloco }}
-              </option>
-            </select>
-            <span class="hint">{{ 'settings.privacy.visibility.hint' | transloco }}</span>
+            <!-- Saves on its own; the Save button below covers the other rows. -->
+            <app-posting-defaults
+              [value]="{ privacy: privacy(), quotePolicy: quotePolicy() }"
+              (changed)="privacy.set($event.privacy); quotePolicy.set($event.quotePolicy)"
+            />
           </div>
         </div>
 

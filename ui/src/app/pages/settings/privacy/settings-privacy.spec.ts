@@ -170,10 +170,9 @@ describe('SettingsPrivacy', () => {
       expect(input.closest('mb-checkbox')!.querySelector('[role="status"]')).not.toBeNull();
     });
   }
-  for (const [field, value] of [
-    ['privacy', 'private'],
-    ['language', 'eo'],
-  ]) {
+  // Default visibility moved into the posting-defaults row (no single dropdown);
+  // its replacement test follows this loop.
+  for (const [field, value] of [['language', 'eo']]) {
     it(`shared ${field} select keeps its label, one-field payload and failed-save rollback`, async () => {
       const f = setUp();
       httpMock
@@ -210,4 +209,103 @@ describe('SettingsPrivacy', () => {
       expect(wrapper.textContent).toContain('Saved');
     });
   }
+
+  it('saves visibility and quote policy together from the posting-defaults dialog', () => {
+    for (const [name, open] of [
+      ['showModal', true],
+      ['close', false],
+    ] as const) {
+      Object.defineProperty(HTMLDialogElement.prototype, name, {
+        configurable: true,
+        value(this: HTMLDialogElement) {
+          this.open = open;
+        },
+      });
+    }
+    const f = setUp();
+    httpMock.expectOne('/api/v1/accounts/verify_credentials').flush({
+      hide_collections: false,
+      indexable: true,
+      source: { privacy: 'unlisted', quote_policy: 'followers', spoiler_field: false },
+    });
+    f.detectChanges();
+    const el = f.nativeElement as HTMLElement;
+    // A sentence, not a dropdown, and the newer switches the server reported.
+    expect(el.querySelector('select[name="privacy"]')).toBeNull();
+    expect(el.textContent).toContain(
+      'New posts: everyone can read them, kept out of public timelines, followers can quote them.',
+    );
+    expect(el.textContent).toContain('Hide who I follow and who follows me');
+    expect(el.textContent).toContain('Let my public posts appear in search results');
+    expect(el.textContent).toContain('Open the content warning field in new posts');
+
+    [...el.querySelectorAll<HTMLButtonElement>('app-posting-defaults button')]
+      .find((b) => b.textContent?.trim() === 'Change…')!
+      .click();
+    f.detectChanges();
+    const dialog = el.querySelector('app-post-permissions')!;
+    // Defaults never offer "mentioned people only" or per-post notifications.
+    expect(dialog.textContent).not.toContain('Mentioned people only');
+    expect(dialog.textContent).not.toContain('Notifications');
+    const listed = dialog.querySelectorAll('select')[1] as HTMLSelectElement;
+    listed.value = listed.options[0].value;
+    listed.dispatchEvent(new Event('change'));
+    [...dialog.querySelectorAll<HTMLButtonElement>('button')]
+      .find((b) => b.textContent?.trim() === 'Apply')!
+      .click();
+
+    const failed = httpMock.expectOne('/api/v1/accounts/update_credentials');
+    expect(Array.from((failed.request.body as FormData).entries())).toEqual([
+      ['source[privacy]', 'public'],
+      ['source[quote_policy]', 'followers'],
+    ]);
+    failed.flush({}, { status: 503, statusText: 'Unavailable' });
+    f.detectChanges();
+    expect(el.querySelector('app-post-permissions')?.textContent).toContain(
+      'Your defaults were not saved.',
+    );
+
+    [...el.querySelectorAll<HTMLButtonElement>('app-post-permissions button')]
+      .find((b) => b.textContent?.trim() === 'Apply')!
+      .click();
+    httpMock.expectOne('/api/v1/accounts/update_credentials').flush({});
+    f.detectChanges();
+    expect(el.querySelector('app-post-permissions')).toBeNull();
+    expect(el.textContent).toContain('shown in public timelines');
+  });
+
+  it('writes the newer account switches one field at a time', () => {
+    const f = setUp();
+    httpMock.expectOne('/api/v1/accounts/verify_credentials').flush({
+      hide_collections: false,
+      indexable: true,
+      source: { privacy: 'public', spoiler_field: false },
+    });
+    f.detectChanges();
+    const ui = f.componentInstance as unknown as {
+      commit(field: string, value: boolean): void;
+    };
+    for (const [field, key] of [
+      ['hide_collections', 'hide_collections'],
+      ['indexable', 'indexable'],
+      ['spoiler_field', 'source[spoiler_field]'],
+    ]) {
+      ui.commit(field, true);
+      const write = httpMock.expectOne('/api/v1/accounts/update_credentials');
+      expect(Array.from((write.request.body as FormData).entries())).toEqual([[key, 'true']]);
+      write.flush({});
+    }
+  });
+
+  it('hides the newer switches on servers that do not report them', () => {
+    const f = setUp();
+    httpMock
+      .expectOne('/api/v1/accounts/verify_credentials')
+      .flush({ source: { privacy: 'public' } });
+    f.detectChanges();
+    const text = (f.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).not.toContain('Hide who I follow');
+    expect(text).not.toContain('appear in search results');
+    expect(text).not.toContain('content warning field');
+  });
 });

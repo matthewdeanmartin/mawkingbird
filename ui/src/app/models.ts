@@ -29,6 +29,10 @@ export interface AccountSource {
   language: string | null;
   note: string;
   fields: AccountField[];
+  /** Default quote policy for new posts: public, followers or nobody (4.5+). */
+  quote_policy?: string;
+  /** Open the content-warning field in the composer by default (4.5+). */
+  spoiler_field?: boolean;
 }
 
 export interface Account {
@@ -338,6 +342,8 @@ export interface Relationship {
   note?: string;
   /** Whether the viewer features this account on their own profile. */
   endorsed?: boolean;
+  /** Languages of theirs that reach Home; null = all (Mastodon follow option). */
+  languages?: string[] | null;
 }
 
 /** One year of a server-generated annual report. `data` varies by `schema_version`. */
@@ -365,6 +371,12 @@ export interface OwnProfile {
   /** API version 9+. Absent on API version 8. */
   avatar_description?: string;
   header_description?: string;
+  /** Which profile tabs visitors see (4.6). */
+  show_media?: boolean;
+  show_media_replies?: boolean;
+  show_featured?: boolean;
+  /** Sites allowed to credit this account as author on link previews. */
+  attribution_domains?: string[];
 }
 
 /** `GET /api/v1/accounts/familiar_followers`: people you follow who follow `id`. */
@@ -507,6 +519,13 @@ export interface InstanceRule {
   id: string;
   text: string;
   hint: string;
+}
+
+/** One entry of `GET /api/v2/suggestions`. */
+export interface FollowSuggestion {
+  /** e.g. featured, most_followed, most_interactions, similar_to_recently_followed, friends_of_friends. */
+  sources: string[];
+  account: Account;
 }
 
 /** `GET /api/v1/instance/privacy_policy`. */

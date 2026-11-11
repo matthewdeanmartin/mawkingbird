@@ -2,6 +2,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AiAvailability } from '../../../ai-availability';
 import { MbButton } from '../../../design-system/button/button';
+import { MbPostAction } from '../../../design-system/post-actions/post-actions';
 import { Account, Status } from '../../../models';
 import { OpenRouterSession } from '../../../providers/openrouter/openrouter-session';
 import { languageDisplayName } from '../../../translation/language-codes';
@@ -64,65 +65,60 @@ export function bioAsStatus(account: Account): Status {
 /** "Translate bio" under a profile: translates the bio and fields; the original stays. */
 @Component({
   selector: 'app-bio-translation',
-  imports: [MbButton, TranslocoPipe],
+  imports: [MbButton, MbPostAction, TranslocoPipe],
   template: `
     @if (translatable()) {
-      <div class="bio-translation">
-        @if (result(); as r) {
-          <div class="translated" [attr.lang]="r.target">
-            <p class="text">{{ r.text }}</p>
-            <p class="credit muted small">
-              {{ 'pages.profile.bio.translatedBy' | transloco: { from: r.from, engine: r.engine } }}
-            </p>
-          </div>
-          <button mbButton type="button" variant="outline" size="small" (click)="hide()">
-            {{ 'pages.profile.bio.hide' | transloco }}
-          </button>
-        } @else {
-          @if (candidates(); as langs) {
-            <p class="muted small">{{ 'pages.profile.bio.pickSource' | transloco }}</p>
-            <div class="choices">
-              @for (code of langs; track code) {
-                <button
-                  mbButton
-                  type="button"
-                  variant="outline"
-                  size="small"
-                  [disabled]="busy()"
-                  (click)="run(code)"
-                >
-                  {{ 'pages.profile.bio.translateFrom' | transloco: { language: name(code) } }}
-                </button>
-              }
-            </div>
-          } @else {
-            <button
-              mbButton
-              type="button"
-              variant="outline"
-              size="small"
-              [disabled]="busy()"
-              (click)="run()"
-            >
-              {{
-                (busy() ? 'pages.profile.bio.translating' : 'pages.profile.bio.translate')
-                  | transloco
-              }}
+      <!-- A globe after the bio, like the one under a post: press to translate,
+           press again to put the original back. -->
+      <button
+        type="button"
+        mbPostAction
+        size="small"
+        class="bio-globe"
+        [pressed]="!!result()"
+        [disabled]="busy()"
+        [attr.aria-busy]="busy() || null"
+        [title]="(result() ? 'pages.profile.bio.hide' : 'pages.profile.bio.translate') | transloco"
+        [attr.aria-label]="
+          (result() ? 'pages.profile.bio.hide' : 'pages.profile.bio.translate') | transloco
+        "
+        (click)="toggle()"
+      >
+        <span aria-hidden="true">🌐</span>
+      </button>
+      @if (result(); as r) {
+        <div class="translated" [attr.lang]="r.target">
+          <p class="text">{{ r.text }}</p>
+          <p class="credit muted small">
+            {{ 'pages.profile.bio.translatedBy' | transloco: { from: r.from, engine: r.engine } }}
+          </p>
+        </div>
+      } @else if (candidates(); as langs) {
+        <p class="muted small choices">
+          {{ 'pages.profile.bio.pickSource' | transloco }}
+          @for (code of langs; track code) {
+            <button mbButton type="button" variant="link" [disabled]="busy()" (click)="run(code)">
+              {{ 'pages.profile.bio.translateFrom' | transloco: { language: name(code) } }}
             </button>
           }
-          @if (message()) {
-            <p class="muted small" role="status">{{ message() }}</p>
-          }
-        }
-      </div>
+        </p>
+      }
+      @if (message() && !result()) {
+        <p class="muted small" role="status">{{ message() }}</p>
+      }
     }
   `,
+  host: { class: 'bio-translation' },
   styles: `
-    .bio-translation {
-      display: grid;
-      gap: 6px;
-      justify-items: start;
-      margin-top: 8px;
+    :host {
+      display: block;
+      margin-top: 4px;
+    }
+    .bio-globe {
+      margin-inline-start: -6px;
+    }
+    .translated {
+      margin-top: 6px;
     }
     .translated {
       border-inline-start: 3px solid var(--border);
@@ -144,7 +140,8 @@ export function bioAsStatus(account: Account): Status {
     .choices {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      align-items: baseline;
+      gap: 4px 10px;
     }
   `,
 })
@@ -170,6 +167,11 @@ export class BioTranslation {
 
   protected name(code: string): string {
     return languageDisplayName(code);
+  }
+
+  protected toggle(): void {
+    if (this.result()) this.hide();
+    else void this.run();
   }
 
   protected hide(): void {

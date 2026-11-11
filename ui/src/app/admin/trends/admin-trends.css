@@ -58,3 +58,17 @@
   font-style: italic;
   text-transform: capitalize;
 }
+
+.trend-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.trend-link .trend-actions {
+  margin-inline-start: auto;
+}

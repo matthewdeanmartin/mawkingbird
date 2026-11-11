@@ -85,3 +85,83 @@
     }
   }
 </section>
+
+<section class="trend-section">
+  <h2>{{ 'adminTrends.links' | transloco }}</h2>
+  @if (!links().length) {
+    <p class="muted center">{{ 'adminTrends.emptyLinks' | transloco }}</p>
+  } @else {
+    @for (l of links(); track l.id) {
+      <div class="trend-link">
+        <a [href]="l.url" target="_blank" rel="noopener noreferrer">{{ l.title || l.url }}</a>
+        <span class="muted small">{{ l.provider_name }}</span>
+        <span class="trend-actions">
+          @if (moderated()['link-' + l.id]; as state) {
+            <span class="moderated muted">{{ state }}</span>
+          } @else {
+            <button
+              mbButton
+              size="small"
+              variant="outline"
+              type="button"
+              class="op"
+              (click)="reviewLink(l, true)"
+            >
+              {{ 'adminTrends.approve' | transloco }}
+            </button>
+            <button
+              mbButton
+              size="small"
+              tone="danger"
+              type="button"
+              class="op warn"
+              (click)="reviewLink(l, false)"
+            >
+              {{ 'adminTrends.reject' | transloco }}
+            </button>
+          }
+        </span>
+      </div>
+    }
+  }
+</section>
+
+<section class="trend-section">
+  <h2>{{ 'adminTrends.publishers' | transloco }}</h2>
+  <p class="muted small">{{ 'adminTrends.publishersHint' | transloco }}</p>
+  @if (!publishers().length) {
+    <p class="muted center">{{ 'adminTrends.emptyPublishers' | transloco }}</p>
+  } @else {
+    @for (p of publishers(); track p.id) {
+      <div class="trend-link">
+        <strong>{{ p.domain }}</strong>
+        <span class="trend-actions">
+          @if (moderated()['publisher-' + p.id]; as state) {
+            <span class="moderated muted">{{ state }}</span>
+          } @else {
+            <button
+              mbButton
+              size="small"
+              variant="outline"
+              type="button"
+              class="op"
+              (click)="reviewPublisher(p, true)"
+            >
+              {{ 'adminTrends.approve' | transloco }}
+            </button>
+            <button
+              mbButton
+              size="small"
+              tone="danger"
+              type="button"
+              class="op warn"
+              (click)="reviewPublisher(p, false)"
+            >
+              {{ 'adminTrends.reject' | transloco }}
+            </button>
+          }
+        </span>
+      </div>
+    }
+  }
+</section>

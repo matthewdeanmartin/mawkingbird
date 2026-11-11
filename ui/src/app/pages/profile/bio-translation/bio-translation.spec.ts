@@ -48,7 +48,7 @@ describe('BioTranslation', () => {
 
   const click = (f: ComponentFixture<BioTranslation>, label: string) =>
     [...(f.nativeElement as HTMLElement).querySelectorAll('button')]
-      .find((b) => b.textContent?.includes(label))!
+      .find((b) => b.getAttribute('aria-label') === label || b.textContent?.includes(label))!
       .click();
 
   it('translates the bio without the server and keeps a way back', async () => {

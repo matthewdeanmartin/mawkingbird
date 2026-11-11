@@ -36,6 +36,38 @@
             : ''
         "
       />
+      @if (hideCollections() !== null) {
+        <mb-checkbox
+          [label]="'settings.privacy.hideCollections' | transloco"
+          [hint]="'settings.privacy.hideCollections.hint' | transloco"
+          [ngModel]="hideCollections()"
+          (ngModelChange)="commit('hide_collections', $event)"
+          [disabled]="saving() === 'hide_collections'"
+          name="hide_collections"
+          [status]="saved() === 'hide_collections' ? ('common.saved' | transloco) : ''"
+          [error]="
+            errorFor('hide_collections')
+              ? ('common.errorPrefix' | transloco: { message: errorFor('hide_collections') })
+              : ''
+          "
+        />
+      }
+      @if (indexable() !== null) {
+        <mb-checkbox
+          [label]="'settings.privacy.indexable' | transloco"
+          [hint]="'settings.privacy.indexable.hint' | transloco"
+          [ngModel]="indexable()"
+          (ngModelChange)="commit('indexable', $event)"
+          [disabled]="saving() === 'indexable'"
+          name="indexable"
+          [status]="saved() === 'indexable' ? ('common.saved' | transloco) : ''"
+          [error]="
+            errorFor('indexable')
+              ? ('common.errorPrefix' | transloco: { message: errorFor('indexable') })
+              : ''
+          "
+        />
+      }
     </mb-settings-row>
 
     <mb-settings-row [heading]="'settings.privacy.automation' | transloco">
@@ -63,34 +95,11 @@
     </p>
 
     <mb-settings-row [heading]="'settings.privacy.visibility' | transloco">
-      <mb-field
-        hideLabel
-        [label]="'settings.privacy.visibility' | transloco"
-        [hint]="'settings.privacy.visibility.hint' | transloco"
-        [error]="
-          errorFor('privacy')
-            ? ('common.errorPrefix' | transloco: { message: errorFor('privacy') })
-            : ''
-        "
-      >
-        <select
-          mbControl
-          [ngModel]="privacy()"
-          (ngModelChange)="commit('privacy', $event)"
-          [disabled]="saving() === 'privacy'"
-          name="privacy"
-        >
-          <option value="public">{{ 'settings.privacy.visibility.public' | transloco }}</option>
-          <option value="unlisted">{{ 'settings.privacy.visibility.unlisted' | transloco }}</option>
-          <option value="private">{{ 'settings.privacy.visibility.private' | transloco }}</option>
-        </select>
-        <mb-save-feedback
-          [state]="saving() === 'privacy' ? 'saving' : saved() === 'privacy' ? 'saved' : 'idle'"
-          [message]="(saving() === 'privacy' ? 'common.saving' : 'common.saved') | transloco"
-        />
-      </mb-field>
+      <app-posting-defaults
+        [value]="{ privacy: privacy(), quotePolicy: quotePolicy() }"
+        (changed)="onDefaultsChanged($event)"
+      />
     </mb-settings-row>
-
     <mb-settings-row [heading]="'settings.privacy.media' | transloco">
       <mb-checkbox
         [label]="'settings.privacy.sensitive' | transloco"
@@ -106,6 +115,26 @@
         "
       />
     </mb-settings-row>
+    @if (spoilerField() !== null) {
+      <mb-settings-row [heading]="'settings.privacy.contentWarnings' | transloco">
+        @if (spoilerField() !== null) {
+          <mb-checkbox
+            [label]="'settings.privacy.spoilerField' | transloco"
+            [hint]="'settings.privacy.spoilerField.hint' | transloco"
+            [ngModel]="spoilerField()"
+            (ngModelChange)="commit('spoiler_field', $event)"
+            [disabled]="saving() === 'spoiler_field'"
+            name="spoiler_field"
+            [status]="saved() === 'spoiler_field' ? ('common.saved' | transloco) : ''"
+            [error]="
+              errorFor('spoiler_field')
+                ? ('common.errorPrefix' | transloco: { message: errorFor('spoiler_field') })
+                : ''
+            "
+          />
+        }
+      </mb-settings-row>
+    }
 
     <mb-settings-row [heading]="'settings.privacy.language' | transloco">
       <mb-field

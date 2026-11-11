@@ -25,6 +25,8 @@ describe('FindFriends', () => {
             get isAnonymous() {
               return anonymous;
             },
+            kind: () => (anonymous ? 'anonymous' : 'bluesky'),
+            token: () => null,
           },
         },
       ],

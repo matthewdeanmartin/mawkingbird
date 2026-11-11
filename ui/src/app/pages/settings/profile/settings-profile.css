@@ -54,3 +54,10 @@
 .image-control mb-field {
   width: 100%;
 }
+
+.attribution-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 8px 0 0;
+}

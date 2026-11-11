@@ -410,4 +410,29 @@ describe('AdminApi (HTTP isolated)', () => {
     expect(req.request.method).toBe('POST');
     req.flush({});
   });
+
+  it('trends links and publishers: list, then approve or reject by id', () => {
+    api.trendingLinks().subscribe();
+    httpMock.expectOne('/api/v1/admin/trends/links').flush([]);
+    api.reviewTrendingLink('7', true).subscribe();
+    expect(httpMock.expectOne('/api/v1/admin/trends/links/7/approve').request.method).toBe('POST');
+    api.linkPublishers().subscribe();
+    httpMock.expectOne('/api/v1/admin/trends/links/publishers').flush([]);
+    api.reviewLinkPublisher('3', false).subscribe();
+    expect(
+      httpMock.expectOne('/api/v1/admin/trends/links/publishers/3/reject').request.method,
+    ).toBe('POST');
+  });
+
+  it('reports: PUT a new category and POST unassign', () => {
+    api.updateReport('9', { category: 'spam' }).subscribe();
+    const put = httpMock.expectOne('/api/v1/admin/reports/9');
+    expect(put.request.method).toBe('PUT');
+    expect(put.request.body).toEqual({ category: 'spam' });
+    put.flush({});
+    api.unassignReport('9').subscribe();
+    const post = httpMock.expectOne('/api/v1/admin/reports/9/unassign');
+    expect(post.request.method).toBe('POST');
+    post.flush({});
+  });
 });

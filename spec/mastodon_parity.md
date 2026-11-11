@@ -145,7 +145,7 @@ Sources: [Mastodon poll](../../REFERENCE/mastodon/app/javascript/mastodon/compon
 
 ## Accounts, relationships and safety
 
-### 9. Choose which languages to see from a followed account: missing
+### 9. Choose which languages to see from a followed account: done 2026-11-11
 
 **Mastodon:** The account menu has "Change subscribed languages". It re-follows with `languages[]`, so the home timeline includes only that person's posts in those languages. The current choice comes from the relationship's `languages`.
 
@@ -153,15 +153,21 @@ Sources: [Mastodon poll](../../REFERENCE/mastodon/app/javascript/mastodon/compon
 
 **Completion criterion:** On a followed profile, choose a set of post languages (or all languages), save it on the server, and show it from the relationship.
 
+
+**Implemented:** profile ••• → More options… → For this account → "Languages you see from them…" opens `FollowLanguagesDialog`: a checkbox per language (the reader's known languages plus any already chosen). Saving re-follows with `languages[]`, keeping the current boosts setting; ticking none sends `null` (every language).
+
 Sources: [Mastodon subscribed-languages modal](../../REFERENCE/mastodon/app/javascript/mastodon/features/subscribed_languages_modal/index.jsx); [mawkingbird `Api.follow`](../ui/src/app/api.ts), [profile](../ui/src/app/pages/profile/profile.ts).
 
-### 10. Server follow suggestions, with dismiss: missing
+### 10. Server follow suggestions, with dismiss: done 2026-11-11
 
 **Mastodon:** Onboarding and Explore → "For you" show `GET /api/v2/suggestions` with their source (for example "Popular on this server" or "Similar to profiles you recently followed"). A suggestion can be dismissed permanently with `DELETE /api/v1/suggestions/:id`.
 
 **Mawkingbird:** It has a lot of discovery: directory, starter kits, offsite directories and find-friends. None of it uses the server's own suggestions, and no dismiss call was found.
 
 **Completion criterion:** Show the server's suggestions and their reasons, let the person follow or dismiss each one, and keep dismissed suggestions away. Under the client-first positioning, place this as a secondary discovery route.
+
+
+**Implemented:** Find friends → Basic shows "Suggested by your server" for signed-in Mastodon users, below the curated ways. Rows reuse the search account card (follow/unfollow) with the server's reason in Mastodon's wording (popular on the server, similar to people you recently followed, and so on); "Not interested" calls `DELETE /api/v1/suggestions/:id`.
 
 Sources: [Mastodon suggestions API](../../REFERENCE/mastodon/app/javascript/mastodon/api/suggestions.ts), [onboarding](../../REFERENCE/mastodon/app/javascript/mastodon/features/onboarding); [mawkingbird directory](../ui/src/app/pages/directory), [find friends](../ui/src/app/pages/find-friends).
 
@@ -173,7 +179,7 @@ Sources: [Mastodon suggestions API](../../REFERENCE/mastodon/app/javascript/mast
 
 **Completion criterion:** From a remote account (and optionally a remote post), block its domain after a confirmation that shows the server's follower and follow counts. If the preview endpoint is missing on an older server, fall back to a plain confirmation.
 
-**Implemented:** profile ••• → More options… → Safety → "Block everyone on <domain>" for remote Mastodon accounts. The confirmation states the server's preview counts (`Api.domainBlockPreview`, Mastodon 4.4+), "you will lose N people you follow and M followers there"; older servers get a plain warning without numbers. The block uses the existing `Api.blockDomain`, and the dialog confirms with an undo pointer to Settings → Blocks. Not offered from posts, to keep the post menu within its budget.
+**Implemented:** profile ••• → More options… → Safety → "Block everyone on <domain>" for remote Mastodon accounts. The confirmation states the server's preview counts (`Api.domainBlockPreview`, Mastodon 4.4+), "you will lose N people you follow and M followers there"; older servers get a plain warning without numbers. The block uses the existing `Api.blockDomain`, and the dialog confirms with an undo pointer to Settings → Blocks. **Never offered from posts (owner, 2026-11-11):** nobody should defederate a whole server over one post, and the app should not invite a decision that gives people a worse experience.
 
 Sources: [Mastodon domain-block modal](../../REFERENCE/mastodon/app/javascript/mastodon/features/ui/components/domain_block_modal.tsx), [preview controller](../../REFERENCE/mastodon/app/controllers/api/v1/domain_blocks/previews_controller.rb); [mawkingbird `Api.blockDomain`](../ui/src/app/api.ts), [account list settings](../ui/src/app/pages/settings/account-list/settings-account-list.ts).
 
@@ -203,7 +209,7 @@ Sources: [Mastodon conversation actions](../../REFERENCE/mastodon/app/javascript
 
 ## Settings that the API can write
 
-### 14. Account and privacy settings missing from the editors: partial
+### 14. Account and privacy settings missing from the editors: done 2026-11-11
 
 `PATCH /api/v1/accounts/update_credentials` and, on 4.6+, `PATCH /api/v1/profile` accept these settings. Mawkingbird's privacy and profile settings currently send only `bot`, `discoverable`, `locked`, display name, bio, fields, images and their descriptions, and `source[privacy|sensitive|language]`.
 
@@ -217,6 +223,9 @@ Sources: [Mastodon conversation actions](../../REFERENCE/mastodon/app/javascript
 | Show Media, Media replies and Featured profile tabs (4.6) | `show_media`, `show_media_replies`, `show_featured` | Profile editor |
 
 **Completion criterion:** Read each value from `verify_credentials` (or the profile endpoint) and save it without resetting the others. Hide fields the server does not return. Where the composer has its own per-post quote policy, the server default should be the starting value.
+
+
+**Implemented:** Default visibility and the default quote policy are no longer a single public/unlisted/private dropdown. Settings → Privacy and Settings → Writing show a sentence ("New posts: everyone can read them, kept out of public timelines, followers can quote them.") and "Change…", which opens the post permissions dialog in a defaults mode (no "mentioned people only", no per-post notifications) and saves `source[privacy]` and `source[quote_policy]` together. Settings → Privacy adds checkboxes for `hide_collections`, `indexable` and `source[spoiler_field]`, each shown only when the server reports it. Settings → Profile adds the 4.6 profile-tab switches and author attribution domains via `PATCH /api/v1/profile`.
 
 Sources: [Mastodon credentials controller](../../REFERENCE/mastodon/app/controllers/api/v1/accounts/credentials_controller.rb), [profiles controller](../../REFERENCE/mastodon/app/controllers/api/v1/profiles_controller.rb), [privacy view](../../REFERENCE/mastodon/app/views/settings/privacy/show.html.haml), [posting defaults view](../../REFERENCE/mastodon/app/views/settings/preferences/posting_defaults/show.html.haml); [mawkingbird privacy settings](../ui/src/app/pages/settings/privacy/settings-privacy.ts), [profile settings](../ui/src/app/pages/settings/profile/settings-profile.ts).
 
@@ -234,7 +243,7 @@ Sources: [Mastodon about](../../REFERENCE/mastodon/app/javascript/mastodon/featu
 
 ## Administration
 
-### 16. Admin features the API supports but mawkingbird lacks: partial
+### 16. Admin features the API supports but mawkingbird lacks: partial (16a, 16b, 16c done 2026-11-11)
 
 The admin area covers the core moderation API. These operations are also supported by the API but not implemented:
 
@@ -249,13 +258,19 @@ The admin area covers the core moderation API. These operations are also support
 
 **Completion criterion:** Each sub-item works for a role with the matching permission and shows the server's 403 otherwise.
 
+
+**Implemented:** 16a: open reports have a compact category select (`PUT /admin/reports/:id`; a violation keeps its existing rules). 16b: assigned open reports offer Unassign. 16c: Admin → Trends adds Links and Publishers with approve/reject. **Correction:** 16f was already implemented (`AdminApi.deleteAccount`, used on the accounts page); this audit missed it. Not done: 16d hashtag review and 16e dashboard dimensions/retention.
+
 Sources: [Mastodon API routes](../../REFERENCE/mastodon/config/routes/api.rb); [mawkingbird admin API](../ui/src/app/admin/admin-api.ts), [admin shell](../ui/src/app/admin/admin-shell/admin-shell.html).
 
-### 17. Admin announcements call an endpoint Mastodon does not have: defect
+### 17. Admin announcements call an endpoint Mastodon does not have: fixed 2026-11-11
 
 **Finding:** `AdminApi.announcements`, `createAnnouncement`, `deleteAnnouncement`, `publishAnnouncement` and `unpublishAnnouncement` call `/api/v1/admin/announcements*`, and the admin shell routes to that page. Mastodon has no such REST API. Announcements are managed only through the server-rendered `/admin/announcements` pages ([admin routes](../../REFERENCE/mastodon/config/routes/admin.rb)). The page therefore works against the mock server only and will fail against a real server.
 
 **Completion criterion:** Either gate the page to the mock or developer build, or replace it with a link to the server's `/admin/announcements` page. Reading and reacting to announcements (`/api/v1/announcements`) is real and is unaffected.
+
+
+**Implemented:** against the local mock the page works as before; against a real server it calls nothing and shows a note linking to the server's own `/admin/announcements` page.
 
 Sources: [mawkingbird admin API](../ui/src/app/admin/admin-api.ts), [routes](../ui/src/app/app.routes.ts).
 

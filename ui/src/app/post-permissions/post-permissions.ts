@@ -13,6 +13,8 @@ export interface PostPermissionsValue {
   muteNotifications?: boolean;
 }
 // i18n permissions.title: Post permissions
+// i18n permissions.defaultsTitle: Defaults for new posts
+// i18n permissions.defaultsIntro: What a new post starts with. You can still change any of it on the post itself.
 // i18n permissions.close: Cancel
 // i18n permissions.save: Apply
 // i18n permissions.audience: Who can read this?
@@ -37,11 +39,14 @@ export interface PostPermissionsValue {
   imports: [FormsModule, TranslocoPipe, MbDialog, MbField, MbControl, MbButton, MbHelp, MbNotice],
   template: `
     <mb-dialog
-      [title]="'permissions.title' | transloco"
+      [title]="(defaults() ? 'permissions.defaultsTitle' : 'permissions.title') | transloco"
       [closeLabel]="'permissions.close' | transloco"
       [busy]="busy()"
       (dismissed)="closed.emit()"
     >
+      @if (defaults()) {
+        <p class="muted small">{{ 'permissions.defaultsIntro' | transloco }}</p>
+      }
       <mb-field [label]="'permissions.audience' | transloco">
         <select
           mbControl
@@ -51,7 +56,9 @@ export interface PostPermissionsValue {
         >
           <option value="public">{{ 'permissions.everyone' | transloco }}</option>
           <option value="private">{{ 'permissions.followers' | transloco }}</option>
-          <option value="direct">{{ 'permissions.mentioned' | transloco }}</option>
+          @if (!defaults()) {
+            <option value="direct">{{ 'permissions.mentioned' | transloco }}</option>
+          }
         </select>
       </mb-field>
       @if (audience() === 'public') {
@@ -78,23 +85,27 @@ export interface PostPermissionsValue {
             (ngModelChange)="quotes.set($event)"
             [disabled]="busy() || audience() !== 'public'"
           >
-            <option value="">{{ 'permissions.default' | transloco }}</option>
+            @if (!defaults()) {
+              <option value="">{{ 'permissions.default' | transloco }}</option>
+            }
             <option value="public">{{ 'permissions.everyone' | transloco }}</option>
             <option value="followers">{{ 'permissions.followers' | transloco }}</option>
             <option value="nobody">{{ 'permissions.nobody' | transloco }}</option>
           </select>
         </mb-field>
-        <mb-field [label]="'permissions.notifications' | transloco">
-          <select
-            mbControl
-            [disabled]="busy()"
-            [ngModel]="muted()"
-            (ngModelChange)="muted.set($event)"
-          >
-            <option [ngValue]="false">{{ 'permissions.on' | transloco }}</option>
-            <option [ngValue]="true">{{ 'permissions.off' | transloco }}</option>
-          </select>
-        </mb-field>
+        @if (!defaults()) {
+          <mb-field [label]="'permissions.notifications' | transloco">
+            <select
+              mbControl
+              [disabled]="busy()"
+              [ngModel]="muted()"
+              (ngModelChange)="muted.set($event)"
+            >
+              <option [ngValue]="false">{{ 'permissions.on' | transloco }}</option>
+              <option [ngValue]="true">{{ 'permissions.off' | transloco }}</option>
+            </select>
+          </mb-field>
+        }
       } @else {
         <p>{{ 'permissions.unsupported' | transloco }}</p>
       }
@@ -126,6 +137,8 @@ export class PostPermissions implements OnInit {
   readonly published = input(false);
   readonly locked = input(false);
   readonly mastodon = input(true);
+  /** Editing the account's defaults for new posts rather than one post. */
+  readonly defaults = input(false);
   readonly closed = output<void>();
   readonly saved = output<PostPermissionsValue>();
   protected audience = signal('public');
@@ -136,7 +149,7 @@ export class PostPermissions implements OnInit {
     const value = this.initial();
     this.audience.set(value.visibility === 'unlisted' ? 'public' : value.visibility);
     this.listed.set(value.visibility !== 'unlisted');
-    this.quotes.set(value.quoteApprovalPolicy ?? '');
+    this.quotes.set(value.quoteApprovalPolicy ?? (this.defaults() ? 'public' : ''));
     this.muted.set(value.muteNotifications ?? false);
   }
   apply(): void {

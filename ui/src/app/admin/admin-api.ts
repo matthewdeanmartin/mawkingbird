@@ -114,6 +114,39 @@ export class AdminApi {
     return this.http.post<Announcement>(`/api/v1/admin/announcements/${id}/unpublish`, {});
   }
 
+  // --- trending links and their publishers (review queue) ---
+  trendingLinks(): Observable<AdminTrendLink[]> {
+    return this.http.get<AdminTrendLink[]>('/api/v1/admin/trends/links');
+  }
+
+  reviewTrendingLink(id: string, approve: boolean): Observable<unknown> {
+    return this.http.post(`/api/v1/admin/trends/links/${id}/${approve ? 'approve' : 'reject'}`, {});
+  }
+
+  linkPublishers(): Observable<AdminLinkPublisher[]> {
+    return this.http.get<AdminLinkPublisher[]>('/api/v1/admin/trends/links/publishers');
+  }
+
+  reviewLinkPublisher(id: string, approve: boolean): Observable<unknown> {
+    return this.http.post(
+      `/api/v1/admin/trends/links/publishers/${id}/${approve ? 'approve' : 'reject'}`,
+      {},
+    );
+  }
+
+  // --- report triage ---
+  /** Change a report's category (`PUT /api/v1/admin/reports/:id`). */
+  updateReport(
+    id: string,
+    changes: { category: string; rule_ids?: string[] },
+  ): Observable<AdminReport> {
+    return this.http.put<AdminReport>(`/api/v1/admin/reports/${id}`, changes);
+  }
+
+  unassignReport(id: string): Observable<AdminReport> {
+    return this.http.post<AdminReport>(`/api/v1/admin/reports/${id}/unassign`, {});
+  }
+
   // --- trends ---
   trendingTags(): Observable<TrendingTag[]> {
     return this.http.get<TrendingTag[]>('/api/v1/admin/trends/tags');
@@ -206,4 +239,21 @@ export class AdminApi {
       end_at: endAt,
     });
   }
+}
+
+/** `GET /api/v1/admin/trends/links`: a trending preview card awaiting review. */
+export interface AdminTrendLink {
+  id: string;
+  url: string;
+  title: string;
+  provider_name: string;
+  requires_review?: boolean;
+}
+
+/** `GET /api/v1/admin/trends/links/publishers`: a site whose links may trend. */
+export interface AdminLinkPublisher {
+  id: string;
+  domain: string;
+  trendable: boolean;
+  requires_review: boolean;
 }

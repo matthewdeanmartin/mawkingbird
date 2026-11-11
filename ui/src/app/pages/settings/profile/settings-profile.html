@@ -231,6 +231,69 @@
       }
     </div>
 
+    @if (profileTabs(); as tabs) {
+      <div class="ssection">
+        <h2>{{ 'settings.profile.tabs.heading' | transloco }}</h2>
+        <mb-settings-row [heading]="'settings.profile.tabs.row' | transloco">
+          <mb-checkbox
+            [label]="'settings.profile.tabs.media' | transloco"
+            [checked]="tabs.show_media"
+            [disabled]="tabSaving()"
+            (checkedChange)="setProfileTab('show_media', $event)"
+          />
+          @if (tabs.show_media) {
+            <mb-checkbox
+              [label]="'settings.profile.tabs.mediaReplies' | transloco"
+              [checked]="tabs.show_media_replies"
+              [disabled]="tabSaving()"
+              (checkedChange)="setProfileTab('show_media_replies', $event)"
+            />
+          }
+          <mb-checkbox
+            [label]="'settings.profile.tabs.featured' | transloco"
+            [checked]="tabs.show_featured"
+            [disabled]="tabSaving()"
+            (checkedChange)="setProfileTab('show_featured', $event)"
+            [error]="tabError()"
+          />
+        </mb-settings-row>
+      </div>
+    }
+
+    @if (attribution() !== null) {
+      <div class="ssection">
+        <h2>{{ 'settings.profile.attribution.heading' | transloco }}</h2>
+        <mb-field
+          [label]="'settings.profile.attribution.label' | transloco"
+          [hint]="'settings.profile.attribution.hint' | transloco"
+          [error]="attributionError()"
+        >
+          <textarea
+            mbControl
+            rows="3"
+            name="attributionDomains"
+            spellcheck="false"
+            [ngModel]="attribution()"
+            (ngModelChange)="attribution.set($event); attributionSaved.set(false)"
+          ></textarea>
+        </mb-field>
+        <p class="attribution-actions">
+          <button
+            mbButton
+            variant="outline"
+            type="button"
+            [disabled]="attributionSaving()"
+            (click)="saveAttribution()"
+          >
+            {{ 'settings.profile.attribution.save' | transloco }}
+          </button>
+          @if (attributionSaved()) {
+            <span class="saved-note" role="status">{{ 'common.saved' | transloco }}</span>
+          }
+        </p>
+      </div>
+    }
+
     @if (!auth.isAnonymous && !auth.isBlueskyPrimary) {
       <div class="ssection">
         <h2>{{ 'settings.profile.accountType' | transloco }}</h2>

@@ -1,6 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { PostingDefaults } from '../posting-defaults/posting-defaults';
 import { Api } from '../../../api';
 import { Auth } from '../../../auth';
 import { ClientPrefs } from '../../../client-prefs';
@@ -87,6 +88,7 @@ import { MbSaveFeedback } from '../../../design-system/save-feedback/save-feedba
 @Component({
   selector: 'app-settings-writing',
   imports: [
+    PostingDefaults,
     FormsModule,
     RouterLink,
     TranslocoPipe,
@@ -111,6 +113,7 @@ export class SettingsWriting implements OnInit {
 
   // ---- server-backed posting defaults (also shown on the Privacy page) ----
   protected privacy = signal('public');
+  protected quotePolicy = signal<string | undefined>(undefined);
   protected sensitive = signal(false);
   protected language = signal('');
   protected readonly postingLanguageOptions = POSTING_LANGUAGE_OPTIONS;
@@ -123,6 +126,7 @@ export class SettingsWriting implements OnInit {
     }
     this.api.verifyCredentials().subscribe((acc) => {
       this.privacy.set(acc.source?.privacy ?? 'public');
+      this.quotePolicy.set(acc.source?.quote_policy);
       this.sensitive.set(acc.source?.sensitive ?? false);
       this.language.set(acc.source?.language ?? '');
     });
@@ -144,7 +148,7 @@ export class SettingsWriting implements OnInit {
     this.postingSaved.set(false);
 
     const form = new FormData();
-    form.append('source[privacy]', this.privacy());
+    // Visibility and quotes save from their own row (app-posting-defaults).
     form.append('source[sensitive]', String(this.sensitive()));
     form.append('source[language]', this.language().trim());
 
@@ -153,7 +157,6 @@ export class SettingsWriting implements OnInit {
         this.postingSaving.set(false);
         this.postingSaved.set(true);
         this.prefs.setPostingLanguage(this.language());
-        this.prefs.setDefaultVisibility(this.privacy());
         if (this.language()) this.prefs.addKnownLanguage(this.language());
       },
       error: () => this.postingSaving.set(false),

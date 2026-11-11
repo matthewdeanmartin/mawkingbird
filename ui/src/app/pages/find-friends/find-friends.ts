@@ -1,5 +1,7 @@
 import { MbContentLink } from '../../design-system/metadata/metadata';
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { Auth } from '../../auth';
+import { ServerSuggestions } from './server-suggestions';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DISCOVERY_WAYS, DiscoveryWay } from '../../discovery-ways';
@@ -37,12 +39,17 @@ import { contactPickerAvailable } from '../settings/import-export/contact-picker
 // i18n pages.findFriends.invite.desc: Prewritten posts for inviting the people you already know to join you.
 @Component({
   selector: 'app-find-friends',
-  imports: [MbContentLink, RouterLink, TranslocoPipe],
+  imports: [MbContentLink, RouterLink, ServerSuggestions, TranslocoPipe],
   templateUrl: './find-friends.html',
   styleUrl: './find-friends.css',
 })
 export class FindFriends {
   protected readonly level = signal<'basic' | 'advanced'>('basic');
+  private readonly auth = inject(Auth);
+  /** Server suggestions need a signed-in Mastodon account to suggest for. */
+  protected readonly offersSuggestions = computed(
+    () => this.auth.kind() === 'mastodon' && !!this.auth.token(),
+  );
   protected readonly ways: readonly DiscoveryWay[] = [
     ...DISCOVERY_WAYS.slice(0, 2),
     {

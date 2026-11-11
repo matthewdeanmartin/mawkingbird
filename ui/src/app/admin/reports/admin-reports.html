@@ -17,7 +17,17 @@
   @for (r of reports(); track r.id) {
     <div class="report">
       <div class="report-head">
-        <span class="cat">{{ r.category }}</span>
+        @if (resolved()) {
+          <span class="cat">{{ 'adminReports.category.' + r.category | transloco }}</span>
+        } @else {
+          <mb-field hideLabel density="compact" [label]="'adminReports.category.label' | transloco">
+            <select mbControl [ngModel]="r.category" (ngModelChange)="setCategory(r, $event)">
+              @for (c of categories; track c) {
+                <option [value]="c">{{ 'adminReports.category.' + c | transloco }}</option>
+              }
+            </select>
+          </mb-field>
+        }
         @if (r.target_account) {
           <span>
             {{ 'adminReports.item.against' | transloco }}
@@ -50,6 +60,11 @@
           <span class="muted small">{{
             'adminReports.item.assignedTo' | transloco: { username: r.assigned_account.username }
           }}</span>
+          @if (!resolved()) {
+            <button mbButton variant="link" type="button" (click)="unassign(r)">
+              {{ 'adminReports.actions.unassign' | transloco }}
+            </button>
+          }
         } @else if (!resolved()) {
           <button
             mbButton

@@ -2,7 +2,7 @@ import { MbButton } from '../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
-import { AdminApi } from '../admin-api';
+import { AdminApi, AdminLinkPublisher, AdminTrendLink } from '../admin-api';
 import { Status, TrendingTag } from '../../models';
 import { StatusCard } from '../../status-card/status-card';
 
@@ -33,7 +33,32 @@ export class AdminTrends implements OnInit {
   /** Ids that have been approved/rejected this session, for transient feedback. */
   protected moderated = signal<Record<string, 'approved' | 'rejected'>>({});
 
+  // i18n adminTrends.links: Links
+  // i18n adminTrends.emptyLinks: No links are waiting for review.
+  // i18n adminTrends.publishers: Publishers
+  // i18n adminTrends.publishersHint: Sites whose links may trend once approved.
+  // i18n adminTrends.emptyPublishers: No publishers are waiting for review.
+  protected links = signal<AdminTrendLink[]>([]);
+  protected publishers = signal<AdminLinkPublisher[]>([]);
+
+  reviewLink(link: AdminTrendLink, approve: boolean): void {
+    this.api
+      .reviewTrendingLink(link.id, approve)
+      .subscribe(() => this.mark('link-' + link.id, approve ? 'approved' : 'rejected'));
+  }
+
+  reviewPublisher(publisher: AdminLinkPublisher, approve: boolean): void {
+    this.api
+      .reviewLinkPublisher(publisher.id, approve)
+      .subscribe(() => this.mark('publisher-' + publisher.id, approve ? 'approved' : 'rejected'));
+  }
+
   ngOnInit(): void {
+    // Older servers or limited roles may refuse these; the sections then stay empty.
+    this.api.trendingLinks().subscribe({ next: (l) => this.links.set(l), error: () => undefined });
+    this.api
+      .linkPublishers()
+      .subscribe({ next: (p) => this.publishers.set(p), error: () => undefined });
     this.api.trendingTags().subscribe((t) => this.tags.set(t));
     this.api.trendingStatuses().subscribe({
       next: (s) => {

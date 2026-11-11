@@ -184,9 +184,99 @@ export class SettingsProfile implements OnInit {
   }
 
   /** Probe the Profile API; a 404 (pre-4.6) just leaves descriptions hidden. */
+  // i18n settings.profile.tabs.heading: Profile tabs
+  // i18n settings.profile.tabs.row: What visitors see
+  // i18n settings.profile.tabs.media: Show a Media tab
+  // i18n settings.profile.tabs.mediaReplies: Include media from my replies
+  // i18n settings.profile.tabs.featured: Show a Featured tab
+  // i18n settings.profile.tabs.failed: That tab setting was not saved. {{detail}}
+  // i18n settings.profile.attribution.heading: Author credit
+  // i18n settings.profile.attribution.label: Websites that may credit you as author
+  // i18n settings.profile.attribution.hint: One domain per line. When an article from one of these sites names you as its author, link previews show your profile.
+  // i18n settings.profile.attribution.save: Save websites
+  // i18n settings.profile.attribution.failed: The websites were not saved. {{detail}}
+
+  /** Profile tab switches (Mastodon 4.6); null hides the section on older servers. */
+  protected profileTabs = signal<{
+    show_media: boolean;
+    show_media_replies: boolean;
+    show_featured: boolean;
+  } | null>(null);
+  protected tabSaving = signal(false);
+  protected tabError = signal('');
+  /** One domain per line; null when the server does not report attribution domains. */
+  protected attribution = signal<string | null>(null);
+  protected attributionSaving = signal(false);
+  protected attributionSaved = signal(false);
+  protected attributionError = signal('');
+
+  /** Instant-apply, like the rest of the switches; a failed write reverts. */
+  protected setProfileTab(
+    key: 'show_media' | 'show_media_replies' | 'show_featured',
+    value: boolean,
+  ): void {
+    const previous = this.profileTabs();
+    if (!previous) return;
+    this.profileTabs.set({ ...previous, [key]: value });
+    this.tabSaving.set(true);
+    this.tabError.set('');
+    this.api.updateProfileSettings({ [key]: value }).subscribe({
+      next: () => this.tabSaving.set(false),
+      error: (error: unknown) => {
+        this.tabSaving.set(false);
+        this.profileTabs.set(previous);
+        this.tabError.set(
+          this.transloco.translate('settings.profile.tabs.failed', {
+            detail: describeHttpError(error),
+          }),
+        );
+      },
+    });
+  }
+
+  protected saveAttribution(): void {
+    const domains = (this.attribution() ?? '')
+      .split(/[\s,]+/)
+      .map((d) =>
+        d
+          .trim()
+          .replace(/^https?:\/\//i, '')
+          .replace(/\/.*$/, ''),
+      )
+      .filter(Boolean);
+    this.attributionSaving.set(true);
+    this.attributionSaved.set(false);
+    this.attributionError.set('');
+    this.api.updateProfileSettings({ attribution_domains: domains }).subscribe({
+      next: (profile) => {
+        this.attributionSaving.set(false);
+        this.attributionSaved.set(true);
+        this.attribution.set((profile?.attribution_domains ?? domains).join('\n'));
+      },
+      error: (error: unknown) => {
+        this.attributionSaving.set(false);
+        this.attributionError.set(
+          this.transloco.translate('settings.profile.attribution.failed', {
+            detail: describeHttpError(error),
+          }),
+        );
+      },
+    });
+  }
+
   private loadImageDescriptions(): void {
     this.api.ownProfile().subscribe({
       next: (profile) => {
+        if (profile.show_media !== undefined) {
+          this.profileTabs.set({
+            show_media: !!profile.show_media,
+            show_media_replies: !!profile.show_media_replies,
+            show_featured: !!profile.show_featured,
+          });
+        }
+        if (profile.attribution_domains) {
+          this.attribution.set(profile.attribution_domains.join('\n'));
+        }
         if (profile.avatar_description === undefined && profile.header_description === undefined) {
           return; // API version 8: profile endpoint, but no descriptions yet.
         }

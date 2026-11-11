@@ -439,6 +439,53 @@ describe('SettingsProfile', () => {
       );
     }
 
+    it('switches profile tabs instantly and reverts one the server refuses', () => {
+      const fixture = open({
+        id: '1',
+        avatar: 'a',
+        header: null,
+        show_media: true,
+        show_media_replies: false,
+        show_featured: true,
+      });
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.textContent).toContain('Show a Media tab');
+      const ui = fixture.componentInstance as unknown as {
+        setProfileTab(key: string, value: boolean): void;
+        profileTabs(): { show_featured: boolean } | null;
+      };
+
+      ui.setProfileTab('show_featured', false);
+      const patch = httpMock.expectOne('/api/v1/profile');
+      expect(patch.request.method).toBe('PATCH');
+      expect(patch.request.body).toEqual({ show_featured: false });
+      patch.flush({}, { status: 422, statusText: 'Unprocessable' });
+      fixture.detectChanges();
+      expect(ui.profileTabs()?.show_featured).toBe(true);
+      expect(el.textContent).toContain('That tab setting was not saved.');
+    });
+
+    it('saves author attribution websites as bare domains', () => {
+      const fixture = open({
+        id: '1',
+        avatar: 'a',
+        header: null,
+        attribution_domains: ['blog.example'],
+      });
+      const ui = fixture.componentInstance as unknown as {
+        attribution: { (): string | null; set(v: string): void };
+        saveAttribution(): void;
+      };
+      expect(ui.attribution()).toBe('blog.example');
+      ui.attribution.set('blog.example\nhttps://news.example/me/');
+      ui.saveAttribution();
+      const patch = httpMock.expectOne('/api/v1/profile');
+      expect(patch.request.body).toEqual({ attribution_domains: ['blog.example', 'news.example'] });
+      patch.flush({ id: '1', attribution_domains: ['blog.example', 'news.example'] });
+      fixture.detectChanges();
+      expect(fixture.nativeElement.textContent).toContain('Saved');
+    });
+
     it('shows the current avatar, treats the default header as none, and hides descriptions on API version 8', () => {
       const fixture = open({ id: '1', avatar: 'a', header: null });
       const el = fixture.nativeElement as HTMLElement;

@@ -57,6 +57,7 @@ import {
   Tag,
   TermsOfService,
   PrivacyPolicy,
+  FollowSuggestion,
   ModeratedServer,
   Translation,
   UserList,
@@ -241,7 +242,14 @@ export class Api {
     return this.http.get<Relationship[]>('/api/v1/accounts/relationships', { params });
   }
 
-  follow(id: string, options?: { reblogs?: boolean }): Observable<Relationship> {
+  /**
+   * Follow, or change an existing follow. `languages` limits which of their
+   * posts reach Home; `null` means every language.
+   */
+  follow(
+    id: string,
+    options?: { reblogs?: boolean; languages?: string[] | null },
+  ): Observable<Relationship> {
     return this.accountMutation(
       this.http.post<Relationship>(`/api/v1/accounts/${id}/follow`, options ?? {}),
       'profile',
@@ -382,6 +390,18 @@ export class Api {
           };
         }),
       );
+  }
+
+  /** The server's own follow suggestions, with why (`GET /api/v2/suggestions`). */
+  followSuggestions(limit = 20): Observable<FollowSuggestion[]> {
+    return this.http.get<FollowSuggestion[]>('/api/v2/suggestions', {
+      params: new HttpParams().set('limit', String(limit)),
+    });
+  }
+
+  /** Never suggest this account again (`DELETE /api/v1/suggestions/:id`). */
+  dismissSuggestion(accountId: string): Observable<unknown> {
+    return this.http.delete(`/api/v1/suggestions/${accountId}`);
   }
 
   unfollow(id: string): Observable<Relationship> {
@@ -1220,6 +1240,18 @@ export class Api {
   /** Set avatar/header descriptions through the Profile API. */
   updateProfileImageDescriptions(
     changes: Partial<Pick<OwnProfile, 'avatar_description' | 'header_description'>>,
+  ): Observable<OwnProfile> {
+    return this.http.patch<OwnProfile>('/api/v1/profile', changes);
+  }
+
+  /** Profile tab switches and author attribution (`PATCH /api/v1/profile`, 4.6). */
+  updateProfileSettings(
+    changes: Partial<
+      Pick<
+        OwnProfile,
+        'show_media' | 'show_media_replies' | 'show_featured' | 'attribution_domains'
+      >
+    >,
   ): Observable<OwnProfile> {
     return this.http.patch<OwnProfile>('/api/v1/profile', changes);
   }

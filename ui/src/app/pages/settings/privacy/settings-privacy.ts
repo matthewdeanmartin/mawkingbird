@@ -1,4 +1,5 @@
 import { ReportHistory } from '../../../report-history/report-history';
+import { PostingDefaults, PostingDefaultsValue } from '../posting-defaults/posting-defaults';
 import { MbSettingsRow } from '../../../design-system/settings-row/settings-row';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbSaveFeedback } from '../../../design-system/save-feedback/save-feedback';
@@ -13,7 +14,24 @@ import { POSTING_LANGUAGE_OPTIONS } from '../../../language-detect';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 /** The credentials fields this page owns, one per control. */
-type PrivacyField = 'locked' | 'discoverable' | 'bot' | 'privacy' | 'sensitive' | 'language';
+type PrivacyField =
+  | 'locked'
+  | 'discoverable'
+  | 'bot'
+  | 'privacy'
+  | 'sensitive'
+  | 'language'
+  | 'hide_collections'
+  | 'indexable'
+  | 'spoiler_field';
+
+// i18n settings.privacy.hideCollections: Hide who I follow and who follows me
+// i18n settings.privacy.hideCollections.hint: Your profile still shows the counts, but not the lists.
+// i18n settings.privacy.indexable: Let my public posts appear in search results
+// i18n settings.privacy.indexable.hint: People on servers with full-text search can find your public posts by their words.
+// i18n settings.privacy.contentWarnings: Content warnings
+// i18n settings.privacy.spoilerField: Open the content warning field in new posts
+// i18n settings.privacy.spoilerField.hint: For people who usually write a warning: the field starts open, ready to fill in.
 
 /**
  * Privacy: who can see the account, who sees each post, and what gets counted.
@@ -73,6 +91,7 @@ type PrivacyField = 'locked' | 'discoverable' | 'bot' | 'privacy' | 'sensitive' 
 @Component({
   selector: 'app-settings-privacy',
   imports: [
+    PostingDefaults,
     ReportHistory,
     MbSettingsRow,
     MbField,
@@ -100,7 +119,17 @@ export class SettingsPrivacy implements OnInit {
   protected privacy = signal('public');
   protected sensitive = signal(false);
   protected language = signal('');
+  protected quotePolicy = signal<string | undefined>(undefined);
+  /** Newer settings: null until the server says it has them, so old servers hide the row. */
+  protected hideCollections = signal<boolean | null>(null);
+  protected indexable = signal<boolean | null>(null);
+  protected spoilerField = signal<boolean | null>(null);
   protected readonly postingLanguageOptions = POSTING_LANGUAGE_OPTIONS;
+
+  protected onDefaultsChanged(value: PostingDefaultsValue): void {
+    this.privacy.set(value.privacy);
+    this.quotePolicy.set(value.quotePolicy);
+  }
 
   /** The field currently in flight, so only its own row shows a spinner. */
   protected saving = signal<PrivacyField | null>(null);
@@ -121,6 +150,10 @@ export class SettingsPrivacy implements OnInit {
       this.privacy.set(acc.source?.privacy ?? 'public');
       this.sensitive.set(acc.source?.sensitive ?? false);
       this.language.set(acc.source?.language ?? '');
+      this.quotePolicy.set(acc.source?.quote_policy);
+      this.hideCollections.set(acc.hide_collections ?? null);
+      this.indexable.set(acc.indexable ?? null);
+      this.spoilerField.set(acc.source?.spoiler_field ?? null);
     });
   }
 
@@ -189,6 +222,12 @@ export class SettingsPrivacy implements OnInit {
         return this.sensitive();
       case 'language':
         return this.language();
+      case 'hide_collections':
+        return this.hideCollections() ?? false;
+      case 'indexable':
+        return this.indexable() ?? false;
+      case 'spoiler_field':
+        return this.spoilerField() ?? false;
     }
   }
 
@@ -212,6 +251,15 @@ export class SettingsPrivacy implements OnInit {
       case 'language':
         this.language.set(value as string);
         break;
+      case 'hide_collections':
+        this.hideCollections.set(value as boolean);
+        break;
+      case 'indexable':
+        this.indexable.set(value as boolean);
+        break;
+      case 'spoiler_field':
+        this.spoilerField.set(value as boolean);
+        break;
     }
   }
 
@@ -224,6 +272,8 @@ export class SettingsPrivacy implements OnInit {
         return 'source[sensitive]';
       case 'language':
         return 'source[language]';
+      case 'spoiler_field':
+        return 'source[spoiler_field]';
       default:
         return field;
     }

@@ -1,5 +1,23 @@
 # Sprint 6 opening consolidation audit
 
+## Bio globe, server suggestions, posting defaults, follow languages, admin triage, 2026-11-11
+
+Three candidates are added, all adopted scope: `pages/find-friends/server-suggestions.ts`
+(AccountResultCard rows, link-variant MbButton), `pages/profile/follow-languages-dialog.ts`
+(Dialog, MbCheckbox, MbButton, MbNotice) and `pages/settings/posting-defaults/posting-defaults.ts`
+(summary sentence, link-variant MbButton opening PostPermissions, MbSaveFeedback). The
+default-visibility dropdown on Settings → Privacy and Settings → Writing is replaced by
+that row; `post-permissions/post-permissions.ts` gains a defaults mode (no new controls).
+`pages/profile/bio-translation/bio-translation.ts` replaces its outline "Translate bio" and
+"Hide" buttons with one MbPostAction 🌐 toggle after the bio and link-variant language
+choices. `pages/settings/privacy/settings-privacy.html` gains three MbCheckbox rows;
+`pages/settings/profile/settings-profile.html` gains MbCheckbox tab switches and a
+Field/Control textarea with an outline MbButton; `admin/reports/admin-reports.html` gains a
+compact Field/Control category select and a link-variant Unassign;
+`admin/trends/admin-trends.html` gains links and publishers rows with the existing
+approve/reject MbButtons; `admin/announcements/admin-announcements.html` shows an MbNotice
+link on real servers. No shared widget changed.
+
 ## ••• menu budget, filter a post, conversations, domain block, server policies, 2026-11-11
 
 Two candidates are added: `filter-post-dialog/filter-post-dialog.html` (adopted

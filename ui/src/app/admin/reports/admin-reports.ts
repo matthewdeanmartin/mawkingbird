@@ -1,5 +1,7 @@
 import { accountProfilePath } from '../../account-route';
 import { MbButton } from '../../design-system/button/button';
+import { MbControl, MbField } from '../../design-system/field/field';
+import { FormsModule } from '@angular/forms';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -22,7 +24,7 @@ import { AdminReport } from '../../models';
 
 @Component({
   selector: 'app-admin-reports',
-  imports: [MbButton, RouterLink, TranslocoPipe],
+  imports: [MbButton, MbField, MbControl, FormsModule, RouterLink, TranslocoPipe],
   templateUrl: './admin-reports.html',
   styleUrl: './admin-reports.css',
 })
@@ -68,6 +70,30 @@ export class AdminReports implements OnInit {
 
   assign(r: AdminReport): void {
     this.api.assignReport(r.id).subscribe((u) => this.replace(u));
+  }
+
+  // i18n adminReports.actions.unassign: Unassign
+  // i18n adminReports.category.label: Category
+  // i18n adminReports.category.spam: Spam
+  // i18n adminReports.category.legal: Legal
+  // i18n adminReports.category.violation: Rule violation
+  // i18n adminReports.category.other: Other
+  protected readonly categories = ['spam', 'legal', 'violation', 'other'] as const;
+
+  unassign(r: AdminReport): void {
+    this.api.unassignReport(r.id).subscribe((u) => this.replace(u));
+  }
+
+  /** Re-file a report; a violation keeps whatever rules it already names. */
+  setCategory(r: AdminReport, category: string): void {
+    if (category === r.category) return;
+    const ruleIds = (r as AdminReport & { rules?: { id: string }[] }).rules?.map((x) => x.id);
+    this.api
+      .updateReport(r.id, {
+        category,
+        ...(category === 'violation' && ruleIds?.length ? { rule_ids: ruleIds } : {}),
+      })
+      .subscribe((u) => this.replace(u));
   }
 
   resolve(r: AdminReport): void {

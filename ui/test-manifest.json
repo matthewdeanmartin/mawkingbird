@@ -4855,7 +4855,6 @@
     "src/app/pages/settings/privacy/settings-privacy.spec.ts :: SettingsPrivacy shared discoverable checkbox saves one field and restores the native control after failure",
     "src/app/pages/settings/privacy/settings-privacy.spec.ts :: SettingsPrivacy shared language select keeps its label, one-field payload and failed-save rollback",
     "src/app/pages/settings/privacy/settings-privacy.spec.ts :: SettingsPrivacy shared locked checkbox saves one field and restores the native control after failure",
-    "src/app/pages/settings/privacy/settings-privacy.spec.ts :: SettingsPrivacy shared privacy select keeps its label, one-field payload and failed-save rollback",
     "src/app/pages/settings/privacy/settings-privacy.spec.ts :: SettingsPrivacy shared sensitive checkbox saves one field and restores the native control after failure",
     "src/app/pages/settings/profile/profile-link-dialog.spec.ts :: ProfileLinkDialog adds a labelled web address and rejects empty labels and unsafe URLs",
     "src/app/pages/settings/profile/profile-link-dialog.spec.ts :: ProfileLinkDialog builds supported profile addresses and rejects paths or credentials as usernames",

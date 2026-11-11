@@ -5,6 +5,7 @@ import { AdminAnnouncements } from './admin-announcements';
 import { AdminApi } from '../admin-api';
 import { AppDialogs } from '../../app-dialogs';
 import { Announcement } from '../../models';
+import { Server } from '../../server';
 
 describe('AdminAnnouncements shared publish checkbox', () => {
   it('submits the chosen publish value and keeps the draft available after failure', async () => {
@@ -60,5 +61,26 @@ describe('AdminAnnouncements shared publish checkbox', () => {
     await fixture.whenStable();
     expect(text.value).toBe('');
     expect(root.textContent).toContain('Draft');
+  });
+});
+
+describe('AdminAnnouncements on a real Mastodon server', () => {
+  it('links to the server admin and calls no announcements API, since Mastodon has none', async () => {
+    const announcements = vi.fn(() => of([]));
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: AdminApi, useValue: { announcements } },
+        { provide: AppDialogs, useValue: { confirm: async () => false } },
+      ],
+    });
+    TestBed.inject(Server).setBaseUrl('https://home.example');
+    const fixture = TestBed.createComponent(AdminAnnouncements);
+    await fixture.whenStable();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(announcements).not.toHaveBeenCalled();
+    expect(root.querySelector('textarea')).toBeNull();
+    const link = root.querySelector<HTMLAnchorElement>('mb-notice a')!;
+    expect(link.href).toBe('https://home.example/admin/announcements');
+    expect(link.textContent).toContain('home.example');
   });
 });

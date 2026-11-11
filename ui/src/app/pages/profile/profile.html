@@ -586,6 +586,14 @@
                 </button>
               </div>
             </details>
+            @if (showFollowLanguages() && relationship(); as rel) {
+              <app-follow-languages-dialog
+                [account]="a"
+                [relationship]="rel"
+                (saved)="relationship.set($event); showFollowLanguages.set(false)"
+                (closed)="showFollowLanguages.set(false)"
+              />
+            }
             @if (moreOptionsOpen()) {
               <!-- Occasional profile actions, moved out of the ••• menu. -->
               <mb-dialog
@@ -653,6 +661,17 @@
                      which is indistinguishable from a follow-bot. Do not "finish"
                      this by adding a delay and enabling it for authenticated users —
                      see sprint/anonymous-great-2-clone-friends.md. -->
+                  @if (
+                    relationship()?.following && capabilities.canManageRelationships && !isBluesky()
+                  ) {
+                    <button
+                      type="button"
+                      mbMenuItem
+                      (click)="moreOptionsOpen.set(false); showFollowLanguages.set(true)"
+                    >
+                      {{ 'pages.profile.followLanguages.open' | transloco }}
+                    </button>
+                  }
                   @if (canCopyAccount()) {
                     <button
                       type="button"
@@ -852,6 +871,11 @@
       @if (a.note) {
         <div class="note" appRenderedHtmlLinks [innerHTML]="a.note | customEmoji: a.emojis"></div>
       }
+      <!-- The globe sits right after the bio, as it does under a post. It also
+         covers the profile fields, so it shows for a fields-only profile too. -->
+      @if (!isSelf() && !isRss()) {
+        <app-bio-translation [account]="a" />
+      }
       @if (a.fields.length) {
         <div class="profile-fields">
           @for (f of a.fields; track f.name) {
@@ -875,9 +899,6 @@
             </div>
           }
         </div>
-      }
-      @if (!isSelf() && !isRss()) {
-        <app-bio-translation [account]="a" />
       }
       <div class="stats muted">
         <span
