@@ -2,7 +2,7 @@
 // of the app renders them like any other post.
 
 import { Account, MediaAttachment, Status } from '../../platform/api/models';
-import { ParsedFeed, ParsedItem } from './rss-parser';
+import { ParsedFeed, ParsedItem } from '../../../lib/rss';
 
 /** Classic RSS icon as an inline SVG data URI — no external favicon fetches. */
 export const RSS_AVATAR =

@@ -1,5 +1,5 @@
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
-import { forgetLoadedDictionaries } from '../learn/dictionary/dictionary-registry';
+import { forgetLoadedDictionaries } from '../learn/dictionary-registry';
 import { BlueskyFeeds } from '../../connections/bluesky/bluesky-feeds';
 import { BlueskyModeration } from '../../connections/bluesky/bluesky-moderation';
 import { BlueskyPostControls } from '../../connections/bluesky/bluesky-post-controls';

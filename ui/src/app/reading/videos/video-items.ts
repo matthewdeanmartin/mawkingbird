@@ -1,4 +1,4 @@
-import { ParsedFeed } from '../rss/rss-parser';
+import { ParsedFeed } from '../../../lib/rss';
 import { VideoSubscription } from './video-subscriptions';
 import { VideoSource, youtubeSource } from '../video-player/media-source';
 

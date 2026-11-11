@@ -1,0 +1,8 @@
+{
+  "description": "Remove known tracking parameters from links, byte-for-byte safe, with an allowlist.",
+  "web": true,
+  "dependencies": [],
+  "entries": [
+    "index.ts"
+  ]
+}

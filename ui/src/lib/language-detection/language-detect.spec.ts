@@ -7,7 +7,7 @@ import {
   detectScriptCandidates,
   detectScriptLanguage,
   sharePct,
-} from './language-detect';
+} from './index';
 
 /** The top-voted language for a snippet. */
 function top(text: string, meta?: string | null): LangCode {

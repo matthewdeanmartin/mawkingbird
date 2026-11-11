@@ -1,5 +1,5 @@
 import { blueskyRouteFor } from '../../accounts/bluesky-links';
-import { hasDictionary } from '../learn/dictionary/dictionary-registry';
+import { hasDictionary } from '../learn/dictionary-registry';
 import type { WordLookupPanel } from '../learn/word-lookup-panel';
 import { FeedLanguageFilter } from '../../language/trend-language-filter';
 import { StatusReactions } from './status-reactions';

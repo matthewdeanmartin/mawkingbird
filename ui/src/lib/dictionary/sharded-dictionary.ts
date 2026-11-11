@@ -6,7 +6,18 @@ import {
   dictionaryShard,
 } from './dictionary';
 
-/** An entry as `scripts/build-dictionaries.mjs` writes it. */
+/**
+ * Where a sharded dictionary's files live, and how to read one. Supplied by the
+ * host app: this library never touches the network or the page itself.
+ */
+export interface DictionaryHost {
+  /** Absolute URL of the folder holding one sub-folder per dictionary id, ending in `/`. */
+  baseUrl: string;
+  /** Read one JSON file. Should reject on a missing file so a later lookup can retry. */
+  fetchJson: (url: string) => Promise<unknown>;
+}
+
+/** An entry as the shard builder writes it. */
 interface CompactEntry {
   w: string[];
   r: string[];
@@ -30,7 +41,7 @@ function expand(entry: CompactEntry): DictEntry {
 }
 
 /**
- * A dictionary served as static shards under `dict/<id>/` beside the app:
+ * A dictionary served as static shards under `<baseUrl><id>/`:
  * a manifest, then one file per bucket of first characters, fetched the
  * first time a word starting with one of them is looked up and kept for the
  * visit (the browser's HTTP cache keeps it after that).
@@ -43,12 +54,11 @@ export class ShardedDictionary implements DictionarySource {
     readonly id: string,
     readonly language: string,
     readonly attribution: DictAttribution,
-    /** Overridable in tests. */
-    private readonly fetchJson: (url: string) => Promise<unknown> = defaultFetchJson,
+    private readonly host: DictionaryHost,
   ) {}
 
   manifest(): Promise<DictManifest> {
-    this.manifestLoad ??= this.fetchJson(this.url('manifest.json')).then(
+    this.manifestLoad ??= this.host.fetchJson(this.url('manifest.json')).then(
       (manifest) => manifest as DictManifest,
       (err: unknown) => {
         // Let a later lookup try again (offline, a deploy in progress).
@@ -77,7 +87,7 @@ export class ShardedDictionary implements DictionarySource {
   private shard(index: number): Promise<Shard> {
     let load = this.shards.get(index);
     if (!load) {
-      load = this.fetchJson(this.url(`${index}.json`)).then(
+      load = this.host.fetchJson(this.url(`${index}.json`)).then(
         (shard) => shard as Shard,
         (err: unknown) => {
           this.shards.delete(index);
@@ -90,12 +100,6 @@ export class ShardedDictionary implements DictionarySource {
   }
 
   private url(file: string): string {
-    return new URL(`dict/${this.id}/${file}`, document.baseURI).href;
+    return new URL(`${this.id}/${file}`, this.host.baseUrl).href;
   }
-}
-
-async function defaultFetchJson(url: string): Promise<unknown> {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Dictionary file unavailable (HTTP ${response.status}).`);
-  return response.json();
 }

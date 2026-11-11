@@ -5,15 +5,9 @@ import { Status } from '../../platform/api/models';
 import { OpenRouterChat } from '../../connections/openrouter/openrouter-chat';
 import { OpenRouterSession } from '../../connections/openrouter/openrouter-session';
 import { plainText } from '../../translation/translation-router';
-import { DictEntry, DictManifest, LanguageDictionary } from './dictionary/dictionary';
-import { dictionaryFor } from './dictionary/dictionary-registry';
-import {
-  LookupHit,
-  LookupMatch,
-  lookupAt,
-  segmentWords,
-  TextToken,
-} from './dictionary/word-lookup';
+import { DictEntry, DictManifest, LanguageDictionary } from '../../../lib/dictionary';
+import { dictionaryFor } from './dictionary-registry';
+import { LookupHit, LookupMatch, lookupAt, segmentWords, TextToken } from '../../../lib/dictionary';
 
 // i18n learn.lookup.hint: Tap a word to look it up.
 // i18n learn.lookup.loading: Looking up…

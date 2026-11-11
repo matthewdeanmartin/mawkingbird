@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { CorsProxy, CorsProxyRefusal } from '../cors-proxy/cors-proxy';
-import { resolveEndpoint } from './webmention-discovery';
+import { resolveEndpoint } from '../../../lib/webmention';
 import {
   PLUS_TOKEN_HEADER,
   PlusTokenSource,

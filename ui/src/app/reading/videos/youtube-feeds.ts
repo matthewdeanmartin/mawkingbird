@@ -12,7 +12,7 @@ import {
 import { externalFetch } from '../../platform/http/external-fetch';
 import { RssCache } from '../rss/rss-cache';
 import { QUIET_PROXY_LIMIT } from '../../connections/cors-proxy/proxy-limit-details';
-import { ParsedFeed, parseFeed } from '../rss/rss-parser';
+import { ParsedFeed, parseFeed } from '../../../lib/rss';
 import { channelFromHtml, channelInput } from './youtube-channel';
 import { CHANNEL_ID, videoFeedUrl } from './video-subscriptions';
 

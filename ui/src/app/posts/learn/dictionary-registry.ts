@@ -1,19 +1,30 @@
-import { LanguageDictionary } from './dictionary';
+import type { DictionaryHost, LanguageDictionary } from '../../../lib/dictionary';
 
 /**
  * The languages word lookup supports, each loaded on first use: a language's
  * code and data stay out of every bundle until a reader taps a word in it.
  *
- * To add a language: write `languages/<name>.ts` returning a
+ * To add a language: write `src/lib/dictionary/languages/<name>.ts` returning a
  * {@link LanguageDictionary} (a source, a deinflector), build its data with
  * `scripts/build-dictionaries.mjs`, credit it on the Credits page, and add a
- * line here. Korean is next (owner decision 8: English ↔ Chinese, Japanese,
+ * line here (and list the file under `entries` in the library's `lib.json`). Korean is next (owner decision 8: English ↔ Chinese, Japanese,
  * Korean in both directions).
  */
 const LOADERS: Record<string, () => Promise<LanguageDictionary>> = {
-  ja: () => import('./languages/japanese').then((m) => m.japanese()),
-  zh: () => import('./languages/chinese').then((m) => m.chinese()),
+  ja: () => import('../../../lib/dictionary/languages/japanese').then((m) => m.japanese(host())),
+  zh: () => import('../../../lib/dictionary/languages/chinese').then((m) => m.chinese(host())),
 };
+
+/** Dictionary data is served as static shards under `dict/` beside the app. */
+function host(): DictionaryHost {
+  return { baseUrl: new URL('dict/', document.baseURI).href, fetchJson };
+}
+
+async function fetchJson(url: string): Promise<unknown> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Dictionary file unavailable (HTTP ${response.status}).`);
+  return response.json();
+}
 
 const loaded = new Map<string, Promise<LanguageDictionary>>();
 

@@ -1,7 +1,7 @@
-import { STOP_WORDS, HOMOGRAPHS, DISCRIMINATING_WORDS } from '../../language-detection';
+import { STOP_WORDS, HOMOGRAPHS, DISCRIMINATING_WORDS } from './index';
 import { describe, expect, it } from 'vitest';
-import corpus from './language-detect.corpus.json';
-import { confidentLanguage, detectLanguage, detectScriptCandidates } from './language-detect';
+import corpus from './corpus.json';
+import { confidentLanguage, detectLanguage, detectScriptCandidates } from './index';
 
 describe('conservative language detection', () => {
   it.each(corpus)('$lang: $text', ({ lang, text }) => {

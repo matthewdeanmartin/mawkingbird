@@ -1,6 +1,6 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1807,
+  "filesScanned": 1799,
   "filesWithCandidates": 631,
   "inventory": [
     {
@@ -12007,15 +12007,15 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 146
+          "line": 140
         },
         {
           "pattern": "nativeButtons",
-          "line": 87
+          "line": 81
         },
         {
           "pattern": "nativeButtons",
-          "line": 145
+          "line": 139
         }
       ]
     },

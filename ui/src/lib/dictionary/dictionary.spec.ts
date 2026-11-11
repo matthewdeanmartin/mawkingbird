@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { DictEntry, dictionaryShard, LanguageDictionary, NO_DEINFLECTION } from './dictionary';
-import { dictionaryFor, forgetLoadedDictionaries, hasDictionary } from './dictionary-registry';
 import { JAPANESE_DEINFLECTOR } from './languages/japanese-deinflect';
 import { ShardedDictionary } from './sharded-dictionary';
 import { lookupAt, segmentWords } from './word-lookup';
@@ -62,7 +61,7 @@ function japanese(fetchJson = vi.fn(async (url: string) => files()[url.split('/'
         licenceUrl: '',
         projectUrl: '',
       },
-      fetchJson,
+      { baseUrl: 'https://dictionaries.test/', fetchJson },
     ),
     deinflector: JAPANESE_DEINFLECTOR,
     maxWordLength: 16,
@@ -146,24 +145,5 @@ describe('Word lookup', () => {
     const tokens = segmentWords('猫が好き。', 'ja');
     expect(tokens.map((t) => t.text).join('')).toBe('猫が好き。');
     expect(tokens.find((t) => t.text === '。')?.word).toBe(false);
-  });
-});
-
-describe('Dictionary registry', () => {
-  // Spec files share one module registry: start from no loaded languages.
-  beforeEach(() => forgetLoadedDictionaries());
-
-  it('knows Japanese and Chinese, by bare code, and nothing else yet', () => {
-    expect(hasDictionary('ja')).toBe(true);
-    expect(hasDictionary('zh-Hant')).toBe(true);
-    expect(hasDictionary('ko')).toBe(false);
-    expect(hasDictionary(null)).toBe(false);
-    expect(dictionaryFor('ko')).toBeNull();
-  });
-
-  it('loads a language once', async () => {
-    const first = dictionaryFor('ja');
-    expect(dictionaryFor('ja-JP')).toBe(first);
-    expect((await first!).language).toBe('ja');
   });
 });

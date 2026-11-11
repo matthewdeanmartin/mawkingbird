@@ -1,0 +1,10 @@
+{
+  "description": "A tiny VADER-style \"rage\" score for short social text.",
+  "web": false,
+  "dependencies": [
+    "badwords-list"
+  ],
+  "entries": [
+    "index.ts"
+  ]
+}

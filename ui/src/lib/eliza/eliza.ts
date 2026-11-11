@@ -1,18 +1,41 @@
 /**
  * The pure ELIZA brain — no Angular, no storage, no clock.
  *
- * Given a line of user text, {@link elizaReply} produces Eliza's answer by the
+ * Given a script and a line of user text, {@link elizaReply} produces an answer by the
  * classic 1966 recipe: try the FAQ (keyword help answers) first, then the
  * pronoun-reflecting reflection rules, then a deflecting fallback. Selection
  * among equally-good responses is deterministic given a `seed`, so tests can
- * pin exact output (see `eliza-engine.spec.ts`) — the service passes a rolling
- * seed at call time to keep live conversation varied.
+ * pin exact output — callers pass a rolling seed to keep live conversation varied.
  *
- * Content (rules, FAQ, fallbacks) lives in `eliza-content.ts`; this file is the
- * matching machinery only.
+ * Content (rules, FAQ, fallbacks) is the caller's {@link ElizaScript}; this file is
+ * the matching machinery only.
  */
 
-import { ELIZA_FALLBACK, ELIZA_FAQ, ELIZA_RULES, FaqPair } from './eliza-content';
+/** A keyword-matched help answer. If any `keywords` token appears in the user's
+ *  message (whole-word, case-insensitive), the reply is `answer`. */
+export interface FaqPair {
+  /** Trigger tokens, lowercase. Matched as whole words against the message. */
+  keywords: string[];
+  /** The reply. Plain text. */
+  answer: string;
+}
+
+/** A classic ELIZA reflection rule: if `pattern` matches the message, reply with
+ *  one of `responses`. `$1` is filled from capture group 1, pronoun-reflected. */
+export interface ElizaRule {
+  /** Case-insensitive regex tested against the message. */
+  pattern: RegExp;
+  /** Candidate replies; `$1` interpolates capture group 1. One is chosen. */
+  responses: string[];
+}
+
+/** Everything a conversation partner says. Earlier FAQ entries and rules win. */
+export interface ElizaScript {
+  faq: readonly FaqPair[];
+  rules: readonly ElizaRule[];
+  /** Deflections for when nothing matches. Must not be empty. */
+  fallback: readonly string[];
+}
 
 /**
  * First-person ⇄ second-person swaps, applied to a matched fragment so it reads
@@ -66,9 +89,9 @@ function containsWord(text: string, token: string): boolean {
 }
 
 /** The first FAQ pair whose any keyword appears in `text`, or null. Earlier
- *  entries win (they're ordered most-specific-first in the datafile). */
-export function faqMatch(text: string): FaqPair | null {
-  for (const pair of ELIZA_FAQ) {
+ *  entries win (scripts order them most-specific-first). */
+export function faqMatch(text: string, faq: readonly FaqPair[]): FaqPair | null {
+  for (const pair of faq) {
     if (pair.keywords.some((kw) => containsWord(text, kw))) {
       return pair;
     }
@@ -87,27 +110,28 @@ function pick<T>(options: readonly T[], seed: number): T {
 }
 
 /**
- * Eliza's reply to one line of user text.
+ * The script's reply to one line of user text.
  *
+ * @param script  What to say: FAQ, rules and fallbacks.
  * @param text  The raw user message.
  * @param seed  Any integer; selects among equally-valid responses
  *              deterministically. The service advances it per turn so a live
  *              chat varies while tests stay pinned.
  */
-export function elizaReply(text: string, seed = 0): string {
+export function elizaReply(script: ElizaScript, text: string, seed = 0): string {
   const trimmed = text.trim();
   if (!trimmed) {
-    return pick(ELIZA_FALLBACK, seed);
+    return pick(script.fallback, seed);
   }
 
   // 1. FAQ — if they're plainly asking about a feature, help instead of deflect.
-  const faq = faqMatch(trimmed);
+  const faq = faqMatch(trimmed, script.faq);
   if (faq) {
     return faq.answer;
   }
 
   // 2. Reflection rules — the pronoun-swapping ELIZA core.
-  for (const rule of ELIZA_RULES) {
+  for (const rule of script.rules) {
     const match = rule.pattern.exec(trimmed);
     if (match) {
       const captured = match[1] ? tidy(reflect(match[1])) : '';
@@ -117,5 +141,5 @@ export function elizaReply(text: string, seed = 0): string {
   }
 
   // 3. Nothing matched — the eternal deflection.
-  return pick(ELIZA_FALLBACK, seed);
+  return pick(script.fallback, seed);
 }

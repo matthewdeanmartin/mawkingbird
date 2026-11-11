@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ParsedFeed } from './rss-parser';
+import { ParsedFeed } from '../../../lib/rss';
 import { RssFetch } from './rss-fetch';
 import { RssAddFeed } from './rss-add-feed';
 import { RssSubscriptions } from './rss-subscriptions';

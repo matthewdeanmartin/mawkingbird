@@ -57,6 +57,13 @@ The separate `make test-integration` suite exercises the real client against a
 PyPI-installed mastodon-mock wheel in CI and locally. Never point this suite at
 the sibling source checkout or an editable install. See docs/contributing.md.
 
+In-repo libraries: domain-neutral code (language detection, RSS/OPML, dictionary,
+ELIZA, link cleaning, sentiment, webmention) lives in ui/src/lib, per
+ui/docs/libraries.md. A library never imports the app or another library; the app
+uses one only through its lib.json entries. `npm run check:libs` enforces this.
+Library specs run in `npm run test:libs` (unchanged libraries are skipped), not
+in the Angular suite.
+
 Where documents go: docs/ holds end-user help guides only. Every file there
 must be in the mkdocs.yml nav; it is published to Read the Docs and as static
 pages at mawkingbird.com/help/ by scripts/build_help.py. Internal plans,

@@ -1,33 +1,22 @@
 import { BskyFacet } from '../connections/bluesky/bluesky-types';
+import { shortDomains } from '../connections/shortener/short-domains';
+import { cleanLinks, cleanUrl, LinkCleaningOptions } from '../../lib/link-cleaning';
 
-const TRACKING =
-  /^(utm_.+|fbclid|gclid|dclid|msclkid|mc_cid|mc_eid|igshid|igsh|yclid|twclid|ttclid|gbraid|wbraid)$/i;
+/**
+ * Links Mawkingbird made on purpose, which the privacy option must not touch:
+ * short links (the providers' shared domains and this browser's custom ones),
+ * and invite links whose campaign tags the user chose to add.
+ */
+function options(): LinkCleaningOptions {
+  return {
+    keepHosts: shortDomains(),
+    keep: (url) => url.searchParams.get('utm_medium') === 'invite',
+  };
+}
 
 /** Preserve unknown parameters, fragments and signed URL bytes. Never follow redirects. */
 export function cleanPostUrl(value: string): string {
-  try {
-    const url = new URL(value);
-    if (!['http:', 'https:'].includes(url.protocol)) return value;
-    if ([...url.searchParams.keys()].some((key) => /signature|^sig$|^x-amz-|^x-goog-/i.test(key)))
-      return value;
-    const hashAt = value.indexOf('#');
-    const body = hashAt < 0 ? value : value.slice(0, hashAt);
-    const queryAt = body.indexOf('?');
-    if (queryAt < 0) return value;
-    const parts = body.slice(queryAt + 1).split('&');
-    const kept = parts.filter((part) => {
-      const key = decodeURIComponent(part.split('=')[0].replace(/\+/g, ' '));
-      return !TRACKING.test(key);
-    });
-    if (kept.length === parts.length) return value;
-    return (
-      body.slice(0, queryAt) +
-      (kept.length ? '?' + kept.join('&') : '') +
-      (hashAt < 0 ? '' : value.slice(hashAt))
-    );
-  } catch {
-    return value;
-  }
+  return cleanUrl(value, options());
 }
 
 /** Keep Bluesky's UTF-8 facet offsets aligned with the text being sent. */
@@ -35,25 +24,20 @@ export function cleanPostLinks(
   text: string,
   facets?: BskyFacet[],
 ): { text: string; facets?: BskyFacet[] } {
+  const rules = options();
+  const result = cleanLinks(text, rules);
   const encoder = new TextEncoder();
-  const edits: { start: number; end: number; delta: number }[] = [];
-  const cleaned = text.replace(/https?:\/\/[^\s<>"']+/gi, (match: string, offset: number) => {
-    const trailing = match.match(/[.,!?;:)\]]+$/)?.[0] ?? '';
-    const original = match.slice(0, match.length - trailing.length);
-    const replacement = cleanPostUrl(original);
-    if (replacement !== original)
-      edits.push({
-        start: encoder.encode(text.slice(0, offset)).length,
-        end: encoder.encode(text.slice(0, offset + original.length)).length,
-        delta: encoder.encode(replacement).length - encoder.encode(original).length,
-      });
-    return replacement + trailing;
-  });
+  const bytes = (index: number) => encoder.encode(text.slice(0, index)).length;
+  const edits = result.edits.map((edit) => ({
+    start: bytes(edit.start),
+    end: bytes(edit.end),
+    delta: encoder.encode(edit.replacement).length - encoder.encode(edit.original).length,
+  }));
   const shift = (position: number) =>
     position +
     edits.filter((edit) => edit.end <= position).reduce((sum, edit) => sum + edit.delta, 0);
   return {
-    text: cleaned,
+    text: result.text,
     facets: facets
       ?.filter(
         (facet) =>
@@ -68,7 +52,7 @@ export function cleanPostLinks(
         index: { byteStart: shift(facet.index.byteStart), byteEnd: shift(facet.index.byteEnd) },
         features: facet.features.map((feature) =>
           feature.$type === 'app.bsky.richtext.facet#link' && feature.uri
-            ? { ...feature, uri: cleanPostUrl(feature.uri) }
+            ? { ...feature, uri: cleanUrl(feature.uri, rules) }
             : feature,
         ),
       })),

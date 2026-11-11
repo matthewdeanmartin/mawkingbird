@@ -5,13 +5,13 @@ import { fileURLToPath } from 'node:url';
 import { transform } from 'esbuild';
 
 const root = new URL('../', import.meta.url);
-const source = readFileSync(new URL('src/language-detection/index.ts', root), 'utf8');
+const source = readFileSync(new URL('src/lib/language-detection/index.ts', root), 'utf8');
 const { code } = await transform(source, { loader: 'ts', format: 'esm' });
 const { detectLanguage, analyzeLanguage } = await import(
   `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
 );
 const corpus = JSON.parse(
-  readFileSync(new URL('src/app/language/language-detect.corpus.json', root), 'utf8'),
+  readFileSync(new URL('src/lib/language-detection/corpus.json', root), 'utf8'),
 );
 let failures = 0;
 const unknownReasons = {};
@@ -68,7 +68,7 @@ detectLanguage('Unrecognized repeated content '.repeat(10000));
 console.log(
   JSON.stringify(
     {
-      corpus: fileURLToPath(new URL('src/app/language/language-detect.corpus.json', root)),
+      corpus: fileURLToPath(new URL('src/lib/language-detection/corpus.json', root)),
       cases: corpus.length,
       failures,
       unknownReasons,

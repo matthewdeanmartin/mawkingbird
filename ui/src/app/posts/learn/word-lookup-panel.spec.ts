@@ -4,8 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Status } from '../../platform/api/models';
 import { OpenRouterChat } from '../../connections/openrouter/openrouter-chat';
 import { OpenRouterSession } from '../../connections/openrouter/openrouter-session';
-import { dictionaryShard } from './dictionary/dictionary';
-import { forgetLoadedDictionaries } from './dictionary/dictionary-registry';
+import { dictionaryShard } from '../../../lib/dictionary';
+import { forgetLoadedDictionaries } from './dictionary-registry';
 import { WordLookupPanel } from './word-lookup-panel';
 
 const SHARDS = 4;

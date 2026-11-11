@@ -1,0 +1,8 @@
+{
+  "description": "Finding a page's W3C Webmention endpoint from its headers and HTML.",
+  "web": true,
+  "dependencies": [],
+  "entries": [
+    "index.ts"
+  ]
+}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ParsedFeed } from './rss-parser';
+import { ParsedFeed } from '../../../lib/rss';
 
 /**
  * A durable cache of parsed feeds, in IndexedDB.

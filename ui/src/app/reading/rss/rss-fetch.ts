@@ -20,7 +20,7 @@ import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { CorsProxyUsageStore, toResponse } from '../../connections/cors-proxy/cors-proxy-usage';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { FAILURE_COOLDOWN_MS, RssCache } from './rss-cache';
-import { ParsedFeed, parseFeed } from './rss-parser';
+import { ParsedFeed, parseFeed } from '../../../lib/rss';
 import {
   proxyErrorBody,
   QUIET_PROXY_LIMIT,

@@ -2,7 +2,7 @@
 //
 // Each dictionary becomes a manifest plus N shard files keyed by the first
 // character of a headword (see `dictionaryShard` in
-// src/app/posts/learn/dictionary/dictionary.ts, which must agree), so a lookup
+// src/lib/dictionary/dictionary.ts, which must agree), so a lookup
 // fetches one small file, and only when a reader taps a word.
 //
 //   npm run dict:jmdict                  fetch the latest JMdict (common words,

@@ -8,7 +8,7 @@ import { CorsProxyUsageStore } from '../../connections/cors-proxy/cors-proxy-usa
 import { Server } from '../../platform/http/server';
 import { CachedFeed, CachedFeedRecord, RssCache } from './rss-cache';
 import { RssCacheMiss, RssFetch } from './rss-fetch';
-import { ParsedFeed } from './rss-parser';
+import { ParsedFeed } from '../../../lib/rss';
 import { firstValueFrom } from 'rxjs';
 import { enableProxyFlags } from '../../testing/enable-proxy-flags';
 

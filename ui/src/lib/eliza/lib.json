@@ -1,0 +1,8 @@
+{
+  "description": "The classic 1966 ELIZA recipe: FAQ keywords, pronoun-reflecting rules, deflections.",
+  "web": false,
+  "dependencies": [],
+  "entries": [
+    "index.ts"
+  ]
+}

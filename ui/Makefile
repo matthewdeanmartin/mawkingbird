@@ -136,6 +136,8 @@ i18n-traps:
 test:
 	npm run design:inventory-check
 	npm run test:source-integrity
+	npm run check:libs
+	npm run test:libs
 	npm run test:ci
 
 test-ci: test

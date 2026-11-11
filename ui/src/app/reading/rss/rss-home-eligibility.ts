@@ -1,4 +1,4 @@
-import { ParsedFeed } from './rss-parser';
+import { ParsedFeed } from '../../../lib/rss';
 
 /**
  * Whether a feed reads like a social timeline — frequent, short posts — rather

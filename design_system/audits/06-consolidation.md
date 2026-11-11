@@ -2266,3 +2266,13 @@ of each entry. The inventory, reconciliation, legacy-colour and adoption-status
 files were rewritten path-for-path. No candidate file was added or removed, and
 no control or shared widget implementation changed. The other inventory edits
 are line shifts from re-wrapped import paths.
+
+### In-repo libraries (2026-11-11)
+
+Reviewed regeneration after moving domain-neutral code (language detection,
+RSS/OPML, dictionary, ELIZA, link cleaning, sentiment, webmention discovery)
+out of `ui/src/app` into `ui/src/lib` (see ui/docs/libraries.md). The audit scans
+the app, so filesScanned falls from 1807 to 1799. None of the moved files had
+control candidates: all 631 candidate files and their records are unchanged
+apart from line numbers. No reconciliation entries needed and no shared widget
+changed.

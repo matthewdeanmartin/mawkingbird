@@ -4,8 +4,8 @@ import {
   detectLanguage,
   DISCRIMINATING_WORDS,
   segmentLanguageText,
-} from '../../language-detection';
-import corpus from './language-detect.corpus.json';
+} from './index';
+import corpus from './corpus.json';
 
 const ENGLISH = 'This is the book that we read with our friends.';
 const DUTCH =

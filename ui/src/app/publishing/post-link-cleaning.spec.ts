@@ -1,35 +1,42 @@
-import { describe, expect, it } from 'vitest';
-import { cleanPostLinks, cleanPostUrl } from './post-link-cleaning';
+import { afterEach, describe, expect, it } from 'vitest';
 import { BskyFacet } from '../connections/bluesky/bluesky-types';
+import { SHORTENER_CONFIG_KEY } from '../connections/shortener/short-domains';
+import { cleanPostLinks, cleanPostUrl } from './post-link-cleaning';
 
-describe('post link cleaning', () => {
-  it('removes known tracking parameters without re-encoding functional parameters or fragments', () => {
-    expect(cleanPostUrl('https://example.org/p?q=a%20b&utm_source=me&FBCLID=secret#part')).toBe(
-      'https://example.org/p?q=a%20b#part',
-    );
-    expect(cleanPostUrl('https://example.org/?%75tm_source=me')).toBe('https://example.org/');
-    expect(cleanPostUrl('https://example.org/?id=42&ref=person')).toBe(
-      'https://example.org/?id=42&ref=person',
+// Cleaning itself is tested in src/lib/link-cleaning. These pin what Mawkingbird
+// protects, and the Bluesky facet bookkeeping that only this app needs.
+describe('post link cleaning in Mawkingbird', () => {
+  afterEach(() => localStorage.removeItem(SHORTENER_CONFIG_KEY));
+
+  it('still removes tracking parameters from ordinary links', () => {
+    expect(cleanPostUrl('https://example.org/?id=1&utm_source=me')).toBe(
+      'https://example.org/?id=1',
     );
   });
 
-  it('leaves signed, malformed and non-http URLs unchanged', () => {
+  it("leaves links on the providers' shared short domains alone", () => {
     for (const url of [
-      'https://example.org/?sig=abc&utm_source=x',
-      'https://example.org/?X-Amz-Credential=x&utm_source=y',
-      'mailto:me@example.org',
-      'not a url',
-      'https://example.org/?%=bad&utm_source=x',
+      'https://dub.sh/abc?utm_source=x',
+      'https://tinyurl.com/abc?utm_source=x',
+      'https://is.gd/abc?utm_source=x',
     ])
       expect(cleanPostUrl(url)).toBe(url);
   });
 
-  it('cleans multiple URLs while preserving surrounding text and punctuation', () => {
-    expect(
-      cleanPostLinks(
-        'Pizza (https://example.org/?utm_source=me), then https://other.org/?id=2&gclid=x!',
-      ).text,
-    ).toBe('Pizza (https://example.org/), then https://other.org/?id=2!');
+  it('leaves links on a custom short domain configured in this browser alone', () => {
+    const url = 'https://go.example.com/abc?utm_source=x';
+    expect(cleanPostUrl(url)).toBe('https://go.example.com/abc');
+    localStorage.setItem(
+      SHORTENER_CONFIG_KEY,
+      JSON.stringify({ active: 'shortio', domains: { shortio: 'go.example.com' } }),
+    );
+    expect(cleanPostUrl(url)).toBe(url);
+  });
+
+  it('keeps the campaign tags the invite tool added on purpose', () => {
+    const invite =
+      'https://mawkingbird.com/invites?mastodon.social&utm_source=bluesky&utm_medium=invite&utm_campaign=a';
+    expect(cleanPostLinks(`Come over: ${invite}`).text).toBe(`Come over: ${invite}`);
   });
 
   it('preserves UTF-8 link and mention facet offsets after cleaning, without changing the input', () => {

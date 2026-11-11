@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CorsProxySettings } from '../../connections/cors-proxy/cors-proxy-settings';
-import { ParsedFeed } from './rss-parser';
+import { ParsedFeed } from '../../../lib/rss';
 import { RssFetch } from './rss-fetch';
 import { RssStarterKit } from './rss-starter-kits';
 import { RssStarterKitInstall } from './rss-starter-kit-install';

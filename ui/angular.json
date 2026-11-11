@@ -181,6 +181,7 @@
             "runnerConfig": "vitest.config.ts",
             "buildTarget": "ui:build:development",
             "tsConfig": "tsconfig.spec.json",
+            "exclude": ["src/lib/**"],
             "setupFiles": [
               "src/test-setup.ts"
             ]

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ParsedFeed, ParsedItem } from './rss-parser';
+import { ParsedFeed, ParsedItem } from '../../../lib/rss';
 import { qualifiesForHome } from './rss-home-eligibility';
 
 function item(publishedAt: string | null, html: string): ParsedItem {

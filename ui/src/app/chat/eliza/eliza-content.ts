@@ -1,3 +1,5 @@
+import type { ElizaRule, FaqPair } from '../../../lib/eliza';
+
 /**
  * Eliza's voice lives here — and ONLY here.
  *
@@ -125,15 +127,6 @@ export const ELIZA_POSTS: ElizaPost[] = [
   },
 ];
 
-/** A keyword-matched help answer. If any `keywords` token appears in the user's
- *  message (whole-word, case-insensitive), Eliza gives this `answer`. */
-export interface FaqPair {
-  /** Trigger tokens, lowercase. Matched as whole words against the message. */
-  keywords: string[];
-  /** What Eliza replies. Plain text. */
-  answer: string;
-}
-
 /**
  * Eliza's FAQ. Checked before the ELIZA reflection rules: if the user is
  * clearly asking about a feature, answer it instead of deflecting with "how
@@ -241,15 +234,6 @@ export const ELIZA_FAQ: FaqPair[] = [
       `you're trying to do.`,
   },
 ];
-
-/** A classic ELIZA reflection rule: if `pattern` matches the (reflected)
- *  message, reply with one of `responses`. `$1` is filled from capture group 1. */
-export interface ElizaRule {
-  /** Case-insensitive regex tested against the pronoun-reflected message. */
-  pattern: RegExp;
-  /** Candidate replies; `$1` interpolates capture group 1. One is chosen. */
-  responses: string[];
-}
 
 /**
  * The 1966 heart of Eliza: pronoun-reflecting reflection rules, checked after

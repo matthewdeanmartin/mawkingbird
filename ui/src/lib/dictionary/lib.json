@@ -1,0 +1,10 @@
+{
+  "description": "Word lookup over sharded static dictionaries, with Japanese deinflection.",
+  "web": true,
+  "dependencies": [],
+  "entries": [
+    "index.ts",
+    "languages/japanese.ts",
+    "languages/chinese.ts"
+  ]
+}

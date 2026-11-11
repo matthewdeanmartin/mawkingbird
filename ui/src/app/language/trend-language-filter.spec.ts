@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ClientPrefs } from '../platform/storage/client-prefs';
 import { Status, Tag } from '../platform/api/models';
-import corpus from './language-detect.corpus.json';
+import corpus from '../../lib/language-detection/corpus.json';
 import { confidentLanguage, detectLanguage } from './language-detect';
-import { DISCRIMINATING_WORDS, LangCode, STOP_WORDS } from '../../language-detection';
+import { DISCRIMINATING_WORDS, LangCode, STOP_WORDS } from '../../lib/language-detection';
 import {
   AutoTranslateEligibility,
   FeedLanguageFilter,

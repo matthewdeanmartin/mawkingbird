@@ -5,6 +5,30 @@ import path from 'node:path';
 import { chromium } from '@playwright/test';
 import { artifactDir } from './artifacts.mjs';
 
+// Feed Builder people lists come from SIG data that is curated by hand. A refresh
+// that drops one to three accounts is ordinary curation, not a bug. A bigger drop,
+// losing more than half, or an empty list means the import or the page broke.
+// The page itself must always show exactly what its data file approves.
+const PEOPLE_DRIFT = 3;
+async function assertPeople(page, topic, lang, reviewed) {
+  const data = JSON.parse(
+    await readFile(
+      new URL(`../src/app/feeds/feed-builder/data/${topic}.${lang}.json`, import.meta.url),
+      'utf8',
+    ),
+  );
+  const approved = data.people.length;
+  assert.equal(
+    await page.locator('.people li').count(),
+    approved,
+    `${topic}.${lang} shows every approved account`,
+  );
+  assert.ok(
+    approved > 0 && approved >= reviewed - PEOPLE_DRIFT && approved * 2 >= reviewed,
+    `${topic}.${lang} shrank from ${reviewed} reviewed accounts to ${approved}: a SIG import bug?`,
+  );
+}
+
 const root = path.resolve(import.meta.dirname, '../dist-mockingbird/browser');
 // Screenshots and failure dumps, outside the working tree (artifacts.mjs).
 const results = artifactDir('seo-browser');
@@ -599,7 +623,7 @@ try {
         'https://mawkingbird.com/de/pflanzlich-leben-auf-mastodon/',
       );
       assert.equal(await page.locator('head link[hreflang="fr"]').count(), 0);
-      assert.equal(await page.locator('.people li').count(), count);
+      await assertPeople(page, 'plant-based-living', lang, count);
       assert.ok(await page.locator(`a[href="/tags/${tag}"]`).count());
       assert.equal(await page.locator('a[href="/tags/Vegan"]').count(), 0);
       for (const width of [1280, 390]) {
@@ -638,7 +662,7 @@ try {
         document.querySelector('app-root')?.hasAttribute('ng-version'),
       );
     assert.equal(await page.locator('html').getAttribute('lang'), 'fr');
-    assert.equal(await page.locator('.people li').count(), 13);
+    await assertPeople(page, 'math', 'fr', 13);
     assert.ok(await page.locator('a[href="/tags/NumberTheory"]').count());
     assert.ok(await page.locator('a[href="https://mathstodon.xyz/about"]').count());
     for (const [lang, slug] of [
@@ -693,7 +717,7 @@ try {
       await page.waitForFunction(() =>
         document.querySelector('app-root')?.hasAttribute('ng-version'),
       );
-    assert.equal(await page.locator('.people li').count(), 14);
+    await assertPeople(page, 'gardening-and-houseplants', 'en', 14);
     for (const tag of ['Succulents', 'Hydroponics', 'Cacti'])
       assert.ok(await page.locator(`a[href="/tags/${tag}"]`).count());
     for (const [lang, path] of [
@@ -744,7 +768,7 @@ try {
           document.querySelector('app-root')?.hasAttribute('ng-version'),
         );
       assert.equal(await page.locator('main').getAttribute('lang'), lang);
-      assert.equal(await page.locator('.people li').count(), count);
+      await assertPeople(page, 'esp32-and-single-board-computers', lang, count);
       for (const tag of tags) assert.ok(await page.locator(`a[href="/tags/${tag}"]`).count());
       assert.equal(
         await page.locator('link[rel="canonical"]').getAttribute('href'),
@@ -794,7 +818,7 @@ try {
           document.querySelector('app-root')?.hasAttribute('ng-version'),
         );
       assert.equal(await page.locator('main').getAttribute('lang'), lang);
-      assert.equal(await page.locator('.people li').count(), count);
+      await assertPeople(page, 'retrocomputing', lang, count);
       assert.ok((await page.locator('.tag-list').allTextContents()).join(' ').includes(`#${tag}`));
       assert.equal(
         await page.locator('link[rel="canonical"]').getAttribute('href'),
@@ -836,7 +860,7 @@ try {
         exact: true,
       })
       .waitFor();
-    assert.equal(await page.locator('.people li').count(), 13);
+    await assertPeople(page, 'dmv', 'en', 13);
     assert.ok(await page.locator('a[href="/tags/PrinceGeorgesCounty"]').count());
     assert.equal(
       await page.locator('link[rel="canonical"]').getAttribute('href'),

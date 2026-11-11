@@ -1,6 +1,6 @@
 # Conservative language detection
 
-The UI detector lives in `src/language-detection/index.ts`. The starter
+The UI detector lives in `src/lib/language-detection/index.ts`. The starter
 project has a separate Python implementation; these revised rules are not yet
 ported there, so parity must not be assumed. Detection is local, synchronous, dependency-free, and makes no API
 calls. The tradeoff is to miss an uncertain language rather than name the wrong
@@ -193,7 +193,7 @@ results include Traditional Chinese; callers' persisted `zh-Hant` preferences
 and storage keys are unchanged.
 
 To verify the extraction boundary locally, run
-`npx tsc -p src/language-detection/tsconfig.json --outDir "$(node scripts/artifacts.mjs language-detection)"`
+`npx tsc -p src/lib/language-detection/tsconfig.json --outDir "$(node scripts/artifacts.mjs language-detection)"`
 from `ui/`. This compiles with only the ES2022 library and no ambient platform
 types, emitting JavaScript and declarations outside the working tree (see
 `scripts/artifacts.mjs`).

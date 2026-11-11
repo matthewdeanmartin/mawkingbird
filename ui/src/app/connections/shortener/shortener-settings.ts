@@ -9,6 +9,7 @@ import { VaultBridge, type SyncOutcome } from '../vault/vault-bridge';
 import { storedOutcome, type VaultReconcileOutcome } from '../vault/vault-reconcile';
 import { ShortenerCatalogEntry, shortenerEntry } from './shortener-catalog';
 import { ShortenerId } from './shortener-provider';
+import { SHORTENER_CONFIG_KEY } from './short-domains';
 
 /**
  * Which shortener this browser uses, and the key for it.
@@ -62,7 +63,7 @@ import { ShortenerId } from './shortener-provider';
  * added on this device thirty seconds ago.
  */
 
-const CONFIG_KEY = 'mockingbird_shortener';
+const CONFIG_KEY = SHORTENER_CONFIG_KEY;
 const SECRET_KEY = 'mockingbird_shortener_keys';
 
 /** The non-secret half: which provider, and the short domain per provider. */

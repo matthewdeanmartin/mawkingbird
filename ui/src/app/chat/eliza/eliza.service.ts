@@ -14,7 +14,7 @@
 
 import { inject, Injectable, Injector } from '@angular/core';
 import { Account, Relationship, Status } from '../../platform/api/models';
-import { elizaReply } from './eliza-engine';
+import { elizaReply } from './eliza-reply';
 import { ElizaFollow } from './eliza-follow';
 import { ConversationStore } from '../conversation-store';
 import { LocalPostStore } from './local-post-store';

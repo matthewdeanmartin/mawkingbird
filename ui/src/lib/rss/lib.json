@@ -1,0 +1,8 @@
+{
+  "description": "RSS 2.0 / Atom parsing, feed-format ranking, and OPML import/export.",
+  "web": true,
+  "dependencies": [],
+  "entries": [
+    "index.ts"
+  ]
+}

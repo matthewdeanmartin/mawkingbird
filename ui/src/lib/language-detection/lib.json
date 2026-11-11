@@ -1,0 +1,9 @@
+{
+  "description": "Dependency-free, bounded language identification for short social prose.",
+  "web": false,
+  "dependencies": [],
+  "entries": [
+    "index.ts",
+    "corpus.json"
+  ]
+}
