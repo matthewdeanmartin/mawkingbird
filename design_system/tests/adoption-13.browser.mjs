@@ -65,11 +65,19 @@ for (const [label, destination] of [
     await page
       .getByLabel("Category", { exact: true })
       .selectOption("violation");
+    // Mastodon asks which published server rule was broken; Bluesky has none.
+    const rule = page.getByRole("checkbox", {
+      name: "No spam or unsolicited advertising",
+      exact: true,
+    });
+    if (destination === "Mastodon") await rule.check();
+    else await expect(rule).toHaveCount(0);
     await page
       .getByLabel("Comment (optional)", { exact: true })
       .fill("Keep this explanation");
     await click(page, "Confirm report");
     await expect(notice(page)).toContainText("Could not send this report");
+    if (destination === "Mastodon") await expect(rule).toBeChecked();
     await expect(page.getByLabel("Category", { exact: true })).toHaveValue(
       "violation",
     );
@@ -94,6 +102,7 @@ for (const [label, destination] of [
         "violation",
         "Keep this explanation",
         ["preview-post"],
+        { ruleIds: ["1"], forward: false },
       ]);
     await click(page, "Confirm report");
     await expect(page.getByRole("dialog")).toHaveCount(0);

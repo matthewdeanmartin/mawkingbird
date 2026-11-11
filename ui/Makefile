@@ -37,7 +37,7 @@ feedbuilder-check:
 	npm run feedbuilder:check
 	node --test scripts/import-feed-builder.test.mjs
 
-.PHONY: help install format format-check lint storage subpaths i18n i18n-extract i18n-todo i18n-batch i18n-merge i18n-traps test test-ci build build-admin build-mockingbird security check check-ci
+.PHONY: help install format format-check lint storage subpaths i18n i18n-extract i18n-todo i18n-batch i18n-merge i18n-traps test test-ci test-quick test-changed build build-admin build-mockingbird security check check-ci
 
 help:
 	@echo "Angular quality gates (admin UI + Mockingbird):"
@@ -52,7 +52,9 @@ help:
 	@echo "  make i18n-batch L=de    Print the next slice of untranslated keys (N=250, P=prefix)"
 	@echo "  make i18n-merge L=de F=b.json  Validate a translation batch, then merge it"
 	@echo "  make i18n-traps L=de    Grep a locale for wrong-sense translations"
-	@echo "  make test               Run tests with coverage"
+	@echo "  make test               Run tests with coverage (the gate)"
+	@echo "  make test-quick         The same suite and checks without coverage"
+	@echo "  make test-changed       Only specs affected by uncommitted changes (BASE=ref, WATCH=1)"
 	@echo "  make build              Production-build admin UI and Mockingbird"
 	@echo "  make build-admin        Build the packaged admin UI"
 	@echo "  make build-mockingbird  Build the standalone Mockingbird site"
@@ -141,6 +143,22 @@ test:
 	npm run test:ci
 
 test-ci: test
+
+# Inner loop, not the gate: everything make test runs except coverage, which
+# costs about two minutes. The runtime test manifest is still checked.
+test-quick:
+	npm run design:inventory-check
+	npm run test:source-integrity
+	npm run check:libs
+	npm run test:libs
+	npm run test:audit
+
+# Inner loop, not the gate: specs that import (directly or transitively) a file
+# changed since HEAD, compiled as a narrowed program. BASE=origin/main widens
+# the change set to a branch; WATCH=1 keeps it running. See
+# docs/test-performance.md.
+test-changed:
+	node scripts/test-changed.mjs $(if $(BASE),--base=$(BASE),) $(if $(WATCH),--watch,)
 
 build: build-admin build-mockingbird
 

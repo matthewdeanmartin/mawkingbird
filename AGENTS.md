@@ -8,7 +8,23 @@ ui/docs/starter-catalog.md and regenerate ui/docs/starter-locale-coverage.md.
 Pack translations and app-wide UI locales are separate; preserve script tags.
 
 Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfile.
-Run targeted specs during development, then the complete gate: cd ui && make test.
+
+Gate cadence: iterate cheap, gate once. Every `ng test` pays a fixed compile
+cost (about 70s for the full program, ~2 min more with coverage), so a full gate
+after each edit costs the owner hours. While working, use only:
+- `cd ui && make test-changed` (specs affected by your uncommitted edits, compiled
+  as a narrowed program; `WATCH=1` keeps it running, rebuilds take seconds),
+- `npm run test:subset -- <spec or dir>` for named specs (also narrowed),
+- `npx prettier --check`/`ng lint --lint-file-patterns` on the files you touched,
+- `npx playwright test --config ../design_system/playwright.config.mjs <file>`
+  for the one design browser file you are working on.
+Narrowed runs type-check only what they compile, so they never replace the gate.
+When the work is done, run each gate required below once, on the final tree,
+cheapest first (static checks, `make test`, build, SEO, design-verify). If a step
+fails, fix it and rerun that step plus the affected specs, not the whole chain.
+Rerun `make test` once more at the end only if source changed after its last
+green run. Never loop the full gate to "make sure"; report the green runs you have.
+`make test-quick` is `make test` without coverage, for a full-suite check midway.
 
 Exception — routine Feed Builder SIG additions/data refreshes (owner reaffirmed
 2026-11-08): use the minimal gate in the sibling
@@ -47,6 +63,11 @@ files in design_system/audits/11-reconciliation.json. Then rerun
 `npm run design:inventory-check`. Never bypass the check or regenerate without review.
 Shared design-widget changes also require `cd ui && make design-verify`, including
 the browser assertions. Report exactly which gates passed and which were not run.
+CI runs design-verify on every push. design_system/stories provide fake services
+(`Api`, `BlueskyApi`, …) to real components: when a component starts calling a
+new service method, or its controls change, grep the stories and
+design_system/tests for it and run that browser file. The browser suite uses 4
+workers locally and 2 in CI; set DESIGN_BROWSER_WORKERS to override.
 Do not skip, focus, delete, or weaken tests; preserve the test inventory checks.
 Angular tests run locally; GitHub Actions builds and checks deployment layout.
 For UI runtime changes, also run `cd ui && npm run build:mockingbird` locally.

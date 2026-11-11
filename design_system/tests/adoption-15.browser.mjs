@@ -20,8 +20,52 @@ test.beforeEach(async ({ page }) => {
   ).toBeVisible();
 });
 test.afterEach(async ({ page }) => expect(errors.get(page)).toEqual([]));
+test("Post visibility keeps the saved default on failure and retries from the dialog", async ({
+  page,
+}) => {
+  const scope = page.getByRole("region", { name: "Privacy form" }),
+    summary = scope.locator("app-posting-defaults");
+  await expect(summary).toContainText("everyone can read them");
+  await scope.getByRole("button", { name: "Change…", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Defaults for new posts" }),
+    audience = dialog.getByRole("combobox", {
+      name: "Who can read this?",
+      exact: true,
+    }),
+    apply = dialog.getByRole("button", { name: "Apply", exact: true });
+  await expect(audience).toHaveValue("public");
+  await page.clock.install({ time: 0 });
+  await page.clock.pauseAt(1000);
+  await audience.selectOption("private");
+  await apply.click();
+  await page.clock.runFor(32);
+  await expect(apply).toBeDisabled();
+  await page.clock.runFor(400);
+  await expect(apply).toBeEnabled();
+  await expect(dialog.getByRole("alert")).toContainText("503");
+  await expect(audience).toHaveValue("private");
+  await expect(summary).toContainText("everyone can read them");
+  await expect(page.locator("[data-defaults]")).toHaveText("public / en");
+  // Followers-only posts cannot be quoted, so the default is written with it.
+  const request = JSON.stringify({
+    "source[privacy]": "private",
+    "source[quote_policy]": "nobody",
+  });
+  await expect(page.locator("[data-requests]")).toHaveText(request);
+  await apply.click();
+  await page.clock.runFor(32);
+  await expect(apply).toBeDisabled();
+  await page.clock.runFor(400);
+  await expect(dialog).toHaveCount(0);
+  await expect(summary).toContainText("only followers can read them");
+  await expect(page.locator("[data-count]")).toHaveText("2");
+  await expect(page.locator("[data-defaults]")).toHaveText("private / en");
+  // The retry repeats the exact write that failed.
+  expect(
+    (await page.locator("[data-requests]").textContent()).split("\n"),
+  ).toEqual([request, request]);
+});
 for (const [label, key, value, old] of [
-  ["Post visibility", "privacy", "private", "public"],
   ["Posting language", "language", "eo", "en"],
 ]) {
   test(`${label} retains one-field writes, pending state, rollback and retry`, async ({
@@ -167,8 +211,10 @@ for (const [width, theme, direction] of [
           await el.evaluate((e) => e.scrollWidth <= e.clientWidth + 1),
         ).toBe(true);
       if (name === "Privacy") {
+        // Post visibility is a sentence and a Change… button; it must start in
+        // the same control column as the language select and media checkbox.
         const visibility = await scope
-          .getByRole("combobox", { name: "Post visibility", exact: true })
+          .locator("app-posting-defaults p.posting-defaults")
           .boundingBox();
         const language = await scope
           .getByRole("combobox", { name: "Posting language", exact: true })
@@ -179,9 +225,11 @@ for (const [width, theme, direction] of [
             exact: true,
           })
           .boundingBox();
-        expect(visibility.width).toBeLessThanOrEqual(384);
-        expect(Math.abs(visibility.x - language.x)).toBeLessThanOrEqual(1);
+        expect(language.width).toBeLessThanOrEqual(384);
         const edge = (box) => (direction === "rtl" ? box.x + box.width : box.x);
+        expect(Math.abs(edge(visibility) - edge(language))).toBeLessThanOrEqual(
+          1,
+        );
         expect(Math.abs(edge(visibility) - edge(media))).toBeLessThanOrEqual(1);
       }
       await scope.screenshot({ path: info.outputPath(`${name}.png`) });

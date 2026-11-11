@@ -11,7 +11,7 @@ import {
   type Meta,
   type StoryObj,
 } from "@storybook/angular";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { Api } from "../../ui/src/app/platform/api/api";
 import { BlueskyApi } from "../../ui/src/app/connections/bluesky/bluesky-api";
 import { BskyRef } from "../../ui/src/app/connections/bluesky/bluesky-types";
@@ -191,7 +191,19 @@ export default {
           provide: Api,
           useFactory: () => {
             const s = inject(Responses);
-            return { report: (...args: unknown[]) => s.send("Mastodon", args) };
+            return {
+              report: (...args: unknown[]) => s.send("Mastodon", args),
+              // A violation report names the published server rule it breaks.
+              instanceRules: () =>
+                of([
+                  {
+                    id: "1",
+                    text: "No spam or unsolicited advertising",
+                    hint: "",
+                  },
+                ]),
+              termsOfService: () => of(null),
+            };
           },
         },
         {

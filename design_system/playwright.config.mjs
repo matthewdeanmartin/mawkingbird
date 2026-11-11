@@ -17,7 +17,12 @@ export default defineConfig({
   // Each test owns its browser context and artifact paths; schedule individual
   // tests so large catalogue files cannot leave the other workers idle.
   fullyParallel: true,
-  workers: 2,
+  // CI runners are small and split the suite into shards. Locally (20 logical
+  // cores, 2026-11-11): 2 workers 7.6 min, 4 workers 4.1 min, 6 workers 3.7 min
+  // but timing failures when the machine was also compiling. Four keeps
+  // headroom. DESIGN_BROWSER_WORKERS overrides both.
+  workers:
+    Number(process.env.DESIGN_BROWSER_WORKERS) || (process.env.CI ? 2 : 4),
   // A dot per test and full detail for failures; VERBOSE=1 lists every test.
   reporter: process.env.VERBOSE ? "list" : "dot",
   use: {

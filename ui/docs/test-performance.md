@@ -42,13 +42,60 @@ on production component boundaries and genuine DOM-test needs.
 - Added a protected runtime manifest of all 2,790 test identities and confirmed
   zero missing, failed, or pending tests after the changes.
 
+## Fixed compile cost — 2026-11-11
+
+By November the suite had 744 spec files (139,000 lines) and 9,664 tests, and
+the app 1,025 non-spec source files (225,000 lines). Measured on the same
+machine:
+
+| Command                                        | Wall time | Of which compile |
+| ---------------------------------------------- | --------: | ---------------: |
+| `make test` (`test:ci`, coverage)              |     291 s |             68 s |
+| `ng test --no-watch` (no coverage)             |     161 s |             88 s |
+| one spec via `ng test --include` (old subset)  |   70–78 s |          63–73 s |
+| one spec via the narrowed program (new subset) |    7–14 s |              8 s |
+| `test:changed`, settings component (2 specs)   |      11 s |              6 s |
+| `test:changed`, speech reader (53 specs)       |      81 s |             39 s |
+| `test:changed`, `api.ts` (235 specs)           |     101 s |             59 s |
+
+`NG_BUILD_DEBUG_PERF=1` showed where the single-spec compile went: TypeScript
+emit 44 s, diagnostics 16 s, program creation 7 s. `--include` only chooses
+which bundles run; tsconfig.spec.json still puts every spec in the program, and
+the persistent `.angular/cache` does not carry the TypeScript program between
+processes. Coverage adds about 130 s.
+
+`scripts/narrow-spec-run.mjs` therefore writes a tsconfig under the artifact
+folder that lists only the chosen specs, and passes it with `--ts-config`. The
+compiler sees those specs and what they import. `test:subset` and
+`test:changed` both use it. Because type checking is narrowed too, these are
+fast feedback, never the gate.
+
+`test:changed` follows static relative imports and component
+`templateUrl`/`styleUrl` backwards from the changed files. It deliberately does
+not follow lazy `import()`: `app.routes.spec.ts` and `mock-routes.spec.ts` reach
+every page that way, and following those edges put the whole app into a
+two-spec settings change (102 s instead of 11 s). Editing a route table still
+selects its specs; the full gate covers the rest. The cost now scales with how
+widely the changed file is imported: a core service such as `api.ts` reaches a
+third of the suite. Toolchain changes (package.json, angular.json, tsconfig,
+vitest config, test-setup) run every spec.
+
+The `src/lib` extraction does not reduce this compile: the app imports library
+sources by relative path, so they are part of the same program (and only about
+1.5% of it). What it does buy is that library specs run outside Angular and are
+skipped when unchanged (`test:libs`, 1–3 s).
+
 ## Commands
 
 ```bash
-npm test                                      # watch mode for an active coding session
-npm run test:subset -- src/app/discovery/search  # one area
+make test-changed                             # specs affected by uncommitted edits
+make test-changed BASE=origin/main            # ...or by a whole branch
+make test-changed WATCH=1                     # keep it running; rebuilds in seconds
+npm run test:changed -- --dry-run             # list affected specs only
+npm run test:subset -- src/app/discovery/search  # one area (narrowed program)
 npm run test:subset -- src/app/publishing/compose/compose.spec.ts
 npm run test:source-integrity                 # sub-second inventory/anti-cheating check
+make test-quick                               # whole suite, no coverage
 make test                                     # full local test gate with coverage
 ```
 
