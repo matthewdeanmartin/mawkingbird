@@ -317,6 +317,36 @@ describe('Shell account switching', () => {
     },
   );
 
+  it(
+    'a switch that hits full storage releases the switch lock, so trying again works',
+    { timeout: 20_000 },
+    () => {
+      const fixture = createShell();
+      const cmp = fixture.componentInstance as any;
+      const social = auth.sessions().find((s) => s.token === 'social-token')!;
+      const original = Storage.prototype.setItem;
+      const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (
+        this: Storage,
+        key: string,
+        value: string,
+      ) {
+        if (key === 'mastodon_mock_token')
+          throw new DOMException('The quota has been exceeded.', 'QuotaExceededError');
+        original.call(this, key, value);
+      });
+
+      expect(() => cmp.switchTo(social)).toThrow(/quota/);
+      write.mockRestore();
+      expect(cmp.switchingServer()).toBeNull();
+      expect(auth.token()).toBe('art-token');
+
+      // With room again, the same click goes through instead of being ignored.
+      cmp.switchTo(social);
+      httpMock.expectOne('https://mastodon.social/api/v1/accounts/verify_credentials');
+      expect(auth.token()).toBe('social-token');
+    },
+  );
+
   // The bug this guards: the failed switch leaves the broken account *inactive*,
   // so the account menu's Log out (which acts on the active account) can never
   // reach it. Without this the account is unusable and undeletable.

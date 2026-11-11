@@ -3,6 +3,9 @@
   "web": true,
   "dependencies": [],
   "entries": [
-    "index.ts"
+    "index.ts",
+    "rss-parser.ts",
+    "feed-ranking.ts",
+    "opml.ts"
   ]
 }

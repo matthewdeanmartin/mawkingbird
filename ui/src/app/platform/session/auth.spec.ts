@@ -45,6 +45,62 @@ describe('Auth + Server linkage', () => {
     expect(auth.token()).toBe('art-token');
   });
 
+  describe('when localStorage is full', () => {
+    const CACHE = 'mockingbird_translation_pairs_cache';
+    const quota = () => new DOMException('The quota has been exceeded.', 'QuotaExceededError');
+    const original = Storage.prototype.setItem;
+
+    beforeEach(() => {
+      server.setBaseUrl('https://mastodon.art');
+      auth.setToken('art-token');
+      server.setBaseUrl('https://mastodon.social');
+      auth.setToken('social-token');
+    });
+
+    it('switchTo drops cached data and completes the switch', () => {
+      localStorage.setItem(CACHE, 'refetchable');
+      const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (
+        this: Storage,
+        key: string,
+        value: string,
+      ) {
+        // Full until the cache is gone.
+        if (this.getItem(CACHE) !== null) throw quota();
+        original.call(this, key, value);
+      });
+
+      expect(auth.switchTo('art-token')).toBe(true);
+      write.mockRestore();
+
+      expect(localStorage.getItem(CACHE)).toBeNull();
+      expect(auth.token()).toBe('art-token');
+      expect(localStorage.getItem('mastodon_mock_token')).toBe('art-token');
+      expect(server.baseUrl()).toBe('https://mastodon.art');
+    });
+
+    it('switchTo leaves the user on the account they had when nothing can be freed', () => {
+      const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (
+        this: Storage,
+        key: string,
+        value: string,
+      ) {
+        if (key === 'mastodon_mock_token') throw quota();
+        original.call(this, key, value);
+      });
+
+      expect(() => auth.switchTo('art-token')).toThrow(/quota/);
+      write.mockRestore();
+
+      expect(auth.token()).toBe('social-token');
+      expect(localStorage.getItem('mastodon_mock_token')).toBe('social-token');
+      expect(server.baseUrl()).toBe('https://mastodon.social');
+      expect(localStorage.getItem('mastodon_mock_server')).toBe('https://mastodon.social');
+      // Nothing is left half-done: switching works once there is room again.
+      expect(auth.switchTo('art-token')).toBe(true);
+      expect(server.baseUrl()).toBe('https://mastodon.art');
+    });
+  });
+
   it('backfills server for a legacy session that predates the field', () => {
     // Simulate a session saved before `server` existed (no server key).
     seedSessions([{ token: 'legacy', account: null }]);

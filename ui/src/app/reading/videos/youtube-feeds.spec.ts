@@ -9,7 +9,7 @@ import { FeatureFlags } from '../../platform/build/feature-flags';
 import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
 import { PlusTokenSource } from '../../accounts/mawkingbird/plus-token.interceptor';
 import { EXTERNAL_FETCH } from '../../platform/http/external-fetch';
-import { parseFeed } from '../../../lib/rss';
+import { parseFeed } from '../../../lib/rss/rss-parser';
 
 const id = 'UCy0tKL1T7wFoYcxCe0xjN6Q';
 describe('YouTube feed transport', () => {

@@ -30,7 +30,9 @@ nothing of the app's and no other library.
 - **Declared entry points.** App code imports a library only through the files
   listed under `entries` in its `lib.json`, normally just `index.ts`. Extra
   entries exist where splitting matters: the dictionary's per-language modules
-  are separate entries so each loads lazily.
+  are separate entries so each loads lazily, and RSS exposes the parser, feed
+  ranking and OPML separately so eager reader code does not pull the other two
+  into the startup bundle (an `index.ts` re-export keeps every module it names).
 - **Type-checks alone.** Each library's `tsconfig.json` sets `"types": []` and
   plain ES2022, adding the DOM library only when `lib.json` says `"web": true`.
 

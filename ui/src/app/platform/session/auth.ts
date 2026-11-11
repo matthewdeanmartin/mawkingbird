@@ -12,6 +12,7 @@ import {
   clearBlueskyIdentity,
   setActiveBlueskyIdentity,
 } from '../../connections/bluesky/bluesky-identity-store';
+import { setItemFreeingCache } from '../storage/storage-quota';
 import { BlueskyOAuth } from '../../connections/bluesky/bluesky-oauth';
 import {
   clearAllMisskeyIdentities,
@@ -598,8 +599,8 @@ export class Auth {
    * currently-selected instance so the session can be restored to the right host later.
    */
   setToken(token: string): void {
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(ACCOUNT_MODE_KEY, 'mastodon');
+    setItemFreeingCache(TOKEN_KEY, token);
+    setItemFreeingCache(ACCOUNT_MODE_KEY, 'mastodon');
     this.kind.set('mastodon');
     this.token.set(token);
     this.blueskyDid.set(null);
@@ -742,8 +743,8 @@ export class Auth {
         session.id === existing.id ? { ...session, token: newToken, account, server } : session,
       );
     this.persistSessions(next);
-    localStorage.setItem(TOKEN_KEY, newToken);
-    localStorage.setItem(ACCOUNT_MODE_KEY, 'mastodon');
+    setItemFreeingCache(TOKEN_KEY, newToken);
+    setItemFreeingCache(ACCOUNT_MODE_KEY, 'mastodon');
     this.kind.set('mastodon');
     this.token.set(newToken);
     this.blueskyDid.set(null);
@@ -806,6 +807,10 @@ export class Auth {
   /**
    * Switch to a previously-saved session. Restores that session's instance first so API
    * calls target the host the token is valid for. Returns false if unknown.
+   *
+   * All or nothing: if storage is still full after its caches are dropped, the
+   * stored server, token and mode are put back and the quota error is rethrown,
+   * so the user stays on the account they had instead of half-switched.
    */
   switchTo(token: string): boolean {
     const session = this.sessions().find((s) => s.token === token);
@@ -819,17 +824,56 @@ export class Auth {
       server: session.server ?? '',
       saved: this.sessions().length,
     });
-    if (session.server !== undefined) {
-      this.server.setBaseUrl(session.server);
+    const before = {
+      server: this.server.baseUrl(),
+      token: localStorage.getItem(TOKEN_KEY),
+      mode: localStorage.getItem(ACCOUNT_MODE_KEY),
+    };
+    try {
+      if (session.server !== undefined) {
+        this.server.setBaseUrl(session.server);
+      }
+      setItemFreeingCache(TOKEN_KEY, token);
+      setItemFreeingCache(ACCOUNT_MODE_KEY, 'mastodon');
+    } catch (error) {
+      this.diagnostics.warn('switch-to-storage-write-failed', { session: session.id });
+      this.restoreStoredSession(before);
+      throw error;
     }
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(ACCOUNT_MODE_KEY, 'mastodon');
     this.kind.set('mastodon');
     this.token.set(token);
     this.blueskyDid.set(null);
     this.misskeyKey.set(null);
     this.mastodonAccount.set(session.account);
     return true;
+  }
+
+  /**
+   * Put back what a failed switch already wrote. Best effort: the old values were
+   * stored a moment ago, so they almost always fit, and the in-memory server is
+   * restored even if its write does not.
+   */
+  private restoreStoredSession(before: {
+    server: string;
+    token: string | null;
+    mode: string | null;
+  }): void {
+    try {
+      this.server.setBaseUrl(before.server);
+    } catch {
+      this.server.baseUrl.set(before.server);
+    }
+    for (const [key, value] of [
+      [TOKEN_KEY, before.token],
+      [ACCOUNT_MODE_KEY, before.mode],
+    ] as const) {
+      try {
+        if (value === null) localStorage.removeItem(key);
+        else localStorage.setItem(key, value);
+      } catch {
+        // Nothing more to free; the next successful switch rewrites it.
+      }
+    }
   }
 
   /** Enter the permanent local account without deleting any saved logins. */
@@ -843,7 +887,7 @@ export class Auth {
     }
     this.server.setBaseUrl(this.anonymous.server());
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.setItem(ACCOUNT_MODE_KEY, 'anonymous');
+    setItemFreeingCache(ACCOUNT_MODE_KEY, 'anonymous');
     this.token.set(null);
     this.mastodonAccount.set(null);
     this.blueskyDid.set(null);
@@ -881,7 +925,7 @@ export class Auth {
     this.blueskyRevision.update((revision) => revision + 1);
     const saved = this.sessions().length;
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.setItem(ACCOUNT_MODE_KEY, 'bluesky');
+    setItemFreeingCache(ACCOUNT_MODE_KEY, 'bluesky');
     this.mastodonAccount.set(null);
     this.misskeyKey.set(null);
     this.blueskyDid.set(identity.did);
@@ -924,7 +968,7 @@ export class Auth {
     this.misskeyRevision.update((revision) => revision + 1);
     const saved = this.sessions().length;
     localStorage.removeItem(TOKEN_KEY);
-    localStorage.setItem(ACCOUNT_MODE_KEY, 'misskey');
+    setItemFreeingCache(ACCOUNT_MODE_KEY, 'misskey');
     this.mastodonAccount.set(null);
     this.blueskyDid.set(null);
     this.misskeyKey.set(identity.key);
@@ -1205,8 +1249,8 @@ export class Auth {
     this.sessions.set(sessions);
     const rows: StoredSession[] = sessions.map(({ token: _token, ...rest }) => rest);
     const tokens = Object.fromEntries(sessions.map((s) => [s.id, s.token]));
-    localStorage.setItem(SESSIONS_KEY, JSON.stringify(rows));
-    localStorage.setItem(SESSION_TOKENS_KEY, JSON.stringify(tokens));
+    setItemFreeingCache(SESSIONS_KEY, JSON.stringify(rows));
+    setItemFreeingCache(SESSION_TOKENS_KEY, JSON.stringify(tokens));
   }
 
   /** Revoke only SDK-owned OAuth sessions; legacy app passwords are revoked at bsky.app. */

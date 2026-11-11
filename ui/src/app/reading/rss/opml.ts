@@ -1,8 +1,8 @@
-import { buildOpml as writeOpml } from '../../../lib/rss';
+import { buildOpml as writeOpml } from '../../../lib/rss/opml';
 import { RssFeedSub } from './rss-subscriptions';
 
-export { parseOpml } from '../../../lib/rss';
-export type { OpmlFeed, ParsedOpml } from '../../../lib/rss';
+export { parseOpml } from '../../../lib/rss/opml';
+export type { OpmlFeed, ParsedOpml } from '../../../lib/rss/opml';
 
 /**
  * Mawkingbird's OPML export: every subscription, disabled ones included.

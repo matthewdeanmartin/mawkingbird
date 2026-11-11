@@ -6,7 +6,7 @@ import {
   feedAccount,
   sanitizeFeedHtml,
 } from './rss-adapter';
-import { ParsedFeed, ParsedItem } from '../../../lib/rss';
+import { ParsedFeed, ParsedItem } from '../../../lib/rss/rss-parser';
 
 const FETCHED_AT = '2026-07-14T12:00:00.000Z';
 

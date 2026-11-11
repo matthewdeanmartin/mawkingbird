@@ -10,7 +10,7 @@ import { VideosPage } from './videos-page';
 import { VideoSubscriptions } from './video-subscriptions';
 import { YoutubeFeeds } from './youtube-feeds';
 import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
-import { parseFeed } from '../../../lib/rss';
+import { parseFeed } from '../../../lib/rss/rss-parser';
 import { VideoSubscriptionsPanel } from './video-subscriptions-panel';
 
 const first = 'UCy0tKL1T7wFoYcxCe0xjN6Q';

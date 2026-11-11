@@ -7,7 +7,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { CorsProxyBatchFetch } from '../../connections/cors-proxy/cors-proxy-batch-fetch';
 import { CorsProxySettings } from '../../connections/cors-proxy/cors-proxy-settings';
-import { FeedCandidate, collapseFormats, rankFeeds } from '../../../lib/rss';
+import { FeedCandidate, collapseFormats, rankFeeds } from '../../../lib/rss/feed-ranking';
 import { feedLinksIn } from './rss-discovery';
 import { RssFetch } from './rss-fetch';
 

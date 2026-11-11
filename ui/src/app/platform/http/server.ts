@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { normalizeHostUrl } from './host-url';
+import { setItemFreeingCache } from '../storage/storage-quota';
 import { blueskyIsPrimaryKind } from '../../connections/bluesky/bluesky-identity-store';
 import { mastodonConnectorServer } from '../../connections/mastodon/mastodon-connector';
 
@@ -48,7 +49,7 @@ export class Server {
 
   setBaseUrl(value: string): void {
     const normalized = this.normalize(value);
-    localStorage.setItem(SERVER_KEY, normalized);
+    setItemFreeingCache(SERVER_KEY, normalized);
     this.baseUrl.set(normalized);
   }
 

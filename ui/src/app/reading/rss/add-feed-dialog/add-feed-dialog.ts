@@ -9,7 +9,7 @@ import { Api } from '../../../platform/api/api';
 import { Auth } from '../../../platform/session/auth';
 import { Account } from '../../../platform/api/models';
 import { CorsProxySettings } from '../../../connections/cors-proxy/cors-proxy-settings';
-import { FeedCandidate } from '../../../../lib/rss';
+import { FeedCandidate } from '../../../../lib/rss/feed-ranking';
 import { PasteResolve, PasteResolution } from '../paste-resolve';
 import { RssAddFeed } from '../rss-add-feed';
 import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics';

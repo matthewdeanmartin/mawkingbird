@@ -788,7 +788,15 @@ export class Shell implements OnInit, AccountSwitcher {
       return;
     }
     this.switchingServer.set(session.server || location.origin);
-    this.auth.switchTo(session.token);
+    try {
+      this.auth.switchTo(session.token);
+    } catch (error) {
+      // Storage full, even after dropping caches: Auth has put the old account
+      // back. Release the switch lock, or every later attempt returns at the top
+      // of this method and the menu looks dead. The global error handler explains.
+      this.switchingServer.set(null);
+      throw error;
+    }
     this.api.verifyCredentials().subscribe({
       next: (acc) => {
         this.auth.setAccount(acc);

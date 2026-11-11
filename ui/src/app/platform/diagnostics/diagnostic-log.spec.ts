@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DiagnosticLog, safeDiagnosticDetails } from './diagnostic-log';
+import { setItemFreeingCache } from '../storage/storage-quota';
 
 const STORAGE_KEY = 'mockingbird_diagnostic_log';
 
@@ -8,6 +9,34 @@ describe('DiagnosticLog', () => {
   beforeEach(() => {
     sessionStorage.removeItem(STORAGE_KEY);
     TestBed.configureTestingModule({});
+  });
+
+  it('records what filled localStorage when a write hits the quota, even when it recovers', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const log = TestBed.inject(DiagnosticLog);
+    const cache = 'mockingbird_translation_pairs_cache';
+    localStorage.setItem(cache, 'x'.repeat(5_000));
+    const original = Storage.prototype.setItem;
+    const write = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (
+      this: Storage,
+      key: string,
+      value: string,
+    ) {
+      if (this === localStorage && this.getItem(cache) !== null)
+        throw new DOMException('The quota has been exceeded.', 'QuotaExceededError');
+      original.call(this, key, value);
+    });
+
+    setItemFreeingCache('mastodon_mock_token', 'token');
+    write.mockRestore();
+
+    const entry = log.entries().find((e) => e.event === 'quota-exceeded-recovered');
+    expect(entry?.level).toBe('warn');
+    expect(entry?.area).toBe('Storage');
+    expect(entry?.details).toContain(`${cache} (cache) 10 KB in 1`);
+    expect(entry?.details).toContain('"writing":"mastodon_mock_token"');
+    expect(entry?.details).not.toContain('xxxxx');
+    localStorage.removeItem('mastodon_mock_token');
   });
 
   it('mirrors the existing console format and retains a structured entry', () => {

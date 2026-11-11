@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { EMPTY, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ParsedFeed } from '../../../lib/rss';
+import { ParsedFeed } from '../../../lib/rss/rss-parser';
 import { RssFetch } from './rss-fetch';
 import { RssProvider } from './rss-provider';
 import { RssSubscriptions } from './rss-subscriptions';

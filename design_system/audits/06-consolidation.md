@@ -2276,3 +2276,12 @@ the app, so filesScanned falls from 1807 to 1799. None of the moved files had
 control candidates: all 631 candidate files and their records are unchanged
 apart from line numbers. No reconciliation entries needed and no shared widget
 changed.
+
+### Full-storage recovery (2026-11-11)
+
+Reviewed regeneration after making a full `localStorage` recoverable (account
+switching, the global error handler, the Anonymous feed corpus size budget). One
+new non-UI source file (`platform/storage/storage-quota.ts`) takes filesScanned
+from 1799 to 1800. All 631 candidate records are unchanged apart from line
+shifts in `shell/shell.ts`. No reconciliation entries needed and no shared
+widget changed.

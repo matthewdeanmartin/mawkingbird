@@ -4,7 +4,7 @@ import { Account, Status } from '../../platform/api/models';
 import { FeedProvider } from '../../connections/provider';
 import { commentAccount, feedAccount, feedToStatuses, itemToStatus } from './rss-adapter';
 import { qualifiesForHome } from './rss-home-eligibility';
-import { ParsedItem } from '../../../lib/rss';
+import { ParsedItem } from '../../../lib/rss/rss-parser';
 import { RssCacheMiss, RssFetch } from './rss-fetch';
 import { RssSubscriptions } from './rss-subscriptions';
 

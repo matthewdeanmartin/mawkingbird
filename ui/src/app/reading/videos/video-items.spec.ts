@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseFeed } from '../../../lib/rss';
+import { parseFeed } from '../../../lib/rss/rss-parser';
 import {
   feedVideos,
   newestVideos,

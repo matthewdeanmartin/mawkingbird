@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { DestroyRef, Injectable, inject, signal } from '@angular/core';
+import { onStoragePressure, StoragePressure } from '../storage/storage-quota';
 
 /** Severity used by the browser console and the in-app diagnostic timeline. */
 export type DiagnosticLevel = 'info' | 'warn' | 'error';
@@ -154,6 +155,24 @@ export class DiagnosticLog {
 
   readonly entries = this.buffer.asReadonly();
 
+  /**
+   * Every time localStorage fills, record what filled it (measured before caches
+   * were dropped), even when dropping them rescued the write. Recovery is the
+   * fallback; this entry is how a cache that grows without bound gets fixed.
+   */
+  constructor() {
+    inject(DestroyRef).onDestroy(
+      onStoragePressure((event) =>
+        this.write(
+          'warn',
+          'Storage',
+          event.recovered ? 'quota-exceeded-recovered' : 'quota-exceeded',
+          storagePressureDetails(event),
+        ),
+      ),
+    );
+  }
+
   write(
     level: DiagnosticLevel,
     area: string,
@@ -268,4 +287,35 @@ export class DiagnosticLog {
       return [];
     }
   }
+}
+
+const kb = (characters: number) => Math.round((characters * 2) / 1024);
+
+/**
+ * A storage-full incident in a form that fits one log entry: sizes in KB (UTF-16,
+ * so characters × 2), the classes and registry entries using the space, the
+ * largest keys, and what was dropped. Key names only, never values.
+ */
+export function storagePressureDetails(event: StoragePressure): Record<string, unknown> {
+  return {
+    writing: event.writing ?? '(uncaught)',
+    writingKB: kb(event.writingCharacters),
+    recovered: event.recovered,
+    usedKB: kb(event.usage.characters),
+    usedKeys: event.usage.keys,
+    bySensitivityKB: Object.fromEntries(
+      Object.entries(event.usage.bySensitivity).map(([name, characters]) => [
+        name,
+        kb(characters ?? 0),
+      ]),
+    ),
+    biggest: event.usage.byBase
+      .slice(0, 8)
+      .map(
+        (group) =>
+          `${group.base} (${group.sensitivity}) ${kb(group.characters)} KB in ${group.keys}`,
+      ),
+    freedKB: kb(event.freed.characters),
+    freedKeys: event.freed.keys,
+  };
 }

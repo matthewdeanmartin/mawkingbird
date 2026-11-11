@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { EMPTY, firstValueFrom, NEVER, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Status } from '../../platform/api/models';
-import { ParsedFeed } from '../../../lib/rss';
+import { ParsedFeed } from '../../../lib/rss/rss-parser';
 import { RssCacheMiss, RssFetch } from './rss-fetch';
 import { PER_FEED_ITEM_CAP, RssProvider } from './rss-provider';
 import { RssSubscriptions } from './rss-subscriptions';
