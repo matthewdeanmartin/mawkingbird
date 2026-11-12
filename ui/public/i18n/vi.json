@@ -916,8 +916,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Cung cấp cấp độ người ủng hộ của proxy Mawkingbird. Cần tài khoản và gói đăng ký; proxy Mawkingbird miễn phí không bị ảnh hưởng dù bật hay tắt.",
     "proxyMawkingbirdPlus.label": "Proxy Mawkingbird Plus",
-    "unifiedShare.description": "Gộp Đẩy bài, Trích dẫn và Chia sẻ vào một nút trên mỗi bài, nút này sẽ mở menu. Giải phóng một vị trí trên thanh thao tác vốn đã xuống dòng ở màn hình hẹp.",
-    "unifiedShare.label": "Menu chia sẻ hợp nhất",
     "write.description": "Không gian viết tại /write — bản nháp, trình soạn thảo và ghi chú cạnh nhau, cùng chế độ tập trung.",
     "write.label": "Viết"
   },
@@ -5925,7 +5923,6 @@
     "step.when": "Bây giờ hay sau?"
   },
   "shareDialog": {
-    "alsoRecord": "Cũng ghi nội dung này trên blog",
     "articleHint": "Sẽ gửi dưới dạng <strong>{{host}}</strong>. Chọn nơi gửi.",
     "chooseHint": "Chọn nội dung cần chia sẻ rồi chọn nơi gửi.",
     "closeDialog": "Đóng hộp thoại chia sẻ",

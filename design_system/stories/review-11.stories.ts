@@ -145,7 +145,6 @@ function preferences() {
 function flags() {
   const flags = new FeatureFlags();
   Object.defineProperty(flags, "persist", { value: () => undefined });
-  flags.setState("unified-share", "off");
   return flags;
 }
 @Component({
@@ -188,9 +187,6 @@ function flags() {
       >
         Fail action
       </button>
-      <button mbToolbarButton [pressed]="unified()" (click)="toggleUnified()">
-        Unified share preference
-      </button>
       <button
         mbToolbarButton
         [pressed]="smallCounts()"
@@ -218,9 +214,9 @@ function flags() {
     </section>
     <p class="ds-intro">
       Compare the catalogue Accent choices: selected controls use the chosen
-      soft tint; ordinary actions stay neutral. The default unified-share
-      preference remains off. The separate Sprint 6 superset still shows tools
-      that cannot coexist for one provider.
+      soft tint; ordinary actions stay neutral. 🔁 opens the repost dialog on
+      every network. The separate Sprint 6 superset still shows tools that
+      cannot coexist for one provider.
     </p>
   </article>`,
 })
@@ -228,7 +224,6 @@ class PostAdoptionReview {
   readonly prefs = inject(ClientPrefs);
   readonly actions = inject(ReviewActions);
   private readonly auth = inject(Auth);
-  private readonly flags = inject(FeatureFlags);
   readonly modes = [
     "Signed in",
     "Own post",
@@ -241,7 +236,6 @@ class PostAdoptionReview {
   ];
   readonly selected = signal("Signed in");
   readonly status = signal(post("Signed in"));
-  readonly unified = signal(false);
   readonly smallCounts = signal(false);
   constructor() {
     this.select("Signed in");
@@ -266,10 +260,6 @@ class PostAdoptionReview {
         ? { ...status, replies_count: 2, reblogs_count: 3, favourites_count: 5 }
         : status,
     );
-  }
-  toggleUnified() {
-    this.unified.update((value) => !value);
-    this.flags.setState("unified-share", this.unified() ? "production" : "off");
   }
 }
 export default {

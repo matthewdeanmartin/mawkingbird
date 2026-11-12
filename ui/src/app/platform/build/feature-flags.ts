@@ -9,7 +9,6 @@ export type FeatureFlagId =
   | 'pastebin'
   | 'links'
   | 'write'
-  | 'unified-share'
   | 'mawkingbird-plus'
   | 'misskey'
   | 'connector-mastodon'
@@ -81,8 +80,6 @@ interface StoredFeatureFlags {
 // i18n flags.links.description: Shorten URLs through Dub, Short.io or T.LY, and manage the links you have created.
 // i18n flags.write.label: Write
 // i18n flags.write.description: The writing workspace at /write — drafts, editor and notes side by side, plus zen mode.
-// i18n flags.unifiedShare.label: Unified share menu
-// i18n flags.unifiedShare.description: Collapse Boost, Quote and Share into one button on every post, opening a menu instead. Frees a slot on an action bar that already wraps on narrow screens.
 // i18n flags.mawkingbirdPlus.label: Mawkingbird Plus
 // i18n flags.mawkingbirdPlus.description: The Mawkingbird account tab in Settings, where you sign in to your Mawkingbird account.
 // i18n flags.connectorMastodon.label: Mastodon
@@ -147,18 +144,6 @@ export const FEATURE_FLAGS: readonly FeatureFlagDefinition[] = [
     labelKey: 'flags.write.label',
     descriptionKey: 'flags.write.description',
     defaultState: 'production',
-    group: 'features',
-  },
-  {
-    id: 'unified-share',
-    labelKey: 'flags.unifiedShare.label',
-    // Says what turning it on changes, since this one is off by default and the
-    // question a reader has is "what will this do to my posts".
-    descriptionKey: 'flags.unifiedShare.description',
-    // `test`, not `production`: this changes the action bar on every post in the
-    // app, which is the most-used surface there is. It earns its way up rather
-    // than starting at the top.
-    defaultState: 'test',
     group: 'features',
   },
   {

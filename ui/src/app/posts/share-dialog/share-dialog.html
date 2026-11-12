@@ -16,12 +16,16 @@
     <div class="dialog-heading">
       <div>
         <h3 id="share-heading">
-          {{
-            (feedItem() ? 'shareDialog.heading.article' : 'shareDialog.heading.elsewhere')
-              | transloco
-          }}
+          @if (page() === 'choose') {
+            {{ words().Boost }}
+          } @else {
+            {{
+              (feedItem() ? 'shareDialog.heading.article' : 'shareDialog.heading.elsewhere')
+                | transloco
+            }}
+          }
         </h3>
-        <p class="muted small">
+        <p class="muted small" [hidden]="page() === 'choose'">
           @if (feedItem()) {
             <!-- No "choose what to share": for an article there is one thing to
                  share, and it is the article. -->
@@ -43,114 +47,147 @@
       </button>
     </div>
 
-    @if (quote(); as highlighted) {
-      <blockquote class="quote">{{ highlighted }}</blockquote>
-    }
+    @if (page() === 'choose') {
+      <!-- Page 1: what the post's own network allows, then everywhere else. -->
+      <div class="choices">
+        @if (repost()?.boost; as boostKind) {
+          <button type="button" class="choice" (click)="boost.emit()">
+            <strong>{{ boostKind === 'undo' ? words().UndoBoost : words().Boost }}</strong>
+            <small>{{
+              (boostKind === 'undo'
+                ? 'shareDialog.choose.undoHint'
+                : 'shareDialog.choose.boostHint'
+              ) | transloco
+            }}</small>
+          </button>
+        }
+        @if (repost()?.quote) {
+          <button type="button" class="choice" (click)="quoteRequested.emit()">
+            <strong>{{ 'shareDialog.choose.quote' | transloco }}</strong>
+            <small>{{ 'shareDialog.choose.quoteHint' | transloco }}</small>
+          </button>
+        }
+        @if (status().url) {
+          <button type="button" class="choice" (click)="page.set('share')">
+            <strong>{{
+              'shareDialog.choose.crossPlatform' | transloco: { boost: words().boost }
+            }}</strong>
+            <small>{{ 'shareDialog.choose.crossPlatformHint' | transloco }}</small>
+          </button>
+        }
+      </div>
+    } @else {
+      @if (hasChoices()) {
+        <button type="button" class="back" (click)="page.set('choose')">
+          ← {{ 'shareDialog.back' | transloco }}
+        </button>
+      }
+      @if (quote(); as highlighted) {
+        <blockquote class="quote">{{ highlighted }}</blockquote>
+      }
 
-    <!-- Hidden entirely on a feed article: `contentLinks()` returns nothing
-         there, so this whole fieldset — "This post" vs "Linked page (without the
-         post wrapper)" — never renders. On an article those two named the same
-         URL, which made the choice unanswerable. -->
-    @if (contentLinks().length) {
-      <fieldset class="targets">
-        <legend>{{ 'shareDialog.share' | transloco }}</legend>
-        <label>
-          <input
-            type="radio"
-            name="share-target"
-            value=""
-            [checked]="!selectedUrl()"
-            (change)="selectedUrl.set('')"
-          />
-          <span
-            ><strong>{{ 'shareDialog.thisPost' | transloco }}</strong
-            ><small>{{ host(status().url!) }}</small></span
-          >
-        </label>
-        @for (link of contentLinks(); track link) {
+      <!-- Hidden entirely on a feed article: `contentLinks()` returns nothing
+           there, so this whole fieldset — "This post" vs "Linked page (without the
+           post wrapper)" — never renders. On an article those two named the same
+           URL, which made the choice unanswerable. -->
+      @if (contentLinks().length) {
+        <fieldset class="targets">
+          <legend>{{ 'shareDialog.share' | transloco }}</legend>
           <label>
             <input
               type="radio"
               name="share-target"
-              [value]="link"
-              [checked]="selectedUrl() === link"
-              (change)="selectedUrl.set(link)"
+              value=""
+              [checked]="!selectedUrl()"
+              (change)="selectedUrl.set('')"
             />
             <span
-              ><strong>{{ 'shareDialog.linkedPage' | transloco }}</strong
-              ><small>{{ host(link) }}</small></span
+              ><strong>{{ 'shareDialog.thisPost' | transloco }}</strong
+              ><small>{{ host(status().url!) }}</small></span
             >
           </label>
-        }
-      </fieldset>
-    }
+          @for (link of contentLinks(); track link) {
+            <label>
+              <input
+                type="radio"
+                name="share-target"
+                [value]="link"
+                [checked]="selectedUrl() === link"
+                (change)="selectedUrl.set(link)"
+              />
+              <span
+                ><strong>{{ 'shareDialog.linkedPage' | transloco }}</strong
+                ><small>{{ host(link) }}</small></span
+              >
+            </label>
+          }
+        </fieldset>
+      }
 
-    @if (canRecordOnBlog()) {
-      <!-- POSSE, in words rather than as a second recycle symbol in the action
-           bar. It rides along with the share because it is the same intention:
-           you are telling people about the article, and telling your own site
-           that you did. Nothing is recorded unless the share itself goes
-           through — see recordIfAsked. -->
-      <label class="also-record">
-        <input
-          type="checkbox"
-          [checked]="recordOnBlog()"
-          (change)="recordOnBlog.set(!recordOnBlog())"
-        />
-        <span>
-          <strong>{{ 'shareDialog.alsoRecord' | transloco }}</strong>
-          <small>{{ 'shareDialog.recordHint' | transloco }}</small>
-        </span>
-      </label>
-    }
+      <!-- Two sections, and a destination is in exactly one of them: posting
+           through a connector when there is one, handing off when there is not.
+           See share-targets.ts for why that is not a preference. -->
+      @if (postTargets().length) {
+        <section class="section">
+          <h4>{{ 'shareDialog.postIt' | transloco }}</h4>
+          <p class="muted small">{{ 'shareDialog.postHint' | transloco }}</p>
+          <div class="destinations">
+            @for (target of postTargets(); track target) {
+              <button type="button" class="destination post" (click)="postTo(target)">
+                {{ targetLabelKey(target) | transloco }}
+              </button>
+            }
+          </div>
+        </section>
+      }
 
-    <!-- Two sections, and a destination is in exactly one of them: posting
-         through a connector when there is one, handing off when there is not.
-         See share-targets.ts for why that is not a preference. -->
-    @if (postTargets().length) {
       <section class="section">
-        <h4>{{ 'shareDialog.postIt' | transloco }}</h4>
-        <p class="muted small">{{ 'shareDialog.postHint' | transloco }}</p>
+        <h4>{{ 'shareDialog.sendItTo' | transloco }}</h4>
+        <p class="muted small">{{ 'shareDialog.sendHint' | transloco }}</p>
         <div class="destinations">
-          @for (target of postTargets(); track target) {
-            <button type="button" class="destination post" (click)="postTo(target)">
-              {{ targetLabelKey(target) | transloco }}
+          @if (canOfferBlog()) {
+            <!-- Your own site, as a destination: queues the boost for it, and
+                 takes it back off on a second press. No request is made. -->
+            <button
+              type="button"
+              class="destination"
+              [class.on]="blogRecorded()"
+              [attr.aria-pressed]="blogRecorded()"
+              [title]="'shareDialog.recordHint' | transloco"
+              (click)="toggleBlog()"
+            >
+              {{
+                (blogRecorded() ? 'shareDialog.myBlogRecorded' : 'shareDialog.myBlog') | transloco
+              }}
             </button>
           }
+          @if (canShareUsingDevice) {
+            <button type="button" class="destination native" (click)="shareUsingDevice()">
+              {{ 'shareDialog.shareUsingDevice' | transloco }}
+            </button>
+          }
+          @for (destination of intents(); track destination.id) {
+            <button type="button" class="destination" (click)="open(destination)">
+              {{ destination.labelKey | transloco }}
+            </button>
+          }
+          <button type="button" class="destination" (click)="copyLink()">
+            {{ (copied() ? 'shareDialog.linkCopied' : 'shareDialog.copyLink') | transloco }}
+          </button>
         </div>
+        <!-- Reddit, LinkedIn and Hacker News take a URL and a title; there is no
+             field a highlighted passage could go in. Someone who highlighted a
+             paragraph is owed that fact rather than watching it vanish. -->
+        @if (quoteMayBeDropped()) {
+          <p class="muted small note">
+            {{ 'shareDialog.quoteDropped' | transloco }}
+          </p>
+        }
       </section>
-    }
 
-    <section class="section">
-      <h4>{{ 'shareDialog.sendItTo' | transloco }}</h4>
-      <p class="muted small">{{ 'shareDialog.sendHint' | transloco }}</p>
-      <div class="destinations">
-        @if (canShareUsingDevice) {
-          <button type="button" class="destination native" (click)="shareUsingDevice()">
-            {{ 'shareDialog.shareUsingDevice' | transloco }}
-          </button>
-        }
-        @for (destination of intents(); track destination.id) {
-          <button type="button" class="destination" (click)="open(destination)">
-            {{ destination.labelKey | transloco }}
-          </button>
-        }
-        <button type="button" class="destination" (click)="copyLink()">
-          {{ (copied() ? 'shareDialog.linkCopied' : 'shareDialog.copyLink') | transloco }}
-        </button>
-      </div>
-      <!-- Reddit, LinkedIn and Hacker News take a URL and a title; there is no
-           field a highlighted passage could go in. Someone who highlighted a
-           paragraph is owed that fact rather than watching it vanish. -->
-      @if (quoteMayBeDropped()) {
-        <p class="muted small note">
-          {{ 'shareDialog.quoteDropped' | transloco }}
-        </p>
+      @if (copyFailed()) {
+        <p class="copy-error" role="alert">{{ 'shareDialog.copyError' | transloco }}</p>
       }
-    </section>
-
-    @if (copyFailed()) {
-      <p class="copy-error" role="alert">{{ 'shareDialog.copyError' | transloco }}</p>
     }
   </div>
 </div>

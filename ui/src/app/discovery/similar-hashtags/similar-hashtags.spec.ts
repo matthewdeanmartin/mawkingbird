@@ -130,7 +130,7 @@ describe('SimilarHashtagsPanel', () => {
     return Array.from({ length: 40 }, () => post(tags));
   }
 
-  async function setUp(tags: string[]): Promise<void> {
+  async function setUp(tags: string[], signedIn = false, beforeSettle?: () => void): Promise<void> {
     TestBed.configureTestingModule({
       imports: [SimilarHashtagsPanel],
       providers: [
@@ -141,10 +141,10 @@ describe('SimilarHashtagsPanel', () => {
         {
           provide: Auth,
           useValue: {
-            kind: signal('anonymous'),
-            token: signal(null),
+            kind: signal(signedIn ? 'mastodon' : 'anonymous'),
+            token: signal(signedIn ? 't' : null),
             isAnonymous: false,
-            lacksMastodonToken: true,
+            lacksMastodonToken: !signedIn,
           },
         },
       ],
@@ -155,6 +155,7 @@ describe('SimilarHashtagsPanel', () => {
     fixture.componentInstance.tagsChange.subscribe((next) => emitted.push(next));
     fixture.detectChanges();
     root = fixture.nativeElement as HTMLElement;
+    beforeSettle?.();
     await vi.waitFor(() => expect(fixture.componentInstance['reading']()).toBe(false));
     fixture.detectChanges();
   }
@@ -185,6 +186,23 @@ describe('SimilarHashtagsPanel', () => {
     await vi.waitFor(() => expect(fixture.componentInstance['reading']()).toBe(false));
     fixture.detectChanges();
     expect(rows()[0]).toBe('#fedidogs 300 posts');
+  });
+
+  it('marks the hashtags you already follow, which sampled posts cannot say', async () => {
+    page = vi.fn(() => of([post(['dog', 'puppy', 'pets'])]));
+    await setUp(['dog'], true, () => {
+      TestBed.inject(HttpTestingController)
+        .expectOne((req) => req.url === '/api/v1/followed_tags')
+        .flush([{ name: 'Puppy', url: '', history: [] }]);
+    });
+    fixture.detectChanges();
+    const labels = Object.fromEntries(
+      [...root.querySelectorAll('.similar-row')].map((row) => [
+        row.querySelector('a')!.textContent!.trim().split(' ')[0],
+        row.querySelector('app-tag-actions button')?.textContent?.trim(),
+      ]),
+    );
+    expect(labels).toEqual({ '#puppy': 'Following', '#pets': 'Follow' });
   });
 
   it('stops at the end of the timeline and offers no more', async () => {

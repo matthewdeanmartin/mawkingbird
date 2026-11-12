@@ -801,209 +801,56 @@
             <span mbPostActionLabel>{{ 'statusCard.viewThread' | transloco }}</span>
           </a>
         }
-        @if (unifiedShare()) {
-          <!-- One control instead of three. The bar is already out of horizontal
-               space and wraps on narrow screens, so Boost/Quote/Share collapse
-               into a menu rather than Share becoming a sixth icon. Boost stays
-               one press: the menu opens with it focused.
-
-               ...but only when there is something to choose between. See
-               `shareMenuIsUseful`: with one action left the popup is pure
-               middleman, so the button just does the thing. -->
-          <div class="share-menu-host">
-            <button
-              mbPostAction
-              class="action"
-              type="button"
-              [class.on]="
-                display.reblogged || (soleShareAction() === 'posse' && posseQueued(repostKind))
-              "
-              [active]="
-                display.reblogged || (soleShareAction() === 'posse' && posseQueued(repostKind))
-              "
-              [class.working]="busyWith('reblog')"
-              [disabled]="actionBusy()"
-              [attr.aria-expanded]="shareMenuIsUseful() ? shareMenuOpen() : null"
-              [attr.aria-haspopup]="shareMenuIsUseful() ? 'menu' : 'dialog'"
-              [pressed]="soleShareAction() === 'posse' ? posseQueued(repostKind) : null"
-              [title]="shareButtonLabel()"
-              [attr.aria-label]="shareButtonLabel()"
-              (click)="shareMenuIsUseful() ? toggleShareMenu($event) : runSoleShareAction($event)"
-            >
-              <span aria-hidden="true">🔁</span>
-              @if (display.reblogged) {
-                <span mbPostActionLabel class="did" aria-hidden="true">{{ words().Boosted }}</span>
-              } @else if (soleShareAction() === 'posse' && posseQueued(repostKind)) {
-                <span mbPostActionLabel class="did" aria-hidden="true">{{
-                  'statusCard.recorded' | transloco
-                }}</span>
-              }
-            </button>
-            @if (shareMenuIsUseful() && shareMenuOpen()) {
-              <!-- Focus moves to the first item on open (see focusShareMenu) so
-                   Boost stays one press for keyboard users. Done in code rather
-                   than with `autofocus`, which the a11y lint rightly rejects. -->
-              <div class="share-menu" role="menu" (click)="$event.stopPropagation()">
-                @for (action of shareMenuActions(); track action) {
-                  @switch (action) {
-                    @case ('boost') {
-                      <button
-                        type="button"
-                        role="menuitem"
-                        [disabled]="actionBusy()"
-                        (click)="shareMenuOpen.set(false); toggleReblog($event)"
-                      >
-                        {{ display.reblogged ? words().UndoBoost : words().Boost }}
-                      </button>
-                    }
-                    @case ('quote') {
-                      <button
-                        type="button"
-                        role="menuitem"
-                        (click)="shareMenuOpen.set(false); toggleQuote($event)"
-                      >
-                        {{ 'statusCard.quote' | transloco }}
-                      </button>
-                    }
-                    @case ('posse') {
-                      <!-- Says "my blog" out loud. The old bare 🔁 beside another
-                           bare 🔁 gave the reader no way to tell which recycle
-                           symbol went to the network and which to their site. -->
-                      <button
-                        type="button"
-                        role="menuitem"
-                        (click)="shareMenuOpen.set(false); togglePosseOnly(repostKind, $event)"
-                      >
-                        {{
-                          posseQueued(repostKind)
-                            ? ('statusCard.boostFromBlog' | transloco)
-                            : ('statusCard.recordBoostOnBlog' | transloco)
-                        }}
-                      </button>
-                    }
-                    @case ('share') {
-                      <button type="button" role="menuitem" (click)="openShare($event)">
-                        {{ 'statusCard.shareElsewhereEllipsis' | transloco }}
-                      </button>
-                    }
-                  }
-                }
-              </div>
-            }
-          </div>
-        } @else if (caps.reblog) {
+        <!-- One 🔁 on every network. It opens the repost dialog: page 1 is
+             Boost (or Undo), Quote and Cross-platform…; page 2 is everywhere
+             else, the share dialog. With nothing to choose on page 1, as for
+             Anonymous or a feed item, it opens straight on page 2. -->
+        @if (hasRepostControl()) {
           <button
-            type="button"
             mbPostAction
             class="action"
-            [class.on]="display.reblogged"
+            type="button"
+            [class.on]="repostActive()"
+            [active]="repostActive()"
             [class.working]="busyWith('reblog')"
-            [disabled]="busyWith('reblog')"
-            (click)="toggleReblog($event)"
-            [title]="display.reblogged ? words().UndoBoost : words().Boost"
-            [pressed]="display.reblogged"
-            [attr.aria-label]="display.reblogged ? words().UndoBoost : words().Boost"
+            [disabled]="actionBusy()"
+            aria-haspopup="dialog"
+            [title]="shareButtonLabel()"
+            [attr.aria-label]="shareButtonLabel()"
+            (click)="openRepost($event)"
           >
             <span aria-hidden="true">🔁</span>
+            @if (!boostCountIsList()) {
+              <!-- A count that opens nothing rides inside the button, as it
+                   always has for Anonymous: a separate number would push a phone
+                   row onto two lines for no extra function. -->
+              <span
+                mbActionCount
+                [count]="display.reblogs_count"
+                [label]="countWords().boosts"
+                [locale]="countLocale"
+                >{{
+                  'statusCard.countLabel'
+                    | transloco: { count: display.reblogs_count, label: countWords().boosts }
+                }}</span
+              >
+            }
             @if (display.reblogged) {
               <span mbPostActionLabel class="did" aria-hidden="true">{{ words().Boosted }}</span>
+            } @else if (posseOnly() && posseQueued(repostKind)) {
+              <span mbPostActionLabel class="did" aria-hidden="true">{{
+                'statusCard.recorded' | transloco
+              }}</span>
             }
           </button>
         }
-        @if (unifiedShare()) {
-          <!-- The menu above already carries boost, quote and share; the
-               per-audience branches below would duplicate all three. Only the
-               count remains, right after the 🔁 it counts. -->
-          @if (!foreign || readOnlyStats || auth.isAnonymous) {
-            <ng-container [ngTemplateOutlet]="boostCount" />
-          }
-          <ng-container
-            [ngTemplateOutlet]="quotesCount"
-            [ngTemplateOutletContext]="{ icon: true }"
-          />
-        } @else if (auth.isAnonymous && display.provider !== 'bluesky') {
-          @if (display.url) {
-            <button
-              mbPostAction
-              type="button"
-              class="action"
-              [title]="'statusCard.shareElsewhere' | transloco"
-              [attr.aria-label]="'statusCard.shareElsewhere' | transloco"
-              (click)="openShare($event)"
-            >
-              <span aria-hidden="true">🔁</span>
-              <span
-                ><span
-                  mbActionCount
-                  [count]="display.reblogs_count"
-                  [label]="countWords().boosts"
-                  [locale]="countLocale"
-                  >{{
-                    'statusCard.countLabel'
-                      | transloco: { count: display.reblogs_count, label: countWords().boosts }
-                  }}</span
-                ></span
-              >
-            </button>
-          } @else {
-            <!-- No URL to share and no network to boost on: a number, not a
-                 control. `.action-static` keeps the row's spacing without the
-                 pointer cursor that made this look tappable. -->
-            <span mbPostAction class="action action-static" [title]="words().Boosts"
-              ><span aria-hidden="true">🔁</span>
-              <span
-                ><span
-                  mbActionCount
-                  [count]="display.reblogs_count"
-                  [label]="countWords().boosts"
-                  [locale]="countLocale"
-                  >{{
-                    'statusCard.countLabel'
-                      | transloco: { count: display.reblogs_count, label: countWords().boosts }
-                  }}</span
-                ></span
-              ></span
-            >
-          }
-        } @else if (!foreign && capabilities.canCompose) {
-          <!-- The count comes first so it sits beside the 🔁 it counts, as on
-               every other network; Quote follows. -->
+        @if (
+          (!foreign || readOnlyStats || auth.isAnonymous) &&
+          (boostCountIsList() || !hasRepostControl())
+        ) {
           <ng-container [ngTemplateOutlet]="boostCount" />
-          <button
-            type="button"
-            mbPostAction
-            class="action"
-            [class.on]="quoting()"
-            [pressed]="quoting()"
-            (click)="toggleQuote($event)"
-            [title]="'statusCard.quote' | transloco"
-            [attr.aria-label]="'statusCard.quote' | transloco"
-          >
-            <span aria-hidden="true">❝</span>
-          </button>
-          <ng-container
-            [ngTemplateOutlet]="quotesCount"
-            [ngTemplateOutletContext]="{ icon: false }"
-          />
-        } @else if (!caps.reblog && readOnlyStats) {
-          <!-- Read-only providers (Twitter) report real counts with no button to
-               attach them to. When `caps.reblog` already rendered a button above,
-               this fallback would be a second 🔁 on the same row — the case a
-               signed-in viewer hits on every Bluesky post. -->
-          <span mbPostAction class="action action-static" [title]="words().Boosts"
-            ><span aria-hidden="true">🔁</span>
-            <span
-              mbActionCount
-              [count]="display.reblogs_count"
-              [label]="countWords().boosts"
-              [locale]="countLocale"
-              >{{
-                'statusCard.countLabel'
-                  | transloco: { count: display.reblogs_count, label: countWords().boosts }
-              }}</span
-            ></span
-          >
         }
+        <ng-container [ngTemplateOutlet]="quotesCount" [ngTemplateOutletContext]="{ icon: true }" />
         @if (caps.favourite) {
           <button
             type="button"
@@ -1034,30 +881,6 @@
                has no endpoint), so these write to the reader's own site and make
                no request at all. State comes from the queue, not from a server
                flag that does not exist here. -->
-          @if (!unifiedShare()) {
-            <!-- Without the unified control this is the only boost affordance
-                 there is. With it, "Record a boost on my blog" is a named item
-                 in that menu instead: a second bare 🔁 next to the first one
-                 asked the reader to tell two identical recycle symbols apart. -->
-            <button
-              type="button"
-              mbPostAction
-              class="action"
-              [class.on]="posseQueued(repostKind)"
-              (click)="togglePosseOnly(repostKind, $event)"
-              [title]="
-                posseQueued(repostKind)
-                  ? ('statusCard.boostFromBlogRecord' | transloco)
-                  : ('statusCard.recordBoostOnBlog' | transloco)
-              "
-              [pressed]="posseQueued(repostKind)"
-            >
-              🔁
-              @if (posseQueued(repostKind)) {
-                <span mbPostActionLabel class="did">{{ 'statusCard.recorded' | transloco }}</span>
-              }
-            </button>
-          }
           <button
             type="button"
             mbPostAction
@@ -1791,7 +1614,7 @@
           }
         </ng-template>
         <ng-template #boostCount>
-          @if ((capabilities.canUseServerActions && !foreign) || display.provider === 'bluesky') {
+          @if (boostCountIsList()) {
             <button
               type="button"
               mbPostAction
@@ -2067,6 +1890,9 @@
     <app-share-dialog
       [status]="display"
       [quote]="shareQuote()"
+      [repost]="repostOptions()"
+      (boost)="onRepostBoost()"
+      (quoteRequested)="onRepostQuote()"
       (compose)="onShareCompose($event)"
       (closed)="showShare.set(false)"
     />

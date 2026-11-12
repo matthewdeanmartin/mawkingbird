@@ -12,7 +12,10 @@ import {
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { firstValueFrom } from 'rxjs';
+import { catchError, firstValueFrom, of } from 'rxjs';
+import { Api } from '../../platform/api/api';
+import { Auth } from '../../platform/session/auth';
+import { TagState } from '../tag-actions/tag-state';
 import { Status } from '../../platform/api/models';
 import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
@@ -47,6 +50,9 @@ import {
 /** Rows shown; the long tail is mostly one-off tags. */
 const SHOWN = 50;
 
+/** Followed tags are read in pages of 200; five covers all but extreme accounts. */
+const FOLLOWED_TAG_PAGES = 5;
+
 /**
  * Similar hashtags for a set of seed hashtags: samples recent posts carrying
  * any of them and lists the other hashtags those posts carry, most shared first.
@@ -68,6 +74,9 @@ export class SimilarHashtagsPanel {
   readonly closed = output<void>();
 
   private samples = inject(HashtagSamples);
+  private api = inject(Api);
+  private auth = inject(Auth);
+  private tagState = inject(TagState);
   protected readonly maxSeeds = MAX_SIMILAR_SEEDS;
   protected readonly step = SAMPLE_STEP;
 
@@ -101,6 +110,28 @@ export class SimilarHashtagsPanel {
       });
     });
     inject(DestroyRef).onDestroy(() => this.run++);
+    void this.loadFollowedTags();
+  }
+
+  /**
+   * Seed the shared follow state with the tags you follow, so each row's Follow
+   * button says "Following" where it should. Regular search gets this for free
+   * (Mastodon's search results carry `following`); sampled posts do not, which
+   * left this list right only for tags that had passed through search or been
+   * toggled here. Anonymous reads its own browser store and needs nothing.
+   */
+  private async loadFollowedTags(): Promise<void> {
+    if (this.auth.isAnonymous || this.auth.lacksMastodonToken) return;
+    let maxId: string | undefined;
+    for (let page = 0; page < FOLLOWED_TAG_PAGES; page++) {
+      const result = await firstValueFrom(
+        this.api.followedTagsPage(maxId, 200, true).pipe(catchError(() => of(null))),
+      );
+      if (!result) return;
+      for (const tag of result.tags) this.tagState.remember({ ...tag, following: true });
+      if (!result.nextMaxId) return;
+      maxId = result.nextMaxId;
+    }
   }
 
   /** Read up to {@link SAMPLE_STEP} more posts. */

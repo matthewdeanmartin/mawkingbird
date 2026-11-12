@@ -3,7 +3,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Status } from '../../platform/api/models';
 import { HugoSettings } from '../../connections/hugo/hugo-settings';
 import { PosseQueue } from '../../connections/hugo/posse-queue';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
 import {
+  RepostOptions,
   SHARE_DESTINATIONS,
   ShareDialog,
   shareContext,
@@ -173,7 +175,7 @@ describe('ShareDialog', () => {
     open.mockRestore();
   });
 
-  it('records a POSSE boost only when the share actually goes through', () => {
+  it('offers "My blog" as a destination that records, and un-records, the boost', () => {
     TestBed.inject(HugoSettings).connect('tok', {
       owner: 'me',
       repo: 'blog',
@@ -186,28 +188,24 @@ describe('ShareDialog', () => {
     fixture.componentRef.setInput('status', feedArticle());
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
+    const blog = () =>
+      Array.from(element.querySelectorAll<HTMLButtonElement>('.destination')).find((button) =>
+        button.textContent?.includes('blog'),
+      )!;
 
-    // The opt-in replaces the second bare 🔁 that used to sit in the action bar,
-    // and says "my blog" where that symbol said nothing.
-    const box = element.querySelector<HTMLInputElement>('.also-record input')!;
-    expect(element.textContent).toContain('Also record this on my blog');
-    box.click();
+    // Says "my blog" where a second bare 🔁 in the action bar once said nothing.
+    expect(blog().textContent?.trim()).toBe('My blog');
+    blog().click();
     fixture.detectChanges();
+    expect(queue.entries()).toEqual([
+      expect.objectContaining({ kind: 'repost', targetUrl: 'https://blog.example/posts/hello/' }),
+    ]);
+    expect(blog().textContent?.trim()).toBe('Recorded on my blog ✓');
+    expect(blog().getAttribute('aria-pressed')).toBe('true');
 
-    // Ticking it is not the act. Nothing is recorded until the share happens.
+    blog().click();
+    fixture.detectChanges();
     expect(queue.count()).toBe(0);
-
-    const open = vi.spyOn(window, 'open').mockImplementation(() => null);
-    Array.from(element.querySelectorAll<HTMLButtonElement>('.destination:not(.post)'))
-      .find((button) => button.textContent?.trim() === 'Reddit')!
-      .click();
-    open.mockRestore();
-
-    expect(queue.count()).toBe(1);
-    expect(queue.entries()[0]).toMatchObject({
-      kind: 'repost',
-      targetUrl: 'https://blog.example/posts/hello/',
-    });
   });
 
   it('does not offer to record on a blog that is not connected', () => {
@@ -215,7 +213,80 @@ describe('ShareDialog', () => {
     fixture.componentRef.setInput('status', feedArticle());
     fixture.detectChanges();
 
-    expect((fixture.nativeElement as HTMLElement).querySelector('.also-record')).toBeNull();
+    const labels = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('.destination'),
+    ).map((button) => button.textContent?.trim());
+    expect(labels).not.toContain('My blog');
+    expect(labels.length).toBeGreaterThan(0);
+  });
+
+  describe('as the repost dialog', () => {
+    function repost(options: RepostOptions | null) {
+      const fixture = TestBed.createComponent(ShareDialog);
+      fixture.componentRef.setInput('status', status());
+      fixture.componentRef.setInput('repost', options);
+      fixture.detectChanges();
+      const element = fixture.nativeElement as HTMLElement;
+      const choices = () =>
+        Array.from(element.querySelectorAll<HTMLButtonElement>('.choice strong')).map((n) =>
+          n.textContent?.trim(),
+        );
+      return { fixture, element, choices };
+    }
+
+    it('opens on page 1 in the reader’s own word, then turns to the destinations and back', () => {
+      TestBed.inject(ClientPrefs).postNoun.set('tweet');
+      const { fixture, element, choices } = repost({ boost: 'boost', quote: true });
+      expect(element.querySelector('h3')?.textContent?.trim()).toBe('Retweet');
+      expect(choices()).toEqual(['Retweet', 'Quote', 'Cross-platform retweet…']);
+      expect(element.querySelector('.destinations')).toBeNull();
+
+      element.querySelectorAll<HTMLButtonElement>('.choice')[2].click();
+      fixture.detectChanges();
+      expect(element.querySelector('.destinations')).not.toBeNull();
+      element.querySelector<HTMLButtonElement>('.back')!.click();
+      fixture.detectChanges();
+      expect(choices()).toHaveLength(3);
+    });
+
+    it('hands Boost, Undo and Quote back to the post', () => {
+      const { fixture, element, choices } = repost({ boost: 'undo', quote: true });
+      expect(choices()[0]).toBe('Undo boost');
+      const boosted = vi.fn();
+      const quoted = vi.fn();
+      fixture.componentInstance.boost.subscribe(boosted);
+      fixture.componentInstance.quoteRequested.subscribe(quoted);
+      const [boost, quote] = element.querySelectorAll<HTMLButtonElement>('.choice');
+      boost.click();
+      quote.click();
+      expect(boosted).toHaveBeenCalledOnce();
+      expect(quoted).toHaveBeenCalledOnce();
+    });
+
+    it('opens straight on the destinations when page 1 has nothing, as for Anonymous', () => {
+      const { element } = repost(null);
+      expect(element.querySelector('.choices')).toBeNull();
+      expect(element.querySelector('.back')).toBeNull();
+      expect(element.querySelector('.destinations')).not.toBeNull();
+    });
+  });
+
+  it('sends to Twitter through its own composer, with the link and any highlight', () => {
+    const fixture = TestBed.createComponent(ShareDialog);
+    fixture.componentRef.setInput('status', status());
+    fixture.componentRef.setInput('quote', 'A line worth sharing');
+    fixture.detectChanges();
+    const open = vi.spyOn(window, 'open').mockImplementation(() => null);
+    Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('.destination'),
+    )
+      .find((button) => button.textContent?.trim() === 'Twitter')!
+      .click();
+    const url = new URL(String(open.mock.calls[0][0]));
+    open.mockRestore();
+    expect(url.origin + url.pathname).toBe('https://twitter.com/intent/tweet');
+    expect(url.searchParams.get('url')).toBe(status().url);
+    expect(url.searchParams.get('text')).toContain('A line worth sharing');
   });
 
   /** Buttons in the "Post it" section. */

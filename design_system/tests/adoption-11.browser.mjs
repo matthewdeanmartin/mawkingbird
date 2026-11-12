@@ -174,7 +174,7 @@ test("full counts open separate account lists and preserve native Tab order", as
   await reply.focus();
   await page.keyboard.press("Tab");
   await expect(
-    scope.getByRole("button", { name: "Boost", exact: true }),
+    scope.getByRole("button", { name: "Boost, quote or share", exact: true }),
   ).toBeFocused();
   await scope
     .getByRole("button", { name: "12345678 Favourited by", exact: true })
@@ -257,37 +257,36 @@ test("provider and anonymous branches retain their capabilities and native desti
     scope.getByRole("button", { name: "Undo favourite", exact: true }),
   ).toBeEnabled();
 });
-test("unified share remains an opt-in preference", async ({ page }) => {
+test("🔁 opens the repost dialog: boost, quote or cross-platform", async ({
+  page,
+}) => {
   const scope = card(page);
-  await expect(
-    scope.getByRole("button", { name: "Quote", exact: true }),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Unified share preference", exact: true })
-    .click();
+  // Quote lives in the dialog now, not beside 🔁.
   await expect(
     scope.getByRole("button", { name: "Quote", exact: true }),
   ).toHaveCount(0);
-  await scope.locator('button[aria-haspopup="menu"]').click();
+  const trigger = scope.getByRole("button", {
+    name: "Boost, quote or share",
+    exact: true,
+  });
+  await expect(trigger).toHaveAttribute("aria-haspopup", "dialog");
+  await trigger.click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("heading", { name: "Boost" })).toBeVisible();
+  await dialog.getByRole("button", { name: /Cross-platform boost/ }).click();
   await expect(
-    scope.getByRole("menuitem", { name: "Boost", exact: true }),
-  ).toBeFocused();
-  await scope.getByRole("menuitem", { name: "Boost", exact: true }).click();
+    dialog.getByRole("button", { name: "Twitter", exact: true }),
+  ).toBeVisible();
+  await dialog.getByRole("button", { name: /Back/ }).click();
+  await dialog.getByRole("button", { name: /^Boost/ }).click();
   await page
     .getByRole("button", { name: "Complete action", exact: true })
     .click();
-  const trigger = scope.locator('button[aria-haspopup="menu"]');
   await expect(trigger).toHaveAttribute("data-active", "true");
   await expect(trigger).not.toHaveAttribute("aria-pressed");
   expect(
     await trigger.evaluate((button) => getComputedStyle(button).boxShadow),
   ).not.toBe("none");
-  await page
-    .getByRole("button", { name: "Unified share preference", exact: true })
-    .click();
-  await expect(
-    scope.getByRole("button", { name: "Quote", exact: true }),
-  ).toBeVisible();
 });
 for (const [theme, width, direction, touch] of [
   ["light", 1280, "ltr", false],

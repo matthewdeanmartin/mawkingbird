@@ -5001,8 +5001,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "提供 Mawkingbird 代理的贊助者方案。需要帳號與訂閱；無論是否開啟，都不影響免費的 Mawkingbird 代理。",
     "proxyMawkingbirdPlus.label": "Mawkingbird Plus 代理",
-    "unifiedShare.description": "將每則嘟文的轉嘟、引用與分享合併為一個開啟選單的按鈕。在窄螢幕上已會換行的操作列中，可省下一個按鈕的位置。",
-    "unifiedShare.label": "整合分享選單",
     "write.description": "位於 /write 的寫作工作區，並排顯示草稿、編輯器與筆記，也提供專注模式。",
     "write.label": "寫作"
   },
@@ -5855,7 +5853,6 @@
     "title": "伺服器規則"
   },
   "shareDialog": {
-    "alsoRecord": "也在我的部落格記錄此內容",
     "articleHint": "即將從 <strong>{{host}}</strong> 發出。選擇傳送位置。",
     "chooseHint": "選擇要分享的內容，再選擇傳送位置。",
     "closeDialog": "關閉分享對話方塊",

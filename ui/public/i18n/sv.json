@@ -3080,8 +3080,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Erbjud supporternivån för Mawkingbird-proxyn. Kräver ett konto och en prenumeration; den kostnadsfria Mawkingbird-proxyn påverkas inte.",
     "proxyMawkingbirdPlus.label": "Mawkingbird Plus-proxy",
-    "unifiedShare.description": "Samla Boosta, Citera och Dela i en knapp på varje inlägg som i stället öppnar en meny. Frigör en plats i ett åtgärdsfält som redan radbryts på smala skärmar.",
-    "unifiedShare.label": "Gemensam delningsmeny",
     "write.description": "Skrivarbetsytan på /write — utkast, redigerare och anteckningar sida vid sida samt zenläge.",
     "write.label": "Skriv"
   },
@@ -5484,7 +5482,6 @@
     "writing.yourWords.hint.c": "är det inte."
   },
   "shareDialog": {
-    "alsoRecord": "Spara även detta på min blogg",
     "articleHint": "Skickas som <strong>{{host}}</strong>. Välj vart det ska skickas.",
     "chooseHint": "Välj vad som ska delas och sedan vart det ska skickas.",
     "closeDialog": "Stäng delningsdialogrutan",

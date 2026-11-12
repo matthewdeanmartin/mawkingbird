@@ -24,14 +24,12 @@ import {
 } from '../../design-system/post-actions/post-actions';
 import { AppDialogs } from '../../shell/app-dialogs';
 import {
-  afterNextRender,
   Component,
   computed,
   DestroyRef,
   effect,
   ElementRef,
   inject,
-  Injector,
   input,
   linkedSignal,
   output,
@@ -169,11 +167,15 @@ import { AnonymousProviderRef } from '../../accounts/anonymous/anonymous-mastodo
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
 import { isElizaId } from '../../chat/eliza/eliza-identity';
 import { LocalCompose } from '../../chat/eliza/local-compose';
-import { ComposeShareRequest, ShareDialog } from '../share-dialog/share-dialog';
+import {
+  ComposeShareRequest,
+  isFeedItem,
+  RepostOptions,
+  ShareDialog,
+} from '../share-dialog/share-dialog';
 import { CopyLinkDialog } from '../copy-link/copy-link-dialog';
 import { accountDeepLink, homeServerFor, postDeepLink, serverHost } from '../copy-link/deep-links';
 import { selectionWithin } from '../share-dialog/share-selection';
-import { FeatureFlags } from '../../platform/build/feature-flags';
 import {
   BookmarkChoice,
   BookmarkProviderDialog,
@@ -394,16 +396,6 @@ const INTERACTIVE_SELECTOR = [
   '.quote-card',
   'app-account-hover-card',
 ].join(',');
-
-/**
- * One entry in the unified 🔁 menu.
- *
- * `posse` is "record a boost on my own blog" — a POSSE write to the reader's
- * site with no network request behind it. It sits in this list rather than as a
- * second 🔁 in the bar, because two recycle symbols side by side is a riddle,
- * not an interface.
- */
-type ShareMenuAction = 'boost' | 'quote' | 'posse' | 'share';
 
 interface MastodonPostRef {
   url: string;
@@ -900,116 +892,48 @@ export class StatusCard {
   protected replying = signal(false);
   protected quoting = signal(false);
   protected showShare = signal(false);
-  /** Text highlighted when Share was pressed; see {@link openShare}. */
+  /** Text highlighted when 🔁 was pressed; see {@link openRepost}. */
   protected shareQuote = signal('');
-  /** Open state of the unified Boost/Quote/Share menu (flagged). */
-  protected shareMenuOpen = signal(false);
   /** A composer the share dialog asked for, rendered inline beneath the post. */
   protected shareCompose = signal<ComposeShareRequest | null>(null);
 
   /**
-   * Whether the action bar collapses Boost, Quote and Share into one button.
-   *
-   * Off by default. The bar is already out of horizontal space and wraps on
-   * narrow screens, so this trades three controls for one rather than adding a
-   * fourth — see the `unified-share` flag.
+   * Page 1 of the repost dialog: what this reader can do on the post's own
+   * network. Null when there is nothing (Anonymous, a feed item), and the
+   * dialog then opens straight on page 2, the share destinations, so the 🔁
+   * there behaves exactly as the old "Share elsewhere" button did.
    */
-  protected readonly unifiedShare = computed(
-    () => this.display.provider === 'bluesky' || this.featureFlags.enabled('unified-share'),
-  );
-
-  /**
-   * The actions the unified menu would actually offer, in menu order.
-   *
-   * Computed rather than left implicit in the template because the *count* is
-   * what decides whether there is a menu at all — see {@link shareMenuItems}.
-   */
-  protected readonly shareMenuActions = computed<readonly ShareMenuAction[]>(() => {
-    const actions: ShareMenuAction[] = [];
-    if (this.caps.reblog) {
-      actions.push('boost');
-    }
-    if (this.canQuote) {
-      actions.push('quote');
-    }
-    // Record-a-boost-on-my-own-blog. On a feed item this is the only thing the
-    // word "boost" can honestly mean: there is no network to boost on.
-    if (this.posseOnly()) {
-      actions.push('posse');
-    }
-    if (this.display.url) {
-      actions.push('share');
-    }
-    return actions;
-  });
-
-  /**
-   * Whether the 🔁 control opens a menu, or just does the one thing.
-   *
-   * A menu holding a single item is not a menu, it is an extra click. That was
-   * the RSS case exactly: boost and quote are both impossible on a feed item, so
-   * the popup opened to offer "Share elsewhere…" and nothing else — a middleman
-   * between the reader and the dialog they were already asking for. Below two
-   * real choices the button skips the popup and performs the action directly; a
-   * Mastodon post still gets its menu, because Boost, Quote and Share there are
-   * three genuinely different things.
-   */
-  protected readonly shareMenuIsUseful = computed(() => this.shareMenuActions().length > 1);
-
-  /** The single action a degenerate menu collapses to, if there is one. */
-  protected readonly soleShareAction = computed<ShareMenuAction | null>(() => {
-    const actions = this.shareMenuActions();
-    return actions.length === 1 ? actions[0] : null;
-  });
-
-  /**
-   * What the 🔁 button does when it is not opening a menu.
-   *
-   * Only reachable when exactly one action exists, so there is nothing to
-   * choose between and no popup is drawn.
-   */
-  protected runSoleShareAction(event: Event): void {
-    switch (this.soleShareAction()) {
-      case 'boost':
-        this.toggleReblog(event);
-        return;
-      case 'quote':
-        this.toggleQuote(event);
-        return;
-      case 'posse':
-        this.togglePosseOnly('repost', event);
-        return;
-      case 'share':
-        this.openShare(event);
-        return;
-      default:
-        event.stopPropagation();
-    }
+  protected repostOptions(): RepostOptions | null {
+    const boost = this.caps.reblog ? (this.display.reblogged ? 'undo' : 'boost') : null;
+    const quote = this.canQuote;
+    return boost || quote ? { boost, quote } : null;
   }
 
-  /** Label and tooltip for the 🔁 control, which changes with what it will do. */
+  /** Whether the bar shows a 🔁 at all: something on page 1, or a link to share. */
+  protected hasRepostControl(): boolean {
+    return !!this.repostOptions() || !!this.display.url;
+  }
+
+  /** Whether the boost count opens the list of who boosted, or is just a number. */
+  protected boostCountIsList(): boolean {
+    return (
+      (this.capabilities.canUseServerActions && !this.foreign) ||
+      this.display.provider === 'bluesky'
+    );
+  }
+
+  /** Lit when boosted, or when a feed item's boost is recorded for the blog. */
+  protected repostActive(): boolean {
+    return this.display.reblogged || (this.posseOnly() && this.posseQueued(this.repostKind));
+  }
+
+  /** Label and tooltip for the 🔁 control: it always opens the dialog now. */
   protected readonly shareButtonLabel = computed(() => {
     this.i18n.version();
-    if (this.shareMenuIsUseful()) {
-      return this.transloco.translate('statusCard.boostQuoteOrShare');
-    }
-    switch (this.soleShareAction()) {
-      case 'boost':
-        return this.display.reblogged ? this.words().UndoBoost : this.words().Boost;
-      case 'quote':
-        return this.transloco.translate('statusCard.quote');
-      case 'posse':
-        return this.transloco.translate(
-          this.posseQueued('repost')
-            ? 'statusCard.removeThisBoostFromBlog'
-            : 'statusCard.recordBoostOnBlogShort',
-        );
-      case 'share':
-        // Names the dialog it opens, because it opens it on the first press.
-        return this.transloco.translate('statusCard.shareThisArticle');
-      default:
-        return this.transloco.translate('statusCard.shareDefault');
-    }
+    if (this.repostOptions()) return this.transloco.translate('statusCard.boostQuoteOrShare');
+    return this.transloco.translate(
+      isFeedItem(this.display) ? 'statusCard.shareThisArticle' : 'statusCard.shareElsewhere',
+    );
   });
 
   // --- content warnings ---
@@ -1257,9 +1181,9 @@ export class StatusCard {
         }
         return true;
       case 'b':
-        if (this.caps.reblog) {
-          this.toggleReblog(event);
-        }
+        // The dialog, not a boost: one key used to boost silently, and a stray
+        // 'b' is the easiest boost to make by mistake.
+        this.openRepost(event);
         return true;
       case 'r':
       case 'm':
@@ -2465,7 +2389,7 @@ export class StatusCard {
   }
 
   /**
-   * Open the share dialog, capturing any highlighted text first.
+   * Open the repost dialog, capturing any highlighted text first.
    *
    * The capture has to happen here, in the click handler: opening the dialog
    * moves focus into it and collapses the selection, so reading it inside the
@@ -2473,36 +2397,25 @@ export class StatusCard {
    * made in a *different* card, which would otherwise quote the wrong post
    * silently.
    */
-  openShare(event: Event): void {
+  openRepost(event: Event): void {
     event.stopPropagation();
+    if (!this.hasRepostControl()) return;
     this.shareQuote.set(selectionWithin(this.host.nativeElement));
-    this.shareMenuOpen.set(false);
     this.showShare.set(true);
   }
 
-  /**
-   * Open the unified menu with Boost focused.
-   *
-   * Boost is the most-used action on this bar, and a menu that turns it into two
-   * presses would be a regression however tidy the bar looks. Focusing the first
-   * item means `Enter` still boosts — one press, as before. Done here rather
-   * than with an `autofocus` attribute, which the a11y lint rejects for good
-   * reasons that do not apply to a menu the user just opened.
-   */
-  toggleShareMenu(event: Event): void {
-    event.stopPropagation();
-    const opening = !this.shareMenuOpen();
-    this.shareMenuOpen.set(opening);
-    if (!opening) {
-      return;
-    }
-    afterNextRender(
-      () => {
-        const host = this.host.nativeElement as HTMLElement;
-        host.querySelector<HTMLButtonElement>('.share-menu [role="menuitem"]')?.focus();
-      },
-      { injector: this.injector },
-    );
+  /** Page 1 → Boost (or Undo): the dialog closes and the ordinary boost runs. */
+  protected onRepostBoost(): void {
+    this.showShare.set(false);
+    this.toggleReblog(new Event('click'));
+  }
+
+  /** Page 1 → Quote: the existing quote dialog takes over. */
+  protected onRepostQuote(): void {
+    this.showShare.set(false);
+    if (!this.canQuote) return;
+    this.replying.set(false);
+    this.quoting.set(true);
   }
 
   /** Open a composer prefilled by the share dialog. */
@@ -3147,8 +3060,6 @@ export class StatusCard {
   private eligibility = inject(AutoTranslateEligibility);
   private host = inject(ElementRef<HTMLElement>);
   private postHistory = inject(PostHistory);
-  private featureFlags = inject(FeatureFlags);
-  private injector = inject(Injector);
 
   /**
    * True once this card has tried to auto-translate, successfully or not.

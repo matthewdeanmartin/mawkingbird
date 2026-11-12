@@ -2355,3 +2355,16 @@ MbButtons for open-app and the Bluesky/Mastodon sign-ins) and
 `interactions-workbench.ts` (two Field/Controls, MbButton Find interactions, outline
 MbButton Me and…, MbNotice for failures; results are ordinary StatusCards).
 Reconciliation entries added for all three. No shared widget implementation changed.
+
+### Repost dialog (2026-11-12)
+
+Reviewed regeneration: 637 candidate files, two changed, none added or removed.
+`posts/status-card/status-card.html`: the per-audience Boost, ❝ Quote and Share
+controls and the flagged unified dropdown (`.share-menu`, one overlay) became one
+🔁 MbPostAction on every network that opens the share dialog (-8 native buttons,
+-8 shared, -1 overlay). The `unified-share` feature flag was removed.
+`posts/share-dialog/share-dialog.html` gained page 1 of the repost dialog (Boost or
+Undo, Quote, Cross-platform…), a Back button and a "My blog" destination replacing
+the "Also record this on my blog" checkbox (+5 native buttons, -1 checkbox), plus
+a Twitter link-out in the existing destination list. No shared widget
+implementation changed.

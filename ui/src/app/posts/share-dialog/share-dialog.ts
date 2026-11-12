@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PostTarget } from '../../publishing/compose/compose';
 import { TargetAvailabilitySource } from '../../publishing/compose/target-availability';
@@ -10,6 +10,7 @@ import { intentIdsFor, postTargetsFor } from './share-targets';
 import { HugoSettings } from '../../connections/hugo/hugo-settings';
 import { PosseQueue } from '../../connections/hugo/posse-queue';
 import { canPosseOnly } from '../../connections/provider';
+import { Terminology } from '../../i18n/terminology';
 
 export interface ShareContext {
   url: string;
@@ -32,6 +33,13 @@ const POST_TARGET_LABEL_KEYS: Record<PostTarget, string> = {
   blogger: 'shareDialog.destinations.blogger',
   hugo: 'shareDialog.destinations.hugoSite',
 };
+
+/** Page 1 of the repost dialog: what the post's own network allows. */
+export interface RepostOptions {
+  /** Boost, undo an existing boost, or neither (no network to boost on). */
+  boost: 'boost' | 'undo' | null;
+  quote: boolean;
+}
 
 /** What the host should open the composer with. */
 export interface ComposeShareRequest {
@@ -132,6 +140,17 @@ function blueskyText(text: string, url: string): string {
 
 export const SHARE_DESTINATIONS: ShareDestination[] = [
   {
+    // Twitter's own composer. It counts any URL as 23 characters, so the text
+    // is shortened to leave room for the link it appends.
+    id: 'twitter',
+    labelKey: 'shareDialog.destinations.twitter',
+    buildUrl: ({ url, text }) =>
+      urlWithParams('https://twitter.com/intent/tweet', {
+        text: shortened(text.replace(url, '').trim(), 250),
+        url,
+      }),
+  },
+  {
     id: 'reddit',
     labelKey: 'shareDialog.destinations.reddit',
     buildUrl: ({ url, title }) => urlWithParams('https://www.reddit.com/submit', { url, title }),
@@ -176,9 +195,16 @@ export const SHARE_DESTINATIONS: ShareDestination[] = [
  * quote vanish silently, because a user who highlighted a paragraph and pressed
  * Reddit is owed the information that it did not travel.
  */
-const QUOTE_CARRYING_INTENTS = new Set(['bluesky', 'tumblr']);
+const QUOTE_CARRYING_INTENTS = new Set(['twitter', 'bluesky', 'tumblr']);
 
 // i18n shareDialog.closeDialog: Close share dialog
+// i18n shareDialog.choose.quote: Quote
+// i18n shareDialog.choose.quoteHint: Add your own words above it.
+// i18n shareDialog.choose.boostHint: Show it to your followers.
+// i18n shareDialog.choose.undoHint: Take it off your profile and your followers' timelines.
+// i18n shareDialog.choose.crossPlatform: Cross-platform {{boost}}…
+// i18n shareDialog.choose.crossPlatformHint: Twitter, Bluesky, your blog, a link and more.
+// i18n shareDialog.back: Back
 // i18n shareDialog.heading.article: Share this article
 // i18n shareDialog.heading.elsewhere: Share elsewhere
 // i18n shareDialog.articleHint: Going out as <strong>{{host}}</strong>. Pick where to send it.
@@ -186,7 +212,8 @@ const QUOTE_CARRYING_INTENTS = new Set(['bluesky', 'tumblr']);
 // i18n shareDialog.share: Share
 // i18n shareDialog.thisPost: This post
 // i18n shareDialog.linkedPage: Linked page (without the post wrapper)
-// i18n shareDialog.alsoRecord: Also record this on my blog
+// i18n shareDialog.myBlog: My blog
+// i18n shareDialog.myBlogRecorded: Recorded on my blog ✓
 // i18n shareDialog.recordHint: Queues a boost for your own site. Nothing is published until you say so.
 // i18n shareDialog.postIt: Post it
 // i18n shareDialog.postHint: Opens a composer. Nothing is posted until you press Post.
@@ -197,6 +224,7 @@ const QUOTE_CARRYING_INTENTS = new Set(['bluesky', 'tumblr']);
 // i18n shareDialog.copyLink: Copy link
 // i18n shareDialog.quoteDropped: Some of these take only a link — your highlight won’t travel.
 // i18n shareDialog.copyError: Couldn’t copy the link. Please try again.
+// i18n shareDialog.destinations.twitter: Twitter
 // i18n shareDialog.destinations.reddit: Reddit
 // i18n shareDialog.destinations.bluesky: Bluesky
 // i18n shareDialog.destinations.tumblr: Tumblr
@@ -233,6 +261,28 @@ export class ShareDialog {
   readonly closed = output<void>();
   /** Asks the host to open a composer — the dialog never posts anything itself. */
   readonly compose = output<ComposeShareRequest>();
+
+  /**
+   * Page 1 of the repost dialog, when the post's own network offers anything:
+   * Boost (or Undo) and Quote, plus "Cross-platform…" which turns to page 2,
+   * the destinations below. Null opens straight on page 2, as Anonymous and
+   * feed items always have.
+   */
+  readonly repost = input<RepostOptions | null>(null);
+  /** Page 1 → Boost or Undo boost. The host runs the boost and closes this. */
+  readonly boost = output<void>();
+  /** Page 1 → Quote. The host opens its quote dialog and closes this. */
+  readonly quoteRequested = output<void>();
+
+  protected readonly words = inject(Terminology).words;
+  protected readonly hasChoices = computed(() => {
+    const repost = this.repost();
+    return !!repost && (!!repost.boost || repost.quote);
+  });
+  /** Which page shows. Starts on the choices when there are any. */
+  protected readonly page = linkedSignal<'choose' | 'share'>(() =>
+    this.hasChoices() ? 'choose' : 'share',
+  );
 
   /**
    * Whether this is a feed article rather than a post — the picker turns on it.
@@ -279,40 +329,39 @@ export class ShareDialog {
   );
 
   /**
-   * Whether "also record this on my blog" is on offer.
+   * Whether "My blog" is offered as a destination.
    *
    * Same test the action bar uses: a POSSE-enabled Hugo connection, a provider
-   * with no network of its own to boost on, and a URL to record. It rides along
-   * in this dialog rather than as a button in the bar because on a feed item
-   * sharing and recording are the same intention expressed twice — you are
-   * telling people about the article, and telling your own site you did.
+   * with no network of its own to boost on, and a URL to record.
    */
-  protected readonly canRecordOnBlog = computed(
+  protected readonly canOfferBlog = computed(
     () =>
       this.hugo.posseEnabled() &&
       // Either tag qualifies. `provider` is optional on a Status and the RSS
       // adapter is not the only thing that builds one, so a feed item is also
       // recognised by its `rss:` id — the same shape `isFeedItem` keys on.
       (canPosseOnly(this.status().provider) || this.feedItem()) &&
-      !!this.status().url &&
-      !this.posse.has('repost', this.status().url!),
+      !!this.status().url,
   );
 
-  /** Ticked by the reader; acted on when they actually send the share. */
-  protected recordOnBlog = signal(false);
+  /** Whether this item's boost is already waiting in the blog queue. */
+  protected readonly blogRecorded = computed(() => {
+    const url = this.status().url;
+    return !!url && this.posse.has('repost', url);
+  });
 
   /**
-   * Write the POSSE entry, if it was asked for.
-   *
-   * Called from every path that completes a share, and only from those: ticking
-   * the box and then closing the dialog records nothing, because the reader
-   * never went through with the share it was attached to.
+   * "My blog" is a destination like any other: pressing it queues the boost
+   * for your site, and pressing it again takes it back off. No request is
+   * made; nothing is published until you publish from the queue.
    */
-  private recordIfAsked(): void {
-    if (!this.recordOnBlog() || !this.canRecordOnBlog()) {
-      return;
+  protected toggleBlog(): void {
+    if (!this.canOfferBlog()) return;
+    if (this.blogRecorded()) {
+      this.posse.removeMatching('repost', this.status().url);
+    } else {
+      this.posse.add('repost', this.status());
     }
-    this.posse.add('repost', this.status());
   }
 
   protected targetLabelKey(target: PostTarget): string {
@@ -346,7 +395,6 @@ export class ShareDialog {
     // missed, so make sure the link is in the body.
     const text = context.text.includes(url) ? context.text : `${context.text}\n\n${url}`;
     this.diagnostics.info('Share', 'compose', { target });
-    this.recordIfAsked();
     this.compose.emit({ target, text });
     this.closed.emit();
   }
@@ -354,7 +402,6 @@ export class ShareDialog {
   protected open(destination: ShareDestination): void {
     const url = destination.buildUrl(shareContext(this.status(), this.targetUrl(), this.quote()));
     window.open(url, '_blank', 'noopener,noreferrer');
-    this.recordIfAsked();
     this.closed.emit();
   }
 
@@ -362,7 +409,6 @@ export class ShareDialog {
     const context = shareContext(this.status(), this.targetUrl(), this.quote());
     try {
       await navigator.share(context);
-      this.recordIfAsked();
       this.closed.emit();
     } catch (error: unknown) {
       if (error instanceof DOMException && error.name === 'AbortError') {
@@ -376,7 +422,6 @@ export class ShareDialog {
   protected async copyLink(): Promise<void> {
     try {
       await navigator.clipboard.writeText(this.targetUrl());
-      this.recordIfAsked();
       this.copyFailed.set(false);
       this.copied.set(true);
     } catch (error: unknown) {

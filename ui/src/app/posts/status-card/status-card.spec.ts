@@ -13,7 +13,6 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@jsverse/transloco';
 import korean from '../../../../public/i18n/ko.json';
-import { FeatureFlags } from '../../platform/build/feature-flags';
 import { Signal, WritableSignal } from '@angular/core';
 import { provideRouter, Router, RouterLink } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -717,14 +716,18 @@ describe('StatusCard', () => {
     const isFavourite = (item: Element) =>
       item.matches('button[title="Favourite"], button[title="Undo favourite"]');
 
-    it('puts Mastodon counts right after 🔁 and ⭐, with Quote after the boost count', () => {
-      const f = setUp(makeStatus({ reblogs_count: 7, favourites_count: 9 }));
+    it('puts Mastodon counts right after 🔁 and ⭐, with the quote count after the boosts', () => {
+      const f = setUp(makeStatus({ reblogs_count: 7, favourites_count: 9, quotes_count: 3 }));
       const items = row(f);
 
       const boosts = after(items, isBoost)!;
       expect(boosts.matches('[mbPostAction]')).toBe(true);
       expect(boosts.querySelector('[mbActionCount]')?.textContent).toContain('7');
-      expect(after(items, (item) => item === boosts)?.textContent).toContain('❝');
+      // Quote lives in the 🔁 dialog now; what follows the boosts is its count.
+      const quotes = after(items, (item) => item === boosts)!;
+      expect(quotes.textContent).toContain('❝');
+      expect(quotes.querySelector('[mbActionCount]')?.textContent).toContain('3');
+      expect(items.some((item) => item.matches('button[title="Quote"]'))).toBe(false);
 
       const likes = after(items, isFavourite)!;
       expect(likes.matches('[mbPostAction]')).toBe(true);
@@ -815,16 +818,18 @@ describe('StatusCard', () => {
       expect(reply?.disabled).toBe(true);
     });
 
-    it('leaves Quote out of the share menu when the author turned quoting off', () => {
+    it('leaves Quote out of the repost dialog when the author turned quoting off', () => {
       linkBluesky();
       const open = setUp(bskyStatus('at://did:plc:x/app.bsky.feed.post/1', 'did:plc:x'));
       const closed = setUp(
         bskyStatus('at://did:plc:x/app.bsky.feed.post/2', 'did:plc:x', { quoteDisabled: true }),
       );
-      const actions = (f: ComponentFixture<StatusCard>) =>
-        (f.componentInstance as unknown as { shareMenuActions: () => string[] }).shareMenuActions();
-      expect(actions(open)).toContain('quote');
-      expect(actions(closed)).not.toContain('quote');
+      const options = (f: ComponentFixture<StatusCard>) =>
+        (
+          f.componentInstance as unknown as { repostOptions: () => { quote: boolean } | null }
+        ).repostOptions();
+      expect(options(open)?.quote).toBe(true);
+      expect(options(closed)?.quote).toBe(false);
     });
 
     it('treats a post by the linked Bluesky account as the viewer’s own, and pins it', () => {
@@ -1089,94 +1094,89 @@ describe('StatusCard', () => {
     expect((f.nativeElement as HTMLElement).textContent).toContain('Share elsewhere');
   });
 
-  describe('unified share menu', () => {
-    function boostButton(f: ComponentFixture<StatusCard>): HTMLButtonElement | null {
+  describe('repost dialog', () => {
+    const mastodonPost = () => makeStatus({ url: 'https://social.example/@alice/1' });
+    function trigger(f: ComponentFixture<StatusCard>): HTMLButtonElement {
       return (f.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
-        '[aria-label="Boost"], [aria-label="Boost, quote or share"]',
-      );
+        'button[aria-label="Boost, quote or share"]',
+      )!;
+    }
+    function choices(f: ComponentFixture<StatusCard>): HTMLButtonElement[] {
+      return [
+        ...(f.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+          'app-share-dialog .choice',
+        ),
+      ];
+    }
+    function open(f: ComponentFixture<StatusCard>): void {
+      trigger(f).click();
+      f.detectChanges();
     }
 
-    it('leaves the action bar untouched while the flag is off', () => {
-      // The default. Boost is its own button and there is no menu — this is the
-      // guarantee that turning the flag on is the only thing that moves anything.
-      const f = setUp(makeStatus({ url: 'https://social.example/@alice/1' }));
+    it('puts one 🔁 on a Mastodon post, which opens a dialog rather than boosting', () => {
+      const f = setUp(mastodonPost());
       const element = f.nativeElement as HTMLElement;
+      expect(trigger(f).getAttribute('aria-haspopup')).toBe('dialog');
+      // Quote moved into the dialog; there is no separate ❝ button any more.
+      expect(element.querySelector('button[title="Quote"]')).toBeNull();
 
-      expect(element.querySelector('[aria-label="Boost"]')).not.toBeNull();
-      expect(element.querySelector('.share-menu-host')).toBeNull();
-      expect(element.querySelector('[aria-haspopup="menu"]')).toBeNull();
+      open(f);
+      httpMock.expectNone('/api/v1/statuses/1/reblog');
+      expect(choices(f).map((c) => c.querySelector('strong')?.textContent?.trim())).toEqual([
+        'Boost',
+        'Quote',
+        'Cross-platform boost…',
+      ]);
     });
 
-    it('collapses boost, quote and share into one control when on', () => {
-      TestBed.inject(FeatureFlags).setState('unified-share', 'production');
-      const f = setUp(makeStatus({ url: 'https://social.example/@alice/1' }));
-      const element = f.nativeElement as HTMLElement;
-
-      // One control where there were up to three.
-      expect(element.querySelector('.share-menu-host')).not.toBeNull();
-      expect(element.querySelector('[aria-label="Boost"]')).toBeNull();
-      expect(element.querySelector('.share-menu')).toBeNull();
-
-      boostButton(f)!.click();
+    it('boosts from the dialog through the ordinary boost path, then closes it', () => {
+      const f = setUp(mastodonPost());
+      open(f);
+      choices(f)[0].click();
       f.detectChanges();
-
-      const items = Array.from(
-        element.querySelectorAll<HTMLButtonElement>('.share-menu [role="menuitem"]'),
-      ).map((button) => button.textContent?.trim());
-      expect(items).toContain('Boost');
-      expect(items).toContain('Quote');
-      expect(items).toContain('Share elsewhere…');
-    });
-
-    it('boosts from the menu without reimplementing boosting', () => {
-      TestBed.inject(FeatureFlags).setState('unified-share', 'production');
-      const f = setUp(makeStatus({ url: 'https://social.example/@alice/1' }));
-      const element = f.nativeElement as HTMLElement;
-
-      boostButton(f)!.click();
-      f.detectChanges();
-      const boost = Array.from(
-        element.querySelectorAll<HTMLButtonElement>('.share-menu [role="menuitem"]'),
-      ).find((button) => button.textContent?.trim() === 'Boost')!;
-      boost.click();
-      f.detectChanges();
-
-      // The menu delegates to the existing boost path rather than owning a
-      // second one, so the ordinary reblog request is what goes out.
       httpMock.expectOne('/api/v1/statuses/1/reblog').flush(makeStatus({ reblogged: true }));
       f.detectChanges();
-
-      expect(element.querySelector('.share-menu')).toBeNull();
+      expect((f.nativeElement as HTMLElement).querySelector('app-share-dialog')).toBeNull();
     });
 
-    it('opens the share dialog from the menu', () => {
-      TestBed.inject(FeatureFlags).setState('unified-share', 'production');
-      const f = setUp(makeStatus({ url: 'https://social.example/@alice/1' }));
-      const element = f.nativeElement as HTMLElement;
-
-      boostButton(f)!.click();
+    it('offers Undo first when already boosted, and undoes through the same path', () => {
+      const f = setUp(makeStatus({ url: 'https://social.example/@alice/1', reblogged: true }));
+      open(f);
+      expect(choices(f)[0].querySelector('strong')?.textContent?.trim()).toBe('Undo boost');
+      choices(f)[0].click();
       f.detectChanges();
-      Array.from(element.querySelectorAll<HTMLButtonElement>('.share-menu [role="menuitem"]'))
-        .find((button) => button.textContent?.trim() === 'Share elsewhere…')!
-        .click();
-      f.detectChanges();
-
-      expect(element.querySelector('app-share-dialog')).not.toBeNull();
+      httpMock.expectOne('/api/v1/statuses/1/unreblog').flush(makeStatus({ reblogged: false }));
     });
 
-    it('keeps the b and q keyboard shortcuts off the menu', () => {
-      // They call toggleReblog/toggleQuote directly, so the menu must not become
-      // a required step for anyone using the keyboard.
-      TestBed.inject(FeatureFlags).setState('unified-share', 'production');
-      const f = setUp(makeStatus({ url: 'https://social.example/@alice/1' }));
+    it('hands Quote to the existing quote dialog', () => {
+      const f = setUp(mastodonPost());
+      open(f);
+      choices(f)[1].click();
+      f.detectChanges();
       const element = f.nativeElement as HTMLElement;
+      expect(element.querySelector('app-share-dialog')).toBeNull();
+      expect(element.querySelector('app-quote-dialog')).not.toBeNull();
+    });
 
+    it('opens the dialog from the b shortcut instead of boosting in one key', () => {
+      const f = setUp(mastodonPost());
+      const element = f.nativeElement as HTMLElement;
+      element
+        .querySelector('article')!
+        .dispatchEvent(new KeyboardEvent('keydown', { key: 'b', bubbles: true }));
+      f.detectChanges();
+      httpMock.expectNone('/api/v1/statuses/1/reblog');
+      expect(choices(f)).toHaveLength(3);
+    });
+
+    it('keeps the q shortcut going straight to a quote', () => {
+      const f = setUp(mastodonPost());
+      const element = f.nativeElement as HTMLElement;
       element
         .querySelector('article')!
         .dispatchEvent(new KeyboardEvent('keydown', { key: 'q', bubbles: true }));
       f.detectChanges();
-
-      expect(element.querySelector('.share-menu')).toBeNull();
+      expect(element.querySelector('app-share-dialog')).toBeNull();
       expect(element.querySelector('app-compose')).not.toBeNull();
     });
   });
@@ -1468,92 +1468,52 @@ describe('StatusCard', () => {
     } as Partial<Status>);
   }
 
-  it('offers record-only like and boost on an RSS item when POSSE is on', () => {
-    enablePosse();
-    const f = setUp(rssStatus());
-
-    const buttons = [
-      ...(f.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button.action'),
-    ].map((b) => b.getAttribute('title'));
-    expect(buttons.some((t) => t?.includes('Record a like'))).toBe(true);
-    expect(buttons.some((t) => t?.includes('Record a boost'))).toBe(true);
-  });
-
-  it('shows exactly one recycle symbol on an RSS item under unified share', () => {
-    // The bug this fixes: with both the unified control and POSSE on, a feed
-    // item grew *two* 🔁 buttons — one whose menu held only "Share elsewhere…",
-    // and one that recorded a boost on your own blog. Two identical symbols,
-    // and nothing on screen said which was which.
-    TestBed.inject(FeatureFlags).setState('unified-share', 'production');
+  it('offers a record-only like, and the blog as a share destination, on an RSS item', () => {
     enablePosse();
     const f = setUp(rssStatus());
     const element = f.nativeElement as HTMLElement;
 
-    const recycles = [...element.querySelectorAll<HTMLElement>('button.action')].filter((button) =>
-      button.textContent?.includes('🔁'),
+    const titles = [...element.querySelectorAll<HTMLButtonElement>('button.action')].map((b) =>
+      b.getAttribute('title'),
     );
+    expect(titles.some((t) => t?.includes('Record a like'))).toBe(true);
+
+    element.querySelector<HTMLButtonElement>('button[aria-label="Share this article"]')!.click();
+    f.detectChanges();
+    const destinations = [
+      ...element.querySelectorAll<HTMLButtonElement>('app-share-dialog .destination'),
+    ].map((b) => b.textContent?.trim());
+    expect(destinations).toContain('My blog');
+  });
+
+  it('shows exactly one recycle symbol on an RSS item', () => {
+    // With POSSE on, a feed item once grew *two* 🔁 buttons — one to share, one
+    // to record a boost on your own blog — and nothing said which was which.
+    enablePosse();
+    const f = setUp(rssStatus());
+    const recycles = [
+      ...(f.nativeElement as HTMLElement).querySelectorAll<HTMLElement>('button.action'),
+    ].filter((button) => button.textContent?.includes('🔁'));
     expect(recycles.length).toBe(1);
   });
 
-  it('goes straight to the share dialog on an RSS item, with no middleman menu', () => {
-    // Boost and quote are both impossible on a feed item, so the menu had one
-    // entry. A one-entry menu is not a choice, it is an extra click between the
-    // reader and the dialog they already asked for.
-    TestBed.inject(FeatureFlags).setState('unified-share', 'production');
-    const f = setUp(rssStatus());
-    const element = f.nativeElement as HTMLElement;
-
-    const button = element.querySelector<HTMLButtonElement>('.share-menu-host button.action')!;
-    // It announces a dialog, not a menu, because that is what it opens.
-    expect(button.getAttribute('aria-haspopup')).toBe('dialog');
-    expect(button.getAttribute('aria-label')).toBe('Share this article');
-
-    button.click();
-    f.detectChanges();
-
-    expect(element.querySelector('.share-menu')).toBeNull();
-    expect(element.querySelector('app-share-dialog')).not.toBeNull();
-  });
-
-  it('names POSSE in words when the menu carries it beside a real share', () => {
-    // With POSSE on there are two things to choose between, so the menu earns
-    // its existence again — and the blog option says "my blog" rather than
-    // being a second bare recycle symbol.
-    TestBed.inject(FeatureFlags).setState('unified-share', 'production');
+  it('goes straight to the share destinations on an RSS item, with no page 1', () => {
+    // Boost and quote are both impossible on a feed item, so page 1 would hold
+    // only "Cross-platform…": an extra click between the reader and the
+    // destinations they already asked for.
     enablePosse();
     const f = setUp(rssStatus());
     const element = f.nativeElement as HTMLElement;
 
-    const button = element.querySelector<HTMLButtonElement>('.share-menu-host button.action')!;
-    expect(button.getAttribute('aria-haspopup')).toBe('menu');
+    const button = element.querySelector<HTMLButtonElement>(
+      'button[aria-label="Share this article"]',
+    )!;
+    expect(button.getAttribute('aria-haspopup')).toBe('dialog');
     button.click();
     f.detectChanges();
 
-    const items = [
-      ...element.querySelectorAll<HTMLButtonElement>('.share-menu [role="menuitem"]'),
-    ].map((b) => b.textContent?.trim());
-    expect(items).toEqual(['Record a boost on my blog', 'Share elsewhere…']);
-    // Boost and quote are not offered, because a feed has no endpoint for them.
-    expect(items).not.toContain('Boost');
-    expect(items).not.toContain('Quote');
-  });
-
-  it('keeps the three-item menu on a Mastodon post', () => {
-    // The counterpart guarantee: nothing about the RSS fix narrows a real post,
-    // where Boost, Quote and Share are three genuinely different actions.
-    TestBed.inject(FeatureFlags).setState('unified-share', 'production');
-    const f = setUp(makeStatus({ url: 'https://social.example/@alice/1' }));
-    const element = f.nativeElement as HTMLElement;
-
-    const button = element.querySelector<HTMLButtonElement>('.share-menu-host button.action')!;
-    expect(button.getAttribute('aria-haspopup')).toBe('menu');
-    button.click();
-    f.detectChanges();
-
-    const items = [
-      ...element.querySelectorAll<HTMLButtonElement>('.share-menu [role="menuitem"]'),
-    ].map((b) => b.textContent?.trim());
-    expect(items).toEqual(['Boost', 'Quote', 'Share elsewhere…']);
+    expect(element.querySelector('app-share-dialog .choices')).toBeNull();
+    expect(element.querySelector('app-share-dialog .destinations')).not.toBeNull();
   });
 
   it('records an RSS like without making any request at all', () => {
@@ -3122,10 +3082,12 @@ describe('StatusCard', () => {
       const open = el.querySelector<HTMLAnchorElement>('a.open-original')!;
       expect(open.href).toBe('https://blog.example/post');
       expect(open.target).toBe('_blank');
-      // No reply/boost/favourite buttons for a read-only source.
+      // No reply or favourite for a read-only source, and no boost: its only
+      // 🔁 opens the share destinations, under the article's own name.
       expect(el.textContent).not.toContain('💬');
-      expect(el.textContent).not.toContain('🔁');
       expect(el.textContent).not.toContain('⭐');
+      expect(el.querySelector('button[aria-label="Boost, quote or share"]')).toBeNull();
+      expect(el.querySelector('button[aria-label="Share this article"]')).not.toBeNull();
     });
 
     it('links the author to the synthetic feed profile and the timestamp to the article thread', () => {
@@ -3184,12 +3146,12 @@ describe('StatusCard', () => {
       );
       const el = f.nativeElement as HTMLElement;
       expect(el.querySelector('button[title="Reply"]')).toBeTruthy();
-      const share = el.querySelector<HTMLButtonElement>('button[aria-haspopup="menu"]');
+      const share = el.querySelector<HTMLButtonElement>('button[aria-haspopup="dialog"]');
       expect(share).toBeTruthy();
       share!.click();
       f.detectChanges();
-      expect(el.querySelector('.share-menu')?.textContent).toContain('Boost');
-      expect(el.querySelector('.share-menu')?.textContent).toContain('Quote');
+      expect(el.querySelector('app-share-dialog .choices')?.textContent).toContain('Boost');
+      expect(el.querySelector('app-share-dialog .choices')?.textContent).toContain('Quote');
       expect(el.querySelector('button[title="Favourite"]')).toBeTruthy();
       expect(el.querySelector('a.open-original')).toBeTruthy();
       // Bookmark is now a Bluesky-native action; Mastodon-only actions stay hidden.

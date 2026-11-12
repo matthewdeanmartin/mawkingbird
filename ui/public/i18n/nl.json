@@ -916,8 +916,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Het supporterniveau van de Mawkingbird-proxy aanbieden. Vereist een account en abonnement; de gratis Mawkingbird-proxy verandert niet.",
     "proxyMawkingbirdPlus.label": "Mawkingbird Plus-proxy",
-    "unifiedShare.description": "Boost, Citeren en Delen samenvoegen tot één knop bij elk bericht, die een menu opent. Maakt ruimte vrij op een actiebalk die op smalle schermen al omslaat.",
-    "unifiedShare.label": "Gecombineerd deelmenu",
     "write.description": "De schrijfwerkruimte op /write — concepten, editor en notities naast elkaar, plus zenmodus.",
     "write.label": "Schrijven"
   },
@@ -5484,7 +5482,6 @@
     "writing.yourWords.hint.c": "niet."
   },
   "shareDialog": {
-    "alsoRecord": "Dit ook op mijn blog vastleggen",
     "articleHint": "Wordt verzonden als <strong>{{host}}</strong>. Kies waar je het naartoe wilt sturen.",
     "chooseHint": "Kies wat je wilt delen en vervolgens waar je het naartoe wilt sturen.",
     "closeDialog": "Deeldialoog sluiten",
