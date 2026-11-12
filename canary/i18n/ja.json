@@ -4994,7 +4994,6 @@
     "writing.yourWords.hint.c": "は異なります。"
   },
   "shareDialog": {
-    "alsoRecord": "ブログにも記録する",
     "articleHint": "<strong>{{host}}</strong>として共有します。送信先を選んでください。",
     "chooseHint": "共有する内容と送信先を選んでください。",
     "closeDialog": "共有ダイアログを閉じる",
@@ -5686,8 +5685,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Mawkingbirdプロキシのサポーター向けプランを提供します。アカウントと購読が必要です。無料のMawkingbirdプロキシには影響しません。",
     "proxyMawkingbirdPlus.label": "Mawkingbird Plusプロキシ",
-    "unifiedShare.description": "各投稿のブースト、引用、共有を1つのボタンにまとめ、メニューで開きます。狭い画面で折り返しやすいアクションバーに空きを作れます。",
-    "unifiedShare.label": "統合共有メニュー",
     "write.description": "/writeの執筆ワークスペースです。下書き、エディター、メモを横並びにし、集中モードも利用できます。",
     "write.label": "執筆"
   },

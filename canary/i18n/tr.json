@@ -916,8 +916,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Mawkingbird vekil sunucusunun destekçi katmanını sunar. Hesap ve abonelik gerektirir; ücretsiz Mawkingbird vekil sunucusu bundan etkilenmez.",
     "proxyMawkingbirdPlus.label": "Mawkingbird Plus vekil sunucusu",
-    "unifiedShare.description": "Her gönderideki Öne çıkar, Alıntıla ve Paylaş seçeneklerini menü açan tek bir düğmede birleştirir. Dar ekranlarda zaten satır atlayan işlem çubuğunda yer açar.",
-    "unifiedShare.label": "Birleşik paylaşım menüsü",
     "write.description": "/write adresindeki yazma çalışma alanı: taslaklar, düzenleyici ve notlar yan yana, ayrıca zen modu.",
     "write.label": "Yaz"
   },
@@ -5484,7 +5482,6 @@
     "writing.yourWords.hint.c": "değildir."
   },
   "shareDialog": {
-    "alsoRecord": "Bunu bloguma da kaydet",
     "articleHint": "<strong>{{host}}</strong> olarak gönderilecek. Nereye gönderileceğini seçin.",
     "chooseHint": "Neyi paylaşacağınızı, ardından nereye göndereceğinizi seçin.",
     "closeDialog": "Paylaşım iletişim kutusunu kapat",

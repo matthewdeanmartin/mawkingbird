@@ -942,8 +942,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Offre il livello per sostenitori del proxy Mawkingbird. Richiede un account e un abbonamento; il proxy Mawkingbird gratuito non cambia.",
     "proxyMawkingbirdPlus.label": "Proxy Mawkingbird Plus",
-    "unifiedShare.description": "Raggruppa Ricondividi, Cita e Condividi in un solo pulsante su ogni post, che apre un menu. Libera spazio nella barra delle azioni sugli schermi stretti.",
-    "unifiedShare.label": "Menu di condivisione unificato",
     "write.description": "Lo spazio di scrittura in /write: bozze, editor e note affiancati, più la modalità zen.",
     "write.label": "Scrivi"
   },
@@ -5855,7 +5853,6 @@
     "writing.yourWords.hint.c": "non lo è."
   },
   "shareDialog": {
-    "alsoRecord": "Registra anche sul mio blog",
     "articleHint": "Verrà inviato come <strong>{{host}}</strong>. Scegli dove inviarlo.",
     "chooseHint": "Scegli cosa condividere e poi dove inviarlo.",
     "closeDialog": "Chiudi finestra di condivisione",
