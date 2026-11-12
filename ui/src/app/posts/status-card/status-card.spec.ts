@@ -1169,6 +1169,22 @@ describe('StatusCard', () => {
       expect(choices(f)).toHaveLength(3);
     });
 
+    it('opens a cross-platform share in its own composer dialog, never the reply box', () => {
+      const f = setUp(mastodonPost());
+      (
+        f.componentInstance as unknown as {
+          onShareCompose: (request: { target: string; text: string }) => void;
+        }
+      ).onShareCompose({ target: 'bsky', text: 'From @alice: hello' });
+      f.detectChanges();
+      const element = f.nativeElement as HTMLElement;
+      expect(element.querySelector('app-share-compose-dialog')).not.toBeNull();
+      expect(element.querySelector('.inline-compose')).toBeNull();
+      expect(element.querySelector('app-share-compose-dialog h2')?.textContent).toContain(
+        'Share to Bluesky',
+      );
+    });
+
     it('keeps the q shortcut going straight to a quote', () => {
       const f = setUp(mastodonPost());
       const element = f.nativeElement as HTMLElement;

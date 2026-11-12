@@ -2376,3 +2376,13 @@ Reviewed regeneration: no control counts changed, only source line positions.
 section in a Bluesky check (it walks Mastodon follower lists), and the analytics
 lookup accepts Bluesky handles with no new controls. No shared widget
 implementation changed.
+
+### Cross-platform share destinations (2026-11-12)
+
+Reviewed regeneration: 637 to 638 candidate files (one added). Added
+`posts/share-dialog/share-compose-dialog.ts` (Dialog around the existing Compose):
+a cross-platform share now opens there instead of the inline reply box under the
+post. `share-dialog.html` merged its two destination sections into one list and
+dropped both section headings and hint lines; its control counts are unchanged.
+The post's own network is no longer offered as a destination. No shared widget
+implementation changed.

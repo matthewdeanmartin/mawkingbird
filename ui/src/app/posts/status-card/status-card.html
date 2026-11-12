@@ -1731,17 +1731,15 @@
       }
 
       @if (shareCompose(); as request) {
-        <div class="inline-compose" (click)="$event.stopPropagation()">
-          <!-- The share dialog prefills text and names a target, but never posts:
-               the user sees what is about to go out and presses Post themselves. -->
-          <app-compose
-            [initialText]="request.text"
-            [initialTarget]="request.target"
-            [gateable]="true"
-            [placeholder]="'statusCard.addComment' | transloco"
-            (posted)="shareCompose.set(null)"
-          />
-        </div>
+        <!-- A cross-platform share is a new post of your own, so it opens in its
+             own dialog like Quote, never in the reply box under the post. The
+             share dialog prefills it; nothing goes out until Post is pressed. -->
+        <app-share-compose-dialog
+          (click)="$event.stopPropagation()"
+          [request]="request"
+          (posted)="shareCompose.set(null)"
+          (closed)="shareCompose.set(null)"
+        />
       }
 
       <ng-content select="[status-footer]" />

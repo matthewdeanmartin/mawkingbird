@@ -174,6 +174,7 @@ import {
   ShareDialog,
 } from '../share-dialog/share-dialog';
 import { CopyLinkDialog } from '../copy-link/copy-link-dialog';
+import { ShareComposeDialog } from '../share-dialog/share-compose-dialog';
 import { accountDeepLink, homeServerFor, postDeepLink, serverHost } from '../copy-link/deep-links';
 import { selectionWithin } from '../share-dialog/share-selection';
 import {
@@ -311,7 +312,6 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.discard: discard
 // i18n statusCard.editAndRepost: Edit and repost
 // i18n statusCard.postYourReply: Post your reply
-// i18n statusCard.addComment: Add a comment
 // i18n statusCard.translateWith: Translate with
 // i18n statusCard.yourServer: Your server
 // i18n statusCard.freeAlreadySetUp: Free, already set up
@@ -512,6 +512,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
     LocalCompose,
     ShareDialog,
     CopyLinkDialog,
+    ShareComposeDialog,
     BookmarkProviderDialog,
     PreviewCardComponent,
     SignInPrompt,

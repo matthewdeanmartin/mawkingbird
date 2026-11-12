@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1823,
-  "filesWithCandidates": 637,
+  "filesScanned": 1824,
+  "filesWithCandidates": 638,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -12418,6 +12418,16 @@
       ]
     },
     {
+      "file": "ui/src/app/posts/share-dialog/share-compose-dialog.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 23
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/posts/share-dialog/share-dialog.html",
       "status": "needs semantic review",
       "findings": [
@@ -12447,23 +12457,23 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 136
+          "line": 133
         },
         {
           "pattern": "nativeButtons",
-          "line": 151
+          "line": 140
         },
         {
           "pattern": "nativeButtons",
-          "line": 165
+          "line": 154
         },
         {
           "pattern": "nativeButtons",
-          "line": 170
+          "line": 159
         },
         {
           "pattern": "nativeButtons",
-          "line": 174
+          "line": 163
         },
         {
           "pattern": "radios",
@@ -12845,27 +12855,27 @@
         },
         {
           "pattern": "shared",
-          "line": 1757
+          "line": 1755
         },
         {
           "pattern": "shared",
-          "line": 1766
+          "line": 1764
         },
         {
           "pattern": "shared",
-          "line": 1775
+          "line": 1773
         },
         {
           "pattern": "shared",
-          "line": 1781
+          "line": 1779
         },
         {
           "pattern": "shared",
-          "line": 1786
+          "line": 1784
         },
         {
           "pattern": "shared",
-          "line": 1796
+          "line": 1794
         },
         {
           "pattern": "nativeButtons",
@@ -13173,39 +13183,39 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 1781
+          "line": 1779
         },
         {
           "pattern": "nativeButtons",
-          "line": 1786
+          "line": 1784
         },
         {
           "pattern": "nativeButtons",
-          "line": 1796
+          "line": 1794
         },
         {
           "pattern": "nativeButtons",
-          "line": 1943
+          "line": 1941
         },
         {
           "pattern": "nativeButtons",
-          "line": 1951
+          "line": 1949
         },
         {
           "pattern": "nativeButtons",
-          "line": 1977
+          "line": 1975
         },
         {
           "pattern": "nativeButtons",
-          "line": 1985
+          "line": 1983
         },
         {
           "pattern": "nativeButtons",
-          "line": 2011
+          "line": 2009
         },
         {
           "pattern": "checkboxes",
-          "line": 1994
+          "line": 1992
         },
         {
           "pattern": "selects",
@@ -13213,7 +13223,7 @@
         },
         {
           "pattern": "selects",
-          "line": 1931
+          "line": 1929
         },
         {
           "pattern": "legacyPills",
@@ -13241,35 +13251,35 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 1944
+          "line": 1942
         },
         {
           "pattern": "legacyPills",
-          "line": 1951
+          "line": 1949
         },
         {
           "pattern": "legacyPills",
-          "line": 1978
+          "line": 1976
         },
         {
           "pattern": "legacyPills",
-          "line": 1985
+          "line": 1983
         },
         {
           "pattern": "legacyPills",
-          "line": 2008
+          "line": 2006
         },
         {
           "pattern": "legacyPills",
-          "line": 2011
+          "line": 2009
         },
         {
           "pattern": "overlays",
-          "line": 1922
+          "line": 1920
         },
         {
           "pattern": "overlays",
-          "line": 1969
+          "line": 1967
         },
         {
           "pattern": "disclosure",
@@ -13295,7 +13305,7 @@
         },
         {
           "pattern": "disclosure",
-          "line": 1654
+          "line": 1655
         }
       ]
     },

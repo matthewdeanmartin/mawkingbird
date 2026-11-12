@@ -5873,12 +5873,8 @@
     "heading.elsewhere": "分享到其他地方",
     "linkCopied": "已複製連結！",
     "linkedPage": "連結的頁面（不含嘟文外框）",
-    "postHint": "會開啟發文編輯器。按下「發佈」前不會送出任何內容。",
-    "postIt": "發佈",
     "quoteDropped": "其中部分只接受連結——您的重點標示不會一併傳送。",
     "recordHint": "會將轉嘟排入您自己網站的佇列。在您確認前，不會發佈任何內容。",
-    "sendHint": "會在新分頁開啟目的地。",
-    "sendItTo": "傳送至",
     "share": "分享",
     "shareUsingDevice": "使用裝置分享…",
     "thisPost": "此嘟文"
@@ -6097,7 +6093,6 @@
   "statusCard": {
     "actionFailure": "無法{{verb}}——請再試一次。",
     "actionFailureBluesky": "無法在 Bluesky {{verb}}——您的連結可能已過期。請在「設定」→「連線」中重新連結。",
-    "addComment": "新增留言",
     "aiTranslation": "AI 翻譯",
     "aiTranslationDescription": "這裡的翻譯由您選擇的 AI 模型透過 OpenRouter 完成——您的金鑰、您的瀏覽器、您的帳號。因為 Mawkingbird 沒有伺服器，所以不會有任何資料傳送到 Mawkingbird 伺服器。",
     "aiTranslationNote": "由 {{model}} 翻譯為 {{target}} · 機器翻譯，措辭僅供參考",

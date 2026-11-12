@@ -124,27 +124,16 @@
         </fieldset>
       }
 
-      <!-- Two sections, and a destination is in exactly one of them: posting
-           through a connector when there is one, handing off when there is not.
-           See share-targets.ts for why that is not a preference. -->
-      @if (postTargets().length) {
-        <section class="section">
-          <h4>{{ 'shareDialog.postIt' | transloco }}</h4>
-          <p class="muted small">{{ 'shareDialog.postHint' | transloco }}</p>
-          <div class="destinations">
-            @for (target of postTargets(); track target) {
-              <button type="button" class="destination post" (click)="postTo(target)">
-                {{ targetLabelKey(target) | transloco }}
-              </button>
-            }
-          </div>
-        </section>
-      }
-
+      <!-- One list. Whether a destination posts through your own account or
+           hands off to the site is plumbing; the button says where it goes.
+           The post's own network is never here (see homeNetworkOf). -->
       <section class="section">
-        <h4>{{ 'shareDialog.sendItTo' | transloco }}</h4>
-        <p class="muted small">{{ 'shareDialog.sendHint' | transloco }}</p>
         <div class="destinations">
+          @for (target of postTargets(); track target) {
+            <button type="button" class="destination post" (click)="postTo(target)">
+              {{ targetLabelKey(target) | transloco }}
+            </button>
+          }
           @if (canOfferBlog()) {
             <!-- Your own site, as a destination: queues the boost for it, and
                  takes it back off on a second press. No request is made. -->

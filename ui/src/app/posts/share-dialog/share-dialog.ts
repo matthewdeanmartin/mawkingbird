@@ -6,7 +6,7 @@ import { Status } from '../../platform/api/models';
 import { FocusTrap } from '../../shell/a11y/focus-trap';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { shareBody } from './share-selection';
-import { intentIdsFor, postTargetsFor } from './share-targets';
+import { homeNetworkOf, intentIdsFor, postTargetsFor } from './share-targets';
 import { HugoSettings } from '../../connections/hugo/hugo-settings';
 import { PosseQueue } from '../../connections/hugo/posse-queue';
 import { canPosseOnly } from '../../connections/provider';
@@ -24,7 +24,7 @@ export interface ShareDestination {
   buildUrl(context: ShareContext): string;
 }
 
-const POST_TARGET_LABEL_KEYS: Record<PostTarget, string> = {
+export const POST_TARGET_LABEL_KEYS: Record<PostTarget, string> = {
   fedi: 'shareDialog.destinations.mastodon',
   bsky: 'shareDialog.destinations.bluesky',
   both: 'shareDialog.destinations.mastodonAndBluesky',
@@ -215,10 +215,6 @@ const QUOTE_CARRYING_INTENTS = new Set(['twitter', 'bluesky', 'tumblr']);
 // i18n shareDialog.myBlog: My blog
 // i18n shareDialog.myBlogRecorded: Recorded on my blog ✓
 // i18n shareDialog.recordHint: Queues a boost for your own site. Nothing is published until you say so.
-// i18n shareDialog.postIt: Post it
-// i18n shareDialog.postHint: Opens a composer. Nothing is posted until you press Post.
-// i18n shareDialog.sendItTo: Send it to
-// i18n shareDialog.sendHint: Opens the destination in a new tab.
 // i18n shareDialog.shareUsingDevice: Share using device…
 // i18n shareDialog.linkCopied: Link copied!
 // i18n shareDialog.copyLink: Copy link
@@ -310,7 +306,10 @@ export class ShareDialog {
   protected readonly canShareUsingDevice = typeof navigator.share === 'function';
 
   /** Everywhere a real post can be made right now, in section order. */
-  protected readonly postTargets = computed(() => postTargetsFor(this.availability.current()));
+  protected readonly postTargets = computed(() => {
+    const home = homeNetworkOf(this.status().provider).target;
+    return postTargetsFor(this.availability.current()).filter((target) => target !== home);
+  });
 
   /** The hand-off destinations left after connectors claimed theirs. */
   protected readonly intents = computed(() => {
@@ -320,7 +319,10 @@ export class ShareDialog {
         this.availability.current(),
       ),
     );
-    return SHARE_DESTINATIONS.filter((destination) => ids.has(destination.id));
+    const home = homeNetworkOf(this.status().provider).intent;
+    return SHARE_DESTINATIONS.filter(
+      (destination) => ids.has(destination.id) && destination.id !== home,
+    );
   });
 
   /** True when a quote exists but some destination on screen cannot carry it. */

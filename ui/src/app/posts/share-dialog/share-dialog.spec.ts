@@ -289,30 +289,60 @@ describe('ShareDialog', () => {
     expect(url.searchParams.get('text')).toContain('A line worth sharing');
   });
 
-  /** Buttons in the "Post it" section. */
+  /** Destinations that post through one of your own accounts. */
   function postButtons(element: HTMLElement): string[] {
     return Array.from(element.querySelectorAll<HTMLButtonElement>('.destination.post')).map(
       (button) => button.textContent?.trim() ?? '',
     );
   }
 
-  /** Buttons in the "Send it to" section. */
+  /** Destinations that hand off to another site. */
   function intentButtons(element: HTMLElement): string[] {
     return Array.from(
       element.querySelectorAll<HTMLButtonElement>('.destination:not(.post):not(.native)'),
     ).map((button) => button.textContent?.trim() ?? '');
   }
 
-  function open(quote = ''): ReturnType<typeof TestBed.createComponent<ShareDialog>> {
+  /** A post that lives on Bluesky, so Mastodon is somewhere else to send it. */
+  function blueskyPost(): Status {
+    return {
+      ...status(),
+      id: 'bsky:at://did:plc:alice/app.bsky.feed.post/1',
+      provider: 'bluesky',
+      url: 'https://bsky.app/profile/alice.bsky.social/post/1',
+    };
+  }
+
+  function open(
+    quote = '',
+    post: Status = status(),
+  ): ReturnType<typeof TestBed.createComponent<ShareDialog>> {
     const fixture = TestBed.createComponent(ShareDialog);
-    fixture.componentRef.setInput('status', status());
+    fixture.componentRef.setInput('status', post);
     fixture.componentRef.setInput('quote', quote);
     fixture.detectChanges();
     return fixture;
   }
 
-  it('offers Mastodon in the post section for a signed-in user', () => {
-    expect(postButtons(open().nativeElement)).toContain('Mastodon');
+  it('never offers a post back to its own network: that is what Boost and Quote are for', () => {
+    // A Mastodon post, a signed-in Mastodon reader: Mastodon is not a destination.
+    expect(postButtons(open().nativeElement)).not.toContain('Mastodon');
+    // A Bluesky post: neither the Bluesky composer nor the bsky.app hand-off.
+    const bluesky = open('', blueskyPost()).nativeElement as HTMLElement;
+    expect(postButtons(bluesky)).not.toContain('Bluesky');
+    expect(intentButtons(bluesky)).not.toContain('Bluesky');
+    // A tweet: no Twitter hand-off.
+    const tweet = open('', {
+      ...status(),
+      id: 'twitter:1',
+      provider: 'twitter',
+      url: 'https://twitter.com/a/status/1',
+    }).nativeElement as HTMLElement;
+    expect(intentButtons(tweet)).not.toContain('Twitter');
+  });
+
+  it('offers the other network: a Bluesky post can go to your Mastodon account', () => {
+    expect(postButtons(open('', blueskyPost()).nativeElement)).toContain('Mastodon');
   });
 
   it('keeps Bluesky as an intent while it is unlinked', () => {
@@ -323,13 +353,21 @@ describe('ShareDialog', () => {
   });
 
   it('never lists a service in both sections', () => {
-    const element = open().nativeElement as HTMLElement;
+    const element = open('', blueskyPost()).nativeElement as HTMLElement;
     const overlap = postButtons(element).filter((label) => intentButtons(element).includes(label));
     expect(overlap).toEqual([]);
   });
 
+  it('lists every destination together, with no section headings or how-it-works notes', () => {
+    const element = open('', blueskyPost()).nativeElement as HTMLElement;
+    expect(element.querySelectorAll('.destinations')).toHaveLength(1);
+    expect(element.querySelector('h4')).toBeNull();
+    expect(element.textContent).not.toContain('Opens a composer');
+    expect(element.textContent).not.toContain('new tab');
+  });
+
   it('emits a compose request rather than posting anything itself', () => {
-    const fixture = open();
+    const fixture = open('', blueskyPost());
     const requests: { target: string; text: string }[] = [];
     fixture.componentInstance.compose.subscribe((request) => requests.push(request));
 
@@ -343,11 +381,11 @@ describe('ShareDialog', () => {
     // One press must never publish: the composer is where the user presses Post.
     expect(requests).toHaveLength(1);
     expect(requests[0].target).toBe('fedi');
-    expect(requests[0].text).toContain('https://social.example/@alice/1');
+    expect(requests[0].text).toContain('https://bsky.app/profile/alice.bsky.social/post/1');
   });
 
   it('shows a highlighted passage and carries it into the compose text', () => {
-    const fixture = open('the highlighted passage');
+    const fixture = open('the highlighted passage', blueskyPost());
     const requests: { text: string }[] = [];
     fixture.componentInstance.compose.subscribe((request) => requests.push(request));
 

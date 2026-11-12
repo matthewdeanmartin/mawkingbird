@@ -5014,12 +5014,8 @@
     "heading.elsewhere": "ほかの場所で共有",
     "linkCopied": "リンクをコピーしました！",
     "linkedPage": "リンク先ページ（投稿の枠なし）",
-    "postHint": "投稿作成画面が開きます。「投稿」を押すまで公開されません。",
-    "postIt": "投稿する",
     "quoteDropped": "リンクだけを受け付ける送信先もあるため、ハイライトは共有されません。",
     "recordHint": "自分のサイトへのブーストを予約します。確定するまで公開されません。",
-    "sendHint": "送信先を新しいタブで開きます。",
-    "sendItTo": "送信先",
     "share": "共有",
     "shareUsingDevice": "デバイスで共有…",
     "thisPost": "この投稿"
@@ -5168,7 +5164,6 @@
   "statusCard": {
     "actionFailure": "{{verb}}できませんでした。もう一度お試しください。",
     "actionFailureBluesky": "Blueskyで{{verb}}できませんでした。連携の有効期限が切れた可能性があります。設定 → 連携から再連携してください。",
-    "addComment": "コメントを追加",
     "aiTranslation": "AI翻訳",
     "aiTranslationDescription": "ここでの翻訳は、OpenRouterを通じて選択したAIモデルが行います。使用するのは自分のキー、ブラウザ、アカウントです。Mawkingbirdにはサーバーがないため、何も送信されません。",
     "aiTranslationNote": "{{model}}が{{target}}に翻訳しました · 機械翻訳のため、表現はおおよそのものとして扱ってください",

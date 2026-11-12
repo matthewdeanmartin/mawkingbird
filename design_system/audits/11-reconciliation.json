@@ -3186,6 +3186,11 @@
       "file": "ui/src/app/discovery/find-interactions/interactions-workbench.ts",
       "disposition": "adopted scope",
       "nextStep": "Two Field/Controls (first and second account, shared hint), Button (Find interactions; outline Me and… when signed in) and MbNotice for invalid, mixed-network and unreadable accounts. Results reuse StatusCard. Preserve the scan-depth disclosure line."
+    },
+    {
+      "file": "ui/src/app/posts/share-dialog/share-compose-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Cross-platform share composer uses Dialog around the existing Compose, prefilled and targeted by the share dialog. Preserve: never inline under the post (it is not a reply), and nothing posts until Post is pressed."
     }
   ]
 }

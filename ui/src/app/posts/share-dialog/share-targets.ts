@@ -1,4 +1,5 @@
 import { PostTarget } from '../../publishing/compose/compose';
+import { ProviderId } from '../../platform/api/models';
 import { isTargetUsable, TargetAvailability } from '../../publishing/compose/post-targets';
 
 /**
@@ -70,4 +71,30 @@ export function intentIdsFor(intentIds: readonly string[], state: TargetAvailabi
     const equivalent = INTENT_EQUIVALENT[id];
     return !(equivalent && isTargetUsable(equivalent, state));
   });
+}
+
+/**
+ * Where a post already lives, as a destination to leave out.
+ *
+ * Sharing a Mastodon post to Mastodon, or a Bluesky post to Bluesky, is not a
+ * cross-platform share: the network already has Reply, Boost and Quote for it,
+ * one press away on page 1. So the post's own network is never offered here —
+ * neither the in-app composer nor the hand-off link.
+ */
+export function homeNetworkOf(provider: ProviderId | undefined): {
+  target: PostTarget | null;
+  intent: string | null;
+} {
+  switch (provider ?? 'mastodon') {
+    case 'mastodon':
+    case 'anonymous-mastodon':
+    case 'misskey':
+      return { target: 'fedi', intent: null };
+    case 'bluesky':
+      return { target: 'bsky', intent: 'bluesky' };
+    case 'twitter':
+      return { target: null, intent: 'twitter' };
+    default:
+      return { target: null, intent: null };
+  }
 }
