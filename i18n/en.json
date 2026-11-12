@@ -7890,6 +7890,10 @@
     "writing.yourWords.hint.b": "are the same tag but",
     "writing.yourWords.hint.c": "is not."
   },
+  "shareCompose": {
+    "close": "Close",
+    "title": "Share to {{destination}}"
+  },
   "shareDialog": {
     "articleHint": "Going out as <strong>{{host}}</strong>. Pick where to send it.",
     "back": "Back",
@@ -7921,12 +7925,8 @@
     "linkedPage": "Linked page (without the post wrapper)",
     "myBlog": "My blog",
     "myBlogRecorded": "Recorded on my blog ✓",
-    "postHint": "Opens a composer. Nothing is posted until you press Post.",
-    "postIt": "Post it",
     "quoteDropped": "Some of these take only a link — your highlight won’t travel.",
     "recordHint": "Queues a boost for your own site. Nothing is published until you say so.",
-    "sendHint": "Opens the destination in a new tab.",
-    "sendItTo": "Send it to",
     "share": "Share",
     "shareUsingDevice": "Share using device…",
     "thisPost": "This post"
@@ -8220,7 +8220,6 @@
   "statusCard": {
     "actionFailure": "Couldn't {{verb}} — try again.",
     "actionFailureBluesky": "Couldn't {{verb}} on Bluesky — your link may have expired. Re-link in Settings → Connections.",
-    "addComment": "Add a comment",
     "addReaction": "Add a reaction",
     "aiTranslation": "AI translation",
     "aiTranslationDescription": "Translation here is done by an AI model of your choosing, through OpenRouter — your key, your browser, your account. Nothing is sent to a Mawkingbird server, because there isn't one.",

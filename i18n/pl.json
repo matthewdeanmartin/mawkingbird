@@ -5873,12 +5873,8 @@
     "heading.elsewhere": "Udostępnij gdzie indziej",
     "linkCopied": "Link skopiowany!",
     "linkedPage": "Powiązana strona (bez otoczki wpisu)",
-    "postHint": "Otwiera edytor. Nic nie zostanie opublikowane, dopóki nie naciśniesz Opublikuj.",
-    "postIt": "Opublikuj",
     "quoteDropped": "Niektóre z nich przyjmują tylko link — zaznaczony fragment nie zostanie przeniesiony.",
     "recordHint": "Dodaje podbicie twojej witryny do kolejki. Nic nie zostanie opublikowane bez twojej zgody.",
-    "sendHint": "Otwiera miejsce docelowe w nowej karcie.",
-    "sendItTo": "Wyślij do",
     "share": "Udostępnij",
     "shareUsingDevice": "Udostępnij przez urządzenie…",
     "thisPost": "Ten wpis"
@@ -6097,7 +6093,6 @@
   "statusCard": {
     "actionFailure": "Nie udało się {{verb}} — spróbuj ponownie.",
     "actionFailureBluesky": "Nie udało się {{verb}} na Bluesky — połączenie mogło wygasnąć. Połącz ponownie w Ustawienia → Połączenia.",
-    "addComment": "Dodaj komentarz",
     "aiTranslation": "Tłumaczenie AI",
     "aiTranslationDescription": "Tłumaczenie wykonuje wybrany przez Ciebie model AI przez OpenRouter — z Twoim kluczem, przeglądarką i kontem. Nic nie trafia na serwer Mawkingbird, bo taki serwer nie istnieje.",
     "aiTranslationNote": "Przetłumaczono na {{target}} przez {{model}} · tłumaczenie maszynowe, więc sformułowania mogą być przybliżone",

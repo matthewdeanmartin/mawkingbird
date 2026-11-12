@@ -4756,12 +4756,8 @@
     "heading.elsewhere": "Bagikan ke tempat lain",
     "linkCopied": "Tautan disalin!",
     "linkedPage": "Halaman tertaut (tanpa bungkus postingan)",
-    "postHint": "Membuka editor postingan. Tidak ada yang diposting sampai kamu menekan Posting.",
-    "postIt": "Posting",
     "quoteDropped": "Beberapa tujuan hanya menerima tautan — sorotanmu tidak akan ikut terbawa.",
     "recordHint": "Mengantre boost untuk situsmu sendiri. Tidak ada yang dipublikasikan sampai kamu memutuskan.",
-    "sendHint": "Membuka tujuan di tab baru.",
-    "sendItTo": "Kirim ke",
     "share": "Bagikan",
     "shareUsingDevice": "Bagikan pakai perangkat…",
     "thisPost": "Postingan ini"
@@ -5539,7 +5535,6 @@
   "statusCard": {
     "actionFailure": "Gagal {{verb}} — coba lagi.",
     "actionFailureBluesky": "Gagal {{verb}} di Bluesky — tautanmu mungkin sudah kedaluwarsa. Hubungkan lagi di Pengaturan → Koneksi.",
-    "addComment": "Tambah komentar",
     "aiTranslation": "Terjemahan AI",
     "aiTranslationDescription": "Terjemahan di sini dikerjakan oleh model AI pilihanmu, lewat OpenRouter — kuncimu, peramban ini, akunmu. Tidak ada yang dikirim ke server Mawkingbird, karena tidak ada servernya.",
     "aiTranslationNote": "Diterjemahkan ke {{target}} oleh {{model}} · terjemahan mesin, jadi anggap redaksinya sebagai perkiraan",

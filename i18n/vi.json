@@ -5678,7 +5678,6 @@
   "statusCard": {
     "actionFailure": "Không thể {{verb}}; hãy thử lại.",
     "actionFailureBluesky": "Không thể {{verb}} trên Bluesky; liên kết có thể đã hết hạn. Liên kết lại trong Cài đặt → Kết nối.",
-    "addComment": "Thêm bình luận",
     "aiTranslation": "Bản dịch AI",
     "aiTranslationDescription": "Bản dịch dùng mô hình AI bạn chọn qua OpenRouter, với khóa, trình duyệt và tài khoản của bạn. Không gửi gì tới máy chủ Mawkingbird.",
     "aiTranslationNote": "Được {{model}} dịch sang {{target}} · bản dịch máy, nên câu chữ chỉ mang tính gần đúng",
@@ -5943,12 +5942,8 @@
     "heading.elsewhere": "Chia sẻ nơi khác",
     "linkCopied": "Đã sao chép liên kết!",
     "linkedPage": "Trang được liên kết (không kèm vỏ bài đăng)",
-    "postHint": "Mở trình soạn thảo. Chưa đăng gì cho đến khi bạn nhấn Đăng.",
-    "postIt": "Đăng nội dung",
     "quoteDropped": "Một số nơi chỉ nhận liên kết — đoạn nổi bật sẽ không đi cùng.",
     "recordHint": "Xếp hàng một lượt đẩy bài cho trang của bạn. Chưa đăng gì cho đến khi bạn yêu cầu.",
-    "sendHint": "Mở đích trong thẻ mới.",
-    "sendItTo": "Gửi đến",
     "share": "Chia sẻ",
     "shareUsingDevice": "Chia sẻ bằng thiết bị…",
     "thisPost": "Bài đăng này"
