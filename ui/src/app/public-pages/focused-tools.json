@@ -348,6 +348,24 @@
     }
   },
   {
+    "id": "find-interactions",
+    "path": "find-interactions",
+    "title": "Find interactions between two Mastodon or Bluesky accounts",
+    "description": "See every reply and mention between two Mastodon accounts, or two Bluesky accounts, newest first. Free, and no account needed.",
+    "group": "search",
+    "signIn": "any",
+    "tab": {
+      "id": "interactions",
+      "labelKey": "shell.modeNav.interactions.find",
+      "icon": "M4 5h10v7H8l-4 3zM10 15v2h6l4 3v-8h-3"
+    },
+    "prerenderCheck": {
+      "heading": "Find interactions between two accounts",
+      "copy": "See what passed between them",
+      "tool": "app-interactions-workbench"
+    }
+  },
+  {
     "id": "language-en",
     "path": "mastodon-in-english",
     "title": "Mastodon in English, without the noise",

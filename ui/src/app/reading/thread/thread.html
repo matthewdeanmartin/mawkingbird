@@ -119,7 +119,16 @@
       (changed)="onChanged($event)"
       (deleted)="onFocusedDeleted()"
       (replied)="onReply($event)"
+      (translatedFrom)="focusedTranslatedFrom.set($event)"
     />
+  }
+  @if (focusedTranslatedFrom(); as warning) {
+    <mb-notice class="reply-translated" tone="error" announcement="alert">{{
+      (warning.language
+        ? 'statusCard.replyingToTranslated'
+        : 'statusCard.replyingToTranslatedUnknown'
+      ) | transloco: { post: words().post, language: warning.language }
+    }}</mb-notice>
   }
   @if (isBluesky(s)) {
     <app-bsky-reply [replyTo]="s" (posted)="onReply($event)" />

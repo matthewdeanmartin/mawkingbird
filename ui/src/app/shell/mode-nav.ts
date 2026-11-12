@@ -49,6 +49,7 @@ import {
 // i18n shell.modeNav.exportBookmarks.export: Export
 // i18n shell.modeNav.downloadMedia.images: Images
 // i18n shell.modeNav.similarTags.find: Hashtags
+// i18n shell.modeNav.interactions.find: Interactions
 // i18n shell.modeNav.languages.setup: Languages
 // i18n shell.modeNav.focused.invite: Invite
 // i18n shell.modeNav.feedBuilder.builder: Builder

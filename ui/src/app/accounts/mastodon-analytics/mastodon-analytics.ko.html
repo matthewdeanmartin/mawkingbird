@@ -26,6 +26,12 @@
       <p class="muted">통계를 불러오는 중…</p>
     }
   } @else {
+    <!-- Deferred: a lookup reads another server, never while prerendering. -->
+    @defer (on immediate) {
+      <app-analytics-lookup />
+    } @placeholder {
+      <p class="muted">…</p>
+    }
     <ol class="steps">
       <li>
         <h2>반응이 가장 좋은 게시물</h2>

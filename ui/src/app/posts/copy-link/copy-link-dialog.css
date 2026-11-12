@@ -1,0 +1,20 @@
+/* Label | link | Copy, one line per row; the columns line up across rows. */
+.rows {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px 10px;
+  align-items: center;
+}
+
+.row-label {
+  font-weight: 700;
+}
+
+.row-url {
+  font-size: 13px;
+  text-overflow: ellipsis;
+}
+
+p {
+  margin: 12px 0 0;
+}

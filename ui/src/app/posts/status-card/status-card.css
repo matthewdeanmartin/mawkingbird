@@ -917,3 +917,9 @@ a.open-original {
   padding-block: 4px;
   border-top: 1px solid var(--border);
 }
+
+/* Above the inline reply: you are answering a post you read in translation. */
+.reply-translated {
+  display: block;
+  margin-bottom: 8px;
+}

@@ -963,6 +963,24 @@ export class Api {
     });
   }
 
+  /**
+   * Ask the signed-in server for its own copy of a remote post, by URL.
+   *
+   * Deliberately not {@link search}: that may be diverted to a separately
+   * chosen search server, whose ids mean nothing on the home server — and
+   * `resolve` is skipped there anyway. A deep link needs the home server's id.
+   */
+  resolveStatusOnHome(url: string): Observable<Status | null> {
+    const params = new HttpParams()
+      .set('q', url)
+      .set('type', 'statuses')
+      .set('resolve', 'true')
+      .set('limit', '1');
+    return this.http
+      .get<SearchResults>('/api/v2/search', { params })
+      .pipe(map((results) => results.statuses[0] ?? null));
+  }
+
   // --- lists ---
   lists(): Observable<UserList[]> {
     return this.http.get<UserList[]>('/api/v1/lists');

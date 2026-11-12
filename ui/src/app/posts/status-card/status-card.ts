@@ -170,6 +170,8 @@ import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-ap
 import { isElizaId } from '../../chat/eliza/eliza-identity';
 import { LocalCompose } from '../../chat/eliza/local-compose';
 import { ComposeShareRequest, ShareDialog } from '../share-dialog/share-dialog';
+import { CopyLinkDialog } from '../copy-link/copy-link-dialog';
+import { accountDeepLink, homeServerFor, postDeepLink, serverHost } from '../copy-link/deep-links';
 import { selectionWithin } from '../share-dialog/share-selection';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import {
@@ -202,7 +204,11 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.showLess: Show less
 // i18n statusCard.translatedVia: Translated via {{provider}}
 // i18n statusCard.translatedViaAutomatic: Translated via {{provider}} · automatic
+// i18n statusCard.translatedFromVia: Translated from {{from}} via {{provider}}
+// i18n statusCard.translatedFromViaAutomatic: Translated from {{from}} via {{provider}} · automatic
 // i18n statusCard.translationInfo: About this translation
+// i18n statusCard.replyingToTranslated: Warning: you are replying to a translated {{post}}. The original is in {{language}}.
+// i18n statusCard.replyingToTranslatedUnknown: Warning: you are replying to a translated {{post}}. The original is in another language.
 // i18n statusCard.aiTranslationNote: Translated into {{target}} by {{model}} · machine translation, so treat the wording as approximate
 // i18n statusCard.aiTranslation: AI translation
 // i18n statusCard.showSensitiveContent: Show sensitive content
@@ -513,6 +519,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
     NgOptimizedImage,
     LocalCompose,
     ShareDialog,
+    CopyLinkDialog,
     BookmarkProviderDialog,
     PreviewCardComponent,
     SignInPrompt,
@@ -523,6 +530,24 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
   styleUrl: './status-card.css',
 })
 export class StatusCard {
+  /** "Copy link": mawkingbird.com links to the post and its author (see deep-links.ts). */
+  protected copyLinkOpen = signal(false);
+  protected postCopyLink = computed(() => postDeepLink(this.display, this.server.baseUrl()));
+  protected accountCopyLink = computed(() =>
+    accountDeepLink(
+      this.display.account,
+      this.display.provider,
+      // A local handle takes its server from the profile URL when the
+      // configured server is unknown.
+      homeServerFor(this.display, this.server.baseUrl()) ?? serverHost(this.display.account.url),
+    ),
+  );
+  protected hasCopyLink = computed(() => !!this.postCopyLink() || !!this.accountCopyLink());
+  protected openCopyLink(event: Event): void {
+    this.closeMenu(event);
+    this.copyLinkOpen.set(true);
+  }
+
   protected permissionsOpen = signal(false);
   protected permissionsBusy = signal(false);
   async applyPermissions(value: PostPermissionsValue): Promise<void> {
@@ -840,6 +865,15 @@ export class StatusCard {
   readonly deleted = output<Status>();
   /** Emitted with the newly-created reply when the user replies inline. */
   readonly replied = output<Status>();
+  /**
+   * The thread page answers its focused post with its own composer, outside
+   * this card: it needs to know when the post is shown in translation so it
+   * can warn there too. Null when it is not.
+   */
+  readonly translatedFrom = output<{ language: string } | null>();
+  private emitTranslatedFrom = effect(() => {
+    this.translatedFrom.emit(this.replyTranslatedFrom());
+  });
 
   /** A legacy quote represented only by a Mastodon post URL in the body. */
   private linkQuote = signal<Status | null>(null);
@@ -2897,6 +2931,36 @@ export class StatusCard {
 
   protected engineName(engine: TranslationEngine): string {
     return CHAIN_ENGINE_NAMES[engine];
+  }
+
+  /** The language the shown server translation came from, by name; empty when unknown. */
+  protected translationSourceLabel(): string {
+    const code = this.translation()?.detected_source_language || this.display.language;
+    return code ? this.languageLabel(code) : '';
+  }
+
+  /**
+   * Set while the reader sees this post in translation (server, chain or AI):
+   * a reply goes to someone who wrote in another language, and should know it.
+   * `language` is empty when no engine said what the original was.
+   */
+  protected replyTranslatedFrom(): { language: string } | null {
+    const chain = this.chainTranslation();
+    if (chain) return { language: chain.source ? this.languageLabel(chain.source) : '' };
+    if (this.translation()) return { language: this.translationSourceLabel() };
+    if (this.aiTranslation()) {
+      const code = this.display.language;
+      return { language: code ? this.languageLabel(code) : '' };
+    }
+    return null;
+  }
+
+  protected translationNoteKey(): string {
+    const from = !!this.translationSourceLabel();
+    if (this.autoTranslated()) {
+      return from ? 'statusCard.translatedFromViaAutomatic' : 'statusCard.translatedViaAutomatic';
+    }
+    return from ? 'statusCard.translatedFromVia' : 'statusCard.translatedVia';
   }
 
   protected languageLabel(code: string): string {

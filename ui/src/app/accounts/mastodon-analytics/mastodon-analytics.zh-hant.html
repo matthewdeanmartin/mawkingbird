@@ -26,6 +26,12 @@
       <p class="muted">正在載入您的數據……</p>
     }
   } @else {
+    <!-- Deferred: a lookup reads another server, never while prerendering. -->
+    @defer (on immediate) {
+      <app-analytics-lookup />
+    } @placeholder {
+      <p class="muted">…</p>
+    }
     <ol class="steps">
       <li>
         <h2>您最受歡迎的嘟文</h2>

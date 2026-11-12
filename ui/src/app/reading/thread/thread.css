@@ -373,3 +373,9 @@
   /* Long URLs must wrap rather than widening the article column. */
   overflow-wrap: anywhere;
 }
+
+/* Above the reply box: the focused post is shown in translation. */
+.reply-translated {
+  display: block;
+  margin: 8px 16px;
+}

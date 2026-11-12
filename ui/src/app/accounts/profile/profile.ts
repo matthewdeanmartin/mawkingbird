@@ -67,6 +67,8 @@ import { StatusCard } from '../../posts/status-card/status-card';
 import { ReportDialog } from '../../moderation/report-dialog/report-dialog';
 import { AccountNoteDialog } from '../account-note-dialog/account-note-dialog';
 import { ProfileQrDialog } from '../profile-qr/profile-qr-dialog';
+import { CopyLinkDialog } from '../../posts/copy-link/copy-link-dialog';
+import { profileDeepLink } from '../../posts/copy-link/deep-links';
 import { FamiliarFollowers } from './familiar-followers/familiar-followers';
 import { BioTranslation } from './bio-translation/bio-translation';
 import { ListDialog } from '../../feeds/lists/list-dialog/list-dialog';
@@ -298,6 +300,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    CopyLinkDialog,
     Lightbox,
     BlueskyProfileDiscovery,
     ProfileSlideshow,
@@ -1080,6 +1083,16 @@ export class Profile implements OnInit, OnDestroy {
   protected showReport = signal(false);
   protected showNote = signal(false);
   protected showQr = signal(false);
+  /** "Copy link": a mawkingbird.com link to this account (see deep-links.ts). */
+  protected copyLinkOpen = signal(false);
+  protected copyLinkUrl = computed(() => {
+    const account = this.account();
+    return account ? profileDeepLink(account) : null;
+  });
+  protected openCopyLink(event: Event): void {
+    (event.target as Element | null)?.closest('details')?.removeAttribute('open');
+    this.copyLinkOpen.set(true);
+  }
   /** People the viewer follows who follow this account (not mutuals). */
   protected familiarFollowers = signal<Account[]>([]);
   protected featureBusy = signal(false);

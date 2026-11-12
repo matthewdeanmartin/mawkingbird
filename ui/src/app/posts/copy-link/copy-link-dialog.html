@@ -1,0 +1,56 @@
+<mb-dialog
+  [title]="'copyLink.title' | transloco"
+  [closeLabel]="'copyLink.close' | transloco"
+  [closeOnBackdrop]="true"
+  (dismissed)="closed.emit()"
+>
+  <div class="rows">
+    @if (postUrl(); as url) {
+      <span class="row-label" aria-hidden="true">{{ postLabel() }}</span>
+      <mb-field [label]="postLabel()" hideLabel>
+        <input
+          mbControl
+          class="row-url"
+          type="text"
+          readonly
+          [value]="url"
+          (focus)="selectAll($event)"
+        />
+      </mb-field>
+      <button
+        mbButton
+        size="small"
+        type="button"
+        [attr.aria-label]="'copyLink.copyAria' | transloco: { what: postLabel() }"
+        (click)="copy('post', url)"
+      >
+        {{ (copied() === 'post' ? 'copyLink.copied' : 'copyLink.copy') | transloco }}
+      </button>
+    }
+    @if (accountUrl(); as url) {
+      <span class="row-label" aria-hidden="true">{{ 'copyLink.account' | transloco }}</span>
+      <mb-field [label]="'copyLink.account' | transloco" hideLabel>
+        <input
+          mbControl
+          class="row-url"
+          type="text"
+          readonly
+          [value]="url"
+          (focus)="selectAll($event)"
+        />
+      </mb-field>
+      <button
+        mbButton
+        size="small"
+        type="button"
+        [attr.aria-label]="
+          'copyLink.copyAria' | transloco: { what: ('copyLink.account' | transloco) }
+        "
+        (click)="copy('account', url)"
+      >
+        {{ (copied() === 'account' ? 'copyLink.copied' : 'copyLink.copy') | transloco }}
+      </button>
+    }
+  </div>
+  <p class="muted small">{{ 'copyLink.hint' | transloco }}</p>
+</mb-dialog>

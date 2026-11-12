@@ -41,6 +41,7 @@ import * as friendBridgePage from './app/discovery/friend-bridge/friend-bridge';
 import * as turnOffBoostsMastodonPage from './app/feeds/turn-off-boosts-mastodon/turn-off-boosts-mastodon';
 import * as githubToMastodonPage from './app/publishing/github-to-mastodon/github-to-mastodon';
 import * as mastodonAnalyticsPage from './app/accounts/mastodon-analytics/mastodon-analytics';
+import * as findInteractionsPage from './app/discovery/find-interactions/find-interactions';
 import * as scheduleMastodonPostsPage from './app/publishing/schedule-mastodon-posts/schedule-mastodon-posts';
 import * as twitterToMastodonPage from './app/discovery/twitter-to-mastodon/twitter-to-mastodon';
 import { PublicArticle, PublicArticleKind } from './app/public-pages/features/public-article';
@@ -79,6 +80,7 @@ const toolModules: Record<string, { module: unknown; component: string; oneForAl
   'twitter-to-mastodon': { module: twitterToMastodonPage, component: 'TwitterToMastodon' },
   crosspost: { module: crosspostPage, component: 'Crosspost' },
   'mastodon-analytics': { module: mastodonAnalyticsPage, component: 'MastodonAnalytics' },
+  'find-interactions': { module: findInteractionsPage, component: 'FindInteractions' },
   'github-to-mastodon': { module: githubToMastodonPage, component: 'GithubToMastodon' },
   'schedule-mastodon-posts': {
     module: scheduleMastodonPostsPage,

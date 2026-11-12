@@ -35,6 +35,7 @@ import { isElizaId } from '../../chat/eliza/eliza-identity';
 
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { MbNotice } from '../../design-system/notice/notice';
 
 // i18n pages.thread.loading: Loading…
 // i18n pages.thread.reply.placeholder: Post your reply
@@ -74,6 +75,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
     LocalCompose,
     ReaderToolbar,
     TranslocoPipe,
+    MbNotice,
   ],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
@@ -293,6 +295,8 @@ export class Thread implements OnInit {
 
   /** Latest route id and `?reader` value. `currentId` is read by the Reader link. */
   protected readonly currentId = signal('');
+  /** Set by the focused card while it shows its post in translation; warns above the reply box. */
+  protected readonly focusedTranslatedFrom = signal<{ language: string } | null>(null);
   protected readonly threadCwOpen = signal<boolean | null>(null);
   protected readonly threadReader = signal(false);
   private readerParam: string | null = null;

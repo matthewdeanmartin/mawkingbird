@@ -26,6 +26,12 @@
       <p class="muted">統計を読み込み中…</p>
     }
   } @else {
+    <!-- Deferred: a lookup reads another server, never while prerendering. -->
+    @defer (on immediate) {
+      <app-analytics-lookup />
+    } @placeholder {
+      <p class="muted">…</p>
+    }
     <ol class="steps">
       <li>
         <h2>反応のよかった投稿</h2>

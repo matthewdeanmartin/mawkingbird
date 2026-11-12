@@ -3161,6 +3161,31 @@
       "file": "ui/src/app/translation/ai-budget-prompt.ts",
       "disposition": "adopted scope",
       "nextStep": "Concurrent translation work: shared MbDialog and MbButton actions; native settings navigation link. Preserve labelled dismissal, focus return, daily budget consent and free-translation fallback. Runtime verification belongs to the translation change."
+    },
+    {
+      "file": "ui/src/app/posts/copy-link/copy-link-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Copy link dialog uses Dialog, Field/Control (two readonly link inputs with hidden accessible labels beside visible row labels) and Button (one Copy per row). Preserve the two-row minimum, the reader terminology for the Post label, and select-on-focus as the manual-copy fallback when the clipboard API is refused."
+    },
+    {
+      "file": "ui/src/app/posts/copy-link/deep-link-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Deep-link resolver shows only a status line or an MbNotice with a link to the original; it navigates away with replaceUrl. Keep it free of other controls."
+    },
+    {
+      "file": "ui/src/app/accounts/mastodon-analytics/analytics-lookup.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Analytics lookup uses Field/Control (one handle input with hint), Button (Show analytics; outline My analytics when signed in to Mastodon) and MbNotice for lookup failures. Preserve the ?acct= query sync, the public-data caveat line, and re-creating AccountAnalytics per account."
+    },
+    {
+      "file": "ui/src/app/discovery/find-interactions/find-interactions.html",
+      "disposition": "adopted scope",
+      "nextStep": "Focused tool page: content link, outline Buttons for open-app and the two sign-in choices, deferred workbench. Preserve the sign-in return carrying ?a=&b= and no prerendered workbench."
+    },
+    {
+      "file": "ui/src/app/discovery/find-interactions/interactions-workbench.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Two Field/Controls (first and second account, shared hint), Button (Find interactions; outline Me and… when signed in) and MbNotice for invalid, mixed-network and unreadable accounts. Results reuse StatusCard. Preserve the scan-depth disclosure line."
     }
   ]
 }

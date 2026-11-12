@@ -613,4 +613,14 @@ describe('Login', () => {
       expect(loginDestination(next)).toBe('/home');
     }
   });
+
+  it('keeps a tool page’s own query string, so what the visitor typed survives sign-in', () => {
+    expect(loginDestination('/mastodon-analytics?acct=alice@home.example')).toBe(
+      '/mastodon-analytics?acct=alice%40home.example',
+    );
+    expect(loginDestination('/mastodon-analytics?#x')).toBe('/mastodon-analytics');
+    for (const next of ['/settings?x=1', '//evil.example?/mastodon-analytics', '?next=/home']) {
+      expect(loginDestination(next)).toBe('/home');
+    }
+  });
 });

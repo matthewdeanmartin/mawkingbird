@@ -182,6 +182,11 @@
                     {{ 'pages.profile.actions.qrCode' | transloco }}
                   </button>
                 }
+                @if (copyLinkUrl()) {
+                  <button type="button" mbMenuItem data-copy-link (click)="openCopyLink($event)">
+                    {{ 'copyLink.title' | transloco }}
+                  </button>
+                }
                 @if (localActionError()) {
                   <p class="menu-note" role="alert">
                     {{ 'pages.profile.actions.localFailed' | transloco }}
@@ -425,6 +430,11 @@
                       ) | transloco
                     }}
                   </button>
+                  @if (copyLinkUrl()) {
+                    <button type="button" mbMenuItem data-copy-link (click)="openCopyLink($event)">
+                      {{ 'copyLink.title' | transloco }}
+                    </button>
+                  }
                 </div>
               </details>
               <ng-container [ngTemplateOutlet]="contactButtons" />
@@ -477,6 +487,11 @@
                     }}</a>
                   }
                   <ng-container [ngTemplateOutlet]="privateFollowMenu" />
+                  @if (copyLinkUrl()) {
+                    <button type="button" mbMenuItem data-copy-link (click)="openCopyLink($event)">
+                      {{ 'copyLink.title' | transloco }}
+                    </button>
+                  }
                 </div>
               </details>
             }
@@ -584,6 +599,11 @@
                 <button type="button" (click)="openMoreOptions($event)">
                   {{ 'pages.profile.moreOptions.open' | transloco }}
                 </button>
+                @if (copyLinkUrl()) {
+                  <button type="button" mbMenuItem data-copy-link (click)="openCopyLink($event)">
+                    {{ 'copyLink.title' | transloco }}
+                  </button>
+                }
               </div>
             </details>
             @if (showFollowLanguages() && relationship(); as rel) {
@@ -1520,6 +1540,9 @@
         (closed)="showNote.set(false)"
         (saved)="onNoteSaved($event)"
       />
+    }
+    @if (copyLinkOpen() && copyLinkUrl()) {
+      <app-copy-link-dialog [accountUrl]="copyLinkUrl()" (closed)="copyLinkOpen.set(false)" />
     }
     @if (showQr() && a.url) {
       <app-profile-qr-dialog [url]="a.url" [acct]="a.acct" (closed)="showQr.set(false)" />

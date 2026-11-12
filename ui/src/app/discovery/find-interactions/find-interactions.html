@@ -1,0 +1,72 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Conversation finder</p>
+    <h1>Find interactions between two accounts</h1>
+    <p>
+      Type two Mastodon handles, or two Bluesky handles, and see every reply and mention between
+      them, newest first. No account needed.
+    </p>
+  </div>
+
+  <!-- Deferred: the reading runs in the browser, never while prerendering. -->
+  @defer (on immediate) {
+    <app-interactions-workbench />
+  } @placeholder {
+    <p class="muted">Loading…</p>
+  }
+
+  @if (!inShell) {
+    <ol class="steps">
+      <li>
+        <h2>Enter two accounts</h2>
+        <p>Both on Mastodon (and other fediverse servers), or both on Bluesky.</p>
+      </li>
+      <li>
+        <h2>Their recent posts are read</h2>
+        <p>From each account's own server, or Bluesky's public feeds.</p>
+      </li>
+      <li>
+        <h2>See what passed between them</h2>
+        <p>Replies and mentions both ways, as ordinary posts you can open and share.</p>
+      </li>
+    </ol>
+    <div class="sign-in-choices">
+      <a mbButton variant="outline" routerLink="/login/bluesky" [queryParams]="returnHere"
+        >Sign in with Bluesky to search further back</a
+      >
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+        >Sign in with Mastodon</a
+      >
+    </div>
+  }
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Why can't Mastodon just search for this?</h3>
+    <p>
+      Each Mastodon server only searches the posts it holds, and many servers do not offer full-text
+      search at all. So this page reads both accounts' latest public posts from their own servers
+      and keeps the ones that reply to or mention the other. It says how far back it looked.
+    </p>
+    <h3>Why is Bluesky better with an account?</h3>
+    <p>
+      Bluesky's post search needs a signed-in account. Without one, this page reads both accounts'
+      recent posts instead, which finds recent exchanges but not old ones.
+    </p>
+    <h3>Can I compare a Mastodon account with a Bluesky one?</h3>
+    <p>
+      Not directly: people on different networks cannot reply to each other without a bridge, so
+      there is nothing to find. Use the same network for both.
+    </p>
+    <h3>Are private posts included?</h3>
+    <p>No. Only public posts are read, the same ones anyone can see on the accounts' profiles.</p>
+  </section>
+</main>

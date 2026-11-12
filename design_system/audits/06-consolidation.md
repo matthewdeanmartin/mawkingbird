@@ -2325,3 +2325,33 @@ network, and added an MbButton "Load older messages" at the top of Mastodon
 transcripts (+2 shared, net +1 native button). A text live-state indicator and a
 composer label were added (no controls). Updated its reconciliation entry. No
 shared widget implementation changed.
+
+### Copy link and translated replies (2026-11-11)
+
+Reviewed regeneration: 1812 to 1817 scanned files, 634 candidate files (two added).
+Added `posts/copy-link/copy-link-dialog.html` (Dialog, two Field/Controls holding
+readonly links with hidden labels beside visible row labels, one MbButton Copy per
+row) and `posts/copy-link/deep-link-page.ts` (one MbNotice with a link to the
+original when a copied link cannot be resolved), with reconciliation entries.
+`posts/status-card/status-card.html` gained a "Copy link" mbMenuItem in each of its
+three ••• panels (+3 native buttons, +3 shared) and an MbNotice warning above the
+inline reply when the post is shown in translation (+1 shared).
+`accounts/profile/profile.html` gained the same mbMenuItem in its four ••• panels
+(+4 native buttons, +4 shared). `reading/thread/thread.html` gained the
+translated-reply MbNotice above its reply box (+1 shared). Menu budgets hold
+(post ••• for someone else's post and own profile now at 10/10). No shared widget
+implementation changed.
+
+### Analytics lookup and Find interactions (2026-11-12)
+
+Reviewed regeneration: 1817 to 1823 scanned files, 634 to 637 candidate files (three added).
+Added `accounts/mastodon-analytics/analytics-lookup.ts` (one Field/Control handle
+input, MbButton Show analytics and an outline MbButton My analytics when signed in,
+MbNotice for failures), deferred into the signed-out branch of every
+mastodon-analytics language template and into the signed-in panel (templates gained
+no controls of their own). Added the Find interactions tool:
+`discovery/find-interactions/find-interactions.html` (content link and outline
+MbButtons for open-app and the Bluesky/Mastodon sign-ins) and
+`interactions-workbench.ts` (two Field/Controls, MbButton Find interactions, outline
+MbButton Me and…, MbNotice for failures; results are ordinary StatusCards).
+Reconciliation entries added for all three. No shared widget implementation changed.

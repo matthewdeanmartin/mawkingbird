@@ -11,6 +11,7 @@ import { anonymousOnlyGuard } from './accounts/anonymous/anonymous-only.guard';
 import { featureFlagGuard } from './platform/build/feature-flag.guard';
 import { misskeyPrimaryMatch } from './connections/misskey/misskey-route.guard';
 import { forumThreadGuard } from './forum/forum-thread.guard';
+import { accountHandleLinkMatcher, mastodonPostLinkMatcher } from './posts/copy-link/deep-links';
 import { inviteAccessGuard } from './accounts/invites/invite-access.guard';
 import {
   justMyServerUpdateCanDeactivate,
@@ -129,6 +130,10 @@ export const TOOL_PAGE_MODULES: Record<string, ToolPageModule> = {
   'mastodon-analytics': {
     load: () => import('./accounts/mastodon-analytics/mastodon-analytics'),
     component: 'MastodonAnalytics',
+  },
+  'find-interactions': {
+    load: () => import('./discovery/find-interactions/find-interactions'),
+    component: 'FindInteractions',
   },
   'github-to-mastodon': {
     load: () => import('./publishing/github-to-mastodon/github-to-mastodon'),
@@ -1450,6 +1455,46 @@ export const routes: Routes = [
         // Opened from Forum, a post stays in Forum (its rails and menu).
         canActivate: [forumThreadGuard],
         loadComponent: () => import('./reading/thread/thread').then((m) => m.Thread),
+      },
+      // Copied "Copy link" deep links (posts/copy-link/deep-links.ts). Each lands
+      // on the reader's own view of the post or account and replaces its URL.
+      {
+        // `/<server>/@<acct>/<id>`, Elk's shape: ids belong to `<server>`.
+        matcher: mastodonPostLinkMatcher,
+        title: 'Post',
+        data: { kind: 'mastodon-post' },
+        loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+      },
+      {
+        // `/@user@host`
+        matcher: accountHandleLinkMatcher,
+        title: 'Profile',
+        data: { kind: 'account' },
+        loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+      },
+      {
+        path: 'bsky/profile/:actor/post/:rkey',
+        title: 'Post',
+        data: { kind: 'bsky-post' },
+        loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+      },
+      {
+        path: 'bsky/profile/:actor',
+        title: 'Profile',
+        data: { kind: 'bsky-profile' },
+        loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+      },
+      {
+        path: 'twitter/:user/status/:id',
+        title: 'Post',
+        data: { kind: 'twitter' },
+        loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+      },
+      {
+        path: 'twitter/:user',
+        title: 'Profile',
+        data: { kind: 'twitter' },
+        loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
       },
       {
         // The reader: one document, the whole screen. Takes the same ids as

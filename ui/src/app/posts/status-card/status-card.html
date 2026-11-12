@@ -237,10 +237,12 @@
           @if (translation()) {
             <div class="translation-note muted small">
               <mb-help [label]="'statusCard.translationInfo' | transloco">{{
-                (autoTranslated()
-                  ? 'statusCard.translatedViaAutomatic'
-                  : 'statusCard.translatedVia'
-                ) | transloco: { provider: translation()!.provider }
+                translationNoteKey()
+                  | transloco
+                    : {
+                        provider: translation()!.provider,
+                        from: translationSourceLabel(),
+                      }
               }}</mb-help>
             </div>
           }
@@ -1424,6 +1426,11 @@
                     •••
                   </summary>
                   <div class="danger-menu-panel">
+                    @if (hasCopyLink()) {
+                      <button type="button" mbMenuItem (click)="openCopyLink($event)">
+                        {{ 'copyLink.title' | transloco }}
+                      </button>
+                    }
                     @if (canMuteTags() && postTags().length) {
                       <app-tag-mute-menu [tags]="postTags()" />
                     }
@@ -1522,6 +1529,11 @@
                   •••
                 </summary>
                 <div class="danger-menu-panel">
+                  @if (hasCopyLink()) {
+                    <button type="button" mbMenuItem (click)="openCopyLink($event)">
+                      {{ 'copyLink.title' | transloco }}
+                    </button>
+                  }
                   @if (blueskyQuoteRef && blueskySessionLinked) {
                     <button type="button" mbMenuItem (click)="toggleBskyThreadMuted($event)">
                       {{
@@ -1669,6 +1681,11 @@
                 •••
               </summary>
               <div class="danger-menu-panel">
+                @if (hasCopyLink()) {
+                  <button type="button" mbMenuItem (click)="openCopyLink($event)">
+                    {{ 'copyLink.title' | transloco }}
+                  </button>
+                }
                 @if (canMuteTags() && postTags().length) {
                   <app-tag-mute-menu [tags]="postTags()" />
                 }
@@ -1842,6 +1859,14 @@
 
       @if (replying()) {
         <div class="inline-compose" (click)="$event.stopPropagation()">
+          @if (replyTranslatedFrom(); as warning) {
+            <mb-notice class="reply-translated" tone="error" announcement="alert">{{
+              (warning.language
+                ? 'statusCard.replyingToTranslated'
+                : 'statusCard.replyingToTranslatedUnknown'
+              ) | transloco: { post: words().post, language: warning.language }
+            }}</mb-notice>
+          }
           @if (isLocalPractice) {
             <app-local-compose [inReplyTo]="display.id" (posted)="onReplied($event)" />
           } @else if (display.provider === 'bluesky') {
@@ -2027,6 +2052,15 @@
 
   @if (signInFor()) {
     <app-sign-in-prompt [action]="signInAction()" (dismissed)="signInFor.set(null)" />
+  }
+
+  @if (copyLinkOpen()) {
+    <app-copy-link-dialog
+      [postLabel]="words().Post"
+      [postUrl]="postCopyLink()"
+      [accountUrl]="accountCopyLink()"
+      (closed)="copyLinkOpen.set(false)"
+    />
   }
 
   @if (showShare()) {

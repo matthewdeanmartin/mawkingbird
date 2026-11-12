@@ -27,6 +27,12 @@
       <p class="muted">Caricamento delle statistiche…</p>
     }
   } @else {
+    <!-- Deferred: a lookup reads another server, never while prerendering. -->
+    @defer (on immediate) {
+      <app-analytics-lookup />
+    } @placeholder {
+      <p class="muted">…</p>
+    }
     <ol class="steps">
       <li>
         <h2>I tuoi post migliori</h2>

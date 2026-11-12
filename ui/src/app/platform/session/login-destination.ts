@@ -7,7 +7,17 @@ import { FOCUSED_APPS } from '../../shell/mode-nav';
  * craft, and only pages built to pick up after sign-in belong here.
  */
 export function loginDestination(next: string | null | undefined): string {
-  return next && FOCUSED_APPS.some((app) => app.root === next) ? next : '/home';
+  if (!next) return '/home';
+  // A tool's own query string survives (`/mastodon-analytics?acct=…`), so a
+  // visitor who typed something before signing in gets it back. Only the path
+  // is checked against the allowlist; a fragment is dropped, and anything that
+  // is not a plain path ("//host", "https:…", "\\host") fails the path test.
+  const queryAt = next.indexOf('?');
+  const path = (queryAt < 0 ? next : next.slice(0, queryAt)).split('#')[0];
+  if (!FOCUSED_APPS.some((app) => app.root === path)) return '/home';
+  if (queryAt < 0) return path;
+  const query = next.slice(queryAt + 1).split('#')[0];
+  return query ? `${path}?${new URLSearchParams(query).toString()}` : path;
 }
 
 /**
