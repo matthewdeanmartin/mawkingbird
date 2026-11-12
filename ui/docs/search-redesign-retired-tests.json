@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-11",
+  "reason": "Owner-authorized search redesign: idle help and trending hashtags removed, advanced search moved to a full-width form, type dropdown replaced by Posts/People/Hashtags tabs with Posts as the signed-in default. Each retired test asserted the old behavior and was rewritten to assert the new one.",
+  "testCount": 7,
+  "tests": [
+    "src/app/discovery/search/bluesky-search-panel.spec.ts :: BlueskySearchPanel hides the Bluesky accounts rail without results unless Advanced is opened",
+    "src/app/discovery/search/bluesky-search-panel.spec.ts :: BlueskySearchPanel hides the Bluesky statuses rail without results unless Advanced is opened",
+    "src/app/discovery/search/search.spec.ts :: Search explains what you can type on the empty account tab",
+    "src/app/discovery/search/search.spec.ts :: Search keeps optional idle trends empty when the trends request fails",
+    "src/app/discovery/search/search.spec.ts :: Search landing panel by account kind opens Accounts for a mastodon-primary account, as before",
+    "src/app/discovery/search/search.spec.ts :: Search shows the search syntax reference in the idle post-search state",
+    "src/app/discovery/search/search.spec.ts :: Search web search hand-off snaps the select element back to the real type"
+  ],
+  "replacedBy": {
+    "Bluesky rail unless Advanced (accounts, statuses)": "BlueskySearchPanel hides the Bluesky {accounts,statuses} rail without results, showing Advanced as a form above",
+    "explains what you can type on the empty account tab": "Search leaves the empty people tab blank rather than showing help",
+    "keeps optional idle trends empty when the trends request fails": "Search makes no trends request for the idle hashtag tab",
+    "opens Accounts for a mastodon-primary account, as before": "Search landing panel by account kind opens Posts for a signed-in mastodon-primary account; reopens on the tab the reader last picked",
+    "shows the search syntax reference in the idle post-search state": "Search leaves the idle post-search state blank, with the reference behind Syntax",
+    "snaps the select element back to the real type": "Search web search hand-off offers the engines in the advanced form, not among the type tabs; has one simple/advanced switch, on either network, and no stray template text"
+  }
+}

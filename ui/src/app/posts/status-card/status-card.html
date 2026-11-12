@@ -211,15 +211,22 @@
                the top of a working one. `onContentClick` stays: it routes
                hashtags, mentions and profile links inside the rendered HTML, and
                that job was never the anchor's. -->
-          <div class="content-link" (click)="onContentClick($event)">
-            <div
-              class="content"
-              [innerHTML]="
-                (appendMode() ? originalContent() : renderedContent()) | customEmoji: display.emojis
-              "
-              [appHighlightCode]="appendMode() ? originalContent() : renderedContent()"
-            ></div>
-          </div>
+          @if (excerpt(); as ex) {
+            <!-- A very long search result, compacted to its opening and the
+                 passages that matched. Rendered as text, never as HTML. -->
+            <app-search-excerpt class="content" [excerpt]="ex" (expand)="expandExcerpt($event)" />
+          } @else {
+            <div class="content-link" (click)="onContentClick($event)">
+              <div
+                class="content"
+                [innerHTML]="
+                  (appendMode() ? originalContent() : renderedContent())
+                    | customEmoji: display.emojis
+                "
+                [appHighlightCode]="appendMode() ? originalContent() : renderedContent()"
+              ></div>
+            </div>
+          }
 
           @if (appendMode() && translation(); as t) {
             <div class="learner-translation">
@@ -1402,10 +1409,8 @@
                   mbPostAction
                   class="action"
                   (click)="deleteAndRedraft($event)"
-                  [title]="'statusCard.deleteAndBoost' | transloco: { boost: words().boost }"
-                  [attr.aria-label]="
-                    'statusCard.deleteAndBoost' | transloco: { boost: words().boost }
-                  "
+                  [title]="'statusCard.deleteAndRedraft' | transloco"
+                  [attr.aria-label]="'statusCard.deleteAndRedraft' | transloco"
                 >
                   <span aria-hidden="true">♻️</span>
                 </button>

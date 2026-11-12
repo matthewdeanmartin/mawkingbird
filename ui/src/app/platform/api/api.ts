@@ -1197,10 +1197,15 @@ export class Api {
   }
 
   // --- conversations (DMs) ---
-  conversations(maxId?: string): Observable<Conversation[]> {
-    return this.http.get<Conversation[]>('/api/v1/conversations', {
-      params: this.pageParams(maxId),
-    });
+  /**
+   * `GET /api/v1/conversations`, newest first. Mastodon pages these by the
+   * conversation's last status, so `maxId` is the oldest row's
+   * `last_status.id`. 40 is the server's maximum page size.
+   */
+  conversations(maxId?: string, limit = 40): Observable<Conversation[]> {
+    let params = new HttpParams().set('limit', String(limit));
+    if (maxId) params = params.set('max_id', maxId);
+    return this.http.get<Conversation[]>('/api/v1/conversations', { params });
   }
 
   markConversationRead(id: string): Observable<Conversation> {

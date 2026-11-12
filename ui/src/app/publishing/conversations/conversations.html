@@ -22,16 +22,38 @@
   </button>
 
   <aside class="chat-list" id="chat-list">
-    <div class="chat-list-head">{{ 'pages.conversations.chatListHeading' | transloco }}</div>
+    <div class="chat-list-head">
+      <span>{{ 'pages.conversations.chatListHeading' | transloco }}</span>
+      <!-- Whether messages arrive by themselves. Not live means the page is
+           polling instead (every 20 s for the open chat), and says so. -->
+      @if (liveState() !== 'off') {
+        <span
+          class="live-state"
+          [attr.data-state]="liveState()"
+          role="status"
+          [title]="liveText[liveState()].title | transloco"
+        >
+          {{ liveText[liveState()].label | transloco }}
+        </span>
+      }
+      <!-- One Refresh for every network: the chat lists and the open chat. -->
+      @if (mastodonAvailable() || bsky.linked()) {
+        <button
+          mbButton
+          variant="compact"
+          type="button"
+          class="refresh-chats"
+          [disabled]="loading() || refreshing()"
+          (click)="refreshAll()"
+        >
+          {{
+            (refreshing() ? 'pages.conversations.refreshing' : 'pages.conversations.refresh')
+              | transloco
+          }}
+        </button>
+      }
+    </div>
     @if (bsky.linked()) {
-      <button
-        type="button"
-        class="btn btn-outline"
-        [disabled]="loading() || bskyRefreshing()"
-        (click)="refreshBskyConvos()"
-      >
-        {{ 'pages.conversations.refreshBluesky' | transloco }}
-      </button>
       <!-- Message requests are listed apart from chats, as on bsky.app. -->
       @if (showRequests() || bskyRequestCount()) {
         <button
@@ -467,6 +489,43 @@
         @if (threadLoading()) {
           <p class="muted center small">{{ 'pages.conversations.loadingThread' | transloco }}</p>
         }
+        <!-- Long conversations: older messages come from older conversations
+             and mentions, so this pages the lists back and pulls them in. -->
+        @if (
+          (chat.kind === 'private' || chat.kind === 'public') &&
+          !threadLoading() &&
+          messages().length
+        ) {
+          <div class="older-messages">
+            @if (chatsExhausted()) {
+              <span class="muted small">{{
+                'pages.conversations.noOlderMessages' | transloco
+              }}</span>
+            } @else {
+              <button
+                mbButton
+                variant="compact"
+                type="button"
+                [disabled]="loadingMoreChats()"
+                (click)="loadOlderMessages()"
+              >
+                {{
+                  (loadingMoreChats()
+                    ? 'pages.conversations.loading'
+                    : 'pages.conversations.loadOlder'
+                  ) | transloco
+                }}
+              </button>
+            }
+          </div>
+        }
+        @if (movedToPrivate(); as moved) {
+          @if (moved.key === chat.key) {
+            <p class="moved-note small" role="status">
+              {{ 'pages.conversations.movedToPrivate' | transloco: { name: moved.name } }}
+            </p>
+          }
+        }
         @if (chat.kind === 'bot') {
           @for (m of botMessages(); track m.id) {
             <div class="bubble-row" [class.mine]="m.from === 'me'">
@@ -632,6 +691,11 @@
                     [aria-label]="'pages.conversations.likeTitle' | transloco"
                   >
                     <span aria-hidden="true">{{ prefs.favStyle() === 'heart' ? '❤️' : '⭐' }}</span>
+                    <!-- The count is the point in a chat: it is how you see that
+                         the other person liked your message. -->
+                    @if (m.favourites_count) {
+                      <span class="bubble-count">{{ m.favourites_count }}</span>
+                    }
                   </button>
                   <button
                     class="bubble-action"
@@ -651,6 +715,9 @@
                       [attr.aria-label]="words().Boost"
                     >
                       <span aria-hidden="true">🔁</span>
+                      @if (m.reblogs_count) {
+                        <span class="bubble-count">{{ m.reblogs_count }}</span>
+                      }
                     </button>
                   }
                   <a
@@ -716,10 +783,21 @@
         </div>
       } @else {
         <div class="chat-compose" [class.compose-public]="chat.kind === 'public'">
+          <!-- Says plainly who will see the reply, because the composer alone
+               did not: a public chat and a private one looked the same. -->
+          <p class="compose-kind small" [attr.data-kind]="chat.kind">
+            {{
+              (chat.kind === 'public'
+                ? 'pages.conversations.composeKind.public'
+                : 'pages.conversations.composeKind.private'
+              ) | transloco
+            }}
+          </p>
           <app-compose
             [compact]="true"
             [chatMode]="true"
             [inReplyToId]="replyToId()"
+            [expectedMentions]="chat.handles"
             [initialText]="replyMentions()"
             [draftContext]="'chat:' + chat.key"
             [initialVisibility]="replyVisibility()"

@@ -652,3 +652,55 @@
   border-radius: 10px;
   box-shadow: 0 4px 24px var(--ds-overlay-shadow);
 }
+
+/* List header: title, live indicator and Refresh on one row. */
+.chat-list-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chat-list-head > span:first-child {
+  margin-right: auto;
+}
+
+.live-state {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.live-state[data-state='live'] {
+  color: var(--ds-success-text, var(--accent));
+}
+
+.older-messages {
+  display: flex;
+  justify-content: center;
+  padding: 4px 0 8px;
+}
+
+.moved-note {
+  margin: 0 0 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.bubble-count {
+  margin-left: 2px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.compose-kind {
+  margin: 0 0 4px;
+  color: var(--muted);
+}
+
+.compose-kind[data-kind='private'] {
+  color: var(--text);
+}

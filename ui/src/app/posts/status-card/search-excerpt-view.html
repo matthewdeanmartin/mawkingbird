@@ -1,0 +1,30 @@
+<p>
+  @for (part of excerpt().head; track $index) {
+    @if (part.match) {
+      <mark>{{ part.text }}</mark>
+    } @else {
+      {{ part.text }}
+    }
+  }
+</p>
+@for (passage of excerpt().passages; track $index) {
+  <p class="excerpt-passage">
+    @for (part of passage; track $index) {
+      @if (part.match) {
+        <mark>{{ part.text }}</mark>
+      } @else {
+        {{ part.text }}
+      }
+    }
+  </p>
+}
+<button
+  type="button"
+  mbButton
+  variant="outline"
+  size="small"
+  class="excerpt-expand"
+  (click)="expand.emit($event)"
+>
+  {{ 'statusCard.showFullPost' | transloco: { count: excerpt().length.toLocaleString() } }}
+</button>

@@ -397,11 +397,6 @@
   font-weight: 600;
 }
 
-/* Empty state: the find-people import/directories body fills the blank space. */
-.search-idle {
-  padding: 0 16px 16px;
-}
-
 /* Advanced search: date-operator builder. */
 .advanced-panel {
   padding: 10px 16px;

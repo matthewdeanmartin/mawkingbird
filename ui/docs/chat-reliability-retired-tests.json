@@ -1,0 +1,11 @@
+{
+  "date": "2026-11-11",
+  "reason": "Owner-authorized chat delivery fix. The retired test asserted that a private 1:1 reply leaves the partner's @handle out, which is the bug: Mastodon delivers a direct status only to accounts mentioned in its text, so those replies reached nobody.",
+  "testCount": 1,
+  "tests": [
+    "src/app/publishing/conversations/conversations.spec.ts :: Conversations replyMentions (private 1:1): stays empty since the conversation notifies the partner"
+  ],
+  "replacedBy": {
+    "replyMentions (private 1:1): stays empty since the conversation notifies the partner": "Conversations replyMentions (private 1:1): mentions the partner, or the message reaches nobody"
+  }
+}

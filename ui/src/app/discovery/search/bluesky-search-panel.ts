@@ -1,4 +1,5 @@
 import { accountProfilePath } from '../../accounts/account-route';
+import { excerptTermsFor } from '../../posts/status-card/search-excerpt';
 import { searchPanelOpenByDefault } from './search-panel-default';
 import {
   Component,
@@ -269,12 +270,16 @@ export class BlueskySearchPanel {
    * `since:`, `#tag` — are read here exactly as bsky.app reads them.
    */
   readonly query = input('');
+  /** Words to find in long results, which are compacted around them. */
+  protected excerptTerms = computed(() => excerptTermsFor(this.query()));
 
   /** Posts or accounts, from the page's shared type select. */
   readonly target = input<BlueskySearchTarget>('statuses');
 
   /** Whether the page's shared Advanced button is toggled on. */
   readonly advancedOpen = input(false);
+  /** The advanced form folds to a summary line once it has run; Edit reopens it. */
+  protected advancedCollapsed = signal(false);
 
   /** Fired when the panel wants the page to open its save dialog. */
   readonly saveRequested = output<BlueskyPostSearch>();
@@ -283,6 +288,10 @@ export class BlueskySearchPanel {
   readonly queryChange = output<string>();
 
   constructor() {
+    // Switching into advanced always shows the whole form, not a folded summary.
+    effect(() => {
+      if (this.advancedOpen()) untracked(() => this.advancedCollapsed.set(false));
+    });
     // Apply a handed-down saved search once it arrives. An `effect` rather than
     // a setter so the page can hand one over at any point in its lifecycle —
     // on first load from `?saved=`, or later from the Saved menu.
@@ -1083,6 +1092,7 @@ export class BlueskySearchPanel {
    * — what their form choices actually mean in Bluesky's syntax.
    */
   applyAdvanced(): void {
+    this.advancedCollapsed.set(true);
     // Tags are only read at apply time, so typing in the box does not silently
     // change what the "active filters" line claims about the last search.
     this.set('tags', parseTags(this.tagInput()));

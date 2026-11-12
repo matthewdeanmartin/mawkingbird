@@ -2,6 +2,9 @@ import { TagActions } from '../tag-actions/tag-actions';
 import { SimilarHashtagsPanel } from '../similar-hashtags/similar-hashtags-panel';
 import { parseSimilarParam, similarParam } from '../similar-hashtags/similar-hashtags';
 import { MbButton } from '../../design-system/button/button';
+import { excerptTermsFor } from '../../posts/status-card/search-excerpt';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
+import { NgTemplateOutlet } from '@angular/common';
 import { searchPanelOpenByDefault } from './search-panel-default';
 import { BLUESKY_WIRE_TYPE } from './search-wire';
 import { matchesMedia, parseMediaQuery, SearchMediaType } from '../../reading/media-query';
@@ -42,7 +45,6 @@ import {
   Tag,
 } from '../../platform/api/models';
 import { StatusCard } from '../../posts/status-card/status-card';
-import { AccountSearchHelp } from './account-search-help/account-search-help';
 import { AnonymousCapabilities } from '../../accounts/anonymous/anonymous-capabilities';
 import { AnonymousAccount } from '../../accounts/anonymous/anonymous-account';
 import { AnonymousFollows } from '../../accounts/anonymous/anonymous-follows';
@@ -153,6 +155,10 @@ const DEFAULT_BUDGET_SIMPLE = 2;
 const DEFAULT_BUDGET_ADVANCED = 3;
 /** Manual "Load more" can page past the budget, but stops here so it never runs away. */
 const LOAD_MORE_HARD_CAP = 30;
+
+/** localStorage: the search tab the reader last picked, so the page reopens on it. */
+const LAST_TYPE_KEY = 'mawkingbird_search_last_type';
+
 /**
  * Below this many visible posts, excluding an author is assumed to have gutted
  * the results rather than cleaned them, and the page offers to fetch more.
@@ -206,10 +212,10 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.found.hashtags.other: Found {{count}} hashtags.
 // i18n pages.search.found.accounts.one: Found 1 account.
 // i18n pages.search.found.accounts.other: Found {{count}} accounts.
-// i18n pages.search.type.accounts: Accounts
+// i18n pages.search.type.accounts: People
 // i18n pages.search.type.posts: Posts
 // i18n pages.search.type.hashtags: Hashtags
-// i18n pages.search.type.web: Search the web ↗
+// i18n pages.search.type.web: Search the web instead ↗
 // i18n pages.search.type.ariaLabel: Search for
 // i18n pages.search.action.search: Search
 // i18n pages.search.action.searchHelperTitle: Describe what you’re looking for and get a query
@@ -217,7 +223,10 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.action.syntaxHelp: Search syntax help
 // i18n pages.search.action.syntaxHelpTitle: What you can type in a {{post}} search
 // i18n pages.search.action.syntax: Syntax?
-// i18n pages.search.action.advanced: Advanced ▾
+// i18n pages.search.action.advancedSearch: Advanced search
+// i18n pages.search.action.simpleSearch: Simple search
+// i18n pages.search.advanced.title: Advanced search
+// i18n pages.search.advanced.edit: Edit
 // i18n pages.search.saved.summary: Saved ({{count}})
 // i18n pages.search.saved.empty: No saved searches yet.
 // i18n pages.search.saved.anonymous: · anon
@@ -380,8 +389,6 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.results.noPostsForTag: No posts for <strong>#{{tag}}</strong> came back — and this server can’t search posts, so there may be some we can’t see.
 // i18n pages.search.results.followingTag: Following it puts new posts in your home timeline as they appear.
 // i18n pages.search.results.viewAndFollow: View and follow #{{tag}}
-// i18n pages.search.results.trendingHashtags: Trending hashtags
-// i18n pages.search.results.recentUses: {{count}} recent uses
 // i18n pages.search.results.weekUses: {{count}} posts this week
 // i18n pages.search.results.weekUsesNone: No posts this week
 // i18n pages.search.tagSort.label: Sort hashtags
@@ -430,7 +437,9 @@ const SEARCH_TIMEOUT_MS = 20000;
     FormsModule,
     RouterLink,
     StatusCard,
-    AccountSearchHelp,
+    MbToolbar,
+    MbToolbarButton,
+    NgTemplateOutlet,
     AccountResultCard,
     SearchHelperDialog,
     SearchSyntaxHelp,
@@ -702,6 +711,50 @@ export class Search implements OnInit, OnDestroy {
   protected searching = signal(false);
   protected type = signal<SearchType>('accounts');
 
+  /** The three tabs, in reading order. Posts first: it is what most searches are for. */
+  protected readonly typeChoices: readonly { value: SearchType; label: string }[] = [
+    { value: 'statuses', label: 'pages.search.type.posts' },
+    { value: 'accounts', label: 'pages.search.type.accounts' },
+    { value: 'hashtags', label: 'pages.search.type.hashtags' },
+  ];
+
+  /**
+   * The tab a search with no `?type=` opens on: the reader's last pick, else
+   * Posts for a signed-in account, else People. A remembered pick the current
+   * network cannot serve (Bluesky without a session) falls through.
+   *
+   * Posts used to be avoided as a default (see {@link inferTypeFor}) because
+   * anonymous full-text search is off on most servers and returns nothing.
+   * That still holds for anonymous and signed-out readers, who keep People; a
+   * signed-in account searches its own server, where posts usually work, and
+   * should not pay an extra click to leave People on every visit.
+   */
+  private defaultType(): SearchType {
+    let remembered: string | null = null;
+    try {
+      remembered = localStorage.getItem(LAST_TYPE_KEY);
+    } catch {
+      // Storage blocked: no memory, the default still works.
+    }
+    // Anonymous and signed-out searches go to servers whose full-text post
+    // search is almost always off, so People stays their default.
+    const postsWork = this.auth.isAuthenticated && !this.capabilities.active;
+    for (const t of [remembered, postsWork ? 'statuses' : null] as const) {
+      if ((t === 'statuses' || t === 'accounts' || t === 'hashtags') && !this.typeUnavailable(t)) {
+        return t;
+      }
+    }
+    return 'accounts';
+  }
+
+  private rememberType(t: SearchType): void {
+    try {
+      localStorage.setItem(LAST_TYPE_KEY, t);
+    } catch {
+      // Storage blocked: the pick still applies to this page.
+    }
+  }
+
   /**
    * True once the reader has picked a type themselves, or arrived with one.
    *
@@ -731,6 +784,9 @@ export class Search implements OnInit, OnDestroy {
    * query, forever, with no error. Defaulting a first-time anonymous visitor
    * into the one search that is usually switched off would be a worse first
    * impression than the wrong-but-populated list they get today.
+   *
+   * Signed-in accounts now default to Posts anyway (see {@link defaultType});
+   * anonymous and signed-out readers keep the People default this describes.
    *
    * So this only claims the cases the query itself settles:
    *
@@ -1037,12 +1093,9 @@ export class Search implements OnInit, OnDestroy {
    * would sit there displaying "Google" while the page is still on Accounts.
    * Restoring `el.value` directly is what makes the option behave as a button.
    */
-  onTypeSelect(value: string, el?: HTMLSelectElement): void {
+  onTypeSelect(value: string): void {
     if (isWebEngine(value)) {
       this.searchTheWeb(value);
-      if (el) {
-        el.value = this.type();
-      }
       return;
     }
     this.webDropped.set([]);
@@ -1052,6 +1105,7 @@ export class Search implements OnInit, OnDestroy {
     // An explicit pick from the dropdown outranks anything the query looks like.
     this.typeChosen = true;
     this.type.set(value as SearchType);
+    this.rememberType(value as SearchType);
     if (this.blueskyMode()) {
       void this.router.navigate([], {
         relativeTo: this.route,
@@ -1190,6 +1244,8 @@ export class Search implements OnInit, OnDestroy {
   // Each field binds to ngModel; `postCriteria` assembles them into the rich
   // PostSearchCriteria that drives serialization, chips, and Explain.
   protected advancedOpen = signal(false);
+  /** The advanced form folds to a summary line once it has run; Edit reopens it. */
+  protected advancedCollapsed = signal(false);
   protected exactPhrase = signal('');
   protected excludeWords = signal('');
   protected author = signal('');
@@ -1701,18 +1757,19 @@ export class Search implements OnInit, OnDestroy {
    * appears and disappears under the reader as they type.
    */
   private ranQuery = signal('');
+  /** Words to find in long results, which are compacted around them. */
+  protected excerptTerms = computed(() =>
+    excerptTermsFor(`${this.ranQuery()} "${this.exactPhrase()}"`),
+  );
 
   protected loadedCount = computed(() => this.results()?.statuses.length ?? 0);
   protected shownCount = computed(() => this.visibleStatuses().length);
 
-  // Idle-state trends: shown under the box before a hashtag search is run.
-  protected trendingTags = signal<Tag[]>([]);
   /**
    * Hashtags being compared in the Similar panel (`?similar=dog,dogs`), which
    * takes the place of the hashtag results while it is open.
    */
   protected similarTags = signal<string[]>([]);
-  private trendsRequested = false;
   /** Last q/type reflected in the URL, so run() can detect an identical re-search
    *  (which wouldn't emit a new queryParamMap) and fetch directly. */
   private urlQuery = '';
@@ -1815,7 +1872,7 @@ export class Search implements OnInit, OnDestroy {
         return;
       }
 
-      const t = (rawType as SearchType) ?? 'accounts';
+      const t = (rawType as SearchType) ?? this.defaultType();
       // A `type` in the URL is a decision too — a shared link, a saved search, or
       // the reader's own earlier pick coming back through the history. Inference
       // must not overrule it on the next Search press.
@@ -1846,7 +1903,6 @@ export class Search implements OnInit, OnDestroy {
         this.activeSearch?.unsubscribe();
         this.searching.set(false);
         this.results.set(null);
-        this.loadTrends();
       }
     });
   }
@@ -1922,26 +1978,6 @@ export class Search implements OnInit, OnDestroy {
       params.has('scope') ||
       params.has('calls')
     );
-  }
-
-  /**
-   * Fetch trending tags once, for the idle hashtag state. Failures show nothing.
-   *
-   * Trending *posts* used to be fetched here too, for the idle post-search
-   * state. That state now shows the search-syntax reference instead, so the
-   * request went with it rather than being left to cost a round trip for
-   * something nothing renders.
-   */
-  private loadTrends(): void {
-    if (this.trendsRequested) {
-      return;
-    }
-    this.trendsRequested = true;
-    this.api
-      .trendingTags()
-      .pipe(catchError(() => EMPTY))
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((tags) => this.trendingTags.set(tags));
   }
 
   /** A result row's usage over the server's window, or null while unknown. */
@@ -2079,6 +2115,7 @@ export class Search implements OnInit, OnDestroy {
    */
   applyAdvanced(): void {
     this.type.set('statuses');
+    this.advancedCollapsed.set(true);
     const criteria = this.postCriteria();
     this.pendingCriteria = criteria;
     // Authenticated: the serialized query IS the search string (operators and all).
@@ -2110,6 +2147,7 @@ export class Search implements OnInit, OnDestroy {
     const opening = !this.advancedOpen();
     this.diagnostics.info('Search', 'user:toggle-advanced', { open: opening });
     this.advancedOpen.set(opening);
+    this.advancedCollapsed.set(false);
     if (opening && this.apiBudget() < DEFAULT_BUDGET_ADVANCED) {
       this.apiBudget.set(DEFAULT_BUDGET_ADVANCED);
     }
@@ -2180,6 +2218,7 @@ export class Search implements OnInit, OnDestroy {
     if (!this.query().trim()) {
       return;
     }
+    this.advancedCollapsed.set(true);
     this.run();
   }
 

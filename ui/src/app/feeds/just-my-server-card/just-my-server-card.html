@@ -1,0 +1,119 @@
+<section mbRailCard tone="subtle" class="server-mode-card">
+  <div class="server-mode-heading">
+    <div>
+      <span class="server-mode-kicker">{{ 'shell.rail.singleServerMode' | transloco }}</span>
+      <h2 class="card-title server-mode-title">{{ 'shell.rail.justMyServer' | transloco }}</h2>
+    </div>
+    <label mbSwitch class="server-mode-switch">
+      <input
+        type="checkbox"
+        [checked]="justMyServer.enabled()"
+        [disabled]="(!justMyServer.ready() && !justMyServer.enabled()) || justMyServer.updating()"
+        (change)="justMyServer.requestEnabled($any($event.target).checked)"
+        [attr.aria-label]="'shell.rail.justMyServerAria' | transloco"
+      />
+      <span aria-hidden="true"></span>
+    </label>
+  </div>
+  <p class="muted server-mode-copy">
+    {{
+      'shell.rail.homeOnly'
+        | transloco: { server: justMyServer.homeHost() || ('shell.dead.thisServer' | transloco) }
+    }}
+  </p>
+  <button
+    type="button"
+    mbButton
+    variant="outline"
+    size="small"
+    class="server-mode-update"
+    [disabled]="justMyServer.preparing() || justMyServer.updating()"
+    (click)="justMyServer.prepareUpdate()"
+  >
+    {{
+      (justMyServer.preparing() ? 'shell.rail.checkingFriends' : 'shell.rail.updateMyServer')
+        | transloco
+    }}
+  </button>
+  @if (justMyServer.checking()) {
+    <p class="muted small server-mode-status">{{ 'shell.rail.checkingGenerated' | transloco }}</p>
+  } @else if (!justMyServer.ready() && !justMyServer.error()) {
+    <p class="muted small server-mode-status">
+      {{ 'shell.rail.updateBeforeEnable' | transloco }}
+    </p>
+  }
+  @if (justMyServer.result(); as result) {
+    <p class="small server-mode-status ok">
+      {{ 'shell.rail.updateResult' | transloco: result }}
+    </p>
+  }
+  @if (justMyServer.error()) {
+    <p class="small server-mode-status fail">{{ justMyServer.error() }}</p>
+  }
+</section>
+
+@if (hostsDialog() && justMyServer.dialogOpen()) {
+  <mb-dialog
+    [title]="'shell.rail.updateTitle' | transloco"
+    [closeLabel]="'shell.rail.close' | transloco"
+    [showClose]="false"
+    [closeOnBackdrop]="true"
+    [busy]="justMyServer.updating()"
+    (dismissed)="justMyServer.closeDialog()"
+  >
+    @if (justMyServer.plan(); as plan) {
+      <p>
+        {{
+          'shell.rail.updatePrompt'
+            | transloco
+              : {
+                  addCount: plan.addIds.length,
+                  addWord:
+                    (plan.addIds.length === 1 ? 'shell.rail.user.one' : 'shell.rail.user.other')
+                    | transloco,
+                  removeCount: plan.removeIds.length,
+                  removeWord:
+                    (plan.removeIds.length === 1 ? 'shell.rail.user.one' : 'shell.rail.user.other')
+                    | transloco,
+                  server: justMyServer.homeHost(),
+                }
+        }}
+      </p>
+      <p class="muted small">
+        <span
+          [innerHTML]="
+            'shell.rail.alreadyPresent'
+              | transloco: { count: plan.alreadyPresent, title: justMyServer.listTitle() }
+          "
+        ></span>
+      </p>
+    }
+    @if (justMyServer.updating()) {
+      <div class="server-mode-progress" role="status">
+        <progress [value]="justMyServer.completed()" [max]="justMyServer.total() || 1"></progress>
+        <span>{{ justMyServer.progressLabel() }}</span>
+      </div>
+    }
+    <div class="share-actions">
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        [disabled]="justMyServer.updating()"
+        (click)="justMyServer.closeDialog()"
+      >
+        {{ 'shell.rail.cancel' | transloco }}
+      </button>
+      <button
+        mbButton
+        type="button"
+        [disabled]="justMyServer.updating()"
+        (click)="justMyServer.confirmUpdate()"
+      >
+        {{
+          (justMyServer.updating() ? 'shell.rail.updating' : 'shell.rail.updateList') | transloco
+        }}
+      </button>
+    </div>
+  </mb-dialog>
+}

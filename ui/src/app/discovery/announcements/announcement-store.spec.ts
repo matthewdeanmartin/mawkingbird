@@ -118,6 +118,61 @@ describe('AnnouncementStore', () => {
     expect(loaded([announcement('1')]).activeCount()).toBe(0);
   });
 
+  /** A new app load: fresh singleton store, same localStorage. */
+  function nextSession(): void {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+    httpMock = TestBed.inject(HttpTestingController);
+    TestBed.inject(Auth).setToken('announcement-test-token');
+  }
+
+  it('retires an announcement the banner showed in two sessions, locally only', () => {
+    let store = loaded([announcement('1'), announcement('2')]);
+    // Session 1: shown, and remounting the banner in the same session counts once.
+    store.noteShown(['1', '2']);
+    store.noteShown(['1', '2']);
+    nextSession();
+    store = loaded([announcement('1'), announcement('2')]);
+    expect(store.activeCount()).toBe(2);
+    // Session 2: only '1' was on screen (say '2' was dismissed by hand elsewhere).
+    store.noteShown(['1']);
+    // Never yanked mid-session.
+    expect(store.activeCount()).toBe(2);
+
+    nextSession();
+    store = loaded([announcement('1'), announcement('2')]);
+    expect(store.isDismissed('1')).toBe(true);
+    expect(store.isDismissed('2')).toBe(false);
+    // Still listed for the server page, and no server-side dismiss was sent.
+    expect(store.total()).toBe(2);
+    httpMock.expectNone('/api/v1/announcements/1/dismiss');
+  });
+
+  it('restoreAll() resets the view counts so restored ones are not retired again', () => {
+    let store = loaded([announcement('1')]);
+    store.noteShown(['1']);
+    nextSession();
+    store = loaded([announcement('1')]);
+    store.noteShown(['1']);
+    nextSession();
+    store = loaded([announcement('1')]);
+    expect(store.activeCount()).toBe(0);
+
+    store.restoreAll();
+    nextSession();
+    expect(loaded([announcement('1')]).activeCount()).toBe(1);
+  });
+
+  it('forgets view counts for announcements the server no longer publishes', () => {
+    const store = loaded([announcement('1')]);
+    store.noteShown(['1']);
+    nextSession();
+    loaded([announcement('2')]);
+    expect(JSON.parse(localStorage.getItem('mockingbird_announcement_views') ?? '{}')).toEqual({});
+  });
+
   it('treats a server with announcements switched off as empty, not broken', () => {
     const store = TestBed.inject(AnnouncementStore);
     store.load();

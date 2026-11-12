@@ -59,6 +59,18 @@ export function normalizeInstanceHost(value: string): string {
 }
 
 /** Host advertised by an account, treating a bare acct as local to its API server. */
+/**
+ * Monthly active users below which a server counts as "small": a topic, regional
+ * or community server, where narrowing Home to it is a real way to read. On big
+ * general servers the rail leaves the switch to the My Server page.
+ */
+export const SMALL_SERVER_ACTIVE_USERS = 5000;
+
+/** True for a known, small server. Unknown size (still loading, or no figure) is not small. */
+export function isSmallServer(activeMonth: number | null | undefined): boolean {
+  return typeof activeMonth === 'number' && activeMonth < SMALL_SERVER_ACTIVE_USERS;
+}
+
 export function accountInstanceHost(account: Account, homeHost: string): string {
   const acct = typeof account.acct === 'string' ? account.acct : '';
   const at = acct.lastIndexOf('@');

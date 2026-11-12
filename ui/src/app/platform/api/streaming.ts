@@ -20,6 +20,17 @@ export type StreamKind =
   | { stream: 'list'; list: string }
   | { stream: 'direct' };
 
+/**
+ * Where one stream's connection stands, for pages that show it (chat's Live
+ * indicator) or fall back to polling while it is not `live`.
+ *
+ * - `connecting`: a socket is being opened (first time or after a drop).
+ * - `live`: the socket is open; events arrive as they happen.
+ * - `down`: the socket closed or is paused after failed handshakes; a retry is scheduled.
+ * - `unavailable`: the server has no streaming at all; nothing will connect.
+ */
+export type StreamState = 'connecting' | 'live' | 'down' | 'unavailable';
+
 /** Events forwarded to subscribers; anything else (e.g. `filters_changed`) is dropped. */
 const FORWARDED = new Set(['update', 'status_update', 'delete', 'notification', 'conversation']);
 
@@ -77,7 +88,7 @@ export class Streaming {
   /** Until when WebSockets to an instance are paused after repeated handshake failures. */
   private pausedUntil = new Map<string, number>();
 
-  open(kind: StreamKind): Observable<StreamEvent> {
+  open(kind: StreamKind, onState?: (state: StreamState) => void): Observable<StreamEvent> {
     return new Observable<StreamEvent>((subscriber) => {
       let socket: WebSocket | null = null;
       let retryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -90,19 +101,26 @@ export class Streaming {
         const base = await this.streamingBase();
         // No streaming on this server: stay subscribed but silent. Pages keep
         // their normal refresh; nothing ever connects or retries.
-        if (closed || base === null) {
+        if (closed) {
+          return;
+        }
+        if (base === null) {
+          onState?.('unavailable');
           return;
         }
         const pausedMs = (this.pausedUntil.get(instance) ?? 0) - Date.now();
         if (pausedMs > 0) {
+          onState?.('down');
           retryTimer = setTimeout(() => void connect(), pausedMs);
           return;
         }
+        onState?.('connecting');
         socket = new WebSocket(this.buildUrl(base, kind));
         openedAt = null;
         socket.onopen = () => {
           openedAt = Date.now();
           this.handshakeFailures.delete(instance);
+          onState?.('live');
         };
         socket.onmessage = (ev: MessageEvent<string>) => {
           const frame = JSON.parse(ev.data) as WsFrame;
@@ -120,6 +138,7 @@ export class Streaming {
           if (closed) {
             return;
           }
+          onState?.('down');
           if (openedAt === null) {
             this.noteHandshakeFailure(instance);
           }

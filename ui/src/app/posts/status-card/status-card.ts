@@ -69,6 +69,8 @@ import { VideoPlayerHost as VideoPlayer } from '../../reading/video-player/video
 import { ExternalPlayerHost } from '../../reading/audio-embeds/external-player-host';
 import { QuoteDialog } from '../../publishing/compose/quote-dialog/quote-dialog';
 import { HighlightCode } from '../code-blocks/highlight-code';
+import { searchExcerpt } from './search-excerpt';
+import { SearchExcerptView } from './search-excerpt-view';
 import { CodeMenuItems } from '../code-blocks/code-menu-items';
 import { MbButton } from '../../design-system/button/button';
 import { listenParams, radioPostRef } from '../../reading/radio-links';
@@ -196,6 +198,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.saving: Saving…
 // i18n statusCard.save: Save
 // i18n statusCard.showMore: Show more
+// i18n statusCard.showFullPost: Show full post ({{count}} characters)
 // i18n statusCard.showLess: Show less
 // i18n statusCard.translatedVia: Translated via {{provider}}
 // i18n statusCard.translatedViaAutomatic: Translated via {{provider}} · automatic
@@ -244,7 +247,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.recordLikeOnBlog: Record a like on your blog
 // i18n statusCard.removeBookmark: Remove bookmark
 // i18n statusCard.bookmark: Bookmark
-// i18n statusCard.deleteAndBoost: Delete & {{boost}}
+// i18n statusCard.deleteAndRedraft: Delete & re-draft
 // i18n statusCard.moreActions: More {{post}} actions
 // i18n statusCard.reportedTitle: Reported
 // i18n statusCard.boostFromBlogRecord: Remove this boost from your blog record
@@ -464,6 +467,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
 @Component({
   selector: 'app-status-card',
   imports: [
+    SearchExcerptView,
     StatusReactions,
     MisskeyCompose,
     MbHelp,
@@ -813,6 +817,24 @@ export class StatusCard {
   readonly filterContext = input<FilterContext>('home');
   /** Thread view turns this on: show which app the post was made with. */
   readonly showSource = input(false);
+  /**
+   * Search results pass the query's terms: a very long post then shows its
+   * opening plus the matching passages until the reader expands it. Null
+   * (everywhere else) always shows the whole post.
+   */
+  readonly excerptTerms = input<readonly string[] | null>(null);
+  protected excerptExpanded = signal(false);
+  /** The compact form, or null when the post is shown whole. */
+  protected excerpt = computed(() => {
+    const terms = this.excerptTerms();
+    if (!terms || this.excerptExpanded() || this.translation() || this.appendMode()) return null;
+    return searchExcerpt(this.display.content, terms);
+  });
+
+  protected expandExcerpt(event: Event): void {
+    event.stopPropagation();
+    this.excerptExpanded.set(true);
+  }
   readonly changed = output<Status>();
   /** Emitted when the user deletes this status, so containers can drop it. */
   readonly deleted = output<Status>();

@@ -46,6 +46,8 @@ help:
 	@echo "  make format-check       Check formatting without changes"
 	@echo "  make lint               Lint TypeScript and templates"
 	@echo "  make storage            Verify every localStorage key is classified"
+	@echo "  make dead-code-check    Fail on unused files or undeclared dependencies (knip)"
+	@echo "  make dead-code          Full knip report incl. unused exports (advisory)"
 	@echo "  make i18n               Verify UI strings are translatable + report coverage"
 	@echo "  make i18n-extract       Regenerate public/i18n/en.json from source comments"
 	@echo "  make i18n-todo L=de     Write a translation work order for one language"
@@ -87,6 +89,16 @@ storage:
 # about silently boots the production app instead of the one that owns the link.
 subpaths:
 	npm run check:subpaths
+
+# Dead code (knip, configured in knip.json). The check fails on unused files and
+# missing or undeclared dependencies, which are cheap to keep at zero. The full
+# report also lists unused exports and types: a known backlog, so it is advisory.
+.PHONY: dead-code-check dead-code
+dead-code-check:
+	npm run check:dead-code
+
+dead-code:
+	npm run dead-code
 
 # Guards the retrofit in sprint/ui-i18n-*.md: a migrated directory must not
 # hardcode user-visible text, and every key must exist in en.json. Non-English
@@ -139,6 +151,7 @@ test:
 	npm run design:inventory-check
 	npm run test:source-integrity
 	npm run check:libs
+	npm run check:dead-code
 	npm run test:libs
 	npm run test:ci
 
@@ -150,6 +163,7 @@ test-quick:
 	npm run design:inventory-check
 	npm run test:source-integrity
 	npm run check:libs
+	npm run check:dead-code
 	npm run test:libs
 	npm run test:audit
 

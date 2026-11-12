@@ -47,7 +47,7 @@ describe('Conversations configured networks', () => {
     loading: () => boolean;
     bskyDraft: WritableSignal<string>;
     bskyMessages: () => BskyMessageView[];
-    refreshBskyConvos(): void;
+    refreshAll(): void;
     retryThread(): void;
   }
   const state = () => fixture.componentInstance as unknown as State;
@@ -158,12 +158,13 @@ describe('Conversations configured networks', () => {
     TestBed.inject(Auth).connectMastodon('connector-token');
     create();
     http
-      .expectOne('/api/v1/conversations?limit=20')
+      .expectOne('/api/v1/conversations?limit=40')
       .flush({}, { status: 503, statusText: 'Unavailable' });
-    http.expectOne('/api/v1/notifications').flush([]);
+    // Mentions only, 40 at a time; an empty page ends the history.
+    http.expectOne('/api/v1/notifications?types%5B%5D=mention&limit=40').flush([]);
     fixture.detectChanges();
-    expect(open).toHaveBeenCalledWith({ stream: 'direct' });
-    expect(open).toHaveBeenCalledWith({ stream: 'user' });
+    expect(open).toHaveBeenCalledWith({ stream: 'direct' }, expect.any(Function));
+    expect(open).toHaveBeenCalledWith({ stream: 'user' }, expect.any(Function));
     expect(
       state()
         .chats()
@@ -177,7 +178,7 @@ describe('Conversations configured networks', () => {
     listConvos.mockReturnValueOnce(throwError(() => new Error('network down')));
     create();
     expect(fixture.nativeElement.querySelector('[role="alert"]').textContent).toContain('Bluesky');
-    state().refreshBskyConvos();
+    state().refreshAll();
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
     expect(

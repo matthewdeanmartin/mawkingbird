@@ -1,0 +1,22 @@
+<header class="page-head">
+  <h1>{{ 'serverAnnouncements.privacy.title' | transloco }}</h1>
+  @if (privacy(); as policy) {
+    <p class="muted small">
+      {{ 'serverAnnouncements.privacy.updated' | transloco: { date: (policy.updated_at | date) } }}
+    </p>
+  }
+</header>
+
+@switch (state()) {
+  @case ('loaded') {
+    @if (privacy(); as policy) {
+      <article class="server-policy" [innerHTML]="policy.content"></article>
+    }
+  }
+  @case ('none') {
+    <p class="empty muted">{{ 'serverAnnouncements.privacy.none' | transloco }}</p>
+  }
+  @default {
+    <p class="empty muted" role="status">{{ 'serverAnnouncements.privacy.loading' | transloco }}</p>
+  }
+}

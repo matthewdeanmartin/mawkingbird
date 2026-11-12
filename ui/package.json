@@ -57,7 +57,7 @@
     "i18n:merge": "node scripts/i18n-merge.mjs",
     "i18n:traps": "node scripts/i18n-traps.mjs",
     "check:i18n": "node scripts/extract-i18n.mjs --check && node scripts/check-i18n.mjs",
-    "check:static": "npm run check:libs && npm run check:storage && npm run check:subpaths && npm run check:i18n && npm run starter-kits:check && npm run format:check && npm run design:lint",
+    "check:static": "npm run check:libs && npm run check:dead-code && npm run check:storage && npm run check:subpaths && npm run check:i18n && npm run starter-kits:check && npm run format:check && npm run design:lint",
     "check:known-failing": "npm run check:terminology && npm run test:source-integrity",
     "check": "npm run check:static && npm run lint && npm run test:ci",
     "gen:api-docs": "node scripts/gen-api-docs.mjs",
@@ -70,10 +70,11 @@
     "starter-kits:check": "node scripts/update-bundled-starter-kits.mjs --check",
     "check:subpaths": "node scripts/check-subpath-deployments.mjs",
     "check:mock-leakage": "node scripts/check-mock-leakage.mjs",
-    "dead-code": "knip",
+    "dead-code": "knip --no-exit-code",
     "servers:misskey": "node scripts/update-misskey-servers.mjs",
     "dict:jmdict": "node scripts/build-dictionaries.mjs jmdict",
-    "dict:cedict": "node scripts/build-dictionaries.mjs cedict"
+    "dict:cedict": "node scripts/build-dictionaries.mjs cedict",
+    "check:dead-code": "knip --include files,dependencies,unlisted,binaries,unresolved"
   },
   "private": true,
   "packageManager": "npm@11.17.0",

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Announcement } from '../../platform/api/models';
 import {
@@ -31,6 +31,15 @@ export class Announcements implements OnInit {
 
   protected readonly quickReactions = QUICK_REACTIONS;
   protected announcements = this.store.active;
+
+  constructor() {
+    // Each session the banner actually shows an announcement counts toward
+    // retiring it, because most readers never press the ✕.
+    effect(() => {
+      const ids = this.announcements().map((a) => a.id);
+      if (ids.length) this.store.noteShown(ids);
+    });
+  }
 
   ngOnInit(): void {
     this.store.load();

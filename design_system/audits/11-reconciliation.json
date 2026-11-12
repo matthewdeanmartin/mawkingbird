@@ -710,7 +710,7 @@
     {
       "file": "ui/src/app/publishing/conversations/conversations.html",
       "disposition": "backlog",
-      "nextStep": "Private chat startup adds a native retry action. Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "nextStep": "Chat reliability batch: the legacy Refresh Bluesky pill became one MbButton Refresh for every network beside a live-state indicator, and Load older messages is an MbButton. Private chat startup adds a native retry action. Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
       "file": "ui/src/app/discovery/directory/directory.html",
@@ -923,14 +923,9 @@
       "nextStep": "Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
     },
     {
-      "file": "ui/src/app/discovery/search/account-search-help/account-search-help.ts",
-      "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
-    },
-    {
       "file": "ui/src/app/discovery/search/bluesky-search-panel.html",
       "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "nextStep": "Budget and advanced fields moved into a full-width .advanced-search details above the refinement column (page projects the web-engine row). Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
       "file": "ui/src/app/discovery/search/search-helper-dialog/search-helper-dialog.html",
@@ -950,7 +945,7 @@
     {
       "file": "ui/src/app/discovery/search/search.html",
       "disposition": "partial adoption",
-      "nextStep": "Search consistency batch adopts standalone Button actions and links while preserving handlers, disabled states and native disclosure summaries. Fields, saved-search controls, refinement controls and content-specific actions remain pending semantic review."
+      "nextStep": "Type select replaced by MbToolbar/MbToolbarButton (Posts, People, Hashtags); advanced options moved from the sidebar into a full-width .advanced-search details above the grid, with MbButton web-engine hand-offs. Search consistency batch adopts standalone Button actions and links while preserving handlers, disabled states and native disclosure summaries. Fields, saved-search controls, refinement controls and content-specific actions remain pending semantic review."
     },
     {
       "file": "ui/src/app/discovery/search/search.ts",
@@ -960,7 +955,7 @@
     {
       "file": "ui/src/app/public-pages/server-announcements/server-announcements.html",
       "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "nextStep": "Privacy policy and moderated servers moved from MbDisclosure to their own pages, linked from the single server-links list. Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/feeds/server-feed/server-feed.html",
@@ -1395,7 +1390,12 @@
     {
       "file": "ui/src/app/shell/right-rail/right-rail.html",
       "disposition": "adopted scope",
-      "nextStep": "Rail cards, rail-mode Navigation, native Switch, Button/PostAction, Dialog, Field/Control and SaveFeedback are adopted. Preserve network consent gates, disclosures, donation links, announcement commands, share URLs and guarded server-list updates. Embedded PlusPromotion remains a separate specialized consumer."
+      "nextStep": "Rail cards, rail-mode Navigation, Button/PostAction, Dialog, Field/Control and SaveFeedback are adopted. Just My Server moved to JustMyServerCard (shown here only on small servers or when enabled). Preserve network consent gates, disclosures, donation links, announcement commands and share URLs. Embedded PlusPromotion remains a separate specialized consumer."
+    },
+    {
+      "file": "ui/src/app/feeds/just-my-server-card/just-my-server-card.html",
+      "disposition": "adopted scope",
+      "nextStep": "Extracted unchanged from the right rail: MbRailCard, native Switch, MbButton and MbDialog own the Just My Server toggle, list update and confirm dialog. Shared by the rail and the My Server page. Preserve guarded list updates, readiness gating and busy-dialog dismissal rules."
     },
     {
       "file": "ui/src/app/shell/shell.html",
@@ -1416,6 +1416,11 @@
       "file": "ui/src/app/posts/status-card/status-card.html",
       "disposition": "partial adoption",
       "nextStep": "Sprint 11 adopts the action row and feedback. Polls, inline editors, content-warning buttons, disclosure menus and translator choice remain separate consumers. Each ••• panel ends with a Close menu row; keep it when the menus migrate, since the phone sheet can cover its trigger."
+    },
+    {
+      "file": "ui/src/app/posts/status-card/search-excerpt-view.html",
+      "disposition": "adopted scope",
+      "nextStep": "Compact long search results: plain-text excerpt with <mark> matches and an MbButton to expand in place. Preserve text-only rendering (never innerHTML), the click stop so expanding does not open the thread, and the 600/400 thresholds."
     },
     {
       "file": "ui/src/app/posts/status-card/status-card.ts",

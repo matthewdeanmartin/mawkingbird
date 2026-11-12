@@ -22,6 +22,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, forkJoin, of, switchMap } from 'rxjs';
 import { Api } from '../../platform/api/api';
 import { ReplyMentions, replyMentions } from './reply-mentions';
+import { AppDialogs } from '../../shell/app-dialogs';
 import { Server } from '../../platform/http/server';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { Auth } from '../../platform/session/auth';
@@ -435,6 +436,10 @@ function dragHasFiles(event: DragEvent): boolean {
   return Array.from(event.dataTransfer?.types ?? []).includes('Files');
 }
 
+// i18n compose.noMention.title: Nobody is mentioned
+// i18n compose.noMention.public: This reply mentions nobody, so the person you are replying to will not be notified. Add their @handle to make sure they see it.
+// i18n compose.noMention.private: This private message mentions nobody, so nobody else will receive it. Add the person's @handle, or send it anyway as a note only you can see.
+// i18n compose.noMention.sendAnyway: Send anyway
 // i18n compose.bskyControls: Bluesky: who can reply and quote
 // i18n compose.bskyLabel.title: Bluesky content label
 // i18n compose.bskyLabel.none: Bluesky: no label
@@ -707,6 +712,13 @@ export class Compose implements OnDestroy {
    */
   readonly compact = input(false);
   readonly chatMode = input(false);
+  /**
+   * Handles a reply is expected to mention (chat passes the chat's
+   * participants). They are not re-confirmed in the "check the people you are
+   * mentioning" dialog, which in a chat only ever listed the person you were
+   * obviously talking to; their absence still triggers the no-mention warning.
+   */
+  readonly expectedMentions = input<readonly string[]>([]);
   protected chatToolsOpen = signal(false);
   // i18n compose.chatTools: More reply options
   /**
@@ -2543,7 +2555,10 @@ export class Compose implements OnDestroy {
         return;
       }
     }
-    const confirmation = this.postConfirmation.confirm(this.auth.account()?.acct);
+    const confirmation = this.postConfirmation.confirm(
+      this.auth.account()?.acct,
+      this.visibility(),
+    );
     if (!(typeof confirmation === 'boolean' ? confirmation : await confirmation)) {
       return;
     }
@@ -2586,14 +2601,56 @@ export class Compose implements OnDestroy {
   }
 
   private readonly replyMentions = inject(ReplyMentions);
+  private readonly dialogs = inject(AppDialogs);
   protected readonly checkingMentions = signal(false);
   private reviewedMentions = '';
+  private noMentionAccepted = false;
+
+  /**
+   * A reply that @-mentions nobody does not do what people expect: Mastodon
+   * notifies only mentioned accounts, and a "mentioned only" post reaches only
+   * them. Returns true when the reply should wait for the reader to confirm.
+   */
+  private holdForMissingMention(): boolean {
+    if (this.noMentionAccepted || !this.inReplyToId() || !this.targetIncludesFedi()) return false;
+    const me = this.auth.account()?.acct?.toLowerCase();
+    const strip = (h: string) => h.replace(/^@/, '').toLowerCase();
+    const others = replyMentions(this.segments().join('\n')).filter((h) => h !== me);
+    const replyTo = strip(this.replyToHandle());
+    const toSomeoneElse =
+      (!!replyTo && replyTo !== me) || this.expectedMentions().some((h) => strip(h) !== me);
+    if (others.length || !toSomeoneElse) return false;
+    const direct = this.visibility() === 'direct';
+    void this.dialogs
+      .confirm(
+        this.transloco.translate(direct ? 'compose.noMention.private' : 'compose.noMention.public'),
+        {
+          title: this.transloco.translate('compose.noMention.title'),
+          confirmLabel: this.transloco.translate('compose.noMention.sendAnyway'),
+        },
+      )
+      .then((ok) => {
+        if (!ok || this.destroyed) return;
+        this.noMentionAccepted = true;
+        try {
+          this.send();
+        } finally {
+          this.noMentionAccepted = false;
+        }
+      });
+    return true;
+  }
 
   private send(): void {
     if (this.checkingMentions()) return;
+    if (this.holdForMissingMention()) return;
     if (this.inReplyToId() && this.targetIncludesFedi()) {
+      const expected = new Set(
+        this.expectedMentions().map((h) => h.replace(/^@/, '').toLowerCase()),
+      );
       const handles = replyMentions(this.segments().join('\n')).filter(
-        (handle) => handle !== this.replyToHandle().replace(/^@/, '').toLowerCase(),
+        (handle) =>
+          handle !== this.replyToHandle().replace(/^@/, '').toLowerCase() && !expected.has(handle),
       );
       const key = JSON.stringify([handles, this.auth.token()]);
       if (handles.length && key !== this.reviewedMentions) {

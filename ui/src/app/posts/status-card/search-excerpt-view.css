@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+p {
+  margin: 0 0 6px;
+  overflow-wrap: anywhere;
+}
+
+.excerpt-passage {
+  color: var(--muted);
+}
+
+mark {
+  background: var(--accent-soft);
+  color: var(--text);
+  border-radius: 2px;
+}
+
+.excerpt-expand {
+  margin-top: 4px;
+}

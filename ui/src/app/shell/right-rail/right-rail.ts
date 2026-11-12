@@ -5,7 +5,6 @@ import { MbField, MbControl } from '../../design-system/field/field';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 import { MbRailCard } from '../../design-system/identity/rail-card';
-import { MbSwitch } from '../../design-system/identity/switch';
 import { MbButton } from '../../design-system/button/button';
 import { PlusPromotion } from '../../accounts/mawkingbird/plus-promotion';
 import { Component, computed, effect, inject, OnInit, linkedSignal, signal } from '@angular/core';
@@ -19,7 +18,8 @@ import { HouseAdStore } from '../house-ad-store';
 import { InstanceInfo } from '../../platform/api/models';
 import { SearchServer } from '../../platform/http/search-server';
 import { Server } from '../../platform/http/server';
-import { JustMyServer } from '../../feeds/just-my-server';
+import { JustMyServer, isSmallServer } from '../../feeds/just-my-server';
+import { JustMyServerCard } from '../../feeds/just-my-server-card/just-my-server-card';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { BlueskyTrends } from '../../connections/bluesky/bluesky-trends';
 import { networkSources } from '../network-sources';
@@ -28,15 +28,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n shell.rail.endorsement: endorsement
 // i18n shell.rail.houseEndorsement: House endorsement
 // i18n shell.rail.hideAd: Hide this until you reload
-// i18n shell.rail.singleServerMode: Single Server Mode
-// i18n shell.rail.justMyServer: Just My Server
-// i18n shell.rail.justMyServerAria: Just My Server mode
-// i18n shell.rail.homeOnly: Home shows only people you follow on {{server}}. Remote boosts stay out.
-// i18n shell.rail.checkingFriends: Checking friends…
-// i18n shell.rail.updateMyServer: Update My Server list
-// i18n shell.rail.checkingGenerated: Checking for the generated list…
-// i18n shell.rail.updateBeforeEnable: Update the list before turning this mode on.
-// i18n shell.rail.updateResult: Added {{added}} · Removed {{removed}} · Already present {{alreadyPresent}} · Failed {{failed}}
 // i18n shell.rail.entryway: entryway
 // i18n shell.rail.selfHosted: self-hosted
 // i18n shell.rail.yourBluesky: Your Bluesky
@@ -67,14 +58,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n shell.rail.copied: Copied to clipboard.
 // i18n shell.rail.copyFailed: Couldn't copy automatically — select the text above and copy it manually.
 // i18n shell.rail.close: Close
-// i18n shell.rail.updateTitle: Update My Server list?
-// i18n shell.rail.user.one: user
-// i18n shell.rail.user.other: users
-// i18n shell.rail.updatePrompt: Add {{addCount}} {{addWord}} and remove {{removeCount}} {{removeWord}} so the list contains only friends on {{server}}?
-// i18n shell.rail.alreadyPresent: {{count}} already present. The list is <strong>{{title}}</strong>.
-// i18n shell.rail.cancel: Cancel
-// i18n shell.rail.updating: Updating…
-// i18n shell.rail.updateList: Update list
 
 /**
  * Right sidebar: house ads (inventory lives in house-ads.ts — edit that file to
@@ -93,12 +76,12 @@ import { TranslocoPipe } from '@jsverse/transloco';
     MbDialog,
     MbNavigation,
     MbNavLink,
-    MbSwitch,
     MbButton,
     MbRailCard,
     RouterLink,
     TranslocoPipe,
     PlusPromotion,
+    JustMyServerCard,
   ],
   templateUrl: './right-rail.html',
   styleUrl: './right-rail.css',
@@ -198,6 +181,15 @@ export class RightRail implements OnInit {
     }
     return this.instance()?.domain ?? null;
   });
+
+  /**
+   * Whether the rail offers Just My Server: on small servers, or whenever it is
+   * already on (so the way out is never hidden). Hidden until the instance size
+   * is known, so a big server's rail does not flash the card on load.
+   */
+  protected showServerMode = computed(
+    () => this.justMyServer.enabled() || isSmallServer(this.instance()?.usage?.users?.active_month),
+  );
 
   /** The configured server's homepage, including a same-origin server. */
   protected serverHomeUrl = computed(() => this.server.baseUrl() || '/');

@@ -22,6 +22,40 @@ interface AnnouncementContext {
  */
 const DISMISSED_KEY = 'mockingbird_dismissed_announcements';
 
+/**
+ * localStorage key holding, per announcement id, how many sessions the banner
+ * has shown it. Readers ignore the ✕, so the banner retires an announcement on
+ * its own after {@link AUTO_DISMISS_SESSIONS} sessions. It moves into the
+ * ordinary dismissed set, so it stays listed on the server page and "restore"
+ * still brings it back.
+ */
+const VIEWS_KEY = 'mockingbird_announcement_views';
+
+/** Sessions an announcement gets in the banner before it is dismissed for the reader. */
+export const AUTO_DISMISS_SESSIONS = 2;
+
+function readViews(): Record<string, number> {
+  try {
+    const raw = JSON.parse(localStorage.getItem(VIEWS_KEY) ?? '{}') as unknown;
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return {};
+    const out: Record<string, number> = {};
+    for (const [id, n] of Object.entries(raw as Record<string, unknown>)) {
+      if (typeof n === 'number' && n > 0) out[id] = n;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function writeViews(views: Record<string, number>): void {
+  try {
+    localStorage.setItem(VIEWS_KEY, JSON.stringify(views));
+  } catch {
+    // Storage blocked or full: the banner simply stays until dismissed by hand.
+  }
+}
+
 function readDismissed(): string[] {
   try {
     const raw = JSON.parse(localStorage.getItem(DISMISSED_KEY) ?? '[]') as unknown;
@@ -63,6 +97,13 @@ export class AnnouncementStore {
   readonly loaded = linkedSignal({ source: () => this.context(), computation: () => false });
 
   private dismissed = signal(new Set<string>(readDismissed()));
+
+  /**
+   * Ids the banner has already counted in this session. The store is a root
+   * singleton, so this lives exactly as long as one app load: navigating away
+   * from Home and back does not count twice.
+   */
+  private countedThisSession = new Set<string>();
 
   /** Not yet dismissed on this device — what the banner shows. */
   readonly active = computed(() => this.all().filter((a) => !this.dismissed().has(a.id)));
@@ -121,6 +162,7 @@ export class AnnouncementStore {
       next: (list) => {
         if (context !== this.context() || request !== this.request) return;
         this.all.set(list);
+        this.retireSeen(list);
         this.loaded.set(true);
         this.loadingFor = null;
       },
@@ -132,6 +174,40 @@ export class AnnouncementStore {
         this.loadingFor = null;
       },
     });
+  }
+
+  /**
+   * The banner rendered these announcements: count this session for each, once.
+   *
+   * Counting never hides anything immediately; retirement happens at the next
+   * load, so an announcement does not vanish while the reader is looking at it.
+   */
+  noteShown(ids: readonly string[]): void {
+    const fresh = ids.filter((id) => !this.countedThisSession.has(id));
+    if (!fresh.length) return;
+    const views = readViews();
+    for (const id of fresh) {
+      this.countedThisSession.add(id);
+      views[id] = (views[id] ?? 0) + 1;
+    }
+    writeViews(views);
+  }
+
+  /**
+   * Dismiss (locally only) anything the banner already showed for
+   * {@link AUTO_DISMISS_SESSIONS} sessions, and forget counts for
+   * announcements the server no longer publishes.
+   */
+  private retireSeen(list: readonly Announcement[]): void {
+    const views = readViews();
+    const live = new Set(list.map((a) => a.id));
+    const pruned: Record<string, number> = {};
+    for (const [id, n] of Object.entries(views)) if (live.has(id)) pruned[id] = n;
+    if (Object.keys(pruned).length !== Object.keys(views).length) writeViews(pruned);
+    const retire = list
+      .filter((a) => !this.dismissed().has(a.id) && (pruned[a.id] ?? 0) >= AUTO_DISMISS_SESSIONS)
+      .map((a) => a.id);
+    if (retire.length) this.persist([...this.dismissed(), ...retire]);
   }
 
   isDismissed(id: string): boolean {
@@ -164,6 +240,8 @@ export class AnnouncementStore {
   /** Put everything back — the escape hatch for a too-eager "dismiss all". */
   restoreAll(): void {
     this.persist([]);
+    // Otherwise the next load would retire them all again straight away.
+    writeViews({});
   }
 
   toggleReaction(a: Announcement, name: string): void {
@@ -205,7 +283,11 @@ export class AnnouncementStore {
   private persist(ids: string[]): void {
     const set = new Set(ids);
     this.dismissed.set(set);
-    localStorage.setItem(DISMISSED_KEY, JSON.stringify([...set]));
+    try {
+      localStorage.setItem(DISMISSED_KEY, JSON.stringify([...set]));
+    } catch {
+      // Blocked storage: the dismissal holds for this session only.
+    }
   }
 }
 

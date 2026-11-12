@@ -172,19 +172,6 @@
   border-bottom: 1px solid var(--border);
 }
 
-.search-idle {
-  padding: 0 16px 16px;
-}
-
-.search-idle code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1px 5px;
-  font-size: 0.9em;
-  white-space: nowrap;
-}
-
 .search-error {
   padding: 16px;
   color: var(--danger, #c0392b);

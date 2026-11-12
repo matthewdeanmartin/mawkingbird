@@ -52,7 +52,10 @@ scratch files into the working tree. Put them under the artifact folder:
 screenshots already go there. Set NO_COLOR=1 FORCE_COLOR=0
 on test runs, and grep failures before opening a full dump. A red `make test`
 ends by naming each failed test with its first message line.
-This gate includes design:inventory-check before the test inventory and coverage suite.
+This gate includes design:inventory-check and check:dead-code (knip: unused files and
+undeclared dependencies) before the test inventory and coverage suite. Delete a file
+your change orphans rather than silencing knip; `make dead-code` prints the full,
+advisory report including unused exports.
 For every client change, inspect ui/package.json, ui/Makefile and the applicable
 .github/workflows checks; unit tests and a production build alone do not cover CI.
 The design inventory records source line numbers, so even nonvisual HTML/TS/CSS

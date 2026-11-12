@@ -175,7 +175,7 @@ describe('BlueskySearchPanel', () => {
   });
 
   for (const target of ['accounts', 'statuses'] as const) {
-    it(`hides the Bluesky ${target} rail without results unless Advanced is opened`, () => {
+    it(`hides the Bluesky ${target} rail without results, showing Advanced as a form above`, () => {
       const fixture = setUp(target);
       const rail = (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>(
         '.search-form-box',
@@ -188,7 +188,12 @@ describe('BlueskySearchPanel', () => {
       expect(fixture.componentInstance.twoBox()).toBe(false);
       fixture.componentRef.setInput('advancedOpen', true);
       fixture.detectChanges();
-      expect(rail.hidden).toBe(false);
+      // Advanced is a form across the top now, not a reason to show the rail.
+      expect(rail.hidden).toBe(true);
+      const form = (fixture.nativeElement as HTMLElement).querySelector('.advanced-search');
+      expect(form).not.toBeNull();
+      expect(form?.querySelector('.budget-row')).not.toBeNull();
+      expect(rail.querySelector('.budget-row')).toBeNull();
     });
 
     it(`shows open facets for a single Bluesky ${target} result`, () => {
@@ -234,8 +239,10 @@ describe('BlueskySearchPanel', () => {
   it('collapses the complete phone filter panel while preserving access to active filters', () => {
     const width = vi.spyOn(window, 'innerWidth', 'get').mockReturnValue(390);
     try {
+      postPages = [{ statuses: [makeStatus('1')], cursor: null }];
       const fixture = setUp();
-      fixture.componentRef.setInput('advancedOpen', true);
+      internals(fixture).apiBudget.set(1);
+      internals(fixture).runQuery();
       fixture.detectChanges();
       const panel = (fixture.nativeElement as HTMLElement).querySelector<HTMLDetailsElement>(
         'details.search-form-box',

@@ -287,3 +287,32 @@
   align-items: baseline;
   margin-bottom: 4px;
 }
+
+/* ---- Advanced search form ----
+   Full width above facets and results (spanning both grid columns), so it
+   reads as the search itself. Shared by the Mastodon page and the Bluesky
+   panel. Folds to its summary line once it has run. */
+.advanced-search {
+  grid-column: 1 / -1;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+
+.two-box > .advanced-search {
+  margin-bottom: 0;
+}
+
+.advanced-search > .advanced-panel:last-of-type {
+  border-bottom: none;
+}
+
+.web-engines {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 10px 16px 12px;
+  border-top: 1px solid var(--border);
+}

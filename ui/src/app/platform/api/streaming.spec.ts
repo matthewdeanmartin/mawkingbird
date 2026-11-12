@@ -129,6 +129,36 @@ describe('Streaming', () => {
     sub.unsubscribe();
   });
 
+  it('reports connecting, live and down as the socket opens and drops', async () => {
+    const states: string[] = [];
+    const sub = streaming.open({ stream: 'direct' }, (s) => states.push(s)).subscribe();
+    await settle();
+    expect(states).toEqual(['connecting']);
+    lastSocket().onopen?.();
+    expect(states.at(-1)).toBe('live');
+    lastSocket().onclose?.();
+    expect(states.at(-1)).toBe('down');
+    sub.unsubscribe();
+  });
+
+  it('reports unavailable when the server has no streaming', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      TestBed.inject(Server).setBaseUrl('http://nostream.local');
+      const states: string[] = [];
+      const sub = streaming.open({ stream: 'user' }, (s) => states.push(s)).subscribe();
+      await settle();
+      httpMock
+        .expectOne('/api/v2/instance')
+        .flush({ configuration: { urls: { streaming: null } } });
+      await settle();
+      expect(states).toEqual(['unavailable']);
+      sub.unsubscribe();
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
   it('supports notification-only push without subscribing to home posts', async () => {
     const sub = await open({ stream: 'user:notification' });
     expect(new URL(lastSocket().url).searchParams.get('stream')).toBe('user:notification');

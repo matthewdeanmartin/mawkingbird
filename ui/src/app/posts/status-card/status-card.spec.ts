@@ -301,6 +301,33 @@ describe('StatusCard', () => {
     return fixture;
   }
 
+  describe('long search results', () => {
+    const long = `<p>${'opening words '.repeat(40)}</p><p>${'middle '.repeat(40)}needle ${'tail '.repeat(40)}</p>`;
+
+    it('compacts a very long post around the search terms, and expands in place', () => {
+      const fixture = TestBed.createComponent(StatusCard);
+      fixture.componentRef.setInput('status', makeStatus({ content: long }));
+      fixture.componentRef.setInput('excerptTerms', ['needle']);
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      const excerpt = el.querySelector('app-search-excerpt')!;
+      expect(excerpt).not.toBeNull();
+      expect(excerpt.querySelector('.excerpt-passage mark')?.textContent).toBe('needle');
+      // Most of the 40-word tail is left out until the reader expands it.
+      expect(el.textContent!.match(/tail/g)!.length).toBeLessThan(25);
+
+      excerpt.querySelector<HTMLButtonElement>('.excerpt-expand')!.click();
+      fixture.detectChanges();
+      expect(el.querySelector('app-search-excerpt')).toBeNull();
+      expect(el.querySelector('.content')?.textContent).toContain('tail tail tail');
+    });
+
+    it('shows long posts whole outside search', () => {
+      const el = setUp(makeStatus({ content: long })).nativeElement as HTMLElement;
+      expect(el.querySelector('app-search-excerpt')).toBeNull();
+    });
+  });
+
   /**
    * The translation chain asks the server which pairs it can do before translating.
    * Answer that, then wait for the request a test expects to follow.

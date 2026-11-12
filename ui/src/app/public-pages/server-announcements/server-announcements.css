@@ -108,7 +108,7 @@
 }
 
 .reaction.unused {
-  opacity: 0.65;
+  color: var(--muted);
 }
 
 .reaction .count {
@@ -159,40 +159,7 @@
   margin-top: 6px;
 }
 
-/* Privacy policy and moderated servers, folded under the server facts. */
-.server-policies {
-  display: grid;
-  gap: 8px;
-  padding: 8px 16px 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.server-policy {
-  max-height: 60vh;
-  overflow: auto;
-  overflow-wrap: anywhere;
-}
-
-.moderated-servers {
-  display: grid;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.moderated-servers li {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 10px;
-  align-items: baseline;
-}
-
-.moderated-domain {
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-
-.moderated-severity {
-  font-size: 12px;
+/* Just My Server, which the rail shows only on small servers. */
+.server-mode {
+  margin: 0 16px 12px;
 }

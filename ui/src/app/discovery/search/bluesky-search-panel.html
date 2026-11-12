@@ -1,8 +1,299 @@
-<!-- The same two boxes the Mastodon side uses, with the same class names: the
-     sticky left column holds the form and every refinement control, the right
-     column holds results. The page supplies the query box, the selects, Search,
-     Advanced, Syntax, the AI helper, Save and Share above this. -->
-<details class="search-form-box" [hidden]="empty() && !advancedOpen()" [open]="formOpen">
+<!-- The same boxes the Mastodon side uses, with the same class names: the
+     advanced form across the top when it is on, then the sticky left column of
+     refinement controls and the results column. The page supplies the query box,
+     the type tabs, Search, Advanced, Syntax, the AI helper, Save and Share. -->
+<!-- The advanced form, full width above facets and results like the Mastodon
+     side's, folding to a one-line summary once it has run. The page projects
+     the web-engine row into it. -->
+@if (advancedOpen()) {
+  <details
+    class="advanced-search"
+    [open]="!advancedCollapsed()"
+    (toggle)="advancedCollapsed.set(!$any($event.target).open)"
+  >
+    <summary class="refine-summary">
+      <span>{{ 'pages.search.advanced.title' | transloco }}</span>
+      @if (advancedCollapsed()) {
+        <span class="refine-active-count">{{ 'pages.search.advanced.edit' | transloco }}</span>
+      }
+    </summary>
+    <!-- How many pages to pull eagerly, so faceting has a corpus to work with.
+         Same control, same place and same bargain as the Mastodon side — one
+         Bluesky request per page for either target, so pages and calls are the
+         same number here. -->
+    <div class="budget-row">
+      <label class="muted small" for="bsky-api-budget">
+        {{ 'pages.search.bluesky.maximumApiCalls' | transloco }}
+      </label>
+      <select
+        id="bsky-api-budget"
+        [ngModel]="apiBudget()"
+        (ngModelChange)="setBudget($event)"
+        [attr.aria-label]="'pages.search.bluesky.maximumApiCalls' | transloco"
+      >
+        @for (b of budgetOptions; track b.value) {
+          <option [value]="b.value">
+            {{ b.label | transloco: { count: b.value, items: b.value * 25 } }}
+          </option>
+        }
+      </select>
+    </div>
+
+    @if (advancedOpen() && target() === 'statuses') {
+      <div class="advanced-panel">
+        <p
+          class="muted small"
+          [innerHTML]="'pages.search.bluesky.advancedPostsDescription' | transloco"
+        ></p>
+
+        <label class="adv-field">
+          <span class="muted small">{{ 'pages.search.bluesky.postedBy' | transloco }}</span>
+          <input
+            type="text"
+            [ngModel]="criteria().author"
+            (ngModelChange)="set('author', $event)"
+            [placeholder]="'pages.search.bluesky.handlePlaceholder' | transloco"
+          />
+        </label>
+
+        <label class="adv-field">
+          <span class="muted small">{{ 'pages.search.bluesky.mentioning' | transloco }}</span>
+          <input
+            type="text"
+            [ngModel]="criteria().mentions"
+            (ngModelChange)="set('mentions', $event)"
+            [placeholder]="'pages.search.bluesky.handlePlaceholder' | transloco"
+          />
+        </label>
+
+        <label class="adv-field">
+          <span class="muted small">{{ 'pages.search.bluesky.hashtags' | transloco }}</span>
+          <input
+            type="text"
+            [ngModel]="tagInput()"
+            (ngModelChange)="tagInput.set($event)"
+            [placeholder]="'pages.search.bluesky.hashtagPlaceholder' | transloco"
+          />
+          <!-- Say "all", because the server ANDs them and readers assume OR. -->
+          <small
+            class="muted"
+            [innerHTML]="'pages.search.bluesky.postsWithAllTags' | transloco"
+          ></small>
+        </label>
+
+        <label class="adv-field">
+          <span class="muted small">{{ 'pages.search.bluesky.linksToDomain' | transloco }}</span>
+          <input
+            type="text"
+            [ngModel]="criteria().domain"
+            (ngModelChange)="set('domain', $event)"
+            [placeholder]="'pages.search.bluesky.domainPlaceholder' | transloco"
+          />
+        </label>
+
+        <label class="adv-field">
+          <span class="muted small">{{ 'pages.search.bluesky.linksToUrl' | transloco }}</span>
+          <input
+            type="url"
+            [ngModel]="criteria().url"
+            (ngModelChange)="set('url', $event)"
+            [placeholder]="'pages.search.bluesky.urlPlaceholder' | transloco"
+          />
+        </label>
+
+        <div class="advanced-fields">
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.postedAfter' | transloco }}</span>
+            <input
+              type="date"
+              [ngModel]="criteria().after"
+              (ngModelChange)="set('after', $event)"
+            />
+          </label>
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.postedBefore' | transloco }}</span>
+            <input
+              type="date"
+              [ngModel]="criteria().before"
+              (ngModelChange)="set('before', $event)"
+            />
+          </label>
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.language' | transloco }}</span>
+            <input
+              type="text"
+              class="lang-input"
+              [ngModel]="criteria().language"
+              (ngModelChange)="set('language', $event)"
+              placeholder="en"
+            />
+          </label>
+        </div>
+
+        <div class="advanced-fields">
+          <label>
+            <!-- Ranking is a server-side choice, unlike the in-memory Sort in the
+                 refine bar below — so it belongs with the criteria, not with them. -->
+            <span class="muted small">{{ 'pages.search.bluesky.ranking' | transloco }}</span>
+            <select [ngModel]="criteria().sort" (ngModelChange)="set('sort', $event)">
+              <option value="latest">{{ 'pages.search.bluesky.latest' | transloco }}</option>
+              <option value="top">{{ 'pages.search.bluesky.top' | transloco }}</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- Everything above is sent to Bluesky; these are not. `searchPosts` has
+             no engagement parameters, so this gates the posts already loaded —
+             which is why it sits below a divider and takes effect immediately
+             instead of waiting for "Apply & search". -->
+        <div class="client-side-fields">
+          <div class="facet-label muted small">
+            {{ 'pages.search.bluesky.minimumEngagement' | transloco }}
+            <span class="muted small">
+              {{
+                'pages.search.bluesky.loadedPostsNoNewSearch'
+                  | transloco: { postType: words().posts }
+              }}
+            </span>
+          </div>
+          <div class="advanced-fields">
+            <label>
+              <span class="muted small">{{ 'pages.search.bluesky.likes' | transloco }}</span>
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.any' | transloco"
+                [ngModel]="engagementBounds().minLikes ?? null"
+                (ngModelChange)="setEngagementBound('minLikes', $event)"
+                [attr.aria-label]="'pages.search.bluesky.minimumLikes' | transloco"
+              />
+            </label>
+            <label>
+              <span class="muted small">{{ 'pages.search.bluesky.reposts' | transloco }}</span>
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.any' | transloco"
+                [ngModel]="engagementBounds().minReposts ?? null"
+                (ngModelChange)="setEngagementBound('minReposts', $event)"
+                [attr.aria-label]="
+                  'pages.search.bluesky.minimumBoosts' | transloco: { boostType: words().boosts }
+                "
+              />
+            </label>
+            <label>
+              <span class="muted small">{{ 'pages.search.bluesky.replies' | transloco }}</span>
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.any' | transloco"
+                [ngModel]="engagementBounds().minReplies ?? null"
+                (ngModelChange)="setEngagementBound('minReplies', $event)"
+                [attr.aria-label]="'pages.search.bluesky.minimumReplies' | transloco"
+              />
+            </label>
+          </div>
+        </div>
+
+        <div class="advanced-actions">
+          <button class="btn btn-sm" (click)="applyAdvanced()">
+            {{ 'pages.search.bluesky.applyAndSearch' | transloco }}
+          </button>
+          @if (hasFilters()) {
+            <button class="btn btn-outline btn-sm" (click)="reset()">
+              {{ 'pages.search.bluesky.clear' | transloco }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+
+    @if (advancedOpen() && target() === 'accounts') {
+      <div class="advanced-panel">
+        <p
+          class="muted small"
+          [innerHTML]="'pages.search.bluesky.advancedAccountsDescription' | transloco"
+        ></p>
+        <!-- The precise counterpart to the clickable follower/post buckets below,
+             mirroring the Mastodon page's numeric bounds grid. -->
+        <div class="num-facet-grid">
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.followers' | transloco }}</span>
+            <span class="num-range">
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.min' | transloco"
+                [ngModel]="accountBound('followers', 'min')"
+                (ngModelChange)="setAccountBound('followers', 'min', $event)"
+                [attr.aria-label]="'pages.search.bluesky.minimumFollowers' | transloco"
+              />
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.max' | transloco"
+                [ngModel]="accountBound('followers', 'max')"
+                (ngModelChange)="setAccountBound('followers', 'max', $event)"
+                [attr.aria-label]="'pages.search.bluesky.maximumFollowers' | transloco"
+              />
+            </span>
+          </label>
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.following' | transloco }}</span>
+            <span class="num-range">
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.min' | transloco"
+                [ngModel]="accountBound('following', 'min')"
+                (ngModelChange)="setAccountBound('following', 'min', $event)"
+                [attr.aria-label]="'pages.search.bluesky.minimumFollowing' | transloco"
+              />
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.max' | transloco"
+                [ngModel]="accountBound('following', 'max')"
+                (ngModelChange)="setAccountBound('following', 'max', $event)"
+                [attr.aria-label]="'pages.search.bluesky.maximumFollowing' | transloco"
+              />
+            </span>
+          </label>
+          <label>
+            <span class="muted small">{{ 'pages.search.bluesky.posts' | transloco }}</span>
+            <span class="num-range">
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.min' | transloco"
+                [ngModel]="accountBound('posts', 'min')"
+                (ngModelChange)="setAccountBound('posts', 'min', $event)"
+                [attr.aria-label]="
+                  'pages.search.bluesky.minimumPosts' | transloco: { postType: words().posts }
+                "
+              />
+              <input
+                type="number"
+                min="0"
+                [placeholder]="'pages.search.bluesky.max' | transloco"
+                [ngModel]="accountBound('posts', 'max')"
+                (ngModelChange)="setAccountBound('posts', 'max', $event)"
+                [attr.aria-label]="
+                  'pages.search.bluesky.maximumPosts' | transloco: { postType: words().posts }
+                "
+              />
+            </span>
+          </label>
+        </div>
+      </div>
+    }
+
+    <ng-content select="[advancedExtra]" />
+  </details>
+}
+
+<!-- Facets and refinements only: the search options moved to the form above. -->
+<details class="search-form-box" [hidden]="!ran() || empty()" [open]="formOpen">
   <summary class="refine-summary">
     <span>{{ 'pages.search.refine.summary' | transloco }}</span>
     @if (activeRefinementCount(); as count) {
@@ -14,272 +305,6 @@
       }}</span>
     }
   </summary>
-  <!-- How many pages to pull eagerly, so faceting has a corpus to work with.
-       Same control, same place and same bargain as the Mastodon side — one
-       Bluesky request per page for either target, so pages and calls are the
-       same number here. -->
-  <div class="budget-row">
-    <label class="muted small" for="bsky-api-budget">
-      {{ 'pages.search.bluesky.maximumApiCalls' | transloco }}
-    </label>
-    <select
-      id="bsky-api-budget"
-      [ngModel]="apiBudget()"
-      (ngModelChange)="setBudget($event)"
-      [attr.aria-label]="'pages.search.bluesky.maximumApiCalls' | transloco"
-    >
-      @for (b of budgetOptions; track b.value) {
-        <option [value]="b.value">
-          {{ b.label | transloco: { count: b.value, items: b.value * 25 } }}
-        </option>
-      }
-    </select>
-  </div>
-
-  @if (advancedOpen() && target() === 'statuses') {
-    <div class="advanced-panel">
-      <p
-        class="muted small"
-        [innerHTML]="'pages.search.bluesky.advancedPostsDescription' | transloco"
-      ></p>
-
-      <label class="adv-field">
-        <span class="muted small">{{ 'pages.search.bluesky.postedBy' | transloco }}</span>
-        <input
-          type="text"
-          [ngModel]="criteria().author"
-          (ngModelChange)="set('author', $event)"
-          [placeholder]="'pages.search.bluesky.handlePlaceholder' | transloco"
-        />
-      </label>
-
-      <label class="adv-field">
-        <span class="muted small">{{ 'pages.search.bluesky.mentioning' | transloco }}</span>
-        <input
-          type="text"
-          [ngModel]="criteria().mentions"
-          (ngModelChange)="set('mentions', $event)"
-          [placeholder]="'pages.search.bluesky.handlePlaceholder' | transloco"
-        />
-      </label>
-
-      <label class="adv-field">
-        <span class="muted small">{{ 'pages.search.bluesky.hashtags' | transloco }}</span>
-        <input
-          type="text"
-          [ngModel]="tagInput()"
-          (ngModelChange)="tagInput.set($event)"
-          [placeholder]="'pages.search.bluesky.hashtagPlaceholder' | transloco"
-        />
-        <!-- Say "all", because the server ANDs them and readers assume OR. -->
-        <small
-          class="muted"
-          [innerHTML]="'pages.search.bluesky.postsWithAllTags' | transloco"
-        ></small>
-      </label>
-
-      <label class="adv-field">
-        <span class="muted small">{{ 'pages.search.bluesky.linksToDomain' | transloco }}</span>
-        <input
-          type="text"
-          [ngModel]="criteria().domain"
-          (ngModelChange)="set('domain', $event)"
-          [placeholder]="'pages.search.bluesky.domainPlaceholder' | transloco"
-        />
-      </label>
-
-      <label class="adv-field">
-        <span class="muted small">{{ 'pages.search.bluesky.linksToUrl' | transloco }}</span>
-        <input
-          type="url"
-          [ngModel]="criteria().url"
-          (ngModelChange)="set('url', $event)"
-          [placeholder]="'pages.search.bluesky.urlPlaceholder' | transloco"
-        />
-      </label>
-
-      <div class="advanced-fields">
-        <label>
-          <span class="muted small">{{ 'pages.search.bluesky.postedAfter' | transloco }}</span>
-          <input type="date" [ngModel]="criteria().after" (ngModelChange)="set('after', $event)" />
-        </label>
-        <label>
-          <span class="muted small">{{ 'pages.search.bluesky.postedBefore' | transloco }}</span>
-          <input
-            type="date"
-            [ngModel]="criteria().before"
-            (ngModelChange)="set('before', $event)"
-          />
-        </label>
-        <label>
-          <span class="muted small">{{ 'pages.search.bluesky.language' | transloco }}</span>
-          <input
-            type="text"
-            class="lang-input"
-            [ngModel]="criteria().language"
-            (ngModelChange)="set('language', $event)"
-            placeholder="en"
-          />
-        </label>
-      </div>
-
-      <div class="advanced-fields">
-        <label>
-          <!-- Ranking is a server-side choice, unlike the in-memory Sort in the
-               refine bar below — so it belongs with the criteria, not with them. -->
-          <span class="muted small">{{ 'pages.search.bluesky.ranking' | transloco }}</span>
-          <select [ngModel]="criteria().sort" (ngModelChange)="set('sort', $event)">
-            <option value="latest">{{ 'pages.search.bluesky.latest' | transloco }}</option>
-            <option value="top">{{ 'pages.search.bluesky.top' | transloco }}</option>
-          </select>
-        </label>
-      </div>
-
-      <!-- Everything above is sent to Bluesky; these are not. `searchPosts` has
-           no engagement parameters, so this gates the posts already loaded —
-           which is why it sits below a divider and takes effect immediately
-           instead of waiting for "Apply & search". -->
-      <div class="client-side-fields">
-        <div class="facet-label muted small">
-          {{ 'pages.search.bluesky.minimumEngagement' | transloco }}
-          <span class="muted small">
-            {{
-              'pages.search.bluesky.loadedPostsNoNewSearch' | transloco: { postType: words().posts }
-            }}
-          </span>
-        </div>
-        <div class="advanced-fields">
-          <label>
-            <span class="muted small">{{ 'pages.search.bluesky.likes' | transloco }}</span>
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.any' | transloco"
-              [ngModel]="engagementBounds().minLikes ?? null"
-              (ngModelChange)="setEngagementBound('minLikes', $event)"
-              [attr.aria-label]="'pages.search.bluesky.minimumLikes' | transloco"
-            />
-          </label>
-          <label>
-            <span class="muted small">{{ 'pages.search.bluesky.reposts' | transloco }}</span>
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.any' | transloco"
-              [ngModel]="engagementBounds().minReposts ?? null"
-              (ngModelChange)="setEngagementBound('minReposts', $event)"
-              [attr.aria-label]="
-                'pages.search.bluesky.minimumBoosts' | transloco: { boostType: words().boosts }
-              "
-            />
-          </label>
-          <label>
-            <span class="muted small">{{ 'pages.search.bluesky.replies' | transloco }}</span>
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.any' | transloco"
-              [ngModel]="engagementBounds().minReplies ?? null"
-              (ngModelChange)="setEngagementBound('minReplies', $event)"
-              [attr.aria-label]="'pages.search.bluesky.minimumReplies' | transloco"
-            />
-          </label>
-        </div>
-      </div>
-
-      <div class="advanced-actions">
-        <button class="btn btn-sm" (click)="applyAdvanced()">
-          {{ 'pages.search.bluesky.applyAndSearch' | transloco }}
-        </button>
-        @if (hasFilters()) {
-          <button class="btn btn-outline btn-sm" (click)="reset()">
-            {{ 'pages.search.bluesky.clear' | transloco }}
-          </button>
-        }
-      </div>
-    </div>
-  }
-
-  @if (advancedOpen() && target() === 'accounts') {
-    <div class="advanced-panel">
-      <p
-        class="muted small"
-        [innerHTML]="'pages.search.bluesky.advancedAccountsDescription' | transloco"
-      ></p>
-      <!-- The precise counterpart to the clickable follower/post buckets below,
-           mirroring the Mastodon page's numeric bounds grid. -->
-      <div class="num-facet-grid">
-        <label>
-          <span class="muted small">{{ 'pages.search.bluesky.followers' | transloco }}</span>
-          <span class="num-range">
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.min' | transloco"
-              [ngModel]="accountBound('followers', 'min')"
-              (ngModelChange)="setAccountBound('followers', 'min', $event)"
-              [attr.aria-label]="'pages.search.bluesky.minimumFollowers' | transloco"
-            />
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.max' | transloco"
-              [ngModel]="accountBound('followers', 'max')"
-              (ngModelChange)="setAccountBound('followers', 'max', $event)"
-              [attr.aria-label]="'pages.search.bluesky.maximumFollowers' | transloco"
-            />
-          </span>
-        </label>
-        <label>
-          <span class="muted small">{{ 'pages.search.bluesky.following' | transloco }}</span>
-          <span class="num-range">
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.min' | transloco"
-              [ngModel]="accountBound('following', 'min')"
-              (ngModelChange)="setAccountBound('following', 'min', $event)"
-              [attr.aria-label]="'pages.search.bluesky.minimumFollowing' | transloco"
-            />
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.max' | transloco"
-              [ngModel]="accountBound('following', 'max')"
-              (ngModelChange)="setAccountBound('following', 'max', $event)"
-              [attr.aria-label]="'pages.search.bluesky.maximumFollowing' | transloco"
-            />
-          </span>
-        </label>
-        <label>
-          <span class="muted small">{{ 'pages.search.bluesky.posts' | transloco }}</span>
-          <span class="num-range">
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.min' | transloco"
-              [ngModel]="accountBound('posts', 'min')"
-              (ngModelChange)="setAccountBound('posts', 'min', $event)"
-              [attr.aria-label]="
-                'pages.search.bluesky.minimumPosts' | transloco: { postType: words().posts }
-              "
-            />
-            <input
-              type="number"
-              min="0"
-              [placeholder]="'pages.search.bluesky.max' | transloco"
-              [ngModel]="accountBound('posts', 'max')"
-              (ngModelChange)="setAccountBound('posts', 'max', $event)"
-              [attr.aria-label]="
-                'pages.search.bluesky.maximumPosts' | transloco: { postType: words().posts }
-              "
-            />
-          </span>
-        </label>
-      </div>
-    </div>
-  }
-
   <!-- Active-filter chips, the same shape as the Mastodon side's. Everything a
        Bluesky search sends is server-side, so they are all `chip-server`. -->
   @if (ran() && activeFilters().length) {
@@ -637,20 +662,7 @@
   } @else if (error(); as message) {
     <p class="search-error center" role="alert">{{ message }}</p>
   } @else if (!ran()) {
-    <!-- Nothing searched yet: answer the question an empty box poses, which is
-         "what can I type here?" — the same thing the Mastodon side does with its
-         embedded syntax help. -->
-    <div class="search-idle">
-      <div class="page-head">{{ 'pages.search.bluesky.searchingTitle' | transloco }}</div>
-      @if (target() === 'accounts') {
-        <p
-          class="muted small"
-          [innerHTML]="'pages.search.bluesky.accountSearchIntro' | transloco"
-        ></p>
-      } @else {
-        <p class="muted small" [innerHTML]="'pages.search.bluesky.postSearchIntro' | transloco"></p>
-      }
-    </div>
+    <!-- Nothing searched yet: deliberately blank, as on the Mastodon side. -->
   } @else if (empty()) {
     <p class="muted center">
       {{
@@ -720,7 +732,7 @@
         </div>
       }
       @for (s of group.statuses; track s.id) {
-        <app-status-card [status]="s" [showSource]="true" />
+        <app-status-card [status]="s" [showSource]="true" [excerptTerms]="excerptTerms()" />
         <!-- Repeats this row stands in for. The count is the point:
              "+36 near-identical" is the evidence of flooding. -->
         @if (duplicatesOf(s.id); as dupes) {
@@ -744,7 +756,11 @@
             @if (isRepeatExpanded(s.id)) {
               <div class="repeat-list">
                 @for (d of dupes; track d.id) {
-                  <app-status-card [status]="d" [showSource]="true" />
+                  <app-status-card
+                    [status]="d"
+                    [showSource]="true"
+                    [excerptTerms]="excerptTerms()"
+                  />
                 }
               </div>
             }

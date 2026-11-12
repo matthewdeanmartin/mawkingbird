@@ -11,6 +11,7 @@ import { Server } from '../../platform/http/server';
 import { SearchServer } from '../../platform/http/search-server';
 import { MastodonConnector } from '../../connections/mastodon/mastodon-connector';
 import { seedBskyIdentity } from '../../testing/seed-storage';
+import { JustMyServer } from '../../feeds/just-my-server';
 import { RightRail } from './right-rail';
 
 interface RightRailInternals {
@@ -41,6 +42,25 @@ describe('RightRail', () => {
   afterEach(() => {
     httpMock.verify();
   });
+
+  /** A rail whose instance reports activeMonth monthly users. */
+  function withInstance(activeMonth: number): ComponentFixture<RightRail> {
+    const fixture = TestBed.createComponent(RightRail);
+    fixture.detectChanges();
+    httpMock
+      .match((r) => r.url === '/api/v2/instance' || r.url === '/api/v1/instance')
+      .forEach((r) =>
+        r.flush({
+          title: 'Home',
+          domain: 'elekk.xyz',
+          version: '4.5.0',
+          usage: { users: { active_month: activeMonth } },
+        }),
+      );
+    httpMock.match(() => true).forEach((req) => req.flush({}, { status: 404, statusText: 'NF' }));
+    fixture.detectChanges();
+    return fixture;
+  }
 
   function setUp(): ComponentFixture<RightRail> {
     const fixture = TestBed.createComponent(RightRail);
@@ -381,8 +401,8 @@ describe('RightRail', () => {
       localStorage.setItem('mastodon_mock_account_mode', 'mastodon');
       localStorage.setItem('mastodon_mock_token', 'tok');
       TestBed.inject(Auth).account.set({ id: '1', acct: 'matt@elekk.xyz' } as Account);
-      const fixture = setUp();
-      fixture.detectChanges();
+      // A small server, so Just My Server is offered in the rail.
+      const fixture = withInstance(40);
       const el = fixture.nativeElement as HTMLElement;
 
       // The standing regression clause: an existing Mastodon session sees no
@@ -433,5 +453,38 @@ describe('RightRail', () => {
     httpMock
       .match(() => true)
       .forEach((request) => request.flush([], { status: 200, statusText: 'OK' }));
+  });
+
+  describe('Just My Server card', () => {
+    beforeEach(() => {
+      localStorage.setItem('mastodon_mock_account_mode', 'mastodon');
+      localStorage.setItem('mastodon_mock_token', 'tok');
+      TestBed.inject(Auth).account.set({ id: '1', acct: 'matt@elekk.xyz' } as Account);
+    });
+
+    it('is offered on a small server', () => {
+      const el = withInstance(4999).nativeElement as HTMLElement;
+      expect(el.querySelector('.server-mode-card')).not.toBeNull();
+    });
+
+    it('stays out of the rail on a big server, and before the size is known', () => {
+      const fixture = TestBed.createComponent(RightRail);
+      fixture.detectChanges();
+      expect((fixture.nativeElement as HTMLElement).querySelector('.server-mode-card')).toBeNull();
+      httpMock.match(() => true).forEach((req) => req.flush({}, { status: 404, statusText: 'NF' }));
+
+      const big = withInstance(5000).nativeElement as HTMLElement;
+      expect(big.querySelector('.server-mode-card')).toBeNull();
+    });
+
+    it('stays in the rail on a big server once it is on, so it can be turned off', () => {
+      const fixture = withInstance(250_000);
+      TestBed.inject(JustMyServer).enabled.set(true);
+      fixture.detectChanges();
+      httpMock.match(() => true).forEach((req) => req.flush([]));
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('.server-mode-card'),
+      ).not.toBeNull();
+    });
   });
 });

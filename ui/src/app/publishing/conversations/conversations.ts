@@ -21,7 +21,7 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Compose } from '../compose/compose';
 import { HumanTimePipe } from '../../i18n/human-time.pipe';
 import { ReportDialog } from '../../moderation/report-dialog/report-dialog';
-import { Streaming } from '../../platform/api/streaming';
+import { Streaming, StreamState } from '../../platform/api/streaming';
 import {
   Account,
   Conversation,
@@ -61,6 +61,16 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 
 /** localStorage map of chat key → ISO timestamp of the newest message seen there. */
 const READ_KEY = 'mockingbird_chat_read';
+
+/** Private conversations per page: Mastodon's maximum. */
+const CONVERSATION_PAGE = 40;
+/** Mention notifications per page: Mastodon's v1 maximum is 80; 40 keeps each request light. */
+const MENTION_PAGE = 40;
+/** Mention pages fetched on open, before any Load more (about 120 mentions). */
+const INITIAL_MENTION_PAGES = 3;
+/** While not live: how often the open conversation and the chat list are re-fetched. */
+const POLL_THREAD_MS = 20_000;
+const POLL_LIST_MS = 60_000;
 
 /**
  * One row in the chat list. Private chats wrap a Mastodon conversation. Public
@@ -182,6 +192,20 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.noOlderMessages: No older messages.
 // i18n pages.conversations.loadMoreTitle: Load older mentions into your public chats
 // i18n pages.conversations.loadMore: Load more
+// i18n pages.conversations.loadOlder: Load older messages
+// i18n pages.conversations.refresh: Refresh
+// i18n pages.conversations.refreshing: Refreshing…
+// i18n pages.conversations.live.live: ● Live
+// i18n pages.conversations.live.liveTitle: New messages, likes and replies arrive as they happen.
+// i18n pages.conversations.live.connecting: Connecting…
+// i18n pages.conversations.live.connectingTitle: Opening the live connection to your server.
+// i18n pages.conversations.live.down: Reconnecting…
+// i18n pages.conversations.live.downTitle: The live connection dropped. Until it is back, the open chat is checked every 20 seconds; Refresh checks now.
+// i18n pages.conversations.live.unavailable: Not live
+// i18n pages.conversations.live.unavailableTitle: Your server does not offer live updates. The open chat is checked every 20 seconds; Refresh checks now.
+// i18n pages.conversations.composeKind.public: 🌐 Public reply: anyone can see it. Choose “Mentioned only” to send it privately instead.
+// i18n pages.conversations.composeKind.private: 🔒 Private message: only the people mentioned in it receive it.
+// i18n pages.conversations.movedToPrivate: You sent that privately, so it is here in your private chat with {{name}} rather than in the public one.
 // i18n pages.conversations.actionsAriaLabel: Conversation actions
 // i18n pages.conversations.mute: Mute
 // i18n pages.conversations.block: Block
@@ -289,6 +313,38 @@ export class Conversations implements OnInit, OnDestroy {
   protected chatsExhausted = signal(false);
   /** Oldest notification id fetched so far, the cursor for "Load more". */
   private oldestNotifId: string | null = null;
+  /** Cursor for older private conversations: the oldest row's last status id. */
+  private oldestConvStatusId: string | null = null;
+  private mentionsExhausted = false;
+  private convsExhausted = false;
+  /**
+   * Whether new messages arrive by themselves. Combined from the two Mastodon
+   * streams this page opens; `off` when there is no Mastodon account at all.
+   */
+  protected liveState = signal<StreamState | 'off'>('off');
+  /** Indicator wording per state, as whole keys so the i18n check can see them. */
+  protected readonly liveText: Record<StreamState | 'off', { label: string; title: string }> = {
+    live: { label: 'pages.conversations.live.live', title: 'pages.conversations.live.liveTitle' },
+    connecting: {
+      label: 'pages.conversations.live.connecting',
+      title: 'pages.conversations.live.connectingTitle',
+    },
+    down: { label: 'pages.conversations.live.down', title: 'pages.conversations.live.downTitle' },
+    unavailable: {
+      label: 'pages.conversations.live.unavailable',
+      title: 'pages.conversations.live.unavailableTitle',
+    },
+    off: { label: '', title: '' },
+  };
+  private streamStates: Record<'direct' | 'user', StreamState> = {
+    direct: 'connecting',
+    user: 'connecting',
+  };
+  /** The Refresh button's own spinner, separate from the first load. */
+  protected refreshing = signal(false);
+  /** Set after a public chat's reply was sent privately and moved to its own chat. */
+  protected movedToPrivate = signal<{ key: string; name: string } | null>(null);
+  private pollTimers: ReturnType<typeof setInterval>[] = [];
   protected privateConvs = signal<Conversation[]>([]);
   protected bskyConvos = signal<BskyConvoView[]>([]);
   /** The linked app password can't read DMs; show the relink hint. */
@@ -296,7 +352,6 @@ export class Conversations implements OnInit, OnDestroy {
   protected bskyMessages = signal<BskyMessageView[]>([]);
   protected bskyDraft = signal('');
   protected bskySending = signal(false);
-  protected readonly bskyRefreshing = signal(false);
   /** The chat list shows Bluesky message requests instead of chats. */
   protected showRequests = signal(false);
   /** Message whose reaction picker is open, by id. */
@@ -703,10 +758,12 @@ export class Conversations implements OnInit, OnDestroy {
           }
         }
       }
-    } else if (implicit) {
-      // Private chats: the 1:1 partner is reached via the conversation itself,
-      // so drop their handle from the box (group members are kept above).
-      handles.delete(implicit);
+    } else if (implicit && implicit !== me?.acct) {
+      // Private chats keep every participant's handle, the partner's included.
+      // A "mentioned only" post reaches exactly the accounts @-mentioned in its
+      // text; the conversation does not deliver it. This used to drop the
+      // partner's handle, so private replies from chat reached nobody.
+      handles.add(implicit);
     }
     if (me?.acct) {
       handles.delete(me.acct);
@@ -744,26 +801,39 @@ export class Conversations implements OnInit, OnDestroy {
       this.prefs.setChatKind('all');
     }
     this.load();
+    this.startPolling();
     if (!this.mastodonAvailable()) return;
+    this.liveState.set('connecting');
     // The IM feel: streams are live while this page is open, closed on leave.
+    // Their connection state drives the Live indicator, and polling (see
+    // startPolling) covers whatever time they are not live.
     this.subs.push(
-      this.streaming.open({ stream: 'direct' }).subscribe(({ event, payload }) => {
-        if (event === 'conversation') {
-          this.upsertConversation(payload as Conversation);
-        }
-      }),
-      this.streaming.open({ stream: 'user' }).subscribe(({ event, payload }) => {
-        if (event === 'notification') {
-          const n = payload as MastodonNotification;
-          if (n.type === 'mention' && n.status) {
-            this.addPublicStatus(n.status, n.account);
+      this.streaming
+        .open({ stream: 'direct' }, (state) => this.noteStreamState('direct', state))
+        .subscribe(({ event, payload }) => {
+          if (event === 'conversation') {
+            this.upsertConversation(payload as Conversation);
           }
-        } else if (event === 'update' || event === 'status_update') {
-          this.maybeAppendToThread(payload as Status);
-        } else if (event === 'delete') {
-          this.messages.update((list) => list.filter((m) => m.id !== payload));
-        }
-      }),
+        }),
+      this.streaming
+        .open({ stream: 'user' }, (state) => this.noteStreamState('user', state))
+        .subscribe(({ event, payload }) => {
+          if (event === 'notification') {
+            const n = payload as MastodonNotification;
+            if (n.type === 'mention' && n.status) {
+              this.addPublicStatus(n.status, n.account);
+            } else if (n.status && ['favourite', 'reblog', 'update'].includes(n.type)) {
+              // Someone liked, boosted or edited a message: the notification
+              // carries the status with fresh counts. These used to be dropped,
+              // so a like only showed up after a reload.
+              this.refreshMessage(n.status);
+            }
+          } else if (event === 'update' || event === 'status_update') {
+            this.maybeAppendToThread(payload as Status);
+          } else if (event === 'delete') {
+            this.messages.update((list) => list.filter((m) => m.id !== payload));
+          }
+        }),
     );
   }
 
@@ -772,6 +842,149 @@ export class Conversations implements OnInit, OnDestroy {
     this.threadSub?.unsubscribe();
     for (const sub of this.subs) {
       sub.unsubscribe();
+    }
+    for (const timer of this.pollTimers) {
+      clearInterval(timer);
+    }
+  }
+
+  // ---------------------------------------------------------------- live state
+
+  /** Both streams must be live for the page to be; any one unavailable means never. */
+  private noteStreamState(which: 'direct' | 'user', state: StreamState): void {
+    this.streamStates[which] = state;
+    const states = Object.values(this.streamStates);
+    this.liveState.set(
+      states.includes('unavailable')
+        ? 'unavailable'
+        : states.every((s) => s === 'live')
+          ? 'live'
+          : states.includes('down')
+            ? 'down'
+            : 'connecting',
+    );
+  }
+
+  /**
+   * The fallback for when messages cannot arrive by themselves: Mastodon while
+   * its streams are not live, and Bluesky always (it has no stream here). The
+   * open conversation is re-fetched every 20 s, the chat list every 60 s, and
+   * nothing at all while the tab is hidden.
+   */
+  private startPolling(): void {
+    const visible = () => typeof document === 'undefined' || !document.hidden;
+    this.pollTimers.push(
+      setInterval(() => {
+        const chat = this.selected();
+        if (!visible() || !chat || this.threadLoading()) return;
+        if (chat.kind === 'bsky' || (chat.kind !== 'bot' && this.liveState() !== 'live')) {
+          this.refreshThread();
+        }
+      }, POLL_THREAD_MS),
+      setInterval(() => {
+        if (!visible() || this.loading() || this.refreshing()) return;
+        this.refreshList({ mastodon: this.liveState() !== 'live', bluesky: true });
+      }, POLL_LIST_MS),
+    );
+  }
+
+  /** The Refresh button: every chat list and the open conversation, now. */
+  protected refreshAll(): void {
+    if (this.refreshing() || this.loading()) return;
+    this.refreshList({ mastodon: true, bluesky: true });
+    this.refreshThread();
+  }
+
+  /**
+   * Re-fetch the newest page of each list and merge it in. Merging (not
+   * replacing) keeps anything paged in with Load more, and the paging cursors
+   * are left alone so Load more still continues from the oldest row.
+   */
+  private refreshList(which: { mastodon: boolean; bluesky: boolean }): void {
+    let pending = 0;
+    const settle = () => {
+      if (--pending <= 0) this.refreshing.set(false);
+    };
+    this.refreshing.set(true);
+    if (which.bluesky && this.bsky.linked()) {
+      pending++;
+      this.subs.push(
+        this.bskyChat
+          .listConvos()
+          .pipe(timeout(15_000))
+          .subscribe({
+            next: (list) => {
+              const before = this.bskyConvos();
+              this.bskyConvos.set(list.convos);
+              this.bskyScopeError.set(false);
+              this.bskyLoadError.set(false);
+              const chat = this.selected();
+              if (chat?.kind === 'bsky' && chat.convoId) {
+                const prev = before.find((c) => c.id === chat.convoId);
+                const next = list.convos.find((c) => c.id === chat.convoId);
+                if (next && next.rev !== prev?.rev) this.loadBskyThread(chat);
+              }
+              settle();
+            },
+            error: (error: unknown) => {
+              this.blueskyLoadFailed(error);
+              settle();
+            },
+          }),
+      );
+    }
+    if (which.mastodon && this.mastodonAvailable()) {
+      pending += 2;
+      this.api.conversations(undefined, CONVERSATION_PAGE).subscribe({
+        next: (convs) => {
+          this.privateConvs.update((list) => mergeConversations(list, convs));
+          settle();
+        },
+        error: settle,
+      });
+      this.api.notifications(undefined, { types: ['mention'], limit: MENTION_PAGE }).subscribe({
+        next: (notifs) => {
+          for (const n of notifs) {
+            if (n.status) this.addPublicStatus(n.status, n.account);
+          }
+          settle();
+        },
+        error: settle,
+      });
+    }
+    if (!pending) this.refreshing.set(false);
+  }
+
+  /** Re-fetch the open conversation, keeping what is shown and updating counts. */
+  private refreshThread(): void {
+    const chat = this.selected();
+    if (!chat || chat.kind === 'bot') return;
+    if (chat.kind === 'bsky') {
+      this.loadBskyThread(chat);
+      return;
+    }
+    const newest = this.messages().at(-1);
+    if (!newest || !this.mastodonAvailable()) return;
+    const key = chat.key;
+    // The context excludes the status itself, so it is fetched alongside for its
+    // own counts. Fresh copies come last, so dedupeSort keeps them.
+    forkJoin([this.api.getContext(newest.id), this.api.getStatus(newest.id)]).subscribe({
+      next: ([ctx, self]) => {
+        if (this.selectedKey() !== key) return;
+        const before = this.messages().length;
+        this.messages.update((list) =>
+          dedupeSort([...list, ...ctx.ancestors, self, ...ctx.descendants]),
+        );
+        if (this.messages().length > before) this.scrollToBottom();
+      },
+      error: () => undefined,
+    });
+  }
+
+  /** A status we already show came back with fresh counts or text. */
+  private refreshMessage(status: Status): void {
+    if (this.messages().some((m) => m.id === status.id)) {
+      this.replaceMessage(status);
     }
   }
 
@@ -782,6 +995,11 @@ export class Conversations implements OnInit, OnDestroy {
     this.bskyLoadError.set(false);
     this.bskyScopeError.set(false);
     this.loading.set(true);
+    this.oldestNotifId = null;
+    this.oldestConvStatusId = null;
+    this.mentionsExhausted = false;
+    this.convsExhausted = false;
+    this.chatsExhausted.set(false);
     let pending = (this.bsky.linked() ? 1 : 0) + (this.mastodonAvailable() ? 2 : 0);
     if (!pending) this.loading.set(false);
     const done = () => {
@@ -815,34 +1033,47 @@ export class Conversations implements OnInit, OnDestroy {
     };
     this.loadSub.add(
       this.api
-        .conversations()
+        .conversations(undefined, CONVERSATION_PAGE)
         .pipe(timeout(15_000))
         .subscribe({
           next: (convs) => {
             this.privateConvs.set(convs);
+            this.noteConvPage(convs);
             done();
           },
           error: failed,
         }),
     );
-    this.loadSub.add(
-      this.api
-        .notifications()
-        .pipe(timeout(15_000))
-        .subscribe({
-          next: (notifs) => {
-            this.ingestNotifPage(notifs);
-            done();
-          },
-          error: failed,
-        }),
-    );
+    // Several pages of mentions, one after another: a single page used to be
+    // the whole history, and with every notification type in it (likes,
+    // boosts, follows) a busy account saw only a handful of mentions.
+    const page = (left: number): void => {
+      this.loadSub.add(
+        this.api
+          .notifications(this.oldestNotifId ?? undefined, {
+            types: ['mention'],
+            limit: MENTION_PAGE,
+          })
+          .pipe(timeout(15_000))
+          .subscribe({
+            next: (notifs) => {
+              this.ingestNotifPage(notifs);
+              if (left > 1 && !this.mentionsExhausted) {
+                page(left - 1);
+              } else {
+                done();
+              }
+            },
+            error: failed,
+          }),
+      );
+    };
+    page(INITIAL_MENTION_PAGES);
   }
 
   /**
-   * Fold one page of notifications into the public chats and advance the
-   * "Load more" cursor. Only mentions build chat history; the cursor tracks the
-   * overall oldest id so paging steps past non-mention notifications too.
+   * Fold one page of mention notifications into the public chats and advance
+   * the "Load more" cursor. A short page means there is nothing older.
    */
   private ingestNotifPage(notifs: MastodonNotification[]): void {
     for (const n of notifs) {
@@ -854,32 +1085,93 @@ export class Conversations implements OnInit, OnDestroy {
     if (oldest) {
       this.oldestNotifId = oldest.id;
     }
+    if (notifs.length < MENTION_PAGE) {
+      this.mentionsExhausted = true;
+    }
+    this.chatsExhausted.set(this.mentionsExhausted && this.convsExhausted);
+  }
+
+  /** Advance the private-conversation cursor (Mastodon pages by last status id). */
+  private noteConvPage(convs: Conversation[]): void {
+    const oldest = convs.at(-1)?.last_status?.id;
+    if (oldest) {
+      this.oldestConvStatusId = oldest;
+    }
+    if (convs.length < CONVERSATION_PAGE || !oldest) {
+      this.convsExhausted = true;
+    }
+    this.chatsExhausted.set(this.mentionsExhausted && this.convsExhausted);
   }
 
   /**
-   * Page in older mention notifications so the public chat list and open thread
-   * fill out — the first page alone shows only a sliver of a busy history.
+   * Page in older private conversations and older mentions together, so both
+   * kinds of chat fill out. Returns when both requests have settled.
    */
-  loadMoreChats(): void {
-    if (
-      !this.mastodonAvailable() ||
-      !this.oldestNotifId ||
-      this.loadingMoreChats() ||
-      this.chatsExhausted()
-    ) {
+  loadMoreChats(after?: () => void): void {
+    if (!this.mastodonAvailable() || this.loadingMoreChats() || this.chatsExhausted()) {
       return;
     }
     this.loadingMoreChats.set(true);
-    this.api.notifications(this.oldestNotifId).subscribe({
-      next: (notifs) => {
+    let pending = 0;
+    const settle = () => {
+      if (--pending === 0) {
         this.loadingMoreChats.set(false);
-        if (!notifs.length) {
-          this.chatsExhausted.set(true);
-          return;
-        }
-        this.ingestNotifPage(notifs);
-      },
-      error: () => this.loadingMoreChats.set(false),
+        after?.();
+      }
+    };
+    if (!this.convsExhausted && this.oldestConvStatusId) {
+      pending++;
+      this.api.conversations(this.oldestConvStatusId, CONVERSATION_PAGE).subscribe({
+        next: (convs) => {
+          this.privateConvs.update((list) => mergeConversations(list, convs));
+          this.noteConvPage(convs);
+          settle();
+        },
+        error: settle,
+      });
+    }
+    if (!this.mentionsExhausted) {
+      pending++;
+      this.api
+        .notifications(this.oldestNotifId ?? undefined, { types: ['mention'], limit: MENTION_PAGE })
+        .subscribe({
+          next: (notifs) => {
+            this.ingestNotifPage(notifs);
+            settle();
+          },
+          error: settle,
+        });
+    }
+    if (!pending) {
+      this.loadingMoreChats.set(false);
+      this.chatsExhausted.set(true);
+    }
+  }
+
+  /**
+   * "Load older messages" in an open chat: page the list back, then pull the
+   * threads of any older conversations that joined this chat.
+   */
+  protected loadOlderMessages(): void {
+    const key = this.selectedKey();
+    this.loadMoreChats(() => {
+      const chat = this.selected();
+      if (!chat || chat.key !== key) return;
+      if (chat.kind === 'public') {
+        // addPublicStatus already appended them to the open transcript.
+        return;
+      }
+      const shown = new Set(this.messages().map((m) => m.id));
+      for (const conv of this.privateConvs()) {
+        const last = conv.last_status;
+        if (!chat.convIds.includes(conv.id) || !last || shown.has(last.id)) continue;
+        this.api.getContext(last.id).subscribe((ctx) => {
+          if (this.selectedKey() !== key) return;
+          this.messages.update((list) =>
+            dedupeSort([...ctx.ancestors, last, ...ctx.descendants, ...list]),
+          );
+        });
+      }
     });
   }
 
@@ -980,7 +1272,11 @@ export class Conversations implements OnInit, OnDestroy {
         // account request was in flight. If so, prefer it.
         const existing = this.chats().find((c) => c.key === key);
         if (existing) {
-          this.prefs.setChatKind(existing.kind);
+          // Widen only. This used to set the saved filter to the chat's own
+          // kind, so opening a public chat from a profile left the list on
+          // "public" for good, and private chats seemed to disappear.
+          const kind = this.prefs.chatKind();
+          if (kind !== 'all' && kind !== existing.kind) this.prefs.setChatKind('all');
           this.selectWithContext(existing, contextId);
           return;
         }
@@ -995,9 +1291,10 @@ export class Conversations implements OnInit, OnDestroy {
           unread: false,
         };
         this.draftChat.set(draft);
-        // Make sure the kind filter doesn't hide the freshly drafted row.
-        if (this.prefs.chatKind() !== 'all') {
-          this.prefs.setChatKind(draft.kind);
+        // Make sure the kind filter doesn't hide the freshly drafted row,
+        // widening to all rather than narrowing to this one kind.
+        if (this.prefs.chatKind() !== 'all' && this.prefs.chatKind() !== draft.kind) {
+          this.prefs.setChatKind('all');
         }
         this.selectWithContext(draft, contextId);
       },
@@ -1076,16 +1373,34 @@ export class Conversations implements OnInit, OnDestroy {
 
   onReplyPosted(status: Status): void {
     const chat = this.selected();
-    this.messages.update((list) => dedupeSort([...list, status]));
-    this.scrollToBottom();
-    if (!chat || chat.kind === 'private') {
+    this.movedToPrivate.set(null);
+    // Sent as "mentioned only" from a public chat: it is a private message now,
+    // and belongs in the private chat with these people, not in the public one.
+    const wentPrivate = chat?.kind === 'public' && status.visibility === 'direct';
+    if (!wentPrivate) {
+      this.messages.update((list) => dedupeSort([...list, status]));
+      this.scrollToBottom();
+    }
+    if (!chat || chat.kind === 'private' || wentPrivate) {
       // A new direct status starts (or advances) a conversation; refresh the list
       // and follow the selection onto the (possibly new) conversation row.
-      this.api.conversations().subscribe((convs) => {
-        this.privateConvs.set(convs);
+      this.api.conversations(undefined, CONVERSATION_PAGE).subscribe((convs) => {
+        // Merged, so conversations paged in with Load more stay listed.
+        this.privateConvs.update((list) => mergeConversations(list, convs));
         const mine = convs.find((c) => c.last_status?.id === status.id);
-        if (mine) {
-          this.selectedKey.set(privateKey(mine.accounts));
+        if (!mine) return;
+        const key = privateKey(mine.accounts);
+        if (wentPrivate) {
+          // Open the private chat itself, so its own history loads.
+          const row = this.chats().find((c) => c.key === key);
+          const kind = this.prefs.chatKind();
+          if (kind !== 'all' && kind !== 'private') this.prefs.setChatKind('all');
+          if (row) {
+            this.select(row);
+            this.movedToPrivate.set({ key, name: this.title(row) });
+          }
+        } else {
+          this.selectedKey.set(key);
         }
       });
     } else {
@@ -1181,40 +1496,6 @@ export class Conversations implements OnInit, OnDestroy {
             this.bskySending.set(false);
             if (this.selectedKey() === chat.key) this.bskySendError.set(true);
             this.diagnostics.error('Conversations', 'send:bluesky-error', error);
-          },
-        }),
-    );
-  }
-
-  // i18n pages.conversations.refreshBluesky: Refresh Bluesky chats
-  protected refreshBskyConvos(): void {
-    if (this.bskyRefreshing() || this.loading() || !this.bsky.linked()) return;
-    this.bskyRefreshing.set(true);
-    this.bskyLoadError.set(false);
-    this.bskyScopeError.set(false);
-    this.subs.push(
-      this.bskyChat
-        .listConvos()
-        .pipe(timeout(15_000))
-        .subscribe({
-          next: (list) => {
-            this.bskyRefreshing.set(false);
-            const before = this.bskyConvos();
-            this.bskyConvos.set(list.convos);
-            const chat = this.selected();
-            if (chat?.kind !== 'bsky' || !chat.convoId) {
-              return;
-            }
-            // Reload the open thread only when its convo actually advanced.
-            const prev = before.find((c) => c.id === chat.convoId);
-            const next = list.convos.find((c) => c.id === chat.convoId);
-            if (next && next.rev !== prev?.rev) {
-              this.loadBskyThread(chat);
-            }
-          },
-          error: (error: unknown) => {
-            this.bskyRefreshing.set(false);
-            this.blueskyLoadFailed(error);
           },
         }),
     );
@@ -1611,6 +1892,13 @@ function hasMissingBlueskyMember(convo: BskyConvoView, myDid: string | undefined
 
 function isDeletedMessage(m: BskyMessageView): boolean {
   return m.$type === BSKY_DELETED_MESSAGE;
+}
+
+/** Newer rows win: a conversation re-fetched by refresh replaces its stale copy. */
+function mergeConversations(current: Conversation[], incoming: Conversation[]): Conversation[] {
+  const byId = new Map(current.map((c) => [c.id, c]));
+  for (const c of incoming) byId.set(c.id, c);
+  return [...byId.values()];
 }
 
 function dedupeSort(statuses: Status[]): Status[] {

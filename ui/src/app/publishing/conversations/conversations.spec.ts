@@ -8,7 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
-import { Streaming, StreamEvent, StreamKind } from '../../platform/api/streaming';
+import { Streaming, StreamEvent, StreamKind, StreamState } from '../../platform/api/streaming';
 import {
   Account,
   Conversation,
@@ -35,6 +35,12 @@ interface ConversationsInternals {
   replyMentions: Signal<string>;
   replyToId: Signal<string | undefined>;
   replyVisibility: Signal<string>;
+  liveState: Signal<string>;
+  chatsExhausted: Signal<boolean>;
+  movedToPrivate: Signal<{ key: string; name: string } | null>;
+  loadMoreChats(): void;
+  refreshAll(): void;
+  onReplyPosted(status: Status): void;
 }
 
 function internals(fixture: ComponentFixture<Conversations>): ConversationsInternals {
@@ -72,10 +78,12 @@ function visibleReal(fixture: ComponentFixture<Conversations>): Chat[] {
 /** The component opens two streams (direct + user); track subscribers per kind. */
 class MultiFakeStreaming {
   private subscribers = new Map<string, (ev: StreamEvent) => void>();
+  private stateCallbacks = new Map<string, (state: StreamState) => void>();
   openedKinds: string[] = [];
 
-  open(kind: StreamKind) {
+  open(kind: StreamKind, onState?: (state: StreamState) => void) {
     this.openedKinds.push(kind.stream);
+    if (onState) this.stateCallbacks.set(kind.stream, onState);
     return {
       subscribe: (fn: (ev: StreamEvent) => void): Subscription => {
         this.subscribers.set(kind.stream, fn);
@@ -86,6 +94,10 @@ class MultiFakeStreaming {
 
   emit(stream: string, ev: StreamEvent): void {
     this.subscribers.get(stream)?.(ev);
+  }
+
+  setState(stream: string, state: StreamState): void {
+    this.stateCallbacks.get(stream)?.(state);
   }
 }
 
@@ -213,6 +225,90 @@ describe('Conversations', () => {
     expect(realChats(fixture)[0].kind).toBe('private');
   });
 
+  /** A full page of mention notifications from distinct people, oldest last. */
+  function mentionPage(prefix: string, size = 40): MastodonNotification[] {
+    return Array.from({ length: size }, (_, i) => {
+      const who = makeAccount(`${prefix}a${i}`, `${prefix}p${i}`);
+      return makeMention(
+        `${prefix}n${i}`,
+        makeStatus(`${prefix}s${i}`, { visibility: 'public', account: who }),
+        who,
+      );
+    });
+  }
+
+  it('loads three pages of mentions only, and 40 private conversations, on open', () => {
+    const fixture = TestBed.createComponent(Conversations);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/conversations?limit=40').flush([]);
+    // Only mentions are asked for, so likes and follows no longer use up the page.
+    httpMock
+      .expectOne('/api/v1/notifications?types%5B%5D=mention&limit=40')
+      .flush(mentionPage('a'));
+    httpMock
+      .expectOne('/api/v1/notifications?max_id=an39&types%5B%5D=mention&limit=40')
+      .flush(mentionPage('b'));
+    httpMock
+      .expectOne('/api/v1/notifications?max_id=bn39&types%5B%5D=mention&limit=40')
+      .flush(mentionPage('c', 5));
+    httpMock.expectNone((r) => r.url === '/api/v1/notifications');
+
+    expect(internals(fixture).loading()).toBe(false);
+    expect(realChats(fixture)).toHaveLength(85);
+  });
+
+  it('Load more pages both lists back: conversations by last status id, mentions by id', () => {
+    const fixture = TestBed.createComponent(Conversations);
+    fixture.detectChanges();
+    const convs = Array.from({ length: 40 }, (_, i) =>
+      makeConversation(`c${i}`, {
+        accounts: [makeAccount(`p${i}`, `p${i}`)],
+        last_status: makeStatus(`ls${i}`),
+      }),
+    );
+    httpMock.expectOne('/api/v1/conversations?limit=40').flush(convs);
+    httpMock
+      .expectOne('/api/v1/notifications?types%5B%5D=mention&limit=40')
+      .flush(mentionPage('a', 3));
+
+    internals(fixture).loadMoreChats();
+    // Mentions ran out on the short first page; conversations continue from
+    // the oldest row's last status, which is how Mastodon pages them.
+    httpMock.expectOne('/api/v1/conversations?limit=40&max_id=ls39').flush([
+      makeConversation('old', {
+        accounts: [makeAccount('q', 'q')],
+        last_status: makeStatus('lsq'),
+      }),
+    ]);
+    httpMock.expectNone((r) => r.url === '/api/v1/notifications');
+
+    expect(realChats(fixture).some((c) => c.key === 'priv:q')).toBe(true);
+    expect(realChats(fixture).filter((c) => c.kind === 'private')).toHaveLength(41);
+    expect(internals(fixture).chatsExhausted()).toBe(true);
+  });
+
+  it('Refresh merges the newest page into what is loaded, keeping paged-in chats', () => {
+    const old = makeConversation('old', {
+      accounts: [makeAccount('q', 'q')],
+      last_status: makeStatus('lsq'),
+    });
+    const fixture = setUp([old]);
+    internals(fixture).refreshAll();
+    httpMock.expectOne('/api/v1/conversations?limit=40').flush([
+      makeConversation('new', {
+        accounts: [makeAccount('r', 'r')],
+        last_status: makeStatus('lsr'),
+      }),
+    ]);
+    httpMock.expectOne('/api/v1/notifications?types%5B%5D=mention&limit=40').flush([]);
+
+    expect(
+      realChats(fixture)
+        .map((c) => c.key)
+        .sort(),
+    ).toEqual(['priv:q', 'priv:r']);
+  });
+
   it('clears loading even when both requests fail', () => {
     const fixture = TestBed.createComponent(Conversations);
     fixture.detectChanges();
@@ -319,6 +415,61 @@ describe('Conversations', () => {
     expect(internals(fixture).selected()?.kind).toBe('private');
     expect(internals(fixture).replyVisibility()).toBe('direct');
     expect(internals(fixture).replyMentions()).toBe('@alice ');
+  });
+
+  it('shows the public and private chats with someone side by side', () => {
+    // Opening a private chat from a profile used to narrow the saved filter to
+    // that one kind, so the public chat with the same person then vanished.
+    Object.defineProperty(TestBed.inject(ActivatedRoute).snapshot, 'queryParamMap', {
+      value: convertToParamMap({ visibility: 'direct' }),
+    });
+    const prefs = TestBed.inject(ClientPrefs);
+    prefs.setChatKind('public');
+    const alice = makeAccount('2', 'alice');
+    const s1 = makeStatus('s1', { visibility: 'public', account: alice });
+    const fixture = setUp([], [makeMention('n1', s1, alice)]);
+    internals(fixture).pendingOpen.set('priv:alice');
+    internals(fixture).pendingWith.set('2');
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/accounts/2').flush(alice);
+    fixture.detectChanges();
+
+    expect(prefs.chatKind()).toBe('all');
+    expect(
+      visibleReal(fixture)
+        .map((c) => c.key)
+        .sort(),
+    ).toEqual(['priv:alice', 'pub:alice']);
+  });
+
+  it('moves a reply sent privately from a public chat into the private chat', () => {
+    const alice = makeAccount('2', 'alice');
+    const s1 = makeStatus('s1', { visibility: 'public', account: alice });
+    const fixture = setUp([], [makeMention('n1', s1, alice)]);
+    fixture.componentInstance.select(realChats(fixture)[0]);
+    httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });
+
+    const dm = makeStatus('dm1', {
+      visibility: 'direct',
+      account: ME,
+      created_at: '2026-01-03T00:00:00Z',
+    });
+    internals(fixture).onReplyPosted(dm);
+    // Not appended to the public transcript.
+    expect(
+      internals(fixture)
+        .messages()
+        .some((m) => m.id === 'dm1'),
+    ).toBe(false);
+    httpMock
+      .expectOne('/api/v1/conversations?limit=40')
+      .flush([makeConversation('c1', { accounts: [alice], last_status: dm })]);
+    httpMock.expectOne('/api/v1/statuses/dm1/context').flush({ ancestors: [], descendants: [] });
+    fixture.detectChanges();
+
+    expect(internals(fixture).selected()?.key).toBe('priv:alice');
+    expect(internals(fixture).movedToPrivate()?.key).toBe('priv:alice');
+    expect((fixture.nativeElement as HTMLElement).querySelector('.moved-note')).not.toBeNull();
   });
 
   it('shows the originating post when a deep link drafts a chat with no history', () => {
@@ -593,9 +744,10 @@ describe('Conversations', () => {
   // ---------------------------------------------------------------- composer seeds
 
   it('replyMentions and replyVisibility: direct for private chats', () => {
+    const alice = makeAccount('2', 'alice');
     const conv = makeConversation('c1', {
-      accounts: [makeAccount('2', 'alice'), makeAccount('3', 'bob')],
-      last_status: makeStatus('s1'),
+      accounts: [alice, makeAccount('3', 'bob')],
+      last_status: makeStatus('s1', { account: alice }),
     });
     const fixture = setUp([conv]);
     internals(fixture).selectedKey.set('priv:alice,bob');
@@ -632,9 +784,10 @@ describe('Conversations', () => {
     expect(internals(fixture).replyMentions()).toBe('@alice @bob ');
   });
 
-  it('replyMentions (private 1:1): stays empty since the conversation notifies the partner', () => {
-    // Direct chats reach the partner via the conversation itself, so a 1:1 gets a
-    // clean box — the notification quirk only applies to public reply threads.
+  it('replyMentions (private 1:1): mentions the partner, or the message reaches nobody', () => {
+    // A "mentioned only" post is delivered to exactly the accounts @-mentioned
+    // in its text; the conversation does not deliver it. Leaving the partner
+    // out (as this used to) sent private replies to no one.
     const conv = makeConversation('c1', {
       accounts: [makeAccount('2', 'alice')],
       last_status: makeStatus('s1', { account: makeAccount('2', 'alice') }),
@@ -642,7 +795,7 @@ describe('Conversations', () => {
     const fixture = setUp([conv]);
     internals(fixture).selectedKey.set('priv:alice');
 
-    expect(internals(fixture).replyMentions()).toBe('');
+    expect(internals(fixture).replyMentions()).toBe('@alice ');
   });
 
   it('replyToId chains onto the newest loaded message, not the list row', () => {
@@ -679,6 +832,42 @@ describe('Conversations', () => {
   });
 
   // ---------------------------------------------------------------- streaming
+
+  it('reports Live only while both streams are open, and says so in the list header', () => {
+    const fixture = setUp();
+    const state = internals(fixture);
+    expect(state.liveState()).toBe('connecting');
+    streaming.setState('direct', 'live');
+    expect(state.liveState()).toBe('connecting');
+    streaming.setState('user', 'live');
+    expect(state.liveState()).toBe('live');
+    fixture.detectChanges();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('.live-state')?.textContent,
+    ).toContain('Live');
+    streaming.setState('user', 'down');
+    expect(state.liveState()).toBe('down');
+    streaming.setState('user', 'unavailable');
+    expect(state.liveState()).toBe('unavailable');
+  });
+
+  it('a like on a shown message updates its count as it happens', () => {
+    const alice = makeAccount('2', 'alice');
+    const mine = makeStatus('s1', { visibility: 'public', account: ME, favourites_count: 0 });
+    const fixture = setUp();
+    internals(fixture).messages.set([mine]);
+
+    streaming.emit('user', {
+      event: 'notification',
+      payload: {
+        ...makeMention('n2', { ...mine, favourites_count: 1 }, alice),
+        type: 'favourite',
+      },
+    });
+    fixture.detectChanges();
+
+    expect(internals(fixture).messages()[0].favourites_count).toBe(1);
+  });
 
   it('a conversation stream event upserts the private chat list', () => {
     const fixture = setUp([]);

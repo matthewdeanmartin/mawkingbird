@@ -1262,6 +1262,20 @@ export const routes: Routes = [
           import('./public-pages/server-rules/server-rules').then((m) => m.ServerRules),
       },
       {
+        // The home server's privacy policy and its published domain blocks: the
+        // My Server page links to these the same way it links to the rules.
+        path: 'server-privacy',
+        title: 'Privacy policy',
+        loadComponent: () =>
+          import('./public-pages/server-privacy/server-privacy').then((m) => m.ServerPrivacy),
+      },
+      {
+        path: 'server-moderated',
+        title: 'Moderated servers',
+        loadComponent: () =>
+          import('./public-pages/server-moderated/server-moderated').then((m) => m.ServerModerated),
+      },
+      {
         path: 'terms',
         title: 'Terms',
         loadComponent: () => import('./public-pages/terms/terms').then((m) => m.Terms),

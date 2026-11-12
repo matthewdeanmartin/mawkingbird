@@ -11,7 +11,7 @@ import {
 } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Account, Relationship, SearchResults, Status, Tag } from '../../platform/api/models';
+import { Account, Relationship, SearchResults, Status } from '../../platform/api/models';
 import { Search } from './search';
 import { BlueskySearchPanel } from './bluesky-search-panel';
 import { Auth } from '../../platform/session/auth';
@@ -28,7 +28,6 @@ interface SearchInternals {
   blueskyMode: WritableSignal<boolean>;
   results: WritableSignal<SearchResults | null>;
   searching: WritableSignal<boolean>;
-  trendingTags: WritableSignal<Tag[]>;
   accountSource: WritableSignal<'bio' | 'posts' | 'both'>;
   followersMax: WritableSignal<string>;
   accountItems: WritableSignal<{ account: Account; matchingPosts: Status[] }[]>;
@@ -50,7 +49,7 @@ interface SearchInternals {
   run(): void;
   onChanged(updated: Status): void;
   onDeleted(removed: Status): void;
-  onTypeSelect(value: string, el?: HTMLSelectElement): void;
+  onTypeSelect(value: string): void;
   onNetworkSelect(value: string): void;
   networkSelection(): string;
   searchDisabled(): boolean;
@@ -337,6 +336,7 @@ describe('Search', () => {
       internals(fixture).query.set('gardening');
       internals(fixture).run();
 
+      // Signed out, so the default is People (posts would come back empty).
       expect(internals(fixture).type()).toBe('accounts');
     });
 
@@ -453,12 +453,12 @@ describe('Search', () => {
         state.searching.set(false);
         state.results.set(makeResults());
         assertRail(false);
+        // Advanced is a form above the grid now, not a reason to show the rail.
         state.advancedOpen.set(true);
-        fixture.detectChanges();
+        assertRail(false);
         expect(
-          (fixture.nativeElement as HTMLElement).querySelector<HTMLElement>('.search-form-box')
-            ?.hidden,
-        ).toBe(false);
+          (fixture.nativeElement as HTMLElement).querySelector('.search-page > .advanced-search'),
+        ).not.toBeNull();
         state.advancedOpen.set(false);
         if (type === 'accounts') {
           state.accountItems.set([{ account: makeAccount(), matchingPosts: [] }]);
@@ -653,28 +653,19 @@ describe('Search', () => {
   // already. The posts tab answers "what can I type here?" with its operator
   // reference; this is the same answer for people, and it is linked to
   // /find-friends at the foot rather than competing with it.
-  it('explains what you can type on the empty account tab', () => {
+  it('leaves the empty people tab blank rather than showing help', () => {
     const auth = TestBed.inject(Auth);
     auth.setToken('zero-follow-token');
     auth.setAccount({ id: 'me', username: 'me', following_count: 0 } as Account);
     const fixture = setUp();
+    internals(fixture).onTypeSelect('accounts');
+    fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
 
-    expect(el.querySelector('app-account-search-help')).not.toBeNull();
-    // A full address resolves even when the server has never seen the account,
-    // which is the fix for "I searched and found nothing".
-    expect(el.textContent).toContain('@name@server.social');
-    // The non-obvious one, and the reason this text exists rather than a "no
-    // operators here" disclaimer: `fetchAccounts` runs `api.search(q,
-    // 'statuses')` as its posts branch and groups the hits by author, so post
-    // operators reach the same endpoint they would from the Posts tab. A reader
-    // told otherwise never tries the thing that works.
-    expect(el.textContent).toContain('from:');
-    // Finding people is still offered, as a footnote rather than the headline.
-    expect(el.querySelector('a[href="/find-friends"]')).not.toBeNull();
-    // The two states it replaced are gone.
+    // The help was noise under the box; Syntax is one click away instead.
+    expect(el.querySelector('app-account-search-help')).toBeNull();
+    expect(el.querySelector('.search-idle')).toBeNull();
     expect(el.querySelector('app-offsite-directories')).toBeNull();
-    expect(el.querySelector('.starter-pack-card')).toBeNull();
   });
 
   /**
@@ -726,12 +717,13 @@ describe('Search', () => {
     });
   });
 
-  it('keeps optional idle trends empty when the trends request fails', () => {
+  it('makes no trends request for the idle hashtag tab', () => {
     const fixture = setUp();
+    internals(fixture).onTypeSelect('hashtags');
+    fixture.detectChanges();
 
-    httpMock.expectOne('/api/v1/trends/tags').flush('', { status: 503, statusText: 'Unavailable' });
-
-    expect(internals(fixture).trendingTags()).toEqual([]);
+    httpMock.expectNone('/api/v1/trends/tags');
+    expect((fixture.nativeElement as HTMLElement).querySelector('.result-tag')).toBeNull();
   });
 
   it('never asks for trending posts, which the idle state no longer shows', () => {
@@ -740,17 +732,13 @@ describe('Search', () => {
     httpMock.expectNone('/api/v1/trends/statuses');
   });
 
-  it('shows the search syntax reference in the idle post-search state', () => {
+  it('leaves the idle post-search state blank, with the reference behind Syntax', () => {
     const fixture = setUp();
-    // The page opens on 'accounts', whose idle state offers follow-list import.
-    // The operator reference belongs to the post search, where operators work.
     internals(fixture).type.set('statuses');
     fixture.detectChanges();
 
-    const help = fixture.nativeElement.querySelector('app-search-syntax-help .embedded');
-    expect(help).not.toBeNull();
-    // Embedded means no dialog chrome — the overlay would darken the page.
-    expect(fixture.nativeElement.querySelector('app-search-syntax-help .overlay')).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-search-syntax-help .embedded')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.search-idle')).toBeNull();
   });
 
   it('run() does nothing when query is blank', () => {
@@ -1463,18 +1451,32 @@ describe('Search', () => {
       expect(internals(fixture).type()).toBe('accounts');
     });
 
-    it('snaps the select element back to the real type', () => {
-      // Regression: `[ngModel]` is bound to type(), which an engine pick does
-      // not change — with no change to write back, the <select> kept displaying
-      // "Google" while the page was still on Accounts.
+    it('has one simple/advanced switch, on either network, and no stray template text', () => {
       const fixture = setUp();
-      internals(fixture).query.set('rust');
-      internals(fixture).type.set('accounts');
-      const el = { value: 'google' } as HTMLSelectElement;
+      const el = fixture.nativeElement as HTMLElement;
+      const toggles = () =>
+        [...el.querySelectorAll('.search-bar button')].filter((b) =>
+          /Advanced search|Simple search/.test(b.textContent ?? ''),
+        );
+      expect(toggles()).toHaveLength(1);
+      internals(fixture).onNetworkSelect('bluesky');
+      fixture.detectChanges();
+      expect(toggles()).toHaveLength(1);
+      expect(el.textContent).not.toContain('saveRequested');
+    });
 
-      internals(fixture).onTypeSelect('google', el);
+    it('offers the engines in the advanced form, not among the type tabs', () => {
+      const fixture = setUp();
+      const el = fixture.nativeElement as HTMLElement;
+      const tabs = [...el.querySelectorAll('.type-toolbar button')].map((b) =>
+        b.textContent?.trim(),
+      );
+      expect(tabs).toEqual(['Posts', 'People', 'Hashtags']);
+      expect(el.querySelector('.web-engines')).toBeNull();
 
-      expect(el.value).toBe('accounts');
+      internals(fixture).advancedOpen.set(true);
+      fixture.detectChanges();
+      expect(el.querySelectorAll('.advanced-search .web-engines button').length).toBe(4);
     });
 
     it('does nothing when there is no query to hand off', () => {
@@ -1542,12 +1544,19 @@ describe('Search', () => {
       expect(internals(fixture).blueskyMode()).toBe(true);
     });
 
-    it('opens Accounts for a mastodon-primary account, as before', () => {
+    it('opens Posts for a signed-in mastodon-primary account', () => {
       TestBed.inject(Auth).setToken('tok');
       const fixture = setUp();
 
       expect(internals(fixture).blueskyMode()).toBe(false);
-      expect(internals(fixture).type()).toBe('accounts');
+      expect(internals(fixture).type()).toBe('statuses');
+    });
+
+    it('reopens on the tab the reader last picked', () => {
+      TestBed.inject(Auth).setToken('tok');
+      internals(setUp()).onTypeSelect('hashtags');
+
+      expect(internals(setUp()).type()).toBe('hashtags');
     });
 
     it('opens Accounts when signed out or anonymous, as before', () => {

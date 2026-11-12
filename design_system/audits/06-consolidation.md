@@ -2285,3 +2285,43 @@ new non-UI source file (`platform/storage/storage-quota.ts`) takes filesScanned
 from 1799 to 1800. All 631 candidate records are unchanged apart from line
 shifts in `shell/shell.ts`. No reconciliation entries needed and no shared
 widget changed.
+
+### My Server and Just My Server (2026-11-11)
+
+Reviewed regeneration: 1800 to 1809 scanned source files, 631 to 632 candidate
+files. The Just My Server card and its confirm dialog moved out of
+`shell/right-rail/right-rail.html` into the new
+`feeds/just-my-server-card/just-my-server-card.html` unchanged: the rail lost
+exactly the 8 records the card gained (MbRailCard, native Switch, MbButton,
+MbDialog). The rail now shows it only on servers under 5,000 monthly actives or
+while enabled, and the My Server page always does. `server-announcements.html`
+dropped its two MbDisclosure records: privacy policy and moderated servers are
+now the `/server-privacy` and `/server-moderated` pages (no control candidates),
+linked from one server-links list. Added the card's reconciliation entry and
+updated the rail and server-page entries. No shared widget implementation changed.
+
+### Search modes and long results (2026-11-11)
+
+Reviewed regeneration: 1809 to 1812 scanned files, 632 candidate files (one added, one removed).
+`discovery/search/search.html`: the type select became an MbToolbar with three
+MbToolbarButtons (Posts, People, Hashtags); the advanced fields and API budget
+moved out of the sidebar `search-form-box` into a full-width `.advanced-search`
+details above the grid (+1 disclosure), with the web engines as MbButtons there
+instead of select options (-1 select). The idle cheat sheet, people-search help
+and trending hashtags were removed. `bluesky-search-panel.html` gained the same
+`.advanced-search` details (+1 disclosure); its controls are unchanged, only
+moved. Added `posts/status-card/search-excerpt-view.html` (one MbButton to expand
+a compacted long result) and its reconciliation entry; updated the search and
+Bluesky panel entries. Removed `discovery/search/account-search-help/account-search-help.ts`
+(1 native button), orphaned once the idle help went, and its reconciliation entry.
+No shared widget implementation changed.
+
+### Chat reliability (2026-11-11)
+
+Reviewed regeneration: 1812 files, 632 candidates, one file changed.
+`publishing/conversations/conversations.html` replaced the legacy-classed
+"Refresh Bluesky chats" pill (-1 legacy pill) with an MbButton Refresh for every
+network, and added an MbButton "Load older messages" at the top of Mastodon
+transcripts (+2 shared, net +1 native button). A text live-state indicator and a
+composer label were added (no controls). Updated its reconciliation entry. No
+shared widget implementation changed.

@@ -7,6 +7,19 @@
 @let accountResultsRan = type() === 'accounts' && loadedAccountCount() > 0;
 @let twoBox = postResults || accountResultsRan;
 
+<!-- The web hand-off, shared by both advanced forms. Opens a tab; the page
+     stays as it was. -->
+<ng-template #webEngineRow>
+  <div class="web-engines">
+    <span class="muted small">{{ 'pages.search.type.web' | transloco }}</span>
+    @for (e of webEngines; track e.id) {
+      <button type="button" mbButton variant="outline" size="small" (click)="searchTheWeb(e.id)">
+        {{ e.label }}
+      </button>
+    }
+  </div>
+</ng-template>
+
 <div class="search-shell">
   <div class="search-bar">
     <!-- One query box for both networks. The Bluesky panel used to bring its own,
@@ -34,30 +47,26 @@
       <option value="mastodon">{{ 'pages.search.network.mastodon' | transloco }}</option>
       <option value="bluesky">🦋 {{ 'pages.search.network.bluesky' | transloco }}</option>
     </select>
-    <!-- The engines are an action, not a fourth type: picking one opens a tab and
-         the select snaps back to the real type (see onTypeSelect). -->
-    <select
-      #typeSelect
-      [ngModel]="type()"
-      (ngModelChange)="onTypeSelect($event, typeSelect)"
-      [attr.aria-label]="'pages.search.type.ariaLabel' | transloco"
+    <!-- Three buttons, not a dropdown: readers searched people by default and
+         then had to find the select to switch to posts. Web engines live in
+         Advanced now; they were never a type. -->
+    <mb-toolbar
+      density="compact"
+      class="type-toolbar"
+      [label]="'pages.search.type.ariaLabel' | transloco"
     >
-      <option value="accounts">{{ 'pages.search.type.accounts' | transloco }}</option>
-      <!-- Disabled rather than hidden: an option that vanishes reads as a bug,
-           while a disabled one with a reason beneath the bar teaches what this
-           network can do. See typeUnavailable. -->
-      <option value="statuses" [disabled]="typeUnavailable('statuses')">
-        {{ 'pages.search.type.posts' | transloco }}
-      </option>
-      <option value="hashtags" [disabled]="typeUnavailable('hashtags')">
-        {{ 'pages.search.type.hashtags' | transloco }}
-      </option>
-      <optgroup [label]="'pages.search.type.web' | transloco">
-        @for (e of webEngines; track e.id) {
-          <option [value]="e.id">{{ e.label }}</option>
-        }
-      </optgroup>
-    </select>
+      @for (choice of typeChoices; track choice.value) {
+        <button
+          type="button"
+          mbToolbarButton
+          [pressed]="type() === choice.value"
+          [disabled]="typeUnavailable(choice.value)"
+          (click)="onTypeSelect(choice.value)"
+        >
+          {{ choice.label | transloco }}
+        </button>
+      }
+    </mb-toolbar>
     <button type="button" mbButton [disabled]="searchDisabled()" (click)="run()">
       {{ 'pages.search.action.search' | transloco }}
     </button>
@@ -83,18 +92,21 @@
     >
       {{ 'pages.search.action.syntax' | transloco }}
     </button>
-    @if (type() === 'statuses' || type() === 'accounts') {
-      <button
-        type="button"
-        mbButton
-        variant="outline"
-        [class.on]="advancedOpen()"
-        (click)="toggleAdvanced()"
-        [attr.aria-expanded]="advancedOpen()"
-      >
-        {{ 'pages.search.action.advanced' | transloco }}
-      </button>
-    }
+    <!-- Switches between the simple bar and the full advanced form, the way
+         most search sites do, instead of revealing fields inside the sidebar. -->
+    <button
+      type="button"
+      mbButton
+      variant="outline"
+      class="advanced-toggle"
+      [attr.aria-pressed]="advancedOpen()"
+      (click)="toggleAdvanced()"
+    >
+      {{
+        (advancedOpen() ? 'pages.search.action.simpleSearch' : 'pages.search.action.advancedSearch')
+          | transloco
+      }}
+    </button>
 
     <!-- Saved searches sit OUTSIDE the blueskyMode guard: the list is shared by
          both engines, and each row re-runs against the network it was saved
@@ -433,11 +445,304 @@
       [savedToRun]="pendingBlueskySaved()"
       (queryChange)="query.set($event)"
       (saveRequested)="openBlueskySaveDialog($event)"
-    />
+    >
+      <ng-container advancedExtra [ngTemplateOutlet]="webEngineRow" />
+    </app-bluesky-search-panel>
   } @else {
     <div class="search-page" [class.two-box]="twoBox">
       <!-- Phones start collapsed; native details preserves the reader’s choice. -->
-      <details class="search-form-box" [hidden]="!twoBox && !advancedOpen()" [open]="formOpen">
+      <!-- The advanced form: full width above facets and results, so it reads as
+           the search itself rather than as one more filter in the sidebar.
+           Folds to a one-line summary once it has run. -->
+      @if (advancedOpen()) {
+        <details
+          class="advanced-search"
+          [open]="!advancedCollapsed()"
+          (toggle)="advancedCollapsed.set(!$any($event.target).open)"
+        >
+          <summary class="refine-summary">
+            <span>{{ 'pages.search.advanced.title' | transloco }}</span>
+            @if (advancedCollapsed()) {
+              <span class="refine-active-count">{{
+                'pages.search.advanced.edit' | transloco
+              }}</span>
+            }
+          </summary>
+          @if (type() === 'statuses') {
+            <div class="budget-row">
+              <label class="muted small" for="api-budget">{{
+                'pages.search.budget.maximumApiCalls' | transloco
+              }}</label>
+              <select
+                id="api-budget"
+                [ngModel]="apiBudget()"
+                (ngModelChange)="setBudget($event)"
+                [attr.aria-label]="'pages.search.budget.maximumApiCalls' | transloco"
+              >
+                @for (b of budgetOptions; track b.value) {
+                  <option [value]="b.value">{{ b.label | transloco }}</option>
+                }
+              </select>
+            </div>
+          }
+
+          @if (advancedOpen() && type() === 'statuses') {
+            <div class="advanced-panel">
+              @if (capabilities.active) {
+                <p class="muted small">
+                  {{ 'pages.search.anonymousPostSearch' | transloco }}
+                  <a routerLink="/login">{{ 'pages.search.fullTextSignIn' | transloco }}</a>
+                  {{ 'pages.search.fullTextPostSearch' | transloco }}
+                </p>
+              }
+
+              <label class="adv-field">
+                <span class="muted small">{{ 'pages.search.field.exactPhrase' | transloco }}</span>
+                <input
+                  type="text"
+                  [ngModel]="exactPhrase()"
+                  (ngModelChange)="exactPhrase.set($event)"
+                  [placeholder]="'pages.search.placeholder.exactPhrase' | transloco"
+                />
+              </label>
+
+              <label class="adv-field">
+                <span class="muted small">{{ 'pages.search.field.excludeWords' | transloco }}</span>
+                <input
+                  type="text"
+                  [ngModel]="excludeWords()"
+                  (ngModelChange)="excludeWords.set($event)"
+                  [placeholder]="'pages.search.placeholder.excludeWords' | transloco"
+                />
+              </label>
+
+              <label class="adv-field">
+                <span class="muted small">{{ 'pages.search.field.postedBy' | transloco }}</span>
+                <input
+                  type="text"
+                  [ngModel]="author()"
+                  (ngModelChange)="author.set($event)"
+                  [disabled]="capabilities.active"
+                  [placeholder]="authorPlaceholder"
+                />
+              </label>
+
+              <div class="advanced-fields">
+                <label>
+                  <span class="muted small">{{
+                    'pages.search.field.postedAfter' | transloco
+                  }}</span>
+                  <input type="date" [ngModel]="after()" (ngModelChange)="after.set($event)" />
+                </label>
+                <label>
+                  <span class="muted small">{{
+                    'pages.search.field.postedBefore' | transloco
+                  }}</span>
+                  <input type="date" [ngModel]="before()" (ngModelChange)="before.set($event)" />
+                </label>
+                <label>
+                  <span class="muted small">{{ 'pages.search.field.language' | transloco }}</span>
+                  <select [ngModel]="language()" (ngModelChange)="language.set($event)">
+                    @for (l of languages; track l.code) {
+                      <option [value]="l.code">{{ l.label | transloco }}</option>
+                    }
+                  </select>
+                </label>
+              </div>
+
+              <div class="advanced-fields">
+                <label>
+                  <span class="muted small">{{ 'pages.search.field.content' | transloco }}</span>
+                  <select [ngModel]="contentType()" (ngModelChange)="contentType.set($event)">
+                    @for (c of contentTypes; track c.value) {
+                      <option [value]="c.value">{{ c.label | transloco }}</option>
+                    }
+                  </select>
+                </label>
+                <label>
+                  <span class="muted small">{{ 'pages.search.field.replies' | transloco }}</span>
+                  <select [ngModel]="replies()" (ngModelChange)="replies.set($event)">
+                    <option value="include">
+                      {{ 'pages.search.field.includeReplies' | transloco }}
+                    </option>
+                    <option value="only">{{ 'pages.search.field.repliesOnly' | transloco }}</option>
+                    <option value="exclude">
+                      {{ 'pages.search.field.excludeReplies' | transloco }}
+                    </option>
+                  </select>
+                </label>
+                <label>
+                  <span class="muted small">{{ 'pages.search.field.sensitive' | transloco }}</span>
+                  <select [ngModel]="sensitive()" (ngModelChange)="sensitive.set($event)">
+                    <option value="include">{{ 'pages.search.field.include' | transloco }}</option>
+                    <option value="only">
+                      {{ 'pages.search.field.sensitiveOnly' | transloco }}
+                    </option>
+                    <option value="exclude">
+                      {{ 'pages.search.field.excludeSensitive' | transloco }}
+                    </option>
+                  </select>
+                </label>
+                @if (!capabilities.active) {
+                  <label>
+                    <span class="muted small">{{ 'pages.search.field.searchIn' | transloco }}</span>
+                    <select [ngModel]="scope()" (ngModelChange)="scope.set($event)">
+                      <option value="all">
+                        {{ 'pages.search.field.publicAndLibrary' | transloco }}
+                      </option>
+                      <option value="public">{{ 'pages.search.field.public' | transloco }}</option>
+                      <option value="library">
+                        {{ 'pages.search.field.myLibrary' | transloco }}
+                      </option>
+                    </select>
+                  </label>
+                }
+              </div>
+
+              <div class="advanced-actions">
+                <button type="button" mbButton size="small" (click)="applyAdvanced()">
+                  {{ 'pages.search.action.applyAndSearch' | transloco }}
+                </button>
+                @if (hasAdvanced()) {
+                  <button
+                    type="button"
+                    mbButton
+                    variant="outline"
+                    size="small"
+                    (click)="clearAdvanced()"
+                  >
+                    {{ 'pages.search.recent.clear' | transloco }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
+          @if (advancedOpen() && type() === 'accounts') {
+            <div class="advanced-panel">
+              <p class="muted small">
+                {{ 'pages.search.accountSearchDescription' | transloco }}
+              </p>
+
+              <label class="adv-field">
+                <span class="muted small">{{
+                  'pages.search.accountField.matchOn' | transloco
+                }}</span>
+                <select [ngModel]="accountSource()" (ngModelChange)="accountSource.set($event)">
+                  @for (s of accountSources; track s.value) {
+                    <option [value]="s.value">{{ s.label | transloco }}</option>
+                  }
+                </select>
+              </label>
+
+              <div class="num-facet-grid">
+                <div class="num-facet">
+                  <span class="muted small">{{
+                    'pages.search.accountField.followers' | transloco
+                  }}</span>
+                  <div class="num-range">
+                    <input
+                      type="number"
+                      min="0"
+                      [placeholder]="'pages.search.accountField.minimum' | transloco"
+                      [ngModel]="followersMin()"
+                      (ngModelChange)="followersMin.set($event)"
+                      [attr.aria-label]="'pages.search.accountField.minimumFollowers' | transloco"
+                    />
+                    <span class="muted">–</span>
+                    <input
+                      type="number"
+                      min="0"
+                      [placeholder]="'pages.search.accountField.maximum' | transloco"
+                      [ngModel]="followersMax()"
+                      (ngModelChange)="followersMax.set($event)"
+                      [attr.aria-label]="'pages.search.accountField.maximumFollowers' | transloco"
+                    />
+                  </div>
+                </div>
+                <div class="num-facet">
+                  <span class="muted small">{{
+                    'pages.search.accountField.following' | transloco
+                  }}</span>
+                  <div class="num-range">
+                    <input
+                      type="number"
+                      min="0"
+                      [placeholder]="'pages.search.accountField.minimum' | transloco"
+                      [ngModel]="followingMin()"
+                      (ngModelChange)="followingMin.set($event)"
+                      [attr.aria-label]="'pages.search.accountField.minimumFollowing' | transloco"
+                    />
+                    <span class="muted">–</span>
+                    <input
+                      type="number"
+                      min="0"
+                      [placeholder]="'pages.search.accountField.maximum' | transloco"
+                      [ngModel]="followingMax()"
+                      (ngModelChange)="followingMax.set($event)"
+                      [attr.aria-label]="'pages.search.accountField.maximumFollowing' | transloco"
+                    />
+                  </div>
+                </div>
+                <div class="num-facet">
+                  <span class="muted small">{{
+                    'pages.search.accountField.posts' | transloco
+                  }}</span>
+                  <div class="num-range">
+                    <input
+                      type="number"
+                      min="0"
+                      [placeholder]="'pages.search.accountField.minimum' | transloco"
+                      [ngModel]="statusesMin()"
+                      (ngModelChange)="statusesMin.set($event)"
+                      [attr.aria-label]="
+                        'pages.search.accountField.minimumPosts'
+                          | transloco: { posts: words().posts }
+                      "
+                    />
+                    <span class="muted">–</span>
+                    <input
+                      type="number"
+                      min="0"
+                      [placeholder]="'pages.search.accountField.maximum' | transloco"
+                      [ngModel]="statusesMax()"
+                      (ngModelChange)="statusesMax.set($event)"
+                      [attr.aria-label]="
+                        'pages.search.accountField.maximumPosts'
+                          | transloco: { posts: words().posts }
+                      "
+                    />
+                  </div>
+                </div>
+              </div>
+              <p class="muted small">
+                {{ 'pages.search.accountRangesDescription' | transloco }}
+              </p>
+
+              <div class="advanced-actions">
+                <button type="button" mbButton size="small" (click)="applyAccountAdvanced()">
+                  {{ 'pages.search.action.applyAndSearch' | transloco }}
+                </button>
+                @if (hasAccountAdvanced()) {
+                  <button
+                    type="button"
+                    mbButton
+                    variant="outline"
+                    size="small"
+                    (click)="clearAccountAdvanced()"
+                  >
+                    {{ 'pages.search.recent.clear' | transloco }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+
+          <ng-container [ngTemplateOutlet]="webEngineRow" />
+        </details>
+      }
+      <!-- Facets and refinements only: the search options moved to the form above. -->
+      <details class="search-form-box" [hidden]="!twoBox" [open]="formOpen">
         <summary class="refine-summary">
           <span>{{ 'pages.search.refine.summary' | transloco }}</span>
           @if (activeRefinementCount(); as active) {
@@ -449,264 +754,6 @@
             }}</span>
           }
         </summary>
-        @if (type() === 'statuses') {
-          <div class="budget-row">
-            <label class="muted small" for="api-budget">{{
-              'pages.search.budget.maximumApiCalls' | transloco
-            }}</label>
-            <select
-              id="api-budget"
-              [ngModel]="apiBudget()"
-              (ngModelChange)="setBudget($event)"
-              [attr.aria-label]="'pages.search.budget.maximumApiCalls' | transloco"
-            >
-              @for (b of budgetOptions; track b.value) {
-                <option [value]="b.value">{{ b.label | transloco }}</option>
-              }
-            </select>
-          </div>
-        }
-
-        @if (advancedOpen() && type() === 'statuses') {
-          <div class="advanced-panel">
-            @if (capabilities.active) {
-              <p class="muted small">
-                {{ 'pages.search.anonymousPostSearch' | transloco }}
-                <a routerLink="/login">{{ 'pages.search.fullTextSignIn' | transloco }}</a>
-                {{ 'pages.search.fullTextPostSearch' | transloco }}
-              </p>
-            }
-
-            <label class="adv-field">
-              <span class="muted small">{{ 'pages.search.field.exactPhrase' | transloco }}</span>
-              <input
-                type="text"
-                [ngModel]="exactPhrase()"
-                (ngModelChange)="exactPhrase.set($event)"
-                [placeholder]="'pages.search.placeholder.exactPhrase' | transloco"
-              />
-            </label>
-
-            <label class="adv-field">
-              <span class="muted small">{{ 'pages.search.field.excludeWords' | transloco }}</span>
-              <input
-                type="text"
-                [ngModel]="excludeWords()"
-                (ngModelChange)="excludeWords.set($event)"
-                [placeholder]="'pages.search.placeholder.excludeWords' | transloco"
-              />
-            </label>
-
-            <label class="adv-field">
-              <span class="muted small">{{ 'pages.search.field.postedBy' | transloco }}</span>
-              <input
-                type="text"
-                [ngModel]="author()"
-                (ngModelChange)="author.set($event)"
-                [disabled]="capabilities.active"
-                [placeholder]="authorPlaceholder"
-              />
-            </label>
-
-            <div class="advanced-fields">
-              <label>
-                <span class="muted small">{{ 'pages.search.field.postedAfter' | transloco }}</span>
-                <input type="date" [ngModel]="after()" (ngModelChange)="after.set($event)" />
-              </label>
-              <label>
-                <span class="muted small">{{ 'pages.search.field.postedBefore' | transloco }}</span>
-                <input type="date" [ngModel]="before()" (ngModelChange)="before.set($event)" />
-              </label>
-              <label>
-                <span class="muted small">{{ 'pages.search.field.language' | transloco }}</span>
-                <select [ngModel]="language()" (ngModelChange)="language.set($event)">
-                  @for (l of languages; track l.code) {
-                    <option [value]="l.code">{{ l.label | transloco }}</option>
-                  }
-                </select>
-              </label>
-            </div>
-
-            <div class="advanced-fields">
-              <label>
-                <span class="muted small">{{ 'pages.search.field.content' | transloco }}</span>
-                <select [ngModel]="contentType()" (ngModelChange)="contentType.set($event)">
-                  @for (c of contentTypes; track c.value) {
-                    <option [value]="c.value">{{ c.label | transloco }}</option>
-                  }
-                </select>
-              </label>
-              <label>
-                <span class="muted small">{{ 'pages.search.field.replies' | transloco }}</span>
-                <select [ngModel]="replies()" (ngModelChange)="replies.set($event)">
-                  <option value="include">
-                    {{ 'pages.search.field.includeReplies' | transloco }}
-                  </option>
-                  <option value="only">{{ 'pages.search.field.repliesOnly' | transloco }}</option>
-                  <option value="exclude">
-                    {{ 'pages.search.field.excludeReplies' | transloco }}
-                  </option>
-                </select>
-              </label>
-              <label>
-                <span class="muted small">{{ 'pages.search.field.sensitive' | transloco }}</span>
-                <select [ngModel]="sensitive()" (ngModelChange)="sensitive.set($event)">
-                  <option value="include">{{ 'pages.search.field.include' | transloco }}</option>
-                  <option value="only">{{ 'pages.search.field.sensitiveOnly' | transloco }}</option>
-                  <option value="exclude">
-                    {{ 'pages.search.field.excludeSensitive' | transloco }}
-                  </option>
-                </select>
-              </label>
-              @if (!capabilities.active) {
-                <label>
-                  <span class="muted small">{{ 'pages.search.field.searchIn' | transloco }}</span>
-                  <select [ngModel]="scope()" (ngModelChange)="scope.set($event)">
-                    <option value="all">
-                      {{ 'pages.search.field.publicAndLibrary' | transloco }}
-                    </option>
-                    <option value="public">{{ 'pages.search.field.public' | transloco }}</option>
-                    <option value="library">
-                      {{ 'pages.search.field.myLibrary' | transloco }}
-                    </option>
-                  </select>
-                </label>
-              }
-            </div>
-
-            <div class="advanced-actions">
-              <button type="button" mbButton size="small" (click)="applyAdvanced()">
-                {{ 'pages.search.action.applyAndSearch' | transloco }}
-              </button>
-              @if (hasAdvanced()) {
-                <button
-                  type="button"
-                  mbButton
-                  variant="outline"
-                  size="small"
-                  (click)="clearAdvanced()"
-                >
-                  {{ 'pages.search.recent.clear' | transloco }}
-                </button>
-              }
-            </div>
-          </div>
-        }
-
-        @if (advancedOpen() && type() === 'accounts') {
-          <div class="advanced-panel">
-            <p class="muted small">
-              {{ 'pages.search.accountSearchDescription' | transloco }}
-            </p>
-
-            <label class="adv-field">
-              <span class="muted small">{{ 'pages.search.accountField.matchOn' | transloco }}</span>
-              <select [ngModel]="accountSource()" (ngModelChange)="accountSource.set($event)">
-                @for (s of accountSources; track s.value) {
-                  <option [value]="s.value">{{ s.label | transloco }}</option>
-                }
-              </select>
-            </label>
-
-            <div class="num-facet-grid">
-              <div class="num-facet">
-                <span class="muted small">{{
-                  'pages.search.accountField.followers' | transloco
-                }}</span>
-                <div class="num-range">
-                  <input
-                    type="number"
-                    min="0"
-                    [placeholder]="'pages.search.accountField.minimum' | transloco"
-                    [ngModel]="followersMin()"
-                    (ngModelChange)="followersMin.set($event)"
-                    [attr.aria-label]="'pages.search.accountField.minimumFollowers' | transloco"
-                  />
-                  <span class="muted">–</span>
-                  <input
-                    type="number"
-                    min="0"
-                    [placeholder]="'pages.search.accountField.maximum' | transloco"
-                    [ngModel]="followersMax()"
-                    (ngModelChange)="followersMax.set($event)"
-                    [attr.aria-label]="'pages.search.accountField.maximumFollowers' | transloco"
-                  />
-                </div>
-              </div>
-              <div class="num-facet">
-                <span class="muted small">{{
-                  'pages.search.accountField.following' | transloco
-                }}</span>
-                <div class="num-range">
-                  <input
-                    type="number"
-                    min="0"
-                    [placeholder]="'pages.search.accountField.minimum' | transloco"
-                    [ngModel]="followingMin()"
-                    (ngModelChange)="followingMin.set($event)"
-                    [attr.aria-label]="'pages.search.accountField.minimumFollowing' | transloco"
-                  />
-                  <span class="muted">–</span>
-                  <input
-                    type="number"
-                    min="0"
-                    [placeholder]="'pages.search.accountField.maximum' | transloco"
-                    [ngModel]="followingMax()"
-                    (ngModelChange)="followingMax.set($event)"
-                    [attr.aria-label]="'pages.search.accountField.maximumFollowing' | transloco"
-                  />
-                </div>
-              </div>
-              <div class="num-facet">
-                <span class="muted small">{{ 'pages.search.accountField.posts' | transloco }}</span>
-                <div class="num-range">
-                  <input
-                    type="number"
-                    min="0"
-                    [placeholder]="'pages.search.accountField.minimum' | transloco"
-                    [ngModel]="statusesMin()"
-                    (ngModelChange)="statusesMin.set($event)"
-                    [attr.aria-label]="
-                      'pages.search.accountField.minimumPosts' | transloco: { posts: words().posts }
-                    "
-                  />
-                  <span class="muted">–</span>
-                  <input
-                    type="number"
-                    min="0"
-                    [placeholder]="'pages.search.accountField.maximum' | transloco"
-                    [ngModel]="statusesMax()"
-                    (ngModelChange)="statusesMax.set($event)"
-                    [attr.aria-label]="
-                      'pages.search.accountField.maximumPosts' | transloco: { posts: words().posts }
-                    "
-                  />
-                </div>
-              </div>
-            </div>
-            <p class="muted small">
-              {{ 'pages.search.accountRangesDescription' | transloco }}
-            </p>
-
-            <div class="advanced-actions">
-              <button type="button" mbButton size="small" (click)="applyAccountAdvanced()">
-                {{ 'pages.search.action.applyAndSearch' | transloco }}
-              </button>
-              @if (hasAccountAdvanced()) {
-                <button
-                  type="button"
-                  mbButton
-                  variant="outline"
-                  size="small"
-                  (click)="clearAccountAdvanced()"
-                >
-                  {{ 'pages.search.recent.clear' | transloco }}
-                </button>
-              }
-            </div>
-          </div>
-        }
-
         <!-- Refinement controls live in the form box, beside the results (post mode only).
          Everything here runs on already-loaded results — no API calls. -->
         @if (postSearchRan) {
@@ -1220,31 +1267,9 @@
           </div>
         }
 
-        @if (type() === 'accounts' && !accountResultsRan && !accountSearchRan() && !searching()) {
-          <!-- Nothing searched yet and looking for people: answer "what can I type
-           here?", the same question the posts tab answers with its operator
-           reference. This used to list offsite directories, which is a fine
-           answer to "where do I find people" but not to the question an empty
-           search box poses — and /find-friends is that hub, linked from the foot
-           of the help rather than competing with the search the reader came to
-           run. Once a search has run (even to zero results) we show the results
-           block's empty state instead, so the button never looks inert. -->
-          <div class="search-idle">
-            <app-account-search-help (syntaxHelp)="syntaxHelpOpen.set(true)" />
-          </div>
-        }
-
-        @if (!results() && type() === 'statuses') {
-          <!-- Nothing searched yet: answer the question an empty search box poses,
-             which is "what can I type here?". This space used to show trending
-             posts — engaging, but it taught nothing and buried the operators in
-             a dialog nobody opens. Unchanged for a search that ran and found
-             nothing: that is the results block's empty state, below. -->
-          <div class="search-idle">
-            <app-search-syntax-help [embedded]="true" />
-          </div>
-        }
-
+        <!-- Nothing searched yet: deliberately blank. This used to fill with the
+             operator cheat sheet, people-search help and trending hashtags, which
+             was mostly noise; Syntax and Advanced are one click away. -->
         @if (type() === 'hashtags' && similarTags().length) {
           <app-similar-hashtags-panel
             [tags]="similarTags()"
@@ -1252,30 +1277,6 @@
             (tagsChange)="showSimilar($event)"
             (closed)="showSimilar([])"
           />
-        }
-
-        @if (!results() && type() === 'hashtags' && !similarTags().length) {
-          @if (trendingTags().length) {
-            <div class="page-head">{{ 'pages.search.results.trendingHashtags' | transloco }}</div>
-            @for (h of trendingTags(); track h.name) {
-              <div class="result-tag">
-                <a [routerLink]="['/tags', h.name]">
-                  #{{ h.name }}
-                  <span class="muted tag-uses">{{
-                    'pages.search.results.recentUses'
-                      | transloco: { count: tagUses(h).toLocaleString() }
-                  }}</span></a
-                >
-                <app-tag-actions
-                  [name]="h.name"
-                  [info]="h"
-                  [offerSimilar]="true"
-                  [offerMute]="true"
-                  (similar)="showSimilar([$event])"
-                />
-              </div>
-            }
-          }
         }
 
         @if (type() === 'accounts' && (accountResultsRan || accountSearchRan() || searching())) {
@@ -1463,6 +1464,7 @@
               @for (s of group.statuses; track s.id) {
                 <app-status-card
                   [status]="s"
+                  [excerptTerms]="excerptTerms()"
                   (changed)="onChanged($event)"
                   (deleted)="onDeleted($event)"
                 />
@@ -1499,6 +1501,7 @@
                         @for (d of dupes; track d.id) {
                           <app-status-card
                             [status]="d"
+                            [excerptTerms]="excerptTerms()"
                             (changed)="onChanged($event)"
                             (deleted)="onDeleted($event)"
                           />

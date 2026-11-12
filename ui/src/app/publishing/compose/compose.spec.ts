@@ -244,6 +244,57 @@ describe('Compose', () => {
     sent.flush({ id: 'reply' });
   });
 
+  it('warns before sending a reply that mentions nobody, and sends only when confirmed', async () => {
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
+    const f = TestBed.createComponent(Compose);
+    f.componentRef.setInput('inReplyToId', 'parent');
+    f.componentRef.setInput('replyToHandle', 'alice');
+    f.detectChanges();
+    internals(f).text.set('hello with no handle');
+    await internals(f).submit();
+    await vi.waitFor(() => expect(confirm).toHaveBeenCalled());
+    expect(String(confirm.mock.calls[0][0])).toContain('will not be notified');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    httpMock.expectNone('/api/v1/statuses');
+
+    confirm.mockResolvedValue(true);
+    await internals(f).submit();
+    await vi.waitFor(() => expect(confirm).toHaveBeenCalledTimes(2));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    httpMock.expectOne('/api/v1/statuses').flush({ id: 'reply' });
+  });
+
+  it('says a private message with no mention reaches nobody', async () => {
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
+    const f = TestBed.createComponent(Compose);
+    f.componentRef.setInput('inReplyToId', 'parent');
+    f.componentRef.setInput('initialVisibility', 'direct');
+    f.componentRef.setInput('expectedMentions', ['alice']);
+    f.detectChanges();
+    internals(f).text.set('just between us');
+    await internals(f).submit();
+    await vi.waitFor(() => expect(confirm).toHaveBeenCalled());
+    expect(String(confirm.mock.calls[0][0])).toContain('nobody else will receive it');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    httpMock.expectNone('/api/v1/statuses');
+  });
+
+  it('does not ask to confirm the chat partner it was told to expect', async () => {
+    const confirm = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+    const f = TestBed.createComponent(Compose);
+    f.componentRef.setInput('inReplyToId', 'parent');
+    f.componentRef.setInput('initialVisibility', 'direct');
+    f.componentRef.setInput('expectedMentions', ['alice']);
+    f.detectChanges();
+    internals(f).text.set('@alice see you at six');
+    await internals(f).submit();
+    httpMock.expectNone((req) => req.url === '/api/v2/search');
+    expect(confirm).not.toHaveBeenCalled();
+    const sent = httpMock.expectOne('/api/v1/statuses');
+    expect(sent.request.body.status).toBe('@alice see you at six');
+    sent.flush({ id: 'dm' });
+  });
+
   it('does not send edited text after a mention check started for an older reply', async () => {
     const f = TestBed.createComponent(Compose);
     f.componentRef.setInput('inReplyToId', 'parent');
@@ -1128,6 +1179,19 @@ describe('Compose', () => {
     expect(req.request.body.status).toBe('risky post');
     req.flush({ id: '1' });
     expect(internals(f).countdown()).toBeNull();
+  });
+
+  it('uses the private-message risks in the confirmation for a private message', async () => {
+    TestBed.inject(ClientPrefs).setConfirmBeforePost(true);
+    const confirmSpy = vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
+    const f = TestBed.createComponent(Compose);
+    f.componentRef.setInput('initialVisibility', 'direct');
+    f.detectChanges();
+    internals(f).text.set('@alice private plans');
+    await internals(f).submit();
+    await vi.waitFor(() => expect(confirmSpy).toHaveBeenCalled());
+    expect(String(confirmSpy.mock.calls[0][0])).toContain('not end-to-end encrypted');
+    httpMock.expectNone('/api/v1/statuses');
   });
 
   it('declining the confirmation aborts without posting and keeps the draft', async () => {

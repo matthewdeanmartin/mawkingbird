@@ -21,7 +21,7 @@ When you find someone:
 
 1. Copy their full handle or profile address.
 2. Return to Mawkingbird.
-3. Paste it into Search with **Accounts** selected.
+3. Paste it into Search with **People** selected.
 4. Check the profile and follow from Mawkingbird.
 
 You can collect several handles and [import them as a follow list](import-follow-list.md).

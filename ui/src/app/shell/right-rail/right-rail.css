@@ -2,61 +2,6 @@
   margin-bottom: 12px;
 }
 
-.server-mode-card {
-  padding: 13px 14px;
-}
-
-.server-mode-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.server-mode-kicker {
-  display: block;
-  color: var(--accent);
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.server-mode-copy {
-  margin: 8px 0 10px;
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.server-mode-update {
-  width: 100%;
-}
-
-.server-mode-status {
-  margin: 8px 0 0;
-  line-height: 1.35;
-}
-
-.server-mode-status.ok {
-  color: var(--accent);
-}
-
-.server-mode-status.fail {
-  color: var(--ds-error-text);
-}
-
-.server-mode-progress {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.server-mode-progress progress {
-  flex: 1;
-  accent-color: var(--accent);
-}
-
 .rail-link svg {
   width: 20px;
   height: 20px;

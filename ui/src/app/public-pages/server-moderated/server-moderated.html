@@ -1,0 +1,37 @@
+<header class="page-head">
+  <h1>{{ 'serverAnnouncements.moderated.title' | transloco }}</h1>
+  <p>{{ 'serverAnnouncements.moderated.intro' | transloco }}</p>
+</header>
+
+@switch (state()) {
+  @case ('loaded') {
+    @if (moderated().length) {
+      <ul class="moderated-servers">
+        @for (m of moderated(); track m.digest) {
+          <li>
+            <span class="moderated-domain">{{ m.domain }}</span>
+            <span class="moderated-severity" [attr.data-severity]="m.severity">{{
+              'serverAnnouncements.moderated.' + m.severity | transloco
+            }}</span>
+            <span class="muted small">{{
+              m.comment || ('serverAnnouncements.moderated.noReason' | transloco)
+            }}</span>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="empty muted">{{ 'serverAnnouncements.moderated.none' | transloco }}</p>
+    }
+  }
+  @case ('private') {
+    <p class="empty muted">{{ 'serverAnnouncements.moderated.private' | transloco }}</p>
+  }
+  @case ('unavailable') {
+    <p class="empty muted">{{ 'serverAnnouncements.moderated.unavailable' | transloco }}</p>
+  }
+  @default {
+    <p class="empty muted" role="status">
+      {{ 'serverAnnouncements.moderated.loading' | transloco }}
+    </p>
+  }
+}

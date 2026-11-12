@@ -2026,7 +2026,10 @@ export class WritePage implements OnInit, OnDestroy {
     ) {
       return;
     }
-    const confirmation = this.postConfirmation.confirm(this.auth.account()?.acct);
+    const confirmation = this.postConfirmation.confirm(
+      this.auth.account()?.acct,
+      this.visibility(),
+    );
     if (!(typeof confirmation === 'boolean' ? confirmation : await confirmation)) return;
     this.wizardBusy.set(true);
     this.wizardError.set(null);
