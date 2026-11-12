@@ -295,6 +295,73 @@ describe('Compose', () => {
     sent.flush({ id: 'dm' });
   });
 
+  describe('1:1 chat partner', () => {
+    function chat(kind: 'public' | 'private') {
+      const f = TestBed.createComponent(Compose);
+      f.componentRef.setInput('inReplyToId', 'parent');
+      f.componentRef.setInput('chatMode', true);
+      f.componentRef.setInput('initialVisibility', kind === 'private' ? 'direct' : 'public');
+      f.componentRef.setInput('expectedMentions', ['alice']);
+      f.componentRef.setInput('chatPartner', { handle: 'alice', kind });
+      f.componentRef.setInput('initialText', '@alice ');
+      f.detectChanges();
+      return f;
+    }
+
+    for (const kind of ['private', 'public'] as const) {
+      it(`puts @partner in front of a ${kind} message that mentions nobody, with no dialog`, async () => {
+        const confirm = vi.spyOn(AppDialogs.prototype, 'confirm');
+        const f = chat(kind);
+        internals(f).text.set('see you at six');
+        await internals(f).submit();
+        expect(confirm).not.toHaveBeenCalled();
+        const sent = httpMock.expectOne('/api/v1/statuses');
+        expect(sent.request.body.status).toBe('@alice see you at six');
+        sent.flush({ id: 'm1', visibility: kind === 'private' ? 'direct' : 'public' });
+      });
+    }
+
+    it('leaves a message that already mentions the partner alone', async () => {
+      const f = chat('private');
+      internals(f).text.set('ok @alice@home.test, six it is');
+      await internals(f).submit();
+      const sent = httpMock.expectOne('/api/v1/statuses');
+      expect(sent.request.body.status).toBe('ok @alice@home.test, six it is');
+      sent.flush({ id: 'm1' });
+    });
+
+    it('also mentions the partner in a public chat that mentions only someone else', async () => {
+      const confirm = vi.spyOn(AppDialogs.prototype, 'confirm');
+      const f = chat('public');
+      internals(f).text.set('have you met @bob?');
+      await internals(f).submit();
+      httpMock.expectNone((req) => req.url === '/api/v2/search');
+      expect(confirm).not.toHaveBeenCalled();
+      const sent = httpMock.expectOne('/api/v1/statuses');
+      expect(sent.request.body.status).toBe('@alice have you met @bob?');
+      sent.flush({ id: 'm1' });
+    });
+
+    it('stops a private message that mentions only someone else, without a dialog', async () => {
+      const confirm = vi.spyOn(AppDialogs.prototype, 'confirm');
+      const f = chat('private');
+      internals(f).text.set('@bob secret');
+      await internals(f).submit();
+      expect(confirm).not.toHaveBeenCalled();
+      httpMock.expectNone('/api/v1/statuses');
+      expect(internals(f).crossPostError()).toContain('@bob');
+      expect(internals(f).text()).toBe('@bob secret');
+    });
+
+    it('refills the box with the mention after sending', async () => {
+      const f = chat('private');
+      internals(f).text.set('@alice first');
+      await internals(f).submit();
+      httpMock.expectOne('/api/v1/statuses').flush({ id: 'm1', visibility: 'direct' });
+      await vi.waitFor(() => expect(internals(f).text()).toBe('@alice '));
+    });
+  });
+
   it('does not send edited text after a mention check started for an older reply', async () => {
     const f = TestBed.createComponent(Compose);
     f.componentRef.setInput('inReplyToId', 'parent');

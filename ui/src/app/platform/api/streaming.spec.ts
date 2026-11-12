@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../session/auth';
 import { Server } from '../http/server';
-import { Streaming } from './streaming';
+import { StreamDiagnostics, Streaming } from './streaming';
 
 /** Minimal fake standing in for the browser's WebSocket. */
 class FakeWebSocket {
@@ -139,6 +139,46 @@ describe('Streaming', () => {
     lastSocket().onclose?.();
     expect(states.at(-1)).toBe('down');
     sub.unsubscribe();
+  });
+
+  it('reports why it is down: server, failures, the close code and the next attempt', async () => {
+    const reports: StreamDiagnostics[] = [];
+    const sub = streaming
+      .open({ stream: 'direct' }, (_state, info) => reports.push(info))
+      .subscribe();
+    await settle();
+    const socket = lastSocket() as unknown as {
+      onclose: ((event: Partial<CloseEvent>) => void) | null;
+    };
+    socket.onclose?.({ code: 1008, reason: 'Invalid token' });
+    const last = reports.at(-1)!;
+    expect(last.server).toBeTruthy();
+    expect(last.failures).toBe(1);
+    expect(last.lastClose).toMatchObject({ code: 1008, reason: 'Invalid token' });
+    expect(last.nextAttemptAt).toBeGreaterThan(Date.now());
+    expect(last.noStreaming).toBe(false);
+    sub.unsubscribe();
+  });
+
+  it('retries at once after retryNow lifts a pause', async () => {
+    vi.useFakeTimers();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    try {
+      const sub = await open({ stream: 'user' });
+      lastSocket().onclose?.();
+      await vi.advanceTimersByTimeAsync(1_000);
+      lastSocket().onclose?.();
+      await vi.advanceTimersByTimeAsync(2_000);
+      lastSocket().onclose?.(); // third failed handshake: paused for five minutes
+      sub.unsubscribe();
+      streaming.retryNow();
+      const again = await open({ stream: 'user' });
+      expect(FakeWebSocket.instances).toHaveLength(4);
+      again.unsubscribe();
+    } finally {
+      warn.mockRestore();
+      vi.useRealTimers();
+    }
   });
 
   it('reports unavailable when the server has no streaming', async () => {

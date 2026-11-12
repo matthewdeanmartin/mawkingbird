@@ -24,6 +24,7 @@ anything that went wrong under **Findings**.
 | [Phanpy parity 3](phanpy-parity-3-mastodon-2026-11.md) | Profile image descriptions and removal, collection language/sensitivity and reporting, server annual reports | Not run |
 | [Phanpy parity 4](phanpy-parity-4-2026-11.md) | Translate bio, camera capture, read aloud, AI alt text via OpenRouter | Not run |
 | [Install and share](install-and-share-2026-11.md) | Install as an app (Settings, footer), share links/text into the composer | Not run |
+| [Chat mentions and live](chat-mentions-and-live-2026-11.md) | 1:1 chat mentions added automatically, Reconnecting… diagnostics | Not run |
 
 The roadmap these come from is `sprint/november_2026_bsky_parity.md`.
 

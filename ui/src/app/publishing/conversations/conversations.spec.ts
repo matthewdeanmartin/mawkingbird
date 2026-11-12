@@ -8,7 +8,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
-import { Streaming, StreamEvent, StreamKind, StreamState } from '../../platform/api/streaming';
+import {
+  StreamDiagnostics,
+  Streaming,
+  StreamEvent,
+  StreamKind,
+  StreamState,
+} from '../../platform/api/streaming';
 import {
   Account,
   Conversation,
@@ -33,6 +39,7 @@ interface ConversationsInternals {
   visibleChats: Signal<Chat[]>;
   selected: Signal<Chat | null>;
   replyMentions: Signal<string>;
+  chatPartner: Signal<{ handle: string; kind: string } | null>;
   replyToId: Signal<string | undefined>;
   replyVisibility: Signal<string>;
   liveState: Signal<string>;
@@ -78,10 +85,15 @@ function visibleReal(fixture: ComponentFixture<Conversations>): Chat[] {
 /** The component opens two streams (direct + user); track subscribers per kind. */
 class MultiFakeStreaming {
   private subscribers = new Map<string, (ev: StreamEvent) => void>();
-  private stateCallbacks = new Map<string, (state: StreamState) => void>();
+  private stateCallbacks = new Map<string, (state: StreamState, info: StreamDiagnostics) => void>();
   openedKinds: string[] = [];
+  retried = 0;
 
-  open(kind: StreamKind, onState?: (state: StreamState) => void) {
+  retryNow(): void {
+    this.retried++;
+  }
+
+  open(kind: StreamKind, onState?: (state: StreamState, info: StreamDiagnostics) => void) {
     this.openedKinds.push(kind.stream);
     if (onState) this.stateCallbacks.set(kind.stream, onState);
     return {
@@ -96,8 +108,17 @@ class MultiFakeStreaming {
     this.subscribers.get(stream)?.(ev);
   }
 
-  setState(stream: string, state: StreamState): void {
-    this.stateCallbacks.get(stream)?.(state);
+  setState(stream: string, state: StreamState, info: Partial<StreamDiagnostics> = {}): void {
+    this.stateCallbacks.get(stream)?.(state, {
+      server: null,
+      failures: 0,
+      lastClose: null,
+      nextAttemptAt: null,
+      pausedUntil: null,
+      discoveryFailed: false,
+      noStreaming: false,
+      ...info,
+    });
   }
 }
 
@@ -693,6 +714,24 @@ describe('Conversations', () => {
     ).toEqual(['s0', 's1']);
   });
 
+  it('names the partner of a 1:1 chat for the composer, and nobody in a group', () => {
+    const alice = makeAccount('2', 'alice');
+    const bob = makeAccount('3', 'bob');
+    const fixture = setUp([
+      makeConversation('c1', { accounts: [alice], last_status: makeStatus('s1') }),
+      makeConversation('c2', { accounts: [alice, bob], last_status: makeStatus('s2') }),
+    ]);
+    const [one, group] = [...realChats(fixture)].sort(
+      (a, b) => a.handles.length - b.handles.length,
+    );
+    fixture.componentInstance.select(one);
+    httpMock.match(() => true).forEach((req) => req.flush({ ancestors: [], descendants: [] }));
+    expect(internals(fixture).chatPartner()).toEqual({ handle: 'alice', kind: 'private' });
+    fixture.componentInstance.select(group);
+    httpMock.match(() => true).forEach((req) => req.flush({ ancestors: [], descendants: [] }));
+    expect(internals(fixture).chatPartner()).toBeNull();
+  });
+
   it('marks a private chat unread on the server and steps out of it', () => {
     const status = makeStatus('s1');
     const fixture = setUp([makeConversation('c1', { last_status: status })]);
@@ -849,6 +888,45 @@ describe('Conversations', () => {
     expect(state.liveState()).toBe('down');
     streaming.setState('user', 'unavailable');
     expect(state.liveState()).toBe('unavailable');
+  });
+
+  it('after 5 s of Reconnecting… the indicator explains why and can reconnect now', () => {
+    vi.useFakeTimers();
+    try {
+      const fixture = setUp();
+      const page = fixture.nativeElement as HTMLElement;
+      streaming.setState('direct', 'live');
+      streaming.setState('user', 'down', {
+        server: 'streaming.example',
+        failures: 3,
+        lastClose: { code: 1006, reason: '', at: Date.now() },
+        nextAttemptAt: Date.now() + 8_000,
+      });
+      fixture.detectChanges();
+      expect(page.querySelector('button.live-state')).toBeNull();
+      vi.advanceTimersByTime(5_000);
+      fixture.detectChanges();
+      const indicator = page.querySelector<HTMLButtonElement>('button.live-state');
+      expect(indicator?.textContent).toContain('Reconnecting');
+      indicator!.click();
+      fixture.detectChanges();
+      const dialog = page.querySelector('mb-dialog')?.textContent ?? '';
+      expect(dialog).toContain('streaming.example');
+      expect(dialog).toContain('1006');
+      expect(dialog).toContain('Failed attempts since it was last live: 3');
+      const opened = streaming.openedKinds.length;
+      const reconnect = [...page.querySelectorAll<HTMLButtonElement>('mb-dialog button')].find(
+        (b) => b.textContent?.includes('Reconnect now'),
+      );
+      reconnect!.click();
+      fixture.detectChanges();
+      expect(streaming.retried).toBe(1);
+      expect(streaming.openedKinds.length).toBe(opened + 2);
+      expect(page.querySelector('mb-dialog')).toBeNull();
+      expect(page.querySelector('button.live-state')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('a like on a shown message updates its count as it happens', () => {

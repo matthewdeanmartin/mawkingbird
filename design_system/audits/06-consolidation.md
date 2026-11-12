@@ -2386,3 +2386,14 @@ post. `share-dialog.html` merged its two destination sections into one list and
 dropped both section headings and hint lines; its control counts are unchanged.
 The post's own network is no longer offered as a destination. No shared widget
 implementation changed.
+
+### Chat live diagnostics and 1:1 mentions (2026-11-12)
+
+Reviewed regeneration: 638 candidate files, one changed, none added or removed.
+`publishing/conversations/conversations.html`: after five seconds of
+Connecting…/Reconnecting…, the live indicator becomes a link-style `mbButton`
+that opens an `mb-dialog` explaining the connection (server, failures, last
+close code, next attempt) with Network Doctor (`a[mbButton]`) and Reconnect now
+(`mbButton`). +4 shared, +2 native buttons; both counted native buttons are
+`mbButton` hosts. The 1:1 mention rule lives in Compose and adds no controls. No
+shared widget implementation changed.

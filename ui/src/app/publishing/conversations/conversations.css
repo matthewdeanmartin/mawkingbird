@@ -704,3 +704,17 @@
 .compose-kind[data-kind='private'] {
   color: var(--text);
 }
+
+.live-diag-stream h3 {
+  margin: 12px 0 4px;
+  font-size: 14px;
+}
+
+.live-diag-stream ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.live-diag-alert {
+  font-weight: 600;
+}

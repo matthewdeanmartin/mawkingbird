@@ -27,14 +27,112 @@
       <!-- Whether messages arrive by themselves. Not live means the page is
            polling instead (every 20 s for the open chat), and says so. -->
       @if (liveState() !== 'off') {
-        <span
-          class="live-state"
-          [attr.data-state]="liveState()"
-          role="status"
-          [title]="liveText[liveState()].title | transloco"
+        <!-- Stuck on Connecting…/Reconnecting… for 5 s: the same words become
+             a button that says what is known about why. -->
+        @if (liveStuck()) {
+          <button
+            mbButton
+            variant="link"
+            size="small"
+            type="button"
+            class="live-state"
+            [attr.data-state]="liveState()"
+            [title]="'pages.conversations.live.diagnose' | transloco"
+            (click)="openLiveDiagnostics()"
+          >
+            {{ liveText[liveState()].label | transloco }}
+          </button>
+        } @else {
+          <span
+            class="live-state"
+            [attr.data-state]="liveState()"
+            role="status"
+            [title]="liveText[liveState()].title | transloco"
+          >
+            {{ liveText[liveState()].label | transloco }}
+          </span>
+        }
+      }
+      @if (liveDiagnosticsOpen()) {
+        <mb-dialog
+          [title]="'pages.conversations.liveDiag.title' | transloco"
+          [closeLabel]="'pages.conversations.liveDiag.close' | transloco"
+          [closeOnBackdrop]="true"
+          (dismissed)="liveDiagnosticsOpen.set(false)"
         >
-          {{ liveText[liveState()].label | transloco }}
-        </span>
+          <p>
+            {{ 'pages.conversations.liveDiag.summary' | transloco: { seconds: notLiveSeconds() } }}
+          </p>
+          @if (browserOffline()) {
+            <p class="live-diag-alert" role="alert">
+              {{ 'pages.conversations.liveDiag.offline' | transloco }}
+            </p>
+          }
+          @for (row of liveDiagnosticRows(); track row.which) {
+            <section class="live-diag-stream">
+              <h3>
+                {{
+                  (row.which === 'direct'
+                    ? 'pages.conversations.liveDiag.streamDirect'
+                    : 'pages.conversations.liveDiag.streamUser'
+                  ) | transloco
+                }}
+                · {{ liveText[row.state].label | transloco }}
+              </h3>
+              <ul>
+                <li>
+                  {{
+                    'pages.conversations.liveDiag.server' | transloco: { server: row.server ?? '—' }
+                  }}
+                </li>
+                @if (row.discoveryFailed) {
+                  <li>{{ 'pages.conversations.liveDiag.discoveryFailed' | transloco }}</li>
+                }
+                <li>
+                  {{ 'pages.conversations.liveDiag.failures' | transloco: { count: row.failures } }}
+                </li>
+                @if (row.closeCode !== null) {
+                  <li>
+                    {{
+                      'pages.conversations.liveDiag.lastClose'
+                        | transloco
+                          : {
+                              code: row.closeCode,
+                              reason:
+                                row.closeReason ??
+                                ((row.closeCode === 1006
+                                  ? 'pages.conversations.liveDiag.reason1006'
+                                  : 'pages.conversations.liveDiag.noReason'
+                                ) | transloco),
+                              seconds: row.closedAgo,
+                            }
+                    }}
+                  </li>
+                }
+                @if (row.pausedFor !== null) {
+                  <li>
+                    {{
+                      'pages.conversations.liveDiag.paused' | transloco: { seconds: row.pausedFor }
+                    }}
+                  </li>
+                } @else if (row.nextIn !== null) {
+                  <li>
+                    {{ 'pages.conversations.liveDiag.nextIn' | transloco: { seconds: row.nextIn } }}
+                  </li>
+                }
+              </ul>
+            </section>
+          }
+          <p class="muted small">{{ 'pages.conversations.liveDiag.polling' | transloco }}</p>
+          <ng-container mbDialogActions>
+            <a mbButton variant="outline" routerLink="/connection-doctor">
+              {{ 'pages.conversations.liveDiag.doctor' | transloco }}
+            </a>
+            <button mbButton type="button" (click)="reconnectNow()">
+              {{ 'pages.conversations.liveDiag.reconnect' | transloco }}
+            </button>
+          </ng-container>
+        </mb-dialog>
       }
       <!-- One Refresh for every network: the chat lists and the open chat. -->
       @if (mastodonAvailable() || bsky.linked()) {
@@ -798,6 +896,7 @@
             [chatMode]="true"
             [inReplyToId]="replyToId()"
             [expectedMentions]="chat.handles"
+            [chatPartner]="chatPartner()"
             [initialText]="replyMentions()"
             [draftContext]="'chat:' + chat.key"
             [initialVisibility]="replyVisibility()"

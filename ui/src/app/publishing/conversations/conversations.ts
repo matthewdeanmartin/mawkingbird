@@ -21,7 +21,7 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Compose } from '../compose/compose';
 import { HumanTimePipe } from '../../i18n/human-time.pipe';
 import { ReportDialog } from '../../moderation/report-dialog/report-dialog';
-import { Streaming, StreamState } from '../../platform/api/streaming';
+import { StreamDiagnostics, Streaming, StreamState } from '../../platform/api/streaming';
 import {
   Account,
   Conversation,
@@ -52,6 +52,7 @@ import {
 } from '../../connections/bluesky/bluesky-types';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { MbButton } from '../../design-system/button/button';
+import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbMenuItem } from '../../design-system/menu/menu-item';
 import { MbPostMenu } from '../../design-system/menu/post-menu';
 import { EmojiPicker } from '../emoji-picker/emoji-picker';
@@ -66,6 +67,8 @@ const READ_KEY = 'mockingbird_chat_read';
 const CONVERSATION_PAGE = 40;
 /** Mention notifications per page: Mastodon's v1 maximum is 80; 40 keeps each request light. */
 const MENTION_PAGE = 40;
+/** How long Connecting…/Reconnecting… shows before it offers diagnostics. */
+const STUCK_AFTER_MS = 5_000;
 /** Mention pages fetched on open, before any Load more (about 120 mentions). */
 const INITIAL_MENTION_PAGES = 3;
 /** While not live: how often the open conversation and the chat list are re-fetched. */
@@ -203,6 +206,24 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.live.downTitle: The live connection dropped. Until it is back, the open chat is checked every 20 seconds; Refresh checks now.
 // i18n pages.conversations.live.unavailable: Not live
 // i18n pages.conversations.live.unavailableTitle: Your server does not offer live updates. The open chat is checked every 20 seconds; Refresh checks now.
+// i18n pages.conversations.live.diagnose: Still not live. Click to see why.
+// i18n pages.conversations.liveDiag.title: Why live updates are not working
+// i18n pages.conversations.liveDiag.close: Close
+// i18n pages.conversations.liveDiag.summary: Live updates have not connected for {{seconds}} seconds. This is what Mawkingbird knows. Browsers hide the details of a failed live connection, so the server's own reason may be missing.
+// i18n pages.conversations.liveDiag.offline: Your browser says it is offline. Check your network connection first.
+// i18n pages.conversations.liveDiag.streamDirect: Private messages
+// i18n pages.conversations.liveDiag.streamUser: Mentions and replies
+// i18n pages.conversations.liveDiag.server: Live server: {{server}}
+// i18n pages.conversations.liveDiag.discoveryFailed: Your server did not say where its live updates are, so its own address was tried.
+// i18n pages.conversations.liveDiag.failures: Failed attempts since it was last live: {{count}}
+// i18n pages.conversations.liveDiag.lastClose: Last error: code {{code}}, {{reason}} ({{seconds}} s ago)
+// i18n pages.conversations.liveDiag.reason1006: the connection failed or dropped without a reason (often a network, firewall or server problem)
+// i18n pages.conversations.liveDiag.noReason: no reason given
+// i18n pages.conversations.liveDiag.paused: Paused after repeated failures. Next try in {{seconds}} s.
+// i18n pages.conversations.liveDiag.nextIn: Next try in {{seconds}} s.
+// i18n pages.conversations.liveDiag.polling: Until it is live again, the open chat is checked every 20 seconds.
+// i18n pages.conversations.liveDiag.doctor: Network Doctor
+// i18n pages.conversations.liveDiag.reconnect: Reconnect now
 // i18n pages.conversations.composeKind.public: 🌐 Public reply: anyone can see it. Choose “Mentioned only” to send it privately instead.
 // i18n pages.conversations.composeKind.private: 🔒 Private message: only the people mentioned in it receive it.
 // i18n pages.conversations.movedToPrivate: You sent that privately, so it is here in your private chat with {{name}} rather than in the public one.
@@ -241,6 +262,7 @@ export function stripLeadingMentions(html: string): string {
     EmojiPicker,
     FormsModule,
     MbButton,
+    MbDialog,
     MbMenuItem,
     MbPostMenu,
     HumanTimePipe,
@@ -336,6 +358,14 @@ export class Conversations implements OnInit, OnDestroy {
     },
     off: { label: '', title: '' },
   };
+  /** What each stream last reported about its connection (see StreamDiagnostics). */
+  private streamInfo = signal<Partial<Record<'direct' | 'user', StreamDiagnostics>>>({});
+  /** Not live for STUCK_AFTER_MS: the indicator becomes a button that explains why. */
+  protected liveStuck = signal(false);
+  protected liveDiagnosticsOpen = signal(false);
+  private notLiveSince = Date.now();
+  private stuckTimer: ReturnType<typeof setTimeout> | null = null;
+  private streamSubs: Subscription[] = [];
   private streamStates: Record<'direct' | 'user', StreamState> = {
     direct: 'connecting',
     user: 'connecting',
@@ -771,6 +801,14 @@ export class Conversations implements OnInit, OnDestroy {
     return handles.size ? [...handles].map((h) => `@${h}`).join(' ') + ' ' : '';
   });
 
+  /** The other person in a 1:1 Mastodon chat, whom every message mentions (see Compose). */
+  protected chatPartner = computed(() => {
+    const chat = this.selected();
+    if (!chat || (chat.kind !== 'private' && chat.kind !== 'public')) return null;
+    const others = chat.handles.filter((h) => h !== '' && h !== this.auth.account()?.acct);
+    return others.length === 1 ? { handle: others[0], kind: chat.kind } : null;
+  });
+
   /** Replies chain onto the newest message in the open thread. */
   protected replyToId = computed(
     () => this.messages().at(-1)?.id ?? this.selected()?.lastStatus?.id,
@@ -803,20 +841,28 @@ export class Conversations implements OnInit, OnDestroy {
     this.load();
     this.startPolling();
     if (!this.mastodonAvailable()) return;
-    this.liveState.set('connecting');
-    // The IM feel: streams are live while this page is open, closed on leave.
-    // Their connection state drives the Live indicator, and polling (see
-    // startPolling) covers whatever time they are not live.
-    this.subs.push(
+    this.openStreams();
+  }
+
+  /**
+   * The IM feel: streams are live while this page is open, closed on leave.
+   * Their connection state drives the Live indicator, and polling (see
+   * startPolling) covers whatever time they are not live.
+   */
+  private openStreams(): void {
+    for (const sub of this.streamSubs) sub.unsubscribe();
+    this.streamStates = { direct: 'connecting', user: 'connecting' };
+    this.noteStreamState('direct', 'connecting');
+    this.streamSubs = [
       this.streaming
-        .open({ stream: 'direct' }, (state) => this.noteStreamState('direct', state))
+        .open({ stream: 'direct' }, (state, info) => this.noteStreamState('direct', state, info))
         .subscribe(({ event, payload }) => {
           if (event === 'conversation') {
             this.upsertConversation(payload as Conversation);
           }
         }),
       this.streaming
-        .open({ stream: 'user' }, (state) => this.noteStreamState('user', state))
+        .open({ stream: 'user' }, (state, info) => this.noteStreamState('user', state, info))
         .subscribe(({ event, payload }) => {
           if (event === 'notification') {
             const n = payload as MastodonNotification;
@@ -834,35 +880,93 @@ export class Conversations implements OnInit, OnDestroy {
             this.messages.update((list) => list.filter((m) => m.id !== payload));
           }
         }),
-    );
+    ];
   }
 
   ngOnDestroy(): void {
     this.loadSub.unsubscribe();
     this.threadSub?.unsubscribe();
-    for (const sub of this.subs) {
+    for (const sub of [...this.subs, ...this.streamSubs]) {
       sub.unsubscribe();
     }
     for (const timer of this.pollTimers) {
       clearInterval(timer);
     }
+    if (this.stuckTimer) clearTimeout(this.stuckTimer);
   }
 
   // ---------------------------------------------------------------- live state
 
   /** Both streams must be live for the page to be; any one unavailable means never. */
-  private noteStreamState(which: 'direct' | 'user', state: StreamState): void {
+  private noteStreamState(
+    which: 'direct' | 'user',
+    state: StreamState,
+    info?: StreamDiagnostics,
+  ): void {
     this.streamStates[which] = state;
+    if (info) this.streamInfo.update((all) => ({ ...all, [which]: info }));
     const states = Object.values(this.streamStates);
-    this.liveState.set(
-      states.includes('unavailable')
-        ? 'unavailable'
-        : states.every((s) => s === 'live')
-          ? 'live'
-          : states.includes('down')
-            ? 'down'
-            : 'connecting',
-    );
+    const next: StreamState = states.includes('unavailable')
+      ? 'unavailable'
+      : states.every((s) => s === 'live')
+        ? 'live'
+        : states.includes('down')
+          ? 'down'
+          : 'connecting';
+    const wasTrying = ['connecting', 'down'].includes(this.liveState());
+    const trying = next === 'connecting' || next === 'down';
+    this.liveState.set(next);
+    if (trying && wasTrying) return; // still the same outage: keep its clock
+    if (this.stuckTimer) clearTimeout(this.stuckTimer);
+    this.stuckTimer = null;
+    this.liveStuck.set(false);
+    if (trying) {
+      this.notLiveSince = Date.now();
+      this.stuckTimer = setTimeout(() => this.liveStuck.set(true), STUCK_AFTER_MS);
+    }
+  }
+
+  /** The indicator, once it has said Connecting… or Reconnecting… for 5 s. */
+  protected openLiveDiagnostics(): void {
+    if (this.liveStuck()) this.liveDiagnosticsOpen.set(true);
+  }
+
+  /** One line per stream for the diagnostics panel; times are relative to now. */
+  protected liveDiagnosticRows = computed(() => {
+    this.liveDiagnosticsOpen(); // re-read times each time the panel opens
+    const now = Date.now();
+    const seconds = (at: number) => Math.max(0, Math.round(Math.abs(at - now) / 1000));
+    return (['direct', 'user'] as const).map((which) => {
+      const info = this.streamInfo()[which];
+      return {
+        which,
+        state: this.streamStates[which],
+        server: info?.server ?? null,
+        failures: info?.failures ?? 0,
+        closeCode: info?.lastClose?.code ?? null,
+        closeReason: info?.lastClose?.reason || null,
+        closedAgo: info?.lastClose ? seconds(info.lastClose.at) : null,
+        nextIn: info?.nextAttemptAt ? seconds(info.nextAttemptAt) : null,
+        pausedFor: info?.pausedUntil ? seconds(info.pausedUntil) : null,
+        discoveryFailed: info?.discoveryFailed ?? false,
+      };
+    });
+  });
+
+  protected notLiveSeconds(): number {
+    return Math.round((Date.now() - this.notLiveSince) / 1000);
+  }
+
+  protected browserOffline(): boolean {
+    return typeof navigator !== 'undefined' && navigator.onLine === false;
+  }
+
+  /** Reconnect now: drop the backoff and any pause, then reopen both streams. */
+  protected reconnectNow(): void {
+    this.liveDiagnosticsOpen.set(false);
+    this.streaming.retryNow();
+    this.liveState.set('off'); // a fresh outage clock for the new attempt
+    this.openStreams();
   }
 
   /**

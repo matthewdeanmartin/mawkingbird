@@ -440,6 +440,7 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.noMention.public: This reply mentions nobody, so the person you are replying to will not be notified. Add their @handle to make sure they see it.
 // i18n compose.noMention.private: This private message mentions nobody, so nobody else will receive it. Add the person's @handle, or send it anyway as a note only you can see.
 // i18n compose.noMention.sendAnyway: Send anyway
+// i18n compose.chatPartner.notMentioned: This private message would go to @{{handle}}, not @{{partner}}. Add @{{partner}} or remove @{{handle}}.
 // i18n compose.bskyControls: Bluesky: who can reply and quote
 // i18n compose.bskyLabel.title: Bluesky content label
 // i18n compose.bskyLabel.none: Bluesky: no label
@@ -719,6 +720,16 @@ export class Compose implements OnDestroy {
    * obviously talking to; their absence still triggers the no-mention warning.
    */
   readonly expectedMentions = input<readonly string[]>([]);
+  /**
+   * The other person in a 1:1 chat. On every send their `@handle` is put in
+   * front of the text when the message mentions nobody, and in a public chat
+   * also when it mentions only someone else; then the usual checks run (so a
+   * mention that makes it too long fails like any too-long text). A private
+   * 1:1 message that mentions only someone else is stopped with a note
+   * instead: it would go to them and not to the partner. Sending without
+   * notifying the partner is deliberately not catered for.
+   */
+  readonly chatPartner = input<{ handle: string; kind: 'public' | 'private' } | null>(null);
   protected chatToolsOpen = signal(false);
   // i18n compose.chatTools: More reply options
   /**
@@ -2500,6 +2511,9 @@ export class Compose implements OnDestroy {
   }
 
   async submit(): Promise<void> {
+    if (!this.mentionChatPartner()) {
+      return;
+    }
     if (!this.canSubmit()) {
       return;
     }
@@ -2535,6 +2549,36 @@ export class Compose implements OnDestroy {
       }
     }
     await this.finishSubmit();
+  }
+
+  /**
+   * The 1:1 chat rule ({@link chatPartner}), applied before any validation.
+   * Returns false when the message must not be sent as it stands.
+   */
+  private mentionChatPartner(): boolean {
+    const partner = this.chatPartner();
+    const text = this.text();
+    if (!partner || !text.trim() || !this.targetIncludesFedi()) return true;
+    const bare = (handle: string) => handle.replace(/^@/, '').toLowerCase();
+    // `alice` and `alice@home.example` name the same person when one is local.
+    const same = (a: string, b: string) =>
+      a === b || (a.split('@')[0] === b.split('@')[0] && (!a.includes('@') || !b.includes('@')));
+    const handle = bare(partner.handle);
+    const me = bare(this.auth.account()?.acct ?? '');
+    const mentioned = replyMentions(text).filter((h) => !me || !same(h, me));
+    if (mentioned.some((h) => same(h, handle))) return true;
+    if (mentioned.length && partner.kind === 'private') {
+      this.crossPostError.set(
+        this.transloco.translate('compose.chatPartner.notMentioned', {
+          handle: mentioned[0],
+          partner: handle,
+        }),
+      );
+      return false;
+    }
+    this.crossPostError.set(null);
+    this.text.set(`@${handle} ${text.replace(/^\s+/, '')}`);
+    return true;
   }
 
   /**
@@ -2644,7 +2688,8 @@ export class Compose implements OnDestroy {
   private send(): void {
     if (this.checkingMentions()) return;
     if (this.holdForMissingMention()) return;
-    if (this.inReplyToId() && this.targetIncludesFedi()) {
+    // Chat trusts the mentions you type: no "check the people" lookup there.
+    if (this.inReplyToId() && this.targetIncludesFedi() && !this.chatMode()) {
       const expected = new Set(
         this.expectedMentions().map((h) => h.replace(/^@/, '').toLowerCase()),
       );
@@ -3490,6 +3535,9 @@ export class Compose implements OnDestroy {
       this.offerSelfCleanup();
     }
     this.reset();
+    // A chat box stays addressed: the next message starts with the same
+    // @mentions, so it notifies the same people.
+    if (this.chatMode()) this.text.set(this.initialText());
     if (result) this.posted.emit(result);
   }
 

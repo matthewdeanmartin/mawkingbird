@@ -31,6 +31,28 @@ export type StreamKind =
  */
 export type StreamState = 'connecting' | 'live' | 'down' | 'unavailable';
 
+/**
+ * What one stream knows about its connection, for a "why is it not live" panel.
+ * Browsers hide WebSocket failure details on purpose (no status code, no
+ * message), so the close code and reason are the most a page can show.
+ */
+export interface StreamDiagnostics {
+  /** The streaming server tried, host only (no token). */
+  server: string | null;
+  /** Failed attempts since the stream was last live. */
+  failures: number;
+  /** The last close: 1006 means the connection failed or dropped without a reason. */
+  lastClose: { code: number; reason: string; at: number } | null;
+  /** When the next attempt is scheduled, if one is. */
+  nextAttemptAt: number | null;
+  /** Live updates for this server are paused after repeated failed handshakes. */
+  pausedUntil: number | null;
+  /** The server could not be asked where it streams, so its own host was tried. */
+  discoveryFailed: boolean;
+  /** The server says it has no streaming at all. */
+  noStreaming: boolean;
+}
+
 /** Events forwarded to subscribers; anything else (e.g. `filters_changed`) is dropped. */
 const FORWARDED = new Set(['update', 'status_update', 'delete', 'notification', 'conversation']);
 
@@ -55,6 +77,14 @@ interface WsFrame {
 
 function toWs(httpUrl: string): string {
   return httpUrl.replace(/^http/i, 'ws');
+}
+
+function hostOf(url: string): string | null {
+  try {
+    return new URL(url).host || null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -87,17 +117,58 @@ export class Streaming {
   private handshakeFailures = new Map<string, number>();
   /** Until when WebSockets to an instance are paused after repeated handshake failures. */
   private pausedUntil = new Map<string, number>();
+  /** Instances whose streaming URL could not be discovered (their own host is tried). */
+  private discoveryFailed = new Set<string>();
 
-  open(kind: StreamKind, onState?: (state: StreamState) => void): Observable<StreamEvent> {
+  /**
+   * Forget the backoff and any pause for the current server, so the next
+   * attempt happens as soon as a stream is (re)opened. For "Reconnect now".
+   */
+  retryNow(): void {
+    const instance = this.server.baseUrl();
+    this.pausedUntil.delete(instance);
+    this.handshakeFailures.delete(instance);
+    if (this.discoveryFailed.has(instance)) {
+      this.baseCache.delete(instance);
+      this.baseRetryAt.delete(instance);
+    }
+  }
+
+  open(
+    kind: StreamKind,
+    onState?: (state: StreamState, diagnostics: StreamDiagnostics) => void,
+  ): Observable<StreamEvent> {
     return new Observable<StreamEvent>((subscriber) => {
       let socket: WebSocket | null = null;
       let retryTimer: ReturnType<typeof setTimeout> | null = null;
       let retryMs = INITIAL_RETRY_MS;
       let closed = false;
       let openedAt: number | null = null;
+      const diagnostics: StreamDiagnostics = {
+        server: null,
+        failures: 0,
+        lastClose: null,
+        nextAttemptAt: null,
+        pausedUntil: null,
+        discoveryFailed: false,
+        noStreaming: false,
+      };
+      const report = (state: StreamState, instance: string) => {
+        const paused = this.pausedUntil.get(instance) ?? 0;
+        onState?.(state, {
+          ...diagnostics,
+          pausedUntil: paused > Date.now() ? paused : null,
+          discoveryFailed: this.discoveryFailed.has(instance),
+        });
+      };
+      const retryIn = (ms: number) => {
+        diagnostics.nextAttemptAt = Date.now() + ms;
+        retryTimer = setTimeout(() => void connect(), ms);
+      };
 
       const connect = async () => {
         const instance = this.server.baseUrl();
+        diagnostics.nextAttemptAt = null;
         const base = await this.streamingBase();
         // No streaming on this server: stay subscribed but silent. Pages keep
         // their normal refresh; nothing ever connects or retries.
@@ -105,22 +176,25 @@ export class Streaming {
           return;
         }
         if (base === null) {
-          onState?.('unavailable');
+          diagnostics.noStreaming = true;
+          report('unavailable', instance);
           return;
         }
+        diagnostics.server = hostOf(base);
         const pausedMs = (this.pausedUntil.get(instance) ?? 0) - Date.now();
         if (pausedMs > 0) {
-          onState?.('down');
-          retryTimer = setTimeout(() => void connect(), pausedMs);
+          retryIn(pausedMs);
+          report('down', instance);
           return;
         }
-        onState?.('connecting');
+        report('connecting', instance);
         socket = new WebSocket(this.buildUrl(base, kind));
         openedAt = null;
         socket.onopen = () => {
           openedAt = Date.now();
           this.handshakeFailures.delete(instance);
-          onState?.('live');
+          diagnostics.failures = 0;
+          report('live', instance);
         };
         socket.onmessage = (ev: MessageEvent<string>) => {
           const frame = JSON.parse(ev.data) as WsFrame;
@@ -134,25 +208,33 @@ export class Streaming {
           subscriber.next({ event: frame.event, payload });
         };
         // Unlike EventSource, a WebSocket never reconnects itself.
-        socket.onclose = () => {
+        socket.onclose = (event?: CloseEvent) => {
           if (closed) {
             return;
           }
-          onState?.('down');
+          diagnostics.failures += 1;
+          // 1006 is what a browser reports for a socket that failed without a close frame.
+          diagnostics.lastClose = {
+            code: event?.code ?? 1006,
+            reason: event?.reason ?? '',
+            at: Date.now(),
+          };
           if (openedAt === null) {
             this.noteHandshakeFailure(instance);
           }
           const pausedMs = (this.pausedUntil.get(instance) ?? 0) - Date.now();
           if (pausedMs > 0) {
-            retryTimer = setTimeout(() => void connect(), pausedMs);
+            retryIn(pausedMs);
+            report('down', instance);
             return;
           }
           // A handshake followed by immediate rejection is still a failure.
           if (openedAt !== null && Date.now() - openedAt >= STABLE_CONNECTION_MS) {
             retryMs = INITIAL_RETRY_MS;
           }
-          retryTimer = setTimeout(() => void connect(), retryMs);
+          retryIn(retryMs);
           retryMs = Math.min(retryMs * 2, MAX_RETRY_MS);
+          report('down', instance);
         };
       };
       void connect();
@@ -182,12 +264,19 @@ export class Streaming {
     if (cached) {
       return cached;
     }
-    const resolved = this.resolveBase(instance).catch(() => {
-      // Reconnects share the fallback during an outage instead of rediscovering
-      // the instance on every attempt. Retry discovery after the cooldown.
-      this.baseRetryAt.set(instance, Date.now() + MAX_RETRY_MS);
-      return toWs(instance || location.origin);
-    });
+    const resolved = this.resolveBase(instance).then(
+      (base) => {
+        this.discoveryFailed.delete(instance);
+        return base;
+      },
+      () => {
+        // Reconnects share the fallback during an outage instead of rediscovering
+        // the instance on every attempt. Retry discovery after the cooldown.
+        this.baseRetryAt.set(instance, Date.now() + MAX_RETRY_MS);
+        this.discoveryFailed.add(instance);
+        return toWs(instance || location.origin);
+      },
+    );
     this.baseCache.set(instance, resolved);
     return resolved;
   }
