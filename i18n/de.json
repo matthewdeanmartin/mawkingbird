@@ -297,8 +297,6 @@
     "proxyCorssh.label": "CORS.SH-Proxy",
     "proxyMawkingbirdPlus.description": "Bietet die Unterstützer-Stufe des Mawkingbird-Proxys an. Braucht ein Konto und ein Abo; der kostenlose Mawkingbird-Proxy bleibt so oder so unberührt.",
     "proxyMawkingbirdPlus.label": "Mawkingbird Plus-Proxy",
-    "unifiedShare.description": "Fasst „Boost“, „Zitat“ und „Teilen“ an jedem Beitrag zu einer Schaltfläche zusammen, die stattdessen ein Menü öffnet. Schafft Platz in einer Aktionsleiste, die auf schmalen Bildschirmen ohnehin schon umbricht.",
-    "unifiedShare.label": "Einheitliches Freigabemenü",
     "write.description": "Der Schreibarbeitsbereich unter /write – Entwürfe, Editor und Notizen nebeneinander, plus Zen-Modus.",
     "write.label": "Schreiben"
   },
@@ -3173,7 +3171,6 @@
     "modeNav.focused.invite": "Einladen"
   },
   "shareDialog": {
-    "alsoRecord": "Auch in meinem Blog aufzeichnen",
     "articleHint": "Wird als <strong>{{host}}</strong> geteilt. Wähle das Ziel aus.",
     "chooseHint": "Wähle zuerst aus, was du teilen möchtest, und dann das Ziel.",
     "closeDialog": "Teilen-Dialog schließen",

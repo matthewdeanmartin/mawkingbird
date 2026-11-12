@@ -5338,8 +5338,6 @@
     "proxyCorssh.label": "Proxy CORS.SH",
     "proxyMawkingbirdPlus.description": "Proposer le palier soutien du proxy Mawkingbird. Nécessite un compte et un abonnement ; le proxy Mawkingbird gratuit n’est affecté dans aucun des cas.",
     "proxyMawkingbirdPlus.label": "Proxy Mawkingbird Plus",
-    "unifiedShare.description": "Fusionner Partager, Citer et Diffuser en un seul bouton sur chaque message, ouvrant un menu à la place. Libère un emplacement sur une barre d’actions qui déborde déjà sur les écrans étroits.",
-    "unifiedShare.label": "Menu de partage unifié",
     "write.description": "L’espace d’écriture sur /write — brouillons, éditeur et notes côte à côte, plus le mode zen.",
     "write.label": "Écrire"
   },
@@ -6133,7 +6131,6 @@
     "show": "Voir les images"
   },
   "shareDialog": {
-    "alsoRecord": "Enregistrer aussi ceci sur mon blog",
     "articleHint": "Publication au nom de <strong>{{host}}</strong>. Choisis où l’envoyer.",
     "chooseHint": "Choisis quoi partager, puis où l’envoyer.",
     "closeDialog": "Fermer la fenêtre de partage",
