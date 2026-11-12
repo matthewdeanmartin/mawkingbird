@@ -3080,8 +3080,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Mawkingbird proxy का समर्थक स्तर दें। अकाउंट और सदस्यता चाहिए; मुफ़्त Mawkingbird proxy पर असर नहीं पड़ेगा।",
     "proxyMawkingbirdPlus.label": "Mawkingbird Plus proxy",
-    "unifiedShare.description": "हर पोस्ट पर बूस्ट, उद्धरण और साझा करें को मेन्यू खोलने वाले एक बटन में समेटें। इससे संकरी स्क्रीन की कार्रवाई पट्टी में जगह खाली होती है।",
-    "unifiedShare.label": "एकीकृत साझा मेन्यू",
     "write.description": "/write पर लेखन कार्यक्षेत्र — ड्राफ़्ट, एडिटर और नोट्स साथ-साथ, साथ में zen मोड।",
     "write.label": "लिखें"
   },
@@ -5484,7 +5482,6 @@
     "writing.yourWords.hint.c": "नहीं है।"
   },
   "shareDialog": {
-    "alsoRecord": "इसे मेरे ब्लॉग पर भी दर्ज करें",
     "articleHint": "<strong>{{host}}</strong> के रूप में भेजा जा रहा है। गंतव्य चुनें।",
     "chooseHint": "क्या साझा करना है चुनें, फिर कहाँ भेजना है।",
     "closeDialog": "साझाकरण संवाद बंद करें",

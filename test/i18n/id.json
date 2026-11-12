@@ -4736,7 +4736,6 @@
     "units.hour": "j"
   },
   "shareDialog": {
-    "alsoRecord": "Catat juga ini di blogku",
     "articleHint": "Akan terkirim sebagai <strong>{{host}}</strong>. Pilih ke mana mengirimnya.",
     "chooseHint": "Pilih apa yang mau dibagikan, lalu ke mana mengirimnya.",
     "closeDialog": "Tutup dialog bagikan",
@@ -5170,8 +5169,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Tawarkan tingkat pendukung dari proxy Mawkingbird. Perlu akun dan langganan; proxy Mawkingbird gratis tetap tidak terpengaruh.",
     "proxyMawkingbirdPlus.label": "Proxy Mawkingbird Plus",
-    "unifiedShare.description": "Gabungkan Boost, Kutip, dan Bagikan jadi satu tombol di setiap postingan, membuka menu sebagai gantinya. Membebaskan slot di bilah aksi yang sudah melipat di layar sempit.",
-    "unifiedShare.label": "Menu bagikan terpadu",
     "write.description": "Ruang kerja menulis di /write — draf, editor, dan catatan berdampingan, plus mode zen.",
     "write.label": "Tulis"
   },

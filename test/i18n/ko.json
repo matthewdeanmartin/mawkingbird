@@ -942,8 +942,6 @@
     "pastebin.label": "Pastebin",
     "proxyMawkingbirdPlus.description": "Mawkingbird 프록시의 후원자 등급을 제공합니다. 계정과 구독이 필요하며, 무료 Mawkingbird 프록시는 어느 쪽이든 영향을 받지 않습니다.",
     "proxyMawkingbirdPlus.label": "Mawkingbird Plus 프록시",
-    "unifiedShare.description": "모든 게시물에서 부스트, 인용, 공유를 하나의 버튼으로 합쳐 메뉴를 엽니다. 좁은 화면에서 이미 줄바꿈되는 작업 표시줄의 자리를 확보합니다.",
-    "unifiedShare.label": "통합 공유 메뉴",
     "write.description": "/write의 글쓰기 작업 공간입니다. 초안, 편집기, 메모를 나란히 두고 젠 모드도 제공합니다.",
     "write.label": "글쓰기"
   },
@@ -5855,7 +5853,6 @@
     "writing.yourWords.hint.c": "태그는 다릅니다."
   },
   "shareDialog": {
-    "alsoRecord": "내 블로그에도 기록",
     "articleHint": "<strong>{{host}}</strong>에서 보냅니다. 보낼 위치를 선택하세요.",
     "chooseHint": "공유할 항목을 선택한 후 보낼 위치를 선택하세요.",
     "closeDialog": "공유 대화 상자 닫기",
