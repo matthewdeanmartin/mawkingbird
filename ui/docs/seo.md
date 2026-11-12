@@ -578,7 +578,21 @@ fails if either sitemap lacks dates.
 
 ## Share image, verification and deployment checks
 
-The original hand-drawn `public/mockingbird_hand.png` is the share image.
+Link previews use one card per page family, 1200×630 PNGs under 200 KB in
+`public/og/`: `default`, `tools`, `communities`, `follow`, `audience`, `help`,
+`news`, `invite` and `share`. A route picks its card with `data: { seoImage }`;
+`Seo` (`SHARE_IMAGES` in `seo.ts`) writes `og:image`, `twitter:image` and both
+alt texts, falling back to `default`. Tool pages and indexes, communities pages
+and hubs, `/follow/` and `/for/` set it in both `app.routes.ts` (or their shared
+route files) and `main.server.ts`. Help (`build_help.py`) and news
+(`news/fediblog.config.json`) name their own cards. `invite` and `share` are
+waiting for invite and shared-post links to get a 200 page (see
+`spec/opus_SEO.md`). The cards are line-art placeholders in the menu-icon style
+until hand-drawn ones replace the files at the same paths. Keep the size, and
+mind the centre 630×630 square, which square previews crop to.
+`check-seo-build.mjs` checks each page's card, the set of families and every
+card's size. `public/mockingbird_hand.png`, the hand-drawn bird, is now
+1080×757 (3× its 360×252 display size) and remains the `WebApplication` image.
 Absolute production URLs in `src/index.html` allow unfurling without JavaScript.
 Both Mastodon accounts have machine-readable `rel="me"` links in the HTML head,
 without visible profile navigation. The features link lives in the app footer,

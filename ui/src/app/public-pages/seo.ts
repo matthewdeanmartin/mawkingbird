@@ -127,6 +127,28 @@ export const LEGAL_DESCRIPTION =
   "About Mawkingbird and its legal pages: why the client exists, how it is funded, credits and privacy, and your server's rules and terms.";
 
 /**
+ * Link-preview cards (og:image), one per page family, all 1200×630 under
+ * public/og/. A route picks one with `data: { seoImage: '<card>' }`; any other
+ * route, utilities included, gets `default`. `invite` and `share` wait for
+ * something that can answer invite and shared-post links with a 200 page (see
+ * spec/opus_SEO.md); no route uses them yet. These are placeholders: the
+ * hand-drawn set will replace the files at the same paths.
+ */
+export const SHARE_IMAGES = {
+  default: 'Mawkingbird: Mastodon, Bluesky and RSS in one place',
+  tools: 'Mawkingbird: free tools for Mastodon and Bluesky',
+  communities: 'Mawkingbird: Mastodon communities by interest',
+  follow: 'Mawkingbird: who to follow on Mastodon',
+  audience: 'Mawkingbird: made for the way you read',
+  help: 'Mawkingbird Help',
+  news: 'Mawkingbird News',
+  invite: 'You’re invited to Mastodon',
+  share: 'Shared from Mawkingbird',
+} as const;
+export type ShareImage = keyof typeof SHARE_IMAGES;
+export const shareImageUrl = (card: ShareImage): string => `${SITE_ORIGIN}/og/${card}.png`;
+
+/**
  * schema.org description of the app itself, for the front page and /features/.
  * It names what kind of thing Mawkingbird is, so search engines need not guess.
  */
@@ -159,7 +181,9 @@ export class Seo {
     let structuredData: object | undefined;
     let lang: string | undefined;
     let alternates: PageAlternate[] = [];
+    let image: ShareImage = 'default';
     while (route) {
+      if (route.data['seoImage'] in SHARE_IMAGES) image = route.data['seoImage'];
       if (route.data['seoAlternates']) alternates = route.data['seoAlternates'];
       if (route.data['lang']) lang = route.data['lang'];
       if (route.data['seoStructuredData']) structuredData = route.data['seoStructuredData'];
@@ -194,6 +218,10 @@ export class Seo {
     this.meta.updateTag({ property: 'og:url', content: canonical });
     this.meta.updateTag({ name: 'twitter:title', content: title });
     this.meta.updateTag({ name: 'twitter:description', content: description });
+    this.meta.updateTag({ property: 'og:image', content: shareImageUrl(image) });
+    this.meta.updateTag({ property: 'og:image:alt', content: SHARE_IMAGES[image] });
+    this.meta.updateTag({ name: 'twitter:image', content: shareImageUrl(image) });
+    this.meta.updateTag({ name: 'twitter:image:alt', content: SHARE_IMAGES[image] });
     let link = this.document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (indexable && !preview) {
       if (!link) {

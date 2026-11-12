@@ -185,6 +185,7 @@ const publicRoutes: Route[] = [
     title: 'Free tools for Mastodon and Bluesky',
     data: {
       seoIndexable: true,
+      seoImage: 'tools',
       seoDescription: TOOLS_DESCRIPTION,
       lang: 'en',
       seoAlternates: TOOLS_INDEX_ALTERNATES,
@@ -199,6 +200,7 @@ const publicRoutes: Route[] = [
     title: TOOLS_INDEXES[lang].title,
     data: {
       seoIndexable: true,
+      seoImage: 'tools',
       seoDescription: TOOLS_INDEXES[lang].description,
       lang,
       seoAlternates: TOOLS_INDEX_ALTERNATES,
@@ -211,6 +213,7 @@ const publicRoutes: Route[] = [
     title,
     data: {
       seoIndexable: true,
+      seoImage: 'tools',
       seoDescription: description,
       lang,
       seoAlternates: alternates,

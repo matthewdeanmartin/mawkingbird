@@ -115,6 +115,7 @@ const articles = new Map([
   ['legal', /Credits & Privacy/],
 ]);
 const titles = new Set();
+const cards = new Set();
 const descriptions = new Set();
 // /blog/ was renamed /legal/; its static page only redirects.
 {
@@ -384,10 +385,14 @@ for (const page of pages) {
   ]) {
     assert.equal(doc.querySelectorAll(selector).length, 1, `one ${selector}`);
   }
+  const card = doc.querySelector('meta[property="og:image"]')?.getAttribute('content') ?? '';
+  assert.match(card, /^https:\/\/mawkingbird\.com\/og\/[a-z]+\.png$/, `${page || '/'} share card`);
   assert.equal(
-    doc.querySelector('meta[property="og:image"]')?.getAttribute('content'),
-    'https://mawkingbird.com/mockingbird_hand.png',
+    doc.querySelector('meta[name="twitter:image"]')?.getAttribute('content'),
+    card,
+    `${page || '/'} twitter:image`,
   );
+  cards.add(card.replace('https://mawkingbird.com/', ''));
   assert.equal(
     doc.querySelector('meta[name="twitter:card"]')?.getAttribute('content'),
     'summary_large_image',
@@ -396,9 +401,23 @@ for (const page of pages) {
 }
 assert.equal(titles.size, pages.length, 'each public page has its own title');
 assert.equal(descriptions.size, pages.length, 'each public page has its own description');
+// Each page family shows its own card (seoImage in route data).
+assert.deepEqual(
+  [...cards].sort(),
+  ['audience', 'communities', 'default', 'follow', 'tools'].map((name) => `og/${name}.png`),
+);
+// Link-preview cards: 1200×630 PNGs, small enough for every unfurler.
+for (const card of cards) {
+  const image = await readFile(path.join(root, card));
+  assert.equal(image.readUInt32BE(16), 1200, `${card} width`);
+  assert.equal(image.readUInt32BE(20), 630, `${card} height`);
+  assert.ok(image.length < 200_000, `${card} is under 200 KB`);
+}
+// The hand-drawn bird the public pages show at 360×252, at 3×.
 const image = await readFile(path.join(root, 'mockingbird_hand.png'));
-assert.equal(image.readUInt32BE(16), 3580);
-assert.equal(image.readUInt32BE(20), 2508);
+assert.equal(image.readUInt32BE(16), 1080);
+assert.equal(image.readUInt32BE(20), 757);
+assert.ok(image.length < 200_000, 'mockingbird_hand.png is under 200 KB');
 const sitemap = new JSDOM(await readFile(path.join(root, 'sitemap.xml'), 'utf8'), {
   contentType: 'text/xml',
 }).window.document;

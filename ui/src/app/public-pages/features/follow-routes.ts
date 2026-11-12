@@ -22,12 +22,13 @@ export const followRoutes: Routes = [
   {
     path: 'follow',
     title: 'Who to follow on Mastodon: hand-picked starter kits',
-    data: { seoIndexable: true, seoDescription: FOLLOW_DESCRIPTION },
+    data: { seoIndexable: true, seoImage: 'follow', seoDescription: FOLLOW_DESCRIPTION },
     loadComponent: () => import('./follow-hub').then((m) => m.FollowHub),
   },
   {
     path: 'follow/:slug',
     title: kitTitle,
+    data: { seoImage: 'follow' },
     resolve: {
       seoDescription: kitDescription,
       seoIndexable: kitIndexable,

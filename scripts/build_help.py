@@ -47,7 +47,7 @@ MKDOCS = REPO / "mkdocs.yml"
 STATIC = Path(__file__).resolve().parent / "help_static"
 SITE_ORIGIN = "https://mawkingbird.com"
 SITE_NAME = "Mawkingbird Help"
-SHARE_IMAGE = f"{SITE_ORIGIN}/mockingbird_hand.png"
+SHARE_IMAGE = f"{SITE_ORIGIN}/og/help.png"
 DESCRIPTION_LIMIT = 160
 
 # Script-free by construction: these pages are documents, not an app.
@@ -304,7 +304,7 @@ class HelpBuilder:
 <meta property="og:description" content="{e(page.description)}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{SHARE_IMAGE}">
-<meta property="og:image:alt" content="The hand-drawn Mawkingbird">
+<meta property="og:image:alt" content="Mawkingbird Help">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="{app}favicon-32x32.png">
 <link rel="stylesheet" href="{self.base}help.css">

@@ -107,7 +107,7 @@ try {
     assert.equal(await page.locator('head link[rel="me"]').count(), 2);
     assert.equal(
       await page.locator('meta[property="og:image"]').getAttribute('content'),
-      'https://mawkingbird.com/mockingbird_hand.png',
+      'https://mawkingbird.com/og/default.png',
     );
     assert.equal(
       await page.locator('link[rel="canonical"]').getAttribute('href'),
@@ -196,7 +196,7 @@ try {
       );
       assert.equal(
         await page.locator('meta[property="og:image"]').getAttribute('content'),
-        'https://mawkingbird.com/mockingbird_hand.png',
+        'https://mawkingbird.com/og/audience.png',
       );
       assert.equal(await page.locator('head link[rel="me"]').count(), 2);
       assert.equal(await page.locator('a[rel="me"]').count(), 0);
@@ -264,7 +264,7 @@ try {
       );
       assert.equal(
         await page.locator('meta[property="og:image"]').getAttribute('content'),
-        'https://mawkingbird.com/mockingbird_hand.png',
+        'https://mawkingbird.com/og/default.png',
       );
     } else {
       // Router navigation proves the browser bootstrapped the real app rather

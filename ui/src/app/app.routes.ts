@@ -100,6 +100,7 @@ function focusedAppRoutes(app: {
       // Prerendered for search engines; see main.server.ts and docs/seo.md.
       data: {
         seoIndexable: true,
+        seoImage: 'tools',
         ...(typeof app.seoDescription === 'string' ? { seoDescription: app.seoDescription } : {}),
         lang: app.lang,
         seoAlternates: app.alternates,
@@ -257,6 +258,7 @@ export const routes: Routes = [
     title: 'Free tools for Mastodon and Bluesky',
     data: {
       seoIndexable: true,
+      seoImage: 'tools',
       seoDescription: TOOLS_DESCRIPTION,
       lang: 'en',
       seoAlternates: TOOLS_INDEX_ALTERNATES,
@@ -270,6 +272,7 @@ export const routes: Routes = [
     title: TOOLS_INDEXES[lang].title,
     data: {
       seoIndexable: true,
+      seoImage: 'tools',
       seoDescription: TOOLS_INDEXES[lang].description,
       lang,
       seoAlternates: TOOLS_INDEX_ALTERNATES,

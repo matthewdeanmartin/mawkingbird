@@ -5,7 +5,7 @@ import { Meta } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { PageTitleStrategy } from '../shell/a11y/page-title-strategy';
-import { APP_STRUCTURED_DATA, FEATURES_DESCRIPTION, SITE_DESCRIPTION } from './seo';
+import { APP_STRUCTURED_DATA, FEATURES_DESCRIPTION, SHARE_IMAGES, SITE_DESCRIPTION } from './seo';
 
 @Component({ template: 'page' })
 class Page {}
@@ -36,6 +36,12 @@ describe('route SEO metadata', () => {
             title: 'Kit',
             data: { seoIndexable: true, seoStructuredData: { name: '</script><b>' } },
           },
+          {
+            path: 'tools',
+            component: Page,
+            title: 'Tools',
+            data: { seoIndexable: true, seoImage: 'tools' },
+          },
           { path: 'login', component: Page, title: 'Sign in' },
           {
             path: 'home',
@@ -62,6 +68,24 @@ describe('route SEO metadata', () => {
     expect(meta.getTag('name="description"')?.content).toBe(FEATURES_DESCRIPTION);
     expect(meta.getTag('name="robots"')?.content).toBe('index, follow');
     expect(doc.querySelectorAll('meta[property="og:title"]')).toHaveLength(1);
+  });
+
+  it('shows the route family’s link-preview card and falls back to the default one', async () => {
+    const router = TestBed.inject(Router);
+    const meta = TestBed.inject(Meta);
+    await router.navigateByUrl('/tools');
+    expect(meta.getTag('property="og:image"')?.content).toBe(
+      'https://mawkingbird.com/og/tools.png',
+    );
+    expect(meta.getTag('name="twitter:image"')?.content).toBe(
+      'https://mawkingbird.com/og/tools.png',
+    );
+    expect(meta.getTag('property="og:image:alt"')?.content).toBe(SHARE_IMAGES.tools);
+    await router.navigateByUrl('/login');
+    expect(meta.getTag('property="og:image"')?.content).toBe(
+      'https://mawkingbird.com/og/default.png',
+    );
+    expect(meta.getTag('name="twitter:image:alt"')?.content).toBe(SHARE_IMAGES.default);
   });
 
   it('clears public canonicals and descriptions when navigating to a utility route', async () => {

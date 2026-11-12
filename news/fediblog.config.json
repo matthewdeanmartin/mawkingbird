@@ -13,11 +13,8 @@
   },
   "mastodon": "@mawkingbird@mastodon.social",
   "posts": "posts",
-  "theme": [
-    "../design_system/tokens.css",
-    "theme.css"
-  ],
-  "image": "https://mawkingbird.com/mockingbird_hand.png",
+  "theme": ["../design_system/tokens.css", "theme.css"],
+  "image": "https://mawkingbird.com/og/news.png",
   "icon": "https://mawkingbird.com/favicon-32x32.png",
   "logo": "https://mawkingbird.com/mockingbird_hand_104.png",
   "nav": [
@@ -38,10 +35,7 @@
     }
   ],
   "publish": {
-    "hashtags": [
-      "mawkingbird",
-      "mastodonClient"
-    ]
+    "hashtags": ["mawkingbird", "mastodonClient"]
   },
   "mawkingbird": true,
   "goatcounter": {

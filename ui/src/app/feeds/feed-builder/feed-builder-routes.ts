@@ -87,7 +87,12 @@ function pageRoute(entry: FeedBuilderEntry): Route {
     path,
     pathMatch: 'full',
     title: pageTitle(entry),
-    data: { seoIndexable: true, lang, seoAlternates: feedBuilderAlternates(topic) },
+    data: {
+      seoIndexable: true,
+      seoImage: 'communities',
+      lang,
+      seoAlternates: feedBuilderAlternates(topic),
+    },
     resolve: {
       page: () => loadFeedPage(entry),
       seoDescription: description,
@@ -176,6 +181,7 @@ function hubRoute({ lang, path }: FeedBuilderHub): Route {
     title: english ? COMMUNITIES_TITLE : async () => (await hubCopy(lang)).title,
     data: {
       seoIndexable: true,
+      seoImage: 'communities',
       lang,
       seoAlternates: feedBuilderHubAlternates(),
       ...(english ? { seoDescription: COMMUNITIES_DESCRIPTION } : {}),
