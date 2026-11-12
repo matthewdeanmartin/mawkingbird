@@ -333,6 +333,16 @@
     "login": "Log in to see your analytics.",
     "title": "Analytics"
   },
+  "analyticsLookup": {
+    "hint": "Any public account, like @alice@mastodon.social. No sign-in needed.",
+    "invalid": "Type a full handle, like @alice@mastodon.social.",
+    "label": "Mastodon handle",
+    "looking": "Looking up {{handle}}…",
+    "mine": "My analytics",
+    "notFound": "{{handle}} could not be read from its server. It may not exist, or the server may not share public data.",
+    "publicOnly": "From {{handle}}'s public posts and followers, read from their own server.",
+    "show": "Show analytics"
+  },
   "announcements": {
     "dismiss": "Dismiss",
     "label": "📣 Announcement",
@@ -903,6 +913,15 @@
     "windows": "Windows",
     "windowsSteps": "Open the downloaded CA → Install Certificate → Current User. Choose Place all certificates in the following store → Trusted Root Certification Authorities, then finish. This trusts it for your Windows user."
   },
+  "copyLink": {
+    "account": "Account",
+    "close": "Close",
+    "copied": "Copied",
+    "copy": "Copy",
+    "copyAria": "Copy the {{what}} link",
+    "hint": "Links open in Mawkingbird for anyone, on any server.",
+    "title": "Copy link"
+  },
   "credits": {
     "title": "Credits & Privacy"
   },
@@ -949,6 +968,11 @@
     "tags.title": "Follow a conversation",
     "write.body": "Open the writing workspace for something longer than a quick post.",
     "write.title": "Give an idea more room"
+  },
+  "deepLink": {
+    "notFound": "This link could not be opened here.",
+    "openOriginal": "Open it on {{host}}",
+    "opening": "Opening…"
   },
   "dialogs": {
     "alertTitle": "Notice",
@@ -1320,6 +1344,24 @@
     "newTitle": "New filter's name",
     "newTitleDefault": "Filtered posts",
     "title": "Filter this post"
+  },
+  "findInteractions": {
+    "count": "{{count}} posts between them.",
+    "find": "Find interactions",
+    "first": "First account",
+    "hint": "A Mastodon handle like @alice@mastodon.social, or a Bluesky handle like alice.bsky.social.",
+    "invalid": "That does not look like a full handle: {{value}}",
+    "me": "Me and…",
+    "mixed": "These accounts are on different networks, so they cannot reply to or mention each other directly.",
+    "none": "No replies or mentions between them turned up.",
+    "notFound": "{{value}} could not be read. It may not exist, or its server may not share public posts.",
+    "same": "Those are the same account.",
+    "scannedBluesky": "Checked the latest {{a}} posts by {{first}} and {{b}} by {{second}}.",
+    "scannedMastodon": "Checked the latest {{a}} posts by {{first}} and {{b}} by {{second}}, read from their own servers. Older exchanges are not included.",
+    "searchedBluesky": "Bluesky search was used as well, so older posts are included.",
+    "searching": "Reading both accounts' posts…",
+    "second": "Second account",
+    "signInForSearch": "Sign in with Bluesky to search further back than the latest posts."
   },
   "firstRun": {
     "accountQuestion": "Which account do you have?",
@@ -7957,6 +7999,7 @@
     "modeNav.friendFeeds.find": "Feeds",
     "modeNav.githubFriends.find": "Find friends",
     "modeNav.handles.find": "Handles",
+    "modeNav.interactions.find": "Interactions",
     "modeNav.languages.setup": "Languages",
     "modeNav.menu": "Apps",
     "modeNav.mode.forum": "Forum",
@@ -8305,6 +8348,8 @@
     "repliesLimited": "Reply (the author limits who can reply)",
     "repliesTitle": "Replies",
     "reply": "Reply",
+    "replyingToTranslated": "Warning: you are replying to a translated {{post}}. The original is in {{language}}.",
+    "replyingToTranslatedUnknown": "Warning: you are replying to a translated {{post}}. The original is in another language.",
     "reportPost": "Report post",
     "reported": "🚩 reported",
     "reportedTitle": "Reported",
@@ -8336,6 +8381,8 @@
     "translateAnyway": "Translate anyway?",
     "translateWith": "Translate with",
     "translateWithAi": "Translate with AI",
+    "translatedFromVia": "Translated from {{from}} via {{provider}}",
+    "translatedFromViaAutomatic": "Translated from {{from}} via {{provider}} · automatic",
     "translatedVia": "Translated via {{provider}}",
     "translatedViaAutomatic": "Translated via {{provider}} · automatic",
     "translating": "Translating…",
