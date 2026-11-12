@@ -5502,12 +5502,8 @@
     "heading.elsewhere": "Başka yerde paylaş",
     "linkCopied": "Bağlantı kopyalandı!",
     "linkedPage": "Bağlantılı sayfa (gönderi sarmalayıcısı olmadan)",
-    "postHint": "Oluşturucuyu açar. Gönder'e basana kadar hiçbir şey paylaşılmaz.",
-    "postIt": "Gönder",
     "quoteDropped": "Bunlardan bazıları yalnızca bağlantı alır; vurgunuz taşınmaz.",
     "recordHint": "Kendi siteniz için öne çıkarmayı sıraya alır. Siz söyleyene kadar hiçbir şey yayınlanmaz.",
-    "sendHint": "Hedefi yeni sekmede açar.",
-    "sendItTo": "Şuraya gönder:",
     "share": "Paylaş",
     "shareUsingDevice": "Cihazla paylaş…",
     "thisPost": "Bu gönderi"
@@ -5709,7 +5705,6 @@
   "statusCard": {
     "actionFailure": "{{verb}} işlemi yapılamadı; tekrar deneyin.",
     "actionFailureBluesky": "Bluesky'da {{verb}} işlemi yapılamadı; bağlantınızın süresi dolmuş olabilir. Ayarlar → Bağlantılar bölümünden yeniden bağlayın.",
-    "addComment": "Yorum ekle",
     "aiTranslation": "Yapay zekâ çevirisi",
     "aiTranslationDescription": "Buradaki çeviri, OpenRouter üzerinden seçtiğiniz yapay zekâ modeliyle yapılır: Anahtarınız, tarayıcınız, hesabınız. Mawkingbird sunucusu olmadığı için hiçbir şey oraya gönderilmez.",
     "aiTranslationNote": "{{model}} tarafından {{target}} diline çevrildi · makine çevirisidir, ifadeleri yaklaşık kabul edin",

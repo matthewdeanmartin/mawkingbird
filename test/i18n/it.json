@@ -5873,12 +5873,8 @@
     "heading.elsewhere": "Condividi altrove",
     "linkCopied": "Link copiato!",
     "linkedPage": "Pagina collegata, senza l’involucro del post",
-    "postHint": "Apre un editor. Nulla viene pubblicato finché non premi Pubblica.",
-    "postIt": "Pubblicalo",
     "quoteDropped": "Alcune destinazioni accettano solo un link: la parte evidenziata non verrà trasferita.",
     "recordHint": "Accoda una ricondivisione per il tuo sito. Nulla viene pubblicato finché non lo decidi.",
-    "sendHint": "Apre la destinazione in una nuova scheda.",
-    "sendItTo": "Invialo a",
     "share": "Condividi",
     "shareUsingDevice": "Condividi tramite dispositivo…",
     "thisPost": "Questo post"
@@ -6098,7 +6094,6 @@
   "statusCard": {
     "actionFailure": "Impossibile {{verb}}: riprova.",
     "actionFailureBluesky": "Impossibile {{verb}} su Bluesky: il collegamento potrebbe essere scaduto. Ricollegalo in Impostazioni → Connessioni.",
-    "addComment": "Aggiungi un commento",
     "aiTranslation": "Traduzione con IA",
     "aiTranslationDescription": "La traduzione viene eseguita da un modello di IA scelto da te tramite OpenRouter, usando la tua chiave, il tuo browser e il tuo account. Nulla viene inviato a un server Mawkingbird, perché non esiste.",
     "aiTranslationNote": "Tradotto in {{target}} da {{model}} · traduzione automatica, quindi considera approssimativa la formulazione",

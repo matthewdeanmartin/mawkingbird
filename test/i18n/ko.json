@@ -5873,12 +5873,8 @@
     "heading.elsewhere": "다른 곳에 공유",
     "linkCopied": "링크를 복사했습니다!",
     "linkedPage": "연결된 페이지(게시물 래퍼 제외)",
-    "postHint": "작성창을 엽니다. 게시를 누르기 전까지 아무것도 게시되지 않습니다.",
-    "postIt": "게시하기",
     "quoteDropped": "이 중 일부는 링크만 받으므로 강조한 부분은 전달되지 않습니다.",
     "recordHint": "내 사이트용 부스트를 대기열에 넣습니다. 승인하기 전까지는 아무것도 게시되지 않습니다.",
-    "sendHint": "대상을 새 탭에서 엽니다.",
-    "sendItTo": "보낼 위치",
     "share": "공유",
     "shareUsingDevice": "기기에서 공유…",
     "thisPost": "이 게시물"
@@ -6097,7 +6093,6 @@
   "statusCard": {
     "actionFailure": "{{verb}} 작업을 완료할 수 없습니다. 다시 시도하세요.",
     "actionFailureBluesky": "Bluesky에서 {{verb}} 작업을 완료할 수 없습니다. 연결이 만료되었을 수 있습니다. 설정 → 연결에서 다시 연결하세요.",
-    "addComment": "댓글 추가",
     "aiTranslation": "AI 번역",
     "aiTranslationDescription": "여기서의 번역은 선택한 AI 모델이 OpenRouter를 통해 수행합니다 — 내 키, 내 브라우저, 내 계정입니다. Mawkingbird 서버는 없으므로 해당 서버로는 아무것도 전송되지 않습니다.",
     "aiTranslationNote": "{{target}} 번역 · 사용 모델: {{model}} · 기계 번역이므로 표현은 대략적으로 봐 주세요",

@@ -5502,12 +5502,8 @@
     "heading.elsewhere": "Dela någon annanstans",
     "linkCopied": "Länken har kopierats!",
     "linkedPage": "Länkad sida (utan inläggets omslag)",
-    "postHint": "Öppnar en redigerare. Inget publiceras förrän du trycker på Publicera.",
-    "postIt": "Publicera det",
     "quoteDropped": "Vissa av dessa tar endast emot en länk — din markering följer inte med.",
     "recordHint": "Köar en boost för din egen webbplats. Inget publiceras förrän du säger till.",
-    "sendHint": "Öppnar målet i en ny flik.",
-    "sendItTo": "Skicka det till",
     "share": "Dela",
     "shareUsingDevice": "Dela med enheten…",
     "thisPost": "Det här inlägget"
@@ -5709,7 +5705,6 @@
   "statusCard": {
     "actionFailure": "Kunde inte {{verb}} — försök igen.",
     "actionFailureBluesky": "Kunde inte {{verb}} på Bluesky — länken kan ha löpt ut. Länka om under Inställningar → Anslutningar.",
-    "addComment": "Lägg till kommentar",
     "aiTranslation": "AI-översättning",
     "aiTranslationDescription": "Översättningen görs av en AI-modell du väljer via OpenRouter — din nyckel, webbläsare och ditt konto. Inget skickas till en Mawkingbird-server, eftersom det inte finns någon.",
     "aiTranslationNote": "Översatt till {{target}} av {{model}} · maskinöversättning, så formuleringen är ungefärlig",

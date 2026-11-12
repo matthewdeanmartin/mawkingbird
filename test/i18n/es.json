@@ -5873,12 +5873,8 @@
     "heading.elsewhere": "Compartir en otro lugar",
     "linkCopied": "¡Enlace copiado!",
     "linkedPage": "Página enlazada (sin el envoltorio de la publicación)",
-    "postHint": "Abre un editor. No se publica nada hasta que pulses Publicar.",
-    "postIt": "Publicarlo",
     "quoteDropped": "Algunos destinos solo aceptan un enlace; el texto destacado no se incluirá.",
     "recordHint": "Pone en cola una republicación para tu propio sitio. No se publica nada hasta que lo indiques.",
-    "sendHint": "Abre el destino en una pestaña nueva.",
-    "sendItTo": "Enviarlo a",
     "share": "Compartir",
     "shareUsingDevice": "Compartir mediante el dispositivo…",
     "thisPost": "Esta publicación"
@@ -6098,7 +6094,6 @@
   "statusCard": {
     "actionFailure": "No se pudo {{verb}}; inténtalo de nuevo.",
     "actionFailureBluesky": "No se pudo {{verb}} en Bluesky; puede que tu vínculo haya caducado. Vuelve a vincularlo en Configuración → Conexiones.",
-    "addComment": "Añadir un comentario",
     "aiTranslation": "Traducción con IA",
     "aiTranslationDescription": "La traducción se realiza mediante un modelo de IA que eliges a través de OpenRouter: tu clave, navegador y cuenta. Nada se envía a un servidor de Mawkingbird porque no existe.",
     "aiTranslationNote": "Traducido a {{target}} por {{model}} · traducción automática, por lo que el texto es aproximado",
