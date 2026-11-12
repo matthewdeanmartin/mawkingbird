@@ -5,6 +5,7 @@ import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AccountAnalytics } from '../account-analytics/account-analytics';
 import { AnonymousPublicApi } from '../anonymous/anonymous-public-api';
+import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { AnonymousPublicRef } from '../anonymous/anonymous-route-ref';
 import { Account } from '../../platform/api/models';
 import { Auth } from '../../platform/session/auth';
@@ -16,6 +17,7 @@ import { parseFediverseHandle } from './fediverse-handle';
 class FakeAnalytics {
   readonly account = input.required<Account>();
   readonly publicRef = input<AnonymousPublicRef | null>(null);
+  readonly blueskyActor = input<string | null>(null);
 }
 
 const alice = { id: '42', acct: 'alice@far.example', username: 'alice' } as Account;
@@ -46,10 +48,12 @@ describe('parseFediverseHandle', () => {
 
 describe('AnalyticsLookup', () => {
   const lookupAccount = vi.fn();
+  const getProfile = vi.fn();
   const navigate = vi.fn().mockResolvedValue(true);
 
   beforeEach(() => {
     lookupAccount.mockReset();
+    getProfile.mockReset();
     navigate.mockClear();
   });
 
@@ -57,6 +61,7 @@ describe('AnalyticsLookup', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: AnonymousPublicApi, useValue: { lookupAccount } },
+        { provide: BlueskyApi, useValue: { getProfile } },
         { provide: Router, useValue: { navigate } },
         {
           provide: ActivatedRoute,
@@ -83,6 +88,8 @@ describe('AnalyticsLookup', () => {
   }
 
   async function settle(fixture: ReturnType<typeof render>) {
+    // The lookup awaits a resolution, then its result: flush both before looking.
+    for (let tick = 0; tick < 5; tick++) await Promise.resolve();
     await fixture.whenStable();
     fixture.detectChanges();
   }
@@ -99,6 +106,21 @@ describe('AnalyticsLookup', () => {
     expect(lookupAccount).toHaveBeenCalledWith('https://far.example', 'alice');
     expect(shown(fixture)?.account()).toBe(alice);
     expect(shown(fixture)?.publicRef()).toEqual({ server: 'https://far.example', id: '42' });
+  });
+
+  it("reads a Bluesky handle's analytics from Bluesky's public feed", async () => {
+    getProfile.mockReturnValue(
+      of({ did: 'did:plc:alice', handle: 'alice.bsky.social', displayName: 'Alice' }),
+    );
+    const fixture = render({ acct: '@alice.bsky.social' });
+    await settle(fixture);
+    expect(getProfile).toHaveBeenCalledWith('alice.bsky.social');
+    expect(lookupAccount).not.toHaveBeenCalled();
+    expect(shown(fixture)?.blueskyActor()).toBe('did:plc:alice');
+    expect(shown(fixture)?.publicRef()).toBeNull();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+      "From @alice.bsky.social's public posts on Bluesky.",
+    );
   });
 
   it('signed in, shows your own analytics until you ask for someone else', async () => {

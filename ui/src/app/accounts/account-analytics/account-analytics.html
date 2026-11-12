@@ -206,124 +206,129 @@
     <!-- The one expensive thing on this page. Everything above is computed from
          the post sample already in memory; this walks the follower and friend
          lists, so it is opt-in behind a dialog that states the cost first. -->
-    <section class="section audience-section">
-      <h2>{{ 'accountAnalytics.audience.heading' | transloco }}</h2>
-      @if (audienceResults(); as results) {
-        <p class="muted small">
-          {{ 'accountAnalytics.audience.explain' | transloco }}
-        </p>
-        @if (results.following; as r) {
-          <h3 class="chart-title muted">{{ 'accountAnalytics.audience.friends' | transloco }}</h3>
-          <div class="tiles">
-            <div class="tile">
-              <span class="tile-label muted">{{
-                'accountAnalytics.audience.effectiveFriends' | transloco
-              }}</span>
-              <span class="tile-value"
-                >{{ r.complete ? '' : '~' }}{{ fmt(r.effective)
-                }}<small class="tile-sub muted">{{
-                  'accountAnalytics.pctOf'
-                    | transloco: { pct: r.effectiveRatePct, total: fmt(r.total) }
-                }}</small></span
-              >
+    <!-- Walks Mastodon follower lists; there is no Bluesky equivalent. -->
+    @if (!isBluesky()) {
+      <section class="section audience-section">
+        <h2>{{ 'accountAnalytics.audience.heading' | transloco }}</h2>
+        @if (audienceResults(); as results) {
+          <p class="muted small">
+            {{ 'accountAnalytics.audience.explain' | transloco }}
+          </p>
+          @if (results.following; as r) {
+            <h3 class="chart-title muted">{{ 'accountAnalytics.audience.friends' | transloco }}</h3>
+            <div class="tiles">
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.audience.effectiveFriends' | transloco
+                }}</span>
+                <span class="tile-value"
+                  >{{ r.complete ? '' : '~' }}{{ fmt(r.effective)
+                  }}<small class="tile-sub muted">{{
+                    'accountAnalytics.pctOf'
+                      | transloco: { pct: r.effectiveRatePct, total: fmt(r.total) }
+                  }}</small></span
+                >
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.audience.zombieFriends' | transloco
+                }}</span>
+                <span class="tile-value"
+                  >{{ r.complete ? '' : '~' }}{{ fmt(r.estimatedZombies)
+                  }}<small class="tile-sub muted">{{
+                    'accountAnalytics.zombieRate' | transloco: { pct: r.zombieRatePct }
+                  }}</small></span
+                >
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.audience.dormant' | transloco
+                }}</span>
+                <span class="tile-value"
+                  >{{ fmt(r.dormant)
+                  }}<small class="tile-sub muted">{{
+                    'accountAnalytics.ofScannedRead' | transloco: { scanned: fmt(r.scanned) }
+                  }}</small></span
+                >
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.audience.lowCadence' | transloco
+                }}</span>
+                <span class="tile-value"
+                  >{{ fmt(r.lowCadence)
+                  }}<small class="tile-sub muted">{{
+                    'accountAnalytics.audience.drizzlers' | transloco
+                  }}</small></span
+                >
+              </div>
             </div>
-            <div class="tile">
-              <span class="tile-label muted">{{
-                'accountAnalytics.audience.zombieFriends' | transloco
-              }}</span>
-              <span class="tile-value"
-                >{{ r.complete ? '' : '~' }}{{ fmt(r.estimatedZombies)
-                }}<small class="tile-sub muted">{{
-                  'accountAnalytics.zombieRate' | transloco: { pct: r.zombieRatePct }
-                }}</small></span
-              >
+          }
+          @if (results.followers; as r) {
+            <h3 class="chart-title muted">
+              {{ 'accountAnalytics.audience.followers' | transloco }}
+            </h3>
+            <div class="tiles">
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.audience.effectiveFollowers' | transloco
+                }}</span>
+                <span class="tile-value"
+                  >{{ r.complete ? '' : '~' }}{{ fmt(r.effective)
+                  }}<small class="tile-sub muted">{{
+                    'accountAnalytics.pctOf'
+                      | transloco: { pct: r.effectiveRatePct, total: fmt(r.total) }
+                  }}</small></span
+                >
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.audience.zombieFollowers' | transloco
+                }}</span>
+                <span class="tile-value"
+                  >{{ r.complete ? '' : '~' }}{{ fmt(r.estimatedZombies)
+                  }}<small class="tile-sub muted">{{
+                    'accountAnalytics.zombieRate' | transloco: { pct: r.zombieRatePct }
+                  }}</small></span
+                >
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.audience.dormant' | transloco
+                }}</span>
+                <span class="tile-value"
+                  >{{ fmt(r.dormant)
+                  }}<small class="tile-sub muted">{{
+                    'accountAnalytics.ofScannedRead' | transloco: { scanned: fmt(r.scanned) }
+                  }}</small></span
+                >
+              </div>
+              <div class="tile">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.audience.lowCadence' | transloco
+                }}</span>
+                <span class="tile-value"
+                  >{{ fmt(r.lowCadence)
+                  }}<small class="tile-sub muted">{{
+                    'accountAnalytics.audience.drizzlers' | transloco
+                  }}</small></span
+                >
+              </div>
             </div>
-            <div class="tile">
-              <span class="tile-label muted">{{
-                'accountAnalytics.audience.dormant' | transloco
-              }}</span>
-              <span class="tile-value"
-                >{{ fmt(r.dormant)
-                }}<small class="tile-sub muted">{{
-                  'accountAnalytics.ofScannedRead' | transloco: { scanned: fmt(r.scanned) }
-                }}</small></span
-              >
-            </div>
-            <div class="tile">
-              <span class="tile-label muted">{{
-                'accountAnalytics.audience.lowCadence' | transloco
-              }}</span>
-              <span class="tile-value"
-                >{{ fmt(r.lowCadence)
-                }}<small class="tile-sub muted">{{
-                  'accountAnalytics.audience.drizzlers' | transloco
-                }}</small></span
-              >
-            </div>
-          </div>
+          }
+          <button type="button" class="btn btn-outline btn-sm" (click)="openAudienceDialog()">
+            {{ 'accountAnalytics.audience.scanAgain' | transloco }}
+          </button>
+        } @else {
+          <p class="muted small">
+            {{ 'accountAnalytics.audience.explainCta' | transloco }}
+          </p>
+          <button type="button" class="btn btn-outline" (click)="openAudienceDialog()">
+            {{ 'accountAnalytics.audience.cta' | transloco }}
+          </button>
         }
-        @if (results.followers; as r) {
-          <h3 class="chart-title muted">{{ 'accountAnalytics.audience.followers' | transloco }}</h3>
-          <div class="tiles">
-            <div class="tile">
-              <span class="tile-label muted">{{
-                'accountAnalytics.audience.effectiveFollowers' | transloco
-              }}</span>
-              <span class="tile-value"
-                >{{ r.complete ? '' : '~' }}{{ fmt(r.effective)
-                }}<small class="tile-sub muted">{{
-                  'accountAnalytics.pctOf'
-                    | transloco: { pct: r.effectiveRatePct, total: fmt(r.total) }
-                }}</small></span
-              >
-            </div>
-            <div class="tile">
-              <span class="tile-label muted">{{
-                'accountAnalytics.audience.zombieFollowers' | transloco
-              }}</span>
-              <span class="tile-value"
-                >{{ r.complete ? '' : '~' }}{{ fmt(r.estimatedZombies)
-                }}<small class="tile-sub muted">{{
-                  'accountAnalytics.zombieRate' | transloco: { pct: r.zombieRatePct }
-                }}</small></span
-              >
-            </div>
-            <div class="tile">
-              <span class="tile-label muted">{{
-                'accountAnalytics.audience.dormant' | transloco
-              }}</span>
-              <span class="tile-value"
-                >{{ fmt(r.dormant)
-                }}<small class="tile-sub muted">{{
-                  'accountAnalytics.ofScannedRead' | transloco: { scanned: fmt(r.scanned) }
-                }}</small></span
-              >
-            </div>
-            <div class="tile">
-              <span class="tile-label muted">{{
-                'accountAnalytics.audience.lowCadence' | transloco
-              }}</span>
-              <span class="tile-value"
-                >{{ fmt(r.lowCadence)
-                }}<small class="tile-sub muted">{{
-                  'accountAnalytics.audience.drizzlers' | transloco
-                }}</small></span
-              >
-            </div>
-          </div>
-        }
-        <button type="button" class="btn btn-outline btn-sm" (click)="openAudienceDialog()">
-          {{ 'accountAnalytics.audience.scanAgain' | transloco }}
-        </button>
-      } @else {
-        <p class="muted small">
-          {{ 'accountAnalytics.audience.explainCta' | transloco }}
-        </p>
-        <button type="button" class="btn btn-outline" (click)="openAudienceDialog()">
-          {{ 'accountAnalytics.audience.cta' | transloco }}
-        </button>
-      }
-    </section>
+      </section>
+    }
 
     @if (showWeekly() || showMonthly()) {
       <section class="section">

@@ -10,28 +10,33 @@ import { MbControl, MbField } from '../../design-system/field/field';
 import { MbNotice } from '../../design-system/notice/notice';
 import { Account } from '../../platform/api/models';
 import { Auth } from '../../platform/session/auth';
-import { parseFediverseHandle } from './fediverse-handle';
+import { adaptProfile } from '../../connections/bluesky/bluesky-adapter';
+import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
+import { parsePerson } from './fediverse-handle';
 
-// i18n analyticsLookup.label: Mastodon handle
-// i18n analyticsLookup.hint: Any public account, like @alice@mastodon.social. No sign-in needed.
+// i18n analyticsLookup.label: Mastodon or Bluesky handle
+// i18n analyticsLookup.hint: Any public account, like @alice@mastodon.social or alice.bsky.social. No sign-in needed.
 // i18n analyticsLookup.show: Show analytics
 // i18n analyticsLookup.mine: My analytics
 // i18n analyticsLookup.looking: Looking up {{handle}}…
-// i18n analyticsLookup.invalid: Type a full handle, like @alice@mastodon.social.
+// i18n analyticsLookup.invalid: Type a full handle, like @alice@mastodon.social or alice.bsky.social.
 // i18n analyticsLookup.notFound: {{handle}} could not be read from its server. It may not exist, or the server may not share public data.
 // i18n analyticsLookup.publicOnly: From {{handle}}'s public posts and followers, read from their own server.
+// i18n analyticsLookup.blueskyOnly: From {{handle}}'s public posts on Bluesky. Reposts are left out.
 
 /** What is on screen: the signed-in account, or a looked-up public one. */
 type Shown =
   | { kind: 'me'; key: string; account: Account }
-  | { kind: 'public'; key: string; account: Account; ref: AnonymousPublicRef; handle: string };
+  | { kind: 'public'; key: string; account: Account; ref: AnonymousPublicRef; handle: string }
+  | { kind: 'bluesky'; key: string; account: Account; did: string; handle: string };
 
 /**
- * Analytics for any public Mastodon account, signed in or not.
+ * Analytics for any public Mastodon or Bluesky account, signed in or not.
  *
- * Signed out, a handle is resolved on its own server's public API and the
+ * A Mastodon handle is resolved on its own server's public API and the
  * ordinary account analytics run against that server (the `publicRef` path the
- * profile page's Analytics tab already uses). Signed in with Mastodon there is
+ * profile page's Analytics tab already uses). A Bluesky handle is resolved on
+ * Bluesky's public AppView and the analytics read its public author feed. Signed in with Mastodon there is
  * also "My analytics", the default when no handle is asked for. The handle
  * rides in `?acct=` so a result can be linked and survives a reload.
  */
@@ -84,6 +89,11 @@ type Shown =
           {{ 'analyticsLookup.publicOnly' | transloco: { handle: view.handle } }}
         </p>
         <app-account-analytics [account]="view.account" [publicRef]="view.ref" />
+      } @else if (view.kind === 'bluesky') {
+        <p class="muted small">
+          {{ 'analyticsLookup.blueskyOnly' | transloco: { handle: view.handle } }}
+        </p>
+        <app-account-analytics [account]="view.account" [blueskyActor]="view.did" />
       } @else {
         <app-account-analytics [account]="view.account" />
       }
@@ -105,6 +115,7 @@ type Shown =
 export class AnalyticsLookup implements OnInit {
   private readonly auth = inject(Auth);
   private readonly anonymousPublic = inject(AnonymousPublicApi);
+  private readonly bluesky = inject(BlueskyApi);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -157,32 +168,55 @@ export class AnalyticsLookup implements OnInit {
 
   private async lookup(value: string): Promise<void> {
     const seq = ++this.lookupSeq;
-    const handle = parseFediverseHandle(value);
+    const person = parsePerson(value);
     this.pending.set(value.trim());
     this.error.set(null);
-    if (!handle) {
+    if (!person) {
       this.error.set('analyticsLookup.invalid');
       return;
     }
     this.busy.set(true);
-    const server = `https://${handle.host}`;
-    const account = await firstValueFrom(
-      this.anonymousPublic.lookupAccount(server, handle.user).pipe(catchError(() => of(null))),
-    );
+    const shown = await (person.network === 'mastodon'
+      ? this.mastodon(person.handle.user, person.handle.host, person.label)
+      : this.blueskyAccount(person.actor, person.label));
     if (seq !== this.lookupSeq) return;
     this.busy.set(false);
-    if (!account) {
+    if (!shown) {
       this.error.set('analyticsLookup.notFound');
       return;
     }
-    const display = `@${handle.user}@${handle.host}`;
-    this.shown.set({
-      kind: 'public',
-      key: `${handle.host}:${account.id}`,
-      account,
-      ref: { server, id: account.id },
-      handle: display,
-    });
+    this.shown.set(shown);
+  }
+
+  private async mastodon(user: string, host: string, label: string): Promise<Shown | null> {
+    const server = `https://${host}`;
+    const account = await firstValueFrom(
+      this.anonymousPublic.lookupAccount(server, user).pipe(catchError(() => of(null))),
+    );
+    return account
+      ? {
+          kind: 'public',
+          key: `${host}:${account.id}`,
+          account,
+          ref: { server, id: account.id },
+          handle: label,
+        }
+      : null;
+  }
+
+  private async blueskyAccount(actor: string, label: string): Promise<Shown | null> {
+    const profile = await firstValueFrom(
+      this.bluesky.getProfile(actor).pipe(catchError(() => of(null))),
+    );
+    return profile?.did
+      ? {
+          kind: 'bluesky',
+          key: `bsky:${profile.did}`,
+          account: adaptProfile(profile),
+          did: profile.did,
+          handle: profile.handle ? `@${profile.handle}` : label,
+        }
+      : null;
   }
 
   private setQuery(acct: string | null): void {

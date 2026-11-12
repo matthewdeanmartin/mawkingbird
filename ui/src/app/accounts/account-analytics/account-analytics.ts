@@ -4,7 +4,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Observable } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
+import { adaptPost } from '../../connections/bluesky/bluesky-adapter';
+import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { Api, AccountStatusesOptions } from '../../platform/api/api';
 import { AnonymousPublicApi } from '../anonymous/anonymous-public-api';
 import { AnonymousPublicRef } from '../anonymous/anonymous-route-ref';
@@ -164,12 +166,20 @@ export class AccountAnalytics implements OnInit {
 
   private api = inject(Api);
   private anonymousPublic = inject(AnonymousPublicApi);
+  private bluesky = inject(BlueskyApi);
   private transloco = inject(TranslocoService);
 
   /** The account to analyze. */
   readonly account = input.required<Account>();
   /** Present when the account is an anonymous public profile (read-only API). */
   readonly publicRef = input<AnonymousPublicRef | null>(null);
+  /**
+   * A Bluesky account's DID. Posts then come from Bluesky's public author feed
+   * (no sign-in), reposts left out. Bluesky's follower list carries no follower
+   * counts and the audience scan walks Mastodon lists, so both are skipped.
+   */
+  readonly blueskyActor = input<string | null>(null);
+  protected readonly isBluesky = computed(() => !!this.blueskyActor());
 
   protected loading = signal(true);
   protected error = signal(false);
@@ -217,6 +227,7 @@ export class AccountAnalytics implements OnInit {
   }
 
   private getFollowers(id: string): Observable<Account[]> {
+    if (this.blueskyActor()) return of([]);
     const ref = this.publicRef();
     return ref
       ? this.anonymousPublic.getAccountFollowers({ ...ref, id })
@@ -237,18 +248,17 @@ export class AccountAnalytics implements OnInit {
    * cap, {@link loadMore} lets the user deliberately spend more API calls to
    * widen the window — no {@link SAMPLE_SIZE} truncation there.
    */
-  private fetchPosts(id: string, acc: Status[], maxId: string | undefined, page: number): void {
-    this.getStatuses(id, { limit: PAGE_LIMIT, maxId, excludeReblogs: true }).subscribe({
-      next: (batch) => {
-        const all = [...acc, ...batch];
-        const exhausted = batch.length < PAGE_LIMIT;
-        if (exhausted || all.length >= SAMPLE_SIZE || page + 1 >= MAX_PAGES) {
+  private fetchPosts(id: string, acc: Status[], cursor: string | undefined, page: number): void {
+    this.fetchPage(id, cursor).subscribe({
+      next: ({ posts, next, done }) => {
+        const all = [...acc, ...posts];
+        if (done || all.length >= SAMPLE_SIZE || page + 1 >= this.maxPages()) {
           this.posts.set(all);
-          this.cursor = all.length ? all[all.length - 1].id : undefined;
-          this.hasMore.set(!exhausted);
+          this.cursor = next;
+          this.hasMore.set(!done);
           this.loading.set(false);
         } else {
-          this.fetchPosts(id, all, batch[batch.length - 1].id, page + 1);
+          this.fetchPosts(id, all, next, page + 1);
         }
       },
       error: (err: unknown) => {
@@ -258,6 +268,39 @@ export class AccountAnalytics implements OnInit {
         this.errorReason.set(failureReason(err));
       },
     });
+  }
+
+  /** Bluesky pages are 20 posts, half a Mastodon page, so it may take twice as many. */
+  private maxPages(): number {
+    return this.blueskyActor() ? MAX_PAGES * 2 : MAX_PAGES;
+  }
+
+  /**
+   * One page of the account's own posts, newest first, and where the next one
+   * starts. Mastodon pages by the server's own id (see {@link pageCursor});
+   * Bluesky by the feed's opaque cursor.
+   */
+  private fetchPage(id: string, cursor: string | undefined): Observable<PostPage> {
+    const did = this.blueskyActor();
+    if (did) {
+      return this.bluesky.getAuthorFeed(did, cursor ?? null, 'posts_with_replies', true).pipe(
+        map((timeline) => ({
+          // A repost is someone else's post; only the author's own words count.
+          posts: timeline.feed
+            .filter((item) => !item.reason && item.post.author.did === did)
+            .map((item) => adaptPost(item.post)),
+          next: timeline.cursor,
+          done: !timeline.cursor || timeline.feed.length === 0,
+        })),
+      );
+    }
+    return this.getStatuses(id, { limit: PAGE_LIMIT, maxId: cursor, excludeReblogs: true }).pipe(
+      map((batch) => ({
+        posts: batch,
+        next: batch.length ? pageCursor(batch[batch.length - 1]) : cursor,
+        done: batch.length < PAGE_LIMIT,
+      })),
+    );
   }
 
   /**
@@ -274,27 +317,23 @@ export class AccountAnalytics implements OnInit {
     this.fetchMore(id, pages, 0);
   }
 
-  private fetchMore(id: string, remaining: number, done: number): void {
+  private fetchMore(id: string, remaining: number, fetched: number): void {
     if (remaining <= 0) {
       this.loadingMore.set(false);
       return;
     }
-    this.getStatuses(id, {
-      limit: PAGE_LIMIT,
-      maxId: this.cursor,
-      excludeReblogs: true,
-    }).subscribe({
-      next: (batch) => {
-        if (batch.length) {
-          this.posts.update((prev) => [...prev, ...batch]);
-          this.cursor = batch[batch.length - 1].id;
+    this.fetchPage(id, this.cursor).subscribe({
+      next: ({ posts, next, done }) => {
+        if (posts.length) {
+          this.posts.update((prev) => [...prev, ...posts]);
         }
-        if (batch.length < PAGE_LIMIT) {
+        this.cursor = next;
+        if (done) {
           this.hasMore.set(false);
           this.loadingMore.set(false);
           return;
         }
-        this.fetchMore(id, remaining - 1, done + 1);
+        this.fetchMore(id, remaining - 1, fetched + 1);
       },
       error: () => this.loadingMore.set(false),
     });
@@ -558,4 +597,23 @@ function failureReason(err: unknown): { key: string; params?: Record<string, unk
   if (err.status === 401 || err.status === 403) return { key: 'accountAnalytics.why.signedOut' };
   if (err.status === 429) return { key: 'accountAnalytics.why.rateLimited' };
   return { key: 'accountAnalytics.why.status', params: { status: err.status } };
+}
+
+/**
+ * The id the server pages by. Posts read anonymously carry a namespaced id
+ * (`anonymous-mastodon:<host>:<id>`) so they cannot collide with the home
+ * server's; the server only knows its own, which rides in `providerRef`.
+ * Sending the namespaced one as `max_id` got an empty page back, and the
+ * sample stopped at the first 40 posts.
+ */
+interface PostPage {
+  posts: Status[];
+  next: string | undefined;
+  /** No older posts to fetch. */
+  done: boolean;
+}
+
+export function pageCursor(status: Status): string {
+  const ref = status.providerRef as { statusId?: unknown } | undefined;
+  return typeof ref?.statusId === 'string' ? ref.statusId : status.id;
 }

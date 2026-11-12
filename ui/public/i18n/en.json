@@ -334,9 +334,10 @@
     "title": "Analytics"
   },
   "analyticsLookup": {
-    "hint": "Any public account, like @alice@mastodon.social. No sign-in needed.",
-    "invalid": "Type a full handle, like @alice@mastodon.social.",
-    "label": "Mastodon handle",
+    "blueskyOnly": "From {{handle}}'s public posts on Bluesky. Reposts are left out.",
+    "hint": "Any public account, like @alice@mastodon.social or alice.bsky.social. No sign-in needed.",
+    "invalid": "Type a full handle, like @alice@mastodon.social or alice.bsky.social.",
+    "label": "Mastodon or Bluesky handle",
     "looking": "Looking up {{handle}}…",
     "mine": "My analytics",
     "notFound": "{{handle}} could not be read from its server. It may not exist, or the server may not share public data.",

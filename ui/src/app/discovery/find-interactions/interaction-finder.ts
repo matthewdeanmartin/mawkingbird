@@ -3,7 +3,9 @@ import { catchError, firstValueFrom, Observable, of, timeout } from 'rxjs';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
 import {
   FediverseHandle,
-  parseFediverseHandle,
+  isDid,
+  ParsedPerson,
+  parsePerson,
 } from '../../accounts/mastodon-analytics/fediverse-handle';
 import { adaptPost } from '../../connections/bluesky/bluesky-adapter';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
@@ -33,10 +35,6 @@ import { Account, Status } from '../../platform/api/models';
 
 export type InteractionNetwork = 'mastodon' | 'bluesky';
 
-export type ParsedPerson =
-  | { network: 'mastodon'; handle: FediverseHandle; label: string }
-  | { network: 'bluesky'; actor: string; label: string };
-
 export interface InteractionResult {
   network: InteractionNetwork;
   /** Newest first, de-duplicated. */
@@ -58,32 +56,6 @@ export const MASTODON_SCAN_PAGES = 5;
 export const BLUESKY_SCAN_PAGES = 10;
 const SEARCH_PAGES = 2;
 const REQUEST_TIMEOUT_MS = 20_000;
-
-const BSKY_HANDLE =
-  /^(?=.{3,253}$)[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+$/;
-const DID = /^did:[a-z]+:[A-Za-z0-9._:%-]+$/;
-
-/**
- * `@alice@mastodon.social` (or a Mastodon profile URL) is Mastodon;
- * `alice.bsky.social`, `@alice.bsky.social`, a DID or a bsky.app profile URL is
- * Bluesky. Anything else is null.
- */
-export function parsePerson(input: string): ParsedPerson | null {
-  const value = input.trim();
-  const bskyUrl = /^https?:\/\/bsky\.app\/profile\/([^/?#]+)\/?$/i.exec(value);
-  if (bskyUrl) return bluesky(decodeURIComponent(bskyUrl[1]));
-  const fedi = parseFediverseHandle(value);
-  if (fedi) return { network: 'mastodon', handle: fedi, label: `@${fedi.user}@${fedi.host}` };
-  return bluesky(value.replace(/^@/, ''));
-}
-
-function bluesky(actor: string): ParsedPerson | null {
-  if (DID.test(actor)) return { network: 'bluesky', actor, label: actor };
-  const handle = actor.toLowerCase();
-  return BSKY_HANDLE.test(handle)
-    ? { network: 'bluesky', actor: handle, label: `@${handle}` }
-    : null;
-}
 
 /** Normalise a Mastodon `acct` seen on `server` to `user@host`, lower-cased. */
 export function qualify(acct: string, serverHost: string): string {
@@ -213,7 +185,7 @@ export class InteractionFinder {
   }
 
   private async did(actor: string): Promise<string | null> {
-    if (DID.test(actor)) return actor;
+    if (isDid(actor)) return actor;
     const profile = await settle(this.bluesky.getProfile(actor), null);
     return profile?.did ?? null;
   }

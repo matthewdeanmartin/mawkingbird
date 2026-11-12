@@ -2368,3 +2368,11 @@ Undo, Quote, Cross-platform…), a Back button and a "My blog" destination repla
 the "Also record this on my blog" checkbox (+5 native buttons, -1 checkbox), plus
 a Twitter link-out in the existing destination list. No shared widget
 implementation changed.
+
+### Bluesky analytics lookup (2026-11-12)
+
+Reviewed regeneration: no control counts changed, only source line positions.
+`accounts/account-analytics/account-analytics.html` wraps the effective-audience
+section in a Bluesky check (it walks Mastodon follower lists), and the analytics
+lookup accepts Bluesky handles with no new controls. No shared widget
+implementation changed.

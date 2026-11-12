@@ -7,12 +7,8 @@ import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { BskyPostView } from '../../connections/bluesky/bluesky-types';
 import { Account, Mention, Status } from '../../platform/api/models';
-import {
-  blueskyPostInvolves,
-  InteractionFinder,
-  mastodonPostInvolves,
-  parsePerson,
-} from './interaction-finder';
+import { blueskyPostInvolves, InteractionFinder, mastodonPostInvolves } from './interaction-finder';
+import { parsePerson } from '../../accounts/mastodon-analytics/fediverse-handle';
 
 function toot(id: string, created: string, mentions: Partial<Mention>[] = []): Status {
   return {
