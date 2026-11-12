@@ -71,10 +71,12 @@ const NON_STORAGE_DECLARATIONS = /^(?:DB_NAME|DATABASE_NAME|CACHE_NAME|STORE_NAM
  * — and it avoids matching the same literals where they appear in comments or
  * in the registry's own notes.
  */
+// The product is spelled both ways in key names, and a key under the newer
+// spelling once slipped past this check entirely; both prefixes are scanned.
 function declaredKeys() {
   const found = new Map();
   const declaration =
-    /(?:const|readonly)\s+(\w+)\s*(?::\s*string\s*)?=\s*'((?:mastodon_mock|mockingbird)[._][a-z0-9._:-]+)'/g;
+    /(?:const|readonly)\s+(\w+)\s*(?::\s*string\s*)?=\s*'((?:mastodon_mock|mockingbird|mawkingbird)[._][a-z0-9._:-]+)'/g;
   for (const file of sourceFiles(APP_DIR)) {
     if (file === REGISTRY) continue;
     const text = readFileSync(file, 'utf8');

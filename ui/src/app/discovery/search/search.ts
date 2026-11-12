@@ -157,7 +157,7 @@ const DEFAULT_BUDGET_ADVANCED = 3;
 const LOAD_MORE_HARD_CAP = 30;
 
 /** localStorage: the search tab the reader last picked, so the page reopens on it. */
-const LAST_TYPE_KEY = 'mawkingbird_search_last_type';
+const LAST_TYPE_KEY = 'mockingbird_search_last_type';
 
 /**
  * Below this many visible posts, excluding an author is assumed to have gutted

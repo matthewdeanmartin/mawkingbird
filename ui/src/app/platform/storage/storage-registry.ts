@@ -112,6 +112,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Named audio playlists and post metadata, per account. Excluded from shareable settings.',
   },
   {
+    base: 'mockingbird_search_last_type',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'The search tab (posts, people or hashtags) the reader last picked.',
+  },
+  {
     base: 'mockingbird_radio_providers',
     storage: 'local',
     suffix: 'account',
@@ -678,6 +685,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     suffix: 'none',
     sensitivity: 'private',
     note: 'Per-conversation read markers; the conversation ids identify correspondents.',
+  },
+  {
+    base: 'mockingbird_announcement_views',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'Sessions each announcement was shown in the banner, keyed by announcement id; server-specific, so it points at the instance.',
   },
   {
     base: 'mockingbird_dismissed_announcements',
