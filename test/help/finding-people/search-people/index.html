@@ -208,13 +208,29 @@
 <ol>
 <li>Choose <strong>Search</strong> in the main navigation.</li>
 <li>Choose the network where you expect the account to be: <strong>Mastodon</strong> or <strong>Bluesky</strong>.</li>
-<li>Choose <strong>Accounts</strong>.</li>
+<li>Choose <strong>People</strong>.</li>
 <li>Enter the person's name or handle.</li>
 <li>Choose <strong>Search</strong>.</li>
 <li>Open a likely result and check the profile before following.</li>
 </ol>
 <p>A full handle is usually more reliable than a display name. Examples are <code>@name@server.example</code> for Mastodon and <code>name.bsky.social</code> for Bluesky.</p>
 <p>You can also paste a Mastodon profile address into search.</p>
+<h2 id="what-people-search-looks-at">What People search looks at<a class="headerlink" href="#what-people-search-looks-at" title="Link to this section">#</a></h2>
+<p>On Mastodon, a People search runs two searches at once: one over names and
+biographies, and one over what people post, with matching posts grouped by
+author. Plain words therefore also find people who often write about a subject,
+not only people who describe themselves that way.</p>
+<p>Post operators such as <code>has:media</code> or <code>from:</code> work here too, but they
+only narrow the posts half of the search. Choose <strong>Syntax</strong> next to the search
+box for the full list.</p>
+<p>Choose <strong>Advanced search</strong> for more control:</p>
+<ul>
+<li><strong>Search in</strong> chooses which half runs: names and biographies, posts, or both.</li>
+<li><strong>Followers</strong>, <strong>Following</strong> and <strong>Posts</strong> take a minimum, a maximum, or both,
+  for example to skip very large accounts or accounts that never posted.</li>
+</ul>
+<p>After results arrive, the filters beside them narrow the list by server, by
+whether you already follow someone, and by how recently they posted.</p>
 <h2 id="confirm-that-it-is-the-right-person">Confirm that it is the right person<a class="headerlink" href="#confirm-that-it-is-the-right-person" title="Link to this section">#</a></h2>
 <p>Display names are not unique. Check several clues:</p>
 <ul>
