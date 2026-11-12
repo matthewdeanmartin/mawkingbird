@@ -235,7 +235,6 @@
   "statusCard": {
     "actionFailure": "Impossible de {{verb}} — réessaie.",
     "actionFailureBluesky": "Impossible de {{verb}} sur Bluesky — ton lien a peut-être expiré. Reconnecte-le dans Paramètres → Connexions.",
-    "addComment": "Ajouter un commentaire",
     "aiTranslation": "Traduction par IA",
     "aiTranslationDescription": "Ici, la traduction est faite par un modèle d’IA de ton choix, via OpenRouter — ta clé, ton navigateur, ton compte. Rien n’est envoyé à un serveur Mawkingbird, puisqu’il n’y en a pas.",
     "aiTranslationNote": "Traduit en {{target}} par {{model}} · traduction automatique, considère donc la formulation comme approximative",
@@ -6151,12 +6150,8 @@
     "heading.elsewhere": "Partager ailleurs",
     "linkCopied": "Lien copié !",
     "linkedPage": "Page liée (sans l’habillage du message)",
-    "postHint": "Ouvre un éditeur. Rien n’est publié tant que tu n’appuies pas sur Publier.",
-    "postIt": "Publier",
     "quoteDropped": "Certaines de ces destinations n’acceptent qu’un lien — ta citation ne suivra pas.",
     "recordHint": "Met un partage en file d’attente pour ton propre site. Rien n’est publié tant que tu ne le décides pas.",
-    "sendHint": "Ouvre la destination dans un nouvel onglet.",
-    "sendItTo": "Envoyer vers",
     "share": "Partager",
     "shareUsingDevice": "Partager avec l’appareil…",
     "thisPost": "Ce message"

@@ -2893,7 +2893,6 @@
   "statusCard": {
     "actionFailure": "„{{verb}}“ fehlgeschlagen – versuche es erneut.",
     "actionFailureBluesky": "„{{verb}}“ auf Bluesky fehlgeschlagen – möglicherweise ist deine Verknüpfung abgelaufen. Verknüpfe das Konto unter Einstellungen → Verbindungen erneut.",
-    "addComment": "Kommentar hinzufügen",
     "aiTranslation": "KI-Übersetzung",
     "aiTranslationDescription": "Die Übersetzung erfolgt hier über OpenRouter mit einem KI-Modell deiner Wahl – dein Schlüssel, dein Browser, dein Konto. Es wird nichts an einen Mawkingbird-Server gesendet, denn einen solchen gibt es nicht.",
     "aiTranslationNote": "Von {{model}} ins {{target}} übersetzt · maschinelle Übersetzung, der Wortlaut ist daher nur als Annäherung zu verstehen",
@@ -3191,12 +3190,8 @@
     "heading.elsewhere": "Anderswo teilen",
     "linkCopied": "Link kopiert!",
     "linkedPage": "Verlinkte Seite (ohne Einbettung in den Beitrag)",
-    "postHint": "Öffnet einen Editor. Es wird nichts veröffentlicht, bis du auf „Veröffentlichen“ drückst.",
-    "postIt": "Veröffentlichen",
     "quoteDropped": "Manche dieser Ziele übernehmen nur einen Link – deine markierte Passage wird nicht mitgesendet.",
     "recordHint": "Stellt einen Boost für deine eigene Website in die Warteschlange. Ohne deine Bestätigung wird nichts veröffentlicht.",
-    "sendHint": "Öffnet das Ziel in einem neuen Tab.",
-    "sendItTo": "Senden an",
     "share": "Teilen",
     "shareUsingDevice": "Über Gerät teilen …",
     "thisPost": "Dieser Beitrag"
