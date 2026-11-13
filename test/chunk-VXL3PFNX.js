@@ -1,0 +1,1 @@
+import{a as n}from"./chunk-CCQ7TJT3.js";import{l as t}from"./chunk-CA2QYDER.js";import{e as r}from"./chunk-NKQZY7GD.js";import{i as o}from"./chunk-V7ETKRZU.js";function k(){let e=o(t),s=o(n),u=o(r);return{usableMastodon:()=>e.isBlueskyPrimary?u.optedIn():!e.isMisskeyPrimary,usableBluesky:()=>s.linked()}}export{k as a};
