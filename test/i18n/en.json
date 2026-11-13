@@ -756,6 +756,8 @@
     "insertEmoji": "Insert emoji",
     "keepEditing": "Keep editing",
     "langMismatch": "You set the language to <strong>{{picked}}</strong>, but this reads as <strong>{{detected}}</strong>. Post anyway, or fix it?",
+    "limit.bluesky": "Bluesky",
+    "limit.mastodon": "Mastodon",
     "markSensitive": "Mark media sensitive",
     "mentions.continue": "Use these mentions",
     "mentions.invalid": "Check @{{handle}} — that handle is not valid. Your reply has not been sent.",
