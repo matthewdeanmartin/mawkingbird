@@ -617,7 +617,9 @@ export class Notifications implements OnInit, OnDestroy {
 
   /** Re-read the current source from the top. */
   refresh(): void {
+    this.holdReadingUpdates.set(false);
     this.load();
+    this.syncLive();
   }
 
   /** Failures are isolated so a healthy network's notifications remain usable. */
@@ -717,6 +719,13 @@ export class Notifications implements OnInit, OnDestroy {
     );
   }
 
+  private holdReadingUpdates = signal(false);
+
+  suspendReading(): void {
+    this.holdReadingUpdates.set(true);
+    this.stopLive();
+  }
+
   ngOnDestroy(): void {
     this.pageSub?.unsubscribe();
     this.liveSub?.unsubscribe();
@@ -744,6 +753,7 @@ export class Notifications implements OnInit, OnDestroy {
    * shut while that source is selected no matter what the preference says.
    */
   private syncLive(): void {
+    if (this.holdReadingUpdates()) return;
     const wanted =
       this.prefs.autoRefreshTimeline() && this.mastodonAvailable() && this.source() !== 'bluesky';
     if (wanted === this.live()) {

@@ -235,6 +235,17 @@ export class RadioPage {
     });
   }
 
+  suspendReading(): void {
+    this.player.fullView.set(false);
+    this.lookup?.unsubscribe();
+    // Playback owns an active scan; leaving its page must not stop the radio.
+    if (!this.player.active()) this.scan.cancel();
+  }
+
+  resumeReading(): void {
+    this.player.fullView.set(this.view() === 'radio');
+  }
+
   get signedIn(): boolean {
     return !this.auth.isAnonymous && !this.auth.isForeignPrimary;
   }

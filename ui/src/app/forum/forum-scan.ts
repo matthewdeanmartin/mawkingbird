@@ -242,6 +242,52 @@ export class ForumScan {
   private stopped = false;
   private generation = 0;
 
+  /** Freeze a visit's scan, including its paging cursors, without keeping requests alive. */
+  checkpoint(): () => void {
+    this.stop();
+    this.generation++;
+    const signals = {
+      source: this.source(),
+      state: this.state(),
+      callsUsed: this.callsUsed(),
+      allowance: this.allowance(),
+      elsewhere: this.elsewhere(),
+      postsSampled: this.postsSampled(),
+      found: this.found(),
+      following: this.following(),
+    };
+    const paging = {
+      sample: [...this.sample],
+      pagers: this.pagers.map((pager) => ({ ...pager })),
+      nextPager: this.nextPager,
+      pagesThisStep: this.pagesThisStep,
+      probed: new Set(this.probed),
+      widened: new Set(this.widened),
+      resolved: new Set(this.resolved),
+      asked: new Set(this.asked),
+    };
+    return () => {
+      this.stop();
+      this.generation++;
+      this.source.set(signals.source);
+      this.state.set(signals.state);
+      this.callsUsed.set(signals.callsUsed);
+      this.allowance.set(signals.allowance);
+      this.elsewhere.set(signals.elsewhere);
+      this.postsSampled.set(signals.postsSampled);
+      this.found.set(signals.found);
+      this.following.set(signals.following);
+      this.sample = paging.sample;
+      this.pagers = paging.pagers;
+      this.nextPager = paging.nextPager;
+      this.pagesThisStep = paging.pagesThisStep;
+      this.probed = paging.probed;
+      this.widened = paging.widened;
+      this.resolved = paging.resolved;
+      this.asked = paging.asked;
+    };
+  }
+
   /** The discussion anchored at this post id, if the scan found one. */
   discussion(anchorId: string): Discussion | null {
     return this.found().find((discussion) => discussion.anchor.id === anchorId) ?? null;

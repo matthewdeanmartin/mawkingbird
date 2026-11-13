@@ -1,3 +1,4 @@
+import { ReadingOutlet } from './shell/reading-outlet';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AnalyticsTracker } from './platform/diagnostics/analytics-tracker';
@@ -14,9 +15,9 @@ import { ActionTracker } from './platform/diagnostics/action-tracker';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FailWhale, UpdateOverlay],
+  imports: [ReadingOutlet, RouterOutlet, FailWhale, UpdateOverlay],
   template: `
-    <router-outlet />
+    <router-outlet mbReadingOutlet />
     @if (health.down()) {
       <app-fail-whale />
     }

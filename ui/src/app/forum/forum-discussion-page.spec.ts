@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { ReadingHistory } from '../shell/reading-history';
+import { By } from '@angular/platform-browser';
+import { Component, input } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Discussion, discussionKey } from './discussion';
 import { ForumScan } from './forum-scan';
 import { post, reply } from '../testing/forum-fixtures';
@@ -11,7 +13,9 @@ import { Thread } from '../reading/thread/thread';
 import { ForumDiscussionPage } from './forum-discussion-page';
 
 @Component({ selector: 'app-thread', template: '<p class="thread">thread</p>' })
-class ThreadStub {}
+class ThreadStub {
+  readonly showBack = input(true);
+}
 
 describe('ForumDiscussionPage', () => {
   const root = post('1', 'a');
@@ -104,8 +108,17 @@ describe('ForumDiscussionPage', () => {
   });
 
   it('goes back to the list as it was left', () => {
-    const back = mount().querySelector<HTMLAnchorElement>('.back a')!;
-    expect(back.getAttribute('href')).toBe('/forum?filter=asked&source=tag:rust');
+    const back = vi.spyOn(TestBed.inject(ReadingHistory), 'back');
+    const fixture = TestBed.createComponent(ForumDiscussionPage);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.firstElementChild?.tagName.toLowerCase()).toBe('app-reading-back');
+    expect(element.querySelectorAll('app-reading-back')).toHaveLength(1);
+    const child = fixture.debugElement.query(By.directive(ThreadStub))
+      .componentInstance as ThreadStub;
+    expect(child.showBack()).toBe(false);
+    element.querySelector<HTMLButtonElement>('app-reading-back button')!.click();
+    expect(back).toHaveBeenCalledOnce();
   });
 
   it('says when the start of the conversation could not be reached', () => {

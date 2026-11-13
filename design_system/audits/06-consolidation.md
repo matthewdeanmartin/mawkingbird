@@ -1,5 +1,19 @@
 # Sprint 6 opening consolidation audit
 
+## Reading history and consistent Back, 2026-11-13
+
+Reviewed the regenerated inventory: one added candidate, `shell/reading-back.ts`,
+uses the shared link-variant MbButton and translated Back label with a decorative
+arrow. Profile removes its platform-specific outline button, tab-row Back and
+error-state duplicates. Thread supplies the same header during loading, success
+and errors; Forum removes its separate link to the discussion list. Removed
+profile Back CSS is no longer needed. Other findings in StatusCard and Thread
+shift only by source line number. No candidate files were removed.
+
+The navigation story exercises ten loaded pages, nested browser/internal Back,
+Forward, desktop/mobile layout, focus return and delayed content resizing using
+the production history service, outlet directive and Back control.
+
 ## Focus points, federated feed filters, admin hashtags and metrics, 2026-11-11
 
 Two candidates are added, both adopted scope: `focal-point/focal-point-dialog.ts` (Dialog,

@@ -102,6 +102,9 @@ describe('Algo page', () => {
         { provide: AlgoFeed, useValue: feed },
       ],
     });
+    TestBed.overrideComponent(Algo, {
+      set: { providers: [{ provide: AlgoFeed, useValue: feed }] },
+    });
     fixture = TestBed.createComponent(Algo);
   });
 

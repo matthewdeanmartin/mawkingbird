@@ -122,6 +122,29 @@ describe('self profile local actions', () => {
     return fixture;
   }
 
+  it.each(['mastodon', 'isBluesky', 'isMisskey', 'isRss', 'isTwitter'] as const)(
+    'uses the same header Back control for %s, including loading and failure',
+    (platform) => {
+      const fixture = setUp(true);
+      const profile = fixture.componentInstance;
+      if (platform !== 'mastodon') profile[platform].set(true);
+      const assertBack = () => {
+        fixture.detectChanges();
+        const el = fixture.nativeElement as HTMLElement;
+        expect(el.firstElementChild?.tagName.toLowerCase()).toBe('app-reading-back');
+        expect(el.querySelectorAll('app-reading-back button')).toHaveLength(1);
+        expect(el.querySelector('app-reading-back button')?.textContent).toContain('Back');
+        expect(el.querySelector('.ptab-back, .back-button')).toBeNull();
+      };
+      assertBack();
+      profile['loading'].set(true);
+      assertBack();
+      profile['loading'].set(false);
+      profile['account'].set(null);
+      assertBack();
+    },
+  );
+
   it.each([true, false])(
     'opens a Mastodon profile in Radio with its qualified account (anonymous=%s)',
     (anonymous) => {

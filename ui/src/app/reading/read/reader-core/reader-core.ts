@@ -271,6 +271,7 @@ export class ReaderCore {
   protected readonly restoringArticle = signal(false);
   private restoreVersion = 0;
   private destroyed = false;
+  private readingSuspended = false;
   private swipe: { x: number; y: number; at: number; id: number } | null = null;
 
   protected readonly pages = computed<string[]>(() => this.columnText());
@@ -609,6 +610,7 @@ export class ReaderCore {
   };
 
   private readonly remeasure = afterRenderEffect(() => {
+    if (this.readingSuspended) return;
     this.chain();
     this.pageHtml();
     this.prefs.readerFontSize();
@@ -632,6 +634,7 @@ export class ReaderCore {
   private scheduleSettledMeasure = (): void => {
     if (
       this.destroyed ||
+      this.readingSuspended ||
       typeof requestAnimationFrame === 'undefined' ||
       this.measureFrame !== null
     )
@@ -671,6 +674,34 @@ export class ReaderCore {
       this.savePosition();
     }
     this.scrollColumn();
+  }
+
+  suspendReading(): void {
+    this.readingSuspended = true;
+    document.removeEventListener('visibilitychange', this.onHide);
+    window.removeEventListener('resize', this.scheduleSettledMeasure);
+    window.visualViewport?.removeEventListener('resize', this.scheduleSettledMeasure);
+    this.host.nativeElement.removeEventListener('load', this.scheduleSettledMeasure, true);
+    document.fonts?.removeEventListener('loadingdone', this.scheduleSettledMeasure);
+    document.removeEventListener('keyup', this.onSelectionKey);
+    document.removeEventListener('mouseup', this.onSelectionPointer);
+    this.layoutObserver?.disconnect();
+    if (this.measureFrame !== null) cancelAnimationFrame(this.measureFrame);
+    this.measureFrame = null;
+    this.flushPosition();
+  }
+
+  resumeReading(): void {
+    this.readingSuspended = false;
+    document.addEventListener('visibilitychange', this.onHide);
+    window.addEventListener('resize', this.scheduleSettledMeasure);
+    window.visualViewport?.addEventListener('resize', this.scheduleSettledMeasure);
+    this.host.nativeElement.addEventListener('load', this.scheduleSettledMeasure, true);
+    document.fonts?.addEventListener('loadingdone', this.scheduleSettledMeasure);
+    document.addEventListener('keyup', this.onSelectionKey);
+    document.addEventListener('mouseup', this.onSelectionPointer);
+    this.observeLayout();
+    this.scheduleSettledMeasure();
   }
 
   constructor() {

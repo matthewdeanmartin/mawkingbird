@@ -1,5 +1,15 @@
+import { ReadingBack } from '../../shell/reading-back';
 import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  ElementRef,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -64,6 +74,7 @@ import { MbNotice } from '../../design-system/notice/notice';
 @Component({
   selector: 'app-thread',
   imports: [
+    ReadingBack,
     MisskeyCompose,
     CustomEmojiPipe,
     MbPostAction,
@@ -82,6 +93,7 @@ import { MbNotice } from '../../design-system/notice/notice';
   providers: [ThreadLoader],
 })
 export class Thread implements OnInit {
+  readonly showBack = input(true);
   private api = inject(Api);
   private auth = inject(Auth);
   private bsky = inject(BlueskyApi);
@@ -401,7 +413,13 @@ export class Thread implements OnInit {
   }
 
   /** The focused status was deleted: leave the thread. */
+  private readonly readingHost = inject<ElementRef<HTMLElement>>(ElementRef);
+
   onFocusedDeleted(): void {
+    if (!this.readingHost.nativeElement.isConnected) {
+      this.status.set(null);
+      return;
+    }
     this.router.navigateByUrl('/home');
   }
 

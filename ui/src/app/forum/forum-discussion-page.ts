@@ -1,9 +1,9 @@
+import { ReadingBack } from '../shell/reading-back';
 import { Component, computed, DestroyRef, effect, inject, untracked } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { map } from 'rxjs';
-import { MbButton } from '../design-system/button/button';
 import { MbDisclosure } from '../design-system/disclosure/disclosure';
 import { MbNotice } from '../design-system/notice/notice';
 import { threadOrder } from './discussion';
@@ -28,13 +28,9 @@ import { useForumRails } from './forum-rails';
  */
 @Component({
   selector: 'app-forum-discussion-page',
-  imports: [RouterLink, TranslocoPipe, MbButton, MbDisclosure, MbNotice, ForumMembers, Thread],
+  imports: [ReadingBack, TranslocoPipe, MbDisclosure, MbNotice, ForumMembers, Thread],
   template: `
-    <nav class="back">
-      <a mbButton variant="link" routerLink="/forum" [queryParams]="scan.listParams">{{
-        'forum.discussion.back' | transloco
-      }}</a>
-    </nav>
+    <app-reading-back />
     @if (discussion()?.partial) {
       <mb-notice>{{ 'forum.discussion.partial' | transloco }}</mb-notice>
     }
@@ -43,21 +39,17 @@ import { useForumRails } from './forum-rails';
         <app-forum-members />
       </mb-disclosure>
     }
-    <app-thread />
+    <app-thread [showBack]="false" />
   `,
   styles: `
     :host {
       display: block;
     }
     /* In line with the post cards' 16px inset. */
-    .back,
     mb-notice,
     mb-disclosure {
       display: block;
       margin-inline: 16px;
-    }
-    .back {
-      padding: 0.75rem 0 0.25rem;
     }
   `,
 })
@@ -75,6 +67,20 @@ export class ForumDiscussionPage {
     const id = this.id();
     return id ? this.scan.containing(id) : null;
   });
+
+  private restoreScan?: () => void;
+
+  suspendReading(): void {
+    this.restoreScan = this.scan.checkpoint();
+    this.rails.suspend();
+  }
+
+  resumeReading(): void {
+    this.restoreScan?.();
+    this.restoreScan = undefined;
+    this.rails.resume();
+    this.view.focus.set(this.id());
+  }
 
   constructor() {
     // The Members rail lists this discussion's people while it is open.

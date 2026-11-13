@@ -111,7 +111,7 @@ function tabRoutes(entry: FeedBuilderEntry): Routes {
     {
       path: `${entry.path}/${FEED_BUILDER_PREVIEW}`,
       title: tabTitle(entry, 'preview'),
-      data: { lang: entry.lang },
+      data: { lang: entry.lang, readingHistory: true },
       resolve: { page: () => loadFeedPage(entry) },
       loadComponent: previewPage,
     },
@@ -140,7 +140,7 @@ export function feedBuilderSignedInChildren(entry: FeedBuilderEntry): Routes {
     {
       path: FEED_BUILDER_PREVIEW,
       title: tabTitle(entry, 'preview'),
-      data: { inShell: true, lang: entry.lang },
+      data: { inShell: true, lang: entry.lang, readingHistory: true },
       resolve: { page: () => loadFeedPage(entry) },
       loadComponent: previewPage,
     },

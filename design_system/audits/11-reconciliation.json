@@ -30,7 +30,7 @@
     {
       "file": "ui/src/app/forum/forum-discussion-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "One Forum discussion: a link-weight MbButton back to the list (its query restored) and a Notice when the root could not be reached, around the unchanged thread page. Preserve the ThreadPreload hand-off (no refetch when the scan holds the whole tree) and the thread page as the only renderer."
+      "nextStep": "Forum discussion uses the shared Back header above notices and suppresses the nested thread header, returning one history step. Notice and Disclosure remain adopted. Preserve the ThreadPreload hand-off and suspend/restore Forum rails and scan state when retaining a discussion."
     },
     {
       "file": "ui/src/app/forum/forum-list-dialog.ts",
@@ -3191,6 +3191,11 @@
       "file": "ui/src/app/posts/share-dialog/share-compose-dialog.ts",
       "disposition": "adopted scope",
       "nextStep": "Cross-platform share composer uses Dialog around the existing Compose, prefilled and targeted by the share dialog. Preserve: never inline under the post (it is not a reply), and nothing posts until Post is pressed."
+    },
+    {
+      "file": "ui/src/app/shell/reading-back.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Shared link-variant MbButton with a decorative arrow and translated Back label. Used at the top of every profile and thread, including Forum discussions, loading and errors. Preserve browser-history semantics and keyboard focus restoration; do not put this action back among content tabs."
     }
   ]
 }

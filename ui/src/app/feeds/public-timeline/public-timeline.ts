@@ -43,6 +43,15 @@ export class PublicTimeline implements OnInit, OnDestroy {
     this.load();
   }
 
+  private holdReadingUpdates = signal(false);
+
+  suspendReading(): void {
+    this.holdReadingUpdates.set(true);
+    this.liveSub?.unsubscribe();
+    this.liveSub = null;
+    this.live.set(false);
+  }
+
   ngOnDestroy(): void {
     this.liveSub?.unsubscribe();
     this.loadSub?.unsubscribe();
@@ -64,7 +73,8 @@ export class PublicTimeline implements OnInit, OnDestroy {
    * Open or close the stream to match Blue → "Auto-refresh timeline", the same
    * preference Home follows now that the toolbar button is gone.
    */
-  private syncLive(): void {
+  private syncLive(reload = true): void {
+    if (this.holdReadingUpdates()) return;
     const wanted = this.prefs.autoRefreshTimeline();
     if (wanted === this.live()) {
       return;
@@ -77,7 +87,7 @@ export class PublicTimeline implements OnInit, OnDestroy {
     }
     this.live.set(true);
     // Going live starts from a fresh snapshot: refetch, then stream deltas on top.
-    this.load();
+    if (reload) this.load();
     this.restartLive();
   }
 
@@ -93,6 +103,12 @@ export class PublicTimeline implements OnInit, OnDestroy {
           this.statuses.update((list) => list.filter((s) => s.id !== id));
         }
       });
+  }
+
+  refresh(): void {
+    this.holdReadingUpdates.set(false);
+    this.load();
+    this.syncLive(false);
   }
 
   load(): void {

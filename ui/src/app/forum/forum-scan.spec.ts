@@ -90,6 +90,25 @@ describe('ForumScan', () => {
     });
   });
 
+  it('restores a retained scan after another feed has replaced the shared scan', async () => {
+    feed(60);
+    const scan = scanner();
+    scan.start({ kind: 'home' });
+    await settled(scan);
+    const found = scan.found();
+    const calls = scan.callsUsed();
+    const restore = scan.checkpoint();
+    scan.start({ kind: 'tag', name: 'other' });
+    await settled(scan);
+    restore();
+    expect(scan.source()).toEqual({ kind: 'home' });
+    expect(scan.found()).toEqual(found);
+    expect(scan.callsUsed()).toBe(calls);
+    const count = api.homeTimeline.mock.calls.length;
+    expect(count).toBeGreaterThan(0);
+    expect(scan.scanning()).toBe(false);
+  });
+
   it('spends the first scan on a page, then the best candidates, within 10 calls', async () => {
     feed(30);
     const scan = scanner();

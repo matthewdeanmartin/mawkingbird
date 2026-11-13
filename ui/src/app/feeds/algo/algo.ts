@@ -74,6 +74,7 @@ interface AlgoLink {
  */
 @Component({
   selector: 'app-algo',
+  providers: [AlgoFeed],
   imports: [StatusCard, FeedLanguagePicker, TranslocoPipe, MbPostAction],
   templateUrl: './algo.html',
   styleUrl: './algo.css',

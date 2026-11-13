@@ -1,13 +1,4 @@
-import {
-  afterNextRender,
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -223,6 +214,22 @@ export class ForumPage {
     }
   });
 
+  private restoreScan?: () => void;
+
+  suspendReading(): void {
+    this.restoreScan = this.scan.checkpoint();
+    this.rails.suspend();
+  }
+
+  resumeReading(): void {
+    this.restoreScan?.();
+    this.restoreScan = undefined;
+    this.rails.resume();
+    this.view.filter.set(this.filter());
+    this.view.choice.set(this.choice());
+    this.view.focus.set(null);
+  }
+
   constructor() {
     // The rails sit outside the router outlet; tell them what this page shows.
     effect(() => {
@@ -244,11 +251,6 @@ export class ForumPage {
         );
       });
     });
-    const returnTo = this.scan.listScroll;
-    afterNextRender(() => {
-      if (returnTo) requestAnimationFrame(() => window.scrollTo(0, returnTo));
-    });
-    inject(DestroyRef).onDestroy(() => (this.scan.listScroll = window.scrollY));
     // The scan outlives the page: switching tabs or coming back is free. Only
     // a different source starts over.
     effect(() => {

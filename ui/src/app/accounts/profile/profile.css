@@ -9,13 +9,6 @@
   white-space: nowrap;
 }
 
-.back-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin: 10px 16px 0;
-}
-
 /* The cross-server dead end: a real explanation plus the two ways out. */
 .profile-error {
   max-width: 460px;
@@ -509,17 +502,6 @@ h2 {
   color: var(--text);
 }
 
-/* Back is an action, not a section, so it sits apart from the tabs it shares a
-   row with: lighter weight, no active state to ever earn, and a rule between. */
-.ptab-back {
-  font-weight: 500;
-  padding-left: 0;
-  padding-right: 14px;
-  margin-right: 6px;
-  border-right: 1px solid var(--border);
-  border-bottom-color: transparent;
-}
-
 .ptab.active {
   color: var(--text);
   border-bottom-color: var(--accent);
@@ -556,18 +538,6 @@ h2 {
 
   .ptab-glyph {
     display: inline-block;
-  }
-
-  /* Back keeps its arrow and drops the word. It is the one control here whose
-     glyph is genuinely unambiguous, and reclaiming its label is what lets the
-     actual section tabs fit without the row scrolling at all. */
-  .ptab-back {
-    padding-right: 8px;
-    margin-right: 4px;
-  }
-
-  .ptab-back .ptab-word {
-    display: none;
   }
 
   .ptab-labelled .ptab-word {

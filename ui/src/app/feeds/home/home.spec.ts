@@ -186,6 +186,55 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/announcements').flush([]);
     return fixture;
   }
+  it('retains its pagination cursor when another Home visit loads newer posts', () => {
+    const first = TestBed.createComponent(Home);
+    first.detectChanges();
+    const oldPage = Array.from({ length: 20 }, (_, i) => makeStatus(String(100 - i)));
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), oldPage);
+    httpMock.expectOne('/api/v1/announcements').flush([]);
+    first.componentInstance.suspendReading();
+    const second = TestBed.createComponent(Home);
+    second.detectChanges();
+    flushHomePage(
+      httpMock.expectOne('/api/v1/timelines/home?limit=20'),
+      Array.from({ length: 20 }, (_, i) => makeStatus(String(200 - i))),
+    );
+    for (const request of httpMock.match('/api/v1/announcements')) request.flush([]);
+    second.componentInstance.suspendReading();
+    first.componentInstance.resumeReading();
+    first.detectChanges();
+    expect(TestBed.inject(HomeTimelineFeed).snapshot()?.posts).toEqual(oldPage);
+    expect(internals(first).statuses()).toEqual(oldPage);
+    first.componentInstance.loadMore();
+    const next = httpMock.expectOne((request) => request.url.includes('/timelines/home'));
+    expect(next.request.params.get('max_id')).toBe('81');
+    flushHomePage(next, []);
+    httpMock.expectOne('/api/v1/bookmarks?limit=1').flush([]);
+  });
+
+  it('holds a restored feed steady despite live arrivals until an explicit refresh', () => {
+    const fixture = setUp();
+    goLive(fixture, [makeStatus('held')]);
+    fixture.componentInstance.suspendReading();
+    expect(fakeStreaming.closed).toBe(true);
+    fakeStreaming.emit({ event: 'update', payload: makeStatus('new') });
+    fixture.componentInstance.resumeReading();
+    fixture.detectChanges();
+    expect(
+      internals(fixture)
+        .statuses()
+        .map((post) => post.id),
+    ).toEqual(['held']);
+    httpMock.expectNone((request) => request.url.includes('/timelines/home'));
+    internals(fixture).refreshHome();
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [makeStatus('new')]);
+    expect(
+      internals(fixture)
+        .statuses()
+        .map((post) => post.id),
+    ).toEqual(['new']);
+  });
+
   describe('Video view fill', () => {
     const page = (prefix: string, videos = 0): Status[] =>
       Array.from({ length: 20 }, (_, i) => ({
@@ -420,9 +469,9 @@ describe('Home', () => {
         accessJwt: 'access',
         refreshJwt: 'refresh',
       });
-      TestBed.inject(BlueskyProvider).errors.set([
-        'Bluesky session refresh failed (HTTP 401; ExpiredToken).',
-      ]);
+      fixture.debugElement.injector
+        .get(BlueskyProvider)
+        .errors.set(['Bluesky session refresh failed (HTTP 401; ExpiredToken).']);
       fixture.detectChanges();
       const warning = fixture.nativeElement.querySelector(
         '.feed-warning[role="alert"]',
@@ -457,7 +506,7 @@ describe('Home', () => {
       service: 'https://pds.example',
       authMethod: 'oauth',
     });
-    const provider = TestBed.inject(BlueskyProvider);
+    const provider = fixture.debugElement.injector.get(BlueskyProvider);
     provider.errors.set(['The saved Bluesky session is missing.']);
     provider.authenticationFailed.set(true);
     const signIn = vi
@@ -574,9 +623,9 @@ describe('Home', () => {
     expect(select).not.toBeNull();
     expect(ids()).toEqual(['local', 'remote']);
 
-    TestBed.inject(HomeSession).origin.set('local');
+    fixture.debugElement.injector.get(HomeSession).origin.set('local');
     expect(ids()).toEqual(['local']);
-    TestBed.inject(HomeSession).origin.set('remote');
+    fixture.debugElement.injector.get(HomeSession).origin.set('remote');
     expect(ids()).toEqual(['remote']);
   });
 
@@ -679,7 +728,7 @@ describe('Home', () => {
     // The Twitter connector resolves saved accounts asynchronously and can start
     // reporting partway through a session — exactly the mid-read arrival that
     // used to displace the feed.
-    TestBed.inject(TwitterProvider).unloaded.set(3);
+    fixture.debugElement.injector.get(TwitterProvider).unloaded.set(3);
     fixture.detectChanges();
 
     // The warning must render (it is not being suppressed, just relocated)…
@@ -713,6 +762,7 @@ describe('Home', () => {
     );
 
     const fixture = TestBed.createComponent(Home);
+    const reset = vi.spyOn(fixture.debugElement.injector.get(AnonymousMastodonProvider), 'reset');
     fixture.detectChanges();
 
     expect(
@@ -722,7 +772,6 @@ describe('Home', () => {
     ).toEqual(['cached']);
     httpMock.expectNone((request) => request.url.includes('/statuses'));
 
-    const reset = vi.spyOn(TestBed.inject(AnonymousMastodonProvider), 'reset');
     fixture.componentInstance.load(true);
     expect(internals(fixture).statuses()).toEqual([]);
     expect(reset).toHaveBeenCalledOnce();
@@ -984,13 +1033,16 @@ describe('Home', () => {
           .mockReturnValueOnce(of([tail]))
           .mockReturnValue(of([])),
       };
-      vi.spyOn(TestBed.inject(ProviderRegistry), 'linked').mockReturnValue([rss]);
+
       if (local) {
         vi.spyOn(TestBed.inject(LocalPostStore), 'posts').mockReturnValue([
           { ...makeStatus('local:practice'), created_at: localDate ?? '2026-02-01T00:00:00Z' },
         ]);
       }
       const fixture = TestBed.createComponent(Home);
+      vi.spyOn(fixture.debugElement.injector.get(ProviderRegistry), 'linked').mockReturnValue([
+        rss,
+      ]);
       fixture.detectChanges();
       httpMock.expectOne('/api/v1/announcements').flush([]);
       flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(20));
@@ -1111,8 +1163,11 @@ describe('Home', () => {
         )
         .mockReturnValue(of([])),
     }));
-    vi.spyOn(TestBed.inject(ProviderRegistry), 'linked').mockReturnValue(providers);
+
     const fixture = TestBed.createComponent(Home);
+    vi.spyOn(fixture.debugElement.injector.get(ProviderRegistry), 'linked').mockReturnValue(
+      providers,
+    );
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/announcements').flush([]);
     // No Link header: the short-page fallback must also continue in Home.
@@ -1785,8 +1840,8 @@ describe('Home, end-of-feed honesty', () => {
     // The worst case in this class: posts were fetched, Calm hid all of them,
     // and Home told the reader to go find friends to follow — sending them to
     // fix follows that were working fine.
-    TestBed.inject(HomeSession).calm.set(true);
     const fixture = TestBed.createComponent(Home);
+    fixture.debugElement.injector.get(HomeSession).calm.set(true);
     fixture.detectChanges();
     flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
       ratioed('1'),
@@ -1805,8 +1860,8 @@ describe('Home, end-of-feed honesty', () => {
   it('names Calm at the end of a feed it only partly hid', () => {
     // The partial case, which reaches the end-of-feed note rather than the
     // all-hidden state: one post survives, two are held back.
-    TestBed.inject(HomeSession).calm.set(true);
     const fixture = TestBed.createComponent(Home);
+    fixture.debugElement.injector.get(HomeSession).calm.set(true);
     fixture.detectChanges();
     flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
       makeStatus('1'),

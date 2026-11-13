@@ -122,8 +122,9 @@ export class JustMyServer {
   readonly total = signal(0);
   readonly result = signal<ServerListUpdateResult | null>(null);
   readonly error = signal('');
-  readonly hasMore = signal(false);
-  readonly droppedByWindow = signal(0);
+  private defaultFeed = this.createFeed();
+  readonly hasMore = this.defaultFeed.hasMore;
+  readonly droppedByWindow = this.defaultFeed.droppedByWindow;
 
   readonly homeHost = computed(() => {
     const acct = this.auth.account()?.acct ?? '';
@@ -150,10 +151,6 @@ export class JustMyServer {
   private identity = '\u0000';
   private context = '\u0000';
   private checkGeneration = 0;
-  private maxId: string | undefined;
-  private exhausted = true;
-  private cutoff: number | null = null;
-  private anonymousFeed: AnonymousFollowFeedSession | null = null;
 
   constructor() {
     effect(() => {
@@ -316,56 +313,70 @@ export class JustMyServer {
     }
   }
 
-  /** Reset the special feed independently of the normal multi-provider Home feed. */
+  /** Each retained Home owns its cursors; account/list settings remain shared. */
+  createFeed() {
+    let maxId: string | undefined;
+    let exhausted = true;
+    let cutoff: number | null = null;
+    let anonymousFeed: AnonymousFollowFeedSession | null = null;
+    const hasMore = signal(false);
+    const droppedByWindow = signal(0);
+    const withinWindow = (status: Status): boolean => {
+      if (cutoff === null) return true;
+      const timestamp = Date.parse(status.created_at);
+      const allowed = Number.isNaN(timestamp) || timestamp === 0 || timestamp >= cutoff;
+      if (!allowed) droppedByWindow.update((count) => count + 1);
+      return allowed;
+    };
+    return {
+      hasMore,
+      droppedByWindow,
+      resetFeed: () => {
+        const windowMs = homeWindowMs(this.prefs.homeWindow());
+        cutoff = windowMs === null ? null : Date.now() - windowMs;
+        droppedByWindow.set(0);
+        maxId = undefined;
+        exhausted = !this.effectiveEnabled();
+        hasMore.set(!exhausted);
+        anonymousFeed = null;
+        if (this.auth.isAnonymous && !exhausted) {
+          const keys = new Set(this.findAnonymousList()?.memberKeys ?? []);
+          const follows = this.anonymousFollows.follows().filter((follow) => keys.has(follow.key));
+          anonymousFeed = this.anonymousProvider.createFollowFeed(follows, withinWindow);
+          hasMore.set(follows.length > 0);
+        }
+      },
+      nextPage: (): Observable<Status[]> => {
+        if (exhausted || !this.listId()) return of([]);
+        if (this.auth.isAnonymous) {
+          if (!anonymousFeed) return of([]);
+          return anonymousFeed.fetchPage().pipe(
+            map((page) => {
+              exhausted = !page.hasMore;
+              hasMore.set(page.hasMore);
+              return serverOnlyStatuses(page.statuses, this.homeHost());
+            }),
+          );
+        }
+        return this.api.listTimeline(this.listId()!, maxId, PAGE_SIZE).pipe(
+          map((statuses) => {
+            maxId = statuses.at(-1)?.id ?? maxId;
+            if (statuses.length < PAGE_SIZE) exhausted = true;
+            const fresh = statuses.filter(withinWindow);
+            if (fresh.length < statuses.length) exhausted = true;
+            hasMore.set(!exhausted);
+            return serverOnlyStatuses(fresh, this.homeHost());
+          }),
+        );
+      },
+    };
+  }
+
   resetFeed(): void {
-    const windowMs = homeWindowMs(this.prefs.homeWindow());
-    this.cutoff = windowMs === null ? null : Date.now() - windowMs;
-    this.droppedByWindow.set(0);
-    this.maxId = undefined;
-    this.exhausted = !this.effectiveEnabled();
-    this.hasMore.set(!this.exhausted);
-    this.anonymousFeed = null;
-    if (this.auth.isAnonymous && !this.exhausted) {
-      const keys = new Set(this.findAnonymousList()?.memberKeys ?? []);
-      const follows = this.anonymousFollows.follows().filter((follow) => keys.has(follow.key));
-      this.anonymousFeed = this.anonymousProvider.createFollowFeed(follows, (status) =>
-        this.withinWindow(status),
-      );
-      this.hasMore.set(follows.length > 0);
-    }
+    this.defaultFeed.resetFeed();
   }
-
   nextPage(): Observable<Status[]> {
-    if (this.exhausted || !this.listId()) return of([]);
-    if (this.auth.isAnonymous) {
-      const feed = this.anonymousFeed;
-      if (!feed) return of([]);
-      return feed.fetchPage().pipe(
-        map((page) => {
-          this.exhausted = !page.hasMore;
-          this.hasMore.set(page.hasMore);
-          return serverOnlyStatuses(page.statuses, this.homeHost());
-        }),
-      );
-    }
-    return this.api.listTimeline(this.listId()!, this.maxId, PAGE_SIZE).pipe(
-      map((statuses) => {
-        this.maxId = statuses.at(-1)?.id ?? this.maxId;
-        if (statuses.length < PAGE_SIZE) this.exhausted = true;
-        const fresh = statuses.filter((status) => this.withinWindow(status));
-        if (fresh.length < statuses.length) this.exhausted = true;
-        this.hasMore.set(!this.exhausted);
-        return serverOnlyStatuses(fresh, this.homeHost());
-      }),
-    );
-  }
-
-  private withinWindow(status: Status): boolean {
-    if (this.cutoff === null) return true;
-    const timestamp = Date.parse(status.created_at);
-    const allowed = Number.isNaN(timestamp) || timestamp === 0 || timestamp >= this.cutoff;
-    if (!allowed) this.droppedByWindow.update((count) => count + 1);
-    return allowed;
+    return this.defaultFeed.nextPage();
   }
 
   private loadEnabled(): void {

@@ -184,6 +184,37 @@ describe('JustMyServer signed-in list synchronization', () => {
     auth.setAccount({ ...account('me', 'example.com'), acct: 'me' });
   });
 
+  it('keeps separate paging cursors for two retained Home visits', async () => {
+    const mode = TestBed.inject(JustMyServer);
+    TestBed.inject(ClientPrefs).setHomeWindow('all');
+    mode.ready.set(true);
+    mode.listId.set('list');
+    mode.enabled.set(true);
+    const first = mode.createFeed();
+    const second = mode.createFeed();
+    first.resetFeed();
+    const firstPage = firstValueFrom(first.nextPage());
+    http
+      .expectOne('/api/v1/timelines/list/list?limit=20')
+      .flush(
+        Array.from({ length: 20 }, (_, i) => status(String(100 - i), account('a', 'example.com'))),
+      );
+    await firstPage;
+    second.resetFeed();
+    const secondPage = firstValueFrom(second.nextPage());
+    http
+      .expectOne('/api/v1/timelines/list/list?limit=20')
+      .flush(
+        Array.from({ length: 20 }, (_, i) => status(String(200 - i), account('a', 'example.com'))),
+      );
+    await secondPage;
+    const older = firstValueFrom(first.nextPage());
+    const request = http.expectOne((request) => request.url.includes('/timelines/list/list'));
+    expect(request.request.params.get('max_id')).toBe('81');
+    request.flush([]);
+    await older;
+  });
+
   it('fully synchronizes an existing Mastodon list in bounded membership batches', async () => {
     const mode = TestBed.inject(JustMyServer);
     mode.checkList();

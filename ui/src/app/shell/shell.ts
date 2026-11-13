@@ -1,3 +1,7 @@
+import { Server } from '../platform/http/server';
+import { ReadingHistory } from './reading-history';
+import { ReadingOutlet } from './reading-outlet';
+import { accountScopeSuffix } from '../platform/session/account-scope';
 import { BlueskyModeration } from '../connections/bluesky/bluesky-moderation';
 import { accountProfilePath } from '../accounts/account-route';
 import { MbContentState } from '../design-system/content-state/content-state';
@@ -182,6 +186,7 @@ function isWideUrl(url: string): boolean {
 @Component({
   selector: 'app-shell',
   imports: [
+    ReadingOutlet,
     AccountTabBanner,
     MbContentState,
     MbButton,
@@ -436,6 +441,16 @@ export class Shell implements OnInit, AccountSwitcher {
    */
   private readonly mainColumn = viewChild<ElementRef<HTMLElement>>('mainColumn');
 
+  protected readonly readingHistory = inject(ReadingHistory);
+  private readonly readingServer = inject(Server);
+  private readonly readingIdentity = effect(() => {
+    this.auth.kind();
+    this.auth.token();
+    this.auth.account();
+    this.readingServer.baseUrl();
+    this.readingHistory.setScope(`${accountScopeSuffix()}:${this.readingServer.baseUrl()}`);
+  });
+
   constructor() {
     this.indicators.start();
     // Bluesky muted words and moderation services, from the account's Bluesky
@@ -458,7 +473,9 @@ export class Shell implements OnInit, AccountSwitcher {
         this.closePlanCard();
         // A brand-new account's first Home visit opens the onboarding card.
         this.onboarding.maybeAutoOpen(this.router.url, this.firstRunActive());
-        setTimeout(() => this.focusMain());
+        setTimeout(() => {
+          if (!this.readingHistory.restoring) this.focusMain();
+        });
       });
   }
 

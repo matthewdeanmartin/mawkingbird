@@ -1,3 +1,4 @@
+<app-reading-back />
 @if (showSlideshow()) {
   <app-profile-slideshow
     [statuses]="statuses()"
@@ -52,14 +53,6 @@
       <p class="muted center">{{ 'pages.profile.loading.loading' | transloco }}</p>
     }
   } @else if (account(); as a) {
-    <!-- Back rides in the tab row (below) where there is one. RSS and Twitter
-       profiles have no tabs, so they keep a standalone button rather than no
-       way back. -->
-    @if (isRss() || isTwitter() || isMisskey()) {
-      <button mbButton variant="outline" class="back-button" type="button" (click)="goBack()">
-        {{ 'pages.profile.actions.back' | transloco }}
-      </button>
-    }
     @if (showReply()) {
       <mb-dialog
         [title]="'pages.profile.actions.reply' | transloco"
@@ -1089,19 +1082,6 @@
         role="group"
         [attr.aria-label]="'pages.profile.navigation.profileSections' | transloco"
       >
-        <!-- aria-label rather than relying on the visible text: the word is
-           display:none on a phone, and a button whose only remaining content is
-           an arrow glyph would otherwise announce as "left arrow". -->
-        <button
-          class="ptab ptab-back"
-          type="button"
-          (click)="goBack()"
-          [title]="'pages.profile.actions.backWord' | transloco"
-          [attr.aria-label]="'pages.profile.actions.backWord' | transloco"
-        >
-          <span aria-hidden="true">←</span>
-          <span class="ptab-word">{{ 'pages.profile.actions.backWord' | transloco }}</span>
-        </button>
         <button
           type="button"
           class="ptab ptab-labelled"
@@ -1701,9 +1681,6 @@
             >
               {{ 'pages.profile.errors.searchFor' | transloco: { handle: handle } }}
             </a>
-            <button class="btn btn-outline" type="button" (click)="goBack()">
-              {{ 'pages.profile.actions.back' | transloco }}
-            </button>
           </div>
         }
       } @else {
@@ -1715,9 +1692,6 @@
           {{ 'pages.profile.errors.idOnlyLink' | transloco }}
         </p>
         <div class="profile-error-actions">
-          <button class="btn" type="button" (click)="goBack()">
-            {{ 'pages.profile.actions.back' | transloco }}
-          </button>
           <a class="btn btn-outline" routerLink="/home">{{
             'pages.profile.actions.homeFeed' | transloco
           }}</a>

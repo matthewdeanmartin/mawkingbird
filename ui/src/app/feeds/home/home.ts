@@ -1,3 +1,4 @@
+import { HOME_PAGING_PROVIDERS } from './home-paging-providers';
 // i18n pages.home.sourceFailed: Could not load the selected Home source. Retry or choose another feed in Settings → Home and Algo.
 import { HomeSource } from '../home-source';
 import { HomeSession } from '../home-session';
@@ -272,7 +273,7 @@ const NO_NEW_POSTS_MS = 2500;
 
 @Component({
   selector: 'app-home',
-  providers: [HomeSource],
+  providers: [HomeSource, ...HOME_PAGING_PROVIDERS],
   imports: [
     MbNotice,
     MisskeyCompose,
@@ -324,6 +325,7 @@ export class Home implements OnInit, OnDestroy {
   );
   private privateFollows = inject(PrivateFollows);
   protected justMyServer = inject(JustMyServer);
+  private serverFeed = this.justMyServer.createFeed();
 
   /**
    * Whether the window actually hid something, so the offer to widen it only
@@ -334,7 +336,7 @@ export class Home implements OnInit, OnDestroy {
   protected readonly olderAvailable = computed(
     () =>
       (this.justMyServer.effectiveEnabled()
-        ? this.justMyServer.droppedByWindow()
+        ? this.serverFeed.droppedByWindow()
         : this.aggregator.droppedByWindow()) > 0 && this.prefs.homeWindow() !== 'all',
   );
 
@@ -808,6 +810,7 @@ export class Home implements OnInit, OnDestroy {
    * view before the first page has arrived) fills the same way.
    */
   private readonly fillVideos = effect(() => {
+    if (this.holdReadingUpdates()) return;
     if (this.view() !== 'video' || this.loading() || this.autoLoading()) return;
     if (this.videos().length >= VIDEO_TARGET || this.videoFillPages >= VIDEO_FILL_PAGES) return;
     if (!this.feedHasMore() || this.capActive()) return;
@@ -1130,6 +1133,7 @@ export class Home implements OnInit, OnDestroy {
 
   /** Capture the settled state, including the actual stop and filter counts. */
   private readonly reportFeedState = effect(() => {
+    if (!this.readingActive()) return;
     if (this.loading() || this.autoLoading()) return;
     const serverOnly = this.justMyServer.effectiveEnabled();
     const sources = serverOnly ? [] : this.aggregator.sourceStates();
@@ -1140,7 +1144,7 @@ export class Home implements OnInit, OnDestroy {
       hiddenByLanguage: this.hiddenByLanguage(),
       hiddenByChips: this.hiddenByFilters(),
       droppedByWindow: serverOnly
-        ? this.justMyServer.droppedByWindow()
+        ? this.serverFeed.droppedByWindow()
         : this.aggregator.droppedByWindow(),
       windowLabel: this.prefs.homeWindow() === 'all' ? null : this.windowLabel(),
       cooldownActive: this.capActive(),
@@ -1218,6 +1222,7 @@ export class Home implements OnInit, OnDestroy {
   private readonly liveEffect = effect(() => this.syncLive());
   /** Changing the rail switch swaps Home's source immediately in either direction. */
   private readonly serverModeEffect = effect(() => {
+    if (this.holdReadingUpdates()) return;
     const source = this.homeSourceState();
     if (!this.initialized) {
       this.lastHomeSource = source;
@@ -1248,6 +1253,7 @@ export class Home implements OnInit, OnDestroy {
    * whenever any of them change.
    */
   private readonly anonymousSourceEffect = effect(() => {
+    if (this.holdReadingUpdates()) return;
     if (!this.auth.isAnonymous) {
       return;
     }
@@ -1285,6 +1291,7 @@ export class Home implements OnInit, OnDestroy {
     } else this.applyHomeDefault(this.homeDefaults.value());
     this.homeNavigationSub = this.router.events.subscribe((event) => {
       if (
+        !this.holdReadingUpdates() &&
         event instanceof NavigationSkipped &&
         event.code === NavigationSkippedCode.IgnoredSameUrlNavigation &&
         event.url.split(/[?#]/)[0] === '/home'
@@ -1304,6 +1311,26 @@ export class Home implements OnInit, OnDestroy {
     this.initialized = true;
     this.load();
     // Re-tick every 30s so the cap message / cooldown updates on its own.
+    this.clock = setInterval(() => this.now.set(Date.now()), 30000);
+  }
+
+  private readingActive = signal(true);
+  private holdReadingUpdates = signal(false);
+
+  suspendReading(): void {
+    this.readingActive.set(false);
+    this.holdReadingUpdates.set(true);
+    this.liveSub?.unsubscribe();
+    this.liveSub = null;
+    this.liveMisskeyTimeline = null;
+    this.live.set(false);
+    if (this.clock) clearInterval(this.clock);
+    this.clock = null;
+  }
+
+  resumeReading(): void {
+    this.readingActive.set(true);
+    this.publishMastodon(this.statuses());
     this.clock = setInterval(() => this.now.set(Date.now()), 30000);
   }
 
@@ -1328,7 +1355,8 @@ export class Home implements OnInit, OnDestroy {
    * Blue, is off by default, and has to be opted into. Anonymous sessions hold no
    * token and have no stream to open, so they stay off whatever the pref says.
    */
-  private syncLive(): void {
+  private syncLive(reload = true): void {
+    if (this.holdReadingUpdates()) return;
     if (this.homeSource.settings.value().mode !== 'friends') {
       this.liveSub?.unsubscribe();
       this.live.set(false);
@@ -1357,8 +1385,8 @@ export class Home implements OnInit, OnDestroy {
     }
     this.diagnostics.info('user:live-on', { stored: this.statuses().length });
     this.live.set(true);
-    // Going live starts from a fresh snapshot: refetch, then stream deltas on top.
-    this.load();
+    // A manual refresh already loaded its snapshot before reconnecting.
+    if (reload) this.load();
     this.liveSub = this.streaming.open({ stream: 'user' }).subscribe(({ event, payload }) => {
       if (event === 'update') {
         this.mergeStatuses([payload as Status], 'newer');
@@ -1417,7 +1445,12 @@ export class Home implements OnInit, OnDestroy {
   }
 
   protected refreshHome(): void {
-    if (!this.loading() && !this.refreshBaseline) this.load(true);
+    if (this.loading() || this.refreshBaseline) return;
+    this.lastHomeSource = this.homeSourceState();
+    this.lastAnonymousSourceKey = this.anonymousSourceKey();
+    this.holdReadingUpdates.set(false);
+    this.load(true);
+    this.syncLive(false);
   }
 
   private finishRefresh(): void {
@@ -1464,7 +1497,7 @@ export class Home implements OnInit, OnDestroy {
       this.homeSource.settings.value().mode === 'friends' &&
       this.justMyServer.effectiveEnabled()
     ) {
-      this.justMyServer.resetFeed();
+      this.serverFeed.resetFeed();
     } else {
       this.aggregator.reset();
     }
@@ -1552,7 +1585,7 @@ export class Home implements OnInit, OnDestroy {
 
   /** Anonymous server mode is an explicit local list, so it pages without tag/provider mixing. */
   private loadAnonymousServerList(): void {
-    this.pageSub = this.justMyServer.nextPage().subscribe({
+    this.pageSub = this.serverFeed.nextPage().subscribe({
       next: (statuses) => {
         this.statuses.set(statuses);
         this.finishRefresh();
@@ -1869,7 +1902,7 @@ export class Home implements OnInit, OnDestroy {
     if (this.homeSource.settings.value().mode === 'interests')
       return this.homeSource.hasMore() || this.aggregator.hasMore();
     return this.justMyServer.effectiveEnabled()
-      ? this.justMyServer.hasMore()
+      ? this.serverFeed.hasMore()
       : this.aggregator.hasMore();
   }
 
@@ -1882,7 +1915,7 @@ export class Home implements OnInit, OnDestroy {
     if (this.homeSource.settings.value().mode !== 'friends')
       return this.homeSource.page(() => this.aggregator.nextPage());
     return this.justMyServer.effectiveEnabled()
-      ? this.justMyServer.nextPage()
+      ? this.serverFeed.nextPage()
       : this.aggregator.nextPage();
   }
 
@@ -2005,6 +2038,7 @@ export class Home implements OnInit, OnDestroy {
 
   /** Timeline-derived widgets (who-to-follow) only understand Mastodon posts. */
   private publishMastodon(statuses: Status[]): void {
+    if (!this.readingActive()) return;
     if (this.auth.isAnonymous) {
       this.anonymousCorpus.ingest(statuses);
     }

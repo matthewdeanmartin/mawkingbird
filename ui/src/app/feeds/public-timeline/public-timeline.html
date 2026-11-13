@@ -7,7 +7,7 @@
   </button>
 </div>
 
-<app-command-bar [showRefresh]="!live()" (refresh)="load()" />
+<app-command-bar [showRefresh]="!live()" (refresh)="refresh()" />
 
 @if (loading()) {
   <mb-content-state

@@ -1,3 +1,6 @@
+@if (showBack()) {
+  <app-reading-back />
+}
 @if (loading()) {
   <p class="muted center">{{ 'pages.thread.loading' | transloco }}</p>
 } @else if (status(); as s) {

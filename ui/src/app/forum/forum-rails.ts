@@ -27,13 +27,20 @@ function matches(query: string, destroyRef: DestroyRef): Signal<boolean> {
  * so the page can offer their contents inline instead. Call from a
  * constructor.
  */
-export function useForumRails(): { leftHidden: Signal<boolean>; rightHidden: Signal<boolean> } {
+export function useForumRails(): {
+  leftHidden: Signal<boolean>;
+  rightHidden: Signal<boolean>;
+  suspend(): void;
+  resume(): void;
+} {
   const outlet = inject(RailOutlet);
   const destroyRef = inject(DestroyRef);
   const owner = {};
   outlet.show(owner, { left: FORUM_LEFT, right: FORUM_RIGHT });
   destroyRef.onDestroy(() => outlet.release(owner));
   return {
+    suspend: () => outlet.release(owner),
+    resume: () => outlet.show(owner, { left: FORUM_LEFT, right: FORUM_RIGHT }),
     leftHidden: matches(LEFT_RAIL_GONE, destroyRef),
     rightHidden: matches(RIGHT_RAIL_GONE, destroyRef),
   };

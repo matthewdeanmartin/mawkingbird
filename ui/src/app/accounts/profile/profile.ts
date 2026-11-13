@@ -1,3 +1,4 @@
+import { ReadingBack } from '../../shell/reading-back';
 import { Lightbox } from '../../posts/lightbox/lightbox';
 import { BlueskyProfileDiscovery } from '../../discovery/bluesky-starter-packs/bluesky-profile-discovery';
 import { ProfileSlideshow, SlideshowOptions, slideshowOptionsFrom } from './profile-slideshow';
@@ -18,7 +19,7 @@ import { BulkFollowConfirmation } from '../bulk-follow-confirmation';
 import { Component, computed, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Location, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { PrivateFollows } from '../private-follows';
 import { Pseudonymity } from '../pseudonymity';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -300,6 +301,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    ReadingBack,
     CopyLinkDialog,
     Lightbox,
     BlueskyProfileDiscovery,
@@ -479,7 +481,6 @@ export class Profile implements OnInit, OnDestroy {
   private ai = inject(AiAvailability);
   private openRouter = inject(OpenRouterSession);
   private modelChoice = inject(OpenRouterModelChoice);
-  private location = inject(Location);
   private router = inject(Router);
   private server = inject(Server);
   private searchServer = inject(SearchServer);
@@ -1211,11 +1212,6 @@ export class Profile implements OnInit, OnDestroy {
         replaceUrl: true,
       });
     }
-  }
-
-  /** Return to the previous page (e.g. back to search results). */
-  goBack(): void {
-    this.location.back();
   }
 
   ngOnInit(): void {

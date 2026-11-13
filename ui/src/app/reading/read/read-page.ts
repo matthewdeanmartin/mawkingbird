@@ -175,6 +175,19 @@ export class ReadPage implements OnInit, OnDestroy {
     });
   }
 
+  suspendReading(): void {
+    this.core()?.suspendReading();
+    document.removeEventListener('keydown', this.onKeydown);
+    this.releaseZen?.();
+    this.releaseZen = null;
+  }
+
+  resumeReading(): void {
+    this.core()?.resumeReading();
+    this.releaseZen = this.readingZen.hold('full');
+    document.addEventListener('keydown', this.onKeydown);
+  }
+
   ngOnDestroy(): void {
     document.removeEventListener('keydown', this.onKeydown);
     this.releaseZen?.();

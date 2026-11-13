@@ -300,6 +300,24 @@ describe('StatusCard', () => {
     return fixture;
   }
 
+  it('reconciles successful actions and deletion into another retained copy without a request', () => {
+    const first = setUp();
+    const second = setUp();
+    const changed = vi.fn();
+    const deleted = vi.fn();
+    first.componentInstance.changed.subscribe(changed);
+    first.componentInstance.deleted.subscribe(deleted);
+    const updated = { ...second.componentInstance.status(), favourited: true, favourites_count: 1 };
+    second.componentInstance.changed.emit(updated);
+    expect(changed).toHaveBeenCalledOnce();
+    expect(changed.mock.calls[0][0].favourited).toBe(true);
+    second.componentInstance.deleted.emit(updated);
+    expect(deleted).toHaveBeenCalledOnce();
+    first.destroy();
+    second.componentInstance.changed.emit(updated);
+    expect(changed).toHaveBeenCalledOnce();
+  });
+
   describe('long search results', () => {
     const long = `<p>${'opening words '.repeat(40)}</p><p>${'middle '.repeat(40)}needle ${'tail '.repeat(40)}</p>`;
 

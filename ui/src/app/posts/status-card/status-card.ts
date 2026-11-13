@@ -1,3 +1,4 @@
+import { ReadingPostChanges, reconcileReadingPost } from '../reading-post-changes';
 import { blueskyRouteFor } from '../../accounts/bluesky-links';
 import { hasDictionary } from '../learn/dictionary-registry';
 import type { WordLookupPanel } from '../learn/word-lookup-panel';
@@ -3085,6 +3086,26 @@ export class StatusCard {
   private observer: IntersectionObserver | null = null;
 
   constructor() {
+    const changes = inject(ReadingPostChanges);
+    const ownChange = this.changed.subscribe((status) =>
+      changes.publish({ owner: this, status, deleted: false }),
+    );
+    const ownDelete = this.deleted.subscribe((status) =>
+      changes.publish({ owner: this, status, deleted: true }),
+    );
+    const shared = changes.changes.subscribe((change) => {
+      if (change.owner === this) return;
+      const updated = reconcileReadingPost(this.status(), change.status);
+      if (!updated) return;
+      if (change.deleted) this.deleted.emit(this.status());
+      else this.changed.emit(updated);
+    });
+    inject(DestroyRef).onDestroy(() => {
+      ownChange.unsubscribe();
+      ownDelete.unsubscribe();
+      shared.unsubscribe();
+    });
+
     // History: remember this post once it is mostly on screen (read lazily, so
     // inputs set after construction still count).
     const stopHistory = this.postHistory.watch(this.host.nativeElement, () =>
