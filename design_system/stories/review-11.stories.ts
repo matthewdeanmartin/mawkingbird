@@ -1,6 +1,9 @@
+import { LinkedText } from "../../ui/src/app/posts/linked-text";
 import { ReaderToolbar } from "../../ui/src/app/reading/reader-toolbar/reader-toolbar";
 import {
   Component,
+  input,
+  effect,
   Injectable,
   inject,
   signal,
@@ -34,15 +37,18 @@ import {
   MbToolbarButton,
 } from "../../ui/src/app/design-system/toolbar/toolbar";
 
+const longUrl = "https://example.com/" + "a".repeat(4096);
+
 const avatar =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='48' height='48' fill='%2346535e'/%3E%3C/svg%3E";
-function post(mode: string): Status {
+function post(mode: string, includeLinks = false): Status {
   return {
     id: "review-post",
     created_at: "2026-09-28T12:00:00Z",
     edited_at: "2026-09-28T13:00:00Z",
     content:
-      "<p>The real post toolbar, with all actions this provider supports. Compact counts and phone-sized labels leave more room for posts without removing tools.</p>",
+      "<p>The real post toolbar, with all actions this provider supports. Compact counts and phone-sized labels leave more room for posts without removing tools.</p>" +
+      (includeLinks ? `<p><a href="${longUrl}">${longUrl}</a></p>` : ""),
     spoiler_text: "",
     visibility: "public",
     url: "https://social.example/@reader/review-post",
@@ -149,9 +155,14 @@ function flags() {
 }
 @Component({
   selector: "ds-post-adoption-review",
-  imports: [StatusCard, ReaderToolbar, MbToolbar, MbToolbarButton],
+  imports: [LinkedText, StatusCard, ReaderToolbar, MbToolbar, MbToolbarButton],
   template: `<article class="ds-sheet">
     <h1>Real post tools, compact counts.</h1>
+    @if (longLinks()) {
+      <p class="long-text" style="white-space: nowrap">
+        <app-linked-text [text]="longUrl" />
+      </p>
+    }
     <p class="ds-intro">
       Sprint 11 · Existing provider capabilities and power-user actions, shared
       compact geometry.
@@ -221,6 +232,8 @@ function flags() {
   </article>`,
 })
 class PostAdoptionReview {
+  readonly longUrl = longUrl;
+  readonly longLinks = input(false);
   readonly prefs = inject(ClientPrefs);
   readonly actions = inject(ReviewActions);
   private readonly auth = inject(Auth);
@@ -239,6 +252,7 @@ class PostAdoptionReview {
   readonly smallCounts = signal(false);
   constructor() {
     this.select("Signed in");
+    effect(() => this.updateCounts());
   }
   select(mode: string) {
     this.actions.finish(true);
@@ -254,7 +268,7 @@ class PostAdoptionReview {
     this.updateCounts();
   }
   private updateCounts() {
-    const status = post(this.selected());
+    const status = post(this.selected(), this.longLinks());
     this.status.set(
       this.smallCounts()
         ? { ...status, replies_count: 2, reblogs_count: 3, favourites_count: 5 }
@@ -292,3 +306,7 @@ export default {
   ],
 } satisfies Meta<PostAdoptionReview>;
 export const ProviderTools: StoryObj<PostAdoptionReview> = {};
+
+export const LongLinks: StoryObj<PostAdoptionReview> = {
+  args: { longLinks: true },
+};

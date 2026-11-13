@@ -31,6 +31,7 @@ const account: Account = {
   locked: false,
   fields: [],
 };
+const longUrl = "https://example.com/" + "a".repeat(4096);
 const status: Status = {
   edited_at: null,
   url: null,
@@ -47,7 +48,8 @@ const status: Status = {
   id: "post",
   account,
   content:
-    "<p>A longer notification with enough text to wrap on a phone.</p><p>The action belongs below this text, alongside the other actions.</p>",
+    "<p>A longer notification with enough text to wrap on a phone.</p><p>The action belongs below this text, alongside the other actions.</p>" +
+    `<p><a href="${longUrl}">${longUrl}</a></p>`,
   created_at: "2026-10-17T12:00:00Z",
   media_attachments: [],
   visibility: "public",

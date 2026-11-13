@@ -606,6 +606,32 @@ describe('Notifications', () => {
     expect(internals(fixture).items()).toEqual([]);
   });
 
+  it.each(['mention', 'status', 'favourite'])(
+    'compacts 4 KB URL labels in %s excerpts without hijacking their target',
+    (type) => {
+      const fixture = TestBed.createComponent(Notifications);
+      fixture.detectChanges();
+      const url = 'https://example.com/' + 'a'.repeat(4096);
+      const n = makeNotification('url', type);
+      n.status = {
+        id: 's-url',
+        content: `<p><a href="${url}">${url}</a></p>`,
+        media_attachments: [],
+      } as unknown as Status;
+      httpMock.expectOne('/api/v1/notifications').flush([n]);
+      fixture.detectChanges();
+      const link = fixture.nativeElement.querySelector('.excerpt-content a') as HTMLAnchorElement;
+      expect(link.textContent).toBe('example.com/' + 'a'.repeat(19) + '…');
+      expect(link.getAttribute('href')).toBe(url);
+      const outerClick = vi.fn();
+      link.closest('.excerpt')!.addEventListener('click', outerClick);
+      const click = new MouseEvent('click', { bubbles: true, cancelable: true });
+      link.addEventListener('click', (event) => event.preventDefault(), { once: true });
+      link.dispatchEvent(click);
+      expect(outerClick).not.toHaveBeenCalled();
+    },
+  );
+
   it('renders media thumbnails inside a mention excerpt', () => {
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();

@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Compact content links and translation-source correction, 2026-11-13
+
+Reviewed post, Chat and Inbox link rendering together. URL labels now retain the
+host plus twenty trailing characters; full hrefs and authored labels remain intact.
+Native links in Inbox/Chat excerpts keep their own navigation rather than activating
+the containing row. AI/chat text still uses Angular text interpolation, with native
+anchors only for parsed HTTP(S) URLs. No trusted-HTML bypass is introduced.
+The generated inventory adds/removes no candidates; existing post, conversation and
+notification controls shift by line number. Their adoption classifications remain.
+Browser fixtures now include 4 KB URLs and assert label length, narrow layout and
+navigation to the entire destination; unit tests cover the mislabeled Japanese post.
+
 ## Profile Back placement correction, 2026-11-13
 
 Back now leads each platform's profile action row, beside the account menu when

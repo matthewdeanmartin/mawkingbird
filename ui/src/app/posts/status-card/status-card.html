@@ -230,7 +230,10 @@
 
           @if (appendMode() && translation(); as t) {
             <div class="learner-translation">
-              <div class="content" [innerHTML]="md(t.content) | customEmoji: display.emojis"></div>
+              <div
+                class="content"
+                [innerHTML]="md(t.content) | compactLinks | customEmoji: display.emojis"
+              ></div>
             </div>
           }
 
@@ -247,13 +250,13 @@
             </div>
           }
 
-          <!-- AI translation renders as TEXT, in its own block, deliberately not
+          <!-- AI translation renders as escaped TEXT, in its own block, deliberately not
                through renderedContent(). That path is applyMinimalMarkdown into
                [innerHTML], which is safe only because the server sanitized the HTML
                first. Model output has been sanitized by nobody. -->
           @if (aiTranslation(); as ai) {
             <div class="ai-translation" (click)="$event.stopPropagation()">
-              <p class="ai-translation-text">{{ ai.text }}</p>
+              <p class="ai-translation-text"><app-linked-text [text]="ai.text" /></p>
               <div class="translation-note muted small">
                 <mb-help [label]="'statusCard.translationInfo' | transloco">{{
                   'statusCard.aiTranslationNote' | transloco: { target: ai.target, model: ai.model }
@@ -266,7 +269,7 @@
                model or the browser: rendered as TEXT, like the AI block above. -->
           @if (chainTranslation(); as ct) {
             <div class="ai-translation chain-translation" (click)="$event.stopPropagation()">
-              <p class="ai-translation-text">{{ ct.text }}</p>
+              <p class="ai-translation-text"><app-linked-text [text]="ct.text" /></p>
               <div class="translation-note muted small">
                 <mb-help [label]="'statusCard.translationInfo' | transloco">{{
                   (autoTranslated() ? 'statusCard.chain.noteAutomatic' : 'statusCard.chain.note')

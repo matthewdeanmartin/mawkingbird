@@ -350,10 +350,11 @@
           @if (c.lastStatus) {
             <div
               class="conv-preview muted"
+              appContentLinks
               [innerHTML]="stripped(c.lastStatus) | customEmoji: c.lastStatus.emojis"
             ></div>
           } @else if (c.previewText) {
-            <div class="conv-preview muted">{{ c.previewText }}</div>
+            <div class="conv-preview muted"><app-linked-text [text]="c.previewText" /></div>
           }
         </div>
       </button>
@@ -628,7 +629,7 @@
           @for (m of botMessages(); track m.id) {
             <div class="bubble-row" [class.mine]="m.from === 'me'">
               <div class="bubble" [class.bubble-mine]="m.from === 'me'">
-                <div class="bubble-text">{{ m.text }}</div>
+                <div class="bubble-text"><app-linked-text [text]="m.text" /></div>
                 @if (m.incomplete) {
                   <!-- Kept rather than hidden: these tokens were paid for, and a
                        truncated answer presented as whole would be worse. -->
@@ -686,7 +687,7 @@
                     {{ 'pages.conversations.deletedMessage' | transloco }}
                   </div>
                 } @else {
-                  <div class="bubble-content">{{ m.text }}</div>
+                  <div class="bubble-content"><app-linked-text [text]="m.text ?? ''" /></div>
                   @if (reactionChips(m); as chips) {
                     @if (chips.length) {
                       <div class="bubble-reactions">
@@ -768,7 +769,11 @@
                   {{ m.account.display_name || m.account.username }}
                 </div>
               }
-              <div class="bubble-content" [innerHTML]="stripped(m) | customEmoji: m.emojis"></div>
+              <div
+                class="bubble-content"
+                appContentLinks
+                [innerHTML]="stripped(m) | customEmoji: m.emojis"
+              ></div>
               @for (media of m.media_attachments; track media.id) {
                 <img
                   class="bubble-media"

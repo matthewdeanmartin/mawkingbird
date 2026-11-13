@@ -214,7 +214,8 @@
           <a class="excerpt" [routerLink]="['/statuses', row.status.id]">
             <span
               class="excerpt-content"
-              [innerHTML]="row.status.content | customEmoji: row.status.emojis"
+              appContentLinks
+              [innerHTML]="row.status.content | compactLinks | customEmoji: row.status.emojis"
             ></span>
             @if (row.status.media_attachments.length && showImages()) {
               <span class="excerpt-media">
@@ -316,7 +317,10 @@
               >
                 <span
                   class="excerpt-content"
-                  [innerHTML]="row.notif.status.content | customEmoji: row.notif.status.emojis"
+                  appContentLinks
+                  [innerHTML]="
+                    row.notif.status.content | compactLinks | customEmoji: row.notif.status.emojis
+                  "
                 ></span>
                 @if (row.notif.status.media_attachments.length && showImages()) {
                   <span class="excerpt-media">
@@ -335,7 +339,10 @@
               <a class="excerpt" [routerLink]="['/statuses', row.notif.status.id]">
                 <span
                   class="excerpt-content"
-                  [innerHTML]="row.notif.status.content | customEmoji: row.notif.status.emojis"
+                  appContentLinks
+                  [innerHTML]="
+                    row.notif.status.content | compactLinks | customEmoji: row.notif.status.emojis
+                  "
                 ></span>
                 @if (row.notif.status.media_attachments.length && showImages()) {
                   <span class="excerpt-media">

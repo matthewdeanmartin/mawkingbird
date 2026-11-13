@@ -1,3 +1,5 @@
+import { compactContentLinks, ContentLinks } from '../../posts/content-links';
+import { LinkedText } from '../../posts/linked-text';
 // i18n pages.conversations.startFailed: Could not start this chat. Check your chat permissions and try again.
 import { accountProfilePath } from '../../accounts/account-route';
 import { CustomEmojiPipe } from '../custom-emoji.pipe';
@@ -257,6 +259,8 @@ export function stripLeadingMentions(html: string): string {
 @Component({
   selector: 'app-conversations',
   imports: [
+    ContentLinks,
+    LinkedText,
     CustomEmojiPipe,
     Compose,
     EmojiPicker,
@@ -1430,7 +1434,7 @@ export class Conversations implements OnInit, OnDestroy {
     const cacheKey = `${s.id}:${s.edited_at ?? ''}`;
     let out = this.strippedCache.get(cacheKey);
     if (out === undefined) {
-      out = stripLeadingMentions(s.content);
+      out = compactContentLinks(stripLeadingMentions(s.content));
       this.strippedCache.set(cacheKey, out);
     }
     return out;

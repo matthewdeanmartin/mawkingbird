@@ -1,3 +1,5 @@
+import { compactContentLinks, CompactLinksPipe } from '../content-links';
+import { LinkedText } from '../linked-text';
 import { ReadingPostChanges, reconcileReadingPost } from '../reading-post-changes';
 import { blueskyRouteFor } from '../../accounts/bluesky-links';
 import { hasDictionary } from '../learn/dictionary-registry';
@@ -423,33 +425,6 @@ function mastodonPostRef(content: string): MastodonPostRef | null {
   return null;
 }
 
-/** Keep long bare URLs compact while preserving the anchor's real destination. */
-function compactContentLinks(content: string, embeddedPostUrl: string | null): string {
-  const doc = new DOMParser().parseFromString(content, 'text/html');
-  for (const anchor of Array.from(doc.querySelectorAll<HTMLAnchorElement>('a[href]'))) {
-    const href = anchor.getAttribute('href')!;
-    if (embeddedPostUrl === href) {
-      const parent = anchor.parentElement;
-      anchor.remove();
-      if (parent?.tagName === 'P' && !parent.textContent?.trim() && !parent.children.length) {
-        parent.remove();
-      }
-      continue;
-    }
-    try {
-      const url = new URL(href);
-      const visible = (anchor.textContent ?? '').trim();
-      if (/^https?:\/\//i.test(visible)) {
-        const hasTail = url.pathname !== '/' || !!url.search || !!url.hash;
-        anchor.textContent = `${url.host}${hasTail ? '/…' : ''}`;
-      }
-    } catch {
-      // Relative and malformed links keep their server-supplied label.
-    }
-  }
-  return doc.body.innerHTML;
-}
-
 /** The failure-message line for each reason an engine gave up ("off" etc. are not listed). */
 const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
   off: 'statusCard.chain.tried',
@@ -466,6 +441,8 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
 @Component({
   selector: 'app-status-card',
   imports: [
+    CompactLinksPipe,
+    LinkedText,
     SearchExcerptView,
     StatusReactions,
     MisskeyCompose,
@@ -2850,7 +2827,12 @@ export class StatusCard {
 
   /** The language the shown server translation came from, by name; empty when unknown. */
   protected translationSourceLabel(): string {
-    const code = this.translation()?.detected_source_language || this.display.language;
+    // Analyze the original body, never the translated text. Servers often stamp
+    // Japanese posts with an English composer locale; reuse the translation detector.
+    const code =
+      this.feedLanguages.languageAssessment(this.display).language ||
+      this.translation()?.detected_source_language ||
+      this.display.language;
     return code ? this.languageLabel(code) : '';
   }
 
@@ -2864,8 +2846,7 @@ export class StatusCard {
     if (chain) return { language: chain.source ? this.languageLabel(chain.source) : '' };
     if (this.translation()) return { language: this.translationSourceLabel() };
     if (this.aiTranslation()) {
-      const code = this.display.language;
-      return { language: code ? this.languageLabel(code) : '' };
+      return { language: this.translationSourceLabel() };
     }
     return null;
   }

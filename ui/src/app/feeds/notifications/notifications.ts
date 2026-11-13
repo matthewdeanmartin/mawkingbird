@@ -1,3 +1,4 @@
+import { CompactLinksPipe, ContentLinks } from '../../posts/content-links';
 import { LocalModeration } from '../../moderation/local-moderation';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
 import { MbButton } from '../../design-system/button/button';
@@ -277,6 +278,8 @@ export function accountsNewToMe(
 @Component({
   selector: 'app-notifications',
   imports: [
+    ContentLinks,
+    CompactLinksPipe,
     MbButton,
     CustomEmojiPipe,
     MbPostAction,

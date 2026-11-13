@@ -2754,7 +2754,7 @@ describe('StatusCard', () => {
     const f = setUp(makeStatus({ content: `<p><a href="${url}">${url}</a></p>` }));
     const anchor = (f.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>('.content a')!;
 
-    expect(anchor.textContent).toBe('example.com/…');
+    expect(anchor.textContent).toBe('example.com/really_long_path/th…');
     expect(anchor.getAttribute('href')).toBe(url);
   });
 

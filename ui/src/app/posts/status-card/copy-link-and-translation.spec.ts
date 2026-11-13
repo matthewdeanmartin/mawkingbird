@@ -59,6 +59,7 @@ function post(overrides: Partial<Status> = {}): Status {
 
 /** The protected state these tests drive directly, as a reader's clicks would. */
 interface CardState {
+  aiTranslation: WritableSignal<{ text: string; model: string; target: string } | null>;
   translation: WritableSignal<Translation | null>;
   replying: WritableSignal<boolean>;
 }
@@ -180,5 +181,40 @@ describe('StatusCard copy link and translation notes', () => {
     expect(warning?.textContent).toContain(
       'Warning: you are replying to a translated post. The original is in German.',
     );
+  });
+  it.each(['ai', 'server'])(
+    'uses detected Japanese rather than an incorrect English tag for a %s translation',
+    (engine) => {
+      const { fixture, el, state } = render(
+        post({
+          language: 'en',
+          content:
+            '<p>総務省が新しい無料オンライン講座「統計解析プログラミング」を1月に開講　Pythonでのデータ分析が4週間で学べる</p>',
+        }),
+      );
+      state.replying.set(true);
+      if (engine === 'ai')
+        state.aiTranslation.set({ text: 'A new online course', model: 'test', target: 'English' });
+      else
+        state.translation.set({
+          content: '<p>A new online course</p>',
+          spoiler_text: '',
+          detected_source_language: 'en',
+          provider: 'test',
+        });
+      fixture.detectChanges();
+      expect(el.querySelector('.reply-translated')?.textContent).toContain(
+        'The original is in Japanese.',
+      );
+      expect(el.querySelector('.reply-translated')?.textContent).not.toContain('English');
+    },
+  );
+
+  it('does not guess a source language for an ambiguous untagged AI translation', () => {
+    const { fixture, el, state } = render(post({ language: null, content: '<p>東京</p>' }));
+    state.replying.set(true);
+    state.aiTranslation.set({ text: 'Tokyo', model: 'test', target: 'English' });
+    fixture.detectChanges();
+    expect(el.querySelector('.reply-translated')?.textContent).toContain('another language');
   });
 });

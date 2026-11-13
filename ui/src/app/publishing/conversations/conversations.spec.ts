@@ -220,6 +220,20 @@ describe('Conversations', () => {
     return fixture;
   }
 
+  it('compacts long chat preview and message URLs while retaining their complete target', () => {
+    const url = 'https://example.com/' + 'a'.repeat(4096);
+    const status = makeStatus('long-url', { content: `<p>@me <a href="${url}">${url}</a></p>` });
+    const fixture = setUp([
+      makeConversation('chat-url', { accounts: [status.account], last_status: status }),
+    ]);
+    fixture.detectChanges();
+    const link = fixture.nativeElement.querySelector('.conv-preview a') as HTMLAnchorElement;
+    expect(link.textContent).toBe('example.com/' + 'a'.repeat(19) + '…');
+    expect(link.getAttribute('href')).toBe(url);
+    // Both list previews and message bubbles consume this same rendered body.
+    expect(fixture.componentInstance['stripped'](status)).toContain(link.outerHTML);
+  });
+
   // ---------------------------------------------------------------- initial load
 
   it('opens the conversation drawer on entry and closes it when a chat is selected', () => {
