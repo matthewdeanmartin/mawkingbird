@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Profile Back placement correction, 2026-11-13
+
+Back now leads each platform's profile action row, beside the account menu when
+available. The banner remains directly below app navigation; Back never consumes
+a profile tab. Narrow action rows wrap below the banner without moving the avatar.
+Loading/error states retain their Back control when no banner is displayed.
+Reviewed the regenerated inventory: no added or removed candidates; only profile
+HTML findings shift by source line number. The real Profile browser story covers
+Mastodon, Bluesky, Misskey, RSS, Twitter, self and OpenRouter at desktop/mobile widths.
+
 ## Reading history and consistent Back, 2026-11-13
 
 Reviewed the regenerated inventory: one added candidate, `shell/reading-back.ts`,

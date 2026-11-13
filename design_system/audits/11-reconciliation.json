@@ -850,7 +850,7 @@
     {
       "file": "ui/src/app/accounts/profile/profile.html",
       "disposition": "partial adoption",
-      "nextStep": "Profile Reply adopts shared Dialog and the existing compact Compose. Reply, Chat and retry retain native action styling; Lists and Open on Bluesky use existing disclosure menus. Review remaining native actions and menu focus/dismissal semantics before adopting shared controls."
+      "nextStep": "Profile Back adopts ReadingBack in every platform action row, outside banner/navigation and tabs. Profile Reply adopts shared Dialog and the existing compact Compose. Reply, Chat and retry retain native action styling; Lists and Open on Bluesky use existing disclosure menus. Review remaining native actions and menu focus/dismissal semantics before adopting shared controls."
     },
     {
       "file": "ui/src/app/feeds/public-timeline/public-timeline.html",

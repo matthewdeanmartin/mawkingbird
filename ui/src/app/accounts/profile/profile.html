@@ -1,4 +1,8 @@
-<app-reading-back />
+<!-- Keep the profile banner directly beneath the app navigation. Never insert Back
+     above the banner or into the crowded profile tabs: use each platform's action row. -->
+@if (loading() || !account() || showSlideshow()) {
+  <app-reading-back />
+}
 @if (showSlideshow()) {
   <app-profile-slideshow
     [statuses]="statuses()"
@@ -104,6 +108,9 @@
         </button>
         @if (isSelf()) {
           <div class="profile-buttons">
+            <!-- Keep Back before the account actions, never between app navigation and
+                 banner or in the profile tabs (which would overflow on narrow screens). -->
+            <app-reading-back />
             <details class="account-danger-menu">
               <summary
                 class="btn btn-outline"
@@ -190,6 +197,9 @@
           </div>
         } @else if (isRss()) {
           <div class="profile-buttons">
+            <!-- Keep Back before the account actions, never between app navigation and
+                 banner or in the profile tabs (which would overflow on narrow screens). -->
+            <app-reading-back />
             <a
               mbButton
               variant="outline"
@@ -217,6 +227,9 @@
           <!-- Following, muting and blocking go through the
              Misskey API. -->
           <div class="profile-buttons">
+            <!-- Keep Back before the account actions, never between app navigation and
+                 banner or in the profile tabs (which would overflow on narrow screens). -->
+            <app-reading-back />
             @if (mkVisitorCanFollow()) {
               <button
                 mbButton
@@ -305,6 +318,9 @@
              or reply: those are Twitter mutations needing a Twitter login this app never
              asks for. "Open on Twitter" is the honest alternative. -->
           <div class="profile-buttons">
+            <!-- Keep Back before the account actions, never between app navigation and
+                 banner or in the profile tabs (which would overflow on narrow screens). -->
+            <app-reading-back />
             @if (a.url) {
               <a class="btn btn-outline" [href]="a.url" target="_blank" rel="noopener noreferrer">
                 {{ 'pages.profile.actions.openOnTwitter' | transloco }}
@@ -333,6 +349,9 @@
              the viewer holds a Bluesky session, so this writes a follow record
              and the other account is notified. -->
           <div class="profile-buttons">
+            <!-- Keep Back before the account actions, never between app navigation and
+                 banner or in the profile tabs (which would overflow on narrow screens). -->
+            <app-reading-back />
             @if (bskySession.linked() && !isSelf()) {
               <!-- Real Bluesky mutes and blocks, written on their network. A timed
                  mute has no Bluesky equivalent, so those stay local — see
@@ -493,6 +512,9 @@
           <!-- No follow, no lists, no moderation: this is a service you have
              connected, not an account you have a relationship with. -->
           <div class="profile-buttons">
+            <!-- Keep Back before the account actions, never between app navigation and
+                 banner or in the profile tabs (which would overflow on narrow screens). -->
+            <app-reading-back />
             <a
               class="btn"
               [routerLink]="['/conversations']"
@@ -506,6 +528,9 @@
           </div>
         } @else if (!isSelf()) {
           <div class="profile-buttons">
+            <!-- Keep Back before the account actions, never between app navigation and
+                 banner or in the profile tabs (which would overflow on narrow screens). -->
+            <app-reading-back />
             <details class="account-danger-menu">
               <summary
                 class="btn btn-outline"
@@ -1040,6 +1065,8 @@
       </section>
     }
 
+    <!-- Back belongs in the action row beside the account menu, never in these
+         crowded tabs: adding it here previously caused horizontal scrolling/clipping. -->
     <!-- Bluesky is excluded here, not by oversight: every tab behind this row
        (following, followers, collections, analytics) reads a Mastodon endpoint
        with an account id this server has never issued. The posts feed is the

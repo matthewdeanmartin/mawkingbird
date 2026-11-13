@@ -127,11 +127,25 @@ describe('self profile local actions', () => {
     (platform) => {
       const fixture = setUp(true);
       const profile = fixture.componentInstance;
+      profile['account'].set(friend);
       if (platform !== 'mastodon') profile[platform].set(true);
       const assertBack = () => {
         fixture.detectChanges();
         const el = fixture.nativeElement as HTMLElement;
-        expect(el.firstElementChild?.tagName.toLowerCase()).toBe('app-reading-back');
+        if (!profile['loading']() && profile['account']()) {
+          expect(el.firstElementChild?.tagName.toLowerCase()).toBe('header');
+          expect(
+            el
+              .querySelector('.profile-header')
+              ?.firstElementChild?.classList.contains('header-banner'),
+          ).toBe(true);
+          expect(
+            el.querySelector('.profile-buttons')?.firstElementChild?.tagName.toLowerCase(),
+          ).toBe('app-reading-back');
+          expect(el.querySelector('.profile-tabs app-reading-back')).toBeNull();
+        } else {
+          expect(el.firstElementChild?.tagName.toLowerCase()).toBe('app-reading-back');
+        }
         expect(el.querySelectorAll('app-reading-back button')).toHaveLength(1);
         expect(el.querySelector('app-reading-back button')?.textContent).toContain('Back');
         expect(el.querySelector('.ptab-back, .back-button')).toBeNull();
