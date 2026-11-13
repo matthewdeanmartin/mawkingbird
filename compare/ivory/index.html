@@ -1,0 +1,111 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Mawkingbird vs Ivory: a browser client or an Apple app · Mawkingbird</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <!-- Bing Webmaster Tools ownership; public/BingSiteAuth.xml is the file method. -->
+    <meta name="msvalidate.01" content="ACFC19CF9923E361561E212397D92649">
+    <meta name="description" content="Ivory or Mawkingbird? A native Mastodon app for iPhone, iPad and Mac with a subscription, or a free browser client for Mastodon, Bluesky and RSS on any device.">
+    <link rel="canonical" href="https://mawkingbird.com/compare/ivory/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mawkingbird">
+    <meta property="og:title" content="Mawkingbird vs Ivory: a browser client or an Apple app · Mawkingbird">
+    <meta property="og:description" content="Ivory or Mawkingbird? A native Mastodon app for iPhone, iPad and Mac with a subscription, or a free browser client for Mastodon, Bluesky and RSS on any device.">
+    <meta property="og:url" content="https://mawkingbird.com/compare/ivory/">
+    <meta property="og:image" content="https://mawkingbird.com/og/default.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Mawkingbird: Mastodon, Bluesky and RSS in one place">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Mawkingbird vs Ivory: a browser client or an Apple app · Mawkingbird">
+    <meta name="twitter:description" content="Ivory or Mawkingbird? A native Mastodon app for iPhone, iPad and Mac with a subscription, or a free browser client for Mastodon, Bluesky and RSS on any device.">
+    <meta name="twitter:image" content="https://mawkingbird.com/og/default.png">
+    <meta name="twitter:image:alt" content="Mawkingbird: Mastodon, Bluesky and RSS in one place">
+
+    <!--
+      Content-Security-Policy. This app is served as static files with no
+      backend we control, so the policy ships as a meta tag; see
+      docs/security.md for the header-only directives (frame-ancestors) that a
+      host which *can* set headers should add on top.
+
+      script-src is the directive that matters here. Everything this app holds —
+      Mastodon bearer tokens, Bluesky JWTs, connector tokens — lives in this
+      origin's localStorage, so any script that runs here can read all of it.
+      The allowlist is therefore exactly 'self' and nothing else: no third-party
+      origin can execute here, so no third party — and no future owner of a
+      third party's expired domain — can read any of it. Analytics is served
+      from our own origin (public/vendor/count.js, refreshed at build time by
+      scripts/vendor-analytics.mjs) for precisely that reason.
+
+      There is also deliberately no 'unsafe-inline' and no 'unsafe-eval': the
+      scripts that used to be inline in this file now live in boot.js.
+
+      style-src needs 'unsafe-inline' because Angular injects component styles
+      as <style> elements at runtime; removing it requires a per-response nonce,
+      which a static host cannot generate.
+
+      connect-src / img-src are deliberately wide: the user points this client
+      at an arbitrary Mastodon instance and subscribes to arbitrary RSS feeds,
+      so the hosts cannot be enumerated in advance. http: and ws: are allowed so
+      a localhost instance still works during development.
+
+      External playback is confined to allowlisted cross-origin iframes
+      below, created only after the user loads a player. No provider SDK executes in
+      our document; script-src remains self-only.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob: https: http:;
+        font-src 'self' data:;
+        connect-src 'self' https: http: ws: wss:;
+        media-src 'self' data: blob: https: http:;
+        worker-src 'self' blob:;
+        manifest-src 'self';
+        form-action 'self';
+        base-uri 'self';
+        object-src 'none';
+        frame-src https://www.youtube-nocookie.com https://w.soundcloud.com https://player-widget.mixcloud.com https://open.spotify.com https://embed.music.apple.com https://embed.podcasts.apple.com https://embed.tidal.com https://bandcamp.com https://audio.com https://music.amazon.com https://widget.deezer.com https://archive.org;
+      ">
+
+    <!--
+      Outbound links go to arbitrary sites, and some in-app URLs carry content in
+      the query string (/message/?m=…). Send only the origin cross-origin.
+    -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!--
+      Identity verification for Mastodon. A profile field linking back to this
+      site shows a green check only if this page links back with rel="me" — the
+      handshake has to be mutual, which is what makes it evidence rather than a
+      claim anyone could type.
+    -->
+    <link rel="me" href="https://mastodon.social/@mistersql">
+    <link rel="me" href="https://mastodon.social/@mawkingbird">
+
+    <!--
+      SPA deep-link restore. Must run synchronously ahead of the app bundle, so
+      this is a blocking script; the src is relative so it resolves against
+      <base href> (/canary/ loads its own copy).
+
+      Analytics is deliberately NOT loaded here. analytics-tracker.ts injects it
+      on the first counted page view, and only when the user has not opted out —
+      so opting out means the script is never fetched or run at all.
+    -->
+    <script src="boot.js"></script>
+  <link rel="stylesheet" href="styles-XO22GPSI.css"><style ng-app-id="ng">[_nghost-ng-c1826377755]{display:block}.features[_ngcontent-ng-c1826377755]{max-width:960px;margin:auto;padding:32px 24px;color:var(--text)}header[_ngcontent-ng-c1826377755], footer[_ngcontent-ng-c1826377755]{display:flex;align-items:center;flex-wrap:wrap;gap:24px}header[_ngcontent-ng-c1826377755]{justify-content:space-between}.intro[_ngcontent-ng-c1826377755]{display:grid;grid-template-columns:1.5fr 1fr;align-items:center;gap:32px;padding:48px 0}.intro[_ngcontent-ng-c1826377755]   img[_ngcontent-ng-c1826377755]{width:100%;height:auto;border-radius:24px;background:var(--col-bg)}h1[_ngcontent-ng-c1826377755]{font-size:clamp(2rem,5vw,3.3rem);line-height:1.12;margin:12px 0 24px}h2[_ngcontent-ng-c1826377755]{font-size:1.65rem;line-height:1.3}p[_ngcontent-ng-c1826377755], li[_ngcontent-ng-c1826377755]{line-height:1.75}.eyebrow[_ngcontent-ng-c1826377755]{font-weight:700;color:var(--muted)}nav[_ngcontent-ng-c1826377755]{margin-block:24px}section[_ngcontent-ng-c1826377755]{padding:28px 0;border-bottom:1px solid var(--border);scroll-margin-top:24px}aside[_ngcontent-ng-c1826377755]{padding:24px;margin-block:32px;background:var(--col-bg);border:1px solid var(--border);border-radius:16px}.feature-actions[_ngcontent-ng-c1826377755]{display:flex;flex-wrap:wrap;align-items:center;gap:16px}footer[_ngcontent-ng-c1826377755]{padding-top:24px;font-size:.9rem}@media(max-width:640px){.intro[_ngcontent-ng-c1826377755]{grid-template-columns:1fr}.intro[_ngcontent-ng-c1826377755]   img[_ngcontent-ng-c1826377755]{max-width:280px;justify-self:center}}.comparison-scroll[_ngcontent-ng-c1826377755]{overflow-x:auto}.comparison[_ngcontent-ng-c1826377755]{width:100%;border-collapse:collapse;font-size:.95rem}.comparison[_ngcontent-ng-c1826377755]   caption[_ngcontent-ng-c1826377755]{text-align:left;font-weight:600;padding-bottom:8px}.comparison[_ngcontent-ng-c1826377755]   th[_ngcontent-ng-c1826377755], .comparison[_ngcontent-ng-c1826377755]   td[_ngcontent-ng-c1826377755]{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}.comparison[_ngcontent-ng-c1826377755]   thead[_ngcontent-ng-c1826377755]   th[_ngcontent-ng-c1826377755]{white-space:nowrap}.comparison-checked[_ngcontent-ng-c1826377755]{font-size:.85rem;color:var(--muted)}</style><style ng-app-id="ng">[_nghost-ng-c3172328079]{color:var(--text);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}[_nghost-ng-c3172328079]:focus-visible{outline:2px solid var(--text);outline-offset:2px}</style></head>
+  <body>
+    <app-root ng-version="21.2.23" ng-server-context="ssg"><router-outlet></router-outlet><app-audience-page _nghost-ng-c1826377755=""><main _ngcontent-ng-c1826377755="" lang="en" class="features"><header _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/features" _nghost-ng-c3172328079="" href="/features/">Mawkingbird · Features</a><a _ngcontent-ng-c1826377755="" mbbutton="" routerlink="/" data-variant="solid" data-size="regular" data-tone="accent" data-shape="pill" href="/">Open the app</a></header><div _ngcontent-ng-c1826377755="" class="intro"><div _ngcontent-ng-c1826377755=""><p _ngcontent-ng-c1826377755="" class="eyebrow">Mawkingbird vs Ivory</p><h1 _ngcontent-ng-c1826377755="">Mawkingbird or Ivory?</h1><p _ngcontent-ng-c1826377755="">Ivory, from the makers of Tweetbot, is a native Mastodon app for iPhone, iPad and Mac. Mawkingbird is a free client that runs in any browser and adds Bluesky and RSS to the same Home feed.</p><a _ngcontent-ng-c1826377755="" mbbutton="" routerlink="/" data-variant="solid" data-size="regular" data-tone="accent" data-shape="pill" href="/">Try Mawkingbird</a></div><img _ngcontent-ng-c1826377755="" src="mockingbird_hand.png" width="360" height="252" alt="The hand-drawn Mawkingbird"></div><section _ngcontent-ng-c1826377755=""><div _ngcontent-ng-c1826377755="" class="comparison-scroll"><table _ngcontent-ng-c1826377755="" class="comparison"><caption _ngcontent-ng-c1826377755=""> Ivory and Mawkingbird at a glance </caption><thead _ngcontent-ng-c1826377755=""><tr _ngcontent-ng-c1826377755=""><td _ngcontent-ng-c1826377755=""></td><th _ngcontent-ng-c1826377755="" scope="col">Ivory</th><th _ngcontent-ng-c1826377755="" scope="col">Mawkingbird</th><!----></tr></thead><tbody _ngcontent-ng-c1826377755=""><tr _ngcontent-ng-c1826377755=""><th _ngcontent-ng-c1826377755="" scope="row">Price</th><td _ngcontent-ng-c1826377755="">Free download; full features need a subscription</td><td _ngcontent-ng-c1826377755="">Free</td><!----></tr><tr _ngcontent-ng-c1826377755=""><th _ngcontent-ng-c1826377755="" scope="row">Open source</th><td _ngcontent-ng-c1826377755="">No</td><td _ngcontent-ng-c1826377755="">Yes (MIT)</td><!----></tr><tr _ngcontent-ng-c1826377755=""><th _ngcontent-ng-c1826377755="" scope="row">Where it runs</th><td _ngcontent-ng-c1826377755="">iPhone, iPad and Mac app</td><td _ngcontent-ng-c1826377755="">Any modern browser, on any device</td><!----></tr><tr _ngcontent-ng-c1826377755=""><th _ngcontent-ng-c1826377755="" scope="row">Mastodon</th><td _ngcontent-ng-c1826377755="">Yes</td><td _ngcontent-ng-c1826377755="">Yes</td><!----></tr><tr _ngcontent-ng-c1826377755=""><th _ngcontent-ng-c1826377755="" scope="row">Bluesky in the same feed</th><td _ngcontent-ng-c1826377755="">No</td><td _ngcontent-ng-c1826377755="">Yes</td><!----></tr><tr _ngcontent-ng-c1826377755=""><th _ngcontent-ng-c1826377755="" scope="row">RSS feeds</th><td _ngcontent-ng-c1826377755="">No</td><td _ngcontent-ng-c1826377755="">Yes</td><!----></tr><tr _ngcontent-ng-c1826377755=""><th _ngcontent-ng-c1826377755="" scope="row">Push notifications</th><td _ngcontent-ng-c1826377755="">Yes</td><td _ngcontent-ng-c1826377755="">No</td><!----></tr><!----></tbody></table></div><p _ngcontent-ng-c1826377755="" class="comparison-checked">Checked on 12 November 2026 against each project’s own site, app listing or source. These apps change; if something here is out of date, tell @mawkingbird@mastodon.social.</p><!----></section><!----><section _ngcontent-ng-c1826377755=""><h2 _ngcontent-ng-c1826377755="">Choose Ivory for a native Apple app</h2><p _ngcontent-ng-c1826377755="">If you live on iPhone, iPad and Mac and want a native app with push notifications, Ivory is a polished choice from a team with a long history of Twitter clients.</p><ul _ngcontent-ng-c1826377755=""><li _ngcontent-ng-c1826377755="">Native apps for iPhone, iPad and Mac.</li><li _ngcontent-ng-c1826377755="">Push notifications.</li><li _ngcontent-ng-c1826377755="">Mastodon only.</li><!----></ul></section><section _ngcontent-ng-c1826377755=""><h2 _ngcontent-ng-c1826377755="">Choose Mawkingbird for any device, and more than Mastodon</h2><p _ngcontent-ng-c1826377755="">Mawkingbird works in the browser on Windows, Linux, Android, ChromeOS and Apple devices alike. It reads Mastodon, Bluesky and RSS together and costs nothing.</p><ul _ngcontent-ng-c1826377755=""><li _ngcontent-ng-c1826377755="">Mastodon, Bluesky and RSS in one Home feed.</li><li _ngcontent-ng-c1826377755="">Post to Mastodon and Bluesky at once.</li><li _ngcontent-ng-c1826377755="">Deliberately quiet: no push notifications pulling you back in.</li><!----></ul></section><!----><aside _ngcontent-ng-c1826377755=""><h2 _ngcontent-ng-c1826377755="">Make it your own</h2><p _ngcontent-ng-c1826377755="">You can use Ivory on your phone and Mawkingbird on a computer with the same Mastodon account; your posts, follows and bookmarks live on your server.</p><p _ngcontent-ng-c1826377755="">Mawkingbird is an independent project and is not affiliated with Tapbots. Ivory is a trademark of Tapbots.</p><h3 _ngcontent-ng-c1826377755="">Read next</h3><ul _ngcontent-ng-c1826377755="" class="guides"><li _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" _nghost-ng-c3172328079="" href="/compare/">Best Mastodon web clients compared</a></li><li _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" _nghost-ng-c3172328079="" href="/compare/elk/">Mawkingbird vs Elk</a></li><li _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" _nghost-ng-c3172328079="" href="/compare/phanpy/">Mawkingbird vs Phanpy</a></li><li _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" _nghost-ng-c3172328079="" href="/compare/mastodon-vs-bluesky/">Mastodon vs Bluesky</a></li><li _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" _nghost-ng-c3172328079="" href="/compare/openvibe/">Mawkingbird vs Openvibe</a></li><li _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" _nghost-ng-c3172328079="" href="/compare/ice-cubes/">Mawkingbird vs Ice Cubes</a></li><li _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" _nghost-ng-c3172328079="" href="/compare/tusky/">Mawkingbird vs Tusky</a></li><li _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" _nghost-ng-c3172328079="" href="/compare/mastodon-app/">Mawkingbird vs the official Mastodon app</a></li><!----></ul><!----><div _ngcontent-ng-c1826377755="" class="feature-actions"><a _ngcontent-ng-c1826377755="" mbbutton="" routerlink="/" data-variant="solid" data-size="regular" data-tone="accent" data-shape="pill" href="/">Try Mawkingbird</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/login" _nghost-ng-c3172328079="" href="/login" rel="nofollow">Sign in</a></div></aside><footer _ngcontent-ng-c1826377755=""><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/features" _nghost-ng-c3172328079="" href="/features/">Discover all Mawkingbird features</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/for/readers" _nghost-ng-c3172328079="" href="/for/readers/">For readers</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/for/bluesky" _nghost-ng-c3172328079="" href="/for/bluesky/">For Bluesky users</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/for/twitter-exodus" _nghost-ng-c3172328079="" href="/for/twitter-exodus/">Leaving Twitter</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/for/instagram" _nghost-ng-c3172328079="" href="/for/instagram/">For photo lovers</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/for/creators" _nghost-ng-c3172328079="" href="/for/creators/">For creators</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/for/power-users" _nghost-ng-c3172328079="" href="/for/power-users/">For power users</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/communities" _nghost-ng-c3172328079="" href="/communities/">Mastodon communities by interest</a><a _ngcontent-ng-c1826377755="" mbcontentlink="" routerlink="/compare" _nghost-ng-c3172328079="" href="/compare/">Mastodon clients compared</a></footer></main></app-audience-page><!----></app-root>
+  <link rel="modulepreload" href="chunk-XMNY57YH.js"><link rel="modulepreload" href="chunk-HK3VQX2L.js"><link rel="modulepreload" href="chunk-47V6KKT2.js"><link rel="modulepreload" href="chunk-D53O7FC5.js"><link rel="modulepreload" href="chunk-WACVSLN6.js"><link rel="modulepreload" href="chunk-4GVRQW7T.js"><link rel="modulepreload" href="chunk-32GTJ3O5.js"><link rel="modulepreload" href="chunk-ZGJN7CK6.js"><link rel="modulepreload" href="chunk-TINXFMP7.js"><link rel="modulepreload" href="chunk-XVOK3V5J.js"><script src="main-IYUUZRVA.js" type="module"></script>
+
+</body></html>
