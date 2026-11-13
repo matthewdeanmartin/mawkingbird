@@ -2397,3 +2397,29 @@ close code, next attempt) with Network Doctor (`a[mbButton]`) and Reconnect now
 (`mbButton`). +4 shared, +2 native buttons; both counted native buttons are
 `mbButton` hosts. The 1:1 mention rule lives in Compose and adds no controls. No
 shared widget implementation changed.
+
+### Client comparison pages (2026-11-12)
+
+Reviewed regeneration: 638 candidate files, two changed, none added or removed.
+`public-pages/features/audience-page.html` renders an optional, dated comparison
+table (a plain `<table>`, no controls) for the new `/compare/` pages, and its
+footer gains a "Mastodon clients compared" `mbContentLink` (+1 shared).
+`public-pages/features/features.html` gains the same footer link (+1 shared). No
+shared widget implementation changed.
+
+### Mastodon and Bluesky explainer (2026-11-12)
+
+Reviewed regeneration: 638 candidate files, none added or removed.
+`public-pages/features/audience-page.html` adds a repeating source link using the
+existing `mbContentLink` directive for the dated network comparison (+1 shared
+control occurrence). Other inventory changes are source line positions. No shared widget implementation changed; the candidate
+file list in `11-reconciliation.json` is unchanged.
+
+### Composer server limits (2026-11-12)
+
+Reviewed regeneration: 638 candidate files, none added or removed.
+`publishing/compose/compose.html` displays the server's Mastodon text limit and
+separate Mastodon and Bluesky counts for a post sent to both. It adds no control
+elements; existing controls shifted source lines. The composer story's fake API
+now supplies instance configuration. No shared widget implementation changed;
+`11-reconciliation.json` needs no candidate-file changes.

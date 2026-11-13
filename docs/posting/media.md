@@ -36,3 +36,5 @@ Use the warning button to mark attached media as sensitive when readers should c
 When the post also goes to Bluesky, a **Bluesky label** menu appears. Bluesky hides media only when the post says what kind of content it is, so choose suggestive, nudity, adult content or graphic media. Mawkingbird also hides media that Bluesky has labelled this way when it shows you other people's posts.
 
 Next: [Write useful media descriptions](alt-text.md).
+
+For the numbers behind these warnings, see [Mastodon post length and media limits](mastodon-limits.md).

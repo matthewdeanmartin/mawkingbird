@@ -34,11 +34,18 @@ const root = path.resolve(import.meta.dirname, '../dist-mockingbird/browser');
 const results = artifactDir('seo-browser');
 const audiencePages = [
   ['readers', 'Make room for the stories you want to read'],
-  ['bluesky', 'Read Bluesky and Mastodon in one place'],
+  ['bluesky', 'Mastodon and Bluesky in one app'],
   ['twitter-exodus', 'Find your next conversation without starting from an empty feed'],
   ['instagram', 'Give the pictures their own space'],
   ['creators', 'Keep the idea, shape the post, share the work'],
   ['power-users', 'Controls most Mastodon clients leave out'],
+];
+const newComparisonPages = [
+  ['mastodon-vs-bluesky', 'Mastodon vs Bluesky: what is different?'],
+  ['openvibe', 'Mawkingbird or Openvibe?'],
+  ['ice-cubes', 'Mawkingbird or Ice Cubes for Mastodon?'],
+  ['tusky', 'Mawkingbird or Tusky on Android?'],
+  ['mastodon-app', 'Use the official Mastodon app or Mawkingbird?'],
 ];
 const types = {
   '.html': 'text/html',
@@ -213,6 +220,27 @@ try {
           ),
           fullPage: true,
         });
+      }
+      assert.deepEqual(errors, [], `${slug} has no browser runtime errors`);
+    }
+    for (const [slug, heading] of newComparisonPages) {
+      await page.goto(`${origin}/compare/${slug}/`);
+      await page.getByRole('heading', { name: heading, exact: true }).waitFor();
+      if (javaScriptEnabled)
+        await page.waitForFunction(() =>
+          document.querySelector('app-root')?.hasAttribute('ng-version'),
+        );
+      assert.equal((await page.locator('table.comparison tbody tr').count()) > 0, true);
+      assert.equal(
+        await page.locator('link[rel="canonical"]').getAttribute('href'),
+        `https://mawkingbird.com/compare/${slug}/`,
+      );
+      for (const width of [1280, 390]) {
+        await page.setViewportSize({ width, height: 900 });
+        assert.ok(
+          await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+          `${slug} has no overflow at ${width}px`,
+        );
       }
       assert.deepEqual(errors, [], `${slug} has no browser runtime errors`);
     }

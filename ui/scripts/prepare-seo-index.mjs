@@ -63,11 +63,12 @@ const fallback = `<noscript>
     <ul>
       <li><a href="/features/">Discover Mawkingbird features</a></li>
       <li><a href="/for/readers/">News, RSS and reading lists</a></li>
-      <li><a href="/for/bluesky/">Bluesky and Mastodon in one place</a></li>
+      <li><a href="/for/bluesky/">Mastodon and Bluesky in one app</a></li>
       <li><a href="/for/twitter-exodus/">A fresh start after Twitter</a></li>
       <li><a href="/for/instagram/">Photo viewing</a></li>
       <li><a href="/for/creators/">Writing and photography</a></li>
       <li><a href="/for/power-users/">Advanced controls for power users</a></li>
+      <li><a href="/compare/">Best Mastodon web clients compared</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
       <li><a href="/follow/">Who to follow on Mastodon: hand-picked starter kits</a></li>
       <li><a href="/communities/">Mastodon communities by interest: hashtags, people and servers</a></li>
@@ -200,7 +201,7 @@ function withLastmod(xml) {
     if (page === '') return ['src/index.html', 'scripts/prepare-seo-index.mjs'];
     if (page === 'features/') return [`${features}features.html`, `${features}features.ts`];
     if (indexPages.includes(page)) return ['src/app/public-pages/tools/', ...registryFiles];
-    if (page.startsWith('for/'))
+    if (page.startsWith('for/') || page.startsWith('compare/'))
       return [`${features}audience-content.ts`, `${features}audience-page.html`];
     if (page === 'about/')
       return ['src/app/public-pages/about/', 'src/app/public-pages/docs/public-copy.ts'];

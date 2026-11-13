@@ -34,6 +34,14 @@ describes photo viewing on supported networks, not an Instagram connection;
 the Twitter/X guide does not promise automatic account migration. Audience
 content is lazy-loaded and stays out of the app's initial bundle.
 
+Comparison pages use the same component and route file: `/compare/` (the
+roundup of Mastodon web clients), the client pages under `/compare/<name>/`,
+and `/compare/mastodon-vs-bluesky/`. Their `comparison` table holds checkable
+facts from each project's own documentation or listing, with the date checked;
+re-check every row when changing that date. They link each other, the features
+and audience footers link `/compare/`, and the help home links all of these
+public pages. `audience-content.spec.ts` keeps routes, copy and cross-links in step.
+
 ## Trailing slashes and app links
 
 Every public page is published as `<path>/index.html`, so GitHub Pages answers
@@ -698,7 +706,6 @@ German Politics has one approved German edition at
 tags. Copy/data are lazy; the registry supplies routes and sitemap entries.
 Copy distinguishes neutral party reporting from endorsement and open tags from
 curated accounts. No equal ideological representation is promised.
-
 
 Running has approved English (`/running-on-mastodon/`) and German
 (`/de/laufen-auf-mastodon/`) editions under Games and sport: eight accounts/five

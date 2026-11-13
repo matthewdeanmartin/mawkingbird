@@ -12,6 +12,49 @@
     </div>
     <img src="mockingbird_hand.png" width="360" height="252" alt="The hand-drawn Mawkingbird" />
   </div>
+  @if (content.comparison; as table) {
+    <section>
+      <!-- Scrolls on its own on a phone, so the page itself never scrolls sideways. -->
+      <div class="comparison-scroll">
+        <table class="comparison">
+          <caption>
+            {{
+              table.caption
+            }}
+          </caption>
+          <thead>
+            <tr>
+              <td></td>
+              @for (column of table.columns; track column) {
+                <th scope="col">{{ column }}</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of table.rows; track row.label) {
+              <tr>
+                <th scope="row">{{ row.label }}</th>
+                @for (cell of row.cells; track $index) {
+                  <td>{{ cell }}</td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="comparison-checked">{{ table.checked }}</p>
+      @if (content.sources?.length) {
+        <p>Sources:</p>
+        <ul class="guides">
+          @for (source of content.sources; track source.href) {
+            <li>
+              <a mbContentLink [href]="source.href">{{ source.label }}</a>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
   @for (section of content.sections; track section.heading) {
     <section>
       <h2>{{ section.heading }}</h2>
@@ -52,5 +95,6 @@
     <a mbContentLink routerLink="/for/creators">For creators</a>
     <a mbContentLink routerLink="/for/power-users">For power users</a>
     <a mbContentLink routerLink="/communities">Mastodon communities by interest</a>
+    <a mbContentLink routerLink="/compare">Mastodon clients compared</a>
   </footer>
 </main>

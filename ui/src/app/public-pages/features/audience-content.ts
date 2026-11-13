@@ -13,7 +13,37 @@ export interface AudienceContent {
   expectation: string;
   /** Help guides at /help/, linked as plain hrefs because the help site is static. */
   guides?: readonly { label: string; href: string }[];
+  /** Primary sources for dated factual comparisons. */
+  sources?: readonly { label: string; href: string }[];
+  /**
+   * Comparison pages only: a feature table, dated, of facts each project states
+   * itself (licence, platforms, networks). Keep it to checkable facts, and
+   * re-check them when the date is changed.
+   */
+  comparison?: {
+    caption: string;
+    columns: readonly string[];
+    rows: readonly { label: string; cells: readonly string[] }[];
+    checked: string;
+  };
 }
+
+const COMPARED_ON =
+  'Checked on 12 November 2026 against each project’s own site, app listing or source. These apps change; if something here is out of date, tell @mawkingbird@mastodon.social.';
+
+/** Pages comparing Mawkingbird with other clients link to each other here. */
+const COMPARISONS = [
+  { label: 'Best Mastodon web clients compared', href: '/compare/' },
+  { label: 'Mawkingbird vs Elk', href: '/compare/elk/' },
+  { label: 'Mawkingbird vs Phanpy', href: '/compare/phanpy/' },
+  { label: 'Mawkingbird vs Ivory', href: '/compare/ivory/' },
+  { label: 'Mastodon vs Bluesky', href: '/compare/mastodon-vs-bluesky/' },
+  { label: 'Mawkingbird vs Openvibe', href: '/compare/openvibe/' },
+  { label: 'Mawkingbird vs Ice Cubes', href: '/compare/ice-cubes/' },
+  { label: 'Mawkingbird vs Tusky', href: '/compare/tusky/' },
+  { label: 'Mawkingbird vs the official Mastodon app', href: '/compare/mastodon-app/' },
+];
+const otherComparisons = (href: string) => COMPARISONS.filter((page) => page.href !== href);
 
 /** Public copy describes shipped capabilities; no account or remote API is needed. */
 export const audienceContent: Record<string, AudienceContent> = {
@@ -59,7 +89,7 @@ export const audienceContent: Record<string, AudienceContent> = {
   },
   bluesky: {
     eyebrow: 'For Bluesky users',
-    heading: 'Read Bluesky and Mastodon in one place',
+    heading: 'Mastodon and Bluesky in one app',
     intro:
       'Keep your Bluesky account and add Mastodon beside it. Mawkingbird shows both timelines in one Home feed, sends each reply back to the right network, and can publish the same post to both.',
     action: 'Try Mawkingbird with Bluesky',
@@ -292,5 +322,564 @@ export const audienceContent: Record<string, AudienceContent> = {
       { label: 'Choose where a post is published', href: '/help/posting/destinations/' },
       { label: 'Publish to a blog', href: '/help/connections/blogs/' },
     ],
+  },
+  compare: {
+    eyebrow: 'Choosing a Mastodon client',
+    heading: 'Which Mastodon web client should you use?',
+    intro:
+      'Mastodon does not tie you to one app. Any client can sign in to your account, and the browser-based ones need nothing installed. Here is an honest look at the main web clients, Mawkingbird included, and what each one is best at.',
+    action: 'Try Mawkingbird',
+    comparison: {
+      caption: 'Mastodon web clients at a glance',
+      columns: ['Mastodon’s own web app', 'Elk', 'Phanpy', 'Mawkingbird'],
+      rows: [
+        { label: 'Price', cells: ['Free', 'Free', 'Free', 'Free'] },
+        {
+          label: 'Open source',
+          cells: ['Yes (AGPL-3.0)', 'Yes (MIT)', 'Yes (MIT)', 'Yes (MIT)'],
+        },
+        {
+          label: 'Where it runs',
+          cells: [
+            'Your server’s own website',
+            'Browser: elk.zone or self-hosted',
+            'Browser: phanpy.social or self-hosted',
+            'Browser: mawkingbird.com',
+          ],
+        },
+        { label: 'Bluesky in the same feed', cells: ['No', 'No', 'No', 'Yes'] },
+        { label: 'RSS feeds', cells: ['No', 'No', 'No', 'Yes'] },
+        { label: 'Several accounts at once', cells: ['No', 'Yes', 'Yes', 'Yes'] },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'Mastodon’s own web app: the reference',
+        text: 'Every Mastodon server has its own web interface at its address. New Mastodon features arrive there first, and it is where server settings, account moderation and administration live.',
+        points: [
+          'Always matches the version of Mastodon your server runs.',
+          'The place for server-specific settings and admin tools.',
+          'Advanced view gives a multi-column layout.',
+        ],
+      },
+      {
+        heading: 'Elk and Phanpy: polished Mastodon-only clients',
+        text: 'Elk and Phanpy are free, open-source web clients that give Mastodon a different look and feel. Both stay focused on Mastodon and servers compatible with it.',
+        points: [
+          'Elk: a fast, polished Mastodon client you can use at elk.zone or host yourself.',
+          'Phanpy: a minimal design with Catch-up, a bounded review of what you missed, and optional columns.',
+          'Neither reads Bluesky or RSS.',
+        ],
+      },
+      {
+        heading: 'Mawkingbird: Mastodon, Bluesky and RSS together',
+        text: 'Mawkingbird is for people whose reading is spread across networks. Mastodon, Bluesky and RSS share one Home feed, and one post can go to both networks at once.',
+        points: [
+          'A finite Home feed, with Feed Doctor to show who dominates it.',
+          'Free tools: analytics, scheduling, bulk follow and mute actions.',
+          'Read Mastodon servers and hashtags before you have an account.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'Open Mawkingbird and look around the preview first; no account is needed. When you are ready, sign in with Mastodon or Bluesky. Your account stays on your server, so you can keep using any other client alongside it.',
+    expectation:
+      'On iPhone, iPad or Mac you may prefer a native app such as Ivory; see the comparison below. Mawkingbird runs in any modern browser and can be installed from it.',
+    guides: otherComparisons('/compare/'),
+  },
+  'compare-elk': {
+    eyebrow: 'Mawkingbird vs Elk',
+    heading: 'Mawkingbird or Elk?',
+    intro:
+      'Elk and Mawkingbird are both free, open-source clients that run in your browser. Elk is a polished, Mastodon-only client. Mawkingbird puts Mastodon, Bluesky and RSS in one Home feed.',
+    action: 'Try Mawkingbird',
+    comparison: {
+      caption: 'Elk and Mawkingbird at a glance',
+      columns: ['Elk', 'Mawkingbird'],
+      rows: [
+        { label: 'Price', cells: ['Free', 'Free'] },
+        { label: 'Open source', cells: ['Yes (MIT)', 'Yes (MIT)'] },
+        {
+          label: 'Where it runs',
+          cells: ['Browser: elk.zone or self-hosted', 'Browser: mawkingbird.com'],
+        },
+        { label: 'Mastodon', cells: ['Yes', 'Yes'] },
+        { label: 'Bluesky in the same feed', cells: ['No', 'Yes'] },
+        { label: 'RSS feeds', cells: ['No', 'Yes'] },
+        { label: 'Several accounts at once', cells: ['Yes', 'Yes'] },
+        { label: 'Post to Mastodon and Bluesky at once', cells: ['No', 'Yes'] },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'Choose Elk if Mastodon is all you use',
+        text: 'Elk is a well-made web client for Mastodon. If every account you care about is on Mastodon and you like its design, it is a good choice, and you can run your own copy.',
+        points: [
+          'A clean, fast Mastodon experience in the browser.',
+          'Can be self-hosted, and some servers run their own Elk.',
+          'Mastodon and compatible servers only.',
+        ],
+      },
+      {
+        heading: 'Choose Mawkingbird if your reading is spread out',
+        text: 'If you follow people on both Mastodon and Bluesky, or still read sites through RSS, Mawkingbird brings them into one Home feed and keeps each reply on the right network.',
+        points: [
+          'Mastodon, Bluesky and RSS in one Home feed.',
+          'Write once and post to both networks.',
+          'A finite feed, analytics and bulk follow and mute tools.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'Nothing stops you using both. Your Mastodon account lives on your server, not in either app, so you can sign in to Elk and Mawkingbird with the same account and keep whichever suits you.',
+    expectation:
+      'Mawkingbird is an independent project and is not affiliated with Elk. Elk is a trademark of its authors.',
+    guides: otherComparisons('/compare/elk/'),
+  },
+  'compare-phanpy': {
+    eyebrow: 'Mawkingbird vs Phanpy',
+    heading: 'Mawkingbird or Phanpy?',
+    intro:
+      'Phanpy and Mawkingbird are both free, open-source web clients. Phanpy is a minimal Mastodon client with thoughtful reading features. Mawkingbird adds Bluesky and RSS to the same Home feed.',
+    action: 'Try Mawkingbird',
+    comparison: {
+      caption: 'Phanpy and Mawkingbird at a glance',
+      columns: ['Phanpy', 'Mawkingbird'],
+      rows: [
+        { label: 'Price', cells: ['Free', 'Free'] },
+        { label: 'Open source', cells: ['Yes (MIT)', 'Yes (MIT)'] },
+        {
+          label: 'Where it runs',
+          cells: ['Browser: phanpy.social or self-hosted', 'Browser: mawkingbird.com'],
+        },
+        { label: 'Mastodon', cells: ['Yes', 'Yes'] },
+        { label: 'Bluesky in the same feed', cells: ['No', 'Yes'] },
+        { label: 'RSS feeds', cells: ['No', 'Yes'] },
+        { label: 'Several accounts at once', cells: ['Yes', 'Yes'] },
+        { label: 'Catch-up sessions for what you missed', cells: ['Yes', 'No'] },
+        { label: 'Several feeds side by side in columns', cells: ['Yes', 'No'] },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'Choose Phanpy for a calm Mastodon-only reader',
+        text: 'Phanpy keeps the screen simple and has features Mawkingbird does not: Catch-up gathers what you missed in a chosen time window, and you can open several feeds side by side as columns.',
+        points: [
+          'Catch-up: review a bounded slice of your timeline, sorted and grouped.',
+          'Optional columns for several feeds at once.',
+          'Collapsible reply branches in long conversations.',
+        ],
+      },
+      {
+        heading: 'Choose Mawkingbird to read more than Mastodon',
+        text: 'Mawkingbird brings Bluesky and RSS into the same Home feed, posts to both networks at once, and adds tools for managing who you follow.',
+        points: [
+          'Mastodon, Bluesky and RSS in one Home feed.',
+          'A finite feed, with Feed Doctor to spot accounts that flood it.',
+          'Analytics, scheduling and bulk follow and mute tools.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'You can use both with the same Mastodon account: sign in to each and keep whichever fits the way you read.',
+    expectation:
+      'Mawkingbird is an independent project and is not affiliated with Phanpy, which is made by Lim Chee Aun.',
+    guides: otherComparisons('/compare/phanpy/'),
+  },
+  'compare-ivory': {
+    eyebrow: 'Mawkingbird vs Ivory',
+    heading: 'Mawkingbird or Ivory?',
+    intro:
+      'Ivory, from the makers of Tweetbot, is a native Mastodon app for iPhone, iPad and Mac. Mawkingbird is a free client that runs in any browser and adds Bluesky and RSS to the same Home feed.',
+    action: 'Try Mawkingbird',
+    comparison: {
+      caption: 'Ivory and Mawkingbird at a glance',
+      columns: ['Ivory', 'Mawkingbird'],
+      rows: [
+        {
+          label: 'Price',
+          cells: ['Free download; full features need a subscription', 'Free'],
+        },
+        { label: 'Open source', cells: ['No', 'Yes (MIT)'] },
+        {
+          label: 'Where it runs',
+          cells: ['iPhone, iPad and Mac app', 'Any modern browser, on any device'],
+        },
+        { label: 'Mastodon', cells: ['Yes', 'Yes'] },
+        { label: 'Bluesky in the same feed', cells: ['No', 'Yes'] },
+        { label: 'RSS feeds', cells: ['No', 'Yes'] },
+        { label: 'Push notifications', cells: ['Yes', 'No'] },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'Choose Ivory for a native Apple app',
+        text: 'If you live on iPhone, iPad and Mac and want a native app with push notifications, Ivory is a polished choice from a team with a long history of Twitter clients.',
+        points: ['Native apps for iPhone, iPad and Mac.', 'Push notifications.', 'Mastodon only.'],
+      },
+      {
+        heading: 'Choose Mawkingbird for any device, and more than Mastodon',
+        text: 'Mawkingbird works in the browser on Windows, Linux, Android, ChromeOS and Apple devices alike. It reads Mastodon, Bluesky and RSS together and costs nothing.',
+        points: [
+          'Mastodon, Bluesky and RSS in one Home feed.',
+          'Post to Mastodon and Bluesky at once.',
+          'Deliberately quiet: no push notifications pulling you back in.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'You can use Ivory on your phone and Mawkingbird on a computer with the same Mastodon account; your posts, follows and bookmarks live on your server.',
+    expectation:
+      'Mawkingbird is an independent project and is not affiliated with Tapbots. Ivory is a trademark of Tapbots.',
+    guides: otherComparisons('/compare/ivory/'),
+  },
+  'compare-mastodon-vs-bluesky': {
+    eyebrow: 'Understanding two social networks',
+    heading: 'Mastodon vs Bluesky: what is different?',
+    intro:
+      'Both let you follow people, post short updates and choose a client. The practical difference is where your account lives and who shapes what you see: Mastodon is a network of independently run servers; most Bluesky accounts use one service with a choice of feeds and moderation tools.',
+    action: 'Read both in Mawkingbird',
+    comparison: {
+      caption: 'Mastodon and Bluesky at a glance',
+      columns: ['Mastodon', 'Bluesky'],
+      rows: [
+        {
+          label: 'Account home',
+          cells: [
+            'An independently run server',
+            'Usually bsky.social; other personal data servers are possible',
+          ],
+        },
+        {
+          label: 'Typical handle',
+          cells: ['@name@server.example', '@name.bsky.social or a domain you own'],
+        },
+        {
+          label: 'Find topics',
+          cells: [
+            'Follow hashtags, search and browse server timelines',
+            'Search hashtags and choose custom feeds',
+          ],
+        },
+        {
+          label: 'Post length',
+          cells: ['500 characters by default; servers can change it', '300 grapheme clusters'],
+        },
+        {
+          label: 'Quote posts',
+          cells: [
+            'Available in Mastodon 4.5 where the author permits them',
+            'Available, with an option to detach your post from a quote',
+          ],
+        },
+        {
+          label: 'Private conversation',
+          cells: ['Private mentions; server admins may access the text', 'Direct messages'],
+        },
+        {
+          label: 'Changing account home',
+          cells: [
+            'Move followers to a new server; old posts stay behind',
+            'Move your account to another personal data server while keeping its identity',
+          ],
+        },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'The place that holds your account matters',
+        text: 'On Mastodon you join a server, whose operators set local rules and moderate their community. Servers can communicate across the fediverse, so a person on one can follow someone on another. Bluesky is built on the AT Protocol, which allows other account hosts, but most people use Bluesky’s own service. Its main app combines service rules with moderation choices such as subscribed labelers.',
+        points: [
+          'A Mastodon handle includes the server; a Bluesky handle can instead be a domain you control.',
+          'Mastodon’s account move can redirect followers to a new server, but does not carry old posts across.',
+          'Bluesky’s personal data server migration keeps the account identity and social graph; it does not turn a Bluesky account into a Mastodon account.',
+        ],
+      },
+      {
+        heading: 'Finding a conversation feels different',
+        text: 'Mastodon gives hashtags a prominent role: you can follow a tag and discover posts known to your server. Bluesky also has hashtags, but its distinctive feature is a choice of custom feeds made by different people. Either way, the people and topics you choose matter more than the name of the app you use to read them.',
+        points: [
+          'Mastodon server and tag views depend on what that server knows about.',
+          'Bluesky custom feeds can collect a topic or reorder posts by their own rules.',
+          'Both networks have quote posts now; Mastodon 4.5 adds author quote controls.',
+        ],
+      },
+      {
+        heading: 'You can read both without merging accounts',
+        text: 'A Mastodon account does not automatically follow a Bluesky account, or vice versa. If your friends and interests are on both, Mawkingbird can show both timelines in one Home feed while replies still go to the network where each post originated.',
+        points: [
+          'Connect an existing account on each network.',
+          'Read Mastodon server and hashtag pages before creating a Mastodon account.',
+          'Choose Both when a public post belongs on each network; check each copy after posting.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'Curious about the networks themselves? Browse a Mastodon server and a Bluesky custom feed first. If you already have accounts on both, connect them to Mawkingbird to read both timelines together.',
+    expectation:
+      'Mawkingbird is an independent client, not affiliated with Mastodon or Bluesky. Combining feeds in an app does not make the networks interoperable or transfer followers between them.',
+    sources: [
+      {
+        label: 'Mastodon: posting and private mentions',
+        href: 'https://docs.joinmastodon.org/user/posting/',
+      },
+      { label: 'Mastodon: quote posts', href: 'https://docs.joinmastodon.org/user/quote-posts/' },
+      { label: 'Mastodon: account moves', href: 'https://docs.joinmastodon.org/user/moving/' },
+      {
+        label: 'Bluesky: custom feeds and domain handles',
+        href: 'https://bsky.social/about/blog/09-04-2024-welcome',
+      },
+      {
+        label: 'Bluesky: moderation and personal data servers',
+        href: 'https://bsky.social/about/blog/12-30-2024-year-in-review',
+      },
+      {
+        label: 'Bluesky: keeping followers across account hosts',
+        href: 'https://bsky.social/about/blog/06-22-2026-summer-of-standard-site',
+      },
+      {
+        label: 'Bluesky: post text limit',
+        href: 'https://github.com/bluesky-social/atproto/discussions/4832',
+      },
+    ],
+    guides: [
+      { label: 'Use Mastodon and Bluesky together', href: '/help/new-to-mastodon/from-bluesky/' },
+      { label: 'Mastodon and Bluesky in one app', href: '/for/bluesky/' },
+      ...otherComparisons('/compare/mastodon-vs-bluesky/'),
+    ],
+  },
+  'compare-openvibe': {
+    eyebrow: 'Mawkingbird vs Openvibe',
+    heading: 'Mawkingbird or Openvibe?',
+    intro:
+      'Both bring Mastodon, Bluesky and RSS into one reading experience. Openvibe goes further across social networks and is built as a phone app. Mawkingbird runs in a browser and gives Mastodon readers more tools for understanding and managing their feed.',
+    action: 'Try Mawkingbird',
+    comparison: {
+      caption: 'Openvibe and Mawkingbird at a glance',
+      columns: ['Openvibe', 'Mawkingbird'],
+      rows: [
+        { label: 'Price', cells: ['Free download; in-app purchases', 'Free'] },
+        {
+          label: 'Where it runs',
+          cells: ['iPhone, iPad and Android apps', 'Modern browsers on phones and computers'],
+        },
+        { label: 'Mastodon and Bluesky', cells: ['Both', 'Both'] },
+        { label: 'RSS and Atom', cells: ['Both', 'Both'] },
+        {
+          label: 'Other social networks',
+          cells: ['Nostr, Threads and Tumblr', 'No direct support for those networks'],
+        },
+        { label: 'Post to several networks', cells: ['Yes', 'Mastodon and Bluesky'] },
+        { label: 'Mastodon bulk follow and mute tools', cells: ['Not advertised', 'Yes'] },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'Choose Openvibe for a wider social mix on your phone',
+        text: 'Openvibe’s current app listings describe one chronological timeline for Mastodon, Bluesky, Nostr, Threads, Tumblr and RSS. It can cross-post across several networks and keep separate profile sets. If your reading really spans those services, that breadth is its strongest reason to choose it.',
+        points: [
+          'Native apps for iPhone, iPad and Android.',
+          'RSS and an article reader are included, so they are not a point of difference here.',
+          'The download is free, with optional purchases; check the store for current terms.',
+        ],
+      },
+      {
+        heading: 'Choose Mawkingbird for browser reading and Mastodon controls',
+        text: 'Mawkingbird works from a browser on a phone or computer. Its finite Home feed has Feed Doctor to explain where posts came from, and Mastodon tools for inspecting profiles, managing follows and scheduling posts. Those are useful if you want more control over the two networks you use most.',
+        points: [
+          'Mastodon, Bluesky and RSS together without installing a phone app.',
+          'Feed Doctor, profile analytics and bulk follow or mute actions for Mastodon.',
+          'Post to Mastodon and Bluesky together; Nostr, Threads and Tumblr are outside its direct connections.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'Try each with the accounts you already have. Your Mastodon and Bluesky accounts are held by their own services, so using one client does not prevent you from using the other.',
+    expectation:
+      'Mawkingbird is an independent project and is not affiliated with Openvibe or Tweetoshi. Network support and paid features can change; these details were checked on 12 November 2026.',
+    sources: [
+      {
+        label: 'Openvibe on Apple App Store',
+        href: 'https://apps.apple.com/us/app/openvibe-bluesky-mastodon/id1666230916',
+      },
+      {
+        label: 'Openvibe on Google Play',
+        href: 'https://play.google.com/store/apps/details?id=com.plebstr.client',
+      },
+    ],
+    guides: otherComparisons('/compare/openvibe/'),
+  },
+  'compare-ice-cubes': {
+    eyebrow: 'Mawkingbird vs Ice Cubes',
+    heading: 'Mawkingbird or Ice Cubes for Mastodon?',
+    intro:
+      'Ice Cubes is a Mastodon app for Apple devices, with a fast live timeline and many ways to arrange it. Mawkingbird runs in a browser and combines Mastodon with Bluesky and RSS. Your Mastodon account can be used in both.',
+    action: 'Try Mawkingbird',
+    comparison: {
+      caption: 'Ice Cubes and Mawkingbird at a glance',
+      columns: ['Ice Cubes', 'Mawkingbird'],
+      rows: [
+        { label: 'Price', cells: ['Free download; in-app purchases', 'Free'] },
+        { label: 'Open source', cells: ['Yes', 'Yes (MIT)'] },
+        {
+          label: 'Where it runs',
+          cells: ['iPhone, iPad and Mac app', 'Modern browser on any device'],
+        },
+        { label: 'Mastodon', cells: ['Yes', 'Yes'] },
+        { label: 'Bluesky and RSS together', cells: ['Not advertised', 'Yes'] },
+        { label: 'Live timeline and iPad layout', cells: ['Yes', 'Finite feed in the browser'] },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'Ice Cubes makes sense on Apple devices',
+        text: 'Its App Store listing emphasizes a live Mastodon timeline, multiple accounts, tag groups and a spacious iPad layout. If you mainly read Mastodon on an iPhone or iPad, those native touches may matter more than adding other networks.',
+        points: [
+          'Home, local and federated timelines with list and followed-tag filters.',
+          'Multiple accounts and a dedicated iPad layout.',
+          'Open-source project you can inspect and contribute to.',
+        ],
+      },
+      {
+        heading: 'Mawkingbird fits reading across services',
+        text: 'Mawkingbird brings Bluesky posts and RSS articles alongside Mastodon, with a Home feed that ends and explains its sources through Feed Doctor. It also works on Windows, Linux and Android without changing your Mastodon account.',
+        points: [
+          'One browser client for Mastodon, Bluesky and RSS.',
+          'Post to Mastodon and Bluesky together.',
+          'Use bulk Mastodon follow and mute tools when a list needs attention.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'Keep Ice Cubes on an Apple device and open Mawkingbird wherever you want the same Mastodon account beside Bluesky and RSS. Your posts and follows remain on your server.',
+    expectation:
+      'Mawkingbird is an independent project and is not affiliated with Ice Cubes or its author, Thomas Ricouard.',
+    sources: [
+      {
+        label: 'Ice Cubes on Apple App Store',
+        href: 'https://apps.apple.com/us/app/ice-cubes-for-mastodon/id6444915884',
+      },
+    ],
+    guides: otherComparisons('/compare/ice-cubes/'),
+  },
+  'compare-tusky': {
+    eyebrow: 'Mawkingbird vs Tusky',
+    heading: 'Mawkingbird or Tusky on Android?',
+    intro:
+      'Tusky is a free, open-source Android app dedicated to Mastodon. Mawkingbird is a browser client for Mastodon, Bluesky and RSS. They can share the same Mastodon account while serving different reading habits.',
+    action: 'Try Mawkingbird',
+    comparison: {
+      caption: 'Tusky and Mawkingbird at a glance',
+      columns: ['Tusky', 'Mawkingbird'],
+      rows: [
+        { label: 'Price', cells: ['Free', 'Free'] },
+        { label: 'Open source', cells: ['Yes (GPL-3.0)', 'Yes (MIT)'] },
+        {
+          label: 'Where it runs',
+          cells: ['Android app from Google Play or F-Droid', 'Modern browser on phone or computer'],
+        },
+        { label: 'Mastodon', cells: ['Yes', 'Yes'] },
+        { label: 'Bluesky and RSS in one feed', cells: ['No direct support advertised', 'Yes'] },
+        {
+          label: 'Android theme choices',
+          cells: ['Light, dark and black', 'Browser-based appearance settings'],
+        },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'Tusky is a focused Android companion',
+        text: 'Tusky follows Android’s Material design and concentrates on Mastodon. It supports media, lists, drafts and the familiar server timelines. If you want a native Android app and do not need Bluesky in it, Tusky is a strong choice.',
+        points: [
+          'Install from Google Play or F-Droid.',
+          'Choose a light, dark or black theme.',
+          'Follow a hashtag from its timeline in the app.',
+        ],
+      },
+      {
+        heading: 'Mawkingbird brings more sources into one browser tab',
+        text: 'If your reading continues on Bluesky and independent websites, Mawkingbird combines those with Mastodon. Open the same account in a desktop or mobile browser, and use its Feed Doctor and reading tools when you want a closer look at your feed.',
+        points: [
+          'Mastodon, Bluesky and RSS together.',
+          'A finite Home feed, analytics and bulk Mastodon actions.',
+          'No separate Android installation required.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'You can keep Tusky on your phone and use Mawkingbird in a browser with the same Mastodon account. Signing in to a second client does not move your account.',
+    expectation:
+      'Mawkingbird is an independent project and is not affiliated with Tusky or its contributors.',
+    sources: [
+      { label: 'Tusky project site', href: 'https://tusky.app/' },
+      { label: 'Tusky FAQ', href: 'https://tusky.app/faq/' },
+    ],
+    guides: otherComparisons('/compare/tusky/'),
+  },
+  'compare-mastodon-app': {
+    eyebrow: 'Mawkingbird vs the official Mastodon app',
+    heading: 'Use the official Mastodon app or Mawkingbird?',
+    intro:
+      'Mastodon makes official phone apps for iOS and Android, and every server has its own web interface. Mawkingbird is an independent browser client for people who also read Bluesky and RSS. The same Mastodon account works in both.',
+    action: 'Try Mawkingbird',
+    comparison: {
+      caption: 'Official Mastodon apps and Mawkingbird at a glance',
+      columns: ['Official Mastodon app', 'Mawkingbird'],
+      rows: [
+        { label: 'Price', cells: ['Free', 'Free'] },
+        {
+          label: 'Where it runs',
+          cells: ['iOS and Android apps', 'Modern browser on phone or computer'],
+        },
+        { label: 'Mastodon', cells: ['Yes', 'Yes'] },
+        { label: 'Bluesky in the same feed', cells: ['No', 'Yes'] },
+        { label: 'RSS reader', cells: ['No', 'Yes'] },
+        {
+          label: 'Server settings and newest server features',
+          cells: ['Use the server website when needed', 'Use the server website when needed'],
+        },
+      ],
+      checked: COMPARED_ON,
+    },
+    sections: [
+      {
+        heading: 'Start with Mastodon’s own app for a simple phone setup',
+        text: 'The official apps guide new users through choosing a server and offer a straightforward chronological feed, Explore, posting and lists. They are the natural starting point when Mastodon is the only network you need on your phone.',
+        points: [
+          'Official iOS and Android apps, free to install.',
+          'A clear path from sign-up to following people and hashtags.',
+          'Your server’s website remains useful for its own settings and features.',
+        ],
+      },
+      {
+        heading: 'Use Mawkingbird when your reading has grown',
+        text: 'Mawkingbird adds Bluesky and RSS to Mastodon in a browser. It can show both social timelines in Home, send a public post to both networks, and give you Feed Doctor and tools for managing a larger Mastodon follow list.',
+        points: [
+          'Read blogs, Mastodon and Bluesky from one place.',
+          'Use a finite feed and inspect its sources.',
+          'Keep using the official app on your phone with the same account.',
+        ],
+      },
+    ],
+    gettingStarted:
+      'Sign in to Mawkingbird with the Mastodon account you already use in the official app. Your account, posts and follows stay on your server; the apps are two ways to reach them.',
+    expectation:
+      'Mawkingbird is independent and is not affiliated with the Mastodon organization or its official apps.',
+    sources: [
+      { label: 'Mastodon: official and third-party apps', href: 'https://joinmastodon.org/apps' },
+      {
+        label: 'Mastodon: official app guide',
+        href: 'https://docs.joinmastodon.org/user/official-ios-android-app-user-guide/',
+      },
+    ],
+    guides: otherComparisons('/compare/mastodon-app/'),
   },
 };

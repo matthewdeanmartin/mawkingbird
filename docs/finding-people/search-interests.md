@@ -28,6 +28,8 @@ Post search availability depends on the connected account and network. If **Post
 
 A hashtag is a subject label beginning with `#`, such as `#Gardening`. Choose **Hashtags** on the Search page when you want the tag itself rather than every post containing an ordinary word.
 
+See [how Mastodon hashtags work](mastodon-hashtags.md) to follow a topic and understand why results differ between servers.
+
 Opening a tag shows its recent posts. Some Fedi accounts can also follow a tag so matching posts appear in Home.
 
 ## Improve an empty search

@@ -34,9 +34,11 @@ nav:
       - Coming to Mastodon from Twitter: new-to-mastodon/coming-from-x.md
       - Mastodon customs worth knowing: new-to-mastodon/customs.md
       - Use Bluesky and Mastodon together: new-to-mastodon/from-bluesky.md
+      - Follow across Mastodon and Bluesky with a bridge: new-to-mastodon/bluesky-bridge.md
   - Reading:
       - Understand your Home feed: reading/home-feed.md
       - Read conversations in Forum: reading/forum.md
+      - RSS feeds for Mastodon and Bluesky accounts: reading/mastodon-bluesky-rss.md
   - Finding people:
       - Find people to follow: finding-people/find-people.md
       - Start with a Mawkingbird Starter Kit: finding-people/starter-kits.md
@@ -49,8 +51,10 @@ nav:
       - Look for people from your contacts: finding-people/contacts.md
       - Import a follow list: finding-people/import-follow-list.md
       - Find sites to read with RSS: finding-people/rss-discovery.md
+      - How hashtags work on Mastodon: finding-people/mastodon-hashtags.md
   - Posting:
       - Write and publish a basic post: posting/basic-post.md
+      - Mastodon post length and media limits: posting/mastodon-limits.md
       - Choose who can see a post: posting/visibility.md
       - Reply, mention, or quote: posting/replies-mentions-quotes.md
       - Add a photo or other media: posting/media.md

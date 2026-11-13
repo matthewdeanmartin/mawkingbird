@@ -36,11 +36,6 @@ textarea {
   margin: 2px 4px 0 0;
 }
 
-/* Which service's limit is binding — quieter than the number it explains. */
-.limit-source {
-  opacity: 0.75;
-}
-
 .reply-mention-hint,
 .future-tag-hint {
   margin: 4px 2px 0;

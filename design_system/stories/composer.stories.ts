@@ -1,4 +1,5 @@
 import { Component, importProvidersFrom, input, signal } from "@angular/core";
+import { of } from "rxjs";
 import { TagHelper } from "../../ui/src/app/publishing/compose/tag-helper";
 import { AiTranslate } from "../../ui/src/app/translation/ai-translate";
 import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
@@ -70,7 +71,13 @@ const providers = [
       token: () => "fixture-only",
     },
   },
-  { provide: Api, useValue: {} },
+  {
+    provide: Api,
+    useValue: {
+      instanceInfo: () =>
+        of({ configuration: { statuses: { max_characters: 500 } } }),
+    },
+  },
   { provide: ReplyMentions, useValue: {} },
   { provide: Server, useValue: { baseUrl: () => "https://example.invalid" } },
   { provide: Pseudonymity, useValue: { cleanMedia: () => false } },

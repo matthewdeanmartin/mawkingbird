@@ -41,3 +41,5 @@ The menu also offers **View feed**, and a headline's feed name links to that sam
 Unsubscribing removes the feed's articles from the regular reading pane while keeping saved articles and reading history. Saved articles from removed feeds remain available under **Read later** from the retained local cache. Clearing that cache can remove those stored copies.
 
 Next: [Understand your Home feed](../reading/home-feed.md).
+
+You can also [read public Mastodon and Bluesky accounts through RSS](../reading/mastodon-bluesky-rss.md).

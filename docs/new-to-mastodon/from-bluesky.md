@@ -37,17 +37,19 @@ One copy can succeed while the other fails. Check both profiles before retrying.
 
 ## Things that work differently
 
-| Bluesky | Mastodon |
-| --- | --- |
-| Handle like `name.bsky.social` or your own domain | Handle like `@name@server.example` |
-| Custom feeds built by other people | Hashtags you follow, lists and server timelines |
-| Posts are public | Posts can be public, unlisted, followers-only or direct |
-| Labelers and moderation lists | Your server's moderators, plus your own mutes, blocks and filters |
+| Bluesky                                           | Mastodon                                                          |
+| ------------------------------------------------- | ----------------------------------------------------------------- |
+| Handle like `name.bsky.social` or your own domain | Handle like `@name@server.example`                                |
+| Custom feeds built by other people                | Hashtags you follow, lists and server timelines                   |
+| Posts are public                                  | Posts can be public, unlisted, followers-only or direct           |
+| Labelers and moderation lists                     | Your server's moderators, plus your own mutes, blocks and filters |
 
 Both networks have likes, reposts, quotes, replies and image descriptions.
 
 ## Bridges
 
 Some people use a bridge service that copies a Bluesky account onto the fediverse, or a Mastodon account onto Bluesky. Bridged accounts look and behave like other accounts, with some delay and missing features. Mawkingbird does not run a bridge; it connects your two real accounts instead.
+
+See [how Bridgy Fed connects the networks](bluesky-bridge.md) for current opt-in rules and example handles.
 
 Next: [Find people to follow](../finding-people/find-people.md).

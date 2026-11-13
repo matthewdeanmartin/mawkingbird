@@ -68,6 +68,7 @@ interface ComposeInternals {
   thread: WritableSignal<string[]>;
   segments: Signal<string[]>;
   overLimit: Signal<boolean>;
+  effectiveMax: Signal<number>;
   addThreadBox(): void;
   setThreadText(index: number, value: string): void;
   removeThreadBox(index: number): void;
@@ -2096,6 +2097,57 @@ describe('Compose', () => {
     expect(internals(f).canSubmit()).toBe(false);
     internals(f).target.set('fedi');
     expect(internals(f).canSubmit()).toBe(true);
+  });
+
+  it('uses the Mastodon server limit for the counter, threads and cross-posting', async () => {
+    const auth = TestBed.inject(Auth);
+    auth.setToken('server-limit-token');
+    auth.setAccount({ id: 'me', username: 'me', acct: 'me' } as never);
+    linkBsky();
+    const f = setUp();
+    (f.nativeElement as HTMLElement).querySelector('textarea')?.focus();
+    httpMock.expectOne('/api/v2/instance').flush({
+      configuration: { statuses: { max_characters: 200 } },
+    });
+    await vi.waitFor(() => expect(internals(f).effectiveMax()).toBe(200));
+    internals(f).text.set('x'.repeat(201));
+    expect(internals(f).canSubmit()).toBe(false);
+    internals(f).text.set('short');
+    internals(f).addThreadBox();
+    internals(f).setThreadText(0, 'x'.repeat(201));
+    expect(internals(f).overLimit()).toBe(true);
+    internals(f).thread.set([]);
+    internals(f).target.set('both');
+    expect(internals(f).effectiveMax()).toBe(200);
+    internals(f).text.set('x'.repeat(201));
+    f.detectChanges();
+    expect((f.nativeElement as HTMLElement).querySelector('.seg-count')?.textContent).toContain(
+      'Mastodon 201/200',
+    );
+    expect(internals(f).canSubmit()).toBe(false);
+  });
+
+  it('allows a longer Mastodon limit while keeping Bluesky at 300', async () => {
+    const auth = TestBed.inject(Auth);
+    auth.setToken('long-server-token');
+    auth.setAccount({ id: 'me', username: 'me', acct: 'me' } as never);
+    linkBsky();
+    const f = setUp();
+    (f.nativeElement as HTMLElement).querySelector('textarea')?.focus();
+    httpMock.expectOne('/api/v2/instance').flush({
+      configuration: { statuses: { max_characters: 800 } },
+    });
+    await vi.waitFor(() => expect(internals(f).effectiveMax()).toBe(800));
+    internals(f).text.set('x'.repeat(600));
+    expect(internals(f).effectiveMax()).toBe(800);
+    expect(internals(f).canSubmit()).toBe(true);
+    internals(f).target.set('both');
+    expect(internals(f).effectiveMax()).toBe(300);
+    f.detectChanges();
+    expect((f.nativeElement as HTMLElement).querySelector('.seg-count')?.textContent).toContain(
+      'Bluesky 600/300',
+    );
+    expect(internals(f).canSubmit()).toBe(false);
   });
 
   it('measures thread boxes against the Bluesky limit, not the Fedi one', () => {

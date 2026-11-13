@@ -95,16 +95,25 @@
   @if (
     !targetIncludesPaste() &&
     !targetIncludesBlog() &&
-    (thread().length || charCount() > effectiveMax() - 50)
+    (thread().length || charCount() > effectiveMax() - 50 || overLimit())
   ) {
-    <!-- The limit follows the target: 500 on Fedi, 300 graphemes on Bluesky, and
-         the lower of the two for "both", where one body goes to each. Naming the
-         source explains a number that would otherwise look wrong to someone
-         looking at a Mastodon composer. -->
-    <div class="seg-count muted" [class.over-limit]="charCount() > effectiveMax()">
-      {{ charCount() }}/{{ effectiveMax() }}
-      @if (limitSource(); as who) {
-        <span class="limit-source">({{ who }})</span>
+    <div class="seg-count muted">
+      @if (target() === 'both') {
+        <span [class.over-limit]="mastodonCount(text()) > mastodonMax()"
+          >{{ 'compose.limit.mastodon' | transloco }} {{ mastodonCount(text()) }}/{{
+            mastodonMax()
+          }}</span
+        >
+        ·
+        <span [class.over-limit]="blueskyCount(text()) > blueskyMax"
+          >{{ 'compose.limit.bluesky' | transloco }} {{ blueskyCount(text()) }}/{{
+            blueskyMax
+          }}</span
+        >
+      } @else {
+        <span [class.over-limit]="charCount() > effectiveMax()"
+          >{{ charCount() }}/{{ effectiveMax() }}</span
+        >
       }
     </div>
   }
@@ -171,9 +180,22 @@
           (paste)="onPaste($event)"
         ></textarea>
         <div class="thread-box-meta">
-          <span class="muted" [class.over-limit]="countOf(t) > effectiveMax()"
-            >{{ countOf(t) }}/{{ effectiveMax() }}</span
-          >
+          @if (target() === 'both') {
+            <span class="muted" [class.over-limit]="mastodonCount(t) > mastodonMax()"
+              >{{ 'compose.limit.mastodon' | transloco }} {{ mastodonCount(t) }}/{{
+                mastodonMax()
+              }}</span
+            >
+            <span class="muted" [class.over-limit]="blueskyCount(t) > blueskyMax"
+              >{{ 'compose.limit.bluesky' | transloco }} {{ blueskyCount(t) }}/{{
+                blueskyMax
+              }}</span
+            >
+          } @else {
+            <span class="muted" [class.over-limit]="countOf(t) > effectiveMax()"
+              >{{ countOf(t) }}/{{ effectiveMax() }}</span
+            >
+          }
           <button
             mbButton
             variant="outline"
@@ -998,7 +1020,7 @@
       @if (targetIncludesPaste()) {
         {{ 'compose.warn.pasteTooBig' | transloco }}
       } @else {
-        {{ 'compose.warn.overLimit.a' | transloco }} {{ maxChars }}
+        {{ 'compose.warn.overLimit.a' | transloco }} {{ effectiveMax() }}
         {{ 'compose.warn.overLimit.b' | transloco }}
       }
     </div>

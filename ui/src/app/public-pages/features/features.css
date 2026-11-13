@@ -81,3 +81,30 @@ footer {
     justify-self: center;
   }
 }
+.comparison-scroll {
+  overflow-x: auto;
+}
+.comparison {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.comparison caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: 8px;
+}
+.comparison th,
+.comparison td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+.comparison thead th {
+  white-space: nowrap;
+}
+.comparison-checked {
+  font-size: 0.85rem;
+  color: var(--muted);
+}

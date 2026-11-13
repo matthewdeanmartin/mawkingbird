@@ -623,6 +623,9 @@ export class Compose implements OnDestroy {
   protected hugoEdit = inject(HugoEditSession);
   protected deployWatch = inject(HugoDeployWatch);
   private destroyed = false;
+  protected mastodonMax = signal(MAX_POST_CHARS);
+  private mastodonLimitServer: string | null = null;
+  private mastodonLimitPromise: Promise<void> | null = null;
 
   ngOnDestroy(): void {
     this.destroyed = true;
@@ -1396,27 +1399,35 @@ export class Compose implements OnDestroy {
   /**
    * The limit that actually applies to the box in front of the user.
    *
-   * Mastodon allows 500 characters (counting every URL as 23 — see
-   * {@link postLength}); Bluesky allows 300 *graphemes*. The composer used to
+   * Mastodon advertises its character limit in instance configuration. A missing
+   * or unavailable value falls back to 500. Bluesky allows 300 *graphemes*.
+   * The composer used to
    * measure everything against 500 regardless of where it was going, so a
    * 400-character Bluesky post showed a comfortable "100 left" and was then
    * refused by the network.
    *
-   * For `both` the lower limit binds, because one body goes to both services:
-   * accepting 400 here would guarantee half the cross-post fails.
+   * For `both` the lower displayed limit binds. Submission checks each
+   * network's own counting rule independently below.
    */
   protected readonly effectiveMax = computed(() =>
-    this.targetIncludesBsky() ? BSKY_MAX_GRAPHEMES : MAX_POST_CHARS,
+    this.target() === 'both'
+      ? Math.min(this.mastodonMax(), BSKY_MAX_GRAPHEMES)
+      : this.targetIncludesBsky()
+        ? BSKY_MAX_GRAPHEMES
+        : this.mastodonMax(),
   );
 
-  /**
-   * Which service's rule the current limit comes from, for the counter to name.
-   * Only worth saying for `both`, where the number is smaller than the Mastodon
-   * limit the user is looking at a Mastodon composer expecting.
-   */
-  protected readonly limitSource = computed(() => (this.target() === 'both' ? 'Bluesky' : ''));
+  protected readonly blueskyMax = BSKY_MAX_GRAPHEMES;
+  // i18n compose.limit.mastodon: Mastodon
+  // i18n compose.limit.bluesky: Bluesky
 
-  protected readonly maxChars = MAX_POST_CHARS;
+  protected mastodonCount(text: string): number {
+    return postLength(text);
+  }
+
+  protected blueskyCount(text: string): number {
+    return graphemeLength(text);
+  }
 
   /**
    * The post's length as the *server* counts it, not as the string measures.
@@ -1428,7 +1439,10 @@ export class Compose implements OnDestroy {
    * accepted without comment.
    */
   protected countOf(text: string): number {
-    return this.targetIncludesBsky() ? graphemeLength(text) : postLength(text);
+    return this.targetIncludesBsky() &&
+      (this.target() !== 'both' || this.mastodonMax() >= BSKY_MAX_GRAPHEMES)
+      ? graphemeLength(text)
+      : postLength(text);
   }
 
   /** The visible counter for the main box. */
@@ -1443,7 +1457,11 @@ export class Compose implements OnDestroy {
       return false;
     }
     const max = this.effectiveMax();
-    return this.segments().some((s) => this.countOf(s) > max);
+    return this.segments().some((s) =>
+      this.target() === 'both'
+        ? postLength(s) > this.mastodonMax() || graphemeLength(s) > BSKY_MAX_GRAPHEMES
+        : this.countOf(s) > max,
+    );
   });
 
   /**
@@ -1708,6 +1726,29 @@ export class Compose implements OnDestroy {
   /** Remember which box has focus so emoji insertion lands in the right place. */
   onBoxFocus(index: number, event: FocusEvent): void {
     this.lastFocusedBox = { index, el: event.target as HTMLTextAreaElement };
+    if (this.target() === 'fedi' || this.target() === 'both') void this.loadMastodonLimit();
+  }
+
+  private loadMastodonLimit(): Promise<void> {
+    if (!this.auth.token() || !this.auth.account()) return Promise.resolve();
+    const server = this.server.baseUrl();
+    if (this.mastodonLimitServer === server) return this.mastodonLimitPromise ?? Promise.resolve();
+    this.mastodonLimitServer = server;
+    this.mastodonMax.set(MAX_POST_CHARS);
+    this.mastodonLimitPromise = firstValueFrom(this.api.instanceInfo())
+      .then((info) => {
+        if (this.destroyed || this.mastodonLimitServer !== server) return;
+        const limit = info.configuration?.statuses?.max_characters;
+        if (typeof limit === 'number' && Number.isSafeInteger(limit) && limit > 0)
+          this.mastodonMax.set(limit);
+      })
+      .catch(() => {
+        // Older or unavailable servers still have the usual 500 fallback.
+      })
+      .finally(() => {
+        if (this.mastodonLimitServer === server) this.mastodonLimitPromise = null;
+      });
+    return this.mastodonLimitPromise;
   }
 
   /** Mastodon-compatible keys inside the box: ctrl/⌘+enter sends, alt+x toggles CW. */
@@ -2514,6 +2555,12 @@ export class Compose implements OnDestroy {
     if (!this.mentionChatPartner()) {
       return;
     }
+    if (
+      (this.target() === 'fedi' || this.target() === 'both') &&
+      this.auth.token() &&
+      this.auth.account()
+    )
+      await this.loadMastodonLimit();
     if (!this.canSubmit()) {
       return;
     }

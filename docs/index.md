@@ -42,6 +42,32 @@ These pages are about the project rather than how to use it:
 - [How Mawkingbird is funded](https://mawkingbird.com/funding/)
 - [Mastodon communities by interest](https://mawkingbird.com/communities/) and [who to follow](https://mawkingbird.com/follow/)
 - [Free tools for Mastodon and Bluesky](https://mawkingbird.com/tools/)
+- [Everything Mawkingbird can do](https://mawkingbird.com/features/), and what it offers
+  [readers](https://mawkingbird.com/for/readers/),
+  [Bluesky users](https://mawkingbird.com/for/bluesky/),
+  [people leaving Twitter](https://mawkingbird.com/for/twitter-exodus/),
+  [photo lovers](https://mawkingbird.com/for/instagram/),
+  [creators](https://mawkingbird.com/for/creators/) and
+  [power users](https://mawkingbird.com/for/power-users/)
+- [Mastodon clients compared](https://mawkingbird.com/compare/): Mawkingbird next to
+  [Elk](https://mawkingbird.com/compare/elk/),
+  [Phanpy](https://mawkingbird.com/compare/phanpy/) and
+  [Ivory](https://mawkingbird.com/compare/ivory/)
+- [Mastodon vs Bluesky](https://mawkingbird.com/compare/mastodon-vs-bluesky/):
+  how accounts, feeds and conversations differ
+- [Openvibe](https://mawkingbird.com/compare/openvibe/),
+  [Ice Cubes](https://mawkingbird.com/compare/ice-cubes/),
+  [Tusky](https://mawkingbird.com/compare/tusky/) and the
+  [official Mastodon app](https://mawkingbird.com/compare/mastodon-app/):
+  more client choices compared with Mawkingbird
+- [RSS feeds for Mastodon and Bluesky accounts](reading/mastodon-bluesky-rss.md):
+  read public social posts alongside websites and blogs
+- [Follow across Mastodon and Bluesky with a bridge](new-to-mastodon/bluesky-bridge.md):
+  what Bridgy Fed can and cannot carry
+- [Mastodon post length and media limits](posting/mastodon-limits.md):
+  check text, images and video before publishing
+- [How hashtags work on Mastodon](finding-people/mastodon-hashtags.md):
+  find and follow topics across servers
 
 [Open Mawkingbird](https://mawkingbird.com/){ .btn }
 
