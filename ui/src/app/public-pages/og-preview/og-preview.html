@@ -1,0 +1,28 @@
+<main class="og-preview" lang="en">
+  <header>
+    <p class="eyebrow">Mawkingbird artwork</p>
+    <h1>Share image previews</h1>
+    <p>
+      These are the current images used for link previews. The last two are reserved for future
+      pages.
+    </p>
+  </header>
+  <div class="cards">
+    @for (card of cards; track card.file) {
+      <figure>
+        <img
+          [src]="'og/' + card.file + '.png'"
+          [alt]="card.label + ' share image'"
+          width="1200"
+          height="630"
+          loading="lazy"
+        />
+        <figcaption>
+          <strong>{{ card.label }}</strong>
+          <span>{{ card.use }}</span>
+          <code>og/{{ card.file }}.png</code>
+        </figcaption>
+      </figure>
+    }
+  </div>
+</main>

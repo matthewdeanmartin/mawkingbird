@@ -2490,7 +2490,6 @@ choices and default, matching the web flow; the same post action-error area show
 a localized reconnect instruction for legacy native read-only credentials. No
 shared widget or template changed; reconciliation dispositions remain unchanged.
 
-
 ### Native discovery and reader controls (2026-11-13)
 
 Reviewed regeneration: 1838 scanned files, 639 candidate files; no candidate files
@@ -2500,7 +2499,6 @@ omits proxy controls/upsells and uses direct-reading explanations; browser Plus,
 proxy controls and consent/retry behavior remain unchanged. No shared widget
 implementation changed; reconciliation candidate dispositions remain unchanged.
 
-
 ### Native Bluesky and Misskey account flows (2026-11-13)
 
 Reviewed regeneration: 1840 scanned source files, 639 candidate files. No
@@ -2509,7 +2507,6 @@ native reader batch. The Bluesky login and connection templates conditionally
 omit app-password fallback in native; the existing browser OAuth and fallback
 controls are preserved. Other changes move source positions. No shared widget
 implementation changed; reconciliation dispositions remain unchanged.
-
 
 ### Native MiAuth approval and YouTube browser handoff (2026-11-13)
 
@@ -2550,3 +2547,7 @@ Reviewed regenerated inventory for the shared Gist and link-shortener pages. Nat
 ### 2026-11-14 — native GitHub and Hugo
 
 Reviewed regenerated inventory: candidate file set remains unchanged. Shared connection forms retain web storage and validation behavior; native forms show OS credential storage, await disconnect failures, and hide deferred Hugo POSSE controls. No shared widget changes or reconciliation additions/removals. Targeted connection browser stories and compiled native smoke cover these flows.
+
+### 2026-11-14 — share image preview page
+
+Reviewed regenerated inventory: 1845 scanned files and 639 candidate files. The new preview component adds images and captions without controls. Candidate files and control counts remain unchanged, so 11-reconciliation.json needs no added or removed entries.

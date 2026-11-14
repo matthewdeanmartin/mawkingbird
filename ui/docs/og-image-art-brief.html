@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mawkingbird — artist work request: search and share images</title>
+  <style>
+    :root { font-family: Arial, Helvetica, sans-serif; color: #182126; background: #fff; }
+    * { box-sizing: border-box; }
+    body { max-width: 1080px; margin: auto; padding: 28px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    .intro { margin: 0 0 18px; font-size: 15px; line-height: 1.45; }
+    .requirements { padding: 14px 18px; margin-bottom: 20px; background: #eef7fd; border-left: 5px solid #198bd1; }
+    .requirements h2 { margin: 0 0 8px; font-size: 18px; }
+    .requirements ul { margin: 0; padding-left: 20px; line-height: 1.45; }
+    .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    article { border: 1px solid #b8c8d1; padding: 12px; break-inside: avoid; page-break-inside: avoid; }
+    article h2 { margin: 0 0 4px; font-size: 18px; }
+    .filename { color: #46606e; font-size: 12px; margin: 0 0 8px; }
+    figure { margin: 0 0 8px; }
+    figure img { display: block; width: 100%; height: auto; border: 1px solid #d6e0e5; }
+    figcaption { margin-top: 4px; color: #53636d; font-size: 11px; }
+    article p { margin: 6px 0; font-size: 13px; line-height: 1.35; }
+    .label { font-weight: 700; }
+    .future { color: #53636d; font-size: 12px; }
+    @media (max-width: 700px) { .cards { grid-template-columns: 1fr; } body { padding: 16px; } }
+    @media print {
+      @page { size: letter landscape; margin: 0.32in; }
+      body { max-width: none; padding: 0; }
+      h1 { font-size: 17pt; }
+      .intro { font-size: 9pt; margin-bottom: 7px; }
+      .requirements { padding: 5px 8px; margin-bottom: 8px; }
+      .requirements h2 { font-size: 10pt; margin-bottom: 3px; }
+      .requirements ul { font-size: 8pt; }
+      .cards { gap: 5mm; }
+      article { padding: 2.5mm; }
+      article h2 { font-size: 10.5pt; }
+      .filename, figcaption, .future { font-size: 7pt; }
+      .filename { margin-bottom: 3px; }
+      figure { margin-bottom: 3px; }
+      article p { font-size: 8pt; margin: 3px 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Artist work request: nine Mawkingbird images</h1>
+  <p class="intro">Please hand draw nine finished cards for Mawkingbird search and link previews. Each card introduces a different part of the website. The pictures below are the temporary cards currently in use; they show the present wording and format, not the artwork you need to copy.</p>
+  <section class="requirements" aria-label="Requirements for all nine images">
+    <h2>What to deliver</h2>
+    <ul>
+      <li>Nine finished PNG cards, one for each filename below, each <strong>1200 × 630 pixels</strong> and <strong>under 200 KB</strong>.</li>
+      <li>Use a cohesive hand-drawn style that feels like Mawkingbird. Make each topic distinct and easy to understand at thumbnail size. Mawkingbird already has a hand-drawn bird; you do not need to draw a new bird.</li>
+      <li>Keep the main subject and essential words within the <strong>center 630 × 630 pixels</strong>; some previews crop the left and right sides.</li>
+      <li>Use the current headline and supporting line shown on each card. Keep words large and legible. The blue stripe, icons and layout are examples, not required design elements.</li>
+    </ul>
+  </section>
+
+  <main class="cards">
+    <article>
+      <h2>1. Mawkingbird overall</h2><p class="filename">Deliver as: default.png</p>
+      <figure><img src="../public/og/default.png" alt="Current default card, with a bird and list icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> One welcoming place where Mastodon, Bluesky and RSS feeds come together. Use the existing Mawkingbird bird artwork if a bird belongs in the composition.</p>
+      <p><span class="label">Words:</span> “Mastodon, Bluesky and RSS in one place” / “A free browser client for all your feeds.”</p>
+    </article>
+    <article>
+      <h2>2. Free tools</h2><p class="filename">Deliver as: tools.png</p>
+      <figure><img src="../public/og/tools.png" alt="Current tools card, with a blue wrench icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> A useful set of practical tools for Mastodon and Bluesky; the sense is “pick a tool and get a job done.”</p>
+      <p><span class="label">Words:</span> “Free tools for Mastodon and Bluesky” / “One task per page. Nothing to install.”</p>
+    </article>
+    <article>
+      <h2>3. Communities</h2><p class="filename">Deliver as: communities.png</p>
+      <figure><img src="../public/og/communities.png" alt="Current communities card, with a bird and hashtag icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> People finding one another through shared interests on Mastodon. Hashtags, people and servers are the three ingredients.</p>
+      <p><span class="label">Words:</span> “Mastodon communities by interest” / “Hashtags, people and servers for what you love.”</p>
+    </article>
+    <article>
+      <h2>4. Who to follow</h2><p class="filename">Deliver as: follow.png</p>
+      <figure><img src="../public/og/follow.png" alt="Current follow card, with a bird and people icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> Discovering interesting people and choosing who to follow on Mastodon. Make it feel personal and welcoming.</p>
+      <p><span class="label">Words:</span> “Who to follow on Mastodon” / “Hand-picked people, ready to follow.”</p>
+    </article>
+    <article>
+      <h2>5. Reading your way</h2><p class="filename">Deliver as: audience.png</p>
+      <figure><img src="../public/og/audience.png" alt="Current audience card, with a blue book icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> A comfortable reading experience with Mastodon, Bluesky and RSS side by side, arranged to suit the reader.</p>
+      <p><span class="label">Words:</span> “Made for the way you read” / “Mastodon, Bluesky and RSS, side by side.”</p>
+    </article>
+    <article>
+      <h2>6. Help</h2><p class="filename">Deliver as: help.png</p>
+      <figure><img src="../public/og/help.png" alt="Current help card, with a blue question mark icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> Friendly guidance or an approachable guide that helps someone find their way through the app.</p>
+      <p><span class="label">Words:</span> “Mawkingbird Help” / “Guides for every corner of the app.”</p>
+    </article>
+    <article>
+      <h2>7. News</h2><p class="filename">Deliver as: news.png</p>
+      <figure><img src="../public/og/news.png" alt="Current news card, with a bird and news icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> News about Mawkingbird: updates, improvements and the story behind a change.</p>
+      <p><span class="label">Words:</span> “Mawkingbird News” / “What changed, and why.”</p>
+    </article>
+    <article>
+      <h2>8. Invitation</h2><p class="filename">Deliver as: invite.png</p>
+      <figure><img src="../public/og/invite.png" alt="Current invitation card, with a blue envelope icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> A warm invitation from one person to another to join Mastodon and choose a server.</p>
+      <p><span class="label">Words:</span> “You’re invited to Mastodon” / “Open the link to pick a server and join.”</p>
+      <p class="future">Prepared for a future invitation page.</p>
+    </article>
+    <article>
+      <h2>9. Shared post</h2><p class="filename">Deliver as: share.png</p>
+      <figure><img src="../public/og/share.png" alt="Current shared post card, with a blue link icon"><figcaption>Current temporary card</figcaption></figure>
+      <p><span class="label">Draw:</span> A post shared from Mawkingbird that leads someone into the post and its conversation.</p>
+      <p><span class="label">Words:</span> “Shared from Mawkingbird” / “Open it to read the post and the conversation.”</p>
+      <p class="future">Prepared for a future shared-post page.</p>
+    </article>
+  </main>
+</body>
+</html>

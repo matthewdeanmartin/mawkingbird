@@ -242,6 +242,12 @@ export const routes: Routes = [
   ...feedBuilderRoutes,
   ...feedBuilderPreviewRoutes,
   {
+    path: 'og-preview',
+    title: 'Mawkingbird share image previews',
+    data: { seoIndexable: false },
+    loadComponent: () => import('./public-pages/og-preview/og-preview').then((m) => m.OgPreview),
+  },
+  {
     path: 'features',
     title: 'Mastodon, reading and writing features',
     data: {

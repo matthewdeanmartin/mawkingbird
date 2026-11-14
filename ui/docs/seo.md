@@ -589,6 +589,7 @@ fails if either sitemap lacks dates.
 Link previews use one card per page family, 1200×630 PNGs under 200 KB in
 `public/og/`: `default`, `tools`, `communities`, `follow`, `audience`, `help`,
 `news`, `invite` and `share`. A route picks its card with `data: { seoImage }`;
+the [share image preview page](/og-preview) shows all nine current cards together.
 `Seo` (`SHARE_IMAGES` in `seo.ts`) writes `og:image`, `twitter:image` and both
 alt texts, falling back to `default`. Tool pages and indexes, communities pages
 and hubs, `/follow/` and `/for/` set it in both `app.routes.ts` (or their shared
