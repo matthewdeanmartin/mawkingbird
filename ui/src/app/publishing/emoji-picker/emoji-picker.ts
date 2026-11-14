@@ -40,6 +40,8 @@ export class EmojiPicker implements OnDestroy {
 
   /** Emits the text to insert: a native emoji or a `:shortcode:`. */
   readonly picked = output<string>();
+  /** Let an enclosing popup dismiss before the picker handles Escape internally. */
+  readonly escaped = output<void>();
 
   private host = viewChild.required<ElementRef<HTMLDivElement>>('host');
   private picker: HTMLElement | null = null;
@@ -97,6 +99,13 @@ export class EmojiPicker implements OnDestroy {
         this.picked.emit(emoji.native ?? `:${emoji.id}:`);
       },
     }) as unknown as HTMLElement;
+    this.picker.addEventListener(
+      'keydown',
+      (event) => {
+        if (event.key === 'Escape') this.escaped.emit();
+      },
+      { capture: true },
+    );
     this.picker.style.width = '100%';
     el.appendChild(this.picker);
   }

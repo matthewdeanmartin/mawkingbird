@@ -1,3 +1,34 @@
+<form class="chat-start" (ngSubmit)="startNamedChat()">
+  <label for="chat-with">{{ 'pages.conversations.chatWith' | transloco }}</label>
+  <input
+    id="chat-with"
+    name="chatWith"
+    autocomplete="off"
+    [ngModel]="chatWith()"
+    (ngModelChange)="chatWith.set($event)"
+    [placeholder]="'pages.conversations.chatHandle' | transloco"
+    [disabled]="!mastodonAvailable() || startingChat()"
+  />
+  <button
+    mbButton
+    type="submit"
+    [disabled]="!mastodonAvailable() || startingChat() || !chatWith().trim()"
+  >
+    {{ 'pages.conversations.startPrivate' | transloco }}
+  </button>
+  <button
+    mbButton
+    variant="outline"
+    type="button"
+    [attr.aria-pressed]="sound.enabled()"
+    [title]="'pages.conversations.soundHint' | transloco"
+    (click)="sound.toggle()"
+  >
+    {{
+      (sound.enabled() ? 'pages.conversations.soundOn' : 'pages.conversations.soundOff') | transloco
+    }}
+  </button>
+</form>
 @if (startChatError()) {
   <p role="alert">{{ 'pages.conversations.startFailed' | transloco }}</p>
   <button type="button" class="btn" (click)="retryStartChat()">
@@ -436,59 +467,57 @@
             [label]="'pages.conversations.bskyMenu.label' | transloco"
             [closeLabel]="'pages.conversations.bskyMenu.close' | transloco"
           >
-            <button mbMenuItem type="button" (click)="toggleBskyMute(chat)">
-              {{
-                (chat.muted
-                  ? 'pages.conversations.bskyMenu.unmute'
-                  : 'pages.conversations.bskyMenu.mute'
-                ) | transloco
-              }}
+            <button
+              mbMenuItem
+              type="button"
+              [disabled]="loading() || refreshing()"
+              (click)="refreshAll()"
+            >
+              {{ 'pages.conversations.refresh' | transloco }}
             </button>
-            <button mbMenuItem type="button" tone="danger" (click)="leaveBskyConvo(chat)">
-              {{
-                (chat.request
-                  ? 'pages.conversations.requests.decline'
-                  : 'pages.conversations.bskyMenu.leave'
-                ) | transloco
-              }}
+            <button mbMenuItem type="button" (click)="moderationChat.set(chat)">
+              {{ 'pages.conversations.moderate' | transloco }}
             </button>
           </mb-post-menu>
         }
         <!-- No moderation menu for bots: there is nobody to mute, block or
              report, and offering it would imply otherwise. -->
-        @if (chat.accounts.length && chat.kind !== 'bot') {
-          <details class="danger-menu">
-            <summary [aria-label]="'pages.conversations.actionsAriaLabel' | transloco">•••</summary>
-            <div class="danger-menu-panel">
-              @if (chat.kind === 'private' && chat.convIds.length) {
-                <button type="button" (click)="markUnread(chat)">
-                  {{ 'pages.conversations.markUnread' | transloco }}
-                </button>
-                <button type="button" (click)="removeChat(chat)">
-                  {{ 'pages.conversations.remove' | transloco }}
-                </button>
-                <hr class="menu-rule" />
-              }
-              @for (a of chat.accounts; track a.id) {
-                <div class="menu-account">
-                  <div class="menu-account-name muted small">&#64;{{ a.acct }}</div>
-                  @if (moderated()[a.id]; as state) {
-                    <span class="muted small">{{ state }}</span>
-                  } @else {
-                    <button type="button" (click)="muteParticipant(a)">
-                      {{ 'pages.conversations.mute' | transloco }}
-                    </button>
-                    <button type="button" (click)="blockParticipant(a)">
-                      {{ 'pages.conversations.block' | transloco }}
-                    </button>
-                    <button type="button" (click)="reportTarget.set(a)">
-                      {{ 'pages.conversations.report' | transloco }}
-                    </button>
-                  }
-                </div>
-              }
-            </div>
-          </details>
+        @if (chat.kind === 'public' || chat.kind === 'private') {
+          <mb-post-menu
+            [label]="'pages.conversations.actionsAriaLabel' | transloco"
+            [closeLabel]="'pages.conversations.close' | transloco"
+          >
+            @if (chat.kind === 'public') {
+              <button mbMenuItem type="button" (click)="startPrivateChat(chat)">
+                {{ 'pages.conversations.startPrivate' | transloco }}
+              </button>
+            }
+            <button
+              mbMenuItem
+              type="button"
+              [disabled]="loading() || refreshing()"
+              (click)="refreshAll()"
+            >
+              {{ 'pages.conversations.refresh' | transloco }}
+            </button>
+            @if (chat.kind === 'private' && chat.convIds.length) {
+              <button mbMenuItem type="button" (click)="markUnread(chat)">
+                {{ 'pages.conversations.markUnread' | transloco }}
+              </button>
+              <button mbMenuItem type="button" tone="danger" (click)="removeChat(chat)">
+                {{ 'pages.conversations.remove' | transloco }}
+              </button>
+            }
+            @if (moderationAccounts(chat).length) {
+              <button
+                mbMenuItem
+                type="button"
+                (click)="moderationError.set(false); moderationChat.set(chat)"
+              >
+                {{ 'pages.conversations.moderate' | transloco }}
+              </button>
+            }
+          </mb-post-menu>
         }
       </header>
 
@@ -522,6 +551,11 @@
       }
 
       @if (chat.kind === 'public') {
+        <div class="private-chat-shortcut">
+          <button mbButton variant="outline" type="button" (click)="startPrivateChat(chat)">
+            {{ 'pages.conversations.startPrivate' | transloco }}
+          </button>
+        </div>
         <details class="public-banner">
           <summary>
             📢 <strong>{{ 'pages.conversations.publicBanner.title' | transloco }}</strong>
@@ -747,7 +781,7 @@
             </div>
           }
         }
-        @for (m of chat.kind === 'bsky' ? [] : messages(); track m.id) {
+        @for (m of chat.kind === 'bsky' ? [] : transcript(); track m.id) {
           <div class="bubble-row" [class.mine]="isMine(m)">
             @if (!isMine(m)) {
               <a
@@ -783,6 +817,33 @@
                   decoding="async"
                 />
               }
+              @if (groupedReplies(m.id).length) {
+                <div class="bubble-reactions">
+                  @for (reply of groupedEmojiChips(m.id); track reply.value) {
+                    <button
+                      mbButton
+                      variant="compact"
+                      size="small"
+                      type="button"
+                      class="reaction-chip"
+                      [class.on]="reply.mine"
+                      [attr.aria-pressed]="reply.mine"
+                      [disabled]="emojiSending()"
+                      [attr.aria-label]="
+                        'pages.conversations.emojiReaction'
+                          | transloco: { emoji: reply.value, count: reply.count }
+                      "
+                      [title]="reply.authors"
+                      (click)="toggleEmojiReply(m, reply.value)"
+                    >
+                      <span aria-hidden="true">{{ reply.value }} {{ reply.count }}</span>
+                    </button>
+                  }
+                </div>
+              }
+              @if (emojiError()) {
+                <p role="alert">{{ 'pages.conversations.emojiFailed' | transloco }}</p>
+              }
               <div class="bubble-meta muted">
                 <span>{{ m.created_at | humanTime }}</span>
                 <span class="bubble-actions">
@@ -800,6 +861,46 @@
                       <span class="bubble-count">{{ m.favourites_count }}</span>
                     }
                   </button>
+                  <button
+                    #emojiTrigger
+                    class="bubble-action"
+                    type="button"
+                    [class.on]="emojiPopover.opened()"
+                    [disabled]="emojiSending()"
+                    [title]="'pages.conversations.emojiReply' | transloco"
+                    [attr.aria-label]="'pages.conversations.emojiReply' | transloco"
+                    aria-haspopup="dialog"
+                    [attr.aria-expanded]="emojiPopover.opened()"
+                    [attr.aria-controls]="emojiPopover.id"
+                    (click)="emojiError.set(false); emojiPopover.toggle()"
+                    (keydown.escape)="emojiPopover.close(); $event.stopPropagation()"
+                  >
+                    <span aria-hidden="true">😀</span>
+                  </button>
+                  <mb-popover
+                    #emojiPopover
+                    [anchor]="emojiTrigger"
+                    [roomy]="true"
+                    [label]="'pages.conversations.emojiReply' | transloco"
+                  >
+                    @if (emojiPopover.opened()) {
+                      <button
+                        mbButton
+                        variant="compact"
+                        type="button"
+                        (click)="emojiPopover.close()"
+                      >
+                        {{ 'pages.conversations.emojiClose' | transloco }}
+                      </button>
+                      <app-emoji-picker
+                        (picked)="sendEmojiReply(m, $event, emojiPopover)"
+                        (escaped)="emojiPopover.close()"
+                      />
+                      @if (emojiError()) {
+                        <p role="alert">{{ 'pages.conversations.emojiFailed' | transloco }}</p>
+                      }
+                    }
+                  </mb-popover>
                   <button
                     class="bubble-action"
                     [class.on]="m.bookmarked"
@@ -931,4 +1032,90 @@
     (closed)="reportTarget.set(null)"
     (submitted)="reportTarget.set(null)"
   />
+}
+
+@if (activeModerationChat(); as chat) {
+  <mb-dialog
+    [title]="'pages.conversations.moderationTitle' | transloco"
+    [closeLabel]="'pages.conversations.close' | transloco"
+    [busy]="moderationBusy()"
+    (dismissed)="moderationChat.set(null)"
+  >
+    <p>{{ 'pages.conversations.moderationIntro' | transloco }}</p>
+    @if (moderationError()) {
+      <p role="alert">{{ 'pages.conversations.moderationFailed' | transloco }}</p>
+    }
+    @if (chat.kind === 'bsky') {
+      <p>{{ 'pages.conversations.bskyModerationExplanation' | transloco }}</p>
+      <button mbButton variant="outline" type="button" (click)="toggleBskyMute(chat)">
+        {{
+          (chat.muted ? 'pages.conversations.bskyMenu.unmute' : 'pages.conversations.bskyMenu.mute')
+            | transloco
+        }}
+      </button>
+      <button mbButton variant="outline" type="button" tone="danger" (click)="leaveBskyConvo(chat)">
+        {{
+          (chat.request
+            ? 'pages.conversations.requests.decline'
+            : 'pages.conversations.bskyMenu.leave'
+          ) | transloco
+        }}
+      </button>
+    }
+    @for (account of moderationAccounts(chat); track account.id) {
+      <section class="chat-moderation-account">
+        <h3>&#64;{{ account.acct }}</h3>
+        @if (moderated()[account.id]; as state) {
+          <p role="status">
+            {{
+              (state === 'muted' ? 'pages.conversations.muted' : 'pages.conversations.blocked')
+                | transloco
+            }}
+          </p>
+        } @else {
+          <p>{{ 'pages.conversations.muteExplanation' | transloco }}</p>
+          <label>
+            {{ 'pages.conversations.mute' | transloco }}
+            <select [(ngModel)]="muteDuration" [disabled]="moderationBusy()">
+              <option [ngValue]="3600">{{ 'pages.conversations.muteHour' | transloco }}</option>
+              <option [ngValue]="86400">{{ 'pages.conversations.muteDay' | transloco }}</option>
+              <option [ngValue]="604800">{{ 'pages.conversations.muteWeek' | transloco }}</option>
+              <option [ngValue]="0">{{ 'pages.conversations.muteForever' | transloco }}</option>
+            </select>
+          </label>
+          <button
+            mbButton
+            variant="outline"
+            type="button"
+            [disabled]="moderationBusy()"
+            (click)="muteParticipant(account)"
+          >
+            {{ 'pages.conversations.mute' | transloco }}
+          </button>
+          <p>{{ 'pages.conversations.blockExplanation' | transloco }}</p>
+          <button
+            mbButton
+            variant="outline"
+            tone="danger"
+            type="button"
+            [disabled]="moderationBusy()"
+            (click)="blockParticipant(account)"
+          >
+            {{ 'pages.conversations.block' | transloco }}
+          </button>
+          <p>{{ 'pages.conversations.reportExplanation' | transloco }}</p>
+          <button
+            mbButton
+            variant="outline"
+            tone="danger"
+            type="button"
+            [disabled]="moderationBusy()"
+            (click)="reportTarget.set(account)"
+          >
+            {{ 'pages.conversations.report' | transloco }}
+          </button>
+        }
+      </section>
+    }
+  </mb-dialog>
 }

@@ -316,6 +316,8 @@ describe('Conversations configured networks', () => {
     it('leaves a conversation only after confirming', async () => {
       create();
       select();
+      button('Moderate…').click();
+      fixture.detectChanges();
       confirm.mockResolvedValueOnce(false);
       button('Leave conversation').click();
       await flush();
@@ -379,6 +381,8 @@ describe('Conversations configured networks', () => {
     it('mutes and unmutes a conversation and marks it in the list', () => {
       create();
       select();
+      button('Moderate…').click();
+      fixture.detectChanges();
       button('Mute conversation').click();
       fixture.detectChanges();
       expect(setConvoMuted).toHaveBeenCalledWith('one', true);

@@ -10,8 +10,8 @@
      the largest it ever gets, so a fixed subtraction from it permanently spends
      space the page does not have. The vh line is the fallback for browsers
      without dvh, and must come first. */
-  height: calc(100vh - 100px);
-  height: calc(100dvh - 100px);
+  height: calc(100vh - 164px);
+  height: calc(100dvh - 164px);
 }
 
 /* Desktop shows both panes, so there is nothing to toggle. */
@@ -246,62 +246,6 @@
   white-space: nowrap;
 }
 
-.danger-menu {
-  position: relative;
-}
-
-.danger-menu summary {
-  list-style: none;
-  cursor: pointer;
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border);
-}
-
-.danger-menu summary::-webkit-details-marker {
-  display: none;
-}
-
-.danger-menu-panel {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 4px);
-  z-index: 10;
-  min-width: 200px;
-  padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--col-bg);
-  box-shadow: 0 6px 20px rgb(0 0 0 / 0.15);
-}
-
-.menu-account {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 0;
-}
-
-.menu-account-name {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.menu-account button {
-  border: 1px solid var(--border);
-  background: none;
-  color: inherit;
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.menu-account button:hover {
-  background: var(--border);
-}
-
 /* Always show the public audience; expand for the longer explanation. */
 .public-banner {
   flex-shrink: 0;
@@ -386,6 +330,7 @@
 
 .bubble-meta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-top: 4px;
@@ -717,4 +662,49 @@
 
 .live-diag-alert {
   font-weight: 600;
+}
+
+.chat-start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 4px;
+}
+.chat-start input {
+  flex: 1;
+  min-width: 120px;
+  padding: 8px;
+  font: inherit;
+  color: var(--text);
+  background: var(--col-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.private-chat-shortcut {
+  padding: 6px 12px;
+}
+.chat-moderation-account + .chat-moderation-account {
+  border-top: 1px solid var(--border);
+}
+.chat-moderation-account select {
+  font: inherit;
+  margin: 0 8px;
+}
+
+@media (hover: none) {
+  .bubble-actions {
+    opacity: 1;
+  }
+}
+@media (pointer: coarse) {
+  .bubble-actions {
+    flex-wrap: wrap;
+  }
+  .bubble-action {
+    min-width: 44px;
+    min-height: 44px;
+  }
 }

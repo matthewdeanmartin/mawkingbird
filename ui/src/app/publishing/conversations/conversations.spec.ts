@@ -220,6 +220,258 @@ describe('Conversations', () => {
     return fixture;
   }
 
+  it('starts a separate private chat without sending or changing the public thread', () => {
+    const account = makeAccount('2', 'alice');
+    const status = makeStatus('public', { account, visibility: 'public' });
+    const fixture = setUp([], [makeMention('mention', status)]);
+    const publicChat = realChats(fixture)[0];
+    fixture.componentInstance['startPrivateChat'](publicChat);
+    expect(internals(fixture).selected()?.kind).toBe('private');
+    expect(internals(fixture).replyVisibility()).toBe('direct');
+    expect(internals(fixture).replyToId()).toBeUndefined();
+    expect(realChats(fixture).find((c) => c.key === publicChat.key)?.lastStatus?.id).toBe('public');
+    httpMock.expectNone((r) => r.method === 'POST');
+  });
+
+  it('resolves the always-visible Chat with field to a private composer', () => {
+    const fixture = setUp();
+    fixture.componentInstance['chatWith'].set('@alice@example.org');
+    fixture.componentInstance['startNamedChat']();
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search' && r.params.get('q') === 'alice@example.org')
+      .flush({ accounts: [makeAccount('2', 'alice@example.org')] });
+    expect(internals(fixture).selected()?.handles).toEqual(['alice@example.org']);
+    expect(internals(fixture).replyVisibility()).toBe('direct');
+    expect(fixture.nativeElement.querySelector('#chat-with')).not.toBeNull();
+    httpMock.expectNone((r) => r.method === 'POST');
+  });
+
+  it('accepts a fully qualified local self handle even when the server returns a short acct', () => {
+    const fixture = setUp();
+    fixture.componentInstance['chatWith'].set('@me_user@example.org');
+    fixture.componentInstance['startNamedChat']();
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search')
+      .flush({
+        accounts: [{ ...ME, url: 'https://example.org/@me_user' }],
+      });
+    expect(internals(fixture).selected()?.key).toBe('priv:');
+    expect(internals(fixture).replyMentions()).toBe('@me_user ');
+    expect(internals(fixture).replyVisibility()).toBe('direct');
+    httpMock.expectNone((r) => r.method === 'POST');
+  });
+
+  it('puts moderation choices in a dialog and defaults to a temporary mute', () => {
+    const account = makeAccount('2', 'alice');
+    const fixture = setUp([makeConversation('c', { accounts: [account] })]);
+    const chat = realChats(fixture)[0];
+    fixture.componentInstance['select'](chat);
+    fixture.detectChanges();
+    const menu = fixture.nativeElement.querySelector('mb-post-menu');
+    expect(menu.textContent).toContain('Moderate');
+    expect(menu.textContent).not.toContain('Block');
+    fixture.componentInstance['moderationChat'].set(chat);
+    fixture.detectChanges();
+    httpMock.expectNone((r) => r.method === 'POST');
+    fixture.componentInstance.muteParticipant(account);
+    const request = httpMock.expectOne('/api/v1/accounts/2/mute');
+    expect(request.request.body.duration).toBe(3600);
+    request.flush({});
+    expect(fixture.componentInstance['moderated']()['2']).toBe('muted');
+  });
+
+  it('updates the chat row when a user-stream reply reaches the open transcript', () => {
+    const account = makeAccount('2', 'alice');
+    const original = makeStatus('original', { account, visibility: 'public' });
+    const fixture = setUp([], [makeMention('n', original)]);
+    const chat = realChats(fixture)[0];
+    internals(fixture).selectedKey.set(chat.key);
+    internals(fixture).messages.set([original]);
+    const reply = makeStatus('reply', {
+      account,
+      visibility: 'public',
+      in_reply_to_id: original.id,
+      created_at: '2026-02-01T00:00:00Z',
+    });
+    streaming.emit('user', { event: 'update', payload: reply });
+    expect(realChats(fixture)[0].lastStatus?.id).toBe('reply');
+    expect(
+      internals(fixture)
+        .messages()
+        .map((m) => m.id),
+    ).toEqual(['original', 'reply']);
+  });
+
+  it('keeps self-chat context separate from messages addressed to someone else', () => {
+    const self = makeStatus('self', { account: ME });
+    const fixture = setUp([makeConversation('self-conv', { last_status: self })]);
+    fixture.componentInstance.select(realChats(fixture)[0]);
+    const other = makeAccount('other', 'other');
+    const foreign = makeStatus('foreign', {
+      account: ME,
+      in_reply_to_id: 'self',
+      mentions: [{ id: other.id, acct: other.acct, username: other.acct, url: '' }],
+    });
+    const own = makeStatus('own', {
+      account: ME,
+      in_reply_to_id: 'self',
+      created_at: '2026-01-02T00:00:00Z',
+    });
+    httpMock
+      .expectOne('/api/v1/statuses/self/context')
+      .flush({ ancestors: [], descendants: [foreign, own] });
+    expect(
+      internals(fixture)
+        .messages()
+        .map((m) => m.id),
+    ).toEqual(['self', 'own']);
+    expect(internals(fixture).replyMentions()).toBe('@me_user ');
+    streaming.emit('user', { event: 'update', payload: foreign });
+    expect(
+      internals(fixture)
+        .messages()
+        .some((m) => m.id === 'foreign'),
+    ).toBe(false);
+  });
+
+  it('includes the exact three-person audience but excludes a one-to-one branch', () => {
+    const alice = makeAccount('alice', 'alice');
+    const bob = makeAccount('bob', 'bob');
+    const mention = (account: Account) => ({
+      id: account.id,
+      acct: account.acct,
+      username: account.acct,
+      url: '',
+    });
+    const anchor = makeStatus('group', { account: ME, mentions: [mention(alice), mention(bob)] });
+    const fixture = setUp([
+      makeConversation('group-conv', { accounts: [alice, bob], last_status: anchor }),
+    ]);
+    fixture.componentInstance.select(realChats(fixture)[0]);
+    const groupReply = makeStatus('group-reply', {
+      created_at: '2026-01-02T00:00:00Z',
+      account: alice,
+      mentions: [mention(ME), mention(bob)],
+    });
+    const privateReply = makeStatus('one-to-one', { account: alice, mentions: [mention(ME)] });
+    httpMock
+      .expectOne('/api/v1/statuses/group/context')
+      .flush({ ancestors: [], descendants: [groupReply, privateReply] });
+    expect(
+      internals(fixture)
+        .messages()
+        .map((m) => m.id),
+    ).toEqual(['group', 'group-reply']);
+    expect(internals(fixture).replyMentions()).toContain('@alice');
+    expect(internals(fixture).replyMentions()).toContain('@bob');
+  });
+
+  it('cancels the old context request when switching chats', () => {
+    const fixture = setUp([
+      makeConversation('one', { accounts: [makeAccount('1')], last_status: makeStatus('one') }),
+      makeConversation('two', { accounts: [makeAccount('2')], last_status: makeStatus('two') }),
+    ]);
+    fixture.componentInstance.select(realChats(fixture)[0]);
+    const old = httpMock.expectOne('/api/v1/statuses/one/context');
+    fixture.componentInstance.select(realChats(fixture)[1]);
+    expect(old.cancelled).toBe(true);
+    httpMock.expectOne('/api/v1/statuses/two/context').flush({ ancestors: [], descendants: [] });
+    expect(
+      internals(fixture)
+        .messages()
+        .map((m) => m.id),
+    ).toEqual(['two']);
+  });
+
+  it('sends a picked emoji as a reply to the target and groups the returned message', () => {
+    const alice = makeAccount('2', 'alice');
+    const target = makeStatus('target', { account: alice, visibility: 'public' });
+    const fixture = setUp([], [makeMention('n', target)]);
+    internals(fixture).selectedKey.set(realChats(fixture)[0].key);
+    internals(fixture).messages.set([target]);
+    fixture.componentInstance['sendEmojiReply'](target, '👍🏽');
+    fixture.componentInstance['sendEmojiReply'](target, '👍🏽');
+    const request = httpMock.expectOne('/api/v1/statuses');
+    expect(request.request.body).toMatchObject({
+      status: '@alice 👍🏽',
+      in_reply_to_id: 'target',
+      visibility: 'public',
+    });
+    request.flush(
+      makeStatus('reaction', {
+        account: ME,
+        visibility: 'public',
+        in_reply_to_id: 'target',
+        content: '<p>@alice 👍🏽</p>',
+      }),
+    );
+    expect(fixture.componentInstance['groupedEmojiChips']('target')).toEqual([
+      { value: '👍🏽', count: 1, authors: '@me_user', mine: true },
+    ]);
+    expect(fixture.componentInstance['transcript']().map((m) => m.id)).toEqual(['target']);
+  });
+
+  it('keeps emoji send failures visible and permits retry without changing visibility', () => {
+    const fixture = setUp();
+    const target = makeStatus('private-target', { account: makeAccount('2', 'alice') });
+    fixture.componentInstance['sendEmojiReply'](target, '🎉');
+    const request = httpMock.expectOne('/api/v1/statuses');
+    expect(request.request.body.visibility).toBe('direct');
+    request.flush({}, { status: 503, statusText: 'Unavailable' });
+    expect(fixture.componentInstance['emojiError']()).toBe(true);
+    expect(fixture.componentInstance['emojiSending']()).toBe(false);
+    fixture.componentInstance['sendEmojiReply'](target, '🎉');
+    httpMock.expectOne('/api/v1/statuses').flush({}, { status: 503, statusText: 'Unavailable' });
+  });
+
+  it('treats emoji-only replies as toggleable reactions, counts people, and preserves text replies', () => {
+    const fixture = setUp();
+    const target = makeStatus('target', { visibility: 'public' });
+    const mine = makeStatus('mine', {
+      account: ME,
+      in_reply_to_id: target.id,
+      content: '<p>😀</p>',
+    });
+    const duplicate = { ...mine, id: 'duplicate' };
+    const other = makeStatus('other', { in_reply_to_id: target.id, content: '<p>😀</p>' });
+    const words = makeStatus('words', { in_reply_to_id: target.id, content: '<p>:) right on</p>' });
+    internals(fixture).messages.set([target, mine, duplicate, other, words]);
+    expect(fixture.componentInstance['groupedEmojiChips'](target.id)[0]).toMatchObject({
+      count: 2,
+      mine: true,
+    });
+    expect(fixture.componentInstance['transcript']().map((m) => m.id)).toEqual(['target', 'words']);
+    fixture.componentInstance['toggleEmojiReply'](target, '😀');
+    httpMock.expectOne('/api/v1/statuses/mine').flush(mine);
+    httpMock.expectOne('/api/v1/statuses/duplicate').flush(duplicate);
+    expect(fixture.componentInstance['groupedEmojiChips'](target.id)[0]).toMatchObject({
+      count: 1,
+      mine: false,
+    });
+    expect(
+      internals(fixture)
+        .messages()
+        .map((m) => m.id),
+    ).toEqual(['target', 'other', 'words']);
+    fixture.componentInstance['toggleEmojiReply'](target, '😀');
+    const posted = httpMock.expectOne('/api/v1/statuses');
+    expect(posted.request.body).toMatchObject({ status: '@user1 😀', in_reply_to_id: target.id });
+    posted.flush({}, { status: 503, statusText: 'Unavailable' });
+  });
+
+  it('groups emoji replies only when their target is present', () => {
+    const fixture = setUp();
+    const parent = makeStatus('parent');
+    const reply = makeStatus('emoji', { in_reply_to_id: 'parent', content: '<p>@me_user 👍🏽</p>' });
+    internals(fixture).messages.set([parent, reply]);
+    expect(fixture.componentInstance['transcript']().map((m) => m.id)).toEqual(['parent']);
+    expect(fixture.componentInstance['groupedReplies']('parent').map((m) => m.id)).toEqual([
+      'emoji',
+    ]);
+    internals(fixture).messages.set([reply]);
+    expect(fixture.componentInstance['transcript']()).toEqual([reply]);
+  });
+
   it('compacts long chat preview and message URLs while retaining their complete target', () => {
     const url = 'https://example.com/' + 'a'.repeat(4096);
     const status = makeStatus('long-url', { content: `<p>@me <a href="${url}">${url}</a></p>` });
@@ -706,7 +958,11 @@ describe('Conversations', () => {
 
   it('select on an unread private chat POSTs mark-read and fetches the thread context', () => {
     const status = makeStatus('s1');
-    const conv = makeConversation('c1', { unread: true, last_status: status });
+    const conv = makeConversation('c1', {
+      unread: true,
+      accounts: [status.account],
+      last_status: status,
+    });
     const fixture = setUp([conv]);
 
     fixture.componentInstance.select(realChats(fixture)[0]);

@@ -710,7 +710,7 @@
     {
       "file": "ui/src/app/publishing/conversations/conversations.html",
       "disposition": "backlog",
-      "nextStep": "Chat reliability batch: the legacy Refresh Bluesky pill became one MbButton Refresh for every network beside a live-state indicator, and Load older messages is an MbButton. Private chat startup adds a native retry action. Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "nextStep": "Chat header adopts PostMenu/MenuItem with consistent vertical rows. Moderate opens Dialog with temporary mute, block and a separate report flow; danger actions use shared tokens. Chat with stays above the mobile drawer. Shared Button covers new entry and sound actions. The emoji icon beside Like anchors a shared Popover and EmojiPicker; existing transcript icons and filter controls remain for later adoption. Preserve private participant boundaries, self-chat isolation and composer drafts. Browser evidence: chat.browser.mjs."
     },
     {
       "file": "ui/src/app/discovery/directory/directory.html",

@@ -1,5 +1,27 @@
 # Sprint 6 opening consolidation audit
 
+## Chat emoji response shortcut, 2026-11-14
+
+The emoji response action is now an accessible icon immediately after Like.
+It anchors a shared roomy Popover with lazy EmojiPicker content, light dismissal,
+Escape/focus restoration and a close control. Selecting an emoji posts a reply
+with the target visibility and recipients. Emoji-only replies render as reaction
+buttons with distinct-person counts and a pressed state for the reader; clicking
+your reaction removes it. Replies containing words remain ordinary messages. Touch actions stay visible and meet 44px targets. The chat
+browser fixture exercises picking, sending and grouping at desktop/mobile widths.
+Reviewed the regenerated inventory: candidate membership remains unchanged.
+
+## Chat menus and conversation boundaries, 2026-11-14
+
+Reviewed the regenerated inventory: 639 candidate files remain, with no candidates
+added or removed. Chat replaces its bespoke horizontal moderation menu with
+PostMenu/MenuItem rows and a separate Dialog for deliberate moderation choices.
+New Chat with, private-chat, sound and emoji controls use shared Buttons. Block,
+report and remove use danger tokens; menu items share typography and row layout.
+The recipient field stays outside the narrow-screen drawer. Existing conversation
+filters and transcript actions remain partial adoption. The reconciliation entry
+records that scope; chat.browser.mjs exercises desktop/mobile menus and dialogs.
+
 ## Native build policy, 2026-11-13
 
 Reviewed the regenerated inventory: two new build-policy source modules increase

@@ -1,3 +1,6 @@
+import { qualifiedHandle } from '../../accounts/account-handle';
+import { ChatSound } from './chat-sound';
+import { emojiReply } from './emoji-reply';
 import { compactContentLinks, ContentLinks } from '../../posts/content-links';
 import { LinkedText } from '../../posts/linked-text';
 // i18n pages.conversations.startFailed: Could not start this chat. Check your chat permissions and try again.
@@ -15,7 +18,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { forkJoin, Subscription, timeout } from 'rxjs';
+import { catchError, forkJoin, map, of, Subscription, timeout } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
@@ -56,6 +59,7 @@ import { AppDialogs } from '../../shell/app-dialogs';
 import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbMenuItem } from '../../design-system/menu/menu-item';
+import { MbPopover } from '../../design-system/popover/popover';
 import { MbPostMenu } from '../../design-system/menu/post-menu';
 import { EmojiPicker } from '../emoji-picker/emoji-picker';
 import { Terminology } from '../../i18n/terminology';
@@ -189,7 +193,7 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.bskyScopeHint.relink: 🦋 This Bluesky link can't read DMs. Unlink and choose Continue with Bluesky to relink with DM access in
 // i18n pages.conversations.bskyScopeHint.link: Settings → Connections → Bluesky
 // i18n pages.conversations.loading: Loading…
-// i18n pages.conversations.emptyChats: No conversations yet. Post with visibility "direct", or reply to a mention.
+// i18n pages.conversations.emptyChats: No conversations yet. Enter a handle in Chat with to start a private conversation.
 // i18n pages.conversations.noMatch: No chats match the filters.
 // i18n pages.conversations.unreadTitle: Unread
 // i18n pages.conversations.badge.publicUpper: 📢 PUBLIC
@@ -269,6 +273,7 @@ export function stripLeadingMentions(html: string): string {
     MbDialog,
     MbMenuItem,
     MbPostMenu,
+    MbPopover,
     HumanTimePipe,
     ReportDialog,
     RouterLink,
@@ -417,6 +422,243 @@ export class Conversations implements OnInit, OnDestroy {
   }
   protected messages = signal<Status[]>([]);
   protected threadLoading = signal(false);
+  protected moderationAccounts(chat: Chat): Account[] {
+    return chat.accounts.filter((a) => a.id !== this.auth.account()?.id);
+  }
+  protected chatWith = signal('');
+  protected startingChat = signal(false);
+  protected moderationChat = signal<Chat | null>(null);
+  protected activeModerationChat = computed(() => {
+    const chat = this.moderationChat();
+    return chat ? (this.chats().find((c) => c.key === chat.key) ?? chat) : null;
+  });
+  protected moderationBusy = signal(false);
+  protected moderationError = signal(false);
+  protected muteDuration = 3600;
+  protected sound = inject(ChatSound);
+  protected emojiReply = emojiReply;
+  protected emojiSending = signal(false);
+  protected emojiError = signal(false);
+  protected transcript = computed(() => {
+    const messages = this.messages();
+    const ids = new Set(messages.filter((m) => !emojiReply(m)).map((m) => m.id));
+    return messages.filter(
+      (m) => !m.in_reply_to_id || !ids.has(m.in_reply_to_id) || !emojiReply(m),
+    );
+  });
+  protected groupedReplies(id: string): Status[] {
+    return this.messages().filter((m) => m.in_reply_to_id === id && !!emojiReply(m));
+  }
+
+  protected groupedEmojiChips(
+    id: string,
+  ): { value: string; count: number; authors: string; mine: boolean }[] {
+    const groups = new Map<string, Status[]>();
+    for (const reply of this.groupedReplies(id)) {
+      const value = emojiReply(reply)!;
+      groups.set(value, [...(groups.get(value) ?? []), reply]);
+    }
+    return [...groups].map(([value, replies]) => ({
+      value,
+      count: new Set(replies.map((r) => r.account.id)).size,
+      authors: [...new Set(replies.map((r) => '@' + r.account.acct))].join(', '),
+      mine: replies.some((r) => this.isMine(r)),
+    }));
+  }
+
+  protected toggleEmojiReply(target: Status, value: string): void {
+    if (this.emojiSending()) return;
+    const mine = this.groupedReplies(target.id).filter(
+      (r) => this.isMine(r) && emojiReply(r) === value,
+    );
+    if (!mine.length) {
+      this.sendEmojiReply(target, value);
+      return;
+    }
+    this.emojiSending.set(true);
+    this.emojiError.set(false);
+    const chat = this.selected();
+    this.subs.push(
+      forkJoin(
+        mine.map((reply) =>
+          this.api.deleteStatus(reply.id).pipe(
+            map(() => reply.id),
+            catchError(() => of(null)),
+          ),
+        ),
+      ).subscribe((results) => {
+        const deleted = new Set(results.filter((id) => id !== null));
+        this.messages.update((messages) => messages.filter((m) => !deleted.has(m.id)));
+        this.publicStatuses.update(
+          (groups) =>
+            new Map(
+              [...groups].map(([key, messages]) => [
+                key,
+                messages.filter((m) => !deleted.has(m.id)),
+              ]),
+            ),
+        );
+        this.emojiSending.set(false);
+        this.emojiError.set(results.some((id) => id === null));
+        if (chat?.kind === 'private') this.refreshList({ mastodon: true, bluesky: false });
+      }),
+    );
+  }
+
+  protected startPrivateChat(chat: Chat): void {
+    const latest = this.selectedKey() === chat.key ? this.messages().at(-1) : chat.lastStatus;
+    const ids = new Set(chat.accounts.map((a) => a.id));
+    for (const mention of latest?.mentions ?? []) {
+      if (mention.id !== this.auth.account()?.id) ids.add(mention.id);
+    }
+    const missing = [...ids].filter((id) => !chat.accounts.some((a) => a.id === id));
+    if (!missing.length) {
+      this.openPrivateChat(chat.accounts);
+      return;
+    }
+    this.startChatError.set(false);
+    this.subs.push(
+      forkJoin(missing.map((id) => this.api.getAccount(id))).subscribe({
+        next: (accounts) => this.openPrivateChat([...chat.accounts, ...accounts]),
+        error: () => this.startChatError.set(true),
+      }),
+    );
+  }
+
+  private privateChatKey(accounts: Account[]): string {
+    return privateKey(accounts.filter((a) => a.id !== this.auth.account()?.id));
+  }
+
+  /** Context is a reply graph, not a recipient boundary. Never import a different DM audience. */
+  private belongsToChat(status: Status, chat: Chat): boolean {
+    if (chat.kind !== 'private') return status.visibility !== 'direct';
+    if (status.visibility !== 'direct') return false;
+    const me = this.auth.account()?.id;
+    const audience = new Set([status.account.id, ...(status.mentions ?? []).map((m) => m.id)]);
+    audience.delete(me ?? '');
+    const expected = new Set(chat.accounts.map((a) => a.id).filter((id) => id !== me));
+    return audience.size === expected.size && [...audience].every((id) => expected.has(id));
+  }
+
+  private openPrivateChat(accounts: Account[]): void {
+    if (!accounts.length) return;
+    const key = this.privateChatKey(accounts);
+    const chat = this.chats().find((c) => c.key === key) ?? {
+      key,
+      kind: 'private' as const,
+      accounts,
+      handles: accounts.map((a) => a.acct),
+      convIds: [],
+      lastStatus: null,
+      unread: false,
+    };
+    if (!this.chats().some((c) => c.key === key)) this.draftChat.set(chat);
+    this.prefs.setChatKind('all');
+    this.prefs.setChatAudience('all');
+    this.showRequests.set(false);
+    this.select(chat);
+  }
+
+  protected startNamedChat(): void {
+    const handle = this.chatWith().trim().replace(/^@/, '');
+    if (!handle || this.startingChat()) return;
+    this.startingChat.set(true);
+    this.startChatError.set(false);
+    this.subs.push(
+      this.api.resolveReplyMention(handle).subscribe({
+        next: (result) => {
+          const account = result.accounts.find(
+            (a) =>
+              a.acct.toLowerCase() === handle.toLowerCase() ||
+              qualifiedHandle(a)?.toLowerCase() === handle.toLowerCase(),
+          );
+          this.startingChat.set(false);
+          if (!account) {
+            this.startChatError.set(true);
+            return;
+          }
+          this.openPrivateChat([account]);
+          this.chatWith.set('');
+        },
+        error: () => {
+          this.startingChat.set(false);
+          this.startChatError.set(true);
+        },
+      }),
+    );
+  }
+
+  protected sendEmojiReply(target: Status, emoji: string, picker?: MbPopover): void {
+    if (this.emojiSending()) return;
+    if (this.groupedReplies(target.id).some((r) => this.isMine(r) && emojiReply(r) === emoji)) {
+      picker?.close();
+      return;
+    }
+    this.emojiSending.set(true);
+    this.emojiError.set(false);
+    const chat = this.selected();
+    const handles = new Set([
+      target.account.acct,
+      ...(target.mentions ?? []).map((m) => m.acct),
+      ...(chat?.handles ?? []),
+    ]);
+    if (handles.size > 1) handles.delete(this.auth.account()?.acct ?? '');
+    const text = [...handles].map((h) => '@' + h).join(' ') + ' ' + emoji;
+    this.subs.push(
+      this.api
+        .postStatus(text.trim(), {
+          inReplyToId: target.id,
+          visibility: target.visibility,
+        })
+        .subscribe({
+          next: (status) => {
+            this.emojiSending.set(false);
+            if (this.selectedKey() === chat?.key) {
+              picker?.close();
+              this.onReplyPosted(status);
+            }
+          },
+          error: () => {
+            this.emojiSending.set(false);
+            this.emojiError.set(true);
+          },
+        }),
+    );
+  }
+
+  private soundFor(status: Status): void {
+    if (!this.sound.enabled()) return;
+    const relationship = this.rels().get(status.account.id);
+    if (!relationship && status.account.id !== this.auth.account()?.id) {
+      this.subs.push(
+        this.api
+          .relationships([status.account.id])
+          .pipe(timeout(15_000))
+          .subscribe({
+            next: (relationships) => {
+              const relationship = relationships.find((r) => r.id === status.account.id);
+              if (relationship)
+                this.rels.update((map) => new Map(map).set(relationship.id, relationship));
+              this.sound.receive(
+                status,
+                relationship,
+                this.auth.account()?.id,
+                !!this.moderated()[status.account.id],
+              );
+            },
+            error: () => undefined,
+          }),
+      );
+      return;
+    }
+    this.sound.receive(
+      status,
+      relationship,
+      this.auth.account()?.id,
+      !!this.moderated()[status.account.id],
+    );
+  }
+
   protected reportTarget = signal<Account | null>(null);
   /** Accounts moderated from the header menu this session, id → 'muted' | 'blocked'. */
   protected moderated = signal<Record<string, string>>({});
@@ -473,7 +715,10 @@ export class Conversations implements OnInit, OnDestroy {
       }
     });
     effect(() => {
-      if (!this.mastodonAvailable() || this.prefs.chatAudience() !== 'mutuals') {
+      if (
+        !this.mastodonAvailable() ||
+        (this.prefs.chatAudience() !== 'mutuals' && !this.sound.enabled())
+      ) {
         return;
       }
       const missing = new Set<string>();
@@ -516,7 +761,7 @@ export class Conversations implements OnInit, OnDestroy {
     // group by the people instead, merging every thread with the same set.
     const byKey = new Map<string, Chat>();
     for (const c of this.privateConvs()) {
-      const key = privateKey(c.accounts);
+      const key = this.privateChatKey(c.accounts);
       const existing = byKey.get(key);
       if (!existing) {
         byKey.set(key, {
@@ -761,10 +1006,8 @@ export class Conversations implements OnInit, OnDestroy {
    * the surprising case, not the norm. The composer itself shows the "remove the
    * handle to reply without notifying" hint (see Compose.showReplyMentionHint).
    *
-   * **Private** (direct) chats are different: delivery there rides on the
-   * `direct` visibility + the conversation itself, which already surfaces to the
-   * recipient, so the obvious 1:1 partner is dropped to keep the box clean. Group
-   * private chats still seed the *other* members, who wouldn't otherwise be reached.
+   * Private delivery requires explicit mentions of every participant. A self
+   * conversation explicitly mentions the signed-in account.
    */
   protected replyMentions = computed(() => {
     const chat = this.selected();
@@ -801,6 +1044,7 @@ export class Conversations implements OnInit, OnDestroy {
     }
     if (me?.acct) {
       handles.delete(me.acct);
+      if (chat.kind === 'private' && !handles.size) handles.add(me.acct);
     }
     return handles.size ? [...handles].map((h) => `@${h}`).join(' ') + ' ' : '';
   });
@@ -863,6 +1107,8 @@ export class Conversations implements OnInit, OnDestroy {
         .subscribe(({ event, payload }) => {
           if (event === 'conversation') {
             this.upsertConversation(payload as Conversation);
+            const incoming = (payload as Conversation).last_status;
+            if (incoming) this.soundFor(incoming);
           }
         }),
       this.streaming
@@ -872,6 +1118,7 @@ export class Conversations implements OnInit, OnDestroy {
             const n = payload as MastodonNotification;
             if (n.type === 'mention' && n.status) {
               this.addPublicStatus(n.status, n.account);
+              this.soundFor(n.status);
             } else if (n.status && ['favourite', 'reblog', 'update'].includes(n.type)) {
               // Someone liked, boosted or edited a message: the notification
               // carries the status with fresh counts. These used to be dropped,
@@ -991,7 +1238,7 @@ export class Conversations implements OnInit, OnDestroy {
       }, POLL_THREAD_MS),
       setInterval(() => {
         if (!visible() || this.loading() || this.refreshing()) return;
-        this.refreshList({ mastodon: this.liveState() !== 'live', bluesky: true });
+        this.refreshList({ mastodon: true, bluesky: true });
       }, POLL_LIST_MS),
     );
   }
@@ -1045,6 +1292,9 @@ export class Conversations implements OnInit, OnDestroy {
       pending += 2;
       this.api.conversations(undefined, CONVERSATION_PAGE).subscribe({
         next: (convs) => {
+          for (const c of convs) {
+            if (c.last_status) this.soundFor(c.last_status);
+          }
           this.privateConvs.update((list) => mergeConversations(list, convs));
           settle();
         },
@@ -1053,7 +1303,10 @@ export class Conversations implements OnInit, OnDestroy {
       this.api.notifications(undefined, { types: ['mention'], limit: MENTION_PAGE }).subscribe({
         next: (notifs) => {
           for (const n of notifs) {
-            if (n.status) this.addPublicStatus(n.status, n.account);
+            if (n.status) {
+              this.addPublicStatus(n.status, n.account);
+              this.soundFor(n.status);
+            }
           }
           settle();
         },
@@ -1081,7 +1334,12 @@ export class Conversations implements OnInit, OnDestroy {
         if (this.selectedKey() !== key) return;
         const before = this.messages().length;
         this.messages.update((list) =>
-          dedupeSort([...list, ...ctx.ancestors, self, ...ctx.descendants]),
+          dedupeSort([
+            ...list,
+            ...[...ctx.ancestors, self, ...ctx.descendants].filter((m) =>
+              this.belongsToChat(m, chat),
+            ),
+          ]),
         );
         if (this.messages().length > before) this.scrollToBottom();
       },
@@ -1276,7 +1534,11 @@ export class Conversations implements OnInit, OnDestroy {
         this.api.getContext(last.id).subscribe((ctx) => {
           if (this.selectedKey() !== key) return;
           this.messages.update((list) =>
-            dedupeSort([...ctx.ancestors, last, ...ctx.descendants, ...list]),
+            dedupeSort([
+              ...list,
+              last,
+              ...[...ctx.ancestors, ...ctx.descendants].filter((m) => this.belongsToChat(m, chat)),
+            ]),
           );
         });
       }
@@ -1327,8 +1589,11 @@ export class Conversations implements OnInit, OnDestroy {
     }
     this.select(chat, null);
     this.threadLoading.set(true);
-    this.api.getStatus(contextId).subscribe({
-      next: (anchor) => this.loadThread(chat, anchor),
+    this.threadSub = this.api.getStatus(contextId).subscribe({
+      next: (anchor) => {
+        if (this.selectedKey() === chat.key)
+          this.loadThread(chat, this.belongsToChat(anchor, chat) ? anchor : chat.lastStatus);
+      },
       error: () => {
         this.threadLoading.set(false);
         this.loadThread(chat);
@@ -1459,9 +1724,13 @@ export class Conversations implements OnInit, OnDestroy {
     }
     this.threadLoading.set(true);
     this.messages.set(known.length ? known : [anchor]);
-    this.api.getContext(anchor.id).subscribe({
+    this.threadSub = this.api.getContext(anchor.id).subscribe({
       next: (ctx) => {
-        this.messages.set(dedupeSort([...ctx.ancestors, anchor, ...ctx.descendants, ...known]));
+        if (this.selectedKey() !== chat.key) return;
+        const context = [...ctx.ancestors, ...ctx.descendants].filter((m) =>
+          this.belongsToChat(m, chat),
+        );
+        this.messages.set(dedupeSort([...context, anchor, ...known]));
         this.threadLoading.set(false);
         this.scrollToBottom();
       },
@@ -1497,7 +1766,7 @@ export class Conversations implements OnInit, OnDestroy {
         this.privateConvs.update((list) => mergeConversations(list, convs));
         const mine = convs.find((c) => c.last_status?.id === status.id);
         if (!mine) return;
-        const key = privateKey(mine.accounts);
+        const key = this.privateChatKey(mine.accounts);
         if (wentPrivate) {
           // Open the private chat itself, so its own history loads.
           const row = this.chats().find((c) => c.key === key);
@@ -1679,6 +1948,7 @@ export class Conversations implements OnInit, OnDestroy {
     this.bskyChat.leaveConvo(chat.convoId).subscribe({
       next: () => {
         this.bskyConvos.update((list) => list.filter((c) => c.id !== chat.convoId));
+        this.moderationChat.set(null);
         if (this.selectedKey() === chat.key) {
           this.selectedKey.set(null);
           this.bskyMessages.set([]);
@@ -1863,7 +2133,11 @@ export class Conversations implements OnInit, OnDestroy {
       return [conv, ...rest];
     });
     const chat = this.selected();
-    if (chat?.kind === 'private' && chat.key === privateKey(conv.accounts) && conv.last_status) {
+    if (
+      chat?.kind === 'private' &&
+      chat.key === this.privateChatKey(conv.accounts) &&
+      conv.last_status
+    ) {
       this.messages.update((list) => dedupeSort([...list, conv.last_status!]));
       this.scrollToBottom();
       this.markRead({ ...chat, unread: true, lastStatus: conv.last_status });
@@ -1911,12 +2185,25 @@ export class Conversations implements OnInit, OnDestroy {
     const inThread =
       !!status.in_reply_to_id && this.messages().some((m) => m.id === status.in_reply_to_id);
     const isEdit = this.messages().some((m) => m.id === status.id);
+    if (!this.belongsToChat(status, chat)) return;
     if (!inThread && !isEdit) {
       return;
     }
     this.messages.update((list) =>
       isEdit ? list.map((m) => (m.id === status.id ? status : m)) : dedupeSort([...list, status]),
     );
+    if (chat.kind === 'public') this.addPublicStatus(status, status.account, chat.key);
+    else if (chat.kind === 'private') {
+      this.privateConvs.update((rows) =>
+        rows.map((c) =>
+          chat.convIds.includes(c.id) &&
+          (!c.last_status || status.created_at > c.last_status.created_at)
+            ? { ...c, last_status: status }
+            : c,
+        ),
+      );
+    }
+    if (!isEdit) this.soundFor(status);
     this.scrollToBottom();
   }
 
@@ -1954,15 +2241,33 @@ export class Conversations implements OnInit, OnDestroy {
   // ---------------------------------------------------------------- moderation
 
   muteParticipant(acc: Account): void {
-    this.api.muteAccount(acc.id).subscribe(() => {
-      this.moderated.update((m) => ({ ...m, [acc.id]: 'muted' }));
-    });
+    this.moderateParticipant(acc, 'muted');
   }
 
   blockParticipant(acc: Account): void {
-    this.api.block(acc.id).subscribe(() => {
-      this.moderated.update((m) => ({ ...m, [acc.id]: 'blocked' }));
-    });
+    this.moderateParticipant(acc, 'blocked');
+  }
+
+  private moderateParticipant(acc: Account, action: 'muted' | 'blocked'): void {
+    if (this.moderationBusy()) return;
+    this.moderationBusy.set(true);
+    this.moderationError.set(false);
+    const request =
+      action === 'muted'
+        ? this.api.muteAccount(acc.id, this.muteDuration || undefined)
+        : this.api.block(acc.id);
+    this.subs.push(
+      request.subscribe({
+        next: () => {
+          this.moderated.update((m) => ({ ...m, [acc.id]: action }));
+          this.moderationBusy.set(false);
+        },
+        error: () => {
+          this.moderationBusy.set(false);
+          this.moderationError.set(true);
+        },
+      }),
+    );
   }
 }
 
@@ -2016,3 +2321,31 @@ function dedupeSort(statuses: Status[]): Status[] {
   }
   return [...byId.values()].sort((a, b) => a.created_at.localeCompare(b.created_at));
 }
+
+// i18n pages.conversations.chatWith: Chat with
+// i18n pages.conversations.chatHandle: @person@server
+// i18n pages.conversations.startPrivate: Start Private Chat
+// i18n pages.conversations.moderate: Moderate…
+// i18n pages.conversations.moderationTitle: Conversation options
+// i18n pages.conversations.moderationIntro: Choose what would help. A temporary mute can give you a break without ending contact.
+// i18n pages.conversations.muteExplanation: Mute hides their messages and notifications. They are not notified.
+// i18n pages.conversations.blockExplanation: Block prevents interaction until you unblock this person in your account settings.
+// i18n pages.conversations.reportExplanation: Report asks server moderators to review a problem. You can explain what happened before submitting.
+// i18n pages.conversations.muteHour: For one hour
+// i18n pages.conversations.muteDay: For one day
+// i18n pages.conversations.muteWeek: For one week
+// i18n pages.conversations.muteForever: Until I unmute
+// i18n pages.conversations.moderationFailed: That action failed. Please try again.
+// i18n pages.conversations.soundOn: Sound on · mutuals only
+// i18n pages.conversations.soundOff: Enable sound · mutuals only
+// i18n pages.conversations.soundHint: At most one sound every 10 seconds for new messages from people you follow who follow you back.
+// i18n pages.conversations.emojiFailed: Could not update this reaction. Please try again.
+// i18n pages.conversations.emojiReply: React with emoji
+// i18n pages.conversations.emojiClose: Close emoji picker
+
+// i18n pages.conversations.muted: Muted
+// i18n pages.conversations.blocked: Blocked
+
+// i18n pages.conversations.bskyModerationExplanation: Mute stops notifications for this conversation. Leaving removes the conversation from your list.
+
+// i18n pages.conversations.emojiReaction: Reaction {{emoji}}: {{count}}
