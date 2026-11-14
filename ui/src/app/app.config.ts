@@ -32,6 +32,7 @@ import { plusTokenInterceptor } from './accounts/mawkingbird/plus-token.intercep
 import { PageTitleStrategy } from './shell/a11y/page-title-strategy';
 import { provideI18nForApp } from './i18n/i18n.config';
 import { AppInstall } from './shell/app-install/app-install';
+import { PLATFORM_HTTP_INTERCEPTORS } from './platform/http/platform-http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -76,6 +77,7 @@ export const appConfig: ApplicationConfig = {
         // been rewriting it earlier in the chain.
         plusTokenInterceptor,
         proxyLimitInterceptor,
+        ...PLATFORM_HTTP_INTERCEPTORS,
       ]),
     ),
   ],

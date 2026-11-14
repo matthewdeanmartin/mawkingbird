@@ -19,18 +19,33 @@
   </li>
   <li>{{ 'settings.connections.raindrop.step3' | transloco }}</li>
 </ol>
-<p class="muted small">
-  {{ 'settings.connections.raindrop.oauthNote' | transloco }}
-</p>
+@if (!native) {
+  <p class="muted small">{{ 'settings.connections.raindrop.oauthNote' | transloco }}</p>
+}
 <mb-notice>
-  {{ 'settings.connections.raindrop.credentialWarning' | transloco }}
+  {{
+    (native
+      ? 'settings.connections.nativeCredential'
+      : 'settings.connections.raindrop.credentialWarning'
+    ) | transloco
+  }}
 </mb-notice>
 
 @if (raindrop.connected()) {
   <div class="raindrop-actions">
     <span>{{ 'settings.connections.raindrop.connected' | transloco }}</span>
-    <app-storage-badge [where]="where()" />
-    <button mbButton variant="outline" type="button" (click)="disconnectRaindrop()">
+    @if (native) {
+      <span>{{ 'settings.connections.nativeStored' | transloco }}</span>
+    } @else {
+      <app-storage-badge [where]="where()" />
+    }
+    <button
+      mbButton
+      variant="outline"
+      type="button"
+      [disabled]="busy()"
+      (click)="disconnectRaindrop()"
+    >
       {{ 'settings.connections.raindrop.disconnect' | transloco }}
     </button>
   </div>
@@ -56,7 +71,7 @@
         (ngModelChange)="raindropToken.set($event)"
       />
     </mb-field>
-    <button mbButton type="submit" [disabled]="!raindropToken().trim()">
+    <button mbButton type="submit" [disabled]="busy() || !raindropToken().trim()">
       {{ 'settings.connections.raindrop.save' | transloco }}
     </button>
   </form>

@@ -1,3 +1,4 @@
+import { NATIVE_SOCIAL } from '../../platform/session/platform-login';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
@@ -90,6 +91,24 @@ const MASTODON_LIKE = new Set([
 export class MisskeyAuth {
   private http = inject(HttpClient);
   private api = inject(MisskeyApi);
+  private native = inject(NATIVE_SOCIAL);
+
+  /** Native MiAuth completes in the system browser; only an OS-store reference returns. */
+  async nativeLogin(origin: string): Promise<string | null> {
+    if (!this.native) return null;
+    const result = await this.native.misskeyLogin(origin);
+    return saveMisskeyIdentity(
+      {
+        server: origin,
+        userId: result.user.id,
+        username: result.user.username,
+        name: result.user.name,
+        avatarUrl: result.user.avatarUrl,
+        ...(result.user.emojis ? { emojis: result.user.emojis } : {}),
+      },
+      { token: result.token, connectedAt: Date.now(), permissions: result.permissions },
+    );
+  }
 
   /** Check that `input` is a reachable Misskey server; resolves to its origin. */
   async checkServer(input: string): Promise<string> {

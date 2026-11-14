@@ -1,5 +1,12 @@
 # Sprint 6 opening consolidation audit
 
+## Native build policy, 2026-11-13
+
+Reviewed the regenerated inventory: two new build-policy source modules increase
+the scanned-file count only. No controls or candidate files were added/removed;
+all 639 existing dispositions in 11-reconciliation.json remain applicable.
+The native index uses the same app-root and introduces no shared widget changes.
+
 ## Compact content links and translation-source correction, 2026-11-13
 
 Reviewed post, Chat and Inbox link rendering together. URL labels now retain the
@@ -2459,3 +2466,87 @@ separate Mastodon and Bluesky counts for a post sent to both. It adds no control
 elements; existing controls shifted source lines. The composer story's fake API
 now supplies instance configuration. No shared widget implementation changed;
 `11-reconciliation.json` needs no candidate-file changes.
+
+### Native public reader transport (2026-11-13)
+
+Reviewed regeneration: 639 candidate files, none added or removed. The native
+HTTP adapter adds five scanned source files (1831 to 1836); no controls or
+shared widget implementations changed. The candidate file list in
+`11-reconciliation.json` is unchanged.
+
+### Native Mastodon login and diagnostics (2026-11-13)
+
+Reviewed regeneration: 1838 scanned source files and 639 candidate files. The two
+platform-login modules change only the scanned count; no candidate files or
+control occurrences were added/removed. Login retains the existing access-choice
+control, with only read access offered in the native reader. No shared widget
+implementation changed; the reconciliation candidate list is unchanged.
+
+### Native favourite transport and permission parity (2026-11-13)
+
+Reviewed inventory: 1838 scanned files, 639 candidates, no candidate/control
+additions or removals. Native Login now uses the existing Full access / Read only
+choices and default, matching the web flow; the same post action-error area shows
+a localized reconnect instruction for legacy native read-only credentials. No
+shared widget or template changed; reconciliation dispositions remain unchanged.
+
+
+### Native discovery and reader controls (2026-11-13)
+
+Reviewed regeneration: 1838 scanned files, 639 candidate files; no candidate files
+or control-pattern counts added/removed. RSS settings, the RSS page and the friend
+feed workbench/dialog have native-only conditions and shifted source lines. Native
+omits proxy controls/upsells and uses direct-reading explanations; browser Plus,
+proxy controls and consent/retry behavior remain unchanged. No shared widget
+implementation changed; reconciliation candidate dispositions remain unchanged.
+
+
+### Native Bluesky and Misskey account flows (2026-11-13)
+
+Reviewed regeneration: 1840 scanned source files, 639 candidate files. No
+candidate files or control-pattern counts changed relative to the previous
+native reader batch. The Bluesky login and connection templates conditionally
+omit app-password fallback in native; the existing browser OAuth and fallback
+controls are preserved. Other changes move source positions. No shared widget
+implementation changed; reconciliation dispositions remain unchanged.
+
+
+### Native MiAuth approval and YouTube browser handoff (2026-11-13)
+
+Reviewed inventory: 1840 scanned files, 639 candidates; no candidate files added
+or removed. VideoPlayer adds one existing mbButton-styled anchor for native-only
+YouTube browser opening (+1 shared occurrence); its web embed controls remain.
+Misskey adds status text without a new control. Remaining differences move source
+positions. No design-system widget implementation or reconciliation disposition
+changed. Native player behavior is covered by component and built-app smoke tests.
+
+### Restored native YouTube embeds (2026-11-13)
+
+Reviewed regeneration: 1840 scanned files, 639 candidates, unchanged candidate
+file list. Removed the native-only mbButton fallback anchor introduced in the
+previous batch (-1 shared occurrence). Native now uses the existing shared
+player controls and external link. Added iframe sandbox attributes; no new
+widget implementation or reconciliation disposition changes.
+
+### Native Mataroa and Raindrop connectors (2026-11-13)
+
+Reviewed regeneration: 1841 scanned files and 639 candidate files. No candidate
+files or control-pattern counts changed. Mataroa's proxy step/consent/error
+controls remain for web and are omitted in native. Both native connection pages
+show OS credential storage, disable duplicate actions while busy, and preserve
+connection state on failed deletion. The catalog replaces Mataroa's proxy
+requirement only in native. No design-system widget implementation changed;
+reconciliation dispositions remain unchanged. Existing publishing/token story
+checks and built native settings smoke cover the affected controls.
+
+### 2026-11-14 — native anonymous publishing
+
+Reviewed the regenerated inventory for the native link-shortener picker and transport additions. The picker keeps the shared controls, filters native choices to anonymous TinyURL/is.gd, and omits browser credential/proxy copy only in native builds. Candidate file count remains 639; no added/removed candidate files or shared widget changes. Web controls and defaults remain unchanged.
+
+### 2026-11-14 — native account publishing
+
+Reviewed regenerated inventory for the shared Gist and link-shortener pages. Native-only OS-store copy replaces browser storage badges; the complete shortener picker is restored. Web controls and storage copy remain. Candidate file set unchanged; no reconciliation additions/removals or shared widget edits. Compiled native settings smoke and token-connections browser tests cover the changed flows.
+
+### 2026-11-14 — native GitHub and Hugo
+
+Reviewed regenerated inventory: candidate file set remains unchanged. Shared connection forms retain web storage and validation behavior; native forms show OS credential storage, await disconnect failures, and hide deferred Hugo POSSE controls. No shared widget changes or reconciliation additions/removals. Targeted connection browser stories and compiled native smoke cover these flows.

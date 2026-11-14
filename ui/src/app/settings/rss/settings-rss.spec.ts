@@ -1,3 +1,4 @@
+import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -59,6 +60,26 @@ describe('SettingsRss', () => {
       .dispatchEvent(new Event('submit'));
     fixture.detectChanges();
   }
+
+  it('hides native proxy controls and does not adopt or retry a cloud proxy on failure', () => {
+    TestBed.overrideProvider(PLATFORM_FEED_READ, { useValue: vi.fn() });
+    const settings = TestBed.inject(CorsProxySettings);
+    const adopt = vi.spyOn(settings, 'adoptSupporterProxy');
+    vi.spyOn(settings, 'missingEntitledProxy').mockReturnValue(true);
+    vi.spyOn(settings, 'usable').mockReturnValue(true);
+    TestBed.inject(RssSubscriptions).add('https://saved.test/rss', 'Imported', true, 2);
+    fetchFeed.mockReturnValue(throwError(() => new Error('Publisher is offline')));
+    const fixture = setUp();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('.proxy-summary, .proxy-switch, .proxy-badge')).toBeNull();
+    expect(root.textContent).toContain('fetched directly on this device');
+    typeUrl(fixture, 'https://offline.test/rss');
+    submit(fixture);
+    expect(fetchFeed).toHaveBeenCalledTimes(1);
+    expect(adopt).not.toHaveBeenCalled();
+    expect(root.querySelector('.retry-line')).toBeNull();
+    expect(root.textContent).toContain('Publisher is offline');
+  });
 
   it('validates a feed by fetching it and stores it with the discovered title', () => {
     fetchFeed.mockReturnValue(

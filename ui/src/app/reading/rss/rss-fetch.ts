@@ -18,6 +18,7 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { CorsProxyUsageStore, toResponse } from '../../connections/cors-proxy/cors-proxy-usage';
+import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { FAILURE_COOLDOWN_MS, RssCache } from './rss-cache';
 import { ParsedFeed, parseFeed } from '../../../lib/rss/rss-parser';
@@ -35,6 +36,7 @@ export class RssCacheMiss extends Error {
 /**
  * Fetches and parses a feed, going to the network as rarely as it can.
  *
+ * Native builds read directly through Rust, ignoring saved proxy flags.
  * Direct from the browser by default, which is the only mode that involves
  * nobody but the reader and the publisher. Feeds whose hosts don't send CORS
  * headers can't be read that way; for those the user may opt *that feed* in to
@@ -72,6 +74,7 @@ const LOG_QUIET_MS = 60_000;
 @Injectable({ providedIn: 'root' })
 export class RssFetch {
   private http = inject(HttpClient);
+  private nativeFeedRead = inject(PLATFORM_FEED_READ);
   private corsProxy = inject(CorsProxy);
   private proxyUsage = inject(CorsProxyUsageStore);
   private cache = inject(RssCache);
@@ -147,7 +150,7 @@ export class RssFetch {
 
     // `defer` so the cache lookup happens per subscription rather than at call
     // time — callers build these observables and subscribe later.
-    const viaProxy = options.useProxy === true;
+    const viaProxy = !this.nativeFeedRead && options.useProxy === true;
 
     return defer(() =>
       from(this.cache.get(url, ttlMs)).pipe(
@@ -255,7 +258,7 @@ export class RssFetch {
       return existing;
     }
 
-    const viaProxy = options.useProxy === true;
+    const viaProxy = !this.nativeFeedRead && options.useProxy === true;
     const key = routeKey(url, viaProxy);
     const startedAt = Date.now();
 
@@ -303,7 +306,10 @@ export class RssFetch {
   }
 
   private buildRequest(url: string, options: { useProxy?: boolean }): Observable<ParsedFeed> {
-    const viaProxy = options.useProxy === true;
+    const viaProxy = !this.nativeFeedRead && options.useProxy === true;
+
+    const nativeRead = this.nativeFeedRead;
+    if (nativeRead) return defer(() => nativeRead(url)).pipe(map((xml) => parseFeed(xml)));
 
     if (viaProxy && this.corsProxy.batchCapacity('feeds') > 1) {
       return this.buildBatchedRequest(url);

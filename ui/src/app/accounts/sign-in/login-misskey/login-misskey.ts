@@ -1,3 +1,4 @@
+import { NATIVE_SOCIAL } from '../../../platform/session/platform-login';
 import { MbButton } from '../../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ import { redirectToSecureLogin } from '../../../platform/session/secure-login';
 // i18n pages.loginMisskey.serverHint: The address you sign in to Misskey at, such as misskey.io. You can also paste your handle, like @you@misskey.io.
 // i18n pages.loginMisskey.continue: Continue on Misskey
 // i18n pages.loginMisskey.checking: Checking server…
+// i18n pages.loginMisskey.nativeWaiting: Approve access in your browser, then return here. Sign-in completes automatically. If you decline, this attempt expires after five minutes.
 // i18n pages.loginMisskey.completing: Finishing sign-in…
 // i18n pages.loginMisskey.note: Misskey will ask you to approve read access for {{brand}}. {{brand}} never sees your password.
 // i18n pages.loginMisskey.useDifferentNetwork: Use a different network
@@ -71,6 +73,7 @@ export interface MisskeyServerSuggestion {
 export class LoginMisskey implements OnInit {
   private auth = inject(Auth);
   private misskey = inject(MisskeyAuth);
+  private native = inject(NATIVE_SOCIAL);
   private api = inject(MisskeyApi);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -81,6 +84,7 @@ export class LoginMisskey implements OnInit {
   protected brand = environment.brand;
   protected server = signal('');
   protected working = signal(false);
+  protected nativeWaiting = signal(false);
   /** True while exchanging `?session=` for a token on the way back. */
   protected completing = signal(false);
   protected error = signal<string | null>(null);
@@ -133,9 +137,18 @@ export class LoginMisskey implements OnInit {
     this.error.set(null);
     try {
       const origin = await this.misskey.checkServer(input);
+      if (this.native) {
+        this.nativeWaiting.set(true);
+        const key = await this.misskey.nativeLogin(origin);
+        if (!key || !this.auth.enterMisskey(key))
+          throw new Error('Native identity could not be restored.');
+        location.assign(this.destination.replace(/^\//, ''));
+        return;
+      }
       stashLoginNext(this.destination);
       location.assign(this.misskey.begin(origin, this.adding));
     } catch (err) {
+      this.nativeWaiting.set(false);
       this.working.set(false);
       this.error.set(this.describe(err));
     }
@@ -207,6 +220,14 @@ export class LoginMisskey implements OnInit {
   }
 
   private describe(err: unknown): string {
+    if (
+      this.native &&
+      !(err instanceof MisskeySignInError) &&
+      err &&
+      typeof err === 'object' &&
+      'message' in err
+    )
+      return String(err.message);
     const t = (key: string, params?: Record<string, string>) =>
       this.transloco.translate<string>(`pages.loginMisskey.errors.${key}`, params);
     if (err instanceof MisskeySignInError) {

@@ -1,3 +1,4 @@
+import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -122,6 +123,14 @@ describe('FriendFeedsDialog', () => {
     }
     button.click();
   }
+
+  it('offers native friend discovery without the web Plus gate', () => {
+    TestBed.overrideProvider(PLATFORM_FEED_READ, { useValue: vi.fn() });
+    supporter.isSupporter.mockReturnValue(false);
+    const fixture = render();
+    expect((fixture.nativeElement as HTMLElement).querySelector('.plus-gate')).toBeNull();
+    expect(text(fixture)).toContain('directly from this device');
+  });
 
   it('offers the upsell rather than the scan when the account is not Plus', () => {
     // Visible to everyone on purpose: a feature nobody can see is a feature

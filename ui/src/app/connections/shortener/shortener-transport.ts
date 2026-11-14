@@ -1,6 +1,11 @@
+import {
+  type NativeConnectorProvider,
+  isNativeConnectorHandle,
+} from '../../platform/http/connector-types';
+import { PLATFORM_LOCAL_PUBLISHING, PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, Observable, tap, throwError, timer } from 'rxjs';
+import { catchError, defer, map, Observable, tap, throwError, timer } from 'rxjs';
 import { retry } from 'rxjs/operators';
 import { CorsProxy, CorsProxyRefusal } from '../cors-proxy/cors-proxy';
 import { publishingFetch } from '../../observability/publishing-metrics';
@@ -160,6 +165,8 @@ function proxyRefusalMessage(error: unknown): string | null {
 @Injectable({ providedIn: 'root' })
 export class ShortenerTransport {
   private http = inject(HttpClient);
+  private native = inject(PLATFORM_LOCAL_PUBLISHING);
+  private connectors = inject(PLATFORM_CONNECTORS);
   private settings = inject(ShortenerSettings);
   private proxy = inject(CorsProxy);
   private consent = inject(ShortenerProxyConsent);
@@ -195,6 +202,33 @@ export class ShortenerTransport {
       );
     }
 
+    if (this.connectors && config.auth) {
+      const handle = config.auth.value.replace(/^Bearer /, '');
+      if (!isNativeConnectorHandle(handle))
+        return throwError(() => new Error('Reconnect this service.'));
+      return defer(() =>
+        this.connectors!.request({
+          provider: provider as NativeConnectorProvider,
+          handle,
+          url: spec.url,
+          method: spec.method,
+          body: spec.body,
+          workspace: spec.headers?.['workspace'],
+        }),
+      ).pipe(
+        map((result) => {
+          if (result.status < 200 || result.status >= 300)
+            throw new HttpErrorResponse({
+              status: result.status,
+              error: JSON.parse(result.body),
+              headers: new HttpHeaders(result.headers),
+            });
+          this.lastRouteUsed = 'direct';
+          return JSON.parse(result.body) as T;
+        }),
+        catchError((error) => throwError(() => toLinkProviderError(error, provider, spec.hints))),
+      );
+    }
     const direct = () => {
       this.diagnostics.info('Shortener', 'request:start', {
         provider,
@@ -211,7 +245,7 @@ export class ShortenerTransport {
 
     return direct().pipe(
       catchError((error: unknown) => {
-        if (!looksCorsBlocked(error)) {
+        if (this.native || !looksCorsBlocked(error)) {
           this.diagnostics.error('Shortener', 'request:error', error, {
             provider,
             route: 'direct',

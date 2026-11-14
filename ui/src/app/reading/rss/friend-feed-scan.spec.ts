@@ -1,3 +1,4 @@
+import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -125,6 +126,37 @@ describe('FriendFeedScan', () => {
     }
     return promise;
   }
+
+  it('runs native discovery without consulting proxy availability or batch capacity', async () => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: PLATFORM_ARTICLE_READ, useValue: vi.fn() },
+        { provide: Api, useValue: api },
+        { provide: PasteResolve, useValue: resolver },
+        { provide: FriendFeedCache, useValue: cache },
+        { provide: PageDiagnostics, useValue: diagnostics },
+        {
+          provide: CorsProxy,
+          useValue: {
+            available() {
+              throw new Error('Native must not require a proxy');
+            },
+            batchCapacity() {
+              throw new Error('Native must not use proxy batches');
+            },
+          },
+        },
+      ],
+    });
+    scan = TestBed.inject(FriendFeedScan);
+    api.accountFollowingPage.mockReturnValue(
+      of({ accounts: [account('alice', 'https://blog.test')], nextMaxId: null, source: 'link' }),
+    );
+    resolver.resolve.mockResolvedValue(feedFound('https://blog.test'));
+    expect(scan.available()).toBe(true);
+    expect((await run())?.feeds.length).toBeGreaterThan(0);
+  });
 
   it('probes each site once however many friends link it', async () => {
     // The group-blog case. Three friends, one site, one probe — and the

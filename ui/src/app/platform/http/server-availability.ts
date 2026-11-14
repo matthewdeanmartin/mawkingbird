@@ -1,4 +1,5 @@
 import { serverProbeTimeout } from './host-url';
+import { publicInstanceFetch, publicMediaProbe } from './platform-http';
 
 /** Result of checking both a Mastodon API and the media host it advertises. */
 export interface ServerAvailability {
@@ -44,7 +45,7 @@ export async function probeServerAvailability(
   const timeout = AbortSignal.timeout(timeoutMs);
   const signal = searchSignal ? AbortSignal.any([searchSignal, timeout]) : timeout;
   try {
-    const response = await fetch(`${baseUrl}/api/v1/instance`, { signal });
+    const response = await publicInstanceFetch(`${baseUrl}/api/v1/instance`, signal);
     if (!response.ok) {
       return { status: 'unreachable', title: '', mediaUrl: null };
     }
@@ -55,7 +56,7 @@ export async function probeServerAvailability(
       return { status: 'available', title, mediaUrl: null };
     }
     try {
-      await fetch(mediaUrl, { mode: 'no-cors', signal });
+      await publicMediaProbe(mediaUrl, signal);
       return { status: 'available', title, mediaUrl };
     } catch {
       return { status: 'degraded', title, mediaUrl };

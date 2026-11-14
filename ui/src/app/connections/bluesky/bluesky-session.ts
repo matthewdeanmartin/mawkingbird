@@ -1,3 +1,4 @@
+import { NATIVE_SOCIAL, forgetNativeAccount } from '../../platform/session/platform-login';
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { map, Observable, switchMap, tap } from 'rxjs';
@@ -38,6 +39,7 @@ export const BSKY_SERVICE = 'https://bsky.social';
 
 export interface BskySession extends ExpiringCredential {
   authMethod?: 'app-password' | 'oauth';
+  nativeHandle?: string;
   service: string;
   handle: string;
   did: string;
@@ -210,6 +212,7 @@ export class BlueskySession implements ExpiringConnection {
   private bridge = inject(VaultBridge);
   private accountKey = inject(ProfileAccountKey);
   private oauth = inject(BlueskyOAuth);
+  private native = inject(NATIVE_SOCIAL);
 
   /**
    * Whether this instance is the app's identity rather than a connector.
@@ -347,7 +350,28 @@ export class BlueskySession implements ExpiringConnection {
   }
 
   /** Redirect to the account's own PDS authorization screen. */
-  async beginOAuthIdentity(identifier: string, adding: boolean): Promise<never> {
+  async beginOAuthIdentity(identifier: string, adding: boolean): Promise<void> {
+    if (this.native) {
+      const result = await this.native.blueskyLogin(identifier);
+      const session: BskySession = {
+        ...result.profile,
+        authMethod: 'oauth',
+        nativeHandle: result.nativeHandle,
+        connectedAt: Date.now(),
+      };
+      const created = saveBlueskyIdentity(
+        result.profile,
+        {
+          authMethod: 'oauth',
+          nativeHandle: result.nativeHandle,
+          connectedAt: session.connectedAt,
+        },
+        true,
+      );
+      if (created) markOnboardingPending(scopeSuffixForDid(result.profile.did));
+      this.session.set(session);
+      return;
+    }
     return this.oauth.signIn(identifier, adding ? 'identity:add' : 'identity:login');
   }
 
@@ -359,9 +383,21 @@ export class BlueskySession implements ExpiringConnection {
    * the same browser under the same active account, so {@link finishOAuth}
    * resolves the same connector keys this instance chose at construction.
    */
-  async beginOAuthConnector(identifier: string): Promise<never> {
+  async beginOAuthConnector(identifier: string): Promise<void> {
     if (this.isIdentity) {
       throw new Error('This account is already signed in with Bluesky.');
+    }
+    if (this.native) {
+      const result = await this.native.blueskyLogin(identifier);
+      const previous = this.session()?.nativeHandle;
+      this.persistOAuth({
+        ...result.profile,
+        authMethod: 'oauth',
+        nativeHandle: result.nativeHandle,
+        connectedAt: Date.now(),
+      });
+      if (previous && previous !== result.nativeHandle) forgetNativeAccount(previous);
+      return;
     }
     return this.oauth.signIn(identifier, 'connector:link');
   }
@@ -411,6 +447,11 @@ export class BlueskySession implements ExpiringConnection {
     if (!current || current.authMethod !== 'oauth') {
       return Promise.reject(new Error('No Bluesky OAuth session is active.'));
     }
+    if (this.native) {
+      if (!current.nativeHandle)
+        return Promise.reject(new Error('Sign in again in the native app.'));
+      return this.native.blueskyFetch(current.nativeHandle, pathname, init);
+    }
     return this.oauth.fetch(current.did, pathname, init);
   }
 
@@ -419,6 +460,7 @@ export class BlueskySession implements ExpiringConnection {
    * a display name and avatar. Persists nothing — callers choose where it lands.
    */
   private authenticate(identifier: string, appPassword: string): Observable<LegacyBskySession> {
+    if (this.native) throw new Error('Use browser OAuth in the native app.');
     return this.http
       .post<SessionResponse>(
         `${BSKY_SERVICE}/xrpc/com.atproto.server.createSession`,
@@ -483,8 +525,12 @@ export class BlueskySession implements ExpiringConnection {
     if (current && current.pdsUrl !== url) {
       const updated = { ...current, pdsUrl: url };
       if (current.authMethod === 'oauth' && this.isIdentity) {
-        const { authMethod: _authMethod, connectedAt, ...profile } = updated;
-        saveBlueskyIdentity(profile, { authMethod: 'oauth', connectedAt }, true);
+        const { authMethod: _authMethod, nativeHandle, connectedAt, ...profile } = updated;
+        saveBlueskyIdentity(
+          profile,
+          { authMethod: 'oauth', connectedAt, ...(nativeHandle ? { nativeHandle } : {}) },
+          true,
+        );
         this.session.set(updated);
       } else {
         this.persist(updated);
@@ -525,7 +571,12 @@ export class BlueskySession implements ExpiringConnection {
     // The SDK keeps one session per DID. A connector for a DID that is also
     // signed in here as an identity shares it, so unlinking the connector must
     // not revoke the identity's sign-in.
-    if (current?.authMethod === 'oauth' && (this.isIdentity || !blueskyIdentity(current.did))) {
+    if (current?.nativeHandle) forgetNativeAccount(current.nativeHandle);
+    if (
+      !this.native &&
+      current?.authMethod === 'oauth' &&
+      (this.isIdentity || !blueskyIdentity(current.did))
+    ) {
       // Revocation is best effort: local removal must still work offline.
       void this.oauth.revoke(current.did).catch(() => undefined);
     }
@@ -596,10 +647,15 @@ export class BlueskySession implements ExpiringConnection {
       accessJwt: _accessJwt,
       refreshJwt: _refreshJwt,
       appPassword: _appPassword,
+      nativeHandle,
       connectedAt,
       ...profile
     } = session;
-    const credentials = { authMethod: 'oauth' as const, connectedAt };
+    const credentials = {
+      authMethod: 'oauth' as const,
+      connectedAt,
+      ...(nativeHandle ? { nativeHandle } : {}),
+    };
     if (this.isIdentity) {
       saveBlueskyIdentity(profile, credentials, true);
     } else {

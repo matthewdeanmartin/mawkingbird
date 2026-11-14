@@ -1,3 +1,5 @@
+import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
+import { isNativeConnectorHandle } from '../../platform/http/connector-types';
 import { inject, Injectable, signal } from '@angular/core';
 import { scopedKey } from '../../platform/session/account-scope';
 import { ProfileAccountKey } from '../../accounts/mawkingbird/profile-account-key';
@@ -54,6 +56,7 @@ interface VaultedGist {
 @Injectable({ providedIn: 'root' })
 export class GistSettings implements ExpiringConnection {
   private bridge = inject(VaultBridge);
+  private native = inject(PLATFORM_CONNECTORS);
   private accountKey = inject(ProfileAccountKey);
   private readonly credentialsKey = scopedKey(CREDENTIALS_KEY_BASE);
   private readonly profileKey = scopedKey(PROFILE_KEY_BASE);
@@ -73,6 +76,14 @@ export class GistSettings implements ExpiringConnection {
   readonly needsFetch = signal(false);
 
   constructor() {
+    if (
+      this.native &&
+      this.credentials() &&
+      !isNativeConnectorHandle(this.credentials()!.accessToken)
+    ) {
+      this.forgetLocally();
+      this.connected.set(false);
+    }
     this.enforceLifetime();
   }
 
@@ -87,6 +98,7 @@ export class GistSettings implements ExpiringConnection {
     if (local) {
       return local;
     }
+    if (this.native) return null;
     const fromVault = this.bridge.readThrough(CREDENTIALS_KEY_BASE, this.accountKey.current());
     if (!fromVault) {
       return null;
@@ -102,6 +114,7 @@ export class GistSettings implements ExpiringConnection {
   }
 
   connect(accessToken: string, profile: GistProfile): void {
+    if (this.native) throw new Error('Use the native credential connection.');
     const trimmed = accessToken.trim();
     if (!trimmed) {
       throw new Error('Paste a GitHub personal access token with the gist scope.');
@@ -115,6 +128,33 @@ export class GistSettings implements ExpiringConnection {
       serialize(stamped, profile),
       this.accountKey.current(),
     );
+  }
+
+  async connectNative(token: string): Promise<void> {
+    if (!this.native) throw new Error('Native connection is unavailable.');
+    const handle = await this.native.connect('gist', token);
+    try {
+      const result = await this.native.request({
+        provider: 'gist',
+        handle,
+        url: 'https://api.github.com/user',
+        method: 'GET',
+      });
+      const profile = JSON.parse(result.body) as GistProfile;
+      if (result.status !== 200 || !profile.login)
+        throw new Error('GitHub did not return your account.');
+      this.persist(stampCredential({ accessToken: handle }), { login: profile.login });
+    } catch (error) {
+      await this.native.forget(handle);
+      throw error;
+    }
+  }
+  async disconnectNative(): Promise<void> {
+    const handle = this.credentials()?.accessToken;
+    if (this.native && handle) await this.native.forget(handle);
+    this.forgetLocally();
+    this.connected.set(false);
+    this.needsFetch.set(false);
   }
 
   /** Write both halves locally and update the signals. */
@@ -133,6 +173,7 @@ export class GistSettings implements ExpiringConnection {
 
   /** Disconnect here, and remove the stored copy so it cannot come back. */
   disconnect(): void {
+    if (this.native) throw new Error('Use the native credential disconnect.');
     void this.bridge.removeThrough(CREDENTIALS_KEY_BASE, this.accountKey.current());
     this.forgetLocally();
     this.connected.set(false);
@@ -155,6 +196,7 @@ export class GistSettings implements ExpiringConnection {
 
   /** Push the current credential to the vault and report what happened. */
   async syncToVault(): Promise<SyncOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const stored = this.credentials();
     return stored
       ? this.bridge.writeThrough(
@@ -167,6 +209,7 @@ export class GistSettings implements ExpiringConnection {
 
   /** Reconcile the token-plus-profile record without silently choosing a conflict winner. */
   reconcileVault(): Promise<VaultReconcileOutcome> {
+    if (this.native) return Promise.resolve({ kind: 'skipped' });
     const current = this.credentials();
     return reconcileScalar({
       local: current ? serialize(current, this.profile()) : null,
@@ -193,6 +236,7 @@ export class GistSettings implements ExpiringConnection {
 
   /** When this token ages out under the retention policy, or null. */
   expiresAt(): number | null {
+    if (this.native) return null;
     return credentialExpiresAt(this.credentials()?.connectedAt);
   }
 
@@ -203,6 +247,7 @@ export class GistSettings implements ExpiringConnection {
    * the next {@link token} pulls it back. See `VaultBridge.verdictFor`.
    */
   enforceLifetime(): void {
+    if (this.native) return;
     const stored = this.credentials();
     if (!stored) {
       return;

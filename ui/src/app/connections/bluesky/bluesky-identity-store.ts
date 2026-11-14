@@ -1,3 +1,4 @@
+import { forgetNativeAccount } from '../../platform/session/platform-login';
 /** Persistence helpers for first-class Bluesky identities. */
 
 export const ACCOUNT_MODE_KEY = 'mastodon_mock_account_mode';
@@ -27,6 +28,7 @@ export interface BlueskyLegacyIdentityCredentials {
 /** OAuth secrets remain in the official SDK's IndexedDB; this is only a join marker. */
 export interface BlueskyOAuthIdentityCredentials {
   authMethod: 'oauth';
+  nativeHandle?: string;
   connectedAt?: number;
 }
 
@@ -176,10 +178,17 @@ export function saveBlueskyIdentity(
   const current = stores();
   const created = !current.profiles[profile.did];
   current.profiles[profile.did] = profile;
+  const previous = current.credentials[profile.did];
   current.credentials[profile.did] = credentials;
   persistMap(BSKY_IDENTITY_PROFILE_KEY, current.profiles);
   persistMap(BSKY_IDENTITY_CREDENTIALS_KEY, current.credentials);
   if (activate) localStorage.setItem(BSKY_ACTIVE_IDENTITY_DID_KEY, profile.did);
+  if (
+    previous?.authMethod === 'oauth' &&
+    previous.nativeHandle &&
+    (credentials.authMethod !== 'oauth' || previous.nativeHandle !== credentials.nativeHandle)
+  )
+    forgetNativeAccount(previous.nativeHandle);
   return created;
 }
 
@@ -213,6 +222,8 @@ export function blueskyIdentityPresent(did: string | null = blueskyIdentityDid()
 export function clearBlueskyIdentity(did: string | null = blueskyIdentityDid()): void {
   if (!did) return;
   const current = stores();
+  const credentials = current.credentials[did];
+  if (credentials?.authMethod === 'oauth') forgetNativeAccount(credentials.nativeHandle ?? null);
   delete current.profiles[did];
   delete current.credentials[did];
   persistMap(BSKY_IDENTITY_PROFILE_KEY, current.profiles);
@@ -224,6 +235,9 @@ export function clearBlueskyIdentity(did: string | null = blueskyIdentityDid()):
 
 /** Remove all first-class Bluesky identities. */
 export function clearAllBlueskyIdentities(): void {
+  for (const credentials of Object.values(stores().credentials)) {
+    if (credentials.authMethod === 'oauth') forgetNativeAccount(credentials.nativeHandle ?? null);
+  }
   localStorage.removeItem(BSKY_IDENTITY_PROFILE_KEY);
   localStorage.removeItem(BSKY_IDENTITY_CREDENTIALS_KEY);
   localStorage.removeItem(BSKY_ACTIVE_IDENTITY_DID_KEY);

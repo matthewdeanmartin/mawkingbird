@@ -1366,6 +1366,23 @@ describe('StatusCard', () => {
     }
   });
 
+  it('rolls back a native like and explains how to renew an old read-only login', () => {
+    const f = setUp(makeStatus({ id: '5', favourited: false }));
+    f.componentInstance.toggleFavourite(fakeEvent());
+    httpMock.expectOne('/api/v1/statuses/5/favourite').flush(
+      { code: 'native_reauthorization_required' },
+      {
+        status: 403,
+        statusText: 'Forbidden',
+      },
+    );
+    f.detectChanges();
+    expect((f.componentInstance as any).optimistic()).toBeNull();
+    expect((f.nativeElement as HTMLElement).querySelector('.action-error')?.textContent).toContain(
+      'Full access',
+    );
+  });
+
   it('a failed favourite surfaces an error instead of failing silently', () => {
     const bsky = makeStatus({
       id: 'bsky:at://did:plc:x/app.bsky.feed.post/1',

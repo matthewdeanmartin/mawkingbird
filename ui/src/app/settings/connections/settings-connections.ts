@@ -1,3 +1,4 @@
+import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
 import { NgTemplateOutlet } from '@angular/common';
 import { MbTab, MbTabs } from '../../design-system/tabs/tabs';
 import { ConnectionSyncButton } from '../../accounts/mawkingbird/connection-sync-button';
@@ -110,6 +111,7 @@ export interface ConnectionCatalogRow {
   styleUrl: './settings-connections.css',
 })
 export class SettingsConnections implements OnInit {
+  private nativeConnectors = inject(PLATFORM_CONNECTORS);
   protected readonly connectionTabs = ['basic', 'advanced'] as const;
   protected isAdvanced(id: ConnectionId): boolean {
     return [
@@ -156,7 +158,18 @@ export class SettingsConnections implements OnInit {
    * there and one case here.
    */
   protected readonly rows = computed<ConnectionCatalogRow[]>(() =>
-    CONNECTION_CATALOG.map((entry) => {
+    CONNECTION_CATALOG.map((original) => {
+      const entry =
+        this.nativeConnectors && original.id === 'mataroa'
+          ? {
+              ...original,
+              enables: original.enables.map((feature) =>
+                feature === 'settings.connections.catalog.mataroa.enables.credentials'
+                  ? 'settings.connections.catalog.mataroa.enables.nativeCredentials'
+                  : feature,
+              ),
+            }
+          : original;
       // A flag beats a build fact. Both can be true — Dropbox with no app key
       // *and* flagged off — and the flag is the one the reader can act on, so
       // it is the one the card explains.
@@ -468,3 +481,5 @@ export class SettingsConnections implements OnInit {
     this.lifetimes.set(lifetime);
   }
 }
+
+// i18n settings.connections.catalog.mataroa.enables.nativeCredentials: Needs your own API key

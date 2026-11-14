@@ -75,6 +75,21 @@ describe('VideoPlayer user control', () => {
     fixture.detectChanges();
     return fixture.nativeElement.querySelector('video');
   }
+  it('embeds YouTube with a referrer and sandbox while retaining the external link', () => {
+    const video = youtubeSource('https://youtu.be/0KoeY54M5VA?t=45')!;
+    mount(video);
+    const frame = fixture.nativeElement.querySelector('iframe') as HTMLIFrameElement;
+    expect(new URL(frame.src).hostname).toBe('www.youtube-nocookie.com');
+    expect(frame.getAttribute('referrerpolicy')).toBe('strict-origin-when-cross-origin');
+    expect(frame.getAttribute('sandbox')).toBe(
+      'allow-scripts allow-same-origin allow-presentation',
+    );
+    const link = fixture.nativeElement.querySelector(
+      '.video-links a[target="_blank"]',
+    ) as HTMLAnchorElement;
+    expect(link.href).toBe(video.url);
+    expect(link.rel).toBe('noopener noreferrer');
+  });
   it('offers Queue on inline players only, carrying the post Watch params', () => {
     const video = { ...youtubeSource('https://youtu.be/0KoeY54M5VA')!, title: 'A talk' };
     mount(video);

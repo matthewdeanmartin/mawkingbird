@@ -1,3 +1,4 @@
+import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
 import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -37,6 +38,19 @@ describe('ArticleQuota', () => {
   beforeEach(() => {
     localStorage.removeItem(ARTICLE_QUOTA_KEY);
     TestBed.resetTestingModule();
+  });
+
+  it('grants native reading without cloud entitlement or a daily web allowance', async () => {
+    TestBed.configureTestingModule({
+      providers: [{ provide: PLATFORM_ARTICLE_READ, useValue: vi.fn() }],
+    });
+    const { quota, plus } = build();
+    for (let n = 0; n < FREE_DAILY_ARTICLES + 3; n++) quota.consume();
+    expect(quota.unlimited()).toBe(true);
+    expect(quota.remaining()).toBe(Infinity);
+    expect(await quota.authorize()).toBe(true);
+    expect(plus.refresh).not.toHaveBeenCalled();
+    expect(quota.freeRemaining()).toBe(FREE_DAILY_ARTICLES);
   });
 
   it('starts with the full free allowance', () => {

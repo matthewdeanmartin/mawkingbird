@@ -1,3 +1,4 @@
+import { PLATFORM_CONNECTORS } from '../../../platform/http/platform-http';
 import { MbButton } from '../../../design-system/button/button';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbNotice } from '../../../design-system/notice/notice';
@@ -52,6 +53,8 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   styleUrls: ['../connection-page.css', './connection-raindrop.css'],
 })
 export class ConnectionRaindrop implements OnInit {
+  protected native = inject(PLATFORM_CONNECTORS);
+  protected busy = signal(false);
   protected raindrop = inject(RaindropSession);
   private bridge = inject(VaultBridge);
   private diagnostics = inject(PageDiagnostics);
@@ -72,6 +75,11 @@ export class ConnectionRaindrop implements OnInit {
   }
 
   connectRaindrop(): void {
+    if (this.busy()) return;
+    if (this.native) {
+      void this.nativeAction(false);
+      return;
+    }
     this.raindropError.set(null);
     this.raindropNotice.set(null);
     try {
@@ -90,7 +98,36 @@ export class ConnectionRaindrop implements OnInit {
     }
   }
 
+  private async nativeAction(disconnect: boolean): Promise<void> {
+    this.busy.set(true);
+    this.raindropError.set(null);
+    this.raindropNotice.set(null);
+    try {
+      if (disconnect) await this.raindrop.disconnect();
+      else {
+        await this.raindrop.connect(this.raindropToken());
+        this.raindropToken.set('');
+        this.raindropNotice.set(
+          this.transloco.translate<string>('settings.connections.raindrop.connectedFull'),
+        );
+      }
+    } catch (error) {
+      this.raindropError.set(
+        error instanceof Error
+          ? error.message
+          : this.transloco.translate<string>('settings.connections.raindrop.connectFailed'),
+      );
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
   disconnectRaindrop(): void {
+    if (this.busy()) return;
+    if (this.native) {
+      void this.nativeAction(true);
+      return;
+    }
     this.raindrop.disconnect();
     this.raindropNotice.set(null);
   }

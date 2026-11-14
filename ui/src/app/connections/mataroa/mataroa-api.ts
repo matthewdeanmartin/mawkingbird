@@ -1,6 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, defer, map } from 'rxjs';
 import { CorsProxy, CorsProxyRefusal } from '../cors-proxy/cors-proxy';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { ProxyConsent } from '../proxy-consent-store';
@@ -27,9 +28,10 @@ export interface MataroaCreatedPost {
   url: string;
 }
 
-/** Authenticated Mataroa writes, always through the explicitly-consented proxy. */
+/** Mataroa operations: native broker, or the browser’s explicitly-consented proxy. */
 @Injectable({ providedIn: 'root' })
 export class MataroaApi {
+  private readonly native = inject(PLATFORM_CONNECTORS);
   private readonly http = inject(HttpClient);
   private readonly settings = inject(MataroaSettings);
   private readonly proxy = inject(CorsProxy);
@@ -51,6 +53,23 @@ export class MataroaApi {
     const config = this.settings.resolve();
     if (!config) {
       return throwError(() => new Error('Connect a Mataroa blog in Settings first.'));
+    }
+    if (this.native) {
+      return defer(() =>
+        this.native!.request({ provider: 'mataroa', handle: config.apiKey, url, method, body }),
+      ).pipe(
+        map((response) => {
+          const parsed: unknown = JSON.parse(response.body);
+          if (response.status < 200 || response.status >= 300)
+            throw new HttpErrorResponse({
+              status: response.status,
+              url,
+              error: parsed,
+              headers: new HttpHeaders(response.headers),
+            });
+          return parsed as T;
+        }),
+      );
     }
     const proxy = this.proxy.entry();
     if (!proxy || !this.proxy.available()) {

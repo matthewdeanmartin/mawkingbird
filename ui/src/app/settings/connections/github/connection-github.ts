@@ -1,3 +1,4 @@
+import { PLATFORM_CONNECTORS } from '../../../platform/http/platform-http';
 import { MbButton } from '../../../design-system/button/button';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbNotice } from '../../../design-system/notice/notice';
@@ -17,6 +18,8 @@ import { CONNECTION_SCOPE_COPY } from '../connection-catalog';
 import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics';
 
 // i18n settings.connections.github.title: 🐙 GitHub
+// i18n settings.connections.github.nativeIntro: Read your GitHub notifications and find people you follow using a personal access token.
+// i18n settings.connections.github.nativeProofCompleted: GitHub connection checked.
 // i18n settings.connections.github.intro: GitHub's REST API works directly from this browser. GitHub's OAuth and device-flow token endpoints do not allow browser CORS, so a serverless connection must use a token you create and paste here.
 // i18n settings.connections.github.disconnect: Disconnect
 // i18n settings.connections.github.tokenPlaceholder: GitHub token (ghp_…)
@@ -62,6 +65,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   styleUrls: ['../connection-page.css', './connection-github.css'],
 })
 export class ConnectionGitHub implements OnInit {
+  protected readonly native = inject(PLATFORM_CONNECTORS);
   /** Inside a mini-app page: no Settings back link or page header. */
   readonly embedded = input(false);
   protected github = inject(GitHubSession);
@@ -134,7 +138,11 @@ export class ConnectionGitHub implements OnInit {
     try {
       await this.github.runProof();
       this.githubNotice.set(
-        this.transloco.translate<string>('settings.connections.github.proofCompleted'),
+        this.transloco.translate<string>(
+          this.native
+            ? 'settings.connections.github.nativeProofCompleted'
+            : 'settings.connections.github.proofCompleted',
+        ),
       );
     } catch (error: unknown) {
       this.diagnostics.error('GitHub', 'proof:error', error);
@@ -149,8 +157,17 @@ export class ConnectionGitHub implements OnInit {
     }
   }
 
-  disconnectGitHub(): void {
-    this.github.disconnect();
+  async disconnectGitHub(): Promise<void> {
+    if (this.githubBusy()) return;
+    this.githubBusy.set(true);
+    try {
+      await this.github.disconnect();
+    } catch (error) {
+      this.githubError.set(describeError(error, 'Could not remove this credential.'));
+      return;
+    } finally {
+      this.githubBusy.set(false);
+    }
     this.githubNotice.set(null);
     this.githubError.set(null);
   }

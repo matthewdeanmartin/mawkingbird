@@ -1,3 +1,4 @@
+import { RUNTIME_POLICY } from '../build/runtime-policy';
 import { inject, Injectable } from '@angular/core';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { importPortableConfig, parsePortableConfig, PortableConfig } from './portable-config';
@@ -55,6 +56,7 @@ async function sha256(text: string): Promise<string> {
 /** Remote portable-config checks. */
 @Injectable({ providedIn: 'root' })
 export class ConfigSync {
+  private readonly runtimePolicy = inject(RUNTIME_POLICY);
   private readonly dialogs = inject(AppDialogs);
 
   private timer: ReturnType<typeof setTimeout> | null = null;
@@ -120,6 +122,7 @@ export class ConfigSync {
   }
 
   private schedule(): void {
+    if (!this.runtimePolicy.remoteConfig) return;
     if (this.timer !== null) {
       clearTimeout(this.timer);
       this.timer = null;
@@ -171,6 +174,8 @@ export class ConfigSync {
   }
 
   private async fetchText(url: string): Promise<string> {
+    if (!this.runtimePolicy.remoteConfig)
+      throw new Error('Remote configuration is unavailable in this build.');
     let parsed: URL;
     try {
       parsed = new URL(url);

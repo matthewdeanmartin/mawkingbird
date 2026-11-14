@@ -1,3 +1,4 @@
+import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { FeedSyncButton } from '../../accounts/mawkingbird/feed-sync-button';
 import {
   afterNextRender,
@@ -155,6 +156,7 @@ interface RailGroup {
   styleUrl: './rss-page.css',
 })
 export class RssPage {
+  protected readonly nativeReading = !!inject(PLATFORM_FEED_READ);
   private host: ElementRef<HTMLElement> = inject(ElementRef);
   private injector = inject(Injector);
   private cache = inject(RssCache);

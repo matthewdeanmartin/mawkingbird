@@ -1,13 +1,19 @@
+import { BUILD_RUNTIME_POLICY, RUNTIME_POLICY } from '../../platform/build/runtime-policy';
 import { inject, Injectable } from '@angular/core';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 
 /** Browser rollout policy for the operator's account services. */
 @Injectable({ providedIn: 'root' })
 export class MawkingbirdAccess {
+  private readonly runtimePolicy = inject(RUNTIME_POLICY);
   private flags = inject(FeatureFlags);
 
   enabled(): boolean {
-    return this.flags.enabled('mawkingbird-plus') && ownsMawkingbirdServices(location.hostname);
+    return (
+      this.runtimePolicy.hostedServices &&
+      this.flags.enabled('mawkingbird-plus') &&
+      ownsMawkingbirdServices(location.hostname)
+    );
   }
 }
 
@@ -20,6 +26,12 @@ export function ownsMawkingbirdServices(host: string): boolean {
   );
 }
 
-export function canUseHostedProxy(host: string = location.hostname): boolean {
-  return ownsMawkingbirdServices(host) || host === 'matthewdeanmartin.github.io';
+export function canUseHostedProxy(
+  host: string = location.hostname,
+  policy = BUILD_RUNTIME_POLICY,
+): boolean {
+  return (
+    policy.hostedServices &&
+    (ownsMawkingbirdServices(host) || host === 'matthewdeanmartin.github.io')
+  );
 }

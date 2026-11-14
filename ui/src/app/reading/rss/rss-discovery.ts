@@ -1,3 +1,4 @@
+import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
 import { inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
@@ -134,6 +135,7 @@ export function feedLinksIn(
 @Injectable({ providedIn: 'root' })
 export class RssDiscovery {
   private proxy = inject(CorsProxy);
+  private nativePageRead = inject(PLATFORM_ARTICLE_READ);
   private batchFetch = inject(CorsProxyBatchFetch);
   private subs = inject(RssSubscriptions);
   private diagnostics = inject(PageDiagnostics);
@@ -147,7 +149,7 @@ export class RssDiscovery {
 
   /** Whether discovery can run — it needs a proxy, like every outbound fetch. */
   available(): boolean {
-    return this.proxy.available();
+    return !!this.nativePageRead || this.proxy.available();
   }
 
   /**
@@ -212,6 +214,10 @@ export class RssDiscovery {
   /** Fetch one site and read its feed declarations. Failures are not fatal. */
   private async probe(siteUrl: string): Promise<{ url: string; title: string; type: string }[]> {
     try {
+      if (this.nativePageRead) {
+        const page = await this.nativePageRead(siteUrl);
+        return page.status >= 200 && page.status < 300 ? feedLinksIn(page.body, page.finalUrl) : [];
+      }
       const html = await firstValueFrom(this.batchFetch.text(siteUrl, 'article'));
       return feedLinksIn(html ?? '', siteUrl);
     } catch (err) {

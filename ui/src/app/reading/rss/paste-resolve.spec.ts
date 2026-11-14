@@ -5,6 +5,7 @@ import { Api } from '../../platform/api/api';
 import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { CorsProxyBatchFetch } from '../../connections/cors-proxy/cors-proxy-batch-fetch';
 import { handleIn, PasteResolve, youtubeFeedFor } from './paste-resolve';
+import { PLATFORM_ARTICLE_READ, PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { RssFetch } from './rss-fetch';
 
 describe('handleIn', () => {
@@ -112,6 +113,87 @@ describe('PasteResolve', () => {
         .map((h) => `<link rel="alternate" type="application/rss+xml" href="${h}">`)
         .join('')}</head><body>hi</body></html>`,
     );
+
+  it('resolves native feeds without filename hints and never probes through the proxy', async () => {
+    TestBed.overrideProvider(PLATFORM_FEED_READ, { useValue: vi.fn() });
+    feeds.set('https://blog.test/frontpage', 'Native news');
+    const resolver = TestBed.inject(PasteResolve);
+    expect(await resolver.resolve('https://blog.test/frontpage')).toMatchObject({
+      kind: 'feeds',
+      needsProxy: false,
+      feeds: [{ title: 'Native news' }],
+    });
+    expect(await resolver.resolve('https://blog.test/missing')).toMatchObject({
+      kind: 'none',
+      reason: 'not a feed',
+    });
+    expect(httpGet).not.toHaveBeenCalled();
+  });
+
+  it('discovers native webpage feeds at the final URL without touching a proxy', async () => {
+    const read = vi.fn().mockResolvedValue({
+      status: 200,
+      finalUrl: 'https://new.test/blog/',
+      body: '<title>Blog</title><link rel="alternate" type="application/rss+xml" href="feed.xml"><link rel="alternate" type="application/rss+xml" href="javascript:alert(1)"><script>window.bad=true</script>',
+    });
+    TestBed.overrideProvider(PLATFORM_FEED_READ, { useValue: vi.fn() });
+    TestBed.overrideProvider(PLATFORM_ARTICLE_READ, { useValue: read });
+    const result = await resolver().resolve('https://old.test/');
+    expect(result).toMatchObject({
+      kind: 'feeds',
+      siteUrl: 'https://new.test/blog/',
+      needsProxy: false,
+      feeds: [{ url: 'https://new.test/blog/feed.xml' }],
+    });
+    if (result.kind === 'feeds') expect(result.feeds).toHaveLength(1);
+    expect(httpGet).not.toHaveBeenCalled();
+    expect(await resolver().resolve('https://old.test/')).toEqual(result);
+    expect(read).toHaveBeenCalledTimes(1);
+  });
+
+  it('distinguishes native publisher throttling, no feeds and policy failures', async () => {
+    const read = vi.fn();
+    TestBed.overrideProvider(PLATFORM_FEED_READ, { useValue: vi.fn() });
+    TestBed.overrideProvider(PLATFORM_ARTICLE_READ, { useValue: read });
+    const service = resolver();
+    read.mockResolvedValue({ status: 429, body: '', finalUrl: 'https://blog.test/' });
+    expect(await service.resolve('https://blog.test/')).toMatchObject({
+      kind: 'none',
+      rateLimited: true,
+      reached: false,
+    });
+    read.mockResolvedValue({
+      status: 200,
+      body: '<html>No feeds</html>',
+      finalUrl: 'https://blog.test/',
+    });
+    expect(await service.resolve('https://blog.test/')).toMatchObject({
+      kind: 'none',
+      reached: true,
+    });
+    read.mockRejectedValue({ kind: 'policy', message: 'Private destinations are blocked.' });
+    expect(await service.resolve('http://127.0.0.1/')).toMatchObject({
+      kind: 'none',
+      reached: false,
+      reason: 'Private destinations are blocked.',
+    });
+    expect(httpGet).not.toHaveBeenCalled();
+  });
+
+  it('does not retry a native policy or HTTP refusal as a webpage', async () => {
+    const read = vi.fn();
+    TestBed.overrideProvider(PLATFORM_FEED_READ, { useValue: vi.fn() });
+    TestBed.overrideProvider(PLATFORM_ARTICLE_READ, { useValue: read });
+    fetchFeed.mockReturnValue(
+      throwError(() => new Error('Publisher refused', { cause: { kind: 'http' } })),
+    );
+    expect(await resolver().resolve('https://blog.test/')).toMatchObject({
+      kind: 'none',
+      reached: false,
+    });
+    expect(read).not.toHaveBeenCalled();
+    expect(httpGet).not.toHaveBeenCalled();
+  });
 
   it('subscribes a site with one declared feed', async () => {
     page('https://blog.test/', '/feed.xml');

@@ -1,3 +1,4 @@
+import { PLATFORM_HUGO } from '../../../platform/http/platform-http';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { MbButton } from '../../../design-system/button/button';
@@ -53,6 +54,8 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.hugo.readOnly: Read-only
 // i18n settings.connections.hugo.step2.g: (that one is for showing build status later).
 // i18n settings.connections.hugo.step3: Paste it below with your repository details, then save. We check them before storing.
+// i18n settings.connections.hugo.nativeWarning: This token can write posts to your selected repository. It is stored in your operating system’s credential store and sent only to GitHub. Revoke it in GitHub to invalidate it.
+// i18n settings.connections.hugo.nativeNeedsToken: Your repository details are saved. Reconnect with a token to publish again.
 // i18n settings.connections.hugo.warning.a: This token can commit files to the repository you scope it to. It is stored in this browser's localStorage, never sent to Mawkingbird, and sent only to
 // i18n settings.connections.hugo.warning.b: — no CORS proxy is involved, because GitHub's API accepts browser requests directly. Scope it to the one blog repository, and revoke it in GitHub to invalidate it.
 // i18n settings.connections.hugo.connected: Connected
@@ -139,6 +142,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   styleUrls: ['../connection-page.css', './connection-hugo.css'],
 })
 export class ConnectionHugo implements OnInit {
+  protected readonly native = inject(PLATFORM_HUGO);
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
 
@@ -257,12 +261,14 @@ export class ConnectionHugo implements OnInit {
 
     this.busy.set(true);
     try {
-      const result = await this.validate.check(this.token(), candidate);
+      const result = this.native
+        ? await this.settings.connectNative(this.token(), candidate)
+        : await this.validate.check(this.token(), candidate);
       if (!result.ok) {
         this.error.set(result.problem);
         return;
       }
-      this.settings.connect(this.token(), candidate);
+      if (!this.native) this.settings.connect(this.token(), candidate);
       this.token.set('');
       this.notice.set(
         result.postCount
@@ -393,8 +399,18 @@ export class ConnectionHugo implements OnInit {
     void this.posts.hydrate();
   }
 
-  disconnect(): void {
-    this.settings.disconnect();
+  async disconnect(): Promise<void> {
+    if (this.busy()) return;
+    this.busy.set(true);
+    try {
+      if (this.native) await this.settings.disconnectNative();
+      else this.settings.disconnect();
+    } catch (error) {
+      this.error.set(error instanceof Error ? error.message : 'Could not remove this credential.');
+      return;
+    } finally {
+      this.busy.set(false);
+    }
     this.posts.reset();
     this.token.set('');
     this.notice.set(null);

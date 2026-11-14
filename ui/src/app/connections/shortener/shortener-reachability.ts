@@ -1,3 +1,4 @@
+import { PLATFORM_LOCAL_PUBLISHING } from '../../platform/http/platform-http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, of } from 'rxjs';
 import { CorsProxy } from '../cors-proxy/cors-proxy';
@@ -70,6 +71,7 @@ export interface ReachabilityResult {
 @Injectable({ providedIn: 'root' })
 export class ShortenerReachability {
   private transport = inject(ShortenerTransport);
+  private native = inject(PLATFORM_LOCAL_PUBLISHING);
   private proxy = inject(CorsProxy);
 
   /**
@@ -82,6 +84,13 @@ export class ShortenerReachability {
    * `Accept`-header preflight bug survived as long as it did.
    */
   probe(shortener: ShortenerId): Observable<ReachabilityResult> {
+    if (this.native)
+      return of({
+        shortener,
+        status: 'unknown',
+        message: 'Create a link to test publishing. No test link was created.',
+        checkedAt: Date.now(),
+      });
     return this.transport
       .request<unknown>(shortener, {
         method: 'GET',

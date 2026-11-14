@@ -1,3 +1,5 @@
+import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
+import { isNativeConnectorHandle } from '../../platform/http/connector-types';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { scopedKey } from '../../platform/session/account-scope';
 import { ProfileAccountKey } from '../../accounts/mawkingbird/profile-account-key';
@@ -18,10 +20,14 @@ export interface MataroaConnection extends ExpiringCredential {
   blogUrl: string;
 }
 
-function load(key: string): MataroaConnection | null {
+function load(key: string, native = false): MataroaConnection | null {
   try {
     const parsed = JSON.parse(localStorage.getItem(key) ?? 'null') as Partial<MataroaConnection>;
     if (!parsed || typeof parsed.apiKey !== 'string' || typeof parsed.blogUrl !== 'string') {
+      return null;
+    }
+    if (native && !isNativeConnectorHandle(parsed.apiKey)) {
+      localStorage.removeItem(key);
       return null;
     }
     return ensureStamped(key, {
@@ -39,10 +45,13 @@ function load(key: string): MataroaConnection | null {
 /** One Mataroa blog linked to the current Mawkingbird account. */
 @Injectable({ providedIn: 'root' })
 export class MataroaSettings implements ExpiringConnection {
+  private native = inject(PLATFORM_CONNECTORS);
   private bridge = inject(VaultBridge);
   private accountKey = inject(ProfileAccountKey);
   private readonly storageKey = scopedKey(STORAGE_KEY_BASE);
-  private readonly connection = signal<MataroaConnection | null>(load(this.storageKey));
+  private readonly connection = signal<MataroaConnection | null>(
+    load(this.storageKey, !!this.native),
+  );
 
   /**
    * Connected, but the credential is not in this browser right now.
@@ -58,7 +67,8 @@ export class MataroaSettings implements ExpiringConnection {
     const blogUrl = this.blogUrl();
     return blogUrl ? new URL('rss/', blogUrl).toString() : null;
   });
-  connect(apiKey: string, blogUrl: string): void {
+  connect(apiKey: string, blogUrl: string): void | Promise<void> {
+    if (this.native) return this.connectNative(apiKey, blogUrl);
     const key = apiKey.trim();
     if (!key) {
       throw new Error('Paste your Mataroa API key.');
@@ -91,6 +101,7 @@ export class MataroaSettings implements ExpiringConnection {
     if (local) {
       return local;
     }
+    if (this.native) return null;
     const fromVault = this.bridge.readThrough(STORAGE_KEY_BASE, this.accountKey.current());
     if (!fromVault) {
       return null;
@@ -105,8 +116,31 @@ export class MataroaSettings implements ExpiringConnection {
   }
 
   /** Disconnect here and remove the stored copy, so it cannot come back. */
-  disconnect(): void {
+  private async connectNative(apiKey: string, blogUrl: string): Promise<void> {
+    const blog = normalizeBlogUrl(blogUrl);
+    const previous = this.connection()?.apiKey;
+    const handle = await this.native!.connect('mataroa', apiKey.trim(), previous);
+    const next = stampCredential({ apiKey: handle, blogUrl: blog });
+    try {
+      localStorage.setItem(this.storageKey, JSON.stringify(next));
+    } catch (error) {
+      if (!previous) await this.native!.forget(handle);
+      throw error;
+    }
+    this.connection.set(next);
+    this.needsFetch.set(false);
+  }
+
+  disconnect(): void | Promise<void> {
+    if (this.native) return this.disconnectNative();
     void this.bridge.removeThrough(STORAGE_KEY_BASE, this.accountKey.current());
+    this.forgetLocally();
+    this.needsFetch.set(false);
+  }
+
+  private async disconnectNative(): Promise<void> {
+    const handle = this.connection()?.apiKey;
+    if (handle) await this.native!.forget(handle);
     this.forgetLocally();
     this.needsFetch.set(false);
   }
@@ -119,6 +153,7 @@ export class MataroaSettings implements ExpiringConnection {
 
   /** Push the current connection to the vault and report what happened. */
   async syncToVault(): Promise<SyncOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const current = this.connection();
     return current
       ? this.bridge.writeThrough(
@@ -131,6 +166,7 @@ export class MataroaSettings implements ExpiringConnection {
 
   /** Reconcile the self-contained blog record without replacing two non-empty copies. */
   reconcileVault(): Promise<VaultReconcileOutcome> {
+    if (this.native) return Promise.resolve({ kind: 'skipped' });
     const current = this.connection();
     return reconcileScalar({
       local: current ? JSON.stringify(current) : null,
@@ -152,6 +188,7 @@ export class MataroaSettings implements ExpiringConnection {
   }
 
   expiresAt(): number | null {
+    if (this.native) return null;
     return credentialExpiresAt(this.connection()?.connectedAt);
   }
 
@@ -159,6 +196,7 @@ export class MataroaSettings implements ExpiringConnection {
    * Apply the local retention policy: lock if vaulted, disconnect otherwise.
    */
   enforceLifetime(): void {
+    if (this.native) return;
     const current = this.connection();
     if (!current) {
       return;

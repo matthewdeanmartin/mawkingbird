@@ -1,3 +1,5 @@
+import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
+import { isNativeConnectorHandle } from '../../platform/http/connector-types';
 import { inject, Injectable, signal } from '@angular/core';
 import { scopedKey } from '../../platform/session/account-scope';
 import { ProfileAccountKey } from '../../accounts/mawkingbird/profile-account-key';
@@ -129,6 +131,7 @@ interface GitHubGraphQlResponse {
 @Injectable({ providedIn: 'root' })
 export class GitHubSession implements ExpiringConnection {
   private bridge = inject(VaultBridge);
+  private native = inject(PLATFORM_CONNECTORS);
   private accountKey = inject(ProfileAccountKey);
   private readonly userKey = scopedKey(USER_KEY_BASE);
   private readonly credentialsKey = scopedKey(CREDENTIALS_KEY_BASE);
@@ -150,6 +153,10 @@ export class GitHubSession implements ExpiringConnection {
   constructor() {
     // Retention is applied here rather than in `readToken`, which cannot tell a
     // vaulted token from a local-only one.
+    if (this.native && this.token() && !isNativeConnectorHandle(this.token()!.accessToken)) {
+      this.forgetLocally();
+      this.connected.set(false);
+    }
     this.enforceLifetime();
   }
 
@@ -159,7 +166,18 @@ export class GitHubSession implements ExpiringConnection {
       throw new Error('Paste a GitHub personal access token (classic).');
     }
 
-    const user = await githubRequest<GitHubUser>('/user', trimmed);
+    if (this.native) {
+      const handle = await this.native.connect('github', trimmed);
+      try {
+        const user = await this.request<GitHubUser>('/user', handle);
+        this.persist(stampCredential({ accessToken: handle }), user);
+        return user;
+      } catch (error) {
+        await this.native.forget(handle);
+        throw error;
+      }
+    }
+    const user = await this.request<GitHubUser>('/user', trimmed);
     this.persist(stampCredential({ accessToken: trimmed }), user);
     // Not awaited: connecting should feel instant. Failures are observable via
     // `syncToVault()`, which the settings page calls when the user opts in.
@@ -185,6 +203,7 @@ export class GitHubSession implements ExpiringConnection {
     if (local) {
       return local;
     }
+    if (this.native) return null;
     const fromVault = this.bridge.readThrough(CREDENTIALS_KEY_BASE, this.accountKey.current());
     if (!fromVault) {
       return null;
@@ -209,6 +228,7 @@ export class GitHubSession implements ExpiringConnection {
 
   /** Push the current credential to the vault and report what happened. */
   async syncToVault(): Promise<SyncOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const stored = this.token();
     return stored
       ? this.bridge.writeThrough(
@@ -221,6 +241,7 @@ export class GitHubSession implements ExpiringConnection {
 
   /** Reconcile the token-plus-profile record without silently choosing a conflict winner. */
   reconcileVault(): Promise<VaultReconcileOutcome> {
+    if (this.native) return Promise.resolve({ kind: 'skipped' });
     const current = this.token();
     return reconcileScalar({
       local: current ? serialize(current.accessToken, current.user) : null,
@@ -241,6 +262,7 @@ export class GitHubSession implements ExpiringConnection {
 
   /** When this token ages out under the retention policy, or null. */
   expiresAt(): number | null {
+    if (this.native) return null;
     return credentialExpiresAt(this.token()?.connectedAt);
   }
 
@@ -251,6 +273,7 @@ export class GitHubSession implements ExpiringConnection {
    * the next {@link accessToken} pulls it back. See `VaultBridge.verdictFor`.
    */
   enforceLifetime(): void {
+    if (this.native) return;
     const token = this.token();
     if (!token) {
       return;
@@ -275,17 +298,17 @@ export class GitHubSession implements ExpiringConnection {
 
     try {
       const [notifications, following] = await Promise.all([
-        githubRequest<GitHubNotification[]>(
+        this.request<GitHubNotification[]>(
           '/notifications?all=false&participating=false&per_page=10',
           accessToken,
         ),
-        githubRequest<GitHubUser[]>('/user/following?per_page=10', accessToken),
+        this.request<GitHubUser[]>('/user/following?per_page=10', accessToken),
       ]);
       this.notifications.set(notifications);
       this.following.set(following);
     } catch (error: unknown) {
       if (error instanceof GitHubApiError && error.status === 401) {
-        this.disconnect();
+        if (!this.native) this.disconnect();
       }
       throw error;
     }
@@ -341,7 +364,8 @@ export class GitHubSession implements ExpiringConnection {
   }
 
   /** Disconnect here, and remove the stored copy so it cannot come back. */
-  disconnect(): void {
+  disconnect(): void | Promise<void> {
+    if (this.native) return this.disconnectNative();
     void this.bridge.removeThrough(CREDENTIALS_KEY_BASE, this.accountKey.current());
     this.forgetLocally();
     this.connected.set(false);
@@ -364,10 +388,45 @@ export class GitHubSession implements ExpiringConnection {
     this.following.set(null);
   }
 
+  private async disconnectNative(): Promise<void> {
+    const handle = this.token()?.accessToken;
+    if (handle && this.native) await this.native.forget(handle);
+    this.forgetLocally();
+    this.connected.set(false);
+    this.needsFetch.set(false);
+  }
+  private async request<T>(path: string, token: string): Promise<T> {
+    if (!this.native) return githubRequest<T>(path, token);
+    const result = await this.native.request({
+      provider: 'github',
+      handle: token,
+      url: API_ROOT + path,
+      method: 'GET',
+    });
+    if (result.status !== 200)
+      throw new GitHubApiError(
+        result.status,
+        'GitHub refused this read. Check the token and its permissions.',
+      );
+    return JSON.parse(result.body) as T;
+  }
+
   private async graphQl(query: string, cursor: string | null): Promise<GitHubGraphQlResponse> {
     const accessToken = this.accessToken();
     if (!accessToken) {
       throw new Error('Connect GitHub first.');
+    }
+    if (this.native) {
+      const result = await this.native.request({
+        provider: 'github',
+        handle: accessToken,
+        url: API_ROOT + '/graphql',
+        method: 'POST',
+        body: { operation: query === FOLLOWED_USERS_QUERY ? 'following' : 'starred', cursor },
+      });
+      if (result.status !== 200)
+        throw new GitHubApiError(result.status, 'GitHub could not read this account list.');
+      return JSON.parse(result.body) as GitHubGraphQlResponse;
     }
     const response = await fetch(`${API_ROOT}/graphql`, {
       method: 'POST',
@@ -380,7 +439,7 @@ export class GitHubSession implements ExpiringConnection {
       body: JSON.stringify({ query, variables: { cursor } }),
     });
     if (!response.ok) {
-      if (response.status === 401) this.disconnect();
+      if (response.status === 401 && !this.native) this.disconnect();
       throw new GitHubApiError(response.status, await githubError(response));
     }
     return (await response.json()) as GitHubGraphQlResponse;

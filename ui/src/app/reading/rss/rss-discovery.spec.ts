@@ -1,3 +1,4 @@
+import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of, throwError } from 'rxjs';
@@ -88,6 +89,22 @@ describe('RssDiscovery', () => {
 
   const feedLink = (href: string, title = 'Feed') =>
     `<link rel="alternate" type="application/rss+xml" title="${title}" href="${href}">`;
+
+  it('uses native HTML discovery with redirects even when no proxy is available', async () => {
+    proxyAvailable = false;
+    const read = vi.fn().mockResolvedValue({
+      status: 200,
+      finalUrl: 'https://redirect.test/blog/',
+      body: feedLink('feed.xml'),
+    });
+    TestBed.overrideProvider(PLATFORM_ARTICLE_READ, { useValue: read });
+    const service = TestBed.inject(RssDiscovery);
+    expect(service.available()).toBe(true);
+    const found = await service.discover([{ url: 'https://blog.test/post', via: 'alice' }]);
+    expect(found[0]).toMatchObject({ url: 'https://redirect.test/blog/feed.xml', via: 'alice' });
+    expect(read).toHaveBeenCalledExactlyOnceWith('https://blog.test/');
+    expect(fetchText).not.toHaveBeenCalled();
+  });
 
   it('probes the site root, not the article URL', async () => {
     pages.set('https://blog.test/', feedLink('/feed.xml'));

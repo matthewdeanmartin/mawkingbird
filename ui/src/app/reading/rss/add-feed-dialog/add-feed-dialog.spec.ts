@@ -1,3 +1,4 @@
+import { PLATFORM_FEED_READ } from '../../../platform/http/platform-http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -113,6 +114,24 @@ describe('AddFeedDialog', () => {
       (b) => b.textContent?.trim() === label,
     ) as HTMLButtonElement | undefined;
   }
+
+  it('keeps native subscription failures out of Plus proxy adoption and retry', async () => {
+    TestBed.overrideProvider(PLATFORM_FEED_READ, { useValue: vi.fn() });
+    const settings = TestBed.inject(CorsProxySettings);
+    const adopt = vi.spyOn(settings, 'adoptSupporterProxy');
+    vi.spyOn(settings, 'missingEntitledProxy').mockReturnValue(true);
+    vi.spyOn(settings, 'usable').mockReturnValue(true);
+    fetchFeed
+      .mockReturnValueOnce(of(feed('Native feed')))
+      .mockReturnValue(throwError(() => new Error('Publisher went offline')));
+    const fixture = setUp();
+    typeUrl(fixture, 'https://blog.test/rss');
+    await submit(fixture);
+    expect(text(fixture)).toContain('Publisher went offline');
+    expect(fetchFeed).toHaveBeenCalledTimes(2);
+    expect(adopt).not.toHaveBeenCalled();
+    expect((fixture.nativeElement as HTMLElement).querySelector('.retry-line')).toBeNull();
+  });
 
   it('subscribes and emits (added) + (closed) on a direct feed url', async () => {
     fetchFeed.mockReturnValue(of(feed('A News', 5)));

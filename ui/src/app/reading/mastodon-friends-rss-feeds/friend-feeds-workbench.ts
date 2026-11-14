@@ -1,3 +1,4 @@
+import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
@@ -43,7 +44,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
   template: `
     <section class="panel">
       <h2>{{ 'focusedTools.feeds.title' | transloco }}</h2>
-      @if (!supporter.isSupporter()) {
+      @if (!nativeReading && !supporter.isSupporter()) {
         <p>
           {{ 'focusedTools.feeds.plusBefore' | transloco }}
           <a routerLink="/plans">Mawkingbird Plus</a
@@ -83,6 +84,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class FriendFeedsWorkbench {
+  protected readonly nativeReading = !!inject(PLATFORM_FEED_READ);
   protected readonly invite = toolInviteLink();
   protected readonly scan = inject(FriendFeedScan);
   protected readonly supporter = inject(SupporterStatus);

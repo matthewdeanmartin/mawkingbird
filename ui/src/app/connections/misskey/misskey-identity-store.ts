@@ -1,3 +1,4 @@
+import { forgetNativeAccount } from '../../platform/session/platform-login';
 // Saved Misskey-primary identities, kept in localStorage.
 //
 // Shaped like `bluesky-identity-store.ts`, for the same reasons: the profile
@@ -209,10 +210,12 @@ export function saveMisskeyIdentity(
   const key = misskeyIdentityKey(profile.server, profile.userId);
   const current = stores();
   current.profiles[key] = { ...profile, server: misskeyOrigin(profile.server) ?? profile.server };
+  const previous = current.credentials[key]?.token;
   current.credentials[key] = credentials;
   persistMap(MK_IDENTITY_PROFILE_KEY, current.profiles);
   persistMap(MK_IDENTITY_CREDENTIALS_KEY, current.credentials);
   if (activate) localStorage.setItem(MK_ACTIVE_IDENTITY_KEY, key);
+  if (previous && previous !== credentials.token) forgetNativeAccount(previous);
   return key;
 }
 
@@ -276,6 +279,7 @@ export function clearMisskeyIdentity(key: string | null = misskeyIdentityKeyActi
     return;
   }
   const current = stores();
+  forgetNativeAccount(current.credentials[key]?.token ?? null);
   delete current.profiles[key];
   delete current.credentials[key];
   persistMap(MK_IDENTITY_PROFILE_KEY, current.profiles);

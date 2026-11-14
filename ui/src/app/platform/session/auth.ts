@@ -1,3 +1,4 @@
+import { forgetNativeAccount } from './platform-login';
 import { Injectable, computed, inject, linkedSignal, signal } from '@angular/core';
 import { ClientPrefs } from '../storage/client-prefs';
 import { adoptMastodonStorageScope, ANONYMOUS_SCOPE_SUFFIX } from './account-scope';
@@ -743,6 +744,7 @@ export class Auth {
         session.id === existing.id ? { ...session, token: newToken, account, server } : session,
       );
     this.persistSessions(next);
+    forgetNativeAccount(existing.token);
     setItemFreeingCache(TOKEN_KEY, newToken);
     setItemFreeingCache(ACCOUNT_MODE_KEY, 'mastodon');
     this.kind.set('mastodon');
@@ -1048,6 +1050,7 @@ export class Auth {
 
   /** Forget one saved session. If it was active, fall back to another (or sign out). */
   removeSession(token: string): void {
+    forgetNativeAccount(token);
     const saved = this.sessions().length;
     const target = this.sessions().find((s) => s.token === token);
     const remaining = this.sessions().filter((s) => s.token !== token);
@@ -1179,6 +1182,7 @@ export class Auth {
       });
       return;
     }
+    forgetNativeAccount(this.token());
     const remaining = this.sessions().filter((s) => s.token !== this.token());
     this.persistSessions(remaining);
     const next = remaining[0];
@@ -1255,7 +1259,8 @@ export class Auth {
 
   /** Revoke only SDK-owned OAuth sessions; legacy app passwords are revoked at bsky.app. */
   private revokeBlueskyOAuth(did: string): void {
-    if (blueskyIdentity(did)?.credentials.authMethod === 'oauth') {
+    const credentials = blueskyIdentity(did)?.credentials;
+    if (credentials?.authMethod === 'oauth' && !credentials.nativeHandle) {
       // Forgetting the local account must still complete while offline.
       void this.blueskyOAuth.revoke(did).catch(() => undefined);
     }

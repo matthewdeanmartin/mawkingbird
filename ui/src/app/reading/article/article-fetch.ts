@@ -1,9 +1,10 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { CorsProxyRoute } from '../../connections/cors-proxy/cors-proxy-catalog';
 import { externalFetch } from '../../platform/http/external-fetch';
+import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
 import { ArticleCache } from './article-cache';
 import { countWords, inspectUrl } from './article-diagnosis';
 import { extractArticle } from './article-extract';
@@ -217,13 +218,14 @@ type FetchOutcome =
 @Injectable({ providedIn: 'root' })
 export class ArticleFetch {
   private http = inject(HttpClient);
+  private nativeRead = inject(PLATFORM_ARTICLE_READ);
   private proxy = inject(CorsProxy);
   private cache = inject(ArticleCache);
   private diagnostics = inject(PageDiagnostics);
 
   /** Whether expansion can be offered at all. */
   available(): boolean {
-    return this.proxy.available();
+    return !!this.nativeRead || this.proxy.available();
   }
 
   /** Read locally without authorizing or making a network request. */
@@ -272,7 +274,7 @@ export class ArticleFetch {
       }
     }
 
-    if (!this.proxy.available()) {
+    if (!this.available()) {
       this.diagnostics.warn('Article', 'no proxy configured', { url });
       return empty('network', { detail: 'No CORS proxy is configured.' });
     }
@@ -282,7 +284,9 @@ export class ArticleFetch {
     // a failed upstream's body with a document we can actually parse. `feeds`
     // stays available and is still right for a known-friendly source where a
     // plain relay is all that is wanted.
-    let fetched = await this.fetchVia('article', url);
+    let fetched = this.nativeRead
+      ? await this.fetchNative(url)
+      : await this.fetchVia('article', url);
 
     // Deploy-order tolerance: the app can ship before the Worker does. Falling
     // back keeps expansion working through that window instead of failing
@@ -372,6 +376,49 @@ export class ArticleFetch {
    * Never throws: a failure is a value, because every failure here is one the
    * reader is meant to see rather than one to handle.
    */
+  private async fetchNative(url: string): Promise<FetchOutcome> {
+    try {
+      const result = await this.nativeRead!(url);
+      if (result.status < 200 || result.status >= 300) {
+        return {
+          ok: false,
+          failure: diagnoseHttpError(
+            new HttpErrorResponse({
+              status: result.status,
+              headers: new HttpHeaders({
+                'X-Proxy-Source': 'upstream',
+                'X-Proxy-Upstream-Status': String(result.status),
+              }),
+            }),
+          ),
+        };
+      }
+      return { ok: true, html: result.body, finalUrl: result.finalUrl, status: result.status };
+    } catch (error) {
+      const native = error as { kind?: string; message?: string } | null;
+      const kinds: Record<string, ArticleDiagnosis> = {
+        policy: 'blocked-destination',
+        'not-html': 'not-html',
+        'too-large': 'too-large',
+        'redirect-loop': 'redirect-loop',
+        'upstream-timeout': 'upstream-timeout',
+      };
+      return {
+        ok: false,
+        failure: {
+          diagnosis: kinds[native?.kind ?? ''] ?? 'network',
+          status: 0,
+          source: 'unknown',
+          upstreamStatus: null,
+          detail:
+            typeof native?.message === 'string'
+              ? native.message
+              : 'Native article request failed; see native logs.',
+        },
+      };
+    }
+  }
+
   private async fetchVia(route: CorsProxyRoute, url: string): Promise<FetchOutcome> {
     try {
       const request = this.proxy.proxyRequest(url, route);

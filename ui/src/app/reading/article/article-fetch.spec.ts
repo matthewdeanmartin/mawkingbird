@@ -1,6 +1,13 @@
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { describe, expect, it } from 'vitest';
-import { diagnoseHttpError } from './article-fetch';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
+import { ArticleCache } from './article-cache';
+import { ArticleResult } from './article-models';
+import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
+import { ArticleFetch, diagnoseHttpError } from './article-fetch';
 
 /** Build the error Angular hands back for a proxied failure. */
 function proxyError(
@@ -208,5 +215,93 @@ describe('reading the article route’s buffered failure', () => {
       proxyError(404, { 'X-Proxy-Source': 'upstream' }, '<html>Not Found</html>'),
     );
     expect(failure.diagnosis).toBe('not-found');
+  });
+});
+
+describe('native article expansion', () => {
+  const url = 'https://publisher.example/old';
+  let read: ReturnType<typeof vi.fn>;
+  let service: ArticleFetch;
+  let saved: Map<string, ArticleResult>;
+  beforeEach(() => {
+    saved = new Map();
+    read = vi.fn();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: PLATFORM_ARTICLE_READ, useValue: read },
+        {
+          provide: CorsProxy,
+          useValue: {
+            available() {
+              throw new Error('Native must not check proxy configuration');
+            },
+            proxyRequest() {
+              throw new Error('Native must not request a proxy');
+            },
+          },
+        },
+        {
+          provide: ArticleCache,
+          useValue: {
+            get: async (key: string) => saved.get(key) ?? null,
+            put: async (key: string, value: ArticleResult) => {
+              saved.set(key, value);
+            },
+          },
+        },
+      ],
+    });
+    service = TestBed.inject(ArticleFetch);
+  });
+
+  it('extracts inert HTML locally, resolves images against the final URL and reuses cache', async () => {
+    const paragraph =
+      '<p>' +
+      'A local reader keeps the text accessible while the publisher remains the source. '.repeat(
+        12,
+      ) +
+      '</p>';
+    read.mockResolvedValue({
+      status: 200,
+      finalUrl: 'https://publisher.example/articles/new',
+      body:
+        '<html><head><title>Local reading</title></head><body><article><h1>Local reading</h1>' +
+        paragraph.repeat(4) +
+        '<img src="photo.jpg" onerror="window.compromised=true"><script>window.compromised=true</script><iframe src="http://127.0.0.1/"></iframe></article></body></html>',
+    });
+    expect(service.available()).toBe(true);
+    const result = await service.expand(url);
+    expect(result.article).not.toBeNull();
+    expect(result.article!.markdown).toContain('A local reader');
+    expect(result.article!.images).toContain('https://publisher.example/articles/photo.jpg');
+    expect(result.article!.markdown).not.toMatch(/onerror|compromised|iframe/);
+    expect(result.finalUrl).toBe('https://publisher.example/articles/new');
+    expect((await service.expand(url)).fromCache).toBe(true);
+    expect(read).toHaveBeenCalledExactlyOnceWith(url);
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  it('preserves publisher rate limits without a proxy retry', async () => {
+    read.mockResolvedValue({ status: 429, finalUrl: url, body: '' });
+    const result = await service.expand(url);
+    expect(result.diagnosis).toBe('site-rate-limited');
+    expect(result.debug).toMatchObject({ status: 429, source: 'upstream' });
+    expect(read).toHaveBeenCalledTimes(1);
+  });
+
+  it('explains native safety refusals and timeouts', async () => {
+    for (const [kind, diagnosis] of [
+      ['policy', 'blocked-destination'],
+      ['too-large', 'too-large'],
+      ['upstream-timeout', 'upstream-timeout'],
+    ]) {
+      read.mockRejectedValue({ kind, message: 'Native refusal detail' });
+      const result = await service.expand(url, true);
+      expect(result.diagnosis).toBe(diagnosis);
+      expect(result.debug?.detail).toBe('Native refusal detail');
+    }
+    TestBed.inject(HttpTestingController).verify();
   });
 });

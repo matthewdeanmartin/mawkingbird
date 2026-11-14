@@ -5,7 +5,7 @@
     {{ 'settings.rss.intro' | transloco }}
   </p>
   <p class="muted">
-    {{ 'settings.rss.cors' | transloco }}
+    {{ (nativeReading ? 'settings.rss.native.direct' : 'settings.rss.cors') | transloco }}
   </p>
   <p class="muted small">
     {{ 'settings.rss.saved' | transloco: { count: subs.feeds().length, limit: subs.limit() } }}
@@ -13,19 +13,21 @@
 </div>
 
 <div class="spage-body">
-  <p class="proxy-summary muted small">
-    @if (proxyLabel(); as label) {
-      {{ 'settings.rss.proxy.before' | transloco }} <strong>{{ label }}</strong
-      >{{ 'settings.rss.proxy.after' | transloco }}
-    } @else if (proxyIncomplete()) {
-      {{ 'settings.rss.proxy.incomplete' | transloco }}
-    } @else {
-      {{ 'settings.rss.proxy.none' | transloco }}
-    }
-    <a [routerLink]="['/settings/connections/cors-proxy']">
-      {{ (proxyLabel() ? 'settings.rss.proxy.change' : 'settings.rss.proxy.setUp') | transloco }}
-    </a>
-  </p>
+  @if (!nativeReading) {
+    <p class="proxy-summary muted small">
+      @if (proxyLabel(); as label) {
+        {{ 'settings.rss.proxy.before' | transloco }} <strong>{{ label }}</strong
+        >{{ 'settings.rss.proxy.after' | transloco }}
+      } @else if (proxyIncomplete()) {
+        {{ 'settings.rss.proxy.incomplete' | transloco }}
+      } @else {
+        {{ 'settings.rss.proxy.none' | transloco }}
+      }
+      <a [routerLink]="['/settings/connections/cors-proxy']">
+        {{ (proxyLabel() ? 'settings.rss.proxy.change' : 'settings.rss.proxy.setUp') | transloco }}
+      </a>
+    </p>
+  }
 
   <div class="reading-controls">
     <label class="check">
@@ -70,7 +72,9 @@
       </select>
     </label>
     <p class="muted small">
-      {{ 'settings.rss.cache.hint' | transloco }}
+      {{
+        (nativeReading ? 'settings.rss.native.cacheHint' : 'settings.rss.cache.hint') | transloco
+      }}
     </p>
     @if (cacheSummary(); as summary) {
       <p class="cache-summary muted small">
@@ -129,7 +133,10 @@
       </button>
     </label>
     <p class="muted small">
-      {{ 'settings.rss.maxFeeds.hint' | transloco: { recommended: recommendedLimit } }}
+      {{
+        (nativeReading ? 'settings.rss.native.maxFeedsHint' : 'settings.rss.maxFeeds.hint')
+          | transloco: { recommended: recommendedLimit }
+      }}
     </p>
 
     <div class="opml-actions">
@@ -196,7 +203,7 @@
           @if (report.failed.length) {
             <li>
               {{ 'settings.rss.import.failed' | transloco: { count: report.failed.length } }}
-              @if (!proxyLabel()) {
+              @if (!nativeReading && !proxyLabel()) {
                 {{ 'settings.rss.import.corsHint.before' | transloco }}
                 <a [routerLink]="['/settings/connections/cors-proxy']">{{
                   'settings.rss.import.corsHint.link' | transloco
@@ -234,7 +241,7 @@
             <span class="names">
               <span class="name">
                 {{ f.title || f.url }}
-                @if (f.useProxy) {
+                @if (!nativeReading && f.useProxy) {
                   <span class="proxy-badge" [title]="'settings.rss.viaProxy.title' | transloco">{{
                     'settings.rss.viaProxy' | transloco
                   }}</span>
@@ -244,7 +251,7 @@
             </span>
           </label>
           <span class="feed-actions">
-            @if (proxyLabel()) {
+            @if (!nativeReading && proxyLabel()) {
               <label
                 class="proxy-switch muted small"
                 [title]="'settings.rss.fetchThrough' | transloco: { proxy: proxyLabel() }"

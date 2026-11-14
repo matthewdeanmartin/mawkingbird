@@ -1,6 +1,7 @@
+import { PLATFORM_MISSKEY_POLL } from '../../platform/http/platform-http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MkNote, MkTimeline } from './misskey-types';
+import { MK_TIMELINE_ENDPOINTS, MkNote, MkTimeline } from './misskey-types';
 
 /** Misskey's streaming channel for each timeline. */
 export const MK_STREAM_CHANNELS: Record<MkTimeline, string> = {
@@ -37,6 +38,36 @@ export class MisskeyStreaming {
   socketFactory: (url: string) => WebSocket = (url) => new WebSocket(url);
 
   notes(server: string, token: string | null, timeline: MkTimeline): Observable<MkNote> {
+    if (PLATFORM_MISSKEY_POLL) {
+      const poll = PLATFORM_MISSKEY_POLL;
+      return new Observable<MkNote>((subscriber) => {
+        let closed = false;
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        let newest: string | undefined;
+        const refresh = async (): Promise<void> => {
+          try {
+            const notes = (await poll(
+              server,
+              MK_TIMELINE_ENDPOINTS[timeline],
+              token || null,
+              newest,
+            )) as MkNote[];
+            if (!closed && Array.isArray(notes) && notes.length) {
+              if (newest) for (const note of [...notes].reverse()) subscriber.next(note);
+              newest = notes[0].id;
+            }
+          } catch {
+            // Native transport records status/failure without URLs or credentials.
+          }
+          if (!closed) timer = setTimeout(() => void refresh(), 30_000);
+        };
+        void refresh();
+        return () => {
+          closed = true;
+          clearTimeout(timer);
+        };
+      });
+    }
     return new Observable<MkNote>((subscriber) => {
       let socket: WebSocket | null = null;
       let retryMs = INITIAL_RETRY_MS;

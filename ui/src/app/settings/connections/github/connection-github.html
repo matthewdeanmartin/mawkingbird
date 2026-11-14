@@ -8,9 +8,18 @@
 }
 <div class="connection-intro">
   <p>
-    {{ 'settings.connections.github.intro' | transloco }}
+    {{
+      (native ? 'settings.connections.github.nativeIntro' : 'settings.connections.github.intro')
+        | transloco
+    }}
   </p>
-  <p class="muted small">{{ scopeDetail | transloco }}</p>
+  @if (native) {
+    <p class="muted small">
+      {{ 'settings.connections.linkShortener.osStorageDetail' | transloco }}
+    </p>
+  } @else {
+    <p class="muted small">{{ scopeDetail | transloco }}</p>
+  }
 </div>
 
 @if (github.connected() && github.user(); as user) {
@@ -22,7 +31,11 @@
       </a>
       <span class="muted small">&#64;{{ user.login }}</span>
     </span>
-    <app-storage-badge [where]="where()" />
+    @if (native) {
+      <span>{{ 'settings.connections.linkShortener.osStorage' | transloco }}</span>
+    } @else {
+      <app-storage-badge [where]="where()" />
+    }
     <button mbButton type="button" (click)="proveGitHubConnection()" [disabled]="githubBusy()">
       {{
         (githubBusy()
@@ -87,7 +100,14 @@
     <li><span [innerHTML]="'settings.connections.github.validatesWith' | transloco"></span></li>
   </ol>
   <mb-notice>
-    <span [innerHTML]="'settings.connections.github.credentialWarning' | transloco"></span>
+    <span
+      [innerHTML]="
+        (native
+          ? 'settings.connections.linkShortener.osStorageDetail'
+          : 'settings.connections.github.credentialWarning'
+        ) | transloco
+      "
+    ></span>
   </mb-notice>
   <form class="github-form" (ngSubmit)="connectGitHub()">
     <mb-field [label]="'settings.connections.github.tokenPlaceholder' | transloco">

@@ -5,9 +5,16 @@
 <div class="spage-head">
   <h1>{{ 'settings.connections.linkShortener.title' | transloco }}</h1>
   <p>
-    {{ 'settings.connections.linkShortener.intro' | transloco }}
+    {{
+      (native
+        ? 'settings.connections.linkShortener.nativeIntro'
+        : 'settings.connections.linkShortener.intro'
+      ) | transloco
+    }}
   </p>
-  <p class="muted small">{{ scopeDetail | transloco }}</p>
+  @if (!native) {
+    <p class="muted small">{{ scopeDetail | transloco }}</p>
+  }
 </div>
 
 <div class="conn-actions">
@@ -19,10 +26,15 @@
   }}</a>
 </div>
 
-<p class="credential-warning small">
-  {{ 'settings.connections.linkShortener.credentialWarning' | transloco }}
-</p>
+@if (!native) {
+  <p class="credential-warning small">
+    {{ 'settings.connections.linkShortener.credentialWarning' | transloco }}
+  </p>
+}
 
+@if (native) {
+  <p class="muted small">{{ 'settings.connections.linkShortener.osStorageDetail' | transloco }}</p>
+}
 <section class="picker">
   <h2 class="section-title">
     {{ 'settings.connections.linkShortener.servicesHeading' | transloco }}
@@ -97,7 +109,10 @@
   @if (entry().keyPolicy === 'none') {
     <p class="muted small">
       {{
-        'settings.connections.linkShortener.noAccountNeeded' | transloco: { label: entry().label }
+        (native
+          ? 'settings.connections.linkShortener.nativeAnonymous'
+          : 'settings.connections.linkShortener.noAccountNeeded'
+        ) | transloco: { label: entry().label }
       }}
     </p>
   } @else if (entry().keyPolicy === 'optional') {
@@ -120,7 +135,11 @@
         }}
       </span>
       @if (settings.hasKey(entry().id) || where(entry().id) === 'locked') {
-        <app-storage-badge [where]="where(entry().id)" />
+        @if (native) {
+          <span>{{ 'settings.connections.linkShortener.osStorage' | transloco }}</span>
+        } @else {
+          <app-storage-badge [where]="where(entry().id)" />
+        }
       }
       @if (!isActive(entry().id)) {
         <button class="btn btn-outline" type="button" (click)="activate(entry().id)">
@@ -158,7 +177,7 @@
         {{ 'settings.connections.linkShortener.keyDeletedOn' | transloco: { date: expiry } }}
       </p>
     }
-    @if (hasConsent(entry().id) && proxyEntry(); as proxy) {
+    @if (!native && hasConsent(entry().id) && proxyEntry(); as proxy) {
       <p class="muted small consent-note">
         {{ 'settings.connections.linkShortener.consentBefore' | transloco }}
         <strong>{{ proxy.label }}</strong>

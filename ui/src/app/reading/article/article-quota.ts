@@ -1,3 +1,4 @@
+import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { PlusSession } from '../../accounts/mawkingbird/plus-session';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
@@ -75,6 +76,7 @@ function today(): string {
 @Injectable({ providedIn: 'root' })
 export class ArticleQuota {
   private plus = inject(PlusSession);
+  private nativeReading = !!inject(PLATFORM_ARTICLE_READ);
   private log = inject(PageDiagnostics);
 
   /** Today's quota and fetch diagnostics, as one atomic stored record. */
@@ -110,7 +112,7 @@ export class ArticleQuota {
    * A lapsed subscription silently returns them to the free limit rather than
    * breaking anything, which is the same posture the proxy takes.
    */
-  readonly unlimited = computed(() => this.plus.isSupporter());
+  readonly unlimited = computed(() => this.nativeReading || this.plus.isSupporter());
 
   /** Free-tier expansions left, even while Plus makes the effective limit unlimited. */
   readonly freeRemaining = computed(() => Math.max(0, FREE_DAILY_ARTICLES - this.used()));
@@ -163,6 +165,7 @@ export class ArticleQuota {
   private checkEntitlement(
     trigger: 'article-fetch' | 'exhausted-on-load' | 'storage-refresh',
   ): Promise<void> {
+    if (this.nativeReading) return Promise.resolve();
     if (this.entitlementChecked()) {
       this.log.info('ArticleEntitlement', 'check:already-settled', {
         trigger,

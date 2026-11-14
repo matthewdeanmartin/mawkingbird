@@ -10,6 +10,8 @@ import { CachedFeed, CachedFeedRecord, RssCache } from './rss-cache';
 import { RssCacheMiss, RssFetch } from './rss-fetch';
 import { ParsedFeed } from '../../../lib/rss/rss-parser';
 import { firstValueFrom } from 'rxjs';
+import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
+import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { enableProxyFlags } from '../../testing/enable-proxy-flags';
 
 const FEED_XML = `<?xml version="1.0"?><rss><channel><title>A Feed</title></channel></rss>`;
@@ -612,5 +614,76 @@ describe('RssFetch', () => {
     } finally {
       vi.useRealTimers();
     }
+  });
+});
+
+describe('RssFetch native transport', () => {
+  let cache: FakeRssCache;
+  let read: ReturnType<typeof vi.fn<(url: string) => Promise<string>>>;
+  let fetcher: RssFetch;
+  let http: HttpTestingController;
+  beforeEach(() => {
+    localStorage.clear();
+    cache = new FakeRssCache();
+    read = vi.fn<(url: string) => Promise<string>>().mockResolvedValue(FEED_XML);
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: RssCache, useValue: cache },
+        { provide: PLATFORM_FEED_READ, useValue: read },
+        {
+          provide: CorsProxy,
+          useValue: {
+            batchCapacity() {
+              throw new Error('Native feed must not use proxy');
+            },
+            proxyRequest() {
+              throw new Error('Native feed must not use proxy');
+            },
+          },
+        },
+      ],
+    });
+    fetcher = TestBed.inject(RssFetch);
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  it('ignores imported proxy flags, shares in-flight reads and caches the parsed feed', async () => {
+    const url = 'https://publisher.example/rss';
+    const [first, second] = await Promise.all([
+      firstValueFrom(fetcher.fetchFeed(url, { useProxy: true })),
+      firstValueFrom(fetcher.fetchFeed(url)),
+    ]);
+    expect(first.title).toBe('A Feed');
+    expect(second).toEqual(first);
+    expect(read).toHaveBeenCalledExactlyOnceWith(url);
+    await settle();
+    expect((await firstValueFrom(fetcher.fetchFeed(url))).title).toBe('A Feed');
+    expect(read).toHaveBeenCalledTimes(1);
+    http.verify();
+  });
+
+  it('keeps stale content and a direct-route cooldown after a native failure', async () => {
+    const url = 'https://publisher.example/rss';
+    cache.seed(url, 'Saved before outage', 7 * 24 * 60 * 60 * 1000);
+    read.mockRejectedValue(new Error('Feed request timed out.'));
+    expect((await firstValueFrom(fetcher.fetchFeed(url, { useProxy: true }))).title).toBe(
+      'Saved before outage',
+    );
+    await settle();
+    expect((await firstValueFrom(fetcher.fetchFeed(url))).title).toBe('Saved before outage');
+    expect(read).toHaveBeenCalledTimes(1);
+    expect(cache.cooldowns.has(`direct:${url}`)).toBe(true);
+    http.verify();
+  });
+
+  it('does not cache malformed feeds or fall back to a proxy', async () => {
+    read.mockResolvedValue('<html>Not a feed</html>');
+    await expect(
+      firstValueFrom(fetcher.fetchFeed('https://publisher.example/rss', { useProxy: true })),
+    ).rejects.toThrow();
+    expect(cache.putCount).toBe(0);
+    http.verify();
   });
 });

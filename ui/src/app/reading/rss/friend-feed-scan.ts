@@ -1,3 +1,4 @@
+import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
 /**
  * Finds the feeds behind the links on the profiles of everyone you follow, and
  * compiles them into an OPML file.
@@ -197,6 +198,7 @@ export class FriendFeedScan {
   private cache = inject(FriendFeedCache);
   private resolver = inject(PasteResolve);
   private proxy = inject(CorsProxy);
+  private nativePageRead = inject(PLATFORM_ARTICLE_READ);
   private diagnostics = inject(PageDiagnostics);
 
   /** Live progress, or null before anything has run. */
@@ -235,7 +237,7 @@ export class FriendFeedScan {
 
   /** Whether a scan can run at all: it needs somewhere to send its fetches. */
   available(): boolean {
-    return this.proxy.available();
+    return !!this.nativePageRead || this.proxy.available();
   }
 
   /** Ask a running scan to stop. Keeps whatever it has found. */
@@ -385,7 +387,7 @@ export class FriendFeedScan {
       let spent = 0;
       let gaveUp = false;
 
-      const batchSize = Math.max(1, this.proxy.batchCapacity('article'));
+      const batchSize = this.nativePageRead ? 4 : Math.max(1, this.proxy.batchCapacity('article'));
       for (let index = 0; index < budget.length; index += batchSize) {
         if (this.cancelRequested) {
           break;

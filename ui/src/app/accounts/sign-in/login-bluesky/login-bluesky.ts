@@ -1,3 +1,4 @@
+import { NATIVE_SOCIAL } from '../../../platform/session/platform-login';
 import { MbButton } from '../../../design-system/button/button';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -65,6 +66,7 @@ export class LoginBluesky implements OnInit {
   private destination = '/home';
 
   protected brand = environment.brand;
+  protected native = inject(NATIVE_SOCIAL);
 
   protected handle = signal('');
   protected appPassword = signal('');
@@ -105,12 +107,19 @@ export class LoginBluesky implements OnInit {
     this.error.set(null);
     // The callback is a fresh page load; it finds the destination here.
     stashLoginNext(this.destination);
-    void this.bsky.beginOAuthIdentity(identifier, this.adding).catch((err: unknown) => {
-      // The redirect promise normally never resolves; rejection means discovery
-      // or PAR failed, or the visitor came back with browser history.
-      this.working.set(false);
-      this.error.set(this.describeOAuth(err));
-    });
+    void this.bsky
+      .beginOAuthIdentity(identifier, this.adding)
+      .then(() => {
+        if (!this.native) return;
+        if (!this.auth.enterBluesky()) throw new Error('Native identity could not be restored.');
+        location.assign(this.destination.replace(/^\//, ''));
+      })
+      .catch((err: unknown) => {
+        // The redirect promise normally never resolves; rejection means discovery
+        // or PAR failed, or the visitor came back with browser history.
+        this.working.set(false);
+        this.error.set(this.describeOAuth(err));
+      });
   }
 
   /** Legacy compatibility path for PDSes that do not yet implement OAuth. */
@@ -155,6 +164,8 @@ export class LoginBluesky implements OnInit {
   }
 
   private describeOAuth(err: unknown): string {
+    if (this.native && err && typeof err === 'object' && 'message' in err)
+      return String(err.message);
     const message = err instanceof Error ? err.message : '';
     if (/resolve|handle|did/i.test(message)) {
       return this.transloco.translate<string>('pages.loginBluesky.errors.handleUnresolved');

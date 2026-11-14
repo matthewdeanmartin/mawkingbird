@@ -1,3 +1,5 @@
+import { PLATFORM_HUGO } from '../../platform/http/platform-http';
+import { isNativeHugoHandle } from '../../platform/http/connector-types';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { scopedKey } from '../../platform/session/account-scope';
 import { ProfileAccountKey } from '../../accounts/mawkingbird/profile-account-key';
@@ -143,6 +145,7 @@ function loadCredentials(key: string): StoredCredentials | null {
 @Injectable({ providedIn: 'root' })
 export class HugoSettings implements ExpiringConnection {
   private bridge = inject(VaultBridge);
+  private native = inject(PLATFORM_HUGO);
   private accountKey = inject(ProfileAccountKey);
   private readonly repoKey = scopedKey(REPO_KEY_BASE);
   private readonly credentialsKey = scopedKey(CREDENTIALS_KEY_BASE);
@@ -175,6 +178,8 @@ export class HugoSettings implements ExpiringConnection {
   constructor() {
     // Retention is applied here rather than in `loadCredentials`, which cannot
     // tell a vaulted token from a local-only one.
+    if (this.native && this.credentials() && !isNativeHugoHandle(this.credentials()!.accessToken))
+      this.forgetTokenLocally();
     this.enforceLifetime();
   }
 
@@ -193,7 +198,9 @@ export class HugoSettings implements ExpiringConnection {
    * the token, and queueing records that can never be published would be a
    * queue that only grows.
    */
-  readonly posseEnabled = computed(() => this.connected() && this.repoState()?.posse === true);
+  readonly posseEnabled = computed(
+    () => !this.native && this.connected() && this.repoState()?.posse === true,
+  );
 
   /**
    * The site's RSS feed: the one a probe actually found, else Hugo's default.
@@ -228,6 +235,7 @@ export class HugoSettings implements ExpiringConnection {
     if (local) {
       return local;
     }
+    if (this.native) return null;
     const raw = this.bridge.readThrough(CREDENTIALS_KEY_BASE, this.accountKey.current());
     const fromVault = raw ? parseVaulted(raw) : null;
     if (fromVault) {
@@ -258,6 +266,7 @@ export class HugoSettings implements ExpiringConnection {
    * the composer will offer a target that can only fail.
    */
   connect(token: string, repo: HugoRepo): void {
+    if (this.native) throw new Error('Use the native Hugo connection.');
     const trimmed = token.trim();
     if (!trimmed) {
       throw new Error('Paste a GitHub token with write access to your blog repository.');
@@ -275,6 +284,32 @@ export class HugoSettings implements ExpiringConnection {
     );
   }
 
+  async connectNative(token: string, repo: HugoRepo) {
+    if (!this.native) throw new Error('Native Hugo is unavailable.');
+    const normalized = { ...repo, contentPath: normalizeContentPath(repo.contentPath) };
+    const result = await this.native.connect(
+      token.trim(),
+      normalized,
+      this.credentials()?.accessToken,
+    );
+    this.writeRepo(normalized);
+    this.writeCredentials(stampCredential({ accessToken: result.handle }));
+    return {
+      ok: true,
+      problem: null,
+      looksLikeHugo: result.looksLikeHugo,
+      postCount: result.postCount,
+    };
+  }
+  async disconnectNative(): Promise<void> {
+    const handle = this.credentials()?.accessToken;
+    if (handle && this.native) await this.native.forget(handle);
+    localStorage.removeItem(this.repoKey);
+    this.repoState.set(null);
+    this.forgetTokenLocally();
+    this.needsFetch.set(false);
+  }
+
   /** Persist the token locally and clear the locked flag. */
   private writeCredentials(credentials: StoredCredentials): void {
     localStorage.setItem(this.credentialsKey, JSON.stringify(credentials));
@@ -289,6 +324,7 @@ export class HugoSettings implements ExpiringConnection {
 
   /** Push the current token to the vault and report what happened. */
   async syncToVault(): Promise<SyncOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const credentials = this.credentials();
     return credentials
       ? this.bridge.writeThrough(
@@ -301,6 +337,7 @@ export class HugoSettings implements ExpiringConnection {
 
   /** Restore missing token/repo halves in either direction without clobbering conflicts. */
   async reconcileVault(): Promise<VaultReconcileOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const localCredentials = this.credentials();
     const localRepo = this.repoState();
     const remoteRaw = this.bridge.readThrough(CREDENTIALS_KEY_BASE, this.accountKey.current());
@@ -372,6 +409,7 @@ export class HugoSettings implements ExpiringConnection {
 
   /** Disconnect here, and remove the stored copy so it cannot come back. */
   disconnect(): void {
+    if (this.native) throw new Error('Use the native Hugo disconnect.');
     void this.bridge.removeThrough(CREDENTIALS_KEY_BASE, this.accountKey.current());
     localStorage.removeItem(this.repoKey);
     this.repoState.set(null);
@@ -386,6 +424,7 @@ export class HugoSettings implements ExpiringConnection {
   }
 
   expiresAt(): number | null {
+    if (this.native) return null;
     return credentialExpiresAt(this.credentials()?.connectedAt);
   }
 
@@ -398,6 +437,7 @@ export class HugoSettings implements ExpiringConnection {
    * plaintext goes, and the next {@link token} fetches it back.
    */
   enforceLifetime(): void {
+    if (this.native) return;
     const current = this.credentials();
     if (!current) {
       return;

@@ -2358,11 +2358,16 @@ export class StatusCard {
         this.recordPosse('like', target, updated.favourited);
         this.changed.emit(updated);
       },
-      error: () => {
+      error: (error) => {
         this.inFlight.set(null);
         // Put the heart back. The failure message says why.
         this.optimistic.set(null);
-        this.actionError.set(this.actionFailureMessage('like'));
+        // i18n statusCard.nativeLikeReconnect: Reconnect this Mastodon account with Full access to enable likes. This login currently has read-only permission.
+        this.actionError.set(
+          error?.error?.code === 'native_reauthorization_required'
+            ? this.transloco.translate('statusCard.nativeLikeReconnect')
+            : this.actionFailureMessage('like'),
+        );
       },
     });
   }

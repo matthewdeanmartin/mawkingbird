@@ -164,7 +164,7 @@
       </div>
     }
 
-    @if (proxyActivity.rssLimitDetails(); as limit) {
+    @if (!nativeReading && proxyActivity.rssLimitDetails(); as limit) {
       <p class="pane-warning" role="status">
         {{
           (limit.cause === 'destination_policy'
@@ -185,7 +185,7 @@
           {{ 'pages.rss.couldntLoadFeeds' | transloco: { count: failed().length } }}
         }
         <a routerLink="/settings/rss">{{ 'pages.rss.checkInSettings' | transloco }}</a>
-        @if (!proxyActivity.rssLimitDetails()) {
+        @if (!nativeReading && !proxyActivity.rssLimitDetails()) {
           {{ 'pages.rss.corsWarning' | transloco }}
         }
       </p>

@@ -11,7 +11,7 @@
   >
     <h3 id="friend-feeds-title">{{ 'friendFeeds.title' | transloco }}</h3>
 
-    @if (!supporter.isSupporter()) {
+    @if (!nativeReading && !supporter.isSupporter()) {
       <!-- The upsell, not a locked door: someone who cannot use this should
            still learn what it does, because that is what makes it worth
            paying for. -->
@@ -47,7 +47,13 @@
           </select>
         </label>
         <!-- The only place the cost is named before it is spent. -->
-        <p class="muted small" [innerHTML]="'friendFeeds.cost' | transloco: { count: cap() }"></p>
+        <p
+          class="muted small"
+          [innerHTML]="
+            (nativeReading ? 'friendFeeds.native.cost' : 'friendFeeds.cost')
+              | transloco: { count: cap() }
+          "
+        ></p>
       }
 
       <div class="dialog-actions">
@@ -112,7 +118,12 @@
         <!-- Five seconds of a still progress bar reads as a hang unless the
              pause is named. -->
         @if (p.waitingOnRateLimit) {
-          <p class="muted small">{{ 'friendFeeds.rateLimited' | transloco }}</p>
+          <p class="muted small">
+            {{
+              (nativeReading ? 'friendFeeds.native.rateLimited' : 'friendFeeds.rateLimited')
+                | transloco
+            }}
+          </p>
         }
         <!-- What the cache saved, stated while it is being saved: this is the
              number that makes a second run feel different from the first. -->
@@ -226,7 +237,10 @@
         }
         @if (followFailures() > 0) {
           <p class="muted small">
-            {{ 'friendFeeds.followFailed' | transloco: { count: followFailures() } }}
+            {{
+              (nativeReading ? 'friendFeeds.native.followFailed' : 'friendFeeds.followFailed')
+                | transloco: { count: followFailures() }
+            }}
           </p>
         }
       }

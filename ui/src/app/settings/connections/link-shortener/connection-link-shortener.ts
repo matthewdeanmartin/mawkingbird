@@ -1,3 +1,4 @@
+import { PLATFORM_LOCAL_PUBLISHING } from '../../../platform/http/platform-http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { credentialLocation, StorageBadge } from '../storage-badge';
@@ -55,6 +56,10 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
  * actually configured. Without one there is nothing to consent to, so the page
  * says what to go and do instead.
  */
+// i18n settings.connections.linkShortener.osStorage: Saved on this device
+// i18n settings.connections.linkShortener.osStorageDetail: API keys are stored in your operating system’s credential store until you disconnect.
+// i18n settings.connections.linkShortener.nativeIntro: Shorten URLs and keep a history of the links you create.
+// i18n settings.connections.linkShortener.nativeAnonymous: No account is needed. Links created here cannot be edited or deleted later.
 // i18n settings.connections.linkShortener.title: 🔗 Link shortener
 // i18n settings.connections.linkShortener.intro: Shorten the URLs you post, and keep track of the links you have made. Choose one active service, as with your CORS proxy. Saved keys stay available when you switch services.
 // i18n settings.connections.linkShortener.credentialWarning: These API keys are stored in this browser's localStorage, because Mawkingbird has no server to keep them on. A key here can create and delete links in your account, so use a key scoped to link management if the service offers one, and only on a device you trust. You can revoke it on the provider's own site at any time.
@@ -118,13 +123,14 @@ export class ConnectionLinkShortener {
   private history = inject(ShortenerHistory);
   private reachability = inject(ShortenerReachability);
 
-  protected readonly catalog = SHORTENER_CATALOG;
+  protected readonly native = inject(PLATFORM_LOCAL_PUBLISHING);
+  protected readonly catalog: readonly ShortenerCatalogEntry[] = SHORTENER_CATALOG;
   protected readonly scopeDetail = CONNECTION_SCOPE_COPY.browser.detail;
   protected readonly expiryLabel = expiryLabel;
 
   /** Which provider's setup form is open. Defaults to the active one. */
   protected readonly selected = signal<ShortenerId>(
-    this.settings.activeId() ?? SHORTENER_CATALOG[0].id,
+    this.catalog.find((e) => e.id === this.settings.activeId())?.id ?? this.catalog[0].id,
   );
 
   protected readonly entry = computed<ShortenerCatalogEntry>(
@@ -232,6 +238,25 @@ export class ConnectionLinkShortener {
       return;
     }
 
+    if (this.native && key) {
+      if (this.busy()) return;
+      this.busy.set(true);
+      this.error.set(null);
+      try {
+        await this.settings.connectNative(entry.id, key, this.domainDraft());
+        this.keyDraft.set('');
+        this.notice.set(
+          this.transloco.translate('settings.connections.linkShortener.connectedFull', {
+            label: entry.label,
+          }),
+        );
+      } catch (error) {
+        this.error.set(error instanceof Error ? error.message : 'Could not connect this service.');
+      } finally {
+        this.busy.set(false);
+      }
+      return;
+    }
     const hadKey = this.settings.hasKey(entry.id);
     if (key && entry.keyPolicy !== 'none') {
       this.settings.setKey(entry.id, key);
@@ -431,8 +456,18 @@ export class ConnectionLinkShortener {
   }
 
   /** Forget a provider entirely: key, domain, consent, and local link history. */
-  protected forget(id: ShortenerId): void {
-    this.settings.forget(id);
+  protected async forget(id: ShortenerId): Promise<void> {
+    if (this.busy()) return;
+    this.busy.set(true);
+    try {
+      if (this.native) await this.settings.forgetNative(id);
+      else this.settings.forget(id);
+    } catch (error) {
+      this.error.set(error instanceof Error ? error.message : 'Could not remove this credential.');
+      return;
+    } finally {
+      this.busy.set(false);
+    }
     this.consent.revokeAll(id);
     this.history.clearProvider(id);
     this.keyDraft.set('');

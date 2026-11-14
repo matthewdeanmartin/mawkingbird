@@ -1,3 +1,4 @@
+import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { BulkFollowConfirmation } from '../../accounts/bulk-follow-confirmation';
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, output, signal } from '@angular/core';
@@ -91,6 +92,7 @@ import { firstValueFrom } from 'rxjs';
   styleUrl: './friend-feeds-dialog.css',
 })
 export class FriendFeedsDialog {
+  protected readonly nativeReading = !!inject(PLATFORM_FEED_READ);
   private readonly bulkConfirmation = inject(BulkFollowConfirmation);
   private scan = inject(FriendFeedScan);
   private subs = inject(RssSubscriptions);
@@ -278,7 +280,7 @@ export class FriendFeedsDialog {
    */
   private async addWithProxyFallback(feed: FoundFeed): Promise<boolean> {
     this.lastAddError = null;
-    for (const useProxy of [false, true]) {
+    for (const useProxy of this.nativeReading ? [false] : [false, true]) {
       if (useProxy) {
         if (this.proxySettings.missingEntitledProxy()) {
           this.proxySettings.adoptSupporterProxy();
@@ -424,3 +426,7 @@ export class FriendFeedsDialog {
     this.closed.emit();
   }
 }
+
+// i18n friendFeeds.native.cost: Checks up to <strong>{{count}}</strong> sites directly from this device. Saved results are reused, and you can stop at any point.
+// i18n friendFeeds.native.rateLimited: A publisher asked us to slow down — waiting a moment before carrying on.
+// i18n friendFeeds.native.followFailed: {{count}} feeds could not be read. They are left unfollowed.

@@ -1,3 +1,4 @@
+import { RUNTIME_POLICY } from '../build/runtime-policy';
 import { inject, Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
@@ -41,6 +42,7 @@ declare global {
  */
 @Injectable({ providedIn: 'root' })
 export class AnalyticsTracker {
+  private readonly runtimePolicy = inject(RUNTIME_POLICY);
   private readonly router = inject(Router);
   private readonly prefs = inject(ClientPrefs);
   private loaded = false;
@@ -49,7 +51,7 @@ export class AnalyticsTracker {
   start(): void {
     // Canary is a testing deployment (normally just me), so don't pollute the
     // stats with it — only production counts.
-    if (isCanaryBuild() || isTestBuild()) {
+    if (!this.runtimePolicy.analytics || isCanaryBuild() || isTestBuild()) {
       return;
     }
     let previousPath: string | undefined;

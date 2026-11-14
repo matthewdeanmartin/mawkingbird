@@ -59,3 +59,9 @@ i18n-context/todo-*.md
 /tmp_uk_*
 /fix_one_tmp.cjs
 /fix_syntax_tmp.cjs
+
+/dist-native
+
+# Application build policy source, not generated build output.
+!src/app/platform/build/
+!src/app/platform/build/*.ts

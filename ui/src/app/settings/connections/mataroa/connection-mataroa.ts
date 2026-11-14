@@ -1,3 +1,4 @@
+import { PLATFORM_CONNECTORS } from '../../../platform/http/platform-http';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { MbButton } from '../../../design-system/button/button';
@@ -70,6 +71,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   styleUrls: ['../connection-page.css', './connection-mataroa.css'],
 })
 export class ConnectionMataroa implements OnInit {
+  protected readonly native = inject(PLATFORM_CONNECTORS);
   protected readonly settings = inject(MataroaSettings);
   private readonly bridge = inject(VaultBridge);
   private readonly api = inject(MataroaApi);
@@ -107,6 +109,11 @@ export class ConnectionMataroa implements OnInit {
   }
 
   connect(): void {
+    if (this.busy()) return;
+    if (this.native) {
+      void this.connectNative();
+      return;
+    }
     const proxy = this.proxyEntry();
     if (!proxy || !this.proxyReady()) {
       this.error.set(
@@ -157,7 +164,49 @@ export class ConnectionMataroa implements OnInit {
     });
   }
 
+  private async connectNative(): Promise<void> {
+    this.busy.set(true);
+    this.error.set(null);
+    this.notice.set(null);
+    try {
+      await this.settings.connect(this.apiKey(), this.blogUrl());
+      this.apiKey.set('');
+      this.notice.set(
+        this.transloco.translate<string>('settings.connections.mataroa.connectedFull'),
+      );
+    } catch (error) {
+      this.error.set(
+        error instanceof Error
+          ? error.message
+          : this.transloco.translate<string>('settings.connections.mataroa.saveFailed'),
+      );
+    } finally {
+      this.busy.set(false);
+    }
+  }
+  private async disconnectNative(): Promise<void> {
+    this.busy.set(true);
+    this.error.set(null);
+    this.notice.set(null);
+    try {
+      await this.settings.disconnect();
+    } catch (error) {
+      this.error.set(
+        error instanceof Error
+          ? error.message
+          : this.transloco.translate<string>('settings.connections.mataroa.saveFailed'),
+      );
+    } finally {
+      this.busy.set(false);
+    }
+  }
+
   disconnect(): void {
+    if (this.busy()) return;
+    if (this.native) {
+      void this.disconnectNative();
+      return;
+    }
     this.settings.disconnect();
     this.consent.revokeAll('mataroa');
     this.notice.set(null);
@@ -165,3 +214,6 @@ export class ConnectionMataroa implements OnInit {
     this.understandsProxy.set(false);
   }
 }
+
+// i18n settings.connections.nativeCredential: Your key stays in this device’s OS credential store. Requests go directly to the provider. Disconnect to remove the saved key.
+// i18n settings.connections.nativeStored: Saved on this device

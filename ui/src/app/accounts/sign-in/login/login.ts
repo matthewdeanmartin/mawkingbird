@@ -29,6 +29,7 @@ import { redirectToSecureLogin } from '../../../platform/session/secure-login';
 import { loginDestination } from '../../../platform/session/login-destination';
 import { MisskeyAuth } from '../../../connections/misskey/misskey-auth';
 import { FeatureFlags } from '../../../platform/build/feature-flags';
+import { NATIVE_MASTODON_LOGIN } from '../../../platform/session/platform-login';
 import { MbNotice } from '../../../design-system/notice/notice';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
@@ -204,6 +205,7 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
   styleUrl: './login.css',
 })
 export class Login implements OnInit, OnDestroy {
+  private readonly nativeLogin = inject(NATIVE_MASTODON_LOGIN);
   private api = inject(Api);
   private readonly transloco = inject(TranslocoService);
   private mockApi = inject(MockApi);
@@ -608,6 +610,12 @@ export class Login implements OnInit, OnDestroy {
     if (!value) {
       return;
     }
+    if (this.nativeLogin && !value.startsWith('native-mastodon:')) {
+      this.error.set(
+        'Use browser sign-in so this app can keep your token in OS credential storage.',
+      );
+      return;
+    }
     this.error.set(null);
     this.checking.set(true);
     this.auth.setToken(value);
@@ -624,10 +632,14 @@ export class Login implements OnInit, OnDestroy {
         this.checking.set(false);
         this.router.navigateByUrl(this.destination, { replaceUrl: true });
       },
-      error: () => {
+      error: (error) => {
         this.auth.removeSession(value);
         this.checking.set(false);
-        this.error.set('That token was rejected. Check it and try again.');
+        this.error.set(
+          this.nativeLogin
+            ? (error?.error?.error ?? 'Account verification failed. See Help > Open logs.')
+            : 'That token was rejected. Check it and try again.',
+        );
       },
     });
   }
@@ -883,6 +895,19 @@ export class Login implements OnInit, OnDestroy {
     if (redirectToSecureLogin() || this.needsInstance() || this.oauthWorking()) return;
     this.oauthError.set(null);
     this.oauthWorking.set(true);
+    if (this.nativeLogin) {
+      void this.nativeLogin(this.server.baseUrl(), this.oauthAccess())
+        .then((handle) => {
+          this.oauthWorking.set(false);
+          this.token.set(handle);
+          this.submit();
+        })
+        .catch((error: { message?: string }) => {
+          this.oauthWorking.set(false);
+          this.oauthError.set(error?.message ?? 'Native sign-in failed. See Help > Open logs.');
+        });
+      return;
+    }
     // Resolve against <base href> (the app may be served from a sub-path like /_ui/).
     const redirectUri = new URL('login', document.baseURI).toString();
     const server = this.server.baseUrl();

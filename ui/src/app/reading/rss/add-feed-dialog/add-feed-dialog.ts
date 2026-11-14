@@ -1,3 +1,4 @@
+import { PLATFORM_FEED_READ } from '../../../platform/http/platform-http';
 import { accountProfilePath } from '../../../accounts/account-route';
 import { Component, computed, inject, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -66,6 +67,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   styleUrl: './add-feed-dialog.css',
 })
 export class AddFeedDialog {
+  protected readonly nativeReading = !!inject(PLATFORM_FEED_READ);
   private addFeed = inject(RssAddFeed);
   private resolver = inject(PasteResolve);
   private api = inject(Api);
@@ -236,13 +238,13 @@ export class AddFeedDialog {
       // the free tier until they stumble across the right screen" problem
       // CorsProxySettings.adoptSupporterProxy already exists to fix elsewhere.
       // Adopt it here too, then retry immediately and silently.
-      if (!useProxy && this.proxySettings.missingEntitledProxy()) {
+      if (!this.nativeReading && !useProxy && this.proxySettings.missingEntitledProxy()) {
         this.proxySettings.adoptSupporterProxy();
         await this.attempt(url, true);
         return;
       }
       this.error.set(message);
-      if (!useProxy && this.proxySettings.usable()) {
+      if (!this.nativeReading && !useProxy && this.proxySettings.usable()) {
         this.retryable.set(url);
       }
     } finally {

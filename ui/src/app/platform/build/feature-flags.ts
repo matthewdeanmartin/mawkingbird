@@ -1,3 +1,4 @@
+import { BUILD_RUNTIME_POLICY } from './runtime-policy';
 import { Injectable, signal } from '@angular/core';
 import { BUILD_INFO } from './build-info';
 import { isCanaryBuild, isTestBuild } from './build-flavor';
@@ -415,6 +416,16 @@ export function isFeatureEnabled(state: FeatureFlagState, channel: DeploymentCha
  * build. A different deployment starts from the defaults declared above rather
  * than carrying an override forward into code it was not chosen for.
  */
+export function isFeatureAvailableInBuild(
+  id: FeatureFlagId,
+  policy = BUILD_RUNTIME_POLICY,
+): boolean {
+  return (
+    policy.hostedServices ||
+    !(id === 'mawkingbird-plus' || id.startsWith('proxy-') || id === 'connector-cors-proxy')
+  );
+}
+
 @Injectable({ providedIn: 'root' })
 export class FeatureFlags {
   readonly publishedHash = BUILD_INFO.commit ?? DEV_BUILD_HASH;
@@ -434,6 +445,7 @@ export class FeatureFlags {
   }
 
   enabled(id: FeatureFlagId): boolean {
+    if (!isFeatureAvailableInBuild(id)) return false;
     return isFeatureEnabled(this.states()[id], this.channel);
   }
 

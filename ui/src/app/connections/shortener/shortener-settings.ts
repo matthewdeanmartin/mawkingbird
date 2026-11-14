@@ -1,3 +1,8 @@
+import {
+  isNativeConnectorHandle,
+  type NativeConnectorProvider,
+} from '../../platform/http/connector-types';
+import { PLATFORM_LOCAL_PUBLISHING, PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import {
   credentialExpiresAt,
@@ -107,8 +112,16 @@ export interface ShortenerConfig {
 @Injectable({ providedIn: 'root' })
 export class ShortenerSettings implements ExpiringConnection {
   private bridge = inject(VaultBridge);
+  private native = inject(PLATFORM_LOCAL_PUBLISHING);
+  private connectors = inject(PLATFORM_CONNECTORS);
   private config = signal<StoredShortenerConfig>(readConfig());
-  private keys = signal<StoredKeys>(readKeys());
+  private keys = signal<StoredKeys>(
+    this.native
+      ? Object.fromEntries(
+          Object.entries(readKeys()).filter(([, v]) => isNativeConnectorHandle(v.key)),
+        )
+      : readKeys(),
+  );
 
   /**
    * Providers whose keys the vault holds but this browser does not.
@@ -134,6 +147,7 @@ export class ShortenerSettings implements ExpiringConnection {
   );
 
   constructor() {
+    if (this.native) this.writeKeys(this.keys());
     this.enforceLifetime();
   }
 
@@ -228,6 +242,8 @@ export class ShortenerSettings implements ExpiringConnection {
    * field doubles as the way to remove a key.
    */
   setKey(id: ShortenerId, key: string): void {
+    if (this.native && key.trim())
+      throw new Error('Account-backed shorteners are not available yet.');
     const trimmed = key.trim();
     if (!trimmed) {
       this.clearKey(id);
@@ -244,6 +260,25 @@ export class ShortenerSettings implements ExpiringConnection {
     );
   }
 
+  async connectNative(id: ShortenerId, token: string, domain: string): Promise<void> {
+    if (!this.connectors || id === 'isgd') throw new Error('This service has no API key.');
+    const handle = await this.connectors.connect(
+      id as NativeConnectorProvider,
+      token,
+      this.keys()[id]?.key,
+      id === 'rebrandly' && domain.trim() ? domain.trim() : undefined,
+      id === 'shortio' ? domain.trim() : undefined,
+    );
+    this.writeKeys({ ...this.keys(), [id]: stampCredential({ key: handle }) });
+    this.setDomain(id, domain);
+    this.activate(id);
+  }
+  async forgetNative(id: ShortenerId): Promise<void> {
+    const handle = this.keys()[id]?.key;
+    if (handle && this.connectors) await this.connectors.forget(handle);
+    this.forget(id);
+  }
+
   /**
    * One provider's key, falling back to the vault on a local miss.
    *
@@ -256,6 +291,7 @@ export class ShortenerSettings implements ExpiringConnection {
    * expects after unlocking on a second device.
    */
   private keyFor(id: ShortenerId): string {
+    if (this.native) return this.keys()[id]?.key ?? '';
     const local = this.keys()[id]?.key ?? '';
     if (local) {
       return local;
@@ -318,6 +354,7 @@ export class ShortenerSettings implements ExpiringConnection {
    * clock on the server.
    */
   enforceLifetime(): void {
+    if (this.native) return;
     const keys = this.keys();
     const kept: StoredKeys = {};
     const locked: ShortenerId[] = [];
@@ -351,6 +388,7 @@ export class ShortenerSettings implements ExpiringConnection {
 
   /** Push the current key map to the vault and report what happened. */
   async syncToVault(): Promise<SyncOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const keys = this.keys();
     return Object.keys(keys).length
       ? this.bridge.writeThrough(
@@ -362,6 +400,7 @@ export class ShortenerSettings implements ExpiringConnection {
 
   /** Reconcile provider keys plus the non-secret choice/domain needed to use them. */
   async reconcileVault(): Promise<VaultReconcileOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const localKeys = this.keys();
     const localConfig = this.config();
     const remoteRaw = this.bridge.readThrough(SECRET_KEY);
@@ -435,6 +474,7 @@ export class ShortenerSettings implements ExpiringConnection {
    * husk that still counts on the settings page.
    */
   private pushOrRemove(next: StoredKeys): Promise<SyncOutcome> {
+    if (this.native) return Promise.resolve({ kind: 'skipped' });
     return Object.keys(next).length
       ? this.bridge.writeThrough(
           SECRET_KEY,
@@ -451,6 +491,7 @@ export class ShortenerSettings implements ExpiringConnection {
    * on its own schedule and is not what "expires in 12 days" should mean.
    */
   expiresAt(): number | null {
+    if (this.native) return null;
     const active = this.config().active;
     return active ? credentialExpiresAt(this.keys()[active]?.connectedAt) : null;
   }

@@ -45,7 +45,11 @@
             "browserTarget": "ui:build:development",
             "configDir": "../design_system/.storybook",
             "tsConfig": "../design_system/.storybook/tsconfig.json",
-            "styles": ["src/styles.css", "../design_system/tokens.css", "../design_system/preview.css"],
+            "styles": [
+              "src/styles.css",
+              "../design_system/tokens.css",
+              "../design_system/preview.css"
+            ],
             "compodoc": false,
             "port": 6006,
             "host": "127.0.0.1",
@@ -58,7 +62,11 @@
             "browserTarget": "ui:build:development",
             "configDir": "../design_system/.storybook",
             "tsConfig": "../design_system/.storybook/tsconfig.json",
-            "styles": ["src/styles.css", "../design_system/tokens.css", "../design_system/preview.css"],
+            "styles": [
+              "src/styles.css",
+              "../design_system/tokens.css",
+              "../design_system/preview.css"
+            ],
             "compodoc": false,
             "outputDir": "../design_system/dist"
           }
@@ -76,9 +84,7 @@
                 "input": "public"
               }
             ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "styles": ["src/styles.css"],
             "optimization": {
               "scripts": true,
               "fonts": true,
@@ -143,6 +149,40 @@
                 }
               ],
               "outputHashing": "all"
+            },
+            "native": {
+              "outputPath": "dist-native",
+              "baseHref": "/",
+              "index": {
+                "input": "src/index.native.html",
+                "output": "index.html"
+              },
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.mockingbird.ts"
+                },
+                {
+                  "replace": "src/app/mock-routes.ts",
+                  "with": "src/app/mock-routes.mockingbird.ts"
+                },
+                {
+                  "replace": "src/app/mock-api.ts",
+                  "with": "src/app/mock-api.mockingbird.ts"
+                },
+                {
+                  "replace": "src/app/platform/build/runtime-policy.ts",
+                  "with": "src/app/platform/build/runtime-policy.native.ts"
+                },
+                {
+                  "replace": "src/app/platform/http/platform-http.ts",
+                  "with": "src/app/platform/http/platform-http.native.ts"
+                },
+                {
+                  "replace": "src/app/platform/session/platform-login.ts",
+                  "with": "src/app/platform/session/platform-login.native.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "mockingbird"
@@ -182,18 +222,13 @@
             "buildTarget": "ui:build:development",
             "tsConfig": "tsconfig.spec.json",
             "exclude": ["src/lib/**"],
-            "setupFiles": [
-              "src/test-setup.ts"
-            ]
+            "setupFiles": ["src/test-setup.ts"]
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "src/**/*.ts",
-              "src/**/*.html"
-            ]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }

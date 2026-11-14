@@ -1,3 +1,4 @@
+import { PLATFORM_LOCAL_PUBLISHING } from '../../platform/http/platform-http';
 import { inject, Injectable, signal } from '@angular/core';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { PasteCreateInput, PasteCreated } from './paste-provider';
@@ -43,6 +44,7 @@ function loadEditKeys(): Record<string, string> {
 @Injectable({ providedIn: 'root' })
 export class PasteHistory {
   private diagnostics = inject(PageDiagnostics);
+  private native = inject(PLATFORM_LOCAL_PUBLISHING);
 
   readonly records = signal<PasteRecord[]>(load());
   /**
@@ -53,7 +55,17 @@ export class PasteHistory {
   readonly persistError = signal<string | null>(null);
 
   /** Edit codes by slug. Never rendered, never exported — only handed to providers. */
-  private editKeys = loadEditKeys();
+  private editKeys = this.native
+    ? Object.fromEntries(
+        Object.entries(loadEditKeys()).filter(
+          ([slug, handle]) => handle === `native-rentry:${slug}`,
+        ),
+      )
+    : loadEditKeys();
+
+  constructor() {
+    if (this.native) this.persist(this.records());
+  }
 
   /** The edit code for a paste, or '' when there is none (e.g. TinyURL). */
   editKeyFor(slug: string): string {
@@ -74,7 +86,7 @@ export class PasteHistory {
       ...rest,
       createdAt: new Date().toISOString(),
     };
-    if (editKey) {
+    if (editKey && (!this.native || editKey === `native-rentry:${record.slug}`)) {
       this.editKeys = { ...this.editKeys, [record.slug]: editKey };
     }
     this.persist([record, ...this.records()]);

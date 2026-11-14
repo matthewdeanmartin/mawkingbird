@@ -1,3 +1,4 @@
+import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { FeedSyncButton } from '../../accounts/mawkingbird/feed-sync-button';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -114,6 +115,7 @@ interface ImportReport {
   styleUrl: './settings-rss.css',
 })
 export class SettingsRss implements OnInit {
+  protected readonly nativeReading = !!inject(PLATFORM_FEED_READ);
   /**
    * The friends'-blogs dialog. Mounted only while open — it pulls in the scan
    * machinery, which most visits to this page have no use for.
@@ -218,7 +220,7 @@ export class SettingsRss implements OnInit {
         // right now — adopt it and retry silently rather than surfacing a
         // failure for something their subscription should have prevented.
         // See add-feed-dialog.ts for the fuller rationale.
-        if (!useProxy && this.proxySettings.missingEntitledProxy()) {
+        if (!this.nativeReading && !useProxy && this.proxySettings.missingEntitledProxy()) {
           this.proxySettings.adoptSupporterProxy();
           this.attemptAdd(url, true);
           return;
@@ -226,7 +228,7 @@ export class SettingsRss implements OnInit {
         this.error.set(err.message);
         // Only offer the retry when it could plausibly help: a direct attempt
         // that failed, with a working proxy standing by.
-        if (!useProxy && this.proxySettings.usable()) {
+        if (!this.nativeReading && !useProxy && this.proxySettings.usable()) {
           this.retryable.set(url);
         }
         this.adding.set(false);
@@ -358,7 +360,9 @@ export class SettingsRss implements OnInit {
     folder: string | undefined,
     report: ImportReport,
   ): Promise<void> {
-    for (const useProxy of this.proxySettings.usable() ? [false, true] : [false]) {
+    for (const useProxy of !this.nativeReading && this.proxySettings.usable()
+      ? [false, true]
+      : [false]) {
       try {
         const parsed = await firstValueFrom(this.rssFetch.fetchFeed(url, { useProxy }));
         const limitError = this.subs.add(url, parsed.title, useProxy, parsed.items.length, folder);
@@ -370,7 +374,7 @@ export class SettingsRss implements OnInit {
         return;
       } catch (err) {
         // Only the last attempt's failure is worth reporting.
-        if (useProxy || !this.proxySettings.usable()) {
+        if (this.nativeReading || useProxy || !this.proxySettings.usable()) {
           report.failed.push({ url, reason: (err as Error).message });
           this.diagnostics.warn('RSS', 'opml:feed-failed', {
             viaProxy: useProxy,
@@ -461,3 +465,7 @@ export class SettingsRss implements OnInit {
     );
   }
 }
+
+// i18n settings.rss.native.direct: Feeds are fetched directly on this device. No CORS proxy or Plus subscription is needed.
+// i18n settings.rss.native.cacheHint: Cached feeds stay on this device, reducing downloads and keeping saved items available when a publisher is unreachable.
+// i18n settings.rss.native.maxFeedsHint: We suggest no more than {{recommended}}. Longer lists take more time and bandwidth to refresh. Lowering this limit never deletes a feed you already have.

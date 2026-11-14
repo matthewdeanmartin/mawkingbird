@@ -1,3 +1,5 @@
+import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
+import { isNativeConnectorHandle } from '../../platform/http/connector-types';
 import { inject, Injectable, signal } from '@angular/core';
 import { scopedKey } from '../../platform/session/account-scope';
 import { Status } from '../../platform/api/models';
@@ -58,9 +60,12 @@ interface RaindropListResponse<T> {
  */
 @Injectable({ providedIn: 'root' })
 export class RaindropSession implements ExpiringConnection {
+  private native = inject(PLATFORM_CONNECTORS);
   private bridge = inject(VaultBridge);
   private readonly tokenKey = TOKEN_KEY_BASE;
-  private token = signal<StoredRaindropToken | null>(adoptScopedToken(this.tokenKey));
+  private token = signal<StoredRaindropToken | null>(
+    adoptScopedToken(this.tokenKey, !!this.native),
+  );
 
   readonly connected = signal(this.token() !== null);
 
@@ -83,7 +88,8 @@ export class RaindropSession implements ExpiringConnection {
     this.enforceLifetime();
   }
 
-  connect(accessToken: string): void {
+  connect(accessToken: string): void | Promise<void> {
+    if (this.native) return this.connectNative(accessToken);
     const trimmed = accessToken.trim();
     if (!trimmed) {
       throw new Error('Paste the Test token from your Raindrop.io app settings.');
@@ -102,6 +108,7 @@ export class RaindropSession implements ExpiringConnection {
     if (local) {
       return local;
     }
+    if (this.native) return null;
     const fromVault = this.bridge.readThrough(TOKEN_KEY_BASE);
     if (fromVault) {
       // Repopulate, so the next call is local and the retention clock restarts
@@ -119,19 +126,21 @@ export class RaindropSession implements ExpiringConnection {
     this.needsFetch.set(false);
     // Not awaited: pasting a token should feel instant. Failures are observable
     // via `syncToVault()`, which the settings page calls when the user opts in.
-    if (sync) {
+    if (sync && !this.native) {
       void this.bridge.writeThrough(TOKEN_KEY_BASE, token.accessToken);
     }
   }
 
   /** Push the current token to the vault and report what happened. */
   async syncToVault(): Promise<SyncOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const token = this.token()?.accessToken;
     return token ? this.bridge.writeThrough(TOKEN_KEY_BASE, token) : { kind: 'skipped' };
   }
 
   /** Fill an empty browser from the vault, or an empty vault from this browser. */
   reconcileVault(): Promise<VaultReconcileOutcome> {
+    if (this.native) return Promise.resolve({ kind: 'skipped' });
     return reconcileScalar({
       local: this.token()?.accessToken ?? null,
       remote: this.bridge.readThrough(TOKEN_KEY_BASE),
@@ -150,6 +159,7 @@ export class RaindropSession implements ExpiringConnection {
 
   /** When this token ages out under the retention policy, or null. */
   expiresAt(): number | null {
+    if (this.native) return null;
     return credentialExpiresAt(this.token()?.connectedAt);
   }
 
@@ -160,6 +170,7 @@ export class RaindropSession implements ExpiringConnection {
    * the next {@link accessToken} pulls it back. See `VaultBridge.verdictFor`.
    */
   enforceLifetime(): void {
+    if (this.native) return;
     const token = this.token();
     if (!token) {
       return;
@@ -255,8 +266,28 @@ export class RaindropSession implements ExpiringConnection {
    * The vault removal is the same reasoning as the legacy-key removal below:
    * "Disconnect" must not be undone by the next read finding another copy.
    */
-  disconnect(): void {
+  private async connectNative(token: string): Promise<void> {
+    const previous = this.token()?.accessToken;
+    const handle = await this.native!.connect('raindrop', token.trim(), previous);
+    try {
+      this.store(stampCredential({ accessToken: handle }), false);
+    } catch (error) {
+      if (!previous) await this.native!.forget(handle);
+      throw error;
+    }
+  }
+
+  disconnect(): void | Promise<void> {
+    if (this.native) return this.disconnectNative();
     void this.bridge.removeThrough(TOKEN_KEY_BASE);
+    this.forgetLocally();
+    this.connected.set(false);
+    this.needsFetch.set(false);
+  }
+
+  private async disconnectNative(): Promise<void> {
+    const handle = this.token()?.accessToken;
+    if (handle) await this.native!.forget(handle);
     this.forgetLocally();
     this.connected.set(false);
     this.needsFetch.set(false);
@@ -280,16 +311,30 @@ export class RaindropSession implements ExpiringConnection {
     if (!accessToken) {
       throw new Error('Connect Raindrop.io in Settings → Connections first.');
     }
-    const response = await fetch(url, {
-      ...init,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ...(init.body ? { 'Content-Type': 'application/json' } : {}),
-        ...init.headers,
-      },
-    });
+    const result = this.native
+      ? await this.native.request({
+          provider: 'raindrop',
+          handle: accessToken,
+          url,
+          method: (init.method ?? 'GET') as 'GET' | 'POST' | 'DELETE',
+          ...(init.body ? { body: JSON.parse(String(init.body)) as unknown } : {}),
+        })
+      : null;
+    const response = result
+      ? new Response(result.status === 204 ? null : result.body, {
+          status: result.status,
+          headers: result.headers,
+        })
+      : await fetch(url, {
+          ...init,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            ...(init.body ? { 'Content-Type': 'application/json' } : {}),
+            ...init.headers,
+          },
+        });
     if (!response.ok) {
-      if (response.status === 401) this.disconnect();
+      if (response.status === 401) await this.disconnect();
       throw new Error(await raindropError(response, fallback));
     }
     return response;
@@ -307,24 +352,28 @@ export class RaindropSession implements ExpiringConnection {
  * whichever one signs in next adopts it the same way. `disconnect()` clears
  * both, so forgetting still means forgetting.
  */
-function adoptScopedToken(key: string): StoredRaindropToken | null {
-  const current = readToken(key);
+function adoptScopedToken(key: string, native = false): StoredRaindropToken | null {
+  const current = readToken(key, native);
   if (current) {
     return current;
   }
-  const legacy = readToken(scopedKey(key));
+  const legacy = readToken(scopedKey(key), native);
   if (legacy) {
     localStorage.setItem(key, JSON.stringify(legacy));
   }
   return legacy;
 }
 
-function readToken(key: string): StoredRaindropToken | null {
+function readToken(key: string, native = false): StoredRaindropToken | null {
   try {
     const parsed = JSON.parse(
       localStorage.getItem(key) ?? 'null',
     ) as Partial<StoredRaindropToken> | null;
     if (typeof parsed?.accessToken !== 'string' || !parsed.accessToken) {
+      return null;
+    }
+    if (native && !isNativeConnectorHandle(parsed.accessToken)) {
+      localStorage.removeItem(key);
       return null;
     }
     const stored = ensureStamped(key, {

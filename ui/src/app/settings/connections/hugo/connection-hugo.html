@@ -7,7 +7,13 @@
   <p>
     {{ 'settings.connections.hugo.intro' | transloco }}
   </p>
-  <p class="muted small">{{ scopeDetail | transloco }}</p>
+  @if (native) {
+    <p class="muted small">
+      {{ 'settings.connections.linkShortener.osStorageDetail' | transloco }}
+    </p>
+  } @else {
+    <p class="muted small">{{ scopeDetail | transloco }}</p>
+  }
 </div>
 
 <ol class="setup-steps muted small">
@@ -47,15 +53,23 @@
   <li>{{ 'settings.connections.hugo.step3' | transloco }}</li>
 </ol>
 
-<mb-notice>
-  {{ 'settings.connections.hugo.warning.a' | transloco }} <code>api.github.com</code>
-  {{ 'settings.connections.hugo.warning.b' | transloco }}
-</mb-notice>
+@if (native) {
+  <mb-notice>{{ 'settings.connections.hugo.nativeWarning' | transloco }}</mb-notice>
+} @else {
+  <mb-notice>
+    {{ 'settings.connections.hugo.warning.a' | transloco }} <code>api.github.com</code>
+    {{ 'settings.connections.hugo.warning.b' | transloco }}
+  </mb-notice>
+}
 
 @if (settings.connected()) {
   <div class="connected-row">
     <span>{{ 'settings.connections.hugo.connected' | transloco }}</span>
-    <app-storage-badge [where]="where()" />
+    @if (native) {
+      <span>{{ 'settings.connections.linkShortener.osStorage' | transloco }}</span>
+    } @else {
+      <app-storage-badge [where]="where()" />
+    }
     <a
       mbContentLink
       [href]="'https://github.com/' + settings.slug()"
@@ -123,22 +137,23 @@
     <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
   }
 
-  <h2 class="section-head">{{ 'settings.connections.hugo.posse.title' | transloco }}</h2>
-  <mb-checkbox
-    [label]="'settings.connections.hugo.posse.label' | transloco"
-    [ngModel]="settings.posseEnabled()"
-    (ngModelChange)="setPosse($event)"
-  />
-  <div class="control-help">
-    {{ 'settings.connections.hugo.posse.hintA' | transloco }}
-    <a mbContentLink [routerLink]="['/posse']">{{
-      'settings.connections.hugo.waitingToPublish' | transloco
-    }}</a>
-    {{ 'settings.connections.hugo.posse.hintB' | transloco }}
+  @if (!native) {
+    <h2 class="section-head">{{ 'settings.connections.hugo.posse.title' | transloco }}</h2>
+    <mb-checkbox
+      [label]="'settings.connections.hugo.posse.label' | transloco"
+      [ngModel]="settings.posseEnabled()"
+      (ngModelChange)="setPosse($event)"
+    />
+    <div class="control-help">
+      {{ 'settings.connections.hugo.posse.hintA' | transloco }}
+      <a mbContentLink [routerLink]="['/posse']">{{
+        'settings.connections.hugo.waitingToPublish' | transloco
+      }}</a>
+      {{ 'settings.connections.hugo.posse.hintB' | transloco }}
 
-    {{ 'settings.connections.hugo.posse.hintC' | transloco }}
-  </div>
-
+      {{ 'settings.connections.hugo.posse.hintC' | transloco }}
+    </div>
+  }
   <div class="posts-head">
     <h2>{{ 'settings.connections.hugo.postsHeading' | transloco }}</h2>
     <button
@@ -239,7 +254,12 @@
 } @else {
   @if (needsToken()) {
     <p class="muted small">
-      {{ 'settings.connections.hugo.needsToken' | transloco }}
+      {{
+        (native
+          ? 'settings.connections.hugo.nativeNeedsToken'
+          : 'settings.connections.hugo.needsToken'
+        ) | transloco
+      }}
     </p>
   }
   <form class="hugo-form" (ngSubmit)="connect()">

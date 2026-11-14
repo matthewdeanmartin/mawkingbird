@@ -9,6 +9,7 @@ import { CorsProxyBatchFetch } from '../../connections/cors-proxy/cors-proxy-bat
 import { CorsProxySettings } from '../../connections/cors-proxy/cors-proxy-settings';
 import { FeedCandidate, collapseFormats, rankFeeds } from '../../../lib/rss/feed-ranking';
 import { feedLinksIn } from './rss-discovery';
+import { PLATFORM_ARTICLE_READ, PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { RssFetch } from './rss-fetch';
 
 /**
@@ -83,6 +84,8 @@ const BARE_DOMAIN = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i;
 @Injectable({ providedIn: 'root' })
 export class PasteResolve {
   private proxy = inject(CorsProxy);
+  private nativeFeedRead = inject(PLATFORM_FEED_READ);
+  private nativePageRead = inject(PLATFORM_ARTICLE_READ);
   private batchFetch = inject(CorsProxyBatchFetch);
   private proxySettings = inject(CorsProxySettings);
   private api = inject(Api);
@@ -157,6 +160,35 @@ export class PasteResolve {
       return { kind: 'none', reason: 'Only http and https links can be checked.' };
     }
 
+    // Native accepts feed URLs without guessing from their extension. HTML
+    // discovery uses the article transport; never fall back to a cloud proxy.
+    if (this.nativeFeedRead) {
+      const youtube = youtubeFeedFor(url);
+      if (youtube)
+        return { kind: 'feeds', feeds: [youtube], siteUrl: url.toString(), needsProxy: false };
+      try {
+        const feed = await firstValueFrom(this.feeds.fetchFeed(url.toString()));
+        return {
+          kind: 'feeds',
+          feeds: [{ url: url.toString(), title: feed.title || hostOf(url.toString()) }],
+          siteUrl: url.toString(),
+          needsProxy: false,
+        };
+      } catch (error) {
+        const cause = error instanceof Error ? error.cause : null;
+        const kind = cause && typeof cause === 'object' && 'kind' in cause ? cause.kind : null;
+        // An HTML response can fail the feed parser. Policy, network and HTTP
+        // refusals are not evidence of HTML and must not trigger another fetch.
+        if (this.nativePageRead && (!kind || kind === 'response'))
+          return this.probeNativePage(url.toString());
+        return {
+          kind: 'none',
+          reason: error instanceof Error ? error.message : 'Could not read this feed or website.',
+          reached: false,
+        };
+      }
+    }
+
     // 2. Looks like a feed already — try that before fetching a page. The
     //    extension is evidence, not proof, so a failure falls through to the
     //    page probe: plenty of sites serve HTML from /feed.
@@ -221,6 +253,38 @@ export class PasteResolve {
       }
     }
     return null;
+  }
+
+  private async probeNativePage(pageUrl: string): Promise<PasteResolution> {
+    try {
+      const page = await this.nativePageRead!(pageUrl);
+      if (page.status < 200 || page.status >= 300)
+        return {
+          kind: 'none',
+          reached: false,
+          rateLimited: page.status === 429,
+          reason: `The site returned HTTP ${page.status}.`,
+        };
+      const found = feedLinksIn(page.body, page.finalUrl);
+      if (!found.length)
+        return {
+          kind: 'none',
+          reached: true,
+          reason: 'No feed found on that page. It may not publish one.',
+        };
+      return {
+        kind: 'feeds',
+        feeds: collapseFormats(rankFeeds(found, titleOf(page.body))),
+        siteUrl: page.finalUrl,
+        needsProxy: false,
+      };
+    } catch (error) {
+      const message =
+        error && typeof error === 'object' && 'message' in error
+          ? String(error.message)
+          : 'Could not reach that site.';
+      return { kind: 'none', reached: false, reason: message };
+    }
   }
 
   /** Fetch a page and rank the feeds it declares. */

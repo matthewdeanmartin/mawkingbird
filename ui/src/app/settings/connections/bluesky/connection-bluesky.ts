@@ -1,3 +1,4 @@
+import { NATIVE_SOCIAL } from '../../../platform/session/platform-login';
 import { MbButton } from '../../../design-system/button/button';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
@@ -74,6 +75,7 @@ export class ConnectionBluesky implements OnInit {
   readonly embedded = input(false);
   protected capabilities = inject(AnonymousCapabilities);
   protected bsky = inject(BlueskySession);
+  protected native = inject(NATIVE_SOCIAL);
   private transloco = inject(TranslocoService);
 
   protected bskyHandle = signal('');
@@ -113,18 +115,27 @@ export class ConnectionBluesky implements OnInit {
     this.bskyError.set(null);
     // The callback is a fresh page load; it returns to the page that started this.
     stashConnectorReturn(this.router.url.split(/[?#]/)[0]);
-    void this.bsky.beginOAuthConnector(identifier).catch((err: unknown) => {
-      // The redirect normally never resolves; rejection means discovery or PAR failed.
-      this.bskyLinking.set(false);
-      const message = err instanceof Error ? err.message : '';
-      this.bskyError.set(
-        this.transloco.translate<string>(
-          /resolve|handle|did/i.test(message)
-            ? 'settings.connections.bluesky.handleUnresolved'
-            : 'settings.connections.bluesky.oauthStartFailed',
-        ),
-      );
-    });
+    void this.bsky
+      .beginOAuthConnector(identifier)
+      .then(() => {
+        if (this.native) this.bskyLinking.set(false);
+      })
+      .catch((err: unknown) => {
+        // The redirect normally never resolves; rejection means discovery or PAR failed.
+        this.bskyLinking.set(false);
+        if (this.native && err && typeof err === 'object' && 'message' in err) {
+          this.bskyError.set(String(err.message));
+          return;
+        }
+        const message = err instanceof Error ? err.message : '';
+        this.bskyError.set(
+          this.transloco.translate<string>(
+            /resolve|handle|did/i.test(message)
+              ? 'settings.connections.bluesky.handleUnresolved'
+              : 'settings.connections.bluesky.oauthStartFailed',
+          ),
+        );
+      });
   }
 
   /** Last resort: an app password, for a PDS that does not support OAuth. */

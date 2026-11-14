@@ -1,3 +1,4 @@
+import { PLATFORM_CONNECTORS } from '../../../platform/http/platform-http';
 import { MbButton } from '../../../design-system/button/button';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbNotice } from '../../../design-system/notice/notice';
@@ -84,6 +85,7 @@ const GIST_KEY = 'mockingbird_gist_credentials';
   styleUrls: ['../connection-page.css', './connection-gist.css'],
 })
 export class ConnectionGist implements OnInit {
+  protected readonly native = inject(PLATFORM_CONNECTORS);
   protected readonly settings = inject(GistSettings);
   private readonly bridge = inject(VaultBridge);
   private readonly provider = inject(GistProvider);
@@ -119,7 +121,21 @@ export class ConnectionGist implements OnInit {
    * proves the token is live, and it returns the login the provider names
    * itself with — so one request does both jobs.
    */
-  connect(): void {
+  async connect(): Promise<void> {
+    if (this.busy()) return;
+    if (this.native) {
+      this.busy.set(true);
+      this.error.set(null);
+      try {
+        await this.settings.connectNative(this.token().trim());
+        this.token.set('');
+      } catch (error) {
+        this.error.set(error instanceof Error ? error.message : 'Could not connect GitHub Gist.');
+      } finally {
+        this.busy.set(false);
+      }
+      return;
+    }
     const token = this.token().trim();
     this.error.set(null);
     this.notice.set(null);
@@ -158,8 +174,22 @@ export class ConnectionGist implements OnInit {
     });
   }
 
-  disconnect(): void {
-    this.settings.disconnect();
+  async disconnect(): Promise<void> {
+    if (this.busy()) return;
+    if (this.native) {
+      this.busy.set(true);
+      this.error.set(null);
+      try {
+        await this.settings.disconnectNative();
+      } catch (error) {
+        this.error.set(
+          error instanceof Error ? error.message : 'Could not remove this credential.',
+        );
+        return;
+      } finally {
+        this.busy.set(false);
+      }
+    } else this.settings.disconnect();
     this.token.set('');
     this.notice.set(this.transloco.translate('settings.connections.gist.notice.disconnected'));
     this.error.set(null);

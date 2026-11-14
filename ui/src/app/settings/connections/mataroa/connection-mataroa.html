@@ -16,27 +16,38 @@
 
 <ol class="setup-steps muted small">
   <li>{{ 'settings.connections.mataroa.step1' | transloco }}</li>
-  <li>
-    <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
-      'settings.connections.mataroa.setUpProxyLink' | transloco
-    }}</a>
-    {{ 'settings.connections.mataroa.setUpProxyAfter' | transloco }}
-  </li>
+  @if (!native) {
+    <li>
+      <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
+        'settings.connections.mataroa.setUpProxyLink' | transloco
+      }}</a>
+      {{ 'settings.connections.mataroa.setUpProxyAfter' | transloco }}
+    </li>
+  }
   <li>{{ 'settings.connections.mataroa.step3' | transloco }}</li>
 </ol>
 
 <mb-notice>
-  {{ 'settings.connections.mataroa.credentialWarning' | transloco }}
+  {{
+    (native
+      ? 'settings.connections.nativeCredential'
+      : 'settings.connections.mataroa.credentialWarning'
+    ) | transloco
+  }}
 </mb-notice>
 
 @if (settings.connected()) {
   <div class="connected-row">
     <span>{{ 'settings.connections.mataroa.connected' | transloco }}</span>
-    <app-storage-badge [where]="where()" />
+    @if (native) {
+      <span>{{ 'settings.connections.nativeStored' | transloco }}</span>
+    } @else {
+      <app-storage-badge [where]="where()" />
+    }
     <a mbContentLink [href]="settings.blogUrl()" target="_blank" rel="noopener noreferrer">{{
       'settings.connections.mataroa.viewBlog' | transloco
     }}</a>
-    <button mbButton variant="outline" type="button" (click)="disconnect()">
+    <button mbButton variant="outline" type="button" [disabled]="busy()" (click)="disconnect()">
       {{ 'settings.connections.mataroa.disconnect' | transloco }}
     </button>
   </div>
@@ -72,32 +83,39 @@
         (ngModelChange)="blogUrl.set($event)"
       />
     </mb-field>
-    @if (proxyEntry(); as proxy) {
-      @if (proxyReady()) {
-        <mb-checkbox
-          [label]="'settings.connections.mataroa.proxyConsent' | transloco: { proxy: proxy.label }"
-          name="understandsProxy"
-          [ngModel]="understandsProxy()"
-          (ngModelChange)="understandsProxy.set($event)"
-        />
+    @if (!native) {
+      @if (proxyEntry(); as proxy) {
+        @if (proxyReady()) {
+          <mb-checkbox
+            [label]="
+              'settings.connections.mataroa.proxyConsent' | transloco: { proxy: proxy.label }
+            "
+            name="understandsProxy"
+            [ngModel]="understandsProxy()"
+            (ngModelChange)="understandsProxy.set($event)"
+          />
+        } @else {
+          <mb-notice tone="error" announcement="alert">
+            {{
+              'settings.connections.mataroa.proxyCannotForward' | transloco: { proxy: proxy.label }
+            }}
+          </mb-notice>
+        }
       } @else {
-        <mb-notice tone="error" announcement="alert">
-          {{
-            'settings.connections.mataroa.proxyCannotForward' | transloco: { proxy: proxy.label }
-          }}
-        </mb-notice>
+        <mb-notice tone="error" announcement="alert">{{
+          'settings.connections.mataroa.noProxy' | transloco
+        }}</mb-notice>
       }
-    } @else {
-      <mb-notice tone="error" announcement="alert">{{
-        'settings.connections.mataroa.noProxy' | transloco
-      }}</mb-notice>
     }
 
     <button
       mbButton
       type="submit"
       [disabled]="
-        busy() || !apiKey().trim() || !blogUrl().trim() || !proxyReady() || !understandsProxy()
+        busy() ||
+        !apiKey().trim() ||
+        !blogUrl().trim() ||
+        (!native && (!proxyReady() || !understandsProxy()))
       "
     >
       {{

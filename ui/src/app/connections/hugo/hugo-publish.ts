@@ -1,3 +1,4 @@
+import { PLATFORM_HUGO } from '../../platform/http/platform-http';
 import { inject, Injectable } from '@angular/core';
 import { Account, Status } from '../../platform/api/models';
 import { HugoApiError, HugoContents, HugoPutResult } from './hugo-contents';
@@ -51,6 +52,7 @@ export interface UpdateResult {
 @Injectable({ providedIn: 'root' })
 export class HugoPublish {
   private readonly contents = inject(HugoContents);
+  private readonly native = inject(PLATFORM_HUGO);
   private readonly settings = inject(HugoSettings);
 
   /**
@@ -110,7 +112,7 @@ export class HugoPublish {
         // 422 here means "that path already exists" — the one error worth
         // retrying, because the fix is mechanical. Anything else is the user's
         // to see.
-        if (!(error instanceof HugoApiError && error.status === 422)) {
+        if (this.native || !(error instanceof HugoApiError && error.status === 422)) {
           throw error;
         }
         if (attempt === MAX_SLUG_ATTEMPTS) {

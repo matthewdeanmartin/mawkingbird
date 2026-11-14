@@ -1,3 +1,4 @@
+import { PLATFORM_HUGO } from '../../platform/http/platform-http';
 import { inject, Injectable } from '@angular/core';
 import { ActionsRun } from './hugo-deploy';
 import { HugoSettings } from './hugo-settings';
@@ -89,6 +90,7 @@ interface PutResponse {
 @Injectable({ providedIn: 'root' })
 export class HugoContents {
   private readonly settings = inject(HugoSettings);
+  private readonly native = inject(PLATFORM_HUGO);
 
   /**
    * List a directory in the configured repo.
@@ -163,6 +165,8 @@ export class HugoContents {
 
   /** Whether a branch exists, used by connect-time validation. */
   async branchExists(owner: string, repo: string, branch: string, token: string): Promise<boolean> {
+    if (this.native)
+      throw new HugoApiError(403, 'Validate the repository through the native connection.');
     const response = await rawRequest(
       'GET',
       `${API_ROOT}/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/branches/${encodeURIComponent(branch)}`,
@@ -203,7 +207,12 @@ export class HugoContents {
     if (!token) {
       throw new HugoApiError(401, 'Connect your Hugo repository in Settings first.');
     }
-    const response = await rawRequest(method, url, token, body);
+    const result = this.native
+      ? await this.native.request({ handle: token, url, method, body })
+      : null;
+    const response = result
+      ? new Response(result.body, { status: result.status, headers: result.headers })
+      : await rawRequest(method, url, token, body);
     await throwIfNotOk(response);
     return (await response.json()) as T;
   }
