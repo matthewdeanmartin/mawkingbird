@@ -1,43 +1,32 @@
-.sdiscovery {
-  margin-top: 10px;
+.sd-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 16px 0;
 }
 
-.sd-searching {
+.sd-filters label {
+  display: grid;
+  gap: 4px;
+}
+
+.sd-servers {
+  max-height: min(55vh, 540px);
+  overflow: auto;
+  list-style: none;
+  padding: 0;
+}
+
+.sd-servers li {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
-}
-
-.sd-searching .text-button {
-  margin-left: auto;
-}
-
-.sd-note {
-  margin: 6px 0 0;
-}
-
-/* The walk, made visible. Monospace host + plain reason, newest on top. */
-.sd-attempts {
-  list-style: none;
-  margin: 10px 0 0;
-  padding: 0;
-  font-size: 13px;
-}
-
-.sd-attempts li {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 3px 0;
+  padding: 10px 0;
   border-bottom: 1px solid var(--border);
 }
 
-.sd-attempts code {
+.sd-servers li strong {
+  min-width: 160px;
   overflow-wrap: anywhere;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-}
-
-.sd-rejects {
-  margin: 10px 0 0;
 }

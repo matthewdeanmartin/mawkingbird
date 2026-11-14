@@ -94,16 +94,21 @@ class ServerSelectionPreview {
         resource instanceof Request ? resource.url : String(resource),
         location.href,
       );
-      // Search discovery reads the shipped snapshot of qualifying servers
-      // before its live probe. It is a static asset of the app, so it loads in
-      // every mode; "unreachable" applies to the probe below.
+      // Search discovery reads the shipped capability snapshot in every mode;
+      // "unreachable" applies to the current network check below.
       if (url.pathname.endsWith("/search-servers.json"))
         return new Response(
           JSON.stringify({
             version: 1,
             checkedAt: "2026-11-08T00:00:00.000Z",
-            checked: 1,
+            checked: 2,
             servers: [
+              {
+                domain: "accounts.example",
+                accounts: true,
+                posts: false,
+                tagsOnly: true,
+              },
               {
                 domain: "community.example",
                 accounts: true,

@@ -13,6 +13,8 @@ import {
   TOOLS_DESCRIPTION,
   TOOLS_INDEX_ALTERNATES,
   TOOLS_INDEXES,
+  TOOLS_INDEX_LEADS,
+  TOOL_TITLE_LEADS,
 } from './app/public-pages/seo';
 import { Type } from '@angular/core';
 import {
@@ -67,9 +69,9 @@ class ClientEntry {}
 // Titles match the browser routes in app.routes.ts, which take over these URLs
 // once the app boots and must keep the same title and indexability.
 const articles: { path: PublicArticleKind; title: string; description: string }[] = [
-  { path: 'about', title: 'About', description: ABOUT_DESCRIPTION },
-  { path: 'funding', title: 'Funding', description: FUNDING_DESCRIPTION },
-  { path: 'legal', title: 'About & legal', description: LEGAL_DESCRIPTION },
+  { path: 'about', title: 'Why this bird exists', description: ABOUT_DESCRIPTION },
+  { path: 'funding', title: 'How the lights stay on', description: FUNDING_DESCRIPTION },
+  { path: 'legal', title: 'The project in plain terms', description: LEGAL_DESCRIPTION },
 ];
 
 // The focused mini-apps' public pages (focused-tools.json; focusedAppRoutes in
@@ -156,6 +158,7 @@ function toolComponent(tool: FocusedTool): Type<unknown> {
 }
 
 const tools = FOCUSED_TOOLS.map((tool) => ({
+  id: tool.id,
   path: tool.path,
   title: tool.title,
   description: tool.description,
@@ -172,9 +175,10 @@ const publicRoutes: Route[] = [
   {
     path: 'features',
     component: Features,
-    title: 'Mastodon, reading and writing features',
+    title: 'A quieter way to read and write',
     data: {
       seoIndexable: true,
+      seoKeywordTitle: 'Mastodon, Bluesky and RSS features',
       seoDescription: FEATURES_DESCRIPTION,
       seoStructuredData: APP_STRUCTURED_DATA,
     },
@@ -182,9 +186,10 @@ const publicRoutes: Route[] = [
   {
     path: 'tools',
     component: ToolsIndex,
-    title: 'Free tools for Mastodon and Bluesky',
+    title: 'Small jobs, useful tools',
     data: {
       seoIndexable: true,
+      seoKeywordTitle: 'Free Mastodon and Bluesky tools',
       seoImage: 'tools',
       seoDescription: TOOLS_DESCRIPTION,
       lang: 'en',
@@ -200,6 +205,8 @@ const publicRoutes: Route[] = [
     title: TOOLS_INDEXES[lang].title,
     data: {
       seoIndexable: true,
+      seoTitleLead: TOOLS_INDEX_LEADS[lang],
+      seoKeywordTitle: TOOLS_INDEXES[lang].title,
       seoImage: 'tools',
       seoDescription: TOOLS_INDEXES[lang].description,
       lang,
@@ -207,12 +214,14 @@ const publicRoutes: Route[] = [
     },
     resolve: { tools: toolsResolver(lang) },
   })),
-  ...tools.map(({ path, title, description, lang, alternates, component }) => ({
+  ...tools.map(({ id, path, title, description, lang, alternates, component }) => ({
     path,
     component,
     title,
     data: {
       seoIndexable: true,
+      seoTitleLead: lang === 'en' ? TOOL_TITLE_LEADS[id] : undefined,
+      seoKeywordTitle: lang === 'en' ? title : TOOLS_INDEXES[lang as TranslatedLanguage].title,
       seoImage: 'tools',
       seoDescription: description,
       lang,
@@ -223,7 +232,12 @@ const publicRoutes: Route[] = [
     path,
     component: PublicArticle,
     title,
-    data: { article: path, seoIndexable: true, seoDescription: description },
+    data: {
+      article: path,
+      seoIndexable: true,
+      seoKeywordTitle: `${path === 'about' ? 'About the Mastodon and Bluesky app' : path === 'funding' ? 'Open source app funding' : 'Mawkingbird legal information'}`,
+      seoDescription: description,
+    },
   })),
 ];
 

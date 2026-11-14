@@ -23,10 +23,12 @@ import { InteractionFailure, InteractionFinder, InteractionResult } from './inte
 // i18n findInteractions.notFound: {{value}} could not be read. It may not exist, or its server may not share public posts.
 // i18n findInteractions.none: No replies or mentions between them turned up.
 // i18n findInteractions.count: {{count}} posts between them.
-// i18n findInteractions.scannedMastodon: Checked the latest {{a}} posts by {{first}} and {{b}} by {{second}}, read from their own servers. Older exchanges are not included.
+// i18n findInteractions.scannedMastodon: Checked the latest {{a}} posts by {{first}} and {{b}} by {{second}}, read from their own servers.
 // i18n findInteractions.scannedBluesky: Checked the latest {{a}} posts by {{first}} and {{b}} by {{second}}.
 // i18n findInteractions.searchedBluesky: Bluesky search was used as well, so older posts are included.
 // i18n findInteractions.signInForSearch: Sign in with Bluesky to search further back than the latest posts.
+// i18n findInteractions.searchedMastodon: Searched the signed-in server with from: and to: in both directions. Results depend on what that server has indexed.
+// i18n findInteractions.signInForMastodonSearch: Sign in with Mastodon to search beyond these recent posts.
 
 /**
  * Two handles in, the replies and mentions between them out, as ordinary post
@@ -105,6 +107,13 @@ import { InteractionFailure, InteractionFinder, InteractionResult } from './inte
             {{
               (r.searched ? 'findInteractions.searchedBluesky' : 'findInteractions.signInForSearch')
                 | transloco
+            }}
+          } @else {
+            {{
+              (r.searched
+                ? 'findInteractions.searchedMastodon'
+                : 'findInteractions.signInForMastodonSearch'
+              ) | transloco
             }}
           }
         </p>

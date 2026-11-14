@@ -1,106 +1,80 @@
-<div class="sdiscovery" aria-live="polite">
-  @switch (state()) {
-    @case ('idle') {
-      <button mbButton variant="outline" type="button" (click)="startSearch()">
-        {{ startText() }}
-      </button>
-      <p class="muted small sd-note">
-        {{ 'searchServerDiscovery.idle.snapshotNote' | transloco }}
-      </p>
-    }
-    @case ('searching') {
-      <div class="sd-searching">
-        <span mbSpinner class="spinner" aria-hidden="true"></span>
-        @if (checking()) {
-          <span>{{
-            'searchServerDiscovery.checking.label' | transloco: { domain: checking() }
-          }}</span>
-        }
-        <button mbPostAction size="small" class="text-button" type="button" (click)="cancel()">
-          {{ 'searchServerDiscovery.searching.cancel' | transloco }}
-        </button>
-      </div>
-    }
-    @case ('found') {
-      @if (candidate(); as server) {
-        <div mbDiscoveryCandidate class="sd-candidate">
-          <strong>
-            {{
-              'searchServerDiscovery.candidate.allowsSearch' | transloco: { domain: server.domain }
-            }}
-          </strong>
-          <span class="muted small">
-            {{
-              'searchServerDiscovery.candidate.found'
-                | transloco
-                  : {
-                      accounts: server.accounts,
-                      statuses: server.statuses,
-                      posts: words().posts,
-                    }
-            }}
-          </span>
-          <span class="muted small">
-            @if (server.category) {
-              {{ server.category }}
-            }
-            @if (sizeLabel(server.users)) {
-              · {{ sizeLabel(server.users) }}
-            }
-          </span>
-          @if (server.description) {
-            <p>{{ server.description }}</p>
-          }
-          <div data-candidate-actions class="sd-actions">
-            <button mbButton type="button" (click)="useCandidate()">
-              {{ 'searchServerDiscovery.candidate.use' | transloco }}
-            </button>
-            <button mbButton variant="outline" type="button" (click)="startSearch(false)">
-              {{ 'searchServerDiscovery.candidate.keepLooking' | transloco }}
-            </button>
-          </div>
-        </div>
-      }
-    }
-    @case ('exhausted') {
+<button mbButton variant="outline" type="button" (click)="openDialog()">{{ startText() }}</button>
+@if (dialogOpen()) {
+  <mb-dialog
+    [title]="'searchServerDiscovery.title' | transloco"
+    [closeLabel]="'searchServerDiscovery.close' | transloco"
+    size="wide"
+    (dismissed)="closeDialog()"
+  >
+    <p>
+      {{ 'searchServerDiscovery.intro' | transloco }}
+    </p>
+    @if (checkedAt()) {
       <p class="muted small">
-        @if (snapshotNone(); as none) {
-          {{ 'searchServerDiscovery.exhausted.none' | transloco: none }}
-        } @else {
-          {{ 'searchServerDiscovery.exhausted.note' | transloco }}
-        }
+        {{ 'searchServerDiscovery.checkedAt' | transloco: { date: checkedAt() } }}
       </p>
-      @if (!snapshotNone()) {
-        <button mbButton variant="outline" type="button" (click)="startSearch()">
-          {{ 'searchServerDiscovery.exhausted.retry' | transloco }}
-        </button>
-      }
     }
-  }
-
-  <!-- Servers whose live confirmation failed, and why. -->
-  @if (attempts().length) {
-    <ul class="sd-attempts">
-      @for (attempt of attempts(); track attempt.domain) {
+    <div class="sd-filters">
+      <label
+        >{{ 'searchServerDiscovery.support' | transloco }}
+        <select [value]="capabilityFilter()" (change)="setCapability($event)">
+          <option value="any">{{ 'searchServerDiscovery.any' | transloco }}</option>
+          <option value="none">{{ 'searchServerDiscovery.none' | transloco }}</option>
+          <option value="accounts">{{ 'searchServerDiscovery.accounts' | transloco }}</option>
+          <option value="posts">{{ 'searchServerDiscovery.posts' | transloco }}</option>
+          <option value="hashtags">{{ 'searchServerDiscovery.hashtags' | transloco }}</option>
+        </select>
+      </label>
+      <label
+        >{{ 'searchServerDiscovery.reachability' | transloco }}
+        <select [value]="reachFilter()" (change)="setReach($event)">
+          <option value="all">{{ 'searchServerDiscovery.all' | transloco }}</option>
+          <option value="reachable">{{ 'searchServerDiscovery.reachable' | transloco }}</option>
+          <option value="unreachable">{{ 'searchServerDiscovery.unreachable' | transloco }}</option>
+        </select>
+      </label>
+    </div>
+    <ul class="sd-servers">
+      @for (server of visibleServers(); track server.domain) {
         <li>
-          <code>{{ attempt.domain }}</code>
-          <span class="muted small">{{ attempt.reason }}</span>
+          <strong>{{ server.domain }}</strong>
+          <span class="muted small">
+            @if (server.accounts) {
+              {{ 'searchServerDiscovery.accounts' | transloco }}
+            }
+            @if (server.posts) {
+              · {{ 'searchServerDiscovery.posts' | transloco }}
+            }
+            @if (server.tagsOnly || server.posts) {
+              · {{ 'searchServerDiscovery.hashtags' | transloco }}
+            }
+          </span>
+          <span class="muted small">{{
+            'searchServerDiscovery.' + (reachability()[server.domain] || 'notChecked') | transloco
+          }}</span>
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            [disabled]="reachability()[server.domain] === 'checking'"
+            (click)="checkReachability(server.domain)"
+          >
+            {{ 'searchServerDiscovery.checkConnection' | transloco }}
+          </button>
+          <button
+            mbButton
+            size="small"
+            type="button"
+            [disabled]="reachability()[server.domain] !== 'reachable'"
+            (click)="useListed(server)"
+          >
+            {{ 'searchServerDiscovery.use' | transloco }}
+          </button>
         </li>
+      } @empty {
+        <li>{{ 'searchServerDiscovery.noMatches' | transloco }}</li>
       }
     </ul>
-  }
-
-  @if (rejectCount()) {
-    <p class="muted small sd-rejects">
-      {{
-        (rejectCount() === 1
-          ? 'searchServerDiscovery.rejects.skipping.one'
-          : 'searchServerDiscovery.rejects.skipping.other'
-        ) | transloco: { count: rejectCount() }
-      }}
-      <button mbPostAction size="small" class="text-button" type="button" (click)="forgetRejects()">
-        {{ 'searchServerDiscovery.rejects.forget' | transloco }}
-      </button>
-    </p>
-  }
-</div>
+  </mb-dialog>
+}

@@ -560,10 +560,13 @@ build time.
 
 ## Titles, structured data and sitemap dates
 
-Pages titled through a route read "Page · Mawkingbird". The untitled front
-page declares a `seoTagline` instead and reads "Mawkingbird — Mastodon,
-Bluesky & RSS reader in one place"; `src/index.html` carries the same title
-for crawlers that skip JavaScript.
+Indexable pages use "Distinctive title | Target keyword title | Mawkingbird".
+The route's `title` supplies the opening unless `seoTitleLead` overrides it;
+`seoKeywordTitle` supplies the search phrase. See `spec/SEO_Titles.md` for the
+copy rules. Utility routes still use "Page · Mawkingbird". The untitled front
+page declares a `seoTagline` and reads "One feed for the places you follow |
+Mastodon, Bluesky & RSS reader | Mawkingbird"; `src/index.html` carries the
+same title for crawlers that skip JavaScript.
 
 `Seo` keeps at most one JSON-LD block in the head, from a route's
 `seoStructuredData`, and removes it on utility routes and previews. The front

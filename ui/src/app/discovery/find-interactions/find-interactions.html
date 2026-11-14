@@ -12,7 +12,7 @@
     <h1>Find interactions between two accounts</h1>
     <p>
       Type two Mastodon handles, or two Bluesky handles, and see every reply and mention between
-      them, newest first. No account needed.
+      them, newest first. Sign in to search beyond the recent public posts.
     </p>
   </div>
 
@@ -30,8 +30,11 @@
         <p>Both on Mastodon (and other fediverse servers), or both on Bluesky.</p>
       </li>
       <li>
-        <h2>Their recent posts are read</h2>
-        <p>From each account's own server, or Bluesky's public feeds.</p>
+        <h2>Recent posts and search results are checked</h2>
+        <p>
+          Recent posts come from each account's server or Bluesky's public feeds. Signing in adds
+          post search.
+        </p>
       </li>
       <li>
         <h2>See what passed between them</h2>
@@ -52,9 +55,9 @@
     <h2>Questions</h2>
     <h3>Why can't Mastodon just search for this?</h3>
     <p>
-      Each Mastodon server only searches the posts it holds, and many servers do not offer full-text
-      search at all. So this page reads both accounts' latest public posts from their own servers
-      and keeps the ones that reply to or mention the other. It says how far back it looked.
+      Each Mastodon server only searches posts it has indexed. When you sign in, this page searches
+      your server with from: and to: in both directions. It also reads recent posts from both
+      accounts' own servers and says how far back that scan looked.
     </p>
     <h3>Why is Bluesky better with an account?</h3>
     <p>

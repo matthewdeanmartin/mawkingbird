@@ -21,14 +21,19 @@ const kitStructuredData: ResolveFn<object | undefined> = async (route) => {
 export const followRoutes: Routes = [
   {
     path: 'follow',
-    title: 'Who to follow on Mastodon: hand-picked starter kits',
-    data: { seoIndexable: true, seoImage: 'follow', seoDescription: FOLLOW_DESCRIPTION },
+    title: 'Find your people, one kit at a time',
+    data: {
+      seoIndexable: true,
+      seoKeywordTitle: 'Mastodon starter kits',
+      seoImage: 'follow',
+      seoDescription: FOLLOW_DESCRIPTION,
+    },
     loadComponent: () => import('./follow-hub').then((m) => m.FollowHub),
   },
   {
     path: 'follow/:slug',
     title: kitTitle,
-    data: { seoImage: 'follow' },
+    data: { seoImage: 'follow', seoKeywordTitle: 'Mastodon starter kit' },
     resolve: {
       seoDescription: kitDescription,
       seoIndexable: kitIndexable,

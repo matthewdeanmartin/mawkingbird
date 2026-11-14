@@ -933,7 +933,7 @@ export class Api {
   search(
     q: string,
     type?: 'accounts' | 'statuses' | 'hashtags',
-    opts?: { resolve?: boolean; limit?: number; offset?: number },
+    opts?: { resolve?: boolean; limit?: number; offset?: number; homeServer?: boolean },
   ): Observable<SearchResults> {
     let params = new HttpParams().set('q', q);
     if (type) {
@@ -959,7 +959,9 @@ export class Api {
       // The role rides on the *same* context as the diversion flag: search may
       // already be talking to a different host, which is exactly why its failures
       // must not be read as the home server being down.
-      context: searchServerRequest().set(SERVER_ROLE, 'search'),
+      context: opts?.homeServer
+        ? serverRole('search')
+        : searchServerRequest().set(SERVER_ROLE, 'search'),
     });
   }
 

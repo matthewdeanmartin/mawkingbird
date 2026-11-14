@@ -49,6 +49,8 @@ import {
   TOOLS_DESCRIPTION,
   TOOLS_INDEX_ALTERNATES,
   TOOLS_INDEXES,
+  TOOLS_INDEX_LEADS,
+  TOOL_TITLE_LEADS,
 } from './public-pages/seo';
 
 /**
@@ -64,6 +66,8 @@ function focusedAppRoutes(app: {
   path: string;
   /** A translated page's title and description resolve lazily (tool-copy.ts). */
   title: string | ResolveFn<string>;
+  seoTitleLead?: string;
+  seoKeywordTitle?: string;
   seoDescription: string | ResolveFn<string>;
   /** The language the page is written in (focused-tools.json `lang`). */
   lang: string;
@@ -100,6 +104,8 @@ function focusedAppRoutes(app: {
       // Prerendered for search engines; see main.server.ts and docs/seo.md.
       data: {
         seoIndexable: true,
+        seoTitleLead: app.seoTitleLead,
+        seoKeywordTitle: app.seoKeywordTitle ?? TOOLS_INDEXES[app.lang as TranslatedLanguage].title,
         seoImage: 'tools',
         ...(typeof app.seoDescription === 'string' ? { seoDescription: app.seoDescription } : {}),
         lang: app.lang,
@@ -249,9 +255,10 @@ export const routes: Routes = [
   },
   {
     path: 'features',
-    title: 'Mastodon, reading and writing features',
+    title: 'A quieter way to read and write',
     data: {
       seoIndexable: true,
+      seoKeywordTitle: 'Mastodon, Bluesky and RSS features',
       seoDescription:
         'Explore Mawkingbird: Mastodon feeds, RSS and readable articles, bookmarks, writing and drafts, bulk actions and third-party integrations.',
       seoStructuredData: APP_STRUCTURED_DATA,
@@ -261,9 +268,10 @@ export const routes: Routes = [
   // Every tool page, from focused-tools.json. Public and prerendered, like /features.
   {
     path: 'tools',
-    title: 'Free tools for Mastodon and Bluesky',
+    title: 'Small jobs, useful tools',
     data: {
       seoIndexable: true,
+      seoKeywordTitle: 'Free Mastodon and Bluesky tools',
       seoImage: 'tools',
       seoDescription: TOOLS_DESCRIPTION,
       lang: 'en',
@@ -278,6 +286,8 @@ export const routes: Routes = [
     title: TOOLS_INDEXES[lang].title,
     data: {
       seoIndexable: true,
+      seoTitleLead: TOOLS_INDEX_LEADS[lang],
+      seoKeywordTitle: TOOLS_INDEXES[lang].title,
       seoImage: 'tools',
       seoDescription: TOOLS_INDEXES[lang].description,
       lang,
@@ -407,6 +417,8 @@ export const routes: Routes = [
     return focusedAppRoutes({
       path: tool.path,
       title: english?.title ?? toolTitle(tool),
+      seoTitleLead: english && TOOL_TITLE_LEADS[english.id],
+      seoKeywordTitle: english?.title,
       seoDescription: english?.description ?? toolDescription(tool),
       lang: toolLanguage(tool),
       alternates: toolAlternates(tool),
@@ -1221,26 +1233,38 @@ export const routes: Routes = [
         // Formerly `/blog` (it never held posts); not `/docs`, which the mock
         // backend's FastAPI serves as Swagger UI.
         path: 'legal',
-        title: 'About & legal',
+        title: 'The project in plain terms',
         // Prerendered for search engines; see main.server.ts and docs/seo.md.
-        data: { seoIndexable: true, seoDescription: LEGAL_DESCRIPTION },
+        data: {
+          seoIndexable: true,
+          seoKeywordTitle: 'Mawkingbird legal information',
+          seoDescription: LEGAL_DESCRIPTION,
+        },
         loadComponent: () => import('./public-pages/docs/docs').then((m) => m.Docs),
       },
       {
         // "Design" — the project story, as a virtual tweet in the centre column.
         path: 'about',
-        title: 'About',
+        title: 'Why this bird exists',
         // Prerendered for search engines; see main.server.ts and docs/seo.md.
-        data: { seoIndexable: true, seoDescription: ABOUT_DESCRIPTION },
+        data: {
+          seoIndexable: true,
+          seoKeywordTitle: 'About the Mastodon and Bluesky app',
+          seoDescription: ABOUT_DESCRIPTION,
+        },
         loadComponent: () => import('./public-pages/about/about').then((m) => m.About),
       },
       {
         // "Funding" — who pays for what, also a virtual tweet. Its own route
         // rather than a tail section of Design, so it can be linked to.
         path: 'funding',
-        title: 'Funding',
+        title: 'How the lights stay on',
         // Prerendered for search engines; see main.server.ts and docs/seo.md.
-        data: { seoIndexable: true, seoDescription: FUNDING_DESCRIPTION },
+        data: {
+          seoIndexable: true,
+          seoKeywordTitle: 'Open source app funding',
+          seoDescription: FUNDING_DESCRIPTION,
+        },
         loadComponent: () => import('./public-pages/funding/funding').then((m) => m.Funding),
       },
       {

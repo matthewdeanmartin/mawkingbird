@@ -56,7 +56,9 @@ describe('PageTitleStrategy', () => {
   });
 
   it('puts the brand before a tagline on an untitled route', async () => {
-    expect(await go('/front')).toBe(`${environment.brand} — Feeds in one place`);
+    expect(await go('/front')).toBe(
+      `One feed for the places you follow | Feeds in one place | ${environment.brand}`,
+    );
   });
 
   it('prefers the page name over a tagline', async () => {
@@ -68,7 +70,9 @@ describe('PageTitleStrategy', () => {
     // is what Google showed as the site's title.
     localStorage.setItem(PREVIEW_KEY, JSON.stringify({ server: 'https://example.social' }));
     try {
-      expect(await go('/titled')).toBe(`${environment.brand} — Feeds in one place`);
+      expect(await go('/titled')).toBe(
+        `One feed for the places you follow | Feeds in one place | ${environment.brand}`,
+      );
       expect(await go('/bookmarks')).toBe(`Bookmarks · ${environment.brand}`);
     } finally {
       localStorage.removeItem(PREVIEW_KEY);

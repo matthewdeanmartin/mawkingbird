@@ -5,10 +5,11 @@ const loadAudience = () => import('./audience-page').then((m) => m.AudiencePage)
 export const audienceRoutes: Routes = [
   {
     path: 'for/readers',
-    title: 'RSS, news and reading lists',
+    title: 'Keep articles beside your social feed',
     data: {
       audience: 'readers',
       seoIndexable: true,
+      seoKeywordTitle: 'RSS reader and reading lists',
       seoImage: 'audience',
       seoDescription:
         'Read news and RSS with Mawkingbird: OPML subscriptions, read tracking, bookmarks and focused article views alongside your social feeds.',
@@ -17,10 +18,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'for/bluesky',
-    title: 'Mastodon and Bluesky in one app',
+    title: 'One home for two social networks',
     data: {
       audience: 'bluesky',
       seoIndexable: true,
+      seoKeywordTitle: 'Mastodon and Bluesky app',
       seoImage: 'audience',
       seoDescription:
         'Mastodon and Bluesky in one app: Mawkingbird gives you one Home feed for both, shared notifications, Mastodon reading without an account, and posting to both at once.',
@@ -29,10 +31,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'for/twitter-exodus',
-    title: 'Moving from Twitter to Mastodon and Bluesky',
+    title: 'Take your follows beyond Twitter',
     data: {
       audience: 'twitter-exodus',
       seoIndexable: true,
+      seoKeywordTitle: 'Move from Twitter to Mastodon and Bluesky',
       seoImage: 'audience',
       seoDescription:
         'Leaving Twitter? Try Mawkingbird to explore Mastodon and Bluesky, discover people through starter collections and build a familiar social feed.',
@@ -41,10 +44,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'for/instagram',
-    title: 'Photo feeds for Instagram users',
+    title: 'Photos without the endless scroll',
     data: {
       audience: 'instagram',
       seoIndexable: true,
+      seoKeywordTitle: 'Mastodon and Bluesky photo feeds',
       seoImage: 'audience',
       seoDescription:
         'Enjoy photo posts on Mastodon and Bluesky with Mawkingbird: media grids, full-size image viewing, swipe navigation and image descriptions.',
@@ -53,10 +57,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'for/creators',
-    title: 'Writing and photography for content creators',
+    title: 'Make room for the work you share',
     data: {
       audience: 'creators',
       seoIndexable: true,
+      seoKeywordTitle: 'Writing and photography for creators',
       seoImage: 'audience',
       seoDescription:
         'Create with Mawkingbird: social posts, saved drafts, image uploads and alt text, plus a focused writing workspace and supported publishing connections.',
@@ -65,10 +70,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'for/power-users',
-    title: 'Advanced Mastodon client for power users',
+    title: 'Tame the endless feed',
     data: {
       audience: 'power-users',
       seoIndexable: true,
+      seoKeywordTitle: 'Advanced Mastodon client',
       seoImage: 'audience',
       seoDescription:
         'A Mastodon client for power users: a finite feed with Feed Doctor, Calm mode, bulk follow and mute tools, profile analytics, scheduling and private follows.',
@@ -79,10 +85,11 @@ export const audienceRoutes: Routes = [
   {
     path: 'compare',
     pathMatch: 'full',
-    title: 'Best Mastodon web clients compared',
+    title: 'The client comparison with RSS in the mix',
     data: {
       audience: 'compare',
       seoIndexable: true,
+      seoKeywordTitle: 'Mastodon web clients compared',
       seoDescription:
         'The best Mastodon web clients compared: Mastodon’s own web app, Elk, Phanpy and Mawkingbird, with price, licence, Bluesky and RSS support side by side.',
     },
@@ -90,10 +97,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'compare/elk',
-    title: 'Mawkingbird vs Elk: Mastodon web clients compared',
+    title: 'Elk beside a feed with Bluesky and RSS',
     data: {
       audience: 'compare-elk',
       seoIndexable: true,
+      seoKeywordTitle: 'Elk vs Mawkingbird Mastodon clients',
       seoDescription:
         'Elk or Mawkingbird? Both are free, open-source Mastodon web clients. Elk is Mastodon-only; Mawkingbird adds Bluesky and RSS to the same Home feed.',
     },
@@ -101,10 +109,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'compare/phanpy',
-    title: 'Mawkingbird vs Phanpy: Mastodon web clients compared',
+    title: 'Catch-up or a combined social feed?',
     data: {
       audience: 'compare-phanpy',
       seoIndexable: true,
+      seoKeywordTitle: 'Phanpy vs Mawkingbird Mastodon clients',
       seoDescription:
         'Phanpy or Mawkingbird? Compare two free Mastodon web clients: Phanpy’s Catch-up and columns, or Mawkingbird’s Mastodon, Bluesky and RSS in one feed.',
     },
@@ -112,10 +121,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'compare/ivory',
-    title: 'Mawkingbird vs Ivory: a browser client or an Apple app',
+    title: 'An Apple app beside a browser client',
     data: {
       audience: 'compare-ivory',
       seoIndexable: true,
+      seoKeywordTitle: 'Ivory vs Mawkingbird Mastodon apps',
       seoDescription:
         'Ivory or Mawkingbird? A native Mastodon app for iPhone, iPad and Mac with a subscription, or a free browser client for Mastodon, Bluesky and RSS on any device.',
     },
@@ -123,10 +133,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'compare/mastodon-vs-bluesky',
-    title: 'Mastodon vs Bluesky: what is different?',
+    title: 'Two networks, different conversations',
     data: {
       audience: 'compare-mastodon-vs-bluesky',
       seoIndexable: true,
+      seoKeywordTitle: 'Mastodon vs Bluesky comparison',
       seoDescription:
         'Mastodon vs Bluesky: compare account homes, handles, discovery, post limits, quotes, private conversations and portability, then see how to read both.',
     },
@@ -134,10 +145,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'compare/openvibe',
-    title: 'Mawkingbird vs Openvibe: multi-network clients compared',
+    title: 'Two ways to bring networks together',
     data: {
       audience: 'compare-openvibe',
       seoIndexable: true,
+      seoKeywordTitle: 'Openvibe vs Mawkingbird social clients',
       seoDescription:
         'Openvibe or Mawkingbird? Compare supported networks, RSS, price and platforms: a broad phone app or a browser client with Mastodon reading tools.',
     },
@@ -145,10 +157,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'compare/ice-cubes',
-    title: 'Mawkingbird vs Ice Cubes: a Mastodon app or browser client',
+    title: 'A native app beside a browser feed',
     data: {
       audience: 'compare-ice-cubes',
       seoIndexable: true,
+      seoKeywordTitle: 'Ice Cubes vs Mawkingbird Mastodon apps',
       seoDescription:
         'Ice Cubes or Mawkingbird for Mastodon? Compare the Apple app’s live timeline and tag groups with a browser client for Mastodon, Bluesky and RSS.',
     },
@@ -156,10 +169,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'compare/tusky',
-    title: 'Mawkingbird vs Tusky: Mastodon on Android and the web',
+    title: 'Android app or browser companion?',
     data: {
       audience: 'compare-tusky',
       seoIndexable: true,
+      seoKeywordTitle: 'Tusky vs Mawkingbird Mastodon apps',
       seoDescription:
         'Tusky or Mawkingbird? Compare a free Android Mastodon app with a browser client that adds Bluesky, RSS and feed management tools.',
     },
@@ -167,10 +181,11 @@ export const audienceRoutes: Routes = [
   },
   {
     path: 'compare/mastodon-app',
-    title: 'Mawkingbird vs the official Mastodon app',
+    title: 'The official app beside a broader feed',
     data: {
       audience: 'compare-mastodon-app',
       seoIndexable: true,
+      seoKeywordTitle: 'Official Mastodon app comparison',
       seoDescription:
         'The official Mastodon app or Mawkingbird? Use the same account in a free phone app and a browser client for Mastodon, Bluesky and RSS.',
     },

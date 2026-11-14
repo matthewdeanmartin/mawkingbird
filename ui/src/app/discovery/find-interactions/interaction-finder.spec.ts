@@ -7,6 +7,9 @@ import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { BskyPostView } from '../../connections/bluesky/bluesky-types';
 import { Account, Mention, Status } from '../../platform/api/models';
+import { Api } from '../../platform/api/api';
+import { Auth } from '../../platform/session/auth';
+import { Server } from '../../platform/http/server';
 import { blueskyPostInvolves, InteractionFinder, mastodonPostInvolves } from './interaction-finder';
 import { parsePerson } from '../../accounts/mastodon-analytics/fediverse-handle';
 
@@ -109,16 +112,23 @@ describe('InteractionFinder', () => {
   const getAuthorFeed = vi.fn();
   const searchPosts = vi.fn();
   const linked = signal(false);
+  const token = signal<string | null>(null);
+  const search = vi.fn();
 
   beforeEach(() => {
     for (const fn of [lookupAccount, getAccountStatuses, getProfile, getAuthorFeed, searchPosts])
       fn.mockReset();
     linked.set(false);
+    token.set(null);
+    search.mockReset();
     TestBed.configureTestingModule({
       providers: [
         { provide: AnonymousPublicApi, useValue: { lookupAccount, getAccountStatuses } },
         { provide: BlueskyApi, useValue: { getProfile, getAuthorFeed, searchPosts } },
         { provide: BlueskySession, useValue: { linked } },
+        { provide: Api, useValue: { search } },
+        { provide: Auth, useValue: { token } },
+        { provide: Server, useValue: { baseUrl: () => 'https://home.example' } },
       ],
     });
   });
@@ -156,6 +166,39 @@ describe('InteractionFinder', () => {
     );
     expect(result).toMatchObject({ network: 'mastodon', scanned: [2, 1], searched: false });
     expect(('posts' in result ? result.posts : []).map((p) => p.id)).toEqual(['b1', 'a1']);
+  });
+
+  it('searches from and to both ways on the signed-in home server and verifies hits', async () => {
+    token.set('signed-in');
+    lookupAccount.mockImplementation((server: string) =>
+      of(
+        server === 'https://a.example'
+          ? ({ id: 'A', url: 'https://a.example/@alice' } as Account)
+          : ({ id: 'B', url: 'https://b.example/@bob' } as Account),
+      ),
+    );
+    getAccountStatuses.mockReturnValue(of([]));
+    const valid = toot('older', '2025-01-01T00:00:00Z', [{ acct: 'bob@b.example' }]);
+    valid.account = { acct: 'alice@a.example', url: 'https://a.example/@alice' } as Account;
+    const wrongAuthor = { ...valid, id: 'wrong', account: { acct: 'other@a.example' } as Account };
+    search.mockReturnValue(of({ statuses: [valid, wrongAuthor], accounts: [], hashtags: [] }));
+
+    const result = await TestBed.inject(InteractionFinder).find(
+      '@alice@a.example',
+      '@bob@b.example',
+    );
+    expect(search).toHaveBeenCalledWith(
+      'from:@alice@a.example to:@bob@b.example',
+      'statuses',
+      expect.objectContaining({ homeServer: true, limit: 40 }),
+    );
+    expect(search).toHaveBeenCalledWith(
+      'from:@bob@b.example to:@alice@a.example',
+      'statuses',
+      expect.objectContaining({ homeServer: true }),
+    );
+    expect(result).toMatchObject({ searched: true, scanned: [0, 0] });
+    expect('posts' in result ? result.posts.map((post) => post.id) : []).toEqual(['older']);
   });
 
   it('reads Bluesky author feeds, skipping reposts, and adds search when signed in', async () => {

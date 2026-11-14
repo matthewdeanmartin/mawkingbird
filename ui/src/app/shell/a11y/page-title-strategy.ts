@@ -41,9 +41,19 @@ export class PageTitleStrategy extends TitleStrategy {
 
   override updateTitle(snapshot: RouterStateSnapshot): void {
     const tagline = this.tagline(snapshot);
-    const page = tagline && readPreviewState() ? undefined : this.buildTitle(snapshot);
+    const page =
+      tagline && readPreviewState()
+        ? undefined
+        : (this.lead(snapshot) ?? this.buildTitle(snapshot));
+    const keyword = this.keyword(snapshot);
     this.title.setTitle(
-      page ? `${page} · ${this.brand}` : tagline ? `${this.brand} — ${tagline}` : this.brand,
+      page
+        ? keyword
+          ? `${page} | ${keyword} | ${this.brand}`
+          : `${page} · ${this.brand}`
+        : tagline
+          ? `One feed for the places you follow | ${tagline} | ${this.brand}`
+          : this.brand,
     );
     this.seo.update(snapshot, this.title.getTitle());
   }
@@ -57,5 +67,27 @@ export class PageTitleStrategy extends TitleStrategy {
       route = route.firstChild;
     }
     return tagline;
+  }
+
+  private keyword(snapshot: RouterStateSnapshot): string | undefined {
+    let route = snapshot.root;
+    let keyword: string | undefined;
+    while (route) {
+      if (route.data['seoKeywordTitle']) keyword = route.data['seoKeywordTitle'];
+      if (!route.firstChild) break;
+      route = route.firstChild;
+    }
+    return keyword;
+  }
+
+  private lead(snapshot: RouterStateSnapshot): string | undefined {
+    let route = snapshot.root;
+    let lead: string | undefined;
+    while (route) {
+      if (route.data['seoTitleLead']) lead = route.data['seoTitleLead'];
+      if (!route.firstChild) break;
+      route = route.firstChild;
+    }
+    return lead;
   }
 }

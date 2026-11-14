@@ -351,7 +351,7 @@
     "id": "find-interactions",
     "path": "find-interactions",
     "title": "Find interactions between two Mastodon or Bluesky accounts",
-    "description": "See every reply and mention between two Mastodon accounts, or two Bluesky accounts, newest first. Free, and no account needed.",
+    "description": "Find replies and mentions between two Mastodon or Bluesky accounts. Sign in to search beyond their recent public posts.",
     "group": "search",
     "signIn": "any",
     "tab": {

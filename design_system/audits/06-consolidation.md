@@ -2407,6 +2407,15 @@ translated-reply MbNotice above its reply box (+1 shared). Menu budgets hold
 (post ••• for someone else's post and own profile now at 10/10). No shared widget
 implementation changed.
 
+### Search server directory picker (2026-11-14)
+
+Search server discovery now opens an MbDialog and lists the shipped capability
+snapshot, including servers that support only account or hashtag search. Two
+native selects filter capabilities and reachability. MbButtons run a browser
+reachability check and explicitly adopt a reachable server. The inventory has
+two new select candidates in `search-server-discovery.html`; reconciliation
+records their shared styling review.
+
 ### Analytics lookup and Find interactions (2026-11-12)
 
 Reviewed regeneration: 1817 to 1823 scanned files, 634 to 637 candidate files (three added).

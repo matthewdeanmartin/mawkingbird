@@ -3,7 +3,7 @@ import { TopicCopy } from './topic-copy';
 
 export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
   en: {
-    title: 'Vegan and vegetarian communities on Mastodon | Plant Based Living',
+    title: 'Vegan and vegetarian communities on Mastodon',
     description:
       'Find welcoming vegan, vegetarian and plant-based people on Mastodon. Discover recipes, everyday tips and tags to build your own feed.',
     heading: 'Plant Based Living',

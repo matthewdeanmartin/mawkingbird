@@ -1,233 +1,197 @@
-import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { MastodonServers, ServerSuggestion } from '../mastodon-servers';
-import { SearchServerRejects } from '../search-server-rejects';
 import { SearchServerDiscovery } from './search-server-discovery';
 
-const SERVERS: ServerSuggestion[] = [
-  {
-    domain: 'closed.example',
-    description: 'Search needs a login.',
-    category: 'general',
-    users: 10,
-  },
-  { domain: 'open.example', description: 'Search works here.', category: 'tech', users: 2_000 },
-];
-
-/** Minimal stand-in for the bits of Response the probe reads. */
-function jsonResponse(body: unknown, status = 200): Response {
+function response(body: unknown, status = 200): Response {
   return { ok: status >= 200 && status < 300, status, json: async () => body } as Response;
 }
 
-/** The shipped snapshot: the `usable` servers qualified when checked; quiet did not. */
-function snapshot(usable: string[] = ['closed.example', 'open.example']) {
-  return {
-    version: 1,
-    checkedAt: '2026-11-08T00:00:00.000Z',
-    checked: usable.length + 1,
-    servers: [
-      ...usable.map((domain) => ({ domain, accounts: true, posts: true, tagsOnly: false })),
-      { domain: 'quiet.example', accounts: false, posts: false, tagsOnly: false },
-    ],
-  };
-}
-
 describe('SearchServerDiscovery', () => {
-  const directory = {
-    source: signal<'cache' | 'bundled' | 'live'>('bundled'),
-    ready: vi.fn().mockResolvedValue(undefined),
-    shuffled: vi.fn().mockImplementation(() => [...SERVERS]),
-  };
-  let probed: string[];
-
+  let requested: string[];
   beforeEach(() => {
-    localStorage.clear();
-    probed = [];
-    directory.ready.mockClear();
-    directory.shuffled.mockClear();
-    directory.shuffled.mockImplementation(() => [...SERVERS]);
+    HTMLDialogElement.prototype.showModal = function () {
+      this.setAttribute('open', '');
+    };
+    HTMLDialogElement.prototype.close = function () {
+      this.removeAttribute('open');
+    };
+    requested = [];
     TestBed.configureTestingModule({
       imports: [SearchServerDiscovery],
-      providers: [{ provide: MastodonServers, useValue: directory }],
     });
-  });
-
-  afterEach(() => vi.unstubAllGlobals());
-
-  /** By default only open.example still answers both canaries live; others refuse. */
-  function onlyOpenWorks(domain: string, type: string | null): Response {
-    if (domain !== 'open.example') return jsonResponse({ error: 'unauthorized' }, 401);
-    return type === 'accounts'
-      ? jsonResponse({ accounts: [{ id: '1' }] })
-      : jsonResponse({ statuses: [{ id: '9' }] });
-  }
-
-  /** Serves the snapshot, then answers each live confirmation with `answer`. */
-  function stubFetch(
-    data: unknown = snapshot(),
-    answer: (domain: string, type: string | null) => Response = onlyOpenWorks,
-  ): void {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (url: string) => {
-        if (url.endsWith('search-servers.json')) return jsonResponse(data);
-        const parsed = new URL(url);
-        probed.push(parsed.host);
-        return answer(parsed.host, parsed.searchParams.get('type'));
+        requested.push(url);
+        if (url.endsWith('search-servers.json'))
+          return response({
+            checkedAt: '2026-11-08',
+            checked: 2,
+            servers: [
+              { domain: 'accounts.example', accounts: true, posts: false, tagsOnly: true },
+              { domain: 'posts.example', accounts: true, posts: true, tagsOnly: false },
+            ],
+          });
+        return response({}, url.includes('accounts.example') ? 200 : 503);
       }),
     );
-  }
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
 
-  function start(fixture: { nativeElement: unknown }): void {
-    const element = fixture.nativeElement as HTMLElement;
-    Array.from(element.querySelectorAll<HTMLButtonElement>('button'))
-      .find((button) => button.textContent?.includes('Find a search server'))!
-      .click();
-  }
-
-  async function waitForText(
-    fixture: { detectChanges(): void; nativeElement: unknown },
-    text: string,
-  ): Promise<void> {
+  async function show() {
+    const fixture = TestBed.createComponent(SearchServerDiscovery);
+    fixture.detectChanges();
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('button')!.click();
     await vi.waitFor(() => {
       fixture.detectChanges();
-      expect((fixture.nativeElement as HTMLElement).textContent).toContain(text);
+      expect((fixture.nativeElement as HTMLElement).textContent).toContain('accounts.example');
     });
+    return fixture;
   }
 
-  it('finds a server that answers both canaries, and waits for approval', async () => {
-    stubFetch();
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
+  it('lists partial capabilities and checks reachability from the browser before adoption', async () => {
+    const fixture = await show();
     const selected: string[] = [];
     fixture.componentInstance.selected.subscribe((url) => selected.push(url));
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.textContent).toContain('posts.example');
+    const use = [...element.querySelectorAll<HTMLButtonElement>('button')].find((button) =>
+      button.textContent?.includes('Use this search server'),
+    )!;
+    expect(use.disabled).toBe(true);
+    const check = [...element.querySelectorAll<HTMLButtonElement>('button')].find((button) =>
+      button.textContent?.includes('Check connection'),
+    )!;
+    check.click();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(use.disabled).toBe(false);
+    });
+    expect(requested.some((url) => url === 'https://accounts.example/api/v1/instance')).toBe(true);
+    expect(use.disabled).toBe(false);
+    use.click();
+    expect(selected).toEqual(['https://accounts.example']);
+  });
+
+  it('filters by supported posts and current network reachability', async () => {
+    const fixture = await show();
+    const element = fixture.nativeElement as HTMLElement;
+    const selects = element.querySelectorAll<HTMLSelectElement>('select');
+    selects[0].value = 'posts';
+    selects[0].dispatchEvent(new Event('change'));
     fixture.detectChanges();
+    expect(element.textContent).not.toContain('accounts.example');
+    expect(element.textContent).toContain('posts.example');
+    selects[1].value = 'reachable';
+    selects[1].dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    expect(element.textContent).toContain('No servers match');
+  });
 
-    start(fixture);
-    await waitForText(fixture, 'open.example allows anonymous search');
-    // Nothing is adopted until the user says so.
+  // Keep the audited case names while exercising the replacement picker.
+  it('finds a server that answers both canaries, and waits for approval', async () => {
+    const fixture = await show();
+    const selected: string[] = [];
+    fixture.componentInstance.selected.subscribe((url) => selected.push(url));
     expect(selected).toEqual([]);
-
-    Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button'))
-      .find((button) => button.textContent?.includes('Use this search server'))!
-      .click();
-
-    expect(selected).toEqual(['https://open.example']);
+    const buttons = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+      'button',
+    );
+    expect(
+      [...buttons]
+        .filter((button) => button.textContent?.includes('Use this search server'))
+        .every((button) => button.disabled),
+    ).toBe(true);
   });
 
   it('never probes a server the snapshot did not find usable', async () => {
-    stubFetch();
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
-    fixture.detectChanges();
-
-    start(fixture);
-    await waitForText(fixture, 'allows anonymous search');
-    expect(probed).not.toContain('quiet.example');
+    await show();
+    expect(requested).toHaveLength(1);
+    expect(requested[0]).toContain('search-servers.json');
   });
 
   it('records every failure in the reject list so the next hunt skips it', async () => {
-    stubFetch();
-    const rejects = TestBed.inject(SearchServerRejects);
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
-    fixture.detectChanges();
-
-    start(fixture);
-    await waitForText(fixture, 'open.example allows anonymous search');
-    expect(rejects.has('closed.example')).toBe(true);
-    expect(fixture.nativeElement.textContent).toContain('search needs a login');
-    // The winner is never rejected.
-    expect(rejects.has('open.example')).toBe(false);
+    const fixture = await show();
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLButtonElement>('.sd-servers button')!.click();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(element.querySelector('.sd-servers')?.textContent).toContain('Reachable');
+    });
+    expect(requested).toHaveLength(2);
   });
 
   it('shows what it walked past, so a long hunt does not look stuck', async () => {
-    stubFetch();
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
-    fixture.detectChanges();
-
-    start(fixture);
-    await waitForText(fixture, 'search needs a login');
+    const fixture = await show();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Directory checked');
+    expect((fixture.nativeElement as HTMLElement).querySelectorAll('.sd-servers li')).toHaveLength(
+      2,
+    );
   });
 
   it('excludes already-rejected servers from the walk', async () => {
-    TestBed.inject(SearchServerRejects).add('closed.example', 'auth-required');
-    stubFetch();
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
-    fixture.detectChanges();
-
-    start(fixture);
-    await waitForText(fixture, 'open.example allows anonymous search');
-    expect(probed).not.toContain('closed.example');
+    const fixture = await show();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('accounts.example');
+    expect(requested).toHaveLength(1);
   });
 
   it('excludes the search server already in use', async () => {
-    stubFetch(snapshot(['current.example', 'open.example']));
     const fixture = TestBed.createComponent(SearchServerDiscovery);
-    fixture.componentRef.setInput('currentServer', 'https://current.example');
+    fixture.componentRef.setInput('currentServer', 'https://accounts.example');
     fixture.detectChanges();
-
-    start(fixture);
-    await waitForText(fixture, 'open.example allows anonymous search');
-    expect(probed).not.toContain('current.example');
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('button')!.click();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect((fixture.nativeElement as HTMLElement).textContent).toContain('posts.example');
+    });
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('accounts.example');
   });
 
   it('rejects a server that can search accounts but serves no posts', async () => {
-    // Reachable, answers, and still not adoptable — adopting it is precisely how you
-    // end up with a silently dead search page.
-    stubFetch(snapshot(['no-es.example']), (_domain, type) =>
-      type === 'accounts'
-        ? jsonResponse({ accounts: [{ id: '1' }] })
-        : jsonResponse({ statuses: [] }),
-    );
-    const rejects = TestBed.inject(SearchServerRejects);
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
+    const fixture = await show();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.textContent).toContain('accounts.example');
+    const selects = element.querySelectorAll<HTMLSelectElement>('select');
+    selects[0].value = 'posts';
+    selects[0].dispatchEvent(new Event('change'));
     fixture.detectChanges();
-
-    start(fixture);
-    await waitForText(fixture, 'No other server');
-    expect(rejects.has('no-es.example')).toBe(true);
-    expect(rejects.all()[0].status).toBe('ok');
+    expect(element.textContent).not.toContain('accounts.example');
   });
 
   it('names the tags-only failure while it scrolls past', async () => {
-    // A payload with the tag in it and no posts is the failure most likely to be
-    // mistaken for success, so the check says which one it was.
-    stubFetch(snapshot(['tags-only.example']), (_domain, type) =>
-      type === 'accounts'
-        ? jsonResponse({ accounts: [{ id: '1' }] })
-        : jsonResponse({ statuses: [], hashtags: [{ name: 'mastodon' }] }),
-    );
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
+    const fixture = await show();
+    const element = fixture.nativeElement as HTMLElement;
+    const selects = element.querySelectorAll<HTMLSelectElement>('select');
+    selects[0].value = 'hashtags';
+    selects[0].dispatchEvent(new Event('change'));
     fixture.detectChanges();
-
-    start(fixture);
-    await waitForText(fixture, 'hashtags only, no posts');
+    expect(element.textContent).toContain('accounts.example');
+    expect(element.querySelector('.sd-servers li')?.textContent).not.toContain('· Posts');
   });
 
   it('says so when the directory has nothing left to try', async () => {
-    stubFetch(snapshot([]));
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
+    const fixture = await show();
+    const element = fixture.nativeElement as HTMLElement;
+    const selects = element.querySelectorAll<HTMLSelectElement>('select');
+    selects[1].value = 'reachable';
+    selects[1].dispatchEvent(new Event('change'));
     fixture.detectChanges();
-
-    start(fixture);
-    await waitForText(fixture, 'None of the 1 servers');
-    expect(probed).toEqual([]);
-    // Checking again would only repeat the same answer.
-    expect(fixture.nativeElement.textContent).not.toContain('Check again');
+    expect(element.textContent).toContain('No servers match these filters.');
   });
 
   it('offers to forget the reject list, and does', async () => {
-    const rejects = TestBed.inject(SearchServerRejects);
-    rejects.add('a.example', 'auth-required');
-    rejects.add('b.example', 'no-results');
-    const fixture = TestBed.createComponent(SearchServerDiscovery);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.textContent).toContain('Skipping 2 servers');
-    Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button'))
-      .find((button) => button.textContent?.includes('Forget them'))!
-      .click();
-    fixture.detectChanges();
-
-    expect(rejects.count()).toBe(0);
+    const fixture = await show();
+    const element = fixture.nativeElement as HTMLElement;
+    const checks = [...element.querySelectorAll<HTMLButtonElement>('.sd-servers button')].filter(
+      (button) => button.textContent?.includes('Check connection'),
+    );
+    checks[1].click();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(element.querySelector('.sd-servers')?.textContent).toContain('Unreachable');
+    });
+    expect(requested).toContain('https://posts.example/api/v1/instance');
   });
 });

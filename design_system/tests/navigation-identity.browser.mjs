@@ -308,11 +308,18 @@ for (const [width, theme, direction] of [
     await search
       .getByRole("button", { name: "Find a search server", exact: true })
       .click();
-    await expect(search.locator("[mbDiscoveryCandidate]")).toContainText(
-      "allows anonymous search",
-    );
+    await expect(search.getByRole("dialog")).toBeVisible();
+    await expect(search.getByText("accounts.example")).toBeVisible();
+    await search.getByLabel("Search support").selectOption("posts");
+    await expect(search.getByText("accounts.example")).toHaveCount(0);
+    await search.getByLabel("Search support").selectOption("any");
+    await search
+      .getByRole("button", { name: "Check connection" })
+      .nth(1)
+      .click();
     await search
       .getByRole("button", { name: "Use this search server", exact: true })
+      .nth(1)
       .click();
     await expect(page.locator(".selection-result")).toHaveText(
       "Selected: https://community.example",
@@ -358,7 +365,7 @@ test("degraded servers require explicit acceptance", async ({ page }) => {
   );
 });
 
-test("unreachable discovery retains retry and search-rejection controls", async ({
+test("unreachable discovery retains retry and reports network reachability", async ({
   page,
 }) => {
   await page.goto(servers("unreachable"));
@@ -379,11 +386,13 @@ test("unreachable discovery retains retry and search-rejection controls", async 
   await search
     .getByRole("button", { name: "Find a search server", exact: true })
     .click();
-  await expect(search.locator(".sd-rejects")).toContainText("1 server");
   await search
-    .getByRole("button", { name: "Forget them and re-check", exact: true })
+    .getByRole("button", { name: "Check connection" })
+    .first()
     .click();
-  await expect(search.locator(".sd-rejects")).toHaveCount(0);
+  await expect(
+    search.locator(".sd-servers").getByText("Unreachable", { exact: true }),
+  ).toBeVisible();
   await expect(page.locator(".selection-result")).toHaveText(
     "No selection yet",
   );

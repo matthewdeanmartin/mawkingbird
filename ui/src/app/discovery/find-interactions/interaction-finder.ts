@@ -16,14 +16,16 @@ import {
   BskyTimeline,
 } from '../../connections/bluesky/bluesky-types';
 import { Account, Status } from '../../platform/api/models';
+import { Api } from '../../platform/api/api';
+import { Auth } from '../../platform/session/auth';
+import { Server } from '../../platform/http/server';
 
 /**
  * Every visible exchange between two accounts: replies and mentions, either way.
  *
- * Mastodon has no "from:A to:B" across servers (a server only searches what it
- * has indexed), so the Mastodon path reads each account's recent public posts
- * from its own server and keeps those that mention the other — best effort,
- * bounded by how far back it reads, and it says how far that was.
+ * Mastodon searches the signed-in reader's home server with directional
+ * operators, then merges those hits with recent public posts read from each
+ * account's own server. Search coverage depends on the home server's index.
  *
  * Bluesky's author feeds are public, so the same scan works with no account;
  * with a linked Bluesky account its post search (`author` + `mentions`) is
@@ -41,7 +43,7 @@ export interface InteractionResult {
   posts: Status[];
   /** Posts read from each account's history (scan only), in input order. */
   scanned: [number, number];
-  /** True when Bluesky search ran in addition to the scan. */
+  /** True when signed-in post search answered in addition to the scan. */
   searched: boolean;
 }
 
@@ -55,6 +57,7 @@ export type InteractionFailure =
 export const MASTODON_SCAN_PAGES = 5;
 export const BLUESKY_SCAN_PAGES = 10;
 const SEARCH_PAGES = 2;
+const MASTODON_SEARCH_PAGES = 5;
 const REQUEST_TIMEOUT_MS = 20_000;
 
 /** Normalise a Mastodon `acct` seen on `server` to `user@host`, lower-cased. */
@@ -90,6 +93,9 @@ export class InteractionFinder {
   private readonly anonymousPublic = inject(AnonymousPublicApi);
   private readonly bluesky = inject(BlueskyApi);
   private readonly blueskySession = inject(BlueskySession);
+  private readonly api = inject(Api);
+  private readonly auth = inject(Auth);
+  private readonly server = inject(Server);
 
   /** Validate a pair before any request is made. */
   check(a: string, b: string): { people: [ParsedPerson, ParsedPerson] } | InteractionFailure {
@@ -118,7 +124,7 @@ export class InteractionFinder {
     const [accountA, accountB] = await Promise.all([this.lookup(a), this.lookup(b)]);
     if (!accountA) return { reason: 'notFound', which: 0 };
     if (!accountB) return { reason: 'notFound', which: 1 };
-    const [fromA, fromB] = await Promise.all([
+    const [fromA, fromB, searched] = await Promise.all([
       this.scanMastodon(a, accountA, {
         handle: `${b.user}@${b.host}`.toLowerCase(),
         url: accountB.url,
@@ -127,13 +133,83 @@ export class InteractionFinder {
         handle: `${a.user}@${a.host}`.toLowerCase(),
         url: accountA.url,
       }),
+      this.auth.token() ? this.searchMastodon(a, b, accountA, accountB) : Promise.resolve(null),
     ]);
     return {
       network: 'mastodon',
-      posts: newestFirst([...fromA.matches, ...fromB.matches]),
+      posts: newestFirst([...fromA.matches, ...fromB.matches, ...(searched?.posts ?? [])]),
       scanned: [fromA.read, fromB.read],
-      searched: false,
+      searched: searched?.answered ?? false,
     };
+  }
+
+  /** Search the signed-in home server's index in both directions. Verify every
+   * hit: instances differ in operator support and may ignore part of a query. */
+  private async searchMastodon(
+    a: FediverseHandle,
+    b: FediverseHandle,
+    accountA: Account,
+    accountB: Account,
+  ): Promise<{ posts: Status[]; answered: boolean }> {
+    const directions = [
+      { author: a, account: accountA, target: b, targetAccount: accountB },
+      { author: b, account: accountB, target: a, targetAccount: accountA },
+    ];
+    const results = await Promise.all(
+      directions.flatMap(({ author, account, target, targetAccount }) => {
+        const from = `from:@${author.user}@${author.host}`;
+        const to = `@${target.user}@${target.host}`;
+        return [`${from} to:${to}`, `${from} ${to}`].map(async (query) => {
+          const posts: Status[] = [];
+          let answered = false;
+          for (let page = 0; page < MASTODON_SEARCH_PAGES; page++) {
+            const result = await settle(
+              this.api.search(query, 'statuses', {
+                limit: 40,
+                offset: page * 40,
+                homeServer: true,
+              }),
+              null,
+            );
+            if (!result) break;
+            answered = true;
+            const statuses = result.statuses ?? [];
+            posts.push(
+              ...statuses.filter(
+                (status) =>
+                  this.isAuthor(status, author, account) &&
+                  mastodonPostInvolves(status, this.serverHost(), {
+                    handle: `${target.user}@${target.host}`.toLowerCase(),
+                    url: targetAccount.url,
+                  }),
+              ),
+            );
+            if (statuses.length < 40) break;
+          }
+          return { posts, answered };
+        });
+      }),
+    );
+    return {
+      posts: results.flatMap((result) => result.posts),
+      answered: results.some((result) => result.answered),
+    };
+  }
+
+  private serverHost(): string {
+    try {
+      return new URL(this.server.baseUrl()).host.toLowerCase();
+    } catch {
+      return '';
+    }
+  }
+
+  private isAuthor(status: Status, author: FediverseHandle, account: Account): boolean {
+    const handle = `${author.user}@${author.host}`.toLowerCase();
+    return (
+      (!!account.url && status.account?.url === account.url) ||
+      qualify(status.account?.acct ?? '', this.serverHost()) === handle
+    );
   }
 
   private lookup(handle: FediverseHandle): Promise<Account | null> {
@@ -235,7 +311,12 @@ export class InteractionFinder {
 function newestFirst(posts: Status[]): Status[] {
   const seen = new Set<string>();
   return posts
-    .filter((post) => (seen.has(post.id) ? false : (seen.add(post.id), true)))
+    .filter((post) => {
+      const key = post.url || post.uri || post.id;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
     .sort((x, y) => Date.parse(y.created_at) - Date.parse(x.created_at));
 }
 

@@ -56,7 +56,7 @@ const previewPage = () => import('./feed-preview').then((m) => m.FeedPreview);
 const floodingPage = () => import('./feed-flooding').then((m) => m.FeedFlooding);
 
 function pageTitle({ topic, lang }: FeedBuilderEntry): ResolveFn<string> {
-  return async () => (await copyOf(topic, lang)).title;
+  return async () => (await copyOf(topic, lang)).heading;
 }
 
 function tabTitle(entry: FeedBuilderEntry, tab: 'preview' | 'flooding'): ResolveFn<string> {
@@ -95,6 +95,7 @@ function pageRoute(entry: FeedBuilderEntry): Route {
     },
     resolve: {
       page: () => loadFeedPage(entry),
+      seoKeywordTitle: async () => (await copyOf(topic, lang)).title,
       seoDescription: description,
       seoStructuredData: structuredData,
     },
@@ -181,6 +182,7 @@ function hubRoute({ lang, path }: FeedBuilderHub): Route {
     title: english ? COMMUNITIES_TITLE : async () => (await hubCopy(lang)).title,
     data: {
       seoIndexable: true,
+      seoKeywordTitle: 'Mastodon communities by interest',
       seoImage: 'communities',
       lang,
       seoAlternates: feedBuilderHubAlternates(),

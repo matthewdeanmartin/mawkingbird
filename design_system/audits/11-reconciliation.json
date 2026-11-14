@@ -1355,7 +1355,7 @@
     {
       "file": "ui/src/app/discovery/search-server-discovery/search-server-discovery.html",
       "disposition": "adopted scope",
-      "nextStep": "MbDiscoveryCandidate, MbSpinner, MbButton and MbPostAction own discovery controls. Preserve cancellable probes, explicit approval, rejection history, retry and provider-specific search criteria."
+      "nextStep": "MbDialog and MbButton own the directory picker. Capability and reachability selects filter the shipped snapshot; live browser checks gate explicit adoption. Review shared select styling when the directory picker is next revised."
     },
     {
       "file": "ui/src/app/discovery/server-discovery/server-discovery.html",

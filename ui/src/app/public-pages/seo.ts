@@ -12,7 +12,32 @@ export const SITE_ORIGIN = 'https://mawkingbird.com';
 export const SITE_DESCRIPTION =
   'A free browser client for Mastodon and Bluesky: read your feeds and RSS in one place, post to both at once, and find your Twitter follows again.';
 /** Front-page title tagline ("Mawkingbird — …"); matches the static <title> in index.html. */
-export const FRONT_PAGE_TAGLINE = 'Mastodon, Bluesky & RSS reader in one place';
+export const FRONT_PAGE_TAGLINE = 'Mastodon, Bluesky & RSS reader';
+/** Distinctive openings for the English focused tools; the registry title supplies the search phrase. */
+export const TOOL_TITLE_LEADS: Record<string, string> = {
+  'twitter-import': 'Bring your old follows along',
+  crosspost: 'One post, two conversations',
+  'mastodon-analytics': 'See what resonates with your followers',
+  'github-friends': 'Find the coders you already know',
+  schedule: 'Write now, publish later',
+  'bluesky-to-mastodon': 'Find familiar faces across networks',
+  'mastodon-to-bluesky': 'Find familiar faces on Bluesky',
+  'turn-off-boosts': 'Quiet the feed without unfollowing',
+  'find-contacts': 'Reconnect with people in your phone',
+  'friend-feeds': 'Follow the blogs behind the profiles',
+  amnesty: 'Give muted accounts a fresh start',
+  pseudonymity: 'Make room for a quieter identity',
+  'handle-generator': 'Find a name that is still yours',
+  'content-warnings': 'Choose how warnings appear',
+  'export-bookmarks': 'Take your saved posts with you',
+  'mastodon-search': 'Find the conversation you missed',
+  'bluesky-search': 'Find posts beyond your feed',
+  'download-media': 'Keep a copy of your pictures',
+  'similar-hashtags': 'Discover the tags next door',
+  'find-interactions': 'Trace a conversation between accounts',
+  'language-en': 'Read English without the noise',
+  'learn-english': 'Practice English in a living feed',
+};
 export const FEATURES_DESCRIPTION =
   'Explore Mawkingbird: Mastodon feeds, RSS and readable articles, bookmarks, writing and drafts, bulk actions and third-party integrations.';
 export const ABOUT_DESCRIPTION =
@@ -114,6 +139,26 @@ export const TOOLS_INDEXES: Record<TranslatedLanguage, { title: string; descript
     description:
       'Mastodon と Bluesky の無料ツール集：Twitter のフォローの引き継ぎ、投稿の予約、画像の一括ダウンロード、似ているハッシュタグ探しなど。すべてブラウザーで動きます。',
   },
+};
+/** Short native-language openings for each translated tools index. */
+export const TOOLS_INDEX_LEADS: Record<TranslatedLanguage, string> = {
+  de: 'Kleine Aufgaben, nützliche Werkzeuge',
+  es: 'Pequeñas tareas, herramientas útiles',
+  fr: 'De petits outils bien utiles',
+  ko: '작은 작업을 위한 유용한 도구',
+  pl: 'Małe zadania, przydatne narzędzia',
+  pt: 'Pequenas tarefas, ferramentas úteis',
+  tr: 'Küçük işler için kullanışlı araçlar',
+  vi: 'Công cụ hữu ích cho việc nhỏ',
+  sv: 'Små uppgifter, användbara verktyg',
+  ru: 'Полезные инструменты для небольших задач',
+  id: 'Alat praktis untuk tugas kecil',
+  nl: 'Kleine klussen, handige tools',
+  hi: 'छोटे कामों के लिए उपयोगी टूल',
+  uk: 'Корисні інструменти для невеликих завдань',
+  'zh-Hant': '小任務也有好工具',
+  it: 'Piccoli compiti, strumenti utili',
+  ja: 'ちょっとした作業に便利なツール',
 };
 /** /tools and every language's index are one page in several languages. */
 export const TOOLS_INDEX_ALTERNATES: PageAlternate[] = [

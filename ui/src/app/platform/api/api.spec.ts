@@ -5,6 +5,8 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api, nextMaxIdFrom } from './api';
 import { Relationship, Status } from './models';
+import { SEARCH_SERVER_REQUEST } from '../http/search-server';
+import { SERVER_ROLE } from '../http/server-role';
 
 /**
  * Unit tests for the {@link Api} service in isolation. These exercise the action methods
@@ -37,6 +39,19 @@ describe('Api service (HTTP isolated)', () => {
   function relStub(overrides: Partial<Relationship> = {}): Relationship {
     return { id: '7', following: false, blocking: false, ...overrides } as Relationship;
   }
+
+  it('keeps interaction search on the signed-in home server even with a separate search server', () => {
+    api
+      .search('from:@alice@example.org to:@bob@example.org', 'statuses', {
+        homeServer: true,
+        limit: 40,
+      })
+      .subscribe();
+    const request = httpMock.expectOne((req) => req.url === '/api/v2/search');
+    expect(request.request.context.get(SEARCH_SERVER_REQUEST)).toBe(false);
+    expect(request.request.context.get(SERVER_ROLE)).toBe('search');
+    request.flush({ accounts: [], statuses: [], hashtags: [] });
+  });
 
   it('follows Link pages to list every scheduled status', async () => {
     const settle = () => new Promise((resolve) => setTimeout(resolve));
