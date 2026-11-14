@@ -2551,3 +2551,7 @@ Reviewed regenerated inventory: candidate file set remains unchanged. Shared con
 ### 2026-11-14 — share image preview page
 
 Reviewed regenerated inventory: 1845 scanned files and 639 candidate files. The new preview component adds images and captions without controls. Candidate files and control counts remain unchanged, so 11-reconciliation.json needs no added or removed entries.
+
+### 2026-11-14 — native translation and OpenRouter
+
+Reviewed regenerated inventory: candidate file set remains unchanged. The OpenRouter page adds native API-key entry using shared field/control/button widgets, OS-store copy, and busy/error handling. Web OAuth, retention and vault controls stay supported. No shared widget implementation changed; no reconciliation file additions/removals. Native compiled settings smoke covers the new controls.

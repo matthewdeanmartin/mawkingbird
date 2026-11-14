@@ -13,8 +13,19 @@
 @if (openrouter.connected()) {
   <div class="or-actions">
     <span class="connection-ok">{{ 'settings.connections.openrouter.connected' | transloco }}</span>
-    <app-storage-badge [where]="where()" />
-    <button class="btn btn-outline" type="button" (click)="disconnect()">
+    @if (native) {
+      <span class="muted small">{{
+        'settings.connections.openrouter.nativeStorage' | transloco
+      }}</span>
+    } @else {
+      <app-storage-badge [where]="where()" />
+    }
+    <button
+      class="btn btn-outline"
+      type="button"
+      [disabled]="connectionBusy()"
+      (click)="disconnect()"
+    >
       {{ 'settings.connections.openrouter.disconnect' | transloco }}
     </button>
   </div>
@@ -68,12 +79,35 @@
   </section>
 } @else {
   <p class="credential-warning small">
-    {{ 'settings.connections.openrouter.keyWarning.a' | transloco }} <code>openrouter.ai</code
-    >{{ 'settings.connections.openrouter.keyWarning.b' | transloco }}
+    @if (native) {
+      {{ 'settings.connections.openrouter.nativeWarning' | transloco }}
+    } @else {
+      {{ 'settings.connections.openrouter.keyWarning.a' | transloco }} <code>openrouter.ai</code
+      >{{ 'settings.connections.openrouter.keyWarning.b' | transloco }}
+    }
   </p>
-  <button class="btn" type="button" (click)="connect()">
+  <button class="btn" type="button" [disabled]="connectionBusy()" (click)="connect()">
     {{ 'settings.connections.openrouter.connect' | transloco }}
   </button>
+  @if (native) {
+    <mb-field [label]="'settings.connections.openrouter.nativeKey' | transloco">
+      <input
+        mbControl
+        type="password"
+        autocomplete="off"
+        [value]="keyDraft()"
+        (input)="keyDraft.set($any($event.target).value)"
+      />
+    </mb-field>
+    <button
+      mbButton
+      type="button"
+      [disabled]="connectionBusy() || !keyDraft().trim()"
+      (click)="connectKey()"
+    >
+      {{ 'settings.connections.openrouter.nativeSaveKey' | transloco }}
+    </button>
+  }
 }
 @if (notice(); as msg) {
   <p class="connection-ok" role="status">{{ msg }}</p>

@@ -1,6 +1,15 @@
 /** Fixed native connector contract. Raw keys enter only through connect. */
 export type NativeConnectorProvider =
-  'mataroa' | 'raindrop' | 'gist' | 'github' | 'dub' | 'shortio' | 'tly' | 'tinyurl' | 'rebrandly';
+  | 'openrouter'
+  | 'mataroa'
+  | 'raindrop'
+  | 'gist'
+  | 'github'
+  | 'dub'
+  | 'shortio'
+  | 'tly'
+  | 'tinyurl'
+  | 'rebrandly';
 export interface NativeConnectorTransport {
   connect(
     provider: NativeConnectorProvider,
@@ -39,4 +48,13 @@ export interface NativeHugoTransport {
 }
 export function isNativeHugoHandle(value: string): boolean {
   return /^native-hugo:[A-Za-z0-9_-]{43}$/.test(value);
+}
+
+export interface NativeIntelligenceTransport {
+  login(): Promise<string>;
+  request(input: {
+    url: string;
+    method: 'GET' | 'POST';
+    body?: string;
+  }): Promise<{ status: number; body: string; headers: Record<string, string> }>;
 }

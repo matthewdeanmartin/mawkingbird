@@ -1,3 +1,4 @@
+import { IntelligenceHttp } from '../../platform/http/intelligence-http';
 import { inject, Injectable } from '@angular/core';
 import { OpenRouterSession, openRouterError } from './openrouter-session';
 import { OpenRouterModelChoice } from './openrouter-model-choice';
@@ -79,6 +80,7 @@ export interface CostedCompletion {
 
 @Injectable({ providedIn: 'root' })
 export class OpenRouterChat {
+  private transport = inject(IntelligenceHttp);
   private session = inject(OpenRouterSession);
   private choice = inject(OpenRouterModelChoice);
 
@@ -103,7 +105,7 @@ export class OpenRouterChat {
     try {
       return await this.attempt(key, options, true);
     } catch (error: unknown) {
-      if (!isRetryable(error)) {
+      if (this.session.isNative || !isRetryable(error)) {
         throw error;
       }
       return this.attempt(key, options, false);
@@ -140,7 +142,7 @@ export class OpenRouterChat {
 
     let response: Response;
     try {
-      response = await fetch(CHAT_URL, {
+      response = await this.transport.authenticated(CHAT_URL, {
         method: 'POST',
         headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -192,7 +194,7 @@ export class OpenRouterChat {
       'Do not start with "Image of" or "Alt text:". Reply with the description only.';
     let response: Response;
     try {
-      response = await fetch(CHAT_URL, {
+      response = await this.transport.authenticated(CHAT_URL, {
         method: 'POST',
         headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -256,7 +258,7 @@ export class OpenRouterChat {
 
     let response: Response;
     try {
-      response = await fetch(CHAT_URL, {
+      response = await this.transport.authenticated(CHAT_URL, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${key}`,
@@ -280,7 +282,7 @@ export class OpenRouterChat {
   private async describeFailure(response: Response): Promise<string> {
     if (response.status === 401) {
       // The key was revoked at OpenRouter. Stop claiming to be connected.
-      this.session.disconnect();
+      if (!this.session.isNative) this.session.disconnect();
       return 'OpenRouter no longer recognises this key. Connect again.';
     }
     if (response.status === 402) {

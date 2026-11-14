@@ -1,9 +1,11 @@
+import { nativeIntelligenceInterceptor } from './native-intelligence-http';
 import { nativePublishingInterceptor } from './native-publishing-http';
 import { InjectionToken } from '@angular/core';
 import { nativePublicInterceptor, nativePublicFetch } from './native-public-http';
 import { nativeSocialInterceptor, invokeSocial } from './native-social-http';
 
 export const PLATFORM_HTTP_INTERCEPTORS = [
+  nativeIntelligenceInterceptor,
   nativePublishingInterceptor,
   nativeSocialInterceptor,
   nativePublicInterceptor,
@@ -153,3 +155,16 @@ export const PLATFORM_HUGO = new InjectionToken<NativeHugoTransport | null>('PLA
     forget: (handle) => connectorInvoke('hugo_forget', { handle }),
   }),
 });
+
+import type { NativeIntelligenceTransport } from './connector-types';
+export const PLATFORM_INTELLIGENCE = new InjectionToken<NativeIntelligenceTransport | null>(
+  'PLATFORM_INTELLIGENCE',
+  {
+    providedIn: 'root',
+    factory: () => ({
+      login: () => connectorInvoke('openrouter_login', {}),
+      request: (input) =>
+        connectorInvoke('intelligence_public_request', { ...input, body: input.body ?? null }),
+    }),
+  },
+);

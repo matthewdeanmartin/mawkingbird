@@ -1,3 +1,5 @@
+import { PLATFORM_CONNECTORS, PLATFORM_INTELLIGENCE } from '../../platform/http/platform-http';
+import { isNativeConnectorHandle } from '../../platform/http/connector-types';
 import { inject, Injectable, signal } from '@angular/core';
 import {
   appCallbackUrl,
@@ -62,6 +64,9 @@ interface ExchangeResponse {
 @Injectable({ providedIn: 'root' })
 export class OpenRouterSession implements ExpiringConnection {
   private bridge = inject(VaultBridge);
+  private native = inject(PLATFORM_INTELLIGENCE);
+  private connectors = inject(PLATFORM_CONNECTORS);
+  readonly isNative = !!this.native;
   private stored = signal<StoredOpenRouterKey | null>(readKey());
 
   readonly connected = signal(this.stored() !== null);
@@ -78,6 +83,10 @@ export class OpenRouterSession implements ExpiringConnection {
   readonly needsFetch = signal(false);
 
   constructor() {
+    if (this.native && this.stored() && !isNativeConnectorHandle(this.stored()!.key)) {
+      this.forgetLocally();
+      this.connected.set(false);
+    }
     this.enforceLifetime();
   }
 
@@ -93,6 +102,7 @@ export class OpenRouterSession implements ExpiringConnection {
     if (local) {
       return local;
     }
+    if (this.native) return null;
     const fromVault = this.bridge.readThrough(KEY_KEY);
     if (fromVault) {
       // Repopulate, so the next call is local again and the retention clock
@@ -105,6 +115,10 @@ export class OpenRouterSession implements ExpiringConnection {
 
   /** Begin authorization. Navigates away; the callback page finishes the job. */
   async connect(): Promise<void> {
+    if (this.native) {
+      this.store(stampCredential({ key: await this.native.login() }), false);
+      return;
+    }
     const verifier = createCodeVerifier();
     const state = createOAuthState();
     const challenge = await codeChallengeFor(verifier);
@@ -128,6 +142,7 @@ export class OpenRouterSession implements ExpiringConnection {
    * stored, the pending flow is cleared, and the caller shows the error.
    */
   async finishAuthorization(params: URLSearchParams): Promise<void> {
+    if (this.native) throw new Error('Finish OpenRouter sign-in in your browser.');
     const oauthError = params.get('error_description') ?? params.get('error');
     if (oauthError) {
       this.clearPendingAuthorization();
@@ -177,7 +192,8 @@ export class OpenRouterSession implements ExpiringConnection {
    * undone by the next sync from another device — the same resurrection problem
    * local expiry had, and just as confusing.
    */
-  disconnect(): void {
+  disconnect(): void | Promise<void> {
+    if (this.native) return this.disconnectNative();
     void this.bridge.removeThrough(KEY_KEY);
     this.forgetLocally();
     this.connected.set(false);
@@ -192,6 +208,7 @@ export class OpenRouterSession implements ExpiringConnection {
    * `VaultBridge.verdictFor`.
    */
   enforceLifetime(): void {
+    if (this.native) return;
     const stored = this.stored();
     if (!stored) {
       return;
@@ -218,6 +235,7 @@ export class OpenRouterSession implements ExpiringConnection {
 
   /** {@link ExpiringConnection}: when the key ages out, or null. */
   expiresAt(): number | null {
+    if (this.native) return null;
     return credentialExpiresAt(this.stored()?.connectedAt);
   }
 
@@ -238,7 +256,7 @@ export class OpenRouterSession implements ExpiringConnection {
     this.stored.set(value);
     this.connected.set(true);
     this.needsFetch.set(false);
-    if (sync) {
+    if (sync && !this.native) {
       void this.bridge.writeThrough(KEY_KEY, value.key);
     }
   }
@@ -250,12 +268,14 @@ export class OpenRouterSession implements ExpiringConnection {
    * explicit per-connector act rather than a global switch.
    */
   async syncToVault(): Promise<SyncOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const key = this.stored()?.key;
     return key ? this.bridge.writeThrough(KEY_KEY, key) : { kind: 'skipped' };
   }
 
   /** Fill an empty browser from the vault, or an empty vault from this browser. */
   reconcileVault(): Promise<VaultReconcileOutcome> {
+    if (this.native) return Promise.resolve({ kind: 'skipped' });
     return reconcileScalar({
       local: this.stored()?.key ?? null,
       remote: this.bridge.readThrough(KEY_KEY),
@@ -272,6 +292,19 @@ export class OpenRouterSession implements ExpiringConnection {
     });
   }
 
+  async connectKey(key: string): Promise<void> {
+    if (!this.native || !this.connectors)
+      throw new Error('Native OpenRouter connection is unavailable.');
+    const handle = await this.connectors.connect('openrouter', key, this.stored()?.key);
+    this.store(stampCredential({ key: handle }), false);
+  }
+  private async disconnectNative(): Promise<void> {
+    const key = this.stored()?.key;
+    if (key) await this.connectors!.forget(key);
+    this.forgetLocally();
+    this.connected.set(false);
+    this.needsFetch.set(false);
+  }
   private clearPendingAuthorization(): void {
     sessionStorage.removeItem(VERIFIER_KEY);
     sessionStorage.removeItem(STATE_KEY);

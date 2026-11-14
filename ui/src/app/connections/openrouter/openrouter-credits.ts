@@ -1,3 +1,4 @@
+import { IntelligenceHttp } from '../../platform/http/intelligence-http';
 import { inject, Injectable } from '@angular/core';
 import { OpenRouterSession, openRouterError } from './openrouter-session';
 
@@ -49,6 +50,7 @@ interface CreditsResponse {
 
 @Injectable({ providedIn: 'root' })
 export class OpenRouterCredits {
+  private transport = inject(IntelligenceHttp);
   private session = inject(OpenRouterSession);
 
   /**
@@ -70,10 +72,12 @@ export class OpenRouterCredits {
     }
 
     try {
-      const response = await fetch(KEY_URL, { headers: { Authorization: `Bearer ${key}` } });
+      const response = await this.transport.authenticated(KEY_URL, {
+        headers: { Authorization: `Bearer ${key}` },
+      });
       if (response.status === 401) {
         // The key was revoked at OpenRouter. Stop claiming to be connected.
-        this.session.disconnect();
+        if (!this.session.isNative) this.session.disconnect();
         return {
           kind: 'unknown',
           reason: 'OpenRouter no longer recognises this key. Connect again.',
@@ -106,7 +110,9 @@ export class OpenRouterCredits {
    */
   private async tryAccountCredits(key: string): Promise<CreditsState | null> {
     try {
-      const response = await fetch(CREDITS_URL, { headers: { Authorization: `Bearer ${key}` } });
+      const response = await this.transport.authenticated(CREDITS_URL, {
+        headers: { Authorization: `Bearer ${key}` },
+      });
       if (!response.ok) {
         return null;
       }

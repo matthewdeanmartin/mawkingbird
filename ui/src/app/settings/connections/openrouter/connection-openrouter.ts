@@ -1,3 +1,6 @@
+import { PLATFORM_INTELLIGENCE } from '../../../platform/http/platform-http';
+import { MbField, MbControl } from '../../../design-system/field/field';
+import { MbButton } from '../../../design-system/button/button';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { VaultBridge } from '../../../connections/vault/vault-bridge';
@@ -87,11 +90,23 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 
 @Component({
   selector: 'app-connection-openrouter',
-  imports: [FormsModule, RouterLink, DecimalPipe, StorageBadge, TranslocoPipe],
+  imports: [
+    MbField,
+    MbControl,
+    MbButton,
+    FormsModule,
+    RouterLink,
+    DecimalPipe,
+    StorageBadge,
+    TranslocoPipe,
+  ],
   templateUrl: './connection-openrouter.html',
   styleUrls: ['../connection-page.css', './connection-openrouter.css'],
 })
 export class ConnectionOpenRouter implements OnInit {
+  protected readonly native = inject(PLATFORM_INTELLIGENCE);
+  protected readonly connectionBusy = signal(false);
+  protected readonly keyDraft = signal('');
   private diagnostics = inject(PageDiagnostics);
   private readonly transloco = inject(TranslocoService);
   protected openrouter = inject(OpenRouterSession);
@@ -162,21 +177,49 @@ export class ConnectionOpenRouter implements OnInit {
   }
 
   async connect(): Promise<void> {
+    if (this.connectionBusy()) return;
+    this.connectionBusy.set(true);
     this.error.set(null);
     this.notice.set(null);
     try {
       await this.openrouter.connect();
+      if (this.native) await this.refreshCredits();
     } catch (error: unknown) {
       this.diagnostics.error('OpenRouter', 'connect:error', error);
       this.error.set(describeError(error, "Couldn't start OpenRouter authorization."));
+    } finally {
+      this.connectionBusy.set(false);
     }
   }
 
-  disconnect(): void {
-    this.openrouter.disconnect();
-    this.creditsState.set(null);
-    this.notice.set(null);
+  async disconnect(): Promise<void> {
+    if (this.connectionBusy()) return;
+    this.connectionBusy.set(true);
+    try {
+      await this.openrouter.disconnect();
+      this.creditsState.set(null);
+      this.notice.set(null);
+      this.error.set(null);
+    } catch (error) {
+      this.error.set(describeError(error, 'Could not remove the stored key.'));
+    } finally {
+      this.connectionBusy.set(false);
+    }
+  }
+  async connectKey(): Promise<void> {
+    if (this.connectionBusy() || !this.keyDraft().trim()) return;
+    this.connectionBusy.set(true);
     this.error.set(null);
+    const key = this.keyDraft();
+    this.keyDraft.set('');
+    try {
+      await this.openrouter.connectKey(key);
+      await this.refreshCredits();
+    } catch (error) {
+      this.error.set(describeError(error, 'Could not connect OpenRouter.'));
+    } finally {
+      this.connectionBusy.set(false);
+    }
   }
 
   async refreshCredits(): Promise<void> {
@@ -266,3 +309,8 @@ export class ConnectionOpenRouter implements OnInit {
 function describeError(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
 }
+
+// i18n settings.connections.openrouter.nativeStorage: Saved on this device
+// i18n settings.connections.openrouter.nativeWarning: Your key is kept in your operating system credential store until you disconnect. Requests go directly to OpenRouter and use your OpenRouter credits.
+// i18n settings.connections.openrouter.nativeKey: Or paste an OpenRouter API key
+// i18n settings.connections.openrouter.nativeSaveKey: Connect with this key

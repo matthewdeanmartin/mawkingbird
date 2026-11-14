@@ -54,3 +54,9 @@ export const PLATFORM_HUGO = new InjectionToken<NativeHugoTransport | null>('PLA
   providedIn: 'root',
   factory: () => null,
 });
+
+import type { NativeIntelligenceTransport } from './connector-types';
+export const PLATFORM_INTELLIGENCE = new InjectionToken<NativeIntelligenceTransport | null>(
+  'PLATFORM_INTELLIGENCE',
+  { providedIn: 'root', factory: () => null },
+);

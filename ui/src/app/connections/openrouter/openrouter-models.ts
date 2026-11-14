@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { IntelligenceHttp } from '../../platform/http/intelligence-http';
+import { inject, Injectable, signal } from '@angular/core';
 import { openRouterError } from './openrouter-session';
 
 /**
@@ -72,6 +73,7 @@ export interface ModelSearchOptions {
 
 @Injectable({ providedIn: 'root' })
 export class OpenRouterModels {
+  private transport = inject(IntelligenceHttp);
   /**
    * Per-page-session cache, keyed by query + filter.
    *
@@ -110,7 +112,7 @@ export class OpenRouterModels {
 
     this.searching.set(true);
     try {
-      const response = await fetch(url.toString());
+      const response = await this.transport.models(url.toString());
       if (!response.ok) {
         throw new Error(await openRouterError(response, "Couldn't reach OpenRouter's model list."));
       }
