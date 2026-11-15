@@ -3891,20 +3891,6 @@
     "title": "Segnala @{{username}}"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} consente la ricerca anonima",
-    "candidate.found": "Le query di prova hanno trovato {{accounts}} account e {{statuses}} {{posts}}.",
-    "candidate.keepLooking": "Continua a cercare",
-    "candidate.use": "Usa questo server di ricerca",
-    "exhausted.note": "Al momento non è stato trovato alcun server che consenta la ricerca anonima. Il server di ricerca non è cambiato.",
-    "exhausted.retry": "Cerca di nuovo",
-    "rejects.forget": "Dimenticali e controlla di nuovo",
-    "rejects.skipping.one": "Viene ignorato {{count}} server già controllato e rifiutato.",
-    "rejects.skipping.other": "Vengono ignorati {{count}} server già controllati e rifiutati.",
-    "searching.cancel": "Annulla",
-    "sizeLabel.cozy": "accogliente",
-    "sizeLabel.large": "grande",
-    "sizeLabel.midSize": "medio",
-    "sizeLabel.veryLarge": "molto grande",
     "start": "Trova un server di ricerca"
   },
   "serverAnnouncements": {

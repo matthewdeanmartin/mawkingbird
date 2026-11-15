@@ -3891,20 +3891,6 @@
     "title": "Zgłoś @{{username}}"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} zezwala na anonimowe wyszukiwanie",
-    "candidate.found": "Zapytania testowe znalazły {{accounts}} kont i {{statuses}} {{posts}}.",
-    "candidate.keepLooking": "Szukaj dalej",
-    "candidate.use": "Użyj tego serwera wyszukiwania",
-    "exhausted.note": "Obecnie nie udało się znaleźć serwera zezwalającego na anonimowe wyszukiwanie. Serwer wyszukiwania nie został zmieniony.",
-    "exhausted.retry": "Szukaj ponownie",
-    "rejects.forget": "Zapomnij je i sprawdź ponownie",
-    "rejects.skipping.one": "Pomijanie {{count}} już sprawdzonego i odrzuconego serwera.",
-    "rejects.skipping.other": "Pomijanie {{count}} już sprawdzonych i odrzuconych serwerów.",
-    "searching.cancel": "Anuluj",
-    "sizeLabel.cozy": "kameralny",
-    "sizeLabel.large": "duży",
-    "sizeLabel.midSize": "średni",
-    "sizeLabel.veryLarge": "bardzo duży",
     "start": "Znajdź serwer wyszukiwania"
   },
   "serverAnnouncements": {

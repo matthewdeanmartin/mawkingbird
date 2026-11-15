@@ -3891,20 +3891,6 @@
     "title": "@{{username}} 신고"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}}에서는 익명 검색을 허용합니다",
-    "candidate.found": "테스트 검색어에서 계정 {{accounts}}개와 게시물 {{statuses}}개를 찾았습니다.",
-    "candidate.keepLooking": "계속 찾기",
-    "candidate.use": "이 검색 서버 사용",
-    "exhausted.note": "현재 익명 검색을 허용하는 서버를 찾을 수 없습니다. 검색 서버는 변경되지 않았습니다.",
-    "exhausted.retry": "다시 검색",
-    "rejects.forget": "잊어버리고 다시 확인",
-    "rejects.skipping.one": "이미 확인했고 거부한 서버 {{count}}개를 건너뜁니다.",
-    "rejects.skipping.other": "이미 확인했고 거부한 서버 {{count}}개를 건너뜁니다.",
-    "searching.cancel": "취소",
-    "sizeLabel.cozy": "아늑함",
-    "sizeLabel.large": "대규모",
-    "sizeLabel.midSize": "중간 규모",
-    "sizeLabel.veryLarge": "매우 대규모",
     "start": "검색 서버 찾기"
   },
   "serverAnnouncements": {

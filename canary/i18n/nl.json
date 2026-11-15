@@ -3520,20 +3520,6 @@
     "title": "@{{username}} rapporteren"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} staat anoniem zoeken toe",
-    "candidate.found": "{{accounts}} accounts en {{statuses}} {{posts}} gevonden voor de testzoekopdrachten.",
-    "candidate.keepLooking": "Verder zoeken",
-    "candidate.use": "Deze zoekserver gebruiken",
-    "exhausted.note": "Er kon momenteel geen server worden gevonden die anoniem zoeken toestaat. Je zoekserver is niet gewijzigd.",
-    "exhausted.retry": "Opnieuw zoeken",
-    "rejects.forget": "Vergeten en opnieuw controleren",
-    "rejects.skipping.one": "{{count}} al gecontroleerde en afgewezen server overgeslagen.",
-    "rejects.skipping.other": "{{count}} al gecontroleerde en afgewezen servers overgeslagen.",
-    "searching.cancel": "Annuleren",
-    "sizeLabel.cozy": "gezellig",
-    "sizeLabel.large": "groot",
-    "sizeLabel.midSize": "middelgroot",
-    "sizeLabel.veryLarge": "zeer groot",
     "start": "Een zoekserver vinden"
   },
   "serverAnnouncements": {

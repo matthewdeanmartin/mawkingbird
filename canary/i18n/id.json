@@ -4884,20 +4884,6 @@
     "summary.other": "{{accountCount}} akun yang menulis {{postCount}} {{posts}} sampel dari feed ini. Tidak ada daftar keanggotaan untuk feed seperti ini — ini hanyalah orang-orang yang sedang posting di sana sekarang."
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} mengizinkan pencarian anonim",
-    "candidate.found": "Menemukan {{accounts}} akun dan {{statuses}} {{posts}} untuk kueri uji.",
-    "candidate.keepLooking": "Terus cari",
-    "candidate.use": "Gunakan server pencarian ini",
-    "exhausted.note": "Tidak menemukan server yang mengizinkan pencarian anonim saat ini. Server pencarianmu tidak berubah.",
-    "exhausted.retry": "Cari lagi",
-    "rejects.forget": "Lupakan dan periksa ulang",
-    "rejects.skipping.one": "Melewati {{count}} server yang sudah diperiksa dan ditolak.",
-    "rejects.skipping.other": "Melewati {{count}} server yang sudah diperiksa dan ditolak.",
-    "searching.cancel": "Batal",
-    "sizeLabel.cozy": "nyaman",
-    "sizeLabel.large": "besar",
-    "sizeLabel.midSize": "menengah",
-    "sizeLabel.veryLarge": "sangat besar",
     "start": "Cari server pencarian"
   },
   "wizard": {

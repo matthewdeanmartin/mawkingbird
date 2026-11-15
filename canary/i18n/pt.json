@@ -3891,20 +3891,6 @@
     "title": "Denunciar @{{username}}"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} permite pesquisa anônima",
-    "candidate.found": "As consultas de teste encontraram {{accounts}} contas e {{statuses}} {{posts}}.",
-    "candidate.keepLooking": "Continuar procurando",
-    "candidate.use": "Usar este servidor de pesquisa",
-    "exhausted.note": "Não foi possível encontrar agora um servidor que permita pesquisa anônima. Seu servidor de pesquisa não foi alterado.",
-    "exhausted.retry": "Pesquisar novamente",
-    "rejects.forget": "Esquecê-los e verificar novamente",
-    "rejects.skipping.one": "Ignorando {{count}} servidor já verificado e rejeitado.",
-    "rejects.skipping.other": "Ignorando {{count}} servidores já verificados e rejeitados.",
-    "searching.cancel": "Cancelar",
-    "sizeLabel.cozy": "aconchegante",
-    "sizeLabel.large": "grande",
-    "sizeLabel.midSize": "médio",
-    "sizeLabel.veryLarge": "muito grande",
     "start": "Encontrar um servidor de pesquisa"
   },
   "serverAnnouncements": {

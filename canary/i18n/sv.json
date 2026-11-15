@@ -3520,20 +3520,6 @@
     "title": "Anmäl @{{username}}"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} tillåter anonym sökning",
-    "candidate.found": "Hittade {{accounts}} konton och {{statuses}} {{posts}} för testfrågorna.",
-    "candidate.keepLooking": "Fortsätt leta",
-    "candidate.use": "Använd den här sökservern",
-    "exhausted.note": "Det gick inte att hitta en server som tillåter anonym sökning just nu. Din sökserver har inte ändrats.",
-    "exhausted.retry": "Sök igen",
-    "rejects.forget": "Glöm dem och kontrollera igen",
-    "rejects.skipping.one": "Hoppar över {{count}} server som redan har kontrollerats och avvisats.",
-    "rejects.skipping.other": "Hoppar över {{count}} servrar som redan har kontrollerats och avvisats.",
-    "searching.cancel": "Avbryt",
-    "sizeLabel.cozy": "liten och trivsam",
-    "sizeLabel.large": "stor",
-    "sizeLabel.midSize": "medelstor",
-    "sizeLabel.veryLarge": "mycket stor",
     "start": "Hitta en sökserver"
   },
   "serverAnnouncements": {
