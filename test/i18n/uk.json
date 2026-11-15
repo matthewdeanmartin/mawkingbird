@@ -3520,20 +3520,6 @@
     "title": "Поскаржитися на @{{username}}"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} дозволяє анонімний пошук",
-    "candidate.found": "За тестовими запитами знайдено облікових записів: {{accounts}}; дописів: {{statuses}}.",
-    "candidate.keepLooking": "Шукати далі",
-    "candidate.use": "Використати цей пошуковий сервер",
-    "exhausted.note": "Зараз не вдалося знайти сервер, що дозволяє анонімний пошук. Ваш пошуковий сервер не змінено.",
-    "exhausted.retry": "Шукати знову",
-    "rejects.forget": "Забути й перевірити знову",
-    "rejects.skipping.one": "Пропускаємо вже перевірений і відхилений сервер: {{count}}.",
-    "rejects.skipping.other": "Пропускаємо вже перевірені й відхилені сервери: {{count}}.",
-    "searching.cancel": "Скасувати",
-    "sizeLabel.cozy": "затишний",
-    "sizeLabel.large": "великий",
-    "sizeLabel.midSize": "середній",
-    "sizeLabel.veryLarge": "дуже великий",
     "start": "Знайти пошуковий сервер"
   },
   "serverAnnouncements": {
