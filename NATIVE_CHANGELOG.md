@@ -9,7 +9,7 @@ snapshot with `kaclm --component native release`.
 
 ## [Unreleased]
 
-## Added
+### Added
 
 - Install app to your PC. Supports PC, Mac, Linux.
 - Features that can't be provided for free on web can be provided for free on you machine

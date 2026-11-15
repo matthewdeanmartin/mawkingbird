@@ -36,11 +36,16 @@ publishing a `native-v...` GitHub Release starts the desktop distribution job.
    and its `native-v` tag namespace; it does not edit Tauri or Cargo files.
 6. Review the complete public diff, then commit and push it yourself. The
    source, version files, and numbered changelog section must be on the commit
-   selected for the Release. No workflow commits or pushes code.
+   selected for the Release. The push refreshes the Native draft Release. No
+   workflow commits or pushes code.
 
 ## Create and publish the public Release
 
-Create a draft from the numbered changelog section:
+`.github/workflows/native-draft-release.yml` creates or refreshes a draft on
+`main` when Native source, shared UI, or release notes change. It uses the
+version in `native/src-tauri/tauri.conf.json` and the matching numbered
+changelog section when present. You can also run it manually from Actions.
+To refresh the draft locally instead, run:
 
 ```sh
 kaclm --component native github-release \
