@@ -39,7 +39,7 @@ import { VAULT_TEST_ROLLOUT } from '../../../connections/vault/vault-preference'
  * ## Why the unavailable features are shown at all
  *
  * API key sync is active on the test deployment and remains a visible planned
- * row elsewhere. Chat remains planned everywhere.
+ * row elsewhere.
  */
 // i18n settings.plus.welcome.intro: Here's what your subscription switches on. Everything is on to begin with — turn off anything you'd rather not use. You can change any of this later in Settings.
 // i18n settings.plus.welcome.save: Save
@@ -157,10 +157,8 @@ const DETAILS: Record<PlusFeature, string> = {
 
 const PLANNED_LABELS: Record<PlannedFeature, string> = {
   apiKeys: 'API key sync',
-  chat: 'End-to-end encrypted chat',
 };
 
 const PLANNED_DETAILS: Record<PlannedFeature, string> = {
   apiKeys: 'Being exercised on the test deployment before it is offered here.',
-  chat: 'Not yet.',
 };

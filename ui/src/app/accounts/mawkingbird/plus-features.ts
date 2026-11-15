@@ -41,14 +41,14 @@ export const PLUS_FEATURES_KEY = 'mockingbird_plus_features';
  * The features a user can switch on.
  *
  * `apiKeys` is available only on the test deployment while the vault is being
- * exercised. `chat` remains planned. Availability is kept separate from this
+ * exercised. Availability is kept separate from this
  * stored preference: a copied production bundle must not be able to turn a
  * test-only backend feature on.
  */
 export type PlusFeature = 'corsProxy' | 'trustSync' | 'listsSync' | 'feedsSync' | 'apiKeys';
 
 /** Features shown but not yet available. */
-export type PlannedFeature = 'apiKeys' | 'chat';
+export type PlannedFeature = 'apiKeys';
 
 export const PLUS_FEATURES: readonly PlusFeature[] = [
   'corsProxy',
@@ -58,7 +58,7 @@ export const PLUS_FEATURES: readonly PlusFeature[] = [
   'apiKeys',
 ];
 
-export const PLANNED_FEATURES: readonly PlannedFeature[] = ['apiKeys', 'chat'];
+export const PLANNED_FEATURES: readonly PlannedFeature[] = ['apiKeys'];
 
 interface StoredFeatures {
   /** Whether the one-time dialog has been answered. */

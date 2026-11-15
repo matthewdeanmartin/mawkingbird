@@ -38,3 +38,11 @@ See [Video feeds](docs/connections/video-feeds.md) for reader behavior and
 
 For setup, testing, design rules, and help-page changes, see
 [Contributing](docs/contributing.md).
+
+## Native desktop source
+
+The Tauri host source is mirrored under [native/](native/). Development happens
+in the separate private `mawkingbird_native` checkout; direct edits to this
+mirror are replaced by its next source deployment. Final builds and
+distribution work use this public repository. The native frontend uses the
+same maintained Angular app in `ui/`.

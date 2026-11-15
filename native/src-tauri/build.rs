@@ -1,0 +1,34 @@
+#![forbid(unsafe_code)]
+fn main() {
+    tauri_build::try_build(tauri_build::Attributes::new().app_manifest(
+        tauri_build::AppManifest::new().commands(&[
+            "open_external",
+            "bluesky_login",
+            "bluesky_request",
+            "misskey_login",
+            "misskey_request",
+            "misskey_nodeinfo",
+            "forget_social_account",
+            "intelligence_public_request",
+            "openrouter_login",
+            "hugo_connect",
+            "hugo_request",
+            "hugo_forget",
+            "connector_connect",
+            "connector_request",
+            "connector_forget",
+            "shorten_link",
+            "rentry_request",
+            "public_mastodon_get",
+            "public_feed_get",
+            "public_article_get",
+            "open_logs",
+            "report_native_event",
+            "mastodon_login",
+            "mastodon_account_get",
+            "mastodon_favourite",
+            "forget_mastodon_account",
+        ]),
+    ))
+    .expect("failed to build native host assets and permissions");
+}

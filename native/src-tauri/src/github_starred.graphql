@@ -1,0 +1,41 @@
+query StarredRepositoryOwners($cursor: String) {
+    viewer {
+      starredRepositories(
+        first: 100
+        after: $cursor
+        orderBy: { field: STARRED_AT, direction: DESC }
+      ) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          nameWithOwner
+          url
+          description
+          owner {
+            login
+            avatarUrl
+            url
+            ... on User {
+              name
+              bio
+              websiteUrl
+              socialAccounts(first: 10) {
+                nodes {
+                  provider
+                  displayName
+                  url
+                }
+              }
+            }
+            ... on Organization {
+              name
+              description
+              websiteUrl
+            }
+          }
+        }
+      }
+    }
+  }

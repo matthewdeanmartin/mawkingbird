@@ -1969,6 +1969,7 @@ export class Conversations implements OnInit, OnDestroy {
             c.id === chat.convoId ? { ...c, muted: convo?.muted ?? !chat.muted } : c,
           ),
         );
+        this.moderationChat.set(null);
       },
       error: (error: unknown) => this.bskyActionFailed('mute', error),
     });
@@ -2248,6 +2249,11 @@ export class Conversations implements OnInit, OnDestroy {
     this.moderateParticipant(acc, 'blocked');
   }
 
+  protected reportParticipant(acc: Account): void {
+    this.moderationChat.set(null);
+    this.reportTarget.set(acc);
+  }
+
   private moderateParticipant(acc: Account, action: 'muted' | 'blocked'): void {
     if (this.moderationBusy()) return;
     this.moderationBusy.set(true);
@@ -2261,6 +2267,7 @@ export class Conversations implements OnInit, OnDestroy {
         next: () => {
           this.moderated.update((m) => ({ ...m, [acc.id]: action }));
           this.moderationBusy.set(false);
+          this.moderationChat.set(null);
         },
         error: () => {
           this.moderationBusy.set(false);

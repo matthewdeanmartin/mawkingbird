@@ -1110,7 +1110,7 @@
             tone="danger"
             type="button"
             [disabled]="moderationBusy()"
-            (click)="reportTarget.set(account)"
+            (click)="reportParticipant(account)"
           >
             {{ 'pages.conversations.report' | transloco }}
           </button>

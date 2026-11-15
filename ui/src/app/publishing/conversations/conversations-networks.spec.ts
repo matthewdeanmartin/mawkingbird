@@ -388,6 +388,10 @@ describe('Conversations configured networks', () => {
       expect(setConvoMuted).toHaveBeenCalledWith('one', true);
       expect(el().querySelector('.conv-row .muted-mark')).not.toBeNull();
 
+      expect(fixture.componentInstance['moderationChat']()).toBeNull();
+      button('Moderate…').click();
+      fixture.detectChanges();
+
       setConvoMuted.mockReturnValue(of({ convo: { ...convo, muted: false } }));
       button('Unmute conversation').click();
       fixture.detectChanges();

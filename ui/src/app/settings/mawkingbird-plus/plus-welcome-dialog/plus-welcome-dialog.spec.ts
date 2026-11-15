@@ -67,7 +67,7 @@ describe('PlusWelcomeDialog', () => {
       ),
     ];
 
-    expect(planned).toHaveLength(2);
+    expect(planned).toHaveLength(1);
     expect(planned.every((box) => box.disabled)).toBe(true);
     expect(html()).toContain('API key sync');
   });

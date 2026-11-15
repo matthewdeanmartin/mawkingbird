@@ -1,0 +1,25 @@
+query FollowedUsers($cursor: String) {
+    viewer {
+      following(first: 100, after: $cursor) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          login
+          name
+          avatarUrl
+          url
+          bio
+          websiteUrl
+          socialAccounts(first: 10) {
+            nodes {
+              provider
+              displayName
+              url
+            }
+          }
+        }
+      }
+    }
+  }

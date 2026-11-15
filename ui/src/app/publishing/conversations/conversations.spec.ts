@@ -278,6 +278,54 @@ describe('Conversations', () => {
     expect(request.request.body.duration).toBe(3600);
     request.flush({});
     expect(fixture.componentInstance['moderated']()['2']).toBe('muted');
+    expect(fixture.componentInstance['moderationChat']()).toBeNull();
+  });
+
+  it('closes moderation after a one-week mute succeeds', () => {
+    const account = makeAccount('2', 'alice');
+    const fixture = setUp([makeConversation('c', { accounts: [account] })]);
+    fixture.componentInstance['moderationChat'].set(realChats(fixture)[0]);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const select = element.querySelector<HTMLSelectElement>('.chat-moderation-account select')!;
+    select.selectedIndex = 2;
+    select.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    element.querySelector<HTMLButtonElement>('.chat-moderation-account button')!.click();
+    const request = httpMock.expectOne('/api/v1/accounts/2/mute');
+    expect(request.request.body.duration).toBe(604800);
+    request.flush({});
+    fixture.detectChanges();
+    expect(fixture.componentInstance['moderationChat']()).toBeNull();
+    expect(element.querySelector('.chat-moderation-account')).toBeNull();
+  });
+
+  it('keeps moderation open with an error when a mute fails', () => {
+    const account = makeAccount('2', 'alice');
+    const fixture = setUp([makeConversation('c', { accounts: [account] })]);
+    fixture.componentInstance['moderationChat'].set(realChats(fixture)[0]);
+    fixture.componentInstance.muteParticipant(account);
+    httpMock
+      .expectOne('/api/v1/accounts/2/mute')
+      .flush({}, { status: 503, statusText: 'Unavailable' });
+    fixture.detectChanges();
+    expect(fixture.componentInstance['moderationChat']()).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent).toContain('failed');
+  });
+
+  it('closes moderation after blocking and before opening a report', () => {
+    const account = makeAccount('2', 'alice');
+    const fixture = setUp([makeConversation('c', { accounts: [account] })]);
+    const chat = realChats(fixture)[0];
+    fixture.componentInstance['moderationChat'].set(chat);
+    fixture.componentInstance.blockParticipant(account);
+    httpMock.expectOne('/api/v1/accounts/2/block').flush({});
+    expect(fixture.componentInstance['moderationChat']()).toBeNull();
+
+    fixture.componentInstance['moderationChat'].set(chat);
+    fixture.componentInstance['reportParticipant'](account);
+    expect(fixture.componentInstance['moderationChat']()).toBeNull();
+    expect(fixture.componentInstance['reportTarget']()).toBe(account);
   });
 
   it('updates the chat row when a user-stream reply reaches the open transcript', () => {

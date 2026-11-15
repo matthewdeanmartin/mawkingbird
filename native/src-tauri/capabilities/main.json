@@ -1,0 +1,36 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main",
+  "description": "Bundled main window may use validated browser links, scoped social account login/operations, public reader transport and constrained diagnostics.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "allow-open-external",
+    "allow-public-mastodon-get",
+    "allow-public-feed-get",
+    "allow-public-article-get",
+    "allow-open-logs",
+    "allow-report-native-event",
+    "allow-mastodon-login",
+    "allow-mastodon-account-get",
+    "allow-mastodon-favourite",
+    "allow-forget-mastodon-account",
+    "allow-bluesky-login",
+    "allow-bluesky-request",
+    "allow-misskey-login",
+    "allow-misskey-request",
+    "allow-misskey-nodeinfo",
+    "allow-forget-social-account",
+    "allow-intelligence-public-request",
+    "allow-openrouter-login",
+    "allow-hugo-connect",
+    "allow-hugo-request",
+    "allow-hugo-forget",
+    "allow-connector-connect",
+    "allow-connector-request",
+    "allow-connector-forget",
+    "allow-shorten-link",
+    "allow-rentry-request"
+  ]
+}
