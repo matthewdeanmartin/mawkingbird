@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import {
@@ -11,6 +11,7 @@ import { AccountChoice, Auth } from '../../../platform/session/auth';
 import { MbButton } from '../../../design-system/button/button';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
+import { AccountReplyCounts } from '../../account-reply-counts';
 
 // i18n accountPicker.title: Switch account
 // i18n accountPicker.intro: Every account saved in this browser. Type to narrow the list by name, handle or server.
@@ -52,8 +53,9 @@ import { MbPageHeader } from '../../../design-system/page-header/page-header';
   styleUrl: './account-picker.css',
   host: { '[class.standalone]': 'standalone' },
 })
-export class AccountPicker {
+export class AccountPicker implements OnInit {
   protected auth = inject(Auth);
+  protected readonly replyCounts = inject(AccountReplyCounts);
   /** Absent on the standalone `/choose-account` route, which has no shell. */
   private switcher = inject(AccountSwitcher, { optional: true });
   protected readonly standalone = !this.switcher;
@@ -65,6 +67,10 @@ export class AccountPicker {
   protected readonly matches = computed(() =>
     filterAccountChoices(this.auth.otherSessions(), this.query()),
   );
+
+  ngOnInit(): void {
+    if (!this.standalone) void this.replyCounts.refresh();
+  }
 
   protected avatar(choice: AccountChoice): string {
     return choice.account?.avatar_static || choice.account?.avatar || '';

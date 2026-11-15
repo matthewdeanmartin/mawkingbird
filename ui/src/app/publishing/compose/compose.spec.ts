@@ -1426,6 +1426,22 @@ describe('Compose', () => {
     expect(internals(setUp()).target()).toBe('bsky');
   });
 
+  it('offers only Bluesky to a Bluesky-primary account without a Mastodon connector', () => {
+    linkBsky();
+    const auth = TestBed.inject(Auth);
+    vi.spyOn(auth, 'isBlueskyPrimary', 'get').mockReturnValue(true);
+    vi.spyOn(auth, 'lacksMastodonToken', 'get').mockReturnValue(true);
+
+    const fixture = setUp();
+    const values = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.target-select option'),
+    ].map((option) => option.getAttribute('value'));
+    expect(internals(fixture).target()).toBe('bsky');
+    expect(values).toContain('bsky');
+    expect(values).not.toContain('fedi');
+    expect(values).not.toContain('both');
+  });
+
   it('falls back to Fedi when a Bluesky-primary session cannot post', () => {
     // Through `restorableTarget`, not a bare 'bsky': with stale or missing
     // Bluesky credentials the composer must not open on a target it cannot

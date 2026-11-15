@@ -218,6 +218,7 @@ describe('WritePage', () => {
   function signIn(): void {
     const auth = TestBed.inject(Auth);
     auth.mode.set('mastodon');
+    auth.token.set('write-test-token');
     auth.account.set({ id: ACCOUNT_ID, username: 'me', acct: 'me' } as Account);
   }
 

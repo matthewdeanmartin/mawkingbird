@@ -45,6 +45,10 @@
   white-space: nowrap;
 }
 
+.picker-name .reply-count {
+  white-space: normal;
+}
+
 .picker-display {
   font-weight: 700;
 }

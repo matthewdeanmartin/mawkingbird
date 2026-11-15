@@ -4,6 +4,7 @@ import { Status } from '../../platform/api/models';
 import { HugoSettings } from '../../connections/hugo/hugo-settings';
 import { PosseQueue } from '../../connections/hugo/posse-queue';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { Auth } from '../../platform/session/auth';
 import {
   RepostOptions,
   SHARE_DESTINATIONS,
@@ -342,6 +343,7 @@ describe('ShareDialog', () => {
   });
 
   it('offers the other network: a Bluesky post can go to your Mastodon account', () => {
+    TestBed.inject(Auth).setToken('share-test-token');
     expect(postButtons(open('', blueskyPost()).nativeElement)).toContain('Mastodon');
   });
 
@@ -367,6 +369,7 @@ describe('ShareDialog', () => {
   });
 
   it('emits a compose request rather than posting anything itself', () => {
+    TestBed.inject(Auth).setToken('share-test-token');
     const fixture = open('', blueskyPost());
     const requests: { target: string; text: string }[] = [];
     fixture.componentInstance.compose.subscribe((request) => requests.push(request));
@@ -385,6 +388,7 @@ describe('ShareDialog', () => {
   });
 
   it('shows a highlighted passage and carries it into the compose text', () => {
+    TestBed.inject(Auth).setToken('share-test-token');
     const fixture = open('the highlighted passage', blueskyPost());
     const requests: { text: string }[] = [];
     fixture.componentInstance.compose.subscribe((request) => requests.push(request));

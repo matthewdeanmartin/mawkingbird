@@ -148,6 +148,9 @@
     "pinned": "Pinned posts",
     "pinnedError": "Pinned posts couldn't be loaded."
   },
+  "accountReplies": {
+    "count": "Likely unread mentions/replies (24h): {{count}}"
+  },
   "accountTab": {
     "continue": "Continue as {{active}}",
     "otherTab": "This tab is still signed in as {{loaded}}, but another tab switched to {{active}}. Likes, boosts, replies and posts are paused here so nothing goes out from the wrong account.",

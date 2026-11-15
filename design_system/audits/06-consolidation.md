@@ -2417,6 +2417,16 @@ selected capability and offers it for explicit adoption. The previous bulk
 reachability action and second select were removed. Reconciliation records the
 remaining select's shared styling review.
 
+### Account switching and reply counts (2026-11-15)
+
+Reviewed regeneration: 1850 scanned source files, 639 candidate files, none
+added or removed. The shell's account menu and the full account picker now show
+the same 24-hour likely unread reply count for each signed-in account. Native
+account-row buttons and the existing filter remain; their source line numbers
+changed in the inventory. Switcher avatars now load eagerly and use a local
+fallback after an image error. Reconciliation retains both row presentations
+for the shared identity-row review.
+
 ### Analytics lookup and Find interactions (2026-11-12)
 
 Reviewed regeneration: 1817 to 1823 scanned files, 634 to 637 candidate files (three added).

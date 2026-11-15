@@ -199,6 +199,36 @@ describe('Shell account switching', () => {
     drainRailRequests();
   });
 
+  it('loads account-menu avatars independently and falls back when one host fails', () => {
+    const fixture = createShell();
+    auth.sessions.update((sessions) =>
+      sessions.map((session) =>
+        session.token === 'social-token'
+          ? {
+              ...session,
+              account: {
+                id: '2',
+                username: 'social',
+                avatar: 'https://slow.example/avatar.png',
+              } as never,
+            }
+          : session,
+      ),
+    );
+    fixture.detectChanges();
+    const images = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>(
+      '.switch-row img',
+    );
+    expect([...images].every((image) => image.getAttribute('loading') === 'eager')).toBe(true);
+    const slow = [...images].find((image) => image.src.includes('slow.example'))!;
+    slow.dispatchEvent(new Event('error'));
+    expect(slow.src).toContain('favicon-32x32.png');
+    expect([...images].filter((image) => image !== slow).every((image) => image.isConnected)).toBe(
+      true,
+    );
+    drainRailRequests();
+  });
+
   it('only uses the unavailable label when a saved profile has no name or handle', () => {
     const fixture = createShell();
     fixture.detectChanges();

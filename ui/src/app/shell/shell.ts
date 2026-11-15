@@ -54,6 +54,7 @@ import {
   filterAccountChoices,
 } from '../accounts/account-switcher';
 import { Account } from '../platform/api/models';
+import { AccountReplyCounts } from '../accounts/account-reply-counts';
 import { FirstRunChoice, FirstRunModal } from '../accounts/first-run/first-run-modal';
 import { PreviewSeed } from '../accounts/first-run/preview-seed';
 import { OnboardingLauncher } from '../accounts/onboarding/onboarding-launcher';
@@ -224,6 +225,7 @@ export class Shell implements OnInit, AccountSwitcher {
   private readonly featureUseHistory = inject(FeatureUseHistory);
   protected indicators = inject(MenuIndicators);
   protected auth = inject(Auth);
+  protected readonly replyCounts = inject(AccountReplyCounts);
   private transloco = inject(TranslocoService);
   private bots = inject(BotPeers);
   private preview = inject(PreviewSeed);
@@ -725,6 +727,13 @@ export class Shell implements OnInit, AccountSwitcher {
     return accountLabel(account);
   }
 
+  /** A slow or broken avatar host must not leave a blank account choice. */
+  protected accountAvatarFailed(event: Event): void {
+    const image = event.target as HTMLImageElement;
+    const fallback = new URL('favicon-32x32.png', document.baseURI).toString();
+    if (image.src !== fallback) image.src = fallback;
+  }
+
   /**
    * Narrows the account menu's switch list. Only offered once there are enough
    * saved accounts that scanning the list is slower than typing.
@@ -743,7 +752,8 @@ export class Shell implements OnInit, AccountSwitcher {
 
   /** A stale filter would hide accounts the next time the menu opens. */
   protected onAccountMenuToggle(event: Event): void {
-    if (!(event.target as HTMLDetailsElement).open) this.accountQuery.set('');
+    if ((event.target as HTMLDetailsElement).open) void this.replyCounts.refresh();
+    else this.accountQuery.set('');
   }
 
   /** Enter in the filter switches when exactly one account is left. */

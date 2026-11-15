@@ -32,6 +32,7 @@ export class TargetAvailabilitySource {
   current(): TargetAvailability {
     return {
       anonymous: this.auth.isAnonymous,
+      mastodonToken: !this.auth.lacksMastodonToken,
       bskyLinked: this.bskySession.linked(),
       mataroaConnected: this.mataroa.connected(),
       bloggerReady: this.blogger.ready(),

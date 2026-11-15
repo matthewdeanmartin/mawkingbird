@@ -442,12 +442,12 @@
                whole pitch to people who are Bluesky-first and haven't signed up
                for a Mastodon account yet. "Both" is the exception: it includes a
                Fedi post, so it needs the token too. -->
-          @if (!auth.isAnonymous) {
+          @if (!auth.lacksMastodonToken) {
             <option value="fedi">{{ 'compose.target.fedi' | transloco }}</option>
           }
           @if (bskySession.linked()) {
             <option value="bsky">{{ 'compose.target.bluesky' | transloco }}</option>
-            @if (!auth.isAnonymous) {
+            @if (!auth.lacksMastodonToken) {
               <option value="both">{{ 'compose.target.both' | transloco }}</option>
             }
           }

@@ -798,6 +798,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Acknowledged activity and pending menu indicator batches; never message read state.',
   },
   {
+    base: 'mockingbird_reply_read_at',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'cache',
+    note: 'Last time the account opened a successful Mastodon or Misskey notifications page. Used only for an approximate 24-hour reply count in account switchers.',
+  },
+  {
     base: 'mockingbird_client_prefs',
     storage: 'local',
     suffix: 'none',

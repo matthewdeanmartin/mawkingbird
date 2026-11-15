@@ -16,6 +16,11 @@
       <span class="picker-name">
         <span class="picker-display">{{ label(acc) }}</span>
         <small class="muted">&#64;{{ acc.username }}</small>
+        @if (replyCounts.currentKey(); as key) {
+          <small class="muted reply-count">{{
+            'accountReplies.count' | transloco: { count: replyCounts.label(key) }
+          }}</small>
+        }
       </span>
       <span class="picker-badge">{{ 'accountPicker.current' | transloco }}</span>
     </div>
@@ -66,6 +71,11 @@
                 {{ 'accountPicker.kind.' + s.kind | transloco }} ·
                 {{ host(s) || ('accountPicker.thisServer' | transloco) }}
               </small>
+              @if (!standalone && replyCounts.hasAccount(s.key)) {
+                <small class="muted reply-count">{{
+                  'accountReplies.count' | transloco: { count: replyCounts.label(s.key) }
+                }}</small>
+              }
             </span>
           </button>
         </li>

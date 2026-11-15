@@ -393,6 +393,11 @@
                   <span class="menu-current-name">
                     {{ accountName(acc) }}
                     <small class="muted">&#64;{{ acc.username }}</small>
+                    @if (replyCounts.currentKey(); as key) {
+                      <small class="muted reply-count">{{
+                        'accountReplies.count' | transloco: { count: replyCounts.label(key) }
+                      }}</small>
+                    }
                   </span>
                 </a>
 
@@ -423,12 +428,15 @@
                     @for (s of visibleOtherSessions(); track s.key) {
                       <button type="button" class="switch-row" (click)="switchTo(s)">
                         <img
-                          [src]="s.account?.avatar_static || s.account?.avatar || ''"
+                          [src]="
+                            s.account?.avatar_static || s.account?.avatar || 'favicon-32x32.png'
+                          "
                           alt=""
                           width="36"
                           height="36"
-                          loading="lazy"
+                          loading="eager"
                           decoding="async"
+                          (error)="accountAvatarFailed($event)"
                         />
                         <span class="switch-name">
                           {{
@@ -439,6 +447,12 @@
                           }}
                           @if (s.account?.username) {
                             <small class="muted">&#64;{{ s.account?.username }}</small>
+                          }
+                          @if (replyCounts.hasAccount(s.key)) {
+                            <small class="muted reply-count">{{
+                              'accountReplies.count'
+                                | transloco: { count: replyCounts.label(s.key) }
+                            }}</small>
                           }
                         </span>
                       </button>

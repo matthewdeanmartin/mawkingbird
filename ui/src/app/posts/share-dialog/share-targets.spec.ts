@@ -5,6 +5,7 @@ import { intentIdsFor, postTargetsFor } from './share-targets';
 /** Nothing connected, signed in. */
 const NOTHING: TargetAvailability = {
   anonymous: false,
+  mastodonToken: true,
   bskyLinked: false,
   mataroaConnected: false,
   bloggerReady: false,
@@ -24,11 +25,17 @@ describe('postTargetsFor', () => {
 
   it('offers nothing to post to when anonymous and nothing is enabled', () => {
     // Anonymous has no Mastodon token, so there is no in-app post to make.
-    expect(postTargetsFor({ ...NOTHING, anonymous: true })).toEqual([]);
+    expect(postTargetsFor({ ...NOTHING, anonymous: true, mastodonToken: false })).toEqual([]);
   });
 
   it('adds a target once its connector is ready', () => {
     expect(postTargetsFor({ ...NOTHING, bskyLinked: true })).toContain('bsky');
+  });
+
+  it('does not offer Mastodon for a Bluesky-primary identity without a connector token', () => {
+    const choices = postTargetsFor({ ...NOTHING, mastodonToken: false, bskyLinked: true });
+    expect(choices).toContain('bsky');
+    expect(choices).not.toContain('fedi');
   });
 
   it('requires both the connection and the flag for a blog', () => {
@@ -54,9 +61,9 @@ describe('postTargetsFor', () => {
   it('lets an anonymous visitor post a paste', () => {
     // Pastes need no account, which is the whole reason they are the anonymous
     // fallback in the composer too.
-    expect(postTargetsFor({ ...NOTHING, anonymous: true, pastebinEnabled: true })).toEqual([
-      'paste',
-    ]);
+    expect(
+      postTargetsFor({ ...NOTHING, anonymous: true, mastodonToken: false, pastebinEnabled: true }),
+    ).toEqual(['paste']);
   });
 });
 
@@ -110,7 +117,7 @@ describe('the two sections together', () => {
   it('always offers a way to share something', () => {
     // Even with nothing connected at all, the intents remain — a share dialog
     // that can offer nothing would be worse than no dialog.
-    const state = { ...NOTHING, anonymous: true };
+    const state = { ...NOTHING, anonymous: true, mastodonToken: false };
     expect(postTargetsFor(state).length + intentIdsFor(INTENTS, state).length).toBeGreaterThan(0);
   });
 });

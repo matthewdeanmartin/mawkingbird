@@ -5,6 +5,7 @@ import { AccountSwitcher } from '../../account-switcher';
 import { AccountChoice, Auth } from '../../../platform/session/auth';
 import { translocoTesting } from '../../../i18n/i18n.testing';
 import { AccountPicker } from './account-picker';
+import { AccountReplyCounts } from '../../account-reply-counts';
 
 function choice(key: string, username: string, server: string): AccountChoice {
   return {
@@ -19,6 +20,12 @@ function choice(key: string, username: string, server: string): AccountChoice {
 describe('AccountPicker', () => {
   const others = signal<AccountChoice[]>([]);
   const switcher = { switchTo: vi.fn() };
+  const replyCounts = {
+    refresh: vi.fn(),
+    currentKey: () => 'current',
+    hasAccount: () => true,
+    label: (key: string) => (key === 'b' ? '3' : '0'),
+  };
 
   beforeEach(() => {
     switcher.switchTo.mockReset();
@@ -30,6 +37,7 @@ describe('AccountPicker', () => {
     TestBed.configureTestingModule({
       imports: [AccountPicker, translocoTesting()],
       providers: [
+        { provide: AccountReplyCounts, useValue: replyCounts },
         { provide: AccountSwitcher, useValue: switcher },
         {
           provide: Auth,
@@ -63,6 +71,9 @@ describe('AccountPicker', () => {
     expect(el.querySelector('.picker-current')?.textContent).toContain('@flyscifiguy');
     expect(el.querySelectorAll('.picker-row')).toHaveLength(3);
     expect(el.querySelector('.picker-row')?.textContent).toContain('mastodon.social');
+    expect(el.querySelector('.picker-current')?.textContent).toContain('0');
+    expect([...el.querySelectorAll('.picker-row')][1].textContent).toContain('3');
+    expect(replyCounts.refresh).toHaveBeenCalled();
   });
 
   it('narrows by server and switches through the shared switcher', () => {
@@ -110,6 +121,15 @@ describe('AccountPicker standalone (fail whale escape hatch)', () => {
     TestBed.configureTestingModule({
       imports: [AccountPicker, translocoTesting()],
       providers: [
+        {
+          provide: AccountReplyCounts,
+          useValue: {
+            refresh: vi.fn(),
+            currentKey: () => null,
+            hasAccount: () => true,
+            label: () => '0',
+          },
+        },
         {
           provide: Auth,
           useValue: {

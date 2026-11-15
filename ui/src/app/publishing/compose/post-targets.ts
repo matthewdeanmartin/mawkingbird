@@ -9,6 +9,8 @@ import { PostTarget } from './compose';
  */
 export interface TargetAvailability {
   anonymous: boolean;
+  /** A Mastodon bearer token, including a connector on a Bluesky-primary identity. */
+  mastodonToken: boolean;
   bskyLinked: boolean;
   /** Mataroa: credentials stored. */
   mataroaConnected: boolean;
@@ -35,6 +37,7 @@ export interface TargetAvailability {
  * will show its own signed-out state.
  */
 export function fallbackTarget(state: TargetAvailability): PostTarget {
+  if (!state.mastodonToken && state.bskyLinked) return 'bsky';
   return state.anonymous && state.pastebinEnabled ? 'paste' : 'fedi';
 }
 
@@ -54,12 +57,12 @@ export function fallbackTarget(state: TargetAvailability): PostTarget {
 export function isTargetUsable(target: PostTarget, state: TargetAvailability): boolean {
   switch (target) {
     case 'fedi':
-      return !state.anonymous;
+      return state.mastodonToken;
     case 'bsky':
       return state.bskyLinked;
     case 'both':
       // Includes a Fedi post, so it needs the token as well as the link.
-      return !state.anonymous && state.bskyLinked;
+      return state.mastodonToken && state.bskyLinked;
     case 'blog':
       return state.mataroaConnected && state.mataroaEnabled;
     case 'blogger':

@@ -25,6 +25,7 @@ import { AccountResultCard } from '../../discovery/search/account-result-card';
 import { AccountWithMatches } from '../../discovery/search/account-refine';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { Auth } from '../../platform/session/auth';
+import { AccountReplyCounts } from '../../accounts/account-reply-counts';
 import { BlueskyNotifications } from '../../connections/bluesky/bluesky-notifications';
 import { MisskeyApi } from '../../connections/misskey/misskey-api';
 import {
@@ -383,6 +384,7 @@ export class Notifications implements OnInit, OnDestroy {
   private prefs = inject(ClientPrefs);
   private diagnostics = inject(PageDiagnostics);
   private auth = inject(Auth);
+  private replyCounts = inject(AccountReplyCounts);
   private bskyNotifications = inject(BlueskyNotifications);
   private misskeyApi = inject(MisskeyApi);
   /** Misskey notifications exist only while a Misskey identity is the account. */
@@ -633,6 +635,7 @@ export class Notifications implements OnInit, OnDestroy {
         this.api.notifications(this.mastodonCursor).pipe(
           timeout(15_000),
           map((batch) => {
+            if (!this.mastodonCursor) this.replyCounts.markCurrentRead('mastodon');
             const cursor = batch.at(-1)?.id;
             this.mastodonDone = !cursor || cursor === this.mastodonCursor;
             this.mastodonCursor = cursor ?? this.mastodonCursor;
@@ -661,7 +664,11 @@ export class Notifications implements OnInit, OnDestroy {
             this.diagnostics.info('Notifications', 'load:bsky-success', {
               notifications: page.notifications.length,
             });
-            if (!cursor) this.bskyNotifications.markSeen().subscribe({ error: () => undefined });
+            if (!cursor)
+              this.bskyNotifications.markSeen().subscribe({
+                next: () => this.replyCounts.markCurrentRead('bluesky'),
+                error: () => undefined,
+              });
             return page.notifications;
           }),
           catchError((error: unknown) => {
@@ -685,6 +692,7 @@ export class Notifications implements OnInit, OnDestroy {
         ]).pipe(
           timeout(15_000),
           map(([batch, { adaptMisskeyNotification }]) => {
+            if (!until) this.replyCounts.markCurrentRead('misskey');
             const last = batch.at(-1)?.id ?? null;
             this.misskeyDone = !last || last === until;
             this.misskeyUntil = last;

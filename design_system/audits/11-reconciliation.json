@@ -230,7 +230,7 @@
     {
       "file": "ui/src/app/accounts/sign-in/account-picker/account-picker.html",
       "disposition": "partial adoption",
-      "nextStep": "Page Header frames the full account picker, the account filter uses Field/Control and add-account actions use Button. Account rows remain native full-width buttons matching the shell account menu's switch rows pending a shared identity-row action. Preserve the visible filter label, Enter-to-switch on a single match, the live result count, the shell's AccountSwitcher flow and the single-column wrap at phone width."
+      "nextStep": "Page Header frames the full account picker, the account filter uses Field/Control and add-account actions use Button. Account rows remain native full-width buttons matching the shell account menu's switch rows pending a shared identity-row action. Preserve the visible filter label, Enter-to-switch on a single match, the live result and per-account reply counts, the shell's AccountSwitcher flow and the single-column wrap at phone width."
     },
     {
       "file": "ui/src/app/reading/watch/party-conversation.html",
@@ -795,7 +795,7 @@
     {
       "file": "ui/src/app/accounts/sign-in/login-bluesky/login-bluesky.html",
       "disposition": "partial adoption",
-      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
+      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Account switch rows now include per-account reply counts and eagerly loaded avatars with a local fallback. Remaining scope: Review native disclosure behavior and nested actions; adopt shared disclosure/menu only after matching focus and dismissal semantics."
     },
     {
       "file": "ui/src/app/accounts/sign-in/login-chooser/login-chooser.html",
