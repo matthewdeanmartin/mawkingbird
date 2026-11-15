@@ -3520,20 +3520,6 @@
     "title": "Báo cáo @{{username}}"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} cho phép tìm kiếm ẩn danh",
-    "candidate.found": "Tìm thấy {{accounts}} tài khoản và {{statuses}} {{posts}} qua các truy vấn thử.",
-    "candidate.keepLooking": "Tiếp tục tìm",
-    "candidate.use": "Dùng máy chủ tìm kiếm này",
-    "exhausted.note": "Hiện không tìm thấy máy chủ cho phép tìm kiếm ẩn danh. Máy chủ tìm kiếm của bạn không thay đổi.",
-    "exhausted.retry": "Tìm lại",
-    "rejects.forget": "Quên các máy chủ đó và kiểm tra lại",
-    "rejects.skipping.one": "Bỏ qua {{count}} máy chủ đã kiểm tra và từ chối.",
-    "rejects.skipping.other": "Bỏ qua {{count}} máy chủ đã kiểm tra và từ chối.",
-    "searching.cancel": "Hủy",
-    "sizeLabel.cozy": "ấm cúng",
-    "sizeLabel.large": "lớn",
-    "sizeLabel.midSize": "trung bình",
-    "sizeLabel.veryLarge": "rất lớn",
     "start": "Tìm máy chủ tìm kiếm"
   },
   "serverAnnouncements": {

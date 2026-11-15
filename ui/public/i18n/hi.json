@@ -3520,20 +3520,6 @@
     "title": "@{{username}} की रिपोर्ट करें"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} अनाम खोज की अनुमति देता है",
-    "candidate.found": "परीक्षण क्वेरी में {{accounts}} अकाउंट और {{statuses}} {{posts}} मिले।",
-    "candidate.keepLooking": "खोजते रहें",
-    "candidate.use": "यह खोज सर्वर इस्तेमाल करें",
-    "exhausted.note": "अभी अनाम खोज वाला सर्वर नहीं मिला। आपका खोज सर्वर नहीं बदला है।",
-    "exhausted.retry": "फिर खोजें",
-    "rejects.forget": "उन्हें भूलकर फिर जाँचें",
-    "rejects.skipping.one": "पहले जाँचा और अस्वीकार किया {{count}} सर्वर छोड़ा जा रहा है।",
-    "rejects.skipping.other": "पहले जाँचे और अस्वीकार किए {{count}} सर्वर छोड़े जा रहे हैं।",
-    "searching.cancel": "रद्द करें",
-    "sizeLabel.cozy": "आरामदायक",
-    "sizeLabel.large": "बड़ा",
-    "sizeLabel.midSize": "मध्यम",
-    "sizeLabel.veryLarge": "बहुत बड़ा",
     "start": "खोज सर्वर ढूँढें"
   },
   "serverAnnouncements": {

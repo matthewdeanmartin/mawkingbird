@@ -3520,20 +3520,6 @@
     "title": "Пожаловаться на @{{username}}"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} разрешает анонимный поиск",
-    "candidate.found": "По тестовым запросам найдено учётных записей: {{accounts}}, а также {{statuses}} {{posts}}.",
-    "candidate.keepLooking": "Искать дальше",
-    "candidate.use": "Использовать этот сервер поиска",
-    "exhausted.note": "Сейчас не удалось найти сервер с анонимным поиском. Ваш сервер поиска не изменён.",
-    "exhausted.retry": "Искать снова",
-    "rejects.forget": "Забыть их и проверить снова",
-    "rejects.skipping.one": "Пропускается {{count}} уже проверенный и отклонённый сервер.",
-    "rejects.skipping.other": "Пропускается {{count}} уже проверенных и отклонённых серверов.",
-    "searching.cancel": "Отмена",
-    "sizeLabel.cozy": "уютный",
-    "sizeLabel.large": "крупный",
-    "sizeLabel.midSize": "средний",
-    "sizeLabel.veryLarge": "очень крупный",
     "start": "Найти сервер поиска"
   },
   "serverAnnouncements": {

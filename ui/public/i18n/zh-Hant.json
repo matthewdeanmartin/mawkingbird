@@ -5786,20 +5786,6 @@
     "title": "檢舉 @{{username}}"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} 允許匿名搜尋",
-    "candidate.found": "測試查詢找到 {{accounts}} 個帳號和 {{statuses}} 則 嘟文。",
-    "candidate.keepLooking": "繼續尋找",
-    "candidate.use": "使用此搜尋伺服器",
-    "exhausted.note": "目前找不到允許匿名搜尋的伺服器。您的搜尋伺服器未變更。",
-    "exhausted.retry": "再次搜尋",
-    "rejects.forget": "忘記這些伺服器並重新檢查",
-    "rejects.skipping.one": "略過已檢查並拒絕的 {{count}} 部伺服器。",
-    "rejects.skipping.other": "略過已檢查並拒絕的 {{count}} 部伺服器。",
-    "searching.cancel": "取消",
-    "sizeLabel.cozy": "舒適",
-    "sizeLabel.large": "大型",
-    "sizeLabel.midSize": "中型",
-    "sizeLabel.veryLarge": "超大型",
     "start": "尋找搜尋伺服器"
   },
   "serverAnnouncements": {

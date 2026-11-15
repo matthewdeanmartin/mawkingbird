@@ -6035,20 +6035,6 @@
     "unfollowEveryone": "Se désabonner de tout le monde"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} autorise la recherche anonyme",
-    "candidate.found": "{{accounts}} comptes et {{statuses}} {{posts}} trouvés pour les requêtes de test.",
-    "candidate.keepLooking": "Continuer à chercher",
-    "candidate.use": "Utiliser ce serveur de recherche",
-    "exhausted.note": "Impossible de trouver un serveur autorisant la recherche anonyme pour le moment. Ton serveur de recherche n’a pas changé.",
-    "exhausted.retry": "Rechercher à nouveau",
-    "rejects.forget": "Les oublier et revérifier",
-    "rejects.skipping.one": "{{count}} serveur déjà vérifié et rejeté ignoré.",
-    "rejects.skipping.other": "{{count}} serveurs déjà vérifiés et rejetés ignorés.",
-    "searching.cancel": "Annuler",
-    "sizeLabel.cozy": "modeste",
-    "sizeLabel.large": "grand",
-    "sizeLabel.midSize": "moyen",
-    "sizeLabel.veryLarge": "très grand",
     "start": "Trouver un serveur de recherche"
   },
   "serverDiscovery": {

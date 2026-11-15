@@ -5623,20 +5623,6 @@
     "step2.title": "Bei {{server}} registrieren"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} erlaubt anonyme Suche",
-    "candidate.found": "{{accounts}} Konten und {{statuses}} {{posts}} für die Testabfragen gefunden.",
-    "candidate.keepLooking": "Weitersuchen",
-    "candidate.use": "Diesen Suchserver verwenden",
-    "exhausted.note": "Es war gerade kein Server zu finden, der anonyme Suche erlaubt. Dein Suchserver wurde nicht geändert.",
-    "exhausted.retry": "Erneut suchen",
-    "rejects.forget": "Sie vergessen und neu prüfen",
-    "rejects.skipping.one": "{{count}} bereits geprüfter und abgelehnter Server wird übersprungen.",
-    "rejects.skipping.other": "{{count}} bereits geprüfte und abgelehnte Server werden übersprungen.",
-    "searching.cancel": "Abbrechen",
-    "sizeLabel.cozy": "gemütlich",
-    "sizeLabel.large": "groß",
-    "sizeLabel.midSize": "mittelgroß",
-    "sizeLabel.veryLarge": "sehr groß",
     "start": "Suchserver finden"
   },
   "serverDiscovery": {

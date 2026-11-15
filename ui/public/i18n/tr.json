@@ -3520,20 +3520,6 @@
     "title": "@{{username}} hesabını bildir"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}} anonim aramaya izin veriyor",
-    "candidate.found": "Test sorguları için {{accounts}} hesap ve {{statuses}} {{posts}} bulundu.",
-    "candidate.keepLooking": "Aramaya devam et",
-    "candidate.use": "Bu arama sunucusunu kullan",
-    "exhausted.note": "Şu anda anonim aramaya izin veren bir sunucu bulunamadı. Arama sunucunuz değişmedi.",
-    "exhausted.retry": "Yeniden ara",
-    "rejects.forget": "Unut ve yeniden denetle",
-    "rejects.skipping.one": "Daha önce denetlenip reddedilen {{count}} sunucu atlanıyor.",
-    "rejects.skipping.other": "Daha önce denetlenip reddedilen {{count}} sunucu atlanıyor.",
-    "searching.cancel": "İptal",
-    "sizeLabel.cozy": "samimi",
-    "sizeLabel.large": "büyük",
-    "sizeLabel.midSize": "orta boy",
-    "sizeLabel.veryLarge": "çok büyük",
     "start": "Arama sunucusu bul"
   },
   "serverAnnouncements": {
