@@ -3049,20 +3049,6 @@
     "title": "@{{username}}を通報"
   },
   "searchServerDiscovery": {
-    "candidate.allowsSearch": "{{domain}}では匿名検索が可能です",
-    "candidate.found": "テスト検索で{{accounts}}件のアカウントと{{statuses}}件の{{posts}}が見つかりました。",
-    "candidate.keepLooking": "探し続ける",
-    "candidate.use": "この検索サーバーを使用",
-    "exhausted.note": "現在、匿名検索を許可するサーバーが見つかりませんでした。検索サーバーは変更されていません。",
-    "exhausted.retry": "もう一度検索",
-    "rejects.forget": "履歴を消して再確認",
-    "rejects.skipping.one": "確認して却下済みの{{count}}件のサーバーをスキップします。",
-    "rejects.skipping.other": "確認して却下済みの{{count}}件のサーバーをスキップします。",
-    "searching.cancel": "キャンセル",
-    "sizeLabel.cozy": "小規模",
-    "sizeLabel.large": "大規模",
-    "sizeLabel.midSize": "中規模",
-    "sizeLabel.veryLarge": "超大規模",
     "start": "検索サーバーを探す"
   },
   "serverAnnouncements": {
