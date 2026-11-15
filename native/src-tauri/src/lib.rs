@@ -20,6 +20,8 @@ mod misskey;
 mod public_mastodon;
 mod publishing;
 mod social;
+mod twitter;
+mod webmentions;
 
 #[cfg(target_os = "windows")]
 mod windows_network;
@@ -106,6 +108,11 @@ pub fn run() {
             connectors::connector_forget,
             publishing::shorten_link,
             publishing::rentry_request,
+            twitter::twitter_connect,
+            twitter::twitter_request,
+            twitter::twitter_forget,
+            webmentions::webmention_discover,
+            webmentions::webmention_send,
             public_mastodon::public_mastodon_get,
             feeds::public_feed_get,
             articles::public_article_get,

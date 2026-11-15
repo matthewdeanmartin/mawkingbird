@@ -48,7 +48,12 @@ fn entry(handle: &str) -> Result<keyring::Entry, Failure> {
         .ok_or_else(|| failure("policy", "Invalid native account reference."))?;
     if !matches!(
         provider,
-        "native-bluesky" | "native-misskey" | "native-connector" | "native-rentry" | "native-hugo"
+        "native-bluesky"
+            | "native-misskey"
+            | "native-connector"
+            | "native-rentry"
+            | "native-hugo"
+            | "native-twitter"
     ) || id.len() != 43
         || !id
             .bytes()
@@ -134,6 +139,7 @@ pub async fn forget_social_account(handle: String) -> Result<(), Failure> {
     if handle.starts_with("native-connector:")
         || handle.starts_with("native-rentry:")
         || handle.starts_with("native-hugo:")
+        || handle.starts_with("native-twitter:")
     {
         return Err(failure(
             "policy",

@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Native connector cleanup, 2026-11-15
+
+Reviewed the regenerated inventory after the native connector changes. Three
+non-candidate UI files were removed, reducing scanned files from 1,850 to 1,847.
+The 639 candidate files and their dispositions are unchanged. The paste
+connection template loses its feed subscription controls, reducing its lexical
+findings from 14 to 10. The Twitter connection template keeps 83 findings;
+wrapping proxy controls for web-only use shifts their source lines. No
+reconciliation entry is added or removed.
+
 ## Chat emoji response shortcut, 2026-11-14
 
 The emoji response action is now an accessible icon immediately after Like.

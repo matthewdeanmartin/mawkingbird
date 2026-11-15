@@ -44,6 +44,7 @@ jobs:
           cache: npm
           cache-dependency-path: ui/package-lock.json
       - run: npm ci
+      - run: npm run design:inventory-check
       - run: npx playwright install --with-deps chromium
       - run: npm run design:build
       - run: npm run design:browser -- --shard=${{ matrix.shard }}/2
