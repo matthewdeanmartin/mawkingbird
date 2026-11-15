@@ -140,7 +140,7 @@ for (const direction of ["ltr", "rtl"]) {
       await expect(save).toBeDisabled();
     });
 
-    test("Paste inspection is separate from default selection and feed consent", async ({
+    test("Paste inspection is separate from default selection", async ({
       page,
     }) => {
       await page.goto(url("adoption-publishing-connections--pastes"));
@@ -152,19 +152,12 @@ for (const direction of ["ltr", "rtl"]) {
         exact: true,
       });
       await expect(activate).toBeEnabled();
+      await expect(page.locator(".setup h2")).toHaveText("GitHub Gist");
       await activate.click();
       await expect(activate).toBeDisabled();
-      await page.getByRole("button", { name: "Follow", exact: true }).click();
-      await expect(
-        page.getByRole("button", { name: "Unfollow", exact: true }),
-      ).toBeVisible();
-      const proxy = page.getByRole("checkbox", {
-        name: "Use my configured CORS proxy",
-        exact: true,
-      });
-      await expect(proxy).not.toBeChecked();
-      await proxy.check();
-      await expect(proxy).toBeChecked();
+      await page.getByRole("radio", { name: "Rentry", exact: true }).check();
+      await expect(page.locator(".setup h2")).toHaveText("Rentry");
+      await expect(activate).toBeEnabled();
     });
 
     test("Twitter spending, local follow visibility and import inclusion", async ({

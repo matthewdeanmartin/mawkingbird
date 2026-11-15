@@ -25,8 +25,6 @@ import { HugoEditSession } from "../../ui/src/app/connections/hugo/hugo-edit-ses
 import { GitHubSession } from "../../ui/src/app/connections/github/github-session";
 import { PasteSettings } from "../../ui/src/app/connections/paste/paste-settings";
 import { PasteProviderRegistry } from "../../ui/src/app/connections/paste/paste-provider-registry";
-import { PasteFeedSubscriptions } from "../../ui/src/app/connections/paste/paste-feed-subscriptions";
-import { PasteFeedFetch } from "../../ui/src/app/connections/paste/paste-feed-fetch";
 import { CorsProxy } from "../../ui/src/app/connections/cors-proxy/cors-proxy";
 import { ProxyConsent } from "../../ui/src/app/connections/proxy-consent-store";
 import { VaultBridge } from "../../ui/src/app/connections/vault/vault-bridge";
@@ -278,9 +276,7 @@ export const Hugo: StoryObj = {
 
 export const Pastes: StoryObj = {
   render: () => {
-    const selected = signal("rentry"),
-      followed = signal(false),
-      proxy = signal(false);
+    const selected = signal("rentry");
     const providers = [
       {
         id: "rentry",
@@ -314,33 +310,12 @@ export const Pastes: StoryObj = {
             provide: PasteProviderRegistry,
             useValue: {
               all: providers,
-              feeds: [
-                {
-                  id: "fixture-feed",
-                  label: "Preview public feed",
-                  feedUrl: "https://example.test/feed",
-                },
-              ],
               get default() {
                 return providers.find((entry) => entry.id === selected())!;
               },
               get: (id: string) => providers.find((entry) => entry.id === id),
               available: () => providers,
             },
-          },
-          {
-            provide: PasteFeedSubscriptions,
-            useValue: {
-              has: followed,
-              follow: () => followed.set(true),
-              unfollow: () => followed.set(false),
-              usesProxy: proxy,
-              setUseProxy: (_id: string, value: boolean) => proxy.set(value),
-            },
-          },
-          {
-            provide: PasteFeedFetch,
-            useValue: { proxyLabel: () => "Preview proxy" },
           },
         ],
       },
