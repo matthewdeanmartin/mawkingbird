@@ -234,7 +234,7 @@ Mawkingbird changes here rather than synchronizing the two copies.</p>
 <p>The desktop app uses Tauri with the same Angular client. Its public host source
 is in <code>native/</code>; development happens in the separate private
 <code>mawkingbird_native</code> checkout, which mirrors reviewed source into this repo.
-See <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/NATIVE_RELEASE.md" rel="noopener">Native release steps</a>
+See <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/NATIVE_RELEASE.md" rel="noopener">Native release steps</a>
 for packaging and publishing. <code>make mockingbird</code> builds the static client into
 <code>ui/dist-mockingbird/browser</code>; <code>make test</code> runs the full UI gate. The optional
 admin diagnostic build writes to <code>ui/dist-admin</code>.</p>
@@ -261,7 +261,7 @@ admin diagnostic build writes to <code>ui/dist-admin</code>.</p>
 </tr>
 <tr>
 <td>Developer guides</td>
-<td><code>ui/docs/</code></td>
+<td><code>ops/engineering/</code></td>
 </tr>
 <tr>
 <td>Published help pages (end-user guides only)</td>
@@ -281,7 +281,7 @@ admin diagnostic build writes to <code>ui/dist-admin</code>.</p>
 </tr>
 <tr>
 <td>Sprint plans and their results</td>
-<td><code>sprint/</code></td>
+<td><code>spec/sprint/</code></td>
 </tr>
 <tr>
 <td>Build and publishing automation</td>
@@ -289,10 +289,8 @@ admin diagnostic build writes to <code>ui/dist-admin</code>.</p>
 </tr>
 </tbody>
 </table>
-<p>Read the <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/contributing.md" rel="noopener">UI design and contribution rules</a>
-before changing screens, text contrast, or settings behavior.
-The <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/security.md" rel="noopener">security guide</a>
-explains storage, credentials, and browser security boundaries.</p>
+<p>Read the <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/engineering/contributing.md" rel="noopener">UI design and contribution rules</a>
+before changing screens, text contrast, or settings behavior.</p>
 <h2 id="check-a-client-change">Check a client change<a class="headerlink" href="#check-a-client-change" title="Link to this section">#</a></h2>
 <p>Run these commands from <code>ui/</code>. During development, run the affected spec or area:</p>
 <p>```bash
@@ -326,7 +324,7 @@ HTTP integration suite; run the full Angular unit suite locally. The other
 deployment base paths and design browser shards run on demand. Include the
 checks you ran and any remaining failures in your PR.</p>
 <p>For test isolation problems, see
-<a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/shared-jsdom-realm-in-tests.md" rel="noopener">the shared jsdom guide</a>.</p>
+<a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/engineering/shared-jsdom-realm-in-tests.md" rel="noopener">the shared jsdom guide</a>.</p>
 <h2 id="integration-tests-against-the-released-mock-server">Integration tests against the released mock server<a class="headerlink" href="#integration-tests-against-the-released-mock-server" title="Link to this section">#</a></h2>
 <p>Install uv and Python 3.13 or newer, then run this from the repository root after
 <code>make install</code>:</p>
@@ -349,10 +347,10 @@ target; ordinary <code>make test</code> remains independent of Python and PyPI. 
 in <code>client-integration.yml</code>. To test a newer release, update the explicit PyPI
 version pin and review the results; do not replace it with a local/editable install.</p>
 <h2 id="translations-and-catalogue-data">Translations and catalogue data<a class="headerlink" href="#translations-and-catalogue-data" title="Link to this section">#</a></h2>
-<p>Follow <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/translating-interface.md" rel="noopener">Adding an interface language</a>.
+<p>Follow <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/engineering/translating-interface.md" rel="noopener">Adding an interface language</a>.
 English is generated from source declarations; other locales are maintained in
 <code>ui/public/i18n/</code>. Preserve placeholders and use the locale's context and glossary.</p>
-<p>The <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/starter-catalog.md" rel="noopener">starter catalogue guide</a>
+<p>The <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/engineering/starter-catalog.md" rel="noopener">starter catalogue guide</a>
 explains importing a snapshot from the sibling <code>mawkingbird_starters</code> repository.
 Normal builds validate the committed snapshot offline and do not require that
 checkout. <code>starter-kits:check</code> is a separate live account-consent check and can
@@ -384,9 +382,11 @@ three deployments now belong to this repository's <code>gh-pages</code> branch. 
 hrefs, OAuth metadata, and the shared 404 fallback consistent. Do not publish a
 <code>/mawkingbird/</code> mirror build over the custom-domain root.</p>
 <p>The old github.io address currently redirects to the custom domain; it is not
-an independent fallback. See the current configuration section of
-<a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/MIGRATION.md" rel="noopener">MIGRATION.md</a>
-before changing hosting. Its older topology is retained as historical context.</p>
+an independent fallback. See the current
+<a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/DEPLOY.md" rel="noopener">deployment runbook</a>
+before changing hosting. The
+<a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/spec/history/MIGRATION.md" rel="noopener">migration record</a>
+retains the old topology as historical context.</p>
 </article>
 <div data-nosnippet><nav class="pager" aria-label="More guides"><a rel="prev" href="/canary/help/glossary/"><span>Previous</span>Glossary</a></nav></div>
 </main>
