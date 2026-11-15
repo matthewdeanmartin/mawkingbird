@@ -42,6 +42,7 @@ import {
 import { TwitterPacer } from '../../../connections/twitter/twitter-pacer';
 import { TwitterSettings } from '../../../connections/twitter/twitter-settings';
 import { TwitterUsage } from '../../../connections/twitter/twitter-usage';
+import { PLATFORM_TWITTER } from '../../../platform/http/platform-http';
 import {
   availableTwitterSources,
   TwitterSourceEntry,
@@ -231,6 +232,7 @@ import { Terminology } from '../../../i18n/terminology';
   styleUrls: ['../connection-page.css', './connection-twitter.css'],
 })
 export class ConnectionTwitter implements OnInit {
+  protected readonly nativeTwitter = inject(PLATFORM_TWITTER) !== null;
   private diagnostics = inject(PageDiagnostics);
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
@@ -344,8 +346,15 @@ export class ConnectionTwitter implements OnInit {
     if (!this.settings.hasKey(this.entry().id)) {
       return 'Paste your API key below.';
     }
+    if (this.nativeTwitter) return null;
     if (this.settings.directReachability(this.entry().id) === 'untested') {
       return 'Press Test connection — the first attempt goes direct, and is expected to fail.';
+    }
+    if (
+      this.entry().id === 'twitterapi-io' &&
+      ['mawkingbird', 'mawkingbird-plus'].includes(this.proxy.entry()?.id ?? '')
+    ) {
+      return 'Mawkingbird’s proxy does not relay TwitterAPI.io. Choose another CORS proxy.';
     }
     if (!this.proxy.available()) {
       return 'Set up a CORS proxy, then test again.';
@@ -389,7 +398,12 @@ export class ConnectionTwitter implements OnInit {
       this.error.set(`Paste your ${entry.label} API key first.`);
       return;
     }
-    this.settings.setKey(entry.id, key);
+    try {
+      await this.settings.setKey(entry.id, key);
+    } catch (error) {
+      this.error.set(error instanceof Error ? error.message : 'Could not save the API key.');
+      return;
+    }
     this.settings.activate(entry.id);
     this.keyDraft.set('');
     await this.test();
@@ -496,7 +510,9 @@ export class ConnectionTwitter implements OnInit {
 
   /** Whether following is possible at all yet. */
   protected readonly canFollow = computed(
-    () => this.settings.usable() && this.hasConsent() && !this.proxyStripsHeaders(),
+    () =>
+      this.settings.usable() &&
+      (this.nativeTwitter || (this.hasConsent() && !this.proxyStripsHeaders())),
   );
 
   /**

@@ -64,7 +64,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n settings.config.savedFrom: Saved from this browser:
 // i18n settings.config.export: Export
 // i18n settings.config.includePrivate: Include potentially private settings
-// i18n settings.config.includePrivate.hint: Adds your home server, custom CORS proxy address, and branded link-shortener setup. Never includes credentials, account-scoped settings, follows, blocks or mutes, RSS or paste feeds, lists, bookmarks, saved searches, local moderation, activity history, drafts, or authored content.
+// i18n settings.config.includePrivate.hint: Adds your home server, custom CORS proxy address, and branded link-shortener setup. Never includes credentials, account-scoped settings, follows, blocks or mutes, RSS feeds, lists, bookmarks, saved searches, local moderation, activity history, drafts, or authored content.
 // i18n settings.config.previewJson: Preview JSON
 // i18n settings.config.downloadJson: Download JSON
 // i18n settings.config.copyJson: Copy JSON

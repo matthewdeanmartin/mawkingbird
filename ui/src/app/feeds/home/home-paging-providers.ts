@@ -4,7 +4,6 @@ import { ProviderRegistry } from '../../connections/provider-registry';
 import { BlueskyProvider } from '../../connections/bluesky/bluesky-provider';
 import { MisskeyProvider } from '../../connections/misskey/misskey-provider';
 import { TwitterProvider } from '../../connections/twitter/twitter-provider';
-import { PasteFeedProvider } from '../../connections/paste/paste-feed-provider';
 import { AnonymousMastodonProvider } from '../../accounts/anonymous/anonymous-mastodon-provider';
 import { AnonymousBlueskyProvider } from '../../accounts/anonymous/anonymous-bluesky-provider';
 import { RssProvider } from '../../reading/rss/rss-provider';
@@ -17,7 +16,6 @@ export const HOME_PAGING_PROVIDERS = [
   BlueskyProvider,
   MisskeyProvider,
   TwitterProvider,
-  PasteFeedProvider,
   AnonymousMastodonProvider,
   AnonymousBlueskyProvider,
   RssProvider,

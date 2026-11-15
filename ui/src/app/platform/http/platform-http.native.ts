@@ -104,6 +104,31 @@ async function nativeArticleRead(
 }
 
 import type { NativeConnectorTransport } from './connector-types';
+import type { NativeTwitterTransport } from './connector-types';
+import type { NativeWebmentionTransport } from './connector-types';
+export const PLATFORM_WEBMENTIONS = new InjectionToken<NativeWebmentionTransport | null>(
+  'PLATFORM_WEBMENTIONS',
+  {
+    providedIn: 'root',
+    factory: () => ({
+      discover: (url) => connectorInvoke('webmention_discover', { url }),
+      send: (endpoint, source, targetUrl) =>
+        connectorInvoke('webmention_send', { endpoint, source, targetUrl }),
+    }),
+  },
+);
+export const PLATFORM_TWITTER = new InjectionToken<NativeTwitterTransport | null>(
+  'PLATFORM_TWITTER',
+  {
+    providedIn: 'root',
+    factory: () => ({
+      connect: (token, previous) =>
+        connectorInvoke('twitter_connect', { token, previous: previous ?? null }),
+      request: (handle, url) => connectorInvoke('twitter_request', { handle, url }),
+      forget: (handle) => connectorInvoke('twitter_forget', { handle }),
+    }),
+  },
+);
 export const PLATFORM_CONNECTORS = new InjectionToken<NativeConnectorTransport | null>(
   'PLATFORM_CONNECTORS',
   {

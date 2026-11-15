@@ -233,11 +233,11 @@ export const CORS_PROXY_CATALOG: readonly CorsProxyEntry[] = [
     },
     batch: {
       pattern: `${MAWKINGBIRD_PROXY}/batch?route={route}`,
-      routes: ['feeds', 'article', 'twitterapi', 'getxapi'],
+      routes: ['feeds', 'article', 'getxapi'],
       maxItems: 6,
     },
     // It forwards exactly the headers each route declares — `x-api-key` for the
-    // Twitter sources, `authorization` for Mataroa — and drops everything else.
+    // GetXAPI, `authorization` for Mataroa — and drops everything else.
     // That is more than AllOrigins can do and is the point of running our own.
     forwardsCustomHeaders: true,
     limits:
@@ -266,7 +266,7 @@ export const CORS_PROXY_CATALOG: readonly CorsProxyEntry[] = [
     },
     batch: {
       pattern: `${MAWKINGBIRD_PROXY}/batch?route={route}`,
-      routes: ['feeds', 'article', 'twitterapi', 'getxapi'],
+      routes: ['feeds', 'article', 'getxapi'],
       maxItems: 6,
     },
     forwardsCustomHeaders: true,

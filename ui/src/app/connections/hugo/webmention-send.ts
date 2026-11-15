@@ -7,6 +7,7 @@ import {
   PlusTokenSource,
 } from '../../accounts/mawkingbird/plus-token.interceptor';
 import { corsProxyOrigin } from '../../platform/build/build-flavor';
+import { PLATFORM_WEBMENTIONS } from '../../platform/http/platform-http';
 
 /**
  * Telling the other site that you linked to it.
@@ -57,6 +58,7 @@ export class WebmentionSend {
   private readonly proxy = inject(CorsProxy);
   private readonly diagnostics = inject(PageDiagnostics);
   private readonly tokens = inject(PlusTokenSource);
+  private readonly native = inject(PLATFORM_WEBMENTIONS);
 
   private async proxyHeaders(proxied: {
     url: string;
@@ -130,6 +132,13 @@ export class WebmentionSend {
     if (cached !== undefined) {
       return cached;
     }
+    if (this.native) {
+      const page = await this.native.discover(targetUrl);
+      if (page.status < 200 || page.status >= 300) throw new Error(`HTTP ${page.status}`);
+      const endpoint = resolveEndpoint(page.finalUrl, page.link, page.body);
+      this.cache.set(targetUrl, endpoint);
+      return endpoint;
+    }
     // Throws CorsProxyRefusal when nothing is configured, which `send` maps to
     // `unsupported` rather than swallowing.
     const proxied = this.proxy.proxyRequest(targetUrl, 'webmention-discover');
@@ -168,6 +177,27 @@ export class WebmentionSend {
     targetUrl: string,
     sourceUrl: string,
   ): Promise<DeliveryResult> {
+    if (this.native) {
+      try {
+        const result = await this.native.send(endpoint, sourceUrl, targetUrl);
+        if (result.status >= 200 && result.status < 300) {
+          return {
+            state: 'delivered',
+            endpoint,
+            message: 'Webmention accepted — the other site will verify it shortly.',
+          };
+        }
+        const response = new Response(result.body, { status: result.status });
+        const detail = await readEndpointError(response);
+        return {
+          state: 'failed',
+          endpoint,
+          message: refusalMessage(result.status, detail, endpoint, targetUrl),
+        };
+      } catch {
+        return { state: 'failed', endpoint, message: 'Could not send the webmention.' };
+      }
+    }
     let proxied: { url: string; headers: unknown };
     try {
       proxied = this.proxy.proxyRequest(endpoint, 'webmention-send');

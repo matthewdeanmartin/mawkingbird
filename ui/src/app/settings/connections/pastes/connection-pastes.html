@@ -65,32 +65,3 @@
     }
   </div>
 </section>
-@if (registry.feeds.length) {
-  <section>
-    <h2>{{ 'settings.connections.pastes.feeds' | transloco }}</h2>
-    <p>{{ 'settings.connections.pastes.feedIntro' | transloco }}</p>
-    <a mbContentLink routerLink="/settings/connections/cors-proxy">{{
-      'settings.connections.pastes.setup' | transloco
-    }}</a>
-    @for (feed of registry.feeds; track feed.id) {
-      <div class="setup">
-        <h3>{{ feed.label }}</h3>
-        <button mbButton type="button" (click)="toggleFeed(feed)">
-          {{
-            (feeds.has(feed.id)
-              ? 'settings.connections.pastes.unfollow'
-              : 'settings.connections.pastes.follow'
-            ) | transloco
-          }}
-        </button>
-        @if (feedFetch.proxyLabel()) {
-          <mb-checkbox
-            [label]="'settings.connections.pastes.proxy' | transloco"
-            [checked]="feeds.usesProxy(feed.id)"
-            (checkedChange)="feeds.setUseProxy(feed.id, $event)"
-          />
-        }
-      </div>
-    }
-  </section>
-}

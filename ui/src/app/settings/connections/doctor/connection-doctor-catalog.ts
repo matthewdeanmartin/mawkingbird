@@ -290,7 +290,6 @@ const PROBE_TARGET_SPECS: readonly ProbeTargetSpec[] = [
     // and the least surprising handle to see in a diagnostic; the probe is
     // rejected before the name is ever looked up, so it only has to parse.
     probeUrl: 'https://api.twitterapi.io/twitter/user/info?userName=twitter',
-    proxyRoute: 'twitterapi',
     openUrl: 'https://twitterapi.io',
     mattersKey: 'settings.connections.doctor.target.twitterapi.matters',
     // Also reports upstream Twitter impact, which is the usual cause here.
@@ -441,7 +440,7 @@ export function probeTargets(translate: Translate): readonly ProbeTarget[] {
 // i18n settings.connections.doctor.target.openrouter.matters: Plain-English search, hashtag suggestions and translation.
 // i18n settings.connections.doctor.status.openrouterStatus: OpenRouter Status
 // i18n settings.connections.doctor.target.twitterapi.label: Twitter data service
-// i18n settings.connections.doctor.target.twitterapi.matters: Reading public tweets. Also needs a CORS proxy.
+// i18n settings.connections.doctor.target.twitterapi.matters: Reading public tweets. The web app needs a third-party CORS proxy; Native reads directly.
 // i18n settings.connections.doctor.status.twitterapiStatus: TwitterAPI.io Service Status
 // i18n settings.connections.doctor.target.raindrop.label: Raindrop.io
 // i18n settings.connections.doctor.target.raindrop.matters: Saving bookmarks to Raindrop.

@@ -5,7 +5,6 @@ import { FeedProvider } from './provider';
 import { RssProvider } from '../reading/rss/rss-provider';
 import { AnonymousBlueskyProvider } from '../accounts/anonymous/anonymous-bluesky-provider';
 import { AnonymousMastodonProvider } from '../accounts/anonymous/anonymous-mastodon-provider';
-import { PasteFeedProvider } from './paste/paste-feed-provider';
 import { TwitterProvider } from './twitter/twitter-provider';
 import { FeatureFlagId, FeatureFlags } from '../platform/build/feature-flags';
 
@@ -22,7 +21,6 @@ import { FeatureFlagId, FeatureFlags } from '../platform/build/feature-flags';
  * signed-out, not a third-party integration that can go down.
  */
 const PROVIDER_FLAGS: Record<string, FeatureFlagId> = {
-  paste: 'pastebin',
   bluesky: 'connector-bluesky',
   misskey: 'misskey',
   rss: 'connector-rss',
@@ -40,7 +38,6 @@ export class ProviderRegistry {
   private rss = inject(RssProvider);
   private anonymousMastodon = inject(AnonymousMastodonProvider);
   private anonymousBluesky = inject(AnonymousBlueskyProvider);
-  private paste = inject(PasteFeedProvider);
   private twitter = inject(TwitterProvider);
   private featureFlags = inject(FeatureFlags);
 
@@ -55,7 +52,6 @@ export class ProviderRegistry {
     this.misskey,
     this.rss,
     this.twitter,
-    this.paste,
   ];
 
   /**

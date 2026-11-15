@@ -5,8 +5,6 @@ import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { ConnectionPastes } from './connection-pastes';
 import { PasteSettings } from '../../../connections/paste/paste-settings';
 import { PasteProviderRegistry } from '../../../connections/paste/paste-provider-registry';
-import { PasteFeedSubscriptions } from '../../../connections/paste/paste-feed-subscriptions';
-import { PasteFeedFetch } from '../../../connections/paste/paste-feed-fetch';
 
 describe('Paste service settings', () => {
   const rentry = {
@@ -29,14 +27,11 @@ describe('Paste service settings', () => {
           provide: PasteProviderRegistry,
           useValue: {
             all: [rentry, gist],
-            feeds: [],
             default: rentry,
             available: signal([rentry]),
             get: (id: string) => (id === 'gist' ? gist : rentry),
           },
         },
-        { provide: PasteFeedSubscriptions, useValue: {} },
-        { provide: PasteFeedFetch, useValue: { proxyLabel: () => null } },
       ],
     });
   });

@@ -46,3 +46,7 @@ in the separate private `mawkingbird_native` checkout; direct edits to this
 mirror are replaced by its next source deployment. Final builds and
 distribution work use this public repository. The native frontend uses the
 same maintained Angular app in `ui/`.
+
+Public desktop installers and the changes that make each update useful appear
+under [Releases](https://github.com/matthewdeanmartin/mawkingbird/releases).
+The maintainer's release steps are in [NATIVE_RELEASE.md](NATIVE_RELEASE.md).

@@ -101,10 +101,12 @@
       </button>
     }
   </div>
-  <p class="muted small">
-    {{ 'settings.connections.twitter.testCost.a' | transloco }} {{ entry().label }}
-    {{ 'settings.connections.twitter.testCost.b' | transloco }}
-  </p>
+  @if (!nativeTwitter) {
+    <p class="muted small">
+      {{ 'settings.connections.twitter.testCost.a' | transloco }} {{ entry().label }}
+      {{ 'settings.connections.twitter.testCost.b' | transloco }}
+    </p>
+  }
 
   @if (busy()) {
     <p class="muted small">{{ 'settings.connections.twitter.testing' | transloco }}</p>
@@ -117,58 +119,67 @@
   }
 </section>
 
-<section class="proxy-status">
-  <h2 class="section-title">{{ 'settings.connections.twitter.proxy.title' | transloco }}</h2>
-  @if (proxyEntry(); as proxy) {
-    <p>
-      {{ 'settings.connections.twitter.proxy.using' | transloco }} <strong>{{ proxy.label }}</strong
-      >.
-      @if (hasConsent()) {
-        {{ 'settings.connections.twitter.proxy.consented.a' | transloco }} {{ entry().label }}
-        {{ 'settings.connections.twitter.proxy.consented.b' | transloco }}
-      } @else {
-        {{ 'settings.connections.twitter.proxy.notConsented' | transloco }}
-      }
-    </p>
-
-    @if (proxyStripsHeaders()) {
-      <mb-notice tone="error" announcement="alert">
-        {{ proxy.label }} {{ 'settings.connections.twitter.proxy.stripsHeaders.a' | transloco }}
-        {{ entry().label }} {{ 'settings.connections.twitter.proxy.stripsHeaders.b' | transloco }}
-        <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
-          'settings.connections.twitter.proxy.title' | transloco
-        }}</a
+@if (!nativeTwitter) {
+  <section class="proxy-status">
+    <h2 class="section-title">{{ 'settings.connections.twitter.proxy.title' | transloco }}</h2>
+    @if (proxyEntry(); as proxy) {
+      <p>
+        {{ 'settings.connections.twitter.proxy.using' | transloco }}
+        <strong>{{ proxy.label }}</strong
         >.
-      </mb-notice>
-    }
+        @if (hasConsent()) {
+          {{ 'settings.connections.twitter.proxy.consented.a' | transloco }} {{ entry().label }}
+          {{ 'settings.connections.twitter.proxy.consented.b' | transloco }}
+        } @else {
+          {{ 'settings.connections.twitter.proxy.notConsented' | transloco }}
+        }
+      </p>
 
-    @if (proxyNeedsRegistration(); as allowlist) {
-      <p class="muted small">
-        {{ allowlist.note }}
-        <a mbContentLink [href]="allowlist.dashboardUrl" target="_blank" rel="noopener noreferrer">
-          {{ 'settings.connections.twitter.proxy.openDashboard.a' | transloco }} {{ proxy.label }}
-          {{ 'settings.connections.twitter.proxy.openDashboard.b' | transloco }}
-        </a>
+      @if (proxyStripsHeaders()) {
+        <mb-notice tone="error" announcement="alert">
+          {{ proxy.label }} {{ 'settings.connections.twitter.proxy.stripsHeaders.a' | transloco }}
+          {{ entry().label }}
+          {{ 'settings.connections.twitter.proxy.stripsHeaders.b' | transloco }}
+          <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
+            'settings.connections.twitter.proxy.title' | transloco
+          }}</a
+          >.
+        </mb-notice>
+      }
+
+      @if (proxyNeedsRegistration(); as allowlist) {
+        <p class="muted small">
+          {{ allowlist.note }}
+          <a
+            mbContentLink
+            [href]="allowlist.dashboardUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ 'settings.connections.twitter.proxy.openDashboard.a' | transloco }} {{ proxy.label }}
+            {{ 'settings.connections.twitter.proxy.openDashboard.b' | transloco }}
+          </a>
+        </p>
+      }
+
+      @if (hasConsent()) {
+        <button mbButton variant="outline" type="button" (click)="revokeConsent()">
+          {{ 'settings.connections.twitter.proxy.withdraw' | transloco }}
+        </button>
+      }
+    } @else {
+      <p>
+        {{ 'settings.connections.twitter.proxy.none.a' | transloco }} {{ entry().label }}
+        {{ 'settings.connections.twitter.proxy.none.b' | transloco }}
+      </p>
+      <p class="small">
+        <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
+          'settings.connections.twitter.proxy.setUp' | transloco
+        }}</a>
       </p>
     }
-
-    @if (hasConsent()) {
-      <button mbButton variant="outline" type="button" (click)="revokeConsent()">
-        {{ 'settings.connections.twitter.proxy.withdraw' | transloco }}
-      </button>
-    }
-  } @else {
-    <p>
-      {{ 'settings.connections.twitter.proxy.none.a' | transloco }} {{ entry().label }}
-      {{ 'settings.connections.twitter.proxy.none.b' | transloco }}
-    </p>
-    <p class="small">
-      <a mbContentLink [routerLink]="['/settings/connections/cors-proxy']">{{
-        'settings.connections.twitter.proxy.setUp' | transloco
-      }}</a>
-    </p>
-  }
-</section>
+  </section>
+}
 
 @if (settings.hasKey(entry().id)) {
   <section class="spend">

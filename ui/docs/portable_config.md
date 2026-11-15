@@ -45,7 +45,7 @@ state such as the last account mode, rejected-server history, and dismissed nudg
 - selected link shortener and branded domains, never its keys.
 
 Both profiles always exclude credentials, caches, account-scoped settings, follows, blocks and
-mutes, RSS and paste feeds, lists, bookmarks, saved searches, local moderation, usage history,
+mutes, RSS feeds, lists, bookmarks, saved searches, local moderation, usage history,
 drafts, DMs, local posts, and other authored content. Those boundaries can be widened deliberately
 in a later schema version without making version 1 unsafe.
 

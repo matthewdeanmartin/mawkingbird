@@ -61,8 +61,8 @@ export class TwitterApi {
    * credits each one actually cost.
    *
    * Costs nothing measurable — it is an account endpoint, not a data one — but
-   * it still goes through the proxy like everything else, because the service
-   * sends no `Access-Control-Allow-Origin` on it either.
+   * the web app still needs a third-party proxy, because the service sends no
+   * `Access-Control-Allow-Origin` on it. Native reads it directly.
    *
    * Returns null rather than throwing when the shape is unrecognisable: a
    * missing balance should blank a display, never break the page it sits on.

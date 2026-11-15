@@ -8,6 +8,8 @@ import {
 import { VaultBridge, type SyncOutcome } from '../vault/vault-bridge';
 import { storedOutcome, type VaultReconcileOutcome } from '../vault/vault-reconcile';
 import { TwitterSourceEntry, TwitterSourceId, twitterSourceEntry } from './twitter-source';
+import { PLATFORM_TWITTER } from '../../platform/http/platform-http';
+import { isNativeTwitterHandle } from '../../platform/http/connector-types';
 
 /**
  * Which Twitter data service this browser uses, and the key for it.
@@ -96,6 +98,7 @@ export interface TwitterConfig {
 @Injectable({ providedIn: 'root' })
 export class TwitterSettings implements ExpiringConnection {
   private bridge = inject(VaultBridge);
+  private native = inject(PLATFORM_TWITTER);
   private config = signal<StoredTwitterConfig>(readConfig());
   private keys = signal<StoredKeys>(readKeys());
 
@@ -134,7 +137,8 @@ export class TwitterSettings implements ExpiringConnection {
 
   /** Whether a key is stored for a source, without exposing it. */
   hasKey(id: TwitterSourceId): boolean {
-    return (this.keys()[id]?.key ?? '') !== '';
+    const key = this.keys()[id]?.key ?? '';
+    return this.native ? isNativeTwitterHandle(key) : key !== '';
   }
 
   /** What the direct-reachability probe last observed for a source. */
@@ -192,13 +196,13 @@ export class TwitterSettings implements ExpiringConnection {
   /** Make a source the active one. Leaves every stored key in place. */
   activate(id: TwitterSourceId): void {
     this.writeConfig({ ...this.config(), active: id });
-    void this.syncToVault();
+    if (!this.native) void this.syncToVault();
   }
 
   /** Stop using any source, keeping keys so switching back is cheap. */
   deactivate(): void {
     this.writeConfig({ ...this.config(), active: null });
-    void this.syncToVault();
+    if (!this.native) void this.syncToVault();
   }
 
   /**
@@ -207,18 +211,31 @@ export class TwitterSettings implements ExpiringConnection {
    * An empty key clears the stored one rather than persisting a blank, so the
    * field doubles as the way to remove a key.
    */
-  setKey(id: TwitterSourceId, key: string): void {
+  setKey(id: TwitterSourceId, key: string): void | Promise<void> {
     const trimmed = key.trim();
     if (!trimmed) {
       this.clearKey(id);
       return;
     }
+    if (this.native) return this.connectNative(id, trimmed);
     const next = { ...this.keys(), [id]: stampCredential({ key: trimmed }) };
     this.writeKeys(next);
     this.needsFetch.update((ids) => ids.filter((pending) => pending !== id));
     // Not awaited: pasting a key should feel instant. Failures are observable
     // via `syncToVault()`, which the settings page calls when the user opts in.
     void this.bridge.writeThrough(SECRET_KEY, serializeVaulted(next, this.activeId()));
+  }
+
+  private async connectNative(id: TwitterSourceId, key: string): Promise<void> {
+    if (id !== 'twitterapi-io')
+      throw new Error('This Twitter data source is not supported in Native.');
+    const previous = this.keys()[id]?.key;
+    const handle = await this.native!.connect(
+      key,
+      previous && isNativeTwitterHandle(previous) ? previous : undefined,
+    );
+    this.writeKeys({ ...this.keys(), [id]: stampCredential({ key: handle }) });
+    this.needsFetch.update((ids) => ids.filter((pending) => pending !== id));
   }
 
   /**
@@ -233,8 +250,9 @@ export class TwitterSettings implements ExpiringConnection {
   private keyFor(id: TwitterSourceId): string {
     const local = this.keys()[id]?.key ?? '';
     if (local) {
-      return local;
+      return this.native && !isNativeTwitterHandle(local) ? '' : local;
     }
+    if (this.native) return '';
     const fromVault = this.bridge.readThrough(SECRET_KEY);
     if (!fromVault) {
       return '';
@@ -253,6 +271,7 @@ export class TwitterSettings implements ExpiringConnection {
 
   clearKey(id: TwitterSourceId): void {
     const next = { ...this.keys() };
+    const previous = next[id]?.key;
     delete next[id];
     this.writeKeys(next);
     this.needsFetch.update((ids) => ids.filter((pending) => pending !== id));
@@ -261,7 +280,9 @@ export class TwitterSettings implements ExpiringConnection {
     }
     // The stored copy follows the local one, or clearing a key here is undone by
     // the next sync from another device.
-    void this.pushOrRemove(next);
+    if (this.native) {
+      if (previous && isNativeTwitterHandle(previous)) void this.native.forget(previous);
+    } else void this.pushOrRemove(next);
   }
 
   /**
@@ -279,10 +300,13 @@ export class TwitterSettings implements ExpiringConnection {
       direct,
     });
     const keys = { ...this.keys() };
+    const previous = keys[id]?.key;
     delete keys[id];
     this.writeKeys(keys);
     this.needsFetch.update((ids) => ids.filter((pending) => pending !== id));
-    void this.pushOrRemove(keys);
+    if (this.native) {
+      if (previous && isNativeTwitterHandle(previous)) void this.native.forget(previous);
+    } else void this.pushOrRemove(keys);
   }
 
   /**
@@ -303,12 +327,15 @@ export class TwitterSettings implements ExpiringConnection {
     let expired = false;
 
     for (const [id, stored] of Object.entries(keys) as [TwitterSourceId, StoredTwitterKey][]) {
-      const verdict = this.bridge.verdictFor(SECRET_KEY, stored?.connectedAt);
+      const verdict = this.native
+        ? { kind: (credentialExpiresAt(stored?.connectedAt) ?? 0) > Date.now() ? 'keep' : 'remove' }
+        : this.bridge.verdictFor(SECRET_KEY, stored?.connectedAt);
       if (verdict.kind === 'keep') {
         kept[id] = stored;
         continue;
       }
       expired = true;
+      if (this.native && isNativeTwitterHandle(stored.key)) void this.native.forget(stored.key);
       if (verdict.kind === 'lock') {
         locked.push(id);
       }
@@ -329,6 +356,7 @@ export class TwitterSettings implements ExpiringConnection {
 
   /** Push the current key map to the vault and report what happened. */
   async syncToVault(): Promise<SyncOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const keys = this.keys();
     return Object.keys(keys).length
       ? this.bridge.writeThrough(SECRET_KEY, serializeVaulted(keys, this.activeId()))
@@ -343,6 +371,7 @@ export class TwitterSettings implements ExpiringConnection {
    * replacing the other. Old key-map-only vault records are upgraded here.
    */
   async reconcileVault(): Promise<VaultReconcileOutcome> {
+    if (this.native) return { kind: 'skipped' };
     const localKeys = this.keys();
     const localActive = this.activeId();
     const remoteRaw = this.bridge.readThrough(SECRET_KEY);

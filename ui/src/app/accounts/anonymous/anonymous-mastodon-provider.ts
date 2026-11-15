@@ -28,8 +28,6 @@ import { AnonymousTags } from './anonymous-tags';
 import { AnonymousLists } from './anonymous-lists';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { AnonymousPreferences } from './anonymous-preferences';
-import { PasteFeedProvider } from '../../connections/paste/paste-feed-provider';
-import { FeatureFlags } from '../../platform/build/feature-flags';
 
 const PAGE_SIZE = 20;
 const MAX_CONCURRENCY = 4;
@@ -146,8 +144,6 @@ export class AnonymousMastodonProvider implements FeedProvider {
   private tagStore = inject(AnonymousTags);
   private lists = inject(AnonymousLists);
   private preferences = inject(AnonymousPreferences);
-  private pasteFeed = inject(PasteFeedProvider);
-  private featureFlags = inject(FeatureFlags);
   private anonymous = inject(AnonymousAccount);
   private rss = inject(RssFetch);
 
@@ -155,11 +151,7 @@ export class AnonymousMastodonProvider implements FeedProvider {
   readonly label = 'Anonymous Mastodon';
   readonly badge = '🐘 Mastodon';
   readonly linked = computed(
-    () =>
-      this.auth.isAnonymous &&
-      (this.followStore.count() > 0 ||
-        this.tagStore.count() > 0 ||
-        (this.featureFlags.enabled('pastebin') && this.pasteFeed.linked())),
+    () => this.auth.isAnonymous && (this.followStore.count() > 0 || this.tagStore.count() > 0),
   );
   readonly errors = signal<string[]>([]);
 
@@ -179,15 +171,12 @@ export class AnonymousMastodonProvider implements FeedProvider {
   private tagCursors: TagCursor[] = [];
   private rssFallbacks = new Set<string>();
   private seen = new Set<string>();
-  private pasteCursor = { exhausted: false };
 
   reset(): void {
     this.errors.set([]);
     this.lastOutcomes.set([]);
     this.rssFallbacks.clear();
     this.seen.clear();
-    this.pasteCursor = { exhausted: false };
-    this.pasteFeed.reset();
     this.cursors = this.followStore.follows().map((follow) => ({ follow, exhausted: false }));
     this.tagCursors = this.tagStore.tags().map((tag) => ({ tag, exhausted: false }));
   }
@@ -210,18 +199,6 @@ export class AnonymousMastodonProvider implements FeedProvider {
           cursor: source,
           fetch: () => this.fetchTag(source),
         })),
-      ...(this.featureFlags.enabled('pastebin') &&
-      this.pasteFeed.linked() &&
-      !this.pasteCursor.exhausted
-        ? [
-            {
-              label: 'Paste public feed',
-              cursor: this.pasteCursor,
-              fetch: () =>
-                this.pasteFeed.fetchPage().pipe(tap(() => (this.pasteCursor.exhausted = true))),
-            },
-          ]
-        : []),
     ];
     if (!active.length) {
       return of([]);
@@ -253,7 +230,6 @@ export class AnonymousMastodonProvider implements FeedProvider {
       map((pages) => {
         this.errors.set([
           ...[...this.rssFallbacks].map((handle) => `Using RSS fallback for @${handle}.`),
-          ...this.pasteFeed.errors(),
           ...failures,
         ]);
         return pages
@@ -301,18 +277,6 @@ export class AnonymousMastodonProvider implements FeedProvider {
           cursor: source,
           fetch: () => this.fetchTag(source),
         })),
-      ...(this.featureFlags.enabled('pastebin') &&
-      this.pasteFeed.linked() &&
-      !this.pasteCursor.exhausted
-        ? [
-            {
-              label: 'Paste public feed',
-              cursor: this.pasteCursor,
-              fetch: () =>
-                this.pasteFeed.fetchPage().pipe(tap(() => (this.pasteCursor.exhausted = true))),
-            },
-          ]
-        : []),
     ];
     if (!active.length) {
       return of([]);
@@ -344,7 +308,6 @@ export class AnonymousMastodonProvider implements FeedProvider {
         });
         this.errors.set([
           ...[...this.rssFallbacks].map((handle) => `Using RSS fallback for @${handle}.`),
-          ...this.pasteFeed.errors(),
           ...failures,
         ]);
         return additions.length ? [...feed, ...additions] : feed;

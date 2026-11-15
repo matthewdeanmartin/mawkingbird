@@ -45,7 +45,6 @@ export interface PasteProvider {
   readonly label: string;
   /** True when the service cannot edit or delete a paste after it is created. */
   readonly immutable?: boolean;
-  readonly feedUrl?: string;
   readonly languages: readonly PasteLanguage[];
   readonly expiries: readonly PasteExpiryOption[];
   readonly visibilities: readonly PasteVisibility[];
@@ -56,13 +55,5 @@ export interface PasteProvider {
     input: Pick<PasteCreateInput, 'title' | 'content' | 'language'>,
   ): Observable<void>;
   delete(slug: string, editKey: string): Observable<void>;
-  recent?(): Observable<PasteRecentItem[]>;
-  status(item: PasteRecentItem): Status;
-}
-
-/** Paste provider with an opt-in global public feed. */
-export interface FeedPasteProvider extends PasteProvider {
-  readonly feedUrl: string;
-  recent(): Observable<PasteRecentItem[]>;
   status(item: PasteRecentItem): Status;
 }

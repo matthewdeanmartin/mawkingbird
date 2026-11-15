@@ -38,6 +38,16 @@ export const PLATFORM_ARTICLE_READ = new InjectionToken<
 >('PLATFORM_ARTICLE_READ', { providedIn: 'root', factory: () => null });
 
 import type { NativeConnectorTransport } from './connector-types';
+import type { NativeTwitterTransport } from './connector-types';
+import type { NativeWebmentionTransport } from './connector-types';
+export const PLATFORM_WEBMENTIONS = new InjectionToken<NativeWebmentionTransport | null>(
+  'PLATFORM_WEBMENTIONS',
+  { providedIn: 'root', factory: () => null },
+);
+export const PLATFORM_TWITTER = new InjectionToken<NativeTwitterTransport | null>(
+  'PLATFORM_TWITTER',
+  { providedIn: 'root', factory: () => null },
+);
 export const PLATFORM_CONNECTORS = new InjectionToken<NativeConnectorTransport | null>(
   'PLATFORM_CONNECTORS',
   { providedIn: 'root', factory: () => null },

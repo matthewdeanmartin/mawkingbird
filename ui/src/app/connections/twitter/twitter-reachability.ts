@@ -4,6 +4,7 @@ import { CorsProxy } from '../cors-proxy/cors-proxy';
 import { TwitterApiError } from './twitter-errors';
 import { TwitterSettings } from './twitter-settings';
 import { TwitterProxyRequired, TwitterTransport } from './twitter-transport';
+import { PLATFORM_TWITTER } from '../../platform/http/platform-http';
 
 /**
  * "Can I reach this Twitter data service, and how?"
@@ -81,6 +82,7 @@ export class TwitterReachability {
   private transport = inject(TwitterTransport);
   private settings = inject(TwitterSettings);
   private proxy = inject(CorsProxy);
+  private native = inject(PLATFORM_TWITTER);
 
   /**
    * Probe the active source: direct first, then the proxy.
@@ -94,6 +96,17 @@ export class TwitterReachability {
     const active = this.settings.activeId();
     if (!active) {
       return of(this.result('unknown'));
+    }
+
+    if (this.native) {
+      return this.transport.request<unknown>(PROBE).pipe(
+        map(() => ({
+          status: 'direct' as const,
+          message: 'TwitterAPI.io is reachable through the Native app.',
+          checkedAt: Date.now(),
+        })),
+        catchError((error: unknown) => of(this.failure(error))),
+      );
     }
 
     return this.transport.probeDirect(PROBE).pipe(
@@ -118,6 +131,9 @@ export class TwitterReachability {
 
   private failure(error: unknown): TwitterReachabilityResult {
     if (error instanceof TwitterProxyRequired) {
+      if (error.mawkingbirdBlocked) {
+        return { status: 'needs-proxy', message: error.message, checkedAt: Date.now() };
+      }
       return this.result(error.noProxyConfigured ? 'needs-proxy' : 'needs-consent');
     }
     if (error instanceof TwitterApiError) {

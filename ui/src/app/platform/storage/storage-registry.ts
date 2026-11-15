@@ -616,13 +616,6 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Which (shortener, CORS proxy) pairings the user agreed to send an API key through, and when. Holds no credential itself, but it records a security decision: exporting it and re-importing elsewhere would carry consent the person never gave in that browser.',
   },
   {
-    base: 'mockingbird_paste_feeds',
-    storage: 'local',
-    suffix: 'account',
-    sensitivity: 'private',
-    note: 'Subscribed paste feeds — what the user reads, and whether each goes through the CORS proxy. Scoped per account: following a feed as one persona says nothing about what the others want in their timeline. An unscoped list from before that change is adopted by the first account to read it.',
-  },
-  {
     base: 'mockingbird_saved_searches',
     storage: 'local',
     suffix: 'account',

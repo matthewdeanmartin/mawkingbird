@@ -28,6 +28,8 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:6008",
     browserName: "chromium",
+    // Missing controls should fail promptly instead of consuming a full test timeout.
+    actionTimeout: 10000,
     viewport: { width: 1280, height: 1000 },
     screenshot: "only-on-failure",
     trace: "retain-on-failure",

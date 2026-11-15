@@ -32,6 +32,29 @@ export function isNativeConnectorHandle(value: string): boolean {
   return /^native-connector:[A-Za-z0-9_-]{43}$/.test(value);
 }
 
+export interface NativeTwitterTransport {
+  connect(token: string, previous?: string): Promise<string>;
+  request(
+    handle: string,
+    url: string,
+  ): Promise<{ status: number; body: string; headers: Record<string, string> }>;
+  forget(handle: string): Promise<void>;
+}
+export function isNativeTwitterHandle(value: string): boolean {
+  return /^native-twitter:[A-Za-z0-9_-]{43}$/.test(value);
+}
+
+export interface NativeWebmentionTransport {
+  discover(
+    url: string,
+  ): Promise<{ status: number; finalUrl: string; link: string | null; body: string }>;
+  send(
+    endpoint: string,
+    source: string,
+    targetUrl: string,
+  ): Promise<{ status: number; body: string }>;
+}
+
 export interface NativeHugoTransport {
   connect(
     token: string,

@@ -1,4 +1,3 @@
-import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { MbButton } from '../../../design-system/button/button';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
@@ -9,9 +8,6 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { PasteProviderRegistry } from '../../../connections/paste/paste-provider-registry';
 import { PasteSettings } from '../../../connections/paste/paste-settings';
-import { PasteFeedSubscriptions } from '../../../connections/paste/paste-feed-subscriptions';
-import { PasteFeedFetch } from '../../../connections/paste/paste-feed-fetch';
-import { FeedPasteProvider } from '../../../connections/paste/paste-provider';
 import { PASTE_SERVICES } from '../../../connections/publishing-services';
 
 // i18n settings.connections.pastes.title: Paste services
@@ -29,15 +25,9 @@ import { PASTE_SERVICES } from '../../../connections/publishing-services';
 // i18n settings.connections.pastes.doctor: Check network access
 // i18n settings.connections.pastes.saveFailed: The default could not be saved in this browser. Free some site storage and try again.
 // i18n settings.connections.pastes.unavailable: Your preferred service needs setup. New pastes currently default to Rentry.
-// i18n settings.connections.pastes.feeds: Public paste feeds
-// i18n settings.connections.pastes.feedIntro: Following a public feed adds it to Home for this account. Proxy access is optional and shares the feed address and contents with your proxy.
-// i18n settings.connections.pastes.follow: Follow
-// i18n settings.connections.pastes.unfollow: Unfollow
-// i18n settings.connections.pastes.proxy: Use my configured CORS proxy
 @Component({
   selector: 'app-connection-pastes',
   imports: [
-    MbCheckbox,
     MbButton,
     MbNotice,
     MbContentLink,
@@ -52,8 +42,6 @@ import { PASTE_SERVICES } from '../../../connections/publishing-services';
 export class ConnectionPastes {
   protected readonly registry = inject(PasteProviderRegistry);
   protected readonly settings = inject(PasteSettings);
-  protected readonly feeds = inject(PasteFeedSubscriptions);
-  protected readonly feedFetch = inject(PasteFeedFetch);
   protected readonly failed = signal(false);
   protected readonly selected = signal(this.settings.selected());
   private readonly transloco = inject(TranslocoService);
@@ -88,10 +76,5 @@ export class ConnectionPastes {
 
   activate(id: string): void {
     if (this.ready(id)) this.failed.set(!this.settings.select(id));
-  }
-
-  toggleFeed(provider: FeedPasteProvider): void {
-    if (this.feeds.has(provider.id)) this.feeds.unfollow(provider.id);
-    else this.feeds.follow(provider.id, provider.feedUrl, provider.label);
   }
 }

@@ -74,7 +74,6 @@ import { ElizaService } from '../../chat/eliza/eliza.service';
 import { isElizaId } from '../../chat/eliza/eliza-identity';
 import { LocalPostStore } from '../../chat/eliza/local-post-store';
 import { LocalCompose } from '../../chat/eliza/local-compose';
-import { PasteFeedSubscriptions } from '../../connections/paste/paste-feed-subscriptions';
 import { PinnedServerFeeds } from '../pinned-server-feeds/pinned-server-feeds';
 import { JustMyServer } from '../just-my-server';
 import { Terminology } from '../../i18n/terminology';
@@ -540,7 +539,6 @@ export class Home implements OnInit, OnDestroy {
   private noNewPostsTimer?: ReturnType<typeof setTimeout>;
   private refreshBaseline: Set<string> | null = null;
   private flags = inject(FeatureFlags);
-  private pasteFeeds = inject(PasteFeedSubscriptions);
 
   /** A draft opened from /drafts (?draft=<id>), handed to the composer. */
   protected openedDraft = toSignal(
@@ -1247,7 +1245,7 @@ export class Home implements OnInit, OnDestroy {
    *
    * Reacting to the source set rather than to a preview-specific signal keeps
    * this honest for every other cause too: unfollowing from a profile, removing
-   * a tag, or clearing a paste feed all change what Home should be showing.
+   * a tag changes what Home should be showing.
    *
    * `anonymousSourceKey()` reads signals, so this effect re-runs on its own
    * whenever any of them change.
@@ -1277,7 +1275,8 @@ export class Home implements OnInit, OnDestroy {
     const navigation = this.router.currentNavigation() ?? this.router.lastSuccessfulNavigation();
     const visit = (navigation?.extras.state?.['homePresentation'] ??
       history.state?.homePresentation) as
-      { scope?: string; view?: FeedView; text?: boolean; tags?: boolean } | undefined;
+      | { scope?: string; view?: FeedView; text?: boolean; tags?: boolean }
+      | undefined;
     if (this.videoOnly) {
       this.setView('video');
     } else if (
@@ -2070,7 +2069,6 @@ export class Home implements OnInit, OnDestroy {
       (this.privateFollows.current()?.count() ?? 0) === 0 &&
       this.anonymousFollows.follows().length === 0 &&
       this.anonymousTags.tags().length === 0 &&
-      this.pasteFeeds.enabledFeeds().length === 0 &&
       this.registry.all.every((provider) => provider.id === 'bluesky' || !provider.linked()) &&
       !this.eliza.following(),
   );
@@ -2132,10 +2130,6 @@ export class Home implements OnInit, OnDestroy {
   );
 
   private anonymousSourceKey(): string {
-    const pasteFeeds = this.pasteFeeds
-      .enabledFeeds()
-      .map((feed) => feed.providerId)
-      .sort();
     return JSON.stringify({
       server: this.server.baseUrl(),
       follows: this.anonymousFollows
@@ -2146,7 +2140,6 @@ export class Home implements OnInit, OnDestroy {
       ...(this.anonymousLists.excludedFromHome().size
         ? { listOnly: [...this.anonymousLists.excludedFromHome()].sort() }
         : {}),
-      ...(pasteFeeds.length ? { pasteFeeds } : {}),
     });
   }
 

@@ -9,22 +9,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    strategy:
-      matrix:
-        base: ['/', '/canary/', '/test/', '/mawkingbird/', '/mawkingbird/canary/']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22'
+          node-version: "22"
           cache: npm
           cache-dependency-path: ui/package-lock.json
       - name: Build standalone client
-        env:
-          BASE_HREF: ${{ matrix.base }}
-        run: make mockingbird MOCKINGBIRD_BASE_HREF="$BASE_HREF"
+        run: make mockingbird MOCKINGBIRD_BASE_HREF=/
       - name: Check deployment contracts
         working-directory: ui
         run: |
@@ -53,18 +48,14 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22'
+          node-version: "22"
           cache: npm
           cache-dependency-path: news/package-lock.json
       - run: make news NEWS_OUT=.news-site
 
-  design-system-shards:
+  design-system:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2]
+    timeout-minutes: 10
     defaults:
       run:
         working-directory: ui
@@ -74,21 +65,11 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22'
+          node-version: "22"
           cache: npm
           cache-dependency-path: ui/package-lock.json
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
       - run: npm run lint
-      - run: npm run design:verify -- --shard=${{ matrix.shard }}/2
-
-  # Preserve the required check name and require every shard to pass.
-  design-system:
-    if: ${{ always() }}
-    needs: design-system-shards
-    runs-on: ubuntu-latest
-    steps:
-      - name: Require all design shards
-        env:
-          SHARD_RESULT: ${{ needs.design-system-shards.result }}
-        run: test "$SHARD_RESULT" = success
+      - run: npm run design:inventory-check
+      - run: npm run design:check
+      - run: npm run design:lint

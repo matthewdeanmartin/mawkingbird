@@ -1,0 +1,8 @@
+[versioning]
+scheme = "semver"
+
+[[components]]
+name = "native"
+changelog = "NATIVE_CHANGELOG.md"
+tag_template = "native-v{version}"
+match = ["native/**", "ui/**"]

@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { CorsProxySettings } from '../cors-proxy/cors-proxy-settings';
 import { ProxyConsent } from '../proxy-consent-store';
 import { TwitterApiError } from './twitter-errors';
@@ -124,40 +124,14 @@ describe('TwitterTransport', () => {
   });
 
   describe('the proxied request', () => {
-    it('coalesces simultaneous Mawkingbird reads without sharing the provider result', async () => {
-      vi.useFakeTimers();
-      try {
-        proxySettings.select('mawkingbird');
-        consent.grant('twitterapi-io', 'mawkingbird');
-        const first = firstValueFrom(transport.request({ ...PROBE, params: { userName: 'one' } }));
-        const second = firstValueFrom(transport.request({ ...PROBE, params: { userName: 'two' } }));
-        await vi.advanceTimersByTimeAsync(20);
-
-        const request = httpMock.expectOne(
-          (candidate) =>
-            candidate.method === 'POST' && candidate.url.endsWith('/batch?route=twitterapi'),
-        );
-        expect(request.request.headers.get('X-API-Key')).toBe('tw-key');
-        const sent = JSON.parse(request.request.body as string) as {
-          requests: { id: string; url: string }[];
-        };
-        request.flush({
-          results: sent.requests.map(({ id, url }) => ({
-            id,
-            status: 200,
-            ok: true,
-            body: JSON.stringify({
-              status: 'success',
-              user: new URL(url).searchParams.get('userName'),
-            }),
-          })),
-        });
-        await expect(first).resolves.toMatchObject({ user: 'one' });
-        await expect(second).resolves.toMatchObject({ user: 'two' });
-        expect(TestBed.inject(TwitterUsage).today()).toBe(2);
-      } finally {
-        vi.useRealTimers();
-      }
+    it('refuses TwitterAPI.io through Mawkingbird without sending a request', async () => {
+      proxySettings.select('mawkingbird');
+      consent.grant('twitterapi-io', 'mawkingbird');
+      const error = await firstValueFrom(transport.request(PROBE)).catch((e: unknown) => e);
+      expect(error).toBeInstanceOf(TwitterProxyRequired);
+      expect((error as TwitterProxyRequired).mawkingbirdBlocked).toBe(true);
+      expect(transport.batchAvailable()).toBe(false);
+      httpMock.expectNone(() => true);
     });
 
     it('carries both credentials and never calls the API directly', async () => {

@@ -21,20 +21,6 @@ import { Terminology } from '../../i18n/terminology';
 // i18n pages.pastes.note.b: Short-link services (TinyURL) are permanent and public: those links cannot be edited or deleted afterwards. Your use of each service is governed by its own terms — see
 // i18n pages.pastes.note.creditsPrivacy: Credits & Privacy
 // i18n pages.pastes.tabs.mine: My Pastes
-// i18n pages.pastes.tabs.feeds: Public Paste Feeds
-// i18n pages.pastes.feeds.heading: Public paste feeds
-// i18n pages.pastes.feeds.intro: These feeds are optional. Following one adds its recent public pastes to Home. Feeds are per account — following one here doesn't follow it for your other accounts.
-// i18n pages.pastes.feeds.proxyConfigured: Paste feeds can be fetched through {{label}}. Turn it on per feed below — the proxy will see that feed's address and its contents.
-// i18n pages.pastes.feeds.proxyMissing: No CORS proxy is set up. These services block browser access, so their feeds can't be read without one.
-// i18n pages.pastes.feeds.changeProxy: Change
-// i18n pages.pastes.feeds.setupProxy: Set one up
-// i18n pages.pastes.feeds.viaProxy: via proxy
-// i18n pages.pastes.feeds.proxyTitle: Fetched through your CORS proxy
-// i18n pages.pastes.feeds.fetchThrough: Fetch through {{label}}
-// i18n pages.pastes.feeds.follow: Follow {{noun}}
-// i18n pages.pastes.feeds.unfollow: Unfollow {{noun}}
-// i18n pages.pastes.feeds.publicFeed: public feed
-// i18n pages.pastes.feeds.publicPastes: public pastes
 // i18n pages.pastes.empty: Pastes created in this browser will appear here.
 // i18n pages.pastes.edit.title: Title
 // i18n pages.pastes.edit.language: Language
@@ -61,8 +47,6 @@ import { Terminology } from '../../i18n/terminology';
 // i18n pages.pastes.error.update: The paste could not be updated. It may have expired.
 // i18n pages.pastes.error.delete: The provider could not delete that paste. It may already have expired.
 // i18n pages.pastes.confirm.delete: Delete this paste from the provider? This cannot be undone.
-
-/** Which top-level section is showing. "My Pastes" is the default landing tab. */
 
 @Component({
   selector: 'app-pastes-page',

@@ -1,6 +1,16 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { catchError, map, Observable, Subscriber, throwError, timeout, timer } from 'rxjs';
+import {
+  catchError,
+  defer,
+  from,
+  map,
+  Observable,
+  Subscriber,
+  throwError,
+  timeout,
+  timer,
+} from 'rxjs';
 import { retry } from 'rxjs/operators';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { CorsProxy, CorsProxyRefusal } from '../cors-proxy/cors-proxy';
@@ -15,9 +25,12 @@ import {
 import { TwitterConfig, TwitterSettings } from './twitter-settings';
 import { TwitterSourceId } from './twitter-source';
 import { TwitterUsage } from './twitter-usage';
+import { PLATFORM_TWITTER } from '../../platform/http/platform-http';
+import { isNativeTwitterHandle } from '../../platform/http/connector-types';
 
 /**
- * The one place a Twitter data request is actually sent.
+ * The one place a Twitter data request is actually sent. Native uses its
+ * scoped Rust connector; the web app requires a user-selected proxy.
  *
  * ## Why this is proxy-*first*, unlike every other transport here
  *
@@ -55,11 +68,14 @@ export class TwitterProxyRequired extends Error {
     readonly source: TwitterSourceId,
     /** True when no usable proxy is configured at all. */
     readonly noProxyConfigured: boolean,
+    readonly mawkingbirdBlocked = false,
   ) {
     super(
-      noProxyConfigured
-        ? 'Twitter data services refuse direct browser requests, and no CORS proxy is configured.'
-        : 'Sending your Twitter API key through the CORS proxy needs your consent.',
+      mawkingbirdBlocked
+        ? 'Mawkingbird’s proxy does not relay TwitterAPI.io. Choose another CORS proxy.'
+        : noProxyConfigured
+          ? 'Twitter data services refuse direct browser requests, and no CORS proxy is configured.'
+          : 'Sending your Twitter API key through the CORS proxy needs your consent.',
     );
     this.name = 'TwitterProxyRequired';
   }
@@ -82,17 +98,26 @@ export class TwitterTransport {
   private consent = inject(ProxyConsent);
   private usage = inject(TwitterUsage);
   private diagnostics = inject(PageDiagnostics);
+  private native = inject(PLATFORM_TWITTER);
   private batchQueue: PendingTwitterRequest[] = [];
   private batchTimer: ReturnType<typeof setTimeout> | null = null;
   private batchSequence = 0;
 
   /** Whether simultaneous reads can share one Mawkingbird invocation. */
   batchAvailable(): boolean {
-    return this.proxy.batchCapacity(this.activeRoute()) > 1;
+    const entry = this.proxy.entry();
+    return (
+      !this.native &&
+      !(
+        this.settings.activeId() === 'twitterapi-io' &&
+        (entry?.id === 'mawkingbird' || entry?.id === 'mawkingbird-plus')
+      ) &&
+      this.proxy.batchCapacity(this.activeRoute()) > 1
+    );
   }
 
   /**
-   * Send an authenticated read to the active source, through the proxy.
+   * Send an authenticated read to the active source.
    *
    * @throws TwitterApiError for anything the caller should show as a failure.
    * @throws TwitterProxyRequired when the caller should configure or ask first.
@@ -125,7 +150,56 @@ export class TwitterTransport {
     }
 
     const targetUrl = buildUrl(config, spec);
+    if (this.native) {
+      const handle = config.auth.value;
+      if (!isNativeTwitterHandle(handle)) {
+        return throwError(
+          () =>
+            new TwitterApiError(
+              'INVALID_CONFIGURATION',
+              'Reconnect TwitterAPI.io in Native.',
+              config.entry.id,
+            ),
+        );
+      }
+      this.usage.record(1);
+      return defer(() => from(this.native!.request(handle, targetUrl))).pipe(
+        map((result) => {
+          let body: T;
+          try {
+            body = JSON.parse(result.body) as T;
+          } catch {
+            throw new TwitterApiError(
+              'PROVIDER_CHANGED',
+              'TwitterAPI.io returned invalid JSON.',
+              config.entry.id,
+            );
+          }
+          if (result.status < 200 || result.status >= 300) {
+            throw new HttpErrorResponse({
+              status: result.status,
+              error: body,
+              url: targetUrl,
+              headers: new HttpHeaders(result.headers),
+            });
+          }
+          const embedded = providerErrorInBody(body, config.entry.id);
+          if (embedded) throw embedded;
+          return body;
+        }),
+        catchError((error: unknown) =>
+          throwError(() => toTwitterApiError(error, config.entry.id, { viaProxy: false })),
+        ),
+      );
+    }
     const entry = this.proxy.entry();
+
+    if (
+      config.entry.id === 'twitterapi-io' &&
+      (entry?.id === 'mawkingbird' || entry?.id === 'mawkingbird-plus')
+    ) {
+      return throwError(() => new TwitterProxyRequired(config.entry.id, true, true));
+    }
 
     // Nothing is sent — not even a doomed direct attempt — until there is a
     // consented proxy. This is the "costs nothing to be unconfigured" property.
@@ -349,11 +423,15 @@ export class TwitterTransport {
 
   /** Whether a proxy is configured and consented for the active source. */
   proxyPosture(): { configured: boolean; consented: boolean; selfHosted: boolean } {
+    if (this.native) return { configured: true, consented: true, selfHosted: true };
     const entry = this.proxy.entry();
     const active = this.settings.activeId();
+    const blocked =
+      active === 'twitterapi-io' &&
+      (entry?.id === 'mawkingbird' || entry?.id === 'mawkingbird-plus');
     return {
-      configured: this.proxy.available(),
-      consented: entry && active ? this.consent.granted(active, entry.id) : false,
+      configured: this.proxy.available() && !blocked,
+      consented: entry && active && !blocked ? this.consent.granted(active, entry.id) : false,
       selfHosted: this.proxy.isSelfHosted(),
     };
   }
