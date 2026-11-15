@@ -43,8 +43,9 @@ publishing a `native-v...` GitHub Release starts the desktop distribution job.
 
 `.github/workflows/native-draft-release.yml` creates or refreshes a draft on
 `main` when Native source, shared UI, or release notes change. It uses the
-version in `native/src-tauri/tauri.conf.json` and the matching numbered
-changelog section when present. You can also run it manually from Actions.
+version in `native/src-tauri/tauri.conf.json` and requires the matching numbered
+changelog section. Promote `[Unreleased]` with `kaclm release` and push that
+change before publishing the draft. You can also run it manually from Actions.
 To refresh the draft locally instead, run:
 
 ```sh
@@ -63,5 +64,12 @@ only temporary transfer files between build and attachment jobs.
 The installers are unsigned, so operating systems may show an untrusted-app
 warning. There is no store listing or paid entitlement in this release path.
 If a build or attachment fails, inspect that workflow run and rerun the failed
-job after fixing the public source. The Release page may be visible before all
-installers have finished building; verify its assets before announcing it.
+job if the release tag already contains the fix. A tag points to a fixed source
+commit: changing `main` does not change a rerun of that tag. If a release was
+published before the numbered changelog section was committed, preview
+`kaclm --component native release-rollback --tag native-vX.Y.Z --repository
+matthewdeanmartin/mawkingbird --dry-run`. After reviewing that it targets only
+the failed release and tag, remove them with the same command and `--yes`,
+commit and push the promoted changelog, then create and publish a new draft for
+the same version. This removes the published Release temporarily; do not apply
+it to a release with working assets. Verify assets before announcing a release.

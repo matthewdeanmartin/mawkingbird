@@ -102,3 +102,14 @@ Read MIGRATION.md before modifying publishing. Keep all public origins, OAuth
 redirect URLs, and persisted storage key names stable. This repository now hosts
 mawkingbird.com; production must use base href `/`. Do not publish a project-path
 mirror build to this site's root. Docs remain under docs/ and use Read the Docs.
+
+For Native releases, read NATIVE_RELEASE.md and use `kaclm --component native`.
+`kaclm github-release` can draft notes from `[Unreleased]` but does not promote
+the changelog. Before creating or publishing a `native-vX.Y.Z` release, run
+`kaclm --component native release --override-version X.Y.Z --dry-run --yes`,
+then the same command without `--dry-run`. Verify that `NATIVE_CHANGELOG.md`
+contains `## [X.Y.Z]` and run
+`RELEASE_TAG=native-vX.Y.Z node .github/scripts/check-native-release.mjs`.
+The numbered section must be committed at the release tag; changing main after
+publication does not repair a tag that points to older source. Never commit,
+push, or move a tag without explicit user authorization.

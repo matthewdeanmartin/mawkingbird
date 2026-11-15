@@ -36,5 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           VERSION=$(node -p "require('./native/src-tauri/tauri.conf.json').version")
+          RELEASE_TAG="native-v${VERSION}" node .github/scripts/check-native-release.mjs
           uvx --from keepachangelog-manager-fork==6.10.1 kaclm --component native github-release \
             --repository "$GITHUB_REPOSITORY" --version "$VERSION" --draft

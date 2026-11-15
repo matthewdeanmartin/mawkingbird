@@ -3,11 +3,15 @@
 This changelog covers the desktop application. The continuously deployed website
 has its own release cadence.
 
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
 The maintainer writes and reviews the user-facing notes before each public
-release. Keep the current notes under [Unreleased] until promoting a tested
-snapshot with `kaclm --component native release`.
+release.
 
 ## [Unreleased]
+
+## [0.1.0] - 2026-11-15
 
 ### Added
 
