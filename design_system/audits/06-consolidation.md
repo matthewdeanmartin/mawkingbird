@@ -2409,12 +2409,13 @@ implementation changed.
 
 ### Search server directory picker (2026-11-14)
 
-Search server discovery now opens an MbDialog and lists the shipped capability
-snapshot, including servers that support only account or hashtag search. Two
-native selects filter capabilities and reachability. MbButtons run individual
-or bounded parallel browser reachability checks and explicitly adopt a reachable server. The inventory has
-two new select candidates in `search-server-discovery.html`; reconciliation
-records their shared styling review.
+Search server discovery opens an MbDialog and filters the shipped capability
+snapshot with one native select. The post option appears only when the snapshot
+contains a post-capable server. An MbButton checks the chosen host's reachability;
+on failure, a sequential fallback stops at the first reachable host with the
+selected capability and offers it for explicit adoption. The previous bulk
+reachability action and second select were removed. Reconciliation records the
+remaining select's shared styling review.
 
 ### Analytics lookup and Find interactions (2026-11-12)
 

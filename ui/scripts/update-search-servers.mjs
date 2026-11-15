@@ -9,7 +9,8 @@
 //  - accounts: an account search (`type=accounts`) for a canary returns results.
 //  - posts: a common hashtag query returns posts, not just matching tag names.
 //  - tagsOnly: the hashtag query named the tag but returned no posts.
-// A server is usable for anonymous search only with accounts AND posts.
+// Keep the three capabilities independent: account or hashtag search is useful
+// even if no server in this snapshot serves anonymous posts.
 //
 // Usage: npm run search-servers:snapshot   (read-only GET requests to each server)
 import { readFile, writeFile } from 'node:fs/promises';
@@ -44,25 +45,34 @@ async function search(domain, q, type) {
 
 async function probe(domain) {
   let status = 'unreachable';
+  let accounts = false;
   for (const q of ACCOUNT_CANARIES) {
     const result = await search(domain, q, 'accounts');
-    if (result.refused)
-      return { status: 'auth-required', accounts: false, posts: false, tagsOnly: false };
+    if (result.refused) {
+      status = 'auth-required';
+      break;
+    }
     if (result.unreachable) continue;
     if (result.accounts > 0) {
-      let hashtags = 0;
-      for (const tag of POST_CANARIES) {
-        const posts = await search(domain, tag, null);
-        if (posts.refused || posts.unreachable) continue;
-        if (posts.statuses > 0)
-          return { status: 'ok', accounts: true, posts: true, tagsOnly: false };
-        hashtags = Math.max(hashtags, posts.hashtags);
-      }
-      return { status: 'ok', accounts: true, posts: false, tagsOnly: hashtags > 0 };
+      accounts = true;
+      status = 'ok';
+      break;
     }
     status = 'no-results';
   }
-  return { status, accounts: false, posts: false, tagsOnly: false };
+  let hashtags = false;
+  for (const tag of POST_CANARIES) {
+    const result = await search(domain, tag, null);
+    if (result.refused || result.unreachable) continue;
+    if (result.statuses > 0) return { status: 'ok', accounts, posts: true, tagsOnly: false };
+    hashtags ||= result.hashtags > 0;
+  }
+  return {
+    status: accounts || hashtags ? 'ok' : status,
+    accounts,
+    posts: false,
+    tagsOnly: hashtags,
+  };
 }
 
 const directory = JSON.parse(await readFile(directoryFile, 'utf8'));
@@ -81,15 +91,19 @@ async function worker() {
 await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 
 const servers = domains.map((domain) => ({ domain, ...results.get(domain) }));
-const usable = servers.filter((server) => server.accounts && server.posts).length;
+const usable = servers.filter(
+  (server) => server.accounts || server.tagsOnly || server.posts,
+).length;
+const postServers = servers.filter((server) => server.posts).length;
 const snapshot = {
   version: 1,
   checkedAt: new Date().toISOString(),
   checked: servers.length,
   usable,
+  postServers,
   servers,
 };
 await writeFile(destination, `${JSON.stringify(snapshot, null, 2)}\n`, 'utf8');
 console.log(
-  `Probed ${servers.length} servers; ${usable} allow anonymous search. Wrote ${destination.pathname}`,
+  `Probed ${servers.length} servers; ${usable} allow anonymous search, ${postServers} return posts. Wrote ${destination.pathname}`,
 );

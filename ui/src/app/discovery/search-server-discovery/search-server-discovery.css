@@ -1,20 +1,8 @@
-.sd-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 16px 0;
-}
-
-.sd-filters label {
+.sd-filter {
   display: grid;
+  width: fit-content;
   gap: 4px;
-}
-
-.sd-scan {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  margin: 16px 0;
 }
 
 .sd-servers {

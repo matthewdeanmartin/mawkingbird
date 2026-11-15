@@ -6,26 +6,19 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n searchServerDiscovery.start: Find a search server
 // i18n searchServerDiscovery.title: Search server directory
 // i18n searchServerDiscovery.close: Close
-// i18n searchServerDiscovery.intro: Filter by the search features each server offered when last checked. Check whether a server is reachable from your current network before choosing it.
+// i18n searchServerDiscovery.intro: Choose the search you need, then pick a server. We check your connection when you choose one.
 // i18n searchServerDiscovery.support: Search support
-// i18n searchServerDiscovery.any: Any
-// i18n searchServerDiscovery.none: No search support
 // i18n searchServerDiscovery.accounts: Accounts
 // i18n searchServerDiscovery.posts: Posts
 // i18n searchServerDiscovery.hashtags: Hashtags
-// i18n searchServerDiscovery.reachability: Reachability
-// i18n searchServerDiscovery.all: All
-// i18n searchServerDiscovery.reachable: Reachable
-// i18n searchServerDiscovery.unreachable: Unreachable
-// i18n searchServerDiscovery.notChecked: Not checked
-// i18n searchServerDiscovery.checkConnection: Check connection
+// i18n searchServerDiscovery.checking: Checking connection…
+// i18n searchServerDiscovery.finding: That server is unavailable from your network. Looking for one you can reach…
+// i18n searchServerDiscovery.found: This server is reachable from your network.
+// i18n searchServerDiscovery.noAvailable: No reachable server was found for this search.
 // i18n searchServerDiscovery.use: Use this search server
-// i18n searchServerDiscovery.noMatches: No servers match these filters.
+// i18n searchServerDiscovery.noMatches: No servers offer this search in the current directory.
 // i18n searchServerDiscovery.checkedAt: Directory checked {{date}}.
-// i18n searchServerDiscovery.checkListed: Check listed servers
-// i18n searchServerDiscovery.checkingListed: Checking {{done}} of {{total}} servers…
-// i18n searchServerDiscovery.cancelChecks: Stop checking
-/** One server's anonymous-search support, as `npm run search-servers:snapshot` found it. */
+/** One server's anonymous-search support, measured while preparing the snapshot. */
 export interface SearchServerFlags {
   domain: string;
   accounts: boolean;
@@ -33,16 +26,16 @@ export interface SearchServerFlags {
   tagsOnly: boolean;
 }
 
-/** `public/search-servers.json`. */
 export interface SearchServerSnapshot {
   checkedAt: string;
   checked: number;
   servers: SearchServerFlags[];
 }
 
+type Capability = 'accounts' | 'hashtags' | 'posts';
 const SNAPSHOT_URL = 'search-servers.json';
 
-/** Browse the shipped capability snapshot and check network reachability live. */
+/** Choose from build-time capabilities; only probe the network after a choice. */
 @Component({
   selector: 'app-search-server-discovery',
   imports: [MbButton, MbDialog, TranslocoPipe],
@@ -51,15 +44,7 @@ const SNAPSHOT_URL = 'search-servers.json';
 })
 export class SearchServerDiscovery implements OnDestroy {
   private readonly transloco = inject(TranslocoService);
-
-  /** Excluded from the offer — usually the server already in use for search. */
   readonly currentServer = input('');
-  /**
-   * The button's text. Empty means "use the default", which is a translation
-   * key rather than an English literal — an `input()` default is evaluated
-   * before any injection context exists, so it cannot call `translate()`
-   * itself. Callers that pass their own label are unaffected.
-   */
   readonly startLabel = input('');
   protected readonly startText = computed(
     () => this.startLabel() || this.transloco.translate<string>('searchServerDiscovery.start'),
@@ -69,39 +54,31 @@ export class SearchServerDiscovery implements OnDestroy {
   protected readonly dialogOpen = signal(false);
   protected readonly directoryServers = signal<SearchServerFlags[]>([]);
   protected readonly checkedAt = signal('');
-  protected readonly capabilityFilter = signal<'any' | 'none' | 'accounts' | 'posts' | 'hashtags'>(
-    'any',
+  protected readonly capability = signal<Capability>('accounts');
+  protected readonly hasPosts = computed(() =>
+    this.directoryServers().some((server) => server.posts),
   );
-  protected readonly reachFilter = signal<'all' | 'reachable' | 'unreachable'>('all');
-  protected readonly reachability = signal<
-    Record<string, 'checking' | 'reachable' | 'unreachable'>
-  >({});
-  protected readonly scanTotal = signal(0);
-  protected readonly scanDone = signal(0);
-  protected readonly scanning = signal(false);
+  protected readonly checking = signal('');
+  protected readonly finding = signal(false);
+  protected readonly fallback = signal(false);
+  protected readonly available = signal<SearchServerFlags[]>([]);
+  protected readonly exhausted = signal(false);
+  protected readonly candidates = computed(() => {
+    const current = this.currentServer()
+      .replace(/^https?:\/\//, '')
+      .replace(/\/$/, '')
+      .toLowerCase();
+    return this.directoryServers().filter(
+      (server) =>
+        server.domain.toLowerCase() !== current && this.supports(server, this.capability()),
+    );
+  });
   protected readonly visibleServers = computed(() =>
-    this.directoryServers().filter((server) => {
-      const capability = this.capabilityFilter();
-      const reach = this.reachability()[server.domain];
-      const current = this.currentServer()
-        .replace(/^https?:\/\//, '')
-        .replace(/\/$/, '')
-        .toLowerCase();
-      return (
-        server.domain.toLowerCase() !== current &&
-        (capability === 'any' ||
-          (capability === 'none'
-            ? !server.accounts && !server.posts && !server.tagsOnly
-            : capability === 'hashtags'
-              ? server.tagsOnly || server.posts
-              : server[capability])) &&
-        (this.reachFilter() === 'all' || reach === this.reachFilter())
-      );
-    }),
+    this.fallback() ? this.available() : this.candidates(),
   );
-  private readonly reachChecks = new Map<string, AbortController>();
-  private scanSequence = 0;
 
+  private controller: AbortController | null = null;
+  private sequence = 0;
   private snapshot: Promise<SearchServerSnapshot | null> | null = null;
 
   ngOnDestroy(): void {
@@ -109,6 +86,10 @@ export class SearchServerDiscovery implements OnDestroy {
   }
 
   protected async openDialog(): Promise<void> {
+    this.cancel();
+    this.fallback.set(false);
+    this.available.set([]);
+    this.exhausted.set(false);
     this.dialogOpen.set(true);
     const snapshot = await this.loadSnapshot();
     if (this.dialogOpen()) {
@@ -121,82 +102,81 @@ export class SearchServerDiscovery implements OnDestroy {
 
   protected closeDialog(): void {
     this.dialogOpen.set(false);
-    this.stopChecks();
+    this.cancel();
   }
 
-  protected stopChecks(): void {
-    this.scanSequence++;
-    this.scanning.set(false);
-    for (const check of this.reachChecks.values()) check.abort();
-    this.reachChecks.clear();
-    this.reachability.update((state) =>
-      Object.fromEntries(Object.entries(state).filter(([, value]) => value !== 'checking')),
-    );
-  }
-
-  /** Probe the currently listed hosts in bounded parallel batches. */
-  protected async checkListed(): Promise<void> {
-    if (this.scanning()) return;
-    const queue = this.visibleServers().filter(
-      (server) => !['reachable', 'checking'].includes(this.reachability()[server.domain]),
-    );
-    const sequence = ++this.scanSequence;
-    this.scanTotal.set(queue.length);
-    this.scanDone.set(0);
-    this.scanning.set(true);
-    let next = 0;
-    const worker = async () => {
-      while (sequence === this.scanSequence && next < queue.length) {
-        const server = queue[next++];
-        await this.checkReachability(server.domain);
-        if (sequence === this.scanSequence) this.scanDone.update((count) => count + 1);
-      }
-    };
-    await Promise.all(Array.from({ length: Math.min(8, queue.length) }, worker));
-    if (sequence === this.scanSequence) this.scanning.set(false);
+  private cancel(): void {
+    this.sequence++;
+    this.controller?.abort();
+    this.controller = null;
+    this.checking.set('');
+    this.finding.set(false);
   }
 
   protected setCapability(event: Event): void {
-    this.capabilityFilter.set(
-      (event.target as HTMLSelectElement).value as
-        'any' | 'none' | 'accounts' | 'posts' | 'hashtags',
-    );
+    this.cancel();
+    this.capability.set((event.target as HTMLSelectElement).value as Capability);
+    this.fallback.set(false);
+    this.available.set([]);
+    this.exhausted.set(false);
   }
 
-  protected setReach(event: Event): void {
-    this.reachFilter.set(
-      (event.target as HTMLSelectElement).value as 'all' | 'reachable' | 'unreachable',
-    );
+  /** A chosen host gets one reachability request. Only a failure starts a fallback walk. */
+  protected async choose(server: SearchServerFlags): Promise<void> {
+    if (this.checking() || this.finding()) return;
+    const sequence = ++this.sequence;
+    if (this.fallback()) {
+      this.selected.emit(`https://${server.domain}`);
+      this.closeDialog();
+      return;
+    }
+    this.checking.set(server.domain);
+    const reachable = await this.checkReachability(server.domain);
+    if (sequence !== this.sequence) return;
+    this.checking.set('');
+    if (reachable) {
+      this.selected.emit(`https://${server.domain}`);
+      this.closeDialog();
+      return;
+    }
+    this.fallback.set(true);
+    this.finding.set(true);
+    for (const candidate of this.candidates()) {
+      if (sequence !== this.sequence) return;
+      if (candidate.domain === server.domain) continue;
+      if (await this.checkReachability(candidate.domain)) {
+        if (sequence !== this.sequence) return;
+        this.available.set([candidate]);
+        this.finding.set(false);
+        return;
+      }
+    }
+    if (sequence === this.sequence) {
+      this.finding.set(false);
+      this.exhausted.set(true);
+    }
   }
 
-  protected async checkReachability(domain: string): Promise<void> {
+  private supports(server: SearchServerFlags, capability: Capability): boolean {
+    if (capability === 'hashtags') return server.tagsOnly || server.posts;
+    return server[capability];
+  }
+
+  private async checkReachability(domain: string): Promise<boolean> {
     const controller = new AbortController();
-    this.reachChecks.set(domain, controller);
-    this.reachability.update((state) => ({ ...state, [domain]: 'checking' }));
+    this.controller = controller;
     try {
       const response = await fetch(`https://${domain}/api/v1/instance`, {
         signal: AbortSignal.any([controller.signal, AbortSignal.timeout(6000)]),
       });
-      if (!controller.signal.aborted)
-        this.reachability.update((state) => ({
-          ...state,
-          [domain]: response.ok ? 'reachable' : 'unreachable',
-        }));
+      return response.ok && !controller.signal.aborted;
     } catch {
-      if (!controller.signal.aborted)
-        this.reachability.update((state) => ({ ...state, [domain]: 'unreachable' }));
+      return false;
     } finally {
-      if (this.reachChecks.get(domain) === controller) this.reachChecks.delete(domain);
+      if (this.controller === controller) this.controller = null;
     }
   }
 
-  protected useListed(server: SearchServerFlags): void {
-    if (this.reachability()[server.domain] !== 'reachable') return;
-    this.selected.emit(`https://${server.domain}`);
-    this.closeDialog();
-  }
-
-  /** The shipped snapshot, fetched once per component; null when it cannot be read. */
   private loadSnapshot(): Promise<SearchServerSnapshot | null> {
     this.snapshot ??= fetch(new URL(SNAPSHOT_URL, document.baseURI).toString())
       .then((response) => (response.ok ? (response.json() as Promise<SearchServerSnapshot>) : null))
