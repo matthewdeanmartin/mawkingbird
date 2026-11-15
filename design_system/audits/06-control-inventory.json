@@ -6741,11 +6741,19 @@
         },
         {
           "pattern": "shared",
-          "line": 56
+          "line": 43
         },
         {
           "pattern": "shared",
-          "line": 66
+          "line": 48
+        },
+        {
+          "pattern": "shared",
+          "line": 78
+        },
+        {
+          "pattern": "shared",
+          "line": 88
         },
         {
           "pattern": "nativeButtons",
@@ -6753,11 +6761,19 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 55
+          "line": 43
         },
         {
           "pattern": "nativeButtons",
-          "line": 65
+          "line": 47
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 77
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 87
         },
         {
           "pattern": "selects",

@@ -344,7 +344,7 @@ test("degraded servers require explicit acceptance", async ({ page }) => {
   await field.press("Enter");
   await expect(
     page.getByRole("button", { name: "Use anyway", exact: true }),
-  ).toBeVisible();
+  ).toHaveCount(2);
   await expect(page.locator(".selection-result")).toHaveText(
     "No selection yet",
   );
@@ -386,10 +386,7 @@ test("unreachable discovery retains retry and reports network reachability", asy
   await search
     .getByRole("button", { name: "Find a search server", exact: true })
     .click();
-  await search
-    .getByRole("button", { name: "Check connection" })
-    .first()
-    .click();
+  await search.getByRole("button", { name: "Check listed servers" }).click();
   await expect(
     search.locator(".sd-servers").getByText("Unreachable", { exact: true }),
   ).toBeVisible();

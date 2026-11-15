@@ -10,6 +10,13 @@
   gap: 4px;
 }
 
+.sd-scan {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .sd-servers {
   max-height: min(55vh, 540px);
   overflow: auto;

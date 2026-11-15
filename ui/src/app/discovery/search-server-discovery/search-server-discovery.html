@@ -34,6 +34,28 @@
         </select>
       </label>
     </div>
+    <div class="sd-scan">
+      @if (scanning()) {
+        <span aria-live="polite">{{
+          'searchServerDiscovery.checkingListed'
+            | transloco: { done: scanDone(), total: scanTotal() }
+        }}</span>
+        <button mbButton variant="outline" size="small" type="button" (click)="stopChecks()">
+          {{ 'searchServerDiscovery.cancelChecks' | transloco }}
+        </button>
+      } @else {
+        <button
+          mbButton
+          variant="outline"
+          size="small"
+          type="button"
+          [disabled]="!visibleServers().length"
+          (click)="checkListed()"
+        >
+          {{ 'searchServerDiscovery.checkListed' | transloco }}
+        </button>
+      }
+    </div>
     <ul class="sd-servers">
       @for (server of visibleServers(); track server.domain) {
         <li>

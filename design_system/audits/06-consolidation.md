@@ -2411,8 +2411,8 @@ implementation changed.
 
 Search server discovery now opens an MbDialog and lists the shipped capability
 snapshot, including servers that support only account or hashtag search. Two
-native selects filter capabilities and reachability. MbButtons run a browser
-reachability check and explicitly adopt a reachable server. The inventory has
+native selects filter capabilities and reachability. MbButtons run individual
+or bounded parallel browser reachability checks and explicitly adopt a reachable server. The inventory has
 two new select candidates in `search-server-discovery.html`; reconciliation
 records their shared styling review.
 

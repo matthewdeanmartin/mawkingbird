@@ -7,14 +7,19 @@ function response(body: unknown, status = 200): Response {
 }
 
 describe('SearchServerDiscovery', () => {
+  const dialogDescriptors = ['showModal', 'close'].map(
+    (name) => [name, Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, name)] as const,
+  );
   let requested: string[];
   beforeEach(() => {
-    HTMLDialogElement.prototype.showModal = function () {
-      this.setAttribute('open', '');
-    };
-    HTMLDialogElement.prototype.close = function () {
-      this.removeAttribute('open');
-    };
+    for (const [name] of dialogDescriptors) {
+      Object.defineProperty(HTMLDialogElement.prototype, name, {
+        configurable: true,
+        value(this: HTMLDialogElement) {
+          this.open = name === 'showModal';
+        },
+      });
+    }
     requested = [];
     TestBed.configureTestingModule({
       imports: [SearchServerDiscovery],
@@ -37,6 +42,11 @@ describe('SearchServerDiscovery', () => {
     );
   });
   afterEach(() => {
+    TestBed.resetTestingModule();
+    for (const [name, descriptor] of dialogDescriptors) {
+      if (descriptor) Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+      else Reflect.deleteProperty(HTMLDialogElement.prototype, name);
+    }
     vi.unstubAllGlobals();
   });
 
@@ -88,6 +98,26 @@ describe('SearchServerDiscovery', () => {
     selects[1].dispatchEvent(new Event('change'));
     fixture.detectChanges();
     expect(element.textContent).toContain('No servers match');
+  });
+
+  it('checks the listed hosts from this browser and filters to reachable ones', async () => {
+    const fixture = await show();
+    const element = fixture.nativeElement as HTMLElement;
+    [...element.querySelectorAll<HTMLButtonElement>('button')]
+      .find((button) => button.textContent?.includes('Check listed servers'))!
+      .click();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(requested).toContain('https://accounts.example/api/v1/instance');
+      expect(requested).toContain('https://posts.example/api/v1/instance');
+      expect(element.textContent).toContain('Unreachable');
+    });
+    const reach = element.querySelectorAll<HTMLSelectElement>('select')[1];
+    reach.value = 'reachable';
+    reach.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    expect(element.textContent).toContain('accounts.example');
+    expect(element.textContent).not.toContain('posts.example');
   });
 
   // Keep the audited case names while exercising the replacement picker.

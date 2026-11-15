@@ -22,6 +22,9 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n searchServerDiscovery.use: Use this search server
 // i18n searchServerDiscovery.noMatches: No servers match these filters.
 // i18n searchServerDiscovery.checkedAt: Directory checked {{date}}.
+// i18n searchServerDiscovery.checkListed: Check listed servers
+// i18n searchServerDiscovery.checkingListed: Checking {{done}} of {{total}} servers…
+// i18n searchServerDiscovery.cancelChecks: Stop checking
 /** One server's anonymous-search support, as `npm run search-servers:snapshot` found it. */
 export interface SearchServerFlags {
   domain: string;
@@ -73,6 +76,9 @@ export class SearchServerDiscovery implements OnDestroy {
   protected readonly reachability = signal<
     Record<string, 'checking' | 'reachable' | 'unreachable'>
   >({});
+  protected readonly scanTotal = signal(0);
+  protected readonly scanDone = signal(0);
+  protected readonly scanning = signal(false);
   protected readonly visibleServers = computed(() =>
     this.directoryServers().filter((server) => {
       const capability = this.capabilityFilter();
@@ -94,6 +100,7 @@ export class SearchServerDiscovery implements OnDestroy {
     }),
   );
   private readonly reachChecks = new Map<string, AbortController>();
+  private scanSequence = 0;
 
   private snapshot: Promise<SearchServerSnapshot | null> | null = null;
 
@@ -114,8 +121,39 @@ export class SearchServerDiscovery implements OnDestroy {
 
   protected closeDialog(): void {
     this.dialogOpen.set(false);
+    this.stopChecks();
+  }
+
+  protected stopChecks(): void {
+    this.scanSequence++;
+    this.scanning.set(false);
     for (const check of this.reachChecks.values()) check.abort();
     this.reachChecks.clear();
+    this.reachability.update((state) =>
+      Object.fromEntries(Object.entries(state).filter(([, value]) => value !== 'checking')),
+    );
+  }
+
+  /** Probe the currently listed hosts in bounded parallel batches. */
+  protected async checkListed(): Promise<void> {
+    if (this.scanning()) return;
+    const queue = this.visibleServers().filter(
+      (server) => !['reachable', 'checking'].includes(this.reachability()[server.domain]),
+    );
+    const sequence = ++this.scanSequence;
+    this.scanTotal.set(queue.length);
+    this.scanDone.set(0);
+    this.scanning.set(true);
+    let next = 0;
+    const worker = async () => {
+      while (sequence === this.scanSequence && next < queue.length) {
+        const server = queue[next++];
+        await this.checkReachability(server.domain);
+        if (sequence === this.scanSequence) this.scanDone.update((count) => count + 1);
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(8, queue.length) }, worker));
+    if (sequence === this.scanSequence) this.scanning.set(false);
   }
 
   protected setCapability(event: Event): void {
@@ -148,7 +186,7 @@ export class SearchServerDiscovery implements OnDestroy {
       if (!controller.signal.aborted)
         this.reachability.update((state) => ({ ...state, [domain]: 'unreachable' }));
     } finally {
-      this.reachChecks.delete(domain);
+      if (this.reachChecks.get(domain) === controller) this.reachChecks.delete(domain);
     }
   }
 
