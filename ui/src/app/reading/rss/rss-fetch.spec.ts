@@ -571,7 +571,7 @@ describe('RssFetch', () => {
     });
     await settle();
     http.expectOne(() => true).error(new ProgressEvent('error'), { status: 0 });
-    expect((await errorPromise).message).toMatch(/CORS proxy/i);
+    expect((await errorPromise).message).toMatch(/Install Mawkingbird Native/i);
   });
 
   it('blames the proxy, not the feed, when a proxied fetch is rejected', async () => {

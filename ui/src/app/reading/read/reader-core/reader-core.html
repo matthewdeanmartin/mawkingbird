@@ -80,7 +80,7 @@
              it must not sit behind "has a fetch already happened". -->
               @if (expansion.blocker(); as blocker) {
                 <p class="reader-expand-note">{{ blocker }}</p>
-                <button class="tool" type="button" routerLink="/settings/connections/cors-proxy">
+                <button class="tool" type="button" routerLink="/settings/app">
                   {{ 'reader.article.chooseProxy' | transloco }}
                 </button>
               } @else if (expansion.result(); as result) {

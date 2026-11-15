@@ -13,9 +13,6 @@
     <p>
       Många anger sin webbplats i Mastodon-profilen. Verktyget letar efter flöden bakom länkarna och
       samlar det som hittas i en OPML-fil för valfri flödesläsare.
-      @if (!inShell) {
-        Det ingår i Mawkingbird Plus.
-      }
     </p>
   </div>
 
@@ -50,17 +47,12 @@
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
         >Logga in med Mastodon för att hitta deras flöden</a
       >
-      <a mbButton variant="outline" routerLink="/plans">Se vad Plus innehåller</a>
+      <a mbButton variant="outline" routerLink="/settings/app">Mawkingbird Native</a>
     </div>
   }
 
   <section class="questions">
     <h2>Frågor</h2>
-    <h3>Varför är detta en Plus-funktion?</h3>
-    <p>
-      Att kontrollera hundratals främmande webbplatser går via en proxy som Mawkingbird betalar för,
-      med en begäran per webbplats. Plus täcker kostnaden.
-    </p>
     <h3>Vad är en OPML-fil?</h3>
     <p>
       Formatet för prenumerationslistor som alla flödesläsare förstår. Importera i Feedly,

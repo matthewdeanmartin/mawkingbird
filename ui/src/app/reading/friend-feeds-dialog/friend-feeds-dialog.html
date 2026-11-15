@@ -12,14 +12,11 @@
     <h3 id="friend-feeds-title">{{ 'friendFeeds.title' | transloco }}</h3>
 
     @if (!nativeReading && !supporter.isSupporter()) {
-      <!-- The upsell, not a locked door: someone who cannot use this should
-           still learn what it does, because that is what makes it worth
-           paying for. -->
       <p class="lead">{{ 'friendFeeds.lead' | transloco }}</p>
       <div class="plus-gate">
         <strong>{{ 'friendFeeds.plusTitle' | transloco }}</strong>
         <p class="muted small">{{ 'friendFeeds.plusWhy' | transloco }}</p>
-        <a class="btn" routerLink="/plans" (click)="forceClose()">
+        <a class="btn" routerLink="/settings/app" (click)="forceClose()">
           {{ 'friendFeeds.plusSeePlans' | transloco }}
         </a>
       </div>
@@ -35,6 +32,9 @@
         <p class="muted small">{{ 'friendFeeds.signedOut' | transloco }}</p>
       } @else if (!available()) {
         <p class="muted small">{{ 'friendFeeds.noProxy' | transloco }}</p>
+        <a routerLink="/settings/app" (click)="forceClose()">{{
+          'friendFeeds.plusSeePlans' | transloco
+        }}</a>
       } @else {
         <label class="budget">
           <span>{{ 'friendFeeds.budgetLabel' | transloco }}</span>

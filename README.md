@@ -1,52 +1,28 @@
 # Mawkingbird
 
-This repository hosts [Mawkingbird](https://mawkingbird.com/) on GitHub Pages.
+Mawkingbird brings social feeds and reading into one app.
 
-Production uses the origin root; canary and sandbox use `/canary/` and `/test/`.
+- Follow Mastodon and Bluesky together in your Home feed.
+- Read RSS feeds, save articles, and keep a reading list.
+- Post to your accounts and use supported publishing connections.
 
-The continuously deployed canary is available at:
+## Install
 
-https://mawkingbird.com/canary/
+### Windows (x64)
 
-The maintained application source now lives in [ui/](ui/), forked from
-`mastodon_mock` at `4d981c458abc1d1ed7f2929f33e53a4f8fee1ca8`. The original UI
-remains there as the frozen mock-server client.
+- [Installer (.exe)](https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_x64-setup.exe)
+- [MSI package](https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_x64_en-US.msi)
 
-In Git Bash, run `make install`, then `make dev`. Run `make mockingbird` for a
-static build in `ui/dist-mockingbird/browser`; `make test` runs the full UI gate.
-The standalone build needs no Python checkout. The optional admin diagnostic
-build writes to `ui/dist-admin`.
+### macOS (Apple Silicon)
 
-Production, canary and sandbox remain at `mawkingbird.com`, `/canary/`, and
-`/test/`. Help remains at https://mawkingbird.readthedocs.io/.
-See [DEPLOY.md](DEPLOY.md) for deployment and rollback, and
-[MIGRATION.md](MIGRATION.md) for hosting history.
+- [Disk image (.dmg)](https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_aarch64.dmg)
 
-## YouTube video feeds
+### Linux (x86-64)
 
-The `/videos` reader uses public YouTube channel RSS feeds. YouTube sometimes
-returns 404 or 500 for valid feeds; users report this recurring for years, with
-feeds often recovering around a day later. Recovery time is not guaranteed.
+- [AppImage](https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_amd64.AppImage)
+- [Debian package (.deb)](https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_amd64.deb)
+- [RPM package](https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native-0.1.0-1.x86_64.rpm)
 
-Failed refreshes retain subscriptions and the last successfully cached videos.
-New subscriptions may remain empty until a successful refresh. Try **Refresh**
-again later; a feed error alone does not mean the channel URL is wrong. The
-reader stays based on RSS rather than switching to channel-page scraping.
+[Use Mawkingbird in your browser](https://mawkingbird.com/) · [Help](https://mawkingbird.com/help/)
 
-See [Video feeds](docs/connections/video-feeds.md) for reader behavior and
-[RSS failure checks](DEPLOY.md#youtube-rss-failures) for deployment diagnosis.
-
-For setup, testing, design rules, and help-page changes, see
-[Contributing](docs/contributing.md).
-
-## Native desktop source
-
-The Tauri host source is mirrored under [native/](native/). Development happens
-in the separate private `mawkingbird_native` checkout; direct edits to this
-mirror are replaced by its next source deployment. Final builds and
-distribution work use this public repository. The native frontend uses the
-same maintained Angular app in `ui/`.
-
-Public desktop installers and the changes that make each update useful appear
-under [Releases](https://github.com/matthewdeanmartin/mawkingbird/releases).
-The maintainer's release steps are in [NATIVE_RELEASE.md](NATIVE_RELEASE.md).
+[Contributing](docs/contributing.md) · [Self-hosting](DEPLOY.md)

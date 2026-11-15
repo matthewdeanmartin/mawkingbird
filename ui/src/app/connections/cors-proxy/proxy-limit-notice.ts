@@ -13,23 +13,22 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import { PlusBadgeEntitlement } from '../../accounts/mawkingbird/plus-badge-entitlement';
-import { PlusPrice } from '../../accounts/mawkingbird/plus-price';
 import { ProxyActivity } from './proxy-activity';
 
 // i18n proxy.limit.title: Some updates are paused
 // i18n proxy.limit.body: A temporary request limit was reached. Your saved content is still available.
-// i18n proxy.limit.offerTitle: Get a higher allowance with Plus
-// i18n proxy.limit.offerBody: You’ve temporarily reached the free request limit. Mawkingbird Plus provides a higher allowance.
-// i18n proxy.limit.networkBody: Your network has temporarily reached its shared free request limit. Plus provides a higher allowance for your account.
+// i18n proxy.limit.offerTitle: Continue in Mawkingbird Native
+// i18n proxy.limit.offerBody: The browser proxy has reached its request limit. The desktop app fetches directly.
+// i18n proxy.limit.networkBody: Your network has reached the browser proxy's shared request limit. The desktop app fetches directly.
 // i18n proxy.limit.retry: Try again in about {{seconds}} seconds.
-// i18n proxy.limit.explore: Explore Plus
+// i18n proxy.limit.explore: Install Mawkingbird Native
 // i18n proxy.limit.dismiss: Dismiss
 // i18n proxy.limit.notNow: Not now
 // i18n proxy.limit.dailyTitle: Your free proxy allowance is used up
-// i18n proxy.limit.anonymousDaily: Anonymous browsing includes 1 proxy request per day. Create an account for 5 daily requests, or sign up for Mawkingbird Plus.
-// i18n proxy.limit.accountDaily: Your account includes 5 free proxy requests per day. Sign up for Mawkingbird Plus for a higher allowance, or quietly disable all features that need the CORS proxy.
-// i18n proxy.limit.destinationTitle: This site requires Mawkingbird Plus
-// i18n proxy.limit.domains: Free proxy access covers Wikipedia, Wikimedia, Wikisource, Project Gutenberg and Internet Archive, including their subdomains. Other sites require Plus.
+// i18n proxy.limit.anonymousDaily: Anonymous browsing includes 1 browser proxy request per day. An account allows 5. Mawkingbird Native can fetch directly.
+// i18n proxy.limit.accountDaily: Your account's browser proxy allowance is used up. Mawkingbird Native can fetch directly.
+// i18n proxy.limit.destinationTitle: This site is unavailable through the browser proxy
+// i18n proxy.limit.domains: The free browser proxy covers Wikipedia, Wikimedia, Wikisource, Project Gutenberg and Internet Archive. Use Mawkingbird Native for other sites.
 // i18n proxy.limit.createAccount: Create an account or sign in
 // i18n proxy.limit.disable: Quietly disable all features that need the CORS proxy
 // i18n proxy.limit.resetDaily: Your free allowance resets at midnight UTC.
@@ -37,7 +36,6 @@ import { ProxyActivity } from './proxy-activity';
 // i18n proxy.limit.sendLink: Send sign-in link
 // i18n proxy.limit.linkSent: Check your email for a link to create your account or sign in.
 // i18n proxy.limit.linkFailed: Could not send the sign-in link. Please try again.
-// i18n proxy.limit.plusUnavailable: Plus signup is currently unavailable.
 
 /** Load account code only when someone asks to sign in. */
 @Injectable({ providedIn: 'root' })
@@ -50,7 +48,7 @@ export class ProxyAccountSignup {
 }
 @Component({
   selector: 'app-proxy-limit-notice',
-  imports: [RouterLink, TranslocoPipe, PlusPrice],
+  imports: [RouterLink, TranslocoPipe],
   template: `
     <dialog #dialog (cancel)="activity.dismissNotice()" aria-labelledby="proxy-free-title">
       @if (showDialog()) {
@@ -91,16 +89,9 @@ export class ProxyAccountSignup {
             </form>
           }
         }
-        @if (plusAvailable()) {
-          <a
-            class="btn"
-            routerLink="/settings/mawkingbird-plus"
-            (click)="activity.dismissNotice()"
-            >{{ 'plus.wall.signUp' | transloco }}</a
-          >
-        } @else {
-          <p>{{ 'proxy.limit.plusUnavailable' | transloco }}</p>
-        }
+        <a class="btn" routerLink="/settings/app" (click)="activity.dismissNotice()">{{
+          'proxy.limit.explore' | transloco
+        }}</a>
         <p>{{ 'plus.wall.affected' | transloco }}</p>
         <button class="btn btn-outline" type="button" (click)="disableProxy()">
           {{ 'proxy.limit.disable' | transloco }}
@@ -131,22 +122,14 @@ export class ProxyAccountSignup {
             }}
           </p>
         </div>
-        @if (showOffer()) {
-          <app-plus-price />
-        }
         <!-- Keep the changing countdown out of the live region. -->
         <p class="small muted">
           {{ 'proxy.limit.retry' | transloco: { seconds: activity.remainingSeconds() } }}
         </p>
         <div class="actions">
-          @if (showOffer()) {
-            <a
-              class="btn"
-              routerLink="/settings/mawkingbird-plus"
-              (click)="activity.dismissNotice()"
-              >{{ 'proxy.limit.explore' | transloco }}</a
-            >
-          }
+          <a class="btn" routerLink="/settings/app" (click)="activity.dismissNotice()">{{
+            'proxy.limit.explore' | transloco
+          }}</a>
           <button class="btn btn-outline" type="button" (click)="activity.dismissNotice()">
             {{ (showOffer() ? 'proxy.limit.notNow' : 'proxy.limit.dismiss') | transloco }}
           </button>

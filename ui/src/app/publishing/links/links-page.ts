@@ -61,7 +61,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 // i18n pages.links.error.update: Couldn't update that link.
 // i18n pages.links.error.delete: Couldn't delete that link.
 // i18n pages.links.serviceFallback: This service
-// i18n pages.links.error.proxySetup: {{service}} doesn't answer web browsers directly. Set up a CORS proxy under Settings → Connections, then try again.
+// i18n pages.links.error.proxySetup: {{service}} doesn't answer web browsers directly. Install Mawkingbird Native under Settings → Install app, then try again.
 // i18n pages.links.error.proxyDeclined: Not sent through {{proxy}}. The direct attempt also failed. Retry later, or choose a different CORS proxy in Settings.
 // i18n pages.links.blocked.none: No link shortener is connected yet.
 // i18n pages.links.blocked.key: Add your {{provider}} {{credential}} to start shortening links.

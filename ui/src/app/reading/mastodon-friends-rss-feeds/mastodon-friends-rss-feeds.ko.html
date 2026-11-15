@@ -13,9 +13,6 @@
     <p>
       많은 사람이 Mastodon 프로필에 자기 웹사이트를 적어 둡니다. 이 도구는 그 링크에 피드가 있는지
       확인하고, 찾은 피드를 모두 하나의 OPML 파일로 모아 어떤 피드 리더에서도 쓸 수 있게 합니다.
-      @if (!inShell) {
-        Mawkingbird Plus 기능입니다.
-      }
     </p>
   </div>
 
@@ -48,17 +45,12 @@
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
         >Mastodon으로 로그인하고 피드 찾기</a
       >
-      <a mbButton variant="outline" routerLink="/plans">Plus에 포함된 것</a>
+      <a mbButton variant="outline" routerLink="/settings/app">Mawkingbird Native</a>
     </div>
   }
 
   <section class="questions">
     <h2>자주 묻는 질문</h2>
-    <h3>왜 Plus 기능인가요?</h3>
-    <p>
-      수백 개의 외부 사이트를 확인하려면 Mawkingbird가 비용을 내는 프록시를 사이트마다 한 번씩
-      거쳐야 합니다. Plus가 그 비용을 충당합니다.
-    </p>
     <h3>OPML 파일이 뭔가요?</h3>
     <p>
       모든 피드 리더가 이해하는 구독 목록 형식입니다. Feedly, NetNewsWire, Inoreader 등으로 가져오면

@@ -63,7 +63,7 @@ describe('toTwitterApiError', () => {
   it('reports a direct status 0 as needing a proxy, without guessing a cause', () => {
     const error = toTwitterApiError(http(0), SOURCE, { viaProxy: false });
     expect(error.code).toBe('CORS_UNAVAILABLE');
-    expect(error.message).toMatch(/needs a CORS proxy/i);
+    expect(error.message).toMatch(/Install Mawkingbird Native/i);
   });
 
   it('blames the proxy, by name, when the proxy leg dies', () => {

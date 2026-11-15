@@ -80,7 +80,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.linkShortener.testing: Testing…
 // i18n settings.connections.linkShortener.testAgain: Test again
 // i18n settings.connections.linkShortener.disconnect: Disconnect
-// i18n settings.connections.linkShortener.setUpProxyLink: Set up a CORS proxy
+// i18n settings.connections.linkShortener.setUpProxyLink: Install Mawkingbird Native
 // i18n settings.connections.linkShortener.keyDeletedOn: This key is deleted from this browser on {{date}}.
 // i18n settings.connections.linkShortener.consentBefore: You have allowed this key to be sent through
 // i18n settings.connections.linkShortener.consentAfter: when a direct request fails.
@@ -101,7 +101,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.linkShortener.needsDomain: {{label}} needs the short domain from your account.
 // i18n settings.connections.linkShortener.connectedFull: Connected to {{label}}. Your key works from this browser.
 // i18n settings.connections.linkShortener.couldNotReach: Couldn't reach {{label}}.
-// i18n settings.connections.linkShortener.needsProxy: {{label}}'s API doesn't answer web browsers directly, so Mawkingbird needs a CORS proxy to reach it. Set one up under CORS proxy, then come back and test again.
+// i18n settings.connections.linkShortener.needsProxy: {{label}}'s API doesn't answer web browsers directly. Mawkingbird Native connects from your computer; install it under Settings → Install app, then test again.
 // i18n settings.connections.linkShortener.notSentThroughProxy: Not sent through {{proxy}}. The direct attempt also failed. Retry later, or choose a different CORS proxy.
 // i18n settings.connections.linkShortener.probeResult: {{label}}: {{message}}
 // i18n settings.connections.linkShortener.consentWithdrawn: Consent withdrawn. You will be asked again next time.

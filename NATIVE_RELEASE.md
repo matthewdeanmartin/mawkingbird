@@ -34,6 +34,10 @@ publishing a `native-v...` GitHub Release starts the desktop distribution job.
 
    Replace `0.1.0` with the reviewed version. `kaclm` manages this changelog
    and its `native-v` tag namespace; it does not edit Tauri or Cargo files.
+   Update the direct installer links in `README.md` and
+   `ui/src/app/settings/app/settings-app.ts` for the new version. Check the
+   filenames against the release workflow's expected bundle names, then verify
+   the links after the assets are attached.
 6. Review the complete public diff, then commit and push it yourself. The
    source, version files, and numbered changelog section must be on the commit
    selected for the Release. The push refreshes the Native draft Release. No

@@ -271,7 +271,7 @@ describe('ConnectionDoctorPage', () => {
     const text = el(fixture).textContent ?? '';
     expect(text).toContain("Hosts your proxy can't rescue");
     // The actionable distinction: not misconfigured, just blocklisted.
-    expect(text).toContain('block those address ranges');
+    expect(text).toContain('block datacentre addresses');
   });
 
   it('links each host to its status page, before anything is even checked', () => {

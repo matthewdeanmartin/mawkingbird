@@ -165,7 +165,9 @@ export class RssDiscovery {
       return this.found();
     }
     if (!this.available()) {
-      this.error.set('Finding feeds needs a CORS proxy.');
+      this.error.set(
+        'Install Mawkingbird Native under Settings → Install app to find feeds directly.',
+      );
       return [];
     }
 

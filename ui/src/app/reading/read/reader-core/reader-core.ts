@@ -42,8 +42,8 @@ import { ReadingTools } from '../reading-tools';
 // i18n reader.note.placeholder: What did you want to remember?
 // i18n reader.note.save: Save
 // i18n reader.note.cancel: Cancel
-// i18n reader.article.blocker: Fetching the full text needs a CORS proxy, which isn't set up on this device.
-// i18n reader.article.chooseProxy: Choose a proxy
+// i18n reader.article.blocker: This article blocks full-text fetching from a browser. Mawkingbird Native can fetch it directly.
+// i18n reader.article.chooseProxy: Install Mawkingbird Native
 // i18n reader.article.fetch: Fetch article
 // i18n reader.article.fetchRest: Fetch the rest
 // i18n reader.article.fetching: Fetching article…

@@ -13,9 +13,6 @@
     <p>
       Mensen zetten hun website in hun Mastodon-profiel. Deze functie zoekt feeds achter die links
       en verzamelt alle gevonden feeds in één OPML-bestand voor elke feedlezer.
-      @if (!inShell) {
-        Dit hoort bij Mawkingbird Plus.
-      }
     </p>
   </div>
 
@@ -51,17 +48,12 @@
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
         >Log in met Mastodon om hun feeds te vinden</a
       >
-      <a mbButton variant="outline" routerLink="/plans">Bekijk wat Plus biedt</a>
+      <a mbButton variant="outline" routerLink="/settings/app">Mawkingbird Native</a>
     </div>
   }
 
   <section class="questions">
     <h2>Vragen</h2>
-    <h3>Waarom is dit een Plus-functie?</h3>
-    <p>
-      Honderden websites van anderen controleren loopt via een proxy waarvoor Mawkingbird betaalt,
-      met één verzoek per site. Plus dekt die kosten.
-    </p>
     <h3>Wat is een OPML-bestand?</h3>
     <p>
       Het abonnementenformaat dat elke feedlezer begrijpt. Importeer het in Feedly, NetNewsWire,

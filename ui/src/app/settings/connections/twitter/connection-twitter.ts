@@ -167,11 +167,11 @@ import { Terminology } from '../../../i18n/terminology';
 // i18n settings.connections.twitter.proxy.consented.a: You have agreed to send your
 // i18n settings.connections.twitter.proxy.consented.b: key through it.
 // i18n settings.connections.twitter.proxy.none.a: No CORS proxy is configured.
-// i18n settings.connections.twitter.proxy.none.b: cannot be reached from a browser without one, so this connector will not work until you set one up.
+// i18n settings.connections.twitter.proxy.none.b: cannot be reached directly from a browser. Mawkingbird Native connects from your computer.
 // i18n settings.connections.twitter.proxy.notConsented: You have not yet agreed to send your API key through it.
 // i18n settings.connections.twitter.proxy.openDashboard.a: Open the
 // i18n settings.connections.twitter.proxy.openDashboard.b: dashboard ↗
-// i18n settings.connections.twitter.proxy.setUp: Set up a CORS proxy →
+// i18n settings.connections.twitter.proxy.setUp: Install Mawkingbird Native →
 // i18n settings.connections.twitter.proxy.stripsHeaders.a: does not forward custom headers, so it cannot carry an API key — requests through it arrive at
 // i18n settings.connections.twitter.proxy.stripsHeaders.b: with no key, which looks exactly like a rejected key. Pick a different proxy under
 // i18n settings.connections.twitter.proxy.title: CORS proxy
@@ -357,7 +357,7 @@ export class ConnectionTwitter implements OnInit {
       return 'Mawkingbird’s proxy does not relay TwitterAPI.io. Choose another CORS proxy.';
     }
     if (!this.proxy.available()) {
-      return 'Set up a CORS proxy, then test again.';
+      return 'Install Mawkingbird Native to connect directly, then test again.';
     }
     if (this.proxyStripsHeaders()) {
       return 'Your CORS proxy cannot carry API keys. Switch to one that can.';

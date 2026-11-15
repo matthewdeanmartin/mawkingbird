@@ -73,7 +73,7 @@ export class MataroaApi {
     }
     const proxy = this.proxy.entry();
     if (!proxy || !this.proxy.available()) {
-      return throwError(() => new Error('Set up a CORS proxy before using Mataroa.'));
+      return throwError(() => new Error('Use Mawkingbird Native to connect to Mataroa directly.'));
     }
     if (!proxy.forwardsCustomHeaders) {
       return throwError(() => new Error('Choose a CORS proxy that forwards custom headers.'));

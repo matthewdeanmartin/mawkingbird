@@ -83,9 +83,7 @@ describe('Mixed feed CTA cards', () => {
     const cards = Array.from({ length: 30 }, (_, i) => store.after(slot(i))).filter(
       (card) => card !== null,
     );
-    expect(cards).toHaveLength(28);
-    expect(cards.some((card) => card.id === 'plus-connections' || card.id === 'plus-proxy')).toBe(
-      false,
-    );
+    expect(cards).toHaveLength(29);
+    expect(cards.some((card) => card.id === 'plus-connections')).toBe(false);
   });
 });

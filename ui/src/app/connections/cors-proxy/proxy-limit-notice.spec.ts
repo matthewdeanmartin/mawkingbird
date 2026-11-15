@@ -29,7 +29,7 @@ describe('Proxy limit notice', () => {
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('dialog')?.open).toBe(true);
-    expect(element.querySelector('dialog a')).toBeNull();
+    expect(element.querySelector('dialog a')?.getAttribute('href')).toBe('/settings/app');
     element.querySelector<HTMLButtonElement>('dialog button')!.click();
     fixture.detectChanges();
     const input = element.querySelector<HTMLInputElement>('input')!;
@@ -88,7 +88,7 @@ describe('Proxy limit notice', () => {
   it('offers a dismissible toast with Plus off and does not consume an upgrade prompt', () => {
     const { fixture, activity, element } = render();
     expect(element.querySelector('.toast')).not.toBeNull();
-    expect(element.querySelector('a')).toBeNull();
+    expect(element.querySelector('a')?.getAttribute('href')).toBe('/settings/app');
     expect(element.querySelector('dialog')?.open).toBe(false);
     expect(check).not.toHaveBeenCalled();
     expect(sessionStorage.getItem(PROXY_PROMPT_KEY)).toBeNull();
@@ -104,8 +104,8 @@ describe('Proxy limit notice', () => {
     enabled.set(true);
     const { fixture, element } = render();
     expect(element.querySelector('.toast')).toBeNull();
-    expect(element.querySelector('a')?.getAttribute('href')).toBe('/settings/mawkingbird-plus');
-    expect(element.querySelector('app-plus-price')).not.toBeNull();
+    expect(element.querySelector('a')?.getAttribute('href')).toBe('/settings/app');
+    expect(element.querySelector('app-plus-price')).toBeNull();
     expect(element.querySelector('dialog')?.open).toBe(false);
     vi.advanceTimersByTime(10_000);
     fixture.detectChanges();
@@ -118,7 +118,7 @@ describe('Proxy limit notice', () => {
       tier.set(state);
       const { element } = render();
       expect(element.querySelector('.toast')).not.toBeNull();
-      expect(element.querySelector('a')).toBeNull();
+      expect(element.querySelector('a')?.getAttribute('href')).toBe('/settings/app');
       expect(sessionStorage.getItem(PROXY_PROMPT_KEY)).toBeNull();
     },
   );
@@ -131,7 +131,7 @@ describe('Proxy limit notice', () => {
     expect(element.querySelector('a')).not.toBeNull();
     enabled.set(false);
     fixture.detectChanges();
-    expect(element.querySelector('a')).toBeNull();
+    expect(element.querySelector('a')?.getAttribute('href')).toBe('/settings/app');
     expect(element.querySelector('.toast')).not.toBeNull();
   });
   it('suppresses an existing offer when a service-capacity refusal arrives', () => {
@@ -139,7 +139,7 @@ describe('Proxy limit notice', () => {
     const { fixture, activity, element } = render();
     activity.exhausted('10', true, { cause: 'service_capacity', scope: 'all_routes' });
     fixture.detectChanges();
-    expect(element.querySelector('a')).toBeNull();
+    expect(element.querySelector('a')?.getAttribute('href')).toBe('/settings/app');
     expect(element.querySelector('.toast')).not.toBeNull();
   });
   it.each(['ip', 'account'] as const)(

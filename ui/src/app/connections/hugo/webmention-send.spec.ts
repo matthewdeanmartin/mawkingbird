@@ -230,7 +230,7 @@ describe('WebmentionSend', () => {
     const result = await TestBed.inject(WebmentionSend).send(TARGET, SOURCE);
 
     expect(result.state).toBe('unsupported');
-    expect(result.message).toContain('CORS proxy');
+    expect(result.message).toContain('Mawkingbird Native');
     // And it says the durable half already happened.
     expect(result.message).toContain('published');
   });

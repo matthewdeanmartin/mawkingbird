@@ -27,8 +27,8 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.mataroa.bloggerLink: Blogger connector
 // i18n settings.connections.mataroa.introAfter: is separate and can be connected at the same time.
 // i18n settings.connections.mataroa.step1: Open Mataroa's dashboard and copy the API key from its API page.
-// i18n settings.connections.mataroa.setUpProxyLink: Set up a CORS proxy
-// i18n settings.connections.mataroa.setUpProxyAfter: that forwards custom headers.
+// i18n settings.connections.mataroa.setUpProxyLink: Install Mawkingbird Native
+// i18n settings.connections.mataroa.setUpProxyAfter: to connect directly.
 // i18n settings.connections.mataroa.step3: Enter the public address of your blog, then save and test the connection.
 // i18n settings.connections.mataroa.credentialWarning: Mataroa's API key can publish, edit, and delete your writing. Its API does not accept browser requests directly, so the configured CORS proxy will see this key and the posts you publish. Only continue with a proxy operator you trust.
 // i18n settings.connections.mataroa.connected: Connected

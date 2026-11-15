@@ -299,7 +299,8 @@ export class PasteResolve {
     if (!this.proxy.available()) {
       return {
         kind: 'none',
-        reason: 'Checking a site for feeds needs a CORS proxy. Set one up in Settings → RSS.',
+        reason:
+          'This browser cannot check the site for feeds directly. Install Mawkingbird Native under Settings → Install app.',
         reached: false,
       };
     }

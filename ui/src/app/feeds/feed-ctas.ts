@@ -31,8 +31,8 @@ export interface FeedCta extends DiscoveryWay {
 // i18n cta.privacy.body: Review the controls for your privacy in Mawkingbird.
 // i18n cta.feedDoctor.title: Understand your feed
 // i18n cta.feedDoctor.body: See why your feed stops and what sources are contributing to it.
-// i18n cta.plus.articles.title: Keep reading right here
-// i18n cta.plus.articles.body: Open more full articles inside Mawkingbird with Plus.
+// i18n cta.nativeArticles.title: Read full articles in the desktop app
+// i18n cta.nativeArticles.body: Mawkingbird Native fetches articles directly from your computer.
 // i18n cta.plus.feeds.title: Your RSS feeds on every device
 // i18n cta.plus.feeds.body: Sync your RSS subscriptions with Plus and bring your favorite sites along.
 // i18n cta.plus.lists.title: Your lists travel with you
@@ -43,8 +43,8 @@ export interface FeedCta extends DiscoveryWay {
 // i18n cta.plus.settings.body: Sync your Mawkingbird settings across devices with Plus.
 // i18n cta.plus.connections.title: Bring your connections along
 // i18n cta.plus.connections.body: Use the encrypted connection vault with Plus to sync supported connection credentials.
-// i18n cta.plus.proxy.title: More room for connected features
-// i18n cta.plus.proxy.body: Plus gives the Mawkingbird proxy a higher request allowance.
+// i18n cta.nativeProxy.title: Connect without a browser proxy
+// i18n cta.nativeProxy.body: Mawkingbird Native connects to more services directly from your computer.
 // i18n cta.plus.appearance.title: Feel at home on another screen
 // i18n cta.plus.appearance.body: Carry your appearance preferences to another device with Plus settings sync.
 // i18n cta.plus.reading.title: Keep reading your way
@@ -85,16 +85,16 @@ export const FEATURE_CTAS: readonly FeedCta[] = [
   feature('appearance', '/settings/appearance'),
   feature('privacy', '/settings/privacy'),
   feature('feed-doctor', '/feed-doctor'),
+  feature('native-articles', '/settings/app'),
+  feature('native-proxy', '/settings/app'),
 ];
 
 export const PLUS_CTAS: readonly FeedCta[] = [
-  plus('articles'),
   plus('feeds'),
   plus('lists'),
   plus('trust'),
   plus('settings'),
   plus('connections', { vault: true }),
-  plus('proxy', { flag: 'proxy-mawkingbird-plus' }),
   plus('appearance'),
   plus('reading'),
   plus('folders'),

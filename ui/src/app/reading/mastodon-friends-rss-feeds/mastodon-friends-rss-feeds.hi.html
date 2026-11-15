@@ -13,9 +13,6 @@
     <p>
       लोग अपने Mastodon प्रोफ़ाइल में वेबसाइट बताते हैं। यह टूल उन लिंक पर फ़ीड खोजता है और मिली
       फ़ीड को एक OPML फ़ाइल में रखता है, जिसे किसी फ़ीड रीडर में खोल सकते हैं।
-      @if (!inShell) {
-        यह Mawkingbird Plus का हिस्सा है।
-      }
     </p>
   </div>
 
@@ -48,17 +45,12 @@
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
         >फ़ीड खोजने के लिए Mastodon से साइन इन करें</a
       >
-      <a mbButton variant="outline" routerLink="/plans">देखें Plus में क्या है</a>
+      <a mbButton variant="outline" routerLink="/settings/app">Mawkingbird Native</a>
     </div>
   }
 
   <section class="questions">
     <h2>सवाल</h2>
-    <h3>यह Plus सुविधा क्यों है?</h3>
-    <p>
-      सैकड़ों अनजान वेबसाइट जाँचने के लिए Mawkingbird के भुगतान वाले प्रॉक्सी से प्रति वेबसाइट एक
-      अनुरोध होता है। Plus यह खर्च पूरा करता है।
-    </p>
     <h3>OPML फ़ाइल क्या है?</h3>
     <p>
       फ़ीड सदस्यता सूची का फ़ॉर्मैट जिसे हर फ़ीड रीडर समझता है। सभी फ़ीड एक साथ फ़ॉलो करने के लिए

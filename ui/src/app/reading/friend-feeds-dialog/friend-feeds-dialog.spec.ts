@@ -139,7 +139,7 @@ describe('FriendFeedsDialog', () => {
 
     const fixture = render();
 
-    expect(text(fixture)).toContain('Part of Mawkingbird Plus');
+    expect(text(fixture)).toContain("Find friends' feeds in Mawkingbird Native");
     const buttons = [
       ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button'),
     ];

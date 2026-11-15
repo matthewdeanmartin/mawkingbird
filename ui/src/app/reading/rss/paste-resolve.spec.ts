@@ -313,7 +313,7 @@ describe('PasteResolve', () => {
     const first = await resolver().resolve('https://blog.test/');
     expect(first.kind).toBe('none');
     if (first.kind !== 'none') return;
-    expect(first.reason).toContain('CORS proxy');
+    expect(first.reason).toContain('Install Mawkingbird Native');
 
     // The user goes and sets a proxy up; the same paste must now work.
     proxyAvailable = true;

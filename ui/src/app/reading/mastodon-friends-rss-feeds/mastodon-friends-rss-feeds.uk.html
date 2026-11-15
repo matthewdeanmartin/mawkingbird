@@ -13,9 +13,6 @@
     <p>
       Люди вказують свої сайти в профілях Mastodon. Інструмент шукає стрічки за цими посиланнями й
       збирає знайдене в один файл OPML для будь-якого RSS-застосунку.
-      @if (!inShell) {
-        Це частина Mawkingbird Plus.
-      }
     </p>
   </div>
 
@@ -50,17 +47,12 @@
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
         >Увійти через Mastodon і знайти стрічки</a
       >
-      <a mbButton variant="outline" routerLink="/plans">Переглянути можливості Plus</a>
+      <a mbButton variant="outline" routerLink="/settings/app">Mawkingbird Native</a>
     </div>
   }
 
   <section class="questions">
     <h2>Запитання</h2>
-    <h3>Чому це можливість Plus?</h3>
-    <p>
-      Перевірка сотень сторонніх сайтів проходить через проксі, який оплачує Mawkingbird: один запит
-      на сайт. Plus покриває ці витрати.
-    </p>
     <h3>Що таке файл OPML?</h3>
     <p>
       Формат списку підписок, який розуміють усі RSS-застосунки. Імпортуйте його у Feedly,

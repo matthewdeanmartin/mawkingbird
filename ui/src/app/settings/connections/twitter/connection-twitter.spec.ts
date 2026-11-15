@@ -67,7 +67,7 @@ describe('ConnectionTwitter', () => {
       settings.activate('twitterapi-io');
       settings.recordDirectReachability('twitterapi-io', 'blocked');
       fixture.detectChanges();
-      expect(text()).toMatch(/Set up a CORS proxy/);
+      expect(text()).toMatch(/Install Mawkingbird Native/);
     });
 
     it('warns when the chosen proxy cannot carry a key', () => {

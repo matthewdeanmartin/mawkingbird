@@ -224,7 +224,7 @@ export function toTwitterApiError(
       'CORS_UNAVAILABLE',
       context.viaProxy
         ? `Could not reach the Twitter data service through ${proxy}. The proxy may be down, rate-limiting you, or answering without the CORS headers a browser needs.`
-        : 'Your browser could not reach the Twitter data service directly. These services do not answer browsers, so this request needs a CORS proxy.',
+        : 'Your browser could not reach the Twitter data service directly. Install Mawkingbird Native under Settings → Install app to connect from your computer.',
       source,
       0,
     );

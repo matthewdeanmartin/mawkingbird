@@ -2607,3 +2607,13 @@ Reviewed regenerated inventory: 1845 scanned files and 639 candidate files. The 
 ### 2026-11-14 — native translation and OpenRouter
 
 Reviewed regenerated inventory: candidate file set remains unchanged. The OpenRouter page adds native API-key entry using shared field/control/button widgets, OS-store copy, and busy/error handling. Web OAuth, retention and vault controls stay supported. No shared widget implementation changed; no reconciliation file additions/removals. Native compiled settings smoke covers the new controls.
+
+### 2026-11-15 — Native install and proxy guidance
+
+Reviewed regenerated inventory: 1847 scanned files and 639 candidate files,
+with no candidate files added or removed. The Install page adds six download
+links and groups PWA controls in a disclosure (+7 shared findings). The proxy
+paywall replaces its Plus purchase controls with a Native install link (+1
+legacy anchor finding); other changes move source positions. No shared widget
+implementation or reconciliation disposition changed. Focused install and
+proxy-notice component tests cover the changed controls.

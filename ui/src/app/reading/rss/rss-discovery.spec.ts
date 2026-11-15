@@ -172,7 +172,7 @@ describe('RssDiscovery', () => {
     const discovery = TestBed.inject(RssDiscovery);
 
     expect(await discovery.discover([{ url: 'https://blog.test/a', via: 'alice' }])).toEqual([]);
-    expect(discovery.error()).toContain('CORS proxy');
+    expect(discovery.error()).toContain('Install Mawkingbird Native');
     expect(fetchText).not.toHaveBeenCalled();
   });
 

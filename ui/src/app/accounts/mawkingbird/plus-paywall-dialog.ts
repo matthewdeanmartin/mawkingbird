@@ -1,5 +1,6 @@
 import { Component, effect, ElementRef, inject, viewChild } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { RouterLink } from '@angular/router';
 import { PlusPaywall } from './plus-paywall';
 import { PlusPrice } from './plus-price';
 import { ProxyActivity } from '../../connections/cors-proxy/proxy-activity';
@@ -7,11 +8,12 @@ import { ProxyActivity } from '../../connections/cors-proxy/proxy-activity';
 // i18n plus.wall.settings: Your settings, on every device
 // i18n plus.wall.feeds: Take your feeds with you
 // i18n plus.wall.connections: Your connections, on every device
-// i18n plus.wall.proxy: Need a higher proxy allowance?
+// i18n plus.wall.proxy: Continue in Mawkingbird Native
 // i18n plus.wall.settingsBody: Get Plus to keep your Mawkingbird setup in sync. You can keep using settings on this device for free.
 // i18n plus.wall.feedsBody: Get Plus to sync feed subscriptions across devices. Reading and managing feeds on this device stays free.
 // i18n plus.wall.connectionsBody: Get Plus to sync stored connections. Connecting services on this device stays free.
-// i18n plus.wall.proxyBody: The free proxy has reached its request limit. Plus provides a higher allowance. You can also wait, or disable features that need the proxy.
+// i18n plus.wall.proxyBody: The browser proxy has reached its request limit. The desktop app fetches directly.
+// i18n plus.wall.installNative: Install Mawkingbird Native
 // i18n plus.wall.affected: Disabling stops proxied feed updates, article fetching, paste-site requests, link shortening and publishing that use the proxy. Direct connections and saved data remain available. Re-enable in connection settings.
 // i18n plus.wall.checking: Checking your membership…
 // i18n plus.wall.unavailable: We could not check your membership. Please retry.
@@ -25,11 +27,20 @@ import { ProxyActivity } from '../../connections/cors-proxy/proxy-activity';
 // i18n plus.wall.connectionsLink: Connection settings
 @Component({
   selector: 'app-plus-paywall-dialog',
-  imports: [TranslocoPipe, PlusPrice],
+  imports: [RouterLink, TranslocoPipe, PlusPrice],
   template: `<dialog #dialog (cancel)="wall.dismiss()" aria-labelledby="plus-wall-title">
     @if (wall.state(); as state) {
       <h2 id="plus-wall-title">{{ titles[state.feature] | transloco }}</h2>
-      @if (state.status === 'checking') {
+      @if (state.feature === 'proxy') {
+        <p>{{ 'plus.wall.proxyBody' | transloco }}</p>
+        <a class="btn" routerLink="/settings/app" (click)="wall.dismiss()">{{
+          'plus.wall.installNative' | transloco
+        }}</a>
+        <p>{{ 'plus.wall.affected' | transloco }}</p>
+        <button class="btn btn-outline" type="button" (click)="disableProxy()">
+          {{ 'plus.wall.disable' | transloco }}
+        </button>
+      } @else if (state.status === 'checking') {
         <p role="status">{{ 'plus.wall.checking' | transloco }}</p>
       } @else if (state.status === 'unavailable') {
         <p role="status">{{ 'plus.wall.unavailable' | transloco }}</p>
@@ -45,17 +56,11 @@ import { ProxyActivity } from '../../connections/cors-proxy/proxy-activity';
           [disabled]="!wall.catalogue.offer()"
           (click)="wall.upgrade()"
         >
-          {{ (state.feature === 'proxy' ? 'plus.wall.signUp' : 'plus.wall.get') | transloco }}
+          {{ 'plus.wall.get' | transloco }}
         </button>
         <button class="btn btn-outline" type="button" (click)="wall.upgrade(false)">
           {{ 'plus.wall.already' | transloco }}
         </button>
-        @if (state.feature === 'proxy') {
-          <p>{{ 'plus.wall.affected' | transloco }}</p>
-          <button class="btn btn-outline" type="button" (click)="disableProxy()">
-            {{ 'plus.wall.disable' | transloco }}
-          </button>
-        }
       }
       <button class="btn btn-outline" type="button" (click)="wall.dismiss()">
         {{ 'plus.wall.dismiss' | transloco }}

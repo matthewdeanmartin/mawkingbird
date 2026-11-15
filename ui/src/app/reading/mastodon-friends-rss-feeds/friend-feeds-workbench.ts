@@ -11,8 +11,8 @@ import {
 } from '../../public-pages/focused-apps/focused-next-steps';
 
 // i18n focusedTools.feeds.title: Your friends' feeds
-// i18n focusedTools.feeds.plusBefore: This is part of
-// i18n focusedTools.feeds.plusAfter: : checking hundreds of websites is the most expensive thing the app does.
+// i18n focusedTools.feeds.plusBefore: Find friends' feeds in
+// i18n focusedTools.feeds.plusAfter: , which checks sites directly from your computer.
 // i18n focusedTools.feeds.found.one: Found {{count}} feed on the {{checked}} sites checked. Open the results to follow it or download the OPML file.
 // i18n focusedTools.feeds.found.other: Found {{count}} feeds on the {{checked}} sites checked. Open the results to follow them or download the OPML file.
 // i18n focusedTools.feeds.progress: Show progress
@@ -25,11 +25,9 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
  * The signed-in body of /mastodon-friends-rss-feeds: the "Find your friends'
  * blogs" dialog from the RSS pages, opened from here.
  *
- * Plus-only, as everywhere (owner decision, sprint/seo-tools-2026-10-30.md):
- * every site checked is a request through the paid proxy. The dialog carries
- * the gate, so a non-supporter who opens it sees what Plus includes; this panel
- * says so before they click. The scan is root-provided, so closing the dialog
- * keeps its progress and result.
+ * Browser scanning uses a proxy; Native scans directly. The dialog carries
+ * the browser gate. The scan is root-provided, so closing the dialog keeps
+ * its progress and result.
  */
 @Component({
   selector: 'app-friend-feeds-workbench',
@@ -47,7 +45,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
       @if (!nativeReading && !supporter.isSupporter()) {
         <p>
           {{ 'focusedTools.feeds.plusBefore' | transloco }}
-          <a routerLink="/plans">Mawkingbird Plus</a
+          <a routerLink="/settings/app">Mawkingbird Native</a
           >{{ 'focusedTools.feeds.plusAfter' | transloco }}
         </p>
       }

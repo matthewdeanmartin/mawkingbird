@@ -30,11 +30,11 @@ describe('MastodonFriendsRssFeeds', () => {
   it('signed out, says it is a Plus feature and offers sign-in and the plans', async () => {
     const root = await page({});
     expect(root.querySelector('h1')?.textContent).toContain('RSS feeds of everyone you follow');
-    expect(root.textContent).toContain('part of Mawkingbird Plus');
+    expect(root.textContent).toContain('Mawkingbird Native');
     const links = [...root.querySelectorAll('.sign-in-choices a')].map((a) =>
       a.getAttribute('href'),
     );
-    expect(links).toEqual(['/login/mastodon?next=%2Fmastodon-friends-rss-feeds', '/plans']);
+    expect(links).toEqual(['/login/mastodon?next=%2Fmastodon-friends-rss-feeds', '/settings/app']);
     expect(root.querySelector('app-friend-feeds-workbench')).toBeNull();
   });
 
@@ -62,7 +62,7 @@ describe('FriendFeedsWorkbench', () => {
 
   it('tells a non-supporter up front, and the dialog then shows the Plus offer', () => {
     const { fixture, root } = render();
-    expect(root.querySelector('.panel a[href="/plans"]')).not.toBeNull();
+    expect(root.querySelector('.panel a[href="/settings/app"]')).not.toBeNull();
     root.querySelector<HTMLButtonElement>('.panel button')!.click();
     fixture.detectChanges();
     expect(root.querySelector('app-friend-feeds-dialog .plus-gate')).not.toBeNull();

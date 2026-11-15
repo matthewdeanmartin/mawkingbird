@@ -6,8 +6,8 @@ import { shuffleCtas } from '../feeds/feed-cta-store';
 describe('Home discovery card schedule', () => {
   it('uses fifteen-post spacing and mixes twenty features with ten Plus pitches', () => {
     expect(Number.isInteger(FEED_CTA_INTERVAL) && FEED_CTA_INTERVAL > 0).toBe(true);
-    expect(FEATURE_CTAS).toHaveLength(20);
-    expect(PLUS_CTAS).toHaveLength(10);
+    expect(FEATURE_CTAS).toHaveLength(22);
+    expect(PLUS_CTAS).toHaveLength(8);
     expect(FEATURE_CTAS.slice(0, DISCOVERY_WAYS.length)).toEqual(DISCOVERY_WAYS);
     const all = [...FEATURE_CTAS, ...PLUS_CTAS];
     expect(new Set(all.map((card) => card.id)).size).toBe(30);

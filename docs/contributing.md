@@ -28,6 +28,14 @@ The maintained Angular client is in `ui/`. The copy in the separate
 `mastodon_mock` repository is a frozen legacy mock-server client. Make new
 Mawkingbird changes here rather than synchronizing the two copies.
 
+The desktop app uses Tauri with the same Angular client. Its public host source
+is in `native/`; development happens in the separate private
+`mawkingbird_native` checkout, which mirrors reviewed source into this repo.
+See [Native release steps](https://github.com/matthewdeanmartin/mawkingbird/blob/main/NATIVE_RELEASE.md)
+for packaging and publishing. `make mockingbird` builds the static client into
+`ui/dist-mockingbird/browser`; `make test` runs the full UI gate. The optional
+admin diagnostic build writes to `ui/dist-admin`.
+
 ## Find the right files
 
 | Area | Location |
@@ -84,8 +92,9 @@ require `make design-verify`, including Storybook browser assertions.
 
 `make check` runs the broader UI gate, including formatting, storage, subpath
 routing, translations, the starter catalogue, both builds, and dependency audit.
-GitHub Actions validates builds for each public base path and runs the separate
-HTTP integration suite; run the full Angular unit suite locally. Include the
+GitHub Actions validates the root client build and runs the separate
+HTTP integration suite; run the full Angular unit suite locally. The other
+deployment base paths and design browser shards run on demand. Include the
 checks you ran and any remaining failures in your PR.
 
 For test isolation problems, see

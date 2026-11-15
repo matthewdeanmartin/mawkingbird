@@ -14,9 +14,6 @@
       很多人會在 Mastodon
       個人檔案裡放上自己的網站。這個工具會檢查這些連結有沒有訂閱源，並把找到的全部整理成一個 OPML
       檔，任何 RSS 閱讀器都能用。
-      @if (!inShell) {
-        這是 Mawkingbird Plus 的功能。
-      }
     </p>
   </div>
 
@@ -48,16 +45,12 @@
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
         >用 Mastodon 登入並找出他們的訂閱源</a
       >
-      <a mbButton variant="outline" routerLink="/plans">Plus 包含什麼</a>
+      <a mbButton variant="outline" routerLink="/settings/app">Mawkingbird Native</a>
     </div>
   }
 
   <section class="questions">
     <h2>常見問題</h2>
-    <h3>為什麼這是 Plus 功能？</h3>
-    <p>
-      檢查數百個外部網站要透過 Mawkingbird 付費的代理伺服器，每個網站一次請求。Plus 負擔這筆費用。
-    </p>
     <h3>什麼是 OPML 檔？</h3>
     <p>
       所有 RSS 閱讀器都看得懂的訂閱清單格式。把它匯入 Feedly、NetNewsWire、Inoreader

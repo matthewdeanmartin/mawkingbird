@@ -55,14 +55,14 @@ import {
 // i18n settings.connections.doctor.corsSection.whitelist.b: decision, made on their server; nothing installed on this side changes their mind. That is exactly what a
 // i18n settings.connections.doctor.corsProxyLink: CORS proxy
 // i18n settings.connections.doctor.corsSection.whitelist.c: is for — it fetches on your behalf from somewhere the rule does not apply, and it is scoped to this app instead of to your whole browser.
-// i18n settings.connections.doctor.corsSection.noProxy.a: You do not have one configured, which is why these are listed as unusable rather than merely indirect.
-// i18n settings.connections.doctor.setOneUp: Set one up
-// i18n settings.connections.doctor.corsSection.noProxy.b: and they can work.
+// i18n settings.connections.doctor.corsSection.noProxy.a: These services cannot be read in this browser without a proxy.
+// i18n settings.connections.doctor.setOneUp: Install Mawkingbird Native
+// i18n settings.connections.doctor.corsSection.noProxy.b: to connect directly.
 // i18n settings.connections.doctor.proxyRefused.title: Hosts your proxy can't rescue
 // i18n settings.connections.doctor.proxyRefused.intro: {{proxy}} is working — it answered when asked. These services refused it anyway:
-// i18n settings.connections.doctor.proxyRefused.fix.a: Proxies run in datacentres, and a lot of services block those address ranges while happily answering home connections. Retrying will not help and the proxy is not misconfigured; the fix is a
-// i18n settings.connections.doctor.differentProxyLink: different proxy
-// i18n settings.connections.doctor.proxyRefused.fix.b: — ideally one you run yourself, on an address nobody has blocklisted.
+// i18n settings.connections.doctor.proxyRefused.fix.a: Some services block datacentre addresses used by proxies. You can connect from your computer with
+// i18n settings.connections.doctor.differentProxyLink: Mawkingbird Native
+// i18n settings.connections.doctor.proxyRefused.fix.b: .
 // i18n settings.connections.doctor.explain.title: What this can and cannot tell you
 // i18n settings.connections.doctor.explain.p1: A background request that fails reports nothing at all to JavaScript — not a status, not a reason. That is the browser's own privacy rule, not a gap in this page: a site is not allowed to learn what else your network can reach. So a red row means only "this did not answer", and the cause could be a firewall, DNS filtering, an extension, a bot check, or a service having a bad day.
 // i18n settings.connections.doctor.explain.p2: Opening the host in a tab is the missing half. A top-level page load isn't subject to those rules, so the browser will show you the block page, the certificate warning or the DNS error directly. Those pages are privileged and unreadable from script, which is why the page has to ask you what you saw rather than detecting it.

@@ -13,9 +13,6 @@
     <p>
       İnsanlar sitelerini Mastodon profiline koyar. Bu araç bağlantıları akış için kontrol eder ve
       bulduklarını her okuyucuda kullanılabilen tek bir OPML dosyasında toplar.
-      @if (!inShell) {
-        Mawkingbird Plus'a dahildir.
-      }
     </p>
   </div>
 
@@ -51,17 +48,12 @@
       <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
         >Akışlarını bulmak için Mastodon ile oturum aç</a
       >
-      <a mbButton variant="outline" routerLink="/plans">Plus'ın içeriğini gör</a>
+      <a mbButton variant="outline" routerLink="/settings/app">Mawkingbird Native</a>
     </div>
   }
 
   <section class="questions">
     <h2>Sorular</h2>
-    <h3>Bu neden Plus özelliği?</h3>
-    <p>
-      Yüzlerce yabancı siteyi kontrol etmek, site başına bir istekle Mawkingbird'ün ücretini ödediği
-      bir vekil sunucudan geçer. Plus bu maliyeti karşılar.
-    </p>
     <h3>OPML dosyası nedir?</h3>
     <p>
       Her akış okuyucunun anladığı abonelik listesi biçimi. Feedly, NetNewsWire, Inoreader veya

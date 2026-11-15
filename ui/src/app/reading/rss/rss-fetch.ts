@@ -610,13 +610,12 @@ function describe(err: unknown, viaProxy: boolean): string {
             'rate-limiting you, or refusing this address — check it on Settings → ' +
             'Connections → CORS proxy.'
         : "Couldn't reach this feed from the browser. Either the address is wrong or the " +
-            "site doesn't allow cross-origin (CORS) access. Mockingbird has no server of " +
-            'its own, so a blocked feed can only be read through a CORS proxy — you can set ' +
-            'one up on Settings → Connections → CORS proxy, then turn it on for this feed.';
+            'site does not allow browser access. Install Mawkingbird Native under Settings → ' +
+            'Install app to read it directly.';
     }
     if (viaProxy && (err.status === 401 || err.status === 403)) {
       if (proxyErrorBody(err.error)['code'] === 'free_destination_denied') {
-        return 'This RSS feed is outside the free proxy domain list and needs Mawkingbird Plus. Your subscription to the feed is saved.';
+        return 'This RSS feed is outside the free browser proxy domain list. Install Mawkingbird Native under Settings → Install app to read it directly. Your subscription is saved.';
       }
       return `The CORS proxy rejected the request (${err.status}). It probably needs an API key, or the key it has is wrong or out of quota.`;
     }

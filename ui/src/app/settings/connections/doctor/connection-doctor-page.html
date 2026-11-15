@@ -221,7 +221,7 @@
     @if (!hasProxy()) {
       <p class="muted small">
         {{ 'settings.connections.doctor.corsSection.noProxy.a' | transloco }}
-        <a [routerLink]="['/settings/connections/cors-proxy']">{{
+        <a [routerLink]="['/settings/app']">{{
           'settings.connections.doctor.setOneUp' | transloco
         }}</a>
         {{ 'settings.connections.doctor.corsSection.noProxy.b' | transloco }}
@@ -251,7 +251,7 @@
     </ul>
     <p class="muted small">
       {{ 'settings.connections.doctor.proxyRefused.fix.a' | transloco }}
-      <a [routerLink]="['/settings/connections/cors-proxy']">{{
+      <a [routerLink]="['/settings/app']">{{
         'settings.connections.doctor.differentProxyLink' | transloco
       }}</a>
       {{ 'settings.connections.doctor.proxyRefused.fix.b' | transloco }}

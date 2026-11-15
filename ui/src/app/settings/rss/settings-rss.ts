@@ -60,7 +60,8 @@ interface ImportReport {
 // i18n settings.rss.proxy.before: Feeds that block browser access can be routed through
 // i18n settings.rss.proxy.after: , per feed, below.
 // i18n settings.rss.proxy.incomplete: Your CORS proxy is selected but not finished — it still needs a key or a valid address.
-// i18n settings.rss.proxy.none: No CORS proxy is set up. Without one, feeds that block browser access can't be read at all.
+// i18n settings.rss.proxy.none: No browser proxy is set up. Feeds that block browser access can be read in Mawkingbird Native.
+// i18n settings.rss.proxy.installNative: Install Mawkingbird Native
 // i18n settings.rss.proxy.change: Change
 // i18n settings.rss.proxy.setUp: Set one up
 // i18n settings.rss.scrollRead: Mark items read as I scroll past them
@@ -93,9 +94,9 @@ interface ImportReport {
 // i18n settings.rss.import.already: {{count}} were already in your list.
 // i18n settings.rss.import.overLimit: {{count}} went past your limit of {{limit}}. Raise it above and import the same file again to pick up the rest.
 // i18n settings.rss.import.failed: {{count}} could not be read
-// i18n settings.rss.import.corsHint.before: — usually this is CORS, which a
-// i18n settings.rss.import.corsHint.link: CORS proxy
-// i18n settings.rss.import.corsHint.after:  can fix.
+// i18n settings.rss.import.corsHint.before: — browser access may be blocked.
+// i18n settings.rss.import.corsHint.link: Mawkingbird Native
+// i18n settings.rss.import.corsHint.after:  can fetch these feeds directly.
 // i18n settings.rss.import.whichFailed: Which ones failed
 // i18n settings.rss.viaProxy: via proxy
 // i18n settings.rss.viaProxy.title: Fetched through your CORS proxy

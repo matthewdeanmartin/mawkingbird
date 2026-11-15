@@ -171,7 +171,7 @@ const MESSAGES: Record<TwitterReachabilityStatus, (proxy: string) => string> = {
   proxy: (proxy) =>
     `Confirmed: your browser cannot reach this service directly, but it works through ${proxy}. Requests will use the proxy.`,
   'needs-proxy': () =>
-    'Confirmed: your browser cannot reach this service directly. It does not answer browsers, so Mawkingbird needs a CORS proxy to read Twitter data at all. Set one up under Settings → Connections → CORS proxy.',
+    'Confirmed: your browser cannot reach this service directly. Install Mawkingbird Native under Settings → Install app to connect from your computer.',
   'needs-consent': (proxy) =>
     `Confirmed: your browser cannot reach this service directly. It can be reached through ${proxy}, but Mawkingbird will not send your API key to that proxy until you say so.`,
   unreachable: (proxy) =>

@@ -44,13 +44,13 @@ import { firstValueFrom } from 'rxjs';
  */
 // i18n friendFeeds.title: Find your friends’ blogs
 // i18n friendFeeds.lead: People put their websites in their profile. This checks those links for a feed and collects whatever it finds into one file.
-// i18n friendFeeds.plusTitle: Part of Mawkingbird Plus
-// i18n friendFeeds.plusWhy: Checking hundreds of websites is the most expensive thing this app can do, so it is kept for supporters.
-// i18n friendFeeds.plusSeePlans: See what Plus includes
+// i18n friendFeeds.plusTitle: Find friends' feeds in Mawkingbird Native
+// i18n friendFeeds.plusWhy: The desktop app checks websites directly from your computer.
+// i18n friendFeeds.plusSeePlans: Install Mawkingbird Native
 // i18n friendFeeds.budgetLabel: Check up to
 // i18n friendFeeds.budgetSites: {{count}} sites
 // i18n friendFeeds.cost: Each site is one request, so this is up to <strong>{{count}}</strong> of them. Sites checked in an earlier run are free, and you can stop at any point.
-// i18n friendFeeds.noProxy: Checking websites needs a CORS proxy. Set one up under Settings → Connections.
+// i18n friendFeeds.noProxy: This browser needs a proxy to check websites. Mawkingbird Native checks them directly.
 // i18n friendFeeds.start: Start checking
 // i18n friendFeeds.cancel: Cancel
 // i18n friendFeeds.close: Close

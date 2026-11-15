@@ -969,7 +969,7 @@ describe('Shell zen modes', () => {
       'Source · MIT License',
       'Report a bug · Fail whale',
       'Discover · Help · News · ? Keyboard',
-      // Last, under the rest: hidden once running as an installed app.
+      // Last, under the rest: desktop downloads remain available from the web app.
       'Install the app',
     ]);
     // The static help site is outside the Angular app: a base-relative plain href.
