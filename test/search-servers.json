@@ -1,8 +1,9 @@
 {
   "version": 1,
-  "checkedAt": "2026-11-08T16:18:46.724Z",
+  "checkedAt": "2026-11-15T02:44:35.000Z",
   "checked": 336,
-  "usable": 0,
+  "usable": 317,
+  "postServers": 0,
   "servers": [
     {
       "domain": "mastodon.social",
@@ -335,10 +336,10 @@
     },
     {
       "domain": "mastodon.eus",
-      "status": "ok",
-      "accounts": true,
+      "status": "unreachable",
+      "accounts": false,
       "posts": false,
-      "tagsOnly": true
+      "tagsOnly": false
     },
     {
       "domain": "muenchen.social",
@@ -384,10 +385,10 @@
     },
     {
       "domain": "mastodont.cat",
-      "status": "ok",
-      "accounts": true,
+      "status": "auth-required",
+      "accounts": false,
       "posts": false,
-      "tagsOnly": true
+      "tagsOnly": false
     },
     {
       "domain": "fediscience.org",
@@ -426,10 +427,10 @@
     },
     {
       "domain": "metalhead.club",
-      "status": "ok",
-      "accounts": true,
+      "status": "unreachable",
+      "accounts": false,
       "posts": false,
-      "tagsOnly": true
+      "tagsOnly": false
     },
     {
       "domain": "cyberplace.social",
@@ -566,10 +567,10 @@
     },
     {
       "domain": "mastodon.me.uk",
-      "status": "ok",
-      "accounts": true,
+      "status": "unreachable",
+      "accounts": false,
       "posts": false,
-      "tagsOnly": true
+      "tagsOnly": false
     },
     {
       "domain": "blorbo.social",
@@ -601,10 +602,10 @@
     },
     {
       "domain": "bonn.social",
-      "status": "ok",
-      "accounts": true,
+      "status": "unreachable",
+      "accounts": false,
       "posts": false,
-      "tagsOnly": true
+      "tagsOnly": false
     },
     {
       "domain": "mementomori.social",
@@ -748,10 +749,10 @@
     },
     {
       "domain": "library.love",
-      "status": "auth-required",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "ursal.zone",
@@ -804,17 +805,17 @@
     },
     {
       "domain": "mastodon.gal",
-      "status": "ok",
-      "accounts": true,
+      "status": "unreachable",
+      "accounts": false,
       "posts": false,
-      "tagsOnly": true
+      "tagsOnly": false
     },
     {
       "domain": "glasgow.social",
       "status": "ok",
       "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "mastodon.berlin",
@@ -1010,7 +1011,7 @@
       "status": "ok",
       "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "machteburch.social",
@@ -1077,10 +1078,10 @@
     },
     {
       "domain": "libretooth.gr",
-      "status": "ok",
-      "accounts": true,
+      "status": "unreachable",
+      "accounts": false,
       "posts": false,
-      "tagsOnly": true
+      "tagsOnly": false
     },
     {
       "domain": "spore.social",
@@ -1182,10 +1183,10 @@
     },
     {
       "domain": "disabled.social",
-      "status": "auth-required",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "burningboard.net",
@@ -1231,10 +1232,10 @@
     },
     {
       "domain": "mikumikudance.cloud",
-      "status": "auth-required",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "mastodon.energy",
@@ -1322,10 +1323,10 @@
     },
     {
       "domain": "muri.network",
-      "status": "auth-required",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "tchafia.be",
@@ -1532,10 +1533,10 @@
     },
     {
       "domain": "epicure.social",
-      "status": "auth-required",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "toot.funami.tech",
@@ -1567,10 +1568,10 @@
     },
     {
       "domain": "lewacki.space",
-      "status": "ok",
-      "accounts": true,
+      "status": "unreachable",
+      "accounts": false,
       "posts": false,
-      "tagsOnly": true
+      "tagsOnly": false
     },
     {
       "domain": "hometech.social",
@@ -1735,10 +1736,10 @@
     },
     {
       "domain": "devianze.city",
-      "status": "auth-required",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "mstdn.animexx.de",
@@ -1959,10 +1960,10 @@
     },
     {
       "domain": "growers.social",
-      "status": "unreachable",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "birdon.social",
@@ -1973,10 +1974,10 @@
     },
     {
       "domain": "paktodon.asia",
-      "status": "auth-required",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "biplus.social",
@@ -2106,10 +2107,10 @@
     },
     {
       "domain": "nfld.me",
-      "status": "unreachable",
-      "accounts": false,
+      "status": "ok",
+      "accounts": true,
       "posts": false,
-      "tagsOnly": false
+      "tagsOnly": true
     },
     {
       "domain": "mastodon.ph",
