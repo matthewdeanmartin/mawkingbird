@@ -294,7 +294,7 @@ the app stay inside that deployment.
 The build fails when a file in `docs/` is missing from the `mkdocs.yml` nav, a
 nav entry has no file, an internal link targets a missing guide, or two guides
 share a title. Keep `docs/` for end-user guides only; internal planning belongs
-in `spec/` or `sprint/`. In-app links to help must be plain `href`s, not
+in `spec/` or `spec/sprint/`. In-app links to help must be plain `href`s, not
 `routerLink`, because `/help/` is outside the Angular app. They are relative
 (`help/`) so `<base href>` sends canary to its own preview. The footer, the More
 menu and the welcome modal link to it; the modal's links open new tabs so its

@@ -2,7 +2,7 @@
 
 Dependency-free, bounded language identification for short social prose.
 
-Part of Mawkingbird's in-repo libraries: see `ui/docs/libraries.md`. This folder
+Part of Mawkingbird's in-repo libraries: see `ops/engineering/libraries.md`. This folder
 must not import the app or another library; `npm run check:libs` enforces it.
 
 **API** (from `index.ts`, `corpus.json`): `detectLanguage(text)`, `confidentLanguage(text)`, script candidates and the word lists behind them. `corpus.json` is the human-reviewed outcome corpus, also read by the starters parity check.

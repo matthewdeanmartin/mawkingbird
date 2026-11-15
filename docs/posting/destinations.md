@@ -10,6 +10,8 @@ The destination selector appears beneath the writing box when more than one publ
 
 **Both** publishes the same writing to Fedi and Bluesky. It appears when both accounts are connected.
 
+If you are writing just for those two networks, [open the cross-post composer](https://mawkingbird.com/crosspost/) directly. You can start by signing in with either account.
+
 Choose the destination before adding special features. Changing it later may reveal that an attachment or option cannot travel to the new destination.
 
 ## What Both does

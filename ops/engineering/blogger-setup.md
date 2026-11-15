@@ -8,10 +8,10 @@ escape hatch for users who need their own.
 
 Google issues two different credentials and only one of them works here:
 
-| Credential | Identifies | Can it publish? |
-| --- | --- | --- |
-| API key (`AIza…`) | the application | **No.** `users/self/blogs` returns `403 PERMISSION_DENIED`, and posting is impossible. |
-| OAuth client id (`….apps.googleusercontent.com`) | the **user** | Yes. |
+| Credential                                       | Identifies      | Can it publish?                                                                        |
+| ------------------------------------------------ | --------------- | -------------------------------------------------------------------------------------- |
+| API key (`AIza…`)                                | the application | **No.** `users/self/blogs` returns `403 PERMISSION_DENIED`, and posting is impossible. |
+| OAuth client id (`….apps.googleusercontent.com`) | the **user**    | Yes.                                                                                   |
 
 Publishing is an act by a person, so it needs a credential that says which
 person. There is no API-key path to it and no setting that unlocks one.
@@ -40,6 +40,7 @@ the same browser that started the flow. **Never put the secret in
    different base href — see the deploy notes. Missing an entry produces
    `redirect_uri_mismatch`, which the connector translates into a message naming
    the exact URI to add.
+
 4. Add the same origins under **Authorized JavaScript origins**.
 5. Put the client id in `bloggerClientId` in `src/environments/environment.ts`
    and `src/environments/environment.mockingbird.ts`. Empty hides the connector
@@ -51,8 +52,8 @@ The scope this connector requests, `https://www.googleapis.com/auth/blogger`, is
 classified by Google as **sensitive**. Two consequences:
 
 - Until the project passes Google's app verification, the consent screen shows
-  **"Google hasn't verified this app"**, which users get past via *Advanced → Go
-  to (unsafe)*. The settings page warns about this in advance so it does not
+  **"Google hasn't verified this app"**, which users get past via _Advanced → Go
+  to (unsafe)_. The settings page warns about this in advance so it does not
   read as the app being broken.
 - An unverified project serves at most **100 test users**, added by hand in the
   console. This is a hard cap, not a soft warning.
@@ -84,11 +85,11 @@ it is the same blog either way.
 
 ## What is stored
 
-| Key | Store | Why |
-| --- | --- | --- |
-| `mockingbird_blogger_token` | `sessionStorage`, account-scoped | A secret. Dies with the tab; there is deliberately no refresh token, which would be a year-long credential sitting in a browser. |
-| `mockingbird_blogger_blog` | `localStorage`, account-scoped | The chosen blog. A preference, not a secret — re-choosing it every session would be busywork. An `includeInProfile` field written by older versions is ignored. |
-| `mockingbird_blogger_client_id` | `localStorage`, unscoped | The user's own client id, if supplied. Public by design. |
+| Key                             | Store                            | Why                                                                                                                                                             |
+| ------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mockingbird_blogger_token`     | `sessionStorage`, account-scoped | A secret. Dies with the tab; there is deliberately no refresh token, which would be a year-long credential sitting in a browser.                                |
+| `mockingbird_blogger_blog`      | `localStorage`, account-scoped   | The chosen blog. A preference, not a secret — re-choosing it every session would be busywork. An `includeInProfile` field written by older versions is ignored. |
+| `mockingbird_blogger_client_id` | `localStorage`, unscoped         | The user's own client id, if supplied. Public by design.                                                                                                        |
 
 Keeping the blog choice out of the token means signing in again does not mean
 choosing the blog again. (It also used to let a "profile feed" mix the blog into

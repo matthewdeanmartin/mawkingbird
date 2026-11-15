@@ -22,7 +22,7 @@ vocabulary and formality matters more than raw throughput.
 Dispatch in large batches, not one subagent per small area. Every dispatch (subagent or fresh
 session) re-pays the cost of reading the skill and glossary before translating a single key,
 so a language done as ~5 large dispatches is far cheaper than the same language done as ~50
-small ones. Use [the translation context](../i18n-context/README.md), the locale's
+small ones. Use [the translation context](../../ui/i18n-context/README.md), the locale's
 glossary in `i18n-context/`, and the generated work order to keep each batch consistent.
 
 ## Bot work order

@@ -26,7 +26,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 const TIMEOUT_MS = 7000;
 const PAGE_LIMIT = 80;
 
-// i18n accountReplies.count: Likely unread mentions/replies (24h): {{count}}
+// i18n accountReplies.count: {{count}} new replies
 
 export interface ReplyCount {
   count: number;
@@ -61,8 +61,7 @@ export class AccountReplyCounts {
 
   label(key: string): string {
     const count = this.counts()[key];
-    if (count === undefined) return this.checking() ? '…' : '—';
-    if (count === null) return '—';
+    if (!count?.count) return '';
     return `${count.count}${count.more ? '+' : ''}`;
   }
 

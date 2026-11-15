@@ -21,6 +21,16 @@
       <a href="https://mawkingbird.com/">mawkingbird.com</a>.
     </div>
   }
+  @if (archiveStatus(); as archive) {
+    @if (!archive.complete) {
+      <div class="archive-progress" role="status">
+        {{
+          (archivePaused() ? 'shell.archive.paused' : 'shell.archive.progress')
+            | transloco: { count: archive.following }
+        }}
+      </div>
+    }
+  }
 
   <!-- Writing zen hides the universal chrome as well as the rails — the header and
      footer live here, outside the outlet, so /write cannot hide them itself.
@@ -216,28 +226,78 @@
           [attr.data-mode]="appMode.mode()"
           [attr.aria-label]="'shell.nav.primary' | transloco"
         >
-          <a routerLink="/home" routerLinkActive="active">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
-            </svg>
-            <span>{{ 'shell.nav.home' | transloco }}</span>
-          </a>
-          @for (item of modeItems(); track item.id) {
-            <a
-              [routerLink]="item.link"
-              [queryParams]="item.queryParams ?? null"
-              [class.active]="item.active(currentUrl())"
-              [attr.aria-current]="item.active(currentUrl()) ? 'page' : null"
-              [class.has-activity]="hasActivity(item)"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
-              <span>{{ item.labelKey | transloco }}</span>
-              @if (hasActivity(item)) {
-                <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
-                  >●</span
+          @if (
+            nativeProfilesAvailable &&
+            appMode.mode() === 'mastodon' &&
+            auth.kind() === 'mastodon' &&
+            auth.token()
+          ) {
+            <details class="nav-dropdown" #homeDropdown>
+              <summary [class.active]="currentUrl().startsWith('/home')">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
+                </svg>
+                <span>{{ 'shell.nav.home' | transloco }}</span>
+              </summary>
+              <div class="nav-dropdown-panel">
+                <a
+                  routerLink="/home"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  (click)="homeDropdown.open = false"
+                  >{{ 'shell.nav.posts' | transloco }}</a
                 >
-              }
+                <a
+                  routerLink="/home/profiles"
+                  routerLinkActive="active"
+                  (click)="homeDropdown.open = false"
+                  >{{ 'shell.nav.profiles' | transloco }}</a
+                >
+              </div>
+            </details>
+          } @else {
+            <a routerLink="/home" routerLinkActive="active">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
+              </svg>
+              <span>{{ 'shell.nav.home' | transloco }}</span>
             </a>
+          }
+          @for (item of modeItems(); track item.id) {
+            @if (item.webSubitems && webAlgoMenu && auth.kind() === 'mastodon' && auth.token()) {
+              <details class="nav-dropdown" #algoDropdown>
+                <summary [class.active]="item.active(currentUrl())">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
+                  <span>{{ item.labelKey | transloco }}</span>
+                </summary>
+                <div class="nav-dropdown-panel">
+                  @for (choice of item.webSubitems; track choice.link) {
+                    <a
+                      [routerLink]="choice.link"
+                      routerLinkActive="active"
+                      (click)="algoDropdown.open = false"
+                      >{{ choice.labelKey | transloco }}</a
+                    >
+                  }
+                </div>
+              </details>
+            } @else {
+              <a
+                [routerLink]="item.link"
+                [queryParams]="item.queryParams ?? null"
+                [class.active]="item.active(currentUrl())"
+                [attr.aria-current]="item.active(currentUrl()) ? 'page' : null"
+                [class.has-activity]="hasActivity(item)"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
+                <span>{{ item.labelKey | transloco }}</span>
+                @if (hasActivity(item)) {
+                  <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
+                    >●</span
+                  >
+                }
+              </a>
+            }
           }
           @if (auth.shouldOfferLogin && !focusedApp()) {
             <a class="login-nav" routerLink="/login" (click)="auth.exitAnonymous()">
@@ -394,9 +454,11 @@
                     {{ accountName(acc) }}
                     <small class="muted">&#64;{{ acc.username }}</small>
                     @if (replyCounts.currentKey(); as key) {
-                      <small class="muted reply-count">{{
-                        'accountReplies.count' | transloco: { count: replyCounts.label(key) }
-                      }}</small>
+                      @if (replyCounts.label(key); as count) {
+                        <small class="muted reply-count">{{
+                          'accountReplies.count' | transloco: { count }
+                        }}</small>
+                      }
                     }
                   </span>
                 </a>
@@ -449,10 +511,11 @@
                             <small class="muted">&#64;{{ s.account?.username }}</small>
                           }
                           @if (replyCounts.hasAccount(s.key)) {
-                            <small class="muted reply-count">{{
-                              'accountReplies.count'
-                                | transloco: { count: replyCounts.label(s.key) }
-                            }}</small>
+                            @if (replyCounts.label(s.key); as count) {
+                              <small class="muted reply-count">{{
+                                'accountReplies.count' | transloco: { count }
+                              }}</small>
+                            }
                           }
                         </span>
                       </button>

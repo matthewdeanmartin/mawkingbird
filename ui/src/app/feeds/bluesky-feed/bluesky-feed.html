@@ -1,6 +1,8 @@
 <header class="bf-header">
-  <a class="muted small" routerLink="/feeds/lists">{{ 'blueskyFeed.back' | transloco }}</a>
-  <h2>{{ title() }}</h2>
+  @if (!forYou) {
+    <a class="muted small" routerLink="/feeds/lists">{{ 'blueskyFeed.back' | transloco }}</a>
+  }
+  <h2>{{ forYou ? ('blueskyFeed.forYou' | transloco) : title() }}</h2>
   @if (entry(); as e) {
     <p class="muted small">
       🦋 {{ (e.kind === 'list' ? 'blueskyFeed.kind.list' : 'blueskyFeed.kind.feed') | transloco }}

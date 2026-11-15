@@ -1,38 +1,9 @@
-# Mawkingbird source migration
+# Mawkingbird source migration (September 2026)
 
-## Current publishing configuration (Actions deployment, 2026-09-12)
+This records the source import and the superseded publishing handoff. Use the
+[current deployment runbook](../../ops/DEPLOY.md) for active procedures.
 
-The workflows now publish production, canary, and test to this repository's
-gh-pages branch with GITHUB_TOKEN as the assembled-site store. GitHub Pages
-Settings must select **GitHub Actions**, not **Deploy from a branch**. The
-workflows upload that complete branch snapshot with `upload-pages-artifact`
-and deploy it with `deploy-pages`; there are no REST Pages rebuild requests.
-Canary and Test stage their subtrees in sequence and deploy the site once, only
-after both succeed. Production uploads the same complete site after replacing
-the root. The shared workflow concurrency lock covers staging through deployment.
-This preserves production on preview pushes and preserves previews on production
-promotion. Keep gh-pages: it holds the other versions that must survive a deploy.
-
-Production builds with base href `/`, root OAuth metadata, the shared subpath
-404 fallback, and CNAME mawkingbird.com. No workflow publishes to mastodon_mock.
-The old mirror jobs were removed: they would overwrite this custom-domain site
-with `/mawkingbird/` assets and break it again. Production has an enforcing
-base/404/OAuth check before publication. MAWKINGBIRD_PUBLISH_ENABLED controls
-activation. Production stays manually promoted; canary/test run on main pushes.
-
-The `github-pages` environment must allow the workflow ref (normally `main`);
-an old branch-only deployment rule allowing just `gh-pages` must be updated for
-Actions. Run production promotions from the current `main` workflow and use its
-`ref` input to choose the source version. Selecting an old workflow ref can run
-the retired branch-publishing procedure. No new secrets or DNS changes are needed.
-After committing these workflow changes, a main push deploys Canary/Test; the
-last-deployment record in Settings still describes the previous rollout until
-that run finishes. A workflow's success now includes the actual Pages deployment.
-
-The github.io fallback is currently a redirect because the owner moved the
-custom-domain binding here. An independent fallback requires a separate Pages
-site and remains follow-up work. The original topology/runbook below is retained
-as migration history, not the current deployment procedure.
+## Hosting incident during migration
 
 > Hosting change reported by the owner after this plan: mawkingbird.com was
 > disconnected from mastodon_mock and attached to mawkingbird, with Cloudflare

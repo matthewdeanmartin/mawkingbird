@@ -1,7 +1,7 @@
 # SEO plan (Opus review, 2026-11-12)
 
 Status: proposal, nothing implemented. Owner decisions are marked **Decide**.
-Engineering reference: [ui/docs/seo.md](../ui/docs/seo.md). This plan does not
+Engineering reference: [SEO engineering guide](../ops/engineering/seo.md). This plan does not
 repeat what that file already describes.
 
 ## Bottom line
@@ -192,7 +192,7 @@ share page.
 **Respect account flags in the card too.** If the author's account says
 `noindex` or isn't `discoverable`, still return a minimal card (the sharer
 chose to share), but show only the display name and handle, with no excerpt
-in the description. Write that rule in `ui/docs/seo.md` and give it a spec
+in the description. Write that rule in `ops/engineering/seo.md` and give it a spec
 before shipping.
 
 **Later, maybe:** an opt-in "public profile page" a user turns on for
@@ -222,7 +222,7 @@ before they choose a client, so they suit the client-first positioning:
 
 Comparison pages need to be accurate and dated. Your parity audits
 (`spec/phanpy_parity.md`, `spec/mastodon_parity.md`,
-`ui/docs/bluesky-feature-parity.md`) are already the research. Do **not** frame
+`spec/history/bluesky-feature-parity.md`) are already the research. Do **not** frame
 any of this as leaving or deleting accounts (house rule: no exit tools).
 
 ### 3.3 Off-page: links and listings (owner work, high leverage)
@@ -267,7 +267,7 @@ submit them.)
   ("Discovered – not indexed" means authority or crawl budget; "Crawled – not
   indexed" means quality or duplication; "Duplicate, Google chose different
   canonical" points to a bug). In Performance, look at queries per family.
-  Record it in `sprint/` so trends are visible.
+  Record it in `spec/sprint/` so trends are visible.
 - **Bing Webmaster Tools**: you've verified it (`BingSiteAuth.xml`). Also turn
   on Cloudflare **Crawler Hints / IndexNow**. It's one toggle and Bing feeds
   DuckDuckGo and several AI answer engines.
@@ -301,7 +301,7 @@ Practical effects:
 
 **Decide**: keep the default (privacy and copyright stance), or allow the
 training bots for the public marketing, help and news pages only. Whichever
-you choose, record it in `ui/docs/seo.md`, because the robots.txt in the
+you choose, record it in `ops/engineering/seo.md`, because the robots.txt in the
 repository no longer matches what's served. Also note that the served file
 has two `User-agent: *` groups. Google merges them, but dropping
 `ui/public/robots.txt`'s own `*` group or turning off the managed block would
@@ -322,7 +322,7 @@ avoid the duplication.
 | Phase                    | Work                                                                                                                                                              | Owner / code | Gates                                                  |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------ |
 | **0. This week**         | Always Use HTTPS + HSTS; check the github.io hop; decide on the legacy `mastodon_mock` site; GSC Domain property; IndexNow toggle; robots/AI decision             | Owner        | curl recheck of §1 table                               |
-| **1. Measure**           | Split the sitemap into families; weekly GSC log in `sprint/`                                                                                                      | Code         | `make test-seo`, `test:seo:browser`                    |
+| **1. Measure**           | Split the sitemap into families; weekly GSC log in `spec/sprint/`                                                                                                      | Code         | `make test-seo`, `test:seo:browser`                    |
 | **2. Share Worker**      | §3.1: unfurl cards, 200 status, noindex, author `fediverse:creator`, invites and `/message/` included; then decide whether share intents use the Mawkingbird link | Code         | Worker tests, test-Worker smoke, DEPLOY.md runbook     |
 | **3. Cheap on-page**     | Optimised default OG image; per-page generated OG cards; `fediverse:creator` everywhere; per-tool `WebApplication` + breadcrumbs; `Organization` + `sameAs`       | Code         | `make test-seo`, `test:seo:browser`, build size report |
 | **4. Links**             | joinmastodon/apps, awesome lists, AlternativeTo, Show HN; announce each community page                                                                            | Owner        | n/a                                                    |

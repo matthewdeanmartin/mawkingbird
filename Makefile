@@ -2,9 +2,8 @@
 MAKEFLAGS += --no-print-directory
 MOCKINGBIRD_BASE_HREF ?= /
 MOCKINGBIRD_SEO ?= false
-# Scratch output (logs, reports, screenshots, Python bytecode) lives outside the
-# working tree, in the folder ui/scripts/artifacts.mjs resolves (OS temp, or
-# $MAWKINGBIRD_ARTIFACTS). Asking Node keeps Git Bash's /tmp out of it.
+# Gate logs go in the ignored log/ folder. Reports, screenshots and Python
+# bytecode use ui/scripts/artifacts.mjs (OS temp or $MAWKINGBIRD_ARTIFACTS).
 export PYTHONPYCACHEPREFIX ?= $(shell node ui/scripts/artifacts.mjs pycache)
 .PHONY: help install dev mockingbird help-site help-site-test news news-check news-link test test-integration check
 help:

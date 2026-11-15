@@ -1,4 +1,5 @@
 import { inject, Type } from '@angular/core';
+import { NATIVE_FOLLOW_STATUS, NATIVE_PROFILES } from './platform/session/platform-login';
 import { CanActivateFn, CanMatchFn, ResolveFn, Route, Router, Routes } from '@angular/router';
 import { authGuard, mastodonSignedInMatch, signedInMatch } from './platform/session/auth.guard';
 import { adminGuard } from './admin/admin.guard';
@@ -489,6 +490,12 @@ export const routes: Routes = [
       // shell resolves against, and removing it would turn those into dead ends.
       { path: '', pathMatch: 'full', redirectTo: 'home' },
       {
+        path: 'home/profiles',
+        title: 'Profiles',
+        canMatch: [() => inject(NATIVE_PROFILES) !== null, mastodonSignedInMatch],
+        loadComponent: () => import('./feeds/home/home-profiles').then((m) => m.HomeProfiles),
+      },
+      {
         path: 'home',
         title: 'Home',
         // The front door dispatches here, so crawlers must not lose its indexability.
@@ -522,6 +529,19 @@ export const routes: Routes = [
           import('./discovery/bluesky-starter-packs/bluesky-starter-pack-page').then(
             (m) => m.BlueskyStarterPackPage,
           ),
+      },
+      {
+        path: 'for-you',
+        title: 'For you',
+        data: { blueskyDiscover: true },
+        loadComponent: () =>
+          import('./feeds/bluesky-feed/bluesky-feed').then((m) => m.BlueskyFeedPage),
+      },
+      {
+        path: 'algo/people',
+        title: 'Algo People',
+        canMatch: [() => inject(NATIVE_FOLLOW_STATUS) === null, mastodonSignedInMatch],
+        loadComponent: () => import('./feeds/algo/algo-people').then((m) => m.AlgoPeople),
       },
       {
         path: 'algo',

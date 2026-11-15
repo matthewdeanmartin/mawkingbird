@@ -29,7 +29,11 @@ import { redirectToSecureLogin } from '../../../platform/session/secure-login';
 import { loginDestination } from '../../../platform/session/login-destination';
 import { MisskeyAuth } from '../../../connections/misskey/misskey-auth';
 import { FeatureFlags } from '../../../platform/build/feature-flags';
-import { NATIVE_MASTODON_LOGIN } from '../../../platform/session/platform-login';
+import {
+  NATIVE_FOLLOW_COLLECT,
+  NATIVE_MASTODON_LOGIN,
+} from '../../../platform/session/platform-login';
+import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics';
 import { MbNotice } from '../../../design-system/notice/notice';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
@@ -206,6 +210,8 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 })
 export class Login implements OnInit, OnDestroy {
   private readonly nativeLogin = inject(NATIVE_MASTODON_LOGIN);
+  private readonly nativeFollowCollect = inject(NATIVE_FOLLOW_COLLECT);
+  private readonly diagnostics = inject(PageDiagnostics);
   private api = inject(Api);
   private readonly transloco = inject(TranslocoService);
   private mockApi = inject(MockApi);
@@ -627,6 +633,16 @@ export class Login implements OnInit, OnDestroy {
         // the existing one. Otherwise commit the new session.
         if (!this.adoptExistingSession(acc, value)) {
           this.auth.setAccount(acc);
+        }
+        if (value.startsWith('native-mastodon:')) {
+          const collection = this.nativeFollowCollect?.(value);
+          if (collection) {
+            void collection.catch((error: { kind?: string }) => {
+              this.diagnostics.warn('Archive', 'following-inventory-paused', {
+                kind: typeof error?.kind === 'string' ? error.kind : 'unknown',
+              });
+            });
+          }
         }
         this.enteringHome.set(true);
         this.checking.set(false);

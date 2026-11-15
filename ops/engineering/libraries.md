@@ -5,15 +5,15 @@ standard or a general technique that any app could use. That code lives in
 `ui/src/lib/<name>/` as a pseudo-vendored library: kept in this repository and
 built with the app, but written and checked as if it were an npm package.
 
-| Library | What it is | The app's seam |
-| --- | --- | --- |
-| `language-detection` | Bounded language identification for short social prose | `app/language/language-detect.ts` |
-| `rss` | RSS/Atom parsing, feed-format ranking, OPML import/export | `app/reading/rss/opml.ts` (export title and filename); the reader imports the parser |
-| `dictionary` | Sharded static dictionaries, word lookup, Japanese deinflection | `app/posts/learn/dictionary-registry.ts` |
-| `eliza` | The 1966 ELIZA recipe; the caller supplies the script | `app/chat/eliza/eliza-reply.ts` |
-| `link-cleaning` | Tracking-parameter removal with an allowlist | `app/publishing/post-link-cleaning.ts` |
-| `sentiment` | A small VADER-style rage score for social text | `app/feeds/sentiment.ts` |
-| `webmention` | W3C Webmention endpoint discovery | `app/connections/hugo/webmention-send.ts` |
+| Library              | What it is                                                      | The app's seam                                                                       |
+| -------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `language-detection` | Bounded language identification for short social prose          | `app/language/language-detect.ts`                                                    |
+| `rss`                | RSS/Atom parsing, feed-format ranking, OPML import/export       | `app/reading/rss/opml.ts` (export title and filename); the reader imports the parser |
+| `dictionary`         | Sharded static dictionaries, word lookup, Japanese deinflection | `app/posts/learn/dictionary-registry.ts`                                             |
+| `eliza`              | The 1966 ELIZA recipe; the caller supplies the script           | `app/chat/eliza/eliza-reply.ts`                                                      |
+| `link-cleaning`      | Tracking-parameter removal with an allowlist                    | `app/publishing/post-link-cleaning.ts`                                               |
+| `sentiment`          | A small VADER-style rage score for social text                  | `app/feeds/sentiment.ts`                                                             |
+| `webmention`         | W3C Webmention endpoint discovery                               | `app/connections/hugo/webmention-send.ts`                                            |
 
 ## The rules
 

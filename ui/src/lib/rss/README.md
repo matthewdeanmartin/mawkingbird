@@ -2,7 +2,7 @@
 
 RSS 2.0 / Atom parsing, feed-format ranking, and OPML import/export.
 
-Part of Mawkingbird's in-repo libraries: see `ui/docs/libraries.md`. This folder
+Part of Mawkingbird's in-repo libraries: see `ops/engineering/libraries.md`. This folder
 must not import the app or another library; `npm run check:libs` enforces it.
 
 **API** (from `index.ts`): `parseFeed(xml)`, `rankFeeds(candidates)`, `collapseFormats(candidates)`, `parseOpml(xml)`, `buildOpml(subscriptions, now, title)`. Uses the browser `DOMParser`.

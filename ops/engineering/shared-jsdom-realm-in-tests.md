@@ -111,7 +111,7 @@ const, because the builder can execute the setup file more than once per worker
 **`src/app/testing/stub-location.ts`** is the supported way to stub `location`:
 
 ```ts
-import { stubLocation } from '../../testing/stub-location';
+import { stubLocation } from "../../testing/stub-location";
 
 stubLocation({ onHref: hrefSpy }); // intercept a redirect
 stubLocation({ onReload: reloadSpy }); // intercept a reload
@@ -145,8 +145,8 @@ to `src/test-setup.ts`:
 
 ```ts
 afterEach(() => {
-  if (typeof location?.origin !== 'string') {
-    console.error('LOCATION-BROKEN-AFTER:', expect.getState().currentTestName);
+  if (typeof location?.origin !== "string") {
+    console.error("LOCATION-BROKEN-AFTER:", expect.getState().currentTestName);
   }
 });
 ```

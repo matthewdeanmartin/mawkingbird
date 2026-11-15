@@ -86,7 +86,7 @@ describe('AccountReplyCounts', () => {
     slow.flush({}, { status: 503, statusText: 'Unavailable' });
     await pending;
     expect(counts.label('mastodon:second')).toBe('1');
-    expect(counts.label('mastodon:first')).toBe('—');
+    expect(counts.label('mastodon:first')).toBe('');
     requests.verify();
   });
 
@@ -129,7 +129,7 @@ describe('AccountReplyCounts', () => {
     kind.set('bluesky');
     account.set({ id: 'bsky:did:plc:one' });
     counts.markCurrentRead('bluesky');
-    expect(counts.label('bluesky:did:plc:one')).toBe('0');
+    expect(counts.label('bluesky:did:plc:one')).toBe('');
   });
 
   it('does not mark Misskey notifications read while checking the switcher', async () => {
@@ -165,7 +165,7 @@ describe('AccountReplyCounts', () => {
     await pending;
     expect(counts.label(`misskey:${key}`)).toBe('1');
     counts.markCurrentRead('misskey');
-    expect(counts.label(`misskey:${key}`)).toBe('0');
+    expect(counts.label(`misskey:${key}`)).toBe('');
     requests.verify();
   });
 });

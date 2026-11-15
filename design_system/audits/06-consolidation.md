@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Native profile reader, 2026-11-15
+
+Reviewed the regenerated inventory after adding the Native Profiles reader and
+Home dropdown. The reader adds one candidate file with shared compact actions,
+profile selection buttons and a read checkbox; its partial-adoption entry in
+11-reconciliation.json records the remaining control and narrow-screen review.
+The existing browser Algo People candidate remains in the inventory. Shell
+navigation findings move with the new Native-only dropdown; web navigation is
+unchanged.
+
 ## Native connector cleanup, 2026-11-15
 
 Reviewed the regenerated inventory after the native connector changes. Three
@@ -2346,7 +2356,7 @@ are line shifts from re-wrapped import paths.
 
 Reviewed regeneration after moving domain-neutral code (language detection,
 RSS/OPML, dictionary, ELIZA, link cleaning, sentiment, webmention discovery)
-out of `ui/src/app` into `ui/src/lib` (see ui/docs/libraries.md). The audit scans
+out of `ui/src/app` into `ui/src/lib` (see ops/engineering/libraries.md). The audit scans
 the app, so filesScanned falls from 1807 to 1799. None of the moved files had
 control candidates: all 631 candidate files and their records are unchanged
 apart from line numbers. No reconciliation entries needed and no shared widget
@@ -2617,3 +2627,25 @@ paywall replaces its Plus purchase controls with a Native install link (+1
 legacy anchor finding); other changes move source positions. No shared widget
 implementation or reconciliation disposition changed. Focused install and
 proxy-notice component tests cover the changed controls.
+
+### 2026-11-15 — Local archive and browser People sample
+
+Reviewed regenerated inventory: 1849 scanned files and 640 candidate files.
+The new browser Algo People page adds two compact action buttons through
+MbPostAction, recorded as one new candidate file in reconciliation. Shell
+line shifts follow the native-only archive progress notice and browser Algo
+dropdown. The dropdown adds one native disclosure with two navigation links;
+the shell's existing partial-adoption entry covers its focus and dismissal
+review. No shared design widget implementation changed.
+
+The Bluesky-primary nav now points the existing Algo slot to Bluesky Discover
+under the shorter “For you” label. Reply counts render only when positive.
+The public Features page replaces its per-tool link list with three contextual
+tool links, and the Bluesky feed heading varies by route. These changes shift
+source line numbers in the inventory; they add no new control candidates or
+shared design widget behavior.
+
+The concurrent Native Profiles page adds one candidate file (1851 scanned,
+641 candidates). It uses MbPostAction for compact actions; profile selection
+buttons and the read checkbox remain a partial-adoption review in
+`11-reconciliation.json`.

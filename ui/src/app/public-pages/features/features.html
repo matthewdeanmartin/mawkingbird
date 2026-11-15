@@ -32,12 +32,6 @@
         <a mbContentLink routerLink="/communities">Starter kits: find your people by interest</a>
       </li>
       <li><a mbContentLink routerLink="/tools">All free tools, in one list</a></li>
-      <!-- One link per tool page, from focused-tools.json. -->
-      @for (tool of tools; track tool.path) {
-        <li>
-          <a mbContentLink [routerLink]="'/' + tool.path">{{ tool.title }}</a>
-        </li>
-      }
       <li><a mbContentLink routerLink="/for/instagram">Photo viewing for Instagram users</a></li>
       <li><a mbContentLink routerLink="/for/creators">Writing and photography for creators</a></li>
       <li>
@@ -62,6 +56,10 @@
         scroll.
       </li>
     </ul>
+    <p>
+      Looking for a particular conversation?
+      <a mbContentLink routerLink="/mastodon-search">Search Mastodon posts and people</a>.
+    </p>
     <a mbContentLink routerLink="/feeds">Explore feeds</a>
   </section>
   <section id="reading">
@@ -79,6 +77,10 @@
         availability can affect article extraction.
       </li>
     </ul>
+    <p>
+      Want to keep the links you saved outside Mawkingbird?
+      <a mbContentLink routerLink="/export-mastodon-bookmarks">Export your Mastodon bookmarks</a>.
+    </p>
     <a mbContentLink routerLink="/rss">Read RSS</a>
   </section>
   <section id="creators">
@@ -93,6 +95,10 @@
       <li>Connect supported publishing services such as Blogger and Hugo.</li>
       <li>Use optional OpenRouter tools with your own configured connection.</li>
     </ul>
+    <p>
+      Posting to both networks?
+      <a mbContentLink routerLink="/crosspost">Write once for Mastodon and Bluesky</a>.
+    </p>
     <a mbContentLink routerLink="/drafts">See your drafts</a>
   </section>
   <section id="advanced">

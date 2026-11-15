@@ -4,7 +4,7 @@ Use Git Bash and Make on Windows. The maintained Angular client lives in ui/.
 The sibling mastodon_mock/ui is a frozen legacy fork; do not synchronize changes back.
 
 For starter catalogue refreshes and language reconciliation, follow
-ui/docs/starter-catalog.md and regenerate ui/docs/starter-locale-coverage.md.
+ops/engineering/starter-catalog.md and regenerate ops/engineering/starter-locale-coverage.md.
 Pack translations and app-wide UI locales are separate; preserve script tags.
 
 Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfile.
@@ -12,19 +12,20 @@ Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfi
 Gate cadence: iterate cheap, gate once. Every `ng test` pays a fixed compile
 cost (about 70s for the full program, ~2 min more with coverage), so a full gate
 after each edit costs the owner hours. While working, use only:
+
 - `cd ui && make test-changed` (specs affected by your uncommitted edits, compiled
   as a narrowed program; `WATCH=1` keeps it running, rebuilds take seconds),
 - `npm run test:subset -- <spec or dir>` for named specs (also narrowed),
 - `npx prettier --check`/`ng lint --lint-file-patterns` on the files you touched,
 - `npx playwright test --config ../design_system/playwright.config.mjs <file>`
   for the one design browser file you are working on.
-Narrowed runs type-check only what they compile, so they never replace the gate.
-When the work is done, run each gate required below once, on the final tree,
-cheapest first (static checks, `make test`, build, SEO, design-verify). If a step
-fails, fix it and rerun that step plus the affected specs, not the whole chain.
-Rerun `make test` once more at the end only if source changed after its last
-green run. Never loop the full gate to "make sure"; report the green runs you have.
-`make test-quick` is `make test` without coverage, for a full-suite check midway.
+  Narrowed runs type-check only what they compile, so they never replace the gate.
+  When the work is done, run each gate required below once, on the final tree,
+  cheapest first (static checks, `make test`, build, SEO, design-verify). If a step
+  fails, fix it and rerun that step plus the affected specs, not the whole chain.
+  Rerun `make test` once more at the end only if source changed after its last
+  green run. Never loop the full gate to "make sure"; report the green runs you have.
+  `make test-quick` is `make test` without coverage, for a full-suite check midway.
 
 Exception — routine Feed Builder SIG additions/data refreshes (owner reaffirmed
 2026-11-08): use the minimal gate in the sibling
@@ -45,11 +46,11 @@ ui/coverage/index.html) and the manifest's added-test list are hidden. Set
 VERBOSE=1 (chunk table, every Playwright test) or TEST_MANIFEST_VERBOSE=1 to
 see them; check:i18n counts its advisories unless VERBOSE=1. ui/.npmrc sets
 loglevel=warn, so npm's "notice run" lines are hidden. Agents: redirect long
-gates to a log file and read its summary lines. Never write logs, screenshots or
-scratch files into the working tree. Put them under the artifact folder:
+gates to a log file and read its summary lines. Put logs in the ignored `log/`
+folder; keep screenshots and scratch files outside the working tree:
 `L=$(node ui/scripts/artifacts.mjs logs); make test > "$L/test.log" 2>&1`
-(OS temp/mawkingbird, or $MAWKINGBIRD_ARTIFACTS). Test reports and browser
-screenshots already go there. Set NO_COLOR=1 FORCE_COLOR=0
+Test reports and browser screenshots go to OS temp/mawkingbird (or
+`$MAWKINGBIRD_ARTIFACTS`). Set NO_COLOR=1 FORCE_COLOR=0
 on test runs, and grep failures before opening a full dump. A red `make test`
 ends by naming each failed test with its first message line.
 This gate includes design:inventory-check and check:dead-code (knip: unused files and
@@ -83,27 +84,28 @@ the sibling source checkout or an editable install. See docs/contributing.md.
 
 In-repo libraries: domain-neutral code (language detection, RSS/OPML, dictionary,
 ELIZA, link cleaning, sentiment, webmention) lives in ui/src/lib, per
-ui/docs/libraries.md. A library never imports the app or another library; the app
+ops/engineering/libraries.md. A library never imports the app or another library; the app
 uses one only through its lib.json entries. `npm run check:libs` enforces this.
 Library specs run in `npm run test:libs` (unchanged libraries are skipped), not
 in the Angular suite.
 
 Where documents go: docs/ holds end-user help guides only. Every file there
 must be in the mkdocs.yml nav; it is published to Read the Docs and as static
-pages at mawkingbird.com/help/ by scripts/build_help.py. Internal plans,
-inventories and feature specs go in spec/; sprint plans and their evidence go
-in sprint/; client engineering notes go in ui/docs/. After editing docs/ or
+pages at mawkingbird.com/help/ by scripts/build_help.py. Active deployment and
+maintainer runbooks go in ops/, with engineering guides in ops/engineering/.
+Feature plans, inventories and sprint evidence go in spec/; retired material goes
+in spec/history/. After editing docs/ or
 mkdocs.yml, run `make help-site-test` and `make help-site` from the repository
 root (uv, wheels only). Public, indexable pages and their sitemaps are described
-in ui/docs/seo.md; keep a page's client route, server route, sitemap entry and
+in ops/engineering/seo.md; keep a page's client route, server route, sitemap entry and
 SEO checks in sync, and run `cd ui && make test-seo && npm run test:seo:browser`.
 
-Read MIGRATION.md before modifying publishing. Keep all public origins, OAuth
+Read ops/DEPLOY.md before modifying publishing. Keep all public origins, OAuth
 redirect URLs, and persisted storage key names stable. This repository now hosts
 mawkingbird.com; production must use base href `/`. Do not publish a project-path
 mirror build to this site's root. Docs remain under docs/ and use Read the Docs.
 
-For Native releases, read NATIVE_RELEASE.md and use `kaclm --component native`.
+For Native releases, read ops/NATIVE_RELEASE.md and use `kaclm --component native`.
 `kaclm github-release` can draft notes from `[Unreleased]` but does not promote
 the changelog. Before creating or publishing a `native-vX.Y.Z` release, run
 `kaclm --component native release --override-version X.Y.Z --dry-run --yes`,

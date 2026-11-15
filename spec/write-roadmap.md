@@ -1,6 +1,6 @@
 # Write roadmap
 
-What comes after `sprint/write-drafts-2026-11.md`. Items are roughly in priority
+What comes after `spec/sprint/write-drafts-2026-11.md`. Items are roughly in priority
 order within each section. Facts were checked against the code on 2026-11-07.
 
 ## Scheduling

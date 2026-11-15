@@ -1,5 +1,5 @@
 // Keep src/lib/* honest: each library stands alone, and the app reaches it only
-// through the entry points its lib.json declares. See ui/docs/libraries.md.
+// through the entry points its lib.json declares. See ops/engineering/libraries.md.
 //
 // Fails when:
 //  1. a library file imports anything outside its own folder (the app, the

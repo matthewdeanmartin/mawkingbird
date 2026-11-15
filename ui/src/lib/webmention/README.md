@@ -2,7 +2,7 @@
 
 Finding a page's W3C Webmention endpoint from its headers and HTML.
 
-Part of Mawkingbird's in-repo libraries: see `ui/docs/libraries.md`. This folder
+Part of Mawkingbird's in-repo libraries: see `ops/engineering/libraries.md`. This folder
 must not import the app or another library; `npm run check:libs` enforces it.
 
 **API** (from `index.ts`): `resolveEndpoint(target, linkHeader, html)`, `endpointFromLinkHeader(value)`, `endpointFromHtml(html)`. Pure: no network.

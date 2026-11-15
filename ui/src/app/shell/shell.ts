@@ -66,7 +66,18 @@ import { RadioOutlet } from './radio-outlet';
 import { RailOutlet } from './rail-outlet';
 import { focusedAppFor, MODE_NAV, ModeNavItem } from './mode-nav';
 import { ModeSwitch } from './mode-switch';
+// i18n shell.nav.forYou: For you
 import { AccountTabBanner } from '../platform/session/account-tab-guard/account-tab-banner';
+import {
+  NATIVE_FOLLOW_COLLECT,
+  NATIVE_FOLLOW_STATUS,
+  NATIVE_PROFILES,
+  NativeFollowStatus,
+} from '../platform/session/platform-login';
+// i18n shell.archive.progress: Local people inventory: {{count}} found so far. Reading more in the background.
+// i18n shell.archive.paused: Local people inventory paused after {{count}}. It will resume when you reopen the app.
+// i18n shell.nav.posts: Posts
+// i18n shell.nav.profiles: Profiles
 
 // i18n shell.testDeployment: Test deployment — nothing here is real. Payments use Stripe's sandbox and no money moves. The real app is at
 // i18n shell.deployment.canary: Canary
@@ -217,6 +228,51 @@ function isWideUrl(url: string): boolean {
   providers: [{ provide: AccountSwitcher, useExisting: forwardRef(() => Shell) }],
 })
 export class Shell implements OnInit, AccountSwitcher {
+  private readonly nativeFollowCollect = inject(NATIVE_FOLLOW_COLLECT);
+  private readonly nativeFollowStatus = inject(NATIVE_FOLLOW_STATUS);
+  protected readonly nativeProfilesAvailable = inject(NATIVE_PROFILES) !== null;
+  protected readonly webAlgoMenu = !this.nativeFollowStatus;
+  protected readonly archiveStatus = signal<NativeFollowStatus | null>(null);
+  protected readonly archivePaused = signal(false);
+  private readonly archiveInventory = effect((onCleanup) => {
+    const handle = this.auth.kind() === 'mastodon' ? this.auth.token() : null;
+    if (
+      !handle?.startsWith('native-mastodon:') ||
+      !this.auth.account() ||
+      !this.nativeFollowStatus
+    ) {
+      this.archiveStatus.set(null);
+      this.archivePaused.set(false);
+      return;
+    }
+    this.archivePaused.set(false);
+    let cancelled = false;
+    let paused = false;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    const poll = async (startIfNeeded = false) => {
+      try {
+        const status = await this.nativeFollowStatus!(handle);
+        if (cancelled) return;
+        this.archiveStatus.set(status);
+        if (startIfNeeded && !status?.complete) {
+          void this.nativeFollowCollect?.(handle).catch(() => {
+            if (!cancelled) {
+              paused = true;
+              this.archivePaused.set(true);
+            }
+          });
+        }
+        if (!status?.complete && !paused) timeout = setTimeout(() => void poll(), 2000);
+      } catch {
+        if (!cancelled) this.archiveStatus.set(null);
+      }
+    };
+    void poll(true);
+    onCleanup(() => {
+      cancelled = true;
+      if (timeout) clearTimeout(timeout);
+    });
+  });
   protected readonly radioOutlet = inject(RadioOutlet);
   /** A page's own rails (Forum), shown in place of the defaults while set. */
   protected readonly railOutlet = inject(RailOutlet);
@@ -408,13 +464,25 @@ export class Shell implements OnInit, AccountSwitcher {
 
   /** The current mode's (or mini-app's) tabs, less any this visitor cannot use. */
   protected readonly modeItems = computed(() =>
-    (this.focusedApp()?.items ?? MODE_NAV[this.appMode.mode()]).filter((item) => {
-      // The Misskey visitor has no account either: no inbox, nothing joined.
-      if (item.requires === 'signedIn')
-        return !this.auth.isAnonymous && !this.auth.isMisskeyVisitor;
-      if (item.requires === 'chat') return !this.auth.isAnonymous || this.hasLocalChat();
-      return true;
-    }),
+    (this.focusedApp()?.items ?? MODE_NAV[this.appMode.mode()])
+      .map((item) =>
+        item.id === 'algo' && this.auth.isBlueskyPrimary
+          ? {
+              ...item,
+              labelKey: 'shell.nav.forYou',
+              link: '/for-you',
+              active: (url: string) => url.split(/[?#]/, 1)[0] === '/for-you',
+              webSubitems: undefined,
+            }
+          : item,
+      )
+      .filter((item) => {
+        // The Misskey visitor has no account either: no inbox, nothing joined.
+        if (item.requires === 'signedIn')
+          return !this.auth.isAnonymous && !this.auth.isMisskeyVisitor;
+        if (item.requires === 'chat') return !this.auth.isAnonymous || this.hasLocalChat();
+        return true;
+      }),
   );
 
   /** Activity dots are a signed-in Mastodon thing; Anonymous chat has none. */

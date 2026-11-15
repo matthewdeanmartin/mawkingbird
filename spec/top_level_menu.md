@@ -40,6 +40,13 @@ icon still means something in Mastodon.
 
 ## Menus
 
+Native Mastodon adds a **Home** dropdown with **Posts** (`/home`) and
+**Profiles** (`/home/profiles`). This follows the owner's November 2026 archive
+roadmap decision. The browser keeps the direct Home link. Other modes keep
+their existing Home behavior, and `/home` remains the default destination.
+The Native Profiles route is guarded so a web deep link cannot show the local
+archive view.
+
 ```
 mastodon: Home | Algo  Inbox  Chat  Search  Feeds | [RSS ▾]
 rss:      Home | Read  Later  Shelf  Kits  Manage | [Fedi ▾]

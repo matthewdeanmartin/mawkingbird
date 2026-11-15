@@ -4,7 +4,7 @@ This is the maintained standalone client. Use `npm ci`, then `npm start`.
 The default build is standalone Mawkingbird in `dist-mockingbird/browser`.
 `make build-admin` explicitly builds optional diagnostics to `dist-admin`.
 The frozen Python-packaged client remains in the sibling mastodon_mock repo.
-See [the migration runbook](../MIGRATION.md) before changing deployment settings.
+See [the deployment runbook](../ops/DEPLOY.md) before changing deployment settings.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
 

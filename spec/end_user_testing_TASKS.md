@@ -22,7 +22,7 @@ Things only you can do, newest first. Tick them off or delete them as you go.
       names and the `_visitor` / `_active_identity` values, not the
       credentials).
 
-## Manual test plans (test_plans/)
+## Manual test plans (spec/test_plans/)
 
 - [ ] `misskey-ma-visitor.md` (the visitor)
 - [ ] `misskey-m3-search.md` (search, hashtags, mentions)

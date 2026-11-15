@@ -18,6 +18,6 @@ Examples:
 
 The app's `PageTitleStrategy` joins `seoTitleLead`, `seoKeywordTitle`, and the build brand. Route titles without these SEO fields continue to serve as short, readable utility tab titles. The homepage uses `FRONT_PAGE_TAGLINE` and the matching static `<title>` in `src/index.html`. Keep browser routes in `app.routes.ts` and prerender routes in `main.server.ts` identical. For sitemap pages generated from registries, keep their title copy and route metadata in sync. Preserve each translated page's language and script; do not insert an English keyword phrase into a translated title.
 
-Before finishing a title change, compare the sitemap URLs with the rendered `<title>`, `og:title`, visible heading, and canonical URL. Look for duplicate titles, extra pipes, repeated brand names, excessively long titles, and phrasing that claims a feature the page does not deliver. Run the SEO build and browser checks listed in `ui/docs/seo.md`.
+Before finishing a title change, compare the sitemap URLs with the rendered `<title>`, `og:title`, visible heading, and canonical URL. Look for duplicate titles, extra pipes, repeated brand names, excessively long titles, and phrasing that claims a feature the page does not deliver. Run the SEO build and browser checks listed in `ops/engineering/seo.md`.
 
 Help and News are separate publishing surfaces; this guide covers app pages in `/sitemap.xml`.

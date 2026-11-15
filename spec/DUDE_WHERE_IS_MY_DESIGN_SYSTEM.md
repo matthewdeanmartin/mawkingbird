@@ -118,7 +118,7 @@ Roughly in order of effort/payoff, not a commitment to do any of it:
 4. Optional, larger lift: a documented component/token reference
    (e.g. a `docs/design-tokens.md`) listing every `--token`, what it means,
    and which components are exempt and why — closer to what
-   `ui/docs/starter-catalog.md` does for starter kits, but for CSS tokens.
+   `ops/engineering/starter-catalog.md` does for starter kits, but for CSS tokens.
 
 None of this exists today. This document is the map of the gap, not a plan
 to fill it.

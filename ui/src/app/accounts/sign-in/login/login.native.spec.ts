@@ -1,25 +1,44 @@
-import { NATIVE_MASTODON_LOGIN } from '../../../platform/session/platform-login';
+import {
+  NATIVE_FOLLOW_COLLECT,
+  NATIVE_MASTODON_LOGIN,
+} from '../../../platform/session/platform-login';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { Login } from './login';
 
 const nativeLogin = vi.fn();
+const nativeCollect = vi.fn();
 
 beforeEach(() => {
   localStorage.clear();
   sessionStorage.clear();
   nativeLogin.mockReset();
+  nativeCollect.mockReset();
+  nativeCollect.mockResolvedValue(undefined);
   TestBed.configureTestingModule({
     providers: [
       { provide: NATIVE_MASTODON_LOGIN, useValue: nativeLogin },
+      { provide: NATIVE_FOLLOW_COLLECT, useValue: nativeCollect },
       provideHttpClient(),
       provideHttpClientTesting(),
       { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({}) } } },
     ],
   });
+});
+
+it('starts native following inventory after account verification without waiting for it', () => {
+  vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+  const component = TestBed.createComponent(Login).componentInstance as any;
+  component.token.set('native-mastodon:opaque-reference');
+  component.submit();
+  expect(nativeCollect).not.toHaveBeenCalled();
+  TestBed.inject(HttpTestingController)
+    .expectOne('/api/v1/accounts/verify_credentials')
+    .flush({ id: '42', username: 'reader', acct: 'reader' } as never);
+  expect(nativeCollect).toHaveBeenCalledWith('native-mastodon:opaque-reference');
 });
 
 it('uses the system-browser bridge without registering or storing OAuth secrets in the renderer', async () => {

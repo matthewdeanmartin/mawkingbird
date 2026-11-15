@@ -10,7 +10,7 @@ const STATE_KEY = 'mockingbird_openrouter_oauth_state';
 
 /**
  * Specs share one jsdom realm, so anything stubbed on a global here has to be
- * put back — see ui/docs/shared-jsdom-realm-in-tests.md.
+ * put back — see ops/engineering/shared-jsdom-realm-in-tests.md.
  */
 describe('OpenRouterSession', () => {
   let fetchMock: ReturnType<typeof vi.fn>;

@@ -59,7 +59,7 @@ comments" points back at Mawkingbird.
   `/help/`.
 - Links: help home "More from Mawkingbird", the app footer (beside About &
   legal), `/legal/`, and the root `noscript` overview. Public page links follow
-  `ui/docs/seo.md` (trailing slash; checked by `check-seo-build.mjs`).
+  `ops/engineering/seo.md` (trailing slash; checked by `check-seo-build.mjs`).
 - `/news/` must not depend on the app bundle; it stays fast and crawlable
   without JavaScript.
 

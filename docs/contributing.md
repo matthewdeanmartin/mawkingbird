@@ -31,30 +31,28 @@ Mawkingbird changes here rather than synchronizing the two copies.
 The desktop app uses Tauri with the same Angular client. Its public host source
 is in `native/`; development happens in the separate private
 `mawkingbird_native` checkout, which mirrors reviewed source into this repo.
-See [Native release steps](https://github.com/matthewdeanmartin/mawkingbird/blob/main/NATIVE_RELEASE.md)
+See [Native release steps](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/NATIVE_RELEASE.md)
 for packaging and publishing. `make mockingbird` builds the static client into
 `ui/dist-mockingbird/browser`; `make test` runs the full UI gate. The optional
 admin diagnostic build writes to `ui/dist-admin`.
 
 ## Find the right files
 
-| Area | Location |
-| --- | --- |
-| Client code and colocated tests | `ui/src/` |
-| Public assets and interface dictionaries | `ui/public/` |
-| Translation context and glossaries | `ui/i18n-context/` |
-| Developer guides | `ui/docs/` |
-| Published help pages (end-user guides only) | `docs/` |
-| Help navigation | `mkdocs.yml` |
+| Area                                             | Location                |
+| ------------------------------------------------ | ----------------------- |
+| Client code and colocated tests                  | `ui/src/`               |
+| Public assets and interface dictionaries         | `ui/public/`            |
+| Translation context and glossaries               | `ui/i18n-context/`      |
+| Developer guides                                 | `ops/engineering/`      |
+| Published help pages (end-user guides only)      | `docs/`                 |
+| Help navigation                                  | `mkdocs.yml`            |
 | Static help site builder (Python, run with `uv`) | `scripts/build_help.py` |
-| Feature specs and internal plans | `spec/` |
-| Sprint plans and their results | `sprint/` |
-| Build and publishing automation | `.github/workflows/` |
+| Feature specs and internal plans                 | `spec/`                 |
+| Sprint plans and their results                   | `spec/sprint/`          |
+| Build and publishing automation                  | `.github/workflows/`    |
 
-Read the [UI design and contribution rules](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/contributing.md)
+Read the [UI design and contribution rules](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/engineering/contributing.md)
 before changing screens, text contrast, or settings behavior.
-The [security guide](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/security.md)
-explains storage, credentials, and browser security boundaries.
 
 ## Check a client change
 
@@ -98,7 +96,7 @@ deployment base paths and design browser shards run on demand. Include the
 checks you ran and any remaining failures in your PR.
 
 For test isolation problems, see
-[the shared jsdom guide](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/shared-jsdom-realm-in-tests.md).
+[the shared jsdom guide](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/engineering/shared-jsdom-realm-in-tests.md).
 
 ## Integration tests against the released mock server
 
@@ -130,11 +128,11 @@ version pin and review the results; do not replace it with a local/editable inst
 
 ## Translations and catalogue data
 
-Follow [Adding an interface language](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/translating-interface.md).
+Follow [Adding an interface language](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/engineering/translating-interface.md).
 English is generated from source declarations; other locales are maintained in
 `ui/public/i18n/`. Preserve placeholders and use the locale's context and glossary.
 
-The [starter catalogue guide](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ui/docs/starter-catalog.md)
+The [starter catalogue guide](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/engineering/starter-catalog.md)
 explains importing a snapshot from the sibling `mawkingbird_starters` repository.
 Normal builds validate the committed snapshot offline and do not require that
 checkout. `starter-kits:check` is a separate live account-consent check and can
@@ -177,6 +175,8 @@ hrefs, OAuth metadata, and the shared 404 fallback consistent. Do not publish a
 `/mawkingbird/` mirror build over the custom-domain root.
 
 The old github.io address currently redirects to the custom domain; it is not
-an independent fallback. See the current configuration section of
-[MIGRATION.md](https://github.com/matthewdeanmartin/mawkingbird/blob/main/MIGRATION.md)
-before changing hosting. Its older topology is retained as historical context.
+an independent fallback. See the current
+[deployment runbook](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/DEPLOY.md)
+before changing hosting. The
+[migration record](https://github.com/matthewdeanmartin/mawkingbird/blob/main/spec/history/MIGRATION.md)
+retains the old topology as historical context.

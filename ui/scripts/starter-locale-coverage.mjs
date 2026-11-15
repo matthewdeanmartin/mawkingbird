@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ui = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const reportPath = join(ui, 'docs/starter-locale-coverage.md');
+const reportPath = resolve(ui, '../ops/engineering/starter-locale-coverage.md');
 // Norwegian catalogue tags and UI negotiation use different equivalent codes.
 const identity = (code) => (code === 'no' ? 'nb' : code);
 const placeholders = (text) =>

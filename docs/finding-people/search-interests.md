@@ -24,6 +24,8 @@ On the Search page:
 
 Post search availability depends on the connected account and network. If **Posts** is unavailable, sign in when offered or try the other connected network.
 
+For a search page you can open directly, use [Search Mastodon](https://mawkingbird.com/mastodon-search/). It starts with the search box and works before you sign in.
+
 ## Try a hashtag
 
 A hashtag is a subject label beginning with `#`, such as `#Gardening`. Choose **Hashtags** on the Search page when you want the tag itself rather than every post containing an ordinary word.

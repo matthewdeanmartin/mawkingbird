@@ -97,7 +97,7 @@ Sprint review: on TEST with a fresh account and no proxy, paste a blocked RSS fe
 
 ## Validation and completion for every sprint
 
-- Implement only in maintained `ui/` and appropriate `docs/`; never synchronize to the frozen sibling client. Preserve public origins, OAuth redirects, routes, and persisted storage key names. Read `MIGRATION.md` before any publishing changes.
+- Implement only in maintained `ui/` and appropriate `docs/`; never synchronize to the frozen sibling client. Preserve public origins, OAuth redirects, routes, and persisted storage key names. Read `ops/DEPLOY.md` before any publishing changes.
 - Use Git Bash/Make and Node 22 or a supported newer version; install with `npm ci` and the committed lockfile as needed. Run targeted behavior specs during development, then `cd ui && make test`; preserve all test inventory checks and never skip/weaken tests.
 - For UI runtime changes run `cd ui && npm run build:mockingbird`, inspect the size report, and retain the 1 MB initial error budget. Keep optional data lazy. Use the real-client integration suite for changed server workflows when applicable, with a PyPI-installed mastodon-mock wheel, never the sibling checkout/editable install.
 - Each sprint must pass focused manual checks on fresh/existing accounts, light/dark mode, keyboard/touch, narrow screens, and relevant non-English text. Exercise real streaming separately from deterministic unit tests; record which deployed build/account/server was checked without logging tokens or private messages.

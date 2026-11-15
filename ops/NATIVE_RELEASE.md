@@ -4,6 +4,7 @@ The private `mawkingbird_native` repository is the development and test channel.
 This public repository contains a reviewed source snapshot and produces the
 public, unsigned desktop installers. Website deployment stays independent; only
 publishing a `native-v...` GitHub Release starts the desktop distribution job.
+Run the commands below from this repository's root.
 
 ## Prepare a reviewed snapshot
 
@@ -22,7 +23,7 @@ publishing a `native-v...` GitHub Release starts the desktop distribution job.
    `NATIVE_CHANGELOG.md` here. This file lives outside the mirror so the next
    source copy will not erase your wording. Website changes do not need entries.
 5. Install `keepachangelog-manager-fork` if needed (`uv tool install
-   keepachangelog-manager-fork`). In this public checkout, validate and promote
+keepachangelog-manager-fork`). In this public checkout, validate and promote
    the notes to the release version:
 
    ```sh
@@ -38,6 +39,7 @@ publishing a `native-v...` GitHub Release starts the desktop distribution job.
    `ui/src/app/settings/app/settings-app.ts` for the new version. Check the
    filenames against the release workflow's expected bundle names, then verify
    the links after the assets are attached.
+
 6. Review the complete public diff, then commit and push it yourself. The
    source, version files, and numbered changelog section must be on the commit
    selected for the Release. The push refreshes the Native draft Release. No

@@ -146,7 +146,7 @@ Sprint 1 validation is recorded with sprint 2 below.
 4. Keep the catalogue as a secondary Studio view.
 
 Keep explicit publication, upload limits and duplicate-submit protection.
-(`MIGRATION.md` covers site deployment, which this sprint does not touch.)
+(`ops/DEPLOY.md` covers site deployment, which this sprint does not touch.)
 
 ### Sprint 2 progress (2026-10-26) — ready for a user trial
 

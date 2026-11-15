@@ -1,23 +1,40 @@
 # Deploy Mawkingbird
 
 Use Git Bash and Make on Windows, Node 22 or a supported newer version, and
-the committed npm lockfiles. This is the current deployment runbook. Read the
-current configuration section of `MIGRATION.md`; its older hosting topology
-and cross-repository publisher instructions are historical.
+the committed npm lockfiles. This is the current deployment runbook. The
+[source and hosting migration record](../spec/history/MIGRATION.md) describes
+the superseded cross-repository publishing plan.
 
 ## Targets
 
-| Component | Production | Preview/test |
-| --- | --- | --- |
-| Angular client (`ui/`) | `https://mawkingbird.com/`, base `/` | `/canary/` and `/test/` |
+| Component                                     | Production                                              | Preview/test                         |
+| --------------------------------------------- | ------------------------------------------------------- | ------------------------------------ |
+| Angular client (`ui/`)                        | `https://mawkingbird.com/`, base `/`                    | `/canary/` and `/test/`              |
 | CORS proxy (sibling `mawkingbird_cors_proxy`) | `cors.mawkingbird.com`, Worker `mawkingbird-cors-proxy` | Worker `mawkingbird-cors-proxy-test` |
 
 GitHub Pages uses **GitHub Actions** in `matthewdeanmartin/mawkingbird`.
-`gh-pages` is the assembled site store; preserve its production root, canary
+The workflows use `GITHUB_TOKEN` to update `gh-pages`, the assembled site store;
+preserve its production root, canary
 and test subtrees. Never publish a `/mawkingbird/` build at the production root.
 Do not modify the frozen `mastodon_mock/ui`, DNS, OAuth origins, persisted
 storage keys, or secrets as part of a routine deployment. Docs remain on Read
 the Docs.
+
+In GitHub Pages settings, select **GitHub Actions** as the publishing source.
+The `github-pages` environment must allow the workflow ref, normally `main`.
+The two client workflows share the `gh-pages-branch` concurrency group. Canary
+and test stage their subtrees before one Pages deployment; production replaces
+the root and deploys the complete assembled site. Both use
+`upload-pages-artifact` and `deploy-pages`, not a REST Pages rebuild request.
+
+Production includes base href `/`, root OAuth metadata, the shared 404
+fallback, and `CNAME` for `mawkingbird.com`. No workflow publishes to
+`mastodon_mock`. `MAWKINGBIRD_PUBLISH_ENABLED=true` enables publishing;
+canary/test run on `main` pushes, while production is promoted manually. Run
+production dispatches from the current `main` workflow and set its `ref` input
+to the validated source SHA. Dispatching an old workflow ref can run retired
+publishing logic. The old github.io address redirects to the custom domain and
+is not an independent fallback.
 
 ## Prepare a release
 

@@ -1,7 +1,7 @@
 # Forum: find the people talking to each other
 
 Status: specified · 2026-10-27. Sprint plan:
-[forum roadmap](../sprint/forum-roadmap-2026-10.md). Follows the mode pattern
+[forum roadmap](sprint/forum-roadmap-2026-10.md). Follows the mode pattern
 in [top_level_menu.md](top_level_menu.md) (Video, Radio).
 
 ## Problem

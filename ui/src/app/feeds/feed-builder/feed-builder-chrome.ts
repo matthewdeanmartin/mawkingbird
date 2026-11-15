@@ -5,7 +5,7 @@ import { Elsewhere, FameCode, Shelf } from './feed-builder-data';
  * The words every topic page shares, one block per language. Written in the
  * page, not the app dictionaries: it is what search engines read, the
  * prerender loads no dictionaries, and each block serves one language's
- * readers (see ui/docs/seo.md, "Pages in other languages"). Style follows the
+ * readers (see ops/engineering/seo.md, "Pages in other languages"). Style follows the
  * tool pages: German du, French tu with French spacing, Spanish tú, Italian tu,
  * Japanese です/ます with マストドン beside Mastodon.
  */

@@ -130,7 +130,7 @@ Examples that the first release should retire:
 | `pages/settings/content/settings-content.css`                             | Helper text uses a hardcoded 26px left indent to imitate a control's label column.                                              |
 | `pages/settings/privacy/settings-privacy.html`                            | Labels, hints, saving state, and errors are manually composed repeatedly.                                                       |
 
-The [UI contribution rules](../ui/docs/contributing.md) also establish behavior:
+The [UI contribution rules](../ops/engineering/contributing.md) also establish behavior:
 7:1 contrast for all text against its actual background; one save pattern per
 page; inline success; revert and explain failed saves; intentional cross-listing
 of settings. These belong in the system's contracts, not just its visual examples.
@@ -214,7 +214,7 @@ providers. It must not boot the real app, log in, access live services, or chang
 persisted preferences. Theme controls set the existing attributes on the preview
 document. Storybook, fixtures, and screenshots stay outside production imports.
 
-Contributor documentation under `docs/` and `ui/docs/` links here. Read the Docs
+Contributor documentation under `docs/` and `ops/engineering/` links here. Read the Docs
 remains the documentation publishing system. Initially the catalogue runs locally
 and builds as an artifact; it does not alter site publishing or public origins.
 
@@ -407,7 +407,7 @@ imports and guards. Use the real-client integration suite when persistence or
 API behavior changes, against the PyPI wheel as documented.
 
 Publishing, OAuth origins, storage keys, base href `/`, and the frozen sibling
-client are outside this migration. Read `MIGRATION.md` before any later catalogue
+client are outside this migration. Read `ops/DEPLOY.md` before any later catalogue
 publishing proposal that touches deployment configuration.
 
 ## What success looks like

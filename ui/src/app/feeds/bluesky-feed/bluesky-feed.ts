@@ -18,6 +18,10 @@ import { BlueskyFeedEntry, BlueskyFeeds } from '../../connections/bluesky/bluesk
 // i18n blueskyFeed.loading: Loading…
 // i18n blueskyFeed.empty: This feed has no posts right now.
 // i18n blueskyFeed.loadMore: Load more
+// i18n blueskyFeed.forYou: For you
+
+/** Bluesky's own Discover generator, also used as a default feed in its app. */
+const DISCOVER_FEED = 'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.generator/whats-hot';
 
 /**
  * One saved Bluesky feed or list, as a timeline.
@@ -39,6 +43,7 @@ import { BlueskyFeedEntry, BlueskyFeeds } from '../../connections/bluesky/bluesk
 export class BlueskyFeedPage implements OnInit {
   private feeds = inject(BlueskyFeeds);
   private route = inject(ActivatedRoute);
+  protected readonly forYou = this.route.snapshot.data['blueskyDiscover'] === true;
   private diagnostics = inject(PageDiagnostics);
   private destroyRef = inject(DestroyRef);
 
@@ -67,7 +72,11 @@ export class BlueskyFeedPage implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const raw = params.get('ref');
-      const ref = raw ? parseFeedRef(raw) : null;
+      const ref = this.forYou
+        ? { kind: 'feed' as const, uri: DISCOVER_FEED }
+        : raw
+          ? parseFeedRef(raw)
+          : null;
       if (!ref) {
         this.loading.set(false);
         this.error.set('That feed link is not valid.');
@@ -91,6 +100,10 @@ export class BlueskyFeedPage implements OnInit {
    * title rather than paying a request for cosmetics.
    */
   private describe(uri: string): void {
+    if (this.forYou) {
+      this.entry.set(null);
+      return;
+    }
     const cached = this.feeds.entries()?.find((e) => e.uri === uri);
     this.entry.set(cached ?? null);
   }

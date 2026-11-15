@@ -6,7 +6,7 @@ import path from 'node:path';
 import { chromium } from '@playwright/test';
 
 const origin = new URL(process.argv[2] ?? 'https://mawkingbird.com/');
-const output = path.resolve(import.meta.dirname, '../../readme-assets/web-preview.png');
+const output = path.resolve(import.meta.dirname, '../readme_assets/web-preview.png');
 const browser = await chromium.launch({ headless: true });
 
 try {

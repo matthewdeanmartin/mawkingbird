@@ -167,7 +167,7 @@
     "id": "friend-feeds",
     "path": "mastodon-friends-rss-feeds",
     "title": "Find the RSS feeds of everyone you follow on Mastodon",
-    "description": "Turn the websites in your Mastodon follows' profiles into one OPML file of their blogs and RSS feeds, for any feed reader. A Mawkingbird Plus feature.",
+    "description": "Collect the blogs and RSS feeds linked from your Mastodon follows' profiles into an OPML file. Mawkingbird Native can check sites directly from your computer.",
     "group": "people",
     "signIn": "mastodon",
     "tab": {

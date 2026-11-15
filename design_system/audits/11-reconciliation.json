@@ -653,6 +653,11 @@
       "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
+      "file": "ui/src/app/feeds/algo/algo-people.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Browser People sample uses compact MbPostAction filters and refresh. Keep the five-page ceiling and honest coverage text; review narrow-screen layout and status-card states before expanding the categories."
+    },
+    {
       "file": "ui/src/app/feeds/algo/algo.html",
       "disposition": "partial adoption",
       "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
@@ -761,6 +766,11 @@
       "file": "ui/src/app/discovery/find-friends/find-friends.html",
       "disposition": "backlog",
       "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+    },
+    {
+      "file": "ui/src/app/feeds/home/home-profiles.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Native Profiles uses MbPostAction for compact actions and filters. Review its profile selector buttons and read checkbox for shared control treatment, keyboard behavior, and narrow-screen layout."
     },
     {
       "file": "ui/src/app/feeds/home/home.html",

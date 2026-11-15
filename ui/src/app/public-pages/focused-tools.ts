@@ -2,7 +2,7 @@ import tools from './focused-tools.json';
 import translatedPaths from './tool-translations/paths.json';
 
 /**
- * The focused mini-apps (public tool pages; spec in ui/docs/seo.md), as one list.
+ * The focused mini-apps (public tool pages; spec in ops/engineering/seo.md), as one list.
  *
  * Everything that has to agree about a tool page reads this registry: the
  * browser routes and the shell's trimmed nav (via `FOCUSED_APPS`), the sign-in

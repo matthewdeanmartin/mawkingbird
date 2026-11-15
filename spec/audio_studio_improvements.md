@@ -144,7 +144,7 @@ decision and explicit user-facing storage controls.
 
 ## Publication and design constraints
 
-Read `MIGRATION.md` before modifying publishing. Keep public origins, OAuth
+Read `ops/DEPLOY.md` before modifying publishing. Keep public origins, OAuth
 redirects, and existing storage key names stable. Preserve explicit publication,
 upload limits, visibility/content-warning fields, duplicate-submit protection,
 and retry behavior. Retrying a failed publication should not unnecessarily rerender

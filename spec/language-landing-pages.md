@@ -138,7 +138,7 @@ batch before the next tools or the next language.
 ## Constraints
 
 - **People on indexable pages.** The German packs come from the larger
-  catalogue, which does not honour `noindex` (ui/docs/seo.md). The page can say
+  catalogue, which does not honour `noindex` (ops/engineering/seo.md). The page can say
   "21 German starter packs"; it never lists who is in them.
 - **Honest claims.** Translation depends on the reader's server (or an
   OpenRouter key); the copy says so.

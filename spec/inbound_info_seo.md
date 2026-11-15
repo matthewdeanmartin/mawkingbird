@@ -3,7 +3,7 @@
 Status: planned, not started (2026-11-12). Owner asked for these pages; this
 file is the brief for whoever writes them. Background:
 [opus_SEO.md](opus_SEO.md) (overall SEO plan) and
-[ui/docs/seo.md](../ui/docs/seo.md) (how public pages are built and checked).
+[SEO engineering guide](../ops/engineering/seo.md) (how public pages are built and checked).
 
 ## Goal
 

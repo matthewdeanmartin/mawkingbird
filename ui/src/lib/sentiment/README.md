@@ -2,7 +2,7 @@
 
 A tiny VADER-style "rage" score for short social text.
 
-Part of Mawkingbird's in-repo libraries: see `ui/docs/libraries.md`. This folder
+Part of Mawkingbird's in-repo libraries: see `ops/engineering/libraries.md`. This folder
 must not import the app or another library; `npm run check:libs` enforces it.
 
 **API** (from `index.ts`): `rageScore(text)`, `stripHtml(html)`, `HEATED_THRESHOLD`.
