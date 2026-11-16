@@ -91,12 +91,12 @@ export function queryTerms(words: string): string[] {
 }
 
 /** True when the status has at least one image, video, audio or gif attached. */
-function hasMedia(status: Status): boolean {
+export function hasMedia(status: Status): boolean {
   return ((status.reblog ?? status).media_attachments ?? []).length > 0;
 }
 
 /** True when the status links out — a card, or an anchor in the body. */
-function hasLink(status: Status): boolean {
+export function hasLink(status: Status): boolean {
   const source = status.reblog ?? status;
   if (source.card) {
     return true;

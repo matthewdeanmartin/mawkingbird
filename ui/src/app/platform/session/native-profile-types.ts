@@ -2,6 +2,7 @@ import type { Status } from '../api/models';
 
 export interface NativeProfileSummary {
   id: number;
+  remoteId: string;
   acct: string;
   displayName: string;
   lastStatusAt: string | null;

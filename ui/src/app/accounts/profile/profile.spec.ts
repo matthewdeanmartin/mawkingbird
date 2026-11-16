@@ -21,6 +21,7 @@ import { AnonymousHomeFeedCache } from '../anonymous/anonymous-home-feed-cache';
 import { RssSubscriptions } from '../../reading/rss/rss-subscriptions';
 import { TwitterFollows } from '../../connections/twitter/twitter-follows';
 import { scopedKey } from '../../platform/session/account-scope';
+import { ProfileContentState } from './profile-content-filters';
 
 /** n bare statuses with descending ids starting at s<base> (timeline order). */
 function makeStatuses(n: number, base: number): Status[] {
@@ -1017,6 +1018,17 @@ describe('Profile block/unblock', () => {
     expect(cmp.visibleStatuses().map((s: Status) => s.id)).toEqual([a.id, c.id]);
     cmp.togglePinned(); // Strip off: the post shows in its natural position again.
     expect(cmp.visibleStatuses()).toHaveLength(3);
+  });
+
+  it('filters the loaded profile sample without making another request', () => {
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    const [plain, linked] = makeStatuses(2, 100);
+    linked.card = { url: 'https://example.org/story' } as Status['card'];
+    cmp.statuses.set([plain, linked]);
+    TestBed.inject(ProfileContentState).selected.set('links');
+    expect(cmp.visibleStatuses().map((post: Status) => post.id)).toEqual([linked.id]);
+    httpMock.expectNone((request) => request.url === '/api/v1/accounts/900/statuses');
   });
 
   it('unblocks a blocked account via POST /unblock', () => {

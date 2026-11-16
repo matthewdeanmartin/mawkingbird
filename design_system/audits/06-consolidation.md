@@ -1,5 +1,12 @@
 # Sprint 6 opening consolidation audit
 
+## Shared profile content rail, 2026-11-15
+
+Reviewed the regenerated inventory after adding the person-page content rail.
+One new candidate uses MbPostAction for accessible post-type controls. The
+reconciliation entry records its adopted scope and the sampled-count and
+narrow-screen behavior to retain. Existing profile findings shifted line numbers.
+
 ## Native profile reader, 2026-11-15
 
 Reviewed the regenerated inventory after adding the Native Profiles reader and

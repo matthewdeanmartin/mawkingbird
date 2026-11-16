@@ -3,6 +3,11 @@
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
+      "file": "ui/src/app/accounts/profile/profile-content-filters.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Shared profile content rail and narrow-screen controls use MbPostAction for sampled post-type filters. Preserve keyboard access, clear sampled counts, and bounded Load more behavior; review Storms and News only after their classifiers are defined."
+    },
+    {
       "file": "ui/src/app/reading/audio-embeds/external-player-host.ts",
       "disposition": "adopted scope",
       "nextStep": "Lazy external player entry uses Button for explicit provider activation and native original links. Preserve per-provider consent, independent alternatives, local-only recognition, and bounded failure fallback."

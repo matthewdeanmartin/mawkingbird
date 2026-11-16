@@ -1,5 +1,6 @@
-import { Component, effect, inject, signal, untracked } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { Auth } from '../../platform/session/auth';
@@ -35,10 +36,11 @@ import { StatusCard } from '../../posts/status-card/status-card';
 // i18n pages.homeProfiles.unread: {{count}} unread
 // i18n pages.homeProfiles.postCount: {{count}} cached posts
 // i18n pages.homeProfiles.following: {{count}} followed people found
+// i18n pages.homeProfiles.openProfile: Open full profile
 
 @Component({
   selector: 'app-home-profiles',
-  imports: [DatePipe, TranslocoPipe, MbPostAction, StatusCard],
+  imports: [DatePipe, RouterLink, TranslocoPipe, MbPostAction, StatusCard],
   template: `
     <section class="profile-reader">
       <header>
@@ -98,6 +100,11 @@ import { StatusCard } from '../../posts/status-card/status-card';
         </nav>
         @if (selectedId() !== null) {
           <section class="profile-posts">
+            @if (selectedProfile(); as selected) {
+              <a [routerLink]="['/accounts', selected.remoteId]">{{
+                'pages.homeProfiles.openProfile' | transloco
+              }}</a>
+            }
             <div
               class="reader-actions"
               role="group"
@@ -229,6 +236,9 @@ export class HomeProfiles {
   protected readonly result = signal<NativeProfilesResult | null>(null);
   protected readonly profiles = signal<NativeProfileSummary[]>([]);
   protected readonly selectedId = signal<number | null>(null);
+  protected readonly selectedProfile = computed(() =>
+    this.profiles().find((profile) => profile.id === this.selectedId()),
+  );
   protected readonly filter = signal<NativeProfileFilter>('all');
   protected readonly hideRead = signal(false);
   protected readonly posts = signal<NativeProfilePost[]>([]);

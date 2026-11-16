@@ -804,3 +804,12 @@ h2 {
 .more-options-heading:first-child {
   margin-top: 0;
 }
+.profile-content-inline {
+  display: none;
+}
+
+@media (max-width: 1000px) {
+  .profile-content-inline {
+    display: block;
+  }
+}

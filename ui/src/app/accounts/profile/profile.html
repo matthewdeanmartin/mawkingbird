@@ -1352,6 +1352,9 @@
           </button>
         </div>
       }
+      @if (contentRailEnabled()) {
+        <div class="profile-content-inline"><app-profile-content-filters /></div>
+      }
       @if (tagged(); as tag) {
         <p class="profile-tagged small" role="status">
           {{ 'pages.profile.tagged.showing' | transloco: { tag } }}
@@ -1490,7 +1493,7 @@
         }
       } @else {
         <!-- Pinned posts are not narrowed by a hashtag, so they step aside. -->
-        @if (showPinned() && !tagged()) {
+        @if (showPinned() && !tagged() && profileContent.selected() === 'all') {
           @for (s of pinnedStatuses(); track s.id) {
             <div class="pinned-label muted">📌 {{ 'pages.profile.posts.pinned' | transloco }}</div>
             <app-status-card

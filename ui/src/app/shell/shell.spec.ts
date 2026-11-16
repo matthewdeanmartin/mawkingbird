@@ -79,6 +79,14 @@ describe('Shell account switching', () => {
     return fixture;
   }
 
+  it('keeps Native Profiles out of the web Home menu', () => {
+    const fixture = createShell();
+    const nav = (fixture.nativeElement as HTMLElement).querySelector('.primary-nav')!;
+    expect(nav.querySelector('a[href="/home"]')).not.toBeNull();
+    expect(nav.querySelector('a[href="/home/profiles"]')).toBeNull();
+    expect(nav.querySelector('details.nav-dropdown:has(a[href="/home/profiles"])')).toBeNull();
+  });
+
   /** The rendered rails fetch trends/instance metadata; account for those requests. */
   function drainRailRequests() {
     httpMock.match(

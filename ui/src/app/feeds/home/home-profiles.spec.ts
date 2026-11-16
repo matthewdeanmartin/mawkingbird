@@ -18,6 +18,7 @@ describe('Native Home Profiles', () => {
       profiles: [
         {
           id: 1,
+          remoteId: '55',
           acct: 'one',
           displayName: 'One',
           lastStatusAt: null,
@@ -27,6 +28,7 @@ describe('Native Home Profiles', () => {
         },
         {
           id: 2,
+          remoteId: '56',
           acct: 'two',
           displayName: 'Two',
           lastStatusAt: null,

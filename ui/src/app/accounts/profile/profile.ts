@@ -16,7 +16,17 @@ import { BulkFollowConfirmation } from '../bulk-follow-confirmation';
 // i18n pages.profile.privateFollow.remove: Remove private follow
 // i18n pages.profile.privateFollow.hint: Adds public posts to Home without following on the network. Kept in this browser only.
 // i18n pages.profile.privateFollow.failed: Could not save this change. Private follows are limited to 50 accounts; check the limit and your browser storage in Pseudonymity settings.
-import { Component, computed, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  untracked,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
@@ -131,6 +141,12 @@ import { buildMediaItems, ProfileMediaItem } from './media/profile-media-item';
 import { describeHttpError, PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { FollowLanguagesDialog } from './follow-languages-dialog';
 import { RenderedHtmlLinks } from '../rendered-html-links';
+import { RailOutlet } from '../../shell/rail-outlet';
+import {
+  ProfileContentFilters,
+  ProfileContentState,
+  matchesProfileContent,
+} from './profile-content-filters';
 
 /** Profile body tabs: the account's posts, who they follow, who follows them. */
 type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' | 'analytics';
@@ -331,6 +347,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     NgOptimizedImage,
     CopyAccountDialog,
     RenderedHtmlLinks,
+    ProfileContentFilters,
     ProfileMediaGrid,
     ProfilePhotoView,
   ],
@@ -1074,11 +1091,13 @@ export class Profile implements OnInit, OnDestroy {
    * posts now live only on its own feed.
    */
   protected visibleStatuses = computed(() => {
+    const kind = this.profileContent.selected();
+    const matches = this.statuses().filter((post) => matchesProfileContent(post, kind));
     if (!this.showPinned()) {
-      return this.statuses();
+      return matches;
     }
     const pinnedIds = new Set(this.pinnedStatuses().map((s) => s.id));
-    return this.statuses().filter((s) => !pinnedIds.has(s.id));
+    return matches.filter((s) => !pinnedIds.has(s.id));
   });
 
   protected showReport = signal(false);
@@ -1122,6 +1141,42 @@ export class Profile implements OnInit, OnDestroy {
   /** True when this profile is Eliza's — unlocks her local "Message" button. */
   protected isEliza = computed(() => isElizaId(this.account()?.id));
   protected isOpenRouter = computed(() => isOpenRouterId(this.account()?.id));
+  protected readonly profileContent = inject(ProfileContentState);
+  private readonly railOutlet = inject(RailOutlet);
+  private contentRailActive = false;
+  private contentAccount: string | null = null;
+  protected readonly contentRailEnabled = computed(
+    () =>
+      !!this.account() &&
+      !this.isRss() &&
+      !this.isTwitter() &&
+      !this.isMisskey() &&
+      !this.isBluesky() &&
+      !this.isEliza() &&
+      !this.isOpenRouter(),
+  );
+  private readonly contentRailSync = effect(() => {
+    const enabled = this.contentRailEnabled();
+    const account = this.account();
+    const posts = this.statuses();
+    const key = account ? `${this.server.baseUrl()}:${account.id}` : null;
+    untracked(() => {
+      if (key !== this.contentAccount) {
+        this.profileContent.selected.set('all');
+        this.contentAccount = key;
+      }
+      this.profileContent.posts.set(enabled ? posts : []);
+      if (enabled && !this.contentRailActive) {
+        this.railOutlet.show(this, {
+          left: { component: ProfileContentFilters, labelKey: 'pages.profile.content.title' },
+        });
+        this.contentRailActive = true;
+      } else if (!enabled && this.contentRailActive) {
+        this.railOutlet.release(this);
+        this.contentRailActive = false;
+      }
+    });
+  });
 
   // --- copy account: follows + collections (anon-office sprint 1) ---
 
@@ -1386,6 +1441,7 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.railOutlet.release(this);
     this.routeLoadSub.unsubscribe();
     this.statusLoadSub.unsubscribe();
     this.mediaSub.unsubscribe();
