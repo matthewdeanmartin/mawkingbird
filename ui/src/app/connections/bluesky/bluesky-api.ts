@@ -541,7 +541,7 @@ export class BlueskyApi {
   /** Full thread (ancestors + replies) for a post's at-uri. */
   getPostThread(uri: string): Observable<{ thread: BskyThreadNode }> {
     const params = new HttpParams().set('uri', uri).set('depth', '50');
-    return this.get<{ thread: BskyThreadNode }>('app.bsky.feed.getPostThread', params);
+    return this.publicGet<{ thread: BskyThreadNode }>('app.bsky.feed.getPostThread', params);
   }
 
   /** Like a post; returns the like record's at-uri (needed to unlike). */

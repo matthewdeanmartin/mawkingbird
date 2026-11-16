@@ -12,7 +12,10 @@ Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfi
 Gate cadence: iterate cheap, gate once. Every `ng test` pays a fixed compile
 cost (about 70s for the full program, ~2 min more with coverage), so a full gate
 after each edit costs the owner hours. While working, use only:
-
+- `python -B -X utf8 ui/scripts/audit_deep_links.py` for shareable-route changes
+  (source-only, under a second); it inventories parameterized routes, checks
+  produced links against anonymous entry, and names routes needing review.
+  Run `cd ui && npm run test:deep-links` once after changing the behavior.
 - `cd ui && make test-changed` (specs affected by your uncommitted edits, compiled
   as a narrowed program; `WATCH=1` keeps it running, rebuilds take seconds),
 - `npm run test:subset -- <spec or dir>` for named specs (also narrowed),

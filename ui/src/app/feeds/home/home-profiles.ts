@@ -9,17 +9,19 @@ import { NATIVE_PROFILES } from '../../platform/session/platform-login';
 import {
   NativeProfileFilter,
   NativeProfilePost,
+  NativeProfileCursor,
   NativeProfilesResult,
   NativeCollectionStatus,
+  NativePeopleCategory,
 } from '../../platform/session/native-profile-types';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { RailOutlet } from '../../shell/rail-outlet';
 import { HomeProfilesRail, HomeProfilesRailState } from './home-profiles-rail';
+import { SeenWhenScrolled } from '../../reading/rss/seen-when-scrolled';
+import { LoadMoreWhenVisible } from './load-more-when-visible';
 
 // i18n pages.homeProfiles.title: Profiles
-// i18n pages.homeProfiles.summary: Read followed people one at a time, using posts saved on this device.
 // i18n pages.homeProfiles.partial: The following scan is still running. People and posts shown here may be incomplete.
-// i18n pages.homeProfiles.cached: Cached posts only. Newer posts may not be here yet.
 // i18n pages.homeProfiles.refresh: Refresh people
 // i18n pages.homeProfiles.next: Next profile
 // i18n pages.homeProfiles.empty: No followed profiles have been saved yet.
@@ -33,12 +35,9 @@ import { HomeProfilesRail, HomeProfilesRailState } from './home-profiles-rail';
 // i18n pages.homeProfiles.links: Links
 // i18n pages.homeProfiles.media: Media
 // i18n pages.homeProfiles.hideRead: Hide already read
-// i18n pages.homeProfiles.markRead: Mark read
-// i18n pages.homeProfiles.read: Read
 // i18n pages.homeProfiles.more: More cached posts
 // i18n pages.homeProfiles.unread: {{count}} unread
 // i18n pages.homeProfiles.postCount: {{count}} cached posts
-// i18n pages.homeProfiles.following: {{count}} followed people found
 // i18n pages.homeProfiles.openProfile: Open full profile
 // i18n pages.homeProfiles.dataActivity: Data activity
 // i18n pages.homeProfiles.dataClose: Close
@@ -71,17 +70,21 @@ import { HomeProfilesRail, HomeProfilesRailState } from './home-profiles-rail';
 
 @Component({
   selector: 'app-home-profiles',
-  imports: [DatePipe, RouterLink, TranslocoPipe, MbPostAction, MbDialog, StatusCard],
+  imports: [
+    DatePipe,
+    RouterLink,
+    TranslocoPipe,
+    MbPostAction,
+    MbDialog,
+    StatusCard,
+    SeenWhenScrolled,
+    LoadMoreWhenVisible,
+  ],
   template: `
     <section class="profile-reader">
       <header>
         <h1>{{ 'pages.homeProfiles.title' | transloco }}</h1>
-        <p>{{ 'pages.homeProfiles.summary' | transloco }}</p>
-        <p>{{ 'pages.homeProfiles.cached' | transloco }}</p>
         @if (result(); as inventory) {
-          <p class="muted">
-            {{ 'pages.homeProfiles.following' | transloco: { count: inventory.following } }}
-          </p>
           @if (!inventory.scanComplete) {
             <p role="status">{{ 'pages.homeProfiles.partial' | transloco }}</p>
           }
@@ -204,26 +207,28 @@ import { HomeProfilesRail, HomeProfilesRailState } from './home-profiles-rail';
                 'pages.homeProfiles.openProfile' | transloco
               }}</a>
             }
-            <div
-              class="reader-actions"
-              role="group"
-              [attr.aria-label]="'pages.homeProfiles.groups' | transloco"
-            >
-              @for (kind of filters; track kind) {
-                <button
-                  type="button"
-                  mbPostAction
-                  [pressed]="filter() === kind"
-                  (click)="changeFilter(kind)"
-                >
-                  {{ 'pages.homeProfiles.' + kind | transloco }}
-                </button>
-              }
+            <div class="post-toolbar">
+              <div
+                class="reader-actions"
+                role="group"
+                [attr.aria-label]="'pages.homeProfiles.groups' | transloco"
+              >
+                @for (kind of filters; track kind) {
+                  <button
+                    type="button"
+                    mbPostAction
+                    [pressed]="filter() === kind"
+                    (click)="changeFilter(kind)"
+                  >
+                    {{ 'pages.homeProfiles.' + kind | transloco }}
+                  </button>
+                }
+              </div>
+              <label class="read-toggle"
+                ><input type="checkbox" [checked]="hideRead()" (change)="toggleHideRead()" />
+                {{ 'pages.homeProfiles.hideRead' | transloco }}</label
+              >
             </div>
-            <label class="read-toggle"
-              ><input type="checkbox" [checked]="hideRead()" (change)="toggleHideRead()" />
-              {{ 'pages.homeProfiles.hideRead' | transloco }}</label
-            >
             @if (postsLoading()) {
               <p role="status">{{ 'pages.homeProfiles.loading' | transloco }}</p>
             }
@@ -231,23 +236,19 @@ import { HomeProfilesRail, HomeProfilesRailState } from './home-profiles-rail';
               <p>{{ 'pages.homeProfiles.noPosts' | transloco }}</p>
             }
             @for (post of posts(); track post.localId) {
-              <article>
+              <article [appSeenWhenScrolled]="!post.isRead" (seen)="queueRead(post)">
                 <app-status-card [status]="post.status" />
-                <button
-                  type="button"
-                  mbPostAction
-                  [disabled]="post.isRead"
-                  (click)="markRead(post)"
-                >
-                  {{
-                    (post.isRead ? 'pages.homeProfiles.read' : 'pages.homeProfiles.markRead')
-                      | transloco
-                  }}
-                </button>
               </article>
             }
             @if (hasMore()) {
-              <button type="button" mbPostAction [disabled]="postsLoading()" (click)="loadMore()">
+              <button
+                type="button"
+                mbPostAction
+                [disabled]="postsLoading()"
+                [appLoadMoreWhenVisible]="!postsLoading()"
+                (visible)="loadMore()"
+                (click)="loadMore()"
+              >
                 {{ 'pages.homeProfiles.more' | transloco }}
               </button>
             }
@@ -277,13 +278,24 @@ import { HomeProfilesRail, HomeProfilesRailState } from './home-profiles-rail';
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        margin-bottom: 12px;
+        margin: 0 0 8px;
+      }
+      .post-toolbar {
+        position: sticky;
+        top: 64px;
+        z-index: 5;
+        background: var(--col-bg);
+        border-bottom: 1px solid var(--border);
+      }
+      .post-toolbar .reader-actions {
+        margin: 0 0 4px;
+        padding-top: 6px;
       }
       .profile-posts {
         min-width: 0;
       }
       .profile-posts article {
-        margin-bottom: 16px;
+        margin: 0;
       }
       table {
         width: 100%;
@@ -317,6 +329,7 @@ export class HomeProfiles {
   ];
   protected readonly result = signal<NativeProfilesResult | null>(null);
   protected readonly profiles = this.railState.profiles;
+  protected readonly visibleProfiles = this.railState.visibleProfiles;
   protected readonly selectedId = this.railState.selectedId;
   protected readonly selectedProfile = computed(() =>
     this.profiles().find((profile) => profile.id === this.selectedId()),
@@ -332,17 +345,32 @@ export class HomeProfiles {
   protected readonly dataStatus = signal<NativeCollectionStatus | null>(null);
   protected readonly dataError = signal(false);
   private dataTimer: ReturnType<typeof setTimeout> | null = null;
+  private readTimer: ReturnType<typeof setTimeout> | null = null;
+  private readonly pendingReads = new Map<
+    number,
+    { handle: string; profileId: number; attempts: number }
+  >();
+  private savingReads = false;
+  private destroyed = false;
   private postRequest = 0;
-  private loadedOffset = 0;
+  private nextCursor: NativeProfileCursor | null = null;
   private listRequest = 0;
+  private categoryRequest = 0;
   private listingHandle: string | null = null;
 
   constructor() {
-    this.railState.bind(this.railOwner, (id) => this.select(id));
+    this.railState.bind(
+      this.railOwner,
+      (id) => this.select(id),
+      (category) => void this.chooseCategory(category),
+    );
     this.rail.show(this.railOwner, {
-      right: { component: HomeProfilesRail, labelKey: 'pages.homeProfiles.title' },
+      left: { component: HomeProfilesRail, labelKey: 'pages.homeProfiles.title' },
     });
     inject(DestroyRef).onDestroy(() => {
+      this.destroyed = true;
+      if (this.readTimer) clearTimeout(this.readTimer);
+      void this.flushReads();
       this.closeDataActivity();
       this.rail.release(this.railOwner);
       this.railState.release(this.railOwner);
@@ -350,8 +378,12 @@ export class HomeProfiles {
     effect(() => {
       const handle = this.auth.token();
       if (this.auth.kind() === 'mastodon' && handle?.startsWith('native-mastodon:')) {
+        if (this.pendingReads.size) void this.flushReads();
         this.closeDataActivity();
         this.dataStatus.set(null);
+        this.categoryRequest++;
+        this.railState.category.set('all');
+        this.railState.members.set(null);
         this.profiles.set([]);
         this.selectedId.set(null);
         this.posts.set([]);
@@ -401,9 +433,12 @@ export class HomeProfiles {
       if (request !== this.listRequest || handle !== this.auth.token()) return;
       this.result.set(result);
       this.profiles.set(result.profiles);
-      const selected = result.profiles.some((p) => p.id === this.selectedId())
+      if (this.railState.category() !== 'all')
+        void this.chooseCategory(this.railState.category(), true);
+      const visible = this.visibleProfiles();
+      const selected = visible.some((p) => p.id === this.selectedId())
         ? this.selectedId()
-        : (result.profiles[0]?.id ?? null);
+        : (visible[0]?.id ?? null);
       if (selected !== this.selectedId()) this.select(selected);
     } catch {
       if (request === this.listRequest) this.error.set(true);
@@ -415,7 +450,7 @@ export class HomeProfiles {
   protected select(id: number | null): void {
     this.selectedId.set(id);
     this.posts.set([]);
-    this.loadedOffset = 0;
+    this.nextCursor = null;
     this.hasMore.set(false);
     this.postRequest++;
     this.postsLoading.set(false);
@@ -423,9 +458,30 @@ export class HomeProfiles {
   }
 
   protected next(): void {
-    const rows = this.profiles();
+    const rows = this.visibleProfiles();
     const index = rows.findIndex((row) => row.id === this.selectedId());
     if (rows.length) this.select(rows[(index + 1) % rows.length].id);
+  }
+
+  protected async chooseCategory(category: NativePeopleCategory, reload = false): Promise<void> {
+    if (!reload && category === this.railState.category()) return;
+    const request = ++this.categoryRequest;
+    const handle = this.auth.token();
+    this.railState.category.set(category);
+    this.railState.members.set(null);
+    if (!handle) return;
+    if (category !== 'all') {
+      try {
+        const members = await this.api.peopleMembers(handle, category);
+        if (request !== this.categoryRequest || handle !== this.auth.token()) return;
+        this.railState.members.set(new Set(members.map((p) => p.id)));
+      } catch {
+        if (request === this.categoryRequest) this.error.set(true);
+        return;
+      }
+    }
+    const visible = this.visibleProfiles();
+    if (!visible.some((p) => p.id === this.selectedId())) this.select(visible[0]?.id ?? null);
   }
 
   protected changeFilter(kind: NativeProfileFilter): void {
@@ -445,17 +501,17 @@ export class HomeProfiles {
     const request = ++this.postRequest;
     this.postsLoading.set(true);
     try {
-      const page = await this.api.posts(
+      const page = await this.api.postsAfter(
         handle,
         id,
         this.filter(),
         this.hideRead(),
-        this.loadedOffset,
+        this.nextCursor,
       );
       if (request !== this.postRequest || handle !== this.auth.token()) return;
-      this.posts.update((rows) => [...rows, ...page]);
-      this.loadedOffset += page.length;
-      this.hasMore.set(page.length === 40);
+      this.posts.update((rows) => [...rows, ...page.posts]);
+      this.nextCursor = page.next;
+      this.hasMore.set(page.next !== null);
     } catch {
       if (request === this.postRequest) this.error.set(true);
     } finally {
@@ -463,28 +519,58 @@ export class HomeProfiles {
     }
   }
 
-  protected async markRead(post: NativeProfilePost): Promise<void> {
+  protected queueRead(post: NativeProfilePost): void {
     const handle = this.auth.token();
     const profileId = this.selectedId();
-    if (!handle || post.isRead) return;
+    if (!handle || profileId === null || post.isRead || this.pendingReads.has(post.localId)) return;
+    this.pendingReads.set(post.localId, { handle, profileId, attempts: 0 });
+    this.scheduleReadFlush();
+  }
+
+  private scheduleReadFlush(delay = 200): void {
+    if (this.readTimer || this.savingReads || !this.pendingReads.size || this.destroyed) return;
+    this.readTimer = setTimeout(() => {
+      this.readTimer = null;
+      void this.flushReads();
+    }, delay);
+  }
+
+  private async flushReads(): Promise<void> {
+    if (this.savingReads || !this.pendingReads.size) return;
+    if (this.readTimer) clearTimeout(this.readTimer);
+    this.readTimer = null;
+    const handle = this.pendingReads.values().next().value!.handle;
+    const batch = [...this.pendingReads.entries()]
+      .filter(([, row]) => row.handle === handle)
+      .slice(0, 100);
+    for (const [id] of batch) this.pendingReads.delete(id);
+    const ids = batch.map(([id]) => id);
+    this.savingReads = true;
     try {
-      await this.api.markRead(handle, post.localId);
-      if (handle !== this.auth.token()) return;
-      if (profileId === this.selectedId()) {
-        this.posts.update((rows) =>
-          rows
-            .filter((row) => !this.hideRead() || row.localId !== post.localId)
-            .map((row) => (row.localId === post.localId ? { ...row, isRead: true } : row)),
-        );
-      }
-      this.profiles.update((rows) =>
-        rows.map((row) =>
-          row.id === profileId ? { ...row, cachedUnread: Math.max(0, row.cachedUnread - 1) } : row,
-        ),
+      await this.api.markReadBatch(handle, ids);
+      if (this.destroyed || handle !== this.auth.token()) return;
+      const marked = new Set(ids);
+      this.posts.update((rows) =>
+        rows.map((row) => (marked.has(row.localId) ? { ...row, isRead: true } : row)),
       );
-      if (this.hideRead() && profileId === this.selectedId()) this.select(profileId);
+      const perProfile = new Map<number, number>();
+      for (const [, row] of batch)
+        perProfile.set(row.profileId, (perProfile.get(row.profileId) ?? 0) + 1);
+      this.profiles.update((rows) =>
+        rows.map((row) => ({
+          ...row,
+          cachedUnread: Math.max(0, row.cachedUnread - (perProfile.get(row.id) ?? 0)),
+        })),
+      );
     } catch {
-      this.error.set(true);
+      for (const [id, row] of batch) {
+        if (row.attempts < 2) this.pendingReads.set(id, { ...row, attempts: row.attempts + 1 });
+        else if (!this.destroyed) this.error.set(true);
+      }
+    } finally {
+      this.savingReads = false;
+      if (this.destroyed && this.pendingReads.size) void this.flushReads();
+      else this.scheduleReadFlush(this.pendingReads.size ? 2000 : 200);
     }
   }
 }

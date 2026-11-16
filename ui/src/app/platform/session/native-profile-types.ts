@@ -23,6 +23,16 @@ export interface NativeProfilePost {
   isRead: boolean;
 }
 
+export interface NativeProfileCursor {
+  createdAt: string;
+  localId: number;
+}
+
+export interface NativeProfilePostPage {
+  posts: NativeProfilePost[];
+  next: NativeProfileCursor | null;
+}
+
 export type NativeProfileFilter = 'all' | 'replies' | 'boosts' | 'links' | 'media';
 
 export interface NativeCollectionStatus {
@@ -87,7 +97,15 @@ export interface NativeProfilesApi {
     hideRead: boolean,
     offset: number,
   ): Promise<NativeProfilePost[]>;
+  postsAfter(
+    handle: string,
+    actorId: number,
+    filter: NativeProfileFilter,
+    hideRead: boolean,
+    before: NativeProfileCursor | null,
+  ): Promise<NativeProfilePostPage>;
   markRead(handle: string, postId: number): Promise<void>;
+  markReadBatch(handle: string, postIds: number[]): Promise<void>;
   accountPosts(handle: string, remoteId: string, offset: number): Promise<NativeProfilePost[]>;
   fetchAccountPage(handle: string, remoteId: string, older: boolean): Promise<number>;
 }

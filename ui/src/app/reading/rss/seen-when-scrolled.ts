@@ -72,7 +72,11 @@ export class SeenWhenScrolled implements OnInit, OnDestroy {
     this.observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
-          const visible = entry.isIntersecting && entry.intersectionRatio >= VISIBLE_RATIO;
+          // A long post can be taller than the viewport, so a percentage alone
+          // would never qualify it even after a substantial section was seen.
+          const visible =
+            entry.isIntersecting &&
+            (entry.intersectionRatio >= VISIBLE_RATIO || entry.intersectionRect?.height >= 180);
           if (visible) {
             this.seenVisible = true;
             this.cancelDwell();

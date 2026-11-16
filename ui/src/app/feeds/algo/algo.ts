@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, OnInit, signal } from '@angular/co
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ALGO_MAX_CALLS, AlgoFeed, AlgoPost, AlgoSource } from '../algo-feed';
+import { AlgoViewTabs } from './algo-view-tabs';
 import { AlgoAudience, ClientPrefs } from '../../platform/storage/client-prefs';
 import { CalmVerdicts } from '../calm-verdicts';
 import { FeedLanguageFilter } from '../../language/trend-language-filter';
@@ -75,7 +76,7 @@ interface AlgoLink {
 @Component({
   selector: 'app-algo',
   providers: [AlgoFeed],
-  imports: [StatusCard, FeedLanguagePicker, TranslocoPipe, MbPostAction],
+  imports: [StatusCard, FeedLanguagePicker, TranslocoPipe, MbPostAction, AlgoViewTabs],
   templateUrl: './algo.html',
   styleUrl: './algo.css',
 })

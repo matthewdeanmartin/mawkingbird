@@ -3,6 +3,11 @@ import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
 import { Auth } from './auth';
 import { radioAccount, radioPostRef } from '../../reading/radio-links';
 import { Server } from '../http/server';
+import {
+  accountHandleLinkMatcher,
+  isTwitterHandle,
+  mastodonPostLinkMatcher,
+} from '../../posts/copy-link/deep-links';
 
 /**
  * Matches only a signed-in Mastodon account with its own token.
@@ -49,11 +54,30 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const publicWatch =
     link.pathname === '/watch' &&
     (link.searchParams.has('post') || link.searchParams.has('youtube'));
+  // A starter pack and a saved Bluesky feed/list are public AppView reads.
+  const publicBlueskyPage =
+    /^\/bluesky\/starter-packs\/[^/]+\/[^/]+\/?$/.test(link.pathname) ||
+    /^\/feeds\/bluesky\/[^/]+\/?$/.test(link.pathname);
+  const segments = router.parseUrl(state.url ?? '/').root.children['primary']?.segments ?? [];
+  const parts = segments.map((segment) => segment.path);
+  const copiedLink =
+    !!mastodonPostLinkMatcher(segments) ||
+    !!accountHandleLinkMatcher(segments) ||
+    (parts[0] === 'bsky' &&
+      parts[1] === 'profile' &&
+      !!parts[2] &&
+      (parts.length === 3 || (parts.length === 5 && parts[3] === 'post' && !!parts[4]))) ||
+    (parts[0] === 'twitter' &&
+      isTwitterHandle(parts[1] ?? '') &&
+      (parts.length === 2 ||
+        (parts.length === 4 && parts[2] === 'status' && /^\d+$/.test(parts[3]))));
   if (
     publicRadio ||
     projectPage ||
     search ||
     publicWatch ||
+    publicBlueskyPage ||
+    copiedLink ||
     /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
   ) {
     auth.enterAnonymous(inject(Server).baseUrl() || 'https://mastodon.social');

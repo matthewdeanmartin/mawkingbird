@@ -4,6 +4,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { Auth } from '../../platform/session/auth';
+import { AlgoViewTabs } from './algo-view-tabs';
 import { NATIVE_FOLLOW_COLLECT, NATIVE_PROFILES } from '../../platform/session/platform-login';
 import {
   NativePeopleCategory,
@@ -52,32 +53,52 @@ import {
 
 @Component({
   selector: 'app-algo-people-native',
-  imports: [TranslocoPipe, MbPostAction, StatusCard, RouterLink],
+  imports: [TranslocoPipe, MbPostAction, StatusCard, RouterLink, AlgoViewTabs],
   template: `
     <section class="people-local">
+      <app-algo-view-tabs view="relationships" />
       <h1>{{ 'pages.algoPeople.title' | transloco }}</h1>
       <p>{{ 'pages.algoPeople.nativeSummary' | transloco }}</p>
-      <div
-        class="people-filters"
-        role="group"
-        [attr.aria-label]="'pages.algoPeople.groups' | transloco"
-      >
-        @for (category of categories; track category) {
-          <button
-            type="button"
-            mbPostAction
-            [pressed]="selected() === category"
-            (click)="choose(category)"
-          >
-            {{ 'pages.algoPeople.' + category | transloco }}
+      <div class="people-toolbar">
+        <div
+          class="people-filters"
+          role="group"
+          [attr.aria-label]="'pages.algoPeople.groups' | transloco"
+        >
+          @for (category of categories; track category) {
+            <button
+              type="button"
+              mbPostAction
+              [pressed]="selected() === category"
+              (click)="choose(category)"
+            >
+              {{ 'pages.algoPeople.' + category | transloco }}
+            </button>
+          }
+          <button type="button" mbPostAction [disabled]="loading()" (click)="refresh()">
+            {{ 'pages.algoPeople.refresh' | transloco }}
           </button>
-        }
-        <button type="button" mbPostAction [disabled]="loading()" (click)="refresh()">
-          {{ 'pages.algoPeople.refresh' | transloco }}
-        </button>
-        <button type="button" mbPostAction [disabled]="syncing()" (click)="refreshEvidence()">
-          {{ 'pages.algoPeople.updateEvidence' | transloco }}
-        </button>
+          <button type="button" mbPostAction [disabled]="syncing()" (click)="refreshEvidence()">
+            {{ 'pages.algoPeople.updateEvidence' | transloco }}
+          </button>
+        </div>
+        <p class="muted small">{{ 'pages.algoPeople.why.' + selected() | transloco }}</p>
+        <div
+          class="people-filters"
+          role="group"
+          [attr.aria-label]="'pages.algoPeople.postBins' | transloco"
+        >
+          @for (bin of bins; track bin) {
+            <button
+              type="button"
+              mbPostAction
+              [pressed]="selectedBin() === bin"
+              (click)="chooseBin(bin)"
+            >
+              {{ 'pages.algoPeople.bin' + binLabels[bin] | transloco }}
+            </button>
+          }
+        </div>
       </div>
       @if (syncing()) {
         <p role="status">{{ 'pages.algoPeople.updatingEvidence' | transloco }}</p>
@@ -85,23 +106,6 @@ import {
       @if (evidenceError()) {
         <p role="alert">{{ 'pages.algoPeople.evidenceError' | transloco }}</p>
       }
-      <p class="muted small">{{ 'pages.algoPeople.why.' + selected() | transloco }}</p>
-      <div
-        class="people-filters"
-        role="group"
-        [attr.aria-label]="'pages.algoPeople.postBins' | transloco"
-      >
-        @for (bin of bins; track bin) {
-          <button
-            type="button"
-            mbPostAction
-            [pressed]="selectedBin() === bin"
-            (click)="chooseBin(bin)"
-          >
-            {{ 'pages.algoPeople.bin' + binLabels[bin] | transloco }}
-          </button>
-        }
-      </div>
       @if (loading()) {
         <p role="status">{{ 'pages.homeProfiles.loading' | transloco }}</p>
       }
@@ -170,6 +174,16 @@ import {
       }
       .people-local h1 {
         margin: 0 0 8px;
+      }
+      .people-toolbar {
+        position: sticky;
+        top: 64px;
+        z-index: 5;
+        background: var(--col-bg);
+        border-bottom: 1px solid var(--border);
+      }
+      .people-toolbar .people-filters {
+        margin: 6px 0;
       }
       .people-filters {
         display: flex;

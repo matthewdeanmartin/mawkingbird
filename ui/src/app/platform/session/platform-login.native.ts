@@ -114,7 +114,17 @@ export const NATIVE_PROFILES = new InjectionToken<NativeProfilesApi | null>('nat
     list: (handle) => invoke('archive_profiles', { handle }),
     posts: (handle, actorId, filter, hideRead, offset) =>
       invoke('archive_profile_posts', { handle, actorId, filter, hideRead, offset }),
+    postsAfter: (handle, actorId, filter, hideRead, before) =>
+      invoke('archive_profile_posts_after', {
+        handle,
+        actorId,
+        filter,
+        hideRead,
+        beforeCreatedAt: before?.createdAt ?? null,
+        beforeId: before?.localId ?? null,
+      }),
     markRead: (handle, postId) => invoke('archive_mark_read', { handle, postId }),
+    markReadBatch: (handle, postIds) => invoke('archive_mark_read_batch', { handle, postIds }),
     accountPosts: (handle, remoteId, offset) =>
       invoke('archive_account_posts', { handle, remoteId, offset }),
     fetchAccountPage: (handle, remoteId, older) =>

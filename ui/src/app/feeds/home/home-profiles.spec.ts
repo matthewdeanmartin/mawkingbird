@@ -9,11 +9,12 @@ import { HomeProfilesRailState } from './home-profiles-rail';
 import { RailOutlet } from '../../shell/rail-outlet';
 
 describe('Native Home Profiles', () => {
-  it('keeps reading explicit and scoped to the selected identity', async () => {
+  it('batches posts passed by scrolling and keeps reads scoped to the identity', async () => {
     const handle = signal<string | null>('native-mastodon:a');
     const post = { localId: 7, isRead: false, status: { id: 'remote-7' } } as NativeProfilePost;
-    const posts = vi.fn(async () => [post]);
-    const markRead = vi.fn(async () => undefined);
+    const postsAfter = vi.fn(async () => ({ posts: [post], next: null }));
+    const markReadBatch = vi.fn(async () => undefined);
+    const peopleMembers = vi.fn(async () => [{ id: 2 }, { id: 99 }]);
     const collectionStatus = vi.fn(async () => ({
       currentJob: 'recent_seed',
       following: null,
@@ -52,7 +53,10 @@ describe('Native Home Profiles', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: Auth, useValue: { token: handle, kind: signal('mastodon') } },
-        { provide: NATIVE_PROFILES, useValue: { list, posts, markRead, collectionStatus } },
+        {
+          provide: NATIVE_PROFILES,
+          useValue: { list, postsAfter, markReadBatch, collectionStatus, peopleMembers },
+        },
       ],
     });
     TestBed.overrideComponent(HomeProfiles, { set: { template: '' } });
@@ -60,15 +64,16 @@ describe('Native Home Profiles', () => {
     fixture.detectChanges();
     const rail = TestBed.inject(RailOutlet);
     const railState = TestBed.inject(HomeProfilesRailState);
-    expect(rail.right()?.labelKey).toBe('pages.homeProfiles.title');
-    expect(rail.left()).toBeNull();
+    expect(rail.left()?.labelKey).toBe('pages.homeProfiles.title');
+    expect(rail.right()).toBeNull();
     const page = fixture.componentInstance as unknown as {
       selectedId: () => number | null;
       posts: () => NativeProfilePost[];
       hideRead: () => boolean;
       next: () => void;
+      chooseCategory: (category: 'mutuals') => Promise<void>;
       toggleHideRead: () => void;
-      markRead: (post: NativeProfilePost) => Promise<void>;
+      queueRead: (post: NativeProfilePost) => void;
       openDataActivity: () => void;
       dataStatus: () => { currentJob: string } | null;
     };
@@ -76,20 +81,28 @@ describe('Native Home Profiles', () => {
     page.openDataActivity();
     await vi.waitFor(() => expect(page.dataStatus()?.currentJob).toBe('recent_seed'));
     expect(collectionStatus).toHaveBeenCalledWith('native-mastodon:a');
-    expect(markRead).not.toHaveBeenCalled();
-    await page.markRead(page.posts()[0]);
-    expect(markRead).toHaveBeenCalledWith('native-mastodon:a', 7);
+    expect(markReadBatch).not.toHaveBeenCalled();
+    page.queueRead(page.posts()[0]);
+    await vi.waitFor(() => expect(markReadBatch).toHaveBeenCalledWith('native-mastodon:a', [7]));
+    await vi.waitFor(() => expect(page.posts()[0].isRead).toBe(true));
     page.next();
     expect(page.selectedId()).toBe(2);
     railState.select(1);
     expect(page.selectedId()).toBe(1);
     page.toggleHideRead();
     expect(page.hideRead()).toBe(true);
+    await page.chooseCategory('mutuals');
+    expect(peopleMembers).toHaveBeenCalledWith('native-mastodon:a', 'mutuals');
+    expect(railState.visibleProfiles().map((profile) => profile.id)).toEqual([2]);
+    expect(page.selectedId()).toBe(2);
+    page.next();
+    expect(page.selectedId()).toBe(2);
     handle.set('native-mastodon:b');
     fixture.detectChanges();
     await vi.waitFor(() => expect(list).toHaveBeenCalledWith('native-mastodon:b'));
-    expect(markRead).toHaveBeenCalledTimes(1);
+    expect(railState.category()).toBe('all');
+    expect(markReadBatch).toHaveBeenCalledTimes(1);
     fixture.destroy();
-    expect(rail.right()).toBeNull();
+    expect(rail.left()).toBeNull();
   });
 });

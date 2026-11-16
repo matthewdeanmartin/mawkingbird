@@ -5,11 +5,12 @@ import { Relationship, Status } from '../../platform/api/models';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { AlgoViewTabs } from './algo-view-tabs';
 
 type Category = 'all' | 'mutuals' | 'celebrities' | 'broadcasters';
 const MAX_POST_PAGES = 5;
 
-// i18n pages.algoPeople.title: People
+// i18n pages.algoPeople.title: Relationships
 // i18n pages.algoPeople.summary: Recent posts sampled from up to five Home pages. These groups describe only people seen in that sample.
 // i18n pages.algoPeople.all: All
 // i18n pages.algoPeople.mutuals: Mutuals
@@ -25,9 +26,10 @@ const MAX_POST_PAGES = 5;
 /** A deliberately bounded browser view. Native's eventual People source is SQLite. */
 @Component({
   selector: 'app-algo-people',
-  imports: [StatusCard, TranslocoPipe, MbPostAction],
+  imports: [StatusCard, TranslocoPipe, MbPostAction, AlgoViewTabs],
   template: `
     <section class="people-sample">
+      <app-algo-view-tabs view="relationships" />
       <h1>{{ 'pages.algoPeople.title' | transloco }}</h1>
       <p>{{ 'pages.algoPeople.summary' | transloco }}</p>
       <div
@@ -79,6 +81,11 @@ const MAX_POST_PAGES = 5;
         flex-wrap: wrap;
         gap: 6px;
         margin: 12px 0;
+        position: sticky;
+        top: 64px;
+        z-index: 5;
+        background: var(--col-bg);
+        border-bottom: 1px solid var(--border);
       }
     `,
   ],

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import {
   NATIVE_FOLLOW_COLLECT,
   NATIVE_NOTIFICATION_COLLECT,
+  NATIVE_PROFILES,
   NATIVE_SOCIAL,
   forgetNativeAccount,
 } from './platform-login.native';
@@ -31,6 +32,27 @@ it('allows a completed people inventory to be updated again', async () => {
   await first;
   await collect('native-mastodon:refreshable');
   expect(invoke).toHaveBeenCalledTimes(2);
+});
+it('sends a bounded read batch through the native archive command', async () => {
+  await TestBed.inject(NATIVE_PROFILES)!.markReadBatch('native-mastodon:reader', [7, 8]);
+  expect(invoke).toHaveBeenCalledWith('archive_mark_read_batch', {
+    handle: 'native-mastodon:reader',
+    postIds: [7, 8],
+  });
+});
+it('sends a profile page keyset without an offset ceiling', async () => {
+  await TestBed.inject(NATIVE_PROFILES)!.postsAfter('native-mastodon:reader', 9, 'all', true, {
+    createdAt: '2026-01-01T00:00:00Z',
+    localId: 42,
+  });
+  expect(invoke).toHaveBeenCalledWith('archive_profile_posts_after', {
+    handle: 'native-mastodon:reader',
+    actorId: 9,
+    filter: 'all',
+    hideRead: true,
+    beforeCreatedAt: '2026-01-01T00:00:00Z',
+    beforeId: 42,
+  });
 });
 it('routes browser authorization and deletion to provider-specific native commands', async () => {
   const native = TestBed.inject(NATIVE_SOCIAL)!;

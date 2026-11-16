@@ -12,12 +12,14 @@ let observedCount = 0;
 function entry(options: {
   isIntersecting: boolean;
   ratio: number;
+  visibleHeight?: number;
   /** Element's bottom edge relative to the viewport. */
   bottom: number;
 }): IntersectionObserverEntry {
   return {
     isIntersecting: options.isIntersecting,
     intersectionRatio: options.ratio,
+    intersectionRect: { height: options.visibleHeight ?? 0 } as DOMRectReadOnly,
     boundingClientRect: { bottom: options.bottom } as DOMRectReadOnly,
     rootBounds: { top: 0 } as DOMRectReadOnly,
   } as IntersectionObserverEntry;
@@ -88,6 +90,16 @@ describe('SeenWhenScrolled', () => {
     scrollPast();
     expect(fixture.componentInstance.seen).toBe(0);
 
+    vi.advanceTimersByTime(800);
+    expect(fixture.componentInstance.seen).toBe(1);
+  });
+
+  it('allows a tall post to qualify by visible pixels when its ratio stays low', () => {
+    capturedCallback!(
+      [entry({ isIntersecting: true, ratio: 0.2, visibleHeight: 220, bottom: 400 })],
+      null!,
+    );
+    capturedCallback!([entry({ isIntersecting: false, ratio: 0, bottom: -10 })], null!);
     vi.advanceTimersByTime(800);
     expect(fixture.componentInstance.seen).toBe(1);
   });

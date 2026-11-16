@@ -264,40 +264,21 @@
             </a>
           }
           @for (item of modeItems(); track item.id) {
-            @if (item.subitems && auth.kind() === 'mastodon' && auth.token()) {
-              <details class="nav-dropdown" #algoDropdown>
-                <summary [class.active]="item.active(currentUrl())">
-                  <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
-                  <span>{{ item.labelKey | transloco }}</span>
-                </summary>
-                <div class="nav-dropdown-panel">
-                  @for (choice of item.subitems; track choice.link) {
-                    <a
-                      [routerLink]="choice.link"
-                      routerLinkActive="active"
-                      (click)="algoDropdown.open = false"
-                      >{{ choice.labelKey | transloco }}</a
-                    >
-                  }
-                </div>
-              </details>
-            } @else {
-              <a
-                [routerLink]="item.link"
-                [queryParams]="item.queryParams ?? null"
-                [class.active]="item.active(currentUrl())"
-                [attr.aria-current]="item.active(currentUrl()) ? 'page' : null"
-                [class.has-activity]="hasActivity(item)"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
-                <span>{{ item.labelKey | transloco }}</span>
-                @if (hasActivity(item)) {
-                  <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
-                    >●</span
-                  >
-                }
-              </a>
-            }
+            <a
+              [routerLink]="item.link"
+              [queryParams]="item.queryParams ?? null"
+              [class.active]="item.active(currentUrl())"
+              [attr.aria-current]="item.active(currentUrl()) ? 'page' : null"
+              [class.has-activity]="hasActivity(item)"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
+              <span>{{ item.labelKey | transloco }}</span>
+              @if (hasActivity(item)) {
+                <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
+                  >●</span
+                >
+              }
+            </a>
           }
           @if (auth.shouldOfferLogin && !focusedApp()) {
             <a class="login-nav" routerLink="/login" (click)="auth.exitAnonymous()">
@@ -572,7 +553,7 @@
     [class.layout-wide]="wide()"
     [class.layout-zen]="!wide() && railsHidden()"
     [class.layout-writing-zen]="chromeHidden()"
-    [class.layout-profiles]="railOutlet.right()?.labelKey === 'pages.homeProfiles.title'"
+    [class.layout-profiles]="railOutlet.left()?.labelKey === 'pages.homeProfiles.title'"
   >
     @if (!wide() && !railsHidden() && !chromeHidden()) {
       <aside

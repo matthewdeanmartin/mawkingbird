@@ -1,10 +1,14 @@
 # Sprint 6 opening consolidation audit
 
+## Native Profiles three-sprint correction, 2026-11-15
+
+Reviewed the correction that puts the blogroll in the left rail and restores the usual right rail. The per-post Mark read button is removed; Profiles reuses RSS's observed-scroll directive and auto-loads cached pages when the accessible More control approaches the viewport. `home-profiles.ts` retains MbPostAction for toolbar and paging actions and MbDialog for collection status. The new load-more directive is behavior-only and adds no candidate styling. Tablet focus and long-session scrolling need owner review. No shared design widget implementation changed.
+
 ## Native Profiles data dialog, 2026-11-15
 
 Reviewed the regenerated inventory after adding a Native-only Data activity button and shared MbDialog to the Profiles reader. Its extra shared findings are MbDialog/MbPostAction adoption and line shifts; the native read checkbox is unchanged. The new right-rail candidate and shell line shift remain reconciled below. The dialog contains a read-only status table and a compact Refresh action; review tablet table scrolling in owner acceptance. No shared widget implementation changed.
 
-## Native Profiles right rail, 2026-11-15
+## Earlier Native Profiles right-rail pass, superseded 2026-11-15
 
 Reviewed the regenerated inventory after moving the Native Profiles queue from the middle column into a dedicated right rail. The new `home-profiles-rail.ts` candidate contains native row buttons with selected state and cached counts; its reconciliation entry records the desktop/tablet keyboard and contrast review. The reader's removed selector shifts its remaining candidate line numbers. The shell change shifts line numbers only. No shared widget implementation changed.
 
@@ -2682,3 +2686,14 @@ The concurrent Native Profiles page adds one candidate file (1851 scanned,
 641 candidates). It uses MbPostAction for compact actions; profile selection
 buttons and the read checkbox remain a partial-adoption review in
 `11-reconciliation.json`.
+
+### 2026-11-16 — Algo and Profiles navigation correction
+
+Reviewed regenerated inventory: 1857 scanned files, 644 candidate files.
+Algo's top-level dropdown is now a direct destination with in-page Good Stuff /
+Relationships route tabs matching the shared tab widget's visual treatment.
+Native Profiles adds a category select at the top of the left rail; compact
+post-type filters stay visible while scrolling. The browser Relationships
+sample retains its bounded source. No new candidate files or shared widget
+implementation changed; existing reconciliation entries now cover the new
+filter and navigation controls.

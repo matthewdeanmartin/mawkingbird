@@ -660,12 +660,12 @@
     {
       "file": "ui/src/app/feeds/algo/algo-people-native.ts",
       "disposition": "partial adoption",
-      "nextStep": "Native People uses MbPostAction for group, bin, refresh and paging controls, with native profile links in its member rail. Review narrow-screen rail height, keyboard traversal and large member groups in the design browser before claiming full adoption. Keep its archive controls absent from web."
+      "nextStep": "Native Relationships uses MbPostAction for group, bin, refresh and paging controls, with a sticky filter toolbar and profile links in its member rail. Review narrow-screen rail height, keyboard traversal and large member groups in the design browser before claiming full adoption. Keep its archive controls absent from web."
     },
     {
       "file": "ui/src/app/feeds/algo/algo-people.ts",
       "disposition": "adopted scope",
-      "nextStep": "Browser People sample uses compact MbPostAction filters and refresh. Keep the five-page ceiling and honest coverage text; review narrow-screen layout and status-card states before expanding the categories."
+      "nextStep": "Browser Relationships sample uses compact sticky MbPostAction filters and refresh. Keep the five-page ceiling and honest coverage text; review narrow-screen layout and status-card states before expanding the categories."
     },
     {
       "file": "ui/src/app/feeds/algo/algo.html",
@@ -780,12 +780,12 @@
     {
       "file": "ui/src/app/feeds/home/home-profiles-rail.ts",
       "disposition": "partial adoption",
-      "nextStep": "Native Profiles right rail uses native row buttons to select a person and display cached counts. Review keyboard focus and selected-row contrast on desktop and tablet; phone layout is outside this slice."
+      "nextStep": "Native Profiles left rail uses a category select and row buttons to filter followed people and display cached counts. Review keyboard focus and selected-row contrast on desktop and tablet; phone layout is outside this slice."
     },
     {
       "file": "ui/src/app/feeds/home/home-profiles.ts",
       "disposition": "partial adoption",
-      "nextStep": "Native Profiles uses MbPostAction for compact actions and filters and MbDialog for collection status. The profile selector moved to the right rail; review the read checkbox, dialog table scrolling and keyboard behavior. Phone layout is outside this slice."
+      "nextStep": "Native Profiles uses a sticky MbPostAction post-filter toolbar and auto-loading fallback paging, MbDialog for collection status, and RSS's observed-scroll directive for automatic read. The category selector and profile list are in the left rail; review the read checkbox, dialog table scrolling, keyboard behavior and long-session memory. Phone layout is outside this slice."
     },
     {
       "file": "ui/src/app/feeds/home/home.html",

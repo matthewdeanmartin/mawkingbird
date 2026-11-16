@@ -1,3 +1,6 @@
+@if (auth.kind() === 'mastodon' && auth.token()) {
+  <app-algo-view-tabs view="goodStuff" />
+}
 <div class="algo-bar">
   <div
     class="algo-chips"

@@ -85,6 +85,8 @@ describe('Shell account switching', () => {
     expect(nav.querySelector('a[href="/home"]')).not.toBeNull();
     expect(nav.querySelector('a[href="/home/profiles"]')).toBeNull();
     expect(nav.querySelector('details.nav-dropdown:has(a[href="/home/profiles"])')).toBeNull();
+    expect(nav.querySelector('a[href="/algo"]')).not.toBeNull();
+    expect(nav.querySelector('details.nav-dropdown:has(a[href="/algo/people"])')).toBeNull();
   });
 
   /** The rendered rails fetch trends/instance metadata; account for those requests. */

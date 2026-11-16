@@ -274,6 +274,42 @@ describe('Watch post access and reveal gates', () => {
     );
   });
 
+  it('opens a shared Bluesky video in Anonymous without changing its global post id', () => {
+    TestBed.overrideProvider(Auth, {
+      useValue: {
+        kind: signal('anonymous'),
+        token: signal(null),
+        account: signal(null),
+        isAnonymous: true,
+      },
+    });
+    const post = 'bsky:at://did:plc:alice/app.bsky.feed.post/3kxyz';
+    params.next(convertToParamMap({ post, attachment: 'v1', server: 'https://home.test' }));
+    mount();
+    expect(loader.load).toHaveBeenCalledWith(post);
+    loader.status.set({ ...status(), id: post, provider: 'bluesky' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).not.toBeNull();
+  });
+
+  it('shows unavailable when a shared Bluesky video is not public', () => {
+    params.next(
+      convertToParamMap({
+        post: 'bsky:at://did:plc:alice/app.bsky.feed.post/hidden',
+        attachment: 'v1',
+        server: 'https://home.test',
+      }),
+    );
+    mount();
+    loader.status.set(null);
+    loader.loading.set(false);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role=alert]')?.textContent).toContain(
+      'unavailable',
+    );
+    expect(fixture.nativeElement.querySelector('video')).toBeNull();
+  });
+
   it('still refuses Anonymous a non-https server for a server-local ID', () => {
     TestBed.overrideProvider(Auth, {
       useValue: {

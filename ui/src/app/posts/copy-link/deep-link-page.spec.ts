@@ -108,6 +108,15 @@ describe('DeepLinkPage', () => {
     );
   });
 
+  it('keeps the original Bluesky link when handle resolution is unavailable', async () => {
+    resolveHandle.mockReturnValue(throwError(() => new Error('AppView unavailable')));
+    const el = await open('bsky-post', { actor: 'alice.bsky.social', rkey: '3kx' });
+    expect(navigate).not.toHaveBeenCalled();
+    expect(el.querySelector('a')?.getAttribute('href')).toBe(
+      'https://bsky.app/profile/alice.bsky.social/post/3kx',
+    );
+  });
+
   it('opens tweets and Twitter accounts by their global ids', async () => {
     await open('twitter', { user: 'jack', id: '20' });
     expect(navigate).toHaveBeenCalledWith(['/statuses', 'twitter:20'], { replaceUrl: true });
