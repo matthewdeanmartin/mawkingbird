@@ -121,3 +121,29 @@ The mini composer on Home is off by default, behind a "Quick post" button. The
 Do not "helpfully" restore a shortcut from an urge to write to a published post.
 The distance between those two things is deliberate, and shortening it is the
 one change this app is least interested in.
+
+### One account acts at a time
+
+To like, boost, reply, bookmark or follow as a different Mastodon account,
+the user switches accounts. Do not add "Boost as…", "Reply as…", "Open as…",
+long-press account pickers or anything else that lets one signed-in account
+act on what another account is reading. Several other clients (Sengi,
+Moshidon, Tokodon) ship this. We decline it on purpose (owner decision
+2026-11-16).
+
+The reason is identity separation. People keep separate accounts precisely so
+that the accounts are not linked: a work account and a personal one, a public
+one and a pseudonymous one. An "act as" picker puts every identity one tap
+away from every post, and a single slip publicly ties two accounts together.
+Once a boost or reply has federated, deleting it doesn't undo the link. An
+account switch is a deliberate step, and it changes the whole screen, so you
+can see who you are before you act. That is the friction we want. It's the
+same idea as [Friction is a feature](#friction-is-a-feature) and the
+Pseudonymity settings.
+
+This rule is about *one network's accounts acting for each other*. It does not
+cover cross-posting the user's own words to several networks (Mastodon and
+Bluesky together, the paste and blog connectors), or sharing into the app from
+another app. There the user picks the destinations deliberately, for content
+they wrote, and we trust that choice just as we trust what they type.
+Warnings and confirmations there stay light.
