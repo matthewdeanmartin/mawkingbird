@@ -413,34 +413,27 @@ try {
     }
     await context.close();
   }
-  // The project's own pages: prerendered copy without JavaScript; with it, a
-  // fresh visitor must stay on the article inside the app rather than being
-  // dispatched to /home, and the metadata must stay indexable.
-  for (const [slug, heading, inApp] of [
+  // Public articles stay visually and textually stable with JavaScript enabled.
+  // Each full in-app view has its own /app/ route.
+  for (const [slug, heading, articleCopy] of [
     ['about', 'Why Mawkingbird exists', 'Why I asked a bot to create this.'],
     ['funding', 'How Mawkingbird is funded', 'Nothing below is a revenue model'],
-    ['legal', 'About & legal', 'Credits & Privacy'],
+    ['legal', 'About & legal', 'Each Mastodon server sets its own rules'],
   ]) {
+    let staticText;
     for (const javaScriptEnabled of [false, true]) {
       const context = await browser.newContext({ javaScriptEnabled });
-      await context.route('**/vendor/count.js', (route) =>
-        route.fulfill({ contentType: 'text/javascript', body: '' }),
-      );
-      // Keep the anonymous shell off real Mastodon servers.
-      await context.route('https://**/*', (route) =>
-        route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
-      );
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
       await page.goto(`${origin}/${slug}/`);
-      if (javaScriptEnabled) {
-        await page.getByText(inApp).first().waitFor();
-        assert.equal(new URL(page.url()).pathname.replace(/\/$/, ''), `/${slug}`);
-      } else {
-        await page.getByRole('heading', { name: heading, exact: true }).waitFor();
-        assert.ok((await page.locator('main').textContent()).includes(inApp));
-      }
+      await page.getByRole('heading', { name: heading, exact: true }).waitFor();
+      const text = await page.locator('article').innerText();
+      assert.ok(text.includes(articleCopy), `${slug} keeps its article copy`);
+      if (staticText) assert.equal(text, staticText, `${slug} does not change after startup`);
+      staticText = text;
+      assert.equal(await page.locator('script[src]').count(), 0);
+      assert.ok(await page.locator(`a[href="/app/${slug}"]`).count());
       assert.equal(
         await page.locator('meta[name="robots"]').getAttribute('content'),
         'index, follow',
@@ -456,6 +449,25 @@ try {
       assert.deepEqual(errors, [], `${slug} has no browser runtime errors`);
       await context.close();
     }
+  }
+  for (const [slug, selector] of [
+    ['about', 'app-about'],
+    ['funding', 'app-funding'],
+    ['legal', 'app-docs'],
+  ]) {
+    const context = await browser.newContext();
+    await context.route('https://**/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: '[]' }),
+    );
+    const page = await context.newPage();
+    await page.goto(`${origin}/?spa=${encodeURIComponent(`/app/${slug}`)}`);
+    await page.locator(selector).waitFor();
+    assert.equal(new URL(page.url()).pathname, `/app/${slug}`);
+    assert.equal(
+      await page.locator('meta[name="robots"]').getAttribute('content'),
+      'noindex, follow',
+    );
+    await context.close();
   }
   // Starter-kit pages: static and client copies agree, and the follow-all link
   // reaches the in-app kit for a fresh visitor instead of the Home dispatcher.

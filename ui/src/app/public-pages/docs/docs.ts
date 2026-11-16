@@ -6,9 +6,10 @@ import { SearchServer } from '../../platform/http/search-server';
 import { SearchServerAbout } from '../../discovery/search-server-about';
 import { ServerAbout } from '../../discovery/server-about';
 import { AppOnlyLinkRel } from '../public-page-urls';
+import { LEGAL_LINKS } from './legal-content';
 
 /**
- * About & legal (/legal, formerly /blog): a centre-column index of the "blog-post"-style pages (Design,
+ * About & legal (/app/legal): a centre-column index of the project pages (Design,
  * Credits) plus the server's own legal pages (Rules, Terms) when it publishes
  * them. This is where Server rules / Terms / Credits moved to once they came off
  * the More menu — reachable, but no longer taking a top-level slot.
@@ -42,6 +43,7 @@ import { AppOnlyLinkRel } from '../public-page-urls';
   styleUrl: './docs.css',
 })
 export class Docs implements OnInit {
+  protected readonly links = LEGAL_LINKS;
   protected featureFlags = inject(FeatureFlags);
   protected serverAbout = inject(ServerAbout);
   protected searchServerAbout = inject(SearchServerAbout);

@@ -66,8 +66,8 @@ class PublicRoot {}
 @Component({ selector: 'app-client-entry', template: '' })
 class ClientEntry {}
 
-// Titles match the browser routes in app.routes.ts, which take over these URLs
-// once the app boots and must keep the same title and indexability.
+// Titles match the public browser routes in app.routes.ts. The SEO build keeps
+// these documents stable; the full app views have separate /app/ routes.
 const articles: { path: PublicArticleKind; title: string; description: string }[] = [
   { path: 'about', title: 'Why this bird exists', description: ABOUT_DESCRIPTION },
   { path: 'funding', title: 'How the lights stay on', description: FUNDING_DESCRIPTION },

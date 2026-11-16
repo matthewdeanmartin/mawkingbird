@@ -1,36 +1,21 @@
 <main class="features" lang="en">
   <header>
     <a mbContentLink routerLink="/legal">Mawkingbird · About &amp; legal</a>
-    <a mbButton routerLink="/">Open the app</a>
+    <a mbButton [routerLink]="'/app/' + kind">Open the app</a>
   </header>
   <article>
     <h1>{{ content.heading }}</h1>
     @if (content.body) {
       <div [innerHTML]="content.body"></div>
     } @else {
+      <p>{{ legalOverview }}</p>
+      <p>{{ legalRulesOverview }}</p>
       <ul>
-        <li><a mbContentLink routerLink="/about">Design</a> — why this client exists.</li>
-        <li>
-          <a mbContentLink routerLink="/funding">Funding</a> — what this costs, who pays for it, and
-          where it's going.
-        </li>
-        <li>
-          <a mbContentLink routerLink="/credits">Credits &amp; Privacy</a> — the software this
-          client ships, and how it handles data.
-        </li>
-        <li>
-          <a mbContentLink routerLink="/features">Features</a> — everything Mawkingbird can do
-          today.
-        </li>
-        <li>
-          <a mbContentLink routerLink="/tools">Tools</a> — free single-purpose tools for Mastodon
-          and Bluesky.
-        </li>
-        <li>
-          <a mbContentLink routerLink="/communities">Mastodon communities by interest</a> —
-          hashtags, people and servers for one interest at a time.
-        </li>
-        <li><a mbContentLink href="/help/">Help</a> — short guides, one task at a time.</li>
+        @for (link of legalLinks; track link.path) {
+          <li>
+            <a mbContentLink [routerLink]="link.path">{{ link.title }}</a> — {{ link.detail }}
+          </li>
+        }
       </ul>
     }
   </article>

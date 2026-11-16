@@ -87,10 +87,17 @@ export const NATIVE_FOLLOW_STATUS = new InjectionToken<
 export const NATIVE_PROFILES = new InjectionToken<NativeProfilesApi | null>('native-profiles', {
   providedIn: 'root',
   factory: () => ({
+    peoplePosts: (handle, category, bin, offset) =>
+      invoke('archive_people_posts', { handle, category, bin, offset }),
+    peopleMembers: (handle, category) => invoke('archive_people_members', { handle, category }),
     list: (handle) => invoke('archive_profiles', { handle }),
     posts: (handle, actorId, filter, hideRead, offset) =>
       invoke('archive_profile_posts', { handle, actorId, filter, hideRead, offset }),
     markRead: (handle, postId) => invoke('archive_mark_read', { handle, postId }),
+    accountPosts: (handle, remoteId, offset) =>
+      invoke('archive_account_posts', { handle, remoteId, offset }),
+    fetchAccountPage: (handle, remoteId, older) =>
+      invoke('archive_fetch_account_page', { handle, remoteId, older }),
   }),
 });
 

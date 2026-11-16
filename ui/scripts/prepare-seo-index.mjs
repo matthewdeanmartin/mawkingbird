@@ -90,6 +90,18 @@ await writeFile(
   html.replace('</head>', `${appData}</head>`).replace('</body>', `${fallback}</body>`),
 );
 
+// These public documents have separate in-app counterparts. Booting the client
+// here would replace the article with the app shell midway through reading.
+const executableScripts = /<script\b[^>]*\bsrc="[^"]+"[^>]*><\/script>/g;
+for (const page of ['about', 'funding', 'legal']) {
+  const url = new URL(`${page}/index.html`, root);
+  const html = await readFile(url, 'utf8');
+  const document = html.replace(executableScripts, '');
+  if (document === html || /<script\b[^>]*\bsrc=/.test(document))
+    throw new Error(`prepare-seo-index: /${page}/ still boots the client`);
+  await writeFile(url, document);
+}
+
 // Renamed public pages. GitHub Pages cannot send a 301, so the old address
 // keeps a page that redirects at once and names the new one as canonical; search
 // engines treat that as a permanent move. Not in the sitemap.
@@ -203,11 +215,14 @@ function withLastmod(xml) {
     if (indexPages.includes(page)) return ['src/app/public-pages/tools/', ...registryFiles];
     if (page.startsWith('for/') || page.startsWith('compare/'))
       return [`${features}audience-content.ts`, `${features}audience-page.html`];
-    if (page === 'about/')
-      return ['src/app/public-pages/about/', 'src/app/public-pages/docs/public-copy.ts'];
-    if (page === 'funding/')
-      return ['src/app/public-pages/funding/', 'src/app/public-pages/docs/public-copy.ts'];
-    if (page === 'legal/') return ['src/app/public-pages/docs/'];
+    if (page === 'about/' || page === 'funding/')
+      return [
+        'src/app/public-pages/features/public-article.html',
+        'src/app/public-pages/features/public-article.ts',
+        'src/app/public-pages/docs/public-copy.ts',
+      ];
+    if (page === 'legal/')
+      return ['src/app/public-pages/features/public-article.html', 'src/app/public-pages/docs/'];
     // Mini-app pages: their own directory (or the one they share), the page
     // chrome they share, and the registry entry that titles and describes them.
     const tool = focusedTools.find((entry) => `${entry.path}/` === page);

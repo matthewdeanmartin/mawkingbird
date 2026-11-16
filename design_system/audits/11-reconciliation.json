@@ -658,6 +658,11 @@
       "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
+      "file": "ui/src/app/feeds/algo/algo-people-native.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Native People uses MbPostAction for group, bin, refresh and paging controls, with native profile links in its member rail. Review narrow-screen rail height, keyboard traversal and large member groups in the design browser before claiming full adoption. Keep its archive controls absent from web."
+    },
+    {
       "file": "ui/src/app/feeds/algo/algo-people.ts",
       "disposition": "adopted scope",
       "nextStep": "Browser People sample uses compact MbPostAction filters and refresh. Keep the five-page ceiling and honest coverage text; review narrow-screen layout and status-card states before expanding the categories."

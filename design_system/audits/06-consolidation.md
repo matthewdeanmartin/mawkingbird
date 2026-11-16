@@ -1,5 +1,23 @@
 # Sprint 6 opening consolidation audit
 
+## Stable public legal page, 2026-11-15
+
+Reviewed the regenerated inventory after separating the public legal document
+from its in-app hub. The public article's shared-link findings decreased from
+16 to 10 as its legal link list moved into one repeated template row. The
+component still uses the same shared content links; its reconciliation
+disposition is unchanged. The in-app hub adds no control candidates.
+
+## Native Algo People split, 2026-11-15
+
+Reviewed the regenerated inventory after adding Native-only People group and post-bin controls plus a member rail. The new `algo-people-native.ts` candidate uses MbPostAction for compact actions and native links for profile navigation. Its reconciliation entry retains narrow-screen and keyboard review. The shared profile and post-embed findings moved with concurrent source edits; their dispositions remain unchanged. No shared widget implementation changed.
+
+## Post embed validation, 2026-11-15
+
+Reviewed the inventory after validating media dimensions and poll counts in
+copied post HTML. Its existing disclosure candidate moved from line 151 to 166;
+there are no new controls or changed reconciliation dispositions.
+
 ## Shared profile content rail, 2026-11-15
 
 Reviewed the regenerated inventory after adding the person-page content rail.

@@ -78,8 +78,8 @@ export interface ModeNavItem {
   requires?: 'signedIn' | 'chat';
   /** The menu indicator that lights this tab's activity dot (signed in only). */
   activity?: 'ordinary' | 'chat';
-  /** Browser Algo uses a compact menu for its two feed views. */
-  webSubitems?: readonly { labelKey: string; link: string }[];
+  /** Algo uses a compact menu for its two feed views. */
+  subitems?: readonly { labelKey: string; link: string }[];
 }
 
 function pathOf(url: string): string {
@@ -185,7 +185,7 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       icon: 'M11 4l1.8 4.7L17.5 10.5l-4.7 1.8L11 17l-1.8-4.7L4.5 10.5l4.7-1.8zM18.5 14l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z',
       link: '/algo',
       active: onPath('/algo'),
-      webSubitems: [
+      subitems: [
         { labelKey: 'shell.modeNav.algo.goodStuff', link: '/algo' },
         { labelKey: 'shell.modeNav.algo.people', link: '/algo/people' },
       ],

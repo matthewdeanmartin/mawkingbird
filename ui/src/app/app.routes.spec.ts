@@ -1,6 +1,8 @@
 import { Route } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { routes, TOOL_PAGE_MODULES, toolPageLoader } from './app.routes';
+import { NATIVE_PROFILES } from './platform/session/platform-login';
 import { anonymousUnavailableGuard } from './accounts/anonymous/anonymous-route.guard';
 import {
   TRANSLATED_PATHS,
@@ -27,6 +29,52 @@ function shellChild(path: string): Route | undefined {
 }
 
 describe('application routes', () => {
+  it('keeps the public legal document separate from the in-app hub', async () => {
+    const publicLegal = routes.find((route) => route.path === 'legal');
+    const appLegal = shellChild('app/legal');
+    expect(publicLegal?.data?.['seoIndexable']).toBe(true);
+    expect(publicLegal?.data?.['article']).toBe('legal');
+    expect(appLegal?.data?.['seoIndexable']).toBeUndefined();
+    expect(await publicLegal!.loadComponent!()).toBe(
+      (await import('./public-pages/features/public-article')).PublicArticle,
+    );
+    expect(await appLegal!.loadComponent!()).toBe((await import('./public-pages/docs/docs')).Docs);
+  });
+
+  it.each(['about', 'funding'] as const)(
+    'keeps the public %s article separate from its in-app post',
+    async (slug) => {
+      const article = routes.find((route) => route.path === slug);
+      const appPage = shellChild(`app/${slug}`);
+      expect(article?.data?.['seoIndexable']).toBe(true);
+      expect(article?.data?.['article']).toBe(slug);
+      expect(appPage?.data?.['seoIndexable']).toBeUndefined();
+      expect(await article!.loadComponent!()).toBe(
+        (await import('./public-pages/features/public-article')).PublicArticle,
+      );
+      expect(await appPage!.loadComponent!()).toBe(
+        slug === 'about'
+          ? (await import('./public-pages/about/about')).About
+          : (await import('./public-pages/funding/funding')).Funding,
+      );
+    },
+  );
+
+  it('loads the browser People sample without a local archive', async () => {
+    TestBed.configureTestingModule({ providers: [{ provide: NATIVE_PROFILES, useValue: null }] });
+    const component = await TestBed.runInInjectionContext(() =>
+      shellChild('algo/people')!.loadComponent!(),
+    );
+    expect(component).toBe((await import('./feeds/algo/algo-people')).AlgoPeople);
+  });
+
+  it('loads the SQLite People page when Native provides an archive', async () => {
+    TestBed.configureTestingModule({ providers: [{ provide: NATIVE_PROFILES, useValue: {} }] });
+    const component = await TestBed.runInInjectionContext(() =>
+      shellChild('algo/people')!.loadComponent!(),
+    );
+    expect(component).toBe((await import('./feeds/algo/algo-people-native')).AlgoPeopleNative);
+  });
   it('keeps the front door destination indexable under the root canonical', () => {
     expect(shellChild('home')?.data).toEqual({
       seoIndexable: true,

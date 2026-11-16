@@ -231,7 +231,6 @@ export class Shell implements OnInit, AccountSwitcher {
   private readonly nativeFollowCollect = inject(NATIVE_FOLLOW_COLLECT);
   private readonly nativeFollowStatus = inject(NATIVE_FOLLOW_STATUS);
   protected readonly nativeProfilesAvailable = inject(NATIVE_PROFILES) !== null;
-  protected readonly webAlgoMenu = !this.nativeFollowStatus;
   protected readonly archiveStatus = signal<NativeFollowStatus | null>(null);
   protected readonly archivePaused = signal(false);
   private readonly archiveInventory = effect((onCleanup) => {
@@ -472,7 +471,7 @@ export class Shell implements OnInit, AccountSwitcher {
               labelKey: 'shell.nav.forYou',
               link: '/for-you',
               active: (url: string) => url.split(/[?#]/, 1)[0] === '/for-you',
-              webSubitems: undefined,
+              subitems: undefined,
             }
           : item,
       )

@@ -264,14 +264,14 @@
             </a>
           }
           @for (item of modeItems(); track item.id) {
-            @if (item.webSubitems && webAlgoMenu && auth.kind() === 'mastodon' && auth.token()) {
+            @if (item.subitems && auth.kind() === 'mastodon' && auth.token()) {
               <details class="nav-dropdown" #algoDropdown>
                 <summary [class.active]="item.active(currentUrl())">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
                   <span>{{ item.labelKey | transloco }}</span>
                 </summary>
                 <div class="nav-dropdown-panel">
-                  @for (choice of item.webSubitems; track choice.link) {
+                  @for (choice of item.subitems; track choice.link) {
                     <a
                       [routerLink]="choice.link"
                       routerLinkActive="active"
@@ -395,7 +395,7 @@
 
               <!-- Reading: Site News and Help. ("Docs" next to "Help" read as the same
                thing, so there is no Docs row.) The help site's home links on to
-               About & legal (/legal), which the footer also links. -->
+               About & legal (/app/legal), which the footer also links. -->
               <div class="menu-divider"></div>
               <!-- The static news blog (news/, fediblog) and help site live outside
                the Angular app, so plain hrefs relative to <base href> (/news/ and

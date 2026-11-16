@@ -20,7 +20,10 @@ after each edit costs the owner hours. While working, use only:
 - `npx playwright test --config ../design_system/playwright.config.mjs <file>`
   for the one design browser file you are working on.
   Narrowed runs type-check only what they compile, so they never replace the gate.
-  When the work is done, run each gate required below once, on the final tree,
+  Owner cadence for multi-sprint Native archive work (2026-11-15): complete two
+  sprints before running the exhaustive full gates. Use focused checks within
+  each sprint and record the deferred gates. At the end of the second sprint,
+  run each gate required below once, on the combined final tree,
   cheapest first (static checks, `make test`, build, SEO, design-verify). If a step
   fails, fix it and rerun that step plus the affected specs, not the whole chain.
   Rerun `make test` once more at the end only if source changed after its last

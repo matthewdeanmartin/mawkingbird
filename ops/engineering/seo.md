@@ -99,20 +99,23 @@ entry and HTML checks in sync.
 
 ## Project pages: About, Funding and About & legal
 
-`/about/`, `/funding/` and `/legal/` (About & legal, formerly `/blog/`) are prerendered by `PublicArticle`
-(`public-pages/features/public-article.ts`), registered only in `main.server.ts`. In the
-browser the same URLs belong to the signed-in shell and render the essays as
-virtual tweets; the essay text lives once in `public-pages/docs/public-copy.ts`, so the
-indexed copy and the in-app copy cannot drift. Their browser routes carry
-`seoIndexable` and the same descriptions (from `seo.ts`), otherwise executing
-JavaScript would turn the prerendered page into `noindex`.
+`/about/`, `/funding/` and `/legal/` (About & legal, formerly `/blog/`) are prerendered by
+`PublicArticle` (`public-pages/features/public-article.ts`). The SEO build removes
+their executable scripts after prerendering, so a fresh visit keeps the same
+article layout. Their in-app counterparts live at `/app/about`, `/app/funding`
+and `/app/legal`, outside the sitemap and marked `noindex, follow`. About and
+Funding render their essays as virtual posts in the shell; their text lives once
+in `public-pages/docs/public-copy.ts`. The public pages link to these views
+through **Open the app**. The public routes carry `seoIndexable` and descriptions
+from `seo.ts`.
 
-These routes sit under the shell's `authGuard`. A fresh visitor (or a crawler
-running JavaScript) used to be sent to `/`, which the entry dispatcher turns
-into `/home`, so the article vanished. `authGuard` now enters Anonymous for
-`/about`, `/funding`, `/legal` and `/credits`, as it already did for public posts,
-profiles and tags. Such a visitor skips the welcome modal, exactly like someone
-arriving on a shared post link.
+Legal's overview and core links come from `public-pages/docs/legal-content.ts`,
+shared with the full in-app hub. The latter adds rules and terms for the
+selected server.
+
+The in-app routes sit under the shell's `authGuard`, which enters Anonymous for
+`/app/about`, `/app/funding`, `/app/legal` and `/credits` on a fresh browser.
+Such a visitor skips the welcome modal, as with a shared post link.
 
 `/legal/` was `/blog/` until 2026-11-07; it never held posts. The browser
 redirects `/blog` to `/legal`, and `prepare-seo-index.mjs` writes a static

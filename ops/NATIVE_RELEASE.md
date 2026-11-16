@@ -65,7 +65,18 @@ install this update, then publish it manually. This publication runs
 `.github/workflows/native-release.yml` for Windows, macOS, and Linux. The
 workflow builds from the release tag and attaches `.exe`/`.msi`, `.dmg`, and
 Linux installer files directly to the GitHub Release. Action-run artifacts are
-only temporary transfer files between build and attachment jobs.
+only temporary transfer files between build and attachment jobs. The attachment
+job also publishes `mawkingbird-native-dependencies.spdx.json`, generated from
+the reviewed UI npm and Native Cargo lockfiles. It records application
+dependencies, including build dependencies; it is not an inventory of host OS
+libraries. GitHub attests each installer with build provenance and this SBOM.
+To verify a downloaded installer against this repository's attestations, run:
+
+```sh
+gh attestation verify PATH_TO_INSTALLER -R matthewdeanmartin/mawkingbird
+gh attestation verify PATH_TO_INSTALLER -R matthewdeanmartin/mawkingbird \
+  --predicate-type https://spdx.dev/Document/v2.3
+```
 
 The installers are unsigned, so operating systems may show an untrusted-app
 warning. There is no store listing or paid entitlement in this release path.

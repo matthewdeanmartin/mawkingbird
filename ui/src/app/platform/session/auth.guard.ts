@@ -34,11 +34,12 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const publicRadio =
     link.pathname === '/radio' &&
     !!(radioAccount(link.searchParams.get('acct')) || radioPostRef(link.searchParams.get('post')));
-  // The project's own pages are prerendered for search engines, and the public
-  // starter-kit pages link to the in-app kit. Sending either to `/` would make the
-  // dispatcher land a fresh visitor (or crawler) on /home instead.
+  // The project's pages and in-app legal hub must open for a fresh visitor.
+  // Sending them to `/` would make the dispatcher land on /home instead.
   const projectPage =
-    /^\/(about|funding|legal|blog|credits|collections\/starter(\/[\w-]+)?)\/?$/.test(link.pathname);
+    /^\/(app\/(about|funding|legal)|blog|credits|collections\/starter(\/[\w-]+)?)\/?$/.test(
+      link.pathname,
+    );
   // Search works anonymously, and the /mastodon-search and /bluesky-search tool
   // pages hand their query straight to it: a front page with a sign-in question
   // in between is the distraction those pages exist to remove.

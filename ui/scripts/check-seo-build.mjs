@@ -293,6 +293,14 @@ for (const page of pages) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
     assert.match(doc.querySelector('article')?.textContent ?? '', articles.get(page));
     assert.ok(doc.querySelector('a[href="/help/"]'), `${page} links to the help site`);
+    assert.equal(doc.querySelectorAll('script[src]').length, 0, `${page} stays a public document`);
+    assert.ok(doc.querySelector(`a[href="/app/${page}"]`), `${page} opens its in-app counterpart`);
+    if (page === 'legal') {
+      assert.match(
+        doc.querySelector('article')?.textContent ?? '',
+        /Each Mastodon server sets its own rules/,
+      );
+    }
   } else if (page) {
     assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has rendered content`);
     assert.ok(doc.querySelectorAll('section').length >= 3);

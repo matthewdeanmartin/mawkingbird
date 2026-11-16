@@ -1,20 +1,14 @@
 <div class="page-head">{{ 'docs.legalHead' | transloco }}</div>
 
-<!-- First: the tool pages are the hardest things in the app to find otherwise. -->
-<a class="doc-row" routerLink="/tools">
-  <span class="doc-title">{{ 'docs.tools.title' | transloco }}</span>
-  <span class="muted small">{{ 'docs.tools.detail' | transloco }}</span>
-</a>
+<p class="legal-overview">{{ 'docs.overview' | transloco }}</p>
+<p class="legal-overview">{{ 'docs.rulesOverview' | transloco }}</p>
 
-<a class="doc-row" routerLink="/communities">
-  <span class="doc-title">{{ 'docs.communities.title' | transloco }}</span>
-  <span class="muted small">{{ 'docs.communities.detail' | transloco }}</span>
-</a>
-
-<a class="doc-row" routerLink="/about">
-  <span class="doc-title">{{ 'docs.design.title' | transloco }}</span>
-  <span class="muted small">{{ 'docs.design.detail' | transloco }}</span>
-</a>
+@for (link of links; track link.path) {
+  <a class="doc-row" [routerLink]="'appPath' in link ? link.appPath : link.path">
+    <span class="doc-title">{{ link.titleKey | transloco }}</span>
+    <span class="muted small">{{ link.detailKey | transloco }}</span>
+  </a>
+}
 
 <!-- Hidden with the Plus flag: the page it opens is now guarded, so an
      ungated row here would be a dead link to a price list. -->
@@ -26,16 +20,6 @@
     </span>
   </a>
 }
-
-<a class="doc-row" routerLink="/funding">
-  <span class="doc-title">{{ 'docs.funding.title' | transloco }}</span>
-  <span class="muted small">{{ 'docs.funding.detail' | transloco }}</span>
-</a>
-
-<a class="doc-row" routerLink="/credits">
-  <span class="doc-title">{{ 'docs.credits.title' | transloco }}</span>
-  <span class="muted small">{{ 'docs.credits.detail' | transloco }}</span>
-</a>
 
 @let searchHost = searchServer.host();
 

@@ -99,7 +99,19 @@ export function cleanContent(html: string, emojis?: readonly CustomEmoji[]): str
 
 function dimensions(media: MediaAttachment): string {
   const size = media.meta?.small ?? media.meta?.original;
-  return size?.width && size?.height ? ` width="${size.width}" height="${size.height}"` : '';
+  const width = size?.width;
+  const height = size?.height;
+  return validDimension(width) && validDimension(height)
+    ? ` width="${width}" height="${height}"`
+    : '';
+}
+
+function validDimension(value: unknown): value is number {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value > 0 && value <= 16384;
+}
+
+function validCount(value: unknown): value is number {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
 }
 
 function mediaHtml(media: MediaAttachment): string {
@@ -133,7 +145,10 @@ function pollHtml(status: Status): string {
   const options = status.poll?.options ?? [];
   if (!options.length) return '';
   const items = options
-    .map((o) => `<li>${emojify(escapeHtml(o.title), status.emojis)} (${o.votes_count ?? 0})</li>`)
+    .map((o) => {
+      const count = o.votes_count ?? 0;
+      return `<li>${emojify(escapeHtml(o.title), status.emojis)}${validCount(count) ? ` (${count})` : ''}</li>`;
+    })
     .join('');
   return `<p>📊</p><ul>${items}</ul>`;
 }

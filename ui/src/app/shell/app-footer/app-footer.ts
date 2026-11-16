@@ -50,7 +50,7 @@ import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
         <span class="footer-separator" aria-hidden="true">·</span>
         <a routerLink="/credits" fragment="privacy">{{ 'footer.privacy' | transloco }}</a>
         <span class="footer-separator" aria-hidden="true">·</span>
-        <a routerLink="/legal">{{ 'footer.legal' | transloco }}</a>
+        <a routerLink="/app/legal">{{ 'footer.legal' | transloco }}</a>
       </p>
       <p class="footer-row">
         <a

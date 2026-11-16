@@ -1031,6 +1031,14 @@ describe('Profile block/unblock', () => {
     httpMock.expectNone((request) => request.url === '/api/v1/accounts/900/statuses');
   });
 
+  it('does not show archive fetch controls on the web profile', () => {
+    const fixture = setUp();
+    fixture.detectChanges();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('.profile-archive-actions'),
+    ).toBeNull();
+  });
+
   it('unblocks a blocked account via POST /unblock', () => {
     const fixture = setUp();
     const cmp = fixture.componentInstance as any;

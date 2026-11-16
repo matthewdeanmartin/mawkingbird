@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { DESIGN_BODY, FUNDING_BODY } from '../docs/public-copy';
+import { LEGAL_LINKS, LEGAL_OVERVIEW, LEGAL_RULES_OVERVIEW } from '../docs/legal-content';
 import { AppOnlyLinkRel } from '../public-page-urls';
 
 export type PublicArticleKind = 'about' | 'funding' | 'legal';
@@ -20,12 +21,9 @@ const ARTICLES: Record<PublicArticleKind, PublicArticleContent> = {
 };
 
 /**
- * Build-time copy of About, Funding and the About & legal hub for search engines.
- *
- * Only `main.server.ts` routes here. In the browser the same URLs belong to the
- * signed-in shell, which renders these essays as virtual tweets; there is no
- * hydration, so this markup is replaced as soon as the app boots. Public English
- * reference, independent of session, instance and runtime dictionaries.
+ * Stable public copies of About, Funding and Legal. Each in-app counterpart
+ * has its own route; public English copy is independent of session, instance
+ * and runtime dictionaries.
  */
 @Component({
   selector: 'app-public-article',
@@ -36,4 +34,7 @@ const ARTICLES: Record<PublicArticleKind, PublicArticleContent> = {
 export class PublicArticle {
   readonly kind: PublicArticleKind = inject(ActivatedRoute).snapshot.data['article'];
   readonly content = ARTICLES[this.kind];
+  readonly legalLinks = LEGAL_LINKS;
+  readonly legalOverview = LEGAL_OVERVIEW;
+  readonly legalRulesOverview = LEGAL_RULES_OVERVIEW;
 }

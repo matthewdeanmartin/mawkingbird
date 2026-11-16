@@ -1,5 +1,5 @@
 import { inject, Type } from '@angular/core';
-import { NATIVE_FOLLOW_STATUS, NATIVE_PROFILES } from './platform/session/platform-login';
+import { NATIVE_PROFILES } from './platform/session/platform-login';
 import { CanActivateFn, CanMatchFn, ResolveFn, Route, Router, Routes } from '@angular/router';
 import { authGuard, mastodonSignedInMatch, signedInMatch } from './platform/session/auth.guard';
 import { adminGuard } from './admin/admin.guard';
@@ -413,6 +413,42 @@ export const routes: Routes = [
   // /blog was renamed About & legal on 2026-11-07; the static build keeps a
   // redirect page at /blog/ for search engines (prepare-seo-index.mjs).
   { path: 'blog', pathMatch: 'full', redirectTo: 'legal' },
+  {
+    path: 'legal',
+    title: 'The project in plain terms',
+    data: {
+      article: 'legal',
+      seoIndexable: true,
+      seoKeywordTitle: 'Mawkingbird legal information',
+      seoDescription: LEGAL_DESCRIPTION,
+    },
+    loadComponent: () =>
+      import('./public-pages/features/public-article').then((m) => m.PublicArticle),
+  },
+  {
+    path: 'about',
+    title: 'Why this bird exists',
+    data: {
+      article: 'about',
+      seoIndexable: true,
+      seoKeywordTitle: 'About the Mastodon and Bluesky app',
+      seoDescription: ABOUT_DESCRIPTION,
+    },
+    loadComponent: () =>
+      import('./public-pages/features/public-article').then((m) => m.PublicArticle),
+  },
+  {
+    path: 'funding',
+    title: 'How the lights stay on',
+    data: {
+      article: 'funding',
+      seoIndexable: true,
+      seoKeywordTitle: 'Open source app funding',
+      seoDescription: FUNDING_DESCRIPTION,
+    },
+    loadComponent: () =>
+      import('./public-pages/features/public-article').then((m) => m.PublicArticle),
+  },
   ...TOOL_PAGES.flatMap((tool) => {
     const english = ENGLISH_TOOLS.find((entry) => entry.id === tool.id);
     return focusedAppRoutes({
@@ -540,8 +576,11 @@ export const routes: Routes = [
       {
         path: 'algo/people',
         title: 'Algo People',
-        canMatch: [() => inject(NATIVE_FOLLOW_STATUS) === null, mastodonSignedInMatch],
-        loadComponent: () => import('./feeds/algo/algo-people').then((m) => m.AlgoPeople),
+        canMatch: [mastodonSignedInMatch],
+        loadComponent: () =>
+          inject(NATIVE_PROFILES)
+            ? import('./feeds/algo/algo-people-native').then((m) => m.AlgoPeopleNative)
+            : import('./feeds/algo/algo-people').then((m) => m.AlgoPeople),
       },
       {
         path: 'algo',
@@ -1245,46 +1284,27 @@ export const routes: Routes = [
             (m) => m.StorageDiagnostics,
           ),
       },
-      // Docs hub + the "blog-post"-style pages it links to. Design lives inside
-      // the shell now (rendered as a virtual tweet), so the reader keeps the top
-      // nav, rails and footer instead of dropping into a bare full-page layout.
+      // In-app project pages. Their public, prerendered counterparts have
+      // separate top-level routes and stay stable on a fresh visit.
       {
         // About & legal: the project pages plus the server's own rules and terms.
         // Formerly `/blog` (it never held posts); not `/docs`, which the mock
         // backend's FastAPI serves as Swagger UI.
-        path: 'legal',
+        path: 'app/legal',
         title: 'The project in plain terms',
-        // Prerendered for search engines; see main.server.ts and docs/seo.md.
-        data: {
-          seoIndexable: true,
-          seoKeywordTitle: 'Mawkingbird legal information',
-          seoDescription: LEGAL_DESCRIPTION,
-        },
         loadComponent: () => import('./public-pages/docs/docs').then((m) => m.Docs),
       },
       {
         // "Design" — the project story, as a virtual tweet in the centre column.
-        path: 'about',
+        path: 'app/about',
         title: 'Why this bird exists',
-        // Prerendered for search engines; see main.server.ts and docs/seo.md.
-        data: {
-          seoIndexable: true,
-          seoKeywordTitle: 'About the Mastodon and Bluesky app',
-          seoDescription: ABOUT_DESCRIPTION,
-        },
         loadComponent: () => import('./public-pages/about/about').then((m) => m.About),
       },
       {
         // "Funding" — who pays for what, also a virtual tweet. Its own route
         // rather than a tail section of Design, so it can be linked to.
-        path: 'funding',
+        path: 'app/funding',
         title: 'How the lights stay on',
-        // Prerendered for search engines; see main.server.ts and docs/seo.md.
-        data: {
-          seoIndexable: true,
-          seoKeywordTitle: 'Open source app funding',
-          seoDescription: FUNDING_DESCRIPTION,
-        },
         loadComponent: () => import('./public-pages/funding/funding').then((m) => m.Funding),
       },
       {

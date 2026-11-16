@@ -116,6 +116,40 @@ describe('post embed HTML', () => {
     expect(html).toContain('<figcaption>Waves</figcaption>');
   });
 
+  it('omits malformed server-supplied dimensions and poll counts from copied HTML', () => {
+    const html = buildPostEmbedHtml(
+      status({
+        media_attachments: [
+          {
+            id: 'm1',
+            type: 'image',
+            url: 'https://cdn.example/full.jpg',
+            preview_url: 'https://cdn.example/small.jpg',
+            description: null,
+            meta: { small: { width: '1" onload="alert(1)' as unknown as number, height: 300 } },
+          },
+        ],
+        poll: {
+          id: 'p',
+          expires_at: null,
+          expired: true,
+          multiple: false,
+          votes_count: 0,
+          voters_count: 0,
+          options: [
+            { title: 'Yes', votes_count: '</li><img src=x onerror=alert(1)>' as unknown as number },
+          ],
+          voted: false,
+          own_votes: [],
+        },
+      }),
+    );
+    expect(html).toContain('<img src="https://cdn.example/small.jpg" alt="" loading="lazy" />');
+    expect(html).toContain('<li>Yes</li>');
+    expect(html).not.toContain('onload=');
+    expect(html).not.toContain('onerror=');
+  });
+
   it('includes poll results and a nested quote', () => {
     const quoted = status({
       id: '9',

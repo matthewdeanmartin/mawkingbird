@@ -1,3 +1,9 @@
+.legal-overview {
+  margin: 0;
+  padding: 12px 16px;
+  line-height: 1.5;
+}
+
 .doc-row {
   display: flex;
   flex-direction: column;

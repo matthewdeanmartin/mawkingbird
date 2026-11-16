@@ -24,8 +24,31 @@ export interface NativeProfilePost {
 }
 
 export type NativeProfileFilter = 'all' | 'replies' | 'boosts' | 'links' | 'media';
+export type NativePeopleCategory =
+  | 'all'
+  | 'social'
+  | 'mutuals'
+  | 'reading'
+  | 'readers'
+  | 'bots'
+  | 'lively'
+  | 'zombies'
+  | 'celebrities';
+export type NativePostBin = 'all' | 'storms' | 'discussions' | 'pictures' | 'videos' | 'reposts';
 
 export interface NativeProfilesApi {
+  peoplePosts(
+    handle: string,
+    category: NativePeopleCategory,
+    bin: NativePostBin,
+    offset: number,
+  ): Promise<{
+    posts: NativeProfilePost[];
+    following: number;
+    relationshipsKnown: number;
+    scanComplete: boolean;
+  }>;
+  peopleMembers(handle: string, category: NativePeopleCategory): Promise<NativeProfileSummary[]>;
   list(handle: string): Promise<NativeProfilesResult>;
   posts(
     handle: string,
@@ -35,4 +58,6 @@ export interface NativeProfilesApi {
     offset: number,
   ): Promise<NativeProfilePost[]>;
   markRead(handle: string, postId: number): Promise<void>;
+  accountPosts(handle: string, remoteId: string, offset: number): Promise<NativeProfilePost[]>;
+  fetchAccountPage(handle: string, remoteId: string, older: boolean): Promise<number>;
 }
