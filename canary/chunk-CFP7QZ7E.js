@@ -1,0 +1,1 @@
+function e(t){return/^native-connector:[A-Za-z0-9_-]{43}$/.test(t)}function r(t){return/^native-twitter:[A-Za-z0-9_-]{43}$/.test(t)}function n(t){return/^native-hugo:[A-Za-z0-9_-]{43}$/.test(t)}export{e as a,r as b,n as c};
