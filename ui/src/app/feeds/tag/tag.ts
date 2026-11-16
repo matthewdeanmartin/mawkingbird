@@ -53,6 +53,8 @@ const SAMPLE_PAGE_SIZE = 40;
 // i18n pages.tag.tabs.analytics: Analytics
 // i18n pages.tag.loading: Loading…
 // i18n pages.tag.noStatuses: No statuses tagged #{{tag}}.
+// i18n pages.tag.loadFailed: Posts tagged #{{tag}} could not be loaded. The server may be busy or down.
+// i18n pages.tag.retry: Try again
 // i18n pages.tag.myPosts: My {{posts}}
 // i18n pages.tag.mine.summary: {{visible}} of the {{total}} loaded {{posts}}. Load more to search further back.
 // i18n pages.tag.mine.none: None of the {{total}} loaded {{posts}} are yours.
@@ -104,6 +106,8 @@ export class Tag implements OnInit {
   protected tagInfo = signal<TagEntity | null>(null);
   protected statuses = signal<Status[]>([]);
   protected loading = signal(true);
+  /** The timeline request failed: not the same as a tag nobody has used. */
+  protected loadFailed = signal(false);
   protected loadingMore = signal(false);
   protected exhausted = signal(false);
   protected tab = signal<'posts' | 'media' | 'members' | 'analytics'>('posts');
@@ -295,6 +299,7 @@ export class Tag implements OnInit {
   private loadTimeline(tag: string): void {
     this.timelineSub?.unsubscribe();
     this.loading.set(true);
+    this.loadFailed.set(false);
     this.statuses.set([]);
     this.exhausted.set(false);
     this.timelineSub = this.getTimeline(tag).subscribe({
@@ -303,11 +308,18 @@ export class Tag implements OnInit {
         this.exhausted.set(s.length < 20);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.loading.set(false);
+        this.loadFailed.set(true);
+      },
     });
   }
 
   private timelineSub: Subscription | null = null;
+
+  protected retry(): void {
+    this.loadTimeline(this.tag());
+  }
 
   loadMore(): void {
     const last = this.statuses().at(-1);

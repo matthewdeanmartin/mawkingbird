@@ -43,9 +43,11 @@
  * on an accident of ordering, and this is one line.
  */
 
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoService } from '@jsverse/transloco';
+
+type HashMap = Record<string, unknown>;
 
 @Injectable({ providedIn: 'root' })
 export class TranslatedText {
@@ -64,3 +66,46 @@ export class TranslatedText {
     });
   }
 }
+
+/** A message held as its key, so it can be translated once the words arrive. */
+export interface MessageRef {
+  key: string;
+  params?: HashMap;
+}
+
+/**
+ * A writable message whose text follows the dictionary.
+ *
+ * Error paths are where {@link TranslatedText} matters most and is easiest to
+ * forget: a fast failure (a refused connection, an instant 404) can land before
+ * `i18n/{lang}.json` does, and a `translate()` stored into a plain signal then
+ * keeps the raw key on screen. A shared link opened in a fresh browser showed
+ * `pages.thread.error.loadPost` exactly this way. Hold the key instead:
+ *
+ *     readonly loadError = translatedMessage();
+ *     this.loadError.set('pages.thread.error.loadPost');
+ *     // template: {{ loadError() }}
+ *
+ * Call in an injection context. `set(null)` clears it.
+ */
+export function translatedMessage(): TranslatedMessage {
+  const transloco = inject(TranslocoService);
+  const version = inject(TranslatedText).version;
+  const ref = signal<MessageRef | null>(null);
+  const text = computed(() => {
+    version();
+    const current = ref();
+    return current ? transloco.translate<string>(current.key, current.params) : null;
+  });
+  return Object.assign(text, {
+    set(key: string | null, params?: HashMap): void {
+      ref.set(key ? { key, params } : null);
+    },
+    ref: ref.asReadonly(),
+  });
+}
+
+export type TranslatedMessage = Signal<string | null> & {
+  set(key: string | null, params?: HashMap): void;
+  readonly ref: Signal<MessageRef | null>;
+};

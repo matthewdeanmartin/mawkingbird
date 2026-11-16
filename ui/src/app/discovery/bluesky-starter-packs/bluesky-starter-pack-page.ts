@@ -82,6 +82,19 @@ export class BlueskyStarterPackPage implements OnInit {
     return `https://bsky.app/starter-pack/${pack.creator.handle}/${rkey}`;
   });
 
+  /**
+   * The pack on bsky.app straight from the link, for when it will not load here:
+   * bsky.app takes a handle or a DID in the same place, so nothing has to resolve.
+   */
+  protected readonly linkedBskyUrl = computed(() => {
+    const params = this.route.snapshot.paramMap;
+    const actor = params.get('actor');
+    const rkey = params.get('rkey');
+    return actor && rkey
+      ? `https://bsky.app/starter-pack/${encodeURIComponent(actor)}/${encodeURIComponent(rkey)}`
+      : null;
+  });
+
   ngOnInit(): void {
     void this.load();
   }

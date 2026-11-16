@@ -105,6 +105,29 @@
   background: var(--accent);
 }
 
+/* Labels never wrap; NavFit (nav-fit.ts) sets data-fit to the level that fits:
+   full label, the same tighter, the language's short form, or icon only. Tabs do not shrink, so
+   an overflow is one it can measure. */
+.primary-nav > * {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nav-label-short,
+[data-fit='short'] :has(> .nav-label-short) > .nav-label,
+[data-fit='icons'] .nav-label {
+  display: none;
+}
+
+[data-fit='short'] .nav-label-short {
+  display: inline;
+}
+
+.primary-nav:not([data-fit='full']) > a {
+  padding-inline: 5px;
+  gap: 4px;
+}
+
 .nav-dropdown {
   position: relative;
   display: flex;
@@ -566,11 +589,6 @@
   .account-pill .caret,
   .more-menu summary span {
     display: none;
-  }
-
-  .primary-nav a {
-    min-width: 56px;
-    padding-inline: 8px;
   }
 
   .account-pill {

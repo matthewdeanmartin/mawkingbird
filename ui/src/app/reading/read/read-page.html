@@ -46,6 +46,11 @@
               >
                 {{ 'reader.page.viewThread' | transloco }}
               </a>
+              @if (loader.publicOriginalUrl(); as originalUrl) {
+                <a class="tool" [href]="originalUrl" target="_blank" rel="noopener noreferrer">
+                  {{ 'pages.thread.error.openOriginal' | transloco }}
+                </a>
+              }
               @if (loader.isRss()) {
                 <a
                   class="tool"

@@ -53,6 +53,7 @@ describe('Watch post access and reveal gates', () => {
     descendants: ReturnType<typeof signal<Status[]>>;
     loading: ReturnType<typeof signal<boolean>>;
     loadError: ReturnType<typeof signal<string | null>>;
+    publicOriginalUrl: ReturnType<typeof signal<string | null>>;
     publicContextUnavailable: ReturnType<typeof signal<boolean>>;
     isAnonymousPublic: ReturnType<typeof signal<boolean>>;
     isTwitter: ReturnType<typeof signal<boolean>>;
@@ -94,6 +95,7 @@ describe('Watch post access and reveal gates', () => {
       descendants: signal<Status[]>([]),
       loading: signal(false),
       loadError: signal<string | null>(null),
+      publicOriginalUrl: signal<string | null>(null),
       publicContextUnavailable: signal(false),
       isAnonymousPublic: signal(false),
       isTwitter: signal(false),
@@ -308,6 +310,15 @@ describe('Watch post access and reveal gates', () => {
       'unavailable',
     );
     expect(fixture.nativeElement.querySelector('video')).toBeNull();
+
+    // A shared link never ends here: the post's own page, and other videos.
+    loader.publicOriginalUrl.set('https://bsky.app/profile/did:plc:alice/post/hidden');
+    fixture.detectChanges();
+    const links = [...fixture.nativeElement.querySelectorAll('a')].map((a: HTMLAnchorElement) =>
+      a.getAttribute('href'),
+    );
+    expect(links).toContain('https://bsky.app/profile/did:plc:alice/post/hidden');
+    expect(links).toContain('/videos');
   });
 
   it('still refuses Anonymous a non-https server for a server-local ID', () => {

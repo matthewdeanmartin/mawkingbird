@@ -9,6 +9,12 @@
     <button mbButton type="button" variant="outline" (click)="load()">
       {{ 'bskyPack.retry' | transloco }}
     </button>
+    <!-- Bluesky may still show it even when this app could not read it. -->
+    @if (linkedBskyUrl(); as url) {
+      <a mbContentLink [href]="url" target="_blank" rel="noopener noreferrer">{{
+        'bskyPack.openOnBluesky' | transloco
+      }}</a>
+    }
   </mb-content-state>
 } @else if (pack(); as pack) {
   <mb-page-header

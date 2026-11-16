@@ -55,6 +55,7 @@ import {
 } from '../accounts/account-switcher';
 import { Account } from '../platform/api/models';
 import { AccountReplyCounts } from '../accounts/account-reply-counts';
+import { NavFit } from './nav-fit';
 import { AddAccountDialog } from '../accounts/sign-in/add-account-dialog/add-account-dialog';
 import { FirstRunChoice, FirstRunModal } from '../accounts/first-run/first-run-modal';
 import { PreviewSeed } from '../accounts/first-run/preview-seed';
@@ -62,12 +63,12 @@ import { OnboardingLauncher } from '../accounts/onboarding/onboarding-launcher';
 import { PlusBadgeEntitlement } from '../accounts/mawkingbird/plus-badge-entitlement';
 import { visiblePlusBenefits } from '../platform/build/plus-benefits';
 import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
+import { TranslatedText } from '../i18n/translated';
 import { AppModeService } from '../platform/build/app-mode';
 import { RadioOutlet } from './radio-outlet';
 import { RailOutlet } from './rail-outlet';
 import { focusedAppFor, MODE_NAV, ModeNavItem } from './mode-nav';
 import { ModeSwitch } from './mode-switch';
-// i18n shell.nav.forYou: For you
 import { AccountTabBanner } from '../platform/session/account-tab-guard/account-tab-banner';
 import {
   NATIVE_FOLLOW_COLLECT,
@@ -125,6 +126,13 @@ import {
 // i18n shell.nav.videos: Videos
 // i18n shell.nav.rss: RSS
 // i18n shell.nav.login: Login
+// i18n shell.navShort.home: Home
+// i18n shell.navShort.algo: Algo
+// i18n shell.navShort.inbox: Inbox
+// i18n shell.navShort.chat: Chat
+// i18n shell.navShort.search: Search
+// i18n shell.navShort.feeds: Feeds
+// i18n shell.navShort.login: Login
 // i18n shell.nav.moreAria: More navigation
 // i18n shell.nav.more: More
 // i18n shell.menu.settings: Settings
@@ -195,10 +203,27 @@ function isWideUrl(url: string): boolean {
   );
 }
 
+/**
+ * A nav label's abbreviation, for when the full labels do not fit (see NavFit).
+ * Literal keys, so the i18n checks see them used. Translators supply real
+ * abbreviations ("Skrz." for Skrzynka odbiorcza); where a language has none,
+ * or its short form equals the full one, the nav goes straight to icons.
+ */
+const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
+  'shell.nav.home': 'shell.navShort.home',
+  'shell.nav.algo': 'shell.navShort.algo',
+  'shell.nav.inbox': 'shell.navShort.inbox',
+  'shell.nav.chat': 'shell.navShort.chat',
+  'shell.nav.search': 'shell.navShort.search',
+  'shell.nav.feeds': 'shell.navShort.feeds',
+  'shell.nav.login': 'shell.navShort.login',
+};
+
 @Component({
   selector: 'app-shell',
   imports: [
     AddAccountDialog,
+    NavFit,
     ReadingOutlet,
     AccountTabBanner,
     MbContentState,
@@ -338,6 +363,24 @@ export class Shell implements OnInit, AccountSwitcher {
   protected auth = inject(Auth);
   protected readonly replyCounts = inject(AccountReplyCounts);
   private transloco = inject(TranslocoService);
+  private readonly dictionary = inject(TranslatedText).version;
+
+  /**
+   * The short form of a nav label in the active language, or null. Only a
+   * short form the language itself provides counts: the English fallback
+   * would put "Inbox" in a Polish nav.
+   */
+  protected readonly navShort = computed(() => {
+    this.dictionary();
+    const lang = this.transloco.getActiveLang();
+    const dict = this.transloco.getTranslation(lang) as Record<string, unknown>;
+    return (labelKey: string): string | null => {
+      const key = NAV_SHORT_KEYS[labelKey];
+      const short = key ? dict[key] : undefined;
+      if (typeof short !== 'string' || !short) return null;
+      return short === this.transloco.translate<string>(labelKey) ? null : short;
+    };
+  });
   private bots = inject(BotPeers);
   private preview = inject(PreviewSeed);
   protected onboarding = inject(OnboardingLauncher);
@@ -523,8 +566,8 @@ export class Shell implements OnInit, AccountSwitcher {
       .map((item) =>
         item.id === 'algo' && this.auth.isBlueskyPrimary
           ? {
+              // Still "Algo" to the reader; for Bluesky it is the Discover feed.
               ...item,
-              labelKey: 'shell.nav.forYou',
               link: '/for-you',
               active: (url: string) => url.split(/[?#]/, 1)[0] === '/for-you',
               subitems: undefined,

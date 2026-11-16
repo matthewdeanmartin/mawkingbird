@@ -142,6 +142,16 @@ describe('Bluesky starter packs UI', () => {
       expect(link?.getAttribute('href')).toBe('https://bsky.app/starter-pack/owner.example/3pack');
     });
 
+    it('still links to the pack on bsky.app when it cannot be loaded here', async () => {
+      packs['load'].mockRejectedValue(new Error('unreachable'));
+      const f = await render();
+      const root = f.nativeElement as HTMLElement;
+      expect(root.textContent).toContain('Retry');
+      expect(root.querySelector('a[target="_blank"]')?.getAttribute('href')).toBe(
+        'https://bsky.app/starter-pack/owner.example/3pack',
+      );
+    });
+
     it('offers similar accounts after a single follow', async () => {
       const f = await render();
       const ana = [...(f.nativeElement as HTMLElement).querySelectorAll('button')].find(

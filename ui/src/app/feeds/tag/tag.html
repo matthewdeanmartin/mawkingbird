@@ -79,6 +79,14 @@
   <app-feed-analytics [source]="feedSource()" />
 } @else if (loading()) {
   <p class="muted center">{{ 'pages.tag.loading' | transloco }}</p>
+} @else if (loadFailed()) {
+  <!-- A failed request is not an unused tag: saying "no posts" would be a lie. -->
+  <p class="muted center" role="alert">
+    {{ 'pages.tag.loadFailed' | transloco: { tag: tag() } }}
+    <button mbButton variant="link" type="button" (click)="retry()">
+      {{ 'pages.tag.retry' | transloco }}
+    </button>
+  </p>
 } @else if (!statuses().length) {
   <p class="muted center">
     {{

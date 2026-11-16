@@ -202,6 +202,28 @@ describe('Tag (timeline)', () => {
     expect(internals(fixture).loading()).toBe(false);
   });
 
+  it('says the posts could not be loaded, not that the tag is unused', () => {
+    const fixture = setUpWithTag('rust');
+    httpMock.expectOne('/api/v1/tags/rust').flush(makeTagEntity('rust'));
+    httpMock
+      .expectOne((r) => r.url.startsWith('/api/v1/timelines/tag/rust'))
+      .flush('', { status: 500, statusText: 'Error' });
+    fixture.detectChanges();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('Posts tagged #rust could not be loaded');
+    expect(text).not.toContain('No statuses tagged');
+
+    (fixture.nativeElement as HTMLElement)
+      .querySelector<HTMLButtonElement>('[role="alert"] button')!
+      .click();
+    httpMock.expectOne((r) => r.url.startsWith('/api/v1/timelines/tag/rust')).flush([]);
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+      'No statuses tagged #rust',
+    );
+  });
+
   // ---------------------------------------------------------------- toggleFollow
 
   it('toggleFollow: POSTs to /follow when not following', async () => {

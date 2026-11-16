@@ -21,6 +21,7 @@ import { ComposeShareRequest, ShareDialog } from '../../posts/share-dialog/share
 import { Drafts } from '../../publishing/drafts';
 import { readerChain } from './reader-document';
 import { Status } from '../../platform/api/models';
+import { keepPortableAddress } from '../../posts/copy-link/portable-address';
 
 /**
  * How long Exit waits before deciding that Back did not work.
@@ -84,6 +85,12 @@ export class ReadPage implements OnInit, OnDestroy {
 
   /** The id currently being read, for the "view as thread" link. */
   protected readonly currentId = signal('');
+  /** The address bar shows a link that opens anywhere, not a server-local id. */
+  private readonly portableAddress = keepPortableAddress(
+    this.currentId,
+    this.loader.status,
+    'reader',
+  );
 
   /**
    * The document that is actually on screen.

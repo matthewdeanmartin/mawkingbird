@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { finalize, forkJoin, from, map, Observable, of, Subscription, catchError } from 'rxjs';
 import { TranslocoService } from '@jsverse/transloco';
+import { translatedMessage } from '../../i18n/translated';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
 import { SearchServer } from '../../platform/http/search-server';
@@ -52,6 +53,12 @@ import { ThreadPreload } from './thread-preload';
  * does not pay for it twice.
  */
 
+/** `at://did/app.bsky.feed.post/rkey` → the post on bsky.app; null for anything else. */
+function blueskyWebUrl(uri: string): string | null {
+  const match = /^at:\/\/([^/]+)\/app\.bsky\.feed\.post\/([^/]+)$/.exec(uri);
+  return match ? `https://bsky.app/profile/${match[1]}/post/${match[2]}` : null;
+}
+
 /** Everything a reading surface needs to know about what it just loaded. */
 @Injectable()
 export class ThreadLoader {
@@ -78,7 +85,8 @@ export class ThreadLoader {
   readonly loading = signal(true);
 
   /** Why the post could not be loaded, when it could not be. */
-  readonly loadError = signal<string | null>(null);
+  /** Held as a key: a fast failure can land before the dictionary does. */
+  readonly loadError = translatedMessage();
 
   /** True while viewing an RSS article: read-only, comments come from a feed. */
   readonly isRss = signal(false);
@@ -243,9 +251,7 @@ export class ThreadLoader {
           const status = (error as { status?: number })?.status;
           this.loading.set(false);
           this.loadError.set(
-            status === 404
-              ? this.transloco.translate('pages.thread.error.postNotOnServer')
-              : this.transloco.translate('pages.thread.error.loadPost'),
+            status === 404 ? 'pages.thread.error.postNotOnServer' : 'pages.thread.error.loadPost',
           );
         },
       }),
@@ -349,7 +355,12 @@ export class ThreadLoader {
           this.publicOriginalUrl.set(status.url ?? ref.originalUrl ?? null);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.loadError.set('pages.thread.error.publicUnavailable', {
+            server: ref.server.replace(/^https?:\/\//, ''),
+          });
+        },
       }),
     );
     this.sub.add(
@@ -392,13 +403,20 @@ export class ThreadLoader {
 
   /** Bluesky thread: `getPostThread` mapped onto ancestors/descendants. */
   private loadBsky(uri: string): void {
+    // A shared link must never end at a bare "not found": whatever happens
+    // below, the reader can still open the post where it lives.
+    this.publicOriginalUrl.set(blueskyWebUrl(uri));
+    const unavailable = () => {
+      this.loading.set(false);
+      this.loadError.set('pages.thread.error.blueskyUnavailable');
+    };
     this.repliesSource = () =>
       this.bsky.getPostThread(uri).pipe(map(({ thread }) => flattenReplies(thread.replies ?? [])));
     this.sub.add(
       this.bsky.getPostThread(uri).subscribe({
         next: ({ thread }) => {
           if (!thread.post) {
-            this.loading.set(false);
+            unavailable();
             return;
           }
           this.status.set(adaptPost(thread.post));
@@ -412,7 +430,7 @@ export class ThreadLoader {
           this.descendants.set(flattenReplies(thread.replies ?? []));
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: unavailable,
       }),
     );
   }
@@ -427,7 +445,7 @@ export class ThreadLoader {
     const identity = misskeyIdentity(this.auth.activeMisskeyKey());
     if (!identity) {
       this.loading.set(false);
-      this.loadError.set(this.transloco.translate('pages.thread.error.misskeySignIn'));
+      this.loadError.set('pages.thread.error.misskeySignIn');
       return;
     }
     const server = identity.profile.server;
@@ -454,11 +472,7 @@ export class ThreadLoader {
           const code = (error as { code?: string | null })?.code;
           this.loading.set(false);
           this.loadError.set(
-            this.transloco.translate(
-              code === 'NO_SUCH_NOTE'
-                ? 'pages.thread.error.notFound'
-                : 'pages.thread.error.loadPost',
-            ),
+            code === 'NO_SUCH_NOTE' ? 'pages.thread.error.notFound' : 'pages.thread.error.loadPost',
           );
         },
       }),
@@ -478,6 +492,7 @@ export class ThreadLoader {
    */
   private loadTwitter(tweetId: string): void {
     this.isTwitter.set(true);
+    this.publicOriginalUrl.set(/^\d+$/.test(tweetId) ? `https://x.com/i/status/${tweetId}` : null);
     this.ancestors.set([]);
     this.descendants.set([]);
     // Wait for the saved timelines to load before deciding to pay. On a reload
@@ -506,6 +521,9 @@ export class ThreadLoader {
                 ? error.message
                 : this.transloco.translate('pages.thread.twitter.loadPost'),
             );
+            // With no post to hang the Twitter note on, say so where the page
+            // looks for a failure, next to the link to the original.
+            this.loadError.set('pages.thread.error.twitterUnavailable');
             this.loading.set(false);
           },
         }),

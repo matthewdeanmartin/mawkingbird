@@ -1,5 +1,6 @@
 import { qualifiedHandle } from '../../accounts/account-handle';
 import { ChatSound } from './chat-sound';
+import { ChatPerson, ChatSuggestions, person, rankSuggestions } from './chat-suggestions';
 import { emojiReply } from './emoji-reply';
 import { compactContentLinks, ContentLinks } from '../../posts/content-links';
 import { LinkedText } from '../../posts/linked-text';
@@ -426,6 +427,60 @@ export class Conversations implements OnInit, OnDestroy {
     return chat.accounts.filter((a) => a.id !== this.auth.account()?.id);
   }
   protected chatWith = signal('');
+
+  // ---------------------------------------------------------- Chat with suggestions
+  protected readonly chatSuggestions = inject(ChatSuggestions);
+  /** Follows found by the server for a large account, newest search only. */
+  private readonly searchedPeople = signal<ChatPerson[]>([]);
+  private searchTimer: ReturnType<typeof setTimeout> | undefined;
+  private searchSub: Subscription | undefined;
+  /** People already in a private chat with you: free, the list is loaded anyway. */
+  private readonly chatPartners = computed(() => {
+    const me = this.auth.account()?.id;
+    return this.chats()
+      .filter((chat) => chat.kind === 'private')
+      .flatMap((chat) => chat.accounts)
+      .filter((account) => account.id !== me)
+      .map(person);
+  });
+  /** What the box offers for the current text: mutuals first, then chat partners. */
+  protected readonly chatWithSuggestions = computed(() =>
+    rankSuggestions(
+      this.chatWith(),
+      [...this.chatSuggestions.mutuals(), ...this.searchedPeople()],
+      this.chatPartners(),
+    ),
+  );
+
+  /** First use of the box, not page open, pays for the mutual set (once a week). */
+  protected onChatWithFocus(): void {
+    void this.chatSuggestions.ensure();
+  }
+
+  protected onChatWithInput(value: string): void {
+    this.chatWith.set(value);
+    this.searchFollowsLater(value);
+  }
+
+  /**
+   * Only when there is no mutual set to filter (an account past the build cap,
+   * or a failed build): one search of your follows per pause in typing, never
+   * per keypress, and not while local matches already fill the list.
+   */
+  private searchFollowsLater(value: string): void {
+    clearTimeout(this.searchTimer);
+    const query = value.trim().replace(/^@/, '');
+    const source = this.chatSuggestions.source();
+    if (source !== 'capped' && source !== 'failed') return;
+    if (query.length < 2 || this.chatWithSuggestions().length >= 5) return;
+    this.searchTimer = setTimeout(() => {
+      this.searchSub?.unsubscribe();
+      this.searchSub = this.chatSuggestions.searchFollowed(query).subscribe({
+        next: (accounts) => this.searchedPeople.set(accounts.map(person)),
+        error: () => undefined,
+      });
+    }, 350);
+  }
   protected startingChat = signal(false);
   protected moderationChat = signal<Chat | null>(null);
   protected activeModerationChat = computed(() => {
@@ -1135,6 +1190,8 @@ export class Conversations implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    clearTimeout(this.searchTimer);
+    this.searchSub?.unsubscribe();
     this.loadSub.unsubscribe();
     this.threadSub?.unsubscribe();
     for (const sub of [...this.subs, ...this.streamSubs]) {

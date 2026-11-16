@@ -1,5 +1,27 @@
 # Sprint 6 opening consolidation audit
 
+## Chat with suggestions, 2026-11-16
+
+Reviewed the regenerated inventory after the Chat with box gained a native
+`<datalist>` of suggested handles. A datalist suggests without restricting
+input and adds no control candidate; `conversations.html` findings only shifted
+lines. No shared widget implementation changed.
+
+## Shared-link failure states and nav fit, 2026-11-16
+
+Reviewed the regenerated inventory after making shared-link failures actionable.
+`profile.html` gains one `.btn btn-outline` link ("Open the profile on {host}")
+inside the existing profile-error block, matching its neighbouring Retry and
+Search actions; the block's legacy-button disposition stands. `tag.html` gains a
+`mbButton variant="link"` Try again for a failed timeline, distinct from the
+empty-tag message. A failed Bluesky starter pack adds an `mbContentLink` to the
+pack on bsky.app beside its Retry, and a failed Bluesky feed adds an
+`mbButton variant="link"` Try again plus a plain link to bsky.app; both sit in
+the existing error states, whose dispositions stand. Watch's unavailable state
+gains two plain links (original post, browse videos). The primary nav's labels now carry full/short spans and
+aria-labels for NavFit; the shell nav is not a design-system widget and its
+inventory findings only shifted lines. No shared widget implementation changed.
+
 ## One Add account entry and web-free Relationships, 2026-11-16
 
 Reviewed the regenerated inventory after replacing the per-network add-account

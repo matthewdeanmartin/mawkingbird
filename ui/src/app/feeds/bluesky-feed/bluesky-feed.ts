@@ -3,6 +3,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Status } from '../../platform/api/models';
+import { translatedMessage } from '../../i18n/translated';
+import { MbButton } from '../../design-system/button/button';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { BlueskyFeedEntry, BlueskyFeeds } from '../../connections/bluesky/bluesky-feeds';
@@ -15,6 +17,10 @@ import { BlueskyFeedEntry, BlueskyFeeds } from '../../connections/bluesky/bluesk
 // i18n blueskyFeed.members.other: {{count}} members
 // i18n blueskyFeed.pinned: · 📌 pinned
 // i18n blueskyFeed.algorithm: This feed is an algorithm run by @{{handle}}, not by Bluesky.
+// i18n blueskyFeed.invalidLink: That feed link is not valid.
+// i18n blueskyFeed.loadFailed: This feed could not be loaded. Its server may not be responding.
+// i18n blueskyFeed.retry: Try again
+// i18n blueskyFeed.openOnBluesky: Open it on bsky.app
 // i18n blueskyFeed.loading: Loading…
 // i18n blueskyFeed.empty: This feed has no posts right now.
 // i18n blueskyFeed.loadMore: Load more
@@ -36,7 +42,7 @@ const DISCOVER_FEED = 'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.gener
  */
 @Component({
   selector: 'app-bluesky-feed',
-  imports: [RouterLink, StatusCard, TranslocoPipe],
+  imports: [MbButton, RouterLink, StatusCard, TranslocoPipe],
   templateUrl: './bluesky-feed.html',
   styleUrl: './bluesky-feed.css',
 })
@@ -50,7 +56,8 @@ export class BlueskyFeedPage implements OnInit {
   protected statuses = signal<Status[]>([]);
   protected loading = signal(true);
   protected loadingMore = signal(false);
-  protected error = signal<string | null>(null);
+  /** Held as a key: a fast failure can land before the dictionary does. */
+  protected error = translatedMessage();
   protected entry = signal<BlueskyFeedEntry | null>(null);
   private cursor = signal<string | null>(null);
 
@@ -79,7 +86,7 @@ export class BlueskyFeedPage implements OnInit {
           : null;
       if (!ref) {
         this.loading.set(false);
-        this.error.set('That feed link is not valid.');
+        this.error.set('blueskyFeed.invalidLink');
         return;
       }
       this.ref.set(ref);
@@ -107,6 +114,28 @@ export class BlueskyFeedPage implements OnInit {
     const cached = this.feeds.entries()?.find((e) => e.uri === uri);
     this.entry.set(cached ?? null);
   }
+
+  /** Try the first page again after a failure. */
+  protected retry(): void {
+    this.statuses.set([]);
+    this.cursor.set(null);
+    this.loading.set(true);
+    this.error.set(null);
+    this.fetch();
+  }
+
+  /**
+   * The feed or list on bsky.app, for when it will not load here: a feed
+   * generator that is down for this app may still be reachable there.
+   */
+  protected readonly bskyUrl = computed(() => {
+    const match = /^at:\/\/([^/]+)\/app\.bsky\.(feed\.generator|graph\.list)\/([^/]+)$/.exec(
+      this.ref()?.uri ?? '',
+    );
+    if (!match) return null;
+    const kind = match[2] === 'graph.list' ? 'lists' : 'feed';
+    return `https://bsky.app/profile/${match[1]}/${kind}/${match[3]}`;
+  });
 
   loadMore(): void {
     if (!this.cursor() || this.loadingMore() || this.loading()) {
@@ -141,11 +170,8 @@ export class BlueskyFeedPage implements OnInit {
         this.diagnostics.error('BlueskyFeed', 'load:error', error, { uri: ref.uri });
         // A third-party generator that is down is the common case here, and it
         // is different from "this feed is empty" — say which.
-        this.error.set(
-          error instanceof Error
-            ? `This feed could not be loaded. ${error.message}`
-            : 'This feed could not be loaded. Its server may not be responding.',
-        );
+        // The technical reason is in the diagnostics log above, not the page.
+        this.error.set('blueskyFeed.loadFailed');
       },
     });
   }

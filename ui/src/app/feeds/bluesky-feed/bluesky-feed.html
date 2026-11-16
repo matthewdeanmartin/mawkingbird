@@ -35,6 +35,19 @@
   <p class="muted center">{{ 'blueskyFeed.loading' | transloco }}</p>
 } @else if (error(); as message) {
   <p class="muted center bf-error" role="alert">{{ message }}</p>
+  @if (error.ref()?.key === 'blueskyFeed.loadFailed') {
+    <p class="muted center">
+      <button mbButton variant="link" type="button" (click)="retry()">
+        {{ 'blueskyFeed.retry' | transloco }}
+      </button>
+      @if (bskyUrl(); as url) {
+        ·
+        <a [href]="url" target="_blank" rel="noopener noreferrer">{{
+          'blueskyFeed.openOnBluesky' | transloco
+        }}</a>
+      }
+    </p>
+  }
 } @else if (!statuses().length) {
   <p class="muted center">{{ 'blueskyFeed.empty' | transloco }}</p>
 } @else {

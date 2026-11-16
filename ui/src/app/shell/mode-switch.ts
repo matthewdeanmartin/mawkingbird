@@ -54,6 +54,10 @@ import { MODE_ENTRIES, suggestedMode } from './mode-nav';
     </mb-popover>
   `,
   styles: `
+    /* The shell's nav ran out of room even for short labels (NavFit). */
+    :host-context(.primary-nav[data-fit='icons']) .label {
+      display: none;
+    }
     :host {
       display: flex;
       align-items: stretch;

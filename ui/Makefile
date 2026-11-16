@@ -57,6 +57,7 @@ help:
 	@echo "  make test               Run tests with coverage (the gate)"
 	@echo "  make test-quick         The same suite and checks without coverage"
 	@echo "  make test-changed       Only specs affected by uncommitted changes (BASE=ref, WATCH=1)"
+	@echo "  make test-deep-links-browser  Occasional: shared links that fail, in a browser (~3 min)"
 	@echo "  make build              Production-build admin UI and Mockingbird"
 	@echo "  make build-admin        Build the packaged admin UI"
 	@echo "  make build-mockingbird  Build the standalone Mockingbird site"
@@ -181,6 +182,19 @@ build-admin:
 
 build-mockingbird:
 	npm run build:mockingbird
+
+# OCCASIONAL INTEGRATION CHECK — do not run after every edit or in a loop.
+# Builds the site, then opens every shareable link shape in a fresh browser with
+# each outside server gone or unreachable, and fails if a page ends on a raw
+# i18n key, a spinner, or no way forward. About three minutes. Run it after
+# changing routes, the deep-link resolver or a landing page's error states, or
+# before a release. SKIP_BUILD=1 reuses dist-mockingbird when it is current.
+.PHONY: test-deep-links-browser
+test-deep-links-browser:
+ifndef SKIP_BUILD
+	npm run build:mockingbird
+endif
+	npm run test:deep-links:browser
 
 .PHONY: build-seo test-seo
 build-seo:

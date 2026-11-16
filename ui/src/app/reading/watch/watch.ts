@@ -45,6 +45,7 @@ import {
 // i18n watch.back: Back
 // i18n watch.loading: Opening video…
 // i18n watch.unavailable: This video is unavailable or you don't have access to its post.
+// i18n watch.browseVideos: Browse videos
 // i18n watch.wrongServer: Switch to the server this post belongs to before opening its video.
 // i18n watch.reveal: Show video
 // i18n watch.hiddenMedia: Media is hidden by your reading preferences. You can open this video without changing them.

@@ -27,12 +27,22 @@ describe('DeepLinkPage', () => {
     auth = { isAnonymous: false, lacksMastodonToken: false };
   });
 
-  async function open(kind: DeepLinkKind, params: Record<string, string>) {
+  async function open(
+    kind: DeepLinkKind,
+    params: Record<string, string>,
+    query: Record<string, string> = {},
+  ) {
     TestBed.configureTestingModule({
       providers: [
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: convertToParamMap(params), data: { kind } } },
+          useValue: {
+            snapshot: {
+              paramMap: convertToParamMap(params),
+              queryParamMap: convertToParamMap(query),
+              data: { kind },
+            },
+          },
         },
         { provide: Router, useValue: { navigate } },
         { provide: Api, useValue: { resolveStatusOnHome } },
@@ -54,6 +64,11 @@ describe('DeepLinkPage', () => {
     await open('mastodon-post', { ...post, server: 'home.example' });
     expect(navigate).toHaveBeenCalledWith(['/statuses', '42'], { replaceUrl: true });
     expect(resolveStatusOnHome).not.toHaveBeenCalled();
+  });
+
+  it('reopens the reader when the address came from the reader page', async () => {
+    await open('mastodon-post', { ...post, server: 'home.example' }, { read: '1' });
+    expect(navigate).toHaveBeenCalledWith(['/read', '42'], { replaceUrl: true });
   });
 
   it("asks the reader's server to resolve the issuing server's URL for the post", async () => {

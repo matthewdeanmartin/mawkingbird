@@ -35,6 +35,7 @@ import {
   untracked,
 } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { translatedMessage } from '../../i18n/translated';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { PrivateFollows } from '../private-follows';
@@ -165,6 +166,8 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.actions.backWord: Back
 // i18n pages.profile.actions.visitSite: ↗ Visit site
 // i18n pages.profile.actions.openOnTwitter: ↗ Open on Twitter
+// i18n pages.profile.twitter.postsElsewhere: Posts from X can't be shown here.
+// i18n pages.profile.twitter.readOnX: Read them on X
 // i18n pages.profile.actions.openOnBluesky: ↗ Open on Bluesky
 // i18n pages.profile.actions.openOnBskyApp: Open on bsky.app
 // i18n pages.profile.actions.openOn: Open on {{host}}
@@ -291,6 +294,8 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.errors.searchFor: Search for @{{handle}}
 // i18n pages.profile.errors.idOnlyLink: This link carries only an account id, and ids belong to the server that issued them — there is no name in it to look up. Links made from here on include the handle, so they survive switching servers.
 // i18n pages.profile.errors.accountNotFound: Account not found.
+// i18n pages.profile.errors.openOnHome: Open the profile on {{host}}
+// i18n pages.profile.errors.notOnServer: This profile is not on the server you are browsing.
 // i18n pages.profile.errors.followUpdateFailed: Could not update the follow on Bluesky.
 // i18n pages.profile.errors.mediaLoadFailed: Could not load pictures for this account.
 // i18n pages.profile.errors.serverDoesNotKnow: {{server}} doesn’t know @{{handle}}.
@@ -773,7 +778,8 @@ export class Profile implements OnInit, OnDestroy {
    * fosstodon), so this is the ordinary outcome of a stale link, not an edge
    * case.
    */
-  protected loadError = signal<string | null>(null);
+  /** Held as a key: a fast failure can land before the dictionary does. */
+  protected loadError = translatedMessage();
   /** The handle from `?handle=`, if the link carried one for recovery. */
   protected routeHandle = signal<string | null>(null);
   /** True while re-resolving that handle against the current server. */
@@ -1456,15 +1462,10 @@ export class Profile implements OnInit, OnDestroy {
             this.recoveryFailed.set((error as { status?: number })?.status === 404);
             this.loading.set(false);
             this.loadError.set(
-              this.transloco.translate<string>(
-                this.recoveryFailed()
-                  ? 'pages.profile.errors.serverDoesNotKnow'
-                  : 'pages.profile.errors.profileLoadFailed',
-                {
-                  server: this.currentServerLabel(),
-                  handle,
-                },
-              ),
+              this.recoveryFailed()
+                ? 'pages.profile.errors.serverDoesNotKnow'
+                : 'pages.profile.errors.profileLoadFailed',
+              { server: this.currentServerLabel(), handle },
             );
           },
         }),
@@ -1641,8 +1642,8 @@ export class Profile implements OnInit, OnDestroy {
           this.loading.set(false);
           this.loadError.set(
             status === 404
-              ? 'This profile is not on the server you are browsing.'
-              : this.transloco.translate<string>('pages.profile.errors.profileLoadFailed'),
+              ? 'pages.profile.errors.notOnServer'
+              : 'pages.profile.errors.profileLoadFailed',
           );
         },
       }),
@@ -1661,6 +1662,12 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   /** Host of the server being browsed, for messages that name it. */
+  /** `alice@far.example` → her profile on far.example; null without a domain. */
+  protected handleHomeUrl(handle: string): { url: string; host: string } | null {
+    const match = /^@?([^@\s/]+)@([a-z0-9.-]+\.[a-z]{2,})$/i.exec(handle);
+    return match ? { url: `https://${match[2]}/@${match[1]}`, host: match[2] } : null;
+  }
+
   protected currentServerLabel(): string {
     const base = this.auth.isAnonymous ? this.anonymous.server() : this.server.baseUrl();
     return (
@@ -1812,7 +1819,7 @@ export class Profile implements OnInit, OnDestroy {
       this.loading.set(false);
       this.statusesLoading.set(false);
       this.exhausted.set(true);
-      this.loadError.set(this.transloco.translate<string>('pages.profile.misskey.signIn'));
+      this.loadError.set('pages.profile.misskey.signIn');
       return;
     }
     const server = identity.profile.server;
@@ -1845,7 +1852,7 @@ export class Profile implements OnInit, OnDestroy {
           if (seq !== this.loadSeq) return;
           this.diagnostics.error('Profile', 'misskey:load-failed', error, { userId });
           this.loading.set(false);
-          this.loadError.set(this.transloco.translate<string>('pages.profile.misskey.loadFailed'));
+          this.loadError.set('pages.profile.misskey.loadFailed');
         },
       }),
     );

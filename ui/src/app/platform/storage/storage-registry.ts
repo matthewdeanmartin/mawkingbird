@@ -197,6 +197,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Account Home mode, favorite feed, session defaults and algorithm tuning. Favorite feed may identify private interests.',
   },
   {
+    base: 'mockingbird_chat_mutuals_v1',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'cache',
+    note: 'Handles and names of mutual follows, offered as you type in Chat with; rebuilt after seven days, never exported.',
+  },
+  {
     base: 'mockingbird_algo_feed_v1',
     storage: 'local',
     suffix: 'account',

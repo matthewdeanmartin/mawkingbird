@@ -4,11 +4,19 @@
     id="chat-with"
     name="chatWith"
     autocomplete="off"
+    list="chat-with-people"
     [ngModel]="chatWith()"
-    (ngModelChange)="chatWith.set($event)"
+    (ngModelChange)="onChatWithInput($event)"
+    (focus)="onChatWithFocus()"
     [placeholder]="'pages.conversations.chatHandle' | transloco"
     [disabled]="!mastodonAvailable() || startingChat()"
   />
+  <!-- A datalist suggests and never restricts: any handle can still be typed. -->
+  <datalist id="chat-with-people">
+    @for (p of chatWithSuggestions(); track p.acct) {
+      <option [value]="'@' + p.acct">{{ p.name }}</option>
+    }
+  </datalist>
   <button
     mbButton
     type="submit"

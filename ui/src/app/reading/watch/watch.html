@@ -27,6 +27,16 @@
   <p role="status">{{ 'watch.loading' | transloco }}</p>
 } @else if (loader.loadError() || hidden() || !source()) {
   <p role="alert">{{ 'watch.unavailable' | transloco }}</p>
+  <!-- A shared Watch link must not end here: the post may still open where it lives. -->
+  <p>
+    @if (loader.publicOriginalUrl(); as originalUrl) {
+      <a [href]="originalUrl" target="_blank" rel="noopener noreferrer">{{
+        'pages.thread.error.openOriginal' | transloco
+      }}</a>
+      ·
+    }
+    <a routerLink="/videos">{{ 'watch.browseVideos' | transloco }}</a>
+  </p>
 } @else {
   <div class="watch-layout">
     <section class="watch-stage" [attr.aria-label]="'watch.title' | transloco">

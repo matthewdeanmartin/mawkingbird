@@ -23,6 +23,10 @@ after each edit costs the owner hours. While working, use only:
 - `npx playwright test --config ../design_system/playwright.config.mjs <file>`
   for the one design browser file you are working on.
   Narrowed runs type-check only what they compile, so they never replace the gate.
+  `make test-deep-links-browser` (shared links whose post, profile or server is
+  gone, in a real browser) is an occasional integration check, ~3 minutes with
+  its build: run it once after changing routes, the deep-link resolver or a
+  landing page's error states, or before a release. Never per edit or in a loop.
   Owner cadence for multi-sprint Native archive work (2026-11-15): complete two
   sprints before running the exhaustive full gates. Use focused checks within
   each sprint and record the deferred gates. At the end of the second sprint,

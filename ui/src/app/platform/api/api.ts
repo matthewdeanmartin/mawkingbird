@@ -178,6 +178,24 @@ export class Api {
     });
   }
 
+  /**
+   * Accounts the viewer follows whose handle or name matches `query`, from the
+   * viewer's own server. No webfinger (`resolve=false`): suggestions, not lookups.
+   */
+  searchFollowedAccounts(query: string, limit = 8): Observable<Account[]> {
+    return this.http
+      .get<SearchResults>('/api/v2/search', {
+        params: new HttpParams()
+          .set('q', query)
+          .set('type', 'accounts')
+          .set('following', 'true')
+          .set('resolve', 'false')
+          .set('limit', limit),
+        context: serverRole('background'),
+      })
+      .pipe(map((results) => results.accounts));
+  }
+
   /** Resolve recipients on the posting server, never on an alternate search server. */
   resolveReplyMention(handle: string): Observable<SearchResults> {
     return this.http.get<SearchResults>('/api/v2/search', {
@@ -1035,8 +1053,10 @@ export class Api {
     return this.http.delete(`/api/v1/lists/${id}`);
   }
 
-  listAccounts(id: string): Observable<Account[]> {
-    return this.http.get<Account[]>(`/api/v1/lists/${id}/accounts`);
+  /** `limit` 0 asks Mastodon for every member in one response, unpaginated. */
+  listAccounts(id: string, limit?: number): Observable<Account[]> {
+    const params = limit === undefined ? undefined : new HttpParams().set('limit', String(limit));
+    return this.http.get<Account[]>(`/api/v1/lists/${id}/accounts`, { params });
   }
 
   /**

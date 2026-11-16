@@ -939,10 +939,13 @@
         </div>
       }
       <div class="stats muted">
-        <span
-          ><strong>{{ a.statuses_count | humanCount }}</strong>
-          {{ isRss() ? ('pages.profile.stats.items' | transloco) : words().posts }}</span
-        >
+        <!-- A Twitter fetch that failed counted nothing; "0 posts" would claim it did. -->
+        @if (!(isTwitter() && twitterError())) {
+          <span
+            ><strong>{{ a.statuses_count | humanCount }}</strong>
+            {{ isRss() ? ('pages.profile.stats.items' | transloco) : words().posts }}</span
+          >
+        }
         @if (!isRss() && !isTwitter() && !isMisskey()) {
           <button type="button" class="count-btn" (click)="setTab('following')">
             <strong>{{
@@ -1559,6 +1562,16 @@
           } @empty {
             @if (tagged(); as tag) {
               <p class="muted center">{{ 'pages.profile.tagged.empty' | transloco: { tag } }}</p>
+            } @else if (isTwitter() && twitterError()) {
+              <!-- Nothing was filtered: the posts never arrived. Point at where they are. -->
+              <p class="muted center">
+                {{ 'pages.profile.twitter.postsElsewhere' | transloco }}
+                @if (a.url) {
+                  <a [href]="a.url" target="_blank" rel="noopener noreferrer">{{
+                    'pages.profile.twitter.readOnX' | transloco
+                  }}</a>
+                }
+              </p>
             } @else if (!showPinned() || !pinnedStatuses().length) {
               <p class="muted center">{{ 'pages.profile.posts.noMatchesFilters' | transloco }}</p>
             }
@@ -1756,6 +1769,14 @@
               [queryParams]="{ q: handle, type: 'accounts' }"
             >
               {{ 'pages.profile.errors.searchFor' | transloco: { handle: handle } }}
+            </a>
+          </div>
+        }
+        <!-- Whatever failed here, the person is still on their own server. -->
+        @if (handleHomeUrl(handle); as home) {
+          <div class="profile-error-actions">
+            <a class="btn btn-outline" [href]="home.url" target="_blank" rel="noopener noreferrer">
+              {{ 'pages.profile.errors.openOnHome' | transloco: { host: home.host } }}
             </a>
           </div>
         }

@@ -223,6 +223,7 @@
            tabs, then the switcher. -->
         <nav
           class="primary-nav"
+          appNavFit
           [attr.data-mode]="appMode.mode()"
           [attr.aria-label]="'shell.nav.primary' | transloco"
         >
@@ -233,11 +234,18 @@
             auth.token()
           ) {
             <details class="nav-dropdown" #homeDropdown>
-              <summary [class.active]="currentUrl().startsWith('/home')">
+              <summary
+                [class.active]="currentUrl().startsWith('/home')"
+                [attr.aria-label]="'shell.nav.home' | transloco"
+                [attr.title]="'shell.nav.home' | transloco"
+              >
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
                 </svg>
-                <span>{{ 'shell.nav.home' | transloco }}</span>
+                <span class="nav-label">{{ 'shell.nav.home' | transloco }}</span>
+                @if (navShort()('shell.nav.home'); as short) {
+                  <span class="nav-label-short">{{ short }}</span>
+                }
               </summary>
               <div class="nav-dropdown-panel">
                 <a
@@ -256,11 +264,19 @@
               </div>
             </details>
           } @else {
-            <a routerLink="/home" routerLinkActive="active">
+            <a
+              routerLink="/home"
+              routerLinkActive="active"
+              [attr.aria-label]="'shell.nav.home' | transloco"
+              [attr.title]="'shell.nav.home' | transloco"
+            >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M3 11.5 12 4l9 7.5v8a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z" />
               </svg>
-              <span>{{ 'shell.nav.home' | transloco }}</span>
+              <span class="nav-label">{{ 'shell.nav.home' | transloco }}</span>
+              @if (navShort()('shell.nav.home'); as short) {
+                <span class="nav-label-short">{{ short }}</span>
+              }
             </a>
           }
           @for (item of modeItems(); track item.id) {
@@ -270,9 +286,18 @@
               [class.active]="item.active(currentUrl())"
               [attr.aria-current]="item.active(currentUrl()) ? 'page' : null"
               [class.has-activity]="hasActivity(item)"
+              [attr.aria-label]="
+                hasActivity(item)
+                  ? (item.labelKey | transloco) + ', ' + ('shell.nav.newActivity' | transloco)
+                  : (item.labelKey | transloco)
+              "
+              [attr.title]="item.labelKey | transloco"
             >
               <svg viewBox="0 0 24 24" aria-hidden="true"><path [attr.d]="item.icon" /></svg>
-              <span>{{ item.labelKey | transloco }}</span>
+              <span class="nav-label">{{ item.labelKey | transloco }}</span>
+              @if (navShort()(item.labelKey); as short) {
+                <span class="nav-label-short">{{ short }}</span>
+              }
               @if (hasActivity(item)) {
                 <span class="activity-dot" [attr.aria-label]="'shell.nav.newActivity' | transloco"
                   >●</span
@@ -281,11 +306,20 @@
             </a>
           }
           @if (auth.shouldOfferLogin && !focusedApp()) {
-            <a class="login-nav" routerLink="/login" (click)="auth.exitAnonymous()">
+            <a
+              class="login-nav"
+              routerLink="/login"
+              (click)="auth.exitAnonymous()"
+              [attr.aria-label]="'shell.nav.login' | transloco"
+              [attr.title]="'shell.nav.login' | transloco"
+            >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10" />
               </svg>
-              <span>{{ 'shell.nav.login' | transloco }}</span>
+              <span class="nav-label">{{ 'shell.nav.login' | transloco }}</span>
+              @if (navShort()('shell.nav.login'); as short) {
+                <span class="nav-label-short">{{ short }}</span>
+              }
             </a>
           }
           @if (!focusedApp()) {

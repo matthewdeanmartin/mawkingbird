@@ -1,3 +1,4 @@
+import { READ_PARAM } from './portable-address';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -76,7 +77,11 @@ export class DeepLinkPage implements OnInit {
     const kind = this.route.snapshot.data['kind'] as DeepLinkKind;
     const target = await this.resolve(kind, (name) => params.get(name) ?? '').catch(() => null);
     if (target) {
-      await this.router.navigate(target, { replaceUrl: true });
+      // A reader page's portable address (see portable-address.ts) reopens
+      // the reader, not the thread around it.
+      const reader =
+        target[0] === '/statuses' && this.route.snapshot.queryParamMap?.get(READ_PARAM) === '1';
+      await this.router.navigate(reader ? ['/read', target[1]] : target, { replaceUrl: true });
     } else {
       this.failed.set(true);
     }

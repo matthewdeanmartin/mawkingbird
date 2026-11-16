@@ -46,6 +46,7 @@ import { isElizaId } from '../../chat/eliza/eliza-identity';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbNotice } from '../../design-system/notice/notice';
+import { keepPortableAddress } from '../../posts/copy-link/portable-address';
 
 // i18n pages.thread.loading: Loading…
 // i18n pages.thread.reply.placeholder: Post your reply
@@ -68,6 +69,9 @@ import { MbNotice } from '../../design-system/notice/notice';
 // i18n pages.thread.error.notFound: Status not found.
 // i18n pages.thread.error.postNotOnServer: This post isn’t on the server you’re browsing. Post links only work on the server that hosts them.
 // i18n pages.thread.error.loadPost: Could not load this post.
+// i18n pages.thread.error.blueskyUnavailable: This Bluesky post could not be loaded here. It may have been deleted, or its author may limit who can see it.
+// i18n pages.thread.error.twitterUnavailable: This post could not be loaded here. It may still be on X.
+// i18n pages.thread.error.publicUnavailable: {{server}} did not return this post. It may have been deleted or made private, or the server may be down.
 // i18n pages.thread.error.misskeySignIn: Sign in with your Misskey account to read this post.
 // i18n pages.thread.twitter.loadPost: Could not load this post.
 // i18n pages.thread.twitter.loadReplies: Could not load replies.
@@ -307,6 +311,12 @@ export class Thread implements OnInit {
 
   /** Latest route id and `?reader` value. `currentId` is read by the Reader link. */
   protected readonly currentId = signal('');
+  /** The address bar shows a link that opens anywhere, not a server-local id. */
+  private readonly portableAddress = keepPortableAddress(
+    this.currentId,
+    this.loader.status,
+    'thread',
+  );
   /** Set by the focused card while it shows its post in translation; warns above the reply box. */
   protected readonly focusedTranslatedFrom = signal<{ language: string } | null>(null);
   protected readonly threadCwOpen = signal<boolean | null>(null);

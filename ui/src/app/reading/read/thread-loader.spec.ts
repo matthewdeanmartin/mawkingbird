@@ -9,6 +9,9 @@ import { SearchServer } from '../../platform/http/search-server';
 import { Status } from '../../platform/api/models';
 import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
 import { saveMisskeyIdentity } from '../../connections/misskey/misskey-identity-store';
+import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
+import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
+import { of, throwError } from 'rxjs';
 
 const ORIGINAL = 'https://graz.social/@publicvoit/117170026233980502';
 
@@ -367,5 +370,64 @@ describe('ThreadLoader with a Misskey note', () => {
     await vi.waitFor(() => expect(loader.loading()).toBe(false));
     expect(loader.status()).toBeNull();
     expect(loader.loadError()).toBeTruthy();
+  });
+});
+
+/** A shared link must end somewhere useful, never at a bare "not found". */
+describe('ThreadLoader when a shared post cannot be loaded', () => {
+  function setUp(providers: unknown[]): ThreadLoader {
+    TestBed.configureTestingModule({
+      providers: [
+        ThreadLoader,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: Auth, useValue: { lacksMastodonToken: true, isAnonymous: true } },
+        { provide: SearchServer, useValue: { active: () => false } },
+        ...(providers as never[]),
+      ],
+    });
+    return TestBed.inject(ThreadLoader);
+  }
+
+  it('explains a Bluesky post it cannot load and links to it on bsky.app', () => {
+    const loader = setUp([
+      {
+        provide: BlueskyApi,
+        useValue: { getPostThread: () => throwError(() => new Error('gone')) },
+      },
+    ]);
+    loader.load('bsky:at://did:plc:alice/app.bsky.feed.post/3k');
+    expect(loader.loading()).toBe(false);
+    expect(loader.loadError()).toContain('Bluesky post could not be loaded');
+    expect(loader.publicOriginalUrl()).toBe('https://bsky.app/profile/did:plc:alice/post/3k');
+  });
+
+  it('treats an empty Bluesky thread as unavailable too', () => {
+    const loader = setUp([
+      { provide: BlueskyApi, useValue: { getPostThread: () => of({ thread: {} }) } },
+    ]);
+    loader.load('bsky:at://did:plc:alice/app.bsky.feed.post/3k');
+    expect(loader.loadError()).toContain('Bluesky post could not be loaded');
+  });
+
+  it('names the server when a public Mastodon post does not come back', () => {
+    const loader = setUp([
+      {
+        provide: AnonymousPublicApi,
+        useValue: {
+          getStatus: () => throwError(() => new Error('404')),
+          getContext: () => throwError(() => new Error('404')),
+        },
+      },
+    ]);
+    loader.load(
+      anonymousStatusRouteRef({
+        server: 'https://far.example',
+        id: '42',
+        originalUrl: 'https://far.example/@alice/42',
+      }),
+    );
+    expect(loader.loadError()).toContain('far.example did not return this post');
+    expect(loader.publicOriginalUrl()).toBe('https://far.example/@alice/42');
   });
 });
