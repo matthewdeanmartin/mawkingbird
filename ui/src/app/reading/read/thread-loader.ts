@@ -25,6 +25,7 @@ import { LocalPostStore } from '../../chat/eliza/local-post-store';
 import { isElizaId } from '../../chat/eliza/eliza-identity';
 import { messageStatus, parseMessageStatusRouteRef } from '../../connections/paste/message-payload';
 import { ThreadPreload } from './thread-preload';
+import { mergeOriginReplies, OriginReads } from '../origin/origin-reads';
 
 /**
  * Resolving a status id into a post and its conversation, whatever it is a
@@ -169,8 +170,49 @@ export class ThreadLoader {
     this.sub = new Subscription();
   }
 
+  private origin = inject(OriginReads);
+  /** The focused post's id once its origin replies were asked for; one read per load. */
+  private originRequestedFor: string | null = null;
+  /** Home context has arrived for the current load. */
+  private homeContextReady = false;
+
+  /**
+   * After the home server's context has rendered, add the replies only the
+   * post's own server has (parity item 8). Off by default, and a no-op for a
+   * local post: {@link OriginReads.context} returns null without a request.
+   * Any failure leaves the home thread exactly as it is.
+   */
+  private mergeFromOrigin(): void {
+    const focused = this.status();
+    if (!focused || !this.homeContextReady || this.originRequestedFor === focused.id) return;
+    if (!this.origin.originOfStatus(focused)) return;
+    this.originRequestedFor = focused.id;
+    this.sub.add(
+      this.origin.context(focused).subscribe((origin) => {
+        if (!origin || this.status()?.id !== focused.id) return;
+        this.sub.add(
+          this.origin.blockedDomains().subscribe((blocked) => {
+            if (this.status()?.id !== focused.id) return;
+            this.descendants.set(
+              mergeOriginReplies(
+                this.descendants(),
+                origin.descendants,
+                focused.uri,
+                origin.ref.id,
+                origin.ref.server,
+                (status) => this.origin.hidden(status, blocked),
+              ),
+            );
+          }),
+        );
+      }),
+    );
+  }
+
   load(id: string): void {
     this.destroy();
+    this.originRequestedFor = null;
+    this.homeContextReady = false;
     this.refreshingReplies = false;
     this.repliesSource = null;
     this.loading.set(true);
@@ -242,6 +284,7 @@ export class ThreadLoader {
         next: (s) => {
           this.status.set(s);
           this.loading.set(false);
+          this.mergeFromOrigin();
         },
         error: (error: unknown) => {
           // Without a handler the spinner never stopped. Unlike an account,
@@ -261,6 +304,8 @@ export class ThreadLoader {
         next: (ctx) => {
           this.ancestors.set(ctx.ancestors);
           this.descendants.set(ctx.descendants);
+          this.homeContextReady = true;
+          this.mergeFromOrigin();
         },
         error: () => this.publicContextUnavailable.set(true),
       }),
@@ -331,6 +376,8 @@ export class ThreadLoader {
               next: (ctx) => {
                 this.ancestors.set(ctx.ancestors);
                 this.descendants.set(ctx.descendants);
+                this.homeContextReady = true;
+                this.mergeFromOrigin();
               },
               error: () => this.publicContextUnavailable.set(true),
             }),

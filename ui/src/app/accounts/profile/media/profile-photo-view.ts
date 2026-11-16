@@ -22,6 +22,7 @@ import { RenderedHtmlLinks } from '../../rendered-html-links';
 import { TrustedAccounts } from '../../trusted-accounts';
 import { AuthorModeration, ModerationTarget } from '../../../moderation/author-moderation';
 import { StatusActions } from '../../../connections/status-actions';
+import { ImageActions } from '../../../posts/media-download/image-actions';
 import { AnonymousCapabilities } from '../../anonymous/anonymous-capabilities';
 import { ProviderCapabilities } from '../../../connections/provider';
 import { AnonymousPublicApi } from '../../anonymous/anonymous-public-api';
@@ -76,6 +77,7 @@ import { Server } from '../../../platform/http/server';
 // i18n pages.profile.media.bookmark: Bookmark
 // i18n pages.profile.media.copyLinkToPost: Copy link to post
 // i18n pages.profile.media.copyImageAddress: Copy image address
+// i18n pages.profile.media.copyImage: Copy image
 // i18n pages.profile.media.openImageInNewTab: Open image in new tab
 // i18n pages.profile.media.deletePost: Delete post
 // i18n pages.profile.media.report: Report…
@@ -478,6 +480,25 @@ export class ProfilePhotoView {
     if (url) {
       void this.copy(url, 'Link copied.');
     }
+  }
+
+  private readonly imageActions = inject(ImageActions);
+
+  /** Copying the picture itself; hidden where the clipboard can't take images, and for video. */
+  protected canCopyImage(): boolean {
+    const item = this.current();
+    return !!item?.url && item.type === 'image' && this.imageActions.canCopy;
+  }
+
+  protected copyImage(): void {
+    const url = this.current()?.url;
+    this.menuOpen.set(false);
+    if (!url) return;
+    this.imageActions.copy(url).then(
+      (message) => this.flash(message),
+      (error: unknown) =>
+        this.actionError.set(error instanceof Error ? error.message : String(error)),
+    );
   }
 
   protected copyImageAddress(): void {

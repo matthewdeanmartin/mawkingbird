@@ -267,6 +267,22 @@ describe('StatusCard', () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
+  it('toggles its own CW when no thread-wide state is set, and follows thread state when it is', () => {
+    const fixture = setUp(makeStatus({ spoiler_text: 'Spoilers' }));
+    const toggled: boolean[] = [];
+    fixture.componentInstance.cwToggled.subscribe((open) => toggled.push(open));
+    const button = () =>
+      (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('.cw-toggle')!;
+    expect(button().getAttribute('aria-expanded')).toBe('false');
+    button().click();
+    fixture.detectChanges();
+    expect(button().getAttribute('aria-expanded')).toBe('true');
+    expect(toggled).toEqual([true]);
+    fixture.componentRef.setInput('threadCwOpen', false);
+    fixture.detectChanges();
+    expect(button().getAttribute('aria-expanded')).toBe('false');
+  });
+
   /** Creates a fixture, sets the required `status` input, and runs the first CD cycle. */
   it.each(['reader', 'trusted'] as const)(
     'lets the viewer collapse a warning expanded by %s and resets for another post',
@@ -3411,7 +3427,10 @@ describe('StatusCard — AI translation', () => {
         // to answer it. These posts carry no language and are too short to detect, so
         // the same-language check declines to fire and the translation proceeds.
         { provide: AiTranslate, useValue: { translateHtml, targetLanguage: () => 'en' } },
-        { provide: OpenRouterSession, useValue: { connected: () => connected } },
+        {
+          provide: OpenRouterSession,
+          useValue: { connected: () => connected, ready: () => connected },
+        },
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);

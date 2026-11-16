@@ -1,5 +1,5 @@
 import { MbButton } from '../../design-system/button/button';
-import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../platform/session/auth';
@@ -11,6 +11,7 @@ import { PeopleSourceFactory } from './people-sources';
 import { Relationship } from '../../platform/api/models';
 
 // i18n peopleBrowser.loading: Loading…
+// i18n peopleBrowser.fromServer: From {{server}}, the account’s own server
 // i18n peopleBrowser.loadError: Couldn't load this list.
 // i18n peopleBrowser.followers.one: {{count}} follower
 // i18n peopleBrowser.followers.other: {{count}} followers
@@ -65,6 +66,10 @@ export class PeopleBrowser {
   readonly server = input<string | null>(null);
   /** Count advertised on the profile, used to distinguish private lists from genuinely empty ones. */
   readonly reportedCount = input<number>(0);
+  /** The profile itself, for reading a remote account's lists from its own server. */
+  readonly account = input<Account | null>(null);
+  /** Host the list came from, when it is the account's own server (parity item 8). */
+  protected fromServer = signal<string | null>(null);
 
   protected accounts = signal<Account[]>([]);
   protected loading = signal(true);
@@ -115,7 +120,11 @@ export class PeopleBrowser {
       // Touch the inputs so the effect re-runs on either change.
       const id = this.accountId();
       this.mode();
-      this.source = this.sources.create(id, this.server());
+      this.source = this.sources.create(
+        id,
+        this.server(),
+        untracked(() => this.account()),
+      );
       this.reset();
       this.loadFirst();
     });
@@ -130,6 +139,7 @@ export class PeopleBrowser {
     this.exhausted.set(false);
     this.error.set(false);
     this.approximate.set(false);
+    this.fromServer.set(null);
     this.cursor = null;
   }
 
@@ -139,6 +149,7 @@ export class PeopleBrowser {
         this.cursor = page.cursor;
         this.loading.set(false);
         this.accounts.set(page.accounts);
+        this.fromServer.set(page.origin ?? null);
         if (page.approximate) this.approximate.set(true);
         this.exhausted.set(!page.accounts.length || !page.cursor);
         this.loadRelationships(page.accounts);

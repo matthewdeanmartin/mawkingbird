@@ -75,6 +75,7 @@ import { keepPortableAddress } from '../../posts/copy-link/portable-address';
 // i18n pages.thread.error.misskeySignIn: Sign in with your Misskey account to read this post.
 // i18n pages.thread.twitter.loadPost: Could not load this post.
 // i18n pages.thread.twitter.loadReplies: Could not load replies.
+// i18n pages.thread.origin.label: From {{server}} — not on your server yet
 @Component({
   selector: 'app-thread',
   imports: [
@@ -319,7 +320,21 @@ export class Thread implements OnInit {
   );
   /** Set by the focused card while it shows its post in translation; warns above the reply box. */
   protected readonly focusedTranslatedFrom = signal<{ language: string } | null>(null);
+  /**
+   * One CW decision for the whole conversation: opening any warning opens every
+   * warning in the thread, closing one closes them all. `null` means nobody has
+   * chosen yet, so each card falls back to its own rule.
+   */
   protected readonly threadCwOpen = signal<boolean | null>(null);
+  /** Ids of every post in the loaded conversation, to tell a move within it from a new thread. */
+  private readonly threadIds = computed(
+    () =>
+      new Set(
+        [this.status(), ...this.ancestors(), ...this.descendants()]
+          .filter((post): post is Status => !!post)
+          .map((post) => post.id),
+      ),
+  );
   protected readonly threadReader = signal(false);
   private readerParam: string | null = null;
   /** True once a hand-off to the reader page is under way. See `applyReaderMode`. */
@@ -341,7 +356,10 @@ export class Thread implements OnInit {
       if (!id) {
         return;
       }
-      if (id !== this.currentId()) this.threadCwOpen.set(null);
+      // Moving to another post of the conversation already on screen (clicking a
+      // reply or an ancestor) keeps the thread-wide CW state; only a different
+      // conversation starts closed again.
+      if (id !== this.currentId() && !this.threadIds().has(id)) this.threadCwOpen.set(null);
       this.currentId.set(id);
       // RSS items are articles, so they hand off unless the link opts out with
       // ?reader=0 — and that decision needs the id, which only arrives here.
@@ -411,7 +429,12 @@ export class Thread implements OnInit {
   }
 
   onContextChanged(updated: Status): void {
-    const patch = (list: Status[]) => list.map((s) => (s.id === updated.id ? updated : s));
+    // An origin-only reply comes back from an action under its home-server id,
+    // so match it by its ActivityPub uri as well.
+    const patch = (list: Status[]) =>
+      list.map((s) =>
+        s.id === updated.id || (!!s.originServer && !!s.uri && s.uri === updated.uri) ? updated : s,
+      );
     this.ancestors.update(patch);
     this.descendants.update(patch);
   }

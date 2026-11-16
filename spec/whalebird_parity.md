@@ -24,7 +24,9 @@ Whalebird is a **small** client. The rewrite dropped much of the older Vue versi
 
 ---
 
-### W1. Sync read position through the server's markers — approved 2026-11-16
+### W1. Sync read position through the server's markers — done 2026-11-16
+
+**Implemented:** automatic jump to the server's home marker with a “Last read on” divider, debounced marker writes, notifications marker. See [TODO item 7](parity_11_16.md).
 
 **Approved by the owner 2026-11-16.** See [today's TODO, item 7](parity_11_16.md).
 
@@ -46,7 +48,7 @@ Sources: [Whalebird notifications](../../REFERENCE/whalebird-desktop/renderer/co
 
 Sources: [Whalebird Jump](../../REFERENCE/whalebird-desktop/renderer/components/Jump.tsx), [timelines layout](../../REFERENCE/whalebird-desktop/renderer/components/layouts/timelines.tsx); [mawkingbird hotkeys](../ui/src/app/shell/hotkeys.ts), [shortcut help](../ui/src/app/shell/shortcut-help/shortcut-help.ts).
 
-### W3. Proxy modes, including “use the OS proxy” — folded into TODO 5
+### W3. Proxy modes, including “use the OS proxy” — implemented 2026-11-16 (TODO 5), awaiting owner Windows check
 
 **Whalebird:** Settings → Proxy offers no proxy, the system proxy, or manual HTTP or SOCKS with host and port (`set-proxy` IPC in `main/main.ts`).
 
@@ -74,7 +76,7 @@ Sources: [Whalebird account layout](../../REFERENCE/whalebird-desktop/renderer/c
 
 Sources: [Whalebird README](../../REFERENCE/whalebird-desktop/README.md), [electron-builder config](../../REFERENCE/whalebird-desktop/electron-builder.yml); [native release runbook](../ops/NATIVE_RELEASE.md).
 
-### W6. Desktop right-click menu: save image, copy link — approved 2026-11-16
+### W6. Desktop right-click menu: save image, copy link — implemented 2026-11-16 (TODO 6), awaiting owner Windows check
 
 **Approved by the owner 2026-11-16** as native image download. See [today's TODO, item 6](parity_11_16.md).
 

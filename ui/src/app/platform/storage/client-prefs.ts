@@ -441,6 +441,7 @@ interface StoredPrefs {
   zenMode?: boolean;
   analytics?: boolean;
   postHistory?: boolean;
+  fetchFromOrigin?: boolean;
   requireAltText?: boolean;
   /**
    * Superseded by `watchYoutubeAutoLoad` and no longer read. It defaulted to
@@ -779,6 +780,13 @@ export class ClientPrefs {
    * the list itself is per account and browser-only (see {@link PostHistory}).
    */
   readonly postHistory = signal<boolean>(true);
+  /**
+   * Read missing replies and full follower/favourite/boost lists from the
+   * post's or account's own server, anonymously (parity item 8). Off by
+   * default: each read tells that server the reader's IP address and what they
+   * opened. Device-level, so it travels with settings export/import.
+   */
+  readonly fetchFromOrigin = signal<boolean>(false);
   /** Opt-in: refuse to post while any attached image lacks alt text. */
   readonly requireAltText = signal<boolean>(true);
   /**
@@ -1237,6 +1245,10 @@ export class ClientPrefs {
   }
 
   /** Turn post history recording on or off. Existing history is kept. */
+  setFetchFromOrigin(on: boolean): void {
+    this.fetchFromOrigin.set(on);
+  }
+
   setPostHistory(on: boolean): void {
     this.postHistory.set(on);
   }
@@ -1543,6 +1555,7 @@ export class ClientPrefs {
     this.loadBool(stored.zenMode, this.zenMode);
     this.loadBool(stored.analytics, this.analytics);
     this.loadBool(stored.postHistory, this.postHistory);
+    this.loadBool(stored.fetchFromOrigin, this.fetchFromOrigin);
     this.loadBool(stored.requireAltText, this.requireAltText);
     this.loadBool(stored.watchYoutubeAutoLoad, this.autoLoadYoutubeWatch);
     this.loadBool(stored.thoughtfulPosting, this.thoughtfulPosting);
@@ -1623,6 +1636,7 @@ export class ClientPrefs {
       zenMode: this.zenMode(),
       analytics: this.analytics(),
       postHistory: this.postHistory(),
+      fetchFromOrigin: this.fetchFromOrigin(),
       requireAltText: this.requireAltText(),
       watchYoutubeAutoLoad: this.autoLoadYoutubeWatch(),
       thoughtfulPosting: this.thoughtfulPosting(),

@@ -42,7 +42,7 @@ export class BotPeers {
       return [];
     }
     const peers: BotPeer[] = [];
-    if (this.openRouter.connected()) {
+    if (this.openRouter.ready()) {
       peers.push({
         peer: OPENROUTER_PEER,
         account: openRouterAccount(this.modelChoice.modelId()),

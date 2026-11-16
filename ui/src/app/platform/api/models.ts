@@ -151,6 +151,12 @@ export interface Status {
   id: string;
   /** ActivityPub id: the same on every server, unlike `id`. Absent on synthetic posts. */
   uri?: string;
+  /**
+   * Set on a reply read from the post's own server that the reader's server has
+   * not seen yet (parity item 8): the origin host, for the label. Actions on it
+   * resolve it through the home server first.
+   */
+  originServer?: string;
   created_at: string;
   edited_at: string | null;
   content: string;
@@ -387,6 +393,19 @@ export interface FamiliarFollowers {
   accounts: Account[];
 }
 
+/** The two timelines Mastodon keeps a read marker for. */
+export type MarkerTimeline = 'home' | 'notifications';
+
+/** Mastodon's Marker entity. `unread_count` is a Mastodon extension some servers send for notifications. */
+export interface Marker {
+  last_read_id: string;
+  version: number;
+  updated_at: string;
+  unread_count?: number;
+}
+
+export type Markers = Partial<Record<MarkerTimeline, Marker>>;
+
 export interface MastodonNotification {
   /** Viewer relationship supplied by the source network, when available. */
   relationship?: Relationship;
@@ -395,6 +414,37 @@ export interface MastodonNotification {
   created_at: string;
   account: Account;
   status?: Status;
+  /** `moderation_warning` notifications (Mastodon 4.3+): what a moderator did to your account. */
+  moderation_warning?: AccountWarning;
+  /** `severed_relationships` notifications (Mastodon 4.3+): follows lost to a block or suspension. */
+  event?: RelationshipSeveranceEvent;
+}
+
+/**
+ * Mastodon's AccountWarning entity. The appeal itself has no REST API; it lives
+ * on the server's web page `/disputes/strikes/:id`.
+ */
+export interface AccountWarning {
+  id: string;
+  /** `none` (a plain warning), `disable`, `mark_statuses_as_sensitive`, `delete_statuses`, `sensitive`, `silence` or `suspend`. */
+  action: string;
+  text: string;
+  status_ids: string[] | null;
+  target_account?: Account;
+  appeal: { text: string; state: string } | null;
+  created_at: string;
+}
+
+/** Mastodon's RelationshipSeveranceEvent entity. The lost-account list is the web page `/severed_relationships`. */
+export interface RelationshipSeveranceEvent {
+  id: string;
+  /** `domain_block` (your admins blocked a server), `user_domain_block` (you did) or `account_suspension`. */
+  type: string;
+  purged: boolean;
+  target_name: string;
+  followers_count: number;
+  following_count: number;
+  created_at: string;
 }
 
 export interface Hashtag {

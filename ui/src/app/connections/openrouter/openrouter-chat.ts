@@ -9,6 +9,7 @@ import {
   SuggestionReply,
 } from './json-suggestions';
 import { cleanTextCompletion } from './text-completion';
+import { LocalAi } from '../local-ai/local-ai';
 
 /**
  * The one inference call in the app.
@@ -83,6 +84,8 @@ export class OpenRouterChat {
   private transport = inject(IntelligenceHttp);
   private session = inject(OpenRouterSession);
   private choice = inject(OpenRouterModelChoice);
+  /** When Local AI is on (native only), every call goes there instead; never a silent fallback. */
+  private localAi = inject(LocalAi);
 
   /**
    * Ask the chosen model for a list of suggestions.
@@ -97,6 +100,14 @@ export class OpenRouterChat {
    * that explains it.
    */
   async suggest(options: SuggestOptions): Promise<SuggestionReply> {
+    if (this.localAi.active()) {
+      // Local servers vary in json_schema support, so ask for JSON in words.
+      const content = await this.localAi.chat({
+        max_tokens: MAX_TOKENS,
+        messages: [{ role: 'user', content: options.prompt + JSON_ONLY_NUDGE }],
+      });
+      return parseSuggestionReply(content, options.max);
+    }
     const key = this.session.apiKey();
     if (!key) {
       throw new Error('Connect OpenRouter first.');
@@ -135,6 +146,17 @@ export class OpenRouterChat {
    * spend rather than guess from token counts and a price table.
    */
   async completeWithCost(options: CompleteOptions): Promise<CostedCompletion> {
+    if (this.localAi.active()) {
+      const content = await this.localAi.chat({
+        max_tokens: options.maxTokens ?? MAX_COMPLETION_TOKENS,
+        messages: [{ role: 'user', content: options.prompt }],
+      });
+      // Free and on this computer: there is no cost to report.
+      return {
+        text: options.raw ? content : cleanTextCompletion(content, { source: options.source }),
+        costUsd: null,
+      };
+    }
     const key = this.session.apiKey();
     if (!key) {
       throw new Error('Connect OpenRouter first.');
@@ -183,15 +205,37 @@ export class OpenRouterChat {
    * 1,500-character description limit.
    */
   async describeImage(imageUrl: string, language: string): Promise<string> {
-    const key = this.session.apiKey();
-    if (!key) {
-      throw new Error('Connect OpenRouter first.');
-    }
     const prompt =
       `Write alt text for this image for a social media post, in the language with code "${language}". ` +
       'Describe what matters for someone who cannot see it: the subject, setting and any ' +
       'visible text, quoted exactly. One to three plain sentences. ' +
       'Do not start with "Image of" or "Alt text:". Reply with the description only.';
+    if (this.localAi.active()) {
+      // No guess about whether the local model reads images: if it can't,
+      // its own error is shown as-is.
+      return cleanAltText(
+        await this.localAi.chat({
+          max_tokens: 400,
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: prompt },
+                { type: 'image_url', image_url: { url: imageUrl } },
+              ],
+            },
+          ],
+        }),
+      );
+    }
+    return this.describeImageWithOpenRouter(imageUrl, prompt);
+  }
+
+  private async describeImageWithOpenRouter(imageUrl: string, prompt: string): Promise<string> {
+    const key = this.session.apiKey();
+    if (!key) {
+      throw new Error('Connect OpenRouter first.');
+    }
     let response: Response;
     try {
       response = await this.transport.authenticated(CHAT_URL, {

@@ -174,7 +174,9 @@
   }
 } @else {
   @for (row of rows(); track row.key) {
-    @if (row.kind === 'group') {
+    @if (row.kind === 'single' && isSafetyNotice(row.notif)) {
+      <app-safety-notice [notification]="row.notif" />
+    } @else if (row.kind === 'group') {
       <div class="notif notif-group">
         <div class="group-avatars">
           @for (g of row.sample; track g.account.id) {

@@ -231,6 +231,22 @@ export class MenuIndicators {
     this.tick();
   }
 
+  /**
+   * The server's notifications marker said how many are unread (Mastodon's
+   * `unread_count`, sent by servers that support it). A positive count lights
+   * the ordinary lane on its usual schedule; zero clears what it lit. Header
+   * only: no badge on the app icon, no sound, no push.
+   */
+  noteServerUnread(lastReadId: string, unreadCount: number): void {
+    this.updateScope();
+    this.receive(
+      `marker:notifications:${lastReadId}`,
+      'ordinary',
+      new Date().toISOString(),
+      unreadCount > 0,
+    );
+  }
+
   private receiveNotifications(source: string, rows: MastodonNotification[]): void {
     for (const row of rows)
       this.receive(

@@ -12,6 +12,7 @@ import { Auth } from '../platform/session/auth';
 import { environment } from '../../environments/environment';
 import { FeatureFlagId, FeatureFlags } from '../platform/build/feature-flags';
 import { SettingsPreloading } from './settings-preloading';
+import { PLATFORM_NETWORK } from '../platform/http/platform-http';
 
 interface SettingsNavItem {
   labelKey: string;
@@ -26,6 +27,8 @@ interface SettingsNavItem {
   anonymousOnly?: boolean;
   /** Hidden unless this feature flag is on. */
   featureFlag?: FeatureFlagId;
+  /** Exists only in the native build (Network, About); never shown on the web. */
+  nativeOnly?: boolean;
 }
 
 /** A heading in the sidebar, and the pages filed under it. */
@@ -87,6 +90,8 @@ interface SettingsNavGroup {
 // i18n settings.nav.featureFlags: Feature flags
 // i18n settings.nav.development: Development
 // i18n settings.nav.rss: RSS feeds
+// i18n settings.nav.network: Network
+// i18n settings.nav.about: About and updates
 // i18n settings.sectionsAriaLabel: Settings sections
 // i18n settings.openMenu: Open settings menu
 // i18n settings.menuTitle: Settings
@@ -135,7 +140,16 @@ const NAV_GROUPS: SettingsNavGroup[] = [
   },
   {
     titleKey: 'settings.groups.advanced',
-    paths: ['pseudonymity', 'storage', 'feature-flags', 'development', 'config', 'deletion'],
+    paths: [
+      'pseudonymity',
+      'storage',
+      'network',
+      'feature-flags',
+      'development',
+      'config',
+      'deletion',
+      'about',
+    ],
   },
 ];
 
@@ -175,6 +189,8 @@ export class SettingsShell {
   private readonly destroyRef = inject(DestroyRef);
   private readonly flags = inject(FeatureFlags);
   private readonly preloading = inject(SettingsPreloading);
+  /** Native-only pages; the web build provides no network transport. */
+  private readonly native = inject(PLATFORM_NETWORK) !== null;
 
   constructor() {
     // The router preloader runs after navigation completes. Enabling it while
@@ -298,9 +314,24 @@ export class SettingsShell {
         anonymous: true,
       },
       { labelKey: 'settings.nav.development', path: 'development', exact: true, mockOnly: true },
+      {
+        labelKey: 'settings.nav.network',
+        path: 'network',
+        exact: true,
+        anonymous: true,
+        nativeOnly: true,
+      },
+      {
+        labelKey: 'settings.nav.about',
+        path: 'about',
+        exact: true,
+        anonymous: true,
+        nativeOnly: true,
+      },
     ] satisfies SettingsNavItem[]
   ).filter(
     (item) =>
+      (!item.nativeOnly || this.native) &&
       (environment.mockTooling || !item.mockOnly) &&
       (!this.auth.isAnonymous || item.anonymous) &&
       (this.auth.isAnonymous || !item.anonymousOnly) &&

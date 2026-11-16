@@ -2731,3 +2731,17 @@ post-type filters stay visible while scrolling. The browser Relationships
 sample retains its bounded source. No new candidate files or shared widget
 implementation changed; existing reconciliation entries now cover the new
 filter and navigation controls.
+
+### 2026-11-16 — Parity batch (items 1–10)
+
+Reviewed regenerated inventory: 1873 scanned files, 647 candidate files. Three
+new native-only settings pages (Network, About and updates, Local AI) are built
+from shared widgets (MbSettingsRow, MbRadioGroup, MbField/MbControl,
+MbCheckbox, MbButton) and are recorded as adopted scope in reconciliation. The
+lightbox adds two native tool buttons (Copy image, native Save image) in its
+existing bespoke tool row, which stays on its backlog entry. The composer adds
+one outline MbButton (Read text from image) beside the AI describe button; the
+profile photo view adds one menu row (Copy image) in its existing menu; Privacy
+adds one MbCheckbox row (Fetch from the original server). The notification
+safety notices and the thread origin label add no controls beyond links. No
+shared design widget implementation changed.

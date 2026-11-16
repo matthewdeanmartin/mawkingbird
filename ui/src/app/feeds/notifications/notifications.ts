@@ -36,6 +36,8 @@ import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { adaptRelationship } from '../../connections/bluesky/bluesky-adapter';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { isSafetyNotice, SafetyNotice } from './safety-notice';
+import { ReadMarkers } from '../home/read-markers';
 
 type NotifAudience = 'all' | 'friends' | 'followers' | 'mutuals' | 'not-following';
 type NotificationView = 'notifications' | 'new-accounts';
@@ -248,6 +250,7 @@ export function accountsNewToMe(
 ): NewAccountCandidate[] {
   const candidates = new Map<string, NewAccountCandidate>();
   for (const notification of notifications) {
+    if (isSafetyNotice(notification)) continue;
     const id = notification.account.id;
     const relationship = relationships.get(id);
     if (
@@ -291,6 +294,7 @@ export function accountsNewToMe(
     NgOptimizedImage,
     AccountResultCard,
     TranslocoPipe,
+    SafetyNotice,
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',
@@ -331,7 +335,9 @@ export class Notifications implements OnInit, OnDestroy {
   }
 
   protected readonly accountProfilePath = accountProfilePath;
+  protected readonly isSafetyNotice = isSafetyNotice;
   private api = inject(Api);
+  private readMarkers = inject(ReadMarkers);
   private statusActions = inject(StatusActions);
   protected likeBusy = signal(new Set<string>());
   protected favIcon = computed(() => (this.prefs.favStyle() === 'heart' ? '❤️' : '⭐'));
@@ -445,6 +451,9 @@ export class Notifications implements OnInit, OnDestroy {
     const audience = this.audience();
     const rels = this.rels();
     return this.items().filter((n) => {
+      // Account-safety notices (a moderator acted on you, you lost follows) are
+      // not engagement: no type or audience filter hides them.
+      if (isSafetyNotice(n)) return true;
       if (type !== 'all' && n.type !== type) {
         return false;
       }
@@ -635,7 +644,12 @@ export class Notifications implements OnInit, OnDestroy {
         this.api.notifications(this.mastodonCursor).pipe(
           timeout(15_000),
           map((batch) => {
-            if (!this.mastodonCursor) this.replyCounts.markCurrentRead('mastodon');
+            if (!this.mastodonCursor) {
+              this.replyCounts.markCurrentRead('mastodon');
+              // Opening the list reads it: move the server's notifications
+              // marker so other devices know (parity item 7). Not a badge.
+              if (batch[0]) this.readMarkers.noteNotificationsRead(batch[0].id);
+            }
             const cursor = batch.at(-1)?.id;
             this.mastodonDone = !cursor || cursor === this.mastodonCursor;
             this.mastodonCursor = cursor ?? this.mastodonCursor;

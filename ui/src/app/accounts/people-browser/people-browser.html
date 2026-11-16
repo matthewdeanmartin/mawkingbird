@@ -5,6 +5,9 @@
 } @else if (!accounts().length) {
   <p class="muted center">{{ emptyLabel() }}</p>
 } @else {
+  @if (fromServer(); as server) {
+    <p class="muted small">{{ 'peopleBrowser.fromServer' | transloco: { server } }}</p>
+  }
   <div class="people-grid">
     @for (a of accounts(); track a.id) {
       <div class="person-card">

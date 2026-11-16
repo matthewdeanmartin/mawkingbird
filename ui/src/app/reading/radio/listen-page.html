@@ -200,6 +200,8 @@
         [status]="status"
         [showMedia]="false"
         filterContext="thread"
+        [threadCwOpen]="threadCwOpen()"
+        (cwToggled)="threadCwOpen.set($event)"
         (changed)="loader.status.set($event)"
         (deleted)="loader.status.set(null)"
         (replied)="onReply($event)"
@@ -213,6 +215,8 @@
           <app-status-card
             [status]="comment.post"
             filterContext="thread"
+            [threadCwOpen]="threadCwOpen()"
+            (cwToggled)="threadCwOpen.set($event)"
             (changed)="onCommentChanged($event)"
             (deleted)="onCommentDeleted($event)"
             (replied)="onReply($event)"

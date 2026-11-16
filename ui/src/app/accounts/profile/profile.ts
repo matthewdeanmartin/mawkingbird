@@ -2236,7 +2236,7 @@ export class Profile implements OnInit, OnDestroy {
    * would only raise a question the page cannot answer.
    */
   private loadOpenRouter(): void {
-    if (!this.ai.enabled() || !this.openRouter.connected()) {
+    if (!this.ai.enabled() || !this.openRouter.ready()) {
       this.loading.set(false);
       this.statusesLoading.set(false);
       return;

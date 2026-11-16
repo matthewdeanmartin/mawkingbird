@@ -18,7 +18,7 @@ Moshidon has few big features, but many careful settings. Its distinctive ideas 
 
 Its two cross-account and multi-server ideas reinforce items already in the backlog:
 - Long-press boost or favourite **as another account** is [Sengi/Pachli item 1](sengi_pachli_parity.md#1-act-on-a-post-as-another-signed-in-account-declined-2026-11-16), which the owner **declined** on 2026-11-16 because it risks linking separate identities. Users switch accounts instead.
-- “Load info from remote instances” extends [Sengi/Pachli item 2](sengi_pachli_parity.md#2-fill-in-replies-the-home-server-hasnt-seen-from-the-origin-server-partial) from replies to follower, favourite and boost lists (M8).
+- “Load info from remote instances” extends [Sengi/Pachli item 2](sengi_pachli_parity.md#2-fill-in-replies-the-home-server-hasnt-seen-from-the-origin-server-done-2026-11-16) from replies to follower, favourite and boost lists (M8).
 
 | Band | Items |
 | --- | --- |
@@ -45,7 +45,9 @@ Its two cross-account and multi-server ideas reinforce items already in the back
 
 Sources: `origin/master:mastodon/src/main/java/org/joinmastodon/android/model/AltTextFilter.java`, `…/ui/utils/MediaAttachmentViewController.java`, `…/fragments/settings/SettingsDisplayFragment.java`; [mawkingbird status card](../ui/src/app/posts/status-card/status-card.ts), [profile media item](../ui/src/app/accounts/profile/media/profile-media-item.ts).
 
-### M2. Auto-reveal repeated content warnings in a thread — missing
+### M2. Auto-reveal repeated content warnings in a thread — already supported
+
+**Already supported, hardened 2026-11-16** ([TODO item 9](parity_11_16.md)): opening any CW on the thread page opens every CW in the thread, the state survives moving to another post of the same thread, Radio's listen page shares it, and regression tests cover it. The identical-text rule below stays declined in favour of this broader behavior.
 
 **Correction 2026-11-16:** mawkingbird already does a broader version. On the thread page, opening any CW opens every CW in the thread (`threadCwOpen` in `reading/thread/thread.ts`). The original search missed it. The remaining work (tests, keeping the state while moving within the thread) is [today's TODO, item 9](parity_11_16.md).
 
@@ -125,7 +127,9 @@ Sources: `origin/master:mastodon/src/main/java/org/joinmastodon/android/fragment
 
 ## Origin-server enrichment
 
-### M8. Follower, favourite and boost lists from the origin server — missing
+### M8. Follower, favourite and boost lists from the origin server — done 2026-11-16
+
+**Implemented:** behind Settings → Privacy → “Fetch from the original server” (off by default). See [TODO item 8](parity_11_16.md).
 
 **Approved by the owner 2026-11-16**, together with Sengi/Pachli item 2, **off by default** behind a Settings → Privacy switch. See [today's TODO, item 8](parity_11_16.md).
 
@@ -133,7 +137,7 @@ Sources: `origin/master:mastodon/src/main/java/org/joinmastodon/android/fragment
 
 **Mawkingbird:** Lists come from the home server. Showing the count from one server next to a partial list from another is a known confusion. No origin read was found.
 
-**Completion criterion:** On remote profiles and remote posts, follower, following, favourite and boost lists try the origin's public endpoint first and fall back to the home server. They're labelled “from {server}”, and the user's token is never sent to the origin. Accounts from the origin are resolved through the home server only when acted on. Build this together with [Sengi/Pachli item 2](sengi_pachli_parity.md#2-fill-in-replies-the-home-server-hasnt-seen-from-the-origin-server-partial), sharing one off switch and one origin-read helper.
+**Completion criterion:** On remote profiles and remote posts, follower, following, favourite and boost lists try the origin's public endpoint first and fall back to the home server. They're labelled “from {server}”, and the user's token is never sent to the origin. Accounts from the origin are resolved through the home server only when acted on. Build this together with [Sengi/Pachli item 2](sengi_pachli_parity.md#2-fill-in-replies-the-home-server-hasnt-seen-from-the-origin-server-done-2026-11-16), sharing one off switch and one origin-read helper.
 
 Sources: `origin/master:mastodon/src/main/java/org/joinmastodon/android/fragments/account_list/PaginatedAccountListFragment.java`; [mawkingbird thread loader](../ui/src/app/reading/read/thread-loader.ts), [anonymous public API](../ui/src/app/accounts/anonymous/anonymous-public-api.ts).
 

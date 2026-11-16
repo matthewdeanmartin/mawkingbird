@@ -189,7 +189,7 @@ export class BioTranslation {
         source,
         force: !!source,
         serverCanTranslate: false,
-        aiAvailable: this.ai.enabled() && this.openrouter.connected(),
+        aiAvailable: this.ai.enabled() && this.openrouter.ready(),
       });
       switch (outcome.kind) {
         case 'text':

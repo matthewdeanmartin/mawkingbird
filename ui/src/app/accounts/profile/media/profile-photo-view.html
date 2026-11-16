@@ -242,6 +242,11 @@
                       {{ 'pages.profile.media.copyLinkToPost' | transloco }}
                     </button>
                   }
+                  @if (canCopyImage()) {
+                    <button type="button" role="menuitem" (click)="copyImage()">
+                      {{ 'pages.profile.media.copyImage' | transloco }}
+                    </button>
+                  }
                   <button type="button" role="menuitem" (click)="copyImageAddress()">
                     {{ 'pages.profile.media.copyImageAddress' | transloco }}
                   </button>

@@ -1,3 +1,4 @@
+import { LocalAi } from '../../connections/local-ai/local-ai';
 import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
 import { NgTemplateOutlet } from '@angular/common';
 import { MbTab, MbTabs } from '../../design-system/tabs/tabs';
@@ -120,6 +121,7 @@ export class SettingsConnections implements OnInit {
       'cors-proxy',
       'dropbox',
       'openrouter',
+      'local-ai',
       'link-shortener',
       'hugo',
     ].includes(id);
@@ -132,6 +134,7 @@ export class SettingsConnections implements OnInit {
   private raindrop = inject(RaindropSession);
   private github = inject(GitHubSession);
   private openrouter = inject(OpenRouterSession);
+  private localAi = inject(LocalAi);
   private translators = inject(TranslationConnectors);
   private corsProxy = inject(CorsProxySettings);
   private shortener = inject(ShortenerSettings);
@@ -189,7 +192,10 @@ export class SettingsConnections implements OnInit {
         storage: this.credentialLocation(entry, live.connected),
         flagged: false,
       };
-    }).filter((row) => !this.isOwnIdentity(row.entry.id)),
+    })
+      .filter((row) => !this.isOwnIdentity(row.entry.id))
+      // Local AI exists only in the native build.
+      .filter((row) => row.entry.id !== 'local-ai' || this.localAi.available),
   );
 
   /**
@@ -274,6 +280,8 @@ export class SettingsConnections implements OnInit {
           return { entry, connected: this.bsky.session() !== null, unavailableReason: null };
         case 'openrouter':
           return { entry, connected: this.openrouter.connected(), unavailableReason: null };
+        case 'local-ai':
+          return { entry, connected: this.localAi.active(), unavailableReason: null };
         case 'mymemory':
           return { entry, connected: this.translators.myMemoryEnabled(), unavailableReason: null };
         case 'apertium':

@@ -19,7 +19,7 @@ export class ImageDescriber {
   private readonly chat = inject(OpenRouterChat);
   private readonly translate = inject(AiTranslate);
 
-  readonly available = computed(() => this.ai.enabled() && this.session.connected());
+  readonly available = computed(() => this.ai.enabled() && this.session.ready());
 
   /** Describe a local file (downscaled first) or a remote image URL. */
   async describe(image: Blob | string, language?: string | null): Promise<string> {

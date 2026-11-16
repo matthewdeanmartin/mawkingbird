@@ -173,6 +173,11 @@
     />
   }
   @for (d of threadReader() ? comments() : descendants(); track d.id) {
+    @if (d.originServer) {
+      <p class="origin-label muted">
+        {{ 'pages.thread.origin.label' | transloco: { server: d.originServer } }}
+      </p>
+    }
     <app-status-card
       [status]="d"
       [threadCwOpen]="threadCwOpen()"

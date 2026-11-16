@@ -10,15 +10,21 @@ import { FeedCtaStore } from '../feed-cta-store';
 import { accountScopeSuffix, scopedKey } from '../../platform/session/account-scope';
 import { FeedCta } from '../feed-ctas';
 import {
+  afterNextRender,
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
+  Injector,
   OnDestroy,
   OnInit,
   signal,
   untracked,
 } from '@angular/core';
+import { compareMastodonIds, ReadMarkers } from './read-markers';
+import { SeenInViewport } from './seen-in-viewport';
+// i18n pages.home.lastRead: Last read on {{date}}
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   ActivatedRoute,
@@ -270,6 +276,9 @@ const VIDEO_FILL_PAGES = 5;
 /** How long the refresh button shows its "nothing new" check. */
 const NO_NEW_POSTS_MS = 2500;
 
+/** Older pages Home may fetch to reach the server's read marker before giving up. */
+const MARKER_SEEK_PAGES = 5;
+
 @Component({
   selector: 'app-home',
   providers: [HomeSource, ...HOME_PAGING_PROVIDERS],
@@ -299,6 +308,7 @@ const NO_NEW_POSTS_MS = 2500;
     ReaderToolbar,
     PinnedServerFeeds,
     TranslocoPipe,
+    SeenInViewport,
   ],
   templateUrl: './home.html',
   styleUrl: './home.css',
@@ -628,6 +638,119 @@ export class Home implements OnInit, OnDestroy {
   protected readonly hasWritePage = computed(() => this.flags.enabled('write'));
 
   protected statuses = signal<Status[]>([]);
+
+  // ---- Server read position (parity item 7) --------------------------------
+  //
+  // Mastodon's home marker follows the reader across devices. On a fresh Home
+  // the page goes there automatically (owner decision: no prompt, no button),
+  // marks it with a "Last read on {date}" divider, and leaves newer posts above
+  // to scroll up to. Local scroll restoration (ReadingHistory) still wins for a
+  // retained view: it never re-runs ngOnInit, so it never reaches this code.
+
+  private readMarkers = inject(ReadMarkers);
+  private injector = inject(Injector);
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
+  /** The post the "Last read on" divider sits above. */
+  protected lastReadDividerId = signal<string | null>(null);
+  protected lastReadLabel = signal('');
+  /** Viewport tracking starts once the jump is settled, so the jump never counts as reading. */
+  protected markerTracking = signal(false);
+  private markerTarget: { id: string; at: string; pages: number } | null = null;
+  private markerResolved = false;
+
+  /** Ask the server where the reader left off, once per fresh Home. */
+  private async resumeFromMarker(): Promise<void> {
+    if (this.markerResolved) return;
+    this.markerResolved = true;
+    if (
+      !this.readMarkers.available ||
+      this.auth.isForeignPrimary ||
+      this.homeSource.settings.value().mode !== 'friends' ||
+      this.view() !== 'feed'
+    ) {
+      this.markerTracking.set(true);
+      return;
+    }
+    const local = this.readMarkers.localHome();
+    const marker = (await this.readMarkers.refresh())?.home;
+    // Only a server position newer than this device's own is worth a jump.
+    if (!marker?.last_read_id || (local && compareMastodonIds(marker.last_read_id, local) <= 0)) {
+      this.markerTracking.set(true);
+      return;
+    }
+    this.markerTarget = { id: marker.last_read_id, at: marker.updated_at, pages: 0 };
+    this.seekMarker();
+  }
+
+  /** Re-check for the marked post whenever a page lands. */
+  private readonly markerSeek = effect(() => {
+    this.statuses();
+    if (this.loading() || this.autoLoading()) return;
+    untracked(() => this.seekMarker());
+  });
+
+  /**
+   * Find the marked post, paging older (a few pages at most) until it shows up
+   * or the feed is already older than it. If it cannot be shown (deleted, too
+   * old, filtered) Home quietly behaves as it always did.
+   */
+  private seekMarker(): void {
+    const target = this.markerTarget;
+    if (!target || this.loading() || this.autoLoading()) return;
+    const index = this.visible().findIndex((status) => status.id === target.id);
+    if (index >= 0) {
+      this.markerTarget = null;
+      if (index > 0) this.showLastRead(target);
+      this.markerTracking.set(true);
+      return;
+    }
+    const held = this.statuses().some((status) => status.id === target.id);
+    const oldest = this.statuses()
+      .filter((status) => !status.provider || status.provider === 'mastodon')
+      .at(-1)?.id;
+    if (
+      !held &&
+      oldest &&
+      compareMastodonIds(oldest, target.id) > 0 &&
+      target.pages < MARKER_SEEK_PAGES &&
+      this.statuses().length < this.prefs.feedMax() &&
+      this.canLoadMore()
+    ) {
+      target.pages++;
+      this.loadMore();
+      if (this.autoLoading()) return;
+    }
+    this.markerTarget = null;
+    this.markerTracking.set(true);
+  }
+
+  private showLastRead(target: { id: string; at: string }): void {
+    const when = Date.parse(target.at);
+    const date = Number.isFinite(when)
+      ? new Date(when).toLocaleString(this.transloco.getActiveLang() || undefined, {
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        })
+      : '';
+    this.lastReadLabel.set(this.transloco.translate<string>('pages.home.lastRead', { date }));
+    this.lastReadDividerId.set(target.id);
+    afterNextRender(
+      () => {
+        this.host.nativeElement
+          .querySelector<HTMLElement>('.last-read-divider')
+          ?.scrollIntoView?.({ block: 'start' });
+      },
+      { injector: this.injector },
+    );
+  }
+
+  /** A post passed through the viewport: the server marker may move forward. */
+  protected onSeen(status: Status): void {
+    if (!this.markerTracking()) return;
+    if (status.provider && status.provider !== 'mastodon') return;
+    this.readMarkers.noteHomeSeen(status.id);
+  }
+
   private syntheticAnchors = new Map<string, { kind: 'before' | 'after'; key: string }>();
   protected loading = signal(true);
   protected live = signal(false);
@@ -1568,6 +1691,7 @@ export class Home implements OnInit, OnDestroy {
         this.loading.set(false);
         // Auto-load further pages until the feed reaches the configured minimum.
         this.fillToMinimum();
+        if (!forceRefresh) void this.resumeFromMarker();
       },
       error: (error: unknown) => {
         this.diagnostics.error('load:first-page-error', error, {

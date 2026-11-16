@@ -5,6 +5,7 @@ import { ImageDescriber } from '../../publishing/image-describer/image-describer
 import { SpeechReader } from '../../reading/speech/speech-reader';
 import { MediaAttachment, Status } from '../../platform/api/models';
 import { VideoPlayerHost as VideoPlayer } from '../../reading/video-player/video-player-host';
+import { ImageActions, imageFileName } from '../media-download/image-actions';
 import {
   attachmentSource,
   mediaUrl,
@@ -101,6 +102,39 @@ export class Lightbox {
     return this.speech.speaking() === `media:${m.id}`;
   }
   protected hasMultiple = computed(() => this.items().length > 1);
+
+  // ---- Save / copy the image itself (parity items 6 and 10) ----
+  protected readonly imageActions = inject(ImageActions);
+  /** Short confirmation or failure under the image ("Image copied."). */
+  protected imageNotice = signal('');
+  protected imageBusy = signal(false);
+
+  protected async copyImage(m: MediaAttachment, event: Event): Promise<void> {
+    event.stopPropagation();
+    await this.runImageAction(() => this.imageActions.copy(m.url || m.preview_url));
+  }
+
+  protected async saveImage(m: MediaAttachment, event: Event): Promise<void> {
+    event.stopPropagation();
+    const status = this.context()?.status ?? null;
+    const index = Math.max(0, this.items().indexOf(m));
+    await this.runImageAction(() =>
+      this.imageActions.save(m.url || m.preview_url, imageFileName(status, index), m.description),
+    );
+  }
+
+  private async runImageAction(action: () => Promise<string | null>): Promise<void> {
+    if (this.imageBusy()) return;
+    this.imageBusy.set(true);
+    this.imageNotice.set('');
+    try {
+      this.imageNotice.set((await action()) ?? '');
+    } catch (error: unknown) {
+      this.imageNotice.set(error instanceof Error ? error.message : String(error));
+    } finally {
+      this.imageBusy.set(false);
+    }
+  }
 
   prev(event: Event): void {
     event.stopPropagation();

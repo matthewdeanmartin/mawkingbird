@@ -1243,7 +1243,9 @@ describe('WritePage', () => {
       prompt: 'Exact proofread prompt\nThis is is repeated.',
     }));
     TestBed.overrideProvider(AiAvailability, { useValue: { enabled: signal(true) } });
-    TestBed.overrideProvider(OpenRouterSession, { useValue: { connected: signal(true) } });
+    TestBed.overrideProvider(OpenRouterSession, {
+      useValue: { connected: signal(true), ready: signal(true) },
+    });
     TestBed.overrideProvider(Proofreader, { useValue: { preview, run } });
     TestBed.inject(Auth).mode.set('anonymous');
     const fixture = setUp();
@@ -2351,7 +2353,9 @@ describe('WritePage', () => {
     function withProofreader(findings: ProofreadingFinding[]): ReturnType<typeof vi.fn> {
       const run = vi.fn(async () => findings);
       TestBed.overrideProvider(AiAvailability, { useValue: { enabled: signal(true) } });
-      TestBed.overrideProvider(OpenRouterSession, { useValue: { connected: signal(true) } });
+      TestBed.overrideProvider(OpenRouterSession, {
+        useValue: { connected: signal(true), ready: signal(true) },
+      });
       TestBed.overrideProvider(Proofreader, {
         useValue: {
           run,

@@ -528,7 +528,12 @@
     </p>
   } @else {
     @for (s of visible(); track s.id; let index = $index) {
+      @if (s.id === lastReadDividerId()) {
+        <div class="last-read-divider" role="separator">{{ lastReadLabel() }}</div>
+      }
       <app-status-card
+        [appSeenInViewport]="markerTracking()"
+        (seen)="onSeen(s)"
         [status]="s"
         [textFocus]="homeTextFocus()"
         (changed)="onChanged(s, $event)"

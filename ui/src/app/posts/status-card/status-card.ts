@@ -149,7 +149,7 @@ import { AnonymousCapabilities } from '../../accounts/anonymous/anonymous-capabi
 import { AnonymousBookmarks } from '../../accounts/anonymous/anonymous-bookmarks';
 import { PrivateLikeButton } from '../../accounts/private-like-button';
 import { nitterHost, toNitterUrl } from '../../connections/twitter/nitter';
-import { StatusActions } from '../../connections/status-actions';
+import { OriginUnresolvedError, StatusActions } from '../../connections/status-actions';
 import { ReportDialog } from '../../moderation/report-dialog/report-dialog';
 import { PostEmbedDialog } from '../post-embed/post-embed-dialog';
 import { StatusEditDialog } from '../../publishing/status-edit/status-edit-dialog';
@@ -213,6 +213,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.translatedFromVia: Translated from {{from}} via {{provider}}
 // i18n statusCard.translatedFromViaAutomatic: Translated from {{from}} via {{provider}} · automatic
 // i18n statusCard.translationInfo: About this translation
+// i18n statusCard.originUnresolved: Your server couldn’t find this reply yet, so you can’t act on it from here. Open it on its own server instead.
 // i18n statusCard.replyingToTranslated: Warning: you are replying to a translated {{post}}. The original is in {{language}}.
 // i18n statusCard.replyingToTranslatedUnknown: Warning: you are replying to a translated {{post}}. The original is in another language.
 // i18n statusCard.aiTranslationNote: Translated into {{target}} by {{model}} · machine translation, so treat the wording as approximate
@@ -2233,8 +2234,27 @@ export class StatusCard {
       return;
     }
     this.quoting.set(false);
+    // A reply read from its origin server has no id the home server knows:
+    // resolve it there first, and say so if the server cannot find it.
+    if (this.display.originServer && !this.replying() && !this.replyTargetId()) {
+      this.actionError.set(null);
+      this.actions.resolveOrigin(this.display).subscribe({
+        next: (home) => {
+          this.replyTargetId.set(home.id);
+          this.replying.set(true);
+        },
+        error: () => this.actionError.set(this.transloco.translate('statusCard.originUnresolved')),
+      });
+      return;
+    }
     this.replying.update((v) => !v);
   }
+
+  /** The home-server id to reply to, once an origin-only reply was resolved. */
+  protected readonly replyTargetId = linkedSignal({
+    source: this.status,
+    computation: (): string | null => null,
+  });
 
   protected get canQuote(): boolean {
     return this.display.provider === 'bluesky'
@@ -2364,9 +2384,11 @@ export class StatusCard {
         this.optimistic.set(null);
         // i18n statusCard.nativeLikeReconnect: Reconnect this Mastodon account with Full access to enable likes. This login currently has read-only permission.
         this.actionError.set(
-          error?.error?.code === 'native_reauthorization_required'
-            ? this.transloco.translate('statusCard.nativeLikeReconnect')
-            : this.actionFailureMessage('like'),
+          error instanceof OriginUnresolvedError
+            ? this.transloco.translate('statusCard.originUnresolved')
+            : error?.error?.code === 'native_reauthorization_required'
+              ? this.transloco.translate('statusCard.nativeLikeReconnect')
+              : this.actionFailureMessage('like'),
         );
       },
     });
@@ -2426,10 +2448,14 @@ export class StatusCard {
         this.recordPosse('repost', target, result.reblogged || !!updated.reblog);
         this.changed.emit(result);
       },
-      error: () => {
+      error: (error: unknown) => {
         this.inFlight.set(null);
         this.optimistic.set(null);
-        this.actionError.set(this.actionFailureMessage('boost'));
+        this.actionError.set(
+          error instanceof OriginUnresolvedError
+            ? this.transloco.translate('statusCard.originUnresolved')
+            : this.actionFailureMessage('boost'),
+        );
       },
     });
   }
@@ -2587,7 +2613,9 @@ export class StatusCard {
       this.auth.isAnonymous ||
       this.remoteMastodonReadOnly ||
       s.provider === 'bluesky' ||
-      !serverKnowsStatus(s.provider)
+      !serverKnowsStatus(s.provider) ||
+      // Read from its origin and not on the home server yet: keep it locally.
+      !!s.originServer
     ) {
       this.changed.emit(this.anonymousBookmarks.toggle(s));
       return;
@@ -2941,7 +2969,7 @@ export class StatusCard {
    * button appears only once OpenRouter is connected.
    */
   protected showAiTranslate = computed(
-    () => this.capabilities.active || this.openrouter.connected() || this.serverCannotTranslate,
+    () => this.capabilities.active || this.openrouter.ready() || this.serverCannotTranslate,
   );
 
   /**
@@ -2964,7 +2992,7 @@ export class StatusCard {
   /** Drives the dialog's two faces: chooser when connected, upsell when not. */
   // AI translation is an AI surface, so it answers to the AI switch as well as
   // to whether a key exists. See AiAvailability.
-  protected openrouterConnected = computed(() => this.ai.enabled() && this.openrouter.connected());
+  protected openrouterConnected = computed(() => this.ai.enabled() && this.openrouter.ready());
 
   /** The 🌐 click for a signed-in user, routed by preference. */
   translateByPreference(event: Event): void {
@@ -3006,7 +3034,7 @@ export class StatusCard {
       this.aiTranslation.set(null);
       return;
     }
-    if (!this.openrouter.connected()) {
+    if (!this.openrouter.ready()) {
       this.translateChoiceOpen.set(true);
       return;
     }

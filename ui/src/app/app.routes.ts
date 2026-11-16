@@ -1,5 +1,10 @@
 import { inject, Type } from '@angular/core';
 import { NATIVE_PROFILES } from './platform/session/platform-login';
+import {
+  PLATFORM_LOCAL_AI,
+  PLATFORM_NETWORK,
+  PLATFORM_UPDATES,
+} from './platform/http/platform-http';
 import { CanActivateFn, CanMatchFn, ResolveFn, Route, Router, Routes } from '@angular/router';
 import { authGuard, mastodonSignedInMatch, signedInMatch } from './platform/session/auth.guard';
 import { adminGuard } from './admin/admin.guard';
@@ -713,6 +718,16 @@ export const routes: Routes = [
                   ),
               },
               {
+                // Native only: a model on this computer (parity item 1).
+                path: 'local-ai',
+                title: 'Local AI',
+                canMatch: [() => inject(PLATFORM_LOCAL_AI) !== null],
+                loadComponent: () =>
+                  import('./settings/connections/local-ai/connection-local-ai').then(
+                    (m) => m.ConnectionLocalAi,
+                  ),
+              },
+              {
                 path: 'mymemory',
                 title: 'MyMemory',
                 data: { translator: 'mymemory' },
@@ -838,6 +853,22 @@ export const routes: Routes = [
               import('./settings/pseudonymity/settings-pseudonymity').then(
                 (m) => m.SettingsPseudonymity,
               ),
+          },
+          {
+            // Native only: proxy settings for the Rust transport (parity item 5).
+            path: 'network',
+            title: 'Network',
+            canMatch: [() => inject(PLATFORM_NETWORK) !== null],
+            loadComponent: () =>
+              import('./settings/network/settings-network').then((m) => m.SettingsNetwork),
+          },
+          {
+            // Native only: version and "Check for updates" (parity item 3).
+            path: 'about',
+            title: 'About',
+            canMatch: [() => inject(PLATFORM_UPDATES) !== null],
+            loadComponent: () =>
+              import('./settings/about/settings-about').then((m) => m.SettingsAbout),
           },
           {
             path: 'privacy',

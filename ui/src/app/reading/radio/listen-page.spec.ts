@@ -23,6 +23,8 @@ class CardStub {
   readonly status = input<Status>();
   readonly showMedia = input(true);
   readonly filterContext = input('thread');
+  readonly threadCwOpen = input<boolean | null>(null);
+  readonly cwToggled = output<boolean>();
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();

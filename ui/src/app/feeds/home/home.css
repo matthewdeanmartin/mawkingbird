@@ -329,3 +329,20 @@ a.eliza-invite:hover {
 .home-misskey-no-follows {
   margin: 8px 16px;
 }
+
+/* "Last read on {date}": where the server's read marker left off (parity item 7). */
+.last-read-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 16px;
+  color: var(--muted, #6b7280);
+  font-size: 0.85em;
+  scroll-margin-top: 64px;
+}
+.last-read-divider::before,
+.last-read-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid var(--border);
+}

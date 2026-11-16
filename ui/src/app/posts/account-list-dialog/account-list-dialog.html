@@ -20,6 +20,9 @@
   } @else if (!accounts().length) {
     <mb-content-state kind="empty" [title]="'accountList.empty' | transloco" />
   } @else {
+    @if (fromServer(); as server) {
+      <p class="muted small">{{ 'accountList.fromServer' | transloco: { server } }}</p>
+    }
     <ul class="account-list">
       @for (a of accounts(); track a.id) {
         <li>

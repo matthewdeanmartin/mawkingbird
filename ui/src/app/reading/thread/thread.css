@@ -379,3 +379,9 @@
   display: block;
   margin: 8px 16px;
 }
+
+/* A reply read from the post's own server (parity item 8). */
+.origin-label {
+  margin: 8px 16px 0;
+  font-size: 0.8em;
+}

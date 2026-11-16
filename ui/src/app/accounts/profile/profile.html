@@ -1181,6 +1181,7 @@
         [accountId]="a.id"
         [mode]="tab() === 'followers' ? 'followers' : 'following'"
         [server]="peopleServer()"
+        [account]="a"
         [reportedCount]="tab() === 'followers' ? a.followers_count : a.following_count"
       />
     }

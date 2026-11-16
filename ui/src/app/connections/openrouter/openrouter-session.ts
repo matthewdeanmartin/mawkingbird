@@ -1,6 +1,7 @@
+import { LocalAi } from '../local-ai/local-ai';
 import { PLATFORM_CONNECTORS, PLATFORM_INTELLIGENCE } from '../../platform/http/platform-http';
 import { isNativeConnectorHandle } from '../../platform/http/connector-types';
-import { inject, Injectable, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import {
   appCallbackUrl,
   codeChallengeFor,
@@ -70,6 +71,13 @@ export class OpenRouterSession implements ExpiringConnection {
   private stored = signal<StoredOpenRouterKey | null>(readKey());
 
   readonly connected = signal(this.stored() !== null);
+  private readonly localAi = inject(LocalAi);
+  /**
+   * Whether AI actions have a provider: this OpenRouter key, or Local AI on
+   * this computer (parity item 1, native only). Feature gates read this;
+   * OpenRouter's own settings, budget and credits keep reading `connected`.
+   */
+  readonly ready = computed(() => this.connected() || this.localAi.active());
 
   /**
    * Connected, but the key is not in this browser right now.

@@ -5,9 +5,10 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../platform/session/auth';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Account, Context, Status } from '../../platform/api/models';
 import { Thread } from './thread';
 import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
@@ -201,6 +202,122 @@ describe('Thread', () => {
     expect(buttons().every((button) => button.getAttribute('aria-expanded') === 'false')).toBe(
       true,
     );
+  });
+
+  describe('thread-wide content warnings (parity item 9)', () => {
+    const warning = (id: string, author = '1') => ({
+      ...makeStatusBy(id, author, author),
+      spoiler_text: `Warning ${id}`,
+    });
+    const expanded = (fixture: ComponentFixture<Thread>) =>
+      Array.from(
+        (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('.cw-toggle'),
+      ).map((button) => button.getAttribute('aria-expanded'));
+
+    /** A route whose id can change, as clicking a reply does. */
+    function setUpNavigable(first: string) {
+      const params = new BehaviorSubject(convertToParamMap({ id: first }));
+      TestBed.overrideProvider(ActivatedRoute, {
+        useValue: { paramMap: params, queryParamMap: of(convertToParamMap({})) },
+      });
+      httpMock = TestBed.inject(HttpTestingController);
+      const fixture = TestBed.createComponent(Thread);
+      fixture.detectChanges();
+      return { fixture, go: (id: string) => params.next(convertToParamMap({ id })) };
+    }
+
+    function flushThread(id: string, ancestors: Status[], descendants: Status[]): void {
+      httpMock.expectOne(`/api/v1/statuses/${id}`).flush(warning(id));
+      httpMock
+        .expectOne(`/api/v1/statuses/${id}/context`)
+        .flush(makeContext(ancestors, descendants));
+    }
+
+    it('opens ancestors, the focused post and descendants from any one CW, and closes them all', () => {
+      const { fixture } = setUpNavigable('100');
+      flushThread('100', [warning('98'), warning('99')], [warning('101'), warning('102')]);
+      fixture.detectChanges();
+      expect(expanded(fixture)).toEqual(['false', 'false', 'false', 'false', 'false']);
+      (fixture.nativeElement as HTMLElement)
+        .querySelectorAll<HTMLButtonElement>('.cw-toggle')[4]
+        .click();
+      fixture.detectChanges();
+      expect(expanded(fixture)).toEqual(['true', 'true', 'true', 'true', 'true']);
+      (fixture.nativeElement as HTMLElement)
+        .querySelectorAll<HTMLButtonElement>('.cw-toggle')[0]
+        .click();
+      fixture.detectChanges();
+      expect(expanded(fixture)).toEqual(['false', 'false', 'false', 'false', 'false']);
+    });
+
+    it('keeps the CWs open when moving to a reply of the same thread', () => {
+      const { fixture, go } = setUpNavigable('100');
+      flushThread('100', [warning('99')], [warning('101')]);
+      fixture.detectChanges();
+      (fixture.nativeElement as HTMLElement)
+        .querySelector<HTMLButtonElement>('.cw-toggle')!
+        .click();
+      fixture.detectChanges();
+      go('101');
+      flushThread('101', [warning('99'), warning('100')], []);
+      fixture.detectChanges();
+      expect(expanded(fixture)).toEqual(['true', 'true', 'true']);
+    });
+
+    it('starts a different thread closed', () => {
+      const { fixture, go } = setUpNavigable('100');
+      flushThread('100', [], [warning('101')]);
+      fixture.detectChanges();
+      (fixture.nativeElement as HTMLElement)
+        .querySelector<HTMLButtonElement>('.cw-toggle')!
+        .click();
+      fixture.detectChanges();
+      go('500');
+      flushThread('500', [], [warning('501')]);
+      fixture.detectChanges();
+      expect(expanded(fixture)).toEqual(['false', 'false']);
+    });
+  });
+
+  it('merges replies only the origin server has, labelled, when the reader turned that on (parity item 8)', () => {
+    const fixture = setUpWithId('100');
+    // Read when the home context arrives, so it may be set after start-up.
+    TestBed.inject(ClientPrefs).setFetchFromOrigin(true);
+    TestBed.inject(Auth).setToken('signed-in');
+    const remote = {
+      ...makeStatusBy('100', 'them', 'them@origin.example'),
+      uri: 'https://origin.example/users/them/statuses/9000',
+    };
+    const homeReply = {
+      ...makeStatusBy('101', 'other', 'other'),
+      uri: 'https://origin.example/users/x/statuses/9001',
+      in_reply_to_id: '100',
+    };
+    httpMock.expectOne('/api/v1/statuses/100').flush(remote);
+    httpMock.expectOne('/api/v1/statuses/100/context').flush(makeContext([], [homeReply]));
+    const origin = httpMock.expectOne('https://origin.example/api/v1/statuses/9000/context');
+    expect(origin.request.headers.has('Authorization')).toBe(false);
+    origin.flush({
+      ancestors: [],
+      descendants: [
+        { ...makeStatus('9001'), uri: homeReply.uri, in_reply_to_id: '9000' },
+        {
+          ...makeStatus('9002'),
+          uri: 'https://origin.example/users/y/statuses/9002',
+          in_reply_to_id: '9000',
+        },
+      ],
+    });
+    httpMock.expectOne((r) => r.url === '/api/v1/domain_blocks').flush([]);
+    fixture.detectChanges();
+    expect(
+      internals(fixture)
+        .descendants()
+        .map((s) => s.uri),
+    ).toEqual([homeReply.uri, 'https://origin.example/users/y/statuses/9002']);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('.origin-label')?.textContent,
+    ).toContain('From origin.example');
   });
 
   it('loads an anonymous public thread from the source instance', () => {

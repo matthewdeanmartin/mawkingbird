@@ -77,12 +77,35 @@
             }}
           </button>
         }
+        @if (m.type === 'image' && imageActions.canCopy) {
+          <button
+            type="button"
+            class="lightbox-tool"
+            [disabled]="imageBusy()"
+            (click)="copyImage(m, $event)"
+          >
+            {{ 'imageActions.copy' | transloco }}
+          </button>
+        }
+        @if (m.type === 'image' && imageActions.canSave) {
+          <button
+            type="button"
+            class="lightbox-tool"
+            [disabled]="imageBusy()"
+            (click)="saveImage(m, $event)"
+          >
+            {{ 'imageActions.save' | transloco }}
+          </button>
+        }
         @if (speech.supported && spokenDescription(m)) {
           <button type="button" class="lightbox-tool" (click)="toggleSpeech(m, $event)">
             {{ (isSpeaking(m) ? 'lightbox.stopReading' : 'lightbox.readDescription') | transloco }}
           </button>
         }
       </div>
+      @if (imageNotice()) {
+        <p class="lightbox-caption" role="status">{{ imageNotice() }}</p>
+      }
       @if (describeError()) {
         <p class="lightbox-caption" role="alert">{{ describeError() }}</p>
       }

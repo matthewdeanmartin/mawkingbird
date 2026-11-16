@@ -472,7 +472,7 @@ export class WritePage implements OnInit, OnDestroy {
   protected tagHelperOpen = signal(false);
   protected translateOpen = signal(false);
   protected postLanguage = signal(this.postingLanguageDefaults.default());
-  protected readonly canUseAi = computed(() => this.ai.enabled() && this.openrouter.connected());
+  protected readonly canUseAi = computed(() => this.ai.enabled() && this.openrouter.ready());
   protected readonly languageOptions = computed(() =>
     [
       ...new Set(

@@ -161,6 +161,8 @@ describe('Home', () => {
   });
 
   afterEach(() => {
+    // A fresh Home asks where the server's read marker is (parity item 7).
+    for (const request of httpMock.match((r) => r.url === '/api/v1/markers')) request.flush({});
     // Status cards batch the fixture author's mutual-follow lookup.
     for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
       expect(request.request.method).toBe('GET');
@@ -186,6 +188,69 @@ describe('Home', () => {
     httpMock.expectOne('/api/v1/announcements').flush([]);
     return fixture;
   }
+  describe('server read marker (parity item 7)', () => {
+    async function settle(fixture: ComponentFixture<Home>): Promise<void> {
+      await Promise.resolve();
+      await Promise.resolve();
+      fixture.detectChanges();
+      await fixture.whenStable();
+    }
+
+    it('goes to the marked post automatically and marks it "Last read on"', async () => {
+      const fixture = TestBed.createComponent(Home);
+      fixture.detectChanges();
+      const page = Array.from({ length: 5 }, (_, i) => makeStatus(String(100 - i)));
+      flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page);
+      httpMock.expectOne('/api/v1/announcements').flush([]);
+      const markers = httpMock.expectOne((r) => r.url === '/api/v1/markers');
+      expect(markers.request.params.getAll('timeline[]')).toEqual(['home', 'notifications']);
+      markers.flush({
+        home: { last_read_id: '98', version: 3, updated_at: '2026-11-15T20:00:00.000Z' },
+      });
+      await settle(fixture);
+      const el = fixture.nativeElement as HTMLElement;
+      const divider = el.querySelector('.last-read-divider');
+      expect(divider?.textContent).toContain('Last read on');
+      // The divider sits directly above the marked post; newer posts stay above it.
+      expect(divider?.nextElementSibling?.textContent).toContain('98');
+      expect(el.querySelectorAll('app-status-card').length).toBe(5);
+    });
+
+    it("keeps today's behaviour quietly when the marked post cannot be loaded", async () => {
+      const fixture = TestBed.createComponent(Home);
+      fixture.detectChanges();
+      const page = Array.from({ length: 3 }, (_, i) => makeStatus(String(100 - i)));
+      flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page);
+      httpMock.expectOne('/api/v1/announcements').flush([]);
+      // Older than everything loaded, and the server says there is no more.
+      httpMock
+        .expectOne((r) => r.url === '/api/v1/markers')
+        .flush({
+          home: { last_read_id: '5', version: 1, updated_at: '2026-11-15T20:00:00.000Z' },
+        });
+      await settle(fixture);
+      expect((fixture.nativeElement as HTMLElement).querySelector('.last-read-divider')).toBeNull();
+      httpMock.expectNone((r) => r.url.includes('/timelines/home'));
+    });
+
+    it('shows no divider when the marked post is already the newest', async () => {
+      const fixture = TestBed.createComponent(Home);
+      fixture.detectChanges();
+      flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+        makeStatus('100'),
+        makeStatus('99'),
+      ]);
+      httpMock.expectOne('/api/v1/announcements').flush([]);
+      httpMock
+        .expectOne((r) => r.url === '/api/v1/markers')
+        .flush({
+          home: { last_read_id: '100', version: 1, updated_at: '2026-11-15T20:00:00.000Z' },
+        });
+      await settle(fixture);
+      expect((fixture.nativeElement as HTMLElement).querySelector('.last-read-divider')).toBeNull();
+    });
+  });
+
   it('retains its pagination cursor when another Home visit loads newer posts', () => {
     const first = TestBed.createComponent(Home);
     first.detectChanges();
@@ -1821,6 +1886,8 @@ describe('Home, end-of-feed honesty', () => {
   });
 
   afterEach(() => {
+    // A fresh Home asks where the server's read marker is (parity item 7).
+    for (const request of httpMock.match((r) => r.url === '/api/v1/markers')) request.flush({});
     // Status cards batch the fixture author's mutual-follow lookup.
     for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
       expect(request.request.method).toBe('GET');
@@ -1929,6 +1996,8 @@ describe('Home, bookmark review', () => {
   });
 
   afterEach(() => {
+    // A fresh Home asks where the server's read marker is (parity item 7).
+    for (const request of httpMock.match((r) => r.url === '/api/v1/markers')) request.flush({});
     // Status cards batch the fixture author's mutual-follow lookup.
     for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
       expect(request.request.method).toBe('GET');
@@ -2071,6 +2140,8 @@ describe('Home, reading break', () => {
   });
 
   afterEach(() => {
+    // A fresh Home asks where the server's read marker is (parity item 7).
+    for (const request of httpMock.match((r) => r.url === '/api/v1/markers')) request.flush({});
     // Status cards batch the fixture author's mutual-follow lookup.
     for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
       expect(request.request.method).toBe('GET');

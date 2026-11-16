@@ -2,11 +2,12 @@ import { accountProfilePath } from '../../accounts/account-route';
 import { Component, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 import { Api } from '../../platform/api/api';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { adaptAuthor } from '../../connections/bluesky/bluesky-adapter';
-import { Account } from '../../platform/api/models';
+import { Account, Status } from '../../platform/api/models';
+import { OriginReads } from '../../reading/origin/origin-reads';
 import { Terminology } from '../../i18n/terminology';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -19,6 +20,7 @@ import { MbContentState } from '../../design-system/content-state/content-state'
 // i18n accountList.close: Close
 // i18n accountList.failed: Could not load accounts. Try again.
 // i18n accountList.retry: Retry
+// i18n accountList.fromServer: From {{server}}
 
 /** Which set of accounts to show for a status. */
 export type AccountListMode = 'favourited_by' | 'reblogged_by';
@@ -43,7 +45,15 @@ export class AccountListDialog implements OnInit {
   readonly mode = input.required<AccountListMode>();
   /** The Bluesky post's at-uri. Set, the lists come from Bluesky instead of the server. */
   readonly blueskyUri = input<string | null>(null);
+  /**
+   * The post itself, so a remote post's list can be read from its own server
+   * when the reader turned that on (parity item 8). Null keeps the home list.
+   */
+  readonly status = input<Pick<Status, 'uri' | 'url'> | null>(null);
   readonly closed = output<void>();
+  /** Set when the list came from the post's own server. */
+  protected fromServer = signal<string | null>(null);
+  private origin = inject(OriginReads);
 
   protected accounts = signal<Account[]>([]);
   protected loading = signal(false);
@@ -72,7 +82,17 @@ export class AccountListDialog implements OnInit {
             .pipe(map((page) => page.likes.map((like) => adaptAuthor(like.actor))))
         : this.bskyApi.getRepostedBy(uri).pipe(map((page) => page.repostedBy.map(adaptAuthor)));
     }
-    return liked ? this.api.favouritedBy(this.statusId()) : this.api.rebloggedBy(this.statusId());
+    const home = (): Observable<Account[]> =>
+      liked ? this.api.favouritedBy(this.statusId()) : this.api.rebloggedBy(this.statusId());
+    const status = this.status();
+    if (!status || !this.origin.originOfStatus(status)) return home();
+    // The origin's list is the complete one; any failure falls back to home, quietly.
+    return this.origin.statusAccounts(status, liked ? 'favourited_by' : 'reblogged_by').pipe(
+      switchMap((found) => {
+        this.fromServer.set(found?.server ?? null);
+        return found ? [found.accounts] : home();
+      }),
+    );
   }
 
   protected load(): void {

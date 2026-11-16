@@ -1219,6 +1219,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'A coarse label for this browser, shown when a stored-connection conflict is resolved. Not a fingerprint and not derived from one.',
   },
   {
+    base: 'mockingbird_local_ai',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Local AI (native only): the chosen model id and the on/off switch. The loopback endpoint is kept by the native host.',
+  },
+  {
     base: 'mockingbird_openrouter_model',
     storage: 'local',
     suffix: 'none',

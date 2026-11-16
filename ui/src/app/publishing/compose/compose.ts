@@ -34,6 +34,7 @@ import { VisibilityState, VISIBILITIES } from './visibility-state';
 import { altTextMessage, mediaTypeOf, undescribedIndexes } from './alt-text';
 import { extractImageDescription } from './image-description';
 import { ImageDescriber } from '../image-describer/image-describer';
+import { PLATFORM_OCR } from '../../platform/http/platform-http';
 import { LinkShortening } from './link-shortening';
 import { TagHelperDialog } from './tag-helper-dialog/tag-helper-dialog';
 import { OpenRouterSession } from '../../connections/openrouter/openrouter-session';
@@ -160,6 +161,16 @@ const MAX_PASTE_BYTES = 2 * 1024 * 1024;
  * HttpErrorResponse with `status: 0` — the browser deliberately hides the real
  * response, so there is no code to show and no point retrying.
  */
+/** A file's bytes as base64, for the native text recognizer. */
+async function fileToBase64(file: Blob): Promise<string> {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  }
+  return btoa(binary);
+}
+
 function describePasteFailure(error: unknown): { status: number | null; hint: string } {
   if (error instanceof HttpErrorResponse) {
     return {
@@ -472,6 +483,10 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.altFromMetadata: Filled in from the description saved in this image. Check it still fits before posting.
 // i18n compose.altFromAi: Written by AI from the image. Check it is accurate before posting.
 // i18n compose.describeWithAi: Describe this image with AI (OpenRouter)
+// i18n compose.readText: Read text from image
+// i18n compose.readingText: Reading text…
+// i18n compose.altFromOcr: Read by your computer — check it before posting.
+// i18n compose.ocrNoText: No text found in this image.
 // i18n compose.describingWithAi: Describing…
 // i18n compose.attachMedia: Attach media — or paste / drag & drop an image
 // i18n compose.takePhoto: Take a photo or video
@@ -811,7 +826,7 @@ export class Compose implements OnDestroy {
    * a power-user surface, and a button that only explains why it doesn't work is
    * worse than no button (decision 9 in sprint/openrouter-0-overview.md).
    */
-  protected canUseTagHelper = computed(() => this.ai.enabled() && this.openrouter.connected());
+  protected canUseTagHelper = computed(() => this.ai.enabled() && this.openrouter.ready());
 
   /**
    * Future tags from Feed Builder pages the reader built a feed from: offered
@@ -961,6 +976,11 @@ export class Compose implements OnDestroy {
   );
 
   constructor() {
+    // Ask once whether this computer can read text in images (native only).
+    void this.ocr?.available().then(
+      (available) => this.ocrAvailable.set(available),
+      () => this.ocrAvailable.set(false),
+    );
     effect(() => {
       const files = new Set(this.media().map((item) => item.file));
       for (const [file, url] of this.videoPreviews) {
@@ -1159,6 +1179,13 @@ export class Compose implements OnDestroy {
   protected aiDescribed = signal<ReadonlySet<string>>(new Set());
   /** Attachments with an AI description request in flight. */
   protected describing = signal<ReadonlySet<string>>(new Set());
+  /** Attachments whose description this computer read from the picture and the writer hasn't edited. */
+  protected ocrDescribed = signal<ReadonlySet<string>>(new Set());
+  /** Attachments with a text-recognition request in flight. */
+  protected readingText = signal<ReadonlySet<string>>(new Set());
+  private readonly ocr = inject(PLATFORM_OCR);
+  /** True once the OS reported a text recognizer (native, Windows today). */
+  protected readonly ocrAvailable = signal(false);
   protected readonly imageDescriber = inject(ImageDescriber);
   /**
    * Why an attachment was refused or trimmed, when one was.
@@ -2155,6 +2182,11 @@ export class Compose implements OnDestroy {
   setMediaDescription(index: number, description: string): void {
     const id = this.media()[index]?.media.id;
     this.media.update((list) => list.map((m, i) => (i === index ? { ...m, description } : m)));
+    if (id && this.ocrDescribed().has(id)) {
+      const next = new Set(this.ocrDescribed());
+      next.delete(id);
+      this.ocrDescribed.set(next);
+    }
     if (id && this.metadataDescribed().has(id)) {
       const next = new Set(this.metadataDescribed());
       next.delete(id);
@@ -2205,6 +2237,55 @@ export class Compose implements OnDestroy {
       const next = new Set(this.describing());
       next.delete(id);
       this.describing.set(next);
+    }
+  }
+
+  /**
+   * "Read text from image" (parity item 4): only where this computer has a
+   * text recognizer, only for a still image the writer attached from a file,
+   * and only while the alt field is empty.
+   */
+  protected canReadText(item: PendingMedia): boolean {
+    return (
+      this.ocrAvailable() && item.media.type === 'image' && !!item.file && !item.description.trim()
+    );
+  }
+
+  /**
+   * Fill the alt field with the text the OS reads in the picture. No network
+   * request: the bytes go to the native host and stay on this computer. Never
+   * overwrites typed text, and says so with the same "check it" note pattern as
+   * the metadata prefill.
+   */
+  protected async readTextFromImage(index: number): Promise<void> {
+    const item = this.media()[index];
+    if (!this.ocr || !item?.file || this.readingText().has(item.media.id)) return;
+    const id = item.media.id;
+    this.readingText.set(new Set(this.readingText()).add(id));
+    this.mediaNotice.set('');
+    try {
+      const { text } = await this.ocr.read(await fileToBase64(item.file));
+      const found = text.trim().slice(0, 1500);
+      if (!found) {
+        this.mediaNotice.set(this.transloco.translate('compose.ocrNoText'));
+        return;
+      }
+      let filled = false;
+      this.media.update((list) =>
+        list.map((m) => {
+          // The writer typed while we waited: keep their words.
+          if (m.media.id !== id || m.description.trim()) return m;
+          filled = true;
+          return { ...m, description: found };
+        }),
+      );
+      if (filled) this.ocrDescribed.set(new Set(this.ocrDescribed()).add(id));
+    } catch (error: unknown) {
+      this.mediaNotice.set(error instanceof Error ? error.message : String(error));
+    } finally {
+      const next = new Set(this.readingText());
+      next.delete(id);
+      this.readingText.set(next);
     }
   }
 

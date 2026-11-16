@@ -70,3 +70,32 @@ export const PLATFORM_INTELLIGENCE = new InjectionToken<NativeIntelligenceTransp
   'PLATFORM_INTELLIGENCE',
   { providedIn: 'root', factory: () => null },
 );
+
+import type {
+  NativeLocalAiTransport,
+  NativeMediaTransport,
+  NativeNetworkTransport,
+  NativeOcrTransport,
+  NativeUpdatesTransport,
+} from './connector-types';
+/** Native-only device features. Null on the web build, so their controls never render there. */
+export const PLATFORM_NETWORK = new InjectionToken<NativeNetworkTransport | null>(
+  'PLATFORM_NETWORK',
+  { providedIn: 'root', factory: () => null },
+);
+export const PLATFORM_UPDATES = new InjectionToken<NativeUpdatesTransport | null>(
+  'PLATFORM_UPDATES',
+  { providedIn: 'root', factory: () => null },
+);
+export const PLATFORM_MEDIA = new InjectionToken<NativeMediaTransport | null>('PLATFORM_MEDIA', {
+  providedIn: 'root',
+  factory: () => null,
+});
+export const PLATFORM_OCR = new InjectionToken<NativeOcrTransport | null>('PLATFORM_OCR', {
+  providedIn: 'root',
+  factory: () => null,
+});
+export const PLATFORM_LOCAL_AI = new InjectionToken<NativeLocalAiTransport | null>(
+  'PLATFORM_LOCAL_AI',
+  { providedIn: 'root', factory: () => null },
+);

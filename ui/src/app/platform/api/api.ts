@@ -43,6 +43,8 @@ import {
   InstanceRule,
   TrendLink,
   MastodonNotification,
+  MarkerTimeline,
+  Markers,
   MediaAttachment,
   OAuthApp,
   OAuthTokenResponse,
@@ -870,6 +872,26 @@ export class Api {
 
   revokeQuote(quotedId: string, quotingId: string): Observable<Status> {
     return this.http.post<Status>(`/api/v1/statuses/${quotedId}/quotes/${quotingId}/revoke`, {});
+  }
+
+  // --- markers (server-side read position, shared across the reader's devices) ---
+
+  /** `GET /api/v1/markers` for the home timeline and notifications. */
+  markers(): Observable<Markers> {
+    const params = new HttpParams()
+      .append('timeline[]', 'home')
+      .append('timeline[]', 'notifications');
+    return this.http.get<Markers>('/api/v1/markers', { params });
+  }
+
+  /**
+   * `POST /api/v1/markers`. A 409 means another device moved the marker at the
+   * same moment; callers re-read rather than retry blindly.
+   */
+  saveMarkers(
+    update: Partial<Record<MarkerTimeline, { last_read_id: string }>>,
+  ): Observable<Markers> {
+    return this.http.post<Markers>('/api/v1/markers', update);
   }
 
   // --- notifications ---

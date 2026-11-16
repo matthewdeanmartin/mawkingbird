@@ -193,3 +193,66 @@ export const PLATFORM_INTELLIGENCE = new InjectionToken<NativeIntelligenceTransp
     }),
   },
 );
+
+import type {
+  NativeLocalAiTransport,
+  NativeMediaTransport,
+  NativeNetworkTransport,
+  NativeOcrTransport,
+  NativeUpdatesTransport,
+} from './connector-types';
+/** Native-only device features, each a typed Rust command (parity items 1, 3, 4, 5, 6, 10). */
+export const PLATFORM_NETWORK = new InjectionToken<NativeNetworkTransport | null>(
+  'PLATFORM_NETWORK',
+  {
+    providedIn: 'root',
+    factory: () => ({
+      status: () => connectorInvoke('network_proxy_status', {}),
+      refresh: () => connectorInvoke('network_proxy_refresh', {}),
+      set: (input) =>
+        connectorInvoke('network_proxy_set', {
+          mode: input.mode,
+          host: input.host ?? null,
+          port: input.port ?? null,
+          username: input.username ?? null,
+          password: input.password ?? null,
+        }),
+    }),
+  },
+);
+export const PLATFORM_UPDATES = new InjectionToken<NativeUpdatesTransport | null>(
+  'PLATFORM_UPDATES',
+  { providedIn: 'root', factory: () => ({ check: () => connectorInvoke('check_for_update', {}) }) },
+);
+export const PLATFORM_MEDIA = new InjectionToken<NativeMediaTransport | null>('PLATFORM_MEDIA', {
+  providedIn: 'root',
+  factory: () => ({
+    saveImage: (url, fileName, alt) =>
+      connectorInvoke('media_save_image', { url, fileName, alt: alt ?? null }),
+    copyImage: (url) => connectorInvoke('media_copy_image', { url }),
+  }),
+});
+export const PLATFORM_OCR = new InjectionToken<NativeOcrTransport | null>('PLATFORM_OCR', {
+  providedIn: 'root',
+  factory: () => ({
+    available: () => connectorInvoke('ocr_available', {}),
+    read: (image) => connectorInvoke('ocr_read_image', { image }),
+  }),
+});
+export const PLATFORM_LOCAL_AI = new InjectionToken<NativeLocalAiTransport | null>(
+  'PLATFORM_LOCAL_AI',
+  {
+    providedIn: 'root',
+    factory: () => ({
+      status: () => connectorInvoke('local_ai_status', {}),
+      setEndpoint: (endpoint) =>
+        connectorInvoke('local_ai_set_endpoint', { endpointUrl: endpoint }),
+      request: (input) =>
+        connectorInvoke('local_ai_request', {
+          path: input.path,
+          method: input.method,
+          body: input.body ?? null,
+        }),
+    }),
+  },
+);

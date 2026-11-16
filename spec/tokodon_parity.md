@@ -47,7 +47,9 @@ Its new contributions are two small items and one engineering practice.
 
 Sources: [Tokodon configuration view](../../REFERENCE/tokodon/src/qml/Settings/TokodonConfigurationView.qml); [mawkingbird hotkeys](../ui/src/app/shell/hotkeys.ts), [shortcut help](../ui/src/app/shell/shortcut-help/shortcut-help.ts).
 
-### T2. Copy image to the clipboard — missing
+### T2. Copy image to the clipboard — web done 2026-11-16; native awaiting owner Windows check
+
+**Implemented:** lightbox and profile photo view “Copy image”. See [TODO item 10](parity_11_16.md).
 
 **Approved by the owner 2026-11-16.** See [today's TODO, item 10](parity_11_16.md).
 

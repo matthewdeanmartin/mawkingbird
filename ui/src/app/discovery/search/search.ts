@@ -631,7 +631,7 @@ export class Search implements OnInit, OnDestroy {
    * queries the user cannot run would be worse than offering nothing.
    */
   protected canUseSearchHelper = computed(() => {
-    if (!this.ai.enabled() || !this.openrouter.connected()) {
+    if (!this.ai.enabled() || !this.openrouter.ready()) {
       return false;
     }
     // The anonymous exclusion is Mastodon's, not a general rule: it exists

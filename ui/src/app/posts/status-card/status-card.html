@@ -1706,7 +1706,7 @@
             />
           } @else {
             <app-compose
-              [inReplyToId]="display.id"
+              [inReplyToId]="replyTargetId() ?? display.id"
               [replyToHandle]="display.account.acct"
               [compact]="true"
               [placeholder]="'statusCard.postYourReply' | transloco"
@@ -1851,6 +1851,7 @@
   @if (accountListMode(); as mode) {
     <app-account-list-dialog
       [statusId]="display.id"
+      [status]="display"
       [blueskyUri]="blueskyQuoteRef?.uri ?? null"
       [mode]="mode"
       (closed)="accountListMode.set(null)"

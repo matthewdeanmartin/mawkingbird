@@ -103,7 +103,7 @@ export class TranslationRouter {
 
   /** OpenRouter connected and AI features on: the reader can pay for AI translation. */
   aiConnected(): boolean {
-    return this.aiAvailability.enabled() && this.openrouter.connected();
+    return this.aiAvailability.enabled() && this.openrouter.ready();
   }
   /** Misskey servers that said they cannot translate (no DeepL key, or role policy). */
   private readonly misskeyUnavailable = new Set<string>();

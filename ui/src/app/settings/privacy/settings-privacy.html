@@ -178,6 +178,15 @@
         [hint]="'settings.privacy.analytics.hint' | transloco"
       />
     </mb-settings-row>
+    <mb-settings-row [heading]="'settings.privacy.origin' | transloco">
+      <mb-checkbox
+        name="fetchFromOrigin"
+        [checked]="prefs.fetchFromOrigin()"
+        (checkedChange)="prefs.setFetchFromOrigin($event)"
+        [label]="'settings.privacy.origin.label' | transloco"
+        [hint]="'settings.privacy.origin.hint' | transloco"
+      />
+    </mb-settings-row>
     <mb-settings-row [heading]="'settings.privacy.history' | transloco">
       <mb-checkbox
         name="postHistory"

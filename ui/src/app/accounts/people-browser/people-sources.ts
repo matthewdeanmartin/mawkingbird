@@ -14,6 +14,7 @@ import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { adaptProfile, adaptRelationship } from '../../connections/bluesky/bluesky-adapter';
 import { BskyProfile } from '../../connections/bluesky/bluesky-types';
 import { PeopleMode, PeoplePage, PeopleSource } from './people-source';
+import { OriginReads } from '../../reading/origin/origin-reads';
 
 /** Mastodon's own followers/following, paged by `max_id`. */
 class MastodonPeopleSource implements PeopleSource {
@@ -75,6 +76,64 @@ class MastodonPeopleSource implements PeopleSource {
 
   unfollow(account: Account): Observable<Relationship> {
     return this.api.unfollow(account.id);
+  }
+
+  accountLink(account: Account): (string | number)[] {
+    return accountProfilePath(account);
+  }
+}
+
+/**
+ * A remote account's lists read from its own server, so the list matches the
+ * count (parity item 8). The first page decides: if the origin answers, every
+ * page comes from there; if it refuses or times out, the walk quietly uses the
+ * home server instead. Cursors from the two never mix.
+ *
+ * Origin accounts carry origin ids, which mean nothing to the home server, so
+ * relationships stay unknown (no follow button) rather than wrong. Their links
+ * open by handle, which the home server resolves.
+ */
+class OriginPeopleSource implements PeopleSource {
+  readonly canFollow = true;
+  private useHome = false;
+  private originAccountId: string | null = null;
+
+  constructor(
+    private origin: OriginReads,
+    private home: MastodonPeopleSource,
+    private account: Account,
+  ) {}
+
+  fetch(mode: PeopleMode, cursor: string | null): Observable<PeoplePage> {
+    if (this.useHome) return this.home.fetch(mode, cursor);
+    return this.origin.peoplePage(this.account, mode, cursor, this.originAccountId).pipe(
+      switchMap((page) => {
+        if (page) {
+          this.originAccountId = page.originAccountId;
+          return of({
+            accounts: page.accounts,
+            cursor: page.cursor,
+            approximate: page.approximate,
+            origin: page.server,
+          });
+        }
+        if (cursor !== null) return of({ accounts: [], cursor: null });
+        this.useHome = true;
+        return this.home.fetch(mode, null);
+      }),
+    );
+  }
+
+  relationships(accounts: Account[]): Observable<Map<string, Relationship>> {
+    return this.useHome ? this.home.relationships(accounts) : of(new Map());
+  }
+
+  follow(account: Account): Observable<Relationship> {
+    return this.home.follow(account);
+  }
+
+  unfollow(account: Account): Observable<Relationship> {
+    return this.home.unfollow(account);
   }
 
   accountLink(account: Account): (string | number)[] {
@@ -298,12 +357,15 @@ export class PeopleSourceFactory {
   private bskyApi = inject(BlueskyApi);
   private bskyGraph = inject(BlueskyGraph);
   private bskySession = inject(BlueskySession);
+  private origin = inject(OriginReads);
 
   /**
    * @param accountId the profile being browsed
    * @param server public instance, when Anonymous browses another account
+   * @param account the profile itself, so a remote account's lists can come
+   *   from its own server when the reader turned that on
    */
-  create(accountId: string, server: string | null): PeopleSource {
+  create(accountId: string, server: string | null, account: Account | null = null): PeopleSource {
     if (accountId.startsWith('bsky:')) {
       return new BlueskyPeopleSource(
         this.bskyApi,
@@ -327,6 +389,10 @@ export class PeopleSourceFactory {
       // Anonymous with no server to read from: local follows are all we have.
       return new LocalAnonymousPeopleSource(this.anonymousFollows, this.anonymous.server());
     }
-    return new MastodonPeopleSource(this.api, accountId);
+    const home = new MastodonPeopleSource(this.api, accountId);
+    if (account && this.origin.originOfAccount(account)) {
+      return new OriginPeopleSource(this.origin, home, account);
+    }
+    return home;
   }
 }

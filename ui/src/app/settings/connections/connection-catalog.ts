@@ -31,6 +31,7 @@ export type ConnectionId =
   | 'raindrop'
   | 'bluesky'
   | 'openrouter'
+  | 'local-ai'
   | 'mymemory'
   | 'apertium'
   | 'cors-proxy'
@@ -111,6 +112,8 @@ export const CONNECTION_FLAGS: Record<ConnectionId, FeatureFlagId> = {
   blogger: 'connector-blogger',
   hugo: 'connector-hugo',
   openrouter: 'connector-openrouter',
+  // Rides the AI rollout switch: turning AI connectors off takes it too.
+  'local-ai': 'connector-openrouter',
   mymemory: 'connector-mymemory',
   apertium: 'connector-apertium',
   raindrop: 'connector-raindrop',
@@ -124,6 +127,10 @@ export const CONNECTION_FLAGS: Record<ConnectionId, FeatureFlagId> = {
   'cors-proxy': 'connector-cors-proxy',
 };
 
+// i18n settings.connections.catalog.localAi.label: Local AI
+// i18n settings.connections.catalog.localAi.pitch: Use an AI model that runs on your computer (Ollama, LM Studio, llama.cpp). Free, no account.
+// i18n settings.connections.catalog.localAi.enables.free: Translations, suggestions and image descriptions, with no cost or budget
+// i18n settings.connections.catalog.localAi.enables.private: Nothing leaves your computer
 // i18n settings.connections.catalog.mastodon.label: Mastodon
 // i18n settings.connections.catalog.mastodon.pitch: Read Mastodon too — with or without a Mastodon account.
 // i18n settings.connections.catalog.mastodon.enables.explore: Explore, trending posts and hashtag timelines from a Mastodon server
@@ -324,6 +331,18 @@ export const CONNECTION_CATALOG: readonly ConnectionCatalogEntry[] = [
     enables: [
       'settings.connections.catalog.openrouter.enables.search',
       'settings.connections.catalog.openrouter.enables.hashtags',
+    ],
+  },
+  {
+    id: 'local-ai',
+    label: 'settings.connections.catalog.localAi.label',
+    emoji: '💻',
+    pitch: 'settings.connections.catalog.localAi.pitch',
+    // The endpoint is a setting of this computer, not of a persona.
+    scope: 'browser',
+    enables: [
+      'settings.connections.catalog.localAi.enables.free',
+      'settings.connections.catalog.localAi.enables.private',
     ],
   },
   {

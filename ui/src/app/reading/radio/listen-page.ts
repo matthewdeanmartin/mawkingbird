@@ -103,6 +103,8 @@ export class ListenPage {
   private readonly prefs = inject(ClientPrefs);
   protected readonly params = signal<Record<string, string>>({});
   protected readonly error = signal('');
+  /** Thread-wide CW state, as on the thread page: one toggle opens or closes every warning. */
+  protected readonly threadCwOpen = signal<boolean | null>(null);
   protected readonly message = signal('');
   protected readonly revealed = linkedSignal({ source: this.params, computation: () => false });
 
@@ -196,6 +198,7 @@ export class ListenPage {
       this.loader.descendants.set([]);
       this.loader.loadError.set(null);
       this.loader.publicContextUnavailable.set(false);
+      this.threadCwOpen.set(null);
       this.params.set(Object.fromEntries(params.keys.map((key) => [key, params.get(key) ?? ''])));
       this.error.set('');
       this.message.set('');

@@ -279,6 +279,27 @@
               <span aria-hidden="true">{{ describing().has(m.media.id) ? '…' : '✨' }}</span>
             </button>
           }
+          @if (canReadText(m)) {
+            <button
+              type="button"
+              mbButton
+              variant="outline"
+              size="small"
+              class="read-text"
+              [disabled]="readingText().has(m.media.id)"
+              (click)="readTextFromImage(i)"
+              [title]="
+                (readingText().has(m.media.id) ? 'compose.readingText' : 'compose.readText')
+                  | transloco
+              "
+              [attr.aria-label]="
+                (readingText().has(m.media.id) ? 'compose.readingText' : 'compose.readText')
+                  | transloco
+              "
+            >
+              <span aria-hidden="true">{{ readingText().has(m.media.id) ? '…' : '🔤' }}</span>
+            </button>
+          }
           @if (canSetFocus(m)) {
             <button
               type="button"
@@ -313,6 +334,10 @@
         } @else if (aiDescribed().has(m.media.id)) {
           <p class="alt-from-metadata muted small" role="status">
             {{ 'compose.altFromAi' | transloco }}
+          </p>
+        } @else if (ocrDescribed().has(m.media.id)) {
+          <p class="alt-from-metadata muted small" role="status">
+            {{ 'compose.altFromOcr' | transloco }}
           </p>
         }
       }

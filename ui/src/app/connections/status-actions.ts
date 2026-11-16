@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { concat, last, map, Observable, of } from 'rxjs';
+import { concat, last, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { Api } from '../platform/api/api';
 import { Status } from '../platform/api/models';
 import { AnonymousProviderRef } from '../accounts/anonymous/anonymous-mastodon-provider';
@@ -34,6 +34,14 @@ function nativeId(status: Status): string {
  * (keeping the record uri in `providerRef` so the toggle can be undone).
  * RSS never gets here — its capabilities hide the buttons.
  */
+/** An origin-only reply could not be found through the reader's own server. */
+export class OriginUnresolvedError extends Error {
+  constructor() {
+    super('This reply could not be found through your server.');
+    this.name = 'OriginUnresolvedError';
+  }
+}
+
 @Injectable({ providedIn: 'root' })
 export class StatusActions {
   private api = inject(Api);
@@ -57,7 +65,31 @@ export class StatusActions {
     );
   }
 
+  /**
+   * The home server's copy of a reply read from its origin (parity item 8).
+   * `/api/v2/search?resolve=true` asks the reader's own server to fetch it over
+   * ActivityPub; the result carries an id the home server can act on. Fails
+   * with {@link OriginUnresolvedError} when the server cannot find it.
+   */
+  resolveOrigin(status: Status): Observable<Status> {
+    const query = status.uri ?? status.url;
+    if (!status.originServer) return of(status);
+    if (!query) return throwError(() => new OriginUnresolvedError());
+    return this.api
+      .search(query, 'statuses', { resolve: true, limit: 1 })
+      .pipe(
+        switchMap((results) =>
+          results.statuses[0]
+            ? of(results.statuses[0])
+            : throwError(() => new OriginUnresolvedError()),
+        ),
+      );
+  }
+
   toggleFavourite(status: Status): Observable<Status> {
+    if (status.originServer) {
+      return this.resolveOrigin(status).pipe(switchMap((home) => this.toggleFavourite(home)));
+    }
     if (status.provider === 'misskey') {
       // The heart is the server's default reaction (❤, Misskey's own fallback).
       return this.react(status, status.favourited ? null : MISSKEY_LIKE);
@@ -88,6 +120,9 @@ export class StatusActions {
   }
 
   toggleReblog(status: Status): Observable<Status> {
+    if (status.originServer) {
+      return this.resolveOrigin(status).pipe(switchMap((home) => this.toggleReblog(home)));
+    }
     if (status.provider === 'misskey') {
       const ref = status.providerRef as MisskeyRef;
       // Misskey does not say whether the reader renoted, so the flag is only

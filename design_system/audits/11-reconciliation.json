@@ -3221,6 +3221,21 @@
       "file": "ui/src/app/shell/reading-back.ts",
       "disposition": "adopted scope",
       "nextStep": "Shared link-variant MbButton with a decorative arrow and translated Back label. Used at the top of every profile and thread, including Forum discussions, loading and errors. Preserve browser-history semantics and keyboard focus restoration; do not put this action back among content tabs."
+    },
+    {
+      "file": "ui/src/app/settings/about/settings-about.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Native-only Settings → About and updates (parity item 3): MbSettingsRow, one MbButton that runs the manual update check, and an outline MbButton link to the release page. Preserve that nothing checks, downloads or installs without the button."
+    },
+    {
+      "file": "ui/src/app/settings/connections/local-ai/connection-local-ai.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Native-only Local AI connection (parity item 1): MbSettingsRow sections, MbField/MbControl for the loopback address and model select, MbCheckbox for the switch, small outline MbButtons for the Ollama/LM Studio presets. Preserve that errors from the native host and the model are shown verbatim and that no cost, budget or Plus copy appears."
+    },
+    {
+      "file": "ui/src/app/settings/network/settings-network.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Native-only Settings → Network (parity item 5): MbRadioGroup for the proxy mode, MbField/MbControl for host, port and credentials, MbButtons for Save, Refresh and the Tor preset. Preserve that a password is never echoed back and that the page never offers a direct fallback."
     }
   ]
 }

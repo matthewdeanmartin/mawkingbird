@@ -56,7 +56,9 @@ Sengi is the closest relative: also Angular, also desktop-minded, also built aro
 
 Sources: [Sengi action bar](../../REFERENCE/sengi/src/app/components/stream/status/action-bar/action-bar.component.ts), [accounts state](../../REFERENCE/sengi/src/app/states/accounts.state.ts); [mawkingbird status actions](../ui/src/app/connections/status-actions.ts), [account picker](../ui/src/app/accounts/sign-in/account-picker/account-picker.ts), [thread loader](../ui/src/app/reading/read/thread-loader.ts).
 
-### 2. Fill in replies the home server hasn't seen, from the origin server — partial
+### 2. Fill in replies the home server hasn't seen, from the origin server — done 2026-11-16
+
+**Implemented:** behind Settings → Privacy → “Fetch from the original server” (off by default). See [TODO item 8](parity_11_16.md).
 
 **Approved by the owner 2026-11-16**, **off by default** behind a Settings → Privacy switch, together with Moshidon M8. See [today's TODO, item 8](parity_11_16.md).
 
@@ -146,7 +148,9 @@ Sources: [Pachli preference keys](../../REFERENCE/pachli-android/core/preference
 
 Sources: [Pachli CHANGELOG v3.3.0, v3.10.0](../../REFERENCE/pachli-android/CHANGELOG.md); [mawkingbird composer](../ui/src/app/publishing/compose/compose.ts).
 
-### 10. Moderation warnings and severed relationships — approved 2026-11-16
+### 10. Moderation warnings and severed relationships — done 2026-11-16
+
+**Implemented:** both notices render plainly, survive every notification filter, and link to the server's appeal and CSV pages. See [TODO item 2](parity_11_16.md).
 
 These are **end-user** notices, not admin tools, so the owner moved them out of the notifications exclusion.
 
@@ -166,7 +170,7 @@ These capabilities are impossible or crippled in a browser. Some are Pachli feat
 
 “Platforms” says where each item is realistic. Linux and macOS are deferred targets. iOS is out of reach for now (see Part 4).
 
-### N1. Offline OCR to draft alt text — approved 2026-11-16
+### N1. Offline OCR to draft alt text — Windows implemented 2026-11-16 (TODO 4), awaiting owner Windows check
 
 **Approved by the owner 2026-11-16.** Windows first; see [today's TODO, item 4](parity_11_16.md).
 
@@ -240,7 +244,7 @@ Sources: [Pachli translation](../../REFERENCE/pachli-android/app/src/main/java/a
 
 Sources: [Pachli CHANGELOG v2.8.2](../../REFERENCE/pachli-android/CHANGELOG.md); [mawkingbird media download](../ui/src/app/posts/media-download/media-download-dialog.ts), [archive roadmap](../../mawkingbird_native/spec/local_archive_roadmap.md).
 
-### N7. Proxy support — approved 2026-11-16
+### N7. Proxy support — implemented 2026-11-16 (TODO 5), awaiting owner Windows check
 
 **Approved by the owner 2026-11-16.** See [today's TODO, item 5](parity_11_16.md).
 
@@ -284,7 +288,7 @@ Sources: [Sengi README](../../REFERENCE/sengi/README.md), [settings shortcuts](.
 
 **Platforms:** Windows, Android (WorkManager would allow sending with the app closed; that's a later decision).
 
-### N11. Signed in-app updates — approved 2026-11-16
+### N11. Signed in-app updates — version check implemented 2026-11-16 (TODO 3, unsigned, link only), awaiting owner Windows check
 
 **Approved by the owner 2026-11-16 in reduced form:** a manual version check against GitHub releases that links to the download page. No signing keys and no self-installing updater for now (too early). See [today's TODO, item 3](parity_11_16.md).
 
@@ -304,7 +308,7 @@ Sources: [Sengi README](../../REFERENCE/sengi/README.md), [settings shortcuts](.
 
 Sources: [Pachli CHANGELOG v3.4.0, v3.2.2](../../REFERENCE/pachli-android/CHANGELOG.md); [archive sprint 10](../../mawkingbird_native/sprint/10-local-archive.md).
 
-### N13. Local AI endpoint as a free OpenRouter alternative — approved 2026-11-16
+### N13. Local AI endpoint as a free OpenRouter alternative — implemented 2026-11-16 (TODO 1), awaiting owner Windows check
 
 **Approved by the owner 2026-11-16** as a local AI connector. See [today's TODO, item 1](parity_11_16.md).
 

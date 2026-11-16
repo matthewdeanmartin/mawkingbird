@@ -123,7 +123,8 @@ describe('SettingsConnections (catalog)', () => {
     // Mastodon-primary, so the Mastodon row is not a connector here — you
     // cannot connect to yourself, and the row it used to render was permanent
     // furniture explaining an impossibility. See `isOwnIdentity`.
-    expect(cards(fixture)).toHaveLength(CONNECTION_CATALOG.length - 1);
+    // Minus the account's own network, and Local AI, which exists only in the native build.
+    expect(cards(fixture)).toHaveLength(CONNECTION_CATALOG.length - 2);
     const panels = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLElement>(
       '[role="tabpanel"]',
     );
@@ -274,7 +275,8 @@ describe('SettingsConnections (catalog)', () => {
     // That is the opposite of the account's own network (the -1 here), which is
     // not an offer at all and will never become one while this account is
     // active. Both rules live in `isOwnIdentity`.
-    expect(cards(fixture)).toHaveLength(CONNECTION_CATALOG.length - 1);
+    // Minus the account's own network, and Local AI, which exists only in the native build.
+    expect(cards(fixture)).toHaveLength(CONNECTION_CATALOG.length - 2);
   });
 
   it('governs every credential-bearing session and enforces on init', () => {

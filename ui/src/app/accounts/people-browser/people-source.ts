@@ -25,6 +25,8 @@ export interface PeoplePage {
    * possibly-incomplete list as complete. See `peopleCursorFrom`.
    */
   approximate?: boolean;
+  /** Set when the page came from the account's own server (parity item 8): its host. */
+  origin?: string;
 }
 
 /**

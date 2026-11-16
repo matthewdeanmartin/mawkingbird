@@ -1,3 +1,4 @@
+import { PLATFORM_NETWORK } from '../platform/http/platform-http';
 import { Component } from '@angular/core';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Router } from '@angular/router';
@@ -15,6 +16,32 @@ describe('SettingsShell', () => {
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
+  });
+
+  it('shows Network and About only in the native build (parity items 3 and 5)', () => {
+    const web = TestBed.createComponent(SettingsShell);
+    web.detectChanges();
+    const webLabels = Array.from(
+      (web.nativeElement as HTMLElement).querySelectorAll('.settings-nav a span:first-child'),
+    ).map((n) => n.textContent?.trim());
+    expect(webLabels).not.toContain('Network');
+    expect(webLabels).not.toContain('About and updates');
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        { provide: PLATFORM_NETWORK, useValue: {} },
+      ],
+    });
+    const native = TestBed.createComponent(SettingsShell);
+    native.detectChanges();
+    const nativeLabels = Array.from(
+      (native.nativeElement as HTMLElement).querySelectorAll('.settings-nav a span:first-child'),
+    ).map((n) => n.textContent?.trim());
+    expect(nativeLabels).toContain('Network');
+    expect(nativeLabels).toContain('About and updates');
   });
 
   it('renders the settings category sidebar', () => {
