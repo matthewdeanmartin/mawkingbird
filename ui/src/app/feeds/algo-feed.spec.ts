@@ -251,6 +251,55 @@ describe('AlgoFeed', () => {
     expect(api.homeTimeline).toHaveBeenCalledTimes(1);
   });
 
+  describe('four-hour cache', () => {
+    afterEach(() => vi.useRealTimers());
+
+    it('rebuilds on a visit once the build is four hours old', () => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date('2026-11-16T08:00:00Z'));
+      api.homeTimeline.mockReturnValue(of([makeStatus('h1')]));
+      const feed = TestBed.inject(AlgoFeed);
+      feed.ensureBuilt();
+      vi.setSystemTime(new Date('2026-11-16T11:59:00Z'));
+      feed.ensureBuilt();
+      expect(api.homeTimeline).toHaveBeenCalledTimes(1);
+      vi.setSystemTime(new Date('2026-11-16T12:00:01Z'));
+      feed.ensureBuilt();
+      expect(api.homeTimeline).toHaveBeenCalledTimes(2);
+    });
+
+    it('reuses a stored build after a cold start without any API call', () => {
+      localStorage.setItem('mastodon_mock_token', 'token-a');
+      api.homeTimeline.mockReturnValue(of([makeStatus('h1')]));
+      TestBed.inject(AlgoFeed).ensureBuilt();
+      const calls = api.homeTimeline.mock.calls.length;
+
+      // A fresh service stands in for a reload or a Native restart.
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: HomeAlgoSettings, useValue: { value: () => HOME_FACTORY } },
+          { provide: Api, useValue: api },
+          { provide: Auth, useValue: { account, isAnonymous: false } },
+        ],
+      });
+      const cold = TestBed.inject(AlgoFeed);
+      cold.ensureBuilt();
+      expect(api.homeTimeline.mock.calls.length).toBe(calls);
+      expect(cold.posts().map((p) => p.status.id)).toEqual(['h1']);
+    });
+
+    it('never serves one account the stored build of another', () => {
+      localStorage.setItem('mastodon_mock_token', 'token-a');
+      api.homeTimeline.mockReturnValue(of([makeStatus('h1')]));
+      const feed = TestBed.inject(AlgoFeed);
+      feed.ensureBuilt();
+      localStorage.setItem('mastodon_mock_token', 'token-b');
+      feed.ensureBuilt();
+      expect(api.homeTimeline).toHaveBeenCalledTimes(2);
+    });
+  });
+
   it('updateStatus and removeStatus edit the cached feed in place', () => {
     api.homeTimeline.mockReturnValue(of([makeStatus('h1'), makeStatus('h2')]));
     const feed = TestBed.inject(AlgoFeed);

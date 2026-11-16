@@ -57,6 +57,15 @@
             <small>{{ 'firstRun.mastodonHint' | transloco }}</small>
           </span>
         </button>
+        @if (misskeyEnabled) {
+          <button type="button" class="first-run-network" (click)="pick('misskey')">
+            <span class="first-run-emoji" aria-hidden="true">Ⓜ️</span>
+            <span class="first-run-network-text">
+              <strong>{{ 'firstRun.misskey' | transloco }}</strong>
+              <small>{{ 'firstRun.misskeyHint' | transloco }}</small>
+            </span>
+          </button>
+        }
       </div>
       <button type="button" class="first-run-back" (click)="back()">
         {{ 'firstRun.back' | transloco }}

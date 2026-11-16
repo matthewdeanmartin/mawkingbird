@@ -574,14 +574,16 @@ export const routes: Routes = [
           import('./feeds/bluesky-feed/bluesky-feed').then((m) => m.BlueskyFeedPage),
       },
       {
+        // Native only: Relationships filters this device's archive like a
+        // client-side list. A browser would have to page hundreds of accounts
+        // live to do the same, so web has no Relationships view at all.
         path: 'algo/people',
         title: 'Algo People',
-        canMatch: [mastodonSignedInMatch],
+        canMatch: [() => inject(NATIVE_PROFILES) !== null, mastodonSignedInMatch],
         loadComponent: () =>
-          inject(NATIVE_PROFILES)
-            ? import('./feeds/algo/algo-people-native').then((m) => m.AlgoPeopleNative)
-            : import('./feeds/algo/algo-people').then((m) => m.AlgoPeople),
+          import('./feeds/algo/algo-people-native').then((m) => m.AlgoPeopleNative),
       },
+      { path: 'algo/people', redirectTo: 'algo' },
       {
         path: 'algo',
         title: 'Algo',

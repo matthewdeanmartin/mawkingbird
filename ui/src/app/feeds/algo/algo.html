@@ -1,4 +1,5 @@
-@if (auth.kind() === 'mastodon' && auth.token()) {
+<!-- Relationships reads Native's local archive; a browser has only Good Stuff. -->
+@if (nativeArchive && auth.kind() === 'mastodon' && auth.token()) {
   <app-algo-view-tabs view="goodStuff" />
 }
 <div class="algo-bar">
@@ -110,9 +111,7 @@
     @if (feed.callsUsed()) {
       <br />
       <span class="small">
-        {{
-          'pages.algo.loading.progress' | transloco: { calls: feed.callsUsed(), maxCalls: maxCalls }
-        }}
+        {{ 'pages.algo.loading.calls' | transloco: { calls: feed.callsUsed() } }}
       </span>
     }
   </p>

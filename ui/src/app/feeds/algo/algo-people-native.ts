@@ -1,5 +1,4 @@
 import { Component, effect, inject, signal, untracked } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { StatusCard } from '../../posts/status-card/status-card';
@@ -10,9 +9,11 @@ import {
   NativePeopleCategory,
   NativePostBin,
   NativeProfilePost,
-  NativeProfileSummary,
 } from '../../platform/session/native-profile-types';
 
+// i18n pages.algoPeople.title: Relationships
+// i18n pages.algoPeople.refresh: Refresh
+// i18n pages.algoPeople.groups: People groups
 // i18n pages.algoPeople.nativeSummary: Choose whose posts to read and which kind of post. Results come from this device's cache.
 // i18n pages.algoPeople.social: Top friends
 // i18n pages.algoPeople.reading: Reading
@@ -36,11 +37,6 @@ import {
 // i18n pages.algoPeople.updateEvidence: Update people evidence
 // i18n pages.algoPeople.updatingEvidence: Updating people in the background…
 // i18n pages.algoPeople.evidenceError: People evidence could not be updated now. The saved posts remain available.
-// i18n pages.algoPeople.members: People in this group
-// i18n pages.algoPeople.memberCount: {{count}} people
-// i18n pages.algoPeople.noMembers: No people have matched with the evidence saved so far.
-// i18n pages.algoPeople.morePeople: More people
-// i18n pages.algoPeople.cachedForPerson: {{count}} cached posts
 // i18n pages.algoPeople.why.all: Posts by people you follow.
 // i18n pages.algoPeople.why.social: Mutual follows with an observed mention, favourite, boost, quote or status notification.
 // i18n pages.algoPeople.why.mutuals: People you follow who currently follow you back, where checked.
@@ -53,7 +49,7 @@ import {
 
 @Component({
   selector: 'app-algo-people-native',
-  imports: [TranslocoPipe, MbPostAction, StatusCard, RouterLink, AlgoViewTabs],
+  imports: [TranslocoPipe, MbPostAction, StatusCard, AlgoViewTabs],
   template: `
     <section class="people-local">
       <app-algo-view-tabs view="relationships" />
@@ -127,42 +123,18 @@ import {
         @if (!scanComplete()) {
           <p class="muted small">{{ 'pages.algoPeople.nativePartial' | transloco }}</p>
         }
-        <div class="people-grid">
-          <nav class="people-members" [attr.aria-label]="'pages.algoPeople.members' | transloco">
-            <h2>{{ 'pages.algoPeople.memberCount' | transloco: { count: members().length } }}</h2>
-            @if (!loading() && !members().length) {
-              <p>{{ 'pages.algoPeople.noMembers' | transloco }}</p>
-            }
-            @for (person of members().slice(0, memberLimit()); track person.id) {
-              <a [routerLink]="['/accounts', person.remoteId]">
-                <span>{{ person.displayName || person.acct }}</span>
-                <small
-                  >&#64;{{ person.acct }} ·
-                  {{
-                    'pages.algoPeople.cachedForPerson' | transloco: { count: person.cachedPosts }
-                  }}</small
-                >
-              </a>
-            }
-            @if (members().length > memberLimit()) {
-              <button type="button" mbPostAction (click)="memberLimit.set(memberLimit() + 100)">
-                {{ 'pages.algoPeople.morePeople' | transloco }}
-              </button>
-            }
-          </nav>
-          <div class="people-posts">
-            @if (!loading() && !posts().length) {
-              <p>{{ 'pages.algoPeople.nativeEmpty' | transloco }}</p>
-            }
-            @for (post of posts(); track post.localId) {
-              <app-status-card [status]="post.status" />
-            }
-            @if (hasMore() && !loading()) {
-              <button type="button" mbPostAction (click)="more()">
-                {{ 'pages.algoPeople.more' | transloco }}
-              </button>
-            }
-          </div>
+        <div class="people-posts">
+          @if (!loading() && !posts().length) {
+            <p>{{ 'pages.algoPeople.nativeEmpty' | transloco }}</p>
+          }
+          @for (post of posts(); track post.localId) {
+            <app-status-card [status]="post.status" />
+          }
+          @if (hasMore() && !loading()) {
+            <button type="button" mbPostAction (click)="more()">
+              {{ 'pages.algoPeople.more' | transloco }}
+            </button>
+          }
         </div>
       }
     </section>
@@ -191,36 +163,8 @@ import {
         gap: 6px;
         margin: 12px 0;
       }
-      .people-grid {
-        display: grid;
-        grid-template-columns: minmax(190px, 260px) minmax(0, 1fr);
-        gap: 16px;
-      }
-      .people-members {
-        max-height: 75vh;
-        overflow: auto;
-      }
-      .people-members h2 {
-        font-size: 1rem;
-        margin: 0 0 8px;
-      }
-      .people-members a {
-        display: block;
-        padding: 8px;
-      }
-      .people-members small {
-        display: block;
-      }
       .people-posts {
         min-width: 0;
-      }
-      @media (max-width: 700px) {
-        .people-grid {
-          grid-template-columns: 1fr;
-        }
-        .people-members {
-          max-height: 220px;
-        }
       }
     `,
   ],
@@ -259,8 +203,6 @@ export class AlgoPeopleNative {
   protected readonly selected = signal<NativePeopleCategory>('all');
   protected readonly selectedBin = signal<NativePostBin>('all');
   protected readonly posts = signal<NativeProfilePost[]>([]);
-  protected readonly members = signal<NativeProfileSummary[]>([]);
-  protected readonly memberLimit = signal(100);
   protected readonly following = signal(0);
   protected readonly relationshipsKnown = signal(0);
   protected readonly scanComplete = signal(false);
@@ -323,8 +265,6 @@ export class AlgoPeopleNative {
     const bin = this.selectedBin();
     if (offset === 0) {
       this.posts.set([]);
-      this.members.set([]);
-      this.memberLimit.set(100);
       this.following.set(0);
       this.relationshipsKnown.set(0);
       this.scanComplete.set(false);
@@ -333,10 +273,7 @@ export class AlgoPeopleNative {
     this.loading.set(true);
     this.error.set(false);
     try {
-      const [result, members] = await Promise.all([
-        this.archive.peoplePosts(handle, category, bin, offset),
-        offset === 0 ? this.archive.peopleMembers(handle, category) : Promise.resolve(null),
-      ]);
+      const result = await this.archive.peoplePosts(handle, category, bin, offset);
       if (
         request !== this.request ||
         handle !== this.auth.token() ||
@@ -345,7 +282,6 @@ export class AlgoPeopleNative {
       )
         return;
       this.posts.set(offset === 0 ? result.posts : [...this.posts(), ...result.posts]);
-      if (members) this.members.set(members);
       this.following.set(result.following);
       this.relationshipsKnown.set(result.relationshipsKnown);
       this.scanComplete.set(result.scanComplete);

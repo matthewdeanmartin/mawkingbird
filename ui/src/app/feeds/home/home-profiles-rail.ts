@@ -6,6 +6,7 @@ import {
   NativeProfileSummary,
 } from '../../platform/session/native-profile-types';
 
+// i18n pages.algoPeople.noMembers: No people have matched with the evidence saved so far.
 // i18n pages.homeProfiles.peopleGroups: Filter people
 
 /** The routed reader owns this state; the shell's rail renders it. */

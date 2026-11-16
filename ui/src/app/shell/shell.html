@@ -515,17 +515,9 @@
 
                 <div class="menu-divider"></div>
                 @if (!auth.isAnonymous || auth.shouldOfferLogin) {
-                  <button type="button" class="menu-action" (click)="addMastodonAccount()">
-                    {{ 'shell.account.addMastodon' | transloco }}
+                  <button type="button" class="menu-action" (click)="openAddAccount($event)">
+                    {{ 'shell.account.add' | transloco }}
                   </button>
-                  <button type="button" class="menu-action" (click)="addBlueskyAccount()">
-                    {{ 'shell.account.addBluesky' | transloco }}
-                  </button>
-                  @if (featureFlags.enabled('misskey')) {
-                    <button type="button" class="menu-action" (click)="addMisskeyAccount()">
-                      {{ 'shell.account.addMisskey' | transloco }}
-                    </button>
-                  }
                 }
                 <!-- "Log out" is right for a Bluesky-primary identity: it is a real
                    account with real credentials, not the browser-local session
@@ -666,5 +658,8 @@
      Blocking: the two buttons are its only exits. -->
   @if (firstRun()) {
     <app-first-run-modal (choose)="answerFirstRun($event)" />
+  }
+  @if (addAccountOpen()) {
+    <app-add-account-dialog (closed)="addAccountOpen.set(false)" />
   }
 </div>

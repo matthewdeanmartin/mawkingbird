@@ -43,50 +43,6 @@
   line-height: 1.5;
 }
 
-.doors {
-  display: grid;
-  gap: 12px;
-}
-
-.door {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  text-align: left;
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-}
-
-.door:hover {
-  background: var(--col-hover, rgba(127, 127, 127, 0.08));
-}
-
-.door-badge {
-  font-size: 30px;
-  line-height: 1;
-  flex: 0 0 auto;
-}
-
-.door-body {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.door-name {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.door-hint {
-  margin-top: 2px;
-  line-height: 1.4;
-}
-
 .chooser-out {
   margin: 24px 0 0;
 }

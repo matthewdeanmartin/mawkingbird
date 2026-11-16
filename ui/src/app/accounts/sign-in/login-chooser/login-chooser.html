@@ -15,39 +15,7 @@
         {{ 'loginChooser.subtitle' | transloco }}
       </p>
 
-      <div class="doors">
-        <a class="door" routerLink="/login/mastodon" [queryParams]="adding ? { add: 1 } : null">
-          <span class="door-badge" aria-hidden="true">🐘</span>
-          <span class="door-body">
-            <span class="door-name">{{ 'loginChooser.mastodon' | transloco }}</span>
-            <span class="door-hint muted small">
-              {{ 'loginChooser.mastodonHint' | transloco }}
-            </span>
-          </span>
-        </a>
-
-        <a class="door" routerLink="/login/bluesky" [queryParams]="adding ? { add: 1 } : null">
-          <span class="door-badge" aria-hidden="true">🦋</span>
-          <span class="door-body">
-            <span class="door-name">{{ 'loginChooser.bluesky' | transloco }}</span>
-            <span class="door-hint muted small">
-              {{ 'loginChooser.blueskyHint' | transloco }}
-            </span>
-          </span>
-        </a>
-
-        @if (misskeyEnabled) {
-          <a class="door" routerLink="/login/misskey" [queryParams]="adding ? { add: 1 } : null">
-            <span class="door-badge" aria-hidden="true">Ⓜ️</span>
-            <span class="door-body">
-              <span class="door-name">{{ 'loginChooser.misskey' | transloco }}</span>
-              <span class="door-hint muted small">
-                {{ 'loginChooser.misskeyHint' | transloco }}
-              </span>
-            </span>
-          </a>
-        }
-      </div>
+      <app-login-doors [adding]="adding" />
 
       <!-- For anyone who took the wrong door. Quiet, but a real way out. -->
       <p class="chooser-out small">

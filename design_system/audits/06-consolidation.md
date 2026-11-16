@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## One Add account entry and web-free Relationships, 2026-11-16
+
+Reviewed the regenerated inventory after replacing the per-network add-account
+buttons with one entry that opens `add-account-dialog.ts` (MbDialog around the
+login chooser's network doors, now the shared `LoginDoors` component). The shell
+menu and account picker each lose one or two native/shared button findings; the
+first-run modal gains one native network button for Misskey, matching its
+existing Bluesky and Mastodon buttons. The browser-only `algo-people.ts` is
+deleted (web no longer has Relationships), and `algo-people-native.ts` drops its
+member rail and profile links. Other entries are line shifts. No shared widget
+implementation changed.
+
 ## Native Profiles three-sprint correction, 2026-11-15
 
 Reviewed the correction that puts the blogroll in the left rail and restores the usual right rail. The per-post Mark read button is removed; Profiles reuses RSS's observed-scroll directive and auto-loads cached pages when the accessible More control approaches the viewport. `home-profiles.ts` retains MbPostAction for toolbar and paging actions and MbDialog for collection status. The new load-more directive is behavior-only and adds no candidate styling. Tablet focus and long-session scrolling need owner review. No shared design widget implementation changed.

@@ -1,5 +1,6 @@
 import { accountProfilePath } from '../../accounts/account-route';
 import { Server } from '../../platform/http/server';
+import { lacksMastodonServer } from '../../platform/http/mastodon-route.interceptor';
 import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbIdentityRow } from '../../design-system/identity/identity-row';
 import { MbButton } from '../../design-system/button/button';
@@ -89,6 +90,9 @@ export class LeftRail implements OnInit {
       this.candidates.clear();
       this.suggestions.set([]);
       this.trends.set([]);
+      // Trending tags are a Mastodon server's; a Bluesky- or Misskey-only
+      // identity has none to ask.
+      if (lacksMastodonServer(this.auth, this.server)) return;
       const sub = this.api.trendingTags().subscribe({
         next: (tags) => {
           if (server === this.server.baseUrl()) this.trends.set(tags);

@@ -1,4 +1,5 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
+import { FeatureFlags } from '../../platform/build/feature-flags';
 import { MbButton } from '../../design-system/button/button';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -13,12 +14,14 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n firstRun.mastodonHint: Sign in on your own server.
 // i18n firstRun.bluesky: Bluesky
 // i18n firstRun.mastodon: Mastodon
+// i18n firstRun.misskey: Misskey
+// i18n firstRun.misskeyHint: Sign in on your Misskey server.
 // i18n firstRun.back: Back
 // i18n firstRun.featuresLink: What can it do? ↗
 // i18n firstRun.helpLink: Read the guides ↗
 
 /** Which network a visitor picked, or that they declined to sign in at all. */
-export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky';
+export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky' | 'misskey';
 
 /**
  * The first-run question, asked over a running app.
@@ -29,7 +32,7 @@ export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky';
  * showed a stranger a page *about* the app instead of the app.
  *
  * It **blocks**. There is no dismiss, no click-outside and no escape key: the
- * two buttons are the only exits, because "clicked the backdrop" has no honest
+ * choices are the only exits, because "clicked the backdrop" has no honest
  * interpretation as either an answer or a refusal. Step two asks which network,
  * and stays in the modal rather than navigating — leaving the page would throw
  * away the very thing being shown.
@@ -48,6 +51,9 @@ export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky';
 export class FirstRunModal {
   /** Emitted once, when the visitor answers. The host then clears the seed. */
   readonly choose = output<FirstRunChoice>();
+
+  /** The Misskey door follows its rollout flag, as on the `/login` page. */
+  protected readonly misskeyEnabled = inject(FeatureFlags).enabled('misskey');
 
   /** `network` is step two: which one. */
   protected step = signal<'welcome' | 'network'>('welcome');

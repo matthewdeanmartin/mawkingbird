@@ -55,6 +55,7 @@ import {
 } from '../accounts/account-switcher';
 import { Account } from '../platform/api/models';
 import { AccountReplyCounts } from '../accounts/account-reply-counts';
+import { AddAccountDialog } from '../accounts/sign-in/add-account-dialog/add-account-dialog';
 import { FirstRunChoice, FirstRunModal } from '../accounts/first-run/first-run-modal';
 import { PreviewSeed } from '../accounts/first-run/preview-seed';
 import { OnboardingLauncher } from '../accounts/onboarding/onboarding-launcher';
@@ -156,9 +157,7 @@ import {
 // i18n shell.account.all: All accounts ({{count}})…
 // i18n shell.account.anonymous: Anonymous
 // i18n shell.account.unavailable: Account details unavailable
-// i18n shell.account.addMastodon: + Add Mastodon account
-// i18n shell.account.addBluesky: + Add Bluesky account
-// i18n shell.account.addMisskey: + Add Misskey account
+// i18n shell.account.add: + Add account
 // i18n shell.account.exitAnonymous: Exit anonymous
 // i18n shell.account.logout: Log out
 // i18n shell.account.menuFor: Account menu for {{name}}
@@ -199,6 +198,7 @@ function isWideUrl(url: string): boolean {
 @Component({
   selector: 'app-shell',
   imports: [
+    AddAccountDialog,
     ReadingOutlet,
     AccountTabBanner,
     MbContentState,
@@ -662,7 +662,7 @@ export class Shell implements OnInit, AccountSwitcher {
     // Leave Anonymous so the login page opens signed-out, exactly as the
     // header's own Log in button does.
     this.auth.exitAnonymous();
-    location.assign(choice === 'bluesky' ? 'login/bluesky' : 'login/mastodon');
+    location.assign(`login/${choice}`);
   }
 
   /**
@@ -982,17 +982,12 @@ export class Shell implements OnInit, AccountSwitcher {
     });
   }
 
-  addMastodonAccount(): void {
-    // ?add=1 tells the login page not to bounce an already-signed-in user back home.
-    location.assign('login/mastodon?add=1');
-  }
+  /** Which network the new account is on is asked in the dialog, not the menu. */
+  protected readonly addAccountOpen = signal(false);
 
-  addBlueskyAccount(): void {
-    location.assign('login/bluesky?add=1');
-  }
-
-  addMisskeyAccount(): void {
-    location.assign('login/misskey?add=1');
+  protected openAddAccount(event: Event): void {
+    this.closeMenu(event);
+    this.addAccountOpen.set(true);
   }
 
   /**

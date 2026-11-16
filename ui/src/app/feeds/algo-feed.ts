@@ -3,6 +3,7 @@ import { effect, inject, Injectable, Injector, signal } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { Api } from '../platform/api/api';
 import { Auth } from '../platform/session/auth';
+import { accountScopeSuffix } from '../platform/session/account-scope';
 import { Account, Status, Tag } from '../platform/api/models';
 import { AnonymousAccount } from '../accounts/anonymous/anonymous-account';
 import { AnonymousAlgoSource } from '../accounts/anonymous/anonymous-algo-source';
@@ -68,6 +69,18 @@ export function engagementScore(status: Status, options: AlgoOptions = ALGO_FACT
   );
 }
 
+/** How long a signed-in Algo build is reused before a visit rebuilds it. */
+export const ALGO_CACHE_TTL_MS = 4 * 60 * 60 * 1000;
+/** Account-scoped (see `accountScopeSuffix`); registered as `cache`. */
+const ALGO_CACHE_KEY = 'mockingbird_algo_feed_v1';
+
+interface StoredAlgoFeed {
+  v: 1;
+  builtAt: number;
+  hashtag: string | null;
+  posts: AlgoPost[];
+}
+
 function shuffle<T>(items: T[]): T[] {
   const out = [...items];
   for (let i = out.length - 1; i > 0; i--) {
@@ -85,10 +98,12 @@ function shuffle<T>(items: T[]): T[] {
  * followed hashtag — ranked by smoothed engagement. Deliberately NOT
  * network-focused: no trending injection, ever.
  *
- * The build costs up to {@link ALGO_MAX_CALLS} API calls, so the result is
- * cached in this root service: navigating away and back is free, and only the
- * explicit refresh button rebuilds. Every fetch is individually error-tolerant
- * (a dead bucket just contributes nothing).
+ * The build costs up to {@link ALGO_MAX_CALLS} API calls, and what it finds
+ * barely moves in a few hours, so a signed-in build is kept for
+ * {@link ALGO_CACHE_TTL_MS} — in memory and in per-account storage, so a reload
+ * or a Native restart reuses it too. Only the explicit refresh button, an
+ * expired build, or a different active account rebuilds. Every fetch is
+ * individually error-tolerant (a dead bucket just contributes nothing).
  */
 @Injectable({ providedIn: 'root' })
 export class AlgoFeed {
@@ -124,10 +139,70 @@ export class AlgoFeed {
     });
   }
 
-  /** Build on first visit; later visits reuse the cached feed. */
+  /** Which account scope the in-memory feed belongs to. */
+  private builtScope: string | null = null;
+
+  /**
+   * Build on first visit; later visits reuse the cached feed while it is
+   * younger than {@link ALGO_CACHE_TTL_MS} and belongs to the active account.
+   * A cold start (reload, Native restart) first tries the stored build.
+   */
   ensureBuilt(): void {
-    if (this.builtAt() === null && !this.loading()) {
-      this.refresh();
+    if (this.loading()) return;
+    const scope = this.cacheScope();
+    const built = this.builtAt();
+    if (built !== null && this.builtScope === scope && Date.now() - built < ALGO_CACHE_TTL_MS) {
+      return;
+    }
+    if (scope && this.restore(scope)) return;
+    this.refresh();
+  }
+
+  /** Storage scope for the active signed-in account; null = do not persist. */
+  private cacheScope(): string | null {
+    if (this.auth.isAnonymous) return null;
+    const suffix = accountScopeSuffix();
+    return suffix ? suffix : null;
+  }
+
+  private restore(scope: string): boolean {
+    let stored: StoredAlgoFeed | null;
+    try {
+      stored = JSON.parse(localStorage.getItem(ALGO_CACHE_KEY + scope) ?? 'null');
+    } catch {
+      return false;
+    }
+    if (
+      !stored ||
+      stored.v !== 1 ||
+      !Array.isArray(stored.posts) ||
+      typeof stored.builtAt !== 'number' ||
+      Date.now() - stored.builtAt >= ALGO_CACHE_TTL_MS
+    ) {
+      return false;
+    }
+    this.posts.set(stored.posts);
+    this.hashtag.set(stored.hashtag ?? null);
+    this.callsUsed.set(0);
+    this.error.set(false);
+    this.builtAt.set(stored.builtAt);
+    this.builtScope = scope;
+    return true;
+  }
+
+  private persist(scope: string | null): void {
+    this.builtScope = scope;
+    if (!scope) return;
+    const value: StoredAlgoFeed = {
+      v: 1,
+      builtAt: this.builtAt() ?? Date.now(),
+      hashtag: this.hashtag(),
+      posts: this.posts(),
+    };
+    try {
+      localStorage.setItem(ALGO_CACHE_KEY + scope, JSON.stringify(value));
+    } catch {
+      // Quota or a blocked store: the in-memory feed still serves this session.
     }
   }
 
@@ -243,6 +318,7 @@ export class AlgoFeed {
         this.callsUsed.set(calls);
         this.builtAt.set(Date.now());
         this.loading.set(false);
+        this.persist(this.cacheScope());
       });
   }
 
@@ -260,6 +336,8 @@ export class AlgoFeed {
 
   removeStatus(id: string): void {
     this.posts.update((list) => list.filter((p) => p.status.id !== id));
+    // A deleted post must not come back from the stored build.
+    if (this.builtScope) this.persist(this.builtScope);
   }
 
   private refreshAnonymous(): void {
@@ -269,6 +347,7 @@ export class AlgoFeed {
       this.hashtag.set(null);
       this.callsUsed.set(acquired ? 1 : 0);
       this.builtAt.set(Date.now());
+      this.builtScope = null;
       this.loading.set(false);
     });
   }

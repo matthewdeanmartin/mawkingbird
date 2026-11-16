@@ -23,6 +23,7 @@ import { providePublicPageUrls } from './public-pages/public-page-urls';
 import { authInterceptor } from './platform/http/auth.interceptor';
 import { healthInterceptor } from './platform/http/health.interceptor';
 import { serverInterceptor } from './platform/http/server.interceptor';
+import { mastodonRouteInterceptor } from './platform/http/mastodon-route.interceptor';
 import { metricsInterceptor } from './observability/metrics.interceptor';
 import { GlobalErrorHandler } from './platform/diagnostics/global-error-handler';
 import { SettingsPreloading } from './settings/settings-preloading';
@@ -67,6 +68,8 @@ export const appConfig: ApplicationConfig = {
     // the server/auth rewrites) and sees the final response/error.
     provideHttpClient(
       withInterceptors([
+        // First: a refused Mastodon route never reaches metrics or the network.
+        mastodonRouteInterceptor,
         metricsInterceptor,
         serverInterceptor,
         dedupeInterceptor,

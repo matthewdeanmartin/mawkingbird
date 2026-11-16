@@ -1275,8 +1275,7 @@ export class Home implements OnInit, OnDestroy {
     const navigation = this.router.currentNavigation() ?? this.router.lastSuccessfulNavigation();
     const visit = (navigation?.extras.state?.['homePresentation'] ??
       history.state?.homePresentation) as
-      | { scope?: string; view?: FeedView; text?: boolean; tags?: boolean }
-      | undefined;
+      { scope?: string; view?: FeedView; text?: boolean; tags?: boolean } | undefined;
     if (this.videoOnly) {
       this.setView('video');
     } else if (

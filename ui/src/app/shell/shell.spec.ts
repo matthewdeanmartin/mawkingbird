@@ -313,21 +313,30 @@ describe('Shell account switching', () => {
     expect(server.baseUrl()).toBe('https://mastodon.social');
   });
 
-  it('offers separate add-account paths for Mastodon and Bluesky', { timeout: 20_000 }, () => {
-    const fixture = createShell();
-    fixture.detectChanges();
-    drainRailRequests();
-    const text = fixture.nativeElement.textContent;
-    expect(text).toContain('+ Add Mastodon account');
-    expect(text).toContain('+ Add Bluesky account');
+  it(
+    'offers one Add account entry that asks for the network in a dialog',
+    { timeout: 20_000 },
+    () => {
+      const fixture = createShell();
+      fixture.detectChanges();
+      drainRailRequests();
+      const root = fixture.nativeElement as HTMLElement;
+      expect(root.textContent).toContain('+ Add account');
+      expect(root.textContent).not.toContain('+ Add Mastodon account');
+      expect(root.textContent).not.toContain('+ Add Bluesky account');
 
-    const assigned: string[] = [];
-    stubLocation({ onAssign: (url) => assigned.push(url) });
-    fixture.componentInstance.addMastodonAccount();
-    fixture.componentInstance.addBlueskyAccount();
-
-    expect(assigned).toEqual(['login/mastodon?add=1', 'login/bluesky?add=1']);
-  });
+      const add = Array.from(root.querySelectorAll<HTMLButtonElement>('button.menu-action')).find(
+        (button) => button.textContent?.includes('+ Add account'),
+      )!;
+      add.click();
+      fixture.detectChanges();
+      const hrefs = Array.from(
+        root.querySelectorAll<HTMLAnchorElement>('app-add-account-dialog a.door'),
+      ).map((a) => a.getAttribute('href'));
+      expect(hrefs).toContain('login/mastodon?add=1');
+      expect(hrefs).toContain('login/bluesky?add=1');
+    },
+  );
 
   /** Drive a switch to the social account and have its instance reject the token. */
   function failSwitchToSocial(): any {

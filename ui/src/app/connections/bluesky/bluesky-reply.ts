@@ -13,6 +13,9 @@ import { BskyRef } from './bluesky-types';
     [blueskyReplyTo]="ref()"
     (posted)="posted.emit($event)"
   />`,
+  // A block, like the bare <app-compose> a Mastodon reply renders: an inline
+  // host around the composer left its box laid out differently.
+  styles: ':host { display: block; }',
 })
 export class BskyReply {
   readonly replyTo = input.required<Status>();

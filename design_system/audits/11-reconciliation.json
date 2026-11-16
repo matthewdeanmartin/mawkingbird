@@ -123,6 +123,11 @@
       "nextStep": "Private account note (Phanpy parity 7): MbDialog, Field/Control textarea with a visible character count, MbButton for Delete note, Cancel and Save, MbNotice for failures. Preserve the typed note on failure, the 2,000-character limit, and that an empty save clears the server note."
     },
     {
+      "file": "ui/src/app/accounts/sign-in/add-account-dialog/add-account-dialog.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Add account: MbDialog around the shared LoginDoors list (the /login chooser's network doors, Misskey behind its flag). Doors are plain links so the login page boots fresh with ?add=1. Keep it the only add-account entry in the shell menu and account picker."
+    },
+    {
       "file": "ui/src/app/feeds/lists/list-settings-dialog/list-settings-dialog.ts",
       "disposition": "adopted scope",
       "nextStep": "Server list rename and reply policy (Phanpy parity 23): MbDialog, Field/Control name, MbRadioGroup for the three Mastodon reply policies with hints, MbButton actions and MbNotice errors. Preserve exclusivity and membership (Api.editList resends unchanged fields)."
@@ -660,12 +665,7 @@
     {
       "file": "ui/src/app/feeds/algo/algo-people-native.ts",
       "disposition": "partial adoption",
-      "nextStep": "Native Relationships uses MbPostAction for group, bin, refresh and paging controls, with a sticky filter toolbar and profile links in its member rail. Review narrow-screen rail height, keyboard traversal and large member groups in the design browser before claiming full adoption. Keep its archive controls absent from web."
-    },
-    {
-      "file": "ui/src/app/feeds/algo/algo-people.ts",
-      "disposition": "adopted scope",
-      "nextStep": "Browser Relationships sample uses compact sticky MbPostAction filters and refresh. Keep the five-page ceiling and honest coverage text; review narrow-screen layout and status-card states before expanding the categories."
+      "nextStep": "Native Relationships uses MbPostAction for group, bin, refresh and paging controls over a single cached-post column, like a client-side list; the member rail is removed. Review narrow-screen toolbar wrapping and keyboard traversal in the design browser before claiming full adoption. Web has no Relationships view."
     },
     {
       "file": "ui/src/app/feeds/algo/algo.html",

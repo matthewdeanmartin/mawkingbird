@@ -28,6 +28,10 @@ function shellChild(path: string): Route | undefined {
   return shellRoute()?.children?.find((route) => route.path === path);
 }
 
+function shellChildren(path: string): Route[] {
+  return shellRoute()?.children?.filter((route) => route.path === path) ?? [];
+}
+
 describe('application routes', () => {
   it('keeps the public legal document separate from the in-app hub', async () => {
     const publicLegal = routes.find((route) => route.path === 'legal');
@@ -60,12 +64,12 @@ describe('application routes', () => {
     },
   );
 
-  it('loads the browser People sample without a local archive', async () => {
+  it('sends a browser without a local archive from Relationships back to Algo', () => {
     TestBed.configureTestingModule({ providers: [{ provide: NATIVE_PROFILES, useValue: null }] });
-    const component = await TestBed.runInInjectionContext(() =>
-      shellChild('algo/people')!.loadComponent!(),
-    );
-    expect(component).toBe((await import('./feeds/algo/algo-people')).AlgoPeople);
+    const [nativeOnly, fallback] = shellChildren('algo/people');
+    const canMatch = nativeOnly.canMatch![0] as () => boolean;
+    expect(TestBed.runInInjectionContext(() => canMatch())).toBe(false);
+    expect(fallback.redirectTo).toBe('algo');
   });
 
   it('loads the SQLite People page when Native provides an archive', async () => {

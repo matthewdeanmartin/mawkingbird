@@ -117,6 +117,14 @@ describe('Algo page', () => {
     expect(text()).toContain('Top post from a mutual');
   });
 
+  it('counts calls while building, with no ceiling to wait for', () => {
+    feed.loading.set(true);
+    feed.callsUsed.set(3);
+    fixture.detectChanges();
+    expect(text()).toContain('3 API calls');
+    expect(text()).not.toContain('of up to');
+  });
+
   it('Friends shows only posts authored by follows — no boosts, no hashtag finds', () => {
     feed.posts.set([
       makePost('authored', 'original', true),

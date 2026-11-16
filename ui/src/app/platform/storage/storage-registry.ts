@@ -197,6 +197,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Account Home mode, favorite feed, session defaults and algorithm tuning. Favorite feed may identify private interests.',
   },
   {
+    base: 'mockingbird_algo_feed_v1',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'cache',
+    note: 'The last signed-in Algo build, reused for four hours so a reload or Native restart does not repeat its API calls; never exported.',
+  },
+  {
     base: 'mockingbird_home_default',
     storage: 'local',
     suffix: 'account',

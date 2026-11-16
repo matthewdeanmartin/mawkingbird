@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { ALGO_MAX_CALLS, AlgoFeed, AlgoPost, AlgoSource } from '../algo-feed';
+import { AlgoFeed, AlgoPost, AlgoSource } from '../algo-feed';
 import { AlgoViewTabs } from './algo-view-tabs';
 import { AlgoAudience, ClientPrefs } from '../../platform/storage/client-prefs';
 import { CalmVerdicts } from '../calm-verdicts';
@@ -12,6 +12,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { StatusVisibility } from '../../moderation/status-visibility';
 import { Auth } from '../../platform/session/auth';
+import { NATIVE_PROFILES } from '../../platform/session/platform-login';
 import { Terminology } from '../../i18n/terminology';
 
 const SOURCE_LABELS: Record<AlgoSource, string> = {
@@ -45,7 +46,7 @@ const FRIEND_SOURCES: readonly AlgoSource[] = ['mutual', 'original'];
 // i18n pages.algo.meta.sampledHashtag: · sampled #{{tag}}
 // i18n pages.algo.meta.calmHidden: · calm mode hid {{count}}
 // i18n pages.algo.loading.gathering: Gathering the good stuff…
-// i18n pages.algo.loading.progress: {{calls}} of up to {{maxCalls}} API calls
+// i18n pages.algo.loading.calls: {{calls}} API calls
 // i18n pages.algo.error.build: Couldn’t build your Algo feed. Try refreshing.
 // i18n pages.algo.empty.follow: Nothing here yet — follow some people and hashtags, or RSS feeds, then refresh.
 // i18n pages.algo.empty.anonymous: Home and Algo only fetch when you ask them to.
@@ -85,8 +86,8 @@ export class Algo implements OnInit {
   protected words = inject(Terminology).words;
 
   protected feed = inject(AlgoFeed);
+  protected readonly nativeArchive = inject(NATIVE_PROFILES) !== null;
   /** Ceiling for the "n of up to N API calls" progress line. */
-  protected readonly maxCalls = ALGO_MAX_CALLS;
   protected prefs = inject(ClientPrefs);
   protected auth = inject(Auth);
   private feedLangFilter = inject(FeedLanguageFilter);

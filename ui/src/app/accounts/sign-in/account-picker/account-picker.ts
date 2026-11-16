@@ -12,6 +12,7 @@ import { MbButton } from '../../../design-system/button/button';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { AccountReplyCounts } from '../../account-reply-counts';
+import { AddAccountDialog } from '../add-account-dialog/add-account-dialog';
 
 // i18n accountPicker.title: Switch account
 // i18n accountPicker.intro: Every account saved in this browser. Type to narrow the list by name, handle or server.
@@ -28,8 +29,7 @@ import { AccountReplyCounts } from '../../account-reply-counts';
 // i18n accountPicker.kind.bluesky: Bluesky
 // i18n accountPicker.kind.misskey: Misskey
 // i18n accountPicker.kind.anonymous: Local only
-// i18n accountPicker.addMastodon: + Add Mastodon account
-// i18n accountPicker.addBluesky: + Add Bluesky account
+// i18n accountPicker.add: + Add account
 // i18n accountPicker.standaloneIntro: Pick another saved account to carry on with. This page doesn't contact your current server, so it works even when that server is down.
 // i18n accountPicker.backHome: Back to the app
 
@@ -48,7 +48,15 @@ import { AccountReplyCounts } from '../../account-reply-counts';
  */
 @Component({
   selector: 'app-account-picker',
-  imports: [FormsModule, TranslocoPipe, MbButton, MbField, MbControl, MbPageHeader],
+  imports: [
+    AddAccountDialog,
+    FormsModule,
+    TranslocoPipe,
+    MbButton,
+    MbField,
+    MbControl,
+    MbPageHeader,
+  ],
   templateUrl: './account-picker.html',
   styleUrl: './account-picker.css',
   host: { '[class.standalone]': 'standalone' },
@@ -92,13 +100,8 @@ export class AccountPicker implements OnInit {
     if (matches.length === 1) this.choose(matches[0]);
   }
 
-  addMastodonAccount(): void {
-    location.assign('login/mastodon?add=1');
-  }
-
-  addBlueskyAccount(): void {
-    location.assign('login/bluesky?add=1');
-  }
+  /** The network is asked in the dialog, the same list the `/login` page shows. */
+  protected readonly addAccountOpen = signal(false);
 
   /** Seam so tests can assert the hard navigation without leaving the runner. */
   protected navigate(url: string): void {

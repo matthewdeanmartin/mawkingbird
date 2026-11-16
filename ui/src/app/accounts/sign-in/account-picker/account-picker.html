@@ -93,13 +93,20 @@
 
   @if (!auth.isAnonymous || auth.shouldOfferLogin) {
     <div class="picker-add">
-      <button mbButton variant="outline" size="small" type="button" (click)="addMastodonAccount()">
-        {{ 'accountPicker.addMastodon' | transloco }}
-      </button>
-      <button mbButton variant="outline" size="small" type="button" (click)="addBlueskyAccount()">
-        {{ 'accountPicker.addBluesky' | transloco }}
+      <button
+        mbButton
+        variant="outline"
+        size="small"
+        type="button"
+        (click)="addAccountOpen.set(true)"
+      >
+        {{ 'accountPicker.add' | transloco }}
       </button>
     </div>
+  }
+
+  @if (addAccountOpen()) {
+    <app-add-account-dialog (closed)="addAccountOpen.set(false)" />
   }
 
   @if (standalone) {

@@ -103,7 +103,8 @@ export class WebmentionSend {
         return {
           state: 'unsupported',
           endpoint: null,
-          message: 'Use Mawkingbird Native to send webmentions directly. Your record is published either way.',
+          message:
+            'Use Mawkingbird Native to send webmentions directly. Your record is published either way.',
         };
       }
       // Could not read the page at all — offline, DNS, a 500. We genuinely do
