@@ -778,9 +778,14 @@
       "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
+      "file": "ui/src/app/feeds/home/home-profiles-rail.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Native Profiles right rail uses native row buttons to select a person and display cached counts. Review keyboard focus and selected-row contrast on desktop and tablet; phone layout is outside this slice."
+    },
+    {
       "file": "ui/src/app/feeds/home/home-profiles.ts",
       "disposition": "partial adoption",
-      "nextStep": "Native Profiles uses MbPostAction for compact actions and filters. Review its profile selector buttons and read checkbox for shared control treatment, keyboard behavior, and narrow-screen layout."
+      "nextStep": "Native Profiles uses MbPostAction for compact actions and filters and MbDialog for collection status. The profile selector moved to the right rail; review the read checkbox, dialog table scrolling and keyboard behavior. Phone layout is outside this slice."
     },
     {
       "file": "ui/src/app/feeds/home/home.html",

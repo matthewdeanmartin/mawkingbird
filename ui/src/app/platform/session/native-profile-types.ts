@@ -24,6 +24,34 @@ export interface NativeProfilePost {
 }
 
 export type NativeProfileFilter = 'all' | 'replies' | 'boosts' | 'links' | 'media';
+
+export interface NativeCollectionStatus {
+  currentJob: 'idle' | 'following' | 'notifications' | 'recent_seed';
+  following: {
+    following: number;
+    knownZombies: number;
+    unknownActivity: number;
+    complete: boolean;
+    updatedAt: number;
+  } | null;
+  cachedPosts: number;
+  profilesWithPosts: number;
+  seedEligible: number;
+  notificationHistoryComplete: boolean;
+  jobs: {
+    job: string;
+    apiCalls: number;
+    savedItems: number;
+    lastOutcome: string;
+    updatedAt: number;
+  }[];
+}
+
+export interface NativeSeedReport {
+  profiles: number;
+  posts: number;
+  remaining: number;
+}
 export type NativePeopleCategory =
   | 'all'
   | 'social'
@@ -37,6 +65,8 @@ export type NativePeopleCategory =
 export type NativePostBin = 'all' | 'storms' | 'discussions' | 'pictures' | 'videos' | 'reposts';
 
 export interface NativeProfilesApi {
+  collectionStatus(handle: string): Promise<NativeCollectionStatus>;
+  seedRecent(handle: string): Promise<NativeSeedReport>;
   peoplePosts(
     handle: string,
     category: NativePeopleCategory,

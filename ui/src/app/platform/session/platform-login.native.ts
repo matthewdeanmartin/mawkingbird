@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import type { NativeSocial } from './native-social-types';
-import type { NativeFollowStatus } from './native-follow-status';
+import type { NativeFollowStatus, NativeNotificationReport } from './native-follow-status';
 import type { NativeProfilesApi } from './native-profile-types';
 export type { NativeFollowStatus } from './native-follow-status';
 
@@ -69,13 +69,32 @@ export const NATIVE_FOLLOW_COLLECT = new InjectionToken<((handle: string) => Pro
     factory: () => (handle: string) => {
       let run = followRuns.get(handle);
       if (!run) {
-        run = invoke('archive_collect_following', { handle });
+        run = invoke<void>('archive_collect_following', { handle }).finally(() => {
+          followRuns.delete(handle);
+        });
         followRuns.set(handle, run);
       }
       return run;
     },
   },
 );
+
+const notificationRuns = new Map<string, Promise<NativeNotificationReport>>();
+export const NATIVE_NOTIFICATION_COLLECT = new InjectionToken<
+  ((handle: string) => Promise<NativeNotificationReport>) | null
+>('native-notification-collect', {
+  providedIn: 'root',
+  factory: () => (handle: string) => {
+    let run = notificationRuns.get(handle);
+    if (!run) {
+      run = invoke<NativeNotificationReport>('archive_collect_notifications', { handle }).finally(
+        () => notificationRuns.delete(handle),
+      );
+      notificationRuns.set(handle, run);
+    }
+    return run;
+  },
+});
 
 export const NATIVE_FOLLOW_STATUS = new InjectionToken<
   ((handle: string) => Promise<NativeFollowStatus | null>) | null
@@ -87,6 +106,8 @@ export const NATIVE_FOLLOW_STATUS = new InjectionToken<
 export const NATIVE_PROFILES = new InjectionToken<NativeProfilesApi | null>('native-profiles', {
   providedIn: 'root',
   factory: () => ({
+    collectionStatus: (handle) => invoke('archive_collection_status', { handle }),
+    seedRecent: (handle) => invoke('archive_seed_recent', { handle }),
     peoplePosts: (handle, category, bin, offset) =>
       invoke('archive_people_posts', { handle, category, bin, offset }),
     peopleMembers: (handle, category) => invoke('archive_people_members', { handle, category }),

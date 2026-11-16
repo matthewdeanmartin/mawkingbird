@@ -1,6 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { NATIVE_SOCIAL, forgetNativeAccount } from './platform-login.native';
+import {
+  NATIVE_FOLLOW_COLLECT,
+  NATIVE_NOTIFICATION_COLLECT,
+  NATIVE_SOCIAL,
+  forgetNativeAccount,
+} from './platform-login.native';
 const invoke = vi.fn();
 beforeEach(() => {
   invoke.mockReset();
@@ -8,6 +13,25 @@ beforeEach(() => {
   vi.stubGlobal('__TAURI__', { core: { invoke } });
 });
 afterEach(() => vi.unstubAllGlobals());
+it('deduplicates active notification backfill and allows the next bounded pass', async () => {
+  const collect = TestBed.inject(NATIVE_NOTIFICATION_COLLECT)!;
+  invoke.mockResolvedValue({ imported: 80, complete: false });
+  const first = collect('native-mastodon:opaque');
+  expect(collect('native-mastodon:opaque')).toBe(first);
+  expect(await first).toEqual({ imported: 80, complete: false });
+  expect(invoke).toHaveBeenCalledTimes(1);
+  await collect('native-mastodon:opaque');
+  expect(invoke).toHaveBeenCalledTimes(2);
+});
+it('allows a completed people inventory to be updated again', async () => {
+  const collect = TestBed.inject(NATIVE_FOLLOW_COLLECT)!;
+  invoke.mockResolvedValue({ complete: true });
+  const first = collect('native-mastodon:refreshable');
+  expect(collect('native-mastodon:refreshable')).toBe(first);
+  await first;
+  await collect('native-mastodon:refreshable');
+  expect(invoke).toHaveBeenCalledTimes(2);
+});
 it('routes browser authorization and deletion to provider-specific native commands', async () => {
   const native = TestBed.inject(NATIVE_SOCIAL)!;
   await native.blueskyLogin('reader.bsky.social');

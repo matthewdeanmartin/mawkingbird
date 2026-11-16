@@ -507,6 +507,19 @@
   background: transparent;
 }
 
+/* The Native Profiles reader gives the queue its own right rail. */
+.layout.layout-profiles {
+  grid-template-columns: minmax(0, var(--col-width)) var(--rail-right-width);
+}
+
+.layout-profiles .rail-left {
+  display: none;
+}
+
+.layout-profiles .rail-right {
+  display: block;
+}
+
 @media (max-width: 1240px) {
   /* `--layout-width` narrows to match at this breakpoint — see styles.css,
      which owns it because component styles are scoped and cannot reach :root. */
@@ -526,6 +539,16 @@
   }
 
   .rail-left {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .layout.layout-profiles {
+    grid-template-columns: minmax(0, var(--col-width));
+  }
+
+  .layout-profiles .rail-right {
     display: none;
   }
 }

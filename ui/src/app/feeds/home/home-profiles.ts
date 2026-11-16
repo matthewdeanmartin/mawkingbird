@@ -1,17 +1,20 @@
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
+import { MbDialog } from '../../design-system/dialog/dialog';
 import { Auth } from '../../platform/session/auth';
 import { NATIVE_PROFILES } from '../../platform/session/platform-login';
 import {
   NativeProfileFilter,
   NativeProfilePost,
-  NativeProfileSummary,
   NativeProfilesResult,
+  NativeCollectionStatus,
 } from '../../platform/session/native-profile-types';
 import { StatusCard } from '../../posts/status-card/status-card';
+import { RailOutlet } from '../../shell/rail-outlet';
+import { HomeProfilesRail, HomeProfilesRailState } from './home-profiles-rail';
 
 // i18n pages.homeProfiles.title: Profiles
 // i18n pages.homeProfiles.summary: Read followed people one at a time, using posts saved on this device.
@@ -37,10 +40,38 @@ import { StatusCard } from '../../posts/status-card/status-card';
 // i18n pages.homeProfiles.postCount: {{count}} cached posts
 // i18n pages.homeProfiles.following: {{count}} followed people found
 // i18n pages.homeProfiles.openProfile: Open full profile
+// i18n pages.homeProfiles.dataActivity: Data activity
+// i18n pages.homeProfiles.dataClose: Close
+// i18n pages.homeProfiles.dataRefresh: Refresh status
+// i18n pages.homeProfiles.dataIntro: Background collection saves your following list and interaction evidence. A recent seed fetches one page of up to 40 posts from at most 12 followed profiles per app session, only when their last known post was within 90 days. Each seeded profile rests for seven days. Ordinary reading can save more posts.
+// i18n pages.homeProfiles.dataRunning: Current job: {{job}}
+// i18n pages.homeProfiles.dataPosts: {{posts}} posts saved from {{profiles}} profiles
+// i18n pages.homeProfiles.dataEligible: {{count}} active profiles waiting for a recent page
+// i18n pages.homeProfiles.dataFollowing: {{count}} followed profiles inventoried; {{old}} known inactive; {{unknown}} activity unknown
+// i18n pages.homeProfiles.dataFollowComplete: Following inventory complete
+// i18n pages.homeProfiles.dataFollowPartial: Following inventory partial
+// i18n pages.homeProfiles.dataNotificationsComplete: Older notification backfill complete; recent notifications refresh on app start.
+// i18n pages.homeProfiles.dataNotificationsPartial: Older notification backfill is still in progress.
+// i18n pages.homeProfiles.dataCalls: Background page API calls
+// i18n pages.homeProfiles.dataSaved: Saved items
+// i18n pages.homeProfiles.dataCounterNote: Following and relationship counts are processed profiles; notification and recent-post counts are newly saved items. Calls include retries but exclude ordinary reading.
+// i18n pages.homeProfiles.dataOutcome: Last result
+// i18n pages.homeProfiles.outcome.requesting: Requesting
+// i18n pages.homeProfiles.outcome.saved: Saved
+// i18n pages.homeProfiles.outcome.network: Network error
+// i18n pages.homeProfiles.outcome.rate_limit: Rate limited
+// i18n pages.homeProfiles.outcome.provider: Server declined
+// i18n pages.homeProfiles.dataUpdated: Last update
+// i18n pages.homeProfiles.dataFailed: Could not read collector status.
+// i18n pages.homeProfiles.job.following: Following
+// i18n pages.homeProfiles.job.relationships: Relationships
+// i18n pages.homeProfiles.job.notifications: Notifications
+// i18n pages.homeProfiles.job.recent_seed: Recent posts
+// i18n pages.homeProfiles.job.idle: Idle
 
 @Component({
   selector: 'app-home-profiles',
-  imports: [DatePipe, RouterLink, TranslocoPipe, MbPostAction, StatusCard],
+  imports: [DatePipe, RouterLink, TranslocoPipe, MbPostAction, MbDialog, StatusCard],
   template: `
     <section class="profile-reader">
       <header>
@@ -63,7 +94,99 @@ import { StatusCard } from '../../posts/status-card/status-card';
         <button type="button" mbPostAction (click)="next()" [disabled]="profiles().length < 2">
           {{ 'pages.homeProfiles.next' | transloco }}
         </button>
+        <button type="button" mbPostAction (click)="openDataActivity()">
+          {{ 'pages.homeProfiles.dataActivity' | transloco }}
+        </button>
       </div>
+      @if (dataOpen()) {
+        <mb-dialog
+          [title]="'pages.homeProfiles.dataActivity' | transloco"
+          [closeLabel]="'pages.homeProfiles.dataClose' | transloco"
+          [closeOnBackdrop]="true"
+          (dismissed)="closeDataActivity()"
+        >
+          <p>{{ 'pages.homeProfiles.dataIntro' | transloco }}</p>
+          @if (dataStatus(); as status) {
+            <p>
+              {{
+                'pages.homeProfiles.dataRunning'
+                  | transloco: { job: ('pages.homeProfiles.job.' + status.currentJob | transloco) }
+              }}
+            </p>
+            <p>
+              {{
+                'pages.homeProfiles.dataPosts'
+                  | transloco: { posts: status.cachedPosts, profiles: status.profilesWithPosts }
+              }}
+            </p>
+            <p>
+              {{ 'pages.homeProfiles.dataEligible' | transloco: { count: status.seedEligible } }}
+            </p>
+            @if (status.following; as follow) {
+              <p>
+                {{
+                  'pages.homeProfiles.dataFollowing'
+                    | transloco
+                      : {
+                          count: follow.following,
+                          old: follow.knownZombies,
+                          unknown: follow.unknownActivity,
+                        }
+                }}
+              </p>
+              <p>
+                {{
+                  (follow.complete
+                    ? 'pages.homeProfiles.dataFollowComplete'
+                    : 'pages.homeProfiles.dataFollowPartial'
+                  ) | transloco
+                }}
+              </p>
+            }
+            <p>
+              {{
+                (status.notificationHistoryComplete
+                  ? 'pages.homeProfiles.dataNotificationsComplete'
+                  : 'pages.homeProfiles.dataNotificationsPartial'
+                ) | transloco
+              }}
+            </p>
+            <div class="data-table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'pages.homeProfiles.dataActivity' | transloco }}</th>
+                    <th scope="col">{{ 'pages.homeProfiles.dataCalls' | transloco }}</th>
+                    <th scope="col">{{ 'pages.homeProfiles.dataSaved' | transloco }}</th>
+                    <th scope="col">{{ 'pages.homeProfiles.dataOutcome' | transloco }}</th>
+                    <th scope="col">{{ 'pages.homeProfiles.dataUpdated' | transloco }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (job of status.jobs; track job.job) {
+                    <tr>
+                      <th scope="row">{{ 'pages.homeProfiles.job.' + job.job | transloco }}</th>
+                      <td>{{ job.apiCalls }}</td>
+                      <td>{{ job.savedItems }}</td>
+                      <td>{{ 'pages.homeProfiles.outcome.' + job.lastOutcome | transloco }}</td>
+                      <td>{{ job.updatedAt * 1000 | date: 'short' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <p class="muted">{{ 'pages.homeProfiles.dataCounterNote' | transloco }}</p>
+          }
+          @if (dataError()) {
+            <p role="alert">{{ 'pages.homeProfiles.dataFailed' | transloco }}</p>
+          }
+          <div mbDialogActions>
+            <button type="button" mbPostAction (click)="refreshDataActivity()">
+              {{ 'pages.homeProfiles.dataRefresh' | transloco }}
+            </button>
+          </div>
+        </mb-dialog>
+      }
       @if (error()) {
         <p role="alert">{{ 'pages.homeProfiles.error' | transloco }}</p>
       }
@@ -74,30 +197,6 @@ import { StatusCard } from '../../posts/status-card/status-card';
         <p>{{ 'pages.homeProfiles.empty' | transloco }}</p>
       }
       <div class="reader-grid">
-        <nav class="profile-list" [attr.aria-label]="'pages.homeProfiles.title' | transloco">
-          @for (profile of profiles(); track profile.id) {
-            <button
-              type="button"
-              [class.selected]="selectedId() === profile.id"
-              [attr.aria-current]="selectedId() === profile.id ? 'true' : null"
-              (click)="select(profile.id)"
-            >
-              <strong>{{ profile.displayName || profile.acct }}</strong>
-              <span>@{{ profile.acct }}</span>
-              @if (profile.lastStatusAt) {
-                <time [attr.datetime]="profile.lastStatusAt">{{
-                  profile.lastStatusAt | date: 'mediumDate'
-                }}</time>
-              }
-              <small
-                >{{ 'pages.homeProfiles.unread' | transloco: { count: profile.cachedUnread } }} ·
-                {{
-                  'pages.homeProfiles.postCount' | transloco: { count: profile.cachedPosts }
-                }}</small
-              >
-            </button>
-          }
-        </nav>
         @if (selectedId() !== null) {
           <section class="profile-posts">
             @if (selectedProfile(); as selected) {
@@ -172,33 +271,7 @@ import { StatusCard } from '../../posts/status-card/status-card';
         margin: 12px 0;
       }
       .reader-grid {
-        display: grid;
-        grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
-        gap: 16px;
-      }
-      .profile-list {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        max-height: 75vh;
-        overflow: auto;
-      }
-      .profile-list button {
-        text-align: left;
-        border: 1px solid var(--border-color, #888);
-        border-radius: 6px;
-        background: transparent;
-        color: inherit;
-        padding: 8px;
-      }
-      .profile-list button.selected {
-        outline: 2px solid currentColor;
-      }
-      .profile-list span,
-      .profile-list small,
-      .profile-list time {
-        display: block;
-        overflow-wrap: anywhere;
+        min-width: 0;
       }
       .read-toggle {
         display: inline-flex;
@@ -212,13 +285,19 @@ import { StatusCard } from '../../posts/status-card/status-card';
       .profile-posts article {
         margin-bottom: 16px;
       }
-      @media (max-width: 700px) {
-        .reader-grid {
-          grid-template-columns: 1fr;
-        }
-        .profile-list {
-          max-height: 220px;
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+      }
+      .data-table-scroll {
+        overflow-x: auto;
+      }
+      th,
+      td {
+        padding: 6px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
       }
     `,
   ],
@@ -226,6 +305,9 @@ import { StatusCard } from '../../posts/status-card/status-card';
 export class HomeProfiles {
   private readonly auth = inject(Auth);
   private readonly api = inject(NATIVE_PROFILES)!;
+  private readonly rail = inject(RailOutlet);
+  private readonly railState = inject(HomeProfilesRailState);
+  private readonly railOwner = {};
   protected readonly filters: readonly NativeProfileFilter[] = [
     'all',
     'replies',
@@ -234,8 +316,8 @@ export class HomeProfiles {
     'media',
   ];
   protected readonly result = signal<NativeProfilesResult | null>(null);
-  protected readonly profiles = signal<NativeProfileSummary[]>([]);
-  protected readonly selectedId = signal<number | null>(null);
+  protected readonly profiles = this.railState.profiles;
+  protected readonly selectedId = this.railState.selectedId;
   protected readonly selectedProfile = computed(() =>
     this.profiles().find((profile) => profile.id === this.selectedId()),
   );
@@ -246,21 +328,65 @@ export class HomeProfiles {
   protected readonly postsLoading = signal(false);
   protected readonly error = signal(false);
   protected readonly hasMore = signal(false);
+  protected readonly dataOpen = signal(false);
+  protected readonly dataStatus = signal<NativeCollectionStatus | null>(null);
+  protected readonly dataError = signal(false);
+  private dataTimer: ReturnType<typeof setTimeout> | null = null;
   private postRequest = 0;
   private loadedOffset = 0;
   private listRequest = 0;
   private listingHandle: string | null = null;
 
   constructor() {
+    this.railState.bind(this.railOwner, (id) => this.select(id));
+    this.rail.show(this.railOwner, {
+      right: { component: HomeProfilesRail, labelKey: 'pages.homeProfiles.title' },
+    });
+    inject(DestroyRef).onDestroy(() => {
+      this.closeDataActivity();
+      this.rail.release(this.railOwner);
+      this.railState.release(this.railOwner);
+    });
     effect(() => {
       const handle = this.auth.token();
       if (this.auth.kind() === 'mastodon' && handle?.startsWith('native-mastodon:')) {
+        this.closeDataActivity();
+        this.dataStatus.set(null);
         this.profiles.set([]);
         this.selectedId.set(null);
         this.posts.set([]);
         untracked(() => void this.refresh());
       }
     });
+  }
+
+  protected openDataActivity(): void {
+    this.dataOpen.set(true);
+    void this.refreshDataActivity();
+  }
+
+  protected closeDataActivity(): void {
+    this.dataOpen.set(false);
+    if (this.dataTimer) clearTimeout(this.dataTimer);
+    this.dataTimer = null;
+  }
+
+  protected async refreshDataActivity(): Promise<void> {
+    const handle = this.auth.token();
+    if (!handle || !this.dataOpen()) return;
+    if (this.dataTimer) clearTimeout(this.dataTimer);
+    this.dataTimer = null;
+    try {
+      const status = await this.api.collectionStatus(handle);
+      if (!this.dataOpen() || handle !== this.auth.token()) return;
+      this.dataStatus.set(status);
+      this.dataError.set(false);
+    } catch {
+      if (this.dataOpen() && handle === this.auth.token()) this.dataError.set(true);
+    } finally {
+      if (this.dataOpen() && handle === this.auth.token())
+        this.dataTimer = setTimeout(() => void this.refreshDataActivity(), 3000);
+    }
   }
 
   protected async refresh(): Promise<void> {

@@ -71,6 +71,7 @@ import { AccountTabBanner } from '../platform/session/account-tab-guard/account-
 import {
   NATIVE_FOLLOW_COLLECT,
   NATIVE_FOLLOW_STATUS,
+  NATIVE_NOTIFICATION_COLLECT,
   NATIVE_PROFILES,
   NativeFollowStatus,
 } from '../platform/session/platform-login';
@@ -230,7 +231,9 @@ function isWideUrl(url: string): boolean {
 export class Shell implements OnInit, AccountSwitcher {
   private readonly nativeFollowCollect = inject(NATIVE_FOLLOW_COLLECT);
   private readonly nativeFollowStatus = inject(NATIVE_FOLLOW_STATUS);
-  protected readonly nativeProfilesAvailable = inject(NATIVE_PROFILES) !== null;
+  private readonly nativeNotificationCollect = inject(NATIVE_NOTIFICATION_COLLECT);
+  private readonly nativeProfiles = inject(NATIVE_PROFILES);
+  protected readonly nativeProfilesAvailable = this.nativeProfiles !== null;
   protected readonly archiveStatus = signal<NativeFollowStatus | null>(null);
   protected readonly archivePaused = signal(false);
   private readonly archiveInventory = effect((onCleanup) => {
@@ -248,6 +251,53 @@ export class Shell implements OnInit, AccountSwitcher {
     let cancelled = false;
     let paused = false;
     let timeout: ReturnType<typeof setTimeout> | undefined;
+    let notificationTimer: ReturnType<typeof setTimeout> | undefined;
+    let seedTimer: ReturnType<typeof setTimeout> | undefined;
+    let notificationsStarted = false;
+    const collectNotifications = () => {
+      if (cancelled || !this.nativeNotificationCollect) return;
+      void this.nativeNotificationCollect(handle)
+        .then((report) => {
+          if (!cancelled && !report.complete)
+            notificationTimer = setTimeout(collectNotifications, 30_000);
+        })
+        .catch((error: unknown) => {
+          if (
+            !cancelled &&
+            typeof error === 'object' &&
+            error !== null &&
+            'kind' in error &&
+            error.kind === 'busy'
+          ) {
+            notificationTimer = setTimeout(collectNotifications, 30_000);
+          }
+        });
+    };
+    const seedRecent = () => {
+      if (cancelled) return;
+      if (!this.nativeProfiles) {
+        collectNotifications();
+        return;
+      }
+      void this.nativeProfiles
+        .seedRecent(handle)
+        .then(() => {
+          if (!cancelled) collectNotifications();
+        })
+        .catch((error: unknown) => {
+          if (cancelled) return;
+          if (
+            typeof error === 'object' &&
+            error !== null &&
+            'kind' in error &&
+            error.kind === 'busy'
+          ) {
+            seedTimer = setTimeout(seedRecent, 30_000);
+          } else {
+            collectNotifications();
+          }
+        });
+    };
     const poll = async (startIfNeeded = false) => {
       try {
         const status = await this.nativeFollowStatus!(handle);
@@ -261,6 +311,10 @@ export class Shell implements OnInit, AccountSwitcher {
             }
           });
         }
+        if (status?.complete && !notificationsStarted) {
+          notificationsStarted = true;
+          seedRecent();
+        }
         if (!status?.complete && !paused) timeout = setTimeout(() => void poll(), 2000);
       } catch {
         if (!cancelled) this.archiveStatus.set(null);
@@ -270,6 +324,8 @@ export class Shell implements OnInit, AccountSwitcher {
     onCleanup(() => {
       cancelled = true;
       if (timeout) clearTimeout(timeout);
+      if (notificationTimer) clearTimeout(notificationTimer);
+      if (seedTimer) clearTimeout(seedTimer);
     });
   });
   protected readonly radioOutlet = inject(RadioOutlet);

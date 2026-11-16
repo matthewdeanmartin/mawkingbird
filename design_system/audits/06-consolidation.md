@@ -1,5 +1,13 @@
 # Sprint 6 opening consolidation audit
 
+## Native Profiles data dialog, 2026-11-15
+
+Reviewed the regenerated inventory after adding a Native-only Data activity button and shared MbDialog to the Profiles reader. Its extra shared findings are MbDialog/MbPostAction adoption and line shifts; the native read checkbox is unchanged. The new right-rail candidate and shell line shift remain reconciled below. The dialog contains a read-only status table and a compact Refresh action; review tablet table scrolling in owner acceptance. No shared widget implementation changed.
+
+## Native Profiles right rail, 2026-11-15
+
+Reviewed the regenerated inventory after moving the Native Profiles queue from the middle column into a dedicated right rail. The new `home-profiles-rail.ts` candidate contains native row buttons with selected state and cached counts; its reconciliation entry records the desktop/tablet keyboard and contrast review. The reader's removed selector shifts its remaining candidate line numbers. The shell change shifts line numbers only. No shared widget implementation changed.
+
 ## Stable public legal page, 2026-11-15
 
 Reviewed the regenerated inventory after separating the public legal document

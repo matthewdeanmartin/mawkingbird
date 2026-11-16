@@ -6,3 +6,8 @@ export interface NativeFollowStatus {
   complete: boolean;
   updatedAt: number;
 }
+
+export interface NativeNotificationReport {
+  imported: number;
+  complete: boolean;
+}

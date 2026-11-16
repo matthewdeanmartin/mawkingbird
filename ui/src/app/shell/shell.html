@@ -572,6 +572,7 @@
     [class.layout-wide]="wide()"
     [class.layout-zen]="!wide() && railsHidden()"
     [class.layout-writing-zen]="chromeHidden()"
+    [class.layout-profiles]="railOutlet.right()?.labelKey === 'pages.homeProfiles.title'"
   >
     @if (!wide() && !railsHidden() && !chromeHidden()) {
       <aside

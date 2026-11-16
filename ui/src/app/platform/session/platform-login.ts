@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 import type { NativeSocial } from './native-social-types';
-import type { NativeFollowStatus } from './native-follow-status';
+import type { NativeFollowStatus, NativeNotificationReport } from './native-follow-status';
 import type { NativeProfilesApi } from './native-profile-types';
 export type { NativeFollowStatus } from './native-follow-status';
 
@@ -22,6 +22,9 @@ export const NATIVE_FOLLOW_COLLECT = new InjectionToken<((handle: string) => Pro
   'native-follow-collect',
   { providedIn: 'root', factory: () => null },
 );
+export const NATIVE_NOTIFICATION_COLLECT = new InjectionToken<
+  ((handle: string) => Promise<NativeNotificationReport>) | null
+>('native-notification-collect', { providedIn: 'root', factory: () => null });
 export const NATIVE_FOLLOW_STATUS = new InjectionToken<
   ((handle: string) => Promise<NativeFollowStatus | null>) | null
 >('native-follow-status', { providedIn: 'root', factory: () => null });
