@@ -1,3 +1,4 @@
+import { RailOutlet } from '../../shell/rail-outlet';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { By } from '@angular/platform-browser';
 import { Compose } from '../../publishing/compose/compose';
@@ -434,6 +435,21 @@ describe('Profile block/unblock', () => {
   afterEach(() => {
     httpMock.verify();
     localStorage.clear();
+  });
+
+  it('gives the shared left rail back while detached, so Home keeps its own rail', () => {
+    const fixture = setUp();
+    fixture.detectChanges();
+    const rails = TestBed.inject(RailOutlet);
+    expect(rails.left()?.labelKey).toBe('pages.profile.content.title');
+    // ReadingHistory detaches (does not destroy) the profile on navigation.
+    fixture.componentInstance.suspendReading();
+    fixture.detectChanges();
+    expect(rails.left()).toBeNull();
+    // Back to the profile: its post-type filter returns.
+    fixture.componentInstance.resumeReading();
+    fixture.detectChanges();
+    expect(rails.left()?.labelKey).toBe('pages.profile.content.title');
   });
 
   it('blocks an un-blocked account via POST /block and stores the updated relationship', () => {

@@ -1192,8 +1192,26 @@ export class Profile implements OnInit, OnDestroy {
       !this.isEliza() &&
       !this.isOpenRouter(),
   );
+  /**
+   * False while ReadingHistory keeps this profile detached in the background.
+   * A detached profile is not destroyed, so without this its "Post types"
+   * filter stayed in the shared left rail on whatever page came next (Home
+   * showed it instead of its own badge and trending tags).
+   */
+  private readonly railVisible = signal(true);
+
+  /** Detached by the reading outlet: hand the shared rails back. */
+  suspendReading(): void {
+    this.railVisible.set(false);
+  }
+
+  /** Reattached (Back): claim the rails again if this profile uses them. */
+  resumeReading(): void {
+    this.railVisible.set(true);
+  }
+
   private readonly contentRailSync = effect(() => {
-    const enabled = this.contentRailEnabled();
+    const enabled = this.contentRailEnabled() && this.railVisible();
     const account = this.account();
     const posts = this.statuses();
     const key = account ? `${this.server.baseUrl()}:${account.id}` : null;
