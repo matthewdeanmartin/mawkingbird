@@ -16,6 +16,7 @@ import {
 } from './catalogue-search';
 import { RadioDock } from './radio-dock';
 import { RadioPlayer, RadioTrack } from './radio-player';
+import { PlaylistDraft } from './playlist-draft';
 import { RadioPlaylists } from './radio-playlists';
 import { TrackActions } from './track-actions';
 
@@ -283,6 +284,7 @@ export class CataloguePanel {
   readonly actions = inject(TrackActions);
   private readonly catalogue = inject(CatalogueSearch);
   private readonly player = inject(RadioPlayer);
+  private readonly draft = inject(PlaylistDraft);
   private readonly playlists = inject(RadioPlaylists);
   private readonly dialogs = inject(AppDialogs);
   private readonly router = inject(Router);
@@ -335,7 +337,7 @@ export class CataloguePanel {
 
   async preview(item: CatalogueItem): Promise<void> {
     const [first] = await this.open(item);
-    if (first) this.player.playNow(first);
+    if (first) this.player.playSingle(first);
   }
   async share(item: CatalogueItem): Promise<void> {
     const [first] = await this.open(item);
@@ -365,13 +367,13 @@ export class CataloguePanel {
     const tracks = await this.selectedTracks();
     if (!tracks.length) return;
     if (
-      this.player.queue().length &&
+      this.draft.tracks().length &&
       !(await this.dialogs.confirm(
         this.transloco.translate('radio.catalogue.replaceConfirm', { count: tracks.length }),
       ))
     )
       return;
-    this.player.replacePlaylist(tracks);
+    this.draft.replace(tracks);
     this.playlists.active.set(null);
     void this.router.navigate(['/radio'], { queryParams: { view: 'publish' } });
   }

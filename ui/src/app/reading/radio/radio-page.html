@@ -28,9 +28,9 @@
     <app-radio-settings />
   } @else if (view() === 'radio') {
     @if (!player.active()) {
-      @if (player.queue().length) {
+      @if (draft.tracks().length) {
         <mb-content-state [title]="'radio.chooseTrack' | transloco">
-          <button mbButton (click)="playQueue()">
+          <button mbButton (click)="playDraft()">
             {{ 'radio.playPlaylist' | transloco }}
           </button>
         </mb-content-state>
@@ -76,13 +76,13 @@
         <button
           mbButton
           type="submit"
-          [disabled]="!playlistName().trim() || !player.queue().length"
+          [disabled]="!playlistName().trim() || !draft.tracks().length"
         >
           {{ 'radio.savePlaylist' | transloco }}
         </button>
       </form>
       <div class="playlist-actions">
-        <button mbButton type="button" (click)="playQueue()" [disabled]="!player.queue().length">
+        <button mbButton type="button" (click)="playDraft()" [disabled]="!draft.tracks().length">
           <app-radio-icon name="play" />
           {{ 'radio.playPlaylist' | transloco }}
         </button>
@@ -104,7 +104,7 @@
               mbMenuItem
               type="button"
               (click)="save(true)"
-              [disabled]="!playlistName().trim() || !player.queue().length"
+              [disabled]="!playlistName().trim() || !draft.tracks().length"
             >
               {{ 'radio.saveAsNew' | transloco }}
             </button>
@@ -118,11 +118,11 @@
         }
       </div>
       <p class="muted">{{ 'radio.shareHint' | transloco }}</p>
-      @if (player.queue().length && !shareable()) {
+      @if (draft.tracks().length && !shareable()) {
         <p>{{ 'radio.privatePlaylist' | transloco }}</p>
       }
       <ol class="playlist">
-        @for (track of player.queue(); track track.key; let i = $index) {
+        @for (track of draft.tracks(); track track.key; let i = $index) {
           <li>
             <div class="row">
               <span class="track"
@@ -144,7 +144,7 @@
                   mbToolbarButton
                   [attr.aria-label]="'radio.play' | transloco"
                   [title]="'radio.play' | transloco"
-                  (click)="player.select(i); switchView('radio')"
+                  (click)="playDraft(i)"
                 >
                   <app-radio-icon name="play" />
                 </button>
@@ -178,7 +178,7 @@
                   [attr.aria-label]="'radio.moveDown' | transloco"
                   [title]="'radio.moveDown' | transloco"
                   (click)="move(i, 1)"
-                  [disabled]="i === player.queue().length - 1"
+                  [disabled]="i === draft.tracks().length - 1"
                 >
                   <app-radio-icon name="down" />
                 </button>
@@ -195,7 +195,7 @@
           </li>
         }
       </ol>
-      @if (signedIn && player.queue().length) {
+      @if (signedIn && draft.tracks().length) {
         <section class="publish" [attr.aria-label]="'radio.publishThread' | transloco">
           <h3>{{ 'radio.publishThread' | transloco }}</h3>
           @let row = activeRow();
@@ -267,8 +267,7 @@
         </section>
       }
     } @else if (view() === 'saved') {
-      <h3>{{ 'radio.savedPlaylists' | transloco }}</h3>
-      <ul class="saved">
+      <ul class="saved" [attr.aria-label]="'radio.savedPlaylists' | transloco">
         @for (saved of playlists.saved(); track saved.id) {
           <li>
             <div class="row">
@@ -307,6 +306,16 @@
           </li>
         }
       </ul>
+      @if (!playlists.saved().length) {
+        <mb-content-state
+          [title]="'radio.noSaved' | transloco"
+          [description]="'radio.noSavedHint' | transloco"
+        >
+          <button mbButton type="button" (click)="switchView('search')">
+            {{ 'radio.buildPlaylist' | transloco }}
+          </button>
+        </mb-content-state>
+      }
     } @else if (view() === 'mine') {
       @if (signedIn) {
         <div class="playlist-actions">
@@ -365,8 +374,11 @@
         <button mbToolbarButton (click)="switchView('publish')">
           {{ 'radio.editPlaylist' | transloco }}
         </button>
-        <button mbToolbarButton (click)="playQueue()" [disabled]="!player.queue().length">
+        <button mbToolbarButton (click)="playDraft()" [disabled]="!draft.tracks().length">
           {{ 'radio.playPlaylist' | transloco }}
+        </button>
+        <button mbToolbarButton (click)="playResults()" [disabled]="!canPlayResults()">
+          {{ 'radio.playResults' | transloco }}
         </button>
       </mb-toolbar>
       <form (ngSubmit)="importLinks()">

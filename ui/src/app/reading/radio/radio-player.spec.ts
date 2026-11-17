@@ -72,27 +72,47 @@ describe('RadioPlayer', () => {
       content: `<a href="https://${provider}.com/artist/track-${id}">Listen</a>`,
     };
   }
-  it('keeps an explicit playlist independent of scans and preserves the current audio while adding and reordering', () => {
-    const first = post('first');
-    const second = post('second');
-    player.replacePlaylist(player.tracks(first));
+  it('starts with an empty queue that scans never fill on their own', () => {
+    player.scan.posts.set([post('1'), post('2')]);
+    expect(player.resultTracks()).toHaveLength(2);
+    expect(player.queue()).toEqual([]);
     player.select(0);
+    expect(player.active()).toBe(false);
+    expect(audios).toHaveLength(0);
+  });
+
+  it('plays an explicit list that later scans leave untouched', () => {
+    const tracks = [...player.tracks(post('first')), ...player.tracks(post('second'))];
+    player.playTracks(tracks, 1);
+    expect(player.current()?.post.id).toBe('second');
     const currentAudio = audios[0];
     player.scan.posts.set([post('unrelated')]);
-    player.addTracks(player.tracks(second));
     expect(player.queue().map((track) => track.post.id)).toEqual(['first', 'second']);
-    expect(player.current()?.post.id).toBe('first');
     expect(audios).toEqual([currentAudio]);
-    player.moveTrack(0, 1);
-    expect(player.current()?.post.id).toBe('first');
-    expect(player.selected()).toBe(1);
-    expect(audios).toEqual([currentAudio]);
-    player.removeTrack(0);
-    expect(player.current()?.post.id).toBe('first');
-    expect(player.selected()).toBe(0);
-    player.removeTrack(0);
-    expect(player.active()).toBe(false);
-    expect(player.queue()).toEqual([]);
+    expect(player.following()).toBe(false);
+  });
+
+  it('plays a Single as a one-track playlist that replaces the queue', () => {
+    player.playTracks([...player.tracks(post('1')), ...player.tracks(post('2'))]);
+    const [single] = player.tracks(post('9'));
+    player.playSingle(single);
+    expect(player.queue().map((track) => track.post.id)).toEqual(['9']);
+    expect(player.current()?.post.id).toBe('9');
+    audios.at(-1)!.dispatchEvent(new Event('ended'));
+    expect(player.current()?.post.id).toBe('9');
+  });
+
+  it('follows a scan only after Play all, and freezes the queue when a track is played next', () => {
+    player.scan.posts.set([post('1')]);
+    player.playResults(0);
+    expect(player.following()).toBe(true);
+    player.scan.posts.set([post('1'), post('2')]);
+    expect(player.queue().map((track) => track.post.id)).toEqual(['1', '2']);
+    const [extra] = player.tracks(post('9'));
+    player.playNext([extra]);
+    expect(player.following()).toBe(false);
+    player.scan.posts.set([post('1'), post('2'), post('3')]);
+    expect(player.queue().map((track) => track.post.id)).toEqual(['1', '9', '2']);
   });
   function controller() {
     return { play: vi.fn(), pause: vi.fn(), seek: vi.fn(), volume: vi.fn(), destroy: vi.fn() };
@@ -109,8 +129,8 @@ describe('RadioPlayer', () => {
         content: '<a href="https://www.youtube.com/watch?v=abcdefghijk">Music</a>',
       },
     ]);
-    expect(player.queue()).toHaveLength(1);
-    expect(player.queue()[0].external?.provider).toBe('soundcloud');
+    expect(player.resultTracks()).toHaveLength(1);
+    expect(player.resultTracks()[0].external?.provider).toBe('soundcloud');
     player.chooseExternal(first, player.radioSources(first)[1]);
     expect(player.queue()).toHaveLength(1);
     expect(player.current()?.external?.provider).toBe('mixcloud');
@@ -120,7 +140,7 @@ describe('RadioPlayer', () => {
   it('requires activation, advances through an authorized provider, and ignores stale widget events', () => {
     player.scan.posts.set([externalPost('1'), externalPost('2'), externalPost('3', 'mixcloud')]);
     player.scan.exhausted.set(true);
-    player.select(0);
+    player.playResults(0);
     expect(player.externalAllowed().size).toBe(0);
     const firstKey = player.current()!.key;
     const first = controller();
@@ -151,7 +171,7 @@ describe('RadioPlayer', () => {
   it('remembers provider consent per account and autoplays a selected allowed track on load', () => {
     localStorage.setItem('mastodon_mock_token', 'first');
     player.scan.posts.set([externalPost('1'), externalPost('2')]);
-    player.select(0);
+    player.playResults(0);
     const first = controller();
     player.attachWidget(player.current()!.key, first);
     expect(first.play).not.toHaveBeenCalled();
@@ -181,7 +201,7 @@ describe('RadioPlayer', () => {
     player.scan.posts.set([post('1'), post('2')]);
     player.setContinuous(false);
     player.setVolume(0.4);
-    player.select(0);
+    player.playResults(0);
     expect(audios[0].volume).toBe(0.4);
     audios[0].dispatchEvent(new Event('ended'));
     await Promise.resolve();
@@ -206,35 +226,31 @@ describe('RadioPlayer', () => {
     } as Status;
     player.scan.posts.set([linked]);
     expect(player.scan).toBeTruthy();
-    const [track] = player.queue();
+    const [track] = player.resultTracks();
     expect(track.media.url).toBe(
       'https://commons.wikimedia.org/wiki/Special:FilePath/Sea_shanty.ogg',
     );
     expect(track.post.media_attachments).toContain(track.media);
     expect(player.tracks(track.post).map((item) => item.key)).toEqual([track.key]);
     expect(player.title(track)).toBe('Archive find');
-    player.select(0);
+    player.playResults(0);
     expect(audios[0].src).toBe(track.media.url);
   });
 
-  it('plays a recording now or next without replacing the queue', () => {
+  it('plays a recording next without replacing the queue', () => {
     player.scan.posts.set([post('1'), post('2')]);
-    player.select(0);
+    player.playResults(0);
     const [extra] = player.tracks(post('9'));
     player.playNext([extra]);
     expect(player.queue().map((track) => track.post.id)).toEqual(['1', '9', '2']);
     expect(player.current()?.post.id).toBe('1');
-    const [second] = player.tracks(post('2'));
-    player.playNow(second);
-    expect(player.queue().map((track) => track.post.id)).toEqual(['1', '2', '9']);
-    expect(player.current()?.post.id).toBe('2');
   });
 
   it('remembers where a long recording stopped and resumes there', () => {
     localStorage.setItem('mastodon_mock_token', 'first');
     const long = post('long');
     const [track] = player.tracks(long);
-    player.playNow(track, 600);
+    player.playSingle(track, 600);
     const audio = audios.at(-1)!;
     Object.defineProperty(audio, 'duration', { value: 3600 });
     audio.dispatchEvent(new Event('loadedmetadata'));
@@ -261,7 +277,7 @@ describe('RadioPlayer', () => {
       content: '<p>Post words</p>' + externalPost('1').content,
     };
     player.scan.posts.set([external]);
-    player.select(0);
+    player.playResults(0);
     const track = player.current()!;
     expect(player.title(track)).toBe('Post words');
     player.widgetState(track.key, { title: 'Night Drive' });
@@ -270,7 +286,7 @@ describe('RadioPlayer', () => {
 
   it('does not advance after pausing an external player or load content behind a warning', () => {
     player.scan.posts.set([externalPost('1'), externalPost('2')]);
-    player.select(0);
+    player.playResults(0);
     const key = player.current()!.key;
     const widget = controller();
     player.attachWidget(key, widget);
@@ -280,7 +296,7 @@ describe('RadioPlayer', () => {
     expect(player.selected()).toBe(0);
     const hidden = { ...externalPost('3'), spoiler_text: 'Warning' };
     player.scan.posts.set([hidden]);
-    player.select(0);
+    player.playResults(0);
     const stale = controller();
     player.attachWidget(player.current()!.key, stale);
     expect(stale.destroy).toHaveBeenCalledOnce();
@@ -296,7 +312,7 @@ describe('RadioPlayer', () => {
     });
     player.scan.posts.set([first, post('2')]);
     player.scan.exhausted.set(true);
-    player.select(0);
+    player.playResults(0);
     expect(player.playing()).toBe(true);
     audios[0].dispatchEvent(new Event('ended'));
     expect(player.current()?.media.id).toBe('second');
@@ -312,7 +328,7 @@ describe('RadioPlayer', () => {
 
   it('does not load hidden audio until reveal and pauses again at the next warning', () => {
     player.scan.posts.set([post('1', true), post('2', true)]);
-    player.select(0);
+    player.playResults(0);
     expect(audios).toHaveLength(0);
     player.reveal();
     expect(audios).toHaveLength(1);
@@ -325,7 +341,7 @@ describe('RadioPlayer', () => {
 
   it('seeks and changes volume without recreating the audio element', () => {
     player.scan.posts.set([post('1')]);
-    player.select(0);
+    player.playResults(0);
     audios[0].dispatchEvent(new Event('loadedmetadata'));
     player.seek(25);
     player.setVolume(0.4);
@@ -339,7 +355,7 @@ describe('RadioPlayer', () => {
 
   it('skips unavailable tracks and ignores late events from a replaced track', () => {
     player.scan.posts.set([post('1'), post('2'), post('3')]);
-    player.select(0);
+    player.playResults(0);
     audios[0].dispatchEvent(new Event('error'));
     expect(player.current()?.post.id).toBe('2');
     expect(player.skipped()).toBe(1);
@@ -355,7 +371,7 @@ describe('RadioPlayer', () => {
         : of({ statuses: Array.from({ length: 20 }, (_, i) => post(String(i))), next: 'next' }),
     );
     await player.scan.start(fetch);
-    player.select(19);
+    player.playResults(19);
     expect(fetch).toHaveBeenCalledTimes(2);
     audios[0].dispatchEvent(new Event('ended'));
     player.pause();
@@ -368,7 +384,7 @@ describe('RadioPlayer', () => {
 
   it('stops and clears private queue data on account change', () => {
     player.scan.posts.set([post('1')]);
-    player.select(0);
+    player.playResults(0);
     token.set('second');
     TestBed.tick();
     expect(player.active()).toBe(false);
@@ -378,7 +394,7 @@ describe('RadioPlayer', () => {
 
   it('pauses when another media element starts', () => {
     player.scan.posts.set([post('1')]);
-    player.select(0);
+    player.playResults(0);
     const video = document.createElement('video');
     document.body.append(video);
     video.dispatchEvent(new Event('play'));
@@ -388,7 +404,7 @@ describe('RadioPlayer', () => {
 
   it('never resumes from late ended or error events after an explicit pause', () => {
     player.scan.posts.set([post('1'), post('2')]);
-    player.select(0);
+    player.playResults(0);
     player.pause();
     audios[0].dispatchEvent(new Event('ended'));
     audios[0].dispatchEvent(new Event('error'));
@@ -400,7 +416,7 @@ describe('RadioPlayer', () => {
   it('bounds consecutive failures and does not restart from late playing events after Pause', () => {
     reportPlaying = false;
     player.scan.posts.set([post('1'), post('2'), post('3'), post('4')]);
-    player.select(0);
+    player.playResults(0);
     audios[0].dispatchEvent(new Event('error'));
     audios[1].dispatchEvent(new Event('error'));
     audios[2].dispatchEvent(new Event('error'));
@@ -412,7 +428,7 @@ describe('RadioPlayer', () => {
 
   it('keeps a browser-rejected track available for explicit retry', async () => {
     player.scan.posts.set([post('1')]);
-    player.select(0);
+    player.playResults(0);
     player.pause();
     vi.mocked(audios[0].play).mockRejectedValueOnce(
       new DOMException('User gesture required', 'NotAllowedError'),
@@ -433,7 +449,7 @@ describe('RadioPlayer', () => {
         ? nextPage
         : of({ statuses: Array.from({ length: 20 }, (_, i) => post(String(i))), next: 'next' }),
     );
-    player.select(19);
+    player.playResults(19);
     audios[0].dispatchEvent(new Event('ended'));
     nextPage.next({ statuses: [post('20')], next: null });
     await new Promise((resolve) => setTimeout(resolve, 0));

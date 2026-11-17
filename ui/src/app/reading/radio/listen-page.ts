@@ -31,6 +31,7 @@ import { LinkedAudioResolver } from './linked-audio-resolver';
 import { RadioDock } from './radio-dock';
 import { RadioIcon } from './radio-icon';
 import { RadioPlayer, RadioTrack } from './radio-player';
+import { PlaylistDraft } from './playlist-draft';
 import { RadioPlaylists } from './radio-playlists';
 import { TrackActions } from './track-actions';
 import { MbPostMenu } from '../../design-system/menu/post-menu';
@@ -50,7 +51,8 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
 // i18n listen.resume: Resume from {{time}}
 // i18n listen.startOver: Start from the beginning
 // i18n listen.playNext: Play next in Radio
-// i18n listen.addQueue: Add to Radio queue
+// i18n listen.addQueue: Add to playlist
+// i18n listen.addedToPlaylist: Added to the playlist you are building.
 // i18n listen.queued: Added to the Radio queue.
 // i18n listen.back15: Back 15 seconds
 // i18n listen.forward30: Forward 30 seconds
@@ -88,6 +90,7 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
 export class ListenPage {
   protected readonly loader = inject(ThreadLoader);
   protected readonly player = inject(RadioPlayer);
+  private readonly draft = inject(PlaylistDraft);
   protected readonly actions = inject(TrackActions);
   private readonly transloco = inject(TranslocoService);
   private readonly linked = inject(LinkedAudioResolver);
@@ -242,7 +245,7 @@ export class ListenPage {
 
   protected play(at = 0): void {
     const track = this.chosen();
-    if (track) this.player.playNow(track, at);
+    if (track) this.player.playSingle(track, at);
   }
   protected playNext(): void {
     const track = this.chosen();
@@ -257,8 +260,8 @@ export class ListenPage {
   protected addToQueue(): void {
     const track = this.chosen();
     if (!track) return;
-    this.player.addTracks([track]);
-    this.message.set(this.transloco.translate('listen.queued'));
+    this.draft.add([track]);
+    this.message.set(this.transloco.translate('listen.addedToPlaylist'));
   }
   protected clock(seconds: number): string {
     const value = Math.max(0, Math.floor(seconds));

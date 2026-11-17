@@ -2072,7 +2072,8 @@
     "unfollowEveryone": "Unfollow everyone"
   },
   "listen": {
-    "addQueue": "Add to Radio queue",
+    "addQueue": "Add to playlist",
+    "addedToPlaylist": "Added to the playlist you are building.",
     "back": "Back",
     "back15": "Back 15 seconds",
     "conversation": "Conversation",
@@ -5461,6 +5462,8 @@
     "nativeOnly": "Native Mastodon audio only",
     "nativeOnlyHint": "Otherwise, also find links to supported external audio players.",
     "next": "Next track",
+    "noSaved": "No saved playlists yet",
+    "noSavedHint": "Build a playlist, name it and save it. Saved playlists stay in this browser.",
     "noThreads": "No playlist threads found in your recent posts.",
     "notQueueable": "This post has no audio that Radio can play continuously. Its player is shown below.",
     "openPlayer": "Open Radio player",
@@ -5469,6 +5472,7 @@
     "play": "Play",
     "playPlaylist": "Play playlist",
     "playPost": "Play audio by {{author}}",
+    "playResults": "Play all results",
     "playTrack": "Play track {{number}}, {{title}}, by {{author}}",
     "playerHint": "Choose audio from an account, your home feed or a list. Radio keeps playing as you explore the app.",
     "playlistDescription": "Description (optional)",

@@ -2745,3 +2745,11 @@ profile photo view adds one menu row (Copy image) in its existing menu; Privacy
 adds one MbCheckbox row (Fetch from the original server). The notification
 safety notices and the thread origin label add no controls beyond links. No
 shared design widget implementation changed.
+
+Radio Singles sprint 1 (2026-11-16): reviewed regenerated inventory: 1874 scanned
+files (new `playlist-draft.ts` has no candidates), 647 candidate files,
+unchanged. `radio-page.html` gains one MbToolbarButton (Play all results) and an
+MbContentState with one MbButton for the empty Saved list, and drops the
+duplicate Saved heading. `catalogue-panel.ts` and `listen-page.html` only shift
+lines. No shared design widget implementation changed; no reconciliation
+entries needed.

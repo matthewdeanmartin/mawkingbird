@@ -6,6 +6,7 @@ import { AppDialogs } from '../../shell/app-dialogs';
 import { CataloguePanel } from './catalogue-panel';
 import { CatalogueItem, CatalogueSearch } from './catalogue-search';
 import { RadioPlayer, RadioTrack } from './radio-player';
+import { PlaylistDraft } from './playlist-draft';
 import { RadioPlaylists } from './radio-playlists';
 import { TrackActions } from './track-actions';
 
@@ -25,6 +26,7 @@ const track = (id: string) => ({ key: `t${id}`, media: { id }, post: {} }) as un
 describe('CataloguePanel', () => {
   let catalogue: { search: ReturnType<typeof vi.fn>; tracks: ReturnType<typeof vi.fn> };
   let player: Record<string, unknown>;
+  let draft: Record<string, unknown>;
   let actions: Record<string, unknown>;
   beforeEach(() => {
     catalogue = {
@@ -33,16 +35,16 @@ describe('CataloguePanel', () => {
     };
     player = {
       installDock: vi.fn(),
-      queue: signal([track('old')]),
-      playNow: vi.fn(),
-      replacePlaylist: vi.fn(),
+      playSingle: vi.fn(),
     };
+    draft = { tracks: signal([track('old')]), replace: vi.fn() };
     actions = { published: signal([]), share: vi.fn(), addToPlaylist: vi.fn(), append: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         { provide: CatalogueSearch, useValue: catalogue },
         { provide: RadioPlayer, useValue: player },
+        { provide: PlaylistDraft, useValue: draft },
         { provide: TrackActions, useValue: actions },
         { provide: RadioPlaylists, useValue: { refresh: vi.fn(), active: signal('x') } },
       ],
@@ -76,7 +78,7 @@ describe('CataloguePanel', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     await panel.playlistSelected();
     expect(confirm).toHaveBeenCalledOnce();
-    expect(player['replacePlaylist']).toHaveBeenCalledWith([track('a'), track('b')]);
+    expect(draft['replace']).toHaveBeenCalledWith([track('a'), track('b')]);
     expect(TestBed.inject(RadioPlaylists).active()).toBeNull();
     expect(navigate).toHaveBeenCalledWith(['/radio'], { queryParams: { view: 'publish' } });
   });
@@ -96,6 +98,6 @@ describe('CataloguePanel', () => {
     await panel.preview(item('a'));
     fixture.detectChanges();
     expect(root.textContent).toContain('No playable recording was found in “Song a”.');
-    expect(player['playNow']).not.toHaveBeenCalled();
+    expect(player['playSingle']).not.toHaveBeenCalled();
   });
 });

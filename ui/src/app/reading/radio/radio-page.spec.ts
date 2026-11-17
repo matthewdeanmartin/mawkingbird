@@ -15,7 +15,8 @@ import { Auth } from '../../platform/session/auth';
 import { Status } from '../../platform/api/models';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { RadioPage } from './radio-page';
-import { RadioPlayer } from './radio-player';
+import { RADIO_AUDIO, RadioPlayer } from './radio-player';
+import { PlaylistDraft } from './playlist-draft';
 import { playlistFragment, playlistUrls, RadioPlaylists } from './radio-playlists';
 import { RadioHandoff } from '../radio-handoff';
 import { SavedSearches } from '../../discovery/search/saved-searches';
@@ -33,6 +34,15 @@ class CardStub {
   readonly playAudio = output<void>();
   readonly addAudio = output<void>();
   readonly listenRadio = output<ExternalMedia>();
+}
+
+/** An audio element whose play() settles, as browsers do; jsdom's returns nothing. */
+function quietAudio(): HTMLAudioElement {
+  const audio = document.createElement('audio');
+  audio.play = () => Promise.resolve();
+  audio.pause = () => undefined;
+  audio.load = () => undefined;
+  return audio;
 }
 
 describe('RadioPage', () => {
@@ -89,7 +99,10 @@ describe('RadioPage', () => {
     expect(api.lookupAccount).toHaveBeenCalledWith('MaQuest@djs.social');
     expect(publicLookup).not.toHaveBeenCalled();
     expect(fixture.componentInstance.view()).toBe('search');
-    expect(fixture.componentInstance.player.queue()).toHaveLength(1);
+    expect(fixture.componentInstance.player.resultTracks()).toHaveLength(1);
+    // Results are offered, not silently added to the playlist or the queue.
+    expect(fixture.componentInstance.draft.tracks()).toEqual([]);
+    expect(fixture.componentInstance.player.queue()).toEqual([]);
     expect(fixture.componentInstance.failed()).toBe(false);
     expect(fixture.componentInstance.player.active()).toBe(false);
   });
@@ -114,7 +127,7 @@ describe('RadioPage', () => {
       handle: 'music@sea.example',
     });
   });
-  it('opens a shared post anonymously, queues it without autoplay, and responds to a new link', async () => {
+  it('opens a shared post anonymously as the playlist being built, without autoplay, and responds to a new link', async () => {
     const params = new BehaviorSubject(
       convertToParamMap({ post: 'https://sea.example/@singer/123' }),
     );
@@ -134,7 +147,8 @@ describe('RadioPage', () => {
     fixture.detectChanges();
     await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
     fixture.detectChanges();
-    expect(fixture.componentInstance.player.queue()).toHaveLength(1);
+    expect(fixture.componentInstance.draft.tracks()).toHaveLength(1);
+    expect(fixture.componentInstance.player.queue()).toEqual([]);
     expect(fixture.componentInstance.player.active()).toBe(false);
     expect(fixture.nativeElement.textContent).not.toContain('Copy Radio link');
     expect(fixture.componentInstance.view()).toBe('search');
@@ -147,7 +161,7 @@ describe('RadioPage', () => {
     });
   });
 
-  it('plays an in-app Open in Radio post from the handoff, keeping the current queue', async () => {
+  it('plays an in-app Open in Radio post from the handoff as a Single, leaving the playlist being built alone', async () => {
     const url = 'https://sea.example/@singer/789';
     const offered = {
       ...audio,
@@ -164,16 +178,21 @@ describe('RadioPage', () => {
         queryParamMap: of(convertToParamMap({ post: url, add: '1', view: 'radio' })),
       },
     });
+    TestBed.overrideProvider(RADIO_AUDIO, { useValue: quietAudio });
     TestBed.inject(RadioHandoff).offer(offered);
     const player = TestBed.inject(RadioPlayer);
-    player.replacePlaylist(player.tracks(audio));
+    const draft = TestBed.inject(PlaylistDraft);
+    draft.replace(player.tracks(audio));
+    player.playTracks(player.tracks(audio));
     const fixture = TestBed.createComponent(RadioPage);
     fixture.detectChanges();
     await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
     expect(getStatus).not.toHaveBeenCalled();
-    expect(player.queue().map((track) => track.post.id)).toEqual(['audio', '789']);
+    expect(player.queue().map((track) => track.post.id)).toEqual(['789']);
+    expect(draft.tracks().map((track) => track.post.id)).toEqual(['audio']);
     expect(player.current()?.post.id).toBe('789');
     expect(player.active()).toBe(true);
+    expect(fixture.componentInstance.failed()).toBe(false);
     expect(fixture.componentInstance.view()).toBe('radio');
     player.stop();
   });
@@ -270,12 +289,24 @@ describe('RadioPage', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Find audio');
   });
 
+  it('says when there are no saved playlists instead of a bare, double-titled list', () => {
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: { snapshot: {}, queryParamMap: of(convertToParamMap({ view: 'saved' })) },
+    });
+    const fixture = TestBed.createComponent(RadioPage);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.textContent).toContain('No saved playlists yet');
+    expect(root.querySelector('h3')).toBeNull();
+    expect(root.querySelector('ul.saved')?.getAttribute('aria-label')).toBe('Saved playlists');
+  });
+
   it('asks for a playlist first when Radio has nothing to play', () => {
     TestBed.overrideProvider(ActivatedRoute, {
       useValue: { snapshot: {}, queryParamMap: of(convertToParamMap({ view: 'radio' })) },
     });
     const fixture = TestBed.createComponent(RadioPage);
-    fixture.componentInstance.player.replacePlaylist([]);
+    fixture.componentInstance.draft.clear();
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Build a playlist first.');
     expect(
@@ -285,7 +316,7 @@ describe('RadioPage', () => {
     ).toBe(true);
   });
 
-  it('keeps playing when returning to a Radio address whose fragment is the current queue', () => {
+  it('keeps playing and keeps edits when returning to an address whose fragment is the playlist being built', () => {
     const fragment = new BehaviorSubject('');
     TestBed.overrideProvider(ActivatedRoute, {
       useValue: {
@@ -294,6 +325,7 @@ describe('RadioPage', () => {
         fragment,
       },
     });
+    TestBed.overrideProvider(RADIO_AUDIO, { useValue: quietAudio });
     const player = TestBed.inject(RadioPlayer);
     const song = {
       ...audio,
@@ -302,15 +334,21 @@ describe('RadioPage', () => {
       url: 'https://sea.example/@singer/1',
       media_attachments: [{ id: 'm', type: 'audio', url: 'https://sea.example/song.mp3' }],
     } as Status;
-    player.replacePlaylist(player.tracks(song));
+    const draft = TestBed.inject(PlaylistDraft);
+    draft.replace(player.tracks(song));
+    player.playTracks(draft.tracks());
     const queue = player.queue();
+    const tracks = draft.tracks();
     const importUrls = vi.spyOn(TestBed.inject(RadioPlaylists), 'importUrls');
-    fragment.next(playlistFragment(playlistUrls(queue)));
+    fragment.next(playlistFragment(playlistUrls(tracks)));
     const fixture = TestBed.createComponent(RadioPage);
     fixture.detectChanges();
     expect(fixture.componentInstance.importing()).toBe(false);
     expect(importUrls).not.toHaveBeenCalled();
     expect(player.queue()).toBe(queue);
+    expect(draft.tracks()).toBe(tracks);
+    expect(player.active()).toBe(true);
+    player.stop();
   });
 
   it('explains a post Radio cannot continue through instead of silently showing Search', async () => {
@@ -412,7 +450,8 @@ describe('RadioPage', () => {
     };
     TestBed.configureTestingModule({
       providers: [
-        provideRouter([]),
+        // Radio navigates to itself to keep its address shareable.
+        provideRouter([{ path: 'radio', children: [] }]),
         { provide: Api, useValue: api },
         {
           provide: Auth,

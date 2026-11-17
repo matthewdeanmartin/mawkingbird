@@ -68,7 +68,13 @@ export interface RadioTrack {
 export class RadioPlayer {
   readonly nativeOnly = signal(false);
   readonly fullView = signal(false);
-  readonly playlist = signal<RadioTrack[] | null>(null);
+  /** The tracks playing, set only by a play action. */
+  private readonly list = signal<RadioTrack[]>([]);
+  /**
+   * "Play all" on a feed scan: the queue is the scan's tracks and grows as the
+   * scan reads further. Off, scans never change what is playing.
+   */
+  readonly following = signal(false);
   private readonly linked = inject(LinkedAudioResolver);
   private readonly services = inject(ProviderPreferences);
   readonly scan = new MediaFeedScan(
@@ -104,39 +110,23 @@ export class RadioPlayer {
   private pendingSeek = 0;
   private positionSavedAt = 0;
   readonly selected = signal(-1);
-  private readonly alternatives = signal<ReadonlyMap<string, string>>(new Map());
   /** Providers this account allowed to load and autoplay inside Radio. */
   private readonly consent = inject(ProviderConsent);
   readonly externalAllowed = this.consent.allowed.asReadonly();
   private widget?: WidgetController;
   private autoExternalPlay = false;
   readonly externalReady = signal(false);
-  readonly queue = computed<RadioTrack[]>(
-    () =>
-      this.playlist() ??
-      this.scan.posts().flatMap((post) => {
-        const native = this.nativeTracks(post);
-        const candidates = this.radioSources(post);
-        const chosen = candidates.find((s) => s.key === this.alternatives().get(post.id));
-        if (native.length && !chosen) return native;
-        const external = chosen ?? candidates[0];
-        return external
-          ? [
-              {
-                key: `${post.id}:${external.key}`,
-                post,
-                external,
-                media: {
-                  id: external.key,
-                  type: 'audio',
-                  url: '',
-                  preview_url: '',
-                  description: external.label,
-                } as MediaAttachment,
-              },
-            ]
-          : native;
-      }),
+  /** One entry per scanned post: its own audio, else its preferred continuous player. */
+  readonly resultTracks = computed<RadioTrack[]>(() =>
+    this.scan.posts().flatMap((post) => {
+      const native = this.nativeTracks(post);
+      if (native.length) return native;
+      const external = this.radioSources(post)[0];
+      return external ? [this.externalTrack(post, external)] : [];
+    }),
+  );
+  readonly queue = computed<RadioTrack[]>(() =>
+    this.following() ? this.resultTracks() : this.list(),
   );
   readonly current = computed(() => this.queue()[this.selected()]);
   /** Titles reported by loaded provider widgets, by track key; memory only. */
@@ -199,7 +189,8 @@ export class RadioPlayer {
         this.loadPositions();
         this.stop();
         this.scan.clear();
-        this.playlist.set(null);
+        this.list.set([]);
+        this.following.set(false);
         this.started.set(false);
         this.scanReady.set(false);
         this.nativeOnly.set(false);
@@ -213,7 +204,7 @@ export class RadioPlayer {
     });
     // Library of Congress links need a metadata lookup before they can play.
     effect(() => {
-      const posts = [...this.scan.posts(), ...(this.playlist() ?? []).map((track) => track.post)];
+      const posts = [...this.scan.posts(), ...this.list().map((track) => track.post)];
       untracked(() => this.linked.resolve(posts));
     });
     // Titles from ID3 tags: the current track and the next few, one small range each.
@@ -235,9 +226,25 @@ export class RadioPlayer {
     return `${this.auth.kind()}:${this.auth.token()}:${this.server.baseUrl()}`;
   }
 
-  /** Freeze the current queue before discovery changes its source. */
-  editPlaylist(): void {
-    if (this.playlist() === null) this.playlist.set([...this.queue()]);
+  /** Stop following a scan: the queue keeps the tracks it has. */
+  private freeze(): void {
+    if (!this.following()) return;
+    this.list.set([...this.resultTracks()]);
+    this.following.set(false);
+  }
+  private externalTrack(post: Status, external: ExternalMedia): RadioTrack {
+    return {
+      key: `${post.id}:${external.key}`,
+      post,
+      external,
+      media: {
+        id: external.key,
+        type: 'audio',
+        url: '',
+        preview_url: '',
+        description: external.label,
+      } as MediaAttachment,
+    };
   }
   /**
    * Attachments plus linked files the audio element can play directly. A linked
@@ -268,58 +275,33 @@ export class RadioPlayer {
     const native = this.nativeTracks(post);
     return [
       ...native,
-      ...this.allRadioSources(post).map((external) => ({
-        key: `${post.id}:${external.key}`,
-        post,
-        external,
-        media: {
-          id: external.key,
-          type: 'audio',
-          url: '',
-          preview_url: '',
-          description: external.label,
-        } as MediaAttachment,
-      })),
+      ...this.allRadioSources(post).map((external) => this.externalTrack(post, external)),
     ];
   }
-  addTracks(tracks: RadioTrack[]): void {
-    this.editPlaylist();
-    this.playlist.update((items) => {
-      const keys = new Set(items!.map((item) => item.key));
-      return [...items!, ...tracks.filter((item) => !keys.has(item.key) && !!keys.add(item.key))];
-    });
-  }
-  replacePlaylist(tracks: RadioTrack[]): void {
+  /** Play these tracks from `start`, replacing whatever was playing. */
+  playTracks(tracks: readonly RadioTrack[], start = 0, at = 0): void {
+    if (!tracks[start]) return;
     this.stop();
-    this.playlist.set([...tracks]);
+    this.following.set(false);
+    const keys = new Set<string>();
+    this.list.set(tracks.filter((track) => !keys.has(track.key) && !!keys.add(track.key)));
+    this.select(this.list().findIndex((track) => track.key === tracks[start].key));
+    this.pendingSeek = at > 0 ? at : 0;
   }
-  moveTrack(index: number, offset: number): void {
-    this.editPlaylist();
-    const items = [...this.queue()];
-    const next = index + offset;
-    if (!items[index] || !items[next]) return;
-    const current = this.current()?.key;
-    [items[index], items[next]] = [items[next], items[index]];
-    this.playlist.set(items);
-    this.selected.set(items.findIndex((item) => item.key === current));
+  /**
+   * A Single takes over the queue as a one-track playlist; what was playing is
+   * not resumed afterwards. `at` resumes a long recording.
+   */
+  playSingle(track: RadioTrack, at = 0): void {
+    this.playTracks([track], 0, at);
   }
-  /** Name a playlist entry; an empty title restores the automatic one. */
-  renameTrack(index: number, title: string): void {
-    this.editPlaylist();
-    this.playlist.update((items) =>
-      items!.map((item, i) => {
-        if (i !== index) return item;
-        const { title: _old, ...rest } = item;
-        return title.trim() ? { ...rest, title: title.trim().slice(0, 200) } : rest;
-      }),
-    );
-  }
-  removeTrack(index: number): void {
-    this.editPlaylist();
-    const current = this.current()?.key;
-    if (this.queue()[index]?.key === current) this.stop();
-    this.playlist.set(this.queue().filter((_, i) => i !== index));
-    this.selected.set(this.queue().findIndex((item) => item.key === current));
+  /** "Play all": the scan's results from `index`, continuing as the scan reads more. */
+  playResults(index = 0): void {
+    if (!this.resultTracks()[index]) return;
+    this.stop();
+    this.list.set([]);
+    this.following.set(true);
+    this.select(index);
   }
   select(index: number): void {
     if (!this.queue()[index]) return;
@@ -327,24 +309,15 @@ export class RadioPlayer {
     this.pendingSeek = 0;
     this.activate(index);
   }
-  /**
-   * Play this recording now, inserted after the current track so the rest of
-   * the queue is kept; `at` resumes from a saved position.
-   */
-  playNow(track: RadioTrack, at = 0): void {
-    this.playNext([track]);
-    this.select(this.queue().findIndex((item) => item.key === track.key));
-    this.pendingSeek = at > 0 ? at : 0;
-  }
   /** Queue recordings right after the current track; ones already queued move there. */
   playNext(tracks: RadioTrack[]): void {
-    this.editPlaylist();
+    this.freeze();
     const keys = new Set(tracks.map((track) => track.key));
     const current = this.current()?.key;
     const rest = this.queue().filter((item) => !keys.has(item.key) || item.key === current);
     const at = rest.findIndex((item) => item.key === current) + 1;
     const inserted = tracks.filter((track) => track.key !== current);
-    this.playlist.set([...rest.slice(0, at), ...inserted, ...rest.slice(at)]);
+    this.list.set([...rest.slice(0, at), ...inserted, ...rest.slice(at)]);
     this.selected.set(this.queue().findIndex((item) => item.key === current));
   }
   /** Seek the current track by an offset, e.g. back 15 or ahead 30 seconds. */
@@ -397,20 +370,10 @@ export class RadioPlayer {
   radioSources(post: Status): ExternalMedia[] {
     return this.services.arrange(this.allRadioSources(post));
   }
+  /** Play one of a post's continuous players as a Single. */
   chooseExternal(post: Status, source: ExternalMedia): void {
     if (!this.radioSources(post).some((s) => s.key === source.key)) return;
-    if (this.playlist() !== null) {
-      const track = this.tracks(post).find((item) => item.external?.key === source.key);
-      if (track) this.addTracks([track]);
-      this.select(
-        this.queue().findIndex(
-          (item) => item.external?.key === source.key && item.post.id === post.id,
-        ),
-      );
-      return;
-    }
-    this.alternatives.update((values) => new Map([...values, [post.id, source.key]]));
-    this.select(this.queue().findIndex((track) => track.post.id === post.id));
+    this.playSingle(this.externalTrack(post, source));
   }
   installDock(component: Type<unknown>): void {
     this.dock = component;
@@ -563,7 +526,7 @@ export class RadioPlayer {
     if (this.queue()[index]) this.activate(index);
   }
   private prefetch(): Promise<void> {
-    if (this.playlist() !== null) return Promise.resolve();
+    if (!this.following()) return Promise.resolve();
     if (this.more) return this.more;
     if (this.scan.loading()) return this.scan.whenIdle();
     const queue = this.queue();
@@ -638,7 +601,6 @@ export class RadioPlayer {
     this.skipped.set(0);
     this.revealed.set(new Set());
     this.prefetchTail = '';
-    this.alternatives.set(new Map());
     this.outlet.component.set(null);
   }
   private releaseAudio(): void {

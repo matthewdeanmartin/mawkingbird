@@ -6,6 +6,7 @@ import { Drafts } from '../../publishing/drafts';
 import { CATALOGUE_POST } from './catalogue-search';
 import { PlaylistPublisher } from './playlist-publisher';
 import { RadioPlayer, RadioTrack } from './radio-player';
+import { PlaylistDraft } from './playlist-draft';
 import { RadioPlaylists, trackUrl } from './radio-playlists';
 
 // i18n radio.share.viaLoc: via the Library of Congress
@@ -29,6 +30,7 @@ export class TrackActions {
   private readonly transloco = inject(TranslocoService);
   private readonly dialogs = inject(AppDialogs);
   private readonly player = inject(RadioPlayer);
+  private readonly draft = inject(PlaylistDraft);
   private readonly playlists = inject(RadioPlaylists);
   private readonly publisher = inject(PlaylistPublisher);
 
@@ -69,9 +71,9 @@ export class TrackActions {
     void this.router.navigate(['/radio/studio']);
   }
 
-  /** Append to the queue being built; publishing happens from Build Playlist → Publish. */
+  /** Append to the playlist being built; what is playing does not change. */
   addToPlaylist(tracks: RadioTrack[]): void {
-    this.player.addTracks(tracks);
+    this.draft.add(tracks);
   }
 
   /**

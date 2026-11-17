@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
 import { qualifiedHandle } from '../../accounts/account-handle';
 import { radioAccount, radioPostRef } from '../radio-links';
@@ -39,6 +39,7 @@ import {
   SavedRadioPlaylist,
 } from './radio-playlists';
 import { RadioDock } from './radio-dock';
+import { PlaylistDraft } from './playlist-draft';
 import { RadioIcon } from './radio-icon';
 import { RadioSettings } from './radio-settings';
 
@@ -108,8 +109,10 @@ export class RadioPage {
   private readonly router = inject(Router);
   private readonly drafts = inject(Drafts);
   private readonly handoff = inject(RadioHandoff);
-  readonly playlistName = signal('');
-  readonly description = signal('');
+  /** The playlist being edited; separate from what is playing. */
+  readonly draft = inject(PlaylistDraft);
+  readonly playlistName = this.draft.name;
+  readonly description = this.draft.description;
   readonly visibility = signal('public');
   readonly publisher = inject(PlaylistPublisher);
   readonly deleteBudget = DELETE_BUDGET;
@@ -124,7 +127,7 @@ export class RadioPage {
       ...(this.activeRow() ?? { id: '' }),
       name: this.playlistName().trim() || this.activeRow()?.name || '',
       description: this.description().trim(),
-      tracks: this.player.queue(),
+      tracks: this.draft.tracks(),
     }),
   );
   readonly importText = signal('');
@@ -134,20 +137,23 @@ export class RadioPage {
   readonly message = signal('');
   private importGeneration = 0;
   private sourceKey = '';
-  private buildScan = false;
   readonly playlistableOnly = signal(false);
   readonly results = computed(() =>
     this.playlistableOnly()
       ? this.scan.posts().filter((post) => this.player.tracks(post).length)
       : this.scan.posts(),
   );
-  readonly shareable = computed(
-    () =>
-      this.player.queue().length > 0 &&
-      playlistUrls(this.player.queue()).length <= 200 &&
-      playlistFragment(playlistUrls(this.player.queue())).length <= 100_000 &&
-      this.player.queue().every((track) => !!playlistUrls([track]).length),
-  );
+  readonly canPlayResults = computed(() => this.player.resultTracks().length > 0);
+  readonly shareable = computed(() => {
+    const tracks = this.draft.tracks();
+    const urls = playlistUrls(tracks);
+    return (
+      tracks.length > 0 &&
+      urls.length <= 200 &&
+      playlistFragment(urls).length <= 100_000 &&
+      tracks.every((track) => !!playlistUrls([track]).length)
+    );
+  });
   readonly shared = signal(false);
   readonly shareParams = signal<{ acct?: string; post?: string } | null>(null);
   private readonly api = inject(Api);
@@ -179,11 +185,6 @@ export class RadioPage {
       this.auth.token();
       this.playlists.refresh();
     });
-    effect(() => {
-      const posts = this.scan.posts();
-      if (this.buildScan)
-        untracked(() => this.player.addTracks(posts.flatMap((post) => this.player.tracks(post))));
-    });
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroy)).subscribe((params) => {
       const post = radioPostRef(params.get('post'));
       const account = radioAccount(params.get('acct'));
@@ -198,7 +199,6 @@ export class RadioPage {
       if (!post && !account) return;
       this.shared.set(true);
       this.cancel();
-      this.player.editPlaylist();
       this.player.nativeOnly.set(false);
       this.started.set(true);
       this.failed.set(false);
@@ -207,10 +207,10 @@ export class RadioPage {
         this.shareParams.set({ post: post.originalUrl });
         void this.loadPost(post.originalUrl!, params.get('add') === '1', view === 'radio');
       } else if (account) {
-        this.buildScan = true;
+        // A shared account link shows its audio; adding any of it is the listener's choice.
         this.source.set('account');
         this.handle.set(account.acct);
-        if (this.signedIn) this.discover(true);
+        if (this.signedIn) this.discover();
         else this.discoverPublicAccount(account);
       }
     });
@@ -219,8 +219,8 @@ export class RadioPage {
       if (urls && fragment !== this.lastFragment) {
         this.lastFragment = fragment ?? '';
         // Returning to Radio (Back, or a link that kept the fragment) shows the
-        // queue that is already playing; re-importing it would stop playback.
-        const queued = playlistUrls(this.player.queue());
+        // playlist already being edited; importing it again would discard edits.
+        const queued = playlistUrls(this.draft.tracks());
         if (queued.length === urls.length && queued.every((url, i) => url === urls[i])) return;
         this.shared.set(true);
         void this.importLinks(urls, false, true);
@@ -291,7 +291,7 @@ export class RadioPage {
 
   changeNativeOnly(value: boolean): void {
     this.cancel();
-    this.player.editPlaylist();
+    this.player.following.set(false);
     this.scan.clear();
     this.player.nativeOnly.set(value);
     this.started.set(false);
@@ -299,8 +299,7 @@ export class RadioPage {
     this.failed.set(false);
   }
 
-  discover(collect = false): void {
-    this.buildScan = collect;
+  discover(): void {
     if (this.source() === 'tag') {
       this.discoverTag();
       return;
@@ -321,7 +320,7 @@ export class RadioPage {
     }
     if (!this.signedIn || Date.now() < this.scan.retryAt()) return;
     this.cancel();
-    this.player.editPlaylist();
+    this.player.following.set(false);
     this.failed.set(false);
     this.shareParams.set(null);
     this.started.set(true);
@@ -391,7 +390,7 @@ export class RadioPage {
     const tag = radioTag(this.tag());
     if (!tag || Date.now() < this.scan.retryAt()) return;
     this.cancel();
-    this.player.editPlaylist();
+    this.player.following.set(false);
     this.scan.clear();
     this.failed.set(false);
     this.shareParams.set(null);
@@ -458,7 +457,7 @@ export class RadioPage {
     const criteria = saved?.search.post;
     if (!saved || !criteria || !this.signedIn || Date.now() < this.scan.retryAt()) return;
     this.cancel();
-    this.player.editPlaylist();
+    this.player.following.set(false);
     this.scan.clear();
     this.failed.set(false);
     this.shareParams.set(null);
@@ -482,7 +481,7 @@ export class RadioPage {
   private discoverPublicAccount(account: { acct: string; server: string }): void {
     if (Date.now() < this.scan.retryAt()) return;
     this.cancel();
-    this.player.editPlaylist();
+    this.player.following.set(false);
     this.scan.clear();
     this.started.set(true);
     this.failed.set(false);
@@ -549,8 +548,7 @@ export class RadioPage {
     });
   }
   syncPlaylistUrl(view = this.view()): void {
-    this.buildScan = false;
-    const urls = playlistUrls(this.player.queue());
+    const urls = playlistUrls(this.draft.tracks());
     this.lastFragment = this.shareable() ? playlistFragment(urls) : '';
     void this.router.navigate(['/radio'], {
       queryParams: { view },
@@ -559,48 +557,46 @@ export class RadioPage {
     });
   }
   addPost(post: Status): void {
-    this.player.addTracks(this.player.tracks(post));
+    this.draft.add(this.player.tracks(post));
     this.message.set('radio.added');
     this.syncPlaylistUrl();
   }
   addResults(): void {
-    this.player.addTracks(this.results().flatMap((post) => this.player.tracks(post)));
+    this.draft.add(this.results().flatMap((post) => this.player.tracks(post)));
     this.syncPlaylistUrl();
   }
   move(index: number, offset: number): void {
-    this.player.moveTrack(index, offset);
+    this.draft.move(index, offset);
     this.syncPlaylistUrl();
   }
   remove(index: number): void {
-    this.player.removeTrack(index);
+    this.draft.remove(index);
     this.syncPlaylistUrl();
   }
   save(asNew = false): void {
-    this.playlists.save(this.playlistName(), this.player.queue(), this.description(), asNew);
+    this.playlists.save(this.playlistName(), this.draft.tracks(), this.description(), asNew);
     this.message.set(this.playlists.error() ? 'radio.saveFailed' : 'radio.saved');
     this.syncPlaylistUrl();
   }
   load(row: SavedRadioPlaylist): void {
-    this.player.replacePlaylist(row.tracks);
+    this.draft.replace(row.tracks, row.name, row.description ?? '');
     this.playlists.active.set(row.id);
-    this.playlistName.set(row.name);
-    this.description.set(row.description ?? '');
     this.syncPlaylistUrl('publish');
   }
   async rename(index: number): Promise<void> {
-    const track = this.player.queue()[index];
+    const track = this.draft.tracks()[index];
     if (!track) return;
     const title = await this.dialogs.prompt(
       this.transloco.translate('radio.renamePrompt'),
       this.player.title(track),
     );
     if (title === null) return;
-    this.player.renameTrack(index, title);
+    this.draft.rename(index, title);
     this.syncPlaylistUrl();
   }
   /** Save the queue as the active playlist, then publish or update its thread. */
   async publishThread(): Promise<void> {
-    const id = this.playlists.save(this.playlistName(), this.player.queue(), this.description());
+    const id = this.playlists.save(this.playlistName(), this.draft.tracks(), this.description());
     if (!id) return;
     await this.publisher.publish(id, this.visibility());
   }
@@ -624,17 +620,19 @@ export class RadioPage {
       await this.scan.start(() => of({ statuses: [post], next: null }));
       if (generation !== this.importGeneration) return;
       const tracks = this.player.tracks(post);
-      if (append) this.player.addTracks(tracks);
-      else this.player.replacePlaylist(tracks);
       if (!tracks.length) {
         this.message.set('radio.notQueueable');
         this.view.set('search');
         this.player.fullView.set(false);
       } else if (play) {
-        const key = tracks[0].key;
-        this.player.select(this.player.queue().findIndex((track) => track.key === key));
+        // Open in Radio plays the post as a Single; the playlist being edited is untouched.
+        this.player.playTracks(tracks);
         // Drop add/play parameters so a reload does not queue the post again.
         this.syncPlaylistUrl('radio');
+      } else if (append) this.draft.add(tracks);
+      else {
+        this.draft.replace(tracks);
+        this.playlists.active.set(null);
       }
     } catch (error) {
       if (generation === this.importGeneration) {
@@ -658,12 +656,13 @@ export class RadioPage {
     );
     if (generation !== this.importGeneration) return;
     if (replace) {
-      this.player.replacePlaylist(result.tracks);
+      this.draft.replace(result.tracks);
+      this.playlists.active.set(null);
       if (urls)
         this.scan.posts.set([
           ...new Map(result.tracks.map((track) => [track.post.id, track.post])).values(),
         ]);
-    } else this.player.addTracks(result.tracks);
+    } else this.draft.add(result.tracks);
     this.importSkipped.set(result.skipped);
     this.importing.set(false);
     this.started.set(true);
@@ -671,7 +670,7 @@ export class RadioPage {
   }
   publish(thread: boolean): void {
     if (!this.shareable()) return;
-    const urls = playlistUrls(this.player.queue());
+    const urls = playlistUrls(this.draft.tracks());
     this.drafts.handoff({
       segments: thread ? urls : [urls.join('\n')],
       spoilerText: '',
@@ -681,8 +680,14 @@ export class RadioPage {
     });
     void this.router.navigate(['/home']);
   }
-  playQueue(): void {
-    if (this.player.queue().length) this.player.select(0);
+  /** Play the playlist being edited from `index`; it replaces what is playing. */
+  playDraft(index = 0): void {
+    this.player.playTracks(this.draft.tracks(), index);
+    this.switchView('radio');
+  }
+  /** Play every result found so far, continuing as the scan reads further. */
+  playResults(): void {
+    this.player.playResults();
     this.switchView('radio');
   }
 
@@ -690,9 +695,9 @@ export class RadioPage {
     return new Date(this.scan.retryAt()).toLocaleTimeString();
   }
 
+  /** A post plays as a Single: its recordings replace what is playing. */
   playPost(post: Status): void {
-    this.player.addTracks(this.player.tracks(post));
-    this.player.select(this.player.queue().findIndex((track) => track.post.id === post.id));
+    this.player.playTracks(this.player.tracks(post));
     this.switchView('radio');
   }
   canQueue(post: Status): boolean {
@@ -778,3 +783,6 @@ function feedPage(statuses: Status[]): { statuses: Status[]; next: string | null
 // i18n radio.tab.saved: Saved
 // i18n radio.tab.mine: My Playlists
 // i18n radio.editPlaylist: Edit current playlist
+// i18n radio.playResults: Play all results
+// i18n radio.noSaved: No saved playlists yet
+// i18n radio.noSavedHint: Build a playlist, name it and save it. Saved playlists stay in this browser.
