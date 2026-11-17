@@ -68,9 +68,12 @@ class ReviewState {
       provide: ClientPrefs,
       useFactory: () => {
         const state = inject(ReviewState);
+        const fetchFromOrigin = signal(false);
         return {
           analytics: state.analytics,
           setAnalytics: (value: boolean) => state.analytics.set(value),
+          fetchFromOrigin,
+          setFetchFromOrigin: (value: boolean) => fetchFromOrigin.set(value),
           postHistory: state.postHistory,
           setPostHistory: (value: boolean) => state.postHistory.set(value),
           setDefaultVisibility: () => undefined,

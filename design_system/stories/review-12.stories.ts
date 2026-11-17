@@ -20,6 +20,7 @@ import {
 import { Observable } from "rxjs";
 import { Api } from "../../ui/src/app/platform/api/api";
 import { Auth } from "../../ui/src/app/platform/session/auth";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
 import { Terminology } from "../../ui/src/app/i18n/terminology";
 import { AnonymousPublicApi } from "../../ui/src/app/accounts/anonymous/anonymous-public-api";
 import { AccountListDialog } from "../../ui/src/app/posts/account-list-dialog/account-list-dialog";
@@ -227,6 +228,19 @@ export default {
           useFactory: () => {
             const state = inject(ReadResponses);
             return { getStatusHistory: () => state.read(true) };
+          },
+        },
+        {
+          // Real preferences for the dialogs, without restyling the preview:
+          // the toolbar's theme and direction globals own <html> here.
+          provide: ClientPrefs,
+          useFactory: () => {
+            const prefs = new ClientPrefs();
+            Object.defineProperties(prefs, {
+              apply: { value: () => undefined },
+              persist: { value: () => undefined },
+            });
+            return prefs;
           },
         },
         {

@@ -109,7 +109,7 @@ const providers = [
   { provide: AiAvailability, useValue: { enabled: () => true } },
   {
     provide: OpenRouterSession,
-    useValue: { connected: () => true, apiKey: () => "" },
+    useValue: { ready: () => true, connected: () => true, apiKey: () => "" },
   },
   { provide: KnownLanguages, useValue: { codes: () => ["en", "de", "fr"] } },
   { provide: FeatureFlags, useValue: { enabled: () => true } },

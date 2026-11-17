@@ -180,9 +180,12 @@ export default {
           provide: ClientPrefs,
           useFactory: () => {
             const s = inject(SettingsPreview);
+            const fetchFromOrigin = signal(false);
             return {
               analytics: s.analytics,
               setAnalytics: (v: boolean) => s.analytics.set(v),
+              fetchFromOrigin,
+              setFetchFromOrigin: (v: boolean) => fetchFromOrigin.set(v),
               postHistory: s.postHistory,
               setPostHistory: (v: boolean) => s.postHistory.set(v),
               setDefaultVisibility: (v: string) => s.visibility.set(v),
@@ -195,6 +198,8 @@ export default {
               ClientPrefs,
               | "analytics"
               | "setAnalytics"
+              | "fetchFromOrigin"
+              | "setFetchFromOrigin"
               | "postHistory"
               | "setPostHistory"
               | "setDefaultVisibility"

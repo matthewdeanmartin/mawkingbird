@@ -1,4 +1,5 @@
 import {
+  computed,
   Component,
   effect,
   inject,
@@ -170,6 +171,15 @@ function services() {
       get isBlueskyPrimary() {
         return state.mode() === "bluesky";
       },
+      // Read by account-scoped services; a fixed preview session.
+      kind: computed(() =>
+        state.mode() === "anonymous"
+          ? "anonymous"
+          : state.mode() === "bluesky"
+            ? "bluesky"
+            : "mastodon",
+      ),
+      token: signal<string | null>("preview-token"),
     },
     api: {
       getAccountStatuses: () =>
