@@ -2,16 +2,15 @@ import { computed, inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { Drafts } from '../../publishing/drafts';
-import { CATALOGUE_POST } from './catalogue-search';
+import { CATALOGUE_POST, catalogueLabel } from './catalogue-search';
+import { ShareRequest } from './share-request';
 import { PlaylistPublisher } from './playlist-publisher';
-import { isContinuous, RadioPlayer, RadioTrack } from './radio-player';
+import { isContinuous, RadioPlayer, RadioTrack, recordingId } from './radio-player';
 import { RadioPlaylists, trackUrl } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
 import { countKey } from './count-key';
 
-// i18n radio.share.viaLoc: via the Library of Congress
-// i18n radio.share.viaArchive: via the Internet Archive
+// i18n radio.share.via: via {{source}}
 // i18n radio.share.viaPost: shared by @{{acct}}
 // i18n radio.share.rights: Rights: {{rights}}
 // i18n radio.append.confirm: Add “{{title}}” to “{{playlist}}”? This will create {{posts}} posts and edit {{edits}} on Mastodon.
@@ -33,7 +32,7 @@ import { countKey } from './count-key';
  */
 @Injectable({ providedIn: 'root' })
 export class TrackActions {
-  private readonly drafts = inject(Drafts);
+  private readonly shareRequest = inject(ShareRequest);
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
   private readonly dialogs = inject(AppDialogs);
@@ -45,44 +44,29 @@ export class TrackActions {
   /** Published playlists, newest last, that a track can be appended to. */
   readonly published = computed(() => this.playlists.saved().filter((row) => !!row.published));
 
-  /** A post that names the recording, credits its source and links it. */
-  shareText(track: RadioTrack, nowPlaying = true): string {
-    const catalogue = track.post.id.startsWith(CATALOGUE_POST);
-    const title = this.player.title(track);
-    const author = track.post.account.display_name || track.post.account.acct;
-    const credit = catalogue
-      ? [
-          author !== title ? author : '',
-          this.transloco.translate(
-            track.post.account.id === 'loc' ? 'radio.share.viaLoc' : 'radio.share.viaArchive',
-          ),
-        ]
-          .filter(Boolean)
-          .join(' · ')
-      : this.transloco.translate('radio.share.viaPost', { acct: track.post.account.acct });
-    const link =
-      !catalogue && ['public', 'unlisted'].includes(track.post.visibility) && track.post.url
-        ? track.post.url
-        : (trackUrl(track) ?? '');
-    return [title, credit, link, nowPlaying ? '#nowplaying' : ''].filter(Boolean).join('\n');
+  /** Who to thank for a recording: its catalogue, or the person who posted it. */
+  credit(track: RadioTrack): string {
+    if (track.post.id.startsWith(CATALOGUE_POST)) {
+      const title = this.player.title(track);
+      const author = track.post.account.display_name;
+      const via = this.transloco.translate('radio.share.via', {
+        source: catalogueLabel(track.post.account.id),
+      });
+      return [author && author !== title ? author : '', via].filter(Boolean).join(' · ');
+    }
+    return this.transloco.translate('radio.share.viaPost', { acct: track.post.account.acct });
   }
 
-  /** Open Studio's composer with a post about this recording, ready to edit. */
+  /** Open Share with this recording, to tell people about it wherever they are. */
   share(track: RadioTrack): void {
-    this.drafts.handoff({
-      segments: [this.shareText(track)],
-      spoilerText: '',
-      sensitive: false,
-      visibility: 'public',
-      poll: null,
-    });
-    void this.router.navigate(['/radio/studio']);
+    this.shareRequest.offer(track);
+    void this.router.navigate(['/share']);
   }
 
   /**
    * Keep recordings: as saved Singles, or, given a playlist, at the end of that
-   * playlist. A listening playlist takes only recordings that play one after
-   * another; one authored in Studio takes any. Returns what happened.
+   * playlist, which takes only recordings that play one after another. Returns
+   * what happened, for the listener.
    */
   keep(tracks: readonly RadioTrack[], playlistId?: string | null): string {
     if (!playlistId) {
@@ -98,10 +82,13 @@ export class TrackActions {
     this.playlists.refresh();
     const row = this.playlists.saved().find((item) => item.id === playlistId);
     if (!row) return '';
-    const playable = row.authored ? [...tracks] : tracks.filter(isContinuous);
+    const playable = tracks.filter(isContinuous);
     if (!playable.length) return this.transloco.translate('radio.keep.notContinuous');
-    const known = new Set(row.tracks.map((track) => track.key));
-    const added = playable.filter((track) => !known.has(track.key) && !!known.add(track.key));
+    // A recording already in the playlist (through another copy of its post) is not added twice.
+    const known = new Set(row.tracks.map(recordingId));
+    const added = playable.filter(
+      (track) => !known.has(recordingId(track)) && !!known.add(recordingId(track)),
+    );
     if (added.length)
       this.playlists.update(row.id, (item) => ({ ...item, tracks: [...item.tracks, ...added] }));
     return this.transloco.translate(added.length ? 'radio.keep.added' : 'radio.keep.alreadyAdded', {

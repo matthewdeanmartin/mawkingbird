@@ -50,8 +50,8 @@ describe('SavedSingles', () => {
     singles.items.set([]);
     singles.refresh();
     expect(singles.items().map((item) => item.track.post.id)).toEqual(['2', '1']);
-    expect(singles.has(singles.items()[0].track.key)).toBe(true);
-    singles.remove(singles.items()[0].track.key);
+    expect(singles.has(singles.items()[0].track)).toBe(true);
+    singles.remove(singles.items()[0].track);
     expect(singles.items().map((item) => item.track.post.id)).toEqual(['1']);
   });
 
@@ -82,5 +82,25 @@ describe('SavedSingles', () => {
     );
     singles.save(many);
     expect(singles.items()).toHaveLength(SINGLES_LIMIT);
+  });
+
+  it('keeps one copy of a recording reached through two copies of its post', () => {
+    const local = post('1');
+    // The same post read from its origin server carries a different id.
+    const remote = { ...local, id: 'origin-77' } as Status;
+    expect(singles.save(player.singlesOf(local))).toBe(1);
+    expect(singles.save(player.singlesOf(remote))).toBe(0);
+    expect(singles.items()).toHaveLength(1);
+    expect(singles.has(player.singlesOf(remote)[0])).toBe(true);
+    // Doubles saved before this rule collapse when the list loads.
+    const [track] = player.singlesOf(remote);
+    localStorage.setItem(
+      'mockingbird_radio_singles' + accountScopeSuffix(),
+      JSON.stringify([...singles.items(), { track, savedAt: 1 }]),
+    );
+    singles.refresh();
+    expect(singles.items()).toHaveLength(1);
+    singles.remove(track);
+    expect(singles.items()).toEqual([]);
   });
 });

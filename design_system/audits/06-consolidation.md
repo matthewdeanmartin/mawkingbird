@@ -2782,3 +2782,11 @@ scanned files, 655 candidate files. New, adopted scope: `section-tabs.ts`
 Radio Group with Tabs and its StatusCard results with track-result rows; the
 playlist page's Add tracks toggle becomes an always-shown section; Saved
 singles gains a Clear all Button. No shared widget implementation changed.
+
+Radio Share (2026-11-17): reviewed regenerated inventory: 1895 scanned files,
+655 candidate files. `studio-playlists.html` is removed (Studio is for your own
+media only) and `share-page.html` is new, adopted scope in reconciliation:
+Radio Header, Content State, Radio Group, Checkbox, Field/Control, Button, link
+Buttons and the shared Compose. The playlist page loses its publish section and
+gains a Share link Button; result rows and Saved singles gain Share. No shared
+widget implementation changed.

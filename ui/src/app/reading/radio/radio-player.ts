@@ -72,6 +72,15 @@ export function isContinuous(track: RadioTrack): boolean {
   return !track.external || track.external.controllable;
 }
 
+/**
+ * What a track plays, whichever copy of a post carried it: the audio file, or
+ * the provider's track. Two keys can name one recording (a post read from your
+ * server and from its origin have different ids); this never does.
+ */
+export function recordingId(track: RadioTrack): string {
+  return track.external ? `player:${track.external.key}` : `file:${track.media.url}`;
+}
+
 /** Tab-lived audio and queue. Route components are only views of this session. */
 @Injectable({ providedIn: 'root' })
 export class RadioPlayer {

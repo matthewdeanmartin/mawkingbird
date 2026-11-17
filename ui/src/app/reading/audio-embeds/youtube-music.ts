@@ -60,6 +60,11 @@ const MUSIC_TAGS = new Set([
   'citypop',
 ]);
 
+/** Whether a hashtag is one people put on music posts. */
+export function isMusicTag(name: string): boolean {
+  return MUSIC_TAGS.has(name.replace(/^#/, '').toLowerCase());
+}
+
 /** What music video titles and channels look like: "Official Audio", "Artist - Topic"… */
 const MUSIC_TITLE =
   /official (audio|music video|video|visualizer)|\((audio|lyrics?|live)\)|lyric video|full album|\blive (at|in|from|on)\b|\bremaster(ed)?\b|\bfeat\.|\bft\./i;

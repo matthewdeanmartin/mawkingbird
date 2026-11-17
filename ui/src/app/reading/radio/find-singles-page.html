@@ -7,7 +7,7 @@
       }}</a>
     </app-radio-header>
     <p class="lead">
-      {{ (row.authored ? 'findSingles.addAuthoredLead' : 'findSingles.addLead') | transloco }}
+      {{ 'findSingles.addLead' | transloco }}
     </p>
   } @else {
     <app-radio-header [heading]="'singles.section' | transloco" />
@@ -109,7 +109,7 @@
                 </button>
               </form>
               <mb-checkbox
-                [label]="'radio.nativeOnly' | transloco"
+                [label]="'findSingles.nativeOnly' | transloco"
                 [checked]="player.nativeOnly()"
                 (checkedChange)="changeNativeOnly($event)"
               />
@@ -197,9 +197,12 @@
           <app-track-result
             [post]="post"
             [canKeep]="canKeep(post)"
+            [kept]="isKept(post)"
             [keepLabel]="keepLabel()"
+            [keptLabel]="keptLabel()"
             (playRequest)="playPost(post)"
             (keep)="keep(post)"
+            (shareRequest)="share(post)"
           />
         }
       </div>

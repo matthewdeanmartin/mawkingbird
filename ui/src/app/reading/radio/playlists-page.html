@@ -131,5 +131,50 @@
         }
       </ul>
     }
+
+    @if (signedIn) {
+      <h2>{{ 'playlists.mine' | transloco }}</h2>
+      <p class="lead">{{ 'playlists.mineHint' | transloco }}</p>
+      <div class="actions">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          [disabled]="publisher.finding()"
+          (click)="publisher.find()"
+        >
+          {{ 'radio.findThreads' | transloco }}
+        </button>
+        @if (publisher.finding()) {
+          <span role="status">{{ 'radio.findingThreads' | transloco }}</span>
+        }
+      </div>
+      @if (publisher.found(); as mine) {
+        <ul class="rows">
+          @for (thread of mine; track thread.root.id) {
+            @let name = title(thread);
+            <li>
+              <div class="row">
+                <span class="track">
+                  <span class="track-title">{{ name }}</span>
+                  <span class="track-meta">{{
+                    countKey('playlists.recordings', thread.recordings)
+                      | transloco: { count: thread.recordings }
+                  }}</span>
+                </span>
+                <a [href]="thread.root.url" target="_blank" rel="noopener noreferrer">{{
+                  'radio.viewThread' | transloco
+                }}</a>
+                <button mbButton size="small" type="button" (click)="adopt(thread)">
+                  {{ 'playlists.adopt' | transloco }}
+                </button>
+              </div>
+            </li>
+          } @empty {
+            <li>{{ 'radio.noThreads' | transloco }}</li>
+          }
+        </ul>
+      }
+    }
   }
 </section>

@@ -1578,9 +1578,9 @@
       "nextStep": "A playlist uses Radio Header, Field/Control for name, description and thread visibility, Button, Toolbar/ToolbarButton track rows, Post Menu/Menu Item for rare actions and Content State for empty and missing playlists. Preserve save-on-change, continuous-only additions, read-only shared previews with Save a copy, and the thread publish plan with its delete budget."
     },
     {
-      "file": "ui/src/app/reading/radio/studio-playlists.html",
+      "file": "ui/src/app/reading/radio/share-page.html",
       "disposition": "adopted scope",
-      "nextStep": "Studio playlists use Button for New playlist and Keep in Studio, Content State for the empty list, and plain links to each playlist and its Mastodon thread. Preserve listing only authored playlists, the published/changed/unpublished state from the publish plan, and finding posted threads on arrival when signed in."
+      "nextStep": "Share uses Radio Header, Content State, Radio Group for the playlist format, Checkbox for links, credit and hashtags, Field/Control for thread visibility, Button for writing and publishing, link Buttons for other sites, and the shared Compose component for the post. Preserve building the post from choices before the composer opens, starting over only on request, and the thread publish plan with its delete budget."
     },
     {
       "file": "ui/src/app/reading/radio/section-tabs.ts",

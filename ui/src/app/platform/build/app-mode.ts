@@ -33,7 +33,8 @@ export function modeForUrl(url: string): AppMode | null {
     path === '/singles' ||
     path.startsWith('/singles/') ||
     path === '/playlists' ||
-    path.startsWith('/playlists/')
+    path.startsWith('/playlists/') ||
+    path === '/share'
   )
     return 'radio';
   if (path === '/forum' || path.startsWith('/forum/')) return 'forum';

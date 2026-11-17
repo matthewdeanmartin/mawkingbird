@@ -32,8 +32,15 @@ import { listenParams, radioAccount } from '../radio-links';
 import { CataloguePanel } from './catalogue-panel';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
-import { isContinuous, RadioPlayer, RadioSource, RadioTrack, radioTag } from './radio-player';
-import { playlistPath, RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
+import {
+  isContinuous,
+  RadioPlayer,
+  RadioSource,
+  RadioTrack,
+  radioTag,
+  recordingId,
+} from './radio-player';
+import { RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
 import { TrackActions } from './track-actions';
 import { SinglesTabs } from './section-tabs';
@@ -42,18 +49,17 @@ import { countKey } from './count-key';
 
 // i18n findSingles.addTitle: Add to {{playlist}}
 // i18n findSingles.addLead: Recordings that play one after another can join this playlist. Others play on their own page.
-// i18n findSingles.addAuthoredLead: Any recording can join a playlist you publish, including ones that play only on their own page.
 // i18n findSingles.backPlaylist: Back to {{playlist}}
 // i18n findSingles.where: Where to look
 // i18n findSingles.scope.account: Account
 // i18n findSingles.scope.accountHint: Everything one person has posted.
-// i18n findSingles.scope.tag: Hashtag
+// i18n findSingles.scope.tag: Tags
 // i18n findSingles.scope.tagHint: Such as #nowplaying or #fedimusic.
-// i18n findSingles.scope.home: Home feed
+// i18n findSingles.scope.home: Home
 // i18n findSingles.scope.homeHint: Posts from people you follow.
 // i18n findSingles.scope.list: List
 // i18n findSingles.scope.listHint: One of your lists.
-// i18n findSingles.scope.saved: Saved search
+// i18n findSingles.scope.saved: Searches
 // i18n findSingles.scope.savedHint: A search saved on the Search screen.
 // i18n findSingles.scope.catalogue: Catalogues
 // i18n findSingles.scope.catalogueHint: Library of Congress, Internet Archive, Openverse, Audius and Wikimedia Commons.
@@ -68,7 +74,10 @@ import { countKey } from './count-key';
 // i18n findSingles.links: Links, one or more
 // i18n findSingles.openLinks: Open links
 // i18n findSingles.save: Save single
+// i18n findSingles.saved: Saved
 // i18n findSingles.addToPlaylist: Add to playlist
+// i18n findSingles.added: Added
+// i18n findSingles.nativeOnly: Only native Mastodon audio: recordings attached to posts, which always play in a playlist
 // i18n findSingles.saveResults: Save all results
 // i18n findSingles.addResults: Add all results
 // i18n findSingles.empty: Choose where to look, then search.
@@ -264,6 +273,8 @@ export class FindSinglesPage {
 
   chooseSource(choice: string): void {
     const source = choice as RadioSource;
+    // Results belong to the search that found them; a new place starts empty.
+    if (source !== this.source()) this.reset();
     this.source.set(source);
     if (source === 'list' && !this.lists().length && this.signedIn) {
       this.listRequest?.unsubscribe();
@@ -292,14 +303,25 @@ export class FindSinglesPage {
     this.scan.cancel();
   }
 
-  changeNativeOnly(value: boolean): void {
+  /** Forget the current search and its results; what is playing keeps playing. */
+  private reset(): void {
+    this.importGeneration++;
     this.cancel();
     this.player.following.set(false);
     this.scan.clear();
-    this.player.nativeOnly.set(value);
     this.started.set(false);
     this.scanReady.set(false);
     this.failed.set(false);
+    this.importing.set(false);
+    this.importSkipped.set(null);
+    this.message.set('');
+  }
+
+  /** The filter changes what a search finds, so it searches again when it can. */
+  changeNativeOnly(value: boolean): void {
+    this.reset();
+    this.player.nativeOnly.set(value);
+    if (this.scanSource() && this.searchReady()) this.discover();
   }
 
   /** Begin a fresh scan: what is playing keeps playing, but no longer follows the old results. */
@@ -533,16 +555,50 @@ export class FindSinglesPage {
   private candidates(post: Status): RadioTrack[] {
     const singles = this.player.singlesOf(post);
     const row = this.target();
-    return row && !row.authored ? singles.filter(isContinuous) : singles;
+    return row ? singles.filter(isContinuous) : singles;
   }
 
   canKeep(post: Status): boolean {
     return this.candidates(post).length > 0;
   }
 
-  /** Save the post's Singles, or add them to the target playlist. */
+  /** Whether every recording the result offers is already saved, or already in the target. */
+  isKept(post: Status): boolean {
+    const tracks = this.candidates(post);
+    if (!tracks.length) return false;
+    const row = this.target();
+    const kept = new Set(
+      (row ? row.tracks : this.singles.items().map((item) => item.track)).map(recordingId),
+    );
+    return tracks.every((track) => kept.has(recordingId(track)));
+  }
+
+  /** Save the post's Singles (or add them to the target); pressed again, take them back out. */
   keep(post: Status): void {
-    this.keepTracks(this.candidates(post));
+    if (!this.isKept(post)) {
+      this.keepTracks(this.candidates(post));
+      return;
+    }
+    const tracks = this.candidates(post);
+    const ids = new Set(tracks.map(recordingId));
+    const row = this.target();
+    if (row)
+      this.playlists.update(row.id, (item) => ({
+        ...item,
+        tracks: item.tracks.filter((track) => !ids.has(recordingId(track))),
+      }));
+    else for (const track of tracks) this.singles.remove(track);
+    this.message.set('');
+  }
+
+  /** Tell people about this result on the Share page. */
+  share(post: Status): void {
+    const [track] = this.player.singlesOf(post);
+    if (track) this.actions.share(track);
+  }
+
+  keptLabel(): string {
+    return this.target() ? 'findSingles.added' : 'findSingles.saved';
   }
 
   keepResults(): void {
@@ -568,9 +624,8 @@ export class FindSinglesPage {
     this.player.playResults();
   }
 
-  /** Studio keeps the playlists it publishes; Playlists keeps the ones to listen to. */
   playlistLink(row: SavedRadioPlaylist): string[] {
-    return playlistPath(row);
+    return ['/playlists', row.id];
   }
 
   keepLabel(): string {

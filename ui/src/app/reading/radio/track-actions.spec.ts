@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Api } from '../../platform/api/api';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { Auth } from '../../platform/session/auth';
-import { Drafts } from '../../publishing/drafts';
+import { ShareRequest } from './share-request';
 import { FollowTrust } from '../../accounts/follow-trust';
 import { Status } from '../../platform/api/models';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
@@ -63,15 +63,13 @@ describe('TrackActions', () => {
       ...extra,
     }) as Status;
 
-  it('shares a post’s recording crediting the poster and linking the post', () => {
+  it('credits the poster and opens Share with the recording', () => {
     const [track] = TestBed.inject(RadioPlayer).tracks(post());
-    expect(actions.shareText(track)).toBe(
-      'Blow the man down\nshared by @singer@sea.example\nhttps://sea.example/@singer/5\n#nowplaying',
-    );
+    expect(actions.credit(track)).toBe('shared by @singer@sea.example');
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     actions.share(track);
-    expect(TestBed.inject(Drafts).takeHandoff()?.snapshot.segments[0]).toContain('#nowplaying');
-    expect(navigate).toHaveBeenCalledWith(['/radio/studio']);
+    expect(TestBed.inject(ShareRequest).take()).toBe(track);
+    expect(navigate).toHaveBeenCalledWith(['/share']);
   });
 
   it('appends to a published playlist only after the cost is confirmed', async () => {
@@ -123,19 +121,17 @@ describe('TrackActions', () => {
     expect(await actions.append(hidden, id)).toContain('is not public');
   });
 
-  it('adds page-only players to a playlist authored to publish, but not to a listening one', () => {
+  it('never adds a player that plays only on its own page to a playlist', () => {
     lists.refresh();
     const spotify = post({
       media_attachments: [],
       content: '<a href="https://open.spotify.com/track/abc123">Spotify</a>',
     });
     const tracks = TestBed.inject(RadioPlayer).singlesOf(spotify);
-    const listening = lists.create('Listen')!;
-    const authored = lists.create('Publish', [], true)!;
-    expect(actions.keep(tracks, listening)).toBe(
+    const id = lists.create('Listen')!;
+    expect(actions.keep(tracks, id)).toBe(
       'These recordings play only on their own page, so they can’t join a playlist.',
     );
-    expect(actions.keep(tracks, authored)).toBe('Added 1 to Publish.');
-    expect(lists.saved().find((row) => row.id === authored)!.tracks).toHaveLength(1);
+    expect(lists.saved()[0].tracks).toEqual([]);
   });
 });

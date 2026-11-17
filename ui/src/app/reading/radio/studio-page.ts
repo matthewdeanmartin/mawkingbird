@@ -12,13 +12,11 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
 import { Status } from '../../platform/api/models';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { RadioStudio } from './radio-studio';
-import { StudioPlaylists } from './studio-playlists';
 import { RadioStudioSession } from './radio-studio-session';
 
 // i18n studio.title: Studio
 // i18n studio.tab.compose: New audio post
 // i18n studio.tab.catalogue: My audio
-// i18n studio.tab.playlists: Playlists
 // i18n studio.recording: Recording
 // i18n studio.placeholder: Say something about this recording…
 // i18n radio.prepareAudio: Prepare an audio post
@@ -58,7 +56,6 @@ import { RadioStudioSession } from './radio-studio-session';
     Compose,
     StatusCard,
     RadioStudio,
-    StudioPlaylists,
   ],
   templateUrl: './studio-page.html',
   styleUrl: './studio-page.css',
@@ -68,10 +65,8 @@ export class StudioPage {
   readonly auth = inject(Auth);
   readonly view = toSignal(
     inject(ActivatedRoute).queryParamMap.pipe(
-      map((params): 'compose' | 'catalogue' | 'playlists' =>
-        params.get('view') === 'catalogue' || params.get('view') === 'playlists'
-          ? (params.get('view') as 'catalogue' | 'playlists')
-          : 'compose',
+      map((params): 'compose' | 'catalogue' =>
+        params.get('view') === 'catalogue' ? 'catalogue' : 'compose',
       ),
     ),
     { initialValue: 'compose' as const },

@@ -262,7 +262,7 @@ describe('FindSinglesPage', () => {
         fixture.nativeElement.querySelectorAll('[role="tab"]') as NodeListOf<HTMLElement>,
         (tab) => tab.textContent?.trim(),
       ),
-    ).toEqual(['Account', 'Hashtag', 'Home feed', 'List', 'Catalogues', 'Links']);
+    ).toEqual(['Account', 'Tags', 'Home', 'List', 'Catalogues', 'Links']);
     const page = fixture.componentInstance;
     page.handle.set('@music@server.example');
     page.discover();
@@ -309,15 +309,14 @@ describe('FindSinglesPage', () => {
     fixture.detectChanges();
     const nativeFilter = Array.from(
       fixture.nativeElement.querySelectorAll('mb-checkbox') as NodeListOf<HTMLElement>,
-    ).find((checkbox) => checkbox.textContent?.includes('Native Mastodon audio only'))!;
+    ).find((checkbox) => checkbox.textContent?.includes('Only native Mastodon audio'))!;
     expect(nativeFilter.querySelector('input')!.checked).toBe(false);
     page.discover();
     await fixture.whenStable();
     expect(page.scan.posts()).toEqual([audio, spotify, music]);
+    // Ticking the filter searches again at once.
     page.changeNativeOnly(true);
-    expect(page.scan.posts()).toEqual([]);
-    expect(page.started()).toBe(false);
-    page.discover();
+    expect(page.started()).toBe(true);
     await fixture.whenStable();
     expect(page.scan.posts()).toEqual([audio]);
     page.chooseSource('account');
@@ -392,15 +391,17 @@ describe('FindSinglesPage', () => {
     // The confirmation says where they went.
     const kept = fixture.nativeElement.querySelector('p.kept') as HTMLElement;
     expect(kept.querySelector('a')?.getAttribute('href')).toBe('/singles');
+    expect(page.isKept(spotify)).toBe(true);
+    // Pressed again, Saved takes the recording back out.
     page.keep(spotify);
-    expect(page.message()).toBe('Already in your saved singles.');
-    page.keep(audio);
-    expect(page.message()).toBe('Already in your saved singles.');
+    expect(page.isKept(spotify)).toBe(false);
+    page.keep(spotify);
+    expect(page.isKept(spotify)).toBe(true);
     expect(
       TestBed.inject(SavedSingles)
         .items()
         .map((item) => item.track.post.id),
-    ).toEqual(['audio', 'spotify']);
+    ).toEqual(['spotify', 'audio']);
     // Saving never changes what is playing.
     expect(page.player.queue()).toEqual([]);
   });

@@ -59,9 +59,18 @@
               <button
                 mbToolbarButton
                 type="button"
+                [attr.aria-label]="'singles.share' | transloco: { title }"
+                [title]="'singles.share' | transloco: { title }"
+                (click)="actions.share(track)"
+              >
+                <app-radio-icon name="share" />
+              </button>
+              <button
+                mbToolbarButton
+                type="button"
                 [attr.aria-label]="'singles.remove' | transloco: { title }"
                 [title]="'singles.remove' | transloco: { title }"
-                (click)="singles.remove(track.key)"
+                (click)="singles.remove(track)"
               >
                 <app-radio-icon name="remove" />
               </button>

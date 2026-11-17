@@ -1,0 +1,47 @@
+.subject,
+.choices,
+.preview,
+.publish,
+.elsewhere {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.subject p {
+  margin: 0;
+}
+h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+fieldset {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+legend {
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.tags legend {
+  width: 100%;
+}
+pre {
+  margin: 0;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--hover);
+  font: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

@@ -1201,12 +1201,6 @@ export const routes: Routes = [
         loadComponent: () => import('./reading/radio/radio-page').then((m) => m.RadioPage),
       },
       {
-        // A playlist made to publish; the same page edits listening playlists.
-        path: 'radio/studio/playlists/:id',
-        title: 'Studio playlist',
-        loadComponent: () => import('./reading/radio/playlist-page').then((m) => m.PlaylistPage),
-      },
-      {
         path: 'radio/studio',
         title: 'Studio',
         loadComponent: () => import('./reading/radio/studio-page').then((m) => m.StudioPage),
@@ -1234,6 +1228,12 @@ export const routes: Routes = [
         title: 'Find playlists',
         data: { view: 'find' },
         loadComponent: () => import('./reading/radio/playlists-page').then((m) => m.PlaylistsPage),
+      },
+      {
+        // Telling followers about someone else's music: a recording or a playlist.
+        path: 'share',
+        title: 'Share music',
+        loadComponent: () => import('./reading/radio/share-page').then((m) => m.SharePage),
       },
       {
         path: 'playlists/:id',

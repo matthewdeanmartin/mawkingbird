@@ -37,6 +37,7 @@ import { countKey } from './count-key';
 // i18n singles.play: Play {{title}}
 // i18n singles.open: Open {{title}}
 // i18n singles.remove: Remove {{title}}
+// i18n singles.share: Share {{title}}
 // i18n singles.addTo: Add {{title}} to a playlist
 // i18n singles.ownPage: Plays on its own page
 // i18n singles.saving: Saving…
@@ -77,7 +78,7 @@ export class SinglesPage {
   readonly singles = inject(SavedSingles);
   readonly playlists = inject(RadioPlaylists);
   readonly player = inject(RadioPlayer);
-  private readonly actions = inject(TrackActions);
+  readonly actions = inject(TrackActions);
   private readonly auth = inject(Auth);
   private readonly server = inject(Server);
   private readonly router = inject(Router);
@@ -162,11 +163,9 @@ export class SinglesPage {
     );
   }
 
-  /** Playlists that can take this Single: any, or only Studio's if it plays on its own page. */
+  /** Playlists that can take this Single: only recordings that play one after another join one. */
   playlistsFor(track: RadioTrack): SavedRadioPlaylist[] {
-    return isContinuous(track)
-      ? this.playlists.saved()
-      : this.playlists.saved().filter((row) => row.authored);
+    return isContinuous(track) ? this.playlists.saved() : [];
   }
 
   addTo(track: RadioTrack, playlistId: string): void {

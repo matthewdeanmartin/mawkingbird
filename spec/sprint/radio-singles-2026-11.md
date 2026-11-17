@@ -278,27 +278,36 @@ and the catalogue additions remain Sprint 5.
   playlist page's Add tracks is an always-shown section, not a toggle.
 - "They stay in this browser" copy removed.
 
-## Proposal: Share, its own place (owner idea, 2026-11-17)
+## Share, its own place (built 2026-11-17)
 
-Studio should be only "I have media and I want to showcase it": upload a
-recording, post it, my audio, an album of my own uploads. Like `/write` for
-writers, it never searches for other people's work.
+Owner decisions: Studio is only "my own media" (upload, post, my audio; later an
+album of my own uploads, posted as a thread of audio files). Assembling or
+publishing someone else's music never happens in Studio. A playlist that mixes
+my uploads with others' is an ordinary playlist. Sharing is mostly sharing to
+people who don't use Mawkingbird, so it must produce ordinary posts and threads.
 
-Amplifying someone else's music ("I enjoy this and you should too", often
-hosted elsewhere) is a third job, neither a Single (a found thing to play) nor a
-listening playlist. It gets a **Share** page:
+- Removed: Studio's Playlists tab, `studio-playlists`, the `authored` flag,
+  `playlistPath`, `/radio/studio/playlists/:id`, and publishing on the playlist
+  page. "Playlists I posted" (adopt) is back on Find playlists. Stored playlists
+  keep a page-only track already in them (marked, skipped when played);
+  adding still takes only tracks that play one after another.
+- `/share` (`share-page`): what is being shared (a recording via
+  `ShareRequest`, or `?playlist=<id>`), then the choices that build the post:
+  every place to listen (the Mastodon post and each service it links,
+  `shareLinks`), the credit, and music hashtags (`shareTags`). A preview with a
+  character count; Write the post parks the text and opens the shared Compose
+  (any target the account can post to); Start again re-seeds after changes.
+  Sites without a connected account get their share-intent links. A playlist
+  shares as one numbered post (Compose) or, signed in to Mastodon, as a thread
+  through `PlaylistPublisher` (publish/update plan, progress, view thread).
+- Share opens from Saved singles rows, search result rows, Listen, catalogue
+  results and a playlist's Share button. `TrackActions.share` no longer drops
+  text into a composer elsewhere.
 
-- Opened from any Single, result row, Listen page or playlist, prefilled: the
-  title, credit (poster or catalogue and licence), the links (every service the
-  post offers), suggested hashtags (`#nowplaying`, `#fedimusic`, genre).
-- Share to Mastodon (one post, or a thread for a playlist: one reply per track,
-  the existing publisher), and to other connected networks the app already
-  cross-posts to.
-- A playlist share is the publish flow moved out of Studio: name, description,
-  one post with every link or a thread, publish/update plan, published state.
-
-What would move: Studio's Playlists tab and `/radio/studio/playlists/:id`
-become Share's playlist publishing; `TrackActions.share` (today it opens
-Studio's composer) opens Share; "Publish from Studio" becomes "Share this
-playlist". Studio keeps New audio post and My audio, and could add an album
-(several of my own uploads as a thread).
+Also this round: Find singles tabs read Account · Tags · Home · List ·
+Searches · Catalogues · Links; Save single toggles to Saved (press again to
+remove); the native-only box reads "Only native Mastodon audio: recordings
+attached to posts, which always play in a playlist" and searches again when
+ticked; changing tabs clears results. Saved singles and playlists dedupe by
+the recording itself (`recordingId`: the file URL or the provider's track), so
+two copies of one post never save twice and stored doubles collapse on load.

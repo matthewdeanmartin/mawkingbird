@@ -259,7 +259,7 @@ export class PlaylistPublisher {
     }
     if (!tracks.length) return null;
     const name = postTitle(thread.root) || this.transloco.translate('radio.thread.untitled');
-    const id = this.playlists.create(name, tracks, true);
+    const id = this.playlists.create(name, tracks);
     if (!id) return null;
     this.record(id, {
       rootId: thread.root.id,
@@ -276,15 +276,14 @@ export class PlaylistPublisher {
 
   /** Native recordings each, plus the first playable alternative for the post's links. */
   private recordingTracks(post: Status): RadioTrack[] {
-    // An adopted thread is authored: page-only players (Spotify, Bandcamp…) count.
+    // A posted thread's page-only players (Spotify, Bandcamp…) are kept and marked.
     const tracks = this.player.singleTracks(post);
     const native = tracks.filter((track) => !track.external);
     return native.length ? native : tracks.slice(0, 1);
   }
 
   private record(id: string, published: PublishedPlaylist): void {
-    // Publishing makes a playlist an authored one, kept in Studio.
-    this.playlists.update(id, (row) => ({ ...row, published, authored: true }));
+    this.playlists.update(id, (row) => ({ ...row, published }));
   }
 
   private send<T>(source: Observable<T>): Promise<T> {

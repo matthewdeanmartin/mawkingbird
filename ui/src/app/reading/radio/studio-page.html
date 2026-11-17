@@ -14,18 +14,9 @@
         [current]="view() === 'catalogue'"
         >{{ 'studio.tab.catalogue' | transloco }}</a
       >
-      <a
-        mbNavLink
-        routerLink="/radio/studio"
-        [queryParams]="{ view: 'playlists' }"
-        [current]="view() === 'playlists'"
-        >{{ 'studio.tab.playlists' | transloco }}</a
-      >
     </nav>
     @if (view() === 'catalogue') {
       <app-radio-studio />
-    } @else if (view() === 'playlists') {
-      <app-studio-playlists />
     } @else {
       <section class="recording" [attr.aria-label]="'studio.recording' | transloco">
         <h2>{{ 'radio.prepareAudio' | transloco }}</h2>

@@ -14,6 +14,10 @@ export const CATALOGUE_SOURCES: readonly CatalogueSource[] = [
 ];
 /** Audius asks each client to name itself; this names the app, never the listener. */
 const AUDIUS_APP = 'mawkingbird';
+/** A catalogue's name, from the source id its synthetic posts carry as their account id. */
+export function catalogueLabel(source: string): string {
+  return LABELS[source as CatalogueSource]?.label ?? source;
+}
 const LABELS: Record<CatalogueSource, { label: string; acct: string }> = {
   loc: { label: 'Library of Congress', acct: 'loc.gov' },
   archive: { label: 'Internet Archive', acct: 'archive.org' },

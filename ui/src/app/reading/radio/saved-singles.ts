@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
-import { RadioPlayer, RadioTrack } from './radio-player';
+import { RadioPlayer, RadioTrack, recordingId } from './radio-player';
 
 const KEY = 'mockingbird_radio_singles';
 /** Oldest Singles drop off past this; a browser's storage is not a music library. */
@@ -28,6 +28,7 @@ export class SavedSingles {
     this.error.set(false);
     try {
       const data: unknown = JSON.parse(localStorage.getItem(this.key) ?? '[]');
+      const seen = new Set<string>();
       this.items.set(
         (Array.isArray(data) ? data : []).flatMap((item: Partial<SavedSingle>) => {
           const saved = item?.track;
@@ -35,7 +36,9 @@ export class SavedSingles {
           const track = this.player
             .singleTracks(saved.post)
             .find((candidate) => candidate.key === saved.key);
-          if (!track) return [];
+          // A recording saved twice (through two copies of its post) shows once.
+          if (!track || seen.has(recordingId(track))) return [];
+          seen.add(recordingId(track));
           const title =
             typeof saved.title === 'string' && saved.title.trim()
               ? { title: saved.title.trim().slice(0, 200) }
@@ -54,25 +57,28 @@ export class SavedSingles {
     }
   }
 
-  has(key: string): boolean {
-    return this.items().some((item) => item.track.key === key);
+  /** Whether this recording is saved, through any copy of its post. */
+  has(track: RadioTrack): boolean {
+    const id = recordingId(track);
+    return this.items().some((item) => recordingId(item.track) === id);
   }
 
   /** Keep these Singles at the top of the list; returns how many were new. */
   save(tracks: readonly RadioTrack[]): number {
     this.refresh();
-    const known = new Set(this.items().map((item) => item.track.key));
+    const known = new Set(this.items().map((item) => recordingId(item.track)));
     const now = Date.now();
     const added = tracks
-      .filter((track) => !known.has(track.key) && !!known.add(track.key))
+      .filter((track) => !known.has(recordingId(track)) && !!known.add(recordingId(track)))
       .map((track) => ({ track, savedAt: now }));
     if (added.length) this.write([...added, ...this.items()].slice(0, SINGLES_LIMIT));
     return this.error() ? 0 : added.length;
   }
 
-  remove(key: string): void {
+  remove(track: RadioTrack): void {
     this.refresh();
-    this.write(this.items().filter((item) => item.track.key !== key));
+    const id = recordingId(track);
+    this.write(this.items().filter((item) => recordingId(item.track) !== id));
   }
 
   clear(): void {

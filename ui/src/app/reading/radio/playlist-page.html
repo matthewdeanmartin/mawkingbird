@@ -1,13 +1,8 @@
 <section class="page">
   <app-radio-header [heading]="heading()">
-    <a
-      mbButton
-      size="small"
-      variant="outline"
-      [routerLink]="back()"
-      [queryParams]="authored() ? { view: 'playlists' } : {}"
-      >{{ (authored() ? 'playlist.backStudio' : 'playlist.back') | transloco }}</a
-    >
+    <a mbButton size="small" variant="outline" routerLink="/playlists">{{
+      'playlist.back' | transloco
+    }}</a>
   </app-radio-header>
 
   @if (shared()) {
@@ -76,9 +71,6 @@
       </ol>
     }
   } @else if (row(); as playlist) {
-    @if (authored()) {
-      <p class="lead">{{ 'playlist.studioLead' | transloco }}</p>
-    }
     <form class="details" (submit)="$event.preventDefault()">
       <mb-field [label]="'playlist.name' | transloco">
         <input
@@ -115,23 +107,19 @@
       >
         {{ 'playlist.shuffle' | transloco }}
       </button>
+      @if (tracks().length) {
+        <a
+          mbButton
+          variant="outline"
+          routerLink="/share"
+          [queryParams]="{ playlist: playlist.id }"
+          >{{ 'playlist.share' | transloco }}</a
+        >
+      }
       <mb-post-menu
         [label]="'playlist.more' | transloco"
         [closeLabel]="'radio.closeMenu' | transloco"
       >
-        @if (authored() && signedIn) {
-          <button mbMenuItem type="button" [disabled]="!fragment()" (click)="draft(false)">
-            {{ 'radio.draftPost' | transloco }}
-          </button>
-          <button mbMenuItem type="button" [disabled]="!fragment()" (click)="draft(true)">
-            {{ 'radio.draftThread' | transloco }}
-          </button>
-        }
-        @if (!authored() && signedIn) {
-          <button mbMenuItem type="button" [disabled]="!tracks().length" (click)="toStudio()">
-            {{ 'playlist.toStudio' | transloco }}
-          </button>
-        }
         <button mbMenuItem type="button" (click)="delete()">
           {{ 'playlist.delete' | transloco }}
         </button>
@@ -239,7 +227,7 @@
     <section class="add" [attr.aria-label]="'playlist.addTracks' | transloco">
       <h2>{{ 'playlist.addTracks' | transloco }}</h2>
       <p class="lead">
-        {{ (authored() ? 'playlist.fromSavedAny' : 'playlist.fromSavedHint') | transloco }}
+        {{ 'playlist.fromSavedHint' | transloco }}
       </p>
       @if (candidates().length) {
         <ul class="rows">
@@ -286,71 +274,6 @@
         }}</a>
       </p>
       <p class="lead">{{ 'playlist.linkHint' | transloco }}</p>
-    }
-
-    @if (authored() && signedIn && tracks().length) {
-      @let changes = plan();
-      <section class="publish" [attr.aria-label]="'radio.publishThread' | transloco">
-        <h2>{{ 'radio.publishThread' | transloco }}</h2>
-        @if (playlist.published; as published) {
-          <p>
-            <a [href]="published.url" target="_blank" rel="noopener noreferrer">{{
-              'radio.viewThread' | transloco
-            }}</a>
-          </p>
-        } @else {
-          <p class="lead">{{ 'radio.publishHint' | transloco }}</p>
-          <mb-field [label]="'radio.threadVisibility' | transloco">
-            <select
-              mbControl
-              name="threadVisibility"
-              [ngModel]="visibility()"
-              (ngModelChange)="visibility.set($event)"
-            >
-              <option value="public">{{ 'radio.public' | transloco }}</option>
-              <option value="unlisted">{{ 'radio.unlisted' | transloco }}</option>
-              <option value="private">{{ 'radio.followers' | transloco }}</option>
-            </select>
-          </mb-field>
-        }
-        @if (changes) {
-          @if (changes.blocked === 'private') {
-            <p>{{ 'radio.privatePlaylist' | transloco }}</p>
-          } @else if (changes.blocked === 'notEditable') {
-            <p>{{ 'radio.threadNotEditable' | transloco }}</p>
-          } @else if (!publisher.cost(changes)) {
-            <p role="status">{{ 'radio.threadCurrent' | transloco }}</p>
-          } @else {
-            <p>
-              {{
-                'radio.threadPlan'
-                  | transloco
-                    : {
-                        posts: changes.post.length + (changes.createRoot ? 1 : 0),
-                        edits: changes.edit.length + (changes.editRoot ? 1 : 0),
-                        deletions: changes.remove.length,
-                      }
-              }}
-            </p>
-            @if (changes.remove.length > deleteBudget) {
-              <p role="alert">
-                {{ 'radio.threadDeleteLimit' | transloco: { limit: deleteBudget } }}
-              </p>
-            }
-            <button mbButton type="button" [disabled]="publisher.busy()" (click)="publishThread()">
-              {{
-                (playlist.published ? 'radio.updateThread' : 'radio.publishAsThread') | transloco
-              }}
-            </button>
-          }
-        }
-        @if (publisher.progress(); as progress) {
-          <p role="status">{{ 'radio.threadProgress' | transloco: progress }}</p>
-        }
-        @if (publisher.failed()) {
-          <p role="alert">{{ 'radio.threadFailed' | transloco }}</p>
-        }
-      </section>
     }
   } @else {
     <mb-content-state

@@ -12,7 +12,6 @@ import { Status } from '../../platform/api/models';
 import { RadioPlayer } from './radio-player';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
 import {
-  playlistPath,
   playlistFragment,
   playlistUrls,
   readPlaylistFragment,
@@ -144,7 +143,7 @@ describe('Radio playlists', () => {
     expect(TestBed.inject(RadioPlayer).active()).toBe(false);
   });
 
-  it('keeps page-only players in a playlist authored to publish, and drops them from a listening one', () => {
+  it('keeps a page-only track already stored in a playlist, marked rather than lost', () => {
     const player = TestBed.inject(RadioPlayer);
     const spotify = {
       id: 's',
@@ -155,32 +154,24 @@ describe('Radio playlists', () => {
       media_attachments: [],
     } as unknown as Status;
     const [track] = player.singleTracks(spotify);
-    const listening = lists.create('Listen', [track])!;
-    const authored = lists.create('Publish', [track], true)!;
+    // An adopted thread can carry one; playing the playlist skips it.
+    const id = lists.create('Thread', [track])!;
     lists.saved.set([]);
     lists.refresh();
-    const row = (id: string) => lists.saved().find((item) => item.id === id)!;
-    expect(row(listening).tracks).toEqual([]);
-    expect(row(listening).authored).toBeUndefined();
-    expect(row(authored).authored).toBe(true);
-    expect(row(authored).tracks.map((item) => item.key)).toEqual([track.key]);
-    expect(playlistPath(row(authored))).toEqual(['/radio/studio/playlists', authored]);
-    expect(playlistPath(row(listening))).toEqual(['/playlists', listening]);
+    expect(
+      lists
+        .saved()
+        .find((row) => row.id === id)!
+        .tracks.map((item) => item.key),
+    ).toEqual([track.key]);
   });
 
-  it('treats a playlist published before Studio existed as authored', () => {
+  it('reads a playlist stored with Studio’s retired authored flag as an ordinary one', () => {
     localStorage.setItem(
       'mockingbird_radio_playlists' + accountScopeSuffix(),
-      JSON.stringify([
-        {
-          id: 'old',
-          name: 'Old thread',
-          tracks: [],
-          published: { rootId: 'r', url: 'https://home.example/@me/r', entries: [] },
-        },
-      ]),
+      JSON.stringify([{ id: 'old', name: 'Old', tracks: [], authored: true }]),
     );
     lists.refresh();
-    expect(lists.saved()[0].authored).toBe(true);
+    expect(lists.saved()[0]).toEqual({ id: 'old', name: 'Old', tracks: [] });
   });
 });

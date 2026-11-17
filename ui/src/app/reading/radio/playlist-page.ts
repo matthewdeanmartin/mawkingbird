@@ -11,10 +11,8 @@ import { MbPostMenu } from '../../design-system/menu/post-menu';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { Auth } from '../../platform/session/auth';
-import { Drafts } from '../../publishing/drafts';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { radioPostRef } from '../radio-links';
-import { DELETE_BUDGET, PlaylistPublisher } from './playlist-publisher';
 import { PlaylistDraft } from './playlist-draft';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
@@ -22,7 +20,6 @@ import { RadioIcon } from './radio-icon';
 import { isContinuous, RadioPlayer, RadioTrack } from './radio-player';
 import {
   playlistFragment,
-  playlistPath,
   playlistUrls,
   RadioPlaylists,
   readPlaylistFragment,
@@ -49,7 +46,6 @@ import { TrackActions } from './track-actions';
 // i18n playlist.shuffle: Shuffle
 // i18n playlist.addTracks: Add tracks
 // i18n playlist.fromSavedHint: From your saved singles. Only recordings that play one after another can join.
-// i18n playlist.fromSavedAny: From your saved singles. Any recording can join a playlist you publish.
 // i18n playlist.noSavedSingles: No saved singles can join yet.
 // i18n playlist.findMore: Find more singles
 // i18n playlist.add: Add {{title}}
@@ -62,9 +58,7 @@ import { TrackActions } from './track-actions';
 // i18n playlist.delete: Delete playlist
 // i18n playlist.deleteConfirm: Delete “{{name}}” from this browser? A published thread stays on Mastodon.
 // i18n playlist.back: Playlists
-// i18n playlist.backStudio: Studio playlists
-// i18n playlist.studioLead: A playlist to publish. Anything can join, including recordings that play only on their own page; those are skipped when you play it here.
-// i18n playlist.toStudio: Publish from Studio
+// i18n playlist.share: Share
 // i18n playlist.ownPage: Plays on its own page
 // i18n playlist.more: More playlist actions
 
@@ -96,17 +90,14 @@ export class PlaylistPage {
   readonly playlists = inject(RadioPlaylists);
   readonly player = inject(RadioPlayer);
   readonly singles = inject(SavedSingles);
-  readonly publisher = inject(PlaylistPublisher);
   readonly actions = inject(TrackActions);
   private readonly preview = inject(PlaylistDraft);
   private readonly auth = inject(Auth);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialogs = inject(AppDialogs);
-  private readonly drafts = inject(Drafts);
   private readonly transloco = inject(TranslocoService);
   private readonly diagnostics = inject(PageDiagnostics);
-  readonly deleteBudget = DELETE_BUDGET;
   readonly countKey = countKey;
   readonly id = signal('');
   readonly shared = computed(() => this.id() === 'shared');
@@ -119,27 +110,20 @@ export class PlaylistPage {
   readonly loading = signal(false);
   readonly failed = signal(false);
   readonly skipped = signal(0);
-  readonly visibility = signal('public');
   readonly message = signal('');
   /** Saved Singles that could join: they play continuously and aren't here yet. */
-  /** Made in Studio to publish: it may hold recordings that play only on their own page. */
-  readonly authored = computed(() => !!this.row()?.authored);
   readonly isContinuous = isContinuous;
   readonly candidates = computed(() => {
     const keys = new Set(this.tracks().map((track) => track.key));
     return this.singles
       .items()
       .map((item) => item.track)
-      .filter((track) => (this.authored() || isContinuous(track)) && !keys.has(track.key));
+      .filter((track) => isContinuous(track) && !keys.has(track.key));
   });
   readonly fragment = computed(() => {
     const urls = playlistUrls(this.tracks());
     const fragment = playlistFragment(urls);
     return urls.length && fragment.length <= 100_000 ? fragment : '';
-  });
-  readonly plan = computed(() => {
-    const row = this.row();
-    return row ? this.publisher.plan(row) : null;
   });
   private generation = 0;
   private lastSource = '';
@@ -285,37 +269,5 @@ export class PlaylistPage {
       return;
     this.playlists.remove(row.id);
     void this.router.navigate(['/playlists']);
-  }
-
-  /** Publish or update this playlist's Mastodon thread. */
-  async publishThread(): Promise<void> {
-    const row = this.row();
-    if (row) await this.publisher.publish(row.id, row.published?.visibility ?? this.visibility());
-  }
-
-  /** Copy this listening playlist into Studio, where playlists are published. */
-  toStudio(): void {
-    const row = this.row();
-    if (!row) return;
-    const id = this.playlists.create(row.name, row.tracks, true);
-    if (id) void this.router.navigate(playlistPath({ id, authored: true }));
-  }
-
-  back(): string[] {
-    return this.authored() ? ['/radio/studio'] : ['/playlists'];
-  }
-
-  /** Hand the links to Studio's composer as one post with every link, or a thread. */
-  draft(thread: boolean): void {
-    const urls = playlistUrls(this.tracks());
-    if (!urls.length) return;
-    this.drafts.handoff({
-      segments: thread ? urls : [urls.join('\n')],
-      spoilerText: '',
-      sensitive: false,
-      visibility: 'public',
-      poll: null,
-    });
-    void this.router.navigate(['/radio/studio']);
   }
 }

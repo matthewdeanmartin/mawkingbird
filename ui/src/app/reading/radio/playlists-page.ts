@@ -23,6 +23,7 @@ import { RadioPlayer } from './radio-player';
 import { RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
 import { postTitle } from './track-title';
 import { PlaylistsTabs } from './section-tabs';
+import { PlaylistPublisher } from './playlist-publisher';
 import { countKey } from './count-key';
 
 // i18n playlists.title: Playlists
@@ -51,6 +52,9 @@ import { countKey } from './count-key';
 // i18n playlists.recordings.one: {{count}} recording
 // i18n playlists.recordings.other: {{count}} recordings
 // i18n playlists.view: Open {{name}}
+// i18n playlists.mine: Playlists I posted
+// i18n playlists.mineHint: Threads in your recent posts with two or more recordings. Keep one to update it from here when you share it again.
+// i18n playlists.adopt: Keep as a playlist
 
 const SCAN_PAGES = 5;
 
@@ -76,8 +80,8 @@ const SCAN_PAGES = 5;
 export class PlaylistsPage {
   readonly playlists = inject(RadioPlaylists);
   readonly player = inject(RadioPlayer);
-  /** Playlists to listen to; the ones made to publish live in Studio. */
-  readonly listening = computed(() => this.playlists.saved().filter((row) => !row.authored));
+  readonly listening = computed(() => this.playlists.saved());
+  readonly publisher = inject(PlaylistPublisher);
   private readonly auth = inject(Auth);
   private readonly api = inject(Api);
   private readonly publicApi = inject(AnonymousPublicApi);
@@ -196,6 +200,11 @@ export class PlaylistsPage {
 
   title(thread: PlaylistThread): string {
     return postTitle(thread.root) || this.transloco.translate('radio.thread.untitled');
+  }
+
+  async adopt(thread: PlaylistThread): Promise<void> {
+    const id = await this.publisher.adopt(thread);
+    if (id) void this.router.navigate(['/playlists', id]);
   }
 
   /** Open a found playlist as a shared preview; its link carries the whole thread. */

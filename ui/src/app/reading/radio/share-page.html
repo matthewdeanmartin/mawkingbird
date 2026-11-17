@@ -1,0 +1,182 @@
+<section class="page">
+  <app-radio-header [heading]="'share.title' | transloco" />
+  @let row = playlist();
+  @if (!row && !track()) {
+    <mb-content-state
+      [title]="'share.nothing' | transloco"
+      [description]="'share.nothingHint' | transloco"
+    >
+      <a mbButton routerLink="/singles">{{ 'share.singles' | transloco }}</a>
+      <a mbButton variant="outline" routerLink="/playlists">{{ 'share.playlists' | transloco }}</a>
+    </mb-content-state>
+  } @else {
+    <p class="lead">{{ 'share.lead' | transloco }}</p>
+
+    <article class="subject">
+      <p class="track-title">{{ title() }}</p>
+      <p class="track-meta">
+        @if (row) {
+          {{
+            countKey('share.trackCount', row.tracks.length)
+              | transloco: { count: row.tracks.length }
+          }}
+        } @else {
+          {{ credit() }}
+        }
+      </p>
+    </article>
+
+    <section class="choices" [attr.aria-label]="'share.include' | transloco">
+      <h2>{{ 'share.include' | transloco }}</h2>
+      @if (row) {
+        <mb-radio-group
+          [label]="'share.format' | transloco"
+          [options]="formats()"
+          [value]="format()"
+          (valueChange)="format.set($any($event))"
+        />
+        @if (!signedIn) {
+          <p class="lead">{{ 'share.signInThread' | transloco }}</p>
+        }
+      } @else {
+        <fieldset>
+          <legend>{{ 'share.links' | transloco }}</legend>
+          <p class="lead">{{ 'share.linksHint' | transloco }}</p>
+          @for (link of links(); track link.url) {
+            <mb-checkbox
+              [label]="link.label"
+              [hint]="link.url"
+              [checked]="chosenLinks().includes(link.url)"
+              (checkedChange)="toggleLink(link.url, $event)"
+            />
+          }
+        </fieldset>
+        @if (credit()) {
+          <mb-checkbox
+            [label]="'share.credit' | transloco: { credit: credit() }"
+            [checked]="includeCredit()"
+            (checkedChange)="includeCredit.set($event)"
+          />
+        }
+      }
+      <fieldset class="tags">
+        <legend>{{ 'share.tags' | transloco }}</legend>
+        @for (tag of tagOptions(); track tag) {
+          <mb-checkbox
+            [label]="'#' + tag"
+            [checked]="chosenTags().includes(tag)"
+            (checkedChange)="toggleTag(tag, $event)"
+          />
+        }
+      </fieldset>
+    </section>
+
+    @if (format() === 'thread' && row) {
+      @let changes = plan();
+      <section class="publish" [attr.aria-label]="'radio.publishThread' | transloco">
+        <h2>{{ 'radio.publishThread' | transloco }}</h2>
+        @if (row.published; as published) {
+          <p>
+            <a [href]="published.url" target="_blank" rel="noopener noreferrer">{{
+              'radio.viewThread' | transloco
+            }}</a>
+          </p>
+        } @else {
+          <p class="lead">{{ 'radio.publishHint' | transloco }}</p>
+          <mb-field [label]="'radio.threadVisibility' | transloco">
+            <select
+              mbControl
+              name="threadVisibility"
+              [ngModel]="visibility()"
+              (ngModelChange)="visibility.set($event)"
+            >
+              <option value="public">{{ 'radio.public' | transloco }}</option>
+              <option value="unlisted">{{ 'radio.unlisted' | transloco }}</option>
+              <option value="private">{{ 'radio.followers' | transloco }}</option>
+            </select>
+          </mb-field>
+        }
+        @if (changes) {
+          @if (changes.blocked === 'private') {
+            <p>{{ 'radio.privatePlaylist' | transloco }}</p>
+          } @else if (changes.blocked === 'notEditable') {
+            <p>{{ 'radio.threadNotEditable' | transloco }}</p>
+          } @else if (!publisher.cost(changes)) {
+            <p role="status">{{ 'radio.threadCurrent' | transloco }}</p>
+          } @else {
+            <p>
+              {{
+                'radio.threadPlan'
+                  | transloco
+                    : {
+                        posts: changes.post.length + (changes.createRoot ? 1 : 0),
+                        edits: changes.edit.length + (changes.editRoot ? 1 : 0),
+                        deletions: changes.remove.length,
+                      }
+              }}
+            </p>
+            @if (changes.remove.length > deleteBudget) {
+              <p role="alert">
+                {{ 'radio.threadDeleteLimit' | transloco: { limit: deleteBudget } }}
+              </p>
+            }
+            <button mbButton type="button" [disabled]="publisher.busy()" (click)="publishThread()">
+              {{ (row.published ? 'radio.updateThread' : 'radio.publishAsThread') | transloco }}
+            </button>
+          }
+        }
+        @if (publisher.progress(); as progress) {
+          <p role="status">{{ 'radio.threadProgress' | transloco: progress }}</p>
+        }
+        @if (publisher.failed()) {
+          <p role="alert">{{ 'radio.threadFailed' | transloco }}</p>
+        }
+      </section>
+    } @else {
+      <section class="preview" [attr.aria-label]="'share.preview' | transloco">
+        <h2>{{ 'share.preview' | transloco }}</h2>
+        <pre>{{ text() }}</pre>
+        <p class="lead">{{ 'share.length' | transloco: { count: text().length } }}</p>
+        <div class="actions">
+          @if (!writing()) {
+            <button mbButton type="button" (click)="write()">
+              {{ 'share.write' | transloco }}
+            </button>
+          } @else if (changed()) {
+            <button mbButton variant="outline" type="button" (click)="write()">
+              {{ 'share.rewrite' | transloco }}
+            </button>
+          }
+        </div>
+        @if (posted()) {
+          <p role="status">{{ 'share.posted' | transloco }}</p>
+        }
+      </section>
+      @if (writing()) {
+        <p class="lead">{{ 'share.writeHint' | transloco }}</p>
+        @for (key of [composeKey()]; track key) {
+          <app-compose draftContext="share" [acceptHandoff]="true" (posted)="onPosted($event)" />
+        }
+      }
+      @if (intents().length) {
+        <section class="elsewhere" [attr.aria-label]="'share.elsewhere' | transloco">
+          <h2>{{ 'share.elsewhere' | transloco }}</h2>
+          <p class="lead">{{ 'share.elsewhereHint' | transloco }}</p>
+          <div class="actions">
+            @for (intent of intents(); track intent.id) {
+              <a
+                mbButton
+                size="small"
+                variant="outline"
+                [href]="intent.href"
+                target="_blank"
+                rel="noopener noreferrer"
+                >{{ intent.labelKey | transloco }}</a
+              >
+            }
+          </div>
+        </section>
+      }
+    }
+  }
+</section>

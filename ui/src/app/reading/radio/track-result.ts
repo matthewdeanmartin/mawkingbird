@@ -12,6 +12,7 @@ import { postTitle } from './track-title';
 
 // i18n trackResult.play: Play
 // i18n trackResult.openThread: Open thread
+// i18n trackResult.share: Share
 // i18n trackResult.ownPage: Plays on its own page
 // i18n trackResult.mastodon: Mastodon audio
 // i18n trackResult.warning: Content warning: {{text}}
@@ -50,10 +51,20 @@ import { postTitle } from './track-title';
             {{ 'trackResult.play' | transloco }}
           </button>
           @if (canKeep()) {
-            <button mbButton size="small" variant="outline" type="button" (click)="keep.emit()">
-              {{ keepLabel() | transloco }}
+            <button
+              mbButton
+              size="small"
+              [variant]="kept() ? 'solid' : 'outline'"
+              type="button"
+              [attr.aria-pressed]="kept()"
+              (click)="keep.emit()"
+            >
+              {{ (kept() ? keptLabel() : keepLabel()) | transloco }}
             </button>
           }
+          <button mbButton size="small" variant="link" type="button" (click)="shareRequest.emit()">
+            {{ 'trackResult.share' | transloco }}
+          </button>
           @if (thread(); as params) {
             <a mbButton size="small" variant="link" routerLink="/listen" [queryParams]="params">{{
               'trackResult.openThread' | transloco
@@ -118,8 +129,12 @@ export class TrackResult {
   readonly post = input.required<Status>();
   readonly canKeep = input(false);
   readonly keepLabel = input('findSingles.save');
+  /** Already kept: the button reads "Saved" and pressing it again takes the recording back out. */
+  readonly kept = input(false);
+  readonly keptLabel = input('findSingles.saved');
   readonly playRequest = output<void>();
   readonly keep = output<void>();
+  readonly shareRequest = output<void>();
 
   readonly singles = computed(() => this.player.singlesOf(this.post()));
   readonly continuous = computed(() => this.singles().some(isContinuous));
