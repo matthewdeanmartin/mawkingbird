@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -8,7 +8,7 @@ import { MbButton } from '../design-system/button/button';
 import { MbContentState } from '../design-system/content-state/content-state';
 import { readerRouteId } from '../reading/read/reader-route-id';
 import { accountRoutePath } from '../accounts/account-route';
-import { BlogPost, collectBlogPosts, readingMinutes } from './blog-classifier';
+import { BlogPost, blogPostId, collectBlogPosts, readingMinutes } from './blog-classifier';
 import { BlogPrefs } from './blog-prefs';
 import { BlogAuthor, BlogSource, pagingId } from './blog-source';
 
@@ -44,8 +44,8 @@ type BlogError = 'handle' | 'notFound' | 'mine' | null;
  * One person's Mastodon posts, read as a blog: their storms and long posts,
  * newest first (spec/sprint/blog-2026-11.md, sprint 2).
  *
- * `/blogs/@user@server` is the shareable address and works anonymously.
- * `/blogs/me` is the signed-in reader's own blog under a fixed address, so the
+ * `/blog/@user@server` is the shareable address and works anonymously.
+ * `/blog/me` is the signed-in reader's own blog under a fixed address, so the
  * Mine tab can light up.
  */
 @Component({
@@ -88,6 +88,13 @@ export class BlogPage {
   private nextMaxId: string | undefined;
 
   constructor() {
+    // The post page offers previous and next from the list read here.
+    effect(() => {
+      const author = this.author();
+      if (author) {
+        this.source.remember(author.handle, this.posts());
+      }
+    });
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const mine = this.route.snapshot.data?.['mine'] === true;
       const handle = mine ? this.source.ownHandle() : (params.get('handle') ?? '');
@@ -95,8 +102,10 @@ export class BlogPage {
     });
   }
 
-  protected readerLink(post: BlogPost): (string | number)[] {
-    return ['/read', readerRouteId(post.root)];
+  /** The post's own blog page, or the reader when it has no portable id. */
+  protected postLink(post: BlogPost): (string | number)[] {
+    const id = blogPostId(post.root, this.host());
+    return id ? ['/blog', `@${this.handle()}`, id] : ['/read', readerRouteId(post.root)];
   }
 
   protected minutes(post: BlogPost): number {

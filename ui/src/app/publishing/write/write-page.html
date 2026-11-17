@@ -305,6 +305,14 @@
           }
           <p class="split-hint muted">{{ modeHint(splitMode()) | transloco }}</p>
 
+          @if (blogMode()) {
+            <app-blog-write-panel
+              [body]="body()"
+              [parts]="blogParts()"
+              (bodyChange)="onBodyInput($event)"
+            />
+          }
+
           @if (cwOpen()) {
             <input
               class="write-cw"
@@ -1542,6 +1550,9 @@
       <a [href]="link" target="_blank" rel="noopener noreferrer">{{
         'pages.write.openPublished' | transloco
       }}</a>
+    }
+    @if (!scheduledHere() && blogPostLink(); as link) {
+      <a [routerLink]="link">{{ 'blog.write.view' | transloco }}</a>
     }
   </p>
 }

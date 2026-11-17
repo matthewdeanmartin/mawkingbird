@@ -859,7 +859,7 @@ describe('Shell app-mode nav', () => {
     expect(rows.map((row) => row.getAttribute('href'))).toEqual([
       '/home',
       // Blog second: the switcher is how people find it (spec/blog-mode.md).
-      '/blogs',
+      '/blog',
       '/rss',
       '/videos',
       '/singles',

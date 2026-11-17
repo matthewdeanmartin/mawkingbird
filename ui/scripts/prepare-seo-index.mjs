@@ -104,8 +104,9 @@ for (const page of ['about', 'funding', 'legal']) {
 
 // Renamed public pages. GitHub Pages cannot send a 301, so the old address
 // keeps a page that redirects at once and names the new one as canonical; search
-// engines treat that as a permanent move. Not in the sitemap.
-const MOVED = { blog: 'legal' };
+// engines treat that as a permanent move. Not in the sitemap. (/blog → /legal
+// was retired on 2026-11-17: /blog is Blog mode now.)
+const MOVED = {};
 for (const [from, to] of Object.entries(MOVED)) {
   const target = `https://mawkingbird.com/${to}/`;
   await mkdir(new URL(`${from}/`, root), { recursive: true });

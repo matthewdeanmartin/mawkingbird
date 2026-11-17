@@ -49,7 +49,7 @@
   }}</a>
 </section>
 
-@if (trends().length) {
+@if (trends().length && rail.shows('trends')) {
   <section mbRailCard class="card">
     <h2 class="card-title">{{ 'shell.left.trendsForYou' | transloco }}</h2>
     @for (tag of trends().slice(0, 10); track tag.name) {

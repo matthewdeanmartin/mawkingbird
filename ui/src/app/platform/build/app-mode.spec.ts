@@ -29,11 +29,10 @@ describe('modeForUrl', () => {
     ['/playlists', 'radio'],
     ['/playlists/abc', 'radio'],
     ['/listen?post=1', 'radio'],
-    ['/blogs', 'blog'],
-    ['/blogs/me', 'blog'],
-    ['/blogs/@alice@far.example', 'blog'],
+    ['/blog', 'blog'],
+    ['/blog/me', 'blog'],
+    ['/blog/@alice@far.example', 'blog'],
     ['/settings/blog', 'blog'],
-    ['/blog', 'mastodon'],
   ] as const)('%s is %s', (url, mode) => {
     expect(modeForUrl(url)).toBe(mode);
   });
@@ -59,7 +58,7 @@ describe('modeForUrl', () => {
     expect(modeForUrl('/rssfeeds')).toBe('mastodon');
     expect(modeForUrl('/videosfoo')).toBe('mastodon');
     expect(modeForUrl('/forums')).toBe('mastodon');
-    expect(modeForUrl('/blogsfoo')).toBe('mastodon');
+    expect(modeForUrl('/blogfoo')).toBe('mastodon');
     expect(modeForUrl('/writer')).toBe('mastodon');
   });
 });

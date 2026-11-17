@@ -25,7 +25,7 @@ import { BlogSource, parseBlogHandle } from './blog-source';
  * heard of the idea and has no account.
  */
 @Component({
-  selector: 'app-blogs-landing',
+  selector: 'app-blog-landing',
   imports: [RouterLink, TranslocoPipe, MbButton, MbField, MbControl, MbPageHeader],
   template: `
     <mb-page-header
@@ -35,7 +35,7 @@ import { BlogSource, parseBlogHandle } from './blog-source';
 
     @if (mine()) {
       <p class="actions">
-        <a mbButton routerLink="/blogs/me">{{ 'blog.landing.mine' | transloco }}</a>
+        <a mbButton routerLink="/blog/me">{{ 'blog.landing.mine' | transloco }}</a>
         <a mbButton variant="outline" routerLink="/write">{{ 'blog.landing.write' | transloco }}</a>
       </p>
     }
@@ -100,7 +100,7 @@ import { BlogSource, parseBlogHandle } from './blog-source';
     }
   `,
 })
-export class BlogsLanding {
+export class BlogLanding {
   private readonly router = inject(Router);
   private readonly source = inject(BlogSource);
   protected readonly prefs = inject(BlogPrefs);
@@ -121,6 +121,6 @@ export class BlogsLanding {
       this.invalid.set(true);
       return;
     }
-    void this.router.navigate(['/blogs', `@${parsed.user}@${parsed.host}`]);
+    void this.router.navigate(['/blog', `@${parsed.user}@${parsed.host}`]);
   }
 }

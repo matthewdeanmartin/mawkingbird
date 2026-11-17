@@ -34,8 +34,18 @@ describe('pagingId', () => {
 });
 
 describe('BlogSource', () => {
-  const publicApi = { lookupAccount: vi.fn(), getAccountStatuses: vi.fn() };
-  const api = { lookupAccount: vi.fn(), getAccountStatuses: vi.fn() };
+  const publicApi = {
+    lookupAccount: vi.fn(),
+    getAccountStatuses: vi.fn(),
+    getStatus: vi.fn(),
+    getContext: vi.fn(),
+  };
+  const api = {
+    lookupAccount: vi.fn(),
+    getAccountStatuses: vi.fn(),
+    search: vi.fn(),
+    getContext: vi.fn(),
+  };
   let signedIn = false;
 
   beforeEach(() => {
@@ -104,6 +114,39 @@ describe('BlogSource', () => {
 
   it('refuses a handle without a server', async () => {
     await expect(TestBed.inject(BlogSource).resolve('@alice')).rejects.toThrow('not-a-handle');
+  });
+
+  it("reads a post's thread from the home server, in thread order", async () => {
+    const ref = { server: 'https://far.example', id: '7' };
+    const home = { handle: 'alice@far.example', account: alice, via: 'home' as const, ref };
+    publicApi.getStatus.mockReturnValue(of({ id: 's' }));
+    publicApi.getContext.mockReturnValue(
+      of({ ancestors: [{ id: 'a' }], descendants: [{ id: 'd' }] }),
+    );
+    const { status, thread } = await TestBed.inject(BlogSource).thread(home, '113');
+    expect(publicApi.getStatus).toHaveBeenCalledWith({ server: 'https://far.example', id: '113' });
+    expect(status.id).toBe('s');
+    expect(thread.map((s) => s.id)).toEqual(['a', 's', 'd']);
+  });
+
+  it('finds the post by its address on your own server', async () => {
+    const local = { handle: 'alice@far.example', account: alice, via: 'local' as const };
+    api.search.mockReturnValue(of({ statuses: [{ id: 'L1' }], accounts: [], hashtags: [] }));
+    api.getContext.mockReturnValue(of({ ancestors: [], descendants: [] }));
+    const { thread } = await TestBed.inject(BlogSource).thread(local, '113');
+    expect(api.search).toHaveBeenCalledWith('https://far.example/@alice/113', 'statuses', {
+      resolve: true,
+      limit: 1,
+    });
+    expect(api.getContext).toHaveBeenCalledWith('L1');
+    expect(thread.map((s) => s.id)).toEqual(['L1']);
+  });
+
+  it('remembers the last list per handle, ignoring case', () => {
+    const source = TestBed.inject(BlogSource);
+    expect(source.remembered('alice@far.example')).toBeNull();
+    source.remember('Alice@Far.Example', []);
+    expect(source.remembered('alice@far.example')).toEqual([]);
   });
 
   it('knows your own handle only with a Mastodon session', () => {

@@ -126,16 +126,8 @@ const articles = new Map([
 const titles = new Set();
 const cards = new Set();
 const descriptions = new Set();
-// /blog/ was renamed /legal/; its static page only redirects.
-{
-  const moved = await readFile(path.join(root, 'blog', 'index.html'), 'utf8');
-  assert.ok(
-    moved.includes('<meta http-equiv="refresh" content="0; url=/legal/">'),
-    '/blog/ redirects',
-  );
-  assert.ok(moved.includes('<link rel="canonical" href="https://mawkingbird.com/legal/">'));
-  assert.ok(!moved.includes('noindex'), 'a redirect page sends one signal: the move');
-}
+// /blog/ no longer redirects to /legal/: it is Blog mode, an app route.
+await assert.rejects(readFile(path.join(root, 'blog', 'index.html'), 'utf8'));
 const publicPaths = new Set(pages.filter(Boolean));
 for (const page of pages) {
   const html = await readFile(path.join(root, page, 'index.html'), 'utf8');

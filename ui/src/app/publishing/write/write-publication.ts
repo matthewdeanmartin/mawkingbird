@@ -5,7 +5,7 @@ import { focusParam } from '../focal-point/focal-point';
 import { Auth } from '../../platform/session/auth';
 import { Server } from '../../platform/http/server';
 import { DraftMedia, DraftSnapshot } from '../drafts';
-import { ComposeOptions } from '../../platform/api/models';
+import { ComposeOptions, Status } from '../../platform/api/models';
 import { applyMinimalMarkdown } from '../markdown';
 import { PasteProviderRegistry } from '../../connections/paste/paste-provider-registry';
 import { PasteHistory } from '../../connections/paste/paste-history';
@@ -34,6 +34,11 @@ export class WritePublication {
   private deployWatch = inject(HugoDeployWatch);
   readonly progress = signal('');
   readonly link = signal<string | null>(null);
+  /**
+   * The first Mastodon post this publish created, once it exists. Blog mode
+   * links to its blog page. Scheduled posts do not set it: they are not posts yet.
+   */
+  readonly firstStatus = signal<Status | null>(null);
   private operation: {
     key: string;
     id: string;
@@ -47,6 +52,7 @@ export class WritePublication {
     const title = snapshot.spoilerText.trim();
     const body = parts.join('\n\n');
     this.link.set(null);
+    this.firstStatus.set(null);
     this.progress.set('Publishing…');
     if (target === 'paste') {
       const provider = this.pastes.get(snapshot.pasteProviderId ?? '') ?? this.pastes.default;
@@ -170,6 +176,9 @@ export class WritePublication {
           ),
         );
         operation.confirmed.push(created.id);
+        if (index === 0 && (created as Partial<Status>).url) {
+          this.firstStatus.set(created as Status);
+        }
       }
       if (target === 'both') {
         checkContext();

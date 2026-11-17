@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Account, Status } from '../platform/api/models';
+import { Account, Context, Status } from '../platform/api/models';
+import { BlogPost } from './blog-classifier';
 import { Api } from '../platform/api/api';
 import { Auth } from '../platform/session/auth';
 import { AnonymousPublicApi } from '../accounts/anonymous/anonymous-public-api';
@@ -83,6 +84,51 @@ export class BlogSource {
       const account = await firstValueFrom(this.api.lookupAccount(qualified));
       return { handle: qualified, account, via: 'local' };
     }
+  }
+
+  /**
+   * One post and its whole conversation: everything before it, then it, then
+   * every reply, in thread order. `id` is the post's id on the author's own
+   * server ({@link blogPostId}), whichever way the author was resolved.
+   */
+  async thread(author: BlogAuthor, id: string): Promise<{ status: Status; thread: Status[] }> {
+    let status: Status;
+    let context: Context;
+    if (author.via === 'home' && author.ref) {
+      const ref = { server: author.ref.server, id };
+      [status, context] = await Promise.all([
+        firstValueFrom(this.publicApi.getStatus(ref)),
+        firstValueFrom(this.publicApi.getContext(ref)),
+      ]);
+    } else {
+      // The reader's server knows the post by its own id; find it by address.
+      const url = `${author.account.url.replace(/\/$/, '')}/${id}`;
+      const found = await firstValueFrom(
+        this.api.search(url, 'statuses', { resolve: true, limit: 1 }),
+      );
+      const local = found.statuses[0];
+      if (!local) {
+        throw new Error('not-found');
+      }
+      status = local;
+      context = await firstValueFrom(this.api.getContext(local.id));
+    }
+    return { status, thread: [...context.ancestors, status, ...context.descendants] };
+  }
+
+  /**
+   * The last blog list read per handle, so a post page can offer the previous
+   * and next post without reading the blog again. Memory only: a post opened
+   * from a shared link simply has no neighbours to offer.
+   */
+  private readonly lists = new Map<string, BlogPost[]>();
+
+  remember(handle: string, posts: BlogPost[]): void {
+    this.lists.set(handle.toLowerCase(), posts);
+  }
+
+  remembered(handle: string): BlogPost[] | null {
+    return this.lists.get(handle.toLowerCase()) ?? null;
   }
 
   /** One page of the author's posts, newest first, reblogs excluded. */

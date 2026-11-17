@@ -42,8 +42,7 @@ export function modeForUrl(url: string): AppMode | null {
   )
     return 'radio';
   if (path === '/forum' || path.startsWith('/forum/')) return 'forum';
-  // `/blogs`, not `/blog`: the static site keeps /blog/ as the redirect to /legal/.
-  if (path === '/blogs' || path.startsWith('/blogs/') || path === '/settings/blog') return 'blog';
+  if (path === '/blog' || path.startsWith('/blog/') || path === '/settings/blog') return 'blog';
   if (path === '/rss' || path.startsWith('/rss/') || path === '/settings/rss') {
     return 'rss';
   }

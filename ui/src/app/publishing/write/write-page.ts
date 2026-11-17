@@ -44,6 +44,10 @@ import {
 } from '../drafts';
 import { HumanTimePipe } from '../../i18n/human-time.pipe';
 import { MAX_POST_CHARS, PostTarget } from '../compose/compose';
+import { AppModeService } from '../../platform/build/app-mode';
+import { BlogSource } from '../../blog/blog-source';
+import { blogPostId } from '../../blog/blog-classifier';
+import { BlogWritePanel } from '../../blog/blog-write-panel';
 import {
   VISIBILITIES,
   visibilityHint,
@@ -325,6 +329,7 @@ export interface Notice {
 @Component({
   selector: 'app-write-page',
   imports: [
+    BlogWritePanel,
     QuotePreview,
     HighlightCode,
     CodeImageDialog,
@@ -418,6 +423,24 @@ export class WritePage implements OnInit, OnDestroy {
   }
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private blogSource = inject(BlogSource);
+  private appMode = inject(AppModeService);
+  /** Blog mode turns on the blog strip: title, BLOG: mark and verdict. */
+  protected readonly blogMode = computed(() => this.appMode.mode() === 'blog');
+  /** The posts the blog strip judges: the body as it will be split. */
+  protected readonly blogParts = computed(() =>
+    splitText(this.body(), this.splitMode(), { limit: MAX_POST_CHARS }),
+  );
+  /** "View on your blog" after publishing from Blog mode. */
+  protected readonly blogPostLink = computed<(string | number)[] | null>(() => {
+    const status = this.publication.firstStatus();
+    const handle = this.blogSource.ownHandle();
+    if (!this.blogMode() || !status || !handle) {
+      return null;
+    }
+    const id = blogPostId(status, handle.split('@')[1] ?? '');
+    return id ? ['/blog', `@${handle}`, id] : null;
+  });
 
   private readonly editorBox = viewChild<ElementRef<HTMLTextAreaElement>>('editorBox');
   private readonly zenEditorBox = viewChild<ElementRef<HTMLTextAreaElement>>('zenEditorBox');

@@ -415,9 +415,6 @@ export const routes: Routes = [
   // German pages moved into /de/ on 2026-10-31, hours after first going live.
   { path: 'mastodon-bilder-herunterladen', redirectTo: 'de/mastodon-bilder-herunterladen' },
   { path: 'mastodon-auf-deutsch', redirectTo: 'de/mastodon-auf-deutsch' },
-  // /blog was renamed About & legal on 2026-11-07; the static build keeps a
-  // redirect page at /blog/ for search engines (prepare-seo-index.mjs).
-  { path: 'blog', pathMatch: 'full', redirectTo: 'legal' },
   {
     path: 'legal',
     title: 'The project in plain terms',
@@ -1664,25 +1661,31 @@ export const routes: Routes = [
         loadComponent: () => import('./reading/read/read-page').then((m) => m.ReadPage),
       },
       // Blog mode (spec/sprint/blog-2026-11.md): Mastodon accounts read as
-      // blogs. `/blogs`, not `/blog`: the static site keeps /blog/ as the
-      // redirect to /legal/. Not anonymous-guarded: a blog is for readers.
+      // blogs. Not anonymous-guarded: a blog is for readers. (Until 2026-11-17
+      // /blog redirected to /legal; the owner retired that address for this.)
       {
-        path: 'blogs',
+        path: 'blog',
         title: 'Blog',
         pathMatch: 'full',
-        loadComponent: () => import('./blog/blogs-landing').then((m) => m.BlogsLanding),
+        loadComponent: () => import('./blog/blog-landing').then((m) => m.BlogLanding),
       },
       {
-        path: 'blogs/me',
+        path: 'blog/me',
         title: 'My blog',
         data: { mine: true },
         loadComponent: () => import('./blog/blog-page').then((m) => m.BlogPage),
       },
       {
         // `@user@server`: a handle, never an id, so the link works from any server.
-        path: 'blogs/:handle',
+        path: 'blog/:handle',
         title: 'Blog',
         loadComponent: () => import('./blog/blog-page').then((m) => m.BlogPage),
+      },
+      {
+        // One blog post; the id is the post's id on the author's own server.
+        path: 'blog/:handle/:id',
+        title: 'Blog post',
+        loadComponent: () => import('./blog/blog-post-page').then((m) => m.BlogPostPage),
       },
       {
         // Friendly alias for Eliza's synthetic profile (id `eliza:self`).

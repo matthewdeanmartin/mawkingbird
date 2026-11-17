@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { Status } from '../platform/api/models';
 import {
+  blogPostId,
   blogReason,
   blogTitle,
   clampThresholds,
@@ -9,6 +10,7 @@ import {
   firstLine,
   hasBlogMarker,
   readingMinutes,
+  withoutTitleLine,
 } from './blog-classifier';
 
 const AUTHOR = 'a';
@@ -243,5 +245,57 @@ describe('readingMinutes', () => {
   it('never says zero', () => {
     expect(readingMinutes(10)).toBe(1);
     expect(readingMinutes(13_000)).toBe(10);
+  });
+});
+
+describe('blogPostId', () => {
+  it("uses the home server's raw id when the post was read there", () => {
+    const read = {
+      provider: 'anonymous-mastodon',
+      providerRef: { server: 'https://far.example', statusId: '113' },
+      url: 'https://far.example/@alice/113',
+    } as unknown as Status;
+    expect(blogPostId(read, 'far.example')).toBe('113');
+  });
+
+  it('reads Mastodon, GoToSocial and Akkoma addresses on the home server', () => {
+    const at = (url: string) => ({ id: 'local-9', url }) as Status;
+    expect(blogPostId(at('https://far.example/@alice/113'), 'far.example')).toBe('113');
+    expect(blogPostId(at('https://gts.example/@a/statuses/01HXYZ'), 'gts.example')).toBe('01HXYZ');
+    expect(blogPostId(at('https://ak.example/notice/AbC123'), 'ak.example')).toBe('AbC123');
+  });
+
+  it('refuses an address on another server or without an id', () => {
+    const at = (url: string | null) => ({ id: 'local-9', url }) as Status;
+    expect(blogPostId(at('https://mirror.example/@alice/113'), 'far.example')).toBeNull();
+    expect(blogPostId(at('https://far.example/@alice/113/'), 'far.example')).toBe('113');
+    expect(blogPostId(at('https://far.example/x-y'), 'far.example')).toBeNull();
+    expect(blogPostId(at(null), 'far.example')).toBeNull();
+  });
+});
+
+describe('withoutTitleLine', () => {
+  it('removes a title paragraph', () => {
+    expect(withoutTitleLine('<p>Title</p><p>Body</p>')).toBe('<p>Body</p>');
+  });
+
+  it('removes a title line before a break', () => {
+    expect(withoutTitleLine('<p>Title<br>Body</p>')).toBe('<p>Body</p>');
+  });
+
+  it('removes a marker line and the title after it', () => {
+    expect(withoutTitleLine('<p>BLOG:<br>Title<br>Body</p>')).toBe('<p>Body</p>');
+    expect(withoutTitleLine('<p>BLOG: Title</p><p>Body</p>')).toBe('<p>Body</p>');
+  });
+
+  it('leaves unfamiliar markup alone', () => {
+    expect(withoutTitleLine('Title then text')).toBe('Title then text');
+    expect(withoutTitleLine('<div>Title</div>')).toBe('<div>Title</div>');
+  });
+
+  it('keeps links inside the body', () => {
+    expect(withoutTitleLine('<p>Title</p><p>See <a href="x">this</a></p>')).toBe(
+      '<p>See <a href="x">this</a></p>',
+    );
   });
 });

@@ -115,8 +115,8 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       id: 'mine',
       labelKey: 'shell.modeNav.blog.mine',
       icon: 'M6 3h9l4 4v14H6zM15 3v4h4M9 12h7M9 16h5',
-      link: '/blogs/me',
-      active: onPath('/blogs/me'),
+      link: '/blog/me',
+      active: onPath('/blog/me'),
       requires: 'signedIn',
     },
     {
@@ -453,7 +453,7 @@ export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
     mode: 'blog',
     labelKey: 'shell.modeNav.mode.blog',
     icon: 'M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3zM21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z',
-    link: '/blogs',
+    link: '/blog',
   },
   mastodon: {
     mode: 'mastodon',

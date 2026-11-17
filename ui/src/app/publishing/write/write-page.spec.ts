@@ -35,6 +35,7 @@ import { DraftItem } from '../drafts/draft-items';
 import { DraftSources } from '../drafts/draft-sources';
 import { Segment, SplitMode } from './split-modes';
 import { Notice, WritePage } from './write-page';
+import { AppModeService } from '../../platform/build/app-mode';
 import { WriteWorkspace } from './write-workspace';
 
 interface PageInternals {
@@ -277,6 +278,28 @@ describe('WritePage', () => {
 
     httpMock.verify();
     expect(page.sources.items().map((i) => i.kind)).toEqual(['local']);
+  });
+
+  it('shows the blog strip only in Blog mode, editing the first line', () => {
+    TestBed.inject(Auth).mode.set('anonymous');
+    const mode = TestBed.inject(AppModeService);
+    mode.set('mastodon');
+    const fixture = setUp();
+    internals(fixture).newDraft();
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('textarea')).not.toBeNull();
+    expect(el.querySelector('app-blog-write-panel')).toBeNull();
+
+    mode.set('blog');
+    fixture.detectChanges();
+    const title = el.querySelector<HTMLInputElement>(
+      'app-blog-write-panel input[name="blog_title"]',
+    )!;
+    title.value = 'My title';
+    title.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(internals(fixture).body()).toBe('My title');
   });
 
   it('links Manage beside New in the drafts pane, to the Drafts page', () => {

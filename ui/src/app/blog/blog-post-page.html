@@ -1,0 +1,134 @@
+@if (failed()) {
+  <mb-content-state
+    kind="error"
+    announcement="alert"
+    [title]="'blog.post.error' | transloco"
+    [description]="'blog.post.error.hint' | transloco: { host: host() }"
+  >
+    <a mbButton variant="outline" [routerLink]="['/blog', '@' + handle()]">{{
+      'blog.post.back' | transloco: { name: '@' + handle() }
+    }}</a>
+  </mb-content-state>
+} @else if (root(); as root) {
+  <p class="back">
+    <a [routerLink]="['/blog', '@' + handle()]"
+      >← {{ 'blog.post.back' | transloco: { name: authorName() } }}</a
+    >
+  </p>
+
+  <article class="post">
+    <header>
+      <h1>{{ title() || ('blog.post.untitled' | transloco) }}</h1>
+      <p class="byline">
+        @if (author()?.account?.avatar; as avatar) {
+          <img class="avatar" [src]="avatar" alt="" width="32" height="32" />
+        }
+        <span>
+          <strong>{{ authorName() }}</strong>
+          ·
+          <time [attr.datetime]="root.created_at">{{ root.created_at | date: 'longDate' }}</time>
+          @if (chain().length > 1) {
+            · {{ 'blog.post.meta.posts' | transloco: { count: chain().length } }}
+          }
+          · {{ 'blog.post.meta.minutes' | transloco: { count: minutes() } }}
+        </span>
+      </p>
+    </header>
+
+    <div class="body">
+      @for (post of chain(); track post.id; let i = $index) {
+        <div class="part" [innerHTML]="body(post, i) | customEmoji: post.emojis"></div>
+        @for (m of post.media_attachments; track m.id) {
+          <img
+            class="media"
+            [src]="m.preview_url || m.url"
+            [alt]="m.description || ''"
+            loading="lazy"
+            decoding="async"
+          />
+        }
+      }
+    </div>
+
+    <p class="post-links">
+      <a mbButton variant="outline" size="small" [routerLink]="readerLink(root)">{{
+        'blog.post.reader' | transloco
+      }}</a>
+      @if (root.url) {
+        <a mbButton variant="link" size="small" [href]="root.url" target="_blank" rel="noopener">{{
+          'blog.post.original' | transloco
+        }}</a>
+      }
+    </p>
+  </article>
+
+  @if (neighbours().newer || neighbours().older) {
+    <nav class="neighbours">
+      @if (neighbours().newer; as newer) {
+        <a [routerLink]="postLink(newer)">{{
+          'blog.post.newer' | transloco: { title: titleOf(newer) }
+        }}</a>
+      }
+      @if (neighbours().older; as older) {
+        <a class="older" [routerLink]="postLink(older)">{{
+          'blog.post.older' | transloco: { title: titleOf(older) }
+        }}</a>
+      }
+    </nav>
+  }
+
+  <section class="comments" aria-labelledby="blog-comments-heading">
+    <h2 id="blog-comments-heading">
+      {{ 'blog.post.comments' | transloco }}
+      @if (comments().length) {
+        <span class="count">({{ comments().length }})</span>
+      }
+    </h2>
+    @for (comment of comments(); track comment.status.id) {
+      <article class="comment" [class.by-author]="comment.byAuthor">
+        <header>
+          <img
+            class="avatar"
+            [src]="comment.status.account.avatar_static || comment.status.account.avatar"
+            alt=""
+            width="32"
+            height="32"
+            loading="lazy"
+          />
+          <span class="who">
+            <strong>{{
+              comment.status.account.display_name || comment.status.account.username
+            }}</strong>
+            @if (comment.byAuthor) {
+              <span class="badge">{{ 'blog.post.author' | transloco }}</span>
+            }
+            <span class="muted">
+              · {{ comment.status.created_at | humanTime }}
+              @if (comment.replyingTo; as name) {
+                · {{ 'blog.post.replyingTo' | transloco: { name: name } }}
+              }
+            </span>
+          </span>
+        </header>
+        <div
+          class="comment-body"
+          [innerHTML]="comment.status.content | customEmoji: comment.status.emojis"
+        ></div>
+        <a class="reply" [routerLink]="threadLink(comment.status)">{{
+          'blog.post.reply' | transloco
+        }}</a>
+      </article>
+    } @empty {
+      <p class="muted">{{ 'blog.post.noComments' | transloco }}</p>
+    }
+    <p class="join">
+      <a mbButton [routerLink]="threadLink(root)">{{ 'blog.post.join' | transloco }}</a>
+    </p>
+  </section>
+} @else if (loading()) {
+  <mb-content-state
+    kind="loading"
+    announcement="status"
+    [title]="'blog.post.loading' | transloco"
+  />
+}

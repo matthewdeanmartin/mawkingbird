@@ -76,6 +76,15 @@ describe('Write publication', () => {
     expect(postStatus.mock.calls[0][1].quotedStatusId).toBe('q1');
     expect(postStatus.mock.calls[1][1].quotedStatusId).toBeUndefined();
   });
+  it('remembers the first published post for Blog mode, but not a scheduled one', async () => {
+    const first = { id: 'one', url: 'https://home.example/@me/one' };
+    postStatus.mockReturnValueOnce(of(first)).mockReturnValueOnce(of({ id: 'two', url: 'x' }));
+    await publisher.publish(draft(), [], '');
+    expect(publisher.firstStatus()).toEqual(first);
+    postStatus.mockReturnValueOnce(of({ id: 'sched' })).mockReturnValueOnce(of({ id: 's2' }));
+    await publisher.publish(draft(), [], '2030-01-01T00:00');
+    expect(publisher.firstStatus()).toBeNull();
+  });
   it('retries only unfinished posts with the same idempotency key', async () => {
     postStatus
       .mockReturnValueOnce(of({ id: 'one' }))

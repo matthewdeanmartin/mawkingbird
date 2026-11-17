@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { BlogsLanding } from './blogs-landing';
+import { BlogLanding } from './blog-landing';
 import { BlogSource } from './blog-source';
 
-describe('BlogsLanding', () => {
+describe('BlogLanding', () => {
   const source = { ownHandle: vi.fn() };
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('BlogsLanding', () => {
   });
 
   async function render() {
-    const fixture = TestBed.createComponent(BlogsLanding);
+    const fixture = TestBed.createComponent(BlogLanding);
     await fixture.whenStable();
     return { fixture, el: fixture.nativeElement as HTMLElement };
   }
@@ -26,7 +26,7 @@ describe('BlogsLanding', () => {
     expect((await render()).el.textContent).not.toContain('My blog');
     source.ownHandle.mockReturnValue('me@home.example');
     const { el } = await render();
-    expect(el.querySelector('a[href="/blogs/me"]')).not.toBeNull();
+    expect(el.querySelector('a[href="/blog/me"]')).not.toBeNull();
   });
 
   it('states the current rule', async () => {
@@ -52,6 +52,6 @@ describe('BlogsLanding', () => {
     input.dispatchEvent(new Event('input'));
     form.dispatchEvent(new Event('submit'));
     await fixture.whenStable();
-    expect(navigate).toHaveBeenCalledWith(['/blogs', '@Alice@far.example']);
+    expect(navigate).toHaveBeenCalledWith(['/blog', '@Alice@far.example']);
   });
 });

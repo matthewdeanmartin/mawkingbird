@@ -43,7 +43,7 @@
      Mastodon list APIs there may be no token for. In the rail only on small
      servers or once turned on: on a big general server it mostly distracts
      from the server card. The My Server page always offers it. -->
-@if (auth.isAuthenticated && usableMastodon() && showServerMode()) {
+@if (auth.isAuthenticated && usableMastodon() && showServerMode() && rail.shows('justMyServer')) {
   <app-just-my-server-card class="card" />
 }
 

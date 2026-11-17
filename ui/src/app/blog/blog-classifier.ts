@@ -316,3 +316,59 @@ export function collectBlogPosts(
   posts.sort((a, b) => byWritingOrder(b.root, a.root));
   return { posts, pendingOlder };
 }
+
+/**
+ * The post's id on its author's own server, for a portable blog link.
+ *
+ * Read from the home server, that is the raw id the anonymous adapter kept.
+ * Read through the reader's own server, the local id means nothing elsewhere,
+ * so it comes from the post's public URL instead — the last path segment of
+ * `https://host/@user/123` (Mastodon), `/@user/statuses/01H…` (GoToSocial) or
+ * `/notice/AbC…` (Akkoma), each of which is the API id on that server. Null
+ * when the URL is not on `host` or has no such segment.
+ */
+export function blogPostId(status: Status, host: string): string | null {
+  const ref = status.providerRef as { statusId?: unknown } | undefined;
+  if (status.provider === 'anonymous-mastodon' && typeof ref?.statusId === 'string') {
+    return ref.statusId;
+  }
+  try {
+    const url = new URL(status.url ?? '');
+    if (url.host.toLowerCase() !== host.toLowerCase()) {
+      return null;
+    }
+    const last = url.pathname.replace(/\/$/, '').split('/').pop() ?? '';
+    return /^[A-Za-z0-9]+$/.test(last) ? last : null;
+  } catch {
+    return null;
+  }
+}
+
+const LEADING_LINE = /^\s*<p>((?:(?!<br\s*\/?>|<\/p>)[\s\S])*)(<br\s*\/?>|<\/p>)/i;
+
+/**
+ * The root's HTML with the title line taken out, so a blog post does not show
+ * its title twice. A `BLOG:` marker alone on its line goes too. Anything not
+ * shaped the way Mastodon writes paragraphs is returned unchanged: a repeated
+ * title is a blemish, a mangled post is a bug.
+ */
+export function withoutTitleLine(html: string): string {
+  let rest = html;
+  for (let removed = 0; removed < 2; removed++) {
+    const match = LEADING_LINE.exec(rest);
+    if (!match) {
+      return removed ? rest : html;
+    }
+    const line = textLines(match[1])[0] ?? '';
+    const marker = MARKER.test(line);
+    const after = rest.slice(match[0].length);
+    rest = (match[2].toLowerCase() === '</p>' ? after : '<p>' + after).replace(
+      /^\s*<p>\s*<\/p>/i,
+      '',
+    );
+    if (!(marker && line.replace(MARKER, '').trim() === '')) {
+      return rest;
+    }
+  }
+  return rest;
+}

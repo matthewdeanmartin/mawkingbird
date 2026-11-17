@@ -148,3 +148,46 @@ are. They belong to concept 3 or are out of scope.
 - Not an SEO surface: search engines are not the audience. **Deep links must work.**
 
 The plan is in `spec/sprint/blog-2026-11.md`.
+
+## Rail widgets (proposals, 2026-11-17)
+
+Ground rules. Rails disappear in zen mode and on phones, so **a rail widget
+may only repeat or shortcut something reachable elsewhere**. It is never the
+only way in. Each mode chooses from one shared catalogue (`shell/rail-widgets.ts`),
+and a page can still fill a rail through `RailOutlet` when what it shows is
+about that page.
+
+Already decided for Blog: keep the profile stack, Plus badge, house
+ads/endorsements and the server card; hide Just My Server and the hashtag
+trends.
+
+### Proposed for Blog mode (ranked)
+
+| # | Widget | Rail | What it shows | Cost | Reachable elsewhere |
+| --- | --- | --- | --- | --- | --- |
+| 1 | **About the author** | right, on blog and post pages | Avatar, name, bio, follow button, "Profile" | One account read, already loaded | The blog header |
+| 2 | **More from this blog** | right, on post pages | The next 3–5 titles from the remembered list | None (memory) | The blog list |
+| 3 | **Recently read blogs** | left | The last ~8 blogs opened, newest first; a starter blogroll before Native's Roll | localStorage (`private`, account-scoped) | Browser history; Roll later |
+| 4 | **Almost a blog post** | left, Write and Mine | Drafts the verdict says are close ("2 of 3 posts"), with Continue | Local drafts only | Drafts tab |
+| 5 | **Post outline** | right, on post pages | One line per part of a long storm (first words), jump links | None | Scrolling |
+| 6 | **The rule** | left | "Blog posts: 3+ posts or 1250+ characters, or BLOG:"; Change | None | Settings › Blog |
+| 7 | **Your blog at a glance** | left, Mine | Posts this month, latest post date, Write a post | From the list already read | Mine |
+
+Recommendation: 1 and 2 first (cheap, and most useful while reading), then 3
+(it bridges the gap until Roll ships, and works on the web). 6 is filler; skip
+it unless the rail looks empty.
+
+### The same pattern for other modes (for later)
+
+- **RSS:** unread count per folder; "next unread" shortcut. Hide hashtags and
+  Just My Server there too.
+- **Video:** Up next (head of the watch queue); live watch parties.
+- **Radio:** now playing and the next two in the queue.
+- **Forum:** your open questions waiting for answers.
+
+### Questions
+
+1. "Keep badge": I read that as the profile stack (left) **and** the Plus
+   badge (right). Right?
+2. **Who to follow** (left) and **Bluesky trends** (right) weren't mentioned,
+   so Blog still shows them. Hide either?

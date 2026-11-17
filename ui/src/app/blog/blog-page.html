@@ -6,7 +6,7 @@
       [title]="'blog.page.error.handle' | transloco"
       [description]="'blog.page.error.handle.hint' | transloco"
     >
-      <a mbButton variant="outline" routerLink="/blogs">{{ 'blog.landing.title' | transloco }}</a>
+      <a mbButton variant="outline" routerLink="/blog">{{ 'blog.landing.title' | transloco }}</a>
     </mb-content-state>
   }
   @case ('mine') {
@@ -14,7 +14,7 @@
       [title]="'blog.page.error.mine' | transloco"
       [description]="'blog.page.error.mine.hint' | transloco"
     >
-      <a mbButton variant="outline" routerLink="/blogs">{{ 'blog.landing.title' | transloco }}</a>
+      <a mbButton variant="outline" routerLink="/blog">{{ 'blog.landing.title' | transloco }}</a>
     </mb-content-state>
   }
   @case ('notFound') {
@@ -71,7 +71,7 @@
             <li>
               <article>
                 <h2>
-                  <a [routerLink]="readerLink(post)">{{
+                  <a [routerLink]="postLink(post)">{{
                     post.title || ('blog.page.untitled' | transloco)
                   }}</a>
                 </h2>

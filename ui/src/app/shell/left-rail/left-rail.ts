@@ -4,7 +4,8 @@ import { lacksMastodonServer } from '../../platform/http/mastodon-route.intercep
 import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbIdentityRow } from '../../design-system/identity/identity-row';
 import { MbButton } from '../../design-system/button/button';
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { RailWidgets } from '../rail-widgets';
 import { RouterLink } from '@angular/router';
 import { AccountPreview } from '../../accounts/account-hover-card/account-preview';
 import { Api } from '../../platform/api/api';
@@ -75,6 +76,9 @@ export class LeftRail implements OnInit {
   /** Ids the user followed from this widget (flips the button to "Following"). */
   protected followed = signal<Set<string>>(new Set());
   protected trends = signal<Tag[]>([]);
+  protected readonly rail = inject(RailWidgets);
+  /** Not fetched at all where the mode hides them (Blog). */
+  private readonly wantsTrends = computed(() => this.rail.shows('trends'));
 
   /** Most recent day's use count for a trending tag, if the server provides one. */
   uses(tag: Tag): string | null {
@@ -90,6 +94,7 @@ export class LeftRail implements OnInit {
       this.candidates.clear();
       this.suggestions.set([]);
       this.trends.set([]);
+      if (!this.wantsTrends()) return;
       // Trending tags are a Mastodon server's; a Bluesky- or Misskey-only
       // identity has none to ask.
       if (lacksMastodonServer(this.auth, this.server)) return;

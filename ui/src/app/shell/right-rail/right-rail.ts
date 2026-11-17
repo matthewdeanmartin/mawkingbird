@@ -8,6 +8,7 @@ import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbButton } from '../../design-system/button/button';
 import { PlusPromotion } from '../../accounts/mawkingbird/plus-promotion';
 import { Component, computed, effect, inject, OnInit, linkedSignal, signal } from '@angular/core';
+import { RailWidgets } from '../rail-widgets';
 import { RouterLink } from '@angular/router';
 import { Terminology } from '../../i18n/terminology';
 import { AnnouncementStore } from '../../discovery/announcements/announcement-store';
@@ -148,6 +149,7 @@ export class RightRail implements OnInit {
    * tally all live in the store, which Settings → Ads drives from the other end.
    */
   protected houseAds = inject(HouseAdStore);
+  protected readonly rail = inject(RailWidgets);
 
   /**
    * Anonymous visitors leaning on someone else's search server are consuming a

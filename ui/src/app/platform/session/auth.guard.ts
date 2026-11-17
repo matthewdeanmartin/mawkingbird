@@ -48,7 +48,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
   // The project's pages and in-app legal hub must open for a fresh visitor.
   // Sending them to `/` would make the dispatcher land on /home instead.
   const projectPage =
-    /^\/(app\/(about|funding|legal)|blog|credits|collections\/starter(\/[\w-]+)?)\/?$/.test(
+    /^\/(app\/(about|funding|legal)|credits|collections\/starter(\/[\w-]+)?)\/?$/.test(
       link.pathname,
     );
   // Search works anonymously, and the /mastodon-search and /bluesky-search tool
@@ -64,9 +64,10 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const publicBlueskyPage =
     /^\/bluesky\/starter-packs\/[^/]+\/[^/]+\/?$/.test(link.pathname) ||
     /^\/feeds\/bluesky\/[^/]+\/?$/.test(link.pathname);
-  // Blog mode's front door and a shared blog (`/blogs/@user@server`): read from
-  // the author's own server, so nothing here needs a session. Not /blogs/me.
-  const publicBlog = /^\/blogs(\/@[^/@]+@[^/@]+)?\/?$/.test(link.pathname);
+  // Blog mode's front door, a shared blog (`/blog/@user@server`) and one of its
+  // posts (`…/<id>`): read from the author's own server, so nothing here needs
+  // a session. Not /blog/me.
+  const publicBlog = /^\/blog(\/@[^/@]+@[^/@]+(\/[A-Za-z0-9]+)?)?\/?$/.test(link.pathname);
   const segments = router.parseUrl(state.url ?? '/').root.children['primary']?.segments ?? [];
   const parts = segments.map((segment) => segment.path);
   const copiedLink =

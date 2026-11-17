@@ -33,7 +33,7 @@ function post(id: string, content: string, replyTo: string | null = null): Statu
 }
 
 describe('BlogPage', () => {
-  const source = { resolve: vi.fn(), page: vi.fn(), ownHandle: vi.fn() };
+  const source = { resolve: vi.fn(), page: vi.fn(), ownHandle: vi.fn(), remember: vi.fn() };
   let params: BehaviorSubject<ParamMap>;
   let data: Record<string, unknown>;
 
@@ -72,7 +72,7 @@ describe('BlogPage', () => {
     return { fixture, el: fixture.nativeElement as HTMLElement };
   }
 
-  it('lists storms and long posts, newest first, and links them to the reader', async () => {
+  it('lists storms and long posts, newest first, and links them to their pages', async () => {
     const storm = [
       post('1', '<p>On bees<br>Bees dance.</p>'),
       post('2', '<p>Two</p>', '1'),
@@ -86,7 +86,12 @@ describe('BlogPage', () => {
     const { el } = await render();
     const titles = [...el.querySelectorAll('article h2 a')].map((a) => a.textContent?.trim());
     expect(titles).toEqual(['A long one', 'On bees']);
+    // No public URL on these fixtures, so no portable id: the reader is the fallback.
     expect(el.querySelector('article h2 a')?.getAttribute('href')).toBe('/read/5');
+    expect(source.remember).toHaveBeenLastCalledWith(
+      'alice@far.example',
+      expect.arrayContaining([expect.objectContaining({ title: 'On bees' })]),
+    );
     expect(el.textContent).toContain('3 posts');
     expect(el.textContent).toContain('Blog posts from all 5 public posts.');
     expect(el.textContent).toContain('Read through your own server');
@@ -126,7 +131,7 @@ describe('BlogPage', () => {
     expect(el.textContent).toContain('far.example');
   });
 
-  it('opens your own blog at /blogs/me, or asks you to sign in', async () => {
+  it('opens your own blog at /blog/me, or asks you to sign in', async () => {
     data = { mine: true };
     source.ownHandle.mockReturnValue(null);
     const first = await render();
