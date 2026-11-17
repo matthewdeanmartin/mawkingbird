@@ -252,6 +252,8 @@ export class SettingsShell {
       { labelKey: 'settings.nav.rss', path: 'rss', exact: true, anonymous: true },
       { labelKey: 'settings.nav.privacy', path: 'privacy', exact: true },
       { labelKey: 'settings.nav.writing', path: 'writing', exact: true, anonymous: true },
+      // Blog mode's reading rule: which posts count as blog posts. Client-side.
+      { labelKey: 'settings.nav.blog', path: 'blog', exact: true, anonymous: true },
       // Appearance is client-side (theme/accent/undo-send in localStorage) and works
       // against any instance; the page hides its server-backed rows off-mock itself.
       { labelKey: 'settings.nav.homeAlgo', path: 'home-algo', exact: true, anonymous: true },

@@ -29,6 +29,11 @@ describe('modeForUrl', () => {
     ['/playlists', 'radio'],
     ['/playlists/abc', 'radio'],
     ['/listen?post=1', 'radio'],
+    ['/blogs', 'blog'],
+    ['/blogs/me', 'blog'],
+    ['/blogs/@alice@far.example', 'blog'],
+    ['/settings/blog', 'blog'],
+    ['/blog', 'mastodon'],
   ] as const)('%s is %s', (url, mode) => {
     expect(modeForUrl(url)).toBe(mode);
   });
@@ -43,6 +48,9 @@ describe('modeForUrl', () => {
     '/accounts/rss:https%3A%2F%2Fa.example%2Ff.xml',
     '/settings',
     '/settings/appearance',
+    '/write',
+    '/write?draft=1',
+    '/drafts',
   ])('%s keeps the current mode', (url) => {
     expect(modeForUrl(url)).toBeNull();
   });
@@ -51,6 +59,8 @@ describe('modeForUrl', () => {
     expect(modeForUrl('/rssfeeds')).toBe('mastodon');
     expect(modeForUrl('/videosfoo')).toBe('mastodon');
     expect(modeForUrl('/forums')).toBe('mastodon');
+    expect(modeForUrl('/blogsfoo')).toBe('mastodon');
+    expect(modeForUrl('/writer')).toBe('mastodon');
   });
 });
 

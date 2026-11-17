@@ -1,0 +1,125 @@
+@switch (error()) {
+  @case ('handle') {
+    <mb-content-state
+      kind="error"
+      announcement="alert"
+      [title]="'blog.page.error.handle' | transloco"
+      [description]="'blog.page.error.handle.hint' | transloco"
+    >
+      <a mbButton variant="outline" routerLink="/blogs">{{ 'blog.landing.title' | transloco }}</a>
+    </mb-content-state>
+  }
+  @case ('mine') {
+    <mb-content-state
+      [title]="'blog.page.error.mine' | transloco"
+      [description]="'blog.page.error.mine.hint' | transloco"
+    >
+      <a mbButton variant="outline" routerLink="/blogs">{{ 'blog.landing.title' | transloco }}</a>
+    </mb-content-state>
+  }
+  @case ('notFound') {
+    <mb-content-state
+      kind="error"
+      announcement="alert"
+      [title]="'blog.page.error.notFound' | transloco"
+      [description]="
+        'blog.page.error.notFound.hint' | transloco: { host: host(), handle: '@' + handle() }
+      "
+    >
+      <a mbButton variant="outline" [routerLink]="profileLink()">{{
+        'blog.page.profile' | transloco
+      }}</a>
+    </mb-content-state>
+  }
+  @default {
+    @if (author(); as author) {
+      <header class="blog-head">
+        @if (author.account.avatar) {
+          <img class="avatar" [src]="author.account.avatar" alt="" width="56" height="56" />
+        }
+        <div class="who">
+          <h1>{{ author.account.display_name || author.account.username }}</h1>
+          <p class="handle">&#64;{{ author.handle }}</p>
+        </div>
+        <nav class="head-links">
+          <a mbButton variant="outline" size="small" [routerLink]="profileLink()">{{
+            'blog.page.profile' | transloco
+          }}</a>
+          <a mbButton variant="link" size="small" routerLink="/settings/blog">{{
+            'blog.page.rules' | transloco
+          }}</a>
+        </nav>
+      </header>
+
+      @if (author.via === 'local') {
+        <p class="note">{{ 'blog.page.via.local' | transloco: { host: host() } }}</p>
+      }
+
+      <p class="coverage" role="status">
+        @if (loading()) {
+          {{ 'blog.page.reading' | transloco }}
+        } @else if (exhausted()) {
+          {{ 'blog.page.coverage.all' | transloco: { count: statuses().length } }}
+        } @else {
+          {{ 'blog.page.coverage.partial' | transloco: { count: statuses().length } }}
+        }
+      </p>
+
+      @if (posts().length) {
+        <ol class="posts">
+          @for (post of posts(); track post.id) {
+            <li>
+              <article>
+                <h2>
+                  <a [routerLink]="readerLink(post)">{{
+                    post.title || ('blog.page.untitled' | transloco)
+                  }}</a>
+                </h2>
+                <p class="meta">
+                  <time [attr.datetime]="post.root.created_at">{{
+                    post.root.created_at | date: 'mediumDate'
+                  }}</time>
+                  @if (post.chain.length > 1) {
+                    · {{ 'blog.page.meta.posts' | transloco: { count: post.chain.length } }}
+                  }
+                  · {{ 'blog.page.meta.minutes' | transloco: { count: minutes(post) } }}
+                  @if (post.partial) {
+                    · {{ 'blog.page.meta.continued' | transloco }}
+                  }
+                </p>
+                @if (post.excerpt) {
+                  <p class="excerpt">{{ post.excerpt }}</p>
+                }
+              </article>
+            </li>
+          }
+        </ol>
+      } @else if (!loading()) {
+        <mb-content-state
+          [title]="'blog.page.empty' | transloco"
+          [description]="
+            (exhausted() ? 'blog.page.empty.all' : 'blog.page.empty.partial')
+              | transloco: { count: statuses().length }
+          "
+        />
+      }
+
+      @if (moreFailed()) {
+        <p class="note" role="alert">{{ 'blog.page.error.more' | transloco }}</p>
+      }
+      @if (!exhausted() && !loading()) {
+        <p class="more">
+          <button mbButton variant="outline" type="button" (click)="more()">
+            {{ 'blog.page.more' | transloco }}
+          </button>
+        </p>
+      }
+    } @else if (loading()) {
+      <mb-content-state
+        kind="loading"
+        announcement="status"
+        [title]="'blog.page.loading' | transloco: { handle: '@' + handle() }"
+      />
+    }
+  }
+}

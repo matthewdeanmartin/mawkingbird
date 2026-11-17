@@ -7,9 +7,13 @@ import { filter } from 'rxjs';
  * Which app the primary nav is serving: the social client, the RSS reader, or
  * video. See spec/top_level_menu.md.
  */
-export type AppMode = 'mastodon' | 'rss' | 'video' | 'radio' | 'forum';
+export type AppMode = 'mastodon' | 'blog' | 'rss' | 'video' | 'radio' | 'forum';
 
-export const APP_MODES: readonly AppMode[] = ['mastodon', 'rss', 'video', 'radio', 'forum'];
+/**
+ * Also the switcher's order. Blog sits second because the switcher is how
+ * people discover it (spec/blog-mode.md): nothing else in the app points there.
+ */
+export const APP_MODES: readonly AppMode[] = ['mastodon', 'blog', 'rss', 'video', 'radio', 'forum'];
 
 /**
  * Tab-lived, not saved: a reload keeps the menu where it was, a new tab starts
@@ -38,6 +42,8 @@ export function modeForUrl(url: string): AppMode | null {
   )
     return 'radio';
   if (path === '/forum' || path.startsWith('/forum/')) return 'forum';
+  // `/blogs`, not `/blog`: the static site keeps /blog/ as the redirect to /legal/.
+  if (path === '/blogs' || path.startsWith('/blogs/') || path === '/settings/blog') return 'blog';
   if (path === '/rss' || path.startsWith('/rss/') || path === '/settings/rss') {
     return 'rss';
   }
@@ -48,6 +54,9 @@ export function modeForUrl(url: string): AppMode | null {
     path === '/watch' ||
     path === '/bookmarks' ||
     path.startsWith('/read/') ||
+    // Write and Drafts serve Fedi and Blog alike, so they keep the mode you came from.
+    path === '/write' ||
+    path === '/drafts' ||
     path.startsWith('/statuses/rss:') ||
     path.startsWith('/accounts/rss:') ||
     path === '/settings' ||

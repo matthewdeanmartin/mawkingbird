@@ -65,7 +65,9 @@ describe('MODE_NAV', () => {
 
   it('keeps the mode navigation slots, with Singles, Playlists and Studio in Radio', () => {
     // Radio is the verb "play": Now Playing is the dock's, settings sit on each page.
-    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' ? 3 : 5);
+    // Blog reaches five when Roll and Search land (spec/sprint/blog-2026-11.md).
+    for (const mode of APP_MODES)
+      expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' || mode === 'blog' ? 3 : 5);
     expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['singles', 'playlists', 'studio']);
     expect(MODE_NAV.mastodon[3].id).toBe('search');
     expect(MODE_NAV.video[3].id).toBe('search');

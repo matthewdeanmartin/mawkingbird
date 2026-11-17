@@ -64,6 +64,9 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const publicBlueskyPage =
     /^\/bluesky\/starter-packs\/[^/]+\/[^/]+\/?$/.test(link.pathname) ||
     /^\/feeds\/bluesky\/[^/]+\/?$/.test(link.pathname);
+  // Blog mode's front door and a shared blog (`/blogs/@user@server`): read from
+  // the author's own server, so nothing here needs a session. Not /blogs/me.
+  const publicBlog = /^\/blogs(\/@[^/@]+@[^/@]+)?\/?$/.test(link.pathname);
   const segments = router.parseUrl(state.url ?? '/').root.children['primary']?.segments ?? [];
   const parts = segments.map((segment) => segment.path);
   const copiedLink =
@@ -83,6 +86,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
     search ||
     publicWatch ||
     publicBlueskyPage ||
+    publicBlog ||
     copiedLink ||
     /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
   ) {

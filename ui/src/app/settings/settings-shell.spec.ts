@@ -119,6 +119,8 @@ describe('SettingsShell', () => {
         // Anonymous-capable: a note can be a browser-local draft, so the PKM tag
         // vocabulary is configurable without a server identity.
         'Writing',
+        // Blog mode's reading rule is two browser-local numbers.
+        'Blog',
         'Appearance',
         // Installing the web app needs no account.
         'Install app',

@@ -43,6 +43,7 @@ LINKS = (
     Link("Mastodon reader", "read/:id", "/read/123", "src/app/reading/thread/thread.html", "['/read'", "regex"),
     Link("Mastodon profile", "accounts/:id", "/accounts/123", "src/app/posts/status-card/status-card.ts", "'/accounts'", "regex"),
     Link("Qualified profile", "accounts/:id/:handle", "/accounts/123/@alice@far.example", "src/app/accounts/account-route.ts", "accountProfilePath", "regex"),
+    Link("Blog", "blogs/:handle", "/blogs/@alice@far.example", "src/app/blog/blogs-landing.ts", "['/blogs'", "regex"),
     Link("Hashtag", "tags/:tag", "/tags/birds", "src/app/posts/status-card/status-card.ts", "'/tags'", "regex"),
     Link("Shared message", "message/:id", "/message/message-status.abc", "src/app/connections/paste/message-payload.ts", "/message/", "top-level"),
     Link("Bundled starter collection", "collections/starter/:slug", "/collections/starter/birds", "src/app/public-pages/features/follow-kit.html", "'/collections/starter'", "regex"),

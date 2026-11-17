@@ -1,0 +1,318 @@
+import { Status } from '../platform/api/models';
+import { plainText } from '../discovery/search/search-refine';
+
+/**
+ * Which of an author's Mastodon posts are blog posts.
+ *
+ * Pure and framework-free on purpose: the web blog page classifies a few
+ * hundred posts fetched live, and Native will run the same function over
+ * archive pages. Two definitions of "blog post" would drift, and then a
+ * person's blog would read differently on the desktop than in the browser.
+ *
+ * ## The rule (spec/sprint/blog-2026-11.md, owner decisions 2026-11-17)
+ *
+ * A blog post is one of the author's own **chains** — a root post plus every
+ * public reply the author made to a post already in the chain — that is:
+ *
+ * - a **storm** of at least `minPosts` posts, or
+ * - at least `minChars` characters of prose across the chain (a single long
+ *   post is a chain of one), or
+ * - **marked**: the root's first line starts with `BLOG:`.
+ *
+ * A chain that starts as a reply to somebody else is a conversation, not a
+ * blog post, unless it is marked. The author's side-replies to other people
+ * inside a storm are not part of it. There is no tree: a chain is read in the
+ * order it was written.
+ *
+ * The title is the root's first line, with the marker removed. **Never the
+ * content warning** — on Mastodon a CW is a warning, and treating it as a
+ * headline would teach authors to misuse it.
+ */
+
+export interface BlogThresholds {
+  /** Posts in a chain that make it a storm. */
+  minPosts: number;
+  /** Characters of prose that make a chain long enough on its own. */
+  minChars: number;
+}
+
+export const DEFAULT_BLOG_THRESHOLDS: BlogThresholds = { minPosts: 3, minChars: 1250 };
+
+/** Bounds for the settings fields; values outside are clamped, not rejected. */
+export const BLOG_THRESHOLD_LIMITS = {
+  minPosts: { min: 2, max: 100 },
+  minChars: { min: 100, max: 50_000 },
+} as const;
+
+/** Why a chain counts. The first that applies, in this order. */
+export type BlogPostReason = 'marked' | 'storm' | 'long';
+
+export interface BlogPost {
+  /** The root's id: the address of the post as a whole. */
+  id: string;
+  root: Status;
+  /** Root first, then the author's own replies in the order written. */
+  chain: Status[];
+  title: string;
+  /** Prose after the title, shortened for a list row. */
+  excerpt: string;
+  /** Characters of prose across the chain. */
+  chars: number;
+  reason: BlogPostReason;
+  /**
+   * The root was not among the posts given, so the chain may start earlier.
+   * Only reported once history is exhausted; before that such chains are held
+   * back (see {@link BlogScan.pendingOlder}), because the next older page
+   * usually supplies the root and can turn them into conversations.
+   */
+  partial: boolean;
+}
+
+export interface BlogScan {
+  posts: BlogPost[];
+  /** Chains whose root is older than the posts given. */
+  pendingOlder: number;
+}
+
+const MARKER = /^\s*blog:\s*/i;
+const EXCERPT_CHARS = 240;
+const TITLE_CHARS = 140;
+/** Characters per minute: about 230 words of about five letters and a space. */
+const CHARS_PER_MINUTE = 1_300;
+
+function decodeEntities(text: string): string {
+  return text
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0*39;|&apos;/g, "'")
+    .replace(/&amp;/g, '&');
+}
+
+/** The post's text as lines: paragraphs and `<br>` become line breaks. */
+export function textLines(html: string): string[] {
+  const text = decodeEntities(
+    html
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<\/p>/gi, '\n')
+      .replace(/<[^>]*>/g, ''),
+  );
+  return text
+    .split('\n')
+    .map((line) => line.replace(/\s+/g, ' ').trim())
+    .filter(Boolean);
+}
+
+/** The first non-empty line of a post, untouched. */
+export function firstLine(html: string): string {
+  return textLines(html)[0] ?? '';
+}
+
+/** Whether the author marked this post as a blog post with a leading `BLOG:`. */
+export function hasBlogMarker(status: Status): boolean {
+  return MARKER.test(firstLine(status.content ?? ''));
+}
+
+function shorten(text: string, max: number): string {
+  if (text.length <= max) {
+    return text;
+  }
+  const cut = text.slice(0, max - 1);
+  const space = cut.lastIndexOf(' ');
+  return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd() + '…';
+}
+
+/**
+ * The title: the root's first line without the marker. A marker alone on its
+ * line hands the title to the next line. Empty when the post has no text.
+ */
+export function blogTitle(root: Status): string {
+  const lines = textLines(root.content ?? '');
+  if (!lines.length) {
+    return '';
+  }
+  const first = lines[0].replace(MARKER, '').trim();
+  return shorten(first || (lines[1] ?? ''), TITLE_CHARS);
+}
+
+/** Prose across a chain, markup excluded, the same measure the reader uses. */
+export function proseLength(chain: Status[]): number {
+  return chain.reduce((total, post) => total + plainText(post.content ?? '').length, 0);
+}
+
+/** Whole minutes to read, never less than one. */
+export function readingMinutes(chars: number): number {
+  return Math.max(1, Math.round(chars / CHARS_PER_MINUTE));
+}
+
+function excerptOf(chain: Status[]): string {
+  const lines = chain.flatMap((post) => textLines(post.content ?? ''));
+  // Drop the line the title came from (and a bare marker line before it).
+  let start = 1;
+  if (lines.length > 1 && lines[0].replace(MARKER, '').trim() === '') {
+    start = 2;
+  }
+  return shorten(lines.slice(start).join(' '), EXCERPT_CHARS);
+}
+
+function isPublic(status: Status): boolean {
+  return status.visibility === 'public' || status.visibility === 'unlisted';
+}
+
+function byWritingOrder(a: Status, b: Status): number {
+  const time = a.created_at.localeCompare(b.created_at);
+  if (time !== 0) {
+    return time;
+  }
+  return a.id.length - b.id.length || a.id.localeCompare(b.id);
+}
+
+/** Clamp to the settings bounds; non-numbers fall back to the default. */
+export function clampThresholds(value: Partial<BlogThresholds> | null | undefined): BlogThresholds {
+  const pick = (key: keyof BlogThresholds): number => {
+    const raw = Number(value?.[key]);
+    if (!Number.isFinite(raw)) {
+      return DEFAULT_BLOG_THRESHOLDS[key];
+    }
+    const { min, max } = BLOG_THRESHOLD_LIMITS[key];
+    return Math.min(max, Math.max(min, Math.round(raw)));
+  };
+  return { minPosts: pick('minPosts'), minChars: pick('minChars') };
+}
+
+/** Why a chain counts as a blog post, or null when it does not. */
+export function blogReason(chain: Status[], thresholds: BlogThresholds): BlogPostReason | null {
+  if (!chain.length) {
+    return null;
+  }
+  if (hasBlogMarker(chain[0])) {
+    return 'marked';
+  }
+  if (chain.length >= thresholds.minPosts) {
+    return 'storm';
+  }
+  if (proseLength(chain) >= thresholds.minChars) {
+    return 'long';
+  }
+  return null;
+}
+
+/**
+ * The author's blog posts among `statuses`, newest first.
+ *
+ * `statuses` may hold anything an account timeline returns — other authors'
+ * reblogs, private posts, replies to strangers — and may be several pages
+ * concatenated, duplicates included. `exhausted` says the author's history
+ * has been read to its start, so a chain whose root never arrived (deleted,
+ * or older than the server will page) is reported as it stands rather than
+ * held back.
+ */
+export function collectBlogPosts(
+  statuses: readonly Status[],
+  authorId: string,
+  thresholds: BlogThresholds,
+  exhausted = false,
+): BlogScan {
+  const own = new Map<string, Status>();
+  for (const status of statuses) {
+    if (status.reblog || status.account?.id !== authorId || !isPublic(status)) {
+      continue;
+    }
+    own.set(status.id, status);
+  }
+
+  /** A reply to the author's own post. Missing `in_reply_to_account_id` is trusted only when the parent is here. */
+  const selfParent = (status: Status): string | null => {
+    const parentId = status.in_reply_to_id;
+    if (!parentId) {
+      return null;
+    }
+    if (status.in_reply_to_account_id === authorId) {
+      return parentId;
+    }
+    if (status.in_reply_to_account_id == null && own.has(parentId)) {
+      return parentId;
+    }
+    return null;
+  };
+
+  // Find each post's root: walk up through the author's own replies.
+  const rootOf = new Map<string, { rootId: string; partial: boolean }>();
+  const resolve = (status: Status): { rootId: string; partial: boolean } => {
+    const known = rootOf.get(status.id);
+    if (known) {
+      return known;
+    }
+    const path: Status[] = [];
+    const seen = new Set<string>();
+    let current = status;
+    let result: { rootId: string; partial: boolean };
+    for (;;) {
+      const cached = rootOf.get(current.id);
+      if (cached) {
+        result = cached;
+        break;
+      }
+      path.push(current);
+      seen.add(current.id);
+      const parentId = selfParent(current);
+      if (!parentId) {
+        result = { rootId: current.id, partial: false };
+        break;
+      }
+      const parent = own.get(parentId);
+      if (!parent || seen.has(parentId)) {
+        // The chain goes on into posts we do not have.
+        result = { rootId: current.id, partial: true };
+        break;
+      }
+      current = parent;
+    }
+    for (const step of path) {
+      rootOf.set(step.id, result);
+    }
+    return result;
+  };
+
+  const chains = new Map<string, { partial: boolean; members: Status[] }>();
+  for (const status of own.values()) {
+    const { rootId, partial } = resolve(status);
+    const entry = chains.get(rootId) ?? { partial, members: [] };
+    entry.members.push(status);
+    chains.set(rootId, entry);
+  }
+
+  const posts: BlogPost[] = [];
+  let pendingOlder = 0;
+  for (const [rootId, { partial, members }] of chains) {
+    const root = own.get(rootId)!;
+    if (partial && !exhausted) {
+      pendingOlder++;
+      continue;
+    }
+    // A conversation: the root answers someone else. Only a marker overrides.
+    const answersSomeoneElse = !partial && root.in_reply_to_id != null && selfParent(root) === null;
+    if (answersSomeoneElse && !hasBlogMarker(root)) {
+      continue;
+    }
+    const chain = [...members].sort(byWritingOrder);
+    const reason = blogReason(chain, thresholds);
+    if (!reason) {
+      continue;
+    }
+    posts.push({
+      id: root.id,
+      root,
+      chain,
+      title: blogTitle(root),
+      excerpt: excerptOf(chain),
+      chars: proseLength(chain),
+      reason,
+      partial,
+    });
+  }
+
+  posts.sort((a, b) => byWritingOrder(b.root, a.root));
+  return { posts, pendingOlder };
+}

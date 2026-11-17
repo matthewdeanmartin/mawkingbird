@@ -858,13 +858,15 @@ describe('Shell app-mode nav', () => {
     // Feed management is RSS's fifth tab now, not a switcher row.
     expect(rows.map((row) => row.getAttribute('href'))).toEqual([
       '/home',
+      // Blog second: the switcher is how people find it (spec/blog-mode.md).
+      '/blogs',
       '/rss',
       '/videos',
       '/singles',
       '/forum',
     ]);
     expect(rows.filter((row) => row.getAttribute('aria-current') === 'true')).toHaveLength(1);
-    expect(rows[1].getAttribute('aria-current')).toBe('true');
+    expect(rows[2].getAttribute('aria-current')).toBe('true');
     expect(host.querySelector('.mode-switch')!.getAttribute('aria-label')).toContain('RSS');
   });
 

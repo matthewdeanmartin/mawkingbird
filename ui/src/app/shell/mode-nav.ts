@@ -18,6 +18,10 @@ import {
 // i18n shell.modeNav.video.search: Search
 // i18n shell.modeNav.video.saved: Saved
 // i18n shell.modeNav.mode.mastodon: Fedi
+// i18n shell.modeNav.mode.blog: Blog
+// i18n shell.modeNav.blog.write: Write
+// i18n shell.modeNav.blog.mine: Mine
+// i18n shell.modeNav.blog.drafts: Drafts
 // i18n shell.modeNav.mode.rss: RSS
 // i18n shell.modeNav.mode.video: Video
 // i18n shell.modeNav.mode.radio: Radio
@@ -97,6 +101,32 @@ function param(url: string, name: string): string | null {
 
 /** Home is not here: it is the fixed first slot of every mode (rule 1). */
 export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
+  // Mastodon as a blog engine (spec/sprint/blog-2026-11.md). Roll and Search
+  // join in later sprints; Write and Drafts are shared, sticky pages.
+  blog: [
+    {
+      id: 'write',
+      labelKey: 'shell.modeNav.blog.write',
+      icon: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',
+      link: '/write',
+      active: onPath('/write'),
+    },
+    {
+      id: 'mine',
+      labelKey: 'shell.modeNav.blog.mine',
+      icon: 'M6 3h9l4 4v14H6zM15 3v4h4M9 12h7M9 16h5',
+      link: '/blogs/me',
+      active: onPath('/blogs/me'),
+      requires: 'signedIn',
+    },
+    {
+      id: 'drafts',
+      labelKey: 'shell.modeNav.blog.drafts',
+      icon: 'M5 5h14M5 9h14M5 13h9M16 15l3 3M14 21v-3h3',
+      link: '/drafts',
+      active: onPath('/drafts'),
+    },
+  ],
   radio: [
     // Radio is the verb "play": the dock and Now Playing. Music is kept here,
     // and settings sit on each page (spec/sprint/radio-singles-2026-11.md).
@@ -418,6 +448,12 @@ export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
     labelKey: 'shell.modeNav.mode.forum',
     icon: 'M4 4h16v12H9l-5 4zM8 8h8M8 12h5',
     link: '/forum',
+  },
+  blog: {
+    mode: 'blog',
+    labelKey: 'shell.modeNav.mode.blog',
+    icon: 'M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3zM21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z',
+    link: '/blogs',
   },
   mastodon: {
     mode: 'mastodon',

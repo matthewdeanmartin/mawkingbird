@@ -1,0 +1,68 @@
+<div class="spage-head">
+  <h1>{{ 'settings.blog.title' | transloco }}</h1>
+  <p>{{ 'settings.blog.intro' | transloco }}</p>
+</div>
+
+<div class="spage-body">
+  <div class="ssection">
+    <h2>{{ 'settings.blog.rule' | transloco }}</h2>
+    <ul class="blog-rule">
+      <li>{{ 'settings.blog.rule.storm' | transloco: { posts: prefs.thresholds().minPosts } }}</li>
+      <li>{{ 'settings.blog.rule.long' | transloco: { chars: prefs.thresholds().minChars } }}</li>
+      <li>{{ 'settings.blog.rule.marked' | transloco }}</li>
+      <li>{{ 'settings.blog.rule.conversation' | transloco }}</li>
+      <li>{{ 'settings.blog.rule.title' | transloco }}</li>
+    </ul>
+
+    <mb-field
+      [label]="'settings.blog.minPosts' | transloco"
+      [hint]="
+        'settings.blog.minPosts.hint'
+          | transloco: { min: limits.minPosts.min, max: limits.minPosts.max }
+      "
+    >
+      <input
+        mbControl
+        type="number"
+        name="blog_min_posts"
+        [min]="limits.minPosts.min"
+        [max]="limits.minPosts.max"
+        step="1"
+        [value]="prefs.thresholds().minPosts"
+        (change)="setMinPosts($any($event.target).value)"
+      />
+    </mb-field>
+
+    <mb-field
+      [label]="'settings.blog.minChars' | transloco"
+      [hint]="
+        'settings.blog.minChars.hint'
+          | transloco: { min: limits.minChars.min, max: limits.minChars.max }
+      "
+    >
+      <input
+        mbControl
+        type="number"
+        name="blog_min_chars"
+        [min]="limits.minChars.min"
+        [max]="limits.minChars.max"
+        step="50"
+        [value]="prefs.thresholds().minChars"
+        (change)="setMinChars($any($event.target).value)"
+      />
+    </mb-field>
+
+    <p class="blog-actions">
+      <button
+        mbButton
+        type="button"
+        variant="outline"
+        [disabled]="prefs.isDefault()"
+        (click)="prefs.reset()"
+      >
+        {{ 'settings.blog.reset' | transloco }}
+      </button>
+      <a mbButton variant="link" routerLink="/blog">{{ 'settings.blog.open' | transloco }}</a>
+    </p>
+  </div>
+</div>

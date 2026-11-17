@@ -845,6 +845,13 @@ export const routes: Routes = [
             loadComponent: () => import('./settings/rss/settings-rss').then((m) => m.SettingsRss),
           },
           {
+            // Blog mode's rule for which posts are blog posts (spec/blog-mode.md).
+            path: 'blog',
+            title: 'Blog',
+            loadComponent: () =>
+              import('./settings/blog/settings-blog').then((m) => m.SettingsBlog),
+          },
+          {
             path: 'pseudonymity',
             title: 'Pseudonymity',
             canActivate: [anonymousUnavailableGuard],
@@ -1655,6 +1662,27 @@ export const routes: Routes = [
         path: 'read/:id',
         title: 'Reader',
         loadComponent: () => import('./reading/read/read-page').then((m) => m.ReadPage),
+      },
+      // Blog mode (spec/sprint/blog-2026-11.md): Mastodon accounts read as
+      // blogs. `/blogs`, not `/blog`: the static site keeps /blog/ as the
+      // redirect to /legal/. Not anonymous-guarded: a blog is for readers.
+      {
+        path: 'blogs',
+        title: 'Blog',
+        pathMatch: 'full',
+        loadComponent: () => import('./blog/blogs-landing').then((m) => m.BlogsLanding),
+      },
+      {
+        path: 'blogs/me',
+        title: 'My blog',
+        data: { mine: true },
+        loadComponent: () => import('./blog/blog-page').then((m) => m.BlogPage),
+      },
+      {
+        // `@user@server`: a handle, never an id, so the link works from any server.
+        path: 'blogs/:handle',
+        title: 'Blog',
+        loadComponent: () => import('./blog/blog-page').then((m) => m.BlogPage),
       },
       {
         // Friendly alias for Eliza's synthetic profile (id `eliza:self`).

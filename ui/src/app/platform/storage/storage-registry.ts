@@ -532,6 +532,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Device-wide watch party chat choices: compact or card view, replies/hashtag mode and refresh cadence. No tags, posts or accounts.',
   },
   {
+    base: 'mockingbird_blog_prefs',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Device-wide Blog thresholds: how many posts make a storm and how many characters make a long post. Two numbers; no posts or accounts.',
+  },
+  {
     base: 'mockingbird_rss_feeds',
     storage: 'local',
     suffix: 'account',

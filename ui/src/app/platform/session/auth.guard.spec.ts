@@ -51,6 +51,10 @@ describe('authGuard', () => {
     '/credits',
     '/collections/starter',
     '/collections/starter/infosec',
+    // Blog mode's front door and a shared blog.
+    '/blogs',
+    '/blogs/@alice@far.example',
+    '/blogs/@alice@far.example/',
     // The search tool pages hand their query here; no front page in between.
     '/search',
     '/search?q=coffee&type=statuses',
@@ -90,6 +94,10 @@ describe('authGuard', () => {
   it.each([
     '/aboutness',
     '/blog/drafts',
+    '/blogs/me',
+    '/blogs/alice',
+    '/blogs/@alice@far.example/123',
+    '/blogsx',
     '/plans',
     '/collections/123',
     '/collections/starter/a/b',
