@@ -51,9 +51,14 @@ export function externalMedia(raw: string): ExternalMedia | null {
         'youtube-music',
         'YouTube Music',
         music.videoId!,
-        `https://www.youtube-nocookie.com/embed/${music.videoId}?autoplay=0${music.start ? `&start=${music.start}` : ''}`,
+        // enablejsapi and our origin let Radio drive the player and hear it finish.
+        `https://www.youtube-nocookie.com/embed/${music.videoId}?autoplay=0&enablejsapi=1&playsinline=1` +
+          (globalThis.location?.origin
+            ? `&origin=${encodeURIComponent(globalThis.location.origin)}`
+            : '') +
+          (music.start ? `&start=${music.start}` : ''),
         'audio',
-        false,
+        true,
         225,
       );
   }

@@ -75,6 +75,7 @@ import { SearchExcerptView } from './search-excerpt-view';
 import { CodeMenuItems } from '../code-blocks/code-menu-items';
 import { MbButton } from '../../design-system/button/button';
 import { listenParams, radioPostRef } from '../../reading/radio-links';
+import { youtubeMusic } from '../../reading/audio-embeds/youtube-music';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import {
   ExternalMedia,
@@ -592,7 +593,8 @@ export class StatusCard {
       post.media_attachments.some((media) => media.type === 'audio') ||
       linkedAudio(post).length > 0 ||
       locItems(post).length > 0 ||
-      this.externalPlayers().some((media) => media.type === 'audio' && !!media.embed);
+      this.externalPlayers().some((media) => media.type === 'audio' && !!media.embed) ||
+      youtubeMusic(post).length > 0;
     return audio ? listenParams(post, this.server.baseUrl()) : null;
   });
   private readonly radioHandoff = inject(RadioHandoff);
@@ -613,7 +615,9 @@ export class StatusCard {
       locItems(this.display).length > 0 ||
       this.externalPlayers().some(
         (media) => media.type === 'audio' && media.controllable && !!media.embed,
-      ),
+      ) ||
+      // A music post's YouTube link plays in Radio as audio.
+      youtubeMusic(this.display).length > 0,
   );
 
   private readonly services = inject(ProviderPreferences);

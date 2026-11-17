@@ -112,7 +112,6 @@ describe('PlaylistPage', () => {
     paramMap.next(convertToParamMap({ id }));
     const { page, fixture, root } = render();
     expect(root.textContent).toContain('This playlist is empty');
-    page.adding.set(true);
     fixture.detectChanges();
     expect(page.candidates().map((track) => track.post.id)).toEqual(['1']);
     expect(Array.from(root.querySelectorAll('a'), (link) => link.getAttribute('href'))).toContain(
@@ -163,5 +162,34 @@ describe('PlaylistPage', () => {
     const page = TestBed.createComponent(PlaylistPage).componentInstance;
     await page.delete();
     expect(playlists.saved()).toEqual([]);
+  });
+
+  it('publishes only playlists authored in Studio, and copies a listening one there', () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    const tracks = player.tracks(post('1'));
+    const listening = playlists.create('Listen', tracks)!;
+    paramMap.next(convertToParamMap({ id: listening }));
+    const first = render();
+    expect(first.root.querySelector('section.publish')).toBeNull();
+    expect(first.page.back()).toEqual(['/playlists']);
+    first.page.toStudio();
+    const copy = playlists.saved().find((row) => row.authored)!;
+    expect(copy.tracks.map((track) => track.key)).toEqual(tracks.map((track) => track.key));
+    expect(navigate).toHaveBeenCalledWith(['/radio/studio/playlists', copy.id]);
+    first.fixture.destroy();
+
+    const stop = player.singleTracks(
+      post('s', '<a href="https://open.spotify.com/track/abc123">Spotify</a>'),
+    );
+    playlists.update(copy.id, (row) => ({ ...row, tracks: [...stop, ...row.tracks] }));
+    paramMap.next(convertToParamMap({ id: copy.id }));
+    const second = render();
+    expect(second.page.authored()).toBe(true);
+    expect(second.page.back()).toEqual(['/radio/studio']);
+    expect(second.root.querySelector('section.publish')).not.toBeNull();
+    expect(second.root.textContent).toContain('Plays on its own page');
+    second.page.play();
+    expect(player.queue().map((track) => track.post.id)).toEqual(['1']);
+    player.stop();
   });
 });

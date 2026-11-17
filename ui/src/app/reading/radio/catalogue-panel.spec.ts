@@ -39,7 +39,7 @@ describe('CataloguePanel', () => {
     actions = {
       published: signal([]),
       share: vi.fn(),
-      keep: vi.fn(() => 'Saved 1 singles.'),
+      keep: vi.fn(() => 'Saved 1 single.'),
       append: vi.fn(),
     };
     TestBed.configureTestingModule({
@@ -55,7 +55,6 @@ describe('CataloguePanel', () => {
 
   async function searched() {
     const fixture = TestBed.createComponent(CataloguePanel);
-    fixture.componentRef.setInput('mode', 'share');
     fixture.detectChanges();
     const panel = fixture.componentInstance;
     panel.query.set('sea shanty');
@@ -88,7 +87,7 @@ describe('CataloguePanel', () => {
     panel.toggle(item('a'), true);
     await panel.addSelected();
     expect(actions['keep']).toHaveBeenCalledWith([track('a')], null);
-    expect(panel.message()).toBe('Saved 1 singles.');
+    expect(panel.message()).toBe('Saved 1 single.');
     fixture.componentRef.setInput('target', 'mix');
     fixture.detectChanges();
     expect(root.textContent).toContain('Add to playlist');

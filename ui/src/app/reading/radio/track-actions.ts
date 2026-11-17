@@ -8,6 +8,7 @@ import { PlaylistPublisher } from './playlist-publisher';
 import { isContinuous, RadioPlayer, RadioTrack } from './radio-player';
 import { RadioPlaylists, trackUrl } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
+import { countKey } from './count-key';
 
 // i18n radio.share.viaLoc: via the Library of Congress
 // i18n radio.share.viaArchive: via the Internet Archive
@@ -16,7 +17,8 @@ import { SavedSingles } from './saved-singles';
 // i18n radio.append.confirm: Add “{{title}}” to “{{playlist}}”? This will create {{posts}} posts and edit {{edits}} on Mastodon.
 // i18n radio.append.private: “{{title}}” is not public, so it cannot join a published playlist.
 // i18n radio.append.done: Added to “{{playlist}}”.
-// i18n radio.keep.saved: Saved {{count}} singles.
+// i18n radio.keep.saved.one: Saved {{count}} single.
+// i18n radio.keep.saved.other: Saved {{count}} singles.
 // i18n radio.keep.alreadySaved: Already in your saved singles.
 // i18n radio.keep.saveFailed: This browser could not save your singles.
 // i18n radio.keep.added: Added {{count}} to {{playlist}}.
@@ -79,21 +81,24 @@ export class TrackActions {
 
   /**
    * Keep recordings: as saved Singles, or, given a playlist, at the end of that
-   * playlist, which takes only recordings that play one after another. Returns
-   * what happened, for the listener.
+   * playlist. A listening playlist takes only recordings that play one after
+   * another; one authored in Studio takes any. Returns what happened.
    */
   keep(tracks: readonly RadioTrack[], playlistId?: string | null): string {
     if (!playlistId) {
       const added = this.singles.save(tracks);
       if (this.singles.error()) return this.transloco.translate('radio.keep.saveFailed');
-      return this.transloco.translate(added ? 'radio.keep.saved' : 'radio.keep.alreadySaved', {
-        count: added,
-      });
+      return this.transloco.translate(
+        added ? countKey('radio.keep.saved', added) : 'radio.keep.alreadySaved',
+        {
+          count: added,
+        },
+      );
     }
     this.playlists.refresh();
     const row = this.playlists.saved().find((item) => item.id === playlistId);
     if (!row) return '';
-    const playable = tracks.filter(isContinuous);
+    const playable = row.authored ? [...tracks] : tracks.filter(isContinuous);
     if (!playable.length) return this.transloco.translate('radio.keep.notContinuous');
     const known = new Set(row.tracks.map((track) => track.key));
     const added = playable.filter((track) => !known.has(track.key) && !!known.add(track.key));

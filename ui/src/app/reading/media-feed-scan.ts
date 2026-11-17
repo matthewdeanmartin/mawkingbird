@@ -12,6 +12,8 @@ export interface MediaFeedPage {
 export class MediaFeedScan {
   readonly posts = signal<Status[]>([]);
   readonly scanned = signal(0);
+  /** Requests sent since the scan started, shown so a long scan is never silent. */
+  readonly requests = signal(0);
   readonly loading = signal(false);
   readonly exhausted = signal(false);
   readonly failed = signal(false);
@@ -34,6 +36,7 @@ export class MediaFeedScan {
     this.fetch = undefined;
     this.posts.set([]);
     this.scanned.set(0);
+    this.requests.set(0);
     this.failed.set(false);
     this.exhausted.set(false);
     this.retryAt.set(0);
@@ -47,6 +50,7 @@ export class MediaFeedScan {
     this.cursors.clear();
     this.posts.set([]);
     this.scanned.set(0);
+    this.requests.set(0);
     this.exhausted.set(false);
     this.retryAt.set(0);
     return this.more();
@@ -81,6 +85,7 @@ export class MediaFeedScan {
     try {
       // Ten requests per explicit action; sparse feeds must never scan forever.
       for (let calls = 0; calls < 10 && this.posts().length < target; calls++) {
+        this.requests.update((n) => n + 1);
         const page = await firstValueFrom(
           this.fetch(this.cursor).pipe(timeout(30_000), takeUntil(this.cancelRequest)),
         );

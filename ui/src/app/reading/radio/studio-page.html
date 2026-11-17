@@ -17,16 +17,15 @@
       <a
         mbNavLink
         routerLink="/radio/studio"
-        [queryParams]="{ view: 'shareable' }"
-        [current]="view() === 'shareable'"
-        >{{ 'studio.tab.shareable' | transloco }}</a
+        [queryParams]="{ view: 'playlists' }"
+        [current]="view() === 'playlists'"
+        >{{ 'studio.tab.playlists' | transloco }}</a
       >
     </nav>
     @if (view() === 'catalogue') {
       <app-radio-studio />
-    } @else if (view() === 'shareable') {
-      <h2>{{ 'studio.tab.shareable' | transloco }}</h2>
-      <app-catalogue-panel mode="share" />
+    } @else if (view() === 'playlists') {
+      <app-studio-playlists />
     } @else {
       <section class="recording" [attr.aria-label]="'studio.recording' | transloco">
         <h2>{{ 'radio.prepareAudio' | transloco }}</h2>

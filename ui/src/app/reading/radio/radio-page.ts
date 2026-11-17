@@ -24,9 +24,10 @@ import { RadioSettings } from './radio-settings';
 // i18n radio.openFailed: Could not open that post. It may be private or deleted.
 
 /**
- * `/radio` is what is playing now, and Radio's settings. Radio is the verb
- * "play": Singles and Playlists are where music is found and kept. Older
- * `/radio` links (shared accounts, posts, playlists, tabs) open their new home.
+ * `/radio` is what is playing now; `/radio/settings` is Radio's settings. Radio
+ * is the verb "play": Singles and Playlists are where music is found and kept.
+ * `?play=` plays a post; older shared links (accounts, posts, playlists) open
+ * their new home.
  */
 @Component({
   selector: 'app-radio-page',
@@ -51,22 +52,22 @@ export class RadioPage {
   constructor() {
     this.player.installDock(RadioDock);
     const destroy = inject(DestroyRef);
+    this.view.set(this.route.snapshot?.data?.['view'] === 'settings' ? 'settings' : 'radio');
+    this.player.fullView.set(this.view() === 'radio');
     this.route.queryParamMap.pipe(takeUntilDestroyed(destroy)).subscribe((params) => {
-      const view = params.get('view');
-      this.view.set(view === 'settings' ? 'settings' : 'radio');
-      this.player.fullView.set(this.view() === 'radio');
+      if (this.view() === 'settings') return;
+      const play = radioPostRef(params.get('play'));
+      if (play?.originalUrl) {
+        void this.playPost(play.originalUrl);
+        return;
+      }
+      // Links people shared before Singles and Playlists existed open their new home.
       const fragment = this.route.snapshot?.fragment ?? '';
       const post = radioPostRef(params.get('post'));
       const account = radioAccount(params.get('acct'));
-      if (post?.originalUrl) {
-        if (params.get('add') === '1' && view === 'radio') void this.playPost(post.originalUrl);
-        else if (params.get('add') === '1') this.forward(['/singles'], { save: post.originalUrl });
-        else this.forward(['/playlists', 'shared'], { post: post.originalUrl });
-      } else if (account) this.forward(['/singles', 'find'], { acct: account.acct });
+      if (post?.originalUrl) this.forward(['/playlists', 'shared'], { post: post.originalUrl });
+      else if (account) this.forward(['/singles', 'find'], { acct: account.acct });
       else if (readPlaylistFragment(fragment)) this.forward(['/playlists', 'shared'], {}, fragment);
-      else if (view === 'search') this.forward(['/singles', 'find']);
-      else if (view && ['publish', 'playlist', 'saved', 'mine'].includes(view))
-        this.forward(['/playlists']);
     });
     destroy.onDestroy(() => {
       this.generation++;
@@ -144,7 +145,6 @@ export class RadioPage {
 // i18n radio.hashtag: Hashtag
 // i18n radio.hashtagHint: For example #robotmusic. Posts linking music players count, not only attached audio.
 // i18n radio.closeMenu: Close menu
-// i18n radio.trackCount: {{count}} tracks
 // i18n radio.renameTrack: Rename
 // i18n radio.renamePrompt: Title for this playlist entry. Leave it empty to use the automatic title.
 // i18n radio.publishThread: Publish as a Mastodon thread
@@ -174,6 +174,6 @@ export class RadioPage {
 // i18n radio.removeTrack: Remove
 // i18n radio.importing: Importing playlist…
 // i18n radio.importResult: Unsupported or unavailable links skipped: {{count}}
-// i18n radio.saveFailed: Could not save the playlist in this browser. Your current queue is retained.
+// i18n radio.saveFailed: Could not save your playlists in this browser.
 // i18n radio.addPlaylist: Add to playlist
 // i18n radio.playResults: Play all results

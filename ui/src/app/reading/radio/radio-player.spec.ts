@@ -456,4 +456,30 @@ describe('RadioPlayer', () => {
     expect(player.current()?.post.id).toBe('20');
     expect(player.playing()).toBe(true);
   });
+
+  it('starts a playlist at the next track that plays here, skipping page-only players', () => {
+    const spotify = {
+      ...post('s'),
+      media_attachments: [],
+      content: '<a href="https://open.spotify.com/track/abc123">Spotify</a>',
+    } as Status;
+    const [stop] = player.singleTracks(spotify);
+    const [song] = player.tracks(post('2'));
+    player.playTracks([stop, song]);
+    expect(player.queue().map((track) => track.post.id)).toEqual(['2']);
+    expect(player.current()?.post.id).toBe('2');
+  });
+
+  it('queues a music post’s YouTube link as a track that advances on its own', () => {
+    const music = {
+      ...post('yt'),
+      media_attachments: [],
+      tags: [{ name: 'fedimusic', url: '' }],
+      content: '<a href="https://youtu.be/jNQXAC9IVRw">A song</a>',
+    } as Status;
+    player.scan.posts.set([music]);
+    const [track] = player.resultTracks();
+    expect(track.external).toMatchObject({ provider: 'youtube', controllable: true });
+    expect(player.singlesOf(music).map((item) => item.key)).toEqual([track.key]);
+  });
 });

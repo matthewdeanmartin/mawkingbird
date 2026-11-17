@@ -39,6 +39,11 @@ export interface SavedRadioPlaylist {
   description?: string;
   tracks: RadioTrack[];
   published?: PublishedPlaylist;
+  /**
+   * Made in Studio to publish (any published playlist is one). It may hold
+   * recordings that play only on their own page; a listening playlist may not.
+   */
+  authored?: boolean;
 }
 
 function publishedRecord(value: unknown): PublishedPlaylist | undefined {
@@ -88,6 +93,10 @@ export function trackUrl(track: RadioTrack): string | null {
     null
   );
 }
+/** Where a playlist's page lives: Studio for authored ones, Playlists otherwise. */
+export function playlistPath(row: Pick<SavedRadioPlaylist, 'id' | 'authored'>): string[] {
+  return row.authored ? ['/radio/studio/playlists', row.id] : ['/playlists', row.id];
+}
 export function playlistUrls(tracks: RadioTrack[]): string[] {
   return [...new Set(tracks.map(trackUrl).filter((url): url is string => !!url))];
 }
@@ -130,17 +139,20 @@ export class RadioPlaylists {
                   typeof item?.name === 'string' &&
                   Array.isArray(item?.tracks),
               )
-              .map((item) => ({
-                id: item.id,
-                name: item.name,
-                ...(typeof item.description === 'string' && item.description
-                  ? { description: item.description }
-                  : {}),
-                tracks: this.validate(item.tracks),
-                ...(publishedRecord(item.published)
-                  ? { published: publishedRecord(item.published) }
-                  : {}),
-              }))
+              .map((item) => {
+                const published = publishedRecord(item.published);
+                const authored = item.authored === true || !!published;
+                return {
+                  id: item.id,
+                  name: item.name,
+                  ...(typeof item.description === 'string' && item.description
+                    ? { description: item.description }
+                    : {}),
+                  tracks: this.validate(item.tracks, authored),
+                  ...(published ? { published } : {}),
+                  ...(authored ? { authored: true } : {}),
+                };
+              })
           : [],
       );
     } catch {
@@ -148,11 +160,11 @@ export class RadioPlaylists {
       this.error.set(true);
     }
   }
-  private validate(items: RadioTrack[]): RadioTrack[] {
+  /** Stored tracks that still describe a recording; only authored playlists keep page-only players. */
+  private validate(items: RadioTrack[], authored = false): RadioTrack[] {
     return items.flatMap((item) => {
       if (!item?.post?.account || !Array.isArray(item.post.media_attachments)) return [];
-      return this.player
-        .tracks(item.post)
+      return (authored ? this.player.singleTracks(item.post) : this.player.tracks(item.post))
         .filter((track) => track.key === item.key)
         .map((track) =>
           typeof item.title === 'string' && item.title.trim()
@@ -190,13 +202,17 @@ export class RadioPlaylists {
     if (!this.error()) this.active.set(row.id);
     return this.error() ? null : row.id;
   }
-  /** Start an empty playlist; its page fills it. Returns the new id, or null if storage failed. */
-  create(name: string, tracks: RadioTrack[] = []): string | null {
+  /**
+   * Start a playlist; its page fills it. `authored` makes one to publish from
+   * Studio. Returns the new id, or null if storage failed.
+   */
+  create(name: string, tracks: RadioTrack[] = [], authored = false): string | null {
     this.refresh();
     const row: SavedRadioPlaylist = {
       id: crypto.randomUUID(),
       name: name.trim().slice(0, 200),
-      tracks: this.validate(tracks),
+      tracks: this.validate(tracks, authored),
+      ...(authored ? { authored: true } : {}),
     };
     this.write([...this.saved(), row]);
     return this.error() ? null : row.id;

@@ -1195,6 +1195,18 @@ export const routes: Routes = [
         loadComponent: () => import('./reading/radio/radio-page').then((m) => m.RadioPage),
       },
       {
+        path: 'radio/settings',
+        title: 'Radio settings',
+        data: { view: 'settings' },
+        loadComponent: () => import('./reading/radio/radio-page').then((m) => m.RadioPage),
+      },
+      {
+        // A playlist made to publish; the same page edits listening playlists.
+        path: 'radio/studio/playlists/:id',
+        title: 'Studio playlist',
+        loadComponent: () => import('./reading/radio/playlist-page').then((m) => m.PlaylistPage),
+      },
+      {
         path: 'radio/studio',
         title: 'Studio',
         loadComponent: () => import('./reading/radio/studio-page').then((m) => m.StudioPage),

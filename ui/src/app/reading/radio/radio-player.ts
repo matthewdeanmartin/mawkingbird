@@ -19,6 +19,7 @@ import { FollowTrust } from '../../accounts/follow-trust';
 import { Playback, PlaybackHandle } from '../video-player/playback';
 import { RadioOutlet } from '../../shell/radio-outlet';
 import { ExternalMedia, postExternalMedia } from '../audio-embeds/providers';
+import { youtubeMusic } from '../audio-embeds/youtube-music';
 import type { WidgetController, WidgetState } from '../audio-embeds/widget-api';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
 import { ProviderConsent } from '../audio-embeds/provider-consent';
@@ -44,9 +45,8 @@ export const RADIO_AUDIO = new InjectionToken<() => HTMLAudioElement>('Radio aud
     return () => document.createElement('audio');
   },
 });
-/** Feeds and hashtags scan posts; `saved` runs a main-Search saved search; `loc` and `archive` search catalogues. */
-export type RadioSource =
-  'account' | 'home' | 'list' | 'tag' | 'saved' | 'loc' | 'archive' | 'links';
+/** Feeds and hashtags scan posts; `saved` runs a main-Search saved search; `catalogue` searches public catalogues; `links` opens pasted links. */
+export type RadioSource = 'account' | 'home' | 'list' | 'tag' | 'saved' | 'catalogue' | 'links';
 /** `#robotmusic`, `robotmusic` or a pasted tag URL → `robotmusic`; null if not a tag. */
 export function radioTag(raw: string): string | null {
   const value = raw
@@ -94,7 +94,9 @@ export class RadioPlayer {
         (this.linked.candidate(post) ||
           this.services
             .arrange(postExternalMedia(post))
-            .some((source) => !!source.embed && source.type !== 'video'))),
+            .some((source) => !!source.embed && source.type !== 'video') ||
+          // Most music on Mastodon is a YouTube link on a post about music.
+          youtubeMusic(post).length > 0)),
   );
   readonly source = signal<RadioSource>('account');
   readonly tag = signal('');
@@ -289,7 +291,9 @@ export class RadioPlayer {
   }
   /** Play these tracks from `start`, replacing whatever was playing. */
   playTracks(tracks: readonly RadioTrack[], start = 0, at = 0): void {
-    if (!tracks[start] || !isContinuous(tracks[start])) return;
+    // Players that only play on their own page are skipped; start at the next one that plays here.
+    const first = tracks.slice(start).find(isContinuous);
+    if (!first) return;
     this.stop();
     this.following.set(false);
     const keys = new Set<string>();
@@ -298,8 +302,8 @@ export class RadioPlayer {
         (track) => isContinuous(track) && !keys.has(track.key) && !!keys.add(track.key),
       ),
     );
-    this.select(this.list().findIndex((track) => track.key === tracks[start].key));
-    this.pendingSeek = at > 0 ? at : 0;
+    this.select(this.list().findIndex((track) => track.key === first.key));
+    this.pendingSeek = at > 0 && first === tracks[start] ? at : 0;
   }
   /**
    * A Single takes over the queue as a one-track playlist; what was playing is
@@ -377,7 +381,12 @@ export class RadioPlayer {
   }
   /** Every continuous provider source a post links, regardless of preferences. */
   private allRadioSources(post: Status): ExternalMedia[] {
-    return postExternalMedia(post).filter((s) => s.type === 'audio' && s.controllable && s.embed);
+    const sources = postExternalMedia(post).filter(
+      (s) => s.type === 'audio' && s.controllable && s.embed,
+    );
+    const keys = new Set(sources.map((source) => source.key));
+    // A music post's YouTube links play here as audio; elsewhere they stay videos.
+    return [...sources, ...youtubeMusic(post).filter((source) => !keys.has(source.key))];
   }
   /** The sources to offer, ordered and pruned by the listener's service preferences. */
   radioSources(post: Status): ExternalMedia[] {

@@ -1,22 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { radioAccount, radioLink, radioPostRef } from './radio-links';
+import { radioAccount, radioPostRef } from './radio-links';
 
 describe('portable Radio links', () => {
-  it.each(['/', '/canary/', '/mawkingbird/canary/'])('preserves deployment base %s', (base) => {
+  it('reads a portable post reference from a shared link', () => {
     const post = 'https://sea.example/@singer/123';
-    const link = new URL(radioLink(`https://mawkingbird.com${base}`, { post }));
-    expect(link.pathname).toBe(`${base}radio`);
-    expect(link.searchParams.get('post')).toBe(post);
+    const link = new URL(
+      `https://mawkingbird.com/playlists/shared?post=${encodeURIComponent(post)}`,
+    );
     expect(radioPostRef(link.searchParams.get('post'))).toEqual({
       server: 'https://sea.example',
       id: '123',
       originalUrl: post,
     });
-    expect(
-      new URL(
-        radioLink(`https://mawkingbird.com${base}`, { acct: 'singer@sea.example' }),
-      ).searchParams.get('acct'),
-    ).toBe('singer@sea.example');
   });
   it.each([
     'https://sea.example/users/singer/statuses/123',

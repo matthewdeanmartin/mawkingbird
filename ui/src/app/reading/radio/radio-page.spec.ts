@@ -57,9 +57,14 @@ describe('RadioPage', () => {
   });
 
   /** `before` runs once the route is set, when services may first be injected. */
-  function open(params: Record<string, string>, fragment = '', before?: () => void) {
+  function open(
+    params: Record<string, string>,
+    fragment = '',
+    before?: () => void,
+    data: Record<string, string> = {},
+  ) {
     TestBed.overrideProvider(ActivatedRoute, {
-      useValue: { snapshot: { fragment }, queryParamMap: of(convertToParamMap(params)) },
+      useValue: { snapshot: { fragment, data }, queryParamMap: of(convertToParamMap(params)) },
     });
     before?.();
     navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true) as never;
@@ -74,14 +79,15 @@ describe('RadioPage', () => {
     expect(root.querySelector('h1')?.textContent).toContain('Now playing');
     expect(root.textContent).toContain('Nothing is playing');
     expect(Array.from(root.querySelectorAll('a'), (link) => link.getAttribute('href'))).toEqual(
-      expect.arrayContaining(['/singles', '/playlists', '/radio?view=settings']),
+      expect.arrayContaining(['/singles', '/playlists', '/radio/settings']),
     );
     expect(root.querySelector('nav')).toBeNull();
     expect(navigate).not.toHaveBeenCalled();
   });
 
-  it('shows Radio settings', () => {
-    const fixture = open({ view: 'settings' });
+  it('shows Radio settings on their own route, never forwarding from there', () => {
+    const fixture = open({ acct: 'singer@sea.example' }, '', undefined, { view: 'settings' });
+    expect(navigate).not.toHaveBeenCalled();
     expect(fixture.nativeElement.querySelector('app-radio-settings')).toBeTruthy();
     expect(fixture.componentInstance.player.fullView()).toBe(false);
   });
@@ -94,23 +100,24 @@ describe('RadioPage', () => {
       ['/playlists', 'shared'],
       { post: 'https://sea.example/@singer/1' },
     ],
-    [
-      { post: 'https://sea.example/@singer/1', add: '1', view: 'playlist' },
-      '',
-      ['/singles'],
-      { save: 'https://sea.example/@singer/1' },
-    ],
-    [{ view: 'search' }, '', ['/singles', 'find'], {}],
-    [{ view: 'publish' }, '', ['/playlists'], {}],
-    [{ view: 'saved' }, '', ['/playlists'], {}],
-    [{ view: 'mine' }, '', ['/playlists'], {}],
-  ])('forwards an older Radio link %o to its new page', (params, fragment, path, queryParams) => {
-    open(params, fragment);
-    expect(navigate).toHaveBeenCalledWith(
-      path,
-      expect.objectContaining({ queryParams, replaceUrl: true }),
-    );
-  });
+  ])(
+    'forwards an older shared Radio link %o to its new page',
+    (params, fragment, path, queryParams) => {
+      open(params, fragment);
+      expect(navigate).toHaveBeenCalledWith(
+        path,
+        expect.objectContaining({ queryParams, replaceUrl: true }),
+      );
+    },
+  );
+
+  it.each(['search', 'publish', 'saved', 'mine', 'playlist'])(
+    'ignores the retired tab address ?view=%s instead of forwarding it',
+    (view) => {
+      open({ view });
+      expect(navigate).not.toHaveBeenCalled();
+    },
+  );
 
   it('forwards a shared playlist fragment to the shared playlist page', () => {
     const fragment = playlistFragment(['https://sea.example/song.mp3']);
@@ -127,7 +134,7 @@ describe('RadioPage', () => {
     const getStatus = vi.fn(() => throwError(() => new Error('origin refuses anonymous reads')));
     TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus } });
     let player!: RadioPlayer;
-    const fixture = open({ post: url, add: '1', view: 'radio' }, '', () => {
+    const fixture = open({ play: url }, '', () => {
       TestBed.inject(RadioHandoff).offer(offered);
       player = TestBed.inject(RadioPlayer);
       player.playTracks(player.tracks(audio));
@@ -154,7 +161,7 @@ describe('RadioPage', () => {
       content: '<a href="https://open.spotify.com/track/abc123">Music</a>',
     } as Status;
     TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus: () => of(inline) } });
-    const fixture = open({ post: url, add: '1', view: 'radio' });
+    const fixture = open({ play: url });
     await vi.waitFor(() => expect(fixture.componentInstance.opening()).toBe(false));
     expect(fixture.componentInstance.player.active()).toBe(false);
     expect(navigate).toHaveBeenCalledWith(

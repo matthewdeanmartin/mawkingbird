@@ -127,4 +127,73 @@ describe('external widget adapters', () => {
     expect(update).not.toHaveBeenCalled();
     controller.destroy();
   });
+
+  it('drives a YouTube embed by messages alone and reports play, progress, title and end once', async () => {
+    const f = frame();
+    const send = vi.spyOn(f.contentWindow!, 'postMessage');
+    const update = vi.fn();
+    const yt = 'https://www.youtube-nocookie.com';
+    const connecting = connectWidget('youtube', f, update);
+    expect(send).toHaveBeenCalledWith(
+      JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }),
+      yt,
+    );
+    // Another origin cannot complete the handshake.
+    message(f, { event: 'onReady' }, 'https://evil.example');
+    message(f, { event: 'onReady' }, yt);
+    const controller = await connecting;
+    controller.play();
+    controller.seek(16);
+    controller.volume(0.5);
+    expect(send).toHaveBeenCalledWith(
+      JSON.stringify({
+        event: 'command',
+        func: 'seekTo',
+        args: [16, true],
+        id: 1,
+        channel: 'widget',
+      }),
+      yt,
+    );
+    expect(send).toHaveBeenCalledWith(
+      JSON.stringify({ event: 'command', func: 'setVolume', args: [50], id: 1, channel: 'widget' }),
+      yt,
+    );
+    message(
+      f,
+      {
+        event: 'infoDelivery',
+        info: {
+          playerState: 1,
+          currentTime: 3,
+          duration: 19,
+          videoData: { title: 'Me at the zoo', author: 'jawed' },
+        },
+      },
+      yt,
+    );
+    expect(update).toHaveBeenCalledWith({
+      time: 3,
+      duration: 19,
+      title: 'Me at the zoo',
+      artist: 'jawed',
+    });
+    expect(update).toHaveBeenCalledWith({ playing: true });
+    message(f, { event: 'onStateChange', info: 0 }, yt);
+    message(f, { event: 'infoDelivery', info: { playerState: 0 } }, yt);
+    expect(update.mock.calls.filter(([state]) => state.ended)).toHaveLength(1);
+    message(f, { event: 'onError', info: 150 }, yt);
+    expect(update).toHaveBeenCalledWith({ error: true });
+    controller.destroy();
+    update.mockClear();
+    message(f, { event: 'onStateChange', info: 1 }, yt);
+    expect(update).not.toHaveBeenCalled();
+  });
+
+  it('rejects a YouTube video whose owner refuses embedding', async () => {
+    const f = frame();
+    const connecting = connectWidget('youtube-music', f, vi.fn());
+    message(f, { event: 'onError', info: 150 }, 'https://www.youtube-nocookie.com');
+    await expect(connecting).rejects.toThrow('YouTube refused the video');
+  });
 });

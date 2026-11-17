@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -15,7 +15,6 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { Auth } from '../../platform/session/auth';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { radioAccount, radioPostRef } from '../radio-links';
-import { PlaylistPublisher } from './playlist-publisher';
 import { PlaylistThread, playlistThreads } from './playlist-thread';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
@@ -23,9 +22,10 @@ import { RadioIcon } from './radio-icon';
 import { RadioPlayer } from './radio-player';
 import { RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
 import { postTitle } from './track-title';
+import { PlaylistsTabs } from './section-tabs';
+import { countKey } from './count-key';
 
 // i18n playlists.title: Playlists
-// i18n playlists.lead: Playlists play one recording after another. They stay in this browser.
 // i18n playlists.new: New playlist
 // i18n playlists.find: Find playlists
 // i18n playlists.empty: No playlists yet
@@ -37,7 +37,6 @@ import { postTitle } from './track-title';
 // i18n playlists.published: Published
 // i18n playlists.storageFailed: This browser could not save your playlists.
 // i18n playlists.findLead: Playlists on Mastodon are a post with several recordings, or a thread of them.
-// i18n playlists.back: Playlists
 // i18n playlists.link: Playlist link
 // i18n playlists.linkHint: A post link. Replies by the same person are included.
 // i18n playlists.openLink: Open
@@ -49,10 +48,8 @@ import { postTitle } from './track-title';
 // i18n playlists.searching: Looking through recent posts…
 // i18n playlists.none: No playlists found in their recent posts.
 // i18n playlists.lookupFailed: Could not read that account’s posts.
-// i18n playlists.recordings: {{count}} recordings
-// i18n playlists.mine: My playlist threads
-// i18n playlists.mineHint: Playlists you posted, found in your recent posts.
-// i18n playlists.adopt: Add to my playlists
+// i18n playlists.recordings.one: {{count}} recording
+// i18n playlists.recordings.other: {{count}} recordings
 // i18n playlists.view: Open {{name}}
 
 const SCAN_PAGES = 5;
@@ -71,6 +68,7 @@ const SCAN_PAGES = 5;
     MbToolbarButton,
     RadioHeader,
     RadioIcon,
+    PlaylistsTabs,
   ],
   templateUrl: './playlists-page.html',
   styleUrl: './radio-lists.css',
@@ -78,7 +76,8 @@ const SCAN_PAGES = 5;
 export class PlaylistsPage {
   readonly playlists = inject(RadioPlaylists);
   readonly player = inject(RadioPlayer);
-  readonly publisher = inject(PlaylistPublisher);
+  /** Playlists to listen to; the ones made to publish live in Studio. */
+  readonly listening = computed(() => this.playlists.saved().filter((row) => !row.authored));
   private readonly auth = inject(Auth);
   private readonly api = inject(Api);
   private readonly publicApi = inject(AnonymousPublicApi);
@@ -94,6 +93,7 @@ export class PlaylistsPage {
   readonly looking = signal(false);
   readonly lookFailed = signal(false);
   readonly found = signal<PlaylistThread[] | null>(null);
+  readonly countKey = countKey;
   private generation = 0;
 
   constructor() {
@@ -202,10 +202,5 @@ export class PlaylistsPage {
   view(thread: PlaylistThread): void {
     const url = radioPostRef(thread.root.url ?? '')?.originalUrl;
     if (url) void this.router.navigate(['/playlists', 'shared'], { queryParams: { post: url } });
-  }
-
-  async adopt(thread: PlaylistThread): Promise<void> {
-    const id = await this.publisher.adopt(thread);
-    if (id) void this.router.navigate(['/playlists', id]);
   }
 }

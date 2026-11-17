@@ -75,6 +75,11 @@ export class SavedSingles {
     this.write(this.items().filter((item) => item.track.key !== key));
   }
 
+  clear(): void {
+    this.refresh();
+    this.write([]);
+  }
+
   private write(items: SavedSingle[]): void {
     try {
       localStorage.setItem(this.key, JSON.stringify(items));

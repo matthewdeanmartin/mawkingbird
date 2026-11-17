@@ -20,6 +20,9 @@ import { TrackActions } from './track-actions';
 
 // i18n radio.catalogue.loc: Library of Congress
 // i18n radio.catalogue.archive: Internet Archive
+// i18n radio.catalogue.openverse: Openverse (openly licensed music)
+// i18n radio.catalogue.audius: Audius (independent artists)
+// i18n radio.catalogue.commons: Wikimedia Commons
 // i18n radio.catalogue.source: Catalogue
 // i18n radio.catalogue.query: Search recordings
 // i18n radio.catalogue.queryHint: Try a song, performer, instrument or place, such as “sea shanty” or “banjo”.
@@ -164,7 +167,7 @@ import { TrackActions } from './track-actions';
               <button
                 mbButton
                 size="small"
-                [variant]="mode() === 'share' ? 'solid' : 'outline'"
+                variant="outline"
                 type="button"
                 [disabled]="opening()"
                 (click)="share(item)"
@@ -270,8 +273,6 @@ import { TrackActions } from './track-actions';
 export class CataloguePanel {
   /** Fixed by the host (Build Playlist's Audio source), or chosen in the panel. */
   readonly source = input<CatalogueSource | null>(null);
-  /** `share` (Studio) leads with Share; `build` (Find singles) leads with keeping. */
-  readonly mode = input<'build' | 'share'>('build');
   /** A playlist to add to; without one, kept recordings become saved Singles. */
   readonly target = input<string | null>(null);
   readonly sources = CATALOGUE_SOURCES;

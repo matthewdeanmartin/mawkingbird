@@ -1,5 +1,4 @@
-import { ExternalMedia } from '../audio-embeds/providers';
-import { Component, input, output, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
@@ -13,7 +12,6 @@ import {
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
 import { Status } from '../../platform/api/models';
-import { StatusCard } from '../../posts/status-card/status-card';
 import { FindSinglesPage } from './find-singles-page';
 import { RadioPlaylists } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
@@ -23,17 +21,6 @@ import { serializeMastodonQuery } from '../../discovery/search/mastodon-query-se
 import { Playback } from '../video-player/playback';
 import { TrustedAccounts } from '../../accounts/trusted-accounts';
 import { FollowTrust } from '../../accounts/follow-trust';
-
-@Component({ selector: 'app-status-card', template: '{{ status().id }}' })
-class CardStub {
-  readonly status = input.required<Status>();
-  readonly radioQueue = input(false);
-  readonly radioAddLabel = input('');
-  readonly radioSources = input<ExternalMedia[]>([]);
-  readonly playAudio = output<void>();
-  readonly addAudio = output<void>();
-  readonly listenRadio = output<ExternalMedia>();
-}
 
 describe('FindSinglesPage', () => {
   const audio = {
@@ -96,10 +83,6 @@ describe('FindSinglesPage', () => {
         },
         { provide: FollowTrust, useValue: { revision: signal(0) } },
       ],
-    });
-    TestBed.overrideComponent(FindSinglesPage, {
-      remove: { imports: [StatusCard] },
-      add: { imports: [CardStub] },
     });
   });
 
@@ -226,11 +209,14 @@ describe('FindSinglesPage', () => {
     const fixture = TestBed.createComponent(FindSinglesPage);
     const page = fixture.componentInstance;
     fixture.detectChanges();
-    page.chooseSource('loc');
+    page.chooseSource('catalogue');
     fixture.detectChanges();
-    expect(page.catalogueSource()).toBe('loc');
+    expect(page.catalogueSource()).toBe(true);
     expect(fixture.nativeElement.querySelector('app-catalogue-panel')).toBeTruthy();
-    expect(fixture.nativeElement.textContent).not.toContain('Find audio');
+    // Inactive tab panels stay in the page, hidden; the visible one has no feed form.
+    const visible = fixture.nativeElement.querySelector('[role="tabpanel"]:not([hidden])');
+    expect(visible.querySelector('app-catalogue-panel')).toBeTruthy();
+    expect(visible.textContent).not.toContain('Find audio');
   });
 
   it('resolves a shared account at its origin and paginates with raw server IDs', async () => {
@@ -271,7 +257,12 @@ describe('FindSinglesPage', () => {
     const fixture = TestBed.createComponent(FindSinglesPage);
     fixture.detectChanges();
     expect(api.lookupAccount).not.toHaveBeenCalled();
-    expect(fixture.nativeElement.querySelector('mb-radio-group')).toBeTruthy();
+    expect(
+      Array.from(
+        fixture.nativeElement.querySelectorAll('[role="tab"]') as NodeListOf<HTMLElement>,
+        (tab) => tab.textContent?.trim(),
+      ),
+    ).toEqual(['Account', 'Hashtag', 'Home feed', 'List', 'Catalogues', 'Links']);
     const page = fixture.componentInstance;
     page.handle.set('@music@server.example');
     page.discover();
@@ -286,6 +277,13 @@ describe('FindSinglesPage', () => {
     });
     expect(page.scan.posts()).toEqual([audio]);
     expect(fixture.nativeElement.textContent).toContain('Reached the end');
+    // A scan says how far it got and how many requests that took.
+    expect(page.progress()).toBe('Scanned 1 posts in 2 API calls · 1 with music');
+    // Results are compact rows to pick from, not full posts with reply and like.
+    const result = fixture.nativeElement.querySelector('app-track-result') as HTMLElement;
+    expect(result.textContent).toContain('Save single');
+    expect(result.textContent).toContain('Open thread');
+    expect(result.querySelector('[aria-label*="Reply" i], [aria-label*="Like" i]')).toBeNull();
   });
 
   it('finds external players by default and restricts every feed to native audio on request', async () => {
@@ -388,10 +386,14 @@ describe('FindSinglesPage', () => {
     page.discover();
     await fixture.whenStable();
     expect(page.canKeep(spotify)).toBe(true);
-    page.keep(spotify);
-    expect(page.message()).toBe('Saved 1 singles.');
     page.keepResults();
-    expect(page.message()).toBe('Saved 1 singles.');
+    expect(page.message()).toBe('Saved 2 singles.');
+    fixture.detectChanges();
+    // The confirmation says where they went.
+    const kept = fixture.nativeElement.querySelector('p.kept') as HTMLElement;
+    expect(kept.querySelector('a')?.getAttribute('href')).toBe('/singles');
+    page.keep(spotify);
+    expect(page.message()).toBe('Already in your saved singles.');
     page.keep(audio);
     expect(page.message()).toBe('Already in your saved singles.');
     expect(

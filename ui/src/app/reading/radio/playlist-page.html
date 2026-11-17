@@ -1,8 +1,13 @@
 <section class="page">
   <app-radio-header [heading]="heading()">
-    <a mbButton size="small" variant="outline" routerLink="/playlists">{{
-      'playlist.back' | transloco
-    }}</a>
+    <a
+      mbButton
+      size="small"
+      variant="outline"
+      [routerLink]="back()"
+      [queryParams]="authored() ? { view: 'playlists' } : {}"
+      >{{ (authored() ? 'playlist.backStudio' : 'playlist.back') | transloco }}</a
+    >
   </app-radio-header>
 
   @if (shared()) {
@@ -21,7 +26,9 @@
       />
     }
     @if (skipped()) {
-      <p role="status">{{ 'playlist.skipped' | transloco: { count: skipped() } }}</p>
+      <p role="status">
+        {{ countKey('playlist.skipped', skipped()) | transloco: { count: skipped() } }}
+      </p>
     }
     @if (tracks().length) {
       <div class="actions">
@@ -38,7 +45,9 @@
       </div>
       <ol
         class="rows"
-        [attr.aria-label]="'playlist.trackCount' | transloco: { count: tracks().length }"
+        [attr.aria-label]="
+          countKey('playlist.trackCount', tracks().length) | transloco: { count: tracks().length }
+        "
       >
         @for (track of tracks(); track track.key; let i = $index) {
           @let title = player.title(track);
@@ -67,6 +76,9 @@
       </ol>
     }
   } @else if (row(); as playlist) {
+    @if (authored()) {
+      <p class="lead">{{ 'playlist.studioLead' | transloco }}</p>
+    }
     <form class="details" (submit)="$event.preventDefault()">
       <mb-field [label]="'playlist.name' | transloco">
         <input
@@ -103,26 +115,21 @@
       >
         {{ 'playlist.shuffle' | transloco }}
       </button>
-      <button
-        mbButton
-        variant="outline"
-        type="button"
-        [attr.aria-expanded]="adding()"
-        (click)="adding.set(!adding())"
-      >
-        <app-radio-icon name="add" />
-        {{ 'playlist.addTracks' | transloco }}
-      </button>
       <mb-post-menu
         [label]="'playlist.more' | transloco"
         [closeLabel]="'radio.closeMenu' | transloco"
       >
-        @if (signedIn) {
+        @if (authored() && signedIn) {
           <button mbMenuItem type="button" [disabled]="!fragment()" (click)="draft(false)">
             {{ 'radio.draftPost' | transloco }}
           </button>
           <button mbMenuItem type="button" [disabled]="!fragment()" (click)="draft(true)">
             {{ 'radio.draftThread' | transloco }}
+          </button>
+        }
+        @if (!authored() && signedIn) {
+          <button mbMenuItem type="button" [disabled]="!tracks().length" (click)="toStudio()">
+            {{ 'playlist.toStudio' | transloco }}
           </button>
         }
         <button mbMenuItem type="button" (click)="delete()">
@@ -131,53 +138,12 @@
       </mb-post-menu>
     </div>
 
-    @if (adding()) {
-      <section class="add" [attr.aria-label]="'playlist.addTracks' | transloco">
-        <h2>{{ 'playlist.fromSaved' | transloco }}</h2>
-        <p class="lead">{{ 'playlist.fromSavedHint' | transloco }}</p>
-        @if (candidates().length) {
-          <ul class="rows">
-            @for (track of candidates(); track track.key) {
-              @let title = player.title(track);
-              <li>
-                <div class="row">
-                  <span class="track">
-                    <span class="track-title">{{ title }}</span>
-                    <span class="track-meta">{{
-                      track.post.account.display_name || track.post.account.acct
-                    }}</span>
-                  </span>
-                  <button
-                    mbButton
-                    size="small"
-                    variant="outline"
-                    type="button"
-                    [attr.aria-label]="'playlist.add' | transloco: { title }"
-                    (click)="add(track)"
-                  >
-                    <app-radio-icon name="add" />
-                  </button>
-                </div>
-              </li>
-            }
-          </ul>
-        } @else {
-          <p>{{ 'playlist.noSavedSingles' | transloco }}</p>
-        }
-        <a
-          mbButton
-          size="small"
-          routerLink="/singles/find"
-          [queryParams]="{ playlist: playlist.id }"
-          >{{ 'playlist.findMore' | transloco }}</a
-        >
-      </section>
-    }
-
     @if (tracks().length) {
       <ol
         class="rows"
-        [attr.aria-label]="'playlist.trackCount' | transloco: { count: tracks().length }"
+        [attr.aria-label]="
+          countKey('playlist.trackCount', tracks().length) | transloco: { count: tracks().length }
+        "
       >
         @for (track of tracks(); track track.key; let i = $index) {
           @let title = player.title(track);
@@ -189,6 +155,9 @@
                   >{{ track.post.account.display_name || track.post.account.acct }}
                   @if (track.external) {
                     · {{ track.external.label }}
+                  }
+                  @if (!isContinuous(track)) {
+                    · {{ 'playlist.ownPage' | transloco }}
                   }
                 </span>
               </span>
@@ -203,6 +172,7 @@
                   type="button"
                   [attr.aria-label]="'radio.play' | transloco"
                   [title]="'radio.play' | transloco"
+                  [disabled]="!isContinuous(track)"
                   (click)="play(i)"
                 >
                   <app-radio-icon name="play" />
@@ -259,16 +229,55 @@
           </li>
         }
       </ol>
-    } @else if (!adding()) {
+    } @else {
       <mb-content-state
         [title]="'playlist.empty' | transloco"
         [description]="'playlist.emptyHint' | transloco"
-      >
-        <button mbButton type="button" (click)="adding.set(true)">
-          {{ 'playlist.addTracks' | transloco }}
-        </button>
-      </mb-content-state>
+      />
     }
+
+    <section class="add" [attr.aria-label]="'playlist.addTracks' | transloco">
+      <h2>{{ 'playlist.addTracks' | transloco }}</h2>
+      <p class="lead">
+        {{ (authored() ? 'playlist.fromSavedAny' : 'playlist.fromSavedHint') | transloco }}
+      </p>
+      @if (candidates().length) {
+        <ul class="rows">
+          @for (track of candidates(); track track.key) {
+            @let title = player.title(track);
+            <li>
+              <div class="row">
+                <span class="track">
+                  <span class="track-title">{{ title }}</span>
+                  <span class="track-meta">{{
+                    track.post.account.display_name || track.post.account.acct
+                  }}</span>
+                </span>
+                <button
+                  mbButton
+                  size="small"
+                  variant="outline"
+                  type="button"
+                  [attr.aria-label]="'playlist.add' | transloco: { title }"
+                  (click)="add(track)"
+                >
+                  <app-radio-icon name="add" />
+                </button>
+              </div>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p>{{ 'playlist.noSavedSingles' | transloco }}</p>
+      }
+      <a
+        mbButton
+        size="small"
+        routerLink="/singles/find"
+        [queryParams]="{ playlist: playlist.id }"
+        >{{ 'playlist.findMore' | transloco }}</a
+      >
+    </section>
 
     @if (fragment()) {
       <p>
@@ -279,7 +288,7 @@
       <p class="lead">{{ 'playlist.linkHint' | transloco }}</p>
     }
 
-    @if (signedIn && tracks().length) {
+    @if (authored() && signedIn && tracks().length) {
       @let changes = plan();
       <section class="publish" [attr.aria-label]="'radio.publishThread' | transloco">
         <h2>{{ 'radio.publishThread' | transloco }}</h2>

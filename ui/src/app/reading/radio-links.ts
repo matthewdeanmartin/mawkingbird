@@ -27,13 +27,6 @@ export function radioAccount(raw: string | null): { acct: string; server: string
   return { acct, server: `https://${match[2].toLowerCase()}` };
 }
 
-export function radioLink(base: string, params: { acct?: string; post?: string }): string {
-  const url = new URL('radio', base);
-  if (params.post) url.searchParams.set('post', params.post);
-  else if (params.acct) url.searchParams.set('acct', params.acct);
-  return url.href;
-}
-
 /**
  * Query parameters for the Listen page, matching Watch: the post as this client
  * reached it and the server it came from. `media` picks one recording of several.

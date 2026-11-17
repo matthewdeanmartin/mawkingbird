@@ -67,6 +67,7 @@ SERVER_OR_LOCAL = {
     "lists/:id": "server-local list id",
     "misskey/:kind/:id": "active Misskey identity required",
     "playlists/:id": "browser-local playlist; shares use /playlists/shared with a post or fragment",
+    "radio/studio/playlists/:id": "browser-local playlist to publish; Studio requires an account",
     "tag-bundles/:id": "saved account bundle",
 }
 

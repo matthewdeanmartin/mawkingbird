@@ -77,13 +77,13 @@ describe('external media providers', () => {
       expect(matchesMedia(status, ['audio'])).toBe(false);
     },
   );
-  it('classifies YouTube Music as audio and supplies an explicitly loaded visible player', () => {
+  it('classifies YouTube Music as audio with a visible player Radio can drive', () => {
     const url = 'https://music.youtube.com/watch?v=z71d3cWLwsw&si=6w5bILhLDRVOXzUO';
     expect(externalMedia(url)).toMatchObject({
       provider: 'youtube-music',
       type: 'audio',
-      controllable: false,
-      embed: 'https://www.youtube-nocookie.com/embed/z71d3cWLwsw?autoplay=0',
+      controllable: true,
+      embed: `https://www.youtube-nocookie.com/embed/z71d3cWLwsw?autoplay=0&enablejsapi=1&playsinline=1&origin=${encodeURIComponent(location.origin)}`,
     });
     const status = post(`<a href="${url}">Sea shanty</a>`);
     expect(matchesMedia(status, ['audio', 'embed'])).toBe(true);

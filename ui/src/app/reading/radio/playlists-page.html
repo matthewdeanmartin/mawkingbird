@@ -5,23 +5,23 @@
         <app-radio-icon name="add" />
         {{ 'playlists.new' | transloco }}
       </button>
-      <a mbButton size="small" variant="outline" routerLink="/playlists/find">{{
-        'playlists.find' | transloco
-      }}</a>
     </app-radio-header>
-    <p class="lead">{{ 'playlists.lead' | transloco }}</p>
+    <app-playlists-tabs current="mine" />
     @if (playlists.error()) {
       <p role="alert">{{ 'playlists.storageFailed' | transloco }}</p>
     }
-    @if (playlists.saved().length) {
+    @if (listening().length) {
       <ul class="rows" [attr.aria-label]="'playlists.title' | transloco">
-        @for (row of playlists.saved(); track row.id) {
+        @for (row of listening(); track row.id) {
           <li>
             <div class="row">
               <a class="track" [routerLink]="['/playlists', row.id]">
                 <span class="track-title">{{ row.name }}</span>
                 <span class="track-meta"
-                  >{{ 'radio.trackCount' | transloco: { count: row.tracks.length } }}
+                  >{{
+                    countKey('playlist.trackCount', row.tracks.length)
+                      | transloco: { count: row.tracks.length }
+                  }}
                   @if (row.published) {
                     · {{ 'playlists.published' | transloco }}
                   }
@@ -67,11 +67,8 @@
       </mb-content-state>
     }
   } @else {
-    <app-radio-header [heading]="'playlists.find' | transloco">
-      <a mbButton size="small" variant="outline" routerLink="/playlists">{{
-        'playlists.back' | transloco
-      }}</a>
-    </app-radio-header>
+    <app-radio-header [heading]="'playlists.title' | transloco" />
+    <app-playlists-tabs current="find" />
     <p class="lead">{{ 'playlists.findLead' | transloco }}</p>
 
     <form class="inline" (ngSubmit)="openLink()">
@@ -120,7 +117,8 @@
               <span class="track">
                 <span class="track-title">{{ name }}</span>
                 <span class="track-meta">{{
-                  'playlists.recordings' | transloco: { count: thread.recordings }
+                  countKey('playlists.recordings', thread.recordings)
+                    | transloco: { count: thread.recordings }
                 }}</span>
               </span>
               <button mbButton size="small" type="button" (click)="view(thread)">
@@ -132,56 +130,6 @@
           <li>{{ 'playlists.none' | transloco }}</li>
         }
       </ul>
-    }
-
-    @if (signedIn) {
-      <h2>{{ 'playlists.mine' | transloco }}</h2>
-      <p class="lead">{{ 'playlists.mineHint' | transloco }}</p>
-      <div class="actions">
-        <button
-          mbButton
-          variant="outline"
-          type="button"
-          [disabled]="publisher.finding()"
-          (click)="publisher.find()"
-        >
-          {{ 'radio.findThreads' | transloco }}
-        </button>
-        @if (publisher.finding()) {
-          <span role="status">{{ 'radio.findingThreads' | transloco }}</span>
-        }
-      </div>
-      @if (publisher.found(); as mine) {
-        <ul class="rows">
-          @for (thread of mine; track thread.root.id) {
-            @let name = title(thread);
-            <li>
-              <div class="row">
-                <span class="track">
-                  <span class="track-title">{{ name }}</span>
-                  <span class="track-meta">{{
-                    'playlists.recordings' | transloco: { count: thread.recordings }
-                  }}</span>
-                </span>
-                <button
-                  mbButton
-                  size="small"
-                  variant="outline"
-                  type="button"
-                  (click)="view(thread)"
-                >
-                  {{ 'playlists.view' | transloco: { name } }}
-                </button>
-                <button mbButton size="small" type="button" (click)="adopt(thread)">
-                  {{ 'playlists.adopt' | transloco }}
-                </button>
-              </div>
-            </li>
-          } @empty {
-            <li>{{ 'radio.noThreads' | transloco }}</li>
-          }
-        </ul>
-      }
     }
   }
 </section>

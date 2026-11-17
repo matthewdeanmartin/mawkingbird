@@ -25,7 +25,12 @@ import { AUDIO_SERVICES, ProviderPreferences } from '../audio-embeds/provider-pr
 // i18n radio.settings.showAll: Show all players, including services I don't subscribe to
 // i18n radio.settings.showAllHint: Hidden services stay hidden.
 
-const PROVIDER_LABELS: Record<string, string> = { soundcloud: 'SoundCloud', mixcloud: 'Mixcloud' };
+const PROVIDER_LABELS: Record<string, string> = {
+  soundcloud: 'SoundCloud',
+  mixcloud: 'Mixcloud',
+  youtube: 'YouTube',
+  'youtube-music': 'YouTube Music',
+};
 
 /** Radio-only preferences, kept beside the player rather than in the main settings. */
 @Component({

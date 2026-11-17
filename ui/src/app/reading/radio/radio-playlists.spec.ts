@@ -10,7 +10,9 @@ import { Playback } from '../video-player/playback';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
 import { Status } from '../../platform/api/models';
 import { RadioPlayer } from './radio-player';
+import { accountScopeSuffix } from '../../platform/session/account-scope';
 import {
+  playlistPath,
   playlistFragment,
   playlistUrls,
   readPlaylistFragment,
@@ -37,17 +39,18 @@ describe('Radio playlists', () => {
     });
     lists = TestBed.inject(RadioPlaylists);
   });
-  it('accepts native, SoundCloud and Mixcloud while rejecting inline-only and unsafe URLs', () => {
+  it('accepts native, SoundCloud, Mixcloud and YouTube Music while rejecting inline-only and unsafe URLs', () => {
     for (const url of [
       'https://audio.example/song.mp3',
       'https://soundcloud.com/artist/song',
       'https://mixcloud.com/artist/mix/',
+      'https://music.youtube.com/watch?v=z71d3cWLwsw',
     ]) {
       expect(lists.fromUrl(url)).toHaveLength(1);
     }
     for (const url of [
       'https://open.spotify.com/track/abc',
-      'https://music.youtube.com/watch?v=z71d3cWLwsw',
+      // A bare YouTube link carries no hint that it is music.
       'https://youtu.be/z71d3cWLwsw',
       'javascript:alert(1)',
       'https://soundcloud.com.evil.example/artist/song',
@@ -139,5 +142,45 @@ describe('Radio playlists', () => {
     expect(result.tracks).toHaveLength(1);
     expect(result.skipped).toBe(1);
     expect(TestBed.inject(RadioPlayer).active()).toBe(false);
+  });
+
+  it('keeps page-only players in a playlist authored to publish, and drops them from a listening one', () => {
+    const player = TestBed.inject(RadioPlayer);
+    const spotify = {
+      id: 's',
+      url: 'https://sea.example/@singer/s',
+      visibility: 'public',
+      account: { id: 'a', acct: 'singer' },
+      content: '<a href="https://open.spotify.com/track/abc123">Spotify</a>',
+      media_attachments: [],
+    } as unknown as Status;
+    const [track] = player.singleTracks(spotify);
+    const listening = lists.create('Listen', [track])!;
+    const authored = lists.create('Publish', [track], true)!;
+    lists.saved.set([]);
+    lists.refresh();
+    const row = (id: string) => lists.saved().find((item) => item.id === id)!;
+    expect(row(listening).tracks).toEqual([]);
+    expect(row(listening).authored).toBeUndefined();
+    expect(row(authored).authored).toBe(true);
+    expect(row(authored).tracks.map((item) => item.key)).toEqual([track.key]);
+    expect(playlistPath(row(authored))).toEqual(['/radio/studio/playlists', authored]);
+    expect(playlistPath(row(listening))).toEqual(['/playlists', listening]);
+  });
+
+  it('treats a playlist published before Studio existed as authored', () => {
+    localStorage.setItem(
+      'mockingbird_radio_playlists' + accountScopeSuffix(),
+      JSON.stringify([
+        {
+          id: 'old',
+          name: 'Old thread',
+          tracks: [],
+          published: { rootId: 'r', url: 'https://home.example/@me/r', entries: [] },
+        },
+      ]),
+    );
+    lists.refresh();
+    expect(lists.saved()[0].authored).toBe(true);
   });
 });

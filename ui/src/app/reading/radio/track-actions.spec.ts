@@ -122,4 +122,20 @@ describe('TrackActions', () => {
     const [hidden] = TestBed.inject(RadioPlayer).tracks(post({ visibility: 'private' }));
     expect(await actions.append(hidden, id)).toContain('is not public');
   });
+
+  it('adds page-only players to a playlist authored to publish, but not to a listening one', () => {
+    lists.refresh();
+    const spotify = post({
+      media_attachments: [],
+      content: '<a href="https://open.spotify.com/track/abc123">Spotify</a>',
+    });
+    const tracks = TestBed.inject(RadioPlayer).singlesOf(spotify);
+    const listening = lists.create('Listen')!;
+    const authored = lists.create('Publish', [], true)!;
+    expect(actions.keep(tracks, listening)).toBe(
+      'These recordings play only on their own page, so they can’t join a playlist.',
+    );
+    expect(actions.keep(tracks, authored)).toBe('Added 1 to Publish.');
+    expect(lists.saved().find((row) => row.id === authored)!.tracks).toHaveLength(1);
+  });
 });

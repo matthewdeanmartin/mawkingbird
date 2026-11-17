@@ -1578,6 +1578,21 @@
       "nextStep": "A playlist uses Radio Header, Field/Control for name, description and thread visibility, Button, Toolbar/ToolbarButton track rows, Post Menu/Menu Item for rare actions and Content State for empty and missing playlists. Preserve save-on-change, continuous-only additions, read-only shared previews with Save a copy, and the thread publish plan with its delete budget."
     },
     {
+      "file": "ui/src/app/reading/radio/studio-playlists.html",
+      "disposition": "adopted scope",
+      "nextStep": "Studio playlists use Button for New playlist and Keep in Studio, Content State for the empty list, and plain links to each playlist and its Mastodon thread. Preserve listing only authored playlists, the published/changed/unpublished state from the publish plan, and finding posted threads on arrival when signed in."
+    },
+    {
+      "file": "ui/src/app/reading/radio/section-tabs.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Singles and Playlists tabs use Navigation/NavLink in tabs presentation for Saved/Find and My playlists/Find playlists. Preserve them as route links (pages, not toggles)."
+    },
+    {
+      "file": "ui/src/app/reading/radio/track-result.ts",
+      "disposition": "adopted scope",
+      "nextStep": "A search result row uses Button for Play and Save single/Add to playlist and a link Button for Open thread, with Radio Icon. Preserve the compact recording-first layout without the post action row, CW text in place of the title, and the page-only marker."
+    },
+    {
       "file": "ui/src/app/reading/radio/radio-header.ts",
       "disposition": "adopted scope",
       "nextStep": "Radio Header uses Button for the settings shortcut with icon content and an accessible name. Preserve the shortcut on every Radio page now that settings are not a menu tab."

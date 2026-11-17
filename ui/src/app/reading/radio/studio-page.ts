@@ -12,13 +12,13 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
 import { Status } from '../../platform/api/models';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { RadioStudio } from './radio-studio';
-import { CataloguePanel } from './catalogue-panel';
+import { StudioPlaylists } from './studio-playlists';
 import { RadioStudioSession } from './radio-studio-session';
 
 // i18n studio.title: Studio
 // i18n studio.tab.compose: New audio post
 // i18n studio.tab.catalogue: My audio
-// i18n studio.tab.shareable: Find Shareable
+// i18n studio.tab.playlists: Playlists
 // i18n studio.recording: Recording
 // i18n studio.placeholder: Say something about this recording…
 // i18n radio.prepareAudio: Prepare an audio post
@@ -58,7 +58,7 @@ import { RadioStudioSession } from './radio-studio-session';
     Compose,
     StatusCard,
     RadioStudio,
-    CataloguePanel,
+    StudioPlaylists,
   ],
   templateUrl: './studio-page.html',
   styleUrl: './studio-page.css',
@@ -68,9 +68,9 @@ export class StudioPage {
   readonly auth = inject(Auth);
   readonly view = toSignal(
     inject(ActivatedRoute).queryParamMap.pipe(
-      map((params): 'compose' | 'catalogue' | 'shareable' =>
-        params.get('view') === 'catalogue' || params.get('view') === 'shareable'
-          ? (params.get('view') as 'catalogue' | 'shareable')
+      map((params): 'compose' | 'catalogue' | 'playlists' =>
+        params.get('view') === 'catalogue' || params.get('view') === 'playlists'
+          ? (params.get('view') as 'catalogue' | 'playlists')
           : 'compose',
       ),
     ),

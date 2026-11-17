@@ -139,4 +139,120 @@ describe('CatalogueSearch', () => {
     expect(await catalogue.search('loc', '   ')).toEqual({ items: [], more: false });
     expect(fetch).not.toHaveBeenCalled();
   });
+
+  it('keeps Openverse results that name a file, crediting the licence and landing page', async () => {
+    fetch.mockResolvedValue(
+      respond({
+        page_count: 3,
+        results: [
+          {
+            id: 'abc-1',
+            title: 'American Banjo',
+            creator: 'FJGI',
+            url: 'https://prod-1.storage.jamendo.com/?trackid=1&format=mp32',
+            foreign_landing_url: 'https://www.jamendo.com/track/1',
+            license: 'by-nc-nd',
+            license_version: '3.0',
+            license_url: 'https://creativecommons.org/licenses/by-nc-nd/3.0/',
+          },
+          { id: 'abc-2', title: 'No file', url: null, foreign_landing_url: 'https://x.example/2' },
+        ],
+      }),
+    );
+    const { items, more } = await catalogue.search('openverse', 'banjo');
+    expect(fetch.mock.calls[0][0]).toBe(
+      'https://api.openverse.org/v1/audio/?q=banjo&page_size=20&page=1',
+    );
+    expect(more).toBe(true);
+    expect(items.map((item) => item.id)).toEqual(['abc-1']);
+    expect(items[0]).toMatchObject({
+      page: 'https://www.jamendo.com/track/1',
+      rights: 'https://creativecommons.org/licenses/by-nc-nd/3.0/',
+    });
+    fetch.mockClear();
+    const [track] = await catalogue.tracks(items[0]);
+    expect(fetch).not.toHaveBeenCalled();
+    expect(track.media.url).toBe('https://prod-1.storage.jamendo.com/?trackid=1&format=mp32');
+    expect(track.post.account.acct).toBe('openverse.org');
+    expect(trackUrl(track)).toBe('https://www.jamendo.com/track/1');
+  });
+
+  it('streams Audius tracks under the app’s name and skips ones that cannot stream', async () => {
+    fetch.mockResolvedValue(
+      respond({
+        data: [
+          {
+            id: 'BKWAR91',
+            title: 'Lis Banjo Song',
+            permalink: '/aswascreates/lis-banjo-song',
+            is_streamable: true,
+            user: { name: 'As Was' },
+            artwork: { '150x150': 'https://art.example/150.jpg' },
+          },
+          { id: 'X', title: 'Locked', permalink: '/a/locked', is_streamable: false, user: {} },
+        ],
+      }),
+    );
+    const { items, more } = await catalogue.search('audius', 'banjo', 2);
+    expect(fetch.mock.calls[0][0]).toBe(
+      'https://api.audius.co/v1/tracks/search?query=banjo&limit=20&offset=20&app_name=mawkingbird',
+    );
+    expect(more).toBe(false);
+    expect(items).toHaveLength(1);
+    const [track] = await catalogue.tracks(items[0]);
+    expect(track.media.url).toBe(
+      'https://api.audius.co/v1/tracks/BKWAR91/stream?app_name=mawkingbird',
+    );
+    expect(trackUrl(track)).toBe('https://audius.co/aswascreates/lis-banjo-song');
+  });
+
+  it('reads Wikimedia Commons audio with its licence and plain-text artist in one request', async () => {
+    const name = 'A_very_' + 'long_'.repeat(50) + 'name.ogg';
+    fetch.mockResolvedValue(
+      respond({
+        continue: { gsroffset: 20 },
+        query: {
+          pages: {
+            '9': {
+              index: 2,
+              title: 'File:Second.ogg',
+              imageinfo: [
+                {
+                  url: 'https://upload.wikimedia.org/b/Second.ogg',
+                  descriptionurl: 'https://commons.wikimedia.org/wiki/File:Second.ogg',
+                },
+              ],
+            },
+            '7': {
+              index: 1,
+              title: `File:${name}`,
+              imageinfo: [
+                {
+                  url: `https://upload.wikimedia.org/a/${name}?utm_source=commons`,
+                  descriptionurl: `https://commons.wikimedia.org/wiki/File:${name}`,
+                  extmetadata: {
+                    LicenseShortName: { value: 'CC BY-SA 4.0' },
+                    Artist: {
+                      value: '<a href="//commons.wikimedia.org/wiki/User:N">N &amp; M</a>',
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
+      }),
+    );
+    const { items, more } = await catalogue.search('commons', 'banjo');
+    expect(fetch.mock.calls[0][0]).toContain('gsrsearch=banjo%20filetype%3Aaudio');
+    expect(more).toBe(true);
+    expect(items.map((item) => item.id)).toEqual([name, 'Second.ogg']);
+    expect(items[0]).toMatchObject({
+      creator: 'N & M',
+      rights: 'CC BY-SA 4.0',
+      file: `https://upload.wikimedia.org/a/${name}`,
+    });
+    const [track] = await catalogue.tracks(items[0]);
+    expect(track.media.url).toBe(`https://upload.wikimedia.org/a/${name}`);
+  });
 });

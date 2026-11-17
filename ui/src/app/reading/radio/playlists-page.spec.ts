@@ -94,7 +94,10 @@ describe('PlaylistsPage', () => {
   it('lists saved playlists once, without a repeated heading', () => {
     TestBed.inject(RadioPlaylists).refresh();
     TestBed.inject(RadioPlaylists).create('Morning');
+    TestBed.inject(RadioPlaylists).create('To publish', [], true);
     const { root } = render();
+    // Playlists made to publish live in Studio.
+    expect(root.textContent).not.toContain('To publish');
     expect(root.querySelectorAll('h1')).toHaveLength(1);
     expect(root.querySelector('ul.rows')?.textContent).toContain('Morning');
     expect(root.textContent).not.toContain('No playlists yet');

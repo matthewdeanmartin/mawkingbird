@@ -2765,3 +2765,20 @@ Now Playing and settings; its tabs, editor and search moved to those pages.
 `status-card.html` swaps its Add to playlist link for Save single. The design
 system only gains a `radioAddLabel` input on StatusCard; no shared widget
 implementation changed.
+
+Radio Singles sprints 4–5 (2026-11-17): reviewed regenerated inventory: 1889
+scanned files, 653 candidate files. One new candidate file, adopted scope in
+reconciliation: `studio-playlists.html` (Button, Content State, links). Studio's
+Find Shareable tab is replaced by Playlists; the catalogue panel drops its
+share-first variant. `playlist-page.html` gains a Studio lead, a "Publish from
+Studio" menu item and disabled Play for page-only tracks; `singles-page.html`
+and `find-singles-page.html` change copy and targets only. No shared design
+widget implementation changed.
+
+Radio Singles owner feedback (2026-11-17): reviewed regenerated inventory: 1892
+scanned files, 655 candidate files. New, adopted scope: `section-tabs.ts`
+(Navigation tabs for Singles Saved/Find and Playlists Mine/Find) and
+`track-result.ts` (compact result row of Buttons). Find singles replaces its
+Radio Group with Tabs and its StatusCard results with track-result rows; the
+playlist page's Add tracks toggle becomes an always-shown section; Saved
+singles gains a Clear all Button. No shared widget implementation changed.

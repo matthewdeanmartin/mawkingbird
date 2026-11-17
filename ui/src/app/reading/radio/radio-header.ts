@@ -22,8 +22,7 @@ import { RadioIcon } from './radio-icon';
           mbButton
           variant="outline"
           size="small"
-          routerLink="/radio"
-          [queryParams]="{ view: 'settings' }"
+          routerLink="/radio/settings"
           [attr.aria-label]="'radio.settingsLink' | transloco"
           [title]="'radio.settingsLink' | transloco"
         >

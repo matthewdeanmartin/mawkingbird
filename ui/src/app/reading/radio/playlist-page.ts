@@ -22,12 +22,14 @@ import { RadioIcon } from './radio-icon';
 import { isContinuous, RadioPlayer, RadioTrack } from './radio-player';
 import {
   playlistFragment,
+  playlistPath,
   playlistUrls,
   RadioPlaylists,
   readPlaylistFragment,
   SavedRadioPlaylist,
 } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
+import { countKey } from './count-key';
 import { postTitle } from './track-title';
 import { TrackActions } from './track-actions';
 
@@ -38,26 +40,32 @@ import { TrackActions } from './track-actions';
 // i18n playlist.sharedLead: A playlist someone shared. Play it, or save a copy to change it.
 // i18n playlist.loading: Opening playlist…
 // i18n playlist.loadFailed: Could not open this playlist. Its posts may be private or deleted.
-// i18n playlist.skipped: {{count}} links can’t play here and were left out.
+// i18n playlist.skipped.one: {{count}} link can’t play here and was left out.
+// i18n playlist.skipped.other: {{count}} links can’t play here and were left out.
 // i18n playlist.saveCopy: Save a copy
 // i18n playlist.name: Name
 // i18n playlist.description: Description (optional)
 // i18n playlist.play: Play
 // i18n playlist.shuffle: Shuffle
 // i18n playlist.addTracks: Add tracks
-// i18n playlist.fromSaved: From your saved singles
-// i18n playlist.fromSavedHint: Only recordings that play one after another can join a playlist.
+// i18n playlist.fromSavedHint: From your saved singles. Only recordings that play one after another can join.
+// i18n playlist.fromSavedAny: From your saved singles. Any recording can join a playlist you publish.
 // i18n playlist.noSavedSingles: No saved singles can join yet.
 // i18n playlist.findMore: Find more singles
 // i18n playlist.add: Add {{title}}
 // i18n playlist.empty: This playlist is empty
-// i18n playlist.emptyHint: Add tracks from your saved singles, or find more.
-// i18n playlist.trackCount: {{count}} tracks
+// i18n playlist.emptyHint: Add tracks from your saved singles below, or find more.
+// i18n playlist.trackCount.one: {{count}} track
+// i18n playlist.trackCount.other: {{count}} tracks
 // i18n playlist.link: Link to this playlist
 // i18n playlist.linkHint: Anyone with the link can play the public tracks. Private posts are left out.
 // i18n playlist.delete: Delete playlist
 // i18n playlist.deleteConfirm: Delete “{{name}}” from this browser? A published thread stays on Mastodon.
 // i18n playlist.back: Playlists
+// i18n playlist.backStudio: Studio playlists
+// i18n playlist.studioLead: A playlist to publish. Anything can join, including recordings that play only on their own page; those are skipped when you play it here.
+// i18n playlist.toStudio: Publish from Studio
+// i18n playlist.ownPage: Plays on its own page
 // i18n playlist.more: More playlist actions
 
 /**
@@ -99,6 +107,7 @@ export class PlaylistPage {
   private readonly transloco = inject(TranslocoService);
   private readonly diagnostics = inject(PageDiagnostics);
   readonly deleteBudget = DELETE_BUDGET;
+  readonly countKey = countKey;
   readonly id = signal('');
   readonly shared = computed(() => this.id() === 'shared');
   readonly row = computed<SavedRadioPlaylist | null>(() =>
@@ -110,16 +119,18 @@ export class PlaylistPage {
   readonly loading = signal(false);
   readonly failed = signal(false);
   readonly skipped = signal(0);
-  readonly adding = signal(false);
   readonly visibility = signal('public');
   readonly message = signal('');
   /** Saved Singles that could join: they play continuously and aren't here yet. */
+  /** Made in Studio to publish: it may hold recordings that play only on their own page. */
+  readonly authored = computed(() => !!this.row()?.authored);
+  readonly isContinuous = isContinuous;
   readonly candidates = computed(() => {
     const keys = new Set(this.tracks().map((track) => track.key));
     return this.singles
       .items()
       .map((item) => item.track)
-      .filter((track) => isContinuous(track) && !keys.has(track.key));
+      .filter((track) => (this.authored() || isContinuous(track)) && !keys.has(track.key));
   });
   readonly fragment = computed(() => {
     const urls = playlistUrls(this.tracks());
@@ -145,7 +156,6 @@ export class PlaylistPage {
     this.route.paramMap.pipe(takeUntilDestroyed(destroy)).subscribe((params) => {
       this.id.set(params.get('id') ?? '');
       this.message.set('');
-      this.adding.set(false);
     });
     this.route.queryParamMap.pipe(takeUntilDestroyed(destroy)).subscribe((params) => {
       const post = radioPostRef(params.get('post'));
@@ -283,7 +293,19 @@ export class PlaylistPage {
     if (row) await this.publisher.publish(row.id, row.published?.visibility ?? this.visibility());
   }
 
-  /** Hand the links to the composer as one post or a thread. */
+  /** Copy this listening playlist into Studio, where playlists are published. */
+  toStudio(): void {
+    const row = this.row();
+    if (!row) return;
+    const id = this.playlists.create(row.name, row.tracks, true);
+    if (id) void this.router.navigate(playlistPath({ id, authored: true }));
+  }
+
+  back(): string[] {
+    return this.authored() ? ['/radio/studio'] : ['/playlists'];
+  }
+
+  /** Hand the links to Studio's composer as one post with every link, or a thread. */
   draft(thread: boolean): void {
     const urls = playlistUrls(this.tracks());
     if (!urls.length) return;
@@ -294,6 +316,6 @@ export class PlaylistPage {
       visibility: 'public',
       poll: null,
     });
-    void this.router.navigate(['/home']);
+    void this.router.navigate(['/radio/studio']);
   }
 }

@@ -48,12 +48,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
             @if (track.media.preview_url && !player.hidden()) {
               <img class="thumb" [src]="track.media.preview_url" alt="" />
             }
-            <a
-              class="now"
-              routerLink="/radio"
-              [queryParams]="{ view: 'radio' }"
-              [title]="'radio.openPlayer' | transloco"
-            >
+            <a class="now" routerLink="/radio" [title]="'radio.openPlayer' | transloco">
               <span class="title">{{
                 player.hidden() ? ('radio.hidden' | transloco) : player.title(track)
               }}</span>

@@ -645,7 +645,7 @@
             <button
               mbToolbarButton
               routerLink="/radio"
-              [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
+              [queryParams]="{ play: postUrl }"
               (click)="offerRadio()"
             >
               {{ 'statusCard.openInRadio' | transloco }}
@@ -1766,7 +1766,7 @@
           <a
             mbMenuItem
             routerLink="/radio"
-            [queryParams]="{ post: postUrl, add: '1', view: 'radio' }"
+            [queryParams]="{ play: postUrl }"
             (click)="offerRadio(); toolsOpen.set(false)"
           >
             {{ 'statusCard.openInRadio' | transloco }}

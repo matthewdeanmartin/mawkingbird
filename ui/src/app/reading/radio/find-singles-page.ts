@@ -1,4 +1,13 @@
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -10,7 +19,8 @@ import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
-import { MbRadioGroup, RadioOption } from '../../design-system/radio-group/radio-group';
+import { RadioOption } from '../../design-system/radio-group/radio-group';
+import { MbTab, MbTabs } from '../../design-system/tabs/tabs';
 import { serializeMastodonQuery } from '../../discovery/search/mastodon-query-serializer';
 import { isMastodonSaved, SavedSearches } from '../../discovery/search/saved-searches';
 import { Api } from '../../platform/api/api';
@@ -18,41 +28,44 @@ import { Status, UserList } from '../../platform/api/models';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { Server } from '../../platform/http/server';
 import { Auth } from '../../platform/session/auth';
-import { StatusCard } from '../../posts/status-card/status-card';
 import { listenParams, radioAccount } from '../radio-links';
 import { CataloguePanel } from './catalogue-panel';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
 import { isContinuous, RadioPlayer, RadioSource, RadioTrack, radioTag } from './radio-player';
-import { RadioPlaylists } from './radio-playlists';
+import { playlistPath, RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
 import { TrackActions } from './track-actions';
+import { SinglesTabs } from './section-tabs';
+import { TrackResult } from './track-result';
+import { countKey } from './count-key';
 
-// i18n findSingles.title: Find singles
 // i18n findSingles.addTitle: Add to {{playlist}}
-// i18n findSingles.lead: Look through posts or public catalogues for recordings. Save the ones you like; they appear in Saved singles.
 // i18n findSingles.addLead: Recordings that play one after another can join this playlist. Others play on their own page.
-// i18n findSingles.backSingles: Saved singles
+// i18n findSingles.addAuthoredLead: Any recording can join a playlist you publish, including ones that play only on their own page.
 // i18n findSingles.backPlaylist: Back to {{playlist}}
 // i18n findSingles.where: Where to look
-// i18n findSingles.scope.account: An account
+// i18n findSingles.scope.account: Account
 // i18n findSingles.scope.accountHint: Everything one person has posted.
-// i18n findSingles.scope.tag: A hashtag
+// i18n findSingles.scope.tag: Hashtag
 // i18n findSingles.scope.tagHint: Such as #nowplaying or #fedimusic.
-// i18n findSingles.scope.home: My home feed
-// i18n findSingles.scope.list: One of my lists
-// i18n findSingles.scope.saved: A saved search
-// i18n findSingles.scope.savedHint: From the Search screen. Only posts with recordings are kept.
-// i18n findSingles.scope.loc: Library of Congress
-// i18n findSingles.scope.locHint: Historic recordings, many in the public domain.
-// i18n findSingles.scope.archive: Internet Archive
-// i18n findSingles.scope.archiveHint: Live concerts, 78rpm records, radio and more.
-// i18n findSingles.scope.links: Links I paste
-// i18n findSingles.scope.linksHint: Post links, audio files, SoundCloud or Mixcloud.
+// i18n findSingles.scope.home: Home feed
+// i18n findSingles.scope.homeHint: Posts from people you follow.
+// i18n findSingles.scope.list: List
+// i18n findSingles.scope.listHint: One of your lists.
+// i18n findSingles.scope.saved: Saved search
+// i18n findSingles.scope.savedHint: A search saved on the Search screen.
+// i18n findSingles.scope.catalogue: Catalogues
+// i18n findSingles.scope.catalogueHint: Library of Congress, Internet Archive, Openverse, Audius and Wikimedia Commons.
+// i18n findSingles.scope.links: Links
+// i18n findSingles.scope.linksHint: Paste post links, audio files, SoundCloud or Mixcloud links.
+// i18n findSingles.progress.one: Scanned {{scanned}} posts in {{requests}} API call · {{matches}} with music
+// i18n findSingles.progress.other: Scanned {{scanned}} posts in {{requests}} API calls · {{matches}} with music
+// i18n findSingles.openSaved: Open Saved singles
+// i18n findSingles.openPlaylist: Open {{playlist}}
 // i18n findSingles.savedSearch: Saved search
 // i18n findSingles.chooseSaved: Choose a saved search
-// i18n findSingles.links: Links
-// i18n findSingles.linksHint: One or more links, up to 200.
+// i18n findSingles.links: Links, one or more
 // i18n findSingles.openLinks: Open links
 // i18n findSingles.save: Save single
 // i18n findSingles.addToPlaylist: Add to playlist
@@ -74,10 +87,12 @@ const SCAN_SOURCES = ['account', 'tag', 'home', 'list', 'saved'] as const;
     MbContentState,
     MbField,
     MbControl,
-    MbRadioGroup,
-    StatusCard,
+    MbTabs,
+    MbTab,
     CataloguePanel,
     RadioHeader,
+    SinglesTabs,
+    TrackResult,
   ],
   templateUrl: './find-singles-page.html',
   styleUrl: './radio-lists.css',
@@ -123,11 +138,17 @@ export class FindSinglesPage {
   private importGeneration = 0;
 
   readonly results = computed(() => this.scan.posts());
+  /** How far a scan got, so a long one is never silent: posts read, requests sent, matches. */
+  readonly progress = computed(() =>
+    this.transloco.translate(countKey('findSingles.progress', this.scan.requests()), {
+      scanned: this.scan.scanned(),
+      requests: this.scan.requests(),
+      matches: this.results().length,
+    }),
+  );
+  private readonly resultsArea = viewChild<ElementRef<HTMLElement>>('resultsArea');
   readonly canPlayResults = computed(() => this.player.resultTracks().length > 0);
-  readonly catalogueSource = computed(() => {
-    const source = this.source();
-    return source === 'loc' || source === 'archive' ? source : null;
-  });
+  readonly catalogueSource = computed(() => this.source() === 'catalogue');
   /** Saved post searches (signed in) and hashtag searches from the main Search screen. */
   readonly savedSearches = computed(() =>
     this.mainSearches
@@ -150,8 +171,16 @@ export class FindSinglesPage {
       { value: 'tag', label: t('findSingles.scope.tag'), hint: t('findSingles.scope.tagHint') },
       ...(this.signedIn
         ? [
-            { value: 'home', label: t('findSingles.scope.home') },
-            { value: 'list', label: t('findSingles.scope.list') },
+            {
+              value: 'home',
+              label: t('findSingles.scope.home'),
+              hint: t('findSingles.scope.homeHint'),
+            },
+            {
+              value: 'list',
+              label: t('findSingles.scope.list'),
+              hint: t('findSingles.scope.listHint'),
+            },
           ]
         : []),
       ...(this.savedSearches().length
@@ -163,11 +192,10 @@ export class FindSinglesPage {
             },
           ]
         : []),
-      { value: 'loc', label: t('findSingles.scope.loc'), hint: t('findSingles.scope.locHint') },
       {
-        value: 'archive',
-        label: t('findSingles.scope.archive'),
-        hint: t('findSingles.scope.archiveHint'),
+        value: 'catalogue',
+        label: t('findSingles.scope.catalogue'),
+        hint: t('findSingles.scope.catalogueHint'),
       },
       {
         value: 'links',
@@ -211,7 +239,7 @@ export class FindSinglesPage {
       else this.discoverPublicAccount(account);
     });
     if (this.source() === 'list') this.chooseSource('list');
-    if (!this.signedIn && !['account', 'tag', 'loc', 'archive', 'links'].includes(this.source()))
+    if (!this.signedIn && !['account', 'tag', 'catalogue', 'links'].includes(this.source()))
       this.source.set('account');
     this.destroy.onDestroy(() => {
       this.importGeneration++;
@@ -283,6 +311,10 @@ export class FindSinglesPage {
     this.message.set('');
     this.importSkipped.set(null);
     this.started.set(true);
+    // Results start below the form; bring them into view so the search visibly began.
+    setTimeout(() =>
+      this.resultsArea()?.nativeElement.scrollIntoView?.({ block: 'start', behavior: 'smooth' }),
+    );
   }
 
   discover(): void {
@@ -500,7 +532,8 @@ export class FindSinglesPage {
   /** What a result offers: every recording it can be saved as, or the playlist's continuous ones. */
   private candidates(post: Status): RadioTrack[] {
     const singles = this.player.singlesOf(post);
-    return this.target() ? singles.filter(isContinuous) : singles;
+    const row = this.target();
+    return row && !row.authored ? singles.filter(isContinuous) : singles;
   }
 
   canKeep(post: Status): boolean {
@@ -533,6 +566,11 @@ export class FindSinglesPage {
   /** Play every result found so far, continuing as the scan reads further. */
   playResults(): void {
     this.player.playResults();
+  }
+
+  /** Studio keeps the playlists it publishes; Playlists keeps the ones to listen to. */
+  playlistLink(row: SavedRadioPlaylist): string[] {
+    return playlistPath(row);
   }
 
   keepLabel(): string {

@@ -1,8 +1,12 @@
 <section class="page">
-  <app-radio-header [heading]="'singles.title' | transloco">
-    <a mbButton size="small" routerLink="/singles/find">{{ 'singles.find' | transloco }}</a>
+  <app-radio-header [heading]="'singles.section' | transloco">
+    @if (singles.items().length) {
+      <button mbButton size="small" variant="outline" type="button" (click)="clearAll()">
+        {{ 'singles.clearAll' | transloco }}
+      </button>
+    }
   </app-radio-header>
-  <p class="lead">{{ 'singles.lead' | transloco }}</p>
+  <app-singles-tabs current="saved" />
   @if (saving()) {
     <p role="status">{{ 'singles.saving' | transloco }}</p>
   }
@@ -62,19 +66,22 @@
                 <app-radio-icon name="remove" />
               </button>
             </mb-toolbar>
-            @if (isContinuous(track)) {
+            @let targets = playlistsFor(track);
+            @if (targets.length || isContinuous(track)) {
               <mb-post-menu
                 [label]="'singles.addTo' | transloco: { title }"
                 [closeLabel]="'radio.closeMenu' | transloco"
               >
-                @for (row of playlists.saved(); track row.id) {
+                @for (row of targets; track row.id) {
                   <button mbMenuItem type="button" (click)="addTo(track, row.id)">
                     {{ row.name }}
                   </button>
                 }
-                <button mbMenuItem type="button" (click)="newPlaylist(track)">
-                  {{ 'singles.newPlaylist' | transloco }}
-                </button>
+                @if (isContinuous(track)) {
+                  <button mbMenuItem type="button" (click)="newPlaylist(track)">
+                    {{ 'singles.newPlaylist' | transloco }}
+                  </button>
+                }
               </mb-post-menu>
             }
           </div>

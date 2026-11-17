@@ -16,9 +16,14 @@ export interface WidgetController {
   destroy(): void;
 }
 
+/** Providers whose embedded players this bridge can drive and hear finish. */
+export const CONTROLLABLE_PROVIDERS = ['soundcloud', 'mixcloud', 'youtube', 'youtube-music'];
+export const YOUTUBE_EMBED_ORIGIN = 'https://www.youtube-nocookie.com';
+
 /** Minimal bridges matching the providers' official widget message protocols.
  * https://w.soundcloud.com/player/api.js
  * https://widget.mixcloud.com/media/js/widgetApi.js
+ * YouTube's embed message protocol (the one its iframe_api.js speaks).
  * No provider JavaScript executes in our credential-bearing document.
  */
 export function connectWidget(
@@ -26,6 +31,7 @@ export function connectWidget(
   frame: HTMLIFrameElement,
   update: (state: WidgetState) => void,
 ): Promise<WidgetController> {
+  if (provider === 'youtube' || provider === 'youtube-music') return connectYouTube(frame, update);
   if (!['soundcloud', 'mixcloud'].includes(provider))
     return Promise.reject(new Error('Unsupported controller'));
   const soundcloud = provider === 'soundcloud';
@@ -198,6 +204,118 @@ export function connectWidget(
     const handshake = () => {
       if (!soundcloud) send({ type: 'getApi' });
     };
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('Widget timed out'));
+    }, 20_000);
+    window.addEventListener('message', receive);
+    frame.addEventListener('load', handshake);
+    handshake();
+  });
+}
+
+/**
+ * YouTube embeds (with `enablejsapi=1` and our origin) answer a `listening`
+ * message with `onReady`, then `infoDelivery` updates carrying playerState,
+ * currentTime, duration and the video title; `onError` reports videos whose
+ * owners refuse embedding. Commands are `{ event: 'command', func, args }`.
+ * Verified against a live embed on 2026-11-17 (ready, playing, seek, ended).
+ */
+function connectYouTube(
+  frame: HTMLIFrameElement,
+  update: (state: WidgetState) => void,
+): Promise<WidgetController> {
+  let alive = true;
+  let ready = false;
+  let state: number | undefined;
+  let title = '';
+  const send = (message: Record<string, unknown>) => {
+    if (alive && frame.isConnected)
+      frame.contentWindow?.postMessage(
+        JSON.stringify({ ...message, id: 1, channel: 'widget' }),
+        YOUTUBE_EMBED_ORIGIN,
+      );
+  };
+  const command = (func: string, args: unknown[] = []) => {
+    if (ready) send({ event: 'command', func, args });
+  };
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      alive = false;
+      clearTimeout(timer);
+      window.removeEventListener('message', receive);
+      frame.removeEventListener('load', handshake);
+    };
+    const controller: WidgetController = {
+      play: () => command('playVideo'),
+      pause: () => command('pauseVideo'),
+      seek: (seconds) => command('seekTo', [seconds, true]),
+      volume: (value) => command('setVolume', [Math.round(value * 100)]),
+      destroy: () => {
+        command('pauseVideo');
+        cleanup();
+      },
+    };
+    /** -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued. */
+    const playerState = (next: number) => {
+      if (next === state) return;
+      state = next;
+      if (next === 1) update({ playing: true });
+      else if (next === 2) update({ playing: false });
+      else if (next === 0) update({ playing: false, ended: true });
+    };
+    const receive = (event: MessageEvent) => {
+      if (!alive || event.origin !== YOUTUBE_EMBED_ORIGIN || event.source !== frame.contentWindow)
+        return;
+      let message: { event?: string; info?: unknown };
+      try {
+        message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      } catch {
+        return;
+      }
+      if (!message || typeof message !== 'object') return;
+      switch (message.event) {
+        case 'onReady':
+          if (!ready) {
+            ready = true;
+            clearTimeout(timer);
+            resolve(controller);
+          }
+          break;
+        case 'onStateChange':
+          if (typeof message.info === 'number') playerState(message.info);
+          break;
+        case 'onError':
+          if (!ready) {
+            cleanup();
+            reject(new Error('YouTube refused the video'));
+          } else update({ error: true });
+          break;
+        case 'infoDelivery': {
+          const info = (message.info ?? {}) as {
+            playerState?: unknown;
+            currentTime?: unknown;
+            duration?: unknown;
+            videoData?: { title?: unknown; author?: unknown };
+          };
+          const progress: WidgetState = {};
+          if (typeof info.currentTime === 'number') progress.time = info.currentTime;
+          if (typeof info.duration === 'number' && info.duration > 0)
+            progress.duration = info.duration;
+          const named = info.videoData?.title;
+          if (typeof named === 'string' && named.trim() && named !== title) {
+            title = named.trim().slice(0, 200);
+            progress.title = title;
+            const author = info.videoData?.author;
+            if (typeof author === 'string' && author) progress.artist = author.slice(0, 100);
+          }
+          if (Object.keys(progress).length) update(progress);
+          if (typeof info.playerState === 'number') playerState(info.playerState);
+          break;
+        }
+      }
+    };
+    const handshake = () => send({ event: 'listening' });
     const timer = setTimeout(() => {
       cleanup();
       reject(new Error('Widget timed out'));

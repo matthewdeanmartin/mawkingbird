@@ -20,11 +20,17 @@ import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
 import { RadioIcon } from './radio-icon';
 import { isContinuous, RadioPlayer, RadioTrack } from './radio-player';
-import { RadioPlaylists } from './radio-playlists';
+import { RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
+import { TrackActions } from './track-actions';
 import { SavedSingles } from './saved-singles';
+import { SinglesTabs } from './section-tabs';
+import { AppDialogs } from '../../shell/app-dialogs';
+import { postHasPage } from './single-page';
+import { countKey } from './count-key';
 
 // i18n singles.title: Saved singles
-// i18n singles.lead: Recordings you kept. Play one, or add it to a playlist. They stay in this browser.
+// i18n singles.clearAll: Clear all
+// i18n singles.clearConfirm: Remove all {{count}} saved singles? Playlists keep their tracks.
 // i18n singles.find: Find singles
 // i18n singles.empty: No saved singles yet
 // i18n singles.emptyHint: Find music in posts, hashtags, accounts or public catalogues, then save the recordings you like.
@@ -34,20 +40,19 @@ import { SavedSingles } from './saved-singles';
 // i18n singles.addTo: Add {{title}} to a playlist
 // i18n singles.ownPage: Plays on its own page
 // i18n singles.saving: Saving…
-// i18n singles.saved: Saved {{count}} singles.
+// i18n singles.saved.one: Saved {{count}} single.
+// i18n singles.saved.other: Saved {{count}} singles.
 // i18n singles.alreadySaved: Already in your saved singles.
 // i18n singles.nothingToSave: This post has no recording to save.
 // i18n singles.saveFailed: Could not open that post. It may be private or deleted.
 // i18n singles.storageFailed: This browser could not save your singles.
-// i18n singles.addedTo: Added to {{playlist}}.
-// i18n singles.alreadyIn: Already in {{playlist}}.
 // i18n singles.noPlaylists: No playlists yet
 // i18n singles.newPlaylist: New playlist with this single
 // i18n singles.source.mastodon: Mastodon
 
 /** True when a track's post can open on the Listen page (not a catalogue or pasted link). */
 export function hasSinglePage(track: RadioTrack): boolean {
-  return !track.post.id.startsWith(CATALOGUE_POST) && !/^https?:/i.test(track.post.id);
+  return postHasPage(track.post);
 }
 
 @Component({
@@ -63,6 +68,7 @@ export function hasSinglePage(track: RadioTrack): boolean {
     MbMenuItem,
     RadioHeader,
     RadioIcon,
+    SinglesTabs,
   ],
   templateUrl: './singles-page.html',
   styleUrl: './radio-lists.css',
@@ -71,6 +77,7 @@ export class SinglesPage {
   readonly singles = inject(SavedSingles);
   readonly playlists = inject(RadioPlaylists);
   readonly player = inject(RadioPlayer);
+  private readonly actions = inject(TrackActions);
   private readonly auth = inject(Auth);
   private readonly server = inject(Server);
   private readonly router = inject(Router);
@@ -80,6 +87,7 @@ export class SinglesPage {
   private readonly linked = inject(LinkedAudioResolver);
   private readonly diagnostics = inject(PageDiagnostics);
   private readonly transloco = inject(TranslocoService);
+  private readonly dialogs = inject(AppDialogs);
   readonly message = signal('');
   readonly saving = signal(false);
   readonly isContinuous = isContinuous;
@@ -117,7 +125,7 @@ export class SinglesPage {
       else {
         const added = this.singles.save(tracks);
         if (this.singles.error()) this.say('singles.storageFailed');
-        else if (added) this.say('singles.saved', { count: added });
+        else if (added) this.say(countKey('singles.saved', added), { count: added });
         else this.say('singles.alreadySaved');
       }
     } catch (error) {
@@ -128,6 +136,15 @@ export class SinglesPage {
       // A reload must not save the post again.
       void this.router.navigate(['/singles'], { replaceUrl: true });
     }
+  }
+
+  async clearAll(): Promise<void> {
+    const count = this.singles.items().length;
+    if (
+      count &&
+      (await this.dialogs.confirm(this.transloco.translate('singles.clearConfirm', { count })))
+    )
+      this.singles.clear();
   }
 
   /** Continuous Singles play here; the others open the page where their player lives. */
@@ -145,13 +162,15 @@ export class SinglesPage {
     );
   }
 
+  /** Playlists that can take this Single: any, or only Studio's if it plays on its own page. */
+  playlistsFor(track: RadioTrack): SavedRadioPlaylist[] {
+    return isContinuous(track)
+      ? this.playlists.saved()
+      : this.playlists.saved().filter((row) => row.authored);
+  }
+
   addTo(track: RadioTrack, playlistId: string): void {
-    const row = this.playlists.saved().find((item) => item.id === playlistId);
-    if (!row) return;
-    const present = row.tracks.some((item) => item.key === track.key);
-    if (!present)
-      this.playlists.update(playlistId, (item) => ({ ...item, tracks: [...item.tracks, track] }));
-    this.say(present ? 'singles.alreadyIn' : 'singles.addedTo', { playlist: row.name });
+    this.message.set(this.actions.keep([track], playlistId));
   }
 
   /** Start a playlist from this Single and open it. */

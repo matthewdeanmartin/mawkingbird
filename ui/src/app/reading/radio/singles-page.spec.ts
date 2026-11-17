@@ -14,6 +14,7 @@ import { RADIO_AUDIO, RadioPlayer } from './radio-player';
 import { RadioPlaylists } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
 import { SinglesPage } from './singles-page';
+import { AppDialogs } from '../../shell/app-dialogs';
 
 function quietAudio(): HTMLAudioElement {
   const audio = document.createElement('audio');
@@ -78,7 +79,8 @@ describe('SinglesPage', () => {
 
   it('says when nothing is saved and leads to Find singles', () => {
     const { root } = render();
-    expect(root.querySelector('h1')?.textContent).toContain('Saved singles');
+    expect(root.querySelector('h1')?.textContent).toContain('Singles');
+    expect(root.querySelector('nav a[aria-current="page"]')?.textContent).toContain('Saved');
     expect(root.textContent).toContain('No saved singles yet');
     expect(Array.from(root.querySelectorAll('a'), (link) => link.getAttribute('href'))).toContain(
       '/singles/find',
@@ -93,7 +95,7 @@ describe('SinglesPage', () => {
     await vi.waitFor(() => expect(page.saving()).toBe(false));
     fixture.detectChanges();
     expect(getStatus).not.toHaveBeenCalled();
-    expect(page.message()).toBe('Saved 1 singles.');
+    expect(page.message()).toBe('Saved 1 single.');
     expect(root.textContent).toContain('Plays on its own page');
     expect(navigate).toHaveBeenCalledWith(['/singles'], { replaceUrl: true });
   });
@@ -122,11 +124,30 @@ describe('SinglesPage', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
     const { page } = render();
     page.addTo(track, id);
-    expect(page.message()).toBe('Added to Mix.');
+    expect(page.message()).toBe('Added 1 to Mix.');
     page.addTo(track, id);
     expect(page.message()).toBe('Already in Mix.');
     page.newPlaylist(track);
     expect(playlists.saved()).toHaveLength(2);
     expect(navigate).toHaveBeenCalledWith(['/playlists', playlists.saved()[1].id]);
+  });
+
+  it('clears every saved single after confirming', async () => {
+    const player = TestBed.inject(RadioPlayer);
+    const singles = TestBed.inject(SavedSingles);
+    singles.save([...player.singlesOf(song), ...player.singlesOf(spotify)]);
+    const confirm = vi.spyOn(TestBed.inject(AppDialogs), 'confirm').mockResolvedValueOnce(false);
+    const { page, fixture, root } = render();
+    expect(root.textContent).toContain('Clear all');
+    await page.clearAll();
+    expect(singles.items()).toHaveLength(2);
+    confirm.mockResolvedValueOnce(true);
+    await page.clearAll();
+    expect(confirm).toHaveBeenLastCalledWith(
+      'Remove all 2 saved singles? Playlists keep their tracks.',
+    );
+    fixture.detectChanges();
+    expect(singles.items()).toEqual([]);
+    expect(root.textContent).toContain('No saved singles yet');
   });
 });

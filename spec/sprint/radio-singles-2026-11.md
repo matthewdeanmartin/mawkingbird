@@ -204,3 +204,101 @@ profile, status card, catalogue panel, guard and app-mode specs updated.
 
 Known gaps: "Saved 1 singles." has no plural handling. YouTube music detection
 and the catalogue additions remain Sprint 5.
+
+### Owner follow-ups (2026-11-17)
+
+- Plurals: counted strings use the app's `.one`/`.other` key pairs through
+  `countKey` (`count-key.ts`): saved singles, track counts, recordings, skipped
+  links.
+- Internal routes that no longer made sense were removed. "Play in Radio" is now
+  `/radio?play=<post>` (was `?post=&add=1&view=radio`); settings moved to
+  `/radio/settings`; the dock links plain `/radio`. Retired tab addresses
+  (`?view=search|publish|saved|mine|playlist`) and the old card "Add to
+  playlist" address are no longer forwarded. Shared content links still are:
+  `/radio?acct=`, `/radio?post=`, `/radio#playlist=`. The unused `radioLink`
+  builder is gone.
+
+### Sprint 4 (2026-11-17): Studio authors playlists
+
+- `SavedRadioPlaylist.authored`: made in Studio to publish. Any published
+  playlist reads as authored (older published rows migrate on read). Authored
+  playlists keep page-only players (Spotify, Bandcamp…); listening playlists
+  never do.
+- Studio's Find Shareable tab is replaced by **Playlists**
+  (`studio-playlists`): authored playlists with Published / changed / not
+  published state, New playlist to publish, and threads already posted found
+  on arrival with Keep in Studio (adopt). Find Shareable's job lives in Find
+  singles (catalogue Share stays).
+- `/radio/studio/playlists/:id` opens an authored playlist on the same playlist
+  page. There: a Studio lead, Publish as thread, Draft playlist post/thread
+  (handed to Studio's composer, not Home), page-only tracks marked and not
+  playable here. A listening playlist shows no publishing; its menu offers
+  "Publish from Studio", which copies it into Studio.
+- `/playlists` lists listening playlists only; "My playlist threads" moved to
+  Studio. Adding to an authored playlist (Find singles target, Saved singles,
+  Listen) accepts any recording via `TrackActions.keep`.
+- `RadioPlayer.playTracks` starts at the next track that plays here, so an
+  authored playlist opening with a Spotify link still plays.
+
+### Sprint 5 (2026-11-17): more music that plays
+
+- **YouTube, verified.** A live youtube-nocookie embed, driven only by
+  postMessage from our page (no YouTube script in our document), reported
+  ready, title, duration and time, played, seeked and signalled ended (spike
+  script, 2026-11-17). `widget-api.ts` gains `connectYouTube`.
+  - YouTube Music links are now controllable (embed with `enablejsapi` and our
+    origin).
+  - Plain YouTube links play in Radio only on music posts (`youtube-music.ts`):
+    a music hashtag, a "- Topic" or "Official Audio"-style card, or "now
+    playing"-style words. Elsewhere YouTube stays video; Watch and Video mode
+    are unaffected. Cards offer Play in Radio and Save single for these posts.
+  - Owner-refused embeds (error 150/101) report an error and stop at that
+    track.
+- **Catalogues.** Openverse (openly licensed, direct files, licence link),
+  Audius (independent artists, stream URL named for the app, unstreamable
+  tracks skipped) and Wikimedia Commons (file, licence and plain-text artist in
+  one request) join LoC and the Internet Archive. Find singles offers one
+  "Public music catalogues" choice; the panel picks the catalogue.
+- Not done: PeerTube/Vimeo bridges and a Spotify control check; error 150
+  skipping to the next track automatically.
+
+### Owner feedback round (2026-11-17), done
+
+- Find singles results are compact `track-result` rows: title, poster, where it
+  plays, then Play, Save single (or Add to playlist) and Open thread. No
+  reply/like/boost row; the thread is one tap away.
+- "Where to look" is one row of tabs, each tab holding its own short form and a
+  one-line hint. A scan shows "Scanned N posts in K API calls · M with music"
+  while it runs, with Cancel, and the page scrolls to results when a search
+  starts. `MediaFeedScan.requests` counts the calls.
+- Saving all results (or one) says where they went, with a link to Saved
+  singles or the target playlist.
+- Saved singles: Clear all (confirmed). Singles and Playlists use Saved/Find and
+  My playlists/Find playlists tabs instead of buttons that read as toggles. The
+  playlist page's Add tracks is an always-shown section, not a toggle.
+- "They stay in this browser" copy removed.
+
+## Proposal: Share, its own place (owner idea, 2026-11-17)
+
+Studio should be only "I have media and I want to showcase it": upload a
+recording, post it, my audio, an album of my own uploads. Like `/write` for
+writers, it never searches for other people's work.
+
+Amplifying someone else's music ("I enjoy this and you should too", often
+hosted elsewhere) is a third job, neither a Single (a found thing to play) nor a
+listening playlist. It gets a **Share** page:
+
+- Opened from any Single, result row, Listen page or playlist, prefilled: the
+  title, credit (poster or catalogue and licence), the links (every service the
+  post offers), suggested hashtags (`#nowplaying`, `#fedimusic`, genre).
+- Share to Mastodon (one post, or a thread for a playlist: one reply per track,
+  the existing publisher), and to other connected networks the app already
+  cross-posts to.
+- A playlist share is the publish flow moved out of Studio: name, description,
+  one post with every link or a thread, publish/update plan, published state.
+
+What would move: Studio's Playlists tab and `/radio/studio/playlists/:id`
+become Share's playlist publishing; `TrackActions.share` (today it opens
+Studio's composer) opens Share; "Publish from Studio" becomes "Share this
+playlist". Studio keeps New audio post and My audio, and could add an album
+(several of my own uploads as a thread).

@@ -420,7 +420,7 @@ describe('StatusCard', () => {
       Array.from(fixture.nativeElement.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>).find(
         (a) => a.textContent?.includes('Play in Radio'),
       );
-    expect(new URL(link()!.href).searchParams.get('post')).toBe(status.url);
+    expect(new URL(link()!.href).searchParams.get('play')).toBe(status.url);
     const radioButtons = fixture.debugElement.queryAll(
       By.css('mb-toolbar.audio-toolbar button[mbToolbarButton][routerLink="/radio"]'),
     );
@@ -429,7 +429,7 @@ describe('StatusCard', () => {
     )!;
     const visible = open.nativeElement as HTMLButtonElement;
     const route = open.injector.get(RouterLink);
-    expect(route.queryParams).toEqual({ post: status.url, add: '1', view: 'radio' });
+    expect(route.queryParams).toEqual({ play: status.url });
     vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
     visible.click();
     expect(TestBed.inject(RadioHandoff).take(status.url!)?.id).toBe(status.id);
