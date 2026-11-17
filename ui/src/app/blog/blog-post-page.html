@@ -37,7 +37,20 @@
 
     <div class="body">
       @for (post of chain(); track post.id; let i = $index) {
-        <div class="part" [innerHTML]="body(post, i) | customEmoji: post.emojis"></div>
+        <div class="part-row">
+          <div class="part" [innerHTML]="body(post, i) | customEmoji: post.emojis"></div>
+          @if (chain().length > 1) {
+            <!-- A remark on one part of a storm belongs in the thread, where it sits
+                 under that part; the box at the bottom answers the whole post. -->
+            <a
+              class="part-reply"
+              [routerLink]="threadLink(post)"
+              [attr.aria-label]="'blog.post.partReply' | transloco"
+              [title]="'blog.post.partReply' | transloco"
+              >+</a
+            >
+          }
+        </div>
         @for (m of post.media_attachments; track m.id) {
           <img
             class="media"
@@ -77,13 +90,13 @@
     </nav>
   }
 
-  <section class="comments" aria-labelledby="blog-comments-heading">
-    <h2 id="blog-comments-heading">
-      {{ 'blog.post.comments' | transloco }}
-      @if (comments().length) {
+  <section class="comments" [attr.aria-label]="'blog.post.comments' | transloco">
+    @if (comments().length) {
+      <h2>
+        {{ 'blog.post.comments' | transloco }}
         <span class="count">({{ comments().length }})</span>
-      }
-    </h2>
+      </h2>
+    }
     @for (comment of comments(); track comment.status.id) {
       <article class="comment" [class.by-author]="comment.byAuthor">
         <header>
@@ -114,16 +127,55 @@
           class="comment-body"
           [innerHTML]="comment.status.content | customEmoji: comment.status.emojis"
         ></div>
-        <a class="reply" [routerLink]="threadLink(comment.status)">{{
-          'blog.post.reply' | transloco
-        }}</a>
+        @if (canComment) {
+          <button type="button" class="reply" (click)="answer(comment)">
+            {{ 'blog.post.reply' | transloco }}
+          </button>
+        }
       </article>
-    } @empty {
-      <p class="muted">{{ 'blog.post.noComments' | transloco }}</p>
     }
-    <p class="join">
-      <a mbButton [routerLink]="threadLink(root)">{{ 'blog.post.join' | transloco }}</a>
-    </p>
+
+    @if (canComment) {
+      <div id="blog-composer" class="composer">
+        @if (replyTo(); as answering) {
+          <p class="answering muted">
+            {{
+              'blog.post.replyingTo.composer'
+                | transloco: { name: answering.account.display_name || answering.account.username }
+            }}
+            ·
+            <button type="button" class="reply" (click)="replyTo.set(null)">
+              {{ 'blog.post.cancelReply' | transloco }}
+            </button>
+          </p>
+        }
+        @if (replyId(); as id) {
+          <!-- Keyed by the target, so a new target gets a fresh composer. -->
+          @for (key of [id]; track key) {
+            <app-compose
+              [inReplyToId]="id"
+              [replyToHandle]="target()?.account?.acct ?? ''"
+              [compact]="true"
+              [placeholder]="
+                (comments().length ? 'blog.post.placeholder' : 'blog.post.placeholderFirst')
+                  | transloco
+              "
+              (posted)="onPosted($event)"
+            />
+          }
+        } @else if (preparing()) {
+          <p class="muted" role="status">{{ 'blog.post.preparing' | transloco }}</p>
+        } @else if (target(); as t) {
+          <a [routerLink]="threadLink(t)">{{ 'blog.post.join' | transloco }}</a>
+        }
+      </div>
+    } @else if (target(); as t) {
+      <p class="join">
+        <a mbButton variant="outline" [routerLink]="threadLink(t)">{{
+          'blog.post.join' | transloco
+        }}</a>
+      </p>
+    }
   </section>
 } @else if (loading()) {
   <mb-content-state

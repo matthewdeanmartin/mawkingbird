@@ -1676,6 +1676,17 @@ export const routes: Routes = [
         loadComponent: () => import('./blog/blog-page').then((m) => m.BlogPage),
       },
       {
+        // Before `blog/:handle`, which would take "roll" for a handle.
+        path: 'blog/roll',
+        title: 'Roll',
+        loadComponent: () => import('./blog/blog-roll-page').then((m) => m.BlogRollPage),
+      },
+      {
+        path: 'blog/search',
+        title: 'Search blogs',
+        loadComponent: () => import('./blog/blog-search-page').then((m) => m.BlogSearchPage),
+      },
+      {
         // `@user@server`: a handle, never an id, so the link works from any server.
         path: 'blog/:handle',
         title: 'Blog',

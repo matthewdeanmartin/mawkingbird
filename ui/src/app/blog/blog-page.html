@@ -45,9 +45,7 @@
           <a mbButton variant="outline" size="small" [routerLink]="profileLink()">{{
             'blog.page.profile' | transloco
           }}</a>
-          <a mbButton variant="link" size="small" routerLink="/settings/blog">{{
-            'blog.page.rules' | transloco
-          }}</a>
+          <app-blog-settings-link />
         </nav>
       </header>
 

@@ -1,0 +1,74 @@
+<app-blog-header [heading]="'blog.search.title' | transloco" />
+
+<form class="search" role="search" (submit)="submit($event)">
+  <mb-field [label]="'blog.search.label' | transloco" hideLabel>
+    <input
+      mbControl
+      type="search"
+      name="blog_q"
+      [placeholder]="'blog.search.label' | transloco"
+      [value]="draft()"
+      (input)="draft.set($any($event.target).value)"
+    />
+  </mb-field>
+  <button mbButton type="submit">{{ 'blog.search.go' | transloco }}</button>
+</form>
+
+@if (opened().length) {
+  <section aria-labelledby="blog-search-opened">
+    <h2 id="blog-search-opened" class="section">{{ 'blog.search.opened' | transloco }}</h2>
+    <ol class="posts">
+      @for (entry of opened(); track entry.handle + ':' + entry.post.id) {
+        <li>
+          <article>
+            <p class="meta">&#64;{{ entry.handle }}</p>
+            <h2>
+              <a [routerLink]="openedLink(entry.handle, entry.post)">{{
+                entry.post.title || '…'
+              }}</a>
+            </h2>
+            @if (entry.post.excerpt) {
+              <p class="excerpt">{{ entry.post.excerpt }}</p>
+            }
+          </article>
+        </li>
+      }
+    </ol>
+  </section>
+}
+
+@if (query()) {
+  <section aria-labelledby="blog-search-mastodon">
+    <h2 id="blog-search-mastodon" class="section">{{ 'blog.search.mastodon' | transloco }}</h2>
+    <p class="note">
+      {{ (search.byText ? 'blog.search.mastodon.text' : 'blog.search.mastodon.tags') | transloco }}
+    </p>
+    @if (searching()) {
+      <p class="coverage" role="status">{{ 'blog.search.searching' | transloco }}</p>
+    } @else if (failed()) {
+      <p class="note" role="alert">{{ 'blog.search.failed' | transloco }}</p>
+    } @else if (searched() && !hits().length) {
+      <p class="coverage" role="status">{{ 'blog.search.none' | transloco }}</p>
+    }
+    <ol class="posts">
+      @for (hit of hits(); track hit.status.id) {
+        <li>
+          <article>
+            <p class="meta">
+              <a [routerLink]="['/blog', '@' + handleOf(hit.status)]">{{
+                hit.status.account.display_name || hit.status.account.username
+              }}</a>
+              · {{ 'blog.search.kind.' + hit.kind | transloco }} ·
+              <time [attr.datetime]="hit.status.created_at">{{
+                hit.status.created_at | date: 'mediumDate'
+              }}</time>
+            </p>
+            <h2>
+              <a [routerLink]="hitLink(hit.status)">{{ hit.title || '…' }}</a>
+            </h2>
+          </article>
+        </li>
+      }
+    </ol>
+  </section>
+}

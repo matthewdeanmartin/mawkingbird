@@ -579,6 +579,8 @@ export class Shell implements OnInit, AccountSwitcher {
         if (item.requires === 'signedIn')
           return !this.auth.isAnonymous && !this.auth.isMisskeyVisitor;
         if (item.requires === 'chat') return !this.auth.isAnonymous || this.hasLocalChat();
+        // The archive is the desktop app's; the web has nothing to read it from.
+        if (item.requires === 'native') return !!this.nativeProfiles && !this.auth.isAnonymous;
         return true;
       }),
   );

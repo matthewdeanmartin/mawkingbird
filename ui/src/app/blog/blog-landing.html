@@ -1,0 +1,120 @@
+<app-blog-header [heading]="'blog.landing.title' | transloco">
+  <a mbButton size="small" routerLink="/write">{{ 'blog.landing.write' | transloco }}</a>
+</app-blog-header>
+
+@if (!mine()) {
+  <p class="intro">{{ 'blog.landing.intro' | transloco }}</p>
+}
+
+<div class="panels">
+  @if (mine()) {
+    <section class="panel">
+      <h2>{{ 'blog.landing.glance' | transloco }}</h2>
+      @if (failed()) {
+        <p class="muted">{{ 'blog.landing.glance.failed' | transloco }}</p>
+      } @else if (loading() && !scanned()) {
+        <p class="muted" role="status">{{ 'blog.landing.glance.loading' | transloco }}</p>
+      } @else {
+        <ul class="glance">
+          <li>
+            {{
+              'blog.landing.glance.posts' | transloco: { count: posts().length, scanned: scanned() }
+            }}
+          </li>
+          @if (posts()[0]; as latest) {
+            <li>
+              {{
+                'blog.landing.glance.latest'
+                  | transloco: { date: (latest.root.created_at | date: 'mediumDate') }
+              }}
+            </li>
+          }
+          <li>{{ 'blog.landing.glance.comments' | transloco: { count: comments() } }}</li>
+        </ul>
+      }
+      <a routerLink="/blog/me">{{ 'blog.landing.mine' | transloco }}</a>
+    </section>
+
+    <section class="panel">
+      <h2>{{ 'blog.landing.recent' | transloco }}</h2>
+      @if (recent().length) {
+        <ul class="rows">
+          @for (post of recent(); track post.id) {
+            <li>
+              <a [routerLink]="postLink(post)">{{ post.title || '…' }}</a>
+              <span class="muted">
+                {{ post.root.created_at | date: 'mediumDate' }}
+                · {{ 'blog.landing.comments' | transloco: { count: commentsOf(post) } }}
+              </span>
+            </li>
+          }
+        </ul>
+      } @else if (!loading()) {
+        <p class="muted">{{ 'blog.landing.recent.none' | transloco }}</p>
+      }
+    </section>
+  }
+
+  @if (draftRows().length) {
+    <section class="panel">
+      <h2>{{ 'blog.landing.drafts' | transloco }}</h2>
+      <ul class="rows">
+        @for (draft of draftRows(); track draft.id) {
+          <li>
+            <a routerLink="/write" [queryParams]="{ draft: draft.id }">{{
+              draft.title || ('blog.landing.drafts.untitled' | transloco)
+            }}</a>
+            <span class="muted">{{
+              (draft.ready ? 'blog.landing.drafts.ready' : 'blog.landing.drafts.notYet') | transloco
+            }}</span>
+          </li>
+        }
+      </ul>
+      <a routerLink="/drafts">{{ 'blog.landing.drafts.all' | transloco }}</a>
+    </section>
+  }
+
+  <section class="panel">
+    <h2>{{ 'blog.landing.read' | transloco }}</h2>
+    @if (history.visits().length) {
+      <ul class="rows">
+        @for (visit of history.visits(); track visit.handle) {
+          <li>
+            <a class="who" [routerLink]="['/blog', '@' + visit.handle]">
+              @if (visit.avatar) {
+                <img [src]="visit.avatar" alt="" width="24" height="24" loading="lazy" />
+              }
+              <span>{{ visit.name || '@' + visit.handle }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="muted">{{ 'blog.landing.read.none' | transloco }}</p>
+    }
+  </section>
+</div>
+
+<details class="shed">
+  <summary>{{ 'blog.landing.open' | transloco }}</summary>
+  <form class="open" (submit)="open($event)">
+    <mb-field
+      [label]="'blog.landing.handle' | transloco"
+      [hint]="'blog.landing.handle.hint' | transloco"
+      [error]="invalid() ? ('blog.landing.invalid' | transloco) : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        name="blog_handle"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="@alice@example.social"
+        [value]="handle()"
+        (input)="edit($any($event.target).value)"
+      />
+    </mb-field>
+    <button mbButton variant="outline" type="submit">{{ 'blog.landing.go' | transloco }}</button>
+  </form>
+</details>

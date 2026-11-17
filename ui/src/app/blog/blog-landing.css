@@ -1,0 +1,85 @@
+:host {
+  display: block;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.intro,
+.muted {
+  color: var(--muted);
+}
+
+.panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.panel {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.panel h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.glance,
+.rows {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rows li {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.rows a {
+  overflow-wrap: anywhere;
+}
+
+.rows .muted {
+  font-size: 0.85rem;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.who img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.shed {
+  margin-top: 1rem;
+  color: var(--muted);
+}
+
+.shed summary {
+  cursor: pointer;
+}
+
+.open {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+  margin-top: 0.75rem;
+  color: var(--fg, inherit);
+}
+
+.open mb-field {
+  width: 100%;
+}

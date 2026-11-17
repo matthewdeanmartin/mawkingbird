@@ -103,3 +103,20 @@ article h2 a:focus-visible {
   justify-content: center;
   margin: 1rem 0;
 }
+
+.search {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  margin: 1rem 0;
+}
+
+.search mb-field {
+  flex: 1 1 auto;
+}
+
+h2.section {
+  margin: 1.25rem 0 0.25rem;
+  font-size: 1rem;
+  color: var(--muted);
+}

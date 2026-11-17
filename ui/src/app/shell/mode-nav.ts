@@ -19,9 +19,12 @@ import {
 // i18n shell.modeNav.video.saved: Saved
 // i18n shell.modeNav.mode.mastodon: Fedi
 // i18n shell.modeNav.mode.blog: Blog
+// i18n shell.modeNav.blog.desk: Desk
 // i18n shell.modeNav.blog.write: Write
 // i18n shell.modeNav.blog.mine: Mine
 // i18n shell.modeNav.blog.drafts: Drafts
+// i18n shell.modeNav.blog.roll: Roll
+// i18n shell.modeNav.blog.search: Search
 // i18n shell.modeNav.mode.rss: RSS
 // i18n shell.modeNav.mode.video: Video
 // i18n shell.modeNav.mode.radio: Radio
@@ -77,8 +80,11 @@ export interface ModeNavItem {
   queryParams?: Record<string, string>;
   /** Whether the tab is the current page, given the router URL. */
   active: (url: string) => boolean;
-  /** `signedIn`: hidden for Anonymous. `chat`: signed in, or a local chat peer. */
-  requires?: 'signedIn' | 'chat';
+  /**
+   * `signedIn`: hidden for Anonymous. `chat`: signed in, or a local chat peer.
+   * `native`: the desktop app with an account, whose archive the page reads.
+   */
+  requires?: 'signedIn' | 'chat' | 'native';
   /** The menu indicator that lights this tab's activity dot (signed in only). */
   activity?: 'ordinary' | 'chat';
 }
@@ -101,9 +107,18 @@ function param(url: string, name: string): string | null {
 
 /** Home is not here: it is the fixed first slot of every mode (rule 1). */
 export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
-  // Mastodon as a blog engine (spec/sprint/blog-2026-11.md). Roll and Search
-  // join in later sprints; Write and Drafts are shared, sticky pages.
+  // Mastodon as a blog engine (spec/sprint/blog-2026-11.md). Desk is where the
+  // switcher lands; Write and Drafts are shared, sticky pages. Six tabs is one
+  // over the budget, tolerated while the owner tries it (2026-11-17); Roll is
+  // Native-only, so the web has five.
   blog: [
+    {
+      id: 'desk',
+      labelKey: 'shell.modeNav.blog.desk',
+      icon: 'M3 4h8v7H3zM13 4h8v4h-8zM13 10h8v10h-8zM3 13h8v7H3z',
+      link: '/blog',
+      active: (url) => pathOf(url).replace(/\/$/, '') === '/blog',
+    },
     {
       id: 'write',
       labelKey: 'shell.modeNav.blog.write',
@@ -125,6 +140,21 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       icon: 'M5 5h14M5 9h14M5 13h9M16 15l3 3M14 21v-3h3',
       link: '/drafts',
       active: onPath('/drafts'),
+    },
+    {
+      id: 'roll',
+      labelKey: 'shell.modeNav.blog.roll',
+      icon: 'M4 6h3M4 12h3M4 18h3M10 5h10v2H10zM10 11h10v2H10zM10 17h10v2H10z',
+      link: '/blog/roll',
+      active: onPath('/blog/roll'),
+      requires: 'native',
+    },
+    {
+      id: 'search',
+      labelKey: 'shell.modeNav.blog.search',
+      icon: 'M5 4h9l4 4v5M5 4v16h7M8 9h5M8 13h3M17.5 16.5m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M19.6 18.6 22 21',
+      link: '/blog/search',
+      active: onPath('/blog/search'),
     },
   ],
   radio: [

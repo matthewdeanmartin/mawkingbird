@@ -65,9 +65,9 @@ describe('MODE_NAV', () => {
 
   it('keeps the mode navigation slots, with Singles, Playlists and Studio in Radio', () => {
     // Radio is the verb "play": Now Playing is the dock's, settings sit on each page.
-    // Blog reaches five when Roll and Search land (spec/sprint/blog-2026-11.md).
+    // Blog has six, one over budget by the owner's leave; Roll is Native-only.
     for (const mode of APP_MODES)
-      expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' || mode === 'blog' ? 3 : 5);
+      expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' ? 3 : mode === 'blog' ? 6 : 5);
     expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['singles', 'playlists', 'studio']);
     expect(MODE_NAV.mastodon[3].id).toBe('search');
     expect(MODE_NAV.video[3].id).toBe('search');
@@ -98,6 +98,19 @@ describe('MODE_NAV', () => {
     expect(
       MODE_NAV.forum.filter((item) => item.requires === 'signedIn').map((item) => item.id),
     ).toEqual(['mine', 'joined']);
+  });
+
+  it('marks exactly one Blog tab current, with Desk only on the dashboard', () => {
+    const active = (url: string) =>
+      MODE_NAV.blog.filter((tab) => tab.active(url)).map((tab) => tab.id);
+    expect(active('/blog')).toEqual(['desk']);
+    expect(active('/blog/')).toEqual(['desk']);
+    expect(active('/blog/me')).toEqual(['mine']);
+    expect(active('/blog/roll')).toEqual(['roll']);
+    expect(active('/blog/search?q=bees')).toEqual(['search']);
+    expect(active('/blog/@alice@far.example')).toEqual([]);
+    expect(active('/write?draft=1')).toEqual(['write']);
+    expect(MODE_NAV.blog.find((tab) => tab.id === 'roll')?.requires).toBe('native');
   });
 
   it('does not claim lookalike paths', () => {

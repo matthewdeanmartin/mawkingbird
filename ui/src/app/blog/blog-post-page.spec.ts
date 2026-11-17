@@ -1,4 +1,7 @@
+import { Component, input, output } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { Compose } from '../publishing/compose/compose';
+import { Auth } from '../platform/session/auth';
 import { ActivatedRoute, convertToParamMap, ParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -63,19 +66,52 @@ describe('commentsOf', () => {
   });
 });
 
+/** Stands in for the real composer, which needs the whole posting stack. */
+@Component({
+  selector: 'app-compose',
+  template: '<textarea [placeholder]="placeholder()"></textarea>',
+})
+class StubCompose {
+  readonly inReplyToId = input<string | undefined>();
+  readonly replyToHandle = input('');
+  readonly compact = input(false);
+  readonly placeholder = input('');
+  readonly posted = output<Status>();
+}
+
 describe('BlogPostPage', () => {
-  const source = { resolve: vi.fn(), thread: vi.fn(), remembered: vi.fn() };
+  const source = {
+    resolve: vi.fn(),
+    thread: vi.fn(),
+    remembered: vi.fn(),
+    localStatusId: vi.fn(),
+    ownHandle: vi.fn(),
+  };
   let params: BehaviorSubject<ParamMap>;
+  let signedIn = false;
 
   beforeEach(() => {
     vi.resetAllMocks();
     params = new BehaviorSubject(convertToParamMap({ handle: '@alice@far.example', id: '1' }));
+    signedIn = false;
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         { provide: BlogSource, useValue: source },
         { provide: ActivatedRoute, useValue: { paramMap: params } },
+        {
+          provide: Auth,
+          useValue: {
+            get lacksMastodonToken() {
+              return !signedIn;
+            },
+          },
+        },
       ],
+    });
+    TestBed.overrideComponent(BlogPostPage, {
+      remove: { imports: [Compose] },
+      add: { imports: [StubCompose] },
     });
   });
 
@@ -123,6 +159,55 @@ describe('BlogPostPage', () => {
     const links = [...el.querySelectorAll('.neighbours a')];
     expect(links.map((a) => a.textContent?.trim())).toEqual(['Newer: Newest', 'Older: Oldest']);
     expect(links[0].getAttribute('href')).toBe('/blog/@alice@far.example/9');
+  });
+
+  it('says "comment" once when there are none yet, and offers Reply on Mastodon without an account', async () => {
+    const p1 = post('1', '<p>Lonely</p>');
+    source.resolve.mockResolvedValue(author);
+    source.thread.mockResolvedValue({ status: p1, thread: [p1] });
+    source.remembered.mockReturnValue(null);
+    const el = await render();
+    const section = el.querySelector('.comments')!;
+    expect(section.querySelector('h2')).toBeNull();
+    expect(section.textContent!.trim()).toBe('Reply on Mastodon');
+    expect(el.querySelector('.part-reply')).toBeNull();
+  });
+
+  it('replies in place: the box answers the last part, a comment Reply retargets it', async () => {
+    signedIn = true;
+    const p1 = post('1', '<p>T</p>');
+    const p2 = post('2', '<p>two</p>', alice, '1');
+    const c1 = post('3', '<p>Lovely</p>', bob, '2');
+    source.resolve.mockResolvedValue(author);
+    source.thread.mockResolvedValue({ status: p1, thread: [p1, p2, c1] });
+    source.remembered.mockReturnValue(null);
+    source.localStatusId.mockImplementation(async (_a: unknown, s: Status) => `L${s.id}`);
+    const fixture = TestBed.createComponent(BlogPostPage);
+    const settle = async () => {
+      for (let i = 0; i < 4; i++) {
+        await fixture.whenStable();
+        fixture.detectChanges();
+      }
+    };
+    await settle();
+    const el = fixture.nativeElement as HTMLElement;
+    const composer = () =>
+      fixture.debugElement.query((d) => d.componentInstance instanceof StubCompose);
+    expect(composer().componentInstance.inReplyToId()).toBe('L2');
+    expect(el.querySelector('textarea')!.placeholder).toBe('Write a reply…');
+    // Each storm part offers the thread for a remark on just that part.
+    expect(el.querySelectorAll('.part-reply')).toHaveLength(2);
+    expect(el.querySelector('.part-reply')!.getAttribute('href')).toBe('/statuses/1');
+
+    (el.querySelector('.comment .reply') as HTMLButtonElement).click();
+    await settle();
+    expect(composer().componentInstance.inReplyToId()).toBe('L3');
+    expect(el.textContent).toContain('Replying to Bob');
+
+    composer().componentInstance.posted.emit(post('9', '<p>Thanks!</p>', bob, '3'));
+    await settle();
+    expect(el.querySelectorAll('.comment')).toHaveLength(2);
+    expect(composer().componentInstance.inReplyToId()).toBe('L2');
   });
 
   it('explains a post that will not open', async () => {

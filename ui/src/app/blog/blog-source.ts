@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Account, Context, Status } from '../platform/api/models';
 import { BlogPost } from './blog-classifier';
@@ -159,6 +159,25 @@ export class BlogSource {
   }
 
   /**
+   * The id the reader's own server uses for `status`, which is what a reply
+   * must name. Posts read through the reader's server already carry it; a post
+   * read from the author's server is looked up by its address.
+   */
+  async localStatusId(author: BlogAuthor, status: Status): Promise<string | null> {
+    if (author.via !== 'home') {
+      return status.id;
+    }
+    const address = status.url ?? status.uri;
+    if (!address) {
+      return null;
+    }
+    const found = await firstValueFrom(
+      this.api.search(address, 'statuses', { resolve: true, limit: 1 }),
+    );
+    return found.statuses[0]?.id ?? null;
+  }
+
+  /**
    * The last blog list read per handle, so a post page can offer the previous
    * and next post without reading the blog again. Memory only: a post opened
    * from a shared link simply has no neighbours to offer.
@@ -168,6 +187,13 @@ export class BlogSource {
   remember(handle: string, posts: BlogPost[]): void {
     this.lists.update((all) => ({ ...all, [handle.toLowerCase()]: posts }));
   }
+
+  /** Every remembered blog post, with whose blog it is on. */
+  readonly rememberedAll = computed(() =>
+    Object.entries(this.lists()).flatMap(([handle, posts]) =>
+      posts.map((post) => ({ handle, post })),
+    ),
+  );
 
   /** Reactive: a rail widget showing it updates as the list grows. */
   remembered(handle: string): BlogPost[] | null {

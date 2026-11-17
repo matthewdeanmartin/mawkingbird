@@ -56,6 +56,8 @@ describe('authGuard', () => {
     '/blog/@alice@far.example/',
     '/blog/@alice@far.example/113',
     '/blog/@alice@gts.example/01HXYZ',
+    '/blog/search',
+    '/blog/search?q=bees',
     // The search tool pages hand their query here; no front page in between.
     '/search',
     '/search?q=coffee&type=statuses',
@@ -96,6 +98,7 @@ describe('authGuard', () => {
     '/aboutness',
     '/blog/drafts',
     '/blog/me',
+    '/blog/roll',
     '/blog/alice',
     '/blog/@alice@far.example/1/2',
     '/blogx',

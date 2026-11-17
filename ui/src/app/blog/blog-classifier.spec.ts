@@ -5,7 +5,9 @@ import {
   blogReason,
   blogTitle,
   clampThresholds,
+  collectAcrossAuthors,
   collectBlogPosts,
+  commentEstimate,
   DEFAULT_BLOG_THRESHOLDS,
   firstLine,
   hasBlogMarker,
@@ -297,5 +299,31 @@ describe('withoutTitleLine', () => {
     expect(withoutTitleLine('<p>Title</p><p>See <a href="x">this</a></p>')).toBe(
       '<p>See <a href="x">this</a></p>',
     );
+  });
+});
+
+describe('collectAcrossAuthors and commentEstimate', () => {
+  it('classifies each author on their own and skips the ones asked', () => {
+    const a1 = post('1', short('A storm'));
+    const a2 = post('2', short('b'), { replyTo: '1' });
+    const a3 = post('3', short('c'), { replyTo: '2' });
+    // Bob's posts reply to Bob, so they chain only within Bob.
+    const b1 = post('4', short('Bob storm'), { account: 'b' });
+    const b2 = post('5', short('b'), { account: 'b', replyTo: '4' });
+    const b3 = post('6', short('c'), { account: 'b', replyTo: '5' });
+    const all = [a1, a2, a3, b1, b2, b3];
+    expect(collectAcrossAuthors(all, DEFAULT_BLOG_THRESHOLDS).posts.map((p) => p.title)).toEqual([
+      'Bob storm',
+      'A storm',
+    ]);
+    const skipped = collectAcrossAuthors(all, DEFAULT_BLOG_THRESHOLDS, new Set([AUTHOR]));
+    expect(skipped.posts.map((p) => p.title)).toEqual(['Bob storm']);
+  });
+
+  it('counts replies minus the storm holding itself together', () => {
+    const chain = [{ replies_count: 3 }, { replies_count: 1 }, { replies_count: 0 }] as Status[];
+    expect(commentEstimate(chain)).toBe(2);
+    expect(commentEstimate([{ replies_count: 0 } as Status])).toBe(0);
+    expect(commentEstimate([{} as Status, {} as Status])).toBe(0);
   });
 });

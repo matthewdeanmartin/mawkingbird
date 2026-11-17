@@ -1,5 +1,4 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbField, MbControl } from '../design-system/field/field';
 import { BlogPrefs } from './blog-prefs';
@@ -22,7 +21,6 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
 // i18n blog.write.verdict.long: Counts as a blog post: {{count}} characters.
 // i18n blog.write.verdict.no: Not a blog post yet. It needs {{posts}} posts, or {{chars}} characters (now {{count}}), or the BLOG: mark.
 // i18n blog.write.verdict.empty: Write something to see whether it counts as a blog post.
-// i18n blog.write.rules: What counts
 // i18n blog.write.view: View on your blog
 // i18n blog.write.also: Also publish to
 // i18n blog.write.also.hint: Copies go out once, after the Mastodon post is live, with a link back to it. They are not retried or updated later.
@@ -37,7 +35,7 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
  */
 @Component({
   selector: 'app-blog-write-panel',
-  imports: [RouterLink, TranslocoPipe, MbField, MbControl],
+  imports: [TranslocoPipe, MbField, MbControl],
   template: `
     <section class="blog-write" [attr.aria-label]="'blog.write.heading' | transloco">
       <mb-field
@@ -88,7 +86,6 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
             }
           }
         }
-        <a routerLink="/settings/blog">{{ 'blog.write.rules' | transloco }}</a>
       </p>
       @if (crossAvailable().length) {
         <fieldset class="also">
@@ -127,9 +124,6 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
       margin: 0;
       color: var(--muted);
       font-size: 0.9rem;
-    }
-    .verdict a {
-      margin-left: 0.35rem;
     }
     .also {
       display: flex;

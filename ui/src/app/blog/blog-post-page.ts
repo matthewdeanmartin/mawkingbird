@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -8,6 +8,8 @@ import { CustomEmojiPipe } from '../publishing/custom-emoji.pipe';
 import { HumanTimePipe } from '../i18n/human-time.pipe';
 import { MbButton } from '../design-system/button/button';
 import { MbContentState } from '../design-system/content-state/content-state';
+import { Compose } from '../publishing/compose/compose';
+import { Auth } from '../platform/session/auth';
 import { readerChain } from '../reading/read/reader-document';
 import { readerRouteId } from '../reading/read/reader-route-id';
 import {
@@ -29,9 +31,14 @@ import { BlogContext } from './blog-context';
 // i18n blog.post.reader: Open in the reader
 // i18n blog.post.original: Original post
 // i18n blog.post.comments: Comments
-// i18n blog.post.noComments: No comments yet.
 // i18n blog.post.reply: Reply
-// i18n blog.post.join: Comment on Mastodon
+// i18n blog.post.join: Reply on Mastodon
+// i18n blog.post.placeholder: Write a reply…
+// i18n blog.post.placeholderFirst: Be the first to reply…
+// i18n blog.post.replyingTo.composer: Replying to {{name}}
+// i18n blog.post.cancelReply: Cancel
+// i18n blog.post.preparing: Getting the reply box ready…
+// i18n blog.post.partReply: Reply to this part in the thread
 // i18n blog.post.author: Author
 // i18n blog.post.replyingTo: replying to {{name}}
 // i18n blog.post.newer: Newer: {{title}}
@@ -67,6 +74,7 @@ interface Comment {
     HumanTimePipe,
     MbButton,
     MbContentState,
+    Compose,
   ],
   templateUrl: './blog-post-page.html',
   styleUrl: './blog-post-page.css',
@@ -76,6 +84,17 @@ export class BlogPostPage {
   private readonly source = inject(BlogSource);
   private readonly destroyRef = inject(DestroyRef);
   private readonly context = inject(BlogContext);
+  private readonly auth = inject(Auth);
+
+  /** Replying needs a Mastodon account; everyone else gets a link out. */
+  protected readonly canComment = !this.auth.lacksMastodonToken;
+  /** A comment being answered; null means the post itself (its last part). */
+  protected readonly replyTo = signal<Status | null>(null);
+  protected readonly target = computed(() => this.replyTo() ?? this.chain().at(-1) ?? null);
+  /** The target's id on the reader's server, which the composer replies to. */
+  protected readonly replyId = signal<string | null>(null);
+  protected readonly preparing = signal(false);
+  private replySeq = 0;
 
   protected readonly handle = signal('');
   protected readonly author = signal<BlogAuthor | null>(null);
@@ -113,6 +132,11 @@ export class BlogPostPage {
   private generation = 0;
 
   constructor() {
+    effect(() => {
+      const target = this.target();
+      const author = this.author();
+      void this.prepareReply(author, target);
+    });
     this.destroyRef.onDestroy(() => this.context.clear());
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       void this.open((params.get('handle') ?? '').replace(/^@/, ''), params.get('id') ?? '');
@@ -137,6 +161,49 @@ export class BlogPostPage {
     return ['/statuses', readerRouteId(status)];
   }
 
+  protected answer(comment: Comment): void {
+    this.replyTo.set(comment.status);
+    setTimeout(() =>
+      document.getElementById('blog-composer')?.scrollIntoView?.({ block: 'center' }),
+    );
+  }
+
+  protected onPosted(status: Status): void {
+    const answering = this.replyTo();
+    const author = this.author();
+    this.comments.update((list) => [
+      ...list,
+      {
+        status,
+        byAuthor:
+          !!author && this.source.ownHandle()?.toLowerCase() === author.handle.toLowerCase(),
+        replyingTo: answering ? answering.account.display_name || answering.account.username : null,
+      },
+    ]);
+    this.replyTo.set(null);
+  }
+
+  private async prepareReply(author: BlogAuthor | null, target: Status | null): Promise<void> {
+    const seq = ++this.replySeq;
+    this.replyId.set(null);
+    if (!this.canComment || !author || !target) {
+      return;
+    }
+    this.preparing.set(true);
+    try {
+      const id = await this.source.localStatusId(author, target);
+      if (seq === this.replySeq) {
+        this.replyId.set(id);
+      }
+    } catch {
+      // The reader keeps the link to the thread.
+    } finally {
+      if (seq === this.replySeq) {
+        this.preparing.set(false);
+      }
+    }
+  }
+
   protected readerLink(status: Status): (string | number)[] {
     return ['/read', readerRouteId(status)];
   }
@@ -147,6 +214,7 @@ export class BlogPostPage {
     this.author.set(null);
     this.chain.set([]);
     this.comments.set([]);
+    this.replyTo.set(null);
     this.failed.set(false);
     this.loading.set(true);
     try {

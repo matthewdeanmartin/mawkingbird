@@ -67,7 +67,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
   // Blog mode's front door, a shared blog (`/blog/@user@server`) and one of its
   // posts (`…/<id>`): read from the author's own server, so nothing here needs
   // a session. Not /blog/me.
-  const publicBlog = /^\/blog(\/@[^/@]+@[^/@]+(\/[A-Za-z0-9]+)?)?\/?$/.test(link.pathname);
+  const publicBlog = /^\/blog(\/@[^/@]+@[^/@]+(\/[A-Za-z0-9]+)?|\/search)?\/?$/.test(link.pathname);
   const segments = router.parseUrl(state.url ?? '/').root.children['primary']?.segments ?? [];
   const parts = segments.map((segment) => segment.path);
   const copiedLink =

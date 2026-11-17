@@ -1,0 +1,68 @@
+<app-blog-header [heading]="'blog.roll.title' | transloco" />
+
+@if (!available()) {
+  <mb-content-state
+    [title]="'blog.roll.native' | transloco"
+    [description]="'blog.roll.native.hint' | transloco"
+  />
+} @else {
+  <p class="coverage" role="status">
+    @if (loading()) {
+      {{ 'blog.roll.reading' | transloco }}
+    } @else if (exhausted()) {
+      {{ 'blog.roll.coverage.all' | transloco: { count: count() } }}
+    } @else {
+      {{ 'blog.roll.coverage' | transloco: { count: count() } }}
+    }
+  </p>
+  @if (collecting()) {
+    <p class="note">{{ 'blog.roll.collecting' | transloco }}</p>
+  }
+
+  @if (posts().length) {
+    <ol class="posts">
+      @for (post of posts(); track post.root.account.id + ':' + post.id) {
+        <li>
+          <article>
+            <p class="meta byline">
+              <a [routerLink]="['/blog', '@' + authorHandle(post)]">{{
+                post.root.account.display_name || post.root.account.username
+              }}</a>
+            </p>
+            <h2>
+              <a [routerLink]="postLink(post)">{{ post.title || '…' }}</a>
+            </h2>
+            <p class="meta">
+              <time [attr.datetime]="post.root.created_at">{{
+                post.root.created_at | date: 'mediumDate'
+              }}</time>
+              @if (post.chain.length > 1) {
+                · {{ 'blog.roll.meta.posts' | transloco: { count: post.chain.length } }}
+              }
+              · {{ 'blog.roll.meta.minutes' | transloco: { count: minutes(post) } }}
+            </p>
+            @if (post.excerpt) {
+              <p class="excerpt">{{ post.excerpt }}</p>
+            }
+          </article>
+        </li>
+      }
+    </ol>
+  } @else if (!loading() && !failed()) {
+    <mb-content-state
+      [title]="'blog.roll.empty' | transloco"
+      [description]="'blog.roll.empty.hint' | transloco"
+    />
+  }
+
+  @if (failed()) {
+    <p class="note" role="alert">{{ 'blog.roll.error' | transloco }}</p>
+  }
+  @if (!exhausted() && !loading()) {
+    <p class="more">
+      <button mbButton variant="outline" type="button" (click)="more()">
+        {{ 'blog.roll.more' | transloco }}
+      </button>
+    </p>
+  }
+}

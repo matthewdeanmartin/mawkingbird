@@ -6,6 +6,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { Status } from '../platform/api/models';
 import { MbButton } from '../design-system/button/button';
 import { MbContentState } from '../design-system/content-state/content-state';
+import { BlogSettingsLink } from './blog-header';
 import { readerRouteId } from '../reading/read/reader-route-id';
 import { accountRoutePath } from '../accounts/account-route';
 import { BlogPost, blogPostId, collectBlogPosts, readingMinutes } from './blog-classifier';
@@ -22,7 +23,6 @@ import { BlogHistory } from './blog-history';
 // i18n blog.page.coverage.archiveAll: Blog posts from all {{count}} archived posts; the server has no older ones.
 // i18n blog.page.more: Look further back
 // i18n blog.page.profile: Profile
-// i18n blog.page.rules: What counts
 // i18n blog.page.untitled: Untitled
 // i18n blog.page.meta.posts: {{count}} posts
 // i18n blog.page.meta.minutes: {{count}} min read
@@ -51,7 +51,7 @@ type BlogError = 'handle' | 'notFound' | 'mine' | null;
  */
 @Component({
   selector: 'app-blog-page',
-  imports: [DatePipe, RouterLink, TranslocoPipe, MbButton, MbContentState],
+  imports: [DatePipe, RouterLink, TranslocoPipe, MbButton, MbContentState, BlogSettingsLink],
   templateUrl: './blog-page.html',
   styleUrl: './blog-page.css',
 })

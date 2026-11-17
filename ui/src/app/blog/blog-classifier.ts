@@ -372,3 +372,45 @@ export function withoutTitleLine(html: string): string {
   }
   return rest;
 }
+
+/**
+ * Replies to a post from other people, as its counters tell it: every post's
+ * `replies_count`, minus the author's own replies that hold the storm together.
+ * An estimate — counters include replies the reader may not be able to see.
+ */
+export function commentEstimate(chain: Status[]): number {
+  const total = chain.reduce((sum, post) => sum + (post.replies_count ?? 0), 0);
+  return Math.max(0, total - (chain.length - 1));
+}
+
+/**
+ * Blog posts in a feed from many people, newest first: each author's posts are
+ * classified on their own, exactly as their blog page would. `skipAuthorIds`
+ * leaves people out (Roll leaves out the reader).
+ */
+export function collectAcrossAuthors(
+  statuses: readonly Status[],
+  thresholds: BlogThresholds,
+  skipAuthorIds: ReadonlySet<string> = new Set(),
+  exhausted = false,
+): BlogScan {
+  const byAuthor = new Map<string, Status[]>();
+  for (const status of statuses) {
+    const id = status.account?.id;
+    if (!id || skipAuthorIds.has(id)) {
+      continue;
+    }
+    const list = byAuthor.get(id) ?? [];
+    list.push(status);
+    byAuthor.set(id, list);
+  }
+  const posts: BlogPost[] = [];
+  let pendingOlder = 0;
+  for (const [id, list] of byAuthor) {
+    const scan = collectBlogPosts(list, id, thresholds, exhausted);
+    posts.push(...scan.posts);
+    pendingOlder += scan.pendingOlder;
+  }
+  posts.sort((a, b) => byWritingOrder(b.root, a.root));
+  return { posts, pendingOlder };
+}
