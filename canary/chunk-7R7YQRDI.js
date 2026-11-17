@@ -1,0 +1,3 @@
+import{d as l,g as c}from"./chunk-AZVUMERJ.js";var g=/^\s*blog:\s*/i;function s(t){let n=t.indexOf(`
+`);return n<0?[t,null]:[t.slice(0,n),t.slice(n+1)]}function h(t){return g.test(s(t)[0])}function B(t){return s(t)[0].replace(g,"").trim()}function d(t,n,r){let[,o]=s(t),e=n.replace(/[\r\n]+/g," ").trim(),i=r?e?`BLOG: ${e}`:"BLOG:":e;return o===null?i:`${i}
+${o}`}function a(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}function p(t){return t.map(n=>n.trim()).filter(Boolean).map((n,r)=>({id:String(r),content:`<p>${a(n).replace(/\n/g,"<br>")}</p>`}))}function b(t,n){let r=p(t);return{reason:c(r,n),posts:r.length,chars:l(r)}}export{h as a,B as b,d as c,b as d};
