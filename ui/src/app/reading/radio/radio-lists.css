@@ -55,6 +55,15 @@ ol.rows {
 }
 .row-actions {
   flex: none;
+  gap: 6px;
+}
+.singles-rows {
+  margin-block-end: 48px;
+}
+.results,
+.results .list {
+  display: grid;
+  gap: 12px;
 }
 form.inline {
   display: flex;
@@ -65,6 +74,14 @@ form.inline {
 form.inline mb-field {
   flex: 1 1 220px;
   min-width: 0;
+}
+form.find-form {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+form.find-form mb-field {
+  width: 100%;
 }
 app-status-card {
   display: block;

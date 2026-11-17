@@ -221,6 +221,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
     }
     .transport {
       flex: none;
+      gap: 6px;
     }
     .transport button {
       min-width: 36px;

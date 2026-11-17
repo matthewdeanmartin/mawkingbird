@@ -71,7 +71,7 @@
     <app-playlists-tabs current="find" />
     <p class="lead">{{ 'playlists.findLead' | transloco }}</p>
 
-    <form class="inline" (ngSubmit)="openLink()">
+    <form class="inline find-form" (ngSubmit)="openLink()">
       <mb-field
         [label]="'playlists.link' | transloco"
         [hint]="'playlists.linkHint' | transloco"
@@ -91,7 +91,7 @@
     </form>
 
     <h2>{{ 'playlists.fromAccount' | transloco }}</h2>
-    <form class="inline" (ngSubmit)="look()">
+    <form class="inline find-form" (ngSubmit)="look()">
       <mb-field
         [label]="'playlists.account' | transloco"
         [hint]="'playlists.accountHint' | transloco"

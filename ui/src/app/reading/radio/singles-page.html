@@ -17,7 +17,7 @@
     <p role="alert">{{ 'singles.storageFailed' | transloco }}</p>
   }
   @if (singles.items().length) {
-    <ul class="rows" [attr.aria-label]="'singles.title' | transloco">
+    <ul class="rows singles-rows" [attr.aria-label]="'singles.title' | transloco">
       @for (item of singles.items(); track item.track.key) {
         @let track = item.track;
         @let title = player.title(track);

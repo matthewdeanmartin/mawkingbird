@@ -363,6 +363,19 @@ main.column:focus {
   outline: none;
 }
 
+/* The compact Radio dock stays at the bottom on short pages; the expanded
+   player appears before the footer on /radio. */
+main.column:has(> app-radio-dock) {
+  display: flex;
+  flex-direction: column;
+}
+main.column:has(> app-radio-dock) > app-app-footer {
+  margin-block-start: auto;
+}
+main.column:has(> app-radio-dock.full-view) > app-app-footer {
+  order: 1;
+}
+
 .muted {
   color: var(--muted);
 }

@@ -599,11 +599,11 @@
       <app-proxy-limit-notice />
       <app-account-tab-banner />
       <router-outlet mbReadingOutlet />
-      @if (radioOutlet.component(); as radioDock) {
-        <ng-container *ngComponentOutlet="radioDock" />
-      }
       @if (!chromeHidden()) {
         <app-app-footer />
+      }
+      @if (radioOutlet.component(); as radioDock) {
+        <ng-container *ngComponentOutlet="radioDock" />
       }
     </main>
     @if (!wide() && !railsHidden() && !chromeHidden()) {
