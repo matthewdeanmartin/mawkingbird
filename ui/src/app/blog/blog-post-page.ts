@@ -19,6 +19,7 @@ import {
   withoutTitleLine,
 } from './blog-classifier';
 import { BlogAuthor, BlogSource } from './blog-source';
+import { BlogContext } from './blog-context';
 
 // i18n blog.post.loading: Opening the post…
 // i18n blog.post.back: All posts by {{name}}
@@ -74,6 +75,7 @@ export class BlogPostPage {
   private readonly route = inject(ActivatedRoute);
   private readonly source = inject(BlogSource);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly context = inject(BlogContext);
 
   protected readonly handle = signal('');
   protected readonly author = signal<BlogAuthor | null>(null);
@@ -111,6 +113,7 @@ export class BlogPostPage {
   private generation = 0;
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.context.clear());
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       void this.open((params.get('handle') ?? '').replace(/^@/, ''), params.get('id') ?? '');
     });
@@ -155,6 +158,7 @@ export class BlogPostPage {
       const chain = readerChain(thread, status.id);
       this.handle.set(author.handle);
       this.author.set(author);
+      this.context.show(author, id);
       this.chain.set(chain);
       this.comments.set(commentsOf(thread, chain, author.account.id));
     } catch {

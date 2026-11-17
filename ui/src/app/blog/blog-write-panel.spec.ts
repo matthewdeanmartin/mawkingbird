@@ -39,4 +39,27 @@ describe('BlogWritePanel', () => {
     const storm = await render('A\n---\nB\n---\nC', ['A', 'B', 'C']);
     expect(storm.el.textContent).toContain('a storm of 3 posts');
   });
+
+  it('offers connected blogs to copy to, and emits the choice', async () => {
+    const fixture = TestBed.createComponent(BlogWritePanel);
+    fixture.componentRef.setInput('body', 'T');
+    fixture.componentRef.setInput('parts', ['T']);
+    fixture.componentRef.setInput('crossAvailable', ['mataroa', 'bsky']);
+    fixture.componentRef.setInput('crossChosen', ['bsky']);
+    const chosen: string[][] = [];
+    fixture.componentInstance.crossChosenChange.subscribe((value) => chosen.push(value));
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain('Also publish to');
+    expect(el.querySelector<HTMLInputElement>('input[name="blog_cross_bsky"]')!.checked).toBe(true);
+    const mataroa = el.querySelector<HTMLInputElement>('input[name="blog_cross_mataroa"]')!;
+    mataroa.checked = true;
+    mataroa.dispatchEvent(new Event('change'));
+    expect(chosen).toEqual([['bsky', 'mataroa']]);
+  });
+
+  it('hides the choice when nothing is connected', async () => {
+    const { el } = await render('T', ['T']);
+    expect(el.textContent).not.toContain('Also publish to');
+  });
 });

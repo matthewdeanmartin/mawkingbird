@@ -6,7 +6,15 @@ import { Account, Status } from '../platform/api/models';
 import { Api } from '../platform/api/api';
 import { Auth } from '../platform/session/auth';
 import { AnonymousPublicApi } from '../accounts/anonymous/anonymous-public-api';
-import { BlogSource, pagingId, parseBlogHandle } from './blog-source';
+import {
+  archivePager,
+  ARCHIVE_STEP_PAGES,
+  BlogSource,
+  pagingId,
+  parseBlogHandle,
+} from './blog-source';
+import { NATIVE_PROFILES } from '../platform/session/platform-login';
+import { NativeProfilesApi } from '../platform/session/native-profile-types';
 
 const alice = { id: '7', acct: 'alice', url: 'https://far.example/@alice' } as Account;
 
@@ -47,20 +55,26 @@ describe('BlogSource', () => {
     getContext: vi.fn(),
   };
   let signedIn = false;
+  let token: string | null = null;
+  let native: Partial<NativeProfilesApi> | null = null;
 
   beforeEach(() => {
     vi.resetAllMocks();
     signedIn = false;
+    token = null;
+    native = null;
     TestBed.configureTestingModule({
       providers: [
         { provide: AnonymousPublicApi, useValue: publicApi },
         { provide: Api, useValue: api },
+        { provide: NATIVE_PROFILES, useFactory: () => native },
         {
           provide: Auth,
           useValue: {
             get lacksMastodonToken() {
               return !signedIn;
             },
+            token: () => token,
             account: signal<Account | null>({
               id: '1',
               acct: 'me',
@@ -149,10 +163,100 @@ describe('BlogSource', () => {
     expect(source.remembered('alice@far.example')).toEqual([]);
   });
 
+  it('reads Native blogs from the archive, keyed by your own server', async () => {
+    signedIn = true;
+    token = 'native-mastodon:abc';
+    native = {
+      fetchAccountPage: vi.fn().mockResolvedValue(0),
+      accountPosts: vi.fn().mockResolvedValue([]),
+    };
+    api.lookupAccount.mockReturnValue(of({ ...alice, id: '555' }));
+    const source = TestBed.inject(BlogSource);
+    const author = await source.resolve('@alice@far.example');
+    expect(author.via).toBe('archive');
+    expect(publicApi.lookupAccount).not.toHaveBeenCalled();
+    const pager = source.pager(author);
+    expect(pager).toMatchObject({ kind: 'archive', stepPages: ARCHIVE_STEP_PAGES });
+    expect(await pager.next()).toEqual([]);
+    expect(native.accountPosts).toHaveBeenCalledWith('native-mastodon:abc', '555', 0);
+  });
+
+  it('pages live by the last id it read', async () => {
+    publicApi.lookupAccount.mockReturnValue(of(alice));
+    publicApi.getAccountStatuses
+      .mockReturnValueOnce(of([{ id: '9' }, { id: '8' }]))
+      .mockReturnValueOnce(of([]));
+    const source = TestBed.inject(BlogSource);
+    const pager = source.pager(await source.resolve('alice@far.example'));
+    expect(pager.kind).toBe('live');
+    await pager.next();
+    await pager.next();
+    expect(publicApi.getAccountStatuses.mock.calls[1][1]).toMatchObject({ maxId: '8' });
+  });
+
   it('knows your own handle only with a Mastodon session', () => {
     const source = TestBed.inject(BlogSource);
     expect(source.ownHandle()).toBeNull();
     signedIn = true;
     expect(source.ownHandle()).toBe('me@home.example');
+  });
+});
+
+describe('archivePager', () => {
+  const status = (id: string) => ({ id }) as Status;
+  const page = (ids: string[]) =>
+    ids.map((id, i) => ({ localId: i, status: status(id), isRead: false }));
+
+  it('refreshes the newest page once, then reads the archive by offset', async () => {
+    const full = Array.from({ length: 40 }, (_, i) => String(100 - i));
+    const profiles = {
+      fetchAccountPage: vi.fn().mockResolvedValue(3),
+      accountPosts: vi
+        .fn()
+        .mockResolvedValueOnce(page(full))
+        .mockResolvedValueOnce(page(['60', '59'])),
+    };
+    const pager = archivePager(profiles as unknown as NativeProfilesApi, 'h', '5');
+    expect((await pager.next()).length).toBe(40);
+    expect(profiles.fetchAccountPage).toHaveBeenCalledWith('h', '5', false);
+    expect((await pager.next()).map((s) => s.id)).toEqual(['60', '59']);
+    expect(profiles.accountPosts.mock.calls[1]).toEqual(['h', '5', 40]);
+    expect(profiles.fetchAccountPage).toHaveBeenCalledTimes(1);
+  });
+
+  it('asks the server for older posts when the archive runs out, and stops when it has none', async () => {
+    const profiles = {
+      fetchAccountPage: vi
+        .fn()
+        .mockResolvedValueOnce(0)
+        .mockResolvedValueOnce(2)
+        .mockResolvedValueOnce(0),
+      accountPosts: vi
+        .fn()
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(page(['2', '1']))
+        .mockResolvedValue([]),
+    };
+    const pager = archivePager(profiles as unknown as NativeProfilesApi, 'h', '5');
+    expect((await pager.next()).map((s) => s.id)).toEqual(['2', '1']);
+    expect(profiles.fetchAccountPage).toHaveBeenLastCalledWith('h', '5', true);
+    expect(await pager.next()).toEqual([]);
+    expect(await pager.next()).toEqual([]);
+    expect(profiles.fetchAccountPage).toHaveBeenCalledTimes(3);
+  });
+
+  it('skips posts it already returned when the archive shifts', async () => {
+    const full = Array.from({ length: 40 }, (_, i) => String(100 - i));
+    const profiles = {
+      fetchAccountPage: vi.fn().mockRejectedValue(new Error('offline')),
+      accountPosts: vi
+        .fn()
+        .mockResolvedValueOnce(page(full))
+        .mockResolvedValueOnce(page(['61', '60']))
+        .mockResolvedValue([]),
+    };
+    const pager = archivePager(profiles as unknown as NativeProfilesApi, 'h', '5');
+    await pager.next();
+    expect((await pager.next()).map((s) => s.id)).toEqual(['60']);
   });
 });

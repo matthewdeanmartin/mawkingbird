@@ -185,9 +185,11 @@ it unless the rail looks empty.
 - **Radio:** now playing and the next two in the queue.
 - **Forum:** your open questions waiting for answers.
 
-### Questions
+### Decided (owner, 2026-11-17)
 
-1. "Keep badge": I read that as the profile stack (left) **and** the Plus
-   badge (right). Right?
-2. **Who to follow** (left) and **Bluesky trends** (right) weren't mentioned,
-   so Blog still shows them. Hide either?
+- Keep the **profile card**. The Plus badge stays behind its flag (off in
+  production). Ads are fine everywhere.
+- Finders of posts, feeds and accounts (who to follow, hashtag and Bluesky
+  trends, Just My Server, feed links) are hidden in Blog, Radio and Video.
+- Built: About the author and More from this blog (left), Recently read blogs
+  (right, bottom).

@@ -3,22 +3,22 @@ import { AppMode, AppModeService } from '../platform/build/app-mode';
 
 /**
  * The shell rails' widgets, by name, so a mode can drop the ones that do not
- * belong to it.
+ * belong to it and add its own.
  *
  * Rails are never essential: they vanish in zen mode and on phones, so
  * nothing a mode needs may live only here. What this table decides is which
  * *extras* a mode keeps on a wide screen.
  */
 export type RailWidget =
-  /** Left: your accounts and the profile badge. */
+  /** Left: your accounts and the profile card. */
   | 'profile'
   /** Left: accounts boosted into your timeline. */
   | 'whoToFollow'
   /** Left: the server's trending hashtags. */
   | 'trends'
-  /** Right: the Mawkingbird Plus badge and promotion. */
+  /** Right: the Mawkingbird Plus promotion (also behind the `mawkingbird-plus` flag). */
   | 'plus'
-  /** Right: house ads and endorsements. */
+  /** Right: house ads and endorsements. Everywhere. */
   | 'houseAds'
   /** Right: the Just My Server switch. */
   | 'justMyServer'
@@ -26,21 +26,52 @@ export type RailWidget =
   | 'blueskyService'
   /** Right: Bluesky trending topics. */
   | 'blueskyTrends'
-  /** Right: the Fediverse card (feeds, donate, server info, announcements). */
-  | 'serverCard';
+  /** Right: the server card (donate, server info, announcements). */
+  | 'serverCard'
+  /** Right, inside the server card: News, Trending posts, All feeds. */
+  | 'feedLinks'
+  /** Left, Blog: the author of the blog or post being read. */
+  | 'blogAuthor'
+  /** Left, Blog: more posts from the same blog. */
+  | 'blogMore'
+  /** Right, Blog, at the bottom: blogs read recently. */
+  | 'blogRecent';
 
 /**
- * Widgets each mode hides. Anything not listed shows, so a new widget appears
- * everywhere until a mode opts out of it.
- *
- * Blog (owner, 2026-11-17): keep the badges, ads/endorsements and server
- * card; drop the timeline-tuning widgets, which are about scrolling Home.
+ * The Mastodon reading workflow's finders: things that help you find posts,
+ * feeds and accounts to follow. In a focused mode they are distractions
+ * (owner, 2026-11-17).
+ */
+const DISCOVERY: readonly RailWidget[] = [
+  'whoToFollow',
+  'trends',
+  'blueskyTrends',
+  'justMyServer',
+  'feedLinks',
+];
+
+/**
+ * Widgets each mode hides. Anything not listed shows, so a new shared widget
+ * appears everywhere until a mode opts out of it.
  */
 export const RAIL_HIDDEN: Readonly<Partial<Record<AppMode, readonly RailWidget[]>>> = {
-  blog: ['justMyServer', 'trends'],
+  blog: DISCOVERY,
+  radio: DISCOVERY,
+  video: DISCOVERY,
+};
+
+/** Widgets that belong to some modes only, and show nowhere else. */
+export const RAIL_ONLY: Readonly<Partial<Record<RailWidget, readonly AppMode[]>>> = {
+  blogAuthor: ['blog'],
+  blogMore: ['blog'],
+  blogRecent: ['blog'],
 };
 
 export function railShows(mode: AppMode, widget: RailWidget): boolean {
+  const only = RAIL_ONLY[widget];
+  if (only && !only.includes(mode)) {
+    return false;
+  }
   return !RAIL_HIDDEN[mode]?.includes(widget);
 }
 

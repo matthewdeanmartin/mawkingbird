@@ -9,6 +9,7 @@ import { MbButton } from '../../design-system/button/button';
 import { PlusPromotion } from '../../accounts/mawkingbird/plus-promotion';
 import { Component, computed, effect, inject, OnInit, linkedSignal, signal } from '@angular/core';
 import { RailWidgets } from '../rail-widgets';
+import { BlogRecentCard } from '../../blog/blog-rail-cards';
 import { RouterLink } from '@angular/router';
 import { Terminology } from '../../i18n/terminology';
 import { AnnouncementStore } from '../../discovery/announcements/announcement-store';
@@ -70,6 +71,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 @Component({
   selector: 'app-right-rail',
   imports: [
+    BlogRecentCard,
     MbPostAction,
     MbSaveFeedback,
     MbField,

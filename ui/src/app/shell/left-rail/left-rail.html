@@ -1,53 +1,62 @@
 <app-profile-stack />
 
-<section mbRailCard overflow="visible" class="card suggest-card">
-  <h2 class="card-title">{{ 'shell.left.whoToFollow' | transloco }}</h2>
-  @if (suggestions().length) {
-    @for (account of suggestions().slice(0, 5); track account.id) {
-      <div mbIdentityRow class="suggestion">
-        <app-account-preview [account]="account">
-          <a class="suggestion-avatar" [routerLink]="accountProfilePath(account)">
-            <img
-              [src]="account.avatar_static || account.avatar"
-              alt=""
-              loading="lazy"
-              decoding="async"
-            />
-          </a>
+@if (rail.shows('blogAuthor')) {
+  <app-blog-author-card />
+}
+@if (rail.shows('blogMore')) {
+  <app-blog-more-card />
+}
 
-          <a class="suggestion-name" [routerLink]="accountProfilePath(account)">
-            <span class="suggestion-display">{{ account.display_name || account.username }}</span>
-            <span class="muted">&#64;{{ account.acct }}</span>
-          </a>
-        </app-account-preview>
-        @if (followed().has(account.id)) {
-          <button type="button" mbButton class="follow-btn" disabled>
-            {{ 'shell.left.following' | transloco }}
-          </button>
-        } @else {
-          <button
-            type="button"
-            mbButton
-            variant="outline"
-            class="follow-btn"
-            (click)="follow(account)"
-          >
-            {{ 'shell.left.follow' | transloco }}
-          </button>
-        }
-      </div>
+@if (rail.shows('whoToFollow')) {
+  <section mbRailCard overflow="visible" class="card suggest-card">
+    <h2 class="card-title">{{ 'shell.left.whoToFollow' | transloco }}</h2>
+    @if (suggestions().length) {
+      @for (account of suggestions().slice(0, 5); track account.id) {
+        <div mbIdentityRow class="suggestion">
+          <app-account-preview [account]="account">
+            <a class="suggestion-avatar" [routerLink]="accountProfilePath(account)">
+              <img
+                [src]="account.avatar_static || account.avatar"
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+
+            <a class="suggestion-name" [routerLink]="accountProfilePath(account)">
+              <span class="suggestion-display">{{ account.display_name || account.username }}</span>
+              <span class="muted">&#64;{{ account.acct }}</span>
+            </a>
+          </app-account-preview>
+          @if (followed().has(account.id)) {
+            <button type="button" mbButton class="follow-btn" disabled>
+              {{ 'shell.left.following' | transloco }}
+            </button>
+          } @else {
+            <button
+              type="button"
+              mbButton
+              variant="outline"
+              class="follow-btn"
+              (click)="follow(account)"
+            >
+              {{ 'shell.left.follow' | transloco }}
+            </button>
+          }
+        </div>
+      }
+      <p class="card-hint muted">
+        {{ 'shell.left.boostedByNetwork' | transloco: { boosted: words().Boosted } }}
+      </p>
     }
-    <p class="card-hint muted">
-      {{ 'shell.left.boostedByNetwork' | transloco: { boosted: words().Boosted } }}
-    </p>
-  }
-  <!-- The hub, not one of the things on it: this is the most prominent
-       who-to-follow link in the app, and the reader almost never knows yet which
-       of the eight routes they want. -->
-  <a class="find-people-link" routerLink="/find-friends">{{
-    'shell.left.findPeople' | transloco
-  }}</a>
-</section>
+    <!-- The hub, not one of the things on it: this is the most prominent
+         who-to-follow link in the app, and the reader almost never knows yet which
+         of the eight routes they want. -->
+    <a class="find-people-link" routerLink="/find-friends">{{
+      'shell.left.findPeople' | transloco
+    }}</a>
+  </section>
+}
 
 @if (trends().length && rail.shows('trends')) {
   <section mbRailCard class="card">

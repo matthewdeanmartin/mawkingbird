@@ -47,7 +47,8 @@ import { MAX_POST_CHARS, PostTarget } from '../compose/compose';
 import { AppModeService } from '../../platform/build/app-mode';
 import { BlogSource } from '../../blog/blog-source';
 import { blogPostId } from '../../blog/blog-classifier';
-import { BlogWritePanel } from '../../blog/blog-write-panel';
+import { BlogWritePanel, CROSS_TARGET_LABELS } from '../../blog/blog-write-panel';
+import { availableCrossTargets, BlogCrossPost, CrossTarget } from '../../blog/blog-cross-post';
 import {
   VISIBILITIES,
   visibilityHint,
@@ -351,7 +352,7 @@ export interface Notice {
   ],
   templateUrl: './write-page.html',
   styleUrls: ['./write-workspace.css', './write-editor.css', './write-overlays.css'],
-  providers: [VisibilityState, LinkShortening, BlueskyPublication, WritePublication],
+  providers: [VisibilityState, LinkShortening, BlueskyPublication, WritePublication, BlogCrossPost],
 })
 export class WritePage implements OnInit, OnDestroy {
   protected permissionsOpen = signal(false);
@@ -431,6 +432,12 @@ export class WritePage implements OnInit, OnDestroy {
   protected readonly blogParts = computed(() =>
     splitText(this.body(), this.splitMode(), { limit: MAX_POST_CHARS }),
   );
+  protected readonly crossPost = inject(BlogCrossPost);
+  /** Cross-post targets that are connected and on, for the blog strip. */
+  protected readonly crossAvailable = computed(() => availableCrossTargets(this.availability()));
+  /** Chosen for the next publish; cleared when it is used. */
+  protected readonly crossChosen = signal<CrossTarget[]>([]);
+  protected readonly crossLabels = CROSS_TARGET_LABELS;
   /** "View on your blog" after publishing from Blog mode. */
   protected readonly blogPostLink = computed<(string | number)[] | null>(() => {
     const status = this.publication.firstStatus();
@@ -2064,7 +2071,10 @@ export class WritePage implements OnInit, OnDestroy {
       ) {
         await this.prepareMediaForTarget(this.wizardTarget());
       }
-      await this.publication.publish({ ...this.snapshot(), target }, this.media(), at);
+      const published = this.snapshot();
+      const publishedMedia = this.media();
+      await this.publication.publish({ ...published, target }, publishedMedia, at);
+      this.crossPostAfterPublish(published.segments, publishedMedia, !!at);
       const replaced = replacing ? await this.cancelReplacedOriginal(replacing.id) : null;
       this.scheduledHere.set(!!at);
       this.dirty.set(false);
@@ -2079,6 +2089,25 @@ export class WritePage implements OnInit, OnDestroy {
     } finally {
       this.wizardBusy.set(false);
     }
+  }
+
+  /**
+   * Blog mode's copies, once the Mastodon original exists. Fire and forget: not
+   * awaited, tried once, reported in the status line (spec/blog-mode.md).
+   * Scheduled posts are not posts yet, so nothing is copied for them.
+   */
+  private crossPostAfterPublish(parts: string[], media: DraftMedia[], scheduled: boolean): void {
+    const targets = this.crossChosen().filter((t) => this.crossAvailable().includes(t));
+    this.crossChosen.set([]);
+    const link = this.blogPostLink();
+    const original = this.publication.firstStatus();
+    if (!this.blogMode() || scheduled || !targets.length || !original) {
+      return;
+    }
+    const url = link
+      ? `${location.origin}${this.router.serializeUrl(this.router.createUrlTree(link))}`
+      : (original.url ?? '');
+    void this.crossPost.run(targets, parts, url, media);
   }
 
   /** Cancel the original once its replacement exists; returns the notice to show. */

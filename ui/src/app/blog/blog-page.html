@@ -58,6 +58,11 @@
       <p class="coverage" role="status">
         @if (loading()) {
           {{ 'blog.page.reading' | transloco }}
+        } @else if (kind() === 'archive') {
+          {{
+            (exhausted() ? 'blog.page.coverage.archiveAll' : 'blog.page.coverage.archive')
+              | transloco: { count: statuses().length }
+          }}
         } @else if (exhausted()) {
           {{ 'blog.page.coverage.all' | transloco: { count: statuses().length } }}
         } @else {

@@ -10,15 +10,16 @@ import { readerRouteId } from '../reading/read/reader-route-id';
 import { accountRoutePath } from '../accounts/account-route';
 import { BlogPost, blogPostId, collectBlogPosts, readingMinutes } from './blog-classifier';
 import { BlogPrefs } from './blog-prefs';
-import { BlogAuthor, BlogSource, pagingId } from './blog-source';
-
-/** Pages of 40 read per step: two hundred posts, about five requests. */
-export const BLOG_STEP_PAGES = 5;
+import { BlogAuthor, BlogPager, BlogSource } from './blog-source';
+import { BlogContext } from './blog-context';
+import { BlogHistory } from './blog-history';
 
 // i18n blog.page.loading: Reading {{handle}}…
 // i18n blog.page.reading: Reading posts…
 // i18n blog.page.coverage.partial: Blog posts from the latest {{count}} posts.
 // i18n blog.page.coverage.all: Blog posts from all {{count}} public posts.
+// i18n blog.page.coverage.archive: Blog posts from {{count}} archived posts.
+// i18n blog.page.coverage.archiveAll: Blog posts from all {{count}} archived posts; the server has no older ones.
 // i18n blog.page.more: Look further back
 // i18n blog.page.profile: Profile
 // i18n blog.page.rules: What counts
@@ -59,6 +60,8 @@ export class BlogPage {
   private readonly source = inject(BlogSource);
   private readonly prefs = inject(BlogPrefs);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly context = inject(BlogContext);
+  private readonly history = inject(BlogHistory);
 
   protected readonly handle = signal('');
   protected readonly author = signal<BlogAuthor | null>(null);
@@ -85,7 +88,9 @@ export class BlogPage {
 
   /** Guards against a slow answer for the blog the reader already left. */
   private generation = 0;
-  private nextMaxId: string | undefined;
+  private pager: BlogPager | null = null;
+  /** Where the posts came from: the coverage line says "archived" on Native. */
+  protected readonly kind = signal<'live' | 'archive'>('live');
 
   constructor() {
     // The post page offers previous and next from the list read here.
@@ -95,6 +100,7 @@ export class BlogPage {
         this.source.remember(author.handle, this.posts());
       }
     });
+    this.destroyRef.onDestroy(() => this.context.clear());
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const mine = this.route.snapshot.data?.['mine'] === true;
       const handle = mine ? this.source.ownHandle() : (params.get('handle') ?? '');
@@ -122,10 +128,11 @@ export class BlogPage {
   private async open(handle: string | null, mine: boolean): Promise<void> {
     const generation = ++this.generation;
     this.author.set(null);
+    this.context.clear();
     this.statuses.set([]);
     this.exhausted.set(false);
     this.moreFailed.set(false);
-    this.nextMaxId = undefined;
+    this.pager = null;
     this.handle.set((handle ?? '').replace(/^@/, ''));
     if (!handle) {
       this.error.set(mine ? 'mine' : 'handle');
@@ -148,16 +155,24 @@ export class BlogPage {
     }
     this.handle.set(author.handle);
     this.author.set(author);
+    this.context.show(author);
+    this.history.record({
+      handle: author.handle,
+      name: author.account.display_name || author.account.username,
+      avatar: author.account.avatar_static || author.account.avatar || '',
+    });
     await this.step(author, generation);
   }
 
-  /** Read up to {@link BLOG_STEP_PAGES} more pages, showing posts as they come. */
+  /** Read one step's worth of pages, showing posts as they come. */
   private async step(author: BlogAuthor, generation: number): Promise<void> {
     this.loading.set(true);
     this.moreFailed.set(false);
     try {
-      for (let page = 0; page < BLOG_STEP_PAGES; page++) {
-        const batch = await this.source.page(author, this.nextMaxId);
+      const pager = (this.pager ??= this.source.pager(author));
+      this.kind.set(pager.kind);
+      for (let page = 0; page < pager.stepPages; page++) {
+        const batch = await pager.next();
         if (generation !== this.generation) {
           return;
         }
@@ -166,7 +181,6 @@ export class BlogPage {
           break;
         }
         this.statuses.update((list) => [...list, ...batch]);
-        this.nextMaxId = pagingId(batch[batch.length - 1]);
       }
     } catch {
       if (generation === this.generation) {

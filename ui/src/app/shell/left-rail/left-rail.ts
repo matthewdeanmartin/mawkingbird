@@ -6,6 +6,7 @@ import { MbIdentityRow } from '../../design-system/identity/identity-row';
 import { MbButton } from '../../design-system/button/button';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { RailWidgets } from '../rail-widgets';
+import { BlogAuthorCard, BlogMoreCard } from '../../blog/blog-rail-cards';
 import { RouterLink } from '@angular/router';
 import { AccountPreview } from '../../accounts/account-hover-card/account-preview';
 import { Api } from '../../platform/api/api';
@@ -49,6 +50,8 @@ function accountKey(account: Account): string {
 @Component({
   selector: 'app-left-rail',
   imports: [
+    BlogAuthorCard,
+    BlogMoreCard,
     MbButton,
     MbRailCard,
     MbIdentityRow,

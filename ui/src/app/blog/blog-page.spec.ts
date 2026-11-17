@@ -3,7 +3,8 @@ import { ActivatedRoute, convertToParamMap, ParamMap, provideRouter } from '@ang
 import { BehaviorSubject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Status } from '../platform/api/models';
-import { BlogPage, BLOG_STEP_PAGES } from './blog-page';
+import { BlogPage } from './blog-page';
+import { LIVE_STEP_PAGES } from './blog-source';
 import { BlogAuthor, BlogSource } from './blog-source';
 
 const account = {
@@ -33,13 +34,27 @@ function post(id: string, content: string, replyTo: string | null = null): Statu
 }
 
 describe('BlogPage', () => {
-  const source = { resolve: vi.fn(), page: vi.fn(), ownHandle: vi.fn(), remember: vi.fn() };
+  const source = {
+    resolve: vi.fn(),
+    page: vi.fn(),
+    pager: vi.fn(),
+    ownHandle: vi.fn(),
+    remember: vi.fn(),
+  };
+  let pagerKind: 'live' | 'archive' = 'live';
   let params: BehaviorSubject<ParamMap>;
   let data: Record<string, unknown>;
 
   beforeEach(() => {
     vi.resetAllMocks();
     localStorage.clear();
+    pagerKind = 'live';
+    // A pager over the stubbed pages, as BlogSource builds one.
+    source.pager.mockImplementation((author: BlogAuthor) => ({
+      stepPages: LIVE_STEP_PAGES,
+      kind: pagerKind,
+      next: () => source.page(author),
+    }));
     params = new BehaviorSubject(convertToParamMap({ handle: '@alice@far.example' }));
     data = {};
     TestBed.configureTestingModule({
@@ -98,13 +113,12 @@ describe('BlogPage', () => {
     expect(el.textContent).not.toContain('Look further back');
   });
 
-  it(`reads ${BLOG_STEP_PAGES} pages per step and offers to look further back`, async () => {
+  it(`reads ${LIVE_STEP_PAGES} pages per step and offers to look further back`, async () => {
     source.resolve.mockResolvedValue(author);
     let n = 100;
     source.page.mockImplementation(async () => [post(String(n--), '<p>short</p>')]);
     const { fixture, el } = await render();
-    expect(source.page).toHaveBeenCalledTimes(BLOG_STEP_PAGES);
-    expect(source.page.mock.calls[1][1]).toBe('100');
+    expect(source.page).toHaveBeenCalledTimes(LIVE_STEP_PAGES);
     expect(el.textContent).toContain('Blog posts from the latest 5 posts.');
     expect(el.textContent).toContain('No blog posts yet');
 
@@ -113,8 +127,18 @@ describe('BlogPage', () => {
     )!;
     more.click();
     await settle(fixture);
-    expect(source.page).toHaveBeenCalledTimes(BLOG_STEP_PAGES * 2);
+    expect(source.page).toHaveBeenCalledTimes(LIVE_STEP_PAGES * 2);
+    expect(source.pager).toHaveBeenCalledTimes(1);
     expect(el.textContent).toContain('the latest 10 posts');
+  });
+
+  it('says "archived" when the posts come from the Native archive', async () => {
+    pagerKind = 'archive';
+    source.resolve.mockResolvedValue({ ...author, via: 'archive' });
+    source.page.mockResolvedValueOnce([post('1', '<p>hi</p>')]).mockResolvedValue([]);
+    const { el } = await render();
+    expect(el.textContent).toContain('Blog posts from all 1 archived posts');
+    expect(el.textContent).not.toContain('Read through your own server');
   });
 
   it('explains a handle without a server', async () => {

@@ -302,6 +302,32 @@ describe('WritePage', () => {
     expect(internals(fixture).body()).toBe('My title');
   });
 
+  it('copies a Blog-mode post to the chosen blogs once, after it is live, but never a scheduled one', () => {
+    TestBed.inject(Auth).mode.set('anonymous');
+    TestBed.inject(AppModeService).set('blog');
+    const page = setUp().componentInstance as unknown as {
+      crossPost: { run: (...args: unknown[]) => Promise<unknown> };
+      crossChosen: WritableSignal<string[]>;
+      crossAvailable: () => string[];
+      publication: { firstStatus: WritableSignal<unknown> };
+      crossPostAfterPublish(parts: string[], media: unknown[], scheduled: boolean): void;
+    };
+    const run = vi.spyOn(page.crossPost, 'run').mockResolvedValue([]);
+    Object.defineProperty(page, 'crossAvailable', { value: () => ['mataroa'] });
+    page.publication.firstStatus.set({ id: '9', url: 'https://home.example/@me/9' });
+
+    page.crossChosen.set(['mataroa']);
+    page.crossPostAfterPublish(['T'], [], true);
+    expect(run).not.toHaveBeenCalled();
+    expect(page.crossChosen()).toEqual([]);
+
+    page.crossChosen.set(['mataroa', 'hugo']);
+    page.crossPostAfterPublish(['T'], [], false);
+    expect(run).toHaveBeenCalledTimes(1);
+    expect(run.mock.calls[0][0]).toEqual(['mataroa']);
+    expect(run.mock.calls[0][2]).toBe('https://home.example/@me/9');
+  });
+
   it('links Manage beside New in the drafts pane, to the Drafts page', () => {
     // Drafts left the ... menu; this is its way in from where people write.
     TestBed.inject(Auth).mode.set('anonymous');

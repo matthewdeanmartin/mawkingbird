@@ -310,6 +310,9 @@
               [body]="body()"
               [parts]="blogParts()"
               (bodyChange)="onBodyInput($event)"
+              [crossAvailable]="crossAvailable()"
+              [crossChosen]="crossChosen()"
+              (crossChosenChange)="crossChosen.set($event)"
             />
           }
 
@@ -1555,6 +1558,21 @@
       <a [routerLink]="link">{{ 'blog.write.view' | transloco }}</a>
     }
   </p>
+  @if (crossPost.running()) {
+    <p role="status">{{ 'blog.write.cross.running' | transloco }}</p>
+  }
+  @for (result of crossPost.results(); track result.target) {
+    <p role="status">
+      @if (result.ok) {
+        {{ 'blog.write.cross.ok' | transloco: { target: crossLabels[result.target] } }}
+      } @else {
+        {{
+          'blog.write.cross.failed'
+            | transloco: { target: crossLabels[result.target], error: result.error }
+        }}
+      }
+    </p>
+  }
 }
 
 @if (permissionsOpen()) {
