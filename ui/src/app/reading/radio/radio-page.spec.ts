@@ -12,7 +12,6 @@ import { RadioHandoff } from '../radio-handoff';
 import { Playback } from '../video-player/playback';
 import { RadioPage } from './radio-page';
 import { RADIO_AUDIO, RadioPlayer } from './radio-player';
-import { playlistFragment } from './radio-playlists';
 
 /** An audio element whose play() settles, as browsers do; jsdom's returns nothing. */
 function quietAudio(): HTMLAudioElement {
@@ -118,15 +117,6 @@ describe('RadioPage', () => {
       expect(navigate).not.toHaveBeenCalled();
     },
   );
-
-  it('forwards a shared playlist fragment to the shared playlist page', () => {
-    const fragment = playlistFragment(['https://sea.example/song.mp3']);
-    open({}, fragment);
-    expect(navigate).toHaveBeenCalledWith(
-      ['/playlists', 'shared'],
-      expect.objectContaining({ fragment, replaceUrl: true }),
-    );
-  });
 
   it('plays an in-app Play in Radio post from the handoff as a Single', async () => {
     const url = 'https://sea.example/@singer/789';

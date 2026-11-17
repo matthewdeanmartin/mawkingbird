@@ -2790,3 +2790,10 @@ Radio Header, Content State, Radio Group, Checkbox, Field/Control, Button, link
 Buttons and the shared Compose. The playlist page loses its publish section and
 gains a Share link Button; result rows and Saved singles gain Share. No shared
 widget implementation changed.
+
+Radio quotes and Back (2026-11-17): reviewed regenerated inventory: 1895
+scanned, 655 candidate files, unchanged. The shared `app-reading-back` gains a
+`fallback` input; Listen, a playlist and Find singles (for a playlist) use it in
+place of their own outline Back buttons, so Radio has one "← Back". The
+playlist page's serialized share link becomes the posted thread's link. No
+design-system widget implementation changed.

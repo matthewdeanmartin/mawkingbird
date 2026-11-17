@@ -10,8 +10,10 @@ import {
   PlaylistThread,
   playlistThreads,
   postRecordings,
+  quoteEntryText,
   rootText,
 } from './playlist-thread';
+import { postHasPage } from './single-page';
 import { RadioPlayer, RadioTrack } from './radio-player';
 import {
   PublishedEntry,
@@ -21,7 +23,7 @@ import {
   trackUrl,
 } from './radio-playlists';
 
-// i18n radio.thread.root: {{count}} tracks, one per reply. Listen in order with Mawkingbird Radio.
+// i18n radio.thread.root: {{count}} tracks, one per reply, each quoting the post it came from. Play them in order:
 // i18n radio.thread.untitled: Playlist
 
 /** Mastodon allows 30 deletions per 30 minutes per account. */
@@ -40,10 +42,19 @@ export interface PublishPlan {
   blocked: '' | 'private' | 'notEditable' | 'empty';
 }
 
+/** The Mawkingbird player's address for a posted playlist thread: it reads the thread. */
+export function playerLink(rootUrl: string): string {
+  const url = new URL('playlists/shared', document.baseURI);
+  url.searchParams.set('post', rootUrl);
+  return url.href;
+}
+
 /**
- * Publishes a saved playlist as a self-reply thread: a root post with its name,
- * then one numbered reply per track. Progress is saved after every request, so
- * an interrupted publication resumes rather than posting duplicates.
+ * Publishes a saved playlist as a self-reply thread: a root post with its name
+ * and a link to play it here, then one numbered reply per track that quotes the
+ * post the recording came from, so its author, words and replies stay with it.
+ * Progress is saved after every request, so an interrupted publication resumes
+ * rather than posting duplicates.
  */
 @Injectable({ providedIn: 'root' })
 export class PlaylistPublisher {
@@ -106,7 +117,8 @@ export class PlaylistPublisher {
   /** Requests the plan sends: shown so the cost of a reorder is visible. */
   cost(plan: PublishPlan): number {
     return (
-      Number(plan.createRoot) +
+      // A new root is posted, then edited once its address can go in its player link.
+      Number(plan.createRoot) * 2 +
       Number(plan.editRoot) +
       plan.edit.length +
       plan.remove.length +
@@ -147,6 +159,21 @@ export class PlaylistPublisher {
         };
         this.record(rowId, published);
         step();
+        // Only now is the thread's address known, for the link that plays it here.
+        if (published.url)
+          await this.send(
+            this.api.editStatus(
+              published.rootId,
+              rootText(
+                row.name,
+                row.description ?? '',
+                row.tracks.length,
+                label,
+                playerLink(published.url),
+              ),
+            ),
+          );
+        step();
       }
       for (const entry of plan.remove) {
         await this.send(this.api.deleteStatus(entry.postId));
@@ -158,7 +185,7 @@ export class PlaylistPublisher {
         await this.send(
           this.api.editStatus(
             item.entry.postId,
-            entryText(item.index, item.title, trackUrl(item.track)!),
+            this.entryBody(item.index, item.title, item.track, !!item.entry.quoted),
           ),
         );
         published = {
@@ -174,18 +201,37 @@ export class PlaylistPublisher {
       const replyVisibility = published.visibility === 'public' ? 'unlisted' : published.visibility;
       for (const item of plan.post) {
         const parent: string = published.entries.at(-1)?.postId ?? published.rootId;
+        const quoteId = await this.quotableId(item.track);
         const reply: Status = await this.send(
           this.api.postStatus(
-            entryText(item.index, item.title, trackUrl(item.track)!),
-            { inReplyToId: parent, visibility: replyVisibility },
+            this.entryBody(item.index, item.title, item.track, !!quoteId),
+            {
+              inReplyToId: parent,
+              visibility: replyVisibility,
+              ...(quoteId ? { quotedStatusId: quoteId } : {}),
+            },
             `mb-playlist-${row.id}-${parent}-${item.track.key}`,
           ),
         );
+        // A server without quotes ignores the request; the reply then links the post instead.
+        const quoted = !!quoteId && !!reply.quote;
+        if (quoteId && !quoted)
+          await this.send(
+            this.api.editStatus(
+              reply.id,
+              this.entryBody(item.index, item.title, item.track, false),
+            ),
+          );
         published = {
           ...published,
           entries: [
             ...published.entries,
-            { key: item.track.key, postId: reply.id, title: item.title },
+            {
+              key: item.track.key,
+              postId: reply.id,
+              title: item.title,
+              ...(quoted ? { quoted: true } : {}),
+            },
           ],
         };
         this.record(rowId, published);
@@ -195,7 +241,13 @@ export class PlaylistPublisher {
         await this.send(
           this.api.editStatus(
             published.rootId,
-            rootText(row.name, row.description ?? '', row.tracks.length, label),
+            rootText(
+              row.name,
+              row.description ?? '',
+              row.tracks.length,
+              label,
+              published.url ? playerLink(published.url) : '',
+            ),
           ),
         );
         published = { ...published, name: row.name, description: row.description ?? '' };
@@ -274,10 +326,52 @@ export class PlaylistPublisher {
     return id;
   }
 
+  /**
+   * The post a track came from, when it is a Mastodon post others can open:
+   * its recording is credited by quoting it, never by linking the bare file.
+   */
+  private origin(track: RadioTrack): Status | null {
+    const post = track.post;
+    return postHasPage(post) && ['public', 'unlisted'].includes(post.visibility) && !!post.url
+      ? post
+      : null;
+  }
+
+  /**
+   * The id this server knows the original post by, to quote it; null when it
+   * cannot be quoted (another server's copy that will not resolve, or an
+   * author who does not allow quotes). The reply then links the post instead.
+   */
+  private async quotableId(track: RadioTrack): Promise<string | null> {
+    const post = this.origin(track);
+    if (!post || post.quote_approval?.current_user === 'denied') return null;
+    if (post.provider !== 'anonymous-mastodon' && /^\d+$/.test(post.id)) return post.id;
+    try {
+      const found = await this.send(
+        this.api.search(post.uri || post.url!, 'statuses', { resolve: true, limit: 1 }),
+      );
+      const local = found.statuses[0];
+      return local && local.quote_approval?.current_user !== 'denied' ? local.id : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /** A reply's text: title and author beside the quoted post, or with its link, or a catalogue link. */
+  private entryBody(index: number, title: string, track: RadioTrack, quoted: boolean): string {
+    const post = this.origin(track);
+    if (!post) return entryText(index, title, trackUrl(track)!);
+    return quoteEntryText(index, title, post.account.acct, quoted ? '' : post.url!);
+  }
+
   /** Native recordings each, plus the first playable alternative for the post's links. */
   private recordingTracks(post: Status): RadioTrack[] {
-    // A posted thread's page-only players (Spotify, Bandcamp…) are kept and marked.
-    const tracks = this.player.singleTracks(post);
+    // A posted thread's page-only players (Spotify, Bandcamp…) are kept and marked;
+    // a reply quoting the original post holds that post's recordings.
+    const tracks = [
+      ...this.player.singleTracks(post),
+      ...(post.quote?.quoted_status ? this.player.singleTracks(post.quote.quoted_status) : []),
+    ];
     const native = tracks.filter((track) => !track.external);
     return native.length ? native : tracks.slice(0, 1);
   }

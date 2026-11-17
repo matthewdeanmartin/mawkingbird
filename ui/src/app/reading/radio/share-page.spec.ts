@@ -128,10 +128,11 @@ describe('SharePage', () => {
     ])!;
     params.next(convertToParamMap({ playlist: id }));
     const { page, fixture, root } = render();
-    // Each track links where it plays: here, its audio file.
+    // Each track links the post it came from, never the bare audio file.
     expect(
-      page.text().startsWith('Road trip\n\n1. Song 1\nhttps://audio.example/1.mp3\n2. Song 2'),
+      page.text().startsWith('Road trip\n\n1. Song 1\nhttps://sea.example/@singer/1\n2. Song 2'),
     ).toBe(true);
+    expect(page.text()).not.toContain('audio.example');
     expect(page.text()).toContain('#fedimusic');
     expect(page.formats().find((format) => format.value === 'thread')?.disabled).toBe(false);
     page.format.set('thread');

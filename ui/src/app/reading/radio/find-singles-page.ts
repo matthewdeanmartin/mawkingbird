@@ -44,12 +44,12 @@ import { RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
 import { TrackActions } from './track-actions';
 import { SinglesTabs } from './section-tabs';
+import { ReadingBack } from '../../shell/reading-back';
 import { TrackResult } from './track-result';
 import { countKey } from './count-key';
 
 // i18n findSingles.addTitle: Add to {{playlist}}
 // i18n findSingles.addLead: Recordings that play one after another can join this playlist. Others play on their own page.
-// i18n findSingles.backPlaylist: Back to {{playlist}}
 // i18n findSingles.where: Where to look
 // i18n findSingles.scope.account: Account
 // i18n findSingles.scope.accountHint: Everything one person has posted.
@@ -102,6 +102,7 @@ const SCAN_SOURCES = ['account', 'tag', 'home', 'list', 'saved'] as const;
     RadioHeader,
     SinglesTabs,
     TrackResult,
+    ReadingBack,
   ],
   templateUrl: './find-singles-page.html',
   styleUrl: './radio-lists.css',

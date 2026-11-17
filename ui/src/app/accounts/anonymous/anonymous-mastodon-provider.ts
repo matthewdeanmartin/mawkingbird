@@ -132,6 +132,17 @@ export function adaptAnonymousStatus(status: Status, server: string): Status {
     } satisfies AnonymousProviderRef,
     account,
     reblog: status.reblog ? adaptAnonymousStatus(status.reblog, server) : null,
+    // A quoted post is read through the same server, so it is namespaced the same way.
+    ...(status.quote
+      ? {
+          quote: {
+            ...status.quote,
+            quoted_status: status.quote.quoted_status
+              ? adaptAnonymousStatus(status.quote.quoted_status, server)
+              : null,
+          },
+        }
+      : {}),
   };
 }
 

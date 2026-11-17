@@ -1,11 +1,8 @@
 <section class="page">
   @let row = target();
   @if (row) {
-    <app-radio-header [heading]="'findSingles.addTitle' | transloco: { playlist: row.name }">
-      <a mbButton size="small" variant="outline" [routerLink]="playlistLink(row)">{{
-        'findSingles.backPlaylist' | transloco: { playlist: row.name }
-      }}</a>
-    </app-radio-header>
+    <app-reading-back [fallback]="'/playlists/' + row.id" />
+    <app-radio-header [heading]="'findSingles.addTitle' | transloco: { playlist: row.name }" />
     <p class="lead">
       {{ 'findSingles.addLead' | transloco }}
     </p>

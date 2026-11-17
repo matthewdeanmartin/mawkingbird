@@ -76,7 +76,7 @@ describe('MODE_NAV', () => {
       MODE_NAV.radio.filter((tab) => tab.active(url)).map((tab) => tab.id);
     for (const url of ['/singles', '/singles/find?acct=a@b.example', '/listen?post=1'])
       expect(active(url)).toEqual(['singles']);
-    for (const url of ['/playlists', '/playlists/find', '/playlists/shared#playlist=x'])
+    for (const url of ['/playlists', '/playlists/find', '/playlists/shared?post=x'])
       expect(active(url)).toEqual(['playlists']);
     expect(active('/radio/studio')).toEqual(['studio']);
     for (const view of ['radio', 'settings']) expect(active('/radio?view=' + view)).toEqual([]);

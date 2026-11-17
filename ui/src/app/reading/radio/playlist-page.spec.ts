@@ -11,7 +11,7 @@ import { AppDialogs } from '../../shell/app-dialogs';
 import { Playback } from '../video-player/playback';
 import { PlaylistPage } from './playlist-page';
 import { RADIO_AUDIO, RadioPlayer } from './radio-player';
-import { playlistFragment, playlistUrls, RadioPlaylists } from './radio-playlists';
+import { RadioPlaylists } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
 
 function quietAudio(): HTMLAudioElement {
@@ -140,16 +140,29 @@ describe('PlaylistPage', () => {
     expect(navigate).toHaveBeenCalledWith(['/playlists', playlists.saved()[0].id]);
   });
 
-  it('previews links from a shared fragment once, even when the address repeats', async () => {
-    const tracks = player.tracks(post('3'));
-    const importUrls = vi.spyOn(playlists, 'importUrls').mockResolvedValue({ tracks, skipped: 0 });
-    const shared = playlistFragment(playlistUrls(tracks));
-    fragment.next(shared);
-    const { page } = render();
-    await vi.waitFor(() => expect(page.loading()).toBe(false));
-    fragment.next(shared);
-    expect(importUrls).toHaveBeenCalledTimes(1);
-    expect(page.tracks().map((track) => track.post.id)).toEqual(['3']);
+  it('links a posted playlist by its thread, never by a list of its tracks', () => {
+    const id = playlists.create('Posted', player.tracks(post('3')))!;
+    paramMap.next(convertToParamMap({ id }));
+    const first = render();
+    expect(first.root.textContent).toContain('Share the playlist to post it as a thread');
+    first.fixture.destroy();
+    playlists.update(id, (row) => ({
+      ...row,
+      published: {
+        rootId: 'r',
+        url: 'https://home.example/@me/r',
+        visibility: 'public',
+        name: 'Posted',
+        description: '',
+        entries: [],
+        editable: true,
+      },
+    }));
+    const { root } = render();
+    const links = Array.from(root.querySelectorAll('a'), (link) => link.getAttribute('href'));
+    const thread = links.find((href) => href?.startsWith('/playlists/shared?post='));
+    expect(decodeURIComponent(thread!.split('post=')[1])).toBe('https://home.example/@me/r');
+    expect(links.some((href) => href?.includes('#'))).toBe(false);
   });
 
   it('says when a playlist is not in this browser, and deletes after confirming', async () => {

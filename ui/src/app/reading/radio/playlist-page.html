@@ -1,9 +1,6 @@
 <section class="page">
-  <app-radio-header [heading]="heading()">
-    <a mbButton size="small" variant="outline" routerLink="/playlists">{{
-      'playlist.back' | transloco
-    }}</a>
-  </app-radio-header>
+  <app-reading-back fallback="/playlists" />
+  <app-radio-header [heading]="heading()" />
 
   @if (shared()) {
     <p class="lead">{{ 'playlist.sharedLead' | transloco }}</p>
@@ -267,13 +264,15 @@
       >
     </section>
 
-    @if (fragment()) {
+    @if (threadLink(); as link) {
       <p>
-        <a routerLink="/playlists/shared" [fragment]="fragment()">{{
+        <a routerLink="/playlists/shared" [queryParams]="{ post: link }">{{
           'playlist.link' | transloco
         }}</a>
       </p>
       <p class="lead">{{ 'playlist.linkHint' | transloco }}</p>
+    } @else if (tracks().length) {
+      <p class="lead">{{ 'playlist.notPosted' | transloco }}</p>
     }
   } @else {
     <mb-content-state

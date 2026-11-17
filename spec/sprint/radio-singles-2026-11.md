@@ -311,3 +311,33 @@ attached to posts, which always play in a playlist" and searches again when
 ticked; changing tabs clears results. Saved singles and playlists dedupe by
 the recording itself (`recordingId`: the file URL or the provider's track), so
 two copies of one post never save twice and stored doubles collapse on load.
+
+### Playlist threads credit their sources (2026-11-17)
+
+Owner decisions: a shared playlist is a thread like any other: the first post
+is the playlist's details plus a link to play it here, then one reply per
+track that quotes the post the recording came from, so its author, words (a tip
+link, say) and replies come along. Linking someone's media file directly is
+never acceptable. Catalogue tracks link their catalogue page. No playlist is
+ever serialized into a URL; the thread is the playlist and its link.
+
+- `PlaylistPublisher`: the root is posted, then edited to add
+  `playlists/shared?post=<root>` (`playerLink`, built from the app's base URL).
+  Each reply about a Mastodon post is "N. Title · @author" with
+  `quoted_status_id`. The quoted id is the post's own id when it came from this
+  server, else found with a resolving search. An author who does not allow
+  quotes, or a server that ignores the quote (`reply.quote` is null), gets the
+  post's link in the reply instead, never the file. `PublishedEntry.quoted`
+  remembers which replies quote.
+- Reading: a reply that quotes a post plays the quoted post's recordings (the
+  anonymous reader now namespaces quoted posts too); the quote's "RE:" fallback
+  link is not counted twice; tracks dedupe by `recordingId`. Finding "Playlists
+  I posted" and keeping one counts quoted recordings.
+- Share's one-post playlist links each track's original post, not its file.
+- Removed: `#playlist=` links (`playlistFragment`, `readPlaylistFragment`,
+  `playlistUrls`), their guard and forwarding. A playlist page shows its
+  thread's link once posted, and says to Share it otherwise.
+- Saved singles keep the full post (URL, URI, id), which is what quoting needs.
+- Radio's Back buttons use the shared `app-reading-back` ("← Back"), which
+  gains a `fallback` for pages opened directly (Listen → Singles, a playlist →
+  Playlists, Find for a playlist → that playlist).

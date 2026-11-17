@@ -3,6 +3,7 @@ import { postExternalMedia } from '../audio-embeds/providers';
 import { CATALOGUE_POST } from './catalogue-search';
 import { RadioTrack } from './radio-player';
 import { trackUrl } from './radio-playlists';
+import { postHasPage } from './single-page';
 
 /** One place a shared recording can be heard: the post, a service, a catalogue page. */
 export interface ShareLink {
@@ -37,6 +38,18 @@ export function shareLinks(track: RadioTrack, postLabel: string): ShareLink[] {
   if (track.external) add(track.external.url, track.external.label);
   for (const source of postExternalMedia(post)) add(source.url, source.label);
   return links;
+}
+
+/**
+ * Where a playlist line points: the post the recording came from, so its
+ * author, words and replies come along; a catalogue page or link otherwise.
+ * Never the bare audio file of someone's post.
+ */
+export function creditUrl(track: RadioTrack): string | null {
+  const post = track.post;
+  if (postHasPage(post) && ['public', 'unlisted'].includes(post.visibility) && post.url)
+    return post.url;
+  return trackUrl(track);
 }
 
 /** The music hashtags worth offering: the usual ones, then the post's own. */

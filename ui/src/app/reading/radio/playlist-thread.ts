@@ -42,6 +42,9 @@ function lines(post: Status): { text: string; links: string[] }[] {
  */
 export function postRecordings(post: Status): string[] {
   const own = post.reblog ?? post;
+  // A playlist reply that quotes the original post holds that post's recordings.
+  if (own.quote?.quoted_status && !own.media_attachments.some((media) => media.type === 'audio'))
+    return postRecordings(own.quote.quoted_status);
   const keys = own.media_attachments
     .filter((media) => media.type === 'audio')
     .map((media) => `media:${media.url || media.id}`);
@@ -101,10 +104,26 @@ export function playlistThreads(statuses: readonly Status[], accountId: string):
 }
 
 /** Root post text for a published playlist. Plain text: the server links nothing else. */
-export function rootText(name: string, description: string, count: number, label: string): string {
-  return [name.trim(), description.trim(), label.replace('{{count}}', String(count))]
+export function rootText(
+  name: string,
+  description: string,
+  count: number,
+  label: string,
+  player = '',
+): string {
+  return [name.trim(), description.trim(), label.replace('{{count}}', String(count)), player]
     .filter(Boolean)
     .join('\n\n');
+}
+
+/**
+ * A playlist reply that credits the original post: its title and author. The
+ * post itself is quoted beside it, so its art, words and replies travel along;
+ * `link` is set only when it cannot be quoted, so the reply still leads there.
+ */
+export function quoteEntryText(index: number, title: string, acct: string, link = ''): string {
+  const name = title.replace(/\s+/g, ' ').trim().slice(0, 200);
+  return [`${index + 1}. ${name}${acct ? ` · @${acct}` : ''}`, link].filter(Boolean).join('\n');
 }
 
 /** One reply per entry: a numbered title line, then the link. */

@@ -16,15 +16,10 @@ import { radioPostRef } from '../radio-links';
 import { PlaylistDraft } from './playlist-draft';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
+import { ReadingBack } from '../../shell/reading-back';
 import { RadioIcon } from './radio-icon';
 import { isContinuous, RadioPlayer, RadioTrack } from './radio-player';
-import {
-  playlistFragment,
-  playlistUrls,
-  RadioPlaylists,
-  readPlaylistFragment,
-  SavedRadioPlaylist,
-} from './radio-playlists';
+import { RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
 import { SavedSingles } from './saved-singles';
 import { countKey } from './count-key';
 import { postTitle } from './track-title';
@@ -54,7 +49,8 @@ import { TrackActions } from './track-actions';
 // i18n playlist.trackCount.one: {{count}} track
 // i18n playlist.trackCount.other: {{count}} tracks
 // i18n playlist.link: Link to this playlist
-// i18n playlist.linkHint: Anyone with the link can play the public tracks. Private posts are left out.
+// i18n playlist.linkHint: The link opens the thread you posted; it plays here in order, and anywhere else as an ordinary thread.
+// i18n playlist.notPosted: Share the playlist to post it as a thread; the thread is its link.
 // i18n playlist.delete: Delete playlist
 // i18n playlist.deleteConfirm: Delete “{{name}}” from this browser? A published thread stays on Mastodon.
 // i18n playlist.back: Playlists
@@ -82,6 +78,7 @@ import { TrackActions } from './track-actions';
     MbMenuItem,
     RadioHeader,
     RadioIcon,
+    ReadingBack,
   ],
   templateUrl: './playlist-page.html',
   styleUrls: ['./radio-lists.css', './playlist-page.css'],
@@ -120,11 +117,8 @@ export class PlaylistPage {
       .map((item) => item.track)
       .filter((track) => isContinuous(track) && !keys.has(track.key));
   });
-  readonly fragment = computed(() => {
-    const urls = playlistUrls(this.tracks());
-    const fragment = playlistFragment(urls);
-    return urls.length && fragment.length <= 100_000 ? fragment : '';
-  });
+  /** A posted playlist's link: the thread is the playlist, and the player reads it. */
+  readonly threadLink = computed(() => this.row()?.published?.url ?? '');
   private generation = 0;
   private lastSource = '';
 
@@ -145,10 +139,6 @@ export class PlaylistPage {
       const post = radioPostRef(params.get('post'));
       if (this.shared() && post?.originalUrl)
         void this.load(post.originalUrl, [post.originalUrl], true);
-    });
-    this.route.fragment?.pipe(takeUntilDestroyed(destroy)).subscribe((fragment) => {
-      const urls = readPlaylistFragment(fragment ?? '');
-      if (this.shared() && urls) void this.load(fragment ?? '', urls, false);
     });
     destroy.onDestroy(() => this.generation++);
   }

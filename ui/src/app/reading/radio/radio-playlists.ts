@@ -14,13 +14,15 @@ import { CATALOGUE_POST } from './catalogue-search';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
 import { radioPostRef } from '../radio-links';
 import { Status } from '../../platform/api/models';
-import { RadioPlayer, RadioTrack } from './radio-player';
+import { RadioPlayer, RadioTrack, recordingId } from './radio-player';
 
 /** One published entry: the reply that carries a track, and the title it shows. */
 export interface PublishedEntry {
   key: string;
   postId: string;
   title: string;
+  /** The reply quotes the original post, so its text carries no link. */
+  quoted?: boolean;
 }
 /** The Mastodon thread a saved playlist is published as. */
 export interface PublishedPlaylist {
@@ -57,12 +59,19 @@ function publishedRecord(value: unknown): PublishedPlaylist | undefined {
     name: typeof data.name === 'string' ? data.name : '',
     description: typeof data.description === 'string' ? data.description : '',
     editable: data.editable === true,
-    entries: data.entries.filter(
-      (entry): entry is PublishedEntry =>
-        typeof entry?.key === 'string' &&
-        typeof entry?.postId === 'string' &&
-        typeof entry?.title === 'string',
-    ),
+    entries: data.entries
+      .filter(
+        (entry): entry is PublishedEntry =>
+          typeof entry?.key === 'string' &&
+          typeof entry?.postId === 'string' &&
+          typeof entry?.title === 'string',
+      )
+      .map((entry) => ({
+        key: entry.key,
+        postId: entry.postId,
+        title: entry.title,
+        ...(entry.quoted === true ? { quoted: true } : {}),
+      })),
   };
 }
 const KEY = 'mockingbird_radio_playlists';
@@ -88,26 +97,6 @@ export function trackUrl(track: RadioTrack): string | null {
     null
   );
 }
-export function playlistUrls(tracks: RadioTrack[]): string[] {
-  return [...new Set(tracks.map(trackUrl).filter((url): url is string => !!url))];
-}
-export function playlistFragment(urls: string[]): string {
-  return 'playlist=' + encodeURIComponent(JSON.stringify(urls));
-}
-export function readPlaylistFragment(fragment: string): string[] | null {
-  if (!fragment.startsWith('playlist=') || fragment.length > 100_000) return null;
-  try {
-    const data: unknown = JSON.parse(decodeURIComponent(fragment.slice(9)));
-    return Array.isArray(data) &&
-      data.length <= PLAYLIST_LIMIT &&
-      data.every((url) => typeof url === 'string' && url.length < 4096)
-      ? data
-      : null;
-  } catch {
-    return null;
-  }
-}
-
 @Injectable({ providedIn: 'root' })
 export class RadioPlaylists {
   private readonly player = inject(RadioPlayer);
@@ -253,9 +242,20 @@ export class RadioPlaylists {
         }
       }
     }
-    await this.linked.ready(posts);
-    const tracks = posts.flatMap((post) => this.player.tracks(post));
-    const visited = new Set([url]);
+    // A reply that quotes a post plays the quoted post: the recording stays with its author.
+    const quoted = posts.flatMap((post) =>
+      post.quote?.quoted_status ? [post.quote.quoted_status] : [],
+    );
+    await this.linked.ready([...posts, ...quoted]);
+    const tracks = posts.flatMap((post) => [
+      ...this.player.tracks(post),
+      ...(post.quote?.quoted_status ? this.player.tracks(post.quote.quoted_status) : []),
+    ]);
+    // A quote's "RE:" fallback link names the same post; it is not another track.
+    const visited = new Set([
+      url,
+      ...quoted.flatMap((post) => [post.url, post.uri].filter((link): link is string => !!link)),
+    ]);
     for (const post of posts) {
       const content = new DOMParser().parseFromString(post.content || '', 'text/html');
       for (const anchor of Array.from(content.querySelectorAll('a[href]')).slice(
@@ -302,7 +302,8 @@ export class RadioPlaylists {
         skipped++;
       }
     }
-    const unique = new Map(tracks.map((track) => [track.key, track]));
+    // One recording reached twice (a quote and its fallback link) is one track.
+    const unique = new Map(tracks.map((track) => [recordingId(track), track]));
     return { tracks: [...unique.values()].slice(0, PLAYLIST_LIMIT), skipped };
   }
   /** A pasted link: a file, a controllable provider or a Library of Congress item. */

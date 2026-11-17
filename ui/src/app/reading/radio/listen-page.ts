@@ -7,7 +7,6 @@ import {
   linkedSignal,
   signal,
 } from '@angular/core';
-import { Location } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -34,11 +33,11 @@ import { RadioPlayer, RadioTrack } from './radio-player';
 import { SavedSingles } from './saved-singles';
 import { RadioPlaylists } from './radio-playlists';
 import { TrackActions } from './track-actions';
+import { ReadingBack } from '../../shell/reading-back';
 import { MbPostMenu } from '../../design-system/menu/post-menu';
 import { MbMenuItem } from '../../design-system/menu/menu-item';
 
 // i18n listen.title: Listen
-// i18n listen.back: Back
 // i18n listen.loading: Opening recording…
 // i18n listen.unavailable: This recording is unavailable or you don't have access to its post.
 // i18n listen.wrongServer: Switch to the server this post belongs to before opening its recording.
@@ -83,6 +82,7 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
     RadioIcon,
     MbPostMenu,
     MbMenuItem,
+    ReadingBack,
   ],
   providers: [ThreadLoader],
   templateUrl: './listen-page.html',
@@ -99,7 +99,6 @@ export class ListenPage {
   private readonly services = inject(ProviderPreferences);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly location = inject(Location);
   private readonly server = inject(Server);
   private readonly auth = inject(Auth);
   private readonly visibility = inject(StatusVisibility);
@@ -285,10 +284,6 @@ export class ListenPage {
     const hours = Math.floor(value / 3600);
     const rest = `${Math.floor((value % 3600) / 60)}:${String(value % 60).padStart(2, '0')}`;
     return hours ? `${hours}:${rest.padStart(5, '0')}` : rest;
-  }
-  protected back(): void {
-    if (history.state?.navigationId > 1) this.location.back();
-    else void this.router.navigate(['/singles']);
   }
   protected onReply(reply: Status): void {
     this.loader.descendants.update((replies) => [...replies, reply]);

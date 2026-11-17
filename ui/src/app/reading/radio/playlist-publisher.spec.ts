@@ -58,7 +58,8 @@ describe('PlaylistPublisher', () => {
 
   it('publishes a named root and chained one-track replies, unlisted under a public root', async () => {
     const id = lists.save('Sea songs', tracks('one', 'two'))!;
-    expect(publisher.cost(publisher.plan(row()))).toBe(3);
+    // The root, its edit adding the player link, and two replies.
+    expect(publisher.cost(publisher.plan(row()))).toBe(4);
     expect(await publisher.publish(id, 'public')).toBe(true);
     const calls = api['postStatus'].mock.calls;
     expect(calls[0][0]).toContain('Sea songs');
@@ -67,6 +68,13 @@ describe('PlaylistPublisher', () => {
     expect(calls[1][1]).toEqual({ inReplyToId: 'p1', visibility: 'unlisted' });
     expect(calls[2][1]).toEqual({ inReplyToId: 'p2', visibility: 'unlisted' });
     expect(new Set(calls.map((call) => call[2])).size).toBe(3);
+    // Once posted, the root names the player that reads the thread.
+    expect(api['editStatus']).toHaveBeenCalledWith(
+      'p1',
+      expect.stringContaining(
+        `/playlists/shared?post=${encodeURIComponent('https://home.example/@me/p1')}`,
+      ),
+    );
     expect(row().published).toMatchObject({
       rootId: 'p1',
       url: 'https://home.example/@me/p1',
@@ -172,5 +180,76 @@ describe('PlaylistPublisher', () => {
     expect(saved.published?.entries.map((entry) => entry.postId)).toEqual(['r1', 'r2']);
     expect(saved.tracks.map((track) => player.title(track))).toEqual(['Song 1', 'Song 2']);
     expect(publisher.found()).toEqual([]);
+  });
+
+  describe('crediting the original post', () => {
+    function mastodonPost(id: string, extra: Partial<Status> = {}): Status {
+      return {
+        id,
+        url: `https://sea.example/@singer/${id}`,
+        uri: `https://sea.example/users/singer/statuses/${id}`,
+        visibility: 'public',
+        account: { id: 'singer', acct: 'singer@sea.example', display_name: 'Singer' },
+        content: `<p>Song ${id}</p>`,
+        spoiler_text: '',
+        sensitive: false,
+        media_attachments: [
+          { id: `m${id}`, type: 'audio', url: `https://files.example/${id}.mp3` },
+        ],
+        ...extra,
+      } as unknown as Status;
+    }
+
+    it('quotes the post a recording came from and never links its file', async () => {
+      api['postStatus'].mockImplementation((text: string, options: { quotedStatusId?: string }) =>
+        of({
+          id: `p${++posted}`,
+          url: `https://home.example/@me/p${posted}`,
+          content: text,
+          quote: options?.quotedStatusId ? { state: 'accepted', quoted_status: {} } : null,
+        }),
+      );
+      const id = lists.create('Credits', player.tracks(mastodonPost('7')))!;
+      expect(await publisher.publish(id, 'public')).toBe(true);
+      const reply = api['postStatus'].mock.calls[1];
+      expect(reply[0]).toBe('1. Song 7 · @singer@sea.example');
+      expect(reply[1]).toMatchObject({ quotedStatusId: '7', inReplyToId: 'p1' });
+      expect(reply[0]).not.toContain('files.example');
+      expect(row().published?.entries[0]).toMatchObject({ postId: 'p2', quoted: true });
+    });
+
+    it('finds another server’s post on this server before quoting it', async () => {
+      api['search'] = vi.fn(() => of({ accounts: [], hashtags: [], statuses: [{ id: 'local9' }] }));
+      const far = mastodonPost('anonymous-mastodon:sea.example:9', {
+        provider: 'anonymous-mastodon',
+      } as Partial<Status>);
+      const id = lists.create('Far', player.tracks(far))!;
+      await publisher.publish(id, 'public');
+      expect(api['search']).toHaveBeenCalledWith(
+        'https://sea.example/users/singer/statuses/anonymous-mastodon:sea.example:9',
+        'statuses',
+        { resolve: true, limit: 1 },
+      );
+      expect(api['postStatus'].mock.calls[1][1]).toMatchObject({ quotedStatusId: 'local9' });
+    });
+
+    it('links the post instead when the server does not quote or the author does not allow it', async () => {
+      // This server ignores the quote: the reply is edited to carry the post's link.
+      const id = lists.create('Old server', player.tracks(mastodonPost('7')))!;
+      await publisher.publish(id, 'public');
+      expect(api['editStatus']).toHaveBeenCalledWith(
+        'p2',
+        '1. Song 7 · @singer@sea.example\nhttps://sea.example/@singer/7',
+      );
+      expect(row().published?.entries[0].quoted).toBeUndefined();
+
+      api['postStatus'].mockClear();
+      const denied = mastodonPost('8', { quote_approval: { current_user: 'denied' } });
+      const other = lists.create('Denied', player.tracks(denied))!;
+      await publisher.publish(other, 'public');
+      const reply = api['postStatus'].mock.calls[1];
+      expect(reply[1].quotedStatusId).toBeUndefined();
+      expect(reply[0]).toBe('1. Song 8 · @singer@sea.example\nhttps://sea.example/@singer/8');
+    });
   });
 });

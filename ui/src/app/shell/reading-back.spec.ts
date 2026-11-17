@@ -18,5 +18,18 @@ describe('shared reading Back control', () => {
     expect(button.hasAttribute('mbButton')).toBe(true);
     button.click();
     expect(back).toHaveBeenCalledOnce();
+    expect(back).toHaveBeenCalledWith('/home');
+  });
+
+  it('goes to the page’s own fallback when it was opened with nothing to go back to', () => {
+    const back = vi.fn();
+    TestBed.configureTestingModule({
+      providers: [{ provide: ReadingHistory, useValue: { back } }],
+    });
+    const fixture = TestBed.createComponent(ReadingBack);
+    fixture.componentRef.setInput('fallback', '/playlists');
+    fixture.detectChanges();
+    (fixture.nativeElement as HTMLElement).querySelector('button')!.click();
+    expect(back).toHaveBeenCalledWith('/playlists');
   });
 });

@@ -1,8 +1,6 @@
 <section class="listen-page">
+  <app-reading-back fallback="/singles" />
   <header class="listen-header">
-    <button type="button" mbButton variant="outline" size="small" (click)="back()">
-      {{ 'listen.back' | transloco }}
-    </button>
     <h1>{{ 'listen.title' | transloco }}</h1>
   </header>
   @if (error()) {

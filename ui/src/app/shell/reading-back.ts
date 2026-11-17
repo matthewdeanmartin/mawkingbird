@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
 import { ReadingHistory } from './reading-history';
@@ -7,7 +7,7 @@ import { ReadingHistory } from './reading-history';
 @Component({
   selector: 'app-reading-back',
   imports: [MbButton, TranslocoPipe],
-  template: `<button mbButton variant="link" type="button" (click)="history.back()">
+  template: `<button mbButton variant="link" type="button" (click)="history.back(fallback())">
     <span aria-hidden="true">←</span> {{ 'pages.profile.actions.backWord' | transloco }}
   </button>`,
   styles: `
@@ -19,4 +19,6 @@ import { ReadingHistory } from './reading-history';
 })
 export class ReadingBack {
   protected history = inject(ReadingHistory);
+  /** Where Back goes when the page was opened directly, with nothing to go back to. */
+  readonly fallback = input('/home');
 }

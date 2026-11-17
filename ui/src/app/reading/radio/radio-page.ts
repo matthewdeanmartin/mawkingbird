@@ -14,7 +14,6 @@ import { LinkedAudioResolver } from './linked-audio-resolver';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
 import { isContinuous, RadioPlayer } from './radio-player';
-import { readPlaylistFragment } from './radio-playlists';
 import { RadioSettings } from './radio-settings';
 
 // i18n radio.nowPlaying: Now playing
@@ -62,12 +61,10 @@ export class RadioPage {
         return;
       }
       // Links people shared before Singles and Playlists existed open their new home.
-      const fragment = this.route.snapshot?.fragment ?? '';
       const post = radioPostRef(params.get('post'));
       const account = radioAccount(params.get('acct'));
       if (post?.originalUrl) this.forward(['/playlists', 'shared'], { post: post.originalUrl });
       else if (account) this.forward(['/singles', 'find'], { acct: account.acct });
-      else if (readPlaylistFragment(fragment)) this.forward(['/playlists', 'shared'], {}, fragment);
     });
     destroy.onDestroy(() => {
       this.generation++;

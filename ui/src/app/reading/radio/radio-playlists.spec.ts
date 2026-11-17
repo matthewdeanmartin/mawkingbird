@@ -11,12 +11,7 @@ import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-ap
 import { Status } from '../../platform/api/models';
 import { RadioPlayer } from './radio-player';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
-import {
-  playlistFragment,
-  playlistUrls,
-  readPlaylistFragment,
-  RadioPlaylists,
-} from './radio-playlists';
+import { RadioPlaylists } from './radio-playlists';
 
 describe('Radio playlists', () => {
   const api = { getStatus: vi.fn(), getContext: vi.fn() };
@@ -84,17 +79,6 @@ describe('Radio playlists', () => {
     } finally {
       vi.unstubAllGlobals();
     }
-  });
-  it('round-trips ordered public URLs without including private posts', () => {
-    const tracks = [
-      ...lists.fromUrl('https://audio.example/one.mp3'),
-      ...lists.fromUrl('https://mixcloud.com/artist/mix/'),
-    ];
-    const urls = playlistUrls(tracks);
-    expect(readPlaylistFragment(playlistFragment(urls))).toEqual(urls);
-    tracks[0].post.visibility = 'private';
-    expect(playlistUrls(tracks)).toEqual(['https://mixcloud.com/artist/mix/']);
-    expect(readPlaylistFragment('playlist=%not-json')).toBeNull();
   });
   it('saves multiple named playlists locally, reloads order and deletes only the selected playlist', () => {
     const tracks = [

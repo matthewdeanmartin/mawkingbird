@@ -27,9 +27,16 @@ import { DELETE_BUDGET, PlaylistPublisher } from './playlist-publisher';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
 import { RadioPlayer, RadioTrack } from './radio-player';
-import { RadioPlaylists, trackUrl } from './radio-playlists';
+import { RadioPlaylists } from './radio-playlists';
 import { ShareRequest } from './share-request';
-import { playlistText, ShareLink, shareLinks, shareTags, singleText } from './share-text';
+import {
+  creditUrl,
+  playlistText,
+  ShareLink,
+  shareLinks,
+  shareTags,
+  singleText,
+} from './share-text';
 import { TrackActions } from './track-actions';
 import { countKey } from './count-key';
 
@@ -157,7 +164,7 @@ export class SharePage {
         row.name,
         row.description ?? '',
         row.tracks.flatMap((track) => {
-          const url = trackUrl(track);
+          const url = creditUrl(track);
           return url ? [{ title: this.player.title(track), url }] : [];
         }),
         this.chosenTags(),
@@ -170,7 +177,7 @@ export class SharePage {
   });
   readonly primaryUrl = computed(() => {
     const row = this.playlist();
-    if (row) return row.published?.url ?? row.tracks.map(trackUrl).find(Boolean) ?? '';
+    if (row) return row.published?.url ?? row.tracks.map(creditUrl).find(Boolean) ?? '';
     return this.chosenLinks()[0] ?? this.links()[0]?.url ?? '';
   });
   /** Sites without a connected account: their own share pages, filled in. */

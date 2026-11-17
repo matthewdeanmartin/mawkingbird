@@ -94,11 +94,13 @@ describe('TrackActions', () => {
     expect(api['postStatus']).not.toHaveBeenCalled();
     confirm.mockResolvedValue(true);
     expect(await actions.append(track, id)).toContain('Added to');
+    // The reply quotes the original post rather than linking its file.
     expect(api['postStatus']).toHaveBeenCalledWith(
-      expect.stringContaining('https://sea.example/m.mp3'),
-      { inReplyToId: 'r1', visibility: 'unlisted' },
+      '2. Blow the man down · @singer@sea.example',
+      { inReplyToId: 'r1', visibility: 'unlisted', quotedStatusId: '5' },
       expect.any(String),
     );
+    expect(JSON.stringify(api['postStatus'].mock.calls)).not.toContain('m.mp3');
     expect(lists.saved()[0].published?.entries).toHaveLength(2);
   });
 
