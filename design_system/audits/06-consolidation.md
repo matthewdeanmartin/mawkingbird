@@ -2797,3 +2797,26 @@ scanned, 655 candidate files, unchanged. The shared `app-reading-back` gains a
 place of their own outline Back buttons, so Radio has one "← Back". The
 playlist page's serialized share link becomes the posted thread's link. No
 design-system widget implementation changed.
+
+Blog mode, sprints 1–10 (2026-11-17): reviewed regenerated inventory: 1922
+scanned files, 664 candidate files. Nine new files, all adopted scope in
+reconciliation: `blog-header.ts` (Blog Header and the gear Button to Settings ›
+Blog, like Radio Header), `blog-landing.html` (dashboard: Blog Header, Button,
+Field/Control; the handle form sits inside a native `<details>` on purpose),
+`blog-page.html`, `blog-roll-page.html` and `blog-search-page.html` (Content
+State, Button, Field/Control), `blog-post-page.html` (Content State, link
+Buttons for Reply/Cancel, the shared Compose as the comment box),
+`blog-rail-cards.ts` (Rail Card, link Button for Clear), `blog-write-panel.ts`
+(Field/Control and Checkbox for the BLOG: mark and cross-post targets) and
+`settings/blog/settings-blog.html` (Field/Control, Button). The left and right
+rails gain mode-dependent `@if`s (`shell/rail-widgets.ts`) and the Blog
+cards; Write gains the blog strip. No shared widget implementation changed.
+
+Blog feedback and profile filters (2026-11-17): reviewed regenerated inventory:
+1924 scanned, 664 candidate files, no new candidates. Blog: the rail cards use
+`card-title` and a padded body like every other rail card; Desk loses the handle
+form (now a `<details>` on Search) and gains a Radio Group (Long, Short, All
+drafts); Settings › Blog has three Field/Control number inputs. The profile's
+"Post types" filters move from a whole-rail takeover (`RailOutlet`) into a
+left-rail widget under the profile card with richer kinds; the inline copy in
+the profile body is removed. No shared widget implementation changed.

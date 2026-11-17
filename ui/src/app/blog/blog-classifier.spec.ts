@@ -10,9 +10,11 @@ import {
   commentEstimate,
   DEFAULT_BLOG_THRESHOLDS,
   firstLine,
+  withoutCounters,
   hasBlogMarker,
   readingMinutes,
   withoutTitleLine,
+  wordCount,
 } from './blog-classifier';
 
 const AUTHOR = 'a';
@@ -53,8 +55,14 @@ function post(
 const short = (text: string) => `<p>${text}</p>`;
 const long = (words: number) => `<p>${'word '.repeat(words).trim()}</p>`;
 
+/**
+ * Chain-building tests use short posts, so they lift the storm's word floor;
+ * the word rule has its own tests below with the real defaults.
+ */
+const STRUCTURE = { ...DEFAULT_BLOG_THRESHOLDS, minStormWords: 0 };
+
 function scan(statuses: Status[], exhausted = false) {
-  return collectBlogPosts(statuses, AUTHOR, DEFAULT_BLOG_THRESHOLDS, exhausted);
+  return collectBlogPosts(statuses, AUTHOR, STRUCTURE, exhausted);
 }
 
 describe('firstLine and blogTitle', () => {
@@ -103,7 +111,7 @@ describe('blogReason', () => {
   it('prefers the marker, then storm, then length', () => {
     const marked = post('1', short('BLOG: x'));
     expect(blogReason([marked], DEFAULT_BLOG_THRESHOLDS)).toBe('marked');
-    const storm = [post('2', short('a')), post('3', short('b')), post('4', short('c'))];
+    const storm = [post('2', long(30)), post('3', long(30)), post('4', long(30))];
     expect(blogReason(storm, DEFAULT_BLOG_THRESHOLDS)).toBe('storm');
     expect(blogReason([post('5', long(300))], DEFAULT_BLOG_THRESHOLDS)).toBe('long');
     expect(blogReason([post('6', short('hi'))], DEFAULT_BLOG_THRESHOLDS)).toBeNull();
@@ -223,7 +231,7 @@ describe('collectBlogPosts', () => {
     const a2 = post('2', short('b'), { replyTo: '1' });
     const b1 = post('3', short('New'));
     const b2 = post('4', short('b'), { replyTo: '3' });
-    const two = { minPosts: 2, minChars: 99_999 };
+    const two = { minPosts: 2, minStormWords: 0, minWords: 99_999 };
     const ids = collectBlogPosts([a1, a2, b1, b2], AUTHOR, two).posts.map((p) => p.id);
     expect(ids).toEqual(['3', '1']);
   });
@@ -231,13 +239,15 @@ describe('collectBlogPosts', () => {
 
 describe('clampThresholds', () => {
   it('clamps, rounds and falls back to defaults', () => {
-    expect(clampThresholds({ minPosts: 1, minChars: 999_999 })).toEqual({
+    expect(clampThresholds({ minPosts: 1, minWords: 999_999, minStormWords: -5 })).toEqual({
       minPosts: 2,
-      minChars: 50_000,
+      minStormWords: 0,
+      minWords: 20_000,
     });
-    expect(clampThresholds({ minPosts: 4.6, minChars: Number.NaN })).toEqual({
+    expect(clampThresholds({ minPosts: 4.6, minWords: Number.NaN })).toEqual({
       minPosts: 5,
-      minChars: 1250,
+      minStormWords: 80,
+      minWords: 200,
     });
     expect(clampThresholds(null)).toEqual(DEFAULT_BLOG_THRESHOLDS);
   });
@@ -312,11 +322,11 @@ describe('collectAcrossAuthors and commentEstimate', () => {
     const b2 = post('5', short('b'), { account: 'b', replyTo: '4' });
     const b3 = post('6', short('c'), { account: 'b', replyTo: '5' });
     const all = [a1, a2, a3, b1, b2, b3];
-    expect(collectAcrossAuthors(all, DEFAULT_BLOG_THRESHOLDS).posts.map((p) => p.title)).toEqual([
+    expect(collectAcrossAuthors(all, STRUCTURE).posts.map((p) => p.title)).toEqual([
       'Bob storm',
       'A storm',
     ]);
-    const skipped = collectAcrossAuthors(all, DEFAULT_BLOG_THRESHOLDS, new Set([AUTHOR]));
+    const skipped = collectAcrossAuthors(all, STRUCTURE, new Set([AUTHOR]));
     expect(skipped.posts.map((p) => p.title)).toEqual(['Bob storm']);
   });
 
@@ -325,5 +335,65 @@ describe('collectAcrossAuthors and commentEstimate', () => {
     expect(commentEstimate(chain)).toBe(2);
     expect(commentEstimate([{ replies_count: 0 } as Status])).toBe(0);
     expect(commentEstimate([{} as Status, {} as Status])).toBe(0);
+  });
+});
+
+describe('withoutCounters', () => {
+  it.each([
+    ['1/ Why I garden', 'Why I garden'],
+    ['1/7 Why I garden', 'Why I garden'],
+    ['(1/7) Why I garden', 'Why I garden'],
+    ['🧵 Why I garden', 'Why I garden'],
+    ['Why I garden 🧵', 'Why I garden'],
+    ['Why I garden 1/7', 'Why I garden'],
+    ['Why I garden (1/) 👇', 'Why I garden'],
+    ['24/7 support is a myth', '24/7 support is a myth'],
+    ['2/3 of people agree', '2/3 of people agree'],
+    ['1/7', '1/7'],
+    ['🧵', '🧵'],
+  ])('%s → %s', (input, output) => {
+    expect(withoutCounters(input)).toBe(output);
+  });
+
+  it('cleans the title', () => {
+    expect(blogTitle(post('1', short('🧵 1/5 On bees')))).toBe('On bees');
+  });
+});
+
+describe('the word rule (owner, 2026-11-17)', () => {
+  const t = DEFAULT_BLOG_THRESHOLDS;
+  const chain = (...words: number[]) =>
+    words.map((n, i) => post(`w${i}`, long(n), { replyTo: i ? `w${i - 1}` : null }));
+
+  it('one post with lots of words is a blog post', () => {
+    expect(blogReason(chain(250), t)).toBe('long');
+  });
+
+  it('two posts with very few words are not', () => {
+    expect(blogReason(chain(8, 8), t)).toBeNull();
+  });
+
+  it('two or more posts with lots of words are', () => {
+    expect(blogReason(chain(120, 120), t)).toBe('long');
+    expect(blogReason(chain(40, 40, 40), t)).toBe('storm');
+  });
+
+  it('ten posts of five words (a thread of photos) are not', () => {
+    expect(blogReason(chain(5, 5, 5, 5, 5, 5, 5, 5, 5, 5), t)).toBeNull();
+  });
+});
+
+describe('wordCount', () => {
+  it('counts prose, not mentions, links or hashtags', () => {
+    const html =
+      '<p><span class="h-card"><a href="x" class="u-url mention">@<span>alice</span></a></span> ' +
+      'three real words <a href="https://example.com/a/long/path">example.com/a/long/path</a> ' +
+      '<a href="t" class="mention hashtag">#<span>Photo</span></a> #bare @bare@example.social</p>';
+    expect(wordCount([post('1', html)])).toBe(3);
+  });
+
+  it('counts about one word per two characters in Japanese and Chinese', () => {
+    expect(wordCount([post('1', '<p>今日はいい天気です</p>')])).toBe(5);
+    expect(wordCount([post('2', "<p>don't stop-me now</p>")])).toBe(3);
   });
 });

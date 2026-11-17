@@ -4,6 +4,11 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
 
 // i18n blog.settingsLink: Blog settings
+// Shared by the blog list, post page and Roll.
+// i18n blog.meta.posts: {{count}} posts
+// i18n blog.meta.minutes: {{count}} min read
+// i18n blog.untitled: Untitled
+// i18n blog.more: Look further back
 
 /** The gear: Settings › Blog. */
 @Component({

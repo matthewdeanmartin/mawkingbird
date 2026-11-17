@@ -7,8 +7,15 @@
   <div class="ssection">
     <h2>{{ 'settings.blog.rule' | transloco }}</h2>
     <ul class="blog-rule">
-      <li>{{ 'settings.blog.rule.storm' | transloco: { posts: prefs.thresholds().minPosts } }}</li>
-      <li>{{ 'settings.blog.rule.long' | transloco: { chars: prefs.thresholds().minChars } }}</li>
+      <li>{{ 'settings.blog.rule.long' | transloco: { words: prefs.thresholds().minWords } }}</li>
+      <li>
+        {{
+          'settings.blog.rule.storm'
+            | transloco
+              : { posts: prefs.thresholds().minPosts, stormWords: prefs.thresholds().minStormWords }
+        }}
+      </li>
+      <li>{{ 'settings.blog.rule.words' | transloco }}</li>
       <li>{{ 'settings.blog.rule.marked' | transloco }}</li>
       <li>{{ 'settings.blog.rule.conversation' | transloco }}</li>
       <li>{{ 'settings.blog.rule.title' | transloco }}</li>
@@ -34,21 +41,40 @@
     </mb-field>
 
     <mb-field
-      [label]="'settings.blog.minChars' | transloco"
+      [label]="'settings.blog.minStormWords' | transloco"
       [hint]="
-        'settings.blog.minChars.hint'
-          | transloco: { min: limits.minChars.min, max: limits.minChars.max }
+        'settings.blog.minStormWords.hint'
+          | transloco: { min: limits.minStormWords.min, max: limits.minStormWords.max }
       "
     >
       <input
         mbControl
         type="number"
-        name="blog_min_chars"
-        [min]="limits.minChars.min"
-        [max]="limits.minChars.max"
-        step="50"
-        [value]="prefs.thresholds().minChars"
-        (change)="setMinChars($any($event.target).value)"
+        name="blog_min_storm_words"
+        [min]="limits.minStormWords.min"
+        [max]="limits.minStormWords.max"
+        step="10"
+        [value]="prefs.thresholds().minStormWords"
+        (change)="setMinStormWords($any($event.target).value)"
+      />
+    </mb-field>
+
+    <mb-field
+      [label]="'settings.blog.minWords' | transloco"
+      [hint]="
+        'settings.blog.minWords.hint'
+          | transloco: { min: limits.minWords.min, max: limits.minWords.max }
+      "
+    >
+      <input
+        mbControl
+        type="number"
+        name="blog_min_words"
+        [min]="limits.minWords.min"
+        [max]="limits.minWords.max"
+        step="10"
+        [value]="prefs.thresholds().minWords"
+        (change)="setMinWords($any($event.target).value)"
       />
     </mb-field>
 

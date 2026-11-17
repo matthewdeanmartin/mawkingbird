@@ -23,8 +23,10 @@ describe('SettingsBlog', () => {
 
   it('states the rule with the current numbers', async () => {
     const { el } = await render();
+    expect(el.textContent).toContain('at least 200 words');
     expect(el.textContent).toContain('at least 3 posts');
-    expect(el.textContent).toContain('at least 1250 characters');
+    expect(el.textContent).toContain('at least 80 words in all');
+    expect(el.textContent).toContain("Mentions, links and hashtags don't count");
     expect(el.textContent).toContain('BLOG:');
     expect(el.textContent).toContain('content warning is never used as a title');
   });
@@ -36,9 +38,10 @@ describe('SettingsBlog', () => {
     expect(reset.disabled).toBe(true);
 
     change(el.querySelector<HTMLInputElement>('input[name="blog_min_posts"]')!, '5');
-    change(el.querySelector<HTMLInputElement>('input[name="blog_min_chars"]')!, '10');
+    change(el.querySelector<HTMLInputElement>('input[name="blog_min_words"]')!, '10');
+    change(el.querySelector<HTMLInputElement>('input[name="blog_min_storm_words"]')!, '50');
     await fixture.whenStable();
-    expect(prefs.thresholds()).toEqual({ minPosts: 5, minChars: 100 });
+    expect(prefs.thresholds()).toEqual({ minPosts: 5, minStormWords: 50, minWords: 20 });
     expect(el.textContent).toContain('at least 5 posts');
     expect(reset.disabled).toBe(false);
 

@@ -24,10 +24,10 @@ function read(): BlogThresholds {
 export class BlogPrefs {
   private readonly value = signal<BlogThresholds>(read());
   readonly thresholds = this.value.asReadonly();
-  readonly isDefault = computed(
-    () =>
-      this.value().minPosts === DEFAULT_BLOG_THRESHOLDS.minPosts &&
-      this.value().minChars === DEFAULT_BLOG_THRESHOLDS.minChars,
+  readonly isDefault = computed(() =>
+    (Object.keys(DEFAULT_BLOG_THRESHOLDS) as (keyof BlogThresholds)[]).every(
+      (key) => this.value()[key] === DEFAULT_BLOG_THRESHOLDS[key],
+    ),
   );
 
   set(next: Partial<BlogThresholds>): void {

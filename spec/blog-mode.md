@@ -193,3 +193,10 @@ it unless the rail looks empty.
   trends, Just My Server, feed links) are hidden in Blog, Radio and Video.
 - Built: About the author and More from this blog (left), Recently read blogs
   (right, bottom).
+
+## Home › Profiles (owner, 2026-11-17)
+
+Home › Profiles stays in Fedi mode. Reading your feed person by person, like a
+blog, is Native's best experience and belongs front and centre even for people
+who are not looking for long text. Blog's Roll is the long-form cut of the
+same idea, not its replacement.

@@ -12,7 +12,8 @@
 
 .panels {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  /* Two columns at most, so a wide panel is exactly two boxes. */
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
   gap: 1rem;
   margin: 1rem 0;
 }
@@ -63,23 +64,6 @@
   object-fit: cover;
 }
 
-.shed {
-  margin-top: 1rem;
-  color: var(--muted);
-}
-
-.shed summary {
-  cursor: pointer;
-}
-
-.open {
-  display: grid;
-  gap: 0.5rem;
-  justify-items: start;
-  margin-top: 0.75rem;
-  color: var(--fg, inherit);
-}
-
-.open mb-field {
-  width: 100%;
+.wide {
+  grid-column: 1 / -1;
 }

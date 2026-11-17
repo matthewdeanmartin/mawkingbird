@@ -5,7 +5,7 @@
     {
       "file": "ui/src/app/accounts/profile/profile-content-filters.ts",
       "disposition": "adopted scope",
-      "nextStep": "Shared profile content rail and narrow-screen controls use MbPostAction for sampled post-type filters. Preserve keyboard access, clear sampled counts, and bounded Load more behavior; review Storms and News only after their classifiers are defined."
+      "nextStep": "Left-rail widget under the profile card (Rail Card, Post Action toggles), shown only while a profile claims it and the address is a profile, so it never lingers on Home. Rich filters only (articles, links, images, videos, audio, long posts, polls, quotes, code, discussions); the cheap ones stay in the profile header. Kinds with no posts are hidden."
     },
     {
       "file": "ui/src/app/reading/audio-embeds/external-player-host.ts",
@@ -3276,6 +3276,51 @@
       "file": "ui/src/app/settings/network/settings-network.ts",
       "disposition": "adopted scope",
       "nextStep": "Native-only Settings → Network (parity item 5): MbRadioGroup for the proxy mode, MbField/MbControl for host, port and credentials, MbButtons for Save, Refresh and the Tor preset. Preserve that a password is never echoed back and that the page never offers a direct fallback."
+    },
+    {
+      "file": "ui/src/app/blog/blog-header.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Blog Header and Blog Settings Link use Button for the gear shortcut, with icon content and an accessible name, as Radio's header does. Keep the shortcut on every Blog page: what counts as a blog post is a setting, not page copy."
+    },
+    {
+      "file": "ui/src/app/blog/blog-landing.html",
+      "disposition": "adopted scope",
+      "nextStep": "The dashboard uses Blog Header, Button and Field/Control; panels are plain sections and lists. The handle form stays inside a native <details> disclosure on purpose: it is the back-shed feature (owner, 2026-11-17)."
+    },
+    {
+      "file": "ui/src/app/blog/blog-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Content State covers loading, empty and error; Button covers Profile, Write, Look further back and the settings gear. Preserve honest coverage text and the moved-account note."
+    },
+    {
+      "file": "ui/src/app/blog/blog-post-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Content State, Button (including link-variant Reply and Cancel) and the app Compose reply box. The per-part (+) is a routerLink anchor to the thread, not a button. Preserve: no heading or 'no comments' line when there are none."
+    },
+    {
+      "file": "ui/src/app/blog/blog-rail-cards.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Rail Card frames all three Blog widgets; Clear is a link-variant Button with a descriptive accessible name. Widgets render nothing when empty."
+    },
+    {
+      "file": "ui/src/app/blog/blog-roll-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Blog Header, Content State (web explainer, empty) and Button for Look further back; reuses the blog list styles."
+    },
+    {
+      "file": "ui/src/app/blog/blog-search-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Blog Header, Field/Control (hidden label, search role on the form) and Button. Results reuse the blog list styles."
+    },
+    {
+      "file": "ui/src/app/blog/blog-write-panel.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Field/Control for the title and Checkbox for the BLOG: mark and each cross-post target; the verdict is a status line. Owns no state: the body is Write's."
+    },
+    {
+      "file": "ui/src/app/settings/blog/settings-blog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Field/Control number inputs with hints and an outline Button for Reset; the Open Blog link is a link-variant Button."
     }
   ]
 }

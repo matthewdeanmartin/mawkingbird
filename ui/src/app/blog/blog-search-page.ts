@@ -12,6 +12,7 @@ import { BlogHeader } from './blog-header';
 import { BlogPrefs } from './blog-prefs';
 import { BlogPost, blogPostId } from './blog-classifier';
 import { BlogHit, BlogSearch } from './blog-search';
+import { parseBlogHandle } from './blog-source';
 
 // i18n blog.search.title: Search
 // i18n blog.search.label: Search long posts
@@ -27,6 +28,11 @@ import { BlogHit, BlogSearch } from './blog-search';
 // i18n blog.search.kind.long: long post
 // i18n blog.search.kind.marked: blog post
 // i18n blog.search.kind.part: part of a storm
+// i18n blog.search.open: Open a blog by its handle
+// i18n blog.search.handle: Handle
+// i18n blog.search.handle.hint: The full handle, like @alice@example.social.
+// i18n blog.search.handle.go: Open
+// i18n blog.search.handle.invalid: Use the full handle, with the server: @alice@example.social.
 
 /**
  * Search for long-form posts: storms, long posts and `BLOG:` posts
@@ -53,6 +59,25 @@ export class BlogSearchPage {
   protected readonly searched = signal(false);
   protected readonly opened = computed(() => this.search.remembered(this.query()));
   private seq = 0;
+
+  protected readonly handle = signal('');
+  protected readonly invalid = signal(false);
+
+  protected editHandle(value: string): void {
+    this.handle.set(value);
+    this.invalid.set(false);
+  }
+
+  /** The back shed: open a blog by typing its handle. */
+  protected openHandle(event: Event): void {
+    event.preventDefault();
+    const parsed = parseBlogHandle(this.handle());
+    if (!parsed) {
+      this.invalid.set(true);
+      return;
+    }
+    void this.router.navigate(['/blog', `@${parsed.user}@${parsed.host}`]);
+  }
 
   constructor() {
     this.route.queryParamMap.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe((params) => {

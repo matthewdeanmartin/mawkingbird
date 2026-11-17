@@ -119,14 +119,6 @@
 
 .reply {
   margin: 0.25rem 0 0 2.5rem;
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--link, inherit);
-  font: inherit;
-  font-size: 0.85rem;
-  text-decoration: underline;
-  cursor: pointer;
 }
 
 .answering .reply {

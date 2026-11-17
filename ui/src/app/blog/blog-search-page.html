@@ -72,3 +72,29 @@
     </ol>
   </section>
 }
+
+<details class="shed">
+  <summary>{{ 'blog.search.open' | transloco }}</summary>
+  <form class="open" (submit)="openHandle($event)">
+    <mb-field
+      [label]="'blog.search.handle' | transloco"
+      [hint]="'blog.search.handle.hint' | transloco"
+      [error]="invalid() ? ('blog.search.handle.invalid' | transloco) : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        name="blog_handle"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="@alice@example.social"
+        [value]="handle()"
+        (input)="editHandle($any($event.target).value)"
+      />
+    </mb-field>
+    <button mbButton variant="outline" type="submit">
+      {{ 'blog.search.handle.go' | transloco }}
+    </button>
+  </form>
+</details>

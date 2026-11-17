@@ -34,30 +34,32 @@
       }
       <a routerLink="/blog/me">{{ 'blog.landing.mine' | transloco }}</a>
     </section>
-
-    <section class="panel">
-      <h2>{{ 'blog.landing.recent' | transloco }}</h2>
-      @if (recent().length) {
-        <ul class="rows">
-          @for (post of recent(); track post.id) {
-            <li>
-              <a [routerLink]="postLink(post)">{{ post.title || '…' }}</a>
-              <span class="muted">
-                {{ post.root.created_at | date: 'mediumDate' }}
-                · {{ 'blog.landing.comments' | transloco: { count: commentsOf(post) } }}
-              </span>
-            </li>
-          }
-        </ul>
-      } @else if (!loading()) {
-        <p class="muted">{{ 'blog.landing.recent.none' | transloco }}</p>
-      }
-    </section>
   }
 
-  @if (draftRows().length) {
+  @if (hasDrafts()) {
     <section class="panel">
       <h2>{{ 'blog.landing.drafts' | transloco }}</h2>
+      <mb-radio-group
+        class="draft-filter"
+        [label]="'blog.landing.drafts.show' | transloco"
+        [options]="[
+          { value: 'long', label: 'blog.landing.drafts.long' | transloco },
+          { value: 'short', label: 'blog.landing.drafts.short' | transloco },
+          { value: 'all', label: 'blog.landing.drafts.every' | transloco },
+        ]"
+        [value]="draftFilter()"
+        (valueChange)="setDraftFilter($event)"
+      />
+      @if (!draftRows().length) {
+        <p class="muted">
+          {{
+            (draftFilter() === 'long'
+              ? 'blog.landing.drafts.noneLong'
+              : 'blog.landing.drafts.noneShort'
+            ) | transloco
+          }}
+        </p>
+      }
       <ul class="rows">
         @for (draft of draftRows(); track draft.id) {
           <li>
@@ -93,28 +95,24 @@
       <p class="muted">{{ 'blog.landing.read.none' | transloco }}</p>
     }
   </section>
+  @if (mine()) {
+    <section class="panel wide">
+      <h2>{{ 'blog.landing.recent' | transloco }}</h2>
+      @if (recent().length) {
+        <ul class="rows">
+          @for (post of recent(); track post.id) {
+            <li>
+              <a [routerLink]="postLink(post)">{{ post.title || '…' }}</a>
+              <span class="muted">
+                {{ post.root.created_at | date: 'mediumDate' }}
+                · {{ 'blog.landing.comments' | transloco: { count: commentsOf(post) } }}
+              </span>
+            </li>
+          }
+        </ul>
+      } @else if (!loading()) {
+        <p class="muted">{{ 'blog.landing.recent.none' | transloco }}</p>
+      }
+    </section>
+  }
 </div>
-
-<details class="shed">
-  <summary>{{ 'blog.landing.open' | transloco }}</summary>
-  <form class="open" (submit)="open($event)">
-    <mb-field
-      [label]="'blog.landing.handle' | transloco"
-      [hint]="'blog.landing.handle.hint' | transloco"
-      [error]="invalid() ? ('blog.landing.invalid' | transloco) : ''"
-    >
-      <input
-        mbControl
-        type="text"
-        name="blog_handle"
-        autocomplete="off"
-        autocapitalize="off"
-        spellcheck="false"
-        placeholder="@alice@example.social"
-        [value]="handle()"
-        (input)="edit($any($event.target).value)"
-      />
-    </mb-field>
-    <button mbButton variant="outline" type="submit">{{ 'blog.landing.go' | transloco }}</button>
-  </form>
-</details>

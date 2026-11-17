@@ -1,5 +1,11 @@
 <app-profile-stack />
 
+<!-- A profile's rich filters, right under the profile card, only while a
+     profile is the page (it replaces the trending hashtags there). -->
+@if (profileFilters()) {
+  <app-profile-content-filters />
+}
+
 @if (rail.shows('blogAuthor')) {
   <app-blog-author-card />
 }
@@ -58,7 +64,7 @@
   </section>
 }
 
-@if (trends().length && rail.shows('trends')) {
+@if (trends().length && rail.shows('trends') && !profileFilters()) {
   <section mbRailCard class="card">
     <h2 class="card-title">{{ 'shell.left.trendsForYou' | transloco }}</h2>
     @for (tag of trends().slice(0, 10); track tag.name) {

@@ -60,6 +60,8 @@ export interface BlogPager {
   /** Where the posts come from, for the coverage line. */
   readonly kind: 'live' | 'archive';
   next(): Promise<Status[]>;
+  /** Where a live read continues, for the cache; undefined for the archive. */
+  cursor(): string | undefined;
 }
 
 /** Live pages from a server, by `max_id`. */
@@ -200,16 +202,17 @@ export class BlogSource {
     return this.lists()[handle.toLowerCase()] ?? null;
   }
 
-  /** A fresh reader of the author's posts, from the newest. */
-  pager(author: BlogAuthor): BlogPager {
+  /** A reader of the author's posts, from the newest or from a cached `startMaxId`. */
+  pager(author: BlogAuthor, startMaxId?: string): BlogPager {
     const handle = this.archiveHandle();
     if (author.via === 'archive' && handle && this.nativeProfiles) {
       return archivePager(this.nativeProfiles, handle, author.account.id);
     }
-    let maxId: string | undefined;
+    let maxId = startMaxId;
     return {
       stepPages: LIVE_STEP_PAGES,
       kind: 'live',
+      cursor: () => maxId,
       next: async () => {
         const batch = await this.page(author, maxId);
         if (batch.length) {
@@ -261,6 +264,7 @@ export function archivePager(
   return {
     stepPages: ARCHIVE_STEP_PAGES,
     kind: 'archive',
+    cursor: () => undefined,
     next: async () => {
       if (!refreshed) {
         refreshed = true;

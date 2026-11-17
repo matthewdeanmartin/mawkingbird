@@ -36,7 +36,8 @@ describe('BlogWritePanel', () => {
     box.dispatchEvent(new Event('change'));
     expect(emitted).toEqual(['BLOG: Hi\nthere']);
 
-    const storm = await render('A\n---\nB\n---\nC', ['A', 'B', 'C']);
+    const say = 'word '.repeat(30);
+    const storm = await render('A', [say, say, say]);
     expect(storm.el.textContent).toContain('a storm of 3 posts');
   });
 

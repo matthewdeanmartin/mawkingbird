@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbRailCard } from '../design-system/identity/rail-card';
+import { MbButton } from '../design-system/button/button';
 import { CustomEmojiPipe } from '../publishing/custom-emoji.pipe';
 import { accountRoutePath } from '../accounts/account-route';
 import { BlogContext } from './blog-context';
@@ -15,6 +16,7 @@ import { blogPostId, BlogPost } from './blog-classifier';
 // i18n blog.rail.more: More from this blog
 // i18n blog.rail.recent: Recently read blogs
 // i18n blog.rail.clear: Clear
+// i18n blog.rail.clear.aria: Clear the list of recently read blogs
 
 /**
  * Blog mode's rail widgets (spec/blog-mode.md › Rail widgets). Each one only
@@ -24,7 +26,9 @@ import { blogPostId, BlogPost } from './blog-classifier';
 
 const CARD_STYLES = `
   :host { display: block; }
-  h2 { margin: 0 0 0.5rem; font-size: 0.95rem; }
+  /* The rails' own spacing does not reach inside these components. */
+  .card { margin-bottom: 12px; }
+  .card-body { padding: 10px 14px 12px; }
   ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
   .muted { color: var(--muted); }
   .row { display: flex; align-items: center; gap: 0.5rem; min-width: 0; }
@@ -37,34 +41,36 @@ const CARD_STYLES = `
   selector: 'app-blog-author-card',
   imports: [RouterLink, TranslocoPipe, MbRailCard, CustomEmojiPipe],
   template: `
-    @if (context.author(); as author) {
+    @if (otherAuthor(); as author) {
       <section mbRailCard class="card">
-        <h2>{{ 'blog.rail.author' | transloco }}</h2>
-        <div class="row">
-          @if (author.account.avatar) {
-            <img [src]="author.account.avatar_static || author.account.avatar" alt="" />
+        <h2 class="card-title">{{ 'blog.rail.author' | transloco }}</h2>
+        <div class="card-body">
+          <div class="row">
+            @if (author.account.avatar) {
+              <img [src]="author.account.avatar_static || author.account.avatar" alt="" />
+            }
+            <span>
+              <strong>{{ author.account.display_name || author.account.username }}</strong>
+              <br />
+              <span class="muted">&#64;{{ author.handle }}</span>
+            </span>
+          </div>
+          @if (author.account.note) {
+            <div
+              class="note"
+              [innerHTML]="author.account.note | customEmoji: author.account.emojis"
+            ></div>
           }
-          <span>
-            <strong>{{ author.account.display_name || author.account.username }}</strong>
-            <br />
-            <span class="muted">&#64;{{ author.handle }}</span>
-          </span>
+          <p class="links">
+            <a [routerLink]="profileLink()">{{ 'blog.rail.profile' | transloco }}</a>
+            @if (context.postId()) {
+              ·
+              <a [routerLink]="['/blog', '@' + author.handle]">{{
+                'blog.rail.allPosts' | transloco
+              }}</a>
+            }
+          </p>
         </div>
-        @if (author.account.note) {
-          <div
-            class="note"
-            [innerHTML]="author.account.note | customEmoji: author.account.emojis"
-          ></div>
-        }
-        <p class="links">
-          <a [routerLink]="profileLink()">{{ 'blog.rail.profile' | transloco }}</a>
-          @if (context.postId()) {
-            ·
-            <a [routerLink]="['/blog', '@' + author.handle]">{{
-              'blog.rail.allPosts' | transloco
-            }}</a>
-          }
-        </p>
       </section>
     }
   `,
@@ -78,6 +84,13 @@ const CARD_STYLES = `
 })
 export class BlogAuthorCard {
   protected readonly context = inject(BlogContext);
+  private readonly source = inject(BlogSource);
+  /** Nobody needs their own profile card beside their own profile card. */
+  protected readonly otherAuthor = computed(() => {
+    const author = this.context.author();
+    const me = this.source.ownHandle()?.toLowerCase();
+    return author && author.handle.toLowerCase() !== me ? author : null;
+  });
   protected readonly profileLink = computed(() =>
     accountRoutePath({ handle: this.context.author()?.handle ?? '' }),
   );
@@ -90,14 +103,16 @@ export class BlogAuthorCard {
   template: `
     @if (more().length) {
       <section mbRailCard class="card">
-        <h2>{{ 'blog.rail.more' | transloco }}</h2>
-        <ul>
-          @for (post of more(); track post.id) {
-            <li>
-              <a [routerLink]="link(post)">{{ post.title || '…' }}</a>
-            </li>
-          }
-        </ul>
+        <h2 class="card-title">{{ 'blog.rail.more' | transloco }}</h2>
+        <div class="card-body">
+          <ul>
+            @for (post of more(); track post.id) {
+              <li>
+                <a [routerLink]="link(post)">{{ post.title || '…' }}</a>
+              </li>
+            }
+          </ul>
+        </div>
       </section>
     }
   `,
@@ -130,33 +145,43 @@ export class BlogMoreCard {
 /** Right, at the bottom: blogs this account opened lately. */
 @Component({
   selector: 'app-blog-recent-card',
-  imports: [RouterLink, TranslocoPipe, MbRailCard],
+  imports: [RouterLink, TranslocoPipe, MbRailCard, MbButton],
   template: `
     @if (history.visits().length) {
       <section mbRailCard class="card">
-        <h2>{{ 'blog.rail.recent' | transloco }}</h2>
-        <ul>
-          @for (visit of history.visits(); track visit.handle) {
-            <li>
-              <a class="row" [routerLink]="['/blog', '@' + visit.handle]">
-                @if (visit.avatar) {
-                  <img [src]="visit.avatar" alt="" loading="lazy" />
-                }
-                <span>{{ visit.name || '@' + visit.handle }}</span>
-              </a>
-            </li>
-          }
-        </ul>
-        <button type="button" class="clear" (click)="history.clear()">
-          {{ 'blog.rail.clear' | transloco }}
-        </button>
+        <h2 class="card-title">{{ 'blog.rail.recent' | transloco }}</h2>
+        <div class="card-body">
+          <ul>
+            @for (visit of history.visits(); track visit.handle) {
+              <li>
+                <a class="row" [routerLink]="['/blog', '@' + visit.handle]">
+                  @if (visit.avatar) {
+                    <img [src]="visit.avatar" alt="" loading="lazy" />
+                  }
+                  <span>{{ visit.name || '@' + visit.handle }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+          <button
+            mbButton
+            variant="link"
+            size="small"
+            type="button"
+            class="clear"
+            [attr.aria-label]="'blog.rail.clear.aria' | transloco"
+            (click)="history.clear()"
+          >
+            {{ 'blog.rail.clear' | transloco }}
+          </button>
+        </div>
       </section>
     }
   `,
   styles:
     CARD_STYLES +
     `
-    .clear { margin-top: 0.5rem; background: none; border: none; padding: 0; color: var(--muted); cursor: pointer; font: inherit; font-size: 0.8rem; text-decoration: underline; }
+    .clear { margin-top: 0.5rem; }
   `,
 })
 export class BlogRecentCard {

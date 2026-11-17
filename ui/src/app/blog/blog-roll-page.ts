@@ -16,15 +16,12 @@ import { BlogPost, blogPostId, collectAcrossAuthors, readingMinutes } from './bl
 // i18n blog.roll.coverage: Storms and long posts from the latest {{count}} posts by people you follow.
 // i18n blog.roll.coverage.all: Storms and long posts from all {{count}} archived posts by people you follow.
 // i18n blog.roll.collecting: Mawkingbird is still collecting posts from the people you follow, so older posts may be missing.
-// i18n blog.roll.more: Look further back
 // i18n blog.roll.reading: Reading the archive…
 // i18n blog.roll.empty: No storms or long posts yet
 // i18n blog.roll.empty.hint: As the desktop app collects posts from the people you follow, their storms and long posts show up here.
 // i18n blog.roll.native: Roll needs the desktop app
 // i18n blog.roll.native.hint: It reads the archive Mawkingbird Native keeps of everyone you follow. On the web, open a blog from Recently read or from someone's profile.
 // i18n blog.roll.error: Couldn't read the archive.
-// i18n blog.roll.meta.posts: {{count}} posts
-// i18n blog.roll.meta.minutes: {{count}} min read
 
 /** Archive pages per step: 400 posts. The archive pages up to 5,000 deep. */
 const ROLL_STEP_PAGES = 10;

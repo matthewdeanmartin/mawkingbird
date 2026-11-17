@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbField, MbControl } from '../design-system/field/field';
+import { MbCheckbox } from '../design-system/checkbox/checkbox';
 import { BlogPrefs } from './blog-prefs';
 import { blogVerdict, bodyMarked, bodyTitle, withBodyTitle } from './blog-write';
 import { CrossTarget } from './blog-cross-post';
@@ -18,8 +19,8 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
 // i18n blog.write.marked: Mark it with BLOG: so it counts however short it is
 // i18n blog.write.verdict.marked: Counts as a blog post: it starts with BLOG:
 // i18n blog.write.verdict.storm: Counts as a blog post: a storm of {{count}} posts.
-// i18n blog.write.verdict.long: Counts as a blog post: {{count}} characters.
-// i18n blog.write.verdict.no: Not a blog post yet. It needs {{posts}} posts, or {{chars}} characters (now {{count}}), or the BLOG: mark.
+// i18n blog.write.verdict.long: Counts as a blog post: {{count}} words.
+// i18n blog.write.verdict.no: Not a blog post yet ({{count}} words). It needs {{words}} words, or {{posts}} posts with {{stormWords}} words, or the BLOG: mark.
 // i18n blog.write.verdict.empty: Write something to see whether it counts as a blog post.
 // i18n blog.write.view: View on your blog
 // i18n blog.write.also: Also publish to
@@ -35,7 +36,7 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
  */
 @Component({
   selector: 'app-blog-write-panel',
-  imports: [TranslocoPipe, MbField, MbControl],
+  imports: [TranslocoPipe, MbField, MbControl, MbCheckbox],
   template: `
     <section class="blog-write" [attr.aria-label]="'blog.write.heading' | transloco">
       <mb-field
@@ -50,15 +51,12 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
           (input)="setTitle($any($event.target).value)"
         />
       </mb-field>
-      <label class="checkline">
-        <input
-          type="checkbox"
-          name="blog_marked"
-          [checked]="marked()"
-          (change)="setMarked($any($event.target).checked)"
-        />
-        {{ 'blog.write.marked' | transloco }}
-      </label>
+      <mb-checkbox
+        name="blog_marked"
+        [label]="'blog.write.marked' | transloco"
+        [checked]="marked()"
+        (checkedChange)="setMarked($event)"
+      />
       <p class="verdict" [class.yes]="verdict().reason" role="status">
         @switch (verdict().reason) {
           @case ('marked') {
@@ -68,7 +66,7 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
             {{ 'blog.write.verdict.storm' | transloco: { count: verdict().posts } }}
           }
           @case ('long') {
-            {{ 'blog.write.verdict.long' | transloco: { count: verdict().chars } }}
+            {{ 'blog.write.verdict.long' | transloco: { count: verdict().words } }}
           }
           @default {
             @if (verdict().posts) {
@@ -77,8 +75,9 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
                   | transloco
                     : {
                         posts: prefs.thresholds().minPosts,
-                        chars: prefs.thresholds().minChars,
-                        count: verdict().chars,
+                        words: prefs.thresholds().minWords,
+                        stormWords: prefs.thresholds().minStormWords,
+                        count: verdict().words,
                       }
               }}
             } @else {
@@ -91,15 +90,12 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
         <fieldset class="also">
           <legend>{{ 'blog.write.also' | transloco }}</legend>
           @for (target of crossAvailable(); track target) {
-            <label class="checkline">
-              <input
-                type="checkbox"
-                [name]="'blog_cross_' + target"
-                [checked]="crossChosen().includes(target)"
-                (change)="toggleCross(target, $any($event.target).checked)"
-              />
-              {{ labels[target] }}
-            </label>
+            <mb-checkbox
+              [name]="'blog_cross_' + target"
+              [label]="labels[target]"
+              [checked]="crossChosen().includes(target)"
+              (checkedChange)="toggleCross(target, $event)"
+            />
           }
           <p class="hint">{{ 'blog.write.also.hint' | transloco }}</p>
         </fieldset>
@@ -114,11 +110,6 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
       padding: 0.75rem;
       border: 1px solid var(--border);
       border-radius: 8px;
-    }
-    .checkline {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
     }
     .verdict {
       margin: 0;

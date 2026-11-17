@@ -37,9 +37,9 @@
                 post.root.created_at | date: 'mediumDate'
               }}</time>
               @if (post.chain.length > 1) {
-                · {{ 'blog.roll.meta.posts' | transloco: { count: post.chain.length } }}
+                · {{ 'blog.meta.posts' | transloco: { count: post.chain.length } }}
               }
-              · {{ 'blog.roll.meta.minutes' | transloco: { count: minutes(post) } }}
+              · {{ 'blog.meta.minutes' | transloco: { count: minutes(post) } }}
             </p>
             @if (post.excerpt) {
               <p class="excerpt">{{ post.excerpt }}</p>
@@ -61,7 +61,7 @@
   @if (!exhausted() && !loading()) {
     <p class="more">
       <button mbButton variant="outline" type="button" (click)="more()">
-        {{ 'blog.roll.more' | transloco }}
+        {{ 'blog.more' | transloco }}
       </button>
     </p>
   }

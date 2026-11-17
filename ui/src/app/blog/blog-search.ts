@@ -7,7 +7,7 @@ import { Server } from '../platform/http/server';
 import { AnonymousPublicApi } from '../accounts/anonymous/anonymous-public-api';
 import { AnonymousProviderRef } from '../accounts/anonymous/anonymous-mastodon-provider';
 import { readerChain } from '../reading/read/reader-document';
-import { BlogPost, BlogThresholds, blogReason, blogTitle, proseLength } from './blog-classifier';
+import { BlogPost, BlogThresholds, blogReason, blogTitle } from './blog-classifier';
 import { BlogSource } from './blog-source';
 
 /** What a search hit is, as a blog post. */
@@ -132,9 +132,7 @@ export class BlogSearch {
             )
           : await firstValueFrom(this.api.getContext(status.id));
       const chain = readerChain([status, ...context.descendants], status.id);
-      return chain.length >= thresholds.minPosts || proseLength(chain) >= thresholds.minChars
-        ? 'storm'
-        : null;
+      return blogReason(chain, thresholds) ? 'storm' : null;
     } catch {
       return null;
     }

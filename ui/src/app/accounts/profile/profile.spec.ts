@@ -440,16 +440,22 @@ describe('Profile block/unblock', () => {
   it('gives the shared left rail back while detached, so Home keeps its own rail', () => {
     const fixture = setUp();
     fixture.detectChanges();
+    // The filters are a widget in the ordinary left rail now, not a takeover.
     const rails = TestBed.inject(RailOutlet);
-    expect(rails.left()?.labelKey).toBe('pages.profile.content.title');
+    const filters = TestBed.inject(ProfileContentState);
+    expect(rails.left()).toBeNull();
+    expect(filters.active()).toBe(true);
     // ReadingHistory detaches (does not destroy) the profile on navigation.
     fixture.componentInstance.suspendReading();
     fixture.detectChanges();
-    expect(rails.left()).toBeNull();
-    // Back to the profile: its post-type filter returns.
+    expect(filters.active()).toBe(false);
+    // Back to the profile: its filters return.
     fixture.componentInstance.resumeReading();
     fixture.detectChanges();
-    expect(rails.left()?.labelKey).toBe('pages.profile.content.title');
+    expect(filters.active()).toBe(true);
+    // Gone for good once the profile is destroyed.
+    fixture.destroy();
+    expect(filters.active()).toBe(false);
   });
 
   it('blocks an un-blocked account via POST /block and stores the updated relationship', () => {

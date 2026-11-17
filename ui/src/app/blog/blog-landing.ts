@@ -1,15 +1,16 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Status } from '../platform/api/models';
 import { Drafts } from '../publishing/drafts';
 import { MbButton } from '../design-system/button/button';
-import { MbField, MbControl } from '../design-system/field/field';
 import { BlogHeader } from './blog-header';
+import { MbRadioGroup } from '../design-system/radio-group/radio-group';
 import { BlogPrefs } from './blog-prefs';
 import { BlogHistory } from './blog-history';
-import { BlogSource, parseBlogHandle } from './blog-source';
+import { BlogSource } from './blog-source';
+import { BlogCache } from './blog-cache';
 import { BlogPost, blogPostId, collectBlogPosts, commentEstimate } from './blog-classifier';
 import { blogVerdict, bodyTitle } from './blog-write';
 
@@ -31,13 +32,14 @@ import { blogVerdict, bodyTitle } from './blog-write';
 // i18n blog.landing.drafts.notYet: not a blog post yet
 // i18n blog.landing.drafts.untitled: Untitled draft
 // i18n blog.landing.drafts.all: All drafts
+// i18n blog.landing.drafts.show: Show
+// i18n blog.landing.drafts.long: Long
+// i18n blog.landing.drafts.short: Short
+// i18n blog.landing.drafts.every: All
+// i18n blog.landing.drafts.noneLong: No long drafts. Short ones are under Short.
+// i18n blog.landing.drafts.noneShort: No short drafts.
 // i18n blog.landing.read: Recently read
 // i18n blog.landing.read.none: Blogs you open show up here.
-// i18n blog.landing.open: Open a blog by its handle
-// i18n blog.landing.handle: Handle
-// i18n blog.landing.handle.hint: The full handle, like @alice@example.social.
-// i18n blog.landing.go: Open
-// i18n blog.landing.invalid: Use the full handle, with the server: @alice@example.social.
 
 /** How many of your blog posts and drafts the dashboard lists. */
 const LIST = 5;
@@ -45,24 +47,22 @@ const LIST = 5;
 /**
  * Blog mode's front room: a dashboard, like WordPress's. Your blog at a glance,
  * your recent posts with their comments, drafts that are close, and the blogs
- * you read. Typing a handle is a back-shed feature (owner, 2026-11-17): it is
- * here, folded away at the bottom.
+ * you read. Typing a handle is a back-shed feature (owner, 2026-11-17): it
+ * lives on Search.
  */
 @Component({
   selector: 'app-blog-landing',
-  imports: [DatePipe, RouterLink, TranslocoPipe, MbButton, MbField, MbControl, BlogHeader],
+  imports: [DatePipe, RouterLink, TranslocoPipe, MbButton, MbRadioGroup, BlogHeader],
   templateUrl: './blog-landing.html',
   styleUrl: './blog-landing.css',
 })
 export class BlogLanding implements OnInit {
-  private readonly router = inject(Router);
   private readonly source = inject(BlogSource);
   private readonly prefs = inject(BlogPrefs);
   private readonly drafts = inject(Drafts);
+  private readonly cache = inject(BlogCache);
   protected readonly history = inject(BlogHistory);
 
-  protected readonly handle = signal('');
-  protected readonly invalid = signal(false);
   protected readonly mine = computed(() => this.source.ownHandle());
 
   protected readonly loading = signal(false);
@@ -79,17 +79,34 @@ export class BlogLanding implements OnInit {
     this.posts().reduce((sum, post) => sum + commentEstimate(post.chain), 0),
   );
 
-  /** Drafts, newest first, with whether each would count as a blog post. */
-  protected readonly draftRows = computed(() =>
+  /**
+   * Long, short or all. Drafts hold microblog posts too, so the dashboard
+   * starts on the ones that would count as blog posts (owner, 2026-11-17).
+   */
+  protected readonly draftFilter = signal<'long' | 'short' | 'all'>('long');
+  private readonly allDrafts = computed(() =>
     [...this.drafts.drafts()]
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-      .slice(0, LIST)
       .map((draft) => ({
         id: draft.id,
         title: bodyTitle(draft.segments[0] ?? ''),
         ready: blogVerdict(draft.segments, this.prefs.thresholds()).reason !== null,
       })),
   );
+  protected readonly hasDrafts = computed(() => this.allDrafts().length > 0);
+  /** Drafts, newest first, with whether each would count as a blog post. */
+  protected readonly draftRows = computed(() => {
+    const filter = this.draftFilter();
+    return this.allDrafts()
+      .filter((draft) => filter === 'all' || draft.ready === (filter === 'long'))
+      .slice(0, LIST);
+  });
+
+  protected setDraftFilter(value: string): void {
+    if (value === 'long' || value === 'short' || value === 'all') {
+      this.draftFilter.set(value);
+    }
+  }
 
   ngOnInit(): void {
     const handle = this.mine();
@@ -112,36 +129,39 @@ export class BlogLanding implements OnInit {
     return id ? ['/blog', `@${handle}`, id] : ['/blog/me'];
   }
 
-  protected edit(value: string): void {
-    this.handle.set(value);
-    this.invalid.set(false);
-  }
-
-  protected open(event: Event): void {
-    event.preventDefault();
-    const parsed = parseBlogHandle(this.handle());
-    if (!parsed) {
-      this.invalid.set(true);
-      return;
-    }
-    void this.router.navigate(['/blog', `@${parsed.user}@${parsed.host}`]);
-  }
-
   /** One step of your own posts: enough for a glance, not a full read. */
   private async loadOwn(handle: string): Promise<void> {
     this.loading.set(true);
     try {
+      // Shared with your blog page, so Desk and Mine read your posts once.
+      const cached = await this.cache.get(handle);
+      if (cached) {
+        this.authorId.set(cached.author.account.id);
+        this.statuses.set(cached.statuses);
+        this.source.remember(cached.author.handle, this.posts());
+        return;
+      }
       const author = await this.source.resolve(handle);
       this.authorId.set(author.account.id);
       const pager = this.source.pager(author);
+      let exhausted = false;
       for (let page = 0; page < pager.stepPages; page++) {
         const batch = await pager.next();
         if (!batch.length) {
+          exhausted = true;
           break;
         }
         this.statuses.update((list) => [...list, ...batch]);
       }
       this.source.remember(author.handle, this.posts());
+      if (pager.kind === 'live' && this.statuses().length) {
+        void this.cache.put(author.handle, {
+          author,
+          statuses: this.statuses(),
+          exhausted,
+          maxId: pager.cursor(),
+        });
+      }
     } catch {
       this.failed.set(true);
     } finally {

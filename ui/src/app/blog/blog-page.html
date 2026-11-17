@@ -42,12 +42,25 @@
           <p class="handle">&#64;{{ author.handle }}</p>
         </div>
         <nav class="head-links">
+          @if (isMine()) {
+            <a mbButton size="small" routerLink="/write">{{ 'blog.page.write' | transloco }}</a>
+          }
           <a mbButton variant="outline" size="small" [routerLink]="profileLink()">{{
             'blog.page.profile' | transloco
           }}</a>
           <app-blog-settings-link />
         </nav>
       </header>
+
+      @if (movedTo(); as moved) {
+        <p class="note" role="note">
+          {{
+            'blog.page.moved'
+              | transloco: { name: author.account.display_name || author.account.username }
+          }}
+          <a [routerLink]="['/blog', '@' + moved]">{{ 'blog.page.moved.go' | transloco }}</a>
+        </p>
+      }
 
       @if (author.via === 'local') {
         <p class="note">{{ 'blog.page.via.local' | transloco: { host: host() } }}</p>
@@ -75,7 +88,7 @@
               <article>
                 <h2>
                   <a [routerLink]="postLink(post)">{{
-                    post.title || ('blog.page.untitled' | transloco)
+                    post.title || ('blog.untitled' | transloco)
                   }}</a>
                 </h2>
                 <p class="meta">
@@ -83,9 +96,9 @@
                     post.root.created_at | date: 'mediumDate'
                   }}</time>
                   @if (post.chain.length > 1) {
-                    · {{ 'blog.page.meta.posts' | transloco: { count: post.chain.length } }}
+                    · {{ 'blog.meta.posts' | transloco: { count: post.chain.length } }}
                   }
-                  · {{ 'blog.page.meta.minutes' | transloco: { count: minutes(post) } }}
+                  · {{ 'blog.meta.minutes' | transloco: { count: minutes(post) } }}
                   @if (post.partial) {
                     · {{ 'blog.page.meta.continued' | transloco }}
                   }
@@ -113,7 +126,7 @@
       @if (!exhausted() && !loading()) {
         <p class="more">
           <button mbButton variant="outline" type="button" (click)="more()">
-            {{ 'blog.page.more' | transloco }}
+            {{ 'blog.more' | transloco }}
           </button>
         </p>
       }

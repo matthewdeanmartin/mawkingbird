@@ -73,13 +73,13 @@ describe('BlogRollPage', () => {
   it("lists followed people's storms and long posts, never your own", async () => {
     const storm = [
       post('10', ann, '<p>Ann storm</p>'),
-      post('11', ann, '<p>b</p>', '10'),
-      post('12', ann, '<p>c</p>', '11'),
+      post('11', ann, `<p>${'word '.repeat(40)}</p>`, '10'),
+      post('12', ann, `<p>${'word '.repeat(40)}</p>`, '11'),
     ];
     const mine = [
       post('20', me, '<p>My storm</p>'),
-      post('21', me, '<p>b</p>', '20'),
-      post('22', me, '<p>c</p>', '21'),
+      post('21', me, `<p>${'word '.repeat(40)}</p>`, '20'),
+      post('22', me, `<p>${'word '.repeat(40)}</p>`, '21'),
     ];
     const long = post('30', bob, `<p>Bob essay<br>${'word '.repeat(300)}</p>`);
     peoplePosts.mockResolvedValueOnce({

@@ -6,6 +6,7 @@ import { Account, Status } from '../platform/api/models';
 import { BlogPage } from './blog-page';
 import { LIVE_STEP_PAGES } from './blog-source';
 import { BlogAuthor, BlogSource } from './blog-source';
+import { BlogCache } from './blog-cache';
 
 const account = {
   id: '7',
@@ -54,6 +55,7 @@ describe('BlogPage', () => {
       stepPages: LIVE_STEP_PAGES,
       kind: pagerKind,
       next: () => source.page(author),
+      cursor: () => undefined,
     }));
     params = new BehaviorSubject(convertToParamMap({ handle: '@alice@far.example' }));
     data = {};
@@ -90,8 +92,8 @@ describe('BlogPage', () => {
   it('lists storms and long posts, newest first, and links them to their pages', async () => {
     const storm = [
       post('1', '<p>On bees<br>Bees dance.</p>'),
-      post('2', '<p>Two</p>', '1'),
-      post('3', '<p>Three</p>', '2'),
+      post('2', `<p>Two ${'word '.repeat(40)}</p>`, '1'),
+      post('3', `<p>Three ${'word '.repeat(40)}</p>`, '2'),
     ];
     const chatter = post('4', '<p>Lunch was good</p>');
     const essay = post('5', `<p>A long one<br>${'word '.repeat(300)}</p>`);
@@ -139,6 +141,30 @@ describe('BlogPage', () => {
     const { el } = await render();
     expect(el.textContent).toContain('Blog posts from all 1 archived posts');
     expect(el.textContent).not.toContain('Read through your own server');
+  });
+
+  it('points a moved account to its new blog, and offers Write on your own', async () => {
+    const moved = { ...account, acct: 'alice@new.example', url: 'https://new.example/@alice' };
+    source.resolve.mockResolvedValue({ ...author, account: { ...account, moved } });
+    source.page.mockResolvedValue([]);
+    source.ownHandle.mockReturnValue('Alice@far.example');
+    const { el } = await render();
+    expect(el.textContent).toContain('Alice has moved to a new account.');
+    expect(el.querySelector('a[href="/blog/@alice@new.example"]')).not.toBeNull();
+    expect(el.querySelector('.head-links a[href="/write"]')).not.toBeNull();
+  });
+
+  it('opens a blog read in the last four hours without a request, and saves new reads', async () => {
+    const cached = post('1', `<p>Cached essay<br>${'word '.repeat(300)}</p>`);
+    await TestBed.inject(BlogCache).put('alice@far.example', {
+      author,
+      statuses: [cached],
+      exhausted: true,
+    });
+    const { el } = await render();
+    expect(source.resolve).not.toHaveBeenCalled();
+    expect(source.page).not.toHaveBeenCalled();
+    expect(el.querySelector('article h2 a')?.textContent?.trim()).toBe('Cached essay');
   });
 
   it('explains a handle without a server', async () => {

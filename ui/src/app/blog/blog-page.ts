@@ -9,9 +9,11 @@ import { MbContentState } from '../design-system/content-state/content-state';
 import { BlogSettingsLink } from './blog-header';
 import { readerRouteId } from '../reading/read/reader-route-id';
 import { accountRoutePath } from '../accounts/account-route';
+import { qualifiedHandle } from '../accounts/account-handle';
 import { BlogPost, blogPostId, collectBlogPosts, readingMinutes } from './blog-classifier';
 import { BlogPrefs } from './blog-prefs';
-import { BlogAuthor, BlogPager, BlogSource } from './blog-source';
+import { BlogAuthor, BlogPager, BlogSource, parseBlogHandle } from './blog-source';
+import { BlogCache } from './blog-cache';
 import { BlogContext } from './blog-context';
 import { BlogHistory } from './blog-history';
 
@@ -21,11 +23,10 @@ import { BlogHistory } from './blog-history';
 // i18n blog.page.coverage.all: Blog posts from all {{count}} public posts.
 // i18n blog.page.coverage.archive: Blog posts from {{count}} archived posts.
 // i18n blog.page.coverage.archiveAll: Blog posts from all {{count}} archived posts; the server has no older ones.
-// i18n blog.page.more: Look further back
 // i18n blog.page.profile: Profile
-// i18n blog.page.untitled: Untitled
-// i18n blog.page.meta.posts: {{count}} posts
-// i18n blog.page.meta.minutes: {{count}} min read
+// i18n blog.page.moved: {{name}} has moved to a new account.
+// i18n blog.page.moved.go: Open the new blog
+// i18n blog.page.write: Write a post
 // i18n blog.page.meta.continued: continues an older post
 // i18n blog.page.via.local: Read through your own server, which may not have every post. {{host}} does not share posts publicly.
 // i18n blog.page.empty: No blog posts yet
@@ -62,6 +63,7 @@ export class BlogPage {
   private readonly destroyRef = inject(DestroyRef);
   private readonly context = inject(BlogContext);
   private readonly history = inject(BlogHistory);
+  private readonly cache = inject(BlogCache);
 
   protected readonly handle = signal('');
   protected readonly author = signal<BlogAuthor | null>(null);
@@ -85,6 +87,15 @@ export class BlogPage {
   protected readonly posts = computed(() => this.scan().posts);
   protected readonly host = computed(() => this.handle().split('@')[1] ?? '');
   protected readonly profileLink = computed(() => accountRoutePath({ handle: this.handle() }));
+  /** Your own blog gets a Write button; nobody else's does. */
+  protected readonly isMine = computed(
+    () => this.source.ownHandle()?.toLowerCase() === this.handle().toLowerCase(),
+  );
+  /** Where a moved account went, as a blog address. */
+  protected readonly movedTo = computed(() => {
+    const moved = this.author()?.account.moved;
+    return moved ? qualifiedHandle(moved) : null;
+  });
 
   /** Guards against a slow answer for the blog the reader already left. */
   private generation = 0;
@@ -140,6 +151,21 @@ export class BlogPage {
     }
     this.error.set(null);
     this.loading.set(true);
+    // A blog read in the last four hours opens without a request.
+    const parsed = parseBlogHandle(handle);
+    const cached = parsed ? await this.cache.get(`${parsed.user}@${parsed.host}`) : null;
+    if (generation !== this.generation) {
+      return;
+    }
+    if (cached) {
+      this.show(cached.author);
+      this.statuses.set(cached.statuses);
+      this.exhausted.set(cached.exhausted);
+      this.pager = this.source.pager(cached.author, cached.maxId);
+      this.kind.set(this.pager.kind);
+      this.loading.set(false);
+      return;
+    }
     let author: BlogAuthor;
     try {
       author = await this.source.resolve(handle);
@@ -153,6 +179,11 @@ export class BlogPage {
     if (generation !== this.generation) {
       return;
     }
+    this.show(author);
+    await this.step(author, generation);
+  }
+
+  private show(author: BlogAuthor): void {
     this.handle.set(author.handle);
     this.author.set(author);
     this.context.show(author);
@@ -161,7 +192,6 @@ export class BlogPage {
       name: author.account.display_name || author.account.username,
       avatar: author.account.avatar_static || author.account.avatar || '',
     });
-    await this.step(author, generation);
   }
 
   /** Read one step's worth of pages, showing posts as they come. */
@@ -193,7 +223,21 @@ export class BlogPage {
     } finally {
       if (generation === this.generation) {
         this.loading.set(false);
+        this.save(author);
       }
     }
+  }
+
+  /** Remember what was read; the archive is local already, so only live reads. */
+  private save(author: BlogAuthor): void {
+    if (this.pager?.kind !== 'live' || !this.statuses().length) {
+      return;
+    }
+    void this.cache.put(author.handle, {
+      author,
+      statuses: this.statuses(),
+      exhausted: this.exhausted(),
+      maxId: this.pager.cursor(),
+    });
   }
 }

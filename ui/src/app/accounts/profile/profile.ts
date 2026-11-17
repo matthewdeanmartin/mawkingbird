@@ -150,12 +150,7 @@ import { describeHttpError, PageDiagnostics } from '../../platform/diagnostics/p
 import { FollowLanguagesDialog } from './follow-languages-dialog';
 import { RenderedHtmlLinks } from '../rendered-html-links';
 import { NATIVE_PROFILES } from '../../platform/session/platform-login';
-import { RailOutlet } from '../../shell/rail-outlet';
-import {
-  ProfileContentFilters,
-  ProfileContentState,
-  matchesProfileContent,
-} from './profile-content-filters';
+import { ProfileContentState } from './profile-content-filters';
 
 /** Profile body tabs: the account's posts, who they follow, who follows them. */
 type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' | 'analytics';
@@ -360,7 +355,6 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     NgOptimizedImage,
     CopyAccountDialog,
     RenderedHtmlLinks,
-    ProfileContentFilters,
     ProfileMediaGrid,
     ProfilePhotoView,
   ],
@@ -1111,7 +1105,7 @@ export class Profile implements OnInit, OnDestroy {
       (post) =>
         (!native ||
           ((this.showBoosts() || !post.reblog) && (this.showReplies() || !post.in_reply_to_id))) &&
-        matchesProfileContent(post, kind),
+        this.profileContent.matches(post, kind),
     );
     if (!this.showPinned()) {
       return matches;
@@ -1179,8 +1173,6 @@ export class Profile implements OnInit, OnDestroy {
       !this.isTwitter()
     );
   });
-  private readonly railOutlet = inject(RailOutlet);
-  private contentRailActive = false;
   private contentAccount: string | null = null;
   protected readonly contentRailEnabled = computed(
     () =>
@@ -1220,15 +1212,15 @@ export class Profile implements OnInit, OnDestroy {
         this.profileContent.selected.set('all');
         this.contentAccount = key;
       }
-      this.profileContent.posts.set(enabled ? posts : []);
-      if (enabled && !this.contentRailActive) {
-        this.railOutlet.show(this, {
-          left: { component: ProfileContentFilters, labelKey: 'pages.profile.content.title' },
-        });
-        this.contentRailActive = true;
-      } else if (!enabled && this.contentRailActive) {
-        this.railOutlet.release(this);
-        this.contentRailActive = false;
+      // A widget in the ordinary left rail, under the profile card; the rail
+      // also checks it is on a profile address, so it never lingers.
+      if (enabled) {
+        this.profileContent.claim(this);
+        this.profileContent.posts.set(posts);
+        this.profileContent.accountId.set(account?.id ?? null);
+        this.profileContent.archived.set(this.nativeArchiveMode());
+      } else {
+        this.profileContent.release(this);
       }
     });
   });
@@ -1491,7 +1483,7 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.railOutlet.release(this);
+    this.profileContent.release(this);
     this.routeLoadSub.unsubscribe();
     this.statusLoadSub.unsubscribe();
     this.mediaSub.unsubscribe();

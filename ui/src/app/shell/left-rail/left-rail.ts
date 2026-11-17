@@ -6,8 +6,14 @@ import { MbIdentityRow } from '../../design-system/identity/identity-row';
 import { MbButton } from '../../design-system/button/button';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { RailWidgets } from '../rail-widgets';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
+import {
+  ProfileContentFilters,
+  ProfileContentState,
+} from '../../accounts/profile/profile-content-filters';
 import { BlogAuthorCard, BlogMoreCard } from '../../blog/blog-rail-cards';
-import { RouterLink } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AccountPreview } from '../../accounts/account-hover-card/account-preview';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
@@ -50,6 +56,7 @@ function accountKey(account: Account): string {
 @Component({
   selector: 'app-left-rail',
   imports: [
+    ProfileContentFilters,
     BlogAuthorCard,
     BlogMoreCard,
     MbButton,
@@ -80,6 +87,23 @@ export class LeftRail implements OnInit {
   protected followed = signal<Set<string>>(new Set());
   protected trends = signal<Tag[]>([]);
   protected readonly rail = inject(RailWidgets);
+  private readonly router = inject(Router);
+  private readonly profileContent = inject(ProfileContentState);
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+  /**
+   * The profile filters, on a profile address only. Belt and braces with the
+   * profile's own claim/release: a profile kept alive in the background can
+   * never leave its widget on Home.
+   */
+  protected readonly profileFilters = computed(
+    () => this.profileContent.active() && /^\/accounts\//.test(this.url() ?? ''),
+  );
   /** Not fetched at all where the mode hides them (Blog). */
   private readonly wantsTrends = computed(() => this.rail.shows('trends'));
 

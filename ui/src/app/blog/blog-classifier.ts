@@ -14,10 +14,13 @@ import { plainText } from '../discovery/search/search-refine';
  * A blog post is one of the author's own **chains** — a root post plus every
  * public reply the author made to a post already in the chain — that is:
  *
- * - a **storm** of at least `minPosts` posts, or
- * - at least `minChars` characters of prose across the chain (a single long
- *   post is a chain of one), or
+ * - **long**: at least `minWords` words across the chain, one post or many, or
+ * - a **storm**: at least `minPosts` posts *and* at least `minStormWords`
+ *   words, so ten photo captions of five words each are not a blog post, or
  * - **marked**: the root's first line starts with `BLOG:`.
+ *
+ * Words are counted from the prose: mentions, links and hashtags do not count
+ * (owner, 2026-11-17: words, not characters).
  *
  * A chain that starts as a reply to somebody else is a conversation, not a
  * blog post, unless it is marked. The author's side-replies to other people
@@ -32,16 +35,23 @@ import { plainText } from '../discovery/search/search-refine';
 export interface BlogThresholds {
   /** Posts in a chain that make it a storm. */
   minPosts: number;
-  /** Characters of prose that make a chain long enough on its own. */
-  minChars: number;
+  /** Words a storm needs as well, so a thread of captioned photos is not one. */
+  minStormWords: number;
+  /** Words that make any post or chain long enough on its own. */
+  minWords: number;
 }
 
-export const DEFAULT_BLOG_THRESHOLDS: BlogThresholds = { minPosts: 3, minChars: 1250 };
+export const DEFAULT_BLOG_THRESHOLDS: BlogThresholds = {
+  minPosts: 3,
+  minStormWords: 80,
+  minWords: 200,
+};
 
 /** Bounds for the settings fields; values outside are clamped, not rejected. */
 export const BLOG_THRESHOLD_LIMITS = {
   minPosts: { min: 2, max: 100 },
-  minChars: { min: 100, max: 50_000 },
+  minStormWords: { min: 0, max: 5_000 },
+  minWords: { min: 20, max: 20_000 },
 } as const;
 
 /** Why a chain counts. The first that applies, in this order. */
@@ -123,9 +133,21 @@ function shorten(text: string, max: number): string {
   return (space > max * 0.6 ? cut.slice(0, space) : cut).trimEnd() + '…';
 }
 
+/** A storm's own bookkeeping: `1/`, `1/7`, `(1/7)` and thread emoji. Only `1`: the root is part one. */
+const LEADING_COUNTER =
+  /^(?:(?:🧵|👇|⬇)️?\s*)*(?:\(?1\s*\/\s*\d{0,3}\)?[.:]?\s+)?(?:(?:🧵|👇|⬇)️?\s*)*/u;
+const TRAILING_COUNTER = /(?:\s+\(?1\s*\/\s*\d{0,3}\)?)?(?:\s*(?:🧵|👇|⬇)️?)*\s*$/u;
+
+/** A title line without the storm's counters, unless that would leave nothing. */
+export function withoutCounters(line: string): string {
+  const clean = line.replace(LEADING_COUNTER, '').replace(TRAILING_COUNTER, '').trim();
+  return clean || line.trim();
+}
+
 /**
- * The title: the root's first line without the marker. A marker alone on its
- * line hands the title to the next line. Empty when the post has no text.
+ * The title: the root's first line without the marker or a storm counter. A
+ * marker alone on its line hands the title to the next line. Empty when the
+ * post has no text.
  */
 export function blogTitle(root: Status): string {
   const lines = textLines(root.content ?? '');
@@ -133,12 +155,35 @@ export function blogTitle(root: Status): string {
     return '';
   }
   const first = lines[0].replace(MARKER, '').trim();
-  return shorten(first || (lines[1] ?? ''), TITLE_CHARS);
+  return shorten(withoutCounters(first || (lines[1] ?? '')), TITLE_CHARS);
 }
 
 /** Prose across a chain, markup excluded, the same measure the reader uses. */
 export function proseLength(chain: Status[]): number {
   return chain.reduce((total, post) => total + plainText(post.content ?? '').length, 0);
+}
+
+/** Links, @mentions and #hashtags: not words anyone wrote as prose. */
+const NOT_PROSE = /(?:https?:\/\/\S+|[@#][\p{L}\p{N}_.@-]+)/gu;
+/** Scripts written without spaces between words. */
+const UNSPACED = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/gu;
+
+/**
+ * Words of prose in a chain. Spaced scripts count runs of letters or digits;
+ * Chinese and Japanese, written without spaces, count about one word per two
+ * characters.
+ */
+export function wordCount(chain: Status[]): number {
+  let words = 0;
+  for (const post of chain) {
+    // Mastodon wraps links, mentions and hashtags in <a>; drop them whole.
+    const html = (post.content ?? '').replace(/<a\b[^>]*>[\s\S]*?<\/a>/gi, ' ');
+    const text = plainText(html).replace(NOT_PROSE, ' ');
+    const unspaced = text.match(UNSPACED)?.length ?? 0;
+    words += Math.ceil(unspaced / 2);
+    words += text.replace(UNSPACED, ' ').match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu)?.length ?? 0;
+  }
+  return words;
 }
 
 /** Whole minutes to read, never less than one. */
@@ -178,7 +223,11 @@ export function clampThresholds(value: Partial<BlogThresholds> | null | undefine
     const { min, max } = BLOG_THRESHOLD_LIMITS[key];
     return Math.min(max, Math.max(min, Math.round(raw)));
   };
-  return { minPosts: pick('minPosts'), minChars: pick('minChars') };
+  return {
+    minPosts: pick('minPosts'),
+    minStormWords: pick('minStormWords'),
+    minWords: pick('minWords'),
+  };
 }
 
 /** Why a chain counts as a blog post, or null when it does not. */
@@ -189,10 +238,11 @@ export function blogReason(chain: Status[], thresholds: BlogThresholds): BlogPos
   if (hasBlogMarker(chain[0])) {
     return 'marked';
   }
-  if (chain.length >= thresholds.minPosts) {
+  const words = wordCount(chain);
+  if (chain.length >= thresholds.minPosts && words >= thresholds.minStormWords) {
     return 'storm';
   }
-  if (proseLength(chain) >= thresholds.minChars) {
+  if (words >= thresholds.minWords) {
     return 'long';
   }
   return null;

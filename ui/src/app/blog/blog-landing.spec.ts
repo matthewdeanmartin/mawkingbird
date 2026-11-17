@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Status } from '../platform/api/models';
 import { Draft, Drafts } from '../publishing/drafts';
@@ -58,11 +58,9 @@ describe('BlogLanding (the dashboard)', () => {
     const { el } = await render();
     expect(el.querySelector('h1')?.textContent).toContain('Blog');
     expect(el.querySelector('a[href="/settings/blog"]')).not.toBeNull();
-    expect(el.textContent).not.toContain('1250');
-    // The handle form is folded away in the back shed.
-    const shed = el.querySelector('details.shed') as HTMLDetailsElement;
-    expect(shed.open).toBe(false);
-    expect(shed.querySelector('input[name="blog_handle"]')).not.toBeNull();
+    expect(el.textContent).not.toContain('words');
+    // Typing a handle lives on Search now, not on the front door.
+    expect(el.querySelector('input[name="blog_handle"]')).toBeNull();
     expect(source.resolve).not.toHaveBeenCalled();
   });
 
@@ -71,28 +69,34 @@ describe('BlogLanding (the dashboard)', () => {
     source.resolve.mockResolvedValue({ handle: 'me@home.example', account: me, via: 'local' });
     const storm = [
       post('1', '<p>Bees</p>', null, 3),
-      post('2', '<p>b</p>', '1', 1),
-      post('3', '<p>c</p>', '2'),
+      post('2', `<p>${'word '.repeat(40)}</p>`, '1', 1),
+      post('3', `<p>${'word '.repeat(40)}</p>`, '2'),
     ];
     const pages = [[...storm].reverse()];
     source.pager.mockReturnValue({
       stepPages: LIVE_STEP_PAGES,
       kind: 'live',
       next: async () => pages.shift() ?? [],
+      cursor: () => undefined,
     });
     drafts.set([
       { id: 'd1', updatedAt: '2026-11-01', segments: ['Almost\nthere'] } as Draft,
       { id: 'd2', updatedAt: '2026-11-02', segments: ['BLOG: Ready'] } as Draft,
     ]);
-    const { el } = await render();
+    const { fixture, el } = await render();
     expect(el.textContent).toContain('1 blog posts in your latest 3 posts');
     expect(el.textContent).toContain('2 comments on them');
     const recent = el.querySelector('a[href="/blog/@me@home.example/1"]');
     expect(recent?.textContent?.trim()).toBe('Bees');
     expect(el.textContent).toContain('2 comments');
-    const draftLinks = [...el.querySelectorAll('a[href^="/write?draft="]')];
-    expect(draftLinks.map((a) => a.textContent?.trim())).toEqual(['Ready', 'Almost']);
-    expect(el.textContent).toContain('ready to post as a blog post');
+    const draftTitles = () =>
+      [...el.querySelectorAll('a[href^="/write?draft="]')].map((a) => a.textContent?.trim());
+    // Long by default: drafts that would count as blog posts.
+    expect(draftTitles()).toEqual(['Ready']);
+    const all = el.querySelector<HTMLInputElement>('.draft-filter input[value="all"]')!;
+    all.click();
+    fixture.detectChanges();
+    expect(draftTitles()).toEqual(['Ready', 'Almost']);
     expect(el.textContent).toContain('not a blog post yet');
   });
 
@@ -101,22 +105,5 @@ describe('BlogLanding (the dashboard)', () => {
     TestBed.inject(BlogHistory).record({ handle: 'a@far.example', name: 'Alice', avatar: '' });
     const { el } = await render();
     expect(el.querySelector('a[href="/blog/@a@far.example"]')?.textContent).toContain('Alice');
-  });
-
-  it('opens a full handle from the back shed and rejects a bare one', async () => {
-    source.ownHandle.mockReturnValue(null);
-    const { fixture, el } = await render();
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    const input = el.querySelector<HTMLInputElement>('input[name="blog_handle"]')!;
-    const form = el.querySelector('form')!;
-    input.value = '@alice';
-    input.dispatchEvent(new Event('input'));
-    form.dispatchEvent(new Event('submit'));
-    await fixture.whenStable();
-    expect(navigate).not.toHaveBeenCalled();
-    input.value = 'Alice@Far.Example';
-    input.dispatchEvent(new Event('input'));
-    form.dispatchEvent(new Event('submit'));
-    expect(navigate).toHaveBeenCalledWith(['/blog', '@Alice@far.example']);
   });
 });

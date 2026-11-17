@@ -17,15 +17,25 @@ describe('BlogPrefs', () => {
   });
 
   it('clamps, saves and reads back', () => {
-    TestBed.inject(BlogPrefs).set({ minPosts: 1, minChars: 2000 });
+    TestBed.inject(BlogPrefs).set({ minPosts: 1, minWords: 2000 });
     expect(JSON.parse(localStorage.getItem('mockingbird_blog_prefs')!)).toEqual({
       minPosts: 2,
-      minChars: 2000,
+      minStormWords: 80,
+      minWords: 2000,
     });
     TestBed.resetTestingModule();
     const again = TestBed.inject(BlogPrefs);
-    expect(again.thresholds()).toEqual({ minPosts: 2, minChars: 2000 });
+    expect(again.thresholds()).toEqual({ minPosts: 2, minStormWords: 80, minWords: 2000 });
     expect(again.isDefault()).toBe(false);
+  });
+
+  it('reads a value saved before words replaced characters, keeping the posts', () => {
+    localStorage.setItem('mockingbird_blog_prefs', '{"minPosts":4,"minChars":1250}');
+    expect(TestBed.inject(BlogPrefs).thresholds()).toEqual({
+      minPosts: 4,
+      minStormWords: 80,
+      minWords: 200,
+    });
   });
 
   it('ignores a corrupt stored value', () => {
@@ -49,7 +59,7 @@ describe('BlogPrefs', () => {
       throw new Error('denied');
     });
     const prefs = TestBed.inject(BlogPrefs);
-    prefs.set({ minChars: 900 });
-    expect(prefs.thresholds().minChars).toBe(900);
+    prefs.set({ minWords: 900 });
+    expect(prefs.thresholds().minWords).toBe(900);
   });
 });

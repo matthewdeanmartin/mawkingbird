@@ -25,12 +25,17 @@ describe('blog-write', () => {
     expect(withBodyTitle(marked, bodyTitle(marked), false)).toBe('Bees\nBody');
   });
 
-  it('judges the parts with the shared classifier', () => {
+  it('judges the parts with the shared classifier, in words', () => {
     const t = DEFAULT_BLOG_THRESHOLDS;
-    expect(blogVerdict(['a', 'b', 'c'], t)).toMatchObject({ reason: 'storm', posts: 3 });
-    expect(blogVerdict(['x'.repeat(1300)], t).reason).toBe('long');
+    const say = (n: number) => 'word '.repeat(n).trim();
+    expect(blogVerdict([say(30), say(30), say(30)], t)).toMatchObject({
+      reason: 'storm',
+      posts: 3,
+    });
+    expect(blogVerdict([say(5), say(5), say(5)], t).reason).toBeNull();
+    expect(blogVerdict([say(250)], t)).toMatchObject({ reason: 'long', words: 250 });
     expect(blogVerdict(['BLOG: short'], t).reason).toBe('marked');
     expect(blogVerdict(['short', ''], t)).toMatchObject({ reason: null, posts: 1 });
-    expect(blogVerdict(['<b>&</b>'], t).chars).toBe('<b>&</b>'.length);
+    expect(blogVerdict(['Tom & Jerry'], t).words).toBe(2);
   });
 });

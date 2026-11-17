@@ -120,3 +120,23 @@ h2.section {
   font-size: 1rem;
   color: var(--muted);
 }
+
+.shed {
+  margin-top: 2rem;
+  color: var(--muted);
+}
+
+.shed summary {
+  cursor: pointer;
+}
+
+.open {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+  margin-top: 0.75rem;
+}
+
+.open mb-field {
+  width: 100%;
+}

@@ -25,9 +25,6 @@ import { BlogContext } from './blog-context';
 
 // i18n blog.post.loading: Opening the post…
 // i18n blog.post.back: All posts by {{name}}
-// i18n blog.post.untitled: Untitled
-// i18n blog.post.meta.posts: {{count}} posts
-// i18n blog.post.meta.minutes: {{count}} min read
 // i18n blog.post.reader: Open in the reader
 // i18n blog.post.original: Original post
 // i18n blog.post.comments: Comments

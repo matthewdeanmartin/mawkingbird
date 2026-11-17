@@ -18,7 +18,7 @@
 
   <article class="post">
     <header>
-      <h1>{{ title() || ('blog.post.untitled' | transloco) }}</h1>
+      <h1>{{ title() || ('blog.untitled' | transloco) }}</h1>
       <p class="byline">
         @if (author()?.account?.avatar; as avatar) {
           <img class="avatar" [src]="avatar" alt="" width="32" height="32" />
@@ -28,9 +28,9 @@
           ·
           <time [attr.datetime]="root.created_at">{{ root.created_at | date: 'longDate' }}</time>
           @if (chain().length > 1) {
-            · {{ 'blog.post.meta.posts' | transloco: { count: chain().length } }}
+            · {{ 'blog.meta.posts' | transloco: { count: chain().length } }}
           }
-          · {{ 'blog.post.meta.minutes' | transloco: { count: minutes() } }}
+          · {{ 'blog.meta.minutes' | transloco: { count: minutes() } }}
         </span>
       </p>
     </header>
@@ -128,7 +128,14 @@
           [innerHTML]="comment.status.content | customEmoji: comment.status.emojis"
         ></div>
         @if (canComment) {
-          <button type="button" class="reply" (click)="answer(comment)">
+          <button
+            mbButton
+            variant="link"
+            size="small"
+            type="button"
+            class="reply"
+            (click)="answer(comment)"
+          >
             {{ 'blog.post.reply' | transloco }}
           </button>
         }
@@ -144,7 +151,14 @@
                 | transloco: { name: answering.account.display_name || answering.account.username }
             }}
             ·
-            <button type="button" class="reply" (click)="replyTo.set(null)">
+            <button
+              mbButton
+              variant="link"
+              size="small"
+              type="button"
+              class="reply"
+              (click)="replyTo.set(null)"
+            >
               {{ 'blog.post.cancelReply' | transloco }}
             </button>
           </p>

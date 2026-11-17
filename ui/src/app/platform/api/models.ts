@@ -38,6 +38,8 @@ export interface AccountSource {
 export interface Account {
   /** Viewer-specific mutual follow supplied by a foreign provider. */
   mutual?: boolean;
+  /** Mastodon: the account this one moved to, when it has. */
+  moved?: Account | null;
   id: string;
   username: string;
   acct: string;

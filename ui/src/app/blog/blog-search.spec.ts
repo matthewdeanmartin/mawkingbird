@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { BehaviorSubject, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Status } from '../platform/api/models';
@@ -116,13 +116,19 @@ describe('BlogSearch', () => {
       of({
         ancestors: [],
         descendants: [
-          post('20', '<p>b</p>', { in_reply_to_id: '10', in_reply_to_account_id: '2' }),
+          post('20', `<p>${'word '.repeat(50)}</p>`, {
+            in_reply_to_id: '10',
+            in_reply_to_account_id: '2',
+          }),
           post('21', '<p>nice</p>', {
             in_reply_to_id: '10',
             in_reply_to_account_id: '2',
             account: bob,
           }),
-          post('22', '<p>c</p>', { in_reply_to_id: '20', in_reply_to_account_id: '2' }),
+          post('22', `<p>${'word '.repeat(50)}</p>`, {
+            in_reply_to_id: '20',
+            in_reply_to_account_id: '2',
+          }),
         ],
       }),
     );
@@ -204,5 +210,28 @@ describe('BlogSearchPage', () => {
       'An essay',
     );
     expect(el.textContent).toContain('long post');
+  });
+
+  it('opens a full handle from the back shed and rejects a bare one', async () => {
+    search.remembered.mockReturnValue([]);
+    search.search.mockResolvedValue([]);
+    const fixture = TestBed.createComponent(BlogSearchPage);
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const shed = el.querySelector('details.shed') as HTMLDetailsElement;
+    expect(shed.open).toBe(false);
+    const input = shed.querySelector<HTMLInputElement>('input[name="blog_handle"]')!;
+    const form = shed.querySelector('form')!;
+    input.value = '@alice';
+    input.dispatchEvent(new Event('input'));
+    form.dispatchEvent(new Event('submit'));
+    fixture.detectChanges();
+    expect(navigate).not.toHaveBeenCalled();
+    expect(el.textContent).toContain('Use the full handle');
+    input.value = 'Alice@Far.Example';
+    input.dispatchEvent(new Event('input'));
+    form.dispatchEvent(new Event('submit'));
+    expect(navigate).toHaveBeenCalledWith(['/blog', '@Alice@far.example']);
   });
 });

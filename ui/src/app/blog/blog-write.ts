@@ -1,5 +1,5 @@
 import { Status } from '../platform/api/models';
-import { BlogPostReason, BlogThresholds, blogReason, proseLength } from './blog-classifier';
+import { BlogPostReason, BlogThresholds, blogReason, wordCount } from './blog-classifier';
 
 /**
  * Writing a blog post in Write, as plain text.
@@ -61,11 +61,11 @@ function asPosts(parts: string[]): Status[] {
 export interface BlogVerdict {
   reason: BlogPostReason | null;
   posts: number;
-  chars: number;
+  words: number;
 }
 
 /** Will this count as a blog post once published, and why. */
 export function blogVerdict(parts: string[], thresholds: BlogThresholds): BlogVerdict {
   const chain = asPosts(parts);
-  return { reason: blogReason(chain, thresholds), posts: chain.length, chars: proseLength(chain) };
+  return { reason: blogReason(chain, thresholds), posts: chain.length, words: wordCount(chain) };
 }

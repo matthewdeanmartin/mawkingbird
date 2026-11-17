@@ -1,4 +1,5 @@
 import { AppDialogs } from '../../shell/app-dialogs';
+import { stampPublished } from '../storage/publish-stamp';
 import { TranslocoService } from '@jsverse/transloco';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
@@ -646,7 +647,8 @@ export class Api {
           }),
         )
       : request;
-    return this.accountMutation(published, 'profile');
+    // Caches built from posts (Blog) go stale the moment a post exists.
+    return this.accountMutation(published.pipe(tap(() => stampPublished())), 'profile');
   }
 
   // --- scheduled statuses ---
@@ -755,7 +757,10 @@ export class Api {
   }
 
   deleteStatus(id: string): Observable<Status> {
-    return this.accountMutation(this.http.delete<Status>(`/api/v1/statuses/${id}`), 'profile');
+    return this.accountMutation(
+      this.http.delete<Status>(`/api/v1/statuses/${id}`).pipe(tap(() => stampPublished())),
+      'profile',
+    );
   }
 
   getStatusSource(id: string): Observable<StatusSource> {
@@ -777,7 +782,7 @@ export class Api {
     if (mediaIds !== undefined) {
       body['media_ids'] = mediaIds;
     }
-    return this.http.put<Status>(`/api/v1/statuses/${id}`, body);
+    return this.http.put<Status>(`/api/v1/statuses/${id}`, body).pipe(tap(() => stampPublished()));
   }
 
   /**
@@ -786,7 +791,9 @@ export class Api {
    */
   updateStatus(id: string, body: StatusEditBody): Observable<Status> {
     const status = this.pseudonymity.cleanLinks() ? cleanPostLinks(body.status).text : body.status;
-    return this.http.put<Status>(`/api/v1/statuses/${id}`, { ...body, status });
+    return this.http
+      .put<Status>(`/api/v1/statuses/${id}`, { ...body, status })
+      .pipe(tap(() => stampPublished()));
   }
 
   favourite(id: string): Observable<Status> {
