@@ -1,1 +1,0 @@
-import{a as n}from"./chunk-C4HWUN7I.js";import{d as i}from"./chunk-5FW6L57M.js";var s=class r{post=null;offer(o){this.post=o}take(o){let t=this.post;return this.post=null,t&&n(t.url??null)?.originalUrl===o?t:null}static \u0275fac=function(t){return new(t||r)};static \u0275prov=i({token:r,factory:r.\u0275fac,providedIn:"root"})};export{s as a};
