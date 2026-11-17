@@ -36,9 +36,16 @@ export const authGuard: CanActivateFn = (_route, state) => {
   // Public content links must also work on a fresh browser. Preserve a chosen
   // instance for legacy numeric IDs; portable public references carry their own.
   const link = new URL(state.url ?? '/', 'https://app.invalid');
+  // Older /radio share links now open these pages: a shared playlist (a post,
+  // or links in the fragment) and an account's recordings.
   const publicRadio =
-    link.pathname === '/radio' &&
-    !!(radioAccount(link.searchParams.get('acct')) || radioPostRef(link.searchParams.get('post')));
+    (link.pathname === '/radio' &&
+      !!(
+        radioAccount(link.searchParams.get('acct')) || radioPostRef(link.searchParams.get('post'))
+      )) ||
+    (link.pathname === '/playlists/shared' &&
+      (!!radioPostRef(link.searchParams.get('post')) || link.hash.startsWith('#playlist='))) ||
+    (link.pathname === '/singles/find' && !!radioAccount(link.searchParams.get('acct')));
   // The project's pages and in-app legal hub must open for a fresh visitor.
   // Sending them to `/` would make the dispatcher land on /home instead.
   const projectPage =

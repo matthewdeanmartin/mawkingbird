@@ -1,0 +1,92 @@
+<section class="page">
+  <app-radio-header [heading]="'singles.title' | transloco">
+    <a mbButton size="small" routerLink="/singles/find">{{ 'singles.find' | transloco }}</a>
+  </app-radio-header>
+  <p class="lead">{{ 'singles.lead' | transloco }}</p>
+  @if (saving()) {
+    <p role="status">{{ 'singles.saving' | transloco }}</p>
+  }
+  @if (message()) {
+    <p role="status">{{ message() }}</p>
+  }
+  @if (singles.error()) {
+    <p role="alert">{{ 'singles.storageFailed' | transloco }}</p>
+  }
+  @if (singles.items().length) {
+    <ul class="rows" [attr.aria-label]="'singles.title' | transloco">
+      @for (item of singles.items(); track item.track.key) {
+        @let track = item.track;
+        @let title = player.title(track);
+        <li>
+          <div class="row">
+            <span class="track">
+              <span class="track-title">{{ title }}</span>
+              <span class="track-meta"
+                >{{ track.post.account.display_name || track.post.account.acct }} ·
+                {{ source(track) }}
+                @if (!isContinuous(track)) {
+                  · {{ 'singles.ownPage' | transloco }}
+                }
+              </span>
+            </span>
+            <mb-toolbar class="row-actions" density="compact" embedded [label]="title">
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'singles.play' | transloco: { title }"
+                [title]="'singles.play' | transloco: { title }"
+                [disabled]="!isContinuous(track) && !hasPage(track)"
+                (click)="play(track)"
+              >
+                <app-radio-icon name="play" />
+              </button>
+              @if (hasPage(track)) {
+                <button
+                  mbToolbarButton
+                  type="button"
+                  [attr.aria-label]="'singles.open' | transloco: { title }"
+                  [title]="'singles.open' | transloco: { title }"
+                  routerLink="/listen"
+                  [queryParams]="listen(track)"
+                >
+                  <app-radio-icon name="open" />
+                </button>
+              }
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'singles.remove' | transloco: { title }"
+                [title]="'singles.remove' | transloco: { title }"
+                (click)="singles.remove(track.key)"
+              >
+                <app-radio-icon name="remove" />
+              </button>
+            </mb-toolbar>
+            @if (isContinuous(track)) {
+              <mb-post-menu
+                [label]="'singles.addTo' | transloco: { title }"
+                [closeLabel]="'radio.closeMenu' | transloco"
+              >
+                @for (row of playlists.saved(); track row.id) {
+                  <button mbMenuItem type="button" (click)="addTo(track, row.id)">
+                    {{ row.name }}
+                  </button>
+                }
+                <button mbMenuItem type="button" (click)="newPlaylist(track)">
+                  {{ 'singles.newPlaylist' | transloco }}
+                </button>
+              </mb-post-menu>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  } @else if (!saving()) {
+    <mb-content-state
+      [title]="'singles.empty' | transloco"
+      [description]="'singles.emptyHint' | transloco"
+    >
+      <a mbButton routerLink="/singles/find">{{ 'singles.find' | transloco }}</a>
+    </mb-content-state>
+  }
+</section>

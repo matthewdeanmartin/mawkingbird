@@ -1,0 +1,17 @@
+.details {
+  display: grid;
+  gap: 12px;
+}
+.add,
+.publish {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.add h2,
+.publish h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}

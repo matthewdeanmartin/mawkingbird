@@ -1,0 +1,191 @@
+<section class="page">
+  @let row = target();
+  <app-radio-header
+    [heading]="
+      row
+        ? ('findSingles.addTitle' | transloco: { playlist: row.name })
+        : ('findSingles.title' | transloco)
+    "
+  >
+    @if (row) {
+      <a mbButton size="small" variant="outline" [routerLink]="['/playlists', row.id]">{{
+        'findSingles.backPlaylist' | transloco: { playlist: row.name }
+      }}</a>
+    } @else {
+      <a mbButton size="small" variant="outline" routerLink="/singles">{{
+        'findSingles.backSingles' | transloco
+      }}</a>
+    }
+  </app-radio-header>
+  <p class="lead">{{ (row ? 'findSingles.addLead' : 'findSingles.lead') | transloco }}</p>
+
+  <mb-radio-group
+    [label]="'findSingles.where' | transloco"
+    [options]="scopes()"
+    [value]="source()"
+    (valueChange)="chooseSource($event)"
+  />
+  @if (!signedIn) {
+    <p class="lead">{{ 'findSingles.anonymousFeeds' | transloco }}</p>
+  }
+
+  @if (catalogueSource(); as catalogue) {
+    <app-catalogue-panel [source]="catalogue" [target]="row?.id ?? null" />
+  } @else if (source() === 'links') {
+    <form class="inline" (ngSubmit)="openLinks()">
+      <mb-field
+        [label]="'findSingles.links' | transloco"
+        [hint]="'findSingles.linksHint' | transloco"
+      >
+        <textarea
+          mbControl
+          name="links"
+          rows="3"
+          [ngModel]="importText()"
+          (ngModelChange)="importText.set($event)"
+        ></textarea>
+      </mb-field>
+      <button mbButton type="submit" [disabled]="importing() || !importText().trim()">
+        {{ 'findSingles.openLinks' | transloco }}
+      </button>
+    </form>
+    @if (importing()) {
+      <p role="status">{{ 'radio.importing' | transloco }}</p>
+    }
+    @if (importSkipped(); as skipped) {
+      <p role="status">{{ 'radio.importResult' | transloco: { count: skipped } }}</p>
+    }
+  } @else {
+    <form class="inline" (ngSubmit)="discover()">
+      @if (source() === 'account') {
+        <mb-field [label]="'radio.handle' | transloco" [hint]="'radio.handleHint' | transloco">
+          <input
+            mbControl
+            name="handle"
+            required
+            [ngModel]="handle()"
+            (ngModelChange)="handle.set($event)"
+          />
+        </mb-field>
+      } @else if (source() === 'tag') {
+        <mb-field [label]="'radio.hashtag' | transloco" [hint]="'radio.hashtagHint' | transloco">
+          <input
+            mbControl
+            name="tag"
+            required
+            [ngModel]="tag()"
+            (ngModelChange)="tag.set($event)"
+          />
+        </mb-field>
+      } @else if (source() === 'list') {
+        <mb-field [label]="'radio.list' | transloco">
+          <select
+            mbControl
+            name="list"
+            required
+            [ngModel]="listId()"
+            (ngModelChange)="listId.set($event)"
+          >
+            <option value="">{{ 'radio.chooseList' | transloco }}</option>
+            @for (list of lists(); track list.id) {
+              <option [value]="list.id">{{ list.title }}</option>
+            }
+          </select>
+        </mb-field>
+      } @else if (source() === 'saved') {
+        <mb-field [label]="'findSingles.savedSearch' | transloco">
+          <select
+            mbControl
+            name="saved"
+            required
+            [ngModel]="savedId()"
+            (ngModelChange)="chooseSaved($event)"
+          >
+            <option value="">{{ 'findSingles.chooseSaved' | transloco }}</option>
+            @for (search of savedSearches(); track search.id) {
+              <option [value]="search.id">{{ search.name }}</option>
+            }
+          </select>
+        </mb-field>
+      }
+      <button mbButton type="submit" [disabled]="resolving() || scan.loading() || !searchReady()">
+        {{ 'radio.discover' | transloco }}
+      </button>
+    </form>
+    <mb-checkbox
+      [label]="'radio.nativeOnly' | transloco"
+      [hint]="'radio.nativeOnlyHint' | transloco"
+      [checked]="player.nativeOnly()"
+      (checkedChange)="changeNativeOnly($event)"
+    />
+  }
+
+  @if (!catalogueSource()) {
+    @if (message()) {
+      <p role="status">{{ message() }}</p>
+    }
+    @if (started()) {
+      @if (resolving() || scan.loading()) {
+        <mb-content-state
+          kind="loading"
+          announcement="status"
+          [title]="'radio.loading' | transloco"
+        >
+          <button mbButton variant="outline" type="button" (click)="cancel()">
+            {{ 'radio.cancel' | transloco }}
+          </button>
+        </mb-content-state>
+      } @else if (source() !== 'links') {
+        @if (scan.exhausted()) {
+          <p>{{ 'radio.exhausted' | transloco }}</p>
+        } @else if (!failed() && scanReady()) {
+          <div class="actions">
+            <button mbButton variant="outline" type="button" (click)="scan.more()">
+              {{ 'radio.more' | transloco }}
+            </button>
+            <span>{{ 'radio.paused' | transloco }}</span>
+          </div>
+        }
+        <p role="status" class="progress">
+          {{ 'radio.progress' | transloco: { scanned: scan.scanned(), matches: results().length } }}
+        </p>
+      }
+      @if (results().length) {
+        <div class="actions">
+          <button mbButton size="small" type="button" (click)="keepResults()">
+            {{ (row ? 'findSingles.addResults' : 'findSingles.saveResults') | transloco }}
+          </button>
+          <button
+            mbButton
+            size="small"
+            variant="outline"
+            type="button"
+            [disabled]="!canPlayResults()"
+            (click)="playResults()"
+          >
+            {{ 'radio.playResults' | transloco }}
+          </button>
+        </div>
+      }
+    } @else if (source() !== 'links') {
+      <mb-content-state [title]="'findSingles.empty' | transloco" />
+    }
+    @if (failed() || scan.failed()) {
+      <mb-content-state kind="error" announcement="alert" [title]="'radio.failed' | transloco" />
+      @if (scan.retryAt()) {
+        <p>{{ 'radio.rateLimited' | transloco: { time: retryTime() } }}</p>
+      }
+    }
+    @for (post of results(); track post.id) {
+      <app-status-card
+        [status]="post"
+        [radioQueue]="canKeep(post)"
+        [radioAddLabel]="keepLabel()"
+        [radioSources]="player.radioSources(post)"
+        (playAudio)="playPost(post)"
+        (addAudio)="keep(post)"
+        (listenRadio)="player.chooseExternal(post, $event)"
+      />
+    }
+  }
+</section>

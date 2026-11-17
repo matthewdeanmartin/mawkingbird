@@ -21,10 +21,9 @@ import {
 // i18n shell.modeNav.mode.rss: RSS
 // i18n shell.modeNav.mode.video: Video
 // i18n shell.modeNav.mode.radio: Radio
-// i18n shell.modeNav.radio.player: Radio
+// i18n shell.modeNav.radio.singles: Singles
+// i18n shell.modeNav.radio.playlists: Playlists
 // i18n shell.modeNav.radio.studio: Studio
-// i18n shell.modeNav.radio.playlist: Playlist
-// i18n shell.modeNav.radio.settings: Settings
 // i18n shell.modeNav.mode.forum: Forum
 // i18n shell.modeNav.forum.talk: Talk
 // i18n shell.modeNav.forum.asked: Asked
@@ -99,22 +98,21 @@ function param(url: string, name: string): string | null {
 /** Home is not here: it is the fixed first slot of every mode (rule 1). */
 export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
   radio: [
+    // Radio is the verb "play": the dock and Now Playing. Music is kept here,
+    // and settings sit on each page (spec/sprint/radio-singles-2026-11.md).
     {
-      id: 'playlist',
-      labelKey: 'shell.modeNav.radio.playlist',
-      icon: 'M4 5h13M4 10h13M4 15h7M16 14v7M12.5 17.5h7',
-      link: '/radio',
-      queryParams: { view: 'search' },
-      active: (url) =>
-        pathOf(url) === '/radio' && !['radio', 'settings'].includes(param(url, 'view') ?? ''),
+      id: 'singles',
+      labelKey: 'shell.modeNav.radio.singles',
+      icon: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M12 10a2 2 0 1 0 0 4a2 2 0 1 0 0-4',
+      link: '/singles',
+      active: (url) => onPath('/singles')(url) || pathOf(url) === '/listen',
     },
     {
-      id: 'player',
-      labelKey: 'shell.modeNav.radio.player',
-      icon: 'M5 12a7 7 0 0 1 14 0M5 12v7H3v-7zM19 12v7h2v-7z',
-      link: '/radio',
-      queryParams: { view: 'radio' },
-      active: (url) => pathOf(url) === '/radio' && param(url, 'view') === 'radio',
+      id: 'playlists',
+      labelKey: 'shell.modeNav.radio.playlists',
+      icon: 'M4 5h13M4 10h13M4 15h7M16 14v7M12.5 17.5h7',
+      link: '/playlists',
+      active: onPath('/playlists'),
     },
     {
       id: 'studio',
@@ -122,14 +120,6 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       icon: 'M9 5a3 3 0 0 1 6 0v7a3 3 0 0 1-6 0zM6 11v1a6 6 0 0 0 12 0v-1M12 18v4M8 22h8',
       link: '/radio/studio',
       active: onPath('/radio/studio'),
-    },
-    {
-      id: 'settings',
-      labelKey: 'shell.modeNav.radio.settings',
-      icon: 'M9 3h6l1 3 3 1 2 5-2 5-3 1-1 3H9l-1-3-3-1-2-5 2-5 3-1zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8',
-      link: '/radio',
-      queryParams: { view: 'settings' },
-      active: (url) => pathOf(url) === '/radio' && param(url, 'view') === 'settings',
     },
   ],
   forum: [
@@ -421,7 +411,7 @@ export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
     mode: 'radio',
     labelKey: 'shell.modeNav.mode.radio',
     icon: 'M4 8h16v13H4zM6 8l12-5M7 15a3 3 0 1 0 6 0a3 3 0 1 0-6 0M16 12h1M16 16h1',
-    link: '/radio',
+    link: '/singles',
   },
   forum: {
     mode: 'forum',

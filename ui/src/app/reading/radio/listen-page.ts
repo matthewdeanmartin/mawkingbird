@@ -31,7 +31,7 @@ import { LinkedAudioResolver } from './linked-audio-resolver';
 import { RadioDock } from './radio-dock';
 import { RadioIcon } from './radio-icon';
 import { RadioPlayer, RadioTrack } from './radio-player';
-import { PlaylistDraft } from './playlist-draft';
+import { SavedSingles } from './saved-singles';
 import { RadioPlaylists } from './radio-playlists';
 import { TrackActions } from './track-actions';
 import { MbPostMenu } from '../../design-system/menu/post-menu';
@@ -52,7 +52,8 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
 // i18n listen.startOver: Start from the beginning
 // i18n listen.playNext: Play next in Radio
 // i18n listen.addQueue: Add to playlist
-// i18n listen.addedToPlaylist: Added to the playlist you are building.
+// i18n listen.saveSingle: Save single
+// i18n listen.newPlaylist: New playlist
 // i18n listen.queued: Added to the Radio queue.
 // i18n listen.back15: Back 15 seconds
 // i18n listen.forward30: Forward 30 seconds
@@ -90,7 +91,8 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
 export class ListenPage {
   protected readonly loader = inject(ThreadLoader);
   protected readonly player = inject(RadioPlayer);
-  private readonly draft = inject(PlaylistDraft);
+  protected readonly singles = inject(SavedSingles);
+  protected readonly playlists = inject(RadioPlaylists);
   protected readonly actions = inject(TrackActions);
   private readonly transloco = inject(TranslocoService);
   private readonly linked = inject(LinkedAudioResolver);
@@ -184,7 +186,8 @@ export class ListenPage {
 
   constructor() {
     this.player.installDock(RadioDock);
-    inject(RadioPlaylists).refresh();
+    this.playlists.refresh();
+    this.singles.refresh();
     const destroy = inject(DestroyRef);
     destroy.onDestroy(() => {
       this.loader.destroy();
@@ -257,11 +260,25 @@ export class ListenPage {
     const result = await this.actions.append(track, rowId);
     if (result) this.message.set(result);
   }
-  protected addToQueue(): void {
+  /** Keep this page's recording, or its first inline player, as a saved Single. */
+  protected saveSingle(): void {
+    const track = this.chosen() ?? this.inlineSingle();
+    if (track) this.message.set(this.actions.keep([track]));
+  }
+  protected addTo(playlistId: string): void {
+    const track = this.chosen();
+    if (track) this.message.set(this.actions.keep([track], playlistId));
+  }
+  protected newPlaylist(): void {
     const track = this.chosen();
     if (!track) return;
-    this.draft.add([track]);
-    this.message.set(this.transloco.translate('listen.addedToPlaylist'));
+    const id = this.playlists.create(this.player.title(track), [track]);
+    if (id) void this.router.navigate(['/playlists', id]);
+  }
+  /** A post whose only players play inline is still a Single worth keeping. */
+  private inlineSingle(): RadioTrack | null {
+    const status = this.loader.status();
+    return status ? (this.player.singlesOf(status.reblog ?? status)[0] ?? null) : null;
   }
   protected clock(seconds: number): string {
     const value = Math.max(0, Math.floor(seconds));
@@ -271,7 +288,7 @@ export class ListenPage {
   }
   protected back(): void {
     if (history.state?.navigationId > 1) this.location.back();
-    else void this.router.navigate(['/radio']);
+    else void this.router.navigate(['/singles']);
   }
   protected onReply(reply: Status): void {
     this.loader.descendants.update((replies) => [...replies, reply]);

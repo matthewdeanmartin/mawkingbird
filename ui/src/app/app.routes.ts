@@ -1199,6 +1199,35 @@ export const routes: Routes = [
         title: 'Studio',
         loadComponent: () => import('./reading/radio/studio-page').then((m) => m.StudioPage),
       },
+      // Radio is the verb "play": music is kept as Singles and Playlists, and
+      // found from within them. See spec/sprint/radio-singles-2026-11.md.
+      {
+        path: 'singles',
+        title: 'Saved singles',
+        loadComponent: () => import('./reading/radio/singles-page').then((m) => m.SinglesPage),
+      },
+      {
+        path: 'singles/find',
+        title: 'Find singles',
+        loadComponent: () =>
+          import('./reading/radio/find-singles-page').then((m) => m.FindSinglesPage),
+      },
+      {
+        path: 'playlists',
+        title: 'Playlists',
+        loadComponent: () => import('./reading/radio/playlists-page').then((m) => m.PlaylistsPage),
+      },
+      {
+        path: 'playlists/find',
+        title: 'Find playlists',
+        data: { view: 'find' },
+        loadComponent: () => import('./reading/radio/playlists-page').then((m) => m.PlaylistsPage),
+      },
+      {
+        path: 'playlists/:id',
+        title: 'Playlist',
+        loadComponent: () => import('./reading/radio/playlist-page').then((m) => m.PlaylistPage),
+      },
       {
         // Discussions found by a budgeted scan of one feed; the mode's tabs
         // are `?filter=`. See spec/forum.md.

@@ -66,6 +66,7 @@ SERVER_OR_LOCAL = {
     "forum/d/:id": "Forum explicitly requires an account",
     "lists/:id": "server-local list id",
     "misskey/:kind/:id": "active Misskey identity required",
+    "playlists/:id": "browser-local playlist; shares use /playlists/shared with a post or fragment",
     "tag-bundles/:id": "saved account bundle",
 }
 

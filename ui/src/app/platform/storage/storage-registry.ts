@@ -112,6 +112,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Named audio playlists and post metadata, per account. Excluded from shareable settings.',
   },
   {
+    base: 'mockingbird_radio_singles',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Saved Singles: recordings and their post metadata, per account. Excluded from shareable settings.',
+  },
+  {
     base: 'mockingbird_search_last_type',
     storage: 'local',
     suffix: 'none',

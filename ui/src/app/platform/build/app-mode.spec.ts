@@ -24,6 +24,11 @@ describe('modeForUrl', () => {
     ['/forum', 'forum'],
     ['/forum?filter=asked&source=tag:rust', 'forum'],
     ['/forum/d/123', 'forum'],
+    ['/singles', 'radio'],
+    ['/singles/find?acct=a%40b.example', 'radio'],
+    ['/playlists', 'radio'],
+    ['/playlists/abc', 'radio'],
+    ['/listen?post=1', 'radio'],
   ] as const)('%s is %s', (url, mode) => {
     expect(modeForUrl(url)).toBe(mode);
   });

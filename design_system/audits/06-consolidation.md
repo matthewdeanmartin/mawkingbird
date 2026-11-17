@@ -2753,3 +2753,15 @@ MbContentState with one MbButton for the empty Saved list, and drops the
 duplicate Saved heading. `catalogue-panel.ts` and `listen-page.html` only shift
 lines. No shared design widget implementation changed; no reconciliation
 entries needed.
+
+Radio Singles sprints 2–3 (2026-11-17): reviewed regenerated inventory: 1885
+scanned files, 652 candidate files. Five new candidate files, all adopted scope
+in reconciliation: `singles-page.html`, `find-singles-page.html`,
+`playlists-page.html`, `playlist-page.html` and `radio-header.ts`. They are built
+from Radio Header, Button, Toolbar/ToolbarButton, Post Menu/Menu Item, Radio
+Group, Field/Control, Checkbox and Content State. `radio-page.html` shrinks to
+Now Playing and settings; its tabs, editor and search moved to those pages.
+`listen-page.html` gains a Save single button and an add-to-playlist Post Menu;
+`status-card.html` swaps its Add to playlist link for Save single. The design
+system only gains a `radioAddLabel` input on StatusCard; no shared widget
+implementation changed.

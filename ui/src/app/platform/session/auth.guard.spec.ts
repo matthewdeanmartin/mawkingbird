@@ -38,6 +38,9 @@ describe('authGuard', () => {
     '/tags/books',
     '/radio?acct=singer%40sea.example',
     '/radio?post=https%3A%2F%2Fsea.example%2F%40singer%2F123',
+    '/playlists/shared?post=https%3A%2F%2Fsea.example%2F%40singer%2F123',
+    '/playlists/shared#playlist=%5B%22https%3A%2F%2Fsea.example%2Fsong.mp3%22%5D',
+    '/singles/find?acct=singer%40sea.example',
     '/watch?post=117583797572986016&server=https:%2F%2Fmstdn.social&youtube=Usr4VpMQjQ0',
     '/watch?youtube=Usr4VpMQjQ0',
     '/app/about',
@@ -68,6 +71,14 @@ describe('authGuard', () => {
     expect(result).toBe(true);
     expect(TestBed.inject(Server).baseUrl()).toBe('https://example.social');
   });
+
+  it.each(['/singles', '/playlists', '/playlists/shared', '/singles/find'])(
+    'keeps Radio pages without a shared link behind the front door: %s',
+    (url) => {
+      const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
+      expect(result).not.toBe(true);
+    },
+  );
 
   it('keeps private routes behind the front door', () => {
     const result = TestBed.runInInjectionContext(() =>

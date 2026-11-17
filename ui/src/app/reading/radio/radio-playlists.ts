@@ -190,6 +190,17 @@ export class RadioPlaylists {
     if (!this.error()) this.active.set(row.id);
     return this.error() ? null : row.id;
   }
+  /** Start an empty playlist; its page fills it. Returns the new id, or null if storage failed. */
+  create(name: string, tracks: RadioTrack[] = []): string | null {
+    this.refresh();
+    const row: SavedRadioPlaylist = {
+      id: crypto.randomUUID(),
+      name: name.trim().slice(0, 200),
+      tracks: this.validate(tracks),
+    };
+    this.write([...this.saved(), row]);
+    return this.error() ? null : row.id;
+  }
   /** Replace one saved row, as publication progresses. */
   update(id: string, change: (row: SavedRadioPlaylist) => SavedRadioPlaylist): boolean {
     this.refresh();

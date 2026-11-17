@@ -1558,6 +1558,31 @@
       "nextStep": "Radio settings reuse Settings Row, Checkbox, Button and Field/Control for a native range. Preserve per-account provider consent with revocation; audio-service subscriptions and hidden services as mutually exclusive checkboxes, with Show all disabled until a subscription exists; continuous-play and starting-volume preferences. Keep these settings beside Radio rather than in the main settings."
     },
     {
+      "file": "ui/src/app/reading/radio/singles-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Saved singles uses Radio Header, Button links, Toolbar/ToolbarButton icon rows with accessible names, Post Menu/Menu Item for add-to-playlist, and Content State for the empty list. Preserve newest-first browser-local storage, continuous Singles playing as a one-track queue, and Singles that cannot advance opening their Listen page."
+    },
+    {
+      "file": "ui/src/app/reading/radio/find-singles-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Find singles uses Radio Header, Radio Group for where to look, Field/Control for handle, hashtag, list, saved search and pasted links, Checkbox for native-only, Button for scan control, Content State for loading/empty/error, the catalogue panel and StatusCard results. Preserve no implicit queueing, explicit Play all, and the playlist target accepting only continuous recordings."
+    },
+    {
+      "file": "ui/src/app/reading/radio/playlists-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Playlists uses Radio Header, Toolbar/ToolbarButton rows, Button, Field/Control for a playlist link and account handle, and Content State for the empty library. Preserve browser-local playlists, shared previews via /playlists/shared, and the bounded account scan."
+    },
+    {
+      "file": "ui/src/app/reading/radio/playlist-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "A playlist uses Radio Header, Field/Control for name, description and thread visibility, Button, Toolbar/ToolbarButton track rows, Post Menu/Menu Item for rare actions and Content State for empty and missing playlists. Preserve save-on-change, continuous-only additions, read-only shared previews with Save a copy, and the thread publish plan with its delete budget."
+    },
+    {
+      "file": "ui/src/app/reading/radio/radio-header.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Radio Header uses Button for the settings shortcut with icon content and an accessible name. Preserve the shortcut on every Radio page now that settings are not a menu tab."
+    },
+    {
       "file": "ui/src/app/reading/radio/listen-page.html",
       "disposition": "adopted scope",
       "nextStep": "Listen uses Button for back, play/resume/start over, skip, play-next, queue and recording choice; icon content with accessible names for transport; Field/Control for the native position range; StatusCard for the post and comments; and the lazy external-player host for inline-only providers. Preserve warning/filter/text-only reveal gates, server-local id checks, playback through Radio (dock hidden only while this page shows the same native recording), resume of long recordings, and indented conversation capped at three levels."

@@ -2,11 +2,9 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AppDialogs } from '../../shell/app-dialogs';
 import { CataloguePanel } from './catalogue-panel';
 import { CatalogueItem, CatalogueSearch } from './catalogue-search';
 import { RadioPlayer, RadioTrack } from './radio-player';
-import { PlaylistDraft } from './playlist-draft';
 import { RadioPlaylists } from './radio-playlists';
 import { TrackActions } from './track-actions';
 
@@ -26,7 +24,7 @@ const track = (id: string) => ({ key: `t${id}`, media: { id }, post: {} }) as un
 describe('CataloguePanel', () => {
   let catalogue: { search: ReturnType<typeof vi.fn>; tracks: ReturnType<typeof vi.fn> };
   let player: Record<string, unknown>;
-  let draft: Record<string, unknown>;
+  let playlists: Record<string, unknown>;
   let actions: Record<string, unknown>;
   beforeEach(() => {
     catalogue = {
@@ -37,16 +35,20 @@ describe('CataloguePanel', () => {
       installDock: vi.fn(),
       playSingle: vi.fn(),
     };
-    draft = { tracks: signal([track('old')]), replace: vi.fn() };
-    actions = { published: signal([]), share: vi.fn(), addToPlaylist: vi.fn(), append: vi.fn() };
+    playlists = { refresh: vi.fn(), active: signal('x'), create: vi.fn(() => 'new-id') };
+    actions = {
+      published: signal([]),
+      share: vi.fn(),
+      keep: vi.fn(() => 'Saved 1 singles.'),
+      append: vi.fn(),
+    };
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         { provide: CatalogueSearch, useValue: catalogue },
         { provide: RadioPlayer, useValue: player },
-        { provide: PlaylistDraft, useValue: draft },
         { provide: TrackActions, useValue: actions },
-        { provide: RadioPlaylists, useValue: { refresh: vi.fn(), active: signal('x') } },
+        { provide: RadioPlaylists, useValue: playlists },
       ],
     });
   });
@@ -70,17 +72,28 @@ describe('CataloguePanel', () => {
     expect(player['installDock']).toHaveBeenCalled();
   });
 
-  it('turns a selection into the playlist being built, after confirming a replacement', async () => {
+  it('turns a selection into a new saved playlist and opens it', async () => {
     const { panel } = await searched();
     panel.toggle(item('a'), true);
     panel.toggle(item('b'), true);
-    const confirm = vi.spyOn(TestBed.inject(AppDialogs), 'confirm').mockResolvedValue(true);
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     await panel.playlistSelected();
-    expect(confirm).toHaveBeenCalledOnce();
-    expect(draft['replace']).toHaveBeenCalledWith([track('a'), track('b')]);
-    expect(TestBed.inject(RadioPlaylists).active()).toBeNull();
-    expect(navigate).toHaveBeenCalledWith(['/radio'], { queryParams: { view: 'publish' } });
+    expect(playlists['create']).toHaveBeenCalledWith('Untitled playlist', [track('a'), track('b')]);
+    expect(navigate).toHaveBeenCalledWith(['/playlists', 'new-id']);
+  });
+
+  it('saves selected items as Singles, or adds them to a target playlist', async () => {
+    const { panel, fixture, root } = await searched();
+    expect(root.textContent).toContain('Save single');
+    panel.toggle(item('a'), true);
+    await panel.addSelected();
+    expect(actions['keep']).toHaveBeenCalledWith([track('a')], null);
+    expect(panel.message()).toBe('Saved 1 singles.');
+    fixture.componentRef.setInput('target', 'mix');
+    fixture.detectChanges();
+    expect(root.textContent).toContain('Add to playlist');
+    await panel.add(item('b'));
+    expect(actions['keep']).toHaveBeenLastCalledWith([track('b')], 'mix');
   });
 
   it('shares and adds single items, resolving each item once', async () => {
@@ -88,7 +101,7 @@ describe('CataloguePanel', () => {
     await panel.share(item('a'));
     expect(actions['share']).toHaveBeenCalledWith(track('a'));
     await panel.add(item('a'));
-    expect(actions['addToPlaylist']).toHaveBeenCalledWith([track('a')]);
+    expect(actions['keep']).toHaveBeenCalledWith([track('a')], null);
     expect(catalogue.tracks).toHaveBeenCalledOnce();
   });
 

@@ -45,7 +45,8 @@ export const RADIO_AUDIO = new InjectionToken<() => HTMLAudioElement>('Radio aud
   },
 });
 /** Feeds and hashtags scan posts; `saved` runs a main-Search saved search; `loc` and `archive` search catalogues. */
-export type RadioSource = 'account' | 'home' | 'list' | 'tag' | 'saved' | 'loc' | 'archive';
+export type RadioSource =
+  'account' | 'home' | 'list' | 'tag' | 'saved' | 'loc' | 'archive' | 'links';
 /** `#robotmusic`, `robotmusic` or a pasted tag URL → `robotmusic`; null if not a tag. */
 export function radioTag(raw: string): string | null {
   const value = raw
@@ -61,6 +62,14 @@ export interface RadioTrack {
   external?: ExternalMedia;
   /** A title the listener gave this playlist entry. */
   title?: string;
+}
+
+/**
+ * Whether a track can join a queue: it plays here and reports its end. Other
+ * players (Spotify, Bandcamp, Apple Music…) are Singles that play on their own page.
+ */
+export function isContinuous(track: RadioTrack): boolean {
+  return !track.external || track.external.controllable;
 }
 
 /** Tab-lived audio and queue. Route components are only views of this session. */
@@ -280,11 +289,15 @@ export class RadioPlayer {
   }
   /** Play these tracks from `start`, replacing whatever was playing. */
   playTracks(tracks: readonly RadioTrack[], start = 0, at = 0): void {
-    if (!tracks[start]) return;
+    if (!tracks[start] || !isContinuous(tracks[start])) return;
     this.stop();
     this.following.set(false);
     const keys = new Set<string>();
-    this.list.set(tracks.filter((track) => !keys.has(track.key) && !!keys.add(track.key)));
+    this.list.set(
+      tracks.filter(
+        (track) => isContinuous(track) && !keys.has(track.key) && !!keys.add(track.key),
+      ),
+    );
     this.select(this.list().findIndex((track) => track.key === tracks[start].key));
     this.pendingSeek = at > 0 ? at : 0;
   }
@@ -369,6 +382,35 @@ export class RadioPlayer {
   /** The sources to offer, ordered and pruned by the listener's service preferences. */
   radioSources(post: Status): ExternalMedia[] {
     return this.services.arrange(this.allRadioSources(post));
+  }
+  /**
+   * Every Single a post offers, regardless of preferences: its continuous tracks
+   * plus players that only play on their own page. Used to validate saved Singles.
+   */
+  singleTracks(post: Status): RadioTrack[] {
+    const tracks = this.tracks(post);
+    const keys = new Set(tracks.map((track) => track.key));
+    return [
+      ...tracks,
+      ...postExternalMedia(post)
+        .filter((source) => source.type === 'audio' && !!source.embed && !source.controllable)
+        .map((source) => this.externalTrack(post, source))
+        .filter((track) => !keys.has(track.key) && !!keys.add(track.key)),
+    ];
+  }
+  /**
+   * The Singles to keep from a post: each recording it carries, else its
+   * preferred player — continuous first, then one that plays on its own page.
+   */
+  singlesOf(post: Status): RadioTrack[] {
+    const native = this.nativeTracks(post);
+    if (native.length) return native;
+    const external =
+      this.radioSources(post)[0] ??
+      this.services
+        .arrange(postExternalMedia(post))
+        .find((source) => source.type === 'audio' && !!source.embed && !source.controllable);
+    return external ? [this.externalTrack(post, external)] : [];
   }
   /** Play one of a post's continuous players as a Single. */
   chooseExternal(post: Status, source: ExternalMedia): void {

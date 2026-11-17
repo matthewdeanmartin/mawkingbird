@@ -17,6 +17,7 @@ export const READING_ROUTES = new Set([
   'home',
   'algo',
   'radio',
+  'singles/find',
   'videos',
   'videos/queue',
   'videos/search',

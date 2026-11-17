@@ -174,13 +174,13 @@ describe('self profile local actions', () => {
       fixture.detectChanges();
       openMoreOptions(fixture);
       const link = fixture.nativeElement.querySelector(
-        'a[mbMenuItem][href^="/radio?"]',
+        'a[mbMenuItem][href^="/singles/find?"]',
       ) as HTMLAnchorElement;
-      expect(link.textContent).toContain('Open in Radio');
+      expect(link.textContent).toContain('Find their music');
       expect(new URL(link.href).searchParams.get('acct')).toBe('MaQuest@djs.social');
       fixture.componentInstance['isBluesky'].set(true);
       fixture.detectChanges();
-      expect(fixture.nativeElement.querySelector('a[href^="/radio?"]')).toBeNull();
+      expect(fixture.nativeElement.querySelector('a[href^="/singles/find?"]')).toBeNull();
     },
   );
 

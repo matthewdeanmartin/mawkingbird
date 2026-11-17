@@ -120,7 +120,7 @@
               </summary>
               <div class="account-danger-panel">
                 @if (radioHandle(); as handle) {
-                  <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                  <a mbMenuItem routerLink="/singles/find" [queryParams]="{ acct: handle }">{{
                     'pages.profile.actions.openInRadio' | transloco
                   }}</a>
                 }
@@ -366,7 +366,7 @@
                 </summary>
                 <div class="account-danger-panel">
                   @if (radioHandle(); as handle) {
-                    <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                    <a mbMenuItem routerLink="/singles/find" [queryParams]="{ acct: handle }">{{
                       'pages.profile.actions.openInRadio' | transloco
                     }}</a>
                   }
@@ -477,7 +477,7 @@
                 </summary>
                 <div class="account-danger-panel">
                   @if (radioHandle(); as handle) {
-                    <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                    <a mbMenuItem routerLink="/singles/find" [queryParams]="{ acct: handle }">{{
                       'pages.profile.actions.openInRadio' | transloco
                     }}</a>
                   }
@@ -645,7 +645,7 @@
                     {{ 'pages.profile.moreOptions.view' | transloco }}
                   </h3>
                   @if (radioHandle(); as handle) {
-                    <a mbMenuItem routerLink="/radio" [queryParams]="{ acct: handle }">{{
+                    <a mbMenuItem routerLink="/singles/find" [queryParams]="{ acct: handle }">{{
                       'pages.profile.actions.openInRadio' | transloco
                     }}</a>
                   }

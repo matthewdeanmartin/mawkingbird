@@ -605,7 +605,7 @@
         showMedia() &&
         !cwCollapsed() &&
         !mediaBlurred() &&
-        (radioQueue() || radioPost() || externalHosts().length)
+        (radioQueue() || radioPost() || singlePost() || externalHosts().length)
       ) {
         <mb-toolbar
           density="compact"
@@ -616,7 +616,7 @@
         >
           @if (radioQueue()) {
             <button mbToolbarButton type="button" (click)="addAudio.emit()">
-              {{ 'radio.addPlaylist' | transloco }}
+              {{ radioAddLabel() | transloco }}
             </button>
             <button mbToolbarButton (click)="playAudio.emit()">
               {{
@@ -630,18 +630,18 @@
               {{ 'radio.listenProvider' | transloco: { provider: source.label } }}
             </button>
           }
+          @if (!radioQueue() && singlePost(); as postUrl) {
+            <button
+              mbToolbarButton
+              type="button"
+              routerLink="/singles"
+              [queryParams]="{ save: postUrl }"
+              (click)="offerRadio()"
+            >
+              {{ 'statusCard.saveSingle' | transloco }}
+            </button>
+          }
           @if (radioPost(); as postUrl) {
-            @if (!radioQueue() && playlistable()) {
-              <button
-                mbToolbarButton
-                type="button"
-                routerLink="/radio"
-                [queryParams]="{ post: postUrl, add: '1', view: 'playlist' }"
-              >
-                {{ 'radio.addPlaylist' | transloco }}
-              </button>
-            }
-
             <button
               mbToolbarButton
               routerLink="/radio"

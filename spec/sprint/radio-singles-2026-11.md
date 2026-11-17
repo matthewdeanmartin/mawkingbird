@@ -152,3 +152,55 @@ changes.
   touched files, `check:i18n`, and `design:inventory-check` after a reviewed
   regeneration. Deferred to the end of Sprint 2: `make test`, the production
   build, `design-verify`, and the deep-link audit.
+
+### Sprints 2 and 3 (2026-11-17): built, ready for owner testing
+
+Owner decisions this round: the list is called **Saved singles**; Singles that
+can't advance never join a playlist (they play on their own page); playing a
+Single replaces the queue with no resume; settings are a gear on each page.
+
+- Navigation: Singles · Playlists · Studio. The Radio mode opens `/singles`.
+  `RadioHeader` puts the settings shortcut on every Radio page.
+- `/singles` (`singles-page`): Saved singles, browser storage
+  `mockingbird_radio_singles` (account-scoped, in the storage registry, capped at
+  500). Rows: Play (a one-track queue, or the Listen page for Singles that can't
+  advance), Open, Remove, add to a playlist or start one. `?save=<post url>` keeps
+  a post handed over by a card.
+- `/singles/find` (`find-singles-page`): the old Build Playlist search, rehomed.
+  A "Where to look" radio group replaces the overloaded dropdown; saved searches
+  are their own choice; pasted links are a choice instead of the lead textarea.
+  Results: Save single (any recording, including Spotify-style players), Play,
+  Save all results, Play all results. With `?playlist=<id>` it adds to that
+  playlist instead, continuous recordings only. Kept alive as a reading route.
+- `/playlists` (`playlists-page`): library with empty state and New playlist.
+  `/playlists/find`: open a playlist link, scan an account's recent posts with
+  `playlistThreads` (posts with several recordings or self-reply threads), and
+  your own playlist threads (signed in).
+- `/playlists/:id` (`playlist-page`): edits save immediately (no Save button).
+  Play, Shuffle, reorder, rename, remove, Add tracks from saved singles (then
+  Find more), share link, delete, and Publish as thread (moves to Studio in
+  Sprint 4). `/playlists/shared` previews a post/thread or `#playlist=` links
+  read-only, with Play and Save a copy. `PlaylistDraft` now only holds that
+  preview.
+- `/radio` is Now Playing (empty state points to Singles and Playlists) plus
+  settings. Older links forward: `?acct=` → Find singles, `?post=` → shared
+  playlist, `?post&add=1&view=playlist` → save single, `#playlist=` → shared
+  playlist, old tabs → Playlists or Find singles. "Play in Radio" on a post that
+  can't advance opens its Listen page.
+- Cards: "Save single" for any public post with a recording; "Open in Radio" is
+  now "Play in Radio". Profile: "Find their music" → Find singles.
+- Listen: Save single, an add-to-playlist menu, Back falls back to Singles.
+- Guard: `/playlists/shared` (post or fragment) and `/singles/find?acct=` open
+  for signed-out visitors, like the older `/radio` links.
+- `TrackActions.keep` is the one "save as Single, or add to this playlist" path
+  (Find singles, catalogue panel, Listen). `RadioPlaylists.create` makes empty
+  playlists. `RadioPlayer.singlesOf`/`singleTracks`/`isContinuous` describe
+  Singles that can't advance.
+
+Specs: new `saved-singles`, `singles-page`, `find-singles-page` (the old Radio
+page search tests moved here), `playlists-page` and `playlist-page` specs;
+`radio-page.spec` rewritten for Now Playing and link forwarding; nav, shell,
+profile, status card, catalogue panel, guard and app-mode specs updated.
+
+Known gaps: "Saved 1 singles." has no plural handling. YouTube music detection
+and the catalogue additions remain Sprint 5.

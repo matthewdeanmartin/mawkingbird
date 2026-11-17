@@ -1,0 +1,187 @@
+<section class="page">
+  @if (!finding()) {
+    <app-radio-header [heading]="'playlists.title' | transloco">
+      <button mbButton size="small" type="button" (click)="create()">
+        <app-radio-icon name="add" />
+        {{ 'playlists.new' | transloco }}
+      </button>
+      <a mbButton size="small" variant="outline" routerLink="/playlists/find">{{
+        'playlists.find' | transloco
+      }}</a>
+    </app-radio-header>
+    <p class="lead">{{ 'playlists.lead' | transloco }}</p>
+    @if (playlists.error()) {
+      <p role="alert">{{ 'playlists.storageFailed' | transloco }}</p>
+    }
+    @if (playlists.saved().length) {
+      <ul class="rows" [attr.aria-label]="'playlists.title' | transloco">
+        @for (row of playlists.saved(); track row.id) {
+          <li>
+            <div class="row">
+              <a class="track" [routerLink]="['/playlists', row.id]">
+                <span class="track-title">{{ row.name }}</span>
+                <span class="track-meta"
+                  >{{ 'radio.trackCount' | transloco: { count: row.tracks.length } }}
+                  @if (row.published) {
+                    · {{ 'playlists.published' | transloco }}
+                  }
+                </span>
+              </a>
+              <mb-toolbar class="row-actions" density="compact" embedded [label]="row.name">
+                <button
+                  mbToolbarButton
+                  type="button"
+                  [attr.aria-label]="'playlists.play' | transloco: { name: row.name }"
+                  [title]="'playlists.play' | transloco: { name: row.name }"
+                  [disabled]="!row.tracks.length"
+                  (click)="play(row)"
+                >
+                  <app-radio-icon name="play" />
+                </button>
+                <button
+                  mbToolbarButton
+                  type="button"
+                  [attr.aria-label]="'playlists.delete' | transloco: { name: row.name }"
+                  [title]="'playlists.delete' | transloco: { name: row.name }"
+                  (click)="delete(row)"
+                >
+                  <app-radio-icon name="remove" />
+                </button>
+              </mb-toolbar>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else {
+      <mb-content-state
+        [title]="'playlists.empty' | transloco"
+        [description]="'playlists.emptyHint' | transloco"
+      >
+        <button mbButton type="button" (click)="create()">{{ 'playlists.new' | transloco }}</button>
+        <a mbButton variant="outline" routerLink="/singles">{{
+          'playlists.savedSingles' | transloco
+        }}</a>
+        <a mbButton variant="outline" routerLink="/playlists/find">{{
+          'playlists.find' | transloco
+        }}</a>
+      </mb-content-state>
+    }
+  } @else {
+    <app-radio-header [heading]="'playlists.find' | transloco">
+      <a mbButton size="small" variant="outline" routerLink="/playlists">{{
+        'playlists.back' | transloco
+      }}</a>
+    </app-radio-header>
+    <p class="lead">{{ 'playlists.findLead' | transloco }}</p>
+
+    <form class="inline" (ngSubmit)="openLink()">
+      <mb-field
+        [label]="'playlists.link' | transloco"
+        [hint]="'playlists.linkHint' | transloco"
+        [error]="linkError() ? ('playlists.badLink' | transloco) : ''"
+      >
+        <input
+          mbControl
+          name="link"
+          type="url"
+          [ngModel]="link()"
+          (ngModelChange)="link.set($event)"
+        />
+      </mb-field>
+      <button mbButton type="submit" [disabled]="!link().trim()">
+        {{ 'playlists.openLink' | transloco }}
+      </button>
+    </form>
+
+    <h2>{{ 'playlists.fromAccount' | transloco }}</h2>
+    <form class="inline" (ngSubmit)="look()">
+      <mb-field
+        [label]="'playlists.account' | transloco"
+        [hint]="'playlists.accountHint' | transloco"
+      >
+        <input mbControl name="account" [ngModel]="handle()" (ngModelChange)="handle.set($event)" />
+      </mb-field>
+      <button mbButton type="submit" [disabled]="looking() || !handle().trim()">
+        {{ 'playlists.search' | transloco }}
+      </button>
+    </form>
+    @if (looking()) {
+      <p role="status">{{ 'playlists.searching' | transloco }}</p>
+    }
+    @if (lookFailed()) {
+      <p role="alert">{{ 'playlists.lookupFailed' | transloco }}</p>
+    }
+    @if (found(); as threads) {
+      <ul class="rows">
+        @for (thread of threads; track thread.root.id) {
+          @let name = title(thread);
+          <li>
+            <div class="row">
+              <span class="track">
+                <span class="track-title">{{ name }}</span>
+                <span class="track-meta">{{
+                  'playlists.recordings' | transloco: { count: thread.recordings }
+                }}</span>
+              </span>
+              <button mbButton size="small" type="button" (click)="view(thread)">
+                {{ 'playlists.view' | transloco: { name } }}
+              </button>
+            </div>
+          </li>
+        } @empty {
+          <li>{{ 'playlists.none' | transloco }}</li>
+        }
+      </ul>
+    }
+
+    @if (signedIn) {
+      <h2>{{ 'playlists.mine' | transloco }}</h2>
+      <p class="lead">{{ 'playlists.mineHint' | transloco }}</p>
+      <div class="actions">
+        <button
+          mbButton
+          variant="outline"
+          type="button"
+          [disabled]="publisher.finding()"
+          (click)="publisher.find()"
+        >
+          {{ 'radio.findThreads' | transloco }}
+        </button>
+        @if (publisher.finding()) {
+          <span role="status">{{ 'radio.findingThreads' | transloco }}</span>
+        }
+      </div>
+      @if (publisher.found(); as mine) {
+        <ul class="rows">
+          @for (thread of mine; track thread.root.id) {
+            @let name = title(thread);
+            <li>
+              <div class="row">
+                <span class="track">
+                  <span class="track-title">{{ name }}</span>
+                  <span class="track-meta">{{
+                    'playlists.recordings' | transloco: { count: thread.recordings }
+                  }}</span>
+                </span>
+                <button
+                  mbButton
+                  size="small"
+                  variant="outline"
+                  type="button"
+                  (click)="view(thread)"
+                >
+                  {{ 'playlists.view' | transloco: { name } }}
+                </button>
+                <button mbButton size="small" type="button" (click)="adopt(thread)">
+                  {{ 'playlists.adopt' | transloco }}
+                </button>
+              </div>
+            </li>
+          } @empty {
+            <li>{{ 'radio.noThreads' | transloco }}</li>
+          }
+        </ul>
+      }
+    }
+  }
+</section>

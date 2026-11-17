@@ -132,9 +132,20 @@
             <button mbButton variant="outline" size="small" type="button" (click)="playNext()">
               {{ 'listen.playNext' | transloco }}
             </button>
-            <button mbButton variant="outline" size="small" type="button" (click)="addToQueue()">
-              {{ 'listen.addQueue' | transloco }}
+            <button mbButton variant="outline" size="small" type="button" (click)="saveSingle()">
+              {{ 'listen.saveSingle' | transloco }}
             </button>
+            <mb-post-menu
+              [label]="'listen.addQueue' | transloco"
+              [closeLabel]="'radio.closeMenu' | transloco"
+            >
+              @for (row of playlists.saved(); track row.id) {
+                <button mbMenuItem type="button" (click)="addTo(row.id)">{{ row.name }}</button>
+              }
+              <button mbMenuItem type="button" (click)="newPlaylist()">
+                {{ 'listen.newPlaylist' | transloco }}
+              </button>
+            </mb-post-menu>
             <button
               mbButton
               variant="outline"
@@ -186,6 +197,21 @@
           <section class="inline" [attr.aria-label]="'listen.inline' | transloco">
             @if (chosen()) {
               <h3>{{ 'listen.inline' | transloco }}</h3>
+            } @else {
+              <div class="actions secondary">
+                <button
+                  mbButton
+                  variant="outline"
+                  size="small"
+                  type="button"
+                  (click)="saveSingle()"
+                >
+                  {{ 'listen.saveSingle' | transloco }}
+                </button>
+              </div>
+              @if (message()) {
+                <p role="status">{{ message() }}</p>
+              }
             }
             <p class="hint">{{ 'listen.inlineHint' | transloco }}</p>
             @for (source of inline(); track source.key) {

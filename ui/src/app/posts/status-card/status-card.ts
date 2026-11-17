@@ -559,17 +559,29 @@ export class StatusCard {
 
   // i18n statusCard.audioActions: Audio actions
   readonly radioQueue = input(false);
+  /** The keep button's label key where `radioQueue` is set: saving a Single or adding to a playlist. */
+  readonly radioAddLabel = input('radio.addPlaylist');
   readonly radioSources = input<ExternalMedia[]>([]);
   readonly playAudio = output<void>();
   readonly addAudio = output<void>();
   readonly listenRadio = output<ExternalMedia>();
   readonly externalHosts = viewChildren(ExternalPlayerHost);
   readonly showMedia = input(true);
-  // i18n statusCard.openInRadio: Open in Radio
+  // i18n statusCard.openInRadio: Play in Radio
+  // i18n statusCard.saveSingle: Save single
   // Radio only continues through sources that report their end; other players stay inline.
   readonly radioPost = computed(() => {
     const post = this.display;
     if (!['public', 'unlisted'].includes(post.visibility) || !this.playlistable()) return null;
+    return radioPostRef(post.url)?.originalUrl ?? null;
+  });
+  /**
+   * The public link "Save single" keeps: any post with a recording, including
+   * players that only play inline. Radio's own result lists keep posts directly.
+   */
+  readonly singlePost = computed(() => {
+    const post = this.display;
+    if (!['public', 'unlisted'].includes(post.visibility) || !this.listenLink()) return null;
     return radioPostRef(post.url)?.originalUrl ?? null;
   });
   // i18n statusCard.openInListen: Open in Listen

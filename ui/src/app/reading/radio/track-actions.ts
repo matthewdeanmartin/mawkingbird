@@ -5,9 +5,9 @@ import { AppDialogs } from '../../shell/app-dialogs';
 import { Drafts } from '../../publishing/drafts';
 import { CATALOGUE_POST } from './catalogue-search';
 import { PlaylistPublisher } from './playlist-publisher';
-import { RadioPlayer, RadioTrack } from './radio-player';
-import { PlaylistDraft } from './playlist-draft';
+import { isContinuous, RadioPlayer, RadioTrack } from './radio-player';
 import { RadioPlaylists, trackUrl } from './radio-playlists';
+import { SavedSingles } from './saved-singles';
 
 // i18n radio.share.viaLoc: via the Library of Congress
 // i18n radio.share.viaArchive: via the Internet Archive
@@ -16,12 +16,18 @@ import { RadioPlaylists, trackUrl } from './radio-playlists';
 // i18n radio.append.confirm: Add “{{title}}” to “{{playlist}}”? This will create {{posts}} posts and edit {{edits}} on Mastodon.
 // i18n radio.append.private: “{{title}}” is not public, so it cannot join a published playlist.
 // i18n radio.append.done: Added to “{{playlist}}”.
+// i18n radio.keep.saved: Saved {{count}} singles.
+// i18n radio.keep.alreadySaved: Already in your saved singles.
+// i18n radio.keep.saveFailed: This browser could not save your singles.
+// i18n radio.keep.added: Added {{count}} to {{playlist}}.
+// i18n radio.keep.alreadyAdded: Already in {{playlist}}.
+// i18n radio.keep.notContinuous: These recordings play only on their own page, so they can’t join a playlist.
 // i18n radio.append.failed: Could not update “{{playlist}}”. Progress is saved; Update thread in Publish continues it.
 
 /**
  * What a listener can do with one recording wherever it appears: share it in a
- * new post, add it to the playlist being built, or append it to a published
- * playlist thread. Shared by Listen, Radio and Studio's Find Shareable.
+ * new post, save it as a Single, add it to a playlist, or append it to a
+ * published playlist thread. Shared by Listen, Find singles and Studio.
  */
 @Injectable({ providedIn: 'root' })
 export class TrackActions {
@@ -30,7 +36,7 @@ export class TrackActions {
   private readonly transloco = inject(TranslocoService);
   private readonly dialogs = inject(AppDialogs);
   private readonly player = inject(RadioPlayer);
-  private readonly draft = inject(PlaylistDraft);
+  private readonly singles = inject(SavedSingles);
   private readonly playlists = inject(RadioPlaylists);
   private readonly publisher = inject(PlaylistPublisher);
 
@@ -71,9 +77,32 @@ export class TrackActions {
     void this.router.navigate(['/radio/studio']);
   }
 
-  /** Append to the playlist being built; what is playing does not change. */
-  addToPlaylist(tracks: RadioTrack[]): void {
-    this.draft.add(tracks);
+  /**
+   * Keep recordings: as saved Singles, or, given a playlist, at the end of that
+   * playlist, which takes only recordings that play one after another. Returns
+   * what happened, for the listener.
+   */
+  keep(tracks: readonly RadioTrack[], playlistId?: string | null): string {
+    if (!playlistId) {
+      const added = this.singles.save(tracks);
+      if (this.singles.error()) return this.transloco.translate('radio.keep.saveFailed');
+      return this.transloco.translate(added ? 'radio.keep.saved' : 'radio.keep.alreadySaved', {
+        count: added,
+      });
+    }
+    this.playlists.refresh();
+    const row = this.playlists.saved().find((item) => item.id === playlistId);
+    if (!row) return '';
+    const playable = tracks.filter(isContinuous);
+    if (!playable.length) return this.transloco.translate('radio.keep.notContinuous');
+    const known = new Set(row.tracks.map((track) => track.key));
+    const added = playable.filter((track) => !known.has(track.key) && !!known.add(track.key));
+    if (added.length)
+      this.playlists.update(row.id, (item) => ({ ...item, tracks: [...item.tracks, ...added] }));
+    return this.transloco.translate(added.length ? 'radio.keep.added' : 'radio.keep.alreadyAdded', {
+      count: added.length,
+      playlist: row.name,
+    });
   }
 
   /**

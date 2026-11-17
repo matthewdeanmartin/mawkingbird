@@ -418,14 +418,14 @@ describe('StatusCard', () => {
     openTools(fixture);
     const link = () =>
       Array.from(fixture.nativeElement.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>).find(
-        (a) => a.textContent?.includes('Open in Radio'),
+        (a) => a.textContent?.includes('Play in Radio'),
       );
     expect(new URL(link()!.href).searchParams.get('post')).toBe(status.url);
     const radioButtons = fixture.debugElement.queryAll(
       By.css('mb-toolbar.audio-toolbar button[mbToolbarButton][routerLink="/radio"]'),
     );
     const open = radioButtons.find((button) =>
-      button.nativeElement.textContent.includes('Open in Radio'),
+      button.nativeElement.textContent.includes('Play in Radio'),
     )!;
     const visible = open.nativeElement as HTMLButtonElement;
     const route = open.injector.get(RouterLink);
@@ -455,6 +455,11 @@ describe('StatusCard', () => {
       .map((button) => button.injector.get(RouterLink));
     expect(listen).toHaveLength(1);
     expect(listen[0].queryParams).toEqual({ post: status.id, server: expect.any(String) });
+    // And it can be kept as a Single, which plays on that page.
+    const save = fixture.debugElement
+      .queryAll(By.css('mb-toolbar.audio-toolbar button[routerLink="/singles"]'))
+      .map((button) => button.injector.get(RouterLink));
+    expect(save.map((link) => link.queryParams)).toEqual([{ save: status.url }]);
   });
 
   it('offers only the subscribed service when a post links the same song on several', () => {
@@ -496,7 +501,7 @@ describe('StatusCard', () => {
     ]);
     expect(audio[0].getAttribute('preload')).toBe('none');
     expect(fixture.nativeElement.textContent).toContain('Sea Shanty.ogg');
-    expect(fixture.nativeElement.textContent).toContain('Open in Radio');
+    expect(fixture.nativeElement.textContent).toContain('Play in Radio');
   });
 
   /**

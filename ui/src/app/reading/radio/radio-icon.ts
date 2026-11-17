@@ -20,6 +20,10 @@ const PATHS = {
   list: 'M4 6h16M4 12h16M4 18h10',
   edit: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',
   share: 'M4 13v7h16v-7M12 3v12M7 8l5-5 5 5',
+  settings:
+    'M9 3h6l1 3 3 1 2 5-2 5-3 1-1 3H9l-1-3-3-1-2-5 2-5 3-1zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8',
+  save: 'M6 3h12v18l-6-4-6 4z',
+  add: 'M12 5v14M5 12h14',
 } as const;
 export type RadioIconName = keyof typeof PATHS;
 

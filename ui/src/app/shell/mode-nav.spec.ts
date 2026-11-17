@@ -63,27 +63,23 @@ describe('MODE_NAV', () => {
     expect(active('/bookmarks?view=media')).toEqual([]);
   });
 
-  it('keeps the mode navigation slots and promotes Playlist and Settings in Radio', () => {
-    // Radio has dedicated Playlist, player, Studio, and Settings destinations.
-    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' ? 4 : 5);
-    expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual([
-      'playlist',
-      'player',
-      'studio',
-      'settings',
-    ]);
+  it('keeps the mode navigation slots, with Singles, Playlists and Studio in Radio', () => {
+    // Radio is the verb "play": Now Playing is the dock's, settings sit on each page.
+    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' ? 3 : 5);
+    expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['singles', 'playlists', 'studio']);
     expect(MODE_NAV.mastodon[3].id).toBe('search');
     expect(MODE_NAV.video[3].id).toBe('search');
   });
 
-  it('selects a single top-level destination for every Radio view', () => {
+  it('selects at most one top-level destination for every Radio page', () => {
     const active = (url: string) =>
       MODE_NAV.radio.filter((tab) => tab.active(url)).map((tab) => tab.id);
-    for (const view of ['search', 'publish', 'saved', 'mine', 'playlist']) {
-      expect(active('/radio?view=' + view)).toEqual(['playlist']);
-    }
-    expect(active('/radio?view=radio')).toEqual(['player']);
-    expect(active('/radio?view=settings')).toEqual(['settings']);
+    for (const url of ['/singles', '/singles/find?acct=a@b.example', '/listen?post=1'])
+      expect(active(url)).toEqual(['singles']);
+    for (const url of ['/playlists', '/playlists/find', '/playlists/shared#playlist=x'])
+      expect(active(url)).toEqual(['playlists']);
+    expect(active('/radio/studio')).toEqual(['studio']);
+    for (const view of ['radio', 'settings']) expect(active('/radio?view=' + view)).toEqual([]);
   });
 
   it('marks exactly one Forum tab current, whatever the sort or source', () => {
@@ -103,9 +99,19 @@ describe('MODE_NAV', () => {
   });
 
   it('does not claim lookalike paths', () => {
-    expect(MODE_NAV.radio.filter((tab) => tab.active('/radio')).map((tab) => tab.id)).toEqual([
-      'playlist',
-    ]);
+    // Now Playing is reached from the dock, not a tab.
+    expect(MODE_NAV.radio.filter((tab) => tab.active('/radio')).map((tab) => tab.id)).toEqual([]);
+    expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['singles', 'playlists', 'studio']);
+    expect(
+      MODE_NAV.radio.filter((tab) => tab.active('/singles/find')).map((tab) => tab.id),
+    ).toEqual(['singles']);
+    expect(
+      MODE_NAV.radio.filter((tab) => tab.active('/listen?post=1')).map((tab) => tab.id),
+    ).toEqual(['singles']);
+    expect(
+      MODE_NAV.radio.filter((tab) => tab.active('/playlists/abc')).map((tab) => tab.id),
+    ).toEqual(['playlists']);
+    expect(MODE_NAV.radio.some((tab) => tab.active('/singlesx'))).toBe(false);
     expect(
       MODE_NAV.radio.filter((tab) => tab.active('/radio/studio')).map((tab) => tab.id),
     ).toEqual(['studio']);

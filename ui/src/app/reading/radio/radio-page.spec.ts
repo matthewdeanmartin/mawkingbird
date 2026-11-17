@@ -1,40 +1,18 @@
-import { ExternalMedia } from '../audio-embeds/providers';
-import { Component, input, output, signal } from '@angular/core';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
-import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
-import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
-import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
-import {
-  adaptAnonymousAccount,
-  adaptAnonymousStatus,
-} from '../../accounts/anonymous/anonymous-mastodon-provider';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { Api } from '../../platform/api/api';
-import { Auth } from '../../platform/session/auth';
+import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
+import { FollowTrust } from '../../accounts/follow-trust';
+import { TrustedAccounts } from '../../accounts/trusted-accounts';
 import { Status } from '../../platform/api/models';
-import { StatusCard } from '../../posts/status-card/status-card';
+import { Auth } from '../../platform/session/auth';
+import { RadioHandoff } from '../radio-handoff';
+import { Playback } from '../video-player/playback';
 import { RadioPage } from './radio-page';
 import { RADIO_AUDIO, RadioPlayer } from './radio-player';
-import { PlaylistDraft } from './playlist-draft';
-import { playlistFragment, playlistUrls, RadioPlaylists } from './radio-playlists';
-import { RadioHandoff } from '../radio-handoff';
-import { SavedSearches } from '../../discovery/search/saved-searches';
-import { emptySearch } from '../../discovery/search/mawkingbird-search';
-import { serializeMastodonQuery } from '../../discovery/search/mastodon-query-serializer';
-import { Playback } from '../video-player/playback';
-import { TrustedAccounts } from '../../accounts/trusted-accounts';
-import { FollowTrust } from '../../accounts/follow-trust';
-
-@Component({ selector: 'app-status-card', template: '{{ status().id }}' })
-class CardStub {
-  readonly status = input.required<Status>();
-  readonly radioQueue = input(false);
-  readonly radioSources = input<ExternalMedia[]>([]);
-  readonly playAudio = output<void>();
-  readonly addAudio = output<void>();
-  readonly listenRadio = output<ExternalMedia>();
-}
+import { playlistFragment } from './radio-playlists';
 
 /** An audio element whose play() settles, as browsers do; jsdom's returns nothing. */
 function quietAudio(): HTMLAudioElement {
@@ -46,416 +24,26 @@ function quietAudio(): HTMLAudioElement {
 }
 
 describe('RadioPage', () => {
-  it('separates playlist workflows and removes nested navigation from Radio and Settings', () => {
-    const params = new BehaviorSubject(convertToParamMap({ view: 'search' }));
-    TestBed.overrideProvider(ActivatedRoute, { useValue: { snapshot: {}, queryParamMap: params } });
-    const fixture = TestBed.createComponent(RadioPage);
-    const element: HTMLElement = fixture.nativeElement;
-    const show = (view: string) => {
-      params.next(convertToParamMap({ view }));
-      fixture.detectChanges();
-    };
-    show('search');
-    expect(
-      Array.from(element.querySelectorAll('nav a'), (link) => link.textContent?.trim()),
-    ).toEqual(['Build Playlist', 'Publish', 'Saved', 'My Playlists']);
-    expect(element.querySelector('[name="source"]')).not.toBeNull();
-    expect(element.querySelector('[name="playlistName"]')).toBeNull();
-    expect(element.querySelector('.saved')).toBeNull();
-    show('publish');
-    expect(element.querySelector('[name="playlistName"]')).not.toBeNull();
-    expect(element.querySelector('[name="source"]')).toBeNull();
-    expect(element.querySelector('.saved')).toBeNull();
-    expect(element.textContent).not.toContain('Find my playlist threads');
-    show('saved');
-    expect(element.querySelector('.saved')).not.toBeNull();
-    expect(element.querySelector('[name="playlistName"]')).toBeNull();
-    expect(element.querySelector('[name="source"]')).toBeNull();
-    show('mine');
-    expect(element.textContent).toContain('Find my playlist threads');
-    expect(element.querySelector('[name="playlistName"]')).toBeNull();
-    expect(element.querySelector('[name="source"]')).toBeNull();
-    for (const view of ['radio', 'settings']) {
-      show(view);
-      expect(element.querySelector('nav')).toBeNull();
-    }
-    show('playlist');
-    expect(fixture.componentInstance.view()).toBe('publish');
-    expect(element.querySelector('[name="playlistName"]')).not.toBeNull();
-  });
-
-  it('automatically scans a profile through the signed-in server, using the same path as Find audio', async () => {
-    const publicLookup = vi.fn(() => throwError(() => new Error('origin blocks browser requests')));
-    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { lookupAccount: publicLookup } });
-    TestBed.overrideProvider(ActivatedRoute, {
-      useValue: {
-        snapshot: {},
-        queryParamMap: of(convertToParamMap({ acct: 'MaQuest@djs.social' })),
-      },
-    });
-    const fixture = TestBed.createComponent(RadioPage);
-    await fixture.componentInstance.scan.whenIdle();
-    fixture.detectChanges();
-    expect(api.lookupAccount).toHaveBeenCalledWith('MaQuest@djs.social');
-    expect(publicLookup).not.toHaveBeenCalled();
-    expect(fixture.componentInstance.view()).toBe('search');
-    expect(fixture.componentInstance.player.resultTracks()).toHaveLength(1);
-    // Results are offered, not silently added to the playlist or the queue.
-    expect(fixture.componentInstance.draft.tracks()).toEqual([]);
-    expect(fixture.componentInstance.player.queue()).toEqual([]);
-    expect(fixture.componentInstance.failed()).toBe(false);
-    expect(fixture.componentInstance.player.active()).toBe(false);
-  });
-  it('logs an automatic lookup failure and gives a plain retry message', () => {
-    const error = { status: 503, url: 'https://home.example/api/v1/accounts/lookup' };
-    api.lookupAccount.mockReturnValue(throwError(() => error));
-    TestBed.overrideProvider(ActivatedRoute, {
-      useValue: {
-        snapshot: {},
-        queryParamMap: of(convertToParamMap({ acct: 'music@sea.example' })),
-      },
-    });
-    const diagnostics = vi.spyOn(TestBed.inject(PageDiagnostics), 'error');
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain(
-      'Could not load audio. Try Find audio again.',
-    );
-    expect(fixture.nativeElement.textContent).not.toContain('results are retained');
-    expect(diagnostics).toHaveBeenCalledWith('Radio', 'account-lookup:failed', error, {
-      transport: 'signed-in',
-      handle: 'music@sea.example',
-    });
-  });
-  it('opens a shared post anonymously as the playlist being built, without autoplay, and responds to a new link', async () => {
-    const params = new BehaviorSubject(
-      convertToParamMap({ post: 'https://sea.example/@singer/123' }),
-    );
-    const getStatus = vi.fn((ref: { id: string }) =>
-      of({
-        ...audio,
-        id: ref.id,
-        visibility: 'public',
-        url: `https://sea.example/@singer/${ref.id}`,
-        media_attachments: [{ id: 'clip', type: 'audio', url: 'https://sea.example/song.mp3' }],
-      } as Status),
-    );
-    auth.isAnonymous = true;
-    TestBed.overrideProvider(ActivatedRoute, { useValue: { snapshot: {}, queryParamMap: params } });
-    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus } });
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.detectChanges();
-    await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
-    fixture.detectChanges();
-    expect(fixture.componentInstance.draft.tracks()).toHaveLength(1);
-    expect(fixture.componentInstance.player.queue()).toEqual([]);
-    expect(fixture.componentInstance.player.active()).toBe(false);
-    expect(fixture.nativeElement.textContent).not.toContain('Copy Radio link');
-    expect(fixture.componentInstance.view()).toBe('search');
-    expect(api.lookupAccount).not.toHaveBeenCalled();
-    params.next(convertToParamMap({ post: 'https://sea.example/@singer/456' }));
-    await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
-    expect(fixture.componentInstance.scan.posts().map((post) => post.id)).toEqual(['456']);
-    expect(fixture.componentInstance.shareParams()).toEqual({
-      post: 'https://sea.example/@singer/456',
-    });
-  });
-
-  it('plays an in-app Open in Radio post from the handoff as a Single, leaving the playlist being built alone', async () => {
-    const url = 'https://sea.example/@singer/789';
-    const offered = {
-      ...audio,
-      id: '789',
-      visibility: 'public',
-      url,
-      media_attachments: [{ id: 'new', type: 'audio', url: 'https://sea.example/new.mp3' }],
-    } as Status;
-    const getStatus = vi.fn(() => throwError(() => new Error('origin refuses anonymous reads')));
-    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus } });
-    TestBed.overrideProvider(ActivatedRoute, {
-      useValue: {
-        snapshot: {},
-        queryParamMap: of(convertToParamMap({ post: url, add: '1', view: 'radio' })),
-      },
-    });
-    TestBed.overrideProvider(RADIO_AUDIO, { useValue: quietAudio });
-    TestBed.inject(RadioHandoff).offer(offered);
-    const player = TestBed.inject(RadioPlayer);
-    const draft = TestBed.inject(PlaylistDraft);
-    draft.replace(player.tracks(audio));
-    player.playTracks(player.tracks(audio));
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.detectChanges();
-    await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
-    expect(getStatus).not.toHaveBeenCalled();
-    expect(player.queue().map((track) => track.post.id)).toEqual(['789']);
-    expect(draft.tracks().map((track) => track.post.id)).toEqual(['audio']);
-    expect(player.current()?.post.id).toBe('789');
-    expect(player.active()).toBe(true);
-    expect(fixture.componentInstance.failed()).toBe(false);
-    expect(fixture.componentInstance.view()).toBe('radio');
-    player.stop();
-  });
-
-  it('searches a hashtag, keeping link posts unless only native audio is wanted', async () => {
-    const fixture = TestBed.createComponent(RadioPage);
-    const page = fixture.componentInstance;
-    fixture.detectChanges();
-    page.chooseSource('tag');
-    page.tag.set('#robotmusic');
-    expect(page.searchReady()).toBe(true);
-    page.discover();
-    await page.scan.whenIdle();
-    expect(api.tagTimeline).toHaveBeenCalledWith('robotmusic', undefined, 40, false);
-    expect(page.scan.posts().map((post) => post.id)).toEqual(['tagged']);
-    page.tag.set('not a tag!');
-    expect(page.searchReady()).toBe(false);
-  });
-
-  it('reads a hashtag anonymously from the browsing server', async () => {
-    auth.isAnonymous = true;
-    const getTagTimeline = vi.fn(() => of([]));
-    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getTagTimeline } });
-    const fixture = TestBed.createComponent(RadioPage);
-    const page = fixture.componentInstance;
-    fixture.detectChanges();
-    page.chooseSource('tag');
-    page.tag.set('robotmusic');
-    page.discover();
-    await page.scan.whenIdle();
-    expect(getTagTimeline).toHaveBeenCalledWith(
-      expect.stringMatching(/^https:/),
-      'robotmusic',
-      undefined,
-      40,
-      false,
-    );
-    expect(api.tagTimeline).not.toHaveBeenCalled();
-  });
-
-  it('offers the main Search screen’s saved searches and keeps only playable posts', async () => {
-    const saved = TestBed.inject(SavedSearches);
-    const hashtag = saved.save(
-      'Robot music',
-      { ...emptySearch('hashtags'), hashtag: { text: '#robotmusic' } },
-      {
-        instance: 'https://home.example',
-        authenticated: true,
-      },
-    );
-    const posts = saved.save(
-      'Banjo posts',
-      { ...emptySearch('posts'), post: { words: 'banjo' } },
-      {
-        instance: 'https://home.example',
-        authenticated: true,
-      },
-    );
-    saved.save('People', emptySearch('accounts'), { instance: '', authenticated: true });
-    if (!hashtag.ok || !posts.ok) throw new Error('save failed');
-    api.search.mockImplementation((_q: string, _type: string, options: { offset: number }) =>
-      of({ accounts: [], hashtags: [], statuses: options.offset ? [] : [audio] }),
-    );
-    const fixture = TestBed.createComponent(RadioPage);
-    const page = fixture.componentInstance;
-    fixture.detectChanges();
-    // Account searches cannot find posts, so they are not offered.
-    expect(page.savedSearches().map((item) => item.name)).toEqual(['Banjo posts', 'Robot music']);
-    page.chooseSource(`saved:${hashtag.saved.id}`);
-    await page.scan.whenIdle();
-    expect(page.source()).toBe('tag');
-    expect(api.tagTimeline).toHaveBeenCalledWith('robotmusic', undefined, 40, false);
-    page.chooseSource(`saved:${posts.saved.id}`);
-    await page.scan.whenIdle();
-    expect(page.sourceChoice()).toBe(`saved:${posts.saved.id}`);
-    // The same serialization the main Search screen sends.
-    expect(api.search).toHaveBeenCalledWith(
-      serializeMastodonQuery({ words: 'banjo' }),
-      'statuses',
-      { limit: 40, offset: 0 },
-    );
-    expect(page.scan.posts().map((post) => post.id)).toEqual(['audio']);
-    for (const item of saved.all()) saved.delete(item.id);
-  });
-
-  it('shows the catalogue search in place of feed results for a catalogue source', () => {
-    const fixture = TestBed.createComponent(RadioPage);
-    const page = fixture.componentInstance;
-    fixture.detectChanges();
-    page.chooseSource('loc');
-    fixture.detectChanges();
-    expect(page.catalogueSource()).toBe('loc');
-    expect(fixture.nativeElement.querySelector('app-catalogue-panel')).toBeTruthy();
-    expect(fixture.nativeElement.textContent).not.toContain('Find audio');
-  });
-
-  it('says when there are no saved playlists instead of a bare, double-titled list', () => {
-    TestBed.overrideProvider(ActivatedRoute, {
-      useValue: { snapshot: {}, queryParamMap: of(convertToParamMap({ view: 'saved' })) },
-    });
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.detectChanges();
-    const root = fixture.nativeElement as HTMLElement;
-    expect(root.textContent).toContain('No saved playlists yet');
-    expect(root.querySelector('h3')).toBeNull();
-    expect(root.querySelector('ul.saved')?.getAttribute('aria-label')).toBe('Saved playlists');
-  });
-
-  it('asks for a playlist first when Radio has nothing to play', () => {
-    TestBed.overrideProvider(ActivatedRoute, {
-      useValue: { snapshot: {}, queryParamMap: of(convertToParamMap({ view: 'radio' })) },
-    });
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.componentInstance.draft.clear();
-    fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Build a playlist first.');
-    expect(
-      Array.from(
-        fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>,
-      ).some((button) => button.textContent?.trim() === 'Build a playlist'),
-    ).toBe(true);
-  });
-
-  it('keeps playing and keeps edits when returning to an address whose fragment is the playlist being built', () => {
-    const fragment = new BehaviorSubject('');
-    TestBed.overrideProvider(ActivatedRoute, {
-      useValue: {
-        snapshot: {},
-        queryParamMap: of(convertToParamMap({ view: 'radio' })),
-        fragment,
-      },
-    });
-    TestBed.overrideProvider(RADIO_AUDIO, { useValue: quietAudio });
-    const player = TestBed.inject(RadioPlayer);
-    const song = {
-      ...audio,
-      id: 'song',
-      visibility: 'public',
-      url: 'https://sea.example/@singer/1',
-      media_attachments: [{ id: 'm', type: 'audio', url: 'https://sea.example/song.mp3' }],
-    } as Status;
-    const draft = TestBed.inject(PlaylistDraft);
-    draft.replace(player.tracks(song));
-    player.playTracks(draft.tracks());
-    const queue = player.queue();
-    const tracks = draft.tracks();
-    const importUrls = vi.spyOn(TestBed.inject(RadioPlaylists), 'importUrls');
-    fragment.next(playlistFragment(playlistUrls(tracks)));
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.detectChanges();
-    expect(fixture.componentInstance.importing()).toBe(false);
-    expect(importUrls).not.toHaveBeenCalled();
-    expect(player.queue()).toBe(queue);
-    expect(draft.tracks()).toBe(tracks);
-    expect(player.active()).toBe(true);
-    player.stop();
-  });
-
-  it('explains a post Radio cannot continue through instead of silently showing Search', async () => {
-    const url = 'https://sea.example/@singer/790';
-    const inline = {
-      ...audio,
-      id: '790',
-      visibility: 'public',
-      url,
-      media_attachments: [],
-      content: '<a href="https://open.spotify.com/track/abc123">Music</a>',
-    } as Status;
-    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus: () => of(inline) } });
-    TestBed.overrideProvider(ActivatedRoute, {
-      useValue: {
-        snapshot: {},
-        queryParamMap: of(convertToParamMap({ post: url, add: '1', view: 'radio' })),
-      },
-    });
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.detectChanges();
-    await vi.waitFor(() => expect(fixture.componentInstance.importing()).toBe(false));
-    fixture.detectChanges();
-    expect(fixture.componentInstance.view()).toBe('search');
-    expect(fixture.nativeElement.textContent).toContain(
-      'This post has no audio that Radio can play continuously.',
-    );
-    expect(fixture.componentInstance.scan.posts().map((post) => post.id)).toEqual(['790']);
-  });
-
-  it('resolves a shared account at its origin and paginates with raw server IDs', async () => {
-    const accountRef = { server: 'https://sea.example', id: '17' };
-    const publicApi = {
-      lookupAccount: vi.fn(() =>
-        of(
-          adaptAnonymousAccount(
-            { id: '17', acct: 'singer', username: 'singer' } as Status['account'],
-            accountRef.server,
-          ),
-        ),
-      ),
-      getAccountStatuses: vi.fn((_: unknown, opts: { maxId?: string }) =>
-        of(opts.maxId ? [] : [adaptAnonymousStatus({ ...audio, id: '123' }, accountRef.server)]),
-      ),
-    };
-    auth.isAnonymous = true;
-    TestBed.overrideProvider(ActivatedRoute, {
-      useValue: {
-        snapshot: {},
-        queryParamMap: of(convertToParamMap({ acct: 'singer@sea.example' })),
-      },
-    });
-    TestBed.overrideProvider(AnonymousPublicApi, { useValue: publicApi });
-    const fixture = TestBed.createComponent(RadioPage);
-    await fixture.componentInstance.scan.whenIdle();
-    expect(publicApi.lookupAccount).toHaveBeenCalledWith('https://sea.example', 'singer');
-    expect(publicApi.getAccountStatuses).toHaveBeenNthCalledWith(
-      2,
-      accountRef,
-      expect.objectContaining({ maxId: '123' }),
-    );
-    expect(fixture.componentInstance.player.active()).toBe(false);
-    expect(fixture.componentInstance.shareParams()).toEqual({ acct: 'singer@sea.example' });
-  });
   const audio = {
     id: 'audio',
+    url: 'https://sea.example/@singer/1',
+    visibility: 'public',
     account: { acct: 'music' },
-    media_attachments: [{ type: 'audio', url: 'https://audio.example/song.mp3' }],
+    media_attachments: [{ id: 'm', type: 'audio', url: 'https://audio.example/song.mp3' }],
   } as Status;
-  let api: {
-    lookupAccount: ReturnType<typeof vi.fn>;
-    getAccountStatuses: ReturnType<typeof vi.fn>;
-    homeTimelinePage: ReturnType<typeof vi.fn>;
-    listTimeline: ReturnType<typeof vi.fn>;
-    lists: ReturnType<typeof vi.fn>;
-    tagTimeline: ReturnType<typeof vi.fn>;
-    search: ReturnType<typeof vi.fn>;
-  };
-  let auth: { isAnonymous: boolean; isBlueskyPrimary: boolean };
+  let navigate: { mock: { calls: unknown[][] } } & ((...args: unknown[]) => unknown);
 
   beforeEach(() => {
-    auth = { isAnonymous: false, isBlueskyPrimary: false };
-    api = {
-      lookupAccount: vi.fn(() => of({ id: 'account' })),
-      getAccountStatuses: vi.fn((_: string, opts: { maxId?: string }) =>
-        of(opts.maxId ? [] : [audio]),
-      ),
-      homeTimelinePage: vi.fn(() => of({ statuses: [audio], nextMaxId: null })),
-      listTimeline: vi.fn((_: string, cursor?: string) => of(cursor ? [] : [audio])),
-      lists: vi.fn(() => of([{ id: 'list', title: 'Music' }])),
-      search: vi.fn(() => of({ accounts: [], hashtags: [], statuses: [] })),
-      tagTimeline: vi.fn((_: string, cursor?: string) =>
-        of(
-          cursor
-            ? []
-            : [{ ...audio, id: 'tagged', content: '<a href="https://soundcloud.com/a/b">x</a>' }],
-        ),
-      ),
-    };
     TestBed.configureTestingModule({
       providers: [
-        // Radio navigates to itself to keep its address shareable.
-        provideRouter([{ path: 'radio', children: [] }]),
-        { provide: Api, useValue: api },
+        provideRouter([]),
         {
           provide: Auth,
-          useValue: Object.assign(auth, { kind: signal('mastodon'), token: signal('test') }),
+          useValue: {
+            isAnonymous: false,
+            kind: signal('mastodon'),
+            token: signal('test'),
+          },
         },
         { provide: Playback, useValue: { register: () => () => undefined, started: vi.fn() } },
         {
@@ -463,127 +51,115 @@ describe('RadioPage', () => {
           useValue: { cwExpanded: () => false, sensitiveShown: () => false },
         },
         { provide: FollowTrust, useValue: { revision: signal(0) } },
+        { provide: RADIO_AUDIO, useValue: quietAudio },
       ],
     });
-    TestBed.overrideComponent(RadioPage, {
-      remove: { imports: [StatusCard] },
-      add: { imports: [CardStub] },
-    });
   });
 
-  it('waits for an explicit action, resolves an account, and discovers only its media', async () => {
+  /** `before` runs once the route is set, when services may first be injected. */
+  function open(params: Record<string, string>, fragment = '', before?: () => void) {
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: { snapshot: { fragment }, queryParamMap: of(convertToParamMap(params)) },
+    });
+    before?.();
+    navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true) as never;
     const fixture = TestBed.createComponent(RadioPage);
     fixture.detectChanges();
-    expect(api.lookupAccount).not.toHaveBeenCalled();
-    expect(fixture.nativeElement.querySelector('select[mbControl]')).toBeTruthy();
-    const page = fixture.componentInstance;
-    page.handle.set('@music@server.example');
-    page.discover();
-    await fixture.whenStable();
-    fixture.detectChanges();
-    expect(api.lookupAccount).toHaveBeenCalledWith('music@server.example');
-    expect(api.getAccountStatuses).toHaveBeenNthCalledWith(1, 'account', {
-      maxId: undefined,
-      limit: 40,
-      onlyMedia: false,
-      excludeReblogs: true,
-    });
-    expect(page.scan.posts()).toEqual([audio]);
-    expect(fixture.nativeElement.textContent).toContain('Reached the end');
+    return fixture;
+  }
+
+  it('says nothing is playing and points to Singles and Playlists, with no tabs', () => {
+    const fixture = open({});
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('h1')?.textContent).toContain('Now playing');
+    expect(root.textContent).toContain('Nothing is playing');
+    expect(Array.from(root.querySelectorAll('a'), (link) => link.getAttribute('href'))).toEqual(
+      expect.arrayContaining(['/singles', '/playlists', '/radio?view=settings']),
+    );
+    expect(root.querySelector('nav')).toBeNull();
+    expect(navigate).not.toHaveBeenCalled();
   });
 
-  it('finds external players by default and restricts every feed to native audio on request', async () => {
-    const linked = {
+  it('shows Radio settings', () => {
+    const fixture = open({ view: 'settings' });
+    expect(fixture.nativeElement.querySelector('app-radio-settings')).toBeTruthy();
+    expect(fixture.componentInstance.player.fullView()).toBe(false);
+  });
+
+  it.each([
+    [{ acct: 'singer@sea.example' }, '', ['/singles', 'find'], { acct: 'singer@sea.example' }],
+    [
+      { post: 'https://sea.example/@singer/1' },
+      '',
+      ['/playlists', 'shared'],
+      { post: 'https://sea.example/@singer/1' },
+    ],
+    [
+      { post: 'https://sea.example/@singer/1', add: '1', view: 'playlist' },
+      '',
+      ['/singles'],
+      { save: 'https://sea.example/@singer/1' },
+    ],
+    [{ view: 'search' }, '', ['/singles', 'find'], {}],
+    [{ view: 'publish' }, '', ['/playlists'], {}],
+    [{ view: 'saved' }, '', ['/playlists'], {}],
+    [{ view: 'mine' }, '', ['/playlists'], {}],
+  ])('forwards an older Radio link %o to its new page', (params, fragment, path, queryParams) => {
+    open(params, fragment);
+    expect(navigate).toHaveBeenCalledWith(
+      path,
+      expect.objectContaining({ queryParams, replaceUrl: true }),
+    );
+  });
+
+  it('forwards a shared playlist fragment to the shared playlist page', () => {
+    const fragment = playlistFragment(['https://sea.example/song.mp3']);
+    open({}, fragment);
+    expect(navigate).toHaveBeenCalledWith(
+      ['/playlists', 'shared'],
+      expect.objectContaining({ fragment, replaceUrl: true }),
+    );
+  });
+
+  it('plays an in-app Play in Radio post from the handoff as a Single', async () => {
+    const url = 'https://sea.example/@singer/789';
+    const offered = { ...audio, id: '789', url } as Status;
+    const getStatus = vi.fn(() => throwError(() => new Error('origin refuses anonymous reads')));
+    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus } });
+    let player!: RadioPlayer;
+    const fixture = open({ post: url, add: '1', view: 'radio' }, '', () => {
+      TestBed.inject(RadioHandoff).offer(offered);
+      player = TestBed.inject(RadioPlayer);
+      player.playTracks(player.tracks(audio));
+    });
+    await vi.waitFor(() => expect(fixture.componentInstance.opening()).toBe(false));
+    expect(getStatus).not.toHaveBeenCalled();
+    expect(player.queue().map((track) => track.post.id)).toEqual(['789']);
+    expect(player.active()).toBe(true);
+    expect(fixture.componentInstance.failed()).toBe(false);
+    expect(navigate).toHaveBeenCalledWith(
+      ['/radio'],
+      expect.objectContaining({ replaceUrl: true }),
+    );
+    player.stop();
+  });
+
+  it('opens a post Radio cannot continue through on its own Listen page', async () => {
+    const url = 'https://sea.example/@singer/790';
+    const inline = {
       ...audio,
-      id: 'linked',
+      id: '790',
+      url,
       media_attachments: [],
       content: '<a href="https://open.spotify.com/track/abc123">Music</a>',
     } as Status;
-    const video = {
-      ...linked,
-      id: 'video',
-      content: '<a href="https://youtu.be/abcdefghijk">Video</a>',
-    };
-    const music = {
-      ...linked,
-      id: 'music',
-      content: '<a href="https://music.youtube.com/watch?v=z71d3cWLwsw">Sea shanty</a>',
-    };
-    api.homeTimelinePage.mockReturnValue(
-      of({ statuses: [audio, linked, video, music], nextMaxId: null }),
+    TestBed.overrideProvider(AnonymousPublicApi, { useValue: { getStatus: () => of(inline) } });
+    const fixture = open({ post: url, add: '1', view: 'radio' });
+    await vi.waitFor(() => expect(fixture.componentInstance.opening()).toBe(false));
+    expect(fixture.componentInstance.player.active()).toBe(false);
+    expect(navigate).toHaveBeenCalledWith(
+      ['/listen'],
+      expect.objectContaining({ queryParams: expect.objectContaining({ post: '790' }) }),
     );
-    const fixture = TestBed.createComponent(RadioPage);
-    const page = fixture.componentInstance;
-    fixture.detectChanges();
-    const nativeFilter = Array.from(
-      fixture.nativeElement.querySelectorAll('mb-checkbox') as NodeListOf<HTMLElement>,
-    ).find((checkbox) => checkbox.textContent?.includes('Native Mastodon audio only'))!;
-    expect(nativeFilter.querySelector('input')!.checked).toBe(false);
-    page.chooseSource('home');
-    page.discover();
-    await fixture.whenStable();
-    expect(page.scan.posts()).toEqual([audio, linked, music]);
-    page.changeNativeOnly(true);
-    expect(page.scan.posts()).toEqual([]);
-    expect(page.started()).toBe(false);
-    page.discover();
-    await fixture.whenStable();
-    expect(page.scan.posts()).toEqual([audio]);
-    page.chooseSource('account');
-    page.handle.set('music');
-    page.discover();
-    await fixture.whenStable();
-    expect(api.getAccountStatuses).toHaveBeenCalledWith(
-      'account',
-      expect.objectContaining({ onlyMedia: true }),
-    );
-  });
-
-  it('places scan continuation before the progress count', () => {
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.componentInstance.started.set(true);
-    fixture.componentInstance.scanReady.set(true);
-    fixture.detectChanges();
-    const more = Array.from(
-      fixture.nativeElement.querySelectorAll('button') as NodeListOf<HTMLButtonElement>,
-    ).find((button) => button.textContent?.includes('Continue scanning'))!;
-    const progress = fixture.nativeElement.querySelector('section.radio-page > p[role="status"]');
-    expect(progress.textContent).toContain('Scanned');
-    expect(more.compareDocumentPosition(progress) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  });
-
-  it('uses the home pagination cursor and loads lists only on selection', async () => {
-    const fixture = TestBed.createComponent(RadioPage);
-    const page = fixture.componentInstance;
-    expect(api.lists).not.toHaveBeenCalled();
-    page.chooseSource('home');
-    page.discover();
-    await fixture.whenStable();
-    expect(api.homeTimelinePage).toHaveBeenCalledWith(undefined);
-    page.chooseSource('list');
-    expect(page.lists()).toEqual([{ id: 'list', title: 'Music' }]);
-    page.listId.set('list');
-    page.discover();
-    await fixture.whenStable();
-    expect(api.listTimeline).toHaveBeenCalledWith('list', undefined, 40);
-    expect(api.listTimeline).toHaveBeenCalledWith('list', 'audio', 40);
-  });
-
-  it('cancels account resolution when leaving and prevents anonymous API calls', () => {
-    const pending = new Subject<{ id: string }>();
-    api.lookupAccount.mockReturnValue(pending);
-    const fixture = TestBed.createComponent(RadioPage);
-    fixture.componentInstance.handle.set('music');
-    fixture.componentInstance.discover();
-    fixture.destroy();
-    expect(pending.observed).toBe(false);
-    expect(api.getAccountStatuses).not.toHaveBeenCalled();
-    auth.isAnonymous = true;
-    const anonymous = TestBed.createComponent(RadioPage);
-    anonymous.detectChanges();
-    anonymous.componentInstance.chooseSource('list');
-    anonymous.componentInstance.discover();
-    expect(api.lists).not.toHaveBeenCalled();
-    expect(anonymous.nativeElement.textContent).toContain('Account handle');
   });
 });

@@ -2,7 +2,6 @@ import { Component, computed, inject, input, linkedSignal, signal } from '@angul
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { AppDialogs } from '../../shell/app-dialogs';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbControl, MbField } from '../../design-system/field/field';
@@ -16,7 +15,6 @@ import {
 } from './catalogue-search';
 import { RadioDock } from './radio-dock';
 import { RadioPlayer, RadioTrack } from './radio-player';
-import { PlaylistDraft } from './playlist-draft';
 import { RadioPlaylists } from './radio-playlists';
 import { TrackActions } from './track-actions';
 
@@ -33,12 +31,12 @@ import { TrackActions } from './track-actions';
 // i18n radio.catalogue.select: Select {{title}}
 // i18n radio.catalogue.preview: Play
 // i18n radio.catalogue.add: Add to playlist
+// i18n radio.catalogue.save: Save single
+// i18n radio.catalogue.saveSelected: Save {{count}} selected
+// i18n radio.catalogue.newPlaylist: New playlist from {{count}} selected
 // i18n radio.catalogue.share: Share
 // i18n radio.catalogue.append: Add to a published playlist
 // i18n radio.catalogue.addSelected: Add {{count}} selected to playlist
-// i18n radio.catalogue.playlistSelected: Make a playlist from {{count}} selected
-// i18n radio.catalogue.replaceConfirm: Replace the playlist you are building with {{count}} selected recordings?
-// i18n radio.catalogue.added: Added {{count}} recordings to the playlist.
 // i18n radio.catalogue.unplayable: No playable recording was found in “{{title}}”.
 // i18n radio.catalogue.opening: Finding recordings…
 // i18n radio.catalogue.open: Open the catalogue page
@@ -110,17 +108,22 @@ import { TrackActions } from './track-actions';
     @if (selected().size) {
       <div class="bulk">
         <button mbButton type="button" [disabled]="opening()" (click)="addSelected()">
-          {{ 'radio.catalogue.addSelected' | transloco: { count: selected().size } }}
+          {{
+            (target() ? 'radio.catalogue.addSelected' : 'radio.catalogue.saveSelected')
+              | transloco: { count: selected().size }
+          }}
         </button>
-        <button
-          mbButton
-          variant="outline"
-          type="button"
-          [disabled]="opening()"
-          (click)="playlistSelected()"
-        >
-          {{ 'radio.catalogue.playlistSelected' | transloco: { count: selected().size } }}
-        </button>
+        @if (!target()) {
+          <button
+            mbButton
+            variant="outline"
+            type="button"
+            [disabled]="opening()"
+            (click)="playlistSelected()"
+          >
+            {{ 'radio.catalogue.newPlaylist' | transloco: { count: selected().size } }}
+          </button>
+        }
       </div>
     }
     <ul class="results">
@@ -176,7 +179,7 @@ import { TrackActions } from './track-actions';
                 [disabled]="opening()"
                 (click)="add(item)"
               >
-                {{ 'radio.catalogue.add' | transloco }}
+                {{ (target() ? 'radio.catalogue.add' : 'radio.catalogue.save') | transloco }}
               </button>
               @if (actions.published().length) {
                 <mb-post-menu
@@ -267,8 +270,10 @@ import { TrackActions } from './track-actions';
 export class CataloguePanel {
   /** Fixed by the host (Build Playlist's Audio source), or chosen in the panel. */
   readonly source = input<CatalogueSource | null>(null);
-  /** `share` (Studio) leads with Share; `build` (Build Playlist) leads with collecting. */
+  /** `share` (Studio) leads with Share; `build` (Find singles) leads with keeping. */
   readonly mode = input<'build' | 'share'>('build');
+  /** A playlist to add to; without one, kept recordings become saved Singles. */
+  readonly target = input<string | null>(null);
   readonly sources = CATALOGUE_SOURCES;
   readonly chosen = linkedSignal<CatalogueSource>(() => this.source() ?? 'loc');
   readonly query = signal('');
@@ -284,9 +289,7 @@ export class CataloguePanel {
   readonly actions = inject(TrackActions);
   private readonly catalogue = inject(CatalogueSearch);
   private readonly player = inject(RadioPlayer);
-  private readonly draft = inject(PlaylistDraft);
   private readonly playlists = inject(RadioPlaylists);
-  private readonly dialogs = inject(AppDialogs);
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
   private readonly resolved = new Map<string, Promise<RadioTrack[]>>();
@@ -346,8 +349,7 @@ export class CataloguePanel {
   async add(item: CatalogueItem): Promise<void> {
     const tracks = await this.open(item);
     if (!tracks.length) return;
-    this.actions.addToPlaylist(tracks);
-    this.message.set(this.transloco.translate('radio.catalogue.added', { count: tracks.length }));
+    this.message.set(this.actions.keep(tracks, this.target()));
   }
   async append(item: CatalogueItem, rowId: string): Promise<void> {
     const [first] = await this.open(item);
@@ -357,25 +359,17 @@ export class CataloguePanel {
   async addSelected(): Promise<void> {
     const tracks = await this.selectedTracks();
     if (!tracks.length) return;
-    this.actions.addToPlaylist(tracks);
-    this.message.set(this.transloco.translate('radio.catalogue.added', { count: tracks.length }));
+    this.message.set(this.actions.keep(tracks, this.target()));
     this.selected.set(new Set());
   }
 
-  /** The selection becomes the playlist being built, ready to name and publish. */
+  /** The selection becomes a new saved playlist, opened to name and play. */
   async playlistSelected(): Promise<void> {
     const tracks = await this.selectedTracks();
     if (!tracks.length) return;
-    if (
-      this.draft.tracks().length &&
-      !(await this.dialogs.confirm(
-        this.transloco.translate('radio.catalogue.replaceConfirm', { count: tracks.length }),
-      ))
-    )
-      return;
-    this.draft.replace(tracks);
-    this.playlists.active.set(null);
-    void this.router.navigate(['/radio'], { queryParams: { view: 'publish' } });
+    const name = this.transloco.translate('playlists.untitled');
+    const id = this.playlists.create(name, tracks);
+    if (id) void this.router.navigate(['/playlists', id]);
   }
 
   private async selectedTracks(): Promise<RadioTrack[]> {

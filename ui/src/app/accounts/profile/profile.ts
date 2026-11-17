@@ -378,7 +378,7 @@ export class Profile implements OnInit, OnDestroy {
   /** Post count and speed from a `?slideshow=1&posts=10&speed=3` deep link. */
   protected slideshowOptions = signal<SlideshowOptions | null>(null);
   protected readonly qualifiedHandle = qualifiedHandle;
-  // i18n pages.profile.actions.openInRadio: Open in Radio
+  // i18n pages.profile.actions.openInRadio: Find their music
   protected radioHandle = computed(() => {
     const account = this.account();
     if (!account || this.isRss() || this.isTwitter() || this.isBluesky() || this.isOpenRouter())
