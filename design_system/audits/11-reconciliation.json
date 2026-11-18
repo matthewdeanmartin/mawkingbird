@@ -3401,6 +3401,11 @@
       "file": "ui/src/app/public-pages/youtubers/youtuber-kit.ts",
       "disposition": "adopted scope",
       "nextStep": "Public page: MbButton for Open the app and Follow and subscribe in Mawkingbird; MbContentLink for creators, other kits, language versions, contact and footer, as on /follow/<slug>/. Creator rows (avatar, handle, badge, bio, channel, video links) and the FAQ are local content."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-more.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Section with Navigation rows (MbNavLink, native routerLinks) from the public Twitter pages into Unbird's tabs; shown only once an archive is loaded. Only the description line's colour is local."
     }
   ]
 }

@@ -74,6 +74,11 @@ export const authGuard: CanActivateFn = (_route, state) => {
   // posts (`…/<id>`): read from the author's own server, so nothing here needs
   // a session. Not /blog/me.
   const publicBlog = /^\/blog(\/@[^/@]+@[^/@]+(\/[A-Za-z0-9]+)?|\/search)?\/?$/.test(link.pathname);
+  // Unbird, Twitter to Mastodon (spec/sprint/unbird-2026-11.md): the archive is
+  // read on the device and people are found with public searches, so a link
+  // from the public Twitter pages, or a shared /unbird/, needs no account.
+  // Posts and Profile ask for one themselves, after the visitor has seen results.
+  const publicUnbird = /^\/unbird(\/(people|posts|archive|profile))?\/?$/.test(link.pathname);
   const segments = router.parseUrl(state.url ?? '/').root.children['primary']?.segments ?? [];
   const parts = segments.map((segment) => segment.path);
   const copiedLink =
@@ -96,6 +101,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
     youtuberKits ||
     publicBlueskyPage ||
     publicBlog ||
+    publicUnbird ||
     copiedLink ||
     /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
   ) {

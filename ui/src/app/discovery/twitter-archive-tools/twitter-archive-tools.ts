@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { LanguageVersions } from '../../public-pages/focused-apps/language-versions';
 import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
 import { UnbirdArchiveTools } from '../../unbird/unbird-archive-tools';
+import { UnbirdMore } from '../../unbird/unbird-more';
 
 /**
  * Twitter archive tools as a public page: the door for people who have the
@@ -22,6 +23,7 @@ import { UnbirdArchiveTools } from '../../unbird/unbird-archive-tools';
     MbContentLink,
     LanguageVersions,
     UnbirdArchiveTools,
+    UnbirdMore,
   ],
   templateUrl: './twitter-archive-tools.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',

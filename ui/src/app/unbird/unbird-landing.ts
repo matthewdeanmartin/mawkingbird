@@ -2,6 +2,7 @@ import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDisclosure } from '../design-system/disclosure/disclosure';
 import { UnbirdDrop } from './unbird-drop';
+import { UnbirdMore } from './unbird-more';
 import { UnbirdMatcher } from './unbird-matcher';
 import { UnbirdPeople } from './unbird-people';
 import { UnbirdServers } from './unbird-servers';
@@ -23,7 +24,7 @@ import { UnbirdServers } from './unbird-servers';
  */
 @Component({
   selector: 'app-unbird-landing',
-  imports: [MbDisclosure, TranslocoPipe, UnbirdDrop, UnbirdPeople, UnbirdServers],
+  imports: [MbDisclosure, TranslocoPipe, UnbirdDrop, UnbirdMore, UnbirdPeople, UnbirdServers],
   template: `
     <app-unbird-drop (loaded)="started()" />
     @if (matcher.archive()) {
@@ -31,6 +32,7 @@ import { UnbirdServers } from './unbird-servers';
       @if (via() === 'public') {
         <app-unbird-servers />
       }
+      <app-unbird-more exclude="people" />
     }
     @if (classic()) {
       <mb-disclosure class="classic" [label]="'unbird.landing.classic' | transloco">

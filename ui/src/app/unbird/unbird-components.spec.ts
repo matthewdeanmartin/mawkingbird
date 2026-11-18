@@ -12,6 +12,7 @@ import type { UnbirdArchive } from './unbird-archive';
 import { UnbirdArchiveTools } from './unbird-archive-tools';
 import { UnbirdDrop } from './unbird-drop';
 import { UnbirdMatcher } from './unbird-matcher';
+import { UnbirdMore } from './unbird-more';
 import { UnbirdPeople } from './unbird-people';
 import { UnbirdStore } from './unbird-store';
 
@@ -245,5 +246,19 @@ describe('Unbird components', () => {
     everyone.click();
     fixture.detectChanges();
     expect(offered()).toEqual(['@ada@hachyderm.io', '@quiet@hachyderm.io']);
+  });
+
+  it('leads from a public page into the rest of Unbird once an archive is loaded', async () => {
+    const matcher = setup();
+    const fixture = TestBed.createComponent(UnbirdMore);
+    fixture.componentRef.setInput('exclude', 'archive');
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    expect(root.querySelector('nav')).toBeNull();
+
+    await matcher.use(archive(), []);
+    fixture.detectChanges();
+    const links = [...root.querySelectorAll('a')].map((a) => a.getAttribute('href'));
+    expect(links).toEqual(['/unbird/posts', '/unbird/profile', '/unbird/people', '/unbird']);
   });
 });

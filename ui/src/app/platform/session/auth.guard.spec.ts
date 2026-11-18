@@ -63,6 +63,13 @@ describe('authGuard', () => {
     '/blog/@alice@gts.example/01HXYZ',
     '/blog/search',
     '/blog/search?q=bees',
+    // Unbird: reached from the public Twitter pages, or shared.
+    '/unbird',
+    '/unbird/',
+    '/unbird/people',
+    '/unbird/posts',
+    '/unbird/archive',
+    '/unbird/profile/',
     // The search tool pages hand their query here; no front page in between.
     '/search',
     '/search?q=coffee&type=statuses',
@@ -73,6 +80,14 @@ describe('authGuard', () => {
     expect(TestBed.inject(Auth).isAnonymous).toBe(true);
     expect(TestBed.inject(Server).baseUrl()).toBe('https://mastodon.social');
   });
+
+  it.each(['/unbirds', '/unbird/settings', '/unbird/people/extra'])(
+    'keeps look-alike Unbird paths behind the front door: %s',
+    (url) => {
+      const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
+      expect(result).not.toBe(true);
+    },
+  );
 
   it('preserves the chosen instance for a legacy numeric content link', () => {
     TestBed.inject(Server).setBaseUrl('https://example.social');

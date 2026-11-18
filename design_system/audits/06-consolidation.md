@@ -2920,3 +2920,9 @@ MbContentLink on the /follow/ page styles and are reconciled as adopted scope.
 Quote moderation (2026-11-18): moved quote revocation from the quote card into
 the existing destructive post menu, with confirmation. Reviewed inventory line
 shifts; candidate counts and reconciliation dispositions are unchanged.
+
+Unbird public entry (2026-11-18): reviewed regenerated inventory: 1994 scanned
+files, 681 candidate files (other files in the tree changed too). One new
+Unbird file, `unbird-more.ts`, adopted scope: Section and Navigation rows
+linking `/twitter-to-mastodon/` and `/twitter-archive-tools/` into
+`/unbird/*`. No shared widget changed.
