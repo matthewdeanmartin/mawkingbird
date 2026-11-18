@@ -70,6 +70,24 @@ The runner starts and stops an in-memory server on a free local port. It does
 not use the sibling mock-server checkout. These are HTTP integration tests,
 not browser click-through tests. See [Contributing](../docs/contributing.md).
 
+### Checking mastodon.social's public API
+
+Run `npm run test:api:live` from `ui/` to exercise Mawkingbird's Angular
+`Api` service and its server and authorization interceptors. This opt-in
+command sends credential-free GETs and runs without Playwright or an account.
+Each invocation reads instance metadata. A new base software release or
+Mastodon API level triggers three additional reads covering instance rules,
+custom emoji and trending statuses. The assertions allow additional fields
+and empty lists.
+
+A network failure, eight-second timeout, HTTP 408, 429 or 5xx ends live traffic
+for the run and reports the affected checks as skipped. Invalid JSON in a
+successful response, changed field types, and unexpected HTTP errors fail
+the command. Only a complete pass saves the release and API level under
+`~/.cache/mawkingbird/live-api/`, or `$MAWKINGBIRD_ARTIFACTS/live-api/`
+when configured. Reusing that directory preserves the version gate across
+runs. The offline integration suite remains independent.
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

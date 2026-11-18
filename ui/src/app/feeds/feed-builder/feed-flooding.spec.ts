@@ -44,6 +44,10 @@ describe('flooding check', () => {
     const result = flooders([flooding, busyButFine, tooSmall]);
     expect(result.map((f) => f.account.acct)).toEqual(['bot@x.social', 'c@x.social']);
     expect(result[0].evidence).toEqual([{ tag: 'SciFi', count: 12, total: 40, share: 0.3 }]);
+    const exact = readTag('Quarter', posts({ a: 2, b: 2, c: 2, d: 2 }));
+    const below = readTag('Fifth', posts({ a: 2, b: 2, c: 2, d: 2, e: 2 }));
+    expect(flooders([exact])).toHaveLength(1);
+    expect(flooders([below])).toEqual([]);
   });
 
   it('merges one account’s floods across hashtags', () => {
@@ -61,6 +65,7 @@ describe('flooding check', () => {
     const tags = Array.from({ length: 12 }, (_, i) => `t${i}`);
     const readings = await checkTags({
       tags,
+      random: () => 0.999,
       read: async (tag, limit) => {
         asked.push({ tag, limit });
         if (tag === 't3') throw new Error('down');
@@ -73,7 +78,7 @@ describe('flooding check', () => {
     expect(readings.length).toBe(FLOOD_CHECK.tags);
     expect(progress.at(-1)).toEqual([FLOOD_CHECK.tags, FLOOD_CHECK.tags]);
     const failed = readings.find((r) => r.tag === 't3');
-    if (failed) expect(failed.total).toBe(0);
+    expect(failed).toMatchObject({ total: 0, loudest: null });
   });
 });
 

@@ -1904,19 +1904,18 @@ export class Home implements OnInit, OnDestroy {
       canLoadMore: this.canLoadMore(),
       capActive: this.capActive(),
     });
-    // Enforce the maximum: once the feed is this big, stop and start the
-    // cooldown. Paging may overshoot slightly (a partial last page) — fine.
-    if (this.statuses().length >= this.prefs.feedMax()) {
-      this.maxHitAt.set(Date.now());
-      return;
-    }
     if (!this.canLoadMore()) {
       return;
     }
+    const continuePastBreak =
+      this.prefs.ignoreFeedCooldown() || this.statuses().length >= this.prefs.feedMax();
     this.autoLoading.set(true);
     this.pageSub = this.nextFeedPage().subscribe({
       next: (more) => {
-        this.mergeStatuses(more);
+        this.mergeStatuses(more, continuePastBreak ? 'continue' : 'older');
+        if (continuePastBreak && more.length && this.statuses().length >= this.prefs.feedMax()) {
+          this.maxHitAt.set(Date.now());
+        }
         this.diagnostics.info('load-more:page-success', {
           received: more.length,
           stored: this.statuses().length,
@@ -1950,7 +1949,7 @@ export class Home implements OnInit, OnDestroy {
    * every round strands an archival post below all later pages. Live and local
    * arrivals prepend; the size bound still applies to every insertion.
    */
-  private mergeStatuses(more: Status[], placement: 'newer' | 'older' = 'older'): void {
+  private mergeStatuses(more: Status[], placement: 'newer' | 'older' | 'continue' = 'older'): void {
     const before = this.statuses().length;
     const previousTail = this.visible().at(-1);
     this.statuses.update((statuses) => {
@@ -1971,7 +1970,10 @@ export class Home implements OnInit, OnDestroy {
         feedMax: max,
         dropped: merged.length - max,
       });
-      return merged.slice(0, max);
+      // An explicit continuation at the cap admits the next page. Evict only
+      // as many already-held rows as necessary and keep the hard memory bound.
+      const start = placement === 'continue' ? Math.min(statuses.length, merged.length - max) : 0;
+      return merged.slice(start, start + max);
     });
     this.noteMaximum();
     const visible = this.visible();

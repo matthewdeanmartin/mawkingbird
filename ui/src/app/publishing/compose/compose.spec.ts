@@ -2098,11 +2098,26 @@ describe('Compose', () => {
     httpMock.expectNone(CREATE_RECORD);
     httpMock.expectNone('/api/v1/statuses');
 
-    metadata.flush({ id: 'media-1' });
+    metadata.flush({}, { status: 503, statusText: 'Unavailable' });
+    f.detectChanges();
+    expect(f.nativeElement.textContent).toContain('nothing was posted');
+    expect(internals(f).text()).toBe('described everywhere');
+    httpMock.expectNone(CREATE_RECORD);
+    httpMock.expectNone('/api/v1/statuses');
+
+    internals(f).submit();
+    const retry = httpMock.expectOne('/api/v1/media/media-1');
+    expect(retry.request.body).toEqual({ description: 'A fox crossing the snow' });
+    httpMock.expectNone(CREATE_RECORD);
+    httpMock.expectNone('/api/v1/statuses');
+    retry.flush({ id: 'media-1' });
     httpMock
       .expectOne(CREATE_RECORD)
       .flush({ uri: 'at://did:plc:me/app.bsky.feed.post/abc', cid: 'cid1' });
-    httpMock.expectOne('/api/v1/statuses').flush({ id: 'm1' });
+    const mastodon = httpMock.expectOne('/api/v1/statuses');
+    expect(mastodon.request.body.media_ids).toEqual(['media-1']);
+    mastodon.flush({ id: 'm1' });
+    expect(internals(f).text()).toBe('');
   });
 
   it('blocks submit when a Bluesky-bound post exceeds 300 graphemes', () => {

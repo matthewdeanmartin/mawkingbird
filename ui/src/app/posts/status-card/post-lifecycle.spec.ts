@@ -13,7 +13,6 @@ import { Account, MediaAttachment, Poll, Status } from '../../platform/api/model
 import { StatusCard } from './status-card';
 import { By } from '@angular/platform-browser';
 import { StatusEditDialog } from '../../publishing/status-edit/status-edit-dialog';
-import { remainingSeconds } from '../../publishing/status-edit/status-edit';
 
 interface ComposerState {
   text: WritableSignal<string>;
@@ -233,7 +232,7 @@ describe('Post lifecycle through composer and status card', () => {
     expect(editDialog()!.text()).toBe(source);
   }
 
-  function saveRequest(text: string) {
+  function saveRequest(text: string, expectedPollSeconds?: number) {
     editDialog()!.text.set(text);
     editDialog()!.save();
     const request = http.expectOne(`/api/v1/statuses/${current.id}`);
@@ -252,7 +251,7 @@ describe('Post lifecycle through composer and status card', () => {
             poll: {
               options: current.poll.options.map((option) => option.title),
               multiple: current.poll.multiple,
-              expires_in: remainingSeconds(current.poll),
+              expires_in: expectedPollSeconds,
             },
           }
         : {}),
@@ -260,10 +259,10 @@ describe('Post lifecycle through composer and status card', () => {
     return request;
   }
 
-  function edit(before: string, after: string): void {
+  function edit(before: string, after: string, expectedPollSeconds?: number): void {
     const previous = current;
     openEdit(before);
-    const request = saveRequest(after);
+    const request = saveRequest(after, expectedPollSeconds);
     expect(editDialog()!.saving()).toBe(true);
     expect(current).toBe(previous);
     const updated = { ...previous, content: `<p>${after}</p>`, edited_at: '2026-10-24T13:00:00Z' };
@@ -339,9 +338,13 @@ describe('Post lifecycle through composer and status card', () => {
     'create poll (multiple=%s, expired=%s) -> edit preserves options, votes and deadline',
     async (multiple, expired) => {
       const originalPoll = poll(multiple, expired);
+      const clock = vi.spyOn(Date, 'now');
+      const firstEdit = Date.parse(expired ? '2026-10-25T12:10:00Z' : '2026-10-25T10:00:00Z');
+      clock.mockReturnValue(firstEdit);
       await create(status({ poll: originalPoll }));
-      edit('Original caption', 'Clearer poll question');
-      edit('Clearer poll question', 'Final poll question');
+      edit('Original caption', 'Clearer poll question', expired ? 300 : 7200);
+      clock.mockReturnValue(firstEdit + 30 * 60_000);
+      edit('Clearer poll question', 'Final poll question', expired ? 300 : 5400);
       expect(current.poll).toEqual(originalPoll);
       expect(card.nativeElement.querySelector('.poll').textContent).toContain('Birds');
       http.expectNone((request) => request.url.includes('/polls/'));
@@ -531,6 +534,7 @@ describe('Post lifecycle through composer and status card', () => {
   });
 
   it('create poll -> vote -> edit keeps the recorded vote and totals', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-10-25T11:00:00Z'));
     const empty = {
       ...poll(),
       votes_count: 0,
@@ -560,7 +564,7 @@ describe('Post lifecycle through composer and status card', () => {
     };
     vote.flush(voted);
     card.detectChanges();
-    edit('Original caption', 'Clearer question');
+    edit('Original caption', 'Clearer question', 3600);
     expect(current.poll).toEqual(voted);
   });
 

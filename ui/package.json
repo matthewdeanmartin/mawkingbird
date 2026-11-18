@@ -40,6 +40,7 @@
     "test:libs:update": "node scripts/test-libs.mjs --update",
     "check:libs": "node scripts/check-libs.mjs",
     "test:integration": "bash scripts/run-integration.sh",
+    "test:api:live": "ng run ui:integration:live",
     "test:audit": "node scripts/run-audited-tests.mjs",
     "test:audit:update": "node scripts/run-audited-tests.mjs --update",
     "test:subset": "node scripts/run-test-subset.mjs",

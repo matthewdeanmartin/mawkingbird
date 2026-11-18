@@ -212,6 +212,12 @@
             "include": ["../integration/**/*.integration.ts"],
             "setupFiles": ["integration/setup.ts"],
             "watch": false
+          },
+          "configurations": {
+            "live": {
+              "include": ["../integration/mastodon-public.live.ts"],
+              "reporters": ["verbose"]
+            }
           }
         },
         "test": {

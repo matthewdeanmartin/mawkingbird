@@ -1212,6 +1212,29 @@ describe('Home', () => {
     expect(fixture.nativeElement.textContent).not.toContain('You’re all caught up');
   });
 
+  it('replaces Load more with the reading break when paging crosses the configured maximum', () => {
+    TestBed.inject(ClientPrefs).setFeedMax(25);
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/announcements').flush([]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), page(20));
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.feed-cap')).toBeNull();
+    el.querySelector<HTMLButtonElement>('.feed-more-actions button')!.click();
+    httpMock.expectOne('/api/v1/bookmarks?limit=1').flush([]);
+    flushHomePage(
+      httpMock.expectOne((r) => r.url === '/api/v1/timelines/home'),
+      page(20, 20),
+    );
+    fixture.detectChanges();
+
+    expect(el.querySelectorAll('app-status-card')).toHaveLength(25);
+    expect(el.querySelector('.feed-cap')?.textContent).toContain('You’ve had enough for now');
+    expect(el.querySelector('.feed-more-actions')).toBeNull();
+  });
+
   it('keeps paging a three-source Home after a short Mastodon page, then reports a source failure truthfully', () => {
     TestBed.inject(ClientPrefs).setFeedMin(75);
     const providers: FeedProvider[] = (['bluesky', 'rss'] as const).map((id) => ({
@@ -2175,25 +2198,30 @@ describe('Home, reading break', () => {
     // The override is a Settings decision, not a button at the end of the feed:
     // relabelling "Load more" would be a different label, not real friction.
     const prefs = TestBed.inject(ClientPrefs);
-    prefs.setFeedMax(5);
+    prefs.setFeedMax(20);
     prefs.setIgnoreFeedCooldown(true);
     const fixture = TestBed.createComponent(Home);
     fixture.detectChanges();
     flushHomePage(
       httpMock.expectOne('/api/v1/timelines/home?limit=20'),
-      ['1', '2', '3', '4', '5', '6'].map(makeStatus),
+      Array.from({ length: 20 }, (_, i) => makeStatus(String(100 - i))),
     );
     httpMock.expectOne('/api/v1/announcements').flush([]);
     fixture.detectChanges();
 
-    internals(fixture).loadMore();
+    const el = fixture.nativeElement as HTMLElement;
+    el.querySelector<HTMLButtonElement>('.feed-more-actions button')!.click();
     httpMock.expectOne('/api/v1/bookmarks?limit=1').flush([]);
-    // The override is on, so paging continues rather than hitting the wall.
-    for (const open of httpMock.match((c) => c.url.startsWith('/api/v1/timelines/home'))) {
-      open.flush([]);
-    }
+    const next = httpMock.expectOne((r) => r.url === '/api/v1/timelines/home');
+    expect(next.request.params.get('max_id')).toBe('81');
+    flushHomePage(next, ['81', '80', '79'].map(makeStatus));
     fixture.detectChanges();
 
+    const ids = internals(fixture)
+      .statuses()
+      .map((s) => s.id);
+    expect(ids).toEqual(Array.from({ length: 20 }, (_, i) => String(98 - i)));
+    expect(el.textContent).toContain('status 79');
     expect(fixture.nativeElement.textContent).not.toContain('You’ve had enough for now');
     // And the reason it kept going is the setting, not an absent cap.
     expect(internals(fixture).capActive()).toBe(false);

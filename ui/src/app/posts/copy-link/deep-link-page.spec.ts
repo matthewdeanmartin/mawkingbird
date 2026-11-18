@@ -1,4 +1,6 @@
 import { signal } from '@angular/core';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -9,6 +11,8 @@ import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { Api } from '../../platform/api/api';
 import { Status } from '../../platform/api/models';
 import { Server } from '../../platform/http/server';
+import { authInterceptor } from '../../platform/http/auth.interceptor';
+import { serverInterceptor } from '../../platform/http/server.interceptor';
 import { Auth } from '../../platform/session/auth';
 import { DeepLinkKind, DeepLinkPage } from './deep-link-page';
 
@@ -85,6 +89,36 @@ describe('DeepLinkPage', () => {
     getStatus.mockReturnValue(of({ uri: 'https://origin.example/notes/abc' } as Status));
     await open('mastodon-post', post);
     expect(navigate).toHaveBeenCalledWith(['/statuses', 'local-8'], { replaceUrl: true });
+  });
+
+  it('resolves a foreign numeric ID on the signed-in home server over authenticated HTTP', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([serverInterceptor, authInterceptor])),
+        provideHttpClientTesting(),
+        { provide: Router, useValue: { navigate } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: convertToParamMap(post), data: { kind: 'mastodon-post' } },
+          },
+        },
+      ],
+    });
+    TestBed.inject(Server).setBaseUrl('https://home.example');
+    TestBed.inject(Auth).setToken('reader-token');
+    const http = TestBed.inject(HttpTestingController);
+    const resolving = TestBed.createComponent(DeepLinkPage).componentInstance.ngOnInit();
+    const search = http.expectOne((r) => r.url === 'https://home.example/api/v2/search');
+    expect(search.request.method).toBe('GET');
+    expect(search.request.headers.get('Authorization')).toBe('Bearer reader-token');
+    expect(search.request.params.get('q')).toBe('https://far.example/@bob@far.example/42');
+    expect(search.request.params.get('type')).toBe('statuses');
+    expect(search.request.params.get('resolve')).toBe('true');
+    search.flush({ accounts: [], hashtags: [], statuses: [{ id: '731' }] });
+    await resolving;
+    expect(navigate.mock.calls).toEqual([[['/statuses', '731'], { replaceUrl: true }]]);
+    http.verify();
   });
 
   it('reads the post from its server for Anonymous', async () => {
