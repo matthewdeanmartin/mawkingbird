@@ -1,50 +1,48 @@
 <main class="unbird">
-  @if (tab === 'start') {
-    <h1>{{ 'unbird.page.title' | transloco }}</h1>
-    <p class="lead">{{ 'unbird.page.lead' | transloco }}</p>
-    <app-unbird-drop (loaded)="loaded()" />
-    <app-unbird-import-points />
-    @if (matcher.archive()) {
-      <div class="tiles">
-        <a class="tile" routerLink="/unbird/people">
-          <strong>{{ 'unbird.page.tile.people' | transloco }}</strong>
-          <span>{{ 'unbird.page.tile.peopleBody' | transloco: { found: matcher.found() } }}</span>
-        </a>
-        <a class="tile" routerLink="/unbird/archive">
-          <strong>{{ 'unbird.page.tile.archive' | transloco }}</strong>
-          <span>{{ 'unbird.page.tile.archiveBody' | transloco }}</span>
-        </a>
-      </div>
-    }
-  } @else if (tab === 'posts') {
-    <h1>{{ 'unbird.page.postsTitle' | transloco }}</h1>
-    @if (matcher.archive()) {
-      <app-unbird-posts />
-    } @else {
-      <p class="lead">{{ 'unbird.page.needArchive' | transloco }}</p>
-      <app-unbird-drop />
-    }
-  } @else if (tab === 'profile') {
-    <h1>{{ 'unbird.page.profileTitle' | transloco }}</h1>
-    @if (matcher.archive()) {
-      <app-unbird-profile />
-    } @else {
-      <p class="lead">{{ 'unbird.page.needArchive' | transloco }}</p>
-      <app-unbird-drop />
-    }
-  } @else if (tab === 'archive') {
-    <h1>{{ 'unbird.page.archiveTitle' | transloco }}</h1>
-    <app-unbird-archive-tools />
-  } @else {
-    <h1>{{ 'unbird.page.peopleTitle' | transloco }}</h1>
-    @if (matcher.archive()) {
-      <app-unbird-people [via]="via()" />
-      @if (via() === 'public') {
-        <app-unbird-servers />
-      }
-    } @else {
-      <p class="lead">{{ 'unbird.page.needArchive' | transloco }}</p>
+  <mb-page-header
+    [title]="titleKey | transloco"
+    [description]="
+      tab === 'start'
+        ? ('unbird.page.lead' | transloco)
+        : matcher.archive() || tab === 'archive'
+          ? ''
+          : ('unbird.page.needArchive' | transloco)
+    "
+  />
+
+  @switch (tab) {
+    @case ('start') {
       <app-unbird-drop (loaded)="loaded()" />
+      <app-unbird-import-points />
+      @if (matcher.archive()) {
+        <nav mbNavigation class="next" [label]="'unbird.page.next' | transloco">
+          <a mbNavLink routerLink="/unbird/people">
+            <strong>{{ 'unbird.page.tile.people' | transloco }}</strong>
+            <span>{{ 'unbird.page.tile.peopleBody' | transloco: { found: matcher.found() } }}</span>
+          </a>
+          <a mbNavLink routerLink="/unbird/archive">
+            <strong>{{ 'unbird.page.tile.archive' | transloco }}</strong>
+            <span>{{ 'unbird.page.tile.archiveBody' | transloco }}</span>
+          </a>
+        </nav>
+      }
+    }
+    @case ('archive') {
+      <app-unbird-archive-tools />
+    }
+    @default {
+      @if (!matcher.archive()) {
+        <app-unbird-drop (loaded)="loaded()" />
+      } @else if (tab === 'posts') {
+        <app-unbird-posts />
+      } @else if (tab === 'profile') {
+        <app-unbird-profile />
+      } @else {
+        <app-unbird-people [via]="via()" />
+        @if (via() === 'public') {
+          <app-unbird-servers />
+        }
+      }
     }
   }
 </main>

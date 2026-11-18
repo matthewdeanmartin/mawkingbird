@@ -1,6 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
+import { MbSection } from '../design-system/page-header/page-header';
 import { UnbirdMatcher } from './unbird-matcher';
 
 // i18n unbird.points.title: Your archives on this computer
@@ -19,11 +20,10 @@ import { UnbirdMatcher } from './unbird-matcher';
  */
 @Component({
   selector: 'app-unbird-import-points',
-  imports: [MbButton, TranslocoPipe],
+  imports: [MbButton, MbSection, TranslocoPipe],
   template: `
     @if (shown()) {
-      <section class="points">
-        <h2>{{ 'unbird.points.title' | transloco }}</h2>
+      <mb-section [title]="'unbird.points.title' | transloco">
         <p class="muted">{{ 'unbird.points.lead' | transloco }}</p>
         <ul>
           @for (point of matcher.importPoints(); track point.id) {
@@ -48,7 +48,7 @@ import { UnbirdMatcher } from './unbird-matcher';
                 } @else {
                   <button
                     mbButton
-                    variant="link"
+                    variant="compact"
                     type="button"
                     (click)="matcher.switchTo(point.id)"
                   >
@@ -57,7 +57,7 @@ import { UnbirdMatcher } from './unbird-matcher';
                 }
                 <button
                   mbButton
-                  variant="link"
+                  variant="compact"
                   tone="danger"
                   type="button"
                   (click)="matcher.forget(point.id)"
@@ -68,21 +68,10 @@ import { UnbirdMatcher } from './unbird-matcher';
             </li>
           }
         </ul>
-      </section>
+      </mb-section>
     }
   `,
   styles: `
-    .points {
-      margin: 16px 0;
-      padding: 14px 16px;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: var(--col-bg);
-    }
-    h2 {
-      margin: 0 0 6px;
-      font-size: 1.05rem;
-    }
     .muted {
       margin: 0 0 8px;
       color: var(--muted);

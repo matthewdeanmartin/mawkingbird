@@ -6,6 +6,9 @@ import { firstValueFrom } from 'rxjs';
 import { MbButton } from '../design-system/button/button';
 import { MbCheckbox } from '../design-system/checkbox/checkbox';
 import { MbControl, MbField } from '../design-system/field/field';
+import { MbNotice } from '../design-system/notice/notice';
+import { MbSection } from '../design-system/page-header/page-header';
+import { MbSaveFeedback, SaveState } from '../design-system/save-feedback/save-feedback';
 import { Api } from '../platform/api/api';
 import { Account } from '../platform/api/models';
 import { Server } from '../platform/http/server';
@@ -34,6 +37,9 @@ import { UnbirdMatcher } from './unbird-matcher';
 // i18n unbird.profile.picturesNeedArchive: To bring your pictures, choose your archive again on the Start tab this visit.
 // i18n unbird.profile.save: Save to my Mastodon profile
 // i18n unbird.profile.saved: Saved.
+// i18n unbird.profile.saving: Saving…
+// i18n unbird.profile.details: Your details
+// i18n unbird.profile.moved.posting: Posting…
 // i18n unbird.profile.saveFailed: Your server did not accept the change. Try again, or edit your profile on the server.
 // i18n unbird.profile.moved.title: Tell people you moved
 // i18n unbird.profile.moved.lead: A public post, pinned to your profile, so anyone who finds you knows where you came from.
@@ -57,7 +63,18 @@ import { UnbirdMatcher } from './unbird-matcher';
  */
 @Component({
   selector: 'app-unbird-profile',
-  imports: [FormsModule, MbButton, MbCheckbox, MbControl, MbField, RouterLink, TranslocoPipe],
+  imports: [
+    FormsModule,
+    MbButton,
+    MbCheckbox,
+    MbControl,
+    MbField,
+    MbNotice,
+    MbSaveFeedback,
+    MbSection,
+    RouterLink,
+    TranslocoPipe,
+  ],
   templateUrl: './unbird-profile.html',
   styleUrl: './unbird-profile.css',
 })
@@ -108,7 +125,31 @@ export class UnbirdProfile implements OnInit, OnDestroy {
     return xBioLine(me.acct.includes('@') ? me.acct : `${me.acct}@${host}`, me.url);
   });
 
+  protected readonly saveMessage = computed(
+    () =>
+      ({
+        idle: '',
+        busy: 'unbird.profile.saving',
+        done: 'unbird.profile.saved',
+        failed: 'unbird.profile.saveFailed',
+      })[this.saving()],
+  );
+  protected readonly movedMessage = computed(
+    () =>
+      ({
+        idle: '',
+        busy: 'unbird.profile.moved.posting',
+        done: 'unbird.profile.moved.done',
+        failed: 'unbird.profile.moved.failed',
+      })[this.movedState()],
+  );
+
   private urls: string[] = [];
+
+  /** This page's states as the design system's save feedback. */
+  protected feedback(state: 'idle' | 'busy' | 'done' | 'failed'): SaveState {
+    return ({ idle: 'idle', busy: 'saving', done: 'saved', failed: 'error' } as const)[state];
+  }
 
   constructor() {
     // Fill the proposals once the archive is known.

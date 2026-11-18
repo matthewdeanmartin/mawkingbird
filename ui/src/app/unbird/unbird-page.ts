@@ -1,6 +1,8 @@
 import { Component, computed, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { MbNavigation, MbNavLink } from '../design-system/navigation/navigation';
+import { MbPageHeader } from '../design-system/page-header/page-header';
 import { Auth } from '../platform/session/auth';
 import { UnbirdArchiveTools } from './unbird-archive-tools';
 import { UnbirdDrop } from './unbird-drop';
@@ -22,6 +24,7 @@ import { UnbirdServers } from './unbird-servers';
 // i18n unbird.page.archiveTitle: Your archive
 // i18n unbird.page.postsTitle: Your tweets, on Mastodon
 // i18n unbird.page.profileTitle: Your profile
+// i18n unbird.page.next: What next
 
 export type UnbirdTab = 'start' | 'people' | 'posts' | 'archive' | 'profile';
 
@@ -32,6 +35,9 @@ export type UnbirdTab = 'start' | 'people' | 'posts' | 'archive' | 'profile';
 @Component({
   selector: 'app-unbird-page',
   imports: [
+    MbNavigation,
+    MbNavLink,
+    MbPageHeader,
     RouterLink,
     TranslocoPipe,
     UnbirdArchiveTools,
@@ -51,6 +57,14 @@ export class UnbirdPage implements OnInit {
   private readonly router = inject(Router);
   protected readonly tab = (inject(ActivatedRoute).snapshot.data['unbirdTab'] ??
     'start') as UnbirdTab;
+
+  protected readonly titleKey = {
+    start: 'unbird.page.title',
+    people: 'unbird.page.peopleTitle',
+    posts: 'unbird.page.postsTitle',
+    archive: 'unbird.page.archiveTitle',
+    profile: 'unbird.page.profileTitle',
+  }[this.tab];
 
   /** Follow needs a Mastodon account; everyone else searches publicly. */
   protected readonly via = computed(() =>

@@ -2844,3 +2844,16 @@ textareas, Buttons) and the Native-only `unbird-import-points.ts` (link
 Buttons). The repeated toggle-row and card patterns are listed for Sprint 5,
 which moves Unbird onto design-system widgets or promotes new ones into the
 design system. No shared widget implementation changed.
+
+Unbird, sprint 5 design system (2026-11-18): reviewed regenerated inventory:
+1971 scanned files, 674 candidate files. Four new shared widgets:
+`MbFileDrop` (a native file input as a drop target, target and link
+presentations), `MbProgress` (labelled native progress), `MbStatGrid`
+(`dl[mbStatGrid]`) and `MbBarList`, each with specs, the **Data / File drop,
+progress and stats** stories, `unbird.browser.mjs` and a components.md
+contract. Every Unbird surface now uses them or existing widgets: PageHeader,
+Section, Navigation, Toolbar (pressed) for the activity filter and post
+suggestions in place of solid/outline pill toggles, IdentityRow with Metadata,
+Notice, Disclosure, SaveFeedback, RadioGroup, Checkbox hints, Spinner, and
+`compact` Buttons in rows. The local cards, drop target, meter, chips, stat
+tiles and bars are deleted. `unbird-page.html` joins the reconciliation.

@@ -26,4 +26,4 @@ Complete the sign-in on Bluesky's page, then approve Mawkingbird. If the page re
 
 People whose account provider does not yet support the normal approval flow can use the compatibility option on the page. Follow its instructions and create a separate app password. Never paste your regular Bluesky password into that compatibility form.
 
-Next: [Your first ten minutes](first-ten-minutes.md).
+Once Home opens, [read and reply on Bluesky](../bluesky/index.md#read-and-reply).

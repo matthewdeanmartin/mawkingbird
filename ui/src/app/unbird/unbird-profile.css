@@ -1,27 +1,21 @@
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
+/* Placement and the image previews only; sections, fields and feedback are the design system's. */
 .lead {
-  margin: 0 0 16px;
+  margin: 0;
   line-height: 1.55;
   color: var(--muted);
 }
-.card {
-  margin: 0 0 16px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--col-bg);
-}
-h2 {
+h3 {
   margin: 14px 0 8px;
-  font-size: 1.05rem;
-}
-.card > h2:first-child {
-  margin-top: 0;
+  font-size: 1rem;
 }
 mb-checkbox,
-mb-field {
+mb-field,
+mb-notice {
   display: block;
   margin-bottom: 10px;
 }
@@ -43,7 +37,7 @@ mb-field {
 }
 .pictures {
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 24px;
 }
 .header {
   display: block;
@@ -57,7 +51,7 @@ mb-field {
   height: 72px;
   border-radius: 14px;
   object-fit: cover;
-  border: 3px solid var(--col-bg);
+  border: 3px solid var(--bg);
 }
 .header + .avatar {
   position: absolute;
@@ -80,14 +74,4 @@ mb-field {
 }
 .muted {
   color: var(--muted);
-}
-.small {
-  font-size: 0.88rem;
-}
-.ok {
-  color: var(--accent);
-  font-weight: 600;
-}
-.error {
-  color: var(--ds-error-text);
 }

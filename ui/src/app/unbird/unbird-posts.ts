@@ -1,11 +1,15 @@
 import { Component, computed, effect, inject, OnInit, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 import { MbButton } from '../design-system/button/button';
 import { MbCheckbox } from '../design-system/checkbox/checkbox';
 import { MbControl, MbField } from '../design-system/field/field';
+import { MbNotice } from '../design-system/notice/notice';
+import { MbSection } from '../design-system/page-header/page-header';
+import { MbRadioGroup, RadioOption } from '../design-system/radio-group/radio-group';
+import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { Api } from '../platform/api/api';
 import { Server } from '../platform/http/server';
 import { Auth } from '../platform/session/auth';
@@ -71,7 +75,20 @@ const PAGE = 50;
  */
 @Component({
   selector: 'app-unbird-posts',
-  imports: [FormsModule, MbButton, MbCheckbox, MbControl, MbField, RouterLink, TranslocoPipe],
+  imports: [
+    FormsModule,
+    MbButton,
+    MbCheckbox,
+    MbControl,
+    MbField,
+    MbNotice,
+    MbRadioGroup,
+    MbSection,
+    MbToolbar,
+    MbToolbarButton,
+    RouterLink,
+    TranslocoPipe,
+  ],
   templateUrl: './unbird-posts.html',
   styleUrl: './unbird-posts.css',
 })
@@ -81,6 +98,7 @@ export class UnbirdPosts implements OnInit {
   private readonly api = inject(Api);
   private readonly auth = inject(Auth);
   private readonly server = inject(Server);
+  private readonly i18n = inject(TranslocoService);
 
   protected readonly signedIn = computed(
     () => !this.auth.lacksMastodonToken && !this.auth.isAnonymous && !!this.auth.account(),
@@ -101,7 +119,12 @@ export class UnbirdPosts implements OnInit {
     'oldest',
     'newest',
   ];
-  protected readonly visibilities: ReplayEntry['visibility'][] = ['unlisted', 'public', 'private'];
+  protected readonly visibilityOptions = computed<RadioOption[]>(() =>
+    (['unlisted', 'public', 'private'] as const).map((value) => ({
+      value,
+      label: this.i18n.translate(`unbird.posts.visibility.${value}`),
+    })),
+  );
 
   protected readonly units = computed(() => {
     const archive = this.matcher.archive();
@@ -191,6 +214,25 @@ export class UnbirdPosts implements OnInit {
       posts += unit.tweets.length;
     }
     this.selected.set(next);
+  }
+
+  protected setVisibility(value: string): void {
+    if (value === 'public' || value === 'unlisted' || value === 'private') {
+      this.visibility.set(value);
+    }
+  }
+
+  /** Date, likes, thread length and photos, plus why a post cannot be picked. */
+  protected unitHint(unit: ReplayUnit): string {
+    const t = (key: string, params?: Record<string, unknown>) =>
+      this.i18n.translate(`unbird.posts.${key}`, params);
+    const parts = [this.date(unit.at)];
+    if (unit.likes) parts.push(t('likes', { count: unit.likes }));
+    if (unit.tweets.length > 1) parts.push(t('thread', { count: unit.tweets.length }));
+    if (unit.media) parts.push(t('photos', { count: unit.media }));
+    if (this.replay.isQueued(unit.id)) parts.push(t('queued'));
+    else if (!this.fits(unit)) parts.push(t('tooLong'));
+    return parts.join(' · ');
   }
 
   protected clearSelection(): void {

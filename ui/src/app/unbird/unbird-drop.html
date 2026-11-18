@@ -1,103 +1,82 @@
 @if (showTarget()) {
-  <label
-    class="target"
-    [class.dragging]="dragging()"
-    [class.busy]="!!step()"
-    (dragover)="onDragOver($event)"
-    (dragleave)="dragging.set(false)"
-    (drop)="onDrop($event)"
+  <mb-file-drop
+    accept=".zip,.js,application/zip"
+    multiple
+    [busy]="!!step()"
+    [label]="
+      step() ? ('unbird.drop.step.' + step() | transloco) : ('unbird.drop.title' | transloco)
+    "
+    [hint]="'unbird.drop.hint' | transloco"
+    [action]="'unbird.drop.choose' | transloco"
+    (files)="onFiles($event)"
   >
-    <input
-      class="visually-hidden"
-      type="file"
-      accept=".zip,.js,application/zip"
-      multiple
-      [disabled]="!!step()"
-      (change)="onPick($event)"
-    />
-    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+    <svg mbFileDropIcon class="icon" viewBox="0 0 24 24">
       <path d="M3 4h18v4H3zM5 8v12h14V8M12 11v6M9.5 14.5 12 17l2.5-2.5" />
     </svg>
-    @if (step(); as current) {
-      <span class="title" role="status">{{ 'unbird.drop.step.' + current | transloco }}</span>
-    } @else {
-      <span class="title">{{ 'unbird.drop.title' | transloco }}</span>
-      <span class="hint">{{ 'unbird.drop.hint' | transloco }}</span>
-      <span mbButton class="choose">{{ 'unbird.drop.choose' | transloco }}</span>
-    }
-  </label>
+  </mb-file-drop>
 
   @if (error(); as kind) {
-    <p class="error" role="alert">{{ 'unbird.drop.error.' + kind | transloco }}</p>
+    <mb-notice class="gap" tone="error" announcement="alert">
+      {{ 'unbird.drop.error.' + kind | transloco }}
+    </mb-notice>
   }
 
   <div class="under">
-    <label class="folder">
-      <input
-        class="visually-hidden"
-        type="file"
-        webkitdirectory
-        multiple
-        [disabled]="!!step()"
-        (change)="onPick($event)"
-      />
-      <span class="link">{{ 'unbird.drop.folder' | transloco }}</span>
-    </label>
-    <details class="get">
-      <summary>{{ 'unbird.drop.howToGet' | transloco }}</summary>
+    <mb-file-drop
+      presentation="link"
+      directory
+      [busy]="!!step()"
+      [label]="'unbird.drop.folder' | transloco"
+      (files)="onFiles($event)"
+    />
+    <mb-disclosure [label]="'unbird.drop.howToGet' | transloco">
       <p>{{ 'unbird.drop.howToGetBody' | transloco }}</p>
-    </details>
+    </mb-disclosure>
   </div>
 }
 
 @if (archive(); as current) {
   @if (!replacing()) {
-    <div class="loaded">
-      <div class="who">
-        <strong>
-          @if (current.owner.userName) {
-            {{ 'unbird.drop.loaded.from' | transloco: { user: current.owner.userName } }}
-          } @else {
-            {{ 'unbird.drop.loaded.fromUnknown' | transloco }}
-          }
-        </strong>
-        <span class="counts">
-          {{ 'unbird.drop.loaded.tweets' | transloco: { count: fmt(current.tweets.length) } }} ·
-          {{ 'unbird.drop.loaded.likes' | transloco: { count: fmt(current.likes.length) } }} ·
-          {{ 'unbird.drop.loaded.following' | transloco: { count: fmt(current.followingCount) } }}
-        </span>
-      </div>
-      <div class="actions">
+    <mb-notice
+      [title]="
+        current.owner.userName
+          ? ('unbird.drop.loaded.from' | transloco: { user: current.owner.userName })
+          : ('unbird.drop.loaded.fromUnknown' | transloco)
+      "
+    >
+      <p class="counts">
+        {{ 'unbird.drop.loaded.tweets' | transloco: { count: fmt(current.tweets.length) } }} ·
+        {{ 'unbird.drop.loaded.likes' | transloco: { count: fmt(current.likes.length) } }} ·
+        {{ 'unbird.drop.loaded.following' | transloco: { count: fmt(current.followingCount) } }}
+      </p>
+      <p class="actions">
         <button mbButton variant="link" type="button" (click)="replacing.set(true)">
           {{ 'unbird.drop.replace' | transloco }}
         </button>
-        <button mbButton variant="link" type="button" (click)="forget()">
+        <button mbButton variant="link" tone="danger" type="button" (click)="forget()">
           {{ 'unbird.drop.forget' | transloco }}
         </button>
-      </div>
-    </div>
+      </p>
+    </mb-notice>
     @if (notSaved()) {
-      <p class="muted small">{{ 'unbird.drop.loaded.notSaved' | transloco }}</p>
+      <mb-notice class="gap">{{ 'unbird.drop.loaded.notSaved' | transloco }}</mb-notice>
     }
   }
 }
 
-<details class="privacy">
-  <summary>
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M6 11h12v10H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3" />
-    </svg>
-    {{ 'unbird.drop.privacy' | transloco }} ·
-    @if (archive(); as current) {
-      {{
-        'unbird.drop.opensAfter'
-          | transloco: { opened: current.files.opened.length, total: current.files.total }
-      }}
-    } @else {
-      {{ 'unbird.drop.opensBefore' | transloco: { count: readFiles.length } }}
-    }
-    · <span class="link">{{ 'unbird.drop.which' | transloco }}</span>
-  </summary>
+<mb-disclosure
+  class="privacy"
+  [label]="
+    ('unbird.drop.privacy' | transloco) +
+    ' · ' +
+    (archive()
+      ? ('unbird.drop.opensAfter'
+        | transloco: { opened: archive()!.files.opened.length, total: archive()!.files.total })
+      : ('unbird.drop.opensBefore' | transloco: { count: readFiles.length })) +
+    ' · ' +
+    ('unbird.drop.which' | transloco)
+  "
+>
   <p>
     {{ 'unbird.drop.readList' | transloco }}
     @for (file of readFiles; track file; let last = $last) {
@@ -106,4 +85,4 @@
     }
   </p>
   <p>{{ 'unbird.drop.neverList' | transloco }}</p>
-</details>
+</mb-disclosure>

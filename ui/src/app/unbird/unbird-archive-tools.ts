@@ -5,6 +5,10 @@ import { MbButton } from '../design-system/button/button';
 import { MbControl, MbField } from '../design-system/field/field';
 import { MbTab, MbTabs } from '../design-system/tabs/tabs';
 import { MbCheckbox } from '../design-system/checkbox/checkbox';
+import { MbFileDrop, MbPickedFile } from '../design-system/file-drop/file-drop';
+import { MbMetadata } from '../design-system/metadata/metadata';
+import { MbNotice } from '../design-system/notice/notice';
+import { MbBarItem, MbBarList, MbStatGrid } from '../design-system/stats/stats';
 import { archiveNumbers } from './archive-numbers';
 import { searchLikes, searchTweets, TweetKind, tweetUrl, tweetYears } from './archive-search';
 import { contactsVcard, readContacts } from './contacts-export';
@@ -82,6 +86,11 @@ import { websiteZip } from './website-export';
     MbCheckbox,
     MbControl,
     MbField,
+    MbBarList,
+    MbFileDrop,
+    MbMetadata,
+    MbNotice,
+    MbStatGrid,
     MbTab,
     MbTabs,
     TranslocoPipe,
@@ -127,8 +136,31 @@ export class UnbirdArchiveTools implements OnInit {
     const archive = this.archive();
     return archive ? archiveNumbers(archive) : null;
   });
-  protected readonly maxPerYear = computed(() =>
-    Math.max(1, ...(this.numbers()?.perYear.map((entry) => entry.tweets) ?? [])),
+  /** The headline tiles, in reading order. */
+  protected readonly stats = computed(() => {
+    const n = this.numbers();
+    if (!n) return [];
+    return [
+      { key: 'unbird.tools.numbers.posts', value: n.originals },
+      { key: 'unbird.tools.numbers.threads', value: n.threads },
+      { key: 'unbird.tools.numbers.replies', value: n.replies },
+      { key: 'unbird.tools.numbers.retweets', value: n.retweets },
+      { key: 'unbird.tools.numbers.media', value: n.withMedia },
+      { key: 'unbird.tools.numbers.likes', value: n.likes },
+      { key: 'unbird.tools.numbers.following', value: n.following },
+      { key: 'unbird.tools.numbers.followers', value: n.followers },
+    ];
+  });
+  protected readonly perYear = computed<MbBarItem[]>(() =>
+    (this.numbers()?.perYear ?? []).map((entry) => this.bar(entry.year, entry.tweets)),
+  );
+  protected readonly talkedTo = computed<MbBarItem[]>(() =>
+    (this.numbers()?.talkedTo ?? []).map((person) =>
+      this.bar(`@${person.twitter_handle}`, person.reply_count + person.mention_count),
+    ),
+  );
+  protected readonly hashtags = computed<MbBarItem[]>(() =>
+    (this.numbers()?.hashtags ?? []).map((tag) => this.bar(`#${tag.tag}`, tag.count)),
   );
 
   protected readonly siteTitle = signal('');
@@ -204,14 +236,12 @@ export class UnbirdArchiveTools implements OnInit {
     }
   }
 
-  protected onReopen(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const files = [...(input.files ?? [])].map((file) => ({
-      path: file.webkitRelativePath || file.name,
-      blob: file as Blob,
-    }));
-    input.value = '';
-    void this.exportContacts(files);
+  protected onReopen(files: readonly MbPickedFile[]): void {
+    void this.exportContacts(files.map(({ path, file }) => ({ path, blob: file })));
+  }
+
+  private bar(label: string, value: number): MbBarItem {
+    return { label, value, display: this.fmt(value) };
   }
 
   protected isCount(value: unknown): value is number {

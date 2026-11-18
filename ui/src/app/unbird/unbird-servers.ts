@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, signal, untracked } from '@angular
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
+import { MbSection } from '../design-system/page-header/page-header';
 import {
   Availability,
   checkHandle,
@@ -29,7 +30,7 @@ const SHOWN = 3;
  */
 @Component({
   selector: 'app-unbird-servers',
-  imports: [MbButton, RouterLink, TranslocoPipe],
+  imports: [MbButton, MbSection, RouterLink, TranslocoPipe],
   templateUrl: './unbird-servers.html',
   styleUrl: './unbird-servers.css',
 })

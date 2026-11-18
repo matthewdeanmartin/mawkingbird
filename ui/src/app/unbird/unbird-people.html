@@ -10,30 +10,25 @@
         {{ 'unbird.people.foundNone' | transloco }}
       }
     </p>
-    <div class="meter" aria-hidden="true">
-      <span
-        [style.width.%]="
-          matcher.searchable().length ? (100 * matcher.searched()) / matcher.searchable().length : 0
-        "
-      ></span>
-    </div>
-    <p class="muted">
-      {{
+    <mb-progress
+      [label]="
+        matcher.running()
+          ? via() === 'public'
+            ? ('unbird.people.searchingVia' | transloco: { server: publicServer })
+            : ('unbird.people.searchingHome' | transloco)
+          : ('unbird.people.progressLabel' | transloco)
+      "
+      [caption]="
         'unbird.people.progress'
           | transloco
             : { searched: fmt(matcher.searched()), total: fmt(matcher.searchable().length) }
-      }}
-      @if (matcher.running()) {
-        ·
-        @if (via() === 'public') {
-          {{ 'unbird.people.searchingVia' | transloco: { server: publicServer } }}
-        } @else {
-          {{ 'unbird.people.searchingHome' | transloco }}
-        }
-      }
-    </p>
+      "
+      [value]="matcher.searched()"
+      [max]="matcher.searchable().length"
+    />
     <div class="controls">
       @if (matcher.running()) {
+        <span mbSpinner aria-hidden="true"></span>
         <button mbButton variant="outline" type="button" (click)="matcher.stop()">
           {{ 'unbird.people.stop' | transloco }}
         </button>
@@ -55,41 +50,30 @@
       }
     </div>
     @if (matcher.rateLimited()) {
-      <p class="notice" role="status">{{ 'unbird.people.rateLimited' | transloco }}</p>
+      <mb-notice announcement="status">{{ 'unbird.people.rateLimited' | transloco }}</mb-notice>
     }
-    <div class="controls" role="group" [attr.aria-label]="'unbird.people.active' | transloco">
+    <mb-toolbar [label]="'unbird.people.active' | transloco">
       @for (choice of withinChoices; track choice) {
-        <button
-          mbButton
-          size="small"
-          type="button"
-          [variant]="within() === choice ? 'solid' : 'outline'"
-          [attr.aria-pressed]="within() === choice"
-          (click)="within.set(choice)"
-        >
+        <button mbToolbarButton [pressed]="within() === choice" (click)="within.set(choice)">
           {{ 'unbird.people.active.' + choice | transloco }}
         </button>
       }
-    </div>
+    </mb-toolbar>
   </section>
 
   @if (found().length) {
-    <ul class="people">
+    <div class="people" role="list">
       @for (entry of found(); track entry.match.acct) {
-        <li class="person">
-          <img class="avatar" [src]="entry.match.avatar" alt="" loading="lazy" />
-          <div class="body">
-            <div class="names">
-              <strong>{{ entry.match.displayName }}</strong>
-              <span class="acct">&#64;{{ entry.match.acct }}</span>
-              @if (entry.match.confidence === 'possible') {
-                <span class="tag">{{ 'unbird.people.maybe' | transloco }}</span>
-              }
-              @if (entry.match.bot) {
-                <span class="tag">{{ 'unbird.people.bot' | transloco }}</span>
-              }
-            </div>
-            <div class="chips">
+        <div mbIdentityRow role="listitem">
+          <span class="suggestion-avatar">
+            <img [src]="entry.match.avatar" alt="" loading="lazy" decoding="async" />
+          </span>
+          <div class="suggestion-name">
+            <a class="suggestion-display" [href]="entry.match.url" target="_blank" rel="noopener">
+              {{ entry.match.displayName }}
+            </a>
+            <span class="muted">&#64;{{ entry.match.acct }}</span>
+            <mb-metadata>
               @if (entry.person.mutual) {
                 <span>{{ 'unbird.people.chip.mutual' | transloco }}</span>
               } @else if (entry.person.currently_following) {
@@ -100,48 +84,40 @@
                   'unbird.people.chip.talked' | transloco: { count: talked(entry.person) }
                 }}</span>
               }
-              <span class="signals" [title]="entry.match.signals.join(' · ')">
-                &#64;{{ entry.person.twitter_handle }}
-              </span>
-            </div>
-            @if (follows().get(entry.match.acct) === 'failed') {
-              <p class="error">{{ 'unbird.people.followFailed' | transloco }}</p>
-            }
-          </div>
-          <div class="action">
-            @if (via() === 'account') {
-              @switch (follows().get(entry.match.acct)) {
-                @case ('done') {
-                  <span class="done">{{ 'unbird.people.following' | transloco }}</span>
-                }
-                @default {
-                  <button
-                    mbButton
-                    size="small"
-                    type="button"
-                    [disabled]="follows().get(entry.match.acct) === 'busy'"
-                    (click)="follow(entry.match.acct)"
-                  >
-                    {{ 'unbird.people.follow' | transloco }}
-                  </button>
-                }
-              }
-            } @else {
-              <a
-                mbButton
-                variant="outline"
-                size="small"
-                [href]="entry.match.url"
-                target="_blank"
-                rel="noopener"
+              <span [title]="entry.match.signals.join(' · ')"
+                >&#64;{{ entry.person.twitter_handle }}</span
               >
-                {{ 'unbird.people.view' | transloco }}
-              </a>
+              @if (entry.match.confidence === 'possible') {
+                <span>{{ 'unbird.people.maybe' | transloco }}</span>
+              }
+              @if (entry.match.bot) {
+                <span>{{ 'unbird.people.bot' | transloco }}</span>
+              }
+            </mb-metadata>
+            @if (follows().get(entry.match.acct) === 'failed') {
+              <span class="error">{{ 'unbird.people.followFailed' | transloco }}</span>
             }
           </div>
-        </li>
+          @if (via() === 'account') {
+            @if (follows().get(entry.match.acct) === 'done') {
+              <button mbButton variant="compact" type="button" disabled>
+                {{ 'unbird.people.following' | transloco }}
+              </button>
+            } @else {
+              <button
+                mbButton
+                variant="compact"
+                type="button"
+                [disabled]="follows().get(entry.match.acct) === 'busy'"
+                (click)="follow(entry.match.acct)"
+              >
+                {{ 'unbird.people.follow' | transloco }}
+              </button>
+            }
+          }
+        </div>
       }
-    </ul>
+    </div>
   }
 
   <div class="foot">
@@ -149,19 +125,21 @@
       <p class="muted small">{{ 'unbird.people.quiet' | transloco: { count: fmt(quiet()) } }}</p>
     }
     @if (followed().length) {
-      <details class="already">
-        <summary>{{ 'unbird.people.already' | transloco: { count: followed().length } }}</summary>
+      <mb-disclosure
+        class="already"
+        [label]="'unbird.people.already' | transloco: { count: followed().length }"
+      >
         <ul>
           @for (entry of followed(); track entry.match.acct) {
             <li>
-              <a [href]="entry.match.url" target="_blank" rel="noopener"
+              <a mbContentLink [href]="entry.match.url" target="_blank" rel="noopener"
                 >&#64;{{ entry.match.acct }}</a
               >
               <span class="muted">· &#64;{{ entry.person.twitter_handle }}</span>
             </li>
           }
         </ul>
-      </details>
+      </mb-disclosure>
     }
     @if (noHandle() > 0) {
       <p class="muted small">

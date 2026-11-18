@@ -1,6 +1,9 @@
 import { Component, computed, inject, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
+import { MbDisclosure } from '../design-system/disclosure/disclosure';
+import { MbFileDrop, MbPickedFile } from '../design-system/file-drop/file-drop';
+import { MbNotice } from '../design-system/notice/notice';
 import {
   ArchiveReadError,
   PickedFile,
@@ -43,7 +46,7 @@ import { UnbirdMatcher } from './unbird-matcher';
  */
 @Component({
   selector: 'app-unbird-drop',
-  imports: [MbButton, TranslocoPipe],
+  imports: [MbButton, MbDisclosure, MbFileDrop, MbNotice, TranslocoPipe],
   templateUrl: './unbird-drop.html',
   styleUrl: './unbird-drop.css',
 })
@@ -52,7 +55,6 @@ export class UnbirdDrop {
   protected readonly readFiles = READ_FILES;
   protected readonly step = signal<'opening' | 'reading' | 'sorting' | null>(null);
   protected readonly error = signal<'notArchive' | 'damaged' | null>(null);
-  protected readonly dragging = signal(false);
   protected readonly notSaved = signal(false);
   /** Replacing: the drop target shows again over a loaded archive. */
   protected readonly replacing = signal(false);
@@ -67,26 +69,8 @@ export class UnbirdDrop {
     return (count ?? 0).toLocaleString();
   }
 
-  protected onDragOver(event: DragEvent): void {
-    event.preventDefault();
-    this.dragging.set(true);
-  }
-
-  protected onDrop(event: DragEvent): void {
-    event.preventDefault();
-    this.dragging.set(false);
-    const files = [...(event.dataTransfer?.files ?? [])];
-    void this.read(files.map((file) => ({ path: file.name, blob: file })));
-  }
-
-  protected onPick(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const files = [...(input.files ?? [])].map((file) => ({
-      path: file.webkitRelativePath || file.name,
-      blob: file,
-    }));
-    input.value = '';
-    void this.read(files);
+  protected onFiles(files: readonly MbPickedFile[]): void {
+    void this.read(files.map(({ path, file }) => ({ path, blob: file })));
   }
 
   protected async forget(): Promise<void> {

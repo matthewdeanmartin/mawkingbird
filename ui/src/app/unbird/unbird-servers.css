@@ -2,15 +2,7 @@
   display: block;
 }
 .servers {
-  margin: 20px 0;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: var(--col-bg);
-}
-h2 {
-  margin: 0 0 6px;
-  font-size: 1.15rem;
+  margin: 8px 0;
 }
 .lead {
   margin: 0 0 12px;

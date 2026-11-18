@@ -6,7 +6,7 @@
 } @else if (matcher.archive(); as archive) {
   <p class="lead">{{ 'unbird.profile.lead' | transloco }}</p>
 
-  <section class="card">
+  <mb-section [title]="'unbird.profile.details' | transloco">
     @if (archive.owner.displayName) {
       <mb-checkbox
         [label]="('unbird.profile.useName' | transloco) + ': ' + archive.owner.displayName"
@@ -40,7 +40,7 @@
       </dl>
     }
 
-    <h2>{{ 'unbird.profile.pictures' | transloco }}</h2>
+    <h3>{{ 'unbird.profile.pictures' | transloco }}</h3>
     @if (avatarUrl() || headerUrl()) {
       <div class="pictures">
         @if (headerUrl(); as url) {
@@ -65,23 +65,21 @@
         />
       }
     } @else {
-      <p class="muted small">{{ 'unbird.profile.picturesNeedArchive' | transloco }}</p>
+      <mb-notice>{{ 'unbird.profile.picturesNeedArchive' | transloco }}</mb-notice>
     }
 
     <div class="row">
       <button mbButton type="button" [disabled]="saving() === 'busy'" (click)="save()">
         {{ 'unbird.profile.save' | transloco }}
       </button>
-      @if (saving() === 'done') {
-        <span class="ok" role="status">{{ 'unbird.profile.saved' | transloco }}</span>
-      } @else if (saving() === 'failed') {
-        <span class="error" role="status">{{ 'unbird.profile.saveFailed' | transloco }}</span>
-      }
+      <mb-save-feedback
+        [state]="feedback(saving())"
+        [message]="saveMessage() ? (saveMessage() | transloco) : ''"
+      />
     </div>
-  </section>
+  </mb-section>
 
-  <section class="card">
-    <h2>{{ 'unbird.profile.moved.title' | transloco }}</h2>
+  <mb-section [title]="'unbird.profile.moved.title' | transloco">
     <p class="muted">{{ 'unbird.profile.moved.lead' | transloco }}</p>
     <mb-field [label]="'unbird.profile.moved.text' | transloco">
       <textarea
@@ -100,41 +98,40 @@
       >
         {{ 'unbird.profile.moved.post' | transloco }}
       </button>
-      @if (movedState() === 'done') {
-        <span class="ok" role="status">{{ 'unbird.profile.moved.done' | transloco }}</span>
-      } @else if (movedState() === 'failed') {
-        <span class="error" role="status">{{ 'unbird.profile.moved.failed' | transloco }}</span>
-      }
+      <mb-save-feedback
+        [state]="feedback(movedState())"
+        [message]="movedMessage() ? (movedMessage() | transloco) : ''"
+      />
     </div>
-  </section>
+  </mb-section>
 
   @if (xLine()) {
-    <section class="card">
-      <h2>{{ 'unbird.profile.x.title' | transloco }}</h2>
+    <mb-section [title]="'unbird.profile.x.title' | transloco">
       <p class="muted">{{ 'unbird.profile.x.lead' | transloco }}</p>
       <div class="row">
         <code class="line">{{ xLine() }}</code>
-        <button mbButton variant="outline" size="small" type="button" (click)="copyXLine()">
+        <button mbButton variant="compact" type="button" (click)="copyXLine()">
           {{ (copied() ? 'unbird.profile.x.copied' : 'unbird.profile.x.copy') | transloco }}
         </button>
       </div>
-    </section>
+    </mb-section>
   }
 
   @if (tags().length) {
-    <section class="card">
-      <h2>{{ 'unbird.profile.tags.title' | transloco }}</h2>
+    <mb-section [title]="'unbird.profile.tags.title' | transloco">
       <div class="row">
         @for (tag of tags(); track tag) {
           @if (followedTags().has(tag)) {
-            <span class="ok">{{ 'unbird.profile.tags.following' | transloco: { tag } }}</span>
+            <button mbButton variant="compact" type="button" disabled>
+              {{ 'unbird.profile.tags.following' | transloco: { tag } }}
+            </button>
           } @else {
-            <button mbButton variant="outline" size="small" type="button" (click)="followTag(tag)">
+            <button mbButton variant="compact" type="button" (click)="followTag(tag)">
               {{ 'unbird.profile.tags.follow' | transloco: { tag } }}
             </button>
           }
         }
       </div>
-    </section>
+    </mb-section>
   }
 }

@@ -28,4 +28,4 @@ Check the spelling first. Enter only a website name such as `example.social`, wi
 
 The server may also be temporarily unavailable or blocked on your network. Use **Try again** after a moment. If Mawkingbird warns that images cannot load, you can decide whether to continue without images or try again later.
 
-Next: [Your first ten minutes](first-ten-minutes.md).
+Once Home opens, [find people to follow on Mastodon](../mastodon/index.md#give-yourself-something-to-read).

@@ -66,6 +66,7 @@ class Page:
     source: PurePosixPath  # relative to docs/, e.g. start/welcome.md
     nav_title: str
     section: str | None
+    book: str | None = None  # Top-level group in the help navigation.
     title: str = ""
     description: str = ""
     body: str = ""
@@ -123,18 +124,18 @@ def load_nav(mkdocs_file: Path = MKDOCS) -> list[Page]:
     config = _yaml().load(mkdocs_file.read_text(encoding="utf-8"))
     pages: list[Page] = []
 
-    def walk(entries: list, section: str | None) -> None:
+    def walk(entries: list, section: str | None, book: str | None) -> None:
         for entry in entries:
             if isinstance(entry, str):
-                pages.append(Page(PurePosixPath(entry), entry, section))
+                pages.append(Page(PurePosixPath(entry), entry, section, book))
                 continue
             for title, value in entry.items():
                 if isinstance(value, list):
-                    walk(value, title)
+                    walk(value, title, book or title)
                 else:
-                    pages.append(Page(PurePosixPath(value), title, section))
+                    pages.append(Page(PurePosixPath(value), title, section, book))
 
-    walk(config.get("nav", []), None)
+    walk(config.get("nav", []), None, None)
     return pages
 
 
@@ -147,6 +148,12 @@ class _LinkRewriter(Treeprocessor):
 
     def run(self, root: ElementTree.Element) -> None:
         page = self.builder.current
+        for image in root.iter("img"):
+            src = image.get("src", "")
+            asset = _normalise(page.source.parent / src)
+            if not asset.startswith("assets/") or not (self.builder.docs / asset).is_file():
+                raise BuildError(f"{page.source}: missing help image {src}")
+            image.set("src", self.builder.base + asset)
         for anchor in root.iter("a"):
             href = anchor.get("href", "")
             if re.match(r"^[a-z][a-z0-9+.-]*:|^//|^#", href, re.IGNORECASE):
@@ -249,7 +256,14 @@ class HelpBuilder:
     def _nav(self, current: Page) -> str:
         out: list[str] = []
         section: object = object()
+        seen: set[str] = set()
         for page in self.pages:
+            if page.book and current.book and page.book != current.book:
+                continue
+            if not current.book and page.book:
+                if page.book in seen:
+                    continue
+                seen.add(page.book)
             if page.section != section:
                 if out:
                     out.append("</ul>")
@@ -266,12 +280,12 @@ class HelpBuilder:
 
     def _pager(self, index: int) -> str:
         links = []
-        if index > 0:
+        if index > 0 and self.pages[index - 1].book == self.pages[index].book:
             prev = self.pages[index - 1]
             links.append(
                 f'<a rel="prev" href="{url_for(self.base, prev.slug)}"><span>Previous</span>{html.escape(prev.nav_title)}</a>'
             )
-        if index < len(self.pages) - 1:
+        if index < len(self.pages) - 1 and self.pages[index + 1].book == self.pages[index].book:
             nxt = self.pages[index + 1]
             links.append(
                 f'<a rel="next" href="{url_for(self.base, nxt.slug)}"><span>Next</span>{html.escape(nxt.nav_title)}</a>'
@@ -308,6 +322,7 @@ class HelpBuilder:
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" sizes="32x32" href="{app}favicon-32x32.png">
 <link rel="stylesheet" href="{self.base}help.css">
+<link rel="stylesheet" href="{self.base}assets/screenshots.css">
 </head>
 <body>
 <a class="skip" href="#guide">Skip to guide</a>
@@ -322,7 +337,7 @@ class HelpBuilder:
 {nav}
 </div></nav>
 <main class="column" id="guide">
-<div data-nosnippet><details class="topics"><summary>All help topics</summary>
+<div data-nosnippet><details class="topics"><summary>{e(page.book or "Help")} topics</summary>
 <nav aria-label="Help topics (compact)">
 {nav}
 </nav>
@@ -382,6 +397,8 @@ class HelpBuilder:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(self.render_page(index), encoding="utf-8", newline="\n")
         shutil.copyfile(STATIC / "help.css", out / "help.css")
+        if (self.docs / "assets").is_dir():
+            shutil.copytree(self.docs / "assets", out / "assets")
         if not self.noindex:
             last_commit_dates(self.docs, self.pages)
             (out / "sitemap.xml").write_text(self.sitemap(), encoding="utf-8", newline="\n")

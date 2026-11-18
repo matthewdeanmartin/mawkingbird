@@ -575,3 +575,42 @@ preserve post unmounting on selection changes. Do not replace native route links
 with local tabs. ContentLink retains native routes; Metadata supplies wrapping
 identity/version content. History uses native time elements for timestamps.
 The scoped local-tab lint rule protects ClientListPage from copied tab geometry.
+
+## File drop, progress and stats
+
+Added for Unbird ([spec](../spec/sprint/unbird-2026-11.md), Sprint 5).
+Preview: **Data / File drop, progress and stats**.
+
+`MbFileDrop` (`mb-file-drop`) is one native `<input type="file">` inside its
+own `<label>`. The whole surface opens the system picker on click, Enter or
+Space; dropping files on it does the same. It emits `files` as
+`{ path, file }[]` (`path` is the folder-relative path when `directory` is
+set) and never emits an empty list. Inputs: required `label` (pass the busy
+text while `busy`), `hint` (linked with `aria-describedby`), `action` (the
+button-like text inside a target), `accept`, `multiple`, `directory`,
+`disabled`, `busy`, and `presentation` (`target`, the large dashed surface for
+a page's main input, or `link`, one accent-coloured line for a secondary way
+in). Project a decorative icon with `mbFileDropIcon`. The caller owns reading
+the files, errors and what happens next. Do not wrap it in another label or
+button, and do not hide a second file input beside it.
+
+`MbProgress` (`mb-progress`) labels a native `<progress>` with a visible
+`label`, an optional `caption` (plain text, not a live region) and
+`value`/`max`; `max` of 0 or less is indeterminate. A caller that wants
+changes announced owns that live region.
+
+`MbStatGrid` (`dl[mbStatGrid]`) lays out headline numbers as a native
+description list: `<div><dt>Label</dt><dd>Value</dd></div>` children. Callers
+format numbers for the locale. Styles are namespaced under `[mbStatGrid]`.
+
+`MbBarList` (`mb-bar-list`) is a short named list (`label`) of rows with a
+proportional bar: `items` of `{ label, value, display? }`. Every row shows its
+value as text, so bars are `aria-hidden` decoration and scale to the largest
+value. It is not a chart: no axes, tooltips or interaction. Use it for
+"posts per year" or "top hashtags", not for comparing series.
+
+Unbird also adopts existing widgets rather than local copies: PageHeader and
+Section for page structure, Toolbar with `pressed` buttons for the People
+activity filter and the Posts suggestions, IdentityRow with Metadata for
+people, Notice, Disclosure, SaveFeedback, RadioGroup, Checkbox hints, Spinner,
+and `compact` Buttons for actions inside rows.

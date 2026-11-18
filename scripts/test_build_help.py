@@ -133,6 +133,29 @@ class BuildHelpTest(unittest.TestCase):
         with self.assertRaisesRegex(build_help.BuildError, "planning.md"):
             self.build()
 
+    def test_nested_topics_and_pager_stay_in_current_app(self) -> None:
+        self.mkdocs.write_text(MKDOCS + "  - Radio:\n      - Listening:\n          - Playlists: radio.md\n", encoding="utf-8")
+        (self.docs / "radio.md").write_text("# Playlists\n\nPlay music.\n", encoding="utf-8")
+        self.build()
+        radio = self.read("radio/index.html")
+        self.assertIn("Listening</h2>", radio)
+        self.assertIn('href="/help/">Help home</a>', radio)
+        self.assertNotIn("/help/start/welcome/", radio)
+
+    def test_nested_guide_image_is_copied_and_respects_preview_base(self) -> None:
+        assets = self.docs / "assets"
+        assets.mkdir()
+        (assets / "screen.png").write_bytes(b"sample")
+        path = self.docs / "start/welcome.md"
+        with path.open("a", encoding="utf-8") as file:
+            file.write("\n![Example](../assets/screen.png){ .help-screenshot }\n")
+        self.build(base="/canary/help/", noindex=True)
+        self.assertIn('src="/canary/help/assets/screen.png"', self.read("start/welcome/index.html"))
+        self.assertEqual((self.out / "assets/screen.png").read_bytes(), b"sample")
+        (assets / "screen.png").unlink()
+        with self.assertRaisesRegex(build_help.BuildError, "missing help image"):
+            self.build()
+
     def test_broken_internal_link_fails(self) -> None:
         (self.docs / "start/welcome.md").write_text(
             "# Welcome\n\nSee [gone](gone.md).\n", encoding="utf-8"

@@ -95,14 +95,16 @@ describe('Unbird components', () => {
     const fixture = TestBed.createComponent(UnbirdDrop);
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
-    expect(root.querySelector('.target')?.textContent).toContain('Drop your Twitter archive');
-    expect(root.querySelector('.privacy summary')?.textContent).toContain('Stays on your device');
+    expect(root.querySelector('mb-file-drop')?.textContent).toContain('Drop your Twitter archive');
+    expect(root.querySelector('mb-disclosure.privacy summary')?.textContent).toContain(
+      'Stays on your device',
+    );
 
     await matcher.use(archive(), []);
     fixture.detectChanges();
-    expect(root.querySelector('.target')).toBeNull();
-    expect(root.querySelector('.loaded')?.textContent).toContain('@owner');
-    expect(root.querySelector('.privacy summary')?.textContent).toContain('2 of 74');
+    expect(root.querySelector('mb-file-drop')).toBeNull();
+    expect(root.querySelector('mb-notice')?.textContent).toContain('@owner');
+    expect(root.querySelector('mb-disclosure.privacy summary')?.textContent).toContain('2 of 74');
   });
 
   it('lists found people with why they matter, and follows only on request', async () => {
@@ -133,11 +135,18 @@ describe('Unbird components', () => {
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
     expect(root.querySelector('.big')?.textContent).toContain('1 of your people is on Mastodon');
-    expect(root.querySelector('.person')?.textContent).toContain('@ada@hachyderm.io');
-    expect(root.querySelector('.person .chips')?.textContent).toContain('Twitter mutual');
-    expect(root.querySelector('.person .chips')?.textContent).toContain('Talked 5 times');
+    expect(root.querySelector('[mbIdentityRow]')?.textContent).toContain('@ada@hachyderm.io');
+    expect(root.querySelector('[mbIdentityRow] mb-metadata')?.textContent).toContain(
+      'Twitter mutual',
+    );
+    expect(root.querySelector('[mbIdentityRow] mb-metadata')?.textContent).toContain(
+      'Talked 5 times',
+    );
     // Signed out: a link to the profile, never a Follow button.
-    expect(root.querySelector('.person a')?.getAttribute('href')).toBe('https://hachyderm.io/@ada');
+    expect(root.querySelector('[mbIdentityRow] a')?.getAttribute('href')).toBe(
+      'https://hachyderm.io/@ada',
+    );
+    expect(root.querySelector('[mbIdentityRow] button')).toBeNull();
     expect(search).not.toHaveBeenCalled();
   });
 
@@ -225,9 +234,9 @@ describe('Unbird components', () => {
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
     const offered = () =>
-      [...root.querySelectorAll('.person .acct')].map((el) => el.textContent?.trim());
+      [...root.querySelectorAll('[mbIdentityRow] .muted')].map((el) => el.textContent?.trim());
     expect(offered()).toEqual(['@ada@hachyderm.io']);
-    expect(root.querySelector('.already summary')?.textContent).toContain('(1)');
+    expect(root.querySelector('mb-disclosure.already summary')?.textContent).toContain('(1)');
     expect(root.querySelector('.foot')?.textContent).toContain('1 more found');
 
     const everyone = [...root.querySelectorAll('button')].find((b) =>

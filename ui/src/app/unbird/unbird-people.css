@@ -1,26 +1,29 @@
 :host {
   display: block;
 }
+/* Placement and spacing only: rows, toolbar, progress and notices are the design system's. */
 .summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin: 20px 0 12px;
 }
 .big {
-  margin: 0 0 10px;
+  margin: 0;
   font-size: clamp(1.3rem, 3.4vw, 1.75rem);
   font-weight: 750;
   line-height: 1.2;
 }
-.meter {
-  height: 6px;
-  border-radius: 3px;
-  background: var(--border);
-  overflow: hidden;
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
-.meter span {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  transition: width 200ms ease;
+.people {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
 }
 .muted {
   color: var(--muted);
@@ -28,94 +31,7 @@
 .small {
   font-size: 0.88rem;
 }
-.summary .muted {
-  margin: 8px 0 0;
-  font-size: 0.92rem;
-}
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin-top: 12px;
-}
-.notice {
-  margin: 10px 0 0;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--accent-soft);
-}
-.people {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
-.person {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-top: 1px solid var(--border);
-}
-.person:first-child {
-  border-top: 0;
-}
-.avatar {
-  flex: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  object-fit: cover;
-  background: var(--border);
-}
-.body {
-  flex: 1;
-  min-width: 0;
-}
-.names {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 8px;
-}
-.names strong {
-  overflow-wrap: anywhere;
-}
-.acct {
-  color: var(--muted);
-  font-size: 0.9rem;
-  overflow-wrap: anywhere;
-}
-.tag {
-  padding: 1px 7px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 0.75rem;
-  color: var(--muted);
-}
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 10px;
-  margin-top: 4px;
-  font-size: 0.82rem;
-  color: var(--muted);
-}
-.signals {
-  opacity: 0.8;
-}
-.action {
-  flex: none;
-}
-.done {
-  font-weight: 600;
-  color: var(--accent);
-}
 .error {
-  margin: 4px 0 0;
   font-size: 0.85rem;
   color: var(--ds-error-text);
 }
@@ -126,20 +42,16 @@
   gap: 8px;
   margin-top: 12px;
 }
-.already {
-  width: 100%;
-}
-.already summary {
-  cursor: pointer;
-  color: var(--muted);
-}
-.already ul {
-  margin: 6px 0 0;
-  padding-left: 1.2em;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
-}
 .foot p {
   margin: 0;
   max-width: 560px;
+}
+.already {
+  width: 100%;
+}
+.already ul {
+  margin: 0;
+  padding-left: 1.2em;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }

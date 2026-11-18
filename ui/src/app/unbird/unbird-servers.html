@@ -1,6 +1,5 @@
 @if (servers().length) {
-  <section class="servers">
-    <h2>{{ 'unbird.servers.title' | transloco }}</h2>
+  <mb-section class="servers" [title]="'unbird.servers.title' | transloco">
     <p class="lead">{{ 'unbird.servers.lead' | transloco }}</p>
     <ul>
       @for (entry of servers(); track entry.server) {
@@ -30,7 +29,7 @@
           </div>
           <a
             mbButton
-            size="small"
+            variant="compact"
             routerLink="/login/mastodon"
             [queryParams]="{ intent: 'need', server: entry.server, next }"
           >
@@ -58,5 +57,5 @@
       </a>
     </div>
     <p class="muted small">{{ 'unbird.servers.after' | transloco }}</p>
-  </section>
+  </mb-section>
 }

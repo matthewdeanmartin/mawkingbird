@@ -3330,42 +3330,47 @@
     {
       "file": "ui/src/app/unbird/unbird-archive-tools.html",
       "disposition": "adopted scope",
-      "nextStep": "Tabs (Search, Likes, Numbers, Website, Contacts), Field/Control for search, kind and year selects and site options, Checkbox for retweets and replies, Button for the two downloads. The per-year bars and stat tiles are local presentation, not a chart widget. The contacts re-pick is a label-wrapped hidden file input with an outline Button span, like the drop target."
+      "nextStep": "Tabs, Field/Control, Checkbox, Metadata for result lines, StatGrid for headline numbers, BarList for posts per year, people talked to and hashtags, FileDrop link to re-pick the archive for contacts, Notice for the export result, Buttons."
     },
     {
       "file": "ui/src/app/unbird/unbird-drop.html",
       "disposition": "adopted scope",
-      "nextStep": "Drop target is a label-wrapped hidden file input (drag and drop plus click) with a Button span; the folder picker is a second label. Two native <details> on purpose: the privacy line's 'Which?' and 'Don't have it yet?'. Link Buttons for replace and forget. Candidate for a shared file-drop widget if a second drop target appears."
+      "nextStep": "FileDrop (target and link presentations) for the archive and folder pickers, Notice for errors, the loaded archive and the not-saved warning, Disclosure for 'Don't have it yet?' and the privacy 'Which?' list, link Buttons (danger for Forget). No local surfaces remain."
     },
     {
       "file": "ui/src/app/unbird/unbird-landing.ts",
       "disposition": "adopted scope",
-      "nextStep": "Composition only: Unbird drop, people and servers, and the classic importer projected into a native <details>. Preserve the classic importer unchanged inside it."
+      "nextStep": "Composition only; the classic importer is projected unchanged into a Disclosure."
     },
     {
       "file": "ui/src/app/unbird/unbird-people.html",
       "disposition": "adopted scope",
-      "nextStep": "Button for find/keep looking/pause/follow-all and small per-row Follow, outline small link Button for View when signed out, link Button for the CSV. Rows are a local list with avatar and chips; a candidate to adopt a shared account row later. Preserve: Follow only on request, never automatic."
+      "nextStep": "Progress for search progress, Spinner while searching, Toolbar with pressed buttons for the activity filter, Notice for rate limits, IdentityRow with Metadata for each match (the name is a native link to the profile), compact Buttons for Follow and Following, Disclosure with ContentLinks for 'Already following', link Button for CSV."
     },
     {
       "file": "ui/src/app/unbird/unbird-servers.html",
       "disposition": "adopted scope",
-      "nextStep": "Small Button links per suggested server into /login/mastodon (intent=need, server, next) and link Buttons for 'Pick another server' and 'I already have an account'."
+      "nextStep": "Section for the matchmaking block, compact link Buttons per server row, link Buttons for the other two sign-in ways."
     },
     {
       "file": "ui/src/app/unbird/unbird-import-points.ts",
       "disposition": "adopted scope",
-      "nextStep": "Native-only list of kept archives: link Buttons (Use this one, danger Forget). Renders nothing on the web. Sprint 5 (design system) reviews it with the other Unbird surfaces."
+      "nextStep": "Section and compact Buttons (Use this one; danger Forget). Native only."
     },
     {
       "file": "ui/src/app/unbird/unbird-posts.html",
       "disposition": "adopted scope",
-      "nextStep": "Small solid/outline Button toggles for suggestions (aria-pressed), link Buttons for select/clear/more, Checkbox per post unit, Field/Control (number, date, visibility select), Checkbox for date line and photos, solid Button to schedule, outline and danger link Buttons for the queue. The suggestion toggle row is a candidate for a shared segmented control in Sprint 5."
+      "nextStep": "Section for the replay queue and the schedule, Toolbar with pressed buttons for suggestions, Checkbox per post unit with the date/likes/thread/photos line as its hint, Field/Control for per-day and start date, RadioGroup for visibility, Notice for errors and the photos note, Buttons (outline, danger link, solid)."
     },
     {
       "file": "ui/src/app/unbird/unbird-profile.html",
       "disposition": "adopted scope",
-      "nextStep": "Checkbox for each proposal, Field/Control textareas for bio and the moved post, solid Buttons for save and post-and-pin, outline small Buttons for copy and follow-tag. Local header/avatar preview images. Sprint 5 reviews the cards against a shared card."
+      "nextStep": "Section per block, Checkbox for each proposal, Field/Control textareas, Notice for the pictures note, SaveFeedback for Save and Post-and-pin, compact Buttons for Copy and follow-tag. Header/avatar previews and the field preview list stay local content."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "PageHeader for every tab's title and lead; Navigation rows (MbNavLink) for the Start tab's next steps. Page width and gap only stay local."
     }
   ]
 }

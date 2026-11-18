@@ -2,6 +2,13 @@ import { Component, computed, effect, inject, input, signal, untracked } from '@
 import { TranslocoPipe } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 import { MbButton } from '../design-system/button/button';
+import { MbDisclosure } from '../design-system/disclosure/disclosure';
+import { MbIdentityRow } from '../design-system/identity/identity-row';
+import { MbSpinner } from '../design-system/identity/spinner';
+import { MbContentLink, MbMetadata } from '../design-system/metadata/metadata';
+import { MbNotice } from '../design-system/notice/notice';
+import { MbProgress } from '../design-system/progress/progress';
+import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { Api } from '../platform/api/api';
 import { Server } from '../platform/http/server';
 import { Auth } from '../platform/session/auth';
@@ -15,6 +22,7 @@ import { StoredMatch } from './unbird-store';
 // i18n unbird.people.found.other: {{count}} of your people are on Mastodon
 // i18n unbird.people.foundNone: Looking for your people on Mastodon
 // i18n unbird.people.progress: Checked {{searched}} of {{total}}, closest first
+// i18n unbird.people.progressLabel: Search progress
 // i18n unbird.people.searchingVia: Searching {{server}}…
 // i18n unbird.people.searchingHome: Searching your server…
 // i18n unbird.people.keepLooking: Keep looking ({{count}} left)
@@ -36,7 +44,6 @@ import { StoredMatch } from './unbird-store';
 // i18n unbird.people.follow: Follow
 // i18n unbird.people.following: Following
 // i18n unbird.people.followFailed: Could not follow. Try again, or open their profile.
-// i18n unbird.people.view: View
 // i18n unbird.people.followAll: Follow all {{count}} likely matches
 // i18n unbird.people.already: Already following on Mastodon ({{count}})
 // i18n unbird.people.csv: Download the list (CSV)
@@ -72,7 +79,19 @@ export function activeWithin(match: StoredMatch, within: ActiveWithin, now = Dat
  */
 @Component({
   selector: 'app-unbird-people',
-  imports: [MbButton, TranslocoPipe],
+  imports: [
+    MbButton,
+    MbContentLink,
+    MbDisclosure,
+    MbIdentityRow,
+    MbMetadata,
+    MbNotice,
+    MbProgress,
+    MbSpinner,
+    MbToolbar,
+    MbToolbarButton,
+    TranslocoPipe,
+  ],
   templateUrl: './unbird-people.html',
   styleUrl: './unbird-people.css',
 })
