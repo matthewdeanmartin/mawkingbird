@@ -18,6 +18,10 @@ design-test:
 design-verify:
 	npm run design:verify
 
+.PHONY: youtubers-update
+youtubers-update:  # Bundle the sibling starters' reviewed YouTuber kits (public/youtubers/)
+	npm run youtubers:update $(if $(CATALOG),-- "$(CATALOG)",)
+
 .PHONY: starter-catalog-update starter-catalog-check
 starter-catalog-update:
 	npm run starter-catalog:update $(if $(CATALOG),-- "$(CATALOG)",)
@@ -65,6 +69,7 @@ help:
 	@echo "  make starter-catalog-update  Bundle the sibling starter catalogue"
 	@echo "  make starter-catalog-check   Validate the bundle and importer offline"
 	@echo "  make feedbuilder-update      Bundle the reviewed Feed Builder topic pages"
+	@echo "  make youtubers-update        Bundle the reviewed YouTuber creator kits"
 	@echo "  make feedbuilder-check       Validate the Feed Builder bundle and importer offline"
 	@echo "  make security           Audit production dependencies"
 	@echo "  make check              Full read-only quality gate"

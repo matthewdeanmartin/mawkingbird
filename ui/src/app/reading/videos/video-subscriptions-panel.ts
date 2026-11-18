@@ -14,6 +14,7 @@ import { MbDialog } from '../../design-system/dialog/dialog';
 // i18n videos.proxyHelp: About video subscriptions
 // i18n videos.subscriptions: Subscriptions
 // i18n videos.channelPage: Channel
+// i18n videos.findCreators: Find YouTubers on Mastodon
 // i18n videos.paste: YouTube channel link, @handle or channel ID
 // i18n videos.subscribe: Subscribe
 // i18n videos.subscribing: Finding channel…
@@ -37,6 +38,12 @@ import { MbDialog } from '../../design-system/dialog/dialog';
         ><p>{{ 'videos.proxyNote' | transloco }}</p></mb-help
       >
     </h2>
+    <!-- The way to the creator kits on phones, where the rail is hidden. -->
+    <p class="find-creators">
+      <a routerLink="/videos/starters" (click)="opened.emit()">{{
+        'videos.findCreators' | transloco
+      }}</a>
+    </p>
     <form (ngSubmit)="subscribe()">
       <label for="video-channel">{{ 'videos.paste' | transloco }}</label>
       <input id="video-channel" name="channel" [(ngModel)]="channel" maxlength="500" required />

@@ -31,11 +31,15 @@ function internals(fixture: ComponentFixture<RightRail>): RightRailInternals {
 describe('RightRail', () => {
   let httpMock: HttpTestingController;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     localStorage.clear();
     TestBed.configureTestingModule({
+      imports: [RightRail],
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
+    // The video-mode creator kits card sits in an @defer block, which needs
+    // the component compiled before it is created.
+    await TestBed.compileComponents();
     httpMock = TestBed.inject(HttpTestingController);
   });
 

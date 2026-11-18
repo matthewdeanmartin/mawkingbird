@@ -1,0 +1,30 @@
+/* YouTuber kit pages: what features.css and follow.css do not already cover. */
+.creators .channel {
+  font-size: 0.9rem;
+  margin: 0.25rem 0;
+}
+.creators .videos {
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0;
+  padding-inline-start: 1.1rem;
+}
+.creators .badge {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-inline-start: 0.4rem;
+  padding: 0 0.3rem;
+}
+.faq dt {
+  font-weight: 600;
+  margin-top: 0.75rem;
+}
+.faq dd {
+  margin: 0.25rem 0 0;
+}
+.versions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1.5rem 0 0;
+}

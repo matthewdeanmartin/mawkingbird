@@ -278,6 +278,42 @@ for a new page language, its shared words in `feed-builder-chrome.ts`.
 To add a topic: the same, plus a `copy/<topic>.ts` and its `COPY_LOADERS` line
 (`copy/topic-copy.ts`).
 
+## YouTubers on Mastodon: /youtubers-on-mastodon/
+
+Creator kits from `mawkingbird_starters` (`make yt-*`; spec/youtubers/ there),
+bundled by `npm run youtubers:update` into `src/app/public-pages/youtubers/`:
+`data/<lang>.json` (lazy, one per language), `youtuber-paths.generated.json`
+(paths and counts) and `youtuber-data.generated.ts` (the lazy imports). The same
+data feeds these public pages and the in-app `/videos/starters`.
+
+- One hub per language with kits, listed in `youtuber-hubs.json`:
+  `/youtubers-on-mastodon/`, `/de/youtuber-auf-mastodon/`,
+  `/fr/youtubeurs-sur-mastodon/`, `/es/youtubers-en-mastodon/`,
+  `/it/youtuber-su-mastodon/`, `/nl/youtubers-op-mastodon/`,
+  `/ja/youtubers-on-mastodon/`. A language without a hub is not bundled; add its
+  hub (path never renamed) and its copy in `youtuber-copy.ts` together.
+- One page per kit and language: the hub path plus the category's name in that
+  language as an ASCII slug (`/de/youtuber-auf-mastodon/technologie/`);
+  Japanese keeps the English slug. A kit's editions are `hreflang` alternates
+  and link one another; the hubs are alternates of one another.
+- Page copy is written per language in `youtuber-copy.ts`, not in the app
+  dictionaries. Category names come from the catalogue taxonomy.
+- Each kit page is a schema.org `CollectionPage` (breadcrumb Mawkingbird › hub ›
+  kit, creators as `ItemList`). Links to YouTube are `nofollow`. "Follow and
+  subscribe in Mawkingbird" opens `/videos/starters`, which `authGuard` lets a
+  fresh visitor reach anonymously.
+- Rows show the display name, handle, a plain-text bio of up to 200 characters,
+  the channel with its latest video month, and up to three recent video titles.
+
+Consent (owner, 2026-11-18): a YouTuber is a public persona. Kits ignore
+`discoverable`, and a creator's `noindex` / `indexable: false` is read as a
+request about Mastodon's own search, so it does not keep them off these pages.
+This is looser than `/follow/` on purpose and may be refined. Removal is by
+request (tombstones in `mawkingbird_starters`); each page links
+`@mawkingbird@mastodon.social`. `check-seo-build.mjs` checks every hub and kit:
+language, one heading, every creator listed, hub and edition links, `nofollow`
+on YouTube and app links, structured data and sitemap alternates.
+
 ## Help site: /help/
 
 The guides in `/docs` are published twice: to Read the Docs (mkdocs) and as

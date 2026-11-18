@@ -2902,3 +2902,17 @@ Reconciliation notes are updated for all three files.
 The feedback dialog uses the shared field and control for its category, destination and
 message, checkboxes for optional recipients, diagnostics and polls, and a disclosure
 for the report preview. The server error and diagnostics entry points use shared buttons.
+
+YouTube client S5 (2026-11-18): reviewed inventory refresh. YouTuber creator
+kits add `reading/videos/youtuber-kits.ts` (non-UI), `youtuber-kits-card.ts`
+(the video-mode rail card: plain links in an MbRailCard, no control candidates)
+and `youtuber-kits-page.ts`. That takes filesScanned from 1982 to 1985 and
+candidates from 677 to 678. The page is reconciled as adopted scope:
+PageHeader, ContentState, a Field/Control language select, MbButtons and the
+shared FollowButton. The subscriptions panel gains one plain link to the kits.
+
+YouTuber kit public pages (2026-11-18): reviewed inventory refresh. The public
+pages in `public-pages/youtubers/` (routes, page model, copy, types, generated
+loaders, hub and kit components) take filesScanned from 1985 to 1993 and
+candidates from 678 to 680. The hub and kit components use MbButton and
+MbContentLink on the /follow/ page styles and are reconciled as adopted scope.

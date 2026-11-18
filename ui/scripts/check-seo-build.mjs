@@ -118,6 +118,43 @@ const breadcrumbOf = (block) =>
     crumb.item.replace('https://mawkingbird.com', ''),
   );
 pages.push(...feedHubs.map((hub) => hub.path), ...feedPages.map((entry) => entry.path));
+// YouTubers on Mastodon (src/app/public-pages/youtubers/): a hub per language
+// with kits and a page per kit and language, from the generated paths file.
+const ytDir = path.resolve(import.meta.dirname, '../src/app/public-pages/youtubers');
+const ytHubsRaw = JSON.parse(await readFile(path.join(ytDir, 'youtuber-hubs.json'), 'utf8'));
+const ytPaths = JSON.parse(
+  await readFile(path.join(ytDir, 'youtuber-paths.generated.json'), 'utf8').catch(
+    () => '{"languages":{},"kits":{}}',
+  ),
+);
+const ytHubs = Object.keys(ytPaths.languages)
+  .filter((lang) => ytHubsRaw[lang])
+  .map((lang) => ({ lang, path: ytHubsRaw[lang].path }));
+const ytKits = Object.entries(ytPaths.kits).flatMap(([category, langs]) =>
+  Object.entries(langs)
+    .filter(([lang]) => ytHubsRaw[lang])
+    .map(([lang, kitPath]) => ({ category, lang, path: kitPath })),
+);
+const ytHubAt = (page) => ytHubs.find((hub) => hub.path === page);
+const ytKitAt = (page) => ytKits.find((kit) => kit.path === page);
+const ytAlternates = (versions) => {
+  if (versions.length < 2) return [];
+  const english = versions.find((entry) => entry.lang === 'en');
+  return [
+    ...versions.map((entry) => `${entry.lang} https://mawkingbird.com/${entry.path}/`),
+    ...(english ? [`x-default https://mawkingbird.com/${english.path}/`] : []),
+  ].sort();
+};
+const ytData = new Map();
+const ytPacks = async (lang) => {
+  if (!ytData.has(lang))
+    ytData.set(
+      lang,
+      JSON.parse(await readFile(path.join(ytDir, 'data', `${lang}.json`), 'utf8')).packs,
+    );
+  return ytData.get(lang);
+};
+pages.push(...ytHubs.map((hub) => hub.path), ...ytKits.map((kit) => kit.path));
 const articles = new Map([
   ['about', /Why I asked a bot to create this/],
   ['funding', /Nothing below is a revenue model/],
@@ -221,6 +258,64 @@ for (const page of pages) {
     for (const version of feedPages.filter(
       (other) => other.topic === entry.topic && other.path !== entry.path,
     ))
+      assert.ok(
+        doc.querySelector(`a[hreflang="${version.lang}"][href="/${version.path}/"]`),
+        `${page} links its ${version.lang} version`,
+      );
+  } else if (ytHubAt(page)) {
+    // A YouTuber hub: its language, its kits, its sister hubs.
+    const hub = ytHubAt(page);
+    assert.equal(doc.documentElement.lang, hub.lang, `${page} <html lang>`);
+    assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has one heading`);
+    for (const kit of ytKits.filter((entry) => entry.lang === hub.lang))
+      assert.ok(doc.querySelector(`a[href="/${kit.path}/"]`), `${page} links to ${kit.path}`);
+    assert.ok(
+      doc.querySelector('a[href^="/videos/starters"][rel~="nofollow"]'),
+      `${page} opens the app (nofollow)`,
+    );
+    assert.deepEqual(
+      [...doc.querySelectorAll('link[rel="alternate"][hreflang]')]
+        .map((link) => `${link.getAttribute('hreflang')} ${link.getAttribute('href')}`)
+        .sort(),
+      ytAlternates(ytHubs),
+      `${page} hreflang alternates`,
+    );
+  } else if (ytKitAt(page)) {
+    // A YouTuber kit: its language, every creator, its hub, its versions.
+    const kit = ytKitAt(page);
+    const pack = (await ytPacks(kit.lang)).find((entry) => entry.category === kit.category);
+    assert.equal(doc.documentElement.lang, kit.lang, `${page} <html lang>`);
+    assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has one heading`);
+    assert.equal(
+      doc.querySelectorAll('.creators > li').length,
+      pack.members.length,
+      `${page} lists every creator`,
+    );
+    const hub = ytHubs.find((entry) => entry.lang === kit.lang);
+    assert.ok(doc.querySelector(`a[href="/${hub.path}/"]`), `${page} links its hub`);
+    assert.ok(
+      doc.querySelector(`a[href^="/videos/starters"][rel~="nofollow"]`),
+      `${page} opens the kit in the app (nofollow)`,
+    );
+    for (const link of doc.querySelectorAll('a[href^="https://www.youtube.com/"]'))
+      assert.match(
+        link.getAttribute('rel') ?? '',
+        /\bnofollow\b/,
+        `${page} YouTube links nofollow`,
+      );
+    assert.ok(
+      doc.querySelector('a[href="/accounts/@mawkingbird@mastodon.social"]'),
+      `${page} says where to ask for help or removal`,
+    );
+    const versions = ytKits.filter((entry) => entry.category === kit.category);
+    assert.deepEqual(
+      [...doc.querySelectorAll('link[rel="alternate"][hreflang]')]
+        .map((link) => `${link.getAttribute('hreflang')} ${link.getAttribute('href')}`)
+        .sort(),
+      ytAlternates(versions),
+      `${page} hreflang alternates`,
+    );
+    for (const version of versions.filter((entry) => entry.path !== kit.path))
       assert.ok(
         doc.querySelector(`a[hreflang="${version.lang}"][href="/${version.path}/"]`),
         `${page} links its ${version.lang} version`,
@@ -372,6 +467,32 @@ for (const page of pages) {
       blocks[0].mainEntity.itemListElement.length,
       doc.querySelectorAll('.people li').length,
     );
+  } else if (ytHubAt(page)) {
+    const hub = ytHubAt(page);
+    assert.equal(blocks.length, 1, `${page} has one structured-data block`);
+    assert.equal(blocks[0]['@type'], 'CollectionPage');
+    assert.equal(blocks[0].inLanguage, hub.lang);
+    assert.deepEqual(breadcrumbOf(blocks[0]), ['/', `/${page}/`], `${page} breadcrumb`);
+    assert.equal(
+      blocks[0].mainEntity.itemListElement.length,
+      ytKits.filter((kit) => kit.lang === hub.lang).length,
+      `${page} lists every kit`,
+    );
+  } else if (ytKitAt(page)) {
+    const kit = ytKitAt(page);
+    const hub = ytHubs.find((entry) => entry.lang === kit.lang);
+    assert.equal(blocks.length, 1, `${page} has one structured-data block`);
+    assert.equal(blocks[0]['@type'], 'CollectionPage');
+    assert.equal(blocks[0].inLanguage, kit.lang);
+    assert.deepEqual(
+      breadcrumbOf(blocks[0]),
+      ['/', `/${hub.path}/`, `/${page}/`],
+      `${page} breadcrumb`,
+    );
+    assert.equal(
+      blocks[0].mainEntity.itemListElement.length,
+      doc.querySelectorAll('.creators > li').length,
+    );
   } else {
     assert.equal(blocks.length, 0, `${page} has no structured data`);
   }
@@ -454,7 +575,11 @@ for (const url of sitemap.querySelectorAll('url')) {
           ? feedAlternates(feedPageAt(page))
           : hubAt(page) && feedHubs.length > 1
             ? HUB_ALTERNATES
-            : [],
+            : ytHubAt(page)
+              ? ytAlternates(ytHubs)
+              : ytKitAt(page)
+                ? ytAlternates(ytKits.filter((kit) => kit.category === ytKitAt(page).category))
+                : [],
     `sitemap alternates for ${page}`,
   );
 }

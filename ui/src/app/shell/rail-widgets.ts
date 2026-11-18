@@ -35,7 +35,9 @@ export type RailWidget =
   /** Left, Blog: more posts from the same blog. */
   | 'blogMore'
   /** Right, Blog, at the bottom: blogs read recently. */
-  | 'blogRecent';
+  | 'blogRecent'
+  /** Right, Video: starter kits of YouTubers on Mastodon. */
+  | 'youtubers';
 
 /**
  * The Mastodon reading workflow's finders: things that help you find posts,
@@ -66,6 +68,7 @@ export const RAIL_ONLY: Readonly<Partial<Record<RailWidget, readonly AppMode[]>>
   blogAuthor: ['blog'],
   blogMore: ['blog'],
   blogRecent: ['blog'],
+  youtubers: ['video'],
 };
 
 export function railShows(mode: AppMode, widget: RailWidget): boolean {

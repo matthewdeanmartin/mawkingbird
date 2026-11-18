@@ -64,6 +64,8 @@ export const authGuard: CanActivateFn = (_route, state) => {
   // A shared YouTube channel page: its uploads come from the channel's public
   // feed, so a visitor needs no account (spec/youtube-client.md, S3).
   const publicChannel = /^\/videos\/channel\/UC[\w-]{22}\/?$/.test(link.pathname);
+  // The YouTuber kits: public kit pages send visitors here to follow and subscribe.
+  const youtuberKits = link.pathname === '/videos/starters';
   // A starter pack and a saved Bluesky feed/list are public AppView reads.
   const publicBlueskyPage =
     /^\/bluesky\/starter-packs\/[^/]+\/[^/]+\/?$/.test(link.pathname) ||
@@ -91,6 +93,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
     search ||
     publicWatch ||
     publicChannel ||
+    youtuberKits ||
     publicBlueskyPage ||
     publicBlog ||
     copiedLink ||

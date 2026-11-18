@@ -3386,6 +3386,21 @@
       "file": "ui/src/app/reading/videos/channel-page.ts",
       "disposition": "adopted scope",
       "nextStep": "PageHeader for the channel name and handle; MbButton (solid/outline) for Subscribe, Open on YouTube and Older videos; the shared FollowButton for the creator's Mastodon account. The upload grid (thumbnail, duration badge, title, age) and the creator identity line stay local content."
+    },
+    {
+      "file": "ui/src/app/reading/videos/youtuber-kits-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "PageHeader, ContentState for the empty catalogue, compact Field/Control select for the kit language, MbButton (solid/outline/link, small) for Subscribe all, Follow all, Do both, Stop and per-creator Subscribe, and the shared FollowButton. The kit grid (icon, name, count, faces) and the creator rows are local content."
+    },
+    {
+      "file": "ui/src/app/public-pages/youtubers/youtuber-hub.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Public page: MbButton for Open the app and MbContentLink for the kit list, language versions, contact and footer, matching the /follow/ pages (features.css, follow.css). The FAQ list and kit counts are local content."
+    },
+    {
+      "file": "ui/src/app/public-pages/youtubers/youtuber-kit.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Public page: MbButton for Open the app and Follow and subscribe in Mawkingbird; MbContentLink for creators, other kits, language versions, contact and footer, as on /follow/<slug>/. Creator rows (avatar, handle, badge, bio, channel, video links) and the FAQ are local content."
     }
   ]
 }

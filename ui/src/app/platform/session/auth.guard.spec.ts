@@ -44,6 +44,9 @@ describe('authGuard', () => {
     '/watch?youtube=Usr4VpMQjQ0',
     // A shared YouTube channel page.
     '/videos/channel/UCy0tKL1T7wFoYcxCe0xjN6Q',
+    // The YouTuber kits page, where public kit pages send visitors to follow.
+    '/videos/starters',
+    '/videos/starters?lang=de&kit=technology',
     '/app/about',
     '/app/about/',
     '/app/funding/',

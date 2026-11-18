@@ -1,7 +1,116 @@
 # Video client: YouTube without a YouTube account, PeerTube playback
 
-Status: S1–S4 implemented, live tests pending · 2026-11-18. Pair B gates on the
-combined tree; S5–S6 proposed.
+Status: S1–S6 implemented, live tests pending · 2026-11-18.
+
+### S5–S6 evidence: YouTubers on Mastodon (2026-11-18)
+
+The owner asked for both sprints together: a synthesis of youtuberfinder's ETL
+and the starter-pack machinery, the creator kits, and their place in video mode.
+
+**Owner decisions.**
+- Review is done by Claude Code agents reading compact batches.
+- A YouTuber is a public persona: `discoverable` is ignored; only locked,
+  moved, suspended, limited and tombstoned accounts are skipped.
+- Channel-repost bots are welcome (a place to comment).
+- Active means posting on Mastodon in 90 days **or** uploading in 12 months.
+- No adult content and no radical politics. Mainstream left, centre, right and
+  civics are fine.
+- Old categories and LLM exclusions are not trusted, and activity is
+  revalidated with fresh data.
+
+**Pipeline** (`mawkingbird_starters/youtubers/`, `make yt-*`;
+[pipeline](../../mawkingbird_starters/spec/youtubers/pipeline.md),
+[review policy](../../mawkingbird_starters/spec/youtubers/review-policy.md)).
+It reuses starters' home-instance resolver, Feed Builder's Wikidata index and
+channel-URL parsing, and the catalogue taxonomy (30 localised slugs).
+- YouTube data is keyless (channel RSS, channel pages).
+- Raw evidence is gitignored. Decisions are committed.
+
+**Language.** Joining titles failed the detector's prose rule on headlines:
+1,270 creators came out undetermined, and the old pipeline had the same
+problem. Titles now vote instead: a confident per-title detection counts 2,
+otherwise each discriminating word counts 1. The lead needs 3 and a 1.5×
+margin; the bio only breaks ties. Undetermined fell to 179. A sample of de,
+en, fr and nl labels was correct, and reviewers' `# lang` corrections are
+applied at export.
+
+**First run.**
+- 1,886 candidates (youtuberfinder links plus Wikidata) became 1,881 home
+  accounts.
+- The gate kept out 239 inactive, 204 with no account, 179 with no language,
+  19 with no channel, 17 locked and 7 suspended. **1,296 passed** (78 bots).
+- Eleven agents reviewed one batch each: **1,266 in, 30 out** (radical 15,
+  for example a communist party's newspaper and channel, anarchist media, a
+  far-right provocateur; wrong-person 7; not-creator 5; adult 1; spam 1;
+  other 1). Mainstream parties, including Die Linke, and civil-disobedience
+  climate groups were kept in.
+- Packs: one member per channel (a creator before its bot), at least 3, at
+  most 150. The cap was raised from 60 after Technology Connections was cut
+  by a recency cap.
+- **59 packs, 1,118 creators**: en 25, de 18, fr 8, es 3, ja 3, it 1, nl 1.
+
+**App.**
+- `scripts/import-youtubers.mjs` (`npm run youtubers:update` /
+  `youtubers:check`, now part of `check:static`; allow-listed fields;
+  node tests) writes `public/youtubers/index.json` plus one `<lang>.json` per
+  language (about 490 KB in all, fetched on demand).
+- `YoutuberKits`: the reader's language (app, then browser, then English).
+- `/videos/starters` ("YouTubers on Mastodon"): a kit grid, then a kit with
+  creators and channels.
+  - Per row: Subscribe (RSS), Follow (FollowButton, foreign) and a channel link.
+  - Kit actions: **Subscribe to all**, **Follow all** (the shared bulk
+    follower: resolves, paces, confirms large batches) and **Do both**.
+    Following needs a Mastodon session.
+- Video mode's right rail (`youtubers`, video only): the five biggest kits,
+  under `@defer (on idle)` so the shell doesn't carry it. On phones, a "Find
+  YouTubers on Mastodon" link in the subscriptions panel.
+- The fake Technology Connections kit from the original S5 plan was not
+  needed: real kits exist.
+
+**Gates (2026-11-18, combined S5–S6 tree).**
+- Client:
+  - `check:static` (now including `youtubers:check`): **green**.
+  - `make test`: **all 10,453 tests passed**; the 13 new tests were recorded
+    in the manifest.
+  - `build:mockingbird`: **green**. Initial 924.00 kB (+1.4 kB: the rail
+    widget hook and service types; the card is deferred), a 900 kB warning,
+    under the 1 MB error.
+  - `design-verify`: 461 of 463. Two `profile-navigation` cases (Misskey at
+    933px, Twitter at 390px), unrelated to this work, passed on rerun (14/14),
+    so these were flakes under the full parallel suite.
+  - Deep-link audit: 0 broken.
+- Starters:
+  - `make check`: lint and mypy (3 packages) **green**. 637 of 639 tests
+    pass; the 2 failures are the pre-existing Feed Builder `test_fb_budget`.
+  - YouTubers tests: 24 passed.
+- Not run: Native gates. No Native code changed in S5–S6; kits are static
+  files in the shared `public/` bundle.
+
+**Public, translated SEO pages (owner, 2026-11-18).**
+- `/youtubers-on-mastodon/` plus hubs in de, fr, es, it, nl and ja, and one
+  prerendered page per kit and language: **66 pages** (7 hubs, 59 kits).
+  Localised ASCII slugs come from the taxonomy (`/de/youtuber-auf-mastodon/technologie/`).
+- Copy is per language in `youtuber-copy.ts`: heading, intro, kit
+  heading/description/intro, labels, FAQ and contact.
+- `hreflang` alternates (a kit's editions; hubs with each other), a visible
+  "Also in" switcher, a `CollectionPage` with breadcrumbs, the sitemap with
+  alternates and lastmod, and `nofollow` on YouTube and app links.
+- Rows show the bio (up to 200 characters), the channel, the latest video
+  month and 3 recent video titles (the starters export now carries `bio`
+  and `videos`).
+- The importer now generates `src/app/public-pages/youtubers/` (lazy data per
+  language) instead of `public/`, so prerendering and the in-app page share
+  one source.
+- Consent: `noindex` and `indexable:false` are read as being about Mastodon
+  search, so creators stay listed (`ops/engineering/seo.md`).
+- `/videos/starters` is open to fresh visitors (auth-guard rule).
+- Checks: the `check-seo-build` assertions for every hub and kit pass, and
+  `test:seo:browser` passes (JS on and off, desktop and mobile).
+
+**Not done.**
+- PeerTube channels are not in kits.
+- The pre-existing Feed Builder `test_fb_budget` failures in starters
+  (`KeyError: 'listed'`, untouched code) remain.
 
 ### S4 evidence (2026-11-18)
 

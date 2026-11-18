@@ -1,0 +1,125 @@
+{
+ "generatedAt": "2026-11-18T18:51:42+00:00",
+ "languages": {
+  "de": 18,
+  "en": 25,
+  "es": 3,
+  "fr": 8,
+  "it": 1,
+  "ja": 3,
+  "nl": 1
+ },
+ "kits": {
+  "civic-life": {
+   "de": "de/youtuber-auf-mastodon/burgergesellschaft",
+   "en": "youtubers-on-mastodon/civic-life",
+   "es": "es/youtubers-en-mastodon/vida-civica",
+   "fr": "fr/youtubeurs-sur-mastodon/vie-civique",
+   "nl": "nl/youtubers-op-mastodon/openbaar-bestuur"
+  },
+  "education": {
+   "de": "de/youtuber-auf-mastodon/bildung",
+   "en": "youtubers-on-mastodon/education",
+   "es": "es/youtubers-en-mastodon/educacion",
+   "fr": "fr/youtubeurs-sur-mastodon/education"
+  },
+  "technology": {
+   "de": "de/youtuber-auf-mastodon/technologie",
+   "en": "youtubers-on-mastodon/technology",
+   "it": "it/youtuber-su-mastodon/tecnologia"
+  },
+  "science": {
+   "de": "de/youtuber-auf-mastodon/wissenschaft",
+   "en": "youtubers-on-mastodon/science",
+   "fr": "fr/youtubeurs-sur-mastodon/sciences"
+  },
+  "climate-and-environment": {
+   "de": "de/youtuber-auf-mastodon/klima-und-umwelt",
+   "en": "youtubers-on-mastodon/climate-and-environment"
+  },
+  "history": {
+   "de": "de/youtuber-auf-mastodon/geschichte",
+   "en": "youtubers-on-mastodon/history",
+   "fr": "fr/youtubeurs-sur-mastodon/histoire"
+  },
+  "news-and-journalism": {
+   "de": "de/youtuber-auf-mastodon/nachrichten-und-journalismus",
+   "en": "youtubers-on-mastodon/news-and-journalism",
+   "es": "es/youtubers-en-mastodon/noticias-y-periodismo",
+   "fr": "fr/youtubeurs-sur-mastodon/actualites-et-journalisme",
+   "ja": "ja/youtubers-on-mastodon/news-and-journalism"
+  },
+  "books-and-writing": {
+   "de": "de/youtuber-auf-mastodon/bucher-und-schreiben",
+   "en": "youtubers-on-mastodon/books-and-writing",
+   "fr": "fr/youtubeurs-sur-mastodon/livres-et-ecriture"
+  },
+  "music": {
+   "de": "de/youtuber-auf-mastodon/musik",
+   "en": "youtubers-on-mastodon/music",
+   "fr": "fr/youtubeurs-sur-mastodon/musique",
+   "ja": "ja/youtubers-on-mastodon/music"
+  },
+  "health-and-medicine": {
+   "de": "de/youtuber-auf-mastodon/gesundheit-und-medizin",
+   "en": "youtubers-on-mastodon/health-and-medicine"
+  },
+  "film-and-tv": {
+   "de": "de/youtuber-auf-mastodon/film-und-fernsehen",
+   "en": "youtubers-on-mastodon/film-and-tv"
+  },
+  "games": {
+   "de": "de/youtuber-auf-mastodon/spiele",
+   "en": "youtubers-on-mastodon/games",
+   "ja": "ja/youtubers-on-mastodon/games"
+  },
+  "nature-and-wildlife": {
+   "de": "de/youtuber-auf-mastodon/natur-und-tierwelt",
+   "en": "youtubers-on-mastodon/nature-and-wildlife"
+  },
+  "security-and-privacy": {
+   "de": "de/youtuber-auf-mastodon/sicherheit-und-privatsphare",
+   "en": "youtubers-on-mastodon/security-and-privacy"
+  },
+  "sport": {
+   "de": "de/youtuber-auf-mastodon/sport",
+   "en": "youtubers-on-mastodon/sport"
+  },
+  "animals-and-pets": {
+   "de": "de/youtuber-auf-mastodon/tiere-und-haustiere"
+  },
+  "crafts-and-making": {
+   "de": "de/youtuber-auf-mastodon/handwerk-und-basteln",
+   "en": "youtubers-on-mastodon/crafts-and-making"
+  },
+  "travel": {
+   "de": "de/youtuber-auf-mastodon/reisen",
+   "en": "youtubers-on-mastodon/travel"
+  },
+  "maps-and-places": {
+   "en": "youtubers-on-mastodon/maps-and-places"
+  },
+  "space-and-astronomy": {
+   "en": "youtubers-on-mastodon/space-and-astronomy"
+  },
+  "art-and-illustration": {
+   "en": "youtubers-on-mastodon/art-and-illustration",
+   "fr": "fr/youtubeurs-sur-mastodon/art-et-illustration"
+  },
+  "retro-computing": {
+   "en": "youtubers-on-mastodon/retro-computing"
+  },
+  "design": {
+   "en": "youtubers-on-mastodon/design"
+  },
+  "languages": {
+   "en": "youtubers-on-mastodon/languages"
+  },
+  "comics": {
+   "en": "youtubers-on-mastodon/comics"
+  },
+  "science-fiction-and-fantasy": {
+   "en": "youtubers-on-mastodon/science-fiction-and-fantasy"
+  }
+ }
+}

@@ -40,6 +40,7 @@ import {
 import { toolDescription, toolTitle, toolsResolver } from './public-pages/tool-copy';
 import { audienceRoutes } from './public-pages/features/audience-routes';
 import { followRoutes } from './public-pages/features/follow-routes';
+import { youtuberRoutes } from './public-pages/youtubers/youtuber-routes';
 import {
   feedBuilderPreviewRoutes,
   feedBuilderRoutes,
@@ -244,6 +245,8 @@ const likesHubRedirect: CanActivateFn = () => inject(Router).parseUrl('/bookmark
 export const routes: Routes = [
   ...audienceRoutes,
   ...followRoutes,
+  // YouTubers on Mastodon: public kit pages per language (ops/engineering/seo.md).
+  ...youtuberRoutes,
   // Topic starter-kit pages are mini-apps too (Home · Builder · Preview):
   // signed in to Mastodon, the trimmed shell; otherwise the public page and its
   // anonymous preview. The twin must come first, as for the focused tools.
@@ -1330,6 +1333,14 @@ export const routes: Routes = [
         title: 'Watch parties',
         loadComponent: () =>
           import('./reading/videos/watch-parties-page').then((m) => m.WatchPartiesPage),
+      },
+      {
+        // YouTubers on Mastodon: reviewed creator kits by language and
+        // category, with the double subscribe. See spec/youtube-client.md, S5.
+        path: 'videos/starters',
+        title: 'YouTubers on Mastodon',
+        loadComponent: () =>
+          import('./reading/videos/youtuber-kits-page').then((m) => m.YoutuberKitsPage),
       },
       {
         // A YouTube channel: its uploads (RSS, open to everyone), the double

@@ -29,6 +29,7 @@ anything that went wrong under **Findings**.
 | [YouTube client S2](youtube-client-s2-watch-2026-11.md) | Watch: comment modes, YouTube comments, Subscribe, Share, Find posts, About this video | Not run |
 | [YouTube client S3](youtube-client-s3-channels-2026-11.md) | Channel pages, creators on Mastodon (Wikidata, channel links), Follow on Watch, visible chapters | Not run |
 | [YouTube client S4](youtube-client-s4-landing-2026-11.md) | Subscriptions landing, Shorts, Recently seen, SponsorBlock, seeking chapters, PeerTube | Not run |
+| [YouTube client S5–S6](youtube-client-s5-creator-kits-2026-11.md) | YouTubers on Mastodon: kits page, rail card, Subscribe/Follow all, review spot-check | Not run |
 
 The roadmap these come from is `sprint/november_2026_bsky_parity.md`.
 

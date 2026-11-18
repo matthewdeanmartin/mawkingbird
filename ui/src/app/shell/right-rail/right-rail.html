@@ -257,6 +257,13 @@
   </section>
 }
 
+<!-- Video mode: creator kits (YouTubers on Mastodon), loaded only when shown. -->
+@if (rail.shows('youtubers')) {
+  @defer (on idle) {
+    <app-youtuber-kits-card />
+  }
+}
+
 <!-- Blog mode, at the bottom: a starter blogroll of blogs read lately. -->
 @if (rail.shows('blogRecent')) {
   <app-blog-recent-card />

@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1982,
-  "filesWithCandidates": 677,
+  "filesScanned": 1993,
+  "filesWithCandidates": 680,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -14570,6 +14570,94 @@
       ]
     },
     {
+      "file": "ui/src/app/public-pages/youtubers/youtuber-hub.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 23
+        },
+        {
+          "pattern": "shared",
+          "line": 26
+        },
+        {
+          "pattern": "shared",
+          "line": 41
+        },
+        {
+          "pattern": "shared",
+          "line": 58
+        },
+        {
+          "pattern": "shared",
+          "line": 68
+        },
+        {
+          "pattern": "shared",
+          "line": 79
+        },
+        {
+          "pattern": "shared",
+          "line": 81
+        },
+        {
+          "pattern": "shared",
+          "line": 82
+        },
+        {
+          "pattern": "shared",
+          "line": 83
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/public-pages/youtubers/youtuber-kit.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 36
+        },
+        {
+          "pattern": "shared",
+          "line": 39
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        },
+        {
+          "pattern": "shared",
+          "line": 66
+        },
+        {
+          "pattern": "shared",
+          "line": 115
+        },
+        {
+          "pattern": "shared",
+          "line": 130
+        },
+        {
+          "pattern": "shared",
+          "line": 140
+        },
+        {
+          "pattern": "shared",
+          "line": 150
+        },
+        {
+          "pattern": "shared",
+          "line": 151
+        },
+        {
+          "pattern": "shared",
+          "line": 152
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/publishing/compose/compose.html",
       "status": "needs semantic review",
       "findings": [
@@ -21127,47 +21215,47 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 36
+          "line": 37
         },
         {
           "pattern": "shared",
-          "line": 43
+          "line": 50
         },
         {
           "pattern": "shared",
-          "line": 51
+          "line": 58
         },
         {
           "pattern": "shared",
-          "line": 64
+          "line": 71
         },
         {
           "pattern": "shared",
-          "line": 95
-        },
-        {
-          "pattern": "shared",
-          "line": 103
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 43
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 64
-        },
-        {
-          "pattern": "nativeButtons",
           "line": 102
         },
         {
-          "pattern": "checkboxes",
-          "line": 88
+          "pattern": "shared",
+          "line": 110
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 50
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 71
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 109
         },
         {
           "pattern": "checkboxes",
-          "line": 131
+          "line": 95
+        },
+        {
+          "pattern": "checkboxes",
+          "line": 138
         }
       ]
     },
@@ -21406,6 +21494,72 @@
         {
           "pattern": "nativeButtons",
           "line": 139
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/reading/videos/youtuber-kits-page.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 70
+        },
+        {
+          "pattern": "shared",
+          "line": 77
+        },
+        {
+          "pattern": "shared",
+          "line": 83
+        },
+        {
+          "pattern": "shared",
+          "line": 84
+        },
+        {
+          "pattern": "shared",
+          "line": 98
+        },
+        {
+          "pattern": "shared",
+          "line": 107
+        },
+        {
+          "pattern": "shared",
+          "line": 116
+        },
+        {
+          "pattern": "shared",
+          "line": 136
+        },
+        {
+          "pattern": "shared",
+          "line": 175
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 97
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 106
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 115
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 136
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 174
+        },
+        {
+          "pattern": "selects",
+          "line": 84
         }
       ]
     },
@@ -26849,27 +27003,27 @@
         },
         {
           "pattern": "shared",
-          "line": 266
+          "line": 273
         },
         {
           "pattern": "shared",
-          "line": 277
+          "line": 284
         },
         {
           "pattern": "shared",
-          "line": 282
+          "line": 289
         },
         {
           "pattern": "shared",
-          "line": 290
-        },
-        {
-          "pattern": "shared",
-          "line": 294
+          "line": 297
         },
         {
           "pattern": "shared",
           "line": 301
+        },
+        {
+          "pattern": "shared",
+          "line": 308
         },
         {
           "pattern": "nativeButtons",
@@ -26885,11 +27039,11 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 290
+          "line": 297
         },
         {
           "pattern": "nativeButtons",
-          "line": 301
+          "line": 308
         }
       ]
     },

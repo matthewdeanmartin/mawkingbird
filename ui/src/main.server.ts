@@ -52,6 +52,7 @@ import * as toolsIndexPage from './app/public-pages/tools/tools-index';
 import { ToolsIndex } from './app/public-pages/tools/tools-index';
 import { audienceRoutes } from './app/public-pages/features/audience-routes';
 import { followRoutes } from './app/public-pages/features/follow-routes';
+import { youtuberRoutes } from './app/public-pages/youtubers/youtuber-routes';
 import { feedBuilderRoutes } from './app/feeds/feed-builder/feed-builder-routes';
 import { providePublicPageUrls } from './app/public-pages/public-page-urls';
 
@@ -172,6 +173,7 @@ const tools = FOCUSED_TOOLS.map((tool) => ({
 const publicRoutes: Route[] = [
   ...audienceRoutes,
   ...followRoutes,
+  ...youtuberRoutes,
   ...feedBuilderRoutes,
   { path: '', pathMatch: 'full', component: ClientEntry },
   {
@@ -274,6 +276,10 @@ export default (context: BootstrapContext) =>
                 ),
             },
             ...feedBuilderRoutes.map((route) => ({
+              path: route.path ?? '',
+              renderMode: RenderMode.Prerender as const,
+            })),
+            ...youtuberRoutes.map((route) => ({
               path: route.path ?? '',
               renderMode: RenderMode.Prerender as const,
             })),
