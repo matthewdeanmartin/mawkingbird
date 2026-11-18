@@ -42,7 +42,7 @@
       </div>
     }
     <div class="search-box">
-      @if (supporter.isSupporter()) {
+      @if (canSearch()) {
         <form (ngSubmit)="search()">
           <input
             name="query"

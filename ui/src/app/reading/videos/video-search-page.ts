@@ -8,7 +8,6 @@ import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { Status } from '../../platform/api/models';
-import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
 import { VideoSearch, withoutSiteOperators } from './video-search';
 import { VideoSubscriptions } from './video-subscriptions';
 import { YoutubeFeeds, YoutubeSearchItem } from './youtube-feeds';
@@ -32,6 +31,7 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
 // i18n videoSearch.youtubeFailed: Couldn't search YouTube. Try again later.
 // i18n videoSearch.start: Search fediverse posts and YouTube for video
 // i18n videoSearch.startHint: Words are searched as hashtags across the fediverse; YouTube search comes with Mawkingbird Plus.
+// i18n videoSearch.startHintYoutube: Words are searched as hashtags across the fediverse and on YouTube.
 // i18n videoSearch.watch: Watch
 // i18n videoSearch.subscribe: Subscribe
 // i18n videoSearch.subscribed: Subscribed
@@ -73,7 +73,7 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
               (ngModelChange)="draft.set($event)"
             />
           </mb-field>
-          @if (supporter.isSupporter()) {
+          @if (canSearch()) {
             <mb-field [label]="'videoSearch.youtubeType' | transloco">
               <select
                 mbControl
@@ -112,7 +112,9 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
         @if (!query()) {
           <mb-content-state
             [title]="'videoSearch.start' | transloco"
-            [description]="'videoSearch.startHint' | transloco"
+            [description]="
+              (canSearch() ? 'videoSearch.startHintYoutube' : 'videoSearch.startHint') | transloco
+            "
           />
         } @else {
           <section [attr.aria-label]="'videoSearch.postsHeading' | transloco" aria-live="polite">
@@ -135,7 +137,7 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
 
           <section [attr.aria-label]="'videoSearch.youtubeHeading' | transloco" aria-live="polite">
             <h2>{{ 'videoSearch.youtubeHeading' | transloco }}</h2>
-            @if (!supporter.isSupporter()) {
+            @if (!canSearch()) {
               <p>{{ 'videos.plusSearch' | transloco }}</p>
               <a routerLink="/settings/mawkingbird-plus">{{ 'videos.plus' | transloco }}</a>
             } @else if (youtubeLoading()) {
@@ -259,7 +261,8 @@ export class VideoSearchPage {
   private readonly router = inject(Router);
   private readonly search = inject(VideoSearch);
   private readonly youtubeFeeds = inject(YoutubeFeeds);
-  protected readonly supporter = inject(SupporterStatus);
+  /** Native searches YouTube directly; browsers need Plus. */
+  protected readonly canSearch = () => this.youtubeFeeds.canSearch();
   protected readonly subs = inject(VideoSubscriptions);
 
   /** What the box holds; `query` is what was last searched (the URL's). */
@@ -347,7 +350,7 @@ export class VideoSearchPage {
       this.posts.set(posts);
       this.postsLoading.set(false);
     });
-    if (!this.supporter.isSupporter()) return;
+    if (!this.youtubeFeeds.canSearch()) return;
     this.youtubeLoading.set(true);
     this.youtubeFeeds
       .search(withoutSiteOperators(q), this.youtubeType())

@@ -3,7 +3,20 @@ import { inject, Injectable } from '@angular/core';
 import { firstValueFrom, timeout } from 'rxjs';
 import { corsProxyOrigin } from '../../platform/build/build-flavor';
 import { canUseHostedProxy } from '../../accounts/mawkingbird/mawkingbird-access';
-import { PLATFORM_ARTICLE_READ, PLATFORM_FEED_READ } from '../../platform/http/platform-http';
+import {
+  PLATFORM_ARTICLE_READ,
+  PLATFORM_FEED_READ,
+  PLATFORM_YOUTUBE,
+  YoutubeEndpoint,
+} from '../../platform/http/platform-http';
+import { chaptersFromDescription, YoutubeVideoDetails } from './youtube-details';
+
+/** The web-client identification headers youtubei.js sends; Rust refuses any others. */
+const YOUTUBE_CLIENT_HEADERS = [
+  'x-youtube-client-name',
+  'x-youtube-client-version',
+  'x-goog-visitor-id',
+];
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
@@ -37,6 +50,8 @@ export class YoutubeFeeds {
   /** Native reads YouTube directly; it needs no proxy and calls no Mawkingbird service. */
   private nativeFeedRead = inject(PLATFORM_FEED_READ);
   private nativePageRead = inject(PLATFORM_ARTICLE_READ);
+  /** Native's direct, allow-listed YouTube web-client reads; null in browsers. */
+  private nativeYoutube = inject(PLATFORM_YOUTUBE);
 
   /**
    * Whether the web build may use the Mawkingbird proxy from this address. A
@@ -170,31 +185,97 @@ export class YoutubeFeeds {
     }
   }
 
+  /**
+   * Whether YouTube search is available here: always on Native (it asks
+   * YouTube directly, with no Mawkingbird service), else with Plus through the
+   * proxy. Native must not be gated on Plus (spec/youtube-client.md, S1).
+   */
+  canSearch(): boolean {
+    return !!this.nativeYoutube || this.supporter.isSupporter();
+  }
+
+  /** Video details (duration, chapters, family-safe flag) need Native's direct reads. */
+  canReadDetails(): boolean {
+    return !!this.nativeYoutube;
+  }
+
+  private innertube: Promise<import('youtubei.js/web').Innertube> | null = null;
+
+  /**
+   * One anonymous web-client session. Native carries search, browse, player and
+   * next (Rust allow-lists them again); the web proxy carries search only.
+   */
+  private session(): Promise<import('youtubei.js/web').Innertube> {
+    this.innertube ??= (async () => {
+      // This large optional library stays behind the action, away from root imports.
+      const { Innertube } = await import('youtubei.js/web');
+      return Innertube.create({
+        retrieve_player: false,
+        retrieve_innertube_config: false,
+        generate_session_locally: true,
+        fetch: (input, init) => this.route(input, init),
+      });
+    })().catch((error: unknown) => {
+      this.innertube = null;
+      throw error;
+    });
+    return this.innertube;
+  }
+
+  private async route(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+    const url = new URL(
+      typeof input === 'string' ? input : input instanceof URL ? input.href : input.url,
+    );
+    const endpoint = /^\/youtubei\/v1\/(search|browse|player|next)$/.exec(url.pathname)?.[1] as
+      YoutubeEndpoint | undefined;
+    if (url.origin !== 'https://www.youtube.com' || !endpoint || typeof init?.body !== 'string') {
+      throw new Error('Only anonymous YouTube reads are supported.');
+    }
+    const headers = new Headers(init.headers);
+    let json: string;
+    if (this.nativeYoutube) {
+      if (!this.flags.enabled('connector-rss')) {
+        throw new Error('Video feeds are disabled in connection settings.');
+      }
+      json = await this.nativeYoutube(
+        endpoint,
+        init.body,
+        YOUTUBE_CLIENT_HEADERS.flatMap((name) => {
+          const value = headers.get(name);
+          return value ? [[name, value] as [string, string]] : [];
+        }),
+      );
+    } else if (endpoint === 'search') {
+      json = await this.request(url.href, true, init.body, headers);
+    } else {
+      throw new Error('This YouTube feature needs the Mawkingbird app.');
+    }
+    return new Response(json, { headers: { 'Content-Type': 'application/json' } });
+  }
+
+  async details(videoId: string): Promise<YoutubeVideoDetails> {
+    if (!/^[\w-]{11}$/.test(videoId)) throw new Error('Invalid YouTube video ID');
+    if (!this.canReadDetails()) throw new Error('This YouTube feature needs the Mawkingbird app.');
+    const info = (await (await this.session()).getBasicInfo(videoId)).basic_info;
+    const description = info.short_description ?? '';
+    return {
+      id: videoId,
+      title: info.title ?? '',
+      channelId: CHANNEL_ID.test(info.channel_id ?? '') ? info.channel_id! : null,
+      channelTitle: info.author ?? info.channel?.name ?? '',
+      durationSeconds: info.duration || null,
+      description,
+      familySafe: info.is_family_safe ?? null,
+      live: !!info.is_live,
+      chapters: chaptersFromDescription(description),
+    };
+  }
+
   async search(query: string, type: 'video' | 'channel'): Promise<YoutubeSearchItem[]> {
     if (!query.trim() || query.length > 200) throw new Error('Search must be 1–200 characters.');
-    if (!this.supporter.isSupporter()) throw new Error('YouTube search requires Mawkingbird Plus.');
-    // This large optional library stays behind the action, away from root imports.
-    const { Innertube, YTNodes } = await import('youtubei.js/web');
-    const yt = await Innertube.create({
-      retrieve_player: false,
-      retrieve_innertube_config: false,
-      generate_session_locally: true,
-      fetch: async (input, init) => {
-        const url = new URL(
-          typeof input === 'string' ? input : input instanceof URL ? input.href : input.url,
-        );
-        if (
-          url.origin !== 'https://www.youtube.com' ||
-          url.pathname !== '/youtubei/v1/search' ||
-          typeof init?.body !== 'string'
-        ) {
-          throw new Error('Only anonymous YouTube search is supported.');
-        }
-        const json = await this.request(url.href, true, init.body, new Headers(init.headers));
-        return new Response(json, { headers: { 'Content-Type': 'application/json' } });
-      },
-    });
-    const page = await yt.search(query.trim(), { type });
+    if (!this.canSearch()) throw new Error('YouTube search requires Mawkingbird Plus.');
+    const { YTNodes } = await import('youtubei.js/web');
+    const page = await (await this.session()).search(query.trim(), { type });
     return page.results.flatMap((node): YoutubeSearchItem[] => {
       if (type === 'channel' && node.is(YTNodes.Channel) && CHANNEL_ID.test(node.id)) {
         return [

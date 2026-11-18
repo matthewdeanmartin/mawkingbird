@@ -89,6 +89,7 @@ export default {
         {
           provide: YoutubeFeeds,
           useValue: {
+            canSearch: () => false,
             feed: async () =>
               parseFeed(
                 `<feed xmlns="http://www.w3.org/2005/Atom"><title>Technology Connections</title><entry><id>older</id><title>How lamps work</title><link href="https://youtube.com/watch?v=0KoeY54M5VA"/><published>2026-01-01T10:00:00Z</published></entry><entry><id>newer</id><title>Why switches click</title><link href="https://youtube.com/watch?v=uMhdcq2rqUU"/><published>2026-01-02T10:00:00Z</published></entry></feed>`,

@@ -25,7 +25,7 @@ class PlayerStub {
 describe('VideoSearchPage', () => {
   let fixture: ComponentFixture<VideoSearchPage>;
   let posts: ReturnType<typeof vi.fn>;
-  let youtube: { search: ReturnType<typeof vi.fn> };
+  let youtube: { canSearch: () => boolean; search: ReturnType<typeof vi.fn> };
   let open: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
@@ -34,6 +34,8 @@ describe('VideoSearchPage', () => {
     vi.stubGlobal('open', open);
     posts = vi.fn(() => of([{ id: 'p1' } as Status]));
     youtube = {
+      // The web rule: YouTube search needs Plus (Native is covered in youtube-feeds.spec).
+      canSearch: () => TestBed.inject(SupporterStatus).isSupporter(),
       search: vi.fn(async () => [
         { id: 'y1', title: 'Tape', channelId: null, channelTitle: 'Ch', videoId: 'aaaaaaaaaaa' },
       ]),

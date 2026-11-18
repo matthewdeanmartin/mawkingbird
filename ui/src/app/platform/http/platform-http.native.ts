@@ -103,6 +103,42 @@ async function nativeArticleRead(
   return bridge.core.invoke('public_article_get', { url });
 }
 
+/** YouTube web-client endpoints the native transport will carry; nothing else. */
+export type YoutubeEndpoint = 'search' | 'browse' | 'player' | 'next';
+export type NativeYoutubeTransport = (
+  endpoint: YoutubeEndpoint,
+  body: string,
+  headers: [string, string][],
+) => Promise<string>;
+
+/** Rust allow-lists the endpoint and headers and strips stream URLs from player responses. */
+export const PLATFORM_YOUTUBE = new InjectionToken<NativeYoutubeTransport | null>(
+  'PLATFORM_YOUTUBE',
+  { providedIn: 'root', factory: () => nativeYoutube },
+);
+
+async function nativeYoutube(
+  endpoint: YoutubeEndpoint,
+  body: string,
+  headers: [string, string][],
+): Promise<string> {
+  const bridge = (
+    window as unknown as {
+      __TAURI__?: { core: { invoke<T>(command: string, args: object): Promise<T> } };
+    }
+  ).__TAURI__;
+  if (!bridge) throw new Error('Native YouTube reader is unavailable.');
+  try {
+    return await bridge.core.invoke<string>('youtube_innertube', { endpoint, body, headers });
+  } catch (error) {
+    const message =
+      error && typeof error === 'object' && 'message' in error
+        ? String(error.message)
+        : 'YouTube request failed; see native logs.';
+    throw new Error(message, { cause: error });
+  }
+}
+
 import type { NativeConnectorTransport } from './connector-types';
 import type { NativeTwitterTransport } from './connector-types';
 import type { NativeWebmentionTransport } from './connector-types';

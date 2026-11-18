@@ -1,6 +1,24 @@
 # Video client: YouTube without a YouTube account, PeerTube playback
 
-Status: proposed · 2026-11-17. Design only; no code yet.
+Status: S1 implemented, live test pending · 2026-11-18. S2–S6 proposed.
+
+### S1 evidence (2026-11-18)
+
+- Native: `src-tauri/src/youtube.rs` (`youtube_innertube`), registered in
+  `lib.rs`, `build.rs` and `capabilities/main.json`. `cargo test --lib youtube`
+  passes 4 new tests: endpoint allowlist, header refusal, body bounds, stream
+  URLs stripped. The capability table row is updated.
+- Client: `PLATFORM_YOUTUBE` token (web `null`, native invoke). In
+  `YoutubeFeeds`, there is one routed Innertube session, `canSearch()`
+  (Native or Plus), `canReadDetails()` and `details()` via `player`. Chapter
+  parsing lives in `youtube-details.ts`. `/videos` and `/videos/search` gate on
+  `canSearch()`, with a new start hint when search is available.
+- Focused checks: `test:subset src/app/reading/videos` (13 files, 83 tests),
+  `ng lint` on the touched files, `i18n:extract` + `check:i18n`, the reviewed
+  `design:inventory-check`, and `design:build` + `video-feeds.browser.mjs` (2 passed).
+- Deferred to the end of pair A (after S2), per the cadence: `make test`,
+  `check:static`, `build:mockingbird`, design-verify, and the native full gates.
+- Live: [test plan](test_plans/youtube-client-s1-native-search-2026-11.md), not run.
 
 Builds on: [Video playback and Watch](video-player.md), [Watch Parties](watch-party.md),
 the starter catalogue (`ops/engineering/starter-catalog.md`), and the sibling

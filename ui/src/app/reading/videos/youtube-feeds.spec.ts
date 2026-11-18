@@ -10,7 +10,11 @@ import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
 import { PlusTokenSource } from '../../accounts/mawkingbird/plus-token.interceptor';
 import { EXTERNAL_FETCH } from '../../platform/http/external-fetch';
 import { parseFeed } from '../../../lib/rss/rss-parser';
-import { PLATFORM_ARTICLE_READ, PLATFORM_FEED_READ } from '../../platform/http/platform-http';
+import {
+  PLATFORM_ARTICLE_READ,
+  PLATFORM_FEED_READ,
+  PLATFORM_YOUTUBE,
+} from '../../platform/http/platform-http';
 
 const id = 'UCy0tKL1T7wFoYcxCe0xjN6Q';
 describe('YouTube feed transport', () => {
@@ -188,6 +192,125 @@ describe('YouTube feeds away from mawkingbird.com', () => {
     const channel = await feeds.resolve('https://www.youtube.com/c/example');
     expect(channel.id).toBe(id);
     expect(pageRead).toHaveBeenCalledTimes(2);
+    TestBed.inject(HttpTestingController).verify();
+  });
+});
+
+describe('YouTube search and details: Native vs web × Plus', () => {
+  const youtube = vi.fn();
+  const channelSearch = JSON.stringify({
+    contents: {
+      twoColumnSearchResultsRenderer: {
+        primaryContents: {
+          sectionListRenderer: {
+            contents: [
+              {
+                itemSectionRenderer: {
+                  contents: [
+                    {
+                      channelRenderer: {
+                        channelId: id,
+                        title: { simpleText: 'Example' },
+                        navigationEndpoint: { browseEndpoint: { browseId: id } },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  });
+
+  function setUp(native: boolean, flags: (id: string) => boolean = () => true) {
+    youtube.mockReset();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: RssCache, useValue: { get: vi.fn(), put: vi.fn() } },
+        { provide: ClientPrefs, useValue: { rssCacheTtlHours: () => 24 } },
+        { provide: FeatureFlags, useValue: { enabled: flags } },
+        { provide: PlusTokenSource, useValue: { token: vi.fn() } },
+        { provide: PLATFORM_YOUTUBE, useValue: native ? youtube : null },
+      ],
+    });
+    return TestBed.inject(YoutubeFeeds);
+  }
+
+  it('offers search on Native without Plus, and on the web only with Plus', () => {
+    expect(setUp(true).canSearch()).toBe(true);
+    TestBed.resetTestingModule();
+    const web = setUp(false);
+    expect(web.canSearch()).toBe(false);
+    TestBed.inject(SupporterStatus).isSupporter.set(true);
+    expect(web.canSearch()).toBe(true);
+    expect(web.canReadDetails()).toBe(false);
+  });
+
+  it('searches YouTube directly on Native without Plus, never touching the proxy', async () => {
+    const feeds = setUp(true);
+    expect(TestBed.inject(SupporterStatus).isSupporter()).toBe(false);
+    youtube.mockResolvedValue(channelSearch);
+    expect(await feeds.search('Example', 'channel')).toEqual([
+      { id, title: 'Example', channelId: id, channelTitle: 'Example' },
+    ]);
+    const [endpoint, body, headers] = youtube.mock.calls[0] as [string, string, [string, string][]];
+    expect(endpoint).toBe('search');
+    expect(body).toContain('Example');
+    // Only the allow-listed web-client headers cross into Rust.
+    for (const [name] of headers) {
+      expect(['x-youtube-client-name', 'x-youtube-client-version', 'x-goog-visitor-id']).toContain(
+        name.toLowerCase(),
+      );
+    }
+    expect(TestBed.inject(PlusTokenSource).token).not.toHaveBeenCalled();
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  it('respects the video feeds connection setting on Native', async () => {
+    const feeds = setUp(true, (flag) => flag !== 'connector-rss');
+    await expect(feeds.search('Example', 'video')).rejects.toThrow('disabled');
+    expect(youtube).not.toHaveBeenCalled();
+  });
+
+  it('reads video details through the player endpoint on Native', async () => {
+    const feeds = setUp(true);
+    youtube.mockResolvedValue(
+      JSON.stringify({
+        playabilityStatus: { status: 'OK' },
+        videoDetails: {
+          videoId: 'abcdefghijk',
+          title: 'Example video',
+          lengthSeconds: '754',
+          channelId: id,
+          author: 'Example',
+          shortDescription: '0:00 Intro\n1:30 Middle\n10:05 End',
+          isLiveContent: false,
+        },
+        microformat: { playerMicroformatRenderer: { isFamilySafe: true } },
+      }),
+    );
+    const details = await feeds.details('abcdefghijk');
+    expect(youtube.mock.calls[0][0]).toBe('player');
+    expect(details).toMatchObject({
+      id: 'abcdefghijk',
+      title: 'Example video',
+      channelId: id,
+      channelTitle: 'Example',
+      durationSeconds: 754,
+      familySafe: true,
+      live: false,
+    });
+    expect(details.chapters.map((c) => c.seconds)).toEqual([0, 90, 605]);
+  });
+
+  it('has no video details on the web, and asks nothing', async () => {
+    const feeds = setUp(false);
+    TestBed.inject(SupporterStatus).isSupporter.set(true);
+    await expect(feeds.details('abcdefghijk')).rejects.toThrow('Mawkingbird app');
     TestBed.inject(HttpTestingController).verify();
   });
 });

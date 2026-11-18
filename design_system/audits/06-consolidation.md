@@ -2857,3 +2857,9 @@ suggestions in place of solid/outline pill toggles, IdentityRow with Metadata,
 Notice, Disclosure, SaveFeedback, RadioGroup, Checkbox hints, Spinner, and
 `compact` Buttons in rows. The local cards, drop target, meter, chips, stat
 tiles and bars are deleted. `unbird-page.html` joins the reconciliation.
+
+YouTube client S1 (2026-11-18): reviewed inventory refresh. A new non-UI source
+file (`reading/videos/youtube-details.ts`, chapter parsing) takes filesScanned
+from 1971 to 1972; the search pages' Plus/Native gate moved three video-search
+template lines by two. Candidate inventory, candidate files (674) and their
+dispositions are unchanged. No reconciliation entries needed.

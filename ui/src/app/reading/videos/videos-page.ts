@@ -12,7 +12,6 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Auth } from '../../platform/session/auth';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { MbButton } from '../../design-system/button/button';
-import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
 import { RssReadState } from '../rss/rss-read-state';
 import { VideoSubscriptions } from './video-subscriptions';
 import { YoutubeFeeds, YoutubeSearchItem } from './youtube-feeds';
@@ -87,7 +86,8 @@ export class VideosPage {
   protected prefs = inject(ClientPrefs);
   protected customizing = signal(false);
   protected subs = inject(VideoSubscriptions);
-  protected supporter = inject(SupporterStatus);
+  /** Native searches YouTube directly; browsers need Plus. */
+  protected canSearch = () => this.youtube.canSearch();
   protected reads = inject(RssReadState);
   private youtube = inject(YoutubeFeeds);
   private route = inject(ActivatedRoute);
@@ -183,7 +183,7 @@ export class VideosPage {
   }
 
   protected async search(): Promise<void> {
-    if (this.searching() || !this.supporter.isSupporter()) return;
+    if (this.searching() || !this.youtube.canSearch()) return;
     this.searching.set(true);
     this.searchError.set(false);
     try {

@@ -23,7 +23,13 @@ describe('Video feeds reader', () => {
   const dialogMethods = ['showModal', 'close'].map(
     (name) => [name, Object.getOwnPropertyDescriptor(HTMLDialogElement.prototype, name)] as const,
   );
-  const youtube = { feed: vi.fn(), resolve: vi.fn(), search: vi.fn() };
+  const youtube = {
+    feed: vi.fn(),
+    resolve: vi.fn(),
+    search: vi.fn(),
+    // The web rule: YouTube search needs Plus (Native is covered in youtube-feeds.spec).
+    canSearch: () => TestBed.inject(SupporterStatus).isSupporter(),
+  };
   beforeEach(() => {
     for (const [name] of dialogMethods) {
       Object.defineProperty(HTMLDialogElement.prototype, name, {
