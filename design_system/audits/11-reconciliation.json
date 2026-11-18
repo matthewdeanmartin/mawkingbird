@@ -245,7 +245,7 @@
     {
       "file": "ui/src/app/reading/watch/party-conversation.html",
       "disposition": "adopted scope",
-      "nextStep": "The party chat bar uses Toolbar (compact view, refresh, add hashtag), compact Field/Control selects for mode and refresh cadence and a Popover nick list; party tags are added through Dialog with Field/Control and Button; the chat box uses Field/Control and Button. Compact chat lines and nick-list rows stay native full-width buttons because they are text rows, not Button presentations; migrate them if a shared list-row action appears. Preserve label associations, aria-expanded on lines, aria-pressed on nicks, the role=log region, removable tag names, keyboard access and bounded narrow layouts; expanded lines and card view reuse StatusCard."
+      "nextStep": "The party chat bar uses Toolbar (compact view, refresh, add hashtag), a second compact Toolbar of pressed buttons for the conversation mode (replies, hashtag, both, YouTube; chosen per visit), a compact Field/Control select for refresh cadence and a Popover nick list; party tags are added through Dialog with Field/Control and Button; the chat box uses Field/Control and Button. Compact chat lines and nick-list rows stay native full-width buttons because they are text rows, not Button presentations; migrate them if a shared list-row action appears. Preserve label associations, aria-expanded on lines, aria-pressed on nicks, the role=log region, removable tag names, keyboard access and bounded narrow layouts; expanded lines and card view reuse StatusCard."
     },
     {
       "file": "ui/src/app/moderation/tag-filter-dialog/tag-filter-dialog.ts",
@@ -1505,7 +1505,7 @@
     {
       "file": "ui/src/app/reading/watch/watch.html",
       "disposition": "adopted scope",
-      "nextStep": "Watch uses MbButton for back/reveal actions and the shared video player; keep existing post actions and moderation gates. Media playback controls retain browser-native semantics."
+      "nextStep": "Watch uses MbButton for back/reveal actions, the shared video player and the Watch video panel under it; the source post's own card sits beneath the player and keeps its post actions and moderation gates. Media playback controls retain browser-native semantics."
     },
     {
       "file": "ui/src/app/reading/video-player/video-player-host.ts",
@@ -3371,6 +3371,16 @@
       "file": "ui/src/app/unbird/unbird-page.html",
       "disposition": "adopted scope",
       "nextStep": "PageHeader for every tab's title and lead; Navigation rows (MbNavLink) for the Start tab's next steps. Page width and gap only stay local."
+    },
+    {
+      "file": "ui/src/app/reading/watch/watch-video-panel.ts",
+      "disposition": "adopted scope",
+      "nextStep": "MbButton (solid/outline, small) for Subscribe, Share and Find posts; Dialog around the shared Compose for the share sheet; Disclosure for About this video. Found posts, chapter cue links and the description stay local text content."
+    },
+    {
+      "file": "ui/src/app/reading/watch/youtube-comments.ts",
+      "disposition": "adopted scope",
+      "nextStep": "MbButton (outline/link, small) for retry, Show, Quote and More comments. The comment list, creator badge and byline are local read-only text rows, not post cards: YouTube comments are not Mastodon statuses."
     }
   ]
 }

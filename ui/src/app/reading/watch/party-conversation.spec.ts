@@ -13,6 +13,14 @@ import { Streaming, StreamEvent } from '../../platform/api/streaming';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
 import { AnonymousAccount } from '../../accounts/anonymous/anonymous-account';
 import { StatusVisibility } from '../../moderation/status-visibility';
+import { YoutubeFeeds } from '../videos/youtube-feeds';
+import { YoutubeComments } from './youtube-comments';
+
+@Component({ selector: 'app-youtube-comments', template: '' })
+class YoutubeCommentsStub {
+  readonly videoId = input('');
+  readonly quoted = output<unknown>();
+}
 
 @Component({ selector: 'app-status-card', template: '{{status()?.id}}' })
 class Card {
@@ -42,7 +50,9 @@ describe('Temporary party conversations', () => {
   let streams: Map<string, Subject<StreamEvent>>;
   let api: { tagTimeline: ReturnType<typeof vi.fn>; postStatus: ReturnType<typeof vi.fn> };
   let posted: Subject<Status>;
+  const native = signal(false);
   beforeEach(() => {
+    native.set(false);
     localStorage.clear();
     posted = new Subject<Status>();
     feeds = new Map();
@@ -71,6 +81,7 @@ describe('Temporary party conversations', () => {
           },
         },
         { provide: AnonymousPublicApi, useValue: {} },
+        { provide: YoutubeFeeds, useValue: { canReadDetails: () => native() } },
         { provide: AnonymousAccount, useValue: { server: signal('https://social.test') } },
         {
           provide: StatusVisibility,
@@ -83,8 +94,8 @@ describe('Temporary party conversations', () => {
       ],
     });
     TestBed.overrideComponent(PartyConversation, {
-      remove: { imports: [StatusCard] },
-      add: { imports: [Card] },
+      remove: { imports: [StatusCard, YoutubeComments] },
+      add: { imports: [Card, YoutubeCommentsStub] },
     });
     fixture = TestBed.createComponent(PartyConversation);
     fixture.componentRef.setInput('session', 'first');
@@ -198,6 +209,8 @@ describe('Temporary party conversations', () => {
     const state = () =>
       fixture.componentInstance as unknown as {
         prefs: WatchPartyPrefs;
+        mode(): string;
+        modes(): string[];
         setMode(mode: string): void;
         setRefresh(refresh: string): void;
         tagDialog(): boolean;
@@ -214,9 +227,10 @@ describe('Temporary party conversations', () => {
       fixture.detectChanges();
     });
 
-    it('opens as a compact chat of replies and hashtag together, updating live', () => {
+    it("opens on the post's replies as a compact chat, updating live", () => {
       expect(state().prefs.view()).toBe('compact');
-      expect(state().prefs.mode()).toBe('both');
+      expect(state().mode()).toBe('replies');
+      expect(state().modes()).toEqual(['replies', 'hashtag', 'both']);
       expect(state().prefs.refresh()).toBe('stream');
       expect(fixture.nativeElement.getAttribute('data-view')).toBe('compact');
     });
@@ -239,13 +253,13 @@ describe('Temporary party conversations', () => {
       expect(state().tagDialog()).toBe(true);
       expect(document.querySelector('dialog')).not.toBeNull();
       state().cancelTagDialog();
-      expect(state().prefs.mode()).toBe('both');
+      expect(state().mode()).toBe('replies');
 
       state().setMode('hashtag');
       state().draft.set('#Show');
       state().joinFromDialog();
       expect(state().tagDialog()).toBe(false);
-      expect(state().prefs.mode()).toBe('hashtag');
+      expect(state().mode()).toBe('hashtag');
       expect(feeds.has('Show')).toBe(true);
     });
 
@@ -253,7 +267,47 @@ describe('Temporary party conversations', () => {
       state().setMode('replies');
       state().draft.set('#Show');
       state().joinFromDialog();
-      expect(state().prefs.mode()).toBe('both');
+      expect(state().mode()).toBe('both');
+    });
+
+    it('opens on replies and the hashtag together for a party, per visit', () => {
+      fixture.componentRef.setInput('initialTags', ['Show']);
+      fixture.componentRef.setInput('session', 'party');
+      fixture.detectChanges();
+      expect(state().mode()).toBe('both');
+      state().setMode('replies');
+      // A new session is a new visit: the choice is not carried over or stored.
+      fixture.componentRef.setInput('initialTags', []);
+      fixture.componentRef.setInput('session', 'next');
+      fixture.detectChanges();
+      expect(state().mode()).toBe('replies');
+      expect(localStorage.getItem('mockingbird_watch_party') ?? '').not.toContain('mode');
+    });
+
+    it('shows a tag added from a post even while only replies are shown', () => {
+      expect(state().mode()).toBe('replies');
+      fixture.componentInstance.addTag('Show');
+      expect(state().mode()).toBe('both');
+    });
+
+    it('offers YouTube comments only on Native with a YouTube video, and never polls them', () => {
+      fixture.componentRef.setInput('youtubeVideoId', 'abcdefghijk');
+      fixture.detectChanges();
+      expect(state().modes()).not.toContain('youtube');
+      native.set(true);
+      fixture.detectChanges();
+      expect(state().modes()).toContain('youtube');
+
+      vi.useFakeTimers();
+      const due = vi.fn();
+      fixture.componentInstance.repliesDue.subscribe(due);
+      state().setRefresh('poll5');
+      state().setMode('youtube');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('app-youtube-comments')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('.chat-box')).toBeNull();
+      vi.advanceTimersByTime(20000);
+      expect(due).not.toHaveBeenCalled();
     });
 
     it('opens hashtag streams only in Live and closes them for polling or manual', () => {

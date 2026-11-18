@@ -26,6 +26,7 @@ anything that went wrong under **Findings**.
 | [Install and share](install-and-share-2026-11.md) | Install as an app (Settings, footer), share links/text into the composer | Not run |
 | [Chat mentions and live](chat-mentions-and-live-2026-11.md) | 1:1 chat mentions added automatically, Reconnecting… diagnostics | Not run |
 | [YouTube client S1](youtube-client-s1-native-search-2026-11.md) | YouTube search on Native without Plus; web Plus unchanged | Not run |
+| [YouTube client S2](youtube-client-s2-watch-2026-11.md) | Watch: comment modes, YouTube comments, Subscribe, Share, Find posts, About this video | Not run |
 
 The roadmap these come from is `sprint/november_2026_bsky_parity.md`.
 

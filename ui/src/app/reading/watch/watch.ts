@@ -8,13 +8,18 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { Location, NgTemplateOutlet } from '@angular/common';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ThreadLoader } from '../read/thread-loader';
 import { VideoPlayer } from '../video-player/video-player';
-import { attachmentSource, statusVideo, youtubeSource } from '../video-player/media-source';
+import {
+  attachmentSource,
+  cueSeconds,
+  statusVideo,
+  youtubeSource,
+} from '../video-player/media-source';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { StatusVisibility } from '../../moderation/status-visibility';
 import { TrustedAccounts } from '../../accounts/trusted-accounts';
@@ -30,9 +35,9 @@ import {
 } from '../../accounts/anonymous/anonymous-route-ref';
 import { Status } from '../../platform/api/models';
 import { PartyConversation } from './party-conversation';
-import { WatchPartyPrefs } from '../videos/watch-party-prefs';
-import { stripHtml } from '../../feeds/sentiment';
 import { QueueButton } from '../video-player/queue-button';
+import { WatchVideoPanel } from './watch-video-panel';
+import { YoutubeComment } from '../videos/youtube-details';
 import {
   pickWatchParams,
   QueuedVideo,
@@ -67,7 +72,7 @@ import {
     PartyConversation,
     QueueButton,
     RouterLink,
-    NgTemplateOutlet,
+    WatchVideoPanel,
   ],
   providers: [ThreadLoader],
   templateUrl: './watch.html',
@@ -75,9 +80,9 @@ import {
 })
 export class Watch {
   protected party = viewChild(PartyConversation);
+  private panel = viewChild<{ quote(comment: YoutubeComment): void }>('panel');
   protected partySession = computed(() => JSON.stringify(this.params()));
   protected loader = inject(ThreadLoader);
-  protected partyPrefs = inject(WatchPartyPrefs);
   private route = inject(ActivatedRoute);
   private server = inject(Server);
   private auth = inject(Auth);
@@ -122,14 +127,20 @@ export class Watch {
     const params = this.params();
     const status = this.loader.status();
     if (this.error() || this.hidden()) return null;
-    if (this.direct()) return youtubeSource(`https://youtu.be/${params['youtube'] ?? ''}`);
+    // `t` cues the embed (a chapter, a shared moment); playback still waits for the reader.
+    const cue = cueSeconds(params['t']);
+    if (this.direct())
+      return youtubeSource(
+        `https://youtu.be/${params['youtube'] ?? ''}${cue !== undefined ? `?t=${cue}` : ''}`,
+      );
     if (!status) return null;
     if (params['attachment']) {
       const media = status.media_attachments.find((item) => item.id === params['attachment']);
       return media ? attachmentSource(media) : null;
     }
     const video = statusVideo(status);
-    return video && video.videoId === params['youtube'] ? video : null;
+    if (!video || video.videoId !== params['youtube']) return null;
+    return cue !== undefined ? { ...video, start: cue } : video;
   });
 
   constructor() {
@@ -199,17 +210,6 @@ export class Watch {
     });
   }
 
-  /** The video post as a one-line channel topic; a content warning stands in for its text. */
-  protected readonly topic = computed(() => {
-    const status = this.loader.status();
-    if (!status) return '';
-    const name = status.account?.username ?? '';
-    const text = status.spoiler_text
-      ? `⚠ ${status.spoiler_text}`
-      : stripHtml(status.content ?? '') || (this.source()?.title ?? '');
-    return name ? `<${name}> ${text}` : text;
-  });
-
   /** The chat box can reply to the video post only when it lives on the signed-in server. */
   protected readonly canReply = computed(() => {
     const status = this.loader.status();
@@ -275,6 +275,16 @@ export class Watch {
   protected back(): void {
     if (history.state?.navigationId > 1) this.location.back();
     else void this.router.navigate(['/home']);
+  }
+
+  /** The YouTube video ID, for read-only YouTube comments. */
+  protected readonly youtubeVideoId = computed(() => {
+    const source = this.source();
+    return source?.kind === 'youtube' ? (source.videoId ?? null) : null;
+  });
+
+  protected onQuoted(comment: YoutubeComment): void {
+    this.panel()?.quote(comment);
   }
 
   protected onReply(reply: Status): void {

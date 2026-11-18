@@ -307,6 +307,52 @@ describe('YouTube search and details: Native vs web × Plus', () => {
     expect(details.chapters.map((c) => c.seconds)).toEqual([0, 90, 605]);
   });
 
+  it('reads YouTube comments as plain text on Native, page by page', async () => {
+    const feeds = setUp(true);
+    const thread = (id: string, text: string) => ({
+      comment: {
+        comment_id: id,
+        author: { name: '@viewer' },
+        published_time: '2 days ago',
+        like_count: '12',
+        content: { toString: () => text },
+        reply_count: '3',
+        author_is_channel_owner: id === 'c2',
+      },
+    });
+    const second = { contents: [thread('c2', 'Thanks!')], has_continuation: false };
+    const first = {
+      contents: [thread('c1', '<b>not html</b>'), { comment: null }],
+      has_continuation: true,
+      getContinuation: vi.fn(async () => second),
+    };
+    const getComments = vi.fn(async () => first);
+    vi.spyOn(feeds as unknown as { session(): Promise<unknown> }, 'session').mockResolvedValue({
+      getComments,
+    });
+    const page = await feeds.comments('abcdefghijk');
+    expect(getComments).toHaveBeenCalledWith('abcdefghijk', 'TOP_COMMENTS');
+    expect(page.comments).toEqual([
+      {
+        id: 'c1',
+        author: '@viewer',
+        published: '2 days ago',
+        likes: '12',
+        text: '<b>not html</b>',
+        replies: '3',
+        byCreator: false,
+      },
+    ]);
+    const next = await page.more!();
+    expect(next.comments[0]).toMatchObject({ id: 'c2', byCreator: true });
+    expect(next.more).toBeNull();
+  });
+
+  it('has no YouTube comments on the web', async () => {
+    const feeds = setUp(false);
+    await expect(feeds.comments('abcdefghijk')).rejects.toThrow('Mawkingbird app');
+  });
+
   it('has no video details on the web, and asks nothing', async () => {
     const feeds = setUp(false);
     TestBed.inject(SupporterStatus).isSupporter.set(true);

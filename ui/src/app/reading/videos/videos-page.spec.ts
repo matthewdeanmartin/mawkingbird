@@ -29,6 +29,7 @@ describe('Video feeds reader', () => {
     search: vi.fn(),
     // The web rule: YouTube search needs Plus (Native is covered in youtube-feeds.spec).
     canSearch: () => TestBed.inject(SupporterStatus).isSupporter(),
+    canReadDetails: () => false,
   };
   beforeEach(() => {
     for (const [name] of dialogMethods) {

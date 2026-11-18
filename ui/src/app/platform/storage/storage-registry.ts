@@ -529,7 +529,7 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     storage: 'local',
     suffix: 'none',
     sensitivity: 'setting',
-    note: 'Device-wide watch party chat choices: compact or card view, replies/hashtag mode and refresh cadence. No tags, posts or accounts.',
+    note: 'Device-wide watch party chat choices: compact or card view and refresh cadence. The conversation mode is chosen per visit and no longer stored. No tags, posts or accounts.',
   },
   {
     base: 'mockingbird_last_published',

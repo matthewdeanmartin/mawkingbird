@@ -53,32 +53,13 @@ h2 {
   gap: 0.5rem;
   min-height: 0;
 }
-/* The chat scrolls on its own; the video post above it keeps to a share of the
-   column so the chat box never leaves the screen. */
+/* The chat scrolls on its own, filling the column, so its box never leaves the screen. */
 .watch-conversation app-party-conversation {
   flex: 1 1 auto;
   min-height: 0;
 }
 .watch-root {
-  flex: 0 1 auto;
-  max-height: 40%;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-}
-.watch-topic {
-  flex: 0 1 auto;
-  max-height: 50%;
-  overflow-y: auto;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 0.3rem;
-  font-size: 0.9rem;
-}
-.watch-topic > summary {
-  cursor: pointer;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--muted);
+  margin-block-start: 0.5rem;
 }
 @media (max-width: 850px) {
   :host {

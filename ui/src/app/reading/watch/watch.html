@@ -55,11 +55,17 @@
         </button>
       } @else if (source(); as video) {
         <app-video-player-controls [source]="video" />
+        <app-watch-video-panel
+          #panel
+          [source]="video"
+          [status]="loader.status()"
+          [partyTag]="partyTags()[0] || null"
+        />
       }
-    </section>
-    @if (loader.status(); as status) {
-      <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
-        <ng-template #rootCard>
+      <!-- The source post sits under the player, like a video's description:
+           its own card carries Like, Boost, Quote and Bookmark. -->
+      @if (loader.status(); as status) {
+        <div class="watch-root">
           <app-status-card
             [status]="status"
             [showMedia]="false"
@@ -70,38 +76,35 @@
             (deleted)="loader.status.set(null)"
             (replied)="onReply($event)"
           />
-        </ng-template>
-        @if (partyPrefs.view() === 'compact') {
-          <!-- The video post collapses to a channel topic line in compact view. -->
-          <details class="watch-topic">
-            <summary>📺 {{ topic() }}</summary>
-            <ng-container [ngTemplateOutlet]="rootCard" />
-          </details>
-        } @else {
-          <div class="watch-root">
-            <ng-container [ngTemplateOutlet]="rootCard" />
-          </div>
-        }
+        </div>
         @if (loader.publicContextUnavailable()) {
           <p>{{ 'pages.thread.anonymous.contextUnavailable' | transloco }}</p>
         }
+      }
+    </section>
+    <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
+      @if (loader.status(); as status) {
         <app-party-conversation
           [root]="status"
           [comments]="loader.descendants()"
           [session]="partySession()"
           [initialTags]="partyTags()"
           [canReply]="canReply()"
+          [youtubeVideoId]="youtubeVideoId()"
+          (quoted)="onQuoted($event)"
           (changed)="onCommentChanged($event)"
           (deleted)="onCommentDeleted($event)"
           (replied)="onReply($event)"
           (repliesDue)="loader.refreshReplies()"
         />
-      </aside>
-    }
-    @if (!loader.status()) {
-      <aside class="watch-conversation" [attr.aria-label]="'watch.conversation' | transloco">
-        <app-party-conversation [session]="partySession()" [initialTags]="partyTags()" />
-      </aside>
-    }
+      } @else {
+        <app-party-conversation
+          [session]="partySession()"
+          [initialTags]="partyTags()"
+          [youtubeVideoId]="youtubeVideoId()"
+          (quoted)="onQuoted($event)"
+        />
+      }
+    </aside>
   </div>
 }

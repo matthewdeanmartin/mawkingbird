@@ -39,14 +39,18 @@ import { MbControl, MbField } from '../../design-system/field/field';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbPopover } from '../../design-system/popover/popover';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
+import { YoutubeFeeds } from '../videos/youtube-feeds';
+import { YoutubeComment } from '../videos/youtube-details';
+import { YoutubeComments } from './youtube-comments';
 
 // i18n watch.party.toolbar: Watch party chat
 // i18n watch.party.compact: Compact
 // i18n watch.party.compactTitle: One line per message, like a chat room. Select a line to open the full post.
-// i18n watch.party.modeLabel: Show
+// i18n watch.party.modeLabel: Comments
 // i18n watch.party.mode.both: Replies + hashtag
 // i18n watch.party.mode.replies: Post replies
 // i18n watch.party.mode.hashtag: Hashtag
+// i18n watch.party.mode.youtube: YouTube
 // i18n watch.party.refreshLabel: Updates
 // i18n watch.party.refreshMode.stream: Live
 // i18n watch.party.refreshMode.poll5: Every 5s
@@ -127,6 +131,7 @@ function hue(value: string): number {
     MbPopover,
     MbToolbar,
     MbToolbarButton,
+    YoutubeComments,
   ],
   templateUrl: './party-conversation.html',
   styleUrl: './party-conversation.css',
@@ -145,6 +150,10 @@ export class PartyConversation implements OnDestroy {
   readonly initialTags = input<readonly string[]>([]);
   /** Whether the chat box may reply to {@link root} (a post on the signed-in server). */
   readonly canReply = input(false);
+  /** The YouTube video being watched, for the read-only YouTube comments mode (Native). */
+  readonly youtubeVideoId = input<string | null>(null);
+  /** A YouTube comment the reader wants to quote in a post. */
+  readonly quoted = output<YoutubeComment>();
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
@@ -153,6 +162,7 @@ export class PartyConversation implements OnDestroy {
   protected prefs = inject(WatchPartyPrefs);
   private api = inject(Api);
   private auth = inject(Auth);
+  private youtube = inject(YoutubeFeeds);
   private streaming = inject(Streaming);
   private publicApi = inject(AnonymousPublicApi);
   private anonymous = inject(AnonymousAccount);
@@ -166,6 +176,8 @@ export class PartyConversation implements OnDestroy {
   protected tagDialog = signal(false);
   /** The mode to return to when the hashtag dialog is cancelled. */
   private modeBeforeDialog: PartyMode | null = null;
+  /** The reader's choice for this visit; `null` follows {@link autoMode}. */
+  protected chosen = signal<PartyMode | null>(null);
   protected expanded = signal<Set<string>>(new Set());
   protected highlight = signal<string | null>(null);
   protected chat = signal('');
@@ -186,16 +198,37 @@ export class PartyConversation implements OnDestroy {
   private ticks = 0;
   private log = viewChild<ElementRef<HTMLElement>>('log');
 
-  /** Without a video post there are no replies; the chat is the hashtag. */
-  protected mode = computed<PartyMode>(() => (this.root() ? this.prefs.mode() : 'hashtag'));
+  /**
+   * How Watch was opened picks the conversation (owner, 2026-11-17): from a
+   * post, its replies; from a party (tags supplied), replies and the hashtag;
+   * a bare video, the hashtag. The toolbar switches for this visit only.
+   */
+  protected autoMode = computed<PartyMode>(() =>
+    this.root() ? (this.initialTags().length ? 'both' : 'replies') : 'hashtag',
+  );
+  /** The modes this video can offer: replies need a post, YouTube needs Native. */
+  protected modes = computed<PartyMode[]>(() => [
+    ...(this.root() ? (['replies'] as const) : []),
+    'hashtag',
+    ...(this.root() ? (['both'] as const) : []),
+    ...(this.youtubeVideoId() && this.youtube.canReadDetails() ? (['youtube'] as const) : []),
+  ]);
+  protected mode = computed<PartyMode>(() => {
+    const chosen = this.chosen();
+    return chosen && this.modes().includes(chosen) ? chosen : this.autoMode();
+  });
+  /** Whether the hashtag posts / the post's replies are part of the current mode. */
+  protected showsTags = computed(() => this.mode() === 'hashtag' || this.mode() === 'both');
+  protected showsReplies = computed(() => this.mode() === 'replies' || this.mode() === 'both');
   protected canStream = computed(() => this.auth.kind() === 'mastodon');
   protected hasMore = computed(
-    () => this.mode() !== 'replies' && this.tags().some((tag) => !this.exhausted().has(tag)),
+    () => this.showsTags() && this.tags().some((tag) => !this.exhausted().has(tag)),
   );
   protected mixed = computed(() => {
     const root = this.root();
     const rootKey = root ? canonicalStatusKey(root) : '';
     const mode = this.mode();
+    if (mode === 'youtube') return [];
     const replies = new Set(this.comments().map(canonicalStatusKey));
     const tagged = Object.values(this.pages()).flat();
     const tagKeys = new Set(tagged.map(canonicalStatusKey));
@@ -273,10 +306,8 @@ export class PartyConversation implements OnDestroy {
     () => this.chatters().filter((person) => person.active).length,
   );
   /** Where the chat box posts: the first party tag and/or a reply to the video post. */
-  protected chatTag = computed(() => (this.mode() !== 'replies' ? (this.tags()[0] ?? null) : null));
-  protected chatReplies = computed(
-    () => this.mode() !== 'hashtag' && this.canReply() && !!this.root(),
-  );
+  protected chatTag = computed(() => (this.showsTags() ? (this.tags()[0] ?? null) : null));
+  protected chatReplies = computed(() => this.showsReplies() && this.canReply() && !!this.root());
   protected canPost = computed(() => this.auth.kind() === 'mastodon' && !this.auth.isAnonymous);
 
   constructor() {
@@ -339,6 +370,8 @@ export class PartyConversation implements OnDestroy {
     this.validation.set(false);
     if (this.tags().some((item) => item.toLowerCase() === tag.toLowerCase())) return;
     this.tags.update((tags) => [...tags, tag]);
+    // A tag joined while tags are not shown (replies, YouTube) would otherwise vanish.
+    if (!this.showsTags()) this.chosen.set(this.root() ? 'both' : 'hashtag');
     this.load(tag);
     if (this.prefs.refresh() === 'stream' && this.canStream()) this.openStream(tag);
   }
@@ -382,8 +415,8 @@ export class PartyConversation implements OnDestroy {
   }
   protected joinFromDialog(): void {
     if (!this.addInput()) return;
-    // A tag joined while only replies are shown would otherwise vanish.
-    if (this.prefs.mode() === 'replies') this.prefs.setMode('both');
+    // A tag joined while it is not shown would otherwise vanish.
+    if (!this.showsTags()) this.chosen.set(this.root() ? 'both' : 'hashtag');
     this.modeBeforeDialog = null;
     this.tagDialog.set(false);
   }
@@ -392,17 +425,17 @@ export class PartyConversation implements OnDestroy {
     this.draft.set('');
     this.validation.set(false);
     // Hashtag mode with no hashtag shows nothing; go back to what worked.
-    if (this.modeBeforeDialog && !this.tags().length) this.prefs.setMode(this.modeBeforeDialog);
+    if (this.modeBeforeDialog && !this.tags().length) this.chosen.set(this.modeBeforeDialog);
     this.modeBeforeDialog = null;
   }
   protected setMode(mode: PartyMode): void {
-    const previous = this.prefs.mode();
-    this.prefs.setMode(mode);
+    const previous = this.mode();
+    this.chosen.set(mode);
     if (mode === 'hashtag' && !this.tags().length) {
       this.modeBeforeDialog = previous === 'hashtag' ? 'both' : previous;
       this.openTagDialog();
     }
-    this.jumpToEnd();
+    if (mode !== 'youtube') this.jumpToEnd();
   }
   protected setRefresh(refresh: PartyRefresh): void {
     this.prefs.setRefresh(refresh);
@@ -444,9 +477,8 @@ export class PartyConversation implements OnDestroy {
   /** Fetch everything the current mode shows, now. */
   protected refresh(): void {
     this.now.set(Date.now());
-    const mode = this.mode();
-    if (mode !== 'hashtag') this.repliesDue.emit();
-    if (mode !== 'replies') this.tags().forEach((tag) => this.load(tag));
+    if (this.showsReplies()) this.repliesDue.emit();
+    if (this.showsTags()) this.tags().forEach((tag) => this.load(tag));
   }
   /**
    * One beat of the refresh timer. A tag with a live stream is only re-read
@@ -456,9 +488,9 @@ export class PartyConversation implements OnDestroy {
     this.now.set(Date.now());
     if (typeof document !== 'undefined' && document.hidden) return;
     this.ticks++;
-    const mode = this.mode();
-    if (mode !== 'hashtag') this.repliesDue.emit();
-    if (mode !== 'replies')
+    // YouTube comments are never polled: they load when asked for.
+    if (this.showsReplies()) this.repliesDue.emit();
+    if (this.showsTags())
       this.tags()
         .filter((tag) => !this.streams.has(tag) || this.ticks % 4 === 0)
         .forEach((tag) => this.load(tag));
@@ -623,6 +655,7 @@ export class PartyConversation implements OnDestroy {
     this.draft.set('');
     this.validation.set(false);
     this.unseen.set(0);
+    this.chosen.set(null);
     this.following = true;
     this.newest = 0;
   }

@@ -69,7 +69,10 @@
         <a routerLink="/settings/mawkingbird-plus">{{ 'videos.plus' | transloco }}</a>
       }
       @if (searchError()) {
-        <p role="alert">{{ 'videos.searchFailed' | transloco }}</p>
+        <!-- Native has no Plus account to check: YouTube itself refused or was unreachable. -->
+        <p role="alert">
+          {{ (nativeSearch() ? 'videoSearch.youtubeFailed' : 'videos.searchFailed') | transloco }}
+        </p>
       }
     </div>
     @if (results(); as found) {

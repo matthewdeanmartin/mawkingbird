@@ -9,7 +9,37 @@ import {
   PLATFORM_YOUTUBE,
   YoutubeEndpoint,
 } from '../../platform/http/platform-http';
-import { chaptersFromDescription, YoutubeVideoDetails } from './youtube-details';
+import {
+  chaptersFromDescription,
+  YoutubeComment,
+  YoutubeCommentPage,
+  YoutubeVideoDetails,
+} from './youtube-details';
+
+type CommentsThread = Awaited<ReturnType<import('youtubei.js/web').Innertube['getComments']>>;
+
+/** Plain text only: comment HTML/runs are flattened, never rendered. */
+function commentPage(page: CommentsThread): YoutubeCommentPage {
+  const comments = page.contents.flatMap((thread): YoutubeComment[] => {
+    const comment = thread.comment;
+    if (!comment) return [];
+    return [
+      {
+        id: comment.comment_id,
+        author: comment.author?.name ?? '',
+        published: comment.published_time ?? '',
+        likes: comment.like_count ?? '',
+        text: comment.content?.toString() ?? '',
+        replies: comment.reply_count ?? '',
+        byCreator: !!comment.author_is_channel_owner,
+      },
+    ];
+  });
+  return {
+    comments,
+    more: page.has_continuation ? async () => commentPage(await page.getContinuation()) : null,
+  };
+}
 
 /** The web-client identification headers youtubei.js sends; Rust refuses any others. */
 const YOUTUBE_CLIENT_HEADERS = [
@@ -269,6 +299,17 @@ export class YoutubeFeeds {
       live: !!info.is_live,
       chapters: chaptersFromDescription(description),
     };
+  }
+
+  /**
+   * Top YouTube comments, read-only and anonymous (the `next` endpoint the
+   * watch page itself uses: no key, no OAuth). Native only. Each page offers
+   * the next one; nothing is fetched until the reader asks.
+   */
+  async comments(videoId: string): Promise<YoutubeCommentPage> {
+    if (!/^[\w-]{11}$/.test(videoId)) throw new Error('Invalid YouTube video ID');
+    if (!this.canReadDetails()) throw new Error('This YouTube feature needs the Mawkingbird app.');
+    return commentPage(await (await this.session()).getComments(videoId, 'TOP_COMMENTS'));
   }
 
   async search(query: string, type: 'video' | 'channel'): Promise<YoutubeSearchItem[]> {

@@ -1,6 +1,65 @@
 # Video client: YouTube without a YouTube account, PeerTube playback
 
-Status: S1 implemented, live test pending · 2026-11-18. S2–S6 proposed.
+Status: S1–S2 implemented (pair A), live tests pending · 2026-11-18. S3–S6 proposed.
+
+### S2 evidence (2026-11-18)
+
+- Spike (Node, youtubei.js 18.1.0, no key/OAuth/cookies): search, `player`
+  details, top comments (20 per page, more available) and a channel's uploads
+  all worked anonymously, using only the four allow-listed endpoints. No Rust change was needed.
+- Comment modes: `PartyConversation` picks the mode per visit (post → replies,
+  party tags → replies + hashtag, bare video → hashtag). A compact Toolbar of
+  pressed buttons replaces the persisted `<select>`, and the stored `mode` is
+  dropped from `mockingbird_watch_party`; the key name is unchanged. Adding a tag
+  while tags are hidden switches to show them. On Native, **YouTube** mode shows
+  `YoutubeComments`: read-only, plain text, paged on request, never polled.
+  The reader's Mastodon keyword filters (thread context) are applied to it via
+  `keywordFilterAction`.
+- Watch: the source post's card moved under the player (YouTube's
+  "description" spot), so Like/Boost/Quote/Bookmark are the card's own,
+  including POSSE and Raindrop. The compact-view topic line is gone.
+  `WatchVideoPanel` adds:
+  - Subscribe (channel from Native details, or resolved from the post's
+    link-card author on the web);
+  - Share (the shared Compose in a Dialog, with the cue link and party tag);
+  - Find posts about this video (`VideoPostFinder`: link timeline +
+    search, bare videos, Mastodon accounts);
+  - on Native, About this video (length, not-family-safe note, chapters,
+    description).
+  `/watch?t=` cues the embed, which stays paused. Chapters link to it, and
+  `t` is not part of queue keys.
+- Native YouTube search failures no longer mention Plus.
+- Changes from the plan:
+  - **Follow** on Watch moves to S3, because it needs CreatorLinks to know the
+    creator's Mastodon account.
+  - The share sheet's "at mm:ss" field became the cue link (the embed loads no
+    Google script, so the app cannot read the playhead). Cue a chapter, then Share.
+- Focused checks: `test:subset` over watch/videos/video-player (22 files, 201
+  tests), lint and prettier on the touched files, `i18n:extract` +
+  `check:i18n`, `audit_deep_links.py` (0 broken), and the reviewed inventory
+  (two new candidate files reconciled).
+- Live: [S2 test plan](test_plans/youtube-client-s2-watch-2026-11.md), not run.
+- Pair A gates (2026-11-18, combined S1+S2 tree):
+  - `check:static`: first red on the committed Unbird key `mockingbird_unbird`.
+    The IndexedDB name was declared as `UNBIRD_DB_NAME`, which the guard does
+    not exempt, so it is now declared as `DB_NAME` and still exported. The
+    watch-party registry note is updated. After that, **green**.
+  - `make test`: 10,387 of 10,389 passed. The **2 failures are in committed
+    Unbird work, not this sprint**, and each needs an owner decision:
+    `shell.spec` expects 6 switcher modes (Unbird added a seventh), and
+    `vault-manifest.spec` has the new secret `mockingbird_oauth_signup` in
+    neither vault list. Specs affected by the post-gate fixes (unbird,
+    storage, vault) were rerun: 234 of 235, the same vault failure.
+  - `build:mockingbird`: **green**. Initial bundle 921.68 kB, over the 900 kB
+    warning budget (under the 1 MB error). Only `platform-http.ts` (the S1
+    token) and a registry note line from this work are in initial chunks; all
+    YouTube, Watch and comments code is lazy.
+  - `make design-verify`: **green**, 463 browser tests.
+  - Native: `check-host` and `test-host` (93 passed) **green**. `make frontend`
+    needs `MAWKINGBIRD_SOURCE` set; rerun with this checkout, then
+    `smoke-frontend`, both **green**.
+  - Not run: SEO (no public page changed), `test-deep-links-browser` (no route,
+    resolver or landing change; the source audit is clean), `test-integration`.
 
 ### S1 evidence (2026-11-18)
 

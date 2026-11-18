@@ -52,6 +52,14 @@ function startSeconds(raw: string | null): number | undefined {
 }
 
 /** Exact hosts and URL paths; preview HTML/provider labels are never executable input. */
+/**
+ * Watch's `t` cue (chapters, shared moments): seconds or YouTube's `1h2m3s`.
+ * `undefined` when absent or invalid, so the link's own start stands.
+ */
+export function cueSeconds(raw: string | null | undefined): number | undefined {
+  return raw ? startSeconds(raw) : undefined;
+}
+
 export function youtubeSource(raw: string): VideoSource | null {
   try {
     const url = new URL(raw);

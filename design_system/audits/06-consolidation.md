@@ -2863,3 +2863,14 @@ file (`reading/videos/youtube-details.ts`, chapter parsing) takes filesScanned
 from 1971 to 1972; the search pages' Plus/Native gate moved three video-search
 template lines by two. Candidate inventory, candidate files (674) and their
 dispositions are unchanged. No reconciliation entries needed.
+
+YouTube client S2 (2026-11-18): reviewed inventory refresh. Three new source
+files (`reading/videos/video-post-finder.ts`, `reading/watch/watch-video-panel.ts`,
+`reading/watch/youtube-comments.ts`) take filesScanned from 1972 to 1975; two
+are new candidate files (674 to 676), reconciled as adopted scope. The panel uses
+MbButton, Dialog around the shared Compose, and Disclosure for "About this
+video". The comments list is local read-only text rows (YouTube comments are not
+statuses), with MbButton actions. The party chat's conversation-mode `<select>`
+became a compact Toolbar of pressed buttons, chosen per visit. Watch's
+compact-view topic `<details>` is gone, because the source post's card now sits
+under the player. Their reconciliation notes are updated to match.

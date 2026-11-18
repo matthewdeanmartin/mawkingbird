@@ -19,6 +19,9 @@ import { StatusVisibility } from '../../moderation/status-visibility';
 import { TrustedAccounts } from '../../accounts/trusted-accounts';
 import { FollowTrust } from '../../accounts/follow-trust';
 import { ReadingZen } from '../reading-zen';
+import { WatchVideoPanel } from './watch-video-panel';
+import { VideoSource } from '../video-player/media-source';
+import { YoutubeComment } from '../videos/youtube-details';
 
 @Component({ selector: 'app-status-card', template: '' })
 class CardStub {
@@ -39,10 +42,20 @@ class PartyStub {
   readonly session = input('');
   readonly initialTags = input<readonly string[]>([]);
   readonly canReply = input(false);
+  readonly youtubeVideoId = input<string | null>(null);
+  readonly quoted = output<YoutubeComment>();
   readonly repliesDue = output<void>();
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
+}
+
+@Component({ selector: 'app-watch-video-panel', template: '' })
+class PanelStub {
+  readonly source = input<VideoSource>();
+  readonly status = input<Status | null>(null);
+  readonly partyTag = input<string | null>(null);
+  readonly quote = vi.fn();
 }
 
 describe('Watch post access and reveal gates', () => {
@@ -141,9 +154,12 @@ describe('Watch post access and reveal gates', () => {
       ],
     });
     TestBed.overrideComponent(Watch, {
-      remove: { imports: [StatusCard, PartyConversation], providers: [ThreadLoader] },
+      remove: {
+        imports: [StatusCard, PartyConversation, WatchVideoPanel],
+        providers: [ThreadLoader],
+      },
       add: {
-        imports: [CardStub, PartyStub],
+        imports: [CardStub, PartyStub, PanelStub],
         providers: [{ provide: ThreadLoader, useValue: loader }],
       },
     });
@@ -390,31 +406,42 @@ describe('Watch post access and reveal gates', () => {
     const party = () =>
       fixture.debugElement.query(By.directive(PartyStub)).componentInstance as PartyStub;
 
-    it('collapses the video post to a topic line in compact view and a card otherwise', () => {
+    it('shows the video post under the player, in compact and card views alike', () => {
       mount();
-      loader.status.set({
-        ...status(),
-        content: '<p>Episode <b>one</b></p>',
-        account: { id: 'a', username: 'kat' },
-      } as Status);
+      loader.status.set(status());
       fixture.detectChanges();
-      const topic = fixture.nativeElement.querySelector('.watch-topic summary');
-      expect(topic.textContent).toContain('<kat> Episode one');
-      expect(fixture.nativeElement.querySelector('.watch-root')).toBeNull();
-
+      const card = () =>
+        fixture.nativeElement.querySelector('.watch-stage .watch-root app-status-card');
+      expect(card()).not.toBeNull();
+      // The conversation column holds only the conversation.
+      expect(fixture.nativeElement.querySelector('.watch-conversation app-status-card')).toBeNull();
       TestBed.inject(WatchPartyPrefs).setView('cards');
       fixture.detectChanges();
-      expect(fixture.nativeElement.querySelector('.watch-topic')).toBeNull();
-      expect(fixture.nativeElement.querySelector('.watch-root')).not.toBeNull();
+      expect(card()).not.toBeNull();
     });
 
-    it('shows a content warning, not the post text, in the topic line', () => {
+    it('cues a bare YouTube video at ?t= and hands its ID to the conversation', () => {
+      params.next(convertToParamMap({ youtube: 'abcdefghijk', t: '90' }));
       mount();
-      loader.status.set({ ...status(), content: 'the twist', spoiler_text: 'finale' } as Status);
+      const panel = fixture.debugElement.query(By.directive(PanelStub))
+        .componentInstance as PanelStub;
+      expect(panel.source()?.start).toBe(90);
+      expect(panel.status()).toBeNull();
+      expect(party().youtubeVideoId()).toBe('abcdefghijk');
+      // An unusable cue is ignored rather than breaking the page.
+      params.next(convertToParamMap({ youtube: 'abcdefghijk', t: 'soon' }));
       fixture.detectChanges();
-      const topic = fixture.nativeElement.querySelector('.watch-topic summary').textContent;
-      expect(topic).toContain('finale');
-      expect(topic).not.toContain('twist');
+      expect(panel.source()?.start).toBe(0);
+    });
+
+    it('quotes a YouTube comment into the share sheet', () => {
+      params.next(convertToParamMap({ youtube: 'abcdefghijk' }));
+      mount();
+      const panel = fixture.debugElement.query(By.directive(PanelStub))
+        .componentInstance as PanelStub;
+      const comment = { id: 'c', author: '@viewer', text: 'Great video' } as YoutubeComment;
+      party().quoted.emit(comment);
+      expect(panel.quote).toHaveBeenCalledWith(comment);
     });
 
     it('lets the chat reply only to a post on the signed-in server', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chaptersFromDescription } from './youtube-details';
+import { chaptersFromDescription, keywordFilterAction } from './youtube-details';
 
 describe('chaptersFromDescription', () => {
   it('reads YouTube-style chapter lists, including hours and decorations', () => {
@@ -27,5 +27,49 @@ describe('chaptersFromDescription', () => {
     expect(
       chaptersFromDescription('0:00 A\n2:00 B\n1:00 typo\n3:00 C').map((c) => c.title),
     ).toEqual(['A', 'B', 'C']);
+  });
+});
+
+describe('keywordFilterAction', () => {
+  const filter = (
+    keyword: string,
+    action: string,
+    extra: Partial<{ whole_word: boolean; context: string[]; expires_at: string | null }> = {},
+  ) => ({
+    context: extra.context ?? ['thread'],
+    filter_action: action,
+    expires_at: extra.expires_at ?? null,
+    keywords: [{ keyword, whole_word: extra.whole_word ?? true }],
+  });
+
+  it('applies the reader’s thread filters to outside text; hide beats warn', () => {
+    expect(keywordFilterAction('Spoilers ahead!', [filter('spoilers', 'warn')])).toBe('warn');
+    expect(
+      keywordFilterAction('spoilers and crypto', [
+        filter('spoilers', 'warn'),
+        filter('crypto', 'hide'),
+      ]),
+    ).toBe('hide');
+    expect(keywordFilterAction('nothing here', [filter('crypto', 'hide')])).toBeNull();
+  });
+
+  it('matches whole words in any script, and substrings when asked', () => {
+    expect(keywordFilterAction('cryptography', [filter('crypto', 'hide')])).toBeNull();
+    expect(
+      keywordFilterAction('cryptography', [filter('crypto', 'hide', { whole_word: false })]),
+    ).toBe('hide');
+    expect(keywordFilterAction('Größe zählt', [filter('größe', 'warn')])).toBe('warn');
+    expect(keywordFilterAction('a+b (c)', [filter('a+b', 'warn')])).toBe('warn');
+  });
+
+  it('ignores filters for other contexts and expired ones', () => {
+    expect(
+      keywordFilterAction('crypto', [filter('crypto', 'hide', { context: ['home'] })]),
+    ).toBeNull();
+    expect(
+      keywordFilterAction('crypto', [
+        filter('crypto', 'hide', { expires_at: '2020-01-01T00:00:00Z' }),
+      ]),
+    ).toBeNull();
   });
 });

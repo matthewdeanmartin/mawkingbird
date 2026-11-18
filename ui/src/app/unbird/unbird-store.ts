@@ -24,7 +24,10 @@ import type { UnbirdArchive } from './unbird-archive';
  * sign-out wipe deletes the database (`session-teardown.ts`).
  */
 
-export const UNBIRD_DB_NAME = 'mockingbird_unbird';
+// Named `DB_NAME` so the storage guard knows it names an IndexedDB database,
+// not a localStorage key (scripts/check-storage, NON_STORAGE_DECLARATIONS).
+const DB_NAME = 'mockingbird_unbird';
+export const UNBIRD_DB_NAME = DB_NAME;
 const DB_VERSION = 2;
 const ARCHIVES = 'archives';
 const MATCHES = 'matches';

@@ -88,6 +88,8 @@ export class VideosPage {
   protected subs = inject(VideoSubscriptions);
   /** Native searches YouTube directly; browsers need Plus. */
   protected canSearch = () => this.youtube.canSearch();
+  /** Native searches YouTube itself, so a failure is never about a Plus account. */
+  protected nativeSearch = () => this.youtube.canReadDetails();
   protected reads = inject(RssReadState);
   private youtube = inject(YoutubeFeeds);
   private route = inject(ActivatedRoute);
