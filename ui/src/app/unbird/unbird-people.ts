@@ -1,4 +1,5 @@
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 import { MbButton } from '../design-system/button/button';
@@ -80,6 +81,7 @@ export function activeWithin(match: StoredMatch, within: ActiveWithin, now = Dat
 @Component({
   selector: 'app-unbird-people',
   imports: [
+    RouterLink,
     MbButton,
     MbContentLink,
     MbDisclosure,
@@ -126,6 +128,17 @@ export class UnbirdPeople {
       (entry) => !this.isFollowing(entry.match.acct) && activeWithin(entry.match, this.within()),
     ),
   );
+  protected readonly counts = computed(
+    () =>
+      Object.fromEntries(
+        this.withinChoices.map((within) => [
+          within,
+          this.allFound().filter(
+            (entry) => !this.isFollowing(entry.match.acct) && activeWithin(entry.match, within),
+          ).length,
+        ]),
+      ) as Record<ActiveWithin, number>,
+  );
   protected readonly quiet = computed(
     () =>
       this.allFound().filter(
@@ -150,7 +163,11 @@ export class UnbirdPeople {
 
   constructor() {
     effect(() => {
-      if (this.via() !== 'account') return;
+      const me = this.auth?.account();
+      const server = this.server?.baseUrl();
+      this.alreadyFollowing.set(new Set());
+      this.self.set(null);
+      if (this.via() !== 'account' || !me || !server) return;
       untracked(() => void this.loadFollowing());
     });
   }
@@ -192,6 +209,8 @@ export class UnbirdPeople {
     for (let page = 0; page < FOLLOWING_PAGES; page++) {
       try {
         const result = await firstValueFrom(this.api.accountFollowingPage(me.id, maxId));
+        if (this.auth?.account()?.id !== me.id || hostOf(this.server?.baseUrl() ?? '') !== host)
+          return;
         for (const account of result.accounts) accts.add(full(account.acct));
         this.alreadyFollowing.set(new Set(accts));
         if (!result.nextMaxId) break;

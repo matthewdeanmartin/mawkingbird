@@ -152,6 +152,23 @@ describe('Unbird matching', () => {
       expect(matcher.servers()).toEqual([{ server: 'hachyderm.io', people: 1 }]);
     });
 
+    it('resumes without re-searching stored matches or stored empty results', async () => {
+      const { matcher } = setup({});
+      await matcher.use(archiveOf([person('ada'), person('bob'), person('cy')]), [
+        {
+          handle: 'ada',
+          status: 'complete',
+          checkedAt: 0,
+          matches: [{ acct: 'ada@hachyderm.io' } as StoredMatchRow['matches'][number]],
+        },
+        { handle: 'bob', status: 'complete', checkedAt: 0, matches: [] },
+      ]);
+      await matcher.search('public');
+      expect(matcher.fetchImpl).toHaveBeenCalledTimes(1);
+      expect(String(vi.mocked(matcher.fetchImpl).mock.calls[0][0])).toContain('q=cy');
+      expect(matcher.remaining()).toBe(0);
+    });
+
     it('stops at a rate limit and leaves the person unsearched, to resume later', async () => {
       const { matcher } = setup({ bob: new Response(null, { status: 429 }) });
       await matcher.adopt(archiveOf([person('ada'), person('bob'), person('cy')]));

@@ -72,12 +72,7 @@ export class UnbirdPage implements OnInit {
   );
 
   ngOnInit(): void {
-    void this.matcher.restore().then((archive) => {
-      // Back from sign-up, or a search left unfinished: carry on where it stopped.
-      if (archive && this.tab === 'people' && this.matcher.remaining() > 0) {
-        void this.matcher.search(this.via());
-      }
-    });
+    void this.matcher.restore();
   }
 
   protected loaded(): void {

@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { Api } from '../platform/api/api';
@@ -13,6 +13,8 @@ import { UnbirdArchiveTools } from './unbird-archive-tools';
 import { UnbirdDrop } from './unbird-drop';
 import { UnbirdMatcher } from './unbird-matcher';
 import { UnbirdMore } from './unbird-more';
+import { UnbirdLanding } from './unbird-landing';
+import { UnbirdPage } from './unbird-page';
 import { UnbirdPeople } from './unbird-people';
 import { UnbirdStore } from './unbird-store';
 
@@ -70,10 +72,10 @@ function archive(): UnbirdArchive {
 function setup(extra: unknown[] = []): UnbirdMatcher {
   TestBed.configureTestingModule({
     providers: [
-      ...(extra as never[]),
       provideHttpClient(),
       provideHttpClientTesting(),
       provideRouter([]),
+      ...(extra as never[]),
       {
         provide: UnbirdStore,
         useValue: {
@@ -91,6 +93,29 @@ function setup(extra: unknown[] = []): UnbirdMatcher {
 }
 
 describe('Unbird components', () => {
+  for (const component of [UnbirdLanding, UnbirdPage]) {
+    it(component.name + ' restores an unfinished archive without starting search', async () => {
+      const matcher = setup([
+        { provide: ActivatedRoute, useValue: { snapshot: { data: { unbirdTab: 'people' } } } },
+      ]);
+      const saved = archive();
+      saved.people.push({ ...saved.people[0], twitter_handle: 'bob' });
+      await matcher.use(saved, [{ handle: 'ada', status: 'complete', checkedAt: 0, matches: [] }]);
+      const search = vi.spyOn(matcher, 'search').mockResolvedValue();
+      const fixture = TestBed.createComponent(component as typeof UnbirdLanding);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(search).not.toHaveBeenCalled();
+      const resume = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+        (button) => button.textContent?.includes('Keep looking (1 left)'),
+      );
+      expect(resume).toBeDefined();
+      resume!.click();
+      expect(search).toHaveBeenCalledOnce();
+    });
+  }
+
   it('offers the drop target with a calm privacy line, then the archive it read', async () => {
     const matcher = setup();
     const fixture = TestBed.createComponent(UnbirdDrop);
@@ -145,10 +170,15 @@ describe('Unbird components', () => {
     );
     // Signed out: a link to the profile, never a Follow button.
     expect(root.querySelector('[mbIdentityRow] a')?.getAttribute('href')).toBe(
-      'https://hachyderm.io/@ada',
+      '/accounts/@ada@hachyderm.io',
     );
     expect(root.querySelector('[mbIdentityRow] button')).toBeNull();
     expect(search).not.toHaveBeenCalled();
+    expect(root.querySelector('[mbIdentityRow] a')?.getAttribute('target')).toBe('_blank');
+    expect(root.querySelector('mb-toolbar')?.textContent).toContain('Everyone (1)');
+    matcher.rows.set(new Map());
+    fixture.detectChanges();
+    expect(root.querySelector('mb-toolbar')?.textContent).toContain('Everyone (0)');
   });
 
   it('searches the archive as you type', async () => {
@@ -188,7 +218,7 @@ describe('Unbird components', () => {
       {
         provide: Auth,
         useValue: {
-          account: signal({ id: '7', acct: 'me' }),
+          account: signal<{ id: string; acct: string } | null>(null),
           lacksMastodonToken: false,
           isAnonymous: false,
         },
@@ -231,12 +261,19 @@ describe('Unbird components', () => {
     const fixture = TestBed.createComponent(UnbirdPeople);
     fixture.componentRef.setInput('via', 'account');
     fixture.detectChanges();
+    (TestBed.inject(Auth).account as unknown as { set(value: unknown): void }).set({
+      id: '7',
+      acct: 'me',
+    });
+    fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
     const root = fixture.nativeElement as HTMLElement;
     const offered = () =>
       [...root.querySelectorAll('[mbIdentityRow] .muted')].map((el) => el.textContent?.trim());
     expect(offered()).toEqual(['@ada@hachyderm.io']);
+    expect(root.querySelector('mb-toolbar')?.textContent).toContain('Everyone (2)');
+    expect(root.querySelector('mb-toolbar')?.textContent).toContain('Active this year (1)');
     expect(root.querySelector('mb-disclosure.already summary')?.textContent).toContain('(1)');
     expect(root.querySelector('.foot')?.textContent).toContain('1 more found');
 

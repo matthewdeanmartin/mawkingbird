@@ -2926,3 +2926,7 @@ files, 681 candidate files (other files in the tree changed too). One new
 Unbird file, `unbird-more.ts`, adopted scope: Section and Navigation rows
 linking `/twitter-to-mastodon/` and `/twitter-archive-tools/` into
 `/unbird/*`. No shared widget changed.
+
+Unbird return visits (2026-11-18): reviewed the People and landing inventory
+line shifts after adding activity-filter counts and internal profile links.
+No candidate files or dispositions changed; reconciliation remains current.

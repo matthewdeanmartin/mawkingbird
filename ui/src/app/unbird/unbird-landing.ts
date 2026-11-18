@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDisclosure } from '../design-system/disclosure/disclosure';
+import { Auth } from '../platform/session/auth';
 import { UnbirdDrop } from './unbird-drop';
 import { UnbirdMore } from './unbird-more';
 import { UnbirdMatcher } from './unbird-matcher';
@@ -59,15 +60,14 @@ export class UnbirdLanding implements OnInit {
   /** Show the projected classic importer under a disclosure. */
   readonly classic = input(true);
 
-  protected readonly via = computed(() => (this.signedIn() ? 'account' : 'public'));
+  private readonly auth = inject(Auth);
+  protected readonly via = computed(() =>
+    !this.auth.lacksMastodonToken && !this.auth.isAnonymous ? 'account' : 'public',
+  );
 
   ngOnInit(): void {
     // A search left unfinished on an earlier visit carries on where it stopped.
-    void this.matcher.restore().then((archive) => {
-      if (archive && this.matcher.searched() > 0 && this.matcher.remaining() > 0) {
-        void this.matcher.search(this.via());
-      }
-    });
+    void this.matcher.restore();
   }
 
   protected started(): void {

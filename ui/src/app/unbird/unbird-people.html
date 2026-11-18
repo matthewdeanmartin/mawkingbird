@@ -55,7 +55,7 @@
     <mb-toolbar [label]="'unbird.people.active' | transloco">
       @for (choice of withinChoices; track choice) {
         <button mbToolbarButton [pressed]="within() === choice" (click)="within.set(choice)">
-          {{ 'unbird.people.active.' + choice | transloco }}
+          {{ 'unbird.people.active.' + choice | transloco }} ({{ fmt(counts()[choice]) }})
         </button>
       }
     </mb-toolbar>
@@ -69,7 +69,12 @@
             <img [src]="entry.match.avatar" alt="" loading="lazy" decoding="async" />
           </span>
           <div class="suggestion-name">
-            <a class="suggestion-display" [href]="entry.match.url" target="_blank" rel="noopener">
+            <a
+              class="suggestion-display"
+              [routerLink]="['/accounts', '@' + entry.match.acct]"
+              target="_blank"
+              rel="noopener"
+            >
               {{ entry.match.displayName }}
             </a>
             <span class="muted">&#64;{{ entry.match.acct }}</span>
@@ -132,7 +137,11 @@
         <ul>
           @for (entry of followed(); track entry.match.acct) {
             <li>
-              <a mbContentLink [href]="entry.match.url" target="_blank" rel="noopener"
+              <a
+                mbContentLink
+                [routerLink]="['/accounts', '@' + entry.match.acct]"
+                target="_blank"
+                rel="noopener"
                 >&#64;{{ entry.match.acct }}</a
               >
               <span class="muted">· &#64;{{ entry.person.twitter_handle }}</span>
