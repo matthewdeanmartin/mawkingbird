@@ -37,12 +37,12 @@ import { websiteZip } from './website-export';
 // i18n unbird.tools.search.retweets: Include retweets
 // i18n unbird.tools.search.count: {{total}} found
 // i18n unbird.tools.search.showing: showing the newest {{shown}}
-// i18n unbird.tools.search.open: Open on X
+// i18n unbird.tools.search.open: Open on Twitter
 // i18n unbird.tools.search.media: {{count}} photo or video
 // i18n unbird.tools.search.thread: thread
 // i18n unbird.tools.search.reply: reply
 // i18n unbird.tools.likes.label: Search your likes
-// i18n unbird.tools.likes.lead: Everything you liked, with its text, searchable here. Twitter's archive does not say who wrote a liked tweet, so each one links back to X.
+// i18n unbird.tools.likes.lead: Everything you liked, with its text, searchable here. Twitter's archive does not say who wrote a liked tweet, so each one links back to Twitter.
 // i18n unbird.tools.numbers.span: {{first}} to {{last}}, {{years}} years
 // i18n unbird.tools.numbers.posts: Your own posts
 // i18n unbird.tools.numbers.threads: Thread posts

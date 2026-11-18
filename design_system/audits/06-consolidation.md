@@ -2930,3 +2930,8 @@ linking `/twitter-to-mastodon/` and `/twitter-archive-tools/` into
 Unbird return visits (2026-11-18): reviewed the People and landing inventory
 line shifts after adding activity-filter counts and internal profile links.
 No candidate files or dispositions changed; reconciliation remains current.
+
+Tool entry links (2026-11-18): reviewed inventory line shifts from wrapping
+header links with sign-in return parameters. Candidate counts and dispositions
+are unchanged. Unbird's folder picker and archive-help disclosure now occupy
+separate grid rows so expansion does not move the disclosure sideways.

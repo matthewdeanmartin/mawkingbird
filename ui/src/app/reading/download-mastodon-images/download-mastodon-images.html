@@ -3,7 +3,9 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/">{{ copy.openApp }}</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">{{
+        copy.openApp
+      }}</a>
     </header>
   }
 

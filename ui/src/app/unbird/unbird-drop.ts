@@ -38,7 +38,7 @@ import { UnbirdMatcher } from './unbird-matcher';
 // i18n unbird.drop.replace: Use a different archive
 // i18n unbird.drop.forget: Forget it
 // i18n unbird.drop.howToGet: Don't have it yet?
-// i18n unbird.drop.howToGetBody: On X, open Settings → Your account → Download an archive of your data. It usually arrives within a day.
+// i18n unbird.drop.howToGetBody: On Twitter, open Settings → Your account → Download an archive of your data. It usually arrives within a day.
 
 /**
  * The front door of Unbird: one big target for the archive, and a calm line

@@ -47,8 +47,8 @@ import { UnbirdMatcher } from './unbird-matcher';
 // i18n unbird.profile.moved.post: Post and pin
 // i18n unbird.profile.moved.done: Posted and pinned.
 // i18n unbird.profile.moved.failed: Could not post. Try again.
-// i18n unbird.profile.x.title: Point your X profile here
-// i18n unbird.profile.x.lead: Paste this into your X bio so old followers can find you.
+// i18n unbird.profile.x.title: Point your Twitter profile here
+// i18n unbird.profile.x.lead: Paste this into your Twitter bio so old followers can find you.
 // i18n unbird.profile.x.copy: Copy
 // i18n unbird.profile.x.copied: Copied
 // i18n unbird.profile.tags.title: Your saved searches, as hashtags to follow

@@ -38,6 +38,7 @@ describe('TwitterToMastodon', () => {
   it('stands alone when signed out, with its own way into the app', async () => {
     const root = await render({});
     expect(root.querySelector('header')?.textContent).toContain('Open the app');
+    expect(root.querySelector('header a[mbButton]')?.getAttribute('href')).toBe('/unbird');
     expect(root.querySelector('h1')?.textContent).toContain('Import your Twitter follows');
   });
 

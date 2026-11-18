@@ -12,5 +12,15 @@ import { AppOnlyLinkRel } from '../public-page-urls';
   styleUrl: './features.css',
 })
 export class AudiencePage {
-  readonly content = audienceContent[inject(ActivatedRoute).snapshot.data['audience']];
+  private readonly audience = inject(ActivatedRoute).snapshot.data['audience'];
+  readonly content = audienceContent[this.audience];
+  readonly appRoute =
+    (
+      {
+        readers: '/rss',
+        'twitter-exodus': '/unbird',
+        creators: '/write',
+        'power-users': '/settings/moderation',
+      } as Record<string, string>
+    )[this.audience] ?? '/home';
 }
