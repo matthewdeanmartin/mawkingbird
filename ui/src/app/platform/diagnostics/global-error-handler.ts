@@ -43,11 +43,17 @@ export class GlobalErrorHandler implements ErrorHandler {
   private readonly injector = inject(Injector);
   private explainingFullStorage = false;
 
+  private feedbackHintShown = false;
+
   handleError(error: unknown): void {
     this.errorLog.record('angular', error);
     this.metrics.recordClientError('angular', error);
     if (this.recovery.recover(error)) {
       return;
+    }
+    if (!this.feedbackHintShown && typeof document !== 'undefined') {
+      this.feedbackHintShown = true;
+      console.info('Report this problem:', new URL('feedback', document.baseURI).href);
     }
     if (isQuotaExceeded(error)) {
       this.recoverFromFullStorage(error);

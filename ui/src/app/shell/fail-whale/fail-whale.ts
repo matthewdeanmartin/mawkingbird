@@ -1,4 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { BugReportDialog } from '../bug-report-dialog/bug-report-dialog';
+import { MbButton } from '../../design-system/button/button';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { failWhaleArt } from '../../platform/build/build-flavor';
@@ -63,11 +65,12 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 // i18n failWhale.copyDetails: Copy details
 @Component({
   selector: 'app-fail-whale',
-  imports: [ServerPicker, RouterLink, TranslocoPipe],
+  imports: [BugReportDialog, MbButton, ServerPicker, RouterLink, TranslocoPipe],
   templateUrl: './fail-whale.html',
   styleUrl: './fail-whale.css',
 })
 export class FailWhale {
+  protected reporting = signal(false);
   protected health = inject(ServerHealth);
   protected status = inject(InstanceStatus);
   private auth = inject(Auth);

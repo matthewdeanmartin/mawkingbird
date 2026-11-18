@@ -5,7 +5,7 @@ import { BugReportDialog } from '../shell/bug-report-dialog/bug-report-dialog';
 import { BugReport } from '../platform/diagnostics/bug-report';
 import { ErrorLog } from '../platform/diagnostics/error-log';
 import { DiagnosticLog } from '../platform/diagnostics/diagnostic-log';
-import { PageDiagnostics } from '../platform/diagnostics/page-diagnostics';
+import { feedbackTargets } from '../platform/diagnostics/feedback-targets';
 import { BulkActionsDialog } from '../accounts/bulk-actions-dialog/bulk-actions-dialog';
 import { BulkActions } from '../accounts/bulk-actions';
 import { MbDialog } from './dialog/dialog';
@@ -35,10 +35,13 @@ describe('Shared dialog adoption', () => {
     cancelPlanning.mockReset();
     TestBed.configureTestingModule({
       providers: [
-        { provide: BugReport, useValue: { buildMarkdown } },
+        {
+          provide: BugReport,
+          useValue: { buildMarkdown, buildGithubUrl: () => 'https://example.org/issues/new' },
+        },
         { provide: ErrorLog, useValue: { entries: signal([{ text: 'fixture error' }]) } },
         { provide: DiagnosticLog, useValue: { entries: signal([]) } },
-        { provide: PageDiagnostics, useValue: { error: vi.fn() } },
+        { provide: feedbackTargets, useValue: { repository: 'fixture/example' } },
         { provide: BulkActions, useValue: { preview, cancelPlanning, planning: signal(null) } },
       ],
     });
@@ -76,20 +79,30 @@ describe('Shared dialog adoption', () => {
     await fixture.whenStable();
     const element = fixture.nativeElement as HTMLElement;
     const textarea = element.querySelector('textarea')!;
-    expect(element.querySelector('mb-field label')?.getAttribute('for')).toBe(textarea.id);
+    expect(textarea.closest('mb-field')?.querySelector('label')?.getAttribute('for')).toBe(
+      textarea.id,
+    );
     textarea.value = 'The page failed';
     textarea.dispatchEvent(new Event('input'));
     await fixture.whenStable();
-    const checkbox = element.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    const checkbox = Array.from(
+      element.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'),
+    ).find((option) => option.closest('mb-checkbox')?.textContent?.includes('most recent error'))!;
+    expect(checkbox.checked).toBe(false);
     checkbox.click();
     await fixture.whenStable();
     expect(buildMarkdown).toHaveBeenLastCalledWith({
       description: 'The page failed',
-      includeErrors: false,
-      includeDiagnostics: true,
+      category: undefined,
+      includeEnvironment: false,
+      includeErrors: true,
+      includeDiagnostics: false,
     });
     expect(element.querySelector('mb-disclosure details')).not.toBeNull();
-    expect(element.querySelectorAll('footer button[mbButton]')).toHaveLength(3);
+    expect(element.querySelectorAll('footer [mbButton]')).toHaveLength(3);
+    expect(element.querySelector('footer a')?.getAttribute('href')).toBe(
+      'https://example.org/issues/new',
+    );
   });
 
   it('routes report Escape dismissal to the existing closed output', () => {

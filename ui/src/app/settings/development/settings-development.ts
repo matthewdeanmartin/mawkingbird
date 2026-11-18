@@ -11,8 +11,8 @@ import { AuthorizedApp } from '../../platform/api/models';
 // i18n settings.development.none: No applications have been authorized for this account.
 // i18n settings.development.lastUsed: Last used: {{date}}
 // i18n settings.development.register: New applications register themselves via POST /api/v1/apps.
-// i18n settings.development.reportBug: Report a bug
-// i18n settings.development.reportBug.hint: Builds a report from your description plus build and environment details. Nothing is sent automatically — you review it, then copy it or open a prefilled GitHub issue.
+// i18n settings.development.reportBug: Feedback
+// i18n settings.development.reportBug.hint: Report a bug, suggest a feature, or contact the maintainer privately about security.
 @Component({
   selector: 'app-settings-development',
   imports: [BugReportDialog, TranslocoPipe],

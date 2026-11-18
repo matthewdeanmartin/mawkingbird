@@ -991,7 +991,7 @@ describe('Shell zen modes', () => {
     ).toEqual([
       'Server rules & terms · Privacy · About & legal',
       'Source · MIT License',
-      'Report a bug · Fail whale',
+      'Feedback · Fail whale',
       'Discover · Help · News · ? Keyboard',
       // Last, under the rest: desktop downloads remain available from the web app.
       'Install the app',

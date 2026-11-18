@@ -3,6 +3,7 @@ import { PublishingMetrics } from './publishing-metrics';
 import { Auth } from '../platform/session/auth';
 // i18n pages.observability.myAnalytics: My Profile's Analytics
 import { Component, computed, inject, signal } from '@angular/core';
+import { MbButton } from '../design-system/button/button';
 import { RouterLink } from '@angular/router';
 import {
   ALL_SCOPES,
@@ -305,7 +306,7 @@ type RouteSortKey = 'visits' | 'time';
 // i18n pages.observability.tooltip.bucketErrors: · {{count}} err
 @Component({
   selector: 'app-observability',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [MbButton, RouterLink, TranslocoPipe],
   templateUrl: './observability.html',
   styleUrls: ['./diagnostics-shared.css', './observability.css'],
 })

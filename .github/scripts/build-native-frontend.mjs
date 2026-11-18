@@ -1,3 +1,4 @@
+import { feedbackDefinition } from '../../native/scripts/feedback-build.mjs';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
@@ -10,6 +11,7 @@ if (!/^native-v\d+\.\d+\.\d+/.test(releaseTag ?? '')) {
 const revision = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
 const cli = resolve(root, 'ui/node_modules/@angular/cli/bin/ng.js');
 execFileSync(process.execPath, [cli, 'build', '--configuration', 'mockingbird,native',
+  '--define', feedbackDefinition(root),
   '--output-path', resolve(root, 'native/.frontend')], {
   cwd: resolve(root, 'ui'), stdio: 'inherit',
 });

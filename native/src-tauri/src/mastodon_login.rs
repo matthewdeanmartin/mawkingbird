@@ -334,15 +334,106 @@ fn account_target(raw: &str, expected_origin: &str) -> Result<Url, Failure> {
     }
     Ok(target)
 }
+fn stored_credential(handle: &str) -> Result<Credential, Failure> {
+    serde_json::from_str(&entry(handle)?.get_password().map_err(|_| {
+        failure(
+            "credentials",
+            "Account unavailable in OS credential storage. Sign in again.",
+        )
+    })?)
+    .map_err(|_| failure("credentials", "Stored account is invalid. Sign in again."))
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct FeedbackPost {
+    message: String,
+    direct: bool,
+    key: String,
+    poll: Option<FeedbackPoll>,
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct FeedbackPoll {
+    options: [String; 2],
+    expires_in: u32,
+}
+
+fn validate_feedback(post: &FeedbackPost) -> Result<(), Failure> {
+    // Direct posts address one account. Extra mentions would expand the audience.
+    if post.direct
+        && post
+            .message
+            .split_whitespace()
+            .skip(1)
+            .any(|word| word.contains(['@', '＠']))
+    {
+        return Err(failure(
+            "policy",
+            "Remove extra recipients from private feedback.",
+        ));
+    }
+    if !post.message.starts_with('@')
+        || post.message.len() > 100_000
+        || post.key.len() != 36
+        || !post.key.bytes().all(|b| b.is_ascii_hexdigit() || b == b'-')
+        || post.poll.as_ref().is_some_and(|p| {
+            post.direct
+                || p.expires_in == 0
+                || p.options.iter().any(|o| o.is_empty() || o.len() > 256)
+        })
+    {
+        return Err(failure("policy", "Invalid feedback post."));
+    }
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn mastodon_feedback(
+    handle: String,
+    server: String,
+    post: FeedbackPost,
+) -> Result<(), Failure> {
+    let _permit = READS
+        .try_acquire()
+        .map_err(|_| failure("busy", "Retry shortly."))?;
+    let credential = stored_credential(&handle)?;
+    let server = origin(&server)?;
+    if server.origin().ascii_serialization() != credential.origin
+        || !credential
+            .scopes
+            .split_whitespace()
+            .any(|s| matches!(s, "write" | "write:statuses"))
+    {
+        return Err(failure(
+            "reauthorize",
+            "Reconnect the posting account with Full access.",
+        ));
+    }
+    validate_feedback(&post)?;
+    let target = server.join("api/v1/statuses").unwrap();
+    let mut body = serde_json::json!({"status": post.message, "visibility": if post.direct { "direct" } else { "public" }});
+    if let Some(poll) = post.poll {
+        body["poll"] = serde_json::json!(poll);
+    }
+    let response = client_for(&target)
+        .await?
+        .post(target)
+        .timeout(Duration::from_secs(15))
+        .bearer_auth(credential.token)
+        .header("Idempotency-Key", post.key)
+        .json(&body)
+        .send()
+        .await
+        .map_err(|_| failure("network", "Feedback request failed."))?;
+    if !response.status().is_success() {
+        return Err(failure("server", "The server declined the post."));
+    }
+    Ok(())
+}
 async fn account_read(url: String, handle: String) -> Result<PublicResponse, Failure> {
-    let credential: Credential =
-        serde_json::from_str(&entry(&handle)?.get_password().map_err(|_| {
-            failure(
-                "credentials",
-                "Account unavailable in OS credential storage. Sign in again.",
-            )
-        })?)
-        .map_err(|_| failure("credentials", "Stored account is invalid. Sign in again."))?;
+    let credential = stored_credential(&handle)?;
     let target = account_target(&url, &credential.origin)?;
     let response = client_for(&target)
         .await?
@@ -412,14 +503,7 @@ async fn favourite(
     status_id: String,
     liked: bool,
 ) -> Result<PublicResponse, Failure> {
-    let credential: Credential =
-        serde_json::from_str(&entry(&handle)?.get_password().map_err(|_| {
-            failure(
-                "credentials",
-                "Account unavailable in OS credential storage. Sign in again.",
-            )
-        })?)
-        .map_err(|_| failure("credentials", "Stored account is invalid. Sign in again."))?;
+    let credential = stored_credential(&handle)?;
     let target = favourite_target(&credential, &server, &status_id, liked)?;
     // A typed action, not an arbitrary method/path/body tunnel. Never auto-retry writes.
     let response = favourite_request(client_for(&target).await?, target, &credential.token)
@@ -566,6 +650,27 @@ mod tests {
         assert_eq!(retrieved.unwrap(), "synthetic-test-secret");
         assert!(matches!(item.get_password(), Err(keyring::Error::NoEntry)));
     }
+    #[test]
+    fn private_feedback_has_one_recipient_and_no_poll() {
+        let mut post = FeedbackPost {
+            message: "@project@example.org private detail".into(),
+            direct: true,
+            key: "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee".into(),
+            poll: None,
+        };
+        assert!(validate_feedback(&post).is_ok());
+        post.message.push_str(" @someone");
+        assert!(validate_feedback(&post).is_err());
+        post.message = "@project@example.org a feature".into();
+        post.poll = Some(FeedbackPoll {
+            options: ["Yes".into(), "No".into()],
+            expires_in: 7776000,
+        });
+        assert!(validate_feedback(&post).is_err());
+        post.direct = false;
+        assert!(validate_feedback(&post).is_ok());
+    }
+
     #[test]
     fn old_credentials_remain_read_only_and_supported_scopes_are_explicit() {
         let old: Credential =

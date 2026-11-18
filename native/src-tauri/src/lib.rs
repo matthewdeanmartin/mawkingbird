@@ -66,6 +66,34 @@ fn open_external(app: tauri::AppHandle, url: String) -> Result<(), String> {
         .map_err(|_| "Could not open the system browser".into())
 }
 
+#[tauri::command]
+fn open_feedback_email(app: tauri::AppHandle, url: String) -> Result<(), String> {
+    let draft = feedback_email_url(&url)?;
+    app.opener()
+        .open_url(draft.as_str(), None::<&str>)
+        .map_err(|_| "Could not open mail app".into())
+}
+
+fn feedback_email_url(url: &str) -> Result<Url, String> {
+    let draft = Url::parse(url).map_err(|_| "Invalid email draft")?;
+    let recipient = draft.path();
+    if draft.scheme() != "mailto"
+        || draft.host().is_some()
+        || draft.fragment().is_some()
+        || url.len() > 32000
+        || recipient.split('@').count() != 2
+        || !recipient
+            .bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b".+_-@".contains(&b))
+        || draft
+            .query_pairs()
+            .any(|(k, v)| !(k == "body" || k == "subject" && !v.chars().any(char::is_control)))
+    {
+        return Err("Invalid email draft".into());
+    }
+    Ok(draft)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -92,6 +120,8 @@ pub fn run() {
         )
         .invoke_handler(tauri::generate_handler![
             open_external,
+            open_feedback_email,
+            mastodon_login::mastodon_feedback,
             bluesky::bluesky_login,
             bluesky::bluesky_request,
             misskey::misskey_login,
@@ -186,6 +216,22 @@ mod tests {
             assert!(external_url(value).is_err(), "{value}");
         }
         assert!(external_url("https://example.com/article?q=1#section").is_ok());
+    }
+
+    #[test]
+    fn feedback_email_accepts_one_recipient_and_draft_fields() {
+        assert!(
+            feedback_email_url("mailto:team@example.org?subject=Bug&body=Line%201%0ALine%202")
+                .is_ok()
+        );
+        for url in [
+            "https://example.org",
+            "mailto:one@example.org,two@example.org",
+            "mailto:one@example.org?bcc=two@example.org",
+            "mailto:one@example.org?subject=x%0D%0Ay",
+        ] {
+            assert!(feedback_email_url(url).is_err());
+        }
     }
 
     #[test]

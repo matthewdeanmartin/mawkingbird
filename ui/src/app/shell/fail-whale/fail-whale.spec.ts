@@ -11,12 +11,13 @@ import { FailWhale } from './fail-whale';
 describe('FailWhale', () => {
   let httpMock: HttpTestingController;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [FailWhale],
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
+    await TestBed.compileComponents();
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -37,7 +38,7 @@ describe('FailWhale', () => {
     // Scoped to the action row: the diagnostics box has its own (always-present)
     // link to the connection doctor, which is not a status-page link.
     expect(el.querySelector('.actions a')).toBeNull();
-    expect(el.textContent).not.toContain('Report this');
+    expect(el.querySelector('.actions')?.textContent).toContain('Report this problem');
     expect(el.querySelector('app-bug-report-dialog')).toBeNull();
   });
 

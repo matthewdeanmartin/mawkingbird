@@ -60,7 +60,23 @@ combined tree; S5–S6 proposed.
   post-history subset (206 files, 2,405 tests), then the Watch spec rerun
   (22 tests). Plus `cargo test --lib sponsorblock`, lint, `check:static`,
   `check:i18n`, the deep-link audit (0 broken) and the reconciled inventory.
-- Pair B gates: below.
+- Pair B gates (2026-11-18, combined S3+S4 tree, cheapest first):
+  - `check:static` and the inventory check: **green**.
+  - `make test`: **all 10,440 tests passed**. The manifest guard listed 3
+    renamed tests, all S4's: the Plus-copy, hand-off and empty-queue tests,
+    each replaced by owner-requested behavior. Accepted: 10,440 present,
+    0 added, 0 missing.
+  - `build:mockingbird`: **green**. Initial bundle 922.59 kB (+0.9 kB over
+    pair A: the post-history video hook and the transport tokens), a 900 kB
+    warning, under the 1 MB error.
+  - `make design-verify`: the first run stopped on markdown formatting in
+    `06-consolidation.md`. Then `video-feeds.browser.mjs` still asserted the
+    old header buttons (Main feed); it now asserts the Toolbar. Rerun:
+    **green**, 463 tests.
+  - `make test-deep-links-browser` (new public channel route): **green**.
+  - Native `check-host`, `test-host` (95), `frontend` (from this checkout) and
+    `smoke-frontend`: **green**.
+  - Not run: SEO (no indexable page changed) and `test-integration`.
 
 ### S3 evidence (2026-11-18)
 

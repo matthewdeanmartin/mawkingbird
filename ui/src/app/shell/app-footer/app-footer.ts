@@ -24,7 +24,7 @@ import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
 // i18n footer.server: Server
 // i18n footer.source: Source
 // i18n footer.license: MIT License
-// i18n footer.reportBug: Report a bug
+// i18n footer.reportBug: Feedback
 // i18n footer.privacy: Privacy
 // i18n footer.legal: About & legal
 // i18n footer.features: Discover

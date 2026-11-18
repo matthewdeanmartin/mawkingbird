@@ -2,54 +2,226 @@
   [title]="'bugReport.title' | transloco"
   [description]="'bugReport.intro' | transloco"
   [closeLabel]="'bugReport.close' | transloco"
+  [busy]="busy()"
   [showClose]="false"
   [closeOnBackdrop]="true"
   (dismissed)="closed.emit()"
 >
   <div class="report-fields">
-    <mb-field [label]="'bugReport.whatHappened' | transloco">
+    <mb-field [label]="'feedback.kind' | transloco">
+      <select
+        mbControl
+        [disabled]="busy()"
+        [ngModel]="kind()"
+        (ngModelChange)="kind.set($event); result.set(''); cc.set(false); poll.set(false)"
+      >
+        @for (option of kinds; track option) {
+          <option [value]="option">{{ 'feedback.' + option | transloco }}</option>
+        }
+      </select>
+    </mb-field>
+    <mb-field
+      [label]="
+        (kind() === 'bug'
+          ? 'bugReport.whatHappened'
+          : kind() === 'feature'
+            ? 'feedback.featurePrompt'
+            : 'feedback.details'
+        ) | transloco
+      "
+    >
       <textarea
         mbControl
         rows="4"
-        [placeholder]="'bugReport.descriptionPlaceholder' | transloco"
+        [disabled]="busy()"
         [ngModel]="description()"
         (ngModelChange)="description.set($event)"
       ></textarea>
     </mb-field>
-    @if (hasErrors()) {
-      <mb-checkbox
-        [label]="
-          (errorLog.entries().length === 1
-            ? 'bugReport.includeErrors.one'
-            : 'bugReport.includeErrors.other'
-          ) | transloco: { count: errorLog.entries().length }
-        "
-        [checked]="includeErrors()"
-        (checkedChange)="includeErrors.set($event)"
-      />
+    @if (destinations().length > 1) {
+      <mb-field [label]="'feedback.destination' | transloco">
+        <select
+          mbControl
+          [disabled]="busy()"
+          [ngModel]="destination()"
+          (ngModelChange)="destination.set($event); result.set('')"
+        >
+          @for (option of destinations(); track option) {
+            <option [value]="option">
+              {{
+                'feedback.' +
+                  (security() && option === 'github'
+                    ? 'advisory'
+                    : security() && option === 'social'
+                      ? 'direct'
+                      : option) | transloco
+              }}
+            </option>
+          }
+        </select>
+      </mb-field>
     }
-    @if (hasDiagnostics()) {
-      <mb-checkbox
-        [label]="'bugReport.includeDiagnostics' | transloco"
-        [checked]="includeDiagnostics()"
-        (checkedChange)="includeDiagnostics.set($event)"
-      />
+    @if (destination() === 'social') {
+      @if (security()) {
+        <p>{{ 'feedback.directHint' | transloco }}</p>
+      }
+      @if (!security() && targets.maintainer && targets.maintainer !== targets.account) {
+        <mb-checkbox
+          [label]="'feedback.cc' | transloco: { handle: targets.maintainer }"
+          [disabled]="busy()"
+          [checked]="cc()"
+          (checkedChange)="cc.set($event)"
+        />
+      }
+      @if (kind() === 'feature' && canPost()) {
+        <mb-checkbox
+          [label]="'feedback.poll' | transloco"
+          [disabled]="busy() || !maxPoll()"
+          [checked]="pollEnabled()"
+          (checkedChange)="poll.set($event)"
+        />
+        @if (pollEnabled()) {
+          <p>
+            {{
+              'feedback.pollHint'
+                | transloco: { seconds: maxPoll(), answers: pollAnswers().join(' / ') }
+            }}
+          </p>
+        }
+        @if (!maxPoll()) {
+          <p>{{ 'feedback.noPoll' | transloco }}</p>
+        }
+      }
+      @if (canPost()) {
+        <p>
+          {{ 'feedback.from' | transloco: { account: auth.account()?.acct } }} · {{ length() }} /
+          {{ maxLength() }}
+        </p>
+      } @else {
+        <p>{{ 'feedback.signIn' | transloco }}</p>
+      }
+      @if (extraMention()) {
+        <p role="alert">{{ 'feedback.extraMention' | transloco }}</p>
+      }
+      <pre class="preview">{{ message() }}</pre>
     }
-    <mb-disclosure
-      [label]="(showDetails() ? 'bugReport.toggle.hide' : 'bugReport.toggle.show') | transloco"
-      [expanded]="showDetails()"
-      (expandedChange)="showDetails.set($event)"
-    >
-      <pre class="preview">{{ preview() }}</pre>
-    </mb-disclosure>
+    @if (destination() === 'email') {
+      <p>{{ 'feedback.mailTo' | transloco: { address: targets.email } }}</p>
+    }
+    @if (destination() === 'email' && emailNeedsCopy()) {
+      <p>{{ 'feedback.mailCopy' | transloco }}</p>
+    }
+    @if (security() && destination() === 'github') {
+      <p>{{ 'feedback.securityHint' | transloco }}</p>
+    }
+    @if (destination() === 'copy') {
+      <p>{{ 'feedback.available' | transloco }}</p>
+    }
+    @if (kind() === 'bug' && destination() !== 'social') {
+      <mb-checkbox
+        [label]="'feedback.environment' | transloco"
+        [checked]="includeEnvironment()"
+        (checkedChange)="includeEnvironment.set($event)"
+      />
+      @if (hasErrors()) {
+        <mb-checkbox
+          [label]="
+            (errorLog.entries().length === 1
+              ? 'bugReport.includeErrors.one'
+              : 'bugReport.includeErrors.other'
+            ) | transloco: { count: errorLog.entries().length }
+          "
+          [checked]="includeErrors()"
+          (checkedChange)="includeErrors.set($event)"
+        />
+      }
+      @if (hasDiagnostics()) {
+        <mb-checkbox
+          [label]="'bugReport.includeDiagnostics' | transloco"
+          [checked]="includeDiagnostics()"
+          (checkedChange)="includeDiagnostics.set($event)"
+        />
+      }
+    }
+    @if (destination() !== 'social') {
+      <mb-disclosure
+        [label]="(showDetails() ? 'bugReport.toggle.hide' : 'bugReport.toggle.show') | transloco"
+        [expanded]="showDetails()"
+        (expandedChange)="showDetails.set($event)"
+      >
+        <pre class="preview">{{ preview() }}</pre>
+      </mb-disclosure>
+    }
+    @if (externalUrl() && destinations().length > 1) {
+      <p>{{ 'feedback.handoff' | transloco }}</p>
+    }
+    @if (!security() && handoff() && destination() === 'github' && targets.account) {
+      <button mbButton variant="outline" type="button" (click)="destination.set('social')">
+        {{ 'feedback.alsoSocial' | transloco }}
+      </button>
+    }
+    @if (
+      !security() &&
+      result() === 'feedback.sent' &&
+      destination() === 'social' &&
+      targets.repository
+    ) {
+      <button
+        mbButton
+        variant="outline"
+        type="button"
+        (click)="destination.set('github'); result.set('')"
+      >
+        {{ 'feedback.alsoGithub' | transloco }}
+      </button>
+    }
+    @if (result()) {
+      <p role="status">{{ result() | transloco }}</p>
+    }
   </div>
-  <button mbDialogActions mbButton variant="outline" type="button" (click)="closed.emit()">
+  <button
+    mbDialogActions
+    mbButton
+    variant="outline"
+    type="button"
+    [disabled]="busy()"
+    (click)="closed.emit()"
+  >
     {{ 'bugReport.close' | transloco }}
   </button>
-  <button mbDialogActions mbButton variant="outline" type="button" (click)="copy()">
+  <button
+    mbDialogActions
+    mbButton
+    variant="outline"
+    type="button"
+    [disabled]="extraMention() && destination() === 'social'"
+    (click)="copy()"
+  >
     {{ (copied() ? 'bugReport.copied' : 'bugReport.copyReport') | transloco }}
   </button>
-  <button mbDialogActions mbButton type="button" (click)="openGithub()">
-    {{ 'bugReport.openGithubIssue' | transloco }}
-  </button>
+  @if (externalUrl(); as url) {
+    <a
+      mbDialogActions
+      mbButton
+      (click)="handoff.set(true)"
+      (feedbackopened)="handoff.set(true)"
+      [href]="url"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {{
+        (destination() === 'email'
+          ? 'feedback.emailAction'
+          : security()
+            ? 'feedback.openSecurity'
+            : 'bugReport.openGithubIssue'
+        ) | transloco
+      }}
+    </a>
+  }
+  @if (destination() === 'social' && canPost()) {
+    <button mbDialogActions mbButton type="button" [disabled]="!postable()" (click)="post()">
+      {{ (busy() ? 'feedback.sending' : 'feedback.send') | transloco }}
+    </button>
+  }
 </mb-dialog>

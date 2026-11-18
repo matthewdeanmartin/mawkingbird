@@ -615,7 +615,7 @@ export interface InstanceInfo {
   thumbnail: { url: string | null };
   contact: { email: string; account: Account | null };
   rules: InstanceRule[];
-  configuration?: { statuses?: { max_characters?: number } };
+  configuration?: { statuses?: { max_characters?: number }; polls?: { max_expiration?: number } };
 }
 
 /** A trending preview card (`GET /api/v1/trends/links`). */

@@ -25,12 +25,21 @@ for (const theme of ["light", "dark"]) {
       "border-radius",
       "8px",
     );
-    await expect(feed.locator("header button")).toHaveText([
-      "Customize",
-      "Refresh",
-      "Main feed",
+    // One toolbar: which videos (pressed), then the page's actions.
+    const toolbar = feed.getByRole("toolbar", { name: "Subscriptions feed" });
+    await expect(toolbar.getByRole("button")).toHaveText([
+      "All videos",
       "Saved videos",
+      "Shorts",
+      "↻ Refresh",
+      "Customize",
     ]);
+    await expect(
+      toolbar.getByRole("button", { name: "All videos" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    await expect(
+      toolbar.getByRole("button", { name: "Shorts" }),
+    ).toHaveAttribute("aria-pressed", "false");
     await page
       .getByRole("button", { name: "About video subscriptions", exact: true })
       .click();
@@ -58,7 +67,7 @@ for (const theme of ["light", "dark"]) {
       .getByRole("button", { name: "Saved videos", exact: true })
       .click();
     await expect(feed.locator(".video-post")).toHaveCount(1);
-    await feed.getByRole("button", { name: "Main feed", exact: true }).click();
+    await feed.getByRole("button", { name: "All videos", exact: true }).click();
     await expect(feed.locator(".video-post")).toHaveCount(2);
     await card
       .getByRole("button", { name: "Post Response", exact: true })

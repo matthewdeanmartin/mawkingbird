@@ -18,6 +18,8 @@ const MAX_BODY_LEN = 6_000;
 /** Everything a report can carry. `description` is the user's; the rest is auto. */
 export interface BugReportInput {
   description: string;
+  category?: string;
+  includeEnvironment?: boolean;
   includeErrors: boolean;
   includeDiagnostics?: boolean;
 }
@@ -34,8 +36,10 @@ export class BugReport {
     const description = input.description.trim() || '_(no description provided)_';
 
     const sections = [
-      `### What happened\n\n${description}`,
-      `### Environment\n\n${this.environmentTable()}`,
+      `### ${input.category ?? 'What happened'}\n\n${description}`,
+      ...(input.includeEnvironment === false
+        ? []
+        : [`### Environment\n\n${this.environmentTable()}`]),
     ];
 
     if (input.includeErrors) {
@@ -64,7 +68,7 @@ export class BugReport {
   buildTitle(input: BugReportInput): string {
     const first = input.description.trim().split('\n')[0]?.trim() ?? '';
     const short = first.length > 72 ? `${first.slice(0, 69)}…` : first;
-    return short ? `Bug: ${short}` : 'Bug report';
+    return short ? `${input.category ?? 'Bug'}: ${short}` : (input.category ?? 'Bug report');
   }
 
   /**
@@ -72,7 +76,7 @@ export class BugReport {
    * still reviews and submits on GitHub — nothing is filed automatically. Body
    * is truncated if the URL would get too long for GitHub to accept.
    */
-  buildGithubUrl(input: BugReportInput): string {
+  buildGithubUrl(input: BugReportInput, repository = REPO): string {
     const title = this.buildTitle(input);
     let body = this.buildMarkdown(input);
     if (body.length > MAX_BODY_LEN) {
@@ -80,8 +84,18 @@ export class BugReport {
         body.slice(0, MAX_BODY_LEN) +
         '\n\n_…truncated for the URL. Paste the full report from your clipboard if needed._';
     }
-    const params = new URLSearchParams({ title, body });
-    return `https://github.com/${REPO}/issues/new?${params.toString()}`;
+    const url = new URL(`https://github.com/${repository}/issues/new`);
+    url.searchParams.set('title', title);
+    url.searchParams.set('body', body);
+    // Account for UTF-8 percent encoding when the report contains non-ASCII text.
+    while (body.length > 0 && url.href.length > 8000) {
+      body = body.slice(0, Math.floor(body.length / 2));
+      url.searchParams.set(
+        'body',
+        body + '\n\n_…truncated for the URL. Copy the full report if needed._',
+      );
+    }
+    return url.href;
   }
 
   private environmentTable(): string {

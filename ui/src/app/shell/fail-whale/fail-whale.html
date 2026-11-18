@@ -31,6 +31,17 @@
     <button class="btn" type="button" [disabled]="health.checking()" (click)="retry()">
       {{ (health.checking() ? 'failWhale.checking' : 'failWhale.tryAgain') | transloco }}
     </button>
+    <button type="button" mbButton variant="outline" (click)="reporting.set(true)">
+      {{ 'feedback.retry' | transloco }}
+    </button>
+    @defer (when reporting()) {
+      @if (reporting()) {
+        <app-bug-report-dialog
+          [initialDescription]="'failWhale.cantReachServer' | transloco"
+          (closed)="reporting.set(false)"
+        />
+      }
+    }
     @if (canSwitchAccount()) {
       <button class="btn btn-outline" type="button" (click)="switchAccount()">
         {{ 'failWhale.switchAccount' | transloco }}

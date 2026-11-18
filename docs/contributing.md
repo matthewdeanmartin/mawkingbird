@@ -1,12 +1,19 @@
-# Report a bug or contribute to Mawkingbird
+# Send feedback or contribute to Mawkingbird
 
-Found a bug in Mawkingbird or want a feature? Open an issue in the
-[Mawkingbird repository](https://github.com/matthewdeanmartin/mawkingbird) on
-GitHub. Mawkingbird is open source, so you can also fix guides or send code.
+[Open the feedback form](https://mawkingbird.com/feedback) to report a bug, suggest a feature,
+or send accessibility, translation, or documentation feedback. You can also open it from the
+feed footer, Development settings, and the server error screen.
 
-For a bug report, include the page, steps to reproduce, expected behavior,
-browser, and build commit shown in the app. Remove tokens and private account
-data from screenshots and logs.
+Choose a public GitHub issue (requires a GitHub account), a Mastodon mention, or email.
+After using one channel, return to the form and change the destination to reuse your draft.
+For feature requests on Mastodon, you can attach a Yes/No poll using your server’s maximum duration.
+To contribute to an existing report, [browse open issues](https://github.com/matthewdeanmartin/mawkingbird/issues).
+
+Choose **Security or privacy** for a private report. The official project accepts
+[private security reports](https://github.com/matthewdeanmartin/mawkingbird/security/advisories/new),
+[email](mailto:matthewdeanmartin@gmail.com), and mentioned-accounts-only Mastodon messages.
+Mastodon server administrators can potentially read direct messages. Review any diagnostics
+you choose to include before sharing.
 
 ## Get the client running
 

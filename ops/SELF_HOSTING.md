@@ -186,3 +186,19 @@ Mawkingbird Native runs on the reader's computer and needs no hosting. It
 calls none of mawkingbird.com's services (no Plus, no proxy, no analytics) and
 reads feeds, including YouTube channels, directly. Its releases are described
 in [NATIVE_RELEASE.md](NATIVE_RELEASE.md).
+
+## Feedback destinations
+
+Only the exact web hostname `mawkingbird.com` and Native builds from the official repository use
+the project contacts automatically. Other builds offer clipboard feedback until configured.
+For a Native build, set `MAWKINGBIRD_FEEDBACK_TARGETS` to a JSON object. For an Angular web
+build, pass the same object as the Angular CLI definition `--define 'FEEDBACK_TARGETS={...}'`.
+
+Example configuration for a fork:
+
+```json
+{"repository":"owner/repository","account":"@project@example.org","maintainer":"@owner@example.org","email":"feedback@example.org","securityUrl":"https://github.com/owner/repository/security/advisories/new"}
+```
+
+Omit unsupported destinations. Supply a verified private intake URL for `securityUrl`.
+The optional maintainer mention applies to public Mastodon feedback.

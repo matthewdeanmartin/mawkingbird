@@ -19,6 +19,8 @@ import {
   BugReport,
   type BugReportInput,
 } from "../../ui/src/app/platform/diagnostics/bug-report";
+import { feedbackTargets } from "../../ui/src/app/platform/diagnostics/feedback-targets";
+import { Server } from "../../ui/src/app/platform/http/server";
 import { ErrorLog } from "../../ui/src/app/platform/diagnostics/error-log";
 import { DiagnosticLog } from "../../ui/src/app/platform/diagnostics/diagnostic-log";
 import { PageDiagnostics } from "../../ui/src/app/platform/diagnostics/page-diagnostics";
@@ -131,6 +133,20 @@ export default {
     applicationConfig({
       providers: [
         DialogFixtures,
+        {
+          provide: Server,
+          useValue: { isMock: false, baseUrl: signal("https://example.org") },
+        },
+        {
+          provide: feedbackTargets,
+          useValue: {
+            repository: "fixture/fixture",
+            securityUrl: "https://example.org/private",
+            account: "@project@example.org",
+            maintainer: "@owner@example.org",
+            email: "team@example.org",
+          },
+        },
         importProvidersFrom(translocoTesting()),
         {
           provide: ErrorLog,
@@ -159,10 +175,18 @@ export default {
               ]
                 .filter(Boolean)
                 .join("\n"),
-            buildGithubUrl: () => "about:blank",
+            buildGithubUrl: () => "https://example.org/issues/new",
           },
         },
-        { provide: Auth, useValue: { isAnonymous: false } },
+        {
+          provide: Auth,
+          useValue: {
+            isAnonymous: false,
+            kind: signal("mastodon"),
+            token: signal("fixture"),
+            account: signal({ id: "fixture", acct: "person" }),
+          },
+        },
         ...[
           AnonymousAccount,
           AnonymousFollows,
@@ -172,6 +196,28 @@ export default {
         {
           provide: Api,
           useValue: {
+            postStatus: (
+              message: string,
+              options: { visibility: string; poll?: { expiresIn: number } },
+            ) => {
+              if (
+                options.visibility === "direct" &&
+                message === "@project@example.org sensitive detail" &&
+                !options.poll
+              )
+                return of({ id: "private" });
+              if (
+                options.visibility === "public" &&
+                options.poll?.expiresIn === 604800 &&
+                message.includes("@owner@example.org")
+              )
+                return of({ id: "idea" });
+              return throwError(
+                () => new Error("Unexpected recipients, visibility or poll"),
+              );
+            },
+            instanceInfo: () =>
+              of({ configuration: { polls: { max_expiration: 604800 } } }),
             search: (handle: string) =>
               of({
                 accounts: handle === "missing" ? [] : [{ id: handle }],

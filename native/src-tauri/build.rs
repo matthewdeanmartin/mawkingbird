@@ -3,6 +3,8 @@ fn main() {
     tauri_build::try_build(tauri_build::Attributes::new().app_manifest(
         tauri_build::AppManifest::new().commands(&[
             "open_external",
+            "open_feedback_email",
+            "mastodon_feedback",
             "bluesky_login",
             "bluesky_request",
             "misskey_login",

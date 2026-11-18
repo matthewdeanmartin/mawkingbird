@@ -1,3 +1,4 @@
+import { feedbackDefinition } from './feedback-build.mjs';
 import { execFileSync } from 'node:child_process';
 import { existsSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -17,6 +18,7 @@ const git = (...args) => execFileSync('git', ['-C', source, ...args], { encoding
 const revision = git('rev-parse', 'HEAD').trim();
 const dirty = Boolean(git('status', '--porcelain').trim());
 execFileSync(process.execPath, [cli, 'build', '--configuration', 'mockingbird,native',
+  '--define', feedbackDefinition(source),
   '--output-path', join(root, '.frontend')], { cwd: ui, stdio: 'inherit' });
 writeFileSync(join(root, '.frontend/provenance.json'), JSON.stringify({
   developmentOnly: true, source, revision, dirty,

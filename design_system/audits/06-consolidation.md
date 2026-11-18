@@ -2898,3 +2898,7 @@ filesScanned from 1977 to 1980; candidates stay at 677.
   existing link buttons.
 
 Reconciliation notes are updated for all three files.
+
+The feedback dialog uses the shared field and control for its category, destination and
+message, checkboxes for optional recipients, diagnostics and polls, and a disclosure
+for the report preview. The server error and diagnostics entry points use shared buttons.

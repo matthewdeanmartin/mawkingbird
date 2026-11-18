@@ -36,6 +36,8 @@ test("report fields, disclosure, Escape and focus restoration", async ({
     .fill("Fixture reproduction");
   await dialog.locator("summary").click();
   await expect(dialog.locator("pre")).toContainText("Fixture reproduction");
+  await expect(dialog.locator("pre")).not.toContainText("Fixture error");
+  await dialog.getByRole("checkbox", { name: /most recent error/ }).check();
   await expect(dialog.locator("pre")).toContainText("Fixture error");
   await dialog.getByRole("checkbox", { name: /most recent error/ }).uncheck();
   await expect(dialog.locator("pre")).not.toContainText("Fixture error");
@@ -88,6 +90,53 @@ test("bulk planning can stop and retry; only explicit confirmation confirms", as
   await expect(page.getByRole("status")).toContainText("Confirmed: 1");
 });
 
+test("security switches to private recipients and preserves the draft", async ({
+  page,
+}) => {
+  await page.getByRole("button", { name: "Report a bug", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByRole("textbox").fill("sensitive detail");
+  await dialog.getByLabel("Feedback type").selectOption("security");
+  await expect(
+    dialog.getByRole("link", { name: "Open private reporting page" }),
+  ).toHaveAttribute("href", "https://example.org/private");
+  await dialog.getByLabel("Send feedback via").selectOption("email");
+  await expect(
+    dialog.getByRole("link", { name: "Open email draft" }),
+  ).not.toHaveAttribute("href", /sensitive/);
+  await dialog.getByLabel("Send feedback via").selectOption("social");
+  await expect(dialog.getByText(/Also mention/)).toHaveCount(0);
+  await dialog.getByRole("textbox").fill("sensitive detail @someone");
+  await expect(
+    dialog.getByRole("button", { name: "Post on Mastodon" }),
+  ).toBeDisabled();
+  await dialog.getByRole("textbox").fill("sensitive detail");
+  await dialog.getByRole("button", { name: "Post on Mastodon" }).click();
+  await expect(
+    dialog.getByRole("status").filter({ hasText: "Posted." }),
+  ).toBeVisible();
+});
+
+test("feature poll uses the server maximum and offers GitHub afterward", async ({
+  page,
+}) => {
+  await page.getByRole("button", { name: "Report a bug", exact: true }).click();
+  const dialog = page.getByRole("dialog");
+  await dialog.getByLabel("Feedback type").selectOption("feature");
+  await dialog.getByRole("textbox").fill("Calendar view");
+  await dialog.getByLabel("Send feedback via").selectOption("social");
+  await dialog.getByRole("checkbox", { name: /Also mention/ }).check();
+  await dialog.getByRole("checkbox", { name: /Add a poll/ }).check();
+  await dialog.getByRole("button", { name: "Post on Mastodon" }).click();
+  await dialog
+    .getByRole("button", { name: "Also file a GitHub issue" })
+    .click();
+  await expect(dialog.getByRole("textbox")).toHaveValue("Calendar view");
+  await expect(
+    dialog.getByRole("link", { name: "Open GitHub issue" }),
+  ).toBeVisible();
+});
+
 for (const theme of ["light", "dark"]) {
   test(`narrow ${theme} dialog stays within viewport and traps focus`, async ({
     page,
@@ -107,11 +156,11 @@ for (const theme of ["light", "dark"]) {
         (element) => element.scrollWidth <= element.clientWidth,
       ),
     ).toBe(true);
-    const first = dialog.getByRole("textbox");
+    const first = dialog.getByRole("combobox").first();
     await first.focus();
     await page.keyboard.press("Shift+Tab");
     await expect(
-      dialog.getByRole("button", { name: "Open GitHub issue" }),
+      dialog.getByRole("link", { name: "Open GitHub issue" }),
     ).toBeFocused();
     await page.keyboard.press("Tab");
     await expect(first).toBeFocused();

@@ -515,6 +515,12 @@ export const routes: Routes = [
       import('./accounts/sign-in/account-picker/account-picker').then((m) => m.AccountPicker),
   },
   {
+    path: 'feedback',
+    title: 'Feedback',
+    loadComponent: () =>
+      import('./shell/bug-report-dialog/feedback-page').then((m) => m.FeedbackPage),
+  },
+  {
     path: 'fail-whale',
     title: 'Something went wrong',
     loadComponent: () =>

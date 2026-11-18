@@ -7,6 +7,8 @@
   ],
   "permissions": [
     "allow-open-external",
+    "allow-open-feedback-email",
+    "allow-mastodon-feedback",
     "allow-public-mastodon-get",
     "allow-public-feed-get",
     "allow-public-article-get",
