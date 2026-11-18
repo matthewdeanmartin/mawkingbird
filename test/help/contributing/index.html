@@ -366,9 +366,11 @@ uv run --no-project --with-requirements docs/requirements.txt mkdocs build --str
 they are separate builds. For a documentation-only change, validate the docs
 build and relevant links; there is no need to rebuild the Angular test suite.</p>
 <h2 id="related-services-and-self-hosting">Related services and self-hosting<a class="headerlink" href="#related-services-and-self-hosting" title="Link to this section">#</a></h2>
-<p>The <a href="https://github.com/matthewdeanmartin/mawkingbird_cors_proxy" rel="noopener">CORS proxy repository</a>
-owns proxy development and deployment instructions. Follow its README for
-self-hosting rather than looking for a backend in this client repository.
+<p>The app is static and can be hosted anywhere; see
+<a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/SELF_HOSTING.md" rel="noopener">Run your own copy</a>.
+The CORS proxy, account and profile services behind mawkingbird.com are
+separate repositories that run the official site. They aren't packaged for
+self-hosting, and a copy hosted elsewhere doesn't use them.
 The <a href="https://github.com/matthewdeanmartin/mastodon_mock" rel="noopener">mock server</a> remains a
 separate project for stateful Mastodon API testing.</p>
 <h2 id="publishing-changes">Publishing changes<a class="headerlink" href="#publishing-changes" title="Link to this section">#</a></h2>
@@ -382,9 +384,10 @@ three deployments now belong to this repository's <code>gh-pages</code> branch. 
 hrefs, OAuth metadata, and the shared 404 fallback consistent. Do not publish a
 <code>/mawkingbird/</code> mirror build over the custom-domain root.</p>
 <p>The old github.io address currently redirects to the custom domain; it is not
-an independent fallback. See the current
-<a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/DEPLOY.md" rel="noopener">deployment runbook</a>
-before changing hosting. The
+an independent fallback. See the
+<a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/DEPLOY.md" rel="noopener">mawkingbird.com deployment runbook</a>
+before changing the official site's hosting. To publish your own copy instead,
+see <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/SELF_HOSTING.md" rel="noopener">Run your own copy</a>. The
 <a href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/spec/history/MIGRATION.md" rel="noopener">migration record</a>
 retains the old topology as historical context.</p>
 </article>
