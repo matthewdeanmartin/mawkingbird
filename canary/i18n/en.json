@@ -9455,6 +9455,7 @@
     "searching": "Searching…",
     "start": "Search fediverse posts and YouTube for video",
     "startHint": "Words are searched as hashtags across the fediverse; YouTube search comes with Mawkingbird Plus.",
+    "startHintYoutube": "Words are searched as hashtags across the fediverse and on YouTube.",
     "submit": "Search",
     "subscribe": "Subscribe",
     "subscribed": "Subscribed",
