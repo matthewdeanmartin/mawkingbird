@@ -1,0 +1,10 @@
+/* Apply the same reading size on mawkingbird.com and Read the Docs. */
+img.help-screenshot {
+  display: block;
+  width: auto;
+  max-width: min(100%, 32rem);
+  max-height: 22rem;
+  height: auto;
+  margin: 1rem 0;
+  object-fit: contain;
+}

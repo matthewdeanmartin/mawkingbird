@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://mawkingbird.com/help/</loc><lastmod>2026-11-12</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/start/welcome/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/start/look-around/</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/start/sign-in/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/start/sign-in-mastodon/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/start/sign-in-bluesky/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/start/first-ten-minutes/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/start/screen-tour/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/mastodon/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/start/sign-in-mastodon/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://mawkingbird.com/help/new-to-mastodon/what-is-mastodon/</loc><lastmod>2026-10-28</lastmod></url>
   <url><loc>https://mawkingbird.com/help/new-to-mastodon/choose-a-server/</loc><lastmod>2026-10-26</lastmod></url>
   <url><loc>https://mawkingbird.com/help/new-to-mastodon/create-an-account/</loc><lastmod>2026-11-02</lastmod></url>
@@ -15,9 +10,38 @@
   <url><loc>https://mawkingbird.com/help/new-to-mastodon/customs/</loc><lastmod>2026-10-26</lastmod></url>
   <url><loc>https://mawkingbird.com/help/new-to-mastodon/from-bluesky/</loc><lastmod>2026-11-12</lastmod></url>
   <url><loc>https://mawkingbird.com/help/new-to-mastodon/bluesky-bridge/</loc><lastmod>2026-11-12</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/reading/home-feed/</loc><lastmod>2026-11-03</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/reading/forum/</loc><lastmod>2026-10-27</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/posting/mastodon-limits/</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/finding-people/mastodon-hashtags/</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/connections/mastodon/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/bluesky/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/start/sign-in-bluesky/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/connections/bluesky/</loc><lastmod>2026-11-03</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/blog/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/blog/write/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/connections/blogs/</loc><lastmod>2026-10-31</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/connections/blogger/</loc><lastmod>2026-10-31</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/connections/mataroa/</loc><lastmod>2026-10-31</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/connections/hugo/</loc><lastmod>2026-10-31</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/radio/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/radio/playlists/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/unbird/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/unbird/people/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/rss/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/finding-people/rss-discovery/</loc><lastmod>2026-11-12</lastmod></url>
   <url><loc>https://mawkingbird.com/help/reading/mastodon-bluesky-rss/</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/video/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/connections/video-feeds/</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/reading/forum/</loc><lastmod>2026-10-27</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/tools/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/posting/schedule/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/finding-people/contacts/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/finding-people/import-follow-list/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/start/welcome/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/start/look-around/</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/start/sign-in/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/start/first-ten-minutes/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/start/screen-tour/</loc><lastmod>2026-08-30</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/reading/home-feed/</loc><lastmod>2026-11-03</lastmod></url>
   <url><loc>https://mawkingbird.com/help/finding-people/find-people/</loc><lastmod>2026-11-07</lastmod></url>
   <url><loc>https://mawkingbird.com/help/finding-people/starter-kits/</loc><lastmod>2026-11-07</lastmod></url>
   <url><loc>https://mawkingbird.com/help/finding-people/collections/</loc><lastmod>2026-08-30</lastmod></url>
@@ -26,12 +50,7 @@
   <url><loc>https://mawkingbird.com/help/finding-people/profiles-handles/</loc><lastmod>2026-11-02</lastmod></url>
   <url><loc>https://mawkingbird.com/help/finding-people/follow-unfollow/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/finding-people/directories/</loc><lastmod>2026-11-11</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/finding-people/contacts/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/finding-people/import-follow-list/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/finding-people/rss-discovery/</loc><lastmod>2026-11-12</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/finding-people/mastodon-hashtags/</loc><lastmod>2026-11-12</lastmod></url>
   <url><loc>https://mawkingbird.com/help/posting/basic-post/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/posting/mastodon-limits/</loc><lastmod>2026-11-12</lastmod></url>
   <url><loc>https://mawkingbird.com/help/posting/visibility/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/posting/replies-mentions-quotes/</loc><lastmod>2026-11-03</lastmod></url>
   <url><loc>https://mawkingbird.com/help/posting/media/</loc><lastmod>2026-11-12</lastmod></url>
@@ -40,28 +59,20 @@
   <url><loc>https://mawkingbird.com/help/posting/content-warnings/</loc><lastmod>2026-11-02</lastmod></url>
   <url><loc>https://mawkingbird.com/help/posting/threads/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/posting/drafts/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/posting/schedule/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/posting/destinations/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://mawkingbird.com/help/posting/edit-delete/</loc><lastmod>2026-09-19</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/accounts/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/credentials/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/connections/mastodon/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/connections/bluesky/</loc><lastmod>2026-11-03</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/twitter/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/connections/video-feeds/</loc><lastmod>2026-11-08</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/github/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/raindrop/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/dropbox/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/openrouter/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/link-shorteners/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/connections/blogs/</loc><lastmod>2026-10-31</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/connections/blogger/</loc><lastmod>2026-10-31</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/connections/mataroa/</loc><lastmod>2026-10-31</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/connections/hugo/</loc><lastmod>2026-10-31</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/github-gist/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/connections/cors-proxy/</loc><lastmod>2026-10-11</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/connections/cors-proxy/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://mawkingbird.com/help/connections/connection-doctor/</loc><lastmod>2026-08-30</lastmod></url>
   <url><loc>https://mawkingbird.com/help/glossary/</loc><lastmod>2026-08-30</lastmod></url>
-  <url><loc>https://mawkingbird.com/help/contributing/</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://mawkingbird.com/help/contributing/</loc><lastmod>2026-11-17</lastmod></url>
 </urlset>
