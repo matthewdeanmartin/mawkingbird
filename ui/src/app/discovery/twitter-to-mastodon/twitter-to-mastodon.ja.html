@@ -16,6 +16,21 @@
     </p>
   </div>
 
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-unbird-landing [signedIn]="inShell">
+      <app-twitter-archive-import
+        [inviteLink]="inShell ? '/ja/twitter-to-mastodon/invite' : '/invites'"
+        [offerSignIn]="!inShell"
+        signInReturn="/ja/twitter-to-mastodon"
+      />
+      <app-twitter-import-next-steps [signedIn]="inShell" />
+    </app-unbird-landing>
+  } @placeholder {
+    <p class="muted">インポーターを読み込み中…</p>
+  }
+
   <ol class="steps">
     <li>
       <h2>Twitter のアーカイブをダウンロード</h2>
@@ -41,19 +56,6 @@
       </p>
     </li>
   </ol>
-
-  <!-- Deferred: prerendering shows the placeholder, and the importer's
-       services (session, storage, Mastodon API) load only in the browser. -->
-  @defer (on immediate) {
-    <app-twitter-archive-import
-      [inviteLink]="inShell ? '/ja/twitter-to-mastodon/invite' : '/invites'"
-      [offerSignIn]="!inShell"
-      signInReturn="/ja/twitter-to-mastodon"
-    />
-    <app-twitter-import-next-steps [signedIn]="inShell" />
-  } @placeholder {
-    <p class="muted">インポーターを読み込み中…</p>
-  }
 
   <section class="questions">
     <h2>よくある質問</h2>

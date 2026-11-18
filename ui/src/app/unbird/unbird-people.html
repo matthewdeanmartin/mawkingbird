@@ -1,0 +1,155 @@
+@if (matcher.archive()) {
+  <section class="summary" aria-live="polite">
+    <p class="big">
+      @if (matcher.found() > 0) {
+        {{
+          (matcher.found() === 1 ? 'unbird.people.found.one' : 'unbird.people.found.other')
+            | transloco: { count: fmt(matcher.found()) }
+        }}
+      } @else {
+        {{ 'unbird.people.foundNone' | transloco }}
+      }
+    </p>
+    <div class="meter" aria-hidden="true">
+      <span
+        [style.width.%]="
+          matcher.searchable().length ? (100 * matcher.searched()) / matcher.searchable().length : 0
+        "
+      ></span>
+    </div>
+    <p class="muted">
+      {{
+        'unbird.people.progress'
+          | transloco
+            : { searched: fmt(matcher.searched()), total: fmt(matcher.searchable().length) }
+      }}
+      @if (matcher.running()) {
+        ·
+        @if (via() === 'public') {
+          {{ 'unbird.people.searchingVia' | transloco: { server: publicServer } }}
+        } @else {
+          {{ 'unbird.people.searchingHome' | transloco }}
+        }
+      }
+    </p>
+    <div class="controls">
+      @if (matcher.running()) {
+        <button mbButton variant="outline" type="button" (click)="matcher.stop()">
+          {{ 'unbird.people.stop' | transloco }}
+        </button>
+      } @else if (matcher.remaining() > 0) {
+        <button mbButton type="button" (click)="search()">
+          @if (matcher.searched() === 0) {
+            {{ 'unbird.people.start' | transloco }}
+          } @else {
+            {{
+              'unbird.people.keepLooking'
+                | transloco
+                  : {
+                      count: fmt(matcher.remaining() < firstPass ? matcher.remaining() : firstPass),
+                    }
+            }}
+          }
+        </button>
+      } @else {
+        <span class="muted">{{ 'unbird.people.allChecked' | transloco }}</span>
+      }
+      @if (via() === 'account' && unfollowedLikely().length > 1 && !matcher.running()) {
+        <button mbButton variant="outline" type="button" (click)="followAll()">
+          {{ 'unbird.people.followAll' | transloco: { count: unfollowedLikely().length } }}
+        </button>
+      }
+    </div>
+    @if (matcher.rateLimited()) {
+      <p class="notice" role="status">{{ 'unbird.people.rateLimited' | transloco }}</p>
+    }
+  </section>
+
+  @if (found().length) {
+    <ul class="people">
+      @for (entry of found(); track entry.match.acct) {
+        <li class="person">
+          <img class="avatar" [src]="entry.match.avatar" alt="" loading="lazy" />
+          <div class="body">
+            <div class="names">
+              <strong>{{ entry.match.displayName }}</strong>
+              <span class="acct">&#64;{{ entry.match.acct }}</span>
+              @if (entry.match.confidence === 'possible') {
+                <span class="tag">{{ 'unbird.people.maybe' | transloco }}</span>
+              }
+              @if (entry.match.bot) {
+                <span class="tag">{{ 'unbird.people.bot' | transloco }}</span>
+              }
+            </div>
+            <div class="chips">
+              @if (entry.person.currently_following) {
+                <span>{{ 'unbird.people.chip.following' | transloco }}</span>
+              }
+              @if (entry.person.mutual) {
+                <span>{{ 'unbird.people.chip.mutual' | transloco }}</span>
+              }
+              @if (entry.person.reply_count) {
+                <span>{{
+                  'unbird.people.chip.replies' | transloco: { count: entry.person.reply_count }
+                }}</span>
+              }
+              @if (entry.person.mention_count) {
+                <span>{{
+                  'unbird.people.chip.mentions' | transloco: { count: entry.person.mention_count }
+                }}</span>
+              }
+              <span class="signals" [title]="entry.match.signals.join(' · ')">
+                &#64;{{ entry.person.twitter_handle }}
+              </span>
+            </div>
+            @if (follows().get(entry.match.acct) === 'failed') {
+              <p class="error">{{ 'unbird.people.followFailed' | transloco }}</p>
+            }
+          </div>
+          <div class="action">
+            @if (via() === 'account') {
+              @switch (follows().get(entry.match.acct)) {
+                @case ('done') {
+                  <span class="done">{{ 'unbird.people.following' | transloco }}</span>
+                }
+                @default {
+                  <button
+                    mbButton
+                    size="small"
+                    type="button"
+                    [disabled]="follows().get(entry.match.acct) === 'busy'"
+                    (click)="follow(entry.match.acct)"
+                  >
+                    {{ 'unbird.people.follow' | transloco }}
+                  </button>
+                }
+              }
+            } @else {
+              <a
+                mbButton
+                variant="outline"
+                size="small"
+                [href]="entry.match.url"
+                target="_blank"
+                rel="noopener"
+              >
+                {{ 'unbird.people.view' | transloco }}
+              </a>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+  <div class="foot">
+    @if (noHandle() > 0) {
+      <p class="muted small">
+        {{ 'unbird.people.noHandle' | transloco: { count: fmt(noHandle()) } }}
+      </p>
+    }
+    <button mbButton variant="link" type="button" (click)="downloadCsv()">
+      {{ 'unbird.people.csv' | transloco }}
+    </button>
+  </div>
+}

@@ -43,6 +43,7 @@
  */
 
 import { corsProxyOrigin } from '../../../platform/build/build-flavor';
+import { canUseHostedProxy } from '../../../accounts/mawkingbird/mawkingbird-access';
 import { CorsProxyRoute } from '../../../connections/cors-proxy/cors-proxy-catalog';
 
 /**
@@ -410,8 +411,15 @@ const PROBE_TARGET_SPECS: readonly ProbeTargetSpec[] = [
  * "connectors fine, proxies blocked" rather than as a flat list of fifteen
  * hostnames.
  */
-export function probeTargets(translate: Translate): readonly ProbeTarget[] {
-  const base = PROBE_TARGET_SPECS.map((spec) => buildTarget(spec, translate));
+export function probeTargets(
+  translate: Translate,
+  hostedProxy: boolean = canUseHostedProxy(),
+): readonly ProbeTarget[] {
+  // A copy hosted elsewhere (or Native) cannot use the Mawkingbird proxy, so it
+  // neither probes it nor lists it: probing would only cost the Worker a request.
+  const base = PROBE_TARGET_SPECS.filter(
+    (spec) => hostedProxy || spec.id !== 'mawkingbird-proxy',
+  ).map((spec) => buildTarget(spec, translate));
   const publishing: ProbeTarget[] = PUBLISHING_ENDPOINTS.map((endpoint) => ({
     ...endpoint,
     host: new URL(endpoint.probeUrl).host,

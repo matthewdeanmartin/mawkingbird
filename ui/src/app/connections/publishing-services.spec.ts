@@ -27,4 +27,10 @@ describe('Publishing service coverage', () => {
       expect(target.probeUrl).not.toMatch(/api-create|create\.php|api\/new|pastepile/i);
     }
   });
+
+  it('lists the Mawkingbird proxy only where this copy may use it', () => {
+    const ids = (hosted: boolean) => probeTargets((key) => key, hosted).map((t) => t.id);
+    expect(ids(true)).toContain('mawkingbird-proxy');
+    expect(ids(false)).not.toContain('mawkingbird-proxy');
+  });
 });

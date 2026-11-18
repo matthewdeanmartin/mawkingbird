@@ -12,6 +12,13 @@ describe('loginDestination', () => {
     }
   });
 
+  it('returns to Unbird after a sign-up started there', () => {
+    expect(loginDestination('/unbird/people')).toBe('/unbird/people');
+    expect(loginDestination('/unbird')).toBe('/unbird');
+    expect(loginDestination('/unbird/archive')).toBe('/unbird/archive');
+    expect(loginDestination('/unbird/elsewhere')).toBe('/home');
+  });
+
   it('carries a destination across a redirect exactly once', () => {
     stashLoginNext('/crosspost');
     expect(takeLoginNext()).toBe('/crosspost');

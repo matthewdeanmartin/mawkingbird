@@ -10,6 +10,7 @@ import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
 import { PlusTokenSource } from '../../accounts/mawkingbird/plus-token.interceptor';
 import { EXTERNAL_FETCH } from '../../platform/http/external-fetch';
 import { parseFeed } from '../../../lib/rss/rss-parser';
+import { PLATFORM_ARTICLE_READ, PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 
 const id = 'UCy0tKL1T7wFoYcxCe0xjN6Q';
 describe('YouTube feed transport', () => {
@@ -133,5 +134,60 @@ describe('YouTube feed transport', () => {
       { id, title: 'Example', channelId: id, channelTitle: 'Example' },
     ]);
     http.verify();
+  });
+});
+
+describe('YouTube feeds away from mawkingbird.com', () => {
+  const cache = { get: vi.fn(), put: vi.fn().mockResolvedValue(undefined) };
+  const feedRead = vi.fn();
+  const pageRead = vi.fn();
+
+  function setUp(native: boolean) {
+    cache.get.mockReset().mockResolvedValue(null);
+    feedRead.mockReset();
+    pageRead.mockReset();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: RssCache, useValue: cache },
+        { provide: ClientPrefs, useValue: { rssCacheTtlHours: () => 24 } },
+        { provide: FeatureFlags, useValue: { enabled: () => true } },
+        { provide: PlusTokenSource, useValue: { token: vi.fn() } },
+        { provide: PLATFORM_FEED_READ, useValue: native ? feedRead : null },
+        { provide: PLATFORM_ARTICLE_READ, useValue: native ? pageRead : null },
+      ],
+    });
+    return TestBed.inject(YoutubeFeeds);
+  }
+
+  it('never calls the Mawkingbird proxy from a copy hosted elsewhere', async () => {
+    const feeds = setUp(false);
+    vi.spyOn(feeds as unknown as { hostedProxy(): boolean }, 'hostedProxy').mockReturnValue(false);
+    await expect(feeds.feed(id)).rejects.toThrow('only available on mawkingbird.com');
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  it('reads channel RSS directly on Native, with no proxy request', async () => {
+    const feeds = setUp(true);
+    feedRead.mockResolvedValue(
+      '<feed xmlns="http://www.w3.org/2005/Atom"><title>Direct</title></feed>',
+    );
+    expect((await feeds.feed(id)).title).toBe('Direct');
+    expect(feedRead).toHaveBeenCalledWith(expect.stringContaining(id));
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  it('resolves a handle from the channel page directly on Native, trying the alias on a 404', async () => {
+    const feeds = setUp(true);
+    pageRead.mockResolvedValueOnce({ status: 404, finalUrl: '', body: '' }).mockResolvedValueOnce({
+      status: 200,
+      finalUrl: '',
+      body: `<meta itemprop="channelId" content="${id}"><meta property="og:title" content="Example">`,
+    });
+    const channel = await feeds.resolve('https://www.youtube.com/c/example');
+    expect(channel.id).toBe(id);
+    expect(pageRead).toHaveBeenCalledTimes(2);
+    TestBed.inject(HttpTestingController).verify();
   });
 });

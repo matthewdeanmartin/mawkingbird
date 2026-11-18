@@ -26,7 +26,7 @@ import { STORAGE_KEYS, classifyStorageKey, matchesKey } from '../storage/storage
  */
 
 /** IndexedDB databases the app creates. Not in the key registry, which is localStorage-only. */
-const INDEXED_DB_NAMES = ['mockingbird_rss', 'mockingbird_twitter'] as const;
+const INDEXED_DB_NAMES = ['mockingbird_rss', 'mockingbird_twitter', 'mockingbird_unbird'] as const;
 
 /** The Anonymous identity and its server, kept by {@link SessionTeardown.resetAnonymousData}. */
 const ANONYMOUS_IDENTITY_KEY = 'mockingbird_anonymous_account';

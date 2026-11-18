@@ -18,6 +18,24 @@
     }
   },
   {
+    "id": "twitter-archive-tools",
+    "path": "twitter-archive-tools",
+    "title": "Twitter archive tools: search, stats and export",
+    "description": "Open your Twitter archive .zip in your browser: search your tweets and likes, see your numbers, save it as a website and find your people on Mastodon. Nothing is uploaded.",
+    "group": "start",
+    "signIn": "any",
+    "tab": {
+      "id": "archive",
+      "labelKey": "shell.modeNav.unbird.archive",
+      "icon": "M4 3h10l4 4v5M4 3v18h7M7 8h6M7 12h4M16.5 17.5m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M18.6 19.6 21 22"
+    },
+    "prerenderCheck": {
+      "heading": "Twitter archive tools",
+      "copy": "Search your tweets",
+      "tool": "app-unbird-archive-tools"
+    }
+  },
+  {
     "id": "crosspost",
     "path": "crosspost",
     "title": "Post to Mastodon and Bluesky at the same time",

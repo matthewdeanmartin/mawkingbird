@@ -2,7 +2,7 @@ import { MbServerPickerSurface } from '../../../design-system/identity/server-pi
 import { MbButton } from '../../../design-system/button/button';
 import { ServerConnectionHelp } from '../server-connection-help/server-connection-help';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -11,6 +11,7 @@ import { MockApi } from '../../../mock-api';
 import { Auth } from '../../../platform/session/auth';
 import { Account, DevUser } from '../../../platform/api/models';
 import { Server, SERVER_PRESETS } from '../../../platform/http/server';
+import { defaultServer, homeServer } from '../../../platform/http/home-server';
 import { MastodonServers, ServerSuggestion } from '../../../discovery/mastodon-servers';
 import { isLocalNetworkServer, normalizeHostUrl } from '../../../platform/http/host-url';
 import { ClientPrefs } from '../../../platform/storage/client-prefs';
@@ -35,8 +36,18 @@ import {
 } from '../../../platform/session/platform-login';
 import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics';
 import { MbNotice } from '../../../design-system/notice/notice';
+import { probeSignup, SignupSupport } from '../../../unbird/signup-support';
+import { normalizeDomain } from '../../mastodon-handle-generator/handle-availability';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
+/**
+ * The same in-flight record for a sign-up that comes back (`prompt=create`).
+ * Sign-up usually ends with an email confirmation link, which opens in a new
+ * tab where `sessionStorage` is empty, so this copy is shared across tabs.
+ * Consumed by the first callback and dropped after {@link SIGNUP_PENDING_MS}.
+ */
+const OAUTH_SIGNUP_KEY = 'mockingbird_oauth_signup';
+const SIGNUP_PENDING_MS = 2 * 60 * 60 * 1000;
 
 /**
  * The in-flight OAuth attempt, held in sessionStorage between the redirect out
@@ -121,6 +132,8 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 // i18n pages.login.notSure.question: Not sure which server?
 // i18n pages.login.notSure.browse: Browse the full directory on joinmastodon.org ↗
 // i18n pages.login.server.label: Your server
+// i18n pages.login.homeServer.signingIn: Signing in to {{server}}.
+// i18n pages.login.homeServer.other: Use another server
 // i18n pages.login.server.placeholder: mastodon.social — or type any instance
 // i18n pages.login.server.thisServerMock: This server (mock)
 // i18n pages.login.server.checking: Checking {{server}}…
@@ -169,6 +182,10 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 // i18n pages.login.register.creating: Creating…
 // i18n pages.login.register.submit: Sign up on the mock
 // i18n pages.login.signup.createOn: Create an account on {{server}} →
+// i18n pages.login.signup.createHere: Create an account on {{server}}
+// i18n pages.login.signup.createHereNote: You sign up on {{server}}'s own page, then come straight back here signed in. Mawkingbird never sees your email or password.
+// i18n pages.login.signup.closed: {{server}} is not taking new sign-ups right now. Pick another server above.
+// i18n pages.login.signup.approval: {{server}} reviews new accounts before they open, so it may take a while.
 // i18n pages.login.anon.heading: Browse anonymously
 // i18n pages.login.anon.continue: Continue anonymously
 // i18n pages.login.anon.tryIt: Try it without an account, using {{server}} for public data.
@@ -284,6 +301,15 @@ export class Login implements OnInit, OnDestroy {
   protected logoSrc = computed(() => brandLogoSrc(this.prefs.artStyle()));
 
   protected serverPresets = SERVER_PRESETS;
+  /** The build's home server, if it has one: sign-in goes there without asking. */
+  protected readonly home = homeServer();
+  protected readonly homeHost = this.home ? new URL(this.home).host : '';
+  /** The reader chose "Use another server". */
+  protected readonly otherServer = signal(false);
+
+  protected useOtherServer(): void {
+    this.otherServer.set(true);
+  }
   protected customServer = signal('');
   /** Curated instances matching the combo text; drives the suggestion dropdown. */
   protected serverSuggestions = signal<ServerSuggestion[]>([]);
@@ -357,6 +383,20 @@ export class Login implements OnInit, OnDestroy {
   /** Home, or the allowlisted page that sent the visitor here (`?next=`). */
   private destination = '/home';
 
+  /** What the chosen server offers someone without an account; null until probed. */
+  protected readonly signup = signal<SignupSupport | null>(null);
+  private signupProbed = '';
+  protected readonly signupProbe = effect(() => {
+    const base = this.server.baseUrl();
+    if (this.intent() !== 'need' || this.server.isMock || !base || base === this.signupProbed)
+      return;
+    this.signupProbed = base;
+    this.signup.set(null);
+    void probeSignup(base).then((support) => {
+      if (this.server.baseUrl() === base) this.signup.set(support);
+    });
+  });
+
   // --- Register (mock server only: never proxy a real server's credentials) ---
   protected regUsername = signal('');
   protected regEmail = signal('');
@@ -414,15 +454,28 @@ export class Login implements OnInit, OnDestroy {
     // page so that a saved session cannot intercept a new sign-in.
     const params = this.route.snapshot.queryParamMap;
     this.destination = loginDestination(params.get('next'));
+    // Links from Unbird's server matchmaking: answer the first question and pick
+    // the suggested server, so "Join hachyderm.io" lands on its sign-up.
+    const askedIntent = params.get('intent');
+    if (askedIntent === 'have' || askedIntent === 'need' || askedIntent === 'look') {
+      this.intent.set(askedIntent);
+    }
+    const askedServer = params.get('code') ? '' : normalizeDomain(params.get('server') ?? '');
+    if (askedServer) this.server.setBaseUrl(`https://${askedServer}`);
     if (!params.get('code') && !params.get('add') && this.auth.isAuthenticated) {
       this.enteringHome.set(true);
       void this.router.navigateByUrl(this.destination, { replaceUrl: true });
       return;
     }
     // Onboarding default: Mocking Bird has no "this server", so rather than greeting
-    // a new user with an empty picker, preselect the biggest general-purpose instance.
+    // a new user with an empty picker, preselect the deployment's home server, or
+    // else the biggest general-purpose instance.
     if (!this.server.allowsThisServer && !this.server.baseUrl()) {
-      this.server.setBaseUrl('https://mastodon.social');
+      this.server.setBaseUrl(defaultServer());
+    }
+    // A reader who already chose another server keeps the picker.
+    if (this.home && this.server.baseUrl() !== this.home) {
+      this.otherServer.set(true);
     }
     this.customServer.set(this.server.isMock ? '' : this.server.baseUrl());
     // Warm the curated joinmastodon index (cached; weekly refresh) so the picker can
@@ -443,7 +496,7 @@ export class Login implements OnInit, OnDestroy {
   /** Enter the real application as the one browser-local Anonymous account. */
   continueAnonymously(discoveredServer?: string): void {
     if (!discoveredServer && this.needsInstance()) return;
-    const selected = discoveredServer || this.server.baseUrl() || 'https://mastodon.social';
+    const selected = discoveredServer || this.server.baseUrl() || defaultServer();
     this.auth.enterAnonymous(selected);
     void this.router.navigateByUrl('/home');
   }
@@ -888,8 +941,10 @@ export class Login implements OnInit, OnDestroy {
 
   /** Read and clear the pending OAuth record; returns null if absent or corrupt. */
   private takePendingOAuth(): StoredApp | null {
-    const raw = sessionStorage.getItem(OAUTH_APP_KEY);
+    let raw = sessionStorage.getItem(OAUTH_APP_KEY);
     sessionStorage.removeItem(OAUTH_APP_KEY);
+    const shared = takeSharedSignup();
+    raw ??= shared;
     if (!raw) {
       return null;
     }
@@ -906,8 +961,12 @@ export class Login implements OnInit, OnDestroy {
     }
   }
 
-  /** Register a throwaway app, then redirect through the server's account-picker. */
-  startOAuth(): void {
+  /**
+   * Register a throwaway app, then redirect through the server's account-picker.
+   * With `create`, the server shows its sign-up form first (`prompt=create`,
+   * Mastodon 5.0+) and returns here signed in once the account exists.
+   */
+  startOAuth(create = false): void {
     if (redirectToSecureLogin() || this.needsInstance() || this.oauthWorking()) return;
     this.oauthError.set(null);
     this.oauthWorking.set(true);
@@ -947,6 +1006,16 @@ export class Login implements OnInit, OnDestroy {
               ...(this.destination !== '/home' && { next: this.destination }),
             };
             sessionStorage.setItem(OAUTH_APP_KEY, JSON.stringify(stored));
+            if (create) {
+              try {
+                localStorage.setItem(
+                  OAUTH_SIGNUP_KEY,
+                  JSON.stringify({ ...stored, expires: Date.now() + SIGNUP_PENDING_MS }),
+                );
+              } catch {
+                // Without it the sign-up still returns, if it ends in this tab.
+              }
+            }
             const params = new URLSearchParams({
               client_id: app.client_id,
               redirect_uri: redirectUri,
@@ -956,6 +1025,7 @@ export class Login implements OnInit, OnDestroy {
               code_challenge: codeChallenge,
               code_challenge_method: 'S256',
             });
+            if (create) params.set('prompt', 'create');
             // The instance itself handles this redirect in the user's browser, so it works
             // even when redirectUri points back at an unreachable local dev server.
             const authorizeBase = server || window.location.origin;
@@ -972,5 +1042,18 @@ export class Login implements OnInit, OnDestroy {
         this.oauthError.set('Could not register the app.');
       },
     });
+  }
+}
+
+/** Read and clear the cross-tab copy of a sign-up's OAuth record, if still fresh. */
+function takeSharedSignup(): string | null {
+  try {
+    const raw = localStorage.getItem(OAUTH_SIGNUP_KEY);
+    localStorage.removeItem(OAUTH_SIGNUP_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { expires?: unknown };
+    return typeof parsed.expires === 'number' && parsed.expires > Date.now() ? raw : null;
+  } catch {
+    return null;
   }
 }

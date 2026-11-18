@@ -3321,6 +3321,36 @@
       "file": "ui/src/app/settings/blog/settings-blog.html",
       "disposition": "adopted scope",
       "nextStep": "Field/Control number inputs with hints and an outline Button for Reset; the Open Blog link is a link-variant Button."
+    },
+    {
+      "file": "ui/src/app/discovery/twitter-archive-tools/twitter-archive-tools.html",
+      "disposition": "adopted scope",
+      "nextStep": "Focused tool page: content link, outline Button for open-app, deferred Unbird archive tools. Preserve: no prerendered tools, and the copy names what is never opened."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-archive-tools.html",
+      "disposition": "adopted scope",
+      "nextStep": "Tabs (Search, Likes, Numbers, Website, Contacts), Field/Control for search, kind and year selects and site options, Checkbox for retweets and replies, Button for the two downloads. The per-year bars and stat tiles are local presentation, not a chart widget. The contacts re-pick is a label-wrapped hidden file input with an outline Button span, like the drop target."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-drop.html",
+      "disposition": "adopted scope",
+      "nextStep": "Drop target is a label-wrapped hidden file input (drag and drop plus click) with a Button span; the folder picker is a second label. Two native <details> on purpose: the privacy line's 'Which?' and 'Don't have it yet?'. Link Buttons for replace and forget. Candidate for a shared file-drop widget if a second drop target appears."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-landing.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Composition only: Unbird drop, people and servers, and the classic importer projected into a native <details>. Preserve the classic importer unchanged inside it."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-people.html",
+      "disposition": "adopted scope",
+      "nextStep": "Button for find/keep looking/pause/follow-all and small per-row Follow, outline small link Button for View when signed out, link Button for the CSV. Rows are a local list with avatar and chips; a candidate to adopt a shared account row later. Preserve: Follow only on request, never automatic."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-servers.html",
+      "disposition": "adopted scope",
+      "nextStep": "Small Button links per suggested server into /login/mastodon (intent=need, server, next) and link Buttons for 'Pick another server' and 'I already have an account'."
     }
   ]
 }

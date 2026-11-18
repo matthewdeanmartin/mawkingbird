@@ -60,6 +60,12 @@ describe('modeForUrl', () => {
     expect(modeForUrl('/forums')).toBe('mastodon');
     expect(modeForUrl('/blogfoo')).toBe('mastodon');
     expect(modeForUrl('/writer')).toBe('mastodon');
+    expect(modeForUrl('/unbirds')).toBe('mastodon');
+  });
+
+  it('puts Unbird pages in the Unbird mode', () => {
+    expect(modeForUrl('/unbird')).toBe('unbird');
+    expect(modeForUrl('/unbird/people?x=1')).toBe('unbird');
   });
 });
 

@@ -50,8 +50,9 @@ If you were setting up another connection, return to that page and repeat its te
 
 Choose **Stop using a proxy**.
 
-Operating your own proxy is an alternative for people who run their own services.
-See [Related services and self-hosting](../contributing.md#related-services-and-self-hosting)
-for the proxy repository and its setup instructions.
+You can also choose **Your own proxy** and enter the address of a proxy you
+run. Mawkingbird doesn't provide proxy software for this; securing a proxy is up
+to whoever runs it. Copies of Mawkingbird hosted somewhere other than
+mawkingbird.com can't use the Mawkingbird proxy.
 
 Related: [Read public Twitter accounts](twitter.md) and [Connect a Mataroa blog](mataroa.md).

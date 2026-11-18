@@ -57,6 +57,7 @@ const DISCOVERY: readonly RailWidget[] = [
 export const RAIL_HIDDEN: Readonly<Partial<Record<AppMode, readonly RailWidget[]>>> = {
   blog: DISCOVERY,
   radio: DISCOVERY,
+  unbird: DISCOVERY,
   video: DISCOVERY,
 };
 

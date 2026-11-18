@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1924,
-  "filesWithCandidates": 664,
+  "filesScanned": 1953,
+  "filesWithCandidates": 670,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -3131,19 +3131,19 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 219
+          "line": 229
         },
         {
           "pattern": "shared",
-          "line": 230
+          "line": 240
         },
         {
           "pattern": "shared",
-          "line": 366
+          "line": 377
         },
         {
           "pattern": "shared",
-          "line": 510
+          "line": 548
         },
         {
           "pattern": "nativeButtons",
@@ -3167,119 +3167,131 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 116
+          "line": 87
         },
         {
           "pattern": "nativeButtons",
-          "line": 148
+          "line": 126
         },
         {
           "pattern": "nativeButtons",
-          "line": 186
+          "line": 158
         },
         {
           "pattern": "nativeButtons",
-          "line": 195
+          "line": 196
         },
         {
           "pattern": "nativeButtons",
-          "line": 218
+          "line": 205
         },
         {
           "pattern": "nativeButtons",
-          "line": 275
+          "line": 228
         },
         {
           "pattern": "nativeButtons",
-          "line": 304
+          "line": 286
         },
         {
           "pattern": "nativeButtons",
-          "line": 331
+          "line": 315
         },
         {
           "pattern": "nativeButtons",
-          "line": 375
+          "line": 342
         },
         {
           "pattern": "nativeButtons",
-          "line": 406
+          "line": 386
         },
         {
           "pattern": "nativeButtons",
-          "line": 437
+          "line": 403
         },
         {
           "pattern": "nativeButtons",
-          "line": 440
+          "line": 444
         },
         {
           "pattern": "nativeButtons",
-          "line": 443
+          "line": 475
         },
         {
           "pattern": "nativeButtons",
-          "line": 454
+          "line": 478
         },
         {
           "pattern": "nativeButtons",
-          "line": 483
+          "line": 481
         },
         {
           "pattern": "nativeButtons",
-          "line": 496
+          "line": 492
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 521
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 534
         },
         {
           "pattern": "radios",
-          "line": 261
+          "line": 272
         },
         {
           "pattern": "selects",
+          "line": 516
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 159
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 286
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 316
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 343
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 386
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 405
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 426
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 445
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 475
+        },
+        {
+          "pattern": "legacyPills",
           "line": 478
         },
         {
           "pattern": "legacyPills",
-          "line": 149
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 275
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 305
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 332
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 375
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 388
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 407
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 437
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 440
-        },
-        {
-          "pattern": "legacyPills",
-          "line": 483
+          "line": 521
         },
         {
           "pattern": "disclosure",
-          "line": 288
+          "line": 299
         }
       ]
     },
@@ -7964,6 +7976,24 @@
         {
           "pattern": "legacyPills",
           "line": 110
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/discovery/twitter-archive-tools/twitter-archive-tools.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 4
+        },
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 62
         }
       ]
     },
@@ -26800,6 +26830,232 @@
         {
           "pattern": "nativeButtons",
           "line": 43
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-archive-tools.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 6
+        },
+        {
+          "pattern": "shared",
+          "line": 11
+        },
+        {
+          "pattern": "shared",
+          "line": 13
+        },
+        {
+          "pattern": "shared",
+          "line": 15
+        },
+        {
+          "pattern": "shared",
+          "line": 22
+        },
+        {
+          "pattern": "shared",
+          "line": 23
+        },
+        {
+          "pattern": "shared",
+          "line": 29
+        },
+        {
+          "pattern": "shared",
+          "line": 30
+        },
+        {
+          "pattern": "shared",
+          "line": 38
+        },
+        {
+          "pattern": "shared",
+          "line": 73
+        },
+        {
+          "pattern": "shared",
+          "line": 75
+        },
+        {
+          "pattern": "shared",
+          "line": 77
+        },
+        {
+          "pattern": "shared",
+          "line": 101
+        },
+        {
+          "pattern": "shared",
+          "line": 216
+        },
+        {
+          "pattern": "shared",
+          "line": 218
+        },
+        {
+          "pattern": "shared",
+          "line": 220
+        },
+        {
+          "pattern": "shared",
+          "line": 227
+        },
+        {
+          "pattern": "shared",
+          "line": 229
+        },
+        {
+          "pattern": "shared",
+          "line": 236
+        },
+        {
+          "pattern": "shared",
+          "line": 242
+        },
+        {
+          "pattern": "shared",
+          "line": 248
+        },
+        {
+          "pattern": "shared",
+          "line": 262
+        },
+        {
+          "pattern": "shared",
+          "line": 277
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 242
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 276
+        },
+        {
+          "pattern": "selects",
+          "line": 23
+        },
+        {
+          "pattern": "selects",
+          "line": 30
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-drop.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 26
+        },
+        {
+          "pattern": "shared",
+          "line": 71
+        },
+        {
+          "pattern": "shared",
+          "line": 74
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 71
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 74
+        },
+        {
+          "pattern": "disclosure",
+          "line": 46
+        },
+        {
+          "pattern": "disclosure",
+          "line": 85
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-landing.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "disclosure",
+          "line": 35
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-people.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 37
+        },
+        {
+          "pattern": "shared",
+          "line": 41
+        },
+        {
+          "pattern": "shared",
+          "line": 58
+        },
+        {
+          "pattern": "shared",
+          "line": 117
+        },
+        {
+          "pattern": "shared",
+          "line": 129
+        },
+        {
+          "pattern": "shared",
+          "line": 151
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 37
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 41
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 58
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 116
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 151
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-servers.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 32
+        },
+        {
+          "pattern": "shared",
+          "line": 44
+        },
+        {
+          "pattern": "shared",
+          "line": 52
         }
       ]
     }

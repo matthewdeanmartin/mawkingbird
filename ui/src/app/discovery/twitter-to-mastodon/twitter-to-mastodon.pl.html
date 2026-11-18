@@ -17,6 +17,21 @@
     </p>
   </div>
 
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-unbird-landing [signedIn]="inShell">
+      <app-twitter-archive-import
+        [inviteLink]="inShell ? '/pl/z-twittera-na-mastodona/invite' : '/invites'"
+        [offerSignIn]="!inShell"
+        signInReturn="/pl/z-twittera-na-mastodona"
+      />
+      <app-twitter-import-next-steps [signedIn]="inShell" />
+    </app-unbird-landing>
+  } @placeholder {
+    <p class="muted">Wczytywanie importu…</p>
+  }
+
   <ol class="steps">
     <li>
       <h2>Pobierz archiwum Twittera</h2>
@@ -41,19 +56,6 @@
       </p>
     </li>
   </ol>
-
-  <!-- Deferred: prerendering shows the placeholder, and the importer's
-       services (session, storage, Mastodon API) load only in the browser. -->
-  @defer (on immediate) {
-    <app-twitter-archive-import
-      [inviteLink]="inShell ? '/pl/z-twittera-na-mastodona/invite' : '/invites'"
-      [offerSignIn]="!inShell"
-      signInReturn="/pl/z-twittera-na-mastodona"
-    />
-    <app-twitter-import-next-steps [signedIn]="inShell" />
-  } @placeholder {
-    <p class="muted">Wczytywanie importu…</p>
-  }
 
   <section class="questions">
     <h2>Pytania</h2>

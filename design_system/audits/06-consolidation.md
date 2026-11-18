@@ -2820,3 +2820,16 @@ drafts); Settings › Blog has three Field/Control number inputs. The profile's
 "Post types" filters move from a whole-rail takeover (`RailOutlet`) into a
 left-rail widget under the profile card with richer kinds; the inline copy in
 the profile body is removed. No shared widget implementation changed.
+
+Unbird, sprints 1–2 (2026-11-17): reviewed regenerated inventory: 1953 scanned
+files, 670 candidate files. Six new files, all adopted scope in reconciliation:
+`unbird-drop.html` (a label-wrapped hidden file input as the drop target with a
+Button span, two native `<details>` for the privacy list and "how to get it"),
+`unbird-people.html` (Button, small Follow and outline View Buttons, local
+account rows), `unbird-servers.html` (small Button links into sign-in),
+`unbird-landing.ts` (composition; the classic importer is projected unchanged
+into a native `<details>`), `unbird-archive-tools.html` (Tabs, Field/Control,
+Checkbox, Button) and the public `twitter-archive-tools.html`. Login gains a
+solid Button for sign-up-then-return (`prompt=create`) beside the existing
+outline welcome-back link; the twitter-to-mastodon pages wrap the importer in
+the Unbird landing. No shared widget implementation changed.

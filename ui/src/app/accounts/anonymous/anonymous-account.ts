@@ -1,9 +1,11 @@
+import { defaultServer } from '../../platform/http/home-server';
 import { computed, Injectable, signal } from '@angular/core';
 import { Account } from '../../platform/api/models';
 import { normalizeHostUrl } from '../../platform/http/host-url';
 
 const STORAGE_KEY = 'mockingbird_anonymous_account';
-const DEFAULT_SERVER = 'https://mastodon.social';
+/** The deployment's home server, or mastodon.social (home-server.ts). */
+const DEFAULT_SERVER = defaultServer();
 const STATE_VERSION = 1;
 
 interface AnonymousAccountState {

@@ -155,9 +155,11 @@ build and relevant links; there is no need to rebuild the Angular test suite.
 
 ## Related services and self-hosting
 
-The [CORS proxy repository](https://github.com/matthewdeanmartin/mawkingbird_cors_proxy)
-owns proxy development and deployment instructions. Follow its README for
-self-hosting rather than looking for a backend in this client repository.
+The app is static and can be hosted anywhere; see
+[Run your own copy](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/SELF_HOSTING.md).
+The CORS proxy, account and profile services behind mawkingbird.com are
+separate repositories that run the official site. They aren't packaged for
+self-hosting, and a copy hosted elsewhere doesn't use them.
 The [mock server](https://github.com/matthewdeanmartin/mastodon_mock) remains a
 separate project for stateful Mastodon API testing.
 
@@ -175,8 +177,9 @@ hrefs, OAuth metadata, and the shared 404 fallback consistent. Do not publish a
 `/mawkingbird/` mirror build over the custom-domain root.
 
 The old github.io address currently redirects to the custom domain; it is not
-an independent fallback. See the current
-[deployment runbook](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/DEPLOY.md)
-before changing hosting. The
+an independent fallback. See the
+[mawkingbird.com deployment runbook](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/DEPLOY.md)
+before changing the official site's hosting. To publish your own copy instead,
+see [Run your own copy](https://github.com/matthewdeanmartin/mawkingbird/blob/main/ops/SELF_HOSTING.md). The
 [migration record](https://github.com/matthewdeanmartin/mawkingbird/blob/main/spec/history/MIGRATION.md)
 retains the old topology as historical context.

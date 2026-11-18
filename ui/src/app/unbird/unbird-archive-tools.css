@@ -1,0 +1,129 @@
+:host {
+  display: block;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: flex-end;
+}
+.grow {
+  flex: 1 1 240px;
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 0.88rem;
+}
+.count {
+  margin: 10px 0 6px;
+  font-size: 0.92rem;
+}
+.posts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.posts li {
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.meta a {
+  color: var(--accent);
+}
+.text {
+  margin: 4px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.span {
+  font-size: 1.15rem;
+  font-weight: 650;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+.stats div {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+.stats dt {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.stats dd {
+  margin: 2px 0 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+h3 {
+  margin: 22px 0 8px;
+  font-size: 1rem;
+}
+.bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.bars li {
+  display: grid;
+  grid-template-columns: 3.2em 1fr 4.5em;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+}
+.bar {
+  display: block;
+  height: 10px;
+  min-width: 2px;
+  border-radius: 0 4px 4px 0;
+  background: var(--accent);
+}
+.value {
+  text-align: right;
+  color: var(--muted);
+}
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0 24px;
+}
+.plain {
+  margin: 0;
+  padding-left: 1.4em;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+mb-field,
+mb-checkbox {
+  display: block;
+  margin-bottom: 10px;
+}
+.reopen {
+  cursor: pointer;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

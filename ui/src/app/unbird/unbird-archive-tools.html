@@ -1,0 +1,289 @@
+@if (!archive()) {
+  @if (withDrop()) {
+    <app-unbird-drop />
+  }
+} @else {
+  <mb-tabs
+    [label]="'unbird.tools.tabs' | transloco"
+    [selected]="tab()"
+    (selectedChange)="tab.set($event)"
+  >
+    <ng-template mbTab value="search" [label]="'unbird.tools.tab.search' | transloco">
+      <div class="filters">
+        <mb-field class="grow" [label]="'unbird.tools.search.label' | transloco">
+          <input
+            mbControl
+            type="search"
+            [placeholder]="'unbird.tools.search.placeholder' | transloco"
+            [ngModel]="query()"
+            (ngModelChange)="query.set($event)"
+          />
+        </mb-field>
+        <mb-field [label]="'unbird.tools.search.kindLabel' | transloco">
+          <select mbControl [ngModel]="kind()" (ngModelChange)="kind.set($event)">
+            @for (value of kinds; track value) {
+              <option [value]="value">{{ 'unbird.tools.search.kind.' + value | transloco }}</option>
+            }
+          </select>
+        </mb-field>
+        <mb-field [label]="'unbird.tools.search.year' | transloco">
+          <select mbControl [ngModel]="year()" (ngModelChange)="year.set($event)">
+            <option value="">{{ 'unbird.tools.search.anyYear' | transloco }}</option>
+            @for (value of years(); track value) {
+              <option [value]="value">{{ value }}</option>
+            }
+          </select>
+        </mb-field>
+      </div>
+      <mb-checkbox
+        [label]="'unbird.tools.search.retweets' | transloco"
+        [ngModel]="retweets()"
+        (ngModelChange)="retweets.set($event)"
+      />
+      <p class="muted count" aria-live="polite">
+        {{ 'unbird.tools.search.count' | transloco: { total: fmt(tweets().total) } }}
+        @if (tweets().total > tweets().results.length) {
+          · {{ 'unbird.tools.search.showing' | transloco: { shown: tweets().results.length } }}
+        }
+      </p>
+      <ol class="posts">
+        @for (tweet of tweets().results; track tweet.id) {
+          <li>
+            <div class="meta">
+              <time [attr.datetime]="tweet.at">{{ date(tweet.at) }}</time>
+              @if (tweet.selfReply) {
+                <span>{{ 'unbird.tools.search.thread' | transloco }}</span>
+              }
+              @if (tweet.replyToOther) {
+                <span>{{ 'unbird.tools.search.reply' | transloco }}</span>
+              }
+              @if (tweet.media) {
+                <span>{{ 'unbird.tools.search.media' | transloco: { count: tweet.media } }}</span>
+              }
+              <a [href]="tweetUrl(tweet.id)" target="_blank" rel="noopener">{{
+                'unbird.tools.search.open' | transloco
+              }}</a>
+            </div>
+            <p class="text">{{ tweet.text }}</p>
+          </li>
+        }
+      </ol>
+    </ng-template>
+
+    <ng-template mbTab value="likes" [label]="'unbird.tools.tab.likes' | transloco">
+      <p class="muted">{{ 'unbird.tools.likes.lead' | transloco }}</p>
+      <mb-field [label]="'unbird.tools.likes.label' | transloco">
+        <input
+          mbControl
+          type="search"
+          [placeholder]="'unbird.tools.search.placeholder' | transloco"
+          [ngModel]="likeQuery()"
+          (ngModelChange)="likeQuery.set($event)"
+        />
+      </mb-field>
+      <p class="muted count" aria-live="polite">
+        {{ 'unbird.tools.search.count' | transloco: { total: fmt(likes().total) } }}
+      </p>
+      <ol class="posts">
+        @for (like of likes().results; track like.id) {
+          <li>
+            <p class="text">{{ like.text }}</p>
+            <div class="meta">
+              <a [href]="like.url || tweetUrl(like.id)" target="_blank" rel="noopener">{{
+                'unbird.tools.search.open' | transloco
+              }}</a>
+            </div>
+          </li>
+        }
+      </ol>
+    </ng-template>
+
+    <ng-template mbTab value="numbers" [label]="'unbird.tools.tab.numbers' | transloco">
+      @if (numbers(); as n) {
+        <p class="muted">{{ 'unbird.tools.numbers.private' | transloco }}</p>
+        @if (n.first) {
+          <p class="span">
+            {{
+              'unbird.tools.numbers.span'
+                | transloco: { first: year4(n.first), last: year4(n.last), years: n.years }
+            }}
+          </p>
+        }
+        <dl class="stats">
+          <div>
+            <dt>{{ 'unbird.tools.numbers.posts' | transloco }}</dt>
+            <dd>{{ fmt(n.originals) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'unbird.tools.numbers.threads' | transloco }}</dt>
+            <dd>{{ fmt(n.threads) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'unbird.tools.numbers.replies' | transloco }}</dt>
+            <dd>{{ fmt(n.replies) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'unbird.tools.numbers.retweets' | transloco }}</dt>
+            <dd>{{ fmt(n.retweets) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'unbird.tools.numbers.media' | transloco }}</dt>
+            <dd>{{ fmt(n.withMedia) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'unbird.tools.numbers.likes' | transloco }}</dt>
+            <dd>{{ fmt(n.likes) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'unbird.tools.numbers.following' | transloco }}</dt>
+            <dd>{{ fmt(n.following) }}</dd>
+          </div>
+          <div>
+            <dt>{{ 'unbird.tools.numbers.followers' | transloco }}</dt>
+            <dd>{{ fmt(n.followers) }}</dd>
+          </div>
+        </dl>
+
+        @if (n.busiestDay !== null) {
+          <p>
+            {{
+              'unbird.tools.numbers.when'
+                | transloco: { day: day(n.busiestDay), hour: hour(n.busiestHour) }
+            }}
+          </p>
+        }
+
+        @if (n.perYear.length) {
+          <h3>{{ 'unbird.tools.numbers.perYear' | transloco }}</h3>
+          <ul class="bars">
+            @for (entry of n.perYear; track entry.year) {
+              <li>
+                <span class="label">{{ entry.year }}</span>
+                <span class="bar" [style.width.%]="(100 * entry.tweets) / maxPerYear()"></span>
+                <span class="value">{{ fmt(entry.tweets) }}</span>
+              </li>
+            }
+          </ul>
+        }
+
+        @if (n.best.length) {
+          <h3>{{ 'unbird.tools.numbers.best' | transloco }}</h3>
+          <ol class="posts">
+            @for (tweet of n.best; track tweet.id) {
+              <li>
+                <div class="meta">
+                  <time [attr.datetime]="tweet.at">{{ date(tweet.at) }}</time>
+                  <span>{{
+                    'unbird.tools.numbers.bestLikes' | transloco: { count: fmt(tweet.likes) }
+                  }}</span>
+                </div>
+                <p class="text">{{ tweet.text }}</p>
+              </li>
+            }
+          </ol>
+        }
+
+        <div class="pair">
+          @if (n.talkedTo.length) {
+            <section>
+              <h3>{{ 'unbird.tools.numbers.talkedTo' | transloco }}</h3>
+              <ol class="plain">
+                @for (person of n.talkedTo; track person.twitter_handle) {
+                  <li>
+                    &#64;{{ person.twitter_handle }}
+                    <span class="muted">{{ fmt(person.reply_count + person.mention_count) }}</span>
+                  </li>
+                }
+              </ol>
+            </section>
+          }
+          @if (n.hashtags.length) {
+            <section>
+              <h3>{{ 'unbird.tools.numbers.hashtags' | transloco }}</h3>
+              <ol class="plain">
+                @for (tag of n.hashtags; track tag.tag) {
+                  <li>
+                    #{{ tag.tag }} <span class="muted">{{ fmt(tag.count) }}</span>
+                  </li>
+                }
+              </ol>
+            </section>
+          }
+        </div>
+      }
+    </ng-template>
+
+    <ng-template mbTab value="website" [label]="'unbird.tools.tab.website' | transloco">
+      <p>{{ 'unbird.tools.website.lead' | transloco }}</p>
+      <mb-field [label]="'unbird.tools.website.title' | transloco">
+        <input
+          mbControl
+          type="text"
+          [placeholder]="defaultTitle()"
+          [ngModel]="siteTitle()"
+          (ngModelChange)="siteTitle.set($event)"
+        />
+      </mb-field>
+      <mb-field [label]="'unbird.tools.website.baseUrl' | transloco">
+        <input
+          mbControl
+          type="url"
+          placeholder="https://example.com/tweets"
+          [ngModel]="siteBase()"
+          (ngModelChange)="siteBase.set($event)"
+        />
+      </mb-field>
+      <mb-checkbox
+        [label]="'unbird.tools.website.replies' | transloco"
+        [ngModel]="siteReplies()"
+        (ngModelChange)="siteReplies.set($event)"
+      />
+      <p class="muted small">{{ 'unbird.tools.website.note' | transloco }}</p>
+      <button mbButton type="button" (click)="downloadSite()">
+        {{ 'unbird.tools.website.download' | transloco }}
+      </button>
+    </ng-template>
+
+    @if (archive()?.hasContacts) {
+      <ng-template mbTab value="contacts" [label]="'unbird.tools.tab.contacts' | transloco">
+        <p>{{ 'unbird.tools.contacts.lead' | transloco }}</p>
+        <p class="muted small">{{ 'unbird.tools.contacts.noNames' | transloco }}</p>
+        @switch (contacts()) {
+          @case ('reopen') {
+            <p>{{ 'unbird.tools.contacts.reopen' | transloco }}</p>
+            <label class="reopen">
+              <input
+                class="visually-hidden"
+                type="file"
+                accept=".zip,.js"
+                multiple
+                (change)="onReopen($event)"
+              />
+              <span mbButton variant="outline">{{
+                'unbird.tools.contacts.choose' | transloco
+              }}</span>
+            </label>
+          }
+          @case ('none') {
+            <p>{{ 'unbird.tools.contacts.none' | transloco }}</p>
+          }
+          @default {
+            @if (isCount(contacts())) {
+              <p role="status">
+                {{ 'unbird.tools.contacts.ready' | transloco: { count: fmt($any(contacts())) } }}
+              </p>
+            }
+            <button
+              mbButton
+              type="button"
+              [disabled]="contacts() === 'busy'"
+              (click)="exportContacts()"
+            >
+              {{ 'unbird.tools.contacts.export' | transloco }}
+            </button>
+          }
+        }
+      </ng-template>
+    }
+  </mb-tabs>
+}

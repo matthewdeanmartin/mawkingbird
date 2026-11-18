@@ -37,6 +37,10 @@ import {
 // i18n shell.modeNav.forum.friends: Friends
 // i18n shell.modeNav.forum.mine: Mine
 // i18n shell.modeNav.forum.joined: Joined
+// i18n shell.modeNav.mode.unbird: Unbird
+// i18n shell.modeNav.unbird.start: Start
+// i18n shell.modeNav.unbird.people: People
+// i18n shell.modeNav.unbird.archive: Archive
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
 // i18n shell.modeNav.twitterImport.import: Import
@@ -155,6 +159,31 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       icon: 'M5 4h9l4 4v5M5 4v16h7M8 9h5M8 13h3M17.5 16.5m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M19.6 18.6 22 21',
       link: '/blog/search',
       active: onPath('/blog/search'),
+    },
+  ],
+  unbird: [
+    // Twitter to Mastodon (spec/sprint/unbird-2026-11.md). Tabs appear as they
+    // are built: Posts and Profile join Start, People and Archive later.
+    {
+      id: 'start',
+      labelKey: 'shell.modeNav.unbird.start',
+      icon: 'M3 4h18v4H3zM5 8v12h14V8M12 11v6M9.5 14.5 12 17l2.5-2.5',
+      link: '/unbird',
+      active: (url) => pathOf(url).replace(/\/$/, '') === '/unbird',
+    },
+    {
+      id: 'people',
+      labelKey: 'shell.modeNav.unbird.people',
+      icon: 'M8 10a3 3 0 1 0 0-6a3 3 0 1 0 0 6M2.5 20a5.5 5.5 0 0 1 11 0M16.5 11a2.5 2.5 0 1 0 0-5a2.5 2.5 0 1 0 0 5M15.5 14.2a4.5 4.5 0 0 1 6 4.3',
+      link: '/unbird/people',
+      active: onPath('/unbird/people'),
+    },
+    {
+      id: 'archive',
+      labelKey: 'shell.modeNav.unbird.archive',
+      icon: 'M4 3h10l4 4v5M4 3v18h7M7 8h6M7 12h4M16.5 17.5m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M18.6 19.6 21 22',
+      link: '/unbird/archive',
+      active: onPath('/unbird/archive'),
     },
   ],
   radio: [
@@ -467,6 +496,13 @@ export interface ModeEntry {
 }
 
 export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
+  unbird: {
+    mode: 'unbird',
+    labelKey: 'shell.modeNav.mode.unbird',
+    // A bird in flight, leaving.
+    icon: 'M2 13c4 0 6-2 8-6 1 3 3 4 6 4l3-3 3 1-3 2c0 5-4 8-9 8-3 0-6-2-8-6M13 15l-3 5',
+    link: '/unbird',
+  },
   radio: {
     mode: 'radio',
     labelKey: 'shell.modeNav.mode.radio',

@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom, timeout } from 'rxjs';
 import { corsProxyOrigin } from '../../platform/build/build-flavor';
+import { canUseHostedProxy } from '../../accounts/mawkingbird/mawkingbird-access';
+import { PLATFORM_ARTICLE_READ, PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
@@ -32,6 +34,43 @@ export class YoutubeFeeds {
   private flags = inject(FeatureFlags);
   private supporter = inject(SupporterStatus);
   private tokens = inject(PlusTokenSource);
+  /** Native reads YouTube directly; it needs no proxy and calls no Mawkingbird service. */
+  private nativeFeedRead = inject(PLATFORM_FEED_READ);
+  private nativePageRead = inject(PLATFORM_ARTICLE_READ);
+
+  /**
+   * Whether the web build may use the Mawkingbird proxy from this address. A
+   * copy hosted elsewhere must not call it (ops/SELF_HOSTING.md): the Worker
+   * refuses other origins anyway, so asking would only cost a request.
+   */
+  private hostedProxy(): boolean {
+    return canUseHostedProxy();
+  }
+
+  /** A channel's RSS: directly on Native, through the Mawkingbird proxy on the web. */
+  private async readFeed(url: string): Promise<string> {
+    if (this.nativeFeedRead) {
+      if (!this.flags.enabled('connector-rss')) {
+        throw new Error('Video feeds are disabled in connection settings.');
+      }
+      return this.nativeFeedRead(url);
+    }
+    return this.request(url);
+  }
+
+  /** A channel page, for resolving @handles: directly on Native, else proxied. */
+  private async readPage(url: string): Promise<string> {
+    if (this.nativePageRead) {
+      if (!this.flags.enabled('connector-rss')) {
+        throw new Error('Video feeds are disabled in connection settings.');
+      }
+      const page = await this.nativePageRead(url);
+      if (page.status === 404) throw new HttpErrorResponse({ status: 404, url });
+      if (page.status >= 400) throw new Error(`YouTube answered ${page.status}.`);
+      return page.body;
+    }
+    return this.request(url);
+  }
 
   private async request(
     target: string,
@@ -41,6 +80,11 @@ export class YoutubeFeeds {
   ): Promise<string> {
     if (!this.flags.enabled('connector-cors-proxy') || !this.flags.enabled('connector-rss')) {
       throw new Error('Video feeds are disabled in connection settings.');
+    }
+    if (!this.hostedProxy()) {
+      throw new Error(
+        'Video feeds use the Mawkingbird proxy, which is only available on mawkingbird.com.',
+      );
     }
     const route = search ? 'youtube-search' : 'youtube';
     let headers = new HttpHeaders();
@@ -95,7 +139,7 @@ export class YoutubeFeeds {
     let failure: unknown;
     for (const url of candidates) {
       try {
-        const channel = channelFromHtml(await this.request(url));
+        const channel = channelFromHtml(await this.readPage(url));
         if (channel) return channel;
         failure = new Error('This page did not provide a YouTube channel.');
       } catch (error) {
@@ -116,7 +160,7 @@ export class YoutubeFeeds {
     );
     if (cached && !cached.stale) return cached.feed;
     try {
-      const feed = parseFeed(await this.request(url));
+      const feed = parseFeed(await this.readFeed(url));
       await this.cache.put(url, feed);
       return feed;
     } catch (error) {

@@ -1,4 +1,5 @@
 import { inject } from '@angular/core';
+import { defaultServer } from '../http/home-server';
 import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
 import { Auth } from './auth';
 import { radioAccount, radioPostRef } from '../../reading/radio-links';
@@ -91,7 +92,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
     copiedLink ||
     /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
   ) {
-    auth.enterAnonymous(inject(Server).baseUrl() || 'https://mastodon.social');
+    auth.enterAnonymous(inject(Server).baseUrl() || defaultServer());
     return true;
   }
   // The front page, not the login page: a stranger who has just arrived should

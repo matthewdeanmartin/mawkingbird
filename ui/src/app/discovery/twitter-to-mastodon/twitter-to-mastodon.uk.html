@@ -16,6 +16,21 @@
     </p>
   </div>
 
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-unbird-landing [signedIn]="inShell">
+      <app-twitter-archive-import
+        [inviteLink]="inShell ? '/uk/twitter-to-mastodon/invite' : '/invites'"
+        [offerSignIn]="!inShell"
+        signInReturn="/uk/twitter-to-mastodon"
+      />
+      <app-twitter-import-next-steps [signedIn]="inShell" />
+    </app-unbird-landing>
+  } @placeholder {
+    <p class="muted">Завантаження імпорту…</p>
+  }
+
   <ol class="steps">
     <li>
       <h2>Завантажте архів Twitter</h2>
@@ -40,19 +55,6 @@
       </p>
     </li>
   </ol>
-
-  <!-- Deferred: prerendering shows the placeholder, and the importer's
-       services (session, storage, Mastodon API) load only in the browser. -->
-  @defer (on immediate) {
-    <app-twitter-archive-import
-      [inviteLink]="inShell ? '/uk/twitter-to-mastodon/invite' : '/invites'"
-      [offerSignIn]="!inShell"
-      signInReturn="/uk/twitter-to-mastodon"
-    />
-    <app-twitter-import-next-steps [signedIn]="inShell" />
-  } @placeholder {
-    <p class="muted">Завантаження імпорту…</p>
-  }
 
   <section class="questions">
     <h2>Запитання</h2>

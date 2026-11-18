@@ -1,6 +1,12 @@
 import { FOCUSED_APPS } from '../../shell/mode-nav';
 
 /**
+ * App pages that pick up after sign-in besides the mini-apps: Unbird keeps the
+ * reader's archive on the device, so signing up mid-way returns to it.
+ */
+const RETURN_PAGES: readonly string[] = ['/unbird', '/unbird/people', '/unbird/archive'];
+
+/**
  * The page to open after signing in: a mini-app's root named in `?next=`, else Home.
  *
  * An allowlist, not a same-origin check: `?next=` arrives in a URL anyone can
@@ -14,7 +20,8 @@ export function loginDestination(next: string | null | undefined): string {
   // is not a plain path ("//host", "https:…", "\\host") fails the path test.
   const queryAt = next.indexOf('?');
   const path = (queryAt < 0 ? next : next.slice(0, queryAt)).split('#')[0];
-  if (!FOCUSED_APPS.some((app) => app.root === path)) return '/home';
+  if (!FOCUSED_APPS.some((app) => app.root === path) && !RETURN_PAGES.includes(path))
+    return '/home';
   if (queryAt < 0) return path;
   const query = next.slice(queryAt + 1).split('#')[0];
   return query ? `${path}?${new URLSearchParams(query).toString()}` : path;

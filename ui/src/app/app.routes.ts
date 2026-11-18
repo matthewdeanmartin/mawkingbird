@@ -139,6 +139,10 @@ export const TOOL_PAGE_MODULES: Record<string, ToolPageModule> = {
     load: () => import('./discovery/twitter-to-mastodon/twitter-to-mastodon'),
     component: 'TwitterToMastodon',
   },
+  'twitter-archive-tools': {
+    load: () => import('./discovery/twitter-archive-tools/twitter-archive-tools'),
+    component: 'TwitterArchiveTools',
+  },
   crosspost: { load: () => import('./publishing/crosspost/crosspost'), component: 'Crosspost' },
   'mastodon-analytics': {
     load: () => import('./accounts/mastodon-analytics/mastodon-analytics'),
@@ -1243,6 +1247,26 @@ export const routes: Routes = [
         path: 'playlists/:id',
         title: 'Playlist',
         loadComponent: () => import('./reading/radio/playlist-page').then((m) => m.PlaylistPage),
+      },
+      {
+        // Unbird: Twitter to Mastodon (spec/sprint/unbird-2026-11.md). Open to
+        // Anonymous: the archive is read locally and searched publicly.
+        path: 'unbird',
+        title: 'Unbird',
+        data: { unbirdTab: 'start' },
+        loadComponent: () => import('./unbird/unbird-page').then((m) => m.UnbirdPage),
+      },
+      {
+        path: 'unbird/people',
+        title: 'Your Twitter people on Mastodon',
+        data: { unbirdTab: 'people' },
+        loadComponent: () => import('./unbird/unbird-page').then((m) => m.UnbirdPage),
+      },
+      {
+        path: 'unbird/archive',
+        title: 'Your Twitter archive',
+        data: { unbirdTab: 'archive' },
+        loadComponent: () => import('./unbird/unbird-page').then((m) => m.UnbirdPage),
       },
       {
         // Discussions found by a budgeted scan of one feed; the mode's tabs

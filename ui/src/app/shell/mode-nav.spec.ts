@@ -66,8 +66,13 @@ describe('MODE_NAV', () => {
   it('keeps the mode navigation slots, with Singles, Playlists and Studio in Radio', () => {
     // Radio is the verb "play": Now Playing is the dock's, settings sit on each page.
     // Blog has six, one over budget by the owner's leave; Roll is Native-only.
-    for (const mode of APP_MODES)
-      expect(MODE_NAV[mode]).toHaveLength(mode === 'radio' ? 3 : mode === 'blog' ? 6 : 5);
+    // Unbird grows a tab per sprint toward five (spec/sprint/unbird-2026-11.md).
+    const slots: Partial<Record<(typeof APP_MODES)[number], number>> = {
+      radio: 3,
+      blog: 6,
+      unbird: 3,
+    };
+    for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(slots[mode] ?? 5);
     expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['singles', 'playlists', 'studio']);
     expect(MODE_NAV.mastodon[3].id).toBe('search');
     expect(MODE_NAV.video[3].id).toBe('search');
@@ -82,6 +87,16 @@ describe('MODE_NAV', () => {
       expect(active(url)).toEqual(['playlists']);
     expect(active('/radio/studio')).toEqual(['studio']);
     for (const view of ['radio', 'settings']) expect(active('/radio?view=' + view)).toEqual([]);
+  });
+
+  it('marks exactly one Unbird tab current', () => {
+    const active = (url: string) =>
+      MODE_NAV.unbird.filter((item) => item.active(url)).map((item) => item.id);
+    expect(active('/unbird')).toEqual(['start']);
+    expect(active('/unbird/')).toEqual(['start']);
+    expect(active('/unbird/people')).toEqual(['people']);
+    expect(active('/unbird/archive')).toEqual(['archive']);
+    expect(active('/unbirds')).toEqual([]);
   });
 
   it('marks exactly one Forum tab current, whatever the sort or source', () => {

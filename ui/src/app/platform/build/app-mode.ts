@@ -7,13 +7,21 @@ import { filter } from 'rxjs';
  * Which app the primary nav is serving: the social client, the RSS reader, or
  * video. See spec/top_level_menu.md.
  */
-export type AppMode = 'mastodon' | 'blog' | 'rss' | 'video' | 'radio' | 'forum';
+export type AppMode = 'mastodon' | 'blog' | 'rss' | 'video' | 'radio' | 'forum' | 'unbird';
 
 /**
  * Also the switcher's order. Blog sits second because the switcher is how
  * people discover it (spec/blog-mode.md): nothing else in the app points there.
  */
-export const APP_MODES: readonly AppMode[] = ['mastodon', 'blog', 'rss', 'video', 'radio', 'forum'];
+export const APP_MODES: readonly AppMode[] = [
+  'mastodon',
+  'blog',
+  'rss',
+  'video',
+  'radio',
+  'forum',
+  'unbird',
+];
 
 /**
  * Tab-lived, not saved: a reload keeps the menu where it was, a new tab starts
@@ -42,6 +50,8 @@ export function modeForUrl(url: string): AppMode | null {
   )
     return 'radio';
   if (path === '/forum' || path.startsWith('/forum/')) return 'forum';
+  // Twitter to Mastodon (spec/sprint/unbird-2026-11.md).
+  if (path === '/unbird' || path.startsWith('/unbird/')) return 'unbird';
   if (path === '/blog' || path.startsWith('/blog/') || path === '/settings/blog') return 'blog';
   if (path === '/rss' || path.startsWith('/rss/') || path === '/settings/rss') {
     return 'rss';

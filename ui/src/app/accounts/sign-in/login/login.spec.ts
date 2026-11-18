@@ -2,7 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../../platform/session/auth';
 import { Server } from '../../../platform/http/server';
 import { sha256Base64Url } from '../../../platform/session/pkce';
@@ -473,6 +473,44 @@ describe('Login', () => {
    * user can fill in. Which network they wanted was already settled by
    * LoginChooser, so the remaining question is what they came to do.
    */
+  describe('home server (MOCKINGBIRD_HOME_SERVER)', () => {
+    let meta: HTMLMetaElement;
+    beforeEach(() => {
+      meta = document.createElement('meta');
+      meta.name = 'mawkingbird:home-server';
+      meta.content = 'https://example.social';
+      document.head.append(meta);
+    });
+    afterEach(() => meta.remove());
+
+    it('signs in to the home server without asking, with another server one click away', () => {
+      const fixture = setUp();
+      const component = fixture.componentInstance as any;
+      component.intent.set('have');
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(TestBed.inject(Server).baseUrl()).toBe('https://example.social');
+      expect(el.textContent).toContain('Signing in to example.social.');
+      expect(el.querySelector('#server-combo')).toBeNull();
+
+      const other = [...el.querySelectorAll('button')].find((b) =>
+        b.textContent?.includes('Use another server'),
+      )!;
+      other.click();
+      fixture.detectChanges();
+      expect(el.querySelector('#server-combo')).not.toBeNull();
+    });
+
+    it('keeps the picker for a reader who already chose another server', () => {
+      localStorage.setItem('mastodon_mock_server', 'https://other.example');
+      const fixture = setUp();
+      const component = fixture.componentInstance as any;
+      component.intent.set('have');
+      fixture.detectChanges();
+      expect((fixture.nativeElement as HTMLElement).querySelector('#server-combo')).not.toBeNull();
+    });
+  });
+
   describe('opening question', () => {
     function textOf(fixture: ReturnType<typeof setUp>): string {
       return (fixture.nativeElement as HTMLElement).textContent ?? '';

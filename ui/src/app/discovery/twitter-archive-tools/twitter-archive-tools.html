@@ -1,0 +1,66 @@
+<main class="focused-page" lang="en">
+  @if (!inShell) {
+    <header>
+      <a mbContentLink routerLink="/">Mawkingbird</a>
+      <app-language-versions />
+      <a mbButton variant="outline" routerLink="/">Open the app</a>
+    </header>
+  }
+
+  <div class="intro">
+    <p class="eyebrow">Twitter archive</p>
+    <h1>Twitter archive tools</h1>
+    <p>
+      Got the .zip and not sure what to do with it? Open it here, no unzipping: search your tweets
+      and likes, see your Twitter years in numbers, and keep it as a website. It never leaves your
+      device.
+    </p>
+  </div>
+
+  <!-- Deferred: prerendering shows the placeholder; the tools read files and
+       storage only in the browser. -->
+  @defer (on immediate) {
+    <app-unbird-archive-tools />
+  } @placeholder {
+    <p class="muted">Loading the archive tools…</p>
+  }
+
+  <ol class="steps">
+    <li>
+      <h2>Search your tweets</h2>
+      <p>
+        Every tweet, thread and like, searchable by word, phrase, year or type. Find the one you
+        half remember.
+      </p>
+    </li>
+    <li>
+      <h2>See your numbers</h2>
+      <p>
+        Your years on Twitter, your most-liked posts, who you talked to most and when you posted.
+        For you only, not a share card.
+      </p>
+    </li>
+    <li>
+      <h2>Keep it as a website</h2>
+      <p>
+        Download a small website of your own posts, a page per year with an RSS feed, to put on any
+        host or keep in a folder.
+      </p>
+    </li>
+  </ol>
+
+  <section class="questions">
+    <h2>Questions</h2>
+    <h3>Is my archive uploaded anywhere?</h3>
+    <p>
+      No. Your browser opens the .zip and reads only the files these tools need: your follows,
+      tweets, likes and profile. Direct messages, email, phone number and logs are never opened.
+    </p>
+    <h3>Where are my people now?</h3>
+    <p>
+      Many moved to Mastodon.
+      <a mbContentLink routerLink="/twitter-to-mastodon">Find your Twitter people on Mastodon</a>
+      with the same archive.
+    </p>
+  </section>
+</main>

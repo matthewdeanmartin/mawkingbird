@@ -1,3 +1,4 @@
+import { defaultServer } from '../../../platform/http/home-server';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth } from '../../../platform/session/auth';
@@ -48,8 +49,8 @@ export class AnonymousEntry implements OnInit {
   async ngOnInit(): Promise<void> {
     // A bare query key makes the share URL pleasantly short:
     // /anonymous?mastodon.social (rather than /anonymous?server=mastodon.social).
-    const sharedHost = this.route.snapshot.queryParamMap.keys[0] ?? 'mastodon.social';
-    const server = normalizeHostUrl(sharedHost) || 'https://mastodon.social';
+    const sharedHost = this.route.snapshot.queryParamMap.keys[0] ?? '';
+    const server = normalizeHostUrl(sharedHost) || defaultServer();
     const result = await probeServerAvailability(server);
     if (result.status === 'unreachable') {
       // Ask for a working server rather than entering against a dead one.

@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { normalizeHostUrl } from './host-url';
+import { homeServer } from './home-server';
 import { setItemFreeingCache } from '../storage/storage-quota';
 import { blueskyIsPrimaryKind } from '../../connections/bluesky/bluesky-identity-store';
 import { mastodonConnectorServer } from '../../connections/mastodon/mastodon-connector';
@@ -18,10 +19,20 @@ export interface ServerPreset {
  * mock-embedded build (the UI is served by the mock); the standalone Mocking Bird client
  * drops it so the user must choose a real instance.
  */
-export const SERVER_PRESETS: ServerPreset[] = [
-  ...(environment.allowThisServer ? [{ label: 'This server (mastodon_mock)', baseUrl: '' }] : []),
-  { label: 'mastodon.social', baseUrl: 'https://mastodon.social' },
-];
+export const SERVER_PRESETS: ServerPreset[] = presets(homeServer());
+
+/** The deployment's home server first, when it has one (home-server.ts). */
+export function presets(home: string | null): ServerPreset[] {
+  const list: ServerPreset[] = [
+    ...(environment.allowThisServer ? [{ label: 'This server (mastodon_mock)', baseUrl: '' }] : []),
+    { label: 'mastodon.social', baseUrl: 'https://mastodon.social' },
+  ];
+  if (!home) return list;
+  return [
+    { label: new URL(home).host, baseUrl: home },
+    ...list.filter((preset) => preset.baseUrl !== home),
+  ];
+}
 
 /** Holds the chosen instance base URL, persisted across reloads. */
 @Injectable({ providedIn: 'root' })
@@ -32,7 +43,7 @@ export class Server {
     this.normalize(
       blueskyIsPrimaryKind()
         ? (mastodonConnectorServer() ?? '')
-        : (localStorage.getItem(SERVER_KEY) ?? ''),
+        : (localStorage.getItem(SERVER_KEY) ?? homeServer() ?? ''),
     ),
   );
 

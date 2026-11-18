@@ -1,3 +1,4 @@
+import { defaultServer } from '../platform/http/home-server';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Context, Status } from '../platform/api/models';
@@ -93,10 +94,7 @@ export class BlogSearch {
     const found = this.byText
       ? await firstValueFrom(this.api.search(q, 'statuses', { limit: 40 }))
       : await firstValueFrom(
-          this.publicApi.searchPostsByHashtags(
-            this.server.baseUrl() || 'https://mastodon.social',
-            q,
-          ),
+          this.publicApi.searchPostsByHashtags(this.server.baseUrl() || defaultServer(), q),
         );
     const seen = new Set<string>();
     const statuses = found.statuses.filter((status) => {

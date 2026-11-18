@@ -16,6 +16,20 @@
     </p>
   </div>
 
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-unbird-landing [signedIn]="inShell">
+      <app-twitter-archive-import
+        [inviteLink]="inShell ? '/vi/twitter-to-mastodon/invite' : '/invites'"
+        [offerSignIn]="!inShell"
+      />
+      <app-twitter-import-next-steps [signedIn]="inShell" />
+    </app-unbird-landing>
+  } @placeholder {
+    <p class="muted">Đang tải công cụ nhập…</p>
+  }
+
   <ol class="steps">
     <li>
       <h2>Tải bản lưu trữ Twitter</h2>
@@ -39,18 +53,6 @@
       </p>
     </li>
   </ol>
-
-  <!-- Deferred: prerendering shows the placeholder, and the importer's
-       services (session, storage, Mastodon API) load only in the browser. -->
-  @defer (on immediate) {
-    <app-twitter-archive-import
-      [inviteLink]="inShell ? '/vi/twitter-to-mastodon/invite' : '/invites'"
-      [offerSignIn]="!inShell"
-    />
-    <app-twitter-import-next-steps [signedIn]="inShell" />
-  } @placeholder {
-    <p class="muted">Đang tải công cụ nhập…</p>
-  }
 
   <section class="questions">
     <h2>Câu hỏi</h2>

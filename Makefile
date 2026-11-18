@@ -2,6 +2,8 @@
 MAKEFLAGS += --no-print-directory
 MOCKINGBIRD_BASE_HREF ?= /
 MOCKINGBIRD_SEO ?= false
+# A self-hosted Mastodon instance this build belongs to (ops/MASTODON_INSTANCE.md).
+MOCKINGBIRD_HOME_SERVER ?=
 # Gate logs go in the ignored log/ folder. Reports, screenshots and Python
 # bytecode use ui/scripts/artifacts.mjs (OS temp or $MAWKINGBIRD_ARTIFACTS).
 export PYTHONPYCACHEPREFIX ?= $(shell node ui/scripts/artifacts.mjs pycache)
@@ -10,6 +12,7 @@ help:
 	@echo "make install | dev | mockingbird | test | test-integration | check"
 	@echo "Override MOCKINGBIRD_BASE_HREF for subpath builds. Use Git Bash on Windows."
 	@echo "Set MOCKINGBIRD_SEO=true to prerender public pages for production publishing."
+	@echo "Set MOCKINGBIRD_HOME_SERVER=https://your.instance to build for one Mastodon server."
 	@echo "make help-site | help-site-test   Static /help/ pages from docs/ (uv, wheels only)"
 	@echo "make news | news-check | news-link   Static /news/ blog from news/posts (fediblog engine)"
 install:
@@ -18,6 +21,7 @@ dev:
 	cd ui && npm start
 mockingbird: install
 	cd ui && MSYS_NO_PATHCONV=1 npm run $(if $(filter true,$(MOCKINGBIRD_SEO)),build:seo,build:mockingbird) -- --base-href "$(MOCKINGBIRD_BASE_HREF)"
+	node ui/scripts/set-home-server.mjs ui/dist-mockingbird/browser "$(MOCKINGBIRD_HOME_SERVER)"
 	$(if $(filter true,$(MOCKINGBIRD_SEO)),"$(MAKE)" help-site,)
 	$(if $(filter true,$(MOCKINGBIRD_SEO)),"$(MAKE)" news,)
 # The help site is static HTML built from docs/ with mkdocs.yml's nav; see

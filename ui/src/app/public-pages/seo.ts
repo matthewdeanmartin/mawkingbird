@@ -16,6 +16,7 @@ export const FRONT_PAGE_TAGLINE = 'Mastodon, Bluesky & RSS reader';
 /** Distinctive openings for the English focused tools; the registry title supplies the search phrase. */
 export const TOOL_TITLE_LEADS: Record<string, string> = {
   'twitter-import': 'Bring your old follows along',
+  'twitter-archive-tools': 'What to do with your Twitter archive',
   crosspost: 'One post, two conversations',
   'mastodon-analytics': 'See what resonates with your followers',
   'github-friends': 'Find the coders you already know',

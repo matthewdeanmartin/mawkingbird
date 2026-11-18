@@ -1,3 +1,4 @@
+import { defaultServer } from '../../platform/http/home-server';
 import {
   Component,
   DestroyRef,
@@ -436,7 +437,7 @@ export class FindSinglesPage {
       );
       return;
     }
-    const server = this.server.baseUrl() || 'https://mastodon.social';
+    const server = this.server.baseUrl() || defaultServer();
     void this.scan.start((cursor) =>
       this.publicApi.getTagTimeline(server, tag, cursor, 40, nativeOnly).pipe(
         tap({ error: (error) => this.scanError(error, 'public-origin') }),

@@ -1,3 +1,4 @@
+import { defaultServer } from '../../platform/http/home-server';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { Auth } from '../../platform/session/auth';
@@ -19,7 +20,7 @@ export const inviteAccessGuard: CanActivateFn = async (route) => {
   }
 
   const sharedHost = route.queryParamMap.keys[0] ?? 'mastodon.social';
-  const server = normalizeHostUrl(sharedHost) || 'https://mastodon.social';
+  const server = normalizeHostUrl(sharedHost) || defaultServer();
   const result = await probeServerAvailability(server);
   if (result.status !== 'available') {
     return router.parseUrl('/login');

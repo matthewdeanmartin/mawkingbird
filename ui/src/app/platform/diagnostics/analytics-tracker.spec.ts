@@ -3,7 +3,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { AnalyticsTracker, sanitizePath } from './analytics-tracker';
+import { AnalyticsTracker, countsForThisSite, sanitizePath } from './analytics-tracker';
 import { ClientPrefs } from '../storage/client-prefs';
 
 describe('sanitizePath', () => {
@@ -201,5 +201,16 @@ describe('AnalyticsTracker opt-out', () => {
     expect(counted).toEqual(['/features/']);
     router.events.next(new NavigationEnd(3, '/for/readers#intro', '/for/readers#intro'));
     expect(counted).toEqual(['/features/', '/for/readers']);
+  });
+});
+
+describe('countsForThisSite', () => {
+  it('counts the official site (and local development), never a fork or self-host', () => {
+    expect(countsForThisSite('mawkingbird.com')).toBe(true);
+    expect(countsForThisSite('www.mawkingbird.com')).toBe(true);
+    expect(countsForThisSite('localhost')).toBe(true);
+    expect(countsForThisSite('someone.github.io')).toBe(false);
+    expect(countsForThisSite('blog.example.org')).toBe(false);
+    expect(countsForThisSite('mawkingbird.com.evil.test')).toBe(false);
   });
 });

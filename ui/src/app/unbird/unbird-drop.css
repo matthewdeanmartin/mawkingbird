@@ -1,0 +1,130 @@
+:host {
+  display: block;
+}
+.target {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 36px 20px;
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  background: var(--col-bg);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+}
+.target:hover,
+.target:focus-within,
+.target.dragging {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.target.busy {
+  cursor: progress;
+}
+.icon {
+  width: 44px;
+  height: 44px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.hint {
+  color: var(--muted);
+}
+.choose {
+  margin-top: 8px;
+}
+.under {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-top: 10px;
+  font-size: 0.92rem;
+}
+.folder {
+  cursor: pointer;
+}
+.link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+details summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+details p {
+  margin: 8px 0 0;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.get {
+  max-width: 420px;
+}
+.error {
+  margin: 10px 0 0;
+  color: var(--ds-error-text);
+}
+.loaded {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+}
+.who {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.counts {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+}
+.privacy {
+  margin-top: 12px;
+  font-size: 0.88rem;
+}
+.privacy summary svg {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 0.88rem;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

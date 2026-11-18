@@ -1178,6 +1178,14 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Legacy key from the superseded Raindrop OAuth flow. Only ever deleted now, never written; listed so it is classified if it lingers.',
   },
 
+  {
+    base: 'mockingbird_oauth_signup',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'secret',
+    note: 'In-flight Mastodon OAuth for a sign-up that returns (prompt=create): client secret, PKCE verifier and state, shared across tabs because the confirmation email opens a new one. Consumed by the callback; ignored after two hours.',
+  },
+
   // ---- sessionStorage: dies with the tab, never exported ----
   {
     base: 'mastodon_mock_oauth_app',

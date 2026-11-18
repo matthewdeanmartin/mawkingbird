@@ -16,6 +16,20 @@
     </p>
   </div>
 
+  <!-- Deferred: prerendering shows the placeholder, and the importer's
+       services (session, storage, Mastodon API) load only in the browser. -->
+  @defer (on immediate) {
+    <app-unbird-landing [signedIn]="inShell">
+      <app-twitter-archive-import
+        [inviteLink]="inShell ? '/nl/twitter-contacten-naar-mastodon/invite' : '/invites'"
+        [offerSignIn]="!inShell"
+      />
+      <app-twitter-import-next-steps [signedIn]="inShell" />
+    </app-unbird-landing>
+  } @placeholder {
+    <p class="muted">De importfunctie laden…</p>
+  }
+
   <ol class="steps">
     <li>
       <h2>Download je Twitter-archief</h2>
@@ -40,18 +54,6 @@
       </p>
     </li>
   </ol>
-
-  <!-- Deferred: prerendering shows the placeholder, and the importer's
-       services (session, storage, Mastodon API) load only in the browser. -->
-  @defer (on immediate) {
-    <app-twitter-archive-import
-      [inviteLink]="inShell ? '/nl/twitter-contacten-naar-mastodon/invite' : '/invites'"
-      [offerSignIn]="!inShell"
-    />
-    <app-twitter-import-next-steps [signedIn]="inShell" />
-  } @placeholder {
-    <p class="muted">De importfunctie laden…</p>
-  }
 
   <section class="questions">
     <h2>Vragen</h2>
