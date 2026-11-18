@@ -2,7 +2,11 @@ import { MediaAttachment, Status } from '../../platform/api/models';
 import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
 
 export interface VideoSource {
-  kind: 'native' | 'youtube';
+  /**
+   * `peertube` is a link to a PeerTube video: feeds show its poster, and
+   * Watch resolves it to a `native` stream from the instance's public API.
+   */
+  kind: 'native' | 'youtube' | 'peertube';
   key: string;
   url: string;
   title: string;
@@ -12,6 +16,34 @@ export interface VideoSource {
   start?: number;
   /** A single image accompanying a YouTube link serves as its poster, not a second media row. */
   posterAttachmentId?: string;
+  /** For `peertube`: the instance and the video's UUID or short UUID. */
+  peertube?: { host: string; id: string };
+}
+
+/** A PeerTube video ID: a UUID, or the 22-character short UUID of `/w/` links. */
+export const PEERTUBE_ID =
+  /^(?:[\da-fA-F]{8}(?:-[\da-fA-F]{4}){3}-[\da-fA-F]{12}|[1-9A-HJ-NP-Za-km-z]{22})$/;
+
+/** A PeerTube watch link (`/w/<id>` or `/videos/watch/<uuid>`) on any https host. */
+export function peertubeSource(raw: string): VideoSource | null {
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== 'https:' || url.username || url.password || url.port) return null;
+    const id =
+      /^\/w\/([^/]+)\/?$/.exec(url.pathname)?.[1] ??
+      /^\/videos\/(?:watch|embed)\/([^/]+)\/?$/.exec(url.pathname)?.[1];
+    if (!id || !PEERTUBE_ID.test(id)) return null;
+    const host = url.hostname.toLowerCase();
+    return {
+      kind: 'peertube',
+      key: `peertube:${host}/${id}`,
+      url: `https://${host}/w/${id}`,
+      title: 'PeerTube',
+      peertube: { host, id },
+    };
+  } catch {
+    return null;
+  }
 }
 
 const YOUTUBE_HOSTS = new Set([
@@ -121,7 +153,9 @@ export function statusVideo(status: Status): VideoSource | null {
           posterAttachmentId: image.id,
         }
       : source;
-  const cardSource = status.card ? youtubeSource(status.card.url) : null;
+  const cardSource = status.card
+    ? (youtubeSource(status.card.url) ?? peertubeSource(status.card.url))
+    : null;
   if (cardSource) {
     return withPoster({
       ...cardSource,
@@ -132,7 +166,8 @@ export function statusVideo(status: Status): VideoSource | null {
   if (!status.content?.includes('<a')) return null;
   const doc = new DOMParser().parseFromString(status.content, 'text/html');
   for (const anchor of Array.from(doc.querySelectorAll('a[href]'))) {
-    const source = youtubeSource(anchor.getAttribute('href') ?? '');
+    const href = anchor.getAttribute('href') ?? '';
+    const source = youtubeSource(href) ?? peertubeSource(href);
     if (source) return withPoster(source);
   }
   return null;
@@ -157,6 +192,10 @@ export function watchParams(
   return {
     post,
     server: new URL(server || location.origin).origin,
-    ...(attachmentId ? { attachment: attachmentId } : { youtube: source.videoId! }),
+    ...(attachmentId
+      ? { attachment: attachmentId }
+      : source.kind === 'peertube'
+        ? { peertube: source.peertube!.id }
+        : { youtube: source.videoId! }),
   };
 }

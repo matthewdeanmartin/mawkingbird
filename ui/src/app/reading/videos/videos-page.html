@@ -1,34 +1,44 @@
 <div class="videos-page">
   <aside class="subscriptions">
-    <h1>{{ 'videos.heading' | transloco }}</h1>
+    <h1>{{ 'videos.subscriptionsHeading' | transloco }}</h1>
     <app-video-subscriptions-panel [selected]="selected()" (opened)="results.set(null)" />
   </aside>
   <section class="video-feed" [attr.aria-label]="'videos.title' | transloco">
     <header>
-      <button mbButton variant="outline" type="button" (click)="customizing.set(true)">
-        {{ 'videos.customize' | transloco }}
-      </button>
-      <button mbButton variant="outline" type="button" [disabled]="loading()" (click)="load(true)">
-        {{ 'videos.refresh' | transloco }}
-      </button>
-      <button
-        mbButton
-        variant="outline"
-        type="button"
-        [attr.aria-pressed]="!savedOnly() && !selected() && results() === null"
-        (click)="mainFeed()"
-      >
-        {{ 'videos.main' | transloco }}
-      </button>
-      <button
-        mbButton
-        variant="outline"
-        type="button"
-        [attr.aria-pressed]="savedOnly() && results() === null"
-        (click)="mainFeed(true)"
-      >
-        {{ 'videos.saved' | transloco }}
-      </button>
+      <!-- One toolbar: which videos (pressed), then the page's actions. -->
+      <mb-toolbar density="compact" [label]="'videos.viewLabel' | transloco">
+        <button
+          type="button"
+          mbToolbarButton
+          [pressed]="!savedOnly() && !selected() && results() === null"
+          (click)="mainFeed()"
+        >
+          {{ 'videos.all' | transloco }}
+        </button>
+        <button
+          type="button"
+          mbToolbarButton
+          [pressed]="savedOnly() && results() === null"
+          (click)="mainFeed(true)"
+        >
+          {{ 'videos.saved' | transloco }}
+        </button>
+        <button
+          type="button"
+          mbToolbarButton
+          [pressed]="showShorts()"
+          [title]="'videos.shortsTitle' | transloco"
+          (click)="showShorts.set(!showShorts())"
+        >
+          {{ 'videos.shorts' | transloco }}
+        </button>
+        <button type="button" mbToolbarButton [disabled]="loading()" (click)="load(true)">
+          ↻ {{ 'videos.refresh' | transloco }}
+        </button>
+        <button type="button" mbToolbarButton (click)="customizing.set(true)">
+          {{ 'videos.customize' | transloco }}
+        </button>
+      </mb-toolbar>
     </header>
     @if (results() === null) {
       <div class="sort-bar">
@@ -65,8 +75,11 @@
           </button>
         </form>
       } @else {
-        <p>{{ 'videos.plusSearch' | transloco }}</p>
-        <a routerLink="/settings/mawkingbird-plus">{{ 'videos.plus' | transloco }}</a>
+        <!-- YouTube search runs in the app, which asks YouTube directly. -->
+        <p>{{ 'videos.nativeSearch' | transloco }}</p>
+        <a mbButton variant="outline" routerLink="/settings/app">{{
+          'videos.installNative' | transloco
+        }}</a>
       }
       @if (searchError()) {
         <!-- Native has no Plus account to check: YouTube itself refused or was unreachable. -->
@@ -82,7 +95,13 @@
       @for (item of found; track item.id) {
         <article class="video-post">
           <h3>{{ item.title }}</h3>
-          <p class="muted">{{ item.channelTitle }}</p>
+          <p class="muted">
+            @if (item.channelId) {
+              <a [routerLink]="['/videos/channel', item.channelId]">{{ item.channelTitle }}</a>
+            } @else {
+              {{ item.channelTitle }}
+            }
+          </p>
           @if (searchSource(item); as source) {
             <app-video-player-controls [source]="source" [inline]="true" />
             <footer>
@@ -139,9 +158,13 @@
       @for (item of visible(); track item.id) {
         <article class="video-post" [class.watched]="reads.isRead(item.id)">
           <div class="byline">
-            <a routerLink="/videos" [queryParams]="{ channel: item.channelId }">{{
-              item.channelTitle
-            }}</a>
+            @if (item.channelId) {
+              <a routerLink="/videos" [queryParams]="{ channel: item.channelId }">{{
+                item.channelTitle
+              }}</a>
+            } @else {
+              <span>{{ item.channelTitle || ('videos.fromFollows' | transloco) }}</span>
+            }
             @if (item.publishedAt) {
               <time [attr.datetime]="item.publishedAt">{{
                 item.publishedAt | date: 'medium'
@@ -150,6 +173,25 @@
           </div>
           <h3>{{ item.title }}</h3>
           <app-video-player-controls [source]="item.source" [inline]="true" />
+          @if (item.sharedBy?.length) {
+            <p class="shared-by">
+              @for (post of item.sharedBy!.slice(0, 3); track post.id) {
+                <img
+                  [src]="
+                    (post.reblog ?? post).account.avatar_static ||
+                    (post.reblog ?? post).account.avatar
+                  "
+                  [alt]="''"
+                  width="24"
+                  height="24"
+                />
+              }
+              <span>{{ 'videos.sharedBy' | transloco: { names: sharedNames(item) } }}</span>
+              <a routerLink="/watch" [queryParams]="watchWith(item, item.sharedBy![0])">{{
+                'videos.watchWithReplies' | transloco
+              }}</a>
+            </p>
+          }
           <footer>
             <button
               mbButton

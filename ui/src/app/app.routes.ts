@@ -1326,6 +1326,13 @@ export const routes: Routes = [
           import('./reading/videos/watch-parties-page').then((m) => m.WatchPartiesPage),
       },
       {
+        // A YouTube channel: its uploads (RSS, open to everyone), the double
+        // subscribe and its creator on Mastodon. See spec/youtube-client.md, S3.
+        path: 'videos/channel/:channelId',
+        title: 'Channel',
+        loadComponent: () => import('./reading/videos/channel-page').then((m) => m.ChannelPage),
+      },
+      {
         path: 'videos/queue',
         title: 'Watch queue',
         loadComponent: () =>

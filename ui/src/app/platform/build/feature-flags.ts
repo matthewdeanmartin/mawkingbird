@@ -27,6 +27,8 @@ export type FeatureFlagId =
   | 'connector-link-shortener'
   | 'connector-cors-proxy'
   | 'connector-rss'
+  | 'connector-wikidata'
+  | 'connector-sponsorblock'
   | 'proxy-mawkingbird-plus'
   | 'proxy-allorigins'
   | 'proxy-corssh'
@@ -115,6 +117,10 @@ interface StoredFeatureFlags {
 // i18n flags.connectorCorsProxy.description: Relaying requests for sites that refuse browsers. Turning this off also stops the connectors that depend on it.
 // i18n flags.connectorRss.label: RSS feeds
 // i18n flags.connectorRss.description: Subscribing to RSS and Atom feeds, and merging them into your home timeline.
+// i18n flags.connectorWikidata.label: Wikidata
+// i18n flags.connectorSponsorblock.label: SponsorBlock
+// i18n flags.connectorSponsorblock.description: Marking sponsor reads, intros and self-promotion in YouTube videos so you can skip them. Only part of a scrambled video ID is sent.
+// i18n flags.connectorWikidata.description: Looking up a YouTube channel on Wikidata to find the creator's Mastodon account. Only the channel's ID is sent.
 // i18n flags.proxyMawkingbirdPlus.label: Mawkingbird Plus proxy
 // i18n flags.proxyMawkingbirdPlus.description: Offer the supporter tier of the Mawkingbird proxy. Needs an account and a subscription; the free Mawkingbird proxy is unaffected either way.
 // i18n flags.proxyAllorigins.label: AllOrigins proxy
@@ -274,6 +280,20 @@ export const FEATURE_FLAGS: readonly FeatureFlagDefinition[] = [
     id: 'connector-rss',
     labelKey: 'flags.connectorRss.label',
     descriptionKey: 'flags.connectorRss.description',
+    defaultState: 'production',
+    group: 'connectors',
+  },
+  {
+    id: 'connector-wikidata',
+    labelKey: 'flags.connectorWikidata.label',
+    descriptionKey: 'flags.connectorWikidata.description',
+    defaultState: 'production',
+    group: 'connectors',
+  },
+  {
+    id: 'connector-sponsorblock',
+    labelKey: 'flags.connectorSponsorblock.label',
+    descriptionKey: 'flags.connectorSponsorblock.description',
     defaultState: 'production',
     group: 'connectors',
   },

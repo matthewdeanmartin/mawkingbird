@@ -39,6 +39,7 @@ LINKS = (
     Link("Twitter post", "twitter/:user/status/:id", "/twitter/alice/status/99", "src/app/posts/copy-link/deep-links.ts", "/twitter/", "copied"),
     Link("Twitter account", "twitter/:user", "/twitter/alice", "src/app/posts/copy-link/deep-links.ts", "/twitter/", "copied"),
     Link("Watch video", "watch", "/watch?post=bsky%3Aat%3A%2F%2Fdid%3Aplc%3Aalice%2Fapp.bsky.feed.post%2F3kxyz&attachment=v1", "src/app/reading/video-player/media-source.ts", "watchParams", "watch"),
+    Link("YouTube channel", "videos/channel/:channelId", "/videos/channel/UCy0tKL1T7wFoYcxCe0xjN6Q", "src/app/reading/watch/watch-video-panel.ts", "'/videos/channel'", "regex"),
     Link("Mastodon thread", "statuses/:id", "/statuses/123", "src/app/posts/status-card/status-card.ts", "'/statuses'", "regex"),
     Link("Mastodon reader", "read/:id", "/read/123", "src/app/reading/thread/thread.html", "['/read'", "regex"),
     Link("Mastodon profile", "accounts/:id", "/accounts/123", "src/app/posts/status-card/status-card.ts", "'/accounts'", "regex"),

@@ -215,7 +215,7 @@
     {
       "file": "ui/src/app/reading/videos/watch-queue-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "Page Header, Content State and MbButton cover the queue page; rows are a native ordered list. Preserve play order, disabled Move up/down at the ends, confirmation before Clear, Watch links built only from validated Watch params and the untitled fallback."
+      "nextStep": "Page Header, Content State and MbButton cover the queue page; rows are a native ordered list. Preserve play order, disabled Move up/down at the ends, confirmation before Clear, Watch links built only from validated Watch params and the untitled fallback. Recently seen (below the queue) reuses the queue rows with MbButton Add and outline Watch."
     },
     {
       "file": "ui/src/app/shell/mode-switch.ts",
@@ -1525,7 +1525,7 @@
     {
       "file": "ui/src/app/reading/videos/videos-page.html",
       "disposition": "partial adoption",
-      "nextStep": "Refresh, search, subscribe, save and watched actions use MbButton and the shared VideoPlayer. Labelled search field/select and channel links retain native semantics; migrate those controls in a separate design pass."
+      "nextStep": "Refresh, search, subscribe, save and watched actions use MbButton and the shared VideoPlayer. Labelled search field/select and channel links retain native semantics; migrate those controls in a separate design pass. The feed header is one compact Toolbar: All videos, Saved and Shorts as pressed buttons, then Refresh and Customize (it replaced a row of outline buttons). The \"shared by\" avatar line under a card is local content."
     },
     {
       "file": "ui/src/app/publishing/post-permissions/post-permissions.ts",
@@ -3375,12 +3375,17 @@
     {
       "file": "ui/src/app/reading/watch/watch-video-panel.ts",
       "disposition": "adopted scope",
-      "nextStep": "MbButton (solid/outline, small) for Subscribe, Share and Find posts; Dialog around the shared Compose for the share sheet; Disclosure for About this video. Found posts, chapter cue links and the description stay local text content."
+      "nextStep": "MbButton (solid/outline, small) for Subscribe, Channel, Share and Find posts; the shared FollowButton for the creator; Dialog around the shared Compose for the share sheet; Disclosure for About this video. Found posts, chapter cue links and the description stay local text content. Chapters are native full-width text-row buttons (seek, not a Button presentation), like party chat lines. The SponsorBlock strip is local content, with an MbButton Skip."
     },
     {
       "file": "ui/src/app/reading/watch/youtube-comments.ts",
       "disposition": "adopted scope",
       "nextStep": "MbButton (outline/link, small) for retry, Show, Quote and More comments. The comment list, creator badge and byline are local read-only text rows, not post cards: YouTube comments are not Mastodon statuses."
+    },
+    {
+      "file": "ui/src/app/reading/videos/channel-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "PageHeader for the channel name and handle; MbButton (solid/outline) for Subscribe, Open on YouTube and Older videos; the shared FollowButton for the creator's Mastodon account. The upload grid (thumbnail, duration badge, title, age) and the creator identity line stay local content."
     }
   ]
 }

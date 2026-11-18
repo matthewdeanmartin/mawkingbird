@@ -828,8 +828,9 @@ describe('Shell app-mode nav', () => {
     fixture.detectChanges();
     expect(tabs(fixture)).toEqual([
       '/home',
-      '/videos/fedi',
+      // Subscriptions, the mode's landing, comes first (spec/youtube-client.md, S4).
       '/videos',
+      '/videos/fedi',
       '/videos/queue',
       '/videos/search',
       '/bookmarks?view=video',
@@ -864,6 +865,8 @@ describe('Shell app-mode nav', () => {
       '/videos',
       '/singles',
       '/forum',
+      // Twitter to Mastodon, last (spec/sprint/unbird-2026-11.md).
+      '/unbird',
     ]);
     expect(rows.filter((row) => row.getAttribute('aria-current') === 'true')).toHaveLength(1);
     expect(rows[2].getAttribute('aria-current')).toBe('true');

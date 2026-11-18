@@ -13,6 +13,7 @@ import { MbDialog } from '../../design-system/dialog/dialog';
 // i18n videos.title: Video feeds
 // i18n videos.proxyHelp: About video subscriptions
 // i18n videos.subscriptions: Subscriptions
+// i18n videos.channelPage: Channel
 // i18n videos.paste: YouTube channel link, @handle or channel ID
 // i18n videos.subscribe: Subscribe
 // i18n videos.subscribing: Finding channel…
@@ -89,6 +90,14 @@ import { MbDialog } from '../../design-system/dialog/dialog';
                 (change)="subs.setEnabled(feed.id, $any($event.target).checked)"
               />
               {{ 'videos.enable' | transloco }}</label
+            >
+            <a
+              mbButton
+              variant="link"
+              size="small"
+              [routerLink]="['/videos/channel', feed.id]"
+              (click)="opened.emit()"
+              >{{ 'videos.channelPage' | transloco }}</a
             >
             <button
               mbButton

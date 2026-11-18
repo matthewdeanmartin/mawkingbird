@@ -11,10 +11,109 @@ import {
 } from '../../platform/http/platform-http';
 import {
   chaptersFromDescription,
+  YoutubeChannelInfo,
+  YoutubeChannelVideo,
+  YoutubeChapter,
   YoutubeComment,
   YoutubeCommentPage,
   YoutubeVideoDetails,
+  YoutubeVideoPage,
 } from './youtube-details';
+
+/**
+ * YouTube's chapter markers from the watch-next response: the creator's
+ * (`DESCRIPTION_CHAPTERS`) before YouTube's automatic ones (`AUTO_CHAPTERS`).
+ * Read loosely, because this structure changes with YouTube's player.
+ */
+interface ChapterMarker {
+  marker_key?: string;
+  value?: { chapters?: { title?: { toString(): string }; time_range_start_millis?: number }[] };
+}
+
+function chapterMarkers(
+  info: unknown,
+): { chapters: YoutubeChapter[]; source: 'creator' | 'auto' } | null {
+  const maps = (
+    info as {
+      player_overlays?: {
+        decorated_player_bar?: { player_bar?: { markers_map?: ChapterMarker[] } };
+      };
+    }
+  ).player_overlays?.decorated_player_bar?.player_bar?.markers_map;
+  if (!Array.isArray(maps)) return null;
+  for (const [key, source] of [
+    ['DESCRIPTION_CHAPTERS', 'creator'],
+    ['AUTO_CHAPTERS', 'auto'],
+  ] as const) {
+    const chapters = (maps.find((map) => map.marker_key === key)?.value?.chapters ?? []).flatMap(
+      (chapter): YoutubeChapter[] => {
+        const ms = chapter.time_range_start_millis;
+        const title = chapter.title?.toString().trim() ?? '';
+        return typeof ms === 'number' && Number.isFinite(ms) && ms >= 0 && title
+          ? [{ seconds: Math.floor(ms / 1000), title }]
+          : [];
+      },
+    );
+    if (chapters.length >= 2) return { chapters, source };
+  }
+  return null;
+}
+
+type Loose = Record<string, unknown> | undefined;
+const text = (value: unknown): string =>
+  value === undefined || value === null
+    ? ''
+    : String((value as { toString(): string }).toString()).trim();
+
+/** A channel-tab upload (YouTube's `LockupView`, or the older `Video`/`GridVideo`). */
+function channelVideo(node: unknown): YoutubeChannelVideo | null {
+  const item = node as Loose;
+  if (!item) return null;
+  const videoId = text(item['content_id'] ?? item['video_id'] ?? item['id']);
+  if (!/^[\w-]{11}$/.test(videoId)) return null;
+  const meta = item['metadata'] as Loose;
+  const title = text(meta?.['title'] ?? item['title']);
+  const rows = ((meta?.['metadata'] as Loose)?.['metadata_rows'] as Loose[] | undefined) ?? [];
+  const parts = rows.flatMap((row) =>
+    ((row?.['metadata_parts'] as Loose[] | undefined) ?? []).map((part) => text(part?.['text'])),
+  );
+  const overlays = ((item['content_image'] as Loose)?.['overlays'] as Loose[] | undefined) ?? [];
+  const badges = overlays.flatMap((overlay) =>
+    ((overlay?.['badges'] as Loose[] | undefined) ?? []).map((badge) => text(badge?.['text'])),
+  );
+  return {
+    videoId,
+    title,
+    views: parts.find((part) => /view/i.test(part)) ?? text(item['view_count']),
+    age: parts.find((part) => /ago|streamed|premiere/i.test(part)) ?? text(item['published']),
+    duration: badges.find((badge) => /^\d+(:\d{2}){1,2}$/.test(badge)) ?? text(item['length_text']),
+  };
+}
+
+function videoPage(page: {
+  videos: unknown[];
+  has_continuation: boolean;
+  getContinuation(): Promise<unknown>;
+}): YoutubeVideoPage {
+  return {
+    videos: page.videos.flatMap((node) => channelVideo(node) ?? []),
+    more: page.has_continuation
+      ? async () => videoPage((await page.getContinuation()) as Parameters<typeof videoPage>[0])
+      : null,
+  };
+}
+
+/** About links come without a scheme (`mas.to/@x`); only https web links are kept. */
+export function aboutLink(raw: string): string | null {
+  const value = raw.trim();
+  if (!value) return null;
+  try {
+    const url = new URL(/^[a-z][a-z0-9+.-]*:/i.test(value) ? value : `https://${value}`);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : null;
+  } catch {
+    return null;
+  }
+}
 
 type CommentsThread = Awaited<ReturnType<import('youtubei.js/web').Innertube['getComments']>>;
 
@@ -286,8 +385,15 @@ export class YoutubeFeeds {
   async details(videoId: string): Promise<YoutubeVideoDetails> {
     if (!/^[\w-]{11}$/.test(videoId)) throw new Error('Invalid YouTube video ID');
     if (!this.canReadDetails()) throw new Error('This YouTube feature needs the Mawkingbird app.');
-    const info = (await (await this.session()).getBasicInfo(videoId)).basic_info;
+    const session = await this.session();
+    // `getInfo` adds the watch-next read (`next`), which carries YouTube's own
+    // chapter markers, including auto-generated ones. If that read fails, the
+    // player details alone still answer, with chapters from the description.
+    const full = await session.getInfo(videoId).catch(() => null);
+    const info = (full ?? (await session.getBasicInfo(videoId))).basic_info;
     const description = info.short_description ?? '';
+    const marked = full ? chapterMarkers(full) : null;
+    const described = chaptersFromDescription(description);
     return {
       id: videoId,
       title: info.title ?? '',
@@ -297,7 +403,9 @@ export class YoutubeFeeds {
       description,
       familySafe: info.is_family_safe ?? null,
       live: !!info.is_live,
-      chapters: chaptersFromDescription(description),
+      ...(marked
+        ? { chapters: marked.chapters, chapterSource: marked.source }
+        : { chapters: described, chapterSource: described.length ? 'description' : null }),
     };
   }
 
@@ -310,6 +418,44 @@ export class YoutubeFeeds {
     if (!/^[\w-]{11}$/.test(videoId)) throw new Error('Invalid YouTube video ID');
     if (!this.canReadDetails()) throw new Error('This YouTube feature needs the Mawkingbird app.');
     return commentPage(await (await this.session()).getComments(videoId, 'TOP_COMMENTS'));
+  }
+
+  /**
+   * A channel's page on Native: handle, About links (where creators list their
+   * Mastodon account) and uploads beyond the 15 its RSS feed carries. The
+   * About tab is optional: without it the channel still answers, link-less.
+   */
+  async channel(id: string, options: { uploads?: boolean } = {}): Promise<YoutubeChannelInfo> {
+    if (!CHANNEL_ID.test(id)) throw new Error('Invalid YouTube channel ID');
+    if (!this.canReadDetails()) throw new Error('This YouTube feature needs the Mawkingbird app.');
+    const channel = await (await this.session()).getChannel(id);
+    const meta = channel.metadata as unknown as Loose;
+    const vanity = text(meta?.['vanity_channel_url']);
+    const handle = /\/(@[\w.-]+)\/?$/.exec(vanity)?.[1] ?? null;
+    const [about, uploads] = await Promise.all([
+      channel.getAbout().catch(() => null),
+      options.uploads === false
+        ? ({ videos: [], more: null } as YoutubeVideoPage)
+        : channel
+            .getVideos()
+            .then((page) => videoPage(page as unknown as Parameters<typeof videoPage>[0]))
+            .catch((): YoutubeVideoPage => ({ videos: [], more: null })),
+    ]);
+    const aboutNode = about as unknown as Loose;
+    const aboutMeta = (aboutNode?.['metadata'] as Loose) ?? aboutNode;
+    const links = ((aboutMeta?.['links'] as Loose[] | undefined) ?? []).flatMap((link) => {
+      const url = aboutLink(text(link?.['link']));
+      return url ? [{ title: text(link?.['title']), url }] : [];
+    });
+    return {
+      id,
+      title: text(meta?.['title']),
+      handle,
+      description: text(aboutMeta?.['description'] ?? meta?.['description']),
+      subscribers: text(aboutMeta?.['subscriber_count']),
+      links,
+      uploads,
+    };
   }
 
   async search(query: string, type: 'video' | 'channel'): Promise<YoutubeSearchItem[]> {

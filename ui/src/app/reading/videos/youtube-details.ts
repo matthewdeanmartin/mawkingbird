@@ -10,6 +10,11 @@ export interface YoutubeVideoDetails {
   familySafe: boolean | null;
   live: boolean;
   chapters: YoutubeChapter[];
+  /**
+   * Where the chapters came from: the creator's own, YouTube's automatic ones,
+   * or timestamps found in the description when YouTube gave no markers.
+   */
+  chapterSource: 'creator' | 'auto' | 'description' | null;
 }
 
 export interface YoutubeChapter {
@@ -100,4 +105,31 @@ export function keywordFilterAction(
     if (filter.filter_action === 'warn') action = 'warn';
   }
   return action;
+}
+
+/** One upload in a channel's list, as YouTube shows it (relative age, views). */
+export interface YoutubeChannelVideo {
+  videoId: string;
+  title: string;
+  age: string;
+  views: string;
+  duration: string;
+}
+
+export interface YoutubeVideoPage {
+  videos: YoutubeChannelVideo[];
+  more: (() => Promise<YoutubeVideoPage>) | null;
+}
+
+/** A channel's own page: Native only, read anonymously. */
+export interface YoutubeChannelInfo {
+  id: string;
+  title: string;
+  /** `@handle`, when the channel has one. */
+  handle: string | null;
+  description: string;
+  subscribers: string;
+  /** The channel's About links, as absolute https URLs. */
+  links: { title: string; url: string }[];
+  uploads: YoutubeVideoPage;
 }

@@ -11,6 +11,13 @@
   flex-direction: column;
   width: 100%;
 }
+.peertube-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+  color: var(--muted);
+}
 video,
 iframe,
 img {

@@ -13,7 +13,7 @@ import {
 // i18n shell.modeNav.rss.kits: Kits
 // i18n shell.modeNav.rss.manage: Manage
 // i18n shell.modeNav.video.fedi: Posts
-// i18n shell.modeNav.video.youtube: YouTube
+// i18n shell.modeNav.video.subscriptions: Subscriptions
 // i18n shell.modeNav.video.queue: Queue
 // i18n shell.modeNav.video.search: Search
 // i18n shell.modeNav.video.saved: Saved
@@ -358,18 +358,20 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
   ],
   video: [
     {
+      // The landing: subscribed channels plus videos people you follow shared
+      // (spec/youtube-client.md, S4). The id stays for saved tab layouts.
+      id: 'youtube',
+      labelKey: 'shell.modeNav.video.subscriptions',
+      icon: 'M3 6h18v12H3zM10 9.5v5l4-2.5z',
+      link: '/videos',
+      active: (url) => pathOf(url) === '/videos',
+    },
+    {
       id: 'fedi',
       labelKey: 'shell.modeNav.video.fedi',
       icon: 'M4 4h16v16H4zM8 4v16M16 4v16M4 8h4M4 12h4M4 16h4M16 8h4M16 12h4M16 16h4',
       link: '/videos/fedi',
       active: onPath('/videos/fedi'),
-    },
-    {
-      id: 'youtube',
-      labelKey: 'shell.modeNav.video.youtube',
-      icon: 'M3 6h18v12H3zM10 9.5v5l4-2.5z',
-      link: '/videos',
-      active: (url) => pathOf(url) === '/videos',
     },
     {
       id: 'queue',

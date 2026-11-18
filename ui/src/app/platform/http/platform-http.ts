@@ -55,6 +55,23 @@ export const PLATFORM_YOUTUBE = new InjectionToken<NativeYoutubeTransport | null
   { providedIn: 'root', factory: () => null },
 );
 
+/**
+ * Wikidata's answer for one YouTube channel ID (its Mastodon address), as
+ * SPARQL JSON. Native asks through Rust (the webview may not fetch remote
+ * hosts); browsers fetch Wikidata directly, which allows any origin.
+ */
+export const PLATFORM_WIKIDATA = new InjectionToken<
+  ((channelId: string) => Promise<string>) | null
+>('PLATFORM_WIKIDATA', { providedIn: 'root', factory: () => null });
+
+/**
+ * SponsorBlock segments for a 4-hex-digit hash prefix, as JSON. Native asks
+ * through Rust; browsers fetch SponsorBlock directly (it allows any origin).
+ */
+export const PLATFORM_SPONSORBLOCK = new InjectionToken<
+  ((prefix: string) => Promise<string>) | null
+>('PLATFORM_SPONSORBLOCK', { providedIn: 'root', factory: () => null });
+
 import type { NativeConnectorTransport } from './connector-types';
 import type { NativeTwitterTransport } from './connector-types';
 import type { NativeWebmentionTransport } from './connector-types';

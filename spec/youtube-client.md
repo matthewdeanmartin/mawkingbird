@@ -1,6 +1,112 @@
 # Video client: YouTube without a YouTube account, PeerTube playback
 
-Status: S1–S2 implemented (pair A), live tests pending · 2026-11-18. S3–S6 proposed.
+Status: S1–S4 implemented, live tests pending · 2026-11-18. Pair B gates on the
+combined tree; S5–S6 proposed.
+
+### S4 evidence (2026-11-18)
+
+- Owner feedback folded in:
+  - The web no longer upsells Plus for YouTube search. It says to search from
+    the app and links **Install Mawkingbird Native** (`/settings/app`), using
+    new keys. The web Plus path still works.
+  - Video search's hand-offs ("Search all posts", Google) are a labelled
+    "Search elsewhere" list of plain links, not peer buttons.
+  - The empty queue's copy no longer repeats "queue".
+- Landing: the video mode's first tab is **Subscriptions** (`/videos`).
+  - One page of Home's posts from people you follow is merged into the RSS
+    uploads by video ID (`mergeFollowedPosts`). A post adds to "Shared by"
+    (avatars plus "Watch with their replies"), or becomes its own item for a
+    video you aren't subscribed to.
+  - Shorts are flagged from `/shorts/` links and hidden unless toggled.
+  - The header is one compact Toolbar (All videos, Saved, Shorts, Refresh,
+    Customize).
+- **Recently seen** (owner request) on the watch queue:
+  - Post history entries now note the video (Watch params, title and poster;
+    never a media URL; `seen-videos.ts`).
+  - The queue page offers the newest six not already queued, below the queue,
+    with Add and Watch.
+  - It follows the History setting. There is no new storage key, and the
+    registry note is updated.
+- Player bridge: the YouTube embed gets `enablejsapi=1&origin=…`.
+  - Watch reads the playhead from `infoDelivery` messages, accepted only from
+    the `youtube-nocookie.com` origin and that exact frame, and only a finite
+    numeric time.
+  - It seeks with a `postMessage` command. Native videos use `timeupdate` and
+    `currentTime`. No Google script runs in the page.
+  - Chapters now seek in place (before, `?t=` reloaded and unloaded the
+    player), falling back to the `?t=` cue when nothing is loaded. The current
+    chapter follows playback.
+- SponsorBlock:
+  - A `connector-sponsorblock` flag (on by default).
+  - The web fetches directly (CORS `*` verified); Native uses
+    `sponsorblock_segments` in Rust. Both send only a 4-hex SHA-256 prefix and
+    a fixed category list (sponsor, self-promo, subscribe reminder, intro,
+    outro), and treat 404 as none.
+  - Under the player: a strip and a count. A **Skip** button shows only while
+    a segment plays. It never skips automatically and never submits.
+- PeerTube:
+  - `peertubeSource` recognises `/w/<shortUUID>` and `/videos/watch/<uuid>` on
+    any https host, and `statusVideo` falls back to it.
+  - Cards show the poster and "Open Watch to play it here". The `peertube`
+    Watch/queue param is validated.
+  - Watch resolves `/api/v1/videos/:id` anonymously. It plays HLS on the web
+    and a ≤720p MP4 on Native through the shared player.
+  - NSFW videos gate like sensitive media. Failure shows "Open it on <host>".
+  - **Follow** goes to the channel's ActivityPub actor. RSS subscribe for
+    PeerTube is not done.
+- Native: `sponsorblock.rs` (fixed host, path and category list; tests refuse
+  full IDs and path tricks), registered and noted in the capability table.
+- Focused checks: the reading, posts/status-card, shell, platform and
+  post-history subset (206 files, 2,405 tests), then the Watch spec rerun
+  (22 tests). Plus `cargo test --lib sponsorblock`, lint, `check:static`,
+  `check:i18n`, the deep-link audit (0 broken) and the reconciled inventory.
+- Pair B gates: below.
+
+### S3 evidence (2026-11-18)
+
+- Spikes: Wikidata SPARQL answers browsers (`Access-Control-Allow-Origin: *`)
+  and gave TechConnectify@mas.to and geerlingguy@mastodon.social (CGP Grey has
+  an item but no P4033). Technology Connections' own About links list
+  `mas.to/@TechConnectify`. Channel uploads now arrive as `LockupView`.
+- Native: `wikidata.rs` (`wikidata_channel_creator`). Rust builds one fixed
+  P2397→P4033 query from a validated channel ID; there is no renderer-supplied
+  SPARQL. Native's CSP blocks remote fetches, hence the command. Its test
+  covers injection attempts. Registered, and noted in the capability table.
+- Client:
+  - The `connector-wikidata` connection flag (on by default; only the
+    channel ID is sent) and the `PLATFORM_WIKIDATA` token.
+  - `YoutubeFeeds.channel()` (Native): handle, About links (scheme added,
+    non-web dropped), subscribers, and paged uploads, which can be skipped.
+  - `CreatorLinks`: candidates come from the channel's About links (Mastodon-
+    shaped, not Medium/Bluesky/YouTube) and Wikidata. Each is looked up
+    publicly on its own server; it counts as confirmed when its profile links
+    the channel ID or @handle. Ranking: confirmed, then agreement, then the
+    channel's own claim.
+  - `/videos/channel/:channelId`: RSS uploads for everyone (open to
+    strangers via a narrow `publicChannel` auth-guard rule and a `LINKS`
+    contract in the deep-link audit), plus the Native extras. The double
+    subscribe: Subscribe (RSS) and Follow (the shared FollowButton, foreign
+    handle), with the source and an "is it really them" note when unconfirmed.
+  - Watch: Follow and a Channel link. Search results and subscription rows
+    link to channel pages.
+- S2 follow-up (owner asked to surface chapters): `details()` now uses
+  `getInfo`, so YouTube's own markers, creator before automatic, come before
+  description timestamps. Technology Connections videos have automatic
+  chapters with no timestamps in the description. Chapters show under the
+  player, not in the collapsed section, with their source and the cued one
+  highlighted.
+- Unbird gate fixes (owner decisions): the shell spec includes `/unbird`.
+  `mockingbird_oauth_signup` is NOT_VAULTED (single-device, in-flight OAuth
+  secret). The test manifest was accepted after another developer's test-quality
+  pass (approved): 10,390 present, 0 added, 0 missing.
+- Focused checks: `test:subset` over videos/watch/build/guard/routes (29
+  files, 330 tests), `cargo test --lib wikidata`, lint on the touched files,
+  `check:static` green, `check:i18n`, the deep-link audit (0 broken), and the
+  reconciled inventory (677 candidates).
+- Deferred to the end of pair B (after S4): `make test`, `build:mockingbird`,
+  design-verify, native full gates, and `test-deep-links-browser` (a new
+  public route).
+- Live: [S3 test plan](test_plans/youtube-client-s3-channels-2026-11.md), not run.
 
 ### S2 evidence (2026-11-18)
 

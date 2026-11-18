@@ -139,6 +139,36 @@ async function nativeYoutube(
   }
 }
 
+/** Rust validates the channel ID and builds the one fixed SPARQL query. */
+export const PLATFORM_WIKIDATA = new InjectionToken<
+  ((channelId: string) => Promise<string>) | null
+>('PLATFORM_WIKIDATA', { providedIn: 'root', factory: () => nativeWikidata });
+
+async function nativeWikidata(channelId: string): Promise<string> {
+  const bridge = (
+    window as unknown as {
+      __TAURI__?: { core: { invoke<T>(command: string, args: object): Promise<T> } };
+    }
+  ).__TAURI__;
+  if (!bridge) throw new Error('Native Wikidata reader is unavailable.');
+  return bridge.core.invoke<string>('wikidata_channel_creator', { channelId });
+}
+
+/** Rust validates the prefix and sends SponsorBlock's one fixed category list. */
+export const PLATFORM_SPONSORBLOCK = new InjectionToken<
+  ((prefix: string) => Promise<string>) | null
+>('PLATFORM_SPONSORBLOCK', { providedIn: 'root', factory: () => nativeSponsorBlock });
+
+async function nativeSponsorBlock(prefix: string): Promise<string> {
+  const bridge = (
+    window as unknown as {
+      __TAURI__?: { core: { invoke<T>(command: string, args: object): Promise<T> } };
+    }
+  ).__TAURI__;
+  if (!bridge) throw new Error('Native SponsorBlock reader is unavailable.');
+  return bridge.core.invoke<string>('sponsorblock_segments', { prefix });
+}
+
 import type { NativeConnectorTransport } from './connector-types';
 import type { NativeTwitterTransport } from './connector-types';
 import type { NativeWebmentionTransport } from './connector-types';

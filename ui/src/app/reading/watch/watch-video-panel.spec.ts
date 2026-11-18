@@ -1,6 +1,6 @@
 import { Component, input, output, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { clock, shareText, shareUrl, WatchVideoPanel } from './watch-video-panel';
@@ -14,6 +14,17 @@ import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { Status } from '../../platform/api/models';
 import { VideoSource } from '../video-player/media-source';
 import { YoutubeVideoDetails } from '../videos/youtube-details';
+import { CreatorLink, CreatorLinks } from '../videos/creator-links';
+import { SponsorBlock, SponsorSegments } from '../videos/sponsor-block';
+import { FollowButton } from '../../accounts/follow-button/follow-button';
+import { Account } from '../../platform/api/models';
+
+@Component({ selector: 'app-follow-button', template: 'follow' })
+class FollowStub {
+  readonly accountId = input('');
+  readonly handle = input('');
+  readonly foreign = input<Account | null>(null);
+}
 
 @Component({ selector: 'app-compose', template: '' })
 class ComposeStub {
@@ -65,7 +76,13 @@ describe('WatchVideoPanel', () => {
     resolve?: YoutubeFeeds['resolve'];
     find?: VideoPostFinder['find'];
     start?: number;
+    creator?: CreatorLink | null;
+    sponsor?: SponsorSegments;
   }) {
+    const sponsorBlock = {
+      segments: vi.fn(async () => options.sponsor ?? { segments: [], duration: null }),
+    };
+    const creators = { lookupChannel: vi.fn(async () => options.creator ?? null) };
     const feeds = signal<{ id: string; title: string; enabled: boolean }[]>([]);
     const subs = {
       feeds,
@@ -84,6 +101,7 @@ describe('WatchVideoPanel', () => {
         familySafe: true,
         live: false,
         chapters: [],
+        chapterSource: null,
         ...options.details,
       })),
       resolve: options.resolve ?? vi.fn(),
@@ -99,17 +117,19 @@ describe('WatchVideoPanel', () => {
         { provide: Server, useValue: { baseUrl: signal('https://home.test') } },
         { provide: Auth, useValue: { isBlueskyPrimary: false, isAnonymous: false } },
         { provide: BlueskySession, useValue: { linked: () => false } },
+        { provide: CreatorLinks, useValue: creators },
+        { provide: SponsorBlock, useValue: sponsorBlock },
       ],
     });
     TestBed.overrideComponent(WatchVideoPanel, {
-      remove: { imports: [Compose] },
-      add: { imports: [ComposeStub] },
+      remove: { imports: [Compose, FollowButton] },
+      add: { imports: [ComposeStub, FollowStub] },
     });
     fixture = TestBed.createComponent(WatchVideoPanel);
     fixture.componentRef.setInput('source', source(options.start));
     fixture.componentRef.setInput('status', options.status ?? null);
     fixture.detectChanges();
-    return { subs, youtube, finder };
+    return { subs, youtube, finder, creators };
   }
 
   const settle = async () => {
@@ -125,7 +145,9 @@ describe('WatchVideoPanel', () => {
   it('on Native, subscribes to the channel from the video details and shows chapters', async () => {
     const { subs } = mount({
       native: true,
+      start: 120,
       details: {
+        chapterSource: 'auto',
         familySafe: false,
         chapters: [
           { seconds: 0, title: 'Intro' },
@@ -141,10 +163,76 @@ describe('WatchVideoPanel', () => {
     expect(button('Subscribed to Technology Connections')).toBeDefined();
     expect(text()).toContain('Length 12:34');
     expect(text()).toContain('not suitable for all ages');
-    const cue = [...fixture.nativeElement.querySelectorAll('.chapters a')].map(
-      (a: HTMLAnchorElement) => a.getAttribute('href'),
-    );
-    expect(cue[1]).toContain('t=90');
+    // Chapters show without opening anything, say where they came from, and
+    // mark the chapter the player is cued in.
+    const section = fixture.nativeElement.querySelector('section.chapters') as HTMLElement;
+    expect(section.closest('mb-disclosure')).toBeNull();
+    expect(section.textContent).toContain('Chapters (3)');
+    expect(section.textContent).toContain('made automatically by YouTube');
+    expect(section.querySelector('[aria-current="true"]')?.textContent).toContain('Middle');
+    // Once the player reports its time, that decides the current chapter.
+    fixture.componentRef.setInput('playhead', 700);
+    fixture.detectChanges();
+    expect(section.querySelector('[aria-current="true"]')?.textContent).toContain('End');
+  });
+
+  it('seeks the loaded player from a chapter, else cues the video there', async () => {
+    mount({
+      native: true,
+      details: {
+        chapterSource: 'creator',
+        chapters: [
+          { seconds: 0, title: 'Intro' },
+          { seconds: 90, title: 'Middle' },
+          { seconds: 605, title: 'End' },
+        ],
+      },
+    });
+    await settle();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const chapter = (title: string) =>
+      [...fixture.nativeElement.querySelectorAll('button.chapter')].find((b: HTMLElement) =>
+        b.textContent?.includes(title),
+      ) as HTMLButtonElement;
+
+    const seeker = vi.fn(() => true);
+    fixture.componentRef.setInput('seeker', seeker);
+    fixture.detectChanges();
+    chapter('Middle').click();
+    expect(seeker).toHaveBeenCalledWith(90);
+    expect(navigate).not.toHaveBeenCalled();
+
+    seeker.mockReturnValue(false);
+    chapter('End').click();
+    expect(navigate).toHaveBeenCalledWith(['/watch'], {
+      queryParams: { t: 605 },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  });
+
+  it('marks SponsorBlock segments and offers Skip only while one plays, never skipping alone', async () => {
+    mount({
+      sponsor: {
+        segments: [{ start: 90, end: 120, category: 'sponsor' }],
+        duration: 600,
+      },
+    });
+    await settle();
+    const seeker = vi.fn(() => true);
+    fixture.componentRef.setInput('seeker', seeker);
+    fixture.detectChanges();
+    const segment = fixture.nativeElement.querySelector('.strip .segment') as HTMLElement;
+    expect(segment.style.left).toBe('15%');
+    expect(segment.style.width).toBe('5%');
+    expect(text()).toContain('SponsorBlock: 1 part to skip.');
+    expect(button('Skip')).toBeUndefined();
+
+    fixture.componentRef.setInput('playhead', 95);
+    fixture.detectChanges();
+    expect(seeker).not.toHaveBeenCalled();
+    button('Skip sponsor (0:30)')!.click();
+    expect(seeker).toHaveBeenCalledWith(120);
   });
 
   it('on the web, resolves the channel from the post’s link card when asked', async () => {
@@ -164,6 +252,32 @@ describe('WatchVideoPanel', () => {
     await settle();
     expect(resolve).toHaveBeenCalledWith('https://www.youtube.com/@TechnologyConnections');
     expect(subs.add).toHaveBeenCalledWith(channelId, 'Technology Connections');
+  });
+
+  it('links the channel page and offers Follow for its creator once the channel is known', async () => {
+    const { creators } = mount({
+      native: true,
+      creator: {
+        acct: 'TechConnectify@mas.to',
+        sources: ['channel'],
+        confirmed: true,
+        account: null,
+      },
+    });
+    await settle();
+    await settle();
+    expect(creators.lookupChannel).toHaveBeenCalledWith(channelId);
+    const follow = fixture.debugElement.query((el) => el.name === 'app-follow-button');
+    expect((follow.componentInstance as FollowStub).foreign()).toMatchObject({
+      acct: 'TechConnectify@mas.to',
+    });
+    expect(follow.nativeElement.getAttribute('title')).toContain(
+      'their profile links this channel',
+    );
+    const channel = [...fixture.nativeElement.querySelectorAll('a')].find(
+      (a: HTMLElement) => a.textContent?.trim() === 'Channel',
+    ) as HTMLAnchorElement;
+    expect(channel.getAttribute('href')).toBe(`/videos/channel/${channelId}`);
   });
 
   it('offers no Subscribe when nothing names the channel', () => {

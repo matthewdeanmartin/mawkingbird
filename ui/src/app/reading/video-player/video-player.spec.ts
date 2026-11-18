@@ -4,7 +4,7 @@ import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../platform/session/auth';
 import { Server } from '../../platform/http/server';
-import { VideoPlayer } from './video-player';
+import { embedTime, VideoPlayer } from './video-player';
 import { WatchQueue } from '../videos/watch-queue';
 import { Playback } from './playback';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -90,6 +90,54 @@ describe('VideoPlayer user control', () => {
     expect(link.href).toBe(video.url);
     expect(link.rel).toBe('noopener noreferrer');
   });
+  it('reports YouTube time and seeks over postMessage only, from that frame and origin', () => {
+    mount(youtubeSource('https://youtu.be/0KoeY54M5VA')!);
+    const frame = fixture.nativeElement.querySelector('iframe') as HTMLIFrameElement;
+    const url = new URL(frame.src);
+    expect(url.searchParams.get('enablejsapi')).toBe('1');
+    expect(url.searchParams.get('origin')).toBe(location.origin);
+    expect(url.searchParams.get('autoplay')).toBe('0');
+    const player = fixture.componentInstance;
+    // Not loaded yet: nothing to seek, so the caller cues a reload instead.
+    expect(player.seekTo(30)).toBe(false);
+
+    const sent = vi.spyOn(frame.contentWindow!, 'postMessage');
+    frame.dispatchEvent(new Event('load'));
+    fixture.detectChanges();
+    expect(JSON.parse(sent.mock.calls[0][0] as string)).toMatchObject({ event: 'listening' });
+    expect(sent.mock.calls[0][1]).toBe('https://www.youtube-nocookie.com');
+
+    const deliver = (origin: string, source: Window | null, time: number) =>
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          data: JSON.stringify({ event: 'infoDelivery', info: { currentTime: time } }),
+          origin,
+          source,
+        }),
+      );
+    deliver('https://evil.test', frame.contentWindow, 5);
+    deliver('https://www.youtube-nocookie.com', window, 6);
+    expect(player.playhead()).toBeNull();
+    deliver('https://www.youtube-nocookie.com', frame.contentWindow, 42.5);
+    expect(player.playhead()).toBe(42.5);
+
+    expect(player.seekTo(120)).toBe(true);
+    expect(JSON.parse(sent.mock.calls.at(-1)![0] as string)).toMatchObject({
+      event: 'command',
+      func: 'seekTo',
+      args: [120, true],
+    });
+    expect(play).not.toHaveBeenCalled();
+  });
+
+  it('seeks a native video in place, without playing it', () => {
+    const video = mount();
+    expect(fixture.componentInstance.seekTo(12)).toBe(true);
+    expect(video.currentTime).toBe(12);
+    expect(fixture.componentInstance.playhead()).toBe(12);
+    expect(play).not.toHaveBeenCalled();
+  });
+
   it('offers Queue on inline players only, carrying the post Watch params', () => {
     const video = { ...youtubeSource('https://youtu.be/0KoeY54M5VA')!, title: 'A talk' };
     mount(video);
@@ -336,5 +384,19 @@ describe('VideoPlayer user control', () => {
     expect(play).not.toHaveBeenCalled();
     fixture.destroy();
     expect(frame.hasAttribute('src')).toBe(false);
+  });
+});
+
+describe('embedTime', () => {
+  it('reads only a finite, non-negative time from YouTube info messages', () => {
+    const msg = (event: string, currentTime: unknown) =>
+      JSON.stringify({ event, info: { currentTime } });
+    expect(embedTime(msg('infoDelivery', 12.5))).toBe(12.5);
+    expect(embedTime({ event: 'initialDelivery', info: { currentTime: 0 } })).toBe(0);
+    expect(embedTime(msg('onStateChange', 3))).toBeNull();
+    expect(embedTime(msg('infoDelivery', -1))).toBeNull();
+    expect(embedTime(msg('infoDelivery', '7'))).toBeNull();
+    expect(embedTime('not json')).toBeNull();
+    expect(embedTime(null)).toBeNull();
   });
 });

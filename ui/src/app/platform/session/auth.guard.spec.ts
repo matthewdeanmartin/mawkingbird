@@ -42,6 +42,8 @@ describe('authGuard', () => {
     '/singles/find?acct=singer%40sea.example',
     '/watch?post=117583797572986016&server=https:%2F%2Fmstdn.social&youtube=Usr4VpMQjQ0',
     '/watch?youtube=Usr4VpMQjQ0',
+    // A shared YouTube channel page.
+    '/videos/channel/UCy0tKL1T7wFoYcxCe0xjN6Q',
     '/app/about',
     '/app/about/',
     '/app/funding/',
@@ -130,4 +132,12 @@ describe('authGuard', () => {
     expect(result).toBeInstanceOf(UrlTree);
     expect((result as UrlTree).toString()).toBe('/');
   });
+
+  it.each(['/videos/channel/not-a-channel', '/videos/channel', '/videos', '/videos/queue'])(
+    'keeps other video pages behind the front page for a stranger: %s',
+    (url) => {
+      const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
+      expect(result).toBeInstanceOf(UrlTree);
+    },
+  );
 });

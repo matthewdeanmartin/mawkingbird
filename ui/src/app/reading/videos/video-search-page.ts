@@ -20,8 +20,9 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
 // i18n videoSearch.query: Search for
 // i18n videoSearch.submit: Search
 // i18n videoSearch.youtubeType: YouTube results
-// i18n videoSearch.google: Search YouTube on Google ↗
-// i18n videoSearch.posts: Search all posts
+// i18n videoSearch.elsewhere: Search elsewhere
+// i18n videoSearch.allPosts: All posts, not only ones with video
+// i18n videoSearch.googleYoutube: YouTube, on Google ↗
 // i18n videoSearch.tagsNote: Fediverse video comes from the hashtags {{tags}}, plus your server's post search when you are signed in. Only posts with a video are kept.
 // i18n videoSearch.postsHeading: Fediverse posts
 // i18n videoSearch.youtubeHeading: YouTube
@@ -30,7 +31,7 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
 // i18n videoSearch.noYoutube: No YouTube results.
 // i18n videoSearch.youtubeFailed: Couldn't search YouTube. Try again later.
 // i18n videoSearch.start: Search fediverse posts and YouTube for video
-// i18n videoSearch.startHint: Words are searched as hashtags across the fediverse; YouTube search comes with Mawkingbird Plus.
+// i18n videoSearch.startHintNative: Words are searched as hashtags across the fediverse. YouTube search is in the Mawkingbird app.
 // i18n videoSearch.startHintYoutube: Words are searched as hashtags across the fediverse and on YouTube.
 // i18n videoSearch.watch: Watch
 // i18n videoSearch.subscribe: Subscribe
@@ -90,22 +91,28 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
             {{ 'videoSearch.submit' | transloco }}
           </button>
         </form>
-        <a
-          mbButton
-          variant="outline"
-          routerLink="/search"
-          [queryParams]="{ q: draftWords() || null }"
-          >{{ 'videoSearch.posts' | transloco }}</a
-        >
-        <button
-          mbButton
-          variant="outline"
-          type="button"
-          [disabled]="!draftSearchable()"
-          (click)="searchGoogle()"
-        >
-          {{ 'videoSearch.google' | transloco }}
-        </button>
+        <!-- Hand-offs to other searches, not alternatives to the Search button. -->
+        <nav class="elsewhere" [attr.aria-label]="'videoSearch.elsewhere' | transloco">
+          <h2>{{ 'videoSearch.elsewhere' | transloco }}</h2>
+          <ul>
+            <li>
+              <a routerLink="/search" [queryParams]="{ q: draftWords() || null }">{{
+                'videoSearch.allPosts' | transloco
+              }}</a>
+            </li>
+            <li>
+              <button
+                mbButton
+                variant="link"
+                type="button"
+                [disabled]="!draftSearchable()"
+                (click)="searchGoogle()"
+              >
+                {{ 'videoSearch.googleYoutube' | transloco }}
+              </button>
+            </li>
+          </ul>
+        </nav>
       </aside>
 
       <div class="search-results">
@@ -113,7 +120,8 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
           <mb-content-state
             [title]="'videoSearch.start' | transloco"
             [description]="
-              (canSearch() ? 'videoSearch.startHintYoutube' : 'videoSearch.startHint') | transloco
+              (canSearch() ? 'videoSearch.startHintYoutube' : 'videoSearch.startHintNative')
+                | transloco
             "
           />
         } @else {
@@ -138,8 +146,10 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
           <section [attr.aria-label]="'videoSearch.youtubeHeading' | transloco" aria-live="polite">
             <h2>{{ 'videoSearch.youtubeHeading' | transloco }}</h2>
             @if (!canSearch()) {
-              <p>{{ 'videos.plusSearch' | transloco }}</p>
-              <a routerLink="/settings/mawkingbird-plus">{{ 'videos.plus' | transloco }}</a>
+              <p>{{ 'videos.nativeSearch' | transloco }}</p>
+              <a mbButton variant="outline" routerLink="/settings/app">{{
+                'videos.installNative' | transloco
+              }}</a>
             } @else if (youtubeLoading()) {
               <p role="status">{{ 'videoSearch.searching' | transloco }}</p>
             } @else if (youtubeFailed()) {
@@ -148,7 +158,15 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
               @for (item of youtube(); track item.id) {
                 <article class="video-result">
                   <h3>{{ item.title }}</h3>
-                  <p class="muted small">{{ item.channelTitle }}</p>
+                  <p class="muted small">
+                    @if (item.channelId) {
+                      <a [routerLink]="['/videos/channel', item.channelId]">{{
+                        item.channelTitle
+                      }}</a>
+                    } @else {
+                      {{ item.channelTitle }}
+                    }
+                  </p>
                   @if (sourceFor(item); as source) {
                     <app-video-player-controls [source]="source" [inline]="true" />
                   }
@@ -213,6 +231,19 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
       gap: 0.75rem;
       position: sticky;
       top: 12px;
+    }
+    .elsewhere h2 {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 0.5rem 0 0.25rem;
+    }
+    .elsewhere ul {
+      display: grid;
+      gap: 0.25rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
     .search-results {
       display: grid;

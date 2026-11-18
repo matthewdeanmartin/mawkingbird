@@ -91,3 +91,20 @@ footer {
     max-height: 60vh;
   }
 }
+/* Who among the people you follow shared this video. */
+.shared-by {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+.shared-by img {
+  border-radius: 50%;
+  margin-inline-end: -0.6rem;
+  outline: 2px solid var(--bg, transparent);
+}
+.shared-by img:last-of-type {
+  margin-inline-end: 0;
+}

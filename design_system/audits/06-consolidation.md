@@ -2874,3 +2874,27 @@ statuses), with MbButton actions. The party chat's conversation-mode `<select>`
 became a compact Toolbar of pressed buttons, chosen per visit. Watch's
 compact-view topic `<details>` is gone, because the source post's card now sits
 under the player. Their reconciliation notes are updated to match.
+
+YouTube client S2 follow-up and S3 (2026-11-18): reviewed inventory refresh.
+Chapters moved out of "About this video" into a visible list in the Watch
+panel, so only line numbers changed there. S3 adds `reading/videos/creator-links.ts`
+(non-UI) and `reading/videos/channel-page.ts`, taking filesScanned from 1975 to
+1977 and candidates from 676 to 677. The channel page uses PageHeader,
+MbButton and the shared FollowButton, and is reconciled as adopted scope. The
+Watch panel gains the FollowButton and a Channel link button. The
+subscriptions panel's new Channel link is an MbButton link variant.
+
+YouTube client S4 (2026-11-18): reviewed inventory refresh. Three non-UI files
+(`reading/videos/peertube.ts`, `sponsor-block.ts`, `seen-videos.ts`) take
+filesScanned from 1977 to 1980; candidates stay at 677.
+
+- `/videos`: its header row of outline buttons (Customize, Refresh, Main,
+  Saved) became one compact Toolbar (All videos, Saved, Shorts pressed;
+  Refresh, Customize).
+- The watch queue: adds Recently seen, which reuses queue rows with MbButtons.
+- The Watch panel: its chapters are full-width text-row buttons that seek, and
+  it gains a SponsorBlock strip with an MbButton Skip.
+- The player: a PeerTube link shows its poster (local content) and keeps its
+  existing link buttons.
+
+Reconciliation notes are updated for all three files.

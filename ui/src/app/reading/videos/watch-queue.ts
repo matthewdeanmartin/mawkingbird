@@ -1,6 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { scopedKey } from '../../platform/session/account-scope';
-import { VideoSource } from '../video-player/media-source';
+import { PEERTUBE_ID, VideoSource } from '../video-player/media-source';
 
 const QUEUE_KEY_BASE = 'mockingbird_watch_queue';
 
@@ -8,7 +8,7 @@ const QUEUE_KEY_BASE = 'mockingbird_watch_queue';
 export const WATCH_QUEUE_LIMIT = 200;
 
 const VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
-const PARAM_NAMES = new Set(['post', 'server', 'youtube', 'attachment']);
+const PARAM_NAMES = new Set(['post', 'server', 'youtube', 'attachment', 'peertube']);
 
 /**
  * One video waiting to be watched.
@@ -29,7 +29,7 @@ export interface QueuedVideo {
 /** Identity of a Watch destination, so the same video is queued once. */
 export function queueKey(params: Record<string, string>): string {
   return params['post']
-    ? `post:${params['server'] ?? ''}|${params['post']}|${params['attachment'] ?? params['youtube'] ?? ''}`
+    ? `post:${params['server'] ?? ''}|${params['post']}|${params['attachment'] ?? params['youtube'] ?? (params['peertube'] ? `peertube:${params['peertube']}` : '')}`
     : `youtube:${params['youtube'] ?? ''}`;
 }
 
@@ -47,10 +47,14 @@ export function validWatchParams(value: unknown): value is Record<string, string
     return false;
   const youtube = params['youtube'] as string | undefined;
   if (youtube !== undefined && !VIDEO_ID.test(youtube)) return false;
+  const peertube = params['peertube'] as string | undefined;
+  if (peertube !== undefined && !PEERTUBE_ID.test(peertube)) return false;
   const post = params['post'] as string | undefined;
   if (post === undefined) return youtube !== undefined && names.length === 1;
   return (
-    post.length > 0 && post.length <= 4000 && (youtube !== undefined || !!params['attachment'])
+    post.length > 0 &&
+    post.length <= 4000 &&
+    (youtube !== undefined || peertube !== undefined || !!params['attachment'])
   );
 }
 

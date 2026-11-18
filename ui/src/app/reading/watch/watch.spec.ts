@@ -22,6 +22,7 @@ import { ReadingZen } from '../reading-zen';
 import { WatchVideoPanel } from './watch-video-panel';
 import { VideoSource } from '../video-player/media-source';
 import { YoutubeComment } from '../videos/youtube-details';
+import { PeerTubeVideo, PeerTubeVideos } from '../videos/peertube';
 
 @Component({ selector: 'app-status-card', template: '' })
 class CardStub {
@@ -55,6 +56,9 @@ class PanelStub {
   readonly source = input<VideoSource>();
   readonly status = input<Status | null>(null);
   readonly partyTag = input<string | null>(null);
+  readonly playhead = input<number | null>(null);
+  readonly seeker = input<((seconds: number) => boolean) | null>(null);
+  readonly peertube = input<PeerTubeVideo | null>(null);
   readonly quote = vi.fn();
 }
 
@@ -77,6 +81,7 @@ describe('Watch post access and reveal gates', () => {
     destroy: ReturnType<typeof vi.fn>;
   };
   let blocked: ReturnType<typeof signal<boolean>>;
+  const peertubeGet = vi.fn<PeerTubeVideos['get']>();
   let images: ReturnType<typeof signal<boolean>>;
   const status = (): Status =>
     ({
@@ -97,6 +102,7 @@ describe('Watch post access and reveal gates', () => {
     }) as Status;
 
   beforeEach(() => {
+    peertubeGet.mockReset();
     vi.spyOn(HTMLMediaElement.prototype, 'load').mockImplementation(() => undefined);
     vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(() => undefined);
     vi.spyOn(HTMLMediaElement.prototype, 'play').mockResolvedValue();
@@ -151,6 +157,7 @@ describe('Watch post access and reveal gates', () => {
           useValue: { entries: signal({}), cwExpanded: () => false, sensitiveShown: () => false },
         },
         { provide: FollowTrust, useValue: { revision: signal(0) } },
+        { provide: PeerTubeVideos, useValue: { get: peertubeGet } },
       ],
     });
     TestBed.overrideComponent(Watch, {
@@ -168,6 +175,14 @@ describe('Watch post access and reveal gates', () => {
     fixture?.destroy();
     vi.restoreAllMocks();
   });
+
+  /** Lets a resolved or rejected promise chain land, then re-renders. */
+  async function settle(): Promise<void> {
+    for (let i = 0; i < 3; i++) {
+      await new Promise((resolve) => setTimeout(resolve));
+      fixture.detectChanges();
+    }
+  }
 
   function mount(): void {
     fixture = TestBed.createComponent(Watch);
@@ -432,6 +447,77 @@ describe('Watch post access and reveal gates', () => {
       params.next(convertToParamMap({ youtube: 'abcdefghijk', t: 'soon' }));
       fixture.detectChanges();
       expect(panel.source()?.start).toBe(0);
+    });
+
+    it('plays a PeerTube link from its instance, waiting like sensitive media when NSFW', async () => {
+      const short = 'kkGMgK9ZtnKfYAgnEtQxbv';
+      const video = (nsfw: boolean): PeerTubeVideo => ({
+        title: 'Talk',
+        channel: 'fsf@tube.example',
+        channelName: 'FSF',
+        sensitive: nsfw,
+        live: false,
+        playable: {
+          kind: 'native',
+          key: `peertube:tube.example/${short}`,
+          url: 'https://tube.example/a.mp4',
+          title: 'Talk',
+        },
+      });
+      peertubeGet.mockResolvedValueOnce(video(false));
+      params.next(convertToParamMap({ post: '1', server: 'https://home.test', peertube: short }));
+      mount();
+      loader.status.set({
+        ...status(),
+        media_attachments: [],
+        content: `<p><a href="https://tube.example/w/${short}">talk</a></p>`,
+      } as Status);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('[role="status"]')?.textContent).toContain(
+        'Opening the PeerTube video',
+      );
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(peertubeGet).toHaveBeenCalledWith(expect.objectContaining({ kind: 'peertube' }));
+      expect(fixture.nativeElement.querySelector('video')).not.toBeNull();
+      const panel = fixture.debugElement.query(By.directive(PanelStub))
+        .componentInstance as PanelStub;
+      expect(panel.peertube()?.channel).toBe('fsf@tube.example');
+
+      // An NSFW video (another one) is gated, as a sensitive post would be.
+      const nsfw = 'aaaaaaaaaaaaaaaaaaaaaa';
+      peertubeGet.mockResolvedValueOnce(video(true));
+      params.next(convertToParamMap({ post: '2', server: 'https://home.test', peertube: nsfw }));
+      loader.status.set({
+        ...status(),
+        id: '2',
+        media_attachments: [],
+        content: `<p><a href="https://tube.example/w/${nsfw}">talk</a></p>`,
+      } as Status);
+      fixture.detectChanges();
+      await settle();
+      expect(fixture.nativeElement.querySelector('video')).toBeNull();
+      expect(fixture.nativeElement.textContent).toContain(
+        'This post has a content warning or sensitive media.',
+      );
+    });
+
+    it('says so when a PeerTube server does not hand over the video', async () => {
+      const short = 'kkGMgK9ZtnKfYAgnEtQxbv';
+      peertubeGet.mockRejectedValueOnce(new Error('down'));
+      params.next(convertToParamMap({ post: '1', server: 'https://home.test', peertube: short }));
+      mount();
+      loader.status.set({
+        ...status(),
+        media_attachments: [],
+        content: `<p><a href="https://tube.example/w/${short}">talk</a></p>`,
+      } as Status);
+      fixture.detectChanges();
+      await settle();
+      expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent).toContain(
+        "didn't hand over the video",
+      );
+      expect(fixture.nativeElement.querySelector('video')).toBeNull();
     });
 
     it('quotes a YouTube comment into the share sheet', () => {

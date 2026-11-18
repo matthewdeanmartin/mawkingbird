@@ -29,6 +29,7 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
 // i18n videoPlayer.external: Loading this player connects to YouTube. Playback starts only when you press Play.
 // i18n videoPlayer.openWatch: Open Watch
 // i18n videoPlayer.openOriginal: Open original
+// i18n videoPlayer.peertube: PeerTube video on {{host}}. Open Watch to play it here.
 // i18n videoPlayer.openYoutube: Open on YouTube
 // i18n videoPlayer.failed: Couldn't play this video. Try again or open the original.
 // i18n videoPlayer.retry: Retry
@@ -37,6 +38,26 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
 // i18n videoPlayer.help: About YouTube playback
 // i18n videoPlayer.positionUnavailable: YouTube opens paused at the link's start time. Your current playback position doesn't transfer between views.
 // i18n videoPlayer.youtubeStopped: This YouTube player closes when another video starts or it scrolls out of view. Reload it to watch again.
+const YOUTUBE_EMBED_ORIGIN = 'https://www.youtube-nocookie.com';
+
+/** The playback time in a YouTube embed message, or null for anything else. */
+export function embedTime(data: unknown): number | null {
+  let message: unknown = data;
+  if (typeof data === 'string') {
+    if (data.length > 100_000) return null;
+    try {
+      message = JSON.parse(data);
+    } catch {
+      return null;
+    }
+  }
+  const info = (message as { event?: unknown; info?: { currentTime?: unknown } } | null)?.info;
+  const event = (message as { event?: unknown } | null)?.event;
+  if (event !== 'infoDelivery' && event !== 'initialDelivery') return null;
+  const time = info?.currentTime;
+  return typeof time === 'number' && Number.isFinite(time) && time >= 0 ? time : null;
+}
+
 @Component({
   selector: 'app-video-player-controls',
   imports: [TranslocoPipe, RouterLink, MbButton, MbHelp, QueueButton],
@@ -73,6 +94,12 @@ export class VideoPlayer implements OnDestroy {
 
   protected title = computed(() => this.source().title || '');
   /**
+   * Seconds into the video, when the player reports it: a native video's
+   * `timeupdate`, or the YouTube embed's `infoDelivery` messages. Null until
+   * known. Read by Watch for chapters and SponsorBlock.
+   */
+  readonly playhead = signal<number | null>(null);
+  /**
    * Inline players offer Queue beside Open Watch. Watch itself has its own
    * queue controls in the header, so the stage player does not repeat them.
    */
@@ -96,6 +123,10 @@ export class VideoPlayer implements OnDestroy {
       playsinline: '1',
       controls: '1',
       start: String(source.start ?? 0),
+      // postMessage only: lets Watch read the time and seek. No Google script
+      // runs in this document (see the iframe effect below).
+      enablejsapi: '1',
+      origin: location.origin,
     });
     // Only a validated video ID from the source classifier reaches this constructed URL.
     return this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -110,6 +141,7 @@ export class VideoPlayer implements OnDestroy {
       this.restoring.set(!!this.saved && untracked(this.source).kind === 'native');
       this.ready.set(false);
       this.rate.set(this.saved?.rate ?? 1);
+      this.playhead.set(null);
     });
     effect((onCleanup) => {
       this.identity();
@@ -149,12 +181,15 @@ export class VideoPlayer implements OnDestroy {
       const handle = this.nativeHandle(video);
       const unregister = this.playback.register(handle);
       const started = () => this.playback.started(handle);
+      const tick = () => this.playhead.set(video.currentTime);
       video.addEventListener('play', started);
+      video.addEventListener('timeupdate', tick);
       onCleanup(() => {
         disposed = true;
         video.removeEventListener('play', startStreaming);
         hls?.destroy();
         video.removeEventListener('play', started);
+        video.removeEventListener('timeupdate', tick);
         unregister();
         video.removeAttribute('src');
         video.load();
@@ -173,11 +208,27 @@ export class VideoPlayer implements OnDestroy {
         position: () => ({ time: 0, volume: 1, muted: false, rate: 1 }),
       };
       this.youtubeHandle = handle;
+      // The embed's postMessage channel: we ask it to report, and read only
+      // numeric times from that exact frame on YouTube's embed origin.
+      const listen = () =>
+        iframe.contentWindow?.postMessage(
+          JSON.stringify({ event: 'listening', id: 1, channel: 'widget' }),
+          YOUTUBE_EMBED_ORIGIN,
+        );
+      const onMessage = (event: MessageEvent) => {
+        if (event.origin !== YOUTUBE_EMBED_ORIGIN || event.source !== iframe.contentWindow) return;
+        const time = embedTime(event.data);
+        if (time !== null) this.playhead.set(time);
+      };
+      window.addEventListener('message', onMessage);
+      iframe.addEventListener('load', listen);
       const unregister = this.playback.register(handle);
       // Loading an external player pauses all other media before the user can
       // play it. Starting another native player closes this iframe entirely.
       this.playback.started(handle);
       onCleanup(() => {
+        window.removeEventListener('message', onMessage);
+        iframe.removeEventListener('load', listen);
         unregister();
         this.youtubeHandle = undefined;
       });
@@ -198,6 +249,35 @@ export class VideoPlayer implements OnDestroy {
   ngOnDestroy(): void {
     this.observer?.disconnect();
     this.pause();
+  }
+
+  /**
+   * Move playback to `seconds` without reloading: the native element, or the
+   * loaded YouTube embed by postMessage. A paused video stays paused. False
+   * when there is no loaded player to seek (the caller can cue a reload).
+   */
+  seekTo(seconds: number): boolean {
+    const at = Math.max(0, seconds);
+    const video = this.native()?.nativeElement;
+    if (video) {
+      video.currentTime = at;
+      this.playhead.set(at);
+      return true;
+    }
+    const frame = this.frame()?.nativeElement;
+    if (!frame?.contentWindow || !this.ready()) return false;
+    frame.contentWindow.postMessage(
+      JSON.stringify({
+        event: 'command',
+        func: 'seekTo',
+        args: [at, true],
+        id: 1,
+        channel: 'widget',
+      }),
+      YOUTUBE_EMBED_ORIGIN,
+    );
+    this.playhead.set(at);
+    return true;
   }
 
   private nativeHandle(video: HTMLVideoElement): PlaybackHandle {

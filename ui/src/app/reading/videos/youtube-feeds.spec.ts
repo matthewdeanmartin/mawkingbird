@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { YoutubeFeeds } from './youtube-feeds';
+import { aboutLink, YoutubeFeeds } from './youtube-feeds';
 import { RssCache } from '../rss/rss-cache';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { FeatureFlags } from '../../platform/build/feature-flags';
@@ -348,6 +348,143 @@ describe('YouTube search and details: Native vs web × Plus', () => {
     expect(next.more).toBeNull();
   });
 
+  it("prefers YouTube's chapter markers, creator before automatic, over the description", async () => {
+    const feeds = setUp(true);
+    const markers = (key: string, titles: string[]) => ({
+      marker_key: key,
+      value: {
+        chapters: titles.map((title, i) => ({
+          title: { toString: () => title },
+          time_range_start_millis: i * 60_500,
+        })),
+      },
+    });
+    const info = (maps: unknown[] | null, description = '0:00 A\n1:00 B\n2:00 C') => ({
+      basic_info: { title: 'T', short_description: description, duration: 600 },
+      player_overlays: maps
+        ? { decorated_player_bar: { player_bar: { markers_map: maps } } }
+        : undefined,
+    });
+    const getInfo = vi.fn();
+    const getBasicInfo = vi.fn();
+    vi.spyOn(feeds as unknown as { session(): Promise<unknown> }, 'session').mockResolvedValue({
+      getInfo,
+      getBasicInfo,
+    });
+
+    getInfo.mockResolvedValueOnce(
+      info([
+        markers('AUTO_CHAPTERS', ['Auto 1', 'Auto 2']),
+        markers('DESCRIPTION_CHAPTERS', ['Mine', 'Yours']),
+      ]),
+    );
+    let details = await feeds.details('abcdefghijk');
+    expect(details.chapterSource).toBe('creator');
+    expect(details.chapters).toEqual([
+      { seconds: 0, title: 'Mine' },
+      { seconds: 60, title: 'Yours' },
+    ]);
+
+    // Auto chapters for a video whose description has no timestamps at all.
+    getInfo.mockResolvedValueOnce(
+      info([markers('AUTO_CHAPTERS', ['One', 'Two', 'Three'])], 'No stamps'),
+    );
+    details = await feeds.details('abcdefghijk');
+    expect(details.chapterSource).toBe('auto');
+    expect(details.chapters.map((c) => c.title)).toEqual(['One', 'Two', 'Three']);
+
+    // No markers: the description's timestamps.
+    getInfo.mockResolvedValueOnce(info(null));
+    details = await feeds.details('abcdefghijk');
+    expect(details.chapterSource).toBe('description');
+
+    // The watch-next read failed: player details alone still answer.
+    getInfo.mockRejectedValueOnce(new Error('next refused'));
+    getBasicInfo.mockResolvedValueOnce(info(null, 'Nothing'));
+    details = await feeds.details('abcdefghijk');
+    expect(details).toMatchObject({ title: 'T', chapters: [], chapterSource: null });
+  });
+
+  it("reads a channel's handle, About links and uploads on Native", async () => {
+    const feeds = setUp(true);
+    const lockup = (videoId: string, title: string) => ({
+      content_id: videoId,
+      metadata: {
+        title: { toString: () => title },
+        metadata: {
+          metadata_rows: [
+            {
+              metadata_parts: [
+                { text: { toString: () => '1.3M views' } },
+                { text: { toString: () => '2 weeks ago' } },
+              ],
+            },
+          ],
+        },
+      },
+      content_image: { overlays: [{ badges: [{ text: '23:01' }] }] },
+    });
+    const getVideos = vi.fn(async () => ({
+      videos: [lockup('aaaaaaaaaaa', 'Lamps'), { content_id: 'bad id' }],
+      has_continuation: true,
+      getContinuation: async () => ({
+        videos: [lockup('bbbbbbbbbbb', 'Switches')],
+        has_continuation: false,
+        getContinuation: vi.fn(),
+      }),
+    }));
+    const getChannel = vi.fn(async () => ({
+      metadata: {
+        title: 'Technology Connections',
+        vanity_channel_url: 'http://www.youtube.com/@TechnologyConnections',
+      },
+      getAbout: async () => ({
+        metadata: {
+          description: 'About me',
+          subscriber_count: { toString: () => '2.4M subscribers' },
+          links: [
+            {
+              title: { toString: () => 'Mastodon' },
+              link: { toString: () => 'mas.to/@TechConnectify' },
+            },
+            { title: { toString: () => 'Bad' }, link: { toString: () => 'javascript:alert(1)' } },
+          ],
+        },
+      }),
+      getVideos,
+    }));
+    vi.spyOn(feeds as unknown as { session(): Promise<unknown> }, 'session').mockResolvedValue({
+      getChannel,
+    });
+    const info = await feeds.channel(id);
+    expect(info).toMatchObject({
+      id,
+      title: 'Technology Connections',
+      handle: '@TechnologyConnections',
+      description: 'About me',
+      subscribers: '2.4M subscribers',
+      links: [{ title: 'Mastodon', url: 'https://mas.to/@TechConnectify' }],
+    });
+    expect(info.uploads.videos).toEqual([
+      {
+        videoId: 'aaaaaaaaaaa',
+        title: 'Lamps',
+        views: '1.3M views',
+        age: '2 weeks ago',
+        duration: '23:01',
+      },
+    ]);
+    expect((await info.uploads.more!()).videos[0].title).toBe('Switches');
+
+    getVideos.mockClear();
+    expect((await feeds.channel(id, { uploads: false })).uploads.videos).toEqual([]);
+    expect(getVideos).not.toHaveBeenCalled();
+  });
+
+  it('has no channel pages on the web', async () => {
+    await expect(setUp(false).channel(id)).rejects.toThrow('Mawkingbird app');
+  });
+
   it('has no YouTube comments on the web', async () => {
     const feeds = setUp(false);
     await expect(feeds.comments('abcdefghijk')).rejects.toThrow('Mawkingbird app');
@@ -358,5 +495,14 @@ describe('YouTube search and details: Native vs web × Plus', () => {
     TestBed.inject(SupporterStatus).isSupporter.set(true);
     await expect(feeds.details('abcdefghijk')).rejects.toThrow('Mawkingbird app');
     TestBed.inject(HttpTestingController).verify();
+  });
+});
+
+describe('aboutLink', () => {
+  it('adds the scheme YouTube leaves off and drops anything that is not a web link', () => {
+    expect(aboutLink('mas.to/@TechConnectify')).toBe('https://mas.to/@TechConnectify');
+    expect(aboutLink('https://example.org/x')).toBe('https://example.org/x');
+    expect(aboutLink('javascript:alert(1)')).toBeNull();
+    expect(aboutLink('  ')).toBeNull();
   });
 });

@@ -6,6 +6,7 @@ import {
   inject,
   linkedSignal,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { Location } from '@angular/common';
@@ -37,6 +38,7 @@ import { Status } from '../../platform/api/models';
 import { PartyConversation } from './party-conversation';
 import { QueueButton } from '../video-player/queue-button';
 import { WatchVideoPanel } from './watch-video-panel';
+import { PeerTubeVideo, PeerTubeVideos } from '../videos/peertube';
 import { YoutubeComment } from '../videos/youtube-details';
 import {
   pickWatchParams,
@@ -62,6 +64,9 @@ import {
 // i18n watch.queue.next: Next: {{title}}
 // i18n watch.queue.nextUntitled: Next in queue
 // i18n watch.queue.open: Queue ({{count}})
+// i18n watch.peertube.loading: Opening the PeerTube video…
+// i18n watch.peertube.failed: This PeerTube server didn't hand over the video.
+// i18n watch.peertube.open: Open it on {{host}}
 @Component({
   selector: 'app-watch',
   imports: [
@@ -81,6 +86,24 @@ import {
 export class Watch {
   protected party = viewChild(PartyConversation);
   private panel = viewChild<{ quote(comment: YoutubeComment): void }>('panel');
+  private player = viewChild<{
+    seekTo(seconds: number): boolean;
+    playhead: () => number | null;
+  }>('player');
+  /** The loaded player's time, for chapters and SponsorBlock. */
+  protected readonly playhead = computed(() => this.player()?.playhead() ?? null);
+  private peertubeVideos = inject(PeerTubeVideos);
+  /** A PeerTube link's video, resolved from its instance (spec/youtube-client.md, S4). */
+  protected readonly peertube = signal<PeerTubeVideo | null>(null);
+  protected readonly peertubeFailed = signal(false);
+  /** What the player plays: the source itself, or a PeerTube link's resolved stream. */
+  protected readonly playable = computed(() => {
+    const source = this.source();
+    if (source?.kind !== 'peertube') return source;
+    return this.peertube()?.playable ?? null;
+  });
+  /** Lets the panel move the loaded player (chapters, SponsorBlock Skip). */
+  protected readonly seeker = (seconds: number): boolean => this.player()?.seekTo(seconds) ?? false;
   protected partySession = computed(() => JSON.stringify(this.params()));
   protected loader = inject(ThreadLoader);
   private route = inject(ActivatedRoute);
@@ -108,7 +131,9 @@ export class Watch {
     this.followTrust.revision();
     return (
       (!!status.spoiler_text && !this.trusted.cwExpanded(status.account)) ||
-      (status.sensitive && !this.trusted.sensitiveShown(status.account))
+      (status.sensitive && !this.trusted.sensitiveShown(status.account)) ||
+      // A video its PeerTube instance marks NSFW waits like sensitive media.
+      (!!this.peertube()?.sensitive && !this.trusted.sensitiveShown(status.account))
     );
   });
   protected filterWarning = computed(() => {
@@ -139,11 +164,36 @@ export class Watch {
       return media ? attachmentSource(media) : null;
     }
     const video = statusVideo(status);
+    if (video?.kind === 'peertube')
+      return params['peertube'] && video.peertube?.id === params['peertube'] ? video : null;
     if (!video || video.videoId !== params['youtube']) return null;
     return cue !== undefined ? { ...video, start: cue } : video;
   });
 
   constructor() {
+    // Resolve a PeerTube link once per video; the player waits for the stream.
+    let peertubeKey = '';
+    effect(() => {
+      const source = this.source();
+      const key = source?.kind === 'peertube' ? source.key : '';
+      if (key === peertubeKey) return;
+      peertubeKey = key;
+      untracked(() => {
+        this.peertube.set(null);
+        this.peertubeFailed.set(false);
+        if (!source || !key) return;
+        this.peertubeVideos
+          .get(source)
+          .then((video) => {
+            if (peertubeKey !== key) return;
+            this.peertube.set(video);
+            if (!video.playable) this.peertubeFailed.set(true);
+          })
+          .catch(() => {
+            if (peertubeKey === key) this.peertubeFailed.set(true);
+          });
+      });
+    });
     const release = inject(ReadingZen).hold('full');
     this.destroyRef.onDestroy(() => {
       this.loader.destroy();

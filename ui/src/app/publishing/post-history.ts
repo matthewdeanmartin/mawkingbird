@@ -1,4 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { SeenVideo, seenVideo } from '../reading/videos/seen-videos';
 import { catchError, firstValueFrom, forkJoin, map, Observable, of } from 'rxjs';
 import { accountScopeSuffix, scopedKey } from '../platform/session/account-scope';
 import { Api } from '../platform/api/api';
@@ -47,6 +48,8 @@ export interface HistoryEntry {
   text: string;
   /** When it last scrolled past, epoch ms. */
   seen: number;
+  /** The post's video, for the queue's "Recently seen" (absent on older entries). */
+  video?: SeenVideo;
 }
 
 function plainText(html: string): string {
@@ -210,7 +213,9 @@ export class PostHistory {
   record(status: Status): void {
     if (!this.prefs.postHistory()) return;
     const entry = historyEntryFor(status, this.server.baseUrl());
-    if (entry) this.current()?.record(entry);
+    if (!entry) return;
+    const video = seenVideo(status, this.server.baseUrl());
+    this.current()?.record(video ? { ...entry, video } : entry);
   }
 
   /**

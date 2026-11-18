@@ -188,6 +188,11 @@ export const NOT_VAULTED: readonly { base: string; reason: string }[] = [
     reason: 'sessionStorage, single-use, seconds long.',
   },
   {
+    base: 'mockingbird_oauth_signup',
+    reason:
+      'In-flight sign-up OAuth (client secret, PKCE verifier, state) for one device: consumed by the callback, ignored after two hours. Syncing it would copy a live OAuth secret to devices that can never use it.',
+  },
+  {
     base: 'mockingbird_dropbox_token',
     reason:
       'The Dropbox connector deliberately does not persist its token — it is session-scoped by design, and syncing it would undo that decision.',

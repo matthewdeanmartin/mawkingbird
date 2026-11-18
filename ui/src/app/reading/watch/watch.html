@@ -54,12 +54,26 @@
           {{ 'watch.reveal' | transloco }}
         </button>
       } @else if (source(); as video) {
-        <app-video-player-controls [source]="video" />
+        @if (playable(); as stream) {
+          <app-video-player-controls #player [source]="stream" />
+        } @else if (peertubeFailed()) {
+          <p role="alert">{{ 'watch.peertube.failed' | transloco }}</p>
+          <p>
+            <a [href]="video.url" target="_blank" rel="noopener noreferrer">{{
+              'watch.peertube.open' | transloco: { host: video.peertube?.host }
+            }}</a>
+          </p>
+        } @else {
+          <p role="status">{{ 'watch.peertube.loading' | transloco }}</p>
+        }
         <app-watch-video-panel
           #panel
           [source]="video"
           [status]="loader.status()"
           [partyTag]="partyTags()[0] || null"
+          [playhead]="playhead()"
+          [seeker]="seeker"
+          [peertube]="peertube()"
         />
       }
       <!-- The source post sits under the player, like a video's description:

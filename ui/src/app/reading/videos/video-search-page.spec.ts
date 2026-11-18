@@ -72,12 +72,17 @@ describe('VideoSearchPage', () => {
     expect(youtube.search).not.toHaveBeenCalled();
   });
 
-  it('searches fediverse posts from ?q= and offers YouTube with Plus only', async () => {
+  it('searches fediverse posts from ?q= and points to the app for YouTube search', async () => {
     const host = await mount('tape');
     expect(posts).toHaveBeenCalledWith('tape');
     expect(host.querySelector('.card')?.textContent).toBe('p1');
     expect(youtube.search).not.toHaveBeenCalled();
-    expect(host.textContent).toContain('YouTube search is included with Mawkingbird Plus');
+    expect(host.textContent).toContain('Search YouTube from the Mawkingbird app');
+    expect(host.textContent).not.toContain('Plus');
+    const install = [...host.querySelectorAll('a')].find((a) =>
+      a.textContent?.includes('Install Mawkingbird Native'),
+    )!;
+    expect(install.getAttribute('href')).toBe('/settings/app');
   });
 
   it('searches YouTube for Plus subscribers, with Watch links', async () => {
@@ -108,14 +113,16 @@ describe('VideoSearchPage', () => {
     expect(host.querySelector('.card')?.textContent).toBe('p1');
   });
 
-  it('keeps Google and all-post search as hand-offs, without site: for posts', async () => {
+  it('lists Google and all-post search as hand-offs under Search elsewhere, without site: for posts', async () => {
     const host = await mount('site:youtube.com tape machines');
-    const all = [...host.querySelectorAll('a')].find((a) =>
-      a.textContent?.includes('Search all posts'),
+    const elsewhere = host.querySelector('nav.elsewhere')!;
+    expect(elsewhere.querySelector('h2')?.textContent).toContain('Search elsewhere');
+    const all = [...elsewhere.querySelectorAll('a')].find((a) =>
+      a.textContent?.includes('All posts, not only ones with video'),
     )!;
     expect(all.getAttribute('href')).toBe('/search?q=tape%20machines');
-    const google = [...host.querySelectorAll('button')].find((b) =>
-      b.textContent?.includes('Google'),
+    const google = [...elsewhere.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('YouTube, on Google'),
     )!;
     google.click();
     expect(open).toHaveBeenCalledWith(

@@ -967,7 +967,7 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     storage: 'local',
     suffix: 'account',
     sensitivity: 'private',
-    note: 'History: the last 500 posts this account scrolled past (network, server, id, author, first 150 characters). Browser-only; never synced or exported publicly.',
+    note: 'History: the last 500 posts this account scrolled past (network, server, id, author, first 150 characters, and for a video its Watch link, title and poster, offered as Recently seen on the watch queue). Browser-only; never synced or exported publicly.',
   },
   {
     base: 'mockingbird_private_follows',
