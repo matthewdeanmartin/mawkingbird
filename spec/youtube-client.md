@@ -25,7 +25,9 @@ oEmbed, Wikidata, and Mastodon itself.
 | Subscribe | **Two buttons.** "Subscribe" adds the channel RSS to video subscriptions. "Follow" follows the creator's known Mastodon account. |
 | Like | Like = favourite the Mastodon post. Also Bookmark, Boost and Quote, reusing existing post actions. Do not rebuild the mini composer; add a video-specific share sheet only. |
 | Comments | **Auto-pick, switchable.** Opened from a post → replies. Opened from a party or hashtag → tag stream. A toolbar toggle switches between them when both exist. |
-| Directory | Move the youtuberfinder ETL into `mawkingbird_starters` as video-scoped packs. |
+| Directory | **YouTube starters are their own pack kind**, not ordinary starter packs, because each creator may need a double subscribe (channel RSS + Mastodon follow). The youtuberfinder ETL moves into `mawkingbird_starters`, and that work comes last. Until it lands, a fake one-creator kit (Technology Connections) stands in. |
+| SponsorBlock | **Yes.** Show segments on the scrubber with a Skip button. |
+| Release cadence | Six sprints, **push after every two** (after S2, S4, S6). Run the full gates once per pair, on the combined tree. Focused checks only inside a sprint. |
 | Language | **Video titles win.** Detect from recent RSS titles and descriptions. Profile text only breaks ties. Use Wikidata language of work when present. Multi-language channels are allowed. |
 | Safety gate | **Automated, with stricter rules.** No human review per creator. Deny by default on any signal, then spot-check samples. |
 | `/videos` landing | **Subscriptions feed.** Newest videos from subscribed channels, merged with video posts from people you follow. |
@@ -77,6 +79,25 @@ It mirrors how youtubei.js is already sandboxed in `search()`:
 Web uses the same code path through the Plus proxy for `search` only, as
 today. Web `browse`/`player` falls back to RSS + oEmbed (title, author,
 thumbnail), which is enough for a degraded channel page.
+
+**How to know the endpoint list is acceptable.** `mawkingbird_native`'s rule
+(`spec/plus_local_capabilities.md`) is "scoped native transport replaces
+relay for implemented adapters; not an unrestricted proxy". The existing
+YouTube embed allowlist in `src-tauri/src/windows_network.rs` is the
+precedent. `PLATFORM_YOUTUBE` is acceptable when all of these hold:
+
+- Rust unit tests prove it accepts exactly `https://www.youtube.com` +
+  `/youtubei/v1/{search,browse,player,next}`, and rejects lookalike hosts
+  (`youtube.com.evil.test`), other paths, `http:` and redirects off-origin.
+  The same tests already exist for the embed allowlist.
+- It sends no cookies, stores no Google identity and never reads stream URLs
+  (playback stays in the official embed).
+- Request bodies are size-capped and the response is returned as text only.
+- The capability table row "CORS-limited public/provider reads" lists it.
+- The owner does a live smoke on Windows Native: search, open a channel,
+  load comments.
+
+If any item fails, the endpoint stays out and that feature degrades to RSS.
 
 YouTube's internal API changes without notice. Keep youtubei.js pinned and
 behind one service (`YoutubeFeeds`, renamed `YoutubeSource` or split). Every
@@ -206,27 +227,86 @@ stages 3–4 before the first publish.
 - Comments on a PeerTube video federate as replies, so replies mode works without changes.
 - No Sepia Search, no PeerTube discovery packs for now.
 
+## SponsorBlock
+
+SponsorBlock is a third-party, crowd-sourced database (`sponsor.ajay.app`,
+public, no key, CORS-enabled, so it works on the web too). It is not part of
+YouTube. YouTube Premium's "Jump ahead" is YouTube's own, different feature
+and is not available to us.
+
+- Look up segments by video ID through the privacy-preserving hash-prefix
+  endpoint (send the first 4 hex characters of the SHA-256 of the video ID,
+  never the full ID).
+- Draw the segments on a strip under the player. When playback enters a
+  segment, show a **Skip** button. Never skip automatically; that respects the
+  "nothing happens on its own" playback rules.
+- Seeking needs the YouTube IFrame Player API's `seekTo`. Check whether the
+  current embed already loads it; if not, adding it is part of the sprint.
+- Read only: we never submit segments or votes.
+
 ## Sprints
 
-1. **Unbreak search + native transport.** Add `PLATFORM_YOUTUBE`, fix the Plus
-   gate ordering, and degrade on web. Add unit specs for the gate matrix (native/web ×
-   Plus/not).
-2. **Watch actions + comment modes.** Action bar, two-mode toggle, "Find posts
-   about this video", video share sheet.
-3. **Channel page + CreatorLinks (Wikidata + profile evidence).**
-4. **Subscriptions landing + Shorts filter.**
-5. **Starter ETL migration** (in `mawkingbird_starters`), then Discover.
-6. **PeerTube playback/follow polish.**
+Every sprint gets a manual live-account test plan in `/test_plans/`. A **push**
+follows each pair of sprints, after one run of the full gates on the combined
+tree (AGENTS.md cadence). The owner authorises each push; agents leave work
+uncommitted.
 
-Each sprint gets a manual live-account test plan in `/test_plans/`.
+### Pair A: the client works
+
+1. **S1: Unbreak search, native transport.** Add `PLATFORM_YOUTUBE` in
+   `mawkingbird_native` and pass the acceptance list above. Fix the gate order in
+   `YoutubeFeeds.search()` to "native transport, else Plus proxy". Add the
+   anonymous `player` metadata call (duration, chapters, family-safe). Add unit
+   specs for the gate matrix (Native/web × Plus/not × flag off).
+2. **S2: Watch page.** Action bar (Like/Boost/Quote/Bookmark, Subscribe, Follow,
+   Queue, Share). Add the comment-mode toolbar with replies/hashtag auto-pick,
+   then a spike and build of read-only YouTube comments. Add "Find posts about this
+   video" and the video share sheet that hands off to the mini composer.
+
+**Push 1.**
+
+### Pair B: channels and the landing
+
+3. **S3: Channel page + CreatorLinks.** `/videos/channel/:id`, shareable and
+   open to visitors who aren't signed in (run the deep-link audit). CreatorLinks
+   draws on profile evidence, Wikidata and channel about links, and shows its
+   source on every match. Add the double subscribe (Subscribe + Follow) on the
+   channel page.
+4. **S4: Subscriptions landing, SponsorBlock, PeerTube.** `/videos` opens on
+   the merged Subscriptions feed with the `mb-toolbar` and Shorts filter.
+   Add SponsorBlock marks + Skip. PeerTube embed playback with no autoplay,
+   plus channel Follow/RSS.
+
+**Push 2.**
+
+### Pair C: YouTube starters (their own pack kind)
+
+5. **S5: YouTube starter kit, end to end with a fake kit.**
+   - Define the YouTube starter schema in `mawkingbird_starters`, separate
+     from people packs. Each entry holds: channel ID, channel title, Mastodon
+     handle (optional), link evidence and its source, languages, topic, and the
+     account kind (creator / RSS mirror / bridge).
+   - Check in one fake kit, **"Technology Connections"**, with a single
+     creator. The channel ID and the Mastodon handle are both to verify against
+     the live channel and profile before checking in; do not trust memory.
+     Mark it `sample: true` so the catalogue never publishes it as a real pack.
+   - Discover page `/videos/discover`. Rows offer Subscribe + Follow. Kit
+     actions: "Subscribe to all" (RSS), "Follow all" (Mastodon), and "Do
+     both". Each one reports what it did per creator. Entries without a handle
+     offer RSS only; mirrors/bots offer RSS only.
+   - Load the kit lazily, outside the root bundle (1 MB budget).
+6. **S6: The real ETL.** Port the youtuberfinder pipeline into
+   `mawkingbird_starters`: collect, link, language (titles win), safety (deny by
+   default, automated), categorise, publish. Re-run every legacy creator from
+   scratch. Each refresh writes a spot-check sample, and rejections become
+   blocklist entries. Replace the fake kit with the generated topic ×
+   language kits. youtuberfinder becomes read-only.
+
+**Push 3.**
 
 ## Decided out / parked
 
 - **Related videos: no.** Next up comes from the queue, subscriptions and the
   creator's channel, not YouTube's recommendations.
-- **SponsorBlock: parked, owner to decide.** SponsorBlock is a free,
-  crowd-sourced public database (sponsor.ajay.app, no key). Viewers mark time
-  ranges in YouTube videos as "sponsor read", "intro", "self-promo" and so on.
-  A player can draw those ranges on the scrubber and offer a Skip button. It
-  would need the YouTube IFrame API for seeking. It is a reader nicety, not core
-  to finding creators. Revisit after sprint 4.
+- **YouTube Premium features** (Jump ahead, downloads, background play) are
+  out of reach without a Google account and are not imitated.

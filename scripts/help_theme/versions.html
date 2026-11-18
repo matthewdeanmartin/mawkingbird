@@ -1,0 +1,10 @@
+{# Keep the theme's bottom navigation within the selected guide. #}
+{% if page and page.ancestors %}
+  <div class="rst-versions"><nav class="rst-current-version" aria-label="More guides">
+    {% for adjacent, label in [(page.previous_page, "Previous"), (page.next_page, "Next")] %}
+      {% if adjacent and adjacent.ancestors and adjacent.ancestors[-1] == page.ancestors[-1] %}
+        <a href="{{ adjacent.url|url }}">{{ label }}</a>
+      {% endif %}
+    {% endfor %}
+  </nav></div>
+{% endif %}

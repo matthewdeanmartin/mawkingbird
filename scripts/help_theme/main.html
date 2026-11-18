@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block site_nav %}
+  <ul><li class="toctree-l1"><a href="{{ nav.homepage.url|url }}">{{ nav.homepage.title }}</a></li></ul>
+  {% set navlevel = 1 %}
+  {% for section in nav if section.is_section and section.active %}
+    <p class="caption"><span class="caption-text">{{ section.title }}</span></p>
+    <ul class="current">
+      {% for nav_item in section.children %}
+        <li class="toctree-l1{% if nav_item.active %} current{% endif %}">{% include "nav.html" %}</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+{% endblock %}

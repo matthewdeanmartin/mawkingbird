@@ -9,6 +9,7 @@ site_description: Short, practical guides for using Mawkingbird.
 
 theme:
   name: readthedocs
+  custom_dir: scripts/help_theme
   prev_next_buttons_location: none
   collapse_navigation: true
 
