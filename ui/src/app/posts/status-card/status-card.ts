@@ -229,6 +229,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.countLabel: {{count}} {{label}}
 // i18n statusCard.closed: Closed
 // i18n statusCard.revokeQuotePermission: Revoke quote permission
+// i18n statusCard.revokeQuoteConfirm: Revoke permission for this post to quote your post? The quoted content will no longer be available in this quote.
 // i18n statusCard.viewImage: View image{{description}}
 // i18n statusCard.viewImageNoDescription: View image {{number}} (no description provided)
 // i18n statusCard.noDescriptionProvided: No description provided
@@ -3388,10 +3389,14 @@ export class StatusCard {
     });
   }
 
-  revokeQuote(event: Event): void {
+  async revokeQuote(event: Event): Promise<void> {
     event.stopPropagation();
     const quoted = this.display.quote?.quoted_status;
-    if (!quoted) {
+    if (!quoted || !this.canRevokeQuote()) {
+      return;
+    }
+    this.closeMenu(event);
+    if (!(await this.dialogs.confirm(this.transloco.translate('statusCard.revokeQuoteConfirm')))) {
       return;
     }
     // The viewer owns the quoted status; revoke this status's quote of it.

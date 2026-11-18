@@ -404,11 +404,6 @@
           </div>
           <div class="quote-content" [innerHTML]="q.content | customEmoji: q.emojis"></div>
         </a>
-        @if (canRevokeQuote()) {
-          <button class="btn btn-outline btn-sm revoke-btn" (click)="revokeQuote($event)">
-            {{ 'statusCard.revokeQuotePermission' | transloco }}
-          </button>
-        }
       } @else if (!cwCollapsed() && quoteUnavailable()) {
         <div class="quote-card quote-unavailable muted">
           {{ 'statusCard.quotedPostUnavailable' | transloco }}
@@ -1471,6 +1466,11 @@
                   @if (canReport) {
                     <button type="button" class="destructive" (click)="openReport($event)">
                       {{ 'statusCard.reportPost' | transloco }}
+                    </button>
+                  }
+                  @if (canRevokeQuote()) {
+                    <button type="button" class="destructive" (click)="revokeQuote($event)">
+                      {{ 'statusCard.revokeQuotePermission' | transloco }}
                     </button>
                   }
                   @if (hasPostTools()) {

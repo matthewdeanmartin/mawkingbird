@@ -9020,6 +9020,7 @@
     "reportPost": "Report post",
     "reported": "🚩 reported",
     "reportedTitle": "Reported",
+    "revokeQuoteConfirm": "Revoke permission for this post to quote your post? The quoted content will no longer be available in this quote.",
     "revokeQuotePermission": "Revoke quote permission",
     "sameLanguageNotice": "This post appears to be in {{target}}.",
     "save": "Save",

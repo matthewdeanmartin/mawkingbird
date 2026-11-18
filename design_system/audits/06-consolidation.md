@@ -2916,3 +2916,7 @@ pages in `public-pages/youtubers/` (routes, page model, copy, types, generated
 loaders, hub and kit components) take filesScanned from 1985 to 1993 and
 candidates from 678 to 680. The hub and kit components use MbButton and
 MbContentLink on the /follow/ page styles and are reconciled as adopted scope.
+
+Quote moderation (2026-11-18): moved quote revocation from the quote card into
+the existing destructive post menu, with confirmation. Reviewed inventory line
+shifts; candidate counts and reconciliation dispositions are unchanged.
