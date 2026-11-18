@@ -1,0 +1,93 @@
+:host {
+  display: block;
+}
+.lead {
+  margin: 0 0 16px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.card {
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--col-bg);
+}
+h2 {
+  margin: 14px 0 8px;
+  font-size: 1.05rem;
+}
+.card > h2:first-child {
+  margin-top: 0;
+}
+mb-checkbox,
+mb-field {
+  display: block;
+  margin-bottom: 10px;
+}
+.fields {
+  margin: 0 0 10px 28px;
+  font-size: 0.9rem;
+}
+.fields div {
+  display: flex;
+  gap: 10px;
+  overflow-wrap: anywhere;
+}
+.fields dt {
+  min-width: 6em;
+  color: var(--muted);
+}
+.fields dd {
+  margin: 0;
+}
+.pictures {
+  position: relative;
+  margin-bottom: 10px;
+}
+.header {
+  display: block;
+  width: 100%;
+  max-height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 3px solid var(--col-bg);
+}
+.header + .avatar {
+  position: absolute;
+  left: 12px;
+  bottom: -18px;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 10px;
+}
+.line {
+  flex: 1 1 260px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--code-bg);
+  overflow-wrap: anywhere;
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 0.88rem;
+}
+.ok {
+  color: var(--accent);
+  font-weight: 600;
+}
+.error {
+  color: var(--ds-error-text);
+}

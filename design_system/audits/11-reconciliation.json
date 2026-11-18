@@ -3351,6 +3351,21 @@
       "file": "ui/src/app/unbird/unbird-servers.html",
       "disposition": "adopted scope",
       "nextStep": "Small Button links per suggested server into /login/mastodon (intent=need, server, next) and link Buttons for 'Pick another server' and 'I already have an account'."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-import-points.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Native-only list of kept archives: link Buttons (Use this one, danger Forget). Renders nothing on the web. Sprint 5 (design system) reviews it with the other Unbird surfaces."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-posts.html",
+      "disposition": "adopted scope",
+      "nextStep": "Small solid/outline Button toggles for suggestions (aria-pressed), link Buttons for select/clear/more, Checkbox per post unit, Field/Control (number, date, visibility select), Checkbox for date line and photos, solid Button to schedule, outline and danger link Buttons for the queue. The suggestion toggle row is a candidate for a shared segmented control in Sprint 5."
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-profile.html",
+      "disposition": "adopted scope",
+      "nextStep": "Checkbox for each proposal, Field/Control textareas for bio and the moved post, solid Buttons for save and post-and-pin, outline small Buttons for copy and follow-tag. Local header/avatar preview images. Sprint 5 reviews the cards against a shared card."
     }
   ]
 }

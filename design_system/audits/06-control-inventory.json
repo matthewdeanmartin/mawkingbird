@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 1953,
-  "filesWithCandidates": 670,
+  "filesScanned": 1964,
+  "filesWithCandidates": 673,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -26982,6 +26982,28 @@
       ]
     },
     {
+      "file": "ui/src/app/unbird/unbird-import-points.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 50
+        },
+        {
+          "pattern": "shared",
+          "line": 59
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 49
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 58
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/unbird/unbird-landing.ts",
       "status": "needs semantic review",
       "findings": [
@@ -27005,19 +27027,23 @@
         },
         {
           "pattern": "shared",
-          "line": 58
+          "line": 52
         },
         {
           "pattern": "shared",
-          "line": 117
+          "line": 63
         },
         {
           "pattern": "shared",
-          "line": 129
+          "line": 119
         },
         {
           "pattern": "shared",
-          "line": 151
+          "line": 131
+        },
+        {
+          "pattern": "shared",
+          "line": 171
         },
         {
           "pattern": "nativeButtons",
@@ -27029,15 +27055,207 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 58
+          "line": 52
         },
         {
           "pattern": "nativeButtons",
-          "line": 116
+          "line": 62
         },
         {
           "pattern": "nativeButtons",
-          "line": 151
+          "line": 118
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 171
+        },
+        {
+          "pattern": "disclosure",
+          "line": 152
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-posts.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 41
+        },
+        {
+          "pattern": "shared",
+          "line": 52
+        },
+        {
+          "pattern": "shared",
+          "line": 69
+        },
+        {
+          "pattern": "shared",
+          "line": 81
+        },
+        {
+          "pattern": "shared",
+          "line": 85
+        },
+        {
+          "pattern": "shared",
+          "line": 97
+        },
+        {
+          "pattern": "shared",
+          "line": 124
+        },
+        {
+          "pattern": "shared",
+          "line": 133
+        },
+        {
+          "pattern": "shared",
+          "line": 135
+        },
+        {
+          "pattern": "shared",
+          "line": 143
+        },
+        {
+          "pattern": "shared",
+          "line": 144
+        },
+        {
+          "pattern": "shared",
+          "line": 146
+        },
+        {
+          "pattern": "shared",
+          "line": 147
+        },
+        {
+          "pattern": "shared",
+          "line": 154
+        },
+        {
+          "pattern": "shared",
+          "line": 159
+        },
+        {
+          "pattern": "shared",
+          "line": 174
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 40
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 51
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 68
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 81
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 85
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 124
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 174
+        },
+        {
+          "pattern": "selects",
+          "line": 147
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/unbird/unbird-profile.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 3
+        },
+        {
+          "pattern": "shared",
+          "line": 11
+        },
+        {
+          "pattern": "shared",
+          "line": 17
+        },
+        {
+          "pattern": "shared",
+          "line": 23
+        },
+        {
+          "pattern": "shared",
+          "line": 24
+        },
+        {
+          "pattern": "shared",
+          "line": 27
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        },
+        {
+          "pattern": "shared",
+          "line": 61
+        },
+        {
+          "pattern": "shared",
+          "line": 72
+        },
+        {
+          "pattern": "shared",
+          "line": 86
+        },
+        {
+          "pattern": "shared",
+          "line": 88
+        },
+        {
+          "pattern": "shared",
+          "line": 96
+        },
+        {
+          "pattern": "shared",
+          "line": 117
+        },
+        {
+          "pattern": "shared",
+          "line": 132
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 72
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 95
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 117
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 132
         }
       ]
     },

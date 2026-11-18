@@ -3,6 +3,7 @@
     <h1>{{ 'unbird.page.title' | transloco }}</h1>
     <p class="lead">{{ 'unbird.page.lead' | transloco }}</p>
     <app-unbird-drop (loaded)="loaded()" />
+    <app-unbird-import-points />
     @if (matcher.archive()) {
       <div class="tiles">
         <a class="tile" routerLink="/unbird/people">
@@ -14,6 +15,22 @@
           <span>{{ 'unbird.page.tile.archiveBody' | transloco }}</span>
         </a>
       </div>
+    }
+  } @else if (tab === 'posts') {
+    <h1>{{ 'unbird.page.postsTitle' | transloco }}</h1>
+    @if (matcher.archive()) {
+      <app-unbird-posts />
+    } @else {
+      <p class="lead">{{ 'unbird.page.needArchive' | transloco }}</p>
+      <app-unbird-drop />
+    }
+  } @else if (tab === 'profile') {
+    <h1>{{ 'unbird.page.profileTitle' | transloco }}</h1>
+    @if (matcher.archive()) {
+      <app-unbird-profile />
+    } @else {
+      <p class="lead">{{ 'unbird.page.needArchive' | transloco }}</p>
+      <app-unbird-drop />
     }
   } @else if (tab === 'archive') {
     <h1>{{ 'unbird.page.archiveTitle' | transloco }}</h1>

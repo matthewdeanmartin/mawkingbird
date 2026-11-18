@@ -1,0 +1,140 @@
+@if (!signedIn()) {
+  <p class="lead">{{ 'unbird.profile.needAccount' | transloco }}</p>
+  <a mbButton routerLink="/login/mastodon" [queryParams]="{ next: '/unbird/profile' }">{{
+    'unbird.profile.signIn' | transloco
+  }}</a>
+} @else if (matcher.archive(); as archive) {
+  <p class="lead">{{ 'unbird.profile.lead' | transloco }}</p>
+
+  <section class="card">
+    @if (archive.owner.displayName) {
+      <mb-checkbox
+        [label]="('unbird.profile.useName' | transloco) + ': ' + archive.owner.displayName"
+        [ngModel]="useName()"
+        (ngModelChange)="useName.set($event)"
+      />
+    }
+    <mb-checkbox
+      [label]="'unbird.profile.useBio' | transloco"
+      [ngModel]="useBio()"
+      (ngModelChange)="useBio.set($event)"
+    />
+    @if (useBio()) {
+      <mb-field [label]="'unbird.profile.bio' | transloco">
+        <textarea mbControl rows="3" [ngModel]="bio()" (ngModelChange)="bio.set($event)"></textarea>
+      </mb-field>
+    }
+    <mb-checkbox
+      [label]="'unbird.profile.addLinks' | transloco"
+      [ngModel]="useLinks()"
+      (ngModelChange)="useLinks.set($event)"
+    />
+    @if (useLinks() && fields().length) {
+      <dl class="fields">
+        @for (field of fields(); track field.name + field.value) {
+          <div>
+            <dt>{{ field.name }}</dt>
+            <dd>{{ field.value }}</dd>
+          </div>
+        }
+      </dl>
+    }
+
+    <h2>{{ 'unbird.profile.pictures' | transloco }}</h2>
+    @if (avatarUrl() || headerUrl()) {
+      <div class="pictures">
+        @if (headerUrl(); as url) {
+          <img class="header" [src]="url" alt="" />
+        }
+        @if (avatarUrl(); as url) {
+          <img class="avatar" [src]="url" alt="" />
+        }
+      </div>
+      @if (avatarUrl()) {
+        <mb-checkbox
+          [label]="'unbird.profile.useAvatar' | transloco"
+          [ngModel]="useAvatar()"
+          (ngModelChange)="useAvatar.set($event)"
+        />
+      }
+      @if (headerUrl()) {
+        <mb-checkbox
+          [label]="'unbird.profile.useHeader' | transloco"
+          [ngModel]="useHeader()"
+          (ngModelChange)="useHeader.set($event)"
+        />
+      }
+    } @else {
+      <p class="muted small">{{ 'unbird.profile.picturesNeedArchive' | transloco }}</p>
+    }
+
+    <div class="row">
+      <button mbButton type="button" [disabled]="saving() === 'busy'" (click)="save()">
+        {{ 'unbird.profile.save' | transloco }}
+      </button>
+      @if (saving() === 'done') {
+        <span class="ok" role="status">{{ 'unbird.profile.saved' | transloco }}</span>
+      } @else if (saving() === 'failed') {
+        <span class="error" role="status">{{ 'unbird.profile.saveFailed' | transloco }}</span>
+      }
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>{{ 'unbird.profile.moved.title' | transloco }}</h2>
+    <p class="muted">{{ 'unbird.profile.moved.lead' | transloco }}</p>
+    <mb-field [label]="'unbird.profile.moved.text' | transloco">
+      <textarea
+        mbControl
+        rows="3"
+        [ngModel]="moved()"
+        (ngModelChange)="moved.set($event)"
+      ></textarea>
+    </mb-field>
+    <div class="row">
+      <button
+        mbButton
+        type="button"
+        [disabled]="movedState() === 'busy' || movedState() === 'done'"
+        (click)="postMoved()"
+      >
+        {{ 'unbird.profile.moved.post' | transloco }}
+      </button>
+      @if (movedState() === 'done') {
+        <span class="ok" role="status">{{ 'unbird.profile.moved.done' | transloco }}</span>
+      } @else if (movedState() === 'failed') {
+        <span class="error" role="status">{{ 'unbird.profile.moved.failed' | transloco }}</span>
+      }
+    </div>
+  </section>
+
+  @if (xLine()) {
+    <section class="card">
+      <h2>{{ 'unbird.profile.x.title' | transloco }}</h2>
+      <p class="muted">{{ 'unbird.profile.x.lead' | transloco }}</p>
+      <div class="row">
+        <code class="line">{{ xLine() }}</code>
+        <button mbButton variant="outline" size="small" type="button" (click)="copyXLine()">
+          {{ (copied() ? 'unbird.profile.x.copied' : 'unbird.profile.x.copy') | transloco }}
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (tags().length) {
+    <section class="card">
+      <h2>{{ 'unbird.profile.tags.title' | transloco }}</h2>
+      <div class="row">
+        @for (tag of tags(); track tag) {
+          @if (followedTags().has(tag)) {
+            <span class="ok">{{ 'unbird.profile.tags.following' | transloco: { tag } }}</span>
+          } @else {
+            <button mbButton variant="outline" size="small" type="button" (click)="followTag(tag)">
+              {{ 'unbird.profile.tags.follow' | transloco: { tag } }}
+            </button>
+          }
+        }
+      </div>
+    </section>
+  }
+}

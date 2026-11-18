@@ -23,7 +23,10 @@ export interface TweetQuery {
 const folded = new WeakMap<object, string[]>();
 
 export function fold(value: string): string {
-  return value.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  return value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 }
 
 /** Quoted phrases and bare words, folded. */

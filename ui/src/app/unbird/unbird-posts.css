@@ -1,0 +1,76 @@
+:host {
+  display: block;
+}
+.lead {
+  margin: 0 0 16px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 10px 0;
+}
+.fields {
+  align-items: flex-end;
+}
+.grow {
+  flex: 1 1 220px;
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 0.88rem;
+}
+.error {
+  color: var(--ds-error-text);
+}
+.queue,
+.schedule {
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--col-bg);
+}
+.queue ul {
+  margin: 0;
+  padding-left: 1.2em;
+  line-height: 1.7;
+}
+.units {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.units li {
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+.units li.off {
+  opacity: 0.6;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: 4px 0 0 28px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.tag {
+  padding: 0 7px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+mb-checkbox {
+  display: block;
+}

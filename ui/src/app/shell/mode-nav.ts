@@ -41,6 +41,8 @@ import {
 // i18n shell.modeNav.unbird.start: Start
 // i18n shell.modeNav.unbird.people: People
 // i18n shell.modeNav.unbird.archive: Archive
+// i18n shell.modeNav.unbird.posts: Posts
+// i18n shell.modeNav.unbird.profile: Profile
 // i18n shell.modeNav.switchAria: Switch app — now in {{mode}}
 // i18n shell.modeNav.menu: Apps
 // i18n shell.modeNav.twitterImport.import: Import
@@ -162,8 +164,7 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
     },
   ],
   unbird: [
-    // Twitter to Mastodon (spec/sprint/unbird-2026-11.md). Tabs appear as they
-    // are built: Posts and Profile join Start, People and Archive later.
+    // Twitter to Mastodon (spec/sprint/unbird-2026-11.md): the full five.
     {
       id: 'start',
       labelKey: 'shell.modeNav.unbird.start',
@@ -179,11 +180,25 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       active: onPath('/unbird/people'),
     },
     {
+      id: 'posts',
+      labelKey: 'shell.modeNav.unbird.posts',
+      icon: 'M4 6h11M4 10h8M4 14h6M14 20l7-7-3-3-7 7v3zM16 12l3 3',
+      link: '/unbird/posts',
+      active: onPath('/unbird/posts'),
+    },
+    {
       id: 'archive',
       labelKey: 'shell.modeNav.unbird.archive',
       icon: 'M4 3h10l4 4v5M4 3v18h7M7 8h6M7 12h4M16.5 17.5m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M18.6 19.6 21 22',
       link: '/unbird/archive',
       active: onPath('/unbird/archive'),
+    },
+    {
+      id: 'profile',
+      labelKey: 'shell.modeNav.unbird.profile',
+      icon: 'M3 4h18v16H3zM9 11a2.5 2.5 0 1 0 0-5a2.5 2.5 0 1 0 0 5M5 17a4 4 0 0 1 8 0M15 9h3M15 13h3',
+      link: '/unbird/profile',
+      active: onPath('/unbird/profile'),
     },
   ],
   radio: [

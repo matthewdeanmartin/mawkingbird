@@ -1,8 +1,13 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
+import { Api } from '../platform/api/api';
+import { Server } from '../platform/http/server';
+import { Auth } from '../platform/session/auth';
 import type { UnbirdArchive } from './unbird-archive';
 import { UnbirdArchiveTools } from './unbird-archive-tools';
 import { UnbirdDrop } from './unbird-drop';
@@ -61,9 +66,10 @@ function archive(): UnbirdArchive {
   };
 }
 
-function setup(): UnbirdMatcher {
+function setup(extra: unknown[] = []): UnbirdMatcher {
   TestBed.configureTestingModule({
     providers: [
+      ...(extra as never[]),
       provideHttpClient(),
       provideHttpClientTesting(),
       provideRouter([]),
@@ -75,6 +81,7 @@ function setup(): UnbirdMatcher {
           saveArchive: async () => true,
           saveMatches: async () => true,
           forget: async () => undefined,
+          listArchives: async () => [],
         },
       },
     ],
@@ -113,7 +120,7 @@ describe('Unbird components', () => {
             avatar: '',
             signals: ['Mastodon username matches Twitter handle'],
             confidence: 'likely',
-            lastStatusAt: null,
+            lastStatusAt: new Date().toISOString(),
             bot: false,
             statuses: 10,
             followers: 5,
@@ -127,7 +134,8 @@ describe('Unbird components', () => {
     const root = fixture.nativeElement as HTMLElement;
     expect(root.querySelector('.big')?.textContent).toContain('1 of your people is on Mastodon');
     expect(root.querySelector('.person')?.textContent).toContain('@ada@hachyderm.io');
-    expect(root.querySelector('.person .chips')?.textContent).toContain('Followed you back');
+    expect(root.querySelector('.person .chips')?.textContent).toContain('Twitter mutual');
+    expect(root.querySelector('.person .chips')?.textContent).toContain('Talked 5 times');
     // Signed out: a link to the profile, never a Follow button.
     expect(root.querySelector('.person a')?.getAttribute('href')).toBe('https://hachyderm.io/@ada');
     expect(search).not.toHaveBeenCalled();
@@ -150,5 +158,83 @@ describe('Unbird components', () => {
     const posts = root.querySelectorAll(visible);
     expect(posts).toHaveLength(1);
     expect(posts[0].textContent).toContain('hello mastodon');
+  });
+  it('never offers yourself, sets aside who you follow, and hides quiet accounts by default', async () => {
+    const recent = new Date().toISOString();
+    const match = (acct: string, lastStatusAt: string | null) => ({
+      acct,
+      url: `https://hachyderm.io/@${acct.split('@')[0]}`,
+      displayName: acct,
+      avatar: '',
+      signals: ['Mastodon username matches Twitter handle'],
+      confidence: 'likely' as const,
+      lastStatusAt,
+      bot: false,
+      statuses: 1,
+      followers: 1,
+    });
+    const person = (handle: string) => ({ ...archive().people[0], twitter_handle: handle });
+    const matcher = setup([
+      {
+        provide: Auth,
+        useValue: {
+          account: signal({ id: '7', acct: 'me' }),
+          lacksMastodonToken: false,
+          isAnonymous: false,
+        },
+      },
+      { provide: Server, useValue: { baseUrl: () => 'https://hachyderm.io' } },
+      {
+        provide: Api,
+        useValue: {
+          accountFollowingPage: () =>
+            of({ accounts: [{ acct: 'old' }], nextMaxId: null, source: 'link' }),
+        },
+      },
+    ]);
+    await matcher.use({ ...archive(), people: ['me', 'old', 'quiet', 'ada'].map(person) }, [
+      {
+        handle: 'me',
+        status: 'complete',
+        checkedAt: 0,
+        matches: [match('me@hachyderm.io', recent)],
+      },
+      {
+        handle: 'old',
+        status: 'complete',
+        checkedAt: 0,
+        matches: [match('old@hachyderm.io', recent)],
+      },
+      {
+        handle: 'quiet',
+        status: 'complete',
+        checkedAt: 0,
+        matches: [match('quiet@hachyderm.io', '2023-02-01')],
+      },
+      {
+        handle: 'ada',
+        status: 'complete',
+        checkedAt: 0,
+        matches: [match('ada@hachyderm.io', recent)],
+      },
+    ]);
+    const fixture = TestBed.createComponent(UnbirdPeople);
+    fixture.componentRef.setInput('via', 'account');
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const offered = () =>
+      [...root.querySelectorAll('.person .acct')].map((el) => el.textContent?.trim());
+    expect(offered()).toEqual(['@ada@hachyderm.io']);
+    expect(root.querySelector('.already summary')?.textContent).toContain('(1)');
+    expect(root.querySelector('.foot')?.textContent).toContain('1 more found');
+
+    const everyone = [...root.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Everyone'),
+    )!;
+    everyone.click();
+    fixture.detectChanges();
+    expect(offered()).toEqual(['@ada@hachyderm.io', '@quiet@hachyderm.io']);
   });
 });

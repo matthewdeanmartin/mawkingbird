@@ -4,7 +4,13 @@ import { FOCUSED_APPS } from '../../shell/mode-nav';
  * App pages that pick up after sign-in besides the mini-apps: Unbird keeps the
  * reader's archive on the device, so signing up mid-way returns to it.
  */
-const RETURN_PAGES: readonly string[] = ['/unbird', '/unbird/people', '/unbird/archive'];
+const RETURN_PAGES: readonly string[] = [
+  '/unbird',
+  '/unbird/people',
+  '/unbird/posts',
+  '/unbird/archive',
+  '/unbird/profile',
+];
 
 /**
  * The page to open after signing in: a mini-app's root named in `?next=`, else Home.

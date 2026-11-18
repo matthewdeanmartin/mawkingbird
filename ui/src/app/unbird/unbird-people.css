@@ -121,11 +121,23 @@
 }
 .foot {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
   margin-top: 12px;
+}
+.already {
+  width: 100%;
+}
+.already summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.already ul {
+  margin: 6px 0 0;
+  padding-left: 1.2em;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 .foot p {
   margin: 0;

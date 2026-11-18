@@ -67,11 +67,20 @@ export interface UnbirdPerson extends TwitterArchivePerson {
 
 export interface UnbirdArchive {
   version: 1;
+  /** Set when stored: whose archive and when Twitter made it (`unbird-store.ts`). */
+  id?: string;
   readAt: number;
   owner: { accountId: string | null; userName: string | null; displayName: string | null };
   /** When Twitter generated the archive, if it said. */
   generatedAt: string | null;
-  profile: { bio: string; website: string; location: string } | null;
+  profile: {
+    bio: string;
+    website: string;
+    location: string;
+    /** Twitter's URLs; their file names find the images in `profile_media/`. */
+    avatarUrl?: string;
+    headerUrl?: string;
+  } | null;
   /** Record counts per data type, from the manifest when present. */
   counts: Record<string, number>;
   /** How many data files the archive has, and which ones were opened. */
@@ -231,6 +240,8 @@ export function buildArchive(
       bio: text(profile.description?.bio) ?? '',
       website: text(profile.description?.website) ?? '',
       location: text(profile.description?.location) ?? '',
+      avatarUrl: text(profile.avatarMediaUrl) ?? undefined,
+      headerUrl: text(profile.headerMediaUrl) ?? undefined,
     };
   }
 
@@ -266,28 +277,73 @@ export function buildArchive(
     ...(byBase.get('tweets.js') ?? []),
   ].map((source) => ({ name: archiveBaseName(source.name), text: source.text }));
   if (peopleSources.length) {
-    archive.people = extractTwitterArchive(peopleSources)
-      .people.map((person) => {
-        const mutual = !!person.twitter_account_id && followers.has(person.twitter_account_id);
-        return { ...person, mutual, closeness: closeness(person, mutual) };
-      })
-      .sort(
-        (left, right) =>
-          right.closeness - left.closeness ||
-          (left.twitter_handle ?? '').localeCompare(right.twitter_handle ?? ''),
-      );
+    archive.people = extractTwitterArchive(peopleSources).people.map((person) => ({
+      ...person,
+      mutual: !!person.twitter_account_id && followers.has(person.twitter_account_id),
+      closeness: 0,
+    }));
+    archive.people = rankPeople(archive);
   }
   return archive;
 }
 
-/** Conversation counts most; following and following back add a floor. */
-export function closeness(person: TwitterArchivePerson, mutual: boolean): number {
-  return (
+const YEAR_MS = 365.25 * 24 * 60 * 60 * 1000;
+
+/**
+ * How close the owner was to someone, for "friends first".
+ *
+ * - Mutual follows weigh most: both chose each other.
+ * - Following adds a floor; following alone is cheap on Twitter.
+ * - Conversation counts with diminishing returns (log), so one long argument
+ *   does not outrank years of regular talk, and replies count double mentions.
+ * - Recency: talking in the archive's last year adds more than long ago.
+ *
+ * `reference` is when the archive ends (its generation date, else the newest
+ * tweet). The archive has no likes by author, so likes cannot count.
+ */
+export function closeness(person: TwitterArchivePerson, mutual: boolean, reference = 0): number {
+  let score =
+    (mutual ? 6 : 0) +
     (person.currently_following ? 3 : 0) +
-    (mutual ? 3 : 0) +
-    person.reply_count * 2 +
-    person.mention_count
+    3 * Math.log2(1 + person.reply_count) +
+    1.5 * Math.log2(1 + person.mention_count);
+  const last = Date.parse(person.last_interaction_at ?? '');
+  if (reference && Number.isFinite(last)) {
+    const years = (reference - last) / YEAR_MS;
+    score += years <= 1 ? 3 : years <= 3 ? 1.5 : 0;
+  }
+  return Math.round(score * 100) / 100;
+}
+
+/** Is this the archive's owner, who must never be offered as their own friend? */
+export function isOwner(archive: UnbirdArchive, person: TwitterArchivePerson): boolean {
+  const { accountId, userName } = archive.owner;
+  if (accountId && person.twitter_account_id === accountId) return true;
+  const handle = userName?.toLowerCase();
+  return (
+    !!handle &&
+    (person.twitter_handle?.toLowerCase() === handle ||
+      person.previous_handles.some((previous) => previous.toLowerCase() === handle))
   );
+}
+
+/**
+ * The archive's people without the owner, scored and closest first. Applied
+ * on read too, so archives saved before a scoring change are re-ranked.
+ */
+export function rankPeople(archive: UnbirdArchive): UnbirdPerson[] {
+  const reference =
+    Date.parse(archive.generatedAt ?? '') ||
+    Date.parse(archive.tweets.find((tweet) => tweet.at)?.at ?? '') ||
+    0;
+  return archive.people
+    .filter((person) => !isOwner(archive, person))
+    .map((person) => ({ ...person, closeness: closeness(person, person.mutual, reference) }))
+    .sort(
+      (left, right) =>
+        right.closeness - left.closeness ||
+        (left.twitter_handle ?? '').localeCompare(right.twitter_handle ?? ''),
+    );
 }
 
 interface ManifestShape {
@@ -297,7 +353,11 @@ interface ManifestShape {
 }
 
 interface ProfileShape {
-  profile?: { description?: { bio?: unknown; website?: unknown; location?: unknown } };
+  profile?: {
+    description?: { bio?: unknown; website?: unknown; location?: unknown };
+    avatarMediaUrl?: unknown;
+    headerMediaUrl?: unknown;
+  };
 }
 
 interface RawTweetRow {

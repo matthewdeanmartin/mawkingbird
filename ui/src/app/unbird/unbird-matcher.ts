@@ -5,8 +5,15 @@ import { Account } from '../platform/api/models';
 import { SearchServer } from '../platform/http/search-server';
 import { Server } from '../platform/http/server';
 import { rankTwitterMatch } from '../settings/import-export/twitter-friend-discovery';
-import type { PickedFile, UnbirdArchive, UnbirdPerson } from './unbird-archive';
-import { StoredMatch, StoredMatchRow, UnbirdStore } from './unbird-store';
+import { PickedFile, rankPeople, UnbirdArchive, UnbirdPerson } from './unbird-archive';
+import { NATIVE_PROFILES } from '../platform/session/platform-login';
+import {
+  archiveId,
+  ArchiveSummary,
+  StoredMatch,
+  StoredMatchRow,
+  UnbirdStore,
+} from './unbird-store';
 
 /**
  * Finds the archive's people on Mastodon, closest first, and remembers what it
@@ -17,8 +24,7 @@ import { StoredMatch, StoredMatchRow, UnbirdStore } from './unbird-store';
  * - `public`: no account. Unauthenticated `GET /api/v2/search` on a large
  *   server ({@link PUBLIC_SEARCH_SERVER}), which knows most active accounts
  *   across the fediverse. Mastodon allows this without a token as long as the
- *   search does not `resolve` remote accounts; it is rate limited per IP, so
- *   the first pass is the closest {@link FIRST_PASS} people.
+ *   search does not `resolve` remote accounts; it is rate limited per IP.
  * - `account`: through the signed-in server's own search, like the classic
  *   importer, so results carry ids that can be followed.
  *
@@ -28,8 +34,15 @@ import { StoredMatch, StoredMatchRow, UnbirdStore } from './unbird-store';
  */
 
 export const PUBLIC_SEARCH_SERVER = 'mastodon.social';
-/** People searched before anyone presses "keep looking". */
+/**
+ * The closest people are searched briskly, for a fast first payoff; after
+ * them the search keeps going on its own at about one a second, inside
+ * Mastodon's default limit of 300 requests per five minutes, until everyone
+ * is checked, the reader pauses, or a server says slow down.
+ */
 export const FIRST_PASS = 120;
+const BRISK_MS = 400;
+const STEADY_MS = 1100;
 const TIMEOUT_MS = 8000;
 
 export type SearchVia = 'public' | 'account';
@@ -119,6 +132,14 @@ export class UnbirdMatcher {
   private readonly searchServer = inject(SearchServer, { optional: true });
   private stopRequested = false;
 
+  /**
+   * Native keeps several archives as import points; the web keeps one, and a
+   * new archive replaces it.
+   */
+  readonly native = inject(NATIVE_PROFILES, { optional: true }) !== null;
+  /** The archives kept on this device; one at most on the web. */
+  readonly importPoints = signal<readonly ArchiveSummary[]>([]);
+
   readonly archive = signal<UnbirdArchive | null>(null);
   /**
    * The files the archive was read from, this visit only. Never stored: a
@@ -129,29 +150,39 @@ export class UnbirdMatcher {
   readonly rows = signal<ReadonlyMap<string, StoredMatchRow>>(new Map());
   readonly running = signal(false);
   readonly rateLimited = signal(false);
-  /** Courtesy pause between searches; tests set it to zero. */
-  delayMs = 400;
+  /** Courtesy pauses between searches, brisk then steady; tests set both to zero. */
+  delayMs = BRISK_MS;
+  steadyDelayMs = STEADY_MS;
   /** Replaceable for tests. */
   fetchImpl: typeof fetch = (...args) => fetch(...args);
 
-  /** People Unbird can search for: those with a known handle, closest first. */
-  readonly searchable = computed(() =>
-    (this.archive()?.people ?? []).filter((person) => !!person.twitter_handle),
+  /** People Unbird can search for: a known handle, never the owner, closest first. */
+  readonly searchable = computed(() => {
+    const archive = this.archive();
+    return archive ? rankPeople(archive).filter((person) => !!person.twitter_handle) : [];
+  });
+  /** Results for people still in the list (an old save may hold the owner's own row). */
+  private readonly listedRows = computed(() =>
+    this.searchable()
+      .map((person) => this.rows().get(key(person)))
+      .filter((row): row is StoredMatchRow => !!row),
   );
-  readonly searched = computed(() => this.rows().size);
-  readonly remaining = computed(
-    () => this.searchable().filter((person) => !this.rows().has(key(person))).length,
-  );
-  readonly found = computed(
-    () => [...this.rows().values()].filter((row) => row.matches.length > 0).length,
-  );
-  readonly servers = computed(() => serverShares(this.rows().values()));
+  readonly searched = computed(() => this.listedRows().length);
+  readonly remaining = computed(() => this.searchable().length - this.searched());
+  readonly found = computed(() => this.listedRows().filter((row) => row.matches.length).length);
+  readonly servers = computed(() => serverShares(this.listedRows()));
+
+  /** The current archive's id, which keys its matches and replay ledger. */
+  readonly currentId = computed(() => {
+    const archive = this.archive();
+    return archive ? archiveId(archive) : null;
+  });
 
   /** Show an archive and whatever was already found for it. */
   async use(archive: UnbirdArchive, previous?: readonly StoredMatchRow[]): Promise<void> {
     this.stopRequested = true;
     this.archive.set(archive);
-    const rows = previous ?? (await this.store.loadMatches());
+    const rows = previous ?? (await this.store.loadMatches(archiveId(archive)));
     this.rows.set(new Map(rows.map((row) => [row.handle, row])));
     this.rateLimited.set(false);
   }
@@ -161,22 +192,47 @@ export class UnbirdMatcher {
     if (this.archive()) return this.archive();
     const archive = await this.store.loadArchive();
     if (archive) await this.use(archive);
+    await this.refreshImportPoints();
     return archive;
   }
 
-  /** Keep a new archive, replacing the saved one and its results. */
+  /**
+   * Keep a newly read archive and make it current. On the web it replaces the
+   * saved one; reading the same archive again keeps what was found for it.
+   */
   async adopt(archive: UnbirdArchive): Promise<boolean> {
-    const saved = await this.store.saveArchive(archive);
-    await this.use(archive, []);
+    const id = archiveId(archive);
+    const kept = { ...archive, id };
+    const saved = await this.store.saveArchive(kept, this.native);
+    await this.use(kept);
+    await this.refreshImportPoints();
     return saved;
   }
 
-  async forget(): Promise<void> {
-    this.stop();
-    await this.store.forget();
-    this.archive.set(null);
+  /** Native: switch to another kept archive. */
+  async switchTo(id: string): Promise<void> {
+    const archive = await this.store.loadArchive(id);
+    if (!archive) return;
+    await this.store.setCurrent(id);
     this.picked = null;
-    this.rows.set(new Map());
+    await this.use(archive);
+  }
+
+  /** Forget the current archive (or the one named) and everything found from it. */
+  async forget(id = this.currentId()): Promise<void> {
+    if (!id) return;
+    if (id === this.currentId()) {
+      this.stop();
+      this.archive.set(null);
+      this.picked = null;
+      this.rows.set(new Map());
+    }
+    await this.store.forget(id);
+    await this.refreshImportPoints();
+  }
+
+  private async refreshImportPoints(): Promise<void> {
+    this.importPoints.set(await this.store.listArchives());
   }
 
   stop(): void {
@@ -187,8 +243,8 @@ export class UnbirdMatcher {
     return this.rows().get(key(person)) ?? null;
   }
 
-  /** Search the next `count` unsearched people, closest first. */
-  async search(via: SearchVia, count = FIRST_PASS): Promise<void> {
+  /** Search unsearched people, closest first: everyone, unless `count` says fewer. */
+  async search(via: SearchVia, count = Infinity): Promise<void> {
     if (this.running()) return;
     const search: AccountSearch =
       via === 'account' && this.api
@@ -200,6 +256,8 @@ export class UnbirdMatcher {
             ).accounts ?? []
         : (handle) => publicAccountSearch(handle, this.fetchImpl);
     const answeredBy = via === 'account' ? '' : PUBLIC_SEARCH_SERVER;
+    const archiveKey = this.currentId();
+    if (!archiveKey) return;
     const queue = this.searchable()
       .filter((person) => !this.rows().has(key(person)))
       .slice(0, count);
@@ -207,6 +265,7 @@ export class UnbirdMatcher {
     this.rateLimited.set(false);
     this.running.set(true);
     let pending: StoredMatchRow[] = [];
+    let done = this.searched();
     try {
       for (const person of queue) {
         if (this.stopRequested) break;
@@ -231,13 +290,14 @@ export class UnbirdMatcher {
           pending.push(row);
         }
         if (pending.length >= 10) {
-          await this.store.saveMatches(pending);
+          await this.store.saveMatches(archiveKey, pending);
           pending = [];
         }
-        if (this.delayMs) await delay(this.delayMs);
+        const pause = ++done < FIRST_PASS ? this.delayMs : this.steadyDelayMs;
+        if (pause) await delay(pause);
       }
     } finally {
-      await this.store.saveMatches(pending);
+      await this.store.saveMatches(archiveKey, pending);
       this.running.set(false);
     }
   }

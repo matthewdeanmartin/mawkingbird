@@ -2833,3 +2833,14 @@ Checkbox, Button) and the public `twitter-archive-tools.html`. Login gains a
 solid Button for sign-up-then-return (`prompt=create`) beside the existing
 outline welcome-back link; the twitter-to-mastodon pages wrap the importer in
 the Unbird landing. No shared widget implementation changed.
+
+Unbird, sprints 3–4 and canary fixes (2026-11-18): reviewed regenerated
+inventory: 1964 scanned files, 673 candidate files. Three new files, adopted
+scope in reconciliation: `unbird-posts.html` (Checkbox per post unit,
+Field/Control for schedule, Buttons; the suggestion row uses small
+solid/outline Buttons with `aria-pressed`, the same pattern as the People
+tab's new activity filter), `unbird-profile.html` (Checkbox, Field/Control
+textareas, Buttons) and the Native-only `unbird-import-points.ts` (link
+Buttons). The repeated toggle-row and card patterns are listed for Sprint 5,
+which moves Unbird onto design-system widgets or promotes new ones into the
+design system. No shared widget implementation changed.

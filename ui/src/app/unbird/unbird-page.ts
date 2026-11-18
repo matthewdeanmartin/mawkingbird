@@ -4,8 +4,11 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../platform/session/auth';
 import { UnbirdArchiveTools } from './unbird-archive-tools';
 import { UnbirdDrop } from './unbird-drop';
-import { FIRST_PASS, UnbirdMatcher } from './unbird-matcher';
+import { UnbirdMatcher } from './unbird-matcher';
 import { UnbirdPeople } from './unbird-people';
+import { UnbirdPosts } from './unbird-posts';
+import { UnbirdProfile } from './unbird-profile';
+import { UnbirdImportPoints } from './unbird-import-points';
 import { UnbirdServers } from './unbird-servers';
 
 // i18n unbird.page.title: Unbird
@@ -15,10 +18,12 @@ import { UnbirdServers } from './unbird-servers';
 // i18n unbird.page.tile.peopleBody: {{found}} found so far, closest first.
 // i18n unbird.page.tile.archive: Explore your archive
 // i18n unbird.page.tile.archiveBody: Search your tweets and likes, see your numbers, save it as a website.
-// i18n unbird.page.needArchive: Start with your archive, and your people show up here.
+// i18n unbird.page.needArchive: Start with your Twitter archive: drop it here.
 // i18n unbird.page.archiveTitle: Your archive
+// i18n unbird.page.postsTitle: Your tweets, on Mastodon
+// i18n unbird.page.profileTitle: Your profile
 
-export type UnbirdTab = 'start' | 'people' | 'archive';
+export type UnbirdTab = 'start' | 'people' | 'posts' | 'archive' | 'profile';
 
 /**
  * The Unbird mode's pages inside the app. The tab comes from route data, so
@@ -26,7 +31,17 @@ export type UnbirdTab = 'start' | 'people' | 'archive';
  */
 @Component({
   selector: 'app-unbird-page',
-  imports: [RouterLink, TranslocoPipe, UnbirdArchiveTools, UnbirdDrop, UnbirdPeople, UnbirdServers],
+  imports: [
+    RouterLink,
+    TranslocoPipe,
+    UnbirdArchiveTools,
+    UnbirdDrop,
+    UnbirdImportPoints,
+    UnbirdPeople,
+    UnbirdPosts,
+    UnbirdProfile,
+    UnbirdServers,
+  ],
   templateUrl: './unbird-page.html',
   styleUrl: './unbird-page.css',
 })
@@ -44,15 +59,15 @@ export class UnbirdPage implements OnInit {
 
   ngOnInit(): void {
     void this.matcher.restore().then((archive) => {
-      // Back from sign-up with nothing searched yet: start, so the page is not empty.
-      if (archive && this.tab === 'people' && this.matcher.searched() === 0) {
-        void this.matcher.search(this.via(), FIRST_PASS);
+      // Back from sign-up, or a search left unfinished: carry on where it stopped.
+      if (archive && this.tab === 'people' && this.matcher.remaining() > 0) {
+        void this.matcher.search(this.via());
       }
     });
   }
 
   protected loaded(): void {
-    void this.matcher.search(this.via(), FIRST_PASS);
+    void this.matcher.search(this.via());
     if (this.tab === 'start') void this.router.navigateByUrl('/unbird/people');
   }
 }

@@ -121,15 +121,17 @@ describe('Unbird matching', () => {
           {
             provide: UnbirdStore,
             useValue: {
-              saveMatches: async (rows: StoredMatchRow[]) => saved.push(...rows),
+              saveMatches: async (_archive: string, rows: StoredMatchRow[]) => saved.push(...rows),
               loadMatches: async () => [],
               saveArchive: async () => true,
+              listArchives: async () => [],
             },
           },
         ],
       });
       const matcher = TestBed.inject(UnbirdMatcher);
       matcher.delayMs = 0;
+      matcher.steadyDelayMs = 0;
       matcher.fetchImpl = vi.fn(async (url: string | URL | Request) => {
         const handle = new URL(String(url)).searchParams.get('q')!;
         return responses[handle] ?? Response.json({ accounts: [] });

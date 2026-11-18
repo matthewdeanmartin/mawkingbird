@@ -1,0 +1,179 @@
+@if (!signedIn()) {
+  <p class="lead">{{ 'unbird.posts.needAccount' | transloco }}</p>
+  <a mbButton routerLink="/login/mastodon" [queryParams]="{ next: '/unbird/posts' }">{{
+    'unbird.posts.signIn' | transloco
+  }}</a>
+} @else if (matcher.archive()) {
+  <p class="lead">{{ 'unbird.posts.lead' | transloco }}</p>
+
+  @if (replay.entries().length) {
+    <section class="queue" aria-live="polite">
+      <h2>{{ 'unbird.posts.queue.title' | transloco }}</h2>
+      <ul>
+        @if (replay.counts().scheduled) {
+          <li>
+            {{ 'unbird.posts.queue.scheduled' | transloco: { count: replay.counts().scheduled } }}
+          </li>
+        }
+        @if (replay.counts().planned) {
+          <li>
+            {{ 'unbird.posts.queue.planned' | transloco: { count: replay.counts().planned } }}
+          </li>
+        }
+        @if (replay.counts().posted) {
+          <li>{{ 'unbird.posts.queue.posted' | transloco: { count: replay.counts().posted } }}</li>
+        }
+        @if (replay.counts().failed) {
+          <li class="error">
+            {{ 'unbird.posts.queue.failed' | transloco: { count: replay.counts().failed } }}
+          </li>
+        }
+      </ul>
+      @if (nextPlanned(); as next) {
+        <p class="muted">{{ 'unbird.posts.queue.next' | transloco: { date: dateTime(next) } }}</p>
+      }
+      @if (replay.lastError(); as error) {
+        <p class="error" role="status">{{ error }}</p>
+      }
+      <div class="row">
+        @if (replay.counts().planned) {
+          <button
+            mbButton
+            variant="outline"
+            type="button"
+            [disabled]="replay.running()"
+            (click)="replay.run()"
+          >
+            {{ 'unbird.posts.queue.runNow' | transloco }}
+          </button>
+        }
+        @if (replay.counts().planned || replay.counts().scheduled) {
+          <button
+            mbButton
+            variant="link"
+            tone="danger"
+            type="button"
+            [disabled]="replay.running()"
+            (click)="replay.cancelAll()"
+          >
+            {{ 'unbird.posts.queue.cancel' | transloco }}
+          </button>
+        }
+      </div>
+    </section>
+  }
+
+  <div class="row suggest" role="group" [attr.aria-label]="'unbird.posts.suggest' | transloco">
+    @for (kind of suggestions; track kind) {
+      <button
+        mbButton
+        size="small"
+        type="button"
+        [variant]="suggestion() === kind ? 'solid' : 'outline'"
+        [attr.aria-pressed]="suggestion() === kind"
+        (click)="suggestion.set(kind); shown.set(50)"
+      >
+        {{ 'unbird.posts.suggest.' + kind | transloco }}
+      </button>
+    }
+  </div>
+  <div class="row">
+    <button mbButton variant="link" type="button" (click)="selectTop(20)">
+      {{ 'unbird.posts.selectTop' | transloco: { count: 20 } }}
+    </button>
+    @if (selected().size) {
+      <button mbButton variant="link" type="button" (click)="clearSelection()">
+        {{ 'unbird.posts.clear' | transloco }}
+      </button>
+    }
+    <span class="muted">
+      {{ 'unbird.posts.selected' | transloco: { posts: chosenPosts(), room: room() } }}
+    </span>
+  </div>
+
+  <ul class="units">
+    @for (unit of visible(); track unit.id) {
+      <li [class.off]="!selectable(unit)">
+        <mb-checkbox
+          [label]="preview(unit)"
+          [ngModel]="selected().has(unit.id)"
+          [disabled]="!selectable(unit)"
+          (ngModelChange)="toggle(unit, $event)"
+        />
+        <div class="meta">
+          <time [attr.datetime]="unit.at">{{ date(unit.at) }}</time>
+          @if (unit.likes) {
+            <span>{{ 'unbird.posts.likes' | transloco: { count: unit.likes } }}</span>
+          }
+          @if (unit.tweets.length > 1) {
+            <span>{{ 'unbird.posts.thread' | transloco: { count: unit.tweets.length } }}</span>
+          }
+          @if (unit.media) {
+            <span>{{ 'unbird.posts.photos' | transloco: { count: unit.media } }}</span>
+          }
+          @if (replay.isQueued(unit.id)) {
+            <span class="tag">{{ 'unbird.posts.queued' | transloco }}</span>
+          } @else if (!fits(unit)) {
+            <span class="tag">{{ 'unbird.posts.tooLong' | transloco }}</span>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+  @if (listed().length > shown()) {
+    <button mbButton variant="link" type="button" (click)="shown.set(shown() + 50)">
+      {{ 'unbird.posts.more' | transloco }}
+    </button>
+  }
+
+  @if (chosen().length) {
+    <section class="schedule">
+      <h2>{{ 'unbird.posts.schedule.title' | transloco }}</h2>
+      <div class="row fields">
+        <mb-field [label]="'unbird.posts.schedule.perDay' | transloco">
+          <input
+            mbControl
+            type="number"
+            min="1"
+            max="20"
+            [ngModel]="perDay()"
+            (ngModelChange)="perDay.set(+$event || 1)"
+          />
+        </mb-field>
+        <mb-field [label]="'unbird.posts.schedule.start' | transloco">
+          <input mbControl type="date" [ngModel]="start()" (ngModelChange)="start.set($event)" />
+        </mb-field>
+        <mb-field class="grow" [label]="'unbird.posts.schedule.visibility' | transloco">
+          <select mbControl [ngModel]="visibility()" (ngModelChange)="visibility.set($event)">
+            @for (value of visibilities; track value) {
+              <option [value]="value">{{ 'unbird.posts.visibility.' + value | transloco }}</option>
+            }
+          </select>
+        </mb-field>
+      </div>
+      <mb-checkbox
+        [label]="'unbird.posts.schedule.dateLine' | transloco"
+        [ngModel]="dateLine()"
+        (ngModelChange)="dateLine.set($event)"
+      />
+      <mb-checkbox
+        [label]="'unbird.posts.schedule.media' | transloco"
+        [ngModel]="media()"
+        (ngModelChange)="media.set($event)"
+      />
+      @if (media() && !matcher.picked) {
+        <p class="muted small">{{ 'unbird.posts.schedule.mediaNeedsArchive' | transloco }}</p>
+      }
+      @if (times().length) {
+        <p class="muted small">
+          {{
+            'unbird.posts.schedule.ends' | transloco: { date: date(times()[times().length - 1]) }
+          }}
+        </p>
+      }
+      <button mbButton type="button" [disabled]="replay.running()" (click)="scheduleChosen()">
+        {{ 'unbird.posts.schedule.go' | transloco: { count: chosenPosts() } }}
+      </button>
+    </section>
+  }
+}

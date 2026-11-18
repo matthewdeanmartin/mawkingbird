@@ -4,8 +4,11 @@ import {
   archiveBaseName,
   ArchiveReadError,
   buildArchive,
+  closeness,
   isDataFile,
+  rankPeople,
   readTwitterArchive,
+  UnbirdPerson,
 } from './unbird-archive';
 
 const ytd = (name: string, rows: unknown[]) => `window.YTD.${name}.part0 = ${JSON.stringify(rows)}`;
@@ -116,6 +119,45 @@ describe('Unbird archive', () => {
     const friend = archive.people.find((person) => person.twitter_handle === 'friend');
     expect(friend).toMatchObject({ mutual: true, currently_following: true });
     expect(archive.people[0]).toBe(friend);
+  });
+
+  it('never lists the owner among their own people, even from self-mentions', () => {
+    const archive = buildArchive(sources);
+    const withSelf = {
+      ...archive,
+      people: [
+        ...archive.people,
+        { ...archive.people[0], twitter_handle: 'Owner', twitter_account_id: null, mutual: false },
+        { ...archive.people[0], twitter_handle: 'x', twitter_account_id: '1', mutual: false },
+      ],
+    };
+    expect(rankPeople(withSelf).map((person) => person.twitter_handle)).not.toContain('Owner');
+    expect(rankPeople(withSelf).map((person) => person.twitter_handle)).not.toContain('x');
+  });
+
+  it('puts friends first: mutuals, steady conversation and recent talk outrank volume alone', () => {
+    const person = (extra: Partial<UnbirdPerson>): UnbirdPerson => ({
+      twitter_handle: 'p',
+      twitter_name: null,
+      twitter_account_id: null,
+      previous_handles: [],
+      currently_following: false,
+      reply_count: 0,
+      mention_count: 0,
+      first_interaction_at: null,
+      last_interaction_at: null,
+      twitter_profile_url: '',
+      mutual: false,
+      closeness: 0,
+      ...extra,
+    });
+    const end = Date.parse('2026-07-24T00:00:00Z');
+    const mutualFriend = person({ currently_following: true, mutual: true, reply_count: 3 });
+    const loudStranger = person({ reply_count: 12 });
+    expect(closeness(mutualFriend, true, end)).toBeGreaterThan(closeness(loudStranger, false, end));
+    const recent = person({ reply_count: 4, last_interaction_at: '2026-03-01T00:00:00Z' });
+    const longAgo = person({ reply_count: 4, last_interaction_at: '2015-03-01T00:00:00Z' });
+    expect(closeness(recent, false, end)).toBeGreaterThan(closeness(longAgo, false, end));
   });
 
   it('reads straight from the zip, opening only the allowlisted files', async () => {

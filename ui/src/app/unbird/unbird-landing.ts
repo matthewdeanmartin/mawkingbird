@@ -1,7 +1,7 @@
 import { Component, computed, inject, input, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { UnbirdDrop } from './unbird-drop';
-import { FIRST_PASS, UnbirdMatcher } from './unbird-matcher';
+import { UnbirdMatcher } from './unbird-matcher';
 import { UnbirdPeople } from './unbird-people';
 import { UnbirdServers } from './unbird-servers';
 
@@ -63,10 +63,15 @@ export class UnbirdLanding implements OnInit {
   protected readonly via = computed(() => (this.signedIn() ? 'account' : 'public'));
 
   ngOnInit(): void {
-    void this.matcher.restore();
+    // A search left unfinished on an earlier visit carries on where it stopped.
+    void this.matcher.restore().then((archive) => {
+      if (archive && this.matcher.searched() > 0 && this.matcher.remaining() > 0) {
+        void this.matcher.search(this.via());
+      }
+    });
   }
 
   protected started(): void {
-    void this.matcher.search(this.via(), FIRST_PASS);
+    void this.matcher.search(this.via());
   }
 }

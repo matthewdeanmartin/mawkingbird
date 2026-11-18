@@ -66,11 +66,9 @@ describe('MODE_NAV', () => {
   it('keeps the mode navigation slots, with Singles, Playlists and Studio in Radio', () => {
     // Radio is the verb "play": Now Playing is the dock's, settings sit on each page.
     // Blog has six, one over budget by the owner's leave; Roll is Native-only.
-    // Unbird grows a tab per sprint toward five (spec/sprint/unbird-2026-11.md).
     const slots: Partial<Record<(typeof APP_MODES)[number], number>> = {
       radio: 3,
       blog: 6,
-      unbird: 3,
     };
     for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(slots[mode] ?? 5);
     expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['singles', 'playlists', 'studio']);
@@ -96,6 +94,8 @@ describe('MODE_NAV', () => {
     expect(active('/unbird/')).toEqual(['start']);
     expect(active('/unbird/people')).toEqual(['people']);
     expect(active('/unbird/archive')).toEqual(['archive']);
+    expect(active('/unbird/posts')).toEqual(['posts']);
+    expect(active('/unbird/profile')).toEqual(['profile']);
     expect(active('/unbirds')).toEqual([]);
   });
 

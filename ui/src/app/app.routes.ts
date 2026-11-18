@@ -1263,6 +1263,18 @@ export const routes: Routes = [
         loadComponent: () => import('./unbird/unbird-page').then((m) => m.UnbirdPage),
       },
       {
+        path: 'unbird/posts',
+        title: 'Bring your tweets to Mastodon',
+        data: { unbirdTab: 'posts' },
+        loadComponent: () => import('./unbird/unbird-page').then((m) => m.UnbirdPage),
+      },
+      {
+        path: 'unbird/profile',
+        title: 'Your Mastodon profile, from Twitter',
+        data: { unbirdTab: 'profile' },
+        loadComponent: () => import('./unbird/unbird-page').then((m) => m.UnbirdPage),
+      },
+      {
         path: 'unbird/archive',
         title: 'Your Twitter archive',
         data: { unbirdTab: 'archive' },

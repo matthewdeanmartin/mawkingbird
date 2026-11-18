@@ -1,10 +1,10 @@
 @if (matcher.archive()) {
   <section class="summary" aria-live="polite">
     <p class="big">
-      @if (matcher.found() > 0) {
+      @if (found().length > 0) {
         {{
-          (matcher.found() === 1 ? 'unbird.people.found.one' : 'unbird.people.found.other')
-            | transloco: { count: fmt(matcher.found()) }
+          (found().length === 1 ? 'unbird.people.found.one' : 'unbird.people.found.other')
+            | transloco: { count: fmt(found().length) }
         }}
       } @else {
         {{ 'unbird.people.foundNone' | transloco }}
@@ -42,19 +42,13 @@
           @if (matcher.searched() === 0) {
             {{ 'unbird.people.start' | transloco }}
           } @else {
-            {{
-              'unbird.people.keepLooking'
-                | transloco
-                  : {
-                      count: fmt(matcher.remaining() < firstPass ? matcher.remaining() : firstPass),
-                    }
-            }}
+            {{ 'unbird.people.keepLooking' | transloco: { count: fmt(matcher.remaining()) } }}
           }
         </button>
       } @else {
         <span class="muted">{{ 'unbird.people.allChecked' | transloco }}</span>
       }
-      @if (via() === 'account' && unfollowedLikely().length > 1 && !matcher.running()) {
+      @if (via() === 'account' && unfollowedLikely().length > 1) {
         <button mbButton variant="outline" type="button" (click)="followAll()">
           {{ 'unbird.people.followAll' | transloco: { count: unfollowedLikely().length } }}
         </button>
@@ -63,6 +57,20 @@
     @if (matcher.rateLimited()) {
       <p class="notice" role="status">{{ 'unbird.people.rateLimited' | transloco }}</p>
     }
+    <div class="controls" role="group" [attr.aria-label]="'unbird.people.active' | transloco">
+      @for (choice of withinChoices; track choice) {
+        <button
+          mbButton
+          size="small"
+          type="button"
+          [variant]="within() === choice ? 'solid' : 'outline'"
+          [attr.aria-pressed]="within() === choice"
+          (click)="within.set(choice)"
+        >
+          {{ 'unbird.people.active.' + choice | transloco }}
+        </button>
+      }
+    </div>
   </section>
 
   @if (found().length) {
@@ -82,20 +90,14 @@
               }
             </div>
             <div class="chips">
-              @if (entry.person.currently_following) {
-                <span>{{ 'unbird.people.chip.following' | transloco }}</span>
-              }
               @if (entry.person.mutual) {
                 <span>{{ 'unbird.people.chip.mutual' | transloco }}</span>
+              } @else if (entry.person.currently_following) {
+                <span>{{ 'unbird.people.chip.friend' | transloco }}</span>
               }
-              @if (entry.person.reply_count) {
+              @if (talked(entry.person)) {
                 <span>{{
-                  'unbird.people.chip.replies' | transloco: { count: entry.person.reply_count }
-                }}</span>
-              }
-              @if (entry.person.mention_count) {
-                <span>{{
-                  'unbird.people.chip.mentions' | transloco: { count: entry.person.mention_count }
+                  'unbird.people.chip.talked' | transloco: { count: talked(entry.person) }
                 }}</span>
               }
               <span class="signals" [title]="entry.match.signals.join(' · ')">
@@ -143,6 +145,24 @@
   }
 
   <div class="foot">
+    @if (quiet() > 0) {
+      <p class="muted small">{{ 'unbird.people.quiet' | transloco: { count: fmt(quiet()) } }}</p>
+    }
+    @if (followed().length) {
+      <details class="already">
+        <summary>{{ 'unbird.people.already' | transloco: { count: followed().length } }}</summary>
+        <ul>
+          @for (entry of followed(); track entry.match.acct) {
+            <li>
+              <a [href]="entry.match.url" target="_blank" rel="noopener"
+                >&#64;{{ entry.match.acct }}</a
+              >
+              <span class="muted">· &#64;{{ entry.person.twitter_handle }}</span>
+            </li>
+          }
+        </ul>
+      </details>
+    }
     @if (noHandle() > 0) {
       <p class="muted small">
         {{ 'unbird.people.noHandle' | transloco: { count: fmt(noHandle()) } }}
