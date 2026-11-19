@@ -2135,7 +2135,6 @@
     "login.server.tryAgain": "Riprova",
     "login.server.unreachable": "⚠ Impossibile raggiungere {{server}}. Il server potrebbe essere offline o bloccato.",
     "login.server.useAnyway": "Usa comunque",
-    "login.signup.createOn": "Crea un account su {{server}} →",
     "login.tabs.mockInit": "Inizializzazione simulazione",
     "login.tabs.mockLogin": "Accesso simulazione",
     "login.tabs.signin": "Accedi / Registrati",

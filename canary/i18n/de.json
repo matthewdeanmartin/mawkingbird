@@ -1448,7 +1448,6 @@
     "login.server.tryAgain": "Erneut versuchen",
     "login.server.unreachable": "⚠ {{server}} ist nicht erreichbar. Der Server ist möglicherweise offline oder blockiert.",
     "login.server.useAnyway": "Trotzdem verwenden",
-    "login.signup.createOn": "Konto auf {{server}} erstellen →",
     "login.tabs.mockInit": "Mock einrichten",
     "login.tabs.mockLogin": "Mock-Anmeldung",
     "login.tabs.signin": "Anmelden / Registrieren",

@@ -1288,7 +1288,6 @@
     "login.server.tryAgain": "Попробовать снова",
     "login.server.unreachable": "⚠ Не удаётся подключиться к {{server}}. Сервер может быть отключён или заблокирован.",
     "login.server.useAnyway": "Всё равно использовать",
-    "login.signup.createOn": "Создать учётную запись на {{server}} →",
     "login.tabs.mockInit": "Инициализация макета",
     "login.tabs.mockLogin": "Вход в макет",
     "login.tabs.signin": "Вход / регистрация",

@@ -1288,7 +1288,6 @@
     "login.server.tryAgain": "फिर कोशिश करें",
     "login.server.unreachable": "⚠ {{server}} तक नहीं पहुँच सके। सर्वर ऑफ़लाइन या ब्लॉक हो सकता है।",
     "login.server.useAnyway": "फिर भी उपयोग करें",
-    "login.signup.createOn": "{{server}} पर अकाउंट बनाएँ →",
     "login.tabs.mockInit": "मॉक शुरू करें",
     "login.tabs.mockLogin": "मॉक लॉगिन",
     "login.tabs.signin": "साइन इन / रजिस्टर",

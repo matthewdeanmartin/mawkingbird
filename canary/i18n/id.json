@@ -876,7 +876,6 @@
     "login.server.tryAgain": "Coba lagi",
     "login.server.unreachable": "⚠ Tidak dapat menjangkau {{server}}. Server mungkin sedang offline atau diblokir.",
     "login.server.useAnyway": "Tetap gunakan",
-    "login.signup.createOn": "Buat akun di {{server}} →",
     "login.tabs.mockInit": "Init Mock",
     "login.tabs.mockLogin": "Login Mock",
     "login.tabs.signin": "Masuk / Daftar",
