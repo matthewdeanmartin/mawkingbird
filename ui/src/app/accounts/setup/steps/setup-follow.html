@@ -12,28 +12,30 @@
 </fieldset>
 
 @if (people().length) {
-  <ul class="setup-people">
+  <div class="setup-people" role="list">
     @for (person of people(); track person.handle) {
-      <li class="setup-person">
-        @if (person.avatar) {
-          <img [src]="person.avatar" alt="" width="40" height="40" loading="lazy" />
-        }
-        @switch (status(person.handle)) {
-          @case ('new') {
-            <mb-checkbox
-              [label]="person.name + ' · @' + person.handle"
-              [checked]="!skipped().has(person.handle)"
-              (checkedChange)="togglePerson(person.handle, $event)"
-            />
+      <div mbIdentityRow role="listitem">
+        <span class="suggestion-avatar">
+          @if (person.avatar) {
+            <img [src]="person.avatar" alt="" loading="lazy" decoding="async" />
           }
-          @default {
-            <span class="setup-person-name">{{ person.name }} · &#64;{{ person.handle }}</span>
-            <span class="setup-person-status">{{ status(person.handle) }}</span>
-          }
+        </span>
+        <div class="suggestion-name">
+          <span class="suggestion-display">{{ person.name }}</span>
+          <span class="muted">&#64;{{ person.handle }}</span>
+        </div>
+        @if (status(person.handle) === 'new') {
+          <mb-checkbox
+            label="Follow"
+            [checked]="!skipped().has(person.handle)"
+            (checkedChange)="togglePerson(person.handle, $event)"
+          />
+        } @else {
+          <span class="muted">{{ status(person.handle) }}</span>
         }
-      </li>
+      </div>
     }
-  </ul>
+  </div>
 }
 
 <div class="setup-follow-bar">

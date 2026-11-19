@@ -19,10 +19,10 @@
         [max]="progress().total"
       />
       @if (state.pending()) {
-        <p class="setup-waiting">
+        <mb-notice>
           Your server is reviewing new accounts. You’ll get an email when yours is ready. You can
           get set up meanwhile.
-        </p>
+        </mb-notice>
       }
       <h1 #heading tabindex="-1" class="setup-title">{{ current.title }}</h1>
 
@@ -68,7 +68,7 @@
         }
       }
       @if (error()) {
-        <p class="setup-error" role="alert">{{ error() }}</p>
+        <mb-notice tone="error" announcement="alert">{{ error() }}</mb-notice>
       }
     </main>
 

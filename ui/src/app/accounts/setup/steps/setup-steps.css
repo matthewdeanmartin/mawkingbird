@@ -22,27 +22,6 @@
   object-fit: cover;
 }
 
-.setup-file {
-  position: relative;
-  display: inline-flex;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  cursor: pointer;
-}
-
-.setup-file input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.setup-file:focus-within {
-  outline: 2px solid var(--accent, currentColor);
-  outline-offset: 2px;
-}
-
 .setup-chips {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -67,35 +46,9 @@
 }
 
 .setup-people {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.setup-person {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.setup-person img {
-  flex: none;
-  border-radius: 8px;
-}
-
-.setup-person-name {
-  flex: 1;
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.setup-person-status {
-  color: var(--muted);
-  font-size: 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .setup-follow-bar {

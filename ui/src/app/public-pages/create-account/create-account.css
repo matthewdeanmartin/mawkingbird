@@ -1,0 +1,60 @@
+:host {
+  display: block;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+}
+
+.ca {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.ca-top {
+  padding-bottom: 16px;
+  font-weight: 600;
+}
+
+.ca-article h1 {
+  margin: 0 0 12px;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.ca-lead {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+.ca-section {
+  margin-top: 32px;
+}
+
+.ca-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+  margin: 16px 0;
+}
+
+.ca-servers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ca-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.ca-server h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}

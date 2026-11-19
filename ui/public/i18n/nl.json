@@ -1812,7 +1812,6 @@
     "login.server.tryAgain": "Opnieuw proberen",
     "login.server.unreachable": "⚠ Kan {{server}} niet bereiken. De server is mogelijk offline of geblokkeerd.",
     "login.server.useAnyway": "Toch gebruiken",
-    "login.signup.createOn": "Een account maken op {{server}} →",
     "login.tabs.mockInit": "Mock initialiseren",
     "login.tabs.mockLogin": "Mock-aanmelding",
     "login.tabs.signin": "Aanmelden / Registreren",

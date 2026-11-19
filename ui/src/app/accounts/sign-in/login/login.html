@@ -392,10 +392,16 @@
                     </button>
                   }
                 } @else {
-                  <!-- Real instances get their own signup page: never type real credentials into a
-                 third-party client. We can't be redirected back after signup, so route through
-                 an in-between "bookmark us & come back" page instead of straight to the server. -->
-                  @if (signup()?.registrations === 'closed') {
+                  <!-- One button. A Mastodon 5+ server signs them up and sends them straight
+                 back (prompt=create); older ones go through the welcome-back page. -->
+                  @if (!signup()) {
+                    <!-- Version check in flight: don't offer a path until we know which. -->
+                    <button type="button" class="btn signup-btn" disabled>
+                      {{
+                        'pages.login.signup.createHere' | transloco: { server: serverHostLabel() }
+                      }}
+                    </button>
+                  } @else if (signup()?.registrations === 'closed') {
                     <p class="muted small">
                       {{ 'pages.login.signup.closed' | transloco: { server: serverHostLabel() } }}
                     </p>
@@ -410,29 +416,17 @@
                         'pages.login.signup.createHere' | transloco: { server: serverHostLabel() }
                       }}
                     </button>
-                    <p class="muted small">
+                  } @else {
+                    <a
+                      class="btn signup-btn"
+                      routerLink="/welcome-back"
+                      [queryParams]="{ server: server.baseUrl() }"
+                    >
                       {{
-                        'pages.login.signup.createHereNote'
-                          | transloco: { server: serverHostLabel() }
+                        'pages.login.signup.createHere' | transloco: { server: serverHostLabel() }
                       }}
-                    </p>
+                    </a>
                   }
-                  @if (signup()?.registrations === 'approval') {
-                    <p class="muted small">
-                      {{ 'pages.login.signup.approval' | transloco: { server: serverHostLabel() } }}
-                    </p>
-                  }
-                  <a
-                    class="btn btn-outline signup-btn"
-                    routerLink="/welcome-back"
-                    [queryParams]="{ server: server.baseUrl() }"
-                  >
-                    {{ 'pages.login.signup.createOn' | transloco: { server: serverHostLabel() } }}
-                  </a>
-                  <p class="muted small">
-                    Sign-up happens on the server itself — Mawkingbird will not get your email or
-                    password. We'll help you bookmark us so you can come back and sign in.
-                  </p>
                 }
               </section>
             }

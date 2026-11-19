@@ -2,6 +2,7 @@ import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { MbButton } from '../../../design-system/button/button';
 import { MbControl, MbField } from '../../../design-system/field/field';
+import { MbFileDrop, type MbPickedFile } from '../../../design-system/file-drop/file-drop';
 import { Api } from '../../../platform/api/api';
 import type { Account } from '../../../platform/api/models';
 import { Auth } from '../../../platform/session/auth';
@@ -22,7 +23,7 @@ function plainNote(account: Account): string {
  */
 @Component({
   selector: 'app-setup-profile',
-  imports: [MbField, MbControl, MbButton],
+  imports: [MbField, MbControl, MbButton, MbFileDrop],
   templateUrl: './setup-profile.html',
   styleUrl: './setup-steps.css',
 })
@@ -68,8 +69,8 @@ export class SetupProfile implements OnDestroy {
     this.note.set(plainNote(account));
   }
 
-  protected onAvatar(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+  protected onAvatar(picked: MbPickedFile[]): void {
+    const file = picked[0]?.file ?? null;
     if (!file) return;
     if (this.preview) URL.revokeObjectURL(this.preview);
     this.preview = URL.createObjectURL(file);

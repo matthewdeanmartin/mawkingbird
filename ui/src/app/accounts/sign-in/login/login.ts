@@ -184,11 +184,8 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 // i18n pages.login.register.agree: I agree to the server rules
 // i18n pages.login.register.creating: Creating…
 // i18n pages.login.register.submit: Sign up on the mock
-// i18n pages.login.signup.createOn: Create an account on {{server}} →
 // i18n pages.login.signup.createHere: Create an account on {{server}}
-// i18n pages.login.signup.createHereNote: You sign up on {{server}}'s own page, then come straight back here signed in. Mawkingbird never sees your email or password.
 // i18n pages.login.signup.closed: {{server}} is not taking new sign-ups right now. Pick another server above.
-// i18n pages.login.signup.approval: {{server}} reviews new accounts before they open, so it may take a while.
 // i18n pages.login.anon.heading: Browse anonymously
 // i18n pages.login.anon.continue: Continue anonymously
 // i18n pages.login.anon.tryIt: Try it without an account, using {{server}} for public data.
@@ -389,6 +386,8 @@ export class Login implements OnInit, OnDestroy {
   /** What the chosen server offers someone without an account; null until probed. */
   protected readonly signup = signal<SignupSupport | null>(null);
   private signupProbed = '';
+  /** `?go=1`: start the sign-up once the probe allows it. */
+  private autoCreate = false;
   protected readonly signupProbe = effect(() => {
     const base = this.server.baseUrl();
     if (this.intent() !== 'need' || this.server.isMock || !base || base === this.signupProbed)
@@ -396,7 +395,15 @@ export class Login implements OnInit, OnDestroy {
     this.signupProbed = base;
     this.signup.set(null);
     void probeSignup(base).then((support) => {
-      if (this.server.baseUrl() === base) this.signup.set(support);
+      if (this.server.baseUrl() !== base) return;
+      this.signup.set(support);
+      // From /create-mastodon-account/: the visitor already chose this server
+      // and pressed Create, so start the sign-up without a second click when
+      // it can come back here signed in. Otherwise the page shows its options.
+      if (this.autoCreate && support.createPrompt && support.registrations !== 'closed') {
+        this.autoCreate = false;
+        this.startOAuth(true);
+      }
     });
   });
 
@@ -459,6 +466,7 @@ export class Login implements OnInit, OnDestroy {
     this.destination = loginDestination(params.get('next'));
     // Links from Unbird's server matchmaking: answer the first question and pick
     // the suggested server, so "Join hachyderm.io" lands on its sign-up.
+    this.autoCreate = params.get('go') === '1' && params.get('intent') === 'need';
     const askedIntent = params.get('intent');
     if (askedIntent === 'have' || askedIntent === 'need' || askedIntent === 'look') {
       this.intent.set(askedIntent);

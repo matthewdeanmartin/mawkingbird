@@ -1,0 +1,119 @@
+<main class="ca">
+  <nav class="ca-top"><a routerLink="/">Mawkingbird</a></nav>
+
+  <article class="ca-article">
+    <h1>Create a Mastodon account</h1>
+    <p class="ca-lead">
+      Pick a server, then sign up on it with an email address and a password. It’s free. Your handle
+      becomes <strong>&#64;name&#64;server</strong>, and you can follow and talk to people on every
+      other Mastodon server from it.
+    </p>
+
+    <section class="ca-section" aria-labelledby="ca-choose">
+      <h2 id="ca-choose">Choose a server</h2>
+      <p>
+        Start on a big, general server in your language. They’re well run, it’s easy to find people
+        from them, and they aren’t going anywhere. Small and topic servers are great for a second
+        account.
+      </p>
+
+      <div class="ca-controls">
+        <mb-field label="Language">
+          <select
+            mbControl
+            name="language"
+            [value]="language()"
+            (change)="language.set($any($event.target).value)"
+          >
+            @for (option of languages; track option.code) {
+              <option [value]="option.code">{{ option.name }}</option>
+            }
+          </select>
+        </mb-field>
+        @if (hiddenCount()) {
+          <mb-checkbox
+            [label]="'Show servers that review new accounts (' + hiddenCount() + ')'"
+            [checked]="showApproval()"
+            (checkedChange)="showApproval.set($event)"
+          />
+        }
+      </div>
+
+      <ul class="ca-servers">
+        @for (server of servers(); track server.domain) {
+          <li class="ca-server">
+            <div mbDiscoveryCandidate>
+              <h3>{{ server.domain }}</h3>
+              @if (server.description) {
+                <p>{{ server.description }}</p>
+              }
+              <p class="ca-meta">
+                {{ active(server.lastWeekUsers) }}
+                @if (server.approvalRequired) {
+                  · reviews new accounts, so it may take a while
+                }
+                ·
+                <a [href]="'https://' + server.domain + '/about'" rel="noopener" target="_blank"
+                  >rules</a
+                >
+              </p>
+              <div data-candidate-actions>
+                <a mbButton [routerLink]="['/create-mastodon-account/go', server.domain]">
+                  Create an account on {{ server.domain }}
+                </a>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+      <p>
+        <a
+          mbButton
+          variant="outline"
+          routerLink="/login/mastodon"
+          [queryParams]="{ intent: 'need' }"
+          >Pick another server</a
+        >
+      </p>
+      <p class="ca-meta">List checked on {{ checkedOn }}, from the joinmastodon.org directory.</p>
+    </section>
+
+    <section class="ca-section" aria-labelledby="ca-signup">
+      <h2 id="ca-signup">What happens when you sign up</h2>
+      <ol>
+        <li>Choose a username. It’s the first half of your handle.</li>
+        <li>Enter your email address and a password, and accept the server’s rules.</li>
+        <li>Open the confirmation email and follow its link.</li>
+        <li>
+          Some servers review each new account first. If yours does, you’ll get an email when it’s
+          ready.
+        </li>
+      </ol>
+      <p>
+        Servers running Mastodon 5 send you straight back here, signed in, and we help you set up.
+        On older servers, come back afterwards and sign in.
+      </p>
+    </section>
+
+    <section class="ca-section" aria-labelledby="ca-after">
+      <h2 id="ca-after">After you sign up</h2>
+      <ul>
+        <li>Add a picture and a bio that says what you’ll post about.</li>
+        <li>Follow people who post about things you like, so your Home feed isn’t empty.</li>
+        <li>Write a first post that introduces you, in your own words.</li>
+      </ul>
+    </section>
+
+    <section class="ca-section" aria-labelledby="ca-questions">
+      <h2 id="ca-questions">Questions</h2>
+      <h3>Does it cost anything?</h3>
+      <p>No. Mastodon is free. Many servers ask for donations to cover their running costs.</p>
+      <h3>Do I need a phone number?</h3>
+      <p>No. Mastodon signs you up with an email address.</p>
+      <h3>Can I use the official Mastodon app, or another app?</h3>
+      <p>Yes. One account works in every Mastodon app, Mawkingbird included.</p>
+      <h3>Can I have more than one account?</h3>
+      <p>Yes, on the same server or on different ones. Mawkingbird can sign in to several.</p>
+    </section>
+  </article>
+</main>

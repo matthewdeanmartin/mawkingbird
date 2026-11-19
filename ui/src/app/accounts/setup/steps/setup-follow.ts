@@ -1,6 +1,7 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MbButton } from '../../../design-system/button/button';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
+import { MbIdentityRow } from '../../../design-system/identity/identity-row';
 import { STARTER_KITS, starterKitText } from '../../../discovery/starter-collection';
 import { UiLocale } from '../../../i18n/locale';
 import { Api } from '../../../platform/api/api';
@@ -55,7 +56,7 @@ export function interestsFor(languages: readonly string[], locale: string): Setu
  */
 @Component({
   selector: 'app-setup-follow',
-  imports: [MbButton, MbCheckbox],
+  imports: [MbButton, MbCheckbox, MbIdentityRow],
   templateUrl: './setup-follow.html',
   styleUrl: './setup-steps.css',
 })

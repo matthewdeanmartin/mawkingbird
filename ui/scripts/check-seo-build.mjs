@@ -33,6 +33,7 @@ const pages = [
   'compare/tusky',
   'compare/mastodon-app',
   'about',
+  'create-mastodon-account',
   'funding',
   'legal',
   'tools',

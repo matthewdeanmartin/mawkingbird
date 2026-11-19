@@ -1812,7 +1812,6 @@
     "login.server.tryAgain": "Спробувати ще раз",
     "login.server.unreachable": "⚠ Не вдається зв’язатися з {{server}}. Сервер може бути вимкнений або заблокований.",
     "login.server.useAnyway": "Усе одно використати",
-    "login.signup.createOn": "Створити обліковий запис на {{server}} →",
     "login.tabs.mockInit": "Ініціалізація макета",
     "login.tabs.mockLogin": "Вхід у макет",
     "login.tabs.signin": "Вхід / Реєстрація",

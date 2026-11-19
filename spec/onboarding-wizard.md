@@ -106,6 +106,12 @@ enabled.
    Pending status is per account, so the other account's own pending flag
    applies after the switch.
 
+> **Since 2026-11-18:** a Mastodon account that is minutes old (a returning
+> `prompt=create` sign-up, or under 2 days old with no posts and no follows)
+> gets full-page account setup instead. This card does not auto-open for it,
+> and setup marks the questions it covers as answered. See
+> [new-account-setup.md](new-account-setup.md).
+
 ### Flow order
 
 ```

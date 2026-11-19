@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { MbButton } from '../../design-system/button/button';
 import { MbProgress } from '../../design-system/progress/progress';
+import { MbNotice } from '../../design-system/notice/notice';
 import { Auth } from '../../platform/session/auth';
 import { Server } from '../../platform/http/server';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -36,6 +37,7 @@ import { SetupIntro } from './steps/setup-intro';
   imports: [
     MbButton,
     MbProgress,
+    MbNotice,
     SetupPurpose,
     SetupProfile,
     SetupLanguages,

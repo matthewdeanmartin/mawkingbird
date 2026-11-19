@@ -1,0 +1,299 @@
+{
+  "checkedOn": "2026-11-19",
+  "languages": {
+    "en": [
+      {
+        "domain": "mastodon.social",
+        "description": "The original server of Mastodon, operated by Mastodon GmbH for the common good.",
+        "lastWeekUsers": 263750,
+        "approvalRequired": false,
+        "version": "5.0.0-beta.1+pr-41738-336ed0f"
+      },
+      {
+        "domain": "mstdn.social",
+        "description": "A general-purpose Mastodon server with a 500 character limit. All languages are welcome.",
+        "lastWeekUsers": 10003,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "social.vivaldi.net",
+        "description": "Vivaldi Social is part of the Mastodon network and is hosted in Iceland by the makers of Vivaldi Browser. Everyone is welcome to join.",
+        "lastWeekUsers": 6626,
+        "approvalRequired": false,
+        "version": "4.7.5+vivaldimod"
+      },
+      {
+        "domain": "mastodon.world",
+        "description": "Generic Mastodon server for anyone to use.",
+        "lastWeekUsers": 6467,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "social.tchncs.de",
+        "description": "A friendly server from Germany – which tends to attract techy people, but welcomes everybody. This is one of the oldest Mastodon instances.",
+        "lastWeekUsers": 3533,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "mstdn.party",
+        "description": "Mastodon Party is a general-purpose Mastodon instance. Welcome to the fediverse!",
+        "lastWeekUsers": 1844,
+        "approvalRequired": false,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "ieji.de",
+        "description": "ieji.de is a generalistic mastodon instance, with the goal of being the fastest and most privacy-focused mastodon instance, like being usable via the tor net…",
+        "lastWeekUsers": 1092,
+        "approvalRequired": false,
+        "version": "5.0.0-nightly.2026-11-18"
+      },
+      {
+        "domain": "mstdn.plus",
+        "description": "MSTDN+ is a general-purpose Mastodon instance which prohibits NSFW content. Welcome to the fediverse!",
+        "lastWeekUsers": 623,
+        "approvalRequired": false,
+        "version": "4.7.5"
+      }
+    ],
+    "de": [
+      {
+        "domain": "troet.cafe",
+        "description": "Hallo im troet.cafe! Dies ist die derzeit größte deutschsprachige Mastodon Instanz zum tröten, neue Leute kennenlernen, sich auszutauschen und Spaß zu haben.",
+        "lastWeekUsers": 5352,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "social.tchncs.de",
+        "description": "A friendly server from Germany – which tends to attract techy people, but welcomes everybody. This is one of the oldest Mastodon instances.",
+        "lastWeekUsers": 3533,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "ieji.de",
+        "description": "ieji.de is a generalistic mastodon instance, with the goal of being the fastest and most privacy-focused mastodon instance, like being usable via the tor net…",
+        "lastWeekUsers": 1092,
+        "approvalRequired": false,
+        "version": "5.0.0-nightly.2026-11-18"
+      },
+      {
+        "domain": "social.anoxinon.de",
+        "description": "Die offizielle Mastodon Instanz des Vereins Anoxinon e.V.",
+        "lastWeekUsers": 869,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "fairmove.net",
+        "description": "A place for people who do fair moves. Operated by fairkom, as part of the fairapps.net open source cloud portfolio with SingleSignOn. Hosted in EU.",
+        "lastWeekUsers": 70,
+        "approvalRequired": false,
+        "version": "4.7.5"
+      }
+    ],
+    "fr": [
+      {
+        "domain": "piaille.fr",
+        "description": "Piaille.fr est un serveur mastodon public francophone accessible à toutes et à tous. Joignable via Tor ici : piaillesmbiv4wjdy7no6r4eijsv6mlsp3cxrpy37dhmose2…",
+        "lastWeekUsers": 7289,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "pouet.chapril.org",
+        "description": "Chapril https://www.chapril.org est un projet de l'April https://www.april.org",
+        "lastWeekUsers": 1565,
+        "approvalRequired": false,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "tooting.ch",
+        "description": "Instance Mastodon suisse pour les personnes de suisses et hébergée par l'association FairSocialNet | Swiss Mastodon instance for people of Switzerland hosted…",
+        "lastWeekUsers": 443,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "rivals.space",
+        "description": "Serveur français queer & millitant, créé en 2018. Géré par des personnes LGBTQIA+, modération active et à l’écoute.",
+        "lastWeekUsers": 388,
+        "approvalRequired": false,
+        "version": "5.0.0-alpha.2+chuckya"
+      },
+      {
+        "domain": "social.roadfm.fr",
+        "description": "Bienvenue sur l'instance Mastodon de l'Association Road FM. Ce serveur réunit les personnes de tous horizons. Rejoignez la discussion !Vos données sont entre…",
+        "lastWeekUsers": 328,
+        "approvalRequired": false,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "h4.io",
+        "description": "h4.io est une instance Mastodon française, généraliste et stable. Inscris-toi, présente-toi et découvre simplement de nouvelles personnes !",
+        "lastWeekUsers": 167,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      }
+    ],
+    "es": [
+      {
+        "domain": "masto.es",
+        "description": "Bienvenidos a masto.es, el mayor servidor de Mastodon para hispanohablantes de temática general.",
+        "lastWeekUsers": 1563,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "tkz.one",
+        "description": "La comunidad Mastodon más grande en Español para gamers, otakus y geeks. Libre de toxicidad. Contenido de anime, manga, videojuegos, tecnología, cómics, lite…",
+        "lastWeekUsers": 1420,
+        "approvalRequired": false,
+        "version": "5.0.0-alpha.3+glitch_20261116"
+      },
+      {
+        "domain": "mast.lat",
+        "description": "Servidor en Español de temática general para hispanohablantes. Actualizado a diario. ¡Tu aventura de Mastodon empieza aquí!",
+        "lastWeekUsers": 1057,
+        "approvalRequired": false,
+        "version": "5.0.0-alpha.3+glitch_20261116"
+      },
+      {
+        "domain": "mastodon.la",
+        "description": "Mastodon.la es una instancia generalista y moderada ligeramente. Temas con respeto y sin desnudos innecesarios. El español es preferido. / Mastodon.la is gen…",
+        "lastWeekUsers": 203,
+        "approvalRequired": true,
+        "version": "4.5.21"
+      },
+      {
+        "domain": "tuiter.rocks",
+        "description": "Instancia Mastodon en español con humor, conversación y comunidad. Registro revisado manualmente.",
+        "lastWeekUsers": 136,
+        "approvalRequired": true,
+        "version": "4.7.5+glitch"
+      }
+    ],
+    "it": [
+      {
+        "domain": "mastodon.uno",
+        "description": "Dal 2019 è la comunità Mastodon più grande d’Italia, con i suoi 80.000 iscritti ed è fra le prime 3 al mondo consigliate dagli sviluppatori. Siamo parte dell…",
+        "lastWeekUsers": 4867,
+        "approvalRequired": false,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "mastodon.bida.im",
+        "description": "Un'istanza mastodon antifascista. autogestita, italofona con base a Bologna. Rispettosa di privacy e anonimato.",
+        "lastWeekUsers": 1328,
+        "approvalRequired": false,
+        "version": "4.4.27"
+      },
+      {
+        "domain": "livellosegreto.it",
+        "description": "Livello Segreto è il social etico che ha rispetto di te e del tuo tempo.",
+        "lastWeekUsers": 1115,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "puntarella.party",
+        "description": "a/social indipendente di Roma",
+        "lastWeekUsers": 101,
+        "approvalRequired": true,
+        "version": "4.7.4"
+      }
+    ],
+    "ko": [
+      {
+        "domain": "uri.life",
+        "description": "우리.인생(uri.life)은 다툼과 차별, 혐오에 지친 나와 여러분, 우리를 위한 안식처입니다.",
+        "lastWeekUsers": 719,
+        "approvalRequired": false,
+        "version": "4.5.20+uri3.5"
+      },
+      {
+        "domain": "mustard.blog",
+        "description": "머스타드(Mustard)는 연합우주의 작은 겨자별입니다. A Little Mustard Planet in the Fediverse.",
+        "lastWeekUsers": 129,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "town.voyager.blue",
+        "description": "한국어 자유 주제 마스토돈 서버 《페일 블루 보이저 네트워크》",
+        "lastWeekUsers": 109,
+        "approvalRequired": true,
+        "version": "4.5.21+r20"
+      },
+      {
+        "domain": "muri.network",
+        "description": "다양한 무리의 네트워크",
+        "lastWeekUsers": 105,
+        "approvalRequired": false,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "toot.funami.tech",
+        "description": "Safe and free-for-all hang out space without hate, discrimination, operated by YuruVerse / YuruVerse에 의해 운영되는 혐오와 차별이 없는 자유로운 대화 공간.",
+        "lastWeekUsers": 73,
+        "approvalRequired": true,
+        "version": "5.0.0-alpha.2+YRYRneoB"
+      },
+      {
+        "domain": "pointless.chat",
+        "description": "반가워요! 항상 즐겁고 새로움이 가득한 소셜 네트워크, 포인트리스에 어서오세요!",
+        "lastWeekUsers": 62,
+        "approvalRequired": false,
+        "version": "4.7.4"
+      }
+    ],
+    "zh": [
+      {
+        "domain": "o3o.ca",
+        "description": "欢迎来到o3o(嘟站)！这是一个泛话题社区，无论你的兴趣是什么，你都可以自由地通过发布“嘟嘟”来吐槽一切、摸鱼扯皮。 本社区由位于加拿大的 O3O 项目运营。我们相信由社会组织运营基本通讯软件和设施是必要的，它们不应被控制在大型企业和政府手中。",
+        "lastWeekUsers": 2565,
+        "approvalRequired": true,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "m.otter.homes",
+        "description": "欢迎来到獭獭之家 （m.otter.homes）! Welcome to m.otter.homes! m.otter.homes是一个自由、开放、多语言的长毛象实例。在这里你可以和Fediverse中不同背景、爱好的任何人友好地交流，而免于任何政府或大公司的言论审查。",
+        "lastWeekUsers": 707,
+        "approvalRequired": true,
+        "version": "5.0.0-alpha.2+glitch"
+      },
+      {
+        "domain": "c7.io",
+        "description": "希奇！是一个轻松闲适的社区，一个远离有毒中文社交圈的创作者乐园。这里不会出卖您的数据，亦无复杂的算法与规则。愿您能在希奇！寻回属于『自己』的初心。",
+        "lastWeekUsers": 609,
+        "approvalRequired": false,
+        "version": "4.7.5"
+      },
+      {
+        "domain": "fairy.id",
+        "description": "這是一個以中文交流為主、同時歡迎全球使用者加入的 Mastodon 社群。在去中心化的世界裡，我們保留一點距離，也分享一點真實。Even when stories end, conversations can still continue.",
+        "lastWeekUsers": 413,
+        "approvalRequired": false,
+        "version": "5.0.0-261105+Xajh.ORG"
+      },
+      {
+        "domain": "mast.dragon-fly.club",
+        "description": "这里是属于每一个人与众不同的岛屿，然而每座岛屿间却又紧密相连。来建设专属于你的岛屿吧！无论世界多么纷纷扰扰，这里总会有你所向往的一片宁静……",
+        "lastWeekUsers": 225,
+        "approvalRequired": true,
+        "version": "4.7.5+island"
+      },
+      {
+        "domain": "tea.codes",
+        "description": "茶码： 结庐在人境，而无车马喧",
+        "lastWeekUsers": 182,
+        "approvalRequired": false,
+        "version": "4.7.4"
+      }
+    ]
+  }
+}

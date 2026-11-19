@@ -1,6 +1,6 @@
 # New account setup + /create-mastodon-account/: six sprints
 
-Status: sprints 1–2 built 2026-11-18 (uncommitted; the owner pushes every two sprints). See [Progress log](#progress-log) at the end. Design and every decision:
+Status: sprints 1–6 built 2026-11-18; final gates not yet run (handoff list at the end). See [Progress log](#progress-log) at the end. Design and every decision:
 [../new-account-setup.md](../new-account-setup.md). Read it first. This file is
 the order of work, the files to touch and the gates.
 
@@ -396,3 +396,184 @@ the setup layout at phone width; do that at the final browser pass.
 
 **Gates:** prettier and lint on `accounts/setup`, and setup specs (35)
 green.
+
+### After sprint 5 (2026-11-18)
+
+**Built:**
+
+- **`ui/scripts/refresh-signup-servers.mjs`** (`make signup-servers`) writes
+  `ui/src/app/public-pages/create-account/signup-servers.json`:
+  - per language, up to 5 open general servers plus up to 3 that require
+    approval, by `last_week_users`,
+  - a language is offered only when it has at least 1 open server,
+  - it prints a per-language diff.
+
+  **The first output (checked 2026-11-18) is a proposal for the owner to
+  review:** en, de, fr, es, it, ko, zh. Japanese and Dutch dropped out because
+  every big general server there requires approval. Many listed servers are
+  still Mastodon 4.x, so the "straight back here" sign-up only happens on the
+  5.x ones (mastodon.social, ieji.de, rivals.space, and others).
+- **`/create-mastodon-account/`** (`public-pages/create-account/`):
+  - complete answer copy, prerendered with the English list,
+  - in the browser: a language select defaulting to the browser's language,
+    and the "Show servers that review new accounts (N)" toggle, off by
+    default,
+  - server cards with domain, description, rounded weekly active users and a
+    rules link,
+  - "Pick another server" goes to `/login/mastodon?intent=need`,
+  - a dated questions section with plain facts only, and no "you can move
+    later".
+- **`/create-mastodon-account/go/:server`** is a counted hop to
+  `/login/mastodon?intent=need&server=…&go=1` (plus `add=1` when already signed
+  in). Non-domains go back to the page.
+- **Login `go=1`:** once `probeSignup` shows `prompt=create` support and
+  registrations aren't closed, `startOAuth(true)` starts by itself. Older or
+  closed servers stay on the login page's existing sign-up options, including
+  welcome-back.
+- **SEO wiring:**
+  - route in `app.routes.ts` and the prerender table in `main.server.ts`
+    (`create-account-meta.ts` holds the description),
+  - `public/sitemap.xml`,
+  - the `pages` list in `scripts/check-seo-build.mjs`.
+
+**Changed from the plan:**
+
+- **Not a `focused-tools.json` entry.** Focused tools are signed-in tools with
+  nav tabs and translations; this page is for people with no account. It's a
+  standalone public page like `/about/`, so it isn't listed on `/tools/`.
+  Link it from the help site and `/for/twitter-exodus/` in sprint 6 instead.
+- **No OAuth extraction from `Login`.** The page hands off to the login page
+  with `go=1`, which reuses the existing, tested flow at the cost of one
+  visible redirect.
+- **Purpose-first in Add account is still not built** (moved twice). Setup
+  already asks purpose. The remaining piece is showing topic servers to alt
+  accounts at server choice. Do it in sprint 6 or drop it.
+
+**Not verified yet (final gates):**
+
+- `make test-seo` and `test:seo:browser`: the sitemap may need a date entry,
+  and the share image or other per-page checks may expect fields this page
+  doesn't set yet.
+- The prerendered HTML: the page reads `navigator` only in the browser.
+- No login spec for `go=1` yet.
+
+**Gates:** prettier and lint; page, go-hop, login and routes specs (69)
+green.
+
+### Owner change between sprints 5 and 6: one sign-up button
+
+The login page's "I'm new here" block showed two identically labelled buttons,
+each with explanatory text, which the owner called confusing and full of
+scare text. It now shows **one** button, "Create an account on {server}":
+
+- **While the version probe is in flight:** the button is disabled.
+- **Mastodon 5+:** `startOAuth(true)`, and the person comes straight back.
+- **Older server, or the probe fails:** the same button links to
+  `/welcome-back` (bookmark us and return).
+- **Registrations closed:** just the one-line message.
+
+The keys `pages.login.signup.createOn`, `.createHereNote` and `.approval` were
+removed from `en.json` and pruned from all 17 locales.
+
+**Purpose-first in Add account is dropped** (owner: "too many questions on the
+path to sign up"). Setup's purpose step is the only place purpose is asked.
+
+### After sprint 6 (2026-11-18)
+
+**Done:**
+
+- `docs/new-to-mastodon/create-an-account.md` rewritten: it points to the
+  page, describes the come-back behaviour and the setup steps, and drops the
+  outdated "come back and sign in" as the only path.
+- `docs/index.md` links `/create-mastodon-account/`.
+- `/for/twitter-exodus/` guides list it (`audience-content.ts`).
+- `ops/engineering/seo.md` has a section for the page, the snapshot refresh
+  routine and the funnel paths.
+- `spec/onboarding-wizard.md` notes that setup suppresses the card.
+- **No changelog entry:** this repo has no web changelog (only
+  `NATIVE_CHANGELOG.md`). A news post, if wanted, is the owner's call.
+
+**Not done:**
+
+- **Design-system consolidation** is owner-deferred ("if space is left, design
+  system work"). Candidates for shared `Mb*` widgets:
+  - the setup step footer (Back/Skip/Next),
+  - the person row in `setup-follow`,
+  - the file-pick button in `setup-profile`,
+  - the page's native `select` and checkbox (`create-account.html` uses raw
+    controls, because it prerenders outside the app).
+
+### Sprint 7: design system (2026-11-18)
+
+Owner rule: use design-system elements, because hand-rolled ones forget
+padding and the rest. Swaps made, with no new `Mb*` component needed:
+
+| Where | Was | Now |
+|---|---|---|
+| Follow step, person rows | hand-styled `li` + `img` | `div[mbIdentityRow]` with `.suggestion-avatar` / `.suggestion-name` (Unbird's pattern) and an `mb-checkbox` labelled "Follow" |
+| Profile picture | label wrapping a hidden `input[type=file]` | `mb-file-drop presentation="link"` |
+| Setup waiting banner, Next error, intro error | styled `p` | `mb-notice` (`tone="error" announcement="alert"` for errors) |
+| SEO page language picker | bare `select` | `mb-field` + `select[mbControl]` |
+| SEO page approval toggle | bare checkbox | `mb-checkbox` |
+| SEO page server cards | hand-styled `li` | `div[mbDiscoveryCandidate]` with `[data-candidate-actions]` |
+| SEO page Create / Pick another server | plain links | `a[mbButton]` (solid / outline) |
+
+The matching hand-written CSS was deleted. Already on the design system before
+this sprint: the setup footer (`mbButton`), progress (`mb-progress`), radio
+choices (`mb-radio-group`), checkboxes and text fields (`mb-field`).
+
+**Left as is, deliberately:**
+- The login page's sign-up button keeps `class="btn signup-btn"` like every
+  other button on that page. Moving the whole login page is a separate job.
+- The interest list's `fieldset`/`legend` grid is layout only, with no
+  control styling.
+
+**Expect the design inventory to change.** `design:inventory-check` will
+report new and removed candidates in `accounts/setup/**` and
+`public-pages/create-account/**`. Reconcile it in the final gates as
+AGENTS.md describes. Nothing was added to `design-system/`, so
+`design-verify` is only needed for the login stories.
+
+**Gates:** prettier and lint, plus setup and page specs (41) green.
+
+## Final gates (handoff, not yet run)
+
+The owner may delegate this. Run once, cheapest first. On a failure, fix it
+and rerun that gate plus the affected specs.
+
+1. **Static checks:**
+   - `cd ui && npm run check:i18n` (green at sprint 6),
+   - `make storage` (new key `mockingbird_account_setup`),
+   - `npm run check:libs`,
+   - `python -B -X utf8 ui/scripts/audit_deep_links.py` (new routes `/setup/:step`
+     and `/create-mastodon-account/go/:server`).
+2. **`cd ui && make test`.** Expect three things to need work:
+   - **Design inventory (`design:inventory-check`) will be stale.** New
+     controls are in `accounts/setup/**` and `public-pages/create-account/**`.
+     Follow AGENTS.md: `npm run design:audit-controls`, review
+     06-control-inventory.json, update 06-consolidation.md, reconcile
+     11-reconciliation.json.
+   - **Test manifest:** new specs were added, none removed.
+   - **knip (dead code):** `create-account-meta.ts` and the exports
+     `SIGNUP_SERVERS_CHECKED_ON` and `interestsFor` are used. Check that nothing
+     was orphaned by the login template change.
+3. **`npm run build:mockingbird`.** Setup and the create-account page must be
+   lazy chunks. Only `setup.guard.ts` and `setup-store.ts` (plus
+   `create-account-meta.ts`) should reach the initial bundle. **Check that
+   setup's embedded Unbird and `BridgeFriendsImport` didn't pull anything
+   eager.**
+4. **`make test-seo` and `npm run test:seo:browser`.** The new page may need a
+   sitemap date entry, a share image (`seoImage`) or a content assertion in
+   `check-seo-build.mjs` (an `articles`-style regex). Add what the checks ask
+   for; don't weaken them.
+5. **`make test-deep-links-browser`** (new public route).
+6. **`make design-verify`** (stories: grep `design_system/stories` for
+   `Login` / `signup` because the sign-up block changed).
+7. **Browser pass** at 320/390/800/1280:
+   - every `/setup/<step>` (especially the embedded Unbird and Bluesky steps),
+   - `/create-mastodon-account/`,
+   - the login "I'm new here" block.
+8. **The owner's canary** (still open): one real `prompt=create` sign-up on a
+   5.x server (mastodon.social or ieji.de are in the list). Fill in "Canary
+   findings" in `spec/new-account-setup.md`, then build or drop the
+   approval queue (sprint 4 deviation).

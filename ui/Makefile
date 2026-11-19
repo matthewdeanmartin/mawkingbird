@@ -18,6 +18,10 @@ design-test:
 design-verify:
 	npm run design:verify
 
+.PHONY: signup-servers
+signup-servers:  # Propose /create-mastodon-account/ servers from joinmastodon.org; review the diff before committing
+	node scripts/refresh-signup-servers.mjs --write
+
 .PHONY: youtubers-update
 youtubers-update:  # Bundle the sibling starters' reviewed YouTuber kits (public/youtubers/)
 	npm run youtubers:update $(if $(CATALOG),-- "$(CATALOG)",)

@@ -2,6 +2,8 @@
 
 Which part of Mawkingbird are you using? Choose a guide below. In the app, **Apps** at the end of the top menu lets you switch between activities.
 
+New to Mastodon? [Create a Mastodon account](https://mawkingbird.com/create-mastodon-account/) on a big server in your language.
+
 - [Mastodon](mastodon/index.md) — choose a server, find people and join a conversation.
 - [Bluesky](bluesky/index.md) — sign in with your handle, read your timeline and post to Bluesky.
 - [Blog](blog/index.md) — read long Mastodon posts as articles and write your own.

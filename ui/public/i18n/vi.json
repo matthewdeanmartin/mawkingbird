@@ -1812,7 +1812,6 @@
     "login.server.tryAgain": "Thử lại",
     "login.server.unreachable": "⚠ Không thể kết nối {{server}}. Máy chủ có thể ngoại tuyến hoặc bị chặn.",
     "login.server.useAnyway": "Vẫn sử dụng",
-    "login.signup.createOn": "Tạo tài khoản trên {{server}} →",
     "login.tabs.mockInit": "Khởi tạo mô phỏng",
     "login.tabs.mockLogin": "Đăng nhập mô phỏng",
     "login.tabs.signin": "Đăng nhập / Đăng ký",

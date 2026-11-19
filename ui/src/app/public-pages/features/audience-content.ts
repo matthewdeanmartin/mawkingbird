@@ -174,6 +174,7 @@ export const audienceContent: Record<string, AudienceContent> = {
     guides: [
       { label: 'Import your Twitter follows to Mastodon', href: '/twitter-to-mastodon/' },
       { label: 'What Mastodon is', href: '/help/new-to-mastodon/what-is-mastodon/' },
+      { label: 'Create a Mastodon account', href: '/create-mastodon-account/' },
       { label: 'Choose a Mastodon server', href: '/help/new-to-mastodon/choose-a-server/' },
       { label: 'Coming to Mastodon from Twitter', href: '/help/new-to-mastodon/coming-from-x/' },
       { label: 'Who to follow: starter kits', href: '/follow/' },

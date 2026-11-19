@@ -358,6 +358,27 @@ footer, the `...` menu (Site News), the `/feeds` landing list and Help link it.
 `news/auth/` (the sign-in return page for commenting) is `noindex` and not in
 the sitemap.
 
+## Create a Mastodon account: /create-mastodon-account/
+
+A standalone public page (`ui/src/app/public-pages/create-account/`), not a
+focused tool: it is for people without an account, so it has no nav tab and
+no sign-in gate. It is prerendered with the English server list; in the
+browser it picks the reader's language. Keep the route in `app.routes.ts`, the
+prerender entry in `main.server.ts`, `public/sitemap.xml` and the `pages` list
+in `scripts/check-seo-build.mjs` in step. English only until the feature
+settles. Design: `spec/new-account-setup.md`.
+
+- **Server list:** `signup-servers.json`, proposed by `make signup-servers`
+  (`ui/scripts/refresh-signup-servers.mjs`, from the joinmastodon.org
+  directory). Up to 5 open and 3 approval-required general servers per
+  language, by weekly active users. A language needs at least one open server.
+  The script prints a diff; **review it before committing**. Refresh it
+  quarterly, or when a listed server closes sign-ups.
+- **Funnel:** `/create-mastodon-account/go/<server>` is a counted hop to
+  `/login/mastodon?intent=need&server=…&go=1`, which starts the
+  `prompt=create` sign-up when the server supports it (Mastodon 5+). The
+  sign-up returns into `/setup/<step>`, each step a GoatCounter path.
+
 ## Focused mini-apps
 
 Public, prerendered pages for one task each, aimed at people searching for that

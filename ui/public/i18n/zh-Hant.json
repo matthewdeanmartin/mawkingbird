@@ -2616,7 +2616,6 @@
     "login.server.tryAgain": "再試一次",
     "login.server.unreachable": "⚠ 無法連線至 {{server}}。伺服器可能離線或遭到封鎖。",
     "login.server.useAnyway": "仍要使用",
-    "login.signup.createOn": "在 {{server}} 建立帳號 →",
     "login.tabs.mockInit": "模擬初始化",
     "login.tabs.mockLogin": "模擬登入",
     "login.tabs.signin": "登入／註冊",

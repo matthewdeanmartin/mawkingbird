@@ -83,15 +83,3 @@
 .setup-spacer {
   flex: 1;
 }
-
-.setup-error {
-  margin: 0;
-  color: var(--danger, #b3261e);
-}
-
-.setup-waiting {
-  margin: 0;
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-}

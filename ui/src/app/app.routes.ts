@@ -1,5 +1,6 @@
 import { inject, Type } from '@angular/core';
 import { setupGuard } from './accounts/setup/setup.guard';
+import { CREATE_ACCOUNT_DESCRIPTION } from './public-pages/create-account/create-account-meta';
 import { NATIVE_PROFILES } from './platform/session/platform-login';
 import {
   PLATFORM_LOCAL_AI,
@@ -448,6 +449,24 @@ export const routes: Routes = [
     },
     loadComponent: () =>
       import('./public-pages/features/public-article').then((m) => m.PublicArticle),
+  },
+  {
+    path: 'create-mastodon-account',
+    title: 'Create a Mastodon account',
+    data: {
+      seoIndexable: true,
+      seoKeywordTitle: 'How to create a Mastodon account',
+      seoDescription: CREATE_ACCOUNT_DESCRIPTION,
+    },
+    loadComponent: () =>
+      import('./public-pages/create-account/create-account').then((m) => m.CreateAccount),
+  },
+  {
+    path: 'create-mastodon-account/go/:server',
+    title: 'Create a Mastodon account',
+    data: { seoIndexable: false },
+    loadComponent: () =>
+      import('./public-pages/create-account/create-account-go').then((m) => m.CreateAccountGo),
   },
   {
     path: 'about',

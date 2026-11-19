@@ -3,6 +3,8 @@ import { bootstrapApplication, BootstrapContext } from '@angular/platform-browse
 import { provideRouter, Route, RouterOutlet, TitleStrategy } from '@angular/router';
 import { provideServerRendering, RenderMode, withRoutes } from '@angular/ssr';
 import { PageTitleStrategy } from './app/shell/a11y/page-title-strategy';
+import { CreateAccount } from './app/public-pages/create-account/create-account';
+import { CREATE_ACCOUNT_DESCRIPTION } from './app/public-pages/create-account/create-account-meta';
 import { Features } from './app/public-pages/features/features';
 import {
   ABOUT_DESCRIPTION,
@@ -232,6 +234,16 @@ const publicRoutes: Route[] = [
       seoAlternates: alternates,
     },
   })),
+  {
+    path: 'create-mastodon-account',
+    component: CreateAccount,
+    title: 'Create a Mastodon account',
+    data: {
+      seoIndexable: true,
+      seoKeywordTitle: 'How to create a Mastodon account',
+      seoDescription: CREATE_ACCOUNT_DESCRIPTION,
+    },
+  },
   ...articles.map(({ path, title, description }) => ({
     path,
     component: PublicArticle,
@@ -263,6 +275,7 @@ export default (context: BootstrapContext) =>
               renderMode: RenderMode.Prerender as const,
             })),
             ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
+            { path: 'create-mastodon-account', renderMode: RenderMode.Prerender },
             ...tools.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             { path: 'follow', renderMode: RenderMode.Prerender },
             {

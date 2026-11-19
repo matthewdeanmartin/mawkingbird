@@ -1,34 +1,32 @@
 # Create a Mastodon account
 
-You create a Mastodon account on the server you chose, not in Mawkingbird. Then you come back and sign in.
+You create a Mastodon account on a server, not in Mawkingbird. Mawkingbird never sees your email address or password.
+
+The quickest way is the [Create a Mastodon account](https://mawkingbird.com/create-mastodon-account/) page. It lists a few big, open servers in your language. Pick one and choose **Create an account on** followed by the server's name.
 
 ## Sign up on your server
 
-1. In Mawkingbird, choose **Log in**, then **Mastodon**, then **I need an account**.
-2. Pick a server, or type the name of the one you chose, such as `mastodon.social`.
-3. Choose **Create an account on** followed by the server's name. The server's sign-up page opens.
-4. Choose a username. It becomes the first half of your handle, as in `@yourname@mastodon.social`.
-5. Enter your email address and a password, and accept the server's rules.
-6. Open the confirmation email and follow its link.
+1. Choose a username. It becomes the first half of your handle, as in `@yourname@mastodon.social`.
+2. Enter your email address and a password, and accept the server's rules.
+3. Open the confirmation email and follow its link.
 
 Some servers review new accounts before approving them. If yours does, you will get an email when the account is ready.
 
-## Sign in to Mawkingbird
+## Come back to Mawkingbird
 
-Return to Mawkingbird and follow [Sign in with Mastodon](../start/sign-in-mastodon.md). You sign in on your server's own page, so Mawkingbird never sees your password.
+Servers running Mastodon 5 or later send you straight back to Mawkingbird, signed in. On an older server, return to Mawkingbird and follow [Sign in with Mastodon](../start/sign-in-mastodon.md).
 
-## Set up your profile
+## Set up your new account
 
-People deciding whether to follow you back look at your profile first, so add a picture and a short description. Edit it in Mawkingbird under **Settings → Profile**, or on your server's website.
+A new account opens in **account setup**, a short series of steps:
 
-Consider writing a first post that says who you are and what you are interested in, with the hashtag `#introduction`. Many people on Mastodon follow that tag to welcome newcomers.
+- **What the account is for**: you, a pseudonym, a project, or a second account.
+- **Your profile**: a name, a picture, and a bio that says what you will post about. People decide whether to follow you from it.
+- **Who can find you**: each choice says what it costs. Most privacy settings mean far fewer followers and much less interaction.
+- **Twitter or Bluesky**: find the people you followed there.
+- **Fill your Home feed**: pick interests and follow people who post about them.
+- **Introduce yourself**: a first post in your own words. Add hashtags for the subjects you will write about. Many people also follow `#introduction` to welcome newcomers.
 
-## Fill your Home feed
-
-A new account's Home feed is empty until you follow someone.
-
-- Follow a whole [starter kit](../finding-people/starter-kits.md) on a subject you like.
-- [Search for subjects](../finding-people/search-interests.md) and follow the people who post about them.
-- Open a hashtag you care about and choose **Follow** to see its posts in Home.
+Every step can be skipped. Choose **Exit setup** to leave at any time, and finish later from **Settings → Public profile → Set up this account step by step**.
 
 Next: [Coming to Mastodon from Twitter](coming-from-x.md).

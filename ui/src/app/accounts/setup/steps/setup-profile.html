@@ -10,10 +10,12 @@
   @if (avatarUrl()) {
     <img [src]="avatarUrl()" alt="Your profile picture" width="72" height="72" />
   }
-  <label class="setup-file">
-    <input type="file" accept="image/*" (change)="onAvatar($event)" />
-    <span>{{ avatarUrl() ? 'Change picture' : 'Add a picture' }}</span>
-  </label>
+  <mb-file-drop
+    presentation="link"
+    accept="image/*"
+    [label]="avatarUrl() ? 'Change picture' : 'Add a picture'"
+    (files)="onAvatar($event)"
+  />
 </div>
 
 <mb-field label="Display name" hint="Any name you like. It can change any time; your handle can’t.">

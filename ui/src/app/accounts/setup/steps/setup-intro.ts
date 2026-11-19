@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { MbButton } from '../../../design-system/button/button';
 import { MbControl, MbField } from '../../../design-system/field/field';
+import { MbNotice } from '../../../design-system/notice/notice';
 import { Api } from '../../../platform/api/api';
 import { ClientPrefs } from '../../../platform/storage/client-prefs';
 import { Drafts } from '../../../publishing/drafts';
@@ -20,7 +21,7 @@ const MAX = 500;
  */
 @Component({
   selector: 'app-setup-intro',
-  imports: [MbButton, MbField, MbControl],
+  imports: [MbButton, MbField, MbControl, MbNotice],
   templateUrl: './setup-intro.html',
   styleUrl: './setup-steps.css',
 })

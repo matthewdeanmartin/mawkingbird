@@ -2135,7 +2135,6 @@
     "login.server.tryAgain": "Spróbuj ponownie",
     "login.server.unreachable": "⚠ Nie można połączyć się z {{server}}. Serwer może być wyłączony lub zablokowany.",
     "login.server.useAnyway": "Użyj mimo to",
-    "login.signup.createOn": "Utwórz konto na {{server}} →",
     "login.tabs.mockInit": "Inicjalizacja makiety",
     "login.tabs.mockLogin": "Logowanie do makiety",
     "login.tabs.signin": "Zaloguj się / Zarejestruj",
