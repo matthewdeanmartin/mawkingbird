@@ -24,6 +24,7 @@ import { readSetup, writeSetup, type SetupRecord } from './setup-store';
 @Injectable()
 export class SetupState {
   private readonly auth = inject(Auth);
+  private readonly api = inject(Api);
 
   readonly record = signal<SetupRecord>(start());
 
@@ -43,8 +44,23 @@ export class SetupState {
    * discoverable, indexable, default visibility, posting language): one shared
    * adapter, so setup and Settings → Privacy send identical requests.
    */
-  readonly server = new MastodonOnboardingServer(inject(Api), inject(ClientPrefs));
+  readonly server = new MastodonOnboardingServer(this.api, inject(ClientPrefs));
   private serverLoaded = false;
+
+  /**
+   * The server answered 403 to `verify_credentials`: the account exists but
+   * can't act yet (approval or email confirmation pending). Believed signal
+   * only; confirm against the canary findings in the spec. Steps that would
+   * write to the server save locally instead (the intro goes to Drafts).
+   */
+  readonly pending = signal(false);
+
+  checkAccount(): void {
+    this.api.verifyCredentials().subscribe({
+      next: () => this.pending.set(false),
+      error: (err: { status?: number }) => this.pending.set(err?.status === 403),
+    });
+  }
 
   /** Run by Next for the step on screen. */
   commit: (() => Promise<void> | void) | null = null;

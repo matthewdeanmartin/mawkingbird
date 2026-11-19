@@ -20,6 +20,7 @@ import { SetupMovers } from './steps/setup-movers';
 import { SetupTwitter } from './steps/setup-twitter';
 import { SetupBluesky } from './steps/setup-bluesky';
 import { SetupFollow } from './steps/setup-follow';
+import { SetupIntro } from './steps/setup-intro';
 
 /**
  * Full-page setup for a Mastodon account that is minutes old
@@ -43,6 +44,7 @@ import { SetupFollow } from './steps/setup-follow';
     SetupTwitter,
     SetupBluesky,
     SetupFollow,
+    SetupIntro,
   ],
   providers: [SetupState],
   templateUrl: './account-setup.html',
@@ -89,6 +91,7 @@ export class AccountSetup {
   private readonly heading = viewChild<ElementRef<HTMLElement>>('heading');
 
   constructor() {
+    this.state.checkAccount();
     // `/setup`, an unknown id, or a step hidden by an earlier answer: go to
     // where this account should resume.
     effect(() => {

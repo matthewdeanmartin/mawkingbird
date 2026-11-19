@@ -1,0 +1,69 @@
+@switch (phase()) {
+  @case ('posted') {
+    <p class="setup-lead-small">
+      Posted. Pin it to your profile, so visitors see who you are first?
+    </p>
+    <div class="setup-follow-bar">
+      <button mbButton type="button" (click)="pin()">Pin it</button>
+    </div>
+  }
+  @case ('pinned') {
+    <p class="setup-lead-small">Posted and pinned to your profile.</p>
+  }
+  @case ('saved') {
+    <p class="setup-lead-small">
+      Saved in Write → Drafts. Post it once your server has approved your account.
+    </p>
+  }
+  @default {
+    <ul class="setup-prompts">
+      <li>What will you post about?</li>
+      <li>Roughly where are you? A city, region or country is plenty.</li>
+      <li>Anything people should know before following you?</li>
+    </ul>
+
+    <mb-field label="Your first post" [hint]="text().length + ' / ' + max">
+      <textarea
+        mbControl
+        name="intro"
+        rows="6"
+        [value]="text()"
+        (input)="text.set($any($event.target).value)"
+      ></textarea>
+    </mb-field>
+
+    <p class="setup-aside">
+      People decide whom to follow by what they write, so you’re a writer here. Add hashtags for the
+      subjects you’ll post about. Many people also follow #introduction to welcome newcomers.
+    </p>
+
+    @if (quiet()) {
+      <p class="setup-aside">
+        Your posts go to followers only, and a new account has none yet.
+        <button mbButton variant="link" size="small" type="button" (click)="forcePublic.set(true)">
+          {{ forcePublic() ? 'This one will be public' : 'Post this one publicly' }}
+        </button>
+      </p>
+    }
+
+    <div class="setup-follow-bar">
+      @if (state.pending()) {
+        <button mbButton type="button" [disabled]="!canPost()" (click)="saveForLater()">
+          Save for later
+        </button>
+      } @else {
+        <button
+          mbButton
+          type="button"
+          [disabled]="!canPost() || phase() === 'posting'"
+          (click)="post()"
+        >
+          Post
+        </button>
+      }
+    </div>
+  }
+}
+@if (error()) {
+  <p class="setup-aside" role="alert">{{ error() }}</p>
+}

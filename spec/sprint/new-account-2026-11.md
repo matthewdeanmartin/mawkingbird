@@ -361,3 +361,38 @@ gates, and the browser overflow checks at 320/390/800/1280.
 **Gates:** prettier and lint on `accounts/setup`, and setup specs (31) green.
 The embedded Unbird and Bluesky components have **not** been checked inside
 the setup layout at phone width; do that at the final browser pass.
+
+### After sprint 4 (2026-11-18)
+
+**Built:**
+
+- `steps/setup-intro`:
+  - a blank textarea (500 characters) with three prompt questions above it,
+    never inserted into the text,
+  - the hashtag advice (`#introduction` appears only in the advice text),
+  - an explicit **Post** button; Next never posts,
+  - after posting, **Pin it**,
+  - if the default visibility is followers-only or direct, a one-tap
+    "Post this one publicly".
+- `done` and the finished state were already done in sprint 1.
+- **Pending accounts, minimal version:** `SetupState.checkAccount()` treats a
+  403 from `verify_credentials` as "awaiting approval". The page shows a calm
+  banner, and the intro becomes **Save for later**, which saves to Write →
+  Drafts.
+
+**Deviations, read before sprint 5:**
+
+- **The intro uses a plain textarea, not `Compose`.** It has no attachments,
+  and a fixed 500-character counter rather than the server's limit. Switching
+  to `Compose` in a minimal configuration is still open if the owner wants
+  media or the real limit.
+- **No interest-tag chips:** starter kits carry no hashtags (see sprint 3).
+- **The approval queue** (profile, settings and follows saved while pending,
+  then `/setup/ready`) is **not built**. It waits on the canary findings: the
+  403 signal is assumed, not verified. Today a pending account's profile and
+  findable writes simply fail with the one-line error, and they can Skip.
+- **Purpose-first in Add account is moved to sprint 5.** Which servers it
+  shows depends on the server snapshot that sprint 5 builds.
+
+**Gates:** prettier and lint on `accounts/setup`, and setup specs (35)
+green.

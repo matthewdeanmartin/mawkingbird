@@ -18,6 +18,12 @@
         [value]="progress().index"
         [max]="progress().total"
       />
+      @if (state.pending()) {
+        <p class="setup-waiting">
+          Your server is reviewing new accounts. You’ll get an email when yours is ready. You can
+          get set up meanwhile.
+        </p>
+      }
       <h1 #heading tabindex="-1" class="setup-title">{{ current.title }}</h1>
 
       @switch (current.id) {
@@ -50,6 +56,9 @@
         }
         @case ('follow') {
           <app-setup-follow />
+        }
+        @case ('intro') {
+          <app-setup-intro />
         }
         @case ('done') {
           <p class="setup-lead">Change any of this later in Settings → Public profile.</p>

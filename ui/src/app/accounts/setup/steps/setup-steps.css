@@ -104,3 +104,9 @@
   flex-wrap: wrap;
   gap: 12px;
 }
+
+.setup-prompts {
+  margin: 0;
+  padding-left: 20px;
+  color: var(--muted);
+}
