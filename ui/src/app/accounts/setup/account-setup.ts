@@ -16,6 +16,10 @@ import { SetupPurpose } from './steps/setup-purpose';
 import { SetupProfile } from './steps/setup-profile';
 import { SetupLanguages } from './steps/setup-languages';
 import { SetupFindable } from './steps/setup-findable';
+import { SetupMovers } from './steps/setup-movers';
+import { SetupTwitter } from './steps/setup-twitter';
+import { SetupBluesky } from './steps/setup-bluesky';
+import { SetupFollow } from './steps/setup-follow';
 
 /**
  * Full-page setup for a Mastodon account that is minutes old
@@ -28,7 +32,18 @@ import { SetupFindable } from './steps/setup-findable';
  */
 @Component({
   selector: 'app-account-setup',
-  imports: [MbButton, MbProgress, SetupPurpose, SetupProfile, SetupLanguages, SetupFindable],
+  imports: [
+    MbButton,
+    MbProgress,
+    SetupPurpose,
+    SetupProfile,
+    SetupLanguages,
+    SetupFindable,
+    SetupMovers,
+    SetupTwitter,
+    SetupBluesky,
+    SetupFollow,
+  ],
   providers: [SetupState],
   templateUrl: './account-setup.html',
   styleUrl: './account-setup.css',

@@ -1,0 +1,51 @@
+<p class="setup-lead-small">Pick what you’re into and we’ll show you people who post about it.</p>
+
+<fieldset class="setup-chips">
+  <legend>Interests</legend>
+  @for (interest of interests(); track interest.id) {
+    <mb-checkbox
+      [label]="interest.title"
+      [checked]="chosen().has(interest.id)"
+      (checkedChange)="toggleInterest(interest.id, $event)"
+    />
+  }
+</fieldset>
+
+@if (people().length) {
+  <ul class="setup-people">
+    @for (person of people(); track person.handle) {
+      <li class="setup-person">
+        @if (person.avatar) {
+          <img [src]="person.avatar" alt="" width="40" height="40" loading="lazy" />
+        }
+        @switch (status(person.handle)) {
+          @case ('new') {
+            <mb-checkbox
+              [label]="person.name + ' · @' + person.handle"
+              [checked]="!skipped().has(person.handle)"
+              (checkedChange)="togglePerson(person.handle, $event)"
+            />
+          }
+          @default {
+            <span class="setup-person-name">{{ person.name }} · &#64;{{ person.handle }}</span>
+            <span class="setup-person-status">{{ status(person.handle) }}</span>
+          }
+        }
+      </li>
+    }
+  </ul>
+}
+
+<div class="setup-follow-bar">
+  <button
+    mbButton
+    type="button"
+    [disabled]="!toFollow().length || importer.running()"
+    (click)="follow()"
+  >
+    Follow {{ toFollow().length }}
+  </button>
+  <span class="setup-aside" aria-live="polite">
+    Following {{ followed() }}. About {{ lively }} makes a lively Home.
+  </span>
+</div>

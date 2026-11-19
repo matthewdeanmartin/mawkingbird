@@ -328,3 +328,36 @@ weekly Search Console check (opus_SEO.md §3.5).
 build:mockingbird` (check that setup is lazy and only `setup.guard.ts` and
 `setup-store.ts` are eager), `make storage`, `make design-verify`, the SEO
 gates, and the browser overflow checks at 320/390/800/1280.
+
+### After sprint 3 (2026-11-18)
+
+**Built:**
+
+- `steps/setup-movers`: preselects Twitter from `hint`; writes `movers` only
+  on Next.
+- `steps/setup-twitter`: embeds `UnbirdDrop` and `UnbirdPeople` unchanged.
+- `steps/setup-bluesky`: embeds `BridgeFriendsImport` with
+  `connectInline`.
+- `steps/setup-follow`:
+  - interests are the starter kits in the languages the person reads (largest
+    first, English as the fallback), led by "Popular on your server"
+    (`/api/v2/suggestions`),
+  - choosing an interest lists its people, deduped and without self, all
+    ticked; they can untick anyone,
+  - **Follow N** appends rows to `ImportFollows` (the starter-kit queue,
+    rate-limit aware, with its bulk-follow confirmation) and starts it,
+  - a counter of follows plus queued follows, against "about 20".
+
+**Cut from sprint 3, still to do:**
+
+- Hashtag follow per interest: starter kits carry no tags. It needs a
+  kit → tag map, or the Feed Builder topics.
+- "Copy follows from @other" for Nth accounts: it needs the other session's
+  token to list its follows.
+- Free-text interest search.
+- No per-person Follow button: ticking a person in or out and pressing
+  **Follow N** does the same job.
+
+**Gates:** prettier and lint on `accounts/setup`, and setup specs (31) green.
+The embedded Unbird and Bluesky components have **not** been checked inside
+the setup layout at phone width; do that at the final browser pass.
