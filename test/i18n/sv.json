@@ -721,7 +721,6 @@
     "login.server.tryAgain": "Försök igen",
     "login.server.unreachable": "⚠ Kan inte nå {{server}}. Servern kan vara offline eller blockerad.",
     "login.server.useAnyway": "Använd ändå",
-    "login.signup.createOn": "Skapa ett konto på {{server}} →",
     "login.tabs.mockInit": "Mock-initiering",
     "login.tabs.mockLogin": "Mock-inloggning",
     "login.tabs.signin": "Logga in / Registrera",

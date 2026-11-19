@@ -1291,7 +1291,6 @@
     "login.server.tryAgain": "Intentar de nuevo",
     "login.server.unreachable": "⚠ No se puede acceder a {{server}}. Es posible que el servidor esté fuera de línea o bloqueado.",
     "login.server.useAnyway": "Usar de todos modos",
-    "login.signup.createOn": "Crear una cuenta en {{server}} →",
     "login.tabs.mockInit": "Inicialización del simulador",
     "login.tabs.mockLogin": "Inicio de sesión del simulador",
     "login.tabs.signin": "Iniciar sesión / Registrarse",

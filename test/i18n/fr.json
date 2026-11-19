@@ -1226,7 +1226,6 @@
     "login.server.tryAgain": "Réessayer",
     "login.server.unreachable": "⚠ Impossible de joindre {{server}}. Le serveur est peut-être hors ligne ou bloqué.",
     "login.server.useAnyway": "Utiliser quand même",
-    "login.signup.createOn": "Créer un compte sur {{server}} →",
     "login.tabs.mockInit": "Init maquette",
     "login.tabs.mockLogin": "Connexion maquette",
     "login.tabs.signin": "Connexion / Inscription",

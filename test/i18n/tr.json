@@ -1812,7 +1812,6 @@
     "login.server.tryAgain": "Tekrar dene",
     "login.server.unreachable": "⚠ {{server}} sunucusuna ulaşılamıyor. Sunucu çevrimdışı veya engellenmiş olabilir.",
     "login.server.useAnyway": "Yine de kullan",
-    "login.signup.createOn": "{{server}} sunucusunda hesap oluştur →",
     "login.tabs.mockInit": "Sahte Başlatma",
     "login.tabs.mockLogin": "Sahte Giriş",
     "login.tabs.signin": "Giriş yap / Kaydol",

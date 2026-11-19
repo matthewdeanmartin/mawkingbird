@@ -1512,7 +1512,6 @@
     "login.server.tryAgain": "再試行",
     "login.server.unreachable": "⚠ {{server}}に接続できません。サーバーがオフラインか、ブロックされている可能性があります。",
     "login.server.useAnyway": "このまま使用",
-    "login.signup.createOn": "{{server}}にアカウントを作成 →",
     "login.tabs.mockInit": "モック初期化",
     "login.tabs.mockLogin": "モックログイン",
     "login.tabs.signin": "ログイン／登録",
