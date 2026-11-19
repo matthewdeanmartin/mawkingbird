@@ -15,6 +15,12 @@
     <p>{{ 'settings.profile.intro.bluesky' | transloco }}</p>
   } @else {
     <p>{{ 'settings.profile.intro' | transloco }}</p>
+    <p class="profile-setup-link">
+      <a routerLink="/setup">{{
+        (setupFinished ? 'settings.profile.setup.again' : 'settings.profile.setup.start')
+          | transloco
+      }}</a>
+    </p>
   }
 </div>
 

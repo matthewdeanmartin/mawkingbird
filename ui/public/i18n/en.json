@@ -8254,6 +8254,8 @@
     "profile.removeHeader": "Remove header",
     "profile.removeHeader.confirm": "Remove your header image? Your profile will show a plain header until you upload a new one.",
     "profile.resetLocal": "Reset local profile",
+    "profile.setup.again": "Run account setup again",
+    "profile.setup.start": "Set up this account step by step →",
     "profile.tabs.failed": "That tab setting was not saved. {{detail}}",
     "profile.tabs.featured": "Show a Featured tab",
     "profile.tabs.heading": "Profile tabs",

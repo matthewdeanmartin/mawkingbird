@@ -36,6 +36,7 @@ import { Server } from '../http/server';
 import { LocalModeration } from '../../moderation/local-moderation';
 import { SessionDiagnostics } from './session-diagnostics';
 import { markOnboardingPending } from '../../accounts/onboarding/onboarding-store';
+import { armSetup, isYoungEmptyAccount, takeSignupReturn } from '../../accounts/setup/setup-store';
 
 const TOKEN_KEY = 'mastodon_mock_token';
 const SESSIONS_KEY = 'mastodon_mock_sessions';
@@ -714,7 +715,14 @@ export class Auth {
     if (account && token) {
       const scope = adoptMastodonStorageScope(account.id, this.server.baseUrl(), [token]);
       if (this.freshTokens.delete(token)) {
-        markOnboardingPending(scope);
+        // A minutes-old account gets the full-page setup instead of the
+        // floating onboarding card, which never auto-opens for it.
+        const signup = takeSignupReturn();
+        if (signup || isYoungEmptyAccount(account)) {
+          armSetup(scope, signup ? 'signup' : 'young', signup?.hint);
+        } else {
+          markOnboardingPending(scope);
+        }
       }
       this.persistSessions(this.sessions().map((s) => (s.token === token ? { ...s, account } : s)));
     }

@@ -38,6 +38,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 import { MbNotice } from '../../../design-system/notice/notice';
 import { probeSignup, SignupSupport } from '../../../unbird/signup-support';
 import { normalizeDomain } from '../../mastodon-handle-generator/handle-availability';
+import { noteSignupReturn, setupRedirectFor } from '../../setup/setup-store';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
 /**
@@ -68,6 +69,8 @@ interface StoredApp {
   codeVerifier: string;
   /** Instance the flow was started against; the code is only valid there. */
   server: string;
+  /** Started with `prompt=create`: the account is new, so it goes to setup. */
+  created?: boolean;
   /** Where to land after signing in, already checked by {@link loginDestination}. */
   next?: string;
 }
@@ -699,7 +702,9 @@ export class Login implements OnInit, OnDestroy {
         }
         this.enteringHome.set(true);
         this.checking.set(false);
-        this.router.navigateByUrl(this.destination, { replaceUrl: true });
+        this.router.navigateByUrl(setupRedirectFor('/home') ?? this.destination, {
+          replaceUrl: true,
+        });
       },
       error: (error) => {
         this.auth.removeSession(value);
@@ -904,6 +909,10 @@ export class Login implements OnInit, OnDestroy {
       return;
     }
     this.destination = loginDestination(app.next);
+    // Sign-ups always land in setup; one that began in Unbird opens its
+    // Twitter step, because setup now carries Unbird's people matching.
+    if (app.created)
+      noteSignupReturn(this.destination.startsWith('/unbird') ? 'twitter' : undefined);
     if (!statesMatch(app.state, params.get('state'))) {
       this.oauthError.set(
         'Sign-in could not be verified (state mismatch) and was stopped. Start again from this page.',
@@ -1004,6 +1013,7 @@ export class Login implements OnInit, OnDestroy {
               codeVerifier,
               server,
               ...(this.destination !== '/home' && { next: this.destination }),
+              ...(create && { created: true }),
             };
             sessionStorage.setItem(OAUTH_APP_KEY, JSON.stringify(stored));
             if (create) {

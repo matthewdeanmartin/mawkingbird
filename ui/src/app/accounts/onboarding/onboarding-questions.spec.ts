@@ -55,6 +55,7 @@ const visible = (ctx: OnboardingContext) =>
 const SERVER: ServerSettings = {
   locked: false,
   discoverable: true,
+  indexable: false,
   privacy: 'public',
   language: '',
 };

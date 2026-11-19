@@ -991,6 +991,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Which app-wide onboarding questions have been asked in this browser. Ids only — the answers live in their own settings keys — so an imported setup, which brings the answers, also skips the questions.',
   },
   {
+    base: 'mockingbird_account_setup',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Full-page setup for a minutes-old Mastodon account: armed/running/finished, how it was armed, which steps were answered, the chosen purpose. Later sprints queue unsent profile text here for accounts awaiting approval, hence private.',
+  },
+  {
     base: 'mockingbird_onboarding_account',
     storage: 'local',
     suffix: 'account',
@@ -1183,7 +1190,7 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     storage: 'local',
     suffix: 'none',
     sensitivity: 'secret',
-    note: 'In-flight Mastodon OAuth for a sign-up that returns (prompt=create): client secret, PKCE verifier and state, shared across tabs because the confirmation email opens a new one. Consumed by the callback; ignored after two hours.',
+    note: 'In-flight Mastodon OAuth for a sign-up that returns (prompt=create): client secret, PKCE verifier and state, shared across tabs because the confirmation email opens a new one. Consumed by the callback; ignored after two hours. Carries created: true so the returning account is sent to account setup.',
   },
 
   // ---- sessionStorage: dies with the tab, never exported ----

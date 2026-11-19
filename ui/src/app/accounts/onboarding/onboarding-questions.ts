@@ -59,6 +59,8 @@ export type OnboardingControl =
 export interface ServerSettings {
   locked: boolean;
   discoverable: boolean;
+  /** Full-text search of public posts on servers that offer it (Mastodon 4.2+). */
+  indexable: boolean;
   privacy: string;
   language: string;
 }
@@ -108,7 +110,7 @@ export interface OnboardingQuestion {
 const text = (value: string) => () => value;
 
 /** Languages offered as chips, in the same order as Settings → Internationalization. */
-const PICKER_ORDER: LangCode[] = [
+export const PICKER_ORDER: LangCode[] = [
   'en',
   'es',
   'fr',
@@ -142,7 +144,7 @@ function languageName(code: string): string {
   return (LANG_NAMES as Record<string, string>)[code] ?? code.toUpperCase();
 }
 
-function languageOptions(codes: Iterable<string>): ChoiceOption[] {
+export function languageOptions(codes: Iterable<string>): ChoiceOption[] {
   const seen = new Set<string>();
   const out: ChoiceOption[] = [];
   for (const code of codes) {

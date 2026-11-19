@@ -60,6 +60,7 @@ import { AddAccountDialog } from '../accounts/sign-in/add-account-dialog/add-acc
 import { FirstRunChoice, FirstRunModal } from '../accounts/first-run/first-run-modal';
 import { PreviewSeed } from '../accounts/first-run/preview-seed';
 import { OnboardingLauncher } from '../accounts/onboarding/onboarding-launcher';
+import { setupRedirectFor } from '../accounts/setup/setup-store';
 import { PlusBadgeEntitlement } from '../accounts/mawkingbird/plus-badge-entitlement';
 import { visiblePlusBenefits } from '../platform/build/plus-benefits';
 import { TranslocoService, TranslocoPipe } from '@jsverse/transloco';
@@ -641,6 +642,12 @@ export class Shell implements OnInit, AccountSwitcher {
         // A route change is a dismissal: the card is header chrome, and leaving
         // it open over a page the reader just navigated to is stale furniture.
         this.closePlanCard();
+        // A minutes-old account (any sign-in path) goes to full-page setup.
+        const setup = setupRedirectFor(this.router.url);
+        if (setup) {
+          void this.router.navigateByUrl(setup, { replaceUrl: true });
+          return;
+        }
         // A brand-new account's first Home visit opens the onboarding card.
         this.onboarding.maybeAutoOpen(this.router.url, this.firstRunActive());
         setTimeout(() => {

@@ -24,6 +24,8 @@ import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
 import { Account, CustomEmoji } from '../../platform/api/models';
 import { ConfirmDialog } from '../../shell/confirm-dialog/confirm-dialog';
 import { describeHttpError } from '../../platform/diagnostics/page-diagnostics';
+import { RouterLink } from '@angular/router';
+import { readSetup } from '../../accounts/setup/setup-store';
 
 type ProfileImage = 'avatar' | 'header';
 
@@ -40,6 +42,8 @@ function realImage(url: string | null | undefined): string {
 // i18n settings.profile.automation: Automation
 // i18n settings.profile.bot.hint: Mark this as an automated account. A bot badge will appear on your profile.
 // i18n settings.profile.intro: How you appear to other people on this server.
+// i18n settings.profile.setup.start: Set up this account step by step →
+// i18n settings.profile.setup.again: Run account setup again
 // i18n settings.profile.intro.anonymous: Your browser-local identity. Nothing here is published to {{server}}.
 // i18n settings.profile.intro.bluesky: How you appear to people on Bluesky.
 // i18n settings.profile.intro.misskey: Your profile lives on your Misskey server. Editing it from here comes in a later update; for now, change it on Misskey.
@@ -87,6 +91,7 @@ function realImage(url: string | null | undefined): string {
     ProfileBioDialog,
     CustomEmojiPipe,
     ConfirmDialog,
+    RouterLink,
   ],
   templateUrl: './settings-profile.html',
   styleUrl: './settings-profile.css',
@@ -100,6 +105,12 @@ export class SettingsProfile implements OnInit {
   private blueskyApi = inject(BlueskyApi);
   private blueskySession = inject(BlueskySession);
   private transloco = inject(TranslocoService);
+
+  /**
+   * Account setup is a guided version of this page, so it is resumed from here
+   * (spec/new-account-setup.md). Mastodon accounts only.
+   */
+  protected setupFinished = readSetup()?.state === 'finished';
 
   protected displayName = signal('');
   protected username = signal('');

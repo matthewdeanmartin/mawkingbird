@@ -8,6 +8,7 @@ import { OnboardingServer, ServerField, ServerSettings } from './onboarding-ques
 const FORM_KEYS: Record<ServerField, string> = {
   locked: 'locked',
   discoverable: 'discoverable',
+  indexable: 'indexable',
   privacy: 'source[privacy]',
   language: 'source[language]',
 };
@@ -35,6 +36,7 @@ export class MastodonOnboardingServer implements OnboardingServer {
         this.settings.set({
           locked: acc.locked ?? false,
           discoverable: acc.discoverable ?? false,
+          indexable: acc.indexable ?? false,
           privacy: acc.source?.privacy ?? 'public',
           language: acc.source?.language ?? '',
         }),

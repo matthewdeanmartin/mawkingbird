@@ -1,0 +1,45 @@
+@if (copySource(); as other) {
+  <p class="setup-aside">
+    <button mbButton variant="link" size="small" type="button" (click)="copyFrom(other)">
+      Copy name and bio from &#64;{{ other.acct }}
+    </button>
+  </p>
+}
+
+<div class="setup-avatar">
+  @if (avatarUrl()) {
+    <img [src]="avatarUrl()" alt="Your profile picture" width="72" height="72" />
+  }
+  <label class="setup-file">
+    <input type="file" accept="image/*" (change)="onAvatar($event)" />
+    <span>{{ avatarUrl() ? 'Change picture' : 'Add a picture' }}</span>
+  </label>
+</div>
+
+<mb-field label="Display name" hint="Any name you like. It can change any time; your handle can’t.">
+  <input
+    mbControl
+    type="text"
+    name="display_name"
+    maxlength="30"
+    autocomplete="nickname"
+    [value]="displayName()"
+    (input)="displayName.set($any($event.target).value)"
+  />
+</mb-field>
+
+<mb-field
+  label="Bio"
+  hint="Say what you’ll post about. People decide whether to follow you from this."
+>
+  <textarea
+    mbControl
+    name="note"
+    rows="4"
+    maxlength="500"
+    [value]="note()"
+    (input)="note.set($any($event.target).value)"
+  ></textarea>
+</mb-field>
+
+<p class="setup-aside">Header image and profile links are in Settings → Public profile.</p>

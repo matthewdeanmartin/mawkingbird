@@ -1,0 +1,63 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.setup-aside {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.setup-avatar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.setup-avatar img {
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.setup-file {
+  position: relative;
+  display: inline-flex;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.setup-file input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.setup-file:focus-within {
+  outline: 2px solid var(--accent, currentColor);
+  outline-offset: 2px;
+}
+
+.setup-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 4px 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.setup-chips legend {
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.setup-loading {
+  margin: 0;
+  color: var(--muted);
+}

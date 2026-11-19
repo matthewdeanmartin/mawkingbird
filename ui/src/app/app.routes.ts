@@ -1,4 +1,5 @@
 import { inject, Type } from '@angular/core';
+import { setupGuard } from './accounts/setup/setup.guard';
 import { NATIVE_PROFILES } from './platform/session/platform-login';
 import {
   PLATFORM_LOCAL_AI,
@@ -390,6 +391,20 @@ export const routes: Routes = [
       ),
   },
   // New-user landing: bookmark this, sign up on your instance, come back and sign in.
+  // Full-page setup for a minutes-old Mastodon account, outside the shell so
+  // nothing distracts from it. Each step is its own URL for page-view counts.
+  {
+    path: 'setup',
+    title: 'Account setup',
+    canActivate: [setupGuard],
+    loadComponent: () => import('./accounts/setup/account-setup').then((m) => m.AccountSetup),
+  },
+  {
+    path: 'setup/:step',
+    title: 'Account setup',
+    canActivate: [setupGuard],
+    loadComponent: () => import('./accounts/setup/account-setup').then((m) => m.AccountSetup),
+  },
   {
     path: 'welcome-back',
     title: 'Welcome back',

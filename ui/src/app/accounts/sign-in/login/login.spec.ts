@@ -16,7 +16,7 @@ const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
 const PENDING_STATE = 'pending-state';
 
 /** Seed the sessionStorage record startOAuth() would have written. */
-function storePendingOAuth(): void {
+function storePendingOAuth(extra: Record<string, unknown> = {}): void {
   sessionStorage.setItem(
     OAUTH_APP_KEY,
     JSON.stringify({
@@ -26,6 +26,7 @@ function storePendingOAuth(): void {
       state: PENDING_STATE,
       codeVerifier: 'pending-verifier',
       server: '',
+      ...extra,
     }),
   );
 }
@@ -302,6 +303,25 @@ describe('Login', () => {
     expect(navigateSpy).not.toHaveBeenCalled();
     expect(navigateByUrlSpy).toHaveBeenCalledWith('/home', { replaceUrl: true });
     expect(TestBed.inject(Auth).token()).toBe('fresh-token');
+  });
+
+  it('sends a sign-up that came back (prompt=create) to account setup', () => {
+    storePendingOAuth({ created: true });
+    const fixture = setUp({ code: 'mockcode_alan', state: PENDING_STATE });
+    const navigateByUrlSpy = vi
+      .spyOn(TestBed.inject(Router), 'navigateByUrl')
+      .mockResolvedValue(true);
+
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
+    httpMock
+      .expectOne('/oauth/token')
+      .flush({ access_token: 'fresh-token', token_type: 'Bearer', scope: 'read', created_at: 0 });
+    httpMock
+      .expectOne('/api/v1/accounts/verify_credentials')
+      .flush({ id: '1', username: 'alan', acct: 'alan' } as never);
+
+    expect(navigateByUrlSpy).toHaveBeenCalledWith('/setup', { replaceUrl: true });
   });
 
   it('on init with ?code, surfaces an error if the exchange fails', () => {
