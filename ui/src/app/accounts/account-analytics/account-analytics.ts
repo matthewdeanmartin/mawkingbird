@@ -41,6 +41,15 @@ import { REACH_MODEL, SampleReach, reachByPost, sampleReach } from '../reach-mod
 import { BoosterLookup } from '../booster-lookup';
 import { Auth } from '../../platform/session/auth';
 import { NATIVE_ANALYTICS } from '../../platform/session/platform-login';
+import type { NativeAudienceHistory } from '../../platform/session/native-analytics-types';
+import {
+  comparePeriods,
+  followerMonths,
+  monthlyCsv,
+  monthlyReport,
+  percentChange,
+} from '../analytics-history';
+import { saveBlob } from '../../posts/media-download/media-download';
 import { readerRouteId } from '../../reading/read/reader-route-id';
 import { MbHelp } from '../../design-system/help/help';
 import { EffectiveAudienceDialog } from '../effective-audience-dialog/effective-audience-dialog';
@@ -92,6 +101,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.tiles.reachPerThread: Est. reach / thread
 // i18n accountAnalytics.tiles.potentialAudience: Could have reached
 // i18n accountAnalytics.help.about: About {{stat}}
+// i18n accountAnalytics.methodology: How these numbers work
 // i18n accountAnalytics.help.reach: People who probably saw these {{count}} threads. Modelled from followers, boosts, quotes, likes and replies with the FediWings method, which was fitted to Instagram story views. Never more than “Could have reached”, never fewer than the people who reacted.
 // i18n accountAnalytics.help.reachQuick: Quick estimate: each boost counts as one typical booster with {{audience}} followers. No extra API calls.
 // i18n accountAnalytics.help.reachFull: Uses the real boosters' follower counts.
@@ -101,6 +111,12 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.help.countTotal: Sum over the {{count}} posts in the sample, as the server reports it now.
 // i18n accountAnalytics.help.engagementsPerPost: Favourites, boosts and replies received, divided by the {{count}} posts in the sample.
 // i18n accountAnalytics.help.followers: As reported by the account's server today.
+// i18n accountAnalytics.help.postsAnalyzed: The account's own posts in this sample; boosts of other people's posts are left out. Every number below describes this sample.
+// i18n accountAnalytics.help.repliesGiven: Share of the account's own posts that reply to someone else. Continuing their own thread does not count.
+// i18n accountAnalytics.help.postLength: Visible characters, including any content warning; links and formatting markup are not counted.
+// i18n accountAnalytics.help.postsPerDay: Posts in the sample divided by the days between its newest and oldest post.
+// i18n accountAnalytics.help.liveliness: 0–100 from how recently and how often they posted. Falls quickly with silence; 40+ is Active, 10–39 Slowing, under 10 Dormant.
+// i18n accountAnalytics.help.recentPostsPerDay: Posts in the last 30 days, divided by 30.
 // i18n accountAnalytics.topPosts.analytics: Post analytics
 // i18n accountAnalytics.topPosts.reach: Thread: est. reach {{net}}, could have reached {{potential}}
 // i18n accountAnalytics.archive.catchingUp: From your archive. Checking the server for new posts and fresh counts…
@@ -109,6 +125,34 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.archive.rateLimited: From your archive. The server asked to slow down, so counts may be a little behind.
 // i18n accountAnalytics.archive.failed: From your archive. The server couldn't be reached; counts are as last seen.
 // i18n accountAnalytics.archive.continue: Continue
+// i18n accountAnalytics.history.heading: Over time
+// i18n accountAnalytics.history.explain: From the archive, grouped by when each thread started.
+// i18n accountAnalytics.history.periodsHeading: Last {{days}} days vs the {{days}} before
+// i18n accountAnalytics.history.periodsHelp: Sums for the threads started in each window, with the same reach model as above. The percentage compares the two windows.
+// i18n accountAnalytics.history.previous: before: {{value}}
+// i18n accountAnalytics.history.previousUncovered: The archive starts {{date}}, so the earlier window is only partly covered.
+// i18n accountAnalytics.history.metric.reach: Est. reach
+// i18n accountAnalytics.history.metric.interactions: Interactions
+// i18n accountAnalytics.history.metric.likes: Favourites
+// i18n accountAnalytics.history.metric.boosts: Boosts
+// i18n accountAnalytics.history.monthsHeading: By month
+// i18n accountAnalytics.history.monthsAria: Est. reach per month
+// i18n accountAnalytics.history.monthBarTitle: {{month}}: est. reach {{reach}}, {{threads}} threads
+// i18n accountAnalytics.history.col.month: Month
+// i18n accountAnalytics.history.col.threads: Threads
+// i18n accountAnalytics.history.col.reach: Est. reach
+// i18n accountAnalytics.history.col.perThread: Per thread
+// i18n accountAnalytics.history.col.interactions: Interactions
+// i18n accountAnalytics.history.col.followers: Followers
+// i18n accountAnalytics.history.col.change: Change
+// i18n accountAnalytics.history.col.newFollows: New follows
+// i18n accountAnalytics.history.coverage.partial: partly in the archive
+// i18n accountAnalytics.history.coverage.none: before the archive
+// i18n accountAnalytics.history.csv: Download CSV
+// i18n accountAnalytics.history.followersHeading: Followers
+// i18n accountAnalytics.history.followersHelp: The follower count is recorded once a day while the app reads your account. New follows come from your follow notifications; servers do not report unfollows.
+// i18n accountAnalytics.history.followersIncomplete: Older follow notifications are still being collected, so early months may be low.
+// i18n accountAnalytics.history.followersEmpty: Follower history starts today. Check back in a few days.
 // i18n accountAnalytics.refine.button.one: Refine reach with real boosters ({{count}} API call)
 // i18n accountAnalytics.refine.button.other: Refine reach with real boosters ({{count}} API calls)
 // i18n accountAnalytics.refine.explain: Looks up who boosted each post and uses their follower counts. One call per boosted post, most-boosted first.
@@ -276,6 +320,13 @@ export class AccountAnalytics implements OnInit {
     const native = this.native!;
     this.hasMore.set(false);
     this.archive.set({ state: 'catchingUp' });
+    // Follower history exists only for the signed-in account itself.
+    if (this.auth.account()?.id === id) {
+      native.history(handle).then(
+        (history) => this.audienceHistory.set(history),
+        () => undefined,
+      );
+    }
     const show = () =>
       native.posts(handle, id, ARCHIVE_LIMIT).then((posts) => {
         if (posts.length) {
@@ -311,6 +362,53 @@ export class AccountAnalytics implements OnInit {
           this.loading.set(false);
         }
       });
+  }
+
+  // --- Native: history over time ---
+
+  /** Follower history; loaded for the signed-in account only. */
+  private audienceHistory = signal<NativeAudienceHistory | null>(null);
+
+  /** When the loaded archive begins: the oldest post on hand. */
+  protected archiveStart = computed(() =>
+    this.archive() ? (this.posts().at(-1)?.created_at ?? null) : null,
+  );
+
+  protected periods = computed(() =>
+    this.archive() ? comparePeriods(this.reach(), this.archiveStart()) : null,
+  );
+
+  /** The comparison as rows for the template: metric key, now, before, change. */
+  protected periodRows = computed(() => {
+    const p = this.periods();
+    if (!p) return [];
+    return (['reach', 'interactions', 'likes', 'boosts'] as const).map((key) => ({
+      key,
+      now: p.current[key],
+      before: p.previous[key],
+      trend: trendOf(percentChange(p.previous[key], p.current[key])),
+    }));
+  });
+
+  protected months = computed(() =>
+    this.archive() ? monthlyReport(this.reach(), this.archiveStart()) : [],
+  );
+  protected monthsPeak = computed(() => Math.max(1, ...this.months().map((m) => m.reach)));
+
+  protected followerHistory = computed(() => {
+    const history = this.audienceHistory();
+    return history ? followerMonths(history.followers, history.followsByMonth) : null;
+  });
+  protected followerHistoryComplete = computed(
+    () => this.audienceHistory()?.notificationHistoryComplete ?? true,
+  );
+
+  protected downloadMonthlyCsv(): void {
+    const name = this.account().acct.replace(/[^\w.-]+/g, '_');
+    saveBlob(
+      new Blob([monthlyCsv(this.months())], { type: 'text/csv;charset=utf-8' }),
+      `analytics-${name}-monthly.csv`,
+    );
   }
 
   /** Run another catch-up after one stopped early. */
@@ -733,6 +831,14 @@ export class AccountAnalytics implements OnInit {
     }
     return n.toLocaleString();
   }
+}
+
+/** A percent change as an arrow label and a direction class; null without a base. */
+function trendOf(change: number | null): { text: string; direction: string } | null {
+  if (change === null) return null;
+  if (change > 0) return { text: `▲ +${change}%`, direction: 'trend up' };
+  if (change < 0) return { text: `▼ ${change}%`, direction: 'trend down' };
+  return { text: '0%', direction: 'trend' };
 }
 
 /** Name the failure, so the reader knows whether retrying can help. */

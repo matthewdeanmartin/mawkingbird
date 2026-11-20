@@ -46,6 +46,8 @@ describe('AccountAnalytics in the native app', () => {
       catchUp: vi.fn(),
       posts: vi.fn(),
       boosters: vi.fn(),
+      history: vi.fn(),
+      postActivity: vi.fn(),
     };
     TestBed.configureTestingModule({
       providers: [
@@ -84,6 +86,44 @@ describe('AccountAnalytics in the native app', () => {
     expect(root.textContent).toContain('From your archive, up to date.');
     expect(root.textContent).not.toContain('Refine reach');
     expect(root.querySelector('.load-more')).toBeNull();
+    // Someone else's account (no signed-in account set): no follower history.
+    expect(native.history).not.toHaveBeenCalled();
+  });
+
+  it('compares periods, lists months and shows your own follower history', async () => {
+    const recent = new Date(Date.now() - 2 * 86_400_000).toISOString();
+    const older = new Date(Date.now() - 40 * 86_400_000).toISOString();
+    const ancient = new Date(Date.now() - 400 * 86_400_000).toISOString();
+    native.posts.mockResolvedValue([
+      { ...own('3'), created_at: recent, favourites_count: 4 },
+      { ...own('2'), created_at: older, favourites_count: 2 },
+      { ...own('1'), created_at: ancient },
+    ]);
+    native.catchUp.mockResolvedValue({ pages: 1, saved: 0, complete: true, rateLimited: false });
+    native.history.mockResolvedValue({
+      followers: [{ day: '2026-11-01', followers: 100, following: 5 }],
+      followsByMonth: [{ month: '2026-11', count: 3 }],
+      notificationHistoryComplete: false,
+    });
+    TestBed.inject(Auth).account.set(ME);
+    const { fixture, root } = render();
+    await settle();
+    await settle();
+    fixture.detectChanges();
+
+    const history = root.querySelector('.history')!;
+    expect(history.textContent).toContain('Last 30 days vs the 30 before');
+    const favourites = [...history.querySelectorAll('.tile')].find((t) =>
+      t.textContent?.includes('Favourites'),
+    )!;
+    expect(favourites.textContent).toContain('+100%');
+    expect(favourites.textContent).toContain('before: 2');
+    expect(history.querySelectorAll('.history-table')[0].querySelectorAll('tbody tr')).toHaveLength(
+      12,
+    );
+    expect(history.textContent).toContain('Download CSV');
+    expect(native.history).toHaveBeenCalledWith('native-mastodon:a');
+    expect(history.textContent).toContain('Older follow notifications are still being collected');
   });
 
   it('offers to continue when a catch-up stopped at its page cap', async () => {

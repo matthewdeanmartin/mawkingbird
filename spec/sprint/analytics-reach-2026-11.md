@@ -1,10 +1,69 @@
 # Analytics and reach (November 2026)
 
-Status: Sprints 1–2 pushed 2026-11-20. Sprints 3–4 implemented locally
+Status: Sprints 1–4 pushed 2026-11-20. Sprints 5–6 implemented locally
 2026-11-20 (uncommitted; the owner pushes and runs the full gates on GHA every
-two sprints). Sprints 5–6 planned. Owner decisions: 2026-11-20.
+two sprints). Follow-up: [metrics evaluation](../analytics-metrics-evaluation.md).
+Owner decisions: 2026-11-20 (owner testing: new reach "much more plausible").
 
 ## Progress
+
+### Sprints 5–6 (2026-11-20)
+
+Delivered, native:
+
+- Migration 6 (`00000000000006_audience_history`, additive):
+  - `archive_interaction.status_remote_id`: which post a notification was
+    about. It is filled for notifications observed from now on, and a re-read
+    notification fills in a missing link.
+  - `archive_follower_snapshot`: the signed-in account's follower, following
+    and status counts, one row per day. Written on sign-in (`verify`) and when
+    an own post's counts change.
+- `archive_analytics_history` (followers by day; follow notifications by
+  month; whether the notification history is complete) and
+  `archive_post_activity` (count snapshots plus the boost, favourite and quote
+  notifications naming a post). Both read the archive only, with no requests.
+- Account analytics, native **Over time** section:
+  - last 30 days vs the 30 before (est. reach, interactions, favourites,
+    boosts), with an archive-coverage note;
+  - a 12-month single-series bar chart, a table and a **Download CSV** button;
+  - for your own account, monthly followers, change and new follows.
+
+  Pure logic is in `accounts/analytics-history.ts`.
+
+- Post page, native, your own posts: **When it was boosted and favourited**, a
+  table of arrival windows (within 1 hour … after 30 days) with the running
+  share.
+
+Delivered, web:
+
+- (?) explainers on every remaining tile: account analytics (posts analyzed,
+  replies given, shortest/longest, posts/day, liveliness, recent posts/day) and
+  the ten feed-analytics tiles (hashtag, list, Home, starter collection).
+  Section-level descriptions already existed there.
+- Help page `docs/tools/analytics.md` ("How the analytics numbers work", in
+  the mkdocs nav under Tools), linked from account and post analytics.
+- Measurement fix: **Replies given** no longer counts continuing your own
+  thread (`isReplyToOthers` in `account-metrics.ts`).
+
+Also: clippy is clean on all targets (owner: "clean up as we go").
+`profile_posts_after` takes one `Option<(&str, i64)>` cursor, and the command
+rejects half a cursor. Four test fixtures (articles, connectors, feeds, media)
+now assert that their request arrived instead of discarding the read length.
+
+Deferred:
+
+- Translation of the new keys: they are English-only until the next UI
+  translation pass.
+- A growth curve from count snapshots on the post page (data is collected;
+  only arrival windows are shown).
+
+Checks run (lightweight): web `make test-changed` (856 files, 10,566 tests),
+`check:i18n`, `ng lint`, prettier, `design:inventory-check`,
+`test:source-integrity`, `build:mockingbird` (initial bundle unchanged at
+933.41 kB), `make help-site-test` and `make help-site`. Native: `cargo clippy
+--all-targets` (0 warnings), `make check-host`, `make test-host` (102 passed),
+the native frontend build and `make smoke-frontend`. **Not run:** full `make
+test`, SEO, `design-verify`, `smoke-host`, and a real-account Windows run.
 
 ### Sprints 3–4 (2026-11-20)
 

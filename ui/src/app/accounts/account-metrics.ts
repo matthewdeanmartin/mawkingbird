@@ -79,13 +79,23 @@ export function replyRatio(posts: Status[]): number | null {
   if (original.length === 0) {
     return null;
   }
-  const replies = original.filter((post) => post.in_reply_to_id != null).length;
+  const replies = original.filter(isReplyToOthers).length;
   return Math.round((replies / original.length) * 100);
 }
 
 /** Replies this account made in the sample — the count behind {@link replyRatio}. */
 export function repliesGiven(posts: Status[]): number {
-  return posts.filter((post) => isOriginal(post) && post.in_reply_to_id != null).length;
+  return posts.filter((post) => isOriginal(post) && isReplyToOthers(post)).length;
+}
+
+/**
+ * A reply to someone else. Continuing your own thread is not a reply given:
+ * counting it made long-thread writers look chatty while never replying.
+ * Without `in_reply_to_account_id` (some providers), any reply counts.
+ */
+function isReplyToOthers(post: Status): boolean {
+  if (post.in_reply_to_id == null) return false;
+  return post.in_reply_to_account_id == null || post.in_reply_to_account_id !== post.account.id;
 }
 
 /**

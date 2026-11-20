@@ -1,5 +1,6 @@
 import { accountProfilePath } from '../../accounts/account-route';
 import { MbButton } from '../../design-system/button/button';
+import { MbHelp } from '../../design-system/help/help';
 import { FeatureUseHistory } from '../feature-use-history';
 import { PostingCalendar } from './posting-calendar';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
@@ -36,6 +37,17 @@ import { Terminology } from '../../i18n/terminology';
 // i18n feedAnalytics.tiles.avgFavourites: Avg. favourites
 // i18n feedAnalytics.tiles.noEngagement: No engagement
 // i18n feedAnalytics.tiles.medianPostAge: Median post age
+// i18n feedAnalytics.help.about: About {{stat}}
+// i18n feedAnalytics.help.postsAnalyzed: Posts in this sample, boosts included. Every number here describes the sample, not the whole feed.
+// i18n feedAnalytics.help.uniqueAuthors: Different people who wrote the sampled posts. For a boost, the original author counts.
+// i18n feedAnalytics.help.instances: Different servers the sampled posts were written on.
+// i18n feedAnalytics.help.topAuthorsShare: Share of the sampled posts written by the five most frequent authors. High means a few accounts fill this feed.
+// i18n feedAnalytics.help.replies: Share of sampled posts that reply to another post.
+// i18n feedAnalytics.help.withMedia: Share of sampled posts with an image, video or audio attachment.
+// i18n feedAnalytics.help.withLinks: Share of sampled posts with at least one web link.
+// i18n feedAnalytics.help.avgFavourites: Mean favourites per sampled post, as this server counts them. A boost uses the original post's count.
+// i18n feedAnalytics.help.noEngagement: Share of sampled posts with no favourites, boosts or replies that this server has seen.
+// i18n feedAnalytics.help.medianPostAge: Half the sampled posts are newer than this, half older.
 // i18n feedAnalytics.units.hour: h
 // i18n feedAnalytics.composition.title: Feed composition
 // i18n feedAnalytics.composition.description: What kind of posts make up the sample. Categories overlap — a post can be a reply with media and a link.
@@ -181,7 +193,15 @@ const PREVIEW_ROWS = 8;
  */
 @Component({
   selector: 'app-feed-analytics',
-  imports: [MbButton, RouterLink, StatusCard, HumanTimePipe, TranslocoPipe, PostingCalendar],
+  imports: [
+    MbButton,
+    MbHelp,
+    RouterLink,
+    StatusCard,
+    HumanTimePipe,
+    TranslocoPipe,
+    PostingCalendar,
+  ],
   templateUrl: './feed-analytics.html',
   styleUrl: './feed-analytics.css',
 })

@@ -94,45 +94,143 @@
 
     <div class="tiles">
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.postsAnalyzed' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'feedAnalytics.tiles.postsAnalyzed' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.postsAnalyzed' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.postsAnalyzed' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ report().composition.total }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.uniqueAuthors' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'feedAnalytics.tiles.uniqueAuthors' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.uniqueAuthors' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.uniqueAuthors' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ report().accounts.uniqueAuthors }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.instances' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'feedAnalytics.tiles.instances' | transloco }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.instances' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.instances' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ report().instances.uniqueInstances }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{
-          'feedAnalytics.tiles.topAuthorsShare' | transloco
-        }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'feedAnalytics.tiles.topAuthorsShare' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.topAuthorsShare' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.topAuthorsShare' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ pct(report().accounts.top5Share) }}%</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.replies' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'feedAnalytics.tiles.replies' | transloco }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.replies' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.replies' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ pct(report().conversations.replyShare) }}%</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.withMedia' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'feedAnalytics.tiles.withMedia' | transloco }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.withMedia' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.withMedia' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ pct(report().media.mediaShare) }}%</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.withLinks' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'feedAnalytics.tiles.withLinks' | transloco }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.withLinks' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.withLinks' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ pct(report().links.linkShare) }}%</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.avgFavourites' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'feedAnalytics.tiles.avgFavourites' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.avgFavourites' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.avgFavourites' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ report().engagement.avgFavourites }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.noEngagement' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'feedAnalytics.tiles.noEngagement' | transloco }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.noEngagement' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.noEngagement' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ pct(report().engagement.zeroEngagementShare) }}%</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'feedAnalytics.tiles.medianPostAge' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'feedAnalytics.tiles.medianPostAge' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'feedAnalytics.help.about'
+                | transloco: { stat: ('feedAnalytics.tiles.medianPostAge' | transloco) }
+            "
+            >{{ 'feedAnalytics.help.medianPostAge' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">
           {{ report().recency.medianAgeHours
           }}<small class="muted">{{ 'feedAnalytics.units.hour' | transloco }}</small>

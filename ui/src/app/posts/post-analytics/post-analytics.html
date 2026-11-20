@@ -27,6 +27,13 @@
         <a class="open-post" [routerLink]="['/statuses', routeId()]">{{
           'postAnalytics.openPost' | transloco
         }}</a>
+        <a
+          class="open-post"
+          href="https://mawkingbird.com/help/tools/analytics/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >{{ 'postAnalytics.methodology' | transloco }}</a
+        >
       </div>
 
       @if (r.thread.parts.length > 1) {
@@ -194,6 +201,58 @@
           }
         }
       </section>
+
+      <!-- Native, own posts: the long tail, from notifications that name the post. -->
+      @if (arrivals(); as a) {
+        <section class="section activity">
+          <h2 class="activity-title">
+            {{ 'postAnalytics.activity.heading' | transloco }}
+            <mb-help
+              [label]="
+                'postAnalytics.about'
+                  | transloco: { stat: ('postAnalytics.activity.heading' | transloco) }
+              "
+              >{{ 'postAnalytics.activity.help' | transloco }}</mb-help
+            >
+          </h2>
+          @if (a.any) {
+            <div class="table-scroll">
+              <table class="activity-table">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'postAnalytics.activity.col.when' | transloco }}</th>
+                    <th scope="col">{{ 'postAnalytics.activity.col.boosts' | transloco }}</th>
+                    <th scope="col">{{ 'postAnalytics.activity.col.likes' | transloco }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of a.rows; track row.key) {
+                    <tr>
+                      <th scope="row">
+                        {{ 'postAnalytics.activity.bucket.' + row.key | transloco }}
+                      </th>
+                      <td>
+                        {{
+                          'postAnalytics.activity.cell'
+                            | transloco: { count: row.boosts.count, pct: row.boosts.cumulativePct }
+                        }}
+                      </td>
+                      <td>
+                        {{
+                          'postAnalytics.activity.cell'
+                            | transloco: { count: row.likes.count, pct: row.likes.cumulativePct }
+                        }}
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <p class="muted small">{{ 'postAnalytics.activity.empty' | transloco }}</p>
+          }
+        </section>
+      }
     }
   }
 </div>

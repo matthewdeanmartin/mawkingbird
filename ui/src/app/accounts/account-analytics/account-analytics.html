@@ -77,6 +77,16 @@
       }
     </div>
 
+    <p class="methodology-note muted small">
+      <a
+        class="methodology"
+        href="https://mawkingbird.com/help/tools/analytics/"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ 'accountAnalytics.methodology' | transloco }}</a
+      >
+    </p>
+
     <div class="live-banner">
       <span class="live-pill" [class]="livelinessClass()">{{ liveliness().label }}</span>
       <span class="live-detail muted">
@@ -104,9 +114,18 @@
 
     <div class="tiles">
       <div class="tile">
-        <span class="tile-label muted">{{
-          'accountAnalytics.tiles.postsAnalyzed' | transloco
-        }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.postsAnalyzed' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.postsAnalyzed' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.postsAnalyzed' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ fmt(posts().length) }}</span>
       </div>
       <div class="tile">
@@ -179,9 +198,18 @@
            day is usually a feed or a cross-poster rather than someone you can
            talk to, and no other tile here would tell you that. -->
       <div class="tile">
-        <span class="tile-label muted">{{
-          'accountAnalytics.tiles.repliesGiven' | transloco
-        }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.repliesGiven' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.repliesGiven' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.repliesGiven' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">
           <!-- Explicit null check, not `as pct`: 0% is falsy and is precisely
                the value this tile exists to show. -->
@@ -196,9 +224,18 @@
         </span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{
-          'accountAnalytics.tiles.shortestPost' | transloco
-        }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.shortestPost' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.shortestPost' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.postLength' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">
           @if (lengthRange(); as range) {
             {{ fmt(range.shortest)
@@ -209,7 +246,18 @@
         </span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'accountAnalytics.tiles.longestPost' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.longestPost' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.longestPost' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.postLength' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">
           @if (lengthRange(); as range) {
             {{ fmt(range.longest)
@@ -220,7 +268,18 @@
         </span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'accountAnalytics.tiles.postsPerDay' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.postsPerDay' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.postsPerDay' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.postsPerDay' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ postsPerDay() }}</span>
       </div>
       <div class="tile">
@@ -329,13 +388,33 @@
         <span class="tile-value">{{ fmt(reach().potential) }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'accountAnalytics.tiles.liveliness' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.liveliness' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.liveliness' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.liveliness' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ liveliness().score }}<small class="muted">/100</small></span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{
-          'accountAnalytics.tiles.recentPostsPerDay' | transloco
-        }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.recentPostsPerDay' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.recentPostsPerDay' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.recentPostsPerDay' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ liveliness().recentPostsPerDay }}</span>
       </div>
     </div>
@@ -367,6 +446,161 @@
         </button>
         <span>{{ 'accountAnalytics.refine.explain' | transloco }}</span>
       </p>
+    }
+
+    <!-- Native only: the archive holds enough history for time comparisons. -->
+    @if (archive() && periods(); as p) {
+      <section class="section history">
+        <h2>{{ 'accountAnalytics.history.heading' | transloco }}</h2>
+        <p class="muted small">{{ 'accountAnalytics.history.explain' | transloco }}</p>
+
+        <h3 class="chart-title muted history-title">
+          {{ 'accountAnalytics.history.periodsHeading' | transloco: { days: p.days } }}
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco
+                  : {
+                      stat:
+                        ('accountAnalytics.history.periodsHeading' | transloco: { days: p.days }),
+                    }
+            "
+            >{{ 'accountAnalytics.history.periodsHelp' | transloco }}</mb-help
+          >
+        </h3>
+        <div class="tiles history-tiles">
+          @for (row of periodRows(); track row.key) {
+            <div class="tile">
+              <span class="tile-label muted">{{
+                'accountAnalytics.history.metric.' + row.key | transloco
+              }}</span>
+              <span class="tile-value">
+                {{ fmt(row.now) }}
+                @if (row.trend; as trend) {
+                  <small class="trend" [class]="trend.direction">{{ trend.text }}</small>
+                }
+                <small class="tile-sub muted">{{
+                  'accountAnalytics.history.previous' | transloco: { value: fmt(row.before) }
+                }}</small>
+              </span>
+            </div>
+          }
+        </div>
+        @if (!p.previousCovered && archiveStart(); as start) {
+          <p class="muted small">
+            {{
+              'accountAnalytics.history.previousUncovered'
+                | transloco: { date: (start | humanTime) }
+            }}
+          </p>
+        }
+
+        <h3 class="chart-title muted">
+          {{ 'accountAnalytics.history.monthsHeading' | transloco }}
+        </h3>
+        <div
+          class="bars"
+          role="img"
+          [attr.aria-label]="'accountAnalytics.history.monthsAria' | transloco"
+        >
+          @for (m of months(); track m.month) {
+            <div
+              class="bar-col"
+              [class.uncovered]="m.coverage !== 'full'"
+              [title]="
+                'accountAnalytics.history.monthBarTitle'
+                  | transloco: { month: m.month, reach: fmt(m.reach), threads: m.threads }
+              "
+            >
+              <div class="bar" [style.height.%]="(m.reach / monthsPeak()) * 100"></div>
+            </div>
+          }
+        </div>
+        <div class="table-scroll">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th scope="col">{{ 'accountAnalytics.history.col.month' | transloco }}</th>
+                <th scope="col">{{ 'accountAnalytics.history.col.threads' | transloco }}</th>
+                <th scope="col">{{ 'accountAnalytics.history.col.reach' | transloco }}</th>
+                <th scope="col">{{ 'accountAnalytics.history.col.perThread' | transloco }}</th>
+                <th scope="col">{{ 'accountAnalytics.history.col.interactions' | transloco }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of months(); track m.month) {
+                <tr [class.uncovered]="m.coverage !== 'full'">
+                  <th scope="row">
+                    {{ m.month }}
+                    @if (m.coverage !== 'full') {
+                      <small class="muted">{{
+                        'accountAnalytics.history.coverage.' + m.coverage | transloco
+                      }}</small>
+                    }
+                  </th>
+                  <td>{{ fmt(m.threads) }}</td>
+                  <td>{{ fmt(m.reach) }}</td>
+                  <td>{{ fmt(m.perThread) }}</td>
+                  <td>{{ fmt(m.interactions) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <button
+          mbButton
+          variant="outline"
+          size="small"
+          type="button"
+          (click)="downloadMonthlyCsv()"
+        >
+          {{ 'accountAnalytics.history.csv' | transloco }}
+        </button>
+
+        @if (followerHistory(); as followers) {
+          <h3 class="chart-title muted history-title">
+            {{ 'accountAnalytics.history.followersHeading' | transloco }}
+            <mb-help
+              [label]="
+                'accountAnalytics.help.about'
+                  | transloco: { stat: ('accountAnalytics.history.followersHeading' | transloco) }
+              "
+              >{{ 'accountAnalytics.history.followersHelp' | transloco }}</mb-help
+            >
+          </h3>
+          @if (followers.length) {
+            <div class="table-scroll">
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th scope="col">{{ 'accountAnalytics.history.col.month' | transloco }}</th>
+                    <th scope="col">{{ 'accountAnalytics.history.col.followers' | transloco }}</th>
+                    <th scope="col">{{ 'accountAnalytics.history.col.change' | transloco }}</th>
+                    <th scope="col">{{ 'accountAnalytics.history.col.newFollows' | transloco }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (f of followers; track f.month) {
+                    <tr>
+                      <th scope="row">{{ f.month }}</th>
+                      <td>{{ f.followers === null ? '—' : fmt(f.followers) }}</td>
+                      <td>{{ f.change === null ? '—' : (f.change > 0 ? '+' : '') + f.change }}</td>
+                      <td>{{ fmt(f.newFollows) }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            @if (!followerHistoryComplete()) {
+              <p class="muted small">
+                {{ 'accountAnalytics.history.followersIncomplete' | transloco }}
+              </p>
+            }
+          } @else {
+            <p class="muted small">{{ 'accountAnalytics.history.followersEmpty' | transloco }}</p>
+          }
+        }
+      </section>
     }
 
     <!-- The one expensive thing on this page. Everything above is computed from

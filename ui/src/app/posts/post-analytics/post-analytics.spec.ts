@@ -156,6 +156,14 @@ describe('PostAnalytics in the native app', () => {
       .mockResolvedValue([
         { id: 'b', username: 'b', acct: 'b', display_name: 'B', followers_count: 5 },
       ]);
+    // Posted 2026-11-01T00:00:00Z (see raw()).
+    const postActivity = vi.fn().mockResolvedValue({
+      snapshots: [],
+      events: [
+        { kind: 'reblog', occurredAt: '2026-11-01T00:20:00Z' },
+        { kind: 'favourite', occurredAt: '2026-11-02T12:00:00Z' },
+      ],
+    });
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -165,10 +173,11 @@ describe('PostAnalytics in the native app', () => {
           provide: ActivatedRoute,
           useValue: { paramMap: new BehaviorSubject(convertToParamMap({ id: '9' })) },
         },
-        { provide: NATIVE_ANALYTICS, useValue: { boosters } },
+        { provide: NATIVE_ANALYTICS, useValue: { boosters, postActivity } },
       ],
     });
     TestBed.inject(Auth).token.set('native-mastodon:a');
+    TestBed.inject(Auth).account.set(ME as never);
     const http = TestBed.inject(HttpTestingController);
     const fixture = TestBed.createComponent(PostAnalytics);
     fixture.detectChanges();
@@ -177,6 +186,14 @@ describe('PostAnalytics in the native app', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     fixture.detectChanges();
     expect(boosters).toHaveBeenCalledWith('native-mastodon:a', '9');
+    expect(postActivity).toHaveBeenCalledWith('native-mastodon:a', '9');
+    const rows = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.activity-table tbody tr'),
+    ];
+    expect(rows[0].textContent).toContain('Within 1 hour');
+    expect(rows[0].textContent).toContain('1 (100%)');
+    // The favourite came 36 hours in: the 1–3 days row.
+    expect(rows[3].textContent).toContain('1 (100%)');
     expect(
       (fixture.nativeElement as HTMLElement).querySelector('.booster-name')?.textContent,
     ).toContain('B');

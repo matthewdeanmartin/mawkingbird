@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Analytics history and explainers everywhere, 2026-11-20
+
+Reviewed 2,032 source files (new: the pure `accounts/analytics-history.ts`) and
+693 candidate files, with no new candidate files. Feed analytics adds shared
+`MbHelp` (?) explainers to its ten headline tiles. Account analytics adds them
+to its remaining seven tiles, plus a native-only history section: period
+tiles, a single-series month bar chart with a matching table, a Download CSV
+MbButton and a follower table. The post page adds a native-only arrival table.
+The other changes are line shifts. No shared widget implementation changed.
+
 ## Post analytics page and native archive analytics, 2026-11-20
 
 Reviewed 2,031 source files and 693 candidate files. New candidate

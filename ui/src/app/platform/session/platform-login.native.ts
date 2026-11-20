@@ -140,6 +140,8 @@ export const NATIVE_ANALYTICS = new InjectionToken<NativeAnalyticsApi | null>('n
     posts: (handle, remoteId, limit) =>
       invoke('archive_analytics_posts', { handle, remoteId, limit }),
     boosters: (handle, postId) => invoke('archive_post_boosters', { handle, postId }),
+    history: (handle) => invoke('archive_analytics_history', { handle }),
+    postActivity: (handle, postId) => invoke('archive_post_activity', { handle, postId }),
   }),
 });
 

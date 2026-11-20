@@ -122,3 +122,32 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.activity-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.activity-table th,
+.activity-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.activity-table th:first-child {
+  text-align: left;
+}

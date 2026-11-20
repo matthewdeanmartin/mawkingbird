@@ -65,6 +65,7 @@ nav:
       - Read conversations in Forum: reading/forum.md
   - Tools:
       - Tools: tools/index.md
+      - How the analytics numbers work: tools/analytics.md
       - Schedule a post: posting/schedule.md
       - Look for people from your contacts: finding-people/contacts.md
       - Import a follow list: finding-people/import-follow-list.md

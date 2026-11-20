@@ -245,6 +245,14 @@ describe('replyRatio and repliesGiven', () => {
     expect(repliesGiven(posts)).toBe(0);
   });
 
+  it("does not count continuing one's own thread as a reply given", () => {
+    const selfReply = makeStatus({ in_reply_to_id: '1', in_reply_to_account_id: 'a' });
+    const toOthers = makeStatus({ in_reply_to_id: '2', in_reply_to_account_id: 'b' });
+    const posts = [selfReply, toOthers, makeStatus(), makeStatus()];
+    expect(replyRatio(posts)).toBe(25);
+    expect(repliesGiven(posts)).toBe(1);
+  });
+
   it('ignores boosts on both sides of the ratio', () => {
     // Passing along someone else's post is neither replying nor declining to.
     const boost = makeStatus({ reblog: makeStatus({ in_reply_to_id: '9' }) as never });

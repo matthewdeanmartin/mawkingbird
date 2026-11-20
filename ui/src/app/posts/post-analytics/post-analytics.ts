@@ -18,6 +18,8 @@ import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
 import { NATIVE_ANALYTICS } from '../../platform/session/platform-login';
+import type { NativePostActivity } from '../../platform/session/native-analytics-types';
+import { arrivalBuckets } from '../../accounts/analytics-history';
 import { Account, Context, Status } from '../../platform/api/models';
 import { parseAnonymousFeedId } from '../../reading/read/thread-loader';
 import { StatusCard } from '../status-card/status-card';
@@ -29,6 +31,7 @@ import { StatusCard } from '../status-card/status-card';
 // i18n postAnalytics.error.notFound: This post is not on the server, or is not public.
 // i18n postAnalytics.error.load: Couldn't load this post. Try again later.
 // i18n postAnalytics.openPost: Open the post
+// i18n postAnalytics.methodology: How these numbers work
 // i18n postAnalytics.about: About {{stat}}
 // i18n postAnalytics.tiles.reach: Est. reach
 // i18n postAnalytics.tiles.potential: Could have reached
@@ -54,6 +57,21 @@ import { StatusCard } from '../status-card/status-card';
 // i18n postAnalytics.boosters.none: Nobody has boosted this thread.
 // i18n postAnalytics.boosters.followers: {{count}} followers
 // i18n postAnalytics.boosters.unattributed: {{seen}} of {{boosts}} boosts have a visible booster; the others count {{audience}} followers each.
+
+// i18n postAnalytics.activity.heading: When it was boosted and favourited
+// i18n postAnalytics.activity.help: From your notifications, by time since posting. Each cell shows the count in that window and the share received so far.
+// i18n postAnalytics.activity.empty: No timed boosts or favourites for this post yet. Only notifications collected since this version name their post.
+// i18n postAnalytics.activity.col.when: Since posting
+// i18n postAnalytics.activity.col.boosts: Boosts
+// i18n postAnalytics.activity.col.likes: Favourites
+// i18n postAnalytics.activity.cell: {{count}} ({{pct}}%)
+// i18n postAnalytics.activity.bucket.hour: Within 1 hour
+// i18n postAnalytics.activity.bucket.sixHours: 1–6 hours
+// i18n postAnalytics.activity.bucket.day: 6–24 hours
+// i18n postAnalytics.activity.bucket.threeDays: 1–3 days
+// i18n postAnalytics.activity.bucket.week: 3–7 days
+// i18n postAnalytics.activity.bucket.month: 7–30 days
+// i18n postAnalytics.activity.bucket.later: After 30 days
 
 type LoadError = 'notFound' | 'load' | 'unsupported';
 
@@ -107,6 +125,7 @@ export class PostAnalytics {
     this.error.set(null);
     this.status.set(null);
     this.context.set({ ancestors: [], descendants: [] });
+    this.activity.set(null);
     if (!this.publicRef && !/^[A-Za-z0-9_-]+$/.test(id)) {
       this.fail('unsupported');
       return;
@@ -124,14 +143,39 @@ export class PostAnalytics {
           this.context.set(context);
           this.loading.set(false);
           // Native keeps boosters in the archive, so Full reach is the default there.
-          if (!ref && this.native && this.auth.token()?.startsWith('native-mastodon:')) {
+          const handle = this.auth.token();
+          if (!ref && this.native && handle?.startsWith('native-mastodon:')) {
             if (this.lookupCost() > 0) this.lookUpBoosters();
+            const own = (status.reblog ?? status).account.id === this.auth.account()?.id;
+            if (own) {
+              this.native.postActivity(handle, (status.reblog ?? status).id).then(
+                (activity) => this.activity.set(activity),
+                () => undefined,
+              );
+            }
           }
         },
         error: (err: unknown) =>
           this.fail(err instanceof HttpErrorResponse && err.status === 404 ? 'notFound' : 'load'),
       });
   }
+
+  /** Native, own posts only: when engagement arrived. */
+  protected activity = signal<NativePostActivity | null>(null);
+
+  protected arrivals = computed(() => {
+    const activity = this.activity();
+    const status = this.status();
+    if (!activity || !status) return null;
+    const times = (kind: string) =>
+      activity.events.filter((e) => e.kind === kind).map((e) => e.occurredAt);
+    const boosts = arrivalBuckets(status.created_at, times('reblog'));
+    const likes = arrivalBuckets(status.created_at, times('favourite'));
+    return {
+      any: activity.events.length > 0,
+      rows: boosts.map((b, i) => ({ key: b.key, boosts: b, likes: likes[i] })),
+    };
+  });
 
   private fail(reason: LoadError): void {
     this.error.set(reason);

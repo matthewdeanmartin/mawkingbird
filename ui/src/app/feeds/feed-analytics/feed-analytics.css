@@ -54,6 +54,16 @@
   font-size: 12.5px;
 }
 
+/* Label plus its (?) explainer. Negative margins keep the 32px help button
+   from making explained tiles taller than the others. */
+.tile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin: -8px -10px -8px 0;
+}
+
 .tile-value {
   font-size: 26px;
   font-weight: 600;
