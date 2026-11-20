@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Status } from '../platform/api/models';
 import {
   arrivalBuckets,
+  audienceDiversity,
   comparePeriods,
   followerMonths,
   monthlyCsv,
@@ -130,5 +131,33 @@ describe('followerMonths', () => {
       { month: '2026-09', followers: 90, change: null, newFollows: 0 },
       { month: '2026-10', followers: 100, change: 10, newFollows: 12 },
     ]);
+  });
+});
+
+describe('audienceDiversity', () => {
+  const row = (acct: string, month: string, count: number, kind = 'favourite') =>
+    ({ actor: acct, acct, displayName: acct, kind, month, count }) as never;
+
+  it('counts different people, servers, returning people and concentration', () => {
+    const d = audienceDiversity(
+      [
+        row('a@one.social', '2026-11', 5),
+        row('a@one.social', '2026-10', 2, 'reblog'),
+        row('b@one.social', '2026-11', 1),
+        row('c@two.example', '2026-09', 1),
+        row('c@two.example', '2026-11', 1),
+        row('d@three.example', '2026-11', 1),
+      ],
+      NOW,
+      2,
+    );
+    expect(d).toMatchObject({ people: 4, reactions: 11, servers: 3, returning: 2 });
+    // Top 2 (a: 7, c: 2) of 11 reactions.
+    expect(d.top5Share).toBe(82);
+    expect(d.top.map((p) => p.acct)).toEqual(['a@one.social', 'c@two.example']);
+  });
+
+  it('is empty without reactions', () => {
+    expect(audienceDiversity([], NOW)).toMatchObject({ people: 0, top5Share: 0, top: [] });
   });
 });

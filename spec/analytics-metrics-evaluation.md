@@ -185,6 +185,20 @@ Supporting figures: how many different people they reply to (one friend vs.
 many), the follower/following ratio, and replies received against replies
 given (do people answer them?).
 
+## Owner response and status (2026-11-20)
+
+- Boosts vs originals, the bot flag and bot-like rhythm, the diversity of
+  people reached, and a style classification: **built** in
+  [Sprint 7](sprint/analytics-reach-2026-11.md).
+- Relative performance / age scaling: **declined**. Posts get their feedback
+  quickly and then stop, so raw totals are fine.
+- Viral posts: already covered by Top posts.
+- Still open from this document: medians beside means, "no engagement"
+  ignoring very fresh posts, "what works" by post type and hour, repeated-text
+  and posting-app bot evidence, flooding (daily volume with boosts,
+  burstiness, share of your Home), last reply to anyone, and active-audience
+  reach.
+
 ## Suggested next sprints
 
 | Sprint                   | Contents                                                                                                                                                                                                           | Cost                                                   |

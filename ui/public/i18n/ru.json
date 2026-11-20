@@ -26,7 +26,6 @@
     "audience.zombieFollowers": "Подписчики-зомби",
     "audience.zombieFriends": "Друзья-зомби",
     "barTitle": "{{label}}: {{count}} {{posts}}, охват ~{{reach}}",
-    "basedOnLast": "На основе последних {{count}} {{posts}}, без учёта репостов.",
     "busiestDay": "Самый активный день: {{count}} {{posts}}",
     "byMonth": "По месяцам",
     "byWeek": "По неделям",

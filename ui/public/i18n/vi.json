@@ -26,7 +26,6 @@
     "audience.zombieFollowers": "Người theo dõi không hoạt động",
     "audience.zombieFriends": "Bạn bè không hoạt động",
     "barTitle": "{{label}}: {{count}} {{posts}}, phạm vi tiếp cận ~{{reach}}",
-    "basedOnLast": "Dựa trên {{count}} {{posts}} gần nhất, không tính bài đẩy.",
     "busiestDay": "Ngày nhộn nhịp nhất: {{count}} {{posts}}",
     "byMonth": "Theo tháng",
     "byWeek": "Theo tuần",

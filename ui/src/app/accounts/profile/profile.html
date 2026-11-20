@@ -846,9 +846,9 @@
             >{{ 'pages.profile.relationship.followsYou' | transloco }}</span
           >
         }
-        @if (a.bot) {
-          <span class="badge">{{ 'pages.profile.bot' | transloco }}</span>
-        }
+        <!-- The bot setting, plus "bot-like" when posting runs on a clock.
+             Judged from the Posts tab only: other tabs load a filtered subset. -->
+        <app-bot-signals [account]="a" [posts]="tab() === 'posts' ? statuses() : []" />
       </h2>
       <div class="acct muted">&#64;{{ a.acct }}</div>
       @if (canEditNote() && relationship()?.note; as note) {

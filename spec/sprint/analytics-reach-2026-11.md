@@ -1,11 +1,61 @@
 # Analytics and reach (November 2026)
 
-Status: Sprints 1–4 pushed 2026-11-20. Sprints 5–6 implemented locally
-2026-11-20 (uncommitted; the owner pushes and runs the full gates on GHA every
-two sprints). Follow-up: [metrics evaluation](../analytics-metrics-evaluation.md).
-Owner decisions: 2026-11-20 (owner testing: new reach "much more plausible").
+Status: Sprints 1–6 pushed 2026-11-20. Signals sprint (7) implemented locally
+2026-11-20 (uncommitted; the owner pushes and runs the full gates on GHA).
+Follow-up: [metrics evaluation](../analytics-metrics-evaluation.md). Owner
+decisions: 2026-11-20 (owner testing: new reach "much more plausible").
 
 ## Progress
+
+### Sprint 7: signals (2026-11-20)
+
+Owner asks: boost vs original, the bot flag plus a "bot-like" label from posting
+regularity, the diversity of people reached, and a style classification.
+Owner decisions: no age scaling of engagement ("posts rapidly get their maximum
+feedback"); viral posts are already covered by Top posts.
+
+- **Boosts in the sample.** Account analytics no longer sends
+  `exclude_reblogs`; the same pages now carry boosts, and `sample` holds
+  everything. `posts` (own posts only) feeds every engagement and reach
+  figure, so a boost's counts are never credited to the booster. The 100-post
+  sample size counts own posts. Bluesky reposts become boost entries.
+  Liveliness counts boosts as activity. Native `archive_analytics_posts` now
+  returns boost wrappers too. The sample note is a new key
+  (`basedOnSample`), and the stale `basedOnLast` translations were removed.
+- **`accounts/account-signals.ts`** (pure):
+  - `activityMix`: new posts, thread posts, replies to others, boosts,
+    link-only.
+  - `postingStyle`: Curator → Conversationalist → Link sharer → Thread writer
+    → Broadcaster → Balanced; needs 20 statuses.
+  - `postingRhythm`: runs of ≥ 4 posts with equal gaps (± max(2 min, 1%)),
+    gaps ≥ 5 min, thread posts and boosts excluded. No runs = human,
+    ≥ 60% of posts in runs = bot-like, otherwise mixed; needs 8 posts.
+- **Profile header** (`accounts/bot-signals`): the official setting becomes
+  an attention MbBadge with a robot icon (reusing the translated
+  `pages.profile.bot`). A neutral **Bot-like** / **Partly scheduled** MbBadge
+  with an (i) explainer (share and interval) appears when the rhythm is not
+  human. It is judged only on the Posts tab, from the posts loaded. Human
+  accounts get no label on the profile; analytics shows "Human".
+- **Account analytics, Style and signals**: Style, Own vs boosted, New posts,
+  Thread posts, Replies to others, Link-only posts, Posting rhythm (with the
+  share on a schedule and the interval), and Bot setting. All have (?)
+  explainers.
+- **People who react** (native, your own account): new command
+  `archive_engagers` (favourite/boost/quote/mention notifications per person,
+  kind and month; handles qualified with the home host; archive only). It
+  shows People, Reactions, Servers, Returning (2+ of the last 3 months), Top 5
+  share and the most active people. **Web**: a "Different boosters" tile
+  (people and servers) once Refine reach has looked boosters up.
+- Help page updated (sample, style, rhythm, people who react).
+
+Checks run (lightweight): web `make test-changed` (858 files, 10,584 tests;
+one profile spec updated for the new badge markup, with both assertions kept),
+`check:i18n`, lint, prettier, `design:inventory-check` (new candidate
+reconciled), `test:source-integrity`, `build:mockingbird` (initial bundle
+unchanged), `make help-site-test`. Native: fmt, `cargo clippy --all-targets` (0
+warnings), `make check-host`, `make test-host` (103 passed), the frontend
+build and `smoke-frontend`. **Not run:** the full gates and a real-account
+check.
 
 ### Sprints 5–6 (2026-11-20)
 

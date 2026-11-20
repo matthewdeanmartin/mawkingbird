@@ -2174,7 +2174,6 @@
     "audience.zombieFollowers": "Zombieföljare",
     "audience.zombieFriends": "Zombievänner",
     "barTitle": "{{label}}: {{count}} {{posts}}, ~{{reach}} räckvidd",
-    "basedOnLast": "Baserat på de senaste {{count}} {{posts}}, boostar exkluderade.",
     "busiestDay": "Mest aktiva dag: {{count}} {{posts}}",
     "byMonth": "Per månad",
     "byWeek": "Per vecka",

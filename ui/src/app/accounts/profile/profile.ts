@@ -93,6 +93,7 @@ import { FamiliarFollowers } from './familiar-followers/familiar-followers';
 import { BioTranslation } from './bio-translation/bio-translation';
 import { ListDialog } from '../../feeds/lists/list-dialog/list-dialog';
 import { VerifiedBadge } from '../verified-badge/verified-badge';
+import { BotSignals } from '../bot-signals/bot-signals';
 import { HumanCountPipe } from '../../i18n/human-count.pipe';
 import { PeopleBrowser } from '../people-browser/people-browser';
 import { AccountAnalytics } from '../account-analytics/account-analytics';
@@ -349,6 +350,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     BioTranslation,
     ListDialog,
     VerifiedBadge,
+    BotSignals,
     HumanCountPipe,
     PeopleBrowser,
     Compose,

@@ -268,3 +268,59 @@ describe('AccountAnalytics reach', () => {
     expect(root.textContent).not.toContain('Refine reach');
   });
 });
+
+describe('AccountAnalytics style and signals', () => {
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  it('keeps boosts in the sample for the mix, without counting their engagement', () => {
+    const fixture = TestBed.createComponent(AccountAnalytics);
+    fixture.componentRef.setInput('account', {
+      ...ME,
+      followers_count: 10,
+      following_count: 1,
+      bot: true,
+    } as Account);
+    fixture.detectChanges();
+    http.match((req) => req.url.includes('/followers')).forEach((req) => req.flush([]));
+    const req = http.expectOne((r) => r.url.endsWith('/api/v1/accounts/me/statuses'));
+    expect(req.request.params.has('exclude_reblogs')).toBe(false);
+    const own = (id: string) => ({
+      id,
+      created_at: '2026-11-01T00:00:00Z',
+      content: '<p>my own words, written out at some length</p>',
+      account: { id: 'me', username: 'me', acct: 'me' },
+      media_attachments: [],
+      reblog: null,
+      in_reply_to_id: null,
+      replies_count: 0,
+      reblogs_count: 0,
+      favourites_count: 1,
+    });
+    const boosted = (id: string) => ({
+      ...own(id),
+      reblog: { ...own(`orig-${id}`), favourites_count: 500 },
+    });
+    req.flush([own('1'), boosted('2'), boosted('3'), own('4')]);
+    fixture.detectChanges();
+    const root = fixture.nativeElement as HTMLElement;
+    const tile = (label: string) =>
+      [...root.querySelectorAll('.tile')].find(
+        (t) => t.querySelector('.tile-label')?.textContent?.trim() === label,
+      );
+    expect(tile('Own vs boosted')?.textContent).toContain('50% own');
+    expect(tile('Own vs boosted')?.textContent).toContain('2 of 4 are boosts');
+    // Boosted posts' 500 favourites are someone else's.
+    expect(tile('Favourites')?.querySelector('.tile-value')?.textContent?.trim()).toBe('2');
+    expect(tile('Bot setting')?.textContent).toContain('On');
+    expect(tile('Style')?.textContent).toContain('Too few posts to say');
+    expect(root.textContent).toContain('Based on the last 2 posts and 2 boosts.');
+  });
+});

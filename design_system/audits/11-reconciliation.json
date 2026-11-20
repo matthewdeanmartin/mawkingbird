@@ -138,6 +138,11 @@
       "nextStep": "Embed post (Phanpy parity 20): MbDialog (wide), Field/Control read-only code textarea, MbButton Copy/Close, and a permissionless sandboxed iframe preview. Preserve the empty sandbox, no-referrer preview and the copy-failure message."
     },
     {
+      "file": "ui/src/app/accounts/bot-signals/bot-signals.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Profile-header bot labels: MbBadge (attention tone) for the account's own bot setting, neutral MbBadge for Bot-like / Partly scheduled from the posting rhythm, and an MbHelp explainer naming the share and interval. Inline decorative SVG icons are aria-hidden. Review wrapping beside long display names on narrow screens."
+    },
+    {
       "file": "ui/src/app/posts/post-analytics/post-analytics.html",
       "disposition": "adopted scope",
       "nextStep": "Post analytics page (/statuses/:id/analytics): MbPageHeader, MbHelp (?) explainers on stat tiles, one MbButton for the cost-named booster lookup, native links to the post and booster profiles. Tiles copy account analytics' layout with the .tile-head negative margin for the 32px help trigger; review touch alignment in owner acceptance."

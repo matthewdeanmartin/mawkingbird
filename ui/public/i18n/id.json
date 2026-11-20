@@ -4498,7 +4498,6 @@
     "audience.zombieFollowers": "Pengikut zombie",
     "audience.zombieFriends": "Teman zombie",
     "barTitle": "{{label}}: {{count}} {{posts}}, ~{{reach}} jangkauan",
-    "basedOnLast": "Berdasarkan {{count}} {{posts}} terakhir, boost tidak dihitung.",
     "busiestDay": "Hari tersibuk: {{count}} {{posts}}",
     "byMonth": "Per bulan",
     "byWeek": "Per minggu",

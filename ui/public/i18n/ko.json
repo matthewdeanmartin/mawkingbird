@@ -26,7 +26,6 @@
     "audience.zombieFollowers": "좀비 팔로워",
     "audience.zombieFriends": "좀비 팔로잉 계정",
     "barTitle": "{{label}}: {{count}}개 게시물, 도달 ~{{reach}}",
-    "basedOnLast": "최근 {{count}}개 게시물 기준, 부스트 제외.",
     "busiestDay": "가장 활발한 날: {{count}}개 게시물",
     "byMonth": "월별",
     "byWeek": "주별",

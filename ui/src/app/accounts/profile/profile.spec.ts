@@ -313,7 +313,7 @@ describe('self profile local actions', () => {
     fixture.componentInstance['account'].update((account) => ({ ...account!, bot: true }));
     fixture.detectChanges();
     const el = fixture.nativeElement as HTMLElement;
-    expect(el.querySelector('h2 > .badge')?.textContent).toContain('Bot');
+    expect(el.querySelector('h2 app-bot-signals mb-badge.bot')?.textContent).toContain('Bot');
     const menu = el.querySelector('.account-danger-menu summary');
     expect(menu?.textContent?.trim()).toBe('•••');
     expect(menu?.getAttribute('aria-label')).toBe('More account actions');
@@ -328,7 +328,7 @@ describe('self profile local actions', () => {
     expect(el.querySelector('app-profile-slideshow')).toBeNull();
     fixture.componentInstance['account'].update((account) => ({ ...account!, bot: false }));
     fixture.detectChanges();
-    expect(el.querySelector('h2 > .badge')).toBeNull();
+    expect(el.querySelector('h2 app-bot-signals mb-badge.bot')).toBeNull();
   });
 
   it('clears only the signed-in account local follows, preserving anonymous and other account data', async () => {

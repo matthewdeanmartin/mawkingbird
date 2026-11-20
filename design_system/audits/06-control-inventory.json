@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2032,
-  "filesWithCandidates": 693,
+  "filesScanned": 2034,
+  "filesWithCandidates": 694,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -77,31 +77,75 @@
         },
         {
           "pattern": "shared",
-          "line": 395
+          "line": 396
         },
         {
           "pattern": "shared",
-          "line": 410
+          "line": 417
         },
         {
           "pattern": "shared",
-          "line": 427
+          "line": 432
         },
         {
           "pattern": "shared",
-          "line": 439
+          "line": 449
         },
         {
           "pattern": "shared",
-          "line": 459
+          "line": 461
         },
         {
           "pattern": "shared",
-          "line": 551
+          "line": 480
         },
         {
           "pattern": "shared",
-          "line": 563
+          "line": 499
+        },
+        {
+          "pattern": "shared",
+          "line": 520
+        },
+        {
+          "pattern": "shared",
+          "line": 547
+        },
+        {
+          "pattern": "shared",
+          "line": 562
+        },
+        {
+          "pattern": "shared",
+          "line": 600
+        },
+        {
+          "pattern": "shared",
+          "line": 628
+        },
+        {
+          "pattern": "shared",
+          "line": 649
+        },
+        {
+          "pattern": "shared",
+          "line": 664
+        },
+        {
+          "pattern": "shared",
+          "line": 679
+        },
+        {
+          "pattern": "shared",
+          "line": 718
+        },
+        {
+          "pattern": "shared",
+          "line": 810
+        },
+        {
+          "pattern": "shared",
+          "line": 822
         },
         {
           "pattern": "nativeButtons",
@@ -117,23 +161,23 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 427
+          "line": 449
         },
         {
           "pattern": "nativeButtons",
-          "line": 439
+          "line": 461
         },
         {
           "pattern": "nativeButtons",
-          "line": 550
+          "line": 809
         },
         {
           "pattern": "nativeButtons",
-          "line": 719
+          "line": 978
         },
         {
           "pattern": "nativeButtons",
-          "line": 726
+          "line": 985
         },
         {
           "pattern": "legacyPills",
@@ -141,11 +185,11 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 719
+          "line": 978
         },
         {
           "pattern": "legacyPills",
-          "line": 726
+          "line": 985
         }
       ]
     },
@@ -664,6 +708,24 @@
         {
           "pattern": "nativeButtons",
           "line": 158
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/accounts/bot-signals/bot-signals.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 28
+        },
+        {
+          "pattern": "shared",
+          "line": 39
+        },
+        {
+          "pattern": "shared",
+          "line": 50
         }
       ]
     },

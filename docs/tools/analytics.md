@@ -7,9 +7,12 @@ quotes. This page explains how each one is calculated.
 ## What gets counted
 
 - **Sample.** Account analytics reads an account's latest posts, about 100 of
-  them (more if you fetch more pages). In the desktop app it reads the local
-  archive instead. Feed analytics reads the posts in that feed. The numbers
-  describe this sample, not the account's whole history.
+  them (more if you fetch more pages), along with the boosts in between. In the
+  desktop app it reads the local archive instead. Feed analytics reads the posts
+  in that feed. The numbers describe this sample, not the account's whole
+  history. Boosts count toward the activity mix, style and liveliness. Their
+  favourites and boosts belong to someone else, so they are left out of the
+  engagement and reach figures.
 - **Thread.** One post plus the author's own replies chained under it. A reply
   to someone else is not part of the author's thread and does not count toward
   their reach.
@@ -53,16 +56,52 @@ reaches the upper limit, so Est. reach equals Could have reached.
 
 ## Account analytics
 
-| Stat                                 | How it is calculated                                                                                    |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| Favourites, Boosts, Replies received | Sum over the posts in the sample                                                                        |
-| Engagements per post                 | Favourites + boosts + replies received, divided by posts                                                |
-| Replies given                        | Share of the account's own posts that reply to someone else; continuing their own thread does not count |
-| Shortest / longest post              | Visible characters, including any content warning                                                       |
-| Posts per day                        | Posts divided by the days between the newest and oldest post in the sample                              |
-| Liveliness                           | 0–100 from how recently and how often they posted; 40+ is Active, 10–39 Slowing, under 10 Dormant       |
-| Recent posts / day                   | Posts in the last 30 days, divided by 30                                                                |
-| Effective followers                  | Optional scan of the follower list: followers who posted recently                                       |
+| Stat                                 | How it is calculated                                                                                         |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| Favourites, Boosts, Replies received | Sum over the posts in the sample                                                                             |
+| Engagements per post                 | Favourites + boosts + replies received, divided by posts                                                     |
+| Replies given                        | Share of the account's own posts that reply to someone else; continuing their own thread does not count      |
+| Shortest / longest post              | Visible characters, including any content warning                                                            |
+| Posts per day                        | Posts divided by the days between the newest and oldest post in the sample                                   |
+| Liveliness                           | 0–100 from how recently and how often they posted or boosted; 40+ is Active, 10–39 Slowing, under 10 Dormant |
+| Recent posts / day                   | Posts in the last 30 days, divided by 30                                                                     |
+| Effective followers                  | Optional scan of the follower list: followers who posted recently                                            |
+
+### Style and signals
+
+| Stat                                       | How it is calculated                                                                                                                                                                                                                                                        |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Own vs boosted                             | Their own posts (new posts, thread posts, replies) against boosts, out of everything in the sample                                                                                                                                                                          |
+| New posts, Thread posts, Replies to others | Each as a share of everything in the sample                                                                                                                                                                                                                                 |
+| Link-only posts                            | Share of their own posts that are a link or preview card with under 40 characters of their own text                                                                                                                                                                         |
+| Style                                      | The first that fits: Curator (boosts ≥ 50%), Conversationalist (replies to others ≥ 50%), Link sharer (link-only ≥ 50% of own posts), Thread writer (thread posts ≥ 30% of own posts), Broadcaster (replies < 10% and boosts < 30%), otherwise Balanced. Needs 20 statuses. |
+| Posting rhythm                             | Human, Partly scheduled or Bot-like (see below)                                                                                                                                                                                                                             |
+| Bot setting                                | The account's own "This is an automated account" setting                                                                                                                                                                                                                    |
+
+**Posting rhythm** looks for posts that arrive on a clock. A run is 4 or more
+posts in a row with the same gap between them, to within 2 minutes or 1%
+(every hour, every 24 hours). Thread posts and boosts are left out, because
+people produce even gaps when writing a thread or boosting in one sitting, and
+gaps under 5 minutes do not count. With no runs, the account is **Human**. With
+60% or more of its posts in runs, it is **Bot-like**. In between, it is
+**Partly scheduled**: a scheduler alongside live posting. The profile page
+shows a **Bot-like** or **Partly scheduled** label next to the official **Bot**
+label, judged from the posts loaded there. It needs at least 8 posts.
+
+### People who react (desktop app, your account)
+
+Counted from your notifications for the last 90 days: favourites, boosts,
+quotes, replies and mentions.
+
+| Stat        | How it is calculated                                                |
+| ----------- | ------------------------------------------------------------------- |
+| People      | Different accounts that reacted                                     |
+| Servers     | Different servers those accounts are on                             |
+| Returning   | People who reacted in two or more of the last three calendar months |
+| Top 5 share | Share of all reactions from the five most active people             |
+
+On the web, after **Refine reach**, **Different boosters** shows how many
+different people boosted the threads in the sample, and on how many servers.
 
 ## Post analytics
 

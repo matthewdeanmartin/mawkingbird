@@ -26,7 +26,6 @@
     "audience.zombieFollowers": "Zombi takipçiler",
     "audience.zombieFriends": "Zombi arkadaşlar",
     "barTitle": "{{label}}: {{count}} {{posts}}, ~{{reach}} erişim",
-    "basedOnLast": "Öne çıkarmalar hariç, son {{count}} {{posts}} temel alınmıştır.",
     "busiestDay": "En yoğun gün: {{count}} {{posts}}",
     "byMonth": "Aya göre",
     "byWeek": "Haftaya göre",

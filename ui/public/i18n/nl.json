@@ -26,7 +26,6 @@
     "audience.zombieFollowers": "Zombievolgers",
     "audience.zombieFriends": "Zombievrienden",
     "barTitle": "{{label}}: {{count}} {{posts}}, ~{{reach}} bereik",
-    "basedOnLast": "Gebaseerd op de laatste {{count}} {{posts}}, exclusief boosts.",
     "busiestDay": "Drukste dag: {{count}} {{posts}}",
     "byMonth": "Per maand",
     "byWeek": "Per week",

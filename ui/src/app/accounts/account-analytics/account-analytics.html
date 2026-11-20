@@ -13,14 +13,14 @@
         {{ 'accountAnalytics.retry' | transloco }}
       </button>
     </div>
-  } @else if (!posts().length) {
+  } @else if (!sample().length) {
     <p class="muted center">{{ 'accountAnalytics.empty' | transloco }}</p>
   } @else {
     <div class="sample-note muted">
       <span>
         {{
-          'accountAnalytics.basedOnLast'
-            | transloco: { count: posts().length, posts: words().posts }
+          'accountAnalytics.basedOnSample'
+            | transloco: { count: posts().length, posts: words().posts, boosts: boostCount() }
         }}
         @if (oldestPostDate(); as oldest) {
           {{ 'accountAnalytics.sampleGoesBack' | transloco: { time: (oldest | humanTime) } }}
@@ -387,6 +387,28 @@
         </span>
         <span class="tile-value">{{ fmt(reach().potential) }}</span>
       </div>
+      @if (boosterSpread(); as spread) {
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{
+              'accountAnalytics.tiles.boosters' | transloco
+            }}</span>
+            <mb-help
+              [label]="
+                'accountAnalytics.help.about'
+                  | transloco: { stat: ('accountAnalytics.tiles.boosters' | transloco) }
+              "
+              >{{ 'accountAnalytics.help.boosters' | transloco }}</mb-help
+            >
+          </span>
+          <span class="tile-value"
+            >{{ fmt(spread.people)
+            }}<small class="tile-sub muted">{{
+              'accountAnalytics.tiles.boostersSub' | transloco: { servers: spread.servers }
+            }}</small></span
+          >
+        </div>
+      }
       <div class="tile">
         <span class="tile-head">
           <span class="tile-label muted">{{
@@ -446,6 +468,243 @@
         </button>
         <span>{{ 'accountAnalytics.refine.explain' | transloco }}</span>
       </p>
+    }
+
+    <section class="section style-section">
+      <h2>{{ 'accountAnalytics.style.heading' | transloco }}</h2>
+      <p class="muted small">{{ 'accountAnalytics.style.explain' | transloco }}</p>
+      <div class="tiles signal-tiles">
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{ 'accountAnalytics.style.style' | transloco }}</span>
+            <mb-help
+              [label]="
+                'accountAnalytics.help.about'
+                  | transloco: { stat: ('accountAnalytics.style.style' | transloco) }
+              "
+              >{{ 'accountAnalytics.style.help' | transloco }}</mb-help
+            >
+          </span>
+          <span class="tile-value tile-word">
+            @if (style(); as s) {
+              {{ 'accountAnalytics.style.name.' + s | transloco }}
+            } @else {
+              <small class="muted">{{ 'accountAnalytics.style.tooFew' | transloco }}</small>
+            }
+          </span>
+        </div>
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{ 'accountAnalytics.style.own' | transloco }}</span>
+            <mb-help
+              [label]="
+                'accountAnalytics.help.about'
+                  | transloco: { stat: ('accountAnalytics.style.own' | transloco) }
+              "
+              >{{ 'accountAnalytics.style.ownHelp' | transloco }}</mb-help
+            >
+          </span>
+          <span class="tile-value"
+            >{{ 'accountAnalytics.style.ownValue' | transloco: { pct: ownPct() }
+            }}<small class="tile-sub muted">{{
+              'accountAnalytics.style.ownSub'
+                | transloco: { boosts: fmt(mix().boosts), total: fmt(mix().total) }
+            }}</small></span
+          >
+        </div>
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{
+              'accountAnalytics.style.newPosts' | transloco
+            }}</span>
+            <mb-help
+              [label]="
+                'accountAnalytics.help.about'
+                  | transloco: { stat: ('accountAnalytics.style.newPosts' | transloco) }
+              "
+              >{{ 'accountAnalytics.style.mixHelp' | transloco }}</mb-help
+            >
+          </span>
+          <span class="tile-value">{{ percent(mix().posts, mix().total) }}%</span>
+        </div>
+        <div class="tile">
+          <span class="tile-label muted">{{
+            'accountAnalytics.style.threadParts' | transloco
+          }}</span>
+          <span class="tile-value">{{ percent(mix().threadParts, mix().total) }}%</span>
+        </div>
+        <div class="tile">
+          <span class="tile-label muted">{{
+            'accountAnalytics.style.repliesToOthers' | transloco
+          }}</span>
+          <span class="tile-value">{{ percent(mix().replies, mix().total) }}%</span>
+        </div>
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{
+              'accountAnalytics.style.linkOnly' | transloco
+            }}</span>
+            <mb-help
+              [label]="
+                'accountAnalytics.help.about'
+                  | transloco: { stat: ('accountAnalytics.style.linkOnly' | transloco) }
+              "
+              >{{ 'accountAnalytics.style.linkOnlyHelp' | transloco }}</mb-help
+            >
+          </span>
+          <span class="tile-value"
+            >{{ percent(mix().linkOnly, mix().posts + mix().threadParts) }}%</span
+          >
+        </div>
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{ 'accountAnalytics.style.rhythm' | transloco }}</span>
+            <mb-help
+              [label]="
+                'accountAnalytics.help.about'
+                  | transloco: { stat: ('accountAnalytics.style.rhythm' | transloco) }
+              "
+              >{{ 'accountAnalytics.style.rhythmHelp' | transloco }}</mb-help
+            >
+          </span>
+          <span class="tile-value tile-word">
+            @if (rhythm(); as r) {
+              {{ 'accountAnalytics.style.rhythmName.' + r.verdict | transloco }}
+              @if (r.verdict !== 'human') {
+                <small class="tile-sub muted"
+                  >{{ 'accountAnalytics.style.rhythmSub' | transloco: { pct: r.regularPct } }}
+                  @if (r.every; as every) {
+                    ·
+                    {{
+                      'accountAnalytics.style.rhythmEvery'
+                        | transloco
+                          : {
+                              interval:
+                                ('accountAnalytics.style.unit.' + every.unit
+                                | transloco: { value: every.value }),
+                            }
+                    }}
+                  }
+                </small>
+              }
+            } @else {
+              <small class="muted">{{ 'accountAnalytics.style.tooFew' | transloco }}</small>
+            }
+          </span>
+        </div>
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{
+              'accountAnalytics.style.botSetting' | transloco
+            }}</span>
+            <mb-help
+              [label]="
+                'accountAnalytics.help.about'
+                  | transloco: { stat: ('accountAnalytics.style.botSetting' | transloco) }
+              "
+              >{{ 'accountAnalytics.style.botHelp' | transloco }}</mb-help
+            >
+          </span>
+          <span class="tile-value tile-word">{{
+            (account().bot ? 'accountAnalytics.style.botOn' : 'accountAnalytics.style.botOff')
+              | transloco
+          }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Native, your own account: who reacts, from notifications. -->
+    @if (diversity(); as d) {
+      <section class="section people-section">
+        <h2>{{ 'accountAnalytics.people.heading' | transloco }}</h2>
+        <p class="muted small">{{ 'accountAnalytics.people.explain' | transloco }}</p>
+        @if (d.people) {
+          <div class="tiles signal-tiles">
+            <div class="tile">
+              <span class="tile-head">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.people.people' | transloco
+                }}</span>
+                <mb-help
+                  [label]="
+                    'accountAnalytics.help.about'
+                      | transloco: { stat: ('accountAnalytics.people.people' | transloco) }
+                  "
+                  >{{ 'accountAnalytics.people.peopleHelp' | transloco }}</mb-help
+                >
+              </span>
+              <span class="tile-value">{{ fmt(d.people) }}</span>
+            </div>
+            <div class="tile">
+              <span class="tile-label muted">{{
+                'accountAnalytics.people.reactions' | transloco
+              }}</span>
+              <span class="tile-value">{{ fmt(d.reactions) }}</span>
+            </div>
+            <div class="tile">
+              <span class="tile-head">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.people.servers' | transloco
+                }}</span>
+                <mb-help
+                  [label]="
+                    'accountAnalytics.help.about'
+                      | transloco: { stat: ('accountAnalytics.people.servers' | transloco) }
+                  "
+                  >{{ 'accountAnalytics.people.serversHelp' | transloco }}</mb-help
+                >
+              </span>
+              <span class="tile-value">{{ fmt(d.servers) }}</span>
+            </div>
+            <div class="tile">
+              <span class="tile-head">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.people.returning' | transloco
+                }}</span>
+                <mb-help
+                  [label]="
+                    'accountAnalytics.help.about'
+                      | transloco: { stat: ('accountAnalytics.people.returning' | transloco) }
+                  "
+                  >{{ 'accountAnalytics.people.returningHelp' | transloco }}</mb-help
+                >
+              </span>
+              <span class="tile-value">{{ fmt(d.returning) }}</span>
+            </div>
+            <div class="tile">
+              <span class="tile-head">
+                <span class="tile-label muted">{{
+                  'accountAnalytics.people.top5' | transloco
+                }}</span>
+                <mb-help
+                  [label]="
+                    'accountAnalytics.help.about'
+                      | transloco: { stat: ('accountAnalytics.people.top5' | transloco) }
+                  "
+                  >{{ 'accountAnalytics.people.top5Help' | transloco }}</mb-help
+                >
+              </span>
+              <span class="tile-value">{{ d.top5Share }}%</span>
+            </div>
+          </div>
+          <h3 class="chart-title muted">{{ 'accountAnalytics.people.mostActive' | transloco }}</h3>
+          <ol class="counted">
+            @for (p of d.top; track p.acct) {
+              <li class="counted-row">
+                <a class="counted-label" [routerLink]="['/@' + p.acct]">{{
+                  p.displayName || p.acct
+                }}</a>
+                <span class="muted small">{{ '@' + p.acct }}</span>
+                <span class="counted-count muted">{{
+                  'accountAnalytics.people.reactionCount' | transloco: { count: fmt(p.count) }
+                }}</span>
+              </li>
+            }
+          </ol>
+        } @else {
+          <p class="muted small">{{ 'accountAnalytics.people.empty' | transloco }}</p>
+        }
+      </section>
     }
 
     <!-- Native only: the archive holds enough history for time comparisons. -->

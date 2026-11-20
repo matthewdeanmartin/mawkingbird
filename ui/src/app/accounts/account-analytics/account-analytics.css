@@ -504,3 +504,15 @@ a.counted-label:hover {
   display: block;
   font-weight: 400;
 }
+
+/* --- Style and signals, people who react --- */
+
+.signal-tiles {
+  padding: 0;
+  border-bottom: 0;
+}
+
+/* A word, not a number: smaller than the headline digits so it fits. */
+.tile-word {
+  font-size: 18px;
+}

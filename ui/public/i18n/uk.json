@@ -26,7 +26,6 @@
     "audience.zombieFollowers": "Підписники-зомбі",
     "audience.zombieFriends": "Підписки-зомбі",
     "barTitle": "{{label}}: дописи — {{count}}, охоплення ~{{reach}}",
-    "basedOnLast": "На основі останніх дописів ({{count}}), без поширень.",
     "busiestDay": "Найактивніший день: дописи — {{count}}",
     "byMonth": "За місяцями",
     "byWeek": "За тижнями",

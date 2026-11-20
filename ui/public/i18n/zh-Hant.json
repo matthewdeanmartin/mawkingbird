@@ -4069,7 +4069,6 @@
     "audience.zombieFollowers": "殭屍跟隨者",
     "audience.zombieFriends": "殭屍跟隨對象",
     "barTitle": "{{label}}：{{count}} 則嘟文，觸及約 {{reach}}",
-    "basedOnLast": "根據最近 {{count}} 則嘟文，不含轉嘟。",
     "busiestDay": "最忙的一天：{{count}} 則嘟文",
     "byMonth": "按月份",
     "byWeek": "按週",

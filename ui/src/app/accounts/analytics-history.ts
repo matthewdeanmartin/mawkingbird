@@ -1,4 +1,5 @@
 import type { SampleReach, ThreadReach } from './reach-model';
+import type { NativeEngagerRow } from '../platform/session/native-analytics-types';
 
 /**
  * Time-based views over an account's archived history (native only: web holds
@@ -199,4 +200,67 @@ export function followerMonths(
     if (followers !== null) previous = followers;
     return { month, followers, change, newFollows: newFollows.get(month) ?? 0 };
   });
+}
+
+export interface AudienceDiversity {
+  /** Different people who reacted in the window. */
+  people: number;
+  /** All their reactions (favourites, boosts, quotes, mentions and replies). */
+  reactions: number;
+  /** Different servers those people are on. */
+  servers: number;
+  /** Share of reactions from the five most active people, 0–100. */
+  top5Share: number;
+  /** People who reacted in two or more of the last three calendar months. */
+  returning: number;
+  /** The most active people, most reactions first. */
+  top: { acct: string; displayName: string; count: number }[];
+}
+
+/**
+ * How many different people react, and how spread out they are, from
+ * notification rows already limited to the window. Measured, not modelled.
+ */
+export function audienceDiversity(
+  rows: readonly NativeEngagerRow[],
+  now: Date = new Date(),
+  topN = 5,
+): AudienceDiversity {
+  const people = new Map<
+    string,
+    { acct: string; displayName: string; count: number; months: Set<string> }
+  >();
+  let reactions = 0;
+  for (const row of rows) {
+    reactions += row.count;
+    const person = people.get(row.acct) ?? {
+      acct: row.acct,
+      displayName: row.displayName,
+      count: 0,
+      months: new Set<string>(),
+    };
+    person.count += row.count;
+    person.months.add(row.month);
+    people.set(row.acct, person);
+  }
+  const recent = new Set(
+    [0, 1, 2].map((back) =>
+      monthKey(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - back, 1))),
+    ),
+  );
+  const ranked = [...people.values()].sort(
+    (a, b) => b.count - a.count || a.acct.localeCompare(b.acct),
+  );
+  const topCount = ranked.slice(0, topN).reduce((sum, p) => sum + p.count, 0);
+  const servers = new Set(ranked.map((p) => p.acct.split('@').pop()!.toLowerCase()));
+  return {
+    people: people.size,
+    reactions,
+    servers: servers.size,
+    top5Share: reactions ? Math.round((topCount / reactions) * 100) : 0,
+    returning: ranked.filter((p) => [...p.months].filter((m) => recent.has(m)).length >= 2).length,
+    top: ranked
+      .slice(0, topN)
+      .map(({ acct, displayName, count }) => ({ acct, displayName, count })),
+  };
 }

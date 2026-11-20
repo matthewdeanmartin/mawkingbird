@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Bot labels, style and people who react, 2026-11-20
+
+Reviewed 2,034 source files (new: the pure `accounts/account-signals.ts`) and
+694 candidate files. The new candidate `accounts/bot-signals/bot-signals.ts`
+replaces the profile header's unstyled `.badge` "Bot" span with MbBadge, adds
+a rhythm MbBadge and an MbHelp explainer, and is reconciled as adopted scope.
+Account analytics adds a "Style and signals" tile section, a native "People
+who react" section (tiles and the existing counted list), and a "Different
+boosters" tile, all with MbHelp. The remaining entries are line shifts. No
+shared widget implementation changed.
+
 ## Analytics history and explainers everywhere, 2026-11-20
 
 Reviewed 2,032 source files (new: the pure `accounts/analytics-history.ts`) and

@@ -41,8 +41,19 @@ import { REACH_MODEL, SampleReach, reachByPost, sampleReach } from '../reach-mod
 import { BoosterLookup } from '../booster-lookup';
 import { Auth } from '../../platform/session/auth';
 import { NATIVE_ANALYTICS } from '../../platform/session/platform-login';
-import type { NativeAudienceHistory } from '../../platform/session/native-analytics-types';
+import type {
+  NativeAudienceHistory,
+  NativeEngagerRow,
+} from '../../platform/session/native-analytics-types';
 import {
+  activityMix,
+  intervalParts,
+  percent,
+  postingRhythm,
+  postingStyle,
+} from '../account-signals';
+import {
+  audienceDiversity,
   comparePeriods,
   followerMonths,
   monthlyCsv,
@@ -73,7 +84,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.why.rateLimited: Your server is limiting how fast it answers. Wait a minute, then retry.
 // i18n accountAnalytics.why.status: Your server answered with an error (HTTP {{status}}).
 // i18n accountAnalytics.empty: Nothing to analyze yet — no posts found.
-// i18n accountAnalytics.basedOnLast: Based on the last {{count}} {{posts}}, boosts excluded.
+// i18n accountAnalytics.basedOnSample: Based on the last {{count}} {{posts}} and {{boosts}} boosts.
 // i18n accountAnalytics.sampleGoesBack: The sample goes back {{time}}.
 // i18n accountAnalytics.getMorePosts.aria: Get more {{posts}}
 // i18n accountAnalytics.fetchingMore: Fetching more…
@@ -115,7 +126,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.help.repliesGiven: Share of the account's own posts that reply to someone else. Continuing their own thread does not count.
 // i18n accountAnalytics.help.postLength: Visible characters, including any content warning; links and formatting markup are not counted.
 // i18n accountAnalytics.help.postsPerDay: Posts in the sample divided by the days between its newest and oldest post.
-// i18n accountAnalytics.help.liveliness: 0–100 from how recently and how often they posted. Falls quickly with silence; 40+ is Active, 10–39 Slowing, under 10 Dormant.
+// i18n accountAnalytics.help.liveliness: 0–100 from how recently and how often they posted or boosted. Falls quickly with silence; 40+ is Active, 10–39 Slowing, under 10 Dormant.
 // i18n accountAnalytics.help.recentPostsPerDay: Posts in the last 30 days, divided by 30.
 // i18n accountAnalytics.topPosts.analytics: Post analytics
 // i18n accountAnalytics.topPosts.reach: Thread: est. reach {{net}}, could have reached {{potential}}
@@ -125,6 +136,58 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.archive.rateLimited: From your archive. The server asked to slow down, so counts may be a little behind.
 // i18n accountAnalytics.archive.failed: From your archive. The server couldn't be reached; counts are as last seen.
 // i18n accountAnalytics.archive.continue: Continue
+// i18n accountAnalytics.style.heading: Style and signals
+// i18n accountAnalytics.style.explain: How this account posts, from the same sample, boosts included.
+// i18n accountAnalytics.style.style: Style
+// i18n accountAnalytics.style.name.curator: Curator
+// i18n accountAnalytics.style.name.conversationalist: Conversationalist
+// i18n accountAnalytics.style.name.linkSharer: Link sharer
+// i18n accountAnalytics.style.name.threadWriter: Thread writer
+// i18n accountAnalytics.style.name.broadcaster: Broadcaster
+// i18n accountAnalytics.style.name.balanced: Balanced
+// i18n accountAnalytics.style.tooFew: Too few posts to say
+// i18n accountAnalytics.style.help: The first that fits: Curator (boosts are half or more), Conversationalist (replies to others are half or more), Link sharer (half their own posts are mostly a link), Thread writer (30% of their own posts continue a thread), Broadcaster (under 10% replies and under 30% boosts), otherwise Balanced. Needs 20 statuses.
+// i18n accountAnalytics.style.own: Own vs boosted
+// i18n accountAnalytics.style.ownValue: {{pct}}% own
+// i18n accountAnalytics.style.ownSub: {{boosts}} of {{total}} are boosts
+// i18n accountAnalytics.style.ownHelp: Their own posts (new posts, thread posts and replies) against boosts of other people's posts, out of everything in the sample.
+// i18n accountAnalytics.style.newPosts: New posts
+// i18n accountAnalytics.style.threadParts: Thread posts
+// i18n accountAnalytics.style.repliesToOthers: Replies to others
+// i18n accountAnalytics.style.mixHelp: Share of everything in the sample, boosts included. New posts start something; thread posts continue their own thread; replies answer someone else.
+// i18n accountAnalytics.style.linkOnly: Link-only posts
+// i18n accountAnalytics.style.linkOnlyHelp: Share of their own posts that are mostly a link: a link or preview card with under 40 characters of their own text.
+// i18n accountAnalytics.style.rhythm: Posting rhythm
+// i18n accountAnalytics.style.rhythmName.human: Human
+// i18n accountAnalytics.style.rhythmName.mixed: Partly scheduled
+// i18n accountAnalytics.style.rhythmName.botLike: Bot-like
+// i18n accountAnalytics.style.rhythmSub: {{pct}}% on a schedule
+// i18n accountAnalytics.style.rhythmEvery: every {{interval}}
+// i18n accountAnalytics.style.rhythmHelp: Looks for runs of 4 or more posts with the same gap between them (within 2 minutes or 1%), like a bot or scheduler posting every hour or every 24 hours. No runs: Human. 60% or more of posts in runs: Bot-like. In between: Partly scheduled. Thread posts and boosts are left out; gaps under 5 minutes are not a schedule. Needs 8 posts.
+// i18n accountAnalytics.style.botSetting: Bot setting
+// i18n accountAnalytics.style.botOn: On
+// i18n accountAnalytics.style.botOff: Off
+// i18n accountAnalytics.style.botHelp: The account's own "This is an automated account" setting. The owner turns it on or off.
+// i18n accountAnalytics.style.unit.minutes: {{value}} min
+// i18n accountAnalytics.style.unit.hours: {{value}} h
+// i18n accountAnalytics.style.unit.days: {{value}} d
+// i18n accountAnalytics.people.heading: People who react
+// i18n accountAnalytics.people.explain: From your notifications in the last 90 days: favourites, boosts, quotes, replies and mentions. Counted, not estimated.
+// i18n accountAnalytics.people.people: People
+// i18n accountAnalytics.people.peopleHelp: Different accounts that reacted to you in the last 90 days.
+// i18n accountAnalytics.people.reactions: Reactions
+// i18n accountAnalytics.people.servers: Servers
+// i18n accountAnalytics.people.serversHelp: Different servers those people are on.
+// i18n accountAnalytics.people.returning: Returning
+// i18n accountAnalytics.people.returningHelp: People who reacted in two or more of the last three calendar months.
+// i18n accountAnalytics.people.top5: Top 5 share
+// i18n accountAnalytics.people.top5Help: Share of all reactions that came from the five most active people. High means a few regulars; low means reactions are spread out.
+// i18n accountAnalytics.people.mostActive: Most active
+// i18n accountAnalytics.people.reactionCount: {{count}} reactions
+// i18n accountAnalytics.people.empty: No reactions in your notifications from the last 90 days yet.
+// i18n accountAnalytics.tiles.boosters: Different boosters
+// i18n accountAnalytics.tiles.boostersSub: on {{servers}} servers
+// i18n accountAnalytics.help.boosters: Different people among the boosters looked up for these threads, and how many servers they are on.
 // i18n accountAnalytics.history.heading: Over time
 // i18n accountAnalytics.history.explain: From the archive, grouped by when each thread started.
 // i18n accountAnalytics.history.periodsHeading: Last {{days}} days vs the {{days}} before
@@ -263,8 +326,15 @@ export class AccountAnalytics implements OnInit {
   protected error = signal(false);
   /** Why the first page failed, as an i18n key and params; shown under the error. */
   protected errorReason = signal<{ key: string; params?: Record<string, unknown> } | null>(null);
-  /** The analyzed sample: own posts only, newest first. */
-  protected posts = signal<Status[]>([]);
+  /**
+   * Everything fetched, newest first, boosts included. Boosts only feed the
+   * activity mix, style and liveliness: their counts belong to someone else.
+   */
+  protected sample = signal<Status[]>([]);
+  /** The account's own posts (boosts left out), newest first. */
+  protected posts = computed(() => this.sample().filter((p) => !p.reblog));
+  /** Boosts of other people's posts in the sample. */
+  protected boostCount = computed(() => this.sample().length - this.posts().length);
   protected followers = signal<Account[]>([]);
   protected followersLoaded = signal(false);
 
@@ -326,11 +396,15 @@ export class AccountAnalytics implements OnInit {
         (history) => this.audienceHistory.set(history),
         () => undefined,
       );
+      native.engagers(handle, 90).then(
+        (rows) => this.engagerRows.set(rows),
+        () => undefined,
+      );
     }
     const show = () =>
       native.posts(handle, id, ARCHIVE_LIMIT).then((posts) => {
         if (posts.length) {
-          this.posts.set(posts);
+          this.sample.set(posts);
           this.loading.set(false);
         }
         return posts.length;
@@ -411,6 +485,42 @@ export class AccountAnalytics implements OnInit {
     );
   }
 
+  // --- Style and signals (free: computed from the sample) ---
+
+  protected mix = computed(() => activityMix(this.sample()));
+  protected style = computed(() => postingStyle(this.mix()));
+  protected ownPct = computed(() => {
+    const m = this.mix();
+    return percent(m.total - m.boosts, m.total);
+  });
+  protected readonly percent = percent;
+
+  protected rhythm = computed(() => {
+    const rhythm = postingRhythm(this.sample());
+    if (!rhythm) return null;
+    return { ...rhythm, every: rhythm.interval === null ? null : intervalParts(rhythm.interval) };
+  });
+
+  /** Distinct known boosters across the sample, once any were looked up. */
+  protected boosterSpread = computed(() => {
+    const seen = new Map<string, string>();
+    for (const part of this.threadParts()) {
+      for (const b of this.boosters.boostersOf(part) ?? []) {
+        seen.set(b.id, (b.acct.split('@')[1] ?? '').toLowerCase());
+      }
+    }
+    if (!seen.size) return null;
+    return { people: seen.size, servers: new Set(seen.values()).size };
+  });
+
+  // --- People who react (native, your own account) ---
+
+  private engagerRows = signal<NativeEngagerRow[] | null>(null);
+  protected diversity = computed(() => {
+    const rows = this.engagerRows();
+    return rows ? audienceDiversity(rows) : null;
+  });
+
   /** Run another catch-up after one stopped early. */
   protected continueCatchUp(): void {
     const handle = this.archiveHandle();
@@ -463,8 +573,10 @@ export class AccountAnalytics implements OnInit {
     this.fetchPage(id, cursor).subscribe({
       next: ({ posts, next, done }) => {
         const all = [...acc, ...posts];
-        if (done || all.length >= SAMPLE_SIZE || page + 1 >= this.maxPages()) {
-          this.posts.set(all);
+        // The sample size counts the account's own posts; boosts ride along.
+        const own = all.filter((p) => !p.reblog).length;
+        if (done || own >= SAMPLE_SIZE || page + 1 >= this.maxPages()) {
+          this.sample.set(all);
           this.cursor = next;
           this.hasMore.set(!done);
           this.loading.set(false);
@@ -473,7 +585,7 @@ export class AccountAnalytics implements OnInit {
         }
       },
       error: (err: unknown) => {
-        this.posts.set(acc);
+        this.sample.set(acc);
         this.loading.set(false);
         this.error.set(acc.length === 0);
         this.errorReason.set(failureReason(err));
@@ -496,16 +608,30 @@ export class AccountAnalytics implements OnInit {
     if (did) {
       return this.bluesky.getAuthorFeed(did, cursor ?? null, 'posts_with_replies', true).pipe(
         map((timeline) => ({
-          // A repost is someone else's post; only the author's own words count.
-          posts: timeline.feed
-            .filter((item) => !item.reason && item.post.author.did === did)
-            .map((item) => adaptPost(item.post)),
+          // Own posts, plus reposts as boosts (someone else's words, kept for the mix).
+          posts: timeline.feed.flatMap((item) => {
+            const reason = item.reason as { $type?: string; indexedAt?: string } | undefined;
+            if (reason?.$type?.endsWith('reasonRepost')) {
+              const inner = adaptPost(item.post);
+              return [
+                {
+                  ...inner,
+                  id: `${inner.id}#repost`,
+                  reblog: inner,
+                  created_at: reason.indexedAt ?? inner.created_at,
+                  account: this.account(),
+                  in_reply_to_id: null,
+                },
+              ];
+            }
+            return !reason && item.post.author.did === did ? [adaptPost(item.post)] : [];
+          }),
           next: timeline.cursor,
           done: !timeline.cursor || timeline.feed.length === 0,
         })),
       );
     }
-    return this.getStatuses(id, { limit: PAGE_LIMIT, maxId: cursor, excludeReblogs: true }).pipe(
+    return this.getStatuses(id, { limit: PAGE_LIMIT, maxId: cursor }).pipe(
       map((batch) => ({
         posts: batch,
         next: batch.length ? pageCursor(batch[batch.length - 1]) : cursor,
@@ -536,7 +662,7 @@ export class AccountAnalytics implements OnInit {
     this.fetchPage(id, this.cursor).subscribe({
       next: ({ posts, next, done }) => {
         if (posts.length) {
-          this.posts.update((prev) => [...prev, ...posts]);
+          this.sample.update((prev) => [...prev, ...posts]);
         }
         this.cursor = next;
         if (done) {
@@ -712,7 +838,8 @@ export class AccountAnalytics implements OnInit {
 
   // --- Liveliness (recency-weighted, relative to now) ---
 
-  protected liveliness = computed<Liveliness>(() => computeLiveliness(this.posts()));
+  /** Boosts count as activity: someone who only boosts is still home. */
+  protected liveliness = computed<Liveliness>(() => computeLiveliness(this.sample()));
 
   // --- Time-window activity ("when they post") ---
 

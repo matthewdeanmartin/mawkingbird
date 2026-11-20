@@ -48,6 +48,7 @@ describe('AccountAnalytics in the native app', () => {
       boosters: vi.fn(),
       history: vi.fn(),
       postActivity: vi.fn(),
+      engagers: vi.fn(),
     };
     TestBed.configureTestingModule({
       providers: [
@@ -105,6 +106,24 @@ describe('AccountAnalytics in the native app', () => {
       followsByMonth: [{ month: '2026-11', count: 3 }],
       notificationHistoryComplete: false,
     });
+    native.engagers.mockResolvedValue([
+      {
+        actor: '5',
+        acct: 'fan@one.social',
+        displayName: 'Fan',
+        kind: 'favourite',
+        month: '2026-11',
+        count: 3,
+      },
+      {
+        actor: '6',
+        acct: 'pal@two.example',
+        displayName: 'Pal',
+        kind: 'reblog',
+        month: '2026-11',
+        count: 1,
+      },
+    ]);
     TestBed.inject(Auth).account.set(ME);
     const { fixture, root } = render();
     await settle();
@@ -124,6 +143,13 @@ describe('AccountAnalytics in the native app', () => {
     expect(history.textContent).toContain('Download CSV');
     expect(native.history).toHaveBeenCalledWith('native-mastodon:a');
     expect(history.textContent).toContain('Older follow notifications are still being collected');
+    expect(native.engagers).toHaveBeenCalledWith('native-mastodon:a', 90);
+    const people = root.querySelector('.people-section')!;
+    expect(people.textContent).toContain('People');
+    expect([...people.querySelectorAll('.counted-row')].map((r) => r.textContent)).toEqual([
+      expect.stringContaining('fan@one.social'),
+      expect.stringContaining('pal@two.example'),
+    ]);
   });
 
   it('offers to continue when a catch-up stopped at its page cap', async () => {
