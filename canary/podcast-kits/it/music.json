@@ -1,0 +1,52 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "music",
+ "lang": "it",
+ "title": {
+  "en": "Music",
+  "de": "Musik",
+  "fr": "Musique",
+  "es": "Música",
+  "ja": "音楽",
+  "it": "Musica",
+  "pt": "Música",
+  "nl": "Muziek",
+  "pl": "Muzyka",
+  "sv": "Musik",
+  "ru": "Музыка",
+  "ko": "음악",
+  "uk": "Музика",
+  "tr": "Müzik",
+  "el": "Μουσική",
+  "zh": "音乐",
+  "ca": "Música",
+  "cs": "Hudba",
+  "fi": "Musiikki",
+  "no": "Musikk",
+  "ar": "الموسيقى",
+  "zh-Hant": "音樂"
+ },
+ "icon": "🎵",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "edosecco@mastodon.uno",
+   "url": "https://mastodon.uno/@edosecco",
+   "displayName": "Edoardo Secco",
+   "avatar": "https://cdn.masto.host/mastodonuno/accounts/avatars/000/123/885/original/5190a995cd309990.jpg",
+   "bot": false,
+   "bio": "Co-conduttore del podcast \"Be Radio!\" (https://fuoriritmo.lol) Un po' impiegato, un po' magazziniere, impegnato ecclesialmente, un po' appassionato di fantascienza e dal 2019 mi sono avvicinato al mo…",
+   "showUrl": "https://fuoriritmo.lol/",
+   "observedAt": "2026-11-20T00:00:09+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.uno/@edosecco/117540555057654310",
+     "seenAt": "2026-11-01T09:48:55.911Z"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,106 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "sport",
+ "lang": "de",
+ "title": {
+  "en": "Sport",
+  "de": "Sport",
+  "fr": "Sport",
+  "es": "Deportes",
+  "ja": "スポーツ",
+  "it": "Sport",
+  "pt": "Esportes",
+  "nl": "Sport",
+  "pl": "Sport",
+  "sv": "Sport",
+  "ru": "Спорт",
+  "ko": "스포츠",
+  "uk": "Спорт",
+  "tr": "Spor",
+  "el": "Αθλητισμός",
+  "zh": "体育",
+  "ca": "Esport",
+  "cs": "Sport",
+  "fi": "Urheilu",
+  "no": "Sport",
+  "ar": "الرياضة",
+  "zh-Hant": "運動"
+ },
+ "icon": "⚽",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "stpop@stpauli.social",
+   "url": "https://stpauli.social/@stpop",
+   "displayName": "St. Pauli POP",
+   "avatar": "https://stpauli.s3proxy.de/accounts/avatars/110/972/423/784/645/237/original/6fdf67973075a9c5.png",
+   "bot": false,
+   "bio": "Admin v StPauli.Social und Host des #FCSP #Blog und #Podcast ST. POP",
+   "showUrl": "https://rss.com/podcasts/stpaulipop/",
+   "observedAt": "2026-11-20T00:07:12+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://stpauli.social/@stpop/117644341045414618",
+     "seenAt": "2026-11-19T17:43:04.412Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://stpauli.social/@stpop/117591842389208722",
+     "seenAt": "2026-11-10T11:11:58.488Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "rss.com",
+     "postUrl": "https://stpauli.social/@stpop/117592231454645041",
+     "seenAt": "2026-11-10T12:50:55.157Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "stpauli.social",
+     "postUrl": "https://stpauli.social/@stpop/117644341045414618",
+     "seenAt": "2026-11-19T17:43:04.412Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "stpaulinu.de",
+     "postUrl": "https://stpauli.social/@stpop/117594305484902478",
+     "seenAt": "2026-11-10T21:38:22.348Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://stpauli.social/@stpop/117597537411352499",
+     "seenAt": "2026-11-11T11:20:17.630Z"
+    }
+   ]
+  },
+  {
+   "acct": "bevegt@mastodon.social",
+   "url": "https://mastodon.social/@beVegt",
+   "displayName": "beVegt",
+   "avatar": "https://files.mastodon.social/accounts/avatars/114/093/014/912/778/688/original/851a6690debdf9b2.jpg",
+   "bot": false,
+   "bio": "Katrin und Daniel Wir machen einen #blog und #podcast über das #laufen 🏃‍♀️🏃‍♂️ und die vegane Lebensweise. 🌱 Unsere einfachen veganen Rezepte, Trainings- und Ernährungstipps findest du auf https://w…",
+   "showUrl": "https://www.bevegt.de/podcasts/",
+   "observedAt": "2026-11-19T23:58:09+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "bevegt.de",
+     "postUrl": "https://mastodon.social/@beVegt/117482870959109303",
+     "seenAt": "2026-10-22T05:19:06.423Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@beVegt/117482870959109303",
+     "seenAt": "2026-10-22T05:19:06.423Z"
+    }
+   ]
+  }
+ ]
+}

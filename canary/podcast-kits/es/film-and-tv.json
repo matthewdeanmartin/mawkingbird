@@ -1,0 +1,70 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "film-and-tv",
+ "lang": "es",
+ "title": {
+  "en": "Film and TV",
+  "de": "Film und Fernsehen",
+  "fr": "Cinéma et télévision",
+  "es": "Cine y televisión",
+  "ja": "映画とテレビ",
+  "it": "Cinema e TV",
+  "pt": "Cinema e TV",
+  "nl": "Film en tv",
+  "pl": "Film i telewizja",
+  "sv": "Film och TV",
+  "ru": "Кино и телевидение",
+  "ko": "영화와 TV",
+  "uk": "Кіно і телебачення",
+  "tr": "Film ve televizyon",
+  "el": "Κινηματογράφος και τηλεόραση",
+  "zh": "电影与电视",
+  "ca": "Cinema i televisió",
+  "cs": "Film a televize",
+  "fi": "Elokuvat ja televisio",
+  "no": "Film og TV",
+  "ar": "السينما والتلفزيون",
+  "zh-Hant": "電影與電視"
+ },
+ "icon": "🎬",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "losmediatizados@tkz.one",
+   "url": "https://tkz.one/@LosMediatizados",
+   "displayName": "Los Mediatizados",
+   "avatar": "https://media.tkz.one/tkz/accounts/avatars/109/377/961/236/151/779/original/3ccffacd944a1f3f.png",
+   "bot": false,
+   "bio": "Los medios, desde otro punto de vista. 📻📺💻 Los jueves, desde las 8:00, en todas las plataformas de podcast. Síguenos también a lo largo de la semana en RFC Radio, Vox Uji Radio, Cuac FM, Ocionews Rad…",
+   "showUrl": "https://podcasts.apple.com/es/podcast/los-mediatizados/id1449762557",
+   "observedAt": "2026-11-20T00:03:44+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://tkz.one/@LosMediatizados/117565131763702418",
+     "seenAt": "2026-11-05T17:59:06.688Z"
+    }
+   ]
+  },
+  {
+   "acct": "sonspodcast@mastodon.social",
+   "url": "https://mastodon.social/@sonspodcast",
+   "displayName": "Sons Podcast 🎙️",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/725/624/055/143/472/original/9de18b6d42f49a51.jpg",
+   "bot": true,
+   "bio": "Red de Podcasts independiente",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:11+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "sons.red",
+     "postUrl": "https://mastodon.social/@sonspodcast/117632772766679761",
+     "seenAt": "2026-11-17T16:41:06.488Z"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "art-and-illustration",
+ "lang": "en",
+ "title": {
+  "en": "Art and Illustration",
+  "de": "Kunst und Illustration",
+  "fr": "Art et illustration",
+  "es": "Arte e ilustración",
+  "ja": "アートとイラスト",
+  "it": "Arte e illustrazione",
+  "pt": "Arte e ilustração",
+  "nl": "Kunst en illustratie",
+  "pl": "Sztuka i ilustracja",
+  "sv": "Konst och illustration",
+  "ru": "Искусство и иллюстрация",
+  "ko": "예술과 일러스트",
+  "uk": "Мистецтво та ілюстрація",
+  "tr": "Sanat ve illüstrasyon",
+  "el": "Τέχνη και εικονογράφηση",
+  "zh": "艺术与插画",
+  "ca": "Art i il·lustració",
+  "cs": "Umění a ilustrace",
+  "fi": "Taide ja kuvitus",
+  "no": "Kunst og illustrasjon",
+  "ar": "الفن والرسم التوضيحي",
+  "zh-Hant": "藝術與插畫"
+ },
+ "icon": "🎨",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "artofcreationpodcast@mastodon.art",
+   "url": "https://mastodon.art/@ArtofCreationPodcast",
+   "displayName": "ArtofCreationPodcast",
+   "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/117/396/879/753/200/012/original/d884ead8e85539cd.png",
+   "bot": false,
+   "bio": "As a failed artist for over 10 years, I thought it would be in my best interest to annoy and harass those who’ve been successful in their craft—to crack open their moist craniums, scoop out the knowl…",
+   "showUrl": "https://linktr.ee/Artofcreationpodcast",
+   "observedAt": "2026-11-19T23:57:15+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.art",
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117643950016604928",
+     "seenAt": "2026-11-19T16:03:37.786Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117633786321337825",
+     "seenAt": "2026-11-17T20:58:52.102Z"
+    }
+   ]
+  }
+ ]
+}

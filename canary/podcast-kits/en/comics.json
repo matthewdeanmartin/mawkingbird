@@ -1,0 +1,70 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "comics",
+ "lang": "en",
+ "title": {
+  "en": "Comics",
+  "de": "Comics",
+  "fr": "Bande dessinée",
+  "es": "Cómics",
+  "ja": "コミック・漫画",
+  "it": "Fumetti",
+  "pt": "Quadrinhos",
+  "nl": "Strips",
+  "pl": "Komiksy",
+  "sv": "Serier",
+  "ru": "Комиксы",
+  "ko": "만화",
+  "uk": "Комікси",
+  "tr": "Çizgi roman",
+  "el": "Κόμικς",
+  "zh": "漫画",
+  "ca": "Còmics",
+  "cs": "Komiksy",
+  "fi": "Sarjakuvat",
+  "no": "Tegneserier",
+  "ar": "القصص المصورة",
+  "zh-Hant": "漫畫"
+ },
+ "icon": "💥",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "perdidoseter@c.im",
+   "url": "https://c.im/@perdidoseter",
+   "displayName": "Perdidos En El Éter",
+   "avatar": "https://s3.c.im/accounts/avatars/109/364/658/845/014/912/original/12e3fa4cc3dd351c.jpg",
+   "bot": false,
+   "bio": "Podcast de comics, ciencia ficción, fantasía, juegos, y cultura nerd en general, incluyendo ciencia e historia. (Desde 2003.) http://bit.ly/perdidoseter",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "c.im",
+     "postUrl": "https://c.im/@perdidoseter/116978027275437841",
+     "seenAt": "2026-07-25T01:30:43.144Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://c.im/@perdidoseter/117193178148173810",
+     "seenAt": "2026-09-01T01:26:24.926Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://c.im/@perdidoseter/117531543889979146",
+     "seenAt": "2026-10-30T19:37:16.408Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://c.im/@perdidoseter/117358607553874445",
+     "seenAt": "2026-09-30T06:37:17.335Z"
+    }
+   ]
+  }
+ ]
+}

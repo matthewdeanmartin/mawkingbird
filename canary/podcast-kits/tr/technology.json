@@ -1,0 +1,76 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "technology",
+ "lang": "tr",
+ "title": {
+  "en": "Technology",
+  "de": "Technologie",
+  "fr": "Technologie",
+  "es": "Tecnología",
+  "ja": "テクノロジー",
+  "it": "Tecnologia",
+  "pt": "Tecnologia",
+  "nl": "Technologie",
+  "pl": "Technologia",
+  "sv": "Teknik",
+  "ru": "Технологии",
+  "ko": "기술",
+  "uk": "Технології",
+  "tr": "Teknoloji",
+  "el": "Τεχνολογία",
+  "zh": "科技",
+  "ca": "Tecnologia",
+  "cs": "Technologie",
+  "fi": "Teknologia",
+  "no": "Teknologi",
+  "zh-Hant": "科技",
+  "ar": "التقنية"
+ },
+ "icon": "💻",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "melihbayramdede@mastodon.social",
+   "url": "https://mastodon.social/@melihbayramdede",
+   "displayName": "Melih Bayram Dede",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/981/927/original/6f2c882bcbb7bf4f.jpg",
+   "bot": false,
+   "bio": "📰 Journalist 🎬 Video Content Creator🎙️Podcaster 📺 http://youtube.com/melihbayramdede",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:08+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@melihbayramdede/112032236452570865",
+     "seenAt": "2024-03-03T14:31:04.232Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@melihbayramdede/111795699446979009",
+     "seenAt": "2024-01-21T19:56:35.959Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasters.spotify.com",
+     "postUrl": "https://mastodon.social/@melihbayramdede/110892823455492417",
+     "seenAt": "2023-08-15T09:03:21.655Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@melihbayramdede/111472429523722440",
+     "seenAt": "2023-11-25T17:44:48.659Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@melihbayramdede/112898068064621112",
+     "seenAt": "2024-08-03T12:23:26.166Z"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,640 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "books-and-writing",
+ "lang": "en",
+ "title": {
+  "en": "Books and Writing",
+  "de": "Bücher und Schreiben",
+  "fr": "Livres et écriture",
+  "es": "Libros y escritura",
+  "ja": "本と執筆",
+  "it": "Libri e scrittura",
+  "pt": "Livros e escrita",
+  "nl": "Boeken en schrijven",
+  "pl": "Ksiazki i pisanie",
+  "sv": "Böcker och skrivande",
+  "ru": "Книги и литература",
+  "ko": "책과 글쓰기",
+  "uk": "Книги та письмо",
+  "tr": "Kitaplar ve yazarlık",
+  "el": "Βιβλία και συγγραφή",
+  "zh": "书籍与写作",
+  "fi": "Kirjat ja kirjoittaminen",
+  "ca": "Llibres i escriptura",
+  "cs": "Knihy a psaní",
+  "no": "Bøker og skriving",
+  "ar": "الكتب والكتابة",
+  "zh-Hant": "書籍與寫作"
+ },
+ "icon": "📚",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "jeanniewarner@wandering.shop",
+   "url": "https://wandering.shop/@Jeanniewarner",
+   "displayName": "JWarner",
+   "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/354/929/900/121/052/original/01bc7e9cd2d52c8d.jpg",
+   "bot": false,
+   "bio": "Writer, blogger, podcaster, hockey player and coach, eternal student of security and life. SFWA member, game writing. I run Writers Drinking Coffee podcast. She/her www.jeanniewarner.com www.writersd…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:44+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "writersdrinkingcoffee.com",
+     "postUrl": "https://wandering.shop/@Jeanniewarner/117644651172237769",
+     "seenAt": "2026-11-19T19:01:56.569Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://wandering.shop/@Jeanniewarner/117260677921311198",
+     "seenAt": "2026-09-12T23:32:29.728Z"
+    }
+   ]
+  },
+  {
+   "acct": "phosphenecatalogue@namtao.com",
+   "url": "https://namtao.com/@phosphenecatalogue",
+   "displayName": "✨ The Phosphene Catalogue",
+   "avatar": "https://cdn.masto.host/namtaocom/accounts/avatars/113/589/192/116/129/194/original/ffad37870fc7e94b.png",
+   "bot": false,
+   "bio": "An urban fantasy podcast of tape recordings by the curator of a secretive London-based art auction house. The Phosphene Catalogue is a 1970s mail-order catalogue, specialising in those items that can…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:40+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "namtao.com",
+     "postUrl": "https://namtao.com/@phosphenecatalogue/117644421732327780",
+     "seenAt": "2026-11-19T18:03:35.597Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://namtao.com/@phosphenecatalogue/115623835752503097",
+     "seenAt": "2025-11-27T21:42:00.343Z"
+    }
+   ]
+  },
+  {
+   "acct": "grammargirl@zirk.us",
+   "url": "https://zirk.us/@grammargirl",
+   "displayName": "Mignon Fogarty",
+   "avatar": "https://files.zirk.us/accounts/avatars/109/384/127/684/711/007/original/5cab4602912a62a0.png",
+   "bot": false,
+   "bio": "Grammar Girl. Podcaster. New York Times bestselling author. Quick and Dirty Tips founder. Bad skier. California. she/her #AmWriting 12/1 Grammar Girl podcast #AmReading Monsters of Ohio (Scalzi)",
+   "showUrl": "https://pod.link/173429229",
+   "observedAt": "2026-11-20T00:01:15+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "forbes.com",
+     "postUrl": "https://zirk.us/@grammargirl/117593758446037900",
+     "seenAt": "2026-11-10T19:19:15.194Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://zirk.us/@grammargirl/117644290153476653",
+     "seenAt": "2026-11-19T17:30:07.859Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "zirk.us",
+     "postUrl": "https://zirk.us/@grammargirl/117639495471640590",
+     "seenAt": "2026-11-18T21:10:46.821Z"
+    }
+   ]
+  },
+  {
+   "acct": "biomespec@mastodon.social",
+   "url": "https://mastodon.social/@biomespec",
+   "displayName": "Biome Podcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/116/620/062/022/719/537/original/fcc36ba3044a8cde.png",
+   "bot": false,
+   "bio": "Scifi/Fantasy/Weird Fic weekly podcast -- bringing incredible fiction to life Listen on: https://rss.com/podcasts/biomespec/?listen-on=true Submit your work at: https://biomespec.wordpress.com/submis…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:06+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@biomespec/117638869167809538",
+     "seenAt": "2026-11-18T18:31:30.184Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "rss.com",
+     "postUrl": "https://mastodon.social/@biomespec/117638869167809538",
+     "seenAt": "2026-11-18T18:31:30.184Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@biomespec/117038584963143688",
+     "seenAt": "2026-08-04T18:11:20.140Z"
+    }
+   ]
+  },
+  {
+   "acct": "vvitchtoria@mastodon.social",
+   "url": "https://mastodon.social/@VVitchtoria",
+   "displayName": "Victoria",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/347/897/828/708/667/original/c5989e9842e6b641.png",
+   "bot": false,
+   "bio": "Author, publisher, podcaster, witch, (amateur artist), and nosy Scorpio (she/her) [Avatar photo is a black and white of me, a middle-aged, fair-skinned woman with long hair and black cat’s-eye glasse…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:40+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@VVitchtoria/117638730674677286",
+     "seenAt": "2026-11-18T17:56:16.949Z"
+    }
+   ]
+  },
+  {
+   "acct": "wkeithtims@podvibes.co",
+   "url": "https://podvibes.co/@wkeithtims",
+   "displayName": "W. Keith Tims :podcast:",
+   "avatar": "https://cdn.masto.host/podvibesco/accounts/avatars/109/334/416/704/279/399/original/a7254dce1bb07465.png",
+   "bot": false,
+   "bio": "Writer, Director, Voice Actor, Audio Drama Creator he/him https://wkeithtims.com - https://alienghostrobot.com https://invisiblesunpod.com - #SciFi. A man must search for the truth behind a mysteriou…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:37+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "fiction-podcast-weekly.beehiiv.com",
+     "postUrl": "https://podvibes.co/@wkeithtims/116630922342460021",
+     "seenAt": "2026-05-24T18:17:22.189Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "music.amazon.com",
+     "postUrl": "https://podvibes.co/@wkeithtims/116794851990091937",
+     "seenAt": "2026-06-22T17:06:50.104Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podvibes.co",
+     "postUrl": "https://podvibes.co/@wkeithtims/117638160871032676",
+     "seenAt": "2026-11-18T15:31:22.433Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://podvibes.co/@wkeithtims/117395377742501739",
+     "seenAt": "2026-10-06T18:28:25.889Z"
+    }
+   ]
+  },
+  {
+   "acct": "tallandtrue@aus.social",
+   "url": "https://aus.social/@tallandtrue",
+   "displayName": "Robert Fairhead",
+   "avatar": "https://mediacdn.aus.social/accounts/avatars/109/276/459/867/086/329/original/aa80f0e82eead331.jpg",
+   "bot": false,
+   "bio": "Writer, blogger and podcaster at http://TallAndTrue.com and http://TallAndTrueShortReads.com. My home is Sydney, on the traditional lands of the Gadigal people of the Eora Nation. I cheer, cheer for…",
+   "showUrl": "https://www.tallandtrueshortreads.com",
+   "observedAt": "2026-11-20T00:07:17+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "aus.social",
+     "postUrl": "https://aus.social/@tallandtrue/117634585281780807",
+     "seenAt": "2026-11-18T00:22:03.266Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://aus.social/@tallandtrue/117588480534411549",
+     "seenAt": "2026-11-09T20:57:00.650Z"
+    }
+   ]
+  },
+  {
+   "acct": "gamemastersbookclub@mastodon.social",
+   "url": "https://mastodon.social/@gamemastersbookclub",
+   "displayName": "Game Master's Book Club",
+   "avatar": "https://files.mastodon.social/accounts/avatars/114/818/815/143/105/862/original/0b710b9e59e105c0.jpg",
+   "bot": false,
+   "bio": "The Podcast where great fiction becomes your next great ttrpg experience. Experienced game masters read spec fic, discuss what ttrpg mechanics evoke that story, recommend characters/items/ideas/scene…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:08+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@gamemastersbookclub/117632979054755087",
+     "seenAt": "2026-11-17T17:33:34.192Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "music.amazon.com",
+     "postUrl": "https://mastodon.social/@gamemastersbookclub/117453947655287077",
+     "seenAt": "2026-10-17T02:43:31.832Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@gamemastersbookclub/117610097405523333",
+     "seenAt": "2026-11-13T16:34:27.939Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcastrepublic.net",
+     "postUrl": "https://mastodon.social/@gamemastersbookclub/117610097405523333",
+     "seenAt": "2026-11-13T16:34:27.939Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://mastodon.social/@gamemastersbookclub/117610097405523333",
+     "seenAt": "2026-11-13T16:34:27.939Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "thepodcastcollaborative.com",
+     "postUrl": "https://mastodon.social/@gamemastersbookclub/117453947655287077",
+     "seenAt": "2026-10-17T02:43:31.832Z"
+    }
+   ]
+  },
+  {
+   "acct": "heatherrosejones@wandering.shop",
+   "url": "https://wandering.shop/@heatherrosejones",
+   "displayName": "Heather Rose Jones",
+   "avatar": "https://stockroom.wandering.shop/accounts/avatars/108/196/054/624/805/721/original/a0fc3b2b895fb901.jpeg",
+   "bot": false,
+   "bio": "Author, amateur queer historian, podcaster. She/her. Find my blog, podcast, books, and more at Alpennia.com.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "alpennia.com",
+     "postUrl": "https://wandering.shop/@heatherrosejones/117576142067817388",
+     "seenAt": "2026-11-07T16:39:10.594Z"
+    }
+   ]
+  },
+  {
+   "acct": "theindyauthor@mastodon.social",
+   "url": "https://mastodon.social/@theindyauthor",
+   "displayName": "Matty Dalrymple | The Indy Author",
+   "avatar": "https://files.mastodon.social/accounts/avatars/113/466/559/650/286/941/original/d2bded2a02dbce08.png",
+   "bot": false,
+   "bio": "Matty Dalrymple is the author of the Lizzy Ballard Thrillers and the Ann Kinnear Suspense Novels and Suspense Shorts. She is a member of International Thriller Writers and Sisters in Crime. ​Matty al…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:34+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "kevintjohns.mysamcart.com",
+     "postUrl": "https://mastodon.social/@theindyauthor/117489988227304827",
+     "seenAt": "2026-10-23T11:29:07.334Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "kindlepreneur.com",
+     "postUrl": "https://mastodon.social/@theindyauthor/117294060713939175",
+     "seenAt": "2026-09-18T21:02:10.730Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@theindyauthor/117490498241725243",
+     "seenAt": "2026-10-23T13:38:49.520Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcast.feedspot.com",
+     "postUrl": "https://mastodon.social/@theindyauthor/117490498241725243",
+     "seenAt": "2026-10-23T13:38:49.520Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "wishidknownthenpodcast.substack.com",
+     "postUrl": "https://mastodon.social/@theindyauthor/117496636062343498",
+     "seenAt": "2026-10-24T15:39:45.236Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@theindyauthor/117565718194739410",
+     "seenAt": "2026-11-05T20:28:14.916Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube.com",
+     "postUrl": "https://mastodon.social/@theindyauthor/117390185979260332",
+     "seenAt": "2026-10-05T20:28:05.868Z"
+    }
+   ]
+  },
+  {
+   "acct": "szhpodcast@mastodon.social",
+   "url": "https://mastodon.social/@szhpodcast",
+   "displayName": "Session Zero Heroes Podcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/113/896/240/598/380/993/original/f264e02e5f02903c.jpg",
+   "bot": false,
+   "bio": "At SZH, we believe in the power of storytelling through #tabletoproleplayinggames and use a wide variety of systems to create these stories, which we share through the podcast medium. From hilarious…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:14+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@szhpodcast/117524812574665531",
+     "seenAt": "2026-10-29T15:05:24.689Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podbean.com",
+     "postUrl": "https://mastodon.social/@szhpodcast/117524812574665531",
+     "seenAt": "2026-10-29T15:05:24.689Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "sessionzeroheroespodcast.itch.io",
+     "postUrl": "https://mastodon.social/@szhpodcast/117388898523316723",
+     "seenAt": "2026-10-05T15:00:40.849Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "twistedtropespodcast.com",
+     "postUrl": "https://mastodon.social/@szhpodcast/117063314781332929",
+     "seenAt": "2026-08-09T03:00:27.213Z"
+    }
+   ]
+  },
+  {
+   "acct": "paullev@mastodon.social",
+   "url": "https://mastodon.social/@PaulLev",
+   "displayName": "Paul Levinson",
+   "avatar": "https://files.mastodon.social/accounts/avatars/109/259/738/495/981/019/original/c89ef96b9f577574.jpg",
+   "bot": false,
+   "bio": "#author 20 books: #ScienceFiction novels (best known: The Silk Code, The Plot to Save Socrates), media/politics (best known: The Soft Edge, Digital McLuhan, New New Media); prof Fordham Univ in New Y…",
+   "showUrl": "https://paullev.libsyn.com/",
+   "observedAt": "2026-11-20T00:05:40+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@PaulLev/117397331243275963",
+     "seenAt": "2026-10-07T02:45:13.946Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@PaulLev/117282893922379646",
+     "seenAt": "2026-09-16T21:42:19.007Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://mastodon.social/@PaulLev/117361251121072036",
+     "seenAt": "2026-09-30T17:49:34.971Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "wfuv.org",
+     "postUrl": "https://mastodon.social/@PaulLev/117198597718788192",
+     "seenAt": "2026-09-02T00:24:41.016Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@PaulLev/117515879038619193",
+     "seenAt": "2026-10-28T01:13:29.746Z"
+    }
+   ]
+  },
+  {
+   "acct": "michaelshotter@mastodon.social",
+   "url": "https://mastodon.social/@michaelshotter",
+   "displayName": "Michael Shotter",
+   "avatar": "https://files.mastodon.social/accounts/avatars/113/182/026/346/756/528/original/d2bbb08042e0b513.jpg",
+   "bot": false,
+   "bio": "Author Co-Host of The Post Mortem Report podcast",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:20+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@michaelshotter/117509749849932231",
+     "seenAt": "2026-10-26T23:14:45.761Z"
+    }
+   ]
+  },
+  {
+   "acct": "octothorpecast@wandering.shop",
+   "url": "https://wandering.shop/@octothorpecast",
+   "displayName": "Octothorpe",
+   "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/494/610/762/194/184/original/826d6e6bd215938c.png",
+   "bot": false,
+   "bio": "A Hugo Award-winning podcast about science fiction and SF fandom from @johncoxon, @bohemiancoast (Alison Scott), and @lizbatty. Most toots are by John.",
+   "showUrl": "https://octothorpe.podbean.com/",
+   "observedAt": "2026-11-20T00:05:01+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podbean.com",
+     "postUrl": "https://wandering.shop/@octothorpecast/113519886716979617",
+     "seenAt": "2024-11-21T08:00:05.848Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "universeodon.com",
+     "postUrl": "https://wandering.shop/@octothorpecast/115105993532701406",
+     "seenAt": "2025-08-28T10:47:55.171Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "wandering.shop",
+     "postUrl": "https://wandering.shop/@octothorpecast/117406510451695312",
+     "seenAt": "2026-10-08T17:39:37.545Z"
+    }
+   ]
+  },
+  {
+   "acct": "deidzoeb@podvibes.co",
+   "url": "https://podvibes.co/@Deidzoeb",
+   "displayName": "Deidzoeb/R Northrup :podcast:",
+   "avatar": "https://cdn.masto.host/podvibesco/accounts/avatars/109/348/545/766/145/372/original/9ef2498d9e49ae2b.jpg",
+   "bot": false,
+   "bio": "The one-man show behind This Gun in My Hand, a scripted #AudioDrama #podcast that parodies #OldTimeRadio , #pulp mags, #superheroes , #hardboiled detectives, modern politics & gun culture. On social…",
+   "showUrl": "https://ThisGuninMyHand.blogspot.com",
+   "observedAt": "2026-11-19T23:59:26+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podvibes.co",
+     "postUrl": "https://podvibes.co/@Deidzoeb/117144814219521331",
+     "seenAt": "2026-08-23T12:26:49.942Z"
+    }
+   ]
+  },
+  {
+   "acct": "ilanderz@mastodon.social",
+   "url": "https://mastodon.social/@ilanderz",
+   "displayName": "Donovan Street Press Inc.",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/087/277/408/111/532/original/f4de3a35938c18a7.png",
+   "bot": false,
+   "bio": "Traditionally published quality books. Based in Riverview New Brunswick.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:26+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@ilanderz/116289792121345083",
+     "seenAt": "2026-03-25T12:23:28.124Z"
+    }
+   ]
+  },
+  {
+   "acct": "nathan_graves@mastodon.social",
+   "url": "https://mastodon.social/@nathan_graves",
+   "displayName": "Nathan Graves",
+   "avatar": "https://files.mastodon.social/accounts/avatars/114/689/008/792/540/739/original/86794df8832364bf.png",
+   "bot": false,
+   "bio": "The world’s forgotten stories still whisper in the dark. Join host Nathan Graves as he unearths the myths, curses, and legends that have haunted generations. From shadowy forests to ancient ruins, ev…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:00+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@nathan_graves/116012805823573443",
+     "seenAt": "2026-02-04T14:22:12.655Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@nathan_graves/116012805823573443",
+     "seenAt": "2026-02-04T14:22:12.655Z"
+    }
+   ]
+  },
+  {
+   "acct": "cryptobiography@mastodon.world",
+   "url": "https://mastodon.world/@CryptoBiography",
+   "displayName": "CryptoBiography",
+   "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/413/052/588/843/174/original/5e4b18a4e7e89cb1.jpg",
+   "bot": false,
+   "bio": "Fiction (and occasionally nonfiction) podcast on Apple Podcasts, YouTube, and cryptobiography.com. Hosted by Brandon Starr",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:57+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.world",
+     "postUrl": "https://mastodon.world/@CryptoBiography/113936235871157304",
+     "seenAt": "2025-02-02T20:43:09.734Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.world/@CryptoBiography/114530651922056100",
+     "seenAt": "2025-05-18T20:10:58.870Z"
+    }
+   ]
+  },
+  {
+   "acct": "octoberschildrenpodcast@podvibes.co",
+   "url": "https://podvibes.co/@OctobersChildrenPodcast",
+   "displayName": "Octobers Children :podcast:",
+   "avatar": "https://cdn.masto.host/podvibesco/accounts/avatars/109/338/166/532/812/549/original/eef0e1a731a3349d.png",
+   "bot": false,
+   "bio": "A paranormal mystery/horror AD about a small New England town where things are getting dangerously weird",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:58+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "ko-fi.com",
+     "postUrl": "https://podvibes.co/@OctobersChildrenPodcast/109966568529145943",
+     "seenAt": "2023-03-04T19:04:33.115Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "octoberschildrenpodcast.creator-spring.com",
+     "postUrl": "https://podvibes.co/@OctobersChildrenPodcast/110531544203466781",
+     "seenAt": "2023-06-12T13:45:17.758Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podvibes.co",
+     "postUrl": "https://podvibes.co/@OctobersChildrenPodcast/110768854338953330",
+     "seenAt": "2023-07-24T11:36:23.060Z"
+    }
+   ]
+  },
+  {
+   "acct": "cupandsaucybooks@universeodon.com",
+   "url": "https://universeodon.com/@cupandsaucybooks",
+   "displayName": "The Cup and Saucy Book Club",
+   "avatar": "https://media.universeodon.com/accounts/avatars/109/377/823/606/061/776/original/680d50535fee6031.png",
+   "bot": false,
+   "bio": "A couple of friends separated by a continent, talking about books, authors, audiobook narrators, readers, and related industries. Coming Jan 2, 2023 to your favorite podcast platform https://www.cupa…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:56+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "universeodon.com",
+     "postUrl": "https://universeodon.com/@cupandsaucybooks/109689563533115906",
+     "seenAt": "2023-01-14T20:58:32.315Z"
+    },
+    {
+     "kind": "short",
+     "source": "tiktok",
+     "postUrl": "https://universeodon.com/@cupandsaucybooks/109974155046676560",
+     "seenAt": "2023-03-06T03:13:54.188Z"
+    }
+   ]
+  },
+  {
+   "acct": "mansfield_mysteries@indieauthors.social",
+   "url": "https://indieauthors.social/@mansfield_mysteries",
+   "displayName": "Mansfield Mysteries",
+   "avatar": "https://storage.googleapis.com/indieauthors/accounts/avatars/109/570/170/795/690/988/original/ff7d676696ab4039.jpg",
+   "bot": false,
+   "bio": "Mansfield Mysteries is a satirical, cozy murder whodunit podcast featuring the inquisitive, martini-loving socialite Dorinda Mansfield. Set in quiet, affluent Berkshire Bay, & told over 9 hilarious e…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:49+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "indieauthors.social",
+     "postUrl": "https://indieauthors.social/@mansfield_mysteries/109757174303017094",
+     "seenAt": "2023-01-26T19:32:50.789Z"
+    }
+   ]
+  },
+  {
+   "acct": "beingbookish@mastodonapp.uk",
+   "url": "https://mastodonapp.uk/@beingbookish",
+   "displayName": "Raye",
+   "avatar": "https://files.mastodonapp.uk/accounts/avatars/109/312/807/968/506/678/original/afc2ff6115a10f76.jpg",
+   "bot": false,
+   "bio": "Avid reader, tea drinker, podcaster, book reviewer. What more can I say but that I love reading, I love to talk about reading and if it's fiction point me in its direction. I host a podcast where I t…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:44+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodonapp.uk",
+     "postUrl": "https://mastodonapp.uk/@beingbookish/109327390755148201",
+     "seenAt": "2022-11-11T21:53:14.502Z"
+    }
+   ]
+  }
+ ]
+}

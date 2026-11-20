@@ -1,0 +1,220 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "civic-life",
+ "lang": "en",
+ "title": {
+  "en": "Civic Life",
+  "de": "Bürgergesellschaft",
+  "fr": "Vie civique",
+  "es": "Vida cívica",
+  "ja": "市民生活",
+  "it": "Vita civica",
+  "pt": "Vida cívica",
+  "nl": "Openbaar bestuur",
+  "pl": "Życie obywatelskie",
+  "sv": "Samhällsliv",
+  "ru": "Общественная жизнь",
+  "ko": "시민 생활",
+  "uk": "Громадське життя",
+  "tr": "Yurttaşlık",
+  "el": "Δημόσιος βίος",
+  "zh": "公共生活",
+  "cs": "Veřejný život",
+  "fi": "Yhteiskunnallinen elämä",
+  "ca": "Vida cívica",
+  "no": "Samfunnsliv",
+  "ar": "الحياة المدنية",
+  "zh-Hant": "公民生活"
+ },
+ "icon": "🗳️",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "theallaboutnothingpodcast@mastodon.social",
+   "url": "https://mastodon.social/@theallaboutnothingpodcast",
+   "displayName": "The All About Nothing: Podcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/378/004/968/781/447/original/a13645ef9eb8c8fe.png",
+   "bot": false,
+   "bio": "In a world with news and politics, sports and entertainment, flying at you all the time, sometimes it takes a little more conversation to make it feel sane. That's what we do! https://theallaboutnoth…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:27+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "linktr.ee",
+     "postUrl": "https://mastodon.social/@theallaboutnothingpodcast/117644843094385642",
+     "seenAt": "2026-11-19T19:50:45.082Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@theallaboutnothingpodcast/117644843094385642",
+     "seenAt": "2026-11-19T19:50:45.082Z"
+    }
+   ]
+  },
+  {
+   "acct": "presidencies@masto.ai",
+   "url": "https://masto.ai/@presidencies",
+   "displayName": "Presidencies of the US",
+   "avatar": "https://s3.masto.ai/accounts/avatars/109/339/259/860/543/005/original/58f4e63ed157db4a.jpg",
+   "bot": false,
+   "bio": "The Presidencies of the United States is a podcast devoted to exploring each presidency from the very beginning in depth. I take a systematic approach to both the people and the events that have shap…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:13+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "masto.ai",
+     "postUrl": "https://masto.ai/@presidencies/117640005869335447",
+     "seenAt": "2026-11-18T23:20:34.876Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://masto.ai/@presidencies/117592568789465457",
+     "seenAt": "2026-11-10T14:16:42.483Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "presidenciespodcast.com",
+     "postUrl": "https://masto.ai/@presidencies/117644170474781584",
+     "seenAt": "2026-11-19T16:59:41.713Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://masto.ai/@presidencies/117640005869335447",
+     "seenAt": "2026-11-18T23:20:34.876Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://masto.ai/@presidencies/117564288912068287",
+     "seenAt": "2026-11-05T14:24:45.798Z"
+    }
+   ]
+  },
+  {
+   "acct": "europeanspodcast@mastodon.social",
+   "url": "https://mastodon.social/@europeanspodcast",
+   "displayName": "The Europeans",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/957/529/316/616/787/original/0a3143b00e3c9c44.png",
+   "bot": false,
+   "bio": "Award-winning podcasts about European politics and culture. New episodes every Thursday 🎉",
+   "showUrl": "https://podcasts.apple.com/gb/podcast/the-europeans/id1315776736",
+   "observedAt": "2026-11-20T00:00:42+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "europeanspodcast.com",
+     "postUrl": "https://mastodon.social/@europeanspodcast/117642562100352258",
+     "seenAt": "2026-11-19T10:10:39.886Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "europeanspodcast.substack.com",
+     "postUrl": "https://mastodon.social/@europeanspodcast/117529565136039387",
+     "seenAt": "2026-10-30T11:14:03.023Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@europeanspodcast/117642562100352258",
+     "seenAt": "2026-11-19T10:10:39.886Z"
+    }
+   ]
+  },
+  {
+   "acct": "gregthebrave@mastodon.social",
+   "url": "https://mastodon.social/@gregthebrave",
+   "displayName": "Greg the Brave",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/245/205/573/023/706/original/0ac2d7a476944e4f.png",
+   "bot": false,
+   "bio": "Writer/Podcaster about parenting and the joys that come from rejected wisdom. Tour guide for Samuel Adams Boston Brewery (Your uncle from Boston) with a genuine Boston accent.",
+   "showUrl": "https://open.spotify.com/show/5Sjbk4YtROIlf0ooxglQbS?si=jojFFYt-QzmlEDE02qddWQ",
+   "observedAt": "2026-11-20T00:01:29+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@gregthebrave/117564841720454763",
+     "seenAt": "2026-11-05T16:45:20.985Z"
+    },
+    {
+     "kind": "short",
+     "source": "instagram",
+     "postUrl": "https://mastodon.social/@gregthebrave/117632340261859818",
+     "seenAt": "2026-11-17T14:51:06.985Z"
+    }
+   ]
+  },
+  {
+   "acct": "laurarbelin@mastodon.social",
+   "url": "https://mastodon.social/@LauraRBelin",
+   "displayName": "LauraRBelin",
+   "avatar": "https://files.mastodon.social/accounts/avatars/109/258/434/085/888/221/original/791176256bb4214e.jpg",
+   "bot": false,
+   "bio": "Publisher, editor, primary reporter for the Iowa political website Bleeding Heartland. https://www.bleedingheartland.com Part-time statehouse reporter for KHOI Radio in Ames. Find \"KHOI's Capitol Wee…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:27+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "laurabelin.substack.com",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117575797221973912",
+     "seenAt": "2026-11-07T15:11:28.665Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podomatic.com",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117464999247354004",
+     "seenAt": "2026-10-19T01:34:05.743Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117611666366524718",
+     "seenAt": "2026-11-13T23:13:28.373Z"
+    }
+   ]
+  },
+  {
+   "acct": "ihppod@mastodon.world",
+   "url": "https://mastodon.world/@ihppod",
+   "displayName": "I Hate Politics Podcast",
+   "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/363/051/922/601/832/original/c7e458372c8935e8.png",
+   "bot": false,
+   "bio": "Cheekily exploring a human activity we love to hate. A podcast about politics close to home, in schools, roads, & local govt. Host: Sunil Dasgupta #DoingPoliSci More at: https://ihppod.org/",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:14+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.world/@ihppod/109606078350169469",
+     "seenAt": "2022-12-31T03:07:09.512Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://mastodon.world/@ihppod/109606078350169469",
+     "seenAt": "2022-12-31T03:07:09.512Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.google.com",
+     "postUrl": "https://mastodon.world/@ihppod/109606078350169469",
+     "seenAt": "2022-12-31T03:07:09.512Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.world/@ihppod/109800800077914814",
+     "seenAt": "2023-02-03T12:27:27.291Z"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,208 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "film-and-tv",
+ "lang": "de",
+ "title": {
+  "en": "Film and TV",
+  "de": "Film und Fernsehen",
+  "fr": "Cinéma et télévision",
+  "es": "Cine y televisión",
+  "ja": "映画とテレビ",
+  "it": "Cinema e TV",
+  "pt": "Cinema e TV",
+  "nl": "Film en tv",
+  "pl": "Film i telewizja",
+  "sv": "Film och TV",
+  "ru": "Кино и телевидение",
+  "ko": "영화와 TV",
+  "uk": "Кіно і телебачення",
+  "tr": "Film ve televizyon",
+  "el": "Κινηματογράφος και τηλεόραση",
+  "zh": "电影与电视",
+  "ca": "Cinema i televisió",
+  "cs": "Film a televize",
+  "fi": "Elokuvat ja televisio",
+  "no": "Film og TV",
+  "ar": "السينما والتلفزيون",
+  "zh-Hant": "電影與電視"
+ },
+ "icon": "🎬",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "maierhofer@wien.rocks",
+   "url": "https://wien.rocks/@maierhofer",
+   "displayName": "Thomas Maierhofer",
+   "avatar": "https://wien.rocks/system/accounts/avatars/114/416/292/359/668/003/original/f6baf2c2c9c8e3d8.jpg",
+   "bot": false,
+   "bio": "Gestaltet die Radiosendung: https://cba.media/podcast/motion-picture-soundtrack-jeden-ersten-donnerstag-im-monat-1200-uhr",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:50+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "postUrl": "https://wien.rocks/@maierhofer/116297293187950013",
+     "seenAt": "2026-03-26T20:11:05.302Z"
+    },
+    {
+     "kind": "full-player",
+     "source": "direct-audio",
+     "postUrl": "https://wien.rocks/@maierhofer/116240580243537919",
+     "seenAt": "2026-03-16T19:48:14.442Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "cba.media",
+     "postUrl": "https://wien.rocks/@maierhofer/117366253279688445",
+     "seenAt": "2026-10-01T15:01:41.866Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://wien.rocks/@maierhofer/117223510163966300",
+     "seenAt": "2026-09-06T10:00:14.980Z"
+    }
+   ]
+  },
+  {
+   "acct": "secondunitstudios@mastodon.social",
+   "url": "https://mastodon.social/@secondunitstudios",
+   "displayName": "Second Unit Studios",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/969/452/999/311/857/original/c053b7ae62fe8b26.jpg",
+   "bot": false,
+   "bio": "Heimat der Second Unit, Superhero Unit, Bast&Christian&George&Lucas und vielen weiteren Podcasts. Posts in Handarbeit von @csteiner",
+   "showUrl": "https://podcasts.apple.com/de/channel/second-unit-studios/id6467397502",
+   "observedAt": "2026-11-20T00:06:58+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@secondunitstudios/117643170774937943",
+     "seenAt": "2026-11-19T12:45:27.503Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "secondunit-podcast.de",
+     "postUrl": "https://mastodon.social/@secondunitstudios/117546981191377330",
+     "seenAt": "2026-11-02T13:03:10.938Z"
+    }
+   ]
+  },
+  {
+   "acct": "herrhochhaus@mastodon.social",
+   "url": "https://mastodon.social/@herrhochhaus",
+   "displayName": "Herr Hochhaus",
+   "avatar": "https://files.mastodon.social/accounts/avatars/117/320/293/082/834/961/original/6c2265df4d79707a.png",
+   "bot": false,
+   "bio": "\"Every day, once a day, give yourself a present. Don’t plan it, don’t wait for it, just let it happen. It could be a new shirt at the men’s store, a catnap in your office chair or two cups of good ho…",
+   "showUrl": "https://www.geekcast.de/",
+   "observedAt": "2026-11-20T00:01:58+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@herrhochhaus/117642035152175920",
+     "seenAt": "2026-11-19T07:56:39.287Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@herrhochhaus/117332695874642511",
+     "seenAt": "2026-09-25T16:47:36.487Z"
+    }
+   ]
+  },
+  {
+   "acct": "eigentlich@podcasts.social",
+   "url": "https://podcasts.social/@eigentlich",
+   "displayName": "Eigentlich Podcast",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/110/320/844/158/162/673/original/7b14ef0ab058689d.jpg",
+   "bot": false,
+   "bio": "\"Beim Laufen reden und laufend reden\"",
+   "showUrl": "https://eigentlich-podcast.de/",
+   "observedAt": "2026-11-20T00:00:15+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "eigentlich-podcast.de",
+     "postUrl": "https://podcasts.social/@eigentlich/117641882269464774",
+     "seenAt": "2026-11-19T07:17:46.466Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://podcasts.social/@eigentlich/117641882269464774",
+     "seenAt": "2026-11-19T07:17:46.466Z"
+    }
+   ]
+  },
+  {
+   "acct": "theretrosven@troet.cafe",
+   "url": "https://troet.cafe/@theretrosven",
+   "displayName": "TanukiTantrum",
+   "avatar": "https://media.troet.cafe/troet/accounts/avatars/111/188/874/720/764/939/original/723f2b60800b5a6c.png",
+   "bot": false,
+   "bio": "SpassMitVideospielen hat einen neuen Namen: TanukiTantrum! Ich streame auf Twitch, alles von Trashgame bis Meisterwerk. Habe einen Podcast über Games, Filme und Popcultur. Nebenbei schreibe ich an ei…",
+   "showUrl": "https://linktr.ee/TanukiTantrum",
+   "observedAt": "2026-11-20T00:07:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "anchor.fm",
+     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
+     "seenAt": "2026-11-14T16:17:35.498Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://troet.cafe/@theretrosven/117615206091116861",
+     "seenAt": "2026-11-14T14:13:40.289Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasters.spotify.com",
+     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
+     "seenAt": "2026-11-14T16:17:35.498Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "troet.cafe",
+     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
+     "seenAt": "2026-11-14T16:17:35.498Z"
+    }
+   ]
+  },
+  {
+   "acct": "dieletztewebsite@mastodon.green",
+   "url": "https://mastodon.green/@DieLetzteWebsite",
+   "displayName": "Die Letzte Website",
+   "avatar": "https://files.mastodon.green/accounts/avatars/110/644/830/385/574/161/original/c6b624211ed51bc5.jpg",
+   "bot": false,
+   "bio": "Mastodon-Heimat von https://www.DieLetzte.website mit \"Der Letzte Podcast\", \"Die Letzte Filmkritik\", \"Letzte Worte\" und \"Das Letzte Level\". Hört uns bei Apple Podcasts, Spotify oder auf https://www.D…",
+   "showUrl": "https://www.dieletzte.website",
+   "observedAt": "2026-11-19T23:59:37+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "dieletzte.website",
+     "postUrl": "https://mastodon.green/@DieLetzteWebsite/117607176568040947",
+     "seenAt": "2026-11-13T04:11:39.496Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.green",
+     "postUrl": "https://mastodon.green/@DieLetzteWebsite/117607176568040947",
+     "seenAt": "2026-11-13T04:11:39.496Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "patreon.com",
+     "postUrl": "https://mastodon.green/@DieLetzteWebsite/117594552717389489",
+     "seenAt": "2026-11-10T22:41:14.815Z"
+    }
+   ]
+  }
+ ]
+}

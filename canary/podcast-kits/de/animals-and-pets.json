@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "animals-and-pets",
+ "lang": "de",
+ "title": {
+  "en": "Animals and Pets",
+  "de": "Tiere und Haustiere",
+  "fr": "Animaux et compagnons",
+  "es": "Animales y mascotas",
+  "ja": "動物とペット",
+  "it": "Animali e animali domestici",
+  "pt": "Animais e bichos",
+  "nl": "Dieren en huisdieren",
+  "pl": "Zwierzęta",
+  "sv": "Djur och husdjur",
+  "ru": "Животные и питомцы",
+  "ko": "동물과 반려동물",
+  "uk": "Тварини та улюбленці",
+  "tr": "Hayvanlar ve evcil hayvanlar",
+  "el": "Ζώα και κατοικίδια",
+  "zh": "动物与宠物",
+  "ca": "Animals i mascotes",
+  "cs": "Zvířata a domácí mazlíčci",
+  "fi": "Eläimet ja lemmikit",
+  "no": "Dyr og kjæledyr",
+  "ar": "الحيوانات والحيوانات الأليفة",
+  "zh-Hant": "動物與寵物"
+ },
+ "icon": "🐾",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "friederikeschmitz@norden.social",
+   "url": "https://norden.social/@friederikeschmitz",
+   "displayName": "Friederike Schmitz",
+   "avatar": "https://media.norden.social/accounts/avatars/109/258/618/399/184/729/original/a87f046a0b91f947.png",
+   "bot": false,
+   "bio": "★Philosophin & Autorin ★ 🎧 Was zu retten ist: Podcast über Klima, Kollaps und Ernährung 📕 Anders satt: Wie der Ausstieg aus der Tierindustrie gelingt (2022) Team https://mastodon.social/@fabakonzepte",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:55+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podcast.de",
+     "postUrl": "https://norden.social/@friederikeschmitz/117491059671350562",
+     "seenAt": "2026-10-23T16:01:36.255Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://norden.social/@friederikeschmitz/117473742028012960",
+     "seenAt": "2026-10-20T14:37:29.986Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "waszurettenist.podcaster.de",
+     "postUrl": "https://norden.social/@friederikeschmitz/117502546329275813",
+     "seenAt": "2026-10-25T16:42:48.745Z"
+    }
+   ]
+  }
+ ]
+}

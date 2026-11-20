@@ -1,0 +1,178 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "games",
+ "lang": "de",
+ "title": {
+  "en": "Games",
+  "de": "Spiele",
+  "fr": "Jeux",
+  "es": "Videojuegos",
+  "ja": "ゲーム",
+  "it": "Videogiochi",
+  "pt": "Jogos",
+  "nl": "Games",
+  "pl": "Gry",
+  "sv": "Spel",
+  "ru": "Игры",
+  "ko": "게임",
+  "uk": "Ігри",
+  "tr": "Oyunlar",
+  "el": "Παιχνίδια",
+  "zh": "游戏",
+  "ca": "Jocs",
+  "cs": "Hry",
+  "fi": "Pelit",
+  "no": "Spill",
+  "ar": "الألعاب",
+  "zh-Hant": "遊戲"
+ },
+ "icon": "🎮",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "satori_y@mastodon.social",
+   "url": "https://mastodon.social/@satori_y",
+   "displayName": "Satori Yakamura",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/833/932/569/670/248/original/940809af2a363beb.png",
+   "bot": false,
+   "bio": "Hallo, ich bin Satori! Ich erzähle Geschichten, die ich noch nicht kenne. #penandpaperde #mythicgme #podcast #rollenspiel #ttrpg",
+   "showUrl": "https://ausgewuerfelt.yakamura.de/",
+   "observedAt": "2026-11-20T00:06:51+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "seenAt": "2026-11-19T21:15:06.219Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "seenAt": "2026-11-19T21:15:06.219Z"
+    }
+   ]
+  },
+  {
+   "acct": "theretrosven@troet.cafe",
+   "url": "https://troet.cafe/@theretrosven",
+   "displayName": "TanukiTantrum",
+   "avatar": "https://media.troet.cafe/troet/accounts/avatars/111/188/874/720/764/939/original/723f2b60800b5a6c.png",
+   "bot": false,
+   "bio": "SpassMitVideospielen hat einen neuen Namen: TanukiTantrum! Ich streame auf Twitch, alles von Trashgame bis Meisterwerk. Habe einen Podcast über Games, Filme und Popcultur. Nebenbei schreibe ich an ei…",
+   "showUrl": "https://linktr.ee/TanukiTantrum",
+   "observedAt": "2026-11-20T00:07:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "anchor.fm",
+     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
+     "seenAt": "2026-11-14T16:17:35.498Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://troet.cafe/@theretrosven/117615206091116861",
+     "seenAt": "2026-11-14T14:13:40.289Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasters.spotify.com",
+     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
+     "seenAt": "2026-11-14T16:17:35.498Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "troet.cafe",
+     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
+     "seenAt": "2026-11-14T16:17:35.498Z"
+    }
+   ]
+  },
+  {
+   "acct": "datort@mastodon.social",
+   "url": "https://mastodon.social/@datort",
+   "displayName": "datort :mastodon:",
+   "avatar": "https://files.mastodon.social/accounts/avatars/106/929/422/237/346/186/original/f484b342e833bd69.png",
+   "bot": false,
+   "bio": "👾 C64-Kid → Arduino & ESP Maker | 🎮 Retro & Coding | 🎥 YouTube & 🎙️ Podcast: Pad One Please",
+   "showUrl": "https://datort.de/feed/podcast/pad-one-please/",
+   "observedAt": "2026-11-19T23:59:32+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "datort.de",
+     "postUrl": "https://mastodon.social/@datort/116073882530867195",
+     "seenAt": "2026-02-15T09:14:49.214Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@datort/116073882530867195",
+     "seenAt": "2026-02-15T09:14:49.214Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@datort/117514489336266424",
+     "seenAt": "2026-10-27T19:20:04.581Z"
+    }
+   ]
+  },
+  {
+   "acct": "vsg_de@mastodon.social",
+   "url": "https://mastodon.social/@vsg_DE",
+   "displayName": "Videospielgeschichten",
+   "avatar": "https://files.mastodon.social/accounts/avatars/109/245/487/579/963/954/original/7649a500c0d5163e.png",
+   "bot": false,
+   "bio": "🎮 Persönliche Geschichten über Videospiele ✨ Erinnerungen, Erlebnisse & Augenblicke 💙 Lesen, kommentieren & mitschreiben 📰 Blog · 🎙️ Podcast · 💬 Forum",
+   "showUrl": "https://videospielgeschichten.letscast.fm",
+   "observedAt": "2026-11-20T00:08:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@vsg_DE/117466877942679231",
+     "seenAt": "2026-10-19T09:31:52.363Z"
+    }
+   ]
+  },
+  {
+   "acct": "pat9496@oldbytes.space",
+   "url": "https://oldbytes.space/@pat9496",
+   "displayName": "Pat",
+   "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/670/799/597/069/436/original/6ba2d0db6c795b83.png",
+   "bot": false,
+   "bio": "Geek | Retrogamer | Modern Gamer | Reader | Parent | IT & Legacy Systems | Point-&-Click-Adventure & CRPG-Specialist | Pen-&-Paper-RPG-Enthusiast | Podcaster (🇬🇧/🇩🇪)",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:19+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "anchor.fm",
+     "postUrl": "https://oldbytes.space/@pat9496/113471458717285578",
+     "seenAt": "2024-11-12T18:44:13.181Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "oldbytes.space",
+     "postUrl": "https://oldbytes.space/@pat9496/110954526697577901",
+     "seenAt": "2023-08-26T06:35:18.408Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://oldbytes.space/@pat9496/115325957723480101",
+     "seenAt": "2025-10-06T07:07:42.333Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://oldbytes.space/@pat9496/111002110805843479",
+     "seenAt": "2023-09-03T16:16:34.279Z"
+    }
+   ]
+  }
+ ]
+}

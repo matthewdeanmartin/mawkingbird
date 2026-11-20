@@ -1,0 +1,106 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "science",
+ "lang": "fr",
+ "title": {
+  "en": "Science",
+  "de": "Wissenschaft",
+  "fr": "Sciences",
+  "es": "Ciência",
+  "ja": "科学",
+  "it": "Scienza",
+  "pt": "Ciência",
+  "nl": "Wetenschap",
+  "pl": "Nauka",
+  "sv": "Vetenskap",
+  "ru": "Наука",
+  "ko": "과학",
+  "uk": "Наука",
+  "tr": "Bilim",
+  "el": "Επιστήμη",
+  "zh": "科学",
+  "ca": "Ciència",
+  "cs": "Věda",
+  "fi": "Tiede",
+  "no": "Vitenskap",
+  "ar": "العلوم",
+  "zh-Hant": "科學"
+ },
+ "icon": "🔬",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "podcastscience@piaille.fr",
+   "url": "https://piaille.fr/@podcastscience",
+   "displayName": "Podcast Science",
+   "avatar": "https://static.piaille.fr/accounts/avatars/111/352/214/223/547/088/original/692228c76b92e0e6.png",
+   "bot": false,
+   "bio": "Le balado #podcast qui fait aimer la science, mercredi à 20h30 en live, et dans vos oreilles le reste de l'année ! Servir la #science, c'est notre joie ! https://www.podcastscience.fm",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:00+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "framaforms.org",
+     "postUrl": "https://piaille.fr/@podcastscience/116931047467879724",
+     "seenAt": "2026-07-16T18:23:08.171Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "my.weezevent.com",
+     "postUrl": "https://piaille.fr/@podcastscience/115622774976638596",
+     "seenAt": "2025-11-27T17:12:14.196Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "piaille.fr",
+     "postUrl": "https://piaille.fr/@podcastscience/117637211855769468",
+     "seenAt": "2026-11-18T11:30:01.609Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcastscience.fm",
+     "postUrl": "https://piaille.fr/@podcastscience/117610366823451573",
+     "seenAt": "2026-11-13T17:42:58.925Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://piaille.fr/@podcastscience/117637211855769468",
+     "seenAt": "2026-11-18T11:30:01.609Z"
+    }
+   ]
+  },
+  {
+   "acct": "metadechoc@mastodon.social",
+   "url": "https://mastodon.social/@MetadeChoc",
+   "displayName": "Méta de Choc",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/538/355/938/672/794/original/0858809f67bd500e.png",
+   "bot": false,
+   "bio": "Le #podcast de #PenséeCritique appliquée à soi. Et si on se demandait pourquoi on pense ce qu'on pense ? La #métacognition c'est choquant, vous allez voir ! En écoute sur toutes les applis audio et s…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:11+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@MetadeChoc/117610286241719621",
+     "seenAt": "2026-11-13T17:22:29.342Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "metadechoc.fr",
+     "postUrl": "https://mastodon.social/@MetadeChoc/117593678920262355",
+     "seenAt": "2026-11-10T18:59:01.733Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@MetadeChoc/117491462393708939",
+     "seenAt": "2026-10-23T17:44:01.315Z"
+    }
+   ]
+  }
+ ]
+}

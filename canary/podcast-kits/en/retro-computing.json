@@ -1,0 +1,154 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "retro-computing",
+ "lang": "en",
+ "title": {
+  "en": "Retro Computing",
+  "de": "Retro-Computing",
+  "fr": "Rétro-informatique",
+  "es": "Retroinformática",
+  "ja": "レトロコンピューティング",
+  "it": "Retrocomputing",
+  "pt": "Retrocomputação",
+  "nl": "Retrocomputing",
+  "pl": "Retro komputery",
+  "sv": "Retrodatorer",
+  "ru": "Ретрокомпьютеры",
+  "ko": "레트로 컴퓨팅",
+  "uk": "Ретрокомп'ютери",
+  "tr": "Retro bilgisayarlar",
+  "el": "Ρετρό υπολογιστές",
+  "zh": "复古计算机",
+  "ca": "Informàtica retro",
+  "cs": "Retro počítače",
+  "fi": "Retrotietokoneet",
+  "no": "Retrodatamaskiner",
+  "ar": "الحوسبة القديمة",
+  "zh-Hant": "復古電腦"
+ },
+ "icon": "🖥️",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "thelogbook@mstdn.social",
+   "url": "https://mstdn.social/@theLogBook",
+   "displayName": "Earl Green",
+   "avatar": "https://media.mstdn.social/accounts/avatars/109/331/593/963/091/620/original/396991a958c2accc.png",
+   "bot": false,
+   "bio": "Podcast editor/writer/producer/voice. Videocast/livecast producer. Friend to cats. Opinions are mine, not my employers'/clients'. He/him/hey you.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:25+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "missionlogpodcast.com",
+     "postUrl": "https://mstdn.social/@theLogBook/116834075011236409",
+     "seenAt": "2026-06-29T15:21:45.908Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mstdn.social/@theLogBook/116824871921009719",
+     "seenAt": "2026-06-28T00:21:17.897Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mstdn.social/@theLogBook/117632526326492446",
+     "seenAt": "2026-11-17T15:38:26.104Z"
+    }
+   ]
+  },
+  {
+   "acct": "janbeta@chaos.social",
+   "url": "https://chaos.social/@janbeta",
+   "displayName": "Jan Beta",
+   "avatar": "https://assets.chaos.social/accounts/avatars/108/193/563/796/459/140/original/9d61e09901f716c0.jpeg",
+   "bot": false,
+   "bio": "I repair/hack/make/destroy stuff on YouTube/PeerTube. RetroComputing, VintageAudio, Tinkering. Co-hosting the Elektroschrott podcast. As unprofessional as it gets. Anti-fascist. Chaotic good. C64 rul…",
+   "showUrl": "https://elektroschrott.org",
+   "observedAt": "2026-11-20T00:02:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://chaos.social/@janbeta/117574292128535310",
+     "seenAt": "2026-11-07T08:48:42.763Z"
+    }
+   ]
+  },
+  {
+   "acct": "dosnostalgic@mastodon.social",
+   "url": "https://mastodon.social/@dosnostalgic",
+   "displayName": "Anatoly Shashkin💾",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/011/472/original/d2e6ad703b6e8453.jpg",
+   "bot": false,
+   "bio": "MS-DOS gaming enthusiast, YouTuber, podcaster, cat admirer, RU in NY. Ask me about DOS games! Tell me your DOS game memories! I swear and repost a bunch. 🥂 (He/Him) I don't describe images",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:05+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117424456043382662",
+     "seenAt": "2026-10-11T21:43:25.547Z"
+    }
+   ]
+  },
+  {
+   "acct": "bluewizard@mastodon.sdf.org",
+   "url": "https://mastodon.sdf.org/@bluewizard",
+   "displayName": "Ryan",
+   "avatar": "https://mastodon.sdf.org/system/accounts/avatars/109/277/915/208/623/190/original/00a261892e7ff52a.png",
+   "bot": false,
+   "bio": "General tech guy that enjoys: Vintage #Amiga and #Commodore #retrocomputers. Casual board games with friends Enjoy digital modes of Amateur Radio Bluewizardnet Amiga blog Podcast creator R N R Does s…",
+   "showUrl": "https://www.rnrdoesstuff.com",
+   "observedAt": "2026-11-19T23:58:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.sdf.org",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/117068429688990407",
+     "seenAt": "2026-08-10T00:41:15.127Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "rnrdoesstuff.com",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/117068429688990407",
+     "seenAt": "2026-08-10T00:41:15.127Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/116184662661687209",
+     "seenAt": "2026-03-06T22:47:39.867Z"
+    }
+   ]
+  },
+  {
+   "acct": "ataripodcast@oldbytes.space",
+   "url": "https://oldbytes.space/@ataripodcast",
+   "displayName": "ANTIC Atari 8-Bit Podcast",
+   "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/382/778/164/644/772/original/824d577b43e5e6cc.png",
+   "bot": false,
+   "bio": "A podcast devoted to Atari 8-bit computers. Since 2013.",
+   "showUrl": "https://ataripodcast.libsyn.com/",
+   "observedAt": "2026-11-19T23:57:29+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "ataripodcast.libsyn.com",
+     "postUrl": "https://oldbytes.space/@ataripodcast/114031034580419544",
+     "seenAt": "2025-02-19T14:31:43.241Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "oldbytes.space",
+     "postUrl": "https://oldbytes.space/@ataripodcast/109383130469334986",
+     "seenAt": "2022-11-21T18:08:34.827Z"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "fediverse",
+ "lang": "fr",
+ "title": {
+  "en": "The Fediverse",
+  "de": "Das Fediverse",
+  "fr": "Le Fédiverse",
+  "es": "El fediverso",
+  "ja": "Fediverse",
+  "it": "Il fediverso",
+  "pt": "O fediverso",
+  "nl": "De fediverse",
+  "pl": "Fediwersum",
+  "sv": "Fediversum",
+  "ru": "Федиверс",
+  "ko": "페디버스",
+  "uk": "Федіверс",
+  "tr": "Fediverse",
+  "el": "Το Fediverse",
+  "zh": "联邦宇宙",
+  "ca": "Fedivers",
+  "cs": "Fediverse",
+  "fi": "Fediversumi",
+  "no": "Fødiverset",
+  "ar": "الفديفرس",
+  "zh-Hant": "聯邦宇宙"
+ },
+ "icon": "🐘",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "projetslibres_podcast@piaille.fr",
+   "url": "https://piaille.fr/@projetslibres_podcast",
+   "displayName": "Podcast Projets libres",
+   "avatar": "https://static.piaille.fr/accounts/avatars/110/366/415/193/400/078/original/c4bf31728e883736.png",
+   "bot": false,
+   "bio": "Podcast francophone sur les modèles économiques, données ouvertes et communautés du logiciel libre. Traductions en anglais disponibles. Suivre le podcast : https://podcast.projets-libres.org/@projets…",
+   "showUrl": "https://podcast.projets-libres.org/@projetslibres",
+   "observedAt": "2026-11-20T00:06:18+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "piaille.fr",
+     "postUrl": "https://piaille.fr/@projetslibres_podcast/117596704556965009",
+     "seenAt": "2026-11-11T07:48:29.282Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "projets-libres.org",
+     "postUrl": "https://piaille.fr/@projetslibres_podcast/117596704556965009",
+     "seenAt": "2026-11-11T07:48:29.282Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "vutuv.de",
+     "postUrl": "https://piaille.fr/@projetslibres_podcast/117264726767312287",
+     "seenAt": "2026-09-13T16:42:10.217Z"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,118 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "space-and-astronomy",
+ "lang": "de",
+ "title": {
+  "en": "Space and Astronomy",
+  "de": "Weltraum und Astronomie",
+  "fr": "Espace et astronomie",
+  "es": "Espacio y astronomía",
+  "ja": "宇宙と天文学",
+  "it": "Spazio e astronomia",
+  "pt": "Espaço e astronomia",
+  "nl": "Ruimte en astronomie",
+  "pl": "Kosmos i astronomia",
+  "sv": "Rymd och astronomi",
+  "ru": "Космос и астрономия",
+  "ko": "우주와 천문학",
+  "uk": "Космос та астрономія",
+  "tr": "Uzay ve astronomi",
+  "el": "Διάστημα και αστρονομία",
+  "zh": "太空与天文学",
+  "ca": "Espai i astronomia",
+  "cs": "Vesmír a astronomie",
+  "fi": "Avaruus ja tähtitiede",
+  "no": "Verdensrommet og astronomi",
+  "ar": "الفضاء وعلم الفلك",
+  "zh-Hant": "太空與天文"
+ },
+ "icon": "🔭",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "pikarl@reporter.social",
+   "url": "https://reporter.social/@pikarl",
+   "displayName": "Karl Urban",
+   "avatar": "https://reporter.social/system/accounts/avatars/109/338/233/296/677/222/original/49d7cf595bbe53aa.jpg",
+   "bot": false,
+   "bio": "Wissenschaftsjournalist 🖋️ Reporter für den @weltraum bei @riffreporter 🛰️🚀✨🪐 Geologe ⚒️ 💎 🌍 Podcaster @astro_geo 🎙️ Hobbyimker 🐝 Lebt in #Tübingen 🏔️🚴",
+   "showUrl": "https://astrogeo.de",
+   "observedAt": "2026-11-20T00:05:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "reporter.social",
+     "postUrl": "https://reporter.social/@pikarl/117608022693398487",
+     "seenAt": "2026-11-13T07:46:50.359Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "riffreporter.de",
+     "postUrl": "https://reporter.social/@pikarl/117557893306733708",
+     "seenAt": "2026-11-04T11:18:16.631Z"
+    }
+   ]
+  },
+  {
+   "acct": "astro_geo@chaos.social",
+   "url": "https://chaos.social/@astro_geo",
+   "displayName": "AstroGeo Podcast",
+   "avatar": "https://assets.chaos.social/accounts/avatars/108/203/851/361/401/739/original/06b31dd2b5946177.jpg",
+   "bot": false,
+   "bio": "Pro Podcast-Folge hörst du eine wahre Geschichte zwischen Weltall und Erde, #Astronomie und #Geologie, erzählt von Franziska Konitzer und Karl Urban (@pikarl). Wir sind der Podcast von @weltraum und…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:21+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "astrogeo.de",
+     "postUrl": "https://chaos.social/@astro_geo/117047990821884366",
+     "seenAt": "2026-08-06T10:03:22.143Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "chaos.social",
+     "postUrl": "https://chaos.social/@astro_geo/117603063764439813",
+     "seenAt": "2026-11-12T10:45:43.087Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://chaos.social/@astro_geo/117558232291579928",
+     "seenAt": "2026-11-04T12:44:29.097Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://chaos.social/@astro_geo/117279165889458577",
+     "seenAt": "2026-09-16T05:54:13.734Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "wissenschaftspodcasts.de",
+     "postUrl": "https://chaos.social/@astro_geo/117268110025311651",
+     "seenAt": "2026-09-14T07:02:34.637Z"
+    }
+   ]
+  },
+  {
+   "acct": "astrodicticum@chaos.social",
+   "url": "https://chaos.social/@astrodicticum",
+   "displayName": "Florian Freistetter",
+   "avatar": "https://assets.chaos.social/accounts/avatars/000/082/124/original/a43cdc482f275441.png",
+   "bot": false,
+   "bio": "Astronom, Autor, Podcaster, Science Busters, Wissenschaftskommunikation",
+   "showUrl": "https://sternengeschichten.podigee.io/",
+   "observedAt": "2026-11-19T23:57:24+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "radiokulturhaus.orf.at",
+     "postUrl": "https://chaos.social/@astrodicticum/117290722058675946",
+     "seenAt": "2026-09-18T06:53:06.881Z"
+    }
+   ]
+  }
+ ]
+}

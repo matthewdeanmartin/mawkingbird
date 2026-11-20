@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "security-and-privacy",
+ "lang": "en",
+ "title": {
+  "en": "Security and Privacy",
+  "de": "Sicherheit und Privatsphäre",
+  "fr": "Sécurité et vie privée",
+  "es": "Seguridad y privacidad",
+  "ja": "セキュリティとプライバシー",
+  "it": "Sicurezza e privacy",
+  "pt": "Segurança e privacidade",
+  "nl": "Beveiliging en privacy",
+  "pl": "Bezpieczeństwo i prywatność",
+  "sv": "Säkerhet och integritet",
+  "ru": "Безопасность и приватность",
+  "ko": "보안과 프라이버시",
+  "uk": "Безпека та приватність",
+  "tr": "Güvenlik ve gizlilik",
+  "el": "Ασφάλεια και ιδιωτικότητα",
+  "zh": "安全与隐私",
+  "ca": "Seguretat i privadesa",
+  "cs": "Bezpečnost a soukromí",
+  "fi": "Tietoturva ja yksityisyys",
+  "no": "Sikkerhet og personvern",
+  "ar": "الأمن والخصوصية",
+  "zh-Hant": "資訊安全與隱私"
+ },
+ "icon": "🔐",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "25admins@mastodon.social",
+   "url": "https://mastodon.social/@25admins",
+   "displayName": "2.5 Admins",
+   "avatar": "https://files.mastodon.social/accounts/avatars/114/406/659/686/570/731/original/440a290360d1f50c.png",
+   "bot": false,
+   "bio": "Podcast from Allan Jude, Jim Salter, and Joe Ressington. Tech news and your sysadmin questions answered weekly. Part of @latenightlinux",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:51+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@25admins/117644392079925519",
+     "seenAt": "2026-11-19T17:56:03.136Z"
+    }
+   ]
+  },
+  {
+   "acct": "angrynerdspodcast@mastodon.nl",
+   "url": "https://mastodon.nl/@angrynerdspodcast",
+   "displayName": "Angry Nerds Podcast 🍻",
+   "avatar": "https://mastodon.nl/system/accounts/avatars/109/365/416/844/558/811/original/9ec11f28e949e16a.jpg",
+   "bot": false,
+   "bio": "Nederlandse #podcast over #privacy, #security, #technologie en #ethiek. Een roulerend #panel bespreekt wekelijks op geheel eigen wijze de belangrijkste #cybers 🍻",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:06+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/116953102926067261",
+     "seenAt": "2026-07-20T15:52:07.757Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "video.angrynerdspodcast.nl",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370127536847168",
+     "seenAt": "2026-10-02T07:26:58.323Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117435036897213616",
+     "seenAt": "2026-10-13T18:34:16.564Z"
+    }
+   ]
+  }
+ ]
+}

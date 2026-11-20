@@ -1,0 +1,130 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "science",
+ "lang": "en",
+ "title": {
+  "en": "Science",
+  "de": "Wissenschaft",
+  "fr": "Sciences",
+  "es": "Ciência",
+  "ja": "科学",
+  "it": "Scienza",
+  "pt": "Ciência",
+  "nl": "Wetenschap",
+  "pl": "Nauka",
+  "sv": "Vetenskap",
+  "ru": "Наука",
+  "ko": "과학",
+  "uk": "Наука",
+  "tr": "Bilim",
+  "el": "Επιστήμη",
+  "zh": "科学",
+  "ca": "Ciència",
+  "cs": "Věda",
+  "fi": "Tiede",
+  "no": "Vitenskap",
+  "ar": "العلوم",
+  "zh-Hant": "科學"
+ },
+ "icon": "🔬",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "lingthusiasm@wandering.shop",
+   "url": "https://wandering.shop/@lingthusiasm",
+   "displayName": "Lingthusiasm",
+   "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/295/172/938/540/315/original/0169ca690dbec14b.png",
+   "bot": false,
+   "bio": "A podcast that's enthusiastic about linguistics! By @gretchenmcc and @superlinguo",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:31+00:00",
+   "media": [
+    {
+     "kind": "full-player",
+     "source": "soundcloud",
+     "postUrl": "https://wandering.shop/@lingthusiasm/117447725480309331",
+     "seenAt": "2026-10-16T00:21:08.982Z"
+    }
+   ]
+  },
+  {
+   "acct": "nachgefragt@mastodon.social",
+   "url": "https://mastodon.social/@nachgefragt",
+   "displayName": "Nachgefragt | Michaela Voth",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/177/405/831/114/618/original/bc9147007420f725.png",
+   "bot": false,
+   "bio": "🎙️ Wissenschaftspodcast von Michaela „Michi“ Voth Komplexe Themen. Klare Haltung. Evidenzbasiert & unabhängig.",
+   "showUrl": "https://nachgefragt-podcast.de/feed/episodes/",
+   "observedAt": "2026-11-20T00:04:55+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@nachgefragt/116607583260379581",
+     "seenAt": "2026-05-20T15:21:56.066Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "nachgefragt-podcast.de",
+     "postUrl": "https://mastodon.social/@nachgefragt/117643944946626399",
+     "seenAt": "2026-11-19T16:02:20.426Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "troet.cafe",
+     "postUrl": "https://mastodon.social/@nachgefragt/115344970007012944",
+     "seenAt": "2025-10-09T15:42:46.766Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@nachgefragt/116299930017191882",
+     "seenAt": "2026-03-27T07:21:40.122Z"
+    }
+   ]
+  },
+  {
+   "acct": "sci_burst@mastodon.social",
+   "url": "https://mastodon.social/@sci_burst",
+   "displayName": "Sci_Burst",
+   "avatar": "https://files.mastodon.social/accounts/avatars/112/014/396/499/366/029/original/9855df85c8e0e739.jpeg",
+   "bot": false,
+   "bio": "🧪 Making #science accessible through #popculture 🎬 ☀️ Inspiring hopeful, #sustainable futures ✨ 👩‍🔬 @1sabelR & @theEllamo 💌 hello[at]sci-burst.com.au 💌 #scicomm #solarpunk",
+   "showUrl": "https://linktr.ee/sci_burst",
+   "observedAt": "2026-11-20T00:06:55+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "abc.net.au",
+     "postUrl": "https://mastodon.social/@sci_burst/116884089486556448",
+     "seenAt": "2026-07-08T11:21:06.247Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "careerswithstem.com.au",
+     "postUrl": "https://mastodon.social/@sci_burst/117634745715343100",
+     "seenAt": "2026-11-18T01:02:51.292Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@sci_burst/117634745715343100",
+     "seenAt": "2026-11-18T01:02:51.292Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@sci_burst/116855617415880818",
+     "seenAt": "2026-07-03T10:40:16.920Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@sci_burst/117476327571531822",
+     "seenAt": "2026-10-21T01:35:02.247Z"
+    }
+   ]
+  }
+ ]
+}

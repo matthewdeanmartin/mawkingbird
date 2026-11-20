@@ -1,0 +1,94 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "music",
+ "lang": "de",
+ "title": {
+  "en": "Music",
+  "de": "Musik",
+  "fr": "Musique",
+  "es": "Música",
+  "ja": "音楽",
+  "it": "Musica",
+  "pt": "Música",
+  "nl": "Muziek",
+  "pl": "Muzyka",
+  "sv": "Musik",
+  "ru": "Музыка",
+  "ko": "음악",
+  "uk": "Музика",
+  "tr": "Müzik",
+  "el": "Μουσική",
+  "zh": "音乐",
+  "ca": "Música",
+  "cs": "Hudba",
+  "fi": "Musiikki",
+  "no": "Musikk",
+  "ar": "الموسيقى",
+  "zh-Hant": "音樂"
+ },
+ "icon": "🎵",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "maierhofer@wien.rocks",
+   "url": "https://wien.rocks/@maierhofer",
+   "displayName": "Thomas Maierhofer",
+   "avatar": "https://wien.rocks/system/accounts/avatars/114/416/292/359/668/003/original/f6baf2c2c9c8e3d8.jpg",
+   "bot": false,
+   "bio": "Gestaltet die Radiosendung: https://cba.media/podcast/motion-picture-soundtrack-jeden-ersten-donnerstag-im-monat-1200-uhr",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:50+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "postUrl": "https://wien.rocks/@maierhofer/116297293187950013",
+     "seenAt": "2026-03-26T20:11:05.302Z"
+    },
+    {
+     "kind": "full-player",
+     "source": "direct-audio",
+     "postUrl": "https://wien.rocks/@maierhofer/116240580243537919",
+     "seenAt": "2026-03-16T19:48:14.442Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "cba.media",
+     "postUrl": "https://wien.rocks/@maierhofer/117366253279688445",
+     "seenAt": "2026-10-01T15:01:41.866Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://wien.rocks/@maierhofer/117223510163966300",
+     "seenAt": "2026-09-06T10:00:14.980Z"
+    }
+   ]
+  },
+  {
+   "acct": "detektorfm@social.detektor.fm",
+   "url": "https://social.detektor.fm/@detektorfm",
+   "displayName": "detektor.fm :dfm:",
+   "avatar": "https://social.detektor.fm/system/accounts/avatars/109/705/336/470/263/839/original/2f108b5bc8317044.jpg",
+   "bot": false,
+   "bio": "Podcast-Radio / Neue Musik & Journalismus / https://detektor.fm/impressum / #podcasts #podcasting #radio",
+   "showUrl": "https://detektor.fm/serien/spektrum",
+   "observedAt": "2026-11-19T23:59:32+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "detektor.fm",
+     "postUrl": "https://social.detektor.fm/@detektorfm/117607135151242288",
+     "seenAt": "2026-11-13T04:01:07.520Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "social.detektor.fm",
+     "postUrl": "https://social.detektor.fm/@detektorfm/117643637630055349",
+     "seenAt": "2026-11-19T14:44:11.154Z"
+    }
+   ]
+  }
+ ]
+}

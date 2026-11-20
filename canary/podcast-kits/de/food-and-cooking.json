@@ -1,0 +1,52 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "food-and-cooking",
+ "lang": "de",
+ "title": {
+  "en": "Food and Cooking",
+  "de": "Essen und Kochen",
+  "fr": "Cuisine",
+  "es": "Comida y cocina",
+  "ja": "料理と食",
+  "it": "Cibo e cucina",
+  "pt": "Comida e culinária",
+  "nl": "Eten en koken",
+  "pl": "Jedzenie i gotowanie",
+  "sv": "Mat och matlagning",
+  "ru": "Еда и кулинария",
+  "ko": "음식과 요리",
+  "uk": "Їжа та кулінарія",
+  "tr": "Yemek ve mutfak",
+  "el": "Φαγητό και μαγειρική",
+  "zh": "美食与烹饪",
+  "ca": "Menjar i cuina",
+  "cs": "Jídlo a vaření",
+  "fi": "Ruoka ja ruoanlaitto",
+  "no": "Mat og matlaging",
+  "ar": "الطعام والطبخ",
+  "zh-Hant": "飲食與烹飪"
+ },
+ "icon": "🍳",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "dirtyminutesleft@podcasts.social",
+   "url": "https://podcasts.social/@dirtyminutesleft",
+   "displayName": "Dirty Minutes Left",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/817/089/148/653/924/original/fe3d10908e81d68e.jpeg",
+   "bot": false,
+   "bio": "Arne Ruddat und Holger Krupp trinken jede Episode ein koffeinhaltiges Erfrischungsgetränk und spielen ein Retro-Videospiel. Zudem sprechen sie über Videospiele, Filme und Fernsehen, Technik, Politik…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:59:40+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://podcasts.social/@dirtyminutesleft/117644057256816031",
+     "seenAt": "2026-11-19T16:30:54.139Z"
+    }
+   ]
+  }
+ ]
+}
