@@ -1701,6 +1701,14 @@ export const routes: Routes = [
         loadComponent: () => import('./reading/watch/watch').then((m) => m.Watch),
       },
       {
+        // One post's reach and engagement. Anonymous-capable like the thread:
+        // takes the same ids, including anonymous public refs.
+        path: 'statuses/:id/analytics',
+        title: 'Post analytics',
+        loadComponent: () =>
+          import('./posts/post-analytics/post-analytics').then((m) => m.PostAnalytics),
+      },
+      {
         path: 'statuses/:id',
         title: 'Post',
         // Opened from Forum, a post stays in Forum (its rails and menu).

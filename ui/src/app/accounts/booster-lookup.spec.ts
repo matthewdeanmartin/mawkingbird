@@ -1,8 +1,10 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Status } from '../platform/api/models';
+import { Auth } from '../platform/session/auth';
+import { NATIVE_ANALYTICS } from '../platform/session/platform-login';
 import { BoosterLookup, REFINE_CALL_BUDGET } from './booster-lookup';
 
 function status(id: string, reblogs: number, extra: Partial<Status> = {}): Status {
@@ -47,7 +49,7 @@ describe('BoosterLookup', () => {
     pendingCalls()[0].flush([booster('y', 5)]);
 
     expect(lookup.run()).toEqual({ total: 3, finished: 3, ended: 'done' });
-    expect(lookup.boostersOf(sample[1])).toEqual([{ id: 'x', followers_count: 100 }]);
+    expect(lookup.boostersOf(sample[1])).toEqual([booster('x', 100)]);
     expect(lookup.boostersOf(sample[2])).toBeNull();
     expect(lookup.cost(sample)).toBe(0);
   });
@@ -100,5 +102,31 @@ describe('BoosterLookup', () => {
     expect(req.request.url).toBe('https://far.example/api/v1/statuses/77/reblogged_by');
     req.flush([booster('z', 3)]);
     expect(lookup.boostersOf(anon)).toHaveLength(1);
+  });
+});
+
+describe('BoosterLookup in the native app', () => {
+  it('asks the archive instead of the server, and stops on its rate limit', async () => {
+    const boosters = vi
+      .fn()
+      .mockResolvedValueOnce([booster('x', 10)])
+      .mockRejectedValueOnce({ kind: 'rate_limited', message: 'slow down' });
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: NATIVE_ANALYTICS, useValue: { boosters } },
+      ],
+    });
+    TestBed.inject(Auth).token.set('native-mastodon:a');
+    const http = TestBed.inject(HttpTestingController);
+    const lookup = TestBed.inject(BoosterLookup);
+    const sample = [status('a', 3), status('b', 2), status('c', 1)];
+    lookup.refine(sample);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(boosters.mock.calls.map((c) => c[1])).toEqual(['a', 'b']);
+    expect(http.match(() => true)).toHaveLength(0);
+    expect(lookup.boostersOf(sample[0])).toHaveLength(1);
+    expect(lookup.run()?.ended).toBe('rateLimited');
   });
 });

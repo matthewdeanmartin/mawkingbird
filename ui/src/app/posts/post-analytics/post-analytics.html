@@ -1,0 +1,199 @@
+<div class="post-analytics">
+  <mb-page-header
+    [title]="'postAnalytics.title' | transloco"
+    [description]="'postAnalytics.description' | transloco"
+  />
+
+  @if (loading()) {
+    <p class="muted center" role="status">{{ 'postAnalytics.loading' | transloco }}</p>
+  } @else if (error(); as reason) {
+    <p class="muted center" role="alert">
+      @switch (reason) {
+        @case ('unsupported') {
+          {{ 'postAnalytics.unsupported' | transloco }}
+        }
+        @case ('notFound') {
+          {{ 'postAnalytics.error.notFound' | transloco }}
+        }
+        @default {
+          {{ 'postAnalytics.error.load' | transloco }}
+        }
+      }
+    </p>
+  } @else if (status(); as s) {
+    @if (reach(); as r) {
+      <div class="post">
+        <app-status-card [status]="s" filterContext="thread" />
+        <a class="open-post" [routerLink]="['/statuses', routeId()]">{{
+          'postAnalytics.openPost' | transloco
+        }}</a>
+      </div>
+
+      @if (r.thread.parts.length > 1) {
+        <p class="muted small thread-note">
+          {{ 'postAnalytics.help.thread' | transloco: { count: r.thread.parts.length } }}
+        </p>
+      }
+
+      <div class="tiles">
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{ 'postAnalytics.tiles.reach' | transloco }}</span>
+            <mb-help
+              [label]="
+                'postAnalytics.about'
+                  | transloco: { stat: ('postAnalytics.tiles.reach' | transloco) }
+              "
+            >
+              <p>{{ 'postAnalytics.help.reach' | transloco }}</p>
+              <p>
+                @if (r.method === 'quick') {
+                  {{
+                    'postAnalytics.help.reachQuick'
+                      | transloco: { audience: typicalBoosterAudience }
+                  }}
+                } @else {
+                  {{ 'postAnalytics.help.reachFull' | transloco }}
+                }
+              </p>
+            </mb-help>
+          </span>
+          <span class="tile-value">{{ fmt(r.net) }}</span>
+        </div>
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{ 'postAnalytics.tiles.potential' | transloco }}</span>
+            <mb-help
+              [label]="
+                'postAnalytics.about'
+                  | transloco: { stat: ('postAnalytics.tiles.potential' | transloco) }
+              "
+              >{{
+                'postAnalytics.help.potential'
+                  | transloco: { followers: fmt(s.account.followers_count ?? 0) }
+              }}</mb-help
+            >
+          </span>
+          <span class="tile-value">{{ fmt(r.potential) }}</span>
+        </div>
+        <div class="tile">
+          <span class="tile-label muted">{{ 'postAnalytics.tiles.likes' | transloco }}</span>
+          <span class="tile-value">{{ fmt(r.thread.likes) }}</span>
+        </div>
+        <div class="tile">
+          <span class="tile-label muted">{{ 'postAnalytics.tiles.boosts' | transloco }}</span>
+          <span class="tile-value">{{ fmt(r.thread.boosts) }}</span>
+        </div>
+        @if (r.thread.quotes > 0) {
+          <div class="tile">
+            <span class="tile-label muted">{{ 'postAnalytics.tiles.quotes' | transloco }}</span>
+            <span class="tile-value">{{ fmt(r.thread.quotes) }}</span>
+          </div>
+        }
+        <div class="tile">
+          <span class="tile-head">
+            <span class="tile-label muted">{{ 'postAnalytics.tiles.replies' | transloco }}</span>
+            <mb-help
+              [label]="
+                'postAnalytics.about'
+                  | transloco: { stat: ('postAnalytics.tiles.replies' | transloco) }
+              "
+              >{{ 'postAnalytics.help.replies' | transloco }}</mb-help
+            >
+          </span>
+          <span class="tile-value"
+            >{{ fmt(r.thread.replies)
+            }}<small class="tile-sub muted">{{
+              'postAnalytics.repliesVisible' | transloco: { count: fmt(visibleReplies()) }
+            }}</small></span
+          >
+        </div>
+        @if (r.thread.parts.length > 1) {
+          <div class="tile">
+            <span class="tile-head">
+              <span class="tile-label muted">{{ 'postAnalytics.tiles.parts' | transloco }}</span>
+              <mb-help
+                [label]="
+                  'postAnalytics.about'
+                    | transloco: { stat: ('postAnalytics.tiles.parts' | transloco) }
+                "
+                >{{ 'postAnalytics.help.parts' | transloco }}</mb-help
+              >
+            </span>
+            <span class="tile-value">{{ r.thread.parts.length }}</span>
+          </div>
+        }
+      </div>
+
+      <section class="section boosters">
+        <h2>{{ 'postAnalytics.boosters.heading' | transloco }}</h2>
+        @if (r.thread.boosts === 0) {
+          <p class="muted small">{{ 'postAnalytics.boosters.none' | transloco }}</p>
+        } @else {
+          @if (boosters.run(); as run) {
+            @if (run.ended === null) {
+              <p class="muted small" role="status">
+                {{ 'postAnalytics.boosters.progress' | transloco: run }}
+              </p>
+            } @else if (run.ended === 'rateLimited') {
+              <p class="muted small" role="status">
+                {{ 'postAnalytics.boosters.rateLimited' | transloco }}
+              </p>
+            }
+          }
+          @if (lookupCost() > 0 && !lookingUp()) {
+            <p class="muted small lookup">
+              <button
+                mbButton
+                variant="outline"
+                size="small"
+                type="button"
+                (click)="lookUpBoosters()"
+              >
+                {{
+                  (lookupCost() === 1
+                    ? 'postAnalytics.boosters.button.one'
+                    : 'postAnalytics.boosters.button.other'
+                  ) | transloco: { count: lookupCost() }
+                }}
+              </button>
+              <span>{{ 'postAnalytics.boosters.explain' | transloco }}</span>
+            </p>
+          }
+          @if (boosterList().length) {
+            <ul class="booster-list">
+              @for (b of boosterList(); track b.id) {
+                <li>
+                  <a [routerLink]="accountProfilePath(b)" class="booster">
+                    @if (b.avatar) {
+                      <img [src]="b.avatar" alt="" width="32" height="32" loading="lazy" />
+                    }
+                    <span class="booster-name">{{ b.display_name || b.username }}</span>
+                    <span class="muted small">{{ '@' + b.acct }}</span>
+                  </a>
+                  <span class="muted small">{{
+                    'postAnalytics.boosters.followers'
+                      | transloco: { count: fmt(b.followers_count ?? 0) }
+                  }}</span>
+                </li>
+              }
+            </ul>
+            @if (r.attributedBoosts < r.thread.boosts) {
+              <p class="muted small">
+                {{
+                  'postAnalytics.boosters.unattributed'
+                    | transloco
+                      : {
+                          seen: r.attributedBoosts,
+                          boosts: r.thread.boosts,
+                          audience: typicalBoosterAudience,
+                        }
+                }}
+              </p>
+            }
+          }
+        }
+      </section>
+    }
+  }
+</div>

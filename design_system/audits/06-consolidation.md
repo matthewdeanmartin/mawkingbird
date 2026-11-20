@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Post analytics page and native archive analytics, 2026-11-20
+
+Reviewed 2,031 source files and 693 candidate files. New candidate
+`posts/post-analytics/post-analytics.html` (the `/statuses/:id/analytics`
+page) uses MbPageHeader, MbHelp explainers, one MbButton for the booster
+lookup and native links; it is reconciled as adopted scope. The status card's
+More tools dialog gains a "Post analytics" mbMenuItem link. Account analytics
+adds a native-only Continue MbButton for an unfinished archive catch-up, and
+the remaining changes are line shifts. No shared widget implementation changed.
+
 ## Analytics stat explainers, 2026-11-20
 
 Reviewed 2,026 source files (new: the pure `accounts/reach-model.ts`, which has

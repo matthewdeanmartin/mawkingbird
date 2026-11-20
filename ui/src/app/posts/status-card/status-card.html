@@ -1777,6 +1777,15 @@
             {{ 'statusCard.openInListen' | transloco }}
           </a>
         }
+        @if (analyticsRouteId(); as routeId) {
+          <a
+            mbMenuItem
+            [routerLink]="['/statuses', routeId, 'analytics']"
+            (click)="toolsOpen.set(false)"
+          >
+            {{ 'statusCard.postAnalytics' | transloco }}
+          </a>
+        }
         <app-code-menu-items [content]="display.content" />
         @if (canEmbed) {
           <button type="button" mbMenuItem (click)="toolsOpen.set(false); openEmbed($event)">

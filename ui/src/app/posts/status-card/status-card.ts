@@ -160,6 +160,7 @@ import { extractCodeBlocks } from '../code-blocks/code-fences';
 import { focalPointOf, objectPosition } from '../../publishing/focal-point/focal-point';
 import { canEmbedPost } from '../post-embed/post-embed';
 import { SpeechReader, speechText } from '../../reading/speech/speech-reader';
+import { readerRouteId } from '../../reading/read/reader-route-id';
 import { statusHashtags } from '../../discovery/hashtag';
 import { TagMuteMenu } from '../../moderation/tag-filter-dialog/tag-mute-menu';
 import { MediaDownloadMenuItem } from '../media-download/media-download-menu-item';
@@ -1300,9 +1301,22 @@ export class StatusCard {
   /** The occasional utilities, kept out of the ••• menu (see menu-budget.ts). */
   protected toolsOpen = signal(false);
 
+  // i18n statusCard.postAnalytics: Post analytics
+  /**
+   * Route id for `/statuses/:id/analytics`, or null when the post is not a
+   * Mastodon post (a home-server post or an anonymously read public one).
+   */
+  protected analyticsRouteId = computed<string | null>(() => {
+    const post = this.display;
+    if (post.provider === 'anonymous-mastodon') return readerRouteId(post);
+    const home = post.provider == null || post.provider === 'mastodon';
+    return home && /^[A-Za-z0-9_-]+$/.test(post.id) ? post.id : null;
+  });
+
   /** Whether "More tools…" would have anything in it for this post. */
   protected hasPostTools = computed(
     () =>
+      !!this.analyticsRouteId() ||
       !!this.radioPost() ||
       !!this.listenLink() ||
       !!this.downloadable() ||

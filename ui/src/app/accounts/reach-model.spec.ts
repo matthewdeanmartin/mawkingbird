@@ -7,6 +7,7 @@ import {
   netReach,
   reachByPost,
   sampleReach,
+  threadOf,
   threadReach,
 } from './reach-model';
 
@@ -75,6 +76,39 @@ describe('groupThreads', () => {
 
   it('returns threads newest first', () => {
     expect(groupThreads([post('new'), post('old')]).map((t) => t.root.id)).toEqual(['new', 'old']);
+  });
+});
+
+describe('threadOf', () => {
+  const someone = { id: 'them', username: 'them', acct: 'them' } as never;
+  const at = (minute: number) => `2026-11-01T00:${String(minute).padStart(2, '0')}:00Z`;
+
+  it("finds the author's chain above and below the post, ignoring other people", () => {
+    const root = post('1', { created_at: at(1), reblogs_count: 1 });
+    const middle = selfReply('2', '1', { created_at: at(2), favourites_count: 3 });
+    const theirs = post('x', {
+      created_at: at(3),
+      account: someone,
+      in_reply_to_id: '2',
+      in_reply_to_account_id: 'me',
+    });
+    const last = selfReply('3', '2', { created_at: at(4) });
+    const thread = threadOf(middle, { ancestors: [root], descendants: [theirs, last] });
+    expect(thread.root.id).toBe('1');
+    expect(thread.parts.map((p) => p.id)).toEqual(['1', '2', '3']);
+    expect(thread).toMatchObject({ likes: 3, boosts: 1 });
+  });
+
+  it('treats a reply to someone else as a one-post thread', () => {
+    const parent = post('p', { account: someone });
+    const reply = post('r', {
+      in_reply_to_id: 'p',
+      in_reply_to_account_id: 'them',
+      favourites_count: 2,
+    });
+    const thread = threadOf(reply, { ancestors: [parent], descendants: [] });
+    expect(thread.parts.map((p) => p.id)).toEqual(['r']);
+    expect(thread.likes).toBe(2);
   });
 });
 

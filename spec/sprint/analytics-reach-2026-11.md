@@ -1,10 +1,80 @@
 # Analytics and reach (November 2026)
 
-Status: Sprints 1–2 implemented locally 2026-11-20 (uncommitted; owner pushes
-and runs full gates on GHA every two sprints). Sprints 3–6 planned. Owner
-decisions: 2026-11-20.
+Status: Sprints 1–2 pushed 2026-11-20. Sprints 3–4 implemented locally
+2026-11-20 (uncommitted; the owner pushes and runs the full gates on GHA every
+two sprints). Sprints 5–6 planned. Owner decisions: 2026-11-20.
 
 ## Progress
+
+### Sprints 3–4 (2026-11-20)
+
+Delivered, web (shared Angular):
+
+- `/statuses/:id/analytics` (`posts/post-analytics/`): post plus context (2
+  calls), and the author's own reply chain as the thread (`threadOf` in
+  `reach-model.ts`; a reply to someone else is a one-post thread). Tiles:
+  Est. reach, Could have reached, favourites, boosts, quotes (when > 0),
+  replies with "visible here", and thread posts; (?) explainers on reach,
+  potential, replies and thread posts. A "Who boosted" list behind the
+  cost-named button reuses the session `BoosterLookup` cache. Handles
+  signed-in home ids, anonymous route refs and anonymous feed ids
+  (`parseAnonymousFeedId` is now exported); other networks get a one-line
+  "Mastodon posts for now".
+- Entry points: the status card's **More tools** dialog (every Mastodon post;
+  the ••• menu stays within its budget) and a "Post analytics" link on each
+  account-analytics top post. The deep-link audit registers the route as a
+  produced link with the same anonymous access as `statuses/:id`.
+- `BoosterLookup` keeps whole accounts (for the list). In native builds,
+  signed-in lookups go through the archive, one at a time.
+
+Delivered, native (`mawkingbird_native`, plus the shared `NATIVE_ANALYTICS`
+token, which is null on web):
+
+- Migration 5 (`00000000000005_post_analytics`, additive):
+  `archive_post_count_snapshot` (own posts only, written only when a count
+  changes), `archive_post_booster` and `archive_post_booster_scan`.
+- `archive_analytics_catch_up`: pages an account's statuses newest-first until
+  it passes the 14-day recount window **and** reaches the newest post cached
+  before the run (with an empty cache, at least 3 pages). Max 10 pages per run,
+  1 s apart; a 429 stops it. An unfinished run saves `{max_id, stop_at}` in
+  `archive_cursor` and the next run resumes there, so a long absence leaves no
+  hole. Calls are counted under a new `analytics` job in Data activity.
+- `archive_analytics_posts`: own posts (boosts excluded), newest first, up to
+  5,000.
+- `archive_post_boosters`: archived boosters while the post's boost count is
+  unchanged. Otherwise it fetches up to 5 pages of 80, 1 s apart, following
+  the Link header, and saves them; it saves the post first if the archive
+  lacks it. An empty result is cached too.
+- Shared account analytics in native, for any home-server account: shows the
+  archive at once (up to 2,000 posts), catches up, shows it again, then runs
+  Full reach automatically from the archive. A "Continue" button appears when
+  a catch-up stopped at its cap or was rate-limited. If the archive is empty
+  and the server cannot be read, it falls back to the web sampler. The post
+  page also looks up boosters on open in native.
+
+Deferred or changed from the plan:
+
+- Boost timeline on the post page: not drawn on web (reblog notifications per
+  post would cost calls). Moves to Sprint 5 with the native long-tail view.
+- The post-analytics entry is offered for every Mastodon post (the page is
+  free until the lookup button), not only your own.
+- Native "Fetch older posts" from the analytics page is not added; the
+  person page's existing history fetch still widens the archive.
+
+Checks run (lightweight): web `make test-changed` (855 files, 10,555 tests
+green; the route and status-card changes pull in most of the suite), new
+specs (`post-analytics.spec.ts`, `account-analytics-native.spec.ts`, native
+cases in `booster-lookup.spec.ts`, `threadOf` cases), `check:i18n`, `ng lint`
+and prettier on touched files, the deep-link audit and `npm run
+test:deep-links`, `design:inventory-check` (new candidate reconciled),
+`test:source-integrity`, and `build:mockingbird` (initial bundle 933.41 kB vs
+933.21 kB before: the status-card link). Native: `make check-host` (no
+warnings), `make test-host` (100 passed; two schema-version pins moved to
+migration 5), `cargo clippy` (one existing warning on `profile_posts_after`),
+`cargo fmt --check` on changed files, `MAWKINGBIRD_SOURCE=../mawkingbird make
+frontend` and `make smoke-frontend` (mocked IPC). **Not run:** full `make
+test`, SEO, `design-verify`, `make test-deep-links-browser`, `smoke-host`, and a
+real-account Windows run of catch-up and boosters (owner acceptance).
 
 ### Sprints 1–2 (2026-11-20)
 

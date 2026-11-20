@@ -39,6 +39,9 @@ import { Terminology } from '../../i18n/terminology';
 import { AudienceScan } from '../audience-scan';
 import { REACH_MODEL, SampleReach, reachByPost, sampleReach } from '../reach-model';
 import { BoosterLookup } from '../booster-lookup';
+import { Auth } from '../../platform/session/auth';
+import { NATIVE_ANALYTICS } from '../../platform/session/platform-login';
+import { readerRouteId } from '../../reading/read/reader-route-id';
 import { MbHelp } from '../../design-system/help/help';
 import { EffectiveAudienceDialog } from '../effective-audience-dialog/effective-audience-dialog';
 
@@ -48,6 +51,8 @@ const SAMPLE_SIZE = 100;
 const PAGE_LIMIT = 40;
 /** Guard against endless paging on very sparse accounts. */
 const MAX_PAGES = 5;
+/** Most archived posts the native data source reads into one analysis. */
+const ARCHIVE_LIMIT = 2000;
 /** Extra pages a user may request via "get more posts", each = one API call. */
 const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 
@@ -96,7 +101,14 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.help.countTotal: Sum over the {{count}} posts in the sample, as the server reports it now.
 // i18n accountAnalytics.help.engagementsPerPost: Favourites, boosts and replies received, divided by the {{count}} posts in the sample.
 // i18n accountAnalytics.help.followers: As reported by the account's server today.
+// i18n accountAnalytics.topPosts.analytics: Post analytics
 // i18n accountAnalytics.topPosts.reach: Thread: est. reach {{net}}, could have reached {{potential}}
+// i18n accountAnalytics.archive.catchingUp: From your archive. Checking the server for new posts and fresh counts…
+// i18n accountAnalytics.archive.upToDate: From your archive, up to date. Posts from the last 14 days have fresh counts.
+// i18n accountAnalytics.archive.partial: From your archive. Some newer posts are not fetched yet.
+// i18n accountAnalytics.archive.rateLimited: From your archive. The server asked to slow down, so counts may be a little behind.
+// i18n accountAnalytics.archive.failed: From your archive. The server couldn't be reached; counts are as last seen.
+// i18n accountAnalytics.archive.continue: Continue
 // i18n accountAnalytics.refine.button.one: Refine reach with real boosters ({{count}} API call)
 // i18n accountAnalytics.refine.button.other: Refine reach with real boosters ({{count}} API calls)
 // i18n accountAnalytics.refine.explain: Looks up who boosted each post and uses their follower counts. One call per boosted post, most-boosted first.
@@ -188,6 +200,8 @@ export class AccountAnalytics implements OnInit {
   private anonymousPublic = inject(AnonymousPublicApi);
   private bluesky = inject(BlueskyApi);
   private transloco = inject(TranslocoService);
+  private auth = inject(Auth);
+  private native = inject(NATIVE_ANALYTICS);
 
   /** The account to analyze. */
   readonly account = input.required<Account>();
@@ -222,8 +236,87 @@ export class AccountAnalytics implements OnInit {
   ngOnInit(): void {
     const acc = this.account();
     const id = this.publicRef()?.id ?? acc.id;
-    this.fetchPosts(id, [], undefined, 0);
     this.loadFollowers(id);
+    const handle = this.archiveHandle();
+    if (handle) {
+      this.loadFromArchive(handle, id);
+      return;
+    }
+    this.fetchPosts(id, [], undefined, 0);
+  }
+
+  // --- Native: the archive is the sample ---
+
+  /** Where the archive's copy of this account stands; null on web. */
+  protected archive = signal<{
+    state: 'catchingUp' | 'upToDate' | 'partial' | 'rateLimited' | 'failed';
+  } | null>(null);
+
+  /**
+   * The native handle when this account's posts can come from the archive:
+   * native build, signed-in Mastodon, an account on the home server.
+   */
+  private archiveHandle(): string | null {
+    const handle = this.auth.token();
+    return this.native &&
+      handle?.startsWith('native-mastodon:') &&
+      !this.publicRef() &&
+      !this.blueskyActor() &&
+      /^\d+$/.test(this.account().id)
+      ? handle
+      : null;
+  }
+
+  /**
+   * Show the archived history at once, then catch up (new posts plus a
+   * recount of the last 14 days) and show it again. Falls back to the web
+   * sampler only when the archive has nothing and the server can't be read.
+   */
+  private loadFromArchive(handle: string, id: string): void {
+    const native = this.native!;
+    this.hasMore.set(false);
+    this.archive.set({ state: 'catchingUp' });
+    const show = () =>
+      native.posts(handle, id, ARCHIVE_LIMIT).then((posts) => {
+        if (posts.length) {
+          this.posts.set(posts);
+          this.loading.set(false);
+        }
+        return posts.length;
+      });
+    void show()
+      .catch(() => 0)
+      .then(() => native.catchUp(handle, id))
+      .then(
+        (report) => {
+          this.archive.set({
+            state: report.rateLimited ? 'rateLimited' : report.complete ? 'upToDate' : 'partial',
+          });
+          return show();
+        },
+        () => {
+          this.archive.set({ state: 'failed' });
+          return show().catch(() => 0);
+        },
+      )
+      .then((count) => {
+        if (count) {
+          this.loading.set(false);
+          // Full reach is the default here: boosters come from the archive.
+          if (this.refineCost() > 0) this.refineReach();
+        } else if (this.archive()?.state === 'failed') {
+          this.archive.set(null);
+          this.fetchPosts(id, [], undefined, 0);
+        } else {
+          this.loading.set(false);
+        }
+      });
+  }
+
+  /** Run another catch-up after one stopped early. */
+  protected continueCatchUp(): void {
+    const handle = this.archiveHandle();
+    if (handle) this.loadFromArchive(handle, this.account().id);
   }
 
   /** Start the post sample over after a failed first load. */
@@ -463,6 +556,9 @@ export class AccountAnalytics implements OnInit {
   protected reach = computed<SampleReach>(() =>
     sampleReach(this.posts(), this.account().followers_count, this.boosters.boostersOf),
   );
+
+  /** The id `/statuses/:id/analytics` takes for a post in this sample. */
+  protected readonly routeIdOf = readerRouteId;
 
   /** Each thread part's whole-thread reach, for the top-posts list. */
   protected threadReachOf = computed(

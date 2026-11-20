@@ -1,4 +1,4 @@
-import type { Status } from '../platform/api/models';
+import type { Context, Status } from '../platform/api/models';
 
 /**
  * Reach: how many people probably saw a thread. Mastodon publishes no view
@@ -109,17 +109,42 @@ export function groupThreads(posts: readonly Status[]): ReachThread[] {
     const root = findRoot(post);
     let thread = threads.get(root.id);
     if (!thread) {
-      thread = { root, parts: [], likes: 0, boosts: 0, replies: 0, quotes: 0 };
+      thread = emptyThread(root);
       threads.set(root.id, thread);
     }
-    thread.parts.push(post);
-    thread.likes += nonNegative(post.favourites_count);
-    thread.boosts += nonNegative(post.reblogs_count);
-    thread.replies += nonNegative(post.replies_count);
-    thread.quotes += nonNegative(post.quotes_count);
+    addPart(thread, post);
   }
   // Newest first, matching the sample.
   return [...threads.values()].reverse();
+}
+
+function emptyThread(root: Status): ReachThread {
+  return { root, parts: [], likes: 0, boosts: 0, replies: 0, quotes: 0 };
+}
+
+function addPart(thread: ReachThread, post: Status): void {
+  thread.parts.push(post);
+  thread.likes += nonNegative(post.favourites_count);
+  thread.boosts += nonNegative(post.reblogs_count);
+  thread.replies += nonNegative(post.replies_count);
+  thread.quotes += nonNegative(post.quotes_count);
+}
+
+/**
+ * The thread one post belongs to, from its conversation context: the
+ * author's own chain above and below it. A reply to someone else is its own
+ * one-post thread, since the conversation around it is not the author's.
+ */
+export function threadOf(status: Status, context: Context): ReachThread {
+  const author = status.account.id;
+  const own = [...context.ancestors, status, ...context.descendants]
+    .filter((p) => p.account.id === author)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at));
+  const found = groupThreads(own).find((t) => t.parts.some((p) => p.id === status.id));
+  if (found) return found;
+  const single = emptyThread(status);
+  addPart(single, status);
+  return single;
 }
 
 /** The net curve: likely viewers out of a potential audience. */

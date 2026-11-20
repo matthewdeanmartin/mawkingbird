@@ -25,6 +25,20 @@
         @if (oldestPostDate(); as oldest) {
           {{ 'accountAnalytics.sampleGoesBack' | transloco: { time: (oldest | humanTime) } }}
         }
+        @if (archive(); as a) {
+          {{ 'accountAnalytics.archive.' + a.state | transloco }}
+          @if (a.state === 'partial' || a.state === 'rateLimited') {
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              (click)="continueCatchUp()"
+            >
+              {{ 'accountAnalytics.archive.continue' | transloco }}
+            </button>
+          }
+        }
       </span>
       @if (hasMore()) {
         <span
@@ -703,6 +717,12 @@
                     'accountAnalytics.topPosts.reach'
                       | transloco: { net: fmt(r.net), potential: fmt(r.potential) }
                   }}
+                  @if (!isBluesky()) {
+                    ·
+                    <a [routerLink]="['/statuses', routeIdOf(s), 'analytics']">{{
+                      'accountAnalytics.topPosts.analytics' | transloco
+                    }}</a>
+                  }
                 </p>
               }
             </div>

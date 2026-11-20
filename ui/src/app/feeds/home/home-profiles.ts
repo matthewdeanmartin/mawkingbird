@@ -66,6 +66,7 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
 // i18n pages.homeProfiles.job.relationships: Relationships
 // i18n pages.homeProfiles.job.notifications: Notifications
 // i18n pages.homeProfiles.job.recent_seed: Recent posts
+// i18n pages.homeProfiles.job.analytics: Analytics
 // i18n pages.homeProfiles.job.idle: Idle
 
 @Component({

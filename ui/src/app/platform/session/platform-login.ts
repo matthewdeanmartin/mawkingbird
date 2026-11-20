@@ -2,6 +2,7 @@ import { InjectionToken } from '@angular/core';
 import type { NativeSocial } from './native-social-types';
 import type { NativeFollowStatus, NativeNotificationReport } from './native-follow-status';
 import type { NativeProfilesApi } from './native-profile-types';
+import type { NativeAnalyticsApi } from './native-analytics-types';
 export type { NativeFollowStatus } from './native-follow-status';
 
 export const NATIVE_SOCIAL = new InjectionToken<NativeSocial | null>('native-social', {
@@ -30,6 +31,11 @@ export const NATIVE_FOLLOW_STATUS = new InjectionToken<
 >('native-follow-status', { providedIn: 'root', factory: () => null });
 
 export const NATIVE_PROFILES = new InjectionToken<NativeProfilesApi | null>('native-profiles', {
+  providedIn: 'root',
+  factory: () => null,
+});
+/** Web builds sample over the API; there is no archive to read. */
+export const NATIVE_ANALYTICS = new InjectionToken<NativeAnalyticsApi | null>('native-analytics', {
   providedIn: 'root',
   factory: () => null,
 });

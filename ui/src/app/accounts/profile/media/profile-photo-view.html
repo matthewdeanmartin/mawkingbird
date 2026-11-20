@@ -312,8 +312,10 @@
             <div class="photo-inline-compose">
               @if (translationOf(p); as tr) {
                 <mb-notice class="reply-translated" tone="error" announcement="alert">{{
-                  (tr.from ? 'statusCard.replyingToTranslated' : 'statusCard.replyingToTranslatedUnknown')
-                    | transloco: { post: words().post, language: tr.from }
+                  (tr.from
+                    ? 'statusCard.replyingToTranslated'
+                    : 'statusCard.replyingToTranslatedUnknown'
+                  ) | transloco: { post: words().post, language: tr.from }
                 }}</mb-notice>
               }
               <app-compose

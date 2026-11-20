@@ -41,6 +41,7 @@ LINKS = (
     Link("Watch video", "watch", "/watch?post=bsky%3Aat%3A%2F%2Fdid%3Aplc%3Aalice%2Fapp.bsky.feed.post%2F3kxyz&attachment=v1", "src/app/reading/video-player/media-source.ts", "watchParams", "watch"),
     Link("YouTube channel", "videos/channel/:channelId", "/videos/channel/UCy0tKL1T7wFoYcxCe0xjN6Q", "src/app/reading/watch/watch-video-panel.ts", "'/videos/channel'", "regex"),
     Link("Mastodon thread", "statuses/:id", "/statuses/123", "src/app/posts/status-card/status-card.ts", "'/statuses'", "regex"),
+    Link("Post analytics", "statuses/:id/analytics", "/statuses/123/analytics", "src/app/posts/status-card/status-card.html", "'analytics']", "regex"),
     Link("Mastodon reader", "read/:id", "/read/123", "src/app/reading/thread/thread.html", "['/read'", "regex"),
     Link("Mastodon profile", "accounts/:id", "/accounts/123", "src/app/posts/status-card/status-card.ts", "'/accounts'", "regex"),
     Link("Qualified profile", "accounts/:id/:handle", "/accounts/123/@alice@far.example", "src/app/accounts/account-route.ts", "accountProfilePath", "regex"),

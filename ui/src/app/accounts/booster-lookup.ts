@@ -1,11 +1,22 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, Subscription, catchError, from, mergeMap, of, tap, throwError } from 'rxjs';
+import {
+  Observable,
+  Subscription,
+  catchError,
+  defer,
+  from,
+  mergeMap,
+  of,
+  tap,
+  throwError,
+} from 'rxjs';
 import { Api } from '../platform/api/api';
+import { Auth } from '../platform/session/auth';
+import { NATIVE_ANALYTICS } from '../platform/session/platform-login';
 import { Account, Status } from '../platform/api/models';
 import { AnonymousPublicApi } from './anonymous/anonymous-public-api';
 import { AnonymousPublicRef } from './anonymous/anonymous-route-ref';
-import { Booster } from './reach-model';
 
 /** Most `reblogged_by` calls one refine click may spend. */
 export const REFINE_CALL_BUDGET = 40;
@@ -26,6 +37,10 @@ export interface RefineRun {
 /**
  * Who boosted which status, for Full reach.
  *
+ * In native builds, signed-in lookups go through the archive, which keeps
+ * boosters on disk and asks the server again only when a post's boost count
+ * has changed.
+ *
  * Asking costs one `reblogged_by` call per post, so nothing here runs on its
  * own: a page calls {@link refine} from a button that names the cost. Answers
  * are kept for the session and shared, so the account page and the post page
@@ -36,15 +51,18 @@ export interface RefineRun {
 export class BoosterLookup {
   private api = inject(Api);
   private anonymous = inject(AnonymousPublicApi);
+  private auth = inject(Auth);
+  private native = inject(NATIVE_ANALYTICS);
 
-  private readonly cache = signal<ReadonlyMap<string, readonly Booster[]>>(new Map());
+  /** Whole accounts, so the post page can list who boosted. */
+  private readonly cache = signal<ReadonlyMap<string, readonly Account[]>>(new Map());
   /** Statuses whose server refused the list (hidden, deleted, sign-in only). Not retried. */
   private readonly refused = new Set<string>();
   readonly run = signal<RefineRun | null>(null);
   private subscription: Subscription | null = null;
 
   /** Known boosters of a status, or null when nobody has asked yet. Reactive. */
-  readonly boostersOf = (status: Status): readonly Booster[] | null =>
+  readonly boostersOf = (status: Status): readonly Account[] | null =>
     this.cache().get(status.id) ?? null;
 
   /** Boosted statuses not looked up yet, most-boosted first. */
@@ -87,7 +105,9 @@ export class BoosterLookup {
                 return of(null);
               }),
             ),
-          PARALLEL,
+          // Native runs lookups one at a time, and an invoked command cannot be
+          // called back, so send one at a time and stop before the next.
+          this.viaArchive(publicRef) ? 1 : PARALLEL,
         ),
       )
       .subscribe({
@@ -102,7 +122,25 @@ export class BoosterLookup {
     if (this.run()?.ended === null) this.end('cancelled');
   }
 
+  /** Signed-in lookups in the native app go through the archive. */
+  private viaArchive(publicRef: AnonymousPublicRef | null): boolean {
+    return !publicRef && !!this.native && !!this.auth.token()?.startsWith('native-mastodon:');
+  }
+
   private fetch(status: Status, publicRef: AnonymousPublicRef | null): Observable<Account[]> {
+    const handle = this.auth.token();
+    if (this.viaArchive(publicRef) && handle) {
+      const native = this.native!;
+      return defer(() => native.boosters(handle, status.id)).pipe(
+        catchError((err: unknown) =>
+          throwError(() =>
+            (err as { kind?: string } | null)?.kind === 'rate_limited'
+              ? new HttpErrorResponse({ status: 429 })
+              : err,
+          ),
+        ),
+      );
+    }
     if (!publicRef) return this.api.rebloggedBy(status.id, 80);
     const ref = status.providerRef as { statusId?: unknown } | undefined;
     const id = typeof ref?.statusId === 'string' ? ref.statusId : status.id;
@@ -110,8 +148,7 @@ export class BoosterLookup {
   }
 
   private store(id: string, accounts: Account[]): void {
-    const boosters = accounts.map((a) => ({ id: a.id, followers_count: a.followers_count ?? 0 }));
-    this.cache.update((m) => new Map(m).set(id, boosters));
+    this.cache.update((m) => new Map(m).set(id, accounts));
   }
 
   private advance(): void {

@@ -2,6 +2,7 @@ import { InjectionToken } from '@angular/core';
 import type { NativeSocial } from './native-social-types';
 import type { NativeFollowStatus, NativeNotificationReport } from './native-follow-status';
 import type { NativeProfilesApi } from './native-profile-types';
+import type { NativeAnalyticsApi } from './native-analytics-types';
 export type { NativeFollowStatus } from './native-follow-status';
 
 export const NATIVE_SOCIAL = new InjectionToken<NativeSocial | null>('native-social', {
@@ -129,6 +130,16 @@ export const NATIVE_PROFILES = new InjectionToken<NativeProfilesApi | null>('nat
       invoke('archive_account_posts', { handle, remoteId, offset }),
     fetchAccountPage: (handle, remoteId, older) =>
       invoke('archive_fetch_account_page', { handle, remoteId, older }),
+  }),
+});
+
+export const NATIVE_ANALYTICS = new InjectionToken<NativeAnalyticsApi | null>('native-analytics', {
+  providedIn: 'root',
+  factory: () => ({
+    catchUp: (handle, remoteId) => invoke('archive_analytics_catch_up', { handle, remoteId }),
+    posts: (handle, remoteId, limit) =>
+      invoke('archive_analytics_posts', { handle, remoteId, limit }),
+    boosters: (handle, postId) => invoke('archive_post_boosters', { handle, postId }),
   }),
 });
 

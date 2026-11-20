@@ -674,7 +674,7 @@ function flattenReplies(nodes: BskyThreadNode[]): Status[] {
  * assumption the rest of the app makes, but it is why the encoded form is
  * canonical rather than this one.
  */
-function parseAnonymousFeedId(id: string): AnonymousPublicRef | null {
+export function parseAnonymousFeedId(id: string): AnonymousPublicRef | null {
   const prefix = 'anonymous-mastodon:';
   if (!id.startsWith(prefix)) {
     return null;
