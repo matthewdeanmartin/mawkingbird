@@ -867,8 +867,11 @@ export class Api {
     return this.http.get<Account[]>(`/api/v1/statuses/${id}/favourited_by`);
   }
 
-  rebloggedBy(id: string): Observable<Account[]> {
-    return this.http.get<Account[]>(`/api/v1/statuses/${id}/reblogged_by`);
+  /** Who boosted a status; one page. `limit` is capped at 80 by Mastodon. */
+  rebloggedBy(id: string, limit?: number): Observable<Account[]> {
+    return this.http.get<Account[]>(`/api/v1/statuses/${id}/reblogged_by`, {
+      params: limit ? { limit } : {},
+    });
   }
 
   setInteractionPolicy(id: string, policy: string): Observable<Status> {

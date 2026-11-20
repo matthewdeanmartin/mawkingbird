@@ -162,6 +162,22 @@ export class AnonymousPublicApi {
       );
   }
 
+  /**
+   * Who boosted a status, one page of up to 80, read from `ref.server`. `ref.id`
+   * is the server's own status id, not the app's namespaced one.
+   */
+  getRebloggedBy(ref: AnonymousPublicRef): Observable<Account[]> {
+    return this.http
+      .get<Account[]>(`${ref.server}/api/v1/statuses/${encodeURIComponent(ref.id)}/reblogged_by`, {
+        params: new HttpParams().set('limit', '80'),
+        context: externalFetch(),
+      })
+      .pipe(
+        timeout(REQUEST_TIMEOUT_MS),
+        map((accounts) => accounts.map((account) => adaptAnonymousAccount(account, ref.server))),
+      );
+  }
+
   getAccountStatuses(
     ref: AnonymousPublicRef,
     opts: AccountStatusesOptions = {},

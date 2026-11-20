@@ -183,3 +183,88 @@ describe('AccountAnalytics read from Bluesky', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('.audience-section')).toBeNull();
   });
 });
+
+describe('AccountAnalytics reach', () => {
+  let http: HttpTestingController;
+
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    });
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  function own(id: string, reblogs: number, extra: Record<string, unknown> = {}) {
+    return {
+      id,
+      created_at: '2026-11-01T00:00:00Z',
+      content: '<p>hi</p>',
+      account: { id: 'me', username: 'me', acct: 'me' },
+      media_attachments: [],
+      reblog: null,
+      in_reply_to_id: null,
+      replies_count: 0,
+      reblogs_count: reblogs,
+      favourites_count: 0,
+      ...extra,
+    };
+  }
+
+  function render() {
+    const fixture = TestBed.createComponent(AccountAnalytics);
+    fixture.componentRef.setInput('account', {
+      ...ME,
+      followers_count: 1000,
+      following_count: 1,
+    } as Account);
+    fixture.detectChanges();
+    http.match((req) => req.url.includes('/followers')).forEach((req) => req.flush([]));
+    http
+      .expectOne((req) => req.url.endsWith('/api/v1/accounts/me/statuses'))
+      .flush([
+        own('3', 0, { in_reply_to_id: '2', in_reply_to_account_id: 'me' }),
+        own('2', 2),
+        own('1', 0, { in_reply_to_id: 'x', in_reply_to_account_id: 'them' }),
+      ]);
+    fixture.detectChanges();
+    return { fixture, root: fixture.nativeElement as HTMLElement };
+  }
+
+  const tileValue = (root: HTMLElement, label: string) =>
+    [...root.querySelectorAll('.tile')]
+      .find((t) => t.querySelector('.tile-label')?.textContent?.trim() === label)
+      ?.querySelector('.tile-value')
+      ?.textContent?.trim();
+
+  it('shows Quick reach per thread with explainers, spending no booster calls', () => {
+    const { root } = render();
+    // One thread (2 + its self-reply 3); the reply to someone else is not reach.
+    // Potential = 1000 followers + 2 boosts × 268.
+    expect(tileValue(root, 'Could have reached')).toBe('1,536');
+    expect(tileValue(root, 'Est. reach / thread')).toBe(tileValue(root, 'Est. reach'));
+    expect(root.querySelector('[aria-label="About Est. reach"]')).not.toBeNull();
+    expect(root.textContent).toContain('typical booster with 268 followers');
+    expect(root.querySelector('.top-post-reach')?.textContent).toContain(
+      'could have reached 1,536',
+    );
+    expect(http.match((req) => req.url.includes('/reblogged_by'))).toHaveLength(0);
+  });
+
+  it('refines with real boosters only when asked, naming the cost', () => {
+    const { fixture, root } = render();
+    const button = [...root.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Refine reach'),
+    )!;
+    expect(button.textContent).toContain('(1 API call)');
+    button.click();
+    http.expectOne('/api/v1/statuses/2/reblogged_by?limit=80').flush([
+      { id: 'b1', username: 'b1', acct: 'b1', followers_count: 40 },
+      { id: 'b2', username: 'b2', acct: 'b2', followers_count: 60 },
+    ]);
+    fixture.detectChanges();
+    expect(tileValue(root, 'Could have reached')).toBe('1,100');
+    expect(root.textContent).toContain("Uses the real boosters' follower counts.");
+    expect(root.textContent).not.toContain('Refine reach');
+  });
+});

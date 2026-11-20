@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Analytics stat explainers, 2026-11-20
+
+Reviewed 2,026 source files (new: the pure `accounts/reach-model.ts`, which has
+no controls) and 692 candidate files. Account analytics adds shared `MbHelp`
+(?) explainers to nine stat tiles: favourites, boosts, replies received,
+engagements per post, followers, following, Est. reach, Est. reach / thread
+and Could have reached. Its added `shared` findings are those MbHelp adoptions,
+and the remaining entries are line shifts. A `.tile-head` row uses negative
+margins so the 32px help trigger (44px on coarse pointers) does not make
+explained tiles taller; check tile alignment on touch in owner acceptance. No
+shared widget implementation changed.
+
 ## Shared pack-language picker, 2026-11-19
 
 Reviewed 2,025 source files and 692 candidate files after extracting the

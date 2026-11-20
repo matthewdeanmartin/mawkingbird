@@ -180,6 +180,16 @@
   font-size: 12.5px;
 }
 
+/* Label plus its (?) explainer. Negative margins keep the 32px help button
+   from making explained tiles taller than the others. */
+.tile-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin: -8px -10px -8px 0;
+}
+
 .tile-value {
   font-size: 26px;
   font-weight: 600;
@@ -193,6 +203,17 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 1.3;
+}
+
+.refine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0;
+  padding: 10px 16px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
 }
 
 .section {
@@ -420,4 +441,8 @@ a.counted-label:hover {
 .load-error span {
   display: block;
   margin-top: 4px;
+}
+
+.top-post-reach {
+  margin: 4px 0 0;
 }

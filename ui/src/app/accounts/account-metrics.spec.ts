@@ -3,10 +3,7 @@ import { Status } from '../platform/api/models';
 import {
   MIN_MONTHS_FOR_MONTHLY,
   MIN_WEEKS_FOR_WEEKLY,
-  REACH_MODEL,
   computeLiveliness,
-  estimatePostReach,
-  estimateTotalReach,
   hasMonthlyRange,
   hasWeeklyRange,
   hourHistogram,
@@ -60,44 +57,6 @@ function makeStatus(overrides: Partial<Status> = {}): Status {
 function postDaysAgo(daysAgo: number, now = Date.now(), overrides: Partial<Status> = {}): Status {
   return makeStatus({ created_at: new Date(now - daysAgo * DAY_MS).toISOString(), ...overrides });
 }
-
-describe('estimatePostReach', () => {
-  it('reaches a baseline fraction of followers with no engagement', () => {
-    const post = makeStatus();
-    expect(estimatePostReach(post, 1000)).toBe(Math.round(1000 * REACH_MODEL.organicReachFraction));
-  });
-
-  it('adds boost audience on top of own audience', () => {
-    const noBoost = estimatePostReach(makeStatus(), 1000);
-    const withBoost = estimatePostReach(makeStatus({ reblogs_count: 4 }), 1000);
-    expect(withBoost - noBoost).toBe(4 * REACH_MODEL.avgBoosterAudience);
-  });
-
-  it('caps own-audience reach at the full follower count', () => {
-    // Enough favourites to blow past 100% of followers — still capped.
-    const post = makeStatus({ favourites_count: 100_000 });
-    expect(estimatePostReach(post, 500)).toBe(500);
-  });
-
-  it('uses the boost target for a reblogged status', () => {
-    const inner = makeStatus({ reblogs_count: 2, favourites_count: 0 });
-    const boost = makeStatus({ reblog: inner });
-    expect(estimatePostReach(boost, 1000)).toBe(estimatePostReach(inner, 1000));
-  });
-});
-
-describe('estimateTotalReach', () => {
-  it('sums per-post reach', () => {
-    const posts = [makeStatus({ reblogs_count: 1 }), makeStatus({ reblogs_count: 1 })];
-    expect(estimateTotalReach(posts, 100)).toBe(
-      estimatePostReach(posts[0], 100) + estimatePostReach(posts[1], 100),
-    );
-  });
-
-  it('is zero for an empty sample', () => {
-    expect(estimateTotalReach([], 1000)).toBe(0);
-  });
-});
 
 describe('sampleSpanDays', () => {
   it('is zero for fewer than two posts', () => {
@@ -153,25 +112,25 @@ describe('range gating', () => {
   it('suppresses weekly below the minimum span', () => {
     const posts = [postDaysAgo(0, now), postDaysAgo(MIN_WEEKS_FOR_WEEKLY * 7 - 5, now)];
     expect(hasWeeklyRange(posts)).toBe(false);
-    expect(weeklyActivity(posts, 100)).toEqual([]);
+    expect(weeklyActivity(posts)).toEqual([]);
   });
 
   it('enables weekly at the minimum span', () => {
     const posts = [postDaysAgo(0, now), postDaysAgo(MIN_WEEKS_FOR_WEEKLY * 7 + 2, now)];
     expect(hasWeeklyRange(posts)).toBe(true);
-    expect(weeklyActivity(posts, 100).length).toBeGreaterThanOrEqual(MIN_WEEKS_FOR_WEEKLY);
+    expect(weeklyActivity(posts).length).toBeGreaterThanOrEqual(MIN_WEEKS_FOR_WEEKLY);
   });
 
   it('suppresses monthly below the minimum span', () => {
     const posts = [postDaysAgo(0, now), postDaysAgo(MIN_MONTHS_FOR_MONTHLY * 30 - 10, now)];
     expect(hasMonthlyRange(posts)).toBe(false);
-    expect(monthlyActivity(posts, 100)).toEqual([]);
+    expect(monthlyActivity(posts)).toEqual([]);
   });
 
   it('enables monthly at the minimum span', () => {
     const posts = [postDaysAgo(0, now), postDaysAgo(MIN_MONTHS_FOR_MONTHLY * 30 + 5, now)];
     expect(hasMonthlyRange(posts)).toBe(true);
-    expect(monthlyActivity(posts, 100).length).toBeGreaterThanOrEqual(2);
+    expect(monthlyActivity(posts).length).toBeGreaterThanOrEqual(2);
   });
 });
 
@@ -180,14 +139,14 @@ describe('activity bucketing', () => {
 
   it('assigns every post to a weekly bucket and preserves total counts', () => {
     const posts = Array.from({ length: 40 }, (_, i) => postDaysAgo(i * 2, now));
-    const buckets = weeklyActivity(posts, 100);
+    const buckets = weeklyActivity(posts);
     const totalPosts = buckets.reduce((s, b) => s + b.posts, 0);
     expect(totalPosts).toBe(posts.length);
   });
 
   it('buckets monthly in chronological order', () => {
     const posts = Array.from({ length: 40 }, (_, i) => postDaysAgo(i * 6, now));
-    const buckets = monthlyActivity(posts, 100);
+    const buckets = monthlyActivity(posts);
     const starts = buckets.map((b) => new Date(b.startIso).getTime());
     const sorted = [...starts].sort((a, b) => a - b);
     expect(starts).toEqual(sorted);

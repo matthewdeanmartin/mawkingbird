@@ -19,7 +19,6 @@ import {
   Heatmap,
   Liveliness,
   computeLiveliness,
-  estimateTotalReach,
   hasMonthlyRange,
   hasWeeklyRange,
   monthlyActivity,
@@ -38,6 +37,9 @@ import { LANG_NAMES, LangShare, detectLanguageMix, sharePct } from '../../langua
 import { stripHtml } from '../../feeds/sentiment';
 import { Terminology } from '../../i18n/terminology';
 import { AudienceScan } from '../audience-scan';
+import { REACH_MODEL, SampleReach, reachByPost, sampleReach } from '../reach-model';
+import { BoosterLookup } from '../booster-lookup';
+import { MbHelp } from '../../design-system/help/help';
 import { EffectiveAudienceDialog } from '../effective-audience-dialog/effective-audience-dialog';
 
 /** How many of the account's most recent posts the component analyzes. */
@@ -59,7 +61,6 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.empty: Nothing to analyze yet — no posts found.
 // i18n accountAnalytics.basedOnLast: Based on the last {{count}} {{posts}}, boosts excluded.
 // i18n accountAnalytics.sampleGoesBack: The sample goes back {{time}}.
-// i18n accountAnalytics.reachEstimated: Reach is estimated, not measured — a cheap peek.
 // i18n accountAnalytics.getMorePosts.aria: Get more {{posts}}
 // i18n accountAnalytics.fetchingMore: Fetching more…
 // i18n accountAnalytics.getMorePostsLabel: Get more posts:
@@ -82,8 +83,26 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.tiles.postsPerDay: Posts per day
 // i18n accountAnalytics.tiles.followers: Followers
 // i18n accountAnalytics.tiles.following: Following
-// i18n accountAnalytics.tiles.estReachTotal: Est. reach (total)
-// i18n accountAnalytics.tiles.estReachPerPost: Est. reach / post
+// i18n accountAnalytics.tiles.reach: Est. reach
+// i18n accountAnalytics.tiles.reachPerThread: Est. reach / thread
+// i18n accountAnalytics.tiles.potentialAudience: Could have reached
+// i18n accountAnalytics.help.about: About {{stat}}
+// i18n accountAnalytics.help.reach: People who probably saw these {{count}} threads. Modelled from followers, boosts, quotes, likes and replies with the FediWings method, which was fitted to Instagram story views. Never more than “Could have reached”, never fewer than the people who reacted.
+// i18n accountAnalytics.help.reachQuick: Quick estimate: each boost counts as one typical booster with {{audience}} followers. No extra API calls.
+// i18n accountAnalytics.help.reachFull: Uses the real boosters' follower counts.
+// i18n accountAnalytics.help.reachMixed: Real boosters for {{looked}} of {{boosted}} boosted threads; other boosts count {{audience}} followers each.
+// i18n accountAnalytics.help.reachPerThread: Est. reach divided by {{count}} threads. A thread is a post plus the author's own replies under it; replies to other people are not counted. The arrow compares the newer half of the sample with the older half.
+// i18n accountAnalytics.help.potentialAudience: The author's followers plus the followers of everyone who boosted, added up per thread. The upper limit for Est. reach; people who follow both are counted twice.
+// i18n accountAnalytics.help.countTotal: Sum over the {{count}} posts in the sample, as the server reports it now.
+// i18n accountAnalytics.help.engagementsPerPost: Favourites, boosts and replies received, divided by the {{count}} posts in the sample.
+// i18n accountAnalytics.help.followers: As reported by the account's server today.
+// i18n accountAnalytics.topPosts.reach: Thread: est. reach {{net}}, could have reached {{potential}}
+// i18n accountAnalytics.refine.button.one: Refine reach with real boosters ({{count}} API call)
+// i18n accountAnalytics.refine.button.other: Refine reach with real boosters ({{count}} API calls)
+// i18n accountAnalytics.refine.explain: Looks up who boosted each post and uses their follower counts. One call per boosted post, most-boosted first.
+// i18n accountAnalytics.refine.progress: Looking up boosters… {{finished}} of {{total}}
+// i18n accountAnalytics.refine.stop: Stop
+// i18n accountAnalytics.refine.rateLimited: The server asked us to slow down. Reach uses the boosters found so far; try the rest later.
 // i18n accountAnalytics.tiles.liveliness: Liveliness
 // i18n accountAnalytics.tiles.recentPostsPerDay: Recent posts / day
 // i18n accountAnalytics.audience.heading: Effective friends & followers
@@ -150,6 +169,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
   selector: 'app-account-analytics',
   imports: [
     MbButton,
+    MbHelp,
     RouterLink,
     StatusCard,
     HumanTimePipe,
@@ -431,38 +451,69 @@ export class AccountAnalytics implements OnInit {
   /** Shortest and longest original post, in visible characters. */
   protected lengthRange = computed<PostLengthRange | null>(() => postLengthRange(this.posts()));
 
-  // --- Reach (estimated; see account-metrics.ts REACH_MODEL) ---
+  // --- Reach (a model; see reach-model.ts) ---
 
-  /** Total estimated reach across the sample — followers + boost/fav model. */
-  protected totalReach = computed(() =>
-    estimateTotalReach(this.posts(), this.account().followers_count),
+  /** The typical booster audience Quick reach assumes, for the (?) text. */
+  protected readonly typicalBoosterAudience = REACH_MODEL.typicalBoosterAudience;
+
+  /** Real boosters, looked up only when the person asks (see refineReach). */
+  protected boosters = inject(BoosterLookup);
+
+  /** Reach for every thread in the sample; Full where boosters are known. */
+  protected reach = computed<SampleReach>(() =>
+    sampleReach(this.posts(), this.account().followers_count, this.boosters.boostersOf),
   );
 
-  /** Estimated reach per post. */
-  protected reachPerPost = computed(() => {
-    const n = this.posts().length;
-    return n ? Math.round(this.totalReach() / n) : 0;
+  /** Each thread part's whole-thread reach, for the top-posts list. */
+  protected threadReachOf = computed(
+    () => new Map(this.reach().threads.flatMap((t) => t.thread.parts.map((p) => [p.id, t]))),
+  );
+
+  /** The author's own thread posts: the only ones whose boosters matter. */
+  private threadParts = computed(() => this.reach().threads.flatMap((t) => t.thread.parts));
+
+  /** API calls the refine button would spend now; 0 hides it. */
+  protected refineCost = computed(() =>
+    this.isBluesky() ? 0 : this.boosters.cost(this.threadParts()),
+  );
+
+  /** A refine is in flight. (In TS: a template's `run()?.ended` reads null, not undefined.) */
+  protected refining = computed(() => this.boosters.run()?.ended === null);
+
+  /** Spend {@link refineCost} calls on `reblogged_by` for the most-boosted posts. */
+  protected refineReach(): void {
+    this.boosters.refine(this.threadParts(), this.publicRef());
+  }
+
+  /** Net reach credited to each thread's first post, for the time buckets. */
+  private reachOf = computed(() => {
+    const byPost = reachByPost(this.reach());
+    return (post: Status) => byPost.get(post.id) ?? 0;
+  });
+
+  /** Boosted threads, and how many of them used real boosters. */
+  protected boostedThreads = computed(() => {
+    const boosted = this.reach().threads.filter((t) => t.thread.boosts > 0);
+    return { boosted: boosted.length, looked: boosted.filter((t) => t.method !== 'quick').length };
   });
 
   /**
-   * Reach trend: newer-half vs older-half average reach, as a percent change.
-   * Null when the sample is too small to split meaningfully.
+   * Reach trend: newer-half vs older-half average net reach per thread, as a
+   * percent change. Null when there are too few threads to split.
    */
   protected reachTrendPct = computed<number | null>(() => {
-    const posts = this.posts();
-    if (posts.length < 6) {
+    const threads = this.reach().threads;
+    if (threads.length < 6) {
       return null;
     }
-    const followers = this.account().followers_count;
-    const mid = Math.floor(posts.length / 2);
-    const newer = posts.slice(0, mid); // newest-first, so this is the recent half
-    const older = posts.slice(mid);
-    const avg = (list: Status[]) => estimateTotalReach(list, followers) / list.length;
-    const olderAvg = avg(older);
+    const mid = Math.floor(threads.length / 2);
+    const avg = (list: typeof threads) => list.reduce((s, t) => s + t.net, 0) / list.length;
+    // Newest-first, so the first half is the recent one.
+    const olderAvg = avg(threads.slice(mid));
     if (olderAvg <= 0) {
       return null;
     }
-    return Math.round(((avg(newer) - olderAvg) / olderAvg) * 100);
+    return Math.round(((avg(threads.slice(0, mid)) - olderAvg) / olderAvg) * 100);
   });
 
   // --- Liveliness (recency-weighted, relative to now) ---
@@ -471,11 +522,9 @@ export class AccountAnalytics implements OnInit {
 
   // --- Time-window activity ("when they post") ---
 
-  protected weekly = computed<ActivityBucket[]>(() =>
-    weeklyActivity(this.posts(), this.account().followers_count),
-  );
+  protected weekly = computed<ActivityBucket[]>(() => weeklyActivity(this.posts(), this.reachOf()));
   protected monthly = computed<ActivityBucket[]>(() =>
-    monthlyActivity(this.posts(), this.account().followers_count),
+    monthlyActivity(this.posts(), this.reachOf()),
   );
   protected showWeekly = computed(() => hasWeeklyRange(this.posts()));
   protected showMonthly = computed(() => hasMonthlyRange(this.posts()));

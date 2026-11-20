@@ -18,6 +18,14 @@ design-test:
 design-verify:
 	npm run design:verify
 
+.PHONY: reach-calibration reach-calibration-replay
+# Default sample: the owner's three accounts plus two large public ones (owner choice, 2026-11-20).
+REACH_ACCOUNTS ?= https://ohai.social/@everybodhi https://mastodon.social/@mistersql https://mstdn.social/@flyscifiguy https://mstdn.social/@stux https://mastodon.social/@Mastodon
+reach-calibration:  # Refit the Quick reach booster constant (~50 polite public API calls); review, then copy to ../spec/
+	@L=$$(node scripts/artifacts.mjs logs); node scripts/reach-calibration.mjs $(REACH_ACCOUNTS) > "$$L/reach-calibration.json" && echo "Wrote $$L/reach-calibration.json"
+reach-calibration-replay:  # Refit from the committed calibration data, no network
+	node scripts/reach-calibration.mjs --replay ../spec/analytics-calibration-2026-11-20.json > /dev/null
+
 .PHONY: signup-servers
 signup-servers:  # Propose /create-mastodon-account/ servers from joinmastodon.org; review the diff before committing
 	node scripts/refresh-signup-servers.mjs --write
@@ -57,6 +65,7 @@ help:
 	@echo "  make format             Auto-format sources"
 	@echo "  make format-check       Check formatting without changes"
 	@echo "  make lint               Lint TypeScript and templates"
+	@echo "  make reach-calibration  Refit Quick reach's booster constant from public accounts"
 	@echo "  make storage            Verify every localStorage key is classified"
 	@echo "  make dead-code-check    Fail on unused files or undeclared dependencies (knip)"
 	@echo "  make dead-code          Full knip report incl. unused exports (advisory)"

@@ -25,7 +25,6 @@
         @if (oldestPostDate(); as oldest) {
           {{ 'accountAnalytics.sampleGoesBack' | transloco: { time: (oldest | humanTime) } }}
         }
-        {{ 'accountAnalytics.reachEstimated' | transloco }}
       </span>
       @if (hasMore()) {
         <span
@@ -97,23 +96,69 @@
         <span class="tile-value">{{ fmt(posts().length) }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'accountAnalytics.tiles.favourites' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.favourites' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.favourites' | transloco) }
+            "
+            >{{
+              'accountAnalytics.help.countTotal' | transloco: { count: posts().length }
+            }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ fmt(totalFavourites()) }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'accountAnalytics.tiles.boosts' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'accountAnalytics.tiles.boosts' | transloco }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.boosts' | transloco) }
+            "
+            >{{
+              'accountAnalytics.help.countTotal' | transloco: { count: posts().length }
+            }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ fmt(totalBoosts()) }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{
-          'accountAnalytics.tiles.repliesReceived' | transloco
-        }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.repliesReceived' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.repliesReceived' | transloco) }
+            "
+            >{{
+              'accountAnalytics.help.countTotal' | transloco: { count: posts().length }
+            }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ fmt(totalReplies()) }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{
-          'accountAnalytics.tiles.engagementsPerPost' | transloco
-        }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.engagementsPerPost' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.engagementsPerPost' | transloco) }
+            "
+            >{{
+              'accountAnalytics.help.engagementsPerPost' | transloco: { count: posts().length }
+            }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ avgEngagement() }}</span>
       </div>
       <!-- Replies given, as a share of the sample. A 0% account that posts every
@@ -165,31 +210,109 @@
         <span class="tile-value">{{ postsPerDay() }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'accountAnalytics.tiles.followers' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'accountAnalytics.tiles.followers' | transloco }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.followers' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.followers' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ fmt(account().followers_count) }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{ 'accountAnalytics.tiles.following' | transloco }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'accountAnalytics.tiles.following' | transloco }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.following' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.followers' | transloco }}</mb-help
+          >
+        </span>
         <span class="tile-value">{{ fmt(account().following_count) }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{
-          'accountAnalytics.tiles.estReachTotal' | transloco
-        }}</span>
-        <span class="tile-value">{{ fmt(totalReach()) }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{ 'accountAnalytics.tiles.reach' | transloco }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.reach' | transloco) }
+            "
+          >
+            <p>
+              {{ 'accountAnalytics.help.reach' | transloco: { count: reach().threads.length } }}
+            </p>
+            <p>
+              @switch (reach().method) {
+                @case ('full') {
+                  {{ 'accountAnalytics.help.reachFull' | transloco }}
+                }
+                @case ('mixed') {
+                  {{
+                    'accountAnalytics.help.reachMixed'
+                      | transloco
+                        : {
+                            looked: boostedThreads().looked,
+                            boosted: boostedThreads().boosted,
+                            audience: typicalBoosterAudience,
+                          }
+                  }}
+                }
+                @default {
+                  {{
+                    'accountAnalytics.help.reachQuick'
+                      | transloco: { audience: typicalBoosterAudience }
+                  }}
+                }
+              }
+            </p>
+          </mb-help>
+        </span>
+        <span class="tile-value">{{ fmt(reach().net) }}</span>
       </div>
       <div class="tile">
-        <span class="tile-label muted">{{
-          'accountAnalytics.tiles.estReachPerPost' | transloco
-        }}</span>
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.reachPerThread' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.reachPerThread' | transloco) }
+            "
+            >{{
+              'accountAnalytics.help.reachPerThread' | transloco: { count: reach().threads.length }
+            }}</mb-help
+          >
+        </span>
         <span class="tile-value">
-          {{ fmt(reachPerPost()) }}
+          {{ fmt(reach().perThread) }}
           @if (reachTrendPct(); as trend) {
             <small class="trend" [class.up]="trend > 0" [class.down]="trend < 0">
               {{ trend > 0 ? '▲' : trend < 0 ? '▼' : '' }}{{ trend > 0 ? '+' : '' }}{{ trend }}%
             </small>
           }
         </span>
+      </div>
+      <div class="tile">
+        <span class="tile-head">
+          <span class="tile-label muted">{{
+            'accountAnalytics.tiles.potentialAudience' | transloco
+          }}</span>
+          <mb-help
+            [label]="
+              'accountAnalytics.help.about'
+                | transloco: { stat: ('accountAnalytics.tiles.potentialAudience' | transloco) }
+            "
+            >{{ 'accountAnalytics.help.potentialAudience' | transloco }}</mb-help
+          >
+        </span>
+        <span class="tile-value">{{ fmt(reach().potential) }}</span>
       </div>
       <div class="tile">
         <span class="tile-label muted">{{ 'accountAnalytics.tiles.liveliness' | transloco }}</span>
@@ -202,6 +325,35 @@
         <span class="tile-value">{{ liveliness().recentPostsPerDay }}</span>
       </div>
     </div>
+
+    <!-- Full reach: opt-in, because it costs one call per boosted post. -->
+    @if (boosters.run(); as run) {
+      @if (run.ended === null) {
+        <p class="refine muted" role="status">
+          {{ 'accountAnalytics.refine.progress' | transloco: run }}
+          <button mbButton variant="outline" size="small" type="button" (click)="boosters.cancel()">
+            {{ 'accountAnalytics.refine.stop' | transloco }}
+          </button>
+        </p>
+      } @else if (run.ended === 'rateLimited') {
+        <p class="refine muted" role="status">
+          {{ 'accountAnalytics.refine.rateLimited' | transloco }}
+        </p>
+      }
+    }
+    @if (refineCost() > 0 && !refining()) {
+      <p class="refine muted">
+        <button mbButton variant="outline" size="small" type="button" (click)="refineReach()">
+          {{
+            (refineCost() === 1
+              ? 'accountAnalytics.refine.button.one'
+              : 'accountAnalytics.refine.button.other'
+            ) | transloco: { count: refineCost() }
+          }}
+        </button>
+        <span>{{ 'accountAnalytics.refine.explain' | transloco }}</span>
+      </p>
+    }
 
     <!-- The one expensive thing on this page. Everything above is computed from
          the post sample already in memory; this walks the follower and friend
@@ -545,6 +697,14 @@
             <span class="rank" aria-hidden="true">{{ i + 1 }}</span>
             <div class="top-post-card">
               <app-status-card [status]="s" filterContext="account" />
+              @if (threadReachOf().get(s.id); as r) {
+                <p class="top-post-reach muted small">
+                  {{
+                    'accountAnalytics.topPosts.reach'
+                      | transloco: { net: fmt(r.net), potential: fmt(r.potential) }
+                  }}
+                </p>
+              }
             </div>
           </div>
         }

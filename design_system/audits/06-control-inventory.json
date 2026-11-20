@@ -1,6 +1,6 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2025,
+  "filesScanned": 2026,
   "filesWithCandidates": 692,
   "inventory": [
     {
@@ -13,7 +13,43 @@
         },
         {
           "pattern": "shared",
-          "line": 46
+          "line": 45
+        },
+        {
+          "pattern": "shared",
+          "line": 103
+        },
+        {
+          "pattern": "shared",
+          "line": 118
+        },
+        {
+          "pattern": "shared",
+          "line": 135
+        },
+        {
+          "pattern": "shared",
+          "line": 152
+        },
+        {
+          "pattern": "shared",
+          "line": 215
+        },
+        {
+          "pattern": "shared",
+          "line": 228
+        },
+        {
+          "pattern": "shared",
+          "line": 241
+        },
+        {
+          "pattern": "shared",
+          "line": 283
+        },
+        {
+          "pattern": "shared",
+          "line": 307
         },
         {
           "pattern": "nativeButtons",
@@ -21,27 +57,27 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 45
+          "line": 44
         },
         {
           "pattern": "nativeButtons",
-          "line": 319
+          "line": 442
         },
         {
           "pattern": "nativeButtons",
-          "line": 326
+          "line": 449
         },
         {
           "pattern": "legacyPills",
-          "line": 50
+          "line": 49
         },
         {
           "pattern": "legacyPills",
-          "line": 319
+          "line": 442
         },
         {
           "pattern": "legacyPills",
-          "line": 326
+          "line": 449
         }
       ]
     },

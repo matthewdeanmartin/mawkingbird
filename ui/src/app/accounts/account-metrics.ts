@@ -11,74 +11,13 @@ import { stripHtml } from '../feeds/sentiment';
  * Two things worth stating up front, because the numbers look more authoritative
  * than they are:
  *
- *  - **Reach is a folk model, not a measurement.** Mastodon exposes no
- *    impression counts, so we infer reach from followers, boosts and favourites
- *    using the deliberately-guessed constants in {@link REACH_MODEL}. It is a
- *    "cheap peek", in the same spirit as the rage lexicon in `sentiment.ts`.
+ *  - **Reach is a model, not a measurement.** It lives in `reach-model.ts`;
+ *    the time buckets here take a per-post reach lookup from it.
  *  - **Liveliness is always relative to *now*.** An account that posted 1000
  *    times in 2023 and nothing since is *dormant*, not lively — so cadence is
  *    measured over a trailing window ending today, never across the sample's
  *    own span (which would make any dead account look busy).
  */
-
-// ---------------------------------------------------------------------------
-// Reach
-// ---------------------------------------------------------------------------
-
-/**
- * The guessed constants behind the reach estimate. These are folklore, not
- * data — tune them here, in one place, and treat every number they produce as
- * an estimate.
- */
-export const REACH_MODEL = {
-  /**
-   * Assumed audience gained per boost. Each boost re-exposes the post to a
-   * *different* account's followers, so this is genuinely new reach. ~250 is
-   * the well-worn "the average account has a few hundred followers" guess.
-   */
-  avgBoosterAudience: 250,
-  /**
-   * How many of your *own* followers a single favourite implies actually saw
-   * the post. A like doesn't broadcast, but it correlates with visibility
-   * (faved posts float up; likers had to see it to like it). Folded into a
-   * fraction-of-followers-saw multiplier that can never exceed 1.0 — likes
-   * alone can't reach beyond your follower count.
-   */
-  followersSeenPerFavourite: 1.5,
-  /**
-   * The floor for "how much of your own audience saw a post" even with zero
-   * favourites — not everyone sees everything, but some baseline fraction of
-   * followers is assumed reached organically.
-   */
-  organicReachFraction: 0.1,
-} as const;
-
-/**
- * Estimated number of people who saw a single post.
- *
- *   reach = ownAudienceReached + boosts × avgBoosterAudience
- *
- * where `ownAudienceReached` is a fraction of the follower count that grows
- * with favourites (capped at the full follower count). Boosts add fresh
- * audience on top. `followers` is passed in because a post's own
- * `account.followers_count` is the same for every post in the sample.
- */
-export function estimatePostReach(post: Status, followers: number): number {
-  const target = post.reblog ?? post;
-  const seenFraction = Math.min(
-    1,
-    REACH_MODEL.organicReachFraction +
-      (target.favourites_count * REACH_MODEL.followersSeenPerFavourite) / Math.max(1, followers),
-  );
-  const ownAudience = followers * seenFraction;
-  const boostAudience = target.reblogs_count * REACH_MODEL.avgBoosterAudience;
-  return Math.round(ownAudience + boostAudience);
-}
-
-/** Total estimated reach across a sample of posts. */
-export function estimateTotalReach(posts: Status[], followers: number): number {
-  return posts.reduce((sum, p) => sum + estimatePostReach(p, followers), 0);
-}
 
 // ---------------------------------------------------------------------------
 // Time helpers
@@ -307,7 +246,10 @@ const MONTH_LABEL_OPTS: Intl.DateTimeFormatOptions = { month: 'short', year: 'nu
  * count and estimated reach. Empty weeks in the middle are included so a
  * sparkline shows real gaps. Returns [] if the span is too short to be useful.
  */
-export function weeklyActivity(posts: Status[], followers: number): ActivityBucket[] {
+export function weeklyActivity(
+  posts: Status[],
+  reachOf: (post: Status) => number = () => 0,
+): ActivityBucket[] {
   if (!hasWeeklyRange(posts)) {
     return [];
   }
@@ -326,7 +268,7 @@ export function weeklyActivity(posts: Status[], followers: number): ActivityBuck
     const idx = Math.floor((new Date(p.created_at).getTime() - oldest) / WEEK_MS);
     const bucket = buckets[Math.min(idx, buckets.length - 1)];
     bucket.posts += 1;
-    bucket.reach += estimatePostReach(p, followers);
+    bucket.reach += reachOf(p);
   }
   return buckets;
 }
@@ -335,7 +277,10 @@ export function weeklyActivity(posts: Status[], followers: number): ActivityBuck
  * Bucket posts by calendar month (oldest → newest). Returns [] if the span is
  * too short to be useful.
  */
-export function monthlyActivity(posts: Status[], followers: number): ActivityBucket[] {
+export function monthlyActivity(
+  posts: Status[],
+  reachOf: (post: Status) => number = () => 0,
+): ActivityBucket[] {
   if (!hasMonthlyRange(posts)) {
     return [];
   }
@@ -355,7 +300,7 @@ export function monthlyActivity(posts: Status[], followers: number): ActivityBuc
       byKey.set(key, bucket);
     }
     bucket.posts += 1;
-    bucket.reach += estimatePostReach(p, followers);
+    bucket.reach += reachOf(p);
   }
   return [...byKey.values()];
 }
