@@ -1,0 +1,70 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "music",
+ "lang": "fr",
+ "title": {
+  "en": "Music",
+  "de": "Musik",
+  "fr": "Musique",
+  "es": "Música",
+  "ja": "音楽",
+  "it": "Musica",
+  "pt": "Música",
+  "nl": "Muziek",
+  "pl": "Muzyka",
+  "sv": "Musik",
+  "ru": "Музыка",
+  "ko": "음악",
+  "uk": "Музика",
+  "tr": "Müzik",
+  "el": "Μουσική",
+  "zh": "音乐",
+  "ca": "Música",
+  "cs": "Hudba",
+  "fi": "Musiikki",
+  "no": "Musikk",
+  "ar": "الموسيقى",
+  "zh-Hant": "音樂"
+ },
+ "icon": "🎵",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "pasleplatine@mastodon.art",
+   "url": "https://mastodon.art/@pasleplatine",
+   "displayName": "Pas le platine podcast",
+   "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/112/976/502/169/229/690/original/93f26ab42ec060bc.png",
+   "bot": false,
+   "bio": "Chaque jour un-e artiste dont vous n'avez peut-être pas entendu les singles plus tardifs. Trois chansons en 10-12 minutes ici et en podcast. Par @terrylaire",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:17+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "postUrl": "https://mastodon.art/@pasleplatine/117641612647542639",
+     "seenAt": "2026-11-19T06:09:12.363Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.art",
+     "postUrl": "https://mastodon.art/@pasleplatine/117641612647542639",
+     "seenAt": "2026-11-19T06:09:12.363Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcast.terrylaire.fr",
+     "postUrl": "https://mastodon.art/@pasleplatine/117641670909096845",
+     "seenAt": "2026-11-19T06:24:01.363Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.art/@pasleplatine/117641670909096845",
+     "seenAt": "2026-11-19T06:24:01.363Z"
+    }
+   ]
+  }
+ ]
+}

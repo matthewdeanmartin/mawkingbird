@@ -1,0 +1,136 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "news-and-journalism",
+ "lang": "en",
+ "title": {
+  "en": "News and Journalism",
+  "de": "Nachrichten und Journalismus",
+  "fr": "Actualités et journalisme",
+  "es": "Noticias y periodismo",
+  "ja": "ニュースとジャーナリズム",
+  "it": "Notizie e giornalismo",
+  "pt": "Notícias e jornalismo",
+  "nl": "Nieuws en journalistiek",
+  "pl": "Wiadomości i dziennikarstwo",
+  "sv": "Nyheter och journalistik",
+  "ru": "Новости и журналистика",
+  "ko": "뉴스와 저널리즘",
+  "uk": "Новини та журналістика",
+  "tr": "Haber ve gazetecilik",
+  "el": "Ειδήσεις και δημοσιογραφία",
+  "zh": "新闻与新闻报道",
+  "ar": "الأخبار والصحافة",
+  "ca": "Notícies i periodisme",
+  "cs": "Zprávy a žurnalistika",
+  "no": "Nyheter og journalistikk",
+  "fi": "Uutiset ja journalismi",
+  "zh-Hant": "新聞與新聞報導"
+ },
+ "icon": "📰",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "europeanspodcast@mastodon.social",
+   "url": "https://mastodon.social/@europeanspodcast",
+   "displayName": "The Europeans",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/957/529/316/616/787/original/0a3143b00e3c9c44.png",
+   "bot": false,
+   "bio": "Award-winning podcasts about European politics and culture. New episodes every Thursday 🎉",
+   "showUrl": "https://podcasts.apple.com/gb/podcast/the-europeans/id1315776736",
+   "observedAt": "2026-11-20T00:00:42+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "europeanspodcast.com",
+     "postUrl": "https://mastodon.social/@europeanspodcast/117642562100352258",
+     "seenAt": "2026-11-19T10:10:39.886Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "europeanspodcast.substack.com",
+     "postUrl": "https://mastodon.social/@europeanspodcast/117529565136039387",
+     "seenAt": "2026-10-30T11:14:03.023Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@europeanspodcast/117642562100352258",
+     "seenAt": "2026-11-19T10:10:39.886Z"
+    }
+   ]
+  },
+  {
+   "acct": "laurarbelin@mastodon.social",
+   "url": "https://mastodon.social/@LauraRBelin",
+   "displayName": "LauraRBelin",
+   "avatar": "https://files.mastodon.social/accounts/avatars/109/258/434/085/888/221/original/791176256bb4214e.jpg",
+   "bot": false,
+   "bio": "Publisher, editor, primary reporter for the Iowa political website Bleeding Heartland. https://www.bleedingheartland.com Part-time statehouse reporter for KHOI Radio in Ames. Find \"KHOI's Capitol Wee…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:27+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "laurabelin.substack.com",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117575797221973912",
+     "seenAt": "2026-11-07T15:11:28.665Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podomatic.com",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117464999247354004",
+     "seenAt": "2026-10-19T01:34:05.743Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117611666366524718",
+     "seenAt": "2026-11-13T23:13:28.373Z"
+    }
+   ]
+  },
+  {
+   "acct": "rorshokspain@techhub.social",
+   "url": "https://techhub.social/@rorshokspain",
+   "displayName": "Rorshok Spain",
+   "avatar": "https://files.techhub.social/accounts/avatars/114/036/810/049/070/430/original/df4c588811691abe.jpg",
+   "bot": false,
+   "bio": "Rorshok Spain Update 🎙️ A ten-minute weekly audio update in English about what’s happening in 🇪🇸 No ads ❌ Listen on 👇 #rorshokupdates #spainexpats #englishpodcast #expatsinspain #esl #madrid #tourism",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "techhub.social",
+     "postUrl": "https://techhub.social/@rorshokspain/115929120275064984",
+     "seenAt": "2026-01-20T19:39:52.481Z"
+    }
+   ]
+  },
+  {
+   "acct": "podnews@social.podnews.net",
+   "url": "https://social.podnews.net/@podnews",
+   "displayName": "Podnews podcasting news",
+   "avatar": "https://cdn.masto.host/socialpodnewsnet/accounts/avatars/110/397/958/803/375/796/original/51d22a80f3f24836.png",
+   "bot": true,
+   "bio": "News headlines, jobs, events and more from Podnews - your daily update for podcasting and on-demand. This account is a bot - and you’ll find us posting latest news, press releases, events and jobs wh…",
+   "showUrl": "https://podcastbusinessjournal.com",
+   "observedAt": "2026-11-20T00:06:03+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podnews.net",
+     "postUrl": "https://social.podnews.net/@podnews/117643711791923797",
+     "seenAt": "2026-11-19T15:03:02.763Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "social.podnews.net",
+     "postUrl": "https://social.podnews.net/@podnews/117642771995196163",
+     "seenAt": "2026-11-19T11:04:02.652Z"
+    }
+   ]
+  }
+ ]
+}

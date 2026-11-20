@@ -1,0 +1,58 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "space-and-astronomy",
+ "lang": "it",
+ "title": {
+  "en": "Space and Astronomy",
+  "de": "Weltraum und Astronomie",
+  "fr": "Espace et astronomie",
+  "es": "Espacio y astronomía",
+  "ja": "宇宙と天文学",
+  "it": "Spazio e astronomia",
+  "pt": "Espaço e astronomia",
+  "nl": "Ruimte en astronomie",
+  "pl": "Kosmos i astronomia",
+  "sv": "Rymd och astronomi",
+  "ru": "Космос и астрономия",
+  "ko": "우주와 천문학",
+  "uk": "Космос та астрономія",
+  "tr": "Uzay ve astronomi",
+  "el": "Διάστημα και αστρονομία",
+  "zh": "太空与天文学",
+  "ca": "Espai i astronomia",
+  "cs": "Vesmír a astronomie",
+  "fi": "Avaruus ja tähtitiede",
+  "no": "Verdensrommet og astronomi",
+  "ar": "الفضاء وعلم الفلك",
+  "zh-Hant": "太空與天文"
+ },
+ "icon": "🔭",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "astro_luigi@mastodon.social",
+   "url": "https://mastodon.social/@astro_luigi",
+   "displayName": "Sotto Pressione",
+   "avatar": "https://files.mastodon.social/accounts/avatars/116/584/792/002/735/411/original/da17d7cc04acf724.png",
+   "bot": false,
+   "bio": "Passione per subacquea e astonautica. Podcast : https://youtube.com/@luigitarsia-o1q?si=Zn9taA5Pz5n5fH0T. Www.amicidiboyle.it",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@astro_luigi/117338627597565516",
+     "seenAt": "2026-09-26T17:56:07.396Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@astro_luigi/117337978145911392",
+     "seenAt": "2026-09-26T15:10:57.551Z"
+    }
+   ]
+  }
+ ]
+}

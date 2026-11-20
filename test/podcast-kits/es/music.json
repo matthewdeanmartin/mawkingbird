@@ -1,0 +1,100 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "music",
+ "lang": "es",
+ "title": {
+  "en": "Music",
+  "de": "Musik",
+  "fr": "Musique",
+  "es": "Música",
+  "ja": "音楽",
+  "it": "Musica",
+  "pt": "Música",
+  "nl": "Muziek",
+  "pl": "Muzyka",
+  "sv": "Musik",
+  "ru": "Музыка",
+  "ko": "음악",
+  "uk": "Музика",
+  "tr": "Müzik",
+  "el": "Μουσική",
+  "zh": "音乐",
+  "ca": "Música",
+  "cs": "Hudba",
+  "fi": "Musiikki",
+  "no": "Musikk",
+  "ar": "الموسيقى",
+  "zh-Hant": "音樂"
+ },
+ "icon": "🎵",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "hardcuore@cabanyal.social",
+   "url": "https://cabanyal.social/@hardcuore",
+   "displayName": "Hardcuore Radio",
+   "avatar": "https://cdn.masto.host/cabanyalsocial/accounts/avatars/116/385/647/841/267/079/original/fe57b6154a449f8f.png",
+   "bot": false,
+   "bio": "Sirviendo radio en el barrio del Cabanyal desde 2015. Un programa de Radio Malva 104.9FM que se emite también en @radioalmaina de Granada, @RArgayo de Cantabria, Radio Aktiva de Alcoi y @contrabanda…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:35+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "cabanyal.social",
+     "postUrl": "https://cabanyal.social/@hardcuore/117642289770148397",
+     "seenAt": "2026-11-19T09:01:24.435Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "hardcuore.podcast.audio",
+     "postUrl": "https://cabanyal.social/@hardcuore/117642289770148397",
+     "seenAt": "2026-11-19T09:01:24.435Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://cabanyal.social/@hardcuore/117585689749554947",
+     "seenAt": "2026-11-09T09:07:16.658Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcast.radioalmaina.org",
+     "postUrl": "https://cabanyal.social/@hardcuore/117638521315837735",
+     "seenAt": "2026-11-18T17:03:02.386Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://cabanyal.social/@hardcuore/117644384311327235",
+     "seenAt": "2026-11-19T17:54:04.595Z"
+    }
+   ]
+  },
+  {
+   "acct": "el_cornetin@tkz.one",
+   "url": "https://tkz.one/@el_cornetin",
+   "displayName": "El Cornetin de Gondor",
+   "avatar": "https://media.tkz.one/tkz/accounts/avatars/109/314/342/405/553/680/original/d4bb62370ac5a24f.jpg",
+   "bot": false,
+   "bio": "El Cornetín de Gondor. #SiempreAlMargen Blog y podcast de lo que viene siendo todo lo friki Cuenta de publicación, para contacto usar https://masto.nobigtech.es/@el_cornetin",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:15+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "elcornetin.es",
+     "postUrl": "https://tkz.one/@el_cornetin/117625111386731788",
+     "seenAt": "2026-11-16T08:12:43.111Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "tkz.one",
+     "postUrl": "https://tkz.one/@el_cornetin/117625111386731788",
+     "seenAt": "2026-11-16T08:12:43.111Z"
+    }
+   ]
+  }
+ ]
+}

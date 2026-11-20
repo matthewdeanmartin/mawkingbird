@@ -1,0 +1,190 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "civic-life",
+ "lang": "de",
+ "title": {
+  "en": "Civic Life",
+  "de": "Bürgergesellschaft",
+  "fr": "Vie civique",
+  "es": "Vida cívica",
+  "ja": "市民生活",
+  "it": "Vita civica",
+  "pt": "Vida cívica",
+  "nl": "Openbaar bestuur",
+  "pl": "Życie obywatelskie",
+  "sv": "Samhällsliv",
+  "ru": "Общественная жизнь",
+  "ko": "시민 생활",
+  "uk": "Громадське життя",
+  "tr": "Yurttaşlık",
+  "el": "Δημόσιος βίος",
+  "zh": "公共生活",
+  "cs": "Veřejný život",
+  "fi": "Yhteiskunnallinen elämä",
+  "ca": "Vida cívica",
+  "no": "Samfunnsliv",
+  "ar": "الحياة المدنية",
+  "zh-Hant": "公民生活"
+ },
+ "icon": "🗳️",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "missio@kirche.social",
+   "url": "https://kirche.social/@missio",
+   "displayName": "missio Aachen",
+   "avatar": "https://kirche.social/system/accounts/avatars/108/220/828/988/188/431/original/2535438972d6788a.png",
+   "bot": false,
+   "bio": "missio - Nächstenliebe, die bleibt. Offizieller Mastodon-Account von missio Aachen Unser neuer Podcast „Echt. Unglaublich!“ ➡️ https://missio-hilft.de/podcast",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:21+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "kirche.social",
+     "postUrl": "https://kirche.social/@missio/117643911782360197",
+     "seenAt": "2026-11-19T15:53:54.379Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "missio-hilft.de",
+     "postUrl": "https://kirche.social/@missio/117643911782360197",
+     "seenAt": "2026-11-19T15:53:54.379Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://kirche.social/@missio/117445156446170388",
+     "seenAt": "2026-10-15T13:27:48.631Z"
+    }
+   ]
+  },
+  {
+   "acct": "ueckueck@dresden.network",
+   "url": "https://dresden.network/@ueckueck",
+   "displayName": "Ückück :ueckueck: :pd: :af:",
+   "avatar": "https://dresden.s3proxy.de/accounts/avatars/000/048/291/original/20554ade25ba9bec.png",
+   "bot": false,
+   "bio": "aka Stephanie Henkel Mod auf dresden.network, video.dresden.network & photo.dresden.network Admina auf podcasts.homes Piratin (1. V @piratensachsen) Stadtbezirksbeirätin in #Dresden #Cotta Teil der @…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:53+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "dresden.network",
+     "postUrl": "https://dresden.network/@ueckueck/117643604701590031",
+     "seenAt": "2026-11-19T14:35:48.698Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.homes",
+     "postUrl": "https://dresden.network/@ueckueck/117637347817388331",
+     "seenAt": "2026-11-18T12:04:36.220Z"
+    }
+   ]
+  },
+  {
+   "acct": "daswissen@ard.social",
+   "url": "https://ard.social/@DasWissen",
+   "displayName": "Das Wissen | SWR",
+   "avatar": "https://ard.social/system/accounts/avatars/112/247/373/573/756/257/original/53cef010b2bc268e.jpeg",
+   "bot": false,
+   "bio": "Mehr Horizont. Der Podcast. Vom SWR. https://www.swr.de/swrkultur/programm/podcast-swr-das-wissen-102.html",
+   "showUrl": "https://www.swr.de/swrkultur/programm/podcast-swr-das-wissen-102.html",
+   "observedAt": "2026-11-19T23:59:21+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "ard.social",
+     "postUrl": "https://ard.social/@DasWissen/117641663074800917",
+     "seenAt": "2026-11-19T06:22:01.822Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "swr.de",
+     "postUrl": "https://ard.social/@DasWissen/117528525742948233",
+     "seenAt": "2026-10-30T06:49:43.138Z"
+    }
+   ]
+  },
+  {
+   "acct": "dazwischen@social.detektor.fm",
+   "url": "https://social.detektor.fm/@dazwischen",
+   "displayName": "DAZWISCHEN - Sachsen-Anhalt",
+   "avatar": "https://social.detektor.fm/system/accounts/avatars/116/177/134/785/719/994/original/526468d4024a5dc5.png",
+   "bot": false,
+   "bio": "DAZWISCHEN ist der Newsletter und Podcast für Sachsen-Anhalt von detektor.fm.",
+   "showUrl": "https://detektor.fm/serien/dazwischen-sachsen-anhalt-podcast",
+   "observedAt": "2026-11-19T23:59:24+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "social.detektor.fm",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117637649620259078",
+     "seenAt": "2026-11-18T13:21:21.374Z"
+    }
+   ]
+  },
+  {
+   "acct": "taiwanreporter@mstdn.social",
+   "url": "https://mstdn.social/@taiwanreporter",
+   "displayName": "taiwanreporter",
+   "avatar": "https://media.mstdn.social/accounts/avatars/108/208/934/722/212/808/original/7c18c4713afea0c7.jpeg",
+   "bot": false,
+   "bio": "Ich lebe als Journalist in Taipeh und teile hier Eindrücke vom Leben in #Taiwan. Da gibt es viel zu sehen. Interessant? Neugierig? Fragt mich was.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:21+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "intaiwan.net",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117432963782564527",
+     "seenAt": "2026-10-13T09:47:03.344Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "pca.st",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117631144503026799",
+     "seenAt": "2026-11-17T09:47:01.152Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117518763569217123",
+     "seenAt": "2026-10-28T13:27:04.188Z"
+    }
+   ]
+  },
+  {
+   "acct": "theandrecramer@mastodon.social",
+   "url": "https://mastodon.social/@TheAndreCramer",
+   "displayName": "Andre 🧐 Cramer 🇪🇺",
+   "avatar": "https://files.mastodon.social/accounts/avatars/109/245/336/238/630/340/original/98ffb871ec8d1359.png",
+   "bot": false,
+   "bio": "Meine Mission: mehr Menschen sollen mehr über unsere guten Zukunftsoptionen wissen. #Innovation #Wissensgesellschaft #Medienmündigkeit #SozioTechnologie",
+   "showUrl": "https://codeundkonsequenz.letscast.fm/",
+   "observedAt": "2026-11-20T00:07:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@TheAndreCramer/116958922828427460",
+     "seenAt": "2026-07-21T16:32:12.430Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@TheAndreCramer/116922740116236873",
+     "seenAt": "2026-07-15T07:10:28.046Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "theandrecramer.substack.com",
+     "postUrl": "https://mastodon.social/@TheAndreCramer/115876189054696124",
+     "seenAt": "2026-01-11T11:18:46.161Z"
+    }
+   ]
+  }
+ ]
+}

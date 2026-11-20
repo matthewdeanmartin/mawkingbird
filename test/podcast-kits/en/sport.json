@@ -1,0 +1,88 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "sport",
+ "lang": "en",
+ "title": {
+  "en": "Sport",
+  "de": "Sport",
+  "fr": "Sport",
+  "es": "Deportes",
+  "ja": "スポーツ",
+  "it": "Sport",
+  "pt": "Esportes",
+  "nl": "Sport",
+  "pl": "Sport",
+  "sv": "Sport",
+  "ru": "Спорт",
+  "ko": "스포츠",
+  "uk": "Спорт",
+  "tr": "Spor",
+  "el": "Αθλητισμός",
+  "zh": "体育",
+  "ca": "Esport",
+  "cs": "Sport",
+  "fi": "Urheilu",
+  "no": "Sport",
+  "ar": "الرياضة",
+  "zh-Hant": "運動"
+ },
+ "icon": "⚽",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "detroitlionspodcast@mastodon.online",
+   "url": "https://mastodon.online/@DetroitLionsPodcast",
+   "displayName": "Detroit Lions Podcast",
+   "avatar": "https://files.mastodon.online/accounts/avatars/109/985/336/488/499/810/original/3b3b2c531e86c685.png",
+   "bot": false,
+   "bio": "Lions Podcast | Interviews | Video -Web: http://detroitlionspodcast.com -Facebook: http://bit.ly/2cl54uO -YouTube: http://bit.ly/2NYp8F0",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:59:34+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "detroitlionspodcast.com",
+     "postUrl": "https://mastodon.online/@DetroitLionsPodcast/117643111042735423",
+     "seenAt": "2026-11-19T12:30:16.055Z"
+    }
+   ]
+  },
+  {
+   "acct": "motomatters@masto.ai",
+   "url": "https://masto.ai/@motomatters",
+   "displayName": "David Emmett",
+   "avatar": "https://s3.masto.ai/accounts/avatars/109/381/371/108/704/566/original/ad365ca2b54b1307.jpg",
+   "bot": false,
+   "bio": "Editor of MotoMatters.com - MotoGP, WorldSBK, politics, science, eclectice nonsense Part of the Paddock Pass Podcast paddockpasspodcast.com Personal writing at emmett.nl",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:25+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "motomatters.com",
+     "postUrl": "https://masto.ai/@motomatters/117636765345921953",
+     "seenAt": "2026-11-18T09:36:28.412Z"
+    }
+   ]
+  },
+  {
+   "acct": "mikebrew@mastodon.social",
+   "url": "https://mastodon.social/@mikebrew",
+   "displayName": "Mike",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/412/841/original/76487f7a573c67bb.jpeg",
+   "bot": false,
+   "bio": "Husband. Father. Car Enthusiast. Music Lover. #Cycling #FoodTrucks #Videogames #Podcaster",
+   "showUrl": "https://pod.link/1774723900",
+   "observedAt": "2026-11-20T00:04:16+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@mikebrew/117509339579465186",
+     "seenAt": "2026-10-26T21:30:25.518Z"
+    }
+   ]
+  }
+ ]
+}

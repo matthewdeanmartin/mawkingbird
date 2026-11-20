@@ -1,0 +1,118 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "music",
+ "lang": "en",
+ "title": {
+  "en": "Music",
+  "de": "Musik",
+  "fr": "Musique",
+  "es": "Música",
+  "ja": "音楽",
+  "it": "Musica",
+  "pt": "Música",
+  "nl": "Muziek",
+  "pl": "Muzyka",
+  "sv": "Musik",
+  "ru": "Музыка",
+  "ko": "음악",
+  "uk": "Музика",
+  "tr": "Müzik",
+  "el": "Μουσική",
+  "zh": "音乐",
+  "ca": "Música",
+  "cs": "Hudba",
+  "fi": "Musiikki",
+  "no": "Musikk",
+  "ar": "الموسيقى",
+  "zh-Hant": "音樂"
+ },
+ "icon": "🎵",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "paulsplaylist@mstdn.party",
+   "url": "https://mstdn.party/@paulsplaylist",
+   "displayName": "Paul",
+   "avatar": "https://files.mstdn.party/accounts/avatars/109/338/333/868/614/338/original/edd40e670e72f5d1.png",
+   "bot": false,
+   "bio": "People who need music everyday are my people. I boost music news as well as episodes of my #IndieRock & #NewWave podcast Frequently Alternative. Plus I broadcast on college radio, WBWC in CLE and I c…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:32+00:00",
+   "media": [
+    {
+     "kind": "full-player",
+     "source": "mixcloud",
+     "postUrl": "https://mstdn.party/@paulsplaylist/117603778116600006",
+     "seenAt": "2026-11-12T13:47:23.237Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mstdn.social",
+     "postUrl": "https://mstdn.party/@paulsplaylist/117529957031382440",
+     "seenAt": "2026-10-30T12:53:42.867Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "soundcloud",
+     "postUrl": "https://mstdn.party/@paulsplaylist/117521035951278016",
+     "seenAt": "2026-10-28T23:04:58.708Z"
+    }
+   ]
+  },
+  {
+   "acct": "scatterbrainpod@mas.to",
+   "url": "https://mas.to/@scatterbrainpod",
+   "displayName": "Scatterbrain Podcast",
+   "avatar": "https://media.mas.to/accounts/avatars/109/321/836/902/433/959/original/ab4015ccf514a2c0.png",
+   "bot": false,
+   "bio": "San Diego-based podcast - Check us out if you’re into history, science, paranormal, metal music, and comedic banter. Now streaming on all major platforms and at ScatterbrainPodcast.com",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:48+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mas.to",
+     "postUrl": "https://mas.to/@scatterbrainpod/111228818131711782",
+     "seenAt": "2023-10-13T17:11:13.545Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mas.to/@scatterbrainpod/111823928358280740",
+     "seenAt": "2024-01-26T19:35:34.962Z"
+    }
+   ]
+  },
+  {
+   "acct": "podcastthemdown@mastodon.social",
+   "url": "https://mastodon.social/@podcastthemdown",
+   "displayName": "PodCast Them Down",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/128/919/331/893/039/original/e73ed06ce7bc84ed.png",
+   "bot": true,
+   "bio": "Heavy Metal Nerdery Podcast",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:20+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@podcastthemdown/117546747803545006",
+     "seenAt": "2026-11-02T12:03:49.720Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@podcastthemdown/115010490214004853",
+     "seenAt": "2025-08-11T14:00:10.227Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@podcastthemdown/115010490214004853",
+     "seenAt": "2025-08-11T14:00:10.227Z"
+    }
+   ]
+  }
+ ]
+}

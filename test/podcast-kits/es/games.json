@@ -1,0 +1,58 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "games",
+ "lang": "es",
+ "title": {
+  "en": "Games",
+  "de": "Spiele",
+  "fr": "Jeux",
+  "es": "Videojuegos",
+  "ja": "ゲーム",
+  "it": "Videogiochi",
+  "pt": "Jogos",
+  "nl": "Games",
+  "pl": "Gry",
+  "sv": "Spel",
+  "ru": "Игры",
+  "ko": "게임",
+  "uk": "Ігри",
+  "tr": "Oyunlar",
+  "el": "Παιχνίδια",
+  "zh": "游戏",
+  "ca": "Jocs",
+  "cs": "Hry",
+  "fi": "Pelit",
+  "no": "Spill",
+  "ar": "الألعاب",
+  "zh-Hant": "遊戲"
+ },
+ "icon": "🎮",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "academiafriki@mastodon.social",
+   "url": "https://mastodon.social/@academiafriki",
+   "displayName": "Academia Friki",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/140/100/445/840/607/original/69ccfa3783d0b1dc.png",
+   "bot": false,
+   "bio": "Conducido por Raúl Pacman, llega tu podcast favorito sobre cultura friki y popular. https://go.ivoox.com/sq/1888289",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:56+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@academiafriki/117403878640867394",
+     "seenAt": "2026-10-08T06:30:19.303Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "patreon.com",
+     "postUrl": "https://mastodon.social/@academiafriki/117438191016104053",
+     "seenAt": "2026-10-14T07:56:24.599Z"
+    }
+   ]
+  }
+ ]
+}

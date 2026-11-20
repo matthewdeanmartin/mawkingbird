@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "history",
+ "lang": "de",
+ "title": {
+  "en": "History",
+  "de": "Geschichte",
+  "fr": "Histoire",
+  "es": "Historia",
+  "ja": "歴史",
+  "it": "Storia",
+  "pt": "História",
+  "nl": "Geschiedenis",
+  "pl": "Historia",
+  "sv": "Historia",
+  "ru": "История",
+  "ko": "역사",
+  "uk": "Історія",
+  "tr": "Tarih",
+  "el": "Ιστορία",
+  "zh": "历史",
+  "ca": "Història",
+  "cs": "Historie",
+  "fi": "Historia",
+  "no": "Historie",
+  "ar": "التاريخ",
+  "zh-Hant": "歷史"
+ },
+ "icon": "🏛️",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "fotomenschen@digitalcourage.social",
+   "url": "https://digitalcourage.social/@fotomenschen",
+   "displayName": "FotoMenschen",
+   "avatar": "https://s3.digitalcourage.social/accounts/avatars/115/050/068/106/798/915/original/ece8790bf3bf5edc.jpeg",
+   "bot": false,
+   "bio": "Geschichts- und Geschichten- #Podcast über Fotografierende, Fotografierte und alle anderen. Mag Kameras, spricht aber eher selten über Technik sondern viel lieber über #Fotografie an sich und die daz…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:52+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "digitalcourage.social",
+     "postUrl": "https://digitalcourage.social/@fotomenschen/117643975274201127",
+     "seenAt": "2026-11-19T16:10:03.186Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://digitalcourage.social/@fotomenschen/117643975274201127",
+     "seenAt": "2026-11-19T16:10:03.186Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://digitalcourage.social/@fotomenschen/115453645423684532",
+     "seenAt": "2025-10-28T20:20:22.017Z"
+    }
+   ]
+  },
+  {
+   "acct": "friesenzeit@norden.social",
+   "url": "https://norden.social/@friesenzeit",
+   "displayName": "Friesenzeit | Der kleine Sagen-Podcast",
+   "avatar": "https://media.norden.social/accounts/avatars/115/445/607/809/968/323/original/63225e05031c9a1b.jpg",
+   "bot": false,
+   "bio": "📖 Geschichten & Sagen von der Küste Dazu gelegentlich Veranstaltungshinweise ❤️ 🌊 Zwischen Deichen, Wind und alten Mythen 🎧 Podcast https://Friesenzeit.de Hier trötet ein grauer Junge primär über Pod…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:58+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "norden.social",
+     "postUrl": "https://norden.social/@friesenzeit/117637014543485969",
+     "seenAt": "2026-11-18T10:39:50.861Z"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "health-and-medicine",
+ "lang": "de",
+ "title": {
+  "en": "Health and Medicine",
+  "de": "Gesundheit und Medizin",
+  "fr": "Santé et médecine",
+  "es": "Salud y medicina",
+  "ja": "健康と医療",
+  "it": "Salute e medicina",
+  "pt": "Saúde e medicina",
+  "nl": "Gezondheid en geneeskunde",
+  "pl": "Zdrowie i medycyna",
+  "sv": "Hälsa och medicin",
+  "ru": "Здоровье и медицина",
+  "ko": "건강과 의학",
+  "uk": "Здоров'я та медицина",
+  "tr": "Sağlık ve tıp",
+  "el": "Υγεία και ιατρική",
+  "zh": "健康与医学",
+  "ca": "Salut i medicina",
+  "cs": "Zdraví a medicína",
+  "fi": "Terveys ja lääketiede",
+  "no": "Helse og medisin",
+  "ar": "الصحة والطب",
+  "zh-Hant": "健康與醫學"
+ },
+ "icon": "🩺",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "unverkrampft_podcast@mastodon.social",
+   "url": "https://mastodon.social/@unverkrampft_podcast",
+   "displayName": "Unverkrampft - Periodenpodcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/989/543/151/965/013/original/1b6c445652eea6f6.png",
+   "bot": false,
+   "bio": "Johanna und Tom sprechen über ein Thema, über das noch immer viel zu selten geredet wird: die Periode. Johanna ist Menstruations-Aktivistin, Lehrerin und DJ. Sie kennt sich aus mit Zyklus, Aufklärung…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:19+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@unverkrampft_podcast/117636207851966492",
+     "seenAt": "2026-11-18T07:14:41.738Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "unverkrampft-podcast.de",
+     "postUrl": "https://mastodon.social/@unverkrampft_podcast/117636207851966492",
+     "seenAt": "2026-11-18T07:14:41.738Z"
+    }
+   ]
+  },
+  {
+   "acct": "bevegt@mastodon.social",
+   "url": "https://mastodon.social/@beVegt",
+   "displayName": "beVegt",
+   "avatar": "https://files.mastodon.social/accounts/avatars/114/093/014/912/778/688/original/851a6690debdf9b2.jpg",
+   "bot": false,
+   "bio": "Katrin und Daniel Wir machen einen #blog und #podcast über das #laufen 🏃‍♀️🏃‍♂️ und die vegane Lebensweise. 🌱 Unsere einfachen veganen Rezepte, Trainings- und Ernährungstipps findest du auf https://w…",
+   "showUrl": "https://www.bevegt.de/podcasts/",
+   "observedAt": "2026-11-19T23:58:09+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "bevegt.de",
+     "postUrl": "https://mastodon.social/@beVegt/117482870959109303",
+     "seenAt": "2026-10-22T05:19:06.423Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@beVegt/117482870959109303",
+     "seenAt": "2026-10-22T05:19:06.423Z"
+    }
+   ]
+  }
+ ]
+}

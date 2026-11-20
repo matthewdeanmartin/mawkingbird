@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "climate-and-environment",
+ "lang": "de",
+ "title": {
+  "en": "Climate and Environment",
+  "de": "Klima und Umwelt",
+  "fr": "Climat et environnement",
+  "es": "Clima y medio ambiente",
+  "ja": "気候と環境",
+  "it": "Clima e ambiente",
+  "pt": "Clima e meio ambiente",
+  "nl": "Klimaat en milieu",
+  "pl": "Klimat i środowisko",
+  "sv": "Klimat och miljö",
+  "ru": "Климат и экология",
+  "ko": "기후와 환경",
+  "uk": "Клімат і довкілля",
+  "tr": "İklim ve çevre",
+  "el": "Κλίμα και περιβάλλον",
+  "zh": "气候与环境",
+  "ca": "Clima i medi ambient",
+  "cs": "Klima a životní prostředí",
+  "fi": "Ilmasto ja ympäristö",
+  "no": "Klima og miljø",
+  "ar": "المناخ والبيئة",
+  "zh-Hant": "氣候與環境"
+ },
+ "icon": "🌍",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "friederikeschmitz@norden.social",
+   "url": "https://norden.social/@friederikeschmitz",
+   "displayName": "Friederike Schmitz",
+   "avatar": "https://media.norden.social/accounts/avatars/109/258/618/399/184/729/original/a87f046a0b91f947.png",
+   "bot": false,
+   "bio": "★Philosophin & Autorin ★ 🎧 Was zu retten ist: Podcast über Klima, Kollaps und Ernährung 📕 Anders satt: Wie der Ausstieg aus der Tierindustrie gelingt (2022) Team https://mastodon.social/@fabakonzepte",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:55+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podcast.de",
+     "postUrl": "https://norden.social/@friederikeschmitz/117491059671350562",
+     "seenAt": "2026-10-23T16:01:36.255Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://norden.social/@friederikeschmitz/117473742028012960",
+     "seenAt": "2026-10-20T14:37:29.986Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "waszurettenist.podcaster.de",
+     "postUrl": "https://norden.social/@friederikeschmitz/117502546329275813",
+     "seenAt": "2026-10-25T16:42:48.745Z"
+    }
+   ]
+  }
+ ]
+}

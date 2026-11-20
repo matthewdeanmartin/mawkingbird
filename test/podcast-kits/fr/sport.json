@@ -1,0 +1,52 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "sport",
+ "lang": "fr",
+ "title": {
+  "en": "Sport",
+  "de": "Sport",
+  "fr": "Sport",
+  "es": "Deportes",
+  "ja": "スポーツ",
+  "it": "Sport",
+  "pt": "Esportes",
+  "nl": "Sport",
+  "pl": "Sport",
+  "sv": "Sport",
+  "ru": "Спорт",
+  "ko": "스포츠",
+  "uk": "Спорт",
+  "tr": "Spor",
+  "el": "Αθλητισμός",
+  "zh": "体育",
+  "ca": "Esport",
+  "cs": "Sport",
+  "fi": "Urheilu",
+  "no": "Sport",
+  "ar": "الرياضة",
+  "zh-Hant": "運動"
+ },
+ "icon": "⚽",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "vibrezrugby@mastodon.social",
+   "url": "https://mastodon.social/@vibrezrugby",
+   "displayName": "Vibrez Rugby",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/866/799/624/001/964/original/df04b57f1c6b9ac9.png",
+   "bot": false,
+   "bio": "🏉 Info #RUGBY et Podcast 🎧 Radios 📻 #XVdeFrance #TOP14 #PROD2 #NATIONALERUGBY. Actualité, résultats, classement, transfert. 👉 site et App : Vibrez Rugby",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:34+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@vibrezrugby/117639414472780057",
+     "seenAt": "2026-11-18T20:50:10.877Z"
+    }
+   ]
+  }
+ ]
+}
