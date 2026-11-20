@@ -1,0 +1,189 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "science",
+ "lang": "en",
+ "title": {
+  "en": "Science",
+  "de": "Wissenschaft",
+  "fr": "Sciences",
+  "es": "Ciência",
+  "ja": "科学",
+  "it": "Scienza",
+  "pt": "Ciência",
+  "nl": "Wetenschap",
+  "pl": "Nauka",
+  "sv": "Vetenskap",
+  "ru": "Наука",
+  "ko": "과학",
+  "uk": "Наука",
+  "tr": "Bilim",
+  "el": "Επιστήμη",
+  "zh": "科学",
+  "ca": "Ciència",
+  "cs": "Věda",
+  "fi": "Tiede",
+  "no": "Vitenskap",
+  "ar": "العلوم",
+  "zh-Hant": "科學"
+ },
+ "icon": "🔬",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "sci_burst@mastodon.social",
+   "url": "https://mastodon.social/@sci_burst",
+   "displayName": "Sci_Burst",
+   "avatar": "https://files.mastodon.social/accounts/avatars/112/014/396/499/366/029/original/9855df85c8e0e739.jpeg",
+   "bot": false,
+   "bio": "🧪 Making #science accessible through #popculture 🎬 ☀️ Inspiring hopeful, #sustainable futures ✨ 👩‍🔬 @1sabelR & @theEllamo 💌 hello[at]sci-burst.com.au 💌 #scicomm #solarpunk",
+   "showUrl": "https://linktr.ee/sci_burst",
+   "observedAt": "2026-11-20T00:06:55+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@sci_burst/117623419236746272",
+     "seenAt": "2026-11-16T01:02:22.956Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@sci_burst/116855617415880818",
+     "seenAt": "2026-07-03T10:40:16.920Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117623419236746272",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@sci_burst/117623419236746272",
+     "createdAt": "2026-11-16T01:02:22.956Z",
+     "text": "What if, instead of “space races”, we reframed and reimagined space travel as “celestial stewardship”? 🚀🪐 That could be one way of making space travel #solarpunk #lunarpunk instead of colonial. #Earthseed by #OctaviaButler is one series that explores this concept, as well as the stories and knowledges of several Indigenous cultures from around the world. 🌍 Tune into S3 E6: Solarpunk at Night to l…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/623/416/431/514/662/original/e1d31fa57f1e8452.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117606435215167031",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@sci_burst/117606435215167031",
+     "createdAt": "2026-11-13T01:03:07.354Z",
+     "text": "Is Halloween a temporal third place? Is it a solarpunk festival? Lunarpunk, even? 🎃👻🌙 Tune into S3 E6: Solarpunk at Night to learn more. 🌃 Find the podcast episode on your favourite platform: https://linktr.ee/sci_burst #solarpunk #lunarpunk #halloween #thirdplace",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/606/432/703/540/780/original/ce59503302d491ba.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "lingthusiasm@wandering.shop",
+   "url": "https://wandering.shop/@lingthusiasm",
+   "displayName": "Lingthusiasm",
+   "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/295/172/938/540/315/original/0169ca690dbec14b.png",
+   "bot": false,
+   "bio": "A podcast that's enthusiastic about linguistics! By @gretchenmcc and @superlinguo",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:31+00:00",
+   "media": [
+    {
+     "kind": "full-player",
+     "source": "soundcloud",
+     "mediaType": null,
+     "postUrl": "https://wandering.shop/@lingthusiasm/117447725480309331",
+     "seenAt": "2026-10-16T00:21:08.982Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117447725480309331",
+     "server": "https://wandering.shop",
+     "postUrl": "https://wandering.shop/@lingthusiasm/117447725480309331",
+     "createdAt": "2026-10-16T00:21:08.982Z",
+     "text": "Vampires, werewolves, witches, ghosts, zombies, imposters, and frankenstein have something in common: they're all possessed by the spirit of linguistics! In this episode we get enthusiastic about various kinds of linguistic monsters 🧟‍♀️🧛🏻‍♀️👻🐺🦇 https://soundcloud.com/lingthusiasm/121-vampires-ghosts-imposters",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "full-player",
+       "source": "soundcloud",
+       "url": "https://soundcloud.com/lingthusiasm/121-vampires-ghosts-imposters",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117289936729472630",
+     "server": "https://wandering.shop",
+     "postUrl": "https://wandering.shop/@lingthusiasm/117289936729472630",
+     "createdAt": "2026-09-18T03:33:23.707Z",
+     "text": "Narratives about smaller languages often focus on the death side, but there's less on why this happens and how communities are fighting back In this episode we get enthusiastic with Sophia Smith Galer about her new book, How to Kill a Language https://soundcloud.com/lingthusiasm/120-how-not-to-kill-a-language",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "full-player",
+       "source": "soundcloud",
+       "url": "https://soundcloud.com/lingthusiasm/120-how-not-to-kill-a-language",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "nachgefragt@mastodon.social",
+   "url": "https://mastodon.social/@nachgefragt",
+   "displayName": "Nachgefragt | Michaela Voth",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/177/405/831/114/618/original/bc9147007420f725.png",
+   "bot": false,
+   "bio": "🎙️ Wissenschaftspodcast von Michaela „Michi“ Voth Komplexe Themen. Klare Haltung. Evidenzbasiert & unabhängig.",
+   "showUrl": "https://nachgefragt-podcast.de/feed/episodes/",
+   "observedAt": "2026-11-20T00:04:55+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@nachgefragt/116299930017191882",
+     "seenAt": "2026-03-27T07:21:40.122Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116299930017191882",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@nachgefragt/116299930017191882",
+     "createdAt": "2026-03-27T07:21:40.122Z",
+     "text": "Ich war zu Gast auf dem YouTube-Kanal UmLeidung ☺️ Für mich als Podcast-Host war das mit Video schon eine kleine Herausforderung – aber das Gespräch über Psychotherapie, Wirksamkeit und Therapieplätze hat großen Spaß gemacht. Wer reinschauen will: https://youtu.be/wbl7SSr5exw?is=KBgTJwwfkmf-ys3p",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/wbl7SSr5exw?is=KBgTJwwfkmf-ys3p",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

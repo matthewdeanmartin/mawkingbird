@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "sport",
+ "lang": "de",
+ "title": {
+  "en": "Sport",
+  "de": "Sport",
+  "fr": "Sport",
+  "es": "Deportes",
+  "ja": "スポーツ",
+  "it": "Sport",
+  "pt": "Esportes",
+  "nl": "Sport",
+  "pl": "Sport",
+  "sv": "Sport",
+  "ru": "Спорт",
+  "ko": "스포츠",
+  "uk": "Спорт",
+  "tr": "Spor",
+  "el": "Αθλητισμός",
+  "zh": "体育",
+  "ca": "Esport",
+  "cs": "Sport",
+  "fi": "Urheilu",
+  "no": "Sport",
+  "ar": "الرياضة",
+  "zh-Hant": "運動"
+ },
+ "icon": "⚽",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "stpop@stpauli.social",
+   "url": "https://stpauli.social/@stpop",
+   "displayName": "St. Pauli POP",
+   "avatar": "https://stpauli.s3proxy.de/accounts/avatars/110/972/423/784/645/237/original/6fdf67973075a9c5.png",
+   "bot": false,
+   "bio": "Admin v StPauli.Social und Host des #FCSP #Blog und #Podcast ST. POP",
+   "showUrl": "https://rss.com/podcasts/stpaulipop/",
+   "observedAt": "2026-11-20T00:07:12+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://stpauli.social/@stpop/117594305484902478",
+     "seenAt": "2026-11-10T21:38:22.348Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://stpauli.social/@stpop/117597537411352499",
+     "seenAt": "2026-11-11T11:20:17.630Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117597537411352499",
+     "server": "https://stpauli.social",
+     "postUrl": "https://stpauli.social/@stpop/117597537411352499",
+     "createdAt": "2026-11-11T11:20:17.630Z",
+     "text": "Sogar die Youtube Videos, die @RSS.com ausspielt, sind ganz chic. https://youtu.be/P6krQzSAswI #Shopify #Rant #FCSP #Podcast",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/P6krQzSAswI",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117594305484902478",
+     "server": "https://stpauli.social",
+     "postUrl": "https://stpauli.social/@stpop/117594305484902478",
+     "createdAt": "2026-11-10T21:38:22.348Z",
+     "text": "Als #Stotterer ist Podcasten für mich eine Art Therapie; eigentlich brauche ich dafür gar keine Zuhörer:innen – ist aber schöner, mit euch 😀 Von #fcsp Giftschränken und den Anfängen: https://stpaulinu.de/st-pauli-pop-podcast-player/",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://stpauli.s3proxy.de/media_attachments/files/117/594/298/388/916/616/original/c717a9dc7914809a.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "books-and-writing",
+ "lang": "de",
+ "title": {
+  "en": "Books and Writing",
+  "de": "Bücher und Schreiben",
+  "fr": "Livres et écriture",
+  "es": "Libros y escritura",
+  "ja": "本と執筆",
+  "it": "Libri e scrittura",
+  "pt": "Livros e escrita",
+  "nl": "Boeken en schrijven",
+  "pl": "Ksiazki i pisanie",
+  "sv": "Böcker och skrivande",
+  "ru": "Книги и литература",
+  "ko": "책과 글쓰기",
+  "uk": "Книги та письмо",
+  "tr": "Kitaplar ve yazarlık",
+  "el": "Βιβλία και συγγραφή",
+  "zh": "书籍与写作",
+  "fi": "Kirjat ja kirjoittaminen",
+  "ca": "Llibres i escriptura",
+  "cs": "Knihy a psaní",
+  "no": "Bøker og skriving",
+  "ar": "الكتب والكتابة",
+  "zh-Hant": "書籍與寫作"
+ },
+ "icon": "📚",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "satori_y@mastodon.social",
+   "url": "https://mastodon.social/@satori_y",
+   "displayName": "Satori Yakamura",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/833/932/569/670/248/original/940809af2a363beb.png",
+   "bot": false,
+   "bio": "Hallo, ich bin Satori! Ich erzähle Geschichten, die ich noch nicht kenne. #penandpaperde #mythicgme #podcast #rollenspiel #ttrpg",
+   "showUrl": "https://ausgewuerfelt.yakamura.de/",
+   "observedAt": "2026-11-20T00:06:51+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@satori_y/116281238014588464",
+     "seenAt": "2026-03-24T00:08:02.795Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "seenAt": "2026-11-19T21:15:06.219Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117645174780879849",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "createdAt": "2026-11-19T21:15:06.219Z",
+     "text": "Neue Folge — Henry Thomas Jones #5 \"Der Schreckensclown\" Henry Thomas Jones und Floyd Adler stürmen ins Büro des Chefredakteurs und finden dort einen Mann im Clownkostüm mit starrer, verzerrter Maske... https://ausgewuerfelt.yakamura.de/series/arkhamadvertiser/staffel1/5-der-schreckensclown/ ▶️ Video auf YouTube: https://www.youtube.com/watch?v=ZXUuM_21k6w #abr #horror #podcast #solorpg #penandpa…",
+     "spoilerText": "Mögliche Gewaltdarstellung in der Erzählung",
+     "sensitive": true,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=ZXUuM_21k6w",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117604685032966422",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@satori_y/117604685032966422",
+     "createdAt": "2026-11-12T17:38:01.680Z",
+     "text": "Neue Folge — Ein Schmugglerleben #16 \"Aufbruch nach Lycai\" Roland investiert in eine Raketenbatterie und verlässt den Sektor mit Kurs auf den Planeten Lycai. https://ausgewuerfelt.yakamura.de/series/sternenschmiede/season1/16-aufbruch-nach-lycai/ https://youtu.be/Y6LrVd4TAMs #starforged #sciencefiction #podcast #solorpg #penandpaper #actualplay #ttrpg #rollenspiel #mythicgme #würfel #pnp #pnpde #…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Y6LrVd4TAMs",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

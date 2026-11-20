@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "music",
+ "lang": "fr",
+ "title": {
+  "en": "Music",
+  "de": "Musik",
+  "fr": "Musique",
+  "es": "Música",
+  "ja": "音楽",
+  "it": "Musica",
+  "pt": "Música",
+  "nl": "Muziek",
+  "pl": "Muzyka",
+  "sv": "Musik",
+  "ru": "Музыка",
+  "ko": "음악",
+  "uk": "Музика",
+  "tr": "Müzik",
+  "el": "Μουσική",
+  "zh": "音乐",
+  "ca": "Música",
+  "cs": "Hudba",
+  "fi": "Musiikki",
+  "no": "Musikk",
+  "ar": "الموسيقى",
+  "zh-Hant": "音樂"
+ },
+ "icon": "🎵",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "pasleplatine@mastodon.art",
+   "url": "https://mastodon.art/@pasleplatine",
+   "displayName": "Pas le platine podcast",
+   "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/112/976/502/169/229/690/original/93f26ab42ec060bc.png",
+   "bot": false,
+   "bio": "Chaque jour un-e artiste dont vous n'avez peut-être pas entendu les singles plus tardifs. Trois chansons en 10-12 minutes ici et en podcast. Par @terrylaire",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:17+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "audio",
+     "postUrl": "https://mastodon.art/@pasleplatine/117641612647542639",
+     "seenAt": "2026-11-19T06:09:12.363Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.art/@pasleplatine/117641670909096845",
+     "seenAt": "2026-11-19T06:24:01.363Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117641670909096845",
+     "server": "https://mastodon.art",
+     "postUrl": "https://mastodon.art/@pasleplatine/117641670909096845",
+     "createdAt": "2026-11-19T06:24:01.363Z",
+     "text": "Aujourd'hui dans Pas le platine : IAM ! Souvenez-vous de 1993 et de la chanson Je danse le Mia https://www.youtube.com/watch?v=7ceNf9qJjgc Écoutez Pas le platine : https://podcast.terrylaire.fr/pasleplatine #PasLePlatine #PasLePlatineMaisLePlatine #RadioPouet",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=7ceNf9qJjgc",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117641612647542639",
+     "server": "https://mastodon.art",
+     "postUrl": "https://mastodon.art/@pasleplatine/117641612647542639",
+     "createdAt": "2026-11-19T06:09:12.363Z",
+     "text": "Bonjour ! IAM, ce sont aussi ces 3 singles moins connus : Noble art (2003) Les raisons de la colère (2013) Monnaie de singe (2017) https://podcast.terrylaire.fr/pasleplatine #PasLePlatine #RadioPouet #Podcast #Music #DailySong #IAM",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/mastodonart/media_attachments/files/117/641/612/527/731/973/original/29611c97bb55add0.mp3",
+       "mediaType": "audio"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

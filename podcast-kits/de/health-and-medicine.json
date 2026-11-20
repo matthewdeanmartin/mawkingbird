@@ -1,0 +1,89 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "health-and-medicine",
+ "lang": "de",
+ "title": {
+  "en": "Health and Medicine",
+  "de": "Gesundheit und Medizin",
+  "fr": "Santé et médecine",
+  "es": "Salud y medicina",
+  "ja": "健康と医療",
+  "it": "Salute e medicina",
+  "pt": "Saúde e medicina",
+  "nl": "Gezondheid en geneeskunde",
+  "pl": "Zdrowie i medycyna",
+  "sv": "Hälsa och medicin",
+  "ru": "Здоровье и медицина",
+  "ko": "건강과 의학",
+  "uk": "Здоров'я та медицина",
+  "tr": "Sağlık ve tıp",
+  "el": "Υγεία και ιατρική",
+  "zh": "健康与医学",
+  "ca": "Salut i medicina",
+  "cs": "Zdraví a medicína",
+  "fi": "Terveys ja lääketiede",
+  "no": "Helse og medisin",
+  "ar": "الصحة والطب",
+  "zh-Hant": "健康與醫學"
+ },
+ "icon": "🩺",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "unverkrampft_podcast@mastodon.social",
+   "url": "https://mastodon.social/@unverkrampft_podcast",
+   "displayName": "Unverkrampft - Periodenpodcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/989/543/151/965/013/original/1b6c445652eea6f6.png",
+   "bot": false,
+   "bio": "Johanna und Tom sprechen über ein Thema, über das noch immer viel zu selten geredet wird: die Periode. Johanna ist Menstruations-Aktivistin, Lehrerin und DJ. Sie kennt sich aus mit Zyklus, Aufklärung…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:19+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@unverkrampft_podcast/117609084491575278",
+     "seenAt": "2026-11-13T12:16:52.105Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117609084491575278",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@unverkrampft_podcast/117609084491575278",
+     "createdAt": "2026-11-13T12:16:52.105Z",
+     "text": "AUSLOSUNG UNSERER SPENDENAKTION: Unter allen Vorschlägen bis Ende Oktober wurde ausgelost! Die Kinderjugendhilfe Erfurt darf sich auf ein großes Paket Tampons & Binden von Cosmea freuen! Danke @davodego für den Vorschlag! Wir freuen uns auf weitere Vorschläge für die nächste Auslosung! 🎧 Und bis dahin hört gerne unsere aktuelle Folge 11 \"Periodenprodukte\"! Überall, wo ihr Podcasts hört und ganz e…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/609/082/134/561/267/original/15ff2405a51ec9fd.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117495369718053693",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@unverkrampft_podcast/117495369718053693",
+     "createdAt": "2026-10-24T10:17:42.371Z",
+     "text": "Wir haben das nächste Sponsoringpaket mit Tampons & Binden ausgelost! 🎉 Unter allen Vorschlägen bis einschließlich September darf sich Cia4u freuen! Dein Vorschlag für @fhk_ev (Frauenhauskoordinierung e.V.) wurde gezogen! 🥰 Wir freuen uns auf viele weitere Vorschläge! 📨 Schreibt uns hier oder an info@unverkrampft-podcast.de #periode #menstruation #zyklus #periodenartikel #frauengesundheit #frauen…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/495/352/442/198/036/original/4a4a4c22d1d5f2c4.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

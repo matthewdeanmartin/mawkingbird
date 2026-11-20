@@ -1,0 +1,258 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "retro-computing",
+ "lang": "en",
+ "title": {
+  "en": "Retro Computing",
+  "de": "Retro-Computing",
+  "fr": "Rétro-informatique",
+  "es": "Retroinformática",
+  "ja": "レトロコンピューティング",
+  "it": "Retrocomputing",
+  "pt": "Retrocomputação",
+  "nl": "Retrocomputing",
+  "pl": "Retro komputery",
+  "sv": "Retrodatorer",
+  "ru": "Ретрокомпьютеры",
+  "ko": "레트로 컴퓨팅",
+  "uk": "Ретрокомп'ютери",
+  "tr": "Retro bilgisayarlar",
+  "el": "Ρετρό υπολογιστές",
+  "zh": "复古计算机",
+  "ca": "Informàtica retro",
+  "cs": "Retro počítače",
+  "fi": "Retrotietokoneet",
+  "no": "Retrodatamaskiner",
+  "ar": "الحوسبة القديمة",
+  "zh-Hant": "復古電腦"
+ },
+ "icon": "🖥️",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "dosnostalgic@mastodon.social",
+   "url": "https://mastodon.social/@dosnostalgic",
+   "displayName": "Anatoly Shashkin💾",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/011/472/original/d2e6ad703b6e8453.jpg",
+   "bot": false,
+   "bio": "MS-DOS gaming enthusiast, YouTuber, podcaster, cat admirer, RU in NY. Ask me about DOS games! Tell me your DOS game memories! I swear and repost a bunch. 🥂 (He/Him) I don't describe images",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:05+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117634760186316933",
+     "seenAt": "2026-11-18T01:06:32.153Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@dosnostalgic/117424456043382662",
+     "seenAt": "2026-10-11T21:43:25.547Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117634760186316933",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117634760186316933",
+     "createdAt": "2026-11-18T01:06:32.153Z",
+     "text": "The kisses of the sun were sweet, I didn't blink I let it in my eyes like an exotic dream The radio playing songs that I have never heard I don't know what to say, oh, not another word 🔊🎵 #OPL3MIDI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/634/757/576/012/519/original/55cacdf47459323e.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117542720939526670",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117542720939526670",
+     "createdAt": "2026-11-01T18:59:44.649Z",
+     "text": "Who can say where the road goes? Where the day flows? Only time 🔊🎵 #OPL3MIDI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/542/720/218/690/623/original/f9b960bbb4bf0cd3.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "thelogbook@mstdn.social",
+   "url": "https://mstdn.social/@theLogBook",
+   "displayName": "Earl Green",
+   "avatar": "https://media.mstdn.social/accounts/avatars/109/331/593/963/091/620/original/396991a958c2accc.png",
+   "bot": false,
+   "bio": "Podcast editor/writer/producer/voice. Videocast/livecast producer. Friend to cats. Opinions are mine, not my employers'/clients'. He/him/hey you.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:25+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mstdn.social/@theLogBook/117481025635461519",
+     "seenAt": "2026-10-21T21:29:49.019Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mstdn.social/@theLogBook/116824871921009719",
+     "seenAt": "2026-06-28T00:21:17.897Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mstdn.social/@theLogBook/117632526326492446",
+     "seenAt": "2026-11-17T15:38:26.104Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117632526326492446",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@theLogBook/117632526326492446",
+     "createdAt": "2026-11-17T15:38:26.104Z",
+     "text": "Bomb Bee may hold an obscure slot in video game history, as an early effort from the future creator of Pac-Man, but it's Namcovember, so it's the focus of the latest edition of Phosphor Dot Fossils. #retrogaming https://www.youtube.com/watch?v=p7dm8bPTOls",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=p7dm8bPTOls",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117624370668481235",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@theLogBook/117624370668481235",
+     "createdAt": "2026-11-16T05:04:20.640Z",
+     "text": "You've already heard the improbable story of Tengen's port of Ms. Pac-Man for the NES; as NAMCOVEMBER continues Phosphor Dot Fossils bites into how the other half lived with Tengen's Ms. Pac-Man for the Sega Master System. #retrogaming https://www.youtube.com/watch?v=mQazjXXbgwU",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=mQazjXXbgwU",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "janbeta@chaos.social",
+   "url": "https://chaos.social/@janbeta",
+   "displayName": "Jan Beta",
+   "avatar": "https://assets.chaos.social/accounts/avatars/108/193/563/796/459/140/original/9d61e09901f716c0.jpeg",
+   "bot": false,
+   "bio": "I repair/hack/make/destroy stuff on YouTube/PeerTube. RetroComputing, VintageAudio, Tinkering. Co-hosting the Elektroschrott podcast. As unprofessional as it gets. Anti-fascist. Chaotic good. C64 rul…",
+   "showUrl": "https://elektroschrott.org",
+   "observedAt": "2026-11-20T00:02:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://chaos.social/@janbeta/117574292128535310",
+     "seenAt": "2026-11-07T08:48:42.763Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117574292128535310",
+     "server": "https://chaos.social",
+     "postUrl": "https://chaos.social/@janbeta/117574292128535310",
+     "createdAt": "2026-11-07T08:48:42.763Z",
+     "text": "New (German) Elektroschrott podcast episode is out now! https://elektroschrott.org https://youtu.be/Ksp0Ps19ThI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Ksp0Ps19ThI",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117531068062561226",
+     "server": "https://chaos.social",
+     "postUrl": "https://chaos.social/@janbeta/117531068062561226",
+     "createdAt": "2026-10-30T17:36:15.864Z",
+     "text": "New video! This explains why I didn't make any new videos for a month. YouTube: https://youtu.be/x8z7OHBJ83k PeerTube: https://makertube.net/w/3MBGUrgxVCaTnrFtPKVouw #BetaLab #NewRoom #ElectronicsLab #RetroComputing #VintageComputing #RoomTour #BehindTheScenes",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/x8z7OHBJ83k",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "bluewizard@mastodon.sdf.org",
+   "url": "https://mastodon.sdf.org/@bluewizard",
+   "displayName": "Ryan",
+   "avatar": "https://mastodon.sdf.org/system/accounts/avatars/109/277/915/208/623/190/original/00a261892e7ff52a.png",
+   "bot": false,
+   "bio": "General tech guy that enjoys: Vintage #Amiga and #Commodore #retrocomputers. Casual board games with friends Enjoy digital modes of Amateur Radio Bluewizardnet Amiga blog Podcast creator R N R Does s…",
+   "showUrl": "https://www.rnrdoesstuff.com",
+   "observedAt": "2026-11-19T23:58:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/116184662661687209",
+     "seenAt": "2026-03-06T22:47:39.867Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116184662661687209",
+     "server": "https://mastodon.sdf.org",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/116184662661687209",
+     "createdAt": "2026-03-06T22:47:39.867Z",
+     "text": "Here is a write up and video from a local #vintagecomputing meetup here in Chantilly, VA https://www.bluewizard.net/blog/vcm-meetup-sep-2025/ https://www.youtube.com/watch?v=LRIPtjlTa3g&t=5s #amiga #commodore #atari #sun #mac #retrocomputing",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=LRIPtjlTa3g&t=5s",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

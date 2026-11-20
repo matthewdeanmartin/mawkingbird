@@ -1,0 +1,89 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "photography",
+ "lang": "en",
+ "title": {
+  "en": "Photography",
+  "de": "Fotografie",
+  "fr": "Photographie",
+  "es": "Fotografía",
+  "ja": "写真",
+  "it": "Fotografia",
+  "pt": "Fotografia",
+  "nl": "Fotografie",
+  "pl": "Fotografia",
+  "sv": "Fotografi",
+  "ru": "Фотография",
+  "ko": "사진",
+  "uk": "Фотографія",
+  "tr": "Fotoğrafçılık",
+  "el": "Φωτογραφία",
+  "zh": "摄影",
+  "cs": "Fotografie",
+  "ca": "Fotografia",
+  "fi": "Valokuvaus",
+  "no": "Fotografi",
+  "ar": "التصوير الفوتوغرافي",
+  "zh-Hant": "攝影"
+ },
+ "icon": "📷",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "alexluyckxphoto@mstdn.ca",
+   "url": "https://mstdn.ca/@AlexLuyckxPhoto",
+   "displayName": "Alex Luyckx",
+   "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/523/545/285/999/857/original/af9396cfb590c683.jpg",
+   "bot": false,
+   "bio": "Long time blogger, Podcaster, film and history nut. Creator of the Classic Camera Revival & Toronto Film Shooters",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:52+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117598059438447204",
+     "seenAt": "2026-11-11T13:33:03.132Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117598059438447204",
+     "server": "https://mstdn.ca",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117598059438447204",
+     "createdAt": "2026-11-11T13:33:03.132Z",
+     "text": "Solid, Mechanical, the Canon FTb. https://youtu.be/mGBwJyZEx2o #photography #filmphotography #camerareview #gear #believeinfilm #shootfilmbenice",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/mGBwJyZEx2o",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117518524133246856",
+     "server": "https://mstdn.ca",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117518524133246856",
+     "createdAt": "2026-10-28T12:26:10.687Z",
+     "text": "Did Agfa really name a camera after the shutter sound? Probably not. But that doesn't mean we should overlook the amazing Agfa Click II! https://youtu.be/wWsviy2IMCo #photography #filmphotography #cameragear #believeinfilm #shootfilmbenice",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/wWsviy2IMCo",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

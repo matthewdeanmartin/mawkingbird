@@ -1,0 +1,89 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "science-fiction-and-fantasy",
+ "lang": "de",
+ "title": {
+  "en": "Science Fiction and Fantasy",
+  "de": "Science-Fiction und Fantasy",
+  "fr": "Science-fiction et fantasy",
+  "es": "Ciencia ficción y fantasía",
+  "ja": "SFとファンタジー",
+  "it": "Fantascienza e fantasy",
+  "pt": "Ficção científica e fantasia",
+  "nl": "Sciencefiction en fantasy",
+  "pl": "Fantastyka",
+  "sv": "Science fiction och fantasy",
+  "ru": "Фантастика и фэнтези",
+  "ko": "SF와 판타지",
+  "uk": "Фантастика і фентезі",
+  "tr": "Bilim kurgu ve fantastik",
+  "el": "Επιστημονική φαντασία",
+  "zh": "科幻与奇幻",
+  "ca": "Ciència-ficció i fantasia",
+  "cs": "Sci-fi a fantasy",
+  "fi": "Tieteiskirjallisuus ja fantasia",
+  "no": "Science fiction og fantasy",
+  "ar": "الخيال العلمي والفانتازيا",
+  "zh-Hant": "科幻與奇幻"
+ },
+ "icon": "🚀",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "discoverypanel@podcasts.social",
+   "url": "https://podcasts.social/@discoverypanel",
+   "displayName": "Discovery Panel Podcast",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/274/473/641/703/399/original/09f8ea77f998a7ea.jpg",
+   "bot": false,
+   "bio": "Der #Podcast zu aktuellen #StarTrek-Serien. #StarTrekStrangeNewWorlds #StarTrekStarfleetAcademy, #StarTrekScouts. @goldeneblogger 2021",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:59:41+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://podcasts.social/@discoverypanel/117642756924306387",
+     "seenAt": "2026-11-19T11:00:12.639Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117642756924306387",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@discoverypanel/117642756924306387",
+     "createdAt": "2026-11-19T11:00:12.639Z",
+     "text": "Was macht Science-Fiction aus? Andreas' Antwort: ein Problem unserer Welt in einen anderen Kontext setzen und von dort aus beleuchten. Und genau deshalb zählt Star Trek IV dazu. #StarTrek 🖖 Folge bewerten & mehr: https://www.discoverypanel.de/c/61m",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/podcastssocial/media_attachments/files/117/637/120/605/982/773/original/fb4e653da632bf16.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117638981430438376",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@discoverypanel/117638981430438376",
+     "createdAt": "2026-11-18T19:00:03.176Z",
+     "text": "Warum Janeways Verhalten in „The Voyager Conspiracy“ für Sebastian der größte Knackpunkt der Folge ist und was das mit seiner Liebe zu dieser Figur zu tun hat. 🖖 Folge bewerten & mehr: https://www.discoverypanel.de/c/316m #StarTrek #Voyager #Janeway #StarTrekVoyager #Podcast #DiscoveryPanel",
+     "spoilerText": "Spoiler zu VOY 6x09 „The Voyager Conspiracy“",
+     "sensitive": true,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/podcastssocial/media_attachments/files/117/637/001/343/431/611/original/178b225f86738a60.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

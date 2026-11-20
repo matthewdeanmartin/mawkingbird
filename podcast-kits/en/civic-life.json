@@ -1,0 +1,349 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "civic-life",
+ "lang": "en",
+ "title": {
+  "en": "Civic Life",
+  "de": "Bürgergesellschaft",
+  "fr": "Vie civique",
+  "es": "Vida cívica",
+  "ja": "市民生活",
+  "it": "Vita civica",
+  "pt": "Vida cívica",
+  "nl": "Openbaar bestuur",
+  "pl": "Życie obywatelskie",
+  "sv": "Samhällsliv",
+  "ru": "Общественная жизнь",
+  "ko": "시민 생활",
+  "uk": "Громадське життя",
+  "tr": "Yurttaşlık",
+  "el": "Δημόσιος βίος",
+  "zh": "公共生活",
+  "cs": "Veřejný život",
+  "fi": "Yhteiskunnallinen elämä",
+  "ca": "Vida cívica",
+  "no": "Samfunnsliv",
+  "ar": "الحياة المدنية",
+  "zh-Hant": "公民生活"
+ },
+ "icon": "🗳️",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "laurarbelin@mastodon.social",
+   "url": "https://mastodon.social/@LauraRBelin",
+   "displayName": "LauraRBelin",
+   "avatar": "https://files.mastodon.social/accounts/avatars/109/258/434/085/888/221/original/791176256bb4214e.jpg",
+   "bot": false,
+   "bio": "Publisher, editor, primary reporter for the Iowa political website Bleeding Heartland. https://www.bleedingheartland.com Part-time statehouse reporter for KHOI Radio in Ames. Find \"KHOI's Capitol Wee…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:27+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117645122988113473",
+     "seenAt": "2026-11-19T21:01:55.910Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@LauraRBelin/117611666366524718",
+     "seenAt": "2026-11-13T23:13:28.373Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117645122988113473",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117645122988113473",
+     "createdAt": "2026-11-19T21:01:55.910Z",
+     "text": "\"We know that actions speak louder than words.\" Why Rob Sand thinks handing the microphone to Republicans at his town halls was so powerful and effective for his #IAGov campaign:",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/645/115/103/680/703/original/7e21fb8beb405aac.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117621266027885878",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117621266027885878",
+     "createdAt": "2026-11-15T15:54:47.586Z",
+     "text": "Another clip from my recent interview with State Rep. Aime Wichtendahl, the only transgender person elected to the Iowa legislature. I asked her about Josh Turek's late TV ad, in which the #IASen Democratic nominee said, \"I oppose males competing in female sports\" and \"I'm against taxpayers paying for sex changes, too.\"",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/621/235/272/128/817/original/081659cf78416d81.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "theallaboutnothingpodcast@mastodon.social",
+   "url": "https://mastodon.social/@theallaboutnothingpodcast",
+   "displayName": "The All About Nothing: Podcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/378/004/968/781/447/original/a13645ef9eb8c8fe.png",
+   "bot": false,
+   "bio": "In a world with news and politics, sports and entertainment, flying at you all the time, sometimes it takes a little more conversation to make it feel sane. That's what we do! https://theallaboutnoth…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:27+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@theallaboutnothingpodcast/117644843094385642",
+     "seenAt": "2026-11-19T19:50:45.082Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117644843094385642",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@theallaboutnothingpodcast/117644843094385642",
+     "createdAt": "2026-11-19T19:50:45.082Z",
+     "text": "🎙️ Highlights from Episode 332; @preachjacobs joins @barrettgruber on #ColaCon to the #2026Election reactions! 🎧 Listen wherever you get #podcasts or 📺 Watch on YouTube! 🔗 https://linktr.ee/theallaboutnothingpodcast 🔗 https://link.content360.io/AANEp332",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/644/843/009/168/075/original/bf2d78fcd69cd27d.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117639244752321395",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@theallaboutnothingpodcast/117639244752321395",
+     "createdAt": "2026-11-18T20:07:01.156Z",
+     "text": "🎙️ Highlights from Episode 332; @preachjacobs joins @barrettgruber on #ColaCon to the #2026Election reactions! 🎧 Listen wherever you get #podcasts or 📺 Watch on YouTube! 🔗 https://linktr.ee/theallaboutnothingpodcast 🔗 https://link.content360.io/AANEp332",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/639/244/650/299/281/original/53f064970f0b3b55.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "gregthebrave@mastodon.social",
+   "url": "https://mastodon.social/@gregthebrave",
+   "displayName": "Greg the Brave",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/245/205/573/023/706/original/0ac2d7a476944e4f.png",
+   "bot": false,
+   "bio": "Writer/Podcaster about parenting and the joys that come from rejected wisdom. Tour guide for Samuel Adams Boston Brewery (Your uncle from Boston) with a genuine Boston accent.",
+   "showUrl": "https://open.spotify.com/show/5Sjbk4YtROIlf0ooxglQbS?si=jojFFYt-QzmlEDE02qddWQ",
+   "observedAt": "2026-11-20T00:01:29+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@gregthebrave/116976051791315108",
+     "seenAt": "2026-07-24T17:08:19.670Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@gregthebrave/117564841720454763",
+     "seenAt": "2026-11-05T16:45:20.985Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117564841720454763",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@gregthebrave/117564841720454763",
+     "createdAt": "2026-11-05T16:45:20.985Z",
+     "text": "It's not easy taking care of your children. Sometimes someone like Fernie MertBert will come along and show them unhealthy food and habits. #childrensbooks #piedpiper #junkfood #children #childrenshealth #videogames https://open.spotify.com/episode/3q2xzFCJthCAaCoajPjbUi?si=hxp2xUQfSq-B_as_HY5ScA",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/3q2xzFCJthCAaCoajPjbUi?si=hxp2xUQfSq-B_as_HY5ScA",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117560208483966292",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@gregthebrave/117560208483966292",
+     "createdAt": "2026-11-04T21:07:03.398Z",
+     "text": "And here is the podcast episode. https://open.spotify.com/episode/3E8fmKmnQ3ws44HGgABeOj?si=G3tlAv6UTqitnIEWSNM-0Q",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/3E8fmKmnQ3ws44HGgABeOj?si=G3tlAv6UTqitnIEWSNM-0Q",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "presidencies@masto.ai",
+   "url": "https://masto.ai/@presidencies",
+   "displayName": "Presidencies of the US",
+   "avatar": "https://s3.masto.ai/accounts/avatars/109/339/259/860/543/005/original/58f4e63ed157db4a.jpg",
+   "bot": false,
+   "bio": "The Presidencies of the United States is a podcast devoted to exploring each presidency from the very beginning in depth. I take a systematic approach to both the people and the events that have shap…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:13+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://masto.ai/@presidencies/117592568789465457",
+     "seenAt": "2026-11-10T14:16:42.483Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://masto.ai/@presidencies/117640005869335447",
+     "seenAt": "2026-11-18T23:20:34.876Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://masto.ai/@presidencies/117564288912068287",
+     "seenAt": "2026-11-05T14:24:45.798Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117640005869335447",
+     "server": "https://masto.ai",
+     "postUrl": "https://masto.ai/@presidencies/117640005869335447",
+     "createdAt": "2026-11-18T23:20:34.876Z",
+     "text": "This #ReflectionWednesday, I'm sharing a few thoughts of how podcasting has changed since I started nearly 10 years ago and new ways that I'm exploring how to connect with listeners. Check it out! #PodcastingLife https://youtu.be/iVfJ4zurSTY",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/iVfJ4zurSTY",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117592568789465457",
+     "server": "https://masto.ai",
+     "postUrl": "https://masto.ai/@presidencies/117592568789465457",
+     "createdAt": "2026-11-10T14:16:42.483Z",
+     "text": "Be sure to check out my recent guest appearance on the Vice Presidents of the United States podcast to learn more about the last days of Aaron Burr. His is truly a fascinating (and scandalous) history! #history #VPOTUS #Burr https://podcasts.apple.com/us/podcast/old-man-burr/id1440240504?i=1000799622259",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/us/podcast/old-man-burr/id1440240504?i=1000799622259",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "ihppod@mastodon.world",
+   "url": "https://mastodon.world/@ihppod",
+   "displayName": "I Hate Politics Podcast",
+   "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/363/051/922/601/832/original/c7e458372c8935e8.png",
+   "bot": false,
+   "bio": "Cheekily exploring a human activity we love to hate. A podcast about politics close to home, in schools, roads, & local govt. Host: Sunil Dasgupta #DoingPoliSci More at: https://ihppod.org/",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:14+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.world/@ihppod/109800800077914814",
+     "seenAt": "2023-02-03T12:27:27.291Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "109800800077914814",
+     "server": "https://mastodon.world",
+     "postUrl": "https://mastodon.world/@ihppod/109800800077914814",
+     "createdAt": "2023-02-03T12:27:27.291Z",
+     "text": "New episode out: How Working From Home is Reshaping the Economy. Sunil Dasgupta talks with Nicholas Ramfos of National Capital Region Transportation Planning Board about the regional “State of the Commute” survey and with Jordan Rappaport of Federal Reserve Bank of Kansas City about how working from home is causing exurban growth, and it’s consequences. Music from Rockville singer-songwriter Gabr…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=z_sBOnTFNdg&feature=youtu.be",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/z_sBOnTFNdg",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "109761942329693547",
+     "server": "https://mastodon.world",
+     "postUrl": "https://mastodon.world/@ihppod/109761942329693547",
+     "createdAt": "2023-01-27T15:45:25.105Z",
+     "text": "New episode out: A Low-Salt Diet for Our Roads. Sunil Dasgupta talks with Abby Hileman of Izaak Walton League of America’s Salt Watch Program, and Karl Van Neste of Muddy Branch Alliance about how to reduce road salt use: If you can feel the crunch underfoot, you’re using too much salt. Music from Rockville singer-songwriter Gabrielle Zwi Music. https://youtu.be/-8FCe2d8xuo #roadsalt #watershed #…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/-8FCe2d8xuo",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=-8FCe2d8xuo&feature=youtu.be",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

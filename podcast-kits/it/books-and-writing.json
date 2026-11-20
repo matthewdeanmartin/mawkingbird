@@ -1,0 +1,115 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "books-and-writing",
+ "lang": "it",
+ "title": {
+  "en": "Books and Writing",
+  "de": "Bücher und Schreiben",
+  "fr": "Livres et écriture",
+  "es": "Libros y escritura",
+  "ja": "本と執筆",
+  "it": "Libri e scrittura",
+  "pt": "Livros e escrita",
+  "nl": "Boeken en schrijven",
+  "pl": "Ksiazki i pisanie",
+  "sv": "Böcker och skrivande",
+  "ru": "Книги и литература",
+  "ko": "책과 글쓰기",
+  "uk": "Книги та письмо",
+  "tr": "Kitaplar ve yazarlık",
+  "el": "Βιβλία και συγγραφή",
+  "zh": "书籍与写作",
+  "fi": "Kirjat ja kirjoittaminen",
+  "ca": "Llibres i escriptura",
+  "cs": "Knihy a psaní",
+  "no": "Bøker og skriving",
+  "ar": "الكتب والكتابة",
+  "zh-Hant": "書籍與寫作"
+ },
+ "icon": "📚",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "valtagliaferri@mastodon.social",
+   "url": "https://mastodon.social/@valtagliaferri",
+   "displayName": "Valtagliaferri",
+   "avatar": "https://files.mastodon.social/accounts/avatars/114/167/134/156/775/204/original/9a5624624d3cba9d.jpg",
+   "bot": false,
+   "bio": "#lettore, #scrittore e #podcaster",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:23+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@valtagliaferri/117633535549783784",
+     "seenAt": "2026-11-17T19:55:05.644Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@valtagliaferri/117534227710413890",
+     "seenAt": "2026-10-31T06:59:48.260Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@valtagliaferri/117633535549783784",
+     "seenAt": "2026-11-17T19:55:05.644Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117633535549783784",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@valtagliaferri/117633535549783784",
+     "createdAt": "2026-11-17T19:55:05.644Z",
+     "text": "È online la SESSANTAQUATTRESIMA puntata di #Sottolultimolampione il #podcast dedicato al #romanzo #Lultimolampione gratis su #podCloud #Castopod #Spotify #YouTube #Amazonmusic #leggere #libri #unolibri #narrativa #libri Il tempo di un pensiero, di una storia che si accende sotto la luce fragile ma tenace di un lampione Mettiti comoda e ascolta... pdca.st/nm2Z https://lafogliadacanto.podcast.audio…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/633/516/510/275/362/original/c88d555b94a09ee3.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/s-g2z_vAZj4?si=vcDYOYl9I04URcRR",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117621647184666357",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@valtagliaferri/117621647184666357",
+     "createdAt": "2026-11-15T17:31:43.582Z",
+     "text": "È online la SESSANTAQUATTRESIMA puntata di #Sottolultimolampione il #podcast dedicato al #romanzo #Lultimolampione gratis su #podCloud #Castopod #Spotify #YouTube #Amazonmusic #leggere #libri #unolibri #narrativa #libri Il tempo di un pensiero, di una storia che si accende sotto la luce fragile ma tenace di un lampione Mettiti comoda e ascolta... https://pdca.st/nm2Z https://lafogliadacanto.podca…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/621/637/798/934/091/original/c23a22f2dc0a95e2.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/s-g2z_vAZj4?si=QGnHYQL1kpYX8o6c",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

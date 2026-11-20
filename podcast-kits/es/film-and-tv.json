@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "film-and-tv",
+ "lang": "es",
+ "title": {
+  "en": "Film and TV",
+  "de": "Film und Fernsehen",
+  "fr": "Cinéma et télévision",
+  "es": "Cine y televisión",
+  "ja": "映画とテレビ",
+  "it": "Cinema e TV",
+  "pt": "Cinema e TV",
+  "nl": "Film en tv",
+  "pl": "Film i telewizja",
+  "sv": "Film och TV",
+  "ru": "Кино и телевидение",
+  "ko": "영화와 TV",
+  "uk": "Кіно і телебачення",
+  "tr": "Film ve televizyon",
+  "el": "Κινηματογράφος και τηλεόραση",
+  "zh": "电影与电视",
+  "ca": "Cinema i televisió",
+  "cs": "Film a televize",
+  "fi": "Elokuvat ja televisio",
+  "no": "Film og TV",
+  "ar": "السينما والتلفزيون",
+  "zh-Hant": "電影與電視"
+ },
+ "icon": "🎬",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "losmediatizados@tkz.one",
+   "url": "https://tkz.one/@LosMediatizados",
+   "displayName": "Los Mediatizados",
+   "avatar": "https://media.tkz.one/tkz/accounts/avatars/109/377/961/236/151/779/original/3ccffacd944a1f3f.png",
+   "bot": false,
+   "bio": "Los medios, desde otro punto de vista. 📻📺💻 Los jueves, desde las 8:00, en todas las plataformas de podcast. Síguenos también a lo largo de la semana en RFC Radio, Vox Uji Radio, Cuac FM, Ocionews Rad…",
+   "showUrl": "https://podcasts.apple.com/es/podcast/los-mediatizados/id1449762557",
+   "observedAt": "2026-11-20T00:03:44+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://tkz.one/@LosMediatizados/117602504560114276",
+     "seenAt": "2026-11-12T08:23:30.306Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://tkz.one/@LosMediatizados/117565131763702418",
+     "seenAt": "2026-11-05T17:59:06.688Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117602504560114276",
+     "server": "https://tkz.one",
+     "postUrl": "https://tkz.one/@LosMediatizados/117602504560114276",
+     "createdAt": "2026-11-12T08:23:30.306Z",
+     "text": "Hoy, por fin, cumplimos 500 programas. Y en esta vorágine en la que lo hacemos, Javier Ruiz nos manda un mensaje desde La Séptima.",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.tkz.one/tkz/media_attachments/files/117/602/503/869/588/460/original/986514d7a5ac326e.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117565131763702418",
+     "server": "https://tkz.one",
+     "postUrl": "https://tkz.one/@LosMediatizados/117565131763702418",
+     "createdAt": "2026-11-05T17:59:06.688Z",
+     "text": "La Séptima, los canales UHD, Premios Ondas, 2Cat, las audiencias del mes, el Real Decreto del DAB+... y bombazo de úlltima hora con la jubilación del Gran Wyoming! Empezamos en directo ya! https://www.youtube.com/live/lG7gTN05vbA?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/live/lG7gTN05vbA?feature=share",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

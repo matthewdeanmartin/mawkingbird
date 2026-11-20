@@ -1,0 +1,282 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "education",
+ "lang": "en",
+ "title": {
+  "en": "Education",
+  "de": "Bildung",
+  "fr": "Éducation",
+  "es": "Educación",
+  "ja": "教育",
+  "it": "Istruzione",
+  "pt": "Educação",
+  "nl": "Onderwijs",
+  "pl": "Edukacja",
+  "sv": "Utbildning",
+  "ru": "Образование",
+  "ko": "교육",
+  "uk": "Освіта",
+  "tr": "Eğitim",
+  "el": "Εκπαίδευση",
+  "zh": "教育",
+  "ca": "Educació",
+  "cs": "Vzdělávání",
+  "fi": "Koulutus",
+  "no": "Utdanning",
+  "ar": "التعليم",
+  "zh-Hant": "教育"
+ },
+ "icon": "🎓",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "behindthenumbers@mastodon.social",
+   "url": "https://mastodon.social/@behindthenumbers",
+   "displayName": "Behind The Numbers",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/757/695/163/243/657/original/d541ca44b79d3ef8.png",
+   "bot": false,
+   "bio": "Behind The Numbers Podcast Go Behind the Numbers for what matters most in business",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:03+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@behindthenumbers/117639090432386468",
+     "seenAt": "2026-11-18T19:27:46.414Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@behindthenumbers/117486340378800496",
+     "seenAt": "2026-10-22T20:01:25.568Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117639090432386468",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@behindthenumbers/117639090432386468",
+     "createdAt": "2026-11-18T19:27:46.414Z",
+     "text": "Top-line growth without protected margins is a trap. On Behind the Numbers with Dave Bookbinder, Rion Westfall (founder of Own Your Revenue) reveals why standard P&Ls miss your biggest growth opportunities. Learn how pattern-led strategy turns operational chaos into enterprise value. 🔸 Spotify: https://tinyurl.com/BTNSpot 🔸 Apple: https://tinyurl.com/BTNApple 🔸 YouTube: https://tinyurl.com/BTNyou…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/639/087/683/493/710/original/c61a54ad67e28fc3.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117599476050049255",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@behindthenumbers/117599476050049255",
+     "createdAt": "2026-11-11T19:33:18.910Z",
+     "text": "If every major decision flows through the CEO, you do not have a talent problem. You have a system bottleneck that is silently draining your company value. Dave Bookbinder chats with Shaun Mader, Founder of Friction to Flow Consulting and creator of Teamware, on the latest Behind the Numbers episode. Learn how to fix your team operating system and build a self-sustaining organization. Listen now!…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/599/475/287/415/615/original/a447ceefc6610b6f.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "josephpliu@mastodon.online",
+   "url": "https://mastodon.online/@josephpliu",
+   "displayName": "Joseph Liu",
+   "avatar": "https://files.mastodon.online/accounts/avatars/108/205/897/554/838/348/original/31be14fc5520a033.jpg",
+   "bot": false,
+   "bio": "Keynote speaker, career consultant, Career Relaunch® podcast host, and writer dedicated to helping people relaunch their careers",
+   "showUrl": "https://careerrelaunch.net",
+   "observedAt": "2026-11-20T00:02:49+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.online/@josephpliu/117602407289663938",
+     "seenAt": "2026-11-12T07:58:46.078Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.online/@josephpliu/115865333239308229",
+     "seenAt": "2026-01-09T13:17:59.557Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117602407289663938",
+     "server": "https://mastodon.online",
+     "postUrl": "https://mastodon.online/@josephpliu/117602407289663938",
+     "createdAt": "2026-11-12T07:58:46.078Z",
+     "text": "When you consider leaving a job behind to pursue a new career, you often don’t know if you’re making the right move until you’re in your new role, and this uncertainty is often what stops people from making a change. Receptionist turned phlebotomist Dawn Drewett explains how she decided to make her brave leap on Career Relaunch® podcast episode 112. 🎧 Hear our conversation: https://pod.link/caree…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.online/media_attachments/files/117/602/405/981/873/091/original/92e88dafa8e982f2.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "116912712435713471",
+     "server": "https://mastodon.online",
+     "postUrl": "https://mastodon.online/@josephpliu/116912712435713471",
+     "createdAt": "2026-07-13T12:40:17.784Z",
+     "text": "AI can certainly assist you with writing, but it can also replace the exact process that sharpens your thinking. Scott Lamb, VP of Content at Medium, explains that the real value of writing comes from the effort you put into working through your ideas to sharpen them. 🎧Hear our full discussion about AI's impact on writing on Career Relaunch® podcast episode 111: https://pod.fo/e/420c9c",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.online/media_attachments/files/116/912/710/814/968/172/original/93fda0ff8e7f3bd5.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "all_learners_network@mathstodon.xyz",
+   "url": "https://mathstodon.xyz/@all_learners_network",
+   "displayName": "All Learners Network",
+   "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/376/642/840/941/356/original/64bfe6f4ff10c427.png",
+   "bot": false,
+   "bio": "OUR MISSION: “Cultivating a community of educators that promote math equity and inclusion for all students.”",
+   "showUrl": "https://www.alllearnersnetwork.com/resources/podcasts",
+   "observedAt": "2026-11-19T23:56:53+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mathstodon.xyz/@all_learners_network/110096586217690234",
+     "seenAt": "2023-03-27T18:09:45.606Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "110096586217690234",
+     "server": "https://mathstodon.xyz",
+     "postUrl": "https://mathstodon.xyz/@all_learners_network/110096586217690234",
+     "createdAt": "2023-03-27T18:09:45.606Z",
+     "text": "Hey math educators and leaders! Join us for professional learning and resources that will help you reach ALL learners! Sign up now for next school year and start accessing the platform right now, instead of waiting until July 1! Learn more and register: https://hubs.li/Q01HRtZV0",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.mathstodon.xyz/media_attachments/files/110/096/586/125/653/978/original/0c959513f738cd6a.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "110057292115229235",
+     "server": "https://mathstodon.xyz",
+     "postUrl": "https://mathstodon.xyz/@all_learners_network/110057292115229235",
+     "createdAt": "2023-03-20T19:36:45.192Z",
+     "text": "In this week's episode of ALN Math Talk, John chats with Sue Looney of @LooneyMath all about #numbersenseroutines and #samebutdifferent math! Check it out here: https://hubs.li/Q01Hyd4f0",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.mathstodon.xyz/media_attachments/files/110/057/292/054/700/252/original/2239827b2e37ac10.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "wesfryer@triangletoot.party",
+   "url": "https://triangletoot.party/@wesfryer",
+   "displayName": "Wes Fryer",
+   "avatar": "https://cdn.masto.host/triangletootparty/accounts/avatars/114/978/003/856/418/722/original/ae8af3ca1b3b473c.jpg",
+   "bot": false,
+   "bio": "Empowering you to bravely and creatively share your voice with kindness. #create2learn “Culture healer, not culture warrior.” #HealOurCulture Teacher by day #MediaLit, democracy & human rights champi…",
+   "showUrl": "https://podcasts.wesfryer.com",
+   "observedAt": "2026-11-20T00:08:28+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://triangletoot.party/@wesfryer/117591848577592417",
+     "seenAt": "2026-11-10T11:13:32.913Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://triangletoot.party/@wesfryer/117605430962919676",
+     "seenAt": "2026-11-12T20:47:43.666Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://triangletoot.party/@wesfryer/117521910905203536",
+     "seenAt": "2026-10-29T02:47:28.726Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117605430962919676",
+     "server": "https://triangletoot.party",
+     "postUrl": "https://triangletoot.party/@wesfryer/117605430962919676",
+     "createdAt": "2026-11-12T20:47:43.666Z",
+     "text": "Check out the RECORDING of our fantastic Nov 2nd webinar for the MediaEd Club of the Media Education Lab, “Voices Beyond the Textbook” https://mediaeducationlab.com/events/voices-beyond-textbook Direct YouTube link: https://www.youtube.com/watch?v=mHVoiRKTFL8 #history #BlackHistory #teaching #curriculum #UnderTold",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=mHVoiRKTFL8",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117604691828019179",
+     "server": "https://triangletoot.party",
+     "postUrl": "https://triangletoot.party/@wesfryer/117604691828019179",
+     "createdAt": "2026-11-12T17:39:45.363Z",
+     "text": "Ben Buchanan Wants the U.S. to Win on AI. But Is It a Race or a Trap? https://youtu.be/tg6eNoh6YEY?is=eBUFVrNNwTYxcP4w #AI #AIPolicy #AIGovernance #HumaneTech #Cybersecurity #USChinaRelations #TechPolicy",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/tg6eNoh6YEY?is=eBUFVrNNwTYxcP4w",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

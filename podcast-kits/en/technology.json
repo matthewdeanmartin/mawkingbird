@@ -1,0 +1,1054 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "technology",
+ "lang": "en",
+ "title": {
+  "en": "Technology",
+  "de": "Technologie",
+  "fr": "Technologie",
+  "es": "Tecnología",
+  "ja": "テクノロジー",
+  "it": "Tecnologia",
+  "pt": "Tecnologia",
+  "nl": "Technologie",
+  "pl": "Technologia",
+  "sv": "Teknik",
+  "ru": "Технологии",
+  "ko": "기술",
+  "uk": "Технології",
+  "tr": "Teknoloji",
+  "el": "Τεχνολογία",
+  "zh": "科技",
+  "ca": "Tecnologia",
+  "cs": "Technologie",
+  "fi": "Teknologia",
+  "no": "Teknologi",
+  "zh-Hant": "科技",
+  "ar": "التقنية"
+ },
+ "icon": "💻",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "leogdion@c.im",
+   "url": "https://c.im/@leogdion",
+   "displayName": "Leo Dion",
+   "avatar": "https://s3.c.im/accounts/avatars/109/263/136/930/561/815/original/50858125790f70e1.jpeg",
+   "bot": false,
+   "bio": "Hey everybody! I'm an independent Swift and Apple developer. My company is https://brightdigit.com I do mostly contract work but also the occasional indie app. I also have a Youtube channel and podca…",
+   "showUrl": "https://www.empowerapps.show",
+   "observedAt": "2026-11-20T00:03:21+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://c.im/@leogdion/117644310432128570",
+     "seenAt": "2026-11-19T17:35:17.288Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://c.im/@leogdion/117638647804132016",
+     "seenAt": "2026-11-18T17:35:12.441Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117644310432128570",
+     "server": "https://c.im",
+     "postUrl": "https://c.im/@leogdion/117644310432128570",
+     "createdAt": "2026-11-19T17:35:17.288Z",
+     "text": "How big a job was taking EventLoopFuture out of @codevapor? @0xTim on the new EmpowerApps: every I/O operation, whether it talked to files, the network or other libraries, was built on futures. Removing them meant touching every part of the framework. Effectively a full rewrite. And worth it: \"It was massively satisfying, because our code got so much simpler.\" 🎧 https://brightdigit.com/episodes/2…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://s3.c.im/media_attachments/files/117/644/309/962/416/078/original/6a49353e6396268e.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117638647804132016",
+     "server": "https://c.im",
+     "postUrl": "https://c.im/@leogdion/117638647804132016",
+     "createdAt": "2026-11-18T17:35:12.441Z",
+     "text": "The recording of my swiftCon Berlin workshop is up. From a new project to TestFlight: mise (@jdx), Tuist (@tuist), Fastlane Match, GitHub Actions, and swift-build for testing on Linux, Windows, Android and WASM. https://youtu.be/NyKmqtklU-U",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/NyKmqtklU-U",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "geekingout_pod@mastodon.social",
+   "url": "https://mastodon.social/@geekingout_pod",
+   "displayName": "Geeking Out Podcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/901/780/225/105/423/original/9955df4c253da516.jpg",
+   "bot": false,
+   "bio": "The podcast about all geeky aspects of software delivery, reliability, and everything in between. Hosted by @adrianamvillela.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:11+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@geekingout_pod/117632640237578211",
+     "seenAt": "2026-11-17T16:07:24.252Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@geekingout_pod/117592765690929375",
+     "seenAt": "2026-11-10T15:06:46.953Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117632640237578211",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@geekingout_pod/117632640237578211",
+     "createdAt": "2026-11-17T16:07:24.252Z",
+     "text": "Should we fully trust AI to code for us? Find out more from guest Monika Rajput on this month's episode of Geeking Out, out NOW. Catch it on our YouTube channel or on your fave podcasting app. #podcasting #podcast #vibecoding #aiAssistedCoding #techpodcast #datascience #dataengineering",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/632/639/992/952/992/original/54af63bee0a74530.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117592765690929375",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@geekingout_pod/117592765690929375",
+     "createdAt": "2026-11-10T15:06:46.953Z",
+     "text": "It took getting laid off for Monika Rajput to rethink some things career-wise. She decided to work on her personal brand, which led to her building the Cloud Native Gurugram community, and eventually to a CNCF Ambassadorship. Join Adriana as she talks to Monika about these topics, Monika's tech journey, and what inspired her to start her own podcast! Her episode is out NOW! ⬇️ 🎧: https://geeking-…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/FNMe3JGltzY",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "marcociappelli@infosec.exchange",
+   "url": "https://infosec.exchange/@Marcociappelli",
+   "displayName": "Marco Ciappelli🎙️✨:verified: :donor:",
+   "avatar": "https://media.infosec.exchange/infosec.exchange/accounts/avatars/109/328/425/430/336/089/original/8c487ceb495e6b6c.png",
+   "bot": false,
+   "bio": "Co-Founder ITSPmagazine & Studio C60 | Creative Director | Branding & Marketing Advisor | Personal Branding Coach | Journalist | Writer | Podcast: An Analog Brain In A Digital Age ⚠️ Beware: Pigs May…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:52+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://infosec.exchange/@Marcociappelli/117451882576708052",
+     "seenAt": "2026-10-16T17:58:21.233Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://infosec.exchange/@Marcociappelli/117584928728603198",
+     "seenAt": "2026-11-09T05:53:44.399Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117584928728603198",
+     "server": "https://infosec.exchange",
+     "postUrl": "https://infosec.exchange/@Marcociappelli/117584928728603198",
+     "createdAt": "2026-11-09T05:53:44.399Z",
+     "text": "You Don't Have to Touch the Candle On prevention, invisible harm, and the beep we stopped hearing A conversation with Barry Davis, author of The Preventioneers: Diseases, Disasters, and the Discoveries That Changed Our World. Inspiring stories of individuals who shaped prevention as a public good. Get the full episode on marcociappelli.com Enjoy and share! https://youtu.be/I2m2t9UCEzM",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/I2m2t9UCEzM",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117531612768389565",
+     "server": "https://infosec.exchange",
+     "postUrl": "https://infosec.exchange/@Marcociappelli/117531612768389565",
+     "createdAt": "2026-10-30T19:54:47.411Z",
+     "text": "Agentic AI learns what makes a business succeed, and Sean Murphy, Field CISO, North America at F5 argues that learning is a new perimeter worth defending. Read https://itspmagazine.com/blog Watch: https://youtube.com/watch?v=WdvKPzc_kTA #cybersecurity #infosec #business #technology #ai #agenticai",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/watch?v=WdvKPzc_kTA",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "hansamann@chaos.social",
+   "url": "https://chaos.social/@hansamann",
+   "displayName": "hansamann 🔥❄️🚀 (he/him)",
+   "avatar": "https://assets.chaos.social/accounts/avatars/111/830/009/140/223/068/original/43caa1da6bb051ec.png",
+   "bot": false,
+   "bio": "Tech Strategist at SAP 🏳️‍🌈 #LabsTalk Podcast | #Metaverse and #Web3 | #DIY | END F$%^ WAR 💙💛 Hungry for new #experiences and genuine, human connections. Creating things in/around #muc, #Cycling west…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:32+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://chaos.social/@hansamann/115666249463264349",
+     "seenAt": "2025-12-05T09:28:22.212Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://chaos.social/@hansamann/116528303173975807",
+     "seenAt": "2026-05-06T15:19:58.234Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://chaos.social/@hansamann/115485328425947519",
+     "seenAt": "2025-11-03T10:37:46.265Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116528303173975807",
+     "server": "https://chaos.social",
+     "postUrl": "https://chaos.social/@hansamann/116528303173975807",
+     "createdAt": "2026-05-06T15:19:58.234Z",
+     "text": "New episode dropping tomorrow 🚀 We had the chance to sit down with Stefan Wagner (Managing Director, SAP Labs Germany) and talk about: – How SAP Labs grew across multiple locations – What makes each site unique – Why culture and community matter so much – And even a look into SAP’s quantum ambitions 👀 https://www.youtube.com/watch?v=iRaa2Am_ekA @andreasofthings",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=iRaa2Am_ekA",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "115666249463264349",
+     "server": "https://chaos.social",
+     "postUrl": "https://chaos.social/@hansamann/115666249463264349",
+     "createdAt": "2025-12-05T09:28:22.212Z",
+     "text": "My year on zwift. Ride now (!) my kickr core is being replaced, hoping I am not losing that 104 week streak! #zwift #cycling",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://assets.chaos.social/media_attachments/files/115/666/247/458/461/012/original/a9c60a530dabe859.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "analyseasia@mas.to",
+   "url": "https://mas.to/@analyseasia",
+   "displayName": "Analyse Podcast",
+   "avatar": "https://media.mas.to/accounts/avatars/109/605/678/391/904/796/original/d01e455040dd5069.jpg",
+   "bot": true,
+   "bio": "The official Mastodon of Analyse Podcast — a weekly show dissecting the pulse of #business, #technology & #media worldwide, hosted by @bernardleong",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:58+00:00",
+   "media": [
+    {
+     "kind": "full-player",
+     "source": "soundcloud",
+     "mediaType": null,
+     "postUrl": "https://mas.to/@analyseasia/117642993076070065",
+     "seenAt": "2026-11-19T12:00:16.031Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://mas.to/@analyseasia/117637332026016747",
+     "seenAt": "2026-11-18T12:00:35.262Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mas.to/@analyseasia/117635956624353712",
+     "seenAt": "2026-11-18T06:10:48.297Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mas.to/@analyseasia/117636150860575673",
+     "seenAt": "2026-11-18T07:00:12.106Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mas.to/@analyseasia/117641223479028408",
+     "seenAt": "2026-11-19T04:30:14.124Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117642993076070065",
+     "server": "https://mas.to",
+     "postUrl": "https://mas.to/@analyseasia/117642993076070065",
+     "createdAt": "2026-11-19T12:00:16.031Z",
+     "text": "Rui Ma of TechBuzz China maps China's AI landscape: DeepSeek's cost curve revolt, Alibaba, Tencent & Baidu racing on enterprise agents, robotics as a home‑grown moat, and how domestic price wars are pulling global AI costs down. Dive in. https://soundcloud.com/analyseasia/mapping-china-ai-ecosystem-rui-ma-techbuzz-china #ChinaAI #AITrends #TechInsights",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "full-player",
+       "source": "soundcloud",
+       "url": "https://soundcloud.com/analyseasia/mapping-china-ai-ecosystem-rui-ma-techbuzz-china",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117641813471563610",
+     "server": "https://mas.to",
+     "postUrl": "https://mas.to/@analyseasia/117641813471563610",
+     "createdAt": "2026-11-19T07:00:16.693Z",
+     "text": "'Our diversity is a feature, not a bug.' – Cassie Wu (Temasek) on how SEA’s mix of languages, cultures and market structures creates an AI moat. 70 % of AI usage is already in local languages. Winners will partner deeply and tailor products vertical‑by‑vertical. Listen: https://soundcloud.com/analyseasia/economysea-2026-ai-economy-nitingajria-cassiewu-florianhoppe #eConomySEA2026",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "full-player",
+       "source": "soundcloud",
+       "url": "https://soundcloud.com/analyseasia/economysea-2026-ai-economy-nitingajria-cassiewu-florianhoppe",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "barredo@mastodon.social",
+   "url": "https://mastodon.social/@Barredo",
+   "displayName": "Alex Barredo 📉",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/018/878/original/b2e65b1c2bc6028f.png",
+   "bot": false,
+   "bio": "I only tweet about tech & data — Student of onlineness: why people do what they do & say what they say online — Father of three & Full time podcaster @mixxio Creator of @mastodeck and @mastofeed #ele…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:55+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@Barredo/117644841325416218",
+     "seenAt": "2026-11-19T19:50:18.078Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117644841325416218",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@Barredo/117644841325416218",
+     "createdAt": "2026-11-19T19:50:18.078Z",
+     "text": "Nos roban a los CEOs | Cupertino 257 #podcast https://www.youtube.com/watch?v=59_bb9uUwJg",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=59_bb9uUwJg",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117556599446863938",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@Barredo/117556599446863938",
+     "createdAt": "2026-11-04T05:49:13.866Z",
+     "text": "¿Dónde te gusta que te toquen? | Cupertino 256 #podcast https://www.youtube.com/watch?v=4rxYMH8NaRw",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=4rxYMH8NaRw",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "jill_linuxgirl@mast.linuxgamecast.com",
+   "url": "https://mast.linuxgamecast.com/@Jill_linuxgirl",
+   "displayName": "Jill Bryant Ryniker",
+   "avatar": "https://cdn.masto.host/mastlinuxgamecastcom/accounts/avatars/000/000/007/original/d54e63632a28cca2.jpg",
+   "bot": false,
+   "bio": "😂💖🐧🐧🐧 LWDW podcast Morale Czar, Co-host and Sprite: \\:-D/ https://open.spotify.com/show/4TtosDHh7MYL5Alpa9QdGq Support: https://www.patreon.com/cw/lwdw Co-host & Owner of Destination Linux podcast: h…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mast.linuxgamecast.com/@Jill_linuxgirl/117644521587144864",
+     "seenAt": "2026-11-19T18:28:59.262Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mast.linuxgamecast.com/@Jill_linuxgirl/117641104962803314",
+     "seenAt": "2026-11-19T04:00:05.710Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117644521587144864",
+     "server": "https://mast.linuxgamecast.com",
+     "postUrl": "https://mast.linuxgamecast.com/@Jill_linuxgirl/117644521587144864",
+     "createdAt": "2026-11-19T18:28:59.262Z",
+     "text": "LWDW #Linux fun this week! 🤗💖🐧🐧🐧 4K On A Budget, Steam 64bit, mostly ;-) Reaping Wayland, Framework Keyboard https://open.spotify.com/episode/5DhmigpobTRCwX39V3nakQ #opensource #podcast #gaming",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/5DhmigpobTRCwX39V3nakQ",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117641104962803314",
+     "server": "https://mast.linuxgamecast.com",
+     "postUrl": "https://mast.linuxgamecast.com/@Jill_linuxgirl/117641104962803314",
+     "createdAt": "2026-11-19T04:00:05.710Z",
+     "text": "Destination Linux is live on YouTube and Twitch! Join Jill, Ryan, Zeb & Rocco as they record the latest edition of Destination Linux! 😂💖🐧🐧🐧 #OpenSource #podcast #technews #SwitchtoLinux #FOSS https://youtube.com/live/jOXxNpqARRQ?feature=share https://m.twitch.tv/jill_linuxgirl",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/jOXxNpqARRQ?feature=share",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "leszek@mastodon.social",
+   "url": "https://mastodon.social/@leszek",
+   "displayName": "Leszek Lesner",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/162/351/original/21e841ead5e63da7.png",
+   "bot": false,
+   "bio": "Computer Geek, Linux Distro Developer, Techview Podcast Youtube Channel, Smartphones & more",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:41+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@leszek/117617637483723850",
+     "seenAt": "2026-11-15T00:32:00.393Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@leszek/117536055478561396",
+     "seenAt": "2026-10-31T14:44:37.798Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117617637483723850",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@leszek/117617637483723850",
+     "createdAt": "2026-11-15T00:32:00.393Z",
+     "text": "Oh man this is better than all the three \"new\" Star Wars film combined. I read the book and they implemented and combined it very well with the latest Star Wars animated series and games https://youtu.be/QsXvvmWy-Ew?is=wTPvHz-hi7SYdEiW",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/QsXvvmWy-Ew?is=wTPvHz-hi7SYdEiW",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117536055478561396",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@leszek/117536055478561396",
+     "createdAt": "2026-10-31T14:44:37.798Z",
+     "text": "#HarmonyOS7 finally added this feature https://youtube.com/shorts/T8VmV3v89PI?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://youtube.com/shorts/T8VmV3v89PI?feature=share",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "wesfryer@triangletoot.party",
+   "url": "https://triangletoot.party/@wesfryer",
+   "displayName": "Wes Fryer",
+   "avatar": "https://cdn.masto.host/triangletootparty/accounts/avatars/114/978/003/856/418/722/original/ae8af3ca1b3b473c.jpg",
+   "bot": false,
+   "bio": "Empowering you to bravely and creatively share your voice with kindness. #create2learn “Culture healer, not culture warrior.” #HealOurCulture Teacher by day #MediaLit, democracy & human rights champi…",
+   "showUrl": "https://podcasts.wesfryer.com",
+   "observedAt": "2026-11-20T00:08:28+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://triangletoot.party/@wesfryer/117591848577592417",
+     "seenAt": "2026-11-10T11:13:32.913Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://triangletoot.party/@wesfryer/117605430962919676",
+     "seenAt": "2026-11-12T20:47:43.666Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://triangletoot.party/@wesfryer/117521910905203536",
+     "seenAt": "2026-10-29T02:47:28.726Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117605430962919676",
+     "server": "https://triangletoot.party",
+     "postUrl": "https://triangletoot.party/@wesfryer/117605430962919676",
+     "createdAt": "2026-11-12T20:47:43.666Z",
+     "text": "Check out the RECORDING of our fantastic Nov 2nd webinar for the MediaEd Club of the Media Education Lab, “Voices Beyond the Textbook” https://mediaeducationlab.com/events/voices-beyond-textbook Direct YouTube link: https://www.youtube.com/watch?v=mHVoiRKTFL8 #history #BlackHistory #teaching #curriculum #UnderTold",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=mHVoiRKTFL8",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117604691828019179",
+     "server": "https://triangletoot.party",
+     "postUrl": "https://triangletoot.party/@wesfryer/117604691828019179",
+     "createdAt": "2026-11-12T17:39:45.363Z",
+     "text": "Ben Buchanan Wants the U.S. to Win on AI. But Is It a Race or a Trap? https://youtu.be/tg6eNoh6YEY?is=eBUFVrNNwTYxcP4w #AI #AIPolicy #AIGovernance #HumaneTech #Cybersecurity #USChinaRelations #TechPolicy",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/tg6eNoh6YEY?is=eBUFVrNNwTYxcP4w",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "janbeta@chaos.social",
+   "url": "https://chaos.social/@janbeta",
+   "displayName": "Jan Beta",
+   "avatar": "https://assets.chaos.social/accounts/avatars/108/193/563/796/459/140/original/9d61e09901f716c0.jpeg",
+   "bot": false,
+   "bio": "I repair/hack/make/destroy stuff on YouTube/PeerTube. RetroComputing, VintageAudio, Tinkering. Co-hosting the Elektroschrott podcast. As unprofessional as it gets. Anti-fascist. Chaotic good. C64 rul…",
+   "showUrl": "https://elektroschrott.org",
+   "observedAt": "2026-11-20T00:02:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://chaos.social/@janbeta/117574292128535310",
+     "seenAt": "2026-11-07T08:48:42.763Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117574292128535310",
+     "server": "https://chaos.social",
+     "postUrl": "https://chaos.social/@janbeta/117574292128535310",
+     "createdAt": "2026-11-07T08:48:42.763Z",
+     "text": "New (German) Elektroschrott podcast episode is out now! https://elektroschrott.org https://youtu.be/Ksp0Ps19ThI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Ksp0Ps19ThI",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117531068062561226",
+     "server": "https://chaos.social",
+     "postUrl": "https://chaos.social/@janbeta/117531068062561226",
+     "createdAt": "2026-10-30T17:36:15.864Z",
+     "text": "New video! This explains why I didn't make any new videos for a month. YouTube: https://youtu.be/x8z7OHBJ83k PeerTube: https://makertube.net/w/3MBGUrgxVCaTnrFtPKVouw #BetaLab #NewRoom #ElectronicsLab #RetroComputing #VintageComputing #RoomTour #BehindTheScenes",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/x8z7OHBJ83k",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "bradlinder@fosstodon.org",
+   "url": "https://fosstodon.org/@bradlinder",
+   "displayName": "Brad Linder",
+   "avatar": "https://cdn.fosstodon.org/accounts/avatars/106/324/267/405/308/842/original/835420f098e5a2eb.png",
+   "bot": false,
+   "bio": "(he / him) Editor of Liliputing Podcast producer and editor Radio News Managing Editor at PhillyCAM/106.5 FM Companion to three cats: Pippin, Loki, and Mr. Humphries Maintaining separate presences fo…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:12+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://fosstodon.org/@bradlinder/117560130567618958",
+     "seenAt": "2026-11-04T20:47:14.494Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117560130567618958",
+     "server": "https://fosstodon.org",
+     "postUrl": "https://fosstodon.org/@bradlinder/117560130567618958",
+     "createdAt": "2026-11-04T20:47:14.494Z",
+     "text": "The latest Micro Journal open source, distraction-free writing device from Un Kyu Lee is the Rev.2.1.mini with a mechanical keyboard, ultrawide display, Raspberry Pi Zero 2 W for brains, and Linux OS. https://github.com/unkyulee/micro-journal/blob/main/rev.2/2.1.mini/readme.md & https://www.youtube.com/watch?v=Nw3Djnw7wN0 #MicroJournal #DistractionFreeWriting #OpenHardware",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=Nw3Djnw7wN0",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117470821599814058",
+     "server": "https://fosstodon.org",
+     "postUrl": "https://fosstodon.org/@bradlinder/117470821599814058",
+     "createdAt": "2026-10-20T02:14:47.792Z",
+     "text": "The Brax Wink is a modular phone with a 4 inch display, a removable QWERTY keyboard, a MediaTek MT8875 chip, 8GB of RAM, 128GB of storage, headphone and microSD, USB 3.2 Gen 1, and de-Google Android. Ships in mid-2027 for $700, but up for pre-order now for $449. https://www.youtube.com/watch?v=1KbD0zSSmng #BraxWink_Modular_Smartphone #De__GoogledAndroid #Brax",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=1KbD0zSSmng",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "ithorrorstories@techhub.social",
+   "url": "https://techhub.social/@ithorrorstories",
+   "displayName": "IT Horror Stories Podcast",
+   "avatar": "https://files.techhub.social/accounts/avatars/113/199/836/263/382/406/original/468b9127b9f186bb.png",
+   "bot": false,
+   "bio": "Real IT failures, questionable decisions, unexpected outages, and the lessons learned from the people who were there. From mainframes and datacenters to networking, cybersecurity, cloud, Shadow IT, O…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:26+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://techhub.social/@ithorrorstories/117557464422327162",
+     "seenAt": "2026-11-04T09:29:12.345Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://techhub.social/@ithorrorstories/117355268150120715",
+     "seenAt": "2026-09-29T16:28:02.080Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117557464422327162",
+     "server": "https://techhub.social",
+     "postUrl": "https://techhub.social/@ithorrorstories/117557464422327162",
+     "createdAt": "2026-11-04T09:29:12.345Z",
+     "text": "Who watches the watchers ? AI writes code, AI reviews it, AI validates it. LGTM ! Meanwhile, AI news reports everything is wonderful while trading bots keep stocks green. A wonderfully sarcastic, entirely AI-produced parody we discovered through @nodepond 's Nerdletter. You couldn't make this stuff up. Well, apparently AI can. Video: https://www.youtube.com/watch?v=3TNpOD6bov8 Nerdletter: https:/…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=3TNpOD6bov8",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117355268150120715",
+     "server": "https://techhub.social",
+     "postUrl": "https://techhub.social/@ithorrorstories/117355268150120715",
+     "createdAt": "2026-09-29T16:28:02.080Z",
+     "text": "This deserves a signal boost. A lot of us got into IT because somebody gave us access to a computer, some old hardware, or simply the opportunity to take things apart and figure out how they worked. Sometimes that opportunity changes a career. Sometimes it changes a life. Second Chance Silicon Booth at GrrCon 2026. Great initiative. https://www.youtube.com/shorts/7aUmVlrKU4Y #Technology #IT #Educ…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://www.youtube.com/shorts/7aUmVlrKU4Y",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "garethjonestv@mastodonapp.uk",
+   "url": "https://mastodonapp.uk/@GarethJonesTV",
+   "displayName": "Gareth Jones",
+   "avatar": "https://files.mastodonapp.uk/accounts/avatars/109/314/960/605/601/948/static/aed07511abb37e90.png",
+   "bot": false,
+   "bio": "Welsh, lisping, over-enthusiastic TV presenter once called Gaz Top. Now making car show Gareth Jones On Speed, documentaries for the BBC & swimming across Wales. www.garethjones.tv",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:03+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodonapp.uk/@GarethJonesTV/117444231828073673",
+     "seenAt": "2026-10-15T09:32:40.077Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117444231828073673",
+     "server": "https://mastodonapp.uk",
+     "postUrl": "https://mastodonapp.uk/@GarethJonesTV/117444231828073673",
+     "createdAt": "2026-10-15T09:32:40.077Z",
+     "text": "Cân ar gyfer @ElfynEvans (a'i thâd hefyd). https://youtu.be/3OjzSTOVcEA?t=1340 #ElfynEvans #cymraeg #dolgellau #wrc #wales #Cymru #onspeed",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/3OjzSTOVcEA?t=1340",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117071232375534110",
+     "server": "https://mastodonapp.uk",
+     "postUrl": "https://mastodonapp.uk/@GarethJonesTV/117071232375534110",
+     "createdAt": "2026-08-10T12:34:00.109Z",
+     "text": "Captain Jean-Luc Picard * Commander Data discuss James Hunt. https://youtu.be/mQY_Xr5aD-E?list=PLoctm6Nub6wGF7CZ9JVaXo7ydd90u0mIu&t=2994 an extract from the Gareth Jones On Speed 2026 Summer Music Compilation: \"Electronica\". #StarTrek #OnSpeed #Podcast #Comedy #TNG #JamesHunt #F1",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/mQY_Xr5aD-E?list=PLoctm6Nub6wGF7CZ9JVaXo7ydd90u0mIu&t=2994",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "gavincampbell@hometech.social",
+   "url": "https://hometech.social/@GavinCampbell",
+   "displayName": "Gavin Campbell",
+   "avatar": "https://assets.hometech.social/accounts/avatars/109/430/217/512/438/960/original/1e7e86e4ceae5a0a.jpg",
+   "bot": false,
+   "bio": "HomeTech.fm Co-Host. I toot about Home Tech, Home Automation, Basketball, Golf, Reggae, Configuration Manager and TV shows.",
+   "showUrl": "https://hometech.fm",
+   "observedAt": "2026-11-20T00:01:03+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://hometech.social/@GavinCampbell/117399962532794015",
+     "seenAt": "2026-10-07T13:54:24.237Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117399962532794015",
+     "server": "https://hometech.social",
+     "postUrl": "https://hometech.social/@GavinCampbell/117399962532794015",
+     "createdAt": "2026-10-07T13:54:24.237Z",
+     "text": "Bins of Regret is the perfect name for this one. I'm sure everybody that has a smart home for a number of years has a bin of regret. #SmartHome #SelfHosted #HomeAssistant #HomeAutomation https://www.youtube.com/watch?v=yPXeIfJw0ho",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=yPXeIfJw0ho",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "angrynerdspodcast@mastodon.nl",
+   "url": "https://mastodon.nl/@angrynerdspodcast",
+   "displayName": "Angry Nerds Podcast 🍻",
+   "avatar": "https://mastodon.nl/system/accounts/avatars/109/365/416/844/558/811/original/9ec11f28e949e16a.jpg",
+   "bot": false,
+   "bio": "Nederlandse #podcast over #privacy, #security, #technologie en #ethiek. Een roulerend #panel bespreekt wekelijks op geheel eigen wijze de belangrijkste #cybers 🍻",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:06+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370065800931633",
+     "seenAt": "2026-10-02T07:11:16.309Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117370065800931633",
+     "server": "https://mastodon.nl",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370065800931633",
+     "createdAt": "2026-10-02T07:11:16.309Z",
+     "text": "Een nieuwe aflevering vol boefjes en bingokaarten. Meer nadelen van overdreven KYC en Hyves is terug! Goed nieuws of zien we al die nostalgie een beetje teveel door een roze gluurbril? Angry Nerds 317 staat voor je klaar. https://www.youtube.com/live/y_uM7hRkPes",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/live/y_uM7hRkPes",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117253996553376198",
+     "server": "https://mastodon.nl",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117253996553376198",
+     "createdAt": "2026-09-11T19:13:20.144Z",
+     "text": "Een theatershow over cybers? Bernhold Nieuwesteeg doet het gewoon. Reserveren doe je via https://www.bernoldnieuwesteeg.nl/show Check trouwens ook even zijn cybersecuritybooster die beslissers helpt chocola te maken van de wirwar aan weetjes. Je hoort Bernhold aan het woord in aflevering 314: https://youtube.com/live/GI6eic4MoVM",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/GI6eic4MoVM",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "thelovebug@mastodon.me.uk",
+   "url": "https://mastodon.me.uk/@thelovebug",
+   "displayName": "Dave M9TLB 🐞",
+   "avatar": "https://mastodon.me.uk/system/accounts/avatars/000/054/091/original/d8c4b619b80e6396.png",
+   "bot": false,
+   "bio": "Award-winning #podcaster (@thebugcast @tuxjam @teghpodcast), #amateurradio #hamradio (@m7tlb), #3dprinting, #christian, #musician, #coffee snob, reader, #Android and #Linux advocate. #infosec #appsec…",
+   "showUrl": "https://thelovebug.org/podcasting",
+   "observedAt": "2026-11-20T00:07:28+00:00",
+   "media": [
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.me.uk/@thelovebug/116820807836915804",
+     "seenAt": "2026-06-27T07:07:44.900Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116820807836915804",
+     "server": "https://mastodon.me.uk",
+     "postUrl": "https://mastodon.me.uk/@thelovebug/116820807836915804",
+     "createdAt": "2026-06-27T07:07:44.900Z",
+     "text": "A poignant and quite moving tribute to the shutdown of #radio4lw, by my good friend Scot M0RWV. This was recorded from his Vidor valve radio that he recently refurbished. The action at the end of this video reflects the finality of the broadcast. https://youtube.com/shorts/Wnk0hbt7PSU #radio4 #radio4longwave #bbcradio4 #bbc",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://youtube.com/shorts/Wnk0hbt7PSU",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "bluewizard@mastodon.sdf.org",
+   "url": "https://mastodon.sdf.org/@bluewizard",
+   "displayName": "Ryan",
+   "avatar": "https://mastodon.sdf.org/system/accounts/avatars/109/277/915/208/623/190/original/00a261892e7ff52a.png",
+   "bot": false,
+   "bio": "General tech guy that enjoys: Vintage #Amiga and #Commodore #retrocomputers. Casual board games with friends Enjoy digital modes of Amateur Radio Bluewizardnet Amiga blog Podcast creator R N R Does s…",
+   "showUrl": "https://www.rnrdoesstuff.com",
+   "observedAt": "2026-11-19T23:58:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/116184662661687209",
+     "seenAt": "2026-03-06T22:47:39.867Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116184662661687209",
+     "server": "https://mastodon.sdf.org",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/116184662661687209",
+     "createdAt": "2026-03-06T22:47:39.867Z",
+     "text": "Here is a write up and video from a local #vintagecomputing meetup here in Chantilly, VA https://www.bluewizard.net/blog/vcm-meetup-sep-2025/ https://www.youtube.com/watch?v=LRIPtjlTa3g&t=5s #amiga #commodore #atari #sun #mac #retrocomputing",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=LRIPtjlTa3g&t=5s",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "changelog@changelog.social",
+   "url": "https://changelog.social/@changelog",
+   "displayName": "Changelog",
+   "avatar": "https://cdn.changelog.social/accounts/avatars/109/365/688/871/983/824/original/5d1bcf4960706353.png",
+   "bot": false,
+   "bio": "Simply the best podcasts for developers",
+   "showUrl": "https://changelog.com/podcasts",
+   "observedAt": "2026-11-19T23:58:30+00:00",
+   "media": [
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://changelog.social/@changelog/115429463379911162",
+     "seenAt": "2025-10-24T13:50:33.316Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115429463379911162",
+     "server": "https://changelog.social",
+     "postUrl": "https://changelog.social/@changelog/115429463379911162",
+     "createdAt": "2025-10-24T13:50:33.316Z",
+     "text": "🎞️ @bcantrill shares two \"sneaky hedges\" he and @sdtuck deployed when raising VC for @oxidecomputer https://youtube.com/shorts/Gf6_-6zxkjY",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://youtube.com/shorts/Gf6_-6zxkjY",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

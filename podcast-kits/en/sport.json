@@ -1,0 +1,78 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "sport",
+ "lang": "en",
+ "title": {
+  "en": "Sport",
+  "de": "Sport",
+  "fr": "Sport",
+  "es": "Deportes",
+  "ja": "スポーツ",
+  "it": "Sport",
+  "pt": "Esportes",
+  "nl": "Sport",
+  "pl": "Sport",
+  "sv": "Sport",
+  "ru": "Спорт",
+  "ko": "스포츠",
+  "uk": "Спорт",
+  "tr": "Spor",
+  "el": "Αθλητισμός",
+  "zh": "体育",
+  "ca": "Esport",
+  "cs": "Sport",
+  "fi": "Urheilu",
+  "no": "Sport",
+  "ar": "الرياضة",
+  "zh-Hant": "運動"
+ },
+ "icon": "⚽",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "mikebrew@mastodon.social",
+   "url": "https://mastodon.social/@mikebrew",
+   "displayName": "Mike",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/412/841/original/76487f7a573c67bb.jpeg",
+   "bot": false,
+   "bio": "Husband. Father. Car Enthusiast. Music Lover. #Cycling #FoodTrucks #Videogames #Podcaster",
+   "showUrl": "https://pod.link/1774723900",
+   "observedAt": "2026-11-20T00:04:16+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "apple-music",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@mikebrew/110623050126178409",
+     "seenAt": "2023-06-28T17:36:27.328Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "110623050126178409",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@mikebrew/110623050126178409",
+     "createdAt": "2023-06-28T17:36:27.328Z",
+     "text": "Finally! Somebody did it. Somebody updated Billy Joel’s “We didn’t start the fire”. Thanks, #FallOutBoy! https://music.apple.com/us/album/we-didnt-start-the-fire/1694092593?i=1694092848",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-music",
+       "url": "https://music.apple.com/us/album/we-didnt-start-the-fire-single/1694092593",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "apple-music",
+       "url": "https://music.apple.com/us/album/we-didnt-start-the-fire/1694092593?i=1694092848",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,151 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "photography",
+ "lang": "de",
+ "title": {
+  "en": "Photography",
+  "de": "Fotografie",
+  "fr": "Photographie",
+  "es": "Fotografía",
+  "ja": "写真",
+  "it": "Fotografia",
+  "pt": "Fotografia",
+  "nl": "Fotografie",
+  "pl": "Fotografia",
+  "sv": "Fotografi",
+  "ru": "Фотография",
+  "ko": "사진",
+  "uk": "Фотографія",
+  "tr": "Fotoğrafçılık",
+  "el": "Φωτογραφία",
+  "zh": "摄影",
+  "cs": "Fotografie",
+  "ca": "Fotografia",
+  "fi": "Valokuvaus",
+  "no": "Fotografi",
+  "ar": "التصوير الفوتوغرافي",
+  "zh-Hant": "攝影"
+ },
+ "icon": "📷",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "aufkurztrip@nrw.social",
+   "url": "https://nrw.social/@aufkurztrip",
+   "displayName": "Michael Koopmann",
+   "avatar": "https://media.nrw.social/accounts/avatars/109/245/738/387/447/651/original/a78052cf750273f4.jpeg",
+   "bot": false,
+   "bio": "Projekte, Bilder und Gedanken von Michael Koopmann #Fotografie #Reisen #Web #Podcast Gerne auf Kurztrip in Europa unterwegs und hat immer die Kamera dabei. Host des Podcast 'Bilder und Geschichten' u…",
+   "showUrl": "https://podcast.bilderzeigen.de",
+   "observedAt": "2026-11-19T23:57:33+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://nrw.social/@aufkurztrip/117438103737481544",
+     "seenAt": "2026-10-14T07:34:12.835Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://nrw.social/@aufkurztrip/117361151237610222",
+     "seenAt": "2026-09-30T17:24:10.869Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117438103737481544",
+     "server": "https://nrw.social",
+     "postUrl": "https://nrw.social/@aufkurztrip/117438103737481544",
+     "createdAt": "2026-10-14T07:34:12.835Z",
+     "text": "Diese @episoden von Bilder und Geschichten liegt aus #BurkinaFaso liegt mir diesmal sehr am Herzen. Tolles Bild, tolle Geschichte dahinter und was ein tolle Engagement. Link zum Verein und einen Spendenlink findet ihr unter: https://podcast.bilderzeigen.de/2026/10/14/dem-waisenhaus-in-afrika-helfen-mit-susanne-prothmann/ Wäre schön wenn mein #Podcast hier auch etwas helfen kann #Waisenhaus",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.nrw.social/media_attachments/files/117/438/092/539/251/648/original/b38b2f20f5f6337d.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117361151237610222",
+     "server": "https://nrw.social",
+     "postUrl": "https://nrw.social/@aufkurztrip/117361151237610222",
+     "createdAt": "2026-09-30T17:24:10.869Z",
+     "text": "Gleich geht es im Bilderabend um das #24HourProject Bilderabend #34 - 24hourProject - Axel Eckenberger https://youtube.com/live/QEURxZcFmkg",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/QEURxZcFmkg",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "happyshooting@podcasts.social",
+   "url": "https://podcasts.social/@happyshooting",
+   "displayName": "Happy Shooting Foto-Podcast",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/110/854/282/856/050/130/original/69bb2920d88d96d3.jpeg",
+   "bot": false,
+   "bio": "Foto-Podcast mit Chris Marquardt und Boris Nienke. Jede Woche viele neue Themen rund ums Fotografieren: Kreativität, News, Technik, Haltung Dazu Workshops: https://happyshooting.de/workshops 14.–16.8…",
+   "showUrl": "https://happyshooting.de/",
+   "observedAt": "2026-11-20T00:01:35+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@happyshooting/117513860226113183",
+     "seenAt": "2026-10-27T16:40:05.113Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117513860226113183",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@happyshooting/117513860226113183",
+     "createdAt": "2026-10-27T16:40:05.113Z",
+     "text": "🎧 Ab 18 Uhr reden @chrismarquardt und @nSonic im Livestream wieder über Fotografie, z.B. über Strichcodes auf Leica, Mittelformat-Workshop, Micro Four Thirds Mount-Warnung, Lightroom Open Eyes und Getty-Privatisierung Gerne Weitersagen 🚀 https://twitch.tv/chrismarquardthimself https://www.youtube.com/watch?v=O4j2iHCFkk0 #hslive #fotografie #podcast #livestream #mittelformat #leica #mft #lightroom…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=O4j2iHCFkk0",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117479476290792059",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@happyshooting/117479476290792059",
+     "createdAt": "2026-10-21T14:55:47.898Z",
+     "text": "🎧 Ab 18 Uhr reden @chrismarquardt und @nSonic live über Polarlichter, KI-Wasserzeichen, Videoframes als Fotos, Weltraumkameras und View-Master. Gerne weitersagen 🚀 https://twitch.tv/chrismarquardthimself https://www.youtube.com/watch?v=wMm9qRI48qA #hslive #fotografie #podcast #livestream #polarlicht #KI #NASA #ViewMaster #Canon",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=wMm9qRI48qA",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

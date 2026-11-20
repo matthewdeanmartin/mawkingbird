@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "books-and-writing",
+ "lang": "es",
+ "title": {
+  "en": "Books and Writing",
+  "de": "Bücher und Schreiben",
+  "fr": "Livres et écriture",
+  "es": "Libros y escritura",
+  "ja": "本と執筆",
+  "it": "Libri e scrittura",
+  "pt": "Livros e escrita",
+  "nl": "Boeken en schrijven",
+  "pl": "Ksiazki i pisanie",
+  "sv": "Böcker och skrivande",
+  "ru": "Книги и литература",
+  "ko": "책과 글쓰기",
+  "uk": "Книги та письмо",
+  "tr": "Kitaplar ve yazarlık",
+  "el": "Βιβλία και συγγραφή",
+  "zh": "书籍与写作",
+  "fi": "Kirjat ja kirjoittaminen",
+  "ca": "Llibres i escriptura",
+  "cs": "Knihy a psaní",
+  "no": "Bøker og skriving",
+  "ar": "الكتب والكتابة",
+  "zh-Hant": "書籍與寫作"
+ },
+ "icon": "📚",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "laposadadelcuervolector@masto.es",
+   "url": "https://masto.es/@laposadadelcuervolector",
+   "displayName": "La posada del Cuervo Lector",
+   "avatar": "https://masto.es/system/accounts/avatars/116/981/002/103/694/912/original/5757c179156d07c0.png",
+   "bot": false,
+   "bio": "La posada donde las historias encuentran refugio y el cuervo las observa🐦‍⬛ Podcast sobre fantasía, terror, grimdark y libros que dejan huella📜",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:08+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117582833729853870",
+     "seenAt": "2026-11-08T21:00:57.255Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117638214469868798",
+     "seenAt": "2026-11-18T15:45:00.287Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117638214469868798",
+     "server": "https://masto.es",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117638214469868798",
+     "createdAt": "2026-11-18T15:45:00.287Z",
+     "text": "Silencio, por favor. Estamos leyendo El imperio del amanecer como dos posesas.Si vosotros no estáis en ello, siempre podéis escuchar nuestro último episodio🤭 #Literaverso #LiteraturaFantástica #LiteraturaDeGénero #grimdark https://youtu.be/FXED_B4rzSw?is=qvci5YQhv5k6tfRL",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/FXED_B4rzSw?is=qvci5YQhv5k6tfRL",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117609206738939303",
+     "server": "https://masto.es",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117609206738939303",
+     "createdAt": "2026-11-13T12:47:57.438Z",
+     "text": "Hoy llega a los cines Scrooge y los fantasmas de la Navidad y Laura lleva desde primera hora dando saltos por la Posada. Ya lo avisó en el episodio de bienvenida: Cuento de Navidad, de Dickens, está entre sus libros top y es de sus lecturas de confort. Vamos, que si por ella fuera, hoy se declaraba festivo en la Posada. Patri, paciencia, que esto va para largo😅 #literaverso #CineYLiteratura #noti…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/8CzbzLTAjjM?is=VXCSg48FAiQfciP5",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

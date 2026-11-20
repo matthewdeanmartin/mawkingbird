@@ -1,0 +1,210 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "film-and-tv",
+ "lang": "de",
+ "title": {
+  "en": "Film and TV",
+  "de": "Film und Fernsehen",
+  "fr": "Cinéma et télévision",
+  "es": "Cine y televisión",
+  "ja": "映画とテレビ",
+  "it": "Cinema e TV",
+  "pt": "Cinema e TV",
+  "nl": "Film en tv",
+  "pl": "Film i telewizja",
+  "sv": "Film och TV",
+  "ru": "Кино и телевидение",
+  "ko": "영화와 TV",
+  "uk": "Кіно і телебачення",
+  "tr": "Film ve televizyon",
+  "el": "Κινηματογράφος και τηλεόραση",
+  "zh": "电影与电视",
+  "ca": "Cinema i televisió",
+  "cs": "Film a televize",
+  "fi": "Elokuvat ja televisio",
+  "no": "Film og TV",
+  "ar": "السينما والتلفزيون",
+  "zh-Hant": "電影與電視"
+ },
+ "icon": "🎬",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "herrhochhaus@mastodon.social",
+   "url": "https://mastodon.social/@herrhochhaus",
+   "displayName": "Herr Hochhaus",
+   "avatar": "https://files.mastodon.social/accounts/avatars/117/320/293/082/834/961/original/6c2265df4d79707a.png",
+   "bot": false,
+   "bio": "\"Every day, once a day, give yourself a present. Don’t plan it, don’t wait for it, just let it happen. It could be a new shirt at the men’s store, a catnap in your office chair or two cups of good ho…",
+   "showUrl": "https://www.geekcast.de/",
+   "observedAt": "2026-11-20T00:01:58+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@herrhochhaus/117643133261866355",
+     "seenAt": "2026-11-19T12:35:55.094Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@herrhochhaus/117332695874642511",
+     "seenAt": "2026-09-25T16:47:36.487Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117643133261866355",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@herrhochhaus/117643133261866355",
+     "createdAt": "2026-11-19T12:35:55.094Z",
+     "text": "Die zweite Staffel \"Ein Geek kommt selten allein\" beginnt mit dem grandiosen Dr. Florian Rademacher. Ich hab Bock, diesmal geht es um all die Geeks, die jetzt im Team mit AI/KI/SI (sagt das ernsthaft irgendwer?) arbeiten. Vorschläge für Gesprächspartner werden immer gerne entgegengenommen (und Tipps, wo mein Fedi-taugliches Castopod noch fehlkonfiguriert ist 😅). Ach ja, den Podcast findet ihr unt…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/643/122/424/867/109/original/7adf435535200462.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117332695874642511",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@herrhochhaus/117332695874642511",
+     "createdAt": "2026-09-25T16:47:36.487Z",
+     "text": "@zefix Raise the Gjallarhorn 🤘 https://www.youtube.com/watch?v=-Y0OKTuMICM",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=-Y0OKTuMICM",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "maierhofer@wien.rocks",
+   "url": "https://wien.rocks/@maierhofer",
+   "displayName": "Thomas Maierhofer",
+   "avatar": "https://wien.rocks/system/accounts/avatars/114/416/292/359/668/003/original/f6baf2c2c9c8e3d8.jpg",
+   "bot": false,
+   "bio": "Gestaltet die Radiosendung: https://cba.media/podcast/motion-picture-soundtrack-jeden-ersten-donnerstag-im-monat-1200-uhr",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:50+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "audio",
+     "postUrl": "https://wien.rocks/@maierhofer/116297293187950013",
+     "seenAt": "2026-03-26T20:11:05.302Z"
+    },
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://wien.rocks/@maierhofer/116846689576000629",
+     "seenAt": "2026-07-01T20:49:48.927Z"
+    },
+    {
+     "kind": "full-player",
+     "source": "direct-audio",
+     "mediaType": null,
+     "postUrl": "https://wien.rocks/@maierhofer/116240580243537919",
+     "seenAt": "2026-03-16T19:48:14.442Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://wien.rocks/@maierhofer/117223510163966300",
+     "seenAt": "2026-09-06T10:00:14.980Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117223510163966300",
+     "server": "https://wien.rocks",
+     "postUrl": "https://wien.rocks/@maierhofer/117223510163966300",
+     "createdAt": "2026-09-06T10:00:14.980Z",
+     "text": "Bill & Tom Kaunixcz - let‘s cook Dr. Speeds SuperPizza https://www.youtube.com/watch?v=JLSEF-REb8k&t=583",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=JLSEF-REb8k&t=583",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "116846689576000629",
+     "server": "https://wien.rocks",
+     "postUrl": "https://wien.rocks/@maierhofer/116846689576000629",
+     "createdAt": "2026-07-01T20:49:48.927Z",
+     "text": "Ich darf die nächste Radiosendung für Donnerstag, 02.07.2026 12:00 - 12:30 auf Orange 94.0 ankündigen: Motion Picture Soundtrack - Musik aus Film & Fernsehen Sommerserie Frankreich: - Zwei Perspektiven auf Paris - Luc Besson und Richard Linklater - Franzosen in Los Angeles - Filme über das Filmemachen selbst https://o94.at/programm/sendung/id/2511853 #Linklater #MrOizo #Truffaut #Besson #Serra #D…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://wien.rocks/system/media_attachments/files/116/846/687/501/522/183/original/8d5d52186081b057.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "theretrosven@troet.cafe",
+   "url": "https://troet.cafe/@theretrosven",
+   "displayName": "TanukiTantrum",
+   "avatar": "https://media.troet.cafe/troet/accounts/avatars/111/188/874/720/764/939/original/723f2b60800b5a6c.png",
+   "bot": false,
+   "bio": "SpassMitVideospielen hat einen neuen Namen: TanukiTantrum! Ich streame auf Twitch, alles von Trashgame bis Meisterwerk. Habe einen Podcast über Games, Filme und Popcultur. Nebenbei schreibe ich an ei…",
+   "showUrl": "https://linktr.ee/TanukiTantrum",
+   "observedAt": "2026-11-20T00:07:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://troet.cafe/@theretrosven/117615206091116861",
+     "seenAt": "2026-11-14T14:13:40.289Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117615206091116861",
+     "server": "https://troet.cafe",
+     "postUrl": "https://troet.cafe/@theretrosven/117615206091116861",
+     "createdAt": "2026-11-14T14:13:40.289Z",
+     "text": "Ihr wollt neue Folgen im #Podcast? Bitte schön, dieses Mal geht es um unseren lila Affenfreund Kong. #SkullIsland #Gaming https://open.spotify.com/episode/7m4BbBGPuVSGvv6DD3obaH?si=hKjiql24St2nh9Il0AQRvg RSS im Link im Profil",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/7m4BbBGPuVSGvv6DD3obaH?si=hKjiql24St2nh9Il0AQRvg",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

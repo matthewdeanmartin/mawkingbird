@@ -1,0 +1,165 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "science",
+ "lang": "de",
+ "title": {
+  "en": "Science",
+  "de": "Wissenschaft",
+  "fr": "Sciences",
+  "es": "Ciência",
+  "ja": "科学",
+  "it": "Scienza",
+  "pt": "Ciência",
+  "nl": "Wetenschap",
+  "pl": "Nauka",
+  "sv": "Vetenskap",
+  "ru": "Наука",
+  "ko": "과학",
+  "uk": "Наука",
+  "tr": "Bilim",
+  "el": "Επιστήμη",
+  "zh": "科学",
+  "ca": "Ciència",
+  "cs": "Věda",
+  "fi": "Tiede",
+  "no": "Vitenskap",
+  "ar": "العلوم",
+  "zh-Hant": "科學"
+ },
+ "icon": "🔬",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "leibnizgemeinschaft@wisskomm.social",
+   "url": "https://wisskomm.social/@leibnizgemeinschaft",
+   "displayName": "Leibniz-Gemeinschaft",
+   "avatar": "https://wisskomm.social/system/accounts/avatars/114/782/426/860/047/619/original/5f30fe27217dee05.png",
+   "bot": false,
+   "bio": "Forschen für die beste der möglichen Welten.",
+   "showUrl": "https://www.leibniz-gemeinschaft.de/ueber-uns/neues/mediathek/podcast-tonspur-wissen",
+   "observedAt": "2026-11-20T00:03:16+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116600460787975180",
+     "seenAt": "2026-05-19T09:10:35.756Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116600460787975180",
+     "server": "https://wisskomm.social",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116600460787975180",
+     "createdAt": "2026-05-19T09:10:35.756Z",
+     "text": "🍪 Was bringt eine Zuckersteuer und macht Zucker aus Datteln wirklich einen Unterschied? Antworten von Dr. Heike Vogel (Deutsches Institut für Ernährungsforschung DIfE) im Video und bei Wissen Unplugged - jetzt nachzuhören im Hörsaal-Podcast von Deutschlandfunk Nova: https://www.deutschlandfunknova.de/beitrag/wissen-unplugged-eat-the-hype-ernaehrungsmythen-im-check #wj26",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://wisskomm.social/system/media_attachments/files/116/600/455/994/079/187/original/f26efed01bd0065b.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "eigenraum@podcasts.social",
+   "url": "https://podcasts.social/@Eigenraum",
+   "displayName": "Eigenraum",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/272/983/838/245/337/original/66b9bc290289dcca.png",
+   "bot": false,
+   "bio": "Ich bin der Eigenraum, ein Podcast über Mathematik und ihre Geschichten. Für Interaktion mit dem Podcast seid ihr hier genau richtig! - Mein Sprecher ist @tomkalei - Automatisierte ActivityPub Ankünd…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:14+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
+     "seenAt": "2026-11-03T10:22:01.933Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117552009834309518",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
+     "createdAt": "2026-11-03T10:22:01.933Z",
+     "text": "P.S. https://www.youtube.com/watch?v=Ac08-99XPKw",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=Ac08-99XPKw",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "letztens@podcasts.social",
+   "url": "https://podcasts.social/@letztens",
+   "displayName": "🎙️letztens.de Podcast",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/113/686/406/399/770/883/original/9ad0422bdeaa3e4b.png",
+   "bot": false,
+   "bio": "Du willst wissen, was hinter den neuesten Technik-Schlagzeilen steckt – und vor allem, was das für dich, für unsere Gesellschaft und für die Wirtschaft bedeutet? In jeder Folge stellen wir dir eine a…",
+   "showUrl": "https://www.letztens.de/podcast-abonnieren/",
+   "observedAt": "2026-11-20T00:03:28+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@letztens/117472112338213508",
+     "seenAt": "2026-10-20T07:43:02.897Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117472112338213508",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@letztens/117472112338213508",
+     "createdAt": "2026-10-20T07:43:02.897Z",
+     "text": "https://www.youtube.com/watch?v=bLTXM3eq7p0 1.300 Jahre #Zeitraffer #Geschichte: #Stadtentwicklung in Berlin. Wie #Cölln und #Berlin zusammenwuchsen. (via @rainerklute) #gefundenVonLukas",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=bLTXM3eq7p0",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117349171355491042",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@letztens/117349171355491042",
+     "createdAt": "2026-09-28T14:37:32.374Z",
+     "text": "https://www.youtube.com/watch?v=GbB3vFfiaVU Falls sich jemand von euch (wie ich) gefragt hat, was ist eigentlich mit diesem Mega-Projekt #TheLine (#NEOM) in Saudi Arabien passiert? Dann kriegt ihr in diesem Video von Wall Street Journal einige Antworten was das so los ist. Fazit: wird nix mehr. #WallStreetJournal #gefundenVonLukas",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=GbB3vFfiaVU",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

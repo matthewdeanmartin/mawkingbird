@@ -1,0 +1,209 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "health-and-medicine",
+ "lang": "en",
+ "title": {
+  "en": "Health and Medicine",
+  "de": "Gesundheit und Medizin",
+  "fr": "Santé et médecine",
+  "es": "Salud y medicina",
+  "ja": "健康と医療",
+  "it": "Salute e medicina",
+  "pt": "Saúde e medicina",
+  "nl": "Gezondheid en geneeskunde",
+  "pl": "Zdrowie i medycyna",
+  "sv": "Hälsa och medicin",
+  "ru": "Здоровье и медицина",
+  "ko": "건강과 의학",
+  "uk": "Здоров'я та медицина",
+  "tr": "Sağlık ve tıp",
+  "el": "Υγεία και ιατρική",
+  "zh": "健康与医学",
+  "ca": "Salut i medicina",
+  "cs": "Zdraví a medicína",
+  "fi": "Terveys ja lääketiede",
+  "no": "Helse og medisin",
+  "ar": "الصحة والطب",
+  "zh-Hant": "健康與醫學"
+ },
+ "icon": "🩺",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "yogascussion@mastodon.social",
+   "url": "https://mastodon.social/@yogascussion",
+   "displayName": "YogaScussion ℠",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/227/433/316/800/680/original/4890ac91d66fb274.png",
+   "bot": false,
+   "bio": "YogaScussion is a yoga talk podcast for modern practitioners exploring yoga culture, yoga philosophy, yoga practice, embodied living, and wellness. Hosts Gina Clingerman and Brendon Orr talk yoga's p…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:53+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@yogascussion/117638235780395747",
+     "seenAt": "2026-11-18T15:50:25.458Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@yogascussion/117638235780395747",
+     "seenAt": "2026-11-18T15:50:25.458Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117638235780395747",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@yogascussion/117638235780395747",
+     "createdAt": "2026-11-18T15:50:25.458Z",
+     "text": "How much can one cue change a yoga pose? 🌿 Gina Clingerman recalls a crescent lunge class where a single instruction made a whole room visibly taller and more stable. Morgan Rojas of Find Aligned explains why cueing is the most powerful tool we have for helping students learn their bodies from the inside out. Listen: https://youtu.be/15VGCzasu84 #yoga #podcast",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/638/223/567/530/152/original/4984fa956995ebf7.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/15VGCzasu84",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117604067584204778",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@yogascussion/117604067584204778",
+     "createdAt": "2026-11-12T15:01:00.161Z",
+     "text": "The 2010s yoga boom created \"yoga celebrities\" with intense, cult-like followings. 🧘‍♀️ Were these elevated teachers the right people to trust with yoga in the West? We explore the era of magazine-cover gurus on the latest YogaScussion. 🎧 Listen: https://yogascussion.podmasana.com/did-modern-yoga-die-or-just-shed-its-skin-1-year-of-yogascussion/ #yoga #podcast #culture #history",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/604/003/612/922/403/original/fd9604b98bdcfd4a.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "drworkpsych@social.lol",
+   "url": "https://social.lol/@drworkpsych",
+   "displayName": "Dr. Richard A. MacKinnon",
+   "avatar": "https://s3.eu-central-003.backblazeb2.com/social-lol-media/accounts/avatars/117/309/606/097/083/732/original/f1d095d4bbdd5450.png",
+   "bot": false,
+   "bio": "I'm a Chartered #Psychologist and Coach, based in London, UK. I'm the founder of WorkLifePsych, a team of accredited and experienced workplace psychologists. We provide coaching, training and develop…",
+   "showUrl": "https://www.worklifepsych.com/podcast",
+   "observedAt": "2026-11-19T23:59:56+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "apple-music",
+     "mediaType": null,
+     "postUrl": "https://social.lol/@drworkpsych/117625169346960488",
+     "seenAt": "2026-11-16T08:27:27.518Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://social.lol/@drworkpsych/117477738602190922",
+     "seenAt": "2026-10-21T07:33:52.878Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://social.lol/@drworkpsych/117552890722837185",
+     "seenAt": "2026-11-03T14:06:03.226Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117625169346960488",
+     "server": "https://social.lol",
+     "postUrl": "https://social.lol/@drworkpsych/117625169346960488",
+     "createdAt": "2026-11-16T08:27:27.518Z",
+     "text": "Morning all! A day of writing, website updates, and podcast admin lies ahead. This morning's office productivity is courtesy of Ycare: https://music.apple.com/gb/album/mathilde/6809492396?i=6809492703 #OfficeMusic #PsychologistAtWork",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-music",
+       "url": "https://music.apple.com/gb/album/mathilde/6809492396?i=6809492703",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117609369015796295",
+     "server": "https://social.lol",
+     "postUrl": "https://social.lol/@drworkpsych/117609369015796295",
+     "createdAt": "2026-11-13T13:29:13.588Z",
+     "text": "🎧 This afternoon's writing productivity is courtesy of Anabel... https://music.apple.com/gb/album/chanter/6829802316?i=6829802318 #PsychologistAtWork #WorkToots",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-music",
+       "url": "https://music.apple.com/gb/album/chanter/6829802316?i=6829802318",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "ty_ylfa@mstdn.social",
+   "url": "https://mstdn.social/@Ty_ylfa",
+   "displayName": "Toren \" Ty \" Ylfa",
+   "avatar": "https://media.mstdn.social/accounts/avatars/117/088/008/240/187/646/original/317c5e7be4ae1e6d.jpg",
+   "bot": false,
+   "bio": "Podcaster | Ex‑martial artist CA | SA Survivor Biochemistry 🧬 | Psychology 🧠 | Child Psychology. I write about resilience, identity, psychology, and lived experience — the honest, ongoing work of sta…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:49+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mstdn.social/@Ty_ylfa/117092206072984372",
+     "seenAt": "2026-08-14T05:27:53.333Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117092206072984372",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@Ty_ylfa/117092206072984372",
+     "createdAt": "2026-08-14T05:27:53.333Z",
+     "text": "Good morning, Fancy listening to my latest podcast episode? https://open.spotify.com/episode/5FLD0bN4slnUNSqgajnQgZ?si=xlCU7tsaScqGUwDbziOC3w&utm_source=copy-link&sci=spotify%3Acard-config%3A6KPOB5KeQCjbcjwwNQ7Fdi #Podcast #Spotify #ApplePodcasts #mentalhealth #livedexperience",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/5FLD0bN4slnUNSqgajnQgZ?si=xlCU7tsaScqGUwDbziOC3w&utm_source=copy-link&sci=spotify%3Acard-config%3A6KPOB5KeQCjbcjwwNQ7Fdi",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

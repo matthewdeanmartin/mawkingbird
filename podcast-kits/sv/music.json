@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "music",
+ "lang": "sv",
+ "title": {
+  "en": "Music",
+  "de": "Musik",
+  "fr": "Musique",
+  "es": "Música",
+  "ja": "音楽",
+  "it": "Musica",
+  "pt": "Música",
+  "nl": "Muziek",
+  "pl": "Muzyka",
+  "sv": "Musik",
+  "ru": "Музыка",
+  "ko": "음악",
+  "uk": "Музика",
+  "tr": "Müzik",
+  "el": "Μουσική",
+  "zh": "音乐",
+  "ca": "Música",
+  "cs": "Hudba",
+  "fi": "Musiikki",
+  "no": "Musikk",
+  "ar": "الموسيقى",
+  "zh-Hant": "音樂"
+ },
+ "icon": "🎵",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "samkvam_online@mastodon.nu",
+   "url": "https://mastodon.nu/@samkvam_online",
+   "displayName": "Samkväm Online",
+   "avatar": "https://media.mastodon.nu/accounts/avatars/112/586/857/946/720/727/original/447ee9dc19ca13cd.jpg",
+   "bot": false,
+   "bio": "Enligt Svenska Akademins Ordbok (1964) så betyder Samkväm \"mer eller mindre enkel eller anspråkslös sammankomst som väsentligen är avsedd för sällskaplig samvaro, ofta i förening med underhållning\"…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:46+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.nu/@samkvam_online/117610721759301686",
+     "seenAt": "2026-11-13T19:13:14.814Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.nu/@samkvam_online/117627183932447244",
+     "seenAt": "2026-11-16T16:59:47.642Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117627183932447244",
+     "server": "https://mastodon.nu",
+     "postUrl": "https://mastodon.nu/@samkvam_online/117627183932447244",
+     "createdAt": "2026-11-16T16:59:47.642Z",
+     "text": "\"Grodarbetare?\" | Avsnitt 227 https://www.youtube.com/shorts/YZP1mo1PcO8",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://www.youtube.com/shorts/YZP1mo1PcO8",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117610721759301686",
+     "server": "https://mastodon.nu",
+     "postUrl": "https://mastodon.nu/@samkvam_online/117610721759301686",
+     "createdAt": "2026-11-13T19:13:14.814Z",
+     "text": "\"Grodarbetare?\" | Minecraft - Project Ozone 3 | Avsnitt 227 https://www.youtube.com/watch?v=GOapwvpJP_Q",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=GOapwvpJP_Q",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

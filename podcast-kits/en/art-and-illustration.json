@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "art-and-illustration",
+ "lang": "en",
+ "title": {
+  "en": "Art and Illustration",
+  "de": "Kunst und Illustration",
+  "fr": "Art et illustration",
+  "es": "Arte e ilustración",
+  "ja": "アートとイラスト",
+  "it": "Arte e illustrazione",
+  "pt": "Arte e ilustração",
+  "nl": "Kunst en illustratie",
+  "pl": "Sztuka i ilustracja",
+  "sv": "Konst och illustration",
+  "ru": "Искусство и иллюстрация",
+  "ko": "예술과 일러스트",
+  "uk": "Мистецтво та ілюстрація",
+  "tr": "Sanat ve illüstrasyon",
+  "el": "Τέχνη και εικονογράφηση",
+  "zh": "艺术与插画",
+  "ca": "Art i il·lustració",
+  "cs": "Umění a ilustrace",
+  "fi": "Taide ja kuvitus",
+  "no": "Kunst og illustrasjon",
+  "ar": "الفن والرسم التوضيحي",
+  "zh-Hant": "藝術與插畫"
+ },
+ "icon": "🎨",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "artofcreationpodcast@mastodon.art",
+   "url": "https://mastodon.art/@ArtofCreationPodcast",
+   "displayName": "ArtofCreationPodcast",
+   "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/117/396/879/753/200/012/original/d884ead8e85539cd.png",
+   "bot": false,
+   "bio": "As a failed artist for over 10 years, I thought it would be in my best interest to annoy and harass those who’ve been successful in their craft—to crack open their moist craniums, scoop out the knowl…",
+   "showUrl": "https://linktr.ee/Artofcreationpodcast",
+   "observedAt": "2026-11-19T23:57:15+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117476871677099939",
+     "seenAt": "2026-10-21T03:53:24.645Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117633786321337825",
+     "seenAt": "2026-11-17T20:58:52.102Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117633786321337825",
+     "server": "https://mastodon.art",
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117633786321337825",
+     "createdAt": "2026-11-17T20:58:52.102Z",
+     "text": "The Interview with Proprætor has been released and is titled \"E: 003, Ritual, Blasphemy & Absinthe.\" We are discussing record covers, theology, his following of rational Satanism and their tongue-in-cheek belief in evil. https://youtu.be/9k0wTwSxi6o #occult #esoteric #interview #art #mastoArt #fediart #painter #satanic #absinthe #brothesquay #ambient #industrial #darkart #Lustmord #vincelocke #go…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/9k0wTwSxi6o",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117476871677099939",
+     "server": "https://mastodon.art",
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117476871677099939",
+     "createdAt": "2026-10-21T03:53:24.645Z",
+     "text": "Tomorrow we release our tête-à-tête with painter, paper maker, and art influencer sceptic, Morgan LaCasse. In it, we discuss the legitimacy of art schools, insights into anxiety while being a vendor, and notoriety with fan art. Here's a sample of what to expect. #art #mastoArt #fediart #painting #podcast #interview #illustration #digitalart #video #youtube #fanart",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/mastodonart/media_attachments/files/117/476/857/962/058/649/original/94d58ec1dbdc8a56.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

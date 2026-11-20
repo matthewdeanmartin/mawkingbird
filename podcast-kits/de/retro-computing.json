@@ -1,0 +1,144 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "retro-computing",
+ "lang": "de",
+ "title": {
+  "en": "Retro Computing",
+  "de": "Retro-Computing",
+  "fr": "Rétro-informatique",
+  "es": "Retroinformática",
+  "ja": "レトロコンピューティング",
+  "it": "Retrocomputing",
+  "pt": "Retrocomputação",
+  "nl": "Retrocomputing",
+  "pl": "Retro komputery",
+  "sv": "Retrodatorer",
+  "ru": "Ретрокомпьютеры",
+  "ko": "레트로 컴퓨팅",
+  "uk": "Ретрокомп'ютери",
+  "tr": "Retro bilgisayarlar",
+  "el": "Ρετρό υπολογιστές",
+  "zh": "复古计算机",
+  "ca": "Informàtica retro",
+  "cs": "Retro počítače",
+  "fi": "Retrotietokoneet",
+  "no": "Retrodatamaskiner",
+  "ar": "الحوسبة القديمة",
+  "zh-Hant": "復古電腦"
+ },
+ "icon": "🖥️",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "datort@mastodon.social",
+   "url": "https://mastodon.social/@datort",
+   "displayName": "datort :mastodon:",
+   "avatar": "https://files.mastodon.social/accounts/avatars/106/929/422/237/346/186/original/f484b342e833bd69.png",
+   "bot": false,
+   "bio": "👾 C64-Kid → Arduino & ESP Maker | 🎮 Retro & Coding | 🎥 YouTube & 🎙️ Podcast: Pad One Please",
+   "showUrl": "https://datort.de/feed/podcast/pad-one-please/",
+   "observedAt": "2026-11-19T23:59:32+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@datort/117514489336266424",
+     "seenAt": "2026-10-27T19:20:04.581Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117514489336266424",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@datort/117514489336266424",
+     "createdAt": "2026-10-27T19:20:04.581Z",
+     "text": "Ich hab versucht mit Basteldraht ein digitales Thermometer zu bauen. Hat auch funktioniert , sieht nur was usselig aus. Fazit: Kann man so machen, muss man aber wollen. https://www.youtube.com/watch?v=fDnRS-WCBk8 #diy #electronics",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=fDnRS-WCBk8",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "116297463668499253",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@datort/116297463668499253",
+     "createdAt": "2026-03-26T20:54:26.641Z",
+     "text": "Gravity Duck 64 und Old Tower sind zwei wirklich gute, moderne Spiele für den C64. Ich hab sie mir genauer angeschaut. https://youtu.be/l_ltWi5OyNo #c64 #retrogaming #retrogames",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/l_ltWi5OyNo",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "pat9496@oldbytes.space",
+   "url": "https://oldbytes.space/@pat9496",
+   "displayName": "Pat",
+   "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/670/799/597/069/436/original/6ba2d0db6c795b83.png",
+   "bot": false,
+   "bio": "Geek | Retrogamer | Modern Gamer | Reader | Parent | IT & Legacy Systems | Point-&-Click-Adventure & CRPG-Specialist | Pen-&-Paper-RPG-Enthusiast | Podcaster (🇬🇧/🇩🇪)",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:19+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://oldbytes.space/@pat9496/115325957723480101",
+     "seenAt": "2025-10-06T07:07:42.333Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115325957723480101",
+     "server": "https://oldbytes.space",
+     "postUrl": "https://oldbytes.space/@pat9496/115325957723480101",
+     "createdAt": "2025-10-06T07:07:42.333Z",
+     "text": "Heute gibt es bei PIXEL HUNTERS eine Premiere: Ein Spiel, das ich nicht kannte! Vermutlich kennt es ausser Kai (@rhemsey82) niemand. Es ist der Edutainment-Titel DAS MUSEUM (1996) Zu finden auf Spotify unter https://open.spotify.com/episode/6vurZZaZTwkfYmOw0epVj4 und natürlich in euren Podcatchern. Viel Spaß!",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/6vurZZaZTwkfYmOw0epVj4",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "115303385981860815",
+     "server": "https://oldbytes.space",
+     "postUrl": "https://oldbytes.space/@pat9496/115303385981860815",
+     "createdAt": "2025-10-02T07:27:24.889Z",
+     "text": "Nach der erweiterten Sommerpause sind wir mit den PIXEL HUNTERS zurück! Und zwar mit: STAR CONTROL II - The Ur-Quan Masters (1992) Wie immer zu finden auf Spotify unter https://open.spotify.com/episode/0L0lhKSqimK2lrwXLLCLaJ und natürlich in euren Podcatchern.",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/0L0lhKSqimK2lrwXLLCLaJ",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

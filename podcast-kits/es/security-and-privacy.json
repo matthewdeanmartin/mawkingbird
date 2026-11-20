@@ -1,0 +1,72 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "security-and-privacy",
+ "lang": "es",
+ "title": {
+  "en": "Security and Privacy",
+  "de": "Sicherheit und Privatsphäre",
+  "fr": "Sécurité et vie privée",
+  "es": "Seguridad y privacidad",
+  "ja": "セキュリティとプライバシー",
+  "it": "Sicurezza e privacy",
+  "pt": "Segurança e privacidade",
+  "nl": "Beveiliging en privacy",
+  "pl": "Bezpieczeństwo i prywatność",
+  "sv": "Säkerhet och integritet",
+  "ru": "Безопасность и приватность",
+  "ko": "보안과 프라이버시",
+  "uk": "Безпека та приватність",
+  "tr": "Güvenlik ve gizlilik",
+  "el": "Ασφάλεια και ιδιωτικότητα",
+  "zh": "安全与隐私",
+  "ca": "Seguretat i privadesa",
+  "cs": "Bezpečnost a soukromí",
+  "fi": "Tietoturva ja yksityisyys",
+  "no": "Sikkerhet og personvern",
+  "ar": "الأمن والخصوصية",
+  "zh-Hant": "資訊安全與隱私"
+ },
+ "icon": "🔐",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "robertsasuke@podcastindex.social",
+   "url": "https://podcastindex.social/@robertsasuke",
+   "displayName": "Robert Sasuke",
+   "avatar": "https://cdn.masto.host/podcastindexsocial/accounts/avatars/107/935/168/046/380/595/static/25e5f57d77fae651.png",
+   "bot": false,
+   "bio": "🎙️ Podcasting 2.0 | 🧠 Ciberpsicología Exploro cómo la tecnología transforma la mente, las relaciones y la forma en que creamos contenido. Divulgo y me expreso ampliamente en mi podcasts. Aquí constru…",
+   "showUrl": "https://sasuke.es/network",
+   "observedAt": "2026-11-20T00:06:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://podcastindex.social/@robertsasuke/115039349290891760",
+     "seenAt": "2025-08-16T16:19:24.716Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115039349290891760",
+     "server": "https://podcastindex.social",
+     "postUrl": "https://podcastindex.social/@robertsasuke/115039349290891760",
+     "createdAt": "2025-08-16T16:19:24.716Z",
+     "text": "Lanzamiento del libro “Evolución Podcasting 2.0: Pasa de ser aficionado a profesional con tu podcast”. Descarga el ebook gratis por tiempo limitado en: pod.sasuke.es https://youtu.be/qyLUbX_xv3g #podcast #podcasting2 #podcaster",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/qyLUbX_xv3g",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,202 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "technology",
+ "lang": "es",
+ "title": {
+  "en": "Technology",
+  "de": "Technologie",
+  "fr": "Technologie",
+  "es": "Tecnología",
+  "ja": "テクノロジー",
+  "it": "Tecnologia",
+  "pt": "Tecnologia",
+  "nl": "Technologie",
+  "pl": "Technologia",
+  "sv": "Teknik",
+  "ru": "Технологии",
+  "ko": "기술",
+  "uk": "Технології",
+  "tr": "Teknoloji",
+  "el": "Τεχνολογία",
+  "zh": "科技",
+  "ca": "Tecnologia",
+  "cs": "Technologie",
+  "fi": "Teknologia",
+  "no": "Teknologi",
+  "zh-Hant": "科技",
+  "ar": "التقنية"
+ },
+ "icon": "💻",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "podcastlinux@mastodon.social",
+   "url": "https://mastodon.social/@podcastlinux",
+   "displayName": "Podcast Linux :mastodon:",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/283/372/original/288e062f55da23de.png",
+   "bot": false,
+   "bio": "Un podcast para amantes de GNU/Linux y el Software Libre. Web: https://podcastlinux.com Feed: https://podcastlinux.com/feed",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:17+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@podcastlinux/111401592568385634",
+     "seenAt": "2023-11-13T05:30:02.235Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "direct-audio",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@podcastlinux/111413708448612951",
+     "seenAt": "2023-11-15T08:51:15.893Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "111413708448612951",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@podcastlinux/111413708448612951",
+     "createdAt": "2023-11-15T08:51:15.893Z",
+     "text": "@voromv @homer@nobigtech.es https://archive.org/download/podcast_linux/PL195.ogg",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "direct-audio",
+       "url": "https://archive.org/download/podcast_linux/PL195.ogg",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "111401592568385634",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@podcastlinux/111401592568385634",
+     "createdAt": "2023-11-13T05:30:02.235Z",
+     "text": "Este miércoles tendrás un #LinuxConnexion con usuarios de #Debian #Gentoo y #Void. No te pierdas esta charla de #DistrosMadres que ha quedado muy interesante. 🌐 Web: http://podcastlinux.com 🎙 Feed: http://podcastlinux.com/feed",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/111/399/868/963/250/965/original/a757e9760d30e3ff.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "24h24l@mastodon.online",
+   "url": "https://mastodon.online/@24h24l",
+   "displayName": "24H24L",
+   "avatar": "https://files.mastodon.online/accounts/avatars/000/074/084/original/7b22bd93639f0d54.png",
+   "bot": false,
+   "bio": "24H24L es un evento en línea, de 24 horas y 24 audios como podcasts, acerca del uso de #GNULinux, experiencias profesionales y personales de los participantes, con seis categorías: #Redes, #Empresa…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:47+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mastodon.online/@24h24l/117400913148650159",
+     "seenAt": "2026-10-07T17:56:09.482Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.online/@24h24l/117621390413637569",
+     "seenAt": "2026-11-15T16:26:25.559Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117621390413637569",
+     "server": "https://mastodon.online",
+     "postUrl": "https://mastodon.online/@24h24l/117621390413637569",
+     "createdAt": "2026-11-15T16:26:25.559Z",
+     "text": "Directo de 24H24L con un Descubriendo Aplicaciones de Linux, con un listado de aplicaciones de Linux interesantes y algo desconocidas. https://youtube.com/live/azKmk6FXzP4?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/azKmk6FXzP4?feature=share",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117620029917022455",
+     "server": "https://mastodon.online",
+     "postUrl": "https://mastodon.online/@24h24l/117620029917022455",
+     "createdAt": "2026-11-15T10:40:26.028Z",
+     "text": "El primer Te Lo Enseño y Te Lo Cuento en dos partes , con directo en el canal. LGM-OS la distribución de Linux para NAS Parte 1 https://youtube.com/live/3oIEuPt1fRk?feature=share Parte 2 https://youtube.com/live/7PDfqQc02j8?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/3oIEuPt1fRk?feature=share",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/7PDfqQc02j8?feature=share",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "robertsasuke@podcastindex.social",
+   "url": "https://podcastindex.social/@robertsasuke",
+   "displayName": "Robert Sasuke",
+   "avatar": "https://cdn.masto.host/podcastindexsocial/accounts/avatars/107/935/168/046/380/595/static/25e5f57d77fae651.png",
+   "bot": false,
+   "bio": "🎙️ Podcasting 2.0 | 🧠 Ciberpsicología Exploro cómo la tecnología transforma la mente, las relaciones y la forma en que creamos contenido. Divulgo y me expreso ampliamente en mi podcasts. Aquí constru…",
+   "showUrl": "https://sasuke.es/network",
+   "observedAt": "2026-11-20T00:06:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://podcastindex.social/@robertsasuke/115039349290891760",
+     "seenAt": "2025-08-16T16:19:24.716Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115039349290891760",
+     "server": "https://podcastindex.social",
+     "postUrl": "https://podcastindex.social/@robertsasuke/115039349290891760",
+     "createdAt": "2025-08-16T16:19:24.716Z",
+     "text": "Lanzamiento del libro “Evolución Podcasting 2.0: Pasa de ser aficionado a profesional con tu podcast”. Descarga el ebook gratis por tiempo limitado en: pod.sasuke.es https://youtu.be/qyLUbX_xv3g #podcast #podcasting2 #podcaster",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/qyLUbX_xv3g",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

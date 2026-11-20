@@ -1,0 +1,108 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "history",
+ "lang": "es",
+ "title": {
+  "en": "History",
+  "de": "Geschichte",
+  "fr": "Histoire",
+  "es": "Historia",
+  "ja": "歴史",
+  "it": "Storia",
+  "pt": "História",
+  "nl": "Geschiedenis",
+  "pl": "Historia",
+  "sv": "Historia",
+  "ru": "История",
+  "ko": "역사",
+  "uk": "Історія",
+  "tr": "Tarih",
+  "el": "Ιστορία",
+  "zh": "历史",
+  "ca": "Història",
+  "cs": "Historie",
+  "fi": "Historia",
+  "no": "Historie",
+  "ar": "التاريخ",
+  "zh-Hant": "歷史"
+ },
+ "icon": "🏛️",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "luisbermejo@mastodon.social",
+   "url": "https://mastodon.social/@luisbermejo",
+   "displayName": "No Soy Original",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/327/922/493/046/586/original/48124f2f9dd10238.png",
+   "bot": false,
+   "bio": "LuisBermejo.com Podcast Pienso, luego molesto. https://podcasts.apple.com/es/podcast/no-soy-original/id1006785564 https://luisbermejo.com/links-recomendados/",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:54+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@luisbermejo/117642577942718577",
+     "seenAt": "2026-11-19T10:14:41.599Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@luisbermejo/117642577942718577",
+     "seenAt": "2026-11-19T10:14:41.599Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117642577942718577",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@luisbermejo/117642577942718577",
+     "createdAt": "2026-11-19T10:14:41.599Z",
+     "text": "La desaparición de Michael Rockefeller, Nueva Guinea, 19 de noviembre de 1961 «El heredero que se lo tragó el mar… ¿o no?» Michael Rockefeller, hijo del gobernador de Nueva York y heredero de una de las mayores fortunas del mundo, volcó su canoa frente a la costa de los asmat, en la actual Papúa. Se lanzó a nadar hacia la orilla y no volvió a aparecer. La versión oficial fue «ahogado o devorado…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/642/575/860/475/907/original/a72fe1539ea19640.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/es/podcast/no-soy-original/id1006785564?i=1000801375214",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117636730711256734",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@luisbermejo/117636730711256734",
+     "createdAt": "2026-11-18T09:27:39.927Z",
+     "text": "El mensaje de Arecibo y el crop circle de Chilbolton «Les escribimos una carta y alguien contestó» El 16 de noviembre de 1974 se emitió desde Arecibo un mensaje de 1.679 bits hacia el cúmulo M13, a unos 25.000 años luz. Lo diseñaron Frank Drake y Carl Sagan, entre otros. Casi 27 años después, en agosto de 2001, apareció un crop circle junto al observatorio de Chilbolton https://podcasts.apple.com…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/636/729/256/754/562/original/64a93f5fbd80d6e5.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/es/podcast/no-soy-original/id1006785564?i=1000801144237",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

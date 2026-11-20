@@ -1,0 +1,89 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "security-and-privacy",
+ "lang": "en",
+ "title": {
+  "en": "Security and Privacy",
+  "de": "Sicherheit und Privatsphäre",
+  "fr": "Sécurité et vie privée",
+  "es": "Seguridad y privacidad",
+  "ja": "セキュリティとプライバシー",
+  "it": "Sicurezza e privacy",
+  "pt": "Segurança e privacidade",
+  "nl": "Beveiliging en privacy",
+  "pl": "Bezpieczeństwo i prywatność",
+  "sv": "Säkerhet och integritet",
+  "ru": "Безопасность и приватность",
+  "ko": "보안과 프라이버시",
+  "uk": "Безпека та приватність",
+  "tr": "Güvenlik ve gizlilik",
+  "el": "Ασφάλεια και ιδιωτικότητα",
+  "zh": "安全与隐私",
+  "ca": "Seguretat i privadesa",
+  "cs": "Bezpečnost a soukromí",
+  "fi": "Tietoturva ja yksityisyys",
+  "no": "Sikkerhet og personvern",
+  "ar": "الأمن والخصوصية",
+  "zh-Hant": "資訊安全與隱私"
+ },
+ "icon": "🔐",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "angrynerdspodcast@mastodon.nl",
+   "url": "https://mastodon.nl/@angrynerdspodcast",
+   "displayName": "Angry Nerds Podcast 🍻",
+   "avatar": "https://mastodon.nl/system/accounts/avatars/109/365/416/844/558/811/original/9ec11f28e949e16a.jpg",
+   "bot": false,
+   "bio": "Nederlandse #podcast over #privacy, #security, #technologie en #ethiek. Een roulerend #panel bespreekt wekelijks op geheel eigen wijze de belangrijkste #cybers 🍻",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:06+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370065800931633",
+     "seenAt": "2026-10-02T07:11:16.309Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117370065800931633",
+     "server": "https://mastodon.nl",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370065800931633",
+     "createdAt": "2026-10-02T07:11:16.309Z",
+     "text": "Een nieuwe aflevering vol boefjes en bingokaarten. Meer nadelen van overdreven KYC en Hyves is terug! Goed nieuws of zien we al die nostalgie een beetje teveel door een roze gluurbril? Angry Nerds 317 staat voor je klaar. https://www.youtube.com/live/y_uM7hRkPes",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/live/y_uM7hRkPes",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117253996553376198",
+     "server": "https://mastodon.nl",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117253996553376198",
+     "createdAt": "2026-09-11T19:13:20.144Z",
+     "text": "Een theatershow over cybers? Bernhold Nieuwesteeg doet het gewoon. Reserveren doe je via https://www.bernoldnieuwesteeg.nl/show Check trouwens ook even zijn cybersecuritybooster die beslissers helpt chocola te maken van de wirwar aan weetjes. Je hoort Bernhold aan het woord in aflevering 314: https://youtube.com/live/GI6eic4MoVM",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/GI6eic4MoVM",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

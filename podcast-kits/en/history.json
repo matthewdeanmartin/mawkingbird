@@ -1,0 +1,274 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "history",
+ "lang": "en",
+ "title": {
+  "en": "History",
+  "de": "Geschichte",
+  "fr": "Histoire",
+  "es": "Historia",
+  "ja": "歴史",
+  "it": "Storia",
+  "pt": "História",
+  "nl": "Geschiedenis",
+  "pl": "Historia",
+  "sv": "Historia",
+  "ru": "История",
+  "ko": "역사",
+  "uk": "Історія",
+  "tr": "Tarih",
+  "el": "Ιστορία",
+  "zh": "历史",
+  "ca": "Història",
+  "cs": "Historie",
+  "fi": "Historia",
+  "no": "Historie",
+  "ar": "التاريخ",
+  "zh-Hant": "歷史"
+ },
+ "icon": "🏛️",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "presidencies@masto.ai",
+   "url": "https://masto.ai/@presidencies",
+   "displayName": "Presidencies of the US",
+   "avatar": "https://s3.masto.ai/accounts/avatars/109/339/259/860/543/005/original/58f4e63ed157db4a.jpg",
+   "bot": false,
+   "bio": "The Presidencies of the United States is a podcast devoted to exploring each presidency from the very beginning in depth. I take a systematic approach to both the people and the events that have shap…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:13+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://masto.ai/@presidencies/117592568789465457",
+     "seenAt": "2026-11-10T14:16:42.483Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://masto.ai/@presidencies/117640005869335447",
+     "seenAt": "2026-11-18T23:20:34.876Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://masto.ai/@presidencies/117564288912068287",
+     "seenAt": "2026-11-05T14:24:45.798Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117640005869335447",
+     "server": "https://masto.ai",
+     "postUrl": "https://masto.ai/@presidencies/117640005869335447",
+     "createdAt": "2026-11-18T23:20:34.876Z",
+     "text": "This #ReflectionWednesday, I'm sharing a few thoughts of how podcasting has changed since I started nearly 10 years ago and new ways that I'm exploring how to connect with listeners. Check it out! #PodcastingLife https://youtu.be/iVfJ4zurSTY",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/iVfJ4zurSTY",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117592568789465457",
+     "server": "https://masto.ai",
+     "postUrl": "https://masto.ai/@presidencies/117592568789465457",
+     "createdAt": "2026-11-10T14:16:42.483Z",
+     "text": "Be sure to check out my recent guest appearance on the Vice Presidents of the United States podcast to learn more about the last days of Aaron Burr. His is truly a fascinating (and scandalous) history! #history #VPOTUS #Burr https://podcasts.apple.com/us/podcast/old-man-burr/id1440240504?i=1000799622259",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/us/podcast/old-man-burr/id1440240504?i=1000799622259",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "alexluyckxphoto@mstdn.ca",
+   "url": "https://mstdn.ca/@AlexLuyckxPhoto",
+   "displayName": "Alex Luyckx",
+   "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/523/545/285/999/857/original/af9396cfb590c683.jpg",
+   "bot": false,
+   "bio": "Long time blogger, Podcaster, film and history nut. Creator of the Classic Camera Revival & Toronto Film Shooters",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:52+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117598059438447204",
+     "seenAt": "2026-11-11T13:33:03.132Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117598059438447204",
+     "server": "https://mstdn.ca",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117598059438447204",
+     "createdAt": "2026-11-11T13:33:03.132Z",
+     "text": "Solid, Mechanical, the Canon FTb. https://youtu.be/mGBwJyZEx2o #photography #filmphotography #camerareview #gear #believeinfilm #shootfilmbenice",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/mGBwJyZEx2o",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117518524133246856",
+     "server": "https://mstdn.ca",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117518524133246856",
+     "createdAt": "2026-10-28T12:26:10.687Z",
+     "text": "Did Agfa really name a camera after the shutter sound? Probably not. But that doesn't mean we should overlook the amazing Agfa Click II! https://youtu.be/wWsviy2IMCo #photography #filmphotography #cameragear #believeinfilm #shootfilmbenice",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/wWsviy2IMCo",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "mnutty@mastodon.ie",
+   "url": "https://mastodon.ie/@mnutty",
+   "displayName": "Martin Nutty",
+   "avatar": "https://cdn.masto.host/mastodonie/accounts/avatars/109/274/742/606/656/432/original/210565f15f016de6.jpg",
+   "bot": false,
+   "bio": "Wannabe polymath, cohost of the Irish Stew Podcast and host of The Nutty Chronicles. Originally from Dublin but now live in NYC. Interested in the Irish diaspora and history and other cultural matters",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:23+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.ie/@mnutty/117463298601964587",
+     "seenAt": "2026-10-18T18:21:35.954Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117463298601964587",
+     "server": "https://mastodon.ie",
+     "postUrl": "https://mastodon.ie/@mnutty/117463298601964587",
+     "createdAt": "2026-10-18T18:21:35.954Z",
+     "text": "1) This Pete Buttigieg video is worth 17 mins of your time as: a) a good analysis of the midterms 2 weeks out b) a masterclass in political communication #USPolitics #Politics #PeteButtigieg #midterms https://youtu.be/W0oLO0OJg_U?is=xi61w5GJFO1Z2W5J",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/W0oLO0OJg_U?is=xi61w5GJFO1Z2W5J",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117304325511849207",
+     "server": "https://mastodon.ie",
+     "postUrl": "https://mastodon.ie/@mnutty/117304325511849207",
+     "createdAt": "2026-09-20T16:32:39.104Z",
+     "text": "American #politics has been turned into a corrupt infotainment circus by Trump and has enablers What would a sensible #USPolitics look like? If you’re looking for a new blueprint, then #PeteButtigieg is worth listening to. With the #midterms coming up, there is an opportunity to replace a rubber stamp Congress but it will only succeed if it avoids restoration or reversion. It’s time for a new way…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/M9UZ7ZGD2vE?is=JuLMjej15ThFufH2",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "ancestryroads@genealysis.social",
+   "url": "https://genealysis.social/@AncestryRoads",
+   "displayName": "Ancestry Roads",
+   "avatar": "https://genealysis.social/system/accounts/avatars/109/392/455/490/880/138/original/56bfb20f3b4f3bfd.png",
+   "bot": false,
+   "bio": "Appalachian Stories Webcast - Changing the Narrative of Appalachia One Story @ a Time | Pro Genealogy | Preserving Veteran's Stories | No Longer Posting - Refuse to be Bullied. #Appalachia #Appalachi…",
+   "showUrl": "https://ancestryroads.podbean.com/",
+   "observedAt": "2026-11-19T23:57:01+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://genealysis.social/@AncestryRoads/117158058567705991",
+     "seenAt": "2026-08-25T20:35:02.657Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117158058567705991",
+     "server": "https://genealysis.social",
+     "postUrl": "https://genealysis.social/@AncestryRoads/117158058567705991",
+     "createdAt": "2026-08-25T20:35:02.657Z",
+     "text": "Islands in the Stream with her good friend Kenny Rogers. No #autotune. Just a perfect live performance. During the dreaded pop era of #CountryMusic but this song hit me, instantly, familiar. And, for good reason. The song was written by the #BeeGees brothers and was originally written for Marvin Gaye with an R&B Style. The title was borrowed from an #ErnestHemingway novel. I was lucky enough to s…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://m.youtube.com/watch?v=PQ4UZ0pc-IY",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117158025992204749",
+     "server": "https://genealysis.social",
+     "postUrl": "https://genealysis.social/@AncestryRoads/117158025992204749",
+     "createdAt": "2026-08-25T20:26:45.593Z",
+     "text": "My favorite cover song by #Dolly is Shine (originally sung by Collective Soul). Parton won the 2001 Grammy Award for Best Female Country Vocal Performance for her version of the song. Collective Soul did not know that Dolly Parton recorded a cover of \"Shine\" until after it was already completed and debuted on national television. https://m.youtube.com/watch?v=plUD6vN80dg ------ (Stairway to Heave…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://m.youtube.com/watch?v=fw_Codf29Pw",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://m.youtube.com/watch?v=plUD6vN80dg",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

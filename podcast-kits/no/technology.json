@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "technology",
+ "lang": "no",
+ "title": {
+  "en": "Technology",
+  "de": "Technologie",
+  "fr": "Technologie",
+  "es": "Tecnología",
+  "ja": "テクノロジー",
+  "it": "Tecnologia",
+  "pt": "Tecnologia",
+  "nl": "Technologie",
+  "pl": "Technologia",
+  "sv": "Teknik",
+  "ru": "Технологии",
+  "ko": "기술",
+  "uk": "Технології",
+  "tr": "Teknoloji",
+  "el": "Τεχνολογία",
+  "zh": "科技",
+  "ca": "Tecnologia",
+  "cs": "Technologie",
+  "fi": "Teknologia",
+  "no": "Teknologi",
+  "zh-Hant": "科技",
+  "ar": "التقنية"
+ },
+ "icon": "💻",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "civix@snabelen.no",
+   "url": "https://snabelen.no/@civix",
+   "displayName": "Gunnar Roland Tjomlid",
+   "avatar": "https://cdn.masto.host/snabelenno/accounts/avatars/109/291/497/787/120/010/original/0d224ebbe7d10be9.jpeg",
+   "bot": false,
+   "bio": "Blogger, author, programmer, podcaster, YouTuber, photographer, skeptic, neuro-spicy and general nerd. Check out shop.qualia.no for my books, www.qualia.no for my photos, tjomlid.com for my blog, and…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:38+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://snabelen.no/@civix/115259804847303748",
+     "seenAt": "2025-09-24T14:44:09.552Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://snabelen.no/@civix/117094580496437992",
+     "seenAt": "2026-08-14T15:31:44.158Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117094580496437992",
+     "server": "https://snabelen.no",
+     "postUrl": "https://snabelen.no/@civix/117094580496437992",
+     "createdAt": "2026-08-14T15:31:44.158Z",
+     "text": "Livestream kl 21 i kveld! Se på YouTube, Facebook eller Twitch. #tomprat #saksynt #tompratlive https://youtube.com/live/M7uaCDcAMis?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/M7uaCDcAMis?feature=share",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "116999171285768204",
+     "server": "https://snabelen.no",
+     "postUrl": "https://snabelen.no/@civix/116999171285768204",
+     "createdAt": "2026-07-28T19:07:55.137Z",
+     "text": "Live nå! https://youtube.com/live/DDxnQ833ppk?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/DDxnQ833ppk?feature=share",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,178 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "education",
+ "lang": "de",
+ "title": {
+  "en": "Education",
+  "de": "Bildung",
+  "fr": "Éducation",
+  "es": "Educación",
+  "ja": "教育",
+  "it": "Istruzione",
+  "pt": "Educação",
+  "nl": "Onderwijs",
+  "pl": "Edukacja",
+  "sv": "Utbildning",
+  "ru": "Образование",
+  "ko": "교육",
+  "uk": "Освіта",
+  "tr": "Eğitim",
+  "el": "Εκπαίδευση",
+  "zh": "教育",
+  "ca": "Educació",
+  "cs": "Vzdělávání",
+  "fi": "Koulutus",
+  "no": "Utdanning",
+  "ar": "التعليم",
+  "zh-Hant": "教育"
+ },
+ "icon": "🎓",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "leibnizgemeinschaft@wisskomm.social",
+   "url": "https://wisskomm.social/@leibnizgemeinschaft",
+   "displayName": "Leibniz-Gemeinschaft",
+   "avatar": "https://wisskomm.social/system/accounts/avatars/114/782/426/860/047/619/original/5f30fe27217dee05.png",
+   "bot": false,
+   "bio": "Forschen für die beste der möglichen Welten.",
+   "showUrl": "https://www.leibniz-gemeinschaft.de/ueber-uns/neues/mediathek/podcast-tonspur-wissen",
+   "observedAt": "2026-11-20T00:03:16+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116600460787975180",
+     "seenAt": "2026-05-19T09:10:35.756Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116600460787975180",
+     "server": "https://wisskomm.social",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116600460787975180",
+     "createdAt": "2026-05-19T09:10:35.756Z",
+     "text": "🍪 Was bringt eine Zuckersteuer und macht Zucker aus Datteln wirklich einen Unterschied? Antworten von Dr. Heike Vogel (Deutsches Institut für Ernährungsforschung DIfE) im Video und bei Wissen Unplugged - jetzt nachzuhören im Hörsaal-Podcast von Deutschlandfunk Nova: https://www.deutschlandfunknova.de/beitrag/wissen-unplugged-eat-the-hype-ernaehrungsmythen-im-check #wj26",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://wisskomm.social/system/media_attachments/files/116/600/455/994/079/187/original/f26efed01bd0065b.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "thomasjenewein@colearn.social",
+   "url": "https://colearn.social/@ThomasJenewein",
+   "displayName": "Thomas Jenewein",
+   "avatar": "https://colearn.social/system/accounts/avatars/109/445/316/074/700/882/original/24a9456cc1f623f1.jpg",
+   "bot": false,
+   "bio": "My updates on SAP Training & Adoption, CorporateLearning, Bildung/ Education, FutureofWork, Edtech, Change 👉🏻checkout our Podcast 🎧 EducationNewscast",
+   "showUrl": "https://podcasts.apple.com/de/podcast/education-newscast/id1352307529",
+   "observedAt": "2026-11-20T00:07:34+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
+     "seenAt": "2026-11-16T12:21:45.677Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
+     "seenAt": "2026-11-16T12:21:45.677Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117626090663164146",
+     "server": "https://colearn.social",
+     "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
+     "createdAt": "2026-11-16T12:21:45.677Z",
+     "text": "Podcasting als Wissens- und Lernformat mit Yannick Peterschmitt Yannick gibt Einblicke in das Konzept und die Herangehensweise, die den Podcast so erfolgreich gemacht haben. Mehr hier auf Apple https://podcasts.apple.com/de/podcast/enc429-podcasting-als-wissens-und-lernformat-mit-yannick/id1352307529?i=1000802195299 und Spotify https://open.spotify.com/episode/5XpERWKd5TxHBz3VVgYtIH #podcasts #sa…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/enc429-podcasting-als-wissens-und-lernformat-mit-yannick/id1352307529?i=1000802195299",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/5XpERWKd5TxHBz3VVgYtIH",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117592284397799039",
+     "server": "https://colearn.social",
+     "postUrl": "https://colearn.social/@ThomasJenewein/117592284397799039",
+     "createdAt": "2026-11-10T13:04:23.008Z",
+     "text": "🤖 Wie lassen sich KI-Agenten im SAP-Umfeld bauen? Das kann man im Agent Lab ausprobieren. Stephan Schluchter erklärt das Lab-Format sowie Joule Studio - SAPs Toolset mit dem Unternehmen eigene KI-Agenten, Skills oder Workflows bauen können. 🎧 Apple: https://podcasts.apple.com/de/podcast/enc428-die-ai-agent-labs-und-joule-studio-mit-stephan/id1352307529?i=1000800714296 🎧 Spotify: https://open.spot…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/enc428-die-ai-agent-labs-und-joule-studio-mit-stephan/id1352307529?i=1000800714296",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "eigenraum@podcasts.social",
+   "url": "https://podcasts.social/@Eigenraum",
+   "displayName": "Eigenraum",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/272/983/838/245/337/original/66b9bc290289dcca.png",
+   "bot": false,
+   "bio": "Ich bin der Eigenraum, ein Podcast über Mathematik und ihre Geschichten. Für Interaktion mit dem Podcast seid ihr hier genau richtig! - Mein Sprecher ist @tomkalei - Automatisierte ActivityPub Ankünd…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:14+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
+     "seenAt": "2026-11-03T10:22:01.933Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117552009834309518",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
+     "createdAt": "2026-11-03T10:22:01.933Z",
+     "text": "P.S. https://www.youtube.com/watch?v=Ac08-99XPKw",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=Ac08-99XPKw",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

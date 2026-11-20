@@ -1,0 +1,89 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "space-and-astronomy",
+ "lang": "it",
+ "title": {
+  "en": "Space and Astronomy",
+  "de": "Weltraum und Astronomie",
+  "fr": "Espace et astronomie",
+  "es": "Espacio y astronomía",
+  "ja": "宇宙と天文学",
+  "it": "Spazio e astronomia",
+  "pt": "Espaço e astronomia",
+  "nl": "Ruimte en astronomie",
+  "pl": "Kosmos i astronomia",
+  "sv": "Rymd och astronomi",
+  "ru": "Космос и астрономия",
+  "ko": "우주와 천문학",
+  "uk": "Космос та астрономія",
+  "tr": "Uzay ve astronomi",
+  "el": "Διάστημα και αστρονομία",
+  "zh": "太空与天文学",
+  "ca": "Espai i astronomia",
+  "cs": "Vesmír a astronomie",
+  "fi": "Avaruus ja tähtitiede",
+  "no": "Verdensrommet og astronomi",
+  "ar": "الفضاء وعلم الفلك",
+  "zh-Hant": "太空與天文"
+ },
+ "icon": "🔭",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "astro_luigi@mastodon.social",
+   "url": "https://mastodon.social/@astro_luigi",
+   "displayName": "Sotto Pressione",
+   "avatar": "https://files.mastodon.social/accounts/avatars/116/584/792/002/735/411/original/da17d7cc04acf724.png",
+   "bot": false,
+   "bio": "Passione per subacquea e astonautica. Podcast : https://youtube.com/@luigitarsia-o1q?si=Zn9taA5Pz5n5fH0T. Www.amicidiboyle.it",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:30+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@astro_luigi/117594082520610375",
+     "seenAt": "2026-11-10T20:41:40.181Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117594082520610375",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@astro_luigi/117594082520610375",
+     "createdAt": "2026-11-10T20:41:40.181Z",
+     "text": "La potenza della pressione",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/594/081/569/101/681/original/0e7aa95ca8be90be.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117461719940468665",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@astro_luigi/117461719940468665",
+     "createdAt": "2026-10-18T11:40:07.492Z",
+     "text": "Interessante per chi si occupa di medicina subacquea e iperbarica",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/461/717/086/727/704/original/309eed5a4126cf96.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

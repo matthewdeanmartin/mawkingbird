@@ -1,0 +1,151 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "science",
+ "lang": "fr",
+ "title": {
+  "en": "Science",
+  "de": "Wissenschaft",
+  "fr": "Sciences",
+  "es": "Ciência",
+  "ja": "科学",
+  "it": "Scienza",
+  "pt": "Ciência",
+  "nl": "Wetenschap",
+  "pl": "Nauka",
+  "sv": "Vetenskap",
+  "ru": "Наука",
+  "ko": "과학",
+  "uk": "Наука",
+  "tr": "Bilim",
+  "el": "Επιστήμη",
+  "zh": "科学",
+  "ca": "Ciència",
+  "cs": "Věda",
+  "fi": "Tiede",
+  "no": "Vitenskap",
+  "ar": "العلوم",
+  "zh-Hant": "科學"
+ },
+ "icon": "🔬",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "metadechoc@mastodon.social",
+   "url": "https://mastodon.social/@MetadeChoc",
+   "displayName": "Méta de Choc",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/538/355/938/672/794/original/0858809f67bd500e.png",
+   "bot": false,
+   "bio": "Le #podcast de #PenséeCritique appliquée à soi. Et si on se demandait pourquoi on pense ce qu'on pense ? La #métacognition c'est choquant, vous allez voir ! En écoute sur toutes les applis audio et s…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:11+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@MetadeChoc/117610286241719621",
+     "seenAt": "2026-11-13T17:22:29.342Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@MetadeChoc/117491462393708939",
+     "seenAt": "2026-10-23T17:44:01.315Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117610286241719621",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@MetadeChoc/117610286241719621",
+     "createdAt": "2026-11-13T17:22:29.342Z",
+     "text": "En attendant, je vous propose un petit jeu : saurez-vous identifier dans cette vidéo 9 personnes et symboles de croyance déjà évoqués sur Méta de Choc ? Cette œuvre magistrale a été réalisée par le monteur/graphiste Pakom. Vous pouvez suivre son actualité sur son nouveau compte Instagram : @pakomvideo ! #jeu #croyances #pseudosciences #NewAge #ésotérisme #PodcastSansPub #AdFreePodcast",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/610/281/307/452/240/original/11fb9e0ffff2dca9.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117491462393708939",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@MetadeChoc/117491462393708939",
+     "createdAt": "2026-10-23T17:44:01.315Z",
+     "text": "Le chapitre 1 de la série “Nouvelle Acropole : un #idéal inquiétant“ (6x1h) sera diffusé vendredi prochain à 18h ! Retrouvez le teaser de l'émission sur votre appli audio (Spotify, Deezer, Apple Podcast, Podcast Addict, etc.), sur le site internet de Méta de choc et sur YouTube : https://youtu.be/62DWFXStUdc #métadechoc #podcastfr #dérives . . . #PodcastSansPub #AdFreePodcast @elena_vlad",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/62DWFXStUdc",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "podcastscience@piaille.fr",
+   "url": "https://piaille.fr/@podcastscience",
+   "displayName": "Podcast Science",
+   "avatar": "https://static.piaille.fr/accounts/avatars/111/352/214/223/547/088/original/692228c76b92e0e6.png",
+   "bot": false,
+   "bio": "Le balado #podcast qui fait aimer la science, mercredi à 20h30 en live, et dans vos oreilles le reste de l'année ! Servir la #science, c'est notre joie ! https://www.podcastscience.fm",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:00+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://piaille.fr/@podcastscience/117637211855769468",
+     "seenAt": "2026-11-18T11:30:01.609Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117637211855769468",
+     "server": "https://piaille.fr",
+     "postUrl": "https://piaille.fr/@podcastscience/117637211855769468",
+     "createdAt": "2026-11-18T11:30:01.609Z",
+     "text": "Si vous voulez prendre un café avec nous ce soir 20h30 UCT+1 ☕ (ou du chocolat ou vos choux de Bruxelles c'est comme vous voulez 😁), on va enregistrer en live ensemble le prochain épisode #Podcast #Science autour d'une thématique pour le moins.. amère 👀 Ce sera par ici : https://youtube.com/live/Ao6BTt-qRAI?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/Ao6BTt-qRAI?feature=share",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117480270165775921",
+     "server": "https://piaille.fr",
+     "postUrl": "https://piaille.fr/@podcastscience/117480270165775921",
+     "createdAt": "2026-10-21T18:17:41.465Z",
+     "text": "RE: https://piaille.fr/@podcastscience/117472734031656408 On arrive en live par ici 😊 : https://youtube.com/live/vLtHdj_8uE8?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/vLtHdj_8uE8?feature=share",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

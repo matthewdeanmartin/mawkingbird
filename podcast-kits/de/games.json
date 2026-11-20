@@ -1,0 +1,244 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "games",
+ "lang": "de",
+ "title": {
+  "en": "Games",
+  "de": "Spiele",
+  "fr": "Jeux",
+  "es": "Videojuegos",
+  "ja": "ゲーム",
+  "it": "Videogiochi",
+  "pt": "Jogos",
+  "nl": "Games",
+  "pl": "Gry",
+  "sv": "Spel",
+  "ru": "Игры",
+  "ko": "게임",
+  "uk": "Ігри",
+  "tr": "Oyunlar",
+  "el": "Παιχνίδια",
+  "zh": "游戏",
+  "ca": "Jocs",
+  "cs": "Hry",
+  "fi": "Pelit",
+  "no": "Spill",
+  "ar": "الألعاب",
+  "zh-Hant": "遊戲"
+ },
+ "icon": "🎮",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "satori_y@mastodon.social",
+   "url": "https://mastodon.social/@satori_y",
+   "displayName": "Satori Yakamura",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/833/932/569/670/248/original/940809af2a363beb.png",
+   "bot": false,
+   "bio": "Hallo, ich bin Satori! Ich erzähle Geschichten, die ich noch nicht kenne. #penandpaperde #mythicgme #podcast #rollenspiel #ttrpg",
+   "showUrl": "https://ausgewuerfelt.yakamura.de/",
+   "observedAt": "2026-11-20T00:06:51+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@satori_y/116281238014588464",
+     "seenAt": "2026-03-24T00:08:02.795Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "seenAt": "2026-11-19T21:15:06.219Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117645174780879849",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "createdAt": "2026-11-19T21:15:06.219Z",
+     "text": "Neue Folge — Henry Thomas Jones #5 \"Der Schreckensclown\" Henry Thomas Jones und Floyd Adler stürmen ins Büro des Chefredakteurs und finden dort einen Mann im Clownkostüm mit starrer, verzerrter Maske... https://ausgewuerfelt.yakamura.de/series/arkhamadvertiser/staffel1/5-der-schreckensclown/ ▶️ Video auf YouTube: https://www.youtube.com/watch?v=ZXUuM_21k6w #abr #horror #podcast #solorpg #penandpa…",
+     "spoilerText": "Mögliche Gewaltdarstellung in der Erzählung",
+     "sensitive": true,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=ZXUuM_21k6w",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117604685032966422",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@satori_y/117604685032966422",
+     "createdAt": "2026-11-12T17:38:01.680Z",
+     "text": "Neue Folge — Ein Schmugglerleben #16 \"Aufbruch nach Lycai\" Roland investiert in eine Raketenbatterie und verlässt den Sektor mit Kurs auf den Planeten Lycai. https://ausgewuerfelt.yakamura.de/series/sternenschmiede/season1/16-aufbruch-nach-lycai/ https://youtu.be/Y6LrVd4TAMs #starforged #sciencefiction #podcast #solorpg #penandpaper #actualplay #ttrpg #rollenspiel #mythicgme #würfel #pnp #pnpde #…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Y6LrVd4TAMs",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "theretrosven@troet.cafe",
+   "url": "https://troet.cafe/@theretrosven",
+   "displayName": "TanukiTantrum",
+   "avatar": "https://media.troet.cafe/troet/accounts/avatars/111/188/874/720/764/939/original/723f2b60800b5a6c.png",
+   "bot": false,
+   "bio": "SpassMitVideospielen hat einen neuen Namen: TanukiTantrum! Ich streame auf Twitch, alles von Trashgame bis Meisterwerk. Habe einen Podcast über Games, Filme und Popcultur. Nebenbei schreibe ich an ei…",
+   "showUrl": "https://linktr.ee/TanukiTantrum",
+   "observedAt": "2026-11-20T00:07:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://troet.cafe/@theretrosven/117615206091116861",
+     "seenAt": "2026-11-14T14:13:40.289Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117615206091116861",
+     "server": "https://troet.cafe",
+     "postUrl": "https://troet.cafe/@theretrosven/117615206091116861",
+     "createdAt": "2026-11-14T14:13:40.289Z",
+     "text": "Ihr wollt neue Folgen im #Podcast? Bitte schön, dieses Mal geht es um unseren lila Affenfreund Kong. #SkullIsland #Gaming https://open.spotify.com/episode/7m4BbBGPuVSGvv6DD3obaH?si=hKjiql24St2nh9Il0AQRvg RSS im Link im Profil",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/7m4BbBGPuVSGvv6DD3obaH?si=hKjiql24St2nh9Il0AQRvg",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "datort@mastodon.social",
+   "url": "https://mastodon.social/@datort",
+   "displayName": "datort :mastodon:",
+   "avatar": "https://files.mastodon.social/accounts/avatars/106/929/422/237/346/186/original/f484b342e833bd69.png",
+   "bot": false,
+   "bio": "👾 C64-Kid → Arduino & ESP Maker | 🎮 Retro & Coding | 🎥 YouTube & 🎙️ Podcast: Pad One Please",
+   "showUrl": "https://datort.de/feed/podcast/pad-one-please/",
+   "observedAt": "2026-11-19T23:59:32+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@datort/117514489336266424",
+     "seenAt": "2026-10-27T19:20:04.581Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117514489336266424",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@datort/117514489336266424",
+     "createdAt": "2026-10-27T19:20:04.581Z",
+     "text": "Ich hab versucht mit Basteldraht ein digitales Thermometer zu bauen. Hat auch funktioniert , sieht nur was usselig aus. Fazit: Kann man so machen, muss man aber wollen. https://www.youtube.com/watch?v=fDnRS-WCBk8 #diy #electronics",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=fDnRS-WCBk8",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "116297463668499253",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@datort/116297463668499253",
+     "createdAt": "2026-03-26T20:54:26.641Z",
+     "text": "Gravity Duck 64 und Old Tower sind zwei wirklich gute, moderne Spiele für den C64. Ich hab sie mir genauer angeschaut. https://youtu.be/l_ltWi5OyNo #c64 #retrogaming #retrogames",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/l_ltWi5OyNo",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "pat9496@oldbytes.space",
+   "url": "https://oldbytes.space/@pat9496",
+   "displayName": "Pat",
+   "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/670/799/597/069/436/original/6ba2d0db6c795b83.png",
+   "bot": false,
+   "bio": "Geek | Retrogamer | Modern Gamer | Reader | Parent | IT & Legacy Systems | Point-&-Click-Adventure & CRPG-Specialist | Pen-&-Paper-RPG-Enthusiast | Podcaster (🇬🇧/🇩🇪)",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:19+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://oldbytes.space/@pat9496/115325957723480101",
+     "seenAt": "2025-10-06T07:07:42.333Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115325957723480101",
+     "server": "https://oldbytes.space",
+     "postUrl": "https://oldbytes.space/@pat9496/115325957723480101",
+     "createdAt": "2025-10-06T07:07:42.333Z",
+     "text": "Heute gibt es bei PIXEL HUNTERS eine Premiere: Ein Spiel, das ich nicht kannte! Vermutlich kennt es ausser Kai (@rhemsey82) niemand. Es ist der Edutainment-Titel DAS MUSEUM (1996) Zu finden auf Spotify unter https://open.spotify.com/episode/6vurZZaZTwkfYmOw0epVj4 und natürlich in euren Podcatchern. Viel Spaß!",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/6vurZZaZTwkfYmOw0epVj4",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "115303385981860815",
+     "server": "https://oldbytes.space",
+     "postUrl": "https://oldbytes.space/@pat9496/115303385981860815",
+     "createdAt": "2025-10-02T07:27:24.889Z",
+     "text": "Nach der erweiterten Sommerpause sind wir mit den PIXEL HUNTERS zurück! Und zwar mit: STAR CONTROL II - The Ur-Quan Masters (1992) Wie immer zu finden auf Spotify unter https://open.spotify.com/episode/0L0lhKSqimK2lrwXLLCLaJ und natürlich in euren Podcatchern.",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/0L0lhKSqimK2lrwXLLCLaJ",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

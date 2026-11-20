@@ -1,0 +1,110 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "technology",
+ "lang": "tr",
+ "title": {
+  "en": "Technology",
+  "de": "Technologie",
+  "fr": "Technologie",
+  "es": "Tecnología",
+  "ja": "テクノロジー",
+  "it": "Tecnologia",
+  "pt": "Tecnologia",
+  "nl": "Technologie",
+  "pl": "Technologia",
+  "sv": "Teknik",
+  "ru": "Технологии",
+  "ko": "기술",
+  "uk": "Технології",
+  "tr": "Teknoloji",
+  "el": "Τεχνολογία",
+  "zh": "科技",
+  "ca": "Tecnologia",
+  "cs": "Technologie",
+  "fi": "Teknologia",
+  "no": "Teknologi",
+  "zh-Hant": "科技",
+  "ar": "التقنية"
+ },
+ "icon": "💻",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "melihbayramdede@mastodon.social",
+   "url": "https://mastodon.social/@melihbayramdede",
+   "displayName": "Melih Bayram Dede",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/981/927/original/6f2c882bcbb7bf4f.jpg",
+   "bot": false,
+   "bio": "📰 Journalist 🎬 Video Content Creator🎙️Podcaster 📺 http://youtube.com/melihbayramdede",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:08+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@melihbayramdede/112382719137968128",
+     "seenAt": "2024-05-04T12:03:25.599Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@melihbayramdede/111795699446979009",
+     "seenAt": "2024-01-21T19:56:35.959Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@melihbayramdede/111472429523722440",
+     "seenAt": "2023-11-25T17:44:48.659Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@melihbayramdede/112898068064621112",
+     "seenAt": "2024-08-03T12:23:26.166Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "112898068064621112",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@melihbayramdede/112898068064621112",
+     "createdAt": "2024-08-03T12:23:26.166Z",
+     "text": "Bütçe dostu telefon | OPPO A38 #teknoloji #tech #telefon #oppo #işbirliği https://www.youtube.com/shorts/xCnGl9WJr3U",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://www.youtube.com/shorts/xCnGl9WJr3U",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "112613891537197422",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@melihbayramdede/112613891537197422",
+     "createdAt": "2024-06-14T07:53:36.477Z",
+     "text": "TECNO CAMON 30 Pro 5G ile ilk karşılaşma #teknoloji #tech #TECNO #telefon #mobile https://www.youtube.com/shorts/ZZq0EyxGGI4",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://www.youtube.com/shorts/ZZq0EyxGGI4",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

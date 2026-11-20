@@ -1,0 +1,855 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "film-and-tv",
+ "lang": "en",
+ "title": {
+  "en": "Film and TV",
+  "de": "Film und Fernsehen",
+  "fr": "Cinéma et télévision",
+  "es": "Cine y televisión",
+  "ja": "映画とテレビ",
+  "it": "Cinema e TV",
+  "pt": "Cinema e TV",
+  "nl": "Film en tv",
+  "pl": "Film i telewizja",
+  "sv": "Film och TV",
+  "ru": "Кино и телевидение",
+  "ko": "영화와 TV",
+  "uk": "Кіно і телебачення",
+  "tr": "Film ve televizyon",
+  "el": "Κινηματογράφος και τηλεόραση",
+  "zh": "电影与电视",
+  "ca": "Cinema i televisió",
+  "cs": "Film a televize",
+  "fi": "Elokuvat ja televisio",
+  "no": "Film og TV",
+  "ar": "السينما والتلفزيون",
+  "zh-Hant": "電影與電視"
+ },
+ "icon": "🎬",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "backlookcinema@mstdn.party",
+   "url": "https://mstdn.party/@backlookcinema",
+   "displayName": "Back Look Cinema",
+   "avatar": "https://files.mstdn.party/accounts/avatars/109/339/783/493/084/015/original/8847a6adab731701.png",
+   "bot": false,
+   "bio": "Back Look Cinema: The Podcast focuses on reliving the movies of the yesteryears of the 70's, 80's and 90's. Join the host, Zo Richardson, as he explores some of his favorite films and all the nostalg…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:33+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mstdn.party/@backlookcinema/112550673673361894",
+     "seenAt": "2024-06-03T03:56:28.892Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mstdn.party/@backlookcinema/109906539610508337",
+     "seenAt": "2023-02-22T04:38:24.508Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mstdn.party/@backlookcinema/117556554872299441",
+     "seenAt": "2026-11-04T05:37:53.712Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117556554872299441",
+     "server": "https://mstdn.party",
+     "postUrl": "https://mstdn.party/@backlookcinema/117556554872299441",
+     "createdAt": "2026-11-04T05:37:53.712Z",
+     "text": "Did you know that #THIR13ENGhosts was the first major Hollywood picture to feature three Arab-American lead actors: Tony Shalhoub, F. Murry Abraham, and Shannon Elizabeth? https://youtu.be/g3P_H2So5bI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/g3P_H2So5bI",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117510389694002384",
+     "server": "https://mstdn.party",
+     "postUrl": "https://mstdn.party/@backlookcinema/117510389694002384",
+     "createdAt": "2026-10-27T01:57:28.995Z",
+     "text": "Did you know that Robert De Niro filed his teeth down so that his character, Max Cady, would appear more menacing? More interesting trivia about #CapeFear in this episode. https://youtu.be/Bods0C7mC9Q",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Bods0C7mC9Q",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "cogwheel@is.aaronbsmith.com",
+   "url": "https://is.aaronbsmith.com/@cogwheel",
+   "displayName": "Cogwheel Gaming",
+   "avatar": "https://cdn.masto.host/isaaronbsmithcom/accounts/avatars/109/931/428/149/925/922/original/d58a14a46219bb8b.png",
+   "bot": false,
+   "bio": "This account is for things relating to the #TTRPG games played by the circle of friends gathered under the banner of Cogwheel Gaming. This account is new but we've been doing this since 2017. We have…",
+   "showUrl": "https://aaronbsmith.com/cogwheel/",
+   "observedAt": "2026-11-19T23:58:45+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://is.aaronbsmith.com/@cogwheel/113067455975870708",
+     "seenAt": "2024-09-02T10:21:00.571Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "113067455975870708",
+     "server": "https://is.aaronbsmith.com",
+     "postUrl": "https://is.aaronbsmith.com/@cogwheel/113067455975870708",
+     "createdAt": "2024-09-02T10:21:00.571Z",
+     "text": "#GURPS is a very serious #TTRPG where none of the characters ever have a moment that lasts for the entire session. Excerpts are from this podcast episode: https://aaronbsmith.com/cogwheel/2024/09/gurps-wars-s1-ep-32-autodefenestration/",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/isaaronbsmithcom/media_attachments/files/113/067/452/729/625/648/original/235342bbf3aa5665.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "thenerdyblogger@mastodon.social",
+   "url": "https://mastodon.social/@TheNerdyBlogger",
+   "displayName": "Ashley Thomas",
+   "avatar": "https://files.mastodon.social/accounts/avatars/108/195/940/312/051/159/original/78774e3687b4b5d2.jpg",
+   "bot": false,
+   "bio": "I follow Christ. Writer/Podcaster. 📝🎙 Fangirlish.com | Sci-Fi 5 Podcast | Film Stories Podcast Network | Podcast-616 | We Are Starfleet | Mission Log: Gene-ology | VideoStorePodcast.com I'll be shari…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:40+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@TheNerdyBlogger/117461951557470952",
+     "seenAt": "2026-10-18T12:39:01.694Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@TheNerdyBlogger/117640896834467203",
+     "seenAt": "2026-11-19T03:07:09.923Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@TheNerdyBlogger/117609407532998065",
+     "seenAt": "2026-11-13T13:39:01.344Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117640896834467203",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@TheNerdyBlogger/117640896834467203",
+     "createdAt": "2026-11-19T03:07:09.923Z",
+     "text": "In this episode of #ModernHorrorHalloween, Emma, Baz, and I take a look back at #HalloweenIII: Season of the Witch. Is it really the worst Halloween movie? How hott is Tom Atkins? Can we pronounce Samhain correctly? Listen and find out! #JohnCarpenter #nerdlyfe https://open.spotify.com/episode/69P0Jg33XhPrYReUlYzq4G?si=c7a7520992b34a01",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/69P0Jg33XhPrYReUlYzq4G?si=c7a7520992b34a01",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117626394546243225",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@TheNerdyBlogger/117626394546243225",
+     "createdAt": "2026-11-16T13:39:02.567Z",
+     "text": "Have you caught up with #Podcast616? Hugh is joined by the lovely Emma Arneil of #TheHorrorAndHer and #ModernHorrorHalloween to discuss #VisionQuest 1x05 and 1x06. Check us out! #MCU #nerdlyfe https://open.spotify.com/episode/2wb21giikVAMAa0x5OWuB9?si=f2f316c558e44428",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/2wb21giikVAMAa0x5OWuB9?si=f2f316c558e44428",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "captainjoedove@mastodon.world",
+   "url": "https://mastodon.world/@captainjoedove",
+   "displayName": "Joe Dove",
+   "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/379/143/157/345/039/original/4e5a3abb58497e62.png",
+   "bot": false,
+   "bio": "Hi I’m Joe Dove of Captains Quadrant #StarTrek #podcast, find me on Captains Quadrant for all #scifi and weekly aftershows and #theagonybokth for https://youtube.com/@captainsquadrant",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:24+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://mastodon.world/@captainjoedove/117467861232955185",
+     "seenAt": "2026-10-19T13:41:56.177Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mastodon.world/@captainjoedove/117442025619209554",
+     "seenAt": "2026-10-15T00:11:35.997Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.world/@captainjoedove/117593199573790550",
+     "seenAt": "2026-11-10T16:57:07.481Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.world/@captainjoedove/117629954226676482",
+     "seenAt": "2026-11-17T04:44:18.978Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117629954226676482",
+     "server": "https://mastodon.world",
+     "postUrl": "https://mastodon.world/@captainjoedove/117629954226676482",
+     "createdAt": "2026-11-17T04:44:18.978Z",
+     "text": "Orb of the Profits with #captain Sisko Larry #cosplay at #stphilly https://youtube.com/shorts/Rb5uGMOlqLE?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://youtube.com/shorts/Rb5uGMOlqLE?feature=share",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117607449333947365",
+     "server": "https://mastodon.world",
+     "postUrl": "https://mastodon.world/@captainjoedove/117607449333947365",
+     "createdAt": "2026-11-13T05:21:01.566Z",
+     "text": "https://youtube.com/shorts/yg4ncMwxPTg?is=bW83i-w_AflleQ1Q #startrek",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://youtube.com/shorts/yg4ncMwxPTg?is=bW83i-w_AflleQ1Q",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "saltiredpopcorn@zirk.us",
+   "url": "https://zirk.us/@SaltiredPopcorn",
+   "displayName": "SaltiredPopcorn",
+   "avatar": "https://files.zirk.us/accounts/avatars/113/736/858/213/643/651/original/2a423dd12e950b2d.png",
+   "bot": false,
+   "bio": "Film addict, reviewer, podcaster, and lover of many other things (including Edinburgh, puns, books, and TV shows).",
+   "showUrl": "https://podcasts.apple.com/gb/podcast/raiders-of-the-podcast/id1250657197",
+   "observedAt": "2026-11-20T00:06:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://zirk.us/@SaltiredPopcorn/117621174550709628",
+     "seenAt": "2026-11-15T15:31:31.754Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://zirk.us/@SaltiredPopcorn/117449807118978126",
+     "seenAt": "2026-10-16T09:10:32.261Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117621174550709628",
+     "server": "https://zirk.us",
+     "postUrl": "https://zirk.us/@SaltiredPopcorn/117621174550709628",
+     "createdAt": "2026-11-15T15:31:31.754Z",
+     "text": "Here's our episode for this week. Some Keach and some housemaking. https://raidersofthepodcast.blogspot.com/2026/11/mobile-home.html Also here - https://podcasts.apple.com/gb/podcast/raiders-of-the-podcast/id1250657197?i=1000802075712 And everywhere here - https://linktr.ee/raidersofthepodcast #podcast #podcaster #StacyKeach #housemakers #RoadGames #JamieLeeCurtis #film #filmastodon",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/gb/podcast/raiders-of-the-podcast/id1250657197?i=1000802075712",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117580889222279196",
+     "server": "https://zirk.us",
+     "postUrl": "https://zirk.us/@SaltiredPopcorn/117580889222279196",
+     "createdAt": "2026-11-08T12:46:26.423Z",
+     "text": "In a crazy reversal of the usual conversation, I actually begged Jose Reyes Teneza from Watch/Skip+ to guest on our podcast while I was away on holiday for a week again. And here is the episode. https://raidersofthepodcast.blogspot.com/2026/11/goats.html Don't worry, I'll be back to begging Jose and Mike Willden to let me back on with them soon enough. We're also here - https://podcasts.apple.com…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/gb/podcast/raiders-of-the-podcast/id1250657197?i=1000800557706",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "ryansmoviereviews@mastodon.au",
+   "url": "https://mastodon.au/@ryansmoviereviews",
+   "displayName": "Ryan's Movie Reviews",
+   "avatar": "https://o.mastodon.au/accounts/avatars/109/364/412/066/448/515/original/9210cc9d57b307e6.jpg",
+   "bot": false,
+   "bio": "I'm Ryan, I live in Adelaide Australia and I like watching movies- so I've started reviewing some. Now with over 500 reviews, I also have a weekly podcast with my friend Anthony (Link below) #movie #…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:47+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.au/@ryansmoviereviews/117616996969397809",
+     "seenAt": "2026-11-14T21:49:06.929Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117616996969397809",
+     "server": "https://mastodon.au",
+     "postUrl": "https://mastodon.au/@ryansmoviereviews/117616996969397809",
+     "createdAt": "2026-11-14T21:49:06.929Z",
+     "text": "Hey all This week on Movie Chats we talked about Whistle... the 2026 horror film. Please check it out here https://youtu.be/JAGelZVmhCU #movie #film #moviereview #podcast #youtube",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/JAGelZVmhCU",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117605809018064355",
+     "server": "https://mastodon.au",
+     "postUrl": "https://mastodon.au/@ryansmoviereviews/117605809018064355",
+     "createdAt": "2026-11-12T22:23:52.337Z",
+     "text": "A THROW BACK to our FIRST podcast on our YouTube channel. On this episode we discussed the movie Red Dragon https://youtu.be/g7RDvwN4OHk?si=Og7jvNWWuM7cFpvZ #throwback #youtube #moviereview #movie #podcast",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/g7RDvwN4OHk?si=Og7jvNWWuM7cFpvZ",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "derreckmayer@mastodon.social",
+   "url": "https://mastodon.social/@derreckmayer",
+   "displayName": "Delightful Derreck",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/887/075/613/054/696/original/32c53bac9835e5eb.jpg",
+   "bot": false,
+   "bio": "Nerd, gamer, collector, preserver, creator. Host of the Coming of Cage podcast & Pop 'N Sodas.",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:59:43+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@derreckmayer/117603933997867443",
+     "seenAt": "2026-11-12T14:27:01.793Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@derreckmayer/114383793682821792",
+     "seenAt": "2025-04-22T21:42:59.976Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117603933997867443",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@derreckmayer/117603933997867443",
+     "createdAt": "2026-11-12T14:27:01.793Z",
+     "text": "Do you normally listen to our show? Did you know you can see our bearded faces at the same time? Check out our in-depth discussion on 2020's The Croods: A New Age in glorious color video! https://youtu.be/TzV9113FdiY",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/TzV9113FdiY",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117569961480443595",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@derreckmayer/117569961480443595",
+     "createdAt": "2026-11-06T14:27:22.319Z",
+     "text": "It's time for some more Cage-O Bingo, where we play custom Nicolas Cage themed bingo as we watch his movies. This episode? The Croods: A New Age! Let's see how many squares we got! https://youtu.be/y6BebFAKS4I",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/y6BebFAKS4I",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "tspoe_pods@mastodon.social",
+   "url": "https://mastodon.social/@TSPOE_pods",
+   "displayName": "Christopher (Podcast host)",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/503/852/294/106/396/original/1066d0844fcfec3d.png",
+   "bot": false,
+   "bio": "Host of the Time Shifters and Orphaned Entertainment podcasts. #Podcast #PodNation #FilmReviews https://linktr.ee/TSPandOE_Podcasts",
+   "showUrl": "https://www.timeshifterspodcast.com/",
+   "observedAt": "2026-11-20T00:07:59+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@TSPOE_pods/117593743385336892",
+     "seenAt": "2026-11-10T19:15:25.391Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117593743385336892",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@TSPOE_pods/117593743385336892",
+     "createdAt": "2026-11-10T19:15:25.391Z",
+     "text": "We will go from the Thanksgiving dinner served up by Arlo Guthrie in ALICE'S RESTAURANT and then jump right into the holiday spirit when we review 1974's BLACK CHRISTMAS! Leave any comments below! #Horror #MovieReview #Podcast #Podcasting #BlackChristmas https://youtu.be/q9ypILdJrwE?si=f2UnbCb9-HsKrzlJ",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/q9ypILdJrwE?si=f2UnbCb9-HsKrzlJ",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117503246957521401",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@TSPOE_pods/117503246957521401",
+     "createdAt": "2026-10-25T19:40:59.495Z",
+     "text": "A bit off the beaten trail, but perfect for the upcoming Thanksgiving holiday So sit right down, and let us know if you've seen the film, heard the song or any other groovy things you can think of. #AlicesRestaurant #Thanksgiving #MovieReview #Podcast https://www.youtube.com/watch?v=jNBurHDrZwM",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=jNBurHDrZwM",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "lonelocust@mastodon.social",
+   "url": "https://mastodon.social/@LoneLocust",
+   "displayName": "Eugene Glover / 高尤金",
+   "avatar": "https://files.mastodon.social/accounts/avatars/109/241/047/566/285/344/original/7f299e84db207715.jpeg",
+   "bot": false,
+   "bio": "Retired government CIO. #Podcast host (Fusion Patrol.) Married, 25+yrs, kids grown. Citizen #Potawatomi Nation member. #Ebike enthusiast. #Atheist. SciFi & Tokusatsu fan. Love a good crossword or #Ki…",
+   "showUrl": "https://fusionpatrol.com",
+   "observedAt": "2026-11-20T00:03:47+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@LoneLocust/117575881690218698",
+     "seenAt": "2026-11-07T15:32:57.551Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117575881690218698",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@LoneLocust/117575881690218698",
+     "createdAt": "2026-11-07T15:32:57.551Z",
+     "text": "I’ve been procrastinating, but I’ve finally gotten around to tying up the loose ends about my move to Taiwan. https://youtu.be/udskMYz7FZs?si=Mpxb29UaGcNYiOAc",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/udskMYz7FZs?si=Mpxb29UaGcNYiOAc",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "ironmikewilson@c.im",
+   "url": "https://c.im/@ironmikewilson",
+   "displayName": "Michael Wilson",
+   "avatar": "https://s3.c.im/accounts/avatars/109/238/829/127/642/397/original/e1ad50756d27af94.png",
+   "bot": false,
+   "bio": "Autistic geek with lots of love & less sense. Star Trek, Doctor Who, Marvel, DC, Sentai, Power Rangers, movies & TV. Creator/host of \"Hit or Miss: Star Trek\" & \"Silver Screen\" podcasts.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:23+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://c.im/@ironmikewilson/117541809238543103",
+     "seenAt": "2026-11-01T15:07:53.194Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117541809238543103",
+     "server": "https://c.im",
+     "postUrl": "https://c.im/@ironmikewilson/117541809238543103",
+     "createdAt": "2026-11-01T15:07:53.194Z",
+     "text": "There will be no new regular episode of Hit or Miss: Star Trek today. It's been an incredibly difficult week for the Star Trek community following the losses of Walter Koenig, our original Pavel Chekov, and Sir Patrick Stewart, the legendary Jean-Luc Picard. In light of these losses we're taking a moment to remember and celebrate two extraordinary actors whose contributions to Star Trek, and to s…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/0Tydxz08wnk",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "whoshepodcast@mastodonapp.uk",
+   "url": "https://mastodonapp.uk/@whoshepodcast",
+   "displayName": "Who’s He? Podcast",
+   "avatar": "https://files.mastodonapp.uk/accounts/avatars/109/327/539/597/558/423/original/92b75e368bbe8e39.png",
+   "bot": false,
+   "bio": "The Who's He? Podcast - An occasional Doctor Who Podcast featuring discussion on it’s visual, audio & written formats and we never take ourselves seriously! Website: https://www.whos-he-podcast.co.uk…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:31+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodonapp.uk/@whoshepodcast/117109609757332974",
+     "seenAt": "2026-08-17T07:13:52.481Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117109609757332974",
+     "server": "https://mastodonapp.uk",
+     "postUrl": "https://mastodonapp.uk/@whoshepodcast/117109609757332974",
+     "createdAt": "2026-08-17T07:13:52.481Z",
+     "text": "Who’s He? Podcast YouTube Channel Welcome The Ninth Doctor - Rose Here is the YouTube version of Scott & I reviewing Rose, the story that introduced Christopher Eccleston in the role of the Doctor. https://youtu.be/1ICm1kdHWdA?is=lh8aOacyGljzgGva #doctorwho #podcast #youtube",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/1ICm1kdHWdA?is=lh8aOacyGljzgGva",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117081201063715856",
+     "server": "https://mastodonapp.uk",
+     "postUrl": "https://mastodonapp.uk/@whoshepodcast/117081201063715856",
+     "createdAt": "2026-08-12T06:49:10.219Z",
+     "text": "Who's He? Podcast YouTube Channel NEW EPISODE! Here is the YouTube version of Scott & I welcoming the other Ninth Doctor in Scream of The Shalka. https://youtu.be/SaiO3lJoNgY #DoctorWho #podcast #YouTube",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/SaiO3lJoNgY",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "rftcs@mstdn.ca",
+   "url": "https://mstdn.ca/@RFTCS",
+   "displayName": "Reviews From The Crawl Space",
+   "avatar": "https://cdn.mstdn.ca/accounts/avatars/111/161/720/396/867/466/original/65c1fa157a4029f1.jpg",
+   "bot": false,
+   "bio": "we are a husband and wife team (Douglas and Vickie) and we used to do a podcast. We can be found almost anywhere you can listen to podcasts. Check out some of our old episodes! Albums/Movies etc.",
+   "showUrl": "https://podcasters.spotify.com/pod/show/reviewsfromthecrawlspace/episodes/S2-E16-31-Days-of-Horror-Challenge-e2a2ql9",
+   "observedAt": "2026-11-20T00:06:35+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mstdn.ca/@RFTCS/116757149233199136",
+     "seenAt": "2026-06-16T01:18:31.688Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116757149233199136",
+     "server": "https://mstdn.ca",
+     "postUrl": "https://mstdn.ca/@RFTCS/116757149233199136",
+     "createdAt": "2026-06-16T01:18:31.688Z",
+     "text": "3:10 to Yuma - Official Trailer https://youtube.com/watch?v=4b_l2MkQSTo&si=Wat3gshLFHq1K0hu",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/watch?v=4b_l2MkQSTo&si=Wat3gshLFHq1K0hu",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "116751857811089379",
+     "server": "https://mstdn.ca",
+     "postUrl": "https://mstdn.ca/@RFTCS/116751857811089379",
+     "createdAt": "2026-06-15T02:52:50.995Z",
+     "text": "Johnny Mnemonic 1995 Official Trailer https://youtube.com/watch?v=MuquoZjhTS8&si=Q4CfN7GjurnUOMec",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/watch?v=MuquoZjhTS8&si=Q4CfN7GjurnUOMec",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "itsgotstartrek@tenforward.social",
+   "url": "https://tenforward.social/@ItsGotStarTrek",
+   "displayName": "The It's Got Star Trek Podcast",
+   "avatar": "https://cdn.tenforward.social/accounts/avatars/109/308/800/047/229/030/original/4de385e586dab171.png",
+   "bot": false,
+   "bio": "The It's Got Star Trek podcast offers a weekly, irreverent dive into all corners of the Star Trek franchise. 🖖 New episodes Mondays, 12:00 am ET Hosts Profiles Patrick: PatrickIrelan@fediscience.org…",
+   "showUrl": "https://podcasts.apple.com/us/podcast/its-got-star-trek/id1489620055",
+   "observedAt": "2026-11-20T00:02:25+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://tenforward.social/@ItsGotStarTrek/115539680122290707",
+     "seenAt": "2025-11-13T01:00:07.336Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115539680122290707",
+     "server": "https://tenforward.social",
+     "postUrl": "https://tenforward.social/@ItsGotStarTrek/115539680122290707",
+     "createdAt": "2025-11-13T01:00:07.336Z",
+     "text": "Did you know you can listen to the It's Got Star Trek podcast via YouTube? It's true! And for no extra fee we dispense with the newfangled \"video\" component and replace it with a custom, well-thought-out static image lovingly crafted for each episode. Surely the best value this side of Nimbus III! #StarTrek https://www.youtube.com/watch?v=iYFdOcqy8J8",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=iYFdOcqy8J8",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "cicspypod@mindly.social",
+   "url": "https://mindly.social/@CICSpypod",
+   "displayName": "Central Intelligence Cinema",
+   "avatar": "https://a.mindlycdn.com/accounts/avatars/109/332/416/538/595/513/original/597781fb158d2e85.jpg",
+   "bot": false,
+   "bio": "A podcast dedicated to spy movies and secret agent pop culture. We have people everywhere...well, really it's just two of us.",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:33+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mindly.social/@CICSpypod/109380398556746687",
+     "seenAt": "2022-11-21T06:33:49.151Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "109380398556746687",
+     "server": "https://mindly.social",
+     "postUrl": "https://mindly.social/@CICSpypod/109380398556746687",
+     "createdAt": "2022-11-21T06:33:49.151Z",
+     "text": "Yeah, might have to give this one a look see. #spytv #TheRecruit https://youtu.be/dT0kexzmU7A",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=dT0kexzmU7A&feature=youtu.be",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/dT0kexzmU7A",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "filmsatfirstsight@mastodon.social",
+   "url": "https://mastodon.social/@FilmsAtFirstSight",
+   "displayName": "FilmsAtFirstSight",
+   "avatar": "https://files.mastodon.social/accounts/avatars/108/130/032/143/270/889/original/8fa97cef056741e7.png",
+   "bot": false,
+   "bio": "Movie podcast focusing on first time views. Hosted by Joe & Caitlin Found wherever you get your podcast fix on!",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:47+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@FilmsAtFirstSight/108730854146646757",
+     "seenAt": "2022-07-29T13:26:08.013Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "108730854146646757",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@FilmsAtFirstSight/108730854146646757",
+     "createdAt": "2022-07-29T13:26:08.013Z",
+     "text": "The gang is finally back together! Joe introduces Caitlin and Graham to 1968's The Great Silence, one helluva mean look at America in one of the most beautiful settings these eyes have ever seen. #western #Film #SergioCorbucci https://open.spotify.com/episode/63uP59bogmqMoHGyUYyzly?si=d9b76bc11ad24e4b",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/63uP59bogmqMoHGyUYyzly?si=d9b76bc11ad24e4b",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/63uP59bogmqMoHGyUYyzly",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "108415605724714133",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@FilmsAtFirstSight/108415605724714133",
+     "createdAt": "2022-06-03T21:14:18.837Z",
+     "text": "We taking a trip to the Big Easy with Alyssa or maybe it's hell, who knows? What I do know is we're talking Lucio Fulci's The Beyond on our latest episode, check it out! https://open.spotify.com/episode/6CyMBN5ZECyqR8pB7khz3V?si=32146b09226b48c8",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/6CyMBN5ZECyqR8pB7khz3V",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/6CyMBN5ZECyqR8pB7khz3V?si=32146b09226b48c8",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "animals-and-pets",
+ "lang": "de",
+ "title": {
+  "en": "Animals and Pets",
+  "de": "Tiere und Haustiere",
+  "fr": "Animaux et compagnons",
+  "es": "Animales y mascotas",
+  "ja": "動物とペット",
+  "it": "Animali e animali domestici",
+  "pt": "Animais e bichos",
+  "nl": "Dieren en huisdieren",
+  "pl": "Zwierzęta",
+  "sv": "Djur och husdjur",
+  "ru": "Животные и питомцы",
+  "ko": "동물과 반려동물",
+  "uk": "Тварини та улюбленці",
+  "tr": "Hayvanlar ve evcil hayvanlar",
+  "el": "Ζώα και κατοικίδια",
+  "zh": "动物与宠物",
+  "ca": "Animals i mascotes",
+  "cs": "Zvířata a domácí mazlíčci",
+  "fi": "Eläimet ja lemmikit",
+  "no": "Dyr og kjæledyr",
+  "ar": "الحيوانات والحيوانات الأليفة",
+  "zh-Hant": "動物與寵物"
+ },
+ "icon": "🐾",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "friederikeschmitz@norden.social",
+   "url": "https://norden.social/@friederikeschmitz",
+   "displayName": "Friederike Schmitz",
+   "avatar": "https://media.norden.social/accounts/avatars/109/258/618/399/184/729/original/a87f046a0b91f947.png",
+   "bot": false,
+   "bio": "★Philosophin & Autorin ★ 🎧 Was zu retten ist: Podcast über Klima, Kollaps und Ernährung 📕 Anders satt: Wie der Ausstieg aus der Tierindustrie gelingt (2022) Team https://mastodon.social/@fabakonzepte",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:55+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://norden.social/@friederikeschmitz/117598560986888807",
+     "seenAt": "2026-11-11T15:40:36.153Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://norden.social/@friederikeschmitz/117473742028012960",
+     "seenAt": "2026-10-20T14:37:29.986Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117598560986888807",
+     "server": "https://norden.social",
+     "postUrl": "https://norden.social/@friederikeschmitz/117598560986888807",
+     "createdAt": "2026-11-11T15:40:36.153Z",
+     "text": "Klar, die #Tierhaltung hat sich weltweit seit den 60er Jahren verfünffacht, weil so viel minderwertiger Weizen und Hafertrester übrig war - man wusste nicht wohin damit und hat deshalb immer mehr Mastanlagen gebaut. Logisch, oder?",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.norden.social/media_attachments/files/117/598/559/153/648/814/original/059449e87f4f062d.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117582303215815194",
+     "server": "https://norden.social",
+     "postUrl": "https://norden.social/@friederikeschmitz/117582303215815194",
+     "createdAt": "2026-11-08T18:46:02.254Z",
+     "text": "Fachartikel zur #Tierhaltung zeigen, worum es dabei geht: „Leistung“, also Eierproduktion, Fleischansatz, Milchmenge. Das ist auch völlig nachvollziehbar, denn die Tiere werden gehalten, um mit ihnen Geld zu verdienen. Die Bedürfnisse der Tiere sind nur insofern relevant, wie sie die Wirtschaftlichkeit tangieren. Krankheiten müssen also erst vermieden werden, wenn sie die „Leistung“ verringern. A…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.norden.social/media_attachments/files/117/582/290/183/859/481/original/6e2920bf0ae4a083.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

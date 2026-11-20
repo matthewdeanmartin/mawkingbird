@@ -1,0 +1,103 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "history",
+ "lang": "fr",
+ "title": {
+  "en": "History",
+  "de": "Geschichte",
+  "fr": "Histoire",
+  "es": "Historia",
+  "ja": "歴史",
+  "it": "Storia",
+  "pt": "História",
+  "nl": "Geschiedenis",
+  "pl": "Historia",
+  "sv": "Historia",
+  "ru": "История",
+  "ko": "역사",
+  "uk": "Історія",
+  "tr": "Tarih",
+  "el": "Ιστορία",
+  "zh": "历史",
+  "ca": "Història",
+  "cs": "Historie",
+  "fi": "Historia",
+  "no": "Historie",
+  "ar": "التاريخ",
+  "zh-Hant": "歷史"
+ },
+ "icon": "🏛️",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "zoomhistoire@oc.todon.fr",
+   "url": "https://oc.todon.fr/@ZoomHistoire",
+   "displayName": "Passé d'Histoire",
+   "avatar": "https://assets.oc.todon.fr/accounts/avatars/000/073/052/original/1b4a616e0e286dd5.png",
+   "bot": false,
+   "bio": "Un podcast qui vous propose de découvrir et redécouvrir l'Histoire. Au-delà des mythes, des stéréotypes, des idées reçues.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:47+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "soundcloud",
+     "mediaType": null,
+     "postUrl": "https://oc.todon.fr/@ZoomHistoire/117574150813616543",
+     "seenAt": "2026-11-07T08:12:46.461Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://oc.todon.fr/@ZoomHistoire/117619552971586881",
+     "seenAt": "2026-11-15T08:39:08.424Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://oc.todon.fr/@ZoomHistoire/117542565236358143",
+     "seenAt": "2026-11-01T18:20:08.815Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117619552971586881",
+     "server": "https://oc.todon.fr",
+     "postUrl": "https://oc.todon.fr/@ZoomHistoire/117619552971586881",
+     "createdAt": "2026-11-15T08:39:08.424Z",
+     "text": "🪐L'histoire pathétique des espions allemands durant la guerre https://www.youtube.com/watch?v=VtTJ3nP9qNE #histoire #secondeguerremondiale",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=VtTJ3nP9qNE",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117581954779021165",
+     "server": "https://oc.todon.fr",
+     "postUrl": "https://oc.todon.fr/@ZoomHistoire/117581954779021165",
+     "createdAt": "2026-11-08T17:17:25.543Z",
+     "text": "Mise au point par votre bien humble et bien dévoué serviteur d'une idée reçue qui a encore cours sur l'Histoire du Japon https://www.youtube.com/watch?v=LXqgeDl2n68 #histoire #Japon",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=LXqgeDl2n68",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

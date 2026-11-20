@@ -1,0 +1,220 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "news-and-journalism",
+ "lang": "de",
+ "title": {
+  "en": "News and Journalism",
+  "de": "Nachrichten und Journalismus",
+  "fr": "Actualités et journalisme",
+  "es": "Noticias y periodismo",
+  "ja": "ニュースとジャーナリズム",
+  "it": "Notizie e giornalismo",
+  "pt": "Notícias e jornalismo",
+  "nl": "Nieuws en journalistiek",
+  "pl": "Wiadomości i dziennikarstwo",
+  "sv": "Nyheter och journalistik",
+  "ru": "Новости и журналистика",
+  "ko": "뉴스와 저널리즘",
+  "uk": "Новини та журналістика",
+  "tr": "Haber ve gazetecilik",
+  "el": "Ειδήσεις και δημοσιογραφία",
+  "zh": "新闻与新闻报道",
+  "ar": "الأخبار والصحافة",
+  "ca": "Notícies i periodisme",
+  "cs": "Zprávy a žurnalistika",
+  "no": "Nyheter og journalistikk",
+  "fi": "Uutiset ja journalismi",
+  "zh-Hant": "新聞與新聞報導"
+ },
+ "icon": "📰",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "uwetschirner@mastodon.social",
+   "url": "https://mastodon.social/@uwetschirner",
+   "displayName": "Uwe Tschirner",
+   "avatar": "https://files.mastodon.social/accounts/avatars/117/599/619/305/627/918/original/190317b6b8cd7593.png",
+   "bot": false,
+   "bio": "Lokaljournalist, Podcasts, Audio, Texte, Online, Bautzen in Sachsen.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:12+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@uwetschirner/117600052591657913",
+     "seenAt": "2026-11-11T21:59:56.236Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@uwetschirner/117632745205282085",
+     "seenAt": "2026-11-17T16:34:05.935Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@uwetschirner/117615858087631460",
+     "seenAt": "2026-11-14T16:59:28.968Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117632745205282085",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@uwetschirner/117632745205282085",
+     "createdAt": "2026-11-17T16:34:05.935Z",
+     "text": "Vorhang auf: Bautzens Theaterprogramm für das Wochenende Der Bühnenball war ein großer Erfolg – und jetzt geht es Schlag auf Schlag: In dieser Episode unseres Podcasts „Lausitz heute“ spricht Gabriele Suschke, Marketingchefin des Deutsch-Sorbischen Volkstheaters Bautzen, über das kommende Theaterwochenende. #vorhangauf #theaterbautzen #podcasts #lausitzerWORTmanufaktur https://podcasts.apple.com/…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/lausitz-heute/id1818818180?i=1000802503566",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117615858087631460",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@uwetschirner/117615858087631460",
+     "createdAt": "2026-11-14T16:59:28.968Z",
+     "text": "Am Sonntag feiert Wolf Biermann seinen 90. Geburtstag Geboren in Hamburg, zog er 1953 in die DDR und wurde als Liedermacher zum scharfen Beobachter der SED-Diktatur. Die Führung schlug zurück: 1965 verhängte sie ein Auftrittsverbot gegen ihn. Nur einen Tag nach seinem 40. Geburtstag wurde Biermann während einer Tournee in der Bundesrepublik aus der DDR ausgebürgert. Im September 2021 haben wir ei…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=ojAhIUYMJBc",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "dazwischen@social.detektor.fm",
+   "url": "https://social.detektor.fm/@dazwischen",
+   "displayName": "DAZWISCHEN - Sachsen-Anhalt",
+   "avatar": "https://social.detektor.fm/system/accounts/avatars/116/177/134/785/719/994/original/526468d4024a5dc5.png",
+   "bot": false,
+   "bio": "DAZWISCHEN ist der Newsletter und Podcast für Sachsen-Anhalt von detektor.fm.",
+   "showUrl": "https://detektor.fm/serien/dazwischen-sachsen-anhalt-podcast",
+   "observedAt": "2026-11-19T23:59:24+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117604331640890983",
+     "seenAt": "2026-11-12T16:08:09.346Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117604331640890983",
+     "server": "https://social.detektor.fm",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117604331640890983",
+     "createdAt": "2026-11-12T16:08:09.346Z",
+     "text": "Dieses Video gibt schon mal einen kleinen Vorgeschmack auf die neue Podcast-Folge von DAZWISCHEN. Hört jetzt rein und findet heraus, wie es Sachsen-Anhalts Nahverkehr eigentlich so geht. https://detektor.fm/gesellschaft/dazwischen-nahverkehr-sachsen-anhalt",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://social.detektor.fm/system/media_attachments/files/117/604/323/036/812/094/original/d81d4fa1e1772ced.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117558986287467394",
+     "server": "https://social.detektor.fm",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117558986287467394",
+     "createdAt": "2026-11-04T15:56:14.163Z",
+     "text": "DAZWISCHEN-Fans aufgepasst. Katja und Marie fahren morgen nach Droyßig und testen den Nahverkehr. Wenn ihr Lust habt, einen Kaffee zu trinken und über das Thema zu sprechen, sagt uns Bescheid. Auch Fragen, Ideen und Geschichten zu dem Thema sind wie immer gerne gesehen! Am besten per Mail an dazwischen@detektor.fm oder per Sprachnachricht. Wir würden uns freuen.",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://social.detektor.fm/system/media_attachments/files/117/558/966/877/056/829/original/6ecfabf8e529f6a1.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "taiwanreporter@mstdn.social",
+   "url": "https://mstdn.social/@taiwanreporter",
+   "displayName": "taiwanreporter",
+   "avatar": "https://media.mstdn.social/accounts/avatars/108/208/934/722/212/808/original/7c18c4713afea0c7.jpeg",
+   "bot": false,
+   "bio": "Ich lebe als Journalist in Taipeh und teile hier Eindrücke vom Leben in #Taiwan. Da gibt es viel zu sehen. Interessant? Neugierig? Fragt mich was.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:21+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117552501495471882",
+     "seenAt": "2026-11-03T12:27:04.089Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mstdn.social/@taiwanreporter/117518763569217123",
+     "seenAt": "2026-10-28T13:27:04.188Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117552501495471882",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117552501495471882",
+     "createdAt": "2026-11-03T12:27:04.089Z",
+     "text": "Im neuen #Taiwancast redet Roderich Kiesewetter Klartext. Hier anhören: https://intaiwan.net/2026/10/14/roderich-kiesewetter-china-russland-ukraine/ (oder auf Apple Podcasts, Spotify usw.)",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.mstdn.social/media_attachments/files/117/552/501/389/487/968/original/99a8e880576cacf1.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117518763569217123",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117518763569217123",
+     "createdAt": "2026-10-28T13:27:04.188Z",
+     "text": "A German and a Swedish journalist living in Taiwan talk about common shortcomings in their countries' media reporting about Taiwan, and what could improve. https://www.youtube.com/watch?v=4UmWxTAzyMo",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=4UmWxTAzyMo",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

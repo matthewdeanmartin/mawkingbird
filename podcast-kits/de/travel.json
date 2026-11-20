@@ -1,0 +1,96 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "travel",
+ "lang": "de",
+ "title": {
+  "en": "Travel",
+  "de": "Reisen",
+  "fr": "Voyages",
+  "es": "Viajes",
+  "ja": "旅行",
+  "it": "Viaggi",
+  "pt": "Viagens",
+  "nl": "Reizen",
+  "pl": "Podróże",
+  "sv": "Resor",
+  "ru": "Путешествия",
+  "ko": "여행",
+  "uk": "Подорожі",
+  "tr": "Seyahat",
+  "el": "Ταξίδια",
+  "zh": "旅行",
+  "ca": "Viatges",
+  "cs": "Cestování",
+  "fi": "Matkailu",
+  "no": "Reiser",
+  "ar": "السفر",
+  "zh-Hant": "旅行"
+ },
+ "icon": "🧳",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "aufkurztrip@nrw.social",
+   "url": "https://nrw.social/@aufkurztrip",
+   "displayName": "Michael Koopmann",
+   "avatar": "https://media.nrw.social/accounts/avatars/109/245/738/387/447/651/original/a78052cf750273f4.jpeg",
+   "bot": false,
+   "bio": "Projekte, Bilder und Gedanken von Michael Koopmann #Fotografie #Reisen #Web #Podcast Gerne auf Kurztrip in Europa unterwegs und hat immer die Kamera dabei. Host des Podcast 'Bilder und Geschichten' u…",
+   "showUrl": "https://podcast.bilderzeigen.de",
+   "observedAt": "2026-11-19T23:57:33+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://nrw.social/@aufkurztrip/117438103737481544",
+     "seenAt": "2026-10-14T07:34:12.835Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://nrw.social/@aufkurztrip/117361151237610222",
+     "seenAt": "2026-09-30T17:24:10.869Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117438103737481544",
+     "server": "https://nrw.social",
+     "postUrl": "https://nrw.social/@aufkurztrip/117438103737481544",
+     "createdAt": "2026-10-14T07:34:12.835Z",
+     "text": "Diese @episoden von Bilder und Geschichten liegt aus #BurkinaFaso liegt mir diesmal sehr am Herzen. Tolles Bild, tolle Geschichte dahinter und was ein tolle Engagement. Link zum Verein und einen Spendenlink findet ihr unter: https://podcast.bilderzeigen.de/2026/10/14/dem-waisenhaus-in-afrika-helfen-mit-susanne-prothmann/ Wäre schön wenn mein #Podcast hier auch etwas helfen kann #Waisenhaus",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.nrw.social/media_attachments/files/117/438/092/539/251/648/original/b38b2f20f5f6337d.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117361151237610222",
+     "server": "https://nrw.social",
+     "postUrl": "https://nrw.social/@aufkurztrip/117361151237610222",
+     "createdAt": "2026-09-30T17:24:10.869Z",
+     "text": "Gleich geht es im Bilderabend um das #24HourProject Bilderabend #34 - 24hourProject - Axel Eckenberger https://youtube.com/live/QEURxZcFmkg",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/QEURxZcFmkg",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

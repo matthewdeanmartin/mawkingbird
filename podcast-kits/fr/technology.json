@@ -1,0 +1,72 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "technology",
+ "lang": "fr",
+ "title": {
+  "en": "Technology",
+  "de": "Technologie",
+  "fr": "Technologie",
+  "es": "Tecnología",
+  "ja": "テクノロジー",
+  "it": "Tecnologia",
+  "pt": "Tecnologia",
+  "nl": "Technologie",
+  "pl": "Technologia",
+  "sv": "Teknik",
+  "ru": "Технологии",
+  "ko": "기술",
+  "uk": "Технології",
+  "tr": "Teknoloji",
+  "el": "Τεχνολογία",
+  "zh": "科技",
+  "ca": "Tecnologia",
+  "cs": "Technologie",
+  "fi": "Teknologia",
+  "no": "Teknologi",
+  "zh-Hant": "科技",
+  "ar": "التقنية"
+ },
+ "icon": "💻",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "cpu@mastodon.tetaneutral.net",
+   "url": "https://mastodon.tetaneutral.net/@cpu",
+   "displayName": "CPU ⬜ Carré Petit Utile",
+   "avatar": "https://mastodon.tetaneutral.net/system/accounts/avatars/000/036/379/original/f89c33ca1d15f59c.png",
+   "bot": false,
+   "bio": "Le programme radio des gens du numérique, pour vous inspirer et vous donner envie de créer. Tous les jeudis à 11h @RadioFMR (aussi sur @cpuprogramme@xwitter et @cpuprogramme.bsky.social)",
+   "showUrl": "https://cpu.pm/podcast",
+   "observedAt": "2026-11-19T23:58:56+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.tetaneutral.net/@cpu/117505623871497980",
+     "seenAt": "2026-10-26T05:45:28.312Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117505623871497980",
+     "server": "https://mastodon.tetaneutral.net",
+     "postUrl": "https://mastodon.tetaneutral.net/@cpu/117505623871497980",
+     "createdAt": "2026-10-26T05:45:28.312Z",
+     "text": "On a parlé du Dugar Radar, le fameux pic-vert russe, le radar si puissant qu'il perturbait radios, télés et lignes téléphoniques longues distances. https://cpu.pm/post/2018/12/11/Artefact-du-pass%C3%A9-%3A-Le-pic-vert-russe Vous pouvez enfin en voir le cœur : https://www.youtube.com/watch?v=HUn3h4B5H14",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=HUn3h4B5H14",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

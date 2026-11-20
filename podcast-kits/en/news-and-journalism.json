@@ -1,0 +1,151 @@
+{
+ "version": 2,
+ "kind": "podcasts",
+ "category": "news-and-journalism",
+ "lang": "en",
+ "title": {
+  "en": "News and Journalism",
+  "de": "Nachrichten und Journalismus",
+  "fr": "Actualités et journalisme",
+  "es": "Noticias y periodismo",
+  "ja": "ニュースとジャーナリズム",
+  "it": "Notizie e giornalismo",
+  "pt": "Notícias e jornalismo",
+  "nl": "Nieuws en journalistiek",
+  "pl": "Wiadomości i dziennikarstwo",
+  "sv": "Nyheter och journalistik",
+  "ru": "Новости и журналистика",
+  "ko": "뉴스와 저널리즘",
+  "uk": "Новини та журналістика",
+  "tr": "Haber ve gazetecilik",
+  "el": "Ειδήσεις και δημοσιογραφία",
+  "zh": "新闻与新闻报道",
+  "ar": "الأخبار والصحافة",
+  "ca": "Notícies i periodisme",
+  "cs": "Zprávy a žurnalistika",
+  "no": "Nyheter og journalistikk",
+  "fi": "Uutiset ja journalismi",
+  "zh-Hant": "新聞與新聞報導"
+ },
+ "icon": "📰",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
+ "members": [
+  {
+   "acct": "laurarbelin@mastodon.social",
+   "url": "https://mastodon.social/@LauraRBelin",
+   "displayName": "LauraRBelin",
+   "avatar": "https://files.mastodon.social/accounts/avatars/109/258/434/085/888/221/original/791176256bb4214e.jpg",
+   "bot": false,
+   "bio": "Publisher, editor, primary reporter for the Iowa political website Bleeding Heartland. https://www.bleedingheartland.com Part-time statehouse reporter for KHOI Radio in Ames. Find \"KHOI's Capitol Wee…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:27+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117645122988113473",
+     "seenAt": "2026-11-19T21:01:55.910Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@LauraRBelin/117611666366524718",
+     "seenAt": "2026-11-13T23:13:28.373Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117645122988113473",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117645122988113473",
+     "createdAt": "2026-11-19T21:01:55.910Z",
+     "text": "\"We know that actions speak louder than words.\" Why Rob Sand thinks handing the microphone to Republicans at his town halls was so powerful and effective for his #IAGov campaign:",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/645/115/103/680/703/original/7e21fb8beb405aac.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117621266027885878",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117621266027885878",
+     "createdAt": "2026-11-15T15:54:47.586Z",
+     "text": "Another clip from my recent interview with State Rep. Aime Wichtendahl, the only transgender person elected to the Iowa legislature. I asked her about Josh Turek's late TV ad, in which the #IASen Democratic nominee said, \"I oppose males competing in female sports\" and \"I'm against taxpayers paying for sex changes, too.\"",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/621/235/272/128/817/original/081659cf78416d81.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "rorshokspain@techhub.social",
+   "url": "https://techhub.social/@rorshokspain",
+   "displayName": "Rorshok Spain",
+   "avatar": "https://files.techhub.social/accounts/avatars/114/036/810/049/070/430/original/df4c588811691abe.jpg",
+   "bot": false,
+   "bio": "Rorshok Spain Update 🎙️ A ten-minute weekly audio update in English about what’s happening in 🇪🇸 No ads ❌ Listen on 👇 #rorshokupdates #spainexpats #englishpodcast #expatsinspain #esl #madrid #tourism",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:45+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://techhub.social/@rorshokspain/115940355308417538",
+     "seenAt": "2026-01-22T19:17:05.487Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115940355308417538",
+     "server": "https://techhub.social",
+     "postUrl": "https://techhub.social/@rorshokspain/115940355308417538",
+     "createdAt": "2026-01-22T19:17:05.487Z",
+     "text": "Spain’s non-contributory retirement pension is set to rise again, so more stay-at-home people and others without enough work contributions are expected to qualify for financial support. Link in bio - @rorshokspain #spain #madrid #spainnews #spainexpats #EU",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.techhub.social/media_attachments/files/115/940/353/052/411/334/original/e69d994f0c8087ad.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "115515723271907829",
+     "server": "https://techhub.social",
+     "postUrl": "https://techhub.social/@rorshokspain/115515723271907829",
+     "createdAt": "2025-11-08T19:27:34.814Z",
+     "text": "Álvaro García Ortíz, Spain’s top prosecutor, denied leaking confidential legal documents against the Partido Popular. This and more in the latest episode of the Rorshok Spain Update. Click on the link in bio to listen to the full story! #Spain #Madrid #SpainNews #SpanishEnglishPodcast #SpainExpats #EU",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.techhub.social/media_attachments/files/115/515/715/478/043/390/original/6e32836911862dc6.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
