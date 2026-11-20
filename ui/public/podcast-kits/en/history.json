@@ -1,0 +1,196 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "history",
+ "lang": "en",
+ "title": {
+  "en": "History",
+  "de": "Geschichte",
+  "fr": "Histoire",
+  "es": "Historia",
+  "ja": "歴史",
+  "it": "Storia",
+  "pt": "História",
+  "nl": "Geschiedenis",
+  "pl": "Historia",
+  "sv": "Historia",
+  "ru": "История",
+  "ko": "역사",
+  "uk": "Історія",
+  "tr": "Tarih",
+  "el": "Ιστορία",
+  "zh": "历史",
+  "ca": "Història",
+  "cs": "Historie",
+  "fi": "Historia",
+  "no": "Historie",
+  "ar": "التاريخ",
+  "zh-Hant": "歷史"
+ },
+ "icon": "🏛️",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "presidencies@masto.ai",
+   "url": "https://masto.ai/@presidencies",
+   "displayName": "Presidencies of the US",
+   "avatar": "https://s3.masto.ai/accounts/avatars/109/339/259/860/543/005/original/58f4e63ed157db4a.jpg",
+   "bot": false,
+   "bio": "The Presidencies of the United States is a podcast devoted to exploring each presidency from the very beginning in depth. I take a systematic approach to both the people and the events that have shap…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:13+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "masto.ai",
+     "postUrl": "https://masto.ai/@presidencies/117640005869335447",
+     "seenAt": "2026-11-18T23:20:34.876Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://masto.ai/@presidencies/117592568789465457",
+     "seenAt": "2026-11-10T14:16:42.483Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "presidenciespodcast.com",
+     "postUrl": "https://masto.ai/@presidencies/117644170474781584",
+     "seenAt": "2026-11-19T16:59:41.713Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://masto.ai/@presidencies/117640005869335447",
+     "seenAt": "2026-11-18T23:20:34.876Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://masto.ai/@presidencies/117564288912068287",
+     "seenAt": "2026-11-05T14:24:45.798Z"
+    }
+   ]
+  },
+  {
+   "acct": "mnutty@mastodon.ie",
+   "url": "https://mastodon.ie/@mnutty",
+   "displayName": "Martin Nutty",
+   "avatar": "https://cdn.masto.host/mastodonie/accounts/avatars/109/274/742/606/656/432/original/210565f15f016de6.jpg",
+   "bot": false,
+   "bio": "Wannabe polymath, cohost of the Irish Stew Podcast and host of The Nutty Chronicles. Originally from Dublin but now live in NYC. Interested in the Irish diaspora and history and other cultural matters",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:23+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "america2.news",
+     "postUrl": "https://mastodon.ie/@mnutty/117066130822847549",
+     "seenAt": "2026-08-09T14:56:36.590Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.ie",
+     "postUrl": "https://mastodon.ie/@mnutty/117639190339712054",
+     "seenAt": "2026-11-18T19:53:10.878Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "pca.st",
+     "postUrl": "https://mastodon.ie/@mnutty/116931751983508587",
+     "seenAt": "2026-07-16T21:22:18.226Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "thenerdreich.com",
+     "postUrl": "https://mastodon.ie/@mnutty/117105704672734900",
+     "seenAt": "2026-08-16T14:40:45.619Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.ie/@mnutty/117463298601964587",
+     "seenAt": "2026-10-18T18:21:35.954Z"
+    }
+   ]
+  },
+  {
+   "acct": "alexluyckxphoto@mstdn.ca",
+   "url": "https://mstdn.ca/@AlexLuyckxPhoto",
+   "displayName": "Alex Luyckx",
+   "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/523/545/285/999/857/original/af9396cfb590c683.jpg",
+   "bot": false,
+   "bio": "Long time blogger, Podcaster, film and history nut. Creator of the Classic Camera Revival & Toronto Film Shooters",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:52+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mstdn.ca",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117592317960381088",
+     "seenAt": "2026-11-10T13:12:55.128Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117598059438447204",
+     "seenAt": "2026-11-11T13:33:03.132Z"
+    }
+   ]
+  },
+  {
+   "acct": "heatherrosejones@wandering.shop",
+   "url": "https://wandering.shop/@heatherrosejones",
+   "displayName": "Heather Rose Jones",
+   "avatar": "https://stockroom.wandering.shop/accounts/avatars/108/196/054/624/805/721/original/a0fc3b2b895fb901.jpeg",
+   "bot": false,
+   "bio": "Author, amateur queer historian, podcaster. She/her. Find my blog, podcast, books, and more at Alpennia.com.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "alpennia.com",
+     "postUrl": "https://wandering.shop/@heatherrosejones/117576142067817388",
+     "seenAt": "2026-11-07T16:39:10.594Z"
+    }
+   ]
+  },
+  {
+   "acct": "ancestryroads@genealysis.social",
+   "url": "https://genealysis.social/@AncestryRoads",
+   "displayName": "Ancestry Roads",
+   "avatar": "https://genealysis.social/system/accounts/avatars/109/392/455/490/880/138/original/56bfb20f3b4f3bfd.png",
+   "bot": false,
+   "bio": "Appalachian Stories Webcast - Changing the Narrative of Appalachia One Story @ a Time | Pro Genealogy | Preserving Veteran's Stories | No Longer Posting - Refuse to be Bullied. #Appalachia #Appalachi…",
+   "showUrl": "https://ancestryroads.podbean.com/",
+   "observedAt": "2026-11-19T23:57:01+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://genealysis.social/@AncestryRoads/117158058567705991",
+     "seenAt": "2026-08-25T20:35:02.657Z"
+    }
+   ]
+  },
+  {
+   "acct": "wikioftheday@masto.ai",
+   "url": "https://masto.ai/@wikioftheday",
+   "displayName": "Wiki of the Day",
+   "avatar": "https://s3.masto.ai/accounts/avatars/109/808/725/055/029/060/original/4ab16696c2ed6de4.jpg",
+   "bot": true,
+   "bio": "Auto-toots announcing new episodes of the Wiki of the Day family of podcasts. That includes the Popular, Random, and Featured Wiki of the Day podcasts, so usually three posts a day. Managed by @abuls…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:34+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "masto.ai",
+     "postUrl": "https://masto.ai/@wikioftheday/117641280334478432",
+     "seenAt": "2026-11-19T04:44:41.671Z"
+    }
+   ]
+  }
+ ]
+}

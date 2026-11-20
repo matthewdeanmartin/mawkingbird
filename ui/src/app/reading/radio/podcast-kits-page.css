@@ -1,0 +1,66 @@
+:host {
+  display: block;
+}
+.page {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+}
+.lead,
+.snapshot,
+.media {
+  color: var(--muted);
+}
+.lead,
+.snapshot,
+.details p {
+  margin: 0;
+}
+.kits,
+.rows,
+.media {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.kits {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+}
+.kits a {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: inherit;
+  text-decoration: none;
+}
+.member {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.member img {
+  border-radius: 50%;
+  align-self: start;
+}
+.details {
+  display: grid;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.media {
+  display: grid;
+  gap: 8px;
+}
+.media li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}

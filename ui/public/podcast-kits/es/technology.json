@@ -1,0 +1,136 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "technology",
+ "lang": "es",
+ "title": {
+  "en": "Technology",
+  "de": "Technologie",
+  "fr": "Technologie",
+  "es": "Tecnología",
+  "ja": "テクノロジー",
+  "it": "Tecnologia",
+  "pt": "Tecnologia",
+  "nl": "Technologie",
+  "pl": "Technologia",
+  "sv": "Teknik",
+  "ru": "Технологии",
+  "ko": "기술",
+  "uk": "Технології",
+  "tr": "Teknoloji",
+  "el": "Τεχνολογία",
+  "zh": "科技",
+  "ca": "Tecnologia",
+  "cs": "Technologie",
+  "fi": "Teknologia",
+  "no": "Teknologi",
+  "zh-Hant": "科技",
+  "ar": "التقنية"
+ },
+ "icon": "💻",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "24h24l@mastodon.online",
+   "url": "https://mastodon.online/@24h24l",
+   "displayName": "24H24L",
+   "avatar": "https://files.mastodon.online/accounts/avatars/000/074/084/original/7b22bd93639f0d54.png",
+   "bot": false,
+   "bio": "24H24L es un evento en línea, de 24 horas y 24 audios como podcasts, acerca del uso de #GNULinux, experiencias profesionales y personales de los participantes, con seis categorías: #Redes, #Empresa…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:47+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "creators.spotify.com",
+     "postUrl": "https://mastodon.online/@24h24l/117237988441234015",
+     "seenAt": "2026-09-08T23:22:15.736Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.online/@24h24l/117400913148650159",
+     "seenAt": "2026-10-07T17:56:09.482Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcastindex.social",
+     "postUrl": "https://mastodon.online/@24h24l/117564097218555641",
+     "seenAt": "2026-11-05T13:36:00.793Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "t.me",
+     "postUrl": "https://mastodon.online/@24h24l/117400913148650159",
+     "seenAt": "2026-10-07T17:56:09.482Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.online/@24h24l/117621390413637569",
+     "seenAt": "2026-11-15T16:26:25.559Z"
+    }
+   ]
+  },
+  {
+   "acct": "robertsasuke@podcastindex.social",
+   "url": "https://podcastindex.social/@robertsasuke",
+   "displayName": "Robert Sasuke",
+   "avatar": "https://cdn.masto.host/podcastindexsocial/accounts/avatars/107/935/168/046/380/595/static/25e5f57d77fae651.png",
+   "bot": false,
+   "bio": "🎙️ Podcasting 2.0 | 🧠 Ciberpsicología Exploro cómo la tecnología transforma la mente, las relaciones y la forma en que creamos contenido. Divulgo y me expreso ampliamente en mi podcasts. Aquí constru…",
+   "showUrl": "https://sasuke.es/network",
+   "observedAt": "2026-11-20T00:06:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podcastindex.social",
+     "postUrl": "https://podcastindex.social/@robertsasuke/117003555116387530",
+     "seenAt": "2026-07-29T13:42:47.109Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://podcastindex.social/@robertsasuke/115039349290891760",
+     "seenAt": "2025-08-16T16:19:24.716Z"
+    }
+   ]
+  },
+  {
+   "acct": "podcastlinux@mastodon.social",
+   "url": "https://mastodon.social/@podcastlinux",
+   "displayName": "Podcast Linux :mastodon:",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/283/372/original/288e062f55da23de.png",
+   "bot": false,
+   "bio": "Un podcast para amantes de GNU/Linux y el Software Libre. Web: https://podcastlinux.com Feed: https://podcastlinux.com/feed",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:17+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "archive.org",
+     "postUrl": "https://mastodon.social/@podcastlinux/111413708448612951",
+     "seenAt": "2023-11-15T08:51:15.893Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@podcastlinux/111413859298624879",
+     "seenAt": "2023-11-15T09:29:37.680Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcastlinux.com",
+     "postUrl": "https://mastodon.social/@podcastlinux/111412917428946429",
+     "seenAt": "2023-11-15T05:30:05.895Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "t.me",
+     "postUrl": "https://mastodon.social/@podcastlinux/111373280983244227",
+     "seenAt": "2023-11-08T05:30:01.754Z"
+    }
+   ]
+  }
+ ]
+}

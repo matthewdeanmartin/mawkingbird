@@ -5,6 +5,7 @@ import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { MbDiscoveryCandidate } from '../../design-system/identity/discovery-candidate';
+import { MbContentLink } from '../../design-system/metadata/metadata';
 import snapshot from './signup-servers.json';
 
 /*
@@ -66,7 +67,15 @@ export function activeLabel(users: number): string {
  */
 @Component({
   selector: 'app-create-account',
-  imports: [RouterLink, MbButton, MbCheckbox, MbField, MbControl, MbDiscoveryCandidate],
+  imports: [
+    RouterLink,
+    MbButton,
+    MbCheckbox,
+    MbField,
+    MbControl,
+    MbDiscoveryCandidate,
+    MbContentLink,
+  ],
   templateUrl: './create-account.html',
   styleUrl: './create-account.css',
 })

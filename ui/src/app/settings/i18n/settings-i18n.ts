@@ -121,7 +121,7 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.engines.aiLast: Connected; used last, because it spends credits
 // i18n settings.i18n.engines.notConnected: Not connected
 // i18n settings.i18n.browserTranslator: Use this browser's built-in translator
-// i18n settings.i18n.browserTranslator.hint: Translates on this device, so the post never leaves your computer. The first time for each language, the browser downloads a language model.
+// i18n settings.i18n.browserTranslator.hint: Uses your browser's built-in translator. Its model downloads and data handling depend on your browser; check its privacy information. Mawkingbird does not provide this AI service.
 // i18n settings.i18n.budget: Translation budget
 // i18n settings.i18n.budget.hint: Translations are counted per day and per service, and each service has its own budget — running out on one never blocks the others. Counts reset at midnight, your time. Only the number of translations is stored, never what was translated.
 // i18n settings.i18n.budget.count: {{today}} today · {{left}} left

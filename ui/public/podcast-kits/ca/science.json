@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "science",
+ "lang": "ca",
+ "title": {
+  "en": "Science",
+  "de": "Wissenschaft",
+  "fr": "Sciences",
+  "es": "Ciência",
+  "ja": "科学",
+  "it": "Scienza",
+  "pt": "Ciência",
+  "nl": "Wetenschap",
+  "pl": "Nauka",
+  "sv": "Vetenskap",
+  "ru": "Наука",
+  "ko": "과학",
+  "uk": "Наука",
+  "tr": "Bilim",
+  "el": "Επιστήμη",
+  "zh": "科学",
+  "ca": "Ciència",
+  "cs": "Věda",
+  "fi": "Tiede",
+  "no": "Vitenskap",
+  "ar": "العلوم",
+  "zh-Hant": "科學"
+ },
+ "icon": "🔬",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "mossegalapoma@podcasts.social",
+   "url": "https://podcasts.social/@mossegalapoma",
+   "displayName": "mossegalapoma podcast",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/110/569/083/812/272/789/original/090a8afee18f3814.png",
+   "bot": false,
+   "bio": "Fem podcàsting des del 2007 - Parlant de ciència i tecnologia en català - #Podcast",
+   "showUrl": "https://mossegalapoma.cat",
+   "observedAt": "2026-11-20T00:04:24+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mossegalapoma.cat",
+     "postUrl": "https://podcasts.social/@mossegalapoma/115627653176987621",
+     "seenAt": "2025-11-28T13:52:49.617Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://podcasts.social/@mossegalapoma/117644241319604564",
+     "seenAt": "2026-11-19T17:17:42.714Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://podcasts.social/@mossegalapoma/116453411017394681",
+     "seenAt": "2026-04-23T09:53:54.323Z"
+    }
+   ]
+  }
+ ]
+}

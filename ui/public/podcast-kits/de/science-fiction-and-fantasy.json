@@ -1,0 +1,76 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "science-fiction-and-fantasy",
+ "lang": "de",
+ "title": {
+  "en": "Science Fiction and Fantasy",
+  "de": "Science-Fiction und Fantasy",
+  "fr": "Science-fiction et fantasy",
+  "es": "Ciencia ficción y fantasía",
+  "ja": "SFとファンタジー",
+  "it": "Fantascienza e fantasy",
+  "pt": "Ficção científica e fantasia",
+  "nl": "Sciencefiction en fantasy",
+  "pl": "Fantastyka",
+  "sv": "Science fiction och fantasy",
+  "ru": "Фантастика и фэнтези",
+  "ko": "SF와 판타지",
+  "uk": "Фантастика і фентезі",
+  "tr": "Bilim kurgu ve fantastik",
+  "el": "Επιστημονική φαντασία",
+  "zh": "科幻与奇幻",
+  "ca": "Ciència-ficció i fantasia",
+  "cs": "Sci-fi a fantasy",
+  "fi": "Tieteiskirjallisuus ja fantasia",
+  "no": "Science fiction og fantasy",
+  "ar": "الخيال العلمي والفانتازيا",
+  "zh-Hant": "科幻與奇幻"
+ },
+ "icon": "🚀",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "secondunitstudios@mastodon.social",
+   "url": "https://mastodon.social/@secondunitstudios",
+   "displayName": "Second Unit Studios",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/969/452/999/311/857/original/c053b7ae62fe8b26.jpg",
+   "bot": false,
+   "bio": "Heimat der Second Unit, Superhero Unit, Bast&Christian&George&Lucas und vielen weiteren Podcasts. Posts in Handarbeit von @csteiner",
+   "showUrl": "https://podcasts.apple.com/de/channel/second-unit-studios/id6467397502",
+   "observedAt": "2026-11-20T00:06:58+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@secondunitstudios/117643170774937943",
+     "seenAt": "2026-11-19T12:45:27.503Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "secondunit-podcast.de",
+     "postUrl": "https://mastodon.social/@secondunitstudios/117546981191377330",
+     "seenAt": "2026-11-02T13:03:10.938Z"
+    }
+   ]
+  },
+  {
+   "acct": "discoverypanel@podcasts.social",
+   "url": "https://podcasts.social/@discoverypanel",
+   "displayName": "Discovery Panel Podcast",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/274/473/641/703/399/original/09f8ea77f998a7ea.jpg",
+   "bot": false,
+   "bio": "Der #Podcast zu aktuellen #StarTrek-Serien. #StarTrekStrangeNewWorlds #StarTrekStarfleetAcademy, #StarTrekScouts. @goldeneblogger 2021",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:59:41+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://podcasts.social/@discoverypanel/117642756924306387",
+     "seenAt": "2026-11-19T11:00:12.639Z"
+    }
+   ]
+  }
+ ]
+}

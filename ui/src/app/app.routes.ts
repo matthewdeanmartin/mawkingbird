@@ -1270,6 +1270,12 @@ export const routes: Routes = [
           import('./reading/radio/find-singles-page').then((m) => m.FindSinglesPage),
       },
       {
+        path: 'singles/starter-kits',
+        title: 'Podcast starter kits',
+        loadComponent: () =>
+          import('./reading/radio/podcast-kits-page').then((m) => m.PodcastKitsPage),
+      },
+      {
         path: 'playlists',
         title: 'Playlists',
         loadComponent: () => import('./reading/radio/playlists-page').then((m) => m.PlaylistsPage),

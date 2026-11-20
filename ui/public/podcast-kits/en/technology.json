@@ -1,0 +1,742 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "technology",
+ "lang": "en",
+ "title": {
+  "en": "Technology",
+  "de": "Technologie",
+  "fr": "Technologie",
+  "es": "Tecnología",
+  "ja": "テクノロジー",
+  "it": "Tecnologia",
+  "pt": "Tecnologia",
+  "nl": "Technologie",
+  "pl": "Technologia",
+  "sv": "Teknik",
+  "ru": "Технологии",
+  "ko": "기술",
+  "uk": "Технології",
+  "tr": "Teknoloji",
+  "el": "Τεχνολογία",
+  "zh": "科技",
+  "ca": "Tecnologia",
+  "cs": "Technologie",
+  "fi": "Teknologia",
+  "no": "Teknologi",
+  "zh-Hant": "科技",
+  "ar": "التقنية"
+ },
+ "icon": "💻",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "analyseasia@mas.to",
+   "url": "https://mas.to/@analyseasia",
+   "displayName": "Analyse Podcast",
+   "avatar": "https://media.mas.to/accounts/avatars/109/605/678/391/904/796/original/d01e455040dd5069.jpg",
+   "bot": true,
+   "bio": "The official Mastodon of Analyse Podcast — a weekly show dissecting the pulse of #business, #technology & #media worldwide, hosted by @bernardleong",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:58+00:00",
+   "media": [
+    {
+     "kind": "full-player",
+     "source": "soundcloud",
+     "postUrl": "https://mas.to/@analyseasia/117642993076070065",
+     "seenAt": "2026-11-19T12:00:16.031Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "analysepodcast.com",
+     "postUrl": "https://mas.to/@analyseasia/117607252177133503",
+     "seenAt": "2026-11-13T04:30:53.193Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mas.to",
+     "postUrl": "https://mas.to/@analyseasia/117637332026016747",
+     "seenAt": "2026-11-18T12:00:35.262Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mas.to/@analyseasia/117635956624353712",
+     "seenAt": "2026-11-18T06:10:48.297Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://mas.to/@analyseasia/117637332026016747",
+     "seenAt": "2026-11-18T12:00:35.262Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mas.to/@analyseasia/117636150860575673",
+     "seenAt": "2026-11-18T07:00:12.106Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://mas.to/@analyseasia/117641223479028408",
+     "seenAt": "2026-11-19T04:30:14.124Z"
+    }
+   ]
+  },
+  {
+   "acct": "jbrodley@tcp.fm",
+   "url": "https://tcp.fm/@jbrodley",
+   "displayName": "Justin Brodley",
+   "avatar": "https://cdn.masto.host/tcpfm/accounts/avatars/109/804/109/269/771/950/original/d04e6d367b1a62d6.jpg",
+   "bot": false,
+   "bio": "Podcast: www.thecloudpod.net Host, IT Executive and overall SaaS, Devops and Cloud engineer.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:42+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "tcp.fm",
+     "postUrl": "https://tcp.fm/@jbrodley/117482608048494847",
+     "seenAt": "2026-10-22T04:12:14.740Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "thecloudpod.net",
+     "postUrl": "https://tcp.fm/@jbrodley/117645601509133761",
+     "seenAt": "2026-11-19T23:03:37.569Z"
+    }
+   ]
+  },
+  {
+   "acct": "barredo@mastodon.social",
+   "url": "https://mastodon.social/@Barredo",
+   "displayName": "Alex Barredo 📉",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/018/878/original/b2e65b1c2bc6028f.png",
+   "bot": false,
+   "bio": "I only tweet about tech & data — Student of onlineness: why people do what they do & say what they say online — Father of three & Full time podcaster @mixxio Creator of @mastodeck and @mastofeed #ele…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:55+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@Barredo/117644841325416218",
+     "seenAt": "2026-11-19T19:50:18.078Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcastindex.social",
+     "postUrl": "https://mastodon.social/@Barredo/116167533568735920",
+     "seenAt": "2026-03-03T22:11:30.646Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@Barredo/117644841325416218",
+     "seenAt": "2026-11-19T19:50:18.078Z"
+    }
+   ]
+  },
+  {
+   "acct": "jill_linuxgirl@mast.linuxgamecast.com",
+   "url": "https://mast.linuxgamecast.com/@Jill_linuxgirl",
+   "displayName": "Jill Bryant Ryniker",
+   "avatar": "https://cdn.masto.host/mastlinuxgamecastcom/accounts/avatars/000/000/007/original/d54e63632a28cca2.jpg",
+   "bot": false,
+   "bio": "😂💖🐧🐧🐧 LWDW podcast Morale Czar, Co-host and Sprite: \\:-D/ https://open.spotify.com/show/4TtosDHh7MYL5Alpa9QdGq Support: https://www.patreon.com/cw/lwdw Co-host & Owner of Destination Linux podcast: h…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mast.linuxgamecast.com",
+     "postUrl": "https://mast.linuxgamecast.com/@Jill_linuxgirl/117644521587144864",
+     "seenAt": "2026-11-19T18:28:59.262Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mast.linuxgamecast.com/@Jill_linuxgirl/117644521587144864",
+     "seenAt": "2026-11-19T18:28:59.262Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mast.linuxgamecast.com/@Jill_linuxgirl/117641104962803314",
+     "seenAt": "2026-11-19T04:00:05.710Z"
+    }
+   ]
+  },
+  {
+   "acct": "25admins@mastodon.social",
+   "url": "https://mastodon.social/@25admins",
+   "displayName": "2.5 Admins",
+   "avatar": "https://files.mastodon.social/accounts/avatars/114/406/659/686/570/731/original/440a290360d1f50c.png",
+   "bot": false,
+   "bio": "Podcast from Allan Jude, Jim Salter, and Joe Ressington. Tech news and your sysadmin questions answered weekly. Part of @latenightlinux",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:51+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@25admins/117644392079925519",
+     "seenAt": "2026-11-19T17:56:03.136Z"
+    }
+   ]
+  },
+  {
+   "acct": "garethjonestv@mastodonapp.uk",
+   "url": "https://mastodonapp.uk/@GarethJonesTV",
+   "displayName": "Gareth Jones",
+   "avatar": "https://files.mastodonapp.uk/accounts/avatars/109/314/960/605/601/948/static/aed07511abb37e90.png",
+   "bot": false,
+   "bio": "Welsh, lisping, over-enthusiastic TV presenter once called Gaz Top. Now making car show Gareth Jones On Speed, documentaries for the BBC & swimming across Wales. www.garethjones.tv",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:03+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodonapp.uk",
+     "postUrl": "https://mastodonapp.uk/@GarethJonesTV/117643547765070104",
+     "seenAt": "2026-11-19T14:21:19.926Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodonapp.uk/@GarethJonesTV/117444231828073673",
+     "seenAt": "2026-10-15T09:32:40.077Z"
+    }
+   ]
+  },
+  {
+   "acct": "wesfryer@triangletoot.party",
+   "url": "https://triangletoot.party/@wesfryer",
+   "displayName": "Wes Fryer",
+   "avatar": "https://cdn.masto.host/triangletootparty/accounts/avatars/114/978/003/856/418/722/original/ae8af3ca1b3b473c.jpg",
+   "bot": false,
+   "bio": "Empowering you to bravely and creatively share your voice with kindness. #create2learn “Culture healer, not culture warrior.” #HealOurCulture Teacher by day #MediaLit, democracy & human rights champi…",
+   "showUrl": "https://podcasts.wesfryer.com",
+   "observedAt": "2026-11-20T00:08:28+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "nytimes.com",
+     "postUrl": "https://triangletoot.party/@wesfryer/117450324346140052",
+     "seenAt": "2026-10-16T11:22:04.520Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://triangletoot.party/@wesfryer/117591848577592417",
+     "seenAt": "2026-11-10T11:13:32.913Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.wesfryer.com",
+     "postUrl": "https://triangletoot.party/@wesfryer/117574699369051398",
+     "seenAt": "2026-11-07T10:32:16.757Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "triangletoot.party",
+     "postUrl": "https://triangletoot.party/@wesfryer/117642934194429350",
+     "seenAt": "2026-11-19T11:45:17.569Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://triangletoot.party/@wesfryer/117605430962919676",
+     "seenAt": "2026-11-12T20:47:43.666Z"
+    },
+    {
+     "kind": "short",
+     "source": "instagram",
+     "postUrl": "https://triangletoot.party/@wesfryer/117609180935295364",
+     "seenAt": "2026-11-13T12:41:23.701Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://triangletoot.party/@wesfryer/117521910905203536",
+     "seenAt": "2026-10-29T02:47:28.726Z"
+    }
+   ]
+  },
+  {
+   "acct": "changelog@changelog.social",
+   "url": "https://changelog.social/@changelog",
+   "displayName": "Changelog",
+   "avatar": "https://cdn.changelog.social/accounts/avatars/109/365/688/871/983/824/original/5d1bcf4960706353.png",
+   "bot": false,
+   "bio": "Simply the best podcasts for developers",
+   "showUrl": "https://changelog.com/podcasts",
+   "observedAt": "2026-11-19T23:58:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "changelog.social",
+     "postUrl": "https://changelog.social/@changelog/117639784162859390",
+     "seenAt": "2026-11-18T22:24:11.904Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://changelog.social/@changelog/115429463379911162",
+     "seenAt": "2025-10-24T13:50:33.316Z"
+    }
+   ]
+  },
+  {
+   "acct": "leogdion@c.im",
+   "url": "https://c.im/@leogdion",
+   "displayName": "Leo Dion",
+   "avatar": "https://s3.c.im/accounts/avatars/109/263/136/930/561/815/original/50858125790f70e1.jpeg",
+   "bot": false,
+   "bio": "Hey everybody! I'm an independent Swift and Apple developer. My company is https://brightdigit.com I do mostly contract work but also the occasional indie app. I also have a Youtube channel and podca…",
+   "showUrl": "https://www.empowerapps.show",
+   "observedAt": "2026-11-20T00:03:21+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podcastindex.social",
+     "postUrl": "https://c.im/@leogdion/117480850369586146",
+     "seenAt": "2026-10-21T20:45:14.673Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://c.im/@leogdion/117394932088163127",
+     "seenAt": "2026-10-06T16:35:05.741Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://c.im/@leogdion/117638647804132016",
+     "seenAt": "2026-11-18T17:35:12.441Z"
+    }
+   ]
+  },
+  {
+   "acct": "nathanwrigley@mastodon.social",
+   "url": "https://mastodon.social/@nathanwrigley",
+   "displayName": "Nathan Wrigley",
+   "avatar": "https://files.mastodon.social/accounts/avatars/112/410/630/171/781/274/original/784539808bf57a53.png",
+   "bot": false,
+   "bio": "Podcasts: https://wpbuilds.com & https://wptavern.com Mastodon: https://mastodon.social/@nathanwrigley Bluesky: https://bsky.app/profile/nathanwrigley.com",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:04+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@nathanwrigley/117537211689870924",
+     "seenAt": "2026-10-31T19:38:40.172Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "nathanwrigley.com",
+     "postUrl": "https://mastodon.social/@nathanwrigley/117330299626153352",
+     "seenAt": "2026-09-25T06:38:12.635Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcastindex.social",
+     "postUrl": "https://mastodon.social/@nathanwrigley/117360297868336685",
+     "seenAt": "2026-09-30T13:47:09.489Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "wpbuilds.com",
+     "postUrl": "https://mastodon.social/@nathanwrigley/117445469242810796",
+     "seenAt": "2026-10-15T14:47:21.528Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "wptavern.com",
+     "postUrl": "https://mastodon.social/@nathanwrigley/117637819074153287",
+     "seenAt": "2026-11-18T14:04:27.024Z"
+    }
+   ]
+  },
+  {
+   "acct": "geekingout_pod@mastodon.social",
+   "url": "https://mastodon.social/@geekingout_pod",
+   "displayName": "Geeking Out Podcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/110/901/780/225/105/423/original/9955df4c253da516.jpg",
+   "bot": false,
+   "bio": "The podcast about all geeky aspects of software delivery, reliability, and everything in between. Hosted by @adrianamvillela.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:11+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "geeking-out.simplecast.com",
+     "postUrl": "https://mastodon.social/@geekingout_pod/115270362538510546",
+     "seenAt": "2025-09-26T11:29:07.145Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@geekingout_pod/117632640237578211",
+     "seenAt": "2026-11-17T16:07:24.252Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.substack.com",
+     "postUrl": "https://mastodon.social/@geekingout_pod/116606849106770495",
+     "seenAt": "2026-05-20T12:15:13.774Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@geekingout_pod/117592765690929375",
+     "seenAt": "2026-11-10T15:06:46.953Z"
+    }
+   ]
+  },
+  {
+   "acct": "foojay@foojay.social",
+   "url": "https://foojay.social/@foojay",
+   "displayName": "Foojay.io",
+   "avatar": "https://foojay.social/system/accounts/avatars/109/347/832/585/149/552/original/cfae6aed62f83a6e.png",
+   "bot": false,
+   "bio": "Foojay.io is a central resource for the Java community’s daily ​information needs, providing a community platform for the Java ecosystem​ — bringing together and helping Java professionals everywhere…",
+   "showUrl": "https://open.spotify.com/show/6CpTfgn9LirzJGAtc4ICdQ",
+   "observedAt": "2026-11-20T00:00:51+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "foojay.io",
+     "postUrl": "https://foojay.social/@foojay/117623535485792881",
+     "seenAt": "2026-11-16T01:31:56.769Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "foojay.social",
+     "postUrl": "https://foojay.social/@foojay/117494382145553475",
+     "seenAt": "2026-10-24T06:06:33.190Z"
+    }
+   ]
+  },
+  {
+   "acct": "leszek@mastodon.social",
+   "url": "https://mastodon.social/@leszek",
+   "displayName": "Leszek Lesner",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/162/351/original/21e841ead5e63da7.png",
+   "bot": false,
+   "bio": "Computer Geek, Linux Distro Developer, Techview Podcast Youtube Channel, Smartphones & more",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:41+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@leszek/117617637483723850",
+     "seenAt": "2026-11-15T00:32:00.393Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@leszek/117536055478561396",
+     "seenAt": "2026-10-31T14:44:37.798Z"
+    }
+   ]
+  },
+  {
+   "acct": "ithorrorstories@techhub.social",
+   "url": "https://techhub.social/@ithorrorstories",
+   "displayName": "IT Horror Stories Podcast",
+   "avatar": "https://files.techhub.social/accounts/avatars/113/199/836/263/382/406/original/468b9127b9f186bb.png",
+   "bot": false,
+   "bio": "Real IT failures, questionable decisions, unexpected outages, and the lessons learned from the people who were there. From mainframes and datacenters to networking, cybersecurity, cloud, Shadow IT, O…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:26+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "techhub.social",
+     "postUrl": "https://techhub.social/@ithorrorstories/117593271664902687",
+     "seenAt": "2026-11-10T17:15:27.507Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://techhub.social/@ithorrorstories/117557464422327162",
+     "seenAt": "2026-11-04T09:29:12.345Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://techhub.social/@ithorrorstories/117355268150120715",
+     "seenAt": "2026-09-29T16:28:02.080Z"
+    }
+   ]
+  },
+  {
+   "acct": "marcociappelli@infosec.exchange",
+   "url": "https://infosec.exchange/@Marcociappelli",
+   "displayName": "Marco Ciappelli🎙️✨:verified: :donor:",
+   "avatar": "https://media.infosec.exchange/infosec.exchange/accounts/avatars/109/328/425/430/336/089/original/8c487ceb495e6b6c.png",
+   "bot": false,
+   "bio": "Co-Founder ITSPmagazine & Studio C60 | Creative Director | Branding & Marketing Advisor | Personal Branding Coach | Journalist | Writer | Podcast: An Analog Brain In A Digital Age ⚠️ Beware: Pigs May…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:52+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "audiosignalspodcast.com",
+     "postUrl": "https://infosec.exchange/@Marcociappelli/115908419134129802",
+     "seenAt": "2026-01-17T03:55:18.142Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "infosec.exchange",
+     "postUrl": "https://infosec.exchange/@Marcociappelli/117430350272149783",
+     "seenAt": "2026-10-12T22:42:24.341Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "redefiningsocietyandtechnologypodcast.com",
+     "postUrl": "https://infosec.exchange/@Marcociappelli/115963516252207396",
+     "seenAt": "2026-01-26T21:27:13.439Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://infosec.exchange/@Marcociappelli/117584928728603198",
+     "seenAt": "2026-11-09T05:53:44.399Z"
+    }
+   ]
+  },
+  {
+   "acct": "janbeta@chaos.social",
+   "url": "https://chaos.social/@janbeta",
+   "displayName": "Jan Beta",
+   "avatar": "https://assets.chaos.social/accounts/avatars/108/193/563/796/459/140/original/9d61e09901f716c0.jpeg",
+   "bot": false,
+   "bio": "I repair/hack/make/destroy stuff on YouTube/PeerTube. RetroComputing, VintageAudio, Tinkering. Co-hosting the Elektroschrott podcast. As unprofessional as it gets. Anti-fascist. Chaotic good. C64 rul…",
+   "showUrl": "https://elektroschrott.org",
+   "observedAt": "2026-11-20T00:02:39+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://chaos.social/@janbeta/117574292128535310",
+     "seenAt": "2026-11-07T08:48:42.763Z"
+    }
+   ]
+  },
+  {
+   "acct": "embedded@mstdn.social",
+   "url": "https://mstdn.social/@embedded",
+   "displayName": "Embedded Podcast",
+   "avatar": "https://media.mstdn.social/accounts/avatars/109/291/904/024/473/417/original/f7469ecd84929c89.jpg",
+   "bot": false,
+   "bio": "Welcome to Embedded, a weekly podcast. We’re here to chat about the interests, careers, and lives of engineers, artists, educators and makers. Our diverse guest list includes names you may have heard…",
+   "showUrl": "https://podcasts.apple.com/us/podcast/embedded/id649204115",
+   "observedAt": "2026-11-20T00:00:18+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mstdn.social",
+     "postUrl": "https://mstdn.social/@embedded/117565563510155178",
+     "seenAt": "2026-11-05T19:48:54.617Z"
+    }
+   ]
+  },
+  {
+   "acct": "thelovebug@mastodon.me.uk",
+   "url": "https://mastodon.me.uk/@thelovebug",
+   "displayName": "Dave M9TLB 🐞",
+   "avatar": "https://mastodon.me.uk/system/accounts/avatars/000/054/091/original/d8c4b619b80e6396.png",
+   "bot": false,
+   "bio": "Award-winning #podcaster (@thebugcast @tuxjam @teghpodcast), #amateurradio #hamradio (@m7tlb), #3dprinting, #christian, #musician, #coffee snob, reader, #Android and #Linux advocate. #infosec #appsec…",
+   "showUrl": "https://thelovebug.org/podcasting",
+   "observedAt": "2026-11-20T00:07:28+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.me.uk",
+     "postUrl": "https://mastodon.me.uk/@thelovebug/117565155081971738",
+     "seenAt": "2026-11-05T18:05:02.501Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://mastodon.me.uk/@thelovebug/117015508128670488",
+     "seenAt": "2026-07-31T16:22:35.582Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://mastodon.me.uk/@thelovebug/116820807836915804",
+     "seenAt": "2026-06-27T07:07:44.900Z"
+    }
+   ]
+  },
+  {
+   "acct": "bradlinder@fosstodon.org",
+   "url": "https://fosstodon.org/@bradlinder",
+   "displayName": "Brad Linder",
+   "avatar": "https://cdn.fosstodon.org/accounts/avatars/106/324/267/405/308/842/original/835420f098e5a2eb.png",
+   "bot": false,
+   "bio": "(he / him) Editor of Liliputing Podcast producer and editor Radio News Managing Editor at PhillyCAM/106.5 FM Companion to three cats: Pippin, Loki, and Mr. Humphries Maintaining separate presences fo…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:12+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://fosstodon.org/@bradlinder/117560130567618958",
+     "seenAt": "2026-11-04T20:47:14.494Z"
+    }
+   ]
+  },
+  {
+   "acct": "angrynerdspodcast@mastodon.nl",
+   "url": "https://mastodon.nl/@angrynerdspodcast",
+   "displayName": "Angry Nerds Podcast 🍻",
+   "avatar": "https://mastodon.nl/system/accounts/avatars/109/365/416/844/558/811/original/9ec11f28e949e16a.jpg",
+   "bot": false,
+   "bio": "Nederlandse #podcast over #privacy, #security, #technologie en #ethiek. Een roulerend #panel bespreekt wekelijks op geheel eigen wijze de belangrijkste #cybers 🍻",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:06+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/116953102926067261",
+     "seenAt": "2026-07-20T15:52:07.757Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "video.angrynerdspodcast.nl",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370127536847168",
+     "seenAt": "2026-10-02T07:26:58.323Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117435036897213616",
+     "seenAt": "2026-10-13T18:34:16.564Z"
+    }
+   ]
+  },
+  {
+   "acct": "gavincampbell@hometech.social",
+   "url": "https://hometech.social/@GavinCampbell",
+   "displayName": "Gavin Campbell",
+   "avatar": "https://assets.hometech.social/accounts/avatars/109/430/217/512/438/960/original/1e7e86e4ceae5a0a.jpg",
+   "bot": false,
+   "bio": "HomeTech.fm Co-Host. I toot about Home Tech, Home Automation, Basketball, Golf, Reggae, Configuration Manager and TV shows.",
+   "showUrl": "https://hometech.fm",
+   "observedAt": "2026-11-20T00:01:03+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://hometech.social/@GavinCampbell/117399962532794015",
+     "seenAt": "2026-10-07T13:54:24.237Z"
+    }
+   ]
+  },
+  {
+   "acct": "bluewizard@mastodon.sdf.org",
+   "url": "https://mastodon.sdf.org/@bluewizard",
+   "displayName": "Ryan",
+   "avatar": "https://mastodon.sdf.org/system/accounts/avatars/109/277/915/208/623/190/original/00a261892e7ff52a.png",
+   "bot": false,
+   "bio": "General tech guy that enjoys: Vintage #Amiga and #Commodore #retrocomputers. Casual board games with friends Enjoy digital modes of Amateur Radio Bluewizardnet Amiga blog Podcast creator R N R Does s…",
+   "showUrl": "https://www.rnrdoesstuff.com",
+   "observedAt": "2026-11-19T23:58:45+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.sdf.org",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/117068429688990407",
+     "seenAt": "2026-08-10T00:41:15.127Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "rnrdoesstuff.com",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/117068429688990407",
+     "seenAt": "2026-08-10T00:41:15.127Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/116184662661687209",
+     "seenAt": "2026-03-06T22:47:39.867Z"
+    }
+   ]
+  },
+  {
+   "acct": "hansamann@chaos.social",
+   "url": "https://chaos.social/@hansamann",
+   "displayName": "hansamann 🔥❄️🚀 (he/him)",
+   "avatar": "https://assets.chaos.social/accounts/avatars/111/830/009/140/223/068/original/43caa1da6bb051ec.png",
+   "bot": false,
+   "bio": "Tech Strategist at SAP 🏳️‍🌈 #LabsTalk Podcast | #Metaverse and #Web3 | #DIY | END F$%^ WAR 💙💛 Hungry for new #experiences and genuine, human connections. Creating things in/around #muc, #Cycling west…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:01:32+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://chaos.social/@hansamann/116528303173975807",
+     "seenAt": "2026-05-06T15:19:58.234Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://chaos.social/@hansamann/115485328425947519",
+     "seenAt": "2025-11-03T10:37:46.265Z"
+    }
+   ]
+  },
+  {
+   "acct": "senosvapod@mastodon.social",
+   "url": "https://mastodon.social/@senosvapod",
+   "displayName": "Se nos va de las manos",
+   "avatar": "https://files.mastodon.social/accounts/avatars/111/352/616/567/157/136/original/7e1ab645eea91422.jpg",
+   "bot": false,
+   "bio": "Descubre avances tech que asombran y desafían. 🚀 #Tecnología #Podcast #Innovación #SeNosVaDeLasManos ¡Sigue el viaje tecnológico!",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:57+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@senosvapod/113412868845950540",
+     "seenAt": "2024-11-02T10:24:02.698Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcast.senosva.com",
+     "postUrl": "https://mastodon.social/@senosvapod/113593338595316376",
+     "seenAt": "2024-12-04T07:19:52.548Z"
+    }
+   ]
+  },
+  {
+   "acct": "hpr@infosec.exchange",
+   "url": "https://infosec.exchange/@hpr",
+   "displayName": "Hacker Public Radio",
+   "avatar": "https://media.infosec.exchange/infosec.exchange/accounts/avatars/113/537/544/129/852/310/original/1dc4bb83178ba18e.png",
+   "bot": true,
+   "bio": "HPR is the Community Podcast, where shows are produced by listeners like you and can be on any topic that \"are of interest to Hackers\" #nobridge Moved from https://botsin.space/@hpr",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:02:05+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "infosec.exchange",
+     "postUrl": "https://infosec.exchange/@hpr/117642150497150615",
+     "seenAt": "2026-11-19T08:25:59.296Z"
+    }
+   ]
+  }
+ ]
+}

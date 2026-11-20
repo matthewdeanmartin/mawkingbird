@@ -1,0 +1,82 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "languages",
+ "lang": "en",
+ "title": {
+  "en": "Languages",
+  "de": "Sprachen",
+  "fr": "Langues",
+  "es": "Idiomas",
+  "ja": "言語",
+  "it": "Lingue",
+  "pt": "Idiomas",
+  "nl": "Talen",
+  "pl": "Języki",
+  "sv": "Språk",
+  "ru": "Языки",
+  "ko": "언어",
+  "uk": "Мови",
+  "tr": "Diller",
+  "el": "Γλώσσες",
+  "zh": "语言",
+  "ca": "Llengües",
+  "cs": "Jazyky",
+  "fi": "Kielet",
+  "no": "Språk",
+  "ar": "اللغات",
+  "zh-Hant": "語言"
+ },
+ "icon": "🗣️",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "lingthusiasm@wandering.shop",
+   "url": "https://wandering.shop/@lingthusiasm",
+   "displayName": "Lingthusiasm",
+   "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/295/172/938/540/315/original/0169ca690dbec14b.png",
+   "bot": false,
+   "bio": "A podcast that's enthusiastic about linguistics! By @gretchenmcc and @superlinguo",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:31+00:00",
+   "media": [
+    {
+     "kind": "full-player",
+     "source": "soundcloud",
+     "postUrl": "https://wandering.shop/@lingthusiasm/117447725480309331",
+     "seenAt": "2026-10-16T00:21:08.982Z"
+    }
+   ]
+  },
+  {
+   "acct": "grammargirl@zirk.us",
+   "url": "https://zirk.us/@grammargirl",
+   "displayName": "Mignon Fogarty",
+   "avatar": "https://files.zirk.us/accounts/avatars/109/384/127/684/711/007/original/5cab4602912a62a0.png",
+   "bot": false,
+   "bio": "Grammar Girl. Podcaster. New York Times bestselling author. Quick and Dirty Tips founder. Bad skier. California. she/her #AmWriting 12/1 Grammar Girl podcast #AmReading Monsters of Ohio (Scalzi)",
+   "showUrl": "https://pod.link/173429229",
+   "observedAt": "2026-11-20T00:01:15+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "forbes.com",
+     "postUrl": "https://zirk.us/@grammargirl/117593758446037900",
+     "seenAt": "2026-11-10T19:19:15.194Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://zirk.us/@grammargirl/117644290153476653",
+     "seenAt": "2026-11-19T17:30:07.859Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "zirk.us",
+     "postUrl": "https://zirk.us/@grammargirl/117639495471640590",
+     "seenAt": "2026-11-18T21:10:46.821Z"
+    }
+   ]
+  }
+ ]
+}

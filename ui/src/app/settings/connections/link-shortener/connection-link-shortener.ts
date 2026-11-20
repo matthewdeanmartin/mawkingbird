@@ -62,7 +62,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.linkShortener.nativeAnonymous: No account is needed. Links created here cannot be edited or deleted later.
 // i18n settings.connections.linkShortener.title: 🔗 Link shortener
 // i18n settings.connections.linkShortener.intro: Shorten the URLs you post, and keep track of the links you have made. Choose one active service, as with your CORS proxy. Saved keys stay available when you switch services.
-// i18n settings.connections.linkShortener.credentialWarning: These API keys are stored in this browser's localStorage, because Mawkingbird has no server to keep them on. A key here can create and delete links in your account, so use a key scoped to link management if the service offers one, and only on a device you trust. You can revoke it on the provider's own site at any time.
+// i18n settings.connections.linkShortener.credentialWarning: These API keys are stored in this browser's localStorage for this connection. A key here can create and delete links in your account, so use a key scoped to link management if the service offers one, and only on a device you trust. You can revoke it on the provider's own site at any time.
 // i18n settings.connections.linkShortener.servicesHeading: Services
 // i18n settings.connections.linkShortener.activePill: Active
 // i18n settings.connections.linkShortener.connectedPill: Connected

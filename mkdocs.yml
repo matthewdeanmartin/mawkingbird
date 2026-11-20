@@ -36,6 +36,7 @@ nav:
       - Mastodon post length and media limits: posting/mastodon-limits.md
       - How hashtags work on Mastodon: finding-people/mastodon-hashtags.md
       - Connect Mastodon: connections/mastodon.md
+      - Mastodon server compatibility: connections/mastodon-compatibility.md
   - Bluesky:
       - Bluesky: bluesky/index.md
       - Sign in with Bluesky: start/sign-in-bluesky.md

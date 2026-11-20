@@ -3,7 +3,13 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon">Открыть приложение</a>
+      <a
+        mbButton
+        variant="outline"
+        routerLink="/login/mastodon"
+        [queryParams]="{ next: '/ru/mastodon-handle-generator' }"
+        >Открыть приложение</a
+      >
     </header>
   }
 

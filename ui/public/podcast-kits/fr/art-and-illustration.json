@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "art-and-illustration",
+ "lang": "fr",
+ "title": {
+  "en": "Art and Illustration",
+  "de": "Kunst und Illustration",
+  "fr": "Art et illustration",
+  "es": "Arte e ilustración",
+  "ja": "アートとイラスト",
+  "it": "Arte e illustrazione",
+  "pt": "Arte e ilustração",
+  "nl": "Kunst en illustratie",
+  "pl": "Sztuka i ilustracja",
+  "sv": "Konst och illustration",
+  "ru": "Искусство и иллюстрация",
+  "ko": "예술과 일러스트",
+  "uk": "Мистецтво та ілюстрація",
+  "tr": "Sanat ve illüstrasyon",
+  "el": "Τέχνη και εικονογράφηση",
+  "zh": "艺术与插画",
+  "ca": "Art i il·lustració",
+  "cs": "Umění a ilustrace",
+  "fi": "Taide ja kuvitus",
+  "no": "Kunst og illustrasjon",
+  "ar": "الفن والرسم التوضيحي",
+  "zh-Hant": "藝術與插畫"
+ },
+ "icon": "🎨",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "laparfumeriepodcast@mastodon.art",
+   "url": "https://mastodon.art/@laparfumeriepodcast",
+   "displayName": "La Parfumerie Podcast",
+   "avatar": "https://cdn.masto.host/mastodonart/accounts/avatars/108/202/129/857/742/466/original/56276b8d6e96695e.jpg",
+   "bot": false,
+   "bio": "#Podcast #Parfum sans concession. https://laparfumerie-podcast.com",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:07+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "laparfumerie-podcast.com",
+     "postUrl": "https://mastodon.art/@laparfumeriepodcast/117641642604000865",
+     "seenAt": "2026-11-19T06:16:49.462Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.art",
+     "postUrl": "https://mastodon.art/@laparfumeriepodcast/117641642604000865",
+     "seenAt": "2026-11-19T06:16:49.462Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "t.me",
+     "postUrl": "https://mastodon.art/@laparfumeriepodcast/113225066891839386",
+     "seenAt": "2024-09-30T06:23:32.290Z"
+    }
+   ]
+  }
+ ]
+}

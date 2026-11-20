@@ -50,7 +50,7 @@ export function takeTwitterArchive(): TwitterArchiveSummary | null {
 
 // i18n settings.importExport.twitter.archiveHint.a: Choose your unzipped archive folder. Mawkingbird reads only
 // i18n settings.importExport.twitter.archiveHint.b: , and
-// i18n settings.importExport.twitter.archiveHint.c: in your browser; nothing is uploaded. You can also select those files directly from the archive's
+// i18n settings.importExport.twitter.archiveHint.c: in your browser. The archive files are not uploaded; after sign-in, handle searches based on them go to your Mastodon server. You can also select those files directly from the archive's
 // i18n settings.importExport.twitter.candidates.one: {{count}} Mastodon candidate
 // i18n settings.importExport.twitter.candidates.other: {{count}} Mastodon candidates
 // i18n settings.importExport.twitter.candidatesShown: Mastodon candidates shown
@@ -82,7 +82,7 @@ export function takeTwitterArchive(): TwitterArchiveSummary | null {
 // i18n settings.importExport.twitter.seenIn: people seen in
 // i18n settings.importExport.twitter.title: Extract contacts from Twitter
 // i18n twitterImport.signIn.title: Next: find them on Mastodon.
-// i18n twitterImport.signIn.body: Sign in to search your Mastodon server for these {{count}} people and follow the ones who have already moved. Your archive stays in this browser.
+// i18n twitterImport.signIn.body: Sign in to search your Mastodon server for these {{count}} people and follow the ones who have already moved. The archive files stay in this browser; handle searches go to your Mastodon server.
 // i18n twitterImport.signIn.action: Sign in with Mastodon
 
 /**

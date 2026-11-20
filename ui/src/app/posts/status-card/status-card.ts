@@ -323,7 +323,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.freeAlreadySetUp: Free, already set up
 // i18n statusCard.spendsOpenrouterCredits: Spends OpenRouter credits
 // i18n statusCard.alwaysUseThis: Always use this, and stop asking
-// i18n statusCard.aiTranslationDescription: Translation here is done by an AI model of your choosing, through OpenRouter — your key, your browser, your account. Nothing is sent to a Mawkingbird server, because there isn't one.
+// i18n statusCard.aiTranslationDescription: Translation uses the AI model you choose through OpenRouter, with your key and account. The post and translation request go to OpenRouter under its terms; Mawkingbird does not provide the AI service.
 // i18n statusCard.connectOpenrouter: Connect OpenRouter
 // i18n statusCard.notNow: Not now
 // i18n statusCard.policyPublic: public

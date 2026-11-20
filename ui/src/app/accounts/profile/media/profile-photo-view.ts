@@ -8,6 +8,7 @@ import {
   input,
   output,
   signal,
+  untracked,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -36,6 +37,36 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { VideoPlayerHost as VideoPlayer } from '../../../reading/video-player/video-player-host';
 import { attachmentSource, watchParams } from '../../../reading/video-player/media-source';
 import { Server } from '../../../platform/http/server';
+import { MbHelp } from '../../../design-system/help/help';
+import { MbNotice } from '../../../design-system/notice/notice';
+import { LinkedText } from '../../../posts/linked-text';
+import {
+  AutoTranslateEligibility,
+  FeedLanguageFilter,
+} from '../../../language/trend-language-filter';
+import {
+  CHAIN_ENGINE_NAMES,
+  TranslationRouter,
+  hasTranslatableText,
+} from '../../../translation/translation-router';
+import { AiTranslate } from '../../../translation/ai-translate';
+import { languageDisplayName } from '../../../translation/language-codes';
+import { AiAvailability } from '../../../platform/build/ai-availability';
+import { OpenRouterSession } from '../../../connections/openrouter/openrouter-session';
+import { serverKnowsStatus } from '../../../connections/provider';
+import { applyMinimalMarkdown } from '../../../publishing/markdown';
+
+/**
+ * A caption or comment shown in translation. `html` is the server's (sanitized)
+ * translation; `text` is any other engine's plain text, which must never reach
+ * `[innerHTML]`. `from` is the original language by name, empty when unknown.
+ */
+interface PhotoTranslation {
+  html: string | null;
+  text: string | null;
+  from: string;
+  via: string;
+}
 
 /**
  * The photo-first viewer behind a profile's media wall.
@@ -100,6 +131,9 @@ import { Server } from '../../../platform/http/server';
     Compose,
     TranslocoPipe,
     VideoPlayer,
+    MbHelp,
+    MbNotice,
+    LinkedText,
   ],
   templateUrl: './profile-photo-view.html',
   styleUrl: './profile-photo-view.css',
@@ -264,6 +298,74 @@ export class ProfilePhotoView {
       }
       this.loadContext(status);
     });
+    // Automatic translation, the same rules as the timeline's status card: the
+    // caption and every comment, each tried once while this viewer is open.
+    effect(() => {
+      const statuses = [this.post(), ...this.replies()].filter((s): s is Status => !!s);
+      untracked(() => statuses.forEach((s) => void this.autoTranslate(s)));
+    });
+  }
+
+  // --- automatic translation ---
+
+  private eligibility = inject(AutoTranslateEligibility);
+  private feedLanguages = inject(FeedLanguageFilter);
+  private translationRouter = inject(TranslationRouter);
+  private aiTranslate = inject(AiTranslate);
+  private ai = inject(AiAvailability);
+  private openrouter = inject(OpenRouterSession);
+
+  /** Shown translations by status id; absent means the original is showing. */
+  protected translations = signal<Map<string, PhotoTranslation>>(new Map());
+  /** Ids already tried, so paging back and forth never pays twice. */
+  private translateTried = new Set<string>();
+
+  protected translationOf(status: Status | null | undefined): PhotoTranslation | null {
+    return status ? (this.translations().get(status.id) ?? null) : null;
+  }
+
+  private async autoTranslate(status: Status): Promise<void> {
+    if (this.translateTried.has(status.id)) return;
+    if (!this.eligibility.shouldTranslate(status) || !hasTranslatableText(status)) return;
+    if (this.eligibility.isAlreadyTargetLanguage(status, this.aiTranslate.targetLanguage())) return;
+    this.translateTried.add(status.id);
+    try {
+      const outcome = await this.translationRouter.translate({
+        status,
+        mode: 'auto',
+        serverCanTranslate:
+          this.capabilities.canUseServerActions &&
+          status.provider !== 'bluesky' &&
+          serverKnowsStatus(status.provider),
+        aiAvailable: this.ai.enabled() && this.openrouter.ready(),
+      });
+      let shown: PhotoTranslation | null = null;
+      if (outcome.kind === 'server') {
+        const code =
+          this.feedLanguages.languageAssessment(status).language ||
+          outcome.translation.detected_source_language ||
+          status.language;
+        shown = {
+          html: applyMinimalMarkdown(outcome.translation.content),
+          text: null,
+          from: code ? languageDisplayName(code) : '',
+          via: outcome.translation.provider,
+        };
+      } else if (outcome.kind === 'text') {
+        shown = {
+          html: null,
+          text: outcome.text,
+          from: outcome.source ? languageDisplayName(outcome.source) : '',
+          via: CHAIN_ENGINE_NAMES[outcome.engine],
+        };
+      }
+      if (shown) {
+        const result = shown;
+        this.translations.update((map) => new Map(map).set(status.id, result));
+      }
+    } catch {
+      // A failed automatic translation leaves the original showing; nobody asked.
+    }
   }
 
   private lastContextStatusId: string | null = null;

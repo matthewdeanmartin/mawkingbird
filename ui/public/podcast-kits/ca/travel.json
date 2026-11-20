@@ -1,0 +1,58 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "travel",
+ "lang": "ca",
+ "title": {
+  "en": "Travel",
+  "de": "Reisen",
+  "fr": "Voyages",
+  "es": "Viajes",
+  "ja": "旅行",
+  "it": "Viaggi",
+  "pt": "Viagens",
+  "nl": "Reizen",
+  "pl": "Podróże",
+  "sv": "Resor",
+  "ru": "Путешествия",
+  "ko": "여행",
+  "uk": "Подорожі",
+  "tr": "Seyahat",
+  "el": "Ταξίδια",
+  "zh": "旅行",
+  "ca": "Viatges",
+  "cs": "Cestování",
+  "fi": "Matkailu",
+  "no": "Reiser",
+  "ar": "السفر",
+  "zh-Hant": "旅行"
+ },
+ "icon": "🧳",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "pangoratravel@mastodon.social",
+   "url": "https://mastodon.social/@pangoratravel",
+   "displayName": "Pangora Travel",
+   "avatar": "https://files.mastodon.social/accounts/avatars/117/523/534/061/706/022/static/8a6a106d7a922c34.png",
+   "bot": false,
+   "bio": "✈️ Planificador de viajes con IA hecho en Girona. Tu itinerario día a día en minutos. Guías, consejos y podcast cada día. 🌍 AI travel planner built in Girona, Spain. Your day-by-day itinerary in minu…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@pangoratravel/117641930824515538",
+     "seenAt": "2026-11-19T07:30:07.361Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasters.spotify.com",
+     "postUrl": "https://mastodon.social/@pangoratravel/117641930824515538",
+     "seenAt": "2026-11-19T07:30:07.361Z"
+    }
+   ]
+  }
+ ]
+}

@@ -137,12 +137,30 @@
              a caption can run to thousands of characters, and on a phone that
              would push the comments entirely off the panel. -->
         <div class="photo-caption-wrap">
-          <div
-            class="photo-caption"
-            [class.clamped]="!captionExpanded()"
-            appRenderedHtmlLinks
-            [innerHTML]="item.status.content | customEmoji: item.status.emojis"
-          ></div>
+          @let captionTr = translationOf(item.status);
+          @if (captionTr?.text; as text) {
+            <!-- Plain text from a third party: rendered as TEXT, never innerHTML. -->
+            <div class="photo-caption" [class.clamped]="!captionExpanded()">
+              <p><app-linked-text [text]="text" /></p>
+            </div>
+          } @else {
+            <div
+              class="photo-caption"
+              [class.clamped]="!captionExpanded()"
+              appRenderedHtmlLinks
+              [innerHTML]="captionTr?.html ?? item.status.content | customEmoji: item.status.emojis"
+            ></div>
+          }
+          @if (captionTr) {
+            <div class="photo-translation-note muted">
+              <mb-help [label]="'statusCard.translationInfo' | transloco">{{
+                (captionTr.from
+                  ? 'statusCard.translatedFromViaAutomatic'
+                  : 'statusCard.translatedViaAutomatic'
+                ) | transloco: { from: captionTr.from, provider: captionTr.via }
+              }}</mb-help>
+            </div>
+          }
           @if (item.status.content && item.status.content.length > 220) {
             <button type="button" class="photo-more-text" (click)="toggleCaption()">
               {{
@@ -292,6 +310,12 @@
                thread, rather than living permanently at the bottom. -->
           @if (isReplyingTo(p)) {
             <div class="photo-inline-compose">
+              @if (translationOf(p); as tr) {
+                <mb-notice class="reply-translated" tone="error" announcement="alert">{{
+                  (tr.from ? 'statusCard.replyingToTranslated' : 'statusCard.replyingToTranslatedUnknown')
+                    | transloco: { post: words().post, language: tr.from }
+                }}</mb-notice>
+              }
               <app-compose
                 [inReplyToId]="p.id"
                 [replyToHandle]="replyToHandle()"
@@ -347,14 +371,39 @@
                       </button>
                     }
                   </span>
-                  <div
-                    class="photo-comment-text"
-                    appRenderedHtmlLinks
-                    [innerHTML]="reply.content | customEmoji: reply.emojis"
-                  ></div>
+                  @let replyTr = translationOf(reply);
+                  @if (replyTr?.text; as text) {
+                    <div class="photo-comment-text">
+                      <p><app-linked-text [text]="text" /></p>
+                    </div>
+                  } @else {
+                    <div
+                      class="photo-comment-text"
+                      appRenderedHtmlLinks
+                      [innerHTML]="replyTr?.html ?? reply.content | customEmoji: reply.emojis"
+                    ></div>
+                  }
+                  @if (replyTr) {
+                    <div class="photo-translation-note muted">
+                      <mb-help [label]="'statusCard.translationInfo' | transloco">{{
+                        (replyTr.from
+                          ? 'statusCard.translatedFromViaAutomatic'
+                          : 'statusCard.translatedViaAutomatic'
+                        ) | transloco: { from: replyTr.from, provider: replyTr.via }
+                      }}</mb-help>
+                    </div>
+                  }
 
                   @if (isReplyingTo(reply)) {
                     <div class="photo-inline-compose">
+                      @if (replyTr; as tr) {
+                        <mb-notice class="reply-translated" tone="error" announcement="alert">{{
+                          (tr.from
+                            ? 'statusCard.replyingToTranslated'
+                            : 'statusCard.replyingToTranslatedUnknown'
+                          ) | transloco: { post: words().post, language: tr.from }
+                        }}</mb-notice>
+                      }
                       <app-compose
                         [inReplyToId]="reply.id"
                         [replyToHandle]="replyToHandle()"

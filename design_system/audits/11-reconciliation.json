@@ -1585,7 +1585,12 @@
     {
       "file": "ui/src/app/reading/radio/section-tabs.ts",
       "disposition": "adopted scope",
-      "nextStep": "Singles and Playlists tabs use Navigation/NavLink in tabs presentation for Saved/Find and My playlists/Find playlists. Preserve them as route links (pages, not toggles)."
+      "nextStep": "Singles and Playlists tabs use Navigation/NavLink in tabs presentation for Saved/Find/Starter kits and My playlists/Find playlists. Preserve them as route links (pages, not toggles)."
+    },
+    {
+      "file": "ui/src/app/reading/radio/podcast-kits-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Podcast starter kits use Radio Header, Navigation/NavLink, Field/Control for language, Button for playable posts, and shared FollowButton. Kit cards and outgoing post links are native links; local CSS provides layout only. Preserve honest media labels and signed-out discovery."
     },
     {
       "file": "ui/src/app/reading/radio/track-result.ts",
@@ -1765,7 +1770,7 @@
     {
       "file": "ui/src/app/public-pages/language-landing/language-landing.html",
       "disposition": "adopted scope",
-      "nextStep": "Public prerendered language landing page (one component for every language page) using MbContentLink and MbButton in the header and sign-in row, a plain claims list, and the deferred checklist when signed in. Keep new controls on shared widgets."
+      "nextStep": "Public prerendered language landing page (one component for every language page) using MbContentLink in the header and optional FAQ compatibility help link, MbButton in the header and sign-in row, a plain claims list, and the deferred checklist when signed in. Keep new controls on shared widgets."
     },
     {
       "file": "ui/src/app/public-pages/language-landing/language-checklist.ts",
@@ -3406,6 +3411,51 @@
       "file": "ui/src/app/unbird/unbird-more.ts",
       "disposition": "adopted scope",
       "nextStep": "Section with Navigation rows (MbNavLink, native routerLinks) from the public Twitter pages into Unbird's tabs; shown only once an archive is loaded. Only the description line's colour is local."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/account-setup.html",
+      "disposition": "adopted scope",
+      "nextStep": "Full-page account setup shell: MbButton (Exit setup link variant, Back outline, Skip link, Next solid), MbProgress, MbNotice for the waiting banner and Next errors. Layout CSS only."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-findable.ts",
+      "disposition": "adopted scope",
+      "nextStep": "MbCheckbox with cost hints (discoverable, indexable, locked) and MbRadioGroup for default visibility. No local control styling."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-follow.html",
+      "disposition": "adopted scope",
+      "nextStep": "Interest MbCheckbox grid in a fieldset, people as MbIdentityRow (suggestion-avatar/suggestion-name, Unbird pattern) with an MbCheckbox Follow toggle, MbButton Follow N. Fieldset grid is layout only."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-intro.html",
+      "disposition": "adopted scope",
+      "nextStep": "MbField + textarea[mbControl], MbButton Post/Pin/Save for later, MbButton link for the public toggle, MbNotice for errors. Prompt list is plain text."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-languages.ts",
+      "disposition": "adopted scope",
+      "nextStep": "MbCheckbox language grid and MbRadioGroup for the posting language."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-movers.ts",
+      "disposition": "adopted scope",
+      "nextStep": "MbRadioGroup (Twitter / Bluesky / Neither)."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-profile.html",
+      "disposition": "adopted scope",
+      "nextStep": "MbFileDrop (link presentation) for the picture, MbField + input/textarea[mbControl] for name and bio, MbButton link for Copy from another account."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-purpose.ts",
+      "disposition": "adopted scope",
+      "nextStep": "MbRadioGroup with hints for the account purpose."
+    },
+    {
+      "file": "ui/src/app/public-pages/create-account/create-account.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public /create-mastodon-account/ page: MbField + select[mbControl] language, MbCheckbox approval toggle, server cards as MbDiscoveryCandidate with data-candidate-actions MbButton, outline MbButton for Pick another server. Prerendered; card list and page width are local layout."
     }
   ]
 }

@@ -1,6 +1,6 @@
 # New account setup + /create-mastodon-account/: six sprints
 
-Status: sprints 1–6 built 2026-11-18; final gates not yet run (handoff list at the end). See [Progress log](#progress-log) at the end. Design and every decision:
+Status: sprints 1–7 built and final gates run 2026-11-18 (results at the end). Still open: owner canary, server-list review. See [Progress log](#progress-log) at the end. Design and every decision:
 [../new-account-setup.md](../new-account-setup.md). Read it first. This file is
 the order of work, the files to touch and the gates.
 
@@ -577,3 +577,42 @@ and rerun that gate plus the affected specs.
    5.x server (mastodon.social or ieji.de are in the list). Fill in "Canary
    findings" in `spec/new-account-setup.md`, then build or drop the
    approval queue (sprint 4 deviation).
+
+## Final gate results (2026-11-18)
+
+| Gate | Result |
+|---|---|
+| `check:i18n`, `make storage`, `check:libs` | green |
+| `audit_deep_links.py` | green after classifying `setup/:step` and `create-mastodon-account/go/:server` as not-shareable (`SERVER_OR_LOCAL`) |
+| `make test` | green (final run): 10517 tests in the manifest, 55 added, 0 missing; dead code clean |
+| `npm run build:mockingbird` | green. Initial bundle 932.34 kB, against 929.59 kB earlier the same day (+2.75 kB raw, +0.6 kB gzip, from `setup-store`, `setup.guard` and `create-account-meta`). The 900 kB *warning* budget was already exceeded before this work; the 1 MB error budget is fine. |
+| `make test-seo` | green after fixes |
+| `npm run test:seo:browser` | green (JavaScript on and off, desktop and mobile) |
+| `npm run test:deep-links`, `make test-deep-links-browser` | green (32 journeys) |
+| `make design-verify` | static parts green. 6 browser tests failed in the full parallel run (adoption-17-18 final batch, adoption-7 Privacy rollback, adoption-9 translation dismiss, adoption toolbar layout); **all 27 tests in those files pass alone** (`DESIGN_BROWSER_WORKERS=1`). Load flakiness, already known in AGENTS.md. |
+
+**Fixes made during the gates** (the owner said "you own all the issues"):
+
+- **Design inventory:** regenerated and reviewed. The 9 new candidate files were
+  reconciled as adopted scope in `11-reconciliation.json` (appended, file
+  order kept). Each line-shift review has its own note in
+  `06-consolidation.md`.
+- **The handle generator's "Open the app" header link** (English and 17
+  translations) had lost its `next` return path in the pushed "unbird"
+  commit. That failed 17 `translated-pages.spec` tests. Each page now passes
+  `[queryParams]="{ next: '/<its path>' }"`.
+- **`prepare-seo-index.mjs`:** a lastmod source for
+  `create-mastodon-account/` (its directory).
+- **The create-account page:**
+  - gained the shared public-page footer (MbContentLink to help, features,
+    every `/for/` page and communities), as `check-seo-build` requires of
+    public pages,
+  - its links into the app (`go/…` and "Pick another server") are now
+    `rel="nofollow"`.
+- **`profile-misskey.spec`** failed once in a full run and passed alone (flaky,
+  untouched).
+
+**Still the owner's:**
+- the canary sign-up (spec, "Canary findings"),
+- reviewing `signup-servers.json`,
+- committing.

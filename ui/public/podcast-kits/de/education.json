@@ -1,0 +1,160 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "education",
+ "lang": "de",
+ "title": {
+  "en": "Education",
+  "de": "Bildung",
+  "fr": "Éducation",
+  "es": "Educación",
+  "ja": "教育",
+  "it": "Istruzione",
+  "pt": "Educação",
+  "nl": "Onderwijs",
+  "pl": "Edukacja",
+  "sv": "Utbildning",
+  "ru": "Образование",
+  "ko": "교육",
+  "uk": "Освіта",
+  "tr": "Eğitim",
+  "el": "Εκπαίδευση",
+  "zh": "教育",
+  "ca": "Educació",
+  "cs": "Vzdělávání",
+  "fi": "Koulutus",
+  "no": "Utdanning",
+  "ar": "التعليم",
+  "zh-Hant": "教育"
+ },
+ "icon": "🎓",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "radihum20@fedihum.org",
+   "url": "https://fedihum.org/@RaDiHum20",
+   "displayName": "RaDiHum20",
+   "avatar": "https://fedihum.s3proxy.de/accounts/avatars/109/353/546/837/157/243/original/7532d2685f724c75.png",
+   "bot": false,
+   "bio": "Merk dir die 20! Denn immer am 20. eines Monats kommt eine neue Folge unseres RaDiHum20-Podcast – dem Radio für Digital Humanities. In gemütlicher Runde und als stünden wir an einem Stehtischchen auf…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:22+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "fedihum.org",
+     "postUrl": "https://fedihum.org/@RaDiHum20/117641926522392803",
+     "seenAt": "2026-11-19T07:29:01.718Z"
+    }
+   ]
+  },
+  {
+   "acct": "leibnizgemeinschaft@wisskomm.social",
+   "url": "https://wisskomm.social/@leibnizgemeinschaft",
+   "displayName": "Leibniz-Gemeinschaft",
+   "avatar": "https://wisskomm.social/system/accounts/avatars/114/782/426/860/047/619/original/5f30fe27217dee05.png",
+   "bot": false,
+   "bio": "Forschen für die beste der möglichen Welten.",
+   "showUrl": "https://www.leibniz-gemeinschaft.de/ueber-uns/neues/mediathek/podcast-tonspur-wissen",
+   "observedAt": "2026-11-20T00:03:16+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "eventbrite.de",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/117268842548147717",
+     "seenAt": "2026-09-14T10:08:52.047Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "leibniz-gemeinschaft.de",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116623324582126787",
+     "seenAt": "2026-05-23T10:05:09.569Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "wisskomm.social",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/117631300991152002",
+     "seenAt": "2026-11-17T10:26:48.975Z"
+    }
+   ]
+  },
+  {
+   "acct": "thomasjenewein@colearn.social",
+   "url": "https://colearn.social/@ThomasJenewein",
+   "displayName": "Thomas Jenewein",
+   "avatar": "https://colearn.social/system/accounts/avatars/109/445/316/074/700/882/original/24a9456cc1f623f1.jpg",
+   "bot": false,
+   "bio": "My updates on SAP Training & Adoption, CorporateLearning, Bildung/ Education, FutureofWork, Edtech, Change 👉🏻checkout our Podcast 🎧 EducationNewscast",
+   "showUrl": "https://podcasts.apple.com/de/podcast/education-newscast/id1352307529",
+   "observedAt": "2026-11-20T00:07:34+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "colearn.social",
+     "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
+     "seenAt": "2026-11-16T12:21:45.677Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "fedigroups.social",
+     "postUrl": "https://colearn.social/@ThomasJenewein/115802168368548611",
+     "seenAt": "2025-12-29T09:34:20.129Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
+     "seenAt": "2026-11-16T12:21:45.677Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcast.opensap.info",
+     "postUrl": "https://colearn.social/@ThomasJenewein/115609202219787637",
+     "seenAt": "2025-11-25T07:40:30.360Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
+     "seenAt": "2026-11-16T12:21:45.677Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podchaser.com",
+     "postUrl": "https://colearn.social/@ThomasJenewein/117347380324776949",
+     "seenAt": "2026-09-28T07:02:03.410Z"
+    }
+   ]
+  },
+  {
+   "acct": "eigenraum@podcasts.social",
+   "url": "https://podcasts.social/@Eigenraum",
+   "displayName": "Eigenraum",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/272/983/838/245/337/original/66b9bc290289dcca.png",
+   "bot": false,
+   "bio": "Ich bin der Eigenraum, ein Podcast über Mathematik und ihre Geschichten. Für Interaktion mit dem Podcast seid ihr hier genau richtig! - Mein Sprecher ist @tomkalei - Automatisierte ActivityPub Ankünd…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:14+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "instagram.com",
+     "postUrl": "https://podcasts.social/@Eigenraum/117531649068400270",
+     "seenAt": "2026-10-30T20:04:01.303Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://podcasts.social/@Eigenraum/117625729433320375",
+     "seenAt": "2026-11-16T10:49:53.747Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
+     "seenAt": "2026-11-03T10:22:01.933Z"
+    }
+   ]
+  }
+ ]
+}

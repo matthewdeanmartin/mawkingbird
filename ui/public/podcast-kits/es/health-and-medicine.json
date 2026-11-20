@@ -1,0 +1,58 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "health-and-medicine",
+ "lang": "es",
+ "title": {
+  "en": "Health and Medicine",
+  "de": "Gesundheit und Medizin",
+  "fr": "Santé et médecine",
+  "es": "Salud y medicina",
+  "ja": "健康と医療",
+  "it": "Salute e medicina",
+  "pt": "Saúde e medicina",
+  "nl": "Gezondheid en geneeskunde",
+  "pl": "Zdrowie i medycyna",
+  "sv": "Hälsa och medicin",
+  "ru": "Здоровье и медицина",
+  "ko": "건강과 의학",
+  "uk": "Здоров'я та медицина",
+  "tr": "Sağlık ve tıp",
+  "el": "Υγεία και ιατρική",
+  "zh": "健康与医学",
+  "ca": "Salut i medicina",
+  "cs": "Zdraví a medicína",
+  "fi": "Terveys ja lääketiede",
+  "no": "Helse og medisin",
+  "ar": "الصحة والطب",
+  "zh-Hant": "健康與醫學"
+ },
+ "icon": "🩺",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "ocularis@mastodon.nu",
+   "url": "https://mastodon.nu/@ocularis",
+   "displayName": "Ocularis",
+   "avatar": "https://media.mastodon.nu/accounts/avatars/109/373/651/343/176/512/original/672bf5910189f863.png",
+   "bot": false,
+   "bio": "Oftalmólogo y divulgador. Tengo un blog y un podcast (Ocularis) sobre salud visual. También tengo un podcast personal (El parche de Odín)",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:01+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podcast.danielaragay.net",
+     "postUrl": "https://mastodon.nu/@ocularis/117605521684943906",
+     "seenAt": "2026-11-12T21:10:47.977Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "rss.com",
+     "postUrl": "https://mastodon.nu/@ocularis/117619307479974959",
+     "seenAt": "2026-11-15T07:36:42.515Z"
+    }
+   ]
+  }
+ ]
+}

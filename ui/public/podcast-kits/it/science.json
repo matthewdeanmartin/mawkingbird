@@ -1,0 +1,58 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "science",
+ "lang": "it",
+ "title": {
+  "en": "Science",
+  "de": "Wissenschaft",
+  "fr": "Sciences",
+  "es": "Ciência",
+  "ja": "科学",
+  "it": "Scienza",
+  "pt": "Ciência",
+  "nl": "Wetenschap",
+  "pl": "Nauka",
+  "sv": "Vetenskap",
+  "ru": "Наука",
+  "ko": "과학",
+  "uk": "Наука",
+  "tr": "Bilim",
+  "el": "Επιστήμη",
+  "zh": "科学",
+  "ca": "Ciència",
+  "cs": "Věda",
+  "fi": "Tiede",
+  "no": "Vitenskap",
+  "ar": "العلوم",
+  "zh-Hant": "科學"
+ },
+ "icon": "🔬",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "astro_luigi@mastodon.social",
+   "url": "https://mastodon.social/@astro_luigi",
+   "displayName": "Sotto Pressione",
+   "avatar": "https://files.mastodon.social/accounts/avatars/116/584/792/002/735/411/original/da17d7cc04acf724.png",
+   "bot": false,
+   "bio": "Passione per subacquea e astonautica. Podcast : https://youtube.com/@luigitarsia-o1q?si=Zn9taA5Pz5n5fH0T. Www.amicidiboyle.it",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:57:30+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mastodon.social/@astro_luigi/117338627597565516",
+     "seenAt": "2026-09-26T17:56:07.396Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@astro_luigi/117337978145911392",
+     "seenAt": "2026-09-26T15:10:57.551Z"
+    }
+   ]
+  }
+ ]
+}

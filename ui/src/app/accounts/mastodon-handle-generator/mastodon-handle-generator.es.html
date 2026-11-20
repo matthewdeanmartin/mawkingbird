@@ -3,7 +3,13 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon">Abrir la app</a>
+      <a
+        mbButton
+        variant="outline"
+        routerLink="/login/mastodon"
+        [queryParams]="{ next: '/es/generador-de-nombres-de-usuario-mastodon' }"
+        >Abrir la app</a
+      >
     </header>
   }
 

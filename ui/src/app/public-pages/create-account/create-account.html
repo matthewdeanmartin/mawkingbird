@@ -58,7 +58,11 @@
                 >
               </p>
               <div data-candidate-actions>
-                <a mbButton [routerLink]="['/create-mastodon-account/go', server.domain]">
+                <a
+                  mbButton
+                  rel="nofollow"
+                  [routerLink]="['/create-mastodon-account/go', server.domain]"
+                >
                   Create an account on {{ server.domain }}
                 </a>
               </div>
@@ -70,6 +74,7 @@
         <a
           mbButton
           variant="outline"
+          rel="nofollow"
           routerLink="/login/mastodon"
           [queryParams]="{ intent: 'need' }"
           >Pick another server</a
@@ -116,4 +121,15 @@
       <p>Yes, on the same server or on different ones. Mawkingbird can sign in to several.</p>
     </section>
   </article>
+  <footer class="ca-footer">
+    <a mbContentLink href="/help/">Help</a>
+    <a mbContentLink routerLink="/features">Discover all Mawkingbird features</a>
+    <a mbContentLink routerLink="/for/readers">For readers</a>
+    <a mbContentLink routerLink="/for/bluesky">For Bluesky users</a>
+    <a mbContentLink routerLink="/for/twitter-exodus">Leaving Twitter</a>
+    <a mbContentLink routerLink="/for/instagram">For photo lovers</a>
+    <a mbContentLink routerLink="/for/creators">For creators</a>
+    <a mbContentLink routerLink="/for/power-users">For power users</a>
+    <a mbContentLink routerLink="/communities">Mastodon communities by interest</a>
+  </footer>
 </main>

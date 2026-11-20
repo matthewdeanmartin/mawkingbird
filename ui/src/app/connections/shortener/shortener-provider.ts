@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
  * Angular talks to your server, your server holds the API key and talks to the
  * shortener. Every credential rule in its section 2 follows from that shape.
  *
- * Mawkingbird has no backend. It is a static bundle on GitHub Pages, and the
+ * The core web client does not proxy shortener requests through a Mawkingbird backend. It is a static bundle on GitHub Pages, and the
  * whole app is built on that constraint — every connector already stores its
  * secret in this origin's localStorage under the retention policy in
  * `credential-lifetime.ts`, because there is nowhere else for it to go. So the

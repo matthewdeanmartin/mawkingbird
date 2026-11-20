@@ -1,0 +1,100 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "retro-computing",
+ "lang": "de",
+ "title": {
+  "en": "Retro Computing",
+  "de": "Retro-Computing",
+  "fr": "Rétro-informatique",
+  "es": "Retroinformática",
+  "ja": "レトロコンピューティング",
+  "it": "Retrocomputing",
+  "pt": "Retrocomputação",
+  "nl": "Retrocomputing",
+  "pl": "Retro komputery",
+  "sv": "Retrodatorer",
+  "ru": "Ретрокомпьютеры",
+  "ko": "레트로 컴퓨팅",
+  "uk": "Ретрокомп'ютери",
+  "tr": "Retro bilgisayarlar",
+  "el": "Ρετρό υπολογιστές",
+  "zh": "复古计算机",
+  "ca": "Informàtica retro",
+  "cs": "Retro počítače",
+  "fi": "Retrotietokoneet",
+  "no": "Retrodatamaskiner",
+  "ar": "الحوسبة القديمة",
+  "zh-Hant": "復古電腦"
+ },
+ "icon": "🖥️",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "datort@mastodon.social",
+   "url": "https://mastodon.social/@datort",
+   "displayName": "datort :mastodon:",
+   "avatar": "https://files.mastodon.social/accounts/avatars/106/929/422/237/346/186/original/f484b342e833bd69.png",
+   "bot": false,
+   "bio": "👾 C64-Kid → Arduino & ESP Maker | 🎮 Retro & Coding | 🎥 YouTube & 🎙️ Podcast: Pad One Please",
+   "showUrl": "https://datort.de/feed/podcast/pad-one-please/",
+   "observedAt": "2026-11-19T23:59:32+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "datort.de",
+     "postUrl": "https://mastodon.social/@datort/116073882530867195",
+     "seenAt": "2026-02-15T09:14:49.214Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@datort/116073882530867195",
+     "seenAt": "2026-02-15T09:14:49.214Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@datort/117514489336266424",
+     "seenAt": "2026-10-27T19:20:04.581Z"
+    }
+   ]
+  },
+  {
+   "acct": "pat9496@oldbytes.space",
+   "url": "https://oldbytes.space/@pat9496",
+   "displayName": "Pat",
+   "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/670/799/597/069/436/original/6ba2d0db6c795b83.png",
+   "bot": false,
+   "bio": "Geek | Retrogamer | Modern Gamer | Reader | Parent | IT & Legacy Systems | Point-&-Click-Adventure & CRPG-Specialist | Pen-&-Paper-RPG-Enthusiast | Podcaster (🇬🇧/🇩🇪)",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:19+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "anchor.fm",
+     "postUrl": "https://oldbytes.space/@pat9496/113471458717285578",
+     "seenAt": "2024-11-12T18:44:13.181Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "oldbytes.space",
+     "postUrl": "https://oldbytes.space/@pat9496/110954526697577901",
+     "seenAt": "2023-08-26T06:35:18.408Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://oldbytes.space/@pat9496/115325957723480101",
+     "seenAt": "2025-10-06T07:07:42.333Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.social",
+     "postUrl": "https://oldbytes.space/@pat9496/111002110805843479",
+     "seenAt": "2023-09-03T16:16:34.279Z"
+    }
+   ]
+  }
+ ]
+}

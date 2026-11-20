@@ -1,0 +1,118 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "health-and-medicine",
+ "lang": "en",
+ "title": {
+  "en": "Health and Medicine",
+  "de": "Gesundheit und Medizin",
+  "fr": "Santé et médecine",
+  "es": "Salud y medicina",
+  "ja": "健康と医療",
+  "it": "Salute e medicina",
+  "pt": "Saúde e medicina",
+  "nl": "Gezondheid en geneeskunde",
+  "pl": "Zdrowie i medycyna",
+  "sv": "Hälsa och medicin",
+  "ru": "Здоровье и медицина",
+  "ko": "건강과 의학",
+  "uk": "Здоров'я та медицина",
+  "tr": "Sağlık ve tıp",
+  "el": "Υγεία και ιατρική",
+  "zh": "健康与医学",
+  "ca": "Salut i medicina",
+  "cs": "Zdraví a medicína",
+  "fi": "Terveys ja lääketiede",
+  "no": "Helse og medisin",
+  "ar": "الصحة والطب",
+  "zh-Hant": "健康與醫學"
+ },
+ "icon": "🩺",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "yogascussion@mastodon.social",
+   "url": "https://mastodon.social/@yogascussion",
+   "displayName": "YogaScussion ℠",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/227/433/316/800/680/original/4890ac91d66fb274.png",
+   "bot": false,
+   "bio": "YogaScussion is a yoga talk podcast for modern practitioners exploring yoga culture, yoga philosophy, yoga practice, embodied living, and wellness. Hosts Gina Clingerman and Brendon Orr talk yoga's p…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:53+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@yogascussion/117644349903168891",
+     "seenAt": "2026-11-19T17:45:19.591Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@yogascussion/117638235780395747",
+     "seenAt": "2026-11-18T15:50:25.458Z"
+    }
+   ]
+  },
+  {
+   "acct": "drworkpsych@social.lol",
+   "url": "https://social.lol/@drworkpsych",
+   "displayName": "Dr. Richard A. MacKinnon",
+   "avatar": "https://s3.eu-central-003.backblazeb2.com/social-lol-media/accounts/avatars/117/309/606/097/083/732/original/f1d095d4bbdd5450.png",
+   "bot": false,
+   "bio": "I'm a Chartered #Psychologist and Coach, based in London, UK. I'm the founder of WorkLifePsych, a team of accredited and experienced workplace psychologists. We provide coaching, training and develop…",
+   "showUrl": "https://www.worklifepsych.com/podcast",
+   "observedAt": "2026-11-19T23:59:56+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "podcasts.apple.com",
+     "postUrl": "https://social.lol/@drworkpsych/117477738602190922",
+     "seenAt": "2026-10-21T07:33:52.878Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "social.lol",
+     "postUrl": "https://social.lol/@drworkpsych/117642179275951751",
+     "seenAt": "2026-11-19T08:33:18.425Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "worklifepsych.com",
+     "postUrl": "https://social.lol/@drworkpsych/117642179275951751",
+     "seenAt": "2026-11-19T08:33:18.425Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://social.lol/@drworkpsych/117552890722837185",
+     "seenAt": "2026-11-03T14:06:03.226Z"
+    }
+   ]
+  },
+  {
+   "acct": "ty_ylfa@mstdn.social",
+   "url": "https://mstdn.social/@Ty_ylfa",
+   "displayName": "Toren \" Ty \" Ylfa",
+   "avatar": "https://media.mstdn.social/accounts/avatars/117/088/008/240/187/646/original/317c5e7be4ae1e6d.jpg",
+   "bot": false,
+   "bio": "Podcaster | Ex‑martial artist CA | SA Survivor Biochemistry 🧬 | Psychology 🧠 | Child Psychology. I write about resilience, identity, psychology, and lived experience — the honest, ongoing work of sta…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:49+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mstdn.social",
+     "postUrl": "https://mstdn.social/@Ty_ylfa/117092206072984372",
+     "seenAt": "2026-08-14T05:27:53.333Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mstdn.social/@Ty_ylfa/117092206072984372",
+     "seenAt": "2026-08-14T05:27:53.333Z"
+    }
+   ]
+  }
+ ]
+}

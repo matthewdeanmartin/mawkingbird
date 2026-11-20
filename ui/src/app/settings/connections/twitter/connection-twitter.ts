@@ -102,7 +102,7 @@ import { Terminology } from '../../../i18n/terminology';
 // i18n settings.connections.twitter.cancel: Cancel
 // i18n settings.connections.twitter.checkBalance: Check balance
 // i18n settings.connections.twitter.checking: Checking…
-// i18n settings.connections.twitter.credentialWarning: This API key is stored in this browser's localStorage, because Mawkingbird has no server to keep it on. The key spends credits you have paid for, so use one you can rotate, and only on a device you trust. You can revoke it on the provider's own site at any time.
+// i18n settings.connections.twitter.credentialWarning: This API key is stored in this browser's localStorage for this connection. The key spends credits you have paid for, so use one you can rotate, and only on a device you trust. You can revoke it on the provider's own site at any time.
 // i18n settings.connections.twitter.disconnect: Disconnect
 // i18n settings.connections.twitter.follows.atMax.a: You are following
 // i18n settings.connections.twitter.follows.atMax.b: accounts, the maximum. Remove one to add another.

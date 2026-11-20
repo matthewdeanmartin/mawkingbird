@@ -47,7 +47,7 @@ import { TwitterSourceEntry } from '../twitter-source';
  */
 // i18n twitter.consent.titleSelfHosted: Send your {{source}} key through your own proxy?
 // i18n twitter.consent.titleWarn: {{proxy}} will be able to read your {{source}} key
-// i18n twitter.consent.intro: {{source}} refuses to answer web browsers at all — you just saw that test fail. Mawkingbird has no server of its own, so the only way to read tweets here is to route every request through the CORS proxy you configured, and those requests carry your API key.
+// i18n twitter.consent.intro: {{source}} refuses to answer web browsers directly — you just saw that test fail. To read tweets with this browser connection, requests go through the CORS proxy you configured, and those requests carry your API key.
 // i18n twitter.consent.selfHostedBody: Your proxy is <strong>your own server</strong>. Your key and your reading go to a machine you run, so nothing is being disclosed to anyone else. Just make sure the template you configured points where you think it does.
 // i18n twitter.consent.whoHeading: Who you would be trusting
 // i18n twitter.consent.theirWebsite: Their website

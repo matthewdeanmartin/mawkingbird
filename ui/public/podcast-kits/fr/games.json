@@ -1,0 +1,142 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "games",
+ "lang": "fr",
+ "title": {
+  "en": "Games",
+  "de": "Spiele",
+  "fr": "Jeux",
+  "es": "Videojuegos",
+  "ja": "ゲーム",
+  "it": "Videogiochi",
+  "pt": "Jogos",
+  "nl": "Games",
+  "pl": "Gry",
+  "sv": "Spel",
+  "ru": "Игры",
+  "ko": "게임",
+  "uk": "Ігри",
+  "tr": "Oyunlar",
+  "el": "Παιχνίδια",
+  "zh": "游戏",
+  "ca": "Jocs",
+  "cs": "Hry",
+  "fi": "Pelit",
+  "no": "Spill",
+  "ar": "الألعاب",
+  "zh-Hant": "遊戲"
+ },
+ "icon": "🎮",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "romaric_briand@ludosphere.fr",
+   "url": "https://ludosphere.fr/@Romaric_Briand",
+   "displayName": "Romaric Briand",
+   "avatar": "https://cdn.masto.host/ludospherefr/accounts/avatars/109/317/921/322/842/188/original/ce5a4185b2d5e05c.jpg",
+   "bot": false,
+   "bio": "Animateur du podcast de La Cellule. Auteur indépendant de jeux de société, philosophe et écrivain. Sens, Le Val, Le Maelstrom, Vade+Mecum, Trip to Skye, Donjons et Dominos.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:42+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "lacellule.net",
+     "postUrl": "https://ludosphere.fr/@Romaric_Briand/117602030573907293",
+     "seenAt": "2026-11-12T06:22:57.849Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "ludosphere.fr",
+     "postUrl": "https://ludosphere.fr/@Romaric_Briand/117642278427723958",
+     "seenAt": "2026-11-19T08:58:31.361Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://ludosphere.fr/@Romaric_Briand/117602233673702222",
+     "seenAt": "2026-11-12T07:14:36.906Z"
+    }
+   ]
+  },
+  {
+   "acct": "proxijeux@ludosphere.fr",
+   "url": "https://ludosphere.fr/@ProxiJeux",
+   "displayName": "Proxi-Jeux",
+   "avatar": "https://cdn.masto.host/ludospherefr/accounts/avatars/111/969/474/664/030/726/original/cff5e3bef13cd8c0.png",
+   "bot": false,
+   "bio": "Proxi-Jeux, c'est le #podcast qui vous parle de jeux de société #j2s https://podcast.proxi-jeux.fr/ Écoutez-nous, et jouez bien 😉",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:06:20+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "ludosphere.fr",
+     "postUrl": "https://ludosphere.fr/@ProxiJeux/117637732437955842",
+     "seenAt": "2026-11-18T13:42:25.061Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcast.proxi-jeux.fr",
+     "postUrl": "https://ludosphere.fr/@ProxiJeux/117637732437955842",
+     "seenAt": "2026-11-18T13:42:25.061Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://ludosphere.fr/@ProxiJeux/117444152606866345",
+     "seenAt": "2026-10-15T09:12:31.253Z"
+    }
+   ]
+  },
+  {
+   "acct": "ind100podcast@ludosphere.fr",
+   "url": "https://ludosphere.fr/@Ind100Podcast",
+   "displayName": "Ind100 Podcast",
+   "avatar": "https://cdn.masto.host/ludospherefr/accounts/avatars/109/296/312/042/907/106/original/89c35e127335e4c0.jpg",
+   "bot": false,
+   "bio": "Chaîne Youtube & Twitch qui parle de #jdr, de #j2s et d'imaginaire ! Tous les mardis à 21h en live sans compter le reste et le tout dans la bonne humeur 😘 ! Trouvable dans pleins d'autres endroits ⬇️…",
+   "showUrl": "https://www.youtube.com/c/Ind100Podcast",
+   "observedAt": "2026-11-20T00:02:19+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "anchor.fm",
+     "postUrl": "https://ludosphere.fr/@Ind100Podcast/116200920563788617",
+     "seenAt": "2026-03-09T19:42:15.752Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://ludosphere.fr/@Ind100Podcast/114165648830674833",
+     "seenAt": "2025-03-15T09:05:53.692Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "tube.portes-imaginaire.org",
+     "postUrl": "https://ludosphere.fr/@Ind100Podcast/114845118715922041",
+     "seenAt": "2025-07-13T09:04:01.345Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "twitch.tv",
+     "postUrl": "https://ludosphere.fr/@Ind100Podcast/116356453069019762",
+     "seenAt": "2026-04-06T06:56:13.441Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://ludosphere.fr/@Ind100Podcast/116200920563788617",
+     "seenAt": "2026-03-09T19:42:15.752Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube.com",
+     "postUrl": "https://ludosphere.fr/@Ind100Podcast/114845118715922041",
+     "seenAt": "2025-07-13T09:04:01.345Z"
+    }
+   ]
+  }
+ ]
+}

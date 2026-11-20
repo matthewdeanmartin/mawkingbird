@@ -1,0 +1,70 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "travel",
+ "lang": "de",
+ "title": {
+  "en": "Travel",
+  "de": "Reisen",
+  "fr": "Voyages",
+  "es": "Viajes",
+  "ja": "旅行",
+  "it": "Viaggi",
+  "pt": "Viagens",
+  "nl": "Reizen",
+  "pl": "Podróże",
+  "sv": "Resor",
+  "ru": "Путешествия",
+  "ko": "여행",
+  "uk": "Подорожі",
+  "tr": "Seyahat",
+  "el": "Ταξίδια",
+  "zh": "旅行",
+  "ca": "Viatges",
+  "cs": "Cestování",
+  "fi": "Matkailu",
+  "no": "Reiser",
+  "ar": "السفر",
+  "zh-Hant": "旅行"
+ },
+ "icon": "🧳",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "aufkurztrip@nrw.social",
+   "url": "https://nrw.social/@aufkurztrip",
+   "displayName": "Michael Koopmann",
+   "avatar": "https://media.nrw.social/accounts/avatars/109/245/738/387/447/651/original/a78052cf750273f4.jpeg",
+   "bot": false,
+   "bio": "Projekte, Bilder und Gedanken von Michael Koopmann #Fotografie #Reisen #Web #Podcast Gerne auf Kurztrip in Europa unterwegs und hat immer die Kamera dabei. Host des Podcast 'Bilder und Geschichten' u…",
+   "showUrl": "https://podcast.bilderzeigen.de",
+   "observedAt": "2026-11-19T23:57:33+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "nrw.social",
+     "postUrl": "https://nrw.social/@aufkurztrip/117502453125921623",
+     "seenAt": "2026-10-25T16:19:06.577Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcast.bilderzeigen.de",
+     "postUrl": "https://nrw.social/@aufkurztrip/117438103737481544",
+     "seenAt": "2026-10-14T07:34:12.835Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcast.de",
+     "postUrl": "https://nrw.social/@aufkurztrip/117411698536257876",
+     "seenAt": "2026-10-09T15:39:01.434Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://nrw.social/@aufkurztrip/117361151237610222",
+     "seenAt": "2026-09-30T17:24:10.869Z"
+    }
+   ]
+  }
+ ]
+}

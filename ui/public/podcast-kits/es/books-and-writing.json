@@ -1,0 +1,64 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "books-and-writing",
+ "lang": "es",
+ "title": {
+  "en": "Books and Writing",
+  "de": "Bücher und Schreiben",
+  "fr": "Livres et écriture",
+  "es": "Libros y escritura",
+  "ja": "本と執筆",
+  "it": "Libri e scrittura",
+  "pt": "Livros e escrita",
+  "nl": "Boeken en schrijven",
+  "pl": "Ksiazki i pisanie",
+  "sv": "Böcker och skrivande",
+  "ru": "Книги и литература",
+  "ko": "책과 글쓰기",
+  "uk": "Книги та письмо",
+  "tr": "Kitaplar ve yazarlık",
+  "el": "Βιβλία και συγγραφή",
+  "zh": "书籍与写作",
+  "fi": "Kirjat ja kirjoittaminen",
+  "ca": "Llibres i escriptura",
+  "cs": "Knihy a psaní",
+  "no": "Bøker og skriving",
+  "ar": "الكتب والكتابة",
+  "zh-Hant": "書籍與寫作"
+ },
+ "icon": "📚",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "laposadadelcuervolector@masto.es",
+   "url": "https://masto.es/@laposadadelcuervolector",
+   "displayName": "La posada del Cuervo Lector",
+   "avatar": "https://masto.es/system/accounts/avatars/116/981/002/103/694/912/original/5757c179156d07c0.png",
+   "bot": false,
+   "bio": "La posada donde las historias encuentran refugio y el cuervo las observa🐦‍⬛ Podcast sobre fantasía, terror, grimdark y libros que dejan huella📜",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:08+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "anchor.fm",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117530905679160995",
+     "seenAt": "2026-10-30T16:54:58.083Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "masto.es",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117643038475524519",
+     "seenAt": "2026-11-19T12:11:48.770Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117638214469868798",
+     "seenAt": "2026-11-18T15:45:00.287Z"
+    }
+   ]
+  }
+ ]
+}

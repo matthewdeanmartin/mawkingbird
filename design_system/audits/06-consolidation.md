@@ -2935,3 +2935,38 @@ Tool entry links (2026-11-18): reviewed inventory line shifts from wrapping
 header links with sign-in return parameters. Candidate counts and dispositions
 are unchanged. Unbird's folder picker and archive-help disclosure now occupy
 separate grid rows so expansion does not move the disclosure sideways.
+
+New account setup and /create-mastodon-account/ (2026-11-18): reviewed the
+regenerated inventory: 2020 scanned files, 690 candidate files. Nine new
+candidate files, all adopted scope: the full-page setup shell
+(`accounts/setup/account-setup.html`), its step components (purpose, profile,
+languages, findable, movers, follow, intro) and the public
+`public-pages/create-account/create-account.html`. Each uses existing widgets
+only: MbButton, MbProgress, MbNotice, MbField/MbControl, MbCheckbox,
+MbRadioGroup, MbFileDrop, MbIdentityRow and MbDiscoveryCandidate. The
+`nativeButtons` findings are `button[mbButton]`. No shared widget changed.
+
+Handle generator return links (2026-11-18): the "Open the app" header link on
+the English page and its 17 translations now carries `next` back to the page,
+as the translated-pages spec requires. Reviewed inventory line shifts only;
+candidate counts and dispositions are unchanged.
+
+Create-account SEO fixes (2026-11-18): the public page gained the shared
+public-page footer (MbContentLink to help, features, every /for/ page and
+communities) and rel="nofollow" on its links into the app, as
+check-seo-build requires. Reviewed: only create-account.html line numbers
+moved. Candidate counts and dispositions are unchanged.
+
+Copy review and compatibility help (2026-11-19): reviewed the regenerated
+inventory after revising archive wording and adding a compatibility help link
+to the language landing pages in all 18 available languages. The new FAQ link
+uses the existing MbContentLink. The archive-tools content link moved one line. The inventory
+still has 2020 scanned files and 690 candidate files; no candidate files,
+dispositions, or shared widgets changed.
+
+Podcast starter kits in Radio (2026-11-19): reviewed the regenerated inventory
+after adding the kit page, its service and styles. The page is the one new
+candidate and is reconciled as adopted scope: Radio Header, Navigation/NavLink,
+Field/Control, Button and FollowButton. Three source files were added, taking
+the inventory to 2023 scanned files and 691 candidate files. Existing Radio
+and route line numbers shifted; no shared design widget changed.

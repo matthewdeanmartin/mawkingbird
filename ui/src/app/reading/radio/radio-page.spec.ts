@@ -78,7 +78,12 @@ describe('RadioPage', () => {
     expect(root.querySelector('h1')?.textContent).toContain('Now playing');
     expect(root.textContent).toContain('Nothing is playing');
     expect(Array.from(root.querySelectorAll('a'), (link) => link.getAttribute('href'))).toEqual(
-      expect.arrayContaining(['/singles', '/playlists', '/radio/settings']),
+      expect.arrayContaining([
+        '/singles',
+        '/singles/starter-kits',
+        '/playlists',
+        '/radio/settings',
+      ]),
     );
     expect(root.querySelector('nav')).toBeNull();
     expect(navigate).not.toHaveBeenCalled();

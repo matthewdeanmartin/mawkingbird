@@ -692,6 +692,14 @@ try {
   });
   await shared.route('**/api/**', apiFixture);
   await shared.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+  await shared.goto(`${base}/singles/starter-kits`);
+  const podcastKits = shared.locator('app-podcast-kits-page');
+  await podcastKits.locator('.kits a[href*="kit=technology"]').click();
+  await podcastKits.locator('.member').first().waitFor();
+  assert.ok(await podcastKits.locator('a[href*="play=https"]').count());
+  assert.ok(await podcastKits.locator('.media a[target="_blank"]').count());
+  await podcastKits.getByRole('link', { name: 'All kits' }).click();
+  await podcastKits.locator('.kits').waitFor();
   await shared.goto(`${base}/radio?post=${encodeURIComponent(audio.url)}`);
   await shared.getByRole('button', { name: /Play audio by/ }).waitFor();
   assert.equal(await shared.locator('app-radio-dock').count(), 0, 'Shared links never autoplay');
@@ -735,7 +743,7 @@ try {
   await shared.close();
   assert.deepEqual(errors, []);
   console.log(
-    'Radio browser checks passed: anonymous shareable post/account links, post menu, address-bar sharing, saved playlists, playlistable filter, native audio, aligned labels, Studio, catalogue caching, explicit publication, external discovery, provider-specific consent, YouTube exclusion, persistent widget playback, automatic advance, pause, mobile layout and cleanup; no page errors.',
+    'Radio browser checks passed: anonymous podcast kits, shareable post/account links, post menu, address-bar sharing, saved playlists, playlistable filter, native audio, aligned labels, Studio, catalogue caching, explicit publication, external discovery, provider-specific consent, YouTube exclusion, persistent widget playback, automatic advance, pause, mobile layout and cleanup; no page errors.',
   );
 } finally {
   await browser.close();

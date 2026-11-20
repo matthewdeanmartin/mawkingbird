@@ -60,6 +60,7 @@ SERVER_OR_LOCAL = {
     "annual-report/:year": "account-specific report",
     "client-lists/:id": "browser-local list id",
     "collections/:id": "server-local collection; anonymousCollectionGuard decides",
+    "create-mastodon-account/go/:server": "one-shot hop into sign-up; links point at /create-mastodon-account/",
     "collections/preview/:id": "server-local collection preview",
     "endorsed/:accountId": "server-local account id",
     "feeds/:feed": "saved feed selected in this browser",
@@ -69,6 +70,7 @@ SERVER_OR_LOCAL = {
     "forum/d/:id": "Forum explicitly requires an account",
     "lists/:id": "server-local list id",
     "misskey/:kind/:id": "active Misskey identity required",
+    "setup/:step": "account setup for the signed-in Mastodon account; setupGuard sends others Home",
     "playlists/:id": "browser-local playlist; shares use /playlists/shared with a post or fragment",
     "tag-bundles/:id": "saved account bundle",
 }

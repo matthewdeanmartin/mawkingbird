@@ -57,7 +57,10 @@
         [title]="'playlists.empty' | transloco"
         [description]="'playlists.emptyHint' | transloco"
       >
-        <button mbButton type="button" (click)="create()">{{ 'playlists.new' | transloco }}</button>
+        <a mbButton routerLink="/singles/starter-kits">{{ 'singles.tab.starter' | transloco }}</a>
+        <button mbButton variant="outline" type="button" (click)="create()">
+          {{ 'playlists.new' | transloco }}
+        </button>
         <a mbButton variant="outline" routerLink="/singles">{{
           'playlists.savedSingles' | transloco
         }}</a>

@@ -1,0 +1,76 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "books-and-writing",
+ "lang": "de",
+ "title": {
+  "en": "Books and Writing",
+  "de": "Bücher und Schreiben",
+  "fr": "Livres et écriture",
+  "es": "Libros y escritura",
+  "ja": "本と執筆",
+  "it": "Libri e scrittura",
+  "pt": "Livros e escrita",
+  "nl": "Boeken en schrijven",
+  "pl": "Ksiazki i pisanie",
+  "sv": "Böcker och skrivande",
+  "ru": "Книги и литература",
+  "ko": "책과 글쓰기",
+  "uk": "Книги та письмо",
+  "tr": "Kitaplar ve yazarlık",
+  "el": "Βιβλία και συγγραφή",
+  "zh": "书籍与写作",
+  "fi": "Kirjat ja kirjoittaminen",
+  "ca": "Llibres i escriptura",
+  "cs": "Knihy a psaní",
+  "no": "Bøker og skriving",
+  "ar": "الكتب والكتابة",
+  "zh-Hant": "書籍與寫作"
+ },
+ "icon": "📚",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "satori_y@mastodon.social",
+   "url": "https://mastodon.social/@satori_y",
+   "displayName": "Satori Yakamura",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/833/932/569/670/248/original/940809af2a363beb.png",
+   "bot": false,
+   "bio": "Hallo, ich bin Satori! Ich erzähle Geschichten, die ich noch nicht kenne. #penandpaperde #mythicgme #podcast #rollenspiel #ttrpg",
+   "showUrl": "https://ausgewuerfelt.yakamura.de/",
+   "observedAt": "2026-11-20T00:06:51+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "seenAt": "2026-11-19T21:15:06.219Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "seenAt": "2026-11-19T21:15:06.219Z"
+    }
+   ]
+  },
+  {
+   "acct": "dailyklappentext@troet.cafe",
+   "url": "https://troet.cafe/@Dailyklappentext",
+   "displayName": "Dailyklappentext",
+   "avatar": "https://media.troet.cafe/troet/accounts/avatars/114/015/360/838/788/147/original/097b1373203f19ac.jpg",
+   "bot": false,
+   "bio": "„Dailyklappentext“ ist der Mini-Podcast, der dir regelmäßig frische Inspiration aus der Welt der Bücher und Hörspiele liefert. Perfekt für alle, die ständig auf der Suche nach neuen Geschichten sind…",
+   "showUrl": "https://letscast.fm/sites/dailyklappentext-taeglich-neue-geschichten-2e5b4949",
+   "observedAt": "2026-11-19T23:59:10+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "troet.cafe",
+     "postUrl": "https://troet.cafe/@Dailyklappentext/117641616234151867",
+     "seenAt": "2026-11-19T06:10:07.091Z"
+    }
+   ]
+  }
+ ]
+}

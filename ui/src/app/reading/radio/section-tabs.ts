@@ -6,10 +6,11 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
 // i18n singles.section: Singles
 // i18n singles.tab.saved: Saved
 // i18n singles.tab.find: Find
+// i18n singles.tab.starter: Starter kits
 // i18n playlists.tab.mine: My playlists
 // i18n playlists.tab.find: Find playlists
 
-/** Singles' two places: what you saved, and finding more. Pages, not a toggle. */
+/** Singles' saved recordings, open discovery, and podcast starter kits. */
 @Component({
   selector: 'app-singles-tabs',
   imports: [RouterLink, TranslocoPipe, MbNavigation, MbNavLink],
@@ -21,11 +22,14 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
       <a mbNavLink routerLink="/singles/find" [current]="current() === 'find'">{{
         'singles.tab.find' | transloco
       }}</a>
+      <a mbNavLink routerLink="/singles/starter-kits" [current]="current() === 'starter'">{{
+        'singles.tab.starter' | transloco
+      }}</a>
     </nav>
   `,
 })
 export class SinglesTabs {
-  readonly current = input<'saved' | 'find'>('saved');
+  readonly current = input<'saved' | 'find' | 'starter'>('saved');
 }
 
 /** Playlists' two places: yours, and finding other people's. */

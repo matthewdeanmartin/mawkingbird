@@ -8,8 +8,8 @@ import { MbSettingsRow } from '../../../design-system/settings-row/settings-row'
 import { LOCAL_AI_PRESETS, LocalAi } from '../../../connections/local-ai/local-ai';
 
 // i18n settings.connections.localAi.title: 💻 Local AI
-// i18n settings.connections.localAi.intro: Use an AI model that runs on your computer instead of OpenRouter: Ollama, LM Studio or a llama.cpp server. It's free and nothing leaves your computer. Mawkingbird can only reach the one local address you enter here.
-// i18n settings.connections.localAi.runsHere: Runs on your computer
+// i18n settings.connections.localAi.intro: Connect an AI model through a local address you choose, such as Ollama, LM Studio or a llama.cpp server. Mawkingbird sends AI requests to that address. The model and any data it sends onward are outside Mawkingbird's control.
+// i18n settings.connections.localAi.runsHere: Local model connection
 // i18n settings.connections.localAi.server: Server
 // i18n settings.connections.localAi.endpoint: Local address
 // i18n settings.connections.localAi.endpointHint: http://127.0.0.1 or http://localhost, with a port.

@@ -85,6 +85,9 @@ describe('SinglesPage', () => {
     expect(Array.from(root.querySelectorAll('a'), (link) => link.getAttribute('href'))).toContain(
       '/singles/find',
     );
+    expect(Array.from(root.querySelectorAll('a'), (link) => link.getAttribute('href'))).toContain(
+      '/singles/starter-kits',
+    );
   });
 
   it('saves a post handed over by a card, then drops the parameter', async () => {

@@ -68,7 +68,7 @@ export interface LanguageLandingCopy {
   claims: { title: string; body: string }[];
   signIn: string;
   questionsTitle: string;
-  questions: { q: string; a: string }[];
+  questions: { q: string; a: string; link?: { href: string; label: string } }[];
   checklist: {
     title: string;
     intro: string;
@@ -85,6 +85,8 @@ export interface LanguageLandingCopy {
     settingsLink: string;
   };
 }
+
+const COMPATIBILITY_HELP = '/help/connections/mastodon-compatibility/';
 
 export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
   'de/mastodon-auf-deutsch': {
@@ -137,7 +139,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Wo melde ich mich an?',
-        a: 'Am einfachsten bei mastodon.social. Es gibt viele weitere Server; Verzeichnisse wie joinmastodon.org helfen bei der Suche. Mawkingbird funktioniert mit jedem davon.',
+        a: 'Am einfachsten bei mastodon.social. Es gibt viele weitere Server; Verzeichnisse wie joinmastodon.org helfen bei der Suche. Mawkingbird funktioniert mit fast allen Mastodon-Servern.',
+        link: { href: COMPATIBILITY_HELP, label: 'Serverkompatibilität ansehen (auf Englisch).' },
       },
       {
         q: 'Was ändert sich, wenn ich mich anmelde?',
@@ -253,7 +256,11 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Where do I sign up?',
-        a: 'mastodon.social is the easiest place to start. Many other servers exist; directories such as joinmastodon.org help you find them. Mawkingbird works with all of them.',
+        a: 'mastodon.social is the easiest place to start. Many other servers exist; directories such as joinmastodon.org help you find them. Mawkingbird works with almost all Mastodon servers.',
+        link: {
+          href: COMPATIBILITY_HELP,
+          label: 'See server compatibility.',
+        },
       },
       {
         q: 'Does it cost anything?',
@@ -424,7 +431,11 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: '¿Dónde me registro?',
-        a: 'mastodon.social es lo más fácil para empezar. También hay muchos servidores en español, que encontrarás en directorios como joinmastodon.org. Mawkingbird funciona con todos.',
+        a: 'mastodon.social es lo más fácil para empezar. También hay muchos servidores en español, que encontrarás en directorios como joinmastodon.org. Mawkingbird funciona con casi todos los servidores Mastodon.',
+        link: {
+          href: COMPATIBILITY_HELP,
+          label: 'Consulta la compatibilidad de servidores (en inglés).',
+        },
       },
       {
         q: '¿Qué cambia cuando inicio sesión?',
@@ -611,7 +622,11 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Où m’inscrire ?',
-        a: 'mastodon.social est le plus simple pour commencer. Il existe aussi beaucoup de serveurs francophones, que tu trouveras dans des annuaires comme joinmastodon.org. Mawkingbird fonctionne avec tous.',
+        a: 'mastodon.social est le plus simple pour commencer. Il existe aussi beaucoup de serveurs francophones, que tu trouveras dans des annuaires comme joinmastodon.org. Mawkingbird fonctionne avec presque tous les serveurs Mastodon.',
+        link: {
+          href: COMPATIBILITY_HELP,
+          label: 'Voir la compatibilité des serveurs (en anglais).',
+        },
       },
       {
         q: 'Qu’est-ce qui change quand je me connecte ?',
@@ -800,7 +815,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'どこで登録すればいいですか？',
-        a: 'まずは mastodon.social がいちばん簡単です。ほかにも多くのサーバーがあり、joinmastodon.org などの一覧で探せます。Mawkingbird はどのサーバーでも使えます。',
+        a: 'まずは mastodon.social がいちばん簡単です。ほかにも多くのサーバーがあり、joinmastodon.org などの一覧で探せます。Mawkingbird はほとんどの Mastodon サーバーで使えます。',
+        link: { href: COMPATIBILITY_HELP, label: 'サーバーの互換性を確認（英語）。' },
       },
       {
         q: 'ログインすると何が変わりますか？',
@@ -987,7 +1003,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: '要在哪裡註冊？',
-        a: 'mastodon.social 是最簡單的起點。也有許多中文伺服器，可以在 joinmastodon.org 等目錄中找到。Mawkingbird 適用於任何伺服器。',
+        a: 'mastodon.social 是最簡單的起點。也有許多中文伺服器，可以在 joinmastodon.org 等目錄中找到。Mawkingbird 適用於幾乎所有 Mastodon 伺服器。',
+        link: { href: COMPATIBILITY_HELP, label: '查看伺服器相容性（英文）。' },
       },
       {
         q: '登入後會改變什麼？',
@@ -1174,7 +1191,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: '어디에서 가입하나요?',
-        a: '처음이라면 mastodon.social이 가장 쉽습니다. 한국어 서버도 여럿 있으며 joinmastodon.org 같은 목록에서 찾을 수 있습니다. Mawkingbird는 어느 서버에서나 작동합니다.',
+        a: '처음이라면 mastodon.social이 가장 쉽습니다. 한국어 서버도 여럿 있으며 joinmastodon.org 같은 목록에서 찾을 수 있습니다. Mawkingbird는 거의 모든 Mastodon 서버에서 작동합니다.',
+        link: { href: COMPATIBILITY_HELP, label: '서버 호환성 보기(영어).' },
       },
       {
         q: '로그인하면 무엇이 바뀌나요?',
@@ -1360,7 +1378,11 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Onde eu me cadastro?',
-        a: 'O mastodon.social é o jeito mais fácil de começar. Também existem muitos servidores brasileiros e em português, que você encontra em diretórios como o joinmastodon.org. O Mawkingbird funciona com todos.',
+        a: 'O mastodon.social é o jeito mais fácil de começar. Também existem muitos servidores brasileiros e em português, que você encontra em diretórios como o joinmastodon.org. O Mawkingbird funciona com quase todos os servidores Mastodon.',
+        link: {
+          href: COMPATIBILITY_HELP,
+          label: 'Veja a compatibilidade dos servidores (em inglês).',
+        },
       },
       {
         q: 'O que muda quando eu entro?',
@@ -1547,7 +1569,11 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Dove mi iscrivo?',
-        a: 'mastodon.social è il modo più semplice per iniziare. Ci sono anche molti server italiani, che trovi in directory come joinmastodon.org. Mawkingbird funziona con tutti.',
+        a: 'mastodon.social è il modo più semplice per iniziare. Ci sono anche molti server italiani, che trovi in directory come joinmastodon.org. Mawkingbird funziona con quasi tutti i server Mastodon.',
+        link: {
+          href: COMPATIBILITY_HELP,
+          label: 'Verifica la compatibilità dei server (in inglese).',
+        },
       },
       {
         q: 'Cosa cambia quando accedo?',
@@ -1734,7 +1760,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Gdzie się zarejestrować?',
-        a: 'Najprościej zacząć od mastodon.social. Jest też wiele polskich serwerów, które znajdziesz w katalogach takich jak joinmastodon.org. Mawkingbird działa z każdym z nich.',
+        a: 'Najprościej zacząć od mastodon.social. Jest też wiele polskich serwerów, które znajdziesz w katalogach takich jak joinmastodon.org. Mawkingbird działa z prawie wszystkimi serwerami Mastodona.',
+        link: { href: COMPATIBILITY_HELP, label: 'Sprawdź zgodność serwerów (po angielsku).' },
       },
       {
         q: 'Co się zmieni po zalogowaniu?',
@@ -1908,7 +1935,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Де зареєструватися?',
-        a: 'Почати можна з mastodon.social. Інші сервери можна знайти в каталогах на зразок joinmastodon.org. Mawkingbird працює з будь-яким із них.',
+        a: 'Почати можна з mastodon.social. Інші сервери можна знайти в каталогах на зразок joinmastodon.org. Mawkingbird працює з майже всіма серверами Mastodon.',
+        link: { href: COMPATIBILITY_HELP, label: 'Перевірте сумісність серверів (англійською).' },
       },
       {
         q: 'Що зміниться після входу?',
@@ -2092,7 +2120,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'कहाँ पंजीकरण करें?',
-        a: 'mastodon.social से शुरुआत कर सकते हैं। joinmastodon.org जैसी डायरेक्टरी में दूसरे सर्वर भी मिलते हैं। Mawkingbird किसी भी Mastodon सर्वर के साथ काम करता है।',
+        a: 'mastodon.social से शुरुआत कर सकते हैं। joinmastodon.org जैसी डायरेक्टरी में दूसरे सर्वर भी मिलते हैं। Mawkingbird लगभग सभी Mastodon सर्वरों के साथ काम करता है।',
+        link: { href: COMPATIBILITY_HELP, label: 'सर्वर संगतता देखें (अंग्रेज़ी में)।' },
       },
       {
         q: 'साइन इन करने पर क्या बदलेगा?',
@@ -2266,7 +2295,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Waar kan ik me aanmelden?',
-        a: 'Je kunt beginnen op mastodon.social. In lijsten zoals joinmastodon.org vind je ook andere servers. Mawkingbird werkt met elke Mastodon-server.',
+        a: 'Je kunt beginnen op mastodon.social. In lijsten zoals joinmastodon.org vind je ook andere servers. Mawkingbird werkt met bijna alle Mastodon-servers.',
+        link: { href: COMPATIBILITY_HELP, label: 'Bekijk servercompatibiliteit (in het Engels).' },
       },
       {
         q: 'Wat verandert er als ik inlog?',
@@ -2446,7 +2476,11 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Di mana aku bisa mendaftar?',
-        a: 'Kamu bisa mulai di mastodon.social. Server lain bisa ditemukan di direktori seperti joinmastodon.org. Mawkingbird bekerja dengan server Mastodon mana pun.',
+        a: 'Kamu bisa mulai di mastodon.social. Server lain bisa ditemukan di direktori seperti joinmastodon.org. Mawkingbird bekerja dengan hampir semua server Mastodon.',
+        link: {
+          href: COMPATIBILITY_HELP,
+          label: 'Lihat kompatibilitas server (dalam bahasa Inggris).',
+        },
       },
       {
         q: 'Apa yang berubah setelah masuk?',
@@ -2627,7 +2661,11 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Где зарегистрироваться?',
-        a: 'Начать можно с mastodon.social. Другие серверы есть в каталогах вроде joinmastodon.org. Mawkingbird работает с любым сервером Mastodon.',
+        a: 'Начать можно с mastodon.social. Другие серверы есть в каталогах вроде joinmastodon.org. Mawkingbird работает почти со всеми серверами Mastodon.',
+        link: {
+          href: COMPATIBILITY_HELP,
+          label: 'Проверь совместимость серверов (на английском).',
+        },
       },
       {
         q: 'Что изменится после входа?',
@@ -2811,7 +2849,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Var registrerar jag mig?',
-        a: 'Du kan börja på mastodon.social. Fler servrar finns i kataloger som joinmastodon.org. Mawkingbird fungerar med alla Mastodon-servrar.',
+        a: 'Du kan börja på mastodon.social. Fler servrar finns i kataloger som joinmastodon.org. Mawkingbird fungerar med nästan alla Mastodon-servrar.',
+        link: { href: COMPATIBILITY_HELP, label: 'Se serverkompatibilitet (på engelska).' },
       },
       {
         q: 'Vad ändras när jag loggar in?',
@@ -2989,7 +3028,11 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Đăng ký ở đâu?',
-        a: 'Bạn có thể bắt đầu tại mastodon.social. Danh mục như joinmastodon.org có thêm máy chủ. Mawkingbird dùng được với mọi máy chủ Mastodon.',
+        a: 'Bạn có thể bắt đầu tại mastodon.social. Danh mục như joinmastodon.org có thêm máy chủ. Mawkingbird dùng được với hầu hết máy chủ Mastodon.',
+        link: {
+          href: COMPATIBILITY_HELP,
+          label: 'Xem khả năng tương thích với máy chủ (bằng tiếng Anh).',
+        },
       },
       {
         q: 'Đăng nhập sẽ đổi gì?',
@@ -3167,7 +3210,8 @@ export const LANGUAGE_LANDING_COPY: Record<string, LanguageLandingCopy> = {
       },
       {
         q: 'Nereden kaydolurum?',
-        a: 'mastodon.social ile başlayabilirsin. joinmastodon.org gibi dizinlerde başka sunucular da var. Mawkingbird tüm Mastodon sunucularıyla çalışır.',
+        a: 'mastodon.social ile başlayabilirsin. joinmastodon.org gibi dizinlerde başka sunucular da var. Mawkingbird neredeyse tüm Mastodon sunucularıyla çalışır.',
+        link: { href: COMPATIBILITY_HELP, label: 'Sunucu uyumluluğunu incele (İngilizce).' },
       },
       {
         q: 'Oturum açınca ne değişir?',

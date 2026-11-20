@@ -1,0 +1,202 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "education",
+ "lang": "en",
+ "title": {
+  "en": "Education",
+  "de": "Bildung",
+  "fr": "Éducation",
+  "es": "Educación",
+  "ja": "教育",
+  "it": "Istruzione",
+  "pt": "Educação",
+  "nl": "Onderwijs",
+  "pl": "Edukacja",
+  "sv": "Utbildning",
+  "ru": "Образование",
+  "ko": "교육",
+  "uk": "Освіта",
+  "tr": "Eğitim",
+  "el": "Εκπαίδευση",
+  "zh": "教育",
+  "ca": "Educació",
+  "cs": "Vzdělávání",
+  "fi": "Koulutus",
+  "no": "Utdanning",
+  "ar": "التعليم",
+  "zh-Hant": "教育"
+ },
+ "icon": "🎓",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "wesfryer@triangletoot.party",
+   "url": "https://triangletoot.party/@wesfryer",
+   "displayName": "Wes Fryer",
+   "avatar": "https://cdn.masto.host/triangletootparty/accounts/avatars/114/978/003/856/418/722/original/ae8af3ca1b3b473c.jpg",
+   "bot": false,
+   "bio": "Empowering you to bravely and creatively share your voice with kindness. #create2learn “Culture healer, not culture warrior.” #HealOurCulture Teacher by day #MediaLit, democracy & human rights champi…",
+   "showUrl": "https://podcasts.wesfryer.com",
+   "observedAt": "2026-11-20T00:08:28+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "nytimes.com",
+     "postUrl": "https://triangletoot.party/@wesfryer/117450324346140052",
+     "seenAt": "2026-10-16T11:22:04.520Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://triangletoot.party/@wesfryer/117591848577592417",
+     "seenAt": "2026-11-10T11:13:32.913Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "podcasts.wesfryer.com",
+     "postUrl": "https://triangletoot.party/@wesfryer/117574699369051398",
+     "seenAt": "2026-11-07T10:32:16.757Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "triangletoot.party",
+     "postUrl": "https://triangletoot.party/@wesfryer/117642934194429350",
+     "seenAt": "2026-11-19T11:45:17.569Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://triangletoot.party/@wesfryer/117605430962919676",
+     "seenAt": "2026-11-12T20:47:43.666Z"
+    },
+    {
+     "kind": "short",
+     "source": "instagram",
+     "postUrl": "https://triangletoot.party/@wesfryer/117609180935295364",
+     "seenAt": "2026-11-13T12:41:23.701Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "postUrl": "https://triangletoot.party/@wesfryer/117521910905203536",
+     "seenAt": "2026-10-29T02:47:28.726Z"
+    }
+   ]
+  },
+  {
+   "acct": "behindthenumbers@mastodon.social",
+   "url": "https://mastodon.social/@behindthenumbers",
+   "displayName": "Behind The Numbers",
+   "avatar": "https://files.mastodon.social/accounts/avatars/115/757/695/163/243/657/original/d541ca44b79d3ef8.png",
+   "bot": false,
+   "bio": "Behind The Numbers Podcast Go Behind the Numbers for what matters most in business",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:58:03+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mastodon.social",
+     "postUrl": "https://mastodon.social/@behindthenumbers/117639090432386468",
+     "seenAt": "2026-11-18T19:27:46.414Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.social/@behindthenumbers/117486340378800496",
+     "seenAt": "2026-10-22T20:01:25.568Z"
+    }
+   ]
+  },
+  {
+   "acct": "josephpliu@mastodon.online",
+   "url": "https://mastodon.online/@josephpliu",
+   "displayName": "Joseph Liu",
+   "avatar": "https://files.mastodon.online/accounts/avatars/108/205/897/554/838/348/original/31be14fc5520a033.jpg",
+   "bot": false,
+   "bio": "Keynote speaker, career consultant, Career Relaunch® podcast host, and writer dedicated to helping people relaunch their careers",
+   "showUrl": "https://careerrelaunch.net",
+   "observedAt": "2026-11-20T00:02:49+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "josephliu.co",
+     "postUrl": "https://mastodon.online/@josephpliu/117602407289663938",
+     "seenAt": "2026-11-12T07:58:46.078Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "mastodon.online",
+     "postUrl": "https://mastodon.online/@josephpliu/117602407289663938",
+     "seenAt": "2026-11-12T07:58:46.078Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mastodon.online/@josephpliu/115865333239308229",
+     "seenAt": "2026-01-09T13:17:59.557Z"
+    }
+   ]
+  },
+  {
+   "acct": "bibliothecaris@social.edu.nl",
+   "url": "https://social.edu.nl/@Bibliothecaris",
+   "displayName": "UniversityofGroningenLibrary",
+   "avatar": "https://objectstore.surf.nl/mastodon/accounts/avatars/110/979/949/706/727/077/original/e81e385ec730b88e.jpg",
+   "bot": false,
+   "bio": "News from the University of Groningen Library // Nieuws van de Universiteitsbibliotheek Groningen #ResearchSupport | #EducationSupport | #OpenScience | #collection | #books #AcademicLibrary #DigitalA…",
+   "showUrl": "https://www.rug.nl/research/openscience/podcast/",
+   "observedAt": "2026-11-19T23:57:58+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "rug.nl",
+     "postUrl": "https://social.edu.nl/@Bibliothecaris/117307931294847756",
+     "seenAt": "2026-09-21T07:49:38.988Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "social.edu.nl",
+     "postUrl": "https://social.edu.nl/@Bibliothecaris/117274063455709854",
+     "seenAt": "2026-09-15T08:16:36.775Z"
+    }
+   ]
+  },
+  {
+   "acct": "steveythetrainingguy@universeodon.com",
+   "url": "https://universeodon.com/@SteveYtheTrainingGuy",
+   "displayName": "Steve Y",
+   "avatar": "https://media.universeodon.com/accounts/avatars/109/362/799/184/081/947/original/60eb6999b8b7385d.jpg",
+   "bot": false,
+   "bio": "Learning and employee development strategist. Writer. Itinerant podcaster. Assistant life coach. On your side (Some restrictions may apply)",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:07:13+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://universeodon.com/@SteveYtheTrainingGuy/111891846649675280",
+     "seenAt": "2024-02-07T19:28:05.842Z"
+    }
+   ]
+  },
+  {
+   "acct": "all_learners_network@mathstodon.xyz",
+   "url": "https://mathstodon.xyz/@all_learners_network",
+   "displayName": "All Learners Network",
+   "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/376/642/840/941/356/original/64bfe6f4ff10c427.png",
+   "bot": false,
+   "bio": "OUR MISSION: “Cultivating a community of educators that promote math equity and inclusion for all students.”",
+   "showUrl": "https://www.alllearnersnetwork.com/resources/podcasts",
+   "observedAt": "2026-11-19T23:56:53+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "open.spotify.com",
+     "postUrl": "https://mathstodon.xyz/@all_learners_network/110057292115229235",
+     "seenAt": "2023-03-20T19:36:45.192Z"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Museum · Mawkingbird copy</title>
+    <meta
+      name="description"
+      content="Browse English Mawkingbird UI copy and review possible overstatements."
+    />
+    <link rel="stylesheet" href="/museum.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="masthead">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">m</span
+          ><span>Mawkingbird <strong>Museum</strong></span>
+        </div>
+        <span class="local-label">Local copy review</span>
+      </header>
+      <main>
+        <section class="hero" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">The words on the walls</p>
+            <h1 id="page-title">
+              See the copy.<br /><em>Question the promises.</em>
+            </h1>
+            <p class="hero-copy">
+              Browse English UI copy without clicking through the app. Review
+              prompts draw attention to claims about privacy, completeness,
+              cost, source, hosting, and outcomes.
+            </p>
+          </div>
+          <aside class="hero-note" aria-label="Review guidance">
+            <span class="note-icon" aria-hidden="true">?</span>
+            <strong>A prompt, not a verdict</strong>
+            <p>
+              A highlighted phrase needs context and evidence. Open its source
+              before changing the wording.
+            </p>
+          </aside>
+        </section>
+
+        <section class="collection" aria-labelledby="collection-title">
+          <div class="collection-heading">
+            <div>
+              <p class="eyebrow">Collection</p>
+              <h2 id="collection-title">English snippets</h2>
+            </div>
+            <p id="summary" class="summary" role="status">
+              Loading the current source…
+            </p>
+          </div>
+
+          <div class="workbench">
+            <div class="view-switch" role="group" aria-label="Collection view">
+              <button
+                mbButton
+                data-variant="compact"
+                type="button"
+                data-view="all"
+                aria-pressed="true"
+              >
+                All strings
+              </button>
+              <button
+                mbButton
+                data-variant="compact"
+                type="button"
+                data-view="eyebrow"
+                aria-pressed="false"
+              >
+                Eyebrows
+              </button>
+              <button
+                mbButton
+                data-variant="compact"
+                type="button"
+                data-view="review"
+                aria-pressed="false"
+              >
+                Review prompts
+              </button>
+              <button
+                mbButton
+                data-variant="compact"
+                type="button"
+                data-view="yapping"
+                aria-pressed="false"
+              >
+                Yapping
+              </button>
+              <button
+                mbButton
+                data-variant="compact"
+                type="button"
+                data-view="marked"
+                aria-pressed="false"
+              >
+                Needs edit <span id="marked-count">0</span>
+              </button>
+            </div>
+            <div class="filters">
+              <mb-field>
+                <label class="mb-field-label" for="search"
+                  >Search text, key, or path</label
+                >
+                <input
+                  class="mb-control"
+                  id="search"
+                  type="search"
+                  placeholder="e.g. nothing is uploaded"
+                  autocomplete="off"
+                />
+              </mb-field>
+              <mb-field>
+                <label class="mb-field-label" for="area">Area</label>
+                <select class="mb-control" id="area">
+                  <option value="">Every area</option>
+                </select>
+              </mb-field>
+              <mb-field>
+                <label class="mb-field-label" for="topic">Review topic</label>
+                <select class="mb-control" id="topic">
+                  <option value="">Every topic</option>
+                  <option value="privacy">Privacy / data flow</option>
+                  <option value="completeness">Absolute / complete</option>
+                  <option value="cost">Cost / availability</option>
+                  <option value="hosting">Source / hosting</option>
+                  <option value="outcome">Outcome / ease</option>
+                </select>
+              </mb-field>
+              <mb-field>
+                <label class="mb-field-label" for="strong">Strong words</label>
+                <select class="mb-control" id="strong">
+                  <option value="">Any wording</option>
+                  <option value="*">All strong words</option>
+                </select>
+              </mb-field>
+              <mb-field id="yapping-field" hidden>
+                <label class="mb-field-label" for="yapping-limit"
+                  >Minimum length</label
+                >
+                <select class="mb-control" id="yapping-limit">
+                  <option value="120">120 characters</option>
+                  <option value="160" selected>160 characters</option>
+                  <option value="200">200 characters</option>
+                  <option value="300">300 characters</option>
+                </select>
+              </mb-field>
+            </div>
+          </div>
+
+          <div class="results-bar">
+            <span id="result-count"></span
+            ><button mbButton data-variant="link" id="clear" type="button">
+              Clear filters
+            </button>
+          </div>
+          <div id="cards" class="cards" aria-live="polite"></div>
+          <div class="more-wrap">
+            <button
+              mbButton
+              data-variant="outline"
+              id="more"
+              type="button"
+              hidden
+            >
+              Show more
+            </button>
+          </div>
+        </section>
+      </main>
+      <footer>
+        Read from the current checkout. Edit source comments for i18n strings;
+        the English JSON is generated.
+      </footer>
+    </div>
+
+    <dialog id="source-dialog" aria-labelledby="source-title">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">Source context</p>
+          <h2 id="source-title"></h2>
+        </div>
+        <button
+          mbButton
+          data-variant="compact"
+          type="button"
+          id="close-dialog"
+          aria-label="Close source"
+        >
+          Close
+        </button>
+      </div>
+      <pre id="source-code"></pre>
+      <p>
+        Use the path and line above to edit the source. I18n English lives in
+        the nearby comment.
+      </p>
+      <button mbButton data-variant="outline" type="button" id="copy-location">
+        Copy location
+      </button>
+    </dialog>
+
+    <dialog id="redraft-dialog" aria-labelledby="redraft-title">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">Copy workshop</p>
+          <h2 id="redraft-title">Redraft a snippet</h2>
+        </div>
+        <button
+          mbButton
+          data-variant="compact"
+          type="button"
+          id="close-redraft"
+        >
+          Close
+        </button>
+      </div>
+      <p id="redraft-location" class="key"></p>
+      <blockquote id="redraft-original"></blockquote>
+      <p id="redraft-availability" class="muted"></p>
+      <form id="redraft-form">
+        <mb-field id="openrouter-key-field">
+          <label class="mb-field-label" for="openrouter-key"
+            >OpenRouter API key</label
+          >
+          <input
+            class="mb-control"
+            id="openrouter-key"
+            type="password"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Paste a key, or start with OPENROUTER_API_KEY"
+          />
+          <small
+            >Used for this local session only. The museum does not save your
+            key.</small
+          >
+        </mb-field>
+        <div class="redraft-grid">
+          <fieldset>
+            <legend>Three bots</legend>
+            <mb-field
+              ><label class="mb-field-label" for="model-0">Model 1</label
+              ><input class="mb-control" id="model-0" required
+            /></mb-field>
+            <mb-field
+              ><label class="mb-field-label" for="model-1">Model 2</label
+              ><input class="mb-control" id="model-1" required
+            /></mb-field>
+            <mb-field
+              ><label class="mb-field-label" for="model-2">Model 3</label
+              ><input class="mb-control" id="model-2" required
+            /></mb-field>
+          </fieldset>
+          <fieldset>
+            <legend>Three improvement instructions</legend>
+            <mb-field
+              ><label class="mb-field-label" for="instruction-0"
+                >Instruction 1</label
+              ><textarea
+                class="mb-control"
+                id="instruction-0"
+                required
+              ></textarea>
+            </mb-field>
+            <mb-field
+              ><label class="mb-field-label" for="instruction-1"
+                >Instruction 2</label
+              ><textarea
+                class="mb-control"
+                id="instruction-1"
+                required
+              ></textarea>
+            </mb-field>
+            <mb-field
+              ><label class="mb-field-label" for="instruction-2"
+                >Instruction 3</label
+              ><textarea
+                class="mb-control"
+                id="instruction-2"
+                required
+              ></textarea>
+            </mb-field>
+          </fieldset>
+        </div>
+        <div class="redraft-run">
+          <mb-field>
+            <label class="mb-field-label" for="alternatives-per-pair"
+              >Alternatives per pair</label
+            >
+            <select class="mb-control" id="alternatives-per-pair">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </mb-field>
+          <p id="redraft-cost">
+            9 OpenRouter requests · up to 9 drafts. Your source text is sent to
+            the chosen models and your OpenRouter account is charged for usage.
+          </p>
+          <button
+            mbButton
+            data-variant="outline"
+            type="submit"
+            id="run-redraft"
+          >
+            Generate drafts
+          </button>
+        </div>
+      </form>
+      <p id="redraft-status" role="status"></p>
+      <div id="redraft-results" class="redraft-results"></div>
+    </dialog>
+  </body>
+</html>

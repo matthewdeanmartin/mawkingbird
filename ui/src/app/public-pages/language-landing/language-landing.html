@@ -38,7 +38,12 @@
     <h2>{{ copy.questionsTitle }}</h2>
     @for (item of copy.questions; track item.q) {
       <h3>{{ item.q }}</h3>
-      <p>{{ item.a }}</p>
+      <p>
+        {{ item.a }}
+        @if (item.link) {
+          <a mbContentLink [href]="item.link.href">{{ item.link.label }}</a>
+        }
+      </p>
     }
   </section>
 </main>

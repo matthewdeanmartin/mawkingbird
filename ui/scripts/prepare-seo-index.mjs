@@ -260,6 +260,8 @@ function withLastmod(xml) {
         'src/app/public-pages/features/public-article.ts',
         'src/app/public-pages/docs/public-copy.ts',
       ];
+    if (page === 'create-mastodon-account/')
+      return ['src/app/public-pages/create-account/'];
     if (page === 'legal/')
       return ['src/app/public-pages/features/public-article.html', 'src/app/public-pages/docs/'];
     // Mini-app pages: their own directory (or the one they share), the page

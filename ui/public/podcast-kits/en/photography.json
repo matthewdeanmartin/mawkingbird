@@ -1,0 +1,76 @@
+{
+ "version": 1,
+ "kind": "podcasts",
+ "category": "photography",
+ "lang": "en",
+ "title": {
+  "en": "Photography",
+  "de": "Fotografie",
+  "fr": "Photographie",
+  "es": "Fotografía",
+  "ja": "写真",
+  "it": "Fotografia",
+  "pt": "Fotografia",
+  "nl": "Fotografie",
+  "pl": "Fotografia",
+  "sv": "Fotografi",
+  "ru": "Фотография",
+  "ko": "사진",
+  "uk": "Фотографія",
+  "tr": "Fotoğrafçılık",
+  "el": "Φωτογραφία",
+  "zh": "摄影",
+  "cs": "Fotografie",
+  "ca": "Fotografia",
+  "fi": "Valokuvaus",
+  "no": "Fotografi",
+  "ar": "التصوير الفوتوغرافي",
+  "zh-Hant": "攝影"
+ },
+ "icon": "📷",
+ "generatedAt": "2026-11-20T00:29:04+00:00",
+ "members": [
+  {
+   "acct": "alexluyckxphoto@mstdn.ca",
+   "url": "https://mstdn.ca/@AlexLuyckxPhoto",
+   "displayName": "Alex Luyckx",
+   "avatar": "https://cdn.mstdn.ca/accounts/avatars/109/523/545/285/999/857/original/af9396cfb590c683.jpg",
+   "bot": false,
+   "bio": "Long time blogger, Podcaster, film and history nut. Creator of the Classic Camera Revival & Toronto Film Shooters",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:56:52+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "mstdn.ca",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117592317960381088",
+     "seenAt": "2026-11-10T13:12:55.128Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117598059438447204",
+     "seenAt": "2026-11-11T13:33:03.132Z"
+    }
+   ]
+  },
+  {
+   "acct": "mcelhearn@journa.host",
+   "url": "https://journa.host/@mcelhearn",
+   "displayName": "Kirk McElhearn",
+   "avatar": "https://assets.journa.host/accounts/avatars/109/529/486/661/978/820/original/9f79932ceffc114a.png",
+   "bot": false,
+   "bio": "Writer, podcaster, photographer, lazy zennist, cat whisperer. Ex-New Yorker in Shakespeare's home town. Chop wood, carry water. http://mcelhearn.me/",
+   "showUrl": "https://kirkville.com/podcasts/",
+   "observedAt": "2026-11-20T00:04:01+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "kirkville.com",
+     "postUrl": "https://journa.host/@mcelhearn/117585720447440260",
+     "seenAt": "2026-11-09T09:15:05.075Z"
+    }
+   ]
+  }
+ ]
+}

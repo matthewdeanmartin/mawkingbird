@@ -128,9 +128,9 @@ export const CONNECTION_FLAGS: Record<ConnectionId, FeatureFlagId> = {
 };
 
 // i18n settings.connections.catalog.localAi.label: Local AI
-// i18n settings.connections.catalog.localAi.pitch: Use an AI model that runs on your computer (Ollama, LM Studio, llama.cpp). Free, no account.
-// i18n settings.connections.catalog.localAi.enables.free: Translations, suggestions and image descriptions, with no cost or budget
-// i18n settings.connections.catalog.localAi.enables.private: Nothing leaves your computer
+// i18n settings.connections.catalog.localAi.pitch: Connect an AI model through a local address you choose. No Mawkingbird AI account.
+// i18n settings.connections.catalog.localAi.enables.free: Translations, suggestions and image descriptions through your chosen model
+// i18n settings.connections.catalog.localAi.enables.private: The model and its handling of your data are your choice
 // i18n settings.connections.catalog.mastodon.label: Mastodon
 // i18n settings.connections.catalog.mastodon.pitch: Read Mastodon too — with or without a Mastodon account.
 // i18n settings.connections.catalog.mastodon.enables.explore: Explore, trending posts and hashtag timelines from a Mastodon server

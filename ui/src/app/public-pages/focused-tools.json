@@ -3,7 +3,7 @@
     "id": "twitter-import",
     "path": "twitter-to-mastodon",
     "title": "Import your Twitter follows to Mastodon",
-    "description": "Find the people you followed on Twitter who are now on Mastodon and follow them again. Your archive is read in your browser; nothing is uploaded.",
+    "description": "Find the people you followed on Twitter who are now on Mastodon. The full archive is not uploaded; handle searches go to your Mastodon server after sign-in.",
     "group": "people",
     "signIn": "mastodon",
     "tab": {
@@ -21,7 +21,7 @@
     "id": "twitter-archive-tools",
     "path": "twitter-archive-tools",
     "title": "Twitter archive tools: search, stats and export",
-    "description": "Open your Twitter archive .zip in your browser: search your tweets and likes, see your numbers, save it as a website and find your people on Mastodon. Nothing is uploaded.",
+    "description": "Open your Twitter archive .zip in your browser to search and save it. The full archive is not uploaded; finding people sends handle searches to your Mastodon server after sign-in.",
     "group": "start",
     "signIn": "any",
     "tab": {

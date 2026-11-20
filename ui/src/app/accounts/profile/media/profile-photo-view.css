@@ -493,3 +493,9 @@
 .photo-figure app-video-player {
   width: min(100%, 1000px);
 }
+
+/* The (i) under a translated caption or comment: what the original was. */
+.photo-translation-note {
+  font-size: 0.8rem;
+  margin-top: 0.15rem;
+}

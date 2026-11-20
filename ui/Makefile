@@ -26,6 +26,10 @@ signup-servers:  # Propose /create-mastodon-account/ servers from joinmastodon.o
 youtubers-update:  # Bundle the sibling starters' reviewed YouTuber kits (public/youtubers/)
 	npm run youtubers:update $(if $(CATALOG),-- "$(CATALOG)",)
 
+.PHONY: podcasts-update
+podcasts-update:  # Bundle reviewed podcast kits for Radio
+	npm run podcasts:update
+
 .PHONY: starter-catalog-update starter-catalog-check
 starter-catalog-update:
 	npm run starter-catalog:update $(if $(CATALOG),-- "$(CATALOG)",)
