@@ -15,7 +15,6 @@
     "audience.zombieFollowers": "ゾンビフォロワー",
     "audience.zombieFriends": "ゾンビの友達",
     "barTitle": "{{label}}：{{count}}件の{{posts}}、リーチ約{{reach}}",
-    "basedOnLast": "直近{{count}}件の{{posts}}に基づきます（ブーストを除く）。",
     "busiestDay": "投稿が最多の日：{{count}}件の{{posts}}",
     "byMonth": "月別",
     "byWeek": "週別",

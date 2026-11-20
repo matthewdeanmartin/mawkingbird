@@ -5350,7 +5350,6 @@
     "audience.zombieFollowers": "Zombie-Follower",
     "audience.zombieFriends": "Zombie-Gefolgte",
     "barTitle": "{{label}}: {{count}} {{posts}}, ~{{reach}} Reichweite",
-    "basedOnLast": "Basiert auf den letzten {{count}} {{posts}}, Boosts ausgenommen.",
     "busiestDay": "Aktivster Tag: {{count}} {{posts}}",
     "byMonth": "Nach Monat",
     "byWeek": "Nach Woche",

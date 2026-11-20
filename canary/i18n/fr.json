@@ -5178,7 +5178,6 @@
     "audience.zombieFollowers": "Abonnés zombies",
     "audience.zombieFriends": "Amis zombies",
     "barTitle": "{{label}} : {{count}} {{posts}}, ~{{reach}} de portée",
-    "basedOnLast": "Basé sur les {{count}} derniers {{posts}}, partages exclus.",
     "busiestDay": "Jour le plus actif : {{count}} {{posts}}",
     "byMonth": "Par mois",
     "byWeek": "Par semaine",
