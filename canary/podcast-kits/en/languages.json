@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "languages",
  "lang": "en",
@@ -28,8 +28,76 @@
   "zh-Hant": "語言"
  },
  "icon": "🗣️",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
+  {
+   "acct": "grammargirl@zirk.us",
+   "url": "https://zirk.us/@grammargirl",
+   "displayName": "Mignon Fogarty",
+   "avatar": "https://files.zirk.us/accounts/avatars/109/384/127/684/711/007/original/5cab4602912a62a0.png",
+   "bot": false,
+   "bio": "Grammar Girl. Podcaster. New York Times bestselling author. Quick and Dirty Tips founder. Bad skier. California. she/her #AmWriting 12/1 Grammar Girl podcast #AmReading Monsters of Ohio (Scalzi)",
+   "showUrl": "https://pod.link/173429229",
+   "observedAt": "2026-11-20T00:01:15+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://zirk.us/@grammargirl/117644290153476653",
+     "seenAt": "2026-11-19T17:30:07.859Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://zirk.us/@grammargirl/117644290153476653",
+     "seenAt": "2026-11-19T17:30:07.859Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117644290153476653",
+     "server": "https://zirk.us",
+     "postUrl": "https://zirk.us/@grammargirl/117644290153476653",
+     "createdAt": "2026-11-19T17:30:07.859Z",
+     "text": "Scientists can be funny too. There’s a ground beetle genus called Agra, which gave us Agra vation, Agra cadabra, and Agra phobia. And there’s another beetle named Etu brutus. Jess Zafarris and I look at these and many more fun animal names in the full Grammar Girl podcast. WATCH: https://youtu.be/FCB5Ax41BwU READ: https://www.quickanddirtytips.com/transcripts/grammar-girl/1239/ LISTEN: https://po…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.zirk.us/media_attachments/files/117/644/289/858/751/322/original/0c431ff7033621f2.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/FCB5Ax41BwU",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117644259884337780",
+     "server": "https://zirk.us",
+     "postUrl": "https://zirk.us/@grammargirl/117644259884337780",
+     "createdAt": "2026-11-19T17:22:25.988Z",
+     "text": "While some people are excited about the Anthropic IPO, I'm excited about a solar car company called Aptera. I made a small investment a few years ago, and they delivered their first solar car to a customer yesterday! SOLAR CAR! Powered completely by the sun! Driving on the road! https://www.youtube.com/watch?v=5F-1Ten5zGo",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=5F-1Ten5zGo",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
   {
    "acct": "lingthusiasm@wandering.shop",
    "url": "https://wandering.shop/@lingthusiasm",
@@ -43,38 +111,45 @@
     {
      "kind": "full-player",
      "source": "soundcloud",
+     "mediaType": null,
      "postUrl": "https://wandering.shop/@lingthusiasm/117447725480309331",
      "seenAt": "2026-10-16T00:21:08.982Z"
     }
-   ]
-  },
-  {
-   "acct": "grammargirl@zirk.us",
-   "url": "https://zirk.us/@grammargirl",
-   "displayName": "Mignon Fogarty",
-   "avatar": "https://files.zirk.us/accounts/avatars/109/384/127/684/711/007/original/5cab4602912a62a0.png",
-   "bot": false,
-   "bio": "Grammar Girl. Podcaster. New York Times bestselling author. Quick and Dirty Tips founder. Bad skier. California. she/her #AmWriting 12/1 Grammar Girl podcast #AmReading Monsters of Ohio (Scalzi)",
-   "showUrl": "https://pod.link/173429229",
-   "observedAt": "2026-11-20T00:01:15+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "forbes.com",
-     "postUrl": "https://zirk.us/@grammargirl/117593758446037900",
-     "seenAt": "2026-11-10T19:19:15.194Z"
+     "statusId": "117447725480309331",
+     "server": "https://wandering.shop",
+     "postUrl": "https://wandering.shop/@lingthusiasm/117447725480309331",
+     "createdAt": "2026-10-16T00:21:08.982Z",
+     "text": "Vampires, werewolves, witches, ghosts, zombies, imposters, and frankenstein have something in common: they're all possessed by the spirit of linguistics! In this episode we get enthusiastic about various kinds of linguistic monsters 🧟‍♀️🧛🏻‍♀️👻🐺🦇 https://soundcloud.com/lingthusiasm/121-vampires-ghosts-imposters",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "full-player",
+       "source": "soundcloud",
+       "url": "https://soundcloud.com/lingthusiasm/121-vampires-ghosts-imposters",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://zirk.us/@grammargirl/117644290153476653",
-     "seenAt": "2026-11-19T17:30:07.859Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "zirk.us",
-     "postUrl": "https://zirk.us/@grammargirl/117639495471640590",
-     "seenAt": "2026-11-18T21:10:46.821Z"
+     "statusId": "117289936729472630",
+     "server": "https://wandering.shop",
+     "postUrl": "https://wandering.shop/@lingthusiasm/117289936729472630",
+     "createdAt": "2026-09-18T03:33:23.707Z",
+     "text": "Narratives about smaller languages often focus on the death side, but there's less on why this happens and how communities are fighting back In this episode we get enthusiastic with Sophia Smith Galer about her new book, How to Kill a Language https://soundcloud.com/lingthusiasm/120-how-not-to-kill-a-language",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "full-player",
+       "source": "soundcloud",
+       "url": "https://soundcloud.com/lingthusiasm/120-how-not-to-kill-a-language",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

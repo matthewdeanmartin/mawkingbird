@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "books-and-writing",
  "lang": "es",
@@ -28,7 +28,7 @@
   "zh-Hant": "書籍與寫作"
  },
  "icon": "📚",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "laposadadelcuervolector@masto.es",
@@ -41,22 +41,54 @@
    "observedAt": "2026-11-20T00:03:08+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "anchor.fm",
-     "postUrl": "https://masto.es/@laposadadelcuervolector/117530905679160995",
-     "seenAt": "2026-10-30T16:54:58.083Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "masto.es",
-     "postUrl": "https://masto.es/@laposadadelcuervolector/117643038475524519",
-     "seenAt": "2026-11-19T12:11:48.770Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117582833729853870",
+     "seenAt": "2026-11-08T21:00:57.255Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://masto.es/@laposadadelcuervolector/117638214469868798",
      "seenAt": "2026-11-18T15:45:00.287Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117638214469868798",
+     "server": "https://masto.es",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117638214469868798",
+     "createdAt": "2026-11-18T15:45:00.287Z",
+     "text": "Silencio, por favor. Estamos leyendo El imperio del amanecer como dos posesas.Si vosotros no estáis en ello, siempre podéis escuchar nuestro último episodio🤭 #Literaverso #LiteraturaFantástica #LiteraturaDeGénero #grimdark https://youtu.be/FXED_B4rzSw?is=qvci5YQhv5k6tfRL",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/FXED_B4rzSw?is=qvci5YQhv5k6tfRL",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117609206738939303",
+     "server": "https://masto.es",
+     "postUrl": "https://masto.es/@laposadadelcuervolector/117609206738939303",
+     "createdAt": "2026-11-13T12:47:57.438Z",
+     "text": "Hoy llega a los cines Scrooge y los fantasmas de la Navidad y Laura lleva desde primera hora dando saltos por la Posada. Ya lo avisó en el episodio de bienvenida: Cuento de Navidad, de Dickens, está entre sus libros top y es de sus lecturas de confort. Vamos, que si por ella fuera, hoy se declaraba festivo en la Posada. Patri, paciencia, que esto va para largo😅 #literaverso #CineYLiteratura #noti…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/8CzbzLTAjjM?is=VXCSg48FAiQfciP5",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

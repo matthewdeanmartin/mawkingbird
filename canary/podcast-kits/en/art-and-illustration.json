@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "art-and-illustration",
  "lang": "en",
@@ -28,7 +28,7 @@
   "zh-Hant": "藝術與插畫"
  },
  "icon": "🎨",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "artofcreationpodcast@mastodon.art",
@@ -41,16 +41,54 @@
    "observedAt": "2026-11-19T23:57:15+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "mastodon.art",
-     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117643950016604928",
-     "seenAt": "2026-11-19T16:03:37.786Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117476871677099939",
+     "seenAt": "2026-10-21T03:53:24.645Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117633786321337825",
      "seenAt": "2026-11-17T20:58:52.102Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117633786321337825",
+     "server": "https://mastodon.art",
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117633786321337825",
+     "createdAt": "2026-11-17T20:58:52.102Z",
+     "text": "The Interview with Proprætor has been released and is titled \"E: 003, Ritual, Blasphemy & Absinthe.\" We are discussing record covers, theology, his following of rational Satanism and their tongue-in-cheek belief in evil. https://youtu.be/9k0wTwSxi6o #occult #esoteric #interview #art #mastoArt #fediart #painter #satanic #absinthe #brothesquay #ambient #industrial #darkart #Lustmord #vincelocke #go…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/9k0wTwSxi6o",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117476871677099939",
+     "server": "https://mastodon.art",
+     "postUrl": "https://mastodon.art/@ArtofCreationPodcast/117476871677099939",
+     "createdAt": "2026-10-21T03:53:24.645Z",
+     "text": "Tomorrow we release our tête-à-tête with painter, paper maker, and art influencer sceptic, Morgan LaCasse. In it, we discuss the legitimacy of art schools, insights into anxiety while being a vendor, and notoriety with fan art. Here's a sample of what to expect. #art #mastoArt #fediart #painting #podcast #interview #illustration #digitalart #video #youtube #fanart",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/mastodonart/media_attachments/files/117/476/857/962/058/649/original/94d58ec1dbdc8a56.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   }

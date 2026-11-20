@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "health-and-medicine",
  "lang": "en",
@@ -28,7 +28,7 @@
   "zh-Hant": "健康與醫學"
  },
  "icon": "🩺",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "yogascussion@mastodon.social",
@@ -41,16 +41,60 @@
    "observedAt": "2026-11-20T00:08:53+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@yogascussion/117644349903168891",
-     "seenAt": "2026-11-19T17:45:19.591Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@yogascussion/117638235780395747",
+     "seenAt": "2026-11-18T15:50:25.458Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@yogascussion/117638235780395747",
      "seenAt": "2026-11-18T15:50:25.458Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117638235780395747",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@yogascussion/117638235780395747",
+     "createdAt": "2026-11-18T15:50:25.458Z",
+     "text": "How much can one cue change a yoga pose? 🌿 Gina Clingerman recalls a crescent lunge class where a single instruction made a whole room visibly taller and more stable. Morgan Rojas of Find Aligned explains why cueing is the most powerful tool we have for helping students learn their bodies from the inside out. Listen: https://youtu.be/15VGCzasu84 #yoga #podcast",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/638/223/567/530/152/original/4984fa956995ebf7.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/15VGCzasu84",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117604067584204778",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@yogascussion/117604067584204778",
+     "createdAt": "2026-11-12T15:01:00.161Z",
+     "text": "The 2010s yoga boom created \"yoga celebrities\" with intense, cult-like followings. 🧘‍♀️ Were these elevated teachers the right people to trust with yoga in the West? We explore the era of magazine-cover gurus on the latest YogaScussion. 🎧 Listen: https://yogascussion.podmasana.com/did-modern-yoga-die-or-just-shed-its-skin-1-year-of-yogascussion/ #yoga #podcast #culture #history",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/604/003/612/922/403/original/fd9604b98bdcfd4a.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -66,27 +110,60 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "podcasts.apple.com",
+     "source": "apple-music",
+     "mediaType": null,
+     "postUrl": "https://social.lol/@drworkpsych/117625169346960488",
+     "seenAt": "2026-11-16T08:27:27.518Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "apple-podcasts",
+     "mediaType": null,
      "postUrl": "https://social.lol/@drworkpsych/117477738602190922",
      "seenAt": "2026-10-21T07:33:52.878Z"
     },
     {
      "kind": "outgoing",
-     "source": "social.lol",
-     "postUrl": "https://social.lol/@drworkpsych/117642179275951751",
-     "seenAt": "2026-11-19T08:33:18.425Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "worklifepsych.com",
-     "postUrl": "https://social.lol/@drworkpsych/117642179275951751",
-     "seenAt": "2026-11-19T08:33:18.425Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://social.lol/@drworkpsych/117552890722837185",
      "seenAt": "2026-11-03T14:06:03.226Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117625169346960488",
+     "server": "https://social.lol",
+     "postUrl": "https://social.lol/@drworkpsych/117625169346960488",
+     "createdAt": "2026-11-16T08:27:27.518Z",
+     "text": "Morning all! A day of writing, website updates, and podcast admin lies ahead. This morning's office productivity is courtesy of Ycare: https://music.apple.com/gb/album/mathilde/6809492396?i=6809492703 #OfficeMusic #PsychologistAtWork",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-music",
+       "url": "https://music.apple.com/gb/album/mathilde/6809492396?i=6809492703",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117609369015796295",
+     "server": "https://social.lol",
+     "postUrl": "https://social.lol/@drworkpsych/117609369015796295",
+     "createdAt": "2026-11-13T13:29:13.588Z",
+     "text": "🎧 This afternoon's writing productivity is courtesy of Anabel... https://music.apple.com/gb/album/chanter/6829802316?i=6829802318 #PsychologistAtWork #WorkToots",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-music",
+       "url": "https://music.apple.com/gb/album/chanter/6829802316?i=6829802318",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -102,15 +179,29 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mstdn.social",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://mstdn.social/@Ty_ylfa/117092206072984372",
      "seenAt": "2026-08-14T05:27:53.333Z"
-    },
+    }
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
+     "statusId": "117092206072984372",
+     "server": "https://mstdn.social",
      "postUrl": "https://mstdn.social/@Ty_ylfa/117092206072984372",
-     "seenAt": "2026-08-14T05:27:53.333Z"
+     "createdAt": "2026-08-14T05:27:53.333Z",
+     "text": "Good morning, Fancy listening to my latest podcast episode? https://open.spotify.com/episode/5FLD0bN4slnUNSqgajnQgZ?si=xlCU7tsaScqGUwDbziOC3w&utm_source=copy-link&sci=spotify%3Acard-config%3A6KPOB5KeQCjbcjwwNQ7Fdi #Podcast #Spotify #ApplePodcasts #mentalhealth #livedexperience",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/5FLD0bN4slnUNSqgajnQgZ?si=xlCU7tsaScqGUwDbziOC3w&utm_source=copy-link&sci=spotify%3Acard-config%3A6KPOB5KeQCjbcjwwNQ7Fdi",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

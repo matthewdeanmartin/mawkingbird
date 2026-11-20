@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "comics",
  "lang": "en",
@@ -28,7 +28,7 @@
   "zh-Hant": "漫畫"
  },
  "icon": "💥",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "perdidoseter@c.im",
@@ -41,28 +41,74 @@
    "observedAt": "2026-11-20T00:05:30+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "c.im",
-     "postUrl": "https://c.im/@perdidoseter/116978027275437841",
-     "seenAt": "2026-07-25T01:30:43.144Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://c.im/@perdidoseter/117587530084322545",
+     "seenAt": "2026-11-09T16:55:17.938Z"
     },
     {
      "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://c.im/@perdidoseter/117193178148173810",
      "seenAt": "2026-09-01T01:26:24.926Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://c.im/@perdidoseter/117531543889979146",
      "seenAt": "2026-10-30T19:37:16.408Z"
     },
     {
      "kind": "short",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://c.im/@perdidoseter/117358607553874445",
      "seenAt": "2026-09-30T06:37:17.335Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117587530084322545",
+     "server": "https://c.im",
+     "postUrl": "https://c.im/@perdidoseter/117587530084322545",
+     "createdAt": "2026-11-09T16:55:17.938Z",
+     "text": "Sumate a La Nerdoteca, el club de lectura de comics de Perdidos En El Éter. En noviembre leemos Marvelman - Libro 1: A Dream of Flying (1982-1983), por Alan Moore, Garry Leach, y equipo. Leelo y dejanos tu reseña con tu puntaje del 1 al 10, mandanos mensaje por más información. Tenés tiempo hasta el 26/11 a eso de las 19. #comics #superheroes",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://s3.c.im/media_attachments/files/117/587/529/252/681/987/original/356499b5af3729e5.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117531543889979146",
+     "server": "https://c.im",
+     "postUrl": "https://c.im/@perdidoseter/117531543889979146",
+     "createdAt": "2026-10-30T19:37:16.408Z",
+     "text": "La Nerdoteca #19 - Uzumaki Vol. 1 (1998) Octubre significa horror, y si además toca manga, eso quiere decir Junji Ito, el mangaka maestro del miedo. El primer volumen de Uzumaki nos presenta un pequeño pueblo costero de Japón, donde sus habitantes se obsesionan por espirales. Espirales en conchas de mar, en oídos, en el agua, en cerámica, y en su mente. Horror cósmico y corporal, para dejarte con…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://s3.c.im/media_attachments/files/117/531/499/947/427/211/original/bba0df36b8738463.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/m-kdiDgI2gk",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

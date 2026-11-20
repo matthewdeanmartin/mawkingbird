@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "sport",
  "lang": "en",
@@ -28,44 +28,8 @@
   "zh-Hant": "運動"
  },
  "icon": "⚽",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
-  {
-   "acct": "detroitlionspodcast@mastodon.online",
-   "url": "https://mastodon.online/@DetroitLionsPodcast",
-   "displayName": "Detroit Lions Podcast",
-   "avatar": "https://files.mastodon.online/accounts/avatars/109/985/336/488/499/810/original/3b3b2c531e86c685.png",
-   "bot": false,
-   "bio": "Lions Podcast | Interviews | Video -Web: http://detroitlionspodcast.com -Facebook: http://bit.ly/2cl54uO -YouTube: http://bit.ly/2NYp8F0",
-   "showUrl": null,
-   "observedAt": "2026-11-19T23:59:34+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "detroitlionspodcast.com",
-     "postUrl": "https://mastodon.online/@DetroitLionsPodcast/117643111042735423",
-     "seenAt": "2026-11-19T12:30:16.055Z"
-    }
-   ]
-  },
-  {
-   "acct": "motomatters@masto.ai",
-   "url": "https://masto.ai/@motomatters",
-   "displayName": "David Emmett",
-   "avatar": "https://s3.masto.ai/accounts/avatars/109/381/371/108/704/566/original/ad365ca2b54b1307.jpg",
-   "bot": false,
-   "bio": "Editor of MotoMatters.com - MotoGP, WorldSBK, politics, science, eclectice nonsense Part of the Paddock Pass Podcast paddockpasspodcast.com Personal writing at emmett.nl",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:04:25+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "motomatters.com",
-     "postUrl": "https://masto.ai/@motomatters/117636765345921953",
-     "seenAt": "2026-11-18T09:36:28.412Z"
-    }
-   ]
-  },
   {
    "acct": "mikebrew@mastodon.social",
    "url": "https://mastodon.social/@mikebrew",
@@ -78,9 +42,35 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@mikebrew/117509339579465186",
-     "seenAt": "2026-10-26T21:30:25.518Z"
+     "source": "apple-music",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@mikebrew/110623050126178409",
+     "seenAt": "2023-06-28T17:36:27.328Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "110623050126178409",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@mikebrew/110623050126178409",
+     "createdAt": "2023-06-28T17:36:27.328Z",
+     "text": "Finally! Somebody did it. Somebody updated Billy Joel’s “We didn’t start the fire”. Thanks, #FallOutBoy! https://music.apple.com/us/album/we-didnt-start-the-fire/1694092593?i=1694092848",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-music",
+       "url": "https://music.apple.com/us/album/we-didnt-start-the-fire-single/1694092593",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "apple-music",
+       "url": "https://music.apple.com/us/album/we-didnt-start-the-fire/1694092593?i=1694092848",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

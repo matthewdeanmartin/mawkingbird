@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "education",
  "lang": "de",
@@ -28,26 +28,8 @@
   "zh-Hant": "教育"
  },
  "icon": "🎓",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
-  {
-   "acct": "radihum20@fedihum.org",
-   "url": "https://fedihum.org/@RaDiHum20",
-   "displayName": "RaDiHum20",
-   "avatar": "https://fedihum.s3proxy.de/accounts/avatars/109/353/546/837/157/243/original/7532d2685f724c75.png",
-   "bot": false,
-   "bio": "Merk dir die 20! Denn immer am 20. eines Monats kommt eine neue Folge unseres RaDiHum20-Podcast – dem Radio für Digital Humanities. In gemütlicher Runde und als stünden wir an einem Stehtischchen auf…",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:06:22+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "fedihum.org",
-     "postUrl": "https://fedihum.org/@RaDiHum20/117641926522392803",
-     "seenAt": "2026-11-19T07:29:01.718Z"
-    }
-   ]
-  },
   {
    "acct": "leibnizgemeinschaft@wisskomm.social",
    "url": "https://wisskomm.social/@leibnizgemeinschaft",
@@ -59,22 +41,30 @@
    "observedAt": "2026-11-20T00:03:16+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "eventbrite.de",
-     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/117268842548147717",
-     "seenAt": "2026-09-14T10:08:52.047Z"
-    },
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116600460787975180",
+     "seenAt": "2026-05-19T09:10:35.756Z"
+    }
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "leibniz-gemeinschaft.de",
-     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116623324582126787",
-     "seenAt": "2026-05-23T10:05:09.569Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "wisskomm.social",
-     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/117631300991152002",
-     "seenAt": "2026-11-17T10:26:48.975Z"
+     "statusId": "116600460787975180",
+     "server": "https://wisskomm.social",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116600460787975180",
+     "createdAt": "2026-05-19T09:10:35.756Z",
+     "text": "🍪 Was bringt eine Zuckersteuer und macht Zucker aus Datteln wirklich einen Unterschied? Antworten von Dr. Heike Vogel (Deutsches Institut für Ernährungsforschung DIfE) im Video und bei Wissen Unplugged - jetzt nachzuhören im Hörsaal-Podcast von Deutschlandfunk Nova: https://www.deutschlandfunknova.de/beitrag/wissen-unplugged-eat-the-hype-ernaehrungsmythen-im-check #wj26",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://wisskomm.social/system/media_attachments/files/116/600/455/994/079/187/original/f26efed01bd0065b.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -90,39 +80,59 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "colearn.social",
+     "source": "apple-podcasts",
+     "mediaType": null,
      "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
      "seenAt": "2026-11-16T12:21:45.677Z"
     },
     {
      "kind": "outgoing",
-     "source": "fedigroups.social",
-     "postUrl": "https://colearn.social/@ThomasJenewein/115802168368548611",
-     "seenAt": "2025-12-29T09:34:20.129Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
      "seenAt": "2026-11-16T12:21:45.677Z"
-    },
+    }
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "podcast.opensap.info",
-     "postUrl": "https://colearn.social/@ThomasJenewein/115609202219787637",
-     "seenAt": "2025-11-25T07:40:30.360Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
+     "statusId": "117626090663164146",
+     "server": "https://colearn.social",
      "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
-     "seenAt": "2026-11-16T12:21:45.677Z"
+     "createdAt": "2026-11-16T12:21:45.677Z",
+     "text": "Podcasting als Wissens- und Lernformat mit Yannick Peterschmitt Yannick gibt Einblicke in das Konzept und die Herangehensweise, die den Podcast so erfolgreich gemacht haben. Mehr hier auf Apple https://podcasts.apple.com/de/podcast/enc429-podcasting-als-wissens-und-lernformat-mit-yannick/id1352307529?i=1000802195299 und Spotify https://open.spotify.com/episode/5XpERWKd5TxHBz3VVgYtIH #podcasts #sa…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/enc429-podcasting-als-wissens-und-lernformat-mit-yannick/id1352307529?i=1000802195299",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/5XpERWKd5TxHBz3VVgYtIH",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "podchaser.com",
-     "postUrl": "https://colearn.social/@ThomasJenewein/117347380324776949",
-     "seenAt": "2026-09-28T07:02:03.410Z"
+     "statusId": "117592284397799039",
+     "server": "https://colearn.social",
+     "postUrl": "https://colearn.social/@ThomasJenewein/117592284397799039",
+     "createdAt": "2026-11-10T13:04:23.008Z",
+     "text": "🤖 Wie lassen sich KI-Agenten im SAP-Umfeld bauen? Das kann man im Agent Lab ausprobieren. Stephan Schluchter erklärt das Lab-Format sowie Joule Studio - SAPs Toolset mit dem Unternehmen eigene KI-Agenten, Skills oder Workflows bauen können. 🎧 Apple: https://podcasts.apple.com/de/podcast/enc428-die-ai-agent-labs-und-joule-studio-mit-stephan/id1352307529?i=1000800714296 🎧 Spotify: https://open.spot…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/enc428-die-ai-agent-labs-und-joule-studio-mit-stephan/id1352307529?i=1000800714296",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -138,21 +148,29 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "instagram.com",
-     "postUrl": "https://podcasts.social/@Eigenraum/117531649068400270",
-     "seenAt": "2026-10-30T20:04:01.303Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://podcasts.social/@Eigenraum/117625729433320375",
-     "seenAt": "2026-11-16T10:49:53.747Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
      "seenAt": "2026-11-03T10:22:01.933Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117552009834309518",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
+     "createdAt": "2026-11-03T10:22:01.933Z",
+     "text": "P.S. https://www.youtube.com/watch?v=Ac08-99XPKw",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=Ac08-99XPKw",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

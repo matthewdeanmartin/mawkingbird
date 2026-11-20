@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "climate-and-environment",
  "lang": "en",
@@ -28,7 +28,7 @@
   "zh-Hant": "氣候與環境"
  },
  "icon": "🌍",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "solarpunkpresents@climatejustice.social",
@@ -42,15 +42,29 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "climatejustice.social",
-     "postUrl": "https://climatejustice.social/@solarpunkpresents/117629045579197306",
-     "seenAt": "2026-11-17T00:53:14.127Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://climatejustice.social/@solarpunkpresents/116811526372676438",
      "seenAt": "2026-06-25T15:47:20.992Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116811526372676438",
+     "server": "https://climatejustice.social",
+     "postUrl": "https://climatejustice.social/@solarpunkpresents/116811526372676438",
+     "createdAt": "2026-06-25T15:47:20.992Z",
+     "text": "Ariel here; I had a chance recently to *really* listen to \"Under Pressure\" by Queen and David Bowie - I've listened to it so many times before and never really paid attention to the lyrics, but now that I have, I can't seem to get them out of my head. I know that the original context and meaning of the song was meant to be different at the time of writing, but the best music is perennial and cros…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=bthfzGMqQS0",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

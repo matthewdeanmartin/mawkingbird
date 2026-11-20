@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "games",
  "lang": "en",
@@ -28,7 +28,7 @@
   "zh-Hant": "遊戲"
  },
  "icon": "🎮",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "bossrushnetwork@mastodon.social",
@@ -41,148 +41,116 @@
    "observedAt": "2026-11-19T23:58:23+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "anchor.fm",
-     "postUrl": "https://mastodon.social/@BossRushNetwork/117644528776593009",
-     "seenAt": "2026-11-19T18:30:48.960Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "creators.spotify.com",
-     "postUrl": "https://mastodon.social/@BossRushNetwork/117616217560328245",
-     "seenAt": "2026-11-14T18:30:54.084Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@BossRushNetwork/117644528749318006",
-     "seenAt": "2026-11-19T18:30:48.556Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://mastodon.social/@BossRushNetwork/117616217560328245",
-     "seenAt": "2026-11-14T18:30:54.084Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://mastodon.social/@BossRushNetwork/117616217560328245",
-     "seenAt": "2026-11-14T18:30:54.084Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@BossRushNetwork/117644300042286695",
+     "seenAt": "2026-11-19T17:32:38.753Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@BossRushNetwork/117644528749318006",
      "seenAt": "2026-11-19T18:30:48.556Z"
     }
-   ]
-  },
-  {
-   "acct": "cogwheel@is.aaronbsmith.com",
-   "url": "https://is.aaronbsmith.com/@cogwheel",
-   "displayName": "Cogwheel Gaming",
-   "avatar": "https://cdn.masto.host/isaaronbsmithcom/accounts/avatars/109/931/428/149/925/922/original/d58a14a46219bb8b.png",
-   "bot": false,
-   "bio": "This account is for things relating to the #TTRPG games played by the circle of friends gathered under the banner of Cogwheel Gaming. This account is new but we've been doing this since 2017. We have…",
-   "showUrl": "https://aaronbsmith.com/cogwheel/",
-   "observedAt": "2026-11-19T23:58:45+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "aaronbsmith.com",
-     "postUrl": "https://is.aaronbsmith.com/@cogwheel/114255990194655630",
-     "seenAt": "2025-03-31T08:00:53.510Z"
+     "statusId": "117644528749318006",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@BossRushNetwork/117644528749318006",
+     "createdAt": "2026-11-19T18:30:48.556Z",
+     "text": "Is PlayStation’s live-service push officially unraveling & can Robert Pattinson pull off James Bond? 🔫 💥 ▶️ This week on the Boss Rush Podcast, Corey Dirrig, LeRon Dawkins, and Andre Wilson unpack Sony canceling Fairgame$ without layoffs at Haven Studios, Pattinson teaming up with Denis Villeneuve for 007, NVIDIA's Jensen Huang fallout, and more. https://youtu.be/0v235Egr-TU?si=5qCFnr3lYXy3GU3X #…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/0v235Egr-TU?si=5qCFnr3lYXy3GU3X",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "is.aaronbsmith.com",
-     "postUrl": "https://is.aaronbsmith.com/@cogwheel/117642050288163263",
-     "seenAt": "2026-11-19T08:00:30.229Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "itunes.apple.com",
-     "postUrl": "https://is.aaronbsmith.com/@cogwheel/111402184372045087",
-     "seenAt": "2023-11-13T08:00:32.438Z"
+     "statusId": "117644300065773330",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@BossRushNetwork/117644300065773330",
+     "createdAt": "2026-11-19T17:32:39.121Z",
+     "text": "NVIDIA's Growing Crisis, Unity Buyout Rumors, & Grand Theft Auto VI | Boss Rush Podcast Episode 337 🎙️ https://youtu.be/ZiNYEltLzRE?si=9RA1M9JibcTUkD5O #BossRushLive #WeAreBossRush #NVIDIA #Unity #NintendoSwitch2",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/ZiNYEltLzRE?si=9RA1M9JibcTUkD5O",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
   {
-   "acct": "grogpod@mastodon.gamedev.place",
-   "url": "https://mastodon.gamedev.place/@grogpod",
-   "displayName": "Grogpod Roguelike Podcast",
-   "avatar": "https://cdn.masto.host/mastodongamedevplace/accounts/avatars/109/366/267/738/477/702/original/421bcb5f02f96358.png",
+   "acct": "dosnostalgic@mastodon.social",
+   "url": "https://mastodon.social/@dosnostalgic",
+   "displayName": "Anatoly Shashkin💾",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/011/472/original/d2e6ad703b6e8453.jpg",
    "bot": false,
-   "bio": "Podcasting about roguelike games, their development, and their history. https://grogpod.zone",
+   "bio": "MS-DOS gaming enthusiast, YouTuber, podcaster, cat admirer, RU in NY. Ask me about DOS games! Tell me your DOS game memories! I swear and repost a bunch. 🥂 (He/Him) I don't describe images",
    "showUrl": null,
-   "observedAt": "2026-11-20T00:01:22+00:00",
+   "observedAt": "2026-11-20T00:00:05+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "github.com",
-     "postUrl": "https://mastodon.gamedev.place/@grogpod/117315819139534192",
-     "seenAt": "2026-09-22T17:15:37.943Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "mastodon.gamedev.place",
-     "postUrl": "https://mastodon.gamedev.place/@grogpod/117638300405369980",
-     "seenAt": "2026-11-18T16:06:51.559Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117634760186316933",
+     "seenAt": "2026-11-18T01:06:32.153Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
-     "postUrl": "https://mastodon.gamedev.place/@grogpod/117589732515090030",
-     "seenAt": "2026-11-10T02:15:24.366Z"
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@dosnostalgic/117424456043382662",
+     "seenAt": "2026-10-11T21:43:25.547Z"
     }
-   ]
-  },
-  {
-   "acct": "gamemastersbookclub@mastodon.social",
-   "url": "https://mastodon.social/@gamemastersbookclub",
-   "displayName": "Game Master's Book Club",
-   "avatar": "https://files.mastodon.social/accounts/avatars/114/818/815/143/105/862/original/0b710b9e59e105c0.jpg",
-   "bot": false,
-   "bio": "The Podcast where great fiction becomes your next great ttrpg experience. Experienced game masters read spec fic, discuss what ttrpg mechanics evoke that story, recommend characters/items/ideas/scene…",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:01:08+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@gamemastersbookclub/117632979054755087",
-     "seenAt": "2026-11-17T17:33:34.192Z"
+     "statusId": "117634760186316933",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117634760186316933",
+     "createdAt": "2026-11-18T01:06:32.153Z",
+     "text": "The kisses of the sun were sweet, I didn't blink I let it in my eyes like an exotic dream The radio playing songs that I have never heard I don't know what to say, oh, not another word 🔊🎵 #OPL3MIDI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/634/757/576/012/519/original/55cacdf47459323e.mp4",
+       "mediaType": "video"
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "music.amazon.com",
-     "postUrl": "https://mastodon.social/@gamemastersbookclub/117453947655287077",
-     "seenAt": "2026-10-17T02:43:31.832Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://mastodon.social/@gamemastersbookclub/117610097405523333",
-     "seenAt": "2026-11-13T16:34:27.939Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcastrepublic.net",
-     "postUrl": "https://mastodon.social/@gamemastersbookclub/117610097405523333",
-     "seenAt": "2026-11-13T16:34:27.939Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://mastodon.social/@gamemastersbookclub/117610097405523333",
-     "seenAt": "2026-11-13T16:34:27.939Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "thepodcastcollaborative.com",
-     "postUrl": "https://mastodon.social/@gamemastersbookclub/117453947655287077",
-     "seenAt": "2026-10-17T02:43:31.832Z"
+     "statusId": "117542720939526670",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117542720939526670",
+     "createdAt": "2026-11-01T18:59:44.649Z",
+     "text": "Who can say where the road goes? Where the day flows? Only time 🔊🎵 #OPL3MIDI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/542/720/218/690/623/original/f9b960bbb4bf0cd3.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -197,22 +165,278 @@
    "observedAt": "2026-11-20T00:07:25+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "missionlogpodcast.com",
-     "postUrl": "https://mstdn.social/@theLogBook/116834075011236409",
-     "seenAt": "2026-06-29T15:21:45.908Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mstdn.social/@theLogBook/117481025635461519",
+     "seenAt": "2026-10-21T21:29:49.019Z"
     },
     {
      "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://mstdn.social/@theLogBook/116824871921009719",
      "seenAt": "2026-06-28T00:21:17.897Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mstdn.social/@theLogBook/117632526326492446",
      "seenAt": "2026-11-17T15:38:26.104Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117632526326492446",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@theLogBook/117632526326492446",
+     "createdAt": "2026-11-17T15:38:26.104Z",
+     "text": "Bomb Bee may hold an obscure slot in video game history, as an early effort from the future creator of Pac-Man, but it's Namcovember, so it's the focus of the latest edition of Phosphor Dot Fossils. #retrogaming https://www.youtube.com/watch?v=p7dm8bPTOls",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=p7dm8bPTOls",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117624370668481235",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@theLogBook/117624370668481235",
+     "createdAt": "2026-11-16T05:04:20.640Z",
+     "text": "You've already heard the improbable story of Tengen's port of Ms. Pac-Man for the NES; as NAMCOVEMBER continues Phosphor Dot Fossils bites into how the other half lived with Tengen's Ms. Pac-Man for the Sega Master System. #retrogaming https://www.youtube.com/watch?v=mQazjXXbgwU",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=mQazjXXbgwU",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "mcoorlim@mastodon.gamedev.place",
+   "url": "https://mastodon.gamedev.place/@mcoorlim",
+   "displayName": "Michael Coorlim",
+   "avatar": "https://cdn.masto.host/mastodongamedevplace/accounts/avatars/108/195/693/022/674/850/static/211a60dfc9927209.png",
+   "bot": false,
+   "bio": "Author of the Galvanic Century and Shadow Decade series, retrogamer, leftist. Solo gameDev, game writer, narrative designer. Senior Writer. Sometimes I produce podcasts. See the links for my YouTube…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:00+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.gamedev.place/@mcoorlim/116993592173441192",
+     "seenAt": "2026-07-27T19:29:04.638Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.gamedev.place/@mcoorlim/117473958110340756",
+     "seenAt": "2026-10-20T15:32:27.141Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117473958110340756",
+     "server": "https://mastodon.gamedev.place",
+     "postUrl": "https://mastodon.gamedev.place/@mcoorlim/117473958110340756",
+     "createdAt": "2026-10-20T15:32:27.141Z",
+     "text": "Following this up with my narrative analysis of the game: https://www.youtube.com/watch?v=X4XC46LD6d4 #retroGaming",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=X4XC46LD6d4",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117451230114064754",
+     "server": "https://mastodon.gamedev.place",
+     "postUrl": "https://mastodon.gamedev.place/@mcoorlim/117451230114064754",
+     "createdAt": "2026-10-16T15:12:25.441Z",
+     "text": "My playthrough of 1987's Maniac Mansion is now up on my YouTube channel. Look for my narrative analysis of the game next week! #retroGaming https://www.youtube.com/watch?v=a-b7QDX2lww",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=a-b7QDX2lww",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "operationwatchtower@horrorhub.club",
+   "url": "https://social.horrorhub.club/@operationwatchtower",
+   "displayName": "Operation Watchtower",
+   "avatar": "https://media.horrorhub.club/accounts/avatars/114/361/816/986/128/721/original/c055b93845f65552.jpeg",
+   "bot": false,
+   "bio": "Operation Watchtower is a podcast rooted in Kult: Divinity Lost, set in the wake of 9/11. Follow Agent Nicholas Grayson, a haunted fed; Belle Flower, a runaway from a family of circus freaks; and Sen…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:11+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115622415786327954",
+     "seenAt": "2025-11-27T15:40:53.377Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115829881187887502",
+     "seenAt": "2026-01-03T07:02:04.177Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115829881187887502",
+     "server": "https://social.horrorhub.club",
+     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115829881187887502",
+     "createdAt": "2026-01-03T07:02:04.177Z",
+     "text": "Wexley wakes to open earth, ghost hovering before him. The gun fails. Trenody broken. Flees into night knowing it rode ahead. Belle hunts a ghost online, wakes a deeper thing. Rot, milk & crying shadows mark the night. The past comes back breathing. It knows her name. Grayson rides a cold trail through lies & shadows, tells folks it's gas when it's damnation. He earns trust late, runs toward a bo…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/hFqB5enyGoQ",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "115822213518323806",
+     "server": "https://social.horrorhub.club",
+     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115822213518323806",
+     "createdAt": "2026-01-01T22:32:04.825Z",
+     "text": "“𝗪𝗵𝗶𝗰𝗵 𝘃𝗲𝗿𝘀𝗶𝗼𝗻 𝗼𝗳 𝘆𝗼𝘂 𝗶𝘀 𝗮𝗻𝘀𝘄𝗲𝗿𝗶𝗻𝗴 𝘁𝗵𝗶𝘀 𝗾𝘂𝗲𝘀𝘁𝗶𝗼𝗻?” 𝗬𝗼𝘂 𝘀𝗮𝘆 𝗺𝗲. 𝗛𝗲 𝘀𝗮𝘆𝘀 𝘁𝗵𝗲 𝗼𝗻𝗲 𝗽𝗿𝗲𝘁𝗲𝗻𝗱𝗶𝗻𝗴. ▶️ https://youtu.be/UpQGgiZENKQ 🎧 https://watchtowerintel.com/2025/12/19/chapter-project-delphi.html",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/UpQGgiZENKQ",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "cogwheel@is.aaronbsmith.com",
+   "url": "https://is.aaronbsmith.com/@cogwheel",
+   "displayName": "Cogwheel Gaming",
+   "avatar": "https://cdn.masto.host/isaaronbsmithcom/accounts/avatars/109/931/428/149/925/922/original/d58a14a46219bb8b.png",
+   "bot": false,
+   "bio": "This account is for things relating to the #TTRPG games played by the circle of friends gathered under the banner of Cogwheel Gaming. This account is new but we've been doing this since 2017. We have…",
+   "showUrl": "https://aaronbsmith.com/cogwheel/",
+   "observedAt": "2026-11-19T23:58:45+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://is.aaronbsmith.com/@cogwheel/113067455975870708",
+     "seenAt": "2024-09-02T10:21:00.571Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "113067455975870708",
+     "server": "https://is.aaronbsmith.com",
+     "postUrl": "https://is.aaronbsmith.com/@cogwheel/113067455975870708",
+     "createdAt": "2024-09-02T10:21:00.571Z",
+     "text": "#GURPS is a very serious #TTRPG where none of the characters ever have a moment that lasts for the entire session. Excerpts are from this podcast episode: https://aaronbsmith.com/cogwheel/2024/09/gurps-wars-s1-ep-32-autodefenestration/",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/isaaronbsmithcom/media_attachments/files/113/067/452/729/625/648/original/235342bbf3aa5665.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "dunkingonthedm@dice.camp",
+   "url": "https://dice.camp/@DunkingontheDM",
+   "displayName": "Dunking on the DM",
+   "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/109/400/828/756/310/585/original/46795cc87d2c6e6b.jpg",
+   "bot": false,
+   "bio": "Never not getting dunked on. Comedy and storytelling in one tabletop roleplay podcast ft. D&D 5e and Degenesis campaigns. Two new episodes every three weeks 🎲☕ We've just finished up Toruna, a fully-…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:59:58+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://dice.camp/@DunkingontheDM/110009839371868136",
+     "seenAt": "2023-03-12T10:28:53.777Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "110009839371868136",
+     "server": "https://dice.camp",
+     "postUrl": "https://dice.camp/@DunkingontheDM/110009839371868136",
+     "createdAt": "2023-03-12T10:28:53.777Z",
+     "text": "Out now: Episode 7 and finale of Leviathans of England, a Call of Cthulhu (@Chaosium) mini-series set during the English Civil War. 🐙🌊⚔🐋 The bailiffs engage in a final showdown with Seaborough's sinister forces in their mission to find 30 missing New Model Army soldiers. #callofcthulhu #horrorpodcast #horrormystery #horrorrpg #historicalmystery",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/dicecamp/media_attachments/files/110/009/831/335/605/929/original/1bafffdb12ee509f.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "109852835014504759",
+     "server": "https://dice.camp",
+     "postUrl": "https://dice.camp/@DunkingontheDM/109852835014504759",
+     "createdAt": "2023-02-12T17:00:37.406Z",
+     "text": "Out now: Episode 4 of Leviathans of England 🌊🌅⚔🐟 Leviathans of England is a short horror-mystery podcast series taking place during the #EnglishCivilWar, using an original setting of @Chaosium's #CallofCthulhu RPG 🐙 #LeviathansofEngland is series inspired by the works of MR James, set in the year 1649 in a small town on the Suffolk coast, where thirty New Model Army recruits have gone missing, an…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/dicecamp/media_attachments/files/109/852/832/982/913/806/original/c939f9bec595a3cd.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -228,147 +452,101 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@mikefromthepodcast/117522096965333648",
-     "seenAt": "2026-10-29T03:34:47.782Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@mikefromthepodcast/117622553543690312",
      "seenAt": "2026-11-15T21:22:13.526Z"
     }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117622553543690312",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@mikefromthepodcast/117622553543690312",
+     "createdAt": "2026-11-15T21:22:13.526Z",
+     "text": "Strauss traces the history of AI, from marketing tricks to Traxus-IV. From the Marathon Codex: World > Perimeter > Collectibles > B. Strauss, On AI #MarathonGame #AI #OnAI #Strauss #TraxusIV #MarathonVID https://www.youtube.com/watch?v=2LMlURDJ3Vk",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=2LMlURDJ3Vk",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117622487768683270",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@mikefromthepodcast/117622487768683270",
+     "createdAt": "2026-11-15T21:05:29.878Z",
+     "text": "Before trusting a machine, Dr. Bernard Strauss asks the first question of his book, On AI. “What is intelligence?” From the Marathon Codex: World > Perimeter > Collectibles > B. Strauss, On AI #MarathonGame #AI #OnAI #Strauss #MarathonVID https://youtu.be/DNWh43rv-Xo?si=qW-p2Jf2A_9wmslv",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/DNWh43rv-Xo?si=qW-p2Jf2A_9wmslv",
+       "mediaType": null
+      }
+     ]
+    }
    ]
   },
   {
-   "acct": "mcoorlim@mastodon.gamedev.place",
-   "url": "https://mastodon.gamedev.place/@mcoorlim",
-   "displayName": "Michael Coorlim",
-   "avatar": "https://cdn.masto.host/mastodongamedevplace/accounts/avatars/108/195/693/022/674/850/static/211a60dfc9927209.png",
+   "acct": "grogpod@mastodon.gamedev.place",
+   "url": "https://mastodon.gamedev.place/@grogpod",
+   "displayName": "Grogpod Roguelike Podcast",
+   "avatar": "https://cdn.masto.host/mastodongamedevplace/accounts/avatars/109/366/267/738/477/702/original/421bcb5f02f96358.png",
    "bot": false,
-   "bio": "Author of the Galvanic Century and Shadow Decade series, retrogamer, leftist. Solo gameDev, game writer, narrative designer. Senior Writer. Sometimes I produce podcasts. See the links for my YouTube…",
+   "bio": "Podcasting about roguelike games, their development, and their history. https://grogpod.zone",
    "showUrl": null,
-   "observedAt": "2026-11-20T00:04:00+00:00",
+   "observedAt": "2026-11-20T00:01:22+00:00",
    "media": [
     {
      "kind": "outgoing",
      "source": "youtube",
-     "postUrl": "https://mastodon.gamedev.place/@mcoorlim/117473958110340756",
-     "seenAt": "2026-10-20T15:32:27.141Z"
+     "mediaType": null,
+     "postUrl": "https://mastodon.gamedev.place/@grogpod/117589732515090030",
+     "seenAt": "2026-11-10T02:15:24.366Z"
     }
-   ]
-  },
-  {
-   "acct": "dosnostalgic@mastodon.social",
-   "url": "https://mastodon.social/@dosnostalgic",
-   "displayName": "Anatoly Shashkin💾",
-   "avatar": "https://files.mastodon.social/accounts/avatars/000/011/472/original/d2e6ad703b6e8453.jpg",
-   "bot": false,
-   "bio": "MS-DOS gaming enthusiast, YouTuber, podcaster, cat admirer, RU in NY. Ask me about DOS games! Tell me your DOS game memories! I swear and repost a bunch. 🥂 (He/Him) I don't describe images",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:00:05+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://mastodon.social/@dosnostalgic/117424456043382662",
-     "seenAt": "2026-10-11T21:43:25.547Z"
-    }
-   ]
-  },
-  {
-   "acct": "operationwatchtower@horrorhub.club",
-   "url": "https://social.horrorhub.club/@operationwatchtower",
-   "displayName": "Operation Watchtower",
-   "avatar": "https://media.horrorhub.club/accounts/avatars/114/361/816/986/128/721/original/c055b93845f65552.jpeg",
-   "bot": false,
-   "bio": "Operation Watchtower is a podcast rooted in Kult: Divinity Lost, set in the wake of 9/11. Follow Agent Nicholas Grayson, a haunted fed; Belle Flower, a runaway from a family of circus freaks; and Sen…",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:05:11+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "social.horrorhub.club",
-     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115661856069021849",
-     "seenAt": "2025-12-04T14:51:04.344Z"
+     "statusId": "117589732515090030",
+     "server": "https://mastodon.gamedev.place",
+     "postUrl": "https://mastodon.gamedev.place/@grogpod/117589732515090030",
+     "createdAt": "2026-11-10T02:15:24.366Z",
+     "text": "To celebrate Carl Sagan's birthday on Nov 9, Hello Games should generate a meat planet somewhere in the galaxy for people to find https://www.youtube.com/watch?v=ZP7K9SycELA #carlsagan #NoMansSky #cosmos",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=ZP7K9SycELA",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115829881187887502",
-     "seenAt": "2026-01-03T07:02:04.177Z"
-    }
-   ]
-  },
-  {
-   "acct": "ugvmpodcast@mas.to",
-   "url": "https://mas.to/@ugvmpodcast",
-   "displayName": "ugvmpodcast",
-   "avatar": "https://media.mas.to/accounts/avatars/109/292/595/722/665/829/original/c1ee528dd2c2962a.png",
-   "bot": false,
-   "bio": "The ugvm Podcast: https://ugvm.org.uk/podcast We are one part of a long established newsgroup, uk.games.video.misc. The podcast is a spin-off hosted by @deKay along with other stars of the ugvm group…",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:07:54+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "music.amazon.com",
-     "postUrl": "https://mas.to/@ugvmpodcast/113913385306374573",
-     "seenAt": "2025-01-29T19:51:57.786Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://mas.to/@ugvmpodcast/113913385306374573",
-     "seenAt": "2025-01-29T19:51:57.786Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://mas.to/@ugvmpodcast/113913385306374573",
-     "seenAt": "2025-01-29T19:51:57.786Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "tunein.com",
-     "postUrl": "https://mas.to/@ugvmpodcast/113913385306374573",
-     "seenAt": "2025-01-29T19:51:57.786Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "ugvm.org.uk",
-     "postUrl": "https://mas.to/@ugvmpodcast/115765283286066895",
-     "seenAt": "2025-12-22T21:13:58.422Z"
-    }
-   ]
-  },
-  {
-   "acct": "dunkingonthedm@dice.camp",
-   "url": "https://dice.camp/@DunkingontheDM",
-   "displayName": "Dunking on the DM",
-   "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/109/400/828/756/310/585/original/46795cc87d2c6e6b.jpg",
-   "bot": false,
-   "bio": "Never not getting dunked on. Comedy and storytelling in one tabletop roleplay podcast ft. D&D 5e and Degenesis campaigns. Two new episodes every three weeks 🎲☕ We've just finished up Toruna, a fully-…",
-   "showUrl": null,
-   "observedAt": "2026-11-19T23:59:58+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "dice.camp",
-     "postUrl": "https://dice.camp/@DunkingontheDM/110009839371868136",
-     "seenAt": "2023-03-12T10:28:53.777Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasters.spotify.com",
-     "postUrl": "https://dice.camp/@DunkingontheDM/110136711956861824",
-     "seenAt": "2023-04-03T20:14:15.784Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "wairpodcast.com",
-     "postUrl": "https://dice.camp/@DunkingontheDM/109423319070697484",
-     "seenAt": "2022-11-28T20:29:04.218Z"
+     "statusId": "117469416429158272",
+     "server": "https://mastodon.gamedev.place",
+     "postUrl": "https://mastodon.gamedev.place/@grogpod/117469416429158272",
+     "createdAt": "2026-10-19T20:17:26.589Z",
+     "text": "Incredibly cool procedural art design being implemented in Dwarf Fortress! https://youtu.be/Hnwz8hCF77Y #dwarffortress #roguelike #proceduralgeneration #art #gaming #kitfox #pixelart",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Hnwz8hCF77Y",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

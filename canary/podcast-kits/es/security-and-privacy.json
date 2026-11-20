@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "security-and-privacy",
  "lang": "es",
@@ -28,7 +28,7 @@
   "zh-Hant": "資訊安全與隱私"
  },
  "icon": "🔐",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "robertsasuke@podcastindex.social",
@@ -42,15 +42,29 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "podcastindex.social",
-     "postUrl": "https://podcastindex.social/@robertsasuke/117003555116387530",
-     "seenAt": "2026-07-29T13:42:47.109Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://podcastindex.social/@robertsasuke/115039349290891760",
      "seenAt": "2025-08-16T16:19:24.716Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115039349290891760",
+     "server": "https://podcastindex.social",
+     "postUrl": "https://podcastindex.social/@robertsasuke/115039349290891760",
+     "createdAt": "2025-08-16T16:19:24.716Z",
+     "text": "Lanzamiento del libro “Evolución Podcasting 2.0: Pasa de ser aficionado a profesional con tu podcast”. Descarga el ebook gratis por tiempo limitado en: pod.sasuke.es https://youtu.be/qyLUbX_xv3g #podcast #podcasting2 #podcaster",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/qyLUbX_xv3g",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }
