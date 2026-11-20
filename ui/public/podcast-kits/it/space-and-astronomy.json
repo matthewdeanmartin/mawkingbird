@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "space-and-astronomy",
  "lang": "it",
@@ -28,7 +28,7 @@
   "zh-Hant": "太空與天文"
  },
  "icon": "🔭",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "astro_luigi@mastodon.social",
@@ -41,16 +41,47 @@
    "observedAt": "2026-11-19T23:57:30+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://mastodon.social/@astro_luigi/117338627597565516",
-     "seenAt": "2026-09-26T17:56:07.396Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@astro_luigi/117594082520610375",
+     "seenAt": "2026-11-10T20:41:40.181Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117594082520610375",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@astro_luigi/117594082520610375",
+     "createdAt": "2026-11-10T20:41:40.181Z",
+     "text": "La potenza della pressione",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/594/081/569/101/681/original/0e7aa95ca8be90be.mp4",
+       "mediaType": "video"
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://mastodon.social/@astro_luigi/117337978145911392",
-     "seenAt": "2026-09-26T15:10:57.551Z"
+     "statusId": "117461719940468665",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@astro_luigi/117461719940468665",
+     "createdAt": "2026-10-18T11:40:07.492Z",
+     "text": "Interessante per chi si occupa di medicina subacquea e iperbarica",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/461/717/086/727/704/original/309eed5a4126cf96.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   }

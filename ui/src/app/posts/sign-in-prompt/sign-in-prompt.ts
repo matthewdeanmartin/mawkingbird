@@ -13,6 +13,7 @@ import { Auth } from '../../platform/session/auth';
 // i18n signInPrompt.action.like: like this
 // i18n signInPrompt.action.reply: reply
 // i18n signInPrompt.action.boost: boost this
+// i18n signInPrompt.action.follow: follow people
 
 /**
  * "You need an account for that" — shown when an anonymous reader taps an action

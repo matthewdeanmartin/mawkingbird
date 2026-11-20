@@ -11,8 +11,8 @@ import { AppOnlyLinkRel } from '../public-page-urls';
 /**
  * `/follow/<slug>/`: one hand-picked starter kit as a public page. The people
  * listed passed the search-listing consent rule in follow-kits.ts. Following
- * happens in the app (`/collections/starter/<slug>`), which also works for a
- * visitor without an account.
+ * happens in the app (`/collections/starter/<slug>`); a visitor without an
+ * account can browse the kit there but is asked to log in to follow.
  */
 @Component({
   selector: 'app-follow-kit',

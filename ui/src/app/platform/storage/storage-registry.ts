@@ -1046,6 +1046,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     sensitivity: 'setting',
     note: 'Which kind of account was last active: mastodon, bluesky or anonymous.',
   },
+  {
+    base: 'mastodon_mock_anonymous_implicit',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Anonymous was opened by a public link rather than chosen, so following asks to sign in.',
+  },
 
   // ---- cache: refetchable, never exported ----
   {

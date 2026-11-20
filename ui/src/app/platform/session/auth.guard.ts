@@ -105,7 +105,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
     copiedLink ||
     /^\/(read|statuses|accounts|tags)\/[^/?#]+/.test(state.url ?? '')
   ) {
-    auth.enterAnonymous(inject(Server).baseUrl() || defaultServer());
+    auth.enterAnonymous(inject(Server).baseUrl() || defaultServer(), { implicit: true });
     return true;
   }
   // The front page, not the login page: a stranger who has just arrived should

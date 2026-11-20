@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "music",
  "lang": "de",
@@ -28,7 +28,7 @@
   "zh-Hant": "音樂"
  },
  "icon": "🎵",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "maierhofer@wien.rocks",
@@ -43,50 +43,66 @@
     {
      "kind": "native",
      "source": "mastodon",
+     "mediaType": "audio",
      "postUrl": "https://wien.rocks/@maierhofer/116297293187950013",
      "seenAt": "2026-03-26T20:11:05.302Z"
     },
     {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://wien.rocks/@maierhofer/116846689576000629",
+     "seenAt": "2026-07-01T20:49:48.927Z"
+    },
+    {
      "kind": "full-player",
      "source": "direct-audio",
+     "mediaType": null,
      "postUrl": "https://wien.rocks/@maierhofer/116240580243537919",
      "seenAt": "2026-03-16T19:48:14.442Z"
     },
     {
      "kind": "outgoing",
-     "source": "cba.media",
-     "postUrl": "https://wien.rocks/@maierhofer/117366253279688445",
-     "seenAt": "2026-10-01T15:01:41.866Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://wien.rocks/@maierhofer/117223510163966300",
      "seenAt": "2026-09-06T10:00:14.980Z"
     }
-   ]
-  },
-  {
-   "acct": "detektorfm@social.detektor.fm",
-   "url": "https://social.detektor.fm/@detektorfm",
-   "displayName": "detektor.fm :dfm:",
-   "avatar": "https://social.detektor.fm/system/accounts/avatars/109/705/336/470/263/839/original/2f108b5bc8317044.jpg",
-   "bot": false,
-   "bio": "Podcast-Radio / Neue Musik & Journalismus / https://detektor.fm/impressum / #podcasts #podcasting #radio",
-   "showUrl": "https://detektor.fm/serien/spektrum",
-   "observedAt": "2026-11-19T23:59:32+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "detektor.fm",
-     "postUrl": "https://social.detektor.fm/@detektorfm/117607135151242288",
-     "seenAt": "2026-11-13T04:01:07.520Z"
+     "statusId": "117223510163966300",
+     "server": "https://wien.rocks",
+     "postUrl": "https://wien.rocks/@maierhofer/117223510163966300",
+     "createdAt": "2026-09-06T10:00:14.980Z",
+     "text": "Bill & Tom Kaunixcz - let‘s cook Dr. Speeds SuperPizza https://www.youtube.com/watch?v=JLSEF-REb8k&t=583",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=JLSEF-REb8k&t=583",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "social.detektor.fm",
-     "postUrl": "https://social.detektor.fm/@detektorfm/117643637630055349",
-     "seenAt": "2026-11-19T14:44:11.154Z"
+     "statusId": "116846689576000629",
+     "server": "https://wien.rocks",
+     "postUrl": "https://wien.rocks/@maierhofer/116846689576000629",
+     "createdAt": "2026-07-01T20:49:48.927Z",
+     "text": "Ich darf die nächste Radiosendung für Donnerstag, 02.07.2026 12:00 - 12:30 auf Orange 94.0 ankündigen: Motion Picture Soundtrack - Musik aus Film & Fernsehen Sommerserie Frankreich: - Zwei Perspektiven auf Paris - Luc Besson und Richard Linklater - Franzosen in Los Angeles - Filme über das Filmemachen selbst https://o94.at/programm/sendung/id/2511853 #Linklater #MrOizo #Truffaut #Besson #Serra #D…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://wien.rocks/system/media_attachments/files/116/846/687/501/522/183/original/8d5d52186081b057.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   }

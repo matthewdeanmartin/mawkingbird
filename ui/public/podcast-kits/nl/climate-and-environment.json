@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "climate-and-environment",
  "lang": "nl",
@@ -28,7 +28,7 @@
   "zh-Hant": "氣候與環境"
  },
  "icon": "🌍",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "markbeekhuis@mastodon.nl",
@@ -43,8 +43,28 @@
     {
      "kind": "outgoing",
      "source": "direct-audio",
+     "mediaType": null,
      "postUrl": "https://mastodon.nl/@MarkBeekhuis/115725973198550453",
      "seenAt": "2025-12-15T22:36:54.093Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115725973198550453",
+     "server": "https://mastodon.nl",
+     "postUrl": "https://mastodon.nl/@MarkBeekhuis/115725973198550453",
+     "createdAt": "2025-12-15T22:36:54.093Z",
+     "text": "Natuurlijk zijn Canadezen geen Nederlanders. En natuurlijk is hun gebied onvergelijkbaar met het gebied van Nederland. Maar als je hoort over een regio waar ze tomaten, komkommers en paprikas in kassen telen, dan voelt het als waar ik ben opgegroeid > Ideas: Your tomatoes have a backstory and it’s not always pretty Media file: https://mgln.ai/e/12/cbc.mc.tritondigital.com/CBC_IDEAS_P/media/ideas/…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "direct-audio",
+       "url": "https://mgln.ai/e/12/cbc.mc.tritondigital.com/CBC_IDEAS_P/media/ideas/ideas-THY80Bik-20251211.mp3",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

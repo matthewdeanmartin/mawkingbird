@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "music",
  "lang": "it",
@@ -28,7 +28,7 @@
   "zh-Hant": "音樂"
  },
  "icon": "🎵",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "edosecco@mastodon.uno",
@@ -43,8 +43,45 @@
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.uno/@edosecco/117540555057654310",
      "seenAt": "2026-11-01T09:48:55.911Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117540555057654310",
+     "server": "https://mastodon.uno",
+     "postUrl": "https://mastodon.uno/@edosecco/117540555057654310",
+     "createdAt": "2026-11-01T09:48:55.911Z",
+     "text": "Diario di ottobre - quindici anni dopo Pezzi che non sarebbero mai combaciati. Sempre bene ricordarselo. https://www.youtube.com/watch?v=80RtBeB61LE",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=80RtBeB61LE",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117446718035549647",
+     "server": "https://mastodon.uno",
+     "postUrl": "https://mastodon.uno/@edosecco/117446718035549647",
+     "createdAt": "2026-10-15T20:04:56.591Z",
+     "text": "Master Boot Record - Plug and Play \"Ma come, un rockettaro come te che ascolta musica elettronica?\" \"Questa non è semplice elettronica. Questo è COMPUTER METAL.\" @mbr https://www.youtube.com/watch?v=WAYj_0j_GHc #UnoRadio #UnoMusica #cybermetal @musica",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=WAYj_0j_GHc",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

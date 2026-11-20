@@ -182,6 +182,48 @@ test:seo:browser`, `make design-verify`, `npm run test:radio:browser`, and
 integration contract. Record the results here. No full local gate, commit,
 push or publication was performed.
 
+## Follow-up: language and profile links
+
+The Radio kits now reuse the same Pack languages control as the curated
+starter-pack page. On a new visit, the podcast view matches the browser's
+language chain against available packs, falling back to English. An explicit
+choice is stored in client preferences; Browser language clears that choice.
+The picker stays visible while a selected kit loads, and account handles
+open `/accounts/@user@host` inside Mawkingbird. A focused browser smoke with
+`de-AT` verified the German default, category navigation, English persistence
+after reload, Browser language reset, and the Analyse Podcast profile route.
+Focused Angular and deep-link tests passed; the combined full gates remain
+deferred to the build server.
+
+## Follow-up: playable media posts
+
+The 80-post gate now accepts native Mastodon audio/video or exact episode/item
+URLs supported by Mawkingbird's inline players. Generic podcast sites, Spotify
+show/profile links, Apple Podcasts show pages without an episode ID, social
+profiles and unsupported shorts no longer qualify. The existing evidence cache
+and 462 review decisions remain in place; the export was regenerated from that
+cache without a new crawl or review reset. The current snapshot has 129 unique
+shows in 60 kits, 172 memberships, and 305 recent post previews. Each account
+card shows up to two newest qualifying posts, with a bounded text excerpt,
+media URL and type, content-warning state, home server, home status ID and canonical
+post URL. Native and supported external media can be played in the kit; Open
+post resolves inside Mawkingbird and rehydrates from the home server. Find this
+account's singles remains the route to more posts. Radio play is offered only
+for native audio or reviewed advancing providers.
+
+Focused checks for this follow-up: 10 Python podcast tests, 2 importer tests,
+7 kit-page Angular tests, and the 51 Angular plus 4 shim deep-link tests passed.
+The source-only deep-link audit reported 0 broken contracts. The design
+inventory was regenerated and its kit-page findings and shared picker candidate
+were reviewed and reconciled. Full gates remain deferred to the build server.
+
+For a monthly refresh, run `make pod-crawl`, inspect `make pod-report`, review
+new or changed candidates, then `make pod-export` in the sibling repo; run
+`cd ui && npm run podcasts:update` here. The crawl reuses the SQLite evidence
+store and `data/podcasts/decisions.json`; a reviewed account drops from the
+snapshot if its last 80 posts no longer meet the gate. A reviewed show may
+still link to a guest appearance; manual review should check show ownership.
+
 ## Open implementation choices to verify from evidence
 
 - A show with several hosts: choose its show account over a host's personal

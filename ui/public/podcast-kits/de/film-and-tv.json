@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "film-and-tv",
  "lang": "de",
@@ -28,8 +28,70 @@
   "zh-Hant": "電影與電視"
  },
  "icon": "🎬",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
+  {
+   "acct": "herrhochhaus@mastodon.social",
+   "url": "https://mastodon.social/@herrhochhaus",
+   "displayName": "Herr Hochhaus",
+   "avatar": "https://files.mastodon.social/accounts/avatars/117/320/293/082/834/961/original/6c2265df4d79707a.png",
+   "bot": false,
+   "bio": "\"Every day, once a day, give yourself a present. Don’t plan it, don’t wait for it, just let it happen. It could be a new shirt at the men’s store, a catnap in your office chair or two cups of good ho…",
+   "showUrl": "https://www.geekcast.de/",
+   "observedAt": "2026-11-20T00:01:58+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@herrhochhaus/117643133261866355",
+     "seenAt": "2026-11-19T12:35:55.094Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@herrhochhaus/117332695874642511",
+     "seenAt": "2026-09-25T16:47:36.487Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117643133261866355",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@herrhochhaus/117643133261866355",
+     "createdAt": "2026-11-19T12:35:55.094Z",
+     "text": "Die zweite Staffel \"Ein Geek kommt selten allein\" beginnt mit dem grandiosen Dr. Florian Rademacher. Ich hab Bock, diesmal geht es um all die Geeks, die jetzt im Team mit AI/KI/SI (sagt das ernsthaft irgendwer?) arbeiten. Vorschläge für Gesprächspartner werden immer gerne entgegengenommen (und Tipps, wo mein Fedi-taugliches Castopod noch fehlkonfiguriert ist 😅). Ach ja, den Podcast findet ihr unt…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/643/122/424/867/109/original/7adf435535200462.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117332695874642511",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@herrhochhaus/117332695874642511",
+     "createdAt": "2026-09-25T16:47:36.487Z",
+     "text": "@zefix Raise the Gjallarhorn 🤘 https://www.youtube.com/watch?v=-Y0OKTuMICM",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=-Y0OKTuMICM",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
   {
    "acct": "maierhofer@wien.rocks",
    "url": "https://wien.rocks/@maierhofer",
@@ -43,98 +105,66 @@
     {
      "kind": "native",
      "source": "mastodon",
+     "mediaType": "audio",
      "postUrl": "https://wien.rocks/@maierhofer/116297293187950013",
      "seenAt": "2026-03-26T20:11:05.302Z"
     },
     {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://wien.rocks/@maierhofer/116846689576000629",
+     "seenAt": "2026-07-01T20:49:48.927Z"
+    },
+    {
      "kind": "full-player",
      "source": "direct-audio",
+     "mediaType": null,
      "postUrl": "https://wien.rocks/@maierhofer/116240580243537919",
      "seenAt": "2026-03-16T19:48:14.442Z"
     },
     {
      "kind": "outgoing",
-     "source": "cba.media",
-     "postUrl": "https://wien.rocks/@maierhofer/117366253279688445",
-     "seenAt": "2026-10-01T15:01:41.866Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://wien.rocks/@maierhofer/117223510163966300",
      "seenAt": "2026-09-06T10:00:14.980Z"
     }
-   ]
-  },
-  {
-   "acct": "secondunitstudios@mastodon.social",
-   "url": "https://mastodon.social/@secondunitstudios",
-   "displayName": "Second Unit Studios",
-   "avatar": "https://files.mastodon.social/accounts/avatars/111/969/452/999/311/857/original/c053b7ae62fe8b26.jpg",
-   "bot": false,
-   "bio": "Heimat der Second Unit, Superhero Unit, Bast&Christian&George&Lucas und vielen weiteren Podcasts. Posts in Handarbeit von @csteiner",
-   "showUrl": "https://podcasts.apple.com/de/channel/second-unit-studios/id6467397502",
-   "observedAt": "2026-11-20T00:06:58+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@secondunitstudios/117643170774937943",
-     "seenAt": "2026-11-19T12:45:27.503Z"
+     "statusId": "117223510163966300",
+     "server": "https://wien.rocks",
+     "postUrl": "https://wien.rocks/@maierhofer/117223510163966300",
+     "createdAt": "2026-09-06T10:00:14.980Z",
+     "text": "Bill & Tom Kaunixcz - let‘s cook Dr. Speeds SuperPizza https://www.youtube.com/watch?v=JLSEF-REb8k&t=583",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=JLSEF-REb8k&t=583",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "secondunit-podcast.de",
-     "postUrl": "https://mastodon.social/@secondunitstudios/117546981191377330",
-     "seenAt": "2026-11-02T13:03:10.938Z"
-    }
-   ]
-  },
-  {
-   "acct": "herrhochhaus@mastodon.social",
-   "url": "https://mastodon.social/@herrhochhaus",
-   "displayName": "Herr Hochhaus",
-   "avatar": "https://files.mastodon.social/accounts/avatars/117/320/293/082/834/961/original/6c2265df4d79707a.png",
-   "bot": false,
-   "bio": "\"Every day, once a day, give yourself a present. Don’t plan it, don’t wait for it, just let it happen. It could be a new shirt at the men’s store, a catnap in your office chair or two cups of good ho…",
-   "showUrl": "https://www.geekcast.de/",
-   "observedAt": "2026-11-20T00:01:58+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@herrhochhaus/117642035152175920",
-     "seenAt": "2026-11-19T07:56:39.287Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://mastodon.social/@herrhochhaus/117332695874642511",
-     "seenAt": "2026-09-25T16:47:36.487Z"
-    }
-   ]
-  },
-  {
-   "acct": "eigentlich@podcasts.social",
-   "url": "https://podcasts.social/@eigentlich",
-   "displayName": "Eigentlich Podcast",
-   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/110/320/844/158/162/673/original/7b14ef0ab058689d.jpg",
-   "bot": false,
-   "bio": "\"Beim Laufen reden und laufend reden\"",
-   "showUrl": "https://eigentlich-podcast.de/",
-   "observedAt": "2026-11-20T00:00:15+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "eigentlich-podcast.de",
-     "postUrl": "https://podcasts.social/@eigentlich/117641882269464774",
-     "seenAt": "2026-11-19T07:17:46.466Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://podcasts.social/@eigentlich/117641882269464774",
-     "seenAt": "2026-11-19T07:17:46.466Z"
+     "statusId": "116846689576000629",
+     "server": "https://wien.rocks",
+     "postUrl": "https://wien.rocks/@maierhofer/116846689576000629",
+     "createdAt": "2026-07-01T20:49:48.927Z",
+     "text": "Ich darf die nächste Radiosendung für Donnerstag, 02.07.2026 12:00 - 12:30 auf Orange 94.0 ankündigen: Motion Picture Soundtrack - Musik aus Film & Fernsehen Sommerserie Frankreich: - Zwei Perspektiven auf Paris - Luc Besson und Richard Linklater - Franzosen in Los Angeles - Filme über das Filmemachen selbst https://o94.at/programm/sendung/id/2511853 #Linklater #MrOizo #Truffaut #Besson #Serra #D…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://wien.rocks/system/media_attachments/files/116/846/687/501/522/183/original/8d5d52186081b057.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -150,57 +180,29 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "anchor.fm",
-     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
-     "seenAt": "2026-11-14T16:17:35.498Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://troet.cafe/@theretrosven/117615206091116861",
      "seenAt": "2026-11-14T14:13:40.289Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasters.spotify.com",
-     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
-     "seenAt": "2026-11-14T16:17:35.498Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "troet.cafe",
-     "postUrl": "https://troet.cafe/@theretrosven/117615693364746573",
-     "seenAt": "2026-11-14T16:17:35.498Z"
     }
-   ]
-  },
-  {
-   "acct": "dieletztewebsite@mastodon.green",
-   "url": "https://mastodon.green/@DieLetzteWebsite",
-   "displayName": "Die Letzte Website",
-   "avatar": "https://files.mastodon.green/accounts/avatars/110/644/830/385/574/161/original/c6b624211ed51bc5.jpg",
-   "bot": false,
-   "bio": "Mastodon-Heimat von https://www.DieLetzte.website mit \"Der Letzte Podcast\", \"Die Letzte Filmkritik\", \"Letzte Worte\" und \"Das Letzte Level\". Hört uns bei Apple Podcasts, Spotify oder auf https://www.D…",
-   "showUrl": "https://www.dieletzte.website",
-   "observedAt": "2026-11-19T23:59:37+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "dieletzte.website",
-     "postUrl": "https://mastodon.green/@DieLetzteWebsite/117607176568040947",
-     "seenAt": "2026-11-13T04:11:39.496Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "mastodon.green",
-     "postUrl": "https://mastodon.green/@DieLetzteWebsite/117607176568040947",
-     "seenAt": "2026-11-13T04:11:39.496Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "patreon.com",
-     "postUrl": "https://mastodon.green/@DieLetzteWebsite/117594552717389489",
-     "seenAt": "2026-11-10T22:41:14.815Z"
+     "statusId": "117615206091116861",
+     "server": "https://troet.cafe",
+     "postUrl": "https://troet.cafe/@theretrosven/117615206091116861",
+     "createdAt": "2026-11-14T14:13:40.289Z",
+     "text": "Ihr wollt neue Folgen im #Podcast? Bitte schön, dieses Mal geht es um unseren lila Affenfreund Kong. #SkullIsland #Gaming https://open.spotify.com/episode/7m4BbBGPuVSGvv6DD3obaH?si=hKjiql24St2nh9Il0AQRvg RSS im Link im Profil",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/7m4BbBGPuVSGvv6DD3obaH?si=hKjiql24St2nh9Il0AQRvg",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

@@ -5,7 +5,7 @@ import { MbButton } from '../../design-system/button/button';
 import { RouterLink } from '@angular/router';
 import { effect, untracked } from '@angular/core';
 import { accountRoutePath } from '../account-route';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n accountPreview.fullProfile: View full profile
 import {
   afterNextRender,
@@ -115,7 +115,18 @@ function didOf(account: Account): string {
             'accountPreview.fullProfile' | transloco
           }}</a>
         }
-        @if (showFollowButton()) {
+        @if (showFollowButton() && signInToFollow) {
+          <!-- Anonymous only because a public link opened the app: a hover card
+               closes too readily to host a dialog, so Follow is the way to sign in. -->
+          <a
+            mbButton
+            size="small"
+            class="hc-follow"
+            routerLink="/login"
+            (click)="$event.stopPropagation(); leaveAnonymous()"
+            >{{ 'signInPrompt.title' | transloco: { action: followAction } }}</a
+          >
+        } @else if (showFollowButton()) {
           <button
             type="button"
             mbButton
@@ -204,6 +215,7 @@ function didOf(account: Account): string {
 export class AccountHoverCard {
   private api = inject(Api);
   private auth = inject(Auth);
+  private transloco = inject(TranslocoService);
   private anonymous = inject(AnonymousAccount);
   private anonymousFollows = inject(AnonymousFollows);
   private bskyGraph = inject(BlueskyGraph);
@@ -366,6 +378,19 @@ export class AccountHoverCard {
           if (current()) this.relationshipLoading.set(false);
         },
       });
+  }
+
+  protected get signInToFollow(): boolean {
+    return this.auth.signInToFollow;
+  }
+
+  protected get followAction(): string {
+    return this.transloco.translate('signInPrompt.action.follow');
+  }
+
+  /** Leave the silent Anonymous session first, as the sign-in prompt does. */
+  protected leaveAnonymous(): void {
+    this.auth.exitAnonymous();
   }
 
   protected toggleFollow(event: MouseEvent): void {

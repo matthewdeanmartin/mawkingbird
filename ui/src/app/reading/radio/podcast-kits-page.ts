@@ -4,10 +4,24 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { map } from 'rxjs';
 import { FollowButton } from '../../accounts/follow-button/follow-button';
+import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
 import { MbButton } from '../../design-system/button/button';
-import { MbControl, MbField } from '../../design-system/field/field';
+import { PackLanguagePicker } from '../../discovery/pack-language-picker';
+import { UiLocale } from '../../i18n/locale';
 import { Account } from '../../platform/api/models';
-import { PodcastIndex, PodcastKits, PodcastMember, PodcastPack } from './podcast-kits';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
+import { externalMedia } from '../audio-embeds/providers';
+import { VideoPlayerHost } from '../video-player/video-player-host';
+import { youtubeSource } from '../video-player/media-source';
+import {
+  PodcastIndex,
+  PodcastKits,
+  PodcastMember,
+  PodcastPack,
+  PodcastRecentPost,
+  podcastPackLanguage,
+} from './podcast-kits';
 import { RadioHeader } from './radio-header';
 import { SinglesTabs } from './section-tabs';
 
@@ -19,16 +33,20 @@ import { SinglesTabs } from './section-tabs';
 // i18n podcastKits.empty: Podcast kits are being prepared.
 // i18n podcastKits.all: All kits
 // i18n podcastKits.shows: {{count}} shows
-// i18n podcastKits.language: Language
-// i18n podcastKits.native: Native Mastodon audio
+// i18n podcastKits.browserLanguage: Browser language ({{language}})
+// i18n podcastKits.native: Native Mastodon media
+// i18n podcastKits.nativeAudio: Native Mastodon audio
+// i18n podcastKits.nativeVideo: Native Mastodon video
 // i18n podcastKits.fullPlayer: Plays through in Radio
-// i18n podcastKits.outgoing: Opens outside Radio
+// i18n podcastKits.outgoing: Inline player
 // i18n podcastKits.short: Short sample or non-advancing player
 // i18n podcastKits.play: Play in Radio
 // i18n podcastKits.openPost: Open post
 // i18n podcastKits.findMore: Find this account’s singles
 // i18n podcastKits.show: Show website
 // i18n podcastKits.bot: Show feed
+// i18n podcastKits.playVideo: Play video
+// i18n podcastKits.showPost: Show post and media
 
 @Component({
   selector: 'app-podcast-kits-page',
@@ -38,9 +56,10 @@ import { SinglesTabs } from './section-tabs';
     RadioHeader,
     SinglesTabs,
     MbButton,
-    MbField,
-    MbControl,
+    PackLanguagePicker,
     FollowButton,
+    ExternalPlayerHost,
+    VideoPlayerHost,
   ],
   template: `
     <section class="page">
@@ -52,23 +71,22 @@ import { SinglesTabs } from './section-tabs';
           {{ 'podcastKits.snapshot' | transloco: { date: dateOf(catalogue) } }}
         </p>
       }
-      @if (loading()) {
-        <p role="status">{{ 'podcastKits.loading' | transloco }}</p>
-      } @else if (failed()) {
+      @if (failed()) {
         <p role="alert">{{ 'podcastKits.unavailable' | transloco }}</p>
-      } @else if (!entries().length) {
-        <p>{{ 'podcastKits.empty' | transloco }}</p>
       } @else {
         @if (languages().length > 1) {
-          <mb-field [label]="'podcastKits.language' | transloco">
-            <select mbControl [value]="lang()" (change)="chooseLanguage($any($event.target).value)">
-              @for (code of languages(); track code) {
-                <option [value]="code">{{ code }}</option>
-              }
-            </select>
-          </mb-field>
+          <app-pack-language-picker
+            [label]="'bundledStarterKits.languages' | transloco"
+            [value]="pickerValue()"
+            [options]="languageOptions()"
+            (valueChange)="chooseLanguage($event)"
+          />
         }
-        @if (pack(); as selected) {
+        @if (loading()) {
+          <p role="status">{{ 'podcastKits.loading' | transloco }}</p>
+        } @else if (!entries().length) {
+          <p>{{ 'podcastKits.empty' | transloco }}</p>
+        } @else if (pack(); as selected) {
           <a routerLink="/singles/starter-kits" [queryParams]="{ lang: lang() }">{{
             'podcastKits.all' | transloco
           }}</a>
@@ -81,9 +99,7 @@ import { SinglesTabs } from './section-tabs';
                 }
                 <div class="details">
                   <strong>{{ member.displayName }}</strong>
-                  <a [href]="member.url" target="_blank" rel="noopener noreferrer">
-                    &#64;{{ member.acct }}
-                  </a>
+                  <a [routerLink]="['/accounts', '@' + member.acct]"> &#64;{{ member.acct }} </a>
                   @if (member.bot) {
                     <span>{{ 'podcastKits.bot' | transloco }}</span>
                   }
@@ -95,26 +111,78 @@ import { SinglesTabs } from './section-tabs';
                       'podcastKits.show' | transloco
                     }}</a>
                   }
-                  <ul class="media">
+                  <div class="media-types">
                     @for (item of member.media; track item.kind + item.source) {
-                      <li>
-                        <span>{{ mediaLabel(item.kind) | transloco }} · {{ item.source }}</span>
-                        @if (item.kind === 'native' || item.kind === 'full-player') {
+                      <span
+                        >{{ mediaLabel(item.kind, item.mediaType) | transloco }} ·
+                        {{ item.source }}</span
+                      >
+                    }
+                  </div>
+                  <div class="posts">
+                    @for (post of member.recentPosts; track post.statusId) {
+                      <article class="post">
+                        <a [routerLink]="postRoute(post)" class="post-date">{{
+                          post.createdAt.slice(0, 10)
+                        }}</a>
+                        @if (post.spoilerText || post.sensitive) {
+                          <p>{{ post.spoilerText }}</p>
+                          <button mbButton size="small" type="button" (click)="reveal(post)">
+                            {{ 'podcastKits.showPost' | transloco }}
+                          </button>
+                        }
+                        @if (
+                          (!post.spoilerText && !post.sensitive) ||
+                          revealedPosts().has(post.server + post.statusId)
+                        ) {
+                          @if (post.text) {
+                            <p class="post-text">{{ post.text }}</p>
+                          }
+                          @for (item of post.sources; track item.url) {
+                            <div class="post-media">
+                              @if (
+                                (item.kind === 'native' && item.mediaType === 'audio') ||
+                                item.source === 'direct-audio'
+                              ) {
+                                <audio controls preload="none" [src]="item.url"></audio>
+                              } @else if (item.kind === 'native' && item.mediaType === 'video') {
+                                <video controls preload="none" [src]="item.url"></video>
+                              } @else if (embedded(item.url); as player) {
+                                @if (player.embed) {
+                                  <app-external-player [source]="player" />
+                                } @else if (videoSource(item.url); as video) {
+                                  @if (activeVideo() === post.statusId + item.url) {
+                                    <app-video-player [source]="video" [inline]="true" />
+                                  } @else {
+                                    <button
+                                      mbButton
+                                      size="small"
+                                      type="button"
+                                      (click)="activeVideo.set(post.statusId + item.url)"
+                                    >
+                                      {{ 'podcastKits.playVideo' | transloco }}
+                                    </button>
+                                  }
+                                }
+                              }
+                            </div>
+                          }
+                        }
+                        <a [routerLink]="postRoute(post)">{{
+                          'podcastKits.openPost' | transloco
+                        }}</a>
+                        @if (radioPlayable(post)) {
                           <a
                             mbButton
                             size="small"
                             routerLink="/radio"
-                            [queryParams]="{ play: item.postUrl }"
+                            [queryParams]="{ play: post.postUrl }"
                             >{{ 'podcastKits.play' | transloco }}</a
                           >
-                        } @else {
-                          <a [href]="item.postUrl" target="_blank" rel="noopener noreferrer">{{
-                            'podcastKits.openPost' | transloco
-                          }}</a>
                         }
-                      </li>
+                      </article>
                     }
-                  </ul>
+                  </div>
                   <a routerLink="/singles/find" [queryParams]="{ acct: member.acct }">{{
                     'podcastKits.findMore' | transloco
                   }}</a>
@@ -149,6 +217,8 @@ import { SinglesTabs } from './section-tabs';
 })
 export class PodcastKitsPage {
   private readonly kits = inject(PodcastKits);
+  private readonly prefs = inject(ClientPrefs);
+  private readonly uiLocale = inject(UiLocale);
   private readonly transloco = inject(TranslocoService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -159,15 +229,45 @@ export class PodcastKitsPage {
   protected readonly failed = signal(false);
   protected readonly index = signal<PodcastIndex | null>(null);
   protected readonly files = signal<Record<string, PodcastPack>>({});
+  protected readonly activeVideo = signal<string | null>(null);
+  protected readonly revealedPosts = signal(new Set<string>());
   protected readonly languages = computed(() => Object.keys(this.index()?.languages ?? {}));
-  protected readonly lang = computed(() => {
-    const available = this.index()?.languages ?? {};
-    const wanted = this.query().get('lang');
-    if (wanted && available[wanted]) return wanted;
-    const active = this.transloco.getActiveLang();
-    if (available[active]) return active;
-    return available['en'] ? 'en' : (Object.keys(available)[0] ?? 'en');
-  });
+  private readonly browserLanguages =
+    typeof navigator === 'undefined'
+      ? []
+      : navigator.languages?.length
+        ? [...navigator.languages]
+        : navigator.language
+          ? [navigator.language]
+          : [];
+  protected readonly browserLang = computed(() =>
+    podcastPackLanguage(this.languages(), null, null, this.browserLanguages),
+  );
+  protected readonly lang = computed(() =>
+    podcastPackLanguage(
+      this.languages(),
+      this.query().get('lang'),
+      this.prefs.podcastPackLanguage(),
+      this.browserLanguages,
+    ),
+  );
+  protected readonly pickerValue = computed(
+    () => this.query().get('lang') ?? this.prefs.podcastPackLanguage() ?? 'auto',
+  );
+  protected readonly languageOptions = computed(() => [
+    {
+      value: 'auto',
+      label: this.browserLabel(),
+    },
+    ...this.languages().map((code) => ({ value: code, label: this.languageName(code) })),
+  ]);
+
+  private browserLabel(): string {
+    this.uiLocale.active();
+    return this.transloco.translate('podcastKits.browserLanguage', {
+      language: this.languageName(this.browserLang()),
+    });
+  }
   protected readonly entries = computed(() =>
     (this.index()?.packs ?? []).filter((row) => row.lang === this.lang()),
   );
@@ -212,7 +312,14 @@ export class PodcastKitsPage {
   }
 
   protected chooseLanguage(lang: string): void {
-    void this.router.navigate(['/singles/starter-kits'], { queryParams: { lang } });
+    this.prefs.podcastPackLanguage.set(lang === 'auto' ? null : lang);
+    void this.router.navigate(['/singles/starter-kits'], {
+      queryParams: lang === 'auto' ? {} : { lang },
+    });
+  }
+
+  private languageName(code: string): string {
+    return new Intl.DisplayNames([code], { type: 'language' }).of(code) ?? code;
   }
 
   protected titleOf(pack: Pick<PodcastPack, 'title' | 'category'>): string {
@@ -223,7 +330,12 @@ export class PodcastKitsPage {
     return index.generatedAt.slice(0, 10);
   }
 
-  protected mediaLabel(kind: string): string {
+  protected embedded = externalMedia;
+  protected videoSource = youtubeSource;
+
+  protected mediaLabel(kind: string, mediaType: string | null): string {
+    if (kind === 'native' && mediaType === 'audio') return 'podcastKits.nativeAudio';
+    if (kind === 'native' && mediaType === 'video') return 'podcastKits.nativeVideo';
     return (
       (
         {
@@ -234,6 +346,28 @@ export class PodcastKitsPage {
         } as Record<string, string>
       )[kind] ?? 'podcastKits.outgoing'
     );
+  }
+
+  protected radioPlayable(post: PodcastRecentPost): boolean {
+    return post.sources.some(
+      (source) =>
+        source.kind === 'full-player' || (source.kind === 'native' && source.mediaType === 'audio'),
+    );
+  }
+
+  protected reveal(post: PodcastRecentPost): void {
+    this.revealedPosts.update((current) => new Set([...current, post.server + post.statusId]));
+  }
+
+  protected postRoute(post: PodcastRecentPost): (string | number)[] {
+    return [
+      '/statuses',
+      anonymousStatusRouteRef({
+        server: post.server,
+        id: post.statusId,
+        originalUrl: post.postUrl,
+      }),
+    ];
   }
 
   protected account(member: PodcastMember): Account {

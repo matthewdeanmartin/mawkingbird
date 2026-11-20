@@ -29,7 +29,7 @@ const assert = (value, message) => {
 const read = (path) => JSON.parse(readFileSync(path, 'utf8'));
 
 export function validate(index, getPack) {
-  assert(index?.version === 1 && Array.isArray(index.packs), 'invalid podcast index');
+  assert(index?.version === 2 && Array.isArray(index.packs), 'invalid podcast index');
   const seen = new Set();
   for (const row of index.packs) {
     assert(safePath.test(row.path), `unsafe pack path ${row.path}`);
@@ -37,7 +37,7 @@ export function validate(index, getPack) {
     assert(!seen.has(row.path), `duplicate pack ${row.path}`);
     seen.add(row.path);
     const pack = getPack(row.path);
-    assert(pack.version === 1 && pack.kind === 'podcasts', `${row.path}: invalid kind`);
+    assert(pack.version === 2 && pack.kind === 'podcasts', `${row.path}: invalid kind`);
     assert(pack.lang === row.lang && pack.category === row.category, `${row.path}: mismatch`);
     assert(pack.members?.length === row.size, `${row.path}: count mismatch`);
     for (const member of pack.members) {
@@ -53,11 +53,53 @@ export function validate(index, getPack) {
           `${row.path}: bad media kind`,
         );
         assert(validUrl(media.postUrl) && media.postUrl !== null, `${row.path}: bad post URL`);
+        assert(['audio', 'video', null].includes(media.mediaType), `${row.path}: bad media type`);
         assert(
           media.kind !== 'full-player' ||
             ['soundcloud', 'mixcloud', 'direct-audio'].includes(media.source),
           `${row.path}: player cannot advance`,
         );
+      }
+      assert(
+        Array.isArray(member.recentPosts) &&
+          member.recentPosts.length > 0 &&
+          member.recentPosts.length <= 2,
+        `${row.path}: missing recent posts`,
+      );
+      for (const post of member.recentPosts) {
+        assert(
+          typeof post.statusId === 'string' && post.statusId.length > 0,
+          `${row.path}: bad status ID`,
+        );
+        assert(
+          post.server !== null &&
+            validUrl(post.server) &&
+            post.postUrl !== null &&
+            validUrl(post.postUrl),
+          `${row.path}: bad post reference`,
+        );
+        assert(
+          typeof post.text === 'string' && [...post.text].length <= 400,
+          `${row.path}: bad post text`,
+        );
+        assert(
+          typeof post.spoilerText === 'string' &&
+            [...post.spoilerText].length <= 200 &&
+            typeof post.sensitive === 'boolean',
+          `${row.path}: bad content warning`,
+        );
+        assert(Array.isArray(post.sources) && post.sources.length, `${row.path}: no post source`);
+        for (const source of post.sources) {
+          assert(source.url !== null && validUrl(source.url), `${row.path}: bad source URL`);
+          assert(
+            ['audio', 'video', null].includes(source.mediaType),
+            `${row.path}: bad source media type`,
+          );
+          assert(
+            ['native', 'full-player', 'outgoing', 'short'].includes(source.kind),
+            `${row.path}: bad source kind`,
+          );
+        }
       }
     }
   }

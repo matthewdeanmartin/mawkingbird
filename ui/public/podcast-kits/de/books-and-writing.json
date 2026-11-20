@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "books-and-writing",
  "lang": "de",
@@ -28,7 +28,7 @@
   "zh-Hant": "書籍與寫作"
  },
  "icon": "📚",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "satori_y@mastodon.social",
@@ -41,34 +41,54 @@
    "observedAt": "2026-11-20T00:06:51+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
-     "seenAt": "2026-11-19T21:15:06.219Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@satori_y/116281238014588464",
+     "seenAt": "2026-03-24T00:08:02.795Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
      "seenAt": "2026-11-19T21:15:06.219Z"
     }
-   ]
-  },
-  {
-   "acct": "dailyklappentext@troet.cafe",
-   "url": "https://troet.cafe/@Dailyklappentext",
-   "displayName": "Dailyklappentext",
-   "avatar": "https://media.troet.cafe/troet/accounts/avatars/114/015/360/838/788/147/original/097b1373203f19ac.jpg",
-   "bot": false,
-   "bio": "„Dailyklappentext“ ist der Mini-Podcast, der dir regelmäßig frische Inspiration aus der Welt der Bücher und Hörspiele liefert. Perfekt für alle, die ständig auf der Suche nach neuen Geschichten sind…",
-   "showUrl": "https://letscast.fm/sites/dailyklappentext-taeglich-neue-geschichten-2e5b4949",
-   "observedAt": "2026-11-19T23:59:10+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "troet.cafe",
-     "postUrl": "https://troet.cafe/@Dailyklappentext/117641616234151867",
-     "seenAt": "2026-11-19T06:10:07.091Z"
+     "statusId": "117645174780879849",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@satori_y/117645174780879849",
+     "createdAt": "2026-11-19T21:15:06.219Z",
+     "text": "Neue Folge — Henry Thomas Jones #5 \"Der Schreckensclown\" Henry Thomas Jones und Floyd Adler stürmen ins Büro des Chefredakteurs und finden dort einen Mann im Clownkostüm mit starrer, verzerrter Maske... https://ausgewuerfelt.yakamura.de/series/arkhamadvertiser/staffel1/5-der-schreckensclown/ ▶️ Video auf YouTube: https://www.youtube.com/watch?v=ZXUuM_21k6w #abr #horror #podcast #solorpg #penandpa…",
+     "spoilerText": "Mögliche Gewaltdarstellung in der Erzählung",
+     "sensitive": true,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=ZXUuM_21k6w",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117604685032966422",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@satori_y/117604685032966422",
+     "createdAt": "2026-11-12T17:38:01.680Z",
+     "text": "Neue Folge — Ein Schmugglerleben #16 \"Aufbruch nach Lycai\" Roland investiert in eine Raketenbatterie und verlässt den Sektor mit Kurs auf den Planeten Lycai. https://ausgewuerfelt.yakamura.de/series/sternenschmiede/season1/16-aufbruch-nach-lycai/ https://youtu.be/Y6LrVd4TAMs #starforged #sciencefiction #podcast #solorpg #penandpaper #actualplay #ttrpg #rollenspiel #mythicgme #würfel #pnp #pnpde #…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Y6LrVd4TAMs",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

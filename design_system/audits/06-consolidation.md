@@ -1,5 +1,16 @@
 # Sprint 6 opening consolidation audit
 
+## Shared pack-language picker, 2026-11-19
+
+Reviewed 2,025 source files and 692 candidate files after extracting the
+Pack languages select into one component used by curated starter packs and
+Radio podcast kits. The new picker is a native labelled select with the
+existing pack-control styling; the Radio page now keeps it visible while a
+kit loads. The new component is an adopted candidate in reconciliation.
+Bundled starter-pack controls retain their known/all choices and existing
+behavior. Other inventory changes are source-line shifts; no design-system
+widget changed.
+
 ## Chat with suggestions, 2026-11-16
 
 Reviewed the regenerated inventory after the Chat with box gained a native
@@ -2970,3 +2981,12 @@ candidate and is reconciled as adopted scope: Radio Header, Navigation/NavLink,
 Field/Control, Button and FollowButton. Three source files were added, taking
 the inventory to 2023 scanned files and 691 candidate files. Existing Radio
 and route line numbers shifted; no shared design widget changed.
+
+Podcast media previews (2026-11-19): reviewed the regenerated inventory after
+replacing bare evidence links with two cached post previews per show. The page
+uses MbButton for reveal and video activation, native audio/video controls,
+ExternalPlayerHost and VideoPlayerHost for inline providers, and local post
+links. The shared language picker remains the only additional candidate from
+the preceding follow-up. Inventory remains at 2025 scanned files and 692
+candidate files; the kit page findings shifted line numbers and gained two
+MbButton findings. No shared widget changed.

@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "technology",
  "lang": "de",
@@ -28,7 +28,7 @@
   "ar": "التقنية"
  },
  "icon": "💻",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "ueckueck@dresden.network",
@@ -41,88 +41,130 @@
    "observedAt": "2026-11-20T00:07:53+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "dresden.network",
-     "postUrl": "https://dresden.network/@ueckueck/117643604701590031",
-     "seenAt": "2026-11-19T14:35:48.698Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://dresden.network/@ueckueck/117622280335507425",
+     "seenAt": "2026-11-15T20:12:44.697Z"
     },
     {
      "kind": "outgoing",
-     "source": "podcasts.homes",
-     "postUrl": "https://dresden.network/@ueckueck/117637347817388331",
-     "seenAt": "2026-11-18T12:04:36.220Z"
+     "source": "direct-audio",
+     "mediaType": null,
+     "postUrl": "https://dresden.network/@ueckueck/117585540568663897",
+     "seenAt": "2026-11-09T08:29:20.345Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117622280335507425",
+     "server": "https://dresden.network",
+     "postUrl": "https://dresden.network/@ueckueck/117622280335507425",
+     "createdAt": "2026-11-15T20:12:44.697Z",
+     "text": "In der letzten Folge @netsplit hab ich mich nicht nur als #Conversations-Fan geoutet, sondern von @daniel auch mein neues Lieblings-Argument gegen #Signal gehört. Das kann ich jetzt immer in #Messenger-Diskussionen verwenden, wenn mich irgendwer von Signal überzeugen will, ich aber für dezentrale Messenger argumentiere. Einen kleinen Ausschnitt aus der Folge \"Open Source × Kapitalismus (NET⫽SPLIT…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://dresden.s3proxy.de/media_attachments/files/117/622/328/189/980/275/original/85188875fa53fb2d.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117585540568663897",
+     "server": "https://dresden.network",
+     "postUrl": "https://dresden.network/@ueckueck/117585540568663897",
+     "createdAt": "2026-11-09T08:29:20.345Z",
+     "text": "@rebootpolitics - Wir schließen die Vergesellschaftung ab In dieser Ausgabe haben wir folgende Themen für euch dabei: Ein Interview mit @lindle zu antisemitismuskritischer Hochschularbeit, einen Bericht zur Vernetzung mit der Datenfreude, Antifaschist*innen, die einen Anschlag der Neonazigruppe #Terror18 verhindert haben, den #KidsAct, Regierungspläne zu #HandyBlitzer und neuen Hürden für #Verges…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "direct-audio",
+       "url": "https://podcasts.homes/audio/@rebootpolitics/wir-schliesen-die-vergesellschaftung-ab.mp3?_from=antennapod.org",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
   {
-   "acct": "radihum20@fedihum.org",
-   "url": "https://fedihum.org/@RaDiHum20",
-   "displayName": "RaDiHum20",
-   "avatar": "https://fedihum.s3proxy.de/accounts/avatars/109/353/546/837/157/243/original/7532d2685f724c75.png",
+   "acct": "schleifenquadrat@podcasts.social",
+   "url": "https://podcasts.social/@schleifenquadrat",
+   "displayName": "Schleifenquadrat",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/332/128/378/441/136/original/ca26d9add879b97b.png",
    "bot": false,
-   "bio": "Merk dir die 20! Denn immer am 20. eines Monats kommt eine neue Folge unseres RaDiHum20-Podcast – dem Radio für Digital Humanities. In gemütlicher Runde und als stünden wir an einem Stehtischchen auf…",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:06:22+00:00",
+   "bio": "In wechselnder Besetzung sprechen wir über Apple und weitere spannende Technik-Themen – und schweifen dabei regelmäßig und gerne ab.",
+   "showUrl": "https://apple.co/3R5eNaS",
+   "observedAt": "2026-11-20T00:06:49+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "fedihum.org",
-     "postUrl": "https://fedihum.org/@RaDiHum20/117641926522392803",
-     "seenAt": "2026-11-19T07:29:01.718Z"
-    }
-   ]
-  },
-  {
-   "acct": "gnulinux@social.anoxinon.de",
-   "url": "https://social.anoxinon.de/@gnulinux",
-   "displayName": "GNU/Linux.ch",
-   "avatar": "https://social.anoxinon.de/system/accounts/avatars/000/079/552/original/231fc6938aaf9353.png",
-   "bot": false,
-   "bio": "Wir sind ein Online-Magazin und ein Podcast rund um Freie Software und Freie Gesellschaft. Bei uns schreibt und spricht die Community für die Community. Unsere Beiträge werden automatisiert gepostet…",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:02:20+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "gnulinux.ch",
-     "postUrl": "https://social.anoxinon.de/@gnulinux/117637098751495889",
-     "seenAt": "2026-11-18T11:01:15.792Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://podcasts.social/@schleifenquadrat/112530328343954404",
+     "seenAt": "2024-05-30T13:42:23.338Z"
     },
     {
      "kind": "outgoing",
-     "source": "social.anoxinon.de",
-     "postUrl": "https://social.anoxinon.de/@gnulinux/117637098751495889",
-     "seenAt": "2026-11-18T11:01:15.792Z"
-    }
-   ]
-  },
-  {
-   "acct": "letztens@podcasts.social",
-   "url": "https://podcasts.social/@letztens",
-   "displayName": "🎙️letztens.de Podcast",
-   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/113/686/406/399/770/883/original/9ad0422bdeaa3e4b.png",
-   "bot": false,
-   "bio": "Du willst wissen, was hinter den neuesten Technik-Schlagzeilen steckt – und vor allem, was das für dich, für unsere Gesellschaft und für die Wirtschaft bedeutet? In jeder Folge stellen wir dir eine a…",
-   "showUrl": "https://www.letztens.de/podcast-abonnieren/",
-   "observedAt": "2026-11-20T00:03:28+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "letztens.de",
-     "postUrl": "https://podcasts.social/@letztens/117630838328751097",
-     "seenAt": "2026-11-17T08:29:09.304Z"
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@schleifenquadrat/117617327400627118",
+     "seenAt": "2026-11-14T23:13:08.901Z"
     },
     {
      "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://podcasts.social/@letztens/117634499545371234",
-     "seenAt": "2026-11-18T00:00:15.037Z"
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@schleifenquadrat/112100149358139197",
+     "seenAt": "2024-03-15T14:22:12.930Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
-     "postUrl": "https://podcasts.social/@letztens/117472112338213508",
-     "seenAt": "2026-10-20T07:43:02.897Z"
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@schleifenquadrat/117608321251040518",
+     "seenAt": "2026-11-13T09:02:45.966Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117617327400627118",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@schleifenquadrat/117617327400627118",
+     "createdAt": "2026-11-14T23:13:08.901Z",
+     "text": "@laberkopp https://podcasts.apple.com/de/podcast/schleifenquadrat/id886093091?i=1000801505520",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/schleifenquadrat/id886093091?i=1000801505520",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117608321251040518",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@schleifenquadrat/117608321251040518",
+     "createdAt": "2026-11-13T09:02:45.966Z",
+     "text": "In der aktuellen Folge haben wir @timpritlove zu Gast, der uns seine Google-Earth-Alternative #Kugelblitz vorstellt. Mal wieder als Video: https://youtu.be/Q41kQNbzBKk … und natürlich überall da, wo es #Podcasts gibt.",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Q41kQNbzBKk",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -138,75 +180,114 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "colearn.social",
+     "source": "apple-podcasts",
+     "mediaType": null,
      "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
      "seenAt": "2026-11-16T12:21:45.677Z"
     },
     {
      "kind": "outgoing",
-     "source": "fedigroups.social",
-     "postUrl": "https://colearn.social/@ThomasJenewein/115802168368548611",
-     "seenAt": "2025-12-29T09:34:20.129Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
      "seenAt": "2026-11-16T12:21:45.677Z"
-    },
+    }
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "podcast.opensap.info",
-     "postUrl": "https://colearn.social/@ThomasJenewein/115609202219787637",
-     "seenAt": "2025-11-25T07:40:30.360Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
+     "statusId": "117626090663164146",
+     "server": "https://colearn.social",
      "postUrl": "https://colearn.social/@ThomasJenewein/117626090663164146",
-     "seenAt": "2026-11-16T12:21:45.677Z"
+     "createdAt": "2026-11-16T12:21:45.677Z",
+     "text": "Podcasting als Wissens- und Lernformat mit Yannick Peterschmitt Yannick gibt Einblicke in das Konzept und die Herangehensweise, die den Podcast so erfolgreich gemacht haben. Mehr hier auf Apple https://podcasts.apple.com/de/podcast/enc429-podcasting-als-wissens-und-lernformat-mit-yannick/id1352307529?i=1000802195299 und Spotify https://open.spotify.com/episode/5XpERWKd5TxHBz3VVgYtIH #podcasts #sa…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/enc429-podcasting-als-wissens-und-lernformat-mit-yannick/id1352307529?i=1000802195299",
+       "mediaType": null
+      },
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/5XpERWKd5TxHBz3VVgYtIH",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "podchaser.com",
-     "postUrl": "https://colearn.social/@ThomasJenewein/117347380324776949",
-     "seenAt": "2026-09-28T07:02:03.410Z"
+     "statusId": "117592284397799039",
+     "server": "https://colearn.social",
+     "postUrl": "https://colearn.social/@ThomasJenewein/117592284397799039",
+     "createdAt": "2026-11-10T13:04:23.008Z",
+     "text": "🤖 Wie lassen sich KI-Agenten im SAP-Umfeld bauen? Das kann man im Agent Lab ausprobieren. Stephan Schluchter erklärt das Lab-Format sowie Joule Studio - SAPs Toolset mit dem Unternehmen eigene KI-Agenten, Skills oder Workflows bauen können. 🎧 Apple: https://podcasts.apple.com/de/podcast/enc428-die-ai-agent-labs-und-joule-studio-mit-stephan/id1352307529?i=1000800714296 🎧 Spotify: https://open.spot…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/enc428-die-ai-agent-labs-und-joule-studio-mit-stephan/id1352307529?i=1000800714296",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
   {
-   "acct": "schleifenquadrat@podcasts.social",
-   "url": "https://podcasts.social/@schleifenquadrat",
-   "displayName": "Schleifenquadrat",
-   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/109/332/128/378/441/136/original/ca26d9add879b97b.png",
+   "acct": "letztens@podcasts.social",
+   "url": "https://podcasts.social/@letztens",
+   "displayName": "🎙️letztens.de Podcast",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/113/686/406/399/770/883/original/9ad0422bdeaa3e4b.png",
    "bot": false,
-   "bio": "In wechselnder Besetzung sprechen wir über Apple und weitere spannende Technik-Themen – und schweifen dabei regelmäßig und gerne ab.",
-   "showUrl": "https://apple.co/3R5eNaS",
-   "observedAt": "2026-11-20T00:06:49+00:00",
+   "bio": "Du willst wissen, was hinter den neuesten Technik-Schlagzeilen steckt – und vor allem, was das für dich, für unsere Gesellschaft und für die Wirtschaft bedeutet? In jeder Folge stellen wir dir eine a…",
+   "showUrl": "https://www.letztens.de/podcast-abonnieren/",
+   "observedAt": "2026-11-20T00:03:28+00:00",
    "media": [
     {
      "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://podcasts.social/@schleifenquadrat/112100149358139197",
-     "seenAt": "2024-03-15T14:22:12.930Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://podcasts.social/@schleifenquadrat/117617327400627118",
-     "seenAt": "2026-11-14T23:13:08.901Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://podcasts.social/@schleifenquadrat/117608321251040518",
-     "seenAt": "2026-11-13T09:02:45.966Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
-     "postUrl": "https://podcasts.social/@schleifenquadrat/117608321251040518",
-     "seenAt": "2026-11-13T09:02:45.966Z"
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@letztens/117472112338213508",
+     "seenAt": "2026-10-20T07:43:02.897Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117472112338213508",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@letztens/117472112338213508",
+     "createdAt": "2026-10-20T07:43:02.897Z",
+     "text": "https://www.youtube.com/watch?v=bLTXM3eq7p0 1.300 Jahre #Zeitraffer #Geschichte: #Stadtentwicklung in Berlin. Wie #Cölln und #Berlin zusammenwuchsen. (via @rainerklute) #gefundenVonLukas",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=bLTXM3eq7p0",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117349171355491042",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@letztens/117349171355491042",
+     "createdAt": "2026-09-28T14:37:32.374Z",
+     "text": "https://www.youtube.com/watch?v=GbB3vFfiaVU Falls sich jemand von euch (wie ich) gefragt hat, was ist eigentlich mit diesem Mega-Projekt #TheLine (#NEOM) in Saudi Arabien passiert? Dann kriegt ihr in diesem Video von Wall Street Journal einige Antworten was das so los ist. Fazit: wird nix mehr. #WallStreetJournal #gefundenVonLukas",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=GbB3vFfiaVU",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -222,21 +303,29 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@TheAndreCramer/116958922828427460",
-     "seenAt": "2026-07-21T16:32:12.430Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@TheAndreCramer/116922740116236873",
      "seenAt": "2026-07-15T07:10:28.046Z"
-    },
+    }
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "theandrecramer.substack.com",
-     "postUrl": "https://mastodon.social/@TheAndreCramer/115876189054696124",
-     "seenAt": "2026-01-11T11:18:46.161Z"
+     "statusId": "116922740116236873",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@TheAndreCramer/116922740116236873",
+     "createdAt": "2026-07-15T07:10:28.046Z",
+     "text": "#Netzneutralität klingt nach einem Thema für Regulierungsbehörden. Dabei geht es um eine einfache Frage: Werden im Internet alle Daten gleich behandelt oder können sich große Anbieter bessere Wege und schnellere Spuren kaufen? In der neuen Folge von #CodeundKonsequenz sprechen wir über Fair Share, Datenmaut und die Macht hinter den unsichtbaren Regeln des Netzes. Und darüber, warum dich dich das…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/7rK5oMA8Q9dF819LBDGW5k",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

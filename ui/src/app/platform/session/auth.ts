@@ -51,6 +51,20 @@ const SESSIONS_KEY = 'mastodon_mock_sessions';
  */
 const SESSION_TOKENS_KEY = 'mastodon_mock_session_tokens';
 export const ACCOUNT_MODE_KEY = 'mastodon_mock_account_mode';
+/**
+ * Set while Anonymous is active only because a public link opened the app
+ * (see `authGuard`), not because the visitor chose it. Such a visitor has never
+ * been offered a sign-in, so a browser-only follow would not do what they think.
+ */
+export const ANONYMOUS_IMPLICIT_KEY = 'mastodon_mock_anonymous_implicit';
+
+function storedAnonymousImplicit(): boolean {
+  try {
+    return localStorage.getItem(ANONYMOUS_IMPLICIT_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
 
 /**
  * Which network an account is *primary* on.
@@ -320,6 +334,18 @@ export class Auth {
 
   /** The active account's kind. Null when signed out. */
   readonly kind = signal<AccountKind | null>(storedKind());
+
+  /** Anonymous was entered silently by a public link; see {@link ANONYMOUS_IMPLICIT_KEY}. */
+  readonly anonymousImplicit = signal(storedAnonymousImplicit());
+
+  /**
+   * Following should ask the visitor to sign in instead of keeping the follow in
+   * this browser: they are in Anonymous without ever having chosen it. People
+   * who did choose Anonymous keep their browser follows.
+   */
+  get signInToFollow(): boolean {
+    return this.isAnonymous && this.anonymousImplicit();
+  }
 
   /**
    * @deprecated Use {@link kind}. An alias, so the ~250 existing readers of
@@ -886,11 +912,25 @@ export class Auth {
     }
   }
 
-  /** Enter the permanent local account without deleting any saved logins. */
-  enterAnonymous(server?: string): void {
+  /**
+   * Enter the permanent local account without deleting any saved logins.
+   *
+   * `implicit` is for the public-link path only: the visitor did not choose
+   * Anonymous. It sticks only for someone who has never used Anonymous here
+   * (or was only ever in it implicitly); every other entry is a choice.
+   */
+  enterAnonymous(server?: string, options: { implicit?: boolean } = {}): void {
     const saved = this.sessions().length;
     // The first activation ever is the Anonymous account's first use here.
     const isNew = !this.anonymous.activated();
+    const implicit = !!options.implicit && (isNew || this.anonymousImplicit());
+    this.anonymousImplicit.set(implicit);
+    try {
+      if (implicit) localStorage.setItem(ANONYMOUS_IMPLICIT_KEY, '1');
+      else localStorage.removeItem(ANONYMOUS_IMPLICIT_KEY);
+    } catch {
+      // Storage unavailable: the in-memory flag still covers this visit.
+    }
     this.anonymous.activate(server);
     if (isNew) {
       markOnboardingPending(ANONYMOUS_SCOPE_SUFFIX);

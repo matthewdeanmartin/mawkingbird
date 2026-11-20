@@ -1797,3 +1797,6 @@
     <p class="muted center">{{ 'pages.profile.errors.accountNotFound' | transloco }}</p>
   }
 }
+@if (signInToFollowOpen()) {
+  <app-sign-in-prompt [action]="signInFollowAction()" (dismissed)="signInToFollowOpen.set(false)" />
+}

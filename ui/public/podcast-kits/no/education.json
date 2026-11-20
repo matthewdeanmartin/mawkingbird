@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "education",
  "lang": "no",
@@ -28,7 +28,7 @@
   "zh-Hant": "教育"
  },
  "icon": "🎓",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "nitteritte@fribygda.no",
@@ -41,22 +41,54 @@
    "observedAt": "2026-11-20T00:04:52+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "anchor.fm",
-     "postUrl": "https://fribygda.no/@nitteritte/117134294002730979",
-     "seenAt": "2026-08-21T15:51:24.174Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://fribygda.no/@nitteritte/114797961538391813",
+     "seenAt": "2025-07-05T01:11:19.919Z"
     },
     {
      "kind": "outgoing",
-     "source": "fribygda.no",
-     "postUrl": "https://fribygda.no/@nitteritte/117134294002730979",
-     "seenAt": "2026-08-21T15:51:24.174Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://fribygda.no/@nitteritte/115675631995284645",
      "seenAt": "2025-12-07T01:14:28.289Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115675631995284645",
+     "server": "https://fribygda.no",
+     "postUrl": "https://fribygda.no/@nitteritte/115675631995284645",
+     "createdAt": "2025-12-07T01:14:28.289Z",
+     "text": "Kjære nitterittelitterar! Episode 49 \"Bankzelius\" er ute! 🌐SISTE Cia- og Vegardnytt! ⛩️NY SPALTE! 📬LYTTARBREV! 📬MEIR LYTTARBREV! 📬ENDA FLEIRE LYTTARBREV! 🎄Kan innehalde spor av julestemnin' ⏳Speletid: 1 time og 45 minutt. 🎙️Finn oss overalt podkastar bur! 📡RSS: https://anchor.fm/s/c67fc134/podcast/rss #DettaNitterItte #podcast #NorskTut #allheimen https://open.spotify.com/episode/4kL0Qt8L5dmFPxmV…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/4kL0Qt8L5dmFPxmVBkhB5p?si=mwg0psxIQoKeP_IAKlLqqg",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "115509936571458344",
+     "server": "https://fribygda.no",
+     "postUrl": "https://fribygda.no/@nitteritte/115509936571458344",
+     "createdAt": "2025-11-07T18:55:56.765Z",
+     "text": "Kjære alle saman! Episode 48 \"SEKSOGFØRR!\" er endeleg her! 🌐SISTE Cia- og Vegardnytt 🔥BRANNFAKKEL! 📬LYTTARBREV! 📬LYTTARBREV! 📬FLEIRE LYTTARBREV! ⏳Speletid: 1 time og 47 minutt. 🎙️Finn oss overalt podkastar bur! 📡RSS: https://anchor.fm/s/c67fc134/podcast/rss #DettaNitterItte #podcast #Allheimen #NorskTut https://open.spotify.com/episode/6eIqEUCKpypIcPjjC1Cinl?si=tZjcYC1xR8KzMfjRbTQGcQ",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/6eIqEUCKpypIcPjjC1Cinl?si=tZjcYC1xR8KzMfjRbTQGcQ",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

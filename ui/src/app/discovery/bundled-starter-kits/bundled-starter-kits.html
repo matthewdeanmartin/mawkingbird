@@ -19,20 +19,12 @@
     }}</a>
   </p>
 
-  <label class="kit-filter">
-    <span>{{ 'bundledStarterKits.languages' | packText: copyLanguage() }}</span>
-    <select [value]="language()" (change)="language.set($any($event.target).value)">
-      <option value="known">
-        {{ 'bundledStarterKits.myLanguages' | packText: copyLanguage() }}
-      </option>
-      <option value="all">
-        {{ 'bundledStarterKits.allLanguages' | packText: copyLanguage() }}
-      </option>
-      @for (lang of languages; track lang.code) {
-        <option [value]="lang.code">{{ lang.name }}</option>
-      }
-    </select>
-  </label>
+  <app-pack-language-picker
+    [label]="'bundledStarterKits.languages' | packText: copyLanguage()"
+    [value]="language()"
+    [options]="languageOptions()"
+    (valueChange)="language.set($event)"
+  />
   <p class="muted small">{{ 'bundledStarterKits.languageNote' | packText: copyLanguage() }}</p>
 
   <!-- The merged list is longer than either of the two it replaced, and this is

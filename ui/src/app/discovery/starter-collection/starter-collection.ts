@@ -15,6 +15,8 @@ import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-ap
 import { anonymousAccountRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
 import { starterKit, StarterAccount, starterKitText } from '../starter-collection';
 import { UiLocale } from '../../i18n/locale';
+import { SignInPrompt } from '../../posts/sign-in-prompt/sign-in-prompt';
+import { TranslocoService } from '@jsverse/transloco';
 
 // i18n starterCollection.heading: A timeline in one click
 // i18n starterCollection.followingProgress: Following… {{completed}}/{{total}}
@@ -40,7 +42,7 @@ import { UiLocale } from '../../i18n/locale';
 // i18n starterCollection.browse: Browse starter kits
 @Component({
   selector: 'app-starter-collection',
-  imports: [RouterLink, StarterPackTextPipe, FeedAnalytics, StatusCard, FollowButton],
+  imports: [RouterLink, StarterPackTextPipe, FeedAnalytics, StatusCard, FollowButton, SignInPrompt],
   templateUrl: './starter-collection.html',
   styleUrl: './starter-collection.css',
 })
@@ -134,7 +136,20 @@ export class StarterCollection implements OnInit, OnDestroy {
     }
   }
 
+  /** Open while asking a visitor who never chose Anonymous to sign in first. */
+  protected signInOpen = signal(false);
+  private transloco = inject(TranslocoService);
+  protected signInAction = computed(() =>
+    this.signInOpen() ? this.transloco.translate('signInPrompt.action.follow') : '',
+  );
+
   followAll(): void {
+    // A visitor who arrived from a public kit page is in Anonymous without having
+    // chosen it; a browser-only follow is not what "Follow" means to them.
+    if (this.auth.signInToFollow) {
+      this.signInOpen.set(true);
+      return;
+    }
     void this.importer.start();
   }
 

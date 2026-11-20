@@ -6,8 +6,20 @@ export type PodcastMediaKind = 'native' | 'full-player' | 'outgoing' | 'short';
 export interface PodcastMedia {
   kind: PodcastMediaKind;
   source: string;
+  mediaType: 'audio' | 'video' | null;
   postUrl: string;
   seenAt: string;
+}
+
+export interface PodcastRecentPost {
+  statusId: string;
+  server: string;
+  postUrl: string;
+  createdAt: string;
+  text: string;
+  spoilerText: string;
+  sensitive: boolean;
+  sources: { kind: PodcastMediaKind; source: string; url: string; mediaType: string | null }[];
 }
 
 export interface PodcastMember {
@@ -20,10 +32,11 @@ export interface PodcastMember {
   showUrl: string | null;
   observedAt: string | null;
   media: PodcastMedia[];
+  recentPosts: PodcastRecentPost[];
 }
 
 export interface PodcastPack {
-  version: 1;
+  version: 2;
   kind: 'podcasts';
   category: string;
   lang: string;
@@ -34,7 +47,7 @@ export interface PodcastPack {
 }
 
 export interface PodcastIndex {
-  version: 1;
+  version: 2;
   generatedAt: string;
   languages: Record<string, number>;
   packs: {
@@ -45,6 +58,23 @@ export interface PodcastIndex {
     title: Record<string, string>;
     icon: string | null;
   }[];
+}
+
+/** A shared link wins for this visit; a saved choice wins on ordinary visits. */
+export function podcastPackLanguage(
+  available: readonly string[],
+  route: string | null,
+  saved: string | null,
+  browser: readonly string[],
+): string {
+  for (const choice of [route, saved]) {
+    if (choice && available.includes(choice)) return choice;
+  }
+  for (const code of browser) {
+    const bare = code.toLowerCase().split(/[-_]/)[0];
+    if (available.includes(bare)) return bare;
+  }
+  return available.includes('en') ? 'en' : (available[0] ?? 'en');
 }
 
 /** Loads the catalogue on demand, outside the initial app bundle. */

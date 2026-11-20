@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "science-fiction-and-fantasy",
  "lang": "en",
@@ -28,7 +28,7 @@
   "zh-Hant": "科幻與奇幻"
  },
  "icon": "🚀",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "phosphenecatalogue@namtao.com",
@@ -41,46 +41,384 @@
    "observedAt": "2026-11-20T00:05:40+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "namtao.com",
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
      "postUrl": "https://namtao.com/@phosphenecatalogue/117644421732327780",
      "seenAt": "2026-11-19T18:03:35.597Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://namtao.com/@phosphenecatalogue/115623835752503097",
      "seenAt": "2025-11-27T21:42:00.343Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117644421732327780",
+     "server": "https://namtao.com",
+     "postUrl": "https://namtao.com/@phosphenecatalogue/117644421732327780",
+     "createdAt": "2026-11-19T18:03:35.597Z",
+     "text": "📼 Issue 4.2 has arrived! The tape is labelled: Side A: \"Murder Investigation\", Rosina Leckermann, 1731. Oil on canvas, 4 by 3ft, frame missing. Side B: \"Villiers Below\", Duke of Southwark, 1958. Oil on board, 4 by 3ft, oak frame. 🔊 Listen here or wherever you get your podcasts: https://www.spreaker.com/episode/4-2-001--76452262 #AudioDrama #Podcast #WeirdFiction #MastoArt #Art #FictionPodcast #Fa…",
+     "spoilerText": "[CLASSIFIED: ISSUE #15042]",
+     "sensitive": true,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/namtaocom/media_attachments/files/117/644/421/298/927/258/original/2216f364314702be.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117633101686468811",
+     "server": "https://namtao.com",
+     "postUrl": "https://namtao.com/@phosphenecatalogue/117633101686468811",
+     "createdAt": "2026-11-17T18:04:45.405Z",
+     "text": "Do crows mourn? Can they feel anger? Who (or what) will hear us in the Nocturnal Garden? Find out in issue 4.2 on 19 November become a Patron of the Arts to listen to the full episode right now: https://www.patreon.com/PhospheneCatalogue/posts/4-2-murder-below-174835893 #AudioDrama #Podcast #WeirdFiction #MastoArt #Art #FictionPodcast #Fantasy #sff #ScifiRadio #Mystery",
+     "spoilerText": "[WARNING: GRIEF HEREIN]",
+     "sensitive": true,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/namtaocom/media_attachments/files/117/633/101/480/195/833/original/c5d4e87fb19ca6a1.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
   {
-   "acct": "biomespec@mastodon.social",
-   "url": "https://mastodon.social/@biomespec",
-   "displayName": "Biome Podcast",
-   "avatar": "https://files.mastodon.social/accounts/avatars/116/620/062/022/719/537/original/fcc36ba3044a8cde.png",
+   "acct": "szhpodcast@mastodon.social",
+   "url": "https://mastodon.social/@szhpodcast",
+   "displayName": "Session Zero Heroes Podcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/113/896/240/598/380/993/original/f264e02e5f02903c.jpg",
    "bot": false,
-   "bio": "Scifi/Fantasy/Weird Fic weekly podcast -- bringing incredible fiction to life Listen on: https://rss.com/podcasts/biomespec/?listen-on=true Submit your work at: https://biomespec.wordpress.com/submis…",
+   "bio": "At SZH, we believe in the power of storytelling through #tabletoproleplayinggames and use a wide variety of systems to create these stories, which we share through the podcast medium. From hilarious…",
    "showUrl": null,
-   "observedAt": "2026-11-19T23:58:06+00:00",
+   "observedAt": "2026-11-20T00:07:14+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@biomespec/117638869167809538",
-     "seenAt": "2026-11-18T18:31:30.184Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@szhpodcast/117632626699139833",
+     "seenAt": "2026-11-17T16:03:57.673Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117632626699139833",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@szhpodcast/117632626699139833",
+     "createdAt": "2026-11-17T16:03:57.673Z",
+     "text": "Sometimes you manage to hit the enemy, and sometimes you roll a nat 1 and end up hitting your best friend instead. Hopefully, F.R.O.G. is ok, find out in our upcoming episode of Criminals of Isla Numus, releasing this Thursday everywhere podcasts are found! #DND #TTRPG #ActualPlay #BowandArrow",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/632/626/371/799/106/original/4875be8d53dbbf08.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117609986386838465",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@szhpodcast/117609986386838465",
+     "createdAt": "2026-11-13T16:06:13.919Z",
+     "text": "Sprout has just consumed a massive amount of god-power all at once and...he's not looking too good. Will the gang be able to save him from himself? Or will this new deity be too much for them to handle? Find out in E47 of COIN, available everywhere podcasts are streamed!",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/609/985/960/440/839/original/b22abab61f8a7019.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "perdidoseter@c.im",
+   "url": "https://c.im/@perdidoseter",
+   "displayName": "Perdidos En El Éter",
+   "avatar": "https://s3.c.im/accounts/avatars/109/364/658/845/014/912/original/12e3fa4cc3dd351c.jpg",
+   "bot": false,
+   "bio": "Podcast de comics, ciencia ficción, fantasía, juegos, y cultura nerd en general, incluyendo ciencia e historia. (Desde 2003.) http://bit.ly/perdidoseter",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:30+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://c.im/@perdidoseter/117587530084322545",
+     "seenAt": "2026-11-09T16:55:17.938Z"
     },
     {
      "kind": "outgoing",
-     "source": "rss.com",
-     "postUrl": "https://mastodon.social/@biomespec/117638869167809538",
-     "seenAt": "2026-11-18T18:31:30.184Z"
+     "source": "spotify",
+     "mediaType": null,
+     "postUrl": "https://c.im/@perdidoseter/117193178148173810",
+     "seenAt": "2026-09-01T01:26:24.926Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
-     "postUrl": "https://mastodon.social/@biomespec/117038584963143688",
-     "seenAt": "2026-08-04T18:11:20.140Z"
+     "mediaType": null,
+     "postUrl": "https://c.im/@perdidoseter/117531543889979146",
+     "seenAt": "2026-10-30T19:37:16.408Z"
+    },
+    {
+     "kind": "short",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://c.im/@perdidoseter/117358607553874445",
+     "seenAt": "2026-09-30T06:37:17.335Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117587530084322545",
+     "server": "https://c.im",
+     "postUrl": "https://c.im/@perdidoseter/117587530084322545",
+     "createdAt": "2026-11-09T16:55:17.938Z",
+     "text": "Sumate a La Nerdoteca, el club de lectura de comics de Perdidos En El Éter. En noviembre leemos Marvelman - Libro 1: A Dream of Flying (1982-1983), por Alan Moore, Garry Leach, y equipo. Leelo y dejanos tu reseña con tu puntaje del 1 al 10, mandanos mensaje por más información. Tenés tiempo hasta el 26/11 a eso de las 19. #comics #superheroes",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://s3.c.im/media_attachments/files/117/587/529/252/681/987/original/356499b5af3729e5.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117531543889979146",
+     "server": "https://c.im",
+     "postUrl": "https://c.im/@perdidoseter/117531543889979146",
+     "createdAt": "2026-10-30T19:37:16.408Z",
+     "text": "La Nerdoteca #19 - Uzumaki Vol. 1 (1998) Octubre significa horror, y si además toca manga, eso quiere decir Junji Ito, el mangaka maestro del miedo. El primer volumen de Uzumaki nos presenta un pequeño pueblo costero de Japón, donde sus habitantes se obsesionan por espirales. Espirales en conchas de mar, en oídos, en el agua, en cerámica, y en su mente. Horror cósmico y corporal, para dejarte con…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://s3.c.im/media_attachments/files/117/531/499/947/427/211/original/bba0df36b8738463.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/m-kdiDgI2gk",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "operationwatchtower@horrorhub.club",
+   "url": "https://social.horrorhub.club/@operationwatchtower",
+   "displayName": "Operation Watchtower",
+   "avatar": "https://media.horrorhub.club/accounts/avatars/114/361/816/986/128/721/original/c055b93845f65552.jpeg",
+   "bot": false,
+   "bio": "Operation Watchtower is a podcast rooted in Kult: Divinity Lost, set in the wake of 9/11. Follow Agent Nicholas Grayson, a haunted fed; Belle Flower, a runaway from a family of circus freaks; and Sen…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:05:11+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115622415786327954",
+     "seenAt": "2025-11-27T15:40:53.377Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115829881187887502",
+     "seenAt": "2026-01-03T07:02:04.177Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115829881187887502",
+     "server": "https://social.horrorhub.club",
+     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115829881187887502",
+     "createdAt": "2026-01-03T07:02:04.177Z",
+     "text": "Wexley wakes to open earth, ghost hovering before him. The gun fails. Trenody broken. Flees into night knowing it rode ahead. Belle hunts a ghost online, wakes a deeper thing. Rot, milk & crying shadows mark the night. The past comes back breathing. It knows her name. Grayson rides a cold trail through lies & shadows, tells folks it's gas when it's damnation. He earns trust late, runs toward a bo…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/hFqB5enyGoQ",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "115822213518323806",
+     "server": "https://social.horrorhub.club",
+     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115822213518323806",
+     "createdAt": "2026-01-01T22:32:04.825Z",
+     "text": "“𝗪𝗵𝗶𝗰𝗵 𝘃𝗲𝗿𝘀𝗶𝗼𝗻 𝗼𝗳 𝘆𝗼𝘂 𝗶𝘀 𝗮𝗻𝘀𝘄𝗲𝗿𝗶𝗻𝗴 𝘁𝗵𝗶𝘀 𝗾𝘂𝗲𝘀𝘁𝗶𝗼𝗻?” 𝗬𝗼𝘂 𝘀𝗮𝘆 𝗺𝗲. 𝗛𝗲 𝘀𝗮𝘆𝘀 𝘁𝗵𝗲 𝗼𝗻𝗲 𝗽𝗿𝗲𝘁𝗲𝗻𝗱𝗶𝗻𝗴. ▶️ https://youtu.be/UpQGgiZENKQ 🎧 https://watchtowerintel.com/2025/12/19/chapter-project-delphi.html",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/UpQGgiZENKQ",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "octoberschildrenpodcast@podvibes.co",
+   "url": "https://podvibes.co/@OctobersChildrenPodcast",
+   "displayName": "Octobers Children :podcast:",
+   "avatar": "https://cdn.masto.host/podvibesco/accounts/avatars/109/338/166/532/812/549/original/eef0e1a731a3349d.png",
+   "bot": false,
+   "bio": "A paranormal mystery/horror AD about a small New England town where things are getting dangerously weird",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:58+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://podvibes.co/@OctobersChildrenPodcast/110097076047917401",
+     "seenAt": "2023-03-27T20:14:19.818Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "110097076047917401",
+     "server": "https://podvibes.co",
+     "postUrl": "https://podvibes.co/@OctobersChildrenPodcast/110097076047917401",
+     "createdAt": "2023-03-27T20:14:19.818Z",
+     "text": "We've come a long way. You'll like what we have in store. October's Children episode 8 Releasing 04/2023 Find the show wherever you get your podcasts . . . . . #podcast #indiepodcast #fyp #horror #quotes #queerhorror #weirdness #newenglandhorror #audiodramapodcast #supernatural #paranormalpodcast #mystery #gothic #gravityfalls #twinpeaks #listennow #octoberschildren #smalltown #fictionpodcast",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/podvibesco/media_attachments/files/110/097/074/987/193/336/original/3139e00538a2567e.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "mansfield_mysteries@indieauthors.social",
+   "url": "https://indieauthors.social/@mansfield_mysteries",
+   "displayName": "Mansfield Mysteries",
+   "avatar": "https://storage.googleapis.com/indieauthors/accounts/avatars/109/570/170/795/690/988/original/ff7d676696ab4039.jpg",
+   "bot": false,
+   "bio": "Mansfield Mysteries is a satirical, cozy murder whodunit podcast featuring the inquisitive, martini-loving socialite Dorinda Mansfield. Set in quiet, affluent Berkshire Bay, & told over 9 hilarious e…",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:03:49+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://indieauthors.social/@mansfield_mysteries/110023818843793455",
+     "seenAt": "2023-03-14T21:44:03.591Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "110023818843793455",
+     "server": "https://indieauthors.social",
+     "postUrl": "https://indieauthors.social/@mansfield_mysteries/110023818843793455",
+     "createdAt": "2023-03-14T21:44:03.591Z",
+     "text": "Back to the beginning... Check out #MansfieldMysteries #TeaserTuesday all the way from our first mystery & then dip into the rest of 'To The Depths' like a refreshing drink - Pool! I mean, pool! mansfieldmysteries.podbean.com #Campy #SoapOpera #Whodunit #AudioDrama #CozyMystery #CozyMysterySeries #CozyMysteryLovers #MurderSheWroteMeetsAbFab #MartinisMotivesAndMurder",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://storage.googleapis.com/indieauthors/media_attachments/files/110/023/816/803/490/573/original/3a843fe683ccb190.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "dunkingonthedm@dice.camp",
+   "url": "https://dice.camp/@DunkingontheDM",
+   "displayName": "Dunking on the DM",
+   "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/109/400/828/756/310/585/original/46795cc87d2c6e6b.jpg",
+   "bot": false,
+   "bio": "Never not getting dunked on. Comedy and storytelling in one tabletop roleplay podcast ft. D&D 5e and Degenesis campaigns. Two new episodes every three weeks 🎲☕ We've just finished up Toruna, a fully-…",
+   "showUrl": null,
+   "observedAt": "2026-11-19T23:59:58+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://dice.camp/@DunkingontheDM/110009839371868136",
+     "seenAt": "2023-03-12T10:28:53.777Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "110009839371868136",
+     "server": "https://dice.camp",
+     "postUrl": "https://dice.camp/@DunkingontheDM/110009839371868136",
+     "createdAt": "2023-03-12T10:28:53.777Z",
+     "text": "Out now: Episode 7 and finale of Leviathans of England, a Call of Cthulhu (@Chaosium) mini-series set during the English Civil War. 🐙🌊⚔🐋 The bailiffs engage in a final showdown with Seaborough's sinister forces in their mission to find 30 missing New Model Army soldiers. #callofcthulhu #horrorpodcast #horrormystery #horrorrpg #historicalmystery",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/dicecamp/media_attachments/files/110/009/831/335/605/929/original/1bafffdb12ee509f.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "109852835014504759",
+     "server": "https://dice.camp",
+     "postUrl": "https://dice.camp/@DunkingontheDM/109852835014504759",
+     "createdAt": "2023-02-12T17:00:37.406Z",
+     "text": "Out now: Episode 4 of Leviathans of England 🌊🌅⚔🐟 Leviathans of England is a short horror-mystery podcast series taking place during the #EnglishCivilWar, using an original setting of @Chaosium's #CallofCthulhu RPG 🐙 #LeviathansofEngland is series inspired by the works of MR James, set in the year 1649 in a small town on the Suffolk coast, where thirty New Model Army recruits have gone missing, an…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://cdn.masto.host/dicecamp/media_attachments/files/109/852/832/982/913/806/original/c939f9bec595a3cd.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -96,69 +434,67 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mastodon.world",
+     "source": "apple-podcasts",
+     "mediaType": null,
      "postUrl": "https://mastodon.world/@captainjoedove/117467861232955185",
      "seenAt": "2026-10-19T13:41:56.177Z"
     },
     {
      "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://mastodon.world/@captainjoedove/117442025619209554",
      "seenAt": "2026-10-15T00:11:35.997Z"
     },
     {
      "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://mastodon.world/@captainjoedove/117467861232955185",
-     "seenAt": "2026-10-19T13:41:56.177Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.world/@captainjoedove/117593199573790550",
      "seenAt": "2026-11-10T16:57:07.481Z"
     },
     {
      "kind": "short",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.world/@captainjoedove/117629954226676482",
      "seenAt": "2026-11-17T04:44:18.978Z"
     }
-   ]
-  },
-  {
-   "acct": "itsgotstartrek@tenforward.social",
-   "url": "https://tenforward.social/@ItsGotStarTrek",
-   "displayName": "The It's Got Star Trek Podcast",
-   "avatar": "https://cdn.tenforward.social/accounts/avatars/109/308/800/047/229/030/original/4de385e586dab171.png",
-   "bot": false,
-   "bio": "The It's Got Star Trek podcast offers a weekly, irreverent dive into all corners of the Star Trek franchise. 🖖 New episodes Mondays, 12:00 am ET Hosts Profiles Patrick: PatrickIrelan@fediscience.org…",
-   "showUrl": "https://podcasts.apple.com/us/podcast/its-got-star-trek/id1489620055",
-   "observedAt": "2026-11-20T00:02:25+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "itsgoteverything.com",
-     "postUrl": "https://tenforward.social/@ItsGotStarTrek/117595470069482077",
-     "seenAt": "2026-11-11T02:34:32.496Z"
+     "statusId": "117629954226676482",
+     "server": "https://mastodon.world",
+     "postUrl": "https://mastodon.world/@captainjoedove/117629954226676482",
+     "createdAt": "2026-11-17T04:44:18.978Z",
+     "text": "Orb of the Profits with #captain Sisko Larry #cosplay at #stphilly https://youtube.com/shorts/Rb5uGMOlqLE?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://youtube.com/shorts/Rb5uGMOlqLE?feature=share",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "reddit.com",
-     "postUrl": "https://tenforward.social/@ItsGotStarTrek/116168981222520339",
-     "seenAt": "2026-03-04T04:19:40.080Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "tenforward.social",
-     "postUrl": "https://tenforward.social/@ItsGotStarTrek/116439688075487344",
-     "seenAt": "2026-04-20T23:43:58.849Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://tenforward.social/@ItsGotStarTrek/115539680122290707",
-     "seenAt": "2025-11-13T01:00:07.336Z"
+     "statusId": "117607449333947365",
+     "server": "https://mastodon.world",
+     "postUrl": "https://mastodon.world/@captainjoedove/117607449333947365",
+     "createdAt": "2026-11-13T05:21:01.566Z",
+     "text": "https://youtube.com/shorts/yg4ncMwxPTg?is=bW83i-w_AflleQ1Q #startrek",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "short",
+       "source": "youtube",
+       "url": "https://youtube.com/shorts/yg4ncMwxPTg?is=bW83i-w_AflleQ1Q",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -175,8 +511,28 @@
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@LoneLocust/117575881690218698",
      "seenAt": "2026-11-07T15:32:57.551Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117575881690218698",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@LoneLocust/117575881690218698",
+     "createdAt": "2026-11-07T15:32:57.551Z",
+     "text": "I’ve been procrastinating, but I’ve finally gotten around to tying up the loose ends about my move to Taiwan. https://youtu.be/udskMYz7FZs?si=Mpxb29UaGcNYiOAc",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/udskMYz7FZs?si=Mpxb29UaGcNYiOAc",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -192,159 +548,129 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "archive.org",
+     "source": "direct-audio",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@roymathur/117505099257108263",
      "seenAt": "2026-10-26T03:32:03.340Z"
     },
     {
      "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@roymathur/117535484356544388",
-     "seenAt": "2026-10-31T12:19:23.158Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://mastodon.social/@roymathur/117535484356544388",
-     "seenAt": "2026-10-31T12:19:23.158Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "roymathur.com",
-     "postUrl": "https://mastodon.social/@roymathur/117535484356544388",
-     "seenAt": "2026-10-31T12:19:23.158Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@roymathur/117294616010709667",
      "seenAt": "2026-09-18T23:23:23.876Z"
     }
-   ]
-  },
-  {
-   "acct": "perdidoseter@c.im",
-   "url": "https://c.im/@perdidoseter",
-   "displayName": "Perdidos En El Éter",
-   "avatar": "https://s3.c.im/accounts/avatars/109/364/658/845/014/912/original/12e3fa4cc3dd351c.jpg",
-   "bot": false,
-   "bio": "Podcast de comics, ciencia ficción, fantasía, juegos, y cultura nerd en general, incluyendo ciencia e historia. (Desde 2003.) http://bit.ly/perdidoseter",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:05:30+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "c.im",
-     "postUrl": "https://c.im/@perdidoseter/116978027275437841",
-     "seenAt": "2026-07-25T01:30:43.144Z"
+     "statusId": "117505099257108263",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@roymathur/117505099257108263",
+     "createdAt": "2026-10-26T03:32:03.340Z",
+     "text": "#CaptainRoysRustyRocketRadioShow: #SFFH and #DoctorWho Pod #CRRRRS 615 #Revisit of #AmicusProductions #DrWhoandtheDaleks (1965) starring #PeterCushing + #DisclosureDay, #Supergirl, #TheMandalorianandGrogu, #MortalKombatII, #SpiderManBrandNewDay, #Silo, #Lanterns, #StarTrekStrangeNewWorlds, #WidowsBay, #TARDISCrew, #MiltonKeynes #Collectomania, #Invincible, #WonderMan, #Carrie, #VisionQuest, #Knig…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "direct-audio",
+       "url": "https://archive.org/download/roymathurspodcast/2026-10-25-captain-roys-rusty-rocket-radio-show.mp3",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://c.im/@perdidoseter/117193178148173810",
-     "seenAt": "2026-09-01T01:26:24.926Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://c.im/@perdidoseter/117531543889979146",
-     "seenAt": "2026-10-30T19:37:16.408Z"
-    },
-    {
-     "kind": "short",
-     "source": "youtube",
-     "postUrl": "https://c.im/@perdidoseter/117358607553874445",
-     "seenAt": "2026-09-30T06:37:17.335Z"
+     "statusId": "117294616010709667",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@roymathur/117294616010709667",
+     "createdAt": "2026-09-18T23:23:23.876Z",
+     "text": "#Horror?! Have you seen the #trailer to #Whalefall? I haven't laughed so hard in ages! https://www.youtube.com/watch?v=Dw-5ZGapGTQ",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=Dw-5ZGapGTQ",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
   {
-   "acct": "szhpodcast@mastodon.social",
-   "url": "https://mastodon.social/@szhpodcast",
-   "displayName": "Session Zero Heroes Podcast",
-   "avatar": "https://files.mastodon.social/accounts/avatars/113/896/240/598/380/993/original/f264e02e5f02903c.jpg",
+   "acct": "biomespec@mastodon.social",
+   "url": "https://mastodon.social/@biomespec",
+   "displayName": "Biome Podcast",
+   "avatar": "https://files.mastodon.social/accounts/avatars/116/620/062/022/719/537/original/fcc36ba3044a8cde.png",
    "bot": false,
-   "bio": "At SZH, we believe in the power of storytelling through #tabletoproleplayinggames and use a wide variety of systems to create these stories, which we share through the podcast medium. From hilarious…",
+   "bio": "Scifi/Fantasy/Weird Fic weekly podcast -- bringing incredible fiction to life Listen on: https://rss.com/podcasts/biomespec/?listen-on=true Submit your work at: https://biomespec.wordpress.com/submis…",
    "showUrl": null,
-   "observedAt": "2026-11-20T00:07:14+00:00",
+   "observedAt": "2026-11-19T23:58:06+00:00",
    "media": [
-    {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@szhpodcast/117524812574665531",
-     "seenAt": "2026-10-29T15:05:24.689Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podbean.com",
-     "postUrl": "https://mastodon.social/@szhpodcast/117524812574665531",
-     "seenAt": "2026-10-29T15:05:24.689Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "sessionzeroheroespodcast.itch.io",
-     "postUrl": "https://mastodon.social/@szhpodcast/117388898523316723",
-     "seenAt": "2026-10-05T15:00:40.849Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "twistedtropespodcast.com",
-     "postUrl": "https://mastodon.social/@szhpodcast/117063314781332929",
-     "seenAt": "2026-08-09T03:00:27.213Z"
-    }
-   ]
-  },
-  {
-   "acct": "octothorpecast@wandering.shop",
-   "url": "https://wandering.shop/@octothorpecast",
-   "displayName": "Octothorpe",
-   "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/494/610/762/194/184/original/826d6e6bd215938c.png",
-   "bot": false,
-   "bio": "A Hugo Award-winning podcast about science fiction and SF fandom from @johncoxon, @bohemiancoast (Alison Scott), and @lizbatty. Most toots are by John.",
-   "showUrl": "https://octothorpe.podbean.com/",
-   "observedAt": "2026-11-20T00:05:01+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "podbean.com",
-     "postUrl": "https://wandering.shop/@octothorpecast/113519886716979617",
-     "seenAt": "2024-11-21T08:00:05.848Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "universeodon.com",
-     "postUrl": "https://wandering.shop/@octothorpecast/115105993532701406",
-     "seenAt": "2025-08-28T10:47:55.171Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "wandering.shop",
-     "postUrl": "https://wandering.shop/@octothorpecast/117406510451695312",
-     "seenAt": "2026-10-08T17:39:37.545Z"
-    }
-   ]
-  },
-  {
-   "acct": "operationwatchtower@horrorhub.club",
-   "url": "https://social.horrorhub.club/@operationwatchtower",
-   "displayName": "Operation Watchtower",
-   "avatar": "https://media.horrorhub.club/accounts/avatars/114/361/816/986/128/721/original/c055b93845f65552.jpeg",
-   "bot": false,
-   "bio": "Operation Watchtower is a podcast rooted in Kult: Divinity Lost, set in the wake of 9/11. Follow Agent Nicholas Grayson, a haunted fed; Belle Flower, a runaway from a family of circus freaks; and Sen…",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:05:11+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "social.horrorhub.club",
-     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115661856069021849",
-     "seenAt": "2025-12-04T14:51:04.344Z"
-    },
     {
      "kind": "outgoing",
      "source": "youtube",
-     "postUrl": "https://social.horrorhub.club/@operationwatchtower/115829881187887502",
-     "seenAt": "2026-01-03T07:02:04.177Z"
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@biomespec/117038584963143688",
+     "seenAt": "2026-08-04T18:11:20.140Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117038584963143688",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@biomespec/117038584963143688",
+     "createdAt": "2026-08-04T18:11:20.140Z",
+     "text": "Our interview with Christopher Thomas is out now. Refresh your memory by giving \"The Winnowers\" a listen Several folks have told us it reminds them of the best of Black Mirror. See if you agree... https://www.youtube.com/watch?v=LZayNMdHvso https://rss.com/podcasts/biomespec/2680314/?listenOn=true #fiction #art #scifi #bookSky #writer",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=LZayNMdHvso",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "itsgotstartrek@tenforward.social",
+   "url": "https://tenforward.social/@ItsGotStarTrek",
+   "displayName": "The It's Got Star Trek Podcast",
+   "avatar": "https://cdn.tenforward.social/accounts/avatars/109/308/800/047/229/030/original/4de385e586dab171.png",
+   "bot": false,
+   "bio": "The It's Got Star Trek podcast offers a weekly, irreverent dive into all corners of the Star Trek franchise. 🖖 New episodes Mondays, 12:00 am ET Hosts Profiles Patrick: PatrickIrelan@fediscience.org…",
+   "showUrl": "https://podcasts.apple.com/us/podcast/its-got-star-trek/id1489620055",
+   "observedAt": "2026-11-20T00:02:25+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://tenforward.social/@ItsGotStarTrek/115539680122290707",
+     "seenAt": "2025-11-13T01:00:07.336Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "115539680122290707",
+     "server": "https://tenforward.social",
+     "postUrl": "https://tenforward.social/@ItsGotStarTrek/115539680122290707",
+     "createdAt": "2025-11-13T01:00:07.336Z",
+     "text": "Did you know you can listen to the It's Got Star Trek podcast via YouTube? It's true! And for no extra fee we dispense with the newfangled \"video\" component and replace it with a custom, well-thought-out static image lovingly crafted for each episode. Surely the best value this side of Nimbus III! #StarTrek https://www.youtube.com/watch?v=iYFdOcqy8J8",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=iYFdOcqy8J8",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -360,93 +686,46 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mastodon.world",
-     "postUrl": "https://mastodon.world/@CryptoBiography/113936235871157304",
-     "seenAt": "2025-02-02T20:43:09.734Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.world/@CryptoBiography/114530651922056100",
      "seenAt": "2025-05-18T20:10:58.870Z"
     }
-   ]
-  },
-  {
-   "acct": "octoberschildrenpodcast@podvibes.co",
-   "url": "https://podvibes.co/@OctobersChildrenPodcast",
-   "displayName": "Octobers Children :podcast:",
-   "avatar": "https://cdn.masto.host/podvibesco/accounts/avatars/109/338/166/532/812/549/original/eef0e1a731a3349d.png",
-   "bot": false,
-   "bio": "A paranormal mystery/horror AD about a small New England town where things are getting dangerously weird",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:04:58+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "ko-fi.com",
-     "postUrl": "https://podvibes.co/@OctobersChildrenPodcast/109966568529145943",
-     "seenAt": "2023-03-04T19:04:33.115Z"
+     "statusId": "114530651922056100",
+     "server": "https://mastodon.world",
+     "postUrl": "https://mastodon.world/@CryptoBiography/114530651922056100",
+     "createdAt": "2025-05-18T20:10:58.870Z",
+     "text": "Last Will - a one-episode story - is now available on Apple Podcasts, YouTube at https://www.youtube.com/watch?v=fszjavoLeKE, and cryptobiography.com. TW: Death, executions, murder",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=fszjavoLeKE",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "octoberschildrenpodcast.creator-spring.com",
-     "postUrl": "https://podvibes.co/@OctobersChildrenPodcast/110531544203466781",
-     "seenAt": "2023-06-12T13:45:17.758Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podvibes.co",
-     "postUrl": "https://podvibes.co/@OctobersChildrenPodcast/110768854338953330",
-     "seenAt": "2023-07-24T11:36:23.060Z"
-    }
-   ]
-  },
-  {
-   "acct": "dunkingonthedm@dice.camp",
-   "url": "https://dice.camp/@DunkingontheDM",
-   "displayName": "Dunking on the DM",
-   "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/109/400/828/756/310/585/original/46795cc87d2c6e6b.jpg",
-   "bot": false,
-   "bio": "Never not getting dunked on. Comedy and storytelling in one tabletop roleplay podcast ft. D&D 5e and Degenesis campaigns. Two new episodes every three weeks 🎲☕ We've just finished up Toruna, a fully-…",
-   "showUrl": null,
-   "observedAt": "2026-11-19T23:59:58+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "dice.camp",
-     "postUrl": "https://dice.camp/@DunkingontheDM/110009839371868136",
-     "seenAt": "2023-03-12T10:28:53.777Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasters.spotify.com",
-     "postUrl": "https://dice.camp/@DunkingontheDM/110136711956861824",
-     "seenAt": "2023-04-03T20:14:15.784Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "wairpodcast.com",
-     "postUrl": "https://dice.camp/@DunkingontheDM/109423319070697484",
-     "seenAt": "2022-11-28T20:29:04.218Z"
-    }
-   ]
-  },
-  {
-   "acct": "mansfield_mysteries@indieauthors.social",
-   "url": "https://indieauthors.social/@mansfield_mysteries",
-   "displayName": "Mansfield Mysteries",
-   "avatar": "https://storage.googleapis.com/indieauthors/accounts/avatars/109/570/170/795/690/988/original/ff7d676696ab4039.jpg",
-   "bot": false,
-   "bio": "Mansfield Mysteries is a satirical, cozy murder whodunit podcast featuring the inquisitive, martini-loving socialite Dorinda Mansfield. Set in quiet, affluent Berkshire Bay, & told over 9 hilarious e…",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:03:49+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "indieauthors.social",
-     "postUrl": "https://indieauthors.social/@mansfield_mysteries/109757174303017094",
-     "seenAt": "2023-01-26T19:32:50.789Z"
+     "statusId": "114250270127501079",
+     "server": "https://mastodon.world",
+     "postUrl": "https://mastodon.world/@CryptoBiography/114250270127501079",
+     "createdAt": "2025-03-30T07:46:12.209Z",
+     "text": "Episode 406, End of the OotiniCast, is on Apple Podcasts, cryptobiography.com, and YouTube at https://youtu.be/TI6JoNPY3KE?si=UQs5XM1696Ldkl8d",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/TI6JoNPY3KE?si=UQs5XM1696Ldkl8d",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

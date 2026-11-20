@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "photography",
  "lang": "en",
@@ -28,7 +28,7 @@
   "zh-Hant": "攝影"
  },
  "icon": "📷",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "alexluyckxphoto@mstdn.ca",
@@ -42,33 +42,46 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mstdn.ca",
-     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117592317960381088",
-     "seenAt": "2026-11-10T13:12:55.128Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117598059438447204",
      "seenAt": "2026-11-11T13:33:03.132Z"
     }
-   ]
-  },
-  {
-   "acct": "mcelhearn@journa.host",
-   "url": "https://journa.host/@mcelhearn",
-   "displayName": "Kirk McElhearn",
-   "avatar": "https://assets.journa.host/accounts/avatars/109/529/486/661/978/820/original/9f79932ceffc114a.png",
-   "bot": false,
-   "bio": "Writer, podcaster, photographer, lazy zennist, cat whisperer. Ex-New Yorker in Shakespeare's home town. Chop wood, carry water. http://mcelhearn.me/",
-   "showUrl": "https://kirkville.com/podcasts/",
-   "observedAt": "2026-11-20T00:04:01+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "kirkville.com",
-     "postUrl": "https://journa.host/@mcelhearn/117585720447440260",
-     "seenAt": "2026-11-09T09:15:05.075Z"
+     "statusId": "117598059438447204",
+     "server": "https://mstdn.ca",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117598059438447204",
+     "createdAt": "2026-11-11T13:33:03.132Z",
+     "text": "Solid, Mechanical, the Canon FTb. https://youtu.be/mGBwJyZEx2o #photography #filmphotography #camerareview #gear #believeinfilm #shootfilmbenice",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/mGBwJyZEx2o",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117518524133246856",
+     "server": "https://mstdn.ca",
+     "postUrl": "https://mstdn.ca/@AlexLuyckxPhoto/117518524133246856",
+     "createdAt": "2026-10-28T12:26:10.687Z",
+     "text": "Did Agfa really name a camera after the shutter sound? Probably not. But that doesn't mean we should overlook the amazing Agfa Click II! https://youtu.be/wWsviy2IMCo #photography #filmphotography #cameragear #believeinfilm #shootfilmbenice",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/wWsviy2IMCo",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

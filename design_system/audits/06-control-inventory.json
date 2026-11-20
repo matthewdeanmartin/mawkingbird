@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2023,
-  "filesWithCandidates": 691,
+  "filesScanned": 2025,
+  "filesWithCandidates": 692,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -55,15 +55,19 @@
         },
         {
           "pattern": "shared",
-          "line": 121
+          "line": 122
         },
         {
           "pattern": "shared",
-          "line": 138
+          "line": 132
+        },
+        {
+          "pattern": "shared",
+          "line": 149
         },
         {
           "pattern": "nativeButtons",
-          "line": 119
+          "line": 130
         }
       ]
     },
@@ -5138,10 +5142,6 @@
         {
           "pattern": "shared",
           "line": 17
-        },
-        {
-          "pattern": "selects",
-          "line": 24
         }
       ]
     },
@@ -7248,6 +7248,16 @@
         {
           "pattern": "selects",
           "line": 23
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/discovery/pack-language-picker.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "selects",
+          "line": 14
         }
       ]
     },
@@ -14309,11 +14319,23 @@
         },
         {
           "pattern": "shared",
-          "line": 28
+          "line": 17
         },
         {
           "pattern": "shared",
-          "line": 51
+          "line": 26
+        },
+        {
+          "pattern": "shared",
+          "line": 49
+        },
+        {
+          "pattern": "shared",
+          "line": 56
+        },
+        {
+          "pattern": "shared",
+          "line": 57
         },
         {
           "pattern": "shared",
@@ -14322,14 +14344,6 @@
         {
           "pattern": "shared",
           "line": 59
-        },
-        {
-          "pattern": "shared",
-          "line": 60
-        },
-        {
-          "pattern": "shared",
-          "line": 61
         }
       ]
     },
@@ -20073,19 +20087,23 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 63
+          "line": 130
         },
         {
           "pattern": "shared",
-          "line": 64
+          "line": 158
         },
         {
           "pattern": "shared",
-          "line": 104
+          "line": 176
         },
         {
-          "pattern": "selects",
-          "line": 64
+          "pattern": "nativeButtons",
+          "line": 130
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 157
         }
       ]
     },

@@ -101,6 +101,21 @@ describe('ClientPrefs', () => {
     expect(stored.verifiedMode).toBe('everyone');
   });
 
+  it('remembers a podcast pack language until returned to browser automatic', () => {
+    const prefs = create();
+    expect(prefs.podcastPackLanguage()).toBeNull();
+    prefs.podcastPackLanguage.set('de');
+    TestBed.tick();
+    expect(JSON.parse(localStorage.getItem(PREFS_KEY)!).podcastPackLanguage).toBe('de');
+
+    TestBed.resetTestingModule();
+    const restored = create();
+    expect(restored.podcastPackLanguage()).toBe('de');
+    restored.podcastPackLanguage.set(null);
+    TestBed.tick();
+    expect(JSON.parse(localStorage.getItem(PREFS_KEY)!).podcastPackLanguage).toBeNull();
+  });
+
   it('persists custom terminology and preserves it while another preset is selected', () => {
     const prefs = create();
     prefs.setCustomTerminologyField('post', 'notelet');

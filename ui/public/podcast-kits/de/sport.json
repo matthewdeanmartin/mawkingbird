@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "sport",
  "lang": "de",
@@ -28,7 +28,7 @@
   "zh-Hant": "運動"
  },
  "icon": "⚽",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "stpop@stpauli.social",
@@ -41,64 +41,54 @@
    "observedAt": "2026-11-20T00:07:12+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://stpauli.social/@stpop/117644341045414618",
-     "seenAt": "2026-11-19T17:43:04.412Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://stpauli.social/@stpop/117591842389208722",
-     "seenAt": "2026-11-10T11:11:58.488Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "rss.com",
-     "postUrl": "https://stpauli.social/@stpop/117592231454645041",
-     "seenAt": "2026-11-10T12:50:55.157Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "stpauli.social",
-     "postUrl": "https://stpauli.social/@stpop/117644341045414618",
-     "seenAt": "2026-11-19T17:43:04.412Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "stpaulinu.de",
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
      "postUrl": "https://stpauli.social/@stpop/117594305484902478",
      "seenAt": "2026-11-10T21:38:22.348Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://stpauli.social/@stpop/117597537411352499",
      "seenAt": "2026-11-11T11:20:17.630Z"
     }
-   ]
-  },
-  {
-   "acct": "bevegt@mastodon.social",
-   "url": "https://mastodon.social/@beVegt",
-   "displayName": "beVegt",
-   "avatar": "https://files.mastodon.social/accounts/avatars/114/093/014/912/778/688/original/851a6690debdf9b2.jpg",
-   "bot": false,
-   "bio": "Katrin und Daniel Wir machen einen #blog und #podcast über das #laufen 🏃‍♀️🏃‍♂️ und die vegane Lebensweise. 🌱 Unsere einfachen veganen Rezepte, Trainings- und Ernährungstipps findest du auf https://w…",
-   "showUrl": "https://www.bevegt.de/podcasts/",
-   "observedAt": "2026-11-19T23:58:09+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "bevegt.de",
-     "postUrl": "https://mastodon.social/@beVegt/117482870959109303",
-     "seenAt": "2026-10-22T05:19:06.423Z"
+     "statusId": "117597537411352499",
+     "server": "https://stpauli.social",
+     "postUrl": "https://stpauli.social/@stpop/117597537411352499",
+     "createdAt": "2026-11-11T11:20:17.630Z",
+     "text": "Sogar die Youtube Videos, die @RSS.com ausspielt, sind ganz chic. https://youtu.be/P6krQzSAswI #Shopify #Rant #FCSP #Podcast",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/P6krQzSAswI",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@beVegt/117482870959109303",
-     "seenAt": "2026-10-22T05:19:06.423Z"
+     "statusId": "117594305484902478",
+     "server": "https://stpauli.social",
+     "postUrl": "https://stpauli.social/@stpop/117594305484902478",
+     "createdAt": "2026-11-10T21:38:22.348Z",
+     "text": "Als #Stotterer ist Podcasten für mich eine Art Therapie; eigentlich brauche ich dafür gar keine Zuhörer:innen – ist aber schöner, mit euch 😀 Von #fcsp Giftschränken und den Anfängen: https://stpaulinu.de/st-pauli-pop-podcast-player/",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://stpauli.s3proxy.de/media_attachments/files/117/594/298/388/916/616/original/c717a9dc7914809a.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   }

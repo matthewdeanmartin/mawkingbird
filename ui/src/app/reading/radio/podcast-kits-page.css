@@ -7,8 +7,7 @@
   padding: 16px;
 }
 .lead,
-.snapshot,
-.media {
+.snapshot {
   color: var(--muted);
 }
 .lead,
@@ -18,7 +17,7 @@
 }
 .kits,
 .rows,
-.media {
+.posts {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -40,8 +39,9 @@
 .member {
   display: flex;
   gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
 .member img {
   border-radius: 50%;
@@ -54,13 +54,39 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
-.media {
+.media-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.media-types span {
+  padding: 2px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.posts {
+  display: grid;
+  gap: 12px;
+}
+.post {
   display: grid;
   gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
 }
-.media li {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
+.post-date {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.post-text {
+  white-space: pre-wrap;
+}
+.post-media audio,
+.post-media video {
+  display: block;
+  width: 100%;
+  max-height: 360px;
 }

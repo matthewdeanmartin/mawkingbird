@@ -1,7 +1,8 @@
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, computed, inject, signal } from '@angular/core';
-import { StarterPackTextPipe } from '../starter-pack-text';
+import { StarterPackTextPipe, starterPackText } from '../starter-pack-text';
+import { PackLanguagePicker } from '../pack-language-picker';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { STARTER_KITS, STARTER_CATALOG_UPDATED_AT, starterKitText } from '../starter-collection';
@@ -75,7 +76,7 @@ interface DiscoverySet {
  */
 @Component({
   selector: 'app-bundled-starter-kits',
-  imports: [MbContentLink, RouterLink, StarterPackTextPipe, TranslocoPipe],
+  imports: [MbContentLink, RouterLink, StarterPackTextPipe, TranslocoPipe, PackLanguagePicker],
   templateUrl: './bundled-starter-kits.html',
   styleUrl: './bundled-starter-kits.css',
 })
@@ -100,6 +101,23 @@ export class BundledStarterKits {
       name: new Intl.DisplayNames([code], { type: 'language' }).of(code) ?? code,
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
+  protected readonly languageOptions = computed(() => [
+    {
+      value: 'known',
+      label: starterPackText(
+        'bundledStarterKits.myLanguages',
+        this.copyLanguage() ?? this.locale.active(),
+      ),
+    },
+    {
+      value: 'all',
+      label: starterPackText(
+        'bundledStarterKits.allLanguages',
+        this.copyLanguage() ?? this.locale.active(),
+      ),
+    },
+    ...this.languages.map(({ code, name }) => ({ value: code, label: name })),
+  ]);
   /** Free-text narrowing, because the merged list is longer than either was. */
   protected readonly filter = signal('');
 

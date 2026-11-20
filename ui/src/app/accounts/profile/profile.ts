@@ -1,3 +1,4 @@
+import { SignInPrompt } from '../../posts/sign-in-prompt/sign-in-prompt';
 import { ReadingBack } from '../../shell/reading-back';
 import { Lightbox } from '../../posts/lightbox/lightbox';
 import { BlueskyProfileDiscovery } from '../../discovery/bluesky-starter-packs/bluesky-profile-discovery';
@@ -325,6 +326,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    SignInPrompt,
     ReadingBack,
     CopyLinkDialog,
     Lightbox,
@@ -2779,7 +2781,25 @@ export class Profile implements OnInit, OnDestroy {
     );
   }
 
+  /** Open while asking a visitor who never chose Anonymous to sign in to follow. */
+  protected signInToFollowOpen = signal(false);
+  protected signInFollowAction = computed(() =>
+    this.signInToFollowOpen() ? this.transloco.translate('signInPrompt.action.follow') : '',
+  );
+
+  /**
+   * True (and the sign-in prompt opened) when this visitor is in Anonymous only
+   * because a public link opened the app: a browser-only follow is not what
+   * "Follow" means to someone who was never offered a sign-in.
+   */
+  private askSignInToFollow(): boolean {
+    if (!this.auth.signInToFollow) return false;
+    this.signInToFollowOpen.set(true);
+    return true;
+  }
+
   followFeatured(target: Account): void {
+    if (this.askSignInToFollow()) return;
     if (this.auth.isAnonymous) {
       const result = this.anonymousFollows.follow(
         target,
@@ -2802,7 +2822,7 @@ export class Profile implements OnInit, OnDestroy {
 
   /** Follow every featured account the viewer doesn't already follow, one at a time. */
   async followAllFeatured(): Promise<void> {
-    if (this.featuredBusy()) {
+    if (this.featuredBusy() || this.askSignInToFollow()) {
       return;
     }
     if (
@@ -2853,6 +2873,7 @@ export class Profile implements OnInit, OnDestroy {
       return;
     }
     if (this.auth.isAnonymous) {
+      if (!rel?.following && this.askSignInToFollow()) return;
       if (rel?.following) {
         this.relationship.set(
           this.anonymousFollows.unfollow(

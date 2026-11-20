@@ -1590,7 +1590,12 @@
     {
       "file": "ui/src/app/reading/radio/podcast-kits-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "Podcast starter kits use Radio Header, Navigation/NavLink, Field/Control for language, Button for playable posts, and shared FollowButton. Kit cards and outgoing post links are native links; local CSS provides layout only. Preserve honest media labels and signed-out discovery."
+      "nextStep": "Podcast starter kits use Radio Header, Navigation/NavLink, shared PackLanguagePicker, Button, FollowButton, ExternalPlayerHost and VideoPlayerHost. Each account card shows two cached public post excerpts with content warnings, native audio/video or provider players, and local post links carrying home-server IDs. Local CSS provides layout. Preserve honest Radio playback labels and signed-out discovery."
+    },
+    {
+      "file": "ui/src/app/discovery/pack-language-picker.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Shared labelled native select for curated starter packs and Radio podcast kits. Preserve keyboard selection, translated labels, and consistent pack-language styling; each caller owns its choices and persistence policy."
     },
     {
       "file": "ui/src/app/reading/radio/track-result.ts",

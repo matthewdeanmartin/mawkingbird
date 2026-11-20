@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "animals-and-pets",
  "lang": "de",
@@ -28,7 +28,7 @@
   "zh-Hant": "動物與寵物"
  },
  "icon": "🐾",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "friederikeschmitz@norden.social",
@@ -41,22 +41,54 @@
    "observedAt": "2026-11-20T00:00:55+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "podcast.de",
-     "postUrl": "https://norden.social/@friederikeschmitz/117491059671350562",
-     "seenAt": "2026-10-23T16:01:36.255Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://norden.social/@friederikeschmitz/117598560986888807",
+     "seenAt": "2026-11-11T15:40:36.153Z"
     },
     {
      "kind": "outgoing",
-     "source": "podcasts.apple.com",
+     "source": "apple-podcasts",
+     "mediaType": null,
      "postUrl": "https://norden.social/@friederikeschmitz/117473742028012960",
      "seenAt": "2026-10-20T14:37:29.986Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117598560986888807",
+     "server": "https://norden.social",
+     "postUrl": "https://norden.social/@friederikeschmitz/117598560986888807",
+     "createdAt": "2026-11-11T15:40:36.153Z",
+     "text": "Klar, die #Tierhaltung hat sich weltweit seit den 60er Jahren verfünffacht, weil so viel minderwertiger Weizen und Hafertrester übrig war - man wusste nicht wohin damit und hat deshalb immer mehr Mastanlagen gebaut. Logisch, oder?",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.norden.social/media_attachments/files/117/598/559/153/648/814/original/059449e87f4f062d.mp4",
+       "mediaType": "video"
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "waszurettenist.podcaster.de",
-     "postUrl": "https://norden.social/@friederikeschmitz/117502546329275813",
-     "seenAt": "2026-10-25T16:42:48.745Z"
+     "statusId": "117582303215815194",
+     "server": "https://norden.social",
+     "postUrl": "https://norden.social/@friederikeschmitz/117582303215815194",
+     "createdAt": "2026-11-08T18:46:02.254Z",
+     "text": "Fachartikel zur #Tierhaltung zeigen, worum es dabei geht: „Leistung“, also Eierproduktion, Fleischansatz, Milchmenge. Das ist auch völlig nachvollziehbar, denn die Tiere werden gehalten, um mit ihnen Geld zu verdienen. Die Bedürfnisse der Tiere sind nur insofern relevant, wie sie die Wirtschaftlichkeit tangieren. Krankheiten müssen also erst vermieden werden, wenn sie die „Leistung“ verringern. A…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.norden.social/media_attachments/files/117/582/290/183/859/481/original/6e2920bf0ae4a083.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   }

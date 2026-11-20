@@ -459,6 +459,7 @@ interface StoredPrefs {
   customSidebar?: CustomColor;
   excludeUnknownLangTrends?: boolean;
   uiLocale?: string | null;
+  podcastPackLanguage?: string | null;
   knownLanguages?: string[];
   postingLanguage?: string;
   postingLanguageAsked?: boolean;
@@ -876,6 +877,9 @@ export class ClientPrefs {
    * *negotiated* result would silently collapse the first case into the second.
    */
   readonly uiLocale = signal<string | null>(null);
+
+  /** Explicit podcast-kit language; null follows the browser's language chain. */
+  readonly podcastPackLanguage = signal<string | null>(null);
 
   /**
    * Languages the user has explicitly said they know (ISO 639-1). This is the
@@ -1565,6 +1569,7 @@ export class ClientPrefs {
     this.customSidebar.set(normalizeColor(stored.customSidebar ?? null));
     this.loadBool(stored.excludeUnknownLangTrends, this.excludeUnknownLangTrends);
     this.uiLocale.set(normalizeLocale(stored.uiLocale));
+    this.podcastPackLanguage.set(normalizeLocale(stored.podcastPackLanguage));
     this.knownLanguages.set(normalizeLangs(stored.knownLanguages));
     this.postingLanguage.set(
       typeof stored.postingLanguage === 'string' ? stored.postingLanguage : '',
@@ -1648,6 +1653,7 @@ export class ClientPrefs {
       customSidebar: this.customSidebar(),
       excludeUnknownLangTrends: this.excludeUnknownLangTrends(),
       uiLocale: this.uiLocale(),
+      podcastPackLanguage: this.podcastPackLanguage(),
       knownLanguages: this.knownLanguages(),
       postingLanguage: this.postingLanguage(),
       postingLanguageAsked: this.postingLanguageAsked(),

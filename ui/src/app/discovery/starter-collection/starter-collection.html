@@ -177,3 +177,6 @@
     }}</a>
   }
 </section>
+@if (signInOpen()) {
+  <app-sign-in-prompt [action]="signInAction()" (dismissed)="signInOpen.set(false)" />
+}

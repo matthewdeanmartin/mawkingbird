@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "music",
  "lang": "es",
@@ -28,7 +28,7 @@
   "zh-Hant": "音樂"
  },
  "icon": "🎵",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "hardcuore@cabanyal.social",
@@ -42,57 +42,46 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "cabanyal.social",
-     "postUrl": "https://cabanyal.social/@hardcuore/117642289770148397",
-     "seenAt": "2026-11-19T09:01:24.435Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "hardcuore.podcast.audio",
-     "postUrl": "https://cabanyal.social/@hardcuore/117642289770148397",
-     "seenAt": "2026-11-19T09:01:24.435Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://cabanyal.social/@hardcuore/117585689749554947",
-     "seenAt": "2026-11-09T09:07:16.658Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcast.radioalmaina.org",
-     "postUrl": "https://cabanyal.social/@hardcuore/117638521315837735",
-     "seenAt": "2026-11-18T17:03:02.386Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://cabanyal.social/@hardcuore/117644384311327235",
      "seenAt": "2026-11-19T17:54:04.595Z"
     }
-   ]
-  },
-  {
-   "acct": "el_cornetin@tkz.one",
-   "url": "https://tkz.one/@el_cornetin",
-   "displayName": "El Cornetin de Gondor",
-   "avatar": "https://media.tkz.one/tkz/accounts/avatars/109/314/342/405/553/680/original/d4bb62370ac5a24f.jpg",
-   "bot": false,
-   "bio": "El Cornetín de Gondor. #SiempreAlMargen Blog y podcast de lo que viene siendo todo lo friki Cuenta de publicación, para contacto usar https://masto.nobigtech.es/@el_cornetin",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:00:15+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "elcornetin.es",
-     "postUrl": "https://tkz.one/@el_cornetin/117625111386731788",
-     "seenAt": "2026-11-16T08:12:43.111Z"
+     "statusId": "117644384311327235",
+     "server": "https://cabanyal.social",
+     "postUrl": "https://cabanyal.social/@hardcuore/117644384311327235",
+     "createdAt": "2026-11-19T17:54:04.595Z",
+     "text": "Somos muy fans de #MichaelWinterbottom, sobre todo por 24 Hour Party People, la mejor película sobre el mundo de la música jamás rodada #cadasemanaunapeli https://www.youtube.com/watch?v=yGLF5g7pYsc",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=yGLF5g7pYsc",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "tkz.one",
-     "postUrl": "https://tkz.one/@el_cornetin/117625111386731788",
-     "seenAt": "2026-11-16T08:12:43.111Z"
+     "statusId": "117642278632812649",
+     "server": "https://cabanyal.social",
+     "postUrl": "https://cabanyal.social/@hardcuore/117642278632812649",
+     "createdAt": "2026-11-19T08:58:34.489Z",
+     "text": "Cuando el agua hirviendo, por Milo J. (ft. Silvana Estrada) #mismejorescasetes #cadadiaunacancion https://www.youtube.com/watch?v=ZxdLVdS-yr4",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=ZxdLVdS-yr4",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

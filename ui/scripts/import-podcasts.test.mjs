@@ -13,9 +13,9 @@ const row = {
   title: { en: 'Science' },
   icon: '🔬',
 };
-const index = { version: 1, generatedAt: '2026-11-19', languages: { en: 1 }, packs: [row] };
+const index = { version: 2, generatedAt: '2026-11-19', languages: { en: 1 }, packs: [row] };
 const pack = {
-  version: 1,
+  version: 2,
   kind: 'podcasts',
   category: 'science',
   lang: 'en',
@@ -25,7 +25,33 @@ const pack = {
       url: 'https://example.social/@show',
       avatar: null,
       showUrl: null,
-      media: [{ kind: 'native', source: 'mastodon', postUrl: 'https://example.social/@show/1' }],
+      media: [
+        {
+          kind: 'native',
+          source: 'mastodon',
+          mediaType: 'audio',
+          postUrl: 'https://example.social/@show/1',
+        },
+      ],
+      recentPosts: [
+        {
+          statusId: '1',
+          server: 'https://example.social',
+          postUrl: 'https://example.social/@show/1',
+          createdAt: '2026-11-19',
+          text: 'New episode',
+          spoilerText: '',
+          sensitive: false,
+          sources: [
+            {
+              kind: 'native',
+              source: 'mastodon',
+              url: 'https://files.example/episode.mp3',
+              mediaType: 'audio',
+            },
+          ],
+        },
+      ],
     },
   ],
 };
@@ -59,7 +85,11 @@ test('rejects traversal and a claimed full player that Radio cannot advance', ()
   bad.members[0].media[0] = {
     kind: 'full-player',
     source: 'youtube',
+    mediaType: null,
     postUrl: 'https://example.social/@show/1',
   };
   assert.throws(() => validate(index, () => bad), /player cannot advance/);
+  const missing = structuredClone(pack);
+  missing.members[0].recentPosts = [];
+  assert.throws(() => validate(index, () => missing), /missing recent posts/);
 });
