@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "news-and-journalism",
  "lang": "de",
@@ -28,47 +28,74 @@
   "zh-Hant": "新聞與新聞報導"
  },
  "icon": "📰",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
-   "acct": "detektorfm@social.detektor.fm",
-   "url": "https://social.detektor.fm/@detektorfm",
-   "displayName": "detektor.fm :dfm:",
-   "avatar": "https://social.detektor.fm/system/accounts/avatars/109/705/336/470/263/839/original/2f108b5bc8317044.jpg",
+   "acct": "uwetschirner@mastodon.social",
+   "url": "https://mastodon.social/@uwetschirner",
+   "displayName": "Uwe Tschirner",
+   "avatar": "https://files.mastodon.social/accounts/avatars/117/599/619/305/627/918/original/190317b6b8cd7593.png",
    "bot": false,
-   "bio": "Podcast-Radio / Neue Musik & Journalismus / https://detektor.fm/impressum / #podcasts #podcasting #radio",
-   "showUrl": "https://detektor.fm/serien/spektrum",
-   "observedAt": "2026-11-19T23:59:32+00:00",
+   "bio": "Lokaljournalist, Podcasts, Audio, Texte, Online, Bautzen in Sachsen.",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:08:12+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "detektor.fm",
-     "postUrl": "https://social.detektor.fm/@detektorfm/117607135151242288",
-     "seenAt": "2026-11-13T04:01:07.520Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@uwetschirner/117600052591657913",
+     "seenAt": "2026-11-11T21:59:56.236Z"
     },
     {
      "kind": "outgoing",
-     "source": "social.detektor.fm",
-     "postUrl": "https://social.detektor.fm/@detektorfm/117643637630055349",
-     "seenAt": "2026-11-19T14:44:11.154Z"
-    }
-   ]
-  },
-  {
-   "acct": "sumikai@mstdn.social",
-   "url": "https://mstdn.social/@sumikai",
-   "displayName": "Sumikai",
-   "avatar": "https://media.mstdn.social/accounts/avatars/109/522/449/592/814/781/original/e0b89e3e560b6ae6.jpg",
-   "bot": false,
-   "bio": "Offizieller Account von Sumikai: #Magazin rund um #Japan. Aktuelle #Nachrichten, Popkultur, #Reisetipps u. v. m.",
-   "showUrl": "https://sumikai.com/tag/japan-podcast/",
-   "observedAt": "2026-11-20T00:07:18+00:00",
-   "media": [
+     "source": "apple-podcasts",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@uwetschirner/117632745205282085",
+     "seenAt": "2026-11-17T16:34:05.935Z"
+    },
     {
      "kind": "outgoing",
-     "source": "sumikai.com",
-     "postUrl": "https://mstdn.social/@sumikai/117638216537041487",
-     "seenAt": "2026-11-18T15:45:31.829Z"
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@uwetschirner/117615858087631460",
+     "seenAt": "2026-11-14T16:59:28.968Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117632745205282085",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@uwetschirner/117632745205282085",
+     "createdAt": "2026-11-17T16:34:05.935Z",
+     "text": "Vorhang auf: Bautzens Theaterprogramm für das Wochenende Der Bühnenball war ein großer Erfolg – und jetzt geht es Schlag auf Schlag: In dieser Episode unseres Podcasts „Lausitz heute“ spricht Gabriele Suschke, Marketingchefin des Deutsch-Sorbischen Volkstheaters Bautzen, über das kommende Theaterwochenende. #vorhangauf #theaterbautzen #podcasts #lausitzerWORTmanufaktur https://podcasts.apple.com/…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/de/podcast/lausitz-heute/id1818818180?i=1000802503566",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117615858087631460",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@uwetschirner/117615858087631460",
+     "createdAt": "2026-11-14T16:59:28.968Z",
+     "text": "Am Sonntag feiert Wolf Biermann seinen 90. Geburtstag Geboren in Hamburg, zog er 1953 in die DDR und wurde als Liedermacher zum scharfen Beobachter der SED-Diktatur. Die Führung schlug zurück: 1965 verhängte sie ein Auftrittsverbot gegen ihn. Nur einen Tag nach seinem 40. Geburtstag wurde Biermann während einer Tournee in der Bundesrepublik aus der DDR ausgebürgert. Im September 2021 haben wir ei…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=ojAhIUYMJBc",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -83,40 +110,47 @@
    "observedAt": "2026-11-19T23:59:24+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "social.detektor.fm",
-     "postUrl": "https://social.detektor.fm/@dazwischen/117637649620259078",
-     "seenAt": "2026-11-18T13:21:21.374Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117604331640890983",
+     "seenAt": "2026-11-12T16:08:09.346Z"
     }
-   ]
-  },
-  {
-   "acct": "uwetschirner@mastodon.social",
-   "url": "https://mastodon.social/@uwetschirner",
-   "displayName": "Uwe Tschirner",
-   "avatar": "https://files.mastodon.social/accounts/avatars/117/599/619/305/627/918/original/190317b6b8cd7593.png",
-   "bot": false,
-   "bio": "Lokaljournalist, Podcasts, Audio, Texte, Online, Bautzen in Sachsen.",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:08:12+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@uwetschirner/117632745205282085",
-     "seenAt": "2026-11-17T16:34:05.935Z"
+     "statusId": "117604331640890983",
+     "server": "https://social.detektor.fm",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117604331640890983",
+     "createdAt": "2026-11-12T16:08:09.346Z",
+     "text": "Dieses Video gibt schon mal einen kleinen Vorgeschmack auf die neue Podcast-Folge von DAZWISCHEN. Hört jetzt rein und findet heraus, wie es Sachsen-Anhalts Nahverkehr eigentlich so geht. https://detektor.fm/gesellschaft/dazwischen-nahverkehr-sachsen-anhalt",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://social.detektor.fm/system/media_attachments/files/117/604/323/036/812/094/original/d81d4fa1e1772ced.mp4",
+       "mediaType": "video"
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://mastodon.social/@uwetschirner/117632745205282085",
-     "seenAt": "2026-11-17T16:34:05.935Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://mastodon.social/@uwetschirner/117615858087631460",
-     "seenAt": "2026-11-14T16:59:28.968Z"
+     "statusId": "117558986287467394",
+     "server": "https://social.detektor.fm",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117558986287467394",
+     "createdAt": "2026-11-04T15:56:14.163Z",
+     "text": "DAZWISCHEN-Fans aufgepasst. Katja und Marie fahren morgen nach Droyßig und testen den Nahverkehr. Wenn ihr Lust habt, einen Kaffee zu trinken und über das Thema zu sprechen, sagt uns Bescheid. Auch Fragen, Ideen und Geschichten zu dem Thema sind wie immer gerne gesehen! Am besten per Mail an dazwischen@detektor.fm oder per Sprachnachricht. Wir würden uns freuen.",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://social.detektor.fm/system/media_attachments/files/117/558/966/877/056/829/original/6ecfabf8e529f6a1.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -131,22 +165,54 @@
    "observedAt": "2026-11-20T00:07:21+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "intaiwan.net",
-     "postUrl": "https://mstdn.social/@taiwanreporter/117432963782564527",
-     "seenAt": "2026-10-13T09:47:03.344Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "pca.st",
-     "postUrl": "https://mstdn.social/@taiwanreporter/117631144503026799",
-     "seenAt": "2026-11-17T09:47:01.152Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117552501495471882",
+     "seenAt": "2026-11-03T12:27:04.089Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mstdn.social/@taiwanreporter/117518763569217123",
      "seenAt": "2026-10-28T13:27:04.188Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117552501495471882",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117552501495471882",
+     "createdAt": "2026-11-03T12:27:04.089Z",
+     "text": "Im neuen #Taiwancast redet Roderich Kiesewetter Klartext. Hier anhören: https://intaiwan.net/2026/10/14/roderich-kiesewetter-china-russland-ukraine/ (oder auf Apple Podcasts, Spotify usw.)",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.mstdn.social/media_attachments/files/117/552/501/389/487/968/original/99a8e880576cacf1.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117518763569217123",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117518763569217123",
+     "createdAt": "2026-10-28T13:27:04.188Z",
+     "text": "A German and a Swedish journalist living in Taiwan talk about common shortcomings in their countries' media reporting about Taiwan, and what could improve. https://www.youtube.com/watch?v=4UmWxTAzyMo",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=4UmWxTAzyMo",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

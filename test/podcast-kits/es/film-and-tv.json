@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "film-and-tv",
  "lang": "es",
@@ -28,7 +28,7 @@
   "zh-Hant": "電影與電視"
  },
  "icon": "🎬",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "losmediatizados@tkz.one",
@@ -41,28 +41,54 @@
    "observedAt": "2026-11-20T00:03:44+00:00",
    "media": [
     {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://tkz.one/@LosMediatizados/117602504560114276",
+     "seenAt": "2026-11-12T08:23:30.306Z"
+    },
+    {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://tkz.one/@LosMediatizados/117565131763702418",
      "seenAt": "2026-11-05T17:59:06.688Z"
     }
-   ]
-  },
-  {
-   "acct": "sonspodcast@mastodon.social",
-   "url": "https://mastodon.social/@sonspodcast",
-   "displayName": "Sons Podcast 🎙️",
-   "avatar": "https://files.mastodon.social/accounts/avatars/110/725/624/055/143/472/original/9de18b6d42f49a51.jpg",
-   "bot": true,
-   "bio": "Red de Podcasts independiente",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:07:11+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "sons.red",
-     "postUrl": "https://mastodon.social/@sonspodcast/117632772766679761",
-     "seenAt": "2026-11-17T16:41:06.488Z"
+     "statusId": "117602504560114276",
+     "server": "https://tkz.one",
+     "postUrl": "https://tkz.one/@LosMediatizados/117602504560114276",
+     "createdAt": "2026-11-12T08:23:30.306Z",
+     "text": "Hoy, por fin, cumplimos 500 programas. Y en esta vorágine en la que lo hacemos, Javier Ruiz nos manda un mensaje desde La Séptima.",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.tkz.one/tkz/media_attachments/files/117/602/503/869/588/460/original/986514d7a5ac326e.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117565131763702418",
+     "server": "https://tkz.one",
+     "postUrl": "https://tkz.one/@LosMediatizados/117565131763702418",
+     "createdAt": "2026-11-05T17:59:06.688Z",
+     "text": "La Séptima, los canales UHD, Premios Ondas, 2Cat, las audiencias del mes, el Real Decreto del DAB+... y bombazo de úlltima hora con la jubilación del Gran Wyoming! Empezamos en directo ya! https://www.youtube.com/live/lG7gTN05vbA?feature=share",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/live/lG7gTN05vbA?feature=share",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

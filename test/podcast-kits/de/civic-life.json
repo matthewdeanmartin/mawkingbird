@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "civic-life",
  "lang": "de",
@@ -28,38 +28,8 @@
   "zh-Hant": "公民生活"
  },
  "icon": "🗳️",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
-  {
-   "acct": "missio@kirche.social",
-   "url": "https://kirche.social/@missio",
-   "displayName": "missio Aachen",
-   "avatar": "https://kirche.social/system/accounts/avatars/108/220/828/988/188/431/original/2535438972d6788a.png",
-   "bot": false,
-   "bio": "missio - Nächstenliebe, die bleibt. Offizieller Mastodon-Account von missio Aachen Unser neuer Podcast „Echt. Unglaublich!“ ➡️ https://missio-hilft.de/podcast",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:04:21+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "kirche.social",
-     "postUrl": "https://kirche.social/@missio/117643911782360197",
-     "seenAt": "2026-11-19T15:53:54.379Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "missio-hilft.de",
-     "postUrl": "https://kirche.social/@missio/117643911782360197",
-     "seenAt": "2026-11-19T15:53:54.379Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://kirche.social/@missio/117445156446170388",
-     "seenAt": "2026-10-15T13:27:48.631Z"
-    }
-   ]
-  },
   {
    "acct": "ueckueck@dresden.network",
    "url": "https://dresden.network/@ueckueck",
@@ -71,40 +41,54 @@
    "observedAt": "2026-11-20T00:07:53+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "dresden.network",
-     "postUrl": "https://dresden.network/@ueckueck/117643604701590031",
-     "seenAt": "2026-11-19T14:35:48.698Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://dresden.network/@ueckueck/117622280335507425",
+     "seenAt": "2026-11-15T20:12:44.697Z"
     },
     {
      "kind": "outgoing",
-     "source": "podcasts.homes",
-     "postUrl": "https://dresden.network/@ueckueck/117637347817388331",
-     "seenAt": "2026-11-18T12:04:36.220Z"
+     "source": "direct-audio",
+     "mediaType": null,
+     "postUrl": "https://dresden.network/@ueckueck/117585540568663897",
+     "seenAt": "2026-11-09T08:29:20.345Z"
     }
-   ]
-  },
-  {
-   "acct": "daswissen@ard.social",
-   "url": "https://ard.social/@DasWissen",
-   "displayName": "Das Wissen | SWR",
-   "avatar": "https://ard.social/system/accounts/avatars/112/247/373/573/756/257/original/53cef010b2bc268e.jpeg",
-   "bot": false,
-   "bio": "Mehr Horizont. Der Podcast. Vom SWR. https://www.swr.de/swrkultur/programm/podcast-swr-das-wissen-102.html",
-   "showUrl": "https://www.swr.de/swrkultur/programm/podcast-swr-das-wissen-102.html",
-   "observedAt": "2026-11-19T23:59:21+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "ard.social",
-     "postUrl": "https://ard.social/@DasWissen/117641663074800917",
-     "seenAt": "2026-11-19T06:22:01.822Z"
+     "statusId": "117622280335507425",
+     "server": "https://dresden.network",
+     "postUrl": "https://dresden.network/@ueckueck/117622280335507425",
+     "createdAt": "2026-11-15T20:12:44.697Z",
+     "text": "In der letzten Folge @netsplit hab ich mich nicht nur als #Conversations-Fan geoutet, sondern von @daniel auch mein neues Lieblings-Argument gegen #Signal gehört. Das kann ich jetzt immer in #Messenger-Diskussionen verwenden, wenn mich irgendwer von Signal überzeugen will, ich aber für dezentrale Messenger argumentiere. Einen kleinen Ausschnitt aus der Folge \"Open Source × Kapitalismus (NET⫽SPLIT…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://dresden.s3proxy.de/media_attachments/files/117/622/328/189/980/275/original/85188875fa53fb2d.mp4",
+       "mediaType": "video"
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "swr.de",
-     "postUrl": "https://ard.social/@DasWissen/117528525742948233",
-     "seenAt": "2026-10-30T06:49:43.138Z"
+     "statusId": "117585540568663897",
+     "server": "https://dresden.network",
+     "postUrl": "https://dresden.network/@ueckueck/117585540568663897",
+     "createdAt": "2026-11-09T08:29:20.345Z",
+     "text": "@rebootpolitics - Wir schließen die Vergesellschaftung ab In dieser Ausgabe haben wir folgende Themen für euch dabei: Ein Interview mit @lindle zu antisemitismuskritischer Hochschularbeit, einen Bericht zur Vernetzung mit der Datenfreude, Antifaschist*innen, die einen Anschlag der Neonazigruppe #Terror18 verhindert haben, den #KidsAct, Regierungspläne zu #HandyBlitzer und neuen Hürden für #Verges…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "direct-audio",
+       "url": "https://podcasts.homes/audio/@rebootpolitics/wir-schliesen-die-vergesellschaftung-ab.mp3?_from=antennapod.org",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -119,10 +103,47 @@
    "observedAt": "2026-11-19T23:59:24+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "social.detektor.fm",
-     "postUrl": "https://social.detektor.fm/@dazwischen/117637649620259078",
-     "seenAt": "2026-11-18T13:21:21.374Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117604331640890983",
+     "seenAt": "2026-11-12T16:08:09.346Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117604331640890983",
+     "server": "https://social.detektor.fm",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117604331640890983",
+     "createdAt": "2026-11-12T16:08:09.346Z",
+     "text": "Dieses Video gibt schon mal einen kleinen Vorgeschmack auf die neue Podcast-Folge von DAZWISCHEN. Hört jetzt rein und findet heraus, wie es Sachsen-Anhalts Nahverkehr eigentlich so geht. https://detektor.fm/gesellschaft/dazwischen-nahverkehr-sachsen-anhalt",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://social.detektor.fm/system/media_attachments/files/117/604/323/036/812/094/original/d81d4fa1e1772ced.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117558986287467394",
+     "server": "https://social.detektor.fm",
+     "postUrl": "https://social.detektor.fm/@dazwischen/117558986287467394",
+     "createdAt": "2026-11-04T15:56:14.163Z",
+     "text": "DAZWISCHEN-Fans aufgepasst. Katja und Marie fahren morgen nach Droyßig und testen den Nahverkehr. Wenn ihr Lust habt, einen Kaffee zu trinken und über das Thema zu sprechen, sagt uns Bescheid. Auch Fragen, Ideen und Geschichten zu dem Thema sind wie immer gerne gesehen! Am besten per Mail an dazwischen@detektor.fm oder per Sprachnachricht. Wir würden uns freuen.",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://social.detektor.fm/system/media_attachments/files/117/558/966/877/056/829/original/6ecfabf8e529f6a1.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -137,22 +158,109 @@
    "observedAt": "2026-11-20T00:07:21+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "intaiwan.net",
-     "postUrl": "https://mstdn.social/@taiwanreporter/117432963782564527",
-     "seenAt": "2026-10-13T09:47:03.344Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "pca.st",
-     "postUrl": "https://mstdn.social/@taiwanreporter/117631144503026799",
-     "seenAt": "2026-11-17T09:47:01.152Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117552501495471882",
+     "seenAt": "2026-11-03T12:27:04.089Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mstdn.social/@taiwanreporter/117518763569217123",
      "seenAt": "2026-10-28T13:27:04.188Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117552501495471882",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117552501495471882",
+     "createdAt": "2026-11-03T12:27:04.089Z",
+     "text": "Im neuen #Taiwancast redet Roderich Kiesewetter Klartext. Hier anhören: https://intaiwan.net/2026/10/14/roderich-kiesewetter-china-russland-ukraine/ (oder auf Apple Podcasts, Spotify usw.)",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://media.mstdn.social/media_attachments/files/117/552/501/389/487/968/original/99a8e880576cacf1.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117518763569217123",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@taiwanreporter/117518763569217123",
+     "createdAt": "2026-10-28T13:27:04.188Z",
+     "text": "A German and a Swedish journalist living in Taiwan talk about common shortcomings in their countries' media reporting about Taiwan, and what could improve. https://www.youtube.com/watch?v=4UmWxTAzyMo",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=4UmWxTAzyMo",
+       "mediaType": null
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "acct": "missio@kirche.social",
+   "url": "https://kirche.social/@missio",
+   "displayName": "missio Aachen",
+   "avatar": "https://kirche.social/system/accounts/avatars/108/220/828/988/188/431/original/2535438972d6788a.png",
+   "bot": false,
+   "bio": "missio - Nächstenliebe, die bleibt. Offizieller Mastodon-Account von missio Aachen Unser neuer Podcast „Echt. Unglaublich!“ ➡️ https://missio-hilft.de/podcast",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:04:21+00:00",
+   "media": [
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://kirche.social/@missio/117445156446170388",
+     "seenAt": "2026-10-15T13:27:48.631Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117445156446170388",
+     "server": "https://kirche.social",
+     "postUrl": "https://kirche.social/@missio/117445156446170388",
+     "createdAt": "2026-10-15T13:27:48.631Z",
+     "text": "Warum verlassen Familien in #Madagaskar für viele Monate ihre Heimatdörfer? Im Katechistenzentrum Père Samuel Malo bereiten sich Frauen und Männer darauf vor, wichtige Aufgaben in ihren Kirchengemeinden zu übernehmen. Neben religiösem Wissen lernen sie auch #Landwirtschaft und #Handwerk. 🔗 https://www.youtube.com/watch?v=7WTn8tHoW8s #WMS2026 #Weltmissionssonntag #Fedikirche",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=7WTn8tHoW8s",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117427558498249751",
+     "server": "https://kirche.social",
+     "postUrl": "https://kirche.social/@missio/117427558498249751",
+     "createdAt": "2026-10-12T10:52:25.266Z",
+     "text": "🥳 20 Jahre missio-Youtube-Kanal 🎉 Die Geschichte von missio Aachen auf #YouTube ist eine Chronik des Wandels: von den ersten Gehversuchen im Web 2.0 hin zu einem etablierten Fundus an Berichten über weltweite Solidarität, Glaubenszeugnisse und Menschenrechte. Mehr als 17.000 Stunden investierte Aufmerksamkeit der Zuschauer/-innen zeigen, wie der Kanal über zwei Jahrzehnte hinweg als Brücke zwisch…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=JnzdmvNa7cM",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -168,21 +276,29 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@TheAndreCramer/116958922828427460",
-     "seenAt": "2026-07-21T16:32:12.430Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@TheAndreCramer/116922740116236873",
      "seenAt": "2026-07-15T07:10:28.046Z"
-    },
+    }
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "theandrecramer.substack.com",
-     "postUrl": "https://mastodon.social/@TheAndreCramer/115876189054696124",
-     "seenAt": "2026-01-11T11:18:46.161Z"
+     "statusId": "116922740116236873",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@TheAndreCramer/116922740116236873",
+     "createdAt": "2026-07-15T07:10:28.046Z",
+     "text": "#Netzneutralität klingt nach einem Thema für Regulierungsbehörden. Dabei geht es um eine einfache Frage: Werden im Internet alle Daten gleich behandelt oder können sich große Anbieter bessere Wege und schnellere Spuren kaufen? In der neuen Folge von #CodeundKonsequenz sprechen wir über Fair Share, Datenmaut und die Macht hinter den unsichtbaren Regeln des Netzes. Und darüber, warum dich dich das…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "spotify",
+       "url": "https://open.spotify.com/episode/7rK5oMA8Q9dF819LBDGW5k",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

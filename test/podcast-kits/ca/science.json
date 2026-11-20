@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "science",
  "lang": "ca",
@@ -28,7 +28,7 @@
   "zh-Hant": "科學"
  },
  "icon": "🔬",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "mossegalapoma@podcasts.social",
@@ -42,21 +42,46 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mossegalapoma.cat",
-     "postUrl": "https://podcasts.social/@mossegalapoma/115627653176987621",
-     "seenAt": "2025-11-28T13:52:49.617Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://podcasts.social/@mossegalapoma/117644241319604564",
-     "seenAt": "2026-11-19T17:17:42.714Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://podcasts.social/@mossegalapoma/116453411017394681",
      "seenAt": "2026-04-23T09:53:54.323Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116453411017394681",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@mossegalapoma/116453411017394681",
+     "createdAt": "2026-04-23T09:53:54.323Z",
+     "text": "Molt bona diada de Sant Jordi. Avui, sobre les 15:30, tenim enregistrament de l'episodi del podcast setmanal. Pots seguir-nos en directe i participar via YouTube https://www.youtube.com/live/QpCo-tsRc9A?si=6EKOs-Febnf1xxFG",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/live/QpCo-tsRc9A?si=6EKOs-Febnf1xxFG",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "115928187652060888",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@mossegalapoma/115928187652060888",
+     "createdAt": "2026-01-20T15:42:41.782Z",
+     "text": "Reserveu agenda Aquest dijous 22 de Gener a les 14:15h enregistrarem un nou episodi del #podcast Serà un episodi especial amb la presència de l'amic @Gui11i per parlar del sofisticat “#phising\" que ha patit a rel del robatori massiu de dades dels clients d’#ENDESA i com està intentant sortir-se'n. No us el perdeu. Podeu veure'l en directe i participar a través de YouTube: https://www.youtube.com/…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=kIjDemlr8_0",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

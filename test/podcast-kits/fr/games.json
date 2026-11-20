@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "games",
  "lang": "fr",
@@ -28,7 +28,7 @@
   "zh-Hant": "遊戲"
  },
  "icon": "🎮",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "romaric_briand@ludosphere.fr",
@@ -42,21 +42,46 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "lacellule.net",
-     "postUrl": "https://ludosphere.fr/@Romaric_Briand/117602030573907293",
-     "seenAt": "2026-11-12T06:22:57.849Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "ludosphere.fr",
-     "postUrl": "https://ludosphere.fr/@Romaric_Briand/117642278427723958",
-     "seenAt": "2026-11-19T08:58:31.361Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://ludosphere.fr/@Romaric_Briand/117602233673702222",
      "seenAt": "2026-11-12T07:14:36.906Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117602233673702222",
+     "server": "https://ludosphere.fr",
+     "postUrl": "https://ludosphere.fr/@Romaric_Briand/117602233673702222",
+     "createdAt": "2026-11-12T07:14:36.906Z",
+     "text": "Notre #podcast sur le rôle de Raid Leader, avec Antoine Morgenthaler est en ligne sur YouTube. #jdr #j2s #Blizzard #WorldOfWarcraft https://youtu.be/2x4rJAJjwE8",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/2x4rJAJjwE8",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117592989932309731",
+     "server": "https://ludosphere.fr",
+     "postUrl": "https://ludosphere.fr/@Romaric_Briand/117592989932309731",
+     "createdAt": "2026-11-10T16:03:48.605Z",
+     "text": "Retrouvez dès maintenant le second épisode de nos lives consacrés à Serial Râlistes, en replay sur YouTube. #jdr #jeuderole #roliste #ttrpg #j2s #rpg #tabletoprpg #roleplay #ttrpgs #YouTube https://youtu.be/gg6YSIrQzSE",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/gg6YSIrQzSE",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -72,21 +97,46 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "ludosphere.fr",
-     "postUrl": "https://ludosphere.fr/@ProxiJeux/117637732437955842",
-     "seenAt": "2026-11-18T13:42:25.061Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcast.proxi-jeux.fr",
-     "postUrl": "https://ludosphere.fr/@ProxiJeux/117637732437955842",
-     "seenAt": "2026-11-18T13:42:25.061Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://ludosphere.fr/@ProxiJeux/117444152606866345",
      "seenAt": "2026-10-15T09:12:31.253Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117444152606866345",
+     "server": "https://ludosphere.fr",
+     "postUrl": "https://ludosphere.fr/@ProxiJeux/117444152606866345",
+     "createdAt": "2026-10-15T09:12:31.253Z",
+     "text": "🖥️ La sélection des jeux à essayer🧐 (ou acheter 🤑) au #SPIEL26 Vous avez raté notre live ? Pas de souci ! #j2s #Essen2026 Vous pouvez regarder la rediffusion sur YouTube : 👀 https://www.youtube.com/watch?v=sWYxX6-vdB0",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=sWYxX6-vdB0",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "116889970520493915",
+     "server": "https://ludosphere.fr",
+     "postUrl": "https://ludosphere.fr/@ProxiJeux/116889970520493915",
+     "createdAt": "2026-07-09T12:16:43.696Z",
+     "text": "RE: https://ludosphere.fr/@ProxiJeux/116849868338333280 🖥️ Pixels et Carton Slay the Spire et Dominion Vous pouvez voir notre émission dans les conditions du live grâce au Replay sur YouTube : ▶️ https://www.youtube.com/watch?v=ttxOp6M7ttU #j2s #live #JV",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=ttxOp6M7ttU",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -102,39 +152,53 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "anchor.fm",
-     "postUrl": "https://ludosphere.fr/@Ind100Podcast/116200920563788617",
-     "seenAt": "2026-03-09T19:42:15.752Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://ludosphere.fr/@Ind100Podcast/114165648830674833",
      "seenAt": "2025-03-15T09:05:53.692Z"
     },
     {
      "kind": "outgoing",
-     "source": "tube.portes-imaginaire.org",
-     "postUrl": "https://ludosphere.fr/@Ind100Podcast/114845118715922041",
-     "seenAt": "2025-07-13T09:04:01.345Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "twitch.tv",
-     "postUrl": "https://ludosphere.fr/@Ind100Podcast/116356453069019762",
-     "seenAt": "2026-04-06T06:56:13.441Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://ludosphere.fr/@Ind100Podcast/116200920563788617",
      "seenAt": "2026-03-09T19:42:15.752Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "116200920563788617",
+     "server": "https://ludosphere.fr",
+     "postUrl": "https://ludosphere.fr/@Ind100Podcast/116200920563788617",
+     "createdAt": "2026-03-09T19:42:15.752Z",
+     "text": "Hello Si vous appréciez l'imaginaire, hier c'était notre Carte Blanche Biblio dédiée à l'actu et nos chroniques. A priori, on a été un peu long ou si peu 😅 Un mois de mars bien dense (celui d'avril promet aussi, merci la saison des festivals) C'est à retrouver ici : 🔴 YouTube : https://youtu.be/G-gMZfRBKDE 🎧 Podcast : https://anchor.fm/s/121a5510/podcast/rss #sfff",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/G-gMZfRBKDE",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "youtube.com",
-     "postUrl": "https://ludosphere.fr/@Ind100Podcast/114845118715922041",
-     "seenAt": "2025-07-13T09:04:01.345Z"
+     "statusId": "116109988523500841",
+     "server": "https://ludosphere.fr",
+     "postUrl": "https://ludosphere.fr/@Ind100Podcast/116109988523500841",
+     "createdAt": "2026-02-21T18:17:02.930Z",
+     "text": "Fichtre ! Voici le lien pour la rediffusion de notre entretien avec Jérôme Vincent d'ActuSF 🥰 🔴 YouTube : https://youtu.be/XqXipPTuMKw 🎧 Podcast : https://anchor.fm/s/121a5510/podcast/rss Et on se retrouve ce dimanche à 18H pour un live à l'arrache dédiée aux kits de découverte de jdr avec du Raven, du Pumpkin Spice et du Eternal Ruins 😍 l'occasion de papoter sur ce que l'on attend de ces livrets…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/XqXipPTuMKw",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

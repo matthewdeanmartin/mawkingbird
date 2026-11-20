@@ -1,14 +1,13 @@
 {
  "$comment": "Reviewed podcast starter kits; media kinds reflect observed posts at build time.",
- "version": 1,
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "version": 2,
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "languages": {
-  "ca": 3,
-  "da": 2,
-  "de": 20,
-  "en": 22,
-  "es": 10,
-  "fr": 8,
+  "ca": 2,
+  "de": 17,
+  "en": 20,
+  "es": 7,
+  "fr": 5,
   "it": 4,
   "nl": 1,
   "no": 2,
@@ -79,99 +78,6 @@
    "icon": "💻"
   },
   {
-   "category": "travel",
-   "lang": "ca",
-   "size": 1,
-   "path": "ca/travel.json",
-   "title": {
-    "en": "Travel",
-    "de": "Reisen",
-    "fr": "Voyages",
-    "es": "Viajes",
-    "ja": "旅行",
-    "it": "Viaggi",
-    "pt": "Viagens",
-    "nl": "Reizen",
-    "pl": "Podróże",
-    "sv": "Resor",
-    "ru": "Путешествия",
-    "ko": "여행",
-    "uk": "Подорожі",
-    "tr": "Seyahat",
-    "el": "Ταξίδια",
-    "zh": "旅行",
-    "ca": "Viatges",
-    "cs": "Cestování",
-    "fi": "Matkailu",
-    "no": "Reiser",
-    "ar": "السفر",
-    "zh-Hant": "旅行"
-   },
-   "icon": "🧳"
-  },
-  {
-   "category": "civic-life",
-   "lang": "da",
-   "size": 1,
-   "path": "da/civic-life.json",
-   "title": {
-    "en": "Civic Life",
-    "de": "Bürgergesellschaft",
-    "fr": "Vie civique",
-    "es": "Vida cívica",
-    "ja": "市民生活",
-    "it": "Vita civica",
-    "pt": "Vida cívica",
-    "nl": "Openbaar bestuur",
-    "pl": "Życie obywatelskie",
-    "sv": "Samhällsliv",
-    "ru": "Общественная жизнь",
-    "ko": "시민 생활",
-    "uk": "Громадське життя",
-    "tr": "Yurttaşlık",
-    "el": "Δημόσιος βίος",
-    "zh": "公共生活",
-    "cs": "Veřejný život",
-    "fi": "Yhteiskunnallinen elämä",
-    "ca": "Vida cívica",
-    "no": "Samfunnsliv",
-    "ar": "الحياة المدنية",
-    "zh-Hant": "公民生活"
-   },
-   "icon": "🗳️"
-  },
-  {
-   "category": "technology",
-   "lang": "da",
-   "size": 1,
-   "path": "da/technology.json",
-   "title": {
-    "en": "Technology",
-    "de": "Technologie",
-    "fr": "Technologie",
-    "es": "Tecnología",
-    "ja": "テクノロジー",
-    "it": "Tecnologia",
-    "pt": "Tecnologia",
-    "nl": "Technologie",
-    "pl": "Technologia",
-    "sv": "Teknik",
-    "ru": "Технологии",
-    "ko": "기술",
-    "uk": "Технології",
-    "tr": "Teknoloji",
-    "el": "Τεχνολογία",
-    "zh": "科技",
-    "ca": "Tecnologia",
-    "cs": "Technologie",
-    "fi": "Teknologia",
-    "no": "Teknologi",
-    "zh-Hant": "科技",
-    "ar": "التقنية"
-   },
-   "icon": "💻"
-  },
-  {
    "category": "animals-and-pets",
    "lang": "de",
    "size": 1,
@@ -205,7 +111,7 @@
   {
    "category": "books-and-writing",
    "lang": "de",
-   "size": 2,
+   "size": 1,
    "path": "de/books-and-writing.json",
    "title": {
     "en": "Books and Writing",
@@ -236,7 +142,7 @@
   {
    "category": "civic-life",
    "lang": "de",
-   "size": 6,
+   "size": 5,
    "path": "de/civic-life.json",
    "title": {
     "en": "Civic Life",
@@ -298,7 +204,7 @@
   {
    "category": "education",
    "lang": "de",
-   "size": 4,
+   "size": 3,
    "path": "de/education.json",
    "title": {
     "en": "Education",
@@ -329,7 +235,7 @@
   {
    "category": "film-and-tv",
    "lang": "de",
-   "size": 6,
+   "size": 3,
    "path": "de/film-and-tv.json",
    "title": {
     "en": "Film and TV",
@@ -358,40 +264,9 @@
    "icon": "🎬"
   },
   {
-   "category": "food-and-cooking",
-   "lang": "de",
-   "size": 1,
-   "path": "de/food-and-cooking.json",
-   "title": {
-    "en": "Food and Cooking",
-    "de": "Essen und Kochen",
-    "fr": "Cuisine",
-    "es": "Comida y cocina",
-    "ja": "料理と食",
-    "it": "Cibo e cucina",
-    "pt": "Comida e culinária",
-    "nl": "Eten en koken",
-    "pl": "Jedzenie i gotowanie",
-    "sv": "Mat och matlagning",
-    "ru": "Еда и кулинария",
-    "ko": "음식과 요리",
-    "uk": "Їжа та кулінарія",
-    "tr": "Yemek ve mutfak",
-    "el": "Φαγητό και μαγειρική",
-    "zh": "美食与烹饪",
-    "ca": "Menjar i cuina",
-    "cs": "Jídlo a vaření",
-    "fi": "Ruoka ja ruoanlaitto",
-    "no": "Mat og matlaging",
-    "ar": "الطعام والطبخ",
-    "zh-Hant": "飲食與烹飪"
-   },
-   "icon": "🍳"
-  },
-  {
    "category": "games",
    "lang": "de",
-   "size": 5,
+   "size": 4,
    "path": "de/games.json",
    "title": {
     "en": "Games",
@@ -422,7 +297,7 @@
   {
    "category": "health-and-medicine",
    "lang": "de",
-   "size": 2,
+   "size": 1,
    "path": "de/health-and-medicine.json",
    "title": {
     "en": "Health and Medicine",
@@ -451,40 +326,9 @@
    "icon": "🩺"
   },
   {
-   "category": "history",
-   "lang": "de",
-   "size": 2,
-   "path": "de/history.json",
-   "title": {
-    "en": "History",
-    "de": "Geschichte",
-    "fr": "Histoire",
-    "es": "Historia",
-    "ja": "歴史",
-    "it": "Storia",
-    "pt": "História",
-    "nl": "Geschiedenis",
-    "pl": "Historia",
-    "sv": "Historia",
-    "ru": "История",
-    "ko": "역사",
-    "uk": "Історія",
-    "tr": "Tarih",
-    "el": "Ιστορία",
-    "zh": "历史",
-    "ca": "Història",
-    "cs": "Historie",
-    "fi": "Historia",
-    "no": "Historie",
-    "ar": "التاريخ",
-    "zh-Hant": "歷史"
-   },
-   "icon": "🏛️"
-  },
-  {
    "category": "music",
    "lang": "de",
-   "size": 2,
+   "size": 1,
    "path": "de/music.json",
    "title": {
     "en": "Music",
@@ -515,7 +359,7 @@
   {
    "category": "news-and-journalism",
    "lang": "de",
-   "size": 5,
+   "size": 3,
    "path": "de/news-and-journalism.json",
    "title": {
     "en": "News and Journalism",
@@ -546,7 +390,7 @@
   {
    "category": "photography",
    "lang": "de",
-   "size": 4,
+   "size": 2,
    "path": "de/photography.json",
    "title": {
     "en": "Photography",
@@ -608,7 +452,7 @@
   {
    "category": "science",
    "lang": "de",
-   "size": 8,
+   "size": 3,
    "path": "de/science.json",
    "title": {
     "en": "Science",
@@ -639,7 +483,7 @@
   {
    "category": "science-fiction-and-fantasy",
    "lang": "de",
-   "size": 2,
+   "size": 1,
    "path": "de/science-fiction-and-fantasy.json",
    "title": {
     "en": "Science Fiction and Fantasy",
@@ -668,40 +512,9 @@
    "icon": "🚀"
   },
   {
-   "category": "space-and-astronomy",
-   "lang": "de",
-   "size": 3,
-   "path": "de/space-and-astronomy.json",
-   "title": {
-    "en": "Space and Astronomy",
-    "de": "Weltraum und Astronomie",
-    "fr": "Espace et astronomie",
-    "es": "Espacio y astronomía",
-    "ja": "宇宙と天文学",
-    "it": "Spazio e astronomia",
-    "pt": "Espaço e astronomia",
-    "nl": "Ruimte en astronomie",
-    "pl": "Kosmos i astronomia",
-    "sv": "Rymd och astronomi",
-    "ru": "Космос и астрономия",
-    "ko": "우주와 천문학",
-    "uk": "Космос та астрономія",
-    "tr": "Uzay ve astronomi",
-    "el": "Διάστημα και αστρονομία",
-    "zh": "太空与天文学",
-    "ca": "Espai i astronomia",
-    "cs": "Vesmír a astronomie",
-    "fi": "Avaruus ja tähtitiede",
-    "no": "Verdensrommet og astronomi",
-    "ar": "الفضاء وعلم الفلك",
-    "zh-Hant": "太空與天文"
-   },
-   "icon": "🔭"
-  },
-  {
    "category": "sport",
    "lang": "de",
-   "size": 2,
+   "size": 1,
    "path": "de/sport.json",
    "title": {
     "en": "Sport",
@@ -732,7 +545,7 @@
   {
    "category": "technology",
    "lang": "de",
-   "size": 7,
+   "size": 5,
    "path": "de/technology.json",
    "title": {
     "en": "Technology",
@@ -825,7 +638,7 @@
   {
    "category": "books-and-writing",
    "lang": "en",
-   "size": 22,
+   "size": 15,
    "path": "en/books-and-writing.json",
    "title": {
     "en": "Books and Writing",
@@ -856,7 +669,7 @@
   {
    "category": "civic-life",
    "lang": "en",
-   "size": 6,
+   "size": 5,
    "path": "en/civic-life.json",
    "title": {
     "en": "Civic Life",
@@ -949,7 +762,7 @@
   {
    "category": "education",
    "lang": "en",
-   "size": 6,
+   "size": 4,
    "path": "en/education.json",
    "title": {
     "en": "Education",
@@ -980,7 +793,7 @@
   {
    "category": "film-and-tv",
    "lang": "en",
-   "size": 17,
+   "size": 15,
    "path": "en/film-and-tv.json",
    "title": {
     "en": "Film and TV",
@@ -1009,40 +822,9 @@
    "icon": "🎬"
   },
   {
-   "category": "food-and-cooking",
-   "lang": "en",
-   "size": 1,
-   "path": "en/food-and-cooking.json",
-   "title": {
-    "en": "Food and Cooking",
-    "de": "Essen und Kochen",
-    "fr": "Cuisine",
-    "es": "Comida y cocina",
-    "ja": "料理と食",
-    "it": "Cibo e cucina",
-    "pt": "Comida e culinária",
-    "nl": "Eten en koken",
-    "pl": "Jedzenie i gotowanie",
-    "sv": "Mat och matlagning",
-    "ru": "Еда и кулинария",
-    "ko": "음식과 요리",
-    "uk": "Їжа та кулінарія",
-    "tr": "Yemek ve mutfak",
-    "el": "Φαγητό και μαγειρική",
-    "zh": "美食与烹饪",
-    "ca": "Menjar i cuina",
-    "cs": "Jídlo a vaření",
-    "fi": "Ruoka ja ruoanlaitto",
-    "no": "Mat og matlaging",
-    "ar": "الطعام والطبخ",
-    "zh-Hant": "飲食與烹飪"
-   },
-   "icon": "🍳"
-  },
-  {
    "category": "games",
    "lang": "en",
-   "size": 11,
+   "size": 9,
    "path": "en/games.json",
    "title": {
     "en": "Games",
@@ -1104,7 +886,7 @@
   {
    "category": "history",
    "lang": "en",
-   "size": 6,
+   "size": 4,
    "path": "en/history.json",
    "title": {
     "en": "History",
@@ -1197,7 +979,7 @@
   {
    "category": "news-and-journalism",
    "lang": "en",
-   "size": 4,
+   "size": 2,
    "path": "en/news-and-journalism.json",
    "title": {
     "en": "News and Journalism",
@@ -1228,7 +1010,7 @@
   {
    "category": "photography",
    "lang": "en",
-   "size": 2,
+   "size": 1,
    "path": "en/photography.json",
    "title": {
     "en": "Photography",
@@ -1259,7 +1041,7 @@
   {
    "category": "retro-computing",
    "lang": "en",
-   "size": 5,
+   "size": 4,
    "path": "en/retro-computing.json",
    "title": {
     "en": "Retro Computing",
@@ -1321,7 +1103,7 @@
   {
    "category": "science-fiction-and-fantasy",
    "lang": "en",
-   "size": 14,
+   "size": 13,
    "path": "en/science-fiction-and-fantasy.json",
    "title": {
     "en": "Science Fiction and Fantasy",
@@ -1352,7 +1134,7 @@
   {
    "category": "security-and-privacy",
    "lang": "en",
-   "size": 2,
+   "size": 1,
    "path": "en/security-and-privacy.json",
    "title": {
     "en": "Security and Privacy",
@@ -1381,40 +1163,9 @@
    "icon": "🔐"
   },
   {
-   "category": "space-and-astronomy",
-   "lang": "en",
-   "size": 1,
-   "path": "en/space-and-astronomy.json",
-   "title": {
-    "en": "Space and Astronomy",
-    "de": "Weltraum und Astronomie",
-    "fr": "Espace et astronomie",
-    "es": "Espacio y astronomía",
-    "ja": "宇宙と天文学",
-    "it": "Spazio e astronomia",
-    "pt": "Espaço e astronomia",
-    "nl": "Ruimte en astronomie",
-    "pl": "Kosmos i astronomia",
-    "sv": "Rymd och astronomi",
-    "ru": "Космос и астрономия",
-    "ko": "우주와 천문학",
-    "uk": "Космос та астрономія",
-    "tr": "Uzay ve astronomi",
-    "el": "Διάστημα και αστρονομία",
-    "zh": "太空与天文学",
-    "ca": "Espai i astronomia",
-    "cs": "Vesmír a astronomie",
-    "fi": "Avaruus ja tähtitiede",
-    "no": "Verdensrommet og astronomi",
-    "ar": "الفضاء وعلم الفلك",
-    "zh-Hant": "太空與天文"
-   },
-   "icon": "🔭"
-  },
-  {
    "category": "sport",
    "lang": "en",
-   "size": 3,
+   "size": 1,
    "path": "en/sport.json",
    "title": {
     "en": "Sport",
@@ -1445,7 +1196,7 @@
   {
    "category": "technology",
    "lang": "en",
-   "size": 25,
+   "size": 18,
    "path": "en/technology.json",
    "title": {
     "en": "Technology",
@@ -1507,7 +1258,7 @@
   {
    "category": "film-and-tv",
    "lang": "es",
-   "size": 2,
+   "size": 1,
    "path": "es/film-and-tv.json",
    "title": {
     "en": "Film and TV",
@@ -1536,71 +1287,9 @@
    "icon": "🎬"
   },
   {
-   "category": "games",
-   "lang": "es",
-   "size": 1,
-   "path": "es/games.json",
-   "title": {
-    "en": "Games",
-    "de": "Spiele",
-    "fr": "Jeux",
-    "es": "Videojuegos",
-    "ja": "ゲーム",
-    "it": "Videogiochi",
-    "pt": "Jogos",
-    "nl": "Games",
-    "pl": "Gry",
-    "sv": "Spel",
-    "ru": "Игры",
-    "ko": "게임",
-    "uk": "Ігри",
-    "tr": "Oyunlar",
-    "el": "Παιχνίδια",
-    "zh": "游戏",
-    "ca": "Jocs",
-    "cs": "Hry",
-    "fi": "Pelit",
-    "no": "Spill",
-    "ar": "الألعاب",
-    "zh-Hant": "遊戲"
-   },
-   "icon": "🎮"
-  },
-  {
-   "category": "health-and-medicine",
-   "lang": "es",
-   "size": 1,
-   "path": "es/health-and-medicine.json",
-   "title": {
-    "en": "Health and Medicine",
-    "de": "Gesundheit und Medizin",
-    "fr": "Santé et médecine",
-    "es": "Salud y medicina",
-    "ja": "健康と医療",
-    "it": "Salute e medicina",
-    "pt": "Saúde e medicina",
-    "nl": "Gezondheid en geneeskunde",
-    "pl": "Zdrowie i medycyna",
-    "sv": "Hälsa och medicin",
-    "ru": "Здоровье и медицина",
-    "ko": "건강과 의학",
-    "uk": "Здоров'я та медицина",
-    "tr": "Sağlık ve tıp",
-    "el": "Υγεία και ιατρική",
-    "zh": "健康与医学",
-    "ca": "Salut i medicina",
-    "cs": "Zdraví a medicína",
-    "fi": "Terveys ja lääketiede",
-    "no": "Helse og medisin",
-    "ar": "الصحة والطب",
-    "zh-Hant": "健康與醫學"
-   },
-   "icon": "🩺"
-  },
-  {
    "category": "history",
    "lang": "es",
-   "size": 2,
+   "size": 1,
    "path": "es/history.json",
    "title": {
     "en": "History",
@@ -1631,7 +1320,7 @@
   {
    "category": "music",
    "lang": "es",
-   "size": 2,
+   "size": 1,
    "path": "es/music.json",
    "title": {
     "en": "Music",
@@ -1689,37 +1378,6 @@
     "zh-Hant": "新聞與新聞報導"
    },
    "icon": "📰"
-  },
-  {
-   "category": "science-fiction-and-fantasy",
-   "lang": "es",
-   "size": 1,
-   "path": "es/science-fiction-and-fantasy.json",
-   "title": {
-    "en": "Science Fiction and Fantasy",
-    "de": "Science-Fiction und Fantasy",
-    "fr": "Science-fiction et fantasy",
-    "es": "Ciencia ficción y fantasía",
-    "ja": "SFとファンタジー",
-    "it": "Fantascienza e fantasy",
-    "pt": "Ficção científica e fantasia",
-    "nl": "Sciencefiction en fantasy",
-    "pl": "Fantastyka",
-    "sv": "Science fiction och fantasy",
-    "ru": "Фантастика и фэнтези",
-    "ko": "SF와 판타지",
-    "uk": "Фантастика і фентезі",
-    "tr": "Bilim kurgu ve fantastik",
-    "el": "Επιστημονική φαντασία",
-    "zh": "科幻与奇幻",
-    "ca": "Ciència-ficció i fantasia",
-    "cs": "Sci-fi a fantasy",
-    "fi": "Tieteiskirjallisuus ja fantasia",
-    "no": "Science fiction og fantasy",
-    "ar": "الخيال العلمي والفانتازيا",
-    "zh-Hant": "科幻與奇幻"
-   },
-   "icon": "🚀"
   },
   {
    "category": "security-and-privacy",
@@ -1782,68 +1440,6 @@
     "ar": "التقنية"
    },
    "icon": "💻"
-  },
-  {
-   "category": "art-and-illustration",
-   "lang": "fr",
-   "size": 1,
-   "path": "fr/art-and-illustration.json",
-   "title": {
-    "en": "Art and Illustration",
-    "de": "Kunst und Illustration",
-    "fr": "Art et illustration",
-    "es": "Arte e ilustración",
-    "ja": "アートとイラスト",
-    "it": "Arte e illustrazione",
-    "pt": "Arte e ilustração",
-    "nl": "Kunst en illustratie",
-    "pl": "Sztuka i ilustracja",
-    "sv": "Konst och illustration",
-    "ru": "Искусство и иллюстрация",
-    "ko": "예술과 일러스트",
-    "uk": "Мистецтво та ілюстрація",
-    "tr": "Sanat ve illüstrasyon",
-    "el": "Τέχνη και εικονογράφηση",
-    "zh": "艺术与插画",
-    "ca": "Art i il·lustració",
-    "cs": "Umění a ilustrace",
-    "fi": "Taide ja kuvitus",
-    "no": "Kunst og illustrasjon",
-    "ar": "الفن والرسم التوضيحي",
-    "zh-Hant": "藝術與插畫"
-   },
-   "icon": "🎨"
-  },
-  {
-   "category": "fediverse",
-   "lang": "fr",
-   "size": 1,
-   "path": "fr/fediverse.json",
-   "title": {
-    "en": "The Fediverse",
-    "de": "Das Fediverse",
-    "fr": "Le Fédiverse",
-    "es": "El fediverso",
-    "ja": "Fediverse",
-    "it": "Il fediverso",
-    "pt": "O fediverso",
-    "nl": "De fediverse",
-    "pl": "Fediwersum",
-    "sv": "Fediversum",
-    "ru": "Федиверс",
-    "ko": "페디버스",
-    "uk": "Федіверс",
-    "tr": "Fediverse",
-    "el": "Το Fediverse",
-    "zh": "联邦宇宙",
-    "ca": "Fedivers",
-    "cs": "Fediverse",
-    "fi": "Fediversumi",
-    "no": "Fødiverset",
-    "ar": "الفديفرس",
-    "zh-Hant": "聯邦宇宙"
-   },
-   "icon": "🐘"
   },
   {
    "category": "games",
@@ -1970,40 +1566,9 @@
    "icon": "🔬"
   },
   {
-   "category": "sport",
-   "lang": "fr",
-   "size": 1,
-   "path": "fr/sport.json",
-   "title": {
-    "en": "Sport",
-    "de": "Sport",
-    "fr": "Sport",
-    "es": "Deportes",
-    "ja": "スポーツ",
-    "it": "Sport",
-    "pt": "Esportes",
-    "nl": "Sport",
-    "pl": "Sport",
-    "sv": "Sport",
-    "ru": "Спорт",
-    "ko": "스포츠",
-    "uk": "Спорт",
-    "tr": "Spor",
-    "el": "Αθλητισμός",
-    "zh": "体育",
-    "ca": "Esport",
-    "cs": "Sport",
-    "fi": "Urheilu",
-    "no": "Sport",
-    "ar": "الرياضة",
-    "zh-Hant": "運動"
-   },
-   "icon": "⚽"
-  },
-  {
    "category": "technology",
    "lang": "fr",
-   "size": 2,
+   "size": 1,
    "path": "fr/technology.json",
    "title": {
     "en": "Technology",

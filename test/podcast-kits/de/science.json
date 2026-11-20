@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "science",
  "lang": "de",
@@ -28,62 +28,8 @@
   "zh-Hant": "科學"
  },
  "icon": "🔬",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
-  {
-   "acct": "daswissen@ard.social",
-   "url": "https://ard.social/@DasWissen",
-   "displayName": "Das Wissen | SWR",
-   "avatar": "https://ard.social/system/accounts/avatars/112/247/373/573/756/257/original/53cef010b2bc268e.jpeg",
-   "bot": false,
-   "bio": "Mehr Horizont. Der Podcast. Vom SWR. https://www.swr.de/swrkultur/programm/podcast-swr-das-wissen-102.html",
-   "showUrl": "https://www.swr.de/swrkultur/programm/podcast-swr-das-wissen-102.html",
-   "observedAt": "2026-11-19T23:59:21+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "ard.social",
-     "postUrl": "https://ard.social/@DasWissen/117641663074800917",
-     "seenAt": "2026-11-19T06:22:01.822Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "swr.de",
-     "postUrl": "https://ard.social/@DasWissen/117528525742948233",
-     "seenAt": "2026-10-30T06:49:43.138Z"
-    }
-   ]
-  },
-  {
-   "acct": "letztens@podcasts.social",
-   "url": "https://podcasts.social/@letztens",
-   "displayName": "🎙️letztens.de Podcast",
-   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/113/686/406/399/770/883/original/9ad0422bdeaa3e4b.png",
-   "bot": false,
-   "bio": "Du willst wissen, was hinter den neuesten Technik-Schlagzeilen steckt – und vor allem, was das für dich, für unsere Gesellschaft und für die Wirtschaft bedeutet? In jeder Folge stellen wir dir eine a…",
-   "showUrl": "https://www.letztens.de/podcast-abonnieren/",
-   "observedAt": "2026-11-20T00:03:28+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "letztens.de",
-     "postUrl": "https://podcasts.social/@letztens/117630838328751097",
-     "seenAt": "2026-11-17T08:29:09.304Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://podcasts.social/@letztens/117634499545371234",
-     "seenAt": "2026-11-18T00:00:15.037Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://podcasts.social/@letztens/117472112338213508",
-     "seenAt": "2026-10-20T07:43:02.897Z"
-    }
-   ]
-  },
   {
    "acct": "leibnizgemeinschaft@wisskomm.social",
    "url": "https://wisskomm.social/@leibnizgemeinschaft",
@@ -95,22 +41,30 @@
    "observedAt": "2026-11-20T00:03:16+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "eventbrite.de",
-     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/117268842548147717",
-     "seenAt": "2026-09-14T10:08:52.047Z"
-    },
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116600460787975180",
+     "seenAt": "2026-05-19T09:10:35.756Z"
+    }
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "leibniz-gemeinschaft.de",
-     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116623324582126787",
-     "seenAt": "2026-05-23T10:05:09.569Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "wisskomm.social",
-     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/117631300991152002",
-     "seenAt": "2026-11-17T10:26:48.975Z"
+     "statusId": "116600460787975180",
+     "server": "https://wisskomm.social",
+     "postUrl": "https://wisskomm.social/@leibnizgemeinschaft/116600460787975180",
+     "createdAt": "2026-05-19T09:10:35.756Z",
+     "text": "🍪 Was bringt eine Zuckersteuer und macht Zucker aus Datteln wirklich einen Unterschied? Antworten von Dr. Heike Vogel (Deutsches Institut für Ernährungsforschung DIfE) im Video und bei Wissen Unplugged - jetzt nachzuhören im Hörsaal-Podcast von Deutschlandfunk Nova: https://www.deutschlandfunknova.de/beitrag/wissen-unplugged-eat-the-hype-ernaehrungsmythen-im-check #wj26",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://wisskomm.social/system/media_attachments/files/116/600/455/994/079/187/original/f26efed01bd0065b.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -126,135 +80,84 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "instagram.com",
-     "postUrl": "https://podcasts.social/@Eigenraum/117531649068400270",
-     "seenAt": "2026-10-30T20:04:01.303Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://podcasts.social/@Eigenraum/117625729433320375",
-     "seenAt": "2026-11-16T10:49:53.747Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
      "seenAt": "2026-11-03T10:22:01.933Z"
     }
-   ]
-  },
-  {
-   "acct": "pikarl@reporter.social",
-   "url": "https://reporter.social/@pikarl",
-   "displayName": "Karl Urban",
-   "avatar": "https://reporter.social/system/accounts/avatars/109/338/233/296/677/222/original/49d7cf595bbe53aa.jpg",
-   "bot": false,
-   "bio": "Wissenschaftsjournalist 🖋️ Reporter für den @weltraum bei @riffreporter 🛰️🚀✨🪐 Geologe ⚒️ 💎 🌍 Podcaster @astro_geo 🎙️ Hobbyimker 🐝 Lebt in #Tübingen 🏔️🚴",
-   "showUrl": "https://astrogeo.de",
-   "observedAt": "2026-11-20T00:05:45+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "reporter.social",
-     "postUrl": "https://reporter.social/@pikarl/117608022693398487",
-     "seenAt": "2026-11-13T07:46:50.359Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "riffreporter.de",
-     "postUrl": "https://reporter.social/@pikarl/117557893306733708",
-     "seenAt": "2026-11-04T11:18:16.631Z"
+     "statusId": "117552009834309518",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@Eigenraum/117552009834309518",
+     "createdAt": "2026-11-03T10:22:01.933Z",
+     "text": "P.S. https://www.youtube.com/watch?v=Ac08-99XPKw",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=Ac08-99XPKw",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
   {
-   "acct": "astro_geo@chaos.social",
-   "url": "https://chaos.social/@astro_geo",
-   "displayName": "AstroGeo Podcast",
-   "avatar": "https://assets.chaos.social/accounts/avatars/108/203/851/361/401/739/original/06b31dd2b5946177.jpg",
+   "acct": "letztens@podcasts.social",
+   "url": "https://podcasts.social/@letztens",
+   "displayName": "🎙️letztens.de Podcast",
+   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/113/686/406/399/770/883/original/9ad0422bdeaa3e4b.png",
    "bot": false,
-   "bio": "Pro Podcast-Folge hörst du eine wahre Geschichte zwischen Weltall und Erde, #Astronomie und #Geologie, erzählt von Franziska Konitzer und Karl Urban (@pikarl). Wir sind der Podcast von @weltraum und…",
-   "showUrl": null,
-   "observedAt": "2026-11-19T23:57:21+00:00",
+   "bio": "Du willst wissen, was hinter den neuesten Technik-Schlagzeilen steckt – und vor allem, was das für dich, für unsere Gesellschaft und für die Wirtschaft bedeutet? In jeder Folge stellen wir dir eine a…",
+   "showUrl": "https://www.letztens.de/podcast-abonnieren/",
+   "observedAt": "2026-11-20T00:03:28+00:00",
    "media": [
     {
      "kind": "outgoing",
-     "source": "astrogeo.de",
-     "postUrl": "https://chaos.social/@astro_geo/117047990821884366",
-     "seenAt": "2026-08-06T10:03:22.143Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "chaos.social",
-     "postUrl": "https://chaos.social/@astro_geo/117603063764439813",
-     "seenAt": "2026-11-12T10:45:43.087Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.apple.com",
-     "postUrl": "https://chaos.social/@astro_geo/117558232291579928",
-     "seenAt": "2026-11-04T12:44:29.097Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://chaos.social/@astro_geo/117279165889458577",
-     "seenAt": "2026-09-16T05:54:13.734Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "wissenschaftspodcasts.de",
-     "postUrl": "https://chaos.social/@astro_geo/117268110025311651",
-     "seenAt": "2026-09-14T07:02:34.637Z"
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://podcasts.social/@letztens/117472112338213508",
+     "seenAt": "2026-10-20T07:43:02.897Z"
     }
-   ]
-  },
-  {
-   "acct": "wisspod@podcasts.social",
-   "url": "https://podcasts.social/@wisspod",
-   "displayName": "WissPod-Podcast",
-   "avatar": "https://cdn.masto.host/podcastssocial/accounts/avatars/113/871/710/926/404/300/original/78020c7f95defc12.jpg",
-   "bot": false,
-   "bio": "Der Podcast der Community von Wissen{schaft}spodcasts, mit einem ehrenamtlich kuratierten Podcastverzeichnis des Wisspod-Teams.",
-   "showUrl": "https://wissenschaftspodcasts.de/wisspodcast/",
-   "observedAt": "2026-11-20T00:08:34+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "podcasts.social",
-     "postUrl": "https://podcasts.social/@wisspod/117381787884682999",
-     "seenAt": "2026-10-04T08:52:21.113Z"
+     "statusId": "117472112338213508",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@letztens/117472112338213508",
+     "createdAt": "2026-10-20T07:43:02.897Z",
+     "text": "https://www.youtube.com/watch?v=bLTXM3eq7p0 1.300 Jahre #Zeitraffer #Geschichte: #Stadtentwicklung in Berlin. Wie #Cölln und #Berlin zusammenwuchsen. (via @rainerklute) #gefundenVonLukas",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=bLTXM3eq7p0",
+       "mediaType": null
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "podjournal.de",
-     "postUrl": "https://podcasts.social/@wisspod/117364337040323187",
-     "seenAt": "2026-10-01T06:54:22.361Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "wissenschaftspodcasts.de",
-     "postUrl": "https://podcasts.social/@wisspod/117443732607431294",
-     "seenAt": "2026-10-15T07:25:42.571Z"
-    }
-   ]
-  },
-  {
-   "acct": "astrodicticum@chaos.social",
-   "url": "https://chaos.social/@astrodicticum",
-   "displayName": "Florian Freistetter",
-   "avatar": "https://assets.chaos.social/accounts/avatars/000/082/124/original/a43cdc482f275441.png",
-   "bot": false,
-   "bio": "Astronom, Autor, Podcaster, Science Busters, Wissenschaftskommunikation",
-   "showUrl": "https://sternengeschichten.podigee.io/",
-   "observedAt": "2026-11-19T23:57:24+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "radiokulturhaus.orf.at",
-     "postUrl": "https://chaos.social/@astrodicticum/117290722058675946",
-     "seenAt": "2026-09-18T06:53:06.881Z"
+     "statusId": "117349171355491042",
+     "server": "https://podcasts.social",
+     "postUrl": "https://podcasts.social/@letztens/117349171355491042",
+     "createdAt": "2026-09-28T14:37:32.374Z",
+     "text": "https://www.youtube.com/watch?v=GbB3vFfiaVU Falls sich jemand von euch (wie ich) gefragt hat, was ist eigentlich mit diesem Mega-Projekt #TheLine (#NEOM) in Saudi Arabien passiert? Dann kriegt ihr in diesem Video von Wall Street Journal einige Antworten was das so los ist. Fazit: wird nix mehr. #WallStreetJournal #gefundenVonLukas",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=GbB3vFfiaVU",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

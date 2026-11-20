@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "security-and-privacy",
  "lang": "en",
@@ -28,26 +28,8 @@
   "zh-Hant": "資訊安全與隱私"
  },
  "icon": "🔐",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
-  {
-   "acct": "25admins@mastodon.social",
-   "url": "https://mastodon.social/@25admins",
-   "displayName": "2.5 Admins",
-   "avatar": "https://files.mastodon.social/accounts/avatars/114/406/659/686/570/731/original/440a290360d1f50c.png",
-   "bot": false,
-   "bio": "Podcast from Allan Jude, Jim Salter, and Joe Ressington. Tech news and your sysadmin questions answered weekly. Part of @latenightlinux",
-   "showUrl": null,
-   "observedAt": "2026-11-19T23:56:51+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@25admins/117644392079925519",
-     "seenAt": "2026-11-19T17:56:03.136Z"
-    }
-   ]
-  },
   {
    "acct": "angrynerdspodcast@mastodon.nl",
    "url": "https://mastodon.nl/@angrynerdspodcast",
@@ -60,21 +42,46 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "open.spotify.com",
-     "postUrl": "https://mastodon.nl/@angrynerdspodcast/116953102926067261",
-     "seenAt": "2026-07-20T15:52:07.757Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "video.angrynerdspodcast.nl",
-     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370127536847168",
-     "seenAt": "2026-10-02T07:26:58.323Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
-     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117435036897213616",
-     "seenAt": "2026-10-13T18:34:16.564Z"
+     "mediaType": null,
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370065800931633",
+     "seenAt": "2026-10-02T07:11:16.309Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117370065800931633",
+     "server": "https://mastodon.nl",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117370065800931633",
+     "createdAt": "2026-10-02T07:11:16.309Z",
+     "text": "Een nieuwe aflevering vol boefjes en bingokaarten. Meer nadelen van overdreven KYC en Hyves is terug! Goed nieuws of zien we al die nostalgie een beetje teveel door een roze gluurbril? Angry Nerds 317 staat voor je klaar. https://www.youtube.com/live/y_uM7hRkPes",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/live/y_uM7hRkPes",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117253996553376198",
+     "server": "https://mastodon.nl",
+     "postUrl": "https://mastodon.nl/@angrynerdspodcast/117253996553376198",
+     "createdAt": "2026-09-11T19:13:20.144Z",
+     "text": "Een theatershow over cybers? Bernhold Nieuwesteeg doet het gewoon. Reserveren doe je via https://www.bernoldnieuwesteeg.nl/show Check trouwens ook even zijn cybersecuritybooster die beslissers helpt chocola te maken van de wirwar aan weetjes. Je hoort Bernhold aan het woord in aflevering 314: https://youtube.com/live/GI6eic4MoVM",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtube.com/live/GI6eic4MoVM",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

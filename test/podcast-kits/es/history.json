@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "history",
  "lang": "es",
@@ -28,7 +28,7 @@
   "zh-Hant": "歷史"
  },
  "icon": "🏛️",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
   {
    "acct": "luisbermejo@mastodon.social",
@@ -41,40 +41,66 @@
    "observedAt": "2026-11-20T00:03:54+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "mastodon.social",
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
      "postUrl": "https://mastodon.social/@luisbermejo/117642577942718577",
      "seenAt": "2026-11-19T10:14:41.599Z"
     },
     {
      "kind": "outgoing",
-     "source": "podcasts.apple.com",
+     "source": "apple-podcasts",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@luisbermejo/117642577942718577",
      "seenAt": "2026-11-19T10:14:41.599Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://mastodon.social/@luisbermejo/117553513819772000",
-     "seenAt": "2026-11-03T16:44:30.932Z"
     }
-   ]
-  },
-  {
-   "acct": "sandglasspatrol@tkz.one",
-   "url": "https://tkz.one/@sandglasspatrol",
-   "displayName": "Sandglass Patrol",
-   "avatar": "https://media.tkz.one/tkz/accounts/avatars/109/350/270/830/414/735/original/8dccf80bb157ebbd.jpg",
-   "bot": false,
-   "bio": "De los blogs de aviación en español, uno de los decanos #aviación #aerotrastornado #aeronáutica, también #podcast https://blog.sandglasspatrol.com/",
-   "showUrl": "https://blog.sandglasspatrol.com/archivo-sonoro-de-sandglass-patrol-podcast/",
-   "observedAt": "2026-11-20T00:06:48+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "blog.sandglasspatrol.com",
-     "postUrl": "https://tkz.one/@sandglasspatrol/117594133190962666",
-     "seenAt": "2026-11-10T20:54:33.349Z"
+     "statusId": "117642577942718577",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@luisbermejo/117642577942718577",
+     "createdAt": "2026-11-19T10:14:41.599Z",
+     "text": "La desaparición de Michael Rockefeller, Nueva Guinea, 19 de noviembre de 1961 «El heredero que se lo tragó el mar… ¿o no?» Michael Rockefeller, hijo del gobernador de Nueva York y heredero de una de las mayores fortunas del mundo, volcó su canoa frente a la costa de los asmat, en la actual Papúa. Se lanzó a nadar hacia la orilla y no volvió a aparecer. La versión oficial fue «ahogado o devorado…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/642/575/860/475/907/original/a72fe1539ea19640.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/es/podcast/no-soy-original/id1006785564?i=1000801375214",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117636730711256734",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@luisbermejo/117636730711256734",
+     "createdAt": "2026-11-18T09:27:39.927Z",
+     "text": "El mensaje de Arecibo y el crop circle de Chilbolton «Les escribimos una carta y alguien contestó» El 16 de noviembre de 1974 se emitió desde Arecibo un mensaje de 1.679 bits hacia el cúmulo M13, a unos 25.000 años luz. Lo diseñaron Frank Drake y Carl Sagan, entre otros. Casi 27 años después, en agosto de 2001, apareció un crop circle junto al observatorio de Chilbolton https://podcasts.apple.com…",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/636/729/256/754/562/original/64a93f5fbd80d6e5.mp4",
+       "mediaType": "video"
+      },
+      {
+       "kind": "outgoing",
+       "source": "apple-podcasts",
+       "url": "https://podcasts.apple.com/es/podcast/no-soy-original/id1006785564?i=1000801144237",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

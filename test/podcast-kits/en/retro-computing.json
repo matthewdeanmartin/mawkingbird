@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "retro-computing",
  "lang": "en",
@@ -28,8 +28,70 @@
   "zh-Hant": "復古電腦"
  },
  "icon": "🖥️",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
+  {
+   "acct": "dosnostalgic@mastodon.social",
+   "url": "https://mastodon.social/@dosnostalgic",
+   "displayName": "Anatoly Shashkin💾",
+   "avatar": "https://files.mastodon.social/accounts/avatars/000/011/472/original/d2e6ad703b6e8453.jpg",
+   "bot": false,
+   "bio": "MS-DOS gaming enthusiast, YouTuber, podcaster, cat admirer, RU in NY. Ask me about DOS games! Tell me your DOS game memories! I swear and repost a bunch. 🥂 (He/Him) I don't describe images",
+   "showUrl": null,
+   "observedAt": "2026-11-20T00:00:05+00:00",
+   "media": [
+    {
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117634760186316933",
+     "seenAt": "2026-11-18T01:06:32.153Z"
+    },
+    {
+     "kind": "outgoing",
+     "source": "youtube",
+     "mediaType": null,
+     "postUrl": "https://mastodon.social/@dosnostalgic/117424456043382662",
+     "seenAt": "2026-10-11T21:43:25.547Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117634760186316933",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117634760186316933",
+     "createdAt": "2026-11-18T01:06:32.153Z",
+     "text": "The kisses of the sun were sweet, I didn't blink I let it in my eyes like an exotic dream The radio playing songs that I have never heard I don't know what to say, oh, not another word 🔊🎵 #OPL3MIDI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/634/757/576/012/519/original/55cacdf47459323e.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117542720939526670",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@dosnostalgic/117542720939526670",
+     "createdAt": "2026-11-01T18:59:44.649Z",
+     "text": "Who can say where the road goes? Where the day flows? Only time 🔊🎵 #OPL3MIDI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/542/720/218/690/623/original/f9b960bbb4bf0cd3.mp4",
+       "mediaType": "video"
+      }
+     ]
+    }
+   ]
+  },
   {
    "acct": "thelogbook@mstdn.social",
    "url": "https://mstdn.social/@theLogBook",
@@ -41,22 +103,61 @@
    "observedAt": "2026-11-20T00:07:25+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "missionlogpodcast.com",
-     "postUrl": "https://mstdn.social/@theLogBook/116834075011236409",
-     "seenAt": "2026-06-29T15:21:45.908Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mstdn.social/@theLogBook/117481025635461519",
+     "seenAt": "2026-10-21T21:29:49.019Z"
     },
     {
      "kind": "outgoing",
-     "source": "open.spotify.com",
+     "source": "spotify",
+     "mediaType": null,
      "postUrl": "https://mstdn.social/@theLogBook/116824871921009719",
      "seenAt": "2026-06-28T00:21:17.897Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mstdn.social/@theLogBook/117632526326492446",
      "seenAt": "2026-11-17T15:38:26.104Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117632526326492446",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@theLogBook/117632526326492446",
+     "createdAt": "2026-11-17T15:38:26.104Z",
+     "text": "Bomb Bee may hold an obscure slot in video game history, as an early effort from the future creator of Pac-Man, but it's Namcovember, so it's the focus of the latest edition of Phosphor Dot Fossils. #retrogaming https://www.youtube.com/watch?v=p7dm8bPTOls",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=p7dm8bPTOls",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117624370668481235",
+     "server": "https://mstdn.social",
+     "postUrl": "https://mstdn.social/@theLogBook/117624370668481235",
+     "createdAt": "2026-11-16T05:04:20.640Z",
+     "text": "You've already heard the improbable story of Tengen's port of Ms. Pac-Man for the NES; as NAMCOVEMBER continues Phosphor Dot Fossils bites into how the other half lived with Tengen's Ms. Pac-Man for the Sega Master System. #retrogaming https://www.youtube.com/watch?v=mQazjXXbgwU",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=mQazjXXbgwU",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -73,26 +174,45 @@
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://chaos.social/@janbeta/117574292128535310",
      "seenAt": "2026-11-07T08:48:42.763Z"
     }
-   ]
-  },
-  {
-   "acct": "dosnostalgic@mastodon.social",
-   "url": "https://mastodon.social/@dosnostalgic",
-   "displayName": "Anatoly Shashkin💾",
-   "avatar": "https://files.mastodon.social/accounts/avatars/000/011/472/original/d2e6ad703b6e8453.jpg",
-   "bot": false,
-   "bio": "MS-DOS gaming enthusiast, YouTuber, podcaster, cat admirer, RU in NY. Ask me about DOS games! Tell me your DOS game memories! I swear and repost a bunch. 🥂 (He/Him) I don't describe images",
-   "showUrl": null,
-   "observedAt": "2026-11-20T00:00:05+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "youtube",
-     "postUrl": "https://mastodon.social/@dosnostalgic/117424456043382662",
-     "seenAt": "2026-10-11T21:43:25.547Z"
+     "statusId": "117574292128535310",
+     "server": "https://chaos.social",
+     "postUrl": "https://chaos.social/@janbeta/117574292128535310",
+     "createdAt": "2026-11-07T08:48:42.763Z",
+     "text": "New (German) Elektroschrott podcast episode is out now! https://elektroschrott.org https://youtu.be/Ksp0Ps19ThI",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/Ksp0Ps19ThI",
+       "mediaType": null
+      }
+     ]
+    },
+    {
+     "statusId": "117531068062561226",
+     "server": "https://chaos.social",
+     "postUrl": "https://chaos.social/@janbeta/117531068062561226",
+     "createdAt": "2026-10-30T17:36:15.864Z",
+     "text": "New video! This explains why I didn't make any new videos for a month. YouTube: https://youtu.be/x8z7OHBJ83k PeerTube: https://makertube.net/w/3MBGUrgxVCaTnrFtPKVouw #BetaLab #NewRoom #ElectronicsLab #RetroComputing #VintageComputing #RoomTour #BehindTheScenes",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://youtu.be/x8z7OHBJ83k",
+       "mediaType": null
+      }
+     ]
     }
    ]
   },
@@ -108,45 +228,29 @@
    "media": [
     {
      "kind": "outgoing",
-     "source": "mastodon.sdf.org",
-     "postUrl": "https://mastodon.sdf.org/@bluewizard/117068429688990407",
-     "seenAt": "2026-08-10T00:41:15.127Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "rnrdoesstuff.com",
-     "postUrl": "https://mastodon.sdf.org/@bluewizard/117068429688990407",
-     "seenAt": "2026-08-10T00:41:15.127Z"
-    },
-    {
-     "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.sdf.org/@bluewizard/116184662661687209",
      "seenAt": "2026-03-06T22:47:39.867Z"
     }
-   ]
-  },
-  {
-   "acct": "ataripodcast@oldbytes.space",
-   "url": "https://oldbytes.space/@ataripodcast",
-   "displayName": "ANTIC Atari 8-Bit Podcast",
-   "avatar": "https://assets.oldbytes.space/assets.oldbytes.space/accounts/avatars/109/382/778/164/644/772/original/824d577b43e5e6cc.png",
-   "bot": false,
-   "bio": "A podcast devoted to Atari 8-bit computers. Since 2013.",
-   "showUrl": "https://ataripodcast.libsyn.com/",
-   "observedAt": "2026-11-19T23:57:29+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "ataripodcast.libsyn.com",
-     "postUrl": "https://oldbytes.space/@ataripodcast/114031034580419544",
-     "seenAt": "2025-02-19T14:31:43.241Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "oldbytes.space",
-     "postUrl": "https://oldbytes.space/@ataripodcast/109383130469334986",
-     "seenAt": "2022-11-21T18:08:34.827Z"
+     "statusId": "116184662661687209",
+     "server": "https://mastodon.sdf.org",
+     "postUrl": "https://mastodon.sdf.org/@bluewizard/116184662661687209",
+     "createdAt": "2026-03-06T22:47:39.867Z",
+     "text": "Here is a write up and video from a local #vintagecomputing meetup here in Chantilly, VA https://www.bluewizard.net/blog/vcm-meetup-sep-2025/ https://www.youtube.com/watch?v=LRIPtjlTa3g&t=5s #amiga #commodore #atari #sun #mac #retrocomputing",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "outgoing",
+       "source": "youtube",
+       "url": "https://www.youtube.com/watch?v=LRIPtjlTa3g&t=5s",
+       "mediaType": null
+      }
+     ]
     }
    ]
   }

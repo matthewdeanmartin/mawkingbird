@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "kind": "podcasts",
  "category": "news-and-journalism",
  "lang": "en",
@@ -28,38 +28,8 @@
   "zh-Hant": "新聞與新聞報導"
  },
  "icon": "📰",
- "generatedAt": "2026-11-20T00:29:04+00:00",
+ "generatedAt": "2026-11-20T03:46:44+00:00",
  "members": [
-  {
-   "acct": "europeanspodcast@mastodon.social",
-   "url": "https://mastodon.social/@europeanspodcast",
-   "displayName": "The Europeans",
-   "avatar": "https://files.mastodon.social/accounts/avatars/111/957/529/316/616/787/original/0a3143b00e3c9c44.png",
-   "bot": false,
-   "bio": "Award-winning podcasts about European politics and culture. New episodes every Thursday 🎉",
-   "showUrl": "https://podcasts.apple.com/gb/podcast/the-europeans/id1315776736",
-   "observedAt": "2026-11-20T00:00:42+00:00",
-   "media": [
-    {
-     "kind": "outgoing",
-     "source": "europeanspodcast.com",
-     "postUrl": "https://mastodon.social/@europeanspodcast/117642562100352258",
-     "seenAt": "2026-11-19T10:10:39.886Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "europeanspodcast.substack.com",
-     "postUrl": "https://mastodon.social/@europeanspodcast/117529565136039387",
-     "seenAt": "2026-10-30T11:14:03.023Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "mastodon.social",
-     "postUrl": "https://mastodon.social/@europeanspodcast/117642562100352258",
-     "seenAt": "2026-11-19T10:10:39.886Z"
-    }
-   ]
-  },
   {
    "acct": "laurarbelin@mastodon.social",
    "url": "https://mastodon.social/@LauraRBelin",
@@ -71,22 +41,54 @@
    "observedAt": "2026-11-20T00:03:27+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "laurabelin.substack.com",
-     "postUrl": "https://mastodon.social/@LauraRBelin/117575797221973912",
-     "seenAt": "2026-11-07T15:11:28.665Z"
-    },
-    {
-     "kind": "outgoing",
-     "source": "podomatic.com",
-     "postUrl": "https://mastodon.social/@LauraRBelin/117464999247354004",
-     "seenAt": "2026-10-19T01:34:05.743Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117645122988113473",
+     "seenAt": "2026-11-19T21:01:55.910Z"
     },
     {
      "kind": "outgoing",
      "source": "youtube",
+     "mediaType": null,
      "postUrl": "https://mastodon.social/@LauraRBelin/117611666366524718",
      "seenAt": "2026-11-13T23:13:28.373Z"
+    }
+   ],
+   "recentPosts": [
+    {
+     "statusId": "117645122988113473",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117645122988113473",
+     "createdAt": "2026-11-19T21:01:55.910Z",
+     "text": "\"We know that actions speak louder than words.\" Why Rob Sand thinks handing the microphone to Republicans at his town halls was so powerful and effective for his #IAGov campaign:",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/645/115/103/680/703/original/7e21fb8beb405aac.mp4",
+       "mediaType": "video"
+      }
+     ]
+    },
+    {
+     "statusId": "117621266027885878",
+     "server": "https://mastodon.social",
+     "postUrl": "https://mastodon.social/@LauraRBelin/117621266027885878",
+     "createdAt": "2026-11-15T15:54:47.586Z",
+     "text": "Another clip from my recent interview with State Rep. Aime Wichtendahl, the only transgender person elected to the Iowa legislature. I asked her about Josh Turek's late TV ad, in which the #IASen Democratic nominee said, \"I oppose males competing in female sports\" and \"I'm against taxpayers paying for sex changes, too.\"",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.mastodon.social/media_attachments/files/117/621/235/272/128/817/original/081659cf78416d81.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   },
@@ -101,34 +103,47 @@
    "observedAt": "2026-11-20T00:06:45+00:00",
    "media": [
     {
-     "kind": "outgoing",
-     "source": "techhub.social",
-     "postUrl": "https://techhub.social/@rorshokspain/115929120275064984",
-     "seenAt": "2026-01-20T19:39:52.481Z"
+     "kind": "native",
+     "source": "mastodon",
+     "mediaType": "video",
+     "postUrl": "https://techhub.social/@rorshokspain/115940355308417538",
+     "seenAt": "2026-01-22T19:17:05.487Z"
     }
-   ]
-  },
-  {
-   "acct": "podnews@social.podnews.net",
-   "url": "https://social.podnews.net/@podnews",
-   "displayName": "Podnews podcasting news",
-   "avatar": "https://cdn.masto.host/socialpodnewsnet/accounts/avatars/110/397/958/803/375/796/original/51d22a80f3f24836.png",
-   "bot": true,
-   "bio": "News headlines, jobs, events and more from Podnews - your daily update for podcasting and on-demand. This account is a bot - and you’ll find us posting latest news, press releases, events and jobs wh…",
-   "showUrl": "https://podcastbusinessjournal.com",
-   "observedAt": "2026-11-20T00:06:03+00:00",
-   "media": [
+   ],
+   "recentPosts": [
     {
-     "kind": "outgoing",
-     "source": "podnews.net",
-     "postUrl": "https://social.podnews.net/@podnews/117643711791923797",
-     "seenAt": "2026-11-19T15:03:02.763Z"
+     "statusId": "115940355308417538",
+     "server": "https://techhub.social",
+     "postUrl": "https://techhub.social/@rorshokspain/115940355308417538",
+     "createdAt": "2026-01-22T19:17:05.487Z",
+     "text": "Spain’s non-contributory retirement pension is set to rise again, so more stay-at-home people and others without enough work contributions are expected to qualify for financial support. Link in bio - @rorshokspain #spain #madrid #spainnews #spainexpats #EU",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.techhub.social/media_attachments/files/115/940/353/052/411/334/original/e69d994f0c8087ad.mp4",
+       "mediaType": "video"
+      }
+     ]
     },
     {
-     "kind": "outgoing",
-     "source": "social.podnews.net",
-     "postUrl": "https://social.podnews.net/@podnews/117642771995196163",
-     "seenAt": "2026-11-19T11:04:02.652Z"
+     "statusId": "115515723271907829",
+     "server": "https://techhub.social",
+     "postUrl": "https://techhub.social/@rorshokspain/115515723271907829",
+     "createdAt": "2025-11-08T19:27:34.814Z",
+     "text": "Álvaro García Ortíz, Spain’s top prosecutor, denied leaking confidential legal documents against the Partido Popular. This and more in the latest episode of the Rorshok Spain Update. Click on the link in bio to listen to the full story! #Spain #Madrid #SpainNews #SpanishEnglishPodcast #SpainExpats #EU",
+     "spoilerText": "",
+     "sensitive": false,
+     "sources": [
+      {
+       "kind": "native",
+       "source": "mastodon",
+       "url": "https://files.techhub.social/media_attachments/files/115/515/715/478/043/390/original/6e32836911862dc6.mp4",
+       "mediaType": "video"
+      }
+     ]
     }
    ]
   }
