@@ -68,9 +68,12 @@ quotes. This page explains how each one is calculated.</p>
 <h2 id="what-gets-counted">What gets counted<a class="headerlink" href="#what-gets-counted" title="Link to this section">#</a></h2>
 <ul>
 <li><strong>Sample.</strong> Account analytics reads an account's latest posts, about 100 of
-  them (more if you fetch more pages). In the desktop app it reads the local
-  archive instead. Feed analytics reads the posts in that feed. The numbers
-  describe this sample, not the account's whole history.</li>
+  them (more if you fetch more pages), along with the boosts in between. In the
+  desktop app it reads the local archive instead. Feed analytics reads the posts
+  in that feed. The numbers describe this sample, not the account's whole
+  history. Boosts count toward the activity mix, style and liveliness. Their
+  favourites and boosts belong to someone else, so they are left out of the
+  engagement and reach figures.</li>
 <li><strong>Thread.</strong> One post plus the author's own replies chained under it. A reply
   to someone else is not part of the author's thread and does not count toward
   their reach.</li>
@@ -152,7 +155,7 @@ reaches the upper limit, so Est. reach equals Could have reached.</p>
 </tr>
 <tr>
 <td>Liveliness</td>
-<td>0–100 from how recently and how often they posted; 40+ is Active, 10–39 Slowing, under 10 Dormant</td>
+<td>0–100 from how recently and how often they posted or boosted; 40+ is Active, 10–39 Slowing, under 10 Dormant</td>
 </tr>
 <tr>
 <td>Recent posts / day</td>
@@ -164,6 +167,81 @@ reaches the upper limit, so Est. reach equals Could have reached.</p>
 </tr>
 </tbody>
 </table>
+<h3 id="style-and-signals">Style and signals<a class="headerlink" href="#style-and-signals" title="Link to this section">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Stat</th>
+<th>How it is calculated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Own vs boosted</td>
+<td>Their own posts (new posts, thread posts, replies) against boosts, out of everything in the sample</td>
+</tr>
+<tr>
+<td>New posts, Thread posts, Replies to others</td>
+<td>Each as a share of everything in the sample</td>
+</tr>
+<tr>
+<td>Link-only posts</td>
+<td>Share of their own posts that are a link or preview card with under 40 characters of their own text</td>
+</tr>
+<tr>
+<td>Style</td>
+<td>The first that fits: Curator (boosts ≥ 50%), Conversationalist (replies to others ≥ 50%), Link sharer (link-only ≥ 50% of own posts), Thread writer (thread posts ≥ 30% of own posts), Broadcaster (replies &lt; 10% and boosts &lt; 30%), otherwise Balanced. Needs 20 statuses.</td>
+</tr>
+<tr>
+<td>Posting rhythm</td>
+<td>Human, Partly scheduled or Bot-like (see below)</td>
+</tr>
+<tr>
+<td>Bot setting</td>
+<td>The account's own "This is an automated account" setting</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Posting rhythm</strong> looks for posts that arrive on a clock. A run is 4 or more
+posts in a row with the same gap between them, to within 2 minutes or 1%
+(every hour, every 24 hours). Thread posts and boosts are left out, because
+people produce even gaps when writing a thread or boosting in one sitting, and
+gaps under 5 minutes do not count. With no runs, the account is <strong>Human</strong>. With
+60% or more of its posts in runs, it is <strong>Bot-like</strong>. In between, it is
+<strong>Partly scheduled</strong>: a scheduler alongside live posting. The profile page
+shows a <strong>Bot-like</strong> or <strong>Partly scheduled</strong> label next to the official <strong>Bot</strong>
+label, judged from the posts loaded there. It needs at least 8 posts.</p>
+<h3 id="people-who-react-desktop-app-your-account">People who react (desktop app, your account)<a class="headerlink" href="#people-who-react-desktop-app-your-account" title="Link to this section">#</a></h3>
+<p>Counted from your notifications for the last 90 days: favourites, boosts,
+quotes, replies and mentions.</p>
+<table>
+<thead>
+<tr>
+<th>Stat</th>
+<th>How it is calculated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>People</td>
+<td>Different accounts that reacted</td>
+</tr>
+<tr>
+<td>Servers</td>
+<td>Different servers those accounts are on</td>
+</tr>
+<tr>
+<td>Returning</td>
+<td>People who reacted in two or more of the last three calendar months</td>
+</tr>
+<tr>
+<td>Top 5 share</td>
+<td>Share of all reactions from the five most active people</td>
+</tr>
+</tbody>
+</table>
+<p>On the web, after <strong>Refine reach</strong>, <strong>Different boosters</strong> shows how many
+different people boosted the threads in the sample, and on how many servers.</p>
 <h2 id="post-analytics">Post analytics<a class="headerlink" href="#post-analytics" title="Link to this section">#</a></h2>
 <p>Open <strong>More tools → Post analytics</strong> on any Mastodon post. The page reads the
 post and its conversation (two requests). <strong>Replies</strong> is the server's count.

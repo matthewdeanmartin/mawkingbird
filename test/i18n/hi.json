@@ -26,7 +26,6 @@
     "audience.zombieFollowers": "निष्क्रिय फ़ॉलोअर",
     "audience.zombieFriends": "निष्क्रिय दोस्त",
     "barTitle": "{{label}}: {{count}} {{posts}}, ~{{reach}} पहुँच",
-    "basedOnLast": "पिछली {{count}} {{posts}} पर आधारित, बूस्ट शामिल नहीं।",
     "busiestDay": "सबसे व्यस्त दिन: {{count}} {{posts}}",
     "byMonth": "महीने के अनुसार",
     "byWeek": "सप्ताह के अनुसार",

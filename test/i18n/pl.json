@@ -26,7 +26,6 @@
     "audience.zombieFollowers": "Nieaktywni obserwujący",
     "audience.zombieFriends": "Nieaktywni znajomi",
     "barTitle": "{{label}}: {{count}} {{posts}}, zasięg ~{{reach}}",
-    "basedOnLast": "Na podstawie ostatnich {{count}} {{posts}}, bez podbić.",
     "busiestDay": "Najaktywniejszy dzień: {{count}} {{posts}}",
     "byMonth": "Według miesięcy",
     "byWeek": "Według tygodni",
