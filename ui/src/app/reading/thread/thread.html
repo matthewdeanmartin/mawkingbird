@@ -180,7 +180,7 @@
       (posted)="onReply($event)"
     />
   }
-  @for (d of threadReader() ? comments() : descendants(); track d.id) {
+  @for (d of visibleReplies(threadReader() ? comments() : descendants()); track d.id) {
     @if (d.originServer) {
       <p class="origin-label muted">
         {{ 'pages.thread.origin.label' | transloco: { server: d.originServer } }}
@@ -197,6 +197,22 @@
       (deleted)="onContextDeleted($event)"
       (replied)="onReply($event)"
     />
+  }
+  @if (foldedReplyGuyCount(); as count) {
+    <!-- Reply-guy controls: a pile-on under the reader's posts, folded into
+         one plain row. Show brings each reply back where it was. -->
+    <div class="reply-guys-folded">
+      <span class="muted">{{ 'pages.thread.replyGuys.folded' | transloco: { count } }}</span>
+      <button
+        type="button"
+        mbButton
+        size="small"
+        variant="outline"
+        (click)="replyGuysUnfolded.set(true)"
+      >
+        {{ 'statusCard.replyGuy.show' | transloco }}
+      </button>
+    </div>
   }
 } @else if (loadError(); as error) {
   <!-- A post id only means something on the server that issued it, and unlike

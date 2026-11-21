@@ -20,10 +20,14 @@
   text-decoration: underline;
 }
 
-.status.mutual {
+/* The filtered stub stands in for the card, so it carries the same mutual
+   tint: otherwise a mutual's filtered post turns grey only after "Show anyway". */
+.status.mutual,
+.filter-stub.mutual {
   background: color-mix(in srgb, var(--col-bg) 90%, var(--text) 10%);
 }
 
+:host-context([data-theme='dark']) .filter-stub.mutual,
 :host-context([data-theme='dark']) .status.mutual {
   background: color-mix(in srgb, var(--col-bg) 94%, var(--text) 6%);
 }

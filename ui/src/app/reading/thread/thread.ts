@@ -7,6 +7,7 @@ import {
   ElementRef,
   inject,
   input,
+  linkedSignal,
   OnInit,
   signal,
 } from '@angular/core';
@@ -46,8 +47,14 @@ import { isElizaId } from '../../chat/eliza/eliza-identity';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbNotice } from '../../design-system/notice/notice';
+import { MbButton } from '../../design-system/button/button';
 import { ReplyGuys } from '../../accounts/reply-guys';
-import { belowMine, ReplyGuyMode, threadReplyGuyMode } from '../../accounts/reply-guys-model';
+import {
+  belowMine,
+  collapsibleReplyGuys,
+  ReplyGuyMode,
+  threadReplyGuyMode,
+} from '../../accounts/reply-guys-model';
 import { keepPortableAddress } from '../../posts/copy-link/portable-address';
 
 // i18n pages.thread.loading: Loading…
@@ -78,6 +85,7 @@ import { keepPortableAddress } from '../../posts/copy-link/portable-address';
 // i18n pages.thread.twitter.loadPost: Could not load this post.
 // i18n pages.thread.twitter.loadReplies: Could not load replies.
 // i18n pages.thread.origin.label: From {{server}} — not on your server yet
+// i18n pages.thread.replyGuys.folded: {{count}} replies from people you don't follow
 @Component({
   selector: 'app-thread',
   imports: [
@@ -94,6 +102,7 @@ import { keepPortableAddress } from '../../posts/copy-link/portable-address';
     ReaderToolbar,
     TranslocoPipe,
     MbNotice,
+    MbButton,
   ],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
@@ -348,8 +357,45 @@ export class Thread implements OnInit {
     return modes;
   });
 
+  /**
+   * A pile-on under the reader's posts folds into one row at the end of the
+   * thread (accounts/reply-guys-model.ts says which replies qualify). Follows
+   * the one-click switch: turning that off unfolds this too.
+   */
+  private readonly foldedReplyGuys = computed(() => {
+    if (!this.replyGuys.cwOn()) return new Set<string>();
+    const modes = this.replyGuyModes();
+    return collapsibleReplyGuys(
+      this.descendants(),
+      (post) => modes.get(post.id) === 'guard',
+      (post) => this.replyGuys.notFollowed(post.account),
+    );
+  });
+
+  /** "Show" on the folded row; a different thread folds again. */
+  protected readonly replyGuysUnfolded = linkedSignal({
+    source: () => this.status()?.id,
+    computation: () => false,
+  });
+
+  /** How many replies the folded row stands for; 0 when there is no row. */
+  protected readonly foldedReplyGuyCount = computed(() =>
+    this.replyGuysUnfolded() ? 0 : this.foldedReplyGuys().size,
+  );
+
+  /** Descendants (or reader comments) minus any folded pile-on. */
+  protected visibleReplies(posts: readonly Status[]): readonly Status[] {
+    if (!this.foldedReplyGuyCount()) return posts;
+    const folded = this.foldedReplyGuys();
+    return posts.filter((post) => !folded.has(post.id));
+  }
+
   protected replyGuyMode(post: Status): ReplyGuyMode {
-    return this.replyGuyModes().get(post.id) ?? 'off';
+    const mode = this.replyGuyModes().get(post.id) ?? 'off';
+    // Unfolding the row was the click: they come back tagged, not guarded.
+    return mode === 'guard' && this.replyGuysUnfolded() && this.foldedReplyGuys().has(post.id)
+      ? 'chip'
+      : mode;
   }
 
   /**

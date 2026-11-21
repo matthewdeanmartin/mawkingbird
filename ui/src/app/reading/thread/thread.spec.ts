@@ -11,6 +11,7 @@ import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Account, Context, Status } from '../../platform/api/models';
 import { Thread } from './thread';
+import { FollowState } from '../../accounts/follow-state';
 import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
 import { settleRssCache } from '../../testing/settle-rss-cache';
 import { TwitterApi } from '../../connections/twitter/twitter-api';
@@ -168,6 +169,55 @@ describe('Thread', () => {
         .map((s) => s.id),
     ).toEqual(['child1', 'child2']);
     expect(internals(fixture).loading()).toBe(false);
+  });
+
+  it('folds a pile-on of strangers under my post into one row, and Show brings them back', () => {
+    const fixture = setUpWithId('100');
+    TestBed.inject(Auth).setAccount({ id: 'me', acct: 'me', username: 'me' } as Account);
+    const reply = (id: string, author: string) => ({
+      ...makeStatusBy(id, author, author),
+      in_reply_to_id: '100',
+    });
+    TestBed.inject(FollowState).write(
+      ['g1', 'g2', 'g3', 'friend'].map((id) => ({
+        id,
+        following: id === 'friend',
+        followed_by: false,
+        requested: false,
+        blocking: false,
+        muting: false,
+      })),
+    );
+    httpMock.expectOne('/api/v1/statuses/100').flush(makeStatusBy('100', 'me', 'me'));
+    httpMock
+      .expectOne('/api/v1/statuses/100/context')
+      .flush(
+        makeContext(
+          [],
+          [reply('a', 'g1'), reply('b', 'friend'), reply('c', 'g2'), reply('d', 'g3')],
+        ),
+      );
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const shown = () =>
+      Array.from(el.querySelectorAll('app-status-card')).map((card) => card.textContent ?? '');
+    expect(el.querySelector('.reply-guys-folded')?.textContent).toContain(
+      "3 replies from people you don't follow",
+    );
+    expect(shown().some((text) => text.includes('@g1'))).toBe(false);
+    expect(shown().some((text) => text.includes('@friend'))).toBe(true);
+
+    el.querySelector<HTMLButtonElement>('.reply-guys-folded button')!.click();
+    fixture.detectChanges();
+    expect(el.querySelector('.reply-guys-folded')).toBeNull();
+    expect(shown().filter((text) => /@g\d/.test(text))).toHaveLength(3);
+    // Unfolding was the click: tagged, not guarded one by one.
+    expect(el.querySelectorAll('.reply-guy-chip')).toHaveLength(3);
+    expect(el.querySelector('.reply-guy-cw')).toBeNull();
+    // The cards' own mutual-tint lookups for the stranger fixtures.
+    for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
+      request.flush([]);
+    }
   });
 
   it('expands and collapses CWs throughout a conversation, including other authors and new replies', () => {

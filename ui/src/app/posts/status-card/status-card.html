@@ -2,7 +2,7 @@
   <!-- "Mute this post": the viewer asked to never see this one again. -->
 } @else if (filterCollapsed()) {
   <!-- A warn-action content filter matched: collapse to a stub, Mastodon-style. -->
-  <div class="filter-stub">
+  <div class="filter-stub" [class.mutual]="mutualAuthor">
     <span class="muted">{{ 'statusCard.filtered' | transloco: { titles: filterTitles() } }}</span>
     <button type="button" class="btn btn-outline btn-sm" (click)="showFiltered($event)">
       {{ 'statusCard.showAnyway' | transloco }}

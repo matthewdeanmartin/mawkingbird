@@ -559,6 +559,11 @@ function dragHasFiles(event: DragEvent): boolean {
 // i18n compose.warn.pasteDisabled: This paste draft cannot be published while Pastebin is disabled in Settings → Feature flags.
 // i18n permissions.scheduleMute: Notifications cannot be turned off in advance for a scheduled post. Publish now or leave notifications on.
 // i18n compose.warn.scheduleTooSoon: Times less than ~5 minutes out publish immediately instead of scheduling.
+// i18n compose.contentWarning: Add a content warning
+// i18n compose.addATitle: Add a title
+// i18n compose.titleShort: Title
+// i18n compose.seeWhatFailed: See what failed
+// i18n compose.buildLink: See the build
 
 @Component({
   selector: 'app-compose',

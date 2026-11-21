@@ -73,3 +73,57 @@ export function threadReplyGuyMode(
   if (rootAuthorId && status.account.id === rootAuthorId) return 'off';
   return inMyConversation ? 'guard' : 'chip';
 }
+
+/** Fewer than this many stay individually guarded; this many or more fold into one row. */
+export const REPLY_GUY_COLLAPSE_MIN = 3;
+
+/**
+ * Replies to fold into one "N replies from people you don't follow" row.
+ *
+ * A reply is folded with its whole sub-thread, and only when every post in
+ * that sub-thread is guarded and by someone the reader definitely does not
+ * follow. One post by the reader, by someone they follow, or by someone not
+ * yet looked up keeps the branch in place: a conversation the reader is part
+ * of never disappears. Below {@link REPLY_GUY_COLLAPSE_MIN} nothing folds.
+ */
+export function collapsibleReplyGuys(
+  statuses: readonly Status[],
+  guarded: (status: Status) => boolean,
+  stranger: (status: Status) => boolean,
+  min = REPLY_GUY_COLLAPSE_MIN,
+): Set<string> {
+  const children = new Map<string, Status[]>();
+  for (const status of statuses) {
+    if (!status.in_reply_to_id) continue;
+    const list = children.get(status.in_reply_to_id) ?? [];
+    list.push(status);
+    children.set(status.in_reply_to_id, list);
+  }
+  const byId = new Map(statuses.map((status) => [status.id, status]));
+  const foldable = (status: Status): boolean => guarded(status) && stranger(status);
+
+  const folded = new Set<string>();
+  for (const status of statuses) {
+    if (!foldable(status)) continue;
+    // Only the top of a run of strangers starts a branch; the rest ride along.
+    const parent = status.in_reply_to_id ? byId.get(status.in_reply_to_id) : undefined;
+    if (parent && foldable(parent)) continue;
+    const branch: string[] = [];
+    const stack = [status];
+    const seen = new Set<string>();
+    let whole = true;
+    while (stack.length) {
+      const next = stack.pop()!;
+      if (seen.has(next.id)) continue;
+      seen.add(next.id);
+      if (!foldable(next)) {
+        whole = false;
+        break;
+      }
+      branch.push(next.id);
+      stack.push(...(children.get(next.id) ?? []));
+    }
+    if (whole) for (const id of branch) folded.add(id);
+  }
+  return folded.size >= min ? folded : new Set();
+}

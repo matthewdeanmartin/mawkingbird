@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { Status } from '../platform/api/models';
-import { belowMine, isIncomingConversation, threadReplyGuyMode } from './reply-guys-model';
+import {
+  belowMine,
+  collapsibleReplyGuys,
+  isIncomingConversation,
+  threadReplyGuyMode,
+} from './reply-guys-model';
 
 function post(id: string, author: string, inReplyTo: string | null = null): Status {
   return {
@@ -46,5 +51,34 @@ describe('reply-guys model', () => {
   it('never marks the thread root or its author answering in their own thread', () => {
     expect(threadReplyGuyMode(post('root', 'alice'), 'alice', false)).toBe('off');
     expect(threadReplyGuyMode(post('r', 'alice', 'x'), 'alice', true)).toBe('off');
+  });
+
+  describe('folding a pile-on', () => {
+    const strangers = new Set(['g1', 'g2', 'g3', 'g4']);
+    const guarded = () => true;
+    const stranger = (s: Status) => strangers.has(s.account.id);
+    const ids = (set: Set<string>) => [...set].sort();
+
+    it('folds three or more stranger replies, and nothing below that', () => {
+      const three = [post('a', 'g1', 'mine'), post('b', 'g2', 'mine'), post('c', 'g3', 'mine')];
+      expect(ids(collapsibleReplyGuys(three, guarded, stranger))).toEqual(['a', 'b', 'c']);
+      expect(collapsibleReplyGuys(three.slice(0, 2), guarded, stranger).size).toBe(0);
+    });
+
+    it('folds a stranger branch whole, but never one the reader or a friend is in', () => {
+      const statuses = [
+        post('a', 'g1', 'mine'),
+        post('a1', 'g2', 'a'),
+        post('b', 'g3', 'mine'),
+        post('b1', 'me', 'b'),
+        post('c', 'g4', 'mine'),
+      ];
+      expect(ids(collapsibleReplyGuys(statuses, guarded, stranger))).toEqual(['a', 'a1', 'c']);
+    });
+
+    it('leaves unguarded replies alone, wherever they are', () => {
+      const statuses = [post('a', 'g1', 'x'), post('b', 'g2', 'x'), post('c', 'g3', 'x')];
+      expect(collapsibleReplyGuys(statuses, () => false, stranger).size).toBe(0);
+    });
   });
 });

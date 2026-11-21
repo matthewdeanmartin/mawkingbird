@@ -193,6 +193,29 @@ describe('StatusCard', () => {
     );
   });
 
+  it('tints a mutual’s filtered stub the same as their card, before "Show anyway"', () => {
+    vi.mocked(FollowTrust.prototype.isMutual).mockReturnValue(true);
+    const fixture = setUp(
+      makeStatus({
+        filtered: [
+          {
+            filter: {
+              id: 'f1',
+              title: 'Politics',
+              context: ['home'],
+              expires_at: null,
+              filter_action: 'warn',
+            },
+            keyword_matches: null,
+            status_matches: null,
+          },
+        ],
+      }),
+    );
+    const stub = (fixture.nativeElement as HTMLElement).querySelector('.filter-stub');
+    expect(stub?.classList.contains('mutual')).toBe(true);
+  });
+
   it('keeps private likes in the post menu and out of the toolbar with PA both off and on', () => {
     localStorage.setItem('mastodon_mock_token', 'private-like-test');
     const pa = TestBed.inject(Pseudonymity);

@@ -427,6 +427,19 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.empty.tagsOnly: {{host}} recognises the hashtag but won’t serve the posts behind it. A different search server would fix this.
 // i18n pages.search.empty.postsUnavailable: Post search isn't available on {{host}}. It can find accounts, but returns no posts even for a common hashtag — anonymous full-text search is off on almost every server. A different search server would fix this.
 // i18n pages.search.empty.notWorking: Search doesn’t appear to be working on {{host}}. A different search server would fix this.
+// i18n pages.search.chip.sentToServer: Sent to the server with your search
+// i18n pages.search.chip.appliedToLoaded: Applied in this browser to the results already loaded
+// i18n pages.search.webDropped.note.one: {{engine}} can't filter by {{criteria}}, so it was left out.
+// i18n pages.search.webDropped.note.other: {{engine}} can't filter by {{criteria}}, so they were left out.
+// i18n pages.search.webDropped.after: after {{date}}
+// i18n pages.search.webDropped.before: before {{date}}
+// i18n pages.search.webDropped.language: language ({{language}})
+// i18n pages.search.webDropped.contentType: content type ({{contentType}})
+// i18n pages.search.webDropped.repliesOnly: replies only
+// i18n pages.search.webDropped.noReplies: no replies
+// i18n pages.search.webDropped.sensitiveOnly: sensitive posts only
+// i18n pages.search.webDropped.noSensitivePosts: no sensitive posts
+// i18n pages.search.webDropped.libraryOnly: your library only
 
 @Component({
   selector: 'app-search',
