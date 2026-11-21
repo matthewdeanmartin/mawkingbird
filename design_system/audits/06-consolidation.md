@@ -1,5 +1,20 @@
 # Sprint 6 opening consolidation audit
 
+## Catch-up, Algo view picker and discovery windows, 2026-11-20
+
+Reviewed 2,047 source files (new: the pure `feeds/catch-up/catch-up-model.ts`
+and `wellness/discovery-window-model.ts`, the `DiscoveryWindow` service and
+guard) and 699 candidate files. Four candidates are added and reconciled as
+backlog: `feeds/catch-up/catch-up.html` (native range/kind/sort selects,
+expandable person rows, Finish/Start buttons), `feeds/algo/algo-view-tabs.ts`
+(the two route tabs became one native select, because three translated view
+names no longer fit a phone row), `wellness/discovery-closed/discovery-closed.ts`
+(four one-tap length buttons and plain links) and
+`wellness/discovery-banner.ts` (a status line with a link-style Close button).
+The Feeds landing list gains a Good Stuff row in the existing `list-row`
+style. Remaining entries are line shifts. No shared widget implementation
+changed.
+
 ## Wellness settings and quiet counts, 2026-11-20
 
 Reviewed 2,038 source files (new: the pure `wellness/wellness-model.ts`, the

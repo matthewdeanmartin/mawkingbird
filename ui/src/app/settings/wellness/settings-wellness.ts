@@ -86,8 +86,6 @@ export class SettingsWellness {
    * that does nothing yet. Remove a key here when its sprint lands.
    */
   private readonly pending: ReadonlySet<WellnessKey> = new Set<WellnessKey>([
-    'demoteGoodStuff',
-    'discoveryWindows',
     'checkIn',
     'breakReminders',
     'autoGrayscale',

@@ -146,11 +146,18 @@ export class FeedAggregator {
     return Number.isNaN(ms) || ms === 0 || ms >= this.cutoff;
   }
 
-  /** Start over from the top using the providers currently visible to the user. */
-  reset(): void {
+  /**
+   * Start over from the top using the providers currently visible to the user.
+   *
+   * `cutoffMs` replaces Home's window with an explicit epoch-ms boundary. Catch-up
+   * uses it, from its own component-scoped instance so Home's state is untouched,
+   * to load exactly "since last time" and stop.
+   */
+  reset(cutoffMs?: number): void {
     this.round = 0;
     const windowMs = homeWindowMs(this.prefs.homeWindow());
-    this.cutoff = windowMs === null ? null : Date.now() - windowMs;
+    this.cutoff =
+      cutoffMs !== undefined ? cutoffMs : windowMs === null ? null : Date.now() - windowMs;
     this.droppedByWindow.set(0);
     this.mastodonMaxId = undefined;
     // Anonymous *or* Bluesky-primary: neither can call /api/v1/timelines/home.

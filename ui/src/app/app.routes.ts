@@ -1,5 +1,6 @@
 import { inject, Type } from '@angular/core';
 import { setupGuard } from './accounts/setup/setup.guard';
+import { discoveryWindowGuard } from './wellness/discovery-guard';
 import { CREATE_ACCOUNT_DESCRIPTION } from './public-pages/create-account/create-account-meta';
 import { NATIVE_PROFILES } from './platform/session/platform-login';
 import {
@@ -415,6 +416,7 @@ export const routes: Routes = [
   {
     path: 'explore',
     title: 'Explore',
+    canActivate: [discoveryWindowGuard],
     loadComponent: () => import('./discovery/explore/explore').then((m) => m.Explore),
   },
   // Public recruiting tool in the normal three-column shell. Fresh visitors
@@ -618,6 +620,7 @@ export const routes: Routes = [
       {
         path: 'for-you',
         title: 'For you',
+        canActivate: [discoveryWindowGuard],
         data: { blueskyDiscover: true },
         loadComponent: () =>
           import('./feeds/bluesky-feed/bluesky-feed').then((m) => m.BlueskyFeedPage),
@@ -634,15 +637,30 @@ export const routes: Routes = [
       },
       { path: 'algo/people', redirectTo: 'algo' },
       {
+        // A bounded, finishable session over followed accounts (Wellness).
+        path: 'algo/catch-up',
+        title: 'Catch-up',
+        loadComponent: () => import('./feeds/catch-up/catch-up').then((m) => m.CatchUp),
+      },
+      {
         path: 'algo',
         title: 'Algo',
+        canActivate: [discoveryWindowGuard],
         loadComponent: () => import('./feeds/algo/algo').then((m) => m.Algo),
       },
       {
         path: 'public',
         title: 'Public timeline',
+        canActivate: [discoveryWindowGuard],
         loadComponent: () =>
           import('./feeds/public-timeline/public-timeline').then((m) => m.PublicTimeline),
+      },
+      {
+        // Wellness: where a closed discovery route lands; one tap opens it.
+        path: 'discovery-closed',
+        title: 'Discovery closed',
+        loadComponent: () =>
+          import('./wellness/discovery-closed/discovery-closed').then((m) => m.DiscoveryClosed),
       },
       {
         path: 'notifications',
@@ -1215,6 +1233,7 @@ export const routes: Routes = [
       {
         path: 'feeds/servers/:server/:feed',
         title: 'Server feed',
+        canActivate: [discoveryWindowGuard],
         loadComponent: () => import('./feeds/server-feed/server-feed').then((m) => m.ServerFeed),
       },
       {

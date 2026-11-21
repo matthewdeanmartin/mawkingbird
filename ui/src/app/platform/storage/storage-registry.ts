@@ -847,6 +847,20 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Theme, accent, reader typography, composer behaviour. The bulk of a shareable setup.',
   },
   {
+    base: 'mockingbird_catch_up',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'Catch-up history: when each finished session started and ended, with post and people counts. The next catch-up starts where the last one ended. Times only, no posts; private because it shows when someone reads.',
+  },
+  {
+    base: 'mockingbird_discovery_window',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'cache',
+    note: 'When the current Wellness discovery window closes (epoch ms). Per device and never exported: a window is a moment, not a setting.',
+  },
+  {
     base: 'mockingbird_house_ads',
     storage: 'local',
     suffix: 'none',

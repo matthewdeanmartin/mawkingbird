@@ -1,7 +1,8 @@
 # Wellness (November 2026)
 
-Status: sprints 1–2 implemented and uncommitted · 2026-11-20; awaiting the
-owner's manual test. Sprints 3–6 not started.
+Status: sprints 1–4 implemented and uncommitted · 2026-11-20. Sprints 1–2
+looked good to the owner; sprints 3–4 await the manual test. Sprints 5–6 not
+started.
 Cadence (owner, 2026-11-20): two sprints at a time, lightweight checks
 between sprints, a stop every two sprints for the owner to push and test by
 hand. The full quality gates (`make test`, build, SEO, design-verify) are
@@ -178,3 +179,39 @@ Implementation notes:
   URLs still work.
 - Not-yet-shipped switches (Good Stuff demotion, discovery windows, check-in,
   breaks, auto-grayscale) are listed but disabled; manual grayscale works now.
+
+## Evidence: sprints 3–4 (2026-11-20)
+
+Light checks only. Passed: `make test-changed` (863 spec files, all green),
+`check:i18n`, `check:storage` (two new keys), `check:dead-code`,
+`design:inventory-check` (four new candidates reconciled as backlog),
+prettier and `ng lint` on every touched file. Deferred as before: full
+`make test`, `build:mockingbird`, SEO, design-verify, integration.
+
+Implementation notes:
+
+- **Algo view picker** (`feeds/algo/algo-view-tabs.ts`) is a native select:
+  Good Stuff / Relationships (Native only) / Catch-up (signed in). It hides
+  itself with one view. Its old two-tab spec was rewritten for the dropdown.
+- **Catch-up** (`/algo/catch-up`, `feeds/catch-up/`): one tap per session,
+  range "since last catch-up" (first time 12 h, never past 72 h) or 1–24 h;
+  loads through a component-scoped `FeedAggregator` with an explicit cutoff
+  (new optional `reset(cutoffMs)`), so every Home network is included. Capped
+  at 600 posts and says so. Grouped by person (collapsed rows), filter by
+  kind, order by most active / most recent, overlap note, ending card,
+  Finish records history (`mockingbird_catch_up`, account-scoped, private).
+  Caveat: the aggregator resets the shared provider objects; Home re-runs
+  `load()` when it is re-created, so the effect is limited to a Home that
+  stayed alive in the background (none today).
+- **Demote Good Stuff**: the top-level Algo tab opens Catch-up (Bluesky
+  primaries too, instead of Discover); Good Stuff is a row on the Feeds
+  landing list and stays listed in the picker only while you're on it.
+- **Discovery windows** (`wellness/discovery-*`): `discoveryWindowGuard` on
+  `/explore`, `/algo` (Good Stuff only), `/for-you`, `/public`,
+  `/feeds/servers/:server/:feed`. Closed routes land on `/discovery-closed`
+  with `next`; one tap on 10 / 20 / 45 min / "No limit today" (until 04:00)
+  opens and continues. Window end is per device (`mockingbird_discovery_window`,
+  cache, not synced). Rails hide trends, Bluesky trends, who-to-follow and
+  feed links while closed. A banner above discovery pages counts down and,
+  when the window ends, says so without leaving the page. `/explore` is a
+  standalone page outside the shell, so it is guarded but has no banner.

@@ -47,6 +47,8 @@ import { FeatureFlags } from '../platform/build/feature-flags';
 import { LeaveChoice, LeaveDialog } from './leave-dialog/leave-dialog';
 import { WritingZen } from '../publishing/writing-zen';
 import { ReadingZen } from '../reading/reading-zen';
+import { Wellness } from '../wellness/wellness';
+import { DiscoveryBanner } from '../wellness/discovery-banner';
 import {
   ACCOUNT_FILTER_THRESHOLD,
   AccountSwitcher,
@@ -223,6 +225,7 @@ const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
 @Component({
   selector: 'app-shell',
   imports: [
+    DiscoveryBanner,
     AddAccountDialog,
     NavFit,
     ReadingOutlet,
@@ -418,6 +421,7 @@ export class Shell implements OnInit, AccountSwitcher {
   /** Mastodon-compatible keyboard shortcuts (and the "?" help dialog). */
   protected hotkeys = inject(Hotkeys);
   protected prefs = inject(ClientPrefs);
+  private wellness = inject(Wellness);
   /**
    * Writing zen, which hides the header and footer too — those are shell-owned
    * and outside the router outlet, so /write cannot hide them by itself. This is
@@ -565,15 +569,23 @@ export class Shell implements OnInit, AccountSwitcher {
   protected readonly modeItems = computed(() =>
     (this.focusedApp()?.items ?? MODE_NAV[this.appMode.mode()])
       .map((item) =>
-        item.id === 'algo' && this.auth.isBlueskyPrimary
+        item.id === 'algo' && this.wellness.demoteGoodStuff() && !this.auth.isAnonymous
           ? {
-              // Still "Algo" to the reader; for Bluesky it is the Discover feed.
+              // Wellness: the tab opens Catch-up. Good Stuff (and Bluesky's
+              // Discover, the same idea) stay reachable from Feeds.
               ...item,
-              link: '/for-you',
-              active: (url: string) => url.split(/[?#]/, 1)[0] === '/for-you',
+              link: '/algo/catch-up',
               subitems: undefined,
             }
-          : item,
+          : item.id === 'algo' && this.auth.isBlueskyPrimary
+            ? {
+                // Still "Algo" to the reader; for Bluesky it is the Discover feed.
+                ...item,
+                link: '/for-you',
+                active: (url: string) => url.split(/[?#]/, 1)[0] === '/for-you',
+                subitems: undefined,
+              }
+            : item,
       )
       .filter((item) => {
         // The Misskey visitor has no account either: no inbox, nothing joined.

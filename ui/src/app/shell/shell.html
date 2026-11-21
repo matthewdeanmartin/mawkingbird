@@ -598,6 +598,7 @@
     <main class="column" id="main" tabindex="-1" #mainColumn>
       <app-proxy-limit-notice />
       <app-account-tab-banner />
+      <app-discovery-banner [url]="currentUrl()" />
       <router-outlet mbReadingOutlet />
       @if (!chromeHidden()) {
         <app-app-footer />

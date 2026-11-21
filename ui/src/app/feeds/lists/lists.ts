@@ -18,6 +18,7 @@ import {
 } from '@angular/router';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
+import { Wellness } from '../../wellness/wellness';
 import {
   Collection,
   FeaturedTag,
@@ -93,6 +94,8 @@ import { MisskeyFeedSections } from './misskey-feed-sections';
 // i18n pages.lists.landing.allFeedsHint: everything on one page
 // i18n pages.lists.landing.news: Mawkingbird News
 // i18n pages.lists.landing.newsHint: what changed in Mawkingbird
+// i18n pages.lists.landing.goodStuff: Good Stuff
+// i18n pages.lists.landing.goodStuffHint: the popularity-ranked Algo view
 // i18n pages.lists.sections.all: All
 // i18n pages.lists.sections.featuredTags: Your Featured Hashtags
 // i18n pages.lists.create: Create
@@ -241,6 +244,7 @@ export class Lists implements OnInit {
   protected recent = inject(RecentFeeds);
   private api = inject(Api);
   protected auth = inject(Auth);
+  protected wellness = inject(Wellness);
   protected tagsPub = inject(TagsPub);
   private feedCaps = inject(FeedCapability);
   private router = inject(Router);

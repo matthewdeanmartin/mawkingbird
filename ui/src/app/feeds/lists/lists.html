@@ -76,6 +76,16 @@
         }
       </li>
     }
+    <!-- Wellness moved Good Stuff out of the Algo menu; it lives here, where
+         reaching it takes intent. -->
+    @if (wellness.demoteGoodStuff()) {
+      <li>
+        <a class="list-row feed-category-row" routerLink="/algo">
+          <span>{{ 'pages.lists.landing.goodStuff' | transloco }}</span>
+          <span class="muted small">{{ 'pages.lists.landing.goodStuffHint' | transloco }}</span>
+        </a>
+      </li>
+    }
     <!-- Project news, always last: the news blog's Atom feed in the RSS reader. -->
     <li>
       <a

@@ -1,7 +1,6 @@
-<!-- Relationships reads Native's local archive; a browser has only Good Stuff. -->
-@if (nativeArchive && auth.kind() === 'mastodon' && auth.token()) {
-  <app-algo-view-tabs view="goodStuff" />
-}
+<!-- The view picker lists what this visitor can use (Relationships is Native's,
+     Catch-up needs an account) and hides itself when there is only one. -->
+<app-algo-view-tabs view="goodStuff" />
 <div class="algo-bar">
   <div
     class="algo-chips"

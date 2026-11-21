@@ -1,0 +1,191 @@
+<app-algo-view-tabs view="catchUp" />
+
+<section class="catch-up">
+  <h1>{{ 'pages.catchUp.title' | transloco }}</h1>
+
+  @if (!signedIn()) {
+    <p class="muted">{{ 'pages.catchUp.signedOut' | transloco }}</p>
+  } @else {
+    @switch (phase()) {
+      @case ('start') {
+        <p class="muted">{{ 'pages.catchUp.intro' | transloco }}</p>
+        <div class="start">
+          <label class="range">
+            {{ 'pages.catchUp.range' | transloco }}
+            <select
+              name="catch_up_range"
+              [value]="'' + range()"
+              (change)="chooseRange($any($event.target).value)"
+            >
+              @for (option of ranges; track option) {
+                <option [value]="'' + option">
+                  {{ rangeLabel(option) | transloco: { count: option } }}
+                </option>
+              }
+            </select>
+          </label>
+          <button type="button" class="btn btn-primary" (click)="begin()">
+            {{ 'pages.catchUp.start' | transloco }}
+          </button>
+        </div>
+        <p class="muted small">
+          @if (range() === 'last' && !history().length) {
+            {{ 'pages.catchUp.firstTime' | transloco }}
+          } @else {
+            {{ 'pages.catchUp.startingAt' | transloco: { time: (start() | date: 'short') } }}
+          }
+        </p>
+        @if (overlap(); as previous) {
+          <p class="muted small overlap">
+            {{ 'pages.catchUp.overlap' | transloco: { time: (previous.to | date: 'short') } }}
+          </p>
+        }
+        @if (history().length) {
+          <h2>{{ 'pages.catchUp.history' | transloco }}</h2>
+          <ul class="history">
+            @for (past of history(); track past.to) {
+              <li class="muted small">
+                {{
+                  'pages.catchUp.historyRow'
+                    | transloco
+                      : {
+                          from: (past.from | date: 'short'),
+                          to: (past.to | date: 'short'),
+                          count: past.posts,
+                          posts: words().posts,
+                          people: past.people,
+                        }
+                }}
+              </li>
+            }
+          </ul>
+        }
+      }
+      @case ('loading') {
+        <p class="muted" role="status">
+          {{ 'pages.catchUp.loading' | transloco: { posts: words().posts, count: posts().length } }}
+        </p>
+      }
+      @case ('error') {
+        <p class="muted" role="alert">{{ 'pages.catchUp.error' | transloco }}</p>
+        <button type="button" class="btn btn-outline" (click)="again()">
+          {{ 'pages.catchUp.again' | transloco }}
+        </button>
+      }
+      @case ('finished') {
+        <div class="ending" role="status">
+          <p class="ending-title">{{ 'pages.catchUp.finished' | transloco }}</p>
+          <button type="button" class="btn btn-outline" (click)="again()">
+            {{ 'pages.catchUp.again' | transloco }}
+          </button>
+        </div>
+      }
+      @case ('ready') {
+        @if (session(); as current) {
+          @if (!allGroups().length) {
+            <p class="muted">
+              {{ 'pages.catchUp.empty' | transloco: { time: (current.from | date: 'short') } }}
+            </p>
+            <button type="button" class="btn btn-primary" (click)="finish()">
+              {{ 'pages.catchUp.finish' | transloco }}
+            </button>
+          } @else {
+            <p class="summary">
+              {{
+                'pages.catchUp.summary'
+                  | transloco
+                    : {
+                        count: posts().length,
+                        posts: words().posts,
+                        people: allGroups().length,
+                        time: (current.from | date: 'short'),
+                      }
+              }}
+            </p>
+            @if (capped()) {
+              <p class="muted small">
+                {{ 'pages.catchUp.capped' | transloco: { max: maxPosts, posts: words().posts } }}
+              </p>
+            }
+            <div class="controls">
+              <label>
+                {{ 'pages.catchUp.kinds' | transloco }}
+                <select
+                  name="catch_up_kind"
+                  [value]="kind()"
+                  (change)="kind.set($any($event.target).value)"
+                >
+                  @for (option of kinds; track option) {
+                    <option [value]="option">
+                      {{ 'pages.catchUp.kind.' + option | transloco }}
+                    </option>
+                  }
+                </select>
+              </label>
+              <label>
+                {{ 'pages.catchUp.sort' | transloco }}
+                <select
+                  name="catch_up_sort"
+                  [value]="sort()"
+                  (change)="sort.set($any($event.target).value)"
+                >
+                  <option value="people">{{ 'pages.catchUp.sort.people' | transloco }}</option>
+                  <option value="recent">{{ 'pages.catchUp.sort.recent' | transloco }}</option>
+                </select>
+              </label>
+            </div>
+
+            @if (!groups().length) {
+              <p class="muted">{{ 'pages.catchUp.noneOfKind' | transloco }}</p>
+            }
+            <ul class="people">
+              @for (group of groups(); track groupKey(group)) {
+                <li class="person">
+                  <button
+                    type="button"
+                    class="person-row"
+                    [attr.aria-expanded]="isOpen(group)"
+                    (click)="toggle(group)"
+                  >
+                    <img
+                      class="avatar"
+                      [src]="group.account.avatar_static || group.account.avatar"
+                      alt=""
+                      width="36"
+                      height="36"
+                      loading="lazy"
+                    />
+                    <span class="name">{{
+                      group.account.display_name || group.account.username
+                    }}</span>
+                    <span class="muted small">
+                      {{
+                        'pages.catchUp.personCount'
+                          | transloco: { count: group.posts.length, posts: words().posts }
+                      }}
+                    </span>
+                  </button>
+                  @if (isOpen(group)) {
+                    <div class="person-posts">
+                      @for (status of group.posts; track status.id) {
+                        <app-status-card [status]="status" filterContext="home" />
+                      }
+                    </div>
+                  }
+                </li>
+              }
+            </ul>
+
+            <div class="ending">
+              <p class="ending-title">{{ 'pages.catchUp.end.title' | transloco }}</p>
+              <p class="muted">{{ 'pages.catchUp.end.body' | transloco }}</p>
+              <button type="button" class="btn btn-primary" (click)="finish()">
+                {{ 'pages.catchUp.finish' | transloco }}
+              </button>
+            </div>
+          }
+        }
+      }
+    }
+  }
+</section>

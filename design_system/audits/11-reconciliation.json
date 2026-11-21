@@ -1268,6 +1268,26 @@
       "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
+      "file": "ui/src/app/feeds/catch-up/catch-up.html",
+      "disposition": "backlog",
+      "nextStep": "Native selects for range, kind and order; person rows are full-width buttons with aria-expanded; Finish and Start use legacy btn classes. Adopt MbButton and Field/Control with the next feed-page batch; preserve one-session-at-a-time loading, collapsed-by-default rows and the ending card."
+    },
+    {
+      "file": "ui/src/app/feeds/algo/algo-view-tabs.ts",
+      "disposition": "backlog",
+      "nextStep": "Algo's view picker is a labelled native select that navigates on change and hides itself with a single view. Adopt Field/Control when shared selects land; preserve Wellness demotion of Good Stuff and the native-only Relationships view."
+    },
+    {
+      "file": "ui/src/app/wellness/discovery-closed/discovery-closed.ts",
+      "disposition": "backlog",
+      "nextStep": "Four one-tap length buttons (legacy btn classes) and plain router links. Adopt MbButton; preserve no-confirm opening, the data-length hooks and same-app-only next navigation."
+    },
+    {
+      "file": "ui/src/app/wellness/discovery-banner.ts",
+      "disposition": "backlog",
+      "nextStep": "Status line above discovery pages with a link-style Close button. Adopt MbNotice/MbButton variant=link when convenient; it must never remove or redirect the current page when a window ends."
+    },
+    {
       "file": "ui/src/app/settings/wellness/settings-wellness.html",
       "disposition": "backlog",
       "nextStep": "Preset radios, protection checkboxes and mirrored feed/posting switches are native ssection/srow/checkline rows like Writing's Home composer section. Adopt SettingsRow and Checkbox with the other native settings forms; preserve disabled not-yet-shipped switches, the Calm lock under Force Calm and the shared ClientPrefs writes."

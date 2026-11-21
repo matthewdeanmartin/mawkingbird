@@ -53,9 +53,9 @@ describe('SettingsWellness', () => {
 
   it('switches whose feature has not shipped are disabled', () => {
     const el = render();
-    expect(
-      el.querySelector<HTMLInputElement>('input[name="wellness_discoveryWindows"]')!.disabled,
-    ).toBe(true);
+    expect(el.querySelector<HTMLInputElement>('input[name="wellness_checkIn"]')!.disabled).toBe(
+      true,
+    );
     expect(
       el.querySelector<HTMLInputElement>('input[name="wellness_limitedNotifications"]')!.disabled,
     ).toBe(false);
