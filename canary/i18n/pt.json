@@ -1208,7 +1208,7 @@
   },
   "footer": {
     "buildLog": "log de criação",
-    "builtAt": "Compilado em {{date}} UTC",
+    "builtAt": "Compilado em {{date}}",
     "end": "Você chegou ao fim. Aqui, isso é permitido.",
     "failWhale": "Baleia de erro",
     "hotkeys": "? para atalhos",

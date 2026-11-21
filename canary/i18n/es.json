@@ -3340,7 +3340,7 @@
   },
   "footer": {
     "buildLog": "log de versión",
-    "builtAt": "Compilado el {{date}} UTC",
+    "builtAt": "Compilado el {{date}}",
     "end": "Llegaste al final. Aquí se permite.",
     "failWhale": "Ballena de error",
     "hotkeys": "? para el teclado",

@@ -1,7 +1,7 @@
 {
   "footer": {
     "buildLog": "log build",
-    "builtAt": "Dibuat {{date}} UTC",
+    "builtAt": "Dibuat {{date}}",
     "end": "Sudah sampai ujung. Berhenti di sini boleh, kok.",
     "failWhale": "Paus gagal",
     "hotkeys": "? untuk pintasan",

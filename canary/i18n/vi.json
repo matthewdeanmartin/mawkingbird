@@ -917,7 +917,7 @@
   },
   "footer": {
     "buildLog": "nhật ký dựng",
-    "builtAt": "Dựng lúc {{date}} UTC",
+    "builtAt": "Dựng lúc {{date}}",
     "end": "Bạn đã đến cuối rồi. Ở đây được phép dừng.",
     "failWhale": "Cá voi báo lỗi",
     "hotkeys": "? cho bàn phím",

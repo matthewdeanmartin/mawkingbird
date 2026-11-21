@@ -5224,7 +5224,7 @@
   },
   "footer": {
     "buildLog": "建置記錄",
-    "builtAt": "建置時間：{{date}} UTC",
+    "builtAt": "建置時間：{{date}}",
     "end": "您已經看到底了。在這裡，停下來也沒關係。",
     "failWhale": "鯨魚又來搗蛋了",
     "hotkeys": "按 ? 看快捷鍵",

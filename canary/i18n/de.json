@@ -711,7 +711,7 @@
   },
   "footer": {
     "buildLog": "Build-Log",
-    "builtAt": "Erstellt {{date}} UTC",
+    "builtAt": "Erstellt {{date}}",
     "end": "Das war alles. Hier darf auch mal Schluss sein.",
     "failWhale": "Fail Whale",
     "hotkeys": "? für Tastatur",
