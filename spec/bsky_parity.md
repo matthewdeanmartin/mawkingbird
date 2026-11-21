@@ -1,8 +1,9 @@
 # Bluesky parity: Mawkingbird vs. the official Bluesky app
 
-Status (2026-11-21): sprints 1–4 pushed, awaiting live trials; the
-app-password phase-out (phase 1) and sprints 5–6 code complete, awaiting
-push/GHA. Sprints 7–8 planned. Progress and evidence: [Progress](#progress). Manual test plans: `test_plans/bsky-parity-2-*`.
+Status (2026-11-21): sprints 1–6 and app-password phase 1 pushed, awaiting
+live trials; app-password phase 2 and sprints 7–8 code complete, awaiting
+push/GHA. The planned sprints are done; deferred items are listed under each
+sprint's progress. Progress and evidence: [Progress](#progress). Manual test plans: `test_plans/bsky-parity-2-*`.
 Reference: `../REFERENCE/social-app` at `47e6acedf` (2026-11-20, "Keep
 find-in-page working in the virtualized web List").
 
@@ -653,10 +654,97 @@ Run: targeted specs; a quality pause after the phase-out (`make test-changed`:
 Actions: `make test` with coverage, production/SEO builds, `make
 design-verify`.
 
+### App-password phase-out, phase 2 (2026-11-21): code complete
+
+Owner: we lose nothing by moving fully to OAuth except risk and hassle. The
+one real loss, recorded for the record: a self-hosted PDS that has no OAuth
+can no longer be linked (the reference PDS has had OAuth since 2024).
+
+- **Nothing creates an app-password link.** The forms, the
+  `bluesky-app-passwords` flag, `BlueskySession.login`/`loginAsIdentity`/
+  `authenticate` (`createSession`) and all vaulting of app passwords are
+  gone, with their specs (they covered the removed feature).
+- **Stored links are retired, not dropped.** `retireBlueskyAppPasswords()`
+  runs in `main.ts` before bootstrap: every app-password credential (a
+  Bluesky-first identity or a connector under any account) loses its tokens and
+  password and becomes `{ authMethod: 'retired' }`. The account stays in the
+  list; any request asks for sign-in (`BlueskySignInRequiredError`), Home's
+  "Sign in to Bluesky again" and the connection page's "Switch to Bluesky
+  sign-in" run OAuth for the same account, and a password still in the vault
+  is removed the first time the account runs.
+- **Kept on purpose:** the bearer-token transport in `BlueskyApi`
+  (`withRefresh`) and `refresh()`. Nothing in production can reach them now,
+  but ~30 specs use stored bearer sessions as transport fixtures; deleting the
+  path means moving those fixtures to OAuth mocks first. Recorded as cleanup.
+- **Tests:** retirement (3), a retired session asks for sign-in (1), vault
+  clean-up on boot (2), the connection page never asks for a password (1);
+  login (−13), connection (−3), session vault (−9), API (−1), identity role
+  (−1) removed with the feature.
+
+### Sprint 7 progress (2026-11-21): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-2-sprint-7-chat.md`.
+
+- **Live updates:** the page reads `chat.bsky.convo.getLog` every 5 s while
+  visible; an event in the open chat re-reads it *quietly* (no flash), any
+  event refreshes the list. The old 20 s thread re-read is now only the
+  fallback when the log can't be read.
+- **Paging:** Load more pages Bluesky chats past the first 50 (listConvos
+  cursor), alongside Mastodon; list refreshes merge instead of dropping
+  paged-in rows.
+- **Group chats** (`chat.bsky.group.*`, on for everyone in bsky.app):
+  groups are titled by name, show who wrote each message, and their system
+  messages (joined, left, added, removed, renamed, locked, join link) read as
+  quiet lines instead of being dropped. **New Bluesky group** (name + handles).
+  **Group settings** from the chat menu: members; for the owner rename, add,
+  remove, lock/unlock, join link (make with optional approval, copy, turn
+  off/on) and join requests (let in / decline). A locked group says so
+  instead of offering the composer.
+- **Join links:** `/bsky/chat/<code>` (bsky.app's shape) previews the group
+  and joins, or asks to; a pasted `bsky.app/chat/…` link opens it from the
+  new-group dialog. Classified in the deep-link audit.
+- **Tests:** helpers (3), dialogs and join page (7), page (5).
+- **Deferred:** a nav badge for message requests; `getUnreadCounts`; replying
+  to a message (`replyTo`); sharing a post into a chat; mutual groups on a
+  profile; rewriting `bsky.app/chat/…` links inside posts to the join page.
+
+### Sprint 8 progress (2026-11-21): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-2-sprint-8-contacts.md`.
+
+- **Find people you know** (`/bluesky/find-contacts`, linked from Bluesky
+  preferences). bsky.app offers this only in its phone apps; on the web the
+  numbers come from the Contact Picker (Chromium on Android), a vCard or CSV
+  export, or pasted text. Flow: confirm your number by SMS
+  (`startPhoneVerification`, `verifyPhone`), then `importContacts` (≤1000
+  E.164 numbers, your own left out), matches shown with Follow buttons;
+  existing matches and the last check load on open; **Remove my contact
+  data** (`removeData`) after a confirm.
+- **Numbers:** `bluesky-contacts.ts` normalizes to E.164 without a
+  numbering-plan library: `+`/`00` keep their country, local numbers take the
+  chosen country (bsky.app's 13), the trunk 0 is dropped except in Italy.
+  The page states what is sent and how it is kept.
+- **Needs a live check:** whether the contact endpoints accept a third-party
+  OAuth session, and SMS delivery.
+- **Tests:** helpers (8), page (3).
+- **Deferred:** the Native app reading the address book directly; dismissing
+  a single match; importing more than 1000 numbers.
+
+### Gates for phase 2 and sprints 7–8
+
+Run: targeted specs per piece; `make test-changed` (the whole suite: 884
+files, 10,732 tests passed), lint and prettier on every touched file,
+`check:i18n` (orphaned app-password keys removed from all locales),
+`check:dead-code`, `check:storage`, `check:subpaths`, `check:libs`, the
+deep-link audit (0 broken) and `design:inventory-check` after review (four
+new adopted-scope candidates). Not run, left to GitHub Actions: `make test`
+with coverage, production/SEO builds, `make design-verify`.
+
 ## What's next
 
-Sprints 7 (chat 2: live updates, paging, group chats) and 8 (find contacts)
-are what remain of the plan, plus the deferred items above and phase 2 of the
-app-password retirement. Owner to-dos: push and watch GHA; run the sprint 1–4 test
-plans, above all a real `prompt=create` sign-up and the Following-feed
-default on an account that never changed it.
+All eight planned sprints are built. What remains is the deferred work listed
+under each sprint, the bearer-transport cleanup from phase 2, and the live
+trials. Owner to-dos: push and watch GHA; run the test plans, above all a
+group chat with a second account, a join link, and find contacts with a real
+phone number (it may turn out that the contact endpoints refuse a third-party
+sign-in).

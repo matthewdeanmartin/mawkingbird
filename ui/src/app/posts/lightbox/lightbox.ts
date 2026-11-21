@@ -6,6 +6,9 @@ import { SpeechReader } from '../../reading/speech/speech-reader';
 import { MediaAttachment, Status } from '../../platform/api/models';
 import { VideoPlayerHost as VideoPlayer } from '../../reading/video-player/video-player-host';
 import { ImageActions, imageFileName } from '../media-download/image-actions';
+import { TranslationRouter } from '../../translation/translation-router';
+import { OpenRouterSession } from '../../connections/openrouter/openrouter-session';
+import { AiAvailability } from '../../platform/build/ai-availability';
 import {
   attachmentSource,
   mediaUrl,
@@ -22,6 +25,11 @@ import {
 // i18n lightbox.aiCaption: AI description (may be wrong):
 // i18n lightbox.readDescription: 🔊 Read description
 // i18n lightbox.stopReading: ⏹ Stop reading
+// i18n lightbox.translateDescription: 🌐 Translate description
+// i18n lightbox.translatingDescription: Translating…
+// i18n lightbox.hideTranslation: Show the original
+// i18n lightbox.translationFailed: This description couldn't be translated.
+// i18n lightbox.sameLanguage: This description is already in your language.
 
 /**
  * How far a finger must travel to count as a swipe rather than a tap that
@@ -65,6 +73,53 @@ export class Lightbox {
   protected current = computed(() => this.items()[this.index()] ?? null);
 
   protected readonly describer = inject(ImageDescriber);
+  private readonly translator = inject(TranslationRouter);
+  private readonly openrouter = inject(OpenRouterSession);
+  private readonly ai = inject(AiAvailability);
+  /** Translated descriptions by media id; asked for one image at a time. */
+  protected translatedAlt = signal<Record<string, string>>({});
+  protected translatingId = signal<string | null>(null);
+  protected altTranslateNote = signal<{ id: string; key: string } | null>(null);
+
+  /**
+   * A post's image descriptions are translated here, one at a time and only
+   * when asked, rather than sent with the post (owner, 2026-11-21). The
+   * description goes alone, through the engines that translate text: never the
+   * home server, which translates a whole post by its id.
+   */
+  protected async translateDescription(media: MediaAttachment, event: Event): Promise<void> {
+    event.stopPropagation();
+    const description = media.description?.trim();
+    if (!description || this.translatingId()) return;
+    if (this.translatedAlt()[media.id]) {
+      const { [media.id]: _shown, ...rest } = this.translatedAlt();
+      this.translatedAlt.set(rest);
+      return;
+    }
+    const post = this.context()?.status;
+    this.translatingId.set(media.id);
+    this.altTranslateNote.set(null);
+    try {
+      const outcome = await this.translator.translate({
+        status: altAsStatus(description, post?.language ?? null),
+        mode: 'manual',
+        serverCanTranslate: false,
+        aiAvailable: this.ai.enabled() && this.openrouter.ready(),
+      });
+      if (outcome.kind === 'text') {
+        this.translatedAlt.update((all) => ({ ...all, [media.id]: outcome.text }));
+      } else {
+        this.altTranslateNote.set({
+          id: media.id,
+          key: outcome.kind === 'same' ? 'lightbox.sameLanguage' : 'lightbox.translationFailed',
+        });
+      }
+    } catch {
+      this.altTranslateNote.set({ id: media.id, key: 'lightbox.translationFailed' });
+    } finally {
+      this.translatingId.set(null);
+    }
+  }
   protected readonly speech = inject(SpeechReader);
   /** AI descriptions by media id: shown for this viewing only, never saved. */
   protected aiDescriptions = signal<Record<string, string>>({});
@@ -231,4 +286,52 @@ export class Lightbox {
       this.prev(event);
     }
   }
+}
+
+/** One image description as a bare post, so the text engines can take it. */
+function altAsStatus(description: string, language: string | null): Status {
+  const escaped = description.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const status: Status = {
+    id: 'alt',
+    created_at: new Date(0).toISOString(),
+    edited_at: null,
+    quote: null,
+    quote_approval_policy: null,
+    content: `<p>${escaped}</p>`,
+    spoiler_text: '',
+    visibility: 'public',
+    url: '',
+    account: {
+      id: 'alt',
+      username: '',
+      acct: '',
+      display_name: '',
+      note: '',
+      url: '',
+      avatar: '',
+      avatar_static: '',
+      header: '',
+      followers_count: 0,
+      following_count: 0,
+      statuses_count: 0,
+      bot: false,
+      locked: false,
+      fields: [],
+    },
+    reblog: null,
+    in_reply_to_id: null,
+    replies_count: 0,
+    reblogs_count: 0,
+    favourites_count: 0,
+    favourited: false,
+    reblogged: false,
+    bookmarked: false,
+    muted: false,
+    pinned: false,
+    sensitive: false,
+    poll: null,
+    media_attachments: [],
+    language,
+  };
+  return status;
 }

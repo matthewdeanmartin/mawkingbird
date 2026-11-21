@@ -531,6 +531,24 @@ describe('Profile block/unblock', () => {
     httpMock.expectNone((r) => r.method !== 'GET');
   });
 
+  it('shows a Bluesky profile with no Bluesky link, from the public AppView', () => {
+    // Switching accounts on a Bluesky profile used to strand the reader on a
+    // "link required" message with a Retry that could never work.
+    const fixture = setUp();
+    const cmp = fixture.componentInstance as any;
+    cmp.loadBluesky('did:plc:other');
+
+    httpMock
+      .expectOne((r) => r.url === 'https://public.api.bsky.app/xrpc/app.bsky.actor.getProfile')
+      .flush({ did: 'did:plc:other', handle: 'other.bsky.social', displayName: 'Other' });
+    httpMock
+      .expectOne((r) => r.url === 'https://public.api.bsky.app/xrpc/app.bsky.feed.getAuthorFeed')
+      .flush({ feed: [] });
+
+    expect(cmp.bskyError()).toBeNull();
+    expect(cmp.account().display_name).toBe('Other');
+  });
+
   /**
    * The relationship reads out of exactly one control.
    *

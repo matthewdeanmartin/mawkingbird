@@ -187,3 +187,19 @@
   border-radius: 8px;
   border: 1px solid var(--border);
 }
+
+/* Reply-guy controls: the dashed chip reads as "not connected", not as a
+   label the author chose; the guard row stands where the excerpt would. */
+.reply-guy-chip {
+  border-style: dashed;
+  font-size: 0.75em;
+  margin-left: 4px;
+}
+
+.reply-guy-cw {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}

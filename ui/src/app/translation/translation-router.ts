@@ -505,7 +505,14 @@ export const CHAIN_ENGINE_NAMES: Record<TranslationEngine, string> = {
  * kanji (草, "lol") is a word.
  */
 export function hasTranslatableText(status: Status): boolean {
-  const text = plainText(status)
+  // The post's own words only: image descriptions do not count. A post that is
+  // only hashtags (or nothing) with a described image is not sent whole; its
+  // descriptions are translated one at a time where they are read, in the
+  // image viewer (owner, 2026-11-21).
+  const body = htmlToPlainText(status.content);
+  const text = [status.spoiler_text, body, ...(status.poll?.options ?? []).map((o) => o.title)]
+    .filter(Boolean)
+    .join('\n')
     .replace(/https?:\/\/\S+/g, ' ')
     .replace(/(^|\s)@[\w.-]+(@[\w.-]+)?/g, ' ')
     .replace(/(^|\s)#[^\s#]+/gu, ' ')

@@ -6,6 +6,9 @@ import { qualifiedHandle } from './account-handle';
 import { Account, Relationship } from '../platform/api/models';
 import { BlueskyGraph } from '../connections/bluesky/bluesky-graph';
 import { BlueskySession } from '../connections/bluesky/bluesky-session';
+import { MisskeyApi } from '../connections/misskey/misskey-api';
+import { MkRelation } from '../connections/misskey/misskey-types';
+import { accountScopeSuffix } from '../platform/session/account-scope';
 
 /**
  * Who the viewer follows, resolved in batches and shared across the app.
@@ -54,6 +57,7 @@ export class FollowState {
   private auth = inject(Auth);
   private blueskyGraph = inject(BlueskyGraph);
   private blueskySession = inject(BlueskySession);
+  private misskeyApi = inject(MisskeyApi);
 
   private known = signal<Record<string, Relationship>>({});
   /** Foreign `user@host` → the local account record for them, or null if none. */
@@ -62,9 +66,18 @@ export class FollowState {
   /** Ids with a write in flight, so the button can disable itself. */
   private busy = signal<ReadonlySet<string>>(new Set());
   private pending = new Map<string, Promise<void>>();
+  /** The signed-in account these answers belong to; a switch drops them all. */
+  private scope = accountScopeSuffix();
+
+  /** The full relationship, when one has been fetched or written; never fetches. */
+  relationship(id: string): Relationship | undefined {
+    if (this.stale()) return undefined;
+    return this.known()[id];
+  }
 
   /** What we know about this account without asking. */
   status(id: string): FollowStatus {
+    if (this.stale()) return 'unknown';
     const rel = this.known()[id];
     if (!rel) {
       return 'unknown';
@@ -92,6 +105,7 @@ export class FollowState {
    * no relationship to have, and the endpoint would 401.
    */
   async resolve(ids: string[]): Promise<void> {
+    this.ensureScope();
     if (this.auth.isAnonymous) {
       return;
     }
@@ -103,12 +117,25 @@ export class FollowState {
       .filter((p): p is Promise<void> => !!p);
     const wanted = unique.filter((id) => !this.known()[id] && !this.pending.has(id));
     const bluesky = wanted.filter((id) => isBlueskyId(id) && this.blueskySession.linked());
-    const mastodon = wanted.filter((id) => !isBlueskyId(id));
+    const misskey = wanted.filter((id) => isMisskeyId(id) && !!this.auth.activeMisskeyKey());
+    const mastodon = wanted.filter((id) => !isBlueskyId(id) && !isMisskeyId(id));
 
     const batches: Promise<void>[] = [];
     for (let i = 0; i < mastodon.length; i += RELATIONSHIP_BATCH) {
       const slice = mastodon.slice(i, i + RELATIONSHIP_BATCH);
       const batch = this.fetch(slice).finally(() => {
+        for (const id of slice) {
+          this.pending.delete(id);
+        }
+      });
+      for (const id of slice) {
+        this.pending.set(id, batch);
+      }
+      batches.push(batch);
+    }
+    for (let i = 0; i < misskey.length; i += RELATIONSHIP_BATCH) {
+      const slice = misskey.slice(i, i + RELATIONSHIP_BATCH);
+      const batch = this.fetchMisskey(slice).finally(() => {
         for (const id of slice) {
           this.pending.delete(id);
         }
@@ -142,6 +169,18 @@ export class FollowState {
       this.write([relationship]);
     } catch {
       // As above, an unknown button is safer than inventing relationship state.
+    }
+  }
+
+  /** Misskey answers per user with its own shape; mapped onto Mastodon's. */
+  private async fetchMisskey(ids: string[]): Promise<void> {
+    try {
+      const relations = await firstValueFrom(
+        this.misskeyApi.relations(ids.map((id) => id.slice(MISSKEY_PREFIX.length))),
+      );
+      this.write(relations.map(misskeyRelationship));
+    } catch {
+      // As above: unknown, never invented.
     }
   }
 
@@ -217,6 +256,7 @@ export class FollowState {
 
   /** Fold in relationships someone else already fetched. */
   write(rels: Relationship[]): void {
+    this.ensureScope();
     this.known.update((all) => {
       const next = { ...all };
       for (const rel of rels) {
@@ -286,6 +326,24 @@ export class FollowState {
     this.foreignPending.clear();
   }
 
+  /**
+   * Relationships are the signed-in account's: "following" for one account is
+   * a lie for the next. Nothing called {@link reset} on a switch, so reads
+   * answer "unknown" for another account's answers, and the next fetch, which
+   * is never inside a `computed`, drops them.
+   */
+  private stale(): boolean {
+    return this.scope !== accountScopeSuffix();
+  }
+
+  private ensureScope(): void {
+    const scope = accountScopeSuffix();
+    if (scope !== this.scope) {
+      this.scope = scope;
+      this.reset();
+    }
+  }
+
   private forget(id: string): void {
     this.known.update((all) => {
       const next = { ...all };
@@ -305,6 +363,24 @@ export class FollowState {
       return next;
     });
   }
+}
+
+/** Misskey account ids, as the Misskey adapter prefixes them. */
+const MISSKEY_PREFIX = 'mk:';
+
+function isMisskeyId(id: string): boolean {
+  return id.startsWith(MISSKEY_PREFIX);
+}
+
+function misskeyRelationship(relation: MkRelation): Relationship {
+  return {
+    id: `${MISSKEY_PREFIX}${relation.id}`,
+    following: relation.isFollowing,
+    followed_by: relation.isFollowed,
+    requested: relation.hasPendingFollowRequestFromYou,
+    blocking: relation.isBlocking,
+    muting: relation.isMuted,
+  };
 }
 
 function isBlueskyId(id: string): boolean {

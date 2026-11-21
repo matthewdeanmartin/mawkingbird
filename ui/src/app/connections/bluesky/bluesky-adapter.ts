@@ -159,6 +159,11 @@ export function adaptAuthor(author: BskyAuthor): Account {
   return {
     id: `bsky:${author.did}`,
     mutual: !!author.viewer?.following && !!author.viewer?.followedBy,
+    // Only when the AppView sent a viewer block: a signed-out read has none,
+    // and "unknown" must not read as "you don't follow them".
+    ...(author.viewer
+      ? { viewerFollows: !!author.viewer.following, followsViewer: !!author.viewer.followedBy }
+      : {}),
     username: author.handle,
     acct: author.handle,
     display_name: author.displayName ?? author.handle,

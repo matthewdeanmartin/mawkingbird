@@ -7,11 +7,14 @@ import { BlueskySession } from './bluesky-session';
 import { BlueskyPds } from './bluesky-pds';
 import {
   BskyAllowIncoming,
+  BskyChatMember,
   BskyConvoView,
   BskyChatLogEntry,
   BskyConvoList,
+  BskyJoinLink,
   BskyMessageView,
 } from './bluesky-types';
+import type { BskyJoinLinkPreview } from './bluesky-group-chat';
 import { IndicatorEvents } from '../../shell/indicator-events';
 
 /**
@@ -185,6 +188,87 @@ export class BlueskyChatApi {
       rkey: 'self',
       record: { $type: DECLARATION, allowIncoming },
     });
+  }
+
+  // --- group chats (chat.bsky.group.*) -------------------------------------
+
+  /** Start a group with these members (DIDs); the reader is its owner. */
+  createGroup(name: string, members: string[]): Observable<{ convo: BskyConvoView }> {
+    return this.chatPost('chat.bsky.group.createGroup', { name: name.trim(), members });
+  }
+
+  renameGroup(convoId: string, name: string): Observable<{ convo: BskyConvoView }> {
+    return this.chatPost('chat.bsky.group.editGroup', { convoId, name: name.trim() });
+  }
+
+  addMembers(convoId: string, members: string[]): Observable<{ convo: BskyConvoView }> {
+    return this.chatPost('chat.bsky.group.addMembers', { convoId, members });
+  }
+
+  removeMembers(convoId: string, members: string[]): Observable<{ convo: BskyConvoView }> {
+    return this.chatPost('chat.bsky.group.removeMembers', { convoId, members });
+  }
+
+  /** Every member of a group, a page at a time. */
+  getMembers(
+    convoId: string,
+    cursor?: string,
+  ): Observable<{ members: BskyChatMember[]; cursor?: string }> {
+    let params = new HttpParams().set('convoId', convoId).set('limit', '100');
+    if (cursor) params = params.set('cursor', cursor);
+    return this.chatGet('chat.bsky.convo.getConvoMembers', params);
+  }
+
+  /** Stop (or allow again) new messages in a group; the owner's choice. */
+  setLocked(convoId: string, locked: boolean): Observable<{ convo: BskyConvoView }> {
+    return this.chatPost(locked ? 'chat.bsky.convo.lockConvo' : 'chat.bsky.convo.unlockConvo', {
+      convoId,
+    });
+  }
+
+  /** Make (or replace) the group's join link. */
+  createJoinLink(
+    convoId: string,
+    requireApproval: boolean,
+    joinRule: 'anyone' | 'followedByOwner' = 'anyone',
+  ): Observable<{ joinLink: BskyJoinLink }> {
+    return this.chatPost('chat.bsky.group.createJoinLink', { convoId, joinRule, requireApproval });
+  }
+
+  setJoinLinkEnabled(convoId: string, enabled: boolean): Observable<{ joinLink: BskyJoinLink }> {
+    return this.chatPost(
+      enabled ? 'chat.bsky.group.enableJoinLink' : 'chat.bsky.group.disableJoinLink',
+      { convoId },
+    );
+  }
+
+  listJoinRequests(
+    convoId: string,
+  ): Observable<{ requests: { requestedBy: BskyChatMember; requestedAt: string }[] }> {
+    return this.chatGet(
+      'chat.bsky.group.listJoinRequests',
+      new HttpParams().set('convoId', convoId).set('limit', '100'),
+    );
+  }
+
+  answerJoinRequest(convoId: string, member: string, approve: boolean): Observable<unknown> {
+    return this.chatPost(
+      approve ? 'chat.bsky.group.approveJoinRequest' : 'chat.bsky.group.rejectJoinRequest',
+      { convoId, member },
+    );
+  }
+
+  /** What a join link leads to, before joining. */
+  joinLinkPreview(code: string): Observable<{ joinLinkPreviews: BskyJoinLinkPreview[] }> {
+    return this.chatGet(
+      'chat.bsky.group.getJoinLinkPreviews',
+      new HttpParams().append('codes', code),
+    );
+  }
+
+  /** Join through a link: straight in, or a request the owner approves. */
+  requestJoin(code: string): Observable<{ convo?: BskyConvoView; status?: string }> {
+    return this.chatPost('chat.bsky.group.requestJoin', { code });
   }
 
   /** Everything that happened across all convos since `cursor` (for polling). */

@@ -37,6 +37,13 @@ import {
 // i18n settings.wellness.key.noHoverCards.hint: Lingering over a name no longer opens a card. Click through to the profile when you mean to.
 // i18n settings.wellness.key.limitedNotifications: Limited notifications
 // i18n settings.wellness.key.limitedNotifications.hint: Favourites, boosts and new followers stop arriving. Replies, mentions and messages still do.
+// i18n settings.wellness.key.hideReplyGuys: Hide replies from people I don't follow
+// i18n settings.wellness.key.hideReplyGuys.hint: Their replies, mentions and quotes no longer reach your notifications. Nothing in any level turns this on: it's yours to choose.
+// i18n settings.wellness.replyGuys: Replies from people you don't follow
+// i18n settings.wellness.replyGuys.intro: Following someone is how you say you want to hear from them. Everyone else can still reply, mention and quote you; these settings decide how close they get.
+// i18n settings.wellness.replyGuys.label: In your conversations
+// i18n settings.wellness.replyGuys.cw: One click before replies from people I don't follow
+// i18n settings.wellness.replyGuys.cw.hint: Under your own posts and in notifications, their words wait behind a Show button, with a quiet "you don't follow" tag. Nothing is hidden for good. To remove them from notifications entirely, use the switch above.
 // i18n settings.wellness.key.hideAnalytics: Hide analytics
 // i18n settings.wellness.key.hideAnalytics.hint: Removes the ways into post, account and feed analytics. A bookmarked analytics address still works.
 // i18n settings.wellness.key.forceCalm: Always use Calm

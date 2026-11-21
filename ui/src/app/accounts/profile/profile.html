@@ -1757,10 +1757,12 @@
        "we could not load it", which is a different claim from "it does not
        exist" — the fallback below would send the reader to check a handle that
        was never the problem. -->
-    <p class="muted center">{{ error }}</p>
-    <button class="btn" type="button" (click)="retryProfile()">
-      {{ 'pages.profile.actions.retry' | transloco }}
-    </button>
+    <div class="profile-error">
+      <p class="profile-error-msg">{{ error }}</p>
+      <button class="btn" type="button" (click)="retryProfile()">
+        {{ 'pages.profile.actions.retry' | transloco }}
+      </button>
+    </div>
   } @else if (loadError(); as error) {
     <!-- Account ids belong to the server that issued them, so a profile URL from
        one server 404s on another. Say which server refused, and offer the two

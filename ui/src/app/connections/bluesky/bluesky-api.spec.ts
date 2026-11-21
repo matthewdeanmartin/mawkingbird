@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { BlueskyApi, tidFromSeed } from './bluesky-api';
 import { BlueskySession, BskySession } from './bluesky-session';
-import { bskySessionStored, seedBskySession, storedBskyProfile } from '../../testing/seed-storage';
+import { bskySessionStored, seedBskySession } from '../../testing/seed-storage';
 
 const SERVICE = 'https://bsky.social';
 
@@ -30,30 +30,6 @@ describe('BlueskySession', () => {
   });
 
   afterEach(() => httpMock.verify());
-
-  it('login creates a session, captures the profile, and persists', () => {
-    const session = TestBed.inject(BlueskySession);
-    let done = false;
-    session.login('me.bsky.social', 'app-pass').subscribe(() => (done = true));
-
-    const create = httpMock.expectOne(`${SERVICE}/xrpc/com.atproto.server.createSession`);
-    expect(create.request.body).toEqual({ identifier: 'me.bsky.social', password: 'app-pass' });
-    create.flush({
-      did: 'did:plc:me',
-      handle: 'me.bsky.social',
-      accessJwt: 'a1',
-      refreshJwt: 'r1',
-    });
-
-    const profile = httpMock.expectOne((req) => req.url.includes('app.bsky.actor.getProfile'));
-    expect(profile.request.headers.get('Authorization')).toBe('Bearer a1');
-    profile.flush({ displayName: 'Me', avatar: 'https://cdn/me.jpg' });
-
-    expect(done).toBe(true);
-    expect(session.linked()).toBe(true);
-    expect(session.session()?.displayName).toBe('Me');
-    expect(storedBskyProfile()!['did']).toBe('did:plc:me');
-  });
 
   it('unlink drops the session and storage', () => {
     seedBskySession(storedSession());

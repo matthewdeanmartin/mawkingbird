@@ -1,0 +1,19 @@
+/* Layout only: controls, sections and states are shared widgets. */
+:host {
+  display: block;
+  padding: 0 16px 24px;
+}
+
+.contacts-form {
+  display: grid;
+  gap: 10px;
+  max-width: 32rem;
+}
+
+.contacts-form button {
+  justify-self: start;
+}
+
+.contacts-remove {
+  margin-top: 24px;
+}

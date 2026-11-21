@@ -46,6 +46,8 @@ import { isElizaId } from '../../chat/eliza/eliza-identity';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbNotice } from '../../design-system/notice/notice';
+import { ReplyGuys } from '../../accounts/reply-guys';
+import { belowMine, ReplyGuyMode, threadReplyGuyMode } from '../../accounts/reply-guys-model';
 import { keepPortableAddress } from '../../posts/copy-link/portable-address';
 
 // i18n pages.thread.loading: Loading…
@@ -326,6 +328,41 @@ export class Thread implements OnInit {
    * chosen yet, so each card falls back to its own rule.
    */
   protected readonly threadCwOpen = signal<boolean | null>(null);
+
+  private readonly replyGuys = inject(ReplyGuys);
+  /**
+   * Reply-guy mode per card. Replies get the "you don't follow" chip; replies
+   * below one of the reader's own posts get the virtual content warning too.
+   * The focused post is never guarded: the reader asked to see it.
+   */
+  private readonly replyGuyModes = computed(() => {
+    const focused = this.status();
+    const all = [...this.ancestors(), ...(focused ? [focused] : []), ...this.descendants()];
+    const root = all.find((post) => !post.in_reply_to_id) ?? null;
+    const mine = belowMine(all, (post) => this.replyGuys.isSelf(post.account));
+    const modes = new Map<string, ReplyGuyMode>();
+    for (const post of all) {
+      const mode = threadReplyGuyMode(post, root?.account.id ?? null, mine.has(post.id));
+      modes.set(post.id, post.id === focused?.id && mode === 'guard' ? 'chip' : mode);
+    }
+    return modes;
+  });
+
+  protected replyGuyMode(post: Status): ReplyGuyMode {
+    return this.replyGuyModes().get(post.id) ?? 'off';
+  }
+
+  /**
+   * Replying to someone who doesn't follow the reader: warned above the reply
+   * box, as a translated post is. Only where the follow graph is the reader's.
+   */
+  protected readonly focusedNotFollowingMe = computed(() => {
+    const focused = this.status();
+    if (!focused || this.isAnonymousPublic() || this.isMessageStatus()) return false;
+    const provider = focused.provider ?? 'mastodon';
+    if (!['mastodon', 'bluesky', 'misskey'].includes(provider)) return false;
+    return this.replyGuys.followsMe(focused.account) === false;
+  });
   /** Ids of every post in the loaded conversation, to tell a move within it from a new thread. */
   private readonly threadIds = computed(
     () =>

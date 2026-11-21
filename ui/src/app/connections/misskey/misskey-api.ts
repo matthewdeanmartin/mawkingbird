@@ -325,6 +325,14 @@ export class MisskeyApi {
     return this.signed<MkRelation>('users/relation', { userId });
   }
 
+  /**
+   * The reader's relationship to several users in one call: `users/relation`
+   * takes an id array as well as a single id, and answers in kind.
+   */
+  relations(userIds: string[]): Observable<MkRelation[]> {
+    return this.signed<MkRelation[]>('users/relation', { userId: userIds });
+  }
+
   follow(userId: string): Observable<unknown> {
     return this.signed<unknown>('following/create', { userId });
   }

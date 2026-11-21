@@ -1,13 +1,13 @@
 import { NATIVE_SOCIAL, forgetNativeAccount } from '../../platform/session/platform-login';
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { map, Observable, switchMap, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { scopedKey, scopeSuffixForDid } from '../../platform/session/account-scope';
 import { markOnboardingPending } from '../../accounts/onboarding/onboarding-store';
 import { armSetup } from '../../accounts/setup/setup-store';
 import { ProfileAccountKey } from '../../accounts/mawkingbird/profile-account-key';
-import { VaultBridge, type SyncOutcome } from '../vault/vault-bridge';
+import { VaultBridge } from '../vault/vault-bridge';
 import { BlueskyOAuth, isSignupIntent } from './bluesky-oauth';
 
 /** Where a new Bluesky account is made: Bluesky's own PDS entryway. */
@@ -16,7 +16,6 @@ import {
   ACCOUNT_MODE_KEY,
   BSKY_IDENTITY_CREDENTIALS_KEY,
   blueskyIdentity,
-  blueskyIdentityDid,
   clearBlueskyIdentity,
   blueskyIsPrimaryKind,
   saveBlueskyIdentity,
@@ -42,7 +41,12 @@ const CREDENTIALS_KEY_BASE = 'mockingbird_bsky_credentials';
 export const BSKY_SERVICE = 'https://bsky.social';
 
 export interface BskySession extends ExpiringCredential {
-  authMethod?: 'app-password' | 'oauth';
+  /**
+   * `retired`: an app-password link whose tokens were dropped when app
+   * passwords were retired (spec/bsky_parity.md). It keeps its place in the
+   * account list and needs Bluesky's own sign-in to work again.
+   */
+  authMethod?: 'app-password' | 'oauth' | 'retired';
   nativeHandle?: string;
   service: string;
   handle: string;
@@ -64,22 +68,11 @@ export interface BskySession extends ExpiringCredential {
   appPassword?: string;
 }
 
-interface LegacyBskySession extends BskySession {
-  authMethod: 'app-password';
-  accessJwt: string;
-  refreshJwt: string;
-}
-
 interface SessionResponse {
   did: string;
   handle: string;
   accessJwt: string;
   refreshJwt: string;
-}
-
-interface ProfileResponse {
-  displayName?: string;
-  avatar?: string;
 }
 
 /**
@@ -241,6 +234,15 @@ export class BlueskySession implements ExpiringConnection {
       ? loadIdentitySession()
       : loadSession(this.profileKey, this.credentialsKey, true),
   );
+
+  constructor() {
+    // A retired app-password link may still have its password in the vault,
+    // written before the retirement; drop it the first time the account runs.
+    const current = this.session();
+    if (current?.authMethod === 'retired' && !this.native) {
+      void this.forgetVaultedAppPassword(this.isIdentity ? current.did : null);
+    }
+  }
   readonly linked = computed(() => this.session() !== null);
 
   /** True when this Bluesky account is the identity the app is signed in as. */
@@ -283,74 +285,6 @@ export class BlueskySession implements ExpiringConnection {
     if (session && credentialExpired(session.connectedAt)) {
       this.unlink();
     }
-  }
-
-  /** Authenticate and store the result as a **connector** under the active account. */
-  login(identifier: string, appPassword: string): Observable<BskySession> {
-    return this.authenticate(identifier, appPassword).pipe(tap((session) => this.persist(session)));
-  }
-
-  /**
-   * Authenticate and store the result as the app's **primary identity**.
-   *
-   * Separate from {@link login} because of an ordering problem, not a protocol
-   * one: this instance resolved its storage keys at construction, and at the
-   * moment a first-time Bluesky login is submitted the active kind is not yet
-   * `bluesky` — so `this.profileKey` is a *connector* key. Writing the identity
-   * through it would file the app's identity under the previous account's
-   * namespace, where the next boot would never look for it.
-   *
-   * So the write goes explicitly to the unscoped identity keys. The network round
-   * trip is shared; only the destination differs.
-   *
-   * The caller is expected to follow this with `Auth.enterBluesky()`, which is
-   * what makes the identity active — this method deliberately does not touch the
-   * account-kind key, so a failed or abandoned login cannot leave the app
-   * claiming to be signed in.
-   */
-  loginAsIdentity(identifier: string, appPassword: string): Observable<BskySession> {
-    return this.authenticate(identifier, appPassword).pipe(
-      tap((session) => {
-        const previouslyActiveDid = blueskyIdentityDid();
-        const {
-          authMethod: _authMethod,
-          accessJwt,
-          refreshJwt,
-          connectedAt,
-          appPassword: pw,
-          ...profile
-        } = session;
-        const created = saveBlueskyIdentity(
-          profile,
-          {
-            authMethod: 'app-password',
-            accessJwt,
-            refreshJwt,
-            connectedAt,
-            ...(pw ? { appPassword: pw } : {}),
-          },
-          true,
-        );
-        if (created) markOnboardingPending(scopeSuffixForDid(profile.did));
-        // Straight to the identity keys rather than through `persist`, so the
-        // vault write must be requested here too. Always the identity base:
-        // this instance may still be holding *connector* keys (see the ordering
-        // note above), and writing the identity under a connector scope would
-        // file it where no later boot looks.
-        if (pw) {
-          void this.syncIdentityCredentialToVault(
-            session.did,
-            session.handle,
-            pw,
-            previouslyActiveDid,
-          );
-        }
-        // Reflect it in memory too, so a caller that reads `session()` between the
-        // write and the reload (the login page, attributing the new account) sees
-        // the account it just signed in as rather than a stale connector.
-        this.session.set(session);
-      }),
-    );
   }
 
   /** Redirect to the account's own PDS authorization screen. */
@@ -444,14 +378,15 @@ export class BlueskySession implements ExpiringConnection {
       if (this.isIdentity) {
         throw new Error('This account is already signed in with Bluesky.');
       }
-      const replacedAppPassword =
-        this.session()?.authMethod === 'app-password' || this.storedAppPassword() !== null;
+      const previous = this.session();
+      const replacedAppPassword = !!previous && previous.authMethod !== 'oauth';
       this.persist(session);
       if (replacedAppPassword) void this.forgetVaultedAppPassword(null);
       return { kind: 'connector', session };
     }
+    const previousIdentity = blueskyIdentity(result.profile.did);
     const replacedAppPassword =
-      blueskyIdentity(result.profile.did)?.credentials.authMethod === 'app-password';
+      !!previousIdentity && previousIdentity.credentials.authMethod !== 'oauth';
     const created = saveBlueskyIdentity(
       result.profile,
       { authMethod: 'oauth', connectedAt: session.connectedAt },
@@ -540,53 +475,6 @@ export class BlueskySession implements ExpiringConnection {
       return this.native.blueskyFetch(current.nativeHandle, pathname, init);
     }
     return this.oauth.fetch(current.did, pathname, init);
-  }
-
-  /**
-   * The `createSession` round trip, plus the profile fetch that gives the account
-   * a display name and avatar. Persists nothing — callers choose where it lands.
-   */
-  private authenticate(identifier: string, appPassword: string): Observable<LegacyBskySession> {
-    if (this.native) throw new Error('Use browser OAuth in the native app.');
-    return this.http
-      .post<SessionResponse>(
-        `${BSKY_SERVICE}/xrpc/com.atproto.server.createSession`,
-        { identifier, password: appPassword },
-        { context: externalFetch() },
-      )
-      .pipe(
-        map((res): LegacyBskySession => ({
-          authMethod: 'app-password',
-          service: BSKY_SERVICE,
-          handle: res.handle,
-          did: res.did,
-          accessJwt: res.accessJwt,
-          refreshJwt: res.refreshJwt,
-          // Kept so `persist` can vault it — see BskyCredentials.appPassword.
-          appPassword,
-          // Retention starts here and is carried through every later
-          // persist() (refresh, PDS discovery) untouched.
-          connectedAt: Date.now(),
-        })),
-        // Grab display name + avatar so the UI can attribute the viewer's own replies.
-        switchMap((session) =>
-          this.http
-            .get<ProfileResponse>(
-              `${session.service}/xrpc/app.bsky.actor.getProfile?actor=${encodeURIComponent(session.did)}`,
-              {
-                headers: { Authorization: `Bearer ${session.accessJwt}` },
-                context: externalFetch(),
-              },
-            )
-            .pipe(
-              map((profile) => ({
-                ...session,
-                displayName: profile.displayName,
-                avatar: profile.avatar,
-              })),
-            ),
-        ),
-      );
   }
 
   /** Swap the refresh token for a fresh access/refresh pair. */
@@ -694,15 +582,14 @@ export class BlueskySession implements ExpiringConnection {
       appPassword,
       ...profile
     } = session;
-    // Read before the write, so "did this login introduce a new password?" can
-    // be answered below.
-    const previous = this.storedAppPassword();
+    // App passwords are retired (spec/bsky_parity.md): a token refresh keeps
+    // the pair, but the password itself is never stored or vaulted again.
+    void appPassword;
     const credentials = {
       authMethod: 'app-password' as const,
       accessJwt,
       refreshJwt,
       connectedAt,
-      ...(appPassword ? { appPassword } : {}),
     } satisfies BskyCredentials;
     if (this.isIdentity) {
       saveBlueskyIdentity(profile, credentials, true);
@@ -711,17 +598,6 @@ export class BlueskySession implements ExpiringConnection {
       localStorage.setItem(this.credentialsKey, JSON.stringify(credentials));
     }
     this.session.set(session);
-    // Vault the app password only when it is *new* to storage.
-    //
-    // The in-memory session carries it forward across refreshes and PDS
-    // discovery (both go through here), so a bare `if (appPassword)` wrote to
-    // the vault on every token refresh — churn the one-blob vault design is not
-    // shaped for, and the exact cost that keeps `mockingbird_paste_edit_keys`
-    // out of the manifest. Comparing against what was already stored means a
-    // write happens on a real login and a password change, and nowhere else.
-    if (appPassword && appPassword !== previous) {
-      void this.syncCredentialToVault(session.handle, appPassword);
-    }
   }
 
   /**
@@ -753,83 +629,6 @@ export class BlueskySession implements ExpiringConnection {
   }
 
   /**
-   * Push the app password to the vault, so the next device does not ask for it.
-   *
-   * Not awaited: connecting should feel instant, and a vault that is locked or
-   * switched off must not fail the login. `VaultBridge.writeThrough` reports
-   * `skipped` in those cases rather than throwing.
-   */
-  private async syncCredentialToVault(identifier: string, appPassword: string): Promise<void> {
-    if (this.isIdentity) {
-      const did = this.session()?.did;
-      if (did) await this.syncIdentityCredentialToVault(did, identifier, appPassword);
-      return;
-    }
-    await this.bridge.writeThrough(
-      this.credentialsBase,
-      JSON.stringify({ identifier, appPassword } satisfies VaultedBskyCredential),
-      this.vaultAccountKey(),
-    );
-  }
-
-  /**
-   * The vaulted app password for this account, or null.
-   *
-   * Read by the login page so a device that has the vault open can offer to
-   * sign in without a paste. Deliberately returns the credential rather than
-   * logging in itself: minting the session is `login`/`loginAsIdentity`'s job,
-   * and which of the two applies is the caller's decision, not this method's.
-   */
-  vaultedCredential(): VaultedBskyCredential | null {
-    const raw = this.bridge.readThrough(this.credentialsBase, this.vaultAccountKey());
-    if (!raw) {
-      return null;
-    }
-    try {
-      const parsed: unknown = JSON.parse(raw);
-      if (this.isIdentity && !isVaultedBskyCredential(parsed)) {
-        const did = this.session()?.did;
-        return did && parsed && typeof parsed === 'object'
-          ? ((parsed as VaultedBskyIdentityCredentials)[did] ?? null)
-          : null;
-      }
-      return isVaultedBskyCredential(parsed) ? parsed : null;
-    } catch {
-      return null;
-    }
-  }
-
-  /** Push whatever app password is stored locally, for the settings page's
-   *  explicit "sync now". Returns what happened so the UI can report it. */
-  async syncToVault(): Promise<SyncOutcome> {
-    const session = this.session();
-    const appPassword = this.storedAppPassword();
-    if (!session || !appPassword) return { kind: 'skipped' };
-    if (this.isIdentity) {
-      return this.syncIdentityCredentialToVault(session.did, session.handle, appPassword);
-    }
-    return this.bridge.writeThrough(
-      this.credentialsBase,
-      JSON.stringify({
-        identifier: session.handle,
-        appPassword,
-      } satisfies VaultedBskyCredential),
-      this.vaultAccountKey(),
-    );
-  }
-
-  /** The app password from the local credentials blob, when one was stored. */
-  private storedAppPassword(): string | null {
-    if (this.isIdentity) return this.session()?.appPassword ?? null;
-    try {
-      const raw = localStorage.getItem(this.credentialsKey);
-      return raw ? ((JSON.parse(raw) as BskyCredentials).appPassword ?? null) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  /**
    * The registry base this instance vaults under, matching the storage key it
    * already chose at construction.
    */
@@ -844,44 +643,5 @@ export class BlueskySession implements ExpiringConnection {
    */
   private vaultAccountKey(): string | null {
     return this.isIdentity ? null : this.accountKey.current();
-  }
-
-  /**
-   * The identity vault remains browser-scoped for backward compatibility, but
-   * its value is now a DID-keyed map so adding an alt cannot overwrite another
-   * identity's app password. A legacy singleton is folded into the map.
-   */
-  private async syncIdentityCredentialToVault(
-    did: string,
-    identifier: string,
-    appPassword: string,
-    legacyDid: string | null = this.session()?.did ?? null,
-  ): Promise<SyncOutcome> {
-    const raw = this.bridge.readThrough(BSKY_IDENTITY_CREDENTIALS_KEY, null);
-    let credentials: VaultedBskyIdentityCredentials = {};
-    if (raw) {
-      try {
-        const parsed: unknown = JSON.parse(raw);
-        if (isVaultedBskyCredential(parsed)) {
-          if (legacyDid) {
-            credentials[legacyDid] = {
-              identifier: parsed.identifier,
-              appPassword: parsed.appPassword,
-            };
-          }
-        } else {
-          credentials =
-            parsed && typeof parsed === 'object' ? (parsed as VaultedBskyIdentityCredentials) : {};
-        }
-      } catch {
-        credentials = {};
-      }
-    }
-    credentials[did] = { identifier, appPassword };
-    return this.bridge.writeThrough(
-      BSKY_IDENTITY_CREDENTIALS_KEY,
-      JSON.stringify(credentials),
-      null,
-    );
   }
 }

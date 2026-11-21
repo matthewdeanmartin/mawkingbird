@@ -30,6 +30,12 @@ describe('wellness model', () => {
     expect(PRESET_FLAGS.strong.grayscale).toBe(false);
   });
 
+  it('hiding reply guys is in no preset: removing people is chosen by name', () => {
+    for (const preset of ['off', 'gentle', 'strong'] as const) {
+      expect(PRESET_FLAGS[preset].hideReplyGuys).toBe(false);
+    }
+  });
+
   it('Gentle hides feed counts but not profile counts', () => {
     const flags = effectiveWellness(withPreset('gentle'));
     expect(flags.hidePostCounts).toBe(true);

@@ -318,6 +318,11 @@
                   ) | transloco: { post: words().post, language: tr.from }
                 }}</mb-notice>
               }
+              @if (authorDoesNotFollowMe(p)) {
+                <mb-notice class="reply-guy-warning" tone="error" announcement="status">{{
+                  'statusCard.replyGuy.replyWarning' | transloco: { handle: p.account.acct }
+                }}</mb-notice>
+              }
               <app-compose
                 [inReplyToId]="p.id"
                 [replyToHandle]="replyToHandle()"
@@ -404,6 +409,12 @@
                             ? 'statusCard.replyingToTranslated'
                             : 'statusCard.replyingToTranslatedUnknown'
                           ) | transloco: { post: words().post, language: tr.from }
+                        }}</mb-notice>
+                      }
+                      @if (authorDoesNotFollowMe(reply)) {
+                        <mb-notice class="reply-guy-warning" tone="error" announcement="status">{{
+                          'statusCard.replyGuy.replyWarning'
+                            | transloco: { handle: reply.account.acct }
                         }}</mb-notice>
                       }
                       <app-compose

@@ -5,10 +5,8 @@ import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbDisclosure } from '../../../design-system/disclosure/disclosure';
-import { FeatureFlags } from '../../../platform/build/feature-flags';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { BlueskySession } from '../../../connections/bluesky/bluesky-session';
@@ -33,21 +31,9 @@ const BLUESKY_ENTRYWAY = 'https://bsky.social';
 // i18n settings.connections.bluesky.opening: Opening Bluesky…
 // i18n settings.connections.bluesky.otherServerSummary: Use a specific handle or another PDS
 // i18n settings.connections.bluesky.handleContinue: Continue
-// i18n settings.connections.bluesky.appPasswordSummary: Use an app password instead (only if the steps above fail)
 // i18n settings.connections.bluesky.handleUnresolved: Couldn't find that Bluesky handle. Check the spelling, or try the full handle such as you.bsky.social.
 // i18n settings.connections.bluesky.oauthStartFailed: Couldn't open Bluesky to approve access. Try again in a moment.
-// i18n settings.connections.bluesky.linkHint.a: Link with an
-// i18n settings.connections.bluesky.linkHint.appPassword: app password
-// i18n settings.connections.bluesky.linkHint.b: — made at bsky.app → Settings → Privacy and security → App Passwords. It's revocable and is never your real password. Check
-// i18n settings.connections.bluesky.linkHint.allowDms: "Allow access to your direct messages"
-// i18n settings.connections.bluesky.linkHint.c: when creating it if you want your Bluesky DMs in Chat.
 // i18n settings.connections.bluesky.handlePlaceholder: you.bsky.social
-// i18n settings.connections.bluesky.passwordPlaceholder: app password
-// i18n settings.connections.bluesky.linking: Linking…
-// i18n settings.connections.bluesky.link: Link Bluesky
-// i18n settings.connections.bluesky.rejected: Bluesky rejected that handle/app password combination.
-// i18n settings.connections.bluesky.unreachable: Couldn't reach bsky.social — network problem?
-// i18n settings.connections.bluesky.linkFailed: Linking failed — check the handle and app password.
 // i18n settings.connections.bluesky.upgradeNotice: This link uses an app password. Switch to Bluesky's own sign-in: it is safer, you approve it on Bluesky's page, and nothing else changes. The app password is then deleted here.
 // i18n settings.connections.bluesky.upgrade: Switch to Bluesky sign-in
 // i18n settings.connections.bluesky.upgradeFailed: Couldn't open Bluesky's sign-in. Try again in a moment.
@@ -80,14 +66,10 @@ export class ConnectionBluesky implements OnInit {
   protected capabilities = inject(AnonymousCapabilities);
   protected bsky = inject(BlueskySession);
   protected native = inject(NATIVE_SOCIAL);
-  /** App passwords are being phased out: new ones only behind a legacy flag. */
-  protected readonly appPasswordsOffered = inject(FeatureFlags).enabled('bluesky-app-passwords');
   protected upgrading = signal(false);
   protected upgradeError = signal(false);
   private transloco = inject(TranslocoService);
 
-  protected bskyHandle = signal('');
-  protected bskyPassword = signal('');
   protected bskyLinking = signal(false);
   protected bskyError = signal<string | null>(null);
   /** Handle for OAuth against a specific account or PDS (the entryway needs none). */
@@ -146,28 +128,6 @@ export class ConnectionBluesky implements OnInit {
       });
   }
 
-  /** Last resort: an app password, for a PDS that does not support OAuth. */
-  linkBluesky(): void {
-    const handle = this.bskyHandle().trim().replace(/^@/, '');
-    const password = this.bskyPassword();
-    if (!handle || !password || this.bskyLinking()) {
-      return;
-    }
-    this.bskyLinking.set(true);
-    this.bskyError.set(null);
-    this.bsky.login(handle, password).subscribe({
-      next: () => {
-        this.bskyLinking.set(false);
-        this.bskyHandle.set('');
-        this.bskyPassword.set('');
-      },
-      error: (err: unknown) => {
-        this.bskyLinking.set(false);
-        this.bskyError.set(this.describeBskyError(err));
-      },
-    });
-  }
-
   /** Re-authorise the same account with OAuth; the app password goes on return. */
   upgradeToOAuth(): void {
     if (this.upgrading()) return;
@@ -182,21 +142,5 @@ export class ConnectionBluesky implements OnInit {
 
   unlinkBluesky(): void {
     this.bsky.unlink();
-  }
-
-  private describeBskyError(err: unknown): string {
-    if (err instanceof HttpErrorResponse) {
-      if (err.status === 401) {
-        return this.transloco.translate<string>('settings.connections.bluesky.rejected');
-      }
-      const message = (err.error as { message?: string } | null)?.message;
-      if (message) {
-        return message;
-      }
-      if (err.status === 0) {
-        return this.transloco.translate<string>('settings.connections.bluesky.unreachable');
-      }
-    }
-    return this.transloco.translate<string>('settings.connections.bluesky.linkFailed');
   }
 }

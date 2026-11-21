@@ -54,8 +54,17 @@ import {
   BSKY_DELETED_MESSAGE,
   BskyChatMember,
   BskyConvoView,
+  BskyGroupConvo,
   BskyMessageView,
 } from '../../connections/bluesky/bluesky-types';
+import {
+  groupOf,
+  isGroupOwner,
+  isSystemMessage,
+  systemLine,
+} from '../../connections/bluesky/bluesky-group-chat';
+import { BlueskyNewGroup } from './bluesky-group/bluesky-new-group';
+import { BlueskyGroupSettings } from './bluesky-group/bluesky-group-settings';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -81,6 +90,12 @@ const INITIAL_MENTION_PAGES = 3;
 /** While not live: how often the open conversation and the chat list are re-fetched. */
 const POLL_THREAD_MS = 20_000;
 const POLL_LIST_MS = 60_000;
+/**
+ * Bluesky chat has no stream here, but `getLog` answers "anything since
+ * <cursor>?" cheaply, so it is asked often and the open thread or the list is
+ * only re-read when something actually happened (parity sprint 7).
+ */
+const POLL_BSKY_LOG_MS = 5_000;
 
 /**
  * One row in the chat list. Private chats wrap a Mastodon conversation. Public
@@ -115,6 +130,9 @@ export interface Chat {
   request?: boolean;
   /** Bluesky only: notifications for this chat are muted. */
   muted?: boolean;
+  /** Bluesky group chats: the group, and whether the reader owns it. */
+  group?: BskyGroupConvo;
+  groupOwner?: boolean;
 }
 
 /** Emoji reactions on one message, grouped for the chips under its bubble. */
@@ -228,6 +246,19 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.liveDiag.noReason: no reason given
 // i18n pages.conversations.liveDiag.paused: Paused after repeated failures. Next try in {{seconds}} s.
 // i18n pages.conversations.liveDiag.nextIn: Next try in {{seconds}} s.
+// i18n pages.conversations.group.newButton: New Bluesky group
+// i18n pages.conversations.group.settingsMenu: Group settings
+// i18n pages.conversations.group.locked: This group is locked: nobody can send messages right now.
+// i18n pages.conversations.group.system.added: {{actor}} added {{member}}
+// i18n pages.conversations.group.system.removed: {{actor}} removed {{member}}
+// i18n pages.conversations.group.system.joined: {{member}} joined
+// i18n pages.conversations.group.system.left: {{member}} left
+// i18n pages.conversations.group.system.renamed: The group is now called {{name}}
+// i18n pages.conversations.group.system.locked: {{actor}} locked the group
+// i18n pages.conversations.group.system.unlocked: {{actor}} unlocked the group
+// i18n pages.conversations.group.system.linkOn: The group's join link changed
+// i18n pages.conversations.group.system.linkOff: The group's join link was turned off
+// i18n pages.conversations.group.system.changed: The group changed
 // i18n pages.conversations.liveDiag.polling: Until it is live again, the open chat is checked every 20 seconds.
 // i18n pages.conversations.liveDiag.doctor: Network Doctor
 // i18n pages.conversations.liveDiag.reconnect: Reconnect now
@@ -279,6 +310,8 @@ export function stripLeadingMentions(html: string): string {
     ReportDialog,
     RouterLink,
     TranslocoPipe,
+    BlueskyNewGroup,
+    BlueskyGroupSettings,
   ],
   templateUrl: './conversations.html',
   styleUrl: './conversations.css',
@@ -343,6 +376,17 @@ export class Conversations implements OnInit, OnDestroy {
   protected loadingMoreChats = signal(false);
   /** No older mention notifications remain to page in. */
   protected chatsExhausted = signal(false);
+  /** Bluesky chats past the first 50: the next page's cursor, if any. */
+  private bskyListCursor: string | null = null;
+  private bskyListExhausted = true;
+
+  /** Nothing older to page in, on any network this account reads. */
+  private noteExhausted(): void {
+    const mastodonDone =
+      !this.mastodonAvailable() || (this.mentionsExhausted && this.convsExhausted);
+    const blueskyDone = !this.bsky.linked() || this.bskyListExhausted;
+    this.chatsExhausted.set(mastodonDone && blueskyDone);
+  }
   /** Oldest notification id fetched so far, the cursor for "Load more". */
   private oldestNotifId: string | null = null;
   /** Cursor for older private conversations: the oldest row's last status id. */
@@ -483,6 +527,9 @@ export class Conversations implements OnInit, OnDestroy {
   }
   protected startingChat = signal(false);
   protected moderationChat = signal<Chat | null>(null);
+  /** Bluesky group dialogs: starting one, and one group's settings. */
+  protected newGroupOpen = signal(false);
+  protected groupSettingsFor = signal<Chat | null>(null);
   protected activeModerationChat = computed(() => {
     const chat = this.moderationChat();
     return chat ? (this.chats().find((c) => c.key === chat.key) ?? chat) : null;
@@ -855,11 +902,14 @@ export class Conversations implements OnInit, OnDestroy {
     }
     const myDid = this.bsky.session()?.did;
     for (const convo of this.bskyConvos()) {
-      if (hasMissingBlueskyMember(convo, myDid)) {
+      const group = groupOf(convo);
+      // A group lists past members too; one missing profile must not hide it.
+      if (!group && hasMissingBlueskyMember(convo, myDid)) {
         continue;
       }
       const others = convo.members.filter((m) => m.did !== myDid);
       rows.push({
+        ...(group ? { group, groupOwner: isGroupOwner(convo.members, myDid) } : {}),
         key: `bsky:${convo.id}`,
         kind: 'bsky',
         convIds: [],
@@ -869,7 +919,10 @@ export class Conversations implements OnInit, OnDestroy {
         unread: convo.unreadCount > 0,
         convoId: convo.id,
         members: others,
-        previewText: convo.lastMessage?.text ?? '',
+        previewText:
+          convo.lastMessage && isSystemMessage(convo.lastMessage)
+            ? this.systemText(convo.lastMessage, convo.members)
+            : (convo.lastMessage?.text ?? ''),
         lastAt: convo.lastMessage?.sentAt,
         request: convo.status === 'request',
         muted: !!convo.muted,
@@ -1289,15 +1342,65 @@ export class Conversations implements OnInit, OnDestroy {
       setInterval(() => {
         const chat = this.selected();
         if (!visible() || !chat || this.threadLoading()) return;
-        if (chat.kind === 'bsky' || (chat.kind !== 'bot' && this.liveState() !== 'live')) {
+        // Bluesky follows its log (below); the 20 s re-read is only its fallback.
+        const bskyFallback = chat.kind === 'bsky' && this.bskyLogFailed;
+        if (
+          bskyFallback ||
+          (chat.kind !== 'bsky' && chat.kind !== 'bot' && this.liveState() !== 'live')
+        ) {
           this.refreshThread();
         }
       }, POLL_THREAD_MS),
+      setInterval(() => {
+        if (visible() && this.bsky.linked()) this.followBskyLog();
+      }, POLL_BSKY_LOG_MS),
       setInterval(() => {
         if (!visible() || this.loading() || this.refreshing()) return;
         this.refreshList({ mastodon: true, bluesky: true });
       }, POLL_LIST_MS),
     );
+  }
+
+  /** Where the Bluesky chat log was last read; undefined until the first read. */
+  private bskyLogCursor: string | undefined;
+  private bskyLogStarted = false;
+  private bskyLogBusy = false;
+  /** The log could not be read: fall back to re-reading the open thread. */
+  private bskyLogFailed = false;
+
+  /**
+   * Ask Bluesky what happened since last time. The first read only finds the
+   * cursor. After that, an event in the open chat re-reads it quietly, and an
+   * event anywhere else refreshes the list (new chats, unread counts, groups).
+   */
+  private followBskyLog(): void {
+    if (this.bskyLogBusy) return;
+    this.bskyLogBusy = true;
+    const first = !this.bskyLogStarted;
+    this.bskyChat
+      .getLog(this.bskyLogCursor)
+      .pipe(timeout(10_000))
+      .subscribe({
+        next: ({ logs, cursor }) => {
+          this.bskyLogBusy = false;
+          this.bskyLogFailed = false;
+          this.bskyLogStarted = true;
+          if (cursor) this.bskyLogCursor = cursor;
+          if (first || !logs.length) return;
+          const open = this.selected();
+          const touched = new Set(logs.map((entry) => entry.convoId));
+          if (open?.kind === 'bsky' && open.convoId && touched.has(open.convoId)) {
+            this.loadBskyThread(open, true);
+          }
+          if (!this.refreshing() && !this.loading()) {
+            this.refreshList({ mastodon: false, bluesky: true });
+          }
+        },
+        error: () => {
+          this.bskyLogBusy = false;
+          this.bskyLogFailed = true;
+        },
+      });
   }
 
   /** The Refresh button: every chat list and the open conversation, now. */
@@ -1327,14 +1430,17 @@ export class Conversations implements OnInit, OnDestroy {
           .subscribe({
             next: (list) => {
               const before = this.bskyConvos();
-              this.bskyConvos.set(list.convos);
+              // The newest page replaces its own rows; older pages already
+              // loaded with Load more stay.
+              const fresh = new Set(list.convos.map((c) => c.id));
+              this.bskyConvos.set([...list.convos, ...before.filter((c) => !fresh.has(c.id))]);
               this.bskyScopeError.set(false);
               this.bskyLoadError.set(false);
               const chat = this.selected();
               if (chat?.kind === 'bsky' && chat.convoId) {
                 const prev = before.find((c) => c.id === chat.convoId);
                 const next = list.convos.find((c) => c.id === chat.convoId);
-                if (next && next.rev !== prev?.rev) this.loadBskyThread(chat);
+                if (next && next.rev !== prev?.rev) this.loadBskyThread(chat, true);
               }
               settle();
             },
@@ -1422,6 +1528,8 @@ export class Conversations implements OnInit, OnDestroy {
     this.oldestConvStatusId = null;
     this.mentionsExhausted = false;
     this.convsExhausted = false;
+    this.bskyListCursor = null;
+    this.bskyListExhausted = true;
     this.chatsExhausted.set(false);
     let pending = (this.bsky.linked() ? 1 : 0) + (this.mastodonAvailable() ? 2 : 0);
     if (!pending) this.loading.set(false);
@@ -1438,6 +1546,9 @@ export class Conversations implements OnInit, OnDestroy {
           .subscribe({
             next: (list) => {
               this.bskyConvos.set(list.convos);
+              this.bskyListCursor = list.cursor ?? null;
+              this.bskyListExhausted = !list.cursor || list.convos.length === 0;
+              this.noteExhausted();
               this.bskyScopeError.set(false);
               done();
             },
@@ -1511,7 +1622,7 @@ export class Conversations implements OnInit, OnDestroy {
     if (notifs.length < MENTION_PAGE) {
       this.mentionsExhausted = true;
     }
-    this.chatsExhausted.set(this.mentionsExhausted && this.convsExhausted);
+    this.noteExhausted();
   }
 
   /** Advance the private-conversation cursor (Mastodon pages by last status id). */
@@ -1523,7 +1634,7 @@ export class Conversations implements OnInit, OnDestroy {
     if (convs.length < CONVERSATION_PAGE || !oldest) {
       this.convsExhausted = true;
     }
-    this.chatsExhausted.set(this.mentionsExhausted && this.convsExhausted);
+    this.noteExhausted();
   }
 
   /**
@@ -1531,7 +1642,7 @@ export class Conversations implements OnInit, OnDestroy {
    * kinds of chat fill out. Returns when both requests have settled.
    */
   loadMoreChats(after?: () => void): void {
-    if (!this.mastodonAvailable() || this.loadingMoreChats() || this.chatsExhausted()) {
+    if (this.loadingMoreChats() || this.chatsExhausted()) {
       return;
     }
     this.loadingMoreChats.set(true);
@@ -1542,7 +1653,24 @@ export class Conversations implements OnInit, OnDestroy {
         after?.();
       }
     };
-    if (!this.convsExhausted && this.oldestConvStatusId) {
+    if (this.bsky.linked() && !this.bskyListExhausted && this.bskyListCursor) {
+      pending++;
+      this.bskyChat.listConvos(this.bskyListCursor).subscribe({
+        next: (list) => {
+          const known = new Set(this.bskyConvos().map((c) => c.id));
+          this.bskyConvos.update((rows) => [
+            ...rows,
+            ...list.convos.filter((c) => !known.has(c.id)),
+          ]);
+          this.bskyListCursor = list.cursor ?? null;
+          this.bskyListExhausted = !list.cursor || list.convos.length === 0;
+          this.noteExhausted();
+          settle();
+        },
+        error: settle,
+      });
+    }
+    if (this.mastodonAvailable() && !this.convsExhausted && this.oldestConvStatusId) {
       pending++;
       this.api.conversations(this.oldestConvStatusId, CONVERSATION_PAGE).subscribe({
         next: (convs) => {
@@ -1553,7 +1681,7 @@ export class Conversations implements OnInit, OnDestroy {
         error: settle,
       });
     }
-    if (!this.mentionsExhausted) {
+    if (this.mastodonAvailable() && !this.mentionsExhausted) {
       pending++;
       this.api
         .notifications(this.oldestNotifId ?? undefined, { types: ['mention'], limit: MENTION_PAGE })
@@ -1732,7 +1860,49 @@ export class Conversations implements OnInit, OnDestroy {
     });
   }
 
+  /** A group's system message ("Ana joined") in the reader's language. */
+  private systemText(m: BskyMessageView, members: readonly BskyChatMember[]): string {
+    const line = systemLine(m, members);
+    return this.i18n.translate<string>(line.key, line.params);
+  }
+
+  /** For the thread: system messages read with every member, the reader too. */
+  protected systemTextIn(chat: Chat, m: BskyMessageView): string {
+    const me = this.bsky.session();
+    const members = [
+      ...(chat.members ?? []),
+      ...(me ? [{ did: me.did, handle: me.handle, displayName: me.displayName }] : []),
+    ];
+    return this.systemText(m, members);
+  }
+
+  protected readonly isSystemMessage = isSystemMessage;
+
+  /** A new group: list it and open it. */
+  protected groupCreated(convo: BskyConvoView): void {
+    this.newGroupOpen.set(false);
+    this.bskyConvos.update((rows) => [convo, ...rows.filter((r) => r.id !== convo.id)]);
+    const chat = this.chats().find((c) => c.convoId === convo.id);
+    if (chat) this.select(chat);
+  }
+
+  /** After a settings change: take the updated convo, or re-read the list. */
+  protected groupChanged(convo: BskyConvoView | null): void {
+    if (convo) {
+      this.bskyConvos.update((rows) => rows.map((r) => (r.id === convo.id ? convo : r)));
+      const open = this.groupSettingsFor();
+      if (open?.convoId === convo.id) {
+        const chat = this.chats().find((c) => c.convoId === convo.id);
+        if (chat?.kind === 'bsky' && this.selected()?.convoId === convo.id)
+          this.loadBskyThread(chat);
+      }
+      return;
+    }
+    this.refreshList({ mastodon: false, bluesky: true });
+  }
+
   title(chat: Chat): string {
+    if (chat.group) return chat.group.name || 'Bluesky group';
     if (chat.kind === 'bsky') {
       const named = (chat.members ?? []).map((m) => m.displayName || m.handle);
       return named.join(', ') || 'Bluesky chat';
@@ -1859,14 +2029,18 @@ export class Conversations implements OnInit, OnDestroy {
     return (chat.members ?? []).find((m) => m.did === did) ?? null;
   }
 
-  private loadBskyThread(chat: Chat): void {
+  /**
+   * Load a Bluesky thread. `quiet` (a live update) keeps what is on screen
+   * until the new copy arrives, so new messages appear without a flash.
+   */
+  private loadBskyThread(chat: Chat, quiet = false): void {
     if (!chat.convoId) {
       return;
     }
-    this.threadLoading.set(true);
+    if (!quiet) this.threadLoading.set(true);
     this.threadError.set(null);
     this.threadSub?.unsubscribe();
-    this.bskyMessages.set([]);
+    if (!quiet) this.bskyMessages.set([]);
     this.threadSub = this.bskyChat
       .getMessages(chat.convoId)
       .pipe(timeout(15_000))
@@ -1875,12 +2049,14 @@ export class Conversations implements OnInit, OnDestroy {
           // Newest-first from the API. Messages deleted for you arrive without
           // text as a deletedMessageView and read "Message deleted".
           const chronological = messages
-            .filter((m) => m.text !== undefined || isDeletedMessage(m))
+            .filter((m) => m.text !== undefined || isDeletedMessage(m) || isSystemMessage(m))
             .reverse();
           this.bskyMessages.set(chronological);
           this.threadLoading.set(false);
           this.scrollToBottom();
-          const newest = chronological.filter((m) => !isDeletedMessage(m)).at(-1);
+          const newest = chronological
+            .filter((m) => !isDeletedMessage(m) && !isSystemMessage(m))
+            .at(-1);
           if (newest) {
             // Best-effort: a failed read-receipt shouldn't surface anywhere.
             this.bskyChat

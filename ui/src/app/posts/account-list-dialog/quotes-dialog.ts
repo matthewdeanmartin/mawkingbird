@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { map, Observable } from 'rxjs';
 import { Api } from '../../platform/api/api';
+import { MbBadge } from '../../design-system/badge/badge';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -11,6 +12,7 @@ import { Status } from '../../platform/api/models';
 import { adaptPost } from '../../connections/bluesky/bluesky-adapter';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { BlueskyPostControls } from '../../connections/bluesky/bluesky-post-controls';
+import { ReplyGuys } from '../../accounts/reply-guys';
 
 // i18n quotes.title: Quotes
 // i18n quotes.close: Close
@@ -22,6 +24,7 @@ import { BlueskyPostControls } from '../../connections/bluesky/bluesky-post-cont
 // i18n quotes.reattach: Reattach
 // i18n quotes.detachTitle: Remove my post from this quote. The quote stays; it shows my post as removed.
 // i18n quotes.detachFailed: Couldn't change this quote on Bluesky.
+// i18n quotes.replyGuy: Quote from someone you don't follow
 
 /** Plain text of a post's HTML content, for a one-line excerpt. */
 function excerpt(html: string): string {
@@ -37,7 +40,7 @@ function excerpt(html: string): string {
  */
 @Component({
   selector: 'app-quotes-dialog',
-  imports: [MbDialog, MbButton, MbContentState, RouterLink, TranslocoPipe],
+  imports: [MbDialog, MbBadge, MbButton, MbContentState, RouterLink, TranslocoPipe],
   template: `
     <mb-dialog
       [title]="'quotes.title' | transloco"
@@ -73,10 +76,28 @@ function excerpt(html: string): string {
                   decoding="async"
                 />
                 <span class="names">
-                  <span class="name">{{ q.account.display_name || q.account.username }}</span>
-                  <span class="acct muted">{{ text(q) }}</span>
+                  <span class="name"
+                    >{{ q.account.display_name || q.account.username }}
+                    @if (mine() && replyGuys.notFollowed(q.account)) {
+                      <mb-badge
+                        class="reply-guy-chip"
+                        [title]="'statusCard.replyGuy.chipTitle' | transloco"
+                        >{{ 'statusCard.replyGuy.chip' | transloco }}</mb-badge
+                      >
+                    }
+                  </span>
+                  @if (guarded(q)) {
+                    <span class="acct muted">{{ 'quotes.replyGuy' | transloco }}</span>
+                  } @else {
+                    <span class="acct muted">{{ text(q) }}</span>
+                  }
                 </span>
               </a>
+              @if (guarded(q)) {
+                <button mbButton type="button" variant="outline" size="small" (click)="reveal(q)">
+                  {{ 'statusCard.replyGuy.show' | transloco }}
+                </button>
+              }
               @if (canDetach()) {
                 <button
                   mbButton
@@ -104,6 +125,13 @@ function excerpt(html: string): string {
     </mb-dialog>
   `,
   styleUrl: './account-list-dialog.css',
+  styles: `
+    .reply-guy-chip {
+      border-style: dashed;
+      font-size: 0.75em;
+      font-weight: normal;
+    }
+  `,
 })
 export class QuotesDialog implements OnInit {
   private api = inject(Api);
@@ -117,6 +145,8 @@ export class QuotesDialog implements OnInit {
   readonly blueskyUri = input<string | null>(null);
   /** The reader wrote this Bluesky post, so its quotes can be detached. */
   readonly canDetach = input(false);
+  /** The reader wrote the quoted post: reply-guy controls apply to its quotes. */
+  readonly mine = input(false);
   readonly closed = output<void>();
 
   protected quotes = signal<Status[]>([]);
@@ -125,6 +155,26 @@ export class QuotesDialog implements OnInit {
   protected busy = signal<string | null>(null);
   protected detached = signal(new Set<string>());
   protected error = signal('');
+  protected replyGuys = inject(ReplyGuys);
+  /** Quotes shown despite the reply-guy guard, by one click each. */
+  private revealed = signal(new Set<string>());
+
+  /**
+   * A quote of the reader's own post by someone they don't follow: the excerpt
+   * waits behind one click, as replies do. The row still opens the quote.
+   */
+  protected guarded(quote: Status): boolean {
+    return (
+      this.mine() &&
+      this.replyGuys.cwOn() &&
+      !this.revealed().has(quote.id) &&
+      this.replyGuys.notFollowed(quote.account)
+    );
+  }
+
+  protected reveal(quote: Status): void {
+    this.revealed.update((set) => new Set(set).add(quote.id));
+  }
 
   ngOnInit(): void {
     this.load();

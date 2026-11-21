@@ -54,6 +54,9 @@ import { BlueskyPostControlsDialog } from '../../publishing/post-permissions/blu
 // i18n settings.bskyPrefs.defaults.change: Change
 // i18n settings.bskyPrefs.interests.title: Interests
 // i18n settings.bskyPrefs.interests.hint: Bluesky uses these to suggest people and feeds.
+// i18n settings.bskyPrefs.contacts.title: People you know
+// i18n settings.bskyPrefs.contacts.hint: Find people from your phone contacts who are on Bluesky, and remove that data again.
+// i18n settings.bskyPrefs.contacts.link: Find people you know
 // i18n settings.bskyPrefs.privacy.title: Privacy
 // i18n settings.bskyPrefs.privacy.hideFromRecommendations: Ask apps not to recommend my posts
 // i18n settings.bskyPrefs.privacy.hideFromRecommendationsHint: Discovery feeds and suggestions are asked to leave your posts out. People who follow you, search or open your profile still see them.

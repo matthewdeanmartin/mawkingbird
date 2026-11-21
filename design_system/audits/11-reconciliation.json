@@ -3528,6 +3528,26 @@
       "nextStep": "Bluesky Add to lists: MbDialog, MbCheckbox per list, MbBadge for moderation lists, MbField + input/select[mbControl] and MbButton to create a list, MbNotice for errors. Row and form layout is local."
     },
     {
+      "file": "ui/src/app/publishing/conversations/bluesky-group/bluesky-group-settings.html",
+      "disposition": "adopted scope",
+      "nextStep": "Bluesky group settings: MbDialog, MbField + input[mbControl] for name and adding people, MbButton per member and per join request, MbCheckbox for approval, MbNotice. Member rows and link line are local layout."
+    },
+    {
+      "file": "ui/src/app/publishing/conversations/bluesky-group/bluesky-join-group.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Join a Bluesky group: MbContentState for not-linked/loading/invalid, one MbButton (Join / Ask to join), MbNotice, MbContentLink to bsky.app."
+    },
+    {
+      "file": "ui/src/app/publishing/conversations/bluesky-group/bluesky-new-group.ts",
+      "disposition": "adopted scope",
+      "nextStep": "New Bluesky group: MbDialog with two forms of MbField + input/textarea[mbControl] and MbButton (create; open a pasted join link), MbNotice for errors."
+    },
+    {
+      "file": "ui/src/app/discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+      "disposition": "adopted scope",
+      "nextStep": "Find people you know on Bluesky: MbPageHeader, MbSection, MbField + select/input/textarea[mbControl], MbButton, MbNotice, MbContentState, the shared Bluesky people list."
+    },
+    {
       "file": "ui/src/app/settings/bluesky-preferences/settings-bluesky-preferences.html",
       "disposition": "adopted scope",
       "nextStep": "Settings page from shared parts: MbPageHeader, MbSection, MbCheckbox, MbField + select[mbControl], MbButton link, MbSaveFeedback, MbContentState, and the existing Bluesky post-controls dialog. Interest grid is local layout."

@@ -29,6 +29,7 @@ export const WELLNESS_KEYS = [
   'hideProfileCounts',
   'noHoverCards',
   'limitedNotifications',
+  'hideReplyGuys',
   'hideAnalytics',
   'forceCalm',
   'demoteGoodStuff',
@@ -65,6 +66,10 @@ const GENTLE: WellnessFlags = {
  * Manual grayscale is deliberately absent from every preset: it is a "right
  * now" choice, while the presets describe a standing posture. Strong turns on
  * the automatic version instead.
+ *
+ * Hiding reply guys is absent too: removing people outright, rather than
+ * putting a click in front of them, is the reader's call to make by name
+ * (owner, 2026-11-21), not something a level switches on for them.
  */
 const STRONG: WellnessFlags = {
   ...GENTLE,

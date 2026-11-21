@@ -80,6 +80,26 @@
   </div>
 
   <div class="ssection">
+    <h2>{{ 'settings.wellness.replyGuys' | transloco }}</h2>
+    <p class="hint">{{ 'settings.wellness.replyGuys.intro' | transloco }}</p>
+    <div class="srow">
+      <span class="slabel">{{ 'settings.wellness.replyGuys.label' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.replyGuyCw()"
+            (ngModelChange)="prefs.setReplyGuyCw($event)"
+            name="wellness_reply_guy_cw"
+          />
+          {{ 'settings.wellness.replyGuys.cw' | transloco }}
+        </label>
+        <span class="hint">{{ 'settings.wellness.replyGuys.cw.hint' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
     <h2>{{ 'settings.wellness.existing' | transloco }}</h2>
     <p class="hint">{{ 'settings.wellness.existing.intro' | transloco }}</p>
 

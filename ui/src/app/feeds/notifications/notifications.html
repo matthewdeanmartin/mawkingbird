@@ -269,6 +269,13 @@
           <a class="who" [routerLink]="accountProfilePath(row.notif.account)">{{
             row.notif.account.display_name || row.notif.account.username
           }}</a>
+          @if (replyGuyChip(row.notif)) {
+            <mb-badge
+              class="reply-guy-chip"
+              [title]="'statusCard.replyGuy.chipTitle' | transloco"
+              >{{ 'statusCard.replyGuy.chip' | transloco }}</mb-badge
+            >
+          }
           <span class="what muted">{{ label(row.notif.type) }}</span>
           <!-- Misskey follow requests need a token that may write (M2). -->
           @if (
@@ -299,69 +306,87 @@
             </div>
           }
           @if (row.notif.status) {
-            <!-- Bluesky replies and mentions also arrive as type 'mention', but
-                 "open in chat" means the Mastodon DM tab and `chatKey` builds a
-                 key from a Mastodon acct. A bsky reply goes to its thread, which
-                 is where the reply actually is. -->
-            <!-- Misskey mentions, like Bluesky ones, open their thread: the
-                 chat tab is Mastodon's. -->
-            @if (
-              row.notif.type === 'mention' &&
-              !row.notif.account.id.startsWith('bsky:') &&
-              !row.notif.account.id.startsWith('mk:')
-            ) {
-              <!-- Mentions open as a chat: click the body to jump into the DM
-                   tab's public chat with this person (we nudge chat over thread). -->
-              <a
-                class="excerpt"
-                [routerLink]="['/conversations']"
-                [queryParams]="{ open: chatKey(row.notif) }"
-              >
-                <span
-                  class="excerpt-content"
-                  appContentLinks
-                  [innerHTML]="
-                    row.notif.status.content | compactLinks | customEmoji: row.notif.status.emojis
-                  "
-                ></span>
-                @if (row.notif.status.media_attachments.length && showImages()) {
-                  <span class="excerpt-media">
-                    @for (m of row.notif.status.media_attachments; track m.id) {
-                      <img
-                        [src]="m.preview_url || m.url"
-                        [alt]="m.description || ''"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    }
-                  </span>
-                }
-              </a>
+            @if (replyGuyGuarded(row.notif)) {
+              <!-- Reply-guy controls: from someone the reader doesn't follow.
+                   One click shows it; it is never removed unless the reader
+                   chose that in Wellness. -->
+              <div class="reply-guy-cw">
+                <span class="muted">{{ 'pages.notifications.replyGuy.cw' | transloco }}</span>
+                <button
+                  type="button"
+                  mbButton
+                  size="small"
+                  variant="outline"
+                  (click)="revealReplyGuy(row.notif)"
+                >
+                  {{ 'statusCard.replyGuy.show' | transloco }}
+                </button>
+              </div>
             } @else {
-              <a class="excerpt" [routerLink]="['/statuses', row.notif.status.id]">
-                <span
-                  class="excerpt-content"
-                  appContentLinks
-                  [innerHTML]="
-                    row.notif.status.content | compactLinks | customEmoji: row.notif.status.emojis
-                  "
-                ></span>
-                @if (row.notif.status.media_attachments.length && showImages()) {
-                  <span class="excerpt-media">
-                    @for (m of row.notif.status.media_attachments; track m.id) {
-                      <img
-                        [src]="m.preview_url || m.url"
-                        [alt]="m.description || ''"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    }
-                  </span>
-                }
-              </a>
-            }
-            @if (row.notif.status.poll; as poll) {
-              <app-poll-results [poll]="poll" [visible]="poll.expired || poll.voted" />
+              <!-- Bluesky replies and mentions also arrive as type 'mention', but
+                   "open in chat" means the Mastodon DM tab and `chatKey` builds a
+                   key from a Mastodon acct. A bsky reply goes to its thread, which
+                   is where the reply actually is. -->
+              <!-- Misskey mentions, like Bluesky ones, open their thread: the
+                   chat tab is Mastodon's. -->
+              @if (
+                row.notif.type === 'mention' &&
+                !row.notif.account.id.startsWith('bsky:') &&
+                !row.notif.account.id.startsWith('mk:')
+              ) {
+                <!-- Mentions open as a chat: click the body to jump into the DM
+                     tab's public chat with this person (we nudge chat over thread). -->
+                <a
+                  class="excerpt"
+                  [routerLink]="['/conversations']"
+                  [queryParams]="{ open: chatKey(row.notif) }"
+                >
+                  <span
+                    class="excerpt-content"
+                    appContentLinks
+                    [innerHTML]="
+                      row.notif.status.content | compactLinks | customEmoji: row.notif.status.emojis
+                    "
+                  ></span>
+                  @if (row.notif.status.media_attachments.length && showImages()) {
+                    <span class="excerpt-media">
+                      @for (m of row.notif.status.media_attachments; track m.id) {
+                        <img
+                          [src]="m.preview_url || m.url"
+                          [alt]="m.description || ''"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      }
+                    </span>
+                  }
+                </a>
+              } @else {
+                <a class="excerpt" [routerLink]="['/statuses', row.notif.status.id]">
+                  <span
+                    class="excerpt-content"
+                    appContentLinks
+                    [innerHTML]="
+                      row.notif.status.content | compactLinks | customEmoji: row.notif.status.emojis
+                    "
+                  ></span>
+                  @if (row.notif.status.media_attachments.length && showImages()) {
+                    <span class="excerpt-media">
+                      @for (m of row.notif.status.media_attachments; track m.id) {
+                        <img
+                          [src]="m.preview_url || m.url"
+                          [alt]="m.description || ''"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      }
+                    </span>
+                  }
+                </a>
+              }
+              @if (row.notif.status.poll; as poll) {
+                <app-poll-results [poll]="poll" [visible]="poll.expired || poll.voted" />
+              }
             }
           }
           <div class="mention-actions">

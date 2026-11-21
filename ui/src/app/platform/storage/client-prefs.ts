@@ -426,6 +426,7 @@ interface StoredPrefs {
   readerDictionaryCustom?: string;
   feedReader?: boolean;
   autoRefreshTimeline?: boolean;
+  replyGuyCw?: boolean;
   homeWindow?: HomeWindow;
   showImages?: boolean;
   hiddenProviders?: ProviderId[];
@@ -663,6 +664,14 @@ export class ClientPrefs {
    * the toggle has no effect on Twitter, Bluesky, or RSS content.
    */
   readonly autoRefreshTimeline = signal<boolean>(false);
+
+  /**
+   * Reply-guy controls: replies, mentions and quotes from people the reader
+   * does not follow open behind one click, in the reader's own conversations.
+   * On by default because it never hides anything outright; see
+   * accounts/reply-guys.ts.
+   */
+  readonly replyGuyCw = signal<boolean>(true);
 
   /**
    * How far back Home reaches. Defaults to the last 24 hours — see
@@ -1136,6 +1145,10 @@ export class ClientPrefs {
     this.feedReader.set(on);
   }
 
+  setReplyGuyCw(on: boolean): void {
+    this.replyGuyCw.set(on);
+  }
+
   setAutoRefreshTimeline(on: boolean): void {
     this.autoRefreshTimeline.set(on);
   }
@@ -1470,6 +1483,7 @@ export class ClientPrefs {
     }
     this.loadBool(stored.feedReader, this.feedReader);
     this.loadBool(stored.autoRefreshTimeline, this.autoRefreshTimeline);
+    this.loadBool(stored.replyGuyCw, this.replyGuyCw);
     // `today` was the old implicit default. Treat a stored copy as that legacy
     // default so existing browsers move to Everything too; week/all represent
     // deliberate non-default choices and still round-trip.
@@ -1639,6 +1653,7 @@ export class ClientPrefs {
       readerLibraryCollapsed: [...this.readerLibraryCollapsed()],
       feedReader: this.feedReader(),
       autoRefreshTimeline: this.autoRefreshTimeline(),
+      replyGuyCw: this.replyGuyCw(),
       homeWindow: this.homeWindow(),
       showImages: this.showImages(),
       chatAudience: this.chatAudience(),

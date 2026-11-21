@@ -1,0 +1,58 @@
+/* Layout only: controls, dialogs and notices are shared widgets. */
+.group-form {
+  display: grid;
+  gap: 10px;
+}
+
+.group-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.group-row mb-field {
+  flex: 1;
+  min-width: 12rem;
+}
+
+.group-heading {
+  margin: 14px 0 6px;
+  font-size: 15px;
+}
+
+.group-members {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.group-members li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.group-members img {
+  border-radius: 50%;
+}
+
+.group-member-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.group-link code {
+  overflow-wrap: anywhere;
+}
+
+.group-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}

@@ -1,6 +1,7 @@
 import { Component, computed, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../../design-system/dialog/dialog';
+import { MbNotice } from '../../../design-system/notice/notice';
 import { Status } from '../../../platform/api/models';
 import { BskyRef } from '../../../connections/bluesky/bluesky-types';
 import { Compose } from '../compose';
@@ -22,7 +23,7 @@ import { QuotePreview } from '../quote-preview/quote-preview';
  */
 @Component({
   selector: 'app-quote-dialog',
-  imports: [MbDialog, Compose, QuotePreview, TranslocoPipe],
+  imports: [MbDialog, MbNotice, Compose, QuotePreview, TranslocoPipe],
   template: `
     <mb-dialog
       size="wide"
@@ -35,6 +36,11 @@ import { QuotePreview } from '../quote-preview/quote-preview';
       } @else {
         @if (manual()) {
           <p class="muted small">{{ 'compose.quoteDialog.manual' | transloco }}</p>
+        }
+        @if (authorDoesNotFollow()) {
+          <mb-notice class="reply-guy-warning" tone="error" announcement="status">{{
+            'statusCard.replyGuy.quoteWarning' | transloco: { handle: status().account.acct }
+          }}</mb-notice>
         }
         <app-compose
           [quotedStatusId]="isBluesky() ? undefined : status().id"
@@ -52,6 +58,10 @@ import { QuotePreview } from '../quote-preview/quote-preview';
     </mb-dialog>
   `,
   styles: `
+    .reply-guy-warning {
+      display: block;
+      margin-bottom: 8px;
+    }
     .quote-dialog-preview {
       display: block;
       margin-top: 12px;
@@ -61,6 +71,8 @@ import { QuotePreview } from '../quote-preview/quote-preview';
 export class QuoteDialog {
   readonly status = input.required<Status>();
   readonly blueskyQuote = input<BskyRef | undefined>(undefined);
+  /** Reply-guy controls: the quoted author doesn't follow the reader. */
+  readonly authorDoesNotFollow = input(false);
   readonly posted = output<Status>();
   readonly closed = output<void>();
 

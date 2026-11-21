@@ -9,6 +9,8 @@ import { Streaming } from '../platform/api/streaming';
 import { IndicatorEvents } from './indicator-events';
 import { Wellness } from '../wellness/wellness';
 import { isEngagementNotification } from '../wellness/wellness-model';
+import { ReplyGuys } from '../accounts/reply-guys';
+import { isIncomingConversation } from '../accounts/reply-guys-model';
 import {
   DEFAULT_INDICATOR_PREFERENCES,
   IndicatorPreferences,
@@ -35,6 +37,7 @@ export class MenuIndicators {
   private streaming = inject(Streaming);
   private events = inject(IndicatorEvents);
   private wellness = inject(Wellness);
+  private replyGuys = inject(ReplyGuys);
   private auth = inject(Auth);
   private bsky = inject(BlueskySession);
   private router = inject(Router);
@@ -244,7 +247,8 @@ export class MenuIndicators {
   noteServerUnread(lastReadId: string, unreadCount: number): void {
     // The marker counts likes and boosts too and can't say which. Under
     // limited notifications, mentions still light the lane through the stream.
-    if (this.wellness.limitedNotifications()) return;
+    // The same goes for hidden reply guys: the marker can't tell who wrote what.
+    if (this.wellness.limitedNotifications() || this.wellness.hideReplyGuys()) return;
     this.updateScope();
     this.receive(
       `marker:notifications:${lastReadId}`,
@@ -256,8 +260,17 @@ export class MenuIndicators {
 
   private receiveNotifications(source: string, rows: MastodonNotification[]): void {
     const limited = this.wellness.limitedNotifications();
+    const hideReplyGuys = this.wellness.hideReplyGuys();
     for (const row of rows) {
       if (limited && isEngagementNotification(row.type)) continue;
+      // Wellness: hidden on the page, so no dot for it either. Only when the
+      // answer is already known; a first-time stranger may still light it once.
+      if (
+        hideReplyGuys &&
+        isIncomingConversation(row.type) &&
+        this.replyGuys.notFollowed(row.account)
+      )
+        continue;
       this.receive(
         row.status?.visibility === 'direct' ? `dm:${row.status.id}` : `${source}:${row.id}`,
         row.type === 'mention' &&

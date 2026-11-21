@@ -317,7 +317,6 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.misskey.actionFailed: That did not work on Misskey. Please try again.
 // i18n pages.profile.misskey.visitorFollowHint: Follows are kept in this browser and fill Home → Following.
 // i18n pages.profile.misskey.visitorFollowFull: You follow as many people as a visitor can (50). Unfollow someone first.
-// i18n pages.profile.bluesky.linkRequired: Link a Bluesky account in Settings → Connections to view this profile.
 // i18n pages.profile.bluesky.profileLoadFailed: Could not load this Bluesky profile.
 // i18n pages.profile.bluesky.postsLoadFailed: Could not load posts for this account.
 // i18n pages.profile.search.noResultsDetail: Nothing matched. Mastodon only indexes some posts, so try fewer words or load more history.
@@ -684,6 +683,8 @@ export class Profile implements OnInit, OnDestroy {
    * deliberately — and the reposts toggle is then applied client-side by
    * `visibleStatuses`, which already drops boosts when `showBoosts` is off.
    */
+  // The server filter does the work; `visibleStatuses` applies both toggles
+  // again on the page, since Bluesky's filter cannot drop reposts at all.
   private bskyFilter(): BskyAuthorFeedFilter {
     return this.showReplies() ? 'posts_with_replies' : 'posts_and_author_threads';
   }
@@ -1109,10 +1110,15 @@ export class Profile implements OnInit, OnDestroy {
   protected visibleStatuses = computed(() => {
     const kind = this.profileContent.selected();
     const native = this.nativeArchiveMode();
+    const bluesky = this.isBluesky();
+    const showBoosts = this.showBoosts();
+    const showReplies = this.showReplies();
     const matches = this.statuses().filter(
       (post) =>
-        (!native ||
-          ((this.showBoosts() || !post.reblog) && (this.showReplies() || !post.in_reply_to_id))) &&
+        (native
+          ? (showBoosts || !post.reblog) && (showReplies || !post.in_reply_to_id)
+          : !bluesky ||
+            ((showBoosts || !post.reblog) && (showReplies || !isBlueskyReplyToOthers(post)))) &&
         this.profileContent.matches(post, kind),
     );
     if (!this.showPinned()) {
@@ -2099,16 +2105,9 @@ export class Profile implements OnInit, OnDestroy {
     this.exhausted.set(false);
     const seq = ++this.loadSeq;
 
-    if (!this.bskySession.linked()) {
-      // Every app.bsky read here is authenticated; without a session there is
-      // nothing to show and no useful error from the network.
-      this.loading.set(false);
-      this.statusesLoading.set(false);
-      this.exhausted.set(true);
-      this.bskyError.set(this.transloco.translate<string>('pages.profile.bluesky.linkRequired'));
-      return;
-    }
-
+    // No Bluesky link is fine: the profile and author feed are public, and the
+    // API reads them from Bluesky's public AppView without a session. Only
+    // following and the like need a linked account.
     this.routeLoadSub.add(
       this.bskyApi.getProfile(did).subscribe({
         next: (profile) => {
@@ -3353,4 +3352,17 @@ function fallbackFollow(handle: string) {
 /** A `?tagged=` value as Mastodon wants it: no `#`, or null when absent. */
 function taggedParam(value: string | null | undefined): string | null {
   return value?.replace(/^#+/, '').trim() || null;
+}
+
+/**
+ * A Bluesky post answering someone else. A reply continuing the author's own
+ * thread is not one: like Mastodon's "exclude replies", the Replies toggle
+ * keeps self-threads. Reposts are judged by the Reposts toggle alone.
+ */
+export function isBlueskyReplyToOthers(post: Status): boolean {
+  if (post.reblog || !post.in_reply_to_id) return false;
+  const parent = (post.providerRef as { replyParentUri?: string | null } | null | undefined)
+    ?.replyParentUri;
+  const parentDid = parent?.replace('at://', '').split('/')[0];
+  return !parentDid || `bsky:${parentDid}` !== post.account.id;
 }

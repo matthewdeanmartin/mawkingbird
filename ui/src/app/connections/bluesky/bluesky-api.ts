@@ -7,6 +7,7 @@ import { Pseudonymity } from '../../accounts/pseudonymity';
 import { cleanPostLinks } from '../../publishing/post-link-cleaning';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { BlueskyModerationState, BSKY_MODERATION_DID } from './bluesky-moderation-state';
+import { BlueskySignInRequiredError } from './bluesky-auth-error';
 import { BlueskySession } from './bluesky-session';
 import { BlueskyPostSearch } from './bluesky-post-search';
 import {
@@ -847,7 +848,11 @@ export class BlueskyApi {
       return throwError(() => new Error('No Bluesky account linked.'));
     }
     if (!session.accessJwt) {
-      return throwError(() => new Error('The Bluesky session has no access token.'));
+      // A retired app-password link (or a damaged one): only Bluesky's own
+      // sign-in brings it back, and Home offers exactly that for this error.
+      return throwError(
+        () => new BlueskySignInRequiredError(new Error('The Bluesky session has no access token.')),
+      );
     }
     return call(session.accessJwt).pipe(
       catchError((err: unknown) =>

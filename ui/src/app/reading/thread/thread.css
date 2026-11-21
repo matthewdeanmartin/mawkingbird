@@ -374,8 +374,10 @@
   overflow-wrap: anywhere;
 }
 
-/* Above the reply box: the focused post is shown in translation. */
-.reply-translated {
+/* Above the reply box: the focused post is shown in translation, or its
+   author doesn't follow you (reply-guy controls). */
+.reply-translated,
+.reply-guy-warning {
   display: block;
   margin: 8px 16px;
 }

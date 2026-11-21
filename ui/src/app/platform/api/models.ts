@@ -38,6 +38,14 @@ export interface AccountSource {
 export interface Account {
   /** Viewer-specific mutual follow supplied by a foreign provider. */
   mutual?: boolean;
+  /**
+   * Viewer-specific, from a provider that embeds it in every author (Bluesky's
+   * `viewer`): the reader follows this account. Absent means not supplied, not
+   * "no" — Mastodon accounts never carry it; ask `/relationships` instead.
+   */
+  viewerFollows?: boolean;
+  /** As {@link viewerFollows}, the other direction: this account follows the reader. */
+  followsViewer?: boolean;
   /** Mastodon: the account this one moved to, when it has. */
   moved?: Account | null;
   id: string;

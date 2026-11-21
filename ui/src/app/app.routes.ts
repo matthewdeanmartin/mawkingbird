@@ -615,6 +615,16 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./accounts/sign-in/account-picker/account-picker').then((m) => m.AccountPicker),
       },
+      // Find people you know on Bluesky by phone number (bsky.app does this in
+      // its phone apps only); the page explains what is sent.
+      {
+        path: 'bluesky/find-contacts',
+        title: 'Find people you know on Bluesky',
+        loadComponent: () =>
+          import('./discovery/bluesky-find-contacts/bluesky-find-contacts').then(
+            (m) => m.BlueskyFindContacts,
+          ),
+      },
       // Bluesky's starter packs: open, follow from and make them. Distinct from
       // Mawkingbird's bundled Starter Kits, which have their own pages.
       {
@@ -1785,6 +1795,15 @@ export const routes: Routes = [
         title: 'Profile',
         data: { kind: 'account' },
         loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+      },
+      {
+        // A Bluesky group's join link, the same shape as bsky.app's /chat/<code>.
+        path: 'bsky/chat/:code',
+        title: 'Join a Bluesky group',
+        loadComponent: () =>
+          import('./publishing/conversations/bluesky-group/bluesky-join-group').then(
+            (m) => m.BlueskyJoinGroup,
+          ),
       },
       {
         path: 'bsky/profile/:actor/post/:rkey',

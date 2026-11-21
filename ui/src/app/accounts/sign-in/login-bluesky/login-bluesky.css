@@ -17,25 +17,6 @@
   text-align: center;
 }
 
-/* --- App-password explanation: deliberately prominent, not fine print --- */
-.bsky-appword {
-  text-align: left;
-  margin: 20px 0;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--col-hover, rgba(127, 127, 127, 0.06));
-}
-
-.bsky-appword p {
-  margin: 0;
-  line-height: 1.5;
-}
-
-.bsky-appword p + p {
-  margin-top: 8px;
-}
-
 .bsky-oauth-note {
   margin: 12px auto 0;
   max-width: 48ch;
@@ -43,20 +24,6 @@
 
 .bsky-entryway {
   width: 100%;
-}
-
-.bsky-advanced,
-.bsky-compat {
-  margin-top: 20px;
-  text-align: left;
-  border-top: 1px solid var(--border);
-  padding-top: 16px;
-}
-
-.bsky-advanced summary,
-.bsky-compat summary {
-  cursor: pointer;
-  font-weight: 600;
 }
 
 .bsky-advanced .bsky-form {
@@ -95,11 +62,6 @@
 .bsky-error {
   margin: 14px 0 0;
   color: var(--col-danger, #d33);
-}
-
-.bsky-hint {
-  margin: 8px auto 0;
-  max-width: 44ch;
 }
 
 .bsky-out {

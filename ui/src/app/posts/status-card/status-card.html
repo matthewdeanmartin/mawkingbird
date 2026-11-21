@@ -101,6 +101,11 @@
         </span>
         <app-verified-badge [account]="display.account" />
         <span class="acct muted">&#64;{{ display.account.acct }}</span>
+        @if (replyGuyChip()) {
+          <mb-badge class="reply-guy-chip" [title]="'statusCard.replyGuy.chipTitle' | transloco">{{
+            'statusCard.replyGuy.chip' | transloco
+          }}</mb-badge>
+        }
         @if (foreign && !threadable && display.url) {
           <!-- Same guard as the ↗ link below: `[href]` bound to a null url
                renders `href=""`, which navigates to the current page. -->
@@ -191,7 +196,24 @@
           </div>
         </div>
       } @else {
-        @if (spoilerText()) {
+        @if (replyGuyCollapsed()) {
+          <!-- The virtual content warning: the author set none; the reader
+               doesn't follow them. One click, never removal. -->
+          <div class="cw-row reply-guy-cw">
+            <span class="spoiler muted">{{ 'statusCard.replyGuy.cw' | transloco }}</span>
+            <button
+              type="button"
+              mbButton
+              size="small"
+              variant="outline"
+              class="cw-toggle"
+              aria-expanded="false"
+              (click)="revealReplyGuy($event)"
+            >
+              {{ 'statusCard.replyGuy.show' | transloco }}
+            </button>
+          </div>
+        } @else if (spoilerText()) {
           <div class="cw-row">
             <span class="spoiler">{{ spoilerText() }}</span>
             <button
@@ -462,6 +484,7 @@
                     <img
                       [src]="m.preview_url || m.url"
                       [alt]="m.description || ''"
+                      [attr.title]="m.description || null"
                       [style.object-position]="thumbPosition(m)"
                       loading="lazy"
                       decoding="async"
@@ -1700,6 +1723,11 @@
               ) | transloco: { post: words().post, language: warning.language }
             }}</mb-notice>
           }
+          @if (notFollowedByAuthor()) {
+            <mb-notice class="reply-guy-warning" tone="error" announcement="status">{{
+              'statusCard.replyGuy.replyWarning' | transloco: { handle: display.account.acct }
+            }}</mb-notice>
+          }
           @if (isLocalPractice) {
             <app-local-compose [inReplyTo]="display.id" (posted)="onReplied($event)" />
           } @else if (display.provider === 'bluesky') {
@@ -1725,6 +1753,11 @@
 
       @if (quoting() && display.provider === 'misskey') {
         <div class="inline-compose" (click)="$event.stopPropagation()">
+          @if (notFollowedByAuthor()) {
+            <mb-notice class="reply-guy-warning" tone="error" announcement="status">{{
+              'statusCard.replyGuy.quoteWarning' | transloco: { handle: display.account.acct }
+            }}</mb-notice>
+          }
           <app-misskey-compose [quote]="display" [compact]="true" (posted)="onQuoted($event)" />
         </div>
       } @else if (quoting()) {
@@ -1735,6 +1768,7 @@
           (click)="$event.stopPropagation()"
           [status]="display"
           [blueskyQuote]="blueskyQuoteRef"
+          [authorDoesNotFollow]="notFollowedByAuthor()"
           (posted)="onQuoted($event)"
           (closed)="quoting.set(false)"
         />
@@ -1850,6 +1884,7 @@
       [statusId]="display.id"
       [blueskyUri]="blueskyQuoteRef?.uri ?? null"
       [canDetach]="isOwn() && display.provider === 'bluesky'"
+      [mine]="isOwn()"
       (closed)="quotesOpen.set(false)"
     />
   }

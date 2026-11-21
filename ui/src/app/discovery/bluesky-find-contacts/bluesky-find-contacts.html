@@ -1,0 +1,141 @@
+<mb-page-header
+  [title]="'bskyContacts.title' | transloco"
+  [description]="'bskyContacts.intro' | transloco"
+/>
+
+@if (!session.linked()) {
+  <mb-content-state kind="empty" [title]="'bskyContacts.notLinked' | transloco">
+    <a mbContentLink routerLink="/settings/connections/bluesky">{{
+      'bskyContacts.link' | transloco
+    }}</a>
+  </mb-content-state>
+} @else {
+  <p class="muted small">{{ 'bskyContacts.privacy' | transloco }}</p>
+
+  <mb-section [title]="'bskyContacts.matches' | transloco: { count: matches().length }">
+    @if (lastSyncText(); as text) {
+      <p class="muted small">{{ text }}</p>
+    }
+    @if (matches().length) {
+      <app-bluesky-people-list [people]="matches()" />
+    } @else {
+      <p class="muted">{{ 'bskyContacts.noMatches' | transloco }}</p>
+    }
+  </mb-section>
+
+  @if (!token()) {
+    <mb-section [title]="'bskyContacts.verifyTitle' | transloco">
+      <form class="contacts-form" (ngSubmit)="codeSent() ? verify() : sendCode()">
+        <mb-field [label]="'bskyContacts.country' | transloco">
+          <select
+            mbControl
+            name="country"
+            [ngModel]="country()"
+            (ngModelChange)="country.set($event)"
+            [disabled]="busy() || codeSent()"
+          >
+            @for (option of countries; track option.code) {
+              <option [value]="option.code">{{ option.name }} (+{{ option.dial }})</option>
+            }
+          </select>
+        </mb-field>
+        <mb-field [label]="'bskyContacts.phone' | transloco">
+          <input
+            mbControl
+            type="tel"
+            name="phone"
+            autocomplete="tel"
+            [ngModel]="phone()"
+            (ngModelChange)="phone.set($event)"
+            [disabled]="busy() || codeSent()"
+          />
+        </mb-field>
+        @if (codeSent()) {
+          <mb-field [label]="'bskyContacts.code' | transloco">
+            <input
+              mbControl
+              name="code"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              [ngModel]="code()"
+              (ngModelChange)="code.set($event)"
+              [disabled]="busy()"
+            />
+          </mb-field>
+          <button mbButton type="submit" [disabled]="busy() || !code().trim()">
+            {{ 'bskyContacts.verify' | transloco }}
+          </button>
+        } @else {
+          <button mbButton type="submit" [disabled]="busy() || !phone().trim()">
+            {{ 'bskyContacts.sendCode' | transloco }}
+          </button>
+        }
+      </form>
+    </mb-section>
+  } @else {
+    <mb-section [title]="'bskyContacts.contactsTitle' | transloco">
+      <p class="muted">
+        {{ 'bskyContacts.contactsHint' | transloco: { country: countryName() } }}
+      </p>
+      <div class="contacts-form">
+        @if (canPick) {
+          <button mbButton type="button" variant="outline" (click)="pick()">
+            {{ 'bskyContacts.pick' | transloco }}
+          </button>
+        }
+        <mb-field [label]="'bskyContacts.file' | transloco">
+          <input
+            mbControl
+            type="file"
+            name="contactsFile"
+            accept=".vcf,.vcard,.csv,text/vcard,text/csv"
+            (change)="readFile($event)"
+          />
+        </mb-field>
+        <mb-field [label]="'bskyContacts.paste' | transloco">
+          <textarea
+            mbControl
+            name="pasted"
+            rows="4"
+            [ngModel]="pasted()"
+            (ngModelChange)="pasted.set($event)"
+          ></textarea>
+        </mb-field>
+        <p class="muted small" aria-live="polite">
+          {{
+            (numbers().length === 1 ? 'bskyContacts.ready.one' : 'bskyContacts.ready.other')
+              | transloco: { count: numbers().length }
+          }}
+        </p>
+        <button
+          mbButton
+          type="button"
+          [disabled]="busy() || !numbers().length"
+          (click)="importContacts()"
+        >
+          {{ 'bskyContacts.import' | transloco }}
+        </button>
+      </div>
+    </mb-section>
+  }
+
+  @if (error(); as message) {
+    <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+  }
+  @if (notice(); as message) {
+    <mb-notice announcement="status">{{ message }}</mb-notice>
+  }
+
+  <p class="contacts-remove">
+    <button
+      mbButton
+      type="button"
+      variant="outline"
+      tone="danger"
+      [disabled]="busy()"
+      (click)="removeData()"
+    >
+      {{ 'bskyContacts.remove' | transloco }}
+    </button>
+  </p>
+}

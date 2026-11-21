@@ -478,6 +478,30 @@ export interface BskyChatMember {
   handle: string;
   displayName?: string;
   avatar?: string;
+  /** In a group: `#groupConvoMember` with a role, or `#pastGroupConvoMember`. */
+  kind?: { $type?: string; role?: 'owner' | 'standard' | string };
+}
+
+/** `chat.bsky.group.defs#joinLinkView`. */
+export interface BskyJoinLink {
+  code: string;
+  joinRule: 'anyone' | 'followedByOwner' | string;
+  enabledStatus: 'enabled' | 'disabled' | string;
+  requireApproval: boolean;
+  createdAt: string;
+}
+
+/** `chat.bsky.convo.defs#groupConvo`: what makes a convo a group. */
+export interface BskyGroupConvo {
+  $type?: string;
+  name: string;
+  memberCount: number;
+  memberLimit: number;
+  lockStatus: 'unlocked' | 'locked' | 'locked-permanently' | string;
+  joinLink?: BskyJoinLink;
+  joinRequestCount?: number;
+  unreadJoinRequestCount?: number;
+  createdAt: string;
 }
 
 /** chat.bsky.convo.defs#messageView (deleted messages arrive with no text). */
@@ -491,6 +515,8 @@ export interface BskyMessageView {
   sentAt: string;
   /** Absent on older chat servers and on messages nobody reacted to. */
   reactions?: BskyReactionView[];
+  /** A group's system message (`#systemMessageView`): what happened, no text. */
+  data?: { $type?: string } & Record<string, unknown>;
 }
 
 /** One emoji reaction on a chat message; `value` is a single grapheme. */
@@ -512,6 +538,8 @@ export interface BskyConvoView {
   /** A message request from someone you haven't accepted yet; absent means accepted. */
   status?: 'request' | 'accepted';
   unreadCount: number;
+  /** `#groupConvo` for a group chat; `#directConvo` (or absent) for a 1:1. */
+  kind?: BskyGroupConvo | { $type?: string };
 }
 
 /** Who may start a chat with the account (`chat.bsky.actor.declaration`). */

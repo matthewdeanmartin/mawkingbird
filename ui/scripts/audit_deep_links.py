@@ -60,6 +60,7 @@ LINKS = (
 SERVER_OR_LOCAL = {
     "annual-report/:year": "account-specific report",
     "client-lists/:id": "browser-local list id",
+    "bsky/chat/:code": "Bluesky group join code (bsky.app/chat shape); joining needs a linked Bluesky account, and the page says so and links to bsky.app",
     "collections/:id": "server-local collection; anonymousCollectionGuard decides",
     "create-mastodon-account/go/:server": "one-shot hop into sign-up; links point at /create-mastodon-account/",
     "collections/preview/:id": "server-local collection preview",

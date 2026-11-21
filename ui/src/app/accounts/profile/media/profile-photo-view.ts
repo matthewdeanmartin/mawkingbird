@@ -54,6 +54,7 @@ import { languageDisplayName } from '../../../translation/language-codes';
 import { AiAvailability } from '../../../platform/build/ai-availability';
 import { OpenRouterSession } from '../../../connections/openrouter/openrouter-session';
 import { serverKnowsStatus } from '../../../connections/provider';
+import { ReplyGuys } from '../../reply-guys';
 import { applyMinimalMarkdown } from '../../../publishing/markdown';
 
 /**
@@ -319,6 +320,13 @@ export class ProfilePhotoView {
   protected translations = signal<Map<string, PhotoTranslation>>(new Map());
   /** Ids already tried, so paging back and forth never pays twice. */
   private translateTried = new Set<string>();
+
+  private replyGuys = inject(ReplyGuys);
+
+  /** Reply-guy controls: the author doesn't follow the reader, said above the reply box. */
+  protected authorDoesNotFollowMe(status: Status): boolean {
+    return this.replyGuys.followsMe(status.account) === false;
+  }
 
   protected translationOf(status: Status | null | undefined): PhotoTranslation | null {
     return status ? (this.translations().get(status.id) ?? null) : null;

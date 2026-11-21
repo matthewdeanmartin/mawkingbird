@@ -15,9 +15,11 @@ import { TranslocoService } from '@jsverse/transloco';
 import korean from '../../../../public/i18n/ko.json';
 import { Signal, WritableSignal } from '@angular/core';
 import { provideRouter, Router, RouterLink } from '@angular/router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { FollowState } from '../../accounts/follow-state';
+import { ReplyGuys } from '../../accounts/reply-guys';
 import { TrustedAccounts } from '../../accounts/trusted-accounts';
 import { Server } from '../../platform/http/server';
 import { Drafts } from '../../publishing/drafts';
@@ -133,6 +135,17 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks();
 });
+
+/**
+ * Opening a reply or quote asks whether the author follows the reader, for
+ * the reply-guy warning. Suites here don't arrange that relationship, so it
+ * answers "no answer"; the warning has its own test.
+ */
+let followsMe: MockInstance<ReplyGuys['followsMe']>;
+beforeEach(() => {
+  followsMe = vi.spyOn(ReplyGuys.prototype, 'followsMe').mockReturnValue(null);
+});
+afterEach(() => followsMe.mockRestore());
 
 describe('StatusCard', () => {
   let httpMock: HttpTestingController;
@@ -281,6 +294,106 @@ describe('StatusCard', () => {
     fixture.componentRef.setInput('threadCwOpen', false);
     fixture.detectChanges();
     expect(button().getAttribute('aria-expanded')).toBe('false');
+  });
+
+  describe('reply-guy controls', () => {
+    function relationship(id: string, following: boolean, followedBy = false) {
+      return {
+        id,
+        following,
+        followed_by: followedBy,
+        requested: false,
+        blocking: false,
+        muting: false,
+      };
+    }
+
+    function guyReply(mode: 'off' | 'chip' | 'guard'): ComponentFixture<StatusCard> {
+      const fixture = TestBed.createComponent(StatusCard);
+      fixture.componentRef.setInput(
+        'status',
+        makeStatus({ in_reply_to_id: '0', account: makeAccount('guy') }),
+      );
+      fixture.componentRef.setInput('replyGuy', mode);
+      fixture.detectChanges();
+      return fixture;
+    }
+
+    const text = (f: ComponentFixture<StatusCard>) => (f.nativeElement as HTMLElement).textContent!;
+    const el = (f: ComponentFixture<StatusCard>, selector: string) =>
+      (f.nativeElement as HTMLElement).querySelector<HTMLElement>(selector);
+
+    it('guards a reply from someone the reader does not follow behind one click', () => {
+      TestBed.inject(FollowState).write([relationship('guy', false)]);
+      const fixture = guyReply('guard');
+      expect(el(fixture, '.reply-guy-chip')).not.toBeNull();
+      expect(el(fixture, '.reply-guy-cw')).not.toBeNull();
+      expect(text(fixture)).not.toContain('Hello');
+      el(fixture, '.reply-guy-cw button')!.click();
+      fixture.detectChanges();
+      expect(el(fixture, '.reply-guy-cw')).toBeNull();
+      expect(text(fixture)).toContain('Hello');
+      // Still tagged once shown: the chip is information, not the guard.
+      expect(el(fixture, '.reply-guy-chip')).not.toBeNull();
+    });
+
+    it('leaves people the reader follows alone, whether or not they follow back', () => {
+      TestBed.inject(FollowState).write([relationship('guy', true, false)]);
+      const fixture = guyReply('guard');
+      expect(el(fixture, '.reply-guy-chip')).toBeNull();
+      expect(el(fixture, '.reply-guy-cw')).toBeNull();
+      expect(text(fixture)).toContain('Hello');
+    });
+
+    it('only chips outside the reader’s conversations, and not at all when switched off', () => {
+      TestBed.inject(FollowState).write([relationship('guy', false)]);
+      const chip = guyReply('chip');
+      expect(el(chip, '.reply-guy-chip')).not.toBeNull();
+      expect(el(chip, '.reply-guy-cw')).toBeNull();
+      const off = guyReply('off');
+      expect(el(off, '.reply-guy-chip')).toBeNull();
+    });
+
+    it('respects the reader turning the click-through off', () => {
+      TestBed.inject(FollowState).write([relationship('guy', false)]);
+      TestBed.inject(ClientPrefs).setReplyGuyCw(false);
+      const fixture = guyReply('guard');
+      expect(el(fixture, '.reply-guy-chip')).not.toBeNull();
+      expect(el(fixture, '.reply-guy-cw')).toBeNull();
+    });
+
+    it('warns, gently, before replying to someone who doesn’t follow the reader', () => {
+      followsMe.mockReturnValue(false);
+      TestBed.inject(Auth).setToken('reader');
+      const fixture = setUp();
+      const reply = (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(
+        'button[title="Reply"]',
+      )!;
+      reply.click();
+      fixture.detectChanges();
+      expect(el(fixture, '.reply-guy-warning')?.textContent).toContain("@user1 doesn't follow you");
+    });
+
+    it('says nothing when the author follows the reader, or nobody knows', () => {
+      for (const answer of [true, null]) {
+        followsMe.mockReturnValue(answer);
+        TestBed.inject(Auth).setToken('reader');
+        const fixture = setUp();
+        (fixture.nativeElement as HTMLElement)
+          .querySelector<HTMLButtonElement>('button[title="Reply"]')!
+          .click();
+        fixture.detectChanges();
+        expect(el(fixture, '.reply-guy-warning')).toBeNull();
+        fixture.destroy();
+      }
+    });
+
+    it('is not opened by content-warning trust', () => {
+      TestBed.inject(FollowState).write([relationship('guy', false)]);
+      TestBed.inject(TrustedAccounts).trust(makeAccount('guy'));
+      const fixture = guyReply('guard');
+      expect(el(fixture, '.reply-guy-cw')).not.toBeNull();
+    });
   });
 
   /** Creates a fixture, sets the required `status` input, and runs the first CD cycle. */

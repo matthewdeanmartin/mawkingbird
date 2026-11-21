@@ -77,59 +77,6 @@
     @if (error(); as msg) {
       <p class="bsky-error" role="alert">{{ msg }}</p>
     }
-    @if (selfHostedHint()) {
-      <!-- The one failure that looks like a wrong password but isn't: bsky.social
-           is an entryway and cannot authenticate an account on someone else's PDS. -->
-      <p class="bsky-hint muted small">
-        {{ 'pages.loginBluesky.selfHostedHint' | transloco }}
-      </p>
-    }
-
-    @if (!native && appPasswordsOffered) {
-      <details class="bsky-compat">
-        <summary>{{ 'pages.loginBluesky.compatSummary' | transloco }}</summary>
-        <!-- App passwords are retained only as an explicit compatibility path. -->
-        <div class="bsky-appword">
-          <p>
-            {{ 'pages.loginBluesky.appPasswordIntro' | transloco }}
-            <a
-              href="https://bsky.app/settings/app-passwords"
-              target="_blank"
-              rel="noopener noreferrer"
-              >{{ 'pages.loginBluesky.appPasswordLinkText' | transloco }}</a
-            >.
-          </p>
-          <p class="muted small" [innerHTML]="'pages.loginBluesky.dmTickHint' | transloco"></p>
-        </div>
-        <form class="bsky-form" (ngSubmit)="submitAppPassword()">
-          <label class="bsky-field">
-            <span class="bsky-label">{{ 'pages.loginBluesky.appPasswordLabel' | transloco }}</span>
-            <input
-              type="password"
-              name="bskyAppPassword"
-              [placeholder]="'pages.loginBluesky.appPasswordPlaceholder' | transloco"
-              autocomplete="off"
-              [ngModel]="appPassword()"
-              (ngModelChange)="appPassword.set($event)"
-              [disabled]="working()"
-            />
-          </label>
-          <button
-            mbButton
-            variant="outline"
-            class="bsky-btn bsky-submit"
-            type="submit"
-            [disabled]="!handle().trim() || !appPassword() || working()"
-          >
-            {{
-              (working() ? 'pages.loginBluesky.signingIn' : 'pages.loginBluesky.useAppPassword')
-                | transloco
-            }}
-          </button>
-        </form>
-      </details>
-    }
-
     <p class="bsky-out small">
       <a routerLink="/login">{{ 'pages.loginBluesky.useDifferentNetwork' | transloco }}</a> ·
       <!-- `/anonymous`, not `/`: this visitor has already been asked whether they

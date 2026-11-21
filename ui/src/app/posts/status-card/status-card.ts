@@ -19,6 +19,7 @@ import {
 } from '../../publishing/post-permissions/post-permissions';
 import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
 import { MbNotice } from '../../design-system/notice/notice';
+import { MbBadge } from '../../design-system/badge/badge';
 import {
   MbPostActions,
   MbPostAction,
@@ -133,6 +134,8 @@ import { LocalModeration } from '../../moderation/local-moderation';
 import { AuthorModeration, ModerationTarget } from '../../moderation/author-moderation';
 import { FollowTrust } from '../../accounts/follow-trust';
 import { TrustedAccounts } from '../../accounts/trusted-accounts';
+import { ReplyGuys } from '../../accounts/reply-guys';
+import { ReplyGuyMode } from '../../accounts/reply-guys-model';
 import { StatusVisibility } from '../../moderation/status-visibility';
 import { serverKnowsStatus, ProviderCapabilities } from '../../connections/provider';
 import { BskyReply } from '../../connections/bluesky/bluesky-reply';
@@ -219,6 +222,12 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.originUnresolved: Your server couldn’t find this reply yet, so you can’t act on it from here. Open it on its own server instead.
 // i18n statusCard.replyingToTranslated: Warning: you are replying to a translated {{post}}. The original is in {{language}}.
 // i18n statusCard.replyingToTranslatedUnknown: Warning: you are replying to a translated {{post}}. The original is in another language.
+// i18n statusCard.replyGuy.chip: you don't follow
+// i18n statusCard.replyGuy.chipTitle: You don't follow this account
+// i18n statusCard.replyGuy.cw: Reply from someone you don't follow
+// i18n statusCard.replyGuy.show: Show
+// i18n statusCard.replyGuy.replyWarning: Heads up: @{{handle}} doesn't follow you. They'll still be notified of your reply.
+// i18n statusCard.replyGuy.quoteWarning: Heads up: @{{handle}} doesn't follow you. They'll still be notified of your quote.
 // i18n statusCard.aiTranslationNote: Translated into {{target}} by {{model}} · machine translation, so treat the wording as approximate
 // i18n statusCard.aiTranslation: AI translation
 // i18n statusCard.showSensitiveContent: Show sensitive content
@@ -465,6 +474,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
     MbToolbarButton,
     CustomEmojiPipe,
     MbNotice,
+    MbBadge,
     MbPostActions,
     MbPostAction,
     MbActionCount,
@@ -993,12 +1003,13 @@ export class StatusCard {
    */
   protected cwCollapsed = computed(
     () =>
-      !!this.spoilerText() &&
-      !(
-        this.threadCwOpen() ??
-        this.cwOpen() ??
-        (this.prefs.feedReader() || this.authorTrustedForCw())
-      ),
+      this.replyGuyCollapsed() ||
+      (!!this.spoilerText() &&
+        !(
+          this.threadCwOpen() ??
+          this.cwOpen() ??
+          (this.prefs.feedReader() || this.authorTrustedForCw())
+        )),
   );
 
   toggleCw(event: Event): void {
@@ -1012,6 +1023,65 @@ export class StatusCard {
     this.cwOpen.set(open);
     this.cwToggled.emit(open);
   }
+
+  // --- reply-guy controls (accounts/reply-guys.ts) ---
+
+  protected replyGuys = inject(ReplyGuys);
+
+  /**
+   * How this card treats an author the reader does not follow. Set by the
+   * thread (replies) and nowhere else: a feed is people you chose already.
+   */
+  readonly replyGuy = input<ReplyGuyMode>('off');
+
+  /**
+   * The mode, once the networks that have no follow graph here are ruled out.
+   * Never `chip`/`guard` on a card that would make a lookup it can't trust:
+   * another server's ids, RSS, Twitter mirrors, local practice posts.
+   */
+  private replyGuyMode = computed<ReplyGuyMode>(() => {
+    const mode = this.replyGuy();
+    if (mode === 'off' || this.isLocalPractice || this.remoteMastodonReadOnly) return 'off';
+    const provider = this.display.provider ?? 'mastodon';
+    return ['mastodon', 'bluesky', 'misskey'].includes(provider) ? mode : 'off';
+  });
+
+  /** "You don't follow" beside the handle. Only on a definite answer. */
+  protected replyGuyChip = computed(
+    () => this.replyGuyMode() !== 'off' && this.replyGuys.notFollowed(this.display.account),
+  );
+
+  /** One click shows the reply; resets when a different status is bound. */
+  protected replyGuyRevealed = linkedSignal({ source: this.status, computation: () => false });
+
+  /**
+   * The virtual content warning: the post has none of its own, but it is a
+   * reply in the reader's conversation from someone they don't follow. Hidden
+   * behind one click, never removed. Content-warning trust does not open it,
+   * and neither does a thread opening its CWs together: those are about what
+   * a post says, this is about who is saying it.
+   */
+  protected replyGuyCollapsed = computed(
+    () =>
+      this.replyGuyMode() === 'guard' &&
+      this.replyGuys.cwOn() &&
+      !this.replyGuyRevealed() &&
+      this.replyGuys.notFollowed(this.display.account),
+  );
+
+  revealReplyGuy(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.replyGuyRevealed.set(true);
+  }
+
+  /**
+   * Set while replying to, or quoting, someone who doesn't follow the reader.
+   * Read only inside the open composer, so a feed of cards asks nothing.
+   */
+  protected notFollowedByAuthor = computed(
+    () => !this.isOwn() && this.replyGuys.followsMe(this.display.account) === false,
+  );
 
   // --- sensitive media ---
 

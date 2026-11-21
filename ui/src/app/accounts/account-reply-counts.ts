@@ -218,6 +218,8 @@ export class AccountReplyCounts {
     const path = `/xrpc/app.bsky.notification.listNotifications?limit=${PAGE_LIMIT}`;
     const service = identity.profile.service.replace(/\/+$/, '');
     let response: Response;
+    // A retired app-password identity has nothing to ask with until it signs in.
+    if (identity.credentials.authMethod === 'retired') throw new Error('Bluesky sign-in needed');
     if (identity.credentials.authMethod === 'oauth') {
       response = await Promise.race([
         this.native && identity.credentials.nativeHandle

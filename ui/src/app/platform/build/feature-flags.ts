@@ -12,7 +12,6 @@ export type FeatureFlagId =
   | 'write'
   | 'mawkingbird-plus'
   | 'misskey'
-  | 'bluesky-app-passwords'
   | 'connector-mastodon'
   | 'connector-bluesky'
   | 'connector-twitter'
@@ -122,8 +121,6 @@ interface StoredFeatureFlags {
 // i18n flags.connectorSponsorblock.label: SponsorBlock
 // i18n flags.connectorSponsorblock.description: Marking sponsor reads, intros and self-promotion in YouTube videos so you can skip them. Only part of a scrambled video ID is sent.
 // i18n flags.connectorWikidata.description: Looking up a YouTube channel on Wikidata to find the creator's Mastodon account. Only the channel's ID is sent.
-// i18n flags.blueskyAppPasswords.label: Bluesky app passwords (legacy)
-// i18n flags.blueskyAppPasswords.description: Offering app passwords when signing in to or linking Bluesky. Off by default: Bluesky's own sign-in is safer. Links already made with an app password keep working either way.
 // i18n flags.proxyMawkingbirdPlus.label: Mawkingbird Plus proxy
 // i18n flags.proxyMawkingbirdPlus.description: Offer the supporter tier of the Mawkingbird proxy. Needs an account and a subscription; the free Mawkingbird proxy is unaffected either way.
 // i18n flags.proxyAllorigins.label: AllOrigins proxy
@@ -187,16 +184,6 @@ export const FEATURE_FLAGS: readonly FeatureFlagDefinition[] = [
     descriptionKey: 'flags.connectorMastodon.description',
     defaultState: 'production',
     group: 'connectors',
-  },
-  {
-    // Being phased out (spec/bsky_parity.md): OAuth with PKCE and DPoP is
-    // better in every way. Off, the app-password forms are not offered; the
-    // code and existing links stay until the owner retires them.
-    id: 'bluesky-app-passwords',
-    labelKey: 'flags.blueskyAppPasswords.label',
-    descriptionKey: 'flags.blueskyAppPasswords.description',
-    defaultState: 'off',
-    group: 'features',
   },
   {
     id: 'connector-bluesky',

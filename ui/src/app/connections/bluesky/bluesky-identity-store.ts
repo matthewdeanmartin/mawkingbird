@@ -32,8 +32,19 @@ export interface BlueskyOAuthIdentityCredentials {
   connectedAt?: number;
 }
 
+/**
+ * An app-password identity after app passwords were retired: no tokens, no
+ * password. The account stays listed and asks for Bluesky's own sign-in.
+ */
+export interface BlueskyRetiredIdentityCredentials {
+  authMethod: 'retired';
+  connectedAt?: number;
+}
+
 export type BlueskyIdentityCredentials =
-  BlueskyLegacyIdentityCredentials | BlueskyOAuthIdentityCredentials;
+  | BlueskyLegacyIdentityCredentials
+  | BlueskyOAuthIdentityCredentials
+  | BlueskyRetiredIdentityCredentials;
 
 export interface BlueskyIdentity {
   profile: BlueskyIdentityProfile;
@@ -73,7 +84,7 @@ function normalizedProfile(value: unknown): BlueskyIdentityProfile | null {
 function isCredentials(value: unknown): value is BlueskyIdentityCredentials {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
   const credentials = value as Record<string, unknown>;
-  if (credentials['authMethod'] === 'oauth') {
+  if (credentials['authMethod'] === 'oauth' || credentials['authMethod'] === 'retired') {
     return (
       credentials['connectedAt'] === undefined || typeof credentials['connectedAt'] === 'number'
     );

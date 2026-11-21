@@ -30,6 +30,8 @@ export class Wellness {
   readonly hideProfileCounts = computed(() => this.flags().hideProfileCounts);
   readonly noHoverCards = computed(() => this.flags().noHoverCards);
   readonly limitedNotifications = computed(() => this.flags().limitedNotifications);
+  /** Replies, mentions and quotes from people you don't follow never reach notifications. */
+  readonly hideReplyGuys = computed(() => this.flags().hideReplyGuys);
   readonly hideAnalytics = computed(() => this.flags().hideAnalytics);
   readonly forceCalm = computed(() => this.flags().forceCalm);
   readonly demoteGoodStuff = computed(() => this.flags().demoteGoodStuff);

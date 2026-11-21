@@ -109,6 +109,17 @@ describe('hasTranslatableText', () => {
     expect(hasTranslatableText(post(''))).toBe(false);
   });
 
+  it('ignores image descriptions: hashtags plus a described image are not sent whole', () => {
+    const described = {
+      media_attachments: [
+        { id: 'm', type: 'image', url: 'u', preview_url: 'p', description: 'Ein Hund am Strand' },
+      ],
+    };
+    expect(hasTranslatableText(post('<p>#dog #beach</p>', described as never))).toBe(false);
+    expect(hasTranslatableText(post('', described as never))).toBe(false);
+    expect(hasTranslatableText(post('<p>Am Strand</p>', described as never))).toBe(true);
+  });
+
   it('is true for any word, including a single kanji', () => {
     expect(hasTranslatableText(post('<p>草</p>'))).toBe(true);
     expect(hasTranslatableText(post('<p>@ai ありがとう 🎉</p>'))).toBe(true);

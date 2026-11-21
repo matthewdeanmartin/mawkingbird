@@ -61,11 +61,26 @@ describe('SettingsWellness', () => {
       .filter(
         (box) =>
           !box.name.match(
-            /_(auto_refresh|algo_calm|confirm_post|delayed_send|thoughtful_posting|show_images)$/,
+            /_(auto_refresh|algo_calm|confirm_post|delayed_send|thoughtful_posting|show_images|reply_guy_cw)$/,
           ),
       );
     expect(boxes.map((box) => box.name.replace('wellness_', ''))).toEqual([...WELLNESS_KEYS]);
     expect(boxes.every((box) => !box.disabled)).toBe(true);
+  });
+
+  it('the reply-guy click-through starts on and writes its own preference', async () => {
+    const fixture = TestBed.createComponent(SettingsWellness);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const box = el.querySelector<HTMLInputElement>('input[name="wellness_reply_guy_cw"]')!;
+    expect(box.checked).toBe(true);
+    box.click();
+    fixture.detectChanges();
+    expect(TestBed.inject(ClientPrefs).replyGuyCw()).toBe(false);
+    // A preference of its own, not a wellness flag: presets never move it.
+    expect(TestBed.inject(Wellness).customized()).toBe(false);
   });
 
   it('Force Calm locks the mirrored Calm switch', async () => {

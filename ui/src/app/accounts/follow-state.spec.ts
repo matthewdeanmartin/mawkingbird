@@ -6,6 +6,8 @@ import { Auth } from '../platform/session/auth';
 import { FollowState, RELATIONSHIP_BATCH } from './follow-state';
 import { Account, Relationship } from '../platform/api/models';
 import { BlueskySession } from '../connections/bluesky/bluesky-session';
+import { MisskeyApi } from '../connections/misskey/misskey-api';
+import { of } from 'rxjs';
 
 function relationship(id: string, overrides: Partial<Relationship> = {}): Relationship {
   return {
@@ -240,6 +242,31 @@ describe('FollowState', () => {
     const noUrl = { id: 'X', acct: 'bob', username: 'bob' } as Account;
     expect(await follows.resolveForeign(noUrl)).toBeNull();
     http.expectNone((r) => r.url.includes('/api/v2/search'));
+  });
+
+  it('asks Misskey in one call and maps its answer onto a relationship', async () => {
+    const auth = TestBed.inject(Auth);
+    Object.defineProperty(auth, 'activeMisskeyKey', { value: () => 'mk-key', configurable: true });
+    const asked: string[][] = [];
+    const misskey = TestBed.inject(MisskeyApi);
+    misskey.relations = (ids: string[]) => {
+      asked.push(ids);
+      return of([
+        {
+          id: 'u1',
+          isFollowing: false,
+          isFollowed: true,
+          hasPendingFollowRequestFromYou: false,
+          hasPendingFollowRequestToYou: false,
+          isBlocking: false,
+          isMuted: false,
+        },
+      ]);
+    };
+    await follows.resolve(['mk:u1']);
+    expect(asked).toEqual([['u1']]);
+    expect(follows.relationship('mk:u1')).toMatchObject({ following: false, followed_by: true });
+    http.expectNone((r) => r.url === RELATIONSHIPS);
   });
 
   it('forgets everything on reset', async () => {

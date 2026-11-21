@@ -2,6 +2,9 @@ import { CompactLinksPipe, ContentLinks } from '../../posts/content-links';
 import { LocalModeration } from '../../moderation/local-moderation';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
 import { MbButton } from '../../design-system/button/button';
+import { MbBadge } from '../../design-system/badge/badge';
+import { ReplyGuys } from '../../accounts/reply-guys';
+import { isIncomingConversation } from '../../accounts/reply-guys-model';
 import { firstValueFrom } from 'rxjs';
 import { accountProfilePath } from '../../accounts/account-route';
 import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
@@ -126,6 +129,7 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.likeLabel: Like
 // i18n pages.notifications.starLabel: Star
 // i18n pages.notifications.likeFailed: Could not update this like. Try again.
+// i18n pages.notifications.replyGuy.cw: From someone you don't follow
 
 function normalizedAccountUrl(url: string): string | null {
   try {
@@ -291,6 +295,7 @@ export function accountsNewToMe(
     ContentLinks,
     CompactLinksPipe,
     MbButton,
+    MbBadge,
     CustomEmojiPipe,
     MbPostAction,
     PollResults,
@@ -395,6 +400,27 @@ export class Notifications implements OnInit, OnDestroy {
   private streaming = inject(Streaming);
   private prefs = inject(ClientPrefs);
   private wellness = inject(Wellness);
+  private replyGuys = inject(ReplyGuys);
+  /** Notifications shown despite the reply-guy guard, one click each. */
+  private replyGuyRevealed = signal<ReadonlySet<string>>(new Set());
+
+  /** A reply, mention or quote from someone the reader doesn't follow. */
+  private fromReplyGuy(n: MastodonNotification): boolean {
+    return isIncomingConversation(n.type) && this.replyGuys.notFollowed(n.account);
+  }
+
+  protected replyGuyChip(n: MastodonNotification): boolean {
+    return this.fromReplyGuy(n);
+  }
+
+  /** Its words wait behind one click (Settings → Wellness turns this off). */
+  protected replyGuyGuarded(n: MastodonNotification): boolean {
+    return this.replyGuys.cwOn() && !this.replyGuyRevealed().has(n.id) && this.fromReplyGuy(n);
+  }
+
+  protected revealReplyGuy(n: MastodonNotification): void {
+    this.replyGuyRevealed.update((set) => new Set(set).add(n.id));
+  }
   private diagnostics = inject(PageDiagnostics);
   private auth = inject(Auth);
   private replyCounts = inject(AccountReplyCounts);
@@ -462,10 +488,15 @@ export class Notifications implements OnInit, OnDestroy {
     const audience = this.audience();
     const rels = this.rels();
     const limited = this.wellness.limitedNotifications();
+    const hideReplyGuys = this.replyGuys.hideFromNotifications();
     return this.items().filter((n) => {
       // Wellness: likes, boosts and follows don't arrive at all. Before the
       // safety check, which none of them are.
       if (limited && isEngagementNotification(n.type)) return false;
+      // Wellness, opt-in only: replies, mentions and quotes from people the
+      // reader doesn't follow are removed, not just put behind a click. Only
+      // on a definite "not followed"; an unanswered lookup leaves them shown.
+      if (hideReplyGuys && this.fromReplyGuy(n)) return false;
       // Account-safety notices (a moderator acted on you, you lost follows) are
       // not engagement: no type or audience filter hides them.
       if (isSafetyNotice(n)) return true;

@@ -143,6 +143,13 @@
     />
   </mb-section>
 
+  <mb-section [title]="'settings.bskyPrefs.contacts.title' | transloco">
+    <p class="muted">{{ 'settings.bskyPrefs.contacts.hint' | transloco }}</p>
+    <a mbContentLink routerLink="/bluesky/find-contacts">{{
+      'settings.bskyPrefs.contacts.link' | transloco
+    }}</a>
+  </mb-section>
+
   <mb-section [title]="'settings.bskyPrefs.privacy.title' | transloco">
     <div class="prefs-stack">
       <mb-checkbox

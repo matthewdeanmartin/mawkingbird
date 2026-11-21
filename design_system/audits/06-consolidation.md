@@ -3117,3 +3117,30 @@ content, MbField + select[mbControl] per label, MbSaveFeedback), Your reports
 Age verification MbContentLink; the report dialog gains two select[mbControl]
 fields (reason with optgroups, send-to). The app-password upgrade MbButton on
 the connection page is counted here too. No shared design widget changed.
+
+Image-description translation and Bluesky profile fixes (2026-11-21): reviewed
+the regenerated inventory: 2073 scanned files, 706 candidate files, unchanged.
+The lightbox gains one `.lightbox-tool` button ("Translate description"), the
+same native pattern as its Describe and Read tools. The Bluesky profile error
+now reuses the page's `.profile-error` layout. No shared widget changed.
+
+Bluesky group chats, find contacts and the end of app passwords (2026-11-21,
+spec/bsky_parity.md sprints 7–8 and phase 2): reviewed the regenerated
+inventory: 2085 scanned files, 710 candidate files. Four new candidate files,
+all adopted scope: the group settings dialog, the new-group dialog, the
+join-a-group page and the find-contacts page, each built from MbDialog,
+MbField/MbControl, MbButton, MbCheckbox, MbNotice, MbSection, MbContentState and
+MbContentLink. The conversations page gains a "New Bluesky group" MbButton and
+a group-settings menu item; Bluesky preferences gains one MbContentLink. The
+app-password forms left `login-bluesky.html` and `connection-bluesky.html`,
+removing their findings. No shared design widget changed.
+
+Reply-guy controls (2026-11-21, spec/reply-guy-controls.md): reviewed the
+regenerated inventory: 2087 scanned files, 710 candidate files, no files added
+or removed. The "you don't follow" chip is MbBadge with a local dashed border
+(status card, notifications, quotes list); the warnings before replying to or
+quoting someone who doesn't follow you reuse MbNotice beside the
+translated-post notice (status card, thread, photo view, quote dialog). The
+virtual content warning's Show control is MbButton in the status card,
+notifications and quotes list; Settings → Wellness gains one native checkbox
+row in the page's existing pattern. No shared design widget changed.

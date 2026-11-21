@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { BlueskySession } from './bluesky-session';
 import { blueskyIsPrimaryKind } from './bluesky-identity-store';
@@ -181,29 +181,6 @@ describe('BlueskySession: identity vs connector', () => {
 
       expect(localStorage.getItem(MODE_KEY)).toBe('mastodon');
       expect(localStorage.getItem(TOKEN_KEY)).toBe('token-abc');
-    });
-  });
-
-  describe('loginAsIdentity', () => {
-    it('writes the unscoped identity keys rather than the scoped connector keys', () => {
-      localStorage.setItem(TOKEN_KEY, 'token-abc'); // a Mastodon session is active
-      const session = TestBed.inject(BlueskySession);
-      const httpMock = TestBed.inject(HttpTestingController);
-
-      session.loginAsIdentity('me.bsky.social', 'app-pass').subscribe();
-
-      httpMock.expectOne('https://bsky.social/xrpc/com.atproto.server.createSession').flush({
-        did: 'did:plc:me',
-        handle: 'me.bsky.social',
-        accessJwt: 'a',
-        refreshJwt: 'r',
-      });
-      httpMock.expectOne((r) => r.url.includes('getProfile')).flush({ displayName: 'Me' });
-
-      expect(localStorage.getItem(IDENTITY_PROFILE)).not.toBeNull();
-      expect(localStorage.getItem(IDENTITY_CREDENTIALS)).not.toBeNull();
-      // Nothing landed in the previous account's connector namespace.
-      expect(localStorage.getItem('mockingbird_bsky_profile_6xtdsz')).toBeNull();
     });
   });
 });

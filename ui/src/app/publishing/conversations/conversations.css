@@ -708,3 +708,13 @@
     min-height: 44px;
   }
 }
+
+/* A group's system message ("Ana joined"): a quiet line between bubbles. */
+.system-line {
+  text-align: center;
+  margin: 6px 0;
+}
+
+.bsky-locked {
+  padding: 12px 16px;
+}

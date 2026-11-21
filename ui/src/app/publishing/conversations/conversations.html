@@ -36,6 +36,11 @@
       (sound.enabled() ? 'pages.conversations.soundOn' : 'pages.conversations.soundOff') | transloco
     }}
   </button>
+  @if (bsky.linked()) {
+    <button mbButton variant="outline" type="button" (click)="newGroupOpen.set(true)">
+      {{ 'pages.conversations.group.newButton' | transloco }}
+    </button>
+  }
 </form>
 @if (startChatError()) {
   <p role="alert">{{ 'pages.conversations.startFailed' | transloco }}</p>
@@ -401,7 +406,7 @@
     <!-- Only when there is Mastodon history to page through. A bot row is not
          that: "Load more" fetches older mentions, and an anonymous visitor whose
          only chat is Eliza has none to fetch. -->
-    @if (mastodonAvailable() && !loading() && hasServerChats()) {
+    @if ((mastodonAvailable() || bsky.linked()) && !loading() && hasServerChats()) {
       <div class="chat-load-more">
         @if (chatsExhausted()) {
           <span class="muted small">{{ 'pages.conversations.noOlderMessages' | transloco }}</span>
@@ -483,6 +488,11 @@
             >
               {{ 'pages.conversations.refresh' | transloco }}
             </button>
+            @if (chat.group) {
+              <button mbMenuItem type="button" (click)="groupSettingsFor.set(chat)">
+                {{ 'pages.conversations.group.settingsMenu' | transloco }}
+              </button>
+            }
             <button mbMenuItem type="button" (click)="moderationChat.set(chat)">
               {{ 'pages.conversations.moderate' | transloco }}
             </button>
@@ -704,89 +714,93 @@
         }
         @if (chat.kind === 'bsky') {
           @for (m of bskyMessages(); track m.id) {
-            <div class="bubble-row" [class.mine]="bskyIsMine(m)">
-              @if (!bskyIsMine(m)) {
-                <span
-                  class="bubble-avatar"
-                  [attr.aria-label]="bskyAuthor(chat, m.sender.did)?.handle"
-                >
-                  @if (bskyAuthor(chat, m.sender.did)?.avatar; as av) {
-                    <img [src]="av" alt="" loading="lazy" decoding="async" />
-                  }
-                </span>
-              }
-              <div class="bubble" [class.bubble-mine]="bskyIsMine(m)">
-                @if (!bskyIsMine(m) && (chat.members ?? []).length > 1) {
-                  <div class="bubble-author small">
-                    {{
-                      bskyAuthor(chat, m.sender.did)?.displayName ||
-                        bskyAuthor(chat, m.sender.did)?.handle
-                    }}
-                  </div>
+            @if (isSystemMessage(m)) {
+              <p class="system-line muted small">{{ systemTextIn(chat, m) }}</p>
+            } @else {
+              <div class="bubble-row" [class.mine]="bskyIsMine(m)">
+                @if (!bskyIsMine(m)) {
+                  <span
+                    class="bubble-avatar"
+                    [attr.aria-label]="bskyAuthor(chat, m.sender.did)?.handle"
+                  >
+                    @if (bskyAuthor(chat, m.sender.did)?.avatar; as av) {
+                      <img [src]="av" alt="" loading="lazy" decoding="async" />
+                    }
+                  </span>
                 }
-                @if (bskyIsDeleted(m)) {
-                  <div class="bubble-content bubble-deleted muted">
-                    {{ 'pages.conversations.deletedMessage' | transloco }}
-                  </div>
-                } @else {
-                  <div class="bubble-content"><app-linked-text [text]="m.text ?? ''" /></div>
-                  @if (reactionChips(m); as chips) {
-                    @if (chips.length) {
-                      <div class="bubble-reactions">
-                        @for (chip of chips; track chip.value) {
-                          <button
-                            mbButton
-                            variant="compact"
-                            size="small"
-                            type="button"
-                            class="reaction-chip"
-                            [attr.aria-pressed]="chip.mine"
-                            (click)="toggleReaction(m, chip)"
-                          >
-                            {{
-                              'pages.conversations.reactions.chip'
-                                | transloco: { emoji: chip.value, count: chip.count }
-                            }}
-                          </button>
-                        }
-                      </div>
+                <div class="bubble" [class.bubble-mine]="bskyIsMine(m)">
+                  @if (!bskyIsMine(m) && (chat.members ?? []).length > 1) {
+                    <div class="bubble-author small">
+                      {{
+                        bskyAuthor(chat, m.sender.did)?.displayName ||
+                          bskyAuthor(chat, m.sender.did)?.handle
+                      }}
+                    </div>
+                  }
+                  @if (bskyIsDeleted(m)) {
+                    <div class="bubble-content bubble-deleted muted">
+                      {{ 'pages.conversations.deletedMessage' | transloco }}
+                    </div>
+                  } @else {
+                    <div class="bubble-content"><app-linked-text [text]="m.text ?? ''" /></div>
+                    @if (reactionChips(m); as chips) {
+                      @if (chips.length) {
+                        <div class="bubble-reactions">
+                          @for (chip of chips; track chip.value) {
+                            <button
+                              mbButton
+                              variant="compact"
+                              size="small"
+                              type="button"
+                              class="reaction-chip"
+                              [attr.aria-pressed]="chip.mine"
+                              (click)="toggleReaction(m, chip)"
+                            >
+                              {{
+                                'pages.conversations.reactions.chip'
+                                  | transloco: { emoji: chip.value, count: chip.count }
+                              }}
+                            </button>
+                          }
+                        </div>
+                      }
                     }
                   }
-                }
-                <div class="bubble-meta muted">
-                  <span>{{ m.sentAt | humanTime }}</span>
-                  @if (!bskyIsDeleted(m)) {
-                    <span class="bubble-actions">
-                      <button
-                        mbButton
-                        variant="compact"
-                        size="small"
-                        type="button"
-                        [attr.aria-expanded]="reactingTo() === m.id"
-                        [title]="'pages.conversations.reactions.add' | transloco"
-                        [attr.aria-label]="'pages.conversations.reactions.add' | transloco"
-                        (click)="toggleReactionPicker(m)"
-                      >
-                        <span aria-hidden="true">☺+</span>
-                      </button>
-                      <mb-post-menu
-                        [label]="'pages.conversations.messageMenu' | transloco"
-                        [closeLabel]="'pages.conversations.bskyMenu.close' | transloco"
-                      >
-                        <button mbMenuItem type="button" tone="danger" (click)="deleteForMe(m)">
-                          {{ 'pages.conversations.deleteForMe' | transloco }}
+                  <div class="bubble-meta muted">
+                    <span>{{ m.sentAt | humanTime }}</span>
+                    @if (!bskyIsDeleted(m)) {
+                      <span class="bubble-actions">
+                        <button
+                          mbButton
+                          variant="compact"
+                          size="small"
+                          type="button"
+                          [attr.aria-expanded]="reactingTo() === m.id"
+                          [title]="'pages.conversations.reactions.add' | transloco"
+                          [attr.aria-label]="'pages.conversations.reactions.add' | transloco"
+                          (click)="toggleReactionPicker(m)"
+                        >
+                          <span aria-hidden="true">☺+</span>
                         </button>
-                      </mb-post-menu>
-                    </span>
+                        <mb-post-menu
+                          [label]="'pages.conversations.messageMenu' | transloco"
+                          [closeLabel]="'pages.conversations.bskyMenu.close' | transloco"
+                        >
+                          <button mbMenuItem type="button" tone="danger" (click)="deleteForMe(m)">
+                            {{ 'pages.conversations.deleteForMe' | transloco }}
+                          </button>
+                        </mb-post-menu>
+                      </span>
+                    }
+                  </div>
+                  @if (reactingTo() === m.id) {
+                    <div class="reaction-popover">
+                      <app-emoji-picker (picked)="pickReaction(m, $event)" />
+                    </div>
                   }
                 </div>
-                @if (reactingTo() === m.id) {
-                  <div class="reaction-popover">
-                    <app-emoji-picker (picked)="pickReaction(m, $event)" />
-                  </div>
-                }
               </div>
-            </div>
+            }
           }
         }
         @for (m of chat.kind === 'bsky' ? [] : transcript(); track m.id) {
@@ -971,6 +985,10 @@
             {{ 'pages.conversations.send' | transloco }}
           </button>
         </div>
+      } @else if (chat.kind === 'bsky' && chat.group && chat.group.lockStatus !== 'unlocked') {
+        <p class="muted small bsky-locked" role="status">
+          {{ 'pages.conversations.group.locked' | transloco }}
+        </p>
       } @else if (chat.kind === 'bsky') {
         @if (bskySendError()) {
           <p class="muted" role="alert">
@@ -1126,4 +1144,19 @@
       </section>
     }
   </mb-dialog>
+}
+
+@if (newGroupOpen()) {
+  <app-bluesky-new-group (closed)="newGroupOpen.set(false)" (created)="groupCreated($event)" />
+}
+@if (groupSettingsFor(); as chat) {
+  @if (chat.group && chat.convoId) {
+    <app-bluesky-group-settings
+      [convoId]="chat.convoId"
+      [group]="chat.group"
+      [owner]="!!chat.groupOwner"
+      (closed)="groupSettingsFor.set(null)"
+      (changed)="groupChanged($event)"
+    />
+  }
 }

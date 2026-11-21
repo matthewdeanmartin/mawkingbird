@@ -144,6 +144,7 @@
 /* Short and fixed-length: cheaper to keep whole than to ellipsize. */
 .meta > .post-time,
 .meta > .badge,
+.meta > .reply-guy-chip,
 .meta > app-verified-badge {
   flex-shrink: 0;
   white-space: nowrap;
@@ -916,6 +917,21 @@ a.open-original {
 
 /* Above the inline reply: you are answering a post you read in translation. */
 .reply-translated {
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Reply-guy chip: information, not an accusation. The shared badge with a
+   dashed edge, so it reads as "not connected" rather than as a label the
+   author chose. */
+.meta > mb-badge.reply-guy-chip {
+  border-style: dashed;
+  font-size: 0.75em;
+}
+
+/* Beside the translated-post notice, styled the same: about to reply to, or
+   quote, someone who doesn't follow you. */
+.reply-guy-warning {
   display: block;
   margin-bottom: 8px;
 }

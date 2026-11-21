@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal, Signal, WritableSignal } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 import { of, Subject, throwError } from 'rxjs';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
@@ -14,6 +14,19 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Streaming } from '../../platform/api/streaming';
 import { FakeStreaming } from '../../testing/fake-streaming';
 import { accountsNewToMe, groupNotifications, isSameAccount, Notifications } from './notifications';
+import { ReplyGuys } from '../../accounts/reply-guys';
+import { Wellness } from '../../wellness/wellness';
+
+/**
+ * Reply-guy controls look up who the reader follows for every mention. This
+ * suite's readers have no arranged relationships, so the lookup answers "no
+ * answer" here; the reply-guy tests below say who is a stranger.
+ */
+let notFollowed: MockInstance<ReplyGuys['notFollowed']>;
+beforeEach(() => {
+  notFollowed = vi.spyOn(ReplyGuys.prototype, 'notFollowed').mockReturnValue(false);
+});
+afterEach(() => notFollowed.mockRestore());
 
 interface NotificationsInternals {
   audience: WritableSignal<'all' | 'friends' | 'followers' | 'mutuals' | 'not-following'>;
@@ -631,6 +644,51 @@ describe('Notifications', () => {
       expect(outerClick).not.toHaveBeenCalled();
     },
   );
+
+  describe('reply-guy controls', () => {
+    function strangerMention(): ComponentFixture<Notifications> {
+      notFollowed.mockImplementation((account) => account?.id === 'guy');
+      const fixture = TestBed.createComponent(Notifications);
+      fixture.detectChanges();
+      const guy = makeNotification('g', 'mention');
+      guy.account = makeAccount('guy', 'Reply Guy');
+      guy.status = { id: 'sg', content: '<p>well actually</p>', media_attachments: [] } as never;
+      const friend = makeNotification('f', 'mention');
+      friend.account = makeAccount('friend', 'Friend');
+      friend.status = { id: 'sf', content: '<p>hello pal</p>', media_attachments: [] } as never;
+      httpMock.expectOne('/api/v1/notifications').flush([guy, friend]);
+      fixture.detectChanges();
+      return fixture;
+    }
+
+    it('tags a stranger and puts their words behind one click', () => {
+      const fixture = strangerMention();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelectorAll('.reply-guy-chip')).toHaveLength(1);
+      expect(el.textContent).not.toContain('well actually');
+      expect(el.textContent).toContain('hello pal');
+      el.querySelector<HTMLButtonElement>('.reply-guy-cw button')!.click();
+      fixture.detectChanges();
+      expect(el.textContent).toContain('well actually');
+      expect(el.querySelector('.reply-guy-cw')).toBeNull();
+    });
+
+    it('removes them entirely only when the reader chose that in Wellness', () => {
+      TestBed.inject(Wellness).set('hideReplyGuys', true);
+      const fixture = strangerMention();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.textContent).not.toContain('Reply Guy');
+      expect(el.textContent).toContain('hello pal');
+    });
+
+    it('shows them plainly when the click-through is off', () => {
+      TestBed.inject(ClientPrefs).setReplyGuyCw(false);
+      const fixture = strangerMention();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.textContent).toContain('well actually');
+      expect(el.querySelectorAll('.reply-guy-chip')).toHaveLength(1);
+    });
+  });
 
   it('renders media thumbnails inside a mention excerpt', () => {
     const fixture = TestBed.createComponent(Notifications);

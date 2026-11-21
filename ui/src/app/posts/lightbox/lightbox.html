@@ -55,7 +55,14 @@
         }}</a>
       }
       @if (m.description) {
-        <figcaption class="lightbox-caption">{{ m.description }}</figcaption>
+        <figcaption class="lightbox-caption">
+          {{ translatedAlt()[m.id] || m.description }}
+        </figcaption>
+        @if (altTranslateNote(); as note) {
+          @if (note.id === m.id) {
+            <p class="lightbox-caption" role="status">{{ note.key | transloco }}</p>
+          }
+        }
       } @else if (aiDescriptions()[m.id]; as generated) {
         <figcaption class="lightbox-caption">
           <span class="ai-label">{{ 'lightbox.aiCaption' | transloco }}</span>
@@ -63,6 +70,23 @@
         </figcaption>
       }
       <div class="lightbox-tools">
+        @if (m.description) {
+          <button
+            type="button"
+            class="lightbox-tool"
+            [disabled]="translatingId() === m.id"
+            (click)="translateDescription(m, $event)"
+          >
+            {{
+              (translatingId() === m.id
+                ? 'lightbox.translatingDescription'
+                : translatedAlt()[m.id]
+                  ? 'lightbox.hideTranslation'
+                  : 'lightbox.translateDescription'
+              ) | transloco
+            }}
+          </button>
+        }
         @if (
           m.type === 'image' && !m.description && !aiDescriptions()[m.id] && describer.available()
         ) {

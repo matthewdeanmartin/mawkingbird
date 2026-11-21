@@ -104,6 +104,7 @@
     @for (a of ancestors(); track a.id) {
       <app-status-card
         [status]="a"
+        [replyGuy]="replyGuyMode(a)"
         [threadCwOpen]="threadCwOpen()"
         (cwToggled)="threadCwOpen.set($event)"
         filterContext="thread"
@@ -116,6 +117,7 @@
     <app-status-card
       [status]="s"
       [revealCounts]="true"
+      [replyGuy]="replyGuyMode(s)"
       [threadCwOpen]="threadCwOpen()"
       (cwToggled)="threadCwOpen.set($event)"
       filterContext="thread"
@@ -132,6 +134,11 @@
         ? 'statusCard.replyingToTranslated'
         : 'statusCard.replyingToTranslatedUnknown'
       ) | transloco: { post: words().post, language: warning.language }
+    }}</mb-notice>
+  }
+  @if (focusedNotFollowingMe()) {
+    <mb-notice class="reply-guy-warning" tone="error" announcement="status">{{
+      'statusCard.replyGuy.replyWarning' | transloco: { handle: s.account.acct }
     }}</mb-notice>
   }
   @if (isBluesky(s)) {
@@ -181,6 +188,7 @@
     }
     <app-status-card
       [status]="d"
+      [replyGuy]="replyGuyMode(d)"
       [threadCwOpen]="threadCwOpen()"
       (cwToggled)="threadCwOpen.set($event)"
       filterContext="thread"

@@ -1,0 +1,189 @@
+<mb-dialog
+  [title]="'pages.conversations.group.settings.title' | transloco"
+  [closeLabel]="'pages.conversations.group.settings.close' | transloco"
+  [busy]="busy()"
+  [closeOnBackdrop]="true"
+  (dismissed)="closed.emit()"
+>
+  @if (lockedForever()) {
+    <mb-notice>{{ 'pages.conversations.group.settings.lockedForever' | transloco }}</mb-notice>
+  } @else if (!owner()) {
+    <p class="muted small">{{ 'pages.conversations.group.settings.ownerOnly' | transloco }}</p>
+  }
+
+  @if (owner()) {
+    <form class="group-row" (ngSubmit)="rename()">
+      <mb-field [label]="'pages.conversations.group.settings.name' | transloco">
+        <input
+          mbControl
+          name="groupName"
+          maxlength="128"
+          [ngModel]="name()"
+          (ngModelChange)="name.set($event)"
+          [disabled]="busy()"
+        />
+      </mb-field>
+      <button mbButton type="submit" variant="outline" size="small" [disabled]="busy()">
+        {{ 'pages.conversations.group.settings.rename' | transloco }}
+      </button>
+    </form>
+  }
+
+  <h3 class="group-heading">
+    {{ 'pages.conversations.group.settings.members' | transloco: { count: members().length } }}
+  </h3>
+  <ul class="group-members">
+    @for (member of members(); track member.did) {
+      <li>
+        @if (member.avatar) {
+          <img [src]="member.avatar" alt="" width="28" height="28" loading="lazy" />
+        }
+        <span class="group-member-name">
+          {{ member.displayName || member.handle }}
+          <span class="muted small">&#64;{{ member.handle }}</span>
+          @if (isOwner(member)) {
+            <span class="muted small">
+              · {{ 'pages.conversations.group.settings.owner' | transloco }}
+            </span>
+          }
+        </span>
+        @if (owner() && !isOwner(member)) {
+          <button
+            mbButton
+            type="button"
+            variant="outline"
+            size="small"
+            [disabled]="busy()"
+            (click)="remove(member)"
+          >
+            {{ 'pages.conversations.group.settings.remove' | transloco }}
+          </button>
+        }
+      </li>
+    }
+  </ul>
+
+  @if (owner() && !lockedForever()) {
+    <form class="group-row" (ngSubmit)="add()">
+      <mb-field [label]="'pages.conversations.group.settings.add' | transloco">
+        <input
+          mbControl
+          name="addMembers"
+          autocapitalize="none"
+          spellcheck="false"
+          [ngModel]="addHandles()"
+          (ngModelChange)="addHandles.set($event)"
+          [disabled]="busy()"
+        />
+      </mb-field>
+      <button
+        mbButton
+        type="submit"
+        variant="outline"
+        size="small"
+        [disabled]="busy() || !addHandles().trim()"
+      >
+        {{ 'pages.conversations.group.settings.addButton' | transloco }}
+      </button>
+    </form>
+
+    <h3 class="group-heading">{{ 'pages.conversations.group.settings.link' | transloco }}</h3>
+    <p class="muted small">{{ 'pages.conversations.group.settings.linkHint' | transloco }}</p>
+    @if (link(); as current) {
+      <p class="group-link">
+        <code>{{ linkUrl() }}</code>
+      </p>
+      <div class="group-actions">
+        <button mbButton type="button" size="small" (click)="copyLink()">
+          {{ 'pages.conversations.group.settings.copy' | transloco }}
+        </button>
+        <button
+          mbButton
+          type="button"
+          variant="outline"
+          size="small"
+          [disabled]="busy()"
+          (click)="setLinkEnabled(current.enabledStatus !== 'enabled')"
+        >
+          {{
+            (current.enabledStatus === 'enabled'
+              ? 'pages.conversations.group.settings.turnOff'
+              : 'pages.conversations.group.settings.turnOn'
+            ) | transloco
+          }}
+        </button>
+        @if (copied()) {
+          <span class="muted small" role="status">
+            {{ 'pages.conversations.group.settings.copied' | transloco }}
+          </span>
+        }
+      </div>
+    } @else {
+      <mb-checkbox
+        [label]="'pages.conversations.group.settings.requireApproval' | transloco"
+        [checked]="requireApproval()"
+        (checkedChange)="requireApproval.set($event)"
+      />
+      <button mbButton type="button" size="small" [disabled]="busy()" (click)="makeLink()">
+        {{ 'pages.conversations.group.settings.makeLink' | transloco }}
+      </button>
+    }
+
+    @if (requests().length) {
+      <h3 class="group-heading">
+        {{ 'pages.conversations.group.settings.requests' | transloco }}
+      </h3>
+      <ul class="group-members">
+        @for (request of requests(); track request.requestedBy.did) {
+          <li>
+            <span class="group-member-name">
+              {{ request.requestedBy.displayName || request.requestedBy.handle }}
+              <span class="muted small">&#64;{{ request.requestedBy.handle }}</span>
+            </span>
+            <button
+              mbButton
+              type="button"
+              size="small"
+              [disabled]="busy()"
+              (click)="answer(request.requestedBy, true)"
+            >
+              {{ 'pages.conversations.group.settings.approve' | transloco }}
+            </button>
+            <button
+              mbButton
+              type="button"
+              variant="outline"
+              size="small"
+              [disabled]="busy()"
+              (click)="answer(request.requestedBy, false)"
+            >
+              {{ 'pages.conversations.group.settings.reject' | transloco }}
+            </button>
+          </li>
+        }
+      </ul>
+    }
+
+    <div class="group-actions">
+      <button
+        mbButton
+        type="button"
+        variant="outline"
+        size="small"
+        [disabled]="busy()"
+        (click)="setLocked(!locked())"
+      >
+        {{
+          (locked()
+            ? 'pages.conversations.group.settings.unlock'
+            : 'pages.conversations.group.settings.lock'
+          ) | transloco
+        }}
+      </button>
+    </div>
+  }
+
+  @if (error(); as message) {
+    <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+  }
+</mb-dialog>

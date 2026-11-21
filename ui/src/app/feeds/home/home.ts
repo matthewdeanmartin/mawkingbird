@@ -512,13 +512,17 @@ export class Home implements OnInit, OnDestroy {
     this.showBlueskyReauth.set(false);
     this.blueskyReauthError.set(false);
     const session = this.bsky.session();
-    if (session?.authMethod !== 'oauth') {
+    if (!session) {
       await this.router.navigate(['/login/bluesky'], { queryParams: { add: 1 } });
       return;
     }
     this.blueskyReauthWorking.set(true);
     try {
-      await this.bsky.beginOAuthIdentity(session.did, true);
+      // An OAuth session re-authorises; a retired app-password one moves to
+      // OAuth. Either way it is the same account, signed in on Bluesky's page.
+      await (session.authMethod === 'oauth'
+        ? this.bsky.beginOAuthIdentity(session.did, true)
+        : this.bsky.upgradeToOAuth());
     } catch (error: unknown) {
       this.blueskyReauthWorking.set(false);
       this.blueskyReauthError.set(true);
