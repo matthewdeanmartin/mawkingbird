@@ -1,3 +1,4 @@
+import { AccountName } from '../accounts/account-name';
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -35,7 +36,7 @@ const ROLL_MAX_OFFSET = 5000;
  */
 @Component({
   selector: 'app-blog-roll-page',
-  imports: [DatePipe, RouterLink, TranslocoPipe, MbButton, MbContentState, BlogHeader],
+  imports: [AccountName, DatePipe, RouterLink, TranslocoPipe, MbButton, MbContentState, BlogHeader],
   templateUrl: './blog-roll-page.html',
   styleUrl: './blog-page.css',
 })

@@ -124,7 +124,7 @@
           <li class="import-row" [class]="'row-' + row.status">
             @if (row.account; as account) {
               <a [routerLink]="accountProfilePath(account)">
-                {{ account.display_name || account.username }}
+                <app-account-name [account]="account" />
                 <span class="muted">&#64;{{ account.acct }}</span>
               </a>
             } @else {

@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { segmentAt, SponsorBlock, SponsorSegment, SponsorSegments } from '../videos/sponsor-block';
@@ -99,7 +100,16 @@ export function shareText(options: {
  */
 @Component({
   selector: 'app-watch-video-panel',
-  imports: [TranslocoPipe, MbButton, MbDialog, MbDisclosure, Compose, RouterLink, FollowButton],
+  imports: [
+    AccountName,
+    TranslocoPipe,
+    MbButton,
+    MbDialog,
+    MbDisclosure,
+    Compose,
+    RouterLink,
+    FollowButton,
+  ],
   template: `
     <div class="bar" role="group" [attr.aria-label]="'watch.panel.label' | transloco">
       @if (channel(); as ch) {
@@ -174,7 +184,7 @@ export function shareText(options: {
           <ul>
             @for (post of posts; track post.id) {
               <li>
-                <strong>{{ post.account.display_name || post.account.username }}</strong>
+                <strong><app-account-name [account]="post.account" /></strong>
                 <span class="muted">&#64;{{ post.account.acct }}</span>
                 <p class="excerpt">{{ excerpt(post) }}</p>
                 <a routerLink="/watch" [queryParams]="repliesParams(post)">{{

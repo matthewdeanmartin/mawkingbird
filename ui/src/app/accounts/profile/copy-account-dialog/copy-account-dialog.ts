@@ -1,3 +1,4 @@
+import { AccountName } from '../../account-name';
 import {
   Component,
   HostListener,
@@ -122,7 +123,7 @@ type Phase = 'loading' | 'confirm' | 'following' | 'done' | 'error' | 'hidden';
 // i18n pages.profile.copyAccount.errors.noSource: No readable source for this account.
 @Component({
   selector: 'app-copy-account-dialog',
-  imports: [RouterLink, FormsModule, TranslocoPipe],
+  imports: [AccountName, RouterLink, FormsModule, TranslocoPipe],
   templateUrl: './copy-account-dialog.html',
   styleUrl: './copy-account-dialog.css',
 })

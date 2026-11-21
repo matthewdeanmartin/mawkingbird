@@ -30,7 +30,7 @@
     <p class="muted small">
       @if (curator(); as c) {
         {{ 'pages.collection.curatedBy' | transloco }}
-        <a [routerLink]="accountProfilePath(c)">{{ c.display_name || c.username }}</a>
+        <a [routerLink]="accountProfilePath(c)"><app-account-name [account]="c" /></a>
         ·
       }
       {{
@@ -252,7 +252,7 @@
               decoding="async"
             />
             <span class="names">
-              <span class="name">{{ a.display_name || a.username }}</span>
+              <span class="name"><app-account-name [account]="a" /></span>
               <span class="acct muted">&#64;{{ a.acct }}</span>
             </span>
           </a>
@@ -382,7 +382,7 @@
     decoding="async"
   />
   <span class="names">
-    <span class="name">{{ account.display_name || account.username }}</span>
+    <span class="name"><app-account-name [account]="account" /></span>
     <span class="acct muted">&#64;{{ account.acct }}</span>
   </span>
 </ng-template>

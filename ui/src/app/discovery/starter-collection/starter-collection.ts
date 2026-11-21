@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -43,7 +44,15 @@ import { Wellness } from '../../wellness/wellness';
 // i18n starterCollection.browse: Browse starter kits
 @Component({
   selector: 'app-starter-collection',
-  imports: [RouterLink, StarterPackTextPipe, FeedAnalytics, StatusCard, FollowButton, SignInPrompt],
+  imports: [
+    AccountName,
+    RouterLink,
+    StarterPackTextPipe,
+    FeedAnalytics,
+    StatusCard,
+    FollowButton,
+    SignInPrompt,
+  ],
   templateUrl: './starter-collection.html',
   styleUrl: './starter-collection.css',
 })

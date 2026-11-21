@@ -1,5 +1,6 @@
 import { ReadingBack } from '../../shell/reading-back';
 import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
+import { AccountName } from '../../accounts/account-name';
 import {
   Component,
   computed,
@@ -92,6 +93,7 @@ import { keepPortableAddress } from '../../posts/copy-link/portable-address';
     ReadingBack,
     MisskeyCompose,
     CustomEmojiPipe,
+    AccountName,
     MbPostAction,
     StatusCard,
     Compose,

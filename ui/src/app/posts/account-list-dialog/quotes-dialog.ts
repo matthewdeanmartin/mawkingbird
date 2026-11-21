@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -40,7 +41,7 @@ function excerpt(html: string): string {
  */
 @Component({
   selector: 'app-quotes-dialog',
-  imports: [MbDialog, MbBadge, MbButton, MbContentState, RouterLink, TranslocoPipe],
+  imports: [AccountName, MbDialog, MbBadge, MbButton, MbContentState, RouterLink, TranslocoPipe],
   template: `
     <mb-dialog
       [title]="'quotes.title' | transloco"
@@ -77,7 +78,7 @@ function excerpt(html: string): string {
                 />
                 <span class="names">
                   <span class="name"
-                    >{{ q.account.display_name || q.account.username }}
+                    ><app-account-name [account]="q.account" />
                     @if (mine() && replyGuys.notFollowed(q.account)) {
                       <mb-badge
                         class="reply-guy-chip"

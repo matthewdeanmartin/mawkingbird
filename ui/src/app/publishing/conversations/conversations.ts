@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { qualifiedHandle } from '../../accounts/account-handle';
 import { ChatSound } from './chat-sound';
 import { ChatPerson, ChatSuggestions, person, rankSuggestions } from './chat-suggestions';
@@ -295,6 +296,7 @@ export function stripLeadingMentions(html: string): string {
 @Component({
   selector: 'app-conversations',
   imports: [
+    AccountName,
     ContentLinks,
     LinkedText,
     CustomEmojiPipe,

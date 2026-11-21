@@ -101,7 +101,7 @@
           <app-account-preview [account]="m"
             ><a [routerLink]="accountProfilePath(m)">
               <span>
-                {{ m.display_name || m.username }}
+                <app-account-name [account]="m" />
                 <span class="muted small">· &#64;{{ m.acct }}</span>
               </span>
             </a></app-account-preview

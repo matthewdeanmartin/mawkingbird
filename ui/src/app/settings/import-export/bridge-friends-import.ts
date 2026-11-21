@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -49,7 +50,7 @@ import { BridgeNetwork } from './bridge-matching';
  */
 @Component({
   selector: 'app-bridge-friends-import',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbRadioGroup],
+  imports: [AccountName, FormsModule, RouterLink, TranslocoPipe, MbButton, MbRadioGroup],
   templateUrl: './bridge-friends-import.html',
   styleUrls: ['./friend-finder.css', './bridge-friends-import.css'],
 })

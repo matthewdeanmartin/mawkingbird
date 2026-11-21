@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -38,7 +39,7 @@ type ExploreTab = 'posts' | 'hashtags';
 // i18n pages.explore.cta.login: Login
 @Component({
   selector: 'app-explore',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [AccountName, RouterLink, TranslocoPipe],
   templateUrl: './explore.html',
   styleUrl: './explore.css',
 })

@@ -109,9 +109,7 @@
             loading="lazy"
           />
           <span class="who">
-            <strong>{{
-              comment.status.account.display_name || comment.status.account.username
-            }}</strong>
+            <strong><app-account-name [account]="comment.status.account" /></strong>
             @if (comment.byAuthor) {
               <span class="badge">{{ 'blog.post.author' | transloco }}</span>
             }

@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { catchError, forkJoin, of } from 'rxjs';
@@ -117,6 +118,7 @@ interface Member {
 @Component({
   selector: 'app-collection',
   imports: [
+    AccountName,
     FormsModule,
     RouterLink,
     NgTemplateOutlet,

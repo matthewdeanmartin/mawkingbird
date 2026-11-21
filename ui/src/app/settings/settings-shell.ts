@@ -1,3 +1,4 @@
+import { AccountName } from '../accounts/account-name';
 import { accountProfilePath } from '../accounts/account-route';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
@@ -172,6 +173,7 @@ const NAV_GROUPS: SettingsNavGroup[] = [
 @Component({
   selector: 'app-settings-shell',
   imports: [
+    AccountName,
     NgTemplateOutlet,
     MbButton,
     MbDialog,

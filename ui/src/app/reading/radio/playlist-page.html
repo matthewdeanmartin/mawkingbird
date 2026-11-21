@@ -47,9 +47,11 @@
             <div class="row">
               <span class="track">
                 <span class="track-title">{{ title }}</span>
-                <span class="track-meta">{{
-                  track.post.account.display_name || track.post.account.acct
-                }}</span>
+                <span class="track-meta"
+                  ><app-account-name
+                    [account]="track.post.account"
+                    [fallback]="track.post.account.acct"
+                /></span>
               </span>
               <mb-toolbar class="row-actions" density="compact" embedded [label]="title">
                 <button
@@ -137,7 +139,10 @@
               <span class="track">
                 <span class="track-title">{{ title }}</span>
                 <span class="track-meta"
-                  >{{ track.post.account.display_name || track.post.account.acct }}
+                  ><app-account-name
+                    [account]="track.post.account"
+                    [fallback]="track.post.account.acct"
+                  />
                   @if (track.external) {
                     · {{ track.external.label }}
                   }
@@ -234,9 +239,11 @@
               <div class="row">
                 <span class="track">
                   <span class="track-title">{{ title }}</span>
-                  <span class="track-meta">{{
-                    track.post.account.display_name || track.post.account.acct
-                  }}</span>
+                  <span class="track-meta"
+                    ><app-account-name
+                      [account]="track.post.account"
+                      [fallback]="track.post.account.acct"
+                  /></span>
                 </span>
                 <button
                   mbButton

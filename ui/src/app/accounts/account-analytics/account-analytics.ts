@@ -1,3 +1,4 @@
+import { AccountName } from '../account-name';
 import { accountProfilePath } from '../account-route';
 import { MbButton } from '../../design-system/button/button';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -287,6 +288,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 @Component({
   selector: 'app-account-analytics',
   imports: [
+    AccountName,
     MbButton,
     MbHelp,
     RouterLink,

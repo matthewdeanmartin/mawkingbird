@@ -21,7 +21,7 @@
         </a>
         <div class="person-body">
           <a class="person-name-row" [routerLink]="accountLink(a)">
-            <span class="person-name">{{ a.display_name || a.username }}</span>
+            <span class="person-name"><app-account-name [account]="a" /></span>
             <app-verified-badge [account]="a" />
           </a>
           <div class="person-acct muted">&#64;{{ a.acct }}</div>

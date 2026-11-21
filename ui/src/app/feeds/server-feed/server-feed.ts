@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -52,7 +53,15 @@ import { anonymousAccountRouteRef } from '../../accounts/anonymous/anonymous-rou
  */
 @Component({
   selector: 'app-server-feed',
-  imports: [RouterLink, StatusCard, TranslocoPipe, MbButton, MbToolbar, MbToolbarButton],
+  imports: [
+    AccountName,
+    RouterLink,
+    StatusCard,
+    TranslocoPipe,
+    MbButton,
+    MbToolbar,
+    MbToolbarButton,
+  ],
   templateUrl: './server-feed.html',
   styleUrl: './server-feed.css',
 })

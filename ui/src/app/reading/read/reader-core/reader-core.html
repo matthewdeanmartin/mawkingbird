@@ -60,7 +60,7 @@
                 decoding="async"
               />
               <div>
-                <div class="reader-author">{{ author.display_name || author.username }}</div>
+                <div class="reader-author"><app-account-name [account]="author" /></div>
                 <div class="muted">
                   &#64;{{ author.acct }} · {{ post.created_at | humanTime }}
                   @if (!isRss() && chain().length > 1) {

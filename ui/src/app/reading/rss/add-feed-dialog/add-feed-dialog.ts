@@ -1,3 +1,4 @@
+import { AccountName } from '../../../accounts/account-name';
 import { PLATFORM_FEED_READ } from '../../../platform/http/platform-http';
 import { accountProfilePath } from '../../../accounts/account-route';
 import { Component, computed, inject, output, signal } from '@angular/core';
@@ -62,7 +63,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
  */
 @Component({
   selector: 'app-add-feed-dialog',
-  imports: [FormsModule, FocusTrap, TranslocoPipe],
+  imports: [AccountName, FormsModule, FocusTrap, TranslocoPipe],
   templateUrl: './add-feed-dialog.html',
   styleUrl: './add-feed-dialog.css',
 })

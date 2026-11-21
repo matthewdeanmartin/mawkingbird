@@ -358,7 +358,7 @@
               decoding="async"
             />
             <span class="share-name">
-              {{ row.account.display_name || row.account.username }}
+              <app-account-name [account]="row.account" />
               <small class="muted">&#64;{{ row.account.acct }}</small>
             </span>
             <span class="share-track">
@@ -787,12 +787,16 @@
 
       <h3 class="chart-title muted">{{ 'feedAnalytics.timing.byHour' | transloco }}</h3>
       <div
-        class="bars labelled"
+        class="timing-chart hourly"
         role="img"
         [attr.aria-label]="
           'feedAnalytics.timing.postsPerHour' | transloco: { posts: words().Posts }
         "
       >
+        <span class="chart-scale muted" aria-hidden="true"
+          ><span>{{ hourPeak() }}</span
+          ><span>0</span></span
+        >
         @for (count of report().recency.byHour; track $index) {
           <div
             class="bar-col"
@@ -802,7 +806,9 @@
             "
           >
             <div class="bar" [style.height.%]="(count / hourPeak()) * 100"></div>
-            <span class="bar-label muted">{{ $index % 3 === 0 ? $index : '' }}</span>
+            <span class="bar-label muted">{{
+              $index % 3 === 0 ? ($index < 10 ? '0' + $index : $index) : ''
+            }}</span>
           </div>
         }
       </div>
@@ -810,12 +816,16 @@
       @if (report().recency.byDay.length) {
         <h3 class="chart-title muted">{{ 'feedAnalytics.timing.byDay' | transloco }}</h3>
         <div
-          class="bars labelled"
+          class="timing-chart"
           role="img"
           [attr.aria-label]="
             'feedAnalytics.timing.postsPerDay' | transloco: { posts: words().Posts }
           "
         >
+          <span class="chart-scale muted" aria-hidden="true"
+            ><span>{{ dayPeak() }}</span
+            ><span>0</span></span
+          >
           @for (day of report().recency.byDay; track day.dayIso) {
             <div
               class="bar-col"

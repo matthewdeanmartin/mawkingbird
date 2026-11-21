@@ -255,9 +255,7 @@
   "accountPreview": {
     "close": "Close preview",
     "fullProfile": "View full profile",
-    "open": "Preview profile",
-    "pinned": "Pinned posts",
-    "pinnedError": "Pinned posts couldn't be loaded."
+    "open": "Preview profile"
   },
   "accountReplies": {
     "count": "{{count}} new replies"

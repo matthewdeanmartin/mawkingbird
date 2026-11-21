@@ -69,9 +69,7 @@
           <div class="resolved account">
             <img class="avatar" [src]="result.account.avatar" alt="" />
             <div class="account-text">
-              <span class="account-name">{{
-                result.account.display_name || result.account.username
-              }}</span>
+              <span class="account-name"><app-account-name [account]="result.account" /></span>
               <span class="muted small">&#64;{{ result.account.acct }}</span>
             </div>
             @if (followed()) {

@@ -115,9 +115,7 @@
               height="40"
             />
             <span class="photo-names">
-              <strong>{{
-                item.status.account.display_name || item.status.account.username
-              }}</strong>
+              <strong><app-account-name [account]="item.status.account" /></strong>
               <span class="acct muted">&#64;{{ item.status.account.acct }}</span>
             </span>
           </a>
@@ -358,7 +356,7 @@
                 </a>
                 <div class="photo-comment-body">
                   <span class="photo-comment-name">
-                    <strong>{{ reply.account.display_name || reply.account.username }}</strong>
+                    <strong><app-account-name [account]="reply.account" /></strong>
                     <time class="muted" [attr.datetime]="reply.created_at">{{
                       reply.created_at | humanTime
                     }}</time>

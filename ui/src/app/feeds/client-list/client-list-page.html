@@ -57,7 +57,7 @@
         } @else {
           @for (m of members(); track m.id) {
             <a mbContentLink class="member-link" [routerLink]="accountProfilePath(m)">
-              <span>{{ m.display_name || m.username }}</span>
+              <span><app-account-name [account]="m" /></span>
               <mb-metadata>&#64;{{ m.acct }}</mb-metadata>
             </a>
           }

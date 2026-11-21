@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -59,6 +60,7 @@ export function hasSinglePage(track: RadioTrack): boolean {
 @Component({
   selector: 'app-singles-page',
   imports: [
+    AccountName,
     RouterLink,
     TranslocoPipe,
     MbButton,

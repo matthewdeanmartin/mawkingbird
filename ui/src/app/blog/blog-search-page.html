@@ -55,9 +55,9 @@
         <li>
           <article>
             <p class="meta">
-              <a [routerLink]="['/blog', '@' + handleOf(hit.status)]">{{
-                hit.status.account.display_name || hit.status.account.username
-              }}</a>
+              <a [routerLink]="['/blog', '@' + handleOf(hit.status)]"
+                ><app-account-name [account]="hit.status.account"
+              /></a>
               · {{ 'blog.search.kind.' + hit.kind | transloco }} ·
               <time [attr.datetime]="hit.status.created_at">{{
                 hit.status.created_at | date: 'mediumDate'

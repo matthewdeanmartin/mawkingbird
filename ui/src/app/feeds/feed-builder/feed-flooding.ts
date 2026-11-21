@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -37,7 +38,15 @@ export const TEMPORARY_MUTE_SECONDS = 8 * 60 * 60;
  */
 @Component({
   selector: 'app-feed-flooding',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, FeedProgress],
+  imports: [
+    AccountName,
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    FeedProgress,
+  ],
   templateUrl: './feed-flooding.html',
   styleUrls: [
     '../../public-pages/features/features.css',

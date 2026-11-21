@@ -274,9 +274,7 @@
                         <img [src]="match.account.avatar_static || match.account.avatar" alt="" />
                         <div class="match-main">
                           <a [routerLink]="accountProfilePath(match.account)">
-                            <strong>{{
-                              match.account.display_name || match.account.username
-                            }}</strong>
+                            <strong><app-account-name [account]="match.account" /></strong>
                             <span class="muted"> &#64;{{ match.account.acct }}</span>
                           </a>
                           <span [class]="'confidence confidence-' + match.confidence">

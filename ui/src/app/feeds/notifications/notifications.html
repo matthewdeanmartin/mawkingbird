@@ -195,9 +195,8 @@
         <div class="notif-body">
           <span class="group-summary">
             @for (g of row.sample; track g.account.id; let last = $last) {
-              <a class="who" [routerLink]="accountProfilePath(g.account)">{{
-                g.account.display_name || g.account.username
-              }}</a
+              <a class="who" [routerLink]="accountProfilePath(g.account)"
+                ><app-account-name [account]="g.account" /></a
               >{{ last ? '' : ', ' }}
             }
             @if (listMode(row.type, row.status)) {
@@ -266,9 +265,9 @@
           />
         </a>
         <div class="notif-body">
-          <a class="who" [routerLink]="accountProfilePath(row.notif.account)">{{
-            row.notif.account.display_name || row.notif.account.username
-          }}</a>
+          <a class="who" [routerLink]="accountProfilePath(row.notif.account)"
+            ><app-account-name [account]="row.notif.account"
+          /></a>
           @if (replyGuyChip(row.notif)) {
             <mb-badge
               class="reply-guy-chip"

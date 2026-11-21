@@ -47,7 +47,7 @@
       <div class="side-identity">
         <img class="side-avatar" [src]="acc.avatar_static || acc.avatar" alt="" decoding="async" />
         <div class="side-names">
-          <span class="side-name">{{ acc.display_name || acc.username }}</span>
+          <span class="side-name"><app-account-name [account]="acc" /></span>
           <span class="side-acct muted">&#64;{{ acc.acct }}</span>
         </div>
       </div>

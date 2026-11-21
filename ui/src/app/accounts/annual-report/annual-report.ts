@@ -1,3 +1,4 @@
+import { AccountName } from '../account-name';
 import { NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -43,6 +44,7 @@ import { reportSections } from './annual-report-sections';
 @Component({
   selector: 'app-annual-report',
   imports: [
+    AccountName,
     MbPageHeader,
     MbSection,
     MbContentState,

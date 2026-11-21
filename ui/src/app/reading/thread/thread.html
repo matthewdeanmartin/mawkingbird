@@ -72,7 +72,7 @@
         />
         <div>
           <div class="reader-author">
-            {{ chain()[0].account.display_name || chain()[0].account.username }}
+            <app-account-name [account]="chain()[0].account" />
           </div>
           <div class="muted">
             &#64;{{ chain()[0].account.acct }} · {{ chain()[0].created_at | humanTime }}

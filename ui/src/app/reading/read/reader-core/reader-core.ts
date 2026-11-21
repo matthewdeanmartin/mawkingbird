@@ -1,3 +1,4 @@
+import { AccountName } from '../../../accounts/account-name';
 import { CustomEmojiPipe } from '../../../publishing/custom-emoji.pipe';
 import {
   afterRenderEffect,
@@ -135,6 +136,7 @@ const POSITION_SAVE_DELAY_MS = 2_000;
 @Component({
   selector: 'app-reader-core',
   imports: [
+    AccountName,
     CustomEmojiPipe,
     RouterLink,
     TranslocoPipe,

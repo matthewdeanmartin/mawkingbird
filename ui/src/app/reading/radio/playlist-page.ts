@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -65,6 +66,7 @@ import { TrackActions } from './track-actions';
 @Component({
   selector: 'app-playlist-page',
   imports: [
+    AccountName,
     FormsModule,
     RouterLink,
     TranslocoPipe,

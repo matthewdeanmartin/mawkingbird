@@ -1,3 +1,4 @@
+import { AccountName } from '../accounts/account-name';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -39,7 +40,7 @@ const CARD_STYLES = `
 /** Left: who wrote the blog or post being read. */
 @Component({
   selector: 'app-blog-author-card',
-  imports: [RouterLink, TranslocoPipe, MbRailCard, CustomEmojiPipe],
+  imports: [AccountName, RouterLink, TranslocoPipe, MbRailCard, CustomEmojiPipe],
   template: `
     @if (otherAuthor(); as author) {
       <section mbRailCard class="card">
@@ -50,7 +51,7 @@ const CARD_STYLES = `
               <img [src]="author.account.avatar_static || author.account.avatar" alt="" />
             }
             <span>
-              <strong>{{ author.account.display_name || author.account.username }}</strong>
+              <strong><app-account-name [account]="author.account" /></strong>
               <br />
               <span class="muted">&#64;{{ author.handle }}</span>
             </span>

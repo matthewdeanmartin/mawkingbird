@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -25,7 +26,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n common.loading: Loading…
 @Component({
   selector: 'app-settings-follows',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [AccountName, RouterLink, TranslocoPipe],
   templateUrl: './settings-follows.html',
   styleUrl: './settings-follows.css',
 })

@@ -370,7 +370,7 @@
     {
       "file": "ui/src/app/accounts/account-hover-card/account-preview.ts",
       "disposition": "adopted scope",
-      "nextStep": "Popover owns the preview trigger, bounded top-layer surface, Escape dismissal and focus return; AccountHoverCard owns profile presentation. Preserve pointer transfer, click pinning, lazy loading of up to three pinned posts and native profile/thread destinations without reflowing member rows."
+      "nextStep": "Popover owns the preview trigger, bounded top-layer surface, Escape dismissal and focus return; AccountHoverCard owns profile presentation. Preserve pointer transfer, click pinning, profile-only previews and native profile destinations without reflowing member rows."
     },
     {
       "file": "ui/src/app/posts/account-list-dialog/account-list-dialog.html",

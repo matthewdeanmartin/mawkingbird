@@ -1,3 +1,4 @@
+import { AccountName } from '../../account-name';
 import { Component, computed, input } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -19,7 +20,7 @@ const NAMED = 3;
  */
 @Component({
   selector: 'app-familiar-followers',
-  imports: [NgOptimizedImage, RouterLink, TranslocoPipe],
+  imports: [AccountName, NgOptimizedImage, RouterLink, TranslocoPipe],
   template: `
     @if (accounts().length) {
       <section
@@ -40,8 +41,7 @@ const NAMED = 3;
         <span class="text">
           {{ 'pages.profile.familiar.label' | transloco }}:
           @for (a of named(); track a.id; let last = $last) {
-            <a [routerLink]="path(a)">{{ a.display_name || a.username }}</a
-            >{{ last ? '' : ', ' }}
+            <a [routerLink]="path(a)"><app-account-name [account]="a" /></a>{{ last ? '' : ', ' }}
           }
           @if (rest() > 0) {
             {{ 'pages.profile.familiar.more' | transloco: { count: rest() } }}

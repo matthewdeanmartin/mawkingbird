@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { accountProfilePath } from '../../accounts/account-route';
 import { MbContentState } from '../../design-system/content-state/content-state';
@@ -73,6 +74,7 @@ const SAMPLE_PAGE_SIZE = 40;
 @Component({
   selector: 'app-list-timeline',
   imports: [
+    AccountName,
     MbHelp,
     MbContentState,
     MbPageHeader,

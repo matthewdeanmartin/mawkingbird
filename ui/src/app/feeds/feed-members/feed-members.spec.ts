@@ -109,6 +109,27 @@ describe('FeedMembers', () => {
     expect(authors[0].share).toBeCloseTo(0.75);
   });
 
+  it('renders the author’s emoji in a member name and preserves unknown shortcodes', () => {
+    const account = makeAccount('alice', {
+      display_name: 'Alice <b> :bird: :other:',
+      emojis: [
+        {
+          shortcode: 'bird',
+          url: 'https://social.example/bird.gif',
+          static_url: 'https://social.example/bird.png',
+          visible_in_picker: true,
+        },
+      ],
+    });
+    const fixture = mount(supplied([makeStatus('1', 'alice', { account })]));
+    const name = fixture.nativeElement.querySelector('.member-link .name') as HTMLElement;
+    expect(name.querySelector('img')?.src).toBe('https://social.example/bird.png');
+    expect(name.querySelector('img')?.alt).toBe(':bird:');
+    expect(name.querySelector('b')).toBeNull();
+    expect(name.textContent).toContain('Alice <b>');
+    expect(name.textContent).toContain(':other:');
+  });
+
   it('credits a boost to whoever wrote the original', () => {
     const fixture = mount(
       supplied([makeStatus('boost', 'booster', { reblog: makeStatus('orig', 'writer') })]),

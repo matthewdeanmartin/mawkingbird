@@ -1,3 +1,4 @@
+import { AccountName } from '../accounts/account-name';
 import { DatePipe } from '@angular/common';
 import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -52,7 +53,15 @@ type BlogError = 'handle' | 'notFound' | 'mine' | null;
  */
 @Component({
   selector: 'app-blog-page',
-  imports: [DatePipe, RouterLink, TranslocoPipe, MbButton, MbContentState, BlogSettingsLink],
+  imports: [
+    AccountName,
+    DatePipe,
+    RouterLink,
+    TranslocoPipe,
+    MbButton,
+    MbContentState,
+    BlogSettingsLink,
+  ],
   templateUrl: './blog-page.html',
   styleUrl: './blog-page.css',
 })

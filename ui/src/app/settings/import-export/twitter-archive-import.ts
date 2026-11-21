@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { afterNextRender, Component, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -95,7 +96,7 @@ export function takeTwitterArchive(): TwitterArchiveSummary | null {
  */
 @Component({
   selector: 'app-twitter-archive-import',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton],
+  imports: [AccountName, FormsModule, RouterLink, TranslocoPipe, MbButton],
   templateUrl: './twitter-archive-import.html',
   styleUrl: './friend-finder.css',
 })

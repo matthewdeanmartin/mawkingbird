@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, input, output, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -90,6 +91,7 @@ const INTERACTIVE_SELECTOR = [
 @Component({
   selector: 'app-account-result-card',
   imports: [
+    AccountName,
     RouterLink,
     HumanCountPipe,
     VerifiedBadge,

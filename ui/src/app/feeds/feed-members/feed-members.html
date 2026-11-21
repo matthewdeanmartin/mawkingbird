@@ -70,7 +70,7 @@
           />
           <span class="names">
             <span class="name">
-              {{ row.account.display_name || row.account.username }}
+              <app-account-name [account]="row.account" />
               @if (row.account.bot) {
                 <span class="bot-tag" [title]="'feedMembers.botTag.title' | transloco">{{
                   'feedMembers.botTag.label' | transloco

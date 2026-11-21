@@ -29,6 +29,7 @@ import { MbButton } from "../../ui/src/app/design-system/button/button";
 import { Api } from "../../ui/src/app/platform/api/api";
 import { Auth } from "../../ui/src/app/platform/session/auth";
 import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
+import { DEFAULT_WELLNESS } from "../../ui/src/app/wellness/wellness-model";
 import { FollowState } from "../../ui/src/app/accounts/follow-state";
 import { HomeTimelineFeed } from "../../ui/src/app/feeds/home-timeline-feed";
 import { Terminology } from "../../ui/src/app/i18n/terminology";
@@ -182,14 +183,6 @@ function services() {
       token: signal<string | null>("preview-token"),
     },
     api: {
-      getAccountStatuses: () =>
-        of(
-          Array.from({ length: 3 }, (_, index) => ({
-            id: `preview-pin-${index + 1}`,
-            content: `<p>Pinned preview post ${index + 1}</p>`,
-            spoiler_text: "",
-          })),
-        ),
       relationships: () => of([state.relationship()]).pipe(delay(100)),
       follow: () =>
         defer(() => {
@@ -221,7 +214,14 @@ const providers = [
   IdentityState,
   { provide: Auth, useFactory: () => services().auth },
   { provide: Api, useFactory: () => services().api },
-  { provide: ClientPrefs, useValue: { verifiedMode: signal("off") } },
+  {
+    provide: ClientPrefs,
+    useValue: {
+      verifiedMode: signal("off"),
+      wellness: signal(DEFAULT_WELLNESS),
+      algoCalm: signal(false),
+    },
+  },
   {
     provide: Terminology,
     useValue: { words: signal({ Boosted: "Boosted", posts: "posts" }) },

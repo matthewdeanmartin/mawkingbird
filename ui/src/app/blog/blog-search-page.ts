@@ -1,3 +1,4 @@
+import { AccountName } from '../accounts/account-name';
 import { DatePipe } from '@angular/common';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -41,7 +42,16 @@ import { parseBlogHandle } from './blog-source';
  */
 @Component({
   selector: 'app-blog-search-page',
-  imports: [DatePipe, RouterLink, TranslocoPipe, MbButton, MbField, MbControl, BlogHeader],
+  imports: [
+    AccountName,
+    DatePipe,
+    RouterLink,
+    TranslocoPipe,
+    MbButton,
+    MbField,
+    MbControl,
+    BlogHeader,
+  ],
   templateUrl: './blog-search-page.html',
   styleUrl: './blog-page.css',
 })

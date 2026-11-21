@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import type { ExternalPlayer } from '../audio-embeds/external-player';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { DOCUMENT } from '@angular/common';
@@ -37,6 +38,7 @@ import { RadioIcon } from './radio-icon';
 @Component({
   selector: 'app-radio-controls',
   imports: [
+    AccountName,
     MbToolbar,
     MbToolbarButton,
     FormsModule,

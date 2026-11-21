@@ -97,7 +97,9 @@
               : player.title(track)
           }}
         </h2>
-        <p class="author">{{ track.post.account.display_name || track.post.account.acct }}</p>
+        <p class="author">
+          <app-account-name [account]="track.post.account" [fallback]="track.post.account.acct" />
+        </p>
         @if (player.hidden()) {
           <p>{{ track.post.spoiler_text || ('radio.hidden' | transloco) }}</p>
           <button mbButton type="button" (click)="player.reveal()">
@@ -195,9 +197,11 @@
               (click)="player.select(i)"
             >
               <span class="track-title">{{ player.title(item) }}</span>
-              <span class="author">{{
-                item.post.account.display_name || item.post.account.acct
-              }}</span>
+              <span class="author"
+                ><app-account-name
+                  [account]="item.post.account"
+                  [fallback]="item.post.account.acct"
+              /></span>
             </button>
           </mb-toolbar>
         </li>

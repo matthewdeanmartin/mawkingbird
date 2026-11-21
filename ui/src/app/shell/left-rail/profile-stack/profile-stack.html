@@ -13,7 +13,13 @@
         @if (peek.avatar) {
           <img class="peek-avatar" [src]="peek.avatar" alt="" loading="lazy" decoding="async" />
         }
-        <span class="peek-name">{{ peek.displayName }}</span>
+        <span class="peek-name">
+          @if (peek.account; as account) {
+            <app-account-name [account]="account" />
+          } @else {
+            {{ peek.displayName }}
+          }
+        </span>
         <span class="peek-handle muted">&#64;{{ peek.handle }}</span>
       </button>
     }
@@ -37,7 +43,11 @@
           }
         </span>
         <span class="profile-name">
-          {{ card.displayName }}
+          @if (card.account; as account) {
+            <app-account-name [account]="account" />
+          } @else {
+            {{ card.displayName }}
+          }
           @if (card.account) {
             <app-verified-badge [account]="card.account" />
           }

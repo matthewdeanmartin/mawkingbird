@@ -1,3 +1,4 @@
+import { AccountName } from '../../account-name';
 import { CustomEmojiPipe } from '../../../publishing/custom-emoji.pipe';
 import {
   Component,
@@ -123,6 +124,7 @@ interface PhotoTranslation {
 @Component({
   selector: 'app-profile-photo-view',
   imports: [
+    AccountName,
     CustomEmojiPipe,
     FocusTrap,
     RouterLink,

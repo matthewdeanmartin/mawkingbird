@@ -38,7 +38,7 @@
           <img class="avatar" [src]="author.account.avatar" alt="" width="56" height="56" />
         }
         <div class="who">
-          <h1>{{ author.account.display_name || author.account.username }}</h1>
+          <h1><app-account-name [account]="author.account" /></h1>
           <p class="handle">&#64;{{ author.handle }}</p>
         </div>
         <nav class="head-links">

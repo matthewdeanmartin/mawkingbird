@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { MbButton } from '../../design-system/button/button';
 import { AccountPreview } from '../../accounts/account-hover-card/account-preview';
@@ -53,7 +54,7 @@ const MAX_RESOLVED_AUTHORS = 80;
 // i18n feedMembers.postCount.other: {{count}} {{posts}}
 @Component({
   selector: 'app-feed-members',
-  imports: [MbButton, AccountPreview, RouterLink, FollowButton, TranslocoPipe],
+  imports: [AccountName, MbButton, AccountPreview, RouterLink, FollowButton, TranslocoPipe],
   templateUrl: './feed-members.html',
   styleUrl: './feed-members.css',
 })

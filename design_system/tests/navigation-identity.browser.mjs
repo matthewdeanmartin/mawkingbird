@@ -70,7 +70,7 @@ for (const [width, theme, direction] of [
     await expect(preview.locator("[mbAccountCard]")).toHaveCount(0);
     await previewButton.focus();
     await expect(preview.locator("[mbAccountCard]")).toBeVisible();
-    await expect(preview.locator(".pinned-post")).toHaveCount(3);
+    await expect(preview.locator("article, .pinned-post")).toHaveCount(0);
     const request = preview.getByRole("button", {
       name: "Request",
       exact: true,

@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { AccountPreview } from '../../accounts/account-hover-card/account-preview';
 import { FollowBundleTags } from '../../discovery/tag-actions/follow-bundle-tags';
@@ -44,7 +45,15 @@ import { StatusCard } from '../../posts/status-card/status-card';
 // i18n tagBundle.tagAlreadyIn: That tag is already in this bundle.
 @Component({
   selector: 'app-tag-bundle-page',
-  imports: [FollowBundleTags, AccountPreview, RouterLink, FormsModule, StatusCard, TranslocoPipe],
+  imports: [
+    AccountName,
+    FollowBundleTags,
+    AccountPreview,
+    RouterLink,
+    FormsModule,
+    StatusCard,
+    TranslocoPipe,
+  ],
   templateUrl: './tag-bundle-page.html',
   styleUrl: './tag-bundle-page.css',
 })

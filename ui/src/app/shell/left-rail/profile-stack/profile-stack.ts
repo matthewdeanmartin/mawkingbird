@@ -1,3 +1,4 @@
+import { AccountName } from '../../../accounts/account-name';
 import { MbProfileStack } from '../../../design-system/identity/profile-stack';
 import { MbRailCard } from '../../../design-system/identity/rail-card';
 import { MbButton } from '../../../design-system/button/button';
@@ -45,6 +46,7 @@ function loadSelected(key: string): string | null {
 @Component({
   selector: 'app-profile-stack',
   imports: [
+    AccountName,
     MbButton,
     MbProfileStack,
     MbRailCard,

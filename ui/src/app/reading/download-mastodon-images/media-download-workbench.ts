@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -56,6 +57,7 @@ const PAGE = 40;
 @Component({
   selector: 'app-media-download-workbench',
   imports: [
+    AccountName,
     FormsModule,
     TranslocoPipe,
     MbButton,

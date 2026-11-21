@@ -32,7 +32,7 @@
     <div class="acct-body">
       <div class="acct-headline">
         <a class="acct-name" [routerLink]="profileLink()">
-          <strong>{{ a.display_name || a.username }}</strong>
+          <strong><app-account-name [account]="a" /></strong>
           <app-verified-badge [account]="a" />
         </a>
         <span class="muted acct-handle">&#64;{{ a.acct }}</span>

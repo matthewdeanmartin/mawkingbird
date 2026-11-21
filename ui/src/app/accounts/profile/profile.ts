@@ -1,3 +1,4 @@
+import { AccountName } from '../account-name';
 import { SignInPrompt } from '../../posts/sign-in-prompt/sign-in-prompt';
 import { ReadingBack } from '../../shell/reading-back';
 import { Lightbox } from '../../posts/lightbox/lightbox';
@@ -328,6 +329,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 @Component({
   selector: 'app-profile',
   imports: [
+    AccountName,
     SignInPrompt,
     ReadingBack,
     CopyLinkDialog,

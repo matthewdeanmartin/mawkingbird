@@ -155,9 +155,7 @@
                       height="36"
                       loading="lazy"
                     />
-                    <span class="name">{{
-                      group.account.display_name || group.account.username
-                    }}</span>
+                    <span class="name"><app-account-name [account]="group.account" /></span>
                     <span class="muted small">
                       {{
                         'pages.catchUp.personCount'

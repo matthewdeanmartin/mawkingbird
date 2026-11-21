@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -24,7 +25,7 @@ import { postTitle } from './track-title';
  */
 @Component({
   selector: 'app-track-result',
-  imports: [RouterLink, TranslocoPipe, MbButton, RadioIcon],
+  imports: [AccountName, RouterLink, TranslocoPipe, MbButton, RadioIcon],
   template: `
     @let single = singles()[0];
     <article class="result">
@@ -40,7 +41,8 @@ import { postTitle } from './track-title';
           }
         </p>
         <p class="meta">
-          {{ post().account.display_name || post().account.acct }} · {{ sources() }}
+          <app-account-name [account]="post().account" [fallback]="post().account.acct" /> ·
+          {{ sources() }}
           @if (!continuous()) {
             · {{ 'trackResult.ownPage' | transloco }}
           }

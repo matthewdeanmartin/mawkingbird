@@ -39,7 +39,7 @@
           <button type="button" (click)="choose(account)">
             <img [src]="account.avatar_static || account.avatar" alt="" width="40" height="40" />
             <span>
-              <strong>{{ account.display_name || account.username }}</strong>
+              <strong><app-account-name [account]="account" /></strong>
               <small class="muted">&#64;{{ account.acct }}</small>
             </span>
           </button>
@@ -54,7 +54,7 @@
     <div class="who">
       <img [src]="s.account.avatar_static || s.account.avatar" alt="" width="56" height="56" />
       <div>
-        <h2 id="media-owner">{{ s.account.display_name || s.account.username }}</h2>
+        <h2 id="media-owner"><app-account-name [account]="s.account" /></h2>
         <p class="muted">
           &#64;{{ s.account.acct }} ·
           {{

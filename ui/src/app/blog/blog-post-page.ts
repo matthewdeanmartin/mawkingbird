@@ -1,3 +1,4 @@
+import { AccountName } from '../accounts/account-name';
 import { DatePipe } from '@angular/common';
 import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -64,6 +65,7 @@ interface Comment {
 @Component({
   selector: 'app-blog-post-page',
   imports: [
+    AccountName,
     DatePipe,
     RouterLink,
     TranslocoPipe,

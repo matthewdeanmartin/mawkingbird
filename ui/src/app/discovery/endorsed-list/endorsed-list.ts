@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -29,7 +30,7 @@ import { ListFeedResolver, MERGE_MEMBER_CAP } from '../../feeds/lists/list-feed-
  */
 @Component({
   selector: 'app-endorsed-list',
-  imports: [RouterLink, StatusCard, TranslocoPipe],
+  imports: [AccountName, RouterLink, StatusCard, TranslocoPipe],
   templateUrl: './endorsed-list.html',
   styleUrl: './endorsed-list.css',
 })

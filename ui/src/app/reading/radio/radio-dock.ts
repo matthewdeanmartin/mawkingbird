@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -20,6 +21,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
 @Component({
   selector: 'app-radio-dock',
   imports: [
+    AccountName,
     RouterLink,
     TranslocoPipe,
     MbButton,
@@ -52,9 +54,11 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
               <span class="title">{{
                 player.hidden() ? ('radio.hidden' | transloco) : player.title(track)
               }}</span>
-              <span class="author">{{
-                track.post.account.display_name || track.post.account.acct
-              }}</span>
+              <span class="author"
+                ><app-account-name
+                  [account]="track.post.account"
+                  [fallback]="track.post.account.acct"
+              /></span>
             </a>
             <mb-toolbar
               class="transport"

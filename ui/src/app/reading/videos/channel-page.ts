@@ -6,6 +6,7 @@ import { map } from 'rxjs';
 import { youtubeSource } from '../video-player/media-source';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Account } from '../../platform/api/models';
+import { AccountName } from '../../accounts/account-name';
 import { MbButton } from '../../design-system/button/button';
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { FollowButton } from '../../accounts/follow-button/follow-button';
@@ -76,7 +77,7 @@ function pageUploads(videos: YoutubeChannelVideo[]): Upload[] {
  */
 @Component({
   selector: 'app-channel-page',
-  imports: [TranslocoPipe, RouterLink, DatePipe, MbButton, MbPageHeader, FollowButton],
+  imports: [AccountName, TranslocoPipe, RouterLink, DatePipe, MbButton, MbPageHeader, FollowButton],
   template: `
     @if (!valid()) {
       <mb-page-header [title]="'videoChannel.title' | transloco" />
@@ -118,7 +119,13 @@ function pageUploads(videos: YoutubeChannelVideo[]): Upload[] {
               <img [src]="link.account!.avatar" alt="" width="40" height="40" />
             }
             <span>
-              <strong>{{ link.account?.display_name || link.acct }}</strong>
+              <strong>
+                @if (link.account; as account) {
+                  <app-account-name [account]="account" [fallback]="link.acct" />
+                } @else {
+                  {{ link.acct }}
+                }
+              </strong>
               <span class="muted">&#64;{{ link.acct }}</span>
             </span>
           </p>

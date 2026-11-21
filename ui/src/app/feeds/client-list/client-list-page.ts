@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { MbMetadata, MbContentLink } from '../../design-system/metadata/metadata';
@@ -37,6 +38,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 @Component({
   selector: 'app-client-list-page',
   imports: [
+    AccountName,
     MbPageHeader,
     MbMetadata,
     MbContentLink,

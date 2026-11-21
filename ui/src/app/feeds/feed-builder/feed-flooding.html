@@ -46,8 +46,8 @@
                     [routerLink]="profile(flooder.account)"
                     target="_blank"
                     rel="noopener"
-                    >{{ flooder.account.display_name || flooder.account.username }}</a
-                  >
+                    ><app-account-name [account]="flooder.account"
+                  /></a>
                   <span class="handle">&#64;{{ flooder.account.acct }}</span>
                   @for (e of flooder.evidence; track e.tag) {
                     <p>{{ controls.floodEvidence(pct(e.share), e.tag, e.count, e.total) }}</p>

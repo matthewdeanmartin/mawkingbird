@@ -175,7 +175,7 @@
                     @if (b.avatar) {
                       <img [src]="b.avatar" alt="" width="32" height="32" loading="lazy" />
                     }
-                    <span class="booster-name">{{ b.display_name || b.username }}</span>
+                    <span class="booster-name"><app-account-name [account]="b" /></span>
                     <span class="muted small">{{ '@' + b.acct }}</span>
                   </a>
                   <span class="muted small">{{

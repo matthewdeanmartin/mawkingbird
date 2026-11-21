@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { MbButton } from '../../design-system/button/button';
 import { MbHelp } from '../../design-system/help/help';
@@ -194,6 +195,7 @@ const PREVIEW_ROWS = 8;
 @Component({
   selector: 'app-feed-analytics',
   imports: [
+    AccountName,
     MbButton,
     MbHelp,
     RouterLink,

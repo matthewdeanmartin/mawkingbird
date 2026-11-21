@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, inject, Injectable, signal } from '@angular/core';
 import { MbButton } from '../../design-system/button/button';
@@ -157,6 +158,7 @@ export class SuggestedTagImporter extends ImportTags {}
 @Component({
   selector: 'app-settings-import-export',
   imports: [
+    AccountName,
     FormsModule,
     RouterLink,
     TranslocoPipe,

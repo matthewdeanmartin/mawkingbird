@@ -185,7 +185,7 @@
           <ul class="cf-list">
             @for (account of sel.adopt; track account.id) {
               <li>
-                <span class="cf-name">{{ account.display_name || account.username }}</span>
+                <span class="cf-name"><app-account-name [account]="account" /></span>
                 <span class="muted small">&#64;{{ account.acct }}</span>
               </li>
             }

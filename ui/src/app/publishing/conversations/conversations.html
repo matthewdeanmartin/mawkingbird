@@ -822,7 +822,7 @@
             <div class="bubble" [class.bubble-mine]="isMine(m)">
               @if (!isMine(m) && chat.accounts.length > 1) {
                 <div class="bubble-author small">
-                  {{ m.account.display_name || m.account.username }}
+                  <app-account-name [account]="m.account" />
                 </div>
               }
               <div

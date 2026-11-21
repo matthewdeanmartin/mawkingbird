@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -31,7 +32,7 @@ export type AccountListMode = 'favourited_by' | 'reblogged_by';
  */
 @Component({
   selector: 'app-account-list-dialog',
-  imports: [MbDialog, MbButton, MbContentState, RouterLink, TranslocoPipe],
+  imports: [AccountName, MbDialog, MbButton, MbContentState, RouterLink, TranslocoPipe],
   templateUrl: './account-list-dialog.html',
   styleUrl: './account-list-dialog.css',
 })

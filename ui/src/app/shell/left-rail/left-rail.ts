@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Server } from '../../platform/http/server';
 import { lacksMastodonServer } from '../../platform/http/mastodon-route.interceptor';
@@ -56,6 +57,7 @@ function accountKey(account: Account): string {
 @Component({
   selector: 'app-left-rail',
   imports: [
+    AccountName,
     ProfileContentFilters,
     BlogAuthorCard,
     BlogMoreCard,

@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -86,7 +87,7 @@ type LoadError = 'notFound' | 'load' | 'unsupported';
  */
 @Component({
   selector: 'app-post-analytics',
-  imports: [MbButton, MbHelp, MbPageHeader, RouterLink, StatusCard, TranslocoPipe],
+  imports: [AccountName, MbButton, MbHelp, MbPageHeader, RouterLink, StatusCard, TranslocoPipe],
   templateUrl: './post-analytics.html',
   styleUrl: './post-analytics.css',
 })

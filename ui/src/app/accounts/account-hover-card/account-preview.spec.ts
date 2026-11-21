@@ -47,13 +47,9 @@ describe('Member account preview', () => {
       .expectOne((request) => request.url.includes('relationships'))
       .flush([{ id: '123', following: true, followed_by: true }]);
     fixture.detectChanges();
-    const pinned = http.expectOne((request) => request.url.endsWith('/accounts/123/statuses'));
-    expect(pinned.request.params.get('pinned')).toBe('true');
-    expect(pinned.request.params.get('limit')).toBe('3');
-    pinned.flush([{ id: 'pin', content: '<p>My favourite cats</p>', spoiler_text: '' }]);
-    fixture.detectChanges();
+    http.expectNone((request) => request.url.endsWith('/accounts/123/statuses'));
     expect(panel.getAttribute('role')).toBe('dialog');
-    expect(panel.textContent).toContain('My favourite cats');
+    expect(panel.querySelector('article')).toBeNull();
     expect(panel.showPopover).toHaveBeenCalledOnce();
     const card = fixture.nativeElement.querySelector('app-account-hover-card') as HTMLElement;
     expect(card.classList.contains('inline')).toBe(true);
@@ -106,43 +102,20 @@ describe('Member account preview', () => {
       return { fixture, panel };
     }
 
-    it('reads pinned posts from the account’s own server', () => {
-      const { fixture, panel } = open({
+    it('opens a remote account preview without looking up its posts', () => {
+      const { panel } = open({
         id: '9',
         acct: 'bob@home.example',
         url: 'https://home.example/@bob',
       });
-      http
-        .expectOne((request) => request.url === 'https://home.example/api/v1/accounts/lookup')
-        .flush({ id: '42', username: 'bob', acct: 'bob' });
-      http.expectOne('https://home.example/api/v1/accounts/42/statuses?pinned=true&limit=3').flush([
-        {
-          id: 'p',
-          content: '<p>Pinned at home</p>',
-          spoiler_text: '',
-          account: { username: 'bob', acct: 'bob' },
-        },
-      ]);
-      fixture.detectChanges();
-      expect(panel.textContent).toContain('Pinned at home');
+      expect(panel.textContent).toContain('Bob');
+      http.expectNone((request) => request.url.includes('/accounts/'));
     });
 
-    it('goes without pinned posts, quietly, when no server will give them', () => {
-      const { fixture, panel } = open({
-        id: '9',
-        acct: 'bob@home.example',
-        url: 'https://home.example/@bob',
-      });
-      http
-        .expectOne((request) => request.url === 'https://home.example/api/v1/accounts/lookup')
-        .flush('no', { status: 401, statusText: 'Unauthorized' });
-      http
-        .expectOne((request) =>
-          request.url.startsWith('https://mastodon.social/api/v1/accounts/9/statuses'),
-        )
-        .flush('no', { status: 401, statusText: 'Unauthorized' });
-      fixture.detectChanges();
-      expect(panel.textContent).not.toContain('accountPreview.pinnedError');
+    it('shows the profile link for a local account without fetching a timeline', () => {
+      const { panel } = open({ id: '9', acct: 'bob', url: 'https://mastodon.social/@bob' });
+      expect(panel.querySelector('a')?.getAttribute('href')).toContain('/accounts/');
+      http.expectNone((request) => request.url.includes('/statuses'));
     });
   });
 });

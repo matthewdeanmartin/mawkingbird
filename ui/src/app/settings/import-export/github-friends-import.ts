@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -45,7 +46,7 @@ import { GitHubFriendDiscovery, GitHubFriendStatus } from './github-friend-disco
  */
 @Component({
   selector: 'app-github-friends-import',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton],
+  imports: [AccountName, FormsModule, RouterLink, TranslocoPipe, MbButton],
   templateUrl: './github-friends-import.html',
   styleUrl: './friend-finder.css',
 })

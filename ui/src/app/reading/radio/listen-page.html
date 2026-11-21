@@ -38,7 +38,10 @@
             <div class="meta">
               <h2>{{ player.title(track) }}</h2>
               <p class="author">
-                {{ track.post.account.display_name || track.post.account.acct }}
+                <app-account-name
+                  [account]="track.post.account"
+                  [fallback]="track.post.account.acct"
+                />
               </p>
             </div>
           </div>

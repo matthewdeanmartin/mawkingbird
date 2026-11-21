@@ -20,7 +20,7 @@
               <a [routerLink]="accountProfilePath(admin)" class="admin">
                 <img [src]="admin.avatar_static || admin.avatar" alt="" decoding="async" />
                 <span>
-                  {{ admin.display_name || admin.username }}
+                  <app-account-name [account]="admin" />
                   <small>&#64;{{ admin.username }}</small>
                 </span>
               </a>
@@ -91,9 +91,7 @@
                 decoding="async"
               />
               <div class="who">
-                <span class="name">{{
-                  status.account.display_name || status.account.username
-                }}</span>
+                <span class="name"><app-account-name [account]="status.account" /></span>
                 <span class="acct muted">&#64;{{ status.account.acct }}</span>
               </div>
             </div>

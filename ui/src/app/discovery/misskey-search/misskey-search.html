@@ -90,7 +90,7 @@
                     <img [src]="account.avatar" alt="" width="40" height="40" loading="lazy" />
                   }
                   <span class="mk-person-names">
-                    <strong>{{ account.display_name }}</strong>
+                    <strong><app-account-name [account]="account" /></strong>
                     <span class="muted small">&#64;{{ account.acct }}</span>
                   </span>
                 </a>

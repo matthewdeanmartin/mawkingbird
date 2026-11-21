@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { CompactLinksPipe, ContentLinks } from '../../posts/content-links';
 import { LocalModeration } from '../../moderation/local-moderation';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
@@ -292,6 +293,7 @@ export function accountsNewToMe(
 @Component({
   selector: 'app-notifications',
   imports: [
+    AccountName,
     ContentLinks,
     CompactLinksPipe,
     MbButton,

@@ -1116,7 +1116,7 @@
             decoding="async"
           />
           <span class="fan-name">
-            {{ fan.display_name || fan.username }}
+            <app-account-name [account]="fan" />
             <small class="muted">&#64;{{ fan.acct }}</small>
           </span>
           <span class="fan-count muted">{{

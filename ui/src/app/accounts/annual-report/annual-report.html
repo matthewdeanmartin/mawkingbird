@@ -73,7 +73,7 @@
                                   width="24"
                                   height="24"
                                 />
-                                {{ cell.account.display_name || cell.account.username }}
+                                <app-account-name [account]="cell.account" />
                               </a>
                             </td>
                           }

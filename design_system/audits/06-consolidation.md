@@ -1,5 +1,12 @@
 # Sprint 6 opening consolidation audit
 
+## Hashtag analytics and account names, 2026-11-21
+
+Reviewed all 710 candidate files against the previous inventory. Candidate
+membership and control counts stayed the same. The timing charts share a
+baseline and tick row. Member previews use the compact account card, and
+account name labels reuse the custom emoji renderer.
+
 ## Bluesky signup footer, 2026-11-21
 
 The prerendered signup page uses the shared content-link directive for its

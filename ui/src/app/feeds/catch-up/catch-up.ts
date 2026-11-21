@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -81,7 +82,7 @@ type Phase = 'start' | 'loading' | 'ready' | 'error' | 'finished';
  */
 @Component({
   selector: 'app-catch-up',
-  imports: [AlgoViewTabs, DatePipe, StatusCard, TranslocoPipe],
+  imports: [AccountName, AlgoViewTabs, DatePipe, StatusCard, TranslocoPipe],
   providers: [FeedAggregator],
   templateUrl: './catch-up.html',
   styleUrl: './catch-up.css',

@@ -90,7 +90,9 @@
                   />
                 }
                 <span class="identity">
-                  <strong>{{ item.account.display_name || item.name }}</strong>
+                  <strong
+                    ><app-account-name [account]="item.account" [fallback]="item.name"
+                  /></strong>
                   <span class="muted">&#64;{{ item.handle }}</span>
                 </span>
               </button>

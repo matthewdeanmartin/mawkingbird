@@ -25,9 +25,9 @@
         <li>
           <article>
             <p class="meta byline">
-              <a [routerLink]="['/blog', '@' + authorHandle(post)]">{{
-                post.root.account.display_name || post.root.account.username
-              }}</a>
+              <a [routerLink]="['/blog', '@' + authorHandle(post)]"
+                ><app-account-name [account]="post.root.account"
+              /></a>
             </p>
             <h2>
               <a [routerLink]="postLink(post)">{{ post.title || '…' }}</a>

@@ -26,7 +26,11 @@
             <span class="track">
               <span class="track-title">{{ title }}</span>
               <span class="track-meta"
-                >{{ track.post.account.display_name || track.post.account.acct }} ·
+                ><app-account-name
+                  [account]="track.post.account"
+                  [fallback]="track.post.account.acct"
+                />
+                ·
                 {{ source(track) }}
                 @if (!isContinuous(track)) {
                   · {{ 'singles.ownPage' | transloco }}

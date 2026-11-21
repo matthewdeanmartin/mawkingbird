@@ -176,7 +176,7 @@
               <div class="bridge-person">
                 <img [src]="row.person.avatar_static || row.person.avatar" alt="" />
                 <span class="bridge-person-name">
-                  {{ row.person.display_name || row.person.username }}
+                  <app-account-name [account]="row.person" />
                 </span>
                 <span class="muted small">&#64;{{ row.person.acct }}</span>
               </div>
@@ -201,7 +201,7 @@
                       </label>
                     }
                     <a class="bridge-match-name" [routerLink]="accountProfilePath(match.account)">
-                      {{ match.account.display_name || match.account.username }}
+                      <app-account-name [account]="match.account" />
                       <span class="muted">&#64;{{ match.account.acct }}</span>
                     </a>
                     <span class="bridge-kind">{{ match.confidence }}</span>

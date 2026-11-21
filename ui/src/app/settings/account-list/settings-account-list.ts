@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -96,7 +97,7 @@ const DOMAIN_PAGE_SIZE = 100;
 // i18n common.running: Running…
 @Component({
   selector: 'app-settings-account-list',
-  imports: [RouterLink, FormsModule, BulkActionsDialog, BulkProgress, TranslocoPipe],
+  imports: [AccountName, RouterLink, FormsModule, BulkActionsDialog, BulkProgress, TranslocoPipe],
   templateUrl: './settings-account-list.html',
   styleUrl: './settings-account-list.css',
 })

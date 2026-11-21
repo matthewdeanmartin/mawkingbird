@@ -30,7 +30,7 @@
             </a>
 
             <a class="suggestion-name" [routerLink]="accountProfilePath(account)">
-              <span class="suggestion-display">{{ account.display_name || account.username }}</span>
+              <span class="suggestion-display"><app-account-name [account]="account" /></span>
               <span class="muted">&#64;{{ account.acct }}</span>
             </a>
           </app-account-preview>

@@ -8,6 +8,7 @@ import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { Account, Status } from '../../platform/api/models';
+import { AccountName } from '../../accounts/account-name';
 import { MisskeyApi, MisskeyApiError } from '../../connections/misskey/misskey-api';
 import { misskeyIdentity } from '../../connections/misskey/misskey-identity-store';
 import { StatusCard } from '../../posts/status-card/status-card';
@@ -52,6 +53,7 @@ export function parseHandle(query: string): { username: string; host: string | n
 @Component({
   selector: 'app-misskey-search',
   imports: [
+    AccountName,
     FormsModule,
     RouterLink,
     TranslocoPipe,

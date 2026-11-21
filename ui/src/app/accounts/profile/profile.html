@@ -1046,7 +1046,7 @@
               />
             </a>
             <a class="featured-name" [routerLink]="accountProfilePath(f)">
-              <span class="featured-display">{{ f.display_name || f.username }}</span>
+              <span class="featured-display"><app-account-name [account]="f" /></span>
               <span class="muted">&#64;{{ f.acct }}</span>
             </a>
             @if (isSelf() && capabilities.canUseServerActions) {

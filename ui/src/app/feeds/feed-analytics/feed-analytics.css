@@ -243,42 +243,64 @@ a.chip:hover {
 
 /* --- Bars (hour/day histograms) --- */
 
-.bars {
+.timing-chart {
+  --axis-height: 1.4rem;
+  --plot-height: 5rem;
+  position: relative;
   display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 72px;
+  gap: clamp(1px, 0.45%, 4px);
+  padding-inline-start: 2.5ch;
+  margin-block: 0.75rem;
+  font-variant-numeric: tabular-nums;
 }
 
-.bars.labelled {
-  height: 92px;
+.timing-chart::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 var(--axis-height);
+  inset-inline-start: 2.5ch;
+  border-block: 1px solid var(--border);
+  pointer-events: none;
+}
+
+.chart-scale {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 0 var(--axis-height);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: 0.72rem;
 }
 
 .bar-col {
   flex: 1 1 0;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
+  display: grid;
+  grid-template-rows: var(--plot-height) var(--axis-height);
+  align-items: end;
+  position: relative;
 }
 
 .bar {
   width: 100%;
-  min-height: 2px;
-  border-radius: 3px 3px 0 0;
+  border-radius: 2px 2px 0 0;
   background: var(--accent);
-  transition: height 0.2s ease;
 }
 
 .bar-label {
-  margin-top: 4px;
-  font-size: 10px;
+  align-self: start;
+  padding-top: 0.25rem;
+  font-size: 0.72rem;
+  text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
+}
+
+.hourly .bar-label {
+  justify-self: center;
+  overflow: visible;
 }
 
 /* --- Top posts --- */

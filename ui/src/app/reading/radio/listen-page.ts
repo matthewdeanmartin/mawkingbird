@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import {
   Component,
   computed,
@@ -72,6 +73,7 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
 @Component({
   selector: 'app-listen-page',
   imports: [
+    AccountName,
     FormsModule,
     TranslocoPipe,
     MbButton,

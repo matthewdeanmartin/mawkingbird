@@ -1,3 +1,4 @@
+import { AccountName } from '../../accounts/account-name';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -33,7 +34,7 @@ import { contactPickerAvailable, pickContacts } from './contact-picker';
  */
 @Component({
   selector: 'app-contact-friends-import',
-  imports: [FormsModule, RouterLink, TranslocoPipe, MbButton],
+  imports: [AccountName, FormsModule, RouterLink, TranslocoPipe, MbButton],
   templateUrl: './contact-friends-import.html',
   styleUrl: './friend-finder.css',
 })
