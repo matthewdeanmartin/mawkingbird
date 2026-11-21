@@ -10,6 +10,7 @@ import { IndicatorEvents } from './indicator-events';
 import { Wellness } from '../wellness/wellness';
 import { isEngagementNotification } from '../wellness/wellness-model';
 import { ReplyGuys } from '../accounts/reply-guys';
+import { ConversationOrigins } from '../accounts/conversation-origins';
 import { isIncomingConversation } from '../accounts/reply-guys-model';
 import {
   DEFAULT_INDICATOR_PREFERENCES,
@@ -38,6 +39,7 @@ export class MenuIndicators {
   private events = inject(IndicatorEvents);
   private wellness = inject(Wellness);
   private replyGuys = inject(ReplyGuys);
+  private origins = inject(ConversationOrigins);
   private auth = inject(Auth);
   private bsky = inject(BlueskySession);
   private router = inject(Router);
@@ -268,7 +270,8 @@ export class MenuIndicators {
       if (
         hideReplyGuys &&
         isIncomingConversation(row.type) &&
-        this.replyGuys.notFollowed(row.account)
+        this.replyGuys.notFollowed(row.account) &&
+        this.origins.unsolicited(row.status) === true
       )
         continue;
       this.receive(

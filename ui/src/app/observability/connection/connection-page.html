@@ -1,0 +1,177 @@
+<div class="connection-page">
+  <mb-page-header
+    [title]="'connection.title' | transloco"
+    [description]="'connection.intro' | transloco"
+  >
+    <a mbButton variant="link" routerLink="/connection-doctor">{{
+      'connection.doctor' | transloco
+    }}</a>
+    <a mbButton variant="link" routerLink="/observability">{{
+      'connection.backToObservability' | transloco
+    }}</a>
+  </mb-page-header>
+
+  <mb-section [title]="'connection.now' | transloco">
+    <div class="verdict" [attr.data-verdict]="assessment().verdict" role="status">
+      <p class="verdict-title">
+        {{ 'connection.verdict.' + assessment().verdict | transloco }}
+      </p>
+      <p class="verdict-reason">{{ reasonKey() | transloco }}</p>
+      @if (assessment().blame === 'server') {
+        <p class="verdict-reason">{{ 'connection.blame.server' | transloco }}</p>
+      }
+    </div>
+
+    <dl mbStatGrid>
+      <div>
+        <dt>{{ 'connection.stat.median' | transloco }}</dt>
+        <dd>{{ medianText() }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'connection.stat.failed' | transloco }}</dt>
+        <dd>{{ failedText() }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'connection.stat.requests' | transloco }}</dt>
+        <dd>{{ assessment().samples }}</dd>
+      </div>
+      @if (browserType(); as type) {
+        <div>
+          <dt>{{ 'connection.stat.browserType' | transloco }}</dt>
+          <dd>{{ type }}</dd>
+        </div>
+      }
+      @if (hints().saveData) {
+        <div>
+          <dt>{{ 'connection.stat.saveData' | transloco }}</dt>
+          <dd>{{ 'connection.stat.on' | transloco }}</dd>
+        </div>
+      }
+    </dl>
+
+    <div class="actions">
+      @if (canProbe) {
+        <button mbButton variant="outline" type="button" [disabled]="testing()" (click)="testNow()">
+          {{ (testing() ? 'connection.testing' : 'connection.testNow') | transloco }}
+        </button>
+      }
+      <button mbButton variant="outline" type="button" (click)="copyReport()">
+        {{ (copied() ? 'connection.copied' : 'connection.copyReport') | transloco }}
+      </button>
+      <button mbButton variant="link" tone="danger" type="button" (click)="clear()">
+        {{ 'connection.clear' | transloco }}
+      </button>
+    </div>
+    @if (meter.lastProbe(); as probe) {
+      <p class="muted">
+        {{
+          'connection.lastProbe'
+            | transloco
+              : {
+                  result:
+                    (probe.outcome === 'ok' ? 'connection.probe.ok' : 'connection.probe.failed')
+                    | transloco,
+                  ms: probe.ms | number: '1.0-0',
+                }
+        }}
+      </p>
+    }
+  </mb-section>
+
+  <mb-section [title]="'connection.history' | transloco">
+    <mb-toolbar [label]="'connection.spanLabel' | transloco" density="compact">
+      @for (choice of spans; track choice) {
+        <button
+          type="button"
+          mbToolbarButton
+          [pressed]="span() === choice"
+          (click)="span.set(choice)"
+        >
+          {{ 'connection.span.' + choice | transloco }}
+        </button>
+      }
+    </mb-toolbar>
+
+    <svg
+      class="timeline"
+      role="img"
+      [attr.aria-label]="'connection.chartLabel' | transloco"
+      [attr.viewBox]="'0 0 ' + chartWidth() + ' ' + chartHeight"
+      preserveAspectRatio="none"
+    >
+      <line
+        class="baseline"
+        x1="0"
+        [attr.x2]="chartWidth()"
+        [attr.y1]="chartHeight"
+        [attr.y2]="chartHeight"
+      />
+      @for (column of columns(); track column.t; let i = $index) {
+        <g>
+          <title>{{ columnTitle(column) }}</title>
+          @if (column.offlineShare > 0) {
+            <rect
+              class="offline-band"
+              [attr.x]="i * columnWidth"
+              y="0"
+              [attr.width]="columnWidth"
+              [attr.height]="chartHeight"
+            />
+          }
+          <rect
+            class="bar"
+            [attr.data-verdict]="column.worst"
+            [attr.x]="i * columnWidth + 1"
+            [attr.y]="chartHeight - barHeight(column)"
+            [attr.width]="columnWidth - 2"
+            [attr.height]="barHeight(column)"
+          />
+          <rect
+            class="hit"
+            [attr.x]="i * columnWidth"
+            y="0"
+            [attr.width]="columnWidth"
+            [attr.height]="chartHeight"
+          />
+        </g>
+      }
+    </svg>
+    <ul class="legend">
+      @for (key of ['good', 'slow', 'flaky', 'offline']; track key) {
+        <li>
+          <span class="swatch" [attr.data-verdict]="key"></span
+          >{{ 'connection.legend.' + key | transloco }}
+        </li>
+      }
+    </ul>
+  </mb-section>
+
+  <mb-section [title]="'connection.summary' | transloco">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{{ 'connection.col.window' | transloco }}</th>
+            <th scope="col">{{ 'connection.col.requests' | transloco }}</th>
+            <th scope="col">{{ 'connection.col.failed' | transloco }}</th>
+            <th scope="col">{{ 'connection.col.typical' | transloco }}</th>
+            <th scope="col">{{ 'connection.col.throughput' | transloco }}</th>
+            <th scope="col">{{ 'connection.col.offline' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.key) {
+            <tr>
+              <th scope="row">{{ 'connection.window.' + row.key | transloco }}</th>
+              <td>{{ row.requests }}</td>
+              <td>{{ row.failed }}</td>
+              <td>{{ row.typical }}</td>
+              <td>{{ row.throughput }}</td>
+              <td>{{ row.offline }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </mb-section>
+</div>

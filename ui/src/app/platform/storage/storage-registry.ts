@@ -1183,6 +1183,16 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Local API timing metrics and grouped client-error counts, one entry per instance. The trailing colon is part of the base — keys are `…metrics:<host>`.',
   },
   {
+    base: 'mockingbird_connection_history',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    // Counts and timing bins per minute, no URLs or places — but a day of
+    // "when was this person online" is a description of their habits, the
+    // same reasoning as the route log.
+    note: 'A day of connection quality at one-minute resolution (request counts, failures, latency bins, online/offline changes) for the Connection page.',
+  },
+  {
     base: 'mockingbird_api_metrics',
     storage: 'local',
     suffix: 'none',

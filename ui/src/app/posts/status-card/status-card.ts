@@ -135,7 +135,7 @@ import { AuthorModeration, ModerationTarget } from '../../moderation/author-mode
 import { FollowTrust } from '../../accounts/follow-trust';
 import { TrustedAccounts } from '../../accounts/trusted-accounts';
 import { ReplyGuys } from '../../accounts/reply-guys';
-import { ReplyGuyMode } from '../../accounts/reply-guys-model';
+import { hasHashtags, ReplyGuyMode } from '../../accounts/reply-guys-model';
 import { StatusVisibility } from '../../moderation/status-visibility';
 import { serverKnowsStatus, ProviderCapabilities } from '../../connections/provider';
 import { BskyReply } from '../../connections/bluesky/bluesky-reply';
@@ -226,8 +226,8 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.replyGuy.chipTitle: You don't follow this account
 // i18n statusCard.replyGuy.cw: Reply from someone you don't follow
 // i18n statusCard.replyGuy.show: Show
-// i18n statusCard.replyGuy.replyWarning: Heads up: @{{handle}} doesn't follow you. They'll still be notified of your reply.
-// i18n statusCard.replyGuy.quoteWarning: Heads up: @{{handle}} doesn't follow you. They'll still be notified of your quote.
+// i18n statusCard.replyGuy.replyWarning: Heads up: @{{handle}} doesn't follow you.
+// i18n statusCard.replyGuy.quoteWarning: Heads up: @{{handle}} doesn't follow you.
 // i18n statusCard.aiTranslationNote: Translated into {{target}} by {{model}} · machine translation, so treat the wording as approximate
 // i18n statusCard.aiTranslation: AI translation
 // i18n statusCard.showSensitiveContent: Show sensitive content
@@ -1068,6 +1068,9 @@ export class StatusCard {
       !this.replyGuyRevealed() &&
       this.replyGuys.notFollowed(this.display.account),
   );
+
+  /** This post invites the crowd (a hashtag), so its quotes aren't guarded. */
+  protected displayTagged = computed(() => hasHashtags(this.display));
 
   revealReplyGuy(event: Event): void {
     event.preventDefault();

@@ -162,6 +162,7 @@ type RouteSortKey = 'visits' | 'time';
 // i18n pages.observability.scope.combined.one: {{count}} server combined · currently signed in to {{server}}
 // i18n pages.observability.scope.combined.other: {{count}} servers combined · currently signed in to {{server}}
 // i18n pages.observability.storageDiagnostics: Storage Diagnostics →
+// i18n pages.observability.connection: Connection →
 // i18n pages.observability.api.title: API calls
 // i18n pages.observability.api.reset: Reset metrics
 // i18n pages.observability.stats.totalCalls: total calls

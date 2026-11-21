@@ -3181,3 +3181,19 @@ The dialog still uses its existing MbDialog, MbField, MbControl, MbCheckbox,
 MbDisclosure and MbButton controls. The footer keeps native links and buttons;
 the inventory changes are source line shifts. The candidate file set remains
 at 710, so 11-reconciliation.json needs no file changes.
+
+Reply-guy controls, part 2 (2026-11-21): reviewed the regenerated inventory:
+2091 scanned files (one new non-UI service, conversation-origins.ts), 710
+candidate files, no findings added or removed. The status card and thread only
+moved line numbers: guarding now follows the conversation's root (the reader's
+own untagged post) instead of "anywhere below my post", and the pile-on fold
+row added earlier in the day keeps its MbButton. No shared design widget changed.
+
+Connection meter, low-bandwidth Sprint 1 (2026-11-21): reviewed the regenerated
+inventory: 711 candidate files. One new candidate,
+observability/connection/connection-page.html, the `/connection` diagnostics
+page. It uses MbPageHeader, MbSection, MbStatGrid, MbButton and
+MbToolbar/MbToolbarButton; its nativeButtons findings are those mbButton and
+mbToolbarButton hosts. Added to 11-reconciliation.json as adopted scope. The new
+header chip (shell/connection-chip, an inline-template link) and the shell's
+one-line header change only shift line numbers. No shared design widget changed.

@@ -3551,6 +3551,11 @@
       "file": "ui/src/app/settings/bluesky-preferences/settings-bluesky-preferences.html",
       "disposition": "adopted scope",
       "nextStep": "Settings page from shared parts: MbPageHeader, MbSection, MbCheckbox, MbField + select[mbControl], MbButton link, MbSaveFeedback, MbContentState, and the existing Bluesky post-controls dialog. Interest grid is local layout."
+    },
+    {
+      "file": "ui/src/app/observability/connection/connection-page.html",
+      "disposition": "adopted scope",
+      "nextStep": "Built on shared widgets: MbPageHeader, MbSection, MbStatGrid, MbButton (Test now, Copy report, Clear history and header links) and MbToolbar/MbToolbarButton for the hour/day switch. The nativeButtons findings are those mbButton and mbToolbarButton hosts. The SVG timeline and summary table are page-specific data views, not controls."
     }
   ]
 }

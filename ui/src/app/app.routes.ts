@@ -1513,6 +1513,14 @@ export const routes: Routes = [
         loadComponent: () => import('./publishing/posse/posse-page').then((m) => m.PossePage),
       },
       {
+        // "Is it me, or is it the server?" — the connection meter's history,
+        // reached from the header chip that appears when the network is bad.
+        path: 'connection',
+        title: 'Connection',
+        loadComponent: () =>
+          import('./observability/connection/connection-page').then((m) => m.ConnectionPage),
+      },
+      {
         path: 'observability',
         title: 'Observability',
         loadComponent: () => import('./observability/observability').then((m) => m.Observability),

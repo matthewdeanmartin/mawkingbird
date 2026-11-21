@@ -5,6 +5,7 @@ import { accountScopeSuffix } from '../../platform/session/account-scope';
 import { MbButton } from '../../design-system/button/button';
 import { MbBadge } from '../../design-system/badge/badge';
 import { ReplyGuys } from '../../accounts/reply-guys';
+import { ConversationOrigins } from '../../accounts/conversation-origins';
 import { isIncomingConversation } from '../../accounts/reply-guys-model';
 import { firstValueFrom } from 'rxjs';
 import { accountProfilePath } from '../../accounts/account-route';
@@ -406,13 +407,25 @@ export class Notifications implements OnInit, OnDestroy {
   /** Notifications shown despite the reply-guy guard, one click each. */
   private replyGuyRevealed = signal<ReadonlySet<string>>(new Set());
 
-  /** A reply, mention or quote from someone the reader doesn't follow. */
-  private fromReplyGuy(n: MastodonNotification): boolean {
+  private origins = inject(ConversationOrigins);
+
+  /** A reply, mention or quote from someone the reader doesn't follow: the chip. */
+  private fromStranger(n: MastodonNotification): boolean {
     return isIncomingConversation(n.type) && this.replyGuys.notFollowed(n.account);
   }
 
+  /**
+   * A stranger starting something: a fresh mention or quote, or a reply in a
+   * conversation the reader began without a hashtag. A reply in a thread the
+   * reader joined is the mosh pit and is never guarded or hidden. The root
+   * lookup happens only after the cheap stranger check says it's needed.
+   */
+  private fromReplyGuy(n: MastodonNotification): boolean {
+    return this.fromStranger(n) && this.origins.unsolicited(n.status) === true;
+  }
+
   protected replyGuyChip(n: MastodonNotification): boolean {
-    return this.fromReplyGuy(n);
+    return this.fromStranger(n);
   }
 
   /** Its words wait behind one click (Settings → Wellness turns this off). */
@@ -495,9 +508,9 @@ export class Notifications implements OnInit, OnDestroy {
       // Wellness: likes, boosts and follows don't arrive at all. Before the
       // safety check, which none of them are.
       if (limited && isEngagementNotification(n.type)) return false;
-      // Wellness, opt-in only: replies, mentions and quotes from people the
-      // reader doesn't follow are removed, not just put behind a click. Only
-      // on a definite "not followed"; an unanswered lookup leaves them shown.
+      // Wellness, opt-in only: strangers starting something are removed, not
+      // just put behind a click. Same rule as the guard: the mosh pit stays,
+      // and an unanswered lookup leaves them shown.
       if (hideReplyGuys && this.fromReplyGuy(n)) return false;
       // Account-safety notices (a moderator acted on you, you lost follows) are
       // not engagement: no type or audience filter hides them.

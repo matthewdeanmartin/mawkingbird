@@ -11,9 +11,15 @@ the starred steps on Bluesky and on Misskey.
    someone you don't follow" + Show. Show reveals it; the chip stays.
 2. ★ From C, reply to the same post. No chip, no guard (you follow C; them not
    following back doesn't matter).
-3. ★ From B, reply to C's reply under A's post (two levels deep). Still guarded.
+3. ★ From B, reply to C's reply under A's post (two levels deep). Still guarded:
+   A started the conversation.
 4. Open someone else's thread with replies from strangers: chips only, no
-   guards.
+   guards. ★ Reply in it as A, then have B reply to A's reply: in A's
+   notifications B is tagged but _not_ behind Show (the mosh pit).
+   4a. ★ Post as A with a hashtag; B replies: chip only, no guard, no fold.
+   4b. ★ Have three strangers reply to an untagged post of A's: they fold into
+   one row "3 replies from people you don't follow" at the end of the thread.
+   Have C (followed) answer one of them: that branch stays unfolded.
 5. Open B's reply itself (click it, so it is the focused post): chip, no guard.
 6. ★ In Notifications, B's mention shows the chip and "From someone you don't
    follow" + Show. C's mention shows normally.
@@ -36,14 +42,12 @@ the starred steps on Bluesky and on Misskey.
 ## Warning (people who don't follow you)
 
 12. ★ As A, reply to C's post (C doesn't follow A): a notice beside the
-    translated-post warning reads "Heads up: @C doesn't follow you. They'll
-    still be notified of your reply." Check the inline reply, the thread reply
+    translated-post warning reads "Heads up: @C doesn't follow you." Check the inline reply, the thread reply
     box and the profile photo view.
-13. ★ Quote C's post: the same notice with "…of your quote" in the quote
-    dialog (Misskey: in the inline quote box).
+13. ★ Quote C's post: the same notice in the quote dialog (Misskey: in the inline quote box).
 14. Reply to someone who follows A: no notice.
 
 ## Account switch
 
 15. Switch to another signed-in account and reopen the thread: chips and guards
-    reflect the *new* account's follows, not the previous one's.
+    reflect the _new_ account's follows, not the previous one's.

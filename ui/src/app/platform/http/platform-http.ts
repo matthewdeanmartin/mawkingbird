@@ -134,3 +134,10 @@ export const PLATFORM_LOCAL_AI = new InjectionToken<NativeLocalAiTransport | nul
   'PLATFORM_LOCAL_AI',
   { providedIn: 'root', factory: () => null },
 );
+
+/**
+ * A tiny same-origin file the connection meter fetches, with caching off, to tell
+ * "the connection is back" from "still nothing" while the app is otherwise quiet.
+ * Relative to the base href so previews probe their own deployment.
+ */
+export const CONNECTIVITY_PROBE_PATH: string | null = 'probe.txt';

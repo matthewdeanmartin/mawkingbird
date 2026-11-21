@@ -1,0 +1,130 @@
+:host {
+  display: block;
+  /* Status colours for the verdict, the bars and the legend. "Working" stays
+     recessive so trouble is what the eye finds; every state also has a text
+     label (legend, tooltip, summary table), so colour never carries it alone. */
+  --conn-good: color-mix(in srgb, var(--muted) 55%, transparent);
+  --conn-slow: var(--ds-warning-text);
+  --conn-flaky: color-mix(in srgb, var(--ds-warning-text) 45%, var(--ds-error-text));
+  --conn-offline: var(--ds-error-text);
+}
+.connection-page {
+  display: grid;
+  gap: 20px;
+  padding: 16px;
+}
+.verdict {
+  border-inline-start: 4px solid var(--conn-good);
+  padding: 4px 0 4px 12px;
+  margin-block-end: 12px;
+}
+.verdict[data-verdict='slow'] {
+  border-color: var(--conn-slow);
+}
+.verdict[data-verdict='flaky'] {
+  border-color: var(--conn-flaky);
+}
+.verdict[data-verdict='offline'] {
+  border-color: var(--conn-offline);
+}
+.verdict p {
+  margin: 0;
+}
+.verdict-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.verdict-reason,
+.muted {
+  color: var(--muted);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-block: 12px 4px;
+}
+.timeline {
+  display: block;
+  inline-size: 100%;
+  block-size: 80px;
+  margin-block: 12px 6px;
+}
+.baseline {
+  stroke: var(--border);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.bar {
+  fill: var(--conn-good);
+}
+.bar[data-verdict='slow'],
+.swatch[data-verdict='slow'] {
+  fill: var(--conn-slow);
+  background: var(--conn-slow);
+}
+.bar[data-verdict='flaky'],
+.swatch[data-verdict='flaky'] {
+  fill: var(--conn-flaky);
+  background: var(--conn-flaky);
+}
+.bar[data-verdict='offline'],
+.swatch[data-verdict='offline'] {
+  fill: var(--conn-offline);
+  background: var(--conn-offline);
+}
+.offline-band {
+  fill: var(--conn-offline);
+  opacity: 0.15;
+}
+.hit {
+  fill: transparent;
+}
+g:hover .hit {
+  fill: color-mix(in srgb, var(--text) 8%, transparent);
+}
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--muted);
+}
+.legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.swatch {
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 2px;
+  background: var(--conn-good);
+}
+.table-wrap {
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  inline-size: 100%;
+  font-variant-numeric: tabular-nums;
+}
+th,
+td {
+  padding: 6px 10px;
+  text-align: end;
+  border-block-end: 1px solid var(--border);
+  white-space: nowrap;
+}
+th[scope='row'],
+thead th:first-child {
+  text-align: start;
+}
+thead th {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 13px;
+}

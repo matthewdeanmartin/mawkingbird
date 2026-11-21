@@ -673,6 +673,36 @@ describe('Notifications', () => {
       expect(el.querySelector('.reply-guy-cw')).toBeNull();
     });
 
+    it('leaves a stranger’s reply alone in a thread the reader jumped into', async () => {
+      notFollowed.mockImplementation((account) => account?.id === 'guy');
+      const fixture = TestBed.createComponent(Notifications);
+      fixture.detectChanges();
+      const n = makeNotification('g', 'mention');
+      n.account = makeAccount('guy', 'Reply Guy');
+      n.status = {
+        id: 'sg',
+        content: '<p>mosh pit</p>',
+        media_attachments: [],
+        in_reply_to_id: 'mine',
+      } as never;
+      httpMock.expectOne('/api/v1/notifications').flush([n]);
+      fixture.detectChanges();
+      httpMock.expectOne('/api/v1/statuses/sg/context').flush({
+        ancestors: [
+          { id: 'root', account: { id: 'alice' }, content: '', in_reply_to_id: null },
+          { id: 'mine', account: { id: 'me' }, content: '', in_reply_to_id: 'root' },
+        ],
+        descendants: [],
+      });
+      await fixture.whenStable();
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.textContent).toContain('mosh pit');
+      expect(el.querySelector('.reply-guy-cw')).toBeNull();
+      // Still tagged: the chip is information, not a guard.
+      expect(el.querySelectorAll('.reply-guy-chip')).toHaveLength(1);
+    });
+
     it('removes them entirely only when the reader chose that in Wellness', () => {
       TestBed.inject(Wellness).set('hideReplyGuys', true);
       const fixture = strangerMention();

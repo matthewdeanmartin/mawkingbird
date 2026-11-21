@@ -1885,6 +1885,7 @@
       [blueskyUri]="blueskyQuoteRef?.uri ?? null"
       [canDetach]="isOwn() && display.provider === 'bluesky'"
       [mine]="isOwn()"
+      [tagged]="displayTagged()"
       (closed)="quotesOpen.set(false)"
     />
   }

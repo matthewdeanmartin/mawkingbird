@@ -51,8 +51,8 @@ import { MbNotice } from '../../design-system/notice/notice';
 import { MbButton } from '../../design-system/button/button';
 import { ReplyGuys } from '../../accounts/reply-guys';
 import {
-  belowMine,
   collapsibleReplyGuys,
+  isMyQuietConversation,
   ReplyGuyMode,
   threadReplyGuyMode,
 } from '../../accounts/reply-guys-model';
@@ -342,18 +342,20 @@ export class Thread implements OnInit {
 
   private readonly replyGuys = inject(ReplyGuys);
   /**
-   * Reply-guy mode per card. Replies get the "you don't follow" chip; replies
-   * below one of the reader's own posts get the virtual content warning too.
-   * The focused post is never guarded: the reader asked to see it.
+   * Reply-guy mode per card. Replies get the "you don't follow" chip. In a
+   * conversation the reader started without a hashtag, strangers' replies get
+   * the virtual content warning too; a thread the reader joined, or tagged, is
+   * the mosh pit, and stays open. The focused post is never guarded: the
+   * reader asked to see it.
    */
   private readonly replyGuyModes = computed(() => {
     const focused = this.status();
     const all = [...this.ancestors(), ...(focused ? [focused] : []), ...this.descendants()];
     const root = all.find((post) => !post.in_reply_to_id) ?? null;
-    const mine = belowMine(all, (post) => this.replyGuys.isSelf(post.account));
+    const quiet = isMyQuietConversation(root, (post) => this.replyGuys.isSelf(post.account));
     const modes = new Map<string, ReplyGuyMode>();
     for (const post of all) {
-      const mode = threadReplyGuyMode(post, root?.account.id ?? null, mine.has(post.id));
+      const mode = threadReplyGuyMode(post, root?.account.id ?? null, quiet);
       modes.set(post.id, post.id === focused?.id && mode === 'guard' ? 'chip' : mode);
     }
     return modes;

@@ -148,6 +148,8 @@ export class QuotesDialog implements OnInit {
   readonly canDetach = input(false);
   /** The reader wrote the quoted post: reply-guy controls apply to its quotes. */
   readonly mine = input(false);
+  /** That post carries a hashtag: the reader invited the crowd, so no guard. */
+  readonly tagged = input(false);
   readonly closed = output<void>();
 
   protected quotes = signal<Status[]>([]);
@@ -167,6 +169,7 @@ export class QuotesDialog implements OnInit {
   protected guarded(quote: Status): boolean {
     return (
       this.mine() &&
+      !this.tagged() &&
       this.replyGuys.cwOn() &&
       !this.revealed().has(quote.id) &&
       this.replyGuys.notFollowed(quote.account)

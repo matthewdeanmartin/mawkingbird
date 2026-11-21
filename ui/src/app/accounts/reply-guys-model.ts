@@ -12,7 +12,16 @@ import { Status } from '../platform/api/models';
  * - `off`: nothing, the default everywhere outside a conversation.
  * - `chip`: a quiet "you don't follow" chip beside the handle.
  * - `guard`: the chip, plus the virtual content warning when the reader keeps
- *   it on. Only replies in a conversation the reader is part of get this.
+ *   it on.
+ *
+ * ## Who gets guarded: strangers who start something (owner, 2026-11-21)
+ *
+ * Joining someone else's busy thread, or adding a hashtag, is walking into the
+ * mosh pit: replies from strangers there were invited, and show normally.
+ * What waits behind a click is a stranger *starting* something with the
+ * reader: a reply in a conversation the reader began without a hashtag, or a
+ * fresh mention or quote that isn't part of anyone's thread. The chip, being
+ * plain information, still shows everywhere.
  */
 export type ReplyGuyMode = 'off' | 'chip' | 'guard';
 
@@ -28,33 +37,26 @@ export function isIncomingConversation(type: string | undefined | null): boolean
 }
 
 /**
- * Ids of the statuses that sit below one of the reader's own posts.
- *
- * Walks each status up its `in_reply_to_id` chain through the statuses we
- * have. A reply to a reply to you is still in your conversation, which is
- * where reply guys pile in. The walk stops at an unknown parent or a cycle.
+ * The post invites the crowd: it carries a hashtag. Mastodon and Misskey list
+ * tags on the status; Bluesky's facet tags only survive as rendered hashtag
+ * links, so the content is checked too.
  */
-export function belowMine(
-  statuses: readonly Status[],
+const HASHTAG_LINK = /class="[^"]*\bhashtag\b|rel="tag"|\/hashtag\/|\/tags\//i;
+
+export function hasHashtags(status: Pick<Status, 'tags' | 'content'>): boolean {
+  return !!status.tags?.length || HASHTAG_LINK.test(status.content ?? '');
+}
+
+/**
+ * The reader started this conversation, without a hashtag: strangers replying
+ * anywhere in it arrive uninvited. `root` is the post with no parent; when the
+ * thread didn't load that far there is no answer, and nothing is guarded.
+ */
+export function isMyQuietConversation(
+  root: Status | null | undefined,
   isMine: (status: Status) => boolean,
-): Set<string> {
-  const byId = new Map(statuses.map((status) => [status.id, status]));
-  const result = new Set<string>();
-  for (const status of statuses) {
-    const seen = new Set<string>([status.id]);
-    let parentId = status.in_reply_to_id;
-    while (parentId && !seen.has(parentId)) {
-      seen.add(parentId);
-      const parent = byId.get(parentId);
-      if (!parent) break;
-      if (isMine(parent)) {
-        result.add(status.id);
-        break;
-      }
-      parentId = parent.in_reply_to_id;
-    }
-  }
-  return result;
+): boolean {
+  return !!root && !root.in_reply_to_id && isMine(root) && !hasHashtags(root);
 }
 
 /**
@@ -67,11 +69,11 @@ export function belowMine(
 export function threadReplyGuyMode(
   status: Status,
   rootAuthorId: string | null,
-  inMyConversation: boolean,
+  myQuietConversation: boolean,
 ): ReplyGuyMode {
   if (!status.in_reply_to_id) return 'off';
   if (rootAuthorId && status.account.id === rootAuthorId) return 'off';
-  return inMyConversation ? 'guard' : 'chip';
+  return myQuietConversation ? 'guard' : 'chip';
 }
 
 /** Fewer than this many stay individually guarded; this many or more fold into one row. */

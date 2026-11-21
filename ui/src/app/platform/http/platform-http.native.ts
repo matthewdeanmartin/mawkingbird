@@ -322,3 +322,10 @@ export const PLATFORM_LOCAL_AI = new InjectionToken<NativeLocalAiTransport | nul
     }),
   },
 );
+
+/**
+ * Native serves its own origin from the app bundle, so fetching a file there
+ * says nothing about the network. The connection meter probes nothing until the
+ * host offers a real connectivity check.
+ */
+export const CONNECTIVITY_PROBE_PATH: string | null = null;

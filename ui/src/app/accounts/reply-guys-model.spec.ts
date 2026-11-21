@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { Status } from '../platform/api/models';
 import {
-  belowMine,
   collapsibleReplyGuys,
+  hasHashtags,
   isIncomingConversation,
+  isMyQuietConversation,
   threadReplyGuyMode,
 } from './reply-guys-model';
 
@@ -25,21 +26,32 @@ describe('reply-guys model', () => {
     expect(isIncomingConversation(undefined)).toBe(false);
   });
 
-  it('finds every reply below one of my posts, however deep', () => {
-    const statuses = [
-      post('root', 'alice'),
-      post('mine', 'me', 'root'),
-      post('a', 'guy', 'mine'),
-      post('b', 'other', 'a'),
-      post('c', 'other', 'root'),
-    ];
-    const below = belowMine(statuses, (s) => s.account.id === 'me');
-    expect([...below].sort()).toEqual(['a', 'b']);
+  it('sees hashtags in status tags or in rendered hashtag links', () => {
+    expect(hasHashtags({ tags: [{ name: 'pizza', url: '' }], content: '' })).toBe(true);
+    expect(
+      hasHashtags({ content: '<a href="https://bsky.app/hashtag/pizza">#pizza</a>' } as Status),
+    ).toBe(true);
+    expect(
+      hasHashtags({ content: '<a class="mention hashtag" rel="tag" href="x">#p</a>' } as Status),
+    ).toBe(true);
+    expect(hasHashtags({ tags: [], content: '<p>peach on pizza</p>' })).toBe(false);
   });
 
-  it('stops at an unknown parent and survives a cycle', () => {
-    const statuses = [post('x', 'guy', 'missing'), post('p', 'a', 'q'), post('q', 'b', 'p')];
-    expect(belowMine(statuses, () => false).size).toBe(0);
+  it('a quiet conversation is one I started, without a hashtag', () => {
+    const isMine = (s: Status) => s.account.id === 'me';
+    const root = { ...post('root', 'me'), content: '<p>peach on pizza</p>' } as Status;
+    expect(isMyQuietConversation(root, isMine)).toBe(true);
+    // Somebody else's thread I jumped into: the mosh pit.
+    expect(isMyQuietConversation({ ...root, account: { id: 'alice' } } as Status, isMine)).toBe(
+      false,
+    );
+    // My own post, but I tagged it: bring it on.
+    expect(
+      isMyQuietConversation({ ...root, tags: [{ name: 'pizza', url: '' }] } as Status, isMine),
+    ).toBe(false);
+    // The thread didn't load to its root: no answer, nothing guarded.
+    expect(isMyQuietConversation(post('r', 'me', 'parent'), isMine)).toBe(false);
+    expect(isMyQuietConversation(null, isMine)).toBe(false);
   });
 
   it('guards replies in my conversation and only chips the rest', () => {

@@ -6,6 +6,7 @@ import { BlueskyModeration } from '../connections/bluesky/bluesky-moderation';
 import { accountProfilePath } from '../accounts/account-route';
 import { MbContentState } from '../design-system/content-state/content-state';
 import { MbButton } from '../design-system/button/button';
+import { ConnectionChip } from './connection-chip/connection-chip';
 import { MbControl, MbField } from '../design-system/field/field';
 import { FeatureUseHistory } from '../feeds/feature-use-history';
 import { PlusPrice } from '../accounts/mawkingbird/plus-price';
@@ -253,6 +254,7 @@ const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
     ModeSwitch,
     MbField,
     MbControl,
+    ConnectionChip,
   ],
   templateUrl: './shell.html',
   styleUrl: './shell.css',

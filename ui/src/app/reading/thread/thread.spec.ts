@@ -217,6 +217,41 @@ describe('Thread', () => {
     expect(el.querySelector('.reply-guy-cw')).toBeNull();
   });
 
+  it.each(['theirs', 'tagged'] as const)(
+    'leaves strangers unguarded in a thread I jumped into, or in my tagged one (%s)',
+    (thread) => {
+      const fixture = setUpWithId('100');
+      TestBed.inject(Auth).setAccount({ id: 'me', acct: 'me', username: 'me' } as Account);
+      TestBed.inject(FollowState).write(
+        ['g1', 'g2', 'g3'].map((id) => ({
+          id,
+          following: false,
+          followed_by: false,
+          requested: false,
+          blocking: false,
+          muting: false,
+        })),
+      );
+      const root =
+        thread === 'theirs'
+          ? makeStatusBy('100', 'them', 'them')
+          : { ...makeStatusBy('100', 'me', 'me'), tags: [{ name: 'pizza', url: '' }] };
+      const reply = (id: string, author: string) => ({
+        ...makeStatusBy(id, author, author),
+        in_reply_to_id: '100',
+      });
+      httpMock.expectOne('/api/v1/statuses/100').flush(root);
+      httpMock
+        .expectOne('/api/v1/statuses/100/context')
+        .flush(makeContext([], [reply('a', 'g1'), reply('b', 'g2'), reply('c', 'g3')]));
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelector('.reply-guys-folded')).toBeNull();
+      expect(el.querySelector('.reply-guy-cw')).toBeNull();
+      expect(el.querySelectorAll('.reply-guy-chip')).toHaveLength(3);
+    },
+  );
+
   it('expands and collapses CWs throughout a conversation, including other authors and new replies', () => {
     const fixture = setUpWithId('100');
     const warning = (id: string, author: string) => ({
