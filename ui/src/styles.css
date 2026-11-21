@@ -1156,6 +1156,14 @@ html[data-wellness-post-counts]
   display: none !important;
 }
 
+/* Auto-grayscale (Wellness): the usage clock sets --wellness-gray from 0 to 1
+   over 15 minutes after 45 minutes of use. The slow transition makes each
+   step a drift rather than a jump. */
+html[data-wellness-fade] {
+  filter: grayscale(var(--wellness-gray, 0));
+  transition: filter 60s linear;
+}
+
 /* Manual grayscale. The whole app, not just media: colour is what pulls. On
    the root element, where filter does not become the containing block for
    fixed-position rails and dialogs (it would on body). */

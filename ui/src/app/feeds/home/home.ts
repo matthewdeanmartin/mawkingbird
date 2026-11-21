@@ -112,6 +112,7 @@ import { MbNotice } from '../../design-system/notice/notice';
 import { HomeDefaults, HomeDefault, asHomeDefault } from '../home-defaults';
 import { MbField, MbControl } from '../../design-system/field/field';
 import { isVideoStatus } from '../../reading/video-player/video-discovery';
+import { BreakReminders } from '../../wellness/break-reminders';
 
 // i18n pages.home.defaultView.label: Default Home to…
 // i18n pages.home.defaultView.legacy: Home Default
@@ -323,6 +324,8 @@ export class Home implements OnInit, OnDestroy {
   protected prefs = inject(ClientPrefs);
   private feedLangFilter = inject(FeedLanguageFilter);
   private calm = inject(CalmVerdicts);
+  /** The feed reaching its cap is a natural stop for Wellness break reminders. */
+  private breaks = inject(BreakReminders);
   private bookmarkPresence = inject(BookmarkPresence);
   private visibility = inject(StatusVisibility);
   private streaming = inject(Streaming);
@@ -2002,6 +2005,7 @@ export class Home implements OnInit, OnDestroy {
   private noteMaximum(): void {
     if (this.statuses().length >= this.prefs.feedMax() && this.maxHitAt() === null) {
       this.maxHitAt.set(Date.now());
+      this.breaks.naturalStop();
       this.diagnostics.info('feed:maximum-reached', {
         stored: this.statuses().length,
         feedMax: this.prefs.feedMax(),

@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Wellness check-in, breaks and fade, 2026-11-20
+
+Reviewed 2,051 source files (new: the pure `wellness/usage-clock-model.ts`,
+the `UsageClock` and `BreakReminders` services) and 700 candidate files. One
+candidate is added and reconciled as adopted scope:
+`wellness/wellness-time.ts` composes the shared Dialog and MbButton for the
+check-in (intent buttons plus a native budget select) and MbButton for the
+break suggestion. The Wellness settings page regroups its protection
+switches under one labelled row (the rows had no label cell and fell into the
+label column). Remaining entries are line shifts. No shared widget
+implementation changed.
+
 ## Catch-up, Algo view picker and discovery windows, 2026-11-20
 
 Reviewed 2,047 source files (new: the pure `feeds/catch-up/catch-up-model.ts`

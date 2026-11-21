@@ -41,9 +41,10 @@
 
   <div class="ssection">
     <h2>{{ 'settings.wellness.protections' | transloco }}</h2>
-    @for (row of rows(); track row.key) {
-      <div class="srow">
-        <div class="scontrol">
+    <div class="srow">
+      <span class="slabel">{{ 'settings.wellness.switches' | transloco }}</span>
+      <div class="scontrol">
+        @for (row of rows(); track row.key) {
           <label class="checkline">
             <input
               type="checkbox"
@@ -52,16 +53,20 @@
               [disabled]="row.pending"
               (change)="toggle(row.key, $any($event.target).checked)"
             />
-            {{ 'settings.wellness.key.' + row.key | transloco }}
-            @if (row.inPreset) {
-              <span class="muted small">
-                ·
-                {{
-                  'settings.wellness.inPreset'
-                    | transloco: { preset: (presetKey(wellness.preset()) | transloco) }
-                }}</span
-              >
-            }
+            <!-- One inline span so the "· in Strong" tag flows after the label
+                 instead of becoming its own flex column. -->
+            <span
+              >{{ 'settings.wellness.key.' + row.key | transloco }}
+              @if (row.inPreset) {
+                <span class="muted small"
+                  >·
+                  {{
+                    'settings.wellness.inPreset'
+                      | transloco: { preset: (presetKey(wellness.preset()) | transloco) }
+                  }}</span
+                >
+              }
+            </span>
           </label>
           <span class="hint">
             {{ 'settings.wellness.key.' + row.key + '.hint' | transloco }}
@@ -69,9 +74,9 @@
               <em>({{ 'settings.wellness.soon' | transloco }})</em>
             }
           </span>
-        </div>
+        }
       </div>
-    }
+    </div>
   </div>
 
   <div class="ssection">

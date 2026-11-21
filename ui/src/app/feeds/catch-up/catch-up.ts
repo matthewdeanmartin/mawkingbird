@@ -12,6 +12,7 @@ import { StatusCard } from '../../posts/status-card/status-card';
 import { StatusVisibility } from '../../moderation/status-visibility';
 import { Wellness } from '../../wellness/wellness';
 import { CalmVerdicts } from '../calm-verdicts';
+import { BreakReminders } from '../../wellness/break-reminders';
 import {
   AuthorGroup,
   CATCH_UP_KINDS,
@@ -91,6 +92,7 @@ export class CatchUp implements OnDestroy {
   private visibility = inject(StatusVisibility);
   private calm = inject(CalmVerdicts);
   private wellness = inject(Wellness);
+  private breaks = inject(BreakReminders);
   protected words = inject(Terminology).words;
 
   protected readonly ranges = CATCH_UP_RANGES;
@@ -216,6 +218,8 @@ export class CatchUp implements OnDestroy {
       // just start from the previous boundary.
     }
     this.phase.set('finished');
+    // The end of a catch-up is the most natural stop there is.
+    this.breaks.naturalStop();
     window.scrollTo?.({ top: 0 });
   }
 

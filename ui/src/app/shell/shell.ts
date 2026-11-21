@@ -49,6 +49,7 @@ import { WritingZen } from '../publishing/writing-zen';
 import { ReadingZen } from '../reading/reading-zen';
 import { Wellness } from '../wellness/wellness';
 import { DiscoveryBanner } from '../wellness/discovery-banner';
+import { WellnessTime } from '../wellness/wellness-time';
 import {
   ACCOUNT_FILTER_THRESHOLD,
   AccountSwitcher,
@@ -226,6 +227,7 @@ const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
   selector: 'app-shell',
   imports: [
     DiscoveryBanner,
+    WellnessTime,
     AddAccountDialog,
     NavFit,
     ReadingOutlet,

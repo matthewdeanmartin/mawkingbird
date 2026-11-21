@@ -1,8 +1,8 @@
 # Wellness (November 2026)
 
-Status: sprints 1–4 implemented and uncommitted · 2026-11-20. Sprints 1–2
-looked good to the owner; sprints 3–4 await the manual test. Sprints 5–6 not
-started.
+Status: sprints 1–6 implemented and uncommitted · 2026-11-20. Sprints 1–4
+were tested by the owner (worked; one layout bug fixed). Sprints 5–6 await
+the manual test, then the full gates once on the combined tree.
 Cadence (owner, 2026-11-20): two sprints at a time, lightweight checks
 between sprints, a stop every two sprints for the owner to push and test by
 hand. The full quality gates (`make test`, build, SEO, design-verify) are
@@ -215,3 +215,42 @@ Implementation notes:
   feed links while closed. A banner above discovery pages counts down and,
   when the window ends, says so without leaving the page. `/explore` is a
   standalone page outside the shell, so it is guarded but has no banner.
+
+## Evidence: sprints 5–6 (2026-11-20)
+
+Also fixed from the owner's test of 1–4: protection switches had no label
+cell and were squeezed into the 170px label column (now one labelled
+"Switches" row); grayscale hint shortened.
+
+Light checks: `make test-changed` (864 spec files, all green), `check:i18n`,
+`check:storage` (new key), `check:dead-code`, `design:inventory-check`
+(`wellness-time.ts` reconciled), prettier and `ng lint` on touched files.
+Native: `cargo test wellness` (3 passed), `cargo fmt --check`,
+`scripts/check-unsafe.py` (still exactly one reviewed exception). Deferred:
+full `make test`, `build:mockingbird`, SEO, design-verify, integration, full
+native `make test-host`, Native build and platform runs.
+
+Implementation notes:
+
+- **Usage clock** (`wellness/usage-clock*.ts`): samples every 15 s, only while
+  check-in, breaks or auto-grayscale is on. Active = visible + focused + input
+  within 2 min (browser), or Native window focus + in-window input. Each
+  sample adds at most 30 s, so sleep/suspend banks nothing. Day turns over at
+  04:00. Stored per device in `mockingbird_usage_today` (cache).
+- **Auto-grayscale**: `--wellness-gray` on `<html>` goes 0→1 between 45 and
+  60 minutes of use, with a 60 s CSS transition per step.
+- **Check-in** (`wellness/wellness-time.ts`): only when the first page is a
+  front door (`/` or `/home`), never on a shared link, and again on returning
+  (visibility or window focus) after 60+ minutes away. Intents: Catch-up,
+  notifications, post (when Write is enabled), Home; optional 10/20/30 min
+  budget. "Just looking" closes it.
+- **Breaks**: considered only at natural stops: a page change, Home reaching
+  its cap, finishing a Catch-up. Sitting reminder after 25 min continuous use
+  (a 10 min gap starts a new sitting); a check-in budget is honoured even with
+  the switch off; 20 min cooldown between suggestions. Non-modal card: "Done
+  for now" (a short "See you later") or "Keep going".
+- **Native** (`mawkingbird_native/src-tauri/src/wellness.rs`): command
+  `wellness_activity` → `{ focused, idle_seconds: null }` with permission and
+  capability entries. See that repo's sprint 17 for the idle-time decision.
+  Native picks up the UI side when `shared-source.json` moves to a revision
+  containing it.

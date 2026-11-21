@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Wellness } from '../../wellness/wellness';
 import { SettingsWellness } from './settings-wellness';
+import { WELLNESS_KEYS } from '../../wellness/wellness-model';
 
 describe('SettingsWellness', () => {
   beforeEach(() => {
@@ -51,14 +52,20 @@ describe('SettingsWellness', () => {
     expect(el.querySelector('[data-testid="wellness-custom"]')).not.toBeNull();
   });
 
-  it('switches whose feature has not shipped are disabled', () => {
+  it('every protection switch is usable, one per key', () => {
     const el = render();
-    expect(el.querySelector<HTMLInputElement>('input[name="wellness_checkIn"]')!.disabled).toBe(
-      true,
-    );
-    expect(
-      el.querySelector<HTMLInputElement>('input[name="wellness_limitedNotifications"]')!.disabled,
-    ).toBe(false);
+    const boxes = [
+      ...el.querySelectorAll<HTMLInputElement>('input[name^="wellness_"][type="checkbox"]'),
+    ]
+      .filter((box) => !['wellness_ignore_feed_cooldown'].includes(box.name))
+      .filter(
+        (box) =>
+          !box.name.match(
+            /_(auto_refresh|algo_calm|confirm_post|delayed_send|thoughtful_posting|show_images)$/,
+          ),
+      );
+    expect(boxes.map((box) => box.name.replace('wellness_', ''))).toEqual([...WELLNESS_KEYS]);
+    expect(boxes.every((box) => !box.disabled)).toBe(true);
   });
 
   it('Force Calm locks the mirrored Calm switch', async () => {

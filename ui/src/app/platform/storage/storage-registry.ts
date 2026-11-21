@@ -861,6 +861,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'When the current Wellness discovery window closes (epoch ms). Per device and never exported: a window is a moment, not a setting.',
   },
   {
+    base: 'mockingbird_usage_today',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'cache',
+    note: 'Wellness usage clock: active minutes today on this device (day turns over at 04:00), kept only while check-in, breaks or auto-grayscale is on. Never synced or exported.',
+  },
+  {
     base: 'mockingbird_house_ads',
     storage: 'local',
     suffix: 'none',

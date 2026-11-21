@@ -1288,6 +1288,11 @@
       "nextStep": "Status line above discovery pages with a link-style Close button. Adopt MbNotice/MbButton variant=link when convenient; it must never remove or redirect the current page when a window ends."
     },
     {
+      "file": "ui/src/app/wellness/wellness-time.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Check-in uses Dialog and MbButton outline intents with a native budget select; the break suggestion is a fixed status card with MbButton actions. Move the select to Field/Control when shared selects land; preserve front-door-only check-in, non-modal breaks shown only at natural stops, and focus/visibility return after an hour away."
+    },
+    {
       "file": "ui/src/app/settings/wellness/settings-wellness.html",
       "disposition": "backlog",
       "nextStep": "Preset radios, protection checkboxes and mirrored feed/posting switches are native ssection/srow/checkline rows like Writing's Home composer section. Adopt SettingsRow and Checkbox with the other native settings forms; preserve disabled not-yet-shipped switches, the Calm lock under Force Calm and the shared ClientPrefs writes."

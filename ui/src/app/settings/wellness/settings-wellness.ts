@@ -26,6 +26,7 @@ import {
 // i18n settings.wellness.preset.strong.hint: Gentle, plus no popularity on profiles, quieter notifications, closed discovery, check-ins and breaks.
 // i18n settings.wellness.custom: Custom, starting from {{preset}}
 // i18n settings.wellness.protections: Protections
+// i18n settings.wellness.switches: Switches
 // i18n settings.wellness.inPreset: in {{preset}}
 // i18n settings.wellness.soon: arrives in a later update
 // i18n settings.wellness.key.hidePostCounts: Hide like, boost, reply and quote counts in feeds
@@ -51,7 +52,7 @@ import {
 // i18n settings.wellness.key.autoGrayscale: Fade to gray after a while
 // i18n settings.wellness.key.autoGrayscale.hint: After 45 minutes in a day the colour fades out over 15 minutes. Resets at 4am.
 // i18n settings.wellness.key.grayscale: Grayscale now
-// i18n settings.wellness.key.grayscale.hint: The whole app in gray, right now. Not part of any level.
+// i18n settings.wellness.key.grayscale.hint: The whole app in gray, right now.
 // i18n settings.wellness.existing: Already protecting you
 // i18n settings.wellness.existing.intro: These live on other settings pages too. Changing them here changes them there.
 // i18n settings.wellness.alwaysOn: Always on
@@ -85,11 +86,7 @@ export class SettingsWellness {
    * page reads as the whole plan, but disabled so nobody turns on a switch
    * that does nothing yet. Remove a key here when its sprint lands.
    */
-  private readonly pending: ReadonlySet<WellnessKey> = new Set<WellnessKey>([
-    'checkIn',
-    'breakReminders',
-    'autoGrayscale',
-  ]);
+  private readonly pending: ReadonlySet<WellnessKey> = new Set<WellnessKey>([]);
 
   protected readonly rows = computed(() => {
     const flags = this.wellness.flags();

@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2047,
-  "filesWithCandidates": 699,
+  "filesScanned": 2051,
+  "filesWithCandidates": 700,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -27155,35 +27155,35 @@
       "findings": [
         {
           "pattern": "checkboxes",
-          "line": 49
+          "line": 50
         },
         {
           "pattern": "checkboxes",
-          "line": 102
+          "line": 107
         },
         {
           "pattern": "checkboxes",
-          "line": 118
+          "line": 123
         },
         {
           "pattern": "checkboxes",
-          "line": 128
+          "line": 133
         },
         {
           "pattern": "checkboxes",
-          "line": 145
+          "line": 150
         },
         {
           "pattern": "checkboxes",
-          "line": 154
+          "line": 159
         },
         {
           "pattern": "checkboxes",
-          "line": 163
+          "line": 168
         },
         {
           "pattern": "checkboxes",
-          "line": 179
+          "line": 184
         },
         {
           "pattern": "radios",
@@ -27821,31 +27821,31 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 639
+          "line": 640
         },
         {
           "pattern": "nativeButtons",
-          "line": 673
+          "line": 674
         },
         {
           "pattern": "nativeButtons",
-          "line": 676
+          "line": 677
         },
         {
           "pattern": "nativeButtons",
-          "line": 679
+          "line": 680
         },
         {
           "pattern": "legacyPills",
-          "line": 673
+          "line": 674
         },
         {
           "pattern": "legacyPills",
-          "line": 676
+          "line": 677
         },
         {
           "pattern": "legacyPills",
-          "line": 679
+          "line": 680
         },
         {
           "pattern": "disclosure",
@@ -28538,6 +28538,44 @@
         {
           "pattern": "legacyPills",
           "line": 37
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/wellness/wellness-time.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 52
+        },
+        {
+          "pattern": "shared",
+          "line": 60
+        },
+        {
+          "pattern": "shared",
+          "line": 99
+        },
+        {
+          "pattern": "shared",
+          "line": 102
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 59
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 99
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 102
+        },
+        {
+          "pattern": "selects",
+          "line": 72
         }
       ]
     }
