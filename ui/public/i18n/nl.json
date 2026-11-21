@@ -1626,7 +1626,6 @@
     "lists.bsky.pinnedHeading": "📌 Vastgezet op Bluesky",
     "lists.bsky.popularHeading": "🦋 Populair op Bluesky",
     "lists.bsky.popularHint": "Feeds die anderen hebben gemaakt en gepubliceerd. Iedereen kan ze lezen, zonder Bluesky-account.",
-    "lists.bsky.savedHint": "Opgeslagen op Bluesky. Zet ze vast of maak ze los in de Bluesky-app. Mawkingbird leest deze lijst maar wijzigt hem nooit.",
     "lists.clientList.heading": "Clientlijsten",
     "lists.clientList.hint": "Worden in deze browser bewaard, zodat iedereen erin kan: je hoeft de accounts niet te volgen en het werkt ook zonder aanmelding. Serverlijsten hierboven aanvaarden alleen accounts die je volgt.",
     "lists.clientList.members.one": "{{count}} lid",

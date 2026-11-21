@@ -1,7 +1,7 @@
 # Bluesky parity: Mawkingbird vs. the official Bluesky app
 
-Status: sprints 1–2 code complete, awaiting push/GHA and live trials ·
-2026-11-20. Sprints 3–8 planned. Progress and evidence:
+Status: sprints 1–2 pushed (2026-11-20), awaiting live trials; sprints 3–4
+code complete, awaiting push/GHA and live trials. Sprints 5–8 planned. Progress and evidence:
 [Progress](#progress). Manual test plans: `test_plans/bsky-parity-2-*`.
 Reference: `../REFERENCE/social-app` at `47e6acedf` (2026-11-20, "Keep
 find-in-page working in the virtualized web List").
@@ -179,7 +179,7 @@ or parks. That needs a live trial (owner to-do).
 | **Create / edit curated and moderation lists; "Add to list" from a profile** | ❌ | `listitem` is only written for starter packs. `getListsWithMembership` unused |
 | Starter packs: view, follow all, create | ✅ | Sprint 5 |
 | Starter packs: edit/delete, search (`searchStarterPacks`), members by search | ❌ | Deferred in Sprint 5 |
-| **Opt out of being added to lists/packs** (`referencelistoptout`) | ❌ | New privacy control |
+| Leave a starter pack you were put in (`referencelistoptout`, per list) | ✅ | Sprint 4 |
 
 ### Search and discovery
 
@@ -478,10 +478,92 @@ coverage and the test inventory, `npm run build:mockingbird` (bundle budget),
 `make test-seo` and `npm run test:seo:browser` (the new public page),
 `make design-verify`, and the other `check:static` parts.
 
+### Sprint 3 progress (2026-11-20): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-2-sprint-3-feeds-lists.md`.
+
+- **`BlueskyPreferences`** (`bluesky-preferences.ts`): the only caller of
+  `putPreferences`. Re-reads before every write, edits one entry in place,
+  keeps every other entry (unknown types included) as read, collapses
+  duplicates of the edited type. `BlueskyModeration` now writes through it.
+  Pure saved-feed helpers: save, remove, pin (after the last pinned), unpin
+  (to the end), move among pinned; a new account starts with Following pinned.
+- **Feeds:** `BlueskyFeeds.save/unsave/setPinned/movePinned/setLiked/describeOne`;
+  entries keep the account's own order (pinned order is the reader's tab
+  order, shared with bsky.app) and carry the generator's CID and the reader's
+  like. The feed page has Save / Remove, Pin to Home / Unpin and Like feed
+  (with the count); pinning an unsaved feed saves it. Lists → pinned Bluesky
+  rows get ↑/↓ arrows. The old read-only rule and its copy are gone (owner
+  decision 2); the retired `savedHint` key was removed from all locales.
+- **Lists** (`bluesky-lists.ts`): the reader's curated and moderation lists
+  with an account's membership (`getListsWithMembership`), create, add,
+  remove, and delete with every listitem (`applyWrites`, as bsky.app does).
+  A Bluesky profile's ••• → Lists opens a new "Add to lists" dialog (tick to
+  add/remove, create-and-add inline, says lists are public) when Bluesky is
+  linked; otherwise the old dialog stays (client lists hold Bluesky accounts).
+  Your own list's page has Delete list, confirmed.
+- **Blocked and muted accounts** on Settings → Bluesky moderation
+  (`getBlocks`, `getMutes`, 50 at a time, Show more), with Unblock/Unmute.
+- **Tests:** `bluesky-preferences.spec.ts` (11), `bluesky-lists.spec.ts` (4),
+  moderation (+1).
+- **Deferred:** profile Feeds tab (`getActorFeeds`); known followers; editing a
+  list's name/description and a members page with remove; starter-pack
+  search/edit/delete; a Save button on Lists' popular rows (save is on the
+  feed's page).
+
+### Sprint 4 progress (2026-11-20): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-2-sprint-4-preferences.md`.
+
+- **Reading prefs** (`bluesky-reading-prefs.ts`, pure): the Following feed
+  filter as bsky.app's feed tuner applies it (hide replies; only replies to
+  people you follow; a like threshold; hide reposts; hide quotes; self-threads
+  and your own replies always stay), and thread reply sorting at every level
+  (oldest, newest, most liked, random; `hotness` keeps the server's order).
+  Read into `BlueskyModerationState` with the other prefs. The home provider
+  filters only once the account's prefs have loaded (no extra request, so the
+  transport specs are untouched); until then nothing is hidden.
+- **Behaviour change to expect:** bsky.app's default for an account that never
+  saved a Following-feed preference hides replies to people you don't follow.
+  Mawkingbird now does the same, so some Bluesky Homes show fewer replies.
+- **Thread v2 not used:** `getPostThreadV2`'s own lexicon says not to use it
+  while it is `unspecced`; sorting runs on the stable `getPostThread`.
+- **Composer defaults:** new Bluesky threads start from
+  `postInteractionSettingsPref` (a `linkedSignal`, so a change applies to the
+  next post); still changeable per post.
+- **Settings → Bluesky preferences** (new page, Content group, also for a
+  Bluesky connector under Anonymous): Following feed, thread order, default
+  reply/quote controls (the existing controls dialog), interests (bsky.app's
+  23 topics, `interestsPref`), and privacy: ask apps not to recommend my posts
+  (`app.bsky.actor.contentVisibilityDeclaration/self`) and this account is
+  automated (`bot` self-label on the profile record, other self-labels kept).
+  Each saves on change; a refusal puts the control back and says why.
+- **Starter packs:** "Remove me from this pack" on someone else's pack you are
+  in (`app.bsky.graph.referencelistoptout`, which is per list, not a global
+  switch as the inventory first assumed).
+- **Tests:** `bluesky-reading-prefs.spec.ts` (10), `bluesky-account-prefs.spec.ts`
+  (6), page spec (3), settings-shell's Anonymous page list (+1 expected page).
+- **Deferred:** applying a default's *list* rules to new posts (kept in the
+  preference, not yet written to the post); interests feeding setup's
+  suggestions; undoing a starter-pack opt-out.
+
+### Gates for sprints 3–4
+
+Run: targeted specs per sprint; for the pair `make test-changed` (330 spec
+files, 4,251 tests passed), `ng lint` and prettier on every touched file,
+`check:i18n` (after removing the orphaned key), `check:dead-code`,
+`check:storage`, `check:subpaths`, `check:libs`, the deep-link audit (0
+broken) and `design:inventory-check` after review (two new adopted-scope
+candidates).
+
+Not run, left to GitHub Actions: `make test` with coverage, the production
+build and bundle budget, SEO, `make design-verify`.
+
 ## What's next
 
-Sprints 3 (your feeds, your lists) and 4 (preferences that follow the account)
-are the next pair; both write `putPreferences`, so they start with the shared
-`BlueskyPreferences` service. Owner to-dos before then: push and watch GHA
-(especially the SEO build for `/create-bluesky-account/`), then the live
-trials in the two new test plans, above all a real `prompt=create` sign-up.
+Sprints 5 (moderation services: label settings UI, labeler pages, full report
+reasons, moderation inbox, age assurance) and 6 (composer catch-up: native
+drafts, galleries, large video and captions, GIFs, profile links editing) are
+the next pair. Owner to-dos: push and watch GHA; run the sprint 1–4 test
+plans, above all a real `prompt=create` sign-up and the Following-feed
+default on an account that never changed it.

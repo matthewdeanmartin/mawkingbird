@@ -1044,7 +1044,6 @@
     "lists.bsky.pinnedHeading": "📌 Épinglé sur Bluesky",
     "lists.bsky.popularHeading": "🦋 Populaire sur Bluesky",
     "lists.bsky.popularHint": "Flux créés et publiés par d’autres personnes. Tout le monde peut les lire — aucun compte Bluesky requis.",
-    "lists.bsky.savedHint": "Enregistrées sur Bluesky. Épingle-les et désépingle-les dans l’application Bluesky — Mawkingbird lit cette liste mais ne la réécrit jamais.",
     "lists.clientList.heading": "Listes locales",
     "lists.clientList.hint": "Conservées dans ce navigateur, donc n’importe qui peut y figurer — tu n’as pas besoin de le suivre, et ça fonctionne sans connexion. Les listes serveur (ci-dessus) n’acceptent que les comptes que tu suis.",
     "lists.clientList.members.one": "{{count}} membre",

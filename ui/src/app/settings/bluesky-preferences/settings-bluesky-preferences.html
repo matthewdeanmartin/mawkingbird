@@ -1,0 +1,176 @@
+<mb-page-header
+  [title]="'settings.bskyPrefs.title' | transloco"
+  [description]="'settings.bskyPrefs.intro' | transloco"
+/>
+
+@if (!session.linked()) {
+  <mb-content-state
+    kind="empty"
+    [title]="'settings.bskyPrefs.notLinked' | transloco"
+    [description]="'settings.bskyPrefs.notLinkedHint' | transloco"
+  >
+    <a mbContentLink routerLink="/settings/connections/bluesky">{{
+      'settings.bskyPrefs.linkBluesky' | transloco
+    }}</a>
+  </mb-content-state>
+} @else if (loading()) {
+  <mb-content-state
+    kind="loading"
+    announcement="status"
+    [title]="'settings.bskyPrefs.loading' | transloco"
+  />
+} @else if (failed()) {
+  <mb-content-state
+    kind="error"
+    announcement="alert"
+    [title]="'settings.bskyPrefs.failed' | transloco"
+  >
+    <button mbButton type="button" variant="outline" (click)="load()">
+      {{ 'settings.bskyPrefs.retry' | transloco }}
+    </button>
+  </mb-content-state>
+} @else {
+  <mb-section [title]="'settings.bskyPrefs.feed.title' | transloco">
+    <p class="muted">{{ 'settings.bskyPrefs.feed.hint' | transloco }}</p>
+    @let feed = state.homeFeedPrefs();
+    <div class="prefs-stack">
+      <mb-checkbox
+        [label]="'settings.bskyPrefs.feed.hideReplies' | transloco"
+        [checked]="feed.hideReplies"
+        [disabled]="busy()"
+        (checkedChange)="setFeed({ hideReplies: $event })"
+      />
+      <mb-checkbox
+        [label]="'settings.bskyPrefs.feed.followedOnly' | transloco"
+        [checked]="feed.hideRepliesByUnfollowed"
+        [disabled]="busy() || feed.hideReplies"
+        (checkedChange)="setFeed({ hideRepliesByUnfollowed: $event })"
+      />
+      <mb-field [label]="'settings.bskyPrefs.feed.likes' | transloco">
+        <select
+          mbControl
+          name="likes"
+          [ngModel]="feed.hideRepliesByLikeCount"
+          (ngModelChange)="setFeed({ hideRepliesByLikeCount: $event })"
+          [disabled]="busy() || feed.hideReplies"
+        >
+          @for (count of likeThresholds; track count) {
+            <option [ngValue]="count">
+              {{ count ? count : ('settings.bskyPrefs.feed.anyLikes' | transloco) }}
+            </option>
+          }
+        </select>
+      </mb-field>
+      <mb-checkbox
+        [label]="'settings.bskyPrefs.feed.hideReposts' | transloco"
+        [checked]="feed.hideReposts"
+        [disabled]="busy()"
+        (checkedChange)="setFeed({ hideReposts: $event })"
+      />
+      <mb-checkbox
+        [label]="'settings.bskyPrefs.feed.hideQuotes' | transloco"
+        [checked]="feed.hideQuotePosts"
+        [disabled]="busy()"
+        (checkedChange)="setFeed({ hideQuotePosts: $event })"
+      />
+    </div>
+    <mb-save-feedback
+      [state]="feedback('feed')"
+      [message]="errorIn()?.message || ('settings.bskyPrefs.saved' | transloco)"
+    />
+  </mb-section>
+
+  <mb-section [title]="'settings.bskyPrefs.threads.title' | transloco">
+    <mb-field [label]="'settings.bskyPrefs.threads.label' | transloco">
+      <select
+        mbControl
+        name="sort"
+        [ngModel]="state.threadSort()"
+        (ngModelChange)="setSort($event)"
+        [disabled]="busy()"
+      >
+        @for (sort of sorts; track sort) {
+          <option [value]="sort">{{ sortKey(sort) | transloco }}</option>
+        }
+      </select>
+    </mb-field>
+    <mb-save-feedback
+      [state]="feedback('threads')"
+      [message]="errorIn()?.message || ('settings.bskyPrefs.saved' | transloco)"
+    />
+  </mb-section>
+
+  <mb-section [title]="'settings.bskyPrefs.defaults.title' | transloco">
+    <p class="muted">{{ 'settings.bskyPrefs.defaults.hint' | transloco }}</p>
+    <p>
+      {{
+        (defaultsLimited(state.postDefaults())
+          ? 'settings.bskyPrefs.defaults.limited'
+          : 'settings.bskyPrefs.defaults.everyone'
+        ) | transloco
+      }}
+      <button
+        mbButton
+        type="button"
+        variant="link"
+        [disabled]="busy()"
+        (click)="controlsOpen.set(true)"
+      >
+        {{ 'settings.bskyPrefs.defaults.change' | transloco }}
+      </button>
+    </p>
+    <mb-save-feedback
+      [state]="feedback('defaults')"
+      [message]="errorIn()?.message || ('settings.bskyPrefs.saved' | transloco)"
+    />
+  </mb-section>
+
+  <mb-section [title]="'settings.bskyPrefs.interests.title' | transloco">
+    <p class="muted">{{ 'settings.bskyPrefs.interests.hint' | transloco }}</p>
+    <div class="prefs-grid">
+      @for (interest of interestsList; track interest.tag) {
+        <mb-checkbox
+          [label]="interest.name"
+          [checked]="interests().includes(interest.tag)"
+          [disabled]="busy()"
+          (checkedChange)="toggleInterest(interest.tag, $event)"
+        />
+      }
+    </div>
+    <mb-save-feedback
+      [state]="feedback('interests')"
+      [message]="errorIn()?.message || ('settings.bskyPrefs.saved' | transloco)"
+    />
+  </mb-section>
+
+  <mb-section [title]="'settings.bskyPrefs.privacy.title' | transloco">
+    <div class="prefs-stack">
+      <mb-checkbox
+        [label]="'settings.bskyPrefs.privacy.hideFromRecommendations' | transloco"
+        [hint]="'settings.bskyPrefs.privacy.hideFromRecommendationsHint' | transloco"
+        [checked]="hiddenFromRecommendations()"
+        [disabled]="busy()"
+        (checkedChange)="setHidden($event)"
+      />
+      <mb-checkbox
+        [label]="'settings.bskyPrefs.privacy.bot' | transloco"
+        [hint]="'settings.bskyPrefs.privacy.botHint' | transloco"
+        [checked]="bot()"
+        [disabled]="busy()"
+        (checkedChange)="setBot($event)"
+      />
+    </div>
+    <mb-save-feedback
+      [state]="feedback('privacy')"
+      [message]="errorIn()?.message || ('settings.bskyPrefs.saved' | transloco)"
+    />
+  </mb-section>
+
+  @if (controlsOpen()) {
+    <app-bluesky-post-controls-dialog
+      [initial]="state.postDefaults()"
+      (closed)="controlsOpen.set(false)"
+      (saved)="setDefaults($event)"
+    />
+  }
+}

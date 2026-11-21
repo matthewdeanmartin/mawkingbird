@@ -29,6 +29,69 @@
       </p>
     }
   }
+  @if (!forYou && session.linked()) {
+    <div class="bf-actions">
+      <button
+        mbButton
+        type="button"
+        size="small"
+        [variant]="saved() ? 'outline' : 'solid'"
+        [disabled]="busy()"
+        (click)="toggleSaved()"
+      >
+        {{ (saved() ? 'blueskyFeed.unsave' : 'blueskyFeed.save') | transloco }}
+      </button>
+      <button
+        mbButton
+        type="button"
+        size="small"
+        variant="outline"
+        [attr.aria-pressed]="pinned()"
+        [disabled]="busy()"
+        (click)="togglePinned()"
+      >
+        {{ (pinned() ? 'blueskyFeed.unpin' : 'blueskyFeed.pin') | transloco }}
+      </button>
+      @if (entry(); as e) {
+        @if (e.kind === 'feed' && e.cid) {
+          <button
+            mbButton
+            type="button"
+            size="small"
+            variant="outline"
+            [attr.aria-pressed]="!!e.likeUri"
+            [disabled]="busy()"
+            (click)="toggleLiked()"
+          >
+            {{ (e.likeUri ? 'blueskyFeed.unlike' : 'blueskyFeed.like') | transloco }}
+          </button>
+          <span class="muted small">
+            {{
+              (e.likeCount === 1 ? 'blueskyFeed.likes.one' : 'blueskyFeed.likes.other')
+                | transloco: { count: e.likeCount ?? 0 }
+            }}
+          </span>
+        }
+      }
+      @if (ownList()) {
+        <button
+          mbButton
+          type="button"
+          size="small"
+          variant="outline"
+          [disabled]="busy()"
+          (click)="deleteList()"
+        >
+          {{ 'blueskyFeed.deleteList' | transloco }}
+        </button>
+      }
+    </div>
+    @if (actionError()) {
+      <mb-notice tone="error" announcement="alert">{{
+        'blueskyFeed.actionFailed' | transloco
+      }}</mb-notice>
+    }
+  }
 </header>
 
 @if (loading()) {

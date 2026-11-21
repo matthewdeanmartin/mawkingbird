@@ -1949,7 +1949,6 @@
     "lists.bsky.pinnedHeading": "📌 Bluesky에 고정됨",
     "lists.bsky.popularHeading": "🦋 Bluesky에서 인기",
     "lists.bsky.popularHint": "다른 사람이 만들고 공개한 피드입니다. Bluesky 계정 없이 누구나 읽을 수 있습니다.",
-    "lists.bsky.savedHint": "Bluesky에 저장되었습니다. Bluesky 앱에서 고정 및 고정 해제를 하세요. Mawkingbird는 이 목록을 읽지만 절대 수정하지 않습니다.",
     "lists.clientList.heading": "클라이언트 목록",
     "lists.clientList.hint": "이 브라우저에 보관되므로 누구나 포함할 수 있고, 팔로우하지 않아도 되며 로그아웃 상태에서도 작동합니다. 서버 목록(위)은 팔로우하는 계정만 받을 수 있습니다.",
     "lists.clientList.members.one": "회원 {{count}}명",

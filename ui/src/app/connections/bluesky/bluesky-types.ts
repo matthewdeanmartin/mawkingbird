@@ -290,6 +290,8 @@ export interface BskyFeedItem {
   /** Opaque context a feed attaches to an item, echoed back with feedback. */
   feedContext?: string;
   reason?: { $type: string; by?: BskyAuthor; indexedAt?: string };
+  /** For a reply: the posts it answers, with their authors (`replyRef`). */
+  reply?: { parent?: { author?: BskyAuthor }; root?: { author?: BskyAuthor } };
 }
 
 export interface BskyTimeline {
@@ -345,6 +347,8 @@ export interface BskyGeneratorView {
   indexedAt: string;
   /** The feed takes "show more / less like this" through `sendInteractions`. */
   acceptsInteractions?: boolean;
+  /** The reader's like of this feed, when there is one. */
+  viewer?: { like?: string };
 }
 
 /** `app.bsky.graph.defs#listView`. `purpose` decides whether it is readable. */

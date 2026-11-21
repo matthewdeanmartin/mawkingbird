@@ -28,6 +28,8 @@ export interface StarterPackSummary {
 /** A starter pack with every member loaded, for its own page. */
 export interface StarterPack extends StarterPackSummary {
   members: BskyProfile[];
+  /** The reference list holding the members. */
+  listUri: string;
 }
 
 /** Where a pack lives in Mawkingbird: `/bluesky/starter-packs/<actor>/<rkey>`. */
@@ -91,7 +93,29 @@ export class BlueskyStarterPacks {
       ...starterPack,
       listItemCount: starterPack.list?.listItemCount ?? members.length,
       members,
+      listUri: list,
     };
+  }
+
+  /**
+   * Ask not to be shown in someone else's pack (`referencelistoptout`): the
+   * pack's public pages leave the reader out. Resolves to the record's uri.
+   */
+  async optOut(listUri: string): Promise<string> {
+    const did = this.session.session()?.did;
+    if (!did) throw new Error('No Bluesky account is linked.');
+    const { uri } = await firstValueFrom(
+      this.api.request<{ uri: string }>('com.atproto.repo.createRecord', {
+        repo: did,
+        collection: 'app.bsky.graph.referencelistoptout',
+        record: {
+          $type: 'app.bsky.graph.referencelistoptout',
+          subject: listUri,
+          createdAt: new Date().toISOString(),
+        },
+      }),
+    );
+    return uri;
   }
 
   /** Packs an account made. */

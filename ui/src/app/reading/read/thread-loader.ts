@@ -9,6 +9,8 @@ import { Status } from '../../platform/api/models';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { adaptPost } from '../../connections/bluesky/bluesky-adapter';
 import { BskyThreadNode } from '../../connections/bluesky/bluesky-types';
+import { BlueskyModerationState } from '../../connections/bluesky/bluesky-moderation-state';
+import { sortThreadReplies } from '../../connections/bluesky/bluesky-reading-prefs';
 import { RssProvider } from '../rss/rss-provider';
 import { MisskeyApi } from '../../connections/misskey/misskey-api';
 import { misskeyIdentity } from '../../connections/misskey/misskey-identity-store';
@@ -67,6 +69,7 @@ export class ThreadLoader {
   private auth = inject(Auth);
   private searchServer = inject(SearchServer);
   private bsky = inject(BlueskyApi);
+  private bskyPrefs = inject(BlueskyModerationState);
   private misskey = inject(MisskeyApi);
   private rss = inject(RssProvider);
   private twitterApi = inject(TwitterApi);
@@ -448,6 +451,11 @@ export class ThreadLoader {
     }
   }
 
+  /** Replies in the reader's Bluesky thread order (`threadViewPref`), flattened. */
+  private bskyReplies(replies: BskyThreadNode[] | undefined): Status[] {
+    return flattenReplies(sortThreadReplies(replies ?? [], this.bskyPrefs.threadSort()));
+  }
+
   /** Bluesky thread: `getPostThread` mapped onto ancestors/descendants. */
   private loadBsky(uri: string): void {
     // A shared link must never end at a bare "not found": whatever happens
@@ -458,7 +466,7 @@ export class ThreadLoader {
       this.loadError.set('pages.thread.error.blueskyUnavailable');
     };
     this.repliesSource = () =>
-      this.bsky.getPostThread(uri).pipe(map(({ thread }) => flattenReplies(thread.replies ?? [])));
+      this.bsky.getPostThread(uri).pipe(map(({ thread }) => this.bskyReplies(thread.replies)));
     this.sub.add(
       this.bsky.getPostThread(uri).subscribe({
         next: ({ thread }) => {
@@ -474,7 +482,7 @@ export class ThreadLoader {
             }
           }
           this.ancestors.set(ancestors);
-          this.descendants.set(flattenReplies(thread.replies ?? []));
+          this.descendants.set(this.bskyReplies(thread.replies));
           this.loading.set(false);
         },
         error: unavailable,

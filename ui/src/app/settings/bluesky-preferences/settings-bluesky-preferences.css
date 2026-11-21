@@ -1,0 +1,14 @@
+/* Page layout only. Controls, sections and states are shared widgets. */
+.prefs-stack {
+  display: grid;
+  gap: 8px;
+  max-width: 32rem;
+  margin-block: 8px 12px;
+}
+
+.prefs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 6px 12px;
+  margin-block: 8px 12px;
+}

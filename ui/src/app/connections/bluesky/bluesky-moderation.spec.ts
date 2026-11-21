@@ -206,6 +206,22 @@ describe('BlueskyModeration', () => {
     expect(request).toHaveBeenCalledWith('app.bsky.graph.muteThread', { root: 'at://root' });
     expect(request).toHaveBeenCalledWith('app.bsky.graph.unmuteThread', { root: 'at://root' });
   });
+
+  it('pages the accounts the reader blocks, ending when Bluesky runs out', async () => {
+    get.mockImplementation((nsid: string, params: HttpParams) =>
+      of(
+        nsid === 'app.bsky.graph.getBlocks'
+          ? params.get('cursor')
+            ? { blocks: [] }
+            : { blocks: [{ did: 'did:plc:x', handle: 'x.test' }], cursor: 'c1' }
+          : { mutes: [{ did: 'did:plc:y', handle: 'y.test' }] },
+      ),
+    );
+    const first = await moderation.blocks();
+    expect(first).toEqual({ profiles: [{ did: 'did:plc:x', handle: 'x.test' }], cursor: 'c1' });
+    expect((await moderation.blocks('c1')).cursor).toBeNull();
+    expect((await moderation.mutes()).profiles.map((p) => p.handle)).toEqual(['y.test']);
+  });
 });
 
 /** Labels from subscribed services only arrive when the AppView is asked for them. */

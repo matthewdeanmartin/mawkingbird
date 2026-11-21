@@ -8,6 +8,12 @@ import {
   BskyLabelVisibility,
   decideLabels,
 } from './bluesky-labels';
+import {
+  BskyHomeFeedPrefs,
+  BskyThreadSort,
+  DEFAULT_HOME_FEED_PREFS,
+} from './bluesky-reading-prefs';
+import type { BskyPostControlsValue } from './bluesky-post-controls';
 
 /** Bluesky's own moderation service; its labels are always requested. */
 export const BSKY_MODERATION_DID = 'did:plc:ar7c4by46qjdydhdevvrndac';
@@ -42,6 +48,14 @@ export class BlueskyModerationState {
   readonly labelPrefs = signal<ReadonlyMap<string, BskyLabelVisibility>>(new Map());
   /** Subscribed labelers' own label definitions, keyed by `labelDefKey`. */
   readonly labelDefs = signal<ReadonlyMap<string, BskyLabelDefinition>>(new Map());
+  /** The reading preferences below came from the account, not defaults. */
+  readonly readingPrefsLoaded = signal(false);
+  /** The Following feed's preferences (`feedViewPref` for `home`). */
+  readonly homeFeedPrefs = signal<BskyHomeFeedPrefs>(DEFAULT_HOME_FEED_PREFS);
+  /** How thread replies are ordered (`threadViewPref.sort`). */
+  readonly threadSort = signal<BskyThreadSort>('hotness');
+  /** Reply and quote controls a new post starts with (`postInteractionSettingsPref`). */
+  readonly postDefaults = signal<BskyPostControlsValue>({ replies: 'everyone', quotes: true });
 
   private readonly labelInputs = computed<BskyLabelInputs>(() => ({
     adultContent: this.adultContent(),

@@ -1051,6 +1051,17 @@ export const routes: Routes = [
               ),
           },
           {
+            // Bluesky's account-level reading and posting preferences; like
+            // moderation, it works for a Bluesky connector under any account.
+            path: 'bluesky-preferences',
+            title: 'Bluesky preferences',
+            data: { preloadSettings: true },
+            loadComponent: () =>
+              import('./settings/bluesky-preferences/settings-bluesky-preferences').then(
+                (m) => m.SettingsBlueskyPreferences,
+              ),
+          },
+          {
             path: 'moderation',
             title: 'Moderation',
             canActivate: [anonymousUnavailableGuard],

@@ -694,7 +694,6 @@
     "lists.bsky.pinnedHeading": "📌 Disematkan di Bluesky",
     "lists.bsky.popularHeading": "🦋 Populer di Bluesky",
     "lists.bsky.popularHint": "Feed yang dibuat dan dipublikasikan orang lain. Siapa pun bisa membacanya — tidak perlu akun Bluesky.",
-    "lists.bsky.savedHint": "Disimpan di Bluesky. Sematkan dan lepas sematan lewat aplikasi Bluesky — Mockingbird hanya membaca list ini, tidak pernah menulis ulang.",
     "lists.clientList.heading": "List klien",
     "lists.clientList.hint": "Disimpan di browser ini, jadi siapa pun bisa masuk ke dalamnya — kamu tidak perlu mengikuti mereka, dan tetap berfungsi meski belum masuk akun. List server (di atas) hanya menerima akun yang kamu ikuti.",
     "lists.clientList.members.one": "{{count}} anggota",

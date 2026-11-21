@@ -193,7 +193,10 @@ import { MisskeyFeedSections } from './misskey-feed-sections';
 // i18n pages.lists.bsky.listsHeading: 🦋 Bluesky lists
 // i18n pages.lists.bsky.popularHeading: 🦋 Popular on Bluesky
 // i18n pages.lists.bsky.popularHint: Feeds other people built and published. Anyone can read them — no Bluesky account needed.
-// i18n pages.lists.bsky.savedHint: Saved on Bluesky. Pin and unpin them in the Bluesky app — Mawkingbird reads this list but never rewrites it.
+// i18n pages.lists.bsky.savedHintShared: Saved on Bluesky, so bsky.app shows the same. Open one to save, pin or remove it; move pinned ones with the arrows.
+// i18n pages.lists.bsky.moveUp: Move {{name}} up
+// i18n pages.lists.bsky.moveDown: Move {{name}} down
+// i18n pages.lists.bsky.moveFailed: Bluesky didn't accept the new order. Try again.
 // i18n pages.lists.bsky.byList: · list by @{{handle}}
 // i18n pages.lists.bsky.byFeed: · feed by @{{handle}}
 // i18n pages.lists.bsky.byHandle: · by @{{handle}}
@@ -282,6 +285,23 @@ export class Lists implements OnInit {
    * kind-specific sections, so nothing appears twice.
    */
   protected bskyPinned = computed(() => this.bskyEntries().filter((e) => e.pinned));
+  protected bskyMoving = signal(false);
+  protected bskyMoveFailed = signal(false);
+
+  /** Swap a pinned feed with its neighbour; bsky.app's tabs follow. */
+  protected async moveBskyPin(entry: BlueskyFeedEntry, delta: -1 | 1): Promise<void> {
+    if (this.bskyMoving()) return;
+    this.bskyMoving.set(true);
+    this.bskyMoveFailed.set(false);
+    try {
+      await this.bskyFeeds.movePinned(entry.uri, delta);
+      this.bskyEntries.set(this.bskyFeeds.entries() ?? []);
+    } catch {
+      this.bskyMoveFailed.set(true);
+    } finally {
+      this.bskyMoving.set(false);
+    }
+  }
   protected bskyUnpinnedFeeds = computed(() =>
     this.bskyEntries().filter((e) => !e.pinned && e.kind === 'feed'),
   );

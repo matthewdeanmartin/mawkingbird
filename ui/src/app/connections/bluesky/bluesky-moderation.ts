@@ -4,8 +4,21 @@ import { firstValueFrom } from 'rxjs';
 import { BlueskyApi } from './bluesky-api';
 import { BlueskyModerationState, BskyMutedWord } from './bluesky-moderation-state';
 import { BskyLabelVisibility, definitionsOf, labelPrefKey } from './bluesky-labels';
+import {
+  BlueskyPreferences,
+  FEED_VIEW_PREF,
+  POST_INTERACTION_PREF,
+  THREAD_VIEW_PREF,
+} from './bluesky-preferences';
+import { controlsFromPref, homeFeedPrefsOf, threadSortOf } from './bluesky-reading-prefs';
 import { BlueskySession } from './bluesky-session';
-import { BskyListView } from './bluesky-types';
+import { BskyListView, BskyProfile } from './bluesky-types';
+
+/** One page of accounts the reader blocks or mutes. */
+export interface BskyAccountPage {
+  profiles: BskyProfile[];
+  cursor: string | null;
+}
 
 const MUTED_WORDS_PREF = 'app.bsky.actor.defs#mutedWordsPref';
 const LABELERS_PREF = 'app.bsky.actor.defs#labelersPref';
@@ -47,6 +60,7 @@ export class BlueskyModeration {
   private api = inject(BlueskyApi);
   private session = inject(BlueskySession);
   private state = inject(BlueskyModerationState);
+  private prefs = inject(BlueskyPreferences);
   private loading: Promise<void> | null = null;
 
   /** Load muted words and moderation services once per linked account. */
@@ -74,6 +88,22 @@ export class BlueskyModeration {
     this.state.labelers.set(labelersOf(preferences));
     this.state.adultContent.set(adultContentOf(preferences));
     this.state.labelPrefs.set(labelPrefsOf(preferences));
+    this.state.homeFeedPrefs.set(
+      homeFeedPrefsOf(preferences.find((p) => p.$type === FEED_VIEW_PREF && p['feed'] === 'home')),
+    );
+    this.state.threadSort.set(threadSortOf(preferences.find((p) => p.$type === THREAD_VIEW_PREF)));
+    this.state.postDefaults.set(
+      controlsFromPref(preferences.find((p) => p.$type === POST_INTERACTION_PREF)),
+    );
+    this.state.readingPrefsLoaded.set(true);
+  }
+
+  /**
+   * Re-read and apply the reading preferences after a write elsewhere (the
+   * Bluesky preferences page), so feeds and threads follow at once.
+   */
+  applyWritten(preferences: Preference[]): void {
+    this.applyPreferences(preferences);
   }
 
   /**
@@ -228,6 +258,33 @@ export class BlueskyModeration {
     }
   }
 
+  /** Accounts the reader blocks (`getBlocks`), a page at a time. */
+  async blocks(cursor: string | null = null): Promise<BskyAccountPage> {
+    return this.accountPage('app.bsky.graph.getBlocks', 'blocks', cursor);
+  }
+
+  /** Accounts the reader mutes (`getMutes`), a page at a time. */
+  async mutes(cursor: string | null = null): Promise<BskyAccountPage> {
+    return this.accountPage('app.bsky.graph.getMutes', 'mutes', cursor);
+  }
+
+  private async accountPage(
+    nsid: string,
+    key: 'blocks' | 'mutes',
+    cursor: string | null,
+  ): Promise<BskyAccountPage> {
+    let params = new HttpParams().set('limit', '50');
+    if (cursor) params = params.set('cursor', cursor);
+    const page = await firstValueFrom(
+      this.api.get<Partial<Record<'blocks' | 'mutes', BskyProfile[]>> & { cursor?: string }>(
+        nsid,
+        params,
+      ),
+    );
+    const profiles = page[key] ?? [];
+    return { profiles, cursor: profiles.length && page.cursor ? page.cursor : null };
+  }
+
   /** Mute or unmute notifications from a thread, by its root post. */
   async setThreadMuted(rootUri: string, muted: boolean): Promise<void> {
     await firstValueFrom(
@@ -238,8 +295,7 @@ export class BlueskyModeration {
   }
 
   private async preferences(): Promise<Preference[]> {
-    const { preferences } = await firstValueFrom(this.api.getPreferences());
-    return preferences as Preference[];
+    return this.prefs.read();
   }
 
   /** Re-read, replace one preference item, write the whole list back, refresh the state. */
@@ -247,10 +303,7 @@ export class BlueskyModeration {
     type: string,
     edit: (current: Preference | undefined) => Preference,
   ): Promise<void> {
-    const preferences = await this.preferences();
-    const current = preferences.find((pref) => pref.$type === type);
-    const next = [...preferences.filter((pref) => pref.$type !== type), edit(current)];
-    await firstValueFrom(this.api.request('app.bsky.actor.putPreferences', { preferences: next }));
+    const next = await this.prefs.edit(type, edit);
     const labelersChanged = type === LABELERS_PREF;
     this.applyPreferences(next);
     if (labelersChanged) await this.loadLabelDefinitions().catch(() => undefined);

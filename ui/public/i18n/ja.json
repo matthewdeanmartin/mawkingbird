@@ -1326,7 +1326,6 @@
     "lists.bsky.pinnedHeading": "📌 Blueskyで固定済み",
     "lists.bsky.popularHeading": "🦋 Blueskyで人気",
     "lists.bsky.popularHint": "他の人が作成・公開したフィードです。Blueskyアカウントなしで誰でも読めます。",
-    "lists.bsky.savedHint": "Blueskyに保存済みです。固定・固定解除はBlueskyアプリで行ってください。Mawkingbirdはこの一覧を読み取るだけです。",
     "lists.clientList.heading": "クライアントリスト",
     "lists.clientList.hint": "このブラウザーに保存されるため、フォロー不要でログアウト中も利用できます。サーバーリスト（上記）はフォロー中のアカウントのみ受け付けます。",
     "lists.clientList.members.one": "{{count}}人のメンバー",

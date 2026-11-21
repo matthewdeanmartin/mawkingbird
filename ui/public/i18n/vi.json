@@ -1626,7 +1626,6 @@
     "lists.bsky.pinnedHeading": "📌 Đã ghim trên Bluesky",
     "lists.bsky.popularHeading": "🦋 Phổ biến trên Bluesky",
     "lists.bsky.popularHint": "Bảng tin do người khác tạo và công bố. Bất kỳ ai cũng có thể đọc — không cần tài khoản Bluesky.",
-    "lists.bsky.savedHint": "Được lưu trên Bluesky. Ghim và bỏ ghim trong ứng dụng Bluesky — Mawkingbird đọc danh sách này nhưng không bao giờ sửa.",
     "lists.clientList.heading": "Danh sách ứng dụng",
     "lists.clientList.hint": "Được giữ trong trình duyệt này nên có thể thêm bất kỳ ai — bạn không cần theo dõi họ và vẫn hoạt động khi đăng xuất. Danh sách máy chủ (ở trên) chỉ nhận tài khoản bạn theo dõi.",
     "lists.clientList.members.one": "{{count}} thành viên",

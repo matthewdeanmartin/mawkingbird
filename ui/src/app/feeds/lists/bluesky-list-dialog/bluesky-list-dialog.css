@@ -1,0 +1,25 @@
+.bsky-list-rows {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.bsky-list-rows li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bsky-list-new {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.bsky-list-new h3 {
+  margin: 0;
+  font-size: 15px;
+}

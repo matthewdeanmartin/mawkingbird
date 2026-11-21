@@ -16,6 +16,9 @@ import { BlueskyPeopleList } from './bluesky-people-list';
 // i18n bskyPack.retry: Retry
 // i18n bskyPack.by: A Bluesky starter pack by @{{handle}}
 // i18n bskyPack.counts: {{members}} people · {{joined}} joined through it
+// i18n bskyPack.optOut: Remove me from this pack
+// i18n bskyPack.optedOut: You won't be shown in this pack.
+// i18n bskyPack.optOutFailed: Bluesky didn't accept that. Try again.
 // i18n bskyPack.followAll: Follow all {{count}}
 // i18n bskyPack.followingAll: Following…
 // i18n bskyPack.followedAll: Followed {{count}} new accounts.
@@ -62,6 +65,37 @@ export class BlueskyStarterPackPage implements OnInit {
   protected notice = signal('');
   protected error = signal('');
   protected similar = signal<{ name: string; people: BskyProfile[] } | null>(null);
+  protected optingOut = signal(false);
+
+  /** The reader is in someone else's pack, and may ask to be left out. */
+  protected readonly canOptOut = computed(() => {
+    const pack = this.pack();
+    const did = this.session.session()?.did;
+    return (
+      !!pack &&
+      !!did &&
+      this.session.linked() &&
+      pack.creator.did !== did &&
+      pack.members.some((m) => m.did === did)
+    );
+  });
+
+  protected async optOut(): Promise<void> {
+    const pack = this.pack();
+    const did = this.session.session()?.did;
+    if (!pack || !did || this.optingOut()) return;
+    this.optingOut.set(true);
+    this.error.set('');
+    try {
+      await this.packs.optOut(pack.listUri);
+      this.pack.set({ ...pack, members: pack.members.filter((m) => m.did !== did) });
+      this.notice.set(this.i18n.translate('bskyPack.optedOut'));
+    } catch {
+      this.error.set(this.i18n.translate('bskyPack.optOutFailed'));
+    } finally {
+      this.optingOut.set(false);
+    }
+  }
 
   /** Members the viewer does not follow yet (and is not). */
   protected readonly toFollow = computed(() => {

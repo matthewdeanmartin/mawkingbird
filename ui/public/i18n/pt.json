@@ -1949,7 +1949,6 @@
     "lists.bsky.pinnedHeading": "📌 Fixados no Bluesky",
     "lists.bsky.popularHeading": "🦋 Populares no Bluesky",
     "lists.bsky.popularHint": "Feeds criados e publicados por outras pessoas. Qualquer pessoa pode lê-los — sem precisar de conta no Bluesky.",
-    "lists.bsky.savedHint": "Salvos no Bluesky. Fixe-os ou desafixe-os no aplicativo Bluesky — o Mawkingbird lê esta lista, mas nunca a altera.",
     "lists.clientList.heading": "Listas do cliente",
     "lists.clientList.hint": "Mantidas neste navegador, então qualquer pessoa pode entrar em uma — você não precisa segui-la e funciona sem entrar. Listas do servidor (acima) só aceitam contas que você segue.",
     "lists.clientList.members.one": "{{count}} membro",

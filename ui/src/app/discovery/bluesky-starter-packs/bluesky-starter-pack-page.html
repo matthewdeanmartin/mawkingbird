@@ -52,6 +52,17 @@
       } @else {
         <p class="muted">{{ 'bskyPack.allFollowed' | transloco }}</p>
       }
+      @if (canOptOut()) {
+        <button
+          mbButton
+          type="button"
+          variant="outline"
+          [disabled]="optingOut()"
+          (click)="optOut()"
+        >
+          {{ 'bskyPack.optOut' | transloco }}
+        </button>
+      }
     } @else {
       <p class="muted">
         {{ 'bskyPack.linkToFollow' | transloco }}

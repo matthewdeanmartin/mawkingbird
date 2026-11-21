@@ -541,7 +541,11 @@
               <div class="account-danger-panel">
                 <!-- Kept to the menu budget (menu-budget.ts): everyday relationship and
                    safety actions here; occasional ones in "More options…". -->
-                @if (capabilities.canManageLists) {
+                @if (canUseBlueskyLists()) {
+                  <button type="button" (click)="showLists.set(true)">
+                    {{ 'pages.profile.lists.lists' | transloco }}
+                  </button>
+                } @else if (capabilities.canManageLists) {
                   <button type="button" (click)="showLists.set(true)">
                     {{
                       (auth.isAnonymous ? 'pages.profile.lists.local' : 'pages.profile.lists.lists')
@@ -1630,7 +1634,13 @@
         (submitted)="onReported()"
       />
     }
-    @if (showLists()) {
+    @if (showLists() && canUseBlueskyLists()) {
+      <app-bluesky-list-dialog
+        [did]="a.id.replace('bsky:', '')"
+        [handle]="a.acct"
+        (closed)="showLists.set(false)"
+      />
+    } @else if (showLists()) {
       <app-list-dialog
         [username]="a.username"
         [accountId]="a.id"

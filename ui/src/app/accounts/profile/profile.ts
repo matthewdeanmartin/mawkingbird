@@ -92,6 +92,7 @@ import { profileDeepLink } from '../../posts/copy-link/deep-links';
 import { FamiliarFollowers } from './familiar-followers/familiar-followers';
 import { BioTranslation } from './bio-translation/bio-translation';
 import { ListDialog } from '../../feeds/lists/list-dialog/list-dialog';
+import { BlueskyListDialog } from '../../feeds/lists/bluesky-list-dialog/bluesky-list-dialog';
 import { VerifiedBadge } from '../verified-badge/verified-badge';
 import { BotSignals } from '../bot-signals/bot-signals';
 import { HumanCountPipe } from '../../i18n/human-count.pipe';
@@ -350,6 +351,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     FamiliarFollowers,
     BioTranslation,
     ListDialog,
+    BlueskyListDialog,
     VerifiedBadge,
     BotSignals,
     HumanCountPipe,
@@ -1138,6 +1140,10 @@ export class Profile implements OnInit, OnDestroy {
   protected featureBusy = signal(false);
   protected featureError = signal<string | null>(null);
   protected showLists = signal(false);
+  /** A Bluesky profile's lists are the reader's Bluesky lists, kept on Bluesky. */
+  protected canUseBlueskyLists(): boolean {
+    return this.useBlueskyModeration;
+  }
   protected reportDone = signal(false);
   protected showBlockConfirm = signal(false);
   protected showUnfollowConfirm = signal(false);

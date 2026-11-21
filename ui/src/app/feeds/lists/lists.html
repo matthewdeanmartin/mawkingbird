@@ -821,19 +821,50 @@
     } @else {
       @if (bskyPinned().length && showsSection('bsky-pinned')) {
         <div class="section-head">{{ 'pages.lists.bsky.pinnedHeading' | transloco }}</div>
-        @for (entry of bskyPinned(); track entry.uri) {
-          <a (click)="rememberFeed($event)" class="list-row" [routerLink]="bskyFeedLink(entry)">
-            <span>
-              {{ entry.displayName }}
-              <span class="muted small">
-                ·
-                {{
-                  (entry.kind === 'list' ? 'pages.lists.bsky.byList' : 'pages.lists.bsky.byFeed')
-                    | transloco: { handle: entry.creatorHandle }
-                }}
+        @for (entry of bskyPinned(); track entry.uri; let first = $first, last = $last) {
+          <div class="bsky-pin-row">
+            <a (click)="rememberFeed($event)" class="list-row" [routerLink]="bskyFeedLink(entry)">
+              <span>
+                {{ entry.displayName }}
+                <span class="muted small">
+                  ·
+                  {{
+                    (entry.kind === 'list' ? 'pages.lists.bsky.byList' : 'pages.lists.bsky.byFeed')
+                      | transloco: { handle: entry.creatorHandle }
+                  }}
+                </span>
               </span>
-            </span>
-          </a>
+            </a>
+            <button
+              mbButton
+              type="button"
+              size="small"
+              variant="compact"
+              [disabled]="first || bskyMoving()"
+              [attr.aria-label]="'pages.lists.bsky.moveUp' | transloco: { name: entry.displayName }"
+              (click)="moveBskyPin(entry, -1)"
+            >
+              ↑
+            </button>
+            <button
+              mbButton
+              type="button"
+              size="small"
+              variant="compact"
+              [disabled]="last || bskyMoving()"
+              [attr.aria-label]="
+                'pages.lists.bsky.moveDown' | transloco: { name: entry.displayName }
+              "
+              (click)="moveBskyPin(entry, 1)"
+            >
+              ↓
+            </button>
+          </div>
+        }
+        @if (bskyMoveFailed()) {
+          <p class="muted center small" role="alert">
+            {{ 'pages.lists.bsky.moveFailed' | transloco }}
+          </p>
         }
       }
 
@@ -872,7 +903,7 @@
 
       @if (bskyPinned().length || bskyUnpinnedFeeds().length || bskyUnpinnedLists().length) {
         <p class="muted center small">
-          {{ 'pages.lists.bsky.savedHint' | transloco }}
+          {{ 'pages.lists.bsky.savedHintShared' | transloco }}
         </p>
       }
     }

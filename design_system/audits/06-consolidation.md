@@ -3086,3 +3086,17 @@ and the shared Bluesky people list. `login-bluesky.html` gains one outline
 hence one more `nativeButtons` and `legacyPills` finding, the same as its
 sibling buttons. `verified-badge.ts` (Bluesky verification check) changed
 without adding candidates. No shared design widget changed.
+
+Bluesky feeds, lists and preferences (2026-11-20, spec/bsky_parity.md sprints
+3–4): reviewed the regenerated inventory: 2069 scanned files, 706 candidate
+files. Two new candidate files, both adopted scope: the Bluesky "Add to lists"
+dialog (`feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html`) and
+Settings → Bluesky preferences
+(`settings/bluesky-preferences/settings-bluesky-preferences.html`), built from
+MbDialog, MbCheckbox, MbBadge, MbField/MbControl, MbButton, MbSaveFeedback,
+MbSection and MbContentState. Existing files gained shared-widget findings
+only: Save/Pin/Like/Delete MbButtons on the Bluesky feed page, MbButton compact
+reorder arrows on pinned Bluesky feeds in Lists, blocked/muted sections on
+Bluesky moderation, a "Remove me from this pack" MbButton on starter packs,
+and one profile ••• entry using the menu's existing plain-button pattern. No
+shared design widget changed.

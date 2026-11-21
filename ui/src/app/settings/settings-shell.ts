@@ -80,6 +80,7 @@ interface SettingsNavGroup {
 // i18n settings.nav.approveFollowRequests: Approve follow requests
 // i18n settings.nav.mutedBlocked: Muted & Blocked
 // i18n settings.nav.blueskyModeration: Bluesky moderation
+// i18n settings.nav.blueskyPreferences: Bluesky preferences
 // i18n settings.nav.trustCwSensitive: Trust: CW/Sensitive
 // i18n settings.nav.bulkModeration: Bulk moderation
 // i18n settings.nav.filters: Filters
@@ -117,7 +118,15 @@ const NAV_GROUPS: SettingsNavGroup[] = [
     // What gets shown to you and what gets shown about you — the filtering and
     // labelling rules, as opposed to the people they apply to.
     titleKey: 'settings.groups.content',
-    paths: ['home-algo', 'wellness', 'filters', 'spotlight', 'content', 'notification-preferences'],
+    paths: [
+      'home-algo',
+      'wellness',
+      'filters',
+      'spotlight',
+      'content',
+      'bluesky-preferences',
+      'notification-preferences',
+    ],
   },
   {
     titleKey: 'settings.groups.people',
@@ -287,6 +296,14 @@ export class SettingsShell {
       // The flipside of the line above — accounts you want *without* a doorway in
       // front of them — so it sits next to it. Client-side, hence anonymous: true.
       { labelKey: 'settings.nav.trustCwSensitive', path: 'content', exact: true, anonymous: true },
+      // Bluesky's Following feed, thread order, default reply controls,
+      // interests and privacy, kept in the Bluesky account.
+      {
+        labelKey: 'settings.nav.blueskyPreferences',
+        path: 'bluesky-preferences',
+        exact: true,
+        anonymous: true,
+      },
       {
         labelKey: 'settings.nav.notifications',
         path: 'notification-preferences',

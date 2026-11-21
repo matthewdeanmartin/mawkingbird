@@ -8,6 +8,8 @@ import { adaptFeedItem } from './bluesky-adapter';
 import { BlueskyApi } from './bluesky-api';
 import { BlueskySession } from './bluesky-session';
 import { BlueskySignInRequiredError } from './bluesky-auth-error';
+import { BlueskyModerationState } from './bluesky-moderation-state';
+import { filterHomeFeed } from './bluesky-reading-prefs';
 
 /**
  * Bluesky as a home-timeline source: pages `app.bsky.feed.getTimeline` with its
@@ -20,6 +22,7 @@ export class BlueskyProvider implements FeedProvider {
   private api = inject(BlueskyApi);
   private session = inject(BlueskySession);
   private diagnostics = inject(HomeDiagnostics);
+  private moderationState = inject(BlueskyModerationState);
 
   readonly id = 'bluesky' as const;
   readonly label = 'Bluesky';
@@ -60,7 +63,16 @@ export class BlueskyProvider implements FeedProvider {
           hasCursor: this.cursor !== null,
           exhausted: this.exhausted,
         });
-        return timeline.feed.map(adaptFeedItem);
+        // The account's Following-feed preferences, once the shell has read
+        // them; until then nothing is hidden, rather than hiding on a guess.
+        const items = this.moderationState.readingPrefsLoaded()
+          ? filterHomeFeed(
+              timeline.feed,
+              this.moderationState.homeFeedPrefs(),
+              this.session.session()?.did,
+            )
+          : timeline.feed;
+        return items.map(adaptFeedItem);
       }),
       catchError((err: unknown) => {
         this.exhausted = true;

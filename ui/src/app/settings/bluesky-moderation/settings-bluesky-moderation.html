@@ -204,6 +204,58 @@
     }
   </mb-section>
 
+  @for (
+    group of [
+      { kind: 'blocks', page: blocked(), error: blockedError(), key: 'blocked' },
+      { kind: 'mutes', page: muted(), error: mutedError(), key: 'muted' },
+    ];
+    track group.kind
+  ) {
+    <mb-section [title]="'settings.bskyModeration.' + group.key + '.title' | transloco">
+      <p class="muted">{{ 'settings.bskyModeration.' + group.key + '.hint' | transloco }}</p>
+      @if (group.error; as message) {
+        <mb-notice tone="error" announcement="alert">{{ message }}</mb-notice>
+      }
+      @if (group.page.profiles.length) {
+        <ul class="mod-list">
+          @for (profile of group.page.profiles; track profile.did) {
+            <li>
+              <span class="mod-name">
+                <strong>{{ profile.displayName || profile.handle }}</strong>
+                <span class="muted small">&#64;{{ profile.handle }}</span>
+              </span>
+              <button
+                mbButton
+                type="button"
+                variant="outline"
+                size="small"
+                [disabled]="busy()"
+                (click)="undo($any(group.kind), profile)"
+              >
+                {{ 'settings.bskyModeration.' + group.key + '.undo' | transloco }}
+              </button>
+            </li>
+          }
+        </ul>
+        @if (group.page.cursor) {
+          <button
+            mbButton
+            type="button"
+            variant="link"
+            (click)="loadAccounts($any(group.kind), true)"
+          >
+            {{ 'settings.bskyModeration.more' | transloco }}
+          </button>
+        }
+      } @else if (!group.error) {
+        <mb-content-state
+          kind="empty"
+          [title]="'settings.bskyModeration.' + group.key + '.empty' | transloco"
+        />
+      }
+    </mb-section>
+  }
+
   <mb-section [title]="'settings.bskyModeration.services.title' | transloco">
     <p class="muted">{{ 'settings.bskyModeration.services.hint' | transloco }}</p>
     <form class="mod-form" (ngSubmit)="addService()">

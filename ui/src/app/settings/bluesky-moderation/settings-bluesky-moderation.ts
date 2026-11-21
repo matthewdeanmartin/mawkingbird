@@ -12,8 +12,11 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { MbNotice } from '../../design-system/notice/notice';
 import { MbPageHeader, MbSection } from '../../design-system/page-header/page-header';
 import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback';
+import { BlueskyGraph } from '../../connections/bluesky/bluesky-graph';
+import { BskyProfile } from '../../connections/bluesky/bluesky-types';
 import {
   BlueskyModeration,
+  BskyAccountPage,
   BskyLabelerEntry,
   BskyModerationList,
   mutedWordKey,
@@ -79,6 +82,15 @@ import { firstValueFrom } from 'rxjs';
 // i18n settings.bskyModeration.chat.none: No one
 // i18n settings.bskyModeration.chat.saved: Saved.
 // i18n settings.bskyModeration.chat.loadFailed: Couldn't read this setting from Bluesky.
+// i18n settings.bskyModeration.blocked.title: Blocked accounts
+// i18n settings.bskyModeration.blocked.hint: People you blocked on Bluesky. They can't see or reply to your posts, and you don't see theirs.
+// i18n settings.bskyModeration.blocked.empty: You haven't blocked anyone on Bluesky.
+// i18n settings.bskyModeration.blocked.undo: Unblock
+// i18n settings.bskyModeration.muted.title: Muted accounts
+// i18n settings.bskyModeration.muted.hint: People you muted on Bluesky. Their posts stay out of your feeds; they aren't told.
+// i18n settings.bskyModeration.muted.empty: You haven't muted anyone on Bluesky.
+// i18n settings.bskyModeration.muted.undo: Unmute
+// i18n settings.bskyModeration.more: Show more
 /**
  * Settings → Bluesky moderation.
  *
@@ -114,6 +126,7 @@ export class SettingsBlueskyModeration implements OnInit {
   protected state = inject(BlueskyModerationState);
   private moderation = inject(BlueskyModeration);
   private chat = inject(BlueskyChatApi);
+  private graph = inject(BlueskyGraph);
   private i18n = inject(TranslocoService);
 
   protected loading = signal(false);
@@ -124,6 +137,10 @@ export class SettingsBlueskyModeration implements OnInit {
   protected servicesError = signal('');
 
   protected lists = signal<BskyModerationList[]>([]);
+  protected blocked = signal<BskyAccountPage>({ profiles: [], cursor: null });
+  protected muted = signal<BskyAccountPage>({ profiles: [], cursor: null });
+  protected blockedError = signal('');
+  protected mutedError = signal('');
   protected services = signal<BskyLabelerEntry[]>([]);
 
   protected wordValue = signal('');
@@ -158,6 +175,8 @@ export class SettingsBlueskyModeration implements OnInit {
       this.lists.set(lists);
       this.services.set(services);
       void this.loadAllowIncoming();
+      void this.loadAccounts('blocks');
+      void this.loadAccounts('mutes');
     } catch {
       this.failed.set(true);
     } finally {
@@ -248,6 +267,43 @@ export class SettingsBlueskyModeration implements OnInit {
       await this.moderation.removeLabeler(service.did);
       this.services.update((services) => services.filter((s) => s.did !== service.did));
     }, this.servicesError);
+  }
+
+  /** The first page, or the next one; read apart so a failure stays in its section. */
+  protected async loadAccounts(kind: 'blocks' | 'mutes', more = false): Promise<void> {
+    const target = kind === 'blocks' ? this.blocked : this.muted;
+    const error = kind === 'blocks' ? this.blockedError : this.mutedError;
+    const cursor = more ? target().cursor : null;
+    error.set('');
+    try {
+      const page =
+        kind === 'blocks'
+          ? await this.moderation.blocks(cursor)
+          : await this.moderation.mutes(cursor);
+      target.set({
+        profiles: more ? [...target().profiles, ...page.profiles] : page.profiles,
+        cursor: page.cursor,
+      });
+    } catch (failure: unknown) {
+      error.set(failure instanceof Error && failure.message ? failure.message : String(failure));
+    }
+  }
+
+  /** Unblock or unmute; the row leaves the list once Bluesky agrees. */
+  protected undo(kind: 'blocks' | 'mutes', profile: BskyProfile): void {
+    const target = kind === 'blocks' ? this.blocked : this.muted;
+    void this.run(
+      async () => {
+        await firstValueFrom(
+          kind === 'blocks' ? this.graph.unblock(profile.did) : this.graph.unmute(profile.did),
+        );
+        target.update((page) => ({
+          ...page,
+          profiles: page.profiles.filter((p) => p.did !== profile.did),
+        }));
+      },
+      kind === 'blocks' ? this.blockedError : this.mutedError,
+    );
   }
 
   /** Read apart from the rest, so a chat-scope problem never hides moderation. */

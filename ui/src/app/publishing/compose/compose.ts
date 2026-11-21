@@ -7,10 +7,12 @@ import {
   effect,
   inject,
   input,
+  linkedSignal,
   OnDestroy,
   output,
   signal,
 } from '@angular/core';
+import { BlueskyModerationState } from '../../connections/bluesky/bluesky-moderation-state';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MbButton } from '../../design-system/button/button';
@@ -399,9 +401,6 @@ function isBlueskyAttachable(file: File): boolean {
  */
 const BSKY_MAX_IMAGES = 4;
 
-/** Anyone may reply and quote: Bluesky's default, which needs no gate records. */
-const DEFAULT_BSKY_CONTROLS: BskyPostControlsValue = { replies: 'everyone', quotes: true };
-
 const BSKY_CONTROLS_FAILED =
   "Posted to Bluesky, but couldn't apply who can reply and quote. Set them from the post's ••• menu.";
 
@@ -619,6 +618,7 @@ export class Compose implements OnDestroy {
   private bskyVideo = inject(BlueskyVideo);
   private bskyLinkCard = inject(BlueskyLinkCard);
   private bskyControls = inject(BlueskyPostControls);
+  private bskyAccountPrefs = inject(BlueskyModerationState);
   protected bskySession = inject(BlueskySession);
   private drafts = inject(Drafts).forCurrentAccount();
   private customEmojis = inject(CustomEmojis);
@@ -1158,7 +1158,12 @@ export class Compose implements OnDestroy {
    * limits on a thread's first post, so these are offered for new posts, not
    * replies, and written beside the post once it exists.
    */
-  protected readonly bskyPostControls = signal<BskyPostControlsValue>(DEFAULT_BSKY_CONTROLS);
+  // Each new post starts from the account's own default controls
+  // (`postInteractionSettingsPref`, shared with bsky.app): everyone, unless
+  // the account says otherwise.
+  protected readonly bskyPostControls = linkedSignal<BskyPostControlsValue>(() =>
+    this.bskyAccountPrefs.postDefaults(),
+  );
   protected readonly bskyControlsOpen = signal(false);
   protected readonly bskyControlsOffered = computed(
     () => this.targetIncludesBsky() && !this.blueskyReplyRef(),
@@ -3679,7 +3684,7 @@ export class Compose implements OnDestroy {
     this.spoilerText.set('');
     this.sensitive.set(false);
     this.bskyLabel.set(null);
-    this.bskyPostControls.set(DEFAULT_BSKY_CONTROLS);
+    this.bskyPostControls.set(this.bskyAccountPrefs.postDefaults());
     // Free the object URLs before dropping the list, or the files stay pinned
     // in memory for the life of the tab.
     for (const item of this.media()) {

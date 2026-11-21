@@ -187,3 +187,15 @@ p.muted.center.small {
   flex: 1;
   border-bottom: none;
 }
+
+/* A pinned Bluesky feed: the row link, then its reorder arrows. */
+.bsky-pin-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.bsky-pin-row .list-row {
+  flex: 1;
+  min-width: 0;
+}

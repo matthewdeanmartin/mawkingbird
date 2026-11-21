@@ -1,0 +1,70 @@
+<mb-dialog
+  [title]="'bskyListDialog.title' | transloco: { handle: handle() }"
+  [closeLabel]="'bskyListDialog.done' | transloco"
+  [closeOnBackdrop]="true"
+  (dismissed)="closed.emit()"
+>
+  <p class="muted small">{{ 'bskyListDialog.public' | transloco }}</p>
+  @if (loading()) {
+    <p class="muted">{{ 'bskyListDialog.loading' | transloco }}</p>
+  } @else if (loadFailed()) {
+    <mb-notice tone="error" announcement="alert">{{
+      'bskyListDialog.loadFailed' | transloco
+    }}</mb-notice>
+  } @else {
+    @if (rows().length) {
+      <ul class="bsky-list-rows">
+        @for (row of rows(); track row.list.uri) {
+          <li>
+            <mb-checkbox
+              [label]="row.list.name"
+              [checked]="!!row.itemUri"
+              [disabled]="busy().has(row.list.uri)"
+              (checkedChange)="toggle(row, $event)"
+            />
+            @if (row.list.purpose === modList) {
+              <mb-badge>{{ 'bskyListDialog.modList' | transloco }}</mb-badge>
+            }
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="muted">{{ 'bskyListDialog.empty' | transloco }}</p>
+    }
+
+    <form class="bsky-list-new" (ngSubmit)="create()">
+      <h3>{{ 'bskyListDialog.newHeading' | transloco }}</h3>
+      <mb-field [label]="'bskyListDialog.name' | transloco">
+        <input
+          mbControl
+          type="text"
+          name="name"
+          maxlength="64"
+          [ngModel]="newName()"
+          (ngModelChange)="newName.set($event)"
+          [disabled]="creating()"
+        />
+      </mb-field>
+      <mb-field [label]="'bskyListDialog.kind' | transloco">
+        <select
+          mbControl
+          name="kind"
+          [ngModel]="newKind()"
+          (ngModelChange)="newKind.set($event)"
+          [disabled]="creating()"
+        >
+          <option value="curate">{{ 'bskyListDialog.curate' | transloco }}</option>
+          <option value="mod">{{ 'bskyListDialog.mod' | transloco }}</option>
+        </select>
+      </mb-field>
+      <button mbButton type="submit" [disabled]="creating() || !newName().trim()">
+        {{ 'bskyListDialog.create' | transloco }}
+      </button>
+    </form>
+  }
+  @if (failed()) {
+    <mb-notice tone="error" announcement="alert">{{
+      'bskyListDialog.failed' | transloco
+    }}</mb-notice>
+  }
+</mb-dialog>

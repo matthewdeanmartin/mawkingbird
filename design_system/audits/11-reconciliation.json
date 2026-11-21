@@ -3521,6 +3521,16 @@
       "file": "ui/src/app/public-pages/create-account/create-bluesky-account.html",
       "disposition": "adopted scope",
       "nextStep": "Public /create-bluesky-account/ page: one MbButton link that starts Bluesky sign-up, MbContentLink footer, plain links. Shares create-account.css; prerendered."
+    },
+    {
+      "file": "ui/src/app/feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html",
+      "disposition": "adopted scope",
+      "nextStep": "Bluesky Add to lists: MbDialog, MbCheckbox per list, MbBadge for moderation lists, MbField + input/select[mbControl] and MbButton to create a list, MbNotice for errors. Row and form layout is local."
+    },
+    {
+      "file": "ui/src/app/settings/bluesky-preferences/settings-bluesky-preferences.html",
+      "disposition": "adopted scope",
+      "nextStep": "Settings page from shared parts: MbPageHeader, MbSection, MbCheckbox, MbField + select[mbControl], MbButton link, MbSaveFeedback, MbContentState, and the existing Bluesky post-controls dialog. Interest grid is local layout."
     }
   ]
 }

@@ -136,6 +136,8 @@ describe('SettingsShell', () => {
         // A Bluesky connector works under Anonymous, and its moderation settings
         // live on Bluesky, not on a Mastodon server.
         'Bluesky moderation',
+        // Likewise its Following-feed, thread and privacy preferences.
+        'Bluesky preferences',
         'Notifications',
         // A feed URL carries no credential, so a reading list works with no
         // server identity at all — the most anonymous-capable page there is.
