@@ -1,3 +1,4 @@
+import { POLL_EXPIRY, PollEditor } from '../poll-editor';
 import { PostPermissions, PostPermissionsValue } from '../post-permissions/post-permissions';
 import { MbHelp } from '../../design-system/help/help';
 import { Pseudonymity } from '../../accounts/pseudonymity';
@@ -362,16 +363,6 @@ export function describePostFailure(error: unknown): PostFailure {
 
   return { message, details };
 }
-
-/** Poll expiry presets (label → seconds). */
-const POLL_EXPIRY = [
-  { label: '5 minutes', seconds: 300 },
-  { label: '1 hour', seconds: 3600 },
-  { label: '6 hours', seconds: 21600 },
-  { label: '1 day', seconds: 86400 },
-  { label: '3 days', seconds: 259200 },
-  { label: '7 days', seconds: 604800 },
-];
 
 /**
  * A media attachment that has been uploaded and is pending attachment to a post.
@@ -1252,10 +1243,11 @@ export class Compose implements OnDestroy {
   }
 
   // Poll.
-  protected pollOpen = signal(false);
-  protected pollOptions = signal<string[]>(['', '']);
-  protected pollMultiple = signal(false);
-  protected pollExpiresIn = signal<number>(86400);
+  protected readonly poll = new PollEditor();
+  protected readonly pollOpen = this.poll.open;
+  protected readonly pollOptions = this.poll.options;
+  protected readonly pollMultiple = this.poll.multiple;
+  protected readonly pollExpiresIn = this.poll.expiresIn;
 
   /** Media and polls are mutually exclusive, matching Mastodon. */
   /**
@@ -1613,7 +1605,7 @@ export class Compose implements OnDestroy {
     }
     const hasText = this.segments().some((s) => s.trim());
     const hasMedia = this.media().length > 0;
-    const hasPoll = this.pollOpen() && this.pollOptions().filter((o) => o.trim()).length >= 2;
+    const hasPoll = this.pollOpen() && this.poll.valid();
     return hasText || hasMedia || hasPoll;
   });
 
@@ -2348,27 +2340,19 @@ export class Compose implements OnDestroy {
   }
 
   togglePoll(): void {
-    this.pollOpen.update((v) => !v);
-    if (!this.pollOpen()) {
-      this.pollOptions.set(['', '']);
-      this.pollMultiple.set(false);
-    }
+    this.poll.toggle();
   }
 
   setPollOption(index: number, value: string): void {
-    this.pollOptions.update((opts) => opts.map((o, i) => (i === index ? value : o)));
+    this.poll.setOption(index, value);
   }
 
   addPollOption(): void {
-    if (this.pollOptions().length < 4) {
-      this.pollOptions.update((opts) => [...opts, '']);
-    }
+    this.poll.addOption();
   }
 
   removePollOption(index: number): void {
-    if (this.pollOptions().length > 2) {
-      this.pollOptions.update((opts) => opts.filter((_, i) => i !== index));
-    }
+    this.poll.removeOption(index);
   }
 
   // --- drafts ---
@@ -2407,13 +2391,7 @@ export class Compose implements OnDestroy {
       visibility: this.visibility(),
       quoteApprovalPolicy: this.quoteApprovalPolicy(),
       muteNotifications: this.muteNotifications(),
-      poll: this.pollOpen()
-        ? {
-            options: this.pollOptions(),
-            multiple: this.pollMultiple(),
-            expiresIn: this.pollExpiresIn(),
-          }
-        : null,
+      poll: this.poll.snapshot(),
       postLanguage: this.postLanguage(),
       postLanguageExplicit: this.languageExplicit(),
       blueskyReplyTo: this.blueskyReplyRef(),
@@ -2483,16 +2461,7 @@ export class Compose implements OnDestroy {
         ? expiry
         : (provider.expiries[0]?.value ?? '1w'),
     );
-    if (d.poll) {
-      this.pollOpen.set(true);
-      this.pollOptions.set(d.poll.options.length >= 2 ? d.poll.options : ['', '']);
-      this.pollMultiple.set(d.poll.multiple);
-      this.pollExpiresIn.set(d.poll.expiresIn);
-    } else {
-      this.pollOpen.set(false);
-      this.pollOptions.set(['', '']);
-      this.pollMultiple.set(false);
-    }
+    this.poll.restore(d.poll);
   }
 
   /** True when there's anything a draft could keep. */
@@ -2981,10 +2950,8 @@ export class Compose implements OnDestroy {
       options.mediaIds = this.media().map((m) => m.media.id);
     }
     if (this.pollOpen()) {
-      const pollOpts = this.pollOptions()
-        .map((o) => o.trim())
-        .filter(Boolean);
-      if (pollOpts.length >= 2) {
+      const pollOpts = this.poll.filledOptions();
+      if (this.poll.valid()) {
         options.poll = {
           options: pollOpts,
           expiresIn: this.pollExpiresIn(),
@@ -3702,9 +3669,7 @@ export class Compose implements OnDestroy {
     }
     this.media.set([]);
     this.mediaNotice.set('');
-    this.pollOpen.set(false);
-    this.pollOptions.set(['', '']);
-    this.pollMultiple.set(false);
+    this.poll.restore(null);
     this.scheduleOpen.set(false);
     this.scheduleAt.set('');
     this.emojiOpen.set(false);

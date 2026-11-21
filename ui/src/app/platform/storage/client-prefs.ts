@@ -1,3 +1,7 @@
+import {
+  ReaderTypography,
+  type StoredReaderTypography,
+} from '../../reading/read/reader-typography';
 import { effect, inject, Injectable, signal, WritableSignal } from '@angular/core';
 import {
   DEFAULT_DICTIONARY,
@@ -403,7 +407,7 @@ const FONT_STACKS = Object.fromEntries(
   READER_FONT_OPTIONS.map(({ id, stack }) => [id, stack]),
 ) as Record<ReaderFontFamily, string>;
 
-interface StoredPrefs {
+interface StoredPrefs extends StoredReaderTypography {
   themeMode?: ThemeMode;
   accentId?: string;
   /** Legacy combined pref; migrated to confirmBeforePost + delayedSend on load. */
@@ -413,8 +417,6 @@ interface StoredPrefs {
   verifiedMode?: VerifiedMode;
   readerFontSize?: number;
   readerFontFamily?: ReaderFontFamily;
-  readerFontWeight?: number;
-  readerLineHeight?: number;
   readerLetterSpacing?: number;
   readerWordSpacing?: number;
   readerTextAlign?: ReaderTextAlign;
@@ -604,8 +606,9 @@ export class ClientPrefs {
   // Reader typography (thread reader mode + feed reader mode).
   readonly readerFontSize = signal<number>(18);
   readonly readerFontFamily = signal<ReaderFontFamily>('serif');
-  readonly readerFontWeight = signal<number>(400);
-  readonly readerLineHeight = signal<number>(1.65);
+  private readonly typography = new ReaderTypography();
+  readonly readerFontWeight = this.typography.fontWeight;
+  readonly readerLineHeight = this.typography.lineHeight;
   readonly readerLetterSpacing = signal<number>(0);
   readonly readerWordSpacing = signal<number>(0);
   readonly readerTextAlign = signal<ReaderTextAlign>('left');
@@ -1108,11 +1111,11 @@ export class ClientPrefs {
   }
 
   setReaderFontWeight(weight: number): void {
-    this.readerFontWeight.set(clamp(Math.round(weight / 100) * 100, 300, 700));
+    this.typography.setFontWeight(weight);
   }
 
   setReaderLineHeight(value: number): void {
-    this.readerLineHeight.set(clamp(value, 1.2, 2.4));
+    this.typography.setLineHeight(value);
   }
 
   setReaderLetterSpacing(px: number): void {
@@ -1497,9 +1500,7 @@ export class ClientPrefs {
     if (typeof stored.readerFontFamily === 'string' && stored.readerFontFamily in FONT_STACKS) {
       this.readerFontFamily.set(stored.readerFontFamily);
     }
-    if (typeof stored.readerFontWeight === 'number') {
-      this.setReaderFontWeight(stored.readerFontWeight);
-    }
+    this.typography.load(stored);
     if (typeof stored.readerTheme === 'string') {
       this.setReaderTheme(stored.readerTheme);
     }
@@ -1508,9 +1509,6 @@ export class ClientPrefs {
     }
     if (typeof stored.readerDictionaryCustom === 'string') {
       this.setReaderDictionaryCustom(stored.readerDictionaryCustom);
-    }
-    if (typeof stored.readerLineHeight === 'number') {
-      this.setReaderLineHeight(stored.readerLineHeight);
     }
     if (typeof stored.readerLetterSpacing === 'number') {
       this.setReaderLetterSpacing(stored.readerLetterSpacing);
@@ -1643,8 +1641,7 @@ export class ClientPrefs {
       readerTheme: this.readerTheme(),
       readerDictionary: this.readerDictionary(),
       readerDictionaryCustom: this.readerDictionaryCustom(),
-      readerFontWeight: this.readerFontWeight(),
-      readerLineHeight: this.readerLineHeight(),
+      ...this.typography.snapshot(),
       readerLetterSpacing: this.readerLetterSpacing(),
       readerWordSpacing: this.readerWordSpacing(),
       readerTextAlign: this.readerTextAlign(),
@@ -1840,8 +1837,7 @@ export class ClientPrefs {
     }
     root.style.setProperty('--reader-font-family', FONT_STACKS[this.readerFontFamily()]);
     root.style.setProperty('--reader-font-size', `${this.readerFontSize()}px`);
-    root.style.setProperty('--reader-font-weight', `${this.readerFontWeight()}`);
-    root.style.setProperty('--reader-line-height', `${this.readerLineHeight()}`);
+    this.typography.apply(root.style);
     root.style.setProperty('--reader-letter-spacing', `${this.readerLetterSpacing()}px`);
     root.style.setProperty('--reader-word-spacing', `${this.readerWordSpacing()}px`);
     root.style.setProperty('--reader-text-align', this.readerTextAlign());

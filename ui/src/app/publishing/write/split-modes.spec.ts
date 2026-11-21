@@ -143,6 +143,13 @@ describe('splitText in demand mode', () => {
 });
 
 describe('segmentsFor', () => {
+  it('marks an intact oversized URL in auto mode', () => {
+    expect(segmentsFor('https://example.org tail', 'auto', { limit: 5 })).toEqual([
+      { text: 'https://example.org', length: 23, overLimit: true },
+      { text: 'tail', length: 4, overLimit: false },
+    ]);
+  });
+
   it('measures each segment and marks the over-limit ones', () => {
     const segments = segmentsFor(`short\n---\n${'x'.repeat(40)}`, 'rule', { limit: 20 });
     expect(segments).toHaveLength(2);

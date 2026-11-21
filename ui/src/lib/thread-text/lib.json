@@ -1,0 +1,6 @@
+{
+  "description": "URL-weighted text measurement and thread splitting.",
+  "web": false,
+  "dependencies": [],
+  "entries": ["index.ts"]
+}

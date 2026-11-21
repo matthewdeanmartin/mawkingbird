@@ -1,4 +1,5 @@
-import { DEFAULT_URL_WEIGHT, findUrls, postLength } from '../compose/post-length';
+import { autoSplit as splitWeightedText } from '../../../lib/thread-text';
+import { DEFAULT_URL_WEIGHT, postLength } from '../compose/post-length';
 
 /**
  * How a body of writing becomes a thread.
@@ -98,95 +99,11 @@ export function splitOnRule(text: string): string[] {
   return segments.map((s) => s.trim()).filter((s) => s !== '');
 }
 
-/**
- * Chunk continuous prose to fit `limit`.
- *
- * Boundaries are preferred in descending order of how much the reader notices
- * them: paragraph break, then sentence end, then a space. Only when a single
- * unbroken run is itself over the limit does this cut mid-word, and even then it
- * will not cut inside a URL — a severed link is worse than an over-long post,
- * because the post is merely ugly while the link is broken.
- *
- * Measured with {@link postLength} throughout, so a paragraph of links chunks by
- * what the server will actually count rather than by how wide the text looks.
- */
 export function autoSplit(text: string, options: SplitOptions): string[] {
-  const limit = Math.max(1, options.limit);
-  const urlWeight = options.urlWeight ?? DEFAULT_URL_WEIGHT;
-  const body = text.trim();
-  if (!body) {
-    return [];
-  }
-  if (postLength(body, urlWeight) <= limit) {
-    return [body];
-  }
-
-  const segments: string[] = [];
-  let rest = body;
-  while (rest) {
-    if (postLength(rest, urlWeight) <= limit) {
-      segments.push(rest);
-      break;
-    }
-    const cut = findCut(rest, limit, urlWeight);
-    segments.push(rest.slice(0, cut).trim());
-    rest = rest.slice(cut).trim();
-  }
-  return segments.filter((s) => s !== '');
-}
-
-/**
- * The index to cut `text` at so the head fits within `limit`.
- *
- * Always returns at least 1, so a caller looping on the remainder cannot spin
- * forever on a string it fails to shorten.
- */
-function findCut(text: string, limit: number, urlWeight: number): number {
-  // The furthest index whose head still fits. Walked from the limit outward
-  // rather than computed, because URL weighting makes the mapping from index to
-  // length non-linear.
-  let fits = 0;
-  for (let i = 1; i <= text.length; i++) {
-    if (postLength(text.slice(0, i), urlWeight) <= limit) {
-      fits = i;
-    } else {
-      break;
-    }
-  }
-  if (fits <= 0) {
-    return 1;
-  }
-
-  // Never cut inside a URL: pull back to where the URL starts, so the whole link
-  // moves to the next segment intact.
-  const spanning = findUrls(text).find((url) => url.start < fits && url.end > fits);
-  if (spanning && spanning.start > 0) {
-    fits = spanning.start;
-  }
-
-  const head = text.slice(0, fits);
-  const paragraph = head.lastIndexOf('\n\n');
-  if (paragraph > 0) {
-    return paragraph;
-  }
-  const sentence = lastSentenceEnd(head);
-  if (sentence > 0) {
-    return sentence;
-  }
-  const space = head.search(/\s+\S*$/);
-  if (space > 0) {
-    return space;
-  }
-  return Math.max(1, fits);
-}
-
-/** Index just past the last sentence-ending punctuation followed by a space. */
-function lastSentenceEnd(text: string): number {
-  let found = 0;
-  for (const match of text.matchAll(/[.!?]["')\]]?\s/g)) {
-    found = (match.index ?? 0) + match[0].length;
-  }
-  return found;
+  return splitWeightedText(text, {
+    limit: options.limit,
+    urlWeight: options.urlWeight ?? DEFAULT_URL_WEIGHT,
+  });
 }
 
 /** Split `text` into raw segment strings for the given mode. */

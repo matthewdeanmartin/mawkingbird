@@ -19,6 +19,27 @@ describe('ClientPrefs', () => {
     return prefs;
   }
 
+  it('loads reader typography from flat keys and persists the values used for CSS', () => {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({ readerFontWeight: 999 }));
+    const prefs = create();
+    expect(prefs.readerFontWeight()).toBe(700);
+    expect(prefs.readerLineHeight()).toBe(1.65);
+    prefs.setReaderFontWeight(523);
+    prefs.setReaderLineHeight(3);
+    TestBed.tick();
+    expect(JSON.parse(localStorage.getItem(PREFS_KEY)!)).toMatchObject({
+      readerFontWeight: 500,
+      readerLineHeight: 2.4,
+    });
+    TestBed.resetTestingModule();
+    const restored = create();
+    expect(restored.readerFontWeight()).toBe(500);
+    expect(restored.readerLineHeight()).toBe(2.4);
+    const style = document.documentElement.style;
+    expect(style.getPropertyValue('--reader-font-weight')).toBe('500');
+    expect(style.getPropertyValue('--reader-line-height')).toBe('2.4');
+  });
+
   it('requires alt text when a new or existing preference record has no choice', () => {
     localStorage.setItem(PREFS_KEY, JSON.stringify({ themeMode: 'light' }));
     expect(create().requireAltText()).toBe(true);

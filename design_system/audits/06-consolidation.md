@@ -1,5 +1,11 @@
 # Sprint 6 opening consolidation audit
 
+## Poll editing and reader typography, 2026-11-21
+
+Reviewed 2,089 app files and 710 existing candidates. The Compose and Write
+poll controls now consult the same option limits. The inventory records one
+shifted Compose source line. All candidate dispositions still apply.
+
 ## Wellness check-in, breaks and fade, 2026-11-20
 
 Reviewed 2,051 source files (new: the pure `wellness/usage-clock-model.ts`,

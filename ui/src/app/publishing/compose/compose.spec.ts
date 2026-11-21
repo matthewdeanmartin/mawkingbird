@@ -386,12 +386,21 @@ describe('Compose', () => {
     f.componentRef.setInput('fullscreenEdit', true);
     f.detectChanges();
     internals(f).text.set('my thoughts on this');
+    internals(f).pollOpen.set(true);
+    internals(f).pollOptions.set(['Yes', '', 'No']);
+    internals(f).pollMultiple.set(true);
+    internals(f).pollExpiresIn.set(300);
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
 
     await internals(f).openInWrite();
 
     const handoff = TestBed.inject(Drafts).takeHandoff();
     expect(handoff?.snapshot.segments).toEqual(['my thoughts on this']);
+    expect(handoff?.snapshot.poll).toEqual({
+      options: ['Yes', '', 'No'],
+      multiple: true,
+      expiresIn: 300,
+    });
     expect(handoff?.snapshot.quotedStatusId).toBe('q1');
     expect(handoff?.quotedStatus).toBe(quotedStatus);
     expect(navigate).toHaveBeenCalledWith(['/write'], { queryParams: { handoff: 1 } });

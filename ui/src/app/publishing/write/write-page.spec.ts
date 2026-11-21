@@ -14,7 +14,7 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Pseudonymity } from '../../accounts/pseudonymity';
 import { PrivateMedia } from '../private-media';
 import { throwError } from 'rxjs';
-import { DraftHandoff, DraftMedia, DraftVersion, Drafts } from '../drafts';
+import { DraftHandoff, DraftMedia, DraftVersion, Drafts, emptyDraftSnapshot } from '../drafts';
 import { Account, ScheduledStatus, Status } from '../../platform/api/models';
 import { PostTarget } from '../compose/compose';
 import { TranslateResult } from '../compose/translate-dialog/translate-dialog';
@@ -1183,6 +1183,18 @@ describe('WritePage', () => {
     await Promise.resolve();
     await Promise.resolve();
     expect(page.wizardStep()).toBeNull();
+  });
+
+  it('retains unfinished poll choices and settings when saving a composer handoff', () => {
+    TestBed.inject(Auth).mode.set('anonymous');
+    const page = internals(setUp());
+    const drafts = TestBed.inject(Drafts);
+    const poll = { options: ['Yes', '', 'No'], multiple: true, expiresIn: 300 };
+    drafts.handoff({ ...emptyDraftSnapshot('private'), segments: ['Choose'], poll });
+    page.openHandoff(drafts.takeHandoff()!);
+    expect(page.pollOpen()).toBe(true);
+    page.save();
+    expect(drafts.drafts()[0]).toMatchObject({ visibility: 'private', poll });
   });
 
   it('saves and restores CW, poll, sensitive, and post-language state', () => {

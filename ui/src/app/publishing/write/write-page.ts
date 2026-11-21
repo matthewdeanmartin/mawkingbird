@@ -1,3 +1,4 @@
+import { POLL_EXPIRY, PollEditor } from '../poll-editor';
 import { PostPermissions, PostPermissionsValue } from '../post-permissions/post-permissions';
 import { CustomEmojiPipe } from '../custom-emoji.pipe';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
@@ -485,18 +486,12 @@ export class WritePage implements OnInit, OnDestroy {
   protected media = signal<DraftMedia[]>([]);
   protected uploading = signal(false);
   protected mediaNotice = signal('');
-  protected pollOpen = signal(false);
-  protected pollOptions = signal<string[]>(['', '']);
-  protected pollMultiple = signal(false);
-  protected pollExpiresIn = signal(86400);
-  protected readonly pollExpiry = [
-    { label: '5 minutes', seconds: 300 },
-    { label: '1 hour', seconds: 3600 },
-    { label: '6 hours', seconds: 21600 },
-    { label: '1 day', seconds: 86400 },
-    { label: '3 days', seconds: 259200 },
-    { label: '7 days', seconds: 604800 },
-  ];
+  protected readonly poll = new PollEditor();
+  protected readonly pollOpen = this.poll.open;
+  protected readonly pollOptions = this.poll.options;
+  protected readonly pollMultiple = this.poll.multiple;
+  protected readonly pollExpiresIn = this.poll.expiresIn;
+  protected readonly pollExpiry = POLL_EXPIRY;
   protected emojiOpen = signal(false);
   private editorSelection: { start: number; end: number } | null = null;
   protected tagHelperOpen = signal(false);
@@ -920,11 +915,7 @@ export class WritePage implements OnInit, OnDestroy {
     if (this.media().length) {
       return;
     }
-    this.pollOpen.update((open) => !open);
-    if (!this.pollOpen()) {
-      this.pollOptions.set(['', '']);
-      this.pollMultiple.set(false);
-    }
+    this.poll.toggle();
     this.dirty.set(true);
   }
 
@@ -1015,24 +1006,16 @@ export class WritePage implements OnInit, OnDestroy {
   protected readonly visibilityHint = visibilityHint;
 
   protected setPollOption(index: number, value: string): void {
-    this.pollOptions.update((options) =>
-      options.map((option, at) => (at === index ? value : option)),
-    );
+    this.poll.setOption(index, value);
     this.dirty.set(true);
   }
 
   protected addPollOption(): void {
-    if (this.pollOptions().length < 4) {
-      this.pollOptions.update((options) => [...options, '']);
-      this.dirty.set(true);
-    }
+    if (this.poll.addOption()) this.dirty.set(true);
   }
 
   protected removePollOption(index: number): void {
-    if (this.pollOptions().length > 2) {
-      this.pollOptions.update((options) => options.filter((_, at) => at !== index));
-      this.dirty.set(true);
-    }
+    if (this.poll.removeOption(index)) this.dirty.set(true);
   }
 
   protected setPollMultiple(value: boolean): void {
@@ -1472,13 +1455,7 @@ export class WritePage implements OnInit, OnDestroy {
       quoteApprovalPolicy: this.quoteApprovalPolicy(),
       muteNotifications: this.muteNotifications(),
       quotedStatusId: this.quotedStatusId(),
-      poll: this.pollOpen()
-        ? {
-            options: this.pollOptions(),
-            multiple: this.pollMultiple(),
-            expiresIn: this.pollExpiresIn(),
-          }
-        : null,
+      poll: this.poll.snapshot(),
       postLanguage: this.postLanguage(),
       postLanguageExplicit: this.languageExplicit(),
       target: 'fedi',
@@ -1501,12 +1478,7 @@ export class WritePage implements OnInit, OnDestroy {
       snapshot.postLanguage ||
         (snapshot.postLanguageExplicit ? '' : this.postingLanguageDefaults.default()),
     );
-    if (snapshot.poll) {
-      this.pollOpen.set(true);
-      this.pollOptions.set(snapshot.poll.options.length >= 2 ? snapshot.poll.options : ['', '']);
-      this.pollMultiple.set(snapshot.poll.multiple);
-      this.pollExpiresIn.set(snapshot.poll.expiresIn);
-    }
+    this.poll.restore(snapshot.poll);
   }
 
   // ------------------------------------------------------------------ quotes
@@ -1653,10 +1625,6 @@ export class WritePage implements OnInit, OnDestroy {
     this.flushAutosave();
     this.drafts.recordVersion(current.localId, this.snapshot(), true);
     this.applyFeatureSnapshot(version.snapshot);
-    if (!version.snapshot.poll) {
-      this.pollOpen.set(false);
-      this.pollOptions.set(['', '']);
-    }
     this.body.set(joinSegments(version.snapshot.segments));
     this.dirty.set(true);
     this.resetProofreading();
@@ -1690,9 +1658,7 @@ export class WritePage implements OnInit, OnDestroy {
     this.cwOpen.set(false);
     this.spoilerText.set('');
     this.sensitive.set(false);
-    this.pollOpen.set(false);
-    this.pollOptions.set(['', '']);
-    this.pollMultiple.set(false);
+    this.poll.restore(null);
     this.pollExpiresIn.set(86400);
     this.languageExplicit.set(false);
     this.postLanguage.set(this.postingLanguageDefaults.default());
@@ -1712,7 +1678,7 @@ export class WritePage implements OnInit, OnDestroy {
       );
       return;
     }
-    if (this.pollOpen() && this.pollOptions().filter((option) => option.trim()).length < 2) {
+    if (this.pollOpen() && !this.poll.valid()) {
       this.mediaNotice.set('A poll needs at least two choices.');
       return;
     }
@@ -2046,7 +2012,7 @@ export class WritePage implements OnInit, OnDestroy {
       );
       return;
     }
-    if (this.pollOpen() && this.pollOptions().filter((option) => option.trim()).length < 2) {
+    if (this.pollOpen() && !this.poll.valid()) {
       this.wizardError.set('A poll needs at least two choices.');
       return;
     }

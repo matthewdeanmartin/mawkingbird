@@ -443,7 +443,7 @@
                     (ngModelChange)="setPollOption(i, $event)"
                     [placeholder]="'Choice ' + (i + 1)"
                   />
-                  @if (pollOptions().length > 2) {
+                  @if (poll.canRemove()) {
                     <button
                       class="btn btn-outline btn-sm"
                       type="button"
@@ -459,7 +459,7 @@
                 <button
                   class="btn btn-outline btn-sm"
                   type="button"
-                  [disabled]="pollOptions().length >= 4"
+                  [disabled]="!poll.canAdd()"
                   (click)="addPollOption()"
                 >
                   {{ 'pages.write.addChoice' | transloco }}

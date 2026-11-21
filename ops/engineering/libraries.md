@@ -14,6 +14,7 @@ built with the app, but written and checked as if it were an npm package.
 | `link-cleaning`      | Tracking-parameter removal with an allowlist                    | `app/publishing/post-link-cleaning.ts`                                               |
 | `sentiment`          | A small VADER-style rage score for social text                  | `app/feeds/sentiment.ts`                                                             |
 | `webmention`         | W3C Webmention endpoint discovery                               | `app/connections/hugo/webmention-send.ts`                                            |
+| `thread-text` | URL-weighted measurement and automatic thread splitting | `app/publishing/compose/post-length.ts` and `app/publishing/write/split-modes.ts` |
 
 ## The rules
 

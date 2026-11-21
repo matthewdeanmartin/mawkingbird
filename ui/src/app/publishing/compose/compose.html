@@ -359,7 +359,7 @@
             (ngModelChange)="setPollOption(i, $event)"
             [placeholder]="'compose.choicePlaceholder' | transloco: { index: i + 1 }"
           />
-          @if (pollOptions().length > 2) {
+          @if (poll.canRemove()) {
             <button
               type="button"
               mbButton
@@ -375,7 +375,7 @@
         </div>
       }
       <div class="poll-controls">
-        @if (pollOptions().length < 4) {
+        @if (poll.canAdd()) {
           <button type="button" mbButton variant="outline" size="small" (click)="addPollOption()">
             {{ 'compose.addChoice' | transloco }}
           </button>
