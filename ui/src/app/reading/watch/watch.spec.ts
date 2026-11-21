@@ -245,6 +245,46 @@ describe('Watch post access and reveal gates', () => {
     });
   });
 
+  it('keeps the loaded YouTube iframe when a reply refreshes the author profile', () => {
+    const account = signal({ id: 'me', statuses_count: 10 });
+    TestBed.overrideProvider(Auth, {
+      useValue: { account, token: signal('token'), kind: signal('mastodon') },
+    });
+    params.next(
+      convertToParamMap({ youtube: 'abcdefghijk', post: '1', server: 'https://home.test' }),
+    );
+    mount();
+    loader.status.set({
+      ...status(),
+      media_attachments: [],
+      content: '<p><a href="https://youtu.be/abcdefghijk">video</a></p>',
+    });
+    fixture.detectChanges();
+    const stage = fixture.nativeElement.querySelector('app-video-player-controls') as HTMLElement;
+    stage.querySelector('button')!.click();
+    fixture.detectChanges();
+    const frame = stage.querySelector('iframe')!;
+    expect(frame).toBeTruthy();
+    const src = frame.src;
+    window.dispatchEvent(
+      new MessageEvent('message', {
+        origin: new URL(src).origin,
+        source: frame.contentWindow,
+        data: JSON.stringify({ event: 'infoDelivery', info: { currentTime: 93.5 } }),
+      }),
+    );
+    expect(fixture.componentInstance['playhead']()).toBe(93.5);
+    const party = fixture.debugElement.query(By.directive(PartyStub))
+      .componentInstance as PartyStub;
+    party.replied.emit({ ...status(), id: 'reply' });
+    account.set({ id: 'me', statuses_count: 11 });
+    fixture.detectChanges();
+    expect(loader.descendants()[0].id).toBe('reply');
+    expect(stage.querySelector('iframe')).toBe(frame);
+    expect(frame.src).toBe(src);
+    expect(fixture.componentInstance['playhead']()).toBe(93.5);
+  });
+
   it('holds the full viewport while open and releases the app chrome on leaving', () => {
     const zen = TestBed.inject(ReadingZen);
     mount();

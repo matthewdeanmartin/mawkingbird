@@ -368,6 +368,11 @@ export class AccountDrafts {
     this.handoffSlot.set({ snapshot, selfStatusId, ...options });
   }
 
+  /** A cancelled navigation must not seed a later editor or discard a newer handoff. */
+  cancelHandoff(snapshot: DraftSnapshot): void {
+    if (this.handoffSlot()?.snapshot === snapshot) this.handoffSlot.set(null);
+  }
+
   /** Take the parked handoff, if any, clearing it so it seeds exactly once. */
   takeHandoff(): DraftHandoff | null {
     const handoff = this.handoffSlot();

@@ -1,3 +1,4 @@
+import { PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { describe, expect, it } from 'vitest';
@@ -27,5 +28,15 @@ describe('create-bluesky-account page', () => {
 
   it('adds an account for someone already signed in', () => {
     expect(signupHref(render(true))).toBe('/login/bluesky?create=1&add=1');
+  });
+
+  it('prerenders the public signup link without initializing a browser session', () => {
+    TestBed.overrideProvider(PLATFORM_ID, { useValue: 'server' });
+    TestBed.overrideProvider(Auth, {
+      useFactory: () => {
+        throw new Error('Prerendering tried to initialize Auth');
+      },
+    });
+    expect(signupHref(render(false))).toBe('/login/bluesky?create=1');
   });
 });

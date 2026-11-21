@@ -1419,6 +1419,7 @@ describe('Home', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('app-compose')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('app-compose button[title*="Write"]')).toBeTruthy();
     // The click bought this visit a composer, not a new default.
     expect(prefs.autoShowMiniComposer()).toBe(false);
   });

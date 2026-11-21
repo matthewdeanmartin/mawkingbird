@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Bluesky signup footer, 2026-11-21
+
+The prerendered signup page uses the shared content-link directive for its
+Instagram, creator and power-user guides, matching the Mastodon signup page.
+The inventory still has 710 candidate files.
+
+## Home handoff and Watch chat, 2026-11-21
+
+Reviewed the inventory delta across 710 candidate files. Home reuses the
+existing Compose button. Watch chat uses a multiline native control in its
+existing labelled field. Candidate membership and dispositions are unchanged.
+
 ## Poll editing and reader typography, 2026-11-21
 
 Reviewed 2,089 app files and 710 existing candidates. The Compose and Write

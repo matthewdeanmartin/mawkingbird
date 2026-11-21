@@ -1190,11 +1190,21 @@ describe('WritePage', () => {
     const page = internals(setUp());
     const drafts = TestBed.inject(Drafts);
     const poll = { options: ['Yes', '', 'No'], multiple: true, expiresIn: 300 };
-    drafts.handoff({ ...emptyDraftSnapshot('private'), segments: ['Choose'], poll });
+    drafts.handoff({
+      ...emptyDraftSnapshot('private'),
+      segments: ['Choose', 'Part two'],
+      target: 'both',
+      poll,
+    });
     page.openHandoff(drafts.takeHandoff()!);
     expect(page.pollOpen()).toBe(true);
     page.save();
-    expect(drafts.drafts()[0]).toMatchObject({ visibility: 'private', poll });
+    expect(drafts.drafts()[0]).toMatchObject({
+      visibility: 'private',
+      segments: ['Choose', 'Part two'],
+      target: 'both',
+      poll,
+    });
   });
 
   it('saves and restores CW, poll, sensitive, and post-language state', () => {

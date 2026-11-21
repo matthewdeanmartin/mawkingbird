@@ -114,6 +114,13 @@
   align-items: center;
   gap: 0.4rem;
 }
+.chat-box textarea {
+  field-sizing: content;
+  min-height: calc(2lh + 1.25rem);
+  max-height: 12lh;
+  resize: vertical;
+  white-space: pre-wrap;
+}
 .chat-box mb-field {
   flex: 1;
   min-width: 0;

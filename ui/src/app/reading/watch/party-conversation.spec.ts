@@ -342,16 +342,22 @@ describe('Temporary party conversations', () => {
       expect(due).toHaveBeenCalledTimes(1);
     });
 
-    it('posts chat publicly with the show hashtag, and as a reply when replies are shown', () => {
+    it('posts chat publicly with the show hashtag, and as a reply when replies are shown', async () => {
       fixture.componentRef.setInput('canReply', true);
       fixture.componentInstance.addTag('Show');
       fixture.detectChanges();
       const replied = vi.fn();
       fixture.componentInstance.replied.subscribe(replied);
-      state().chat.set('here we go');
-      state().send();
+      const box = fixture.nativeElement.querySelector(
+        'textarea[name="chat"]',
+      ) as HTMLTextAreaElement;
+      expect(box.rows).toBe(2);
+      await fixture.whenStable();
+      box.value = 'here we go\non two lines';
+      box.dispatchEvent(new Event('input'));
+      box.form!.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
       expect(api.postStatus).toHaveBeenCalledWith(
-        'here we go #Show',
+        'here we go\non two lines #Show',
         { inReplyToId: 'root', visibility: 'public' },
         expect.any(String),
       );

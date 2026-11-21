@@ -1445,6 +1445,9 @@ export class WritePage implements OnInit, OnDestroy {
     return this.transloco.translate<string>(notice.key, notice.params);
   }
 
+  private pasteSettings: Pick<DraftSnapshot, 'pasteProviderId' | 'pasteLanguage' | 'pasteExpiry'> =
+    {};
+
   private snapshot(): DraftSnapshot {
     const segments = splitText(this.body(), this.splitMode(), { limit: MAX_POST_CHARS });
     return {
@@ -1458,11 +1461,18 @@ export class WritePage implements OnInit, OnDestroy {
       poll: this.poll.snapshot(),
       postLanguage: this.postLanguage(),
       postLanguageExplicit: this.languageExplicit(),
-      target: 'fedi',
+      target: this.wizardTarget(),
+      ...(this.wizardTarget() === 'paste' ? this.pasteSettings : {}),
     };
   }
 
   private applyFeatureSnapshot(snapshot: DraftSnapshot): void {
+    this.wizardTarget.set(snapshot.target ?? 'fedi');
+    this.pasteSettings = {
+      pasteProviderId: snapshot.pasteProviderId,
+      pasteLanguage: snapshot.pasteLanguage,
+      pasteExpiry: snapshot.pasteExpiry,
+    };
     // A saved visibility is a deliberate choice and outranks the account
     // default; dropping it here is what used to silently widen private drafts.
     this.visibilityState.choose(snapshot.visibility);
@@ -1519,6 +1529,7 @@ export class WritePage implements OnInit, OnDestroy {
     this.applyFeatureSnapshot(handoff.snapshot);
     this.body.set(joinSegments(handoff.snapshot.segments));
     this.media.set(handoff.media ?? []);
+    this.wizardScheduleAt.set(handoff.scheduleAt ?? '');
     this.editing.set({
       key: `new:${Date.now()}`,
       localId: null,
@@ -1526,6 +1537,9 @@ export class WritePage implements OnInit, OnDestroy {
       titleKey: 'pages.write.editing.newDraft',
       savedAt: null,
     });
+    if (handoff.snapshot.segments.length === 1 && /^\s*---\s*$/m.test(this.body())) {
+      this.setSplitMode('demand');
+    }
     this.dirty.set(true);
     this.focusEditor();
   }
@@ -1641,6 +1655,9 @@ export class WritePage implements OnInit, OnDestroy {
   }
 
   private resetAuthoringState(): void {
+    this.wizardTarget.set('fedi');
+    this.wizardScheduleAt.set('');
+    this.pasteSettings = {};
     this.replacing.set(null);
     this.quotedStatusId.set(undefined);
     this.quotedStatus.set(null);
@@ -1692,12 +1709,16 @@ export class WritePage implements OnInit, OnDestroy {
   }
 
   private beginPublish(): void {
-    const firstTarget = this.wizardTargets().find(
-      (target) => !this.targetUnsupportedReason(target),
-    );
-    if (firstTarget) {
-      this.setWizardTarget(firstTarget);
+    const targets = this.wizardTargets().filter((target) => !this.targetUnsupportedReason(target));
+    const preferred = this.wizardTarget();
+    const firstTarget = targets.includes(preferred) ? preferred : targets[0];
+    if (firstTarget) this.setWizardTarget(firstTarget);
+    if (preferred !== 'fedi' && firstTarget !== preferred) {
+      // A disconnected destination must never silently turn into a different publication.
+      this.enterWizardStep('targets');
+      return;
     }
+
     const first = firstStep(this.wizardEnabled());
     if (!first) {
       this.enterWizardStep('targets');
@@ -2366,10 +2387,11 @@ function kindNounKey(kind: DraftKind): string {
  */
 function allowedVisibilitiesFor(target: PostTarget): readonly string[] | null {
   switch (target) {
+    case 'paste':
+      return ['public', 'unlisted'];
     case 'blog':
     case 'blogger':
     case 'hugo':
-    case 'paste':
     case 'bsky':
       return ['public'];
     default:

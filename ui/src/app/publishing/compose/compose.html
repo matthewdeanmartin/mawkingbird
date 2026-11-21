@@ -1,5 +1,6 @@
 <div
   class="compose"
+  [inert]="movingToWrite()"
   [class.compose-compact]="compact()"
   [class.compose-chat]="chatMode()"
   [class.chat-tools-open]="chatToolsOpen()"
@@ -833,6 +834,7 @@
           type="button"
           mbButton
           variant="outline"
+          [disabled]="movingToWrite() || !canMoveToWrite()"
           [title]="'compose.fullscreenEditTitle' | transloco"
           (click)="openInWrite()"
         >

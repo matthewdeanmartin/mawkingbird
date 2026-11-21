@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, inject, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -23,7 +24,8 @@ import { Auth } from '../../platform/session/auth';
   styleUrl: './create-account.css',
 })
 export class CreateBlueskyAccount {
-  protected readonly signupParams = inject(Auth).isAuthenticated
-    ? { create: 1, add: 1 }
-    : { create: 1 };
+  protected readonly signupParams =
+    isPlatformBrowser(inject(PLATFORM_ID)) && inject(Auth).isAuthenticated
+      ? { create: 1, add: 1 }
+      : { create: 1 };
 }

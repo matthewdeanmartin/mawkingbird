@@ -1,4 +1,4 @@
-import { effect, inject, Injectable } from '@angular/core';
+import { computed, effect, inject, Injectable } from '@angular/core';
 import { Auth } from '../../platform/session/auth';
 import { Server } from '../../platform/http/server';
 
@@ -22,10 +22,13 @@ export class Playback {
   private handles = new Set<PlaybackHandle>();
   private positions = new Map<string, PlaybackPosition>();
 
+  // A post refreshes profile counters without changing who owns the player.
+  private readonly accountId = computed(() => this.auth.account()?.id);
+
   constructor() {
     effect(() => {
       this.auth.kind();
-      this.auth.account();
+      this.accountId();
       this.auth.token();
       this.server.baseUrl();
       this.stopAll();

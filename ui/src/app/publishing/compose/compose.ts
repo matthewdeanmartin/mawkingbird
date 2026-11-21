@@ -674,6 +674,23 @@ export class Compose implements OnDestroy {
   readonly quotedStatus = input<Status | undefined>(undefined);
   /** Show "Fullscreen edit" beside Post, which moves this post into Write. */
   readonly fullscreenEdit = input(false);
+  protected movingToWrite = signal(false);
+
+  protected canMoveToWrite(): boolean {
+    return (
+      this.fullscreenEdit() &&
+      !this.submitting() &&
+      !this.uploading() &&
+      this.countdown() === null &&
+      !this.postingOperation &&
+      !this.selfDraftOrigin &&
+      !this.blogDraft() &&
+      !this.hugoEdit.editing() &&
+      !this.blueskyReplyRef() &&
+      !this.blueskyQuoteRef() &&
+      !this.inReplyToId()
+    );
+  }
   /**
    * The box's prompt. Empty means "use the default", which is a translation key
    * rather than an English literal: an `input()` default is evaluated before an
@@ -2588,16 +2605,28 @@ export class Compose implements OnDestroy {
    * does not come back here later as well.
    */
   protected async openInWrite(): Promise<void> {
-    this.drafts.handoff(this.snapshot(), undefined, {
+    if (this.movingToWrite() || !this.canMoveToWrite()) return;
+    this.movingToWrite.set(true);
+    const snapshot = this.snapshot();
+    const context = this.contextKey();
+    this.drafts.handoff(snapshot, undefined, {
       media: this.media(),
       quotedStatus: this.quotedStatus(),
+      scheduleAt: this.scheduleActive() ? this.scheduleAt() : undefined,
     });
-    if (this.autosaveTimer) {
-      clearTimeout(this.autosaveTimer);
-      this.autosaveTimer = null;
+    let moved = false;
+    try {
+      moved = await this.router.navigate(['/write'], { queryParams: { handoff: 1 } });
+      if (moved) {
+        this.flushAutosave();
+        this.drafts.clearAutosave(context);
+      }
+    } catch (error) {
+      this.crossPostError.set(error instanceof Error ? error.message : String(error));
+    } finally {
+      if (!moved) this.drafts.cancelHandoff(snapshot);
+      this.movingToWrite.set(false);
     }
-    this.drafts.clearAutosave(this.contextKey());
-    await this.router.navigate(['/write'], { queryParams: { handoff: 1 } });
   }
 
   private flushAutosave(): void {

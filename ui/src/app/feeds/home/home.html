@@ -99,6 +99,7 @@
   <!-- Un-gated when finishing a draft: that IS the deliberate publish step. -->
   <app-compose
     [gateable]="!fromDraft() && !openedDraft()"
+    [fullscreenEdit]="!fromDraft() && !openedDraft()"
     [initialDraft]="openedDraft()"
     (posted)="onPosted($event)"
   />

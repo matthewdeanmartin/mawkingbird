@@ -213,8 +213,9 @@
   } @else {
     <form class="chat-box" (ngSubmit)="send()">
       <mb-field density="compact" [hideLabel]="true" [label]="'watch.party.chatLabel' | transloco">
-        <input
+        <textarea
           mbControl
+          rows="2"
           name="chat"
           autocomplete="off"
           maxlength="480"
@@ -225,7 +226,7 @@
               ? ('watch.party.chatPlaceholderTag' | transloco: { tag: chatTag() })
               : ('watch.party.chatPlaceholderReply' | transloco)
           "
-        />
+        ></textarea>
       </mb-field>
       <button mbButton type="submit" size="small" [disabled]="!chat().trim() || sending()">
         {{ 'watch.party.send' | transloco }}

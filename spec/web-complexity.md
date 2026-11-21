@@ -2,9 +2,31 @@
 
 ## Implementation on November 21
 
-Thread text now lives in its own [library](../ui/src/lib/thread-text/README.md). Write keeps a URL whole when it exceeds the thread budget and marks that segment over limit. Compose and Write share a [poll editor](../ui/src/app/publishing/poll-editor.ts) for option limits, validity, expiry choices, and draft snapshots. The existing Fullscreen edit action in the quote dialog already uses the handoff into Write. Its sending and receiving specs now exercise partly filled polls with a non-default expiry. The proposed minicomposer action can use this same draft contract.
+Thread text now lives in its own [library](../ui/src/lib/thread-text/README.md). Write keeps a URL whole when it exceeds the thread budget and marks that segment over limit. Compose and Write share a [poll editor](../ui/src/app/publishing/poll-editor.ts) for option limits, validity, expiry choices, and draft snapshots. The existing Fullscreen edit action in the quote dialog already uses the handoff into Write. Its sending and receiving specs now exercise partly filled polls with a non-default expiry. Home’s minicomposer now uses the same draft contract.
 
 The first [reader typography change](../ui/src/app/reading/read/reader-typography.ts) covers font weight and line height. Their saved keys and CSS variables are exercised through ClientPrefs, including a reload of persisted settings.
+
+## Where people compose in Mawkingbird web
+
+Home's Quick post now offers Fullscreen edit. The shared Compose component appears **21 times in 17 production templates**. This counts component placements in maintained Angular source, including inline templates. A status card can appear dozens of times on one screen.
+
+| Templates hosting Compose | Placements |
+| --- | ---: |
+| Home, Drafts, Conversations, Pastes | 4 |
+| Cross-post workbench (Mastodon, Bluesky, both) | 3 |
+| Profile and profile photo view | 3 |
+| Status card, shared-post dialog, quote dialog, Bluesky reply wrapper | 5 |
+| Blog post and thread reader | 2 |
+| Videos, Watch video sharing, Radio sharing and Radio Studio | 4 |
+
+There are three general social writing implementations in this inventory: [Compose](../ui/src/app/publishing/compose/compose.ts), [full-screen Write](../ui/src/app/publishing/write/write-page.ts), and the [Misskey note composer](../ui/src/app/connections/misskey/misskey-compose.ts). A new feature for all places that publish text has a wider scope. For example:
+
+- [Contact/feedback](../ui/src/app/shell/bug-report-dialog/bug-report-dialog.html) collects a report and chooses a delivery channel, including a private security report.
+- [Conversations](../ui/src/app/publishing/conversations/conversations.html) has dedicated bot and Bluesky chat fields alongside the shared Mastodon composer. [Local Compose](../ui/src/app/chat/eliza/local-compose.ts) also supports local ELIZA conversations.
+- [Watch party chat](../ui/src/app/reading/watch/party-conversation.html) writes with the current hashtag or reply parent. Watch's separate video-sharing dialog mounts ordinary Compose.
+- [Status edit](../ui/src/app/publishing/status-edit/status-edit-dialog.html), [scheduled posts](../ui/src/app/publishing/schedule-mastodon-posts/schedule-workbench.html), and [admin announcements](../ui/src/app/admin/announcements/admin-announcements.html) edit or publish records with their own lifecycle.
+
+The first handoff is enabled on Home's Quick post and the existing Mastodon quote dialog. Extending it to a reply or private conversation needs the receiving editor to preserve the reply parent, recipient and network through publication.
 
 ## Start with thread text
 

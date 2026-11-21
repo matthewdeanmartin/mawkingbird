@@ -406,6 +406,20 @@ describe('Compose', () => {
     expect(navigate).toHaveBeenCalledWith(['/write'], { queryParams: { handoff: 1 } });
   });
 
+  it('keeps the mini composer draft when navigation to Write is cancelled', async () => {
+    const f = setUp();
+    f.componentRef.setInput('fullscreenEdit', true);
+    f.detectChanges();
+    const drafts = TestBed.inject(Drafts);
+    internals(f).text.set('still here');
+    drafts.autosave('new', { ...emptyDraftSnapshot('private'), segments: ['still here'] });
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(false);
+    await internals(f).openInWrite();
+    expect(drafts.takeHandoff()).toBeNull();
+    expect(drafts.loadAutosave('new')?.segments).toEqual(['still here']);
+    expect(internals(f).text()).toBe('still here');
+  });
+
   describe('alt text', () => {
     /** A minimal JPEG whose EXIF ImageDescription is the given text. */
     function jpegDescribed(text: string): Uint8Array<ArrayBuffer> {
