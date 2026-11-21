@@ -2536,6 +2536,9 @@
     "visibility.public": "Public",
     "visibilityLabel": "Who can see it"
   },
+  "moderation": {
+    "bskyLabels.hidden": "Hidden by your Bluesky moderation settings"
+  },
   "otherServers": {
     "back": "← Feeds",
     "backToServers": "← Other Servers",
@@ -3687,6 +3690,8 @@
     "loginBluesky.compatSummary": "My PDS does not support OAuth yet",
     "loginBluesky.continueWithAccount": "Continue with this account",
     "loginBluesky.continueWithBluesky": "Continue with Bluesky",
+    "loginBluesky.createAccount": "Create a Bluesky account",
+    "loginBluesky.createNote": "New to Bluesky? Bluesky shows its sign-up form, then brings you back here signed in to set up.",
     "loginBluesky.dmTickHint": "Tick <em>“Allow access to your direct messages”</em> if you want Bluesky DMs in Chat.",
     "loginBluesky.errors.credentialsRejected": "That handle and app password combination was rejected.",
     "loginBluesky.errors.handleUnresolved": "That Bluesky handle could not be resolved. Check the spelling or enter your PDS URL.",
@@ -3787,11 +3792,15 @@
     "notifications.followFailed": "Could not follow @{{acct}}.",
     "notifications.hide": "Hide notification",
     "notifications.hideFailed": "Could not hide the notification. Try again.",
+    "notifications.label.contactMatch": "is in your contacts",
     "notifications.label.favourite": "favourited your status",
     "notifications.label.follow": "followed you",
     "notifications.label.followRequest": "requested to follow you",
     "notifications.label.mention": "mentioned you",
     "notifications.label.reblog": "boosted your status",
+    "notifications.label.status": "posted",
+    "notifications.label.unverified": "removed your verification",
+    "notifications.label.verified": "verified your account",
     "notifications.like": "Like reply",
     "notifications.likeFailed": "Could not update this like. Try again.",
     "notifications.likeLabel": "Like",
@@ -9764,6 +9773,10 @@
     "skip": "Skip — I’ll sign in instead",
     "thatServer": "That server",
     "title": "{{server}} isn’t reachable"
+  },
+  "verifiedBadge": {
+    "bskyVerified": "Verified on Bluesky",
+    "bskyVerifier": "Trusted verifier on Bluesky"
   },
   "videoChannel": {
     "failed": "Couldn't load this channel's videos.",

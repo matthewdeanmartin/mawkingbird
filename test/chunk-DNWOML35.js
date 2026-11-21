@@ -1,0 +1,1 @@
+import{a as o}from"./chunk-ENS42SM5.js";import{p as e}from"./chunk-LA2AVP6U.js";import{i as t}from"./chunk-4UWPKRZU.js";var c=(r,i)=>t(o).isOpenNow()?!0:t(e).createUrlTree(["/discovery-closed"],{queryParams:{next:i.url}});function d(r){return r&&r.startsWith("/")&&!r.startsWith("//")?r:"/home"}export{c as a,d as b};
