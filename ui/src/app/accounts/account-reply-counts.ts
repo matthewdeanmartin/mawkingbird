@@ -58,6 +58,43 @@ export class AccountReplyCounts {
   readonly checking = signal(false);
   private lastCheck = 0;
   private pending: Promise<void> | null = null;
+  /**
+   * OAuth requests still running, timeouts or not. The SDK may be rotating a
+   * refresh token inside one; see {@link settled}.
+   */
+  private readonly inFlight = new Set<Promise<unknown>>();
+
+  /**
+   * Resolves once no OAuth request from these checks is still running, or
+   * after `maxMs`. Call before reloading the page (an account switch does).
+   *
+   * Why: opening the account menu checks every account, which can make the
+   * OAuth SDK refresh a Bluesky identity's tokens. Bluesky rotates the refresh
+   * token on use, so a reload that lands after the server answered but before
+   * the SDK stored the new pair leaves only a spent token behind. The next
+   * restore then fails, the SDK deletes the session, and Home asks to sign in
+   * to Bluesky again. Waiting a moment for the write avoids that.
+   */
+  async settled(maxMs = 10_000): Promise<void> {
+    if (!this.inFlight.size) return;
+    await Promise.race([
+      Promise.allSettled([...this.inFlight]),
+      new Promise((resolve) => setTimeout(resolve, maxMs)),
+    ]);
+  }
+
+  /** Run `then` now when nothing is in flight, else once {@link settled}. */
+  afterSettled(then: () => void): void {
+    if (!this.inFlight.size) then();
+    else void this.settled().then(then);
+  }
+
+  private track<T>(request: Promise<T>): Promise<T> {
+    this.inFlight.add(request);
+    const done = () => this.inFlight.delete(request);
+    request.then(done, done);
+    return request;
+  }
 
   label(key: string): string {
     const count = this.counts()[key];
@@ -185,9 +222,11 @@ export class AccountReplyCounts {
       response = await Promise.race([
         this.native && identity.credentials.nativeHandle
           ? this.native.blueskyFetch(identity.credentials.nativeHandle, path)
-          : this.oauth.fetch(identity.profile.did, path, {
-              signal: AbortSignal.timeout(TIMEOUT_MS),
-            }),
+          : this.track(
+              this.oauth.fetch(identity.profile.did, path, {
+                signal: AbortSignal.timeout(TIMEOUT_MS),
+              }),
+            ),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Timeout')), TIMEOUT_MS),
         ),

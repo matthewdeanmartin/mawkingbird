@@ -128,6 +128,7 @@ describe('AccountPicker standalone (fail whale escape hatch)', () => {
             currentKey: () => null,
             hasAccount: () => true,
             label: () => '0',
+            afterSettled: (then: () => void) => then(),
           },
         },
         {

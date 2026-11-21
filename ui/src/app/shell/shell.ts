@@ -986,7 +986,9 @@ export class Shell implements OnInit, AccountSwitcher {
     // Misskey-primary is tokenless here too (its token lives in its own store).
     if (session.kind === 'anonymous' || session.kind === 'bluesky' || session.kind === 'misskey') {
       if (this.auth.switchAccount(session)) {
-        location.reload();
+        // Let an OAuth token refresh started by the menu's reply counts finish
+        // first, or the reload can leave a spent refresh token (see settled()).
+        this.replyCounts.afterSettled(() => location.reload());
       }
       return;
     }
@@ -1016,8 +1018,9 @@ export class Shell implements OnInit, AccountSwitcher {
     this.api.verifyCredentials().subscribe({
       next: (acc) => {
         this.auth.setAccount(acc);
-        // Hard reload: rebuild the whole app under the new account.
-        location.reload();
+        // Hard reload: rebuild the whole app under the new account, once any
+        // OAuth refresh from the menu's reply counts has been stored.
+        this.replyCounts.afterSettled(() => location.reload());
       },
       error: (err: unknown) => {
         // The token was rejected by its instance. Don't silently delete the account —

@@ -90,7 +90,8 @@ export class AccountPicker implements OnInit {
       return;
     }
     if (this.auth.switchAccount(choice)) {
-      this.navigate('home');
+      // See AccountReplyCounts.settled(): never reload mid OAuth refresh.
+      this.replyCounts.afterSettled(() => this.navigate('home'));
     }
   }
 
