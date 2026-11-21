@@ -1,0 +1,114 @@
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <title>Create a Bluesky account | How to create a Bluesky account | Mawkingbird</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index, follow">
+    <!-- The one server this build belongs to; empty for mawkingbird.com. Set at
+         build time with MOCKINGBIRD_HOME_SERVER (src/app/platform/http/home-server.ts). -->
+    <meta name="mawkingbird:home-server" content="">
+    <!-- Bing Webmaster Tools ownership; public/BingSiteAuth.xml is the file method. -->
+    <meta name="msvalidate.01" content="ACFC19CF9923E361561E212397D92649">
+    <meta name="description" content="How to create a Bluesky account: sign up on Bluesky with an email address, choose a handle, and come back to Mawkingbird to set up your profile and Home feed. Free.">
+    <link rel="canonical" href="https://mawkingbird.com/create-bluesky-account/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Mawkingbird">
+    <meta property="og:title" content="Create a Bluesky account | How to create a Bluesky account | Mawkingbird">
+    <meta property="og:description" content="How to create a Bluesky account: sign up on Bluesky with an email address, choose a handle, and come back to Mawkingbird to set up your profile and Home feed. Free.">
+    <meta property="og:url" content="https://mawkingbird.com/create-bluesky-account/">
+    <meta property="og:image" content="https://mawkingbird.com/og/default.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Mawkingbird: Mastodon, Bluesky and RSS in one place">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Create a Bluesky account | How to create a Bluesky account | Mawkingbird">
+    <meta name="twitter:description" content="How to create a Bluesky account: sign up on Bluesky with an email address, choose a handle, and come back to Mawkingbird to set up your profile and Home feed. Free.">
+    <meta name="twitter:image" content="https://mawkingbird.com/og/default.png">
+    <meta name="twitter:image:alt" content="Mawkingbird: Mastodon, Bluesky and RSS in one place">
+
+    <!--
+      Content-Security-Policy. This app is served as static files with no
+      backend we control, so the policy ships as a meta tag; see
+      docs/security.md for the header-only directives (frame-ancestors) that a
+      host which *can* set headers should add on top.
+
+      script-src is the directive that matters here. Everything this app holds —
+      Mastodon bearer tokens, Bluesky JWTs, connector tokens — lives in this
+      origin's localStorage, so any script that runs here can read all of it.
+      The allowlist is therefore exactly 'self' and nothing else: no third-party
+      origin can execute here, so no third party — and no future owner of a
+      third party's expired domain — can read any of it. Analytics is served
+      from our own origin (public/vendor/count.js, refreshed at build time by
+      scripts/vendor-analytics.mjs) for precisely that reason.
+
+      There is also deliberately no 'unsafe-inline' and no 'unsafe-eval': the
+      scripts that used to be inline in this file now live in boot.js.
+
+      style-src needs 'unsafe-inline' because Angular injects component styles
+      as <style> elements at runtime; removing it requires a per-response nonce,
+      which a static host cannot generate.
+
+      connect-src / img-src are deliberately wide: the user points this client
+      at an arbitrary Mastodon instance and subscribes to arbitrary RSS feeds,
+      so the hosts cannot be enumerated in advance. http: and ws: are allowed so
+      a localhost instance still works during development.
+
+      External playback is confined to allowlisted cross-origin iframes
+      below, created only after the user loads a player. No provider SDK executes in
+      our document; script-src remains self-only.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: blob: https: http:;
+        font-src 'self' data:;
+        connect-src 'self' https: http: ws: wss:;
+        media-src 'self' data: blob: https: http:;
+        worker-src 'self' blob:;
+        manifest-src 'self';
+        form-action 'self';
+        base-uri 'self';
+        object-src 'none';
+        frame-src https://www.youtube-nocookie.com https://w.soundcloud.com https://player-widget.mixcloud.com https://open.spotify.com https://embed.music.apple.com https://embed.podcasts.apple.com https://embed.tidal.com https://bandcamp.com https://audio.com https://music.amazon.com https://widget.deezer.com https://archive.org;
+      ">
+
+    <!--
+      Outbound links go to arbitrary sites, and some in-app URLs carry content in
+      the query string (/message/?m=…). Send only the origin cross-origin.
+    -->
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
+    <!--
+      Identity verification for Mastodon. A profile field linking back to this
+      site shows a green check only if this page links back with rel="me" — the
+      handshake has to be mutual, which is what makes it evidence rather than a
+      claim anyone could type.
+    -->
+    <link rel="me" href="https://mastodon.social/@mistersql">
+    <link rel="me" href="https://mastodon.social/@mawkingbird">
+
+    <!--
+      SPA deep-link restore. Must run synchronously ahead of the app bundle, so
+      this is a blocking script; the src is relative so it resolves against
+      <base href> (/canary/ loads its own copy).
+
+      Analytics is deliberately NOT loaded here. analytics-tracker.ts injects it
+      on the first counted page view, and only when the user has not opted out —
+      so opting out means the script is never fetched or run at all.
+    -->
+    <script src="boot.js"></script>
+  <link rel="stylesheet" href="styles-R4OVMXKE.css"><style ng-app-id="ng">[_nghost-ng-c6298999]{display:block;background:var(--bg);color:var(--text);min-height:100dvh}.ca[_ngcontent-ng-c6298999]{max-width:720px;margin:0 auto;padding:16px;box-sizing:border-box}.ca-top[_ngcontent-ng-c6298999]{padding-bottom:16px;font-weight:600}.ca-article[_ngcontent-ng-c6298999]   h1[_ngcontent-ng-c6298999]{margin:0 0 12px;font-size:2rem;line-height:1.2}.ca-lead[_ngcontent-ng-c6298999]{font-size:1.1rem;line-height:1.5}.ca-section[_ngcontent-ng-c6298999]{margin-top:32px}.ca-controls[_ngcontent-ng-c6298999]{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;margin:16px 0}.ca-servers[_ngcontent-ng-c6298999]{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}.ca-meta[_ngcontent-ng-c6298999]{color:var(--muted);font-size:.9rem}.ca-server[_ngcontent-ng-c6298999]   h3[_ngcontent-ng-c6298999]{margin:0;overflow-wrap:anywhere}.ca-footer[_ngcontent-ng-c6298999]{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:40px;padding-top:16px;border-top:1px solid var(--border)}</style><style ng-app-id="ng">[_nghost-ng-c3172328079]{color:var(--text);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}[_nghost-ng-c3172328079]:focus-visible{outline:2px solid var(--text);outline-offset:2px}</style></head>
+  <body>
+    <app-root ng-version="21.2.26" ng-server-context="ssg"><router-outlet></router-outlet><app-create-bluesky-account _nghost-ng-c6298999=""><main _ngcontent-ng-c6298999="" class="ca"><nav _ngcontent-ng-c6298999="" class="ca-top"><a _ngcontent-ng-c6298999="" routerlink="/" href="/">Mawkingbird</a></nav><article _ngcontent-ng-c6298999="" class="ca-article"><h1 _ngcontent-ng-c6298999="">Create a Bluesky account</h1><p _ngcontent-ng-c6298999="" class="ca-lead"> Sign up on Bluesky with an email address and a password. It’s free. Your handle becomes <strong _ngcontent-ng-c6298999="">@name.bsky.social</strong>, and Bluesky brings you straight back here, signed in, so we can help you set up. </p><p _ngcontent-ng-c6298999=""><a _ngcontent-ng-c6298999="" mbbutton="" rel="nofollow" routerlink="/login/bluesky" data-variant="solid" data-size="regular" data-tone="accent" data-shape="pill" href="/login/bluesky?create=1"> Create a Bluesky account </a></p><p _ngcontent-ng-c6298999="" class="ca-meta"> Already have one? <a _ngcontent-ng-c6298999="" rel="nofollow" routerlink="/login/bluesky" href="/login/bluesky">Sign in with Bluesky</a>. </p><section _ngcontent-ng-c6298999="" aria-labelledby="ca-signup" class="ca-section"><h2 _ngcontent-ng-c6298999="" id="ca-signup">What happens when you sign up</h2><ol _ngcontent-ng-c6298999=""><li _ngcontent-ng-c6298999="">Bluesky asks for your email address, a password and your date of birth.</li><li _ngcontent-ng-c6298999="">Choose a handle. It’s the name people mention you by.</li><li _ngcontent-ng-c6298999="">Prove you’re a person, if Bluesky asks.</li><li _ngcontent-ng-c6298999="">Approve Mawkingbird’s access, and you’re back here, signed in.</li></ol><p _ngcontent-ng-c6298999=""> Mawkingbird never sees your password: you type it on Bluesky’s own page. When Bluesky is busy, it may queue new sign-ups for a short while; once yours is ready, come back and sign in. </p></section><section _ngcontent-ng-c6298999="" aria-labelledby="ca-after" class="ca-section"><h2 _ngcontent-ng-c6298999="" id="ca-after">After you sign up</h2><ul _ngcontent-ng-c6298999=""><li _ngcontent-ng-c6298999="">Add a picture and a bio that says what you’ll post about.</li><li _ngcontent-ng-c6298999="">Follow people Bluesky suggests, so your Home feed isn’t empty.</li><li _ngcontent-ng-c6298999="">Write a first post that introduces you, in your own words.</li></ul></section><section _ngcontent-ng-c6298999="" aria-labelledby="ca-questions" class="ca-section"><h2 _ngcontent-ng-c6298999="" id="ca-questions">Questions</h2><h3 _ngcontent-ng-c6298999="">Does it cost anything?</h3><p _ngcontent-ng-c6298999="">No. Bluesky is free.</p><h3 _ngcontent-ng-c6298999="">Can I use the official Bluesky app too?</h3><p _ngcontent-ng-c6298999="">Yes. One account works in every Bluesky app, Mawkingbird included.</p><h3 _ngcontent-ng-c6298999="">Can I use my own domain as my handle?</h3><p _ngcontent-ng-c6298999="">Yes. You can switch to a domain you own later, in Bluesky’s settings.</p><h3 _ngcontent-ng-c6298999="">Can I follow Mastodon people as well?</h3><p _ngcontent-ng-c6298999=""> Yes. Mawkingbird reads both networks. You can also <a _ngcontent-ng-c6298999="" routerlink="/create-mastodon-account" href="/create-mastodon-account/">create a Mastodon account</a>. </p></section></article><footer _ngcontent-ng-c6298999="" class="ca-footer"><a _ngcontent-ng-c6298999="" mbcontentlink="" href="/help/" _nghost-ng-c3172328079="">Help</a><a _ngcontent-ng-c6298999="" mbcontentlink="" routerlink="/features" _nghost-ng-c3172328079="" href="/features/">Discover all Mawkingbird features</a><a _ngcontent-ng-c6298999="" mbcontentlink="" routerlink="/for/bluesky" _nghost-ng-c3172328079="" href="/for/bluesky/">For Bluesky users</a><a _ngcontent-ng-c6298999="" mbcontentlink="" routerlink="/for/readers" _nghost-ng-c3172328079="" href="/for/readers/">For readers</a><a _ngcontent-ng-c6298999="" mbcontentlink="" routerlink="/for/twitter-exodus" _nghost-ng-c3172328079="" href="/for/twitter-exodus/">Leaving Twitter</a><a _ngcontent-ng-c6298999="" mbcontentlink="" routerlink="/for/instagram" _nghost-ng-c3172328079="" href="/for/instagram/">For photo lovers</a><a _ngcontent-ng-c6298999="" mbcontentlink="" routerlink="/for/creators" _nghost-ng-c3172328079="" href="/for/creators/">For creators</a><a _ngcontent-ng-c6298999="" mbcontentlink="" routerlink="/for/power-users" _nghost-ng-c3172328079="" href="/for/power-users/">For power users</a><a _ngcontent-ng-c6298999="" mbcontentlink="" routerlink="/compare/mastodon-vs-bluesky" _nghost-ng-c3172328079="" href="/compare/mastodon-vs-bluesky/">Mastodon vs Bluesky</a></footer></main></app-create-bluesky-account><!----></app-root>
+  <link rel="modulepreload" href="chunk-NQFE3AQG.js"><link rel="modulepreload" href="chunk-CHYS5EBV.js"><link rel="modulepreload" href="chunk-MSENMFBM.js"><link rel="modulepreload" href="chunk-BB7HQQ3S.js"><link rel="modulepreload" href="chunk-WZLBWVHJ.js"><link rel="modulepreload" href="chunk-3PDRRBIC.js"><link rel="modulepreload" href="chunk-2OQXOH7A.js"><link rel="modulepreload" href="chunk-GE7PUDET.js"><link rel="modulepreload" href="chunk-KQ4C53VD.js"><link rel="modulepreload" href="chunk-7UJGHZ5B.js"><script src="main-5NQAKC64.js" type="module"></script>
+
+</body></html>
