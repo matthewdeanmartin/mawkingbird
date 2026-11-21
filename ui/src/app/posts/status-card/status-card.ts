@@ -1033,7 +1033,7 @@ export class StatusCard {
    */
   protected mediaBlurred = computed(
     () =>
-      this.display.sensitive &&
+      this.visibility.mediaSensitive(this.display) &&
       !this.spoilerText() &&
       !this.sensitiveRevealed() &&
       !this.authorTrustedForSensitive(),

@@ -23,6 +23,22 @@
       {{ 'pages.loginBluesky.oauthNote' | transloco: { brand: brand } }}
     </p>
 
+    @if (!native) {
+      <button
+        mbButton
+        variant="outline"
+        class="bsky-btn bsky-submit bsky-create"
+        type="button"
+        [disabled]="working()"
+        (click)="createAccount()"
+      >
+        {{ 'pages.loginBluesky.createAccount' | transloco }}
+      </button>
+      <p class="bsky-oauth-note muted small">
+        {{ 'pages.loginBluesky.createNote' | transloco }}
+      </p>
+    }
+
     <details class="bsky-advanced">
       <summary>{{ 'pages.loginBluesky.advancedSummary' | transloco }}</summary>
       <form class="bsky-form" (ngSubmit)="submit()">

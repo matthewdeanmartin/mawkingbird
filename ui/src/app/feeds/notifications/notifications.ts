@@ -115,6 +115,10 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.label.followRequest: requested to follow you
 // i18n pages.notifications.label.follow: followed you
 // i18n pages.notifications.label.mention: mentioned you
+// i18n pages.notifications.label.status: posted
+// i18n pages.notifications.label.verified: verified your account
+// i18n pages.notifications.label.unverified: removed your verification
+// i18n pages.notifications.label.contactMatch: is in your contacts
 // i18n pages.notifications.like: Like reply
 // i18n pages.notifications.unlike: Undo like
 // i18n pages.notifications.star: Star reply
@@ -1046,6 +1050,15 @@ export class Notifications implements OnInit, OnDestroy {
         return this.transloco.translate<string>('pages.notifications.label.follow');
       case 'mention':
         return this.transloco.translate<string>('pages.notifications.label.mention');
+      case 'status':
+        return this.transloco.translate<string>('pages.notifications.label.status');
+      // Bluesky reasons with no Mastodon type (see bluesky-notification-adapter).
+      case 'verified':
+        return this.transloco.translate<string>('pages.notifications.label.verified');
+      case 'unverified':
+        return this.transloco.translate<string>('pages.notifications.label.unverified');
+      case 'contact-match':
+        return this.transloco.translate<string>('pages.notifications.label.contactMatch');
       default:
         return type;
     }

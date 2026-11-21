@@ -34,6 +34,7 @@ const pages = [
   'compare/mastodon-app',
   'about',
   'create-mastodon-account',
+  'create-bluesky-account',
   'funding',
   'legal',
   'tools',

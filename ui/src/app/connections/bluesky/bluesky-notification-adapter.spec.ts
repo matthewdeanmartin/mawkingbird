@@ -55,6 +55,8 @@ describe('notificationType', () => {
   it('folds the -via-repost variants into their base reason', () => {
     expect(notificationType('like-via-repost')).toBe('favourite');
     expect(notificationType('repost-via-repost')).toBe('reblog');
+    expect(notificationType('subscribed-post')).toBe('status');
+    expect(notificationType('verified')).toBe('verified');
   });
 
   it('passes an unknown reason through rather than dropping it', () => {

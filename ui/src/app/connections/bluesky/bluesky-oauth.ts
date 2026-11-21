@@ -27,7 +27,13 @@ export interface BlueskyOAuthResult {
  * `connector:link` attaches Bluesky to the active Mastodon or Anonymous account
  * instead of signing in as it.
  */
-export type BlueskyOAuthIntent = 'identity:login' | 'identity:add' | 'connector:link';
+export type BlueskyOAuthIntent =
+  'identity:login' | 'identity:add' | 'identity:signup' | 'identity:signup-add' | 'connector:link';
+
+/** The intents that open the server's sign-up form first (`prompt=create`). */
+export function isSignupIntent(intent: string | null): boolean {
+  return intent === 'identity:signup' || intent === 'identity:signup-add';
+}
 
 interface ProfileResponse {
   handle: string;
@@ -59,6 +65,10 @@ export class BlueskyOAuth {
     return (await this.client()).signInRedirect(identifier, {
       state: intent,
       redirect_uri: blueskyOAuthRedirectUri(),
+      // The authorization server shows its own sign-up form, then finishes
+      // authorizing the new account and redirects back here signed in.
+      // bsky.social lists `create` in prompt_values_supported (checked 2026-11-20).
+      ...(isSignupIntent(intent) && { prompt: 'create' as const }),
     });
   }
 

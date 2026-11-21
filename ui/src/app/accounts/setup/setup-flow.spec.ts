@@ -29,6 +29,22 @@ describe('setup flow', () => {
     ]);
   });
 
+  it('gives a new Bluesky account its own short run, without Mastodon settings', () => {
+    expect(ids({ first: true, network: 'bluesky' })).toEqual([
+      'welcome-bluesky',
+      'profile-bluesky',
+      'follow-bluesky',
+      'intro-bluesky',
+      'done',
+    ]);
+    expect(ids({ first: false, network: 'bluesky', movers: 'twitter' })).toEqual([
+      'profile-bluesky',
+      'follow-bluesky',
+      'intro-bluesky',
+      'done',
+    ]);
+  });
+
   it('opens the Twitter or Bluesky step from the movers answer, and none for a pseudonym', () => {
     expect(ids({ first: false, movers: 'twitter' })).toContain('twitter');
     expect(ids({ first: false, movers: 'bluesky' })).toContain('bluesky');

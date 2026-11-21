@@ -3473,6 +3473,21 @@
       "nextStep": "Interest MbCheckbox grid in a fieldset, people as MbIdentityRow (suggestion-avatar/suggestion-name, Unbird pattern) with an MbCheckbox Follow toggle, MbButton Follow N. Fieldset grid is layout only."
     },
     {
+      "file": "ui/src/app/accounts/setup/steps/setup-bluesky-follow.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Bluesky setup: Bluesky suggestions through the shared app-bluesky-people-list (its MbButton Follow per row) and MbNotice for a failed load. Text only otherwise."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-bluesky-intro.html",
+      "disposition": "adopted scope",
+      "nextStep": "Bluesky setup: MbField + textarea[mbControl] with a grapheme count, MbButton Post and Pin, MbNotice for errors. Same pattern as setup-intro.html."
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-bluesky-profile.html",
+      "disposition": "adopted scope",
+      "nextStep": "Bluesky setup: MbFileDrop (link presentation) for the picture, MbField + input/textarea[mbControl] for name and bio. Same pattern as setup-profile.html."
+    },
+    {
       "file": "ui/src/app/accounts/setup/steps/setup-intro.html",
       "disposition": "adopted scope",
       "nextStep": "MbField + textarea[mbControl], MbButton Post/Pin/Save for later, MbButton link for the public toggle, MbNotice for errors. Prompt list is plain text."
@@ -3501,6 +3516,11 @@
       "file": "ui/src/app/public-pages/create-account/create-account.html",
       "disposition": "adopted scope",
       "nextStep": "Public /create-mastodon-account/ page: MbField + select[mbControl] language, MbCheckbox approval toggle, server cards as MbDiscoveryCandidate with data-candidate-actions MbButton, outline MbButton for Pick another server. Prerendered; card list and page width are local layout."
+    },
+    {
+      "file": "ui/src/app/public-pages/create-account/create-bluesky-account.html",
+      "disposition": "adopted scope",
+      "nextStep": "Public /create-bluesky-account/ page: one MbButton link that starts Bluesky sign-up, MbContentLink footer, plain links. Shares create-account.css; prerendered."
     }
   ]
 }

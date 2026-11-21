@@ -1,5 +1,13 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import type { Status } from '../../platform/api/models';
+import type { BskyRef } from './bluesky-types';
+import {
+  BskyLabelDecision,
+  BskyLabelDefinition,
+  BskyLabelInputs,
+  BskyLabelVisibility,
+  decideLabels,
+} from './bluesky-labels';
 
 /** Bluesky's own moderation service; its labels are always requested. */
 export const BSKY_MODERATION_DID = 'did:plc:ar7c4by46qjdydhdevvrndac';
@@ -28,6 +36,38 @@ export class BlueskyModerationState {
   readonly labelers = signal<string[]>([]);
   /** The linked Bluesky account, whose own posts muted words never hide. */
   readonly viewerDid = signal<string | undefined>(undefined);
+  /** `adultContentPref.enabled`: off until the account says otherwise, as bsky.app. */
+  readonly adultContent = signal(false);
+  /** `contentLabelPref` entries, keyed by `labelPrefKey`. */
+  readonly labelPrefs = signal<ReadonlyMap<string, BskyLabelVisibility>>(new Map());
+  /** Subscribed labelers' own label definitions, keyed by `labelDefKey`. */
+  readonly labelDefs = signal<ReadonlyMap<string, BskyLabelDefinition>>(new Map());
+
+  private readonly labelInputs = computed<BskyLabelInputs>(() => ({
+    adultContent: this.adultContent(),
+    prefs: this.labelPrefs(),
+    defs: this.labelDefs(),
+    labelers: this.labelers(),
+  }));
+
+  /**
+   * What the reader's label settings make of a Bluesky post: its own labels
+   * and its author's account labels together. Null for other networks. The
+   * reader's own posts are never hidden or collapsed, as on bsky.app.
+   */
+  labelDecision(status: Status): BskyLabelDecision | null {
+    if (status.provider !== 'bluesky') return null;
+    const ref = status.providerRef as BskyRef | null | undefined;
+    const authorDid = status.account.id.replace(/^bsky:/, '');
+    const inputs = this.labelInputs();
+    if (!ref?.labels?.length && !ref?.authorLabels?.length) return null;
+    // A label on the profile *record* covers only the avatar and banner; one on
+    // the account (its uri is the DID) covers everything the account posts.
+    const account = (ref.authorLabels ?? []).filter((l) => !l.uri || l.uri.startsWith('did:'));
+    const decision = decideLabels([...(ref.labels ?? []), ...account], authorDid, inputs);
+    if (authorDid === this.viewerDid()) return { ...decision, hide: false, warn: [] };
+    return decision;
+  }
 }
 
 /** Plain text of a post's HTML, lower-cased, for word matching. */

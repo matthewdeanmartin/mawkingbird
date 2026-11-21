@@ -104,4 +104,20 @@ describe('BlueskyOAuthCallback', () => {
     expect(back?.getAttribute('href')).toBe('/settings/connections/bluesky');
     expect(back?.textContent).toContain('Back to the Bluesky connection');
   });
+
+  it('sends an account that was just created to setup', async () => {
+    bsky.finishOAuth.mockResolvedValue({
+      kind: 'identity',
+      session: {},
+      adding: false,
+      signup: true,
+    });
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+
+    const fixture = TestBed.createComponent(BlueskyOAuthCallback);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(navigate).toHaveBeenCalledWith('/setup', { replaceUrl: true });
+  });
 });

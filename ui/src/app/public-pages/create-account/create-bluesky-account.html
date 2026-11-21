@@ -1,0 +1,69 @@
+<main class="ca">
+  <nav class="ca-top"><a routerLink="/">Mawkingbird</a></nav>
+
+  <article class="ca-article">
+    <h1>Create a Bluesky account</h1>
+    <p class="ca-lead">
+      Sign up on Bluesky with an email address and a password. It’s free. Your handle becomes
+      <strong>&#64;name.bsky.social</strong>, and Bluesky brings you straight back here, signed in,
+      so we can help you set up.
+    </p>
+
+    <p>
+      <a mbButton rel="nofollow" routerLink="/login/bluesky" [queryParams]="signupParams">
+        Create a Bluesky account
+      </a>
+    </p>
+    <p class="ca-meta">
+      Already have one?
+      <a routerLink="/login/bluesky">Sign in with Bluesky</a>.
+    </p>
+
+    <section class="ca-section" aria-labelledby="ca-signup">
+      <h2 id="ca-signup">What happens when you sign up</h2>
+      <ol>
+        <li>Bluesky asks for your email address, a password and your date of birth.</li>
+        <li>Choose a handle. It’s the name people mention you by.</li>
+        <li>Prove you’re a person, if Bluesky asks.</li>
+        <li>Approve Mawkingbird’s access, and you’re back here, signed in.</li>
+      </ol>
+      <p>
+        Mawkingbird never sees your password: you type it on Bluesky’s own page. When Bluesky is
+        busy, it may queue new sign-ups for a short while; once yours is ready, come back and sign
+        in.
+      </p>
+    </section>
+
+    <section class="ca-section" aria-labelledby="ca-after">
+      <h2 id="ca-after">After you sign up</h2>
+      <ul>
+        <li>Add a picture and a bio that says what you’ll post about.</li>
+        <li>Follow people Bluesky suggests, so your Home feed isn’t empty.</li>
+        <li>Write a first post that introduces you, in your own words.</li>
+      </ul>
+    </section>
+
+    <section class="ca-section" aria-labelledby="ca-questions">
+      <h2 id="ca-questions">Questions</h2>
+      <h3>Does it cost anything?</h3>
+      <p>No. Bluesky is free.</p>
+      <h3>Can I use the official Bluesky app too?</h3>
+      <p>Yes. One account works in every Bluesky app, Mawkingbird included.</p>
+      <h3>Can I use my own domain as my handle?</h3>
+      <p>Yes. You can switch to a domain you own later, in Bluesky’s settings.</p>
+      <h3>Can I follow Mastodon people as well?</h3>
+      <p>
+        Yes. Mawkingbird reads both networks. You can also
+        <a routerLink="/create-mastodon-account">create a Mastodon account</a>.
+      </p>
+    </section>
+  </article>
+  <footer class="ca-footer">
+    <a mbContentLink href="/help/">Help</a>
+    <a mbContentLink routerLink="/features">Discover all Mawkingbird features</a>
+    <a mbContentLink routerLink="/for/bluesky">For Bluesky users</a>
+    <a mbContentLink routerLink="/for/readers">For readers</a>
+    <a mbContentLink routerLink="/for/twitter-exodus">Leaving Twitter</a>
+    <a mbContentLink routerLink="/compare/mastodon-vs-bluesky">Mastodon vs Bluesky</a>
+  </footer>
+</main>

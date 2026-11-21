@@ -99,4 +99,29 @@ describe('Bluesky OAuth transport', () => {
     expect(credentials['did:plc:second']).not.toHaveProperty('accessJwt');
     expect(credentials['did:plc:second']).not.toHaveProperty('refreshJwt');
   });
+
+  it('starts a sign-up at bsky.social with the sign-up intent', async () => {
+    oauth.signIn.mockReturnValue(new Promise(() => undefined));
+    void TestBed.inject(BlueskySession).beginOAuthSignup(false);
+    expect(oauth.signIn).toHaveBeenCalledWith('https://bsky.social', 'identity:signup');
+    void TestBed.inject(BlueskySession).beginOAuthSignup(true);
+    expect(oauth.signIn).toHaveBeenLastCalledWith('https://bsky.social', 'identity:signup-add');
+  });
+
+  it('arms full-page setup for an account that was just created', async () => {
+    oauth.callback.mockResolvedValue({
+      state: 'identity:signup',
+      profile: { service: SERVICE, handle: 'new.bsky.social', did: 'did:plc:new' },
+    });
+    const result = await TestBed.inject(BlueskySession).finishOAuth();
+    expect(result).toMatchObject({ kind: 'identity', adding: false, signup: true });
+    const armed = Object.keys(localStorage).filter((key) =>
+      key.startsWith('mockingbird_account_setup'),
+    );
+    expect(armed).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(armed[0])!)).toMatchObject({
+      state: 'armed',
+      source: 'signup',
+    });
+  });
 });

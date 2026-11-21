@@ -106,4 +106,15 @@ describe('VerifiedBadge', () => {
     expect(self).not.toBeNull();
     expect(self!.classList.contains('self')).toBe(true);
   });
+
+  it('shows Bluesky verification whatever the mode, even with counts hidden', () => {
+    TestBed.inject(Wellness).set('hideProfileCounts', true);
+    const verified = render(makeAccount({ followers_count: 0, bsky_verification: 'verified' }));
+    const badge = verified.querySelector('svg.badge.bsky');
+    expect(badge?.querySelector('title')?.textContent).toBe('Verified on Bluesky');
+    const verifier = render(makeAccount({ followers_count: 0, bsky_verification: 'verifier' }));
+    expect(verifier.querySelector('svg.badge.bsky title')?.textContent).toBe(
+      'Trusted verifier on Bluesky',
+    );
+  });
 });

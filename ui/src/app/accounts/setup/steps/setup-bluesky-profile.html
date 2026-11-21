@@ -1,0 +1,39 @@
+<div class="setup-avatar">
+  @if (avatarUrl()) {
+    <img [src]="avatarUrl()" alt="Your profile picture" width="72" height="72" />
+  }
+  <mb-file-drop
+    presentation="link"
+    accept="image/*"
+    [label]="avatarUrl() ? 'Change picture' : 'Add a picture'"
+    (files)="onAvatar($event)"
+  />
+</div>
+
+<mb-field label="Display name" hint="Any name you like. It can change any time.">
+  <input
+    mbControl
+    type="text"
+    name="display_name"
+    [attr.maxlength]="nameMax"
+    autocomplete="nickname"
+    [value]="displayName()"
+    (input)="displayName.set($any($event.target).value)"
+  />
+</mb-field>
+
+<mb-field
+  label="Bio"
+  [hint]="'Say what you’ll post about. ' + description().length + ' / ' + bioMax"
+>
+  <textarea
+    mbControl
+    name="description"
+    rows="4"
+    [attr.maxlength]="bioMax"
+    [value]="description()"
+    (input)="description.set($any($event.target).value)"
+  ></textarea>
+</mb-field>
+
+<p class="setup-aside">Banner, pronouns and website are in Settings → Public profile.</p>

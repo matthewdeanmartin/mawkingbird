@@ -368,6 +368,13 @@ prerender entry in `main.server.ts`, `public/sitemap.xml` and the `pages` list
 in `scripts/check-seo-build.mjs` in step. English only until the feature
 settles. Design: `spec/new-account-setup.md`.
 
+Its sibling `/create-bluesky-account/` (`create-bluesky-account.ts`, same
+directory and stylesheet) has no server list: its button opens
+`/login/bluesky?create=1`, which starts Bluesky's own sign-up (OAuth
+`prompt=create`) and returns into setup. It is wired in the same four places
+and shares the directory's `prepare-seo-index.mjs` sources. Design:
+`spec/bsky_parity.md` sprint 2.
+
 - **Server list:** `signup-servers.json`, proposed by `make signup-servers`
   (`ui/scripts/refresh-signup-servers.mjs`, from the joinmastodon.org
   directory). Up to 5 open and 3 approval-required general servers per

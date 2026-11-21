@@ -4,7 +4,11 @@ import { provideRouter, Route, RouterOutlet, TitleStrategy } from '@angular/rout
 import { provideServerRendering, RenderMode, withRoutes } from '@angular/ssr';
 import { PageTitleStrategy } from './app/shell/a11y/page-title-strategy';
 import { CreateAccount } from './app/public-pages/create-account/create-account';
-import { CREATE_ACCOUNT_DESCRIPTION } from './app/public-pages/create-account/create-account-meta';
+import { CreateBlueskyAccount } from './app/public-pages/create-account/create-bluesky-account';
+import {
+  CREATE_ACCOUNT_DESCRIPTION,
+  CREATE_BLUESKY_ACCOUNT_DESCRIPTION,
+} from './app/public-pages/create-account/create-account-meta';
 import { Features } from './app/public-pages/features/features';
 import {
   ABOUT_DESCRIPTION,
@@ -244,6 +248,16 @@ const publicRoutes: Route[] = [
       seoDescription: CREATE_ACCOUNT_DESCRIPTION,
     },
   },
+  {
+    path: 'create-bluesky-account',
+    component: CreateBlueskyAccount,
+    title: 'Create a Bluesky account',
+    data: {
+      seoIndexable: true,
+      seoKeywordTitle: 'How to create a Bluesky account',
+      seoDescription: CREATE_BLUESKY_ACCOUNT_DESCRIPTION,
+    },
+  },
   ...articles.map(({ path, title, description }) => ({
     path,
     component: PublicArticle,
@@ -276,6 +290,7 @@ export default (context: BootstrapContext) =>
             })),
             ...articles.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             { path: 'create-mastodon-account', renderMode: RenderMode.Prerender },
+            { path: 'create-bluesky-account', renderMode: RenderMode.Prerender },
             ...tools.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
             { path: 'follow', renderMode: RenderMode.Prerender },
             {

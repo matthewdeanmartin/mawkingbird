@@ -24,6 +24,8 @@ const BLUESKY_ENTRYWAY = 'https://bsky.social';
 // i18n pages.loginBluesky.intro: Your Bluesky timeline becomes your home timeline in {{brand}}. You can reply, like and repost from here.
 // i18n pages.loginBluesky.openingBluesky: Opening Bluesky…
 // i18n pages.loginBluesky.continueWithBluesky: Continue with Bluesky
+// i18n pages.loginBluesky.createAccount: Create a Bluesky account
+// i18n pages.loginBluesky.createNote: New to Bluesky? Bluesky shows its sign-up form, then brings you back here signed in to set up.
 // i18n pages.loginBluesky.oauthNote: Sign in on bsky.social with your email address or username, then approve access. Use your account password there; Bluesky does not allow app passwords during OAuth. {{brand}} never sees your password.
 // i18n pages.loginBluesky.advancedSummary: Use a specific handle, DID, or another PDS
 // i18n pages.loginBluesky.handleLabel: Handle, DID, or PDS
@@ -82,7 +84,23 @@ export class LoginBluesky implements OnInit {
     // Already signed in and not explicitly adding an account: nothing to do here.
     if (this.auth.isAuthenticated && !this.adding) {
       void this.router.navigateByUrl(this.destination, { replaceUrl: true });
+      return;
     }
+    // From /create-bluesky-account/: the visitor already chose to sign up.
+    if (this.route.snapshot.queryParamMap.get('create') === '1' && !this.native) {
+      this.createAccount();
+    }
+  }
+
+  /** Sign up on bsky.social (`prompt=create`) and come back signed in, into setup. */
+  createAccount(): void {
+    if (this.working() || this.native) return;
+    this.working.set(true);
+    this.error.set(null);
+    void this.bsky.beginOAuthSignup(this.adding).catch((err: unknown) => {
+      this.working.set(false);
+      this.error.set(this.describeOAuth(err));
+    });
   }
 
   /** Let Bluesky choose the account and accept its native email/username sign-in. */

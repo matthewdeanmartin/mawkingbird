@@ -30,11 +30,18 @@ export class SetupState {
 
   /** No other account in this browser: show the first-account steps. */
   readonly first = computed(() => this.auth.sessions().length <= 1);
+  /** Bluesky-first accounts take Bluesky's own, shorter run of steps. */
+  readonly network = computed(() => (this.auth.kind() === 'bluesky' ? 'bluesky' : 'mastodon'));
 
   readonly flow = computed(() => {
     const record = this.record();
     return new SetupFlow(
-      { first: this.first(), purpose: record.purpose, movers: record.movers },
+      {
+        first: this.first(),
+        network: this.network(),
+        purpose: record.purpose,
+        movers: record.movers,
+      },
       record,
     );
   });
@@ -56,6 +63,8 @@ export class SetupState {
   readonly pending = signal(false);
 
   checkAccount(): void {
+    // Bluesky has no approval queue: a new account can act at once.
+    if (this.network() === 'bluesky') return;
     this.api.verifyCredentials().subscribe({
       next: () => this.pending.set(false),
       error: (err: { status?: number }) => this.pending.set(err?.status === 403),

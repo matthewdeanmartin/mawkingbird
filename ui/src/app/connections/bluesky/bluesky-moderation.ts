@@ -3,11 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { BlueskyApi } from './bluesky-api';
 import { BlueskyModerationState, BskyMutedWord } from './bluesky-moderation-state';
+import { BskyLabelVisibility, definitionsOf, labelPrefKey } from './bluesky-labels';
 import { BlueskySession } from './bluesky-session';
 import { BskyListView } from './bluesky-types';
 
 const MUTED_WORDS_PREF = 'app.bsky.actor.defs#mutedWordsPref';
 const LABELERS_PREF = 'app.bsky.actor.defs#labelersPref';
+const ADULT_CONTENT_PREF = 'app.bsky.actor.defs#adultContentPref';
+const CONTENT_LABEL_PREF = 'app.bsky.actor.defs#contentLabelPref';
 
 type Preference = { $type?: string } & Record<string, unknown>;
 
@@ -61,8 +64,41 @@ export class BlueskyModeration {
   async reload(): Promise<void> {
     const preferences = await this.preferences();
     this.state.viewerDid.set(this.session.session()?.did);
+    this.applyPreferences(preferences);
+    await this.loadLabelDefinitions().catch(() => undefined);
+  }
+
+  /** Mirror the reading-side preferences into the state every card reads. */
+  private applyPreferences(preferences: Preference[]): void {
     this.state.mutedWords.set(mutedWordsOf(preferences));
     this.state.labelers.set(labelersOf(preferences));
+    this.state.adultContent.set(adultContentOf(preferences));
+    this.state.labelPrefs.set(labelPrefsOf(preferences));
+  }
+
+  /**
+   * The subscribed labelers' own label values, so their labels can warn or
+   * hide by their definitions. A failure leaves only the global values, which
+   * is what bsky.app shows while a labeler is unreachable.
+   */
+  private async loadLabelDefinitions(): Promise<void> {
+    const dids = this.state.labelers();
+    if (!dids.length) {
+      this.state.labelDefs.set(new Map());
+      return;
+    }
+    let params = new HttpParams().set('detailed', 'true');
+    for (const did of dids) params = params.append('dids', did);
+    const { views } = await firstValueFrom(
+      this.api.get<{ views: LabelerDetail[] }>('app.bsky.labeler.getServices', params),
+    );
+    this.state.labelDefs.set(
+      new Map(
+        views.flatMap((view) =>
+          definitionsOf(view.creator.did, view.policies?.labelValueDefinitions ?? []),
+        ),
+      ),
+    );
   }
 
   async addMutedWord(word: BskyMutedWord): Promise<void> {
@@ -215,8 +251,9 @@ export class BlueskyModeration {
     const current = preferences.find((pref) => pref.$type === type);
     const next = [...preferences.filter((pref) => pref.$type !== type), edit(current)];
     await firstValueFrom(this.api.request('app.bsky.actor.putPreferences', { preferences: next }));
-    this.state.mutedWords.set(mutedWordsOf(next));
-    this.state.labelers.set(labelersOf(next));
+    const labelersChanged = type === LABELERS_PREF;
+    this.applyPreferences(next);
+    if (labelersChanged) await this.loadLabelDefinitions().catch(() => undefined);
   }
 
   private async resolveDid(handleOrDid: string): Promise<string> {
@@ -263,6 +300,36 @@ export function dedupeMutedWords(items: readonly BskyMutedWord[]): BskyMutedWord
 function mutedWordsOf(preferences: Preference[]): BskyMutedWord[] {
   const pref = preferences.find((p) => p.$type === MUTED_WORDS_PREF);
   return dedupeMutedWords(itemsOf(pref));
+}
+
+interface LabelerDetail {
+  creator: { did: string };
+  policies?: { labelValueDefinitions?: Parameters<typeof definitionsOf>[1] };
+}
+
+function adultContentOf(preferences: Preference[]): boolean {
+  return preferences.find((p) => p.$type === ADULT_CONTENT_PREF)?.['enabled'] === true;
+}
+
+/** `contentLabelPref` entries; an unknown visibility is skipped, leaving the default. */
+function labelPrefsOf(preferences: Preference[]): Map<string, BskyLabelVisibility> {
+  const out = new Map<string, BskyLabelVisibility>();
+  for (const pref of preferences) {
+    if (pref.$type !== CONTENT_LABEL_PREF) continue;
+    const label = pref['label'];
+    const visibility = pref['visibility'];
+    const labeler = pref['labelerDid'];
+    if (typeof label !== 'string') continue;
+    if (
+      visibility !== 'ignore' &&
+      visibility !== 'show' &&
+      visibility !== 'warn' &&
+      visibility !== 'hide'
+    )
+      continue;
+    out.set(labelPrefKey(label, typeof labeler === 'string' ? labeler : undefined), visibility);
+  }
+  return out;
 }
 
 function labelersOf(preferences: Preference[]): string[] {

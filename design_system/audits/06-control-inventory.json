@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2051,
-  "filesWithCandidates": 700,
+  "filesScanned": 2059,
+  "filesWithCandidates": 704,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -3099,23 +3099,23 @@
         },
         {
           "pattern": "shared",
-          "line": 71
+          "line": 86
         },
         {
           "pattern": "shared",
-          "line": 77
+          "line": 92
         },
         {
           "pattern": "shared",
-          "line": 81
+          "line": 96
         },
         {
           "pattern": "shared",
-          "line": 82
+          "line": 97
         },
         {
           "pattern": "shared",
-          "line": 84
+          "line": 99
         },
         {
           "pattern": "nativeButtons",
@@ -3123,19 +3123,85 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 77
+          "line": 92
         },
         {
           "pattern": "nativeButtons",
-          "line": 81
+          "line": 96
         },
         {
           "pattern": "nativeButtons",
-          "line": 82
+          "line": 97
         },
         {
           "pattern": "nativeButtons",
-          "line": 84
+          "line": 99
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-bluesky-follow.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 24
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-bluesky-intro.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 7
+        },
+        {
+          "pattern": "shared",
+          "line": 20
+        },
+        {
+          "pattern": "shared",
+          "line": 22
+        },
+        {
+          "pattern": "shared",
+          "line": 37
+        },
+        {
+          "pattern": "shared",
+          "line": 48
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 7
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 36
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/accounts/setup/steps/setup-bluesky-profile.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 13
+        },
+        {
+          "pattern": "shared",
+          "line": 15
+        },
+        {
+          "pattern": "shared",
+          "line": 25
+        },
+        {
+          "pattern": "shared",
+          "line": 30
         }
       ]
     },
@@ -3451,11 +3517,15 @@
         },
         {
           "pattern": "shared",
-          "line": 45
+          "line": 28
         },
         {
           "pattern": "shared",
-          "line": 102
+          "line": 61
+        },
+        {
+          "pattern": "shared",
+          "line": 118
         },
         {
           "pattern": "nativeButtons",
@@ -3463,11 +3533,15 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 44
+          "line": 27
         },
         {
           "pattern": "nativeButtons",
-          "line": 101
+          "line": 60
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 117
         },
         {
           "pattern": "legacyPills",
@@ -3475,19 +3549,23 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 47
+          "line": 30
         },
         {
           "pattern": "legacyPills",
-          "line": 104
+          "line": 63
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 120
         },
         {
           "pattern": "disclosure",
-          "line": 26
+          "line": 42
         },
         {
           "pattern": "disclosure",
-          "line": 73
+          "line": 89
         }
       ]
     },
@@ -14348,6 +14426,40 @@
         {
           "pattern": "selects",
           "line": 22
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/public-pages/create-account/create-bluesky-account.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 13
+        },
+        {
+          "pattern": "shared",
+          "line": 62
+        },
+        {
+          "pattern": "shared",
+          "line": 63
+        },
+        {
+          "pattern": "shared",
+          "line": 64
+        },
+        {
+          "pattern": "shared",
+          "line": 65
+        },
+        {
+          "pattern": "shared",
+          "line": 66
+        },
+        {
+          "pattern": "shared",
+          "line": 67
         }
       ]
     },

@@ -22,10 +22,13 @@ import { SetupTwitter } from './steps/setup-twitter';
 import { SetupBluesky } from './steps/setup-bluesky';
 import { SetupFollow } from './steps/setup-follow';
 import { SetupIntro } from './steps/setup-intro';
+import { SetupBlueskyProfile } from './steps/setup-bluesky-profile';
+import { SetupBlueskyFollow } from './steps/setup-bluesky-follow';
+import { SetupBlueskyIntro } from './steps/setup-bluesky-intro';
 
 /**
- * Full-page setup for a Mastodon account that is minutes old
- * (spec/new-account-setup.md). It sits outside the shell on purpose: no rails,
+ * Full-page setup for a Mastodon or Bluesky account that is minutes old
+ * (spec/new-account-setup.md; Bluesky: spec/bsky_parity.md, sprint 2). It sits outside the shell on purpose: no rails,
  * no menus, only the logo and a quiet "Exit setup", so the person is walked
  * through without distraction but never trapped.
  *
@@ -47,6 +50,9 @@ import { SetupIntro } from './steps/setup-intro';
     SetupBluesky,
     SetupFollow,
     SetupIntro,
+    SetupBlueskyProfile,
+    SetupBlueskyFollow,
+    SetupBlueskyIntro,
   ],
   providers: [SetupState],
   templateUrl: './account-setup.html',
@@ -64,6 +70,8 @@ export class AccountSetup {
   protected readonly handle = computed(() => {
     const account = this.auth.account();
     if (!account) return '';
+    // A Bluesky handle is already a whole domain.
+    if (this.state.network() === 'bluesky') return `@${account.acct}`;
     const host = new URL(this.server.baseUrl() || location.origin).host;
     return account.acct.includes('@') ? `@${account.acct}` : `@${account.acct}@${host}`;
   });
@@ -116,7 +124,8 @@ export class AccountSetup {
       await this.state.commit?.();
     } catch {
       this.busy.set(false);
-      this.error.set('Your server didn’t accept this change. Try again, or skip this step.');
+      const who = this.state.network() === 'bluesky' ? 'Bluesky' : 'Your server';
+      this.error.set(`${who} didn’t accept this change. Try again, or skip this step.`);
       return;
     }
     this.busy.set(false);

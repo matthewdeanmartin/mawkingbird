@@ -53,8 +53,11 @@ export class BlueskyOAuthCallback implements OnInit {
         throw new Error('The browser could not store the Bluesky identity.');
       }
       if (result.adding) {
-        // Recreate account-scoped singletons under the newly active DID.
+        // Recreate account-scoped singletons under the newly active DID. A
+        // sign-up's armed setup takes over from Home (the shell redirects).
         location.assign('home');
+      } else if (result.signup) {
+        await this.router.navigateByUrl('/setup', { replaceUrl: true });
       } else {
         await this.router.navigateByUrl(next, { replaceUrl: true });
       }

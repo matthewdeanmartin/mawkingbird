@@ -129,6 +129,7 @@ export const audienceContent: Record<string, AudienceContent> = {
     guides: [
       { label: 'Use Bluesky and Mastodon together', href: '/help/new-to-mastodon/from-bluesky/' },
       { label: 'Sign in with Bluesky', href: '/help/start/sign-in-bluesky/' },
+      { label: 'Create a Bluesky account', href: '/create-bluesky-account/' },
       { label: 'Choose where a post is published', href: '/help/posting/destinations/' },
     ],
   },
@@ -175,6 +176,7 @@ export const audienceContent: Record<string, AudienceContent> = {
       { label: 'Import your Twitter follows to Mastodon', href: '/twitter-to-mastodon/' },
       { label: 'What Mastodon is', href: '/help/new-to-mastodon/what-is-mastodon/' },
       { label: 'Create a Mastodon account', href: '/create-mastodon-account/' },
+      { label: 'Create a Bluesky account', href: '/create-bluesky-account/' },
       { label: 'Choose a Mastodon server', href: '/help/new-to-mastodon/choose-a-server/' },
       { label: 'Coming to Mastodon from Twitter', href: '/help/new-to-mastodon/coming-from-x/' },
       { label: 'Who to follow: starter kits', href: '/follow/' },

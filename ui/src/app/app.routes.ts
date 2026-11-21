@@ -1,7 +1,10 @@
 import { inject, Type } from '@angular/core';
 import { setupGuard } from './accounts/setup/setup.guard';
 import { discoveryWindowGuard } from './wellness/discovery-guard';
-import { CREATE_ACCOUNT_DESCRIPTION } from './public-pages/create-account/create-account-meta';
+import {
+  CREATE_ACCOUNT_DESCRIPTION,
+  CREATE_BLUESKY_ACCOUNT_DESCRIPTION,
+} from './public-pages/create-account/create-account-meta';
 import { NATIVE_PROFILES } from './platform/session/platform-login';
 import {
   PLATFORM_LOCAL_AI,
@@ -462,6 +465,19 @@ export const routes: Routes = [
     },
     loadComponent: () =>
       import('./public-pages/create-account/create-account').then((m) => m.CreateAccount),
+  },
+  {
+    path: 'create-bluesky-account',
+    title: 'Create a Bluesky account',
+    data: {
+      seoIndexable: true,
+      seoKeywordTitle: 'How to create a Bluesky account',
+      seoDescription: CREATE_BLUESKY_ACCOUNT_DESCRIPTION,
+    },
+    loadComponent: () =>
+      import('./public-pages/create-account/create-bluesky-account').then(
+        (m) => m.CreateBlueskyAccount,
+      ),
   },
   {
     path: 'create-mastodon-account/go/:server',

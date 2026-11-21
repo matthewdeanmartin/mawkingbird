@@ -71,6 +71,12 @@ export interface Account {
   /** Mastodon 4.1+: the follows and followers lists are hidden from others. */
   hide_collections?: boolean | null;
   fields: AccountField[];
+  /**
+   * Bluesky's own verification: `verified` by a trusted verifier, or itself a
+   * `verifier`. Unlike the follower-count check, this is a fact the network
+   * asserts, so it shows regardless of the viewer's check-mark mode.
+   */
+  bsky_verification?: 'verified' | 'verifier';
   // Present on verify_credentials (CredentialAccount): the current user's role, or null.
   role?: Role | null;
   source?: AccountSource;

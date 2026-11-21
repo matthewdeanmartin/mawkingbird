@@ -1,4 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Account } from '../../platform/api/models';
@@ -16,11 +17,19 @@ export const VERIFIED_FOLLOWER_THRESHOLD = 9_728;
  * follower bar (default), anyone with more followers than the viewer, or
  * everyone. The viewer's own account additionally always shows a private
  * self-check — only you can know that you really are you.
+ *
+ * Bluesky's own verification is different in kind: the network asserts it,
+ * so it shows whatever the mode, and Wellness's hidden counts do not hide it.
  */
 @Component({
   selector: 'app-verified-badge',
   template: `
-    @if (publicCheck()) {
+    @if (account().bsky_verification; as kind) {
+      <svg class="badge bsky" viewBox="0 0 24 24" [attr.aria-label]="bskyTitle(kind)" role="img">
+        <title>{{ bskyTitle(kind) }}</title>
+        <path [attr.d]="kind === 'verifier' ? checkPath : circleCheckPath" />
+      </svg>
+    } @else if (publicCheck()) {
       <svg class="badge" viewBox="0 0 24 24" aria-label="Verified" role="img">
         <title>{{ publicTitle() }}</title>
         <path [attr.d]="checkPath" />
@@ -52,6 +61,8 @@ export class VerifiedBadge {
   private auth = inject(Auth);
   private prefs = inject(ClientPrefs);
   private wellness = inject(Wellness);
+  /** Optional: the badge renders in specs and shells without translations. */
+  private transloco = inject(TranslocoService, { optional: true });
 
   readonly account = input.required<Account>();
 
@@ -63,6 +74,21 @@ export class VerifiedBadge {
     ' 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27' +
     '-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26' +
     ' 4.8-5.23 1.47 1.36-6.2 6.77z';
+
+  /** A filled circle with a check: Bluesky's mark for a verified account. */
+  protected readonly circleCheckPath =
+    'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.4 14.2-4.2-4.2 1.4-1.4 2.8 2.8 5.8-5.8 1.4 1.4-7.2 7.2z';
+
+  // i18n verifiedBadge.bskyVerified: Verified on Bluesky
+  // i18n verifiedBadge.bskyVerifier: Trusted verifier on Bluesky
+  protected bskyTitle(kind: 'verified' | 'verifier'): string {
+    const verifier = kind === 'verifier';
+    return (
+      this.transloco?.translate<string>(
+        verifier ? 'verifiedBadge.bskyVerifier' : 'verifiedBadge.bskyVerified',
+      ) ?? (verifier ? 'Trusted verifier on Bluesky' : 'Verified on Bluesky')
+    );
+  }
 
   /**
    * Every public check here is a popularity marker (follower counts, or a joke

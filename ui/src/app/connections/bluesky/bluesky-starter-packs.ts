@@ -186,11 +186,11 @@ export class BlueskyStarterPacks {
   }
 
   /** Bluesky's suggestions for the signed-in account. */
-  async suggestions(): Promise<BskyProfile[]> {
+  async suggestions(limit = 10): Promise<BskyProfile[]> {
     const { actors } = await firstValueFrom(
       this.api.get<{ actors: BskyProfile[] }>(
         'app.bsky.actor.getSuggestions',
-        new HttpParams().set('limit', '10'),
+        new HttpParams().set('limit', String(limit)),
       ),
     );
     return actors;

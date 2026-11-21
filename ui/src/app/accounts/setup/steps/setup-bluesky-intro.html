@@ -1,0 +1,49 @@
+@switch (phase()) {
+  @case ('posted') {
+    <p class="setup-lead-small">
+      Posted. Pin it to your profile, so visitors see who you are first?
+    </p>
+    <div class="setup-follow-bar">
+      <button mbButton type="button" (click)="pin()">Pin it</button>
+    </div>
+  }
+  @case ('pinned') {
+    <p class="setup-lead-small">Posted and pinned to your profile.</p>
+  }
+  @default {
+    <ul class="setup-prompts">
+      <li>What will you post about?</li>
+      <li>Roughly where are you? A city, region or country is plenty.</li>
+      <li>Anything people should know before following you?</li>
+    </ul>
+
+    <mb-field label="Your first post" [hint]="length() + ' / ' + max">
+      <textarea
+        mbControl
+        name="intro"
+        rows="6"
+        [value]="text()"
+        (input)="text.set($any($event.target).value)"
+      ></textarea>
+    </mb-field>
+
+    <p class="setup-aside">
+      People decide whom to follow by what they write. Add hashtags for the subjects you’ll post
+      about.
+    </p>
+
+    <div class="setup-follow-bar">
+      <button
+        mbButton
+        type="button"
+        [disabled]="!canPost() || phase() === 'posting'"
+        (click)="post()"
+      >
+        Post
+      </button>
+    </div>
+  }
+}
+@if (error()) {
+  <mb-notice tone="error" announcement="alert">{{ error() }}</mb-notice>
+}

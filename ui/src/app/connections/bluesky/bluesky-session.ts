@@ -5,9 +5,13 @@ import { map, Observable, switchMap, tap } from 'rxjs';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { scopedKey, scopeSuffixForDid } from '../../platform/session/account-scope';
 import { markOnboardingPending } from '../../accounts/onboarding/onboarding-store';
+import { armSetup } from '../../accounts/setup/setup-store';
 import { ProfileAccountKey } from '../../accounts/mawkingbird/profile-account-key';
 import { VaultBridge, type SyncOutcome } from '../vault/vault-bridge';
-import { BlueskyOAuth } from './bluesky-oauth';
+import { BlueskyOAuth, isSignupIntent } from './bluesky-oauth';
+
+/** Where a new Bluesky account is made: Bluesky's own PDS entryway. */
+const BLUESKY_SIGNUP_ENTRYWAY = 'https://bsky.social';
 import {
   ACCOUNT_MODE_KEY,
   BSKY_IDENTITY_CREDENTIALS_KEY,
@@ -376,6 +380,23 @@ export class BlueskySession implements ExpiringConnection {
   }
 
   /**
+   * Begin OAuth that creates a Bluesky account first: bsky.social shows its own
+   * sign-up form (`prompt=create`), then returns here signed in as the new
+   * account, which {@link finishOAuth} sends to setup. We never see the
+   * password, the captcha or the email. Web only: the native sign-in sheet
+   * has no sign-up form.
+   */
+  async beginOAuthSignup(adding: boolean): Promise<never> {
+    if (this.native) {
+      throw new Error('Create the account at bsky.app, then sign in here.');
+    }
+    return this.oauth.signIn(
+      BLUESKY_SIGNUP_ENTRYWAY,
+      adding ? 'identity:signup-add' : 'identity:signup',
+    );
+  }
+
+  /**
    * Begin OAuth to link Bluesky as a **connector** under the active account.
    *
    * The preferred way to connect: no app password to make or paste, and the
@@ -410,7 +431,7 @@ export class BlueskySession implements ExpiringConnection {
    * owns the DPoP key and rotating token set in IndexedDB.
    */
   async finishOAuth(): Promise<
-    | { kind: 'identity'; session: BskySession; adding: boolean }
+    | { kind: 'identity'; session: BskySession; adding: boolean; signup: boolean }
     | { kind: 'connector'; session: BskySession }
   > {
     const result = await this.oauth.callback();
@@ -431,9 +452,18 @@ export class BlueskySession implements ExpiringConnection {
       { authMethod: 'oauth', connectedAt: session.connectedAt },
       true,
     );
-    if (created) markOnboardingPending(scopeSuffixForDid(result.profile.did));
+    const signup = isSignupIntent(result.state);
+    // A sign-up that came back goes to full-page setup, as a new Mastodon
+    // account does; the onboarding card is setup's follow-up, not a rival.
+    if (signup) armSetup(scopeSuffixForDid(result.profile.did), 'signup');
+    else if (created) markOnboardingPending(scopeSuffixForDid(result.profile.did));
     this.session.set(session);
-    return { kind: 'identity', session, adding: result.state === 'identity:add' };
+    return {
+      kind: 'identity',
+      session,
+      adding: result.state === 'identity:add' || result.state === 'identity:signup-add',
+      signup,
+    };
   }
 
   /** Whether authenticated calls must go through the OAuth DPoP transport. */

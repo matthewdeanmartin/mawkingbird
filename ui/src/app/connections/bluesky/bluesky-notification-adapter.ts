@@ -30,6 +30,12 @@ const REASON_TYPES: Readonly<Record<string, string>> = {
   mention: 'mention',
   reply: 'mention',
   quote: 'mention',
+  // A post from someone the reader asked bsky.app to notify them about. The
+  // subscription itself is made in bsky.app; Mawkingbird only shows the post,
+  // under Mastodon's matching type.
+  'subscribed-post': 'status',
+  // `verified`, `unverified` and `contact-match` keep their own names: the
+  // notifications page labels them, and no Mastodon type means the same.
 };
 
 export function notificationType(reason: string): string {
@@ -44,7 +50,12 @@ export function notificationType(reason: string): string {
  * `like` and `repost` the record is the like/repost record instead, which shows
  * nothing useful; those need `reasonSubject` hydrated separately.
  */
-const RECORD_IS_THE_POST: ReadonlySet<string> = new Set(['reply', 'mention', 'quote']);
+const RECORD_IS_THE_POST: ReadonlySet<string> = new Set([
+  'reply',
+  'mention',
+  'quote',
+  'subscribed-post',
+]);
 
 /**
  * The at-uris a page of notifications needs hydrated, deduped.

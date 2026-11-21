@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
 import { LocalModeration } from './local-moderation';
 import { MutedPosts } from './muted-posts';
 import { FilterContext, FilterResult, Status } from '../platform/api/models';
@@ -25,6 +26,8 @@ export class StatusVisibility {
   private mutedPosts = inject(MutedPosts);
   private localMod = inject(LocalModeration);
   private bluesky = inject(BlueskyModerationState);
+  /** Optional: many specs build cards without a translation setup. */
+  private transloco = inject(TranslocoService, { optional: true });
 
   /** Matched filters that apply in `context` — boost wrapper and target both. */
   activeFilters(status: Status, context: FilterContext): FilterResult[] {
@@ -37,7 +40,52 @@ export class StatusVisibility {
           Array.isArray(result?.filter?.context) && result.filter.context.includes(context),
       ),
       ...this.blueskyMutedWord(status.reblog ?? status),
-    ];
+      ...this.blueskyLabels(status.reblog ?? status),
+    ].filter((result) => result.filter.context.includes(context));
+  }
+
+  /**
+   * Whether the post's media sits behind the sensitive blur. Bluesky posts
+   * follow the reader's Bluesky label settings (a label set to "show" does not
+   * blur); every other network keeps its own `sensitive` flag.
+   */
+  mediaSensitive(status: Status): boolean {
+    const decision = this.bluesky.labelDecision(status);
+    return decision ? decision.blurMedia : status.sensitive;
+  }
+
+  /**
+   * Bluesky labels as filters, per the reader's label settings. "Hide" leaves
+   * the post out of lists but, as on bsky.app, a thread still shows it behind
+   * a warning; "warn" collapses it everywhere, named by its labels.
+   */
+  private blueskyLabels(status: Status): FilterResult[] {
+    const decision = this.bluesky.labelDecision(status);
+    if (!decision || (!decision.hide && !decision.warn.length)) return [];
+    const lists: FilterContext[] = ['home', 'notifications', 'public', 'account'];
+    const result = (
+      action: 'hide' | 'warn',
+      context: FilterContext[],
+      title: string,
+    ): FilterResult => ({
+      filter: {
+        id: `bsky-label:${action}`,
+        title,
+        context,
+        expires_at: null,
+        filter_action: action,
+      },
+      keyword_matches: null,
+      status_matches: null,
+    });
+    // i18n moderation.bskyLabels.hidden: Hidden by your Bluesky moderation settings
+    const hiddenTitle =
+      this.transloco?.translate<string>('moderation.bskyLabels.hidden') ??
+      'Hidden by your Bluesky moderation settings';
+    if (decision.hide) {
+      return [result('hide', lists, hiddenTitle), result('warn', ['thread'], hiddenTitle)];
+    }
+    return [result('warn', [...lists, 'thread'], decision.warn.join(', '))];
   }
 
   /**

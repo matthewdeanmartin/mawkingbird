@@ -1,6 +1,14 @@
 // Adapts app.bsky feed views into Mastodon-shaped Status objects.
 
-import { Account, MediaAttachment, Quote, Relationship, Status } from '../../platform/api/models';
+import {
+  Account,
+  AccountField,
+  MediaAttachment,
+  Quote,
+  Relationship,
+  Status,
+} from '../../platform/api/models';
+import type { BskyLabel } from './bluesky-labels';
 import {
   BskyAuthor,
   BskyEmbeddedRecord,
@@ -9,7 +17,10 @@ import {
   BskyFeedItem,
   BskyPostView,
   BskyProfile,
+  BskyProfileLinkView,
   BskyRef,
+  BskyStatusView,
+  BskyVerificationState,
 } from './bluesky-types';
 
 /** Butterfly-blue placeholder for authors without an avatar. */
@@ -84,8 +95,67 @@ export function renderRichText(text: string, facets: BskyFacet[] = []): string {
   return paragraphs || '<p></p>';
 }
 
+/** Bluesky verification as the badge shows it; invalid or absent shows nothing. */
+function verificationOf(state: BskyVerificationState | undefined): Account['bsky_verification'] {
+  if (state?.trustedVerifierStatus === 'valid') return 'verifier';
+  if (state?.verifiedStatus === 'valid') return 'verified';
+  return undefined;
+}
+
+/** The account labelled itself a bot (bsky.app's "automated account" setting). */
+function isSelfLabelledBot(did: string, labels: readonly BskyLabel[] | undefined): boolean {
+  return !!labels?.some((label) => label.val === 'bot' && !label.neg && (label.src ?? did) === did);
+}
+
+/** The stream address while the account is live, else null. */
+export function liveUrl(status: BskyStatusView | undefined, now = Date.now()): string | null {
+  if (!status || !status.status.endsWith('#live') || status.isDisabled) return null;
+  if (status.isActive === false) return null;
+  if (status.expiresAt && Date.parse(status.expiresAt) <= now) return null;
+  const uri = status.embed?.external?.uri;
+  return uri && /^https:\/\//.test(uri) ? uri : null;
+}
+
+/** An https address as a profile-field link, Mastodon style; anything else stays text. */
+function fieldLink(url: string): string {
+  const label = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  if (!/^https:\/\/[^\s"<>]+$/.test(url)) return escapeHtml(label);
+  return `<a href="${escapeHtml(url)}" rel="me nofollow noopener" target="_blank">${escapeHtml(label)}</a>`;
+}
+
+function isShowableLink(link: BskyProfileLinkView, seen: Set<string>): boolean {
+  if (link.labels?.some((label) => !label.neg)) return false;
+  const key = link.url.trim().replace(/\/$/, '').toLowerCase();
+  if (!key || seen.has(key)) return false;
+  seen.add(key);
+  return true;
+}
+
+/**
+ * Bluesky profile extras as Mastodon profile fields, which the profile header
+ * already renders: a live stream, pronouns, website and the profile's links
+ * (bsky.app's link pills). A labelled link is left out, as bsky.app leaves out
+ * a link it would otherwise have to blur; a non-https one stays plain text.
+ */
+export function profileFields(profile: BskyProfile, now = Date.now()): AccountField[] {
+  const fields: AccountField[] = [];
+  const live = liveUrl(profile.status, now);
+  if (live) fields.push({ name: '🔴 Live now', value: fieldLink(live) });
+  const pronouns = profile.pronouns?.trim();
+  if (pronouns) fields.push({ name: 'Pronouns', value: escapeHtml(pronouns) });
+  const website = profile.website?.trim();
+  if (website) fields.push({ name: 'Website', value: fieldLink(website) });
+  const seen = new Set<string>();
+  for (const link of profile.links ?? []) {
+    if (!isShowableLink(link, seen)) continue;
+    fields.push({ name: link.title?.trim() || 'Link', value: fieldLink(link.url.trim()) });
+  }
+  return fields;
+}
+
 export function adaptAuthor(author: BskyAuthor): Account {
   const avatar = author.avatar ?? BSKY_AVATAR;
+  const verification = verificationOf(author.verification);
   return {
     id: `bsky:${author.did}`,
     mutual: !!author.viewer?.following && !!author.viewer?.followedBy,
@@ -100,9 +170,10 @@ export function adaptAuthor(author: BskyAuthor): Account {
     followers_count: 0,
     following_count: 0,
     statuses_count: 0,
-    bot: false,
+    bot: isSelfLabelledBot(author.did, author.labels),
     locked: false,
     fields: [],
+    ...(verification ? { bsky_verification: verification } : {}),
   };
 }
 
@@ -133,6 +204,7 @@ function adaptDescription(description: string | undefined): string {
  */
 export function adaptProfile(profile: BskyProfile): Account {
   const avatar = profile.avatar ?? BSKY_AVATAR;
+  const verification = verificationOf(profile.verification);
   return {
     id: `bsky:${profile.did}`,
     username: profile.handle,
@@ -146,9 +218,10 @@ export function adaptProfile(profile: BskyProfile): Account {
     followers_count: profile.followersCount ?? 0,
     following_count: profile.followsCount ?? 0,
     statuses_count: profile.postsCount ?? 0,
-    bot: false,
+    bot: isSelfLabelledBot(profile.did, profile.labels),
     locked: false,
-    fields: [],
+    fields: profileFields(profile),
+    ...(verification ? { bsky_verification: verification } : {}),
   };
 }
 
@@ -189,6 +262,29 @@ function adaptMedia(embed: BskyEmbedView | undefined, postUri: string): MediaAtt
         description: media.alt || null,
       },
     ];
+  }
+  if (media?.$type === 'app.bsky.embed.gallery#view' && media.items?.length) {
+    return media.items.map((img, i) => {
+      const ratio = img.aspectRatio;
+      return {
+        id: `bsky-media:${postUri}:${i}`,
+        type: 'image',
+        url: img.fullsize,
+        preview_url: img.thumbnail,
+        description: img.alt || null,
+        ...(ratio?.width && ratio.height
+          ? {
+              meta: {
+                original: {
+                  width: ratio.width,
+                  height: ratio.height,
+                  aspect: ratio.width / ratio.height,
+                },
+              },
+            }
+          : {}),
+      };
+    });
   }
   const images = embed?.images ?? embed?.media?.images ?? [];
   return images.map((img, i) => ({
@@ -267,19 +363,30 @@ function adaptQuote(embed: BskyEmbedView | undefined): Quote | null {
 const SENSITIVE_LABELS = new Set(['sexual', 'nudity', 'porn', 'graphic-media', 'gore']);
 
 /**
- * Whether a post carries a content label, from its author or a moderation
- * service. Mapped onto Mastodon's `sensitive`, which the card already honours,
- * so labelled media stays covered here as it does on Bluesky.
+ * The post's labels, with the record's self-labels attributed to the author.
+ * The AppView usually hydrates self-labels into `labels` already; a record
+ * read from a notification has only the record, so both are merged.
  */
-function isLabelledSensitive(post: BskyPostView): boolean {
-  const values = [
-    ...(post.labels ?? []).filter((label) => !label.neg).map((label) => label.val),
-    ...(post.record.labels?.values ?? []).map((label) => label.val),
-  ];
-  return values.some((value) => SENSITIVE_LABELS.has(value));
+function postLabels(post: BskyPostView): BskyLabel[] {
+  const author = post.author.did;
+  const hydrated = post.labels ?? [];
+  const self = (post.record.labels?.values ?? [])
+    .filter((label) => !hydrated.some((h) => h.val === label.val && (h.src ?? author) === author))
+    .map((label) => ({ val: label.val, src: author, uri: post.uri }));
+  return [...hydrated, ...self];
+}
+
+/**
+ * Whether a post carries a media label, mapped onto Mastodon's `sensitive` as
+ * the default every surface understands. StatusVisibility refines it with the
+ * reader's own Bluesky label settings where a card asks.
+ */
+function isLabelledSensitive(labels: readonly BskyLabel[]): boolean {
+  return labels.some((label) => !label.neg && SENSITIVE_LABELS.has(label.val));
 }
 
 export function adaptPost(post: BskyPostView): Status {
+  const labels = postLabels(post);
   const ref: BskyRef = {
     uri: post.uri,
     cid: post.cid,
@@ -294,6 +401,8 @@ export function adaptPost(post: BskyPostView): Status {
     ...(post.threadgate?.record?.allow ? { repliesLimited: true } : {}),
     ...(post.author.viewer?.following ? { authorFollowed: true } : {}),
     ...(post.viewer?.threadMuted ? { threadMuted: true } : {}),
+    ...(labels.length ? { labels } : {}),
+    ...(post.author.labels?.length ? { authorLabels: post.author.labels } : {}),
   };
   return {
     provider: 'bluesky',
@@ -318,7 +427,7 @@ export function adaptPost(post: BskyPostView): Status {
     bookmarked: !!post.viewer?.bookmarked,
     muted: false,
     pinned: !!post.viewer?.pinned,
-    sensitive: isLabelledSensitive(post),
+    sensitive: isLabelledSensitive(labels),
     poll: null,
     quote_approval_policy: null,
     // First of the declared languages: the record carries an array, Mastodon's

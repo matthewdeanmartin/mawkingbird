@@ -90,6 +90,33 @@ describe('LoginBluesky', () => {
     httpMock.expectNone(CREATE_SESSION);
   });
 
+  it('creates a Bluesky account through the sign-up intent', () => {
+    const begin = vi
+      .spyOn(TestBed.inject(BlueskySession), 'beginOAuthSignup')
+      .mockReturnValue(new Promise<never>(() => undefined));
+    const fixture = TestBed.createComponent(LoginBluesky);
+    fixture.detectChanges();
+    const button = [...fixture.nativeElement.querySelectorAll('button')].find((b: HTMLElement) =>
+      b.textContent?.includes('Create a Bluesky account'),
+    ) as HTMLButtonElement;
+
+    button.click();
+
+    expect(begin).toHaveBeenCalledWith(false);
+    httpMock.expectNone(CREATE_SESSION);
+  });
+
+  it('starts the sign-up at once when the public page sent the visitor', () => {
+    const begin = vi
+      .spyOn(TestBed.inject(BlueskySession), 'beginOAuthSignup')
+      .mockReturnValue(new Promise<never>(() => undefined));
+    vi.spyOn(TestBed.inject(ActivatedRoute).snapshot.queryParamMap, 'get').mockImplementation(
+      (key: string) => (key === 'create' ? '1' : null),
+    );
+    TestBed.createComponent(LoginBluesky).detectChanges();
+    expect(begin).toHaveBeenCalledWith(false);
+  });
+
   it('uses targeted OAuth for a specific handle', () => {
     const begin = vi
       .spyOn(TestBed.inject(BlueskySession), 'beginOAuthIdentity')

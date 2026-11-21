@@ -1,6 +1,8 @@
 # Bluesky parity: Mawkingbird vs. the official Bluesky app
 
-Status: gap analysis and proposed sprints, 2026-11-20. No code written.
+Status: sprints 1–2 code complete, awaiting push/GHA and live trials ·
+2026-11-20. Sprints 3–8 planned. Progress and evidence:
+[Progress](#progress). Manual test plans: `test_plans/bsky-parity-2-*`.
 Reference: `../REFERENCE/social-app` at `47e6acedf` (2026-11-20, "Keep
 find-in-page working in the virtualized web List").
 
@@ -118,7 +120,7 @@ or parks. That needs a live trial (owner to-do).
 | Images (up to 4), alt text | ✅ | |
 | **Gallery embed** (`app.bsky.embed.gallery`, up to 10 images) | ❌ | **Content-loss risk:** the adapter doesn't know this embed, so another user's gallery post probably renders with no media. Verify first |
 | External card | ✅ | |
-| **Article card** (`embed.external#viewArticle`, publication, theme) and **livestream** view | ❓ | New view variants. Check that they fall back to a plain card and don't vanish |
+| Article / gallery / livestream external views | n/a | Checked in sprint 1: these `embed.external#view*` variants appear only in the Atmosphere directory. A post's external embed is still `#viewExternal`, which we render |
 | Video playback | ✅ | Sprint 1 |
 | Quote, quote-with-media, detached/blocked/not-found quotes | ✅ | Sprint 3 handles detached |
 | Labels on posts (blur/warn/hide) | 🟡 | Hard-coded `SENSITIVE_LABELS` mapped to `sensitive` (`bluesky-adapter.ts:266`). Ignores the reader's label prefs, labeler-defined labels, `!hide`/`!warn`, and account-level labels |
@@ -305,7 +307,8 @@ short "now in your Home" confirmation.
 ### Sprint 3: your feeds, your lists
 
 - The `BlueskyPreferences` service (see the rule above), with specs that
-  round-trip unknown prefs.
+  round-trip unknown prefs. Moves `BlueskyModeration.editPreference` onto it.
+  Lifts the old read-only rule in `bluesky-feeds.ts` (owner decision 2).
 - Save, unsave, pin, unpin and reorder feeds and lists. Like a feed.
 - Lists: create/edit/delete curated and moderation lists, add/remove members,
   and "Add to list" on profiles (`getListsWithMembership`).
@@ -333,11 +336,16 @@ short "now in your Home" confirmation.
 - Moderation inbox (`tools.ozone.inbox.*`): my reports, actions on me,
   appeals. Confirm the endpoint is reachable from a browser OAuth session
   before committing.
+- Age assurance as bsky.app shows it (owner decision 4): read
+  `app.bsky.ageassurance.getState`/`getConfig`, show the account's state where
+  it limits content or chat, and offer the same "verify your age" path
+  (`begin`), or a link to bsky.app where a browser client cannot.
 
 ### Sprint 6: composer catch-up
 
-- Server drafts (`app.bsky.draft.*`) for Bluesky-only posts. Decide how they
-  coexist with local drafts (owner question 3).
+- Native drafts (`app.bsky.draft.*`) are the default for a Bluesky account,
+  so drafts appear in bsky.app too. Local drafts remain the default only for
+  Anonymous and networks with no native drafts (owner decision 3).
 - Gallery posting (up to 10 images).
 - Large video via multipart; captions.
 - GIF picker, if `gifs.bsky.app` permits browser CORS and Klipy's terms allow
@@ -350,19 +358,31 @@ short "now in your Home" confirmation.
 - Group chats: create, add/remove members, join links and join requests,
   lock/unlock, system messages. Large; may split.
 
-## Owner questions
+### Sprint 8: find contacts
 
-1. **Sign-up landing page:** do you want a public `/create-bluesky-account/`
-   page alongside the Mastodon one, or only a button on the login page?
-2. **Feed preferences:** the earlier "read-only on purpose" decision guarded
-   against corrupting the list bsky.app depends on. Is the shared
-   read-modify-write service (Sprint 3) enough to lift it?
-3. **Drafts:** sync Bluesky drafts to the account (visible in bsky.app), keep
-   them local, or both with a choice?
-4. **Age assurance:** do nothing (Bluesky enforces server-side), or surface
-   the state and the "verify your age" link-out like bsky.app?
-5. **Extras:** video feed, Atmosphere and find-contacts (phone-number
-   matching). Build, link out, or explicitly drop?
+Owner wants it (2026-11-20). `app.bsky.contact.*`: phone verification
+(`startPhoneVerification`/`verifyPhone`), `importContacts`, `getMatches`,
+`dismissMatch`, `getSyncStatus`, `removeData`, plus the `contact-match`
+notification (labelled since sprint 1). A browser has no address book: the
+Contact Picker API exists only in Chromium on Android, so the web path is a
+picker where available and a pasted/uploaded list (vCard/CSV) otherwise; the
+Native app can read contacts. Removing uploaded data must be one obvious
+button. Needs its own privacy copy and a check that these endpoints accept a
+third-party OAuth session before building.
+
+## Owner decisions (2026-11-20)
+
+1. **Sign-up landing page:** yes, a public `/create-bluesky-account/` page.
+   Built in sprint 2.
+2. **Feed preferences:** lift the old read-only rule (it was scoped to an
+   earlier increment). Sprint 3's shared read-modify-write service is enough.
+3. **Drafts:** Bluesky's native drafts (`app.bsky.draft.*`) first. Local
+   drafts are the recommendation only for Anonymous and for platforms with no
+   native drafts. Sprint 6.
+4. **Age assurance:** do what bsky.app does: show the account's state and its
+   "verify your age" path. Sprint 5.
+5. **Extras:** find contacts is wanted (sprint 8). Video feed and Atmosphere
+   stay unscheduled.
 
 ## Owner to-dos
 
@@ -373,8 +393,95 @@ short "now in your Home" confirmation.
 - Live check: open a gallery post and an article-card post from bsky.app in
   Mawkingbird, and note what renders.
 
+## Progress
+
+### Sprint 1 progress (2026-11-20): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-2-sprint-1-reading.md`.
+
+- **Gallery** (`app.bsky.embed.gallery#view`, also under `recordWithMedia`):
+  mapped to image attachments with alt text and aspect ratio
+  (`bluesky-adapter.ts` `adaptMedia`). Article/gallery/livestream *external*
+  views turned out to be Atmosphere-only (see the inventory row).
+- **Label engine** (`bluesky-labels.ts`, pure, no API import): global values
+  and defaults restated from `@atproto/api` `LABELS` (`!hide`, `!warn`, `porn`,
+  `sexual`, `nudity`, `graphic-media`, `gore` alias), the reader's
+  `contentLabelPref` (global and per labeler), `adultContentPref` (adult-only
+  values always hide when off), subscribed labelers' own definitions
+  (`getServices?detailed=true`), negations, and no self `!hide`/`!warn`.
+  `BlueskyModeration` loads the prefs and definitions into
+  `BlueskyModerationState`. `StatusVisibility` turns a decision into filters:
+  hide leaves the post out of lists and shows it behind a warning in a thread;
+  warn collapses it, titled with the label names; the reader's own posts are
+  never hidden. Media blur now follows the reader's setting
+  (`StatusVisibility.mediaSensitive`, one line in `status-card.ts`). Account
+  labels apply; profile-record labels (avatar/banner only) do not.
+- **Verification:** `Account.bsky_verification` (`verified` / `verifier`) and a
+  Bluesky check in `app-verified-badge` that shows whatever the check-mark mode
+  and even with Wellness hiding counts (it isn't a popularity marker).
+- **Profiles:** pronouns, website, profile links (`profileLinkView`; labelled
+  and duplicate links dropped, non-https left as text) and a live "🔴 Live now"
+  stream link become profile fields. The self-applied `bot` label sets
+  `Account.bot`.
+- **Notifications:** `subscribed-post` → `status` (its record is the post);
+  `verified`, `unverified`, `contact-match` and `status` get proper labels
+  instead of the raw reason.
+- **Tests:** `bluesky-labels.spec.ts` (9), adapter (+6),
+  `status-visibility-bluesky-labels.spec.ts` (4), notification adapter (+2
+  expectations), verified badge (+1).
+- **Deferred:** a live ring on avatars in cards (Live Now shows on the profile
+  only); inform/alert label *badges* for labels that blur nothing; label names
+  in languages other than English; editing label settings (sprint 5).
+
+### Sprint 2 progress (2026-11-20): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-2-sprint-2-signup.md`.
+
+- **OAuth:** intents `identity:signup` and `identity:signup-add` send
+  `prompt: 'create'` to bsky.social (`bluesky-oauth.ts`,
+  `BlueskySession.beginOAuthSignup`). On return, `finishOAuth` arms full-page
+  setup (`armSetup(..., 'signup')`) instead of the onboarding card, and the
+  callback goes to `/setup` (an added account goes Home, where the shell's
+  existing setup redirect takes over). Web only; Native has no sign-up sheet.
+- **Login page:** "Create a Bluesky account" button with a one-line note;
+  `?create=1` starts the sign-up at once (used by the public page).
+- **Setup wizard:** `SetupContext.network`; the guard admits Bluesky-first
+  accounts; a Bluesky run of welcome-bluesky → profile-bluesky →
+  follow-bluesky → intro-bluesky → done. Profile writes the
+  `app.bsky.actor.profile` record (read, change name/bio/avatar, put back by
+  CID); follow lists Bluesky's suggestions (30) through the shared people list;
+  intro posts with facets and offers to pin. Mastodon steps are unchanged (the
+  Twitter/Bluesky movers steps are now Mastodon-only, a bug the new flow spec
+  caught).
+- **Public page** `/create-bluesky-account/` (English only, like its Mastodon
+  sibling): client route, server route, prerender entry, `public/sitemap.xml`,
+  `check-seo-build.mjs` pages and `prepare-seo-index.mjs` sources, linked from
+  the Bluesky and Twitter-exodus audience pages.
+- **Tests:** flow (+1), steps (`setup-bluesky-steps.spec.ts`, 5), login (+2),
+  callback (+1), OAuth transport (+2), page (2).
+- **Deferred:** creating a Bluesky account as a *connector* under a Mastodon
+  account; interests and suggested starter packs in setup
+  (`getSuggestedOnboardingUsers`, `getOnboardingSuggestedStarterPacks`, sprint
+  4 brings interests); help guide copy (docs/ belongs to another developer).
+
+### Gates for sprints 1–2
+
+Run: targeted specs per sprint; then for the pair `make test-changed` (it ran
+the whole app suite because `models.ts` changed: 868 files, 10,670 tests
+passed), `ng lint` and prettier on every touched file, `check:i18n`,
+`check:dead-code`, the deep-link audit (0 broken) and `design:inventory-check`
+after reviewing the regenerated inventory (`06-consolidation.md`,
+`11-reconciliation.json`: four new adopted-scope candidates).
+
+Not run, left to GitHub Actions or the end of the programme: `make test` with
+coverage and the test inventory, `npm run build:mockingbird` (bundle budget),
+`make test-seo` and `npm run test:seo:browser` (the new public page),
+`make design-verify`, and the other `check:static` parts.
+
 ## What's next
 
-Sprint 1 (read everything bsky.app shows) is the next sprint: low risk, no
-preference writes, and it fixes visible content loss. Sprint 2 (sign-up) can
-run in parallel if owner question 1 is answered.
+Sprints 3 (your feeds, your lists) and 4 (preferences that follow the account)
+are the next pair; both write `putPreferences`, so they start with the shared
+`BlueskyPreferences` service. Owner to-dos before then: push and watch GHA
+(especially the SEO build for `/create-bluesky-account/`), then the live
+trials in the two new test plans, above all a real `prompt=create` sign-up.

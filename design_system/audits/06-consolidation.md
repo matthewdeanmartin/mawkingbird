@@ -3073,3 +3073,16 @@ links. The shared language picker remains the only additional candidate from
 the preceding follow-up. Inventory remains at 2025 scanned files and 692
 candidate files; the kit page findings shifted line numbers and gained two
 MbButton findings. No shared widget changed.
+
+Bluesky sign-up and setup (2026-11-20, spec/bsky_parity.md sprint 2): reviewed
+the regenerated inventory: 2059 scanned files, 704 candidate files. Four new
+candidate files, all adopted scope: the Bluesky setup steps
+(`setup-bluesky-profile.html`, `setup-bluesky-follow.ts`,
+`setup-bluesky-intro.html`) and the public
+`public-pages/create-account/create-bluesky-account.html`. They use existing
+widgets only: MbButton, MbField/MbControl, MbFileDrop, MbNotice, MbContentLink
+and the shared Bluesky people list. `login-bluesky.html` gains one outline
+"Create a Bluesky account" button with the page's existing `bsky-btn` classes,
+hence one more `nativeButtons` and `legacyPills` finding, the same as its
+sibling buttons. `verified-badge.ts` (Bluesky verification check) changed
+without adding candidates. No shared design widget changed.

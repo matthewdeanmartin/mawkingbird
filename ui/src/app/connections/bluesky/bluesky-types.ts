@@ -1,11 +1,45 @@
 // Minimal AT Protocol / app.bsky view shapes — only what the adapter consumes.
 
+import type { BskyLabel } from './bluesky-labels';
+
 export interface BskyAuthor {
   viewer?: BskyViewerState;
   did: string;
   handle: string;
   displayName?: string;
   avatar?: string;
+  /** Account-level labels: self-labels (such as `bot`) and moderation labels. */
+  labels?: BskyLabel[];
+  pronouns?: string;
+  verification?: BskyVerificationState;
+  status?: BskyStatusView;
+}
+
+/** `app.bsky.actor.defs#verificationState`. */
+export interface BskyVerificationState {
+  verifiedStatus: 'valid' | 'invalid' | 'none' | string;
+  trustedVerifierStatus: 'valid' | 'invalid' | 'none' | string;
+}
+
+/**
+ * `app.bsky.actor.defs#statusView`: today only "live", with an external
+ * embed pointing at the stream. Expired or disabled statuses are not live.
+ */
+export interface BskyStatusView {
+  status: string;
+  isActive?: boolean;
+  isDisabled?: boolean;
+  expiresAt?: string;
+  embed?: { $type?: string; external?: { uri: string; title?: string } };
+}
+
+/** `app.bsky.actor.defs#profileLinkView`: one link on a profile. */
+export interface BskyProfileLinkView {
+  uri: string;
+  cid: string;
+  url: string;
+  title?: string;
+  labels?: BskyLabel[];
 }
 
 /**
@@ -35,6 +69,12 @@ export interface BskyProfile {
   followsCount?: number;
   postsCount?: number;
   viewer?: BskyViewerState;
+  labels?: BskyLabel[];
+  pronouns?: string;
+  website?: string;
+  links?: BskyProfileLinkView[];
+  verification?: BskyVerificationState;
+  status?: BskyStatusView;
 }
 
 /** The mutable `app.bsky.actor.profile/self` repository record. */
@@ -44,6 +84,8 @@ export interface BskyProfileRecord extends Record<string, unknown> {
   description?: string;
   avatar?: BskyBlobRef;
   banner?: BskyBlobRef;
+  pronouns?: string;
+  website?: string;
 }
 
 /** A repository record plus the CID used for optimistic replacement. */
@@ -163,6 +205,14 @@ export interface BskyImagesEmbed {
   }[];
 }
 
+/** `app.bsky.embed.gallery#viewImage`. Note `thumbnail`, not images' `thumb`. */
+export interface BskyGalleryImage {
+  thumbnail: string;
+  fullsize: string;
+  alt?: string;
+  aspectRatio?: { width: number; height: number };
+}
+
 /** A post embed view; `$type` discriminates (images / external / record / recordWithMedia). */
 export interface BskyEmbedView {
   playlist?: string;
@@ -172,6 +222,8 @@ export interface BskyEmbedView {
   aspectRatio?: { width: number; height: number };
   $type: string;
   images?: BskyImage[];
+  /** `app.bsky.embed.gallery#view`: up to 20 images (bsky.app posts up to 10). */
+  items?: BskyGalleryImage[];
   external?: { uri: string; title: string; description: string; thumb?: string };
   record?: BskyEmbeddedRecord | { record: BskyEmbeddedRecord };
   media?: BskyEmbedView;
@@ -212,7 +264,7 @@ export interface BskyPostView {
    * Labels on the post: the author's self-labels and those from moderation
    * services, as the AppView hydrates them. `neg` withdraws an earlier label.
    */
-  labels?: { val: string; src?: string; neg?: boolean }[];
+  labels?: BskyLabel[];
 }
 
 /** Private bookmark page; blocked/not-found items do not have a post record. */
@@ -501,4 +553,11 @@ export interface BskyRef {
    * rides here — the place Bluesky-specific post data already lives.
    */
   externalUri: string | null;
+  /**
+   * The post's labels (moderation labels, plus the author's self-labels with
+   * the author as `src`) and the author's account labels. Applied per reader
+   * preference by StatusVisibility; see `bluesky-labels.ts`.
+   */
+  labels?: BskyLabel[];
+  authorLabels?: BskyLabel[];
 }

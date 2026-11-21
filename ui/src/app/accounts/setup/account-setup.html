@@ -33,6 +33,12 @@
             >. This is how people find and mention you.
           </p>
         }
+        @case ('welcome-bluesky') {
+          <p class="setup-lead">
+            You’re <strong class="setup-handle">{{ handle() }}</strong
+            >. This is how people find and mention you on Bluesky.
+          </p>
+        }
         @case ('purpose') {
           <app-setup-purpose />
         }
@@ -59,6 +65,15 @@
         }
         @case ('intro') {
           <app-setup-intro />
+        }
+        @case ('profile-bluesky') {
+          <app-setup-bluesky-profile />
+        }
+        @case ('follow-bluesky') {
+          <app-setup-bluesky-follow />
+        }
+        @case ('intro-bluesky') {
+          <app-setup-bluesky-intro />
         }
         @case ('done') {
           <p class="setup-lead">Change any of this later in Settings → Public profile.</p>

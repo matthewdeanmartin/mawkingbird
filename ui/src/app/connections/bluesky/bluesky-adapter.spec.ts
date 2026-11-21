@@ -397,3 +397,132 @@ it('retains mutual relationships only when both Bluesky follow records exist', (
       .mutual,
   ).toBe(true);
 });
+
+describe('newer Bluesky views (parity sprint 1)', () => {
+  it('maps a gallery embed to image attachments with aspect ratios', () => {
+    const status = adaptPost(
+      makePost({
+        embed: {
+          $type: 'app.bsky.embed.gallery#view',
+          items: Array.from({ length: 6 }, (_, i) => ({
+            thumbnail: `https://cdn/t${i}`,
+            fullsize: `https://cdn/f${i}`,
+            alt: i === 0 ? 'first' : '',
+            aspectRatio: { width: 4, height: 3 },
+          })),
+        },
+      }),
+    );
+    expect(status.media_attachments).toHaveLength(6);
+    expect(status.media_attachments[0]).toMatchObject({
+      type: 'image',
+      url: 'https://cdn/f0',
+      preview_url: 'https://cdn/t0',
+      description: 'first',
+      meta: { original: { width: 4, height: 3 } },
+    });
+    expect(status.media_attachments[1].description).toBeNull();
+  });
+
+  it('maps a gallery under a quote (recordWithMedia)', () => {
+    const status = adaptPost(
+      makePost({
+        embed: {
+          $type: 'app.bsky.embed.recordWithMedia#view',
+          media: {
+            $type: 'app.bsky.embed.gallery#view',
+            items: [{ thumbnail: 't', fullsize: 'f' }],
+          },
+        },
+      }),
+    );
+    expect(status.media_attachments.map((m) => m.url)).toEqual(['f']);
+  });
+
+  it('carries post labels and the record self-labels on the ref', () => {
+    const status = adaptPost(
+      makePost({
+        labels: [{ val: '!warn', src: 'did:plc:mod' }],
+        record: {
+          $type: 'app.bsky.feed.post',
+          text: 'x',
+          createdAt: '2026-07-14T10:00:00.000Z',
+          labels: { values: [{ val: 'graphic-media' }] },
+        },
+      }),
+    );
+    const ref = status.providerRef as BskyRef;
+    expect(ref.labels).toEqual([
+      { val: '!warn', src: 'did:plc:mod' },
+      {
+        val: 'graphic-media',
+        src: 'did:plc:alice',
+        uri: 'at://did:plc:alice/app.bsky.feed.post/3k44',
+      },
+    ]);
+    expect(status.sensitive).toBe(true);
+  });
+
+  it('shows Bluesky verification and the self-applied bot label', () => {
+    const author = adaptAuthor({
+      did: 'did:plc:alice',
+      handle: 'alice.bsky.social',
+      verification: { verifiedStatus: 'valid', trustedVerifierStatus: 'none' },
+      labels: [{ val: 'bot', src: 'did:plc:alice' }],
+    });
+    expect(author.bsky_verification).toBe('verified');
+    expect(author.bot).toBe(true);
+    const verifier = adaptAuthor({
+      did: 'did:plc:v',
+      handle: 'v.bsky.social',
+      verification: { verifiedStatus: 'none', trustedVerifierStatus: 'valid' },
+      // A moderation service calling someone a bot is not a self-label.
+      labels: [{ val: 'bot', src: 'did:plc:mod' }],
+    });
+    expect(verifier.bsky_verification).toBe('verifier');
+    expect(verifier.bot).toBe(false);
+    expect(adaptAuthor({ did: 'did:plc:n', handle: 'n' }).bsky_verification).toBeUndefined();
+  });
+
+  it('turns pronouns, website, links and a live status into profile fields', () => {
+    const account = adaptProfile({
+      did: 'did:plc:alice',
+      handle: 'alice.bsky.social',
+      pronouns: 'she/her',
+      website: 'https://alice.example/',
+      links: [
+        { uri: 'at://l1', cid: 'c', url: 'https://shop.example', title: 'Shop' },
+        { uri: 'at://l2', cid: 'c', url: 'https://shop.example/', title: 'Duplicate' },
+        { uri: 'at://l3', cid: 'c', url: 'https://adult.example', labels: [{ val: 'porn' }] },
+        { uri: 'at://l4', cid: 'c', url: 'http://insecure.example' },
+      ],
+      status: {
+        status: 'app.bsky.actor.status#live',
+        isActive: true,
+        embed: { external: { uri: 'https://twitch.tv/alice' } },
+      },
+    });
+    expect(account.fields.map((f) => f.name)).toEqual([
+      '🔴 Live now',
+      'Pronouns',
+      'Website',
+      'Shop',
+      'Link',
+    ]);
+    expect(account.fields[2].value).toContain('href="https://alice.example/"');
+    expect(account.fields[4].value).toBe('insecure.example');
+  });
+
+  it('does not show an expired live status', () => {
+    const account = adaptProfile({
+      did: 'did:plc:alice',
+      handle: 'alice.bsky.social',
+      status: {
+        status: 'app.bsky.actor.status#live',
+        expiresAt: '2020-01-01T00:00:00Z',
+        embed: { external: { uri: 'https://twitch.tv/alice' } },
+      },
+    });
+    expect(account.fields).toEqual([]);
+  });
+});
