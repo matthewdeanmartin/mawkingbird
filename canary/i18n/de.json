@@ -1266,7 +1266,6 @@
     "lists.bsky.pinnedHeading": "📌 Auf Bluesky angeheftet",
     "lists.bsky.popularHeading": "🦋 Beliebt auf Bluesky",
     "lists.bsky.popularHint": "Feeds, die andere erstellt und veröffentlicht haben. Alle können sie lesen – ein Bluesky-Konto ist nicht erforderlich.",
-    "lists.bsky.savedHint": "Auf Bluesky gespeichert. Hefte sie in der Bluesky-App an oder löse sie dort – Mockingbird liest diese Liste, verändert sie aber nie.",
     "lists.clientList.heading": "Client-Listen",
     "lists.clientList.hint": "Werden in diesem Browser gespeichert, daher können beliebige Personen aufgenommen werden – du musst ihnen nicht folgen und es funktioniert ohne Anmeldung. Serverlisten (oben) erlauben nur Konten, denen du folgst.",
     "lists.clientList.members.one": "{{count}} Mitglied",

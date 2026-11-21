@@ -2434,7 +2434,6 @@
     "lists.bsky.pinnedHeading": "📌 Bluesky 上已釘選",
     "lists.bsky.popularHeading": "🦋 Bluesky 上的熱門項目",
     "lists.bsky.popularHint": "其他人建立並發佈的動態消息。任何人都能閱讀，無需 Bluesky 帳號。",
-    "lists.bsky.savedHint": "已儲存在 Bluesky。請在 Bluesky 應用程式中釘選或取消釘選；Mawkingbird 只讀取此清單，不會改寫。",
     "lists.clientList.heading": "用戶端清單",
     "lists.clientList.hint": "清單保存在此瀏覽器，可加入任何帳號，不必先跟隨，未登入也能使用。伺服器清單（上方）只能加入您跟隨的帳號。",
     "lists.clientList.members.one": "{{count}} 位成員",

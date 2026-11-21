@@ -1102,7 +1102,6 @@
     "lists.bsky.pinnedHeading": "📌 Bluesky पर पिन किया",
     "lists.bsky.popularHeading": "🦋 Bluesky पर लोकप्रिय",
     "lists.bsky.popularHint": "दूसरे लोगों की बनाई और प्रकाशित फ़ीड। कोई भी पढ़ सकता है — Bluesky अकाउंट की जरूरत नहीं।",
-    "lists.bsky.savedHint": "Bluesky पर सहेजी गईं। Bluesky ऐप में पिन या अनपिन करें — Mawkingbird सूची पढ़ता है, बदलता नहीं।",
     "lists.clientList.heading": "क्लाइंट सूचियाँ",
     "lists.clientList.hint": "इस ब्राउज़र में रखी जाती हैं, इसलिए किसी को भी जोड़ा जा सकता है — फ़ॉलो करना जरूरी नहीं और लॉग आउट पर भी काम करती हैं। सर्वर सूचियाँ (ऊपर) केवल फ़ॉलो किए अकाउंट लेती हैं।",
     "lists.clientList.members.one": "{{count}} सदस्य",
