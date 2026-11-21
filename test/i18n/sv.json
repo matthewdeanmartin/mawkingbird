@@ -3049,7 +3049,7 @@
   },
   "footer": {
     "buildLog": "bygglogg",
-    "builtAt": "Byggd {{date}} UTC",
+    "builtAt": "Byggd {{date}}",
     "end": "Du har nått slutet. Det är tillåtet här.",
     "failWhale": "Felval",
     "hotkeys": "? för tangentbord",

@@ -917,7 +917,7 @@
   },
   "footer": {
     "buildLog": "buildlogboek",
-    "builtAt": "Gebouwd op {{date}} UTC",
+    "builtAt": "Gebouwd op {{date}}",
     "end": "Je hebt het einde bereikt. Dat mag hier.",
     "failWhale": "Foutwalvis",
     "hotkeys": "? voor toetsenbord",

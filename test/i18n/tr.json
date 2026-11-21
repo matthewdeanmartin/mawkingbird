@@ -917,7 +917,7 @@
   },
   "footer": {
     "buildLog": "derleme kaydı",
-    "builtAt": "{{date}} UTC tarihinde derlendi",
+    "builtAt": "{{date}} tarihinde derlendi",
     "end": "Sona ulaştın. Burada buna izin var.",
     "failWhale": "Hata balinası",
     "hotkeys": "klavye için ?",

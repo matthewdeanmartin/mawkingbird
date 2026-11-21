@@ -688,7 +688,7 @@
   },
   "footer": {
     "buildLog": "ビルドログ",
-    "builtAt": "{{date}} UTCにビルド",
+    "builtAt": "{{date}}にビルド",
     "end": "ここで終わりです。ひと休みしても大丈夫です。",
     "failWhale": "失敗クジラ",
     "hotkeys": "? キー操作",

@@ -1208,7 +1208,7 @@
   },
   "footer": {
     "buildLog": "빌드 로그",
-    "builtAt": "{{date}} UTC 빌드",
+    "builtAt": "{{date}} 빌드",
     "end": "끝까지 왔습니다. 여기서는 괜찮습니다.",
     "failWhale": "고래 오류",
     "hotkeys": "? 키로 단축키 보기",
