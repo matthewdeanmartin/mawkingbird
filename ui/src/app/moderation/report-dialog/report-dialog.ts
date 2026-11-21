@@ -1,7 +1,7 @@
 import { accountProfilePath } from '../../accounts/account-route';
 import { Account } from '../../platform/api/models';
 import { SubmittedReports } from '../report-history/report-history';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../platform/api/api';
@@ -10,10 +10,16 @@ import { MbField, MbControl } from '../../design-system/field/field';
 import { MbButton } from '../../design-system/button/button';
 import { MbNotice } from '../../design-system/notice/notice';
 import { ProviderId } from '../../platform/api/models';
-import { BlueskyApi, BskyReportReason } from '../../connections/bluesky/bluesky-api';
+import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { BskyRef } from '../../connections/bluesky/bluesky-types';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { ServerAbout } from '../../discovery/server-about';
+import { BlueskyModeration, BskyLabelerEntry } from '../../connections/bluesky/bluesky-moderation';
+import {
+  BLUESKY_REPORT_GROUPS,
+  BskyReportReasonId,
+  defaultBlueskyReason,
+} from './bluesky-report-reasons';
 
 // i18n report.title: Report @{{username}}
 // i18n report.specificPost: Reporting a specific post.
@@ -54,10 +60,17 @@ const CATEGORIES = ['spam', 'violation', 'other'] as const;
   templateUrl: './report-dialog.html',
   styleUrl: './report-dialog.css',
 })
-export class ReportDialog {
+export class ReportDialog implements OnInit {
   private history = inject(SubmittedReports);
   private api = inject(Api);
   private blueskyApi = inject(BlueskyApi);
+  private bskyModeration = inject(BlueskyModeration);
+  protected readonly bskyGroups = BLUESKY_REPORT_GROUPS;
+  /** The exact Bluesky reason; starts from the category's closest one. */
+  protected bskyReason = signal<BskyReportReasonId>(defaultBlueskyReason('spam'));
+  /** '' sends to Bluesky's own moderation; otherwise a subscribed service's DID. */
+  protected bskySendTo = signal('');
+  protected bskyServices = signal<BskyLabelerEntry[]>([]);
   private transloco = inject(TranslocoService);
   protected serverAbout = inject(ServerAbout);
 
@@ -96,6 +109,15 @@ export class ReportDialog {
     return at > 0 ? acct.slice(at + 1) : null;
   });
 
+  ngOnInit(): void {
+    if (this.provider() !== 'bluesky') return;
+    // The subscribed moderation services a report may go to instead.
+    void this.bskyModeration
+      .labelers()
+      .then((services) => this.bskyServices.set(services))
+      .catch(() => undefined);
+  }
+
   protected setCategory(category: string): void {
     this.category.set(category);
     if (category === 'violation' && this.provider() !== 'bluesky') {
@@ -126,7 +148,8 @@ export class ReportDialog {
       category: this.category(),
     };
     if (this.provider() === 'bluesky') {
-      const reason = BLUESKY_REASONS[this.category()] ?? BLUESKY_REASONS['other'];
+      const reason = this.bskyReason();
+      const labeler = this.bskySendTo() || undefined;
       const ref = this.statusRef();
       if (this.statusId() && !ref) {
         this.submitting.set(false);
@@ -140,8 +163,8 @@ export class ReportDialog {
         return;
       }
       const call = ref
-        ? this.blueskyApi.reportPost(ref.uri, ref.cid, reason, this.comment())
-        : this.blueskyApi.reportAccount(did, reason, this.comment());
+        ? this.blueskyApi.reportPost(ref.uri, ref.cid, reason, this.comment(), labeler)
+        : this.blueskyApi.reportAccount(did, reason, this.comment(), labeler);
       call.subscribe({
         next: () => {
           this.submitting.set(false);
@@ -185,9 +208,3 @@ export class ReportDialog {
       });
   }
 }
-
-const BLUESKY_REASONS: Record<string, BskyReportReason> = {
-  spam: 'tools.ozone.report.defs#reasonMisleadingSpam',
-  violation: 'tools.ozone.report.defs#reasonRuleOther',
-  other: 'tools.ozone.report.defs#reasonOther',
-};

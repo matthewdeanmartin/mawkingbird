@@ -124,4 +124,11 @@ describe('Bluesky OAuth transport', () => {
       source: 'signup',
     });
   });
+
+  it('upgrades the identity to OAuth as itself, returning Home afterwards', async () => {
+    oauth.signIn.mockReturnValue(new Promise(() => undefined));
+    void TestBed.inject(BlueskySession).upgradeToOAuth();
+    await Promise.resolve();
+    expect(oauth.signIn).toHaveBeenCalledWith(DID, 'identity:add');
+  });
 });

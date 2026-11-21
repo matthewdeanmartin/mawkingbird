@@ -1,5 +1,5 @@
 import type { FocalPoint } from './focal-point/focal-point';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, Injector, signal } from '@angular/core';
 import { MediaAttachment, Status } from '../platform/api/models';
 import { accountScopeSuffix } from '../platform/session/account-scope';
 import { Auth } from '../platform/session/auth';
@@ -49,6 +49,17 @@ export interface Draft {
   pasteProviderId?: string;
   pasteLanguage?: string;
   pasteExpiry?: string;
+  /** The same draft in the Bluesky account (`app.bsky.draft`), once mirrored there. */
+  blueskyDraftId?: string;
+}
+
+/**
+ * Somewhere a store's drafts are also kept, told after each durable change:
+ * Bluesky's own drafts for a Bluesky-first account (`BlueskyDraftSync`).
+ */
+export interface DraftMirror {
+  saved(draft: Draft): void;
+  removed(draft: Draft): void;
 }
 
 export type DraftSnapshot = Omit<Draft, 'id' | 'updatedAt'>;
@@ -153,6 +164,8 @@ export class AccountDrafts {
   private readonly autosaveKey: string;
   private readonly versionsKey: string;
   readonly drafts;
+  /** Set for an account whose drafts also live on its network. */
+  mirror: DraftMirror | null = null;
 
   constructor(namespace: string) {
     this.draftsKey = `${DRAFTS_KEY}${namespace}`;
@@ -184,8 +197,26 @@ export class AccountDrafts {
     const outcome = storeJson(this.draftsKey, next);
     if (outcome.durable) {
       this.drafts.set(next);
+      this.mirror?.saved(draft);
     }
     return { id: draft.id, updatedAt: draft.updatedAt, ...outcome };
+  }
+
+  /** Remember a draft's id on its network, without touching its edit time. */
+  setRemoteId(id: string, blueskyDraftId: string): void {
+    const current = loadJson<Draft[]>(this.draftsKey) ?? this.drafts();
+    if (!current.some((draft) => draft.id === id)) return;
+    const next = current.map((draft) => (draft.id === id ? { ...draft, blueskyDraftId } : draft));
+    if (storeJson(this.draftsKey, next).durable) this.drafts.set(next);
+  }
+
+  /** Add a draft made elsewhere (bsky.app, another device), keeping its time. */
+  importRemote(draft: DraftSnapshot & { updatedAt: string }): void {
+    const current = loadJson<Draft[]>(this.draftsKey) ?? this.drafts();
+    const id = `remote-${draft.blueskyDraftId ?? Date.now()}`;
+    if (current.some((item) => item.id === id)) return;
+    const next = [...current, { ...draft, id }];
+    if (storeJson(this.draftsKey, next).durable) this.drafts.set(next);
   }
 
   /**
@@ -223,10 +254,18 @@ export class AccountDrafts {
     const updatedAt = new Date(
       Math.max(Date.now(), Date.parse(stored.updatedAt) + 1),
     ).toISOString();
-    const next = current.map((draft) => (draft.id === id ? { ...snapshot, id, updatedAt } : draft));
+    const blueskyDraftId = snapshot.blueskyDraftId ?? stored.blueskyDraftId;
+    const updated: Draft = {
+      ...snapshot,
+      ...(blueskyDraftId ? { blueskyDraftId } : {}),
+      id,
+      updatedAt,
+    };
+    const next = current.map((draft) => (draft.id === id ? updated : draft));
     const outcome = storeJson(this.draftsKey, next);
     if (outcome.durable) {
       this.drafts.set(next);
+      this.mirror?.saved(updated);
     }
     return {
       updated: outcome.durable,
@@ -237,11 +276,13 @@ export class AccountDrafts {
 
   remove(id: string): DraftStorageOutcome {
     const current = loadJson<Draft[]>(this.draftsKey) ?? this.drafts();
+    const removed = current.find((draft) => draft.id === id);
     const next = current.filter((draft) => draft.id !== id);
     const outcome = storeJson(this.draftsKey, next);
     if (outcome.durable) {
       this.drafts.set(next);
       this.removeVersions(id);
+      if (removed) this.mirror?.removed(removed);
     }
     return outcome;
   }
@@ -376,6 +417,7 @@ export class AccountDrafts {
 export class Drafts {
   private readonly auth = inject(Auth);
   private readonly server = inject(Server);
+  private readonly injector = inject(Injector);
   private readonly stores = new Map<string, AccountDrafts>();
   private readonly active = computed(() => {
     this.auth.kind();
@@ -386,6 +428,17 @@ export class Drafts {
     let store = this.stores.get(namespace);
     if (!store) {
       store = new AccountDrafts(namespace);
+      // A Bluesky-first account keeps its drafts in Bluesky too (native drafts
+      // first, owner decision). Loaded lazily: most stores never need it.
+      if (this.auth.isBlueskyPrimary) {
+        const created = store;
+        void import('../connections/bluesky/bluesky-drafts')
+          .then(({ BlueskyDraftSync }) => {
+            created.mirror = this.injector.get(BlueskyDraftSync).mirrorFor(created);
+          })
+          // The app (or a spec) may be gone by the time the chunk arrives.
+          .catch(() => undefined);
+      }
       this.stores.set(namespace, store);
     }
     return store;

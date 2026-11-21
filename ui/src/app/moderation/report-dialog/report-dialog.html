@@ -18,13 +18,37 @@
     <p class="muted small">{{ 'report.blueskyService' | transloco }}</p>
   }
 
-  <mb-field [label]="'report.category' | transloco">
-    <select mbControl [ngModel]="category()" (ngModelChange)="setCategory($event)">
-      @for (c of categories; track c) {
-        <option [value]="c">{{ c }}</option>
-      }
-    </select>
-  </mb-field>
+  @if (provider() === 'bluesky') {
+    <mb-field [label]="'report.bsky.reason' | transloco">
+      <select mbControl [ngModel]="bskyReason()" (ngModelChange)="bskyReason.set($event)">
+        @for (group of bskyGroups; track group.key) {
+          <optgroup [label]="group.key | transloco">
+            @for (reason of group.reasons; track reason.value) {
+              <option [value]="reason.value">{{ reason.key | transloco }}</option>
+            }
+          </optgroup>
+        }
+      </select>
+    </mb-field>
+    @if (bskyServices().length) {
+      <mb-field [label]="'report.bsky.sendTo' | transloco">
+        <select mbControl [ngModel]="bskySendTo()" (ngModelChange)="bskySendTo.set($event)">
+          <option value="">{{ 'report.bsky.bluesky' | transloco }}</option>
+          @for (service of bskyServices(); track service.did) {
+            <option [value]="service.did">{{ service.name }}</option>
+          }
+        </select>
+      </mb-field>
+    }
+  } @else {
+    <mb-field [label]="'report.category' | transloco">
+      <select mbControl [ngModel]="category()" (ngModelChange)="setCategory($event)">
+        @for (c of categories; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+    </mb-field>
+  }
 
   @if (category() === 'violation' && provider() !== 'bluesky') {
     <fieldset class="report-rules">

@@ -227,3 +227,27 @@ export function definitionsOf(
     ];
   });
 }
+
+/** The global labels a reader may set, in bsky.app's order. */
+export const CONFIGURABLE_LABELS: readonly BskyLabelDefinition[] = [
+  'porn',
+  'sexual',
+  'graphic-media',
+  'nudity',
+].map((id) => GLOBAL[id]);
+
+/**
+ * What the reader has a label set to now, as the settings page shows it:
+ * `show` and `ignore` read the same, and an adult-only label is `hide` while
+ * adult content is off.
+ */
+export function currentVisibility(
+  def: BskyLabelDefinition,
+  inputs: Pick<BskyLabelInputs, 'adultContent' | 'prefs'>,
+  labelerDid?: string,
+): 'ignore' | 'warn' | 'hide' {
+  if (def.adultOnly && !inputs.adultContent) return 'hide';
+  const value =
+    inputs.prefs.get(labelPrefKey(def.identifier, labelerDid)) ?? def.defaultSetting ?? 'warn';
+  return value === 'show' ? 'ignore' : value;
+}

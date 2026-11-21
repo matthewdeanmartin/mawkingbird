@@ -1,5 +1,5 @@
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, Injector, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -258,6 +258,7 @@ export class DraftsPage implements OnInit {
   private drafts = inject(Drafts).forCurrentAccount();
   private pastes = inject(PasteHistory);
   protected auth = inject(Auth);
+  private injector = inject(Injector);
   protected featureFlags = inject(FeatureFlags);
   protected prefs = inject(ClientPrefs);
   protected pasteProviders = inject(PasteProviderRegistry);
@@ -301,6 +302,13 @@ export class DraftsPage implements OnInit {
 
   ngOnInit(): void {
     this.sources.load();
+    // Drafts saved in bsky.app (or another device) join the list.
+    if (this.auth.isBlueskyPrimary) {
+      const store = this.drafts;
+      void import('../../connections/bluesky/bluesky-drafts')
+        .then(({ BlueskyDraftSync }) => this.injector.get(BlueskyDraftSync).pull(store))
+        .catch(() => undefined);
+    }
     // Home's Write button lands here with ?write=1 and expects a ready box.
     if (this.route.snapshot.queryParamMap.get('write')) {
       this.writing.set(true);

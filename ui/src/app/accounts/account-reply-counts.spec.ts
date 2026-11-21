@@ -132,6 +132,67 @@ describe('AccountReplyCounts', () => {
     expect(counts.label('bluesky:did:plc:one')).toBe('');
   });
 
+  it('holds an account switch until an OAuth request (and any token refresh) finishes', async () => {
+    sessions.set([]);
+    saveBlueskyIdentity(
+      { did: 'did:plc:one', handle: 'one.bsky.social', service: 'https://bsky.social' },
+      { authMethod: 'oauth' },
+    );
+    blueskyAccounts.set([
+      {
+        key: 'bluesky:did:plc:one',
+        kind: 'bluesky',
+        token: null,
+        did: 'did:plc:one',
+        server: 'https://bsky.social',
+        account: { id: 'bsky:did:plc:one' },
+      },
+    ]);
+    let finish!: (response: Response) => void;
+    oauth.fetch.mockReturnValue(new Promise<Response>((resolve) => (finish = resolve)));
+    const counts = TestBed.inject(AccountReplyCounts);
+
+    const idle = vi.fn();
+    counts.afterSettled(idle);
+    expect(idle).toHaveBeenCalledOnce(); // nothing running: no delay at all
+
+    void counts.refresh();
+    const reload = vi.fn();
+    counts.afterSettled(reload);
+    await Promise.resolve();
+    expect(reload).not.toHaveBeenCalled();
+
+    finish(new Response(JSON.stringify({ notifications: [] }), { status: 200 }));
+    await counts.settled();
+    await new Promise((resolve) => setTimeout(resolve));
+    expect(reload).toHaveBeenCalledOnce();
+  });
+
+  it('gives up waiting after the time limit', async () => {
+    vi.useFakeTimers();
+    try {
+      sessions.set([]);
+      saveBlueskyIdentity(
+        { did: 'did:plc:one', handle: 'one.bsky.social', service: 'https://bsky.social' },
+        { authMethod: 'oauth' },
+      );
+      blueskyAccounts.set([
+        { key: 'bluesky:did:plc:one', kind: 'bluesky', token: null, did: 'did:plc:one' },
+      ]);
+      oauth.fetch.mockReturnValue(new Promise<Response>(() => undefined));
+      const counts = TestBed.inject(AccountReplyCounts);
+      void counts.refresh();
+      const done = vi.fn();
+      void counts.settled(1000).then(done);
+      await vi.advanceTimersByTimeAsync(999);
+      expect(done).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(1);
+      expect(done).toHaveBeenCalledOnce();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('does not mark Misskey notifications read while checking the switcher', async () => {
     sessions.set([]);
     const key = saveMisskeyIdentity(

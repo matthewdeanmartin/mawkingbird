@@ -13,6 +13,7 @@ import {
   signal,
 } from '@angular/core';
 import { BlueskyModerationState } from '../../connections/bluesky/bluesky-moderation-state';
+import { blueskyImageEmbed, BSKY_GALLERY_MAX } from '../../connections/bluesky/bluesky-image-embed';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MbButton } from '../../design-system/button/button';
@@ -63,6 +64,7 @@ import { buildLocalBskyStatus } from '../../connections/bluesky/bluesky-local-st
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import {
   BskyFacet,
+  BskyGalleryEmbed,
   BskyImagesEmbed,
   BskyPostEmbed,
   BskyRef,
@@ -399,7 +401,8 @@ function isBlueskyAttachable(file: File): boolean {
  * Enforced when picking rather than at submit, so the fifth photo is refused
  * where the reader can see why, not after they have written the post.
  */
-const BSKY_MAX_IMAGES = 4;
+/** Images per Bluesky post: four as `images`, up to ten as a gallery (bsky.app's cap). */
+const BSKY_MAX_IMAGES = BSKY_GALLERY_MAX;
 
 const BSKY_CONTROLS_FAILED =
   "Posted to Bluesky, but couldn't apply who can reply and quote. Set them from the post's ••• menu.";
@@ -3380,7 +3383,7 @@ export class Compose implements OnDestroy {
       this.postBskyPart(operation);
       return;
     }
-    // Up to four images, or one video on its own — the protocol's rules. A
+    // Up to ten images (a gallery past four), or one video on its own. A
     // "both" post can carry more on the Fedi leg, so this trims rather than
     // refusing; photos win over a video, matching what the composer said when
     // the target changed (`noteBlueskyMediaLimits`).
@@ -3405,7 +3408,7 @@ export class Compose implements OnDestroy {
     }
     // Blobs must exist in the repo before the record that references them, so
     // the uploads finish first and the post carries the finished embed.
-    const upload: Promise<BskyImagesEmbed | BskyVideoEmbed | string> = video
+    const upload: Promise<BskyImagesEmbed | BskyGalleryEmbed | BskyVideoEmbed | string> = video
       ? this.uploadBskyVideo(video)
       : this.uploadBskyImages(images).then(
           (embed) => embed ?? "Couldn't upload the image to Bluesky; nothing was posted there.",
@@ -3434,7 +3437,9 @@ export class Compose implements OnDestroy {
    * Mastodon leg uses — because Bluesky's lexicon requires the key and an image
    * with no description is a real accessibility loss, not a formality.
    */
-  private async uploadBskyImages(items: PendingMedia[]): Promise<BskyImagesEmbed | null> {
+  private async uploadBskyImages(
+    items: PendingMedia[],
+  ): Promise<BskyImagesEmbed | BskyGalleryEmbed | null> {
     const images: BskyImagesEmbed['images'] = [];
     for (const item of items) {
       const prepared = await prepareImageForBluesky(item.file!, this.pseudonymity.cleanMedia());
@@ -3454,7 +3459,7 @@ export class Compose implements OnDestroy {
         return null;
       }
     }
-    return { $type: 'app.bsky.embed.images', images };
+    return blueskyImageEmbed(images);
   }
 
   /**
@@ -3505,7 +3510,7 @@ export class Compose implements OnDestroy {
    */
   private quoteEmbed(
     operation: PostingOperation,
-    media?: BskyImagesEmbed | BskyVideoEmbed,
+    media?: BskyImagesEmbed | BskyGalleryEmbed | BskyVideoEmbed,
   ): BskyPostEmbed | undefined {
     const quote = operation.bsky.quote;
     if (!quote) return media;

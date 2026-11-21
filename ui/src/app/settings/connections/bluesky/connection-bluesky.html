@@ -41,6 +41,25 @@
       ) | transloco
     }}
   </p>
+  @if (bsky.usesAppPassword() && !native) {
+    <mb-notice>
+      {{ 'settings.connections.bluesky.upgradeNotice' | transloco }}
+      <button
+        mbButton
+        type="button"
+        size="small"
+        [disabled]="upgrading()"
+        (click)="upgradeToOAuth()"
+      >
+        {{ 'settings.connections.bluesky.upgrade' | transloco }}
+      </button>
+    </mb-notice>
+    @if (upgradeError()) {
+      <mb-notice tone="error" announcement="alert">{{
+        'settings.connections.bluesky.upgradeFailed' | transloco
+      }}</mb-notice>
+    }
+  }
   @if (expiryLabel(bsky.expiresAt()); as expiry) {
     <p class="muted small">
       {{ 'settings.connections.bluesky.expiresOn' | transloco: { date: expiry } }}
@@ -83,7 +102,7 @@
       </button>
     </form>
   </mb-disclosure>
-  @if (!native) {
+  @if (!native && appPasswordsOffered) {
     <mb-disclosure [label]="'settings.connections.bluesky.appPasswordSummary' | transloco">
       <p class="muted">
         {{ 'settings.connections.bluesky.linkHint.a' | transloco }}

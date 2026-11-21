@@ -256,6 +256,64 @@
     </mb-section>
   }
 
+  <mb-section [title]="'settings.bskyModeration.filters.title' | transloco">
+    <p class="muted">{{ 'settings.bskyModeration.filters.hint' | transloco }}</p>
+    <mb-checkbox
+      [label]="'settings.bskyModeration.filters.adult' | transloco"
+      [hint]="'settings.bskyModeration.filters.adultHint' | transloco"
+      [checked]="state.adultContent()"
+      [disabled]="busy()"
+      (checkedChange)="setAdult($event)"
+    />
+    <div class="mod-filters">
+      @for (def of globalLabels; track def.identifier) {
+        <mb-field [label]="labelKey(def) | transloco">
+          <select
+            mbControl
+            [name]="'label-' + def.identifier"
+            [ngModel]="visibility(def)"
+            (ngModelChange)="setVisibility(def, $event)"
+            [disabled]="busy() || (!!def.adultOnly && !state.adultContent())"
+          >
+            @for (value of visibilities; track value) {
+              <option [value]="value">
+                {{ 'settings.bskyModeration.filters.' + value | transloco }}
+              </option>
+            }
+          </select>
+        </mb-field>
+      }
+    </div>
+    @for (group of labelerGroups(); track group.did) {
+      <h3 class="mod-subhead">
+        {{ 'settings.bskyModeration.filters.from' | transloco: { name: group.name } }}
+      </h3>
+      <div class="mod-filters">
+        @for (def of group.defs; track def.identifier) {
+          <mb-field [label]="def.name || def.identifier">
+            <select
+              mbControl
+              [name]="'label-' + group.did + '-' + def.identifier"
+              [ngModel]="visibility(def, group.did)"
+              (ngModelChange)="setVisibility(def, $event, group.did)"
+              [disabled]="busy() || (!!def.adultOnly && !state.adultContent())"
+            >
+              @for (value of visibilities; track value) {
+                <option [value]="value">
+                  {{ 'settings.bskyModeration.filters.' + value | transloco }}
+                </option>
+              }
+            </select>
+          </mb-field>
+        }
+      </div>
+    }
+    <mb-save-feedback
+      [state]="filtersError() ? 'error' : filtersSaved() ? 'saved' : 'idle'"
+      [message]="filtersError() || ('settings.bskyModeration.filters.saved' | transloco)"
+    />
+  </mb-section>
+
   <mb-section [title]="'settings.bskyModeration.services.title' | transloco">
     <p class="muted">{{ 'settings.bskyModeration.services.hint' | transloco }}</p>
     <form class="mod-form" (ngSubmit)="addService()">
@@ -335,5 +393,51 @@
         [message]="chatError() || ('settings.bskyModeration.chat.saved' | transloco)"
       />
     }
+  </mb-section>
+
+  <mb-section [title]="'settings.bskyModeration.inbox.title' | transloco">
+    <p class="muted">{{ 'settings.bskyModeration.inbox.hint' | transloco }}</p>
+    @if (standing()?.standing; as value) {
+      <p>{{ 'settings.bskyModeration.inbox.standing' | transloco: { standing: value } }}</p>
+    }
+    @if (reportsFailed()) {
+      <mb-notice tone="error" announcement="alert">{{
+        'settings.bskyModeration.inbox.failed' | transloco
+      }}</mb-notice>
+    } @else if (reports().length) {
+      <ul class="mod-list">
+        @for (report of reports(); track report.id) {
+          <li>
+            <span class="mod-name">
+              <strong>{{ reportReason(report) }}</strong>
+              <span class="muted small">
+                {{ reportSubject(report) }} · {{ sentOn(report) }}
+                @if (report.status) {
+                  · {{ report.status }}
+                }
+              </span>
+            </span>
+          </li>
+        }
+      </ul>
+      @if (reportsCursor()) {
+        <button mbButton type="button" variant="link" (click)="loadInbox(true)">
+          {{ 'settings.bskyModeration.more' | transloco }}
+        </button>
+      }
+    } @else {
+      <mb-content-state kind="empty" [title]="'settings.bskyModeration.inbox.empty' | transloco" />
+    }
+  </mb-section>
+
+  <mb-section [title]="'settings.bskyModeration.age.title' | transloco">
+    <p class="muted">{{ 'settings.bskyModeration.age.hint' | transloco }}</p>
+    <a
+      mbContentLink
+      href="https://bsky.app/settings/account"
+      target="_blank"
+      rel="noopener noreferrer"
+      >{{ 'settings.bskyModeration.age.link' | transloco }}</a
+    >
   </mb-section>
 }

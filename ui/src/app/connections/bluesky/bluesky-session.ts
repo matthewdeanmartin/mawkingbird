@@ -444,9 +444,14 @@ export class BlueskySession implements ExpiringConnection {
       if (this.isIdentity) {
         throw new Error('This account is already signed in with Bluesky.');
       }
+      const replacedAppPassword =
+        this.session()?.authMethod === 'app-password' || this.storedAppPassword() !== null;
       this.persist(session);
+      if (replacedAppPassword) void this.forgetVaultedAppPassword(null);
       return { kind: 'connector', session };
     }
+    const replacedAppPassword =
+      blueskyIdentity(result.profile.did)?.credentials.authMethod === 'app-password';
     const created = saveBlueskyIdentity(
       result.profile,
       { authMethod: 'oauth', connectedAt: session.connectedAt },
@@ -458,12 +463,64 @@ export class BlueskySession implements ExpiringConnection {
     if (signup) armSetup(scopeSuffixForDid(result.profile.did), 'signup');
     else if (created) markOnboardingPending(scopeSuffixForDid(result.profile.did));
     this.session.set(session);
+    if (replacedAppPassword) void this.forgetVaultedAppPassword(result.profile.did);
     return {
       kind: 'identity',
       session,
       adding: result.state === 'identity:add' || result.state === 'identity:signup-add',
       signup,
     };
+  }
+
+  /**
+   * Whether this link still uses an app password, which Mawkingbird is phasing
+   * out in favour of Bluesky's own sign-in (spec/bsky_parity.md).
+   */
+  usesAppPassword(): boolean {
+    const current = this.session();
+    return !!current && current.authMethod !== 'oauth';
+  }
+
+  /**
+   * Replace this link's app password with Bluesky's own sign-in, for the same
+   * account: the identity is re-authorised as itself (and the page returns
+   * Home), a connector is re-linked. On return the app password is deleted
+   * here and from the vault.
+   */
+  async upgradeToOAuth(): Promise<void> {
+    const current = this.session();
+    if (!current) throw new Error('No Bluesky account is linked.');
+    if (this.isIdentity) {
+      await this.beginOAuthIdentity(current.did, true);
+      return;
+    }
+    await this.beginOAuthConnector(current.did);
+  }
+
+  /**
+   * Drop a vaulted app password once OAuth has replaced it, so it does not sit
+   * in the vault (or travel to another device) after it stopped being used.
+   * `did` names an identity's entry; null means this account's connector.
+   */
+  private async forgetVaultedAppPassword(did: string | null): Promise<void> {
+    try {
+      if (did === null) {
+        await this.bridge.removeThrough(this.credentialsBase, this.vaultAccountKey());
+        return;
+      }
+      const raw = this.bridge.readThrough(BSKY_IDENTITY_CREDENTIALS_KEY, null);
+      if (!raw) return;
+      const parsed: unknown = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object' || isVaultedBskyCredential(parsed)) return;
+      const credentials = { ...(parsed as VaultedBskyIdentityCredentials) };
+      if (!(did in credentials)) return;
+      delete credentials[did];
+      await (Object.keys(credentials).length
+        ? this.bridge.writeThrough(BSKY_IDENTITY_CREDENTIALS_KEY, JSON.stringify(credentials), null)
+        : this.bridge.removeThrough(BSKY_IDENTITY_CREDENTIALS_KEY, null));
+    } catch {
+      // Best effort: a locked or switched-off vault keeps what it had.
+    }
   }
 
   /** Whether authenticated calls must go through the OAuth DPoP transport. */

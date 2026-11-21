@@ -40,6 +40,33 @@
         </div>
       </div>
 
+      @if (auth.isBlueskyPrimary) {
+        <div class="srow">
+          <span class="slabel">{{ 'settings.profile.bsky.pronouns' | transloco }}</span>
+          <div class="scontrol">
+            <input
+              type="text"
+              [ngModel]="bskyPronouns()"
+              (ngModelChange)="bskyPronouns.set($event)"
+              name="pronouns"
+              maxlength="20"
+            />
+          </div>
+        </div>
+        <div class="srow">
+          <span class="slabel">{{ 'settings.profile.bsky.website' | transloco }}</span>
+          <div class="scontrol">
+            <input
+              type="url"
+              [ngModel]="bskyWebsite()"
+              (ngModelChange)="bskyWebsite.set($event)"
+              name="website"
+            />
+            <span class="hint">{{ 'settings.profile.bsky.websiteHint' | transloco }}</span>
+          </div>
+        </div>
+      }
+
       @if (auth.isAnonymous) {
         <div class="srow">
           <span class="slabel">{{ 'settings.profile.localHandle' | transloco }}</span>

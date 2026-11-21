@@ -2684,16 +2684,18 @@ describe('Compose', () => {
       expect(internals(f).mediaNotice()).toContain('images and video only');
     });
 
-    it('caps at four images and says how many were left out', () => {
+    // Bluesky takes up to ten images since galleries (parity sprint 6); four
+    // or fewer still post as the classic images embed.
+    it('caps at ten images and says how many were left out', () => {
       linkBsky();
       const f = setUp();
       internals(f).target.set('bsky');
 
       internals(f).uploadFiles(
-        Array.from({ length: 6 }, (_, i) => new File(['x'], `${i}.jpg`, { type: 'image/jpeg' })),
+        Array.from({ length: 12 }, (_, i) => new File(['x'], `${i}.jpg`, { type: 'image/jpeg' })),
       );
 
-      expect(internals(f).media()).toHaveLength(4);
+      expect(internals(f).media()).toHaveLength(10);
       expect(internals(f).mediaNotice()).toContain('2 were left out');
     });
   });

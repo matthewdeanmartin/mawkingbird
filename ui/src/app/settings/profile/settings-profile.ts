@@ -46,6 +46,9 @@ function realImage(url: string | null | undefined): string {
 // i18n settings.profile.setup.again: Run account setup again
 // i18n settings.profile.intro.anonymous: Your browser-local identity. Nothing here is published to {{server}}.
 // i18n settings.profile.intro.bluesky: How you appear to people on Bluesky.
+// i18n settings.profile.bsky.pronouns: Pronouns
+// i18n settings.profile.bsky.website: Website
+// i18n settings.profile.bsky.websiteHint: A full address starting with https://
 // i18n settings.profile.intro.misskey: Your profile lives on your Misskey server. Editing it from here comes in a later update; for now, change it on Misskey.
 // i18n settings.profile.misskeyLink: Edit your profile on {{server}}
 // i18n settings.profile.displayName: Display name
@@ -358,7 +361,13 @@ export class SettingsProfile implements OnInit {
     return Object.keys(changes).length ? changes : null;
   }
 
+  /** Bluesky profile fields Mastodon has no slot for. */
+  protected bskyPronouns = signal('');
+  protected bskyWebsite = signal('');
+
   private loadBlueskyProfile(profile: BskyProfile): void {
+    this.bskyPronouns.set(profile.pronouns ?? '');
+    this.bskyWebsite.set(profile.website ?? '');
     this.displayName.set(profile.displayName ?? profile.handle);
     this.username.set(profile.handle);
     this.note.set(profile.description ?? '');
@@ -525,6 +534,8 @@ export class SettingsProfile implements OnInit {
         ...current.value,
         displayName: this.displayName(),
         description: this.note(),
+        pronouns: this.bskyPronouns().trim() || undefined,
+        website: this.bskyWebsite().trim() || undefined,
         ...(avatar ? { avatar } : {}),
         ...(banner ? { banner } : {}),
       };

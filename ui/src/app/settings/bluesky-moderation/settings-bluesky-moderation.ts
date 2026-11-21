@@ -13,6 +13,16 @@ import { MbNotice } from '../../design-system/notice/notice';
 import { MbPageHeader, MbSection } from '../../design-system/page-header/page-header';
 import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback';
 import { BlueskyGraph } from '../../connections/bluesky/bluesky-graph';
+import {
+  BlueskyModerationInbox,
+  BskyAccountStanding,
+  BskyInboxReport,
+} from '../../connections/bluesky/bluesky-moderation-inbox';
+import {
+  BskyLabelDefinition,
+  CONFIGURABLE_LABELS,
+  currentVisibility,
+} from '../../connections/bluesky/bluesky-labels';
 import { BskyProfile } from '../../connections/bluesky/bluesky-types';
 import {
   BlueskyModeration,
@@ -91,6 +101,30 @@ import { firstValueFrom } from 'rxjs';
 // i18n settings.bskyModeration.muted.empty: You haven't muted anyone on Bluesky.
 // i18n settings.bskyModeration.muted.undo: Unmute
 // i18n settings.bskyModeration.more: Show more
+// i18n settings.bskyModeration.filters.title: Content filters
+// i18n settings.bskyModeration.filters.hint: How labelled posts show, here and in bsky.app. Saved to your Bluesky account.
+// i18n settings.bskyModeration.filters.adult: Show adult content
+// i18n settings.bskyModeration.filters.adultHint: Off, adult content stays hidden whatever the settings below say.
+// i18n settings.bskyModeration.filters.ignore: Show
+// i18n settings.bskyModeration.filters.warn: Warn
+// i18n settings.bskyModeration.filters.hide: Hide
+// i18n settings.bskyModeration.filters.porn: Adult content
+// i18n settings.bskyModeration.filters.sexual: Sexually suggestive
+// i18n settings.bskyModeration.filters.graphicMedia: Graphic media
+// i18n settings.bskyModeration.filters.nudity: Non-sexual nudity
+// i18n settings.bskyModeration.filters.from: Labels from {{name}}
+// i18n settings.bskyModeration.filters.saved: Saved.
+// i18n settings.bskyModeration.inbox.title: Your reports
+// i18n settings.bskyModeration.inbox.hint: Reports you sent to Bluesky's moderators, and what happened. To appeal a decision, use bsky.app.
+// i18n settings.bskyModeration.inbox.empty: You haven't reported anything to Bluesky.
+// i18n settings.bskyModeration.inbox.failed: Your reports didn't load from Bluesky.
+// i18n settings.bskyModeration.inbox.standing: Your account's standing: {{standing}}
+// i18n settings.bskyModeration.inbox.post: A post
+// i18n settings.bskyModeration.inbox.account: An account
+// i18n settings.bskyModeration.inbox.sent: Sent {{date}}
+// i18n settings.bskyModeration.age.title: Age verification
+// i18n settings.bskyModeration.age.hint: In some places Bluesky asks people to confirm their age before showing adult content or allowing chat. Bluesky decides this from where you are; if it asks you, verify on bsky.app and Mawkingbird follows.
+// i18n settings.bskyModeration.age.link: Open Bluesky's age settings
 /**
  * Settings → Bluesky moderation.
  *
@@ -127,6 +161,16 @@ export class SettingsBlueskyModeration implements OnInit {
   private moderation = inject(BlueskyModeration);
   private chat = inject(BlueskyChatApi);
   private graph = inject(BlueskyGraph);
+  private inbox = inject(BlueskyModerationInbox);
+
+  protected readonly globalLabels = CONFIGURABLE_LABELS;
+  protected readonly visibilities = ['ignore', 'warn', 'hide'] as const;
+  protected filtersSaved = signal(false);
+  protected filtersError = signal('');
+  protected reports = signal<BskyInboxReport[]>([]);
+  protected reportsCursor = signal<string | null>(null);
+  protected reportsFailed = signal(false);
+  protected standing = signal<BskyAccountStanding | null>(null);
   private i18n = inject(TranslocoService);
 
   protected loading = signal(false);
@@ -177,6 +221,7 @@ export class SettingsBlueskyModeration implements OnInit {
       void this.loadAllowIncoming();
       void this.loadAccounts('blocks');
       void this.loadAccounts('mutes');
+      void this.loadInbox();
     } catch {
       this.failed.set(true);
     } finally {
@@ -304,6 +349,91 @@ export class SettingsBlueskyModeration implements OnInit {
       },
       kind === 'blocks' ? this.blockedError : this.mutedError,
     );
+  }
+
+  /** The copy key for a global label's name. */
+  protected labelKey(def: BskyLabelDefinition): string {
+    return `settings.bskyModeration.filters.${def.identifier === 'graphic-media' ? 'graphicMedia' : def.identifier}`;
+  }
+
+  /** A label's current setting, as the select shows it. */
+  protected visibility(def: BskyLabelDefinition, labelerDid?: string): string {
+    return currentVisibility(
+      def,
+      { adultContent: this.state.adultContent(), prefs: this.state.labelPrefs() },
+      labelerDid,
+    );
+  }
+
+  /** Subscribed services and the labels they define that a reader can set. */
+  protected labelerGroups(): { did: string; name: string; defs: BskyLabelDefinition[] }[] {
+    const defs = [...this.state.labelDefs().entries()];
+    return this.services()
+      .map((service) => ({
+        did: service.did,
+        name: service.name,
+        defs: defs
+          .filter(([key, def]) => key.startsWith(`${service.did}|`) && def.blurs !== 'none')
+          .map(([, def]) => def),
+      }))
+      .filter((group) => group.defs.length);
+  }
+
+  protected setAdult(enabled: boolean): void {
+    void this.saveFilter(() => this.moderation.setAdultContent(enabled));
+  }
+
+  protected setVisibility(
+    def: BskyLabelDefinition,
+    value: 'ignore' | 'warn' | 'hide',
+    labelerDid?: string,
+  ): void {
+    void this.saveFilter(() =>
+      this.moderation.setLabelVisibility(def.identifier, value, labelerDid),
+    );
+  }
+
+  private async saveFilter(change: () => Promise<void>): Promise<void> {
+    this.filtersSaved.set(false);
+    if (await this.run(change, this.filtersError)) this.filtersSaved.set(true);
+  }
+
+  /** Reports and standing, read apart so a failure stays in that section. */
+  protected async loadInbox(more = false): Promise<void> {
+    this.reportsFailed.set(false);
+    try {
+      const page = await this.inbox.reports(more ? this.reportsCursor() : null);
+      this.reports.set(more ? [...this.reports(), ...page.reports] : page.reports);
+      this.reportsCursor.set(page.cursor);
+    } catch {
+      this.reportsFailed.set(true);
+    }
+    if (!more) {
+      this.standing.set(await this.inbox.standing().catch(() => null));
+    }
+  }
+
+  protected reportSubject(report: BskyInboxReport): string {
+    return this.i18n.translate(
+      report.subject?.uri
+        ? 'settings.bskyModeration.inbox.post'
+        : 'settings.bskyModeration.inbox.account',
+    );
+  }
+
+  /** `tools.ozone.report.defs#reasonMisleadingSpam` → the reason's label, else its name. */
+  protected reportReason(report: BskyInboxReport): string {
+    const name = report.reasonType?.split('#reason')[1] ?? '';
+    if (!name) return report.reasonType ?? '';
+    const key = `report.bsky.${name[0].toLowerCase()}${name.slice(1)}`;
+    const label = this.i18n.translate(key);
+    return label === key ? name : label;
+  }
+
+  protected sentOn(report: BskyInboxReport): string {
+    return this.i18n.translate('settings.bskyModeration.inbox.sent', {
+      date: new Date(report.createdAt).toLocaleDateString(),
+    });
   }
 
   /** Read apart from the rest, so a chat-scope problem never hides moderation. */

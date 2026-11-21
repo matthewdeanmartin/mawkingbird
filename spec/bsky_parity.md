@@ -1,8 +1,8 @@
 # Bluesky parity: Mawkingbird vs. the official Bluesky app
 
-Status: sprints 1–2 pushed (2026-11-20), awaiting live trials; sprints 3–4
-code complete, awaiting push/GHA and live trials. Sprints 5–8 planned. Progress and evidence:
-[Progress](#progress). Manual test plans: `test_plans/bsky-parity-2-*`.
+Status (2026-11-21): sprints 1–4 pushed, awaiting live trials; the
+app-password phase-out (phase 1) and sprints 5–6 code complete, awaiting
+push/GHA. Sprints 7–8 planned. Progress and evidence: [Progress](#progress). Manual test plans: `test_plans/bsky-parity-2-*`.
 Reference: `../REFERENCE/social-app` at `47e6acedf` (2026-11-20, "Keep
 find-in-page working in the virtualized web List").
 
@@ -559,11 +559,104 @@ candidates).
 Not run, left to GitHub Actions: `make test` with coverage, the production
 build and bundle budget, SEO, `make design-verify`.
 
+### Fix (2026-11-21): "Sign in to Bluesky again?" after switching accounts
+
+Opening the account menu checks unread replies for every account, which can
+make the OAuth SDK refresh a Bluesky identity's tokens; Bluesky rotates the
+refresh token on use. Choosing an account reloaded the page at once, so a
+reload landing mid-refresh left only a spent token, the next restore failed,
+the SDK deleted the session and Home asked to sign in again. It showed up after
+time on another account (the token had gone stale), not when switching
+quickly. `AccountReplyCounts` now tracks its OAuth requests and
+`afterSettled()` runs the switch's reload at once when none are running, or
+after they finish (10 s at most); the shell and the account picker use it.
+Specs: reply counts (+2). Live check: stay on a Mastodon account 20+ minutes,
+open the menu and switch to the Bluesky identity straight away.
+
+### App-password phase-out, phase 1 (2026-11-21): code complete
+
+Owner: app passwords go everywhere; OAuth (PKCE + DPoP) is better in every
+way. Phase 1 stops new ones and moves existing ones over without signing
+anyone out.
+
+- New `bluesky-app-passwords` feature flag (Features group), **off by
+  default**. Off, neither the Bluesky sign-in page nor Settings → Connections
+  → Bluesky offers the app-password form. The code stays, so its specs still
+  run (the connection spec switches the flag on for those tests), and someone
+  on a PDS without OAuth can turn it on.
+- An existing app-password link (connector or Bluesky-first identity) shows a
+  notice on Settings → Connections → Bluesky with **Switch to Bluesky sign-in**
+  (`BlueskySession.upgradeToOAuth`): the identity re-authorises as itself, a
+  connector re-links. On return the app password is deleted locally and from
+  the vault (`forgetVaultedAppPassword`).
+- Home's "sign in again" for an app-password identity already went to the
+  sign-in page, which is now OAuth only.
+- Tests: connection spec (+2, a phase-out block), OAuth transport (+1).
+- Phase 2, owner to schedule: drop app-password sessions entirely (refresh,
+  vault minting, the flag and its forms and specs) once links have moved.
+
+### Sprint 5 progress (2026-11-21): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-2-sprint-5-moderation.md`.
+
+- **Content filters** on Settings → Bluesky moderation: show adult content
+  (`adultContentPref`), Show/Warn/Hide for the four global labels (adult-only
+  ones read Hide and are locked while adult content is off), and the same for
+  each subscribed service's own labels (`contentLabelPref` with
+  `labelerDid`). Written through `BlueskyPreferences`; cards follow at once.
+- **Reports:** the Bluesky report dialog offers bsky.app's full reason list
+  (`tools.ozone.report.defs`, grouped, `bluesky-report-reasons.ts`) and a
+  Send to choice between Bluesky and subscribed moderation services (the PDS
+  proxies to `<did>#atproto_labeler`). Mastodon reports are unchanged.
+- **Your reports** (moderation inbox, read-only): `tools.ozone.inbox.listReports`
+  and `getAccountStatus` through the PDS, proxied to Bluesky's moderation
+  service. Appeals stay on bsky.app.
+- **Age verification:** a link-out section. `app.bsky.ageassurance.getState`
+  needs a country code that bsky.app gets from Bluesky's IP geolocation
+  service; guessing it from the browser language could show the wrong rules,
+  so the status is not shown. Server-side limits already apply.
+- **Tests:** `bluesky-moderation-services.spec.ts` (5).
+- **Deferred:** a labeler profile page (subscribe from there, its policies,
+  liked by); appeals; inform/alert label badges; age-assurance status (needs
+  a geolocation source).
+
+### Sprint 6 progress (2026-11-21): code complete, needs a live trial
+
+Test plan: `test_plans/bsky-parity-2-sprint-6-composer.md`.
+
+- **Native drafts** (owner decision 3): for a Bluesky-first account, local
+  drafts are mirrored to `app.bsky.draft.*` (create, update, delete; the
+  Bluesky id is kept on the draft), and Drafts pulls in drafts made in
+  bsky.app or on another device. Text and threads only: Bluesky keeps draft
+  media as device-local paths, so attachments don't travel (as in bsky.app).
+  Paste and blog drafts stay local. `BlueskyDraftSync` loads lazily, so other
+  accounts never load it.
+- **Galleries:** Bluesky posts take up to ten images; four or fewer still go as
+  `app.bsky.embed.images`, five to ten as `app.bsky.embed.gallery`
+  (`bluesky-image-embed.ts`). The composer spec's cap moved from 4 to 10.
+- **Profile:** pronouns and website editable in Settings → Public profile for
+  a Bluesky-first account.
+- **Tests:** `bluesky-drafts.spec.ts` (5), `bluesky-image-embed.spec.ts` (3),
+  composer cap spec updated.
+- **Deferred:** large video (multipart upload) and captions; GIF picker
+  (`gifs.bsky.app` CORS and Klipy terms unchecked); editing profile links
+  (`app.bsky.actor.link` records); galleries on the Write page (still four);
+  native drafts for a Bluesky *connector* under Mastodon.
+
+### Gates for the phase-out and sprints 5–6
+
+Run: targeted specs; a quality pause after the phase-out (`make test-changed`:
+873 files, 10,709 tests); for sprints 5–6 `make test-changed` (whole suite:
+876 files, 10,722 tests passed), lint and prettier on every touched file,
+`check:i18n`, `check:dead-code`, `check:storage`, `check:subpaths`,
+`check:libs`, `design:inventory-check` after review. Not run, left to GitHub
+Actions: `make test` with coverage, production/SEO builds, `make
+design-verify`.
+
 ## What's next
 
-Sprints 5 (moderation services: label settings UI, labeler pages, full report
-reasons, moderation inbox, age assurance) and 6 (composer catch-up: native
-drafts, galleries, large video and captions, GIFs, profile links editing) are
-the next pair. Owner to-dos: push and watch GHA; run the sprint 1–4 test
+Sprints 7 (chat 2: live updates, paging, group chats) and 8 (find contacts)
+are what remain of the plan, plus the deferred items above and phase 2 of the
+app-password retirement. Owner to-dos: push and watch GHA; run the sprint 1–4 test
 plans, above all a real `prompt=create` sign-up and the Following-feed
 default on an account that never changed it.

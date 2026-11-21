@@ -159,14 +159,30 @@ export interface BlobUploadResponse {
  */
 export type BskyPostEmbed =
   | BskyImagesEmbed
+  | BskyGalleryEmbed
   | BskyVideoEmbed
   | BskyExternalEmbed
   | BskyRecordEmbed
   | {
       $type: 'app.bsky.embed.recordWithMedia';
       record: BskyRecordEmbed;
-      media: BskyImagesEmbed | BskyVideoEmbed;
+      media: BskyImagesEmbed | BskyGalleryEmbed | BskyVideoEmbed;
     };
+
+/**
+ * The write-side gallery: 5 to 10 images in one post, as bsky.app posts
+ * them (the lexicon allows 20). Unlike images, every item needs its aspect
+ * ratio. Four or fewer still go as `app.bsky.embed.images`, which every
+ * client renders.
+ */
+export interface BskyGalleryEmbed {
+  $type: 'app.bsky.embed.gallery';
+  items: {
+    image: BskyBlobRef;
+    alt: string;
+    aspectRatio: { width: number; height: number };
+  }[];
+}
 
 /** The self-label values Bluesky's own app offers a writer for their media. */
 export type BskySelfLabelValue = 'sexual' | 'nudity' | 'porn' | 'graphic-media';

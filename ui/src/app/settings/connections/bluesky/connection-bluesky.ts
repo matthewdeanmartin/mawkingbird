@@ -5,6 +5,7 @@ import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbDisclosure } from '../../../design-system/disclosure/disclosure';
+import { FeatureFlags } from '../../../platform/build/feature-flags';
 import { Component, inject, input, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -47,6 +48,9 @@ const BLUESKY_ENTRYWAY = 'https://bsky.social';
 // i18n settings.connections.bluesky.rejected: Bluesky rejected that handle/app password combination.
 // i18n settings.connections.bluesky.unreachable: Couldn't reach bsky.social — network problem?
 // i18n settings.connections.bluesky.linkFailed: Linking failed — check the handle and app password.
+// i18n settings.connections.bluesky.upgradeNotice: This link uses an app password. Switch to Bluesky's own sign-in: it is safer, you approve it on Bluesky's page, and nothing else changes. The app password is then deleted here.
+// i18n settings.connections.bluesky.upgrade: Switch to Bluesky sign-in
+// i18n settings.connections.bluesky.upgradeFailed: Couldn't open Bluesky's sign-in. Try again in a moment.
 /**
  * Settings → Connections → Bluesky: links Bluesky under a Mastodon or Anonymous
  * account. OAuth comes first; the app password is kept as a last resort for a
@@ -76,6 +80,10 @@ export class ConnectionBluesky implements OnInit {
   protected capabilities = inject(AnonymousCapabilities);
   protected bsky = inject(BlueskySession);
   protected native = inject(NATIVE_SOCIAL);
+  /** App passwords are being phased out: new ones only behind a legacy flag. */
+  protected readonly appPasswordsOffered = inject(FeatureFlags).enabled('bluesky-app-passwords');
+  protected upgrading = signal(false);
+  protected upgradeError = signal(false);
   private transloco = inject(TranslocoService);
 
   protected bskyHandle = signal('');
@@ -157,6 +165,18 @@ export class ConnectionBluesky implements OnInit {
         this.bskyLinking.set(false);
         this.bskyError.set(this.describeBskyError(err));
       },
+    });
+  }
+
+  /** Re-authorise the same account with OAuth; the app password goes on return. */
+  upgradeToOAuth(): void {
+    if (this.upgrading()) return;
+    this.upgrading.set(true);
+    this.upgradeError.set(false);
+    stashConnectorReturn(this.router.url.split(/[?#]/)[0]);
+    void this.bsky.upgradeToOAuth().catch(() => {
+      this.upgrading.set(false);
+      this.upgradeError.set(true);
     });
   }
 

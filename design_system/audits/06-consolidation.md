@@ -3100,3 +3100,20 @@ reorder arrows on pinned Bluesky feeds in Lists, blocked/muted sections on
 Bluesky moderation, a "Remove me from this pack" MbButton on starter packs,
 and one profile ••• entry using the menu's existing plain-button pattern. No
 shared design widget changed.
+
+Bluesky app-password phase-out (2026-11-21): reviewed the regenerated
+inventory: line shifts in `login-bluesky.html` and `connection-bluesky.html`
+(the legacy app-password forms now sit behind the `bluesky-app-passwords`
+flag) and one more MbButton, "Switch to Bluesky sign-in", inside an MbNotice on
+the connection page. No candidate files added or removed; no shared widget
+changed.
+
+Bluesky moderation services and composer catch-up (2026-11-21,
+spec/bsky_parity.md sprints 5–6): reviewed the regenerated inventory: 2073
+scanned files, 706 candidate files, no candidate files added or removed.
+Bluesky moderation gains a Content filters section (MbCheckbox for adult
+content, MbField + select[mbControl] per label, MbSaveFeedback), Your reports
+(the page's existing list rows, MbNotice, MbContentState, link MbButton) and an
+Age verification MbContentLink; the report dialog gains two select[mbControl]
+fields (reason with optgroups, send-to). The app-password upgrade MbButton on
+the connection page is counted here too. No shared design widget changed.

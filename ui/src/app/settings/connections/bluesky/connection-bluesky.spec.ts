@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BlueskySession, BskySession } from '../../../connections/bluesky/bluesky-session';
 import { AnonymousCapabilities } from '../../../accounts/anonymous/anonymous-capabilities';
 import { ConnectionBluesky } from './connection-bluesky';
+import { FeatureFlags } from '../../../platform/build/feature-flags';
 
 /** Expose the protected signals — ngModel writes are async in specs. */
 interface BlueskyInternals {
@@ -23,6 +24,8 @@ describe('ConnectionBluesky', () => {
     unlink: ReturnType<typeof vi.fn>;
     expiresAt: ReturnType<typeof vi.fn>;
     enforceLifetime: ReturnType<typeof vi.fn>;
+    usesAppPassword: () => boolean;
+    upgradeToOAuth: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(() => {
@@ -35,12 +38,19 @@ describe('ConnectionBluesky', () => {
       unlink: vi.fn(),
       expiresAt: vi.fn(() => null),
       enforceLifetime: vi.fn(),
+      usesAppPassword: () => {
+        const current = bskySession.session();
+        return !!current && current.authMethod !== 'oauth';
+      },
+      upgradeToOAuth: vi.fn(() => new Promise<never>(() => undefined)),
     };
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
         { provide: BlueskySession, useValue: bskySession },
         { provide: AnonymousCapabilities, useValue: { canUseBluesky: true, active: false } },
+        // These tests cover the legacy app-password form, now behind its flag.
+        { provide: FeatureFlags, useValue: { enabled: () => true } },
       ],
     });
   });
@@ -204,5 +214,63 @@ describe('ConnectionBluesky', () => {
     expect(el.querySelector('form.bsky-form')).not.toBeNull();
     expect(el.textContent).toContain('while you');
     expect(el.textContent).toContain("doesn't involve a Mastodon account");
+  });
+});
+
+describe('ConnectionBluesky app-password phase-out', () => {
+  const session = signal<BskySession | null>(null);
+  const upgradeToOAuth = vi.fn(() => new Promise<never>(() => undefined));
+
+  beforeEach(() => {
+    localStorage.clear();
+    session.set(null);
+    upgradeToOAuth.mockClear();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        {
+          provide: BlueskySession,
+          useValue: {
+            session,
+            beginOAuthConnector: vi.fn(),
+            unlink: vi.fn(),
+            expiresAt: () => null,
+            enforceLifetime: vi.fn(),
+            usesAppPassword: () => !!session() && session()!.authMethod !== 'oauth',
+            upgradeToOAuth,
+          },
+        },
+        { provide: AnonymousCapabilities, useValue: { canUseBluesky: true, active: false } },
+      ],
+    });
+  });
+
+  it('offers no app-password form by default', () => {
+    const fixture = TestBed.createComponent(ConnectionBluesky);
+    fixture.detectChanges();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('form.bsky-app-password'),
+    ).toBeNull();
+  });
+
+  it('offers an app-password link the switch to Bluesky sign-in, and an OAuth link nothing', () => {
+    session.set({
+      service: 'https://bsky.social',
+      handle: 'me.example',
+      did: 'did:plc:me',
+      authMethod: 'app-password',
+    });
+    const fixture = TestBed.createComponent(ConnectionBluesky);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const button = [...el.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Switch to Bluesky sign-in'),
+    )!;
+    button.click();
+    expect(upgradeToOAuth).toHaveBeenCalledOnce();
+
+    session.set({ ...session()!, authMethod: 'oauth' });
+    fixture.detectChanges();
+    expect(el.textContent).not.toContain('Switch to Bluesky sign-in');
   });
 });

@@ -85,7 +85,7 @@
       </p>
     }
 
-    @if (!native) {
+    @if (!native && appPasswordsOffered) {
       <details class="bsky-compat">
         <summary>{{ 'pages.loginBluesky.compatSummary' | transloco }}</summary>
         <!-- App passwords are retained only as an explicit compatibility path. -->

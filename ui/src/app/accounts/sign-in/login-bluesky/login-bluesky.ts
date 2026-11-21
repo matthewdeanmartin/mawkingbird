@@ -1,5 +1,6 @@
 import { NATIVE_SOCIAL } from '../../../platform/session/platform-login';
 import { MbButton } from '../../../design-system/button/button';
+import { FeatureFlags } from '../../../platform/build/feature-flags';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -69,6 +70,8 @@ export class LoginBluesky implements OnInit {
 
   protected brand = environment.brand;
   protected native = inject(NATIVE_SOCIAL);
+  /** App passwords are being phased out: offered only behind a legacy flag. */
+  protected readonly appPasswordsOffered = inject(FeatureFlags).enabled('bluesky-app-passwords');
 
   protected handle = signal('');
   protected appPassword = signal('');

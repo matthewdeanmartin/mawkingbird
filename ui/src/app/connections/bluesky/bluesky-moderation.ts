@@ -298,6 +298,40 @@ export class BlueskyModeration {
     return this.prefs.read();
   }
 
+  /** Show adult content on Bluesky (`adultContentPref`). */
+  async setAdultContent(enabled: boolean): Promise<void> {
+    await this.editPreference(ADULT_CONTENT_PREF, (current) => ({
+      ...current,
+      $type: ADULT_CONTENT_PREF,
+      enabled,
+    }));
+  }
+
+  /**
+   * Set how one label shows (`contentLabelPref`): a global value when
+   * `labelerDid` is absent, else that moderation service's own value.
+   */
+  async setLabelVisibility(
+    label: string,
+    visibility: BskyLabelVisibility,
+    labelerDid?: string,
+  ): Promise<void> {
+    const next = await this.prefs.edit(
+      (pref) =>
+        pref.$type === CONTENT_LABEL_PREF &&
+        pref['label'] === label &&
+        (pref['labelerDid'] ?? undefined) === labelerDid,
+      (current) => ({
+        ...current,
+        $type: CONTENT_LABEL_PREF,
+        label,
+        visibility,
+        ...(labelerDid ? { labelerDid } : {}),
+      }),
+    );
+    this.applyPreferences(next);
+  }
+
   /** Re-read, replace one preference item, write the whole list back, refresh the state. */
   private async editPreference(
     type: string,

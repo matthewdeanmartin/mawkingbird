@@ -53,10 +53,8 @@ interface CreateRecordResponse {
   cid: string;
 }
 
-export type BskyReportReason =
-  | 'tools.ozone.report.defs#reasonMisleadingSpam'
-  | 'tools.ozone.report.defs#reasonRuleOther'
-  | 'tools.ozone.report.defs#reasonOther';
+/** A `tools.ozone.report.defs` reason; see `bluesky-report-reasons.ts` for the list. */
+export type BskyReportReason = `tools.ozone.report.defs#${string}`;
 
 /** Shared params for the cursor-paged graph list endpoints. */
 function peoplePage(actor: string, cursor: string | null): HttpParams {
@@ -473,11 +471,18 @@ export class BlueskyApi {
   }
 
   /** Report an account to the moderation service configured by the viewer's PDS. */
-  reportAccount(did: string, reasonType: BskyReportReason, reason: string): Observable<unknown> {
-    return this.createReport(reasonType, reason, {
-      $type: 'com.atproto.admin.defs#repoRef',
-      did,
-    });
+  reportAccount(
+    did: string,
+    reasonType: BskyReportReason,
+    reason: string,
+    labelerDid?: string,
+  ): Observable<unknown> {
+    return this.createReport(
+      reasonType,
+      reason,
+      { $type: 'com.atproto.admin.defs#repoRef', did },
+      labelerDid,
+    );
   }
 
   /** Report one exact post record, addressed by its stable AT URI and CID. */
@@ -486,25 +491,34 @@ export class BlueskyApi {
     cid: string,
     reasonType: BskyReportReason,
     reason: string,
+    labelerDid?: string,
   ): Observable<unknown> {
-    return this.createReport(reasonType, reason, {
-      $type: 'com.atproto.repo.strongRef',
-      uri,
-      cid,
-    });
+    return this.createReport(
+      reasonType,
+      reason,
+      { $type: 'com.atproto.repo.strongRef', uri, cid },
+      labelerDid,
+    );
   }
 
   private createReport(
     reasonType: BskyReportReason,
     reason: string,
     subject: Record<string, string>,
+    labelerDid?: string,
   ): Observable<unknown> {
-    return this.request('com.atproto.moderation.createReport', {
-      reasonType,
-      ...(reason.trim() ? { reason: reason.trim() } : {}),
-      subject,
-      modTool: { name: 'mawkingbird/web' },
-    });
+    // No proxy header: the PDS sends it to Bluesky's own moderation. A chosen
+    // moderation service gets it through the PDS, as bsky.app sends it.
+    return this.request(
+      'com.atproto.moderation.createReport',
+      {
+        reasonType,
+        ...(reason.trim() ? { reason: reason.trim() } : {}),
+        subject,
+        modTool: { name: 'mawkingbird/web' },
+      },
+      labelerDid ? { 'atproto-proxy': `${labelerDid}#atproto_labeler` } : {},
+    );
   }
 
   /**
