@@ -7,6 +7,8 @@ import { BlueskySession } from '../connections/bluesky/bluesky-session';
 import { Conversation, MastodonNotification } from '../platform/api/models';
 import { Streaming } from '../platform/api/streaming';
 import { IndicatorEvents } from './indicator-events';
+import { Wellness } from '../wellness/wellness';
+import { isEngagementNotification } from '../wellness/wellness-model';
 import {
   DEFAULT_INDICATOR_PREFERENCES,
   IndicatorPreferences,
@@ -32,6 +34,7 @@ interface IndicatorState {
 export class MenuIndicators {
   private streaming = inject(Streaming);
   private events = inject(IndicatorEvents);
+  private wellness = inject(Wellness);
   private auth = inject(Auth);
   private bsky = inject(BlueskySession);
   private router = inject(Router);
@@ -65,6 +68,7 @@ export class MenuIndicators {
     const observations = this.events.received.subscribe((event) => {
       this.tick();
       if (this.auth.isAnonymous || event.did !== this.bsky.session()?.did) return;
+      if (this.wellness.limitedNotifications() && isEngagementNotification(event.kind)) return;
       this.receive(event.id, event.lane, event.at, event.unread, event.group);
     });
     const focus = (): void => {
@@ -238,6 +242,9 @@ export class MenuIndicators {
    * only: no badge on the app icon, no sound, no push.
    */
   noteServerUnread(lastReadId: string, unreadCount: number): void {
+    // The marker counts likes and boosts too and can't say which. Under
+    // limited notifications, mentions still light the lane through the stream.
+    if (this.wellness.limitedNotifications()) return;
     this.updateScope();
     this.receive(
       `marker:notifications:${lastReadId}`,
@@ -248,7 +255,9 @@ export class MenuIndicators {
   }
 
   private receiveNotifications(source: string, rows: MastodonNotification[]): void {
-    for (const row of rows)
+    const limited = this.wellness.limitedNotifications();
+    for (const row of rows) {
+      if (limited && isEngagementNotification(row.type)) continue;
       this.receive(
         row.status?.visibility === 'direct' ? `dm:${row.status.id}` : `${source}:${row.id}`,
         row.type === 'mention' &&
@@ -257,6 +266,7 @@ export class MenuIndicators {
           : 'ordinary',
         row.created_at,
       );
+    }
   }
 
   private syncStreams(): void {

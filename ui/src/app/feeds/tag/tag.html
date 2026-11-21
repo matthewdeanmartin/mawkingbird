@@ -12,9 +12,11 @@
   <button class="tab" [class.active]="tab() === 'members'" (click)="setTab('members')">
     {{ 'pages.tag.tabs.members' | transloco }}
   </button>
-  <button class="tab" [class.active]="tab() === 'analytics'" (click)="setTab('analytics')">
-    {{ 'pages.tag.tabs.analytics' | transloco }}
-  </button>
+  @if (!wellness.hideAnalytics()) {
+    <button class="tab" [class.active]="tab() === 'analytics'" (click)="setTab('analytics')">
+      {{ 'pages.tag.tabs.analytics' | transloco }}
+    </button>
+  }
 </div>
 
 <!-- Server-side narrowing (Mastodon's any/all/none tags and local), folded away

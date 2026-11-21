@@ -1,5 +1,18 @@
 # Sprint 6 opening consolidation audit
 
+## Wellness settings and quiet counts, 2026-11-20
+
+Reviewed 2,038 source files (new: the pure `wellness/wellness-model.ts`, the
+`wellness/wellness.ts` service and the settings page component) and 695
+candidate files. The new candidate `settings/wellness/settings-wellness.html`
+uses the same native `ssection`/`srow`/`checkline` checkbox and radio rows as
+Writing's Home composer section and is reconciled as backlog with the other
+native settings forms. Existing analytics tabs (list, tag, starter
+collection), the Home command bar's Analytics button, the post menu's
+analytics item, the Algo Calm toggle and the hover-card mounts are now wrapped
+in Wellness conditions; their controls are unchanged and the entries are line
+shifts. No shared widget implementation changed.
+
 ## Bot labels, style and people who react, 2026-11-20
 
 Reviewed 2,034 source files (new: the pure `accounts/account-signals.ts`) and

@@ -32,9 +32,11 @@
   <button class="tab" [class.active]="tab() === 'members'" (click)="setTab('members')">
     {{ 'listTimeline.tabs.members' | transloco }}
   </button>
-  <button class="tab" [class.active]="tab() === 'analytics'" (click)="setTab('analytics')">
-    {{ 'listTimeline.tabs.analytics' | transloco }}
-  </button>
+  @if (!wellness.hideAnalytics()) {
+    <button class="tab" [class.active]="tab() === 'analytics'" (click)="setTab('analytics')">
+      {{ 'listTimeline.tabs.analytics' | transloco }}
+    </button>
+  }
 </div>
 
 @if (tab() === 'analytics') {

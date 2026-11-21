@@ -15,6 +15,8 @@ import { catchError, forkJoin, from, map, Observable, of, Subscription, timeout 
 import { NgOptimizedImage } from '@angular/common';
 import { Api } from '../../platform/api/api';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { Wellness } from '../../wellness/wellness';
+import { isEngagementNotification } from '../../wellness/wellness-model';
 import { Account, MastodonNotification, Relationship, Status } from '../../platform/api/models';
 import { Streaming } from '../../platform/api/streaming';
 import {
@@ -388,6 +390,7 @@ export class Notifications implements OnInit, OnDestroy {
   }
   private streaming = inject(Streaming);
   private prefs = inject(ClientPrefs);
+  private wellness = inject(Wellness);
   private diagnostics = inject(PageDiagnostics);
   private auth = inject(Auth);
   private replyCounts = inject(AccountReplyCounts);
@@ -444,13 +447,21 @@ export class Notifications implements OnInit, OnDestroy {
   protected accountActionError = signal<string | null>(null);
 
   /** Distinct notification types present, for the type dropdown. */
-  protected types = computed(() => [...new Set(this.items().map((n) => n.type))].sort());
+  protected types = computed(() =>
+    [...new Set(this.items().map((n) => n.type))]
+      .filter((type) => !(this.wellness.limitedNotifications() && isEngagementNotification(type)))
+      .sort(),
+  );
 
   protected visible = computed(() => {
     const type = this.typeFilter();
     const audience = this.audience();
     const rels = this.rels();
+    const limited = this.wellness.limitedNotifications();
     return this.items().filter((n) => {
+      // Wellness: likes, boosts and follows don't arrive at all. Before the
+      // safety check, which none of them are.
+      if (limited && isEngagementNotification(n.type)) return false;
       // Account-safety notices (a moderator acted on you, you lost follows) are
       // not engagement: no type or audience filter hides them.
       if (isSafetyNotice(n)) return true;

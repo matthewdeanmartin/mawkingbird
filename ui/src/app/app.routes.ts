@@ -944,6 +944,15 @@ export const routes: Routes = [
               import('./settings/appearance/settings-appearance').then((m) => m.SettingsAppearance),
           },
           {
+            // What the app counts, shows and invites. Client prefs only, so it
+            // works signed out. See spec/sprint/wellness-2026-11.md.
+            path: 'wellness',
+            title: 'Wellness',
+            data: { preloadSettings: true },
+            loadComponent: () =>
+              import('./settings/wellness/settings-wellness').then((m) => m.SettingsWellness),
+          },
+          {
             path: 'storage',
             title: 'Storage',
             data: { preloadSettings: true },

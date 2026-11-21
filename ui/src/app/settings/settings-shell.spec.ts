@@ -122,6 +122,8 @@ describe('SettingsShell', () => {
         // Blog mode's reading rule is two browser-local numbers.
         'Blog',
         'Appearance',
+        // Wellness is client prefs only.
+        'Wellness',
         // Installing the web app needs no account.
         'Install app',
         'Internationalization',

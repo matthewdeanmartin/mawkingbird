@@ -10,6 +10,13 @@ import { isCanaryBuild } from '../build/build-flavor';
 import { ProviderId } from '../api/models';
 import { ProfileSyncStarter } from '../../accounts/mawkingbird/profile-sync-starter';
 import {
+  DEFAULT_WELLNESS,
+  effectiveWellness,
+  normalizeWellness,
+  WellnessSettings,
+  wellnessRootAttributes,
+} from '../../wellness/wellness-model';
+import {
   DEFAULT_PKM_VOCABULARY,
   PkmVocabulary,
   normalizeVocabulary,
@@ -472,6 +479,8 @@ interface StoredPrefs {
   autoTranslateUsesAi?: boolean;
   browserTranslator?: boolean;
   skipSameLanguageTranslation?: boolean;
+  /** Wellness preset + overrides; see wellness/wellness-model.ts. Synced with the blob. */
+  wellness?: WellnessSettings;
 }
 
 /** When automatic translation fires. See {@link ClientPrefs.autoTranslateMode}. */
@@ -765,6 +774,11 @@ export class ClientPrefs {
   readonly postNoun = signal<PostNoun>('post');
   /** User-defined vocabulary; retained while a built-in preset is selected. */
   readonly customTerminology = signal<CustomTerminology>({ ...DEFAULT_CUSTOM_TERMINOLOGY });
+  /**
+   * Wellness preset and overrides. Read through the `Wellness` service, which
+   * resolves the effective switches; stored here so it lives in the synced blob.
+   */
+  readonly wellness = signal<WellnessSettings>(DEFAULT_WELLNESS);
   /** Zen mode: both sidebars disappear, leaving just the feed column. */
   readonly zenMode = signal<boolean>(false);
   /**
@@ -1239,6 +1253,10 @@ export class ClientPrefs {
     this.customTerminology.set({ ...DEFAULT_CUSTOM_TERMINOLOGY });
   }
 
+  setWellness(settings: WellnessSettings): void {
+    this.wellness.set(normalizeWellness(settings));
+  }
+
   setZenMode(on: boolean): void {
     this.zenMode.set(on);
   }
@@ -1590,6 +1608,7 @@ export class ClientPrefs {
     this.loadBool(stored.autoTranslateUsesAi, this.autoTranslateUsesAi);
     this.loadBool(stored.browserTranslator, this.browserTranslator);
     this.loadBool(stored.skipSameLanguageTranslation, this.skipSameLanguageTranslation);
+    this.wellness.set(normalizeWellness(stored.wellness));
   }
 
   private loadBool(value: boolean | undefined, target: WritableSignal<boolean>): void {
@@ -1666,6 +1685,7 @@ export class ClientPrefs {
       autoTranslateUsesAi: this.autoTranslateUsesAi(),
       browserTranslator: this.browserTranslator(),
       skipSameLanguageTranslation: this.skipSameLanguageTranslation(),
+      wellness: this.wellness(),
     };
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
     // Hidden providers live in their own account-scoped key, not the global blob.
@@ -1797,6 +1817,12 @@ export class ClientPrefs {
     root.setAttribute('data-feed-reader', this.feedReader() ? 'on' : 'off');
     root.setAttribute('data-images', this.showImages() ? 'on' : 'off');
     root.setAttribute('data-art', this.artStyle());
+    // Presentation-only wellness switches, applied by global CSS (styles.css).
+    for (const [name, on] of Object.entries(
+      wellnessRootAttributes(effectiveWellness(this.wellness())),
+    )) {
+      root.toggleAttribute(name, on);
+    }
     root.style.setProperty('--reader-font-family', FONT_STACKS[this.readerFontFamily()]);
     root.style.setProperty('--reader-font-size', `${this.readerFontSize()}px`);
     root.style.setProperty('--reader-font-weight', `${this.readerFontWeight()}`);

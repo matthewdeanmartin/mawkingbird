@@ -32,6 +32,7 @@ import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-ap
 import { AnonymousProviderRef } from '../../accounts/anonymous/anonymous-mastodon-provider';
 import { Observable, Subscription } from 'rxjs';
 import { Terminology } from '../../i18n/terminology';
+import { Wellness } from '../../wellness/wellness';
 
 /** Posts per request when sampling the tag — Mastodon's cap. */
 const SAMPLE_PAGE_SIZE = 40;
@@ -90,6 +91,7 @@ const SAMPLE_PAGE_SIZE = 40;
 })
 export class Tag implements OnInit {
   private api = inject(Api);
+  protected wellness = inject(Wellness);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);

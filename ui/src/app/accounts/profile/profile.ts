@@ -153,6 +153,7 @@ import { FollowLanguagesDialog } from './follow-languages-dialog';
 import { RenderedHtmlLinks } from '../rendered-html-links';
 import { NATIVE_PROFILES } from '../../platform/session/platform-login';
 import { ProfileContentState } from './profile-content-filters';
+import { Wellness } from '../../wellness/wellness';
 
 /** Profile body tabs: the account's posts, who they follow, who follows them. */
 type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' | 'analytics';
@@ -418,6 +419,7 @@ export class Profile implements OnInit, OnDestroy {
   private diagnostics = inject(PageDiagnostics);
   protected words = inject(Terminology).words;
   protected auth = inject(Auth);
+  protected wellness = inject(Wellness);
   private localMod = inject(LocalModeration);
   private trusted = inject(TrustedAccounts);
   protected capabilities = inject(AnonymousCapabilities);

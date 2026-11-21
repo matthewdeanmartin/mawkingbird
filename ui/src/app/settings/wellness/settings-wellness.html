@@ -1,0 +1,195 @@
+<div class="spage-head">
+  <h1>{{ 'settings.wellness.title' | transloco }}</h1>
+  <p>{{ 'settings.wellness.intro' | transloco }}</p>
+  <p class="hint">
+    <a routerLink="/settings/appearance">{{ 'settings.wellness.notZen' | transloco }}</a>
+  </p>
+</div>
+
+<div class="spage-body">
+  <div class="ssection">
+    <h2>{{ 'settings.wellness.level' | transloco }}</h2>
+    <div class="srow">
+      <span class="slabel">{{ 'settings.wellness.level' | transloco }}</span>
+      <div
+        class="scontrol"
+        role="radiogroup"
+        [attr.aria-label]="'settings.wellness.level' | transloco"
+      >
+        @for (preset of presets; track preset) {
+          <label class="checkline">
+            <input
+              type="radio"
+              name="wellness_preset"
+              [value]="preset"
+              [checked]="wellness.preset() === preset"
+              (change)="choosePreset(preset)"
+            />
+            <strong>{{ presetKey(preset) | transloco }}</strong>
+          </label>
+          <span class="hint">{{ presetKey(preset) + '.hint' | transloco }}</span>
+        }
+        @if (wellness.customized()) {
+          <span class="hint" data-testid="wellness-custom">{{
+            'settings.wellness.custom'
+              | transloco: { preset: (presetKey(wellness.preset()) | transloco) }
+          }}</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="ssection">
+    <h2>{{ 'settings.wellness.protections' | transloco }}</h2>
+    @for (row of rows(); track row.key) {
+      <div class="srow">
+        <div class="scontrol">
+          <label class="checkline">
+            <input
+              type="checkbox"
+              [name]="'wellness_' + row.key"
+              [checked]="row.on"
+              [disabled]="row.pending"
+              (change)="toggle(row.key, $any($event.target).checked)"
+            />
+            {{ 'settings.wellness.key.' + row.key | transloco }}
+            @if (row.inPreset) {
+              <span class="muted small">
+                ·
+                {{
+                  'settings.wellness.inPreset'
+                    | transloco: { preset: (presetKey(wellness.preset()) | transloco) }
+                }}</span
+              >
+            }
+          </label>
+          <span class="hint">
+            {{ 'settings.wellness.key.' + row.key + '.hint' | transloco }}
+            @if (row.pending) {
+              <em>({{ 'settings.wellness.soon' | transloco }})</em>
+            }
+          </span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="ssection">
+    <h2>{{ 'settings.wellness.existing' | transloco }}</h2>
+    <p class="hint">{{ 'settings.wellness.existing.intro' | transloco }}</p>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.wellness.alwaysOn' | transloco }}</span>
+      <div class="scontrol">
+        <span class="hint">{{ 'settings.wellness.alwaysOn.hint' | transloco }}</span>
+        <label class="inline-field">
+          {{
+            'settings.blue.feedMax' | transloco: { count: prefs.feedMax(), posts: words().posts }
+          }}
+          <input
+            type="number"
+            min="5"
+            max="5000"
+            step="10"
+            [ngModel]="prefs.feedMax()"
+            (ngModelChange)="prefs.setFeedMax(+$event)"
+            name="wellness_feed_max"
+          />
+        </label>
+        <span class="hint">{{ 'settings.blue.maxPosts.hint' | transloco }}</span>
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.ignoreFeedCooldown()"
+            (ngModelChange)="prefs.setIgnoreFeedCooldown($event)"
+            name="wellness_ignore_feed_cooldown"
+          />
+          {{ 'settings.blue.ignoreCooldown' | transloco }}
+        </label>
+        <span class="hint">{{ 'settings.blue.ignoreCooldown.hint' | transloco }}</span>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.blue.timeline' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.autoRefreshTimeline()"
+            (ngModelChange)="prefs.setAutoRefreshTimeline($event)"
+            name="wellness_auto_refresh"
+          />
+          {{ 'settings.blue.autoRefresh' | transloco }}
+        </label>
+        <span class="hint">{{ 'settings.blue.autoRefresh.hint' | transloco }}</span>
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.algoCalm()"
+            (ngModelChange)="prefs.setAlgoCalm($event)"
+            [disabled]="wellness.forceCalm()"
+            name="wellness_algo_calm"
+          />
+          {{ 'settings.wellness.calm' | transloco }}
+        </label>
+        <span class="hint">{{ 'settings.wellness.key.forceCalm.hint' | transloco }}</span>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.blue.posting' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.confirmBeforePost()"
+            (ngModelChange)="prefs.setConfirmBeforePost($event)"
+            name="wellness_confirm_post"
+          />
+          {{ 'settings.blue.confirmPost' | transloco }}
+        </label>
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.delayedSend()"
+            (ngModelChange)="prefs.setDelayedSend($event)"
+            name="wellness_delayed_send"
+          />
+          {{ 'settings.blue.delayedSend' | transloco }}
+        </label>
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.thoughtfulPosting()"
+            (ngModelChange)="prefs.setThoughtfulPosting($event)"
+            name="wellness_thoughtful_posting"
+          />
+          {{ 'settings.writing.thoughtful' | transloco }}
+        </label>
+        <span class="hint">{{ 'settings.blue.thoughtful.hint' | transloco }}</span>
+      </div>
+    </div>
+
+    <div class="srow">
+      <span class="slabel">{{ 'settings.blue.feed' | transloco }}</span>
+      <div class="scontrol">
+        <label class="checkline">
+          <input
+            type="checkbox"
+            [ngModel]="prefs.showImages()"
+            (ngModelChange)="prefs.setShowImages($event)"
+            name="wellness_show_images"
+          />
+          {{ 'settings.blue.showImages' | transloco }}
+        </label>
+        <span class="hint">
+          {{ 'settings.wellness.notificationHours' | transloco }}
+          <a routerLink="/settings/notification-preferences">{{
+            'settings.wellness.notificationHours.link' | transloco
+          }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

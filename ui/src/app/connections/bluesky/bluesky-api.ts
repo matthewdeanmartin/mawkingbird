@@ -438,6 +438,7 @@ export class BlueskyApi {
             lane: row.reason === 'reply' ? 'chat' : 'ordinary',
             at: row.indexedAt,
             unread: !row.isRead,
+            kind: row.reason,
           });
         }
       }),

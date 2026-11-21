@@ -1144,3 +1144,21 @@ pre.mb-code > code {
   object-fit: contain;
   vertical-align: -0.2em;
 }
+
+/* Wellness (wellness/wellness-model.ts): engagement counts hidden in feeds.
+   A card marked data-counts-shown (the thread page's focused post) keeps its
+   numbers — opening a post is the tap that reveals them. Count-only buttons
+   (who favourited, who boosted, quotes) go with their numbers: an empty button
+   would be a control with nothing on it. */
+html[data-wellness-post-counts]
+  app-status-card:not([data-counts-shown])
+  :is([mbactioncount], .count-link, .reaction-count) {
+  display: none !important;
+}
+
+/* Manual grayscale. The whole app, not just media: colour is what pulls. On
+   the root element, where filter does not become the containing block for
+   fixed-position rails and dialogs (it would on body). */
+html[data-wellness-grayscale] {
+  filter: grayscale(1);
+}

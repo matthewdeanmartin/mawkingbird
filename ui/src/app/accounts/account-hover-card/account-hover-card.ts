@@ -31,6 +31,7 @@ import { AnonymousFollows } from '../anonymous/anonymous-follows';
 import { BlueskyGraph } from '../../connections/bluesky/bluesky-graph';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { RenderedHtmlLinks } from '../rendered-html-links';
+import { Wellness } from '../../wellness/wellness';
 
 /** `bsky:did:plc:…` → `did:plc:…`. */
 function didOf(account: Account): string {
@@ -96,7 +97,7 @@ function didOf(account: Account): string {
           [innerHTML]="account().note | customEmoji: account().emojis"
         ></div>
       }
-      @if (showStats() && hasStats) {
+      @if (showStats() && hasStats && !wellness.hideProfileCounts()) {
         <div class="hc-stats muted">
           <span
             ><strong>{{ account().statuses_count | humanCount }}</strong> posts</span
@@ -271,6 +272,7 @@ export class AccountHoverCard {
   }
   readonly allowFollow = input(true, { transform: booleanAttribute });
   readonly showStats = input(true, { transform: booleanAttribute });
+  protected wellness = inject(Wellness);
 
   /** Where to open this profile on its own server, or null if there is nowhere. */
   protected homeServerLink = computed(() => homeServerLink(this.account()));

@@ -69,6 +69,7 @@ interface SettingsNavGroup {
 // i18n settings.nav.writing: Writing
 // i18n settings.nav.homeAlgo: Home and Algo
 // i18n settings.nav.appearance: Appearance
+// i18n settings.nav.wellness: Wellness
 // i18n settings.nav.installApp: Install app
 // i18n settings.nav.internationalization: Internationalization
 // i18n settings.nav.localStorage: Local storage
@@ -102,7 +103,7 @@ const NAV_GROUPS: SettingsNavGroup[] = [
     // Pages that belong here *as well as* under a more specific heading. Anything
     // not named in any group lands here too — see `groups` below — so this list
     // is only for deliberate cross-listing, not for the ordinary case.
-    paths: ['profile', 'home-algo', 'writing', 'privacy', 'appearance'],
+    paths: ['profile', 'home-algo', 'writing', 'privacy', 'appearance', 'wellness'],
   },
   {
     // Second, and 'mawkingbird-plus' first within it: an account page nobody
@@ -116,7 +117,7 @@ const NAV_GROUPS: SettingsNavGroup[] = [
     // What gets shown to you and what gets shown about you — the filtering and
     // labelling rules, as opposed to the people they apply to.
     titleKey: 'settings.groups.content',
-    paths: ['home-algo', 'filters', 'spotlight', 'content', 'notification-preferences'],
+    paths: ['home-algo', 'wellness', 'filters', 'spotlight', 'content', 'notification-preferences'],
   },
   {
     titleKey: 'settings.groups.people',
@@ -258,6 +259,8 @@ export class SettingsShell {
       // against any instance; the page hides its server-backed rows off-mock itself.
       { labelKey: 'settings.nav.homeAlgo', path: 'home-algo', exact: true, anonymous: true },
       { labelKey: 'settings.nav.appearance', path: 'appearance', exact: true, anonymous: true },
+      // Client-side, so it works signed out; see wellness/wellness-model.ts.
+      { labelKey: 'settings.nav.wellness', path: 'wellness', exact: true, anonymous: true },
       { labelKey: 'settings.nav.installApp', path: 'app', exact: true, anonymous: true },
       { labelKey: 'settings.nav.internationalization', path: 'i18n', exact: true, anonymous: true },
       { labelKey: 'settings.nav.localStorage', path: 'storage', exact: true, anonymous: true },

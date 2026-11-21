@@ -42,7 +42,8 @@
     <button
       type="button"
       mbPostAction
-      [pressed]="prefs.algoCalm()"
+      [pressed]="wellness.calm()"
+      [disabled]="wellness.forceCalm()"
       (click)="toggleCalm()"
       [title]="'pages.algo.filter.calmTitle' | transloco: { posts: words().posts }"
     >

@@ -17,6 +17,7 @@ import { starterKit, StarterAccount, starterKitText } from '../starter-collectio
 import { UiLocale } from '../../i18n/locale';
 import { SignInPrompt } from '../../posts/sign-in-prompt/sign-in-prompt';
 import { TranslocoService } from '@jsverse/transloco';
+import { Wellness } from '../../wellness/wellness';
 
 // i18n starterCollection.heading: A timeline in one click
 // i18n starterCollection.followingProgress: Following… {{completed}}/{{total}}
@@ -49,6 +50,7 @@ import { TranslocoService } from '@jsverse/transloco';
 export class StarterCollection implements OnInit, OnDestroy {
   protected importer = inject(ImportFollows);
   private api = inject(Api);
+  protected wellness = inject(Wellness);
   private auth = inject(Auth);
   private anonymousPublic = inject(AnonymousPublicApi);
   private route = inject(ActivatedRoute);

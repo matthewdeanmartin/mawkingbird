@@ -52,14 +52,16 @@
       >
         {{ 'starterCollection.tabs.posts' | packText: copyLanguage }}
       </button>
-      <button
-        type="button"
-        [class.active]="view() === 'analytics'"
-        [attr.aria-pressed]="view() === 'analytics'"
-        (click)="setView('analytics')"
-      >
-        {{ 'starterCollection.tabs.analytics' | packText: copyLanguage }}
-      </button>
+      @if (!wellness.hideAnalytics()) {
+        <button
+          type="button"
+          [class.active]="view() === 'analytics'"
+          [attr.aria-pressed]="view() === 'analytics'"
+          (click)="setView('analytics')"
+        >
+          {{ 'starterCollection.tabs.analytics' | packText: copyLanguage }}
+        </button>
+      }
     </nav>
     @if (view() === 'members') {
       <div

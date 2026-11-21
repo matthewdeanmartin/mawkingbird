@@ -74,7 +74,12 @@
           }
         }
       </a>
-      <app-account-hover-card [account]="display.account" [allowFollow]="!remoteMastodonReadOnly" />
+      @if (!wellness.noHoverCards()) {
+        <app-account-hover-card
+          [account]="display.account"
+          [allowFollow]="!remoteMastodonReadOnly"
+        />
+      }
     </span>
     <div class="body">
       <div class="meta">
@@ -87,10 +92,12 @@
                 | customEmoji: display.account.emojis : true
             "
           ></a>
-          <app-account-hover-card
-            [account]="display.account"
-            [allowFollow]="!remoteMastodonReadOnly"
-          />
+          @if (!wellness.noHoverCards()) {
+            <app-account-hover-card
+              [account]="display.account"
+              [allowFollow]="!remoteMastodonReadOnly"
+            />
+          }
         </span>
         <app-verified-badge [account]="display.account" />
         <span class="acct muted">&#64;{{ display.account.acct }}</span>
@@ -1777,7 +1784,7 @@
             {{ 'statusCard.openInListen' | transloco }}
           </a>
         }
-        @if (analyticsRouteId(); as routeId) {
+        @if (!wellness.hideAnalytics() && analyticsRouteId(); as routeId) {
           <a
             mbMenuItem
             [routerLink]="['/statuses', routeId, 'analytics']"

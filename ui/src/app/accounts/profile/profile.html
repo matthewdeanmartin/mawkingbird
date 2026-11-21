@@ -940,7 +940,9 @@
       }
       <div class="stats muted">
         <!-- A Twitter fetch that failed counted nothing; "0 posts" would claim it did. -->
-        @if (!(isTwitter() && twitterError())) {
+        <!-- Wellness can hide the numbers; Following/Followers stay as plain
+             buttons because the lists behind them are still worth opening. -->
+        @if (!(isTwitter() && twitterError()) && !wellness.hideProfileCounts()) {
           <span
             ><strong>{{ a.statuses_count | humanCount }}</strong>
             {{ isRss() ? ('pages.profile.stats.items' | transloco) : words().posts }}</span
@@ -948,16 +950,20 @@
         }
         @if (!isRss() && !isTwitter() && !isMisskey()) {
           <button type="button" class="count-btn" (click)="setTab('following')">
-            <strong>{{
-              auth.isAnonymous && isSelf()
-                ? anonymousFollows.count()
-                : (a.following_count | humanCount)
-            }}</strong>
+            @if (!wellness.hideProfileCounts()) {
+              <strong>{{
+                auth.isAnonymous && isSelf()
+                  ? anonymousFollows.count()
+                  : (a.following_count | humanCount)
+              }}</strong>
+            }
             {{ 'pages.profile.stats.following' | transloco }}
           </button>
           @if (!auth.isAnonymous || !isSelf()) {
             <button type="button" class="count-btn" (click)="setTab('followers')">
-              <strong>{{ a.followers_count | humanCount }}</strong>
+              @if (!wellness.hideProfileCounts()) {
+                <strong>{{ a.followers_count | humanCount }}</strong>
+              }
               {{ 'pages.profile.stats.followers' | transloco }}
             </button>
           }

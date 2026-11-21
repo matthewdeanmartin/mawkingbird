@@ -27,6 +27,7 @@ import { RouteLog, RouteStat, formatDuration } from './route-log';
 import { MawkingbirdMetrics, MawkingbirdService, ServiceStat } from './mawkingbird-metrics';
 import { DiagnosticEntry, DiagnosticLog } from '../platform/diagnostics/diagnostic-log';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { Wellness } from '../wellness/wellness';
 
 /** How the endpoint table is sorted. */
 type SortKey = 'count' | 'avg' | 'max' | 'errors';
@@ -314,6 +315,7 @@ export class Observability {
   private readonly dialogs = inject(AppDialogs);
 
   protected readonly auth = inject(Auth);
+  protected readonly wellness = inject(Wellness);
   private transloco = inject(TranslocoService);
   private metrics = inject(ApiMetrics);
   private routeLog = inject(RouteLog);

@@ -8,6 +8,8 @@ export interface IndicatorEvent {
   at: string;
   unread: boolean;
   group?: string;
+  /** Provider notification type/reason, so Wellness can drop engagement. */
+  kind?: string;
 }
 
 /** Observations from existing provider requests; subscribing never starts a request. */

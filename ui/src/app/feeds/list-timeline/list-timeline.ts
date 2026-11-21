@@ -35,6 +35,7 @@ import { anonymousAccountRouteRef } from '../../accounts/anonymous/anonymous-rou
 import { FeedAnalytics } from '../feed-analytics/feed-analytics';
 import { FeedSource } from '../feed-sample';
 import { JUST_MY_SERVER_LIST_PREFIX, serverOnlyStatuses } from '../just-my-server';
+import { Wellness } from '../../wellness/wellness';
 
 /** Posts per request when sampling the list — Mastodon's cap. */
 const SAMPLE_PAGE_SIZE = 40;
@@ -92,6 +93,7 @@ const SAMPLE_PAGE_SIZE = 40;
 })
 export class ListTimeline implements OnInit {
   private api = inject(Api);
+  protected wellness = inject(Wellness);
   private diagnostics = inject(PageDiagnostics);
   private route = inject(ActivatedRoute);
   private dialogs = inject(AppDialogs);

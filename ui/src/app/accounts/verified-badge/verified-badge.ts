@@ -2,6 +2,7 @@ import { Component, computed, inject, input } from '@angular/core';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Account } from '../../platform/api/models';
+import { Wellness } from '../../wellness/wellness';
 
 /**
  * Follower count at which an account earns a check visible to everyone —
@@ -50,6 +51,7 @@ export const VERIFIED_FOLLOWER_THRESHOLD = 9_728;
 export class VerifiedBadge {
   private auth = inject(Auth);
   private prefs = inject(ClientPrefs);
+  private wellness = inject(Wellness);
 
   readonly account = input.required<Account>();
 
@@ -62,7 +64,15 @@ export class VerifiedBadge {
     '-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26' +
     ' 4.8-5.23 1.47 1.36-6.2 6.77z';
 
+  /**
+   * Every public check here is a popularity marker (follower counts, or a joke
+   * that depends on them), so hiding profile counts in Wellness hides them all.
+   * The private self-check is not popularity and stays.
+   */
   protected readonly publicCheck = computed(() => {
+    if (this.wellness.hideProfileCounts()) {
+      return false;
+    }
     switch (this.prefs.verifiedMode()) {
       case 'everyone':
         return true;

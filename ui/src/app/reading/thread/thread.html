@@ -115,6 +115,7 @@
     }
     <app-status-card
       [status]="s"
+      [revealCounts]="true"
       [threadCwOpen]="threadCwOpen()"
       (cwToggled)="threadCwOpen.set($event)"
       filterContext="thread"

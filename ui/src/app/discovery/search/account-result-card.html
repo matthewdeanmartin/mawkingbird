@@ -73,18 +73,20 @@
         @let postsCount = a.statuses_count | humanCount;
         @let followingCount = a.following_count | humanCount;
         @let followersCount = a.followers_count | humanCount;
-        <span
-          [title]="words().Posts"
-          [innerHTML]="'pages.search.card.postsCount' | transloco: { count: postsCount }"
-        ></span>
-        <span
-          [title]="'pages.search.card.following' | transloco"
-          [innerHTML]="'pages.search.card.followingCount' | transloco: { count: followingCount }"
-        ></span>
-        <span
-          [title]="'pages.search.card.followers' | transloco"
-          [innerHTML]="'pages.search.card.followersCount' | transloco: { count: followersCount }"
-        ></span>
+        @if (!wellness.hideProfileCounts()) {
+          <span
+            [title]="words().Posts"
+            [innerHTML]="'pages.search.card.postsCount' | transloco: { count: postsCount }"
+          ></span>
+          <span
+            [title]="'pages.search.card.following' | transloco"
+            [innerHTML]="'pages.search.card.followingCount' | transloco: { count: followingCount }"
+          ></span>
+          <span
+            [title]="'pages.search.card.followers' | transloco"
+            [innerHTML]="'pages.search.card.followersCount' | transloco: { count: followersCount }"
+          ></span>
+        }
         @if (lastPosted(); as last) {
           <span
             class="acct-activity"

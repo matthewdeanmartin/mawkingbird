@@ -3,6 +3,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { Account, ProviderId, Status } from '../../platform/api/models';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { Wellness } from '../../wellness/wellness';
 import { FeedAggregator } from '../feed-aggregator';
 import { ProviderRegistry } from '../../connections/provider-registry';
 import { Auth } from '../../platform/session/auth';
@@ -64,6 +65,7 @@ export class FeedDoctorPage implements OnInit {
   private aggregator = inject(FeedAggregator);
   private registry = inject(ProviderRegistry);
   private prefs = inject(ClientPrefs);
+  private wellness = inject(Wellness);
   private calm = inject(CalmVerdicts);
   private langFilter = inject(FeedLanguageFilter);
   private homeFeed = inject(HomeTimelineFeed);
@@ -178,7 +180,7 @@ export class FeedDoctorPage implements OnInit {
    * not invent the rest.
    */
   private bounds(posts: Status[], droppedByWindow: number): FeedBounds {
-    const calmOn = this.prefs.algoCalm();
+    const calmOn = this.wellness.calm();
     const hiddenByCalm = calmOn
       ? posts.filter((p) => this.calm.hidden(p) && this.langFilter.shouldShow(p)).length
       : 0;

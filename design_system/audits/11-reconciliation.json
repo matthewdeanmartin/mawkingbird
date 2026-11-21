@@ -1268,6 +1268,11 @@
       "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
     },
     {
+      "file": "ui/src/app/settings/wellness/settings-wellness.html",
+      "disposition": "backlog",
+      "nextStep": "Preset radios, protection checkboxes and mirrored feed/posting switches are native ssection/srow/checkline rows like Writing's Home composer section. Adopt SettingsRow and Checkbox with the other native settings forms; preserve disabled not-yet-shipped switches, the Calm lock under Force Calm and the shared ClientPrefs writes."
+    },
+    {
       "file": "ui/src/app/settings/writing/settings-writing.html",
       "disposition": "partial adoption",
       "nextStep": "Publish wizard and vocabulary sections use SettingsRow, Checkbox, Field/Control, Button and SaveFeedback. Home composer and server-backed posting defaults remain a separate migration."

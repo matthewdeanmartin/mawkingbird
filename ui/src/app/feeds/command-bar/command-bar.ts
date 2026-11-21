@@ -9,6 +9,7 @@ import { PrivateFollows } from '../../accounts/private-follows';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import { ProviderId } from '../../platform/api/models';
 import { ProviderRegistry } from '../../connections/provider-registry';
+import { Wellness } from '../../wellness/wellness';
 
 /** What the host page is showing in place of its timeline. */
 export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles';
@@ -68,15 +69,18 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
                 (click)="setView('members')"
                 title="Who is in this feed — the accounts whose posts are loaded"
               >
-                👥 Members</button
-              ><button
-                mbToolbarButton
-                [pressed]="view() === 'analytics'"
-                (click)="setView('analytics')"
-                title="Analytics for the posts currently loaded in this feed"
-              >
-                📊 Analytics
+                👥 Members
               </button>
+              @if (!wellness.hideAnalytics()) {
+                <button
+                  mbToolbarButton
+                  [pressed]="view() === 'analytics'"
+                  (click)="setView('analytics')"
+                  title="Analytics for the posts currently loaded in this feed"
+                >
+                  📊 Analytics
+                </button>
+              }
             }
           </mb-toolbar>
         }
@@ -248,6 +252,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
 export class CommandBar {
   protected readonly auth = inject(Auth);
   protected readonly prefs = inject(ClientPrefs);
+  protected readonly wellness = inject(Wellness);
   protected readonly registry = inject(ProviderRegistry);
 
   /** WHAT row in its deliberate network order; utility providers are not feed networks. */

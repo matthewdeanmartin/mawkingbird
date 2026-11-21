@@ -4,6 +4,7 @@ import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Account } from '../../platform/api/models';
 import { VERIFIED_FOLLOWER_THRESHOLD, VerifiedBadge } from './verified-badge';
+import { Wellness } from '../../wellness/wellness';
 
 function makeAccount(overrides: Partial<Account> = {}): Account {
   return {
@@ -93,5 +94,16 @@ describe('VerifiedBadge', () => {
     const badge = el.querySelector('svg.badge');
     expect(badge).not.toBeNull();
     expect(badge!.querySelector('title')?.textContent).toContain('everyone deserves');
+  });
+
+  it('Wellness profile-count hiding removes every public check but keeps the self-check', () => {
+    TestBed.inject(ClientPrefs).setVerifiedMode('everyone');
+    TestBed.inject(Wellness).set('hideProfileCounts', true);
+    expect(render(makeAccount({ followers_count: 80_000 })).querySelector('svg.badge')).toBeNull();
+
+    const viewer = makeAccount({ id: '42', followers_count: 80_000 });
+    const self = render(viewer, viewer).querySelector('svg.badge');
+    expect(self).not.toBeNull();
+    expect(self!.classList.contains('self')).toBe(true);
   });
 });

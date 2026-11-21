@@ -4,6 +4,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { AlgoFeed, AlgoPost, AlgoSource } from '../algo-feed';
 import { AlgoViewTabs } from './algo-view-tabs';
 import { AlgoAudience, ClientPrefs } from '../../platform/storage/client-prefs';
+import { Wellness } from '../../wellness/wellness';
 import { CalmVerdicts } from '../calm-verdicts';
 import { FeedLanguageFilter } from '../../language/trend-language-filter';
 import { FeedLanguagePicker } from '../feed-language-picker/feed-language-picker';
@@ -89,6 +90,8 @@ export class Algo implements OnInit {
   protected readonly nativeArchive = inject(NATIVE_PROFILES) !== null;
   /** Ceiling for the "n of up to N API calls" progress line. */
   protected prefs = inject(ClientPrefs);
+  /** Calm is on when the person turned it on or Wellness forces it. */
+  protected wellness = inject(Wellness);
   protected auth = inject(Auth);
   private feedLangFilter = inject(FeedLanguageFilter);
   private calm = inject(CalmVerdicts);
@@ -118,7 +121,7 @@ export class Algo implements OnInit {
       .filter(
         (p) =>
           this.passesChips(p) &&
-          !(this.prefs.algoCalm() && this.calm.hidden(p.status)) &&
+          !(this.wellness.calm() && this.calm.hidden(p.status)) &&
           this.feedLangFilter.shouldShow(p.status) &&
           !this.visibility.rendersNothing(p.status),
       ),
@@ -175,7 +178,7 @@ export class Algo implements OnInit {
 
   /** How many posts calm mode is currently hiding, for the chip hint. */
   protected calmHidden = computed(() => {
-    if (!this.prefs.algoCalm()) {
+    if (!this.wellness.calm()) {
       return 0;
     }
     return this.feed.posts().filter((p) => this.passesChips(p) && this.calm.hidden(p.status))
@@ -186,7 +189,7 @@ export class Algo implements OnInit {
     this.diagnostics.info('Algo', 'page:open', {
       audience: this.prefs.algoAudience(),
       tags: this.prefs.algoTags(),
-      calm: this.prefs.algoCalm(),
+      calm: this.wellness.calm(),
       cachedPosts: this.feed.posts().length,
     });
     this.feed.ensureBuilt();

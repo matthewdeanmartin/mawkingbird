@@ -4,6 +4,7 @@ import { FeatureUseHistory } from './feature-use-history';
 import { FEED_CTA_INTERVAL, FEATURE_CTAS, PLUS_CTAS, FeedCta } from './feed-ctas';
 import { PlusPromotions } from '../accounts/mawkingbird/plus-promotion';
 import { VAULT_TEST_ROLLOUT } from '../connections/vault/vault-preference';
+import { Wellness } from '../wellness/wellness';
 
 /** Fisher-Yates: stable for this app session, mixed again on the next load. */
 export function shuffleCtas(cards: readonly FeedCta[], random = Math.random): FeedCta[] {
@@ -21,6 +22,7 @@ export class FeedCtaStore {
   private flags = inject(FeatureFlags);
   private plus = inject(PlusPromotions);
   private vaultAvailable = inject(VAULT_TEST_ROLLOUT);
+  private wellness = inject(Wellness);
   private deck = shuffleCtas([...FEATURE_CTAS, ...PLUS_CTAS]);
   private slots = new Map<number, FeedCta>();
   private dismissed = signal<ReadonlySet<string>>(new Set());
@@ -46,7 +48,9 @@ export class FeedCtaStore {
       !this.dismissed().has(card.id) &&
       (!card.flag || this.flags.enabled(card.flag)) &&
       (!card.vault || this.vaultAvailable) &&
-      (!card.plus || this.plus.visible())
+      (!card.plus || this.plus.visible()) &&
+      // Wellness: don't advertise the numbers someone asked not to see.
+      !(card.id === 'analytics' && this.wellness.hideAnalytics())
     );
   }
 }

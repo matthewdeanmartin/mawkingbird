@@ -8,6 +8,7 @@ import { StatusCard } from '../../posts/status-card/status-card';
 import { AccountWithMatches } from './account-refine';
 import { RenderedHtmlLinks } from '../../accounts/rendered-html-links';
 import { Terminology } from '../../i18n/terminology';
+import { Wellness } from '../../wellness/wellness';
 
 /**
  * Clicks that belong to something on the card rather than to the card itself.
@@ -102,6 +103,7 @@ const INTERACTIVE_SELECTOR = [
 export class AccountResultCard {
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
+  protected wellness = inject(Wellness);
 
   /** The account plus any posts that made it surface (empty in bio-only mode). */
   readonly item = input.required<AccountWithMatches>();

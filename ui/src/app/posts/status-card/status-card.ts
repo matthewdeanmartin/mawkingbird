@@ -60,6 +60,7 @@ import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
 import { hashtagNameFrom, profileRouteFor } from '../../accounts/rendered-html-links';
 import { ClientPrefs, READER_THEMES } from '../../platform/storage/client-prefs';
+import { Wellness } from '../../wellness/wellness';
 import { Terminology } from '../../i18n/terminology';
 import { Compose } from '../../publishing/compose/compose';
 import { Drafts } from '../../publishing/drafts';
@@ -503,8 +504,20 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
   ],
   templateUrl: './status-card.html',
   styleUrl: './status-card.css',
+  host: {
+    // Wellness hides counts with global CSS keyed on <html>; this marks the
+    // cards that show them anyway (see `revealCounts`).
+    '[attr.data-counts-shown]': 'revealCounts() ? "" : null',
+  },
 })
 export class StatusCard {
+  /**
+   * Show engagement counts even when Wellness hides them in feeds. The thread
+   * page sets it on its focused post: opening a post is the tap that reveals
+   * its numbers, the way Mastodon keeps stats on the post page.
+   */
+  readonly revealCounts = input(false);
+  protected wellness = inject(Wellness);
   /** "Copy link": mawkingbird.com links to the post and its author (see deep-links.ts). */
   protected copyLinkOpen = signal(false);
   protected postCopyLink = computed(() => postDeepLink(this.display, this.server.baseUrl()));
