@@ -8323,7 +8323,7 @@
       "findings": [
         {
           "pattern": "selects",
-          "line": 1092
+          "line": 1105
         }
       ]
     },
@@ -16065,7 +16065,7 @@
       "findings": [
         {
           "pattern": "selects",
-          "line": 909
+          "line": 914
         }
       ]
     },
@@ -22366,12 +22366,20 @@
           "line": 140
         },
         {
-          "pattern": "legacyPills",
-          "line": 210
+          "pattern": "shared",
+          "line": 208
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 206
         },
         {
           "pattern": "legacyPills",
-          "line": 214
+          "line": 226
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 230
         }
       ]
     },

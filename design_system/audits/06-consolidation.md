@@ -3144,3 +3144,8 @@ translated-post notice (status card, thread, photo view, quote dialog). The
 virtual content warning's Show control is MbButton in the status card,
 notifications and quotes list; Settings → Wellness gains one native checkbox
 row in the page's existing pattern. No shared design widget changed.
+
+Reply-guy thread folding (2026-11-21): reviewed the refreshed inventory after
+the fold control was added. The thread's new Show button uses MbButton; the
+other changes are source line shifts in search and compose. The candidate file
+set remains at 710, so 11-reconciliation.json needs no file changes.

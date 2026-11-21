@@ -141,7 +141,8 @@ describe('Thread', () => {
       expect(request.request.method).toBe('GET');
       const ids = request.request.params.getAll('id[]')!;
       expect(ids.length).toBeGreaterThan(0);
-      for (const id of ids) expect(['1', 'me', 'them', 'other']).toContain(id);
+      for (const id of ids)
+        expect(['1', 'me', 'them', 'other', 'g1', 'g2', 'g3', 'friend']).toContain(id);
       request.flush(ids.map((id) => ({ id, following: false, followed_by: false })));
     }
     httpMock.verify();
@@ -214,10 +215,6 @@ describe('Thread', () => {
     // Unfolding was the click: tagged, not guarded one by one.
     expect(el.querySelectorAll('.reply-guy-chip')).toHaveLength(3);
     expect(el.querySelector('.reply-guy-cw')).toBeNull();
-    // The cards' own mutual-tint lookups for the stranger fixtures.
-    for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
-      request.flush([]);
-    }
   });
 
   it('expands and collapses CWs throughout a conversation, including other authors and new replies', () => {
