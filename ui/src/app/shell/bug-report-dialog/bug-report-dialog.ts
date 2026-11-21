@@ -56,6 +56,9 @@ type Destination = 'github' | 'social' | 'email' | 'copy';
 // i18n feedback.advisory: Private security reporting page
 // i18n feedback.social: Mastodon mention (public)
 // i18n feedback.direct: Mastodon message (mentioned accounts only)
+// i18n feedback.publicAudience: Public post
+// i18n feedback.publicAudienceHint: Your feedback will be posted publicly on Mastodon. Anyone can read it.
+// i18n feedback.directAudience: Direct message
 // i18n feedback.email: Email
 // i18n feedback.copy: Copy feedback
 // i18n feedback.environment: Include build, browser, server and page details

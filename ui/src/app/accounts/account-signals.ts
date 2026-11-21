@@ -125,6 +125,8 @@ export const MIN_POSTS_FOR_RHYTHM = 8;
 export const RUN_LENGTH = 4;
 /** Regular share at or above which the account is called bot-like. */
 export const BOT_LIKE_PCT = 60;
+/** A smaller regular share is too easy to find by chance in human posting. */
+export const PARTLY_SCHEDULED_PCT = 10;
 /** Gaps shorter than this are bursts of activity, not a schedule. */
 const MIN_GAP_S = 5 * 60;
 
@@ -140,7 +142,7 @@ function sameGap(a: number, b: number): boolean {
  * since a person writing a thread or boosting in one sitting produces even
  * gaps too.
  *
- * - No run at all: human.
+ * - Under {@link PARTLY_SCHEDULED_PCT}% of the posts in runs: human.
  * - {@link BOT_LIKE_PCT}% or more of the posts in runs: bot-like.
  * - In between: mixed (a scheduler plus live posting).
  */
@@ -181,8 +183,13 @@ export function postingRhythm(sample: readonly Status[]): PostingRhythm | null {
   }
 
   const regularPct = percent(regularPosts.size, times.length);
+  const regularShare = (regularPosts.size * 100) / times.length;
   const verdict: RhythmVerdict =
-    regularPosts.size === 0 ? 'human' : regularPct >= BOT_LIKE_PCT ? 'botLike' : 'mixed';
+    regularShare < PARTLY_SCHEDULED_PCT
+      ? 'human'
+      : regularShare >= BOT_LIKE_PCT
+        ? 'botLike'
+        : 'mixed';
   return {
     verdict,
     regular: regularPosts.size,

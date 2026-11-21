@@ -3,9 +3,8 @@
  *
  * Rendered twice: in the footer, which is the one place with room on every
  * route, and on Settings → Internationalization, where someone actually looking
- * for it will go. The `footer` input carries the difference — the dot separator
- * and the compact type belong to the footer's link row only. It is deliberately a
- * plain `<select>` rather than a styled menu: this is a control people use once
+ * for it will go. The `footer` input gives the footer control compact type.
+ * The picker is a plain `<select>` rather than a styled menu: people use it once
  * and then never again, and a native select is the version that works with
  * every screen reader, every mobile keyboard, and 60 options without scrolling
  * problems.
@@ -45,11 +44,6 @@ const AUTO = 'auto';
   host: { '[class.in-footer]': 'footer()' },
   template: `
     @if (locale.hasChoice) {
-      <!-- The separator lives inside the guard so a hidden picker does not
-           leave a stray "·" dangling in the footer's link row. -->
-      @if (footer()) {
-        <span class="footer-separator" aria-hidden="true">·</span>
-      }
       <label class="locale-picker">
         <span class="sr-only">{{ 'localePicker.label' | transloco }}</span>
         <select
@@ -68,18 +62,12 @@ const AUTO = 'auto';
     }
   `,
   styles: `
-    /* Matches .footer-separator in app-footer, which is style-encapsulated to
-       that component and so does not reach this one. */
-    .footer-separator {
-      display: inline-block;
-      margin: 0 0.55em;
-    }
     .locale-picker select {
       font: inherit;
       cursor: pointer;
     }
-    /* Footer-only shrink. The footer is a dense row of muted links, so the
-       control matches that type; anywhere else — Settings →
+    /* Footer-only shrink. The control matches the footer's muted links;
+       anywhere else — Settings →
        Internationalization — it must match the page's own selects instead,
        which .scontrol select in styles.css already sizes. Component styles
        beat that rule on specificity, so scoping these to the footer is what
@@ -99,7 +87,7 @@ const AUTO = 'auto';
   `,
 })
 export class LocalePicker {
-  /** Include the footer's dot separator when rendered in its link row. */
+  /** Use the compact footer style when rendered below the footer links. */
   readonly footer = input(false);
 
   protected locale = inject(UiLocale);

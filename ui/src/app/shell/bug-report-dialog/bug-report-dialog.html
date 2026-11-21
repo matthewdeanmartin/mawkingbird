@@ -62,9 +62,15 @@
       </mb-field>
     }
     @if (destination() === 'social') {
-      @if (security()) {
-        <p>{{ 'feedback.directHint' | transloco }}</p>
-      }
+      <div class="audience-note">
+        @if (security()) {
+          <p class="audience-eyebrow">{{ 'feedback.directAudience' | transloco }}</p>
+          <p>{{ 'feedback.directHint' | transloco }}</p>
+        } @else {
+          <p class="audience-eyebrow">{{ 'feedback.publicAudience' | transloco }}</p>
+          <p>{{ 'feedback.publicAudienceHint' | transloco }}</p>
+        }
+      </div>
       @if (!security() && targets.maintainer && targets.maintainer !== targets.account) {
         <mb-checkbox
           [label]="'feedback.cc' | transloco: { handle: targets.maintainer }"

@@ -82,9 +82,9 @@ reaches the upper limit, so Est. reach equals Could have reached.
 posts in a row with the same gap between them, to within 2 minutes or 1%
 (every hour, every 24 hours). Thread posts and boosts are left out, because
 people produce even gaps when writing a thread or boosting in one sitting, and
-gaps under 5 minutes do not count. With no runs, the account is **Human**. With
-60% or more of its posts in runs, it is **Bot-like**. In between, it is
-**Partly scheduled**: a scheduler alongside live posting. The profile page
+gaps under 5 minutes do not count. With under 10% of its posts in runs, the
+account is **Human**. From 10% to under 60%, it is **Partly scheduled**; with
+60% or more, it is **Bot-like**. The profile page
 shows a **Bot-like** or **Partly scheduled** label next to the official **Bot**
 label, judged from the posts loaded there. It needs at least 8 posts.
 

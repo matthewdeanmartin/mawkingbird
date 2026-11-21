@@ -12133,15 +12133,15 @@
       "findings": [
         {
           "pattern": "selects",
-          "line": 8
+          "line": 7
         },
         {
           "pattern": "selects",
-          "line": 33
+          "line": 32
         },
         {
           "pattern": "selects",
-          "line": 55
+          "line": 49
         }
       ]
     },
@@ -28185,11 +28185,11 @@
       "findings": [
         {
           "pattern": "nativeButtons",
-          "line": 93
+          "line": 98
         },
         {
           "pattern": "nativeButtons",
-          "line": 108
+          "line": 113
         }
       ]
     },
@@ -28227,15 +28227,11 @@
         },
         {
           "pattern": "shared",
-          "line": 69
+          "line": 75
         },
         {
           "pattern": "shared",
-          "line": 77
-        },
-        {
-          "pattern": "shared",
-          "line": 121
+          "line": 83
         },
         {
           "pattern": "shared",
@@ -28243,55 +28239,59 @@
         },
         {
           "pattern": "shared",
-          "line": 139
+          "line": 133
         },
         {
           "pattern": "shared",
-          "line": 147
+          "line": 145
         },
         {
           "pattern": "shared",
-          "line": 159
+          "line": 153
         },
         {
           "pattern": "shared",
-          "line": 170
+          "line": 165
         },
         {
           "pattern": "shared",
-          "line": 184
+          "line": 176
         },
         {
           "pattern": "shared",
-          "line": 194
+          "line": 190
         },
         {
           "pattern": "shared",
-          "line": 205
+          "line": 200
         },
         {
           "pattern": "shared",
-          "line": 223
+          "line": 211
+        },
+        {
+          "pattern": "shared",
+          "line": 229
         },
         {
           "pattern": "nativeButtons",
-          "line": 159
+          "line": 165
         },
         {
           "pattern": "nativeButtons",
-          "line": 169
+          "line": 175
         },
         {
           "pattern": "nativeButtons",
-          "line": 182
+          "line": 188
         },
         {
           "pattern": "nativeButtons",
-          "line": 192
+          "line": 198
         },
         {
           "pattern": "nativeButtons",
-          "line": 223
+          "line": 229
         },
         {
           "pattern": "selects",

@@ -3149,3 +3149,10 @@ Reply-guy thread folding (2026-11-21): reviewed the refreshed inventory after
 the fold control was added. The thread's new Show button uses MbButton; the
 other changes are source line shifts in search and compose. The candidate file
 set remains at 710, so 11-reconciliation.json needs no file changes.
+
+Footer and feedback copy (2026-11-21): reviewed the refreshed inventory after
+removing the footer locale separator and adding the feedback audience label.
+The dialog still uses its existing MbDialog, MbField, MbControl, MbCheckbox,
+MbDisclosure and MbButton controls. The footer keeps native links and buttons;
+the inventory changes are source line shifts. The candidate file set remains
+at 710, so 11-reconciliation.json needs no file changes.

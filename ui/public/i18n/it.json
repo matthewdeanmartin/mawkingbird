@@ -1208,7 +1208,7 @@
   },
   "footer": {
     "buildLog": "log di build",
-    "builtAt": "Compilato il {{date}} UTC",
+    "builtAt": "Compilato il {{date}}",
     "end": "Hai raggiunto la fine. Qui si può.",
     "failWhale": "Balena d’errore",
     "hotkeys": "? per la tastiera",

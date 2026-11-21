@@ -110,6 +110,19 @@ describe('postingRhythm', () => {
     expect(rhythm.regular).toBe(4);
   });
 
+  it('needs an actual 10% scheduled share before calling posting partly scheduled', () => {
+    const irregular = Array.from({ length: 37 }, (_, i) => post(i * i * 17 + i * 37));
+    const scheduled = Array.from({ length: 4 }, (_, i) => post(100_000 + i * 60));
+    const below = postingRhythm([...irregular, ...scheduled])!;
+    expect(below.regular).toBe(4);
+    expect(below.regularPct).toBe(10); // 4/41 rounds up for display.
+    expect(below.verdict).toBe('human');
+
+    const atCutoff = postingRhythm([...irregular.slice(0, 36), ...scheduled])!;
+    expect(atCutoff.regularPct).toBe(10);
+    expect(atCutoff.verdict).toBe('mixed');
+  });
+
   it('ignores threads and boosts, which come in even bursts from people too', () => {
     const burst = Array.from({ length: 10 }, (_, i) => threadPart(i * 6));
     const boosts = Array.from({ length: 10 }, (_, i) => boost(1000 + i * 6));

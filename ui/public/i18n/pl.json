@@ -1208,7 +1208,7 @@
   },
   "footer": {
     "buildLog": "log kompilacji",
-    "builtAt": "Kompilacja: {{date}} UTC",
+    "builtAt": "Kompilacja: {{date}}",
     "end": "To już koniec. Tutaj wolno się zatrzymać.",
     "failWhale": "Wieloryb błędu",
     "hotkeys": "? — klawiatura",

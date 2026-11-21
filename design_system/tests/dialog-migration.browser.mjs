@@ -105,6 +105,12 @@ test("security switches to private recipients and preserves the draft", async ({
     dialog.getByRole("link", { name: "Open email draft" }),
   ).not.toHaveAttribute("href", /sensitive/);
   await dialog.getByLabel("Send feedback via").selectOption("social");
+  await expect(dialog.locator(".audience-eyebrow")).toHaveText(
+    "Direct message",
+  );
+  await expect(dialog.locator(".audience-note")).toContainText(
+    "Server administrators may be able to read direct messages.",
+  );
   await expect(dialog.getByText(/Also mention/)).toHaveCount(0);
   await dialog.getByRole("textbox").fill("sensitive detail @someone");
   await expect(
@@ -125,6 +131,10 @@ test("feature poll uses the server maximum and offers GitHub afterward", async (
   await dialog.getByLabel("Feedback type").selectOption("feature");
   await dialog.getByRole("textbox").fill("Calendar view");
   await dialog.getByLabel("Send feedback via").selectOption("social");
+  await expect(dialog.locator(".audience-eyebrow")).toHaveText("Public post");
+  await expect(dialog.locator(".audience-note")).toContainText(
+    "Anyone can read it.",
+  );
   await dialog.getByRole("checkbox", { name: /Also mention/ }).check();
   await dialog.getByRole("checkbox", { name: /Add a poll/ }).check();
   await dialog.getByRole("button", { name: "Post on Mastodon" }).click();

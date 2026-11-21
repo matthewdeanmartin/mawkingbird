@@ -29,6 +29,7 @@ import {
 } from '../accounts/mawkingbird/plus-badge-entitlement';
 import { FeatureFlags } from '../platform/build/feature-flags';
 import { AppModeService } from '../platform/build/app-mode';
+import { BUILD_INFO } from '../platform/build/build-info';
 
 class FakePlusBadgeEntitlement {
   readonly state = signal<PlusBadgeState>('free');
@@ -982,37 +983,63 @@ describe('Shell zen modes', () => {
   });
 
   it('groups footer links by purpose and points to the maintained source and license', () => {
-    const footer = render().nativeElement.querySelector('app-app-footer') as HTMLElement;
-    const rows = [...footer.querySelectorAll('.footer-row')];
-    expect(
-      rows.map((row) =>
-        [...row.querySelectorAll('a, button')].map((link) => link.textContent?.trim()).join(' · '),
-      ),
-    ).toEqual([
-      'Server rules & terms · Privacy · About & legal',
-      'Source · MIT License',
-      'Feedback · Fail whale',
-      'Discover · Help · News · ? Keyboard',
-      // Last, under the rest: desktop downloads remain available from the web app.
-      'Install the app',
-    ]);
-    // The static help site is outside the Angular app: a base-relative plain href.
-    expect(footer.querySelector('a[href="help/"]:not([routerLink])')?.textContent?.trim()).toBe(
-      'Help',
-    );
-    // So is the static news blog (news/, built by fediblog).
-    expect(footer.querySelector('a[href="news/"]:not([routerLink])')?.textContent?.trim()).toBe(
-      'News',
-    );
-    expect(
-      footer.querySelector('a[href="https://github.com/matthewdeanmartin/mawkingbird/"]'),
-    ).not.toBeNull();
-    expect(
-      footer.querySelector(
-        'a[href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/LICENSE"]',
-      ),
-    ).not.toBeNull();
-    expect(footer.querySelector('[mbContentLink]')).toBeNull();
+    const originalBuild = { ...BUILD_INFO };
+    Object.assign(BUILD_INFO, {
+      builtAt: '2026-11-20T23:14:00.000Z',
+      commit: 'f3b7c3c0',
+      commitUrl: 'https://example.com/commit/f3b7c3c0',
+      runUrl: 'https://example.com/actions/runs/1',
+    });
+    try {
+      const footer = render().nativeElement.querySelector('app-app-footer') as HTMLElement;
+      const rows = [...footer.querySelectorAll('.footer-row')];
+      expect(
+        rows.map((row) =>
+          [...row.querySelectorAll('a, button')]
+            .map((link) => link.textContent?.trim())
+            .join(' · '),
+        ),
+      ).toEqual([
+        'Server rules & terms · Privacy · About & legal',
+        'Source · MIT License',
+        'Feedback · Fail whale',
+        'Discover · Help · News · ? Keyboard',
+        // Last, under the rest: desktop downloads remain available from the web app.
+        'Install the app',
+      ]);
+      // The static help site is outside the Angular app: a base-relative plain href.
+      expect(footer.querySelector('a[href="help/"]:not([routerLink])')?.textContent?.trim()).toBe(
+        'Help',
+      );
+      // So is the static news blog (news/, built by fediblog).
+      expect(footer.querySelector('a[href="news/"]:not([routerLink])')?.textContent?.trim()).toBe(
+        'News',
+      );
+      expect(
+        footer.querySelector('a[href="https://github.com/matthewdeanmartin/mawkingbird/"]'),
+      ).not.toBeNull();
+      expect(
+        footer.querySelector(
+          'a[href="https://github.com/matthewdeanmartin/mawkingbird/blob/main/LICENSE"]',
+        ),
+      ).not.toBeNull();
+      expect(footer.querySelector('[mbContentLink]')).toBeNull();
+      const built = footer.querySelector('.build-info')!;
+      expect([...built.children].map((part) => part.textContent?.trim())).toEqual([
+        'Built 2026-11-20',
+        '·',
+        'commit',
+        '·',
+        'build log',
+      ]);
+      expect([...built.querySelectorAll('a')].map((link) => link.textContent?.trim())).toEqual([
+        'commit',
+        'build log',
+      ]);
+      expect(built.querySelector('a .footer-separator')).toBeNull();
+    } finally {
+      Object.assign(BUILD_INFO, originalBuild);
+    }
   });
 
   it('global zen drops the rails but keeps the header and footer', () => {

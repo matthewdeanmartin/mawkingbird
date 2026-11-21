@@ -64,6 +64,7 @@ describe('LocalePicker', () => {
     footer.componentRef.setInput('footer', true);
     footer.detectChanges();
     expect((footer.nativeElement as HTMLElement).classList).toContain('in-footer');
+    expect((footer.nativeElement as HTMLElement).querySelector('.footer-separator')).toBeNull();
 
     const settings = TestBed.createComponent(LocalePicker);
     settings.detectChanges();

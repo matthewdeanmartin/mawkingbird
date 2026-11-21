@@ -28,8 +28,8 @@ feedback"); viral posts are already covered by Top posts.
   - `postingStyle`: Curator → Conversationalist → Link sharer → Thread writer
     → Broadcaster → Balanced; needs 20 statuses.
   - `postingRhythm`: runs of ≥ 4 posts with equal gaps (± max(2 min, 1%)),
-    gaps ≥ 5 min, thread posts and boosts excluded. No runs = human,
-    ≥ 60% of posts in runs = bot-like, otherwise mixed; needs 8 posts.
+    gaps ≥ 5 min, thread posts and boosts excluded. Under 10% of posts in
+    runs = human, 10% to under 60% = mixed, ≥ 60% = bot-like; needs 8 posts.
 - **Profile header** (`accounts/bot-signals`): the official setting becomes
   an attention MbBadge with a robot icon (reusing the translated
   `pages.profile.bot`). A neutral **Bot-like** / **Partly scheduled** MbBadge

@@ -34,7 +34,8 @@ import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
 // i18n footer.hotkeys: ? Keyboard
 // i18n footer.hotkeys.title: Keyboard shortcuts (or press ? anywhere)
 // i18n footer.end: You reached the end. That's allowed here.
-// i18n footer.builtAt: Built {{date}} UTC
+// i18n footer.builtAt: Built {{date}}
+// i18n footer.commit: commit
 // i18n footer.buildLog: build log
 // i18n footer.installApp: Install the app
 // i18n footer.installApp.title: Download Mawkingbird for your computer
@@ -71,14 +72,18 @@ import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
       </p>
       @if (build.builtAt) {
         <p class="build-info">
-          {{
-            'footer.builtAt'
-              | transloco: { date: (build.builtAt | date: 'yyyy-MM-dd HH:mm' : 'UTC') }
-          }}
+          <span>{{
+            'footer.builtAt' | transloco: { date: (build.builtAt | date: 'yyyy-MM-dd' : 'UTC') }
+          }}</span>
           @if (build.commitUrl) {
             <span class="footer-separator" aria-hidden="true">·</span>
-            <a [href]="build.commitUrl" target="_blank" rel="noopener noreferrer">
-              {{ build.commit!.slice(0, 7) }}
+            <a
+              [href]="build.commitUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              [title]="build.commit ?? ''"
+            >
+              {{ 'footer.commit' | transloco }}
             </a>
           }
           @if (build.runUrl) {
@@ -138,6 +143,7 @@ import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
       color: var(--muted);
       text-decoration: underline;
       text-underline-offset: 0.15em;
+      white-space: nowrap;
     }
     .footer-separator {
       display: inline-block;
@@ -165,6 +171,14 @@ import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
     .build-info {
       margin: 6px 0;
       font-size: inherit;
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      flex-wrap: wrap;
+      column-gap: 0.55em;
+    }
+    .build-info .footer-separator {
+      margin: 0;
     }
   `,
 })

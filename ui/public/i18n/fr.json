@@ -39,7 +39,7 @@
   },
   "footer": {
     "buildLog": "journal",
-    "builtAt": "Compilé le {{date}} UTC",
+    "builtAt": "Compilé le {{date}}",
     "end": "Tu es arrivé au bout. C’est permis, ici.",
     "failWhale": "Baleine en vrac",
     "hotkeys": "? au clavier",

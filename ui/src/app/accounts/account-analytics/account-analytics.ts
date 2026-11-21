@@ -163,7 +163,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.style.rhythmName.botLike: Bot-like
 // i18n accountAnalytics.style.rhythmSub: {{pct}}% on a schedule
 // i18n accountAnalytics.style.rhythmEvery: every {{interval}}
-// i18n accountAnalytics.style.rhythmHelp: Looks for runs of 4 or more posts with the same gap between them (within 2 minutes or 1%), like a bot or scheduler posting every hour or every 24 hours. No runs: Human. 60% or more of posts in runs: Bot-like. In between: Partly scheduled. Thread posts and boosts are left out; gaps under 5 minutes are not a schedule. Needs 8 posts.
+// i18n accountAnalytics.style.rhythmHelp: Looks for runs of 4 or more posts with the same gap between them (within 2 minutes or 1%), like a bot or scheduler posting every hour or every 24 hours. Under 10% of posts in runs: Human. 10% to under 60%: Partly scheduled. 60% or more: Bot-like. Thread posts and boosts are left out; gaps under 5 minutes are not a schedule. Needs 8 posts.
 // i18n accountAnalytics.style.botSetting: Bot setting
 // i18n accountAnalytics.style.botOn: On
 // i18n accountAnalytics.style.botOff: Off

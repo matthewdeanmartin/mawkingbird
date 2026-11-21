@@ -42,6 +42,16 @@ describe('BotSignals', () => {
     expect(render(ME, [...live, ...scheduled]).textContent).toContain('Partly scheduled');
   });
 
+  it('does not label an account for a chance 1% regular run', () => {
+    let minute = 0;
+    const irregular = Array.from({ length: 396 }, (_, i) => {
+      minute += 20 + ((i * 73) % 997);
+      return postAt(minute, i);
+    });
+    const run = Array.from({ length: 4 }, (_, i) => postAt(1_000_000 + i * 10, 396 + i));
+    expect(render(ME, [...irregular, ...run]).textContent?.trim()).toBe('');
+  });
+
   it('says nothing for human-looking posting or too few posts', () => {
     const live = [0, 50, 400, 410, 1900, 2300, 4000, 4022, 5555, 7000].map(postAt);
     expect(render(ME, live).textContent?.trim()).toBe('');
