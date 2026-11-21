@@ -1626,7 +1626,6 @@
     "lists.bsky.pinnedHeading": "📌 Bluesky'da sabitlenenler",
     "lists.bsky.popularHeading": "🦋 Bluesky'da popüler",
     "lists.bsky.popularHint": "Başkalarının oluşturup yayımladığı akışlar. Herkes okuyabilir; Bluesky hesabı gerekmez.",
-    "lists.bsky.savedHint": "Bluesky'da kaydedildi. Bluesky uygulamasında sabitleyip kaldırabilirsin; Mawkingbird bu listeyi okur ama değiştirmez.",
     "lists.clientList.heading": "İstemci listeleri",
     "lists.clientList.hint": "Bu tarayıcıda tutulur; bu yüzden takip etmen gerekmeden herkesi ekleyebilirsin ve giriş yapmadan çalışır. Sunucu listeleri yalnızca takip ettiğin hesapları kabul eder.",
     "lists.clientList.members.one": "{{count}} üye",

@@ -539,7 +539,6 @@
     "lists.bsky.pinnedHeading": "📌 Fäst på Bluesky",
     "lists.bsky.popularHeading": "🦋 Populärt på Bluesky",
     "lists.bsky.popularHint": "Flöden som andra har skapat och publicerat. Vem som helst kan läsa dem — inget Bluesky-konto behövs.",
-    "lists.bsky.savedHint": "Sparat på Bluesky. Fäst och lossa dem i Bluesky-appen — Mawkingbird läser listan men skriver aldrig om den.",
     "lists.clientList.heading": "Klientlistor",
     "lists.clientList.hint": "Sparas i denna webbläsare, så vem som helst kan ingå — du behöver inte följa dem och det fungerar utloggad. Serverlistor (ovan) accepterar bara konton du följer.",
     "lists.clientList.members.one": "{{count}} medlem",
