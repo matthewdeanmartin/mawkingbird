@@ -1,10 +1,18 @@
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpRequest } from '@angular/common/http';
+import {
+  HttpTestingController,
+  TestRequest,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
 import { Type } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { READ_CACHE_STORE, MemoryReadCacheStore, ReadCache } from '../platform/offline/read-cache';
+import { accountScopeSuffix } from '../platform/session/account-scope';
+import { LiteStore } from './lite-store';
 import { Auth } from '../platform/session/auth';
 import { LiteHome, LiteNotifications, LiteSearch, LiteThread } from './lite-pages';
 import { LiteShell } from './lite-shell';
@@ -54,6 +62,7 @@ describe('Lite pages', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([]),
+        { provide: READ_CACHE_STORE, useValue: new MemoryReadCacheStore() },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -80,47 +89,115 @@ describe('Lite pages', () => {
     return fixture;
   }
 
-  it('Home makes one request per page and loads more only when asked', () => {
+  /** Lite starts loading a moment after a screen appears; wait for the request. */
+  async function request(
+    match: string | ((r: HttpRequest<unknown>) => boolean),
+  ): Promise<TestRequest> {
+    return vi.waitFor(() => httpMock.expectOne(match as string));
+  }
+  const HOME = (r: HttpRequest<unknown>) => r.url === '/api/v1/timelines/home';
+
+  it('Home makes one request per page and loads more only when asked', async () => {
     const f = render(LiteHome);
-    const first = httpMock.expectOne((r) => r.url === '/api/v1/timelines/home');
+    const first = await request(HOME);
     expect(first.request.params.get('limit')).toBe('20');
     first.flush([status('2'), status('1')]);
     f.detectChanges();
     const el = f.nativeElement as HTMLElement;
     expect(el.querySelectorAll('app-status-card')).toHaveLength(2);
-    httpMock.expectNone((r) => r.url === '/api/v1/timelines/home');
+    httpMock.expectNone(HOME);
 
     (el.querySelector('button.more') as HTMLButtonElement).click();
-    const second = httpMock.expectOne((r) => r.url === '/api/v1/timelines/home');
+    const second = httpMock.expectOne(HOME);
     expect(second.request.params.get('max_id')).toBe('1');
     second.flush([]);
     f.detectChanges();
     expect(el.textContent).toContain("That's everything");
   });
 
-  it('Notifications show one line per event and the post underneath', () => {
-    const f = render(LiteNotifications);
-    httpMock
-      .expectOne((r) => r.url === '/api/v1/notifications')
-      .flush([
-        {
-          id: 'n1',
-          type: 'favourite',
-          created_at: '2026-11-21T10:00:00.000Z',
-          account: status('x').account,
-          status: status('9'),
-        },
-      ]);
+  it('holds Home for the visit: coming back shows it at once with no request', async () => {
+    const first = render(LiteHome);
+    (await request(HOME)).flush([status('2'), status('1')]);
+    first.destroy();
+
+    const again = render(LiteHome);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    httpMock.expectNone(HOME);
+    expect((again.nativeElement as HTMLElement).querySelectorAll('app-status-card')).toHaveLength(
+      2,
+    );
+  });
+
+  it('Refresh reloads the screen on display and keeps it visible meanwhile', async () => {
+    const f = render(LiteHome);
+    (await request(HOME)).flush([status('1')]);
+    f.detectChanges();
+    TestBed.inject(LiteStore).refresh();
     f.detectChanges();
     const el = f.nativeElement as HTMLElement;
+    expect(el.querySelectorAll('app-status-card')).toHaveLength(1);
+    expect(el.textContent).toContain('Getting the newest');
+    const fresh = httpMock.expectOne(HOME);
+    expect(fresh.request.params.has('max_id')).toBe(false);
+    fresh.flush([status('3'), status('2'), status('1')]);
+    f.detectChanges();
+    expect(el.querySelectorAll('app-status-card')).toHaveLength(3);
+  });
+
+  it('shows the saved copy at once on a first visit, then the newest page', async () => {
+    const scope = accountScopeSuffix();
+    await TestBed.inject(ReadCache).save(
+      scope,
+      '/api/v1/timelines/home?limit=20',
+      [status('5')],
+      null,
+    );
+    const f = render(LiteHome);
+    const live = await request(HOME);
+    f.detectChanges();
+    const el = f.nativeElement as HTMLElement;
+    expect(el.querySelectorAll('app-status-card')).toHaveLength(1);
+    expect(el.textContent).toContain('Showing a copy saved');
+    live.flush([status('6'), status('5')]);
+    f.detectChanges();
+    expect(el.querySelectorAll('app-status-card')).toHaveLength(2);
+    expect(el.textContent).not.toContain('Showing a copy saved');
+  });
+
+  it('keeps what it has when a refresh fails, and says so', async () => {
+    const f = render(LiteHome);
+    (await request(HOME)).flush([status('1')]);
+    TestBed.inject(LiteStore).refresh();
+    f.detectChanges();
+    httpMock.expectOne(HOME).flush('', { status: 503, statusText: 'Unavailable' });
+    f.detectChanges();
+    const el = f.nativeElement as HTMLElement;
+    expect(el.querySelectorAll('app-status-card')).toHaveLength(1);
+    expect(el.textContent).toContain("Couldn't get anything newer");
+  });
+
+  it('Notifications show one line per event and the post underneath, with padding while loading', async () => {
+    const f = render(LiteNotifications);
+    const el = f.nativeElement as HTMLElement;
+    expect(el.querySelector('app-lite-status .lite-status')?.textContent).toContain('Loading');
+    (await request((r) => r.url === '/api/v1/notifications')).flush([
+      {
+        id: 'n1',
+        type: 'favourite',
+        created_at: '2026-11-21T10:00:00.000Z',
+        account: status('x').account,
+        status: status('9'),
+      },
+    ]);
+    f.detectChanges();
     expect(el.textContent).toContain('Alice favourited your post');
     expect(el.querySelectorAll('app-status-card')).toHaveLength(1);
   });
 
-  it('A thread loads the post and its context, nothing else', () => {
+  it('A thread loads the post and its context, nothing else', async () => {
     params.next(convertToParamMap({ id: '9' }));
     const f = render(LiteThread);
-    httpMock.expectOne('/api/v1/statuses/9').flush(status('9'));
+    (await request('/api/v1/statuses/9')).flush(status('9'));
     httpMock
       .expectOne('/api/v1/statuses/9/context')
       .flush({ ancestors: [status('8')], descendants: [status('10')] });
@@ -128,10 +205,10 @@ describe('Lite pages', () => {
     expect((f.nativeElement as HTMLElement).querySelectorAll('app-status-card')).toHaveLength(3);
   });
 
-  it('Search runs the query in the address and links people into Lite', () => {
+  it('Search runs the query in the address and links people into Lite', async () => {
     query.next(convertToParamMap({ q: 'birds' }));
     const f = render(LiteSearch);
-    const req = httpMock.expectOne((r) => r.url === '/api/v2/search');
+    const req = await request((r) => r.url === '/api/v2/search');
     expect(req.request.params.get('q')).toBe('birds');
     req.flush({ accounts: [status('x').account], hashtags: [{ name: 'birds' }], statuses: [] });
     f.detectChanges();

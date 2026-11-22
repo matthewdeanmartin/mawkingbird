@@ -1,32 +1,53 @@
-import { Component, effect, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  WritableSignal,
+  computed,
+  effect,
+  inject,
+  input,
+  untracked,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { MbButton } from '../design-system/button/button';
-import { MbNotice } from '../design-system/notice/notice';
-import { Status } from '../platform/api/models';
+import { FilterContext, Status } from '../platform/api/models';
 import { StatusCard } from '../posts/status-card/status-card';
+import { LiteStatus } from './lite-status';
+import { LiteStore, PageLoader, PagedState, byLastId } from './lite-store';
 
-// i18n lite.feed.loading: Loading…
 // i18n lite.feed.more: Load more
 // i18n lite.feed.end: That's everything.
 // i18n lite.feed.empty: Nothing here yet.
-// i18n lite.feed.failed: Couldn't load this. Check your connection and try again.
-// i18n lite.feed.retry: Try again
 
-/** Loads one page; `maxId` is the last post already shown, or undefined for the newest. */
+/** Loads one page of posts; `maxId` is the last post already shown. */
 export type LitePageLoader = (maxId?: string) => Observable<Status[]>;
 
+/** Adapt a plain posts loader to the store's paged loader. */
+export function statusPages(load: LitePageLoader): PageLoader<Status> {
+  return (cursor) => load(cursor).pipe(map(byLastId));
+}
+
 /**
- * The one list Lite uses for every timeline: one request per page, no
- * prefetching, no infinite scroll (a "Load more" button is a request the reader
- * chose to pay for), and the shared status card, so posts look and behave the
- * same as in the full app and improve with it.
+ * The one list Lite uses for every timeline. What it has loaded is held in
+ * {@link LiteStore} for the whole visit, so coming back is instant and nothing
+ * reloads until the reader presses Refresh. One request per page, no
+ * prefetching, no infinite scroll, and the shared status card.
  */
 @Component({
   selector: 'app-lite-feed',
-  imports: [MbButton, MbNotice, StatusCard, TranslocoPipe],
+  imports: [LiteStatus, MbButton, StatusCard, TranslocoPipe],
   template: `
-    @for (status of statuses(); track status.id) {
+    @let s = state();
+    <app-lite-status
+      [loading]="s.loading"
+      [refreshing]="s.refreshing"
+      [failed]="s.failed"
+      [fromSaved]="s.fromSaved"
+      [hasContent]="s.items.length > 0"
+      [loadedAt]="s.loadedAt"
+      (retry)="retry()"
+    />
+    @for (status of s.items; track status.id) {
       <app-status-card
         [status]="status"
         [filterContext]="filterContext()"
@@ -34,37 +55,30 @@ export type LitePageLoader = (maxId?: string) => Observable<Status[]>;
         (changed)="replace($event)"
       />
     } @empty {
-      @if (!loading() && !failed()) {
-        <p class="muted">{{ 'lite.feed.empty' | transloco }}</p>
+      @if (!s.loading && !s.refreshing && !s.failed) {
+        <p class="lite-pad">{{ 'lite.feed.empty' | transloco }}</p>
       }
     }
-    @if (failed()) {
-      <mb-notice tone="error" announcement="alert">
-        {{ 'lite.feed.failed' | transloco }}
-        <button mbButton variant="link" type="button" (click)="more()">
-          {{ 'lite.feed.retry' | transloco }}
+    @if (s.items.length && !s.failed) {
+      @if (s.loading) {
+        <app-lite-status [loading]="true" />
+      } @else if (s.done) {
+        <p class="lite-pad">{{ 'lite.feed.end' | transloco }}</p>
+      } @else if (!s.refreshing) {
+        <button mbButton variant="outline" type="button" class="more" (click)="more()">
+          {{ 'lite.feed.more' | transloco }}
         </button>
-      </mb-notice>
-    } @else if (loading()) {
-      <p class="muted" role="status">{{ 'lite.feed.loading' | transloco }}</p>
-    } @else if (done()) {
-      @if (statuses().length) {
-        <p class="muted">{{ 'lite.feed.end' | transloco }}</p>
       }
-    } @else {
-      <button mbButton variant="outline" type="button" class="more" (click)="more()">
-        {{ 'lite.feed.more' | transloco }}
-      </button>
     }
   `,
   styles: `
     :host {
       display: block;
     }
-    .muted {
-      color: var(--muted);
-      padding: 12px 16px;
+    .lite-pad {
       margin: 0;
+      padding: 12px 16px;
+      color: var(--muted);
     }
     .more {
       display: block;
@@ -73,53 +87,50 @@ export type LitePageLoader = (maxId?: string) => Observable<Status[]>;
   `,
 })
 export class LiteFeed {
+  /** What this list is, for holding it: 'home', 'list:7', 'profile-posts:42'. */
+  readonly key = input.required<string>();
   readonly load = input.required<LitePageLoader>();
-  readonly filterContext = input<'home' | 'notifications' | 'public' | 'thread' | 'account'>(
-    'home',
-  );
+  /** The endpoint path whose saved first page can be shown at once, if any. */
+  readonly savedPath = input<string>();
+  readonly filterContext = input<FilterContext>('home');
 
-  protected readonly statuses = signal<Status[]>([]);
-  protected readonly loading = signal(false);
-  protected readonly failed = signal(false);
-  protected readonly done = signal(false);
+  private readonly store = inject(LiteStore);
+  private readonly pages = computed(() => statusPages(this.load()));
+  /** The held list's signal; a new key (another list or profile) picks another. */
+  private readonly held = computed<WritableSignal<PagedState<Status>>>(() =>
+    this.store.pagedState(this.key(), this.pages(), this.savedPath()),
+  );
+  protected readonly state = computed(() => this.held()());
 
   constructor() {
-    // A new loader (another list, another profile) starts over.
+    // Refresh reloads only the list on screen.
+    let seen = this.store.refreshTick();
     effect(() => {
-      this.load();
-      untracked(() => {
-        this.statuses.set([]);
-        this.done.set(false);
-        this.more();
-      });
+      const tick = this.store.refreshTick();
+      if (tick === seen) return;
+      seen = tick;
+      untracked(() => this.store.reload(this.held(), this.pages()));
     });
   }
 
   protected more(): void {
-    if (this.loading()) return;
-    this.loading.set(true);
-    this.failed.set(false);
-    const last = this.statuses().at(-1)?.id;
-    this.load()(last).subscribe({
-      next: (page) => {
-        const seen = new Set(this.statuses().map((s) => s.id));
-        const fresh = page.filter((s) => !seen.has(s.id));
-        this.statuses.update((list) => [...list, ...fresh]);
-        this.done.set(fresh.length === 0);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.failed.set(true);
-        this.loading.set(false);
-      },
-    });
+    this.store.more(this.held(), this.pages());
+  }
+
+  protected retry(): void {
+    const s = this.held()();
+    if (s.items.length) this.store.reload(this.held(), this.pages());
+    else this.store.more(this.held(), this.pages());
   }
 
   protected drop(status: Status): void {
-    this.statuses.update((list) => list.filter((s) => s.id !== status.id));
+    this.held().update((s) => ({ ...s, items: s.items.filter((x) => x.id !== status.id) }));
   }
 
   protected replace(status: Status): void {
-    this.statuses.update((list) => list.map((s) => (s.id === status.id ? status : s)));
+    this.held().update((s) => ({
+      ...s,
+      items: s.items.map((x) => (x.id === status.id ? status : x)),
+    }));
   }
 }

@@ -128,3 +128,10 @@ thead th {
   color: var(--muted);
   font-size: 13px;
 }
+
+.page-links {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-inline-start: 1.2em;
+}

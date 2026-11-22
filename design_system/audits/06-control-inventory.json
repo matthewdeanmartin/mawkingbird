@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2121,
-  "filesWithCandidates": 717,
+  "filesScanned": 2123,
+  "filesWithCandidates": 718,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -12151,23 +12151,11 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 42
-        },
-        {
-          "pattern": "shared",
-          "line": 44
-        },
-        {
-          "pattern": "shared",
-          "line": 55
+          "line": 68
         },
         {
           "pattern": "nativeButtons",
-          "line": 44
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 55
+          "line": 68
         }
       ]
     },
@@ -12227,47 +12215,27 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 138
+          "line": 238
         },
         {
           "pattern": "shared",
-          "line": 187
+          "line": 434
         },
         {
           "pattern": "shared",
-          "line": 189
-        },
-        {
-          "pattern": "shared",
-          "line": 196
-        },
-        {
-          "pattern": "shared",
-          "line": 255
-        },
-        {
-          "pattern": "shared",
-          "line": 310
-        },
-        {
-          "pattern": "shared",
-          "line": 383
-        },
-        {
-          "pattern": "shared",
-          "line": 386
+          "line": 550
         },
         {
           "pattern": "nativeButtons",
-          "line": 189
+          "line": 238
         },
         {
           "pattern": "nativeButtons",
-          "line": 196
+          "line": 434
         },
         {
           "pattern": "nativeButtons",
-          "line": 383
+          "line": 550
         }
       ]
     },
@@ -12277,15 +12245,37 @@
       "findings": [
         {
           "pattern": "shared",
-          "line": 52
+          "line": 56
+        },
+        {
+          "pattern": "shared",
+          "line": 59
         },
         {
           "pattern": "nativeButtons",
-          "line": 52
+          "line": 56
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 59
         },
         {
           "pattern": "disclosure",
-          "line": 64
+          "line": 71
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/lite/lite-status.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 28
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 28
         }
       ]
     },
@@ -13189,23 +13179,7 @@
         },
         {
           "pattern": "shared",
-          "line": 6
-        },
-        {
-          "pattern": "shared",
-          "line": 7
-        },
-        {
-          "pattern": "shared",
-          "line": 10
-        },
-        {
-          "pattern": "shared",
-          "line": 15
-        },
-        {
-          "pattern": "shared",
-          "line": 64
+          "line": 19
         },
         {
           "pattern": "shared",
@@ -13213,27 +13187,27 @@
         },
         {
           "pattern": "shared",
-          "line": 71
+          "line": 72
         },
         {
           "pattern": "shared",
-          "line": 91
+          "line": 75
         },
         {
           "pattern": "shared",
-          "line": 97
+          "line": 95
         },
         {
           "pattern": "shared",
-          "line": 110
+          "line": 101
         },
         {
           "pattern": "shared",
-          "line": 120
+          "line": 114
         },
         {
           "pattern": "shared",
-          "line": 121
+          "line": 124
         },
         {
           "pattern": "shared",
@@ -13241,11 +13215,11 @@
         },
         {
           "pattern": "shared",
-          "line": 188
+          "line": 129
         },
         {
-          "pattern": "nativeButtons",
-          "line": 64
+          "pattern": "shared",
+          "line": 192
         },
         {
           "pattern": "nativeButtons",
@@ -13253,19 +13227,23 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 71
+          "line": 72
         },
         {
           "pattern": "nativeButtons",
-          "line": 97
+          "line": 75
         },
         {
           "pattern": "nativeButtons",
-          "line": 110
+          "line": 101
         },
         {
           "pattern": "nativeButtons",
-          "line": 123
+          "line": 114
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 127
         }
       ]
     },

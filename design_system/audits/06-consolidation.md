@@ -3232,3 +3232,11 @@ main shell's (partial adoption, follows the main shell). Changed findings:
 offline-banner.ts gains the switch-to-Lite offer's two MbButtons;
 connection-page.html gains an "Open Lite" MbButton link. No shared design
 widget changed.
+
+Lite feedback fixes (2026-11-21): reviewed the regenerated inventory: 718
+candidate files. New candidate lite/lite-status.ts (the shared Lite status line,
+MbButton link for Try again; adopted scope). lite-shell.ts gains a Refresh
+MbButton (outline, small). lite-feed.ts and lite-pages.ts lose their per-page
+MbNotice failure blocks to the shared status line. connection-page.html's three
+header links become a plain list of links instead of MbButton link variants, so
+they no longer read as one run-on link. No shared design widget changed.

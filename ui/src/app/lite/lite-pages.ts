@@ -1,17 +1,23 @@
-import { Component, Signal, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  Signal,
+  WritableSignal,
+  computed,
+  effect,
+  inject,
+  untracked,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { map } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of } from 'rxjs';
 import { parseAccountRoute } from '../accounts/account-route';
 import { MbButton } from '../design-system/button/button';
-import { MbNotice } from '../design-system/notice/notice';
 import { Api } from '../platform/api/api';
 import {
   Account,
   Context,
-  Conversation,
   MastodonNotification,
   SearchResults,
   Status,
@@ -19,6 +25,8 @@ import {
 } from '../platform/api/models';
 import { StatusCard } from '../posts/status-card/status-card';
 import { LiteFeed, LitePageLoader } from './lite-feed';
+import { LiteStatus } from './lite-status';
+import { LiteStore, PageLoader, ValueState, byLastId } from './lite-store';
 
 // i18n lite.home: Home
 // i18n lite.notifications: Notifications
@@ -26,7 +34,6 @@ import { LiteFeed, LitePageLoader } from './lite-feed';
 // i18n lite.lists: Lists
 // i18n lite.noLists: You have no lists.
 // i18n lite.conversations: Direct messages
-// i18n lite.noConversations: No direct messages.
 // i18n lite.search: Search
 // i18n lite.searchLabel: Search posts, people and hashtags
 // i18n lite.searchButton: Search
@@ -35,9 +42,6 @@ import { LiteFeed, LitePageLoader } from './lite-feed';
 // i18n lite.posts: Posts
 // i18n lite.noResults: No results.
 // i18n lite.thread: Thread
-// i18n lite.loading: Loading…
-// i18n lite.failed: Couldn't load this. Check your connection and try again.
-// i18n lite.retry: Try again
 // i18n lite.notFound: This post or profile isn't available.
 // i18n lite.posts.count: {{count}} posts
 // i18n lite.followers: {{count}} followers
@@ -49,7 +53,11 @@ import { LiteFeed, LitePageLoader } from './lite-feed';
 // i18n lite.notification.update: {{name}} edited a post you interacted with
 // i18n lite.notification.other: {{name}}: {{type}}
 
-/** Lite pages are deliberately small: one request per view, the shared status card. */
+/**
+ * Lite pages: one request per view, the shared status card, and everything
+ * held in {@link LiteStore} for the visit — coming back to a screen is instant
+ * and only the Refresh button reloads it.
+ */
 const PAGE = 20;
 
 /** A route parameter as a signal; the page reacts when it changes in place. */
@@ -65,11 +73,40 @@ function queryParam(name: string): Signal<string> {
   return computed(() => params().get(name) ?? '');
 }
 
+/** Run `reload` when the reader presses Refresh while this screen is showing. */
+function onRefresh(reload: () => void): void {
+  const store = inject(LiteStore);
+  let seen = store.refreshTick();
+  effect(() => {
+    const tick = store.refreshTick();
+    if (tick === seen) return;
+    seen = tick;
+    untracked(reload);
+  });
+}
+
+/** A held single value for a key that can change in place (another thread, profile). */
+function heldValue<T>(
+  key: Signal<string>,
+  fetch: (key: string) => Observable<T>,
+): Signal<WritableSignal<ValueState<T>>> {
+  const store = inject(LiteStore);
+  const held = computed(() => {
+    const k = key();
+    return store.valueState(k, () => fetch(k));
+  });
+  onRefresh(() => {
+    const k = key();
+    store.fetchValue(held(), () => fetch(k));
+  });
+  return held;
+}
+
 @Component({
   selector: 'app-lite-home',
   imports: [LiteFeed, TranslocoPipe],
   template: `<h1 class="lite-title">{{ 'lite.home' | transloco }}</h1>
-    <app-lite-feed [load]="load" filterContext="home" />`,
+    <app-lite-feed key="home" [load]="load" savedPath="/api/v1/timelines/home" />`,
 })
 export class LiteHome {
   private readonly api = inject(Api);
@@ -80,7 +117,7 @@ export class LiteHome {
   selector: 'app-lite-bookmarks',
   imports: [LiteFeed, TranslocoPipe],
   template: `<h1 class="lite-title">{{ 'lite.bookmarks' | transloco }}</h1>
-    <app-lite-feed [load]="load" filterContext="home" />`,
+    <app-lite-feed key="bookmarks" [load]="load" savedPath="/api/v1/bookmarks" />`,
 })
 export class LiteBookmarks {
   private readonly api = inject(Api);
@@ -91,7 +128,7 @@ export class LiteBookmarks {
   selector: 'app-lite-tag',
   imports: [LiteFeed],
   template: `<h1 class="lite-title">#{{ tag() }}</h1>
-    <app-lite-feed [load]="load()" filterContext="public" />`,
+    <app-lite-feed [key]="'tag:' + tag()" [load]="load()" filterContext="public" />`,
 })
 export class LiteTag {
   protected readonly tag = param('tag');
@@ -105,38 +142,39 @@ export class LiteTag {
 @Component({
   selector: 'app-lite-list',
   imports: [LiteFeed],
-  template: `<h1 class="lite-title">{{ title() }}</h1>
-    <app-lite-feed [load]="load()" filterContext="home" />`,
+  template: `<h1 class="lite-title">{{ list()().value?.title ?? '' }}</h1>
+    <app-lite-feed
+      [key]="'list:' + id()"
+      [load]="load()"
+      [savedPath]="'/api/v1/timelines/list/' + id()"
+    />`,
 })
 export class LiteListTimeline {
-  private readonly id = param('id');
+  protected readonly id = param('id');
   private readonly api = inject(Api);
-  protected readonly title = signal('');
+  protected readonly list = heldValue(
+    computed(() => `list-info:${this.id()}`),
+    (key) => this.api.getList(key.slice('list-info:'.length)),
+  );
   protected readonly load = computed<LitePageLoader>(() => {
     const id = this.id();
     return (maxId) => this.api.listTimeline(id, maxId, PAGE);
   });
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      untracked(() =>
-        this.api.getList(id).subscribe({
-          next: (list) => this.title.set(list.title),
-          error: () => this.title.set(''),
-        }),
-      );
-    });
-  }
 }
 
 @Component({
   selector: 'app-lite-lists',
-  imports: [MbNotice, RouterLink, TranslocoPipe],
+  imports: [LiteStatus, RouterLink, TranslocoPipe],
   template: `<h1 class="lite-title">{{ 'lite.lists' | transloco }}</h1>
-    @if (failed()) {
-      <mb-notice tone="error" announcement="alert">{{ 'lite.failed' | transloco }}</mb-notice>
-    } @else if (lists(); as all) {
+    @let s = lists()();
+    <app-lite-status
+      [loading]="s.loading"
+      [failed]="s.failed"
+      [hasContent]="!!s.value"
+      [loadedAt]="s.loadedAt"
+      (retry)="retry()"
+    />
+    @if (s.value; as all) {
       <ul class="lite-rows">
         @for (list of all; track list.id) {
           <li>
@@ -146,18 +184,18 @@ export class LiteListTimeline {
           <li class="muted">{{ 'lite.noLists' | transloco }}</li>
         }
       </ul>
-    } @else {
-      <p class="muted" role="status">{{ 'lite.loading' | transloco }}</p>
     }`,
 })
 export class LiteLists {
-  protected readonly lists = signal<UserList[] | null>(null);
-  protected readonly failed = signal(false);
+  private readonly api = inject(Api);
+  private readonly store = inject(LiteStore);
+  protected readonly lists = heldValue<UserList[]>(
+    computed(() => 'lists'),
+    () => this.api.lists(),
+  );
 
-  constructor() {
-    inject(Api)
-      .lists()
-      .subscribe({ next: (lists) => this.lists.set(lists), error: () => this.failed.set(true) });
+  protected retry(): void {
+    this.store.fetchValue(this.lists(), () => this.api.lists());
   }
 }
 
@@ -167,9 +205,19 @@ export class LiteLists {
  */
 @Component({
   selector: 'app-lite-notifications',
-  imports: [MbButton, MbNotice, RouterLink, StatusCard, TranslocoPipe],
+  imports: [LiteStatus, MbButton, RouterLink, StatusCard, TranslocoPipe],
   template: `<h1 class="lite-title">{{ 'lite.notifications' | transloco }}</h1>
-    @for (n of items(); track n.id) {
+    @let s = held();
+    <app-lite-status
+      [loading]="s.loading"
+      [refreshing]="s.refreshing"
+      [failed]="s.failed"
+      [fromSaved]="s.fromSaved"
+      [hasContent]="s.items.length > 0"
+      [loadedAt]="s.loadedAt"
+      (retry)="retry()"
+    />
+    @for (n of s.items; track n.id) {
       <section class="lite-notification">
         @if (n.type !== 'mention' && n.type !== 'status') {
           <p class="line">
@@ -183,19 +231,14 @@ export class LiteLists {
         }
       </section>
     }
-    @if (failed()) {
-      <mb-notice tone="error" announcement="alert">
-        {{ 'lite.failed' | transloco }}
-        <button mbButton variant="link" type="button" (click)="more()">
-          {{ 'lite.retry' | transloco }}
+    @if (s.items.length && !s.failed && !s.refreshing) {
+      @if (s.loading) {
+        <app-lite-status [loading]="true" />
+      } @else if (!s.done) {
+        <button mbButton variant="outline" type="button" class="lite-more" (click)="more()">
+          {{ 'lite.feed.more' | transloco }}
         </button>
-      </mb-notice>
-    } @else if (loading()) {
-      <p class="muted" role="status">{{ 'lite.loading' | transloco }}</p>
-    } @else if (!done()) {
-      <button mbButton variant="outline" type="button" class="lite-more" (click)="more()">
-        {{ 'lite.feed.more' | transloco }}
-      </button>
+      }
     }`,
   styles: `
     .line {
@@ -210,30 +253,27 @@ export class LiteLists {
 })
 export class LiteNotifications {
   private readonly api = inject(Api);
-  protected readonly items = signal<MastodonNotification[]>([]);
-  protected readonly loading = signal(false);
-  protected readonly failed = signal(false);
-  protected readonly done = signal(false);
+  private readonly store = inject(LiteStore);
+  private readonly loader: PageLoader<MastodonNotification> = (cursor) =>
+    this.api.notifications(cursor, { limit: PAGE }).pipe(map(byLastId));
+  private readonly state = this.store.pagedState(
+    'notifications',
+    this.loader,
+    '/api/v1/notifications',
+  );
+  protected readonly held = computed(() => this.state());
 
   constructor() {
-    this.more();
+    onRefresh(() => this.store.reload(this.state, this.loader));
   }
 
   protected more(): void {
-    if (this.loading()) return;
-    this.loading.set(true);
-    this.failed.set(false);
-    this.api.notifications(this.items().at(-1)?.id, { limit: PAGE }).subscribe({
-      next: (page) => {
-        this.items.update((list) => [...list, ...page]);
-        this.done.set(page.length === 0);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.failed.set(true);
-        this.loading.set(false);
-      },
-    });
+    this.store.more(this.state, this.loader);
+  }
+
+  protected retry(): void {
+    if (this.state().items.length) this.store.reload(this.state, this.loader);
+    else this.store.more(this.state, this.loader);
   }
 
   protected line(n: MastodonNotification): string {
@@ -246,25 +286,37 @@ export class LiteNotifications {
   }
 }
 
+interface ThreadView {
+  focus: Status;
+  context: Context;
+}
+
 /** A post with its conversation: two requests, no reply tree machinery. */
 @Component({
   selector: 'app-lite-thread',
-  imports: [MbNotice, StatusCard, TranslocoPipe],
+  imports: [LiteStatus, StatusCard, TranslocoPipe],
   template: `<h1 class="lite-title">{{ 'lite.thread' | transloco }}</h1>
-    @if (failed()) {
-      <mb-notice tone="error" announcement="alert">{{ 'lite.notFound' | transloco }}</mb-notice>
-    } @else if (focus(); as post) {
-      @for (s of context()?.ancestors ?? []; track s.id) {
-        <app-status-card [status]="s" filterContext="thread" />
+    @let s = thread()();
+    <app-lite-status
+      [loading]="s.loading"
+      [refreshing]="s.loading && !!s.value"
+      [failed]="s.failed"
+      [hasContent]="!!s.value"
+      [loadedAt]="s.loadedAt"
+      (retry)="retry()"
+    />
+    @if (s.value; as view) {
+      @for (p of view.context.ancestors; track p.id) {
+        <app-status-card [status]="p" filterContext="thread" />
       }
       <div class="focus">
-        <app-status-card [status]="post" filterContext="thread" />
+        <app-status-card [status]="view.focus" filterContext="thread" />
       </div>
-      @for (s of context()?.descendants ?? []; track s.id) {
-        <app-status-card [status]="s" filterContext="thread" />
+      @for (p of view.context.descendants; track p.id) {
+        <app-status-card [status]="p" filterContext="thread" />
       }
-    } @else {
-      <p class="muted" role="status">{{ 'lite.loading' | transloco }}</p>
+    } @else if (s.failed) {
+      <p class="lite-intro muted">{{ 'lite.notFound' | transloco }}</p>
     }`,
   styles: `
     .focus {
@@ -275,40 +327,41 @@ export class LiteNotifications {
 export class LiteThread {
   private readonly id = param('id');
   private readonly api = inject(Api);
-  protected readonly focus = signal<Status | null>(null);
-  protected readonly context = signal<Context | null>(null);
-  protected readonly failed = signal(false);
-
-  constructor() {
-    effect(() => {
-      const id = this.id();
-      untracked(() => this.fetch(id));
-    });
-  }
-
-  private fetch(id: string): void {
-    this.focus.set(null);
-    this.context.set(null);
-    this.failed.set(false);
-    this.api.getStatus(id).subscribe({
-      next: (status) => this.focus.set(status),
-      error: () => this.failed.set(true),
-    });
-    this.api.getContext(id).subscribe({
-      next: (c) => this.context.set(c),
+  private readonly store = inject(LiteStore);
+  private readonly fetch = (key: string): Observable<ThreadView> => {
+    const id = key.slice('thread:'.length);
+    return forkJoin({
+      focus: this.api.getStatus(id),
       // Without context the post alone still shows; that is the useful part.
-      error: () => this.context.set({ ancestors: [], descendants: [] }),
+      context: this.api
+        .getContext(id)
+        .pipe(catchError(() => of<Context>({ ancestors: [], descendants: [] }))),
     });
+  };
+  protected readonly thread = heldValue(
+    computed(() => `thread:${this.id()}`),
+    this.fetch,
+  );
+
+  protected retry(): void {
+    const key = `thread:${this.id()}`;
+    this.store.fetchValue(this.thread(), () => this.fetch(key));
   }
 }
 
 /** A profile: who it is, and their posts. Pinned posts, media walls and analytics stay in the full app. */
 @Component({
   selector: 'app-lite-profile',
-  imports: [LiteFeed, MbNotice, TranslocoPipe],
-  template: `@if (failed()) {
-      <mb-notice tone="error" announcement="alert">{{ 'lite.notFound' | transloco }}</mb-notice>
-    } @else if (account(); as a) {
+  imports: [LiteFeed, LiteStatus, TranslocoPipe],
+  template: `@let s = profile()();
+    <app-lite-status
+      [loading]="s.loading && !s.value"
+      [failed]="s.failed && !s.value"
+      [hasContent]="!!s.value"
+      [loadedAt]="s.loadedAt"
+      (retry)="retry()"
+    />
+    @if (s.value; as a) {
       <header class="lite-profile">
         <h1 class="lite-title">{{ a.display_name || a.username }}</h1>
         <p class="muted">&#64;{{ a.acct }}</p>
@@ -317,9 +370,14 @@ export class LiteThread {
           {{ 'lite.followers' | transloco: { count: a.followers_count } }}
         </p>
       </header>
-      <app-lite-feed [load]="load()!" filterContext="account" />
-    } @else {
-      <p class="muted" role="status">{{ 'lite.loading' | transloco }}</p>
+      <app-lite-feed
+        [key]="'profile-posts:' + a.id"
+        [load]="postsOf(a.id)"
+        [savedPath]="'/api/v1/accounts/' + a.id + '/statuses'"
+        filterContext="account"
+      />
+    } @else if (s.failed) {
+      <p class="lite-intro muted">{{ 'lite.notFound' | transloco }}</p>
     }`,
   styles: `
     .lite-profile p {
@@ -331,46 +389,39 @@ export class LiteProfile {
   private readonly id = param('id');
   private readonly handle = param('handle');
   private readonly api = inject(Api);
-  protected readonly account = signal<Account | null>(null);
-  protected readonly failed = signal(false);
-  protected readonly load = computed<LitePageLoader | null>(() => {
-    const account = this.account();
-    return account
-      ? (maxId) => this.api.getAccountStatuses(account.id, { maxId, limit: PAGE })
-      : null;
-  });
-
-  constructor() {
-    effect(() => {
-      const segments = [this.id(), this.handle()];
-      untracked(() => this.fetch(segments));
-    });
-  }
-
-  private fetch(segments: string[]): void {
-    this.account.set(null);
-    this.failed.set(false);
-    const ref = parseAccountRoute(segments);
-    const request = ref?.id
+  private readonly store = inject(LiteStore);
+  private readonly fetch = (key: string): Observable<Account> => {
+    const ref = parseAccountRoute(key.slice('profile:'.length).split(' '));
+    return ref?.id
       ? this.api.getAccount(ref.id)
       : ref?.handle
         ? this.api.lookupAccount(ref.handle)
-        : null;
-    if (!request) {
-      this.failed.set(true);
-      return;
+        : new Observable<Account>((sub) => sub.error(new Error('not a profile address')));
+  };
+  private readonly key = computed(() => `profile:${this.id()} ${this.handle()}`.trim());
+  protected readonly profile = heldValue(this.key, this.fetch);
+  private readonly loaders = new Map<string, LitePageLoader>();
+
+  /** One stable loader per account, so the held list is reused. */
+  protected postsOf(accountId: string): LitePageLoader {
+    let loader = this.loaders.get(accountId);
+    if (!loader) {
+      loader = (maxId) => this.api.getAccountStatuses(accountId, { maxId, limit: PAGE });
+      this.loaders.set(accountId, loader);
     }
-    request.subscribe({
-      next: (account) => this.account.set(account),
-      error: () => this.failed.set(true),
-    });
+    return loader;
+  }
+
+  protected retry(): void {
+    const key = this.key();
+    this.store.fetchValue(this.profile(), () => this.fetch(key));
   }
 }
 
 /** One search request; posts render as cards, people and tags as links. */
 @Component({
   selector: 'app-lite-search',
-  imports: [FormsModule, MbButton, MbNotice, RouterLink, StatusCard, TranslocoPipe],
+  imports: [FormsModule, LiteStatus, MbButton, RouterLink, StatusCard, TranslocoPipe],
   template: `<h1 class="lite-title">{{ 'lite.search' | transloco }}</h1>
     <form class="lite-search" (submit)="submit($event)">
       <input
@@ -382,39 +433,46 @@ export class LiteProfile {
       />
       <button mbButton type="submit">{{ 'lite.searchButton' | transloco }}</button>
     </form>
-    @if (failed()) {
-      <mb-notice tone="error" announcement="alert">{{ 'lite.failed' | transloco }}</mb-notice>
-    } @else if (loading()) {
-      <p class="muted" role="status">{{ 'lite.loading' | transloco }}</p>
-    } @else if (results(); as r) {
-      @if (!r.accounts.length && !r.hashtags.length && !r.statuses.length) {
-        <p class="muted">{{ 'lite.noResults' | transloco }}</p>
-      }
-      @if (r.accounts.length) {
-        <h2 class="lite-subtitle">{{ 'lite.people' | transloco }}</h2>
-        <ul class="lite-rows">
-          @for (a of r.accounts; track a.id) {
-            <li>
-              <a [routerLink]="['/m/accounts', a.id]">{{ a.display_name || a.username }}</a>
-              <span class="muted"> &#64;{{ a.acct }}</span>
-            </li>
+    @if (q()) {
+      @let s = results()();
+      <app-lite-status
+        [loading]="s.loading"
+        [refreshing]="s.loading && !!s.value"
+        [failed]="s.failed"
+        [hasContent]="!!s.value"
+        [loadedAt]="s.loadedAt"
+        (retry)="retry()"
+      />
+      @if (s.value; as r) {
+        @if (!r.accounts.length && !r.hashtags.length && !r.statuses.length) {
+          <p class="lite-intro muted">{{ 'lite.noResults' | transloco }}</p>
+        }
+        @if (r.accounts.length) {
+          <h2 class="lite-subtitle">{{ 'lite.people' | transloco }}</h2>
+          <ul class="lite-rows">
+            @for (a of r.accounts; track a.id) {
+              <li>
+                <a [routerLink]="['/m/accounts', a.id]">{{ a.display_name || a.username }}</a>
+                <span class="muted"> &#64;{{ a.acct }}</span>
+              </li>
+            }
+          </ul>
+        }
+        @if (r.hashtags.length) {
+          <h2 class="lite-subtitle">{{ 'lite.hashtags' | transloco }}</h2>
+          <ul class="lite-rows">
+            @for (t of r.hashtags; track t.name) {
+              <li>
+                <a [routerLink]="['/m/tags', t.name]">#{{ t.name }}</a>
+              </li>
+            }
+          </ul>
+        }
+        @if (r.statuses.length) {
+          <h2 class="lite-subtitle">{{ 'lite.posts' | transloco }}</h2>
+          @for (p of r.statuses; track p.id) {
+            <app-status-card [status]="p" filterContext="public" />
           }
-        </ul>
-      }
-      @if (r.hashtags.length) {
-        <h2 class="lite-subtitle">{{ 'lite.hashtags' | transloco }}</h2>
-        <ul class="lite-rows">
-          @for (t of r.hashtags; track t.name) {
-            <li>
-              <a [routerLink]="['/m/tags', t.name]">#{{ t.name }}</a>
-            </li>
-          }
-        </ul>
-      }
-      @if (r.statuses.length) {
-        <h2 class="lite-subtitle">{{ 'lite.posts' | transloco }}</h2>
-        @for (s of r.statuses; track s.id) {
-          <app-status-card [status]="s" filterContext="public" />
         }
       }
     }`,
@@ -437,63 +495,82 @@ export class LiteProfile {
   `,
 })
 export class LiteSearch {
-  private readonly q = queryParam('q');
+  protected readonly q = queryParam('q');
   private readonly api = inject(Api);
   private readonly router = inject(Router);
-  protected query = '';
-  protected readonly results = signal<SearchResults | null>(null);
-  protected readonly loading = signal(false);
-  protected readonly failed = signal(false);
+  private readonly store = inject(LiteStore);
+  protected query = this.q();
+  private readonly fetch = (key: string): Observable<SearchResults> => {
+    const q = key.slice('search:'.length);
+    return q
+      ? this.api.search(q, undefined, { resolve: true, limit: 10 })
+      : of({ accounts: [], hashtags: [], statuses: [] });
+  };
+  protected readonly results = heldValue(
+    computed(() => `search:${this.q().trim()}`),
+    this.fetch,
+  );
 
-  constructor() {
-    effect(() => {
-      const q = this.q().trim();
-      untracked(() => {
-        if (!q) return;
-        this.query = q;
-        this.run(q);
-      });
-    });
-  }
-
-  /** The query lives in the address, so a search can be shared or reloaded. */
+  /** The query lives in the address, so a search can be shared, reloaded and held. */
   protected submit(event: Event): void {
     event.preventDefault();
     const q = this.query.trim();
     if (q) void this.router.navigate(['/m/search'], { queryParams: { q } });
   }
 
-  private run(q: string): void {
-    this.loading.set(true);
-    this.failed.set(false);
-    this.api.search(q, undefined, { resolve: true, limit: 10 }).subscribe({
-      next: (results) => {
-        this.results.set(results);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.failed.set(true);
-        this.loading.set(false);
-      },
-    });
+  protected retry(): void {
+    const key = `search:${this.q().trim()}`;
+    this.store.fetchValue(this.results(), () => this.fetch(key));
   }
 }
 
 /** Direct messages: each conversation's latest post, newest first. Replies happen on the card. */
 @Component({
   selector: 'app-lite-conversations',
-  imports: [LiteFeed, TranslocoPipe],
+  imports: [LiteStatus, MbButton, StatusCard, TranslocoPipe],
   template: `<h1 class="lite-title">{{ 'lite.conversations' | transloco }}</h1>
-    <app-lite-feed [load]="load" filterContext="thread" />`,
+    @let s = held();
+    <app-lite-status
+      [loading]="s.loading"
+      [refreshing]="s.refreshing"
+      [failed]="s.failed"
+      [hasContent]="s.items.length > 0"
+      [loadedAt]="s.loadedAt"
+      (retry)="retry()"
+    />
+    @for (c of s.items; track c.id) {
+      @if (c.last_status) {
+        <app-status-card [status]="c.last_status" filterContext="thread" />
+      }
+    }
+    @if (s.items.length && !s.failed && !s.refreshing) {
+      @if (s.loading) {
+        <app-lite-status [loading]="true" />
+      } @else if (!s.done) {
+        <button mbButton variant="outline" type="button" class="lite-more" (click)="more()">
+          {{ 'lite.feed.more' | transloco }}
+        </button>
+      }
+    }`,
 })
 export class LiteConversations {
   private readonly api = inject(Api);
-  private lastConversation: string | undefined;
-  protected readonly load: LitePageLoader = (maxId) =>
-    this.api.conversations(maxId ? this.lastConversation : undefined, PAGE).pipe(
-      map((page: Conversation[]) => {
-        this.lastConversation = page.at(-1)?.id;
-        return page.flatMap((c) => (c.last_status ? [c.last_status] : []));
-      }),
-    );
+  private readonly store = inject(LiteStore);
+  private readonly loader: PageLoader<{ id: string; last_status: Status | null }> = (cursor) =>
+    this.api.conversations(cursor, PAGE).pipe(map(byLastId));
+  private readonly state = this.store.pagedState('conversations', this.loader);
+  protected readonly held = computed(() => this.state());
+
+  constructor() {
+    onRefresh(() => this.store.reload(this.state, this.loader));
+  }
+
+  protected more(): void {
+    this.store.more(this.state, this.loader);
+  }
+
+  protected retry(): void {
+    if (this.state().items.length) this.store.reload(this.state, this.loader);
+    else this.store.more(this.state, this.loader);
+  }
 }

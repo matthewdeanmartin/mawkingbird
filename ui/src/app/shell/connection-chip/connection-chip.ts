@@ -34,6 +34,11 @@ import { ConnectionMeter } from '../../platform/network/connection-meter';
       padding: 2px 10px;
       border: 1px solid var(--border);
       border-radius: 999px;
+      /* Opaque and above its neighbours: in a crowded header it may sit over
+         another icon, and must stay readable rather than blend into it. */
+      position: relative;
+      z-index: 1;
+      background: var(--col-bg);
       font-size: 13px;
       line-height: 1.6;
       color: var(--text);
@@ -41,7 +46,7 @@ import { ConnectionMeter } from '../../platform/network/connection-meter';
       white-space: nowrap;
     }
     .connection-chip:hover {
-      background: color-mix(in srgb, var(--text) 6%, transparent);
+      background: color-mix(in srgb, var(--text) 6%, var(--col-bg));
     }
     .dot {
       inline-size: 8px;

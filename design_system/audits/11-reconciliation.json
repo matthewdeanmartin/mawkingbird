@@ -3586,6 +3586,11 @@
       "file": "ui/src/app/lite/lite-shell.ts",
       "disposition": "partial adoption",
       "nextStep": "Minimal /m/ shell: MbButton (Full app link) and the shared connection chip. Its More menu is a native details/summary disclosure with plain links, the same pattern as the main shell's More menu; adopt the shared menu component when the main shell's does."
+    },
+    {
+      "file": "ui/src/app/lite/lite-status.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Shared Lite status line (loading, refreshing, saved copy, failure kept): text plus an MbButton link for Try again. The nativeButtons finding is that mbButton host."
     }
   ]
 }

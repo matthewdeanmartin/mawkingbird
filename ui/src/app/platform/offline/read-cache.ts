@@ -131,6 +131,19 @@ export class ReadCache {
     }
   }
 
+  /**
+   * The saved first page for an endpoint path, however it was requested
+   * (`?limit=20` from the API client's page helper, or bare). For Lite, which
+   * shows it at once while the newest page loads.
+   */
+  async peekFirstPage(scope: string, path: string): Promise<CachedRead | null> {
+    for (const url of [`${path}?limit=20`, path]) {
+      const hit = await this.get(scope, url);
+      if (hit) return hit;
+    }
+    return null;
+  }
+
   /** Note that a saved copy was shown, for the offline banner's "saved N min ago". */
   noteServed(savedAt: number): void {
     const current = this.servedSavedAt();

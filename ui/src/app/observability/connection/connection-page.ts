@@ -52,8 +52,8 @@ import {
 // i18n connection.stat.saveData: Data saver
 // i18n connection.stat.on: On
 // i18n connection.stat.pictures: Pictures in new posts
-// i18n connection.stat.picturesHeld: Wait for a tap
-// i18n connection.stat.picturesLoad: Load normally
+// i18n connection.stat.picturesHeld: Held back until you press “Show them” on a post
+// i18n connection.stat.picturesLoad: Shown normally
 // i18n connection.lastProbe: Last test: {{result}} in {{ms}} ms
 // i18n connection.probe.ok: reached
 // i18n connection.probe.failed: no answer
@@ -88,6 +88,7 @@ import {
 // i18n connection.offlineApp.allow: Keep an offline copy
 // i18n connection.savedReads: Saved for offline reading: {{size}} ({{entries}} saved pages). Feeds, threads and profiles you opened, for this browser only; up to 25 MB.
 // i18n connection.openLite: Open Lite, for slow connections
+// i18n connection.links: Related pages
 // i18n connection.doctor: Which services does this network allow?
 
 /** Reason codes are kebab-case; translation keys must be camelCase. */

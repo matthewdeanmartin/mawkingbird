@@ -230,6 +230,17 @@ Connection card (verdict, typical reply, the last hour) linking to
 - The deep-link audit reads only `app.routes.ts`, so it does not list `/m/`
   routes; that is consistent with shared links staying full-app addresses.
 
+- **Owner feedback, 2026-11-21 (Firefox's slowest throttle):** every tab
+  change reloaded the screen and showed nothing meanwhile. Lite is for a
+  capable phone on a bad signal, so memory is spent freely: `LiteStore` holds
+  every screen (lists, threads, profiles, search results) for the visit, keyed
+  by account. Coming back is instant and makes no request; a load still running
+  when you leave keeps going. The top bar's **Refresh** reloads only the screen
+  on display, keeping what is there until the answer arrives (and keeping it if
+  the refresh fails). A first visit to Home, Notifications, Bookmarks, a list or
+  a profile shows the read cache's saved copy at once ("Showing a copy saved N
+  min ago. Getting the newest…") and replaces it when the newest page arrives.
+
 ### Sprint 7: Native offline (done 2026-11-21)
 
 - **Connectivity:** new Rust command `network_connectivity` in

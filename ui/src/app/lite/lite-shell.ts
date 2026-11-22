@@ -13,9 +13,12 @@ import { MbButton } from '../design-system/button/button';
 import { Auth } from '../platform/session/auth';
 import { ConnectionChip } from '../shell/connection-chip/connection-chip';
 import { LiteMode } from './lite-mode';
+import { LiteStore } from './lite-store';
 
 // i18n lite.brand: Mawkingbird Lite
 // i18n lite.fullApp: Full app
+// i18n lite.refresh: Refresh
+// i18n lite.refreshing: Loading…
 // i18n lite.nav.label: Lite
 // i18n lite.nav.home: Home
 // i18n lite.nav.notifications: Notifications
@@ -31,7 +34,8 @@ import { LiteMode } from './lite-mode';
 
 /**
  * The `/m/` shell (spec/low-bandwidth-offline.md, Sprint 6): no rails, no
- * widgets, no big menus, nothing that polls. Every screen inside is a thin
+ * widgets, no big menus, nothing that polls. Every screen is held in memory
+ * for the visit (LiteStore); the top bar's Refresh is the only reload. Every screen inside is a thin
  * page around the full app's own building blocks (the status card, the
  * composer, the API client, the offline read cache), so Lite gets their
  * improvements without inheriting the full pages' extra requests.
@@ -49,6 +53,9 @@ import { LiteMode } from './lite-mode';
         <a class="lite-brand" routerLink="/m/home">{{ 'lite.brand' | transloco }}</a>
         <span class="lite-bar-end">
           <app-connection-chip />
+          <button mbButton variant="outline" size="small" type="button" (click)="store.refresh()">
+            {{ (store.busy() ? 'lite.refreshing' : 'lite.refresh') | transloco }}
+          </button>
           <button mbButton variant="link" size="small" type="button" (click)="leave()">
             {{ 'lite.fullApp' | transloco }}
           </button>
@@ -180,6 +187,8 @@ import { LiteMode } from './lite-mode';
 })
 export class LiteShell {
   private readonly lite = inject(LiteMode);
+  /** Screens are held for the visit; only this button reloads the one on display. */
+  protected readonly store = inject(LiteStore);
   private readonly router = inject(Router);
   private readonly auth = inject(Auth);
   protected readonly mastodon = computed(() => this.auth.kind() === 'mastodon');

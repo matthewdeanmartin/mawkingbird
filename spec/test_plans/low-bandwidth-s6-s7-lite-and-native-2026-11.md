@@ -30,6 +30,20 @@ Build: `main` after low-bandwidth Sprints 6–7 (2026-11-21). Roadmap:
 - [ ] More → Videos: your watch queue; a YouTube item plays inline on Play; an
       item from a post opens that post in Lite.
 
+## Held screens and Refresh (slowest throttle)
+
+- [ ] Firefox DevTools → Network → slowest throttle. Open Lite Home, then
+      Notifications, then Bookmarks, then Home again: each screen you already
+      visited shows at once with no new request.
+- [ ] Switch away while a screen is still loading, come back: it has filled in.
+- [ ] **Refresh** in the top bar: the current screen keeps its posts, says
+      "Getting the newest…", then shows the newer posts.
+- [ ] Refresh with DevTools set to Offline: the posts stay on screen (a saved
+      copy may stand in for the newest page; nothing goes blank).
+- [ ] After using the full app's Home once, open Lite Home for the first time:
+      the saved copy shows immediately with its age, then the newest page replaces it.
+- [ ] The "Unstable connection" chip is opaque and readable over the header icons.
+
 ## Lite stays Lite
 
 - [ ] In Lite, tap a link in a post that points to another post or profile:
