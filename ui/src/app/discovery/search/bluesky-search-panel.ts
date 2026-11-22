@@ -1,6 +1,10 @@
 import { accountProfilePath } from '../../accounts/account-route';
 import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
-import { AdultCollapsed, AdultFilterControl } from '../../moderation/adult-content/adult-explain';
+import {
+  AdultBadge,
+  AdultCollapsed,
+  AdultFilterControl,
+} from '../../moderation/adult-content/adult-explain';
 import { AdultResults } from '../../moderation/adult-content/adult-results';
 import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
 import { BlueskyModerationState } from '../../connections/bluesky/bluesky-moderation-state';
@@ -257,6 +261,7 @@ const ACTIVITY_SCAN_CONCURRENCY = 4;
     TranslocoPipe,
     AdultCollapsed,
     AdultFilterControl,
+    AdultBadge,
   ],
   templateUrl: './bluesky-search-panel.html',
   styleUrls: ['./bluesky-search-panel.css', './search-refine.css'],
@@ -390,6 +395,14 @@ export class BlueskySearchPanel {
 
   protected revealAdult(key: string): void {
     this.adult.reveal(key);
+  }
+
+  protected adultBadgePost(s: Status): AdultVerdict | null {
+    return this.adult.badgePost(s);
+  }
+
+  protected adultBadgeAccount(id: string): AdultVerdict | null {
+    return this.adult.badgeAccount(id);
   }
 
   protected adultHiddenPosts = computed(

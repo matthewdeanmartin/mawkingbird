@@ -96,7 +96,8 @@ describe('ReportGate', () => {
     expect(text).toContain('When last crawled (2026-11-30)');
     expect(text).toContain('Helsinki, Finland');
     expect(el.querySelector('.gate-quote blockquote')?.textContent).toContain('laws of Finland');
-    expect(text).toContain('This is not legal advice');
+    expect(text).toContain('Read the Terms of Service or About page');
+    expect(text).not.toContain('legal advice');
     expect(text).toContain('has published 1 rule.');
     expect(el.querySelector('a[href$="/terms-of-service"]')).not.toBeNull();
     expect(el.querySelector('a[href$="/about"]')).not.toBeNull();

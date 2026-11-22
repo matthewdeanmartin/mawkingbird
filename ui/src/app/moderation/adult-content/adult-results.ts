@@ -97,6 +97,28 @@ export class AdultResults {
       : null;
   }
 
+  /**
+   * The verdict to explain above a shown adult post: every kept post under
+   * Only, and the ones a reader revealed under Hide. Not adult needs no why.
+   */
+  badgePost(s: Status): AdultVerdict | null {
+    const verdict = this.postVerdicts().get(s.id);
+    if (!verdict?.adult) return null;
+    const filter = this.filter();
+    return filter === 'only' || (filter === 'hide' && this.revealed().has(`s:${s.id}`))
+      ? verdict
+      : null;
+  }
+
+  badgeAccount(id: string): AdultVerdict | null {
+    const verdict = this.accountVerdicts().get(id);
+    if (!verdict?.adult) return null;
+    const filter = this.filter();
+    return filter === 'only' || (filter === 'hide' && this.revealed().has(`a:${id}`))
+      ? verdict
+      : null;
+  }
+
   reveal(key: string): void {
     this.revealed.update((set) => new Set(set).add(key));
   }

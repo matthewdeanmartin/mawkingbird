@@ -2129,4 +2129,79 @@ describe('Search', () => {
     expect(state.visibleStatuses().map((s) => s.id)).toEqual(['m']);
     httpMock.match(() => true).forEach((r) => r.flush([]));
   });
+
+  describe('owner feedback 2026-11-22', () => {
+    it('drops the search error once the box no longer holds the query that failed', () => {
+      TestBed.inject(Auth).setToken('dismiss-token');
+      const fixture = setUp();
+      search(fixture, 'language:ms');
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelector('[data-search-error]')).not.toBeNull();
+      internals(fixture).query.set('');
+      fixture.detectChanges();
+      expect(el.querySelector('[data-search-error]')).toBeNull();
+    });
+
+    it('offers a common word for a language-only post search, and runs it', () => {
+      TestBed.inject(Auth).setToken('seed-word-token');
+      const fixture = setUp();
+      search(fixture, 'language:eo');
+      const el = fixture.nativeElement as HTMLElement;
+      const button = el.querySelector<HTMLButtonElement>('[data-use-seed]');
+      expect(button?.textContent).toContain('Esperanto');
+      expect(button?.textContent).toContain('kaj');
+      button!.click();
+      const requests = httpMock.match((r) => r.url === '/api/v2/search');
+      expect(requests.map((r) => r.request.params.get('q'))).toContain('kaj language:eo');
+      requests.forEach((r) => r.flush(makeResults()));
+    });
+
+    it('hides post results (and their facets) under Accounts, and keeps them for Posts', () => {
+      TestBed.inject(Auth).setToken('switch-token');
+      const fixture = setUp();
+      search(fixture, 'esp32');
+      httpMock
+        .expectOne((r) => r.url === '/api/v2/search')
+        .flush(makeResults([makeStatus('kept')]));
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelectorAll('app-status-card').length).toBe(1);
+      internals(fixture).type.set('accounts');
+      fixture.detectChanges();
+      expect(el.querySelectorAll('app-status-card').length).toBe(0);
+      internals(fixture).type.set('statuses');
+      fixture.detectChanges();
+      expect(el.querySelectorAll('app-status-card').length).toBe(1);
+    });
+
+    it('says why each post is kept under Only adult', () => {
+      const fixture = setUp();
+      const state = internals(fixture);
+      state.type.set('statuses');
+      state.results.set(
+        makeResults([{ ...makeStatus('a'), spoiler_text: 'lewd', sensitive: true }]),
+      );
+      state.setAdultFilter('only');
+      fixture.detectChanges();
+      const badge = (fixture.nativeElement as HTMLElement).querySelector('[data-adult-badge]');
+      expect(badge?.textContent).toContain('Content warning “lewd”');
+    });
+  });
+
+  it('Apply & search runs people-by-language with an empty box', () => {
+    TestBed.inject(Auth).setToken('apply-lang-token');
+    const fixture = setUp();
+    const state = internals(fixture) as unknown as SearchInternals & {
+      applyAccountAdvanced(): void;
+    };
+    state.peopleLanguage.set('it');
+    state.applyAccountAdvanced();
+    fixture.detectChanges();
+    const requests = httpMock.match((r) => r.url === '/api/v2/search');
+    expect(requests.map((r) => r.request.params.get('q'))).toEqual([
+      'che language:it',
+      'non language:it',
+    ]);
+    requests.forEach((r) => r.flush(makeResults()));
+  });
 });

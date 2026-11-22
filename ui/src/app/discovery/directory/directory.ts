@@ -10,7 +10,11 @@ import { MbButton } from '../../design-system/button/button';
 import { AccountLanguages, inferAccountLanguages, writesIn } from '../../language/account-language';
 import { LanguageSelect } from '../../language/language-select/language-select';
 import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
-import { AdultCollapsed, AdultFilterControl } from '../../moderation/adult-content/adult-explain';
+import {
+  AdultBadge,
+  AdultCollapsed,
+  AdultFilterControl,
+} from '../../moderation/adult-content/adult-explain';
 import { AdultResults } from '../../moderation/adult-content/adult-results';
 import { NativeEvidence } from '../../moderation/adult-content/native-evidence';
 import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
@@ -82,6 +86,7 @@ const PAGE_SIZE = 80;
     LanguageSelect,
     AdultFilterControl,
     AdultCollapsed,
+    AdultBadge,
     MbButton,
   ],
   templateUrl: './directory.html',
@@ -197,6 +202,11 @@ export class Directory implements OnInit {
 
   protected revealAdult(id: string): void {
     this.adult.reveal(`a:${id}`);
+  }
+
+  /** Why a shown person is adult (Only, or revealed): the line above them. */
+  protected adultBadgeAccount(id: string): AdultVerdict | null {
+    return this.adult.badgeAccount(id);
   }
 
   /**

@@ -8,7 +8,14 @@ import {
   classifyStatus,
   isAdultServer,
 } from './adult-classifier';
-import { classifyContentWarning, postTextMarker, selfDeclaredMarker } from './adult-lexicon';
+import { IN_PROGRESS_LOCALES, PRODUCTION_LOCALES } from '../../i18n/locale';
+import {
+  classifyContentWarning,
+  postTextMarker,
+  selfDeclaredMarker,
+  SEX_WORK_PHRASES,
+  SEX_WORK_PHRASES_CJK,
+} from './adult-lexicon';
 
 function account(over: Partial<Account> = {}): Account {
   return {
@@ -59,6 +66,73 @@ describe('adult lexicon', () => {
       'Ready VCS, DM',
     ]) {
       expect(selfDeclaredMarker(bio), bio).not.toBeNull();
+    }
+  });
+
+  it('has sex-work phrases for every language the app is translated into', () => {
+    const covered = new Set([
+      ...Object.keys(SEX_WORK_PHRASES),
+      ...Object.keys(SEX_WORK_PHRASES_CJK),
+    ]);
+    for (const locale of [...PRODUCTION_LOCALES, ...IN_PROGRESS_LOCALES]) {
+      expect(covered.has(locale.split('-')[0]), locale).toBe(true);
+    }
+  });
+
+  it('matches advertising in each language, and in CJK text without spaces', () => {
+    for (const ad of [
+      'Escort service, incall and outcall',
+      'Diskrete Erotikmassage in Berlin',
+      'Massage érotique sur rendez-vous',
+      'Masajes eróticos a domicilio',
+      'Garota de programa em SP',
+      'Massaggi erotici a Milano',
+      'Erotische massage aan huis',
+      'Erotisk massage i Stockholm',
+      'Agencja towarzyska Warszawa',
+      'Интим услуги, звоните',
+      'Еротичний масаж у Києві',
+      'Escort bayan İstanbul',
+      'Gadis panggilan KL',
+      'Dịch vụ tình dục giá rẻ',
+      'कॉल गर्ल उपलब्ध',
+      '今夜パパ活できる人',
+      '台北外送茶line',
+      '서울조건만남',
+    ]) {
+      expect(postTextMarker(ad), ad).not.toBeNull();
+    }
+  });
+
+  it('leaves ordinary posts in those languages alone', () => {
+    for (const text of [
+      'Licensed massage therapist, booking open',
+      'Vendo bicicleta usada',
+      'Sponsoring für unseren Verein',
+      'Massaggio sportivo dopo la corsa',
+      'Ich gehe heute ins Theater',
+      '今日はパパと公園に行った',
+      '我们周末一起吃饭',
+    ]) {
+      expect(postTextMarker(text), text).toBeNull();
+    }
+  });
+
+  it('reads "minors, keep out" however it is phrased', () => {
+    for (const bio of [
+      'minors do not interact',
+      'Minors DNI',
+      'no minors pls',
+      'under 18s, please don’t follow',
+      'Under-18 accounts: not welcome',
+      'kids: go away',
+      'Minors are not welcome here',
+      'teens please do not interact',
+    ]) {
+      expect(selfDeclaredMarker(bio), bio).not.toBeNull();
+    }
+    for (const bio of ['Dad of two, no kids stuff here', 'I teach kids to code', 'minors league']) {
+      expect(selfDeclaredMarker(bio), bio).toBeNull();
     }
   });
 

@@ -708,6 +708,9 @@
           (reveal)="revealAdult('a:' + result.account.id)"
         />
       } @else {
+        @if (adultBadgeAccount(result.account.id); as why) {
+          <app-adult-badge [verdict]="why" />
+        }
         <app-account-result-card
           [item]="asItem(result)"
           [relationship]="relationshipFor(result)"
@@ -761,6 +764,9 @@
         @if (adultCollapsedPost(s); as verdict) {
           <app-adult-collapsed [verdict]="verdict" (reveal)="revealAdult('s:' + s.id)" />
         } @else {
+          @if (adultBadgePost(s); as why) {
+            <app-adult-badge [verdict]="why" />
+          }
           <app-status-card [status]="s" [showSource]="true" [excerptTerms]="excerptTerms()" />
         }
         <!-- Repeats this row stands in for. The count is the point:

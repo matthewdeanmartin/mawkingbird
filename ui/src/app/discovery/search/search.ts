@@ -24,6 +24,7 @@ import {
 import {
   Component,
   DestroyRef,
+  ElementRef,
   Injector,
   OnDestroy,
   afterNextRender,
@@ -149,7 +150,11 @@ import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
 import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
 import { AdultResults } from '../../moderation/adult-content/adult-results';
 import { NativeEvidence } from '../../moderation/adult-content/native-evidence';
-import { AdultCollapsed, AdultFilterControl } from '../../moderation/adult-content/adult-explain';
+import {
+  AdultBadge,
+  AdultCollapsed,
+  AdultFilterControl,
+} from '../../moderation/adult-content/adult-explain';
 import { BlueskyPostSearch } from '../../connections/bluesky/bluesky-post-search';
 import { decodeSearchFromParams, encodeSearchToParams } from './search-url';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
@@ -413,6 +418,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.facet.malayOrIndonesian: Malay or Indonesian (uncertain)
 // i18n pages.search.facet.languageUnknown: Can’t tell
 // i18n pages.search.results.needsWord: Mastodon needs at least one word to search for. Filters such as {{filters}} only narrow a search down. Add a word too, for example one that is common in the language you want.
+// i18n pages.search.results.useSeedWord: Search with a common {{language}} word (“{{word}}”)
 // i18n pages.search.results.needsWordShort: Mastodon needs at least one word to search for, not only filters. Add a word and search again.
 // i18n pages.search.results.failed: The search failed (HTTP {{status}}).
 // i18n pages.search.results.unreachable: The search failed: the server could not be reached.
@@ -498,6 +504,7 @@ const SEARCH_TIMEOUT_MS = 20000;
     LanguageSelect,
     AdultCollapsed,
     AdultFilterControl,
+    AdultBadge,
   ],
   templateUrl: './search.html',
   // The refine layer's styles are shared with the Bluesky panel, so they live in
@@ -889,7 +896,47 @@ export class Search implements OnInit, OnDestroy {
   /** Set when a search was abandoned on the clock. Cleared by the next attempt. */
   protected searchTimedOut = signal(false);
   /** Why the last post or hashtag search produced nothing, when it failed. */
-  protected searchError = signal<SearchFailure | null>(null);
+  /** Which search type produced `results`; null when set some other way. */
+  private resultsType = signal<SearchType | null>(null);
+  /**
+   * The post/hashtag results to show: hidden (not discarded) while another type
+   * is selected, so switching back to Posts finds them, and their facets, intact.
+   */
+  protected shownResults = computed(() => {
+    const type = this.type();
+    if (type === 'accounts') return null;
+    const from = this.resultsType();
+    return from === null || from === type ? this.results() : null;
+  });
+  private searchError = signal<SearchFailure | null>(null);
+  /** What the box said when the search failed; editing it dismisses the message. */
+  private searchErrorFor = signal('');
+  /** The failure to show: only while the box still holds the query that failed. */
+  protected shownSearchError = computed(() =>
+    this.query().trim() === this.searchErrorFor() ? this.searchError() : null,
+  );
+
+  /**
+   * For a filters-only post search naming a language: a very common word in
+   * it, offered as a one-click way to see posts in that language at all.
+   */
+  protected seedSuggestion = computed(() => {
+    const failure = this.shownSearchError();
+    if (failure?.kind !== 'needsWord' || this.type() !== 'statuses') return null;
+    const language = languageInQuery(this.query());
+    const word = language ? seedWordsFor(language)[0] : undefined;
+    return word ? { word, language: languageName(language, this.kitLocale.active()) } : null;
+  });
+
+  protected useSeedWord(word: string): void {
+    this.query.set(`${word} ${this.query().trim()}`);
+    this.run();
+  }
+
+  private failSearch(failure: SearchFailure): void {
+    this.searchErrorFor.set(this.query().trim());
+    this.searchError.set(failure);
+  }
   private slowTimer: ReturnType<typeof setTimeout> | null = null;
   private timeoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -1359,6 +1406,7 @@ export class Search implements OnInit, OnDestroy {
   protected hasAccountAdvanced = computed(
     () =>
       this.accountSource() !== 'both' ||
+      !!this.peopleLanguage() ||
       !!this.followersMin() ||
       !!this.followersMax() ||
       !!this.followingMin() ||
@@ -1858,6 +1906,15 @@ export class Search implements OnInit, OnDestroy {
     this.adult.reveal(key);
   }
 
+  /** Why a shown result is adult (Only, or revealed): the line above it. */
+  protected adultBadgePost(s: Status): AdultVerdict | null {
+    return this.adult.badgePost(s);
+  }
+
+  protected adultBadgeAccount(id: string): AdultVerdict | null {
+    return this.adult.badgeAccount(id);
+  }
+
   /** Collapsed adult posts / people now on screen (Hide). */
   protected adultHiddenPosts = computed(
     () => this.visibleStatuses().filter((s) => this.adult.collapsedPost(s)).length,
@@ -2184,6 +2241,7 @@ export class Search implements OnInit, OnDestroy {
     if (!q && !peopleLanguage) {
       return;
     }
+    this.scrollToResults();
     // Bluesky runs in the panel, which owns the criteria and parses the box's
     // operators. Same button, same box, different engine underneath — which is
     // the whole point of the shared bar.
@@ -2241,6 +2299,28 @@ export class Search implements OnInit, OnDestroy {
       queryParams: { q: q || null, type, similar: null, plang: plang || null },
       queryParamsHandling: 'merge',
     });
+  }
+
+  private readonly host = inject(ElementRef<HTMLElement>);
+
+  /**
+   * Bring the results into view once a search starts. The Advanced panels are
+   * tall enough that the spinner and results land below the fold, and a
+   * Search press that changes nothing visible reads as a dead button. Leaves
+   * the page alone when the results are already on screen.
+   */
+  private scrollToResults(): void {
+    afterNextRender(
+      () => {
+        const box = (this.host.nativeElement as HTMLElement).querySelector('.search-results-box');
+        if (!box || typeof (box as HTMLElement).scrollIntoView !== 'function') return;
+        const top = box.getBoundingClientRect().top;
+        if (top >= 0 && top < window.innerHeight * 0.6) return;
+        const calm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+        (box as HTMLElement).scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'start' });
+      },
+      { injector: this.injector },
+    );
   }
 
   /** Open (or change) the Similar panel for these hashtags; none closes it. */
@@ -2363,7 +2443,8 @@ export class Search implements OnInit, OnDestroy {
    *  Accounts tab is active and (re-)runs. */
   applyAccountAdvanced(): void {
     this.type.set('accounts');
-    if (!this.query().trim()) {
+    // A language alone is enough: common words in it stand in for the query.
+    if (!this.query().trim() && !this.peopleLanguage()) {
       return;
     }
     this.advancedCollapsed.set(true);
@@ -2372,6 +2453,7 @@ export class Search implements OnInit, OnDestroy {
 
   clearAccountAdvanced(): void {
     this.accountSource.set('both');
+    this.peopleLanguage.set('');
     this.followersMin.set('');
     this.followersMax.set('');
     this.followingMin.set('');
@@ -2782,7 +2864,7 @@ export class Search implements OnInit, OnDestroy {
         : null;
     if (onlyFilters) {
       this.results.set(null);
-      this.searchError.set({ kind: 'needsWord', filters: onlyFilters.join(' ') });
+      this.failSearch({ kind: 'needsWord', filters: onlyFilters.join(' ') });
       this.diagnostics.info('Search', 'load:needs-word', { type });
       return;
     }
@@ -2820,6 +2902,7 @@ export class Search implements OnInit, OnDestroy {
       next: (r) => {
         this.stopSearchClock();
         this.results.set(r);
+        this.resultsType.set(type);
         this.scanExhausted.set(type === 'statuses' && r.statuses.length === 0);
         // Keep an exact, valid tag followable before the server indexes it.
         const tag = q.trim().replace(/^#/, '');
@@ -2857,7 +2940,7 @@ export class Search implements OnInit, OnDestroy {
         this.scanFailed.set(true);
         // Don't leave the previous query's results under the new query.
         this.results.set(null);
-        this.searchError.set(describeSearchError(error));
+        this.failSearch(describeSearchError(error));
         // A failed search is the other way to end up with an empty page, and the
         // reason is just as worth naming.
         void this.explainEmptyResult();
@@ -3007,7 +3090,7 @@ export class Search implements OnInit, OnDestroy {
     this.seedsLeft.set(0);
     this.seedLanguage.set(seedLanguage);
     if (onlyFilters && !seeds.length) {
-      this.searchError.set({ kind: 'needsWord', filters: onlyFilters.join(' ') });
+      this.failSearch({ kind: 'needsWord', filters: onlyFilters.join(' ') });
       if (!bioReq) {
         this.searching.set(false);
         this.accountSearchRan.set(true);
@@ -3016,7 +3099,7 @@ export class Search implements OnInit, OnDestroy {
     }
     if (this.capabilities.active && !q) {
       // Signed out, post search is a hashtag transform: it cannot filter by language.
-      this.searchError.set({ kind: 'needsSignIn' });
+      this.failSearch({ kind: 'needsSignIn' });
       this.searching.set(false);
       this.accountSearchRan.set(true);
       return;

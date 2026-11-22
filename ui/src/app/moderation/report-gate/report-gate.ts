@@ -15,7 +15,7 @@ import {
 // i18n report.gate.whereNone: When last crawled ({{date}}), {{server}}’s Terms and About pages did not state a jurisdiction.
 // i18n report.gate.whereUnknown: We have not recorded where {{server}} is based.
 // i18n report.gate.quote: What the server wrote
-// i18n report.gate.warning: Read the Terms of Service or About page for the full legal notices, if any. This is not legal advice.
+// i18n report.gate.warning: Read the Terms of Service or About page for the full legal notices, if any.
 // i18n report.gate.rulesCount.one: {{server}} has published {{count}} rule.
 // i18n report.gate.rulesCount.other: {{server}} has published {{count}} rules.
 // i18n report.gate.rulesNone: {{server}} has not published any rules.

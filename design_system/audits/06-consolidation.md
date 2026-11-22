@@ -1,5 +1,19 @@
 # Sprint 6 opening consolidation audit
 
+## Search scroll and language group label, 2026-11-22
+
+Reviewed the inventory delta: line shifts in `search.html` only. No control
+was added or changed; Search now scrolls the results box into view when it
+is off screen. Candidate membership and dispositions are unchanged.
+
+## Adult badge and search feedback, 2026-11-22
+
+Reviewed the inventory delta. `adult-explain.ts` (already reconciled) gains
+the "Adult · reason (i)" badge above results kept by Only adult or revealed
+under Hide, using MbHelp. Search's filters-only message gains an outline
+MbButton offering a common word for the named language. Remaining entries
+are line shifts. Candidate membership and dispositions are unchanged.
+
 ## Native evidence for adult and language filters, 2026-11-22
 
 Reviewed 2,140 source files (new: the template-free

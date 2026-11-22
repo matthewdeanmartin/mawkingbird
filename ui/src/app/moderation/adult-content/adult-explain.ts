@@ -16,6 +16,7 @@ import { AdultReason, AdultVerdict } from './adult-classifier';
 // i18n adult.collapsed.post: Adult content
 // i18n adult.collapsed.account: Adult account
 // i18n adult.collapsed.show: Show
+// i18n adult.badge: Adult
 // i18n adult.why.label: Why this was classified as adult
 // i18n adult.why.decided: Why:
 // i18n adult.why.weak: Also seen, not enough on its own:
@@ -142,6 +143,49 @@ export class AdultCollapsed {
   readonly verdict = input.required<AdultVerdict>();
   readonly kind = input<'post' | 'account'>('post');
   readonly reveal = output<void>();
+  protected readonly first = computed(() => this.verdict().reasons[0] ?? null);
+  protected key = adultReasonKey;
+}
+
+/**
+ * One line above an adult result that is shown ("Only adult", or revealed):
+ * "Adult · ⟨first reason⟩ (i)", so nobody has to hunt for why it was kept.
+ */
+@Component({
+  selector: 'app-adult-badge',
+  imports: [TranslocoPipe, MbHelp, AdultReasons],
+  template: `
+    <div class="adult-badge" data-adult-badge>
+      <span class="label">{{ 'adult.badge' | transloco }}</span>
+      @if (first(); as r) {
+        <span class="muted small reason">{{ key(r) | transloco: r }}</span>
+      }
+      <mb-help [label]="'adult.why.label' | transloco">
+        <app-adult-reasons [verdict]="verdict()" />
+      </mb-help>
+    </div>
+  `,
+  styles: `
+    .adult-badge {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 8px;
+      margin: 6px 0 -2px;
+    }
+    .label {
+      font-weight: 600;
+      font-size: 0.85em;
+    }
+    .reason {
+      flex: 1 1 12em;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+  `,
+})
+export class AdultBadge {
+  readonly verdict = input.required<AdultVerdict>();
   protected readonly first = computed(() => this.verdict().reasons[0] ?? null);
   protected key = adultReasonKey;
 }

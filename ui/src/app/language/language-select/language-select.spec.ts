@@ -27,7 +27,7 @@ describe('LanguageSelect', () => {
     const { codes } = setup();
     expect(codes('Your languages')).toContain('eo');
     // Malay and Indonesian are app localizations, so they are always offered.
-    const all = [...codes('Your languages'), ...codes('Languages Mawkingbird is translated into')];
+    const all = [...codes('Your languages'), ...codes('Other languages')];
     expect(all).toContain('ms');
     expect(all).toContain('id');
   });

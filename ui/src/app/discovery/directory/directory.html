@@ -68,6 +68,9 @@
         (reveal)="revealAdult(item.account.id)"
       />
     } @else {
+      @if (adultBadgeAccount(item.account.id); as why) {
+        <app-adult-badge [verdict]="why" />
+      }
       <app-account-result-card
         [item]="item"
         [relationship]="relationshipFor(item.account.id)"

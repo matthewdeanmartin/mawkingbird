@@ -1314,6 +1314,9 @@
                   (reveal)="revealAdult('a:' + item.account.id)"
                 />
               } @else {
+                @if (adultBadgeAccount(item.account.id); as why) {
+                  <app-adult-badge [verdict]="why" />
+                }
                 <app-account-result-card
                   [item]="item"
                   [relationship]="relationshipFor(item.account.id)"
@@ -1405,7 +1408,7 @@
             }
           </p>
         }
-        @if (searchError(); as failure) {
+        @if (shownSearchError(); as failure) {
           <div class="search-unavailable" role="alert" data-search-error>
             @if (failure.kind === 'needsSignIn') {
               <p>{{ 'pages.search.results.needsSignIn' | transloco }}</p>
@@ -1417,6 +1420,19 @@
                     : ('pages.search.results.needsWordShort' | transloco)
                 }}
               </p>
+              @if (seedSuggestion(); as seed) {
+                <p>
+                  <button
+                    type="button"
+                    mbButton
+                    variant="outline"
+                    data-use-seed
+                    (click)="useSeedWord(seed.word)"
+                  >
+                    {{ 'pages.search.results.useSeedWord' | transloco: seed }}
+                  </button>
+                </p>
+              }
             } @else {
               <p>
                 {{
@@ -1482,7 +1498,7 @@
             </button>
           }
         }
-        @if (results(); as r) {
+        @if (shownResults(); as r) {
           @if (r.hashtags.length && !similarTags().length) {
             <div class="page-head tag-results-head">
               {{ 'pages.search.results.hashtags' | transloco }}
@@ -1550,6 +1566,9 @@
                 @if (adultCollapsedPost(s); as verdict) {
                   <app-adult-collapsed [verdict]="verdict" (reveal)="revealAdult('s:' + s.id)" />
                 } @else {
+                  @if (adultBadgePost(s); as why) {
+                    <app-adult-badge [verdict]="why" />
+                  }
                   <app-status-card
                     [status]="s"
                     [excerptTerms]="excerptTerms()"

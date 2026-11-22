@@ -10,7 +10,7 @@ import { KnownLanguages } from '../trend-language-filter';
 // i18n language.select.any: Any language
 // i18n language.select.group.current: Chosen
 // i18n language.select.group.yours: Your languages
-// i18n language.select.group.app: Languages Mawkingbird is translated into
+// i18n language.select.group.app: Other languages
 // i18n language.select.more: All languages…
 
 const MORE = '__more__';
