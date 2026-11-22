@@ -3584,13 +3584,23 @@
     },
     {
       "file": "ui/src/app/lite/lite-shell.ts",
-      "disposition": "partial adoption",
-      "nextStep": "Minimal /m/ shell: MbButton (Full app link) and the shared connection chip. Its More menu is a native details/summary disclosure with plain links, the same pattern as the main shell's More menu; adopt the shared menu component when the main shell's does."
+      "disposition": "adopted scope",
+      "nextStep": "Minimal /m/ shell: MbButton (Refresh, Full app) and the shared connection chip. Its nav is a plain row of links using the full app's short names (no icons, no More menu); the nativeButtons findings are mbButton hosts."
     },
     {
       "file": "ui/src/app/lite/lite-status.ts",
       "disposition": "adopted scope",
       "nextStep": "Shared Lite status line (loading, refreshing, saved copy, failure kept): text plus an MbButton link for Try again. The nativeButtons finding is that mbButton host."
+    },
+    {
+      "file": "ui/src/app/lite/lite-bar.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Lite's load-control bar: one dense row of native selects (pictures, updates, text size, line width) and checkboxes (avatars, video and audio, high contrast) plus a details/summary Reading toggle, styled compactly with design tokens. MbControl/MbCheckbox are sized for settings rows; adopt them here once they offer a compact density."
+    },
+    {
+      "file": "ui/src/app/lite/lite-new-pill.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Sticky \"New posts\" pill: a single MbButton (small); the nativeButtons finding is that mbButton host."
     }
   ]
 }

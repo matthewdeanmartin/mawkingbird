@@ -1,4 +1,5 @@
 import { compactContentLinks, CompactLinksPipe } from '../content-links';
+import { MediaPolicy } from '../../platform/network/media-policy';
 import { DataSaver } from '../../platform/network/data-saver';
 import { LinkedText } from '../linked-text';
 import { ReadingPostChanges, reconcileReadingPost } from '../reading-post-changes';
@@ -242,6 +243,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.closed: Closed
 // i18n statusCard.revokeQuotePermission: Revoke quote permission
 // i18n statusCard.revokeQuoteConfirm: Revoke permission for this post to quote your post? The quoted content will no longer be available in this quote.
+// i18n statusCard.playMedia: Play
 // i18n statusCard.showHeldImages: Slow connection: pictures held back. Show them
 // i18n statusCard.viewImage: View image{{description}}
 // i18n statusCard.viewImageNoDescription: View image {{number}} (no description provided)
@@ -800,11 +802,68 @@ export class StatusCard {
   private readonly imagesWanted = computed(
     () => !this.textFocus() && this.prefs.showImages() && !this.prefs.feedReader(),
   );
-  protected imagesVisible = computed(
-    () => this.imagesWanted() && (!this.savingData || this.imagesForced()),
+  private readonly mediaPolicy = inject(MediaPolicy);
+  /**
+   * A screen's media override (Lite's load-control bar), followed live so the
+   * reader's choice applies to the posts already on screen. Without one, the
+   * data-saver snapshot above decides.
+   */
+  protected readonly mediaOverride = this.mediaPolicy.override;
+  protected imagesVisible = computed(() => {
+    if (!this.imagesWanted()) return false;
+    if (this.imagesForced()) return true;
+    const override = this.mediaOverride();
+    if (!override) return !this.savingData;
+    if (override.pictures === 'on') return true;
+    if (override.pictures === 'off') return false;
+    // Tap to load: pictures this tab already fetched cost nothing to show.
+    return (
+      this.pictureUrls().length > 0 &&
+      this.pictureUrls().every((url) => this.mediaPolicy.wasLoaded(url))
+    );
+  });
+  /** Pictures the reader wants but a slow connection or Lite's bar is holding back. */
+  protected imagesHeldBack = computed(
+    () => this.imagesWanted() && !this.imagesVisible() && this.mediaOverride()?.pictures !== 'off',
   );
-  /** Pictures the reader wants but a slow connection is holding back. */
-  protected imagesHeldBack = computed(() => this.imagesWanted() && !this.imagesVisible());
+  /** Author pictures; initials stand in when a screen turned them off. */
+  protected avatarsShown = computed(() => this.mediaOverride()?.avatars !== false);
+  protected readonly previewsForced = signal(false);
+  /**
+   * Inline YouTube players: with a screen override they follow its previews
+   * choice (a video is not a picture); otherwise the images preference, as before.
+   */
+  protected playersShown = computed(() =>
+    this.mediaOverride() ? this.previewsShown() : this.imagesVisible(),
+  );
+  /** Video and audio players; a Play button stands in until pressed when a screen turned them off. */
+  protected previewsShown = computed(
+    () => this.mediaOverride()?.previews !== false || this.previewsForced(),
+  );
+
+  /** The picture URLs this card would load: attachment previews and the link card image. */
+  private readonly pictureUrls = computed(() => {
+    const display = this.display;
+    const urls = display.media_attachments
+      .filter((m) => m.type === 'image' || m.preview_url)
+      .map((m) => m.preview_url || m.url);
+    if (!display.media_attachments.length && display.card?.image) urls.push(display.card.image);
+    return urls;
+  });
+
+  protected notePictureLoaded(url: string | null | undefined): void {
+    this.mediaPolicy.noteLoaded(url);
+  }
+
+  protected showPreviews(event: Event): void {
+    event.stopPropagation();
+    this.previewsForced.set(true);
+  }
+
+  protected initial(account: { display_name?: string; username?: string }): string {
+    const name = (account.display_name || account.username || '?').trim();
+    return [...name][0]?.toUpperCase() ?? '?';
+  }
 
   protected showHeldImages(event: Event): void {
     event.stopPropagation();

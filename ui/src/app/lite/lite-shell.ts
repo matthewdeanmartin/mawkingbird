@@ -1,18 +1,14 @@
-import {
-  Component,
-  DestroyRef,
-  ElementRef,
-  ViewEncapsulation,
-  computed,
-  inject,
-  viewChild,
-} from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, DestroyRef, ViewEncapsulation, computed, effect, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
 import { Auth } from '../platform/session/auth';
 import { ConnectionChip } from '../shell/connection-chip/connection-chip';
 import { LiteMode } from './lite-mode';
+import { LiteBar } from './lite-bar';
+import { LitePrefs } from './lite-prefs';
+import { MediaPolicy } from '../platform/network/media-policy';
+import { OutboxSummary } from '../platform/offline/outbox-summary';
 import { LiteStore } from './lite-store';
 
 // i18n lite.brand: Mawkingbird Lite
@@ -20,22 +16,26 @@ import { LiteStore } from './lite-store';
 // i18n lite.refresh: Refresh
 // i18n lite.refreshing: Loading…
 // i18n lite.nav.label: Lite
-// i18n lite.nav.home: Home
-// i18n lite.nav.notifications: Notifications
-// i18n lite.nav.search: Search
-// i18n lite.nav.write: Write
-// i18n lite.nav.more: More
-// i18n lite.nav.lists: Lists
-// i18n lite.nav.bookmarks: Bookmarks
-// i18n lite.nav.conversations: Direct messages
-// i18n lite.nav.radio: Radio
-// i18n lite.nav.videos: Videos
 // i18n lite.mastodonOnly: Lite works with a signed-in Mastodon account for now. Your other accounts work in the full app.
+
+/** Lite's destinations, labelled with the full app's existing short names. */
+export const LITE_NAV: readonly { path: string; label: string }[] = [
+  { path: '/m/home', label: 'shell.nav.home' },
+  { path: '/m/notifications', label: 'shell.nav.inbox' },
+  { path: '/m/conversations', label: 'shell.nav.chat' },
+  { path: '/m/search', label: 'shell.nav.search' },
+  { path: '/m/write', label: 'shell.menu.write' },
+  { path: '/m/lists', label: 'listDialog.lists' },
+  { path: '/m/bookmarks', label: 'pages.bookmarks.tab.bookmarks' },
+  { path: '/m/radio', label: 'shell.modeNav.mode.radio' },
+  { path: '/m/videos', label: 'shell.nav.videos' },
+];
 
 /**
  * The `/m/` shell (spec/low-bandwidth-offline.md, Sprint 6): no rails, no
  * widgets, no big menus, nothing that polls. Every screen is held in memory
- * for the visit (LiteStore); the top bar's Refresh is the only reload. Every screen inside is a thin
+ * for the visit (LiteStore); the top bar's Refresh is the only reload. Every
+ * screen inside is a thin
  * page around the full app's own building blocks (the status card, the
  * composer, the API client, the offline read cache), so Lite gets their
  * improvements without inheriting the full pages' extra requests.
@@ -45,10 +45,24 @@ import { LiteStore } from './lite-store';
  */
 @Component({
   selector: 'app-lite-shell',
-  imports: [ConnectionChip, MbButton, RouterLink, RouterLinkActive, RouterOutlet, TranslocoPipe],
+  imports: [
+    ConnectionChip,
+    LiteBar,
+    MbButton,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    TranslocoPipe,
+  ],
   encapsulation: ViewEncapsulation.None,
   template: `
-    <div class="lite-shell">
+    @let reading = prefs.value();
+    <div
+      class="lite-shell"
+      [attr.data-text]="reading.textSize"
+      [attr.data-width]="reading.width"
+      [attr.data-contrast]="reading.highContrast ? 'high' : null"
+    >
       <header class="lite-bar">
         <a class="lite-brand" routerLink="/m/home">{{ 'lite.brand' | transloco }}</a>
         <span class="lite-bar-end">
@@ -62,23 +76,21 @@ import { LiteStore } from './lite-store';
         </span>
       </header>
       <nav class="lite-nav" [attr.aria-label]="'lite.nav.label' | transloco">
-        <a routerLink="/m/home" routerLinkActive="active">{{ 'lite.nav.home' | transloco }}</a>
-        <a routerLink="/m/notifications" routerLinkActive="active">{{
-          'lite.nav.notifications' | transloco
-        }}</a>
-        <a routerLink="/m/search" routerLinkActive="active">{{ 'lite.nav.search' | transloco }}</a>
-        <a routerLink="/m/compose" routerLinkActive="active">{{ 'lite.nav.write' | transloco }}</a>
-        <details class="lite-more-menu" #moreMenu>
-          <summary>{{ 'lite.nav.more' | transloco }}</summary>
-          <div class="lite-menu">
-            <a routerLink="/m/lists">{{ 'lite.nav.lists' | transloco }}</a>
-            <a routerLink="/m/bookmarks">{{ 'lite.nav.bookmarks' | transloco }}</a>
-            <a routerLink="/m/conversations">{{ 'lite.nav.conversations' | transloco }}</a>
-            <a routerLink="/m/radio">{{ 'lite.nav.radio' | transloco }}</a>
-            <a routerLink="/m/videos">{{ 'lite.nav.videos' | transloco }}</a>
-          </div>
-        </details>
+        <!-- The full app's own short names and keys (shell.nav.*, chosen to fit
+             its width budget and already translated), so Lite and the full
+             app say the same thing in every language. No icons here, so every
+             destination fits as a word and there is no More menu. -->
+        @for (item of nav; track item.path) {
+          <a [routerLink]="item.path" routerLinkActive="active">{{ item.label | transloco }}</a>
+        }
+        <!-- Shown only while something is waiting to be sent or reviewed. -->
+        @if (outbox.waiting() + outbox.held(); as queued) {
+          <a routerLink="/m/outbox" routerLinkActive="active"
+            >{{ 'outbox.title' | transloco }} ({{ queued }})</a
+          >
+        }
       </nav>
+      <app-lite-bar />
       <main class="lite-main" id="main" tabindex="-1">
         @if (mastodon()) {
           <router-outlet />
@@ -95,6 +107,27 @@ import { LiteStore } from './lite-store';
       margin: 0 auto;
       background: var(--col-bg);
       color: var(--text);
+    }
+    /* Reader controls: all local, no requests. Zoom scales the shared cards too,
+       whose own sizes are fixed in px. */
+    .lite-shell[data-width='narrow'] {
+      max-width: 520px;
+    }
+    .lite-shell[data-width='wide'] {
+      max-width: 820px;
+    }
+    .lite-shell[data-text='s'] .lite-main {
+      zoom: 0.9;
+    }
+    .lite-shell[data-text='l'] .lite-main {
+      zoom: 1.12;
+    }
+    .lite-shell[data-text='xl'] .lite-main {
+      zoom: 1.25;
+    }
+    .lite-shell[data-contrast='high'] {
+      --muted: var(--text);
+      --border: color-mix(in srgb, var(--text) 55%, transparent);
     }
     .lite-bar {
       position: sticky;
@@ -126,8 +159,7 @@ import { LiteStore } from './lite-store';
       border-block-end: 1px solid var(--border);
       font-size: 15px;
     }
-    .lite-nav a,
-    .lite-nav summary {
+    .lite-nav a {
       color: var(--text);
       text-decoration: none;
       cursor: pointer;
@@ -135,23 +167,6 @@ import { LiteStore } from './lite-store';
     .lite-nav a.active {
       font-weight: 700;
       text-decoration: underline;
-    }
-    .lite-more-menu {
-      position: relative;
-    }
-    .lite-menu {
-      position: absolute;
-      inset-inline-end: 0;
-      z-index: 20;
-      display: grid;
-      min-width: 180px;
-      padding: 6px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--col-bg);
-    }
-    .lite-menu a {
-      padding: 8px 10px;
     }
     .lite-shell .lite-title {
       margin: 0;
@@ -187,21 +202,22 @@ import { LiteStore } from './lite-store';
 })
 export class LiteShell {
   private readonly lite = inject(LiteMode);
+  protected readonly prefs = inject(LitePrefs);
+  protected readonly outbox = inject(OutboxSummary);
+  private readonly mediaPolicy = inject(MediaPolicy);
+
+  constructor() {
+    // While Lite is open, the shared post cards follow its load-control bar.
+    effect(() => this.mediaPolicy.override.set(this.prefs.media()));
+    inject(DestroyRef).onDestroy(() => this.mediaPolicy.override.set(null));
+  }
+
   /** Screens are held for the visit; only this button reloads the one on display. */
   protected readonly store = inject(LiteStore);
   private readonly router = inject(Router);
   private readonly auth = inject(Auth);
   protected readonly mastodon = computed(() => this.auth.kind() === 'mastodon');
-
-  private readonly moreMenu = viewChild<ElementRef<HTMLDetailsElement>>('moreMenu');
-
-  constructor() {
-    // Close the More menu once one of its links has taken the reader somewhere.
-    const sub = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) this.moreMenu()?.nativeElement.removeAttribute('open');
-    });
-    inject(DestroyRef).onDestroy(() => sub.unsubscribe());
-  }
+  protected readonly nav = LITE_NAV;
 
   protected leave(): void {
     this.lite.leave(this.router.url);

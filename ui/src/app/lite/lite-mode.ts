@@ -52,6 +52,10 @@ export function liteUrlFor(url: string): string | null {
       return seg.length === 1 ? '/m/radio' : null;
     case 'videos':
       return seg.length === 1 || second === 'queue' ? '/m/videos' : null;
+    case 'write':
+      return seg.length === 1 ? `/m/write${q}` : null;
+    case 'outbox':
+      return seg.length === 1 ? '/m/outbox' : null;
     default:
       return null;
   }
@@ -66,8 +70,9 @@ export function fullUrlFor(liteUrl: string): string {
   const [, first, second] = seg;
   switch (first) {
     case undefined:
-    case 'compose':
       return '/home';
+    case 'compose':
+      return '/write';
     case 'lists':
       return second ? `/lists/${second}` : '/feeds/lists';
     case 'videos':

@@ -88,11 +88,7 @@ export class SettingsWellness {
   protected words = inject(Terminology).words;
 
   protected readonly presets = WELLNESS_PRESETS;
-  /**
-   * Switches whose behaviour ships in a later sprint. They are listed so the
-   * page reads as the whole plan, but disabled so nobody turns on a switch
-   * that does nothing yet. Remove a key here when its sprint lands.
-   */
+  /** A key here keeps its switch visible and disabled. */
   private readonly pending: ReadonlySet<WellnessKey> = new Set<WellnessKey>([]);
 
   protected readonly rows = computed(() => {

@@ -142,8 +142,6 @@ describe('ProfileFeeds', () => {
   });
 
   it('keeps the folders a feed sat under', async () => {
-    // Carried even though today's UI flattens them, so enabling folders later is
-    // a UI change rather than a data migration.
     collections.items = [
       {
         id: feedId('https://a.example/feed') ?? '',

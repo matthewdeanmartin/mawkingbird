@@ -8,7 +8,6 @@ import { VideoPlayerHost } from '../reading/video-player/video-player-host';
 import { VideoSource, youtubeSource } from '../reading/video-player/media-source';
 import { QueuedVideo, WatchQueue } from '../reading/videos/watch-queue';
 
-// i18n lite.radio: Radio
 // i18n lite.radio.intro: Your saved playlists. To build or change playlists, use Radio in the full app.
 // i18n lite.radio.none: You have no saved playlists yet.
 // i18n lite.radio.tracks: {{count}} tracks
@@ -18,7 +17,6 @@ import { QueuedVideo, WatchQueue } from '../reading/videos/watch-queue';
 // i18n lite.radio.resume: Play
 // i18n lite.radio.next: Next
 // i18n lite.radio.stop: Stop
-// i18n lite.videos: Videos
 // i18n lite.videos.intro: Your watch queue. Videos play only when you press Play.
 // i18n lite.videos.none: Your watch queue is empty.
 // i18n lite.videos.play: Play
@@ -33,7 +31,7 @@ import { QueuedVideo, WatchQueue } from '../reading/videos/watch-queue';
 @Component({
   selector: 'app-lite-radio',
   imports: [MbButton, TranslocoPipe],
-  template: `<h1 class="lite-title">{{ 'lite.radio' | transloco }}</h1>
+  template: `<h1 class="lite-title">{{ 'shell.modeNav.mode.radio' | transloco }}</h1>
     <p class="muted lite-intro">{{ 'lite.radio.intro' | transloco }}</p>
     @if (player.current(); as track) {
       <section class="now" aria-live="polite">
@@ -119,7 +117,7 @@ export class LiteRadio {
 @Component({
   selector: 'app-lite-videos',
   imports: [MbButton, RouterLink, TranslocoPipe, VideoPlayerHost],
-  template: `<h1 class="lite-title">{{ 'lite.videos' | transloco }}</h1>
+  template: `<h1 class="lite-title">{{ 'shell.nav.videos' | transloco }}</h1>
     <p class="muted lite-intro">{{ 'lite.videos.intro' | transloco }}</p>
     @if (playing(); as source) {
       <div class="player">

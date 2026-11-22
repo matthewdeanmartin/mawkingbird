@@ -13,7 +13,9 @@ import { MbButton } from '../design-system/button/button';
 import { FilterContext, Status } from '../platform/api/models';
 import { StatusCard } from '../posts/status-card/status-card';
 import { LiteStatus } from './lite-status';
-import { LiteStore, PageLoader, PagedState, byLastId } from './lite-store';
+import { LiteNewPill } from './lite-new-pill';
+import { keepPlace } from './lite-place';
+import { LiteStore, PageLoader, PagedState, STALE_MS, byLastId } from './lite-store';
 
 // i18n lite.feed.more: Load more
 // i18n lite.feed.end: That's everything.
@@ -29,13 +31,14 @@ export function statusPages(load: LitePageLoader): PageLoader<Status> {
 
 /**
  * The one list Lite uses for every timeline. What it has loaded is held in
- * {@link LiteStore} for the whole visit, so coming back is instant and nothing
- * reloads until the reader presses Refresh. One request per page, no
+ * {@link LiteStore} for the whole visit, so coming back is instant; it is
+ * checked again only when out of date (if the reader allows) or on Refresh,
+ * and newer posts never move the one being read (see `keepPlace`). One request per page, no
  * prefetching, no infinite scroll, and the shared status card.
  */
 @Component({
   selector: 'app-lite-feed',
-  imports: [LiteStatus, MbButton, StatusCard, TranslocoPipe],
+  imports: [LiteNewPill, LiteStatus, MbButton, StatusCard, TranslocoPipe],
   template: `
     @let s = state();
     <app-lite-status
@@ -47,13 +50,18 @@ export function statusPages(load: LitePageLoader): PageLoader<Status> {
       [loadedAt]="s.loadedAt"
       (retry)="retry()"
     />
+    <app-lite-new-pill [count]="s.incoming.length" (show)="place.showIncoming()" />
     @for (status of s.items; track status.id) {
       <app-status-card
+        [attr.data-lite-item]="status.id"
         [status]="status"
         [filterContext]="filterContext()"
         (deleted)="drop($event)"
         (changed)="replace($event)"
       />
+      @if (status.id === s.gapAfter) {
+        <p class="lite-pad lite-gap">{{ 'lite.feed.gap' | transloco }}</p>
+      }
     } @empty {
       @if (!s.loading && !s.refreshing && !s.failed) {
         <p class="lite-pad">{{ 'lite.feed.empty' | transloco }}</p>
@@ -80,6 +88,13 @@ export function statusPages(load: LitePageLoader): PageLoader<Status> {
       padding: 12px 16px;
       color: var(--muted);
     }
+    .lite-gap {
+      border-block: 1px dashed var(--border);
+      font-size: 14px;
+    }
+    [data-lite-item] {
+      scroll-margin-top: 56px;
+    }
     .more {
       display: block;
       margin: 12px auto 24px;
@@ -93,16 +108,24 @@ export class LiteFeed {
   /** The endpoint path whose saved first page can be shown at once, if any. */
   readonly savedPath = input<string>();
   readonly filterContext = input<FilterContext>('home');
+  /** How old the held list may get before "when out of date" checks it again. */
+  readonly staleMs = input<number>(STALE_MS.feed);
 
   private readonly store = inject(LiteStore);
   private readonly pages = computed(() => statusPages(this.load()));
   /** The held list's signal; a new key (another list or profile) picks another. */
   private readonly held = computed<WritableSignal<PagedState<Status>>>(() =>
-    this.store.pagedState(this.key(), this.pages(), this.savedPath()),
+    this.store.pagedState(this.key(), this.pages(), this.savedPath(), this.staleMs()),
   );
   protected readonly state = computed(() => this.held()());
+  protected readonly place = keepPlace(this.held);
 
   constructor() {
+    // Coming back to a held list: check it once if it is out of date.
+    effect(() => {
+      const held = this.held();
+      untracked(() => this.store.checkIfStale(held, this.pages(), this.staleMs()));
+    });
     // Refresh reloads only the list on screen.
     let seen = this.store.refreshTick();
     effect(() => {

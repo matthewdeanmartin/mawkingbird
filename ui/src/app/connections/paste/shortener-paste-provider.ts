@@ -39,8 +39,6 @@ function slugOf(shortUrl: string): string {
  * posted that way is gone from your control the moment it exists. Routed
  * through a shortener you have connected, the same message becomes a link on
  * your own account — one you can find on the Links page, retitle, and revoke.
- * For anyone using this feature as their posting mechanism rather than as a
- * novelty, that is the difference between publishing and littering.
  *
  * It appears in the composer's provider list only when a shortener is connected
  * *and* usable, because there is nothing to offer otherwise. TinyURL stays in

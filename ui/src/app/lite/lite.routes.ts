@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
+import { featureFlagGuard } from '../platform/build/feature-flag.guard';
 
 /**
  * The `/m/` screens. Each is a thin page in `lite-pages.ts` (sharing one chunk
- * with the status card), except the composer and the media players, which are
- * heavier and load only when opened. `npm run bundle:report -- --check` holds
+ * with the status card), except Write (the full app's blog-style writer) and
+ * the media players, which are heavier and load only when opened. `npm run bundle:report -- --check` holds
  * these routes to the Lite budget (scripts/report-bundle.mjs).
  */
 export const LITE_ROUTES: Routes = [
@@ -64,9 +65,20 @@ export const LITE_ROUTES: Routes = [
     loadComponent: () => import('./lite-pages').then((m) => m.LiteConversations),
   },
   {
-    path: 'compose',
+    // The full app's blog-style writer, unchanged; the quick composer is on Lite Home.
+    path: 'write',
     title: 'Write',
-    loadComponent: () => import('./lite-compose').then((m) => m.LiteCompose),
+    canDeactivate: [(page: { canLeave: () => boolean | Promise<boolean> }) => page.canLeave()],
+    canActivate: [featureFlagGuard],
+    data: { featureFlag: 'write' },
+    loadComponent: () => import('../publishing/write/write-page').then((m) => m.WritePage),
+  },
+  { path: 'compose', redirectTo: 'write' },
+  {
+    // Posts written offline, shown with Lite's chrome (the full app's page, unchanged).
+    path: 'outbox',
+    title: 'Outbox',
+    loadComponent: () => import('../publishing/outbox/outbox-page').then((m) => m.OutboxPage),
   },
   {
     path: 'radio',

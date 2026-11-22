@@ -1,4 +1,5 @@
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
+import { MediaOverride, MediaPolicy } from '../../platform/network/media-policy';
 import { DataSaver } from '../../platform/network/data-saver';
 import { forgetLoadedDictionaries } from '../learn/dictionary-registry';
 import { BlueskyFeeds } from '../../connections/bluesky/bluesky-feeds';
@@ -3037,6 +3038,71 @@ describe('StatusCard', () => {
   });
 
   // ------------------------------------------------------------ images-off mode
+
+  describe('with a screen media override (Lite)', () => {
+    const lite = (over: Partial<MediaOverride> = {}) =>
+      TestBed.inject(MediaPolicy).override.set({
+        pictures: 'tap',
+        avatars: true,
+        previews: false,
+        ...over,
+      });
+    afterEach(() => TestBed.inject(MediaPolicy).override.set(null));
+
+    it('tap to load holds pictures back until asked, even on a good connection', () => {
+      lite();
+      const f = setUp(makeStatus({ media_attachments: [makeMedia('a')] }));
+      const el = f.nativeElement as HTMLElement;
+      expect(el.querySelectorAll('.media-thumb')).toHaveLength(0);
+      expect(el.querySelectorAll('.media-alt-row')).toHaveLength(1);
+      expect(el.textContent).toContain('pictures held back');
+    });
+
+    it('tap to load shows pictures this tab already loaded', () => {
+      TestBed.inject(MediaPolicy).noteLoaded('https://cdn.example/a-small.jpg');
+      lite();
+      const f = setUp(makeStatus({ media_attachments: [makeMedia('a')] }));
+      expect((f.nativeElement as HTMLElement).querySelectorAll('.media-thumb')).toHaveLength(1);
+    });
+
+    it('off shows descriptions with no button; on loads everything; changes apply live', () => {
+      lite({ pictures: 'off' });
+      const f = setUp(makeStatus({ media_attachments: [makeMedia('a')] }));
+      const el = f.nativeElement as HTMLElement;
+      expect(el.querySelectorAll('.media-alt-row')).toHaveLength(1);
+      expect(el.textContent).not.toContain('pictures held back');
+      lite({ pictures: 'on' });
+      f.detectChanges();
+      expect(el.querySelectorAll('.media-thumb')).toHaveLength(1);
+    });
+
+    it('shows initials instead of avatar images when avatars are off', () => {
+      lite({ avatars: false });
+      const f = setUp();
+      const el = f.nativeElement as HTMLElement;
+      expect(el.querySelector('img.avatar')).toBeNull();
+      expect(el.querySelector('span.avatar')?.textContent?.trim()).toMatch(/^\S$/);
+    });
+
+    it('keeps video players behind a Play button until pressed', () => {
+      lite({ pictures: 'on' });
+      const f = setUp(
+        makeStatus({
+          media_attachments: [
+            { ...makeMedia('clip'), type: 'video', url: 'https://cdn.example/clip.mp4' },
+          ],
+        }),
+      );
+      const el = f.nativeElement as HTMLElement;
+      expect(el.querySelector('app-video-player')).toBeNull();
+      const play = [...el.querySelectorAll('button')].find((b) =>
+        b.textContent!.includes('Play'),
+      ) as HTMLButtonElement;
+      play.click();
+      f.detectChanges();
+      expect(el.querySelector('app-video-player')).not.toBeNull();
+    });
+  });
 
   it('holds pictures back on cards created while saving data, until the reader asks', () => {
     TestBed.inject(DataSaver).setMode('always');

@@ -7,6 +7,23 @@
 
 <div class="spage-body">
   <div class="ssection">
+    <h2>{{ 'settings.writing.offline' | transloco }}</h2>
+    <div class="srow">
+      <span class="slabel">{{ 'outbox.sendMode' | transloco }}</span>
+      <div class="scontrol">
+        <select
+          [ngModel]="outboxSummary.sendMode()"
+          (ngModelChange)="outboxSummary.setSendMode($event)"
+          name="outbox_send_mode"
+        >
+          <option value="auto">{{ 'outbox.sendMode.auto' | transloco }}</option>
+          <option value="review">{{ 'outbox.sendMode.review' | transloco }}</option>
+        </select>
+        <span class="hint">{{ 'settings.writing.offline.hint' | transloco }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="ssection">
     <h2>{{ 'settings.writing.whereStarts' | transloco }}</h2>
     <div class="srow">
       <span class="slabel">{{ 'settings.writing.onHome' | transloco }}</span>

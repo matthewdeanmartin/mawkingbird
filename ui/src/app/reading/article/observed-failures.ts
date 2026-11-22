@@ -55,11 +55,8 @@ export const OBSERVED_FAILURES_KEY_BASE = 'mockingbird_article_observed_failures
 export const OBSERVED_HOSTS_MAX = 200;
 
 /**
- * Failures before the warning appears.
- *
- * Three, not one: sites have bad days, and a single refusal is at least as
- * likely to be the moment as the publisher. Three consecutive failures with
- * nothing to set against them is a pattern.
+ * Count failures attributable to this host since its last successful or
+ * partial read. Intervening network errors leave the count unchanged.
  */
 export const FAILURES_BEFORE_WARNING = 3;
 

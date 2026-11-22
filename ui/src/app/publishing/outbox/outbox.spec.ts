@@ -119,6 +119,15 @@ describe('Outbox', () => {
     expect(TestBed.inject(OutboxSummary).held()).toBe(2);
   });
 
+  it('holds everything for review when the reader chose not to send on reconnect', async () => {
+    TestBed.inject(OutboxSummary).setSendMode('review');
+    seed(entry({ parts: ['wait'] }));
+    await TestBed.inject(Outbox).flush();
+    httpMock.expectNone('/api/v1/statuses');
+    expect(readOutbox()[0].state).toBe('held');
+    expect(TestBed.inject(OutboxSummary).held()).toBe(1);
+  });
+
   it("never sends another account's post", async () => {
     seed(entry({ scope: scopeSuffixForToken('tok-someone-else') }));
     await TestBed.inject(Outbox).flush();

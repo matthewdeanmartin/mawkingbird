@@ -3240,3 +3240,21 @@ MbButton (outline, small). lite-feed.ts and lite-pages.ts lose their per-page
 MbNotice failure blocks to the shared status line. connection-page.html's three
 header links become a plain list of links instead of MbButton link variants, so
 they no longer read as one run-on link. No shared design widget changed.
+
+Lite nav and Write (2026-11-21): reviewed the regenerated inventory: 718
+candidate files. lite-shell.ts drops its details/summary More menu: every
+destination is now a plain link labelled with the full app's short names, so
+its reconciliation entry moves to adopted scope. Lite Write is the full app's
+WritePage (no new controls); the deleted lite-compose.ts had no controls. No
+shared design widget changed.
+
+Lite load control and saved-first reading (2026-11-21, spec/lite-next-hour.md):
+reviewed the regenerated inventory: 720 candidate files. New candidates:
+lite/lite-bar.ts (the load-control bar: native selects and checkboxes in one
+compact row, partial adoption pending a compact MbControl/MbCheckbox density)
+and lite/lite-new-pill.ts (one MbButton). Changed findings: status-card.html
+gains four MbButton Play buttons that stand in for video/YouTube/external
+players when Lite's bar turns previews off, plus initials spans for avatars (not
+controls); outbox-page.ts and settings-writing.html each gain one native select
+for "When the connection comes back", matching their neighbouring selects. No
+shared design widget changed.

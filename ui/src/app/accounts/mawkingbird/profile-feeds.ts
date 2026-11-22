@@ -16,18 +16,14 @@ import type { CollectionResult } from './profile-collections';
  * rewritten on every write (see `mawkingbird_profile/docs/01-data-model.md`), so
  * churn is the cost that matters.
  *
- * `folders` is carried even though today's UI flattens them. The OPML parser
- * already reads folder paths, so keeping them costs nothing now and means
- * enabling folders later is a UI change rather than a data migration.
+ * `folders` preserves the OPML path from outermost to innermost. The RSS
+ * reader groups subscriptions by folder.
  *
- * ## A decided rule: a secret in a URL is not a secret
+ * ## Private feed URLs
  *
- * Private feed URLs (Feedbin, Miniflux, Google Alerts) routinely embed an API
- * key in the URL itself. Those URLs are stored **as-is** and are not treated as
- * credentials, and the user is not warned about it. Protecting a key pasted into
- * a URL field would mean encrypting the subscription list, which is not worth
- * what it buys — and real secret storage is separate future work. The app does
- * not lecture people about what they paste.
+ * Sync sends the complete URL to the Plus feeds collection. If the URL
+ * contains an access token, anyone who can read the synced URL may be able
+ * to read the feed. These writes bypass the credential vault.
  *
  * ## Not synced: `useProxy`, `enabled`
  *

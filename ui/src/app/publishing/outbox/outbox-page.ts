@@ -7,6 +7,7 @@ import { MbNotice } from '../../design-system/notice/notice';
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { ConnectionMeter } from '../../platform/network/connection-meter';
 import { Outbox } from './outbox';
+import { OutboxSummary } from '../../platform/offline/outbox-summary';
 
 // i18n outbox.title: Outbox
 // i18n outbox.intro: Posts you wrote without a connection. They post by themselves when you're back online, from this account only. Anything older than half an hour waits for you to send it.
@@ -23,6 +24,10 @@ import { Outbox } from './outbox';
 // i18n outbox.delete: Delete
 // i18n outbox.editMediaNote: Attachments aren't kept in drafts; add them again when you post.
 // i18n outbox.draftFailed: Couldn't save it as a draft. It is still here.
+// i18n outbox.sendMode: When the connection comes back
+// i18n outbox.sendMode.auto: Send queued posts automatically
+// i18n outbox.sendMode.review: Wait for me to review them
+// i18n outbox.reviewNote: Waiting for you to send it.
 // i18n outbox.offlineNow: You're offline. These will be sent when the connection is back.
 
 /** The queued posts of the active account (spec/low-bandwidth-offline.md, Sprint 5). */
@@ -37,6 +42,13 @@ import { Outbox } from './outbox';
       >
         <a mbButton variant="link" routerLink="/drafts">{{ 'outbox.drafts' | transloco }}</a>
       </mb-page-header>
+      <label class="send-mode">
+        {{ 'outbox.sendMode' | transloco }}
+        <select [value]="summary.sendMode()" (change)="setSendMode($event)">
+          <option value="auto">{{ 'outbox.sendMode.auto' | transloco }}</option>
+          <option value="review">{{ 'outbox.sendMode.review' | transloco }}</option>
+        </select>
+      </label>
       @if (meter.verdict() === 'offline' && outbox.entries().length) {
         <mb-notice announcement="status">{{ 'outbox.offlineNow' | transloco }}</mb-notice>
       }
@@ -108,6 +120,13 @@ import { Outbox } from './outbox';
       gap: 16px;
       padding: 16px;
     }
+    .send-mode {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
     .entry {
       display: grid;
       gap: 6px;
@@ -150,6 +169,13 @@ import { Outbox } from './outbox';
 export class OutboxPage {
   protected readonly outbox = inject(Outbox);
   protected readonly meter = inject(ConnectionMeter);
+  protected readonly summary = inject(OutboxSummary);
+
+  protected setSendMode(event: Event): void {
+    const mode = (event.target as HTMLSelectElement).value === 'review' ? 'review' : 'auto';
+    this.summary.setSendMode(mode);
+    if (mode === 'auto') void this.outbox.flush();
+  }
   private readonly router = inject(Router);
   private readonly transloco = inject(TranslocoService);
   protected readonly error = signal<string | null>(null);

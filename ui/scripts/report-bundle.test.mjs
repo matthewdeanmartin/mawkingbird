@@ -95,3 +95,29 @@ test('measures what Lite loads beyond startup and flags full pages it pulls in',
   assert.deepEqual(lite.violations, ['src/app/feeds/home/home.ts']);
   assert.ok(LITE_BUDGET_BYTES > 0);
 });
+
+test('counts the screens Lite routes load lazily from outside src/app/lite', async () => {
+  const { summarizeLite } = await import('./report-bundle.mjs');
+  const stats = {
+    outputs: {
+      'main.js': {
+        entryPoint: 'src/main.ts',
+        bytes: 100,
+        inputs: { 'src/main.ts': {} },
+        imports: [{ path: 'routes.js', kind: 'dynamic-import' }],
+      },
+      'routes.js': {
+        bytes: 10,
+        inputs: { 'src/app/lite/lite.routes.ts': {} },
+        imports: [{ path: 'write.js', kind: 'dynamic-import' }],
+      },
+      'write.js': {
+        bytes: 70,
+        inputs: { 'src/app/publishing/write/write-page.ts': {} },
+        imports: [{ path: 'editor.js', kind: 'import-statement' }],
+      },
+      'editor.js': { bytes: 20, inputs: { 'src/app/publishing/editor.ts': {} }, imports: [] },
+    },
+  };
+  assert.equal(summarizeLite(stats).bytes, 10 + 70 + 20);
+});

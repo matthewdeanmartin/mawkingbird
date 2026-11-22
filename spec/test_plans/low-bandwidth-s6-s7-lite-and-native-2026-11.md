@@ -12,7 +12,10 @@ Build: `main` after low-bandwidth Sprints 6–7 (2026-11-21). Roadmap:
 ## Lite basics (phone)
 
 - [ ] Open `/m/` (or Settings → feed → **Open Lite**). A slim top bar
-      ("Mawkingbird Lite", Full app) and Home, Notifications, Search, Write, More.
+      ("Mawkingbird Lite", Refresh, Full app) and the full app's names as
+      words: Home, Inbox, Chat, Search, Write, Lists, Bookmarks, Radio, Videos.
+      With the interface set to Bahasa Indonesia they read Beranda, Kotak
+      masuk, Obrolan…
 - [ ] Home shows 20 posts and a **Load more** button; nothing else loads while
       you read. Posts look and act like the full app (boost, favourite, reply on
       the card, content warnings).
@@ -23,11 +26,14 @@ Build: `main` after low-bandwidth Sprints 6–7 (2026-11-21). Roadmap:
 - [ ] Tap a name: the Lite profile shows the person's posts with Load more.
 - [ ] Search: people and hashtags link into Lite; posts show as cards. The
       query stays in the address (`/m/search?q=…`).
-- [ ] More → Lists, a list, Bookmarks and Direct messages each load.
-- [ ] Write: post something; you land back on Lite Home.
-- [ ] More → Radio: your saved playlists, Play, Pause, Next and Stop work. No
+- [ ] Lists, a list, Bookmarks and Chat each load.
+- [ ] Lite Home has the quick composer at the top; a post written there shows
+      at the top of Home at once.
+- [ ] Write opens the full blog-style writer (`/m/write`); leaving with unsaved
+      text asks first.
+- [ ] Radio: your saved playlists, Play, Pause, Next and Stop work. No
       playlist builder.
-- [ ] More → Videos: your watch queue; a YouTube item plays inline on Play; an
+- [ ] Videos: your watch queue; a YouTube item plays inline on Play; an
       item from a post opens that post in Lite.
 
 ## Held screens and Refresh (slowest throttle)

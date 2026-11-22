@@ -55,10 +55,9 @@ export class SetupState {
   private serverLoaded = false;
 
   /**
-   * The server answered 403 to `verify_credentials`: the account exists but
-   * can't act yet (approval or email confirmation pending). Believed signal
-   * only; confirm against the canary findings in the spec. Steps that would
-   * write to the server save locally instead (the intro goes to Drafts).
+   * Setup treats a Mastodon verification 403 as pending. The status alone
+   * does not identify the reason. While pending, the intro step offers to
+   * save a draft. Profile and discoverability edits still use server writes.
    */
   readonly pending = signal(false);
 

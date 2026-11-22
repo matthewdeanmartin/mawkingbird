@@ -11,6 +11,7 @@ import {
   readOutbox,
 } from '../../platform/offline/outbox-summary';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
+import { TranslocoService } from '@jsverse/transloco';
 import { Drafts } from '../drafts';
 
 /**
@@ -57,6 +58,7 @@ export class Outbox {
   private readonly meter = inject(ConnectionMeter);
   private readonly summary = inject(OutboxSummary);
   private readonly drafts = inject(Drafts);
+  private readonly transloco = inject(TranslocoService);
 
   /** The active account's entries, newest first. */
   readonly entries = signal<OutboxEntry[]>(this.mine());
@@ -89,6 +91,11 @@ export class Outbox {
     try {
       for (const entry of this.mine()) {
         if (entry.state !== 'waiting') continue;
+        if (this.summary.sendMode() === 'review') {
+          // The reader chose to review queued posts before they go out.
+          this.update(entry.id, { state: 'held', note: this.reviewNote() });
+          continue;
+        }
         if (outboxDecision(entry, Date.now()) === 'hold') {
           this.update(entry.id, {
             state: 'held',
@@ -176,6 +183,10 @@ export class Outbox {
     } finally {
       this.sending.set(false);
     }
+  }
+
+  private reviewNote(): string {
+    return this.transloco.translate('outbox.reviewNote');
   }
 
   private mine(): OutboxEntry[] {

@@ -5,13 +5,14 @@ import {
   computed,
   effect,
   inject,
+  signal,
   untracked,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Observable, catchError, forkJoin, map, of } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { parseAccountRoute } from '../accounts/account-route';
 import { MbButton } from '../design-system/button/button';
 import { Api } from '../platform/api/api';
@@ -24,21 +25,19 @@ import {
   UserList,
 } from '../platform/api/models';
 import { StatusCard } from '../posts/status-card/status-card';
-import { LiteFeed, LitePageLoader } from './lite-feed';
+import { Compose } from '../publishing/compose/compose';
+import { LiteFeed, LitePageLoader, statusPages } from './lite-feed';
+import { LiteNewPill } from './lite-new-pill';
+import { keepPlace } from './lite-place';
 import { LiteStatus } from './lite-status';
-import { LiteStore, PageLoader, ValueState, byLastId } from './lite-store';
+import { LiteStore, PageLoader, STALE_MS, ValueOptions, ValueState, byLastId } from './lite-store';
 
-// i18n lite.home: Home
-// i18n lite.notifications: Notifications
-// i18n lite.bookmarks: Bookmarks
-// i18n lite.lists: Lists
 // i18n lite.noLists: You have no lists.
-// i18n lite.conversations: Direct messages
-// i18n lite.search: Search
 // i18n lite.searchLabel: Search posts, people and hashtags
 // i18n lite.searchButton: Search
 // i18n lite.people: People
 // i18n lite.hashtags: Hashtags
+// i18n lite.home.posted: Posted.
 // i18n lite.posts: Posts
 // i18n lite.noResults: No results.
 // i18n lite.thread: Thread
@@ -54,6 +53,10 @@ import { LiteStore, PageLoader, ValueState, byLastId } from './lite-store';
 // i18n lite.notification.other: {{name}}: {{type}}
 
 /**
+ * Page titles reuse the full app's short names (shell.nav.*, listDialog.lists,
+ * pages.bookmarks.tab.bookmarks) so a screen is called the same thing in its
+ * Lite nav link, its heading and the full app, in every language.
+ *
  * Lite pages: one request per view, the shared status card, and everything
  * held in {@link LiteStore} for the visit — coming back to a screen is instant
  * and only the Refresh button reloads it.
@@ -89,11 +92,24 @@ function onRefresh(reload: () => void): void {
 function heldValue<T>(
   key: Signal<string>,
   fetch: (key: string) => Observable<T>,
+  options: (key: string) => ValueOptions<T> = () => ({}),
 ): Signal<WritableSignal<ValueState<T>>> {
   const store = inject(LiteStore);
   const held = computed(() => {
     const k = key();
-    return store.valueState(k, () => fetch(k));
+    return store.valueState(
+      k,
+      () => fetch(k),
+      untracked(() => options(k)),
+    );
+  });
+  // Coming back to a held screen: check it once if it is out of date.
+  effect(() => {
+    const k = key();
+    const state = held();
+    untracked(() =>
+      store.checkValueIfStale(state, () => fetch(k), options(k).staleMs ?? STALE_MS.feed),
+    );
   });
   onRefresh(() => {
     const k = key();
@@ -104,19 +120,53 @@ function heldValue<T>(
 
 @Component({
   selector: 'app-lite-home',
-  imports: [LiteFeed, TranslocoPipe],
-  template: `<h1 class="lite-title">{{ 'lite.home' | transloco }}</h1>
+  imports: [Compose, LiteFeed, TranslocoPipe],
+  template: `<h1 class="lite-title">{{ 'shell.nav.home' | transloco }}</h1>
+    <!-- The quick composer, as on the full app's Home; Write is the full writer. -->
+    <div class="lite-quick-compose">
+      <app-compose [compact]="true" draftContext="lite-home" (posted)="posted($event)" />
+      <!-- Sent, queued or still a draft must be obvious after a shaky send:
+           queued posts get compose's own Outbox message and the nav count. -->
+      @if (justPosted()) {
+        <p class="lite-posted" role="status">{{ 'lite.home.posted' | transloco }}</p>
+      }
+    </div>
     <app-lite-feed key="home" [load]="load" savedPath="/api/v1/timelines/home" />`,
+  styles: `
+    .lite-quick-compose {
+      padding: 0 16px 12px;
+      border-block-end: 1px solid var(--border);
+    }
+    .lite-posted {
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+  `,
 })
 export class LiteHome {
   private readonly api = inject(Api);
+  private readonly store = inject(LiteStore);
   protected readonly load: LitePageLoader = (maxId) => this.api.homeTimeline(maxId, PAGE);
+
+  protected readonly justPosted = signal(false);
+  private postedTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Show the reader's own post at the top of the held Home at once, and say it went out. */
+  protected posted(status: Status): void {
+    this.justPosted.set(true);
+    if (this.postedTimer) clearTimeout(this.postedTimer);
+    this.postedTimer = setTimeout(() => this.justPosted.set(false), 6_000);
+    this.store
+      .pagedState('home', statusPages(this.load), '/api/v1/timelines/home')
+      .update((s) => ({ ...s, items: [status, ...s.items.filter((x) => x.id !== status.id)] }));
+  }
 }
 
 @Component({
   selector: 'app-lite-bookmarks',
   imports: [LiteFeed, TranslocoPipe],
-  template: `<h1 class="lite-title">{{ 'lite.bookmarks' | transloco }}</h1>
+  template: `<h1 class="lite-title">{{ 'pages.bookmarks.tab.bookmarks' | transloco }}</h1>
     <app-lite-feed key="bookmarks" [load]="load" savedPath="/api/v1/bookmarks" />`,
 })
 export class LiteBookmarks {
@@ -165,7 +215,7 @@ export class LiteListTimeline {
 @Component({
   selector: 'app-lite-lists',
   imports: [LiteStatus, RouterLink, TranslocoPipe],
-  template: `<h1 class="lite-title">{{ 'lite.lists' | transloco }}</h1>
+  template: `<h1 class="lite-title">{{ 'listDialog.lists' | transloco }}</h1>
     @let s = lists()();
     <app-lite-status
       [loading]="s.loading"
@@ -205,8 +255,8 @@ export class LiteLists {
  */
 @Component({
   selector: 'app-lite-notifications',
-  imports: [LiteStatus, MbButton, RouterLink, StatusCard, TranslocoPipe],
-  template: `<h1 class="lite-title">{{ 'lite.notifications' | transloco }}</h1>
+  imports: [LiteNewPill, LiteStatus, MbButton, RouterLink, StatusCard, TranslocoPipe],
+  template: `<h1 class="lite-title">{{ 'shell.nav.inbox' | transloco }}</h1>
     @let s = held();
     <app-lite-status
       [loading]="s.loading"
@@ -217,8 +267,9 @@ export class LiteLists {
       [loadedAt]="s.loadedAt"
       (retry)="retry()"
     />
+    <app-lite-new-pill [count]="s.incoming.length" (show)="place.showIncoming()" />
     @for (n of s.items; track n.id) {
-      <section class="lite-notification">
+      <section class="lite-notification" [attr.data-lite-item]="n.id">
         @if (n.type !== 'mention' && n.type !== 'status') {
           <p class="line">
             <a [routerLink]="['/m/accounts', n.account.id]">{{
@@ -262,9 +313,12 @@ export class LiteNotifications {
     '/api/v1/notifications',
   );
   protected readonly held = computed(() => this.state());
+  protected readonly place = keepPlace(computed(() => this.state));
 
   constructor() {
     onRefresh(() => this.store.reload(this.state, this.loader));
+    // Coming back: check once if it is out of date.
+    queueMicrotask(() => this.store.checkIfStale(this.state, this.loader, STALE_MS.feed));
   }
 
   protected more(): void {
@@ -286,36 +340,37 @@ export class LiteNotifications {
   }
 }
 
-interface ThreadView {
-  focus: Status;
-  context: Context;
-}
-
-/** A post with its conversation: two requests, no reply tree machinery. */
+/**
+ * A post with its conversation. The post itself shows at once when the phone
+ * has it (from the feed it was tapped in, or saved on disk); the replies load
+ * separately, so a slow context request never hides text already on screen.
+ */
 @Component({
   selector: 'app-lite-thread',
   imports: [LiteStatus, StatusCard, TranslocoPipe],
   template: `<h1 class="lite-title">{{ 'lite.thread' | transloco }}</h1>
-    @let s = thread()();
+    @let f = focus()();
+    @let c = context()();
     <app-lite-status
-      [loading]="s.loading"
-      [refreshing]="s.loading && !!s.value"
-      [failed]="s.failed"
-      [hasContent]="!!s.value"
-      [loadedAt]="s.loadedAt"
+      [loading]="f.loading && !f.value"
+      [refreshing]="(f.loading || c.loading) && !!f.value"
+      [failed]="f.failed && !f.value"
+      [fromSaved]="f.fromSaved"
+      [hasContent]="!!f.value"
+      [loadedAt]="f.loadedAt"
       (retry)="retry()"
     />
-    @if (s.value; as view) {
-      @for (p of view.context.ancestors; track p.id) {
+    @if (f.value; as post) {
+      @for (p of c.value?.ancestors ?? []; track p.id) {
         <app-status-card [status]="p" filterContext="thread" />
       }
       <div class="focus">
-        <app-status-card [status]="view.focus" filterContext="thread" />
+        <app-status-card [status]="post" filterContext="thread" />
       </div>
-      @for (p of view.context.descendants; track p.id) {
+      @for (p of c.value?.descendants ?? []; track p.id) {
         <app-status-card [status]="p" filterContext="thread" />
       }
-    } @else if (s.failed) {
+    } @else if (f.failed) {
       <p class="lite-intro muted">{{ 'lite.notFound' | transloco }}</p>
     }`,
   styles: `
@@ -328,24 +383,30 @@ export class LiteThread {
   private readonly id = param('id');
   private readonly api = inject(Api);
   private readonly store = inject(LiteStore);
-  private readonly fetch = (key: string): Observable<ThreadView> => {
-    const id = key.slice('thread:'.length);
-    return forkJoin({
-      focus: this.api.getStatus(id),
-      // Without context the post alone still shows; that is the useful part.
-      context: this.api
-        .getContext(id)
-        .pipe(catchError(() => of<Context>({ ancestors: [], descendants: [] }))),
-    });
-  };
-  protected readonly thread = heldValue(
-    computed(() => `thread:${this.id()}`),
-    this.fetch,
+  private readonly fetchFocus = (key: string) => this.api.getStatus(key.slice('status:'.length));
+  private readonly fetchContext = (key: string) =>
+    this.api
+      .getContext(key.slice('context:'.length))
+      // Without replies the post alone still shows; that is the useful part.
+      .pipe(catchError(() => of<Context>({ ancestors: [], descendants: [] })));
+  protected readonly focus = heldValue<Status>(
+    computed(() => `status:${this.id()}`),
+    this.fetchFocus,
+    (key) => {
+      const id = key.slice('status:'.length);
+      return { seed: this.store.knownStatus(id), savedPath: `/api/v1/statuses/${id}` };
+    },
+  );
+  protected readonly context = heldValue<Context>(
+    computed(() => `context:${this.id()}`),
+    this.fetchContext,
+    (key) => ({ savedPath: `/api/v1/statuses/${key.slice('context:'.length)}/context` }),
   );
 
   protected retry(): void {
-    const key = `thread:${this.id()}`;
-    this.store.fetchValue(this.thread(), () => this.fetch(key));
+    const id = this.id();
+    this.store.fetchValue(this.focus(), () => this.fetchFocus(`status:${id}`));
+    this.store.fetchValue(this.context(), () => this.fetchContext(`context:${id}`));
   }
 }
 
@@ -399,7 +460,16 @@ export class LiteProfile {
         : new Observable<Account>((sub) => sub.error(new Error('not a profile address')));
   };
   private readonly key = computed(() => `profile:${this.id()} ${this.handle()}`.trim());
-  protected readonly profile = heldValue(this.key, this.fetch);
+  /** The author shows at once from the post that was tapped, or from disk; details refresh when stale. */
+  protected readonly profile = heldValue<Account>(this.key, this.fetch, (key) => {
+    const id = key.slice('profile:'.length).split(' ')[0];
+    const numeric = /^\d+$/.test(id);
+    return {
+      seed: numeric ? this.store.knownAccount(id) : null,
+      savedPath: numeric ? `/api/v1/accounts/${id}` : undefined,
+      staleMs: STALE_MS.profile,
+    };
+  });
   private readonly loaders = new Map<string, LitePageLoader>();
 
   /** One stable loader per account, so the held list is reused. */
@@ -422,7 +492,7 @@ export class LiteProfile {
 @Component({
   selector: 'app-lite-search',
   imports: [FormsModule, LiteStatus, MbButton, RouterLink, StatusCard, TranslocoPipe],
-  template: `<h1 class="lite-title">{{ 'lite.search' | transloco }}</h1>
+  template: `<h1 class="lite-title">{{ 'shell.nav.search' | transloco }}</h1>
     <form class="lite-search" (submit)="submit($event)">
       <input
         type="search"
@@ -527,8 +597,8 @@ export class LiteSearch {
 /** Direct messages: each conversation's latest post, newest first. Replies happen on the card. */
 @Component({
   selector: 'app-lite-conversations',
-  imports: [LiteStatus, MbButton, StatusCard, TranslocoPipe],
-  template: `<h1 class="lite-title">{{ 'lite.conversations' | transloco }}</h1>
+  imports: [LiteNewPill, LiteStatus, MbButton, StatusCard, TranslocoPipe],
+  template: `<h1 class="lite-title">{{ 'shell.nav.chat' | transloco }}</h1>
     @let s = held();
     <app-lite-status
       [loading]="s.loading"
@@ -538,9 +608,14 @@ export class LiteSearch {
       [loadedAt]="s.loadedAt"
       (retry)="retry()"
     />
+    <app-lite-new-pill [count]="s.incoming.length" (show)="place.showIncoming()" />
     @for (c of s.items; track c.id) {
       @if (c.last_status) {
-        <app-status-card [status]="c.last_status" filterContext="thread" />
+        <app-status-card
+          [attr.data-lite-item]="c.id"
+          [status]="c.last_status"
+          filterContext="thread"
+        />
       }
     }
     @if (s.items.length && !s.failed && !s.refreshing) {
@@ -560,9 +635,12 @@ export class LiteConversations {
     this.api.conversations(cursor, PAGE).pipe(map(byLastId));
   private readonly state = this.store.pagedState('conversations', this.loader);
   protected readonly held = computed(() => this.state());
+  protected readonly place = keepPlace(computed(() => this.state));
 
   constructor() {
     onRefresh(() => this.store.reload(this.state, this.loader));
+    // Coming back: check once if it is out of date.
+    queueMicrotask(() => this.store.checkIfStale(this.state, this.loader, STALE_MS.feed));
   }
 
   protected more(): void {

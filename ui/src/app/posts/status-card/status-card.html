@@ -49,7 +49,24 @@
            the same destination with the same name, so a described avatar makes
            every post announce its author twice. -->
       <a class="avatar-link" [routerLink]="accountLink" tabindex="-1" aria-hidden="true">
-        @if (avatarSrc(display.account); as avatar) {
+        @if (!avatarsShown()) {
+          <!-- Lite with avatars off: initials, no image request. -->
+          <span
+            class="avatar"
+            style="
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              width: 48px;
+              height: 48px;
+              border-radius: 50%;
+              background: var(--hover);
+              color: var(--muted);
+              font-weight: 700;
+            "
+            >{{ initial(display.account) }}</span
+          >
+        } @else if (avatarSrc(display.account); as avatar) {
           @if (avatar.optimizable) {
             <img
               class="avatar"
@@ -402,7 +419,23 @@
       @if (!cwCollapsed() && quotedStatus(); as q) {
         <a class="quote-card" [routerLink]="quoteThreadLink(q)" (click)="$event.stopPropagation()">
           <div class="quote-meta">
-            @if (avatarSrc(q.account); as avatar) {
+            @if (!avatarsShown()) {
+              <span
+                class="quote-avatar"
+                style="
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  width: 20px;
+                  height: 20px;
+                  border-radius: 50%;
+                  background: var(--hover);
+                  font-size: 11px;
+                  font-weight: 700;
+                "
+                >{{ initial(q.account) }}</span
+              >
+            } @else if (avatarSrc(q.account); as avatar) {
               @if (avatar.optimizable) {
                 <img
                   class="quote-avatar"
@@ -449,11 +482,23 @@
             @for (m of display.media_attachments; track m.id; let i = $index) {
               @let video = attachmentVideo(m);
               @if (video && !mediaBlurred()) {
-                <app-video-player
-                  [source]="video"
-                  [inline]="true"
-                  [watch]="videoWatch(video, m.id)"
-                />
+                @if (previewsShown()) {
+                  <app-video-player
+                    [source]="video"
+                    [inline]="true"
+                    [watch]="videoWatch(video, m.id)"
+                  />
+                } @else {
+                  <button
+                    mbButton
+                    variant="outline"
+                    size="small"
+                    type="button"
+                    (click)="showPreviews($event)"
+                  >
+                    ▶ {{ 'statusCard.playMedia' | transloco }}
+                  </button>
+                }
               } @else if (m.type === 'audio' && !mediaBlurred()) {
                 <div class="media-audio" (click)="$event.stopPropagation()">
                   <audio
@@ -483,6 +528,7 @@
                   @if (m.type === 'image' || m.preview_url) {
                     <img
                       [src]="m.preview_url || m.url"
+                      (load)="notePictureLoaded(m.preview_url || m.url)"
                       [alt]="m.description || ''"
                       [attr.title]="m.description || null"
                       [style.object-position]="thumbPosition(m)"
@@ -559,8 +605,18 @@
           <button type="button" class="sensitive-reveal" (click)="revealSensitive($event)">
             {{ 'statusCard.showSensitiveContent' | transloco }}
           </button>
-        } @else if (imagesVisible()) {
+        } @else if (playersShown()) {
           <app-video-player [source]="video" [inline]="true" [watch]="videoWatch(video)" />
+        } @else if (mediaOverride()) {
+          <button
+            mbButton
+            variant="outline"
+            size="small"
+            type="button"
+            (click)="showPreviews($event)"
+          >
+            ▶ {{ 'statusCard.playMedia' | transloco }}
+          </button>
         } @else {
           <a routerLink="/watch" [queryParams]="videoWatch(video)"
             >{{ video.title }} · {{ 'videoPlayer.openWatch' | transloco }}</a
@@ -598,8 +654,18 @@
           </button>
         } @else {
           @for (video of additionalYoutube(); track video.key) {
-            @if (imagesVisible()) {
+            @if (playersShown()) {
               <app-video-player [source]="video" [inline]="true" [watch]="videoWatch(video)" />
+            } @else if (mediaOverride()) {
+              <button
+                mbButton
+                variant="outline"
+                size="small"
+                type="button"
+                (click)="showPreviews($event)"
+              >
+                ▶ {{ 'statusCard.playMedia' | transloco }}
+              </button>
             } @else {
               <a routerLink="/watch" [queryParams]="videoWatch(video)"
                 >{{ video.title }} · {{ 'videoPlayer.openWatch' | transloco }}</a
@@ -614,8 +680,20 @@
             {{ 'statusCard.showSensitiveContent' | transloco }}
           </button>
         } @else {
-          @for (source of externalPlayers(); track source.key) {
-            <app-external-player [source]="source" [toolbar]="true" />
+          @if (previewsShown()) {
+            @for (source of externalPlayers(); track source.key) {
+              <app-external-player [source]="source" [toolbar]="true" />
+            }
+          } @else {
+            <button
+              mbButton
+              variant="outline"
+              size="small"
+              type="button"
+              (click)="showPreviews($event)"
+            >
+              ▶ {{ 'statusCard.playMedia' | transloco }}
+            </button>
           }
         }
       }

@@ -17,10 +17,8 @@
  *
  * ## Why per-request cost is modelled here
  *
- * Every other connector in this app is free to call. These are not: each request
- * spends credits the user has paid for. Cost is therefore a property of the
- * catalog rather than a footnote, so the UI can put a number on a button before
- * the user presses it.
+ * These providers bill differently. The catalog gives the UI each provider's
+ * pricing terms so a reader can see the cost before requesting data.
  */
 
 /** Identity of a source, and the value persisted in settings. */
@@ -37,9 +35,8 @@ export interface TwitterSourceEntry {
   /**
    * The header this service authenticates with.
    *
-   * The name matters beyond configuration: it is a *non-safelisted* header, so
-   * sending it forces a CORS preflight. That single fact is why these services
-   * cannot be called directly from a browser — see {@link TwitterTransport}.
+   * Both providers use a header that requires a CORS preflight for direct
+   * cross-origin browser requests. See {@link TwitterTransport} for routing.
    */
   authHeader: string;
   /** Prefix before the key, e.g. `Bearer `. Empty when the key stands alone. */
@@ -66,8 +63,6 @@ export const TWITTER_SOURCE_CATALOG: readonly TwitterSourceEntry[] = [
     label: 'TwitterAPI.io',
     pitch: 'Public Twitter data — profiles, posts, search — billed per record returned.',
     baseUrl: 'https://api.twitterapi.io',
-    // Measured: this header is what forces the preflight that makes direct
-    // browser access impossible. See sprint/twitter-1-transport.md.
     authHeader: 'X-API-Key',
     authPrefix: '',
     keyUrl: 'https://twitterapi.io/',
@@ -87,7 +82,7 @@ export const TWITTER_SOURCE_CATALOG: readonly TwitterSourceEntry[] = [
     keyUrl: 'https://getxapi.com/',
     pricingNote: 'Billed per call at a flat rate, with thread lookups priced higher.',
     homepage: 'https://getxapi.com/',
-    // Adapter lands in a later sprint; see sprint/twitter-0-overview.md.
+    // Transport configuration exists, but the data adapter is still missing.
     implemented: false,
   },
 ];

@@ -66,8 +66,16 @@ export function summarizeBundle(stats) {
 export const LITE_SOURCE = 'src/app/lite/';
 /** Startup code, so not part of what Lite adds. */
 const LITE_STARTUP = new Set(['src/app/lite/lite-mode.ts']);
-/** Measured at 898 kB on 2026-11-21; raise only with a reason in the commit. */
-export const LITE_BUDGET_BYTES = 950_000;
+const LITE_ROUTES = 'src/app/lite/lite.routes.ts';
+/**
+ * Everything /m/ can load beyond startup, including the full-app screens its
+ * routes open lazily (the blog-style writer, the Outbox page, the players).
+ * Measured at 1,090 kB on 2026-11-21 after the check started counting those
+ * lazy screens (it previously reported ~900 kB by missing them), with Lite's
+ * load-control bar and saved-first reading included. Raise only with a reason
+ * in the commit.
+ */
+export const LITE_BUDGET_BYTES = 1_150_000;
 export const LITE_EXCLUSIONS = [
   'src/app/feeds/home/home.ts',
   'src/app/feeds/notifications/notifications.ts',
@@ -100,6 +108,14 @@ export function summarizeLite(stats) {
     const sources = Object.keys(output.inputs ?? {}).map((input) => input.replaceAll('\\', '/'));
     if (sources.some((source) => source.startsWith(LITE_SOURCE) && !LITE_STARTUP.has(source)))
       visit(name);
+    // The route table's lazy screens are Lite too, even when they live outside
+    // src/app/lite (the full app's writer and Outbox page): follow its dynamic
+    // imports one level, then their static imports as usual.
+    if (sources.includes(LITE_ROUTES)) {
+      for (const imported of output.imports ?? []) {
+        if (imported.kind === 'dynamic-import') visit(imported.path);
+      }
+    }
   }
   let bytes = 0;
   const inputs = new Set();

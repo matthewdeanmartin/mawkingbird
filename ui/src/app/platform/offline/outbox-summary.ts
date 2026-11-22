@@ -2,6 +2,10 @@ import { Injectable, signal } from '@angular/core';
 import { accountScopeSuffix } from '../session/account-scope';
 
 export const OUTBOX_KEY = 'mockingbird_outbox';
+/** Present ("review") when queued posts must wait for the reader instead of sending on reconnect. */
+export const OUTBOX_SEND_KEY = 'mockingbird_outbox_send';
+
+export type OutboxSendMode = 'auto' | 'review';
 
 /** The persisted shape; the Outbox service owns the behaviour. */
 export interface OutboxEntry {
@@ -56,6 +60,18 @@ export function readOutbox(): OutboxEntry[] {
 export class OutboxSummary {
   readonly waiting = signal(0);
   readonly held = signal(0);
+  /** What happens to queued posts when the connection returns. */
+  readonly sendMode = signal<OutboxSendMode>(readSendMode());
+
+  setSendMode(mode: OutboxSendMode): void {
+    this.sendMode.set(mode);
+    try {
+      if (mode === 'auto') localStorage.removeItem(OUTBOX_SEND_KEY);
+      else localStorage.setItem(OUTBOX_SEND_KEY, mode);
+    } catch {
+      // The choice still applies to this visit.
+    }
+  }
 
   constructor() {
     this.refresh();
@@ -71,5 +87,13 @@ export class OutboxSummary {
     const mine = readOutbox().filter((entry) => entry.scope === scope);
     this.waiting.set(mine.filter((entry) => entry.state === 'waiting').length);
     this.held.set(mine.filter((entry) => entry.state === 'held').length);
+  }
+}
+
+function readSendMode(): OutboxSendMode {
+  try {
+    return localStorage.getItem(OUTBOX_SEND_KEY) === 'review' ? 'review' : 'auto';
+  } catch {
+    return 'auto';
   }
 }

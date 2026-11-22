@@ -241,6 +241,22 @@ Connection card (verdict, typical reply, the last hour) linking to
   a profile shows the read cache's saved copy at once ("Showing a copy saved N
   min ago. Getting the newest…") and replaces it when the newest page arrives.
 
+- **Owner feedback, 2026-11-21 (names and Write):** the Lite nav reuses the
+  full app's carefully chosen short names and their translation keys
+  (`shell.nav.*` and friends): Home · Inbox · Chat · Search · Write · Lists ·
+  Bookmarks · Radio · Videos, all shown as words (no icons, so no More menu).
+  Page headings use the same keys. **Write** (`/m/write`) is the full app's
+  blog-style WritePage; the quick composer sits on Lite Home, as on the full
+  app's Home, and a post written there appears at the top of the held Home.
+
+- **Owner decision, 2026-11-21 (languages):** every language the main app
+  supports, Lite must support. All 161 Lite and offline strings (Lite screens,
+  offline banner, connection chip, Outbox, `/connection`, data-saver and Lite
+  settings, and the reused nav names) are translated into all 17 locales
+  through the merge gate, and `check:i18n` Rule 2b now fails if any Lite key is
+  missing from any locale. Malay (`ms`) is not a locale yet; adding one is a
+  separate decision.
+
 ### Sprint 7: Native offline (done 2026-11-21)
 
 - **Connectivity:** new Rust command `network_connectivity` in

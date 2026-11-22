@@ -8,9 +8,9 @@ import { accountScopeSuffix, scopedKey } from '../../platform/session/account-sc
  * code touches: `Auth` arms it when a brand-new account verifies, and the shell
  * sends an armed account from Home to `/setup`. Everything else is lazy.
  *
- * `private` in the storage registry, not `setting`: later sprints queue unsent
- * profile text here for accounts still waiting for approval, and that must
- * never travel in a settings export.
+ * The storage registry marks this account's progress and answers as private,
+ * which keeps them out of settings exports. The intro step saves draft text
+ * separately through Drafts.
  */
 export const ACCOUNT_SETUP_KEY = 'mockingbird_account_setup';
 

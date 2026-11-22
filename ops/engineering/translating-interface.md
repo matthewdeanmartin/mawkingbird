@@ -25,6 +25,15 @@ so a language done as ~5 large dispatches is far cheaper than the same language 
 small ones. Use [the translation context](../../ui/i18n-context/README.md), the locale's
 glossary in `i18n-context/`, and the generated work order to keep each batch consistent.
 
+## Lite is translated in every locale
+
+Lite (`/m/`) and its offline strings are the exception to "English first,
+translate when settled": every locale the app ships must have them. `make i18n`
+(`npm run check:i18n`, Rule 2b in `scripts/check-i18n.mjs`) fails when any key
+under `LITE_PREFIXES` or in `LITE_KEYS` is missing from a locale. Translate new
+Lite copy into every locale in the same change, through `make i18n-merge`
+(tracked locales need a `--source=` snapshot, as `make i18n-batch` writes).
+
 ## Bot work order
 
 Replace `de` below with the target locale and give this prompt to the bot:

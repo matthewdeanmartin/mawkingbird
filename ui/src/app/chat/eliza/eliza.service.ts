@@ -1,15 +1,7 @@
 /**
- * ElizaService — the single delegate both feed providers route Eliza-directed
- * work to. Fully client-side: no HTTP, no clock beyond `Date.now`, so it behaves
- * identically in anonymous mode and against the real mastodon.social backend.
- *
- * Sprint 1 scope: identity + the reply brain. It answers three questions the
- * interception seams need —
- *   - "is this id / handle Eliza?"      → {@link owns}
- *   - "give me Eliza's account/posts"   → {@link account}, {@link timeline}
- *   - "what does Eliza say to this?"    → {@link reply}
- * Later sprints add the local post/DM stores and the follow flag; those hang off
- * this same service so there is exactly one brain behind every door.
+ * Feed providers route Eliza's profile, timeline and replies through this
+ * browser-local service. Unfollowing Eliza also clears the current account's
+ * practice posts and its conversation with her.
  */
 
 import { inject, Injectable, Injector } from '@angular/core';

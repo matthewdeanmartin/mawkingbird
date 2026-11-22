@@ -32,22 +32,12 @@ import { isNativeTwitterHandle } from '../../platform/http/connector-types';
  * The one place a Twitter data request is actually sent. Native uses its
  * scoped Rust connector; the web app requires a user-selected proxy.
  *
- * ## Why this is proxy-*first*, unlike every other transport here
+ * ## Why web requests use the proxy
  *
- * {@link ShortenerTransport} tries direct on every request and falls back to a
- * proxy on failure, because shorteners genuinely vary — some answer browsers.
- * These services provably never will, and the reason is structural rather than
- * a policy that might soften:
- *
- * > Authentication is a custom header (`X-API-Key` / `Authorization`), which
- * > forces a CORS preflight. TwitterAPI.io answers that preflight with **401 and
- * > no `Access-Control-Allow-Origin`**, because it demands the API key on the
- * > preflight itself — which a browser is forbidden to send. There is no
- * > query-parameter auth to fall back to; all three plausible spellings 403.
- *
- * Measured 2026-07-31; see `sprint/twitter-1-transport.md`. So a direct attempt
- * is not a fallback worth trying, it is a guaranteed failure that costs seconds
- * of the user's time before every real request.
+ * On 2026-07-31 TwitterAPI.io answered the browser's preflight for
+ * `X-API-Key` with HTTP 401 and no `Access-Control-Allow-Origin`. That
+ * response prevents the browser from sending the authenticated request.
+ * Using the proxy avoids repeating the failed probe on normal reads.
  *
  * The direct path therefore exists in exactly one place — {@link probeDirect},
  * called by the connector page's Test button — so that "this service refuses

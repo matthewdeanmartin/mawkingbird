@@ -7,8 +7,7 @@
  * scoped per account via {@link scopedKey}, so an anonymous visitor and each
  * signed-in account each have their own independent relationship with her.
  *
- * This is the gate for the whole feature: her DM thread and the local-compose
- * replies (later sprints) only exist once {@link following} is true.
+ * Following Eliza enables her DM thread and replies to locally composed posts.
  */
 
 import { Injectable, signal } from '@angular/core';

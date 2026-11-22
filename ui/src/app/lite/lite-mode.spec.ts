@@ -22,6 +22,7 @@ describe('Lite address mapping', () => {
     expect(liteUrlFor('/tags/birds')).toBe('/m/tags/birds');
     expect(liteUrlFor('/videos/queue')).toBe('/m/videos');
     expect(liteUrlFor('/conversations')).toBe('/m/conversations');
+    expect(liteUrlFor('/write')).toBe('/m/write');
   });
 
   it('leaves screens Lite does not have in the full app', () => {
@@ -34,7 +35,8 @@ describe('Lite address mapping', () => {
 
   it('maps back for the Full app link', () => {
     expect(fullUrlFor('/m/home')).toBe('/home');
-    expect(fullUrlFor('/m/compose')).toBe('/home');
+    expect(fullUrlFor('/m/write')).toBe('/write');
+    expect(fullUrlFor('/m/compose')).toBe('/write');
     expect(fullUrlFor('/m/lists')).toBe('/feeds/lists');
     expect(fullUrlFor('/m/lists/7')).toBe('/lists/7');
     expect(fullUrlFor('/m/search?q=birds')).toBe('/search?q=birds');

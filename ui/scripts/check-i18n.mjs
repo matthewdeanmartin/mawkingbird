@@ -577,6 +577,55 @@ for (const code of localeCodes) {
   }
 }
 
+// ---- Rule 2b: Lite is complete in every locale ----
+//
+// Owner decision (2026-11-21): every language the main app supports, Lite
+// (/m/) must support. It is the part of the app most likely to be used abroad
+// on a bad connection, by readers who chose their language for a reason.
+// Elsewhere a missing key falls back to English; for these keys it fails the
+// check, so new Lite copy ships translated or not at all.
+const LITE_PREFIXES = ['lite.', 'offlineBanner.', 'shell.connection.', 'outbox.', 'connection.'];
+const LITE_KEYS = [
+  // The Lite nav and headings reuse the full app's short names.
+  'shell.nav.home',
+  'shell.nav.inbox',
+  'shell.nav.chat',
+  'shell.nav.search',
+  'shell.nav.videos',
+  'shell.menu.write',
+  'listDialog.lists',
+  'pages.bookmarks.tab.bookmarks',
+  'shell.modeNav.mode.radio',
+  // Offline and low-bandwidth strings shown inside Lite or one tap from it.
+  'statusCard.showHeldImages',
+  'statusCard.playMedia',
+  'settings.writing.offline',
+  'settings.writing.offline.hint',
+  'compose.savedToOutbox',
+  'pages.drafts.outbox',
+  'pages.observability.connection',
+  'pages.observability.connectionTitle',
+  'settings.blue.dataSaver',
+  'settings.blue.dataSaver.auto',
+  'settings.blue.dataSaver.always',
+  'settings.blue.dataSaver.never',
+  'settings.blue.lite.hint',
+  'settings.blue.lite.open',
+];
+const liteKeys = Object.keys(en).filter(
+  (key) => LITE_KEYS.includes(key) || LITE_PREFIXES.some((prefix) => key.startsWith(prefix)),
+);
+for (const code of localeCodes) {
+  const dict = loadLocale(code) ?? {};
+  const missing = liteKeys.filter((key) => !(key in dict));
+  if (missing.length > 0) {
+    problems.push(
+      `${code}.json is missing ${missing.length} Lite key(s): ${missing.slice(0, 8).join(', ')}` +
+        `${missing.length > 8 ? ', …' : ''} (Lite must be translated in every locale; see Rule 2b)`,
+    );
+  }
+}
+
 if (problems.length > 0) {
   console.error('\ni18n problems:\n');
   for (const problem of problems) {

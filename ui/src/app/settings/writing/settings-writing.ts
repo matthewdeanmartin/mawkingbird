@@ -1,4 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { OutboxSummary } from '../../platform/offline/outbox-summary';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PostingDefaults } from '../posting-defaults/posting-defaults';
@@ -43,6 +44,8 @@ import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback'
  * need a server and hide themselves when there isn't one.
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
+// i18n settings.writing.offline: Posts written offline
+// i18n settings.writing.offline.hint: A post you send without a connection waits in the Outbox. It can go out by itself when you're back online (only from the account that wrote it, and never after half an hour), or wait for you.
 // i18n settings.writing.title: ✍ Writing
 // i18n settings.writing.intro: Everything about getting words out: where writing starts, what gets asked at the moment you publish, and the workflow around drafts and notes.
 // i18n settings.writing.whereStarts: Where writing starts
@@ -112,6 +115,7 @@ import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback'
   `,
 })
 export class SettingsWriting implements OnInit {
+  protected readonly outboxSummary = inject(OutboxSummary);
   protected prefs = inject(ClientPrefs);
   private api = inject(Api);
   protected auth = inject(Auth);

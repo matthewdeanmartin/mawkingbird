@@ -28,7 +28,7 @@ import { MAWKINGBIRD_ACCOUNT, virtualTweet } from '../docs/static-status';
   styleUrl: './funding.css',
 })
 export class Funding {
-  // TODO: once the Liberapay account exists, link the donation line above to
+  // TODO: once the Liberapay account exists, link the donation line in FUNDING_BODY to
   // https://liberapay.com/<handle> (target=_blank rel="noopener noreferrer",
   // matching the external links in the Credits body).
   protected status: Status = virtualTweet({
