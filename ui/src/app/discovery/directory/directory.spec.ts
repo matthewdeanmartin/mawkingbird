@@ -38,6 +38,12 @@ interface Internals {
   order(): DirectoryOrder;
   local(): boolean;
   loadMore(): void;
+  language: { set(v: string): void };
+  items(): { account: Account }[];
+  unknownLanguage(): { account: Account }[];
+  checkLanguages(): void;
+  setAdultFilter(v: 'either' | 'hide' | 'only'): void;
+  adultCollapsed(id: string): unknown;
 }
 
 function internals(f: ComponentFixture<Directory>): Internals {
@@ -197,5 +203,70 @@ describe('Directory', () => {
       r.flush([]);
     }
     expect(internals(fixture).accounts().length).toBe(2);
+  });
+
+  describe('language and adult filters', () => {
+    function person(id: string, note: string): Account {
+      return { ...makeAccount(id), note: `<p>${note}</p>` } as Account;
+    }
+    const english = 'The weather is lovely today and I went for a long walk with the dog';
+
+    it('keeps people whose bio is in the language and hides the ones it cannot tell', () => {
+      const fixture = open([person('1', english), person('2', ''), person('3', '')]);
+      const state = internals(fixture);
+      state.language.set('en');
+      fixture.detectChanges();
+      expect(state.items().map((i) => i.account.id)).toEqual(['1']);
+      expect(state.unknownLanguage().length).toBe(2);
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelector('[data-unknown-language]')?.textContent).toContain('2 people hidden');
+      expect(el.querySelector('[data-check-languages]')?.textContent).toContain('(2 requests)');
+    });
+
+    it('checks recent posts, one request each, and shows who turns out to match', () => {
+      const fixture = open([person('2', ''), person('3', '')]);
+      const state = internals(fixture);
+      state.language.set('eo');
+      state.checkLanguages();
+      const requests = http.match((r) => /\/api\/v1\/accounts\/\d+\/statuses$/.test(r.url));
+      expect(requests.length).toBe(2);
+      requests[0].flush([
+        {
+          id: 'p',
+          created_at: '2026-11-01T00:00:00Z',
+          account: state.accounts()[0],
+          language: 'eo',
+          content: '<p>Saluton</p>',
+          spoiler_text: '',
+          sensitive: false,
+          visibility: 'public',
+          media_attachments: [],
+          mentions: [],
+          tags: [],
+          emojis: [],
+          reblog: null,
+          replies_count: 0,
+          reblogs_count: 0,
+          favourites_count: 0,
+        },
+      ]);
+      requests[1].flush(null, { status: 500, statusText: 'x' });
+      // State only: rendering the checked post would fetch its author's relationship.
+      expect(state.items().map((i) => i.account.id)).toEqual(['2']);
+      // A failed profile counts as checked, so the offer does not loop on it.
+      expect(state.unknownLanguage().length).toBe(0);
+    });
+
+    it('collapses adult profiles on Hide', () => {
+      const fixture = open([person('1', '18+ MDNI'), person('2', english)]);
+      const state = internals(fixture);
+      state.setAdultFilter('hide');
+      fixture.detectChanges();
+      expect(state.adultCollapsed('1')).toBeTruthy();
+      expect(state.adultCollapsed('2')).toBeNull();
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('app-adult-collapsed'),
+      ).not.toBeNull();
+    });
   });
 });

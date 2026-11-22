@@ -1,7 +1,7 @@
 # Adult facet, people by language, reporting with care (November 2026)
 
-Status: sprints 1–2 pushed 2026-11-22; sprints 3–4 implemented and uncommitted,
-2026-11-22, awaiting the owner's push and manual test. Sprints 5–8 planned.
+Status: sprints 1–4 pushed 2026-11-22; sprints 5–6 implemented and uncommitted,
+2026-11-22, awaiting the owner's push and manual test. Sprints 7–8 planned.
 Cadence (owner, 2026-11-22): two sprints at a time, light checks between
 sprints, a stop after every two for the owner to commit, push, deploy and
 test by hand. Full gates are held for the end of the epic or the owner's
@@ -68,8 +68,15 @@ Acceptance: a food CW is never adult; "18+ MDNI" bio is self-declared adult;
 - Account language inference (post tags, detection on bio + posts, home
   server languages), with the Malay/Indonesian low-confidence rule.
 - Language facet on People search (uses the Sprint 1 widget for "other").
-- "People who post in X" mode: `language:xx` post search → authors, ranked,
-  adult facet applied, budget 2–5 with "Load more" and the ask at 10.
+- "People who post in X" mode: post search → authors, ranked, adult facet
+  applied, budget 2–5 with "Load more" and the ask at 10.
+  **Revised 2026-11-22:** Mastodon refuses `language:xx` on its own (HTTP 400
+  "At least one keyword or phrase is required",
+  `SearchQueryTransformer::Query#validate_clauses!`), and plain words are
+  ANDed (no OR). So the mode runs one `<seed word> language:xx` query per
+  call, using very common function words for the language (Malay: *yang*,
+  *dan*, *saya*, …; candidates in `ui/githubmimbmawkingbird_starters…stopwords_extracted.json`),
+  and merges the authors. Each seed costs one call from the budget.
 
 ## Sprint 6 — Directory and timelines
 
@@ -162,3 +169,58 @@ Implementation notes:
   by bio only. Bluesky posts carry labels. When the reader's Bluesky account
   has adult content off and they pick Only, the panel says Bluesky itself
   leaves most adult posts out.
+
+## Side fix: failed searches were silent (2026-11-22)
+
+`language:ms` in the search box returned HTTP 400 and the page showed
+nothing. Mastodon requires at least one positive word or phrase (hashtags
+count; `-word` and `prefix:value` do not; `in:library` / `from:me` are exempt).
+`discovery/search/search-query-check.ts` now catches filters-only queries before
+sending and says what to add; People search skips its doomed post branch and
+shows the same note. Any other failed post/hashtag search shows the HTTP
+status, the server's own `error` text and Try again (it used to only log).
+Bare `has:image` was also being sent as `has:media` and refused the same way;
+it now scans the home timeline like the other bare media filters
+(`reading/media-query.ts`). Checks: `make test-changed` (113 files, 1,834
+tests), search + media specs, `check:i18n`, `check:dead-code`,
+`design:inventory-check`, lint.
+
+## Evidence: sprints 5–6 (2026-11-22)
+
+Light checks only, per cadence. Passed: `make test-changed` (115 spec files,
+1,854 tests), `test:subset` on the search, language, account-refine and
+directory specs, `check:i18n`, `check:storage`, `check:dead-code`,
+`check:libs`, `design:inventory-check` (one new candidate,
+`language-select.ts`, reconciled as backlog), prettier and `ng lint` on
+every touched file.
+
+Not run (deferred): full `make test` with coverage, `build:mockingbird`, SEO,
+design-verify, integration.
+
+Implementation notes:
+
+- The Sprint 1 picker became `<app-language-select>` (post search, People
+  search, Directory). `eslint.config.js` lists it under
+  `label-has-associated-control`'s `controlComponents`, because it renders a
+  native `<select>` in its own light DOM, so a wrapping `<label>` labels it.
+- `language/account-language.ts`: one vote per own post (its tag, unless
+  detection is confident of another language) plus the bio. The shared
+  detector is conservative: it leaves everyday Malay undetermined (common words
+  like *di* and *dan* also belong to other languages), so for Malay and
+  Indonesian the tags carry the evidence. Detected `id` without a settling tag
+  is `ms-id`, which matches either and shows as "Malay or Indonesian (uncertain)".
+- People search: Advanced → *Posts in* (URL `plang`). With words it adds
+  `language:xx` to the post branch. With an empty box (or a typed
+  `language:xx` with no words) it runs `<seed> language:xx` per seed word
+  (`language/seed-words.ts`, 31 languages), up to the budget, then
+  *More people* runs the next seeds. Signed out it explains that hashtag search
+  cannot filter by language. People results get a Language facet.
+- Directory: *Posts in* + the adult filter. A person whose bio says nothing is
+  hidden and counted; *Check their recent posts* fetches 20 posts each for at
+  most 10 people per click (one request each); a failed profile counts as
+  checked so the offer cannot loop.
+- Hashtag timelines: signed-out post search reads tag timelines; the chips
+  already called its language a loaded-result filter but nothing applied it.
+  It now filters loaded posts by `postLanguage`.
+- Deferred to Native (§6a): server-declared languages per home server
+  (one `/api/v2/instance` call per server is too costly on web).

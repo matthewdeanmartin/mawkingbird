@@ -3616,6 +3616,11 @@
       "file": "ui/src/app/moderation/adult-content/adult-explain.ts",
       "disposition": "backlog",
       "nextStep": "Adult filter: a native labelled select with MbHelp, and the collapsed adult row (dashed card, MbHelp (i) explainer, link-style Show button). Move the select to Field/Control and Show to MbButton variant=link when convenient; preserve that every hidden item names its first reason inline and lists all evidence behind (i)."
+    },
+    {
+      "file": "ui/src/app/language/language-select/language-select.ts",
+      "disposition": "backlog",
+      "nextStep": "Shared short language list: a native select with option groups (yours / app languages) and an \"All languages…\" entry that opens the language finder Dialog. Move to Field/Control when shared selects land; preserve that the full catalogue is never rendered in the select."
     }
   ]
 }

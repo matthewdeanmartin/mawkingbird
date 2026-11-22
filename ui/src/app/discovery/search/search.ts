@@ -9,6 +9,19 @@ import { searchPanelOpenByDefault } from './search-panel-default';
 import { BLUESKY_WIRE_TYPE } from './search-wire';
 import { matchesMedia, parseMediaQuery, SearchMediaType } from '../../reading/media-query';
 import {
+  describeSearchError,
+  filtersWithoutTerm,
+  languageInQuery,
+  SearchFailure,
+} from './search-query-check';
+import { seedWordsFor } from '../../language/seed-words';
+import {
+  AccountLanguages,
+  inferAccountLanguages,
+  languageMatches,
+  postLanguage,
+} from '../../language/account-language';
+import {
   Component,
   DestroyRef,
   Injector,
@@ -25,7 +38,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { catchError, EMPTY, from, map, mergeMap, Observable, of, Subscription } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  forkJoin,
+  from,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  Subscription,
+} from 'rxjs';
 import {
   HASHTAG_SORTS,
   HASHTAG_STATS_CONCURRENCY,
@@ -119,10 +142,9 @@ import { isBlueskySaved, isMastodonSaved, SavedSearches } from './saved-searches
 import { RecentSearches, RecentSearch } from './recent-searches';
 import { kitMatchesFor } from './kit-matches';
 import { KnownLanguages } from '../../language/trend-language-filter';
-import { IN_PROGRESS_LOCALES, PRODUCTION_LOCALES, UiLocale } from '../../i18n/locale';
-import { suggestedLanguages } from '../../language/language-catalog';
-import { LanguageFinderDialog } from '../../language/language-finder/language-finder';
-import { PostingLanguage } from '../../publishing/posting-language';
+import { UiLocale } from '../../i18n/locale';
+import { LanguageSelect } from '../../language/language-select/language-select';
+import { bareLanguageCode, languageName } from '../../language/language-catalog';
 import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
 import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
 import { AdultResults } from '../../moderation/adult-content/adult-results';
@@ -381,6 +403,19 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.results.noLoadedPeople: No loaded people match the current filters.
 // i18n pages.search.results.searching: Searching…
 // i18n pages.search.results.stillWaiting: This server is being slow. Still waiting…
+// i18n pages.search.accountField.language: Posts in
+// i18n pages.search.accountField.languageAny: Any language
+// i18n pages.search.accountField.languageHint: Finds people who post in this language. Leave the search box empty to list people from common words in the language (one request per word).
+// i18n pages.search.results.needsSignIn: Signed out, Mawkingbird can only search hashtags, so it cannot find people by language. Sign in, or add words to search for.
+// i18n pages.search.results.seeded: Found from {{count}} common words in {{language}}. Each word is one request.
+// i18n pages.search.results.morePeople: More people ({{count}} more words)
+// i18n pages.search.facet.malayOrIndonesian: Malay or Indonesian (uncertain)
+// i18n pages.search.facet.languageUnknown: Can’t tell
+// i18n pages.search.results.needsWord: Mastodon needs at least one word to search for. Filters such as {{filters}} only narrow a search down. Add a word too, for example one that is common in the language you want.
+// i18n pages.search.results.needsWordShort: Mastodon needs at least one word to search for, not only filters. Add a word and search again.
+// i18n pages.search.results.failed: The search failed (HTTP {{status}}).
+// i18n pages.search.results.unreachable: The search failed: the server could not be reached.
+// i18n pages.search.results.serverSaid: The server said: “{{detail}}”
 // i18n pages.search.results.timedOut: This search took too long and was stopped. The server may be down or overloaded.
 // i18n pages.search.results.tryAgain: Try again
 // i18n pages.search.results.noLoadedPosts: No loaded posts match the current filters.
@@ -412,10 +447,6 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.accountSource.nameAndBioOnly: Name & bio only
 // i18n pages.search.accountSource.whatTheyPost: What they post
 // i18n pages.search.language.any: Any language
-// i18n pages.search.language.group.current: Chosen
-// i18n pages.search.language.group.yours: Your languages
-// i18n pages.search.language.group.app: Languages Mawkingbird is translated into
-// i18n pages.search.language.more: All languages…
 // i18n pages.search.content.any: Any
 // i18n pages.search.content.media: Has media
 // i18n pages.search.content.image: Image
@@ -463,7 +494,7 @@ const SEARCH_TIMEOUT_MS = 20000;
     SearchServerDiscovery,
     BlueskySearchPanel,
     TranslocoPipe,
-    LanguageFinderDialog,
+    LanguageSelect,
     AdultCollapsed,
     AdultFilterControl,
   ],
@@ -856,6 +887,8 @@ export class Search implements OnInit, OnDestroy {
   protected searchSlow = signal(false);
   /** Set when a search was abandoned on the clock. Cleared by the next attempt. */
   protected searchTimedOut = signal(false);
+  /** Why the last post or hashtag search produced nothing, when it failed. */
+  protected searchError = signal<SearchFailure | null>(null);
   private slowTimer: ReturnType<typeof setTimeout> | null = null;
   private timeoutTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -933,7 +966,9 @@ export class Search implements OnInit, OnDestroy {
    * has nothing to do with what is on screen.
    */
   protected searchDisabled = computed(() => {
-    if (!this.query().trim()) {
+    const peopleByLanguage =
+      this.type() === 'accounts' && !this.blueskyMode() && !!this.peopleLanguage();
+    if (!this.query().trim() && !peopleByLanguage) {
       return true;
     }
     return this.blueskyMode() ? (this.blueskyPanel()?.searching() ?? false) : this.searching();
@@ -1331,37 +1366,6 @@ export class Search implements OnInit, OnDestroy {
       !!this.statusesMax(),
   );
 
-  /**
-   * The short language list (spec/moderation-facets.md §1): the reader's own
-   * languages, then every language the app is translated into. Anything else
-   * is one "All languages…" away, in the finder, never in this select.
-   */
-  protected readonly languageGroups = computed(() =>
-    suggestedLanguages(
-      this.language(),
-      [
-        ...this.kitLanguages.codes(),
-        ...this.searchPrefs.learningLanguages(),
-        this.postingLanguage.default(),
-      ],
-      [...PRODUCTION_LOCALES, ...IN_PROGRESS_LOCALES],
-      this.kitLocale.active(),
-    ),
-  );
-  /** Sentinel select value that opens the finder instead of choosing. */
-  protected readonly moreLanguages = '__more__';
-  protected languageFinderOpen = signal(false);
-
-  protected chooseLanguage(code: string, select?: HTMLSelectElement): void {
-    if (code === this.moreLanguages) {
-      // The model never held the sentinel, so put the control back by hand.
-      if (select) select.value = this.language();
-      this.languageFinderOpen.set(true);
-      return;
-    }
-    this.language.set(code);
-  }
-
   protected readonly contentTypes: { value: PostContentType; label: string }[] = [
     { value: 'any', label: 'pages.search.content.any' },
     { value: 'media', label: 'pages.search.content.media' },
@@ -1541,7 +1545,13 @@ export class Search implements OnInit, OnDestroy {
     );
     // Exclusion before the text filter: both are cheap, but this keeps the
     // "hidden by exclusion" count meaning what it says.
-    const adultKept = this.adult.keepPosts(faceted);
+    // Signed out, post search reads hashtag timelines, which cannot filter by
+    // language; the chips call it a loaded-result filter, so apply it here.
+    const language = this.capabilities.active ? (this.executedCriteria()?.language ?? '') : '';
+    const inLanguage = language
+      ? faceted.filter((s) => languageMatches(postLanguage(s.reblog ?? s), language))
+      : faceted;
+    const adultKept = this.adult.keepPosts(inLanguage);
     const kept = excludeAuthors(adultKept, this.excludedAuthors());
     // Sort last, so it reorders exactly the posts that survive facet + text
     // filtering (grouping then buckets this sorted list).
@@ -1787,7 +1797,6 @@ export class Search implements OnInit, OnDestroy {
   private readonly kitLanguages = inject(KnownLanguages);
   private readonly kitLocale = inject(UiLocale);
   private readonly searchPrefs = inject(ClientPrefs);
-  private readonly postingLanguage = inject(PostingLanguage);
 
   // --- Adult content (spec/moderation-facets.md §3) ---
 
@@ -1864,6 +1873,8 @@ export class Search implements OnInit, OnDestroy {
   /** Last q/type reflected in the URL, so run() can detect an identical re-search
    *  (which wouldn't emit a new queryParamMap) and fetch directly. */
   private urlQuery = '';
+  /** The `plang` the URL last carried, for the same-URL check in run(). */
+  private urlPeopleLanguage = '';
   /** The Bluesky query and type last run, so a URL change it caused does not run it again. */
   private lastBlueskyRun = '';
   private readonly injector = inject(Injector);
@@ -1973,6 +1984,11 @@ export class Search implements OnInit, OnDestroy {
       this.blueskyMode.set(false);
       this.urlQuery = q;
       this.urlType = t;
+      const plang = t === 'accounts' ? bareLanguageCode(params.get('plang')) : '';
+      this.urlPeopleLanguage = plang;
+      if (t === 'accounts') this.peopleLanguage.set(plang);
+      // The Language field lives under Advanced; a link that uses it opens it.
+      if (plang) this.advancedOpen.set(true);
       this.query.set(q);
       this.type.set(t);
       // The Similar panel does its own reading; the hashtag search it covers
@@ -1983,10 +1999,10 @@ export class Search implements OnInit, OnDestroy {
         this.searching.set(false);
         return;
       }
-      if (q.trim()) {
+      if (q.trim() || plang) {
         // Returning to an account search (e.g. Back from a profile): restore the
         // in-memory snapshot rather than re-running the whole fan-out.
-        if (t === 'accounts' && this.restoreAccountSnapshot(q.trim())) {
+        if (t === 'accounts' && !plang && this.restoreAccountSnapshot(q.trim())) {
           return;
         }
         this.fetch(q.trim(), t);
@@ -2132,7 +2148,10 @@ export class Search implements OnInit, OnDestroy {
 
   run(): void {
     const q = this.query().trim();
-    if (!q) {
+    // People who post in a language need no words: seed words stand in.
+    const peopleLanguage =
+      this.type() === 'accounts' && !this.blueskyMode() ? this.peopleLanguage() : '';
+    if (!q && !peopleLanguage) {
       return;
     }
     // Bluesky runs in the panel, which owns the criteria and parses the box's
@@ -2176,14 +2195,20 @@ export class Search implements OnInit, OnDestroy {
     // directly instead of relying on navigation.
     // A Similar panel in the way closes, so the URL changes and the
     // subscription fetches.
-    if (this.urlQuery === q && this.urlType === type && !this.similarTags().length) {
+    const plang = type === 'accounts' ? peopleLanguage : '';
+    if (
+      this.urlQuery === q &&
+      this.urlType === type &&
+      this.urlPeopleLanguage === plang &&
+      !this.similarTags().length
+    ) {
       this.fetch(q, type);
       return;
     }
     // Otherwise push the search into the URL; ngOnInit's subscription fetches.
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { q, type, similar: null },
+      queryParams: { q: q || null, type, similar: null, plang: plang || null },
       queryParamsHandling: 'merge',
     });
   }
@@ -2676,6 +2701,7 @@ export class Search implements OnInit, OnDestroy {
     this.scanExhausted.set(false);
     this.scanFailed.set(false);
     this.scanCancelled.set(false);
+    this.searchError.set(null);
     this.resetRefinements();
     // Account cards carry per-result state (relationships, expansion) that must
     // not leak across searches.
@@ -2702,7 +2728,7 @@ export class Search implements OnInit, OnDestroy {
     // search is definitely *run*. Keystrokes are not searches, and restoring an
     // account snapshot on back-navigation returns before this point, so
     // returning to a result set does not shuffle the history you came back to.
-    this.recent.record(q, type);
+    if (q) this.recent.record(q, type);
 
     // Accounts have their own orchestration (bio / posts→authors / both).
     if (type === 'accounts') {
@@ -2718,6 +2744,18 @@ export class Search implements OnInit, OnDestroy {
       this.executedCriteria.set(null);
     }
     this.pendingCriteria = null;
+
+    // Mastodon refuses filters without a word (HTTP 400); say what to add instead.
+    const onlyFilters =
+      type === 'statuses' && !this.capabilities.active && !this.mediaHome()
+        ? filtersWithoutTerm(media.query)
+        : null;
+    if (onlyFilters) {
+      this.results.set(null);
+      this.searchError.set({ kind: 'needsWord', filters: onlyFilters.join(' ') });
+      this.diagnostics.info('Search', 'load:needs-word', { type });
+      return;
+    }
     this.searching.set(true);
 
     // Anonymous post search fans out to one call per hashtag. Cap the tag count
@@ -2787,6 +2825,9 @@ export class Search implements OnInit, OnDestroy {
         this.searching.set(false);
         this.diagnostics.error('Search', 'load:error', error, { type });
         this.scanFailed.set(true);
+        // Don't leave the previous query's results under the new query.
+        this.results.set(null);
+        this.searchError.set(describeSearchError(error));
         // A failed search is the other way to end up with an empty page, and the
         // reason is just as worth naming.
         void this.explainEmptyResult();
@@ -2804,6 +2845,66 @@ export class Search implements OnInit, OnDestroy {
    * are in. Post fan-out reuses the same hashtag transform as post search, so it
    * respects the API-call budget the same way.
    */
+  // --- People who post in a language (spec/moderation-facets.md §4) ---
+
+  /** The language People search looks for: '' for any. In the URL as `plang`. */
+  protected peopleLanguage = signal('');
+  /** Seeded queries not yet run, for "More people". */
+  private seedQueue: string[] = [];
+  /** How many seeded queries ran, for the note under the list. */
+  protected seedsUsed = signal(0);
+  protected seedsLeft = signal(0);
+  /** The language the seed words came from (the field, or a typed `language:`). */
+  private seedLanguage = signal('');
+  protected peopleLanguageName = computed(() =>
+    languageName(this.seedLanguage(), this.kitLocale.active()),
+  );
+
+  /** The next seeded queries the budget allows. */
+  private takeSeeds(): string[] {
+    const batch = this.seedQueue.splice(0, Math.max(1, this.apiBudget()));
+    this.seedsUsed.update((n) => n + batch.length);
+    this.seedsLeft.set(this.seedQueue.length);
+    return batch;
+  }
+
+  /** Run seeded post searches and merge their posts into one page. */
+  private seededPostSearch(
+    queries: string[],
+    resilient: (obs: Observable<SearchResults>, label: string) => Observable<SearchResults>,
+  ): Observable<SearchResults> {
+    return forkJoin(
+      queries.map((query) =>
+        resilient(this.api.search(query, 'statuses', { limit: PAGE_SIZE }), 'seed'),
+      ),
+    ).pipe(
+      map((pages) => ({
+        accounts: [],
+        hashtags: [],
+        statuses: pages.flatMap((page) => page.statuses ?? []),
+      })),
+    );
+  }
+
+  /** "More people": the next seed words, merged into the list. */
+  protected morePeople(): void {
+    if (this.searching() || !this.seedQueue.length) return;
+    const batch = this.takeSeeds();
+    const empty: SearchResults = { accounts: [], statuses: [], hashtags: [] };
+    this.searching.set(true);
+    this.activeSearch = this.seededPostSearch(batch, (obs) =>
+      obs.pipe(catchError(() => of(empty))),
+    ).subscribe((page) => {
+      const authors = condenseStatusesToAuthors(page.statuses ?? []);
+      if (authors.length) {
+        this.accountItems.update((cur) => mergeAuthors(cur, authors));
+        this.loadRelationships(authors.map((a) => a.account));
+      }
+      this.callsUsed.update((c) => c + batch.length);
+      this.searching.set(false);
+    });
+  }
+
   private fetchAccounts(q: string): void {
     const criteria = this.accountCriteria();
     const source = criteria.source ?? 'both';
@@ -2835,7 +2936,7 @@ export class Search implements OnInit, OnDestroy {
     // accounts it hasn't federated with yet (how you find someone by address).
     const resolve = /^@?[\w.-]+@[\w.-]+\.\w+$/.test(q) || /^https?:\/\//.test(q);
     const bioReq: Observable<SearchResults> | null =
-      source === 'posts'
+      source === 'posts' || !q
         ? null
         : resilient(
             this.capabilities.active
@@ -2859,20 +2960,58 @@ export class Search implements OnInit, OnDestroy {
     } else {
       this.firstPageTags = null;
     }
+    // People who post in a language (spec/moderation-facets.md §4). The
+    // language rides along as `language:xx`; with no word to go with it,
+    // Mastodon refuses the search (HTTP 400), so common words of that language
+    // seed it instead, one call each.
+    const language = this.peopleLanguage();
+    const postQuery =
+      !this.capabilities.active && language ? `${q} language:${language}`.trim() : q;
+    const onlyFilters =
+      !this.capabilities.active && source !== 'bio' ? filtersWithoutTerm(postQuery) : null;
+    const seedLanguage = onlyFilters ? language || languageInQuery(postQuery) : '';
+    const seeds = seedLanguage ? seedWordsFor(seedLanguage) : [];
+    this.seedQueue = seeds.length ? seeds.map((seed) => `${seed} ${postQuery}`) : [];
+    this.seedsUsed.set(0);
+    this.seedsLeft.set(0);
+    this.seedLanguage.set(seedLanguage);
+    if (onlyFilters && !seeds.length) {
+      this.searchError.set({ kind: 'needsWord', filters: onlyFilters.join(' ') });
+      if (!bioReq) {
+        this.searching.set(false);
+        this.accountSearchRan.set(true);
+        return;
+      }
+    }
+    if (this.capabilities.active && !q) {
+      // Signed out, post search is a hashtag transform: it cannot filter by language.
+      this.searchError.set({ kind: 'needsSignIn' });
+      this.searching.set(false);
+      this.accountSearchRan.set(true);
+      return;
+    }
+    const seedBatch = seeds.length ? this.takeSeeds() : [];
     const postsReq: Observable<SearchResults> | null =
-      source === 'bio'
+      source === 'bio' || (onlyFilters && !seeds.length)
         ? null
-        : resilient(
-            this.capabilities.active
-              ? this.anonymousPublic.searchPostsByHashtags(this.searchHost(), q, {
-                  maxTags: this.apiBudget(),
-                })
-              : this.api.search(q, 'statuses', { limit: PAGE_SIZE }),
-            'posts',
-          );
+        : seedBatch.length
+          ? this.seededPostSearch(seedBatch, resilient)
+          : resilient(
+              this.capabilities.active
+                ? this.anonymousPublic.searchPostsByHashtags(this.searchHost(), q, {
+                    maxTags: this.apiBudget(),
+                  })
+                : this.api.search(postQuery, 'statuses', { limit: PAGE_SIZE }),
+              'posts',
+            );
 
-    // Each request costs at least 1; anonymous post fan-out costs one per tag.
-    const postCost = this.firstPageTags ? this.firstPageTags.length : 1;
+    // Each request costs at least 1; anonymous post fan-out costs one per tag;
+    // a seeded search costs one per seed word.
+    const postCost = seedBatch.length
+      ? seedBatch.length
+      : this.firstPageTags
+        ? this.firstPageTags.length
+        : 1;
 
     this.debug('[search] account fetch', {
       q,
@@ -3113,9 +3252,25 @@ export class Search implements OnInit, OnDestroy {
   /** Snapshot of the numeric bounds that the current results are gated by. */
   private executedAccountBounds = signal<AccountSearchCriteria>({ text: '' });
 
+  /** Each loaded person's languages, from their bio and their matched posts. */
+  private accountLanguages = computed(() => {
+    const out = new Map<string, AccountLanguages>();
+    for (const item of this.accountItems()) {
+      out.set(item.account.id, inferAccountLanguages(item.account, item.matchingPosts));
+    }
+    return out;
+  });
+  private readonly accountLanguageOf = (account: Account): string | null =>
+    this.accountLanguages().get(account.id)?.primary ?? null;
+
   /** Facets computed from all loaded accounts (counts reflect the full load). */
   protected accountFacets = computed<AccountFacet[]>(() =>
-    buildAccountFacets(this.accountItems().map((i) => i.account)),
+    buildAccountFacets(
+      this.accountItems().map((i) => i.account),
+      Date.now(),
+      this.accountLanguageOf,
+      (code) => languageName(code, this.kitLocale.active()),
+    ),
   );
 
   /** The loaded accounts after numeric gates, facet selection, and text filter. */
@@ -3134,7 +3289,9 @@ export class Search implements OnInit, OnDestroy {
           statuses: bounds.statuses,
         }) &&
         [...byKind.entries()].every(([kind, values]) =>
-          values.some((v) => accountMatchesFacet(item.account, kind, v)),
+          values.some((v) =>
+            accountMatchesFacet(item.account, kind, v, Date.now(), this.accountLanguageOf),
+          ),
         ),
     );
     // Text filter reuses filterAccounts over the accounts, keeping matches attached.

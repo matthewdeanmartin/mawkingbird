@@ -1,5 +1,24 @@
 # Sprint 6 opening consolidation audit
 
+## People by language and Directory filters, 2026-11-22
+
+Reviewed 2,139 source files (new: the pure `language/account-language.ts` and
+`language/seed-words.ts`) and 724 candidate files. One candidate is added and
+reconciled as backlog: `language/language-select/language-select.ts`, the
+post-search language select moved into a shared component, now also used by
+People search and the Directory. The Directory gains that select, the adult
+filter control, collapsed adult rows, and an outline MbButton to check
+unknown people's recent posts. People search gains a "More people" outline
+MbButton. No shared widget implementation changed.
+
+## Search failures, 2026-11-22
+
+Reviewed 2,136 source files (new: the pure `discovery/search/search-query-check.ts`).
+A failed or filters-only post search now shows an alert in the existing
+`search-unavailable` style with the shared outline MbButton "Try again", as the
+timeout state already did. Remaining entries are line shifts in `search.html`.
+Candidate membership and dispositions are unchanged.
+
 ## Adult content filter, 2026-11-22
 
 Reviewed 2,135 source files (new: the pure

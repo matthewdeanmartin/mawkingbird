@@ -404,3 +404,26 @@ describe('last-activity facet', () => {
     expect(accountMatchesFacet(activeDaysAgo(7.1), 'activity', 'd30', NOW)).toBe(true);
   });
 });
+
+describe('language facet', () => {
+  const langs: Record<string, string | null> = { a: 'ms', b: 'ms-id', c: null, d: 'en' };
+  const languageOf = (account: Account) => langs[account.id] ?? null;
+  const people = ['a', 'b', 'c', 'd'].map((id) => makeAccount({ id, acct: id }));
+
+  it('appears only when languages are known, labelling the uncertain and the unknown', () => {
+    expect(buildAccountFacets(people).some((f) => f.kind === 'language')).toBe(false);
+    const facet = buildAccountFacets(people, Date.now(), languageOf, (c) => `name:${c}`).find(
+      (f) => f.kind === 'language',
+    )!;
+    const byValue = new Map(facet.values.map((v) => [v.value, v]));
+    expect(byValue.get('ms')?.text).toBe('name:ms');
+    expect(byValue.get('ms-id')?.labelKey).toBe('pages.search.facet.malayOrIndonesian');
+    expect(byValue.get('und')?.labelKey).toBe('pages.search.facet.languageUnknown');
+  });
+
+  it('matches people by their main language', () => {
+    expect(accountMatchesFacet(people[0], 'language', 'ms', Date.now(), languageOf)).toBe(true);
+    expect(accountMatchesFacet(people[2], 'language', 'und', Date.now(), languageOf)).toBe(true);
+    expect(accountMatchesFacet(people[3], 'language', 'ms', Date.now(), languageOf)).toBe(false);
+  });
+});

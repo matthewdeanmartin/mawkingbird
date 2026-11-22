@@ -41,3 +41,14 @@
   display: block;
   margin: 16px auto;
 }
+.dir-language {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dir-unknown {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 12px 0;
+}

@@ -30,12 +30,11 @@ export function parseMediaQuery(query: string): { query: string; types: SearchMe
     types.add(match[1].toLowerCase() as SearchMediaType);
     return false;
   });
-  // Attachment-only image searches can use Mastodon's native filter. Other bare
-  // media filters scan the home timeline; has:media would discard external links.
+  // Bare media filters scan the home timeline. Mastodon's search refuses a
+  // query made only of filters ("At least one keyword or phrase is required"),
+  // so a bare `has:media` would always fail with HTTP 400.
   return {
-    query: types.size
-      ? rest.join(' ') || (types.size === 1 && types.has('image') ? 'has:media' : '')
-      : query,
+    query: types.size ? rest.join(' ') : query,
     types: [...types],
   };
 }

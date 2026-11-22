@@ -542,25 +542,7 @@
                 </label>
                 <label>
                   <span class="muted small">{{ 'pages.search.field.language' | transloco }}</span>
-                  <select
-                    #languageSelect
-                    [ngModel]="language()"
-                    (ngModelChange)="chooseLanguage($event, languageSelect)"
-                  >
-                    <option value="">{{ 'pages.search.language.any' | transloco }}</option>
-                    @for (group of languageGroups(); track group.kind) {
-                      <optgroup [label]="'pages.search.language.group.' + group.kind | transloco">
-                        @for (l of group.options; track l.code) {
-                          <option [value]="l.code">
-                            {{ l.name }}{{ l.endonym ? ' · ' + l.endonym : '' }}
-                          </option>
-                        }
-                      </optgroup>
-                    }
-                    <option [value]="moreLanguages">
-                      {{ 'pages.search.language.more' | transloco }}
-                    </option>
-                  </select>
+                  <app-language-select [value]="language()" (valueChange)="language.set($event)" />
                 </label>
               </div>
 
@@ -648,6 +630,18 @@
                   }
                 </select>
               </label>
+
+              <label class="adv-field">
+                <span class="muted small">{{
+                  'pages.search.accountField.language' | transloco
+                }}</span>
+                <app-language-select
+                  [value]="peopleLanguage()"
+                  [anyLabel]="'pages.search.accountField.languageAny' | transloco"
+                  (valueChange)="peopleLanguage.set($event)"
+                />
+              </label>
+              <p class="muted small">{{ 'pages.search.accountField.languageHint' | transloco }}</p>
 
               <div class="num-facet-grid">
                 <div class="num-facet">
@@ -1336,6 +1330,28 @@
             @if (!shownAccountCount()) {
               <p class="muted center">{{ 'pages.search.results.noLoadedPeople' | transloco }}</p>
             }
+            @if (seedsUsed()) {
+              <p class="muted small center" data-seeded>
+                {{
+                  'pages.search.results.seeded'
+                    | transloco: { count: seedsUsed(), language: peopleLanguageName() }
+                }}
+              </p>
+              @if (seedsLeft()) {
+                <p class="center">
+                  <button
+                    type="button"
+                    mbButton
+                    variant="outline"
+                    data-more-people
+                    [disabled]="searching()"
+                    (click)="morePeople()"
+                  >
+                    {{ 'pages.search.results.morePeople' | transloco: { count: seedsLeft() } }}
+                  </button>
+                </p>
+              }
+            }
           } @else if (searching()) {
             <p class="muted center" role="status">
               {{ 'pages.search.results.searching' | transloco }}
@@ -1388,6 +1404,41 @@
               <span class="small">{{ 'pages.search.results.stillWaiting' | transloco }}</span>
             }
           </p>
+        }
+        @if (searchError(); as failure) {
+          <div class="search-unavailable" role="alert" data-search-error>
+            @if (failure.kind === 'needsSignIn') {
+              <p>{{ 'pages.search.results.needsSignIn' | transloco }}</p>
+            } @else if (failure.kind === 'needsWord') {
+              <p>
+                {{
+                  failure.filters
+                    ? ('pages.search.results.needsWord' | transloco: { filters: failure.filters })
+                    : ('pages.search.results.needsWordShort' | transloco)
+                }}
+              </p>
+            } @else {
+              <p>
+                {{
+                  failure.status
+                    ? ('pages.search.results.failed' | transloco: { status: failure.status })
+                    : ('pages.search.results.unreachable' | transloco)
+                }}
+              </p>
+              @if (failure.detail) {
+                <p class="small">
+                  {{ 'pages.search.results.serverSaid' | transloco: { detail: failure.detail } }}
+                </p>
+              }
+            }
+          </div>
+          @if (failure.kind === 'failed') {
+            <p class="muted center">
+              <button type="button" mbButton variant="outline" (click)="retrySearch()">
+                {{ 'pages.search.results.tryAgain' | transloco }}
+              </button>
+            </p>
+          }
         }
         @if (type() !== 'accounts' && searchTimedOut()) {
           <p class="search-unavailable" role="alert">
@@ -1635,12 +1686,6 @@
     [context]="searchHelperContext()"
     (useQuery)="useSuggestedQuery($event)"
     (closed)="searchHelperOpen.set(false)"
-  />
-}
-@if (languageFinderOpen()) {
-  <app-language-finder-dialog
-    (picked)="chooseLanguage($event)"
-    (closed)="languageFinderOpen.set(false)"
   />
 }
 

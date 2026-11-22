@@ -1,11 +1,20 @@
+import { UiLocale } from '../../i18n/locale';
+import { languageName } from '../../language/language-catalog';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { catchError, EMPTY } from 'rxjs';
+import { catchError, EMPTY, forkJoin, map, of } from 'rxjs';
+import { MbButton } from '../../design-system/button/button';
+import { AccountLanguages, inferAccountLanguages, writesIn } from '../../language/account-language';
+import { LanguageSelect } from '../../language/language-select/language-select';
+import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
+import { AdultCollapsed, AdultFilterControl } from '../../moderation/adult-content/adult-explain';
+import { AdultResults } from '../../moderation/adult-content/adult-results';
+import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
 import { Api } from '../../platform/api/api';
-import { Account, Relationship } from '../../platform/api/models';
+import { Account, Relationship, Status } from '../../platform/api/models';
 import { Server } from '../../platform/http/server';
 import { AccountResultCard } from '../search/account-result-card';
 import { AccountWithMatches } from '../search/account-refine';
@@ -40,6 +49,13 @@ const PAGE_SIZE = 80;
  * button restores it, matching how search's URL sync already behaves.
  */
 // i18n pages.directory.heading: Server directory
+// i18n pages.directory.language: Posts in
+// i18n pages.directory.languageAny: Any language
+// i18n pages.directory.unknown.one: {{count}} person hidden: we can’t tell their language from their profile yet.
+// i18n pages.directory.unknown.other: {{count}} people hidden: we can’t tell their language from their profile yet.
+// i18n pages.directory.check: Check their recent posts ({{count}} requests)
+// i18n pages.directory.checking: Checking…
+// i18n pages.directory.noneInLanguage: Nobody loaded so far posts in {{language}}. Load more, or check the people we can’t tell yet.
 // i18n pages.directory.blurb: Accounts on {{host}} that chose to appear in the public directory. Opting out is the default on some servers, so this is a slice of the membership, not a roster.
 // i18n pages.directory.tabs.active: Recently active
 // i18n pages.directory.tabs.new: Recently joined
@@ -58,7 +74,15 @@ const PAGE_SIZE = 80;
 // i18n pages.directory.errorMessage: {{host}} didn't return a profile directory. The server may have it turned off.
 @Component({
   selector: 'app-directory',
-  imports: [RouterLink, AccountResultCard, TranslocoPipe],
+  imports: [
+    RouterLink,
+    AccountResultCard,
+    TranslocoPipe,
+    LanguageSelect,
+    AdultFilterControl,
+    AdultCollapsed,
+    MbButton,
+  ],
   templateUrl: './directory.html',
   styleUrl: './directory.css',
 })
@@ -71,6 +95,7 @@ export class Directory implements OnInit {
   protected capabilities = inject(AnonymousCapabilities);
   private anonymousFollows = inject(AnonymousFollows);
   private transloco = inject(TranslocoService);
+  private locale = inject(UiLocale);
 
   protected order = signal<DirectoryOrder>('active');
   protected local = signal(true);
@@ -94,10 +119,111 @@ export class Directory implements OnInit {
       this.transloco.translate<string>('pages.directory.thisServer'),
   );
 
-  /** The card takes the search page's shape; the directory has no matching posts. */
-  protected items = computed<AccountWithMatches[]>(() =>
-    this.accounts().map((account) => ({ account, matchingPosts: [] })),
+  // --- Language and adult filters (spec/moderation-facets.md §4, Sprint 6) ---
+
+  /** At most this many profiles are checked per click; more is the reader's call. */
+  static readonly CHECK_BATCH = 10;
+  /** Show people who post in this language; '' for anyone. Client side only. */
+  protected language = signal('');
+  /** Recent posts fetched per account by "Check their recent posts". */
+  private postsById = signal<ReadonlyMap<string, Status[]>>(new Map());
+  protected checking = signal(false);
+
+  /** The card takes the search page's shape; posts appear once checked. */
+  protected allItems = computed<AccountWithMatches[]>(() =>
+    this.accounts().map((account) => ({
+      account,
+      matchingPosts: this.postsById().get(account.id) ?? [],
+    })),
   );
+
+  private languages = computed(() => {
+    const out = new Map<string, AccountLanguages>();
+    for (const item of this.allItems()) {
+      out.set(item.account.id, inferAccountLanguages(item.account, item.matchingPosts));
+    }
+    return out;
+  });
+
+  /** Loaded people whose language is unknown and whose posts were not checked. */
+  protected unknownLanguage = computed(() =>
+    this.language()
+      ? this.allItems().filter(
+          (i) => !this.languages().get(i.account.id)?.votes && !this.postsById().has(i.account.id),
+        )
+      : [],
+  );
+  protected checkCount = computed(() =>
+    Math.min(Directory.CHECK_BATCH, this.unknownLanguage().length),
+  );
+
+  private readonly adult = new AdultResults(
+    inject(ClientPrefs),
+    () => [],
+    () => this.allItems(),
+  );
+  protected readonly adultFilter = this.adult.filter;
+
+  /** What the list shows: language first, then the adult filter's Only. */
+  protected items = computed<AccountWithMatches[]>(() => {
+    const language = this.language();
+    const byLanguage = language
+      ? this.allItems().filter((i) => {
+          const langs = this.languages().get(i.account.id);
+          return !!langs && writesIn(langs, language);
+        })
+      : this.allItems();
+    return this.adult.keepPeople(byLanguage);
+  });
+
+  protected adultHidden = computed(
+    () => this.items().filter((i) => this.adult.collapsedAccount(i.account.id)).length,
+  );
+  protected adultDropped = this.adult.droppedPeople;
+
+  protected languageName = computed(() =>
+    this.language() ? languageName(this.language(), this.locale.active()) : '',
+  );
+
+  protected setAdultFilter(value: AdultFilter): void {
+    this.adult.choose(value);
+  }
+
+  protected adultCollapsed(id: string): AdultVerdict | null {
+    return this.adult.collapsedAccount(id);
+  }
+
+  protected revealAdult(id: string): void {
+    this.adult.reveal(`a:${id}`);
+  }
+
+  /**
+   * Fetch recent posts for the next unknown-language people, one request each
+   * and at most {@link Directory.CHECK_BATCH} per click. Failures count as
+   * checked, with no evidence, so the button never loops on a broken profile.
+   */
+  protected checkLanguages(): void {
+    const batch = this.unknownLanguage().slice(0, Directory.CHECK_BATCH);
+    if (!batch.length || this.checking()) return;
+    this.checking.set(true);
+    forkJoin(
+      batch.map((item) =>
+        this.api.getAccountStatuses(item.account.id, { limit: 20 }).pipe(
+          catchError(() => of([] as Status[])),
+          map((posts) => [item.account.id, posts] as const),
+        ),
+      ),
+    )
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((pairs) => {
+        this.postsById.update((cur) => {
+          const next = new Map(cur);
+          for (const [id, posts] of pairs) next.set(id, posts);
+          return next;
+        });
+        this.checking.set(false);
+      });
+  }
 
   ngOnInit(): void {
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
@@ -135,6 +261,7 @@ export class Directory implements OnInit {
     this.accounts.set([]);
     this.relationships.set({});
     this.expanded.set(new Set());
+    this.postsById.set(new Map());
     this.api
       .directory({ order: this.order(), local: this.local(), limit: PAGE_SIZE })
       .pipe(

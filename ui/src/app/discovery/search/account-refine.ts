@@ -163,7 +163,14 @@ export interface AccountFacetValue {
   count: number;
 }
 
-export type AccountFacetKind = 'domain' | 'bot' | 'locked' | 'followers' | 'statuses' | 'activity';
+export type AccountFacetKind =
+  'domain' | 'bot' | 'locked' | 'followers' | 'statuses' | 'activity' | 'language';
+
+/**
+ * A person's main language for the Language facet: a bare code, `ms-id` for
+ * "Malay or Indonesian, undecided", or null when nothing could be told.
+ */
+export type AccountLanguageOf = (account: Account) => string | null;
 
 export interface AccountFacet {
   kind: AccountFacetKind;
@@ -312,7 +319,12 @@ function activityBins(accounts: Account[], now: number): AccountFacetValue[] {
  * The numeric min/max inputs are the precise tool; these buckets are the quick
  * clickable one.
  */
-export function buildAccountFacets(accounts: Account[], now: number = Date.now()): AccountFacet[] {
+export function buildAccountFacets(
+  accounts: Account[],
+  now: number = Date.now(),
+  languageOf?: AccountLanguageOf,
+  languageLabel: (code: string) => string = (code) => code,
+): AccountFacet[] {
   if (!accounts.length) {
     return [];
   }
@@ -387,6 +399,15 @@ export function buildAccountFacets(accounts: Account[], now: number = Date.now()
       ? { value: 'locked', labelKey: 'pages.search.facet.requiresApproval' }
       : { value: 'open', labelKey: 'pages.search.facet.open' },
   );
+  if (languageOf) {
+    tally('language', 'pages.search.facet.language', (a) => {
+      const lang = languageOf(a);
+      if (!lang) return { value: 'und', labelKey: 'pages.search.facet.languageUnknown' };
+      if (lang === 'ms-id')
+        return { value: lang, labelKey: 'pages.search.facet.malayOrIndonesian' };
+      return { value: lang, labelKey: null, text: languageLabel(lang) };
+    });
+  }
   bucketFacet('followers', 'pages.search.facet.followers', (a) => a.followers_count);
   bucketFacet('statuses', 'pages.search.facet.posts', (a) => a.statuses_count);
 
@@ -448,8 +469,11 @@ export function accountMatchesFacet(
   kind: AccountFacetKind,
   value: string,
   now: number = Date.now(),
+  languageOf?: AccountLanguageOf,
 ): boolean {
   switch (kind) {
+    case 'language':
+      return (languageOf?.(a) ?? 'und') === value;
     case 'domain':
       return (acctDomain(a.acct) || 'local') === value;
     case 'bot':

@@ -10,8 +10,9 @@ describe('synthetic media queries', () => {
       types: ['video', 'audio'],
     });
     expect(parseMediaQuery('has:audiofile')).toEqual({ query: 'has:audiofile', types: [] });
+    // Bare filters go to the home-timeline scan: Mastodon refuses filter-only searches.
     expect(parseMediaQuery('has:image has:image')).toEqual({
-      query: 'has:media',
+      query: '',
       types: ['image'],
     });
     expect(parseMediaQuery('"has:audio"')).toEqual({ query: '"has:audio"', types: [] });

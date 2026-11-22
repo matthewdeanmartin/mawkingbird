@@ -65,12 +65,12 @@ interface SearchInternals {
   canEnrichActivity(): boolean;
   enrichActivity(): void;
   enrichError: WritableSignal<string | null>;
-  language: WritableSignal<string>;
-  languageGroups(): { kind: string; options: { code: string }[] }[];
-  languageFinderOpen: WritableSignal<boolean>;
-  chooseLanguage(code: string, select?: HTMLSelectElement): void;
-  moreLanguages: string;
   adultFilter: WritableSignal<'either' | 'hide' | 'only'>;
+  peopleLanguage: WritableSignal<string>;
+  seedsUsed(): number;
+  seedsLeft(): number;
+  morePeople(): void;
+  accountFacets(): { kind: string; values: { value: string; count: number }[] }[];
   setAdultFilter(value: 'either' | 'hide' | 'only'): void;
   adultCollapsedPost(s: Status): { adult: boolean } | null;
   adultCollapsedAccount(id: string): { adult: boolean } | null;
@@ -205,6 +205,74 @@ describe('Search', () => {
     internals(fixture).run();
     fixture.detectChanges();
   }
+
+  describe('searches that cannot or did not run', () => {
+    it('explains a filters-only post search instead of sending one the server refuses', () => {
+      TestBed.inject(Auth).setToken('needs-word-token');
+      const fixture = setUp();
+      search(fixture, 'language:ms');
+      httpMock.expectNone((r) => r.url === '/api/v2/search');
+      const alert = (fixture.nativeElement as HTMLElement).querySelector('[data-search-error]');
+      expect(alert?.getAttribute('role')).toBe('alert');
+      expect(alert?.textContent).toContain('Mastodon needs at least one word to search for');
+      expect(alert?.textContent).toContain('language:ms');
+      expect(internals(fixture).searching()).toBe(false);
+    });
+
+    it('skips the doomed post branch for filters with no known seed words', () => {
+      TestBed.inject(Auth).setToken('needs-word-people');
+      const fixture = setUp();
+      // Cornish has no seed words, so the filter alone cannot run.
+      search(fixture, 'language:kw', 'accounts');
+      const requests = httpMock.match((r) => r.url === '/api/v2/search');
+      expect(requests.map((r) => r.request.params.get('type'))).toEqual(['accounts']);
+      requests[0].flush(makeResults());
+      fixture.detectChanges();
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('[data-search-error]')?.textContent,
+      ).toContain('Mastodon needs at least one word');
+    });
+
+    it('shows a failed search with the server’s words and a way to retry', () => {
+      TestBed.inject(Auth).setToken('failed-token');
+      const fixture = setUp();
+      search(fixture, 'esp32');
+      httpMock
+        .expectOne((r) => r.url === '/api/v2/search')
+        .flush({ error: 'Search is temporarily unavailable' }, { status: 503, statusText: 'x' });
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      const alert = el.querySelector('[data-search-error]');
+      expect(alert?.textContent).toContain('The search failed (HTTP 503).');
+      expect(alert?.textContent).toContain('Search is temporarily unavailable');
+      const retry = [...el.querySelectorAll<HTMLButtonElement>('button')].find(
+        (b) => b.textContent?.trim() === 'Try again',
+      );
+      expect(retry).toBeTruthy();
+      retry!.click();
+      for (const request of httpMock.match((r) => r.url === '/api/v2/search')) {
+        request.flush(makeResults([makeStatus('ok')]));
+      }
+      fixture.detectChanges();
+      expect(el.querySelector('[data-search-error]')).toBeNull();
+    });
+
+    it('recognises the refusal from a server even when the query looked fine to us', () => {
+      TestBed.inject(Auth).setToken('server-refusal');
+      const fixture = setUp();
+      search(fixture, 'esp32');
+      httpMock
+        .expectOne((r) => r.url === '/api/v2/search')
+        .flush(
+          { error: 'At least one keyword or phrase is required' },
+          { status: 400, statusText: 'Bad Request' },
+        );
+      fixture.detectChanges();
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('[data-search-error]')?.textContent,
+      ).toContain('Mastodon needs at least one word to search for, not only filters');
+    });
+  });
 
   it('keeps an unindexed hashtag visible with a short empty label and follow action', async () => {
     TestBed.inject(Auth).setToken('tag-follow-token');
@@ -810,12 +878,11 @@ describe('Search', () => {
     fixture.destroy();
   });
 
-  it('uses native has:media for a synthetic media-only search', () => {
+  it('scans the home timeline for a bare has:image, which Mastodon search would refuse', () => {
     const fixture = setUp();
     search(fixture, 'has:image');
-    httpMock
-      .expectOne((r) => r.url === '/api/v2/search' && r.params.get('q') === 'has:media')
-      .flush(makeResults());
+    httpMock.expectNone((r) => r.url === '/api/v2/search');
+    httpMock.expectOne((r) => r.url === '/api/v1/timelines/home').flush([]);
     fixture.destroy();
   });
 
@@ -1848,40 +1915,6 @@ describe('Search', () => {
     });
   });
 
-  describe('language choices', () => {
-    const codes = (fixture: ComponentFixture<Search>, kind: string) =>
-      internals(fixture)
-        .languageGroups()
-        .find((g) => g.kind === kind)
-        ?.options.map((o) => o.code) ?? [];
-
-    it('offers the reader’s declared languages and every app language', () => {
-      TestBed.inject(ClientPrefs).setKnownLanguages(['eo']);
-      const fixture = setUp();
-      expect(codes(fixture, 'yours')).toContain('eo');
-      // Malay and Indonesian are app localizations, so they are always offered.
-      const all = [...codes(fixture, 'yours'), ...codes(fixture, 'app')];
-      expect(all).toContain('ms');
-      expect(all).toContain('id');
-    });
-
-    it('opens the finder from "All languages…" without changing the choice', () => {
-      const fixture = setUp();
-      internals(fixture).language.set('de');
-      const select = document.createElement('select');
-      internals(fixture).chooseLanguage(internals(fixture).moreLanguages, select);
-      expect(internals(fixture).languageFinderOpen()).toBe(true);
-      expect(internals(fixture).language()).toBe('de');
-    });
-
-    it('lists a language picked in the finder as the current choice', () => {
-      const fixture = setUp();
-      internals(fixture).chooseLanguage('tok');
-      expect(internals(fixture).language()).toBe('tok');
-      expect(codes(fixture, 'current')).toEqual(['tok']);
-    });
-  });
-
   describe('adult content filter', () => {
     function adultStatus(id: string): Status {
       return { ...makeStatus(id), spoiler_text: 'lewd', sensitive: true };
@@ -1962,5 +1995,138 @@ describe('Search', () => {
       expect(internals(second).adultFilter()).toBe('only');
       expect(prefs.adultFilter()).toBe('hide');
     });
+  });
+
+  describe('people who post in a language', () => {
+    function author(id: string, note = ''): Account {
+      return makeAccount({ id, acct: id, username: id, note });
+    }
+    function post(id: string, account: Account, language: string, content: string): Status {
+      return { ...makeStatus(id), account, language, content: `<p>${content}</p>` };
+    }
+    const malay = 'Saya suka makan nasi lemak dengan sambal yang pedas di kedai itu';
+
+    it('lists people from common words when the box is empty, one request per word', () => {
+      TestBed.inject(Auth).setToken('seed-token');
+      const fixture = setUp();
+      const state = internals(fixture);
+      state.type.set('accounts');
+      state.peopleLanguage.set('ms');
+      expect(state.searchDisabled()).toBe(false);
+      state.run();
+      fixture.detectChanges();
+      const requests = httpMock.match((r) => r.url === '/api/v2/search');
+      // No words means no bio search; the budget (2) decides how many seeds run.
+      expect(requests.map((r) => r.request.params.get('q'))).toEqual([
+        'yang language:ms',
+        'dan language:ms',
+      ]);
+      const aminah = author('aminah');
+      requests[0].flush(makeResults([post('1', aminah, 'ms', malay)]));
+      requests[1].flush(makeResults([post('2', author('budi'), 'ms', malay)]));
+      fixture.detectChanges();
+      expect(
+        state
+          .accountItems()
+          .map((i) => i.account.id)
+          .sort(),
+      ).toEqual(['aminah', 'budi']);
+      expect(state.seedsUsed()).toBe(2);
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.querySelector('[data-seeded]')?.textContent).toContain('2 common words in Malay');
+
+      // More people runs the next words and merges.
+      expect(state.seedsLeft()).toBeGreaterThan(0);
+      state.morePeople();
+      const more = httpMock.match((r) => r.url === '/api/v2/search');
+      expect(more.map((r) => r.request.params.get('q'))).toEqual([
+        'saya language:ms',
+        'ini language:ms',
+      ]);
+      more.forEach((r) => r.flush(makeResults([post('3', author('citra'), 'ms', malay)])));
+      expect(state.accountItems().length).toBe(3);
+    });
+
+    it('adds the language to the post branch when there are words', () => {
+      TestBed.inject(Auth).setToken('lang-words-token');
+      const fixture = setUp();
+      const state = internals(fixture);
+      state.peopleLanguage.set('eo');
+      search(fixture, 'kato', 'accounts');
+      const requests = httpMock.match((r) => r.url === '/api/v2/search');
+      expect(
+        requests.map((r) => [r.request.params.get('type'), r.request.params.get('q')]),
+      ).toEqual([
+        ['accounts', 'kato'],
+        ['statuses', 'kato language:eo'],
+      ]);
+      requests.forEach((r) => r.flush(makeResults()));
+    });
+
+    it('seeds a typed language: filter too', () => {
+      TestBed.inject(Auth).setToken('typed-lang-token');
+      const fixture = setUp();
+      search(fixture, 'language:ms', 'accounts');
+      const statuses = httpMock
+        .match((r) => r.url === '/api/v2/search')
+        .filter((r) => r.request.params.get('type') === 'statuses');
+      expect(statuses.map((r) => r.request.params.get('q'))).toEqual([
+        'yang language:ms',
+        'dan language:ms',
+      ]);
+      httpMock.match(() => true).forEach((r) => r.flush(makeResults()));
+      statuses.forEach((r) => r.flush(makeResults()));
+    });
+
+    it('offers a Language facet from what people post', () => {
+      const fixture = setUp();
+      const state = internals(fixture);
+      const aminah = author('aminah');
+      const sam = author('sam');
+      state.accountItems.set([
+        { account: aminah, matchingPosts: [post('1', aminah, 'ms', malay)] },
+        {
+          account: sam,
+          matchingPosts: [
+            post('2', sam, 'en', 'The weather is lovely today and I went for a walk'),
+          ],
+        },
+      ]);
+      const facet = state.accountFacets().find((f) => f.kind === 'language');
+      expect(facet?.values.map((v) => v.value).sort()).toEqual(['en', 'ms']);
+    });
+
+    it('explains that signed-out search cannot find people by language', () => {
+      TestBed.inject(Auth).enterAnonymous('https://home.example');
+      const fixture = setUp();
+      const state = internals(fixture);
+      state.type.set('accounts');
+      state.peopleLanguage.set('ms');
+      state.run();
+      fixture.detectChanges();
+      httpMock.expectNone((r) => r.url.endsWith('/api/v2/search'));
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('[data-search-error]')?.textContent,
+      ).toContain('cannot find people by language');
+      httpMock.match(() => true).forEach((r) => r.flush([]));
+    });
+  });
+
+  it('applies the language to signed-out hashtag-timeline results, as its chip says', () => {
+    TestBed.inject(Auth).enterAnonymous('https://home.example');
+    const fixture = setUp();
+    const state = internals(fixture) as unknown as SearchInternals & {
+      executedCriteria: WritableSignal<{ words?: string; language?: string } | null>;
+    };
+    state.type.set('statuses');
+    state.executedCriteria.set({ words: 'kopi', language: 'ms' });
+    state.results.set(
+      makeResults([
+        { ...makeStatus('m'), language: 'ms' },
+        { ...makeStatus('e'), language: 'en' },
+      ]),
+    );
+    expect(state.visibleStatuses().map((s) => s.id)).toEqual(['m']);
+    httpMock.match(() => true).forEach((r) => r.flush([]));
   });
 });

@@ -26,7 +26,16 @@ module.exports = defineConfig([
     files: ['**/*.html'],
     extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
     plugins: { mb: designSystem },
-    rules: { 'mb/no-pill-in-toolbar': 'error', 'mb/require-shared-post-action': 'error' },
+    rules: {
+      'mb/no-pill-in-toolbar': 'error',
+      'mb/require-shared-post-action': 'error',
+      // Components that render a native control in their own (light) DOM, so a
+      // wrapping <label> labels it exactly as it would a bare <select>.
+      '@angular-eslint/template/label-has-associated-control': [
+        'error',
+        { controlComponents: ['app-language-select'] },
+      ],
+    },
   },
   {
     files: ['**/feeds/client-list/client-list-page.html'],

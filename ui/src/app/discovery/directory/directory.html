@@ -17,7 +17,22 @@
     <input type="checkbox" [checked]="local()" (change)="toggleLocal()" />
     <span>{{ 'pages.directory.thisServerOnly' | transloco }}</span>
   </label>
+
+  <label class="dir-language">
+    <span class="muted small">{{ 'pages.directory.language' | transloco }}</span>
+    <app-language-select
+      [value]="language()"
+      [anyLabel]="'pages.directory.languageAny' | transloco"
+      (valueChange)="language.set($event)"
+    />
+  </label>
 </div>
+<app-adult-filter-control
+  [value]="adultFilter()"
+  [hidden]="adultHidden()"
+  [dropped]="adultDropped()"
+  (valueChange)="setAdultFilter($event)"
+/>
 
 @if (!local()) {
   <p class="muted small dir-note">
@@ -46,17 +61,56 @@
   </p>
 } @else {
   @for (item of items(); track item.account.id) {
-    <app-account-result-card
-      [item]="item"
-      [relationship]="relationshipFor(item.account.id)"
-      [profileLink]="accountLink(item.account)"
-      [expanded]="isExpanded(item.account.id)"
-      [followBusy]="isFollowBusy(item.account.id)"
-      [anonymous]="capabilities.active"
-      (follow)="onFollow($event)"
-      (unfollow)="onUnfollow($event)"
-      (toggleExpand)="toggleExpand(item.account.id)"
-    />
+    @if (adultCollapsed(item.account.id); as verdict) {
+      <app-adult-collapsed
+        kind="account"
+        [verdict]="verdict"
+        (reveal)="revealAdult(item.account.id)"
+      />
+    } @else {
+      <app-account-result-card
+        [item]="item"
+        [relationship]="relationshipFor(item.account.id)"
+        [profileLink]="accountLink(item.account)"
+        [expanded]="isExpanded(item.account.id)"
+        [followBusy]="isFollowBusy(item.account.id)"
+        [anonymous]="capabilities.active"
+        (follow)="onFollow($event)"
+        (unfollow)="onUnfollow($event)"
+        (toggleExpand)="toggleExpand(item.account.id)"
+      />
+    }
+  }
+  @if (language() && !items().length) {
+    <p class="muted center" data-none-in-language>
+      {{ 'pages.directory.noneInLanguage' | transloco: { language: languageName() } }}
+    </p>
+  }
+  @if (unknownLanguage().length) {
+    <div class="dir-unknown" data-unknown-language>
+      <p class="muted small">
+        {{
+          (unknownLanguage().length === 1
+            ? 'pages.directory.unknown.one'
+            : 'pages.directory.unknown.other'
+          ) | transloco: { count: unknownLanguage().length }
+        }}
+      </p>
+      <button
+        type="button"
+        mbButton
+        variant="outline"
+        data-check-languages
+        [disabled]="checking()"
+        (click)="checkLanguages()"
+      >
+        {{
+          checking()
+            ? ('pages.directory.checking' | transloco)
+            : ('pages.directory.check' | transloco: { count: checkCount() })
+        }}
+      </button>
+    </div>
   }
 
   @if (!exhausted()) {
