@@ -439,6 +439,7 @@
     "uses.other": "{{count}} uses"
   },
   "adult": {
+    "badge": "Adult",
     "bskyHidden": "Your Bluesky account hides adult content, so Bluesky leaves most of it out of search results. You can change that in Settings → Moderation on Bluesky.",
     "collapsed.account": "Adult account",
     "collapsed.post": "Adult content",
@@ -2452,7 +2453,7 @@
     "finder.placeholder": "Type a name or code, e.g. Malay, Melayu, ms",
     "finder.title": "All languages",
     "select.any": "Any language",
-    "select.group.app": "Languages Mawkingbird is translated into",
+    "select.group.app": "Other languages",
     "select.group.current": "Chosen",
     "select.group.yours": "Your languages",
     "select.more": "All languages…"
@@ -5423,6 +5424,7 @@
     "search.results.timedOut": "This search took too long and was stopped. The server may be down or overloaded.",
     "search.results.tryAgain": "Try again",
     "search.results.unreachable": "The search failed: the server could not be reached.",
+    "search.results.useSeedWord": "Search with a common {{language}} word (“{{word}}”)",
     "search.results.viewAndFollow": "View and follow #{{tag}}",
     "search.results.weekUses": "{{count}} posts this week",
     "search.results.weekUsesNone": "No posts this week",
@@ -6698,7 +6700,7 @@
     "gate.rulesNone": "{{server}} has not published any rules.",
     "gate.terms": "Terms of Service",
     "gate.title": "Before you report",
-    "gate.warning": "Read the Terms of Service or About page for the full legal notices, if any. This is not legal advice.",
+    "gate.warning": "Read the Terms of Service or About page for the full legal notices, if any.",
     "gate.where": "When last crawled ({{date}}), {{server}} said its jurisdiction was {{jurisdiction}}.",
     "gate.whereNone": "When last crawled ({{date}}), {{server}}’s Terms and About pages did not state a jurisdiction.",
     "gate.whereUnknown": "We have not recorded where {{server}} is based.",
