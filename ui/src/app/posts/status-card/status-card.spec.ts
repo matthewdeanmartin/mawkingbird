@@ -2993,6 +2993,37 @@ describe('StatusCard', () => {
     expect(f.nativeElement.querySelector('app-video-player')).not.toBeNull();
   });
 
+  it('reserves each image’s shape before it loads, so posts below do not jump', () => {
+    const f = setUp(
+      makeStatus({
+        media_attachments: [
+          { ...makeMedia('wide'), meta: { small: { width: 640, height: 360 } } },
+          { ...makeMedia('orig'), meta: { original: { width: 300, height: 400 } } },
+          makeMedia('unknown'),
+        ],
+      }),
+    );
+    const imgs = [
+      ...(f.nativeElement as HTMLElement).querySelectorAll<HTMLImageElement>('.media img'),
+    ];
+    expect(imgs.map((img) => img.style.aspectRatio)).toEqual(['640 / 360', '300 / 400', '']);
+  });
+
+  it('asks before showing a sensitive linked video without covering the page', () => {
+    const f = setUp(
+      makeStatus({
+        sensitive: true,
+        content: '<p><a href="https://youtu.be/dQw4w9WgXcQ">A video</a></p>',
+      }),
+    );
+    const el = f.nativeElement as HTMLElement;
+    const ask = el.querySelector<HTMLButtonElement>('[data-sensitive-video]');
+    expect(ask).not.toBeNull();
+    // Not the absolutely positioned image-grid overlay, which covered the page.
+    expect(ask!.classList.contains('sensitive-reveal')).toBe(false);
+    expect(el.querySelector('.sensitive-reveal')).toBeNull();
+  });
+
   it('shows a single video player when an uploaded clip also links to YouTube', () => {
     const f = setUp(
       makeStatus({

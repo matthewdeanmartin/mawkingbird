@@ -496,53 +496,52 @@
                 </p>
               }
 
-              <label class="adv-field">
-                <span class="muted small">{{ 'pages.search.field.exactPhrase' | transloco }}</span>
-                <input
-                  type="text"
-                  [ngModel]="exactPhrase()"
-                  (ngModelChange)="exactPhrase.set($event)"
-                  [placeholder]="'pages.search.placeholder.exactPhrase' | transloco"
-                />
-              </label>
-
-              <label class="adv-field">
-                <span class="muted small">{{ 'pages.search.field.excludeWords' | transloco }}</span>
-                <input
-                  type="text"
-                  [ngModel]="excludeWords()"
-                  (ngModelChange)="excludeWords.set($event)"
-                  [placeholder]="'pages.search.placeholder.excludeWords' | transloco"
-                />
-              </label>
-
-              <label class="adv-field">
-                <span class="muted small">{{ 'pages.search.field.postedBy' | transloco }}</span>
-                <input
-                  type="text"
-                  [ngModel]="author()"
-                  (ngModelChange)="author.set($event)"
-                  [disabled]="capabilities.active"
-                  [placeholder]="authorPlaceholder"
-                />
-              </label>
-
-              <div class="advanced-fields">
-                <label>
+              <!-- Label beside field, one row each: stacked labels made this
+                   panel too tall to see the results under it. -->
+              <div class="adv-rows">
+                <label class="adv-row">
+                  <span class="muted small">{{
+                    'pages.search.field.exactPhrase' | transloco
+                  }}</span>
+                  <input
+                    type="text"
+                    [ngModel]="exactPhrase()"
+                    (ngModelChange)="exactPhrase.set($event)"
+                    [placeholder]="'pages.search.placeholder.exactPhrase' | transloco"
+                  />
+                </label>
+                <label class="adv-row">
+                  <span class="muted small">{{
+                    'pages.search.field.excludeWords' | transloco
+                  }}</span>
+                  <input
+                    type="text"
+                    [ngModel]="excludeWords()"
+                    (ngModelChange)="excludeWords.set($event)"
+                    [placeholder]="'pages.search.placeholder.excludeWords' | transloco"
+                  />
+                </label>
+                <label class="adv-row">
+                  <span class="muted small">{{ 'pages.search.field.postedBy' | transloco }}</span>
+                  <input
+                    type="text"
+                    [ngModel]="author()"
+                    (ngModelChange)="author.set($event)"
+                    [disabled]="capabilities.active"
+                    [placeholder]="authorPlaceholder"
+                  />
+                </label>
+                <label class="adv-row">
                   <span class="muted small">{{
                     'pages.search.field.postedAfter' | transloco
                   }}</span>
                   <input type="date" [ngModel]="after()" (ngModelChange)="after.set($event)" />
                 </label>
-                <label>
+                <label class="adv-row">
                   <span class="muted small">{{
                     'pages.search.field.postedBefore' | transloco
                   }}</span>
                   <input type="date" [ngModel]="before()" (ngModelChange)="before.set($event)" />
-                </label>
-                <label>
-                  <span class="muted small">{{ 'pages.search.field.language' | transloco }}</span>
-                  <app-language-select [value]="language()" (valueChange)="language.set($event)" />
                 </label>
               </div>
 
@@ -593,6 +592,13 @@
                     </select>
                   </label>
                 }
+              </div>
+
+              <div class="advanced-fields adv-language">
+                <label>
+                  <span class="muted small">{{ 'pages.search.field.language' | transloco }}</span>
+                  <app-language-select [value]="language()" (valueChange)="language.set($event)" />
+                </label>
               </div>
 
               <div class="advanced-actions">
@@ -1300,12 +1306,14 @@
                 </span>
               }
             </div>
-            <app-adult-filter-control
-              [value]="adultFilter()"
-              [hidden]="adultHiddenAccounts()"
-              [dropped]="adultDroppedAccounts()"
-              (valueChange)="setAdultFilter($event)"
-            />
+            @if (adultOfferPeople()) {
+              <app-adult-filter-control
+                [value]="adultFilter()"
+                [hidden]="adultHiddenAccounts()"
+                [dropped]="adultDroppedAccounts()"
+                (valueChange)="setAdultFilter($event)"
+              />
+            }
             @for (item of visibleAccounts(); track item.account.id) {
               @if (adultCollapsedAccount(item.account.id); as verdict) {
                 <app-adult-collapsed
@@ -1332,6 +1340,16 @@
             }
             @if (!shownAccountCount()) {
               <p class="muted center">{{ 'pages.search.results.noLoadedPeople' | transloco }}</p>
+            }
+            @if (languageHiddenCount(); as hidden) {
+              <p class="muted small center" data-language-hidden>
+                {{
+                  (hidden === 1
+                    ? 'pages.search.results.languageHidden.one'
+                    : 'pages.search.results.languageHidden.other'
+                  ) | transloco: { count: hidden, language: searchedLanguageName() }
+                }}
+              </p>
             }
             @if (seedsUsed()) {
               <p class="muted small center" data-seeded>
@@ -1420,19 +1438,6 @@
                     : ('pages.search.results.needsWordShort' | transloco)
                 }}
               </p>
-              @if (seedSuggestion(); as seed) {
-                <p>
-                  <button
-                    type="button"
-                    mbButton
-                    variant="outline"
-                    data-use-seed
-                    (click)="useSeedWord(seed.word)"
-                  >
-                    {{ 'pages.search.results.useSeedWord' | transloco: seed }}
-                  </button>
-                </p>
-              }
             } @else {
               <p>
                 {{
@@ -1550,12 +1555,22 @@
 
           @if (r.statuses.length) {
             <div class="page-head">{{ 'pages.search.results.posts' | transloco }}</div>
-            <app-adult-filter-control
-              [value]="adultFilter()"
-              [hidden]="adultHiddenPosts()"
-              [dropped]="adultDroppedPosts()"
-              (valueChange)="setAdultFilter($event)"
-            />
+            @if (seedsUsed()) {
+              <p class="muted small" data-seeded-posts>
+                {{
+                  'pages.search.results.seeded'
+                    | transloco: { count: seedsUsed(), language: peopleLanguageName() }
+                }}
+              </p>
+            }
+            @if (adultOfferPosts()) {
+              <app-adult-filter-control
+                [value]="adultFilter()"
+                [hidden]="adultHiddenPosts()"
+                [dropped]="adultDroppedPosts()"
+                (valueChange)="setAdultFilter($event)"
+              />
+            }
             @for (group of groups(); track group.key) {
               @if (group.label) {
                 <div class="group-head">

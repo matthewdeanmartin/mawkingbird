@@ -694,3 +694,46 @@
 .result-tag.tag-inactive > a {
   opacity: 0.7;
 }
+
+/* Posts Advanced: label beside field, one compact row each. */
+.adv-rows {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.adv-row {
+  display: contents;
+}
+
+.adv-row input {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--col-bg);
+  color: var(--text);
+  font-size: 14px;
+  min-width: 0;
+}
+
+.adv-row input[type='date'] {
+  justify-self: start;
+}
+
+/* Language gets a row of its own, under Content / Replies / Sensitive. */
+.adv-language {
+  margin-top: 10px;
+}
+
+/* Too narrow for labels beside fields: stack them again. */
+@media (max-width: 420px) {
+  .adv-rows {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .adv-row input {
+    margin-bottom: 6px;
+  }
+}

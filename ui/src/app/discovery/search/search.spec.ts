@@ -210,12 +210,12 @@ describe('Search', () => {
     it('explains a filters-only post search instead of sending one the server refuses', () => {
       TestBed.inject(Auth).setToken('needs-word-token');
       const fixture = setUp();
-      search(fixture, 'language:ms');
+      search(fixture, 'language:kw');
       httpMock.expectNone((r) => r.url === '/api/v2/search');
       const alert = (fixture.nativeElement as HTMLElement).querySelector('[data-search-error]');
       expect(alert?.getAttribute('role')).toBe('alert');
       expect(alert?.textContent).toContain('Mastodon needs at least one word to search for');
-      expect(alert?.textContent).toContain('language:ms');
+      expect(alert?.textContent).toContain('language:kw');
       expect(internals(fixture).searching()).toBe(false);
     });
 
@@ -2134,7 +2134,7 @@ describe('Search', () => {
     it('drops the search error once the box no longer holds the query that failed', () => {
       TestBed.inject(Auth).setToken('dismiss-token');
       const fixture = setUp();
-      search(fixture, 'language:ms');
+      search(fixture, 'language:kw');
       const el = fixture.nativeElement as HTMLElement;
       expect(el.querySelector('[data-search-error]')).not.toBeNull();
       internals(fixture).query.set('');
@@ -2142,18 +2142,34 @@ describe('Search', () => {
       expect(el.querySelector('[data-search-error]')).toBeNull();
     });
 
-    it('offers a common word for a language-only post search, and runs it', () => {
-      TestBed.inject(Auth).setToken('seed-word-token');
+    it('searches posts by language alone using common words, one per page', () => {
+      TestBed.inject(Auth).setToken('seed-posts-token');
       const fixture = setUp();
-      search(fixture, 'language:eo');
+      search(fixture, 'language:uk');
       const el = fixture.nativeElement as HTMLElement;
-      const button = el.querySelector<HTMLButtonElement>('[data-use-seed]');
-      expect(button?.textContent).toContain('Esperanto');
-      expect(button?.textContent).toContain('kaj');
-      button!.click();
-      const requests = httpMock.match((r) => r.url === '/api/v2/search');
-      expect(requests.map((r) => r.request.params.get('q'))).toContain('kaj language:eo');
-      requests.forEach((r) => r.flush(makeResults()));
+      expect(el.querySelector('[data-search-error]')).toBeNull();
+      const first = httpMock.expectOne((r) => r.url === '/api/v2/search');
+      expect(first.request.params.get('q')).toBe('і language:uk');
+      first.flush(makeResults([{ ...makeStatus('u1'), language: 'uk' }]));
+      // The budget fill carries on with the next word; a repeat post is merged.
+      const second = httpMock.expectOne((r) => r.url === '/api/v2/search');
+      expect(second.request.params.get('q')).toBe('не language:uk');
+      second.flush(
+        makeResults([
+          { ...makeStatus('u1'), language: 'uk' },
+          { ...makeStatus('u2'), language: 'uk' },
+        ]),
+      );
+      fixture.detectChanges();
+      expect(
+        internals(fixture)
+          .visibleStatuses()
+          .map((s) => s.id),
+      ).toEqual(['u1', 'u2']);
+      expect(el.querySelector('[data-seeded-posts]')?.textContent).toContain(
+        '2 common words in Ukrainian',
+      );
+      httpMock.match((r) => r.url === '/api/v2/search').forEach((r) => r.flush(makeResults()));
     });
 
     it('hides post results (and their facets) under Accounts, and keeps them for Posts', () => {
@@ -2203,5 +2219,96 @@ describe('Search', () => {
       'non language:it',
     ]);
     requests.forEach((r) => r.flush(makeResults()));
+  });
+
+  it('hides the adult filter when nothing loaded is adult, unless it is set to Only', () => {
+    const fixture = setUp();
+    const state = internals(fixture);
+    const el = fixture.nativeElement as HTMLElement;
+    state.type.set('statuses');
+    state.results.set(makeResults([makeStatus('esp32-a'), makeStatus('esp32-b')]));
+    fixture.detectChanges();
+    expect(el.querySelector('app-adult-filter-control')).toBeNull();
+
+    state.setAdultFilter('only');
+    fixture.detectChanges();
+    // Kept under Only: an empty list must still offer a way back.
+    expect(el.querySelector('app-adult-filter-control')).not.toBeNull();
+
+    state.setAdultFilter('either');
+    state.results.set(
+      makeResults([
+        makeStatus('plain'),
+        { ...makeStatus('a'), spoiler_text: 'lewd', sensitive: true },
+      ]),
+    );
+    fixture.detectChanges();
+    expect(el.querySelector('app-adult-filter-control')).not.toBeNull();
+  });
+
+  it('lays out post Advanced as label-beside-field rows, filters, then language', () => {
+    TestBed.inject(Auth).setToken('layout-token');
+    const fixture = setUp();
+    const state = internals(fixture) as unknown as SearchInternals & { toggleAdvanced(): void };
+    state.type.set('statuses');
+    state.toggleAdvanced();
+    fixture.detectChanges();
+    const panel = (fixture.nativeElement as HTMLElement).querySelector('.advanced-panel')!;
+    expect(panel.querySelectorAll('.adv-rows > label.adv-row')).toHaveLength(5);
+    const blocks = [...panel.children].map((el) => el.className);
+    const rows = blocks.indexOf('adv-rows');
+    const filters = blocks.findIndex((c) => c === 'advanced-fields');
+    const language = blocks.findIndex((c) => c.includes('adv-language'));
+    expect(rows).toBeLessThan(filters);
+    expect(filters).toBeLessThan(language);
+    expect(panel.querySelector('.adv-language app-language-select')).not.toBeNull();
+  });
+
+  describe('"Posts in" filters people found by name or bio too', () => {
+    const english = '<p>The weather is lovely today and I went for a long walk with the dog</p>';
+    const german = '<p>Heute ist das Wetter sehr schön und ich gehe mit dem Hund spazieren</p>';
+
+    function run(fixture: ComponentFixture<Search>, language: string): void {
+      internals(fixture).peopleLanguage.set(language);
+      search(fixture, 'esp32', 'accounts');
+      const requests = httpMock.match((r) => r.url === '/api/v2/search');
+      const bio = requests.find((r) => r.request.params.get('type') === 'accounts')!;
+      bio.flush({
+        ...makeResults(),
+        accounts: [
+          makeAccount({ id: 'en', acct: 'en', note: english }),
+          makeAccount({ id: 'de', acct: 'de', note: german }),
+          makeAccount({ id: 'blank', acct: 'blank', note: '' }),
+        ],
+      });
+      requests.filter((r) => r !== bio).forEach((r) => r.flush(makeResults()));
+      fixture.detectChanges();
+    }
+
+    it('keeps only people shown to write German, and says how many it left out', () => {
+      TestBed.inject(Auth).setToken('people-de-token');
+      const fixture = setUp();
+      run(fixture, 'de');
+      expect(
+        internals(fixture)
+          .visibleAccounts()
+          .map((i) => i.account.id),
+      ).toEqual(['de']);
+      expect(
+        (fixture.nativeElement as HTMLElement).querySelector('[data-language-hidden]')?.textContent,
+      ).toContain('2 people left out');
+    });
+
+    it('treats an unknown language as English, the usual default', () => {
+      TestBed.inject(Auth).setToken('people-en-token');
+      const fixture = setUp();
+      run(fixture, 'en');
+      expect(
+        internals(fixture)
+          .visibleAccounts()
+          .map((i) => i.account.id)
+          .sort(),
+      ).toEqual(['blank', 'en']);
+    });
   });
 });

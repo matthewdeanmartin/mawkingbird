@@ -587,6 +587,18 @@ describe('Notifications', () => {
     expect(lines[0]).toContain('post A');
     expect(lines[0]).toContain('2 likes');
     expect(lines[0]).toContain('+1');
+    const first = digest.querySelector('[data-digest-post]')!;
+    // The post reads as a post, then "2 likes · Open post", then who, as profile links.
+    expect(first.querySelector('.digest-post-text')?.innerHTML).toContain('<p>post A</p>');
+    const open = first.querySelector<HTMLAnchorElement>('.digest-open')!;
+    expect(open.textContent?.trim()).toMatch(/^Open /);
+    expect(open.getAttribute('href')).toBe('/statuses/A');
+    const people = [...first.querySelectorAll<HTMLAnchorElement>('a.digest-person')];
+    expect(people.map((a) => a.getAttribute('href'))).toEqual(
+      expect.arrayContaining([expect.stringContaining('ana')]),
+    );
+    // Faces stack in the ordinary avatar column, so the text keeps its width.
+    expect(digest.querySelectorAll('.digest-avatars > a').length).toBe(3);
   });
 
   it('renders poll bars in both grouped and individual notifications', () => {

@@ -176,16 +176,18 @@
   @for (row of rows(); track row.key) {
     @if (row.kind === 'engagement') {
       <div class="notif notif-digest" data-digest="engagement">
-        <div class="group-avatars">
+        <div class="digest-avatars">
           @for (a of row.people.slice(0, 3); track a.id) {
-            <img
-              class="notif-avatar"
-              [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
-              [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
-              [alt]="a.username"
-              width="40"
-              height="40"
-            />
+            <a [routerLink]="accountProfilePath(a)" [attr.aria-label]="a.acct">
+              <img
+                class="notif-avatar"
+                [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
+                [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
+                [alt]="a.username"
+                width="40"
+                height="40"
+              />
+            </a>
           }
         </div>
         <div class="notif-body">
@@ -202,21 +204,47 @@
               }}</span>
             }
           </button>
-          <p class="muted small digest-people">{{ peopleLine(row.people) }}</p>
+          <p class="muted small digest-people">
+            <ng-container
+              *ngTemplateOutlet="peopleLinks; context: { $implicit: row.people, max: 3 }"
+            />
+          </p>
           @if (isDigestOpen(row.key)) {
             <ul class="digest-posts">
               @for (t of row.posts; track t.status.id) {
                 <li data-digest-post>
-                  <a class="digest-excerpt" [routerLink]="['/statuses', t.status.id]">{{
-                    excerptText(t.status)
-                  }}</a>
+                  <div
+                    class="excerpt-content digest-post-text"
+                    appContentLinks
+                    [innerHTML]="t.status.content | compactLinks | customEmoji: t.status.emojis"
+                  ></div>
+                  @if (t.status.media_attachments?.length && showImages()) {
+                    <span class="excerpt-media">
+                      @for (m of t.status.media_attachments; track m.id) {
+                        <img
+                          [src]="m.preview_url || m.url"
+                          [alt]="m.description || ''"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      }
+                    </span>
+                  }
                   <span class="digest-tally">
                     {{ tallyText(t.likes, t.boosts) }}
                     @if (t.newLikes + t.newBoosts; as fresh) {
                       <span class="digest-new">+{{ fresh }}</span>
                     }
+                    <span aria-hidden="true">·</span>
+                    <a class="digest-open" [routerLink]="['/statuses', t.status.id]">{{
+                      'pages.notifications.digest.openPost' | transloco: { post: words().post }
+                    }}</a>
                   </span>
-                  <span class="muted small">{{ peopleLine(t.people) }}</span>
+                  <span class="muted small digest-people">
+                    <ng-container
+                      *ngTemplateOutlet="peopleLinks; context: { $implicit: t.people, max: 12 }"
+                    />
+                  </span>
                 </li>
               }
             </ul>
@@ -225,16 +253,18 @@
       </div>
     } @else if (row.kind === 'follows') {
       <div class="notif notif-digest" data-digest="follows">
-        <div class="group-avatars">
+        <div class="digest-avatars">
           @for (a of row.accounts.slice(0, 3); track a.id) {
-            <img
-              class="notif-avatar"
-              [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
-              [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
-              [alt]="a.username"
-              width="40"
-              height="40"
-            />
+            <a [routerLink]="accountProfilePath(a)" [attr.aria-label]="a.acct">
+              <img
+                class="notif-avatar"
+                [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
+                [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
+                [alt]="a.username"
+                width="40"
+                height="40"
+              />
+            </a>
           }
         </div>
         <div class="notif-body">
@@ -251,7 +281,11 @@
               }}</span>
             }
           </button>
-          <p class="muted small digest-people">{{ peopleLine(row.accounts) }}</p>
+          <p class="muted small digest-people">
+            <ng-container
+              *ngTemplateOutlet="peopleLinks; context: { $implicit: row.accounts, max: 3 }"
+            />
+          </p>
           @if (isDigestOpen(row.key)) {
             <ul class="digest-posts">
               @for (a of row.accounts; track a.id) {
@@ -572,3 +606,14 @@
     (closed)="listTarget.set(null)"
   />
 }
+
+<ng-template #peopleLinks let-people let-max="max">
+  @for (a of people.slice(0, max); track a.id; let last = $last) {
+    <a class="digest-person" [routerLink]="accountProfilePath(a)"
+      ><app-account-name [account]="a" /></a
+    >{{ last ? '' : ', ' }}
+  }
+  @if (people.length > max) {
+    {{ 'pages.notifications.digest.more' | transloco: { count: people.length - max } }}
+  }
+</ng-template>

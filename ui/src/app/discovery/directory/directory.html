@@ -27,12 +27,14 @@
     />
   </label>
 </div>
-<app-adult-filter-control
-  [value]="adultFilter()"
-  [hidden]="adultHidden()"
-  [dropped]="adultDropped()"
-  (valueChange)="setAdultFilter($event)"
-/>
+@if (adultOfferPeople()) {
+  <app-adult-filter-control
+    [value]="adultFilter()"
+    [hidden]="adultHidden()"
+    [dropped]="adultDropped()"
+    (valueChange)="setAdultFilter($event)"
+  />
+}
 
 @if (!local()) {
   <p class="muted small dir-note">

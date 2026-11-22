@@ -89,6 +89,19 @@ describe('AdultResults', () => {
     ).toBe('hide');
   });
 
+  it('offers the filter only when someone loaded is adult, or under Only', () => {
+    const people = signal([person('b', 'gardener')]);
+    const results = new AdultResults(TestBed.inject(ClientPrefs), () => [], people);
+    expect(results.offerForPeople()).toBe(false);
+    results.choose('hide');
+    expect(results.offerForPeople()).toBe(false);
+    results.choose('only');
+    expect(results.offerForPeople()).toBe(true);
+    results.choose('either');
+    people.set([person('a', '18+'), person('b', 'gardener')]);
+    expect(results.offerForPeople()).toBe(true);
+  });
+
   it('keeps, collapses and counts people by the filter', () => {
     const people = signal([person('a', '18+'), person('b', 'gardener')]);
     const results = new AdultResults(TestBed.inject(ClientPrefs), () => [], people);

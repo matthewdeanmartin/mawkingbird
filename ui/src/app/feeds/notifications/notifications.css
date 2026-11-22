@@ -246,3 +246,29 @@
   display: inline-flex;
   gap: 8px;
 }
+
+/* Digest rows keep the ordinary 42px avatar column: faces stack downward and
+   overlap, so more people never squeeze the text. */
+.digest-avatars {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 42px;
+}
+.digest-avatars a + a {
+  margin-top: -26px;
+}
+.digest-avatars .notif-avatar {
+  border: 2px solid var(--col-bg);
+  box-sizing: border-box;
+}
+.digest-post-text {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.digest-open {
+  font-weight: 600;
+}
+.digest-person {
+  color: inherit;
+}

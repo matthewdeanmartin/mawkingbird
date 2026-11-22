@@ -385,6 +385,10 @@ export class BlueskySearchPanel {
     this.adult.choose(value);
   }
 
+  /** The adult filter shows only when something loaded is adult (or under Only). */
+  protected adultOfferPosts = this.adult.offerForPosts;
+  protected adultOfferPeople = this.adult.offerForPeople;
+
   protected adultCollapsedPost(s: Status): AdultVerdict | null {
     return this.adult.collapsedPost(s);
   }

@@ -56,6 +56,18 @@ const GROUP_KEYS = {
     :host {
       display: contents;
     }
+    /* The host page's select styles cannot reach inside this component, so it
+       carries the look of the search page's other filter selects itself. */
+    select {
+      padding: 6px 8px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--col-bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 14px;
+      max-width: 100%;
+    }
   `,
 })
 export class LanguageSelect {

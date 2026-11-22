@@ -1522,6 +1522,16 @@ export class StatusCard {
     return objectPosition(focalPointOf(media));
   }
 
+  /**
+   * The thumbnail's shape before it loads, from the size the server reports,
+   * so a lazily loaded image takes its final height at once instead of pushing
+   * the posts below it down when the bytes arrive. Null (no reservation) only
+   * when the server sent no size at all.
+   */
+  protected thumbAspect(media: MediaAttachment): string | null {
+    return mediaAspect(media);
+  }
+
   protected openTools(event: Event): void {
     this.closeMenu(event);
     this.toolsOpen.set(true);
@@ -3608,4 +3618,14 @@ export function misskeyProfileRoute(href: string): string[] | null {
   if (!match) return null;
   const host = match[2] && match[2] !== url.host ? match[2] : null;
   return ['/accounts', `mk:@${match[1]}${host ? `@${host}` : ''}`];
+}
+
+/** `width / height` for an attachment's preview, from its reported size. */
+export function mediaAspect(media: MediaAttachment): string | null {
+  const small = media.meta?.small;
+  if (small?.width && small.height) return `${small.width} / ${small.height}`;
+  const original = media.meta?.original;
+  if (original?.width && original.height) return `${original.width} / ${original.height}`;
+  if (original?.aspect && Number.isFinite(original.aspect)) return String(original.aspect);
+  return null;
 }

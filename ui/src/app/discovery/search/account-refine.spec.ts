@@ -427,3 +427,21 @@ describe('language facet', () => {
     expect(accountMatchesFacet(people[3], 'language', 'ms', Date.now(), languageOf)).toBe(false);
   });
 });
+
+describe('duplicate posts from overlapping searches', () => {
+  const post = (id: string, account: Account) => ({ id, account }) as unknown as Status;
+  const ana = makeAccount({ id: 'ana', acct: 'ana' });
+
+  it('counts a post once when two seed-word searches both return it', () => {
+    const [entry] = condenseStatusesToAuthors([post('p1', ana), post('p2', ana), post('p1', ana)]);
+    expect(entry.matchingPosts.map((p) => p.id)).toEqual(['p1', 'p2']);
+  });
+
+  it('merges a person’s posts across pages without repeating any', () => {
+    const merged = mergeAuthors(
+      [{ account: ana, matchingPosts: [post('p1', ana)] }],
+      [{ account: ana, matchingPosts: [post('p1', ana), post('p3', ana)] }],
+    );
+    expect(merged[0].matchingPosts.map((p) => p.id)).toEqual(['p1', 'p3']);
+  });
+});

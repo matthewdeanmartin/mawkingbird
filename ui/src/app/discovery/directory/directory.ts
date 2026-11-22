@@ -196,6 +196,9 @@ export class Directory implements OnInit {
     this.adult.choose(value);
   }
 
+  /** The adult filter shows only when someone loaded is adult (or under Only). */
+  protected adultOfferPeople = this.adult.offerForPeople;
+
   protected adultCollapsed(id: string): AdultVerdict | null {
     return this.adult.collapsedAccount(id);
   }

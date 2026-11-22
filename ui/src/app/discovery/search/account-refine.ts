@@ -124,7 +124,9 @@ export function condenseStatusesToAuthors(statuses: Status[]): AccountWithMatche
       byId.set(acc.id, entry);
       order.push(acc.id);
     }
-    entry.matchingPosts.push(s);
+    // Seed-word searches overlap: one long post can match two or three of
+    // them. Each post counts once, as evidence and on the card.
+    if (!entry.matchingPosts.some((p) => p.id === s.id)) entry.matchingPosts.push(s);
   }
   return order.map((id) => byId.get(id)!);
 }
@@ -145,7 +147,11 @@ export function mergeAuthors(
     const id = item.account.id;
     const existing = byId.get(id);
     if (existing) {
-      existing.matchingPosts = [...existing.matchingPosts, ...item.matchingPosts];
+      const have = new Set(existing.matchingPosts.map((p) => p.id));
+      existing.matchingPosts = [
+        ...existing.matchingPosts,
+        ...item.matchingPosts.filter((p) => !have.has(p.id)),
+      ];
     } else {
       byId.set(id, { account: item.account, matchingPosts: [...item.matchingPosts] });
       order.push(id);

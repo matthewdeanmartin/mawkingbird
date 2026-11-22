@@ -674,12 +674,14 @@
     </p>
   } @else if (target() === 'accounts') {
     <div class="page-head">{{ 'pages.search.bluesky.people' | transloco }}</div>
-    <app-adult-filter-control
-      [value]="adultFilter()"
-      [hidden]="adultHiddenAccounts()"
-      [dropped]="adultDroppedAccounts()"
-      (valueChange)="setAdultFilter($event)"
-    />
+    @if (adultOfferPeople()) {
+      <app-adult-filter-control
+        [value]="adultFilter()"
+        [hidden]="adultHiddenAccounts()"
+        [dropped]="adultDroppedAccounts()"
+        (valueChange)="setAdultFilter($event)"
+      />
+    }
     @if (bskyHidesAdult() && adultFilter() === 'only') {
       <p class="muted small" data-bsky-hides-adult>{{ 'adult.bskyHidden' | transloco }}</p>
     }
@@ -745,12 +747,14 @@
     </div>
   } @else {
     <div class="page-head">{{ words().Posts }}</div>
-    <app-adult-filter-control
-      [value]="adultFilter()"
-      [hidden]="adultHiddenPosts()"
-      [dropped]="adultDroppedPosts()"
-      (valueChange)="setAdultFilter($event)"
-    />
+    @if (adultOfferPosts()) {
+      <app-adult-filter-control
+        [value]="adultFilter()"
+        [hidden]="adultHiddenPosts()"
+        [dropped]="adultDroppedPosts()"
+        (valueChange)="setAdultFilter($event)"
+      />
+    }
     @if (bskyHidesAdult() && adultFilter() === 'only') {
       <p class="muted small" data-bsky-hides-adult>{{ 'adult.bskyHidden' | transloco }}</p>
     }

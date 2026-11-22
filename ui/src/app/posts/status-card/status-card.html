@@ -532,6 +532,7 @@
                       [alt]="m.description || ''"
                       [attr.title]="m.description || null"
                       [style.object-position]="thumbPosition(m)"
+                      [style.aspect-ratio]="thumbAspect(m)"
                       loading="lazy"
                       decoding="async"
                     />
@@ -602,7 +603,17 @@
            wins that. Behind the images pref like every other picture here. -->
       @if (showMedia() && !cwCollapsed() && youtubeVideo(); as video) {
         @if (mediaBlurred()) {
-          <button type="button" class="sensitive-reveal" (click)="revealSensitive($event)">
+          <!-- A plain button, not .sensitive-reveal: that one is absolutely
+               positioned to cover an image grid, and out here it has no
+               positioned parent, so it covered the whole page (one layer per
+               sensitive video post). -->
+          <button
+            mbButton
+            variant="outline"
+            type="button"
+            data-sensitive-video
+            (click)="revealSensitive($event)"
+          >
             {{ 'statusCard.showSensitiveContent' | transloco }}
           </button>
         } @else if (playersShown()) {

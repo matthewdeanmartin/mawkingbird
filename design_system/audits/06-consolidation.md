@@ -1,5 +1,47 @@
 # Sprint 6 opening consolidation audit
 
+## Language-only post search and people language filter, 2026-11-22
+
+Search drops the "search with a common word" outline button (a
+language-only post search now uses common words by itself) and adds two
+muted status lines: the seeded-words note above post results and the
+"N people left out" note under people. Line shifts otherwise; dispositions
+unchanged.
+
+## Post images reserve their shape; posts Advanced layout, 2026-11-22
+
+`status-card.html`: post thumbnails get `aspect-ratio` from the attachment's
+reported size, so lazy images no longer shift the feed as they load. Search's
+posts Advanced panel puts exact phrase, exclude words, posted by and the two
+dates in label-beside-field rows (stacked below 420px), keeps Content /
+Replies / Sensitive / Search in as one row, and gives Language its own row.
+`language-select.ts` styles its own native select to match the page's other
+filter selects. Line shifts otherwise; dispositions unchanged.
+
+## Sensitive video button, menu cleanup, 2026-11-22
+
+`status-card.html`: the sensitive warning for a linked video is now the shared
+outline MbButton (it used the absolutely positioned `.sensitive-reveal`
+overlay outside any positioned parent, so it covered the page). The More
+menu's Observability row lost its connection-speed suffix; the component
+`shell/connection-chip/connection-speed.ts` was removed (the Observability
+page's connection card shows the same figure). Remaining entries are line
+shifts; dispositions unchanged.
+
+## Adult filter shown only when relevant, 2026-11-22
+
+The adult filter control in search, the Bluesky panel and the Directory now
+renders only when a loaded result is adult, or while set to Only. Line shifts
+only; dispositions unchanged.
+
+## Notification digest layout, 2026-11-22
+
+Digest rows now keep the ordinary 42px avatar column (faces stack downward,
+each a profile link) instead of a horizontal stack that narrowed the text.
+Expanded post lines render the post body as other notifications do, then
+"likes · boosts · Open post" and the people as profile links. Remaining
+entries are line shifts; dispositions unchanged.
+
 ## Notification digest, 2026-11-22
 
 Reviewed the inventory delta (new: the pure `feeds/notifications/notification-digest.ts`

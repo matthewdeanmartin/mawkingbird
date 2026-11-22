@@ -123,6 +123,19 @@ export class AdultResults {
     this.revealed.update((set) => new Set(set).add(key));
   }
 
+  /**
+   * Whether the filter control is worth showing over these posts / people:
+   * only when something loaded is adult. An esp32 search should not ask
+   * "were you expecting adult content?". Always shown under Only, which
+   * would otherwise leave an empty list with no way back.
+   */
+  readonly offerForPosts = computed(
+    () => this.filter() === 'only' || [...this.postVerdicts().values()].some((v) => v.adult),
+  );
+  readonly offerForPeople = computed(
+    () => this.filter() === 'only' || [...this.accountVerdicts().values()].some((v) => v.adult),
+  );
+
   /** Loaded posts / people that Only left out for not being adult. */
   readonly droppedPosts = computed(() =>
     this.filter() === 'only' ? this.posts().filter((s) => !this.isAdultPost(s)).length : 0,

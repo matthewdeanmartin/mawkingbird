@@ -407,11 +407,9 @@
               <!-- Storage Diagnostics has no row of its own here any more — this
                  menu had no room left, and /observability already links to it
                  prominently (page-menu-link, and the storage-summary card). -->
-              <!-- The typical reply time rides on this row (no room for another):
-                 the Connection page is one click past Observability. -->
-              <a routerLink="/observability"
-                >{{ 'shell.menu.observability' | transloco }}<app-connection-speed
-              /></a>
+              <!-- Just the link: stats belong on /observability (its connection
+                 card shows the typical reply time), not squeezed into this menu. -->
+              <a routerLink="/observability">{{ 'shell.menu.observability' | transloco }}</a>
 
               <!-- Reading: Site News and Help. ("Docs" next to "Help" read as the same
                thing, so there is no Docs row.) The help site's home links on to

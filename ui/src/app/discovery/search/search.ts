@@ -18,6 +18,7 @@ import { seedWordsFor } from '../../language/seed-words';
 import {
   AccountLanguages,
   inferAccountLanguages,
+  writesIn,
   languageMatches,
   postLanguage,
 } from '../../language/account-language';
@@ -412,13 +413,14 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.accountField.language: Posts in
 // i18n pages.search.accountField.languageAny: Any language
 // i18n pages.search.accountField.languageHint: Finds people who post in this language. Leave the search box empty to list people from common words in the language (one request per word).
+// i18n pages.search.results.languageHidden.one: {{count}} person left out: nothing in their posts or bio shows {{language}}.
+// i18n pages.search.results.languageHidden.other: {{count}} people left out: nothing in their posts or bio shows {{language}}.
 // i18n pages.search.results.needsSignIn: Signed out, Mawkingbird can only search hashtags, so it cannot find people by language. Sign in, or add words to search for.
 // i18n pages.search.results.seeded: Found from {{count}} common words in {{language}}. Each word is one request.
 // i18n pages.search.results.morePeople: More people ({{count}} more words)
 // i18n pages.search.facet.malayOrIndonesian: Malay or Indonesian (uncertain)
 // i18n pages.search.facet.languageUnknown: Can’t tell
 // i18n pages.search.results.needsWord: Mastodon needs at least one word to search for. Filters such as {{filters}} only narrow a search down. Add a word too, for example one that is common in the language you want.
-// i18n pages.search.results.useSeedWord: Search with a common {{language}} word (“{{word}}”)
 // i18n pages.search.results.needsWordShort: Mastodon needs at least one word to search for, not only filters. Add a word and search again.
 // i18n pages.search.results.failed: The search failed (HTTP {{status}}).
 // i18n pages.search.results.unreachable: The search failed: the server could not be reached.
@@ -915,23 +917,6 @@ export class Search implements OnInit, OnDestroy {
   protected shownSearchError = computed(() =>
     this.query().trim() === this.searchErrorFor() ? this.searchError() : null,
   );
-
-  /**
-   * For a filters-only post search naming a language: a very common word in
-   * it, offered as a one-click way to see posts in that language at all.
-   */
-  protected seedSuggestion = computed(() => {
-    const failure = this.shownSearchError();
-    if (failure?.kind !== 'needsWord' || this.type() !== 'statuses') return null;
-    const language = languageInQuery(this.query());
-    const word = language ? seedWordsFor(language)[0] : undefined;
-    return word ? { word, language: languageName(language, this.kitLocale.active()) } : null;
-  });
-
-  protected useSeedWord(word: string): void {
-    this.query.set(`${word} ${this.query().trim()}`);
-    this.run();
-  }
 
   private failSearch(failure: SearchFailure): void {
     this.searchErrorFor.set(this.query().trim());
@@ -1892,6 +1877,10 @@ export class Search implements OnInit, OnDestroy {
   protected setAdultFilter(value: AdultFilter): void {
     this.adult.choose(value);
   }
+
+  /** The adult filter shows only when something loaded is adult (or under Only). */
+  protected adultOfferPosts = this.adult.offerForPosts;
+  protected adultOfferPeople = this.adult.offerForPeople;
 
   /** The verdict to collapse this post to, or null to render it normally. */
   protected adultCollapsedPost(s: Status): AdultVerdict | null {
@@ -2857,12 +2846,22 @@ export class Search implements OnInit, OnDestroy {
     }
     this.pendingCriteria = null;
 
-    // Mastodon refuses filters without a word (HTTP 400); say what to add instead.
+    // Mastodon refuses filters without a word (HTTP 400). With a language
+    // among them, common words of that language stand in, one per page; any
+    // other filters-only search says what to add instead.
+    this.postSeeds = null;
+    this.seedsUsed.set(0);
+    this.seedsLeft.set(0);
     const onlyFilters =
       type === 'statuses' && !this.capabilities.active && !this.mediaHome()
         ? filtersWithoutTerm(media.query)
         : null;
-    if (onlyFilters) {
+    const postSeedLanguage = onlyFilters ? languageInQuery(media.query) : '';
+    const postSeedWords = postSeedLanguage ? seedWordsFor(postSeedLanguage) : [];
+    if (onlyFilters && postSeedWords.length) {
+      this.postSeeds = postSeedWords.map((word) => `${word} ${media.query}`);
+      this.seedLanguage.set(postSeedLanguage);
+    } else if (onlyFilters) {
       this.results.set(null);
       this.failSearch({ kind: 'needsWord', filters: onlyFilters.join(' ') });
       this.diagnostics.info('Search', 'load:needs-word', { type });
@@ -2893,7 +2892,7 @@ export class Search implements OnInit, OnDestroy {
       : this.mediaHome()
         ? this.mediaHomePage()
         : this.api.search(
-            media.query,
+            this.postSeeds ? this.nextPostSeed() : media.query,
             type,
             type === 'statuses' ? { limit: PAGE_SIZE } : undefined,
           );
@@ -2903,7 +2902,8 @@ export class Search implements OnInit, OnDestroy {
         this.stopSearchClock();
         this.results.set(r);
         this.resultsType.set(type);
-        this.scanExhausted.set(type === 'statuses' && r.statuses.length === 0);
+        const seedsRemain = !!this.postSeeds?.length;
+        this.scanExhausted.set(type === 'statuses' && r.statuses.length === 0 && !seedsRemain);
         // Keep an exact, valid tag followable before the server indexes it.
         const tag = q.trim().replace(/^#/, '');
         if (
@@ -2928,7 +2928,7 @@ export class Search implements OnInit, OnDestroy {
           callsUsed: this.callsUsed(),
         });
         // Eagerly page up to the budget so client-side faceting has a corpus.
-        this.maybeAutoFill(r.statuses.length > 0);
+        this.maybeAutoFill(r.statuses.length > 0 || seedsRemain);
         if (!r.statuses.length && !r.hashtags.length) {
           void this.explainEmptyResult();
         }
@@ -2972,6 +2972,17 @@ export class Search implements OnInit, OnDestroy {
   protected peopleLanguageName = computed(() =>
     languageName(this.seedLanguage(), this.kitLocale.active()),
   );
+
+  /** Post search seeded by common words (a language-only search); null otherwise. */
+  private postSeeds: string[] | null = null;
+
+  /** The next common-word query for a seeded post search, one per page. */
+  private nextPostSeed(): string {
+    const next = this.postSeeds!.shift()!;
+    this.seedsUsed.update((n) => n + 1);
+    this.seedsLeft.set(this.postSeeds!.length);
+    return next;
+  }
 
   /** The next seeded queries the budget allows. */
   private takeSeeds(): string[] {
@@ -3079,6 +3090,7 @@ export class Search implements OnInit, OnDestroy {
     // Mastodon refuses the search (HTTP 400), so common words of that language
     // seed it instead, one call each.
     const language = this.peopleLanguage();
+    this.searchedPeopleLanguage.set(language);
     const postQuery =
       !this.capabilities.active && language ? `${q} language:${language}`.trim() : q;
     const onlyFilters =
@@ -3268,8 +3280,9 @@ export class Search implements OnInit, OnDestroy {
       this.executedType === 'statuses'
         ? parseMediaQuery(this.executedQuery).query
         : this.executedQuery;
-    const request =
-      this.capabilities.active && this.executedType === 'statuses'
+    const request = this.postSeeds
+      ? this.api.search(this.nextPostSeed(), 'statuses', { limit: PAGE_SIZE })
+      : this.capabilities.active && this.executedType === 'statuses'
         ? this.anonymousPublic.searchPostsByHashtags(this.searchHost(), q, {
             maxTags: this.firstPageTags?.length ?? this.apiBudget(),
             maxIds: Object.fromEntries(
@@ -3287,7 +3300,10 @@ export class Search implements OnInit, OnDestroy {
       next: (r) => {
         this.stopSearchClock();
         const added = this.appendResults(r);
-        this.scanExhausted.set(added === 0);
+        // Seeded: each page is a different word, so a page of repeats is not
+        // the end; running out of words is.
+        const more = this.postSeeds ? this.postSeeds.length > 0 : added > 0;
+        this.scanExhausted.set(!more);
         this.callsUsed.update((c) => c + cost);
         this.rememberCursors(r);
         this.searching.set(false);
@@ -3298,7 +3314,7 @@ export class Search implements OnInit, OnDestroy {
             callsUsed: this.callsUsed(),
           });
         }
-        this.maybeAutoFill(added > 0);
+        this.maybeAutoFill(more);
       },
       error: (error: unknown) => {
         this.stopSearchClock();
@@ -3368,6 +3384,32 @@ export class Search implements OnInit, OnDestroy {
   /** Snapshot of the numeric bounds that the current results are gated by. */
   private executedAccountBounds = signal<AccountSearchCriteria>({ text: '' });
 
+  /** The "Posts in" language the last people search ran with; '' for any. */
+  private searchedPeopleLanguage = signal('');
+
+  /**
+   * "Posts in X" applies to everyone in the results, including people found by
+   * name or bio. A person stays when their posts or bio show X. When nothing
+   * shows any language, they stay only for English: an unknown language is
+   * not German, but English is what an unlabelled account most often is.
+   */
+  private speaksSearchedLanguage(id: string): boolean {
+    const wanted = this.searchedPeopleLanguage();
+    if (!wanted) return true;
+    const langs = this.accountLanguages().get(id);
+    if (!langs?.votes) return bareLanguageCode(wanted) === 'en';
+    return writesIn(langs, wanted);
+  }
+
+  /** Loaded people "Posts in X" left out, for the note under the list. */
+  protected languageHiddenCount = computed(() => {
+    if (!this.searchedPeopleLanguage()) return 0;
+    return this.accountItems().filter((i) => !this.speaksSearchedLanguage(i.account.id)).length;
+  });
+  protected searchedLanguageName = computed(() =>
+    languageName(this.searchedPeopleLanguage(), this.kitLocale.active()),
+  );
+
   /** Each loaded person's languages, from their bio and their matched posts. */
   private accountLanguages = computed(() => {
     const out = new Map<string, AccountLanguages>();
@@ -3422,7 +3464,8 @@ export class Search implements OnInit, OnDestroy {
     // relationship map rather than through `accountMatchesFacet`.
     const byFollow = filterByFollowState(filtered, this.relationships(), this.followFilter());
     const adultKept = this.adult.keepPeople(byFollow);
-    return sortAccounts(adultKept, this.accountSort());
+    const inLanguage = adultKept.filter((i) => this.speaksSearchedLanguage(i.account.id));
+    return sortAccounts(inLanguage, this.accountSort());
   });
 
   /**

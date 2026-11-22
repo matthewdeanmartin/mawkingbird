@@ -3,6 +3,7 @@ import { NgComponentOutlet } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { VideoSource } from './media-source';
+import { UpdateRecovery } from '../../platform/build/update-recovery';
 import type { VideoPlayer } from './video-player';
 import type { Type } from '@angular/core';
 
@@ -30,6 +31,7 @@ export class VideoPlayerHost {
   protected player = signal<Type<VideoPlayer> | null>(null);
   protected failed = signal(false);
   private destroyed = false;
+  private readonly recovery = inject(UpdateRecovery);
   protected inputs = computed(() => ({
     source: this.source(),
     watch: this.watch(),
@@ -44,14 +46,25 @@ export class VideoPlayerHost {
     this.load();
   }
 
+  /** The player chunk. A method so a test can stand in a failed import. */
+  protected importPlayer(): Promise<typeof import('./video-player')> {
+    return import('./video-player');
+  }
+
   protected load(): void {
     this.failed.set(false);
-    void import('./video-player')
+    void this.importPlayer()
       .then((module) => {
         if (!this.destroyed) this.player.set(module.VideoPlayer);
       })
-      .catch(() => {
-        if (!this.destroyed) this.failed.set(true);
+      .catch((error: unknown) => {
+        if (this.destroyed) return;
+        // After a deploy, an open tab asks for a player chunk that no longer
+        // exists, and the browser then remembers that failed import for the
+        // rest of the tab: every later video failed the same way, and Retry
+        // could never help. Let the app-wide recovery reload onto the new build.
+        if (this.recovery.recover(error)) return;
+        this.failed.set(true);
       });
   }
 }

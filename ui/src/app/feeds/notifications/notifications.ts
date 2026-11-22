@@ -17,7 +17,8 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PollResults } from '../../posts/poll-results/poll-results';
 import { catchError, forkJoin, from, map, Observable, of, Subscription, timeout } from 'rxjs';
-import { NgOptimizedImage } from '@angular/common';
+import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { Terminology } from '../../i18n/terminology';
 import { Api } from '../../platform/api/api';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Wellness } from '../../wellness/wellness';
@@ -46,7 +47,6 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { isSafetyNotice, SafetyNotice } from './safety-notice';
 import { ReadMarkers } from '../home/read-markers';
 import { InboxSeen } from './inbox-seen';
-import { stripHtml } from '../../../lib/sentiment';
 import {
   digestNotifications,
   DigestRow,
@@ -77,8 +77,8 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.digest.followers.one: {{count}} new follower
 // i18n pages.notifications.digest.followers.other: {{count}} new followers
 // i18n pages.notifications.digest.sinceLast: +{{count}} since you last looked
-// i18n pages.notifications.digest.andMore: {{names}} and {{count}} more
-// i18n pages.notifications.digest.mediaPost: (a post with media)
+// i18n pages.notifications.digest.openPost: Open {{post}}
+// i18n pages.notifications.digest.more: and {{count}} more
 // i18n pages.notifications.hide: Hide notification
 // i18n pages.notifications.hideFailed: Could not hide the notification. Try again.
 // i18n pages.notifications.sourceAriaLabel: Notification source
@@ -328,11 +328,14 @@ export function accountsNewToMe(
     AccountResultCard,
     TranslocoPipe,
     SafetyNotice,
+    NgTemplateOutlet,
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',
 })
 export class Notifications implements OnInit, OnDestroy {
+  /** post/tweet/florp vocabulary, per the Blue setting. */
+  protected words = inject(Terminology).words;
   private localModeration = inject(LocalModeration);
   protected blurAvatar(account: Account): boolean {
     const relationship = this.rels().get(account.id);
@@ -636,25 +639,6 @@ export class Notifications implements OnInit, OnDestroy {
       'pages.notifications.digest.followers.one',
       'pages.notifications.digest.followers.other',
     );
-  }
-
-  /** "Ana, Budi and 10 more". */
-  protected peopleLine(people: readonly Account[]): string {
-    const names = people.slice(0, 3).map((a) => a.display_name || a.username);
-    const rest = people.length - names.length;
-    return rest > 0
-      ? this.transloco.translate<string>('pages.notifications.digest.andMore', {
-          names: names.join(', '),
-          count: rest,
-        })
-      : names.join(', ');
-  }
-
-  /** The post as one short line of plain text. */
-  protected excerptText(status: Status): string {
-    const text = stripHtml(status.content ?? '');
-    if (!text) return this.transloco.translate<string>('pages.notifications.digest.mediaPost');
-    return text.length > 120 ? `${text.slice(0, 117)}…` : text;
   }
 
   /** Notification actors the viewer has not followed, deduped to one profile row each. */
