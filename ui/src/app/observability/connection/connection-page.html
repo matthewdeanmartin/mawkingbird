@@ -87,6 +87,35 @@
     }
   </mb-section>
 
+  <mb-section [title]="'connection.offlineApp.title' | transloco">
+    @if (!offlineApp.supported) {
+      <p class="muted">{{ 'connection.offlineApp.unsupported' | transloco }}</p>
+    } @else if (!offlineApp.enabled()) {
+      <p class="muted">{{ 'connection.offlineApp.removed' | transloco }}</p>
+      <div class="actions">
+        <button mbButton variant="outline" type="button" (click)="allowOfflineCopy()">
+          {{ 'connection.offlineApp.allow' | transloco }}
+        </button>
+      </div>
+    } @else {
+      @if (offlineApp.stats()?.shell) {
+        <p>
+          {{ 'connection.offlineApp.ready' | transloco: { files: offlineApp.stats()!.files } }}
+        </p>
+      } @else {
+        <p class="muted">{{ 'connection.offlineApp.saving' | transloco }}</p>
+      }
+      <div class="actions">
+        <button mbButton variant="link" tone="danger" type="button" (click)="removeOfflineCopy()">
+          {{ 'connection.offlineApp.remove' | transloco }}
+        </button>
+      </div>
+    }
+    @if (savedReads(); as reads) {
+      <p class="muted">{{ 'connection.savedReads' | transloco: reads }}</p>
+    }
+  </mb-section>
+
   <mb-section [title]="'connection.history' | transloco">
     <mb-toolbar [label]="'connection.spanLabel' | transloco" density="compact">
       @for (choice of spans; track choice) {

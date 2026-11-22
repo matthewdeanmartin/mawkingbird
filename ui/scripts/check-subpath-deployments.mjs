@@ -63,7 +63,28 @@ function publishedSubpaths() {
   return [...found];
 }
 
+/**
+ * Subpaths the service worker leaves alone. The production worker's scope is
+ * the site root, so without this list it would answer /test/… navigations with
+ * the production shell while offline.
+ */
+function serviceWorkerSubpaths() {
+  const worker = readFileSync('public/sw.js', 'utf8');
+  const list = /var SUBPATHS = \[([^\]]*)\]/.exec(worker);
+  if (!list) {
+    throw new Error('Could not find a SUBPATHS array in public/sw.js.');
+  }
+  return [...list[1].matchAll(/'([^']+)'/g)].map((match) => match[1]);
+}
+
 const declared = declaredSubpaths().sort();
+const workerList = serviceWorkerSubpaths().sort();
+if (workerList.join(',') !== declared.join(',')) {
+  console.error(
+    `public/sw.js SUBPATHS (${workerList.join(', ')}) must match ${SHIM} (${declared.join(', ')}).`,
+  );
+  process.exit(1);
+}
 const published = publishedSubpaths().sort();
 
 const missing = published.filter((name) => !declared.includes(name));

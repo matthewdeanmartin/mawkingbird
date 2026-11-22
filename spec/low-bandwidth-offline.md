@@ -157,25 +157,46 @@ Connection card (verdict, typical reply, the last hour) linking to
   a bad connection are pictures, which now wait. The "switch to Lite?" offer
   moves to Sprint 6, because there is no `/m/` to offer until then.
 
-### Sprint 4: service worker (app shell + visited chunks)
+### Sprint 4: service worker (done 2026-11-21)
 
-- Custom or Angular service worker: cache the shell at install, cache hashed
-  chunks when first used, never cache API responses (that's Sprint 5), and keep
-  the GitHub Pages 404 deep-link restore working.
-- Deploy safety: versioned caches, old caches cleaned up, works with the existing
-  `UpdateRecovery`/update overlay, and is scoped so `/canary/` and `/test/`
-  previews never share or clobber production caches.
-- An offline start shows the shell and the offline state, not the browser's page.
+- `ui/public/sw.js`, hand-written with no build step; runbook in
+  `ops/engineering/service-worker.md`. Hashed build files are cache-first and
+  saved on first use (capped at 600). Navigations are network-first, with the
+  saved `index.html` only when the network fails. `boot.js`, translations, icons
+  and the manifest are network-first with the saved copy as a fallback. APIs,
+  other sites, `probe.txt` and the `/canary/`, `/test/`, `/help/` and `/news/`
+  subtrees pass through untouched.
+- Registered 5 s after start, scoped to the base href, so each deployment has
+  its own worker and caches. Not registered on `ng serve` or Native
+  (`BUILD_RUNTIME_POLICY.serviceWorker`).
+- Kill switch: `KILL_SWITCH = true` in `sw.js` deletes the caches, unregisters
+  and reloads tabs. `check:subpaths` keeps `sw.js`'s subpath list equal to the
+  404 shim's.
+- Readers see and remove the offline copy on `/connection` (Offline copy).
+- Offline, a screen whose code was never saved no longer looks like a new
+  deployment: `UpdateRecovery` shows "Not saved for offline use" instead of
+  reloading into its loop guard.
 
-### Sprint 5: web read cache and outbox
+### Sprint 5: web read cache and outbox (done 2026-11-21)
 
-- IndexedDB cache, about 25 MB: the last pages of Home and notifications,
-  threads and profiles opened, and small avatars. Stale-while-revalidate with
-  "cached N min ago" labels; evicted oldest first; cleared on sign-out; scoped
-  per account; listed in Storage Diagnostics.
-- Outbox: queued posts and replies with `Idempotency-Key`, auto-sent on
-  reconnect, held for confirmation after about 30 min, visible and editable,
-  never sent from a signed-out or switched account.
+- `readCacheInterceptor` with an IndexedDB store (`mawkingbird-read-cache`, 25 MB,
+  oldest evicted first): first pages of Home, notifications, lists, bookmarks,
+  conversations and profiles' posts, plus single posts, threads, accounts and
+  verify_credentials, per account scope. Offline, the saved copy is served at
+  once; online, only after the network (and the read policy's retries) got no
+  answer. Feeds need no changes; the offline banner says "Showing a copy saved
+  N min ago". A signed-out account's saved reads are deleted.
+- **Changed from the plan:** no avatars in the cache. Cache Storage charges each
+  opaque cross-origin image several MB of quota (Chromium pads them), so 25 MB
+  would hold a handful of faces. Avatars rely on the browser's HTTP cache.
+- Outbox (`/outbox`, linked from Drafts and the offline banner): a Mastodon post
+  or thread whose send fails while the device is offline is queued with its
+  compose operation id, so every part keeps its Idempotency-Key. It sends by
+  itself when the connection returns, from the writing account only. After 30
+  minutes, or when the server refuses it, it is held: Send now, Edit as draft
+  (attachments can't go to drafts and the page says so) or Delete. Online, a
+  lost response keeps compose's existing retry with the same key. Cross-posts and
+  scheduled posts are not queued.
 
 ### Sprint 6: `/m/` Lite shell
 

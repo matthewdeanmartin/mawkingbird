@@ -3210,3 +3210,15 @@ the existing images checkbox, matching that row's other selects;
 fault-injection.html (developer page) gains an MbToolbar of network profiles.
 The Observability connection card, the More-menu speed suffix and the header
 chip have no controls. No shared design widget changed.
+
+Low-bandwidth Sprints 4–5 (2026-11-21): reviewed the regenerated inventory:
+2113 scanned files, 713 candidate files. New candidate
+publishing/outbox/outbox-page.ts (posts written offline) uses MbPageHeader,
+MbNotice and MbButton; added to 11-reconciliation.json as adopted scope.
+Changed findings: connection-page.html gains the Offline copy section's two
+MbButtons (Keep an offline copy, Remove offline copy); offline-banner.ts gains an
+MbButton link (Review, for held Outbox posts); update-overlay.ts gains an OK
+button for the new "Not saved for offline use" state, using the overlay's
+existing legacy `btn` class like its two neighbours (the file stays in the
+backlog for MbButton adoption as a whole). The Drafts page's new Outbox line is
+a plain content link. No shared design widget changed.

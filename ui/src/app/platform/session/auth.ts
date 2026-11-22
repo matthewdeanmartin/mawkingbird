@@ -1,7 +1,12 @@
 import { forgetNativeAccount } from './platform-login';
+import { forgetSavedReads } from '../offline/read-cache';
 import { Injectable, computed, inject, linkedSignal, signal } from '@angular/core';
 import { ClientPrefs } from '../storage/client-prefs';
-import { adoptMastodonStorageScope, ANONYMOUS_SCOPE_SUFFIX } from './account-scope';
+import {
+  accountScopeSuffix,
+  adoptMastodonStorageScope,
+  ANONYMOUS_SCOPE_SUFFIX,
+} from './account-scope';
 import { Account } from '../api/models';
 import { AnonymousAccount } from '../../accounts/anonymous/anonymous-account';
 import {
@@ -1186,6 +1191,9 @@ export class Auth {
       this.diagnostics.transition('logout-anonymous', saved, saved);
       return;
     }
+    // Saved offline copies can include followers-only posts and DMs; they
+    // must not outlive the account that was allowed to see them.
+    void forgetSavedReads(accountScopeSuffix());
     if (this.isMisskeyPrimary) {
       // Same reasoning as the Bluesky branch below: forget this identity only,
       // and never fall through to the Mastodon path with a null token.

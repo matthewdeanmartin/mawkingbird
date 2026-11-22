@@ -1,4 +1,6 @@
 import { POLL_EXPIRY, PollEditor } from '../poll-editor';
+import { ConnectionMeter } from '../../platform/network/connection-meter';
+import { Outbox } from '../outbox/outbox';
 import { PostPermissions, PostPermissionsValue } from '../post-permissions/post-permissions';
 import { MbHelp } from '../../design-system/help/help';
 import { Pseudonymity } from '../../accounts/pseudonymity';
@@ -440,6 +442,7 @@ function dragHasFiles(event: DragEvent): boolean {
   return Array.from(event.dataTransfer?.types ?? []).includes('Files');
 }
 
+// i18n compose.savedToOutbox: You're offline, so this went to your Outbox. It will post by itself when you're back online.
 // i18n compose.noMention.title: Nobody is mentioned
 // i18n compose.noMention.public: This reply mentions nobody, so the person you are replying to will not be notified. Add their @handle to make sure they see it.
 // i18n compose.noMention.private: This private message mentions nobody, so nobody else will receive it. Add the person's @handle, or send it anyway as a note only you can see.
@@ -610,6 +613,8 @@ export class Compose implements OnDestroy {
   private server = inject(Server);
   private transloco = inject(TranslocoService);
   protected auth = inject(Auth);
+  private outbox = inject(Outbox);
+  private meter = inject(ConnectionMeter);
   private prefs = inject(ClientPrefs);
   private postConfirmation = inject(PostConfirmation);
   private linkShortening = inject(LinkShortening);
@@ -3142,11 +3147,46 @@ export class Compose implements OnDestroy {
         },
         error: (error: unknown) => {
           operation.fedi.inFlight = false;
+          if (this.queueForLater(operation, error)) return;
           operation.fedi.failure = describePostFailure(error);
           this.showPostingFailure(operation);
           this.settlePosting(operation);
         },
       });
+  }
+
+  /**
+   * A Mastodon post whose send got no answer while the device is offline goes
+   * to the Outbox and is sent when the connection returns (spec/low-bandwidth-offline.md, Sprint 5).
+   * Same operation id, so each part keeps the Idempotency-Key it was first sent
+   * with and a post that did get through is never repeated. Cross-posts and
+   * scheduled posts keep the ordinary retry, because their other leg or the
+   * schedule can't wait in the Outbox.
+   */
+  private queueForLater(operation: PostingOperation, error: unknown): boolean {
+    if (
+      !(error instanceof HttpErrorResponse) ||
+      error.status !== 0 ||
+      operation.target !== 'fedi' ||
+      operation.scheduledFor ||
+      this.auth.kind() !== 'mastodon' ||
+      // Online, a lost response is better retried right here with the same key
+      // (the reader is looking at it); only a device that is actually offline
+      // hands the post to the Outbox.
+      (this.meter.verdict() !== 'offline' && this.meter.hints().online)
+    ) {
+      return false;
+    }
+    const { scheduledAt: _scheduled, ...options } = operation.options;
+    this.outbox.enqueue({
+      id: operation.id,
+      parts: [...operation.parts],
+      options,
+      posted: operation.fedi.statuses.map((status) => status.id),
+    });
+    this.reset();
+    this.flashScheduled(this.transloco.translate('compose.savedToOutbox'));
+    return true;
   }
 
   private sendToPaste(): void {

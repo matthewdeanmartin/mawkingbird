@@ -9,6 +9,11 @@
 <p class="page-note">
   {{ 'pages.drafts.intro' | transloco }}
 </p>
+@if (outboxSummary.waiting() + outboxSummary.held(); as queued) {
+  <p class="page-note">
+    <a routerLink="/outbox">{{ 'pages.drafts.outbox' | transloco: { count: queued } }}</a>
+  </p>
+}
 @if (!auth.isAnonymous && sources.loaded()) {
   <p class="page-note muted small">
     {{

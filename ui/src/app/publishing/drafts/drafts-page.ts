@@ -1,4 +1,5 @@
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
+import { OutboxSummary } from '../../platform/offline/outbox-summary';
 import { Component, Injector, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -119,6 +120,7 @@ function kindNoun(kind: DraftKind): string {
  * out of that list and shown separately below it. A post that publishes tomorrow
  * is not a draft, and displaying it as one invites exactly the wrong assumption.
  */
+// i18n pages.drafts.outbox: Outbox ({{count}} waiting to send) →
 // i18n pages.drafts.title: Drafts
 // i18n pages.drafts.openWrite: Open in Write →
 // i18n pages.drafts.intro: Everything you've written but not published — wherever you parked it. Mastodon has no drafts API, so each of these lives somewhere different.
@@ -248,6 +250,7 @@ function kindNoun(kind: DraftKind): string {
   styleUrl: './drafts-page.css',
 })
 export class DraftsPage implements OnInit {
+  protected readonly outboxSummary = inject(OutboxSummary);
   /** post/tweet/florp vocabulary, per the Blue setting. */
   protected words = inject(Terminology).words;
   private readonly transloco = inject(TranslocoService);

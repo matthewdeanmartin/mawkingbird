@@ -28,6 +28,7 @@ import { metricsInterceptor } from './observability/metrics.interceptor';
 import { connectionMeterInterceptor } from './platform/network/connection-meter.interceptor';
 import { networkSimulatorInterceptor } from './platform/network/network-simulator';
 import { requestPolicyInterceptor } from './platform/network/request-policy';
+import { readCacheInterceptor } from './platform/offline/read-cache.interceptor';
 import { GlobalErrorHandler } from './platform/diagnostics/global-error-handler';
 import { SettingsPreloading } from './settings/settings-preloading';
 import { dedupeInterceptor } from './platform/http/dedupe.interceptor';
@@ -74,6 +75,9 @@ export const appConfig: ApplicationConfig = {
         // First: a refused Mastodon route never reaches metrics or the network.
         mastodonRouteInterceptor,
         metricsInterceptor,
+        // Saves first-page reads and answers them offline; outside the read
+        // policy so a saved copy is used only once its retries gave up.
+        readCacheInterceptor,
         // Inside metrics (one call, total time), outside everything that
         // rewrites, authenticates, measures or health-checks an attempt.
         requestPolicyInterceptor,

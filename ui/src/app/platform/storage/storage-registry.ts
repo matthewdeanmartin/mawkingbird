@@ -1183,6 +1183,23 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Local API timing metrics and grouped client-error counts, one entry per instance. The trailing colon is part of the base — keys are `…metrics:<host>`.',
   },
   {
+    base: 'mockingbird_outbox',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'content',
+    // Unpublished post text, like drafts. Entries carry their account scope and
+    // are only ever sent from that account; one key keeps a queued post visible
+    // after an account switch instead of silently orphaning it.
+    note: 'Posts written offline and waiting to be sent (Outbox), each tagged with the account that wrote it.',
+  },
+  {
+    base: 'mockingbird_offline_app',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Present ("off") when the reader removed the offline copy of the app (service worker and its caches) on the Connection page.',
+  },
+  {
     base: 'mockingbird_data_saver',
     storage: 'local',
     suffix: 'none',

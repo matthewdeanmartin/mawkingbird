@@ -3561,6 +3561,11 @@
       "file": "ui/src/app/shell/offline-banner/offline-banner.ts",
       "disposition": "adopted scope",
       "nextStep": "Fixed bottom status banner shown when the reader's own connection is down (or while checking whose fault an outage is). Try now is an MbButton outline/small and Details an MbButton link; the nativeButtons finding is that mbButton host. No bespoke control styles."
+    },
+    {
+      "file": "ui/src/app/publishing/outbox/outbox-page.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Outbox list built on MbPageHeader, MbNotice and MbButton (Send now solid/small, Edit as draft outline/small, Delete link/danger/small, Drafts link). The nativeButtons findings are those mbButton hosts. Entry cards are page-specific layout, not controls."
     }
   ]
 }

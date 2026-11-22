@@ -10,6 +10,8 @@ import { CONNECTIVITY_PROBE_PATH } from '../../platform/http/platform-http';
 import { medianBin } from '../../platform/network/connection-history';
 import { ConnectionMeter } from '../../platform/network/connection-meter';
 import { DataSaver } from '../../platform/network/data-saver';
+import { OfflineApp } from '../../platform/offline/offline-app';
+import { ReadCache } from '../../platform/offline/read-cache';
 import { VerdictReason } from '../../platform/network/connection-quality';
 import {
   SPAN_COLUMNS,
@@ -78,6 +80,14 @@ import {
 // i18n connection.window.1h: Last hour
 // i18n connection.window.24h: Last 24 hours
 // i18n connection.backToObservability: Observability
+// i18n connection.offlineApp.title: Offline copy
+// i18n connection.offlineApp.ready: Mawkingbird can open on this device without a connection. {{files}} app files are saved; screens you haven't opened yet still need a connection the first time.
+// i18n connection.offlineApp.saving: Mawkingbird is saving the parts of the app you use, so it can open without a connection.
+// i18n connection.offlineApp.removed: No offline copy is kept. Mawkingbird needs a connection to open.
+// i18n connection.offlineApp.unsupported: This browser can't keep an offline copy of Mawkingbird.
+// i18n connection.offlineApp.remove: Remove offline copy
+// i18n connection.offlineApp.allow: Keep an offline copy
+// i18n connection.savedReads: Saved for offline reading: {{size}} ({{entries}} saved pages). Feeds, threads and profiles you opened, for this browser only; up to 25 MB.
 // i18n connection.doctor: Which services does this network allow?
 
 /** Reason codes are kebab-case; translation keys must be camelCase. */
@@ -113,6 +123,30 @@ const COLUMN_WIDTH = 6;
 export class ConnectionPage {
   protected readonly meter = inject(ConnectionMeter);
   protected readonly dataSaver = inject(DataSaver);
+  protected readonly offlineApp = inject(OfflineApp);
+
+  private readonly readCache = inject(ReadCache);
+  protected readonly savedReads = signal<{ entries: number; size: string } | null>(null);
+
+  constructor() {
+    void this.offlineApp.refreshStats();
+    void this.readCache
+      .usage()
+      .then(({ entries, bytes }) =>
+        this.savedReads.set(
+          entries ? { entries, size: `${(bytes / (1024 * 1024)).toFixed(1)} MB` } : null,
+        ),
+      );
+  }
+
+  protected async removeOfflineCopy(): Promise<void> {
+    await this.offlineApp.remove();
+  }
+
+  protected async allowOfflineCopy(): Promise<void> {
+    await this.offlineApp.allow();
+    await this.offlineApp.refreshStats();
+  }
   private readonly transloco = inject(TranslocoService);
 
   protected readonly canProbe = CONNECTIVITY_PROBE_PATH !== null;

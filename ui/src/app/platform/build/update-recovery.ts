@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { ConnectionMeter } from '../network/connection-meter';
 
 /**
  * Recovers the app after a deployment happened while the tab was open.
@@ -46,6 +47,13 @@ export class UpdateRecovery {
   readonly updating = signal(false);
   /** True when recovery already ran recently and failed again — show the panel. */
   readonly failed = signal(false);
+  /** A part of the app was needed while offline and was never saved for offline use. */
+  readonly unavailableOffline = signal(false);
+  private readonly meter = inject(ConnectionMeter);
+
+  private offline(): boolean {
+    return this.meter.verdict() === 'offline' || !this.meter.hints().online;
+  }
 
   /**
    * Call once the Angular app has successfully started. The guard is *not*
@@ -75,6 +83,14 @@ export class UpdateRecovery {
   recover(error: unknown): boolean {
     if (!this.isChunkLoadError(error)) {
       return false;
+    }
+
+    // Offline, a missing file is not a new deployment: it is a part of the app
+    // this browser never saved. Reloading would only fail again (and trip the
+    // loop guard), so say what happened and leave the reader where they are.
+    if (this.offline()) {
+      this.unavailableOffline.set(true);
+      return true;
     }
 
     // Several browser error channels report the same failure (a sync error and

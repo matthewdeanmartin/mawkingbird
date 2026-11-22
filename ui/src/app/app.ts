@@ -1,5 +1,5 @@
 import { ReadingOutlet } from './shell/reading-outlet';
-import { Component, inject } from '@angular/core';
+import { Component, Injector, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AnalyticsTracker } from './platform/diagnostics/analytics-tracker';
 import { ClientPrefs } from './platform/storage/client-prefs';
@@ -9,6 +9,8 @@ import { RouteLog } from './observability/route-log';
 import { ConnectionState } from './platform/network/connection-state';
 import { OfflineBanner } from './shell/offline-banner/offline-banner';
 import { UpdateOverlay } from './shell/update-overlay/update-overlay';
+import { OfflineApp } from './platform/offline/offline-app';
+import { OutboxSummary } from './platform/offline/outbox-summary';
 import { UpdateRecovery } from './platform/build/update-recovery';
 import { ConfigSync } from './platform/storage/config-sync';
 import { ProfileSyncStarter } from './accounts/mawkingbird/profile-sync-starter';
@@ -51,6 +53,10 @@ export class App {
    * the anonymous github.io deployment, where there are no accounts at all.
    */
   private readonly profileSync = inject(ProfileSyncStarter);
+  /** The offline app shell (service worker); registers a few seconds after start. */
+  private readonly offlineApp = inject(OfflineApp);
+  private readonly outboxSummary = inject(OutboxSummary);
+  private readonly injector = inject(Injector);
   /** Privacy-scrubbed intent log for buttons, links, submits, and committed changes. */
   private readonly actions = inject(ActionTracker);
 
@@ -65,6 +71,12 @@ export class App {
     // auto-reload, clear it once we've run cleanly for a bit.
     this.recovery.markApplicationStableAfterDelay();
     this.configSync.start();
+    this.offlineApp.start();
+    // The Outbox service needs the API client; load it only when something
+    // is actually queued. Compose loads it itself when it queues a post.
+    if (this.outboxSummary.waiting() + this.outboxSummary.held() > 0) {
+      void import('./publishing/outbox/outbox').then((m) => this.injector.get(m.Outbox));
+    }
     // Never awaited: sync settling is not something application start should
     // wait on, and the starter swallows its own failures.
     void this.profileSync.start();

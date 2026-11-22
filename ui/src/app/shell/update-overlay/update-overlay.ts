@@ -34,6 +34,20 @@ import { UpdateRecovery } from '../../platform/build/update-recovery';
           <button class="btn" type="button" (click)="recovery.retry()">Try again</button>
         </div>
       </div>
+    } @else if (recovery.unavailableOffline()) {
+      <div class="update-overlay" role="alertdialog" aria-labelledby="offline-part-title">
+        <div class="spinner-slot">📴</div>
+        <h1 id="offline-part-title">Not saved for offline use</h1>
+        <p class="muted">
+          This part of Mawkingbird hasn't been opened on this device before, so it isn't available
+          without a connection. It will work once you're back online.
+        </p>
+        <div class="overlay-actions">
+          <button class="btn" type="button" (click)="recovery.unavailableOffline.set(false)">
+            OK
+          </button>
+        </div>
+      </div>
     } @else if (recovery.updating()) {
       <div class="update-overlay" role="status" aria-live="polite">
         <div class="spinner" aria-hidden="true"></div>

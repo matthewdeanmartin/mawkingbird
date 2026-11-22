@@ -1,4 +1,6 @@
 import { Router } from '@angular/router';
+import { ConnectionMeter } from '../../platform/network/connection-meter';
+import { readOutbox } from '../../platform/offline/outbox-summary';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -2009,6 +2011,22 @@ describe('Compose', () => {
     retriedBsky.flush({ uri: 'at://did:plc:me/app.bsky.feed.post/retry', cid: 'cid-retry' });
 
     expect(posted.map((s) => s.id)).toEqual(['m2']);
+    expect(internals(f).text()).toBe('');
+  });
+
+  it('hands a post to the Outbox when the device is offline, keeping its key', () => {
+    TestBed.inject(Auth).setToken('outbox-composer');
+    const f = setUp();
+    internals(f).text.set('written on the bus');
+    internals(f).submit();
+    const lost = httpMock.expectOne('/api/v1/statuses');
+    const key = lost.request.headers.get('Idempotency-Key');
+    TestBed.inject(ConnectionMeter).hints.set({ online: false });
+    lost.flush(null, { status: 0, statusText: 'Unknown Error' });
+
+    const [queued] = readOutbox();
+    expect(queued.parts).toEqual(['written on the bus']);
+    expect(`${queued.id}:fedi:0`).toBe(key);
     expect(internals(f).text()).toBe('');
   });
 

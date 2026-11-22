@@ -1622,6 +1622,12 @@ export const routes: Routes = [
         loadComponent: () => import('./shell/app-install/share-target').then((m) => m.ShareTarget),
       },
       {
+        // Posts written offline, waiting to send (low-bandwidth Sprint 5).
+        path: 'outbox',
+        title: 'Outbox',
+        loadComponent: () => import('./publishing/outbox/outbox-page').then((m) => m.OutboxPage),
+      },
+      {
         path: 'drafts',
         title: 'Drafts',
         loadComponent: () => import('./publishing/drafts/drafts-page').then((m) => m.DraftsPage),

@@ -4,6 +4,7 @@ Maintained guidance for contributors and maintainers:
 
 - [UI contribution rules](contributing.md)
 - [Bundle budgets](bundle-budgets.md)
+- [Service worker (offline app shell)](service-worker.md)
 - [In-repo libraries](libraries.md)
 - [SEO and public pages](seo.md)
 - [Test performance](test-performance.md)
