@@ -1183,6 +1183,20 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Local API timing metrics and grouped client-error counts, one entry per instance. The trailing colon is part of the base — keys are `…metrics:<host>`.',
   },
   {
+    base: 'mockingbird_lite',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Present ("on") while the reader uses Lite (/m/); full-app links then open their Lite version.',
+  },
+  {
+    base: 'mockingbird_lite_offer_dismissed',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'The reader said "Not now" to the switch-to-Lite offer in this tab.',
+  },
+  {
     base: 'mockingbird_outbox',
     storage: 'local',
     suffix: 'none',

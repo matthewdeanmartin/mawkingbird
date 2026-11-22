@@ -33,6 +33,7 @@ anything that went wrong under **Findings**.
 | [Low bandwidth S1: connection meter](low-bandwidth-s1-connection-meter-2026-11.md) | Header chip on slow/unstable/offline, /connection history and report | Not run |
 | [Low bandwidth S2–S3](low-bandwidth-s2-s3-offline-and-data-saver-2026-11.md) | Offline banner vs whale, read retries, pictures wait for a tap on slow connections, menu speed stats | Not run |
 | [Low bandwidth S4–S5](low-bandwidth-s4-s5-offline-app-and-outbox-2026-11.md) | Opens offline (service worker), saved reads offline, Outbox for posts written offline | Not run |
+| [Low bandwidth S6–S7](low-bandwidth-s6-s7-lite-and-native-2026-11.md) | Lite (/m/) screens, staying in Lite, the switch-to-Lite offer, Native offline banner/whale and archived profiles | Not run |
 
 The roadmap these come from is `sprint/november_2026_bsky_parity.md`.
 

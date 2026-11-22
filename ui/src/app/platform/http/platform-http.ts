@@ -9,6 +9,7 @@ export const PLATFORM_MISSKEY_POLL:
     ) => Promise<unknown>)
   | null = null;
 import type { HttpInterceptorFn } from '@angular/common/http';
+import type { ConnectivityLevel } from './connector-types';
 
 /** Browser transport stays unchanged; native replaces this module at build time. */
 export const PLATFORM_HTTP_INTERCEPTORS: HttpInterceptorFn[] = [];
@@ -141,3 +142,9 @@ export const PLATFORM_LOCAL_AI = new InjectionToken<NativeLocalAiTransport | nul
  * Relative to the base href so previews probe their own deployment.
  */
 export const CONNECTIVITY_PROBE_PATH: string | null = 'probe.txt';
+
+/**
+ * Browsers have no trustworthy OS connectivity API, so the web build probes
+ * {@link CONNECTIVITY_PROBE_PATH} instead. Native replaces this with a host command.
+ */
+export const CONNECTIVITY_CHECK: (() => Promise<ConnectivityLevel>) | null = null;

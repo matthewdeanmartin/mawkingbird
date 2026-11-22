@@ -6,9 +6,8 @@ import { MbButton } from '../../design-system/button/button';
 import { MbPageHeader, MbSection } from '../../design-system/page-header/page-header';
 import { MbStatGrid } from '../../design-system/stats/stats';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
-import { CONNECTIVITY_PROBE_PATH } from '../../platform/http/platform-http';
 import { medianBin } from '../../platform/network/connection-history';
-import { ConnectionMeter } from '../../platform/network/connection-meter';
+import { CAN_PROBE, ConnectionMeter } from '../../platform/network/connection-meter';
 import { DataSaver } from '../../platform/network/data-saver';
 import { OfflineApp } from '../../platform/offline/offline-app';
 import { ReadCache } from '../../platform/offline/read-cache';
@@ -88,6 +87,7 @@ import {
 // i18n connection.offlineApp.remove: Remove offline copy
 // i18n connection.offlineApp.allow: Keep an offline copy
 // i18n connection.savedReads: Saved for offline reading: {{size}} ({{entries}} saved pages). Feeds, threads and profiles you opened, for this browser only; up to 25 MB.
+// i18n connection.openLite: Open Lite, for slow connections
 // i18n connection.doctor: Which services does this network allow?
 
 /** Reason codes are kebab-case; translation keys must be camelCase. */
@@ -149,7 +149,7 @@ export class ConnectionPage {
   }
   private readonly transloco = inject(TranslocoService);
 
-  protected readonly canProbe = CONNECTIVITY_PROBE_PATH !== null;
+  protected readonly canProbe = CAN_PROBE;
   protected readonly testing = signal(false);
   protected readonly copied = signal(false);
   protected readonly span = signal<TimelineSpan>('hour');

@@ -3566,6 +3566,26 @@
       "file": "ui/src/app/publishing/outbox/outbox-page.ts",
       "disposition": "adopted scope",
       "nextStep": "Outbox list built on MbPageHeader, MbNotice and MbButton (Send now solid/small, Edit as draft outline/small, Delete link/danger/small, Drafts link). The nativeButtons findings are those mbButton hosts. Entry cards are page-specific layout, not controls."
+    },
+    {
+      "file": "ui/src/app/lite/lite-feed.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Lite timeline list: shared StatusCard for posts, MbButton (Load more outline, Try again link) and MbNotice for failures. The nativeButtons findings are those mbButton hosts."
+    },
+    {
+      "file": "ui/src/app/lite/lite-pages.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Thin Lite pages (home, notifications, thread, profile, search, lists, bookmarks, DMs) around the shared StatusCard, MbButton and MbNotice; the Lite search box is a plain labelled input matching the page's single-field form. The nativeButtons findings are mbButton hosts."
+    },
+    {
+      "file": "ui/src/app/lite/lite-media.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Lite radio and videos: MbButton for Play/Pause/Next/Stop and the queue's Play/Open the post, plus the shared lazy video player host. The nativeButtons findings are mbButton hosts."
+    },
+    {
+      "file": "ui/src/app/lite/lite-shell.ts",
+      "disposition": "partial adoption",
+      "nextStep": "Minimal /m/ shell: MbButton (Full app link) and the shared connection chip. Its More menu is a native details/summary disclosure with plain links, the same pattern as the main shell's More menu; adopt the shared menu component when the main shell's does."
     }
   ]
 }

@@ -650,6 +650,10 @@
           <option value="never">{{ 'settings.blue.dataSaver.never' | transloco }}</option>
         </select>
       </label>
+      <span class="hint">
+        {{ 'settings.blue.lite.hint' | transloco }}
+        <a routerLink="/m/home">{{ 'settings.blue.lite.open' | transloco }}</a>
+      </span>
 
       <label class="inline-field">
         {{ 'settings.blue.feedMin' | transloco: { count: prefs.feedMin(), posts: words().posts } }}

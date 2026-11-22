@@ -3,6 +3,7 @@ import { nativePublishingInterceptor } from './native-publishing-http';
 import { InjectionToken } from '@angular/core';
 import { nativePublicInterceptor, nativePublicFetch } from './native-public-http';
 import { nativeSocialInterceptor, invokeSocial } from './native-social-http';
+import type { ConnectivityLevel } from './connector-types';
 
 export const PLATFORM_HTTP_INTERCEPTORS = [
   nativeIntelligenceInterceptor,
@@ -325,7 +326,14 @@ export const PLATFORM_LOCAL_AI = new InjectionToken<NativeLocalAiTransport | nul
 
 /**
  * Native serves its own origin from the app bundle, so fetching a file there
- * says nothing about the network. The connection meter probes nothing until the
- * host offers a real connectivity check.
+ * says nothing about the network; {@link CONNECTIVITY_CHECK} asks the OS instead.
  */
 export const CONNECTIVITY_PROBE_PATH: string | null = null;
+
+/**
+ * The OS's own connectivity verdict (`network_connectivity`, low-bandwidth
+ * Sprint 7). No request is made. A host without the command, or a platform the
+ * host cannot ask, answers `unknown` and the meter carries on without a probe.
+ */
+export const CONNECTIVITY_CHECK: (() => Promise<ConnectivityLevel>) | null = () =>
+  invokeSocial<ConnectivityLevel>('network_connectivity', {}).catch(() => 'unknown' as const);

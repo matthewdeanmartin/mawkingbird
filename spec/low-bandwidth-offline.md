@@ -198,23 +198,58 @@ Connection card (verdict, typical reply, the last hour) linking to
   lost response keeps compose's existing retry with the same key. Cross-posts and
   scheduled posts are not queued.
 
-### Sprint 6: `/m/` Lite shell
+### Sprint 6: `/m/` Lite shell (done 2026-11-21)
 
-- A route subtree with a minimal shell (no rails or big menus, a small page
-  size, media off by default) that reuses the existing feed, status card, thread,
-  compose and profile components, so it improves as they improve.
-- Scope as in decision 7; simplified video and radio players.
-- A route budget check that fails the build if `/m/` routes pull in heavy features.
-- Lite ⇄ full-app route mapping, `noindex`, and an entry from Settings.
-- The "switch to Lite?" offer (moved from Sprint 3): after sustained bad
-  verdicts, dismissible, remembered per session.
+- `ui/src/app/lite/`: a minimal shell (one top bar with the connection chip and
+  a **Full app** link, a short nav: Home, Notifications, Search, Write, More →
+  Lists, Bookmarks, Direct messages, Radio, Videos) around thin pages built from
+  the full app's own building blocks: the status card (with its inline reply
+  composer), the composer, the API client and the offline read cache.
+- **Changed from the plan:** Lite reuses the building blocks, not the full
+  _pages_. Measured on the 2026-11-21 build, the status card brings ~800 kB of
+  dependencies, and the full Home, Profile and Search pages add 340 kB to
+  1.7 MB on top, plus their extra per-screen requests. Thin Lite pages make one
+  request per view, no prefetching and an explicit "Load more", and still get
+  every status-card and composer improvement.
+- Radio: saved playlists and the shared player (play, pause, next, stop); no
+  scanning, catalogue or playlist builder. Videos: the watch queue; YouTube
+  entries play inline on Play, post entries open their Lite thread.
+- Lite is one concept: entering `/m/` turns it on (`mockingbird_lite`); while
+  on, any full-app address with a Lite twin opens as the twin (shared links,
+  links inside posts). **Full app** turns it off. `/m/` is `noindex` (no
+  `seoIndexable`). Mastodon only; other accounts see a note pointing to the
+  full app.
+- The "switch to Lite?" offer (from Sprint 3) is in the bottom banner after
+  two complete bad minutes running, for Mastodon readers not already in Lite,
+  with "Not now" remembered for the tab. Settings (feed) and `/connection` link
+  to Lite.
+- `npm run bundle:report -- --check` (and `postbuild:mockingbird`) now also
+  holds everything `/m/` loads beyond startup to 950 kB (898 kB measured) and
+  fails if Lite pulls in the full Home, Notifications, Thread, Profile, Search,
+  Chat, Radio, Videos, forum, Unbird or analytics pages.
+- The deep-link audit reads only `app.routes.ts`, so it does not list `/m/`
+  routes; that is consistent with shared links staying full-app addresses.
 
-### Sprint 7: Native offline
+### Sprint 7: Native offline (done 2026-11-21)
 
-- Offline reading of Home, notifications, threads and profiles from the SQLite
-  archive, with coverage and staleness labels.
-- A Rust-side outbox that survives closing the app, sharing semantics with the web outbox.
-- A host-side connectivity probe for the meter.
+- **Connectivity:** new Rust command `network_connectivity` in
+  `mawkingbird_native` (`src-tauri/src/connectivity.rs`) returns the OS's own
+  verdict (`internet`, `limited` for captive or local-only, `none`, `unknown`)
+  from Windows `NetworkInformation`; no request is made. macOS/Linux answer
+  `unknown` for now. The shared meter uses it as Native's probe
+  (`CONNECTIVITY_CHECK`), so Native gets the same offline banner vs fail whale
+  decision, recovery detection and Test now as the web. Where the OS can't say,
+  the whale behaviour is unchanged.
+- **Reading offline:** the Sprint 5 read cache already works in the Native
+  WebView (IndexedDB persists in the app's data folder). In addition, a
+  profile's posts that were never saved there are answered from the SQLite
+  archive through the existing `archive_account_posts` command, any page
+  (`archive-fallback.ts`). Home and notifications beyond their saved first page
+  would need a new archive query; that belongs in the archive roadmap.
+- **Changed from the plan:** no separate Rust outbox. The Sprint 5 Outbox lives
+  in WebView localStorage, which Native keeps on disk, so it already survives
+  closing the app; a Rust copy would add a second source of truth without
+  adding a capability (nothing can send while the app is closed).
 
 ## Risks and open questions
 

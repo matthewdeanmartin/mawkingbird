@@ -50,8 +50,71 @@ export function summarizeBundle(stats) {
   }
   return {
     bytes,
+    /** Names of the startup outputs, for other boundary checks. */
+    outputs: initial,
     inputs: [...inputs].sort((a, b) => b[1] - a[1]),
     violations: STARTUP_EXCLUSIONS.filter((name) => inputs.has(name)),
+  };
+}
+
+/**
+ * Lite (/m/) must stay light: everything its routes can load, beyond the
+ * startup bundle, is held to {@link LITE_BUDGET_BYTES}, and it must never pull
+ * in the full pages it replaces. A Lite page that imports one of those by
+ * accident would quietly turn the low-bandwidth app back into the full one.
+ */
+export const LITE_SOURCE = 'src/app/lite/';
+/** Startup code, so not part of what Lite adds. */
+const LITE_STARTUP = new Set(['src/app/lite/lite-mode.ts']);
+/** Measured at 898 kB on 2026-11-21; raise only with a reason in the commit. */
+export const LITE_BUDGET_BYTES = 950_000;
+export const LITE_EXCLUSIONS = [
+  'src/app/feeds/home/home.ts',
+  'src/app/feeds/notifications/notifications.ts',
+  'src/app/reading/thread/thread.ts',
+  'src/app/accounts/profile/profile.ts',
+  'src/app/discovery/search/search.ts',
+  'src/app/publishing/conversations/conversations.ts',
+  'src/app/reading/radio/radio-page.ts',
+  'src/app/reading/radio/radio-studio.ts',
+  'src/app/reading/videos/videos-page.ts',
+  'src/app/forum/',
+  'src/app/unbird/',
+  'src/app/accounts/mastodon-analytics/',
+];
+
+export function summarizeLite(stats) {
+  const outputs = stats.outputs;
+  const startup = summarizeBundle(stats);
+  const initial = startup.outputs;
+  const lite = new Set();
+  function visit(name) {
+    if (lite.has(name) || initial.has(name) || !outputs[name]) return;
+    lite.add(name);
+    for (const imported of outputs[name].imports ?? []) {
+      if (!imported.external && imported.kind !== 'dynamic-import') visit(imported.path);
+    }
+    if (outputs[name].cssBundle) visit(outputs[name].cssBundle);
+  }
+  for (const [name, output] of Object.entries(outputs)) {
+    const sources = Object.keys(output.inputs ?? {}).map((input) => input.replaceAll('\\', '/'));
+    if (sources.some((source) => source.startsWith(LITE_SOURCE) && !LITE_STARTUP.has(source)))
+      visit(name);
+  }
+  let bytes = 0;
+  const inputs = new Set();
+  for (const name of lite) {
+    bytes += outputs[name].bytes;
+    for (const input of Object.keys(outputs[name].inputs ?? {}))
+      inputs.add(input.replaceAll('\\', '/'));
+  }
+  return {
+    found: lite.size > 0,
+    bytes,
+    startupBytes: startup.bytes,
+    violations: LITE_EXCLUSIONS.filter((excluded) =>
+      [...inputs].some((input) => input === excluded || input.startsWith(excluded)),
+    ),
   };
 }
 
@@ -75,6 +138,18 @@ async function main() {
     if (args.includes('--check')) process.exitCode = 1;
   } else {
     console.log('Startup boundary OK: collection snapshots remain lazy.');
+  }
+  const lite = summarizeLite(JSON.parse(await readFile(filename, 'utf8')));
+  if (lite.found) {
+    console.log(
+      `Lite (/m/) beyond startup: ${(lite.bytes / 1000).toFixed(2)} kB (budget ${(LITE_BUDGET_BYTES / 1000).toFixed(0)} kB).`,
+    );
+    if (lite.bytes > LITE_BUDGET_BYTES || lite.violations.length) {
+      if (lite.violations.length)
+        console.error(`Lite pulled in full-app pages: ${lite.violations.join(', ')}`);
+      if (lite.bytes > LITE_BUDGET_BYTES) console.error('Lite is over its budget.');
+      if (args.includes('--check')) process.exitCode = 1;
+    }
   }
 }
 

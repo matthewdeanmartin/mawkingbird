@@ -3222,3 +3222,13 @@ button for the new "Not saved for offline use" state, using the overlay's
 existing legacy `btn` class like its two neighbours (the file stays in the
 backlog for MbButton adoption as a whole). The Drafts page's new Outbox line is
 a plain content link. No shared design widget changed.
+
+Low-bandwidth Sprints 6–7 (2026-11-21): reviewed the regenerated inventory:
+2121 scanned files, 717 candidate files. Four new candidates, the Lite (/m/)
+files: lite-feed.ts, lite-pages.ts and lite-media.ts use the shared StatusCard,
+MbButton and MbNotice (adopted scope); lite-shell.ts uses MbButton and the
+shared connection chip, with a native details/summary More menu matching the
+main shell's (partial adoption, follows the main shell). Changed findings:
+offline-banner.ts gains the switch-to-Lite offer's two MbButtons;
+connection-page.html gains an "Open Lite" MbButton link. No shared design
+widget changed.

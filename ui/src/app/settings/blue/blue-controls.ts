@@ -81,6 +81,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.feedMax: Maximum feed size ({{count}} {{posts}})
 // i18n settings.blue.showImages: Show images in feeds (off replaces pictures with a 🖼️ chip)
 // i18n settings.blue.dataSaver: Pictures in new posts
+// i18n settings.blue.lite.hint: On a poor connection, Mawkingbird Lite shows the essentials and loads much less.
+// i18n settings.blue.lite.open: Open Lite
 // i18n settings.blue.dataSaver.auto: Wait for a tap while the connection is slow
 // i18n settings.blue.dataSaver.always: Always wait for a tap
 // i18n settings.blue.dataSaver.never: Always load

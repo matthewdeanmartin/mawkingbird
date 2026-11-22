@@ -576,6 +576,15 @@ export const routes: Routes = [
       import('./shell/bug-report-dialog/feedback-page').then((m) => m.FeedbackPage),
   },
   {
+    // Lite (low-bandwidth Sprint 6): a minimal shell around thin pages that
+    // reuse the full app's status card, composer and API client. Not indexed
+    // (no seoIndexable), so search engines keep the full-app addresses.
+    path: 'm',
+    canActivate: [authGuard],
+    loadComponent: () => import('./lite/lite-shell').then((m) => m.LiteShell),
+    loadChildren: () => import('./lite/lite.routes').then((m) => m.LITE_ROUTES),
+  },
+  {
     path: 'fail-whale',
     title: 'Something went wrong',
     loadComponent: () =>

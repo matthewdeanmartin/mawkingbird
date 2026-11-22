@@ -1,5 +1,8 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { LiteMode, sustainedBad } from '../../lite/lite-mode';
+import { ConnectionMeter } from '../../platform/network/connection-meter';
+import { Auth } from '../../platform/session/auth';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { ConnectionState } from '../../platform/network/connection-state';
@@ -16,6 +19,9 @@ import { ReadCache } from '../../platform/offline/read-cache';
 // i18n offlineBanner.queued: Waiting to send: {{count}}
 // i18n offlineBanner.held: Outbox posts waiting for you: {{count}}
 // i18n offlineBanner.review: Review
+// i18n offlineBanner.liteOffer: Your connection has been slow for a while. Lite loads less and works better on it.
+// i18n offlineBanner.liteSwitch: Switch to Lite
+// i18n offlineBanner.liteNotNow: Not now
 
 /**
  * The calm replacement for the fail whale when the problem is the reader's
@@ -60,6 +66,16 @@ import { ReadCache } from '../../platform/offline/read-cache';
             'offlineBanner.details' | transloco
           }}</a>
         </div>
+      } @else if (liteOffer()) {
+        <div class="banner" role="status" data-surface="lite">
+          <span>{{ 'offlineBanner.liteOffer' | transloco }}</span>
+          <button mbButton size="small" type="button" (click)="switchToLite()">
+            {{ 'offlineBanner.liteSwitch' | transloco }}
+          </button>
+          <button mbButton variant="link" size="small" type="button" (click)="lite.dismissOffer()">
+            {{ 'offlineBanner.liteNotNow' | transloco }}
+          </button>
+        </div>
       } @else if (outbox.held()) {
         <div class="banner" role="status" data-surface="held">
           <span>{{ 'offlineBanner.held' | transloco: { count: outbox.held() } }}</span>
@@ -92,6 +108,9 @@ import { ReadCache } from '../../platform/offline/read-cache';
       box-shadow: 0 8px 28px rgb(15 20 25 / 16%);
       font-size: 14px;
     }
+    .banner[data-surface='lite'] {
+      border-inline-start-color: var(--ds-warning-text);
+    }
     .banner[data-surface='held'] {
       border-inline-start-color: var(--ds-warning-text);
     }
@@ -111,6 +130,29 @@ export class OfflineBanner {
     const savedAt = this.readCache.servedSavedAt();
     return savedAt === null ? null : Math.max(0, Math.round((Date.now() - savedAt) / 60_000));
   });
+
+  protected readonly lite = inject(LiteMode);
+  private readonly meter = inject(ConnectionMeter);
+  private readonly auth = inject(Auth);
+  private readonly router = inject(Router);
+  /**
+   * Offer Lite (moved here from Sprint 3) once the connection has been bad for
+   * a couple of minutes running — not on the first slow request — to a
+   * Mastodon reader who isn't already in Lite and hasn't said "Not now" this
+   * session.
+   */
+  protected readonly liteOffer = computed(
+    () =>
+      !this.lite.on() &&
+      !this.lite.offerDismissed() &&
+      this.auth.kind() === 'mastodon' &&
+      this.meter.bad() &&
+      sustainedBad(this.meter.historySnapshot(), Date.now()),
+  );
+
+  protected switchToLite(): void {
+    this.lite.enter(this.router.url);
+  }
 
   protected async tryNow(): Promise<void> {
     this.trying.set(true);

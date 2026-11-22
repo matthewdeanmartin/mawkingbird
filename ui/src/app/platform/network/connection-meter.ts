@@ -1,5 +1,5 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
-import { CONNECTIVITY_PROBE_PATH } from '../http/platform-http';
+import { CONNECTIVITY_CHECK, CONNECTIVITY_PROBE_PATH } from '../http/platform-http';
 import { NetworkSimulator, simulatedDrop } from './network-simulator';
 import {
   BrowserHints,
@@ -52,6 +52,12 @@ function connectionInfo(): NetworkInformationLike | undefined {
     : (navigator as Navigator & { connection?: NetworkInformationLike }).connection;
 }
 
+/**
+ * Whether this build can check connectivity on its own: the web fetches a tiny
+ * file from its own site, Native asks the operating system.
+ */
+export const CAN_PROBE = CONNECTIVITY_PROBE_PATH !== null || CONNECTIVITY_CHECK !== null;
+
 export function readHints(): BrowserHints {
   const info = connectionInfo();
   return {
@@ -102,6 +108,8 @@ export class ConnectionMeter {
     const bin = medianBin(summarize(this.history, now - RECENT_REPLY_MS, now).lat);
     return bin === null ? null : binLabel(bin);
   });
+  /** True after the OS said it can't tell (Native off Windows); see ConnectionState. */
+  readonly probeUnknown = signal(false);
   /** When the last probe finished, for the diagnostics page. */
   readonly lastProbe = signal<ConnectionSample | null>(null);
 
@@ -172,13 +180,15 @@ export class ConnectionMeter {
    * browser says it is back online and by the page's "Test now" button.
    */
   async probe(): Promise<ConnectionSample | null> {
+    if (this.probing) return null;
+    const check = CONNECTIVITY_CHECK;
     const path = CONNECTIVITY_PROBE_PATH;
-    if (!path || this.probing || typeof fetch === 'undefined') return null;
+    if (!check && (!path || typeof fetch === 'undefined')) return null;
     this.probing = true;
     const started = performance.now();
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
-    let sample: ConnectionSample;
+    let sample: ConnectionSample | null;
     try {
       const simulated = this.simulator.profile();
       if (simulated.id !== 'off') {
@@ -187,16 +197,27 @@ export class ConnectionMeter {
         await new Promise((resolve) => setTimeout(resolve, simulated.latencyMs));
         if (simulatedDrop(simulated, Date.now(), Math.random())) throw new Error('simulated');
       }
-      const url = new URL(path, document.baseURI);
-      url.searchParams.set('t', String(Date.now()));
-      await fetch(url.href, { cache: 'no-store', signal: controller.signal });
-      sample = this.probeSample('ok', started);
+      if (check) {
+        // Native: the operating system's own verdict; no request is made.
+        const level = await check();
+        this.probeUnknown.set(level === 'unknown');
+        sample =
+          level === 'unknown'
+            ? null
+            : this.probeSample(level === 'internet' ? 'ok' : 'unreachable', started);
+      } else {
+        const url = new URL(path!, document.baseURI);
+        url.searchParams.set('t', String(Date.now()));
+        await fetch(url.href, { cache: 'no-store', signal: controller.signal });
+        sample = this.probeSample('ok', started);
+      }
     } catch {
       sample = this.probeSample(controller.signal.aborted ? 'abandoned' : 'unreachable', started);
     } finally {
       clearTimeout(timer);
       this.probing = false;
     }
+    if (!sample) return null;
     this.lastProbe.set(sample);
     this.record(sample);
     return sample;
@@ -254,7 +275,7 @@ export class ConnectionMeter {
     if (resetBackoff) this.probeAttempt = 0;
     const verdict = this.verdict();
     const wanted =
-      CONNECTIVITY_PROBE_PATH !== null &&
+      CAN_PROBE &&
       (verdict === 'flaky' || verdict === 'offline') &&
       typeof document !== 'undefined' &&
       document.visibilityState === 'visible';

@@ -10,6 +10,7 @@ import { ConnectionState } from './platform/network/connection-state';
 import { OfflineBanner } from './shell/offline-banner/offline-banner';
 import { UpdateOverlay } from './shell/update-overlay/update-overlay';
 import { OfflineApp } from './platform/offline/offline-app';
+import { LiteMode } from './lite/lite-mode';
 import { OutboxSummary } from './platform/offline/outbox-summary';
 import { UpdateRecovery } from './platform/build/update-recovery';
 import { ConfigSync } from './platform/storage/config-sync';
@@ -55,6 +56,7 @@ export class App {
   private readonly profileSync = inject(ProfileSyncStarter);
   /** The offline app shell (service worker); registers a few seconds after start. */
   private readonly offlineApp = inject(OfflineApp);
+  private readonly lite = inject(LiteMode);
   private readonly outboxSummary = inject(OutboxSummary);
   private readonly injector = inject(Injector);
   /** Privacy-scrubbed intent log for buttons, links, submits, and committed changes. */
@@ -72,6 +74,8 @@ export class App {
     this.recovery.markApplicationStableAfterDelay();
     this.configSync.start();
     this.offlineApp.start();
+    // Lite: entering /m/ turns it on; while on, full-app links open their /m/ twin.
+    this.lite.start();
     // The Outbox service needs the API client; load it only when something
     // is actually queued. Compose loads it itself when it queues a post.
     if (this.outboxSummary.waiting() + this.outboxSummary.held() > 0) {

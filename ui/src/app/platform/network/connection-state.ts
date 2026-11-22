@@ -1,7 +1,6 @@
 import { Injectable, computed, effect, inject, untracked } from '@angular/core';
-import { CONNECTIVITY_PROBE_PATH } from '../http/platform-http';
 import { ServerHealth } from '../http/server-health';
-import { ConnectionMeter } from './connection-meter';
+import { CAN_PROBE, ConnectionMeter } from './connection-meter';
 
 /**
  * What the app should put in front of the reader when requests fail.
@@ -25,8 +24,8 @@ export function failureSurface(input: {
 }): FailureSurface {
   if (!input.online || input.verdict === 'offline') return 'offline';
   if (!input.serverDown) return 'none';
-  // Without a probe (Native) there is no second host to ask; keep the old
-  // behaviour and let the whale's own diagnostics explain.
+  // Without any probe there is nothing else to ask; keep the old behaviour
+  // and let the whale's own diagnostics explain.
   if (!input.canProbe || input.blame === 'server') return 'whale';
   return 'checking';
 }
@@ -42,7 +41,9 @@ export class ConnectionState {
       online: this.meter.hints().online,
       verdict: this.meter.verdict(),
       blame: this.meter.assessment().blame,
-      canProbe: CONNECTIVITY_PROBE_PATH !== null,
+      // A probe that can't answer (Native where the OS can't say) is no probe:
+      // "checking" would otherwise wait forever.
+      canProbe: CAN_PROBE && !this.meter.probeUnknown(),
     }),
   );
 

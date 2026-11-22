@@ -144,3 +144,6 @@ export interface NativeIntelligenceTransport {
     body?: string;
   }): Promise<{ status: number; body: string; headers: Record<string, string> }>;
 }
+
+/** What the OS says about internet access (Native `network_connectivity`). */
+export type ConnectivityLevel = 'internet' | 'limited' | 'none' | 'unknown';

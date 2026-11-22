@@ -1,6 +1,8 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import {
+  CONNECTIVITY_CHECK,
+  CONNECTIVITY_PROBE_PATH,
   PLATFORM_ARTICLE_READ,
   PLATFORM_CONNECTORS,
   PLATFORM_FEED_READ,
@@ -111,4 +113,15 @@ it('native connector bridge limits raw credentials to connect and normalizes fai
   });
   invoke.mockRejectedValue({ kind: 'credentials', message: 'OS store locked' });
   await expect(connectors.forget(handle)).rejects.toThrow('OS store locked');
+});
+
+it('asks the OS for connectivity instead of probing its own bundled origin', async () => {
+  expect(CONNECTIVITY_PROBE_PATH).toBeNull();
+  const invoke = vi.fn().mockResolvedValue('limited');
+  vi.stubGlobal('__TAURI__', { core: { invoke } });
+  await expect(CONNECTIVITY_CHECK!()).resolves.toBe('limited');
+  expect(invoke).toHaveBeenCalledExactlyOnceWith('network_connectivity', {});
+  // An older host without the command, or any failure, means "can't tell".
+  invoke.mockRejectedValue(new Error('command not found'));
+  await expect(CONNECTIVITY_CHECK!()).resolves.toBe('unknown');
 });

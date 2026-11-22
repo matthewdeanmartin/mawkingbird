@@ -1,4 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
+import { Auth } from '../../platform/session/auth';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -42,5 +43,33 @@ describe('OfflineBanner', () => {
     expect(el.querySelector('a')!.getAttribute('href')).toBe('/connection');
     (el.querySelector('button') as HTMLButtonElement).click();
     await vi.waitFor(() => expect(meter.lastProbe()?.outcome).toBe('unreachable'));
+  });
+
+  it('offers Lite after a couple of slow minutes, and "Not now" hides it', () => {
+    TestBed.inject(Auth).setToken('lite-offer');
+    const meter = TestBed.inject(ConnectionMeter);
+    vi.useFakeTimers({ toFake: ['Date'] });
+    try {
+      const start = Math.floor(Date.now() / 60_000) * 60_000 + 5_000;
+      for (const minute of [0, 1, 2]) {
+        vi.setSystemTime(start + minute * 60_000);
+        for (let i = 4; i > 0; i--) {
+          meter.record({ at: Date.now() - i, ms: 3_000, outcome: 'ok', latency: true, home: true });
+        }
+      }
+      const fixture = TestBed.createComponent(OfflineBanner);
+      fixture.detectChanges();
+      const el = fixture.nativeElement as HTMLElement;
+      expect(el.textContent).toContain('Switch to Lite');
+      (
+        [...el.querySelectorAll('button')].find((b) =>
+          b.textContent!.includes('Not now'),
+        ) as HTMLButtonElement
+      ).click();
+      fixture.detectChanges();
+      expect(el.textContent).not.toContain('Switch to Lite');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
