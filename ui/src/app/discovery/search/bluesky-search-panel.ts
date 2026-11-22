@@ -1,4 +1,9 @@
 import { accountProfilePath } from '../../accounts/account-route';
+import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
+import { AdultCollapsed, AdultFilterControl } from '../../moderation/adult-content/adult-explain';
+import { AdultResults } from '../../moderation/adult-content/adult-results';
+import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
+import { BlueskyModerationState } from '../../connections/bluesky/bluesky-moderation-state';
 import { excerptTermsFor } from '../../posts/status-card/search-excerpt';
 import { searchPanelOpenByDefault } from './search-panel-default';
 import {
@@ -245,7 +250,14 @@ const ACTIVITY_SCAN_CONCURRENCY = 4;
  */
 @Component({
   selector: 'app-bluesky-search-panel',
-  imports: [FormsModule, StatusCard, AccountResultCard, TranslocoPipe],
+  imports: [
+    FormsModule,
+    StatusCard,
+    AccountResultCard,
+    TranslocoPipe,
+    AdultCollapsed,
+    AdultFilterControl,
+  ],
   templateUrl: './bluesky-search-panel.html',
   styleUrls: ['./bluesky-search-panel.css', './search-refine.css'],
 })
@@ -345,6 +357,49 @@ export class BlueskySearchPanel {
   private auth = inject(Auth);
   private anonymousFollows = inject(AnonymousFollows);
   private transloco = inject(TranslocoService);
+  private bskyModerationState = inject(BlueskyModerationState);
+
+  // --- Adult content (spec/moderation-facets.md §3) ---
+
+  private readonly adult = new AdultResults(
+    inject(ClientPrefs),
+    () => this.statuses(),
+    () => this.accounts(),
+  );
+  protected readonly adultFilter = this.adult.filter;
+  /**
+   * Signed in with adult content off: Bluesky drops labelled adult posts from
+   * search itself, so "Only adult" will find little. Say so instead of
+   * letting the filter look broken.
+   */
+  protected readonly bskyHidesAdult = computed(
+    () => this.session.linked() && !this.bskyModerationState.adultContent(),
+  );
+
+  protected setAdultFilter(value: AdultFilter): void {
+    this.adult.choose(value);
+  }
+
+  protected adultCollapsedPost(s: Status): AdultVerdict | null {
+    return this.adult.collapsedPost(s);
+  }
+
+  protected adultCollapsedAccount(id: string): AdultVerdict | null {
+    return this.adult.collapsedAccount(id);
+  }
+
+  protected revealAdult(key: string): void {
+    this.adult.reveal(key);
+  }
+
+  protected adultHiddenPosts = computed(
+    () => this.visible().filter((s) => this.adult.collapsedPost(s)).length,
+  );
+  protected adultHiddenAccounts = computed(
+    () => this.visibleAccounts().filter((r) => this.adult.collapsedAccount(r.account.id)).length,
+  );
+  protected adultDroppedPosts = this.adult.droppedPosts;
+  protected adultDroppedAccounts = this.adult.droppedPeople;
 
   /** Account results, hydrated with counts. */
   protected accounts = signal<BlueskyAccountResult[]>([]);
@@ -385,7 +440,7 @@ export class BlueskySearchPanel {
         )
       : gated;
     const sorted = sortAccounts(
-      matching.map((r) => this.asItem(r)),
+      this.adult.keepPeople(matching).map((r) => this.asItem(r)),
       this.accountSort(),
     );
     // Re-attach relationships by id after sorting, which only sees the account.
@@ -787,7 +842,7 @@ export class BlueskySearchPanel {
     );
     // Exclusion before the text filter, so "hidden by exclusion" counts what it
     // says it counts.
-    const kept = excludeAuthors(faceted, this.excludedAuthors());
+    const kept = excludeAuthors(this.adult.keepPosts(faceted), this.excludedAuthors());
     return sortStatuses(filterLoaded(kept, this.loadedFilter()), this.statusSort());
   });
 

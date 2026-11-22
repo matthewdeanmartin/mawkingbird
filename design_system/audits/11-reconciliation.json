@@ -3611,6 +3611,11 @@
       "file": "ui/src/app/moderation/report-gate/report-gate.ts",
       "disposition": "backlog",
       "nextStep": "Pre-report notice inside the report Dialog: MbNotice (info tone), plain links to Terms/About, a link-style rules toggle and a details/summary quote. Adopt MbButton variant=link and Disclosure when convenient; preserve that it names the reader's server, the crawl date and the not-legal-advice warning."
+    },
+    {
+      "file": "ui/src/app/moderation/adult-content/adult-explain.ts",
+      "disposition": "backlog",
+      "nextStep": "Adult filter: a native labelled select with MbHelp, and the collapsed adult row (dashed card, MbHelp (i) explainer, link-style Show button). Move the select to Field/Control and Show to MbButton variant=link when convenient; preserve that every hidden item names its first reason inline and lists all evidence behind (i)."
     }
   ]
 }

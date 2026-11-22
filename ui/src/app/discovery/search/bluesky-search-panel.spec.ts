@@ -1,3 +1,5 @@
+import { BlueskySession } from '../../connections/bluesky/bluesky-session';
+import { BlueskyModerationState } from '../../connections/bluesky/bluesky-moderation-state';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
@@ -103,6 +105,9 @@ interface PanelInternals {
   accountsMissingActivity(): { account: Account }[];
   scanCallsUsed(): number;
   hasActivityFacet(): boolean;
+  setAdultFilter(value: 'either' | 'hide' | 'only'): void;
+  adultCollapsedPost(s: Status): { adult: boolean } | null;
+  bskyHidesAdult(): boolean;
 }
 
 function internals(fixture: ComponentFixture<BlueskySearchPanel>): PanelInternals {
@@ -800,6 +805,35 @@ describe('BlueskySearchPanel', () => {
       expect(internals(fixture).activityScanSize()).toBe(25);
       internals(fixture).scanActivity();
       expect(authorFeedCalls.length).toBe(25);
+    });
+  });
+
+  describe('adult content filter', () => {
+    it('reads Bluesky labels on posts and keeps only adult ones on Only', () => {
+      const labelled = makeStatus('1', 'alice.bsky.social', {
+        provider: 'bluesky',
+        providerRef: { labels: [{ val: 'porn' }] } as never,
+      });
+      postPages = [{ statuses: [labelled, makeStatus('2')], cursor: null }];
+      const fixture = setUp();
+      internals(fixture).apiBudget.set(1);
+      internals(fixture).runQuery();
+      internals(fixture).setAdultFilter('hide');
+      expect(internals(fixture).adultCollapsedPost(labelled)?.adult).toBe(true);
+      internals(fixture).setAdultFilter('only');
+      expect(
+        internals(fixture)
+          .visible()
+          .map((s) => s.id),
+      ).toEqual([labelled.id]);
+    });
+
+    it('says when the reader’s Bluesky account hides adult content', () => {
+      const fixture = setUp();
+      TestBed.inject(BlueskyModerationState).adultContent.set(false);
+      expect(internals(fixture).bskyHidesAdult()).toBe(TestBed.inject(BlueskySession).linked());
+      TestBed.inject(BlueskyModerationState).adultContent.set(true);
+      expect(internals(fixture).bskyHidesAdult()).toBe(false);
     });
   });
 });

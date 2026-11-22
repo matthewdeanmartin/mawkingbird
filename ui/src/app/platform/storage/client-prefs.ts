@@ -32,6 +32,10 @@ import {
   WizardSteps,
 } from '../../publishing/publish-wizard';
 
+/** Search's adult-content filter values. `either` shows everything. */
+export type AdultFilter = 'either' | 'hide' | 'only';
+export const ADULT_FILTERS: readonly AdultFilter[] = ['either', 'hide', 'only'];
+
 const PREFS_KEY = 'mockingbird_client_prefs';
 
 /**
@@ -474,6 +478,8 @@ interface StoredPrefs extends StoredReaderTypography {
   postingLanguage?: string;
   postingLanguageAsked?: boolean;
   hideForeignLangPosts?: boolean;
+  /** Search's adult-content filter (spec/moderation-facets.md §3). Synced. */
+  adultFilter?: AdultFilter;
   feedLanguages?: string[];
   learningLanguages?: string[];
   appendTranslation?: Record<string, boolean>;
@@ -924,6 +930,11 @@ export class ClientPrefs {
    * determined — see the FeedLanguageFilter service.
    */
   readonly hideForeignLangPosts = signal<boolean>(false);
+  /**
+   * Adult-content filter for search results: show all (default), hide, or only.
+   * Starts at show-all because people mark plenty that is not sexual as sensitive.
+   */
+  readonly adultFilter = signal<AdultFilter>('either');
 
   /**
    * Languages the user is **learning** (ISO 639-1) — orthogonal to
@@ -1606,6 +1617,11 @@ export class ClientPrefs {
     );
     this.loadBool(stored.postingLanguageAsked, this.postingLanguageAsked);
     this.loadBool(stored.hideForeignLangPosts, this.hideForeignLangPosts);
+    this.adultFilter.set(
+      ADULT_FILTERS.includes(stored.adultFilter as AdultFilter)
+        ? (stored.adultFilter as AdultFilter)
+        : 'either',
+    );
     this.feedLanguages.set(normalizeLangs(stored.feedLanguages).slice(0, MAX_FEED_LANGUAGES));
     this.learningLanguages.set(normalizeLangs(stored.learningLanguages));
     this.appendTranslation.set(normalizeAppendFlags(stored.appendTranslation));
@@ -1689,6 +1705,7 @@ export class ClientPrefs {
       postingLanguage: this.postingLanguage(),
       postingLanguageAsked: this.postingLanguageAsked(),
       hideForeignLangPosts: this.hideForeignLangPosts(),
+      adultFilter: this.adultFilter(),
       feedLanguages: this.feedLanguages(),
       learningLanguages: this.learningLanguages(),
       appendTranslation: this.appendTranslation(),

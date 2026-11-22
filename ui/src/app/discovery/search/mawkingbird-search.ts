@@ -91,6 +91,12 @@ export interface SearchPresentation {
   grouping: ResultGrouping;
   /** The §12 loaded-result text filter. Presentation state, never a server criterion. */
   loadedResultFilter?: string;
+  /**
+   * Adult-content filter (spec/moderation-facets.md §3), client side only.
+   * Absent means "the reader's own setting", so a link only overrides it when
+   * its author chose to.
+   */
+  adult?: 'hide' | 'only';
 }
 
 export interface MawkingbirdSearch {

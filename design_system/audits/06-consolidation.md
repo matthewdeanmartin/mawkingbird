@@ -1,5 +1,17 @@
 # Sprint 6 opening consolidation audit
 
+## Adult content filter, 2026-11-22
+
+Reviewed 2,135 source files (new: the pure
+`moderation/adult-content/adult-lexicon.ts`, `adult-classifier.ts` and the
+`AdultResults` helper) and 723 candidate files. One candidate is
+added and reconciled as backlog: `moderation/adult-content/adult-explain.ts`
+(a native labelled select with MbHelp, and the collapsed adult row with an
+MbHelp explainer and a link-style Show button). Mastodon search and the
+Bluesky search panel place that control above their people and post lists
+and swap a result card for the collapsed row when it is hidden. No shared
+widget implementation changed.
+
 ## Language finder and report gate, 2026-11-22
 
 Reviewed 2,131 source files (new: the pure `language/language-catalog.ts` and

@@ -70,6 +70,16 @@ interface SearchInternals {
   languageFinderOpen: WritableSignal<boolean>;
   chooseLanguage(code: string, select?: HTMLSelectElement): void;
   moreLanguages: string;
+  adultFilter: WritableSignal<'either' | 'hide' | 'only'>;
+  setAdultFilter(value: 'either' | 'hide' | 'only'): void;
+  adultCollapsedPost(s: Status): { adult: boolean } | null;
+  adultCollapsedAccount(id: string): { adult: boolean } | null;
+  adultHiddenPosts(): number;
+  adultDroppedPosts(): number;
+  adultHiddenAccounts(): number;
+  revealAdult(key: string): void;
+  visibleStatuses(): Status[];
+  applySearch(search: unknown): void;
 }
 
 function makeAccount(over: Partial<Account> = {}): Account {
@@ -1869,6 +1879,88 @@ describe('Search', () => {
       internals(fixture).chooseLanguage('tok');
       expect(internals(fixture).language()).toBe('tok');
       expect(codes(fixture, 'current')).toEqual(['tok']);
+    });
+  });
+
+  describe('adult content filter', () => {
+    function adultStatus(id: string): Status {
+      return { ...makeStatus(id), spoiler_text: 'lewd', sensitive: true };
+    }
+    function foodStatus(id: string): Status {
+      return { ...makeStatus(id), spoiler_text: 'food', sensitive: true };
+    }
+
+    it('starts at show-all and shows everything', () => {
+      const fixture = setUp();
+      const state = internals(fixture);
+      state.type.set('statuses');
+      state.results.set(makeResults([adultStatus('a'), foodStatus('f')]));
+      expect(state.adultFilter()).toBe('either');
+      expect(state.visibleStatuses().map((s) => s.id)).toEqual(['a', 'f']);
+      expect(state.adultCollapsedPost(state.visibleStatuses()[0])).toBeNull();
+    });
+
+    it('collapses adult posts on Hide, never a food CW, and reveals on request', () => {
+      const fixture = setUp();
+      const state = internals(fixture);
+      state.type.set('statuses');
+      state.results.set(makeResults([adultStatus('a'), foodStatus('f')]));
+      state.setAdultFilter('hide');
+      fixture.detectChanges();
+      const [adult, food] = state.visibleStatuses();
+      expect(state.adultCollapsedPost(adult)?.adult).toBe(true);
+      expect(state.adultCollapsedPost(food)).toBeNull();
+      expect(state.adultHiddenPosts()).toBe(1);
+      const row = (fixture.nativeElement as HTMLElement).querySelector('[data-adult-collapsed]');
+      expect(row?.textContent).toContain('Content warning “lewd”');
+      state.revealAdult('s:a');
+      expect(state.adultCollapsedPost(adult)).toBeNull();
+    });
+
+    it('keeps only adult posts on Only and counts what it left out', () => {
+      const fixture = setUp();
+      const state = internals(fixture);
+      state.type.set('statuses');
+      state.results.set(makeResults([adultStatus('a'), foodStatus('f'), makeStatus('p')]));
+      state.setAdultFilter('only');
+      expect(state.visibleStatuses().map((s) => s.id)).toEqual(['a']);
+      expect(state.adultDroppedPosts()).toBe(2);
+    });
+
+    it('judges people from their bio and matched posts', () => {
+      const fixture = setUp();
+      const state = internals(fixture);
+      const adult = makeAccount({ id: 'adult', note: '<p>18+ MDNI</p>' });
+      const teacher = makeAccount({ id: 'teacher', note: '<p>Cikgu di Johor</p>' });
+      state.accountItems.set([
+        { account: adult, matchingPosts: [] },
+        { account: teacher, matchingPosts: [] },
+      ]);
+      state.setAdultFilter('hide');
+      expect(state.adultCollapsedAccount('adult')?.adult).toBe(true);
+      expect(state.adultCollapsedAccount('teacher')).toBeNull();
+      expect(state.adultHiddenAccounts()).toBe(1);
+      state.setAdultFilter('only');
+      expect(state.visibleAccounts().map((i) => i.account.id)).toEqual(['adult']);
+    });
+
+    it('remembers the reader’s choice, but a shared link does not change it', () => {
+      const prefs = TestBed.inject(ClientPrefs);
+      const fixture = setUp();
+      internals(fixture).setAdultFilter('hide');
+      expect(prefs.adultFilter()).toBe('hide');
+
+      const second = setUp();
+      expect(internals(second).adultFilter()).toBe('hide');
+      internals(second).applySearch({
+        version: 1,
+        target: 'posts',
+        post: {},
+        apiCallBudget: 1,
+        presentation: { grouping: 'none', adult: 'only' },
+      });
+      expect(internals(second).adultFilter()).toBe('only');
+      expect(prefs.adultFilter()).toBe('hide');
     });
   });
 });

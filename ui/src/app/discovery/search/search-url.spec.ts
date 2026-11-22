@@ -123,3 +123,35 @@ describe('decodeSearchFromParams', () => {
     }
   });
 });
+
+describe('adult filter in the URL', () => {
+  it('rides alongside a plain search and a blob, and round-trips', () => {
+    const plain: MawkingbirdSearch = {
+      ...emptySearch('posts'),
+      post: { words: 'malay', language: 'ms' },
+      presentation: { grouping: 'none', adult: 'hide' },
+    };
+    expect(encodeSearchToParams(plain)['adult']).toBe('hide');
+    expect(roundTrip(plain).presentation.adult).toBe('hide');
+
+    const rich: MawkingbirdSearch = {
+      ...emptySearch('posts'),
+      post: { words: 'x', exactPhrase: 'open bo', sensitive: 'only' },
+      presentation: { grouping: 'none', adult: 'only' },
+    };
+    const params = encodeSearchToParams(rich);
+    expect(params['s']).toBeTruthy();
+    expect(params['adult']).toBe('only');
+    expect(roundTrip(rich).presentation.adult).toBe('only');
+  });
+
+  it('leaves the reader’s own setting alone when the link names none or a bad value', () => {
+    expect(encodeSearchToParams(emptySearch('accounts'))['adult']).toBeUndefined();
+    expect(
+      decodeSearchFromParams(getter({ type: 'accounts', adult: 'either' })).presentation.adult,
+    ).toBeUndefined();
+    expect(
+      decodeSearchFromParams(getter({ type: 'accounts', adult: 'nope' })).presentation.adult,
+    ).toBeUndefined();
+  });
+});

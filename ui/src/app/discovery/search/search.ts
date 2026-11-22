@@ -123,7 +123,10 @@ import { IN_PROGRESS_LOCALES, PRODUCTION_LOCALES, UiLocale } from '../../i18n/lo
 import { suggestedLanguages } from '../../language/language-catalog';
 import { LanguageFinderDialog } from '../../language/language-finder/language-finder';
 import { PostingLanguage } from '../../publishing/posting-language';
-import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
+import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
+import { AdultResults } from '../../moderation/adult-content/adult-results';
+import { AdultCollapsed, AdultFilterControl } from '../../moderation/adult-content/adult-explain';
 import { BlueskyPostSearch } from '../../connections/bluesky/bluesky-post-search';
 import { decodeSearchFromParams, encodeSearchToParams } from './search-url';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
@@ -461,6 +464,8 @@ const SEARCH_TIMEOUT_MS = 20000;
     BlueskySearchPanel,
     TranslocoPipe,
     LanguageFinderDialog,
+    AdultCollapsed,
+    AdultFilterControl,
   ],
   templateUrl: './search.html',
   // The refine layer's styles are shared with the Bluesky panel, so they live in
@@ -1390,6 +1395,7 @@ export class Search implements OnInit, OnDestroy {
    *  travel with it; transient view state (page, facets) deliberately does not. */
   protected currentSearch = computed<MawkingbirdSearch>(() => {
     const target = this.type() === 'statuses' ? 'posts' : (this.type() as SearchTarget);
+    const adult = this.adultFilter();
     return {
       version: 1,
       target,
@@ -1397,7 +1403,10 @@ export class Search implements OnInit, OnDestroy {
       hashtag: target === 'hashtags' ? { text: this.query().trim() } : undefined,
       post: target === 'posts' ? this.postCriteria() : undefined,
       apiCallBudget: this.apiBudget(),
-      presentation: { grouping: this.grouping() },
+      presentation: {
+        grouping: this.grouping(),
+        ...(adult === 'either' ? {} : { adult }),
+      },
     };
   });
 
@@ -1532,7 +1541,8 @@ export class Search implements OnInit, OnDestroy {
     );
     // Exclusion before the text filter: both are cheap, but this keeps the
     // "hidden by exclusion" count meaning what it says.
-    const kept = excludeAuthors(faceted, this.excludedAuthors());
+    const adultKept = this.adult.keepPosts(faceted);
+    const kept = excludeAuthors(adultKept, this.excludedAuthors());
     // Sort last, so it reorders exactly the posts that survive facet + text
     // filtering (grouping then buckets this sorted list).
     return sortStatuses(filterLoaded(kept, this.loadedFilter()), this.statusSort());
@@ -1778,6 +1788,51 @@ export class Search implements OnInit, OnDestroy {
   private readonly kitLocale = inject(UiLocale);
   private readonly searchPrefs = inject(ClientPrefs);
   private readonly postingLanguage = inject(PostingLanguage);
+
+  // --- Adult content (spec/moderation-facets.md §3) ---
+
+  /**
+   * Show all / hide / only adult, over what is loaded. Starts from the reader's
+   * remembered choice; a shared link's `adult=` overrides it for that view only.
+   */
+  private readonly adult = new AdultResults(
+    this.searchPrefs,
+    () => this.results()?.statuses ?? [],
+    () => this.accountItems(),
+  );
+  protected readonly adultFilter = this.adult.filter;
+
+  protected setAdultFilter(value: AdultFilter): void {
+    this.adult.choose(value);
+  }
+
+  /** The verdict to collapse this post to, or null to render it normally. */
+  protected adultCollapsedPost(s: Status): AdultVerdict | null {
+    return this.adult.collapsedPost(s);
+  }
+
+  protected adultCollapsedAccount(id: string): AdultVerdict | null {
+    return this.adult.collapsedAccount(id);
+  }
+
+  protected revealAdult(key: string): void {
+    this.adult.reveal(key);
+  }
+
+  /** Collapsed adult posts / people now on screen (Hide). */
+  protected adultHiddenPosts = computed(
+    () => this.visibleStatuses().filter((s) => this.adult.collapsedPost(s)).length,
+  );
+  protected adultHiddenAccounts = computed(
+    () => this.visibleAccounts().filter((i) => this.adult.collapsedAccount(i.account.id)).length,
+  );
+  /** Loaded results that Only left out for not being adult (before other filters). */
+  protected adultDroppedPosts = computed(() =>
+    this.adultFilter() === 'only'
+      ? this.mediaMatches().filter((s) => !this.adult.isAdultPost(s)).length
+      : 0,
+  );
+  protected adultDroppedAccounts = this.adult.droppedPeople;
   protected kitMatches = computed(() =>
     this.type() === 'accounts'
       ? kitMatchesFor(this.ranQuery(), 3, this.kitLanguages.codes(), this.kitLocale.active())
@@ -2213,6 +2268,8 @@ export class Search implements OnInit, OnDestroy {
     this.type.set(search.target === 'posts' ? 'statuses' : search.target);
     this.apiBudget.set(search.apiCallBudget || DEFAULT_BUDGET_SIMPLE);
     this.grouping.set(search.presentation?.grouping ?? 'none');
+    // Only a link that names a choice overrides the reader's remembered one.
+    if (search.presentation?.adult) this.adult.override(search.presentation.adult);
 
     const p = search.post ?? {};
     this.exactPhrase.set(p.exactPhrase ?? '');
@@ -3091,7 +3148,8 @@ export class Search implements OnInit, OnDestroy {
     // Follow state is the viewer's, not the account's, so it filters from the
     // relationship map rather than through `accountMatchesFacet`.
     const byFollow = filterByFollowState(filtered, this.relationships(), this.followFilter());
-    return sortAccounts(byFollow, this.accountSort());
+    const adultKept = this.adult.keepPeople(byFollow);
+    return sortAccounts(adultKept, this.accountSort());
   });
 
   /**

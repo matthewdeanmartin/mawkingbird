@@ -79,7 +79,7 @@ function base64UrlDecode(blob: string): string {
  *  can hand it straight to Angular's Router. */
 export function encodeSearchToParams(search: MawkingbirdSearch): Record<string, string> {
   if (needsBlob(search)) {
-    return { s: base64UrlEncode(JSON.stringify(search)) };
+    return withAdult({ s: base64UrlEncode(JSON.stringify(search)) }, search);
   }
 
   const params: Record<string, string> = { type: search.target };
@@ -99,13 +99,38 @@ export function encodeSearchToParams(search: MawkingbirdSearch): Record<string, 
     if (p.contentType && p.contentType !== 'any') params['media'] = p.contentType;
     if (p.scope && p.scope !== 'all') params['scope'] = p.scope;
   }
-  return params;
+  return withAdult(params, search);
+}
+
+const ADULT_VALUES = ['hide', 'only'] as const;
+
+/** `adult=` rides alongside either encoding, so a plain link stays readable. */
+function withAdult(
+  params: Record<string, string>,
+  search: MawkingbirdSearch,
+): Record<string, string> {
+  const adult = search.presentation?.adult;
+  return adult ? { ...params, adult } : params;
+}
+
+function readAdult(get: (key: string) => string | null): 'hide' | 'only' | undefined {
+  const raw = get('adult');
+  return (ADULT_VALUES as readonly string[]).includes(raw ?? '')
+    ? (raw as 'hide' | 'only')
+    : undefined;
 }
 
 /** Decode a search from a param map (Angular's ParamMap or a plain getter).
  *  Invalid/unknown fields are ignored; a malformed blob yields a safe empty
  *  search so the form never crashes. */
 export function decodeSearchFromParams(get: (key: string) => string | null): MawkingbirdSearch {
+  const search = decodeWithoutAdult(get);
+  const adult = readAdult(get);
+  if (adult) search.presentation = { ...search.presentation, adult };
+  return search;
+}
+
+function decodeWithoutAdult(get: (key: string) => string | null): MawkingbirdSearch {
   const blob = get('s');
   if (blob) {
     return decodeBlob(blob);

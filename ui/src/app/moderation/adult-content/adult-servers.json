@@ -1,0 +1,4 @@
+{
+  "$comment": "Servers whose own About page or rules describe them as for adult (sexual) content. HAND-REVIEWED ONLY: add a host after reading its About page, and cite it in `why`. A host here makes every account on it adult for the search facet (spec/moderation-facets.md §2). Starts empty on purpose.",
+  "servers": []
+}

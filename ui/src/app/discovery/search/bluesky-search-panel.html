@@ -674,6 +674,15 @@
     </p>
   } @else if (target() === 'accounts') {
     <div class="page-head">{{ 'pages.search.bluesky.people' | transloco }}</div>
+    <app-adult-filter-control
+      [value]="adultFilter()"
+      [hidden]="adultHiddenAccounts()"
+      [dropped]="adultDroppedAccounts()"
+      (valueChange)="setAdultFilter($event)"
+    />
+    @if (bskyHidesAdult() && adultFilter() === 'only') {
+      <p class="muted small" data-bsky-hides-adult>{{ 'adult.bskyHidden' | transloco }}</p>
+    }
 
     @if (followUnavailable()) {
       <!-- No session and no local store to write to: the server sends no viewer
@@ -692,15 +701,23 @@
     }
 
     @for (result of visibleAccounts(); track result.account.id) {
-      <app-account-result-card
-        [item]="asItem(result)"
-        [relationship]="relationshipFor(result)"
-        [profileLink]="profileLink(result.account)"
-        [followBusy]="isFollowBusy(result.account)"
-        [anonymous]="followUnavailable()"
-        (follow)="toggleFollow($event, false)"
-        (unfollow)="toggleFollow($event, true)"
-      />
+      @if (adultCollapsedAccount(result.account.id); as verdict) {
+        <app-adult-collapsed
+          kind="account"
+          [verdict]="verdict"
+          (reveal)="revealAdult('a:' + result.account.id)"
+        />
+      } @else {
+        <app-account-result-card
+          [item]="asItem(result)"
+          [relationship]="relationshipFor(result)"
+          [profileLink]="profileLink(result.account)"
+          [followBusy]="isFollowBusy(result.account)"
+          [anonymous]="followUnavailable()"
+          (follow)="toggleFollow($event, false)"
+          (unfollow)="toggleFollow($event, true)"
+        />
+      }
     }
     @if (!visibleAccounts().length) {
       <p class="muted center">{{ 'pages.search.bluesky.noLoadedPeople' | transloco }}</p>
@@ -725,6 +742,15 @@
     </div>
   } @else {
     <div class="page-head">{{ words().Posts }}</div>
+    <app-adult-filter-control
+      [value]="adultFilter()"
+      [hidden]="adultHiddenPosts()"
+      [dropped]="adultDroppedPosts()"
+      (valueChange)="setAdultFilter($event)"
+    />
+    @if (bskyHidesAdult() && adultFilter() === 'only') {
+      <p class="muted small" data-bsky-hides-adult>{{ 'adult.bskyHidden' | transloco }}</p>
+    }
     @for (group of groups(); track group.key) {
       @if (group.label) {
         <div class="group-head">
@@ -732,7 +758,11 @@
         </div>
       }
       @for (s of group.statuses; track s.id) {
-        <app-status-card [status]="s" [showSource]="true" [excerptTerms]="excerptTerms()" />
+        @if (adultCollapsedPost(s); as verdict) {
+          <app-adult-collapsed [verdict]="verdict" (reveal)="revealAdult('s:' + s.id)" />
+        } @else {
+          <app-status-card [status]="s" [showSource]="true" [excerptTerms]="excerptTerms()" />
+        }
         <!-- Repeats this row stands in for. The count is the point:
              "+36 near-identical" is the evidence of flooding. -->
         @if (duplicatesOf(s.id); as dupes) {

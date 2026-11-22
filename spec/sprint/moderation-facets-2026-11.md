@@ -1,7 +1,7 @@
 # Adult facet, people by language, reporting with care (November 2026)
 
-Status: sprints 1–2 implemented and uncommitted, 2026-11-22; awaiting the owner's
-push and manual test. Sprints 3–8 planned. Design and owner decisions: `spec/moderation-facets.md`.
+Status: sprints 1–2 pushed 2026-11-22; sprints 3–4 implemented and uncommitted,
+2026-11-22, awaiting the owner's push and manual test. Sprints 5–8 planned.
 Cadence (owner, 2026-11-22): two sprints at a time, light checks between
 sprints, a stop after every two for the owner to commit, push, deploy and
 test by hand. Full gates are held for the end of the epic or the owner's
@@ -128,3 +128,37 @@ Implementation notes:
   (status card, profile, collection, conversations) needed no change; the
   conversations host passes no `Account`, so it offers no mute/block there.
   The jurisdiction data file ships empty; Sprint 7 fills it.
+
+## Evidence: sprints 3–4 (2026-11-22)
+
+Light checks only, per cadence. Passed: `make test-changed` (913 spec files,
+11,009 tests, all green first time), `test:subset` on the adult-content,
+search, search-url and Bluesky panel specs, `check:i18n`, `check:storage`,
+`check:dead-code`, `check:libs`, `design:inventory-check` (one new candidate,
+`adult-explain.ts`, reconciled as backlog), prettier and `ng lint` on every
+touched file.
+
+Not run (deferred): full `make test` with coverage, `build:mockingbird`, SEO,
+design-verify, integration.
+
+Implementation notes:
+
+- Sprint 3. `moderation/adult-content/adult-lexicon.ts` holds the word lists,
+  each with false-friend tests: "BO", "VCS", "ayam", "spicy" never count alone;
+  "nsfw language", "sexual assault", "sex ed" CWs are *other*, not sexual.
+  `adult-classifier.ts` returns reasons for every verdict. A person is adult
+  when their profile says so, a Bluesky label says so, their server is listed,
+  or ≥2 of their loaded posts **and** ≥⅓ of them are adult. One adult post is
+  weak evidence: shown under (i), never decisive. Sensitive with no CW is
+  weak too. `adult-servers.json` ships **empty**: entries are hand-reviewed
+  against the server's own About page.
+- Sprint 4. `AdultResults` (one class, used by Mastodon search and the
+  Bluesky panel) keeps the filter, the verdicts and the reveals. The control
+  sits above each people/post list. Hide swaps a card for "Adult content ·
+  ⟨first reason⟩ (i) Show"; Only drops the rest and says how many it left
+  out. The choice is the synced `adultFilter` client pref (default `either`);
+  a link's `adult=hide|only` overrides it for that view without changing it.
+  Bluesky people come from `searchActors` without labels, so they are judged
+  by bio only. Bluesky posts carry labels. When the reader's Bluesky account
+  has adult content off and they pick Only, the panel says Bluesky itself
+  leaves most adult posts out.
