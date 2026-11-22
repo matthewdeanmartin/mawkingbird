@@ -63,12 +63,16 @@ describe('supportedLocales', () => {
   });
 
   it('offers the same set on test and canary deployments', () => {
-    const reviewLocales = [...shipped, 'vi', 'hi', 'sv'];
+    const reviewLocales = [...shipped, 'vi', 'hi', 'sv', 'ms', 'zh-Hans'];
     expect(supportedLocales('https://mawkingbird.com/test/')).toEqual(reviewLocales);
     expect(supportedLocales('https://mawkingbird.com/canary/')).toEqual(reviewLocales);
     expect(supportedLocales('https://example.github.io/mawkingbird/canary/')).toEqual(
       reviewLocales,
     );
+    expect(negotiateLocale(['ms-MY'], supportedLocales('https://mawkingbird.com/canary/'))).toBe(
+      'ms',
+    );
+    expect(negotiateLocale(['ms-MY'], supportedLocales('https://mawkingbird.com/'))).toBe('en');
   });
 
   it('negotiates a production visitor into their browser language', () => {
@@ -119,16 +123,20 @@ describe('negotiateLocale', () => {
     (tag) => expect(negotiateLocale([tag], reviewLocales)).toBe('zh-Hant'),
   );
 
-  it.each(['zh', 'zh-CN', 'zh-SG', 'zh-Hans', 'zh-Hans-TW', 'zh-Latn-TW', '???'])(
-    'does not coerce %s into Traditional Chinese',
-    (tag) => expect(negotiateLocale([tag], reviewLocales)).toBe('en'),
+  it.each(['zh', 'zh-CN', 'zh-SG', 'zh-MY', 'zh-Hans', 'zh-Hans-TW'])(
+    'negotiates Simplified Chinese for %s on review builds',
+    (tag) => expect(negotiateLocale([tag], reviewLocales)).toBe('zh-Hans'),
+  );
+
+  it.each(['zh-Latn-TW', '???'])('falls back to English for %s', (tag) =>
+    expect(negotiateLocale([tag], reviewLocales)).toBe('en'),
   );
 
   it('honours browser order and deployment availability for Chinese', () => {
-    // The browser's own order decides: the first tag we ship wins, so a reader
-    // asking for Simplified first still gets whatever they asked for next.
-    expect(negotiateLocale(['zh-Hans', 'fr-FR', 'zh-TW'], reviewLocales)).toBe('fr');
-    expect(negotiateLocale(['zh-Hans', 'zh-TW'], reviewLocales)).toBe('zh-Hant');
+    const production = supportedLocales('https://mawkingbird.com/');
+    expect(negotiateLocale(['zh-Hans', 'fr-FR', 'zh-TW'], reviewLocales)).toBe('zh-Hans');
+    expect(negotiateLocale(['zh-Hans', 'fr-FR', 'zh-TW'], production)).toBe('fr');
+    expect(negotiateLocale(['zh-SG', 'zh-TW'], production)).toBe('zh-Hant');
     expect(negotiateLocale(['en', 'zh-TW'], reviewLocales)).toBe('en');
     // A build that ships only English has nothing to negotiate into.
     expect(negotiateLocale(['zh-TW'], ['en'])).toBe('en');

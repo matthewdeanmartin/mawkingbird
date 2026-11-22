@@ -214,7 +214,9 @@ Connection card (verdict, typical reply, the last hour) linking to
 - Radio: saved playlists and the shared player (play, pause, next, stop); no
   scanning, catalogue or playlist builder. Videos: the watch queue; YouTube
   entries play inline on Play, post entries open their Lite thread.
-- Lite is one concept: entering `/m/` turns it on (`mockingbird_lite`); while
+- Lite is one concept: entering `/m/` turns it on for that tab (`mockingbird_lite`,
+  sessionStorage since 2026-11-21: as localStorage it sent a desktop browser that
+  had once opened `/m/` to Lite on every later visit); while
   on, any full-app address with a Lite twin opens as the twin (shared links,
   links inside posts). **Full app** turns it off. `/m/` is `noindex` (no
   `seoIndexable`). Mastodon only; other accounts see a note pointing to the

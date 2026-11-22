@@ -58,11 +58,10 @@ export const PRODUCTION_LOCALES = [
 /**
  * Locales shipped only to `/test/` and `/canary/`.
  *
- * Empty now that every translated dictionary ships to production. A new
- * language lands here first, gets reviewed on canary, then moves up to
+ * A new language lands here first, gets reviewed on canary, then moves up to
  * {@link PRODUCTION_LOCALES}.
  */
-export const IN_PROGRESS_LOCALES = ['vi', 'hi', 'sv'] as const;
+export const IN_PROGRESS_LOCALES = ['vi', 'hi', 'sv', 'ms', 'zh-Hans'] as const;
 
 export type SupportedLocale =
   (typeof PRODUCTION_LOCALES)[number] | (typeof IN_PROGRESS_LOCALES)[number];
@@ -101,6 +100,7 @@ export const LOCALE_ENDONYMS: Record<string, string> = {
   de: 'Deutsch',
   fr: 'Français',
   id: 'Bahasa Indonesia',
+  ms: 'Bahasa Melayu',
   es: 'Español',
   pt: 'Português',
   it: 'Italiano',
@@ -114,6 +114,7 @@ export const LOCALE_ENDONYMS: Record<string, string> = {
   vi: 'Tiếng Việt (đang thực hiện)',
   hi: 'हिन्दी (कार्य जारी)',
   ja: '日本語',
+  'zh-Hans': '简体中文',
   'zh-Hant': '繁體中文（台灣）',
   uk: 'Українська',
   ko: '한국어',
@@ -125,9 +126,9 @@ function localeCandidate(code: string): string | null {
     const locale = new Intl.Locale(code.replaceAll('_', '-'));
     if (locale.language === 'zh') {
       if (locale.script) {
-        return locale.script === 'Hant' ? 'zh-Hant' : null;
+        return ['Hans', 'Hant'].includes(locale.script) ? `zh-${locale.script}` : null;
       }
-      return ['TW', 'HK', 'MO'].includes(locale.region ?? '') ? 'zh-Hant' : null;
+      return ['TW', 'HK', 'MO'].includes(locale.region ?? '') ? 'zh-Hant' : 'zh-Hans';
     }
     return locale.language === 'no' ? 'nb' : locale.language;
   } catch {

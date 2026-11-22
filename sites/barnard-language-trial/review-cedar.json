@@ -1,0 +1,24 @@
+{
+  "quartz": {
+    "msUI": 4,
+    "idUI": 5,
+    "meaning": 5,
+    "usability": 5,
+    "msProse": 4,
+    "idProse": 5,
+    "fidelity": 5,
+    "uiNote": "“Tunjukkan markah” and “Tampilkan nilai” both work for judging entries. “Buang muat turun?” reads a little abruptly in Malay; adding “ini” would identify the selected download. The Indonesian confirmation already makes clear the story remains readable online.",
+    "storyNote": "“Mariam menjawab, hadir” works in both editions because the teacher’s roll call gives that ordinary word a second meaning. The Malay opening “Pada hari sekolah mengajar” gives the school an awkwardly abstract role. The Indonesian “Pada hari anak-anak belajar” starts more naturally. Both editions preserve the emergency, the sisters’ exchange and the recorded arrival."
+  },
+  "reed": {
+    "msUI": 5,
+    "idUI": 4,
+    "meaning": 5,
+    "usability": 5,
+    "msProse": 4,
+    "idProse": 4,
+    "fidelity": 5,
+    "uiNote": "“Paparkan skor” and “Tampilkan skor” are concise, idiomatic controls. “Hapus unduhan ini?” identifies exactly what will be removed. Indonesian “{minutes} menit membaca” is understandable but sounds like time spent reading; “Waktu baca: {minutes} menit” is clearer as an estimate.",
+    "storyNote": "“Mereka menang selama sebelas minit” and “Mereka menang selama sebelas menit” give the reversal the same sharp timing. The Malay “sarang tersebut” sounds administrative in this intimate scene, and Indonesian “kepala penjaga sistem” leaves the mother’s role slightly awkward. The salt, stolen voice and rhythm through the floor survive the adaptation intact."
+  }
+}

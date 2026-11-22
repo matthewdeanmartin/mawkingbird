@@ -105,17 +105,28 @@ describe('LiteMode', () => {
     const { router, lite } = setUp();
     await router.navigateByUrl('/m/home');
     expect(lite.on()).toBe(true);
-    expect(localStorage.getItem(LITE_KEY)).toBe('on');
+    expect(sessionStorage.getItem(LITE_KEY)).toBe('on');
+    // Never permanently: a later visit must start in the full app.
+    expect(localStorage.getItem(LITE_KEY)).toBeNull();
   });
 
   it('opens full-app links as their Lite twin while on, and leaves the rest alone', async () => {
-    localStorage.setItem(LITE_KEY, 'on');
+    sessionStorage.setItem(LITE_KEY, 'on');
     const { router } = setUp();
     await router.navigateByUrl('/statuses/5');
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(router.url).toBe('/m/statuses/5');
     await router.navigateByUrl('/settings');
     expect(router.url).toBe('/settings');
+  });
+
+  it('ignores and clears the old permanent flag, so a new visit opens the full app', async () => {
+    localStorage.setItem(LITE_KEY, 'on');
+    const { router, lite } = setUp();
+    expect(lite.on()).toBe(false);
+    expect(localStorage.getItem(LITE_KEY)).toBeNull();
+    await router.navigateByUrl('/home');
+    expect(router.url).toBe('/home');
   });
 
   it('does nothing while off', async () => {

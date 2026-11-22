@@ -1,0 +1,24 @@
+{
+  "cedar": {
+    "msUI": 5,
+    "idUI": 5,
+    "meaning": 5,
+    "usability": 5,
+    "msProse": 5,
+    "idProse": 5,
+    "fidelity": 5,
+    "uiNote": "“Paparkan markah” and “Tampilkan nilai” are natural equivalents; “Penyertaan tanpa nama {id}” and “Karya anonim {id}” fit the context. Placeholders and offline actions remain clear.",
+    "storyNote": "“roda itu tertinggal dalam tangannya” and “Roda itu tertinggal di tangannya” preserve the same vivid moment; “kenduri” and “selamatan” are apt local equivalents."
+  },
+  "quartz": {
+    "msUI": 5,
+    "idUI": 5,
+    "meaning": 5,
+    "usability": 5,
+    "msProse": 5,
+    "idProse": 5,
+    "fidelity": 5,
+    "uiNote": "“Buang muat turun?” and “Hapus unduhan?” clearly name the action; both explain online access and preserve all placeholders. “Markah” and “nilai” are valid local equivalents.",
+    "storyNote": "“dia percaya pada angka yang dibacanya” and “dia percaya pada angka yang dibacanya” retain the same bitter turn. “kami dah sampai” and “kami sudah sampai” preserve the final message naturally."
+  }
+}

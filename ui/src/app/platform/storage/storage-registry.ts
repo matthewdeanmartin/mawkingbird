@@ -1198,10 +1198,10 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
   },
   {
     base: 'mockingbird_lite',
-    storage: 'local',
+    storage: 'session',
     suffix: 'none',
     sensitivity: 'setting',
-    note: 'Present ("on") while the reader uses Lite (/m/); full-app links then open their Lite version.',
+    note: 'Present ("on") while this tab uses Lite (/m/); full-app links then open their Lite version. A new visit starts in the full app. A copy in localStorage (the superseded permanent flag) is only ever deleted, at start-up.',
   },
   {
     base: 'mockingbird_lite_offer_dismissed',

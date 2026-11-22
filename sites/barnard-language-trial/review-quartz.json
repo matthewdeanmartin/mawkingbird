@@ -1,0 +1,24 @@
+{
+  "reed": {
+    "msUI": 5,
+    "idUI": 4,
+    "meaning": 5,
+    "usability": 4,
+    "msProse": 4,
+    "idProse": 4,
+    "fidelity": 5,
+    "uiNote": "“Paparkan skor” and “Tampilkan skor” are natural alternatives to labels using markah or nilai. The four offline messages preserve their prompts, including the device-only restriction and the option to read online after removal. “{minutes} menit membaca” is understandable but slightly stiff for compact metadata. “Waktu baca: {minutes} menit” would give the duration a clearer label.",
+    "storyNote": "The two editions carry the same escalation through “Mereka menang selama sebelas minit” and “Mereka menang selama sebelas menit,” and both bring the song back through the floor. The compact “mencelup jari, merasa” reads abruptly in Malay. Naming what the mother tastes would smooth it out. The Indonesian “mengenakan pakaian darurat” is vague for equipment meant to protect wearers in a reactor. A more specific term such as baju pelindung would make the ensuing sacrifice easier to picture."
+  },
+  "cedar": {
+    "msUI": 5,
+    "idUI": 5,
+    "meaning": 5,
+    "usability": 5,
+    "msProse": 5,
+    "idProse": 4,
+    "fidelity": 4,
+    "uiNote": "“Padam muat turun ini?” clearly names the local download as the object of removal, and both editions immediately explain that online reading remains available. “Karya anonim {id}” is a natural contextual label for a submitted story and serves the same purpose as “Penyertaan tanpa nama {id}.” “Hanya tersimpan di perangkat ini.” clearly limits the scope of storage.",
+    "storyNote": "“Sudu mengikis dasar periuk” and “sendok menggaruk dasar panci” give the malfunction the same domestic texture. “Selamatan” is a sound localization of “kenduri.” Change “dua belas modul terpadat” to wording that counts occupants directly, matching “dua belas modul dengan penduduk paling ramai.” Density could imply a different selection rule if the modules vary in size. “Hidungnya sampai berkerut” would also benefit from a clearer referent in a passage that moves among Jali, the baby, and the voice on the radio."
+  }
+}

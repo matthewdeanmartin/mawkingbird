@@ -13,6 +13,12 @@ import { isBad } from '../platform/network/connection-quality';
  * so the redirect works on the very first navigation, and the pages are not.
  */
 
+/**
+ * Session (tab) storage, deliberately: Lite is for the stretch of bad signal
+ * the reader is in now. A new visit always starts in the full app. (It was
+ * localStorage for a day, which sent a desktop browser that once opened /m/ to
+ * Lite on every later visit; that old localStorage copy is cleared on start.)
+ */
 export const LITE_KEY = 'mockingbird_lite';
 export const LITE_OFFER_DISMISSED_KEY = 'mockingbird_lite_offer_dismissed';
 
@@ -112,7 +118,7 @@ export function sustainedBad(history: ConnectionHistory, now: number): boolean {
 export class LiteMode {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  readonly on = signal(read(LITE_KEY, () => localStorage) === 'on');
+  readonly on = signal(read(LITE_KEY, () => sessionStorage) === 'on');
   readonly offerDismissed = signal(read(LITE_OFFER_DISMISSED_KEY, () => sessionStorage) === '1');
   private started = false;
 
@@ -120,6 +126,8 @@ export class LiteMode {
   start(): void {
     if (this.started) return;
     this.started = true;
+    // Un-stick browsers that saved "Lite on" permanently under the old rule.
+    write(LITE_KEY, null, () => localStorage);
     const sub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart && this.on() && !isLiteUrl(event.url)) {
         const lite = liteUrlFor(event.url);
@@ -151,7 +159,7 @@ export class LiteMode {
   private setOn(on: boolean): void {
     if (this.on() === on) return;
     this.on.set(on);
-    write(LITE_KEY, on ? 'on' : null, () => localStorage);
+    write(LITE_KEY, on ? 'on' : null, () => sessionStorage);
   }
 }
 

@@ -21,6 +21,7 @@ public UI dictionaries, and the independent starter control dictionary.
 | it | 8 | Production |
 | ja | 7 | Production |
 | ko | 2 | Production |
+| ms | 0 | In progress (test/canary) |
 | nl | 8 | Production |
 | no | 2 | Missing |
 | pl | 3 | Production |
@@ -31,11 +32,12 @@ public UI dictionaries, and the independent starter control dictionary.
 | uk | 1 | Production |
 | vi | 0 | In progress (test/canary) |
 | zh | 2 | Missing |
+| zh-Hans | 0 | In progress (test/canary) |
 | zh-Hant | 1 | Production |
 
 - Starter languages without a registered UI dictionary: `ar`, `ca`, `cs`, `fi`, `no`, `zh`.
 - Production UI locales without starters: `id`.
-- In-progress UI locales without starters: `vi`, `hi`.
+- In-progress UI locales without starters: `vi`, `hi`, `ms`, `zh-Hans`.
 - Registered locales missing their dictionary file: None.
 - Dictionary files without locale registration: None.
 - Packs missing their content-language title or description: None.
