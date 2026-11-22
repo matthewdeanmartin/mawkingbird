@@ -1,5 +1,11 @@
 # Sprint 6 opening consolidation audit
 
+## Native evidence for adult and language filters, 2026-11-22
+
+Reviewed 2,140 source files (new: the template-free
+`moderation/adult-content/native-evidence.ts` service). Candidate membership
+and dispositions are unchanged.
+
 ## People by language and Directory filters, 2026-11-22
 
 Reviewed 2,139 source files (new: the pure `language/account-language.ts` and

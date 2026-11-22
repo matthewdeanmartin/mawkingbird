@@ -1,9 +1,11 @@
+import { Auth } from '../../platform/session/auth';
+import { NATIVE_PROFILES } from '../../platform/session/platform-login';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { beforeEach, afterEach, describe, expect, it } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { Account } from '../../platform/api/models';
 import { Directory, DirectoryOrder } from './directory';
 
@@ -54,10 +56,23 @@ describe('Directory', () => {
   let http: HttpTestingController;
   let queryParams: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
+  /** Cached posts the fake Native archive returns, per account id. */
+  let archive: Map<string, unknown[]>;
+
   beforeEach(() => {
+    archive = new Map();
     queryParams = new BehaviorSubject(convertToParamMap({}));
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideRouter([]),
+        // Inert unless a test signs in natively and fills `archive`.
+        {
+          provide: NATIVE_PROFILES,
+          useValue: { accountPosts: async (_h: string, id: string) => archive.get(id) ?? [] },
+        },
+      ],
     });
     TestBed.overrideProvider(ActivatedRoute, {
       useValue: { queryParamMap: queryParams, snapshot: { queryParamMap: convertToParamMap({}) } },
@@ -268,5 +283,44 @@ describe('Directory', () => {
         (fixture.nativeElement as HTMLElement).querySelector('app-adult-collapsed'),
       ).not.toBeNull();
     });
+  });
+
+  it('uses the Native archive’s cached posts before offering to fetch any', async () => {
+    archive.set('1', [
+      {
+        localId: 1,
+        isRead: false,
+        status: {
+          id: 'c',
+          created_at: '2026-11-01T00:00:00Z',
+          account: makeAccount('1'),
+          language: 'eo',
+          content: '<p>x</p>',
+          spoiler_text: '',
+          sensitive: false,
+          visibility: 'public',
+          media_attachments: [],
+          mentions: [],
+          tags: [],
+          emojis: [],
+          reblog: null,
+          replies_count: 0,
+          reblogs_count: 0,
+          favourites_count: 0,
+        },
+      },
+    ]);
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('mastodon');
+    auth.token.set('native-mastodon:a');
+    const fixture = open([makeAccount('1'), makeAccount('2')]);
+    const state = internals(fixture);
+    state.language.set('eo');
+    await vi.waitFor(() => expect(state.items().map((i) => i.account.id)).toEqual(['1']));
+    // Only the person the archive knows nothing about still needs a request.
+    expect(state.unknownLanguage().map((i) => i.account.id)).toEqual(['2']);
+    // The cached post renders and asks for its author's relationship.
+    await fixture.whenStable();
+    http.match((r) => r.url === '/api/v1/accounts/relationships').forEach((r) => r.flush([]));
   });
 });

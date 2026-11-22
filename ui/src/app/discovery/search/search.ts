@@ -148,6 +148,7 @@ import { bareLanguageCode, languageName } from '../../language/language-catalog'
 import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
 import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
 import { AdultResults } from '../../moderation/adult-content/adult-results';
+import { NativeEvidence } from '../../moderation/adult-content/native-evidence';
 import { AdultCollapsed, AdultFilterControl } from '../../moderation/adult-content/adult-explain';
 import { BlueskyPostSearch } from '../../connections/bluesky/bluesky-post-search';
 import { decodeSearchFromParams, encodeSearchToParams } from './search-url';
@@ -1807,8 +1808,37 @@ export class Search implements OnInit, OnDestroy {
   private readonly adult = new AdultResults(
     this.searchPrefs,
     () => this.results()?.statuses ?? [],
-    () => this.accountItems(),
+    () => this.peopleWithEvidence(),
   );
+
+  // --- Native: local-archive evidence (Native roadmap §6a) ---
+
+  private readonly nativeEvidence = inject(NativeEvidence);
+  /** Posts the Native archive holds per loaded person; empty on the web. */
+  private cachedPosts = signal<ReadonlyMap<string, Status[]>>(new Map());
+
+  /** Loaded people with their matched posts plus any cached ones. */
+  private peopleWithEvidence = computed<AccountWithMatches[]>(() => {
+    const cached = this.cachedPosts();
+    if (!cached.size) return this.accountItems();
+    return this.accountItems().map((item) => {
+      const extra = cached.get(item.account.id);
+      if (!extra) return item;
+      const seen = new Set(item.matchingPosts.map((p) => p.id));
+      return {
+        account: item.account,
+        matchingPosts: [...item.matchingPosts, ...extra.filter((p) => !seen.has(p.id))],
+      };
+    });
+  });
+
+  private addCachedPosts(accounts: Account[]): void {
+    if (!this.nativeEvidence.available || !accounts.length) return;
+    void this.nativeEvidence.postsFor(accounts).then((found) => {
+      if (!found.size) return;
+      this.cachedPosts.update((cur) => new Map([...cur, ...found]));
+    });
+  }
   protected readonly adultFilter = this.adult.filter;
 
   protected setAdultFilter(value: AdultFilter): void {
@@ -2899,6 +2929,7 @@ export class Search implements OnInit, OnDestroy {
       if (authors.length) {
         this.accountItems.update((cur) => mergeAuthors(cur, authors));
         this.loadRelationships(authors.map((a) => a.account));
+        this.addCachedPosts(authors.map((a) => a.account));
       }
       this.callsUsed.update((c) => c + batch.length);
       this.searching.set(false);
@@ -3042,10 +3073,12 @@ export class Search implements OnInit, OnDestroy {
         }
       }
     };
+    this.cachedPosts.set(new Map());
     const mergeIn = (authors: AccountWithMatches[], addedCost: number): void => {
       if (authors.length) {
         this.accountItems.update((cur) => mergeAuthors(cur, authors));
         this.loadRelationships(authors.map((a) => a.account));
+        this.addCachedPosts(authors.map((a) => a.account));
       }
       this.callsUsed.update((c) => c + addedCost);
     };
@@ -3255,7 +3288,7 @@ export class Search implements OnInit, OnDestroy {
   /** Each loaded person's languages, from their bio and their matched posts. */
   private accountLanguages = computed(() => {
     const out = new Map<string, AccountLanguages>();
-    for (const item of this.accountItems()) {
+    for (const item of this.peopleWithEvidence()) {
       out.set(item.account.id, inferAccountLanguages(item.account, item.matchingPosts));
     }
     return out;

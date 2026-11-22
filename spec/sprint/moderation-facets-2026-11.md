@@ -1,7 +1,8 @@
 # Adult facet, people by language, reporting with care (November 2026)
 
-Status: sprints 1–4 pushed 2026-11-22; sprints 5–6 implemented and uncommitted,
-2026-11-22, awaiting the owner's push and manual test. Sprints 7–8 planned.
+Status: sprints 1–6 pushed 2026-11-22; sprints 7–8 implemented and uncommitted,
+2026-11-22. Sprint 7's model step is blocked on an expired OpenRouter key.
+Full gates not yet run on the combined tree.
 Cadence (owner, 2026-11-22): two sprints at a time, light checks between
 sprints, a stop after every two for the owner to commit, push, deploy and
 test by hand. Full gates are held for the end of the epic or the owner's
@@ -224,3 +225,32 @@ Implementation notes:
   It now filters loaded posts by `postLanguage`.
 - Deferred to Native (§6a): server-declared languages per home server
   (one `/api/v2/instance` call per server is too costly on web).
+
+## Evidence: sprints 7–8 (2026-11-22)
+
+Light checks only. Passed: `make test-changed` (68 spec files, 1,240 tests),
+`check:i18n`, `check:dead-code`, `check:libs`, `check:storage`,
+`design:inventory-check`, prettier and `ng lint` on touched files. In
+`mawkingbird_starters`: 17 jurisdiction tests, ruff and mypy clean; the repo's
+`make check` has two pre-existing `feedbuilder` failures
+(`test_french_prominence_gets_language_sample_before_fame`, `KeyError: 'listed'`
+in `feedbuilder/cli.py:380`), unrelated to this work.
+
+- Sprint 7. `mawkingbird_starters/jurisdiction/` with `make jur-crawl`,
+  `jur-extract-dry`, `jur-extract`, `jur-report`, `jur-export` and `jur` (all).
+  Servers come from joinmastodon.org (284); no reachable public list has
+  countries, so the model returns the country with the jurisdiction and the
+  export keeps the 25 largest plus the largest per declared country, plus
+  `data/jurisdiction/extra-hosts.txt`. Model `google/gemma-4-26b-a4b-it`
+  through the starters OpenRouter client (key from `OPENROUTER_API_KEY` or a
+  `.env`). A reply's quote must appear verbatim in the page or it is discarded;
+  only changed text is re-asked; a 401/402/403 stops the run at the first call.
+  Crawl run 2026-11-22: 284 servers, 266 with legal text (32 publish Terms of
+  Service, 265 an About page), 8 unreachable; extraction estimate ~297k prompt
+  tokens, ~$0.03. **Extraction not run:** the key in
+  `mawkingbird_starters/.env` is expired (HTTP 401), so the client file is
+  still empty and the gate says "We have not recorded where … is based".
+- Sprint 8. `NativeEvidence` (shared UI) feeds the Native archive's cached
+  posts to the adult and language classifiers in People search and the
+  Directory through the existing `accountPosts` IPC. See
+  `mawkingbird_native/sprint/19-moderation-facets.md`.

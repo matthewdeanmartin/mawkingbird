@@ -12,6 +12,7 @@ import { LanguageSelect } from '../../language/language-select/language-select';
 import { AdultVerdict } from '../../moderation/adult-content/adult-classifier';
 import { AdultCollapsed, AdultFilterControl } from '../../moderation/adult-content/adult-explain';
 import { AdultResults } from '../../moderation/adult-content/adult-results';
+import { NativeEvidence } from '../../moderation/adult-content/native-evidence';
 import { AdultFilter, ClientPrefs } from '../../platform/storage/client-prefs';
 import { Api } from '../../platform/api/api';
 import { Account, Relationship, Status } from '../../platform/api/models';
@@ -96,6 +97,7 @@ export class Directory implements OnInit {
   private anonymousFollows = inject(AnonymousFollows);
   private transloco = inject(TranslocoService);
   private locale = inject(UiLocale);
+  private nativeEvidence = inject(NativeEvidence);
 
   protected order = signal<DirectoryOrder>('active');
   protected local = signal(true);
@@ -198,6 +200,22 @@ export class Directory implements OnInit {
   }
 
   /**
+   * Native: posts already in the local archive count as checked, at no API
+   * cost, so "Check their recent posts" is only offered for the rest.
+   */
+  private addCachedPosts(accounts: Account[]): void {
+    if (!this.nativeEvidence.available || !accounts.length) return;
+    void this.nativeEvidence.postsFor(accounts).then((cached) => {
+      if (!cached.size) return;
+      this.postsById.update((cur) => {
+        const next = new Map(cur);
+        for (const [id, posts] of cached) if (!next.has(id)) next.set(id, posts);
+        return next;
+      });
+    });
+  }
+
+  /**
    * Fetch recent posts for the next unknown-language people, one request each
    * and at most {@link Directory.CHECK_BATCH} per click. Failures count as
    * checked, with no evidence, so the button never loops on a broken profile.
@@ -281,6 +299,7 @@ export class Directory implements OnInit {
         this.exhausted.set(accounts.length < PAGE_SIZE);
         this.loading.set(false);
         this.loadRelationships(accounts);
+        this.addCachedPosts(accounts);
       });
   }
 
@@ -313,6 +332,7 @@ export class Directory implements OnInit {
         this.exhausted.set(accounts.length < PAGE_SIZE);
         this.loadingMore.set(false);
         this.loadRelationships(fresh);
+        this.addCachedPosts(fresh);
       });
   }
 

@@ -12,6 +12,8 @@ import data from './jurisdictions.generated.json';
 export interface JurisdictionRecord {
   /** "Helsinki, Finland", or null when the pages state none. */
   jurisdiction: string | null;
+  /** ISO 3166-1 alpha-2 of that place, when the extraction could name it. */
+  country?: string | null;
   /** The sentence the extraction relied on, so a reader can check it. */
   quote?: string;
   /** Which page said it. */
