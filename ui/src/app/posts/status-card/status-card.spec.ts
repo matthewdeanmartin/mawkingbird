@@ -3495,6 +3495,11 @@ describe('StatusCard', () => {
       expect(report).toBeTruthy();
       report!.click();
       f.detectChanges();
+      // Bluesky skips the server notice; "Report it to moderators" leads to the form.
+      (f.nativeElement as HTMLElement)
+        .querySelector<HTMLButtonElement>('[data-triage="report"]')!
+        .click();
+      f.detectChanges();
       const confirm = Array.from(
         (f.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button'),
       ).find((button) => button.textContent?.includes('Confirm report'));

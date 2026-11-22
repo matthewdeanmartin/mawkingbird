@@ -528,7 +528,15 @@ describe('CollectionPage', () => {
     fixture.detectChanges();
     const dialog = el.querySelector('app-report-dialog');
     expect(dialog).not.toBeNull();
+    // The pre-report notice loads this server's rules and terms first.
+    httpMock.expectOne('/api/v1/instance/rules').flush([]);
+    httpMock.expectOne('/api/v1/instance/terms_of_service').flush(null, {
+      status: 404,
+      statusText: 'Not Found',
+    });
+    fixture.detectChanges();
     expect(dialog?.textContent).toContain('Reporting a specific collection.');
+    expect(dialog?.textContent).toContain('Before you report');
   });
 
   // ---------------------------------------------------------------- non-owner

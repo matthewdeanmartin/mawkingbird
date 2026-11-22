@@ -119,7 +119,11 @@ import { isBlueskySaved, isMastodonSaved, SavedSearches } from './saved-searches
 import { RecentSearches, RecentSearch } from './recent-searches';
 import { kitMatchesFor } from './kit-matches';
 import { KnownLanguages } from '../../language/trend-language-filter';
-import { UiLocale } from '../../i18n/locale';
+import { IN_PROGRESS_LOCALES, PRODUCTION_LOCALES, UiLocale } from '../../i18n/locale';
+import { suggestedLanguages } from '../../language/language-catalog';
+import { LanguageFinderDialog } from '../../language/language-finder/language-finder';
+import { PostingLanguage } from '../../publishing/posting-language';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { BlueskyPostSearch } from '../../connections/bluesky/bluesky-post-search';
 import { decodeSearchFromParams, encodeSearchToParams } from './search-url';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
@@ -405,13 +409,10 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.accountSource.nameAndBioOnly: Name & bio only
 // i18n pages.search.accountSource.whatTheyPost: What they post
 // i18n pages.search.language.any: Any language
-// i18n pages.search.language.english: English
-// i18n pages.search.language.spanish: Spanish
-// i18n pages.search.language.french: French
-// i18n pages.search.language.german: German
-// i18n pages.search.language.portuguese: Portuguese
-// i18n pages.search.language.japanese: Japanese
-// i18n pages.search.language.chinese: Chinese
+// i18n pages.search.language.group.current: Chosen
+// i18n pages.search.language.group.yours: Your languages
+// i18n pages.search.language.group.app: Languages Mawkingbird is translated into
+// i18n pages.search.language.more: All languages…
 // i18n pages.search.content.any: Any
 // i18n pages.search.content.media: Has media
 // i18n pages.search.content.image: Image
@@ -459,6 +460,7 @@ const SEARCH_TIMEOUT_MS = 20000;
     SearchServerDiscovery,
     BlueskySearchPanel,
     TranslocoPipe,
+    LanguageFinderDialog,
   ],
   templateUrl: './search.html',
   // The refine layer's styles are shared with the Bluesky panel, so they live in
@@ -1324,17 +1326,36 @@ export class Search implements OnInit, OnDestroy {
       !!this.statusesMax(),
   );
 
-  /** Bundled language options (no API call — spec §6.4). */
-  protected readonly languages = [
-    { code: '', label: 'pages.search.language.any' },
-    { code: 'en', label: 'pages.search.language.english' },
-    { code: 'es', label: 'pages.search.language.spanish' },
-    { code: 'fr', label: 'pages.search.language.french' },
-    { code: 'de', label: 'pages.search.language.german' },
-    { code: 'pt', label: 'pages.search.language.portuguese' },
-    { code: 'ja', label: 'pages.search.language.japanese' },
-    { code: 'zh', label: 'pages.search.language.chinese' },
-  ];
+  /**
+   * The short language list (spec/moderation-facets.md §1): the reader's own
+   * languages, then every language the app is translated into. Anything else
+   * is one "All languages…" away, in the finder, never in this select.
+   */
+  protected readonly languageGroups = computed(() =>
+    suggestedLanguages(
+      this.language(),
+      [
+        ...this.kitLanguages.codes(),
+        ...this.searchPrefs.learningLanguages(),
+        this.postingLanguage.default(),
+      ],
+      [...PRODUCTION_LOCALES, ...IN_PROGRESS_LOCALES],
+      this.kitLocale.active(),
+    ),
+  );
+  /** Sentinel select value that opens the finder instead of choosing. */
+  protected readonly moreLanguages = '__more__';
+  protected languageFinderOpen = signal(false);
+
+  protected chooseLanguage(code: string, select?: HTMLSelectElement): void {
+    if (code === this.moreLanguages) {
+      // The model never held the sentinel, so put the control back by hand.
+      if (select) select.value = this.language();
+      this.languageFinderOpen.set(true);
+      return;
+    }
+    this.language.set(code);
+  }
 
   protected readonly contentTypes: { value: PostContentType; label: string }[] = [
     { value: 'any', label: 'pages.search.content.any' },
@@ -1755,6 +1776,8 @@ export class Search implements OnInit, OnDestroy {
    */
   private readonly kitLanguages = inject(KnownLanguages);
   private readonly kitLocale = inject(UiLocale);
+  private readonly searchPrefs = inject(ClientPrefs);
+  private readonly postingLanguage = inject(PostingLanguage);
   protected kitMatches = computed(() =>
     this.type() === 'accounts'
       ? kitMatchesFor(this.ranQuery(), 3, this.kitLanguages.codes(), this.kitLocale.active())

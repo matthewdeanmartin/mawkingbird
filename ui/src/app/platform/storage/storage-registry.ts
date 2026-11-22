@@ -352,6 +352,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
 
   // ---- private: discloses something about the person ----
   {
+    base: 'mockingbird_report_gate_v1',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'private',
+    note: 'Which servers the reader acknowledged the pre-report notice for (host → legal-text fingerprint). Reveals the servers they have reported from, so private; never shared.',
+  },
+  {
     base: 'mastodon_mock_sessions',
     storage: 'local',
     suffix: 'none',

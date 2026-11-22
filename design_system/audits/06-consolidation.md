@@ -1,5 +1,18 @@
 # Sprint 6 opening consolidation audit
 
+## Language finder and report gate, 2026-11-22
+
+Reviewed 2,131 source files (new: the pure `language/language-catalog.ts` and
+`moderation/jurisdiction/jurisdiction.ts`) and 722 candidate files. Two
+candidates are added and reconciled as backlog:
+`language/language-finder/language-finder.ts` (a native combobox input with a
+listbox of at most 12 options, in a Dialog with an outline MbButton) and
+`moderation/report-gate/report-gate.ts` (MbNotice, plain links and a
+link-style rules toggle inside the report Dialog). The report dialog's
+category select became triage choice buttons and MbButton alternatives; the
+post search language select gained option groups and an "All languages…"
+entry. No shared widget implementation changed.
+
 ## Hashtag analytics and account names, 2026-11-21
 
 Reviewed all 710 candidate files against the previous inventory. Candidate

@@ -1,94 +1,177 @@
 <mb-dialog
-  [title]="'report.title' | transloco: { username: username() }"
+  [title]="
+    step() === 'gate'
+      ? ('report.gate.title' | transloco)
+      : step() === 'alternatives'
+        ? ('report.alt.title' | transloco)
+        : ('report.title' | transloco: { username: username() })
+  "
   [closeLabel]="'report.cancel' | transloco"
   [showClose]="false"
   [closeOnBackdrop]="true"
   (dismissed)="closed.emit()"
 >
+  @let server = gate.host();
   @if (statusId()) {
     <p class="muted small">{{ 'report.specificPost' | transloco }}</p>
   }
   @if (collectionId()) {
     <p class="muted small">{{ 'report.specificCollection' | transloco }}</p>
   }
-  <p class="muted small">
-    {{ 'report.review' | transloco }}
-  </p>
-  @if (provider() === 'bluesky') {
-    <p class="muted small">{{ 'report.blueskyService' | transloco }}</p>
-  }
-
-  @if (provider() === 'bluesky') {
-    <mb-field [label]="'report.bsky.reason' | transloco">
-      <select mbControl [ngModel]="bskyReason()" (ngModelChange)="bskyReason.set($event)">
-        @for (group of bskyGroups; track group.key) {
-          <optgroup [label]="group.key | transloco">
-            @for (reason of group.reasons; track reason.value) {
-              <option [value]="reason.value">{{ reason.key | transloco }}</option>
-            }
-          </optgroup>
-        }
-      </select>
-    </mb-field>
-    @if (bskyServices().length) {
-      <mb-field [label]="'report.bsky.sendTo' | transloco">
-        <select mbControl [ngModel]="bskySendTo()" (ngModelChange)="bskySendTo.set($event)">
-          <option value="">{{ 'report.bsky.bluesky' | transloco }}</option>
-          @for (service of bskyServices(); track service.did) {
-            <option [value]="service.did">{{ service.name }}</option>
-          }
-        </select>
-      </mb-field>
+  @switch (step()) {
+    @case ('gate') {
+      <app-report-gate />
     }
-  } @else {
-    <mb-field [label]="'report.category' | transloco">
-      <select mbControl [ngModel]="category()" (ngModelChange)="setCategory($event)">
-        @for (c of categories; track c) {
-          <option [value]="c">{{ c }}</option>
-        }
-      </select>
-    </mb-field>
-  }
 
-  @if (category() === 'violation' && provider() !== 'bluesky') {
-    <fieldset class="report-rules">
-      <legend>{{ 'report.rules' | transloco }}</legend>
-      @if (serverAbout.rules(); as rules) {
-        @for (rule of rules; track rule.id) {
-          <mb-checkbox
-            [label]="rule.text"
-            [hint]="rule.hint"
-            [checked]="ruleIds().has(rule.id)"
-            (checkedChange)="toggleRule(rule.id, $event)"
-          />
-        } @empty {
-          <p class="muted small">{{ 'report.rulesNone' | transloco }}</p>
+    @case ('triage') {
+      <fieldset class="report-triage">
+        <legend>{{ 'report.triage.title' | transloco }}</legend>
+        @for (choice of triageOptions(); track choice) {
+          <button
+            type="button"
+            class="triage-choice"
+            [attr.data-triage]="choice"
+            [attr.aria-pressed]="triage() === choice"
+            (click)="chooseTriage(choice)"
+          >
+            <span class="triage-label">{{ triageKeys[choice].label | transloco: { server } }}</span>
+            <span class="muted small">{{ triageKeys[choice].hint | transloco: { server } }}</span>
+          </button>
         }
-      } @else if (serverAbout.loading()) {
-        <p class="muted small">{{ 'report.rulesLoading' | transloco }}</p>
-      } @else {
-        <p class="muted small">{{ 'report.rulesNone' | transloco }}</p>
+      </fieldset>
+    }
+
+    @case ('alternatives') {
+      <p class="muted small">{{ 'report.alt.intro' | transloco }}</p>
+      <div class="report-alternatives">
+        @if (canModerateAuthor()) {
+          <button mbButton type="button" variant="outline" data-alt="mute" (click)="muteAuthor()">
+            {{ 'report.alt.mute' | transloco: { username: username() } }}
+          </button>
+          <p class="muted small">{{ 'report.alt.muteHint' | transloco }}</p>
+          <button mbButton type="button" variant="outline" data-alt="block" (click)="blockAuthor()">
+            {{ 'report.alt.block' | transloco: { username: username() } }}
+          </button>
+          <p class="muted small">{{ 'report.alt.blockHint' | transloco }}</p>
+        }
+        @if (statusId()) {
+          <button mbButton type="button" variant="outline" data-alt="hide" (click)="hidePost()">
+            {{ 'report.alt.hide' | transloco }}
+          </button>
+          <p class="muted small">{{ 'report.alt.hideHint' | transloco }}</p>
+        }
+        @if (canFilter()) {
+          <a
+            mbButton
+            variant="outline"
+            data-alt="filter"
+            routerLink="/settings/filters/new"
+            (click)="closed.emit()"
+          >
+            {{ 'report.alt.filter' | transloco }}
+          </a>
+          <p class="muted small">{{ 'report.alt.filterHint' | transloco }}</p>
+        }
+      </div>
+      @if (altResult() === 'done') {
+        <mb-notice announcement="status">{{ 'report.alt.done' | transloco }}</mb-notice>
+      } @else if (altResult() === 'failed') {
+        <mb-notice tone="error" announcement="alert">{{
+          'report.alt.failed' | transloco
+        }}</mb-notice>
       }
-    </fieldset>
-  }
+      <button type="button" class="link-button" (click)="backToTriage()">
+        {{ 'report.alt.reportAnyway' | transloco }}
+      </button>
+    }
 
-  <mb-field [label]="'report.comment' | transloco">
-    <textarea
-      mbControl
-      rows="3"
-      [ngModel]="comment()"
-      (ngModelChange)="comment.set($event)"
-      [placeholder]="'report.placeholder' | transloco"
-    ></textarea>
-  </mb-field>
+    @case ('details') {
+      @if (triage(); as chosen) {
+        <p class="report-chosen">
+          <strong>{{ triageKeys[chosen].label | transloco: { server } }}</strong>
+          <button type="button" class="link-button" (click)="backToTriage()">
+            {{ 'report.change' | transloco }}
+          </button>
+        </p>
+      }
+      <p class="muted small">{{ 'report.review' | transloco }}</p>
+      @if (isBluesky()) {
+        <p class="muted small">{{ 'report.blueskyService' | transloco }}</p>
+        <mb-field [label]="'report.bsky.reason' | transloco">
+          <select mbControl [ngModel]="bskyReason()" (ngModelChange)="bskyReason.set($event)">
+            @for (group of bskyGroups; track group.key) {
+              <optgroup [label]="group.key | transloco">
+                @for (reason of group.reasons; track reason.value) {
+                  <option [value]="reason.value">{{ reason.key | transloco }}</option>
+                }
+              </optgroup>
+            }
+          </select>
+        </mb-field>
+        @if (bskyServices().length) {
+          <mb-field [label]="'report.bsky.sendTo' | transloco">
+            <select mbControl [ngModel]="bskySendTo()" (ngModelChange)="bskySendTo.set($event)">
+              <option value="">{{ 'report.bsky.bluesky' | transloco }}</option>
+              @for (service of bskyServices(); track service.did) {
+                <option [value]="service.did">{{ service.name }}</option>
+              }
+            </select>
+          </mb-field>
+        }
+      } @else {
+        <p class="muted small" data-who-reads>{{ 'report.whoReads' | transloco: { server } }}</p>
+      }
 
-  @if (remoteHost(); as host) {
-    <mb-checkbox
-      [label]="'report.forward' | transloco: { host }"
-      [hint]="'report.forwardHint' | transloco"
-      [checked]="forward()"
-      (checkedChange)="forward.set($event)"
-    />
+      @if (category() === 'legal' && !isBluesky()) {
+        <mb-notice>{{ 'report.legalNote' | transloco: { server } }}</mb-notice>
+      }
+
+      @if (category() === 'violation' && !isBluesky()) {
+        <fieldset class="report-rules">
+          <legend>{{ 'report.rules' | transloco }}</legend>
+          @if (serverAbout.rules(); as rules) {
+            @for (rule of rules; track rule.id) {
+              <mb-checkbox
+                [label]="rule.text"
+                [hint]="rule.hint"
+                [checked]="ruleIds().has(rule.id)"
+                (checkedChange)="toggleRule(rule.id, $event)"
+              />
+            } @empty {
+              <p class="muted small">{{ 'report.rulesNone' | transloco }}</p>
+            }
+          } @else if (serverAbout.loading()) {
+            <p class="muted small">{{ 'report.rulesLoading' | transloco }}</p>
+          } @else {
+            <p class="muted small">{{ 'report.rulesNone' | transloco }}</p>
+          }
+        </fieldset>
+      }
+
+      <mb-field [label]="'report.comment' | transloco">
+        <textarea
+          mbControl
+          rows="3"
+          [ngModel]="comment()"
+          (ngModelChange)="comment.set($event)"
+          [placeholder]="'report.placeholder' | transloco"
+        ></textarea>
+      </mb-field>
+
+      @if (remoteHost(); as host) {
+        <mb-checkbox
+          [label]="'report.forward' | transloco: { host }"
+          [hint]="'report.forwardHint' | transloco"
+          [checked]="forward()"
+          (checkedChange)="forward.set($event)"
+        />
+        <p class="muted small">
+          <a [href]="'https://' + host + '/about'" target="_blank" rel="noopener">{{
+            'report.forwardRules' | transloco: { host }
+          }}</a>
+        </p>
+      }
+    }
   }
 
   @if (error()) {
@@ -99,8 +182,20 @@
     <button mbButton type="button" variant="outline" (click)="closed.emit()">
       {{ 'report.cancel' | transloco }}
     </button>
-    <button type="button" class="btn warn" [disabled]="submitting()" (click)="submit()">
-      {{ submitting() ? ('report.sending' | transloco) : ('report.confirm' | transloco) }}
-    </button>
+    @if (step() === 'gate') {
+      <button
+        mbButton
+        type="button"
+        data-gate-continue
+        [disabled]="gate.loading()"
+        (click)="passGate()"
+      >
+        {{ 'report.continue' | transloco }}
+      </button>
+    } @else if (step() === 'details') {
+      <button type="button" class="btn warn" [disabled]="submitting()" (click)="submit()">
+        {{ submitting() ? ('report.sending' | transloco) : ('report.confirm' | transloco) }}
+      </button>
+    }
   </ng-container>
 </mb-dialog>

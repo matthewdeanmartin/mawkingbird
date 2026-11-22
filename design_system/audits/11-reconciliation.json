@@ -3601,6 +3601,16 @@
       "file": "ui/src/app/lite/lite-new-pill.ts",
       "disposition": "adopted scope",
       "nextStep": "Sticky \"New posts\" pill: a single MbButton (small); the nativeButtons finding is that mbButton host."
+    },
+    {
+      "file": "ui/src/app/language/language-finder/language-finder.ts",
+      "disposition": "backlog",
+      "nextStep": "Language finder: a native combobox input with an ARIA listbox (max 12 rows) plus a Dialog wrapper with an outline MbButton. Move the input to Field/Control and the list to a shared combobox when one lands; preserve type-to-find over every language and never rendering the full catalogue."
+    },
+    {
+      "file": "ui/src/app/moderation/report-gate/report-gate.ts",
+      "disposition": "backlog",
+      "nextStep": "Pre-report notice inside the report Dialog: MbNotice (info tone), plain links to Terms/About, a link-style rules toggle and a details/summary quote. Adopt MbButton variant=link and Disclosure when convenient; preserve that it names the reader's server, the crawl date and the not-legal-advice warning."
     }
   ]
 }

@@ -542,10 +542,24 @@
                 </label>
                 <label>
                   <span class="muted small">{{ 'pages.search.field.language' | transloco }}</span>
-                  <select [ngModel]="language()" (ngModelChange)="language.set($event)">
-                    @for (l of languages; track l.code) {
-                      <option [value]="l.code">{{ l.label | transloco }}</option>
+                  <select
+                    #languageSelect
+                    [ngModel]="language()"
+                    (ngModelChange)="chooseLanguage($event, languageSelect)"
+                  >
+                    <option value="">{{ 'pages.search.language.any' | transloco }}</option>
+                    @for (group of languageGroups(); track group.kind) {
+                      <optgroup [label]="'pages.search.language.group.' + group.kind | transloco">
+                        @for (l of group.options; track l.code) {
+                          <option [value]="l.code">
+                            {{ l.name }}{{ l.endonym ? ' · ' + l.endonym : '' }}
+                          </option>
+                        }
+                      </optgroup>
                     }
+                    <option [value]="moreLanguages">
+                      {{ 'pages.search.language.more' | transloco }}
+                    </option>
                   </select>
                 </label>
               </div>
@@ -1597,6 +1611,12 @@
     [context]="searchHelperContext()"
     (useQuery)="useSuggestedQuery($event)"
     (closed)="searchHelperOpen.set(false)"
+  />
+}
+@if (languageFinderOpen()) {
+  <app-language-finder-dialog
+    (picked)="chooseLanguage($event)"
+    (closed)="languageFinderOpen.set(false)"
   />
 }
 

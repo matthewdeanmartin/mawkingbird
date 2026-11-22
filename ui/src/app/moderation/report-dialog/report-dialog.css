@@ -18,4 +18,56 @@ mb-field {
   font-weight: 600;
   margin-bottom: 6px;
 }
+.report-triage {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+  padding: 0;
+  border: 0;
+}
+.report-triage legend {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.triage-choice {
+  display: grid;
+  gap: 2px;
+  text-align: start;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.triage-choice:hover,
+.triage-choice:focus-visible {
+  background: var(--hover);
+}
+.triage-label {
+  font-weight: 600;
+}
+.report-alternatives {
+  display: grid;
+  gap: 4px;
+  margin: 14px 0;
+}
+.report-alternatives p {
+  margin: 0 0 8px;
+}
+.report-chosen {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.link-button {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--ds-action-text);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
 /* Preserve the existing destructive action pending the shared danger variant. */

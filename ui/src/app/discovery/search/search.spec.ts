@@ -10,6 +10,7 @@ import {
   provideRouter,
 } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Relationship, SearchResults, Status } from '../../platform/api/models';
 import { Search } from './search';
@@ -64,6 +65,11 @@ interface SearchInternals {
   canEnrichActivity(): boolean;
   enrichActivity(): void;
   enrichError: WritableSignal<string | null>;
+  language: WritableSignal<string>;
+  languageGroups(): { kind: string; options: { code: string }[] }[];
+  languageFinderOpen: WritableSignal<boolean>;
+  chooseLanguage(code: string, select?: HTMLSelectElement): void;
+  moreLanguages: string;
 }
 
 function makeAccount(over: Partial<Account> = {}): Account {
@@ -1829,6 +1835,40 @@ describe('Search', () => {
       queryParams$.next(convertToParamMap({ type: 'bluesky-posts' }));
 
       expect(internals(fixture).searching()).toBe(false);
+    });
+  });
+
+  describe('language choices', () => {
+    const codes = (fixture: ComponentFixture<Search>, kind: string) =>
+      internals(fixture)
+        .languageGroups()
+        .find((g) => g.kind === kind)
+        ?.options.map((o) => o.code) ?? [];
+
+    it('offers the reader’s declared languages and every app language', () => {
+      TestBed.inject(ClientPrefs).setKnownLanguages(['eo']);
+      const fixture = setUp();
+      expect(codes(fixture, 'yours')).toContain('eo');
+      // Malay and Indonesian are app localizations, so they are always offered.
+      const all = [...codes(fixture, 'yours'), ...codes(fixture, 'app')];
+      expect(all).toContain('ms');
+      expect(all).toContain('id');
+    });
+
+    it('opens the finder from "All languages…" without changing the choice', () => {
+      const fixture = setUp();
+      internals(fixture).language.set('de');
+      const select = document.createElement('select');
+      internals(fixture).chooseLanguage(internals(fixture).moreLanguages, select);
+      expect(internals(fixture).languageFinderOpen()).toBe(true);
+      expect(internals(fixture).language()).toBe('de');
+    });
+
+    it('lists a language picked in the finder as the current choice', () => {
+      const fixture = setUp();
+      internals(fixture).chooseLanguage('tok');
+      expect(internals(fixture).language()).toBe('tok');
+      expect(codes(fixture, 'current')).toEqual(['tok']);
     });
   });
 });
