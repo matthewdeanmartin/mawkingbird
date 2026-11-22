@@ -112,26 +112,50 @@ Not yet run: production build/bundle check, `make test` with coverage, design-ve
 (navigation cancels, 5xx, slow-by-design endpoints); the history survives a
 reload; the chip stays hidden on a good connection.
 
-### Sprint 2: graded states and a shared request policy
+### Sprint 1b: speed stats in menus (done 2026-11-21)
 
-- Replace the binary down/up whale trigger with the meter's verdicts: `slow`
-  and `flaky` give inline notices with retry and keep the app usable; the whale
-  is kept for a home server that is truly unreachable while the connection works.
-  Offline gets its own calm "You're offline" state that keeps already-loaded
-  content readable, instead of the whale.
-- One request policy (timeouts by request family, retry with backoff and jitter
-  for idempotent GETs only, honoring `Retry-After`) to replace scattered
-  `timeout(` calls step by step, starting with Home, notifications and threads.
-- Named network profiles on the fault-injection page (slow 3G, flaky 30%,
-  blackout 20 s/min).
+The More menu's Observability row carries the typical reply time ("240 ms",
+"Offline"); the menu has no room for another row. The Observability page has a
+Connection card (verdict, typical reply, the last hour) linking to
+`/connection`, the same shape as the storage card.
 
-### Sprint 3: graceful degradation in the full app
+### Sprint 2: graded states and a shared request policy (done 2026-11-21)
 
-- While the verdict is `slow`/`flaky`: media and link cards are tap-to-load,
-  timeline pages are smaller, background and optional panels (right-rail
-  widgets, prefetches, polling) pause, and reading requests come before background ones.
-- The "switch to Lite?" offer (shown after sustained bad verdicts, dismissible,
-  remembered per session).
+- `ConnectionState` decides what the reader sees. The reader's own connection
+  is down: a calm bottom banner ("You're offline. What's already on screen stays
+  readable.") with Try now and Details, never the whale. The home server stopped
+  answering: one probe of this site settles whose fault it is ("checking"), then
+  the whale only if this site answered. Native has no probe, so it keeps the old
+  whale behaviour. When the connection comes back, a server marked down while
+  offline is rechecked once (an event, not a polling timer).
+- `requestPolicyInterceptor` with the opt-in `readPolicy()`: 20 s per attempt
+  (doubled while slow or unstable), 2 retries at ~1 s and ~3 s with ±30% jitter,
+  `Retry-After` honoured up to 30 s, GET/HEAD only, no retries while offline.
+  Adopted by `Api` for the home timeline, notifications, a status and its thread
+  context; the notifications page's own 15 s timeout on that read is gone.
+- Network profiles (Normal, Slow 3G, Flaky 30%, Blackouts 20 s/min, Offline) on
+  the developer fault page. They run in the client inside the meter, so the meter
+  and the probe see them as real, and they are session-only.
+- **Changed from the plan:** slow and unstable do not get their own inline
+  notices. The header chip says it, the read policy retries quietly, and each
+  feature keeps its existing error state. A second banner would repeat the chip.
+
+### Sprint 3: graceful degradation in the full app (done 2026-11-21)
+
+- `DataSaver` (Settings → feed: "Pictures in new posts": wait for a tap while
+  slow (default) / always wait / always load). Automatic mode is on while the
+  connection is bad or the browser asks to save data, and stays on 3 minutes
+  after recovery so pictures don't blink in and out.
+- The status card reads it once, when created: cards created while saving data
+  use the existing images-off rendering (alt-text rows, plain video links, link
+  cards without images) plus a "Show them" button; cards that already loaded
+  their pictures keep them.
+- Chat polling is skipped while offline and runs half as often while saving data.
+- `/connection` shows whether pictures in new posts currently wait for a tap.
+- **Changed from the plan:** timeline pages are not made smaller. The meter's
+  "slow" is about latency, where fewer, larger requests are better; the bytes on
+  a bad connection are pictures, which now wait. The "switch to Lite?" offer
+  moves to Sprint 6, because there is no `/m/` to offer until then.
 
 ### Sprint 4: service worker (app shell + visited chunks)
 
@@ -160,7 +184,9 @@ reload; the chip stays hidden on a good connection.
   compose and profile components, so it improves as they improve.
 - Scope as in decision 7; simplified video and radio players.
 - A route budget check that fails the build if `/m/` routes pull in heavy features.
-- Lite ⇄ full-app route mapping, `noindex`, and an entry from the Lite offer and Settings.
+- Lite ⇄ full-app route mapping, `noindex`, and an entry from Settings.
+- The "switch to Lite?" offer (moved from Sprint 3): after sustained bad
+  verdicts, dismissible, remembered per session.
 
 ### Sprint 7: Native offline
 

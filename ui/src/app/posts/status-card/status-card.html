@@ -535,6 +535,17 @@
               </button>
             }
           </div>
+          @if (imagesHeldBack()) {
+            <button
+              mbButton
+              variant="link"
+              size="small"
+              type="button"
+              (click)="showHeldImages($event)"
+            >
+              {{ 'statusCard.showHeldImages' | transloco }}
+            </button>
+          }
         }
       }
 
@@ -567,6 +578,17 @@
         <div class="status-card-preview" (click)="$event.stopPropagation()">
           <app-preview-card [card]="card" [showImage]="imagesVisible()" />
         </div>
+        @if (imagesHeldBack() && card.image) {
+          <button
+            mbButton
+            variant="link"
+            size="small"
+            type="button"
+            (click)="showHeldImages($event)"
+          >
+            {{ 'statusCard.showHeldImages' | transloco }}
+          </button>
+        }
       }
 
       @if (showMedia() && !cwCollapsed() && additionalYoutube().length) {

@@ -9,6 +9,7 @@ import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar'
 import { CONNECTIVITY_PROBE_PATH } from '../../platform/http/platform-http';
 import { medianBin } from '../../platform/network/connection-history';
 import { ConnectionMeter } from '../../platform/network/connection-meter';
+import { DataSaver } from '../../platform/network/data-saver';
 import { VerdictReason } from '../../platform/network/connection-quality';
 import {
   SPAN_COLUMNS,
@@ -49,6 +50,9 @@ import {
 // i18n connection.stat.browserType: Browser estimate
 // i18n connection.stat.saveData: Data saver
 // i18n connection.stat.on: On
+// i18n connection.stat.pictures: Pictures in new posts
+// i18n connection.stat.picturesHeld: Wait for a tap
+// i18n connection.stat.picturesLoad: Load normally
 // i18n connection.lastProbe: Last test: {{result}} in {{ms}} ms
 // i18n connection.probe.ok: reached
 // i18n connection.probe.failed: no answer
@@ -108,6 +112,7 @@ const COLUMN_WIDTH = 6;
 })
 export class ConnectionPage {
   protected readonly meter = inject(ConnectionMeter);
+  protected readonly dataSaver = inject(DataSaver);
   private readonly transloco = inject(TranslocoService);
 
   protected readonly canProbe = CONNECTIVITY_PROBE_PATH !== null;

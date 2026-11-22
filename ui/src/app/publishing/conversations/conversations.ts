@@ -1,4 +1,5 @@
 import { AccountName } from '../../accounts/account-name';
+import { DataSaver } from '../../platform/network/data-saver';
 import { qualifiedHandle } from '../../accounts/account-handle';
 import { ChatSound } from './chat-sound';
 import { ChatPerson, ChatSuggestions, person, rankSuggestions } from './chat-suggestions';
@@ -324,6 +325,7 @@ export class Conversations implements OnInit, OnDestroy {
   protected words = inject(Terminology).words;
 
   private api = inject(Api);
+  private dataSaver = inject(DataSaver);
   private auth = inject(Auth);
   private diagnostics = inject(PageDiagnostics);
   protected mastodonAvailable = computed(() => !this.auth.lacksMastodonToken);
@@ -1336,7 +1338,8 @@ export class Conversations implements OnInit, OnDestroy {
    * The fallback for when messages cannot arrive by themselves: Mastodon while
    * its streams are not live, and Bluesky always (it has no stream here). The
    * open conversation is re-fetched every 20 s, the chat list every 60 s, and
-   * nothing at all while the tab is hidden.
+   * nothing at all while the tab is hidden. Offline, polls are skipped; while
+   * saving data on a bad connection, they run half as often (DataSaver).
    */
   private startPolling(): void {
     const visible = () => typeof document === 'undefined' || !document.hidden;
@@ -1344,6 +1347,7 @@ export class Conversations implements OnInit, OnDestroy {
       setInterval(() => {
         const chat = this.selected();
         if (!visible() || !chat || this.threadLoading()) return;
+        if (!this.dataSaver.allowBackground('chat-thread')) return;
         // Bluesky follows its log (below); the 20 s re-read is only its fallback.
         const bskyFallback = chat.kind === 'bsky' && this.bskyLogFailed;
         if (
@@ -1354,10 +1358,13 @@ export class Conversations implements OnInit, OnDestroy {
         }
       }, POLL_THREAD_MS),
       setInterval(() => {
-        if (visible() && this.bsky.linked()) this.followBskyLog();
+        if (visible() && this.bsky.linked() && this.dataSaver.allowBackground('chat-bsky-log')) {
+          this.followBskyLog();
+        }
       }, POLL_BSKY_LOG_MS),
       setInterval(() => {
         if (!visible() || this.loading() || this.refreshing()) return;
+        if (!this.dataSaver.allowBackground('chat-list')) return;
         this.refreshList({ mastodon: true, bluesky: true });
       }, POLL_LIST_MS),
     );

@@ -1,4 +1,5 @@
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
+import { DataSaver } from '../../platform/network/data-saver';
 import { forgetLoadedDictionaries } from '../learn/dictionary-registry';
 import { BlueskyFeeds } from '../../connections/bluesky/bluesky-feeds';
 import { BlueskyModeration } from '../../connections/bluesky/bluesky-moderation';
@@ -3036,6 +3037,34 @@ describe('StatusCard', () => {
   });
 
   // ------------------------------------------------------------ images-off mode
+
+  it('holds pictures back on cards created while saving data, until the reader asks', () => {
+    TestBed.inject(DataSaver).setMode('always');
+    const f = setUp(makeStatus({ media_attachments: [makeMedia('a')] }));
+    const el = f.nativeElement as HTMLElement;
+    expect(el.querySelectorAll('.media-thumb')).toHaveLength(0);
+    expect(el.querySelectorAll('.media-alt-row')).toHaveLength(1);
+    const show = [...el.querySelectorAll('button')].find((b) =>
+      b.textContent!.includes('pictures held back'),
+    ) as HTMLButtonElement;
+    show.click();
+    f.detectChanges();
+    expect(el.querySelectorAll('.media-thumb')).toHaveLength(1);
+  });
+
+  it('keeps pictures that already loaded when saving data starts later', () => {
+    const f = setUp(makeStatus({ media_attachments: [makeMedia('a')] }));
+    TestBed.inject(DataSaver).setMode('always');
+    f.detectChanges();
+    expect((f.nativeElement as HTMLElement).querySelectorAll('.media-thumb')).toHaveLength(1);
+  });
+
+  it('offers no held-back button when the reader turned images off', () => {
+    TestBed.inject(DataSaver).setMode('always');
+    TestBed.inject(ClientPrefs).setShowImages(false);
+    const f = setUp(makeStatus({ media_attachments: [makeMedia('a')] }));
+    expect((f.nativeElement as HTMLElement).textContent).not.toContain('pictures held back');
+  });
 
   it('replaces thumbnails with one alt-text row per attachment when images are off', () => {
     TestBed.inject(ClientPrefs).setShowImages(false);

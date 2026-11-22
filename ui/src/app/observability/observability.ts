@@ -27,6 +27,7 @@ import { RouteLog, RouteStat, formatDuration } from './route-log';
 import { MawkingbirdMetrics, MawkingbirdService, ServiceStat } from './mawkingbird-metrics';
 import { DiagnosticEntry, DiagnosticLog } from '../platform/diagnostics/diagnostic-log';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { ConnectionSummary } from './connection/connection-summary';
 import { Wellness } from '../wellness/wellness';
 
 /** How the endpoint table is sorted. */
@@ -163,6 +164,7 @@ type RouteSortKey = 'visits' | 'time';
 // i18n pages.observability.scope.combined.other: {{count}} servers combined · currently signed in to {{server}}
 // i18n pages.observability.storageDiagnostics: Storage Diagnostics →
 // i18n pages.observability.connection: Connection →
+// i18n pages.observability.connectionTitle: Connection
 // i18n pages.observability.api.title: API calls
 // i18n pages.observability.api.reset: Reset metrics
 // i18n pages.observability.stats.totalCalls: total calls
@@ -308,7 +310,7 @@ type RouteSortKey = 'visits' | 'time';
 // i18n pages.observability.tooltip.bucketErrors: · {{count}} err
 @Component({
   selector: 'app-observability',
-  imports: [MbButton, RouterLink, TranslocoPipe],
+  imports: [MbButton, RouterLink, TranslocoPipe, ConnectionSummary],
   templateUrl: './observability.html',
   styleUrls: ['./diagnostics-shared.css', './observability.css'],
 })

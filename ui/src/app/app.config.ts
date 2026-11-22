@@ -26,6 +26,8 @@ import { serverInterceptor } from './platform/http/server.interceptor';
 import { mastodonRouteInterceptor } from './platform/http/mastodon-route.interceptor';
 import { metricsInterceptor } from './observability/metrics.interceptor';
 import { connectionMeterInterceptor } from './platform/network/connection-meter.interceptor';
+import { networkSimulatorInterceptor } from './platform/network/network-simulator';
+import { requestPolicyInterceptor } from './platform/network/request-policy';
 import { GlobalErrorHandler } from './platform/diagnostics/global-error-handler';
 import { SettingsPreloading } from './settings/settings-preloading';
 import { dedupeInterceptor } from './platform/http/dedupe.interceptor';
@@ -72,6 +74,9 @@ export const appConfig: ApplicationConfig = {
         // First: a refused Mastodon route never reaches metrics or the network.
         mastodonRouteInterceptor,
         metricsInterceptor,
+        // Inside metrics (one call, total time), outside everything that
+        // rewrites, authenticates, measures or health-checks an attempt.
+        requestPolicyInterceptor,
         serverInterceptor,
         dedupeInterceptor,
         rateLimitInterceptor,
@@ -85,6 +90,9 @@ export const appConfig: ApplicationConfig = {
         // waits, deduped repeats, refused routes) is never mistaken for the
         // network being slow.
         connectionMeterInterceptor,
+        // Inert unless a test profile is picked; inside the meter so the
+        // simulated conditions are measured like real ones.
+        networkSimulatorInterceptor,
         ...PLATFORM_HTTP_INTERCEPTORS,
       ]),
     ),

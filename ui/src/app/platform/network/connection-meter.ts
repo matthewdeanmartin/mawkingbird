@@ -1,22 +1,27 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { CONNECTIVITY_PROBE_PATH } from '../http/platform-http';
+import { NetworkSimulator, simulatedDrop } from './network-simulator';
 import {
   BrowserHints,
   ConnectionAssessment,
   ConnectionSample,
   WINDOW_MS,
   assess,
+  formatReplyTime,
   isBad,
 } from './connection-quality';
 import {
   ConnectionHistory,
   addSample,
+  binLabel,
   deserialize,
+  medianBin,
   emptyHistory,
   noteTransition,
   noteVerdict,
   prune,
   serialize,
+  summarize,
 } from './connection-history';
 
 export const CONNECTION_HISTORY_KEY = 'mockingbird_connection_history';
@@ -29,6 +34,8 @@ const FLUSH_DEBOUNCE_MS = 5_000;
 export const PROBE_BACKOFF_MS: readonly number[] = [10_000, 20_000, 40_000, 80_000, 120_000];
 /** A probe that takes longer than this counts as abandoned. */
 const PROBE_TIMEOUT_MS = 15_000;
+/** How far back the compact reply-time readout looks when the live window is empty. */
+const RECENT_REPLY_MS = 15 * 60_000;
 /** Samples kept in memory; the verdict only reads the newest window of them. */
 const MAX_LIVE_SAMPLES = 120;
 
@@ -75,6 +82,7 @@ export class ConnectionMeter {
   /** Bumped on every change so computed views refresh. */
   private readonly version = signal(0);
   readonly hints = signal<BrowserHints>(readHints());
+  private readonly simulator = inject(NetworkSimulator);
 
   readonly assessment = computed<ConnectionAssessment>(() => {
     this.version();
@@ -82,6 +90,18 @@ export class ConnectionMeter {
   });
   readonly verdict = computed(() => this.assessment().verdict);
   readonly bad = computed(() => isBad(this.verdict()));
+  /**
+   * A short "how fast is it" for compact places (the More menu, the
+   * Observability card): the live median when there is one, otherwise the
+   * typical bin from the last 15 minutes, otherwise null.
+   */
+  readonly typicalReply = computed<string | null>(() => {
+    const live = formatReplyTime(this.assessment().medianMs);
+    if (live) return live;
+    const now = Date.now();
+    const bin = medianBin(summarize(this.history, now - RECENT_REPLY_MS, now).lat);
+    return bin === null ? null : binLabel(bin);
+  });
   /** When the last probe finished, for the diagnostics page. */
   readonly lastProbe = signal<ConnectionSample | null>(null);
 
@@ -160,6 +180,13 @@ export class ConnectionMeter {
     const timer = setTimeout(() => controller.abort(), PROBE_TIMEOUT_MS);
     let sample: ConnectionSample;
     try {
+      const simulated = this.simulator.profile();
+      if (simulated.id !== 'off') {
+        // Dev profiles must fool the probe too, or "offline" would look like
+        // a server outage the moment the probe sailed through.
+        await new Promise((resolve) => setTimeout(resolve, simulated.latencyMs));
+        if (simulatedDrop(simulated, Date.now(), Math.random())) throw new Error('simulated');
+      }
       const url = new URL(path, document.baseURI);
       url.searchParams.set('t', String(Date.now()));
       await fetch(url.href, { cache: 'no-store', signal: controller.signal });

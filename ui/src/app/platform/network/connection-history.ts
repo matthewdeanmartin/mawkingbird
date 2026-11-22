@@ -206,6 +206,16 @@ export function medianBin(lat: readonly number[]): number | null {
   return lat.length - 1;
 }
 
+/** "under 250 ms", "1–2.5 s", "over 5 s": what one latency bin honestly says. */
+export function binLabel(bin: number | null): string {
+  if (bin === null) return '—';
+  const edges = LATENCY_BIN_EDGES;
+  const fmt = (ms: number) => (ms < 1000 ? `${ms} ms` : `${ms / 1000} s`);
+  if (bin === 0) return `< ${fmt(edges[0])}`;
+  if (bin >= edges.length) return `> ${fmt(edges[edges.length - 1])}`;
+  return `${fmt(edges[bin - 1])}–${fmt(edges[bin])}`;
+}
+
 // ------------------------------------------------------------------- storage
 
 const VERDICT_CODES: readonly ConnectionVerdict[] = ['unknown', 'good', 'slow', 'flaky', 'offline'];

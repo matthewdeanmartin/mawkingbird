@@ -3197,3 +3197,16 @@ MbToolbar/MbToolbarButton; its nativeButtons findings are those mbButton and
 mbToolbarButton hosts. Added to 11-reconciliation.json as adopted scope. The new
 header chip (shell/connection-chip, an inline-template link) and the shell's
 one-line header change only shift line numbers. No shared design widget changed.
+
+Low-bandwidth Sprints 2–3 (2026-11-21): reviewed the regenerated inventory:
+2107 scanned files, 712 candidate files. New candidate
+shell/offline-banner/offline-banner.ts (the calm offline banner that replaces
+the whale when the reader's own connection is down) uses MbButton for Try now
+and Details; added to 11-reconciliation.json as adopted scope. Changed
+findings: status-card.html gains one shared MbButton (link, small) for "Show
+pictures held back", used in the media and link-card branches;
+blue-controls.html gains one native `select` for the data-saver choice beside
+the existing images checkbox, matching that row's other selects;
+fault-injection.html (developer page) gains an MbToolbar of network profiles.
+The Observability connection card, the More-menu speed suffix and the header
+chip have no controls. No shared design widget changed.

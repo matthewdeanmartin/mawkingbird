@@ -31,6 +31,7 @@ anything that went wrong under **Findings**.
 | [YouTube client S4](youtube-client-s4-landing-2026-11.md) | Subscriptions landing, Shorts, Recently seen, SponsorBlock, seeking chapters, PeerTube | Not run |
 | [YouTube client S5–S6](youtube-client-s5-creator-kits-2026-11.md) | YouTubers on Mastodon: kits page, rail card, Subscribe/Follow all, review spot-check | Not run |
 | [Low bandwidth S1: connection meter](low-bandwidth-s1-connection-meter-2026-11.md) | Header chip on slow/unstable/offline, /connection history and report | Not run |
+| [Low bandwidth S2–S3](low-bandwidth-s2-s3-offline-and-data-saver-2026-11.md) | Offline banner vs whale, read retries, pictures wait for a tap on slow connections, menu speed stats | Not run |
 
 The roadmap these come from is `sprint/november_2026_bsky_parity.md`.
 

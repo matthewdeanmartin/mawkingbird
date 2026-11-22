@@ -1,4 +1,5 @@
 import { compactContentLinks, CompactLinksPipe } from '../content-links';
+import { DataSaver } from '../../platform/network/data-saver';
 import { LinkedText } from '../linked-text';
 import { ReadingPostChanges, reconcileReadingPost } from '../reading-post-changes';
 import { blueskyRouteFor } from '../../accounts/bluesky-links';
@@ -241,6 +242,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.closed: Closed
 // i18n statusCard.revokeQuotePermission: Revoke quote permission
 // i18n statusCard.revokeQuoteConfirm: Revoke permission for this post to quote your post? The quoted content will no longer be available in this quote.
+// i18n statusCard.showHeldImages: Slow connection: pictures held back. Show them
 // i18n statusCard.viewImage: View image{{description}}
 // i18n statusCard.viewImageNoDescription: View image {{number}} (no description provided)
 // i18n statusCard.noDescriptionProvided: No description provided
@@ -787,9 +789,27 @@ export class StatusCard {
   protected downloadable = computed(() =>
     hasDownloadableMedia(this.status()) ? [this.status()] : null,
   );
-  protected imagesVisible = computed(
+  private readonly dataSaver = inject(DataSaver);
+  /**
+   * Read once, when the card is created: a card whose pictures already loaded
+   * keeps them if the connection then gets worse, and a card created while
+   * saving data stays text-first until the reader asks (see DataSaver).
+   */
+  private readonly savingData = this.dataSaver.active();
+  protected readonly imagesForced = signal(false);
+  private readonly imagesWanted = computed(
     () => !this.textFocus() && this.prefs.showImages() && !this.prefs.feedReader(),
   );
+  protected imagesVisible = computed(
+    () => this.imagesWanted() && (!this.savingData || this.imagesForced()),
+  );
+  /** Pictures the reader wants but a slow connection is holding back. */
+  protected imagesHeldBack = computed(() => this.imagesWanted() && !this.imagesVisible());
+
+  protected showHeldImages(event: Event): void {
+    event.stopPropagation();
+    this.imagesForced.set(true);
+  }
 
   /**
    * Icon standing in for one attachment when images are off. Mastodon's media

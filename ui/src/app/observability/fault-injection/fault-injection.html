@@ -4,6 +4,23 @@
   <code>/api/v1/_mock/*</code> {{ 'pages.faultInjection.introExempt' | transloco }}
 </p>
 
+<section class="rule-form">
+  <h2>{{ 'pages.faultInjection.profilesHeading' | transloco }}</h2>
+  <p class="muted">{{ 'pages.faultInjection.profilesIntro' | transloco }}</p>
+  <mb-toolbar [label]="'pages.faultInjection.profilesLabel' | transloco">
+    @for (id of profiles; track id) {
+      <button
+        type="button"
+        mbToolbarButton
+        [pressed]="simulator.active() === id"
+        (click)="simulator.set(id)"
+      >
+        {{ 'pages.faultInjection.profile.' + id | transloco }}
+      </button>
+    }
+  </mb-toolbar>
+</section>
+
 <div class="rule-form">
   <h2>{{ 'pages.faultInjection.addRuleHeading' | transloco }}</h2>
   <div class="row">

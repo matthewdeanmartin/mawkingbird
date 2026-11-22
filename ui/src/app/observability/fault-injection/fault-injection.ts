@@ -1,5 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
+import { NETWORK_PROFILES, NetworkSimulator } from '../../platform/network/network-simulator';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MockApi } from '../../mock-api';
 import { FaultEffectType, FaultRule, FaultRuleDraft } from '../../platform/api/models';
@@ -35,15 +37,25 @@ import { FaultEffectType, FaultRule, FaultRuleDraft } from '../../platform/api/m
 // i18n pages.faultInjection.msValue: {{ms}}ms
 // i18n pages.faultInjection.remove: remove
 // i18n pages.faultInjection.addRuleFailed: Could not add rule.
+// i18n pages.faultInjection.profilesHeading: Network profiles
+// i18n pages.faultInjection.profilesIntro: Simulate a bad connection in this tab, against any server. Requests are slowed or dropped before they leave the app, so the connection meter sees them as real. Closing the tab turns it off.
+// i18n pages.faultInjection.profilesLabel: Network profile
+// i18n pages.faultInjection.profile.off: Normal
+// i18n pages.faultInjection.profile.slow3g: Slow 3G
+// i18n pages.faultInjection.profile.flaky: Flaky (30% dropped)
+// i18n pages.faultInjection.profile.blackouts: Blackouts (20 s each minute)
+// i18n pages.faultInjection.profile.offline: Offline
 @Component({
   selector: 'app-fault-injection',
-  imports: [FormsModule, TranslocoPipe],
+  imports: [FormsModule, TranslocoPipe, MbToolbar, MbToolbarButton],
   templateUrl: './fault-injection.html',
   styleUrl: './fault-injection.css',
 })
 export class FaultInjection implements OnInit {
   private api = inject(MockApi);
   private transloco = inject(TranslocoService);
+  protected readonly simulator = inject(NetworkSimulator);
+  protected readonly profiles = NETWORK_PROFILES.map((p) => p.id);
 
   protected rules = signal<FaultRule[]>([]);
   protected loading = signal(true);

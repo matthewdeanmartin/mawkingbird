@@ -6,7 +6,8 @@ import { ClientPrefs } from './platform/storage/client-prefs';
 import { FailWhale } from './shell/fail-whale/fail-whale';
 import { InstanceStatus } from './platform/http/instance-status';
 import { RouteLog } from './observability/route-log';
-import { ServerHealth } from './platform/http/server-health';
+import { ConnectionState } from './platform/network/connection-state';
+import { OfflineBanner } from './shell/offline-banner/offline-banner';
 import { UpdateOverlay } from './shell/update-overlay/update-overlay';
 import { UpdateRecovery } from './platform/build/update-recovery';
 import { ConfigSync } from './platform/storage/config-sync';
@@ -15,17 +16,23 @@ import { ActionTracker } from './platform/diagnostics/action-tracker';
 
 @Component({
   selector: 'app-root',
-  imports: [ReadingOutlet, RouterOutlet, FailWhale, UpdateOverlay],
+  imports: [ReadingOutlet, RouterOutlet, FailWhale, OfflineBanner, UpdateOverlay],
   template: `
     <router-outlet mbReadingOutlet />
-    @if (health.down()) {
+    @if (connection.surface() === 'whale') {
       <app-fail-whale />
     }
+    <app-offline-banner />
     <app-update-overlay />
   `,
 })
 export class App {
-  protected readonly health = inject(ServerHealth);
+  /**
+   * Whale, offline banner or nothing. The whale used to follow ServerHealth
+   * alone, which blamed the server for the reader's dead Wi-Fi; see
+   * spec/low-bandwidth-offline.md (Sprint 2).
+   */
+  protected readonly connection = inject(ConnectionState);
   /** Instantiated eagerly so theme/accent apply on every route, including login. */
   private readonly prefs = inject(ClientPrefs);
   /** Instantiated eagerly so status-page discovery runs while the instance is healthy. */

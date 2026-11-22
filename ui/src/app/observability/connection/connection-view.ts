@@ -1,8 +1,10 @@
+export { binLabel } from '../../platform/network/connection-history';
 import {
   ConnectionHistory,
   HISTORY_BUCKET_MS,
   HistorySummary,
   LATENCY_BIN_EDGES,
+  binLabel,
   medianBin,
   offlineTime,
   summarize,
@@ -100,16 +102,6 @@ export function summaries(
     key,
     summary: summarize(history, now - ms, now),
   }));
-}
-
-/** "under 250 ms", "1–2.5 s", "over 5 s": what one latency bin honestly says. */
-export function binLabel(bin: number | null): string {
-  if (bin === null) return '—';
-  const edges = LATENCY_BIN_EDGES;
-  const fmt = (ms: number) => (ms < 1000 ? `${ms} ms` : `${ms / 1000} s`);
-  if (bin === 0) return `< ${fmt(edges[0])}`;
-  if (bin >= edges.length) return `> ${fmt(edges[edges.length - 1])}`;
-  return `${fmt(edges[bin - 1])}–${fmt(edges[bin])}`;
 }
 
 /** Average throughput, kbit/s, when response sizes were known; else null. */

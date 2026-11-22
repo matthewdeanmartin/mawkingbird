@@ -1183,6 +1183,20 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Local API timing metrics and grouped client-error counts, one entry per instance. The trailing colon is part of the base — keys are `…metrics:<host>`.',
   },
   {
+    base: 'mockingbird_data_saver',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Whether pictures in new posts wait for a tap: automatically on a slow connection (absent), always, or never.',
+  },
+  {
+    base: 'mockingbird_network_profile',
+    storage: 'session',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'The simulated bad-network profile picked on the developer fault page. Session-only so a forgotten profile dies with the tab.',
+  },
+  {
     base: 'mockingbird_connection_history',
     storage: 'local',
     suffix: 'none',

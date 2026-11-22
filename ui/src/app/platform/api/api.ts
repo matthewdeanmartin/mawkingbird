@@ -23,6 +23,7 @@ import { Pseudonymity } from '../../accounts/pseudonymity';
 import { cleanPostLinks } from '../../publishing/post-link-cleaning';
 import { SearchServer, searchServerRequest } from '../http/search-server';
 import { SERVER_ROLE, serverRole } from '../http/server-role';
+import { readPolicy } from '../network/request-policy';
 import {
   Account,
   Announcement,
@@ -475,7 +476,7 @@ export class Api {
   homeTimeline(maxId?: string, limit?: number): Observable<Status[]> {
     let params = this.pageParams(maxId);
     if (limit) params = params.set('limit', String(limit));
-    return this.http.get<Status[]>('/api/v1/timelines/home', { params });
+    return this.http.get<Status[]>('/api/v1/timelines/home', { params, context: readPolicy() });
   }
 
   /** Home must follow pagination, not infer exhaustion from response length. */
@@ -484,6 +485,7 @@ export class Api {
       .get<Status[]>('/api/v1/timelines/home', {
         params: this.pageParams(maxId),
         observe: 'response',
+        context: readPolicy(),
       })
       .pipe(
         map((response) => {
@@ -562,7 +564,7 @@ export class Api {
 
   // --- statuses ---
   getStatus(id: string): Observable<Status> {
-    return this.http.get<Status>(`/api/v1/statuses/${id}`);
+    return this.http.get<Status>(`/api/v1/statuses/${id}`, { context: readPolicy() });
   }
 
   /**
@@ -578,7 +580,9 @@ export class Api {
   }
 
   getContext(id: string): Observable<Context> {
-    return this.http.get<Context>(`/api/v1/statuses/${id}/context`);
+    return this.http.get<Context>(`/api/v1/statuses/${id}/context`, {
+      context: readPolicy(),
+    });
   }
 
   postStatus(
@@ -915,7 +919,10 @@ export class Api {
     }
     for (const type of opts.types ?? []) params = params.append('types[]', type);
     if (opts.limit) params = params.set('limit', String(opts.limit));
-    return this.http.get<MastodonNotification[]>('/api/v1/notifications', { params });
+    return this.http.get<MastodonNotification[]>('/api/v1/notifications', {
+      params,
+      context: readPolicy(),
+    });
   }
 
   // --- favourites / bookmarks ---

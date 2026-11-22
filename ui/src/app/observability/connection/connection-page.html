@@ -41,6 +41,15 @@
           <dd>{{ type }}</dd>
         </div>
       }
+      <div>
+        <dt>{{ 'connection.stat.pictures' | transloco }}</dt>
+        <dd>
+          {{
+            (dataSaver.active() ? 'connection.stat.picturesHeld' : 'connection.stat.picturesLoad')
+              | transloco
+          }}
+        </dd>
+      </div>
       @if (hints().saveData) {
         <div>
           <dt>{{ 'connection.stat.saveData' | transloco }}</dt>

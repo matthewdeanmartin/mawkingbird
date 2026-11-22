@@ -702,8 +702,8 @@ export class Notifications implements OnInit, OnDestroy {
     const pages: Observable<MastodonNotification[]>[] = [];
     if (!this.mastodonDone) {
       pages.push(
+        // Timeouts and retries come from the read policy on the request.
         this.api.notifications(this.mastodonCursor).pipe(
-          timeout(15_000),
           map((batch) => {
             if (!this.mastodonCursor) {
               this.replyCounts.markCurrentRead('mastodon');

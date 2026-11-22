@@ -202,3 +202,9 @@ export function assess(
 
   return { ...base, verdict: 'good', reason: 'normal', blame };
 }
+
+/** "240 ms", "1.8 s": a measured reply time for compact display; null passes through. */
+export function formatReplyTime(ms: number | null): string | null {
+  if (ms === null || !Number.isFinite(ms)) return null;
+  return ms < 1000 ? `${Math.round(ms)} ms` : `${(ms / 1000).toFixed(1)} s`;
+}

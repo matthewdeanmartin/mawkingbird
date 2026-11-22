@@ -639,6 +639,19 @@
       </label>
 
       <label class="inline-field">
+        {{ 'settings.blue.dataSaver' | transloco }}
+        <select
+          [ngModel]="dataSaver.mode()"
+          (ngModelChange)="dataSaver.setMode($event)"
+          name="data_saver"
+        >
+          <option value="auto">{{ 'settings.blue.dataSaver.auto' | transloco }}</option>
+          <option value="always">{{ 'settings.blue.dataSaver.always' | transloco }}</option>
+          <option value="never">{{ 'settings.blue.dataSaver.never' | transloco }}</option>
+        </select>
+      </label>
+
+      <label class="inline-field">
         {{ 'settings.blue.feedMin' | transloco: { count: prefs.feedMin(), posts: words().posts } }}
         <input
           type="number"
