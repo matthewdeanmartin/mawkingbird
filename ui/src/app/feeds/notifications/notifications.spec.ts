@@ -112,7 +112,11 @@ describe('Notifications across primary networks', () => {
     });
     http = TestBed.inject(HttpTestingController);
   });
-  afterEach(() => http.verify());
+  afterEach(() => {
+    // Opening the inbox reads the notifications marker for "+N since you last looked".
+    http.match((r) => r.url === '/api/v1/markers').forEach((r) => r.flush({}));
+    http.verify();
+  });
 
   function notification(id: string, date: string): MastodonNotification {
     const n = makeNotification(id, 'follow');
@@ -372,7 +376,8 @@ describe('Notifications across primary networks', () => {
     fixture.detectChanges();
     http.expectOne('/api/v1/notifications').flush([]);
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('.notif-group')).not.toBeNull();
+    // With no type filter, the likes collapse into the digest row.
+    expect(fixture.nativeElement.querySelector('[data-digest="engagement"]')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.others-link')).toBeNull();
     const toolbar = fixture.nativeElement.querySelector('.mention-actions') as HTMLElement;
     expect(toolbar.querySelectorAll('a')).toHaveLength(0);
@@ -429,6 +434,7 @@ describe('Notifications', () => {
   });
 
   afterEach(() => {
+    httpMock.match((r) => r.url === '/api/v1/markers').forEach((r) => r.flush({}));
     httpMock.verify();
   });
 
@@ -540,6 +546,49 @@ describe('Notifications', () => {
     },
   );
 
+  it('collapses every like and boost into one row, with +N since the inbox was last read', async () => {
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    httpMock
+      .expectOne((r) => r.url === '/api/v1/markers')
+      .flush({
+        notifications: { last_read_id: '1', version: 1, updated_at: '2026-11-22T10:30:00Z' },
+      });
+    await fixture.whenStable();
+    const at = (time: string, id: string, type: string, who: string, on: string) => {
+      const n = makeNotification(id, type);
+      n.created_at = time;
+      n.account = makeAccount(who);
+      n.status = { id: on, content: `<p>post ${on}</p>`, media_attachments: [] } as never;
+      return n;
+    };
+    httpMock
+      .expectOne('/api/v1/notifications')
+      .flush([
+        at('2026-11-22T10:50:00Z', 'n3', 'favourite', 'ana', 'A'),
+        at('2026-11-22T10:40:00Z', 'n2', 'reblog', 'budi', 'B'),
+        at('2026-11-22T10:00:00Z', 'n1', 'favourite', 'citra', 'A'),
+      ]);
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const digest = el.querySelector('[data-digest="engagement"]')!;
+    expect(el.querySelectorAll('.notif').length).toBe(1);
+    expect(digest.textContent).toContain('2 likes · 1 boost on 2 posts');
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(digest.querySelector('[data-digest-new]')?.textContent).toContain(
+        '+2 since you last looked',
+      );
+    });
+    digest.querySelector<HTMLButtonElement>('.digest-toggle')!.click();
+    fixture.detectChanges();
+    const lines = [...digest.querySelectorAll('[data-digest-post]')].map((li) => li.textContent);
+    expect(lines).toHaveLength(2);
+    expect(lines[0]).toContain('post A');
+    expect(lines[0]).toContain('2 likes');
+    expect(lines[0]).toContain('+1');
+  });
+
   it('renders poll bars in both grouped and individual notifications', () => {
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
@@ -570,8 +619,19 @@ describe('Notifications', () => {
     httpMock.expectOne('/api/v1/notifications').flush(notifications);
     fixture.detectChanges();
     const element: HTMLElement = fixture.nativeElement;
-    expect(element.querySelectorAll('app-poll-results')).toHaveLength(3);
-    expect(element.querySelectorAll('.poll-bar')).toHaveLength(6);
+    // The like is in the digest row; the poll and the mention render their polls.
+    expect(element.querySelectorAll('app-poll-results')).toHaveLength(2);
+    expect(element.querySelectorAll('.poll-bar')).toHaveLength(4);
+    // Filtered to likes, the per-post row renders its poll too.
+    (
+      fixture.componentInstance as unknown as { typeFilter: { set(v: string): void } }
+    ).typeFilter.set('favourite');
+    fixture.detectChanges();
+    expect(element.querySelectorAll('app-poll-results')).toHaveLength(1);
+    (
+      fixture.componentInstance as unknown as { typeFilter: { set(v: string): void } }
+    ).typeFilter.set('all');
+    fixture.detectChanges();
     expect(element.querySelector<HTMLElement>('.poll-bar')!.style.width).toBe('40%');
   });
 
@@ -632,6 +692,10 @@ describe('Notifications', () => {
         media_attachments: [],
       } as unknown as Status;
       httpMock.expectOne('/api/v1/notifications').flush([n]);
+      // A row of its own: likes and boosts only render singly under a type filter.
+      (
+        fixture.componentInstance as unknown as { typeFilter: { set(v: string): void } }
+      ).typeFilter.set(type);
       fixture.detectChanges();
       const link = fixture.nativeElement.querySelector('.excerpt-content a') as HTMLAnchorElement;
       expect(link.textContent).toBe('example.com/' + 'a'.repeat(19) + '…');

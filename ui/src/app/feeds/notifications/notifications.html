@@ -174,7 +174,98 @@
   }
 } @else {
   @for (row of rows(); track row.key) {
-    @if (row.kind === 'single' && isSafetyNotice(row.notif)) {
+    @if (row.kind === 'engagement') {
+      <div class="notif notif-digest" data-digest="engagement">
+        <div class="group-avatars">
+          @for (a of row.people.slice(0, 3); track a.id) {
+            <img
+              class="notif-avatar"
+              [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
+              [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
+              [alt]="a.username"
+              width="40"
+              height="40"
+            />
+          }
+        </div>
+        <div class="notif-body">
+          <button
+            type="button"
+            class="digest-toggle"
+            [attr.aria-expanded]="isDigestOpen(row.key)"
+            (click)="toggleDigest(row.key)"
+          >
+            <span class="digest-summary">{{ engagementSummary(row) }}</span>
+            @if (row.newLikes + row.newBoosts; as fresh) {
+              <span class="digest-new" data-digest-new>{{
+                'pages.notifications.digest.sinceLast' | transloco: { count: fresh }
+              }}</span>
+            }
+          </button>
+          <p class="muted small digest-people">{{ peopleLine(row.people) }}</p>
+          @if (isDigestOpen(row.key)) {
+            <ul class="digest-posts">
+              @for (t of row.posts; track t.status.id) {
+                <li data-digest-post>
+                  <a class="digest-excerpt" [routerLink]="['/statuses', t.status.id]">{{
+                    excerptText(t.status)
+                  }}</a>
+                  <span class="digest-tally">
+                    {{ tallyText(t.likes, t.boosts) }}
+                    @if (t.newLikes + t.newBoosts; as fresh) {
+                      <span class="digest-new">+{{ fresh }}</span>
+                    }
+                  </span>
+                  <span class="muted small">{{ peopleLine(t.people) }}</span>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+    } @else if (row.kind === 'follows') {
+      <div class="notif notif-digest" data-digest="follows">
+        <div class="group-avatars">
+          @for (a of row.accounts.slice(0, 3); track a.id) {
+            <img
+              class="notif-avatar"
+              [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
+              [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
+              [alt]="a.username"
+              width="40"
+              height="40"
+            />
+          }
+        </div>
+        <div class="notif-body">
+          <button
+            type="button"
+            class="digest-toggle"
+            [attr.aria-expanded]="isDigestOpen(row.key)"
+            (click)="toggleDigest(row.key)"
+          >
+            <span class="digest-summary">{{ followSummary(row) }}</span>
+            @if (row.newCount) {
+              <span class="digest-new" data-digest-new>{{
+                'pages.notifications.digest.sinceLast' | transloco: { count: row.newCount }
+              }}</span>
+            }
+          </button>
+          <p class="muted small digest-people">{{ peopleLine(row.accounts) }}</p>
+          @if (isDigestOpen(row.key)) {
+            <ul class="digest-posts">
+              @for (a of row.accounts; track a.id) {
+                <li>
+                  <a class="who" [routerLink]="accountProfilePath(a)"
+                    ><app-account-name [account]="a"
+                  /></a>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </div>
+    } @else if (row.kind === 'single' && isSafetyNotice(row.notif)) {
       <app-safety-notice [notification]="row.notif" />
     } @else if (row.kind === 'group') {
       <div class="notif notif-group">

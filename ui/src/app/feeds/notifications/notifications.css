@@ -203,3 +203,46 @@
   gap: 8px;
   margin-top: 4px;
 }
+.notif-digest .digest-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+}
+.digest-summary {
+  font-weight: 600;
+}
+.digest-new {
+  font-weight: 600;
+  color: var(--ds-action-text);
+}
+.digest-people {
+  margin: 2px 0 0;
+}
+.digest-posts {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.digest-posts li {
+  display: grid;
+  gap: 2px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+.digest-excerpt {
+  overflow-wrap: anywhere;
+}
+.digest-tally {
+  display: inline-flex;
+  gap: 8px;
+}

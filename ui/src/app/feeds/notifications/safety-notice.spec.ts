@@ -95,6 +95,8 @@ describe('Notifications with safety notices', () => {
     for (const request of httpMock.match((r) => r.url === '/api/v1/accounts/relationships')) {
       request.flush([]);
     }
+    // Opening the inbox reads the notifications marker ("+N since you last looked").
+    httpMock.match((r) => r.url === '/api/v1/markers').forEach((r) => r.flush({}));
     httpMock.verify();
   });
 

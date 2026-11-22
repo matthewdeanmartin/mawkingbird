@@ -1,5 +1,13 @@
 # Sprint 6 opening consolidation audit
 
+## Notification digest, 2026-11-22
+
+Reviewed the inventory delta (new: the pure `feeds/notifications/notification-digest.ts`
+and the `InboxSeen` service). `notifications.html` gains two summary rows
+(all likes and boosts; new followers), each a native disclosure button with
+`aria-expanded` that lists posts or people. Remaining entries are line
+shifts. Candidate membership and dispositions are unchanged.
+
 ## Search scroll and language group label, 2026-11-22
 
 Reviewed the inventory delta: line shifts in `search.html` only. No control

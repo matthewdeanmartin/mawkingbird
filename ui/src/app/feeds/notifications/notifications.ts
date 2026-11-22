@@ -45,6 +45,14 @@ import { adaptRelationship } from '../../connections/bluesky/bluesky-adapter';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { isSafetyNotice, SafetyNotice } from './safety-notice';
 import { ReadMarkers } from '../home/read-markers';
+import { InboxSeen } from './inbox-seen';
+import { stripHtml } from '../../../lib/sentiment';
+import {
+  digestNotifications,
+  DigestRow,
+  EngagementDigest,
+  FollowDigest,
+} from './notification-digest';
 
 type NotifAudience = 'all' | 'friends' | 'followers' | 'mutuals' | 'not-following';
 type NotificationView = 'notifications' | 'new-accounts';
@@ -60,6 +68,17 @@ export interface NewAccountCandidate {
 }
 
 /** English source strings; see scripts/extract-i18n.mjs. */
+// i18n pages.notifications.digest.likes.one: {{count}} like
+// i18n pages.notifications.digest.likes.other: {{count}} likes
+// i18n pages.notifications.digest.boosts.one: {{count}} boost
+// i18n pages.notifications.digest.boosts.other: {{count}} boosts
+// i18n pages.notifications.digest.onPosts.one: on {{count}} post
+// i18n pages.notifications.digest.onPosts.other: on {{count}} posts
+// i18n pages.notifications.digest.followers.one: {{count}} new follower
+// i18n pages.notifications.digest.followers.other: {{count}} new followers
+// i18n pages.notifications.digest.sinceLast: +{{count}} since you last looked
+// i18n pages.notifications.digest.andMore: {{names}} and {{count}} more
+// i18n pages.notifications.digest.mediaPost: (a post with media)
 // i18n pages.notifications.hide: Hide notification
 // i18n pages.notifications.hideFailed: Could not hide the notification. Try again.
 // i18n pages.notifications.sourceAriaLabel: Notification source
@@ -536,8 +555,107 @@ export class Notifications implements OnInit, OnDestroy {
     });
   });
 
-  /** The filtered list with same-status pile-ups collapsed into group rows. */
-  protected rows = computed(() => groupNotifications(this.visible()));
+  /**
+   * What the list renders. With no type filter, the digest: all likes and
+   * boosts in one row, new followers in another. With a type filter, the
+   * per-post grouping, so "only likes" still reads post by post.
+   */
+  protected rows = computed<(NotifRow | DigestRow)[]>(() =>
+    this.typeFilter() === 'all'
+      ? digestNotifications(this.visible(), this.isNewNotification)
+      : groupNotifications(this.visible()),
+  );
+
+  // --- Digest: every "number goes up" notification in one row (owner, 2026-11-22) ---
+
+  private readonly inboxSeen = inject(InboxSeen);
+  /** When the inbox was last read (ms), or null until known / on a first visit. */
+  private inboxSince = signal<number | null>(null);
+  /** Digest rows the reader expanded, by key. */
+  private digestOpen = signal<ReadonlySet<string>>(new Set());
+
+  /** Arrived after the inbox was last read. */
+  private isNewNotification = (n: MastodonNotification): boolean => {
+    const since = this.inboxSince();
+    return since !== null && Date.parse(n.created_at) > since;
+  };
+
+  protected isDigestOpen(key: string): boolean {
+    return this.digestOpen().has(key);
+  }
+
+  protected toggleDigest(key: string): void {
+    this.digestOpen.update((set) => {
+      const next = new Set(set);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }
+
+  private countWord(count: number, one: string, other: string): string {
+    return this.transloco.translate<string>(count === 1 ? one : other, { count });
+  }
+
+  /** "12 likes · 4 boosts", leaving out a zero. */
+  protected tallyText(likes: number, boosts: number): string {
+    const parts: string[] = [];
+    if (likes) {
+      parts.push(
+        this.countWord(
+          likes,
+          'pages.notifications.digest.likes.one',
+          'pages.notifications.digest.likes.other',
+        ),
+      );
+    }
+    if (boosts) {
+      parts.push(
+        this.countWord(
+          boosts,
+          'pages.notifications.digest.boosts.one',
+          'pages.notifications.digest.boosts.other',
+        ),
+      );
+    }
+    return parts.join(' · ');
+  }
+
+  /** "38 likes · 9 boosts on 6 posts". */
+  protected engagementSummary(row: EngagementDigest): string {
+    return `${this.tallyText(row.likes, row.boosts)} ${this.countWord(
+      row.posts.length,
+      'pages.notifications.digest.onPosts.one',
+      'pages.notifications.digest.onPosts.other',
+    )}`;
+  }
+
+  protected followSummary(row: FollowDigest): string {
+    return this.countWord(
+      row.accounts.length,
+      'pages.notifications.digest.followers.one',
+      'pages.notifications.digest.followers.other',
+    );
+  }
+
+  /** "Ana, Budi and 10 more". */
+  protected peopleLine(people: readonly Account[]): string {
+    const names = people.slice(0, 3).map((a) => a.display_name || a.username);
+    const rest = people.length - names.length;
+    return rest > 0
+      ? this.transloco.translate<string>('pages.notifications.digest.andMore', {
+          names: names.join(', '),
+          count: rest,
+        })
+      : names.join(', ');
+  }
+
+  /** The post as one short line of plain text. */
+  protected excerptText(status: Status): string {
+    const text = stripHtml(status.content ?? '');
+    if (!text) return this.transloco.translate<string>('pages.notifications.digest.mediaPost');
+    return text.length > 120 ? `${text.slice(0, 117)}…` : text;
+  }
 
   /** Notification actors the viewer has not followed, deduped to one profile row each. */
   protected newAccounts = computed(() =>
@@ -646,6 +764,8 @@ export class Notifications implements OnInit, OnDestroy {
       mastodonConfigured: this.mastodonAvailable(),
       blueskyConfigured: this.bskySession.linked(),
     });
+    // Read "when was the inbox last read" before this visit's first page moves it.
+    void this.inboxSeen.previousVisit().then((since) => this.inboxSince.set(since));
     this.load();
   }
 

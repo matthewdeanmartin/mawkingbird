@@ -352,6 +352,13 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
 
   // ---- private: discloses something about the person ----
   {
+    base: 'mockingbird_inbox_seen_v1',
+    storage: 'local',
+    suffix: 'account',
+    sensitivity: 'private',
+    note: 'When this account last opened the notifications inbox on this device (ISO time), for the digest "+N since you last looked" where the server keeps no notifications marker. Discloses when the person uses the app.',
+  },
+  {
     base: 'mockingbird_report_gate_v1',
     storage: 'local',
     suffix: 'none',
