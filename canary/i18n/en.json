@@ -3001,7 +3001,7 @@
     "reason.noPosts": "no posts",
     "reason.noneVisible": "none of their posts are visible from your server",
     "reason.nothingFound": "{{count}} posts looked at",
-    "reason.ownWords": "{{pct}}% is in their own words",
+    "reason.ownVsBoosts": "{{own}}% own posts, {{boosts}}% boosts",
     "reason.postedDays": "last posted {{days}} days ago",
     "reason.postsNotChecked": "posts not checked yet",
     "reason.repeats": "{{pct}}% of posts repeat each other",
