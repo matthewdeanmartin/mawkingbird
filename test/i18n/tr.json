@@ -3940,7 +3940,6 @@
     "connections.corsProxy.title": "🔀 CORS proxy",
     "connections.corsProxy.unknownFailure": "Sınama bilinmeyen bir nedenle başarısız oldu.",
     "connections.corsProxy.unreachable": "Proxy'ye hiç ulaşılamadı. Kapalı olabilir, bu kaynağı engelliyor olabilir veya URL yanlış olabilir.",
-    "connections.doctor.back": "‹ Tüm bağlantılar",
     "connections.doctor.category.connector": "Bağlantılar",
     "connections.doctor.category.control": "Denetim",
     "connections.doctor.category.core": "Sunucunuz",

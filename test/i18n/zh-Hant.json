@@ -406,7 +406,6 @@
     "connections.corsProxy.title": "🔀 CORS 代理",
     "connections.corsProxy.unknownFailure": "測試因未知原因失敗。",
     "connections.corsProxy.unreachable": "完全無法連線至代理。它可能停止運作、封鎖此來源，或 URL 不正確。",
-    "connections.doctor.back": "‹ 所有連線",
     "connections.doctor.category.connector": "連線",
     "connections.doctor.category.control": "對照",
     "connections.doctor.category.core": "您的伺服器",

@@ -2695,7 +2695,6 @@
     "connections.corsProxy.title": "🔀 Proksi CORS",
     "connections.corsProxy.unknownFailure": "Pengujian gagal karena alasan yang tidak diketahui.",
     "connections.corsProxy.unreachable": "Sama sekali tidak bisa menjangkau proksinya. Mungkin sedang mati, memblokir asal ini, atau URL-nya salah.",
-    "connections.doctor.back": "‹ Semua koneksi",
     "connections.doctor.category.connector": "Koneksi",
     "connections.doctor.category.control": "Kontrol",
     "connections.doctor.category.core": "Servermu",

@@ -3619,7 +3619,6 @@
     "connections.corsProxy.title": "🔀 CORS-Proxy",
     "connections.corsProxy.unknownFailure": "Der Test ist aus unbekanntem Grund fehlgeschlagen.",
     "connections.corsProxy.unreachable": "Der Proxy war überhaupt nicht erreichbar. Er könnte ausgefallen sein, diese Quelle blockieren oder die URL könnte falsch sein.",
-    "connections.doctor.back": "‹ Alle Verbindungen",
     "connections.doctor.category.connector": "Verbindungen",
     "connections.doctor.category.control": "Kontrolle",
     "connections.doctor.category.core": "Dein Server",
