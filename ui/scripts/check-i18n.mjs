@@ -139,6 +139,7 @@ const MIGRATED = [
   'accounts/account-analytics',
   'accounts/interaction-decay-panel',
   'accounts/audience-composition-panel',
+  'accounts/engaged-audience-panel',
   'discovery/find-friends',
   'discovery/explore',
   'discovery/directory',

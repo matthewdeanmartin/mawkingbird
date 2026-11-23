@@ -66,6 +66,7 @@ import { readerRouteId } from '../../reading/read/reader-route-id';
 import { MbHelp } from '../../design-system/help/help';
 import { EffectiveAudienceDialog } from '../effective-audience-dialog/effective-audience-dialog';
 import { InteractionDecayPanel } from '../interaction-decay-panel/interaction-decay-panel';
+import { EngagedAudiencePanel } from '../engaged-audience-panel/engaged-audience-panel';
 import { AudienceCompositionPanel } from '../audience-composition-panel/audience-composition-panel';
 import { hostOf } from '../audience-composition';
 
@@ -299,6 +300,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
     HumanTimePipe,
     EffectiveAudienceDialog,
     InteractionDecayPanel,
+    EngagedAudiencePanel,
     AudienceCompositionPanel,
     TranslocoPipe,
   ],

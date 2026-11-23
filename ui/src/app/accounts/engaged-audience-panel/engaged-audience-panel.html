@@ -1,0 +1,132 @@
+<section class="engaged">
+  <h2>{{ 'engagedAudience.heading' | transloco }}</h2>
+  <p class="muted small">{{ 'engagedAudience.explain' | transloco }}</p>
+
+  @if (scan.running()) {
+    <p class="muted small" role="status">{{ 'engagedAudience.reading' | transloco }}</p>
+  } @else if (engaged(); as e) {
+    <dl mbStatGrid>
+      <div>
+        <dt>{{ 'engagedAudience.tile.people' | transloco }}</dt>
+        <dd>{{ fmt(e.people) }}</dd>
+      </div>
+      <div>
+        <dt>{{ 'engagedAudience.tile.reactions' | transloco }}</dt>
+        <dd>{{ fmt(e.reactions) }}</dd>
+      </div>
+    </dl>
+
+    <h3 class="chart-title muted">
+      {{ 'engagedAudience.best' | transloco }}
+      <mb-help
+        [label]="
+          'engagedAudience.help.about' | transloco: { stat: ('engagedAudience.best' | transloco) }
+        "
+        >{{ 'engagedAudience.help.best' | transloco }}</mb-help
+      >
+    </h3>
+    <ol class="best">
+      @for (text of bestText(); track text) {
+        <li>{{ text }}</li>
+      }
+    </ol>
+    <p class="muted small">{{ 'engagedAudience.timeZone' | transloco: { zone: zone } }}</p>
+
+    @for (
+      g of [
+        { title: 'engagedAudience.grid.people', rows: peopleGrid(), help: true },
+        { title: 'engagedAudience.grid.posts', rows: postsGrid(), help: false },
+      ];
+      track g.title
+    ) {
+      <h3 class="chart-title muted">
+        {{ g.title | transloco }}
+        @if (g.help) {
+          <mb-help
+            [label]="'engagedAudience.help.about' | transloco: { stat: (g.title | transloco) }"
+            >{{ 'engagedAudience.help.grid' | transloco }}</mb-help
+          >
+        }
+      </h3>
+      <div
+        class="week"
+        role="img"
+        [attr.aria-label]="
+          'engagedAudience.grid.aria'
+            | transloco: { title: (g.title | transloco), best: bestText().join('; ') }
+        "
+      >
+        <span class="corner" aria-hidden="true"></span>
+        @for (h of hourTicks; track h) {
+          <span class="hour-label" aria-hidden="true" [style.grid-column]="h + 2 + ' / span 3'">{{
+            hourNames()[h]
+          }}</span>
+        }
+        @for (row of g.rows; track $index; let day = $index) {
+          <span class="day-label" aria-hidden="true" [style.grid-row]="day + 2">{{
+            dayNames()[day]
+          }}</span>
+          @for (cell of row; track cell.key; let hour = $index) {
+            <span
+              class="cell"
+              [attr.data-level]="cell.level"
+              [style.grid-row]="day + 2"
+              [style.grid-column]="hour + 2"
+              [title]="cell.title"
+            ></span>
+          }
+        }
+      </div>
+    }
+
+    <h3 class="chart-title muted">{{ 'engagedAudience.byDay' | transloco }}</h3>
+    <mb-bar-list [label]="'engagedAudience.byDay' | transloco" [items]="byDay()" />
+
+    <div class="langs">
+      <div>
+        <h3 class="chart-title muted">
+          {{ 'engagedAudience.languages.replies' | transloco }}
+          <mb-help
+            [label]="
+              'engagedAudience.help.about'
+                | transloco: { stat: ('engagedAudience.languages.replies' | transloco) }
+            "
+            >{{ 'engagedAudience.help.languages' | transloco }}</mb-help
+          >
+        </h3>
+        @if (replyLanguages().length) {
+          <mb-bar-list
+            [label]="'engagedAudience.languages.replies' | transloco"
+            [items]="replyLanguages()"
+          />
+          <p class="muted small">
+            {{ 'engagedAudience.languages.repliesNote' | transloco: { count: fmt(e.replies) } }}
+          </p>
+        } @else {
+          <p class="muted small">{{ 'engagedAudience.languages.none' | transloco }}</p>
+        }
+      </div>
+      <div>
+        <h3 class="chart-title muted">{{ 'engagedAudience.languages.bios' | transloco }}</h3>
+        @if (bioLanguages().length) {
+          <mb-bar-list
+            [label]="'engagedAudience.languages.bios' | transloco"
+            [items]="bioLanguages()"
+          />
+          <p class="muted small">
+            {{ 'engagedAudience.languages.biosNote' | transloco: { count: fmt(e.bios) } }}
+          </p>
+        } @else {
+          <p class="muted small">{{ 'engagedAudience.languages.none' | transloco }}</p>
+        }
+      </div>
+    </div>
+  } @else if (state()?.phase === 'done' || state()?.phase === 'cancelled') {
+    <p class="muted small">{{ 'engagedAudience.nothing' | transloco }}</p>
+  } @else {
+    <p class="muted small">{{ 'engagedAudience.cta' | transloco }}</p>
+    <button mbButton type="button" variant="outline" (click)="run()">
+      {{ 'engagedAudience.run' | transloco }}
+    </button>
+  }
+</section>

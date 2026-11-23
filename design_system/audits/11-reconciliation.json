@@ -3631,6 +3631,11 @@
       "file": "ui/src/app/accounts/audience-composition-panel/audience-composition-panel.html",
       "disposition": "adopted scope",
       "nextStep": "Built on MbBarList, MbStatGrid and MbHelp; no bespoke controls."
+    },
+    {
+      "file": "ui/src/app/accounts/engaged-audience-panel/engaged-audience-panel.html",
+      "disposition": "adopted scope",
+      "nextStep": "Built on MbButton, MbBarList, MbStatGrid and MbHelp. The weekday-by-hour grid is bespoke CSS grid (no shared heatmap primitive); share one with the analytics lawn heatmap if either is reworked."
     }
   ]
 }

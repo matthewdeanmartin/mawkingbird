@@ -1,5 +1,14 @@
 # Sprint 6 opening consolidation audit
 
+## Engaged audience panel, 2026-11-23
+
+Own-account analytics gains "When your audience is around"
+(`accounts/engaged-audience-panel`) under the decay panel, sharing its
+notification read: stat tiles, busiest times, two weekday-by-hour grids
+(people reacting, your posts), weekday and language `MbBarList`s. Built from
+`MbButton`, `MbBarList`, `MbStatGrid` and `MbHelp`; the grid is bespoke CSS.
+Analytics lines shift; other dispositions unchanged.
+
 ## Interaction decay and audience composition panels, 2026-11-23
 
 The effective-audience section gains a composition block

@@ -865,6 +865,7 @@
     <!-- Opt-in like the audience scan below: reads your own notifications. -->
     @if (isOwnMastodonAccount()) {
       <app-interaction-decay-panel [accountId]="account().id" [posts]="posts()" />
+      <app-engaged-audience-panel [accountId]="account().id" [posts]="posts()" />
     }
 
     <!-- The one expensive thing on this page. Everything above is computed from

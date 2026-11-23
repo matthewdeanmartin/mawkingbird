@@ -20,7 +20,9 @@
       <p class="small error" role="alert">
         {{ 'interactionDecay.failed' | transloco: { error: s.error } }}
       </p>
-    } @else {
+    } @else if (targets().length) {
+      <!-- A read started from the engaged-audience panel with no posts old
+           enough has nothing to say here; the "no posts" note below covers it. -->
       <p class="muted small status-line">
         @switch (s.stop) {
           @case ('reachedOldest') {

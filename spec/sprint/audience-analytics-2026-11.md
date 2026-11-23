@@ -1,7 +1,7 @@
 # Audience analytics (November 2026)
 
-Status: Sprints 1–2 implemented locally 2026-11-23 (uncommitted). The owner
-pushes and tests by hand before Sprint 3.
+Status: Sprints 1–2 pushed 2026-11-23. Sprint 3 implemented locally
+2026-11-23 (uncommitted).
 
 Owner asks: an interaction decay curve ("when has everyone seen it?") and
 follower analytics for creators (best time to post, language split, active vs
@@ -122,6 +122,38 @@ prettier. The owner runs the full gates on GHA.
   with half and 90% rows.
 - `Account.group` added to the model (optional).
 
+### Sprint 3: engaged audience (2026-11-23)
+
+- `accounts/engaged-audience.ts`: `EngagedAccumulator` takes every like,
+  boost and mention the decay scan reads (not just those on target posts).
+  It keeps a set of weekday-hour slots per person, a set of days per person,
+  up to 500 mention texts and one bio per person (up to 2,000). The summary
+  has the distinct people per slot (7×24, local time), the top 3 slots,
+  people per weekday, and the reply and bio language mix
+  (`detectLanguageMix`, min share 2%).
+- `InteractionDecayScan` feeds it and stores `engaged` on the state. With no
+  posts old enough for a decay curve, it now reads the last 30 days
+  (`FALLBACK_WINDOW_MS`) instead of refusing. The decay panel stays quiet in
+  that case.
+- `accounts/engaged-audience-panel/`, under the decay panel, on own analytics
+  only. A run from either panel fills both. It shows People who interact,
+  Reactions read, Busiest times (in the viewer's time zone, named), a
+  "People reacting" weekday-by-hour grid beside "Your posts in the same
+  period" (the posting-hour bias, made visible), people by weekday, and reply
+  and bio languages, with the bio caveat. Weekday, hour and language names
+  come from `Intl` in the active UI language. The grid uses one hue
+  (validated blue) in 4 steps.
+- Native: not changed. The archive has engagers by month but no per-event
+  times, so a native notification-time archive would be needed to go past the
+  server's notification retention. That is listed below.
+
+Checks run (lightweight): `make test-changed` (14 affected spec files, 132
+tests pass), `check:i18n`, eslint on the touched files, prettier,
+`design:inventory-check` (ledger entry plus consolidation note),
+`check:dead-code`, and `build:mockingbird`, which succeeds with the same 4
+NG8102 and NG8107 warnings in existing files. **Not run:** the full gates,
+native, and a real-account check.
+
 ### Sprint 2: audience composition (2026-11-23)
 
 - `accounts/audience-composition.ts` (pure, merged per page) and
@@ -141,3 +173,40 @@ prettier, `design:inventory-check` (two new ledger entries plus a
 consolidation note), and `build:mockingbird`, which succeeds. Its 4 NG8102
 and NG8107 template warnings are in existing files. **Not run:** the full
 gates, native, and a real-account check.
+
+## Proposed next: creator analytics (2026-11-23, not yet agreed)
+
+Ideas for people who post for a living (podcasters, YouTubers, journalists,
+artists). Ranked by value against cost. Each is limited to what Mastodon
+exposes.
+
+1. **Discovery rate.** The share of reactions from people who _don't_ follow
+   you, per post and per hashtag. Engager ids (notifications) against the
+   follower id set (audience scan). Free once both have run.
+2. **Follows after a post.** `follow` notifications are timed, so new
+   followers can be attributed to the post they followed after (within 24 h).
+   One more notification type in the same read.
+3. **Amplifiers.** Top boosters by audience (booster-lookup), returning
+   boosters, and the boosts that reached a new server.
+4. **What works, by format.** Median engagement and decay for image, video,
+   audio, link, thread, poll and text posts, and for links to your own
+   domains (YouTube, podcast host, site). Free from the sample.
+5. **Launch report.** For one post (an episode, video or article): its decay
+   against your typical curve, reach, amplifiers, discovery rate and follows
+   gained.
+6. **Clicks.** Tracked links (Plus) are the only real click-through number.
+   Clicks per post, per platform, and clicks against likes.
+7. **Audience interests.** Keywords and link hosts from engagers' bios and
+   profile fields (Patreon, Ko-fi, YouTube, newsrooms, "illustrator").
+8. **Evergreen posts.** Old posts still collecting interactions, from
+   notifications on posts outside the recent sample. They are candidates to
+   share again.
+9. **Media-kit card.** An exportable summary for sponsors and editors:
+   followers, effective followers, engaged people, median reach, top
+   servers, languages and best times.
+10. **Native notification archive.** Store timed notifications so decay,
+    best times and discovery rate cover months, not just the server's
+    retention.
+11. **Journalists: pickup.** Quote notifications (Mastodon 4.5) and mentions
+    from large or institutional accounts, plus `/api/v1/trends/links` on major
+    servers to see whether a story is trending.

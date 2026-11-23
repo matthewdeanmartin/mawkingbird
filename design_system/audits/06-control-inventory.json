@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2150,
-  "filesWithCandidates": 726,
+  "filesScanned": 2154,
+  "filesWithCandidates": 727,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -173,11 +173,11 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 989
+          "line": 990
         },
         {
           "pattern": "nativeButtons",
-          "line": 996
+          "line": 997
         },
         {
           "pattern": "legacyPills",
@@ -185,11 +185,11 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 989
+          "line": 990
         },
         {
           "pattern": "legacyPills",
-          "line": 996
+          "line": 997
         }
       ]
     },
@@ -936,6 +936,32 @@
       ]
     },
     {
+      "file": "ui/src/app/accounts/engaged-audience-panel/engaged-audience-panel.html",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 21
+        },
+        {
+          "pattern": "shared",
+          "line": 45
+        },
+        {
+          "pattern": "shared",
+          "line": 89
+        },
+        {
+          "pattern": "shared",
+          "line": 128
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 128
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/accounts/first-run/first-run-modal.html",
       "status": "needs semantic review",
       "findings": [
@@ -1001,19 +1027,19 @@
         },
         {
           "pattern": "shared",
-          "line": 77
+          "line": 79
         },
         {
           "pattern": "shared",
-          "line": 98
+          "line": 100
         },
         {
           "pattern": "shared",
-          "line": 118
+          "line": 120
         },
         {
           "pattern": "shared",
-          "line": 331
+          "line": 333
         },
         {
           "pattern": "nativeButtons",
@@ -1021,7 +1047,7 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 330
+          "line": 332
         }
       ]
     },

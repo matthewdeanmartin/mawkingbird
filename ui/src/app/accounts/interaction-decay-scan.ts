@@ -10,6 +10,7 @@ import {
   classifyNotification,
   computeDecay,
 } from './interaction-decay';
+import { EngagedAccumulator, EngagedSummary } from './engaged-audience';
 
 /** Mastodon caps notification pages at 80. */
 export const DECAY_PAGE_SIZE = 80;
@@ -22,6 +23,13 @@ export const DECAY_PAGE_SIZE = 80;
  * oldest post.
  */
 export const DECAY_MAX_PAGES = 60;
+
+/**
+ * How far back to read when there are no posts old enough for a decay curve.
+ * The engaged-audience figures still want a window, and 30 days matches the
+ * rest of the analytics page.
+ */
+export const FALLBACK_WINDOW_MS = 30 * 86_400_000;
 
 /** Why the walk stopped. */
 export type DecayStop = 'reachedOldest' | 'serverEnd' | 'pageCap' | 'cancelled';
@@ -44,6 +52,8 @@ export interface DecayScanState {
   result?: DecayResult;
   /** Target posts left out because the notifications read don't reach them. */
   excluded?: number;
+  /** When people who interact are around and what they write in. */
+  engaged?: EngagedSummary;
   error?: string;
 }
 
@@ -74,6 +84,8 @@ export function coveredPosts(
  * the oldest target post, and builds the decay curves from them.
  *
  * A root service, like {@link AudienceScan}, so a run survives leaving the tab.
+ * The same pages also feed {@link EngagedAccumulator}, so one read answers both
+ * "when are my posts done?" and "when is my audience around?".
  * Only the interactions on target posts are kept; the notifications themselves
  * are dropped page by page. Stopping keeps what was read: a curve built from
  * the newer posts is still a curve, and the panel says the run stopped early.
@@ -91,14 +103,21 @@ export class InteractionDecayScan {
     this.cancelRequested = true;
   }
 
+  /**
+   * Run a read. With no target posts, the walk still runs over the last
+   * {@link FALLBACK_WINDOW_MS} for the engaged-audience figures.
+   */
   async start(accountId: string, posts: DecayPost[]): Promise<void> {
-    if (this.running() || !posts.length) {
+    if (this.running()) {
       return;
     }
     this.cancelRequested = false;
-    const oldestPost = Math.min(...posts.map((p) => p.createdAt));
+    const oldestPost = posts.length
+      ? Math.min(...posts.map((p) => p.createdAt))
+      : Date.now() - FALLBACK_WINDOW_MS;
     const postIds = new Set(posts.map((p) => p.id));
     const events: DecayEvent[] = [];
+    const engaged = new EngagedAccumulator();
     this.state.set({
       phase: 'scanning',
       accountId,
@@ -129,6 +148,7 @@ export class InteractionDecayScan {
           if (event) {
             events.push(event);
           }
+          engaged.add(notification);
           const at = Date.parse(notification.created_at);
           if (!Number.isNaN(at)) {
             oldest = oldest === null ? at : Math.min(oldest, at);
@@ -165,6 +185,7 @@ export class InteractionDecayScan {
         stop,
         result,
         excluded: posts.length - covered.length,
+        engaged: engaged.summary(),
       }));
     } catch (error) {
       this.patch((s) => ({ ...s, phase: 'failed', error: describeError(error) }));

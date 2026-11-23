@@ -73,6 +73,16 @@ describe('InteractionDecayScan', () => {
     expect(s.result?.posts).toBe(1);
   });
 
+  it('with no posts old enough, still reads a window for the engaged audience', async () => {
+    notifications.mockReturnValueOnce(of(likes('x', Date.now() - DAY, 4)));
+    await scan.start('me', []);
+    const s = scan.state()!;
+    expect(s.phase).toBe('done');
+    expect(s.result?.posts).toBe(0);
+    expect(s.engaged?.reactions).toBe(4);
+    expect(s.engaged?.people).toBe(1);
+  });
+
   it('respects the page cap', async () => {
     notifications.mockImplementation(() => of(likes('p1', T0 + 30 * DAY, DECAY_PAGE_SIZE)));
     await scan.start('me', posts);
