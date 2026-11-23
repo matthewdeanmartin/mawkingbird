@@ -2,6 +2,7 @@ import { Component, input, output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { provideRouter } from '@angular/router';
 import { Subject } from 'rxjs';
 import { PartyConversation } from './party-conversation';
 import { WatchPartyPrefs } from '../videos/watch-party-prefs';
@@ -51,8 +52,12 @@ describe('Temporary party conversations', () => {
   let api: { tagTimeline: ReturnType<typeof vi.fn>; postStatus: ReturnType<typeof vi.fn> };
   let posted: Subject<Status>;
   const native = signal(false);
+  const kind = signal<string | null>('mastodon');
+  const exitAnonymous = vi.fn();
   beforeEach(() => {
     native.set(false);
+    kind.set('mastodon');
+    exitAnonymous.mockClear();
     localStorage.clear();
     posted = new Subject<Status>();
     feeds = new Map();
@@ -69,7 +74,17 @@ describe('Temporary party conversations', () => {
       imports: [PartyConversation],
       providers: [
         { provide: Api, useValue: api },
-        { provide: Auth, useValue: { kind: signal('mastodon'), isAnonymous: false } },
+        provideRouter([{ path: '**', children: [] }]),
+        {
+          provide: Auth,
+          useValue: {
+            kind,
+            get isAnonymous() {
+              return kind() === 'anonymous';
+            },
+            exitAnonymous,
+          },
+        },
         {
           provide: Streaming,
           useValue: {
@@ -110,6 +125,24 @@ describe('Temporary party conversations', () => {
       fixture.componentInstance as unknown as { mixed(): { status: Status; context: string }[] }
     ).mixed();
   }
+  it('offers a sign-in that comes back here when the reader cannot chat', () => {
+    const link = () =>
+      fixture.nativeElement.querySelector('a[href^="/login/mastodon"]') as HTMLAnchorElement | null;
+    expect(link()).toBeNull();
+    kind.set('anonymous');
+    fixture.componentRef.setInput('signInNext', '/watch?post=1&youtube=abc');
+    fixture.detectChanges();
+    const query = new URL(link()!.href).searchParams;
+    expect(link()!.textContent).toContain('Sign in with Mastodon');
+    expect(query.get('next')).toBe('/watch?post=1&youtube=abc');
+    expect(query.has('add')).toBe(false);
+    link()!.click();
+    expect(exitAnonymous).toHaveBeenCalled();
+    // Someone on another network adds an account instead of being sent Home.
+    kind.set('bluesky');
+    fixture.detectChanges();
+    expect(new URL(link()!.href).searchParams.get('add')).toBe('1');
+  });
   it('mixes tags with replies once, without making subscription writes', () => {
     fixture.componentRef.setInput('comments', [post('1')]);
     fixture.componentInstance.addTag('#Anime2000');

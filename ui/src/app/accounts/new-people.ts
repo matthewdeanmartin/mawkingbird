@@ -59,8 +59,10 @@ export interface Behavior {
   rhythm: PostingRhythm | null;
   /** A daily stretch of 5+ hours with no posts; null with too little to tell. */
   quietStretch: boolean | null;
-  /** Own posts that are more than a link, as a percentage of everything read. */
-  ownWordsPct: number;
+  /** Own posts as a percentage of everything read; the rest are boosts. */
+  ownPct: number;
+  /** Own posts that are mostly a link, as a percentage of own posts. */
+  linkOnlyPct: number;
   /** Own posts that repeat each other almost word for word, percentage. */
   repeatedPct: number;
   /** The site most of their own posts link to, when it is half or more. */
@@ -163,7 +165,8 @@ export function behaviorOf(statuses: Status[], now: number = Date.now()): Behavi
     repliesReceived,
     rhythm: postingRhythm(own),
     quietStretch: times.length >= 15 && span >= 5 * DAY ? longestQuiet(times) >= 5 : null,
-    ownWordsPct: pct(own.filter((s) => !isLinkOnly(s)).length, statuses.length),
+    ownPct: pct(own.length, statuses.length),
+    linkOnlyPct: pct(own.filter(isLinkOnly).length, own.length),
     repeatedPct: pct(repeated, own.length),
     mainLink: mainLink && mainLink[1] >= 5 && mainLink[1] * 2 >= own.length ? mainLink[0] : null,
     mentionsPeople: named.size >= 5 && naming * 10 >= own.length * 3 ? named.size : 0,
@@ -241,7 +244,9 @@ function human(e: Evidence): Verdicts['human'] {
     else if (b.rhythm?.verdict === 'human') reasons.push({ key: 'irregular' });
     if (b.quietStretch) reasons.push({ key: 'sleeps' });
     else if (b.quietStretch === false) reasons.push({ key: 'neverSleeps' });
-    if (b.own >= MIN_OWN_POSTS) reasons.push({ key: 'ownWords', params: { pct: b.ownWordsPct } });
+    if (b.sample >= MIN_OWN_POSTS) {
+      reasons.push({ key: 'ownVsBoosts', params: { own: b.ownPct, boosts: 100 - b.ownPct } });
+    }
   }
   const site = (e.account.fields ?? []).some((f) => f.verified_at);
   if (site) reasons.push({ key: 'verifiedSite' });
@@ -311,7 +316,7 @@ function spam(e: Evidence, now: number): Verdicts['spam'] {
       (f) => f.verified_at && b.mainLink && f.value.toLowerCase().includes(b.mainLink),
     );
     // Linking to your own proven site is normal; so is linking with a comment.
-    if (b.mainLink && !verified && b.ownWordsPct < 50) {
+    if (b.mainLink && !verified && b.linkOnlyPct > 50) {
       warnings.push({ key: 'sameLink', params: { host: b.mainLink } });
     }
     if (b.mentionsPeople) {

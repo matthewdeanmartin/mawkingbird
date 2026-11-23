@@ -2,9 +2,11 @@ import { FOCUSED_APPS } from '../../shell/mode-nav';
 
 /**
  * App pages that pick up after sign-in besides the mini-apps: Unbird keeps the
- * reader's archive on the device, so signing up mid-way returns to it.
+ * reader's archive on the device, so signing up mid-way returns to it. Watch
+ * offers sign-in to chat, and its query only names a public post and a video.
  */
 const RETURN_PAGES: readonly string[] = [
+  '/watch',
   '/unbird',
   '/unbird/people',
   '/unbird/posts',

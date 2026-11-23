@@ -17,6 +17,8 @@ describe('loginDestination', () => {
     expect(loginDestination('/unbird')).toBe('/unbird');
     expect(loginDestination('/unbird/archive')).toBe('/unbird/archive');
     expect(loginDestination('/unbird/elsewhere')).toBe('/home');
+    expect(loginDestination('/watch?post=1&youtube=abc')).toBe('/watch?post=1&youtube=abc');
+    expect(loginDestination('/watch/elsewhere')).toBe('/home');
   });
 
   it('carries a destination across a redirect exactly once', () => {

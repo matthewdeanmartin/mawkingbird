@@ -1,5 +1,10 @@
 # Sprint 6 opening consolidation audit
 
+## Watch chat sign-in, 2026-11-23
+
+Watch's "Sign in with Mastodon to chat here" text becomes a shared button link
+to the login page. Line shifts otherwise; dispositions unchanged.
+
 ## New people to meet, 2026-11-23
 
 Your own Followers tab opens with an opt-in "New people to meet" panel

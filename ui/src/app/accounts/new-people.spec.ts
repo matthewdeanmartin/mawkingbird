@@ -108,6 +108,27 @@ describe('behaviorOf', () => {
     expect(behaviorOf(talker(), NOW).repeatedPct).toBe(0);
   });
 
+  it('splits own posts from boosts, and judges links on own posts alone', () => {
+    const boost = () => post(DAY, { reblog: { id: 'b' } as Status });
+    const b = behaviorOf([...talker(), ...Array.from({ length: 14 }, boost)], NOW);
+    expect(b.ownPct).toBe(30);
+    expect(b.linkOnlyPct).toBe(0);
+    const shown = judge(evidence({ behavior: b }), NOW).human.reasons;
+    expect(shown).toContainEqual({ key: 'ownVsBoosts', params: { own: 30, boosts: 70 } });
+  });
+
+  it('does not warn a frequent booster who comments on the links they post', () => {
+    const commented = Array.from({ length: 6 }, (_, i) =>
+      post(i * DAY, {
+        content: `<p>My long thoughts on why the piece number ${'abcdef'[i].repeat(6)} matters so much https://news.example/${i}</p>`,
+      }),
+    );
+    const boosts = Array.from({ length: 30 }, () => post(DAY, { reblog: { id: 'b' } as Status }));
+    const behavior = behaviorOf([...commented, ...boosts], NOW);
+    expect(behavior.mainLink).toBe('news.example');
+    expect(judge(evidence({ behavior }), NOW).spam.verdict).toBe('clear');
+  });
+
   it('names a main link only when it is a habit', () => {
     const linky = Array.from({ length: 6 }, (_, i) =>
       post(i * DAY, { content: `<p>https://www.shop.example/${i}</p>` }),

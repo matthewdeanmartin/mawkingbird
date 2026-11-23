@@ -63,7 +63,7 @@ import { CHECK_STEP, NewPeopleScan, PAGE } from '../new-people-scan';
 // i18n newPeople.reason.irregular: posts at irregular times
 // i18n newPeople.reason.sleeps: has a daily quiet stretch
 // i18n newPeople.reason.neverSleeps: posts around the clock
-// i18n newPeople.reason.ownWords: {{pct}}% is in their own words
+// i18n newPeople.reason.ownVsBoosts: {{own}}% own posts, {{boosts}}% boosts
 // i18n newPeople.reason.verifiedSite: has a verified website
 // i18n newPeople.reason.littleToGoOn: little to go on in the posts seen
 // i18n newPeople.reason.postsNotChecked: posts not checked yet

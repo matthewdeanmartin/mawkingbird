@@ -9,7 +9,11 @@ import { Watch } from './watch';
 import { PartyConversation } from './party-conversation';
 import { WatchPartyPrefs } from '../videos/watch-party-prefs';
 import { ThreadLoader } from '../read/thread-loader';
-import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
+import {
+  anonymousStatusRouteRef,
+  parseAnonymousStatusRouteRef,
+} from '../../accounts/anonymous/anonymous-route-ref';
+import { loginDestination } from '../../platform/session/login-destination';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { Status } from '../../platform/api/models';
 import { Auth } from '../../platform/session/auth';
@@ -42,6 +46,7 @@ class PartyStub {
   readonly comments = input<Status[]>([]);
   readonly session = input('');
   readonly initialTags = input<readonly string[]>([]);
+  readonly signInNext = input('');
   readonly canReply = input(false);
   readonly youtubeVideoId = input<string | null>(null);
   readonly quoted = output<YoutubeComment>();
@@ -345,6 +350,64 @@ describe('Watch post access and reveal gates', () => {
     expect(loader.load).toHaveBeenCalledWith(
       anonymousStatusRouteRef({ server: 'https://mstdn.social', id: '117583797572986016' }),
     );
+  });
+
+  it('comes back from sign-in to the same post, by its public address', () => {
+    const anonymous = {
+      kind: signal('anonymous'),
+      token: signal(null),
+      account: signal(null),
+      isAnonymous: true,
+    };
+    TestBed.overrideProvider(Auth, { useValue: anonymous });
+    params.next(
+      convertToParamMap({
+        post: '117668053158363850',
+        youtube: 'B_im-2M2l8Q',
+        server: 'https://mastodon.social',
+      }),
+    );
+    mount();
+    // Both ways it can have loaded: from another server, or from Anonymous's own.
+    loader.isAnonymousPublic.set(false);
+    const url = 'https://mastodon.social/@someone/117668053158363850';
+    loader.status.set({ ...status(), url } as Status);
+    const next = (fixture.componentInstance as unknown as { signInNext(): string }).signInNext();
+    // Allowed as a return page, and unchanged by the check.
+    expect(loginDestination(next)).toBe(next);
+    const back = new URLSearchParams(next.split('?')[1]);
+    expect(next.split('?')[0]).toBe('/watch');
+    expect(back.get('youtube')).toBe('B_im-2M2l8Q');
+    expect(back.get('server')).toBeNull();
+    expect(parseAnonymousStatusRouteRef(back.get('post')!)).toEqual({
+      server: 'https://mastodon.social',
+      id: '117668053158363850',
+      originalUrl: url,
+    });
+  });
+
+  it('opens that address for an account on another server', () => {
+    const post = anonymousStatusRouteRef({
+      server: 'https://mastodon.social',
+      id: '9',
+      originalUrl: 'https://mastodon.social/@someone/9',
+    });
+    params.next(convertToParamMap({ post, youtube: 'B_im-2M2l8Q' }));
+    mount();
+    expect(loader.load).toHaveBeenCalledWith(post);
+  });
+
+  it("finds a looked-up post's only video, whose id differs here, but never guesses", () => {
+    const post = anonymousStatusRouteRef({ server: 'https://mastodon.social', id: '9' });
+    params.next(convertToParamMap({ post, attachment: 'theirs' }));
+    mount();
+    loader.status.set(status());
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).not.toBeNull();
+    const [video] = status().media_attachments;
+    loader.status.set({ ...status(), media_attachments: [video, { ...video, id: 'v2' }] });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).toBeNull();
   });
 
   it('opens a shared Bluesky video in Anonymous without changing its global post id', () => {

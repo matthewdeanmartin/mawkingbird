@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 import { Api } from '../../platform/api/api';
@@ -122,6 +123,7 @@ function hue(value: string): number {
   imports: [
     FormsModule,
     NgTemplateOutlet,
+    RouterLink,
     TranslocoPipe,
     StatusCard,
     MbButton,
@@ -148,6 +150,8 @@ export class PartyConversation implements OnDestroy {
    * the reader did not type them.
    */
   readonly initialTags = input<readonly string[]>([]);
+  /** Where signing in to chat comes back to: this video, as a path with its query. */
+  readonly signInNext = input('/home');
   /** Whether the chat box may reply to {@link root} (a post on the signed-in server). */
   readonly canReply = input(false);
   /** The YouTube video being watched, for the read-only YouTube comments mode (Native). */
@@ -309,6 +313,17 @@ export class PartyConversation implements OnDestroy {
   protected chatTag = computed(() => (this.showsTags() ? (this.tags()[0] ?? null) : null));
   protected chatReplies = computed(() => this.showsReplies() && this.canReply() && !!this.root());
   protected canPost = computed(() => this.auth.kind() === 'mastodon' && !this.auth.isAnonymous);
+
+  /** `add` keeps the login page open for someone signed in to another network. */
+  protected signInParams = computed(() => ({
+    next: this.signInNext(),
+    ...(this.auth.kind() === 'anonymous' ? {} : { add: 1 }),
+  }));
+
+  /** The login page sends a live anonymous session straight on, so leave it first. */
+  protected leaveAnonymous(): void {
+    this.auth.exitAnonymous();
+  }
 
   constructor() {
     effect(() => {

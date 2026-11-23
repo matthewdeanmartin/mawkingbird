@@ -207,7 +207,18 @@
   </ng-template>
 
   @if (!canPost()) {
-    <p class="party-note muted">{{ 'watch.party.signInToChat' | transloco }}</p>
+    <!-- Watch hides the shell, so this is the only way to sign in from here. -->
+    <p class="party-note">
+      <a
+        mbButton
+        variant="outline"
+        size="small"
+        routerLink="/login/mastodon"
+        [queryParams]="signInParams()"
+        (click)="leaveAnonymous()"
+        >{{ 'watch.party.signInToChat' | transloco }}</a
+      >
+    </p>
   } @else if (!chatTag() && !chatReplies()) {
     <p class="party-note muted">{{ 'watch.party.needTarget' | transloco }}</p>
   } @else {

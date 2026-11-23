@@ -103,6 +103,7 @@
           [comments]="loader.descendants()"
           [session]="partySession()"
           [initialTags]="partyTags()"
+          [signInNext]="signInNext()"
           [canReply]="canReply()"
           [youtubeVideoId]="youtubeVideoId()"
           (quoted)="onQuoted($event)"
@@ -115,6 +116,7 @@
         <app-party-conversation
           [session]="partySession()"
           [initialTags]="partyTags()"
+          [signInNext]="signInNext()"
           [youtubeVideoId]="youtubeVideoId()"
           (quoted)="onQuoted($event)"
         />

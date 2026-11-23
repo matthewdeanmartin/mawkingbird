@@ -160,7 +160,9 @@ export class Watch {
       );
     if (!status) return null;
     if (params['attachment']) {
-      const media = status.media_attachments.find((item) => item.id === params['attachment']);
+      const media =
+        status.media_attachments.find((item) => item.id === params['attachment']) ??
+        this.onlyVideoOfForeignPost(status, params['post']);
       return media ? attachmentSource(media) : null;
     }
     const video = statusVideo(status);
@@ -275,6 +277,40 @@ export class Watch {
       /^[A-Za-z0-9_-]+$/.test(status.id)
     );
   });
+
+  /**
+   * Where signing in from here comes back to.
+   *
+   * A shared link names the post by the sharer's server-local id, which another
+   * account's server can't read. The post's public address is already known by
+   * now, so the way back carries that and the reader's own server looks it up.
+   */
+  protected readonly signInNext = computed(() => {
+    const params = { ...this.params() };
+    const status = this.loader.status();
+    const id = params['post'] ?? '';
+    if (this.auth.kind() !== 'mastodon' && status?.url && /^\d+$/.test(id) && params['server']) {
+      params['post'] = anonymousStatusRouteRef({
+        server: params['server'],
+        id,
+        originalUrl: status.url,
+      });
+      delete params['server'];
+    }
+    const query = new URLSearchParams(params).toString();
+    return query ? `/watch?${query}` : '/watch';
+  });
+
+  /**
+   * The video of a post looked up through another server: the copy there has
+   * its own attachment ids, so the link's id can't match. Only when there is
+   * exactly one video, so the wrong one is never played.
+   */
+  private onlyVideoOfForeignPost(status: Status, post: string | undefined) {
+    if (!parseAnonymousStatusRouteRef(post ?? '')) return undefined;
+    const videos = status.media_attachments.filter((item) => item.type === 'video');
+    return videos.length === 1 ? videos[0] : undefined;
+  }
 
   /** `?tags=a,b`: hashtags a party opened from the finder starts with. */
   protected readonly partyTags = computed(() =>
