@@ -2969,7 +2969,6 @@
     "shareElsewhereEllipsis": "Anderswo teilen …",
     "shareThisArticle": "Diesen Artikel teilen",
     "showAnyway": "Trotzdem anzeigen",
-    "showHeldImages": "Langsame Verbindung: Bilder zurückgehalten. Anzeigen",
     "showLess": "Weniger anzeigen",
     "showMore": "Mehr anzeigen",
     "showSensitiveContent": "Sensiblen Inhalt anzeigen",
@@ -5190,7 +5189,6 @@
     "proxyConsent.whoHeading": "Wem du dabei vertraust"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Observability",
     "colChars": "Zeichen",
     "colDatabase": "Datenbank",
     "colKey": "Schlüssel",
@@ -6474,7 +6472,6 @@
     "write.view": "In deinem Blog ansehen"
   },
   "connection": {
-    "backToObservability": "Beobachtbarkeit",
     "blame.server": "Andere Seiten antworten, also liegt das Problem wohl an deinem Server und nicht an deiner Verbindung.",
     "card.details": "Verbindungsdetails →",
     "card.hour": "Letzte Stunde: {{requests}} Anfragen, {{failed}} ohne Antwort",

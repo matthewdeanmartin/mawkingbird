@@ -6482,7 +6482,6 @@
     "shareElsewhereEllipsis": "分享到其他地方…",
     "shareThisArticle": "分享此文章",
     "showAnyway": "仍要显示",
-    "showHeldImages": "连接缓慢：已暂缓显示图片。显示图片",
     "showLess": "显示较少",
     "showMore": "显示更多",
     "showSensitiveContent": "显示敏感内容",
@@ -6510,7 +6509,6 @@
     "yourServer": "你的服务器"
   },
   "storageDiagnostics": {
-    "backToObservability": "← 可观测性",
     "colChars": "字符",
     "colDatabase": "数据库",
     "colKey": "键",
@@ -6647,7 +6645,6 @@
     "step.when": "现在，还是稍后？"
   },
   "connection": {
-    "backToObservability": "可观测性",
     "blame.server": "其他网站有回复，所以问题看来出在你的服务器，而不是你的连接。",
     "card.details": "连接详细数据 →",
     "card.hour": "最近一小时：{{requests}} 个请求，{{failed}} 个没有回复",
