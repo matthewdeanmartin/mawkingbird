@@ -5592,7 +5592,6 @@
     "shareElsewhereEllipsis": "Bagikan ke tempat lain…",
     "shareThisArticle": "Bagikan artikel ini",
     "showAnyway": "Tetap tampilkan",
-    "showHeldImages": "Koneksi lambat: gambar ditahan. Tampilkan",
     "showLess": "Tampilkan lebih sedikit",
     "showMore": "Tampilkan lebih banyak",
     "showSensitiveContent": "Tampilkan konten sensitif",
@@ -5620,7 +5619,6 @@
     "yourServer": "Servermu"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Observabilitas",
     "colChars": "Karakter",
     "colDatabase": "Basis data",
     "colKey": "Kunci",
@@ -6315,7 +6313,6 @@
     "party.tags": "Tagar pesta"
   },
   "connection": {
-    "backToObservability": "Observabilitas",
     "blame.server": "Situs lain menjawab, jadi masalahnya tampaknya di servermu, bukan koneksimu.",
     "card.details": "Detail koneksi →",
     "card.hour": "Satu jam terakhir: {{requests}} permintaan, {{failed}} tanpa jawaban",

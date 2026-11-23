@@ -5762,7 +5762,6 @@
     "shareElsewhereEllipsis": "Elders delen…",
     "shareThisArticle": "Dit artikel delen",
     "showAnyway": "Toch weergeven",
-    "showHeldImages": "Trage verbinding: afbeeldingen tegengehouden. Toon ze",
     "showLess": "Minder weergeven",
     "showMore": "Meer weergeven",
     "showSensitiveContent": "Gevoelige inhoud weergeven",
@@ -5790,7 +5789,6 @@
     "yourServer": "Jouw server"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Observatie",
     "colChars": "Tekens",
     "colDatabase": "Database",
     "colKey": "Sleutel",
@@ -6315,7 +6313,6 @@
     "party.tags": "Hashtags van het kijkfeest"
   },
   "connection": {
-    "backToObservability": "Observability",
     "blame.server": "Andere sites antwoorden, dus het probleem lijkt bij je server te liggen en niet bij je verbinding.",
     "card.details": "Verbindingsdetails →",
     "card.hour": "Afgelopen uur: {{requests}} verzoeken, {{failed}} zonder antwoord",

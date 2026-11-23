@@ -5246,7 +5246,6 @@
     "shareElsewhereEllipsis": "別の場所で共有…",
     "shareThisArticle": "この記事を共有",
     "showAnyway": "そのまま表示",
-    "showHeldImages": "接続が低速のため画像を保留しています。表示する",
     "showLess": "折りたたむ",
     "showMore": "さらに表示",
     "showSensitiveContent": "センシティブな内容を表示",
@@ -5274,7 +5273,6 @@
     "yourServer": "自分のサーバー"
   },
   "storageDiagnostics": {
-    "backToObservability": "← 可観測性",
     "colChars": "文字数",
     "colDatabase": "データベース",
     "colKey": "キー",
@@ -6466,7 +6464,6 @@
     "write.view": "自分のブログで見る"
   },
   "connection": {
-    "backToObservability": "オブザーバビリティ",
     "blame.server": "ほかのサイトは応答しているので、接続ではなくサーバー側の問題のようです。",
     "card.details": "接続の詳細 →",
     "card.hour": "直近1時間: リクエスト{{requests}}件、応答なし{{failed}}件",

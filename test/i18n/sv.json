@@ -5762,7 +5762,6 @@
     "shareElsewhereEllipsis": "Dela någon annanstans…",
     "shareThisArticle": "Dela artikeln",
     "showAnyway": "Visa ändå",
-    "showHeldImages": "Långsam anslutning: bilder tillbakahållna. Visa dem",
     "showLess": "Visa mindre",
     "showMore": "Visa mer",
     "showSensitiveContent": "Visa känsligt innehåll",
@@ -5790,7 +5789,6 @@
     "yourServer": "Din server"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Observerbarhet",
     "colChars": "Tecken",
     "colDatabase": "Databas",
     "colKey": "Nyckel",
@@ -6315,7 +6313,6 @@
     "party.tags": "Festens hashtaggar"
   },
   "connection": {
-    "backToObservability": "Observerbarhet",
     "blame.server": "Andra webbplatser svarar, så problemet verkar ligga hos din server snarare än din anslutning.",
     "card.details": "Anslutningsdetaljer →",
     "card.hour": "Senaste timmen: {{requests}} förfrågningar, {{failed}} utan svar",

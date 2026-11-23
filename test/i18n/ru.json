@@ -5762,7 +5762,6 @@
     "shareElsewhereEllipsis": "Поделиться в другом месте…",
     "shareThisArticle": "Поделиться этой статьёй",
     "showAnyway": "Всё равно показать",
-    "showHeldImages": "Медленное соединение: картинки придержаны. Показать",
     "showLess": "Показать меньше",
     "showMore": "Показать больше",
     "showSensitiveContent": "Показать чувствительное содержимое",
@@ -5790,7 +5789,6 @@
     "yourServer": "Ваш сервер"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Наблюдаемость",
     "colChars": "Символы",
     "colDatabase": "База данных",
     "colKey": "Ключ",
@@ -6315,7 +6313,6 @@
     "party.tags": "Хештеги вечеринки"
   },
   "connection": {
-    "backToObservability": "Наблюдаемость",
     "blame.server": "Другие сайты отвечают, так что проблема, похоже, в твоём сервере, а не в соединении.",
     "card.details": "Подробнее о соединении →",
     "card.hour": "За последний час: запросов {{requests}}, без ответа {{failed}}",

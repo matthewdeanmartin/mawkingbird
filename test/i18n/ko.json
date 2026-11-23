@@ -6150,7 +6150,6 @@
     "shareElsewhereEllipsis": "다른 곳에 공유…",
     "shareThisArticle": "이 글 공유",
     "showAnyway": "그래도 표시",
-    "showHeldImages": "연결이 느려 사진을 보류했습니다. 보기",
     "showLess": "간단히 보기",
     "showMore": "더 보기",
     "showSensitiveContent": "민감한 콘텐츠 표시",
@@ -6178,7 +6177,6 @@
     "yourServer": "내 서버"
   },
   "storageDiagnostics": {
-    "backToObservability": "← 관측성",
     "colChars": "문자 수",
     "colDatabase": "데이터베이스",
     "colKey": "키",
@@ -6315,7 +6313,6 @@
     "step.when": "지금, 아니면 나중에?"
   },
   "connection": {
-    "backToObservability": "관측",
     "blame.server": "다른 사이트는 응답하고 있으므로 연결이 아니라 서버 문제로 보입니다.",
     "card.details": "연결 세부 정보 →",
     "card.hour": "최근 1시간: 요청 {{requests}}건, 응답 없음 {{failed}}건",

@@ -5762,7 +5762,6 @@
     "shareElsewhereEllipsis": "Поділитися деінде…",
     "shareThisArticle": "Поділитися цією статтею",
     "showAnyway": "Показати попри це",
-    "showHeldImages": "Повільне з’єднання: зображення притримано. Показати",
     "showLess": "Показати менше",
     "showMore": "Показати більше",
     "showSensitiveContent": "Показати делікатний вміст",
@@ -5790,7 +5789,6 @@
     "yourServer": "Ваш сервер"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Спостережуваність",
     "colChars": "Символи",
     "colDatabase": "База даних",
     "colKey": "Ключ",
@@ -6315,7 +6313,6 @@
     "party.tags": "Хештеги вечірки"
   },
   "connection": {
-    "backToObservability": "Спостережуваність",
     "blame.server": "Інші сайти відповідають, тож проблема, схоже, у вашому сервері, а не в з’єднанні.",
     "card.details": "Докладніше про з’єднання →",
     "card.hour": "Остання година: запитів {{requests}}, без відповіді {{failed}}",
