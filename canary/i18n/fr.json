@@ -3064,7 +3064,6 @@
     "connections.corsProxy.title": "🔀 Proxy CORS",
     "connections.corsProxy.unknownFailure": "Le test a échoué pour une raison inconnue.",
     "connections.corsProxy.unreachable": "Impossible de joindre le proxy. Il est peut-être hors service, il bloque cette origine, ou l’URL est peut-être incorrecte.",
-    "connections.doctor.back": "‹ Toutes les connexions",
     "connections.doctor.category.connector": "Connexions",
     "connections.doctor.category.control": "Contrôle",
     "connections.doctor.category.core": "Ton serveur",

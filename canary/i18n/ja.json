@@ -3469,7 +3469,6 @@
     "connections.corsProxy.title": "🔀 CORSプロキシ",
     "connections.corsProxy.unknownFailure": "原因不明でテストに失敗しました。",
     "connections.corsProxy.unreachable": "プロキシにまったく接続できませんでした。停止中、オリジンをブロック中、またはURLが間違っている可能性があります。",
-    "connections.doctor.back": "‹ すべての接続",
     "connections.doctor.category.connector": "接続",
     "connections.doctor.category.control": "コントロール",
     "connections.doctor.category.core": "あなたのサーバー",

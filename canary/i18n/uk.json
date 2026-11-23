@@ -3940,7 +3940,6 @@
     "connections.corsProxy.title": "🔀 Проксі CORS",
     "connections.corsProxy.unknownFailure": "Перевірка не вдалася з невідомої причини.",
     "connections.corsProxy.unreachable": "Не вдалося зв’язатися з проксі. Можливо, він не працює, блокує це джерело або URL-адреса неправильна.",
-    "connections.doctor.back": "‹ Усі підключення",
     "connections.doctor.category.connector": "Підключення",
     "connections.doctor.category.control": "Контрольна перевірка",
     "connections.doctor.category.core": "Ваш сервер",
