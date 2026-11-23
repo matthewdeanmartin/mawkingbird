@@ -3621,6 +3621,16 @@
       "file": "ui/src/app/language/language-select/language-select.ts",
       "disposition": "backlog",
       "nextStep": "Shared short language list: a native select with option groups (yours / app languages) and an \"All languages…\" entry that opens the language finder Dialog. Move to Field/Control when shared selects land; preserve that the full catalogue is never rendered in the select."
+    },
+    {
+      "file": "ui/src/app/accounts/interaction-decay-panel/interaction-decay-panel.html",
+      "disposition": "adopted scope",
+      "nextStep": "Built on MbButton, MbProgress, MbStatGrid and MbHelp. The SVG decay chart is bespoke (no shared line-chart primitive yet); revisit if one is added."
+    },
+    {
+      "file": "ui/src/app/accounts/audience-composition-panel/audience-composition-panel.html",
+      "disposition": "adopted scope",
+      "nextStep": "Built on MbBarList, MbStatGrid and MbHelp; no bespoke controls."
     }
   ]
 }

@@ -72,6 +72,8 @@ export interface Account {
    */
   created_at?: string;
   bot: boolean;
+  /** A group actor (Mastodon `group`; Friendica/Lemmy groups federate as these). */
+  group?: boolean;
   locked: boolean;
   discoverable?: boolean | null;
   indexable?: boolean | null;

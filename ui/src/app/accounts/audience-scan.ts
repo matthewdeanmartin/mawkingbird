@@ -12,6 +12,14 @@ import {
   tallyAudience,
 } from './effective-audience';
 import { Account } from '../platform/api/models';
+import {
+  AudienceOverlap,
+  CompositionTally,
+  audienceOverlap,
+  emptyComposition,
+  mergeComposition,
+  tallyComposition,
+} from './audience-composition';
 
 /**
  * Walks an account's follower and following lists to work out how much of the
@@ -84,6 +92,15 @@ export interface AudienceScanState {
   sides: AudienceSide[];
   progress: Record<AudienceSide, SideProgress | null>;
   results: Partial<Record<AudienceSide, AudienceEstimate>>;
+  /** Who the accounts read are: servers, sizes, ages, cadence. Per side. */
+  composition: Partial<Record<AudienceSide, CompositionTally>>;
+  /**
+   * Mutuals and one-way follows. Set only when both lists were read in full:
+   * an intersection of two partial lists undercounts mutuals.
+   */
+  overlap: AudienceOverlap | null;
+  /** The account the scan measured, so another account's page can ignore it. */
+  accountId: string;
   error?: string;
 }
 
@@ -169,7 +186,11 @@ export class AudienceScan {
       sides: request.sides,
       progress: { followers: null, following: null },
       results: {},
+      composition: {},
+      overlap: null,
+      accountId: request.accountId,
     });
+    const ids: Partial<Record<AudienceSide, Set<string>>> = {};
 
     try {
       for (const side of request.sides) {
@@ -179,14 +200,22 @@ export class AudienceScan {
           break;
         }
         const total = side === 'followers' ? request.followersTotal : request.followingTotal;
-        const tally = await this.walk(side, request, total);
+        const { tally, composition, seen } = await this.walk(side, request, total);
+        const estimate = estimateAudience(tally, total);
+        if (estimate.complete && !this.cancelRequested) {
+          ids[side] = seen;
+        }
         this.patch((state) => ({
           ...state,
-          results: { ...state.results, [side]: estimateAudience(tally, total) },
+          results: { ...state.results, [side]: estimate },
+          composition: { ...state.composition, [side]: composition },
         }));
       }
+      const overlap =
+        ids.followers && ids.following ? audienceOverlap(ids.followers, ids.following) : null;
       this.patch((state) => ({
         ...state,
+        overlap,
         phase: this.cancelRequested ? 'cancelled' : 'done',
       }));
     } catch (error) {
@@ -199,7 +228,8 @@ export class AudienceScan {
    *
    * Accounts are scored per-page and discarded rather than accumulated: a
    * 16,000-account list would otherwise sit in memory for the whole scan to
-   * produce five integers. `now` is pinned once per side so a scan that takes
+   * produce five integers. Only the ids are kept (the dedupe set), which is
+   * what the mutuals count needs. `now` is pinned once per side so a scan that takes
    * three minutes doesn't judge its last page against a different "today" than
    * its first.
    */
@@ -207,9 +237,10 @@ export class AudienceScan {
     side: AudienceSide,
     request: AudienceScanRequest,
     total: number,
-  ): Promise<AudienceTally> {
+  ): Promise<{ tally: AudienceTally; composition: CompositionTally; seen: Set<string> }> {
     const now = Date.now();
     let tally: AudienceTally = { scanned: 0, active: 0, dormant: 0, lowCadence: 0, zombies: 0 };
+    let composition = emptyComposition();
     let maxId: string | undefined;
     /**
      * Ids already counted.
@@ -234,6 +265,7 @@ export class AudienceScan {
         seen.add(account.id);
       }
       tally = mergeTally(tally, tallyAudience(fresh, now));
+      composition = mergeComposition(composition, tallyComposition(fresh, now));
       this.bumpProgress(side, fresh.length);
 
       // Nothing new on a full page means the cursor is not advancing; stop
@@ -251,7 +283,7 @@ export class AudienceScan {
     }
 
     this.setProgressPatch(side, { done: true });
-    return tally;
+    return { tally, composition, seen };
   }
 
   /**

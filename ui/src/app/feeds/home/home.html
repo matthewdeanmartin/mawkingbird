@@ -482,12 +482,12 @@
         ) | transloco
       }}
     </p>
-  } @else if (!visible().length && failedFeedSources().length) {
+  } @else if (!visible().length && feedEndFailedSources().length) {
     <div class="feed-window-end">
       <p class="muted small">
         {{
           'pages.home.feedEnd.failedSources'
-            | transloco: { sources: failedFeedSources().join(', ') }
+            | transloco: { sources: feedEndFailedSources().join(', ') }
         }}
       </p>
       <button class="btn btn-outline more" type="button" (click)="refreshHome()">
@@ -625,12 +625,12 @@
           </button>
         }
       </div>
-    } @else if (failedFeedSources().length) {
+    } @else if (feedEndFailedSources().length) {
       <div class="feed-window-end">
         <p class="muted small">
           {{
             'pages.home.feedEnd.failedSources'
-              | transloco: { sources: failedFeedSources().join(', ') }
+              | transloco: { sources: feedEndFailedSources().join(', ') }
           }}
         </p>
         <button class="btn btn-outline more" type="button" (click)="refreshHome()">
@@ -736,14 +736,23 @@
   }
 
   @if (blueskyFeedFailed()) {
-    <aside class="muted feed-warning" role="alert">
-      <p>{{ 'pages.home.warnings.blueskyError' | transloco }}</p>
+    <aside class="muted feed-warning" role="alert" data-bluesky-warning>
+      <p>
+        {{
+          (blueskySignInRequired()
+            ? 'pages.home.warnings.blueskySignedOut'
+            : 'pages.home.warnings.blueskyError'
+          ) | transloco
+        }}
+      </p>
       @for (detail of blueskyFeedErrors(); track $index) {
         <p>{{ detail }}</p>
       }
-      <button type="button" class="btn btn-outline" [disabled]="loading()" (click)="load(true)">
-        {{ 'pages.home.warnings.blueskyError.retry' | transloco }}
-      </button>
+      @if (!blueskySignInRequired()) {
+        <button type="button" class="btn btn-outline" [disabled]="loading()" (click)="load(true)">
+          {{ 'pages.home.warnings.blueskyError.retry' | transloco }}
+        </button>
+      }
       @if (auth.isBlueskyPrimary) {
         <button
           type="button"

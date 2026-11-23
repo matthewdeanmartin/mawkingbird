@@ -56,7 +56,14 @@
     <p class="bsky-handle">&#64;{{ svc.handle }}</p>
     <p class="muted server-line">
       {{ svc.host }} &middot;
-      {{ (svc.entryway ? 'shell.rail.entryway' : 'shell.rail.selfHosted') | transloco }}
+      {{
+        (svc.hosting === 'entryway'
+          ? 'shell.rail.entryway'
+          : svc.hosting === 'bluesky'
+            ? 'shell.rail.blueskyHosted'
+            : 'shell.rail.selfHosted'
+        ) | transloco
+      }}
     </p>
   </section>
 }

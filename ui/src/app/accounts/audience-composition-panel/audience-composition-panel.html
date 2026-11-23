@@ -1,0 +1,111 @@
+@for (v of sides(); track v.side) {
+  <div class="side">
+    <h3 class="chart-title muted">{{ 'audienceComposition.heading.' + v.side | transloco }}</h3>
+    @if (v.estimate && !v.estimate.complete) {
+      <p class="muted small">
+        {{
+          'audienceComposition.sample'
+            | transloco: { scanned: fmt(v.estimate.scanned), total: fmt(v.estimate.total) }
+        }}
+      </p>
+    }
+
+    <div class="grid">
+      <div class="block">
+        <h4>
+          {{ 'audienceComposition.servers' | transloco }}
+          <mb-help
+            [label]="
+              'audienceComposition.help.about'
+                | transloco: { stat: ('audienceComposition.servers' | transloco) }
+            "
+            >{{ 'audienceComposition.help.servers' | transloco }}</mb-help
+          >
+        </h4>
+        <p class="muted small">{{ v.serversSummary }}</p>
+        <mb-bar-list [label]="'audienceComposition.servers' | transloco" [items]="v.servers" />
+      </div>
+
+      <div class="block">
+        <h4>
+          {{ 'audienceComposition.size' | transloco }}
+          <mb-help
+            [label]="
+              'audienceComposition.help.about'
+                | transloco: { stat: ('audienceComposition.size' | transloco) }
+            "
+            >{{ 'audienceComposition.help.size' | transloco }}</mb-help
+          >
+        </h4>
+        <mb-bar-list [label]="'audienceComposition.size' | transloco" [items]="v.size" />
+        <p class="muted small">
+          {{
+            'audienceComposition.botsGroups'
+              | transloco: { bots: fmt(v.tally.bots), groups: fmt(v.tally.groups) }
+          }}
+        </p>
+      </div>
+
+      <div class="block">
+        <h4>
+          {{ 'audienceComposition.age' | transloco }}
+          <mb-help
+            [label]="
+              'audienceComposition.help.about'
+                | transloco: { stat: ('audienceComposition.age' | transloco) }
+            "
+            >{{ 'audienceComposition.help.age' | transloco }}</mb-help
+          >
+        </h4>
+        <mb-bar-list [label]="'audienceComposition.age' | transloco" [items]="v.age" />
+      </div>
+
+      <div class="block">
+        <h4>
+          {{ 'audienceComposition.cadence' | transloco }}
+          <mb-help
+            [label]="
+              'audienceComposition.help.about'
+                | transloco: { stat: ('audienceComposition.cadence' | transloco) }
+            "
+            >{{ 'audienceComposition.help.cadence' | transloco }}</mb-help
+          >
+        </h4>
+        <mb-bar-list [label]="'audienceComposition.cadence' | transloco" [items]="v.cadence" />
+      </div>
+    </div>
+  </div>
+}
+
+@if (bothSides()) {
+  <div class="side">
+    <h3 class="chart-title muted">
+      {{ 'audienceComposition.heading.overlap' | transloco }}
+      <mb-help
+        [label]="
+          'audienceComposition.help.about'
+            | transloco: { stat: ('audienceComposition.heading.overlap' | transloco) }
+        "
+        >{{ 'audienceComposition.help.overlap' | transloco }}</mb-help
+      >
+    </h3>
+    @if (overlap(); as o) {
+      <dl mbStatGrid>
+        <div>
+          <dt>{{ 'audienceComposition.mutuals' | transloco }}</dt>
+          <dd>{{ fmt(o.mutuals) }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'audienceComposition.notFollowedBack' | transloco }}</dt>
+          <dd>{{ fmt(o.notFollowedBack) }}</dd>
+        </div>
+        <div>
+          <dt>{{ 'audienceComposition.notFollowingBack' | transloco }}</dt>
+          <dd>{{ fmt(o.notFollowingBack) }}</dd>
+        </div>
+      </dl>
+    } @else {
+      <p class="muted small">{{ 'audienceComposition.overlapNeedsBoth' | transloco }}</p>
+    }
+  </div>
+}

@@ -12,7 +12,7 @@ import { SearchServer } from '../../platform/http/search-server';
 import { MastodonConnector } from '../../connections/mastodon/mastodon-connector';
 import { seedBskyIdentity } from '../../testing/seed-storage';
 import { JustMyServer } from '../../feeds/just-my-server';
-import { RightRail } from './right-rail';
+import { blueskyHosting, RightRail } from './right-rail';
 
 interface RightRailInternals {
   homeHost: () => string | null;
@@ -490,5 +490,15 @@ describe('RightRail', () => {
         (fixture.nativeElement as HTMLElement).querySelector('.server-mode-card'),
       ).not.toBeNull();
     });
+  });
+});
+
+describe('blueskyHosting', () => {
+  it('knows Bluesky-run servers from self-hosted ones', () => {
+    expect(blueskyHosting('bsky.social')).toBe('entryway');
+    expect(blueskyHosting('shiitake.us-east.host.bsky.network')).toBe('bluesky');
+    expect(blueskyHosting('Morel.US-West.Host.Bsky.Network')).toBe('bluesky');
+    expect(blueskyHosting('pds.example.com')).toBe('self');
+    expect(blueskyHosting('notbsky.network.example')).toBe('self');
   });
 });

@@ -1,5 +1,23 @@
 # Sprint 6 opening consolidation audit
 
+## Interaction decay and audience composition panels, 2026-11-23
+
+The effective-audience section gains a composition block
+(`accounts/audience-composition-panel`: servers, account size, age, cadence
+and mutuals) built from `MbBarList`, `MbStatGrid` and `MbHelp`.
+Own-account analytics gains an opt-in "When are your posts done?" panel
+(`accounts/interaction-decay-panel`) built from `MbButton`, `MbProgress`,
+`MbStatGrid` and `MbHelp`, plus a bespoke SVG line chart with a legend, end
+labels, a hover crosshair and a table view. Analytics lines shift; other
+dispositions unchanged.
+
+## Bluesky sign-out messaging and hosting label, 2026-11-22
+
+Home's Bluesky warning hides its retry button when the cause is a sign-out
+(sign in again is the only fix) and the feed-end retry no longer repeats it.
+The right rail labels Bluesky-run PDS hosts "hosted by Bluesky". Line shifts
+otherwise; dispositions unchanged.
+
 ## Back on Network Doctor, viewer and share tidy-ups, 2026-11-22
 
 Network Doctor opens with the shared `app-reading-back` control. The compact

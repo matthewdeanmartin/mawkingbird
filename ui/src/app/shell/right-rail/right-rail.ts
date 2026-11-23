@@ -33,6 +33,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n shell.rail.hideAd: Hide this until you reload
 // i18n shell.rail.entryway: entryway
 // i18n shell.rail.selfHosted: self-hosted
+// i18n shell.rail.blueskyHosted: hosted by Bluesky
 // i18n shell.rail.yourBluesky: Your Bluesky
 // i18n shell.rail.trendingBluesky: Trending on Bluesky
 // i18n shell.rail.fediverse: Fediverse
@@ -143,7 +144,7 @@ export class RightRail implements OnInit {
     return {
       handle: session.handle,
       host,
-      entryway: host === 'bsky.social',
+      hosting: blueskyHosting(host),
     };
   });
 
@@ -301,4 +302,16 @@ export class RightRail implements OnInit {
       },
     });
   }
+}
+
+/**
+ * Who runs a Bluesky account's PDS. Bluesky's own accounts mostly live on its
+ * "mushroom" servers (`shiitake.us-east.host.bsky.network`), not on
+ * `bsky.social`, which is the entryway; only another domain is self-hosted.
+ */
+export function blueskyHosting(host: string): 'entryway' | 'bluesky' | 'self' {
+  const h = host.toLowerCase();
+  if (h === 'bsky.social') return 'entryway';
+  if (h === 'bsky.network' || h.endsWith('.bsky.network')) return 'bluesky';
+  return 'self';
 }

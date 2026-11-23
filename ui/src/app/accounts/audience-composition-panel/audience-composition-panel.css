@@ -1,0 +1,45 @@
+:host {
+  display: block;
+}
+
+.side {
+  margin: 6px 0 14px;
+}
+
+.chart-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 14px 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px 20px;
+}
+
+.block {
+  min-width: 0;
+}
+
+h4 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.block p {
+  margin: 2px 0 6px;
+}

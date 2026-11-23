@@ -1,0 +1,343 @@
+<section class="decay">
+  <h2>{{ 'interactionDecay.heading' | transloco }}</h2>
+  <p class="muted small">{{ 'interactionDecay.explain' | transloco }}</p>
+
+  @if (state(); as s) {
+    @if (s.phase === 'scanning') {
+      <mb-progress
+        [label]="'interactionDecay.progressLabel' | transloco"
+        [caption]="
+          'interactionDecay.progressCaption'
+            | transloco: { pages: fmt(s.pages), matched: fmt(s.matched) }
+        "
+        [value]="progress().value"
+        [max]="progress().max"
+      />
+      <button mbButton type="button" variant="outline" size="small" (click)="stop()">
+        {{ 'interactionDecay.stop' | transloco }}
+      </button>
+    } @else if (s.phase === 'failed') {
+      <p class="small error" role="alert">
+        {{ 'interactionDecay.failed' | transloco: { error: s.error } }}
+      </p>
+    } @else {
+      <p class="muted small status-line">
+        @switch (s.stop) {
+          @case ('reachedOldest') {
+            {{ 'interactionDecay.stop.reachedOldest' | transloco: { posts: s.result?.posts } }}
+          }
+          @case ('serverEnd') {
+            {{
+              'interactionDecay.stop.serverEnd'
+                | transloco: { date: (reachedBackIso() | humanTime) }
+            }}
+          }
+          @case ('pageCap') {
+            {{ 'interactionDecay.stop.pageCap' | transloco: { pages: fmt(s.pages) } }}
+          }
+          @case ('cancelled') {
+            {{ 'interactionDecay.stop.cancelled' | transloco }}
+          }
+        }
+        @if (s.excluded) {
+          {{ 'interactionDecay.excluded' | transloco: { count: s.excluded } }}
+        }
+      </p>
+
+      @if (result(); as r) {
+        @if (seriesOf('all'); as all) {
+          @if (duration(all.t50); as half) {
+            @if (duration(all.t90); as most) {
+              <p class="headline">
+                {{
+                  'interactionDecay.headline'
+                    | transloco
+                      : {
+                          half:
+                            ('interactionDecay.unit.' + half.unit
+                            | transloco: { value: half.value }),
+                          most:
+                            ('interactionDecay.unit.' + most.unit
+                            | transloco: { value: most.value }),
+                        }
+                }}
+              </p>
+            }
+          }
+        }
+
+        <dl mbStatGrid>
+          @for (kind of series; track kind) {
+            @if (seriesOf(kind); as ser) {
+              @if (duration(ser.t90); as most) {
+                <div>
+                  <dt>
+                    {{ 'interactionDecay.series.' + kind | transloco }} ·
+                    {{ 'interactionDecay.tile.most' | transloco }}
+                    <mb-help
+                      [label]="
+                        'interactionDecay.help.about'
+                          | transloco: { stat: ('interactionDecay.tile.most' | transloco) }
+                      "
+                      >{{
+                        'interactionDecay.help.most'
+                          | transloco: { kind: ('interactionDecay.series.' + kind | transloco) }
+                      }}</mb-help
+                    >
+                  </dt>
+                  <dd>
+                    {{ 'interactionDecay.unit.' + most.unit | transloco: { value: most.value } }}
+                  </dd>
+                </div>
+              }
+            }
+          }
+          <div>
+            <dt>
+              {{ 'interactionDecay.tile.coverage' | transloco }}
+              <mb-help
+                [label]="
+                  'interactionDecay.help.about'
+                    | transloco: { stat: ('interactionDecay.tile.coverage' | transloco) }
+                "
+                >{{ 'interactionDecay.help.coverage' | transloco }}</mb-help
+              >
+            </dt>
+            <dd>
+              {{ 'interactionDecay.tile.coverageValue' | transloco: { pct: pct(r.coverage) } }}
+              <small class="muted">{{
+                'interactionDecay.tile.coverageSub'
+                  | transloco: { seen: fmt(r.events), counted: fmt(r.counters) }
+              }}</small>
+            </dd>
+          </div>
+        </dl>
+
+        <h3 class="chart-title muted">
+          {{ 'interactionDecay.chartTitle' | transloco }}
+          <mb-help
+            [label]="
+              'interactionDecay.help.about'
+                | transloco: { stat: ('interactionDecay.chartTitle' | transloco) }
+            "
+            >{{ 'interactionDecay.help.chart' | transloco }}</mb-help
+          >
+        </h3>
+
+        <ul class="legend">
+          @for (kind of series; track kind) {
+            <li>
+              <span class="swatch" [attr.data-kind]="kind" aria-hidden="true"></span>
+              {{ 'interactionDecay.series.' + kind | transloco }}
+            </li>
+          }
+        </ul>
+
+        <div class="chart-wrap" (mouseleave)="hover.set(null)">
+          <svg
+            class="chart"
+            [attr.viewBox]="'0 0 ' + W + ' ' + H"
+            role="img"
+            [attr.aria-label]="'interactionDecay.chartAria' | transloco"
+          >
+            @for (g of gridLines; track g) {
+              <line
+                class="grid"
+                [attr.x1]="pad.left"
+                [attr.x2]="pad.left + plotW"
+                [attr.y1]="y(g)"
+                [attr.y2]="y(g)"
+              />
+              <text class="axis" [attr.x]="pad.left - 6" [attr.y]="y(g) + 4" text-anchor="end">
+                {{ 'interactionDecay.pct' | transloco: { pct: g * 100 } }}
+              </text>
+            }
+            @for (m of checkpoints; track m; let i = $index) {
+              @if (checkpointLabel(m); as c) {
+                <text class="axis" [attr.x]="x(i)" [attr.y]="H - 8" text-anchor="middle">
+                  {{ 'interactionDecay.unit.' + c.unit | transloco: { value: c.value } }}
+                </text>
+              }
+            }
+            @if (hover() !== null) {
+              <line
+                class="crosshair"
+                [attr.x1]="x(hover()!)"
+                [attr.x2]="x(hover()!)"
+                [attr.y1]="pad.top"
+                [attr.y2]="pad.top + plotH"
+              />
+            }
+            @for (line of lines(); track line.kind) {
+              <path class="line" [attr.data-kind]="line.kind" [attr.d]="line.d" />
+              @if (hover() !== null) {
+                @let p = seriesOf(line.kind)?.points?.[hover()!] ?? null;
+                @if (p !== null) {
+                  <circle
+                    class="dot"
+                    [attr.data-kind]="line.kind"
+                    [attr.cx]="x(hover()!)"
+                    [attr.cy]="y(p)"
+                    r="4"
+                  />
+                }
+              }
+              @if (line.end) {
+                <text class="end-label" [attr.x]="line.end.x + 8" [attr.y]="line.labelY + 4">
+                  {{ 'interactionDecay.series.' + line.kind | transloco }}
+                </text>
+              }
+            }
+            @for (m of checkpoints; track m; let i = $index) {
+              <rect
+                class="hit"
+                [attr.x]="x(i) - colW / 2"
+                [attr.y]="pad.top"
+                [attr.width]="colW"
+                [attr.height]="plotH"
+                (pointerenter)="hover.set(i)"
+                (pointerdown)="hover.set(i)"
+              />
+            }
+          </svg>
+          @if (hover() !== null) {
+            @if (checkpointLabel(checkpoints[hover()!]); as c) {
+              <div
+                class="tooltip"
+                [class.flip]="hover()! > checkpoints.length / 2"
+                [style.left.%]="(x(hover()!) / W) * 100"
+                aria-hidden="true"
+              >
+                <strong>{{
+                  'interactionDecay.tooltipAfter'
+                    | transloco
+                      : {
+                          time: ('interactionDecay.unit.' + c.unit | transloco: { value: c.value }),
+                        }
+                }}</strong>
+                @for (kind of series; track kind) {
+                  <span class="tip-row">
+                    <span class="swatch" [attr.data-kind]="kind"></span>
+                    {{ 'interactionDecay.series.' + kind | transloco }}
+                    <span class="tip-value">
+                      @let v = pct(seriesOf(kind)?.points?.[hover()!] ?? null);
+                      @if (v !== null) {
+                        {{ 'interactionDecay.pct' | transloco: { pct: v } }}
+                      } @else {
+                        {{ 'interactionDecay.none' | transloco }}
+                      }
+                    </span>
+                  </span>
+                }
+              </div>
+            }
+          }
+        </div>
+
+        <div class="table-scroll">
+          <table class="decay-table">
+            <caption class="muted small">
+              {{
+                'interactionDecay.chartTitle' | transloco
+              }}
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">{{ 'interactionDecay.col.after' | transloco }}</th>
+                @for (kind of series; track kind) {
+                  <th scope="col">{{ 'interactionDecay.series.' + kind | transloco }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (m of checkpoints; track m; let i = $index) {
+                <tr>
+                  @if (checkpointLabel(m); as c) {
+                    <th scope="row">
+                      {{ 'interactionDecay.unit.' + c.unit | transloco: { value: c.value } }}
+                    </th>
+                  }
+                  @for (kind of series; track kind) {
+                    <td>
+                      @let v = pct(seriesOf(kind)?.points?.[i] ?? null);
+                      @if (v !== null) {
+                        {{ 'interactionDecay.pct' | transloco: { pct: v } }}
+                      } @else {
+                        {{ 'interactionDecay.none' | transloco }}
+                      }
+                    </td>
+                  }
+                </tr>
+              }
+              <tr class="summary">
+                <th scope="row">{{ 'interactionDecay.tile.half' | transloco }}</th>
+                @for (kind of series; track kind) {
+                  <td>
+                    @if (duration(seriesOf(kind)?.t50 ?? null); as d) {
+                      {{ 'interactionDecay.unit.' + d.unit | transloco: { value: d.value } }}
+                    } @else {
+                      {{ 'interactionDecay.none' | transloco }}
+                    }
+                  </td>
+                }
+              </tr>
+              <tr class="summary">
+                <th scope="row">{{ 'interactionDecay.tile.most' | transloco }}</th>
+                @for (kind of series; track kind) {
+                  <td>
+                    @if (duration(seriesOf(kind)?.t90 ?? null); as d) {
+                      {{ 'interactionDecay.unit.' + d.unit | transloco: { value: d.value } }}
+                    } @else {
+                      {{ 'interactionDecay.none' | transloco }}
+                    }
+                  </td>
+                }
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="muted small used">
+          @for (kind of series; track kind) {
+            @if (seriesOf(kind); as ser) {
+              <li>
+                {{
+                  'interactionDecay.postsUsed'
+                    | transloco
+                      : {
+                          kind: ('interactionDecay.series.' + kind | transloco),
+                          posts: ser.posts,
+                          events: fmt(ser.events),
+                        }
+                }}
+              </li>
+            }
+          }
+        </ul>
+      } @else {
+        <p class="muted small">{{ 'interactionDecay.nothing' | transloco }}</p>
+      }
+    }
+  }
+
+  @if (!scan.running()) {
+    @if (targets().length) {
+      <p class="muted small">
+        {{
+          'interactionDecay.cost'
+            | transloco: { count: targets().length, pages: maxPages, size: pageSize }
+        }}
+      </p>
+      <button
+        mbButton
+        type="button"
+        variant="outline"
+        [size]="state() ? 'small' : 'regular'"
+        (click)="run()"
+      >
+        {{ (state() ? 'interactionDecay.runAgain' : 'interactionDecay.run') | transloco }}
+      </button>
+    } @else {
+      <p class="muted small">{{ 'interactionDecay.noPosts' | transloco }}</p>
+    }
+  }
+</section>

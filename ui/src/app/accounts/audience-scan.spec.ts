@@ -101,6 +101,40 @@ describe('AudienceScan', () => {
     expect(result?.complete).toBe(true);
   });
 
+  it('tallies composition and counts mutuals once both lists are read in full', async () => {
+    // Followers 0–9, following 5–14: ids 5–9 are mutual.
+    api.accountFollowersPage.mockReturnValueOnce(pageOf(page(0, 10)));
+    api.accountFollowingPage.mockReturnValueOnce(pageOf(page(5, 10)));
+
+    await scan.start({
+      accountId: '1',
+      followersTotal: 10,
+      followingTotal: 10,
+      sides: ['following', 'followers'],
+    });
+
+    const state = scan.state()!;
+    expect(state.accountId).toBe('1');
+    expect(state.composition.followers?.scanned).toBe(10);
+    expect(state.composition.following?.scanned).toBe(10);
+    expect(state.overlap).toEqual({ mutuals: 5, notFollowedBack: 5, notFollowingBack: 5 });
+  });
+
+  it('leaves mutuals unset when a list was only partly read', async () => {
+    api.accountFollowersPage.mockReturnValueOnce(pageOf(page(0, 10)));
+    api.accountFollowingPage.mockReturnValueOnce(pageOf(page(5, 10)));
+
+    await scan.start({
+      accountId: '1',
+      followersTotal: 500,
+      followingTotal: 10,
+      sides: ['following', 'followers'],
+    });
+
+    expect(scan.state()?.composition.followers?.scanned).toBe(10);
+    expect(scan.state()?.overlap).toBeNull();
+  });
+
   it('follows the Link cursor across full pages', async () => {
     api.accountFollowersPage
       .mockReturnValueOnce(pageOf(page(0, 80), 'rel-1'))

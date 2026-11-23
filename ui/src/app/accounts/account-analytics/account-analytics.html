@@ -862,6 +862,11 @@
       </section>
     }
 
+    <!-- Opt-in like the audience scan below: reads your own notifications. -->
+    @if (isOwnMastodonAccount()) {
+      <app-interaction-decay-panel [accountId]="account().id" [posts]="posts()" />
+    }
+
     <!-- The one expensive thing on this page. Everything above is computed from
          the post sample already in memory; this walks the follower and friend
          lists, so it is opt-in behind a dialog that states the cost first. -->
@@ -975,6 +980,12 @@
               </div>
             </div>
           }
+          <app-audience-composition-panel
+            [composition]="results.composition"
+            [results]="{ followers: results.followers, following: results.following }"
+            [overlap]="results.overlap"
+            [homeHost]="homeHost()"
+          />
           <button type="button" class="btn btn-outline btn-sm" (click)="openAudienceDialog()">
             {{ 'accountAnalytics.audience.scanAgain' | transloco }}
           </button>

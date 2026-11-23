@@ -65,6 +65,9 @@ import { saveBlob } from '../../posts/media-download/media-download';
 import { readerRouteId } from '../../reading/read/reader-route-id';
 import { MbHelp } from '../../design-system/help/help';
 import { EffectiveAudienceDialog } from '../effective-audience-dialog/effective-audience-dialog';
+import { InteractionDecayPanel } from '../interaction-decay-panel/interaction-decay-panel';
+import { AudienceCompositionPanel } from '../audience-composition-panel/audience-composition-panel';
+import { hostOf } from '../audience-composition';
 
 /** How many of the account's most recent posts the component analyzes. */
 const SAMPLE_SIZE = 100;
@@ -295,6 +298,8 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
     StatusCard,
     HumanTimePipe,
     EffectiveAudienceDialog,
+    InteractionDecayPanel,
+    AudienceCompositionPanel,
     TranslocoPipe,
   ],
   templateUrl: './account-analytics.html',
@@ -678,6 +683,14 @@ export class AccountAnalytics implements OnInit {
     });
   }
 
+  /**
+   * The signed-in account looking at its own analytics on Mastodon. Only then
+   * are there notifications to time interactions with (see interaction-decay).
+   */
+  protected readonly isOwnMastodonAccount = computed(
+    () => !this.publicRef() && !this.isBluesky() && this.auth.account()?.id === this.account().id,
+  );
+
   // --- Effective audience (opt-in; the only expensive thing on this page) ---
 
   /**
@@ -701,13 +714,19 @@ export class AccountAnalytics implements OnInit {
    */
   protected audienceResults = computed(() => {
     const state = this.audience.state();
-    if (!state) {
+    // The scan service is shared; a scan of someone else must not show here.
+    if (!state || state.accountId !== this.account().id) {
       return null;
     }
     const followers = state.results.followers ?? null;
     const following = state.results.following ?? null;
-    return followers || following ? { followers, following } : null;
+    return followers || following
+      ? { followers, following, composition: state.composition, overlap: state.overlap }
+      : null;
   });
+
+  /** The analyzed account's server, for the composition panel's "on your server". */
+  protected readonly homeHost = computed(() => hostOf(this.account()));
 
   protected openAudienceDialog(): void {
     this.audienceDialogOpen.set(true);

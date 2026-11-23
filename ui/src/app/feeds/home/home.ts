@@ -235,6 +235,7 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.twitterUnloaded.summary.one: {{count}} followed Twitter account has nothing saved yet, so it is not in this feed.
 // i18n pages.home.warnings.blueskyError: Bluesky could not load your feed. Retry the request. If your session has expired or access was revoked, sign in again.
 // i18n pages.home.warnings.blueskyError.link: Check Bluesky connection
+// i18n pages.home.warnings.blueskySignedOut: Bluesky signed this browser out, so your Bluesky posts can't load. Sign in again to bring them back.
 // i18n pages.home.warnings.misskeyError: Misskey could not load this timeline. Retry the request. If access was revoked, sign in again.
 // i18n pages.home.warnings.misskeyError.retry: Retry
 // i18n pages.home.warnings.misskeyError.signIn: Sign in to Misskey again
@@ -387,6 +388,24 @@ export class Home implements OnInit, OnDestroy {
     this.registry
       .linked()
       .some((provider) => provider.id === 'bluesky' && provider.errors().length > 0),
+  );
+  /**
+   * Bluesky failed because the session is gone (signed out, refresh refused).
+   * Retrying cannot help then, so the warning offers signing in again instead
+   * of a "Try again" that quietly fails the same way.
+   */
+  protected blueskySignInRequired = computed(
+    () => this.blueskyFeedFailed() && this.bskyProvider.authenticationFailed(),
+  );
+  /**
+   * Sources for the feed-end "Try again". Bluesky is left out while its own
+   * warning (with the right action) is on screen: two retry buttons for one
+   * failure, neither of which could fix a sign-out, was the old experience.
+   */
+  protected feedEndFailedSources = computed(() =>
+    this.failedFeedSources().filter(
+      (source) => !(source === 'bluesky' && this.blueskyFeedFailed()),
+    ),
   );
   private misskeyProvider = inject(MisskeyProvider);
   /** Home, Social, Local, Global (Following, Local, Global for the visitor). */

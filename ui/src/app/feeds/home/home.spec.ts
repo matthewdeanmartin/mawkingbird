@@ -557,6 +557,34 @@ describe('Home', () => {
     },
   );
 
+  it('offers signing in again, not a Try again that cannot work, when Bluesky signed us out', () => {
+    const fixture = setUp();
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('bluesky');
+    TestBed.inject(BlueskySession).session.set({
+      did: 'did:plc:me',
+      handle: 'me.bsky.social',
+      service: 'https://pds.example',
+      authMethod: 'oauth',
+    });
+    const provider = fixture.debugElement.injector.get(BlueskyProvider);
+    provider.errors.set(['The saved Bluesky session is missing.']);
+    provider.authenticationFailed.set(true);
+    fixture.detectChanges();
+    const warning = fixture.nativeElement.querySelector('[data-bluesky-warning]') as HTMLElement;
+    expect(warning.textContent).toContain('signed this browser out');
+    const labels = [...warning.querySelectorAll('button')].map((b) => b.textContent?.trim());
+    expect(labels).toContain('Sign in to Bluesky again');
+    expect(labels).not.toContain('Retry Bluesky feed');
+
+    // A failure that is not a sign-out still offers a retry.
+    provider.authenticationFailed.set(false);
+    fixture.detectChanges();
+    expect([...warning.querySelectorAll('button')].map((b) => b.textContent?.trim())).toContain(
+      'Retry Bluesky feed',
+    );
+  });
+
   it('prompts once for a missing OAuth session, permits cancel, and reauthenticates the same DID without logout', async () => {
     const fixture = setUp();
     vi.spyOn(TestBed.inject(BlueskyApi), 'getFollows').mockReturnValue(

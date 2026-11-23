@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { BlueskySignInRequiredError } from './bluesky-auth-error';
 import type { BrowserOAuthClient, OAuthSession } from '@atproto/oauth-client-browser';
 import {
@@ -51,6 +52,30 @@ interface ProfileResponse {
 @Injectable({ providedIn: 'root' })
 export class BlueskyOAuth {
   private clientValue: Promise<BrowserOAuthClient> | null = null;
+  private readonly diagnostics = inject(PageDiagnostics);
+
+  /**
+   * The SDK's own account of a session ending or being refreshed, for the
+   * diagnostic timeline. Sign-outs used to leave no trace there, so "why does
+   * Bluesky keep signing me out?" had no answer. The SDK store is per origin
+   * and keyed by DID, while each deployment path (/, /canary/, /test/) is its
+   * own OAuth client; `client` says which path's client saw the event.
+   */
+  private readonly sessionHooks = {
+    onSessionDeleted: (sub: string, cause: unknown) => {
+      this.diagnostics.warn('Bluesky OAuth', 'session:deleted', {
+        account: shortDid(sub),
+        client: clientPath(),
+        cause: describeCause(cause),
+      });
+    },
+    onSessionUpdated: (sub: string) => {
+      this.diagnostics.info('Bluesky OAuth', 'session:refreshed', {
+        account: shortDid(sub),
+        client: clientPath(),
+      });
+    },
+  };
 
   /** Begin an authorization redirect, as an identity or as a connector. */
   async signIn(identifier: string, intent: BlueskyOAuthIntent): Promise<never> {
@@ -99,6 +124,12 @@ export class BlueskyOAuth {
         // Errors sent between tabs can lose their SDK subclass during cloning.
         (error instanceof Error && error.message === 'The session was deleted by another process')
       ) {
+        this.diagnostics.warn('Bluesky OAuth', 'sign-in-required', {
+          account: shortDid(did),
+          client: clientPath(),
+          path: pathname.split('?')[0],
+          cause: describeCause(error),
+        });
         throw new BlueskySignInRequiredError(error);
       }
       throw error;
@@ -117,6 +148,7 @@ export class BlueskyOAuth {
           if (isBlueskyOAuthLoopback()) {
             const callback = new URL(blueskyOAuthRedirectUri());
             return BrowserOAuthClient.load({
+              ...this.sessionHooks,
               handleResolver: HANDLE_RESOLVER,
               clientId: buildLoopbackClientId({
                 hostname: location.hostname,
@@ -126,6 +158,7 @@ export class BlueskyOAuth {
             });
           }
           return new BrowserOAuthClient({
+            ...this.sessionHooks,
             handleResolver: HANDLE_RESOLVER,
             clientMetadata: blueskyOAuthClientMetadata(),
           });
@@ -152,4 +185,28 @@ export class BlueskyOAuth {
       ...(profile.avatar ? { avatar: profile.avatar } : {}),
     };
   }
+}
+
+/** The tail of a DID: enough to tell accounts apart in a log, nothing more. */
+function shortDid(did: string): string {
+  return did.length > 12 ? `…${did.slice(-8)}` : did;
+}
+
+/** Which deployment path's OAuth client this is: "/", "/canary/" or "/test/". */
+function clientPath(): string {
+  try {
+    return new URL(document.baseURI).pathname;
+  } catch {
+    return '?';
+  }
+}
+
+/** A deletion or refresh cause as a short readable string. */
+function describeCause(cause: unknown): string {
+  if (cause instanceof Error) {
+    const inner = (cause as { cause?: unknown }).cause;
+    const detail = inner instanceof Error ? `: ${inner.message}` : '';
+    return `${cause.name} ${cause.message}${detail}`.slice(0, 300);
+  }
+  return String(cause ?? 'unknown').slice(0, 300);
 }

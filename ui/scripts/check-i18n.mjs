@@ -137,6 +137,8 @@ const MIGRATED = [
   'discovery/offsite-directories',
   'feeds/tag',
   'accounts/account-analytics',
+  'accounts/interaction-decay-panel',
+  'accounts/audience-composition-panel',
   'discovery/find-friends',
   'discovery/explore',
   'discovery/directory',
