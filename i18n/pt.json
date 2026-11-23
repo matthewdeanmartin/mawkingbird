@@ -4311,7 +4311,6 @@
     "connections.corsProxy.title": "🔀 Proxy CORS",
     "connections.corsProxy.unknownFailure": "O teste falhou por um motivo desconhecido.",
     "connections.corsProxy.unreachable": "Não foi possível acessar o proxy. Pode estar fora do ar, bloqueando esta origem ou com URL errada.",
-    "connections.doctor.back": "‹ Todas as conexões",
     "connections.doctor.category.connector": "Conexões",
     "connections.doctor.category.control": "Controle",
     "connections.doctor.category.core": "Seu servidor",

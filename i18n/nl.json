@@ -3940,7 +3940,6 @@
     "connections.corsProxy.title": "🔀 CORS-proxy",
     "connections.corsProxy.unknownFailure": "De test mislukte om een onbekende reden.",
     "connections.corsProxy.unreachable": "De proxy kon helemaal niet worden bereikt. Mogelijk is hij offline, blokkeert hij deze herkomst of is de URL onjuist.",
-    "connections.doctor.back": "‹ Alle verbindingen",
     "connections.doctor.category.connector": "Verbindingen",
     "connections.doctor.category.control": "Controle",
     "connections.doctor.category.core": "Je server",

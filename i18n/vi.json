@@ -3940,7 +3940,6 @@
     "connections.corsProxy.title": "🔀 Proxy CORS",
     "connections.corsProxy.unknownFailure": "Kiểm tra thất bại vì lý do không rõ.",
     "connections.corsProxy.unreachable": "Không thể kết nối proxy. Có thể proxy ngừng hoạt động, chặn nguồn này hoặc URL sai.",
-    "connections.doctor.back": "‹ Mọi kết nối",
     "connections.doctor.category.connector": "Kết nối",
     "connections.doctor.category.control": "Đối chứng",
     "connections.doctor.category.core": "Máy chủ của bạn",
