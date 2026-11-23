@@ -376,4 +376,11 @@ describe('ConnectionDoctorPage', () => {
     expect(TestBed.inject(Server).baseUrl()).toBe('https://fast.example');
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  it('opens with the standard Back control', () => {
+    const fixture = setUp();
+    const back = fixture.nativeElement.querySelector('app-reading-back');
+    expect(back?.textContent).toContain('Back');
+    expect(fixture.nativeElement.textContent).not.toContain('Back to sign in');
+  });
 });

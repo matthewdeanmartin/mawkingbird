@@ -2,7 +2,9 @@ import { AccountName } from '../../account-name';
 import { CustomEmojiPipe } from '../../../publishing/custom-emoji.pipe';
 import {
   Component,
+  ElementRef,
   HostListener,
+  afterRenderEffect,
   computed,
   effect,
   inject,
@@ -10,6 +12,7 @@ import {
   output,
   signal,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -488,6 +491,21 @@ export class ProfilePhotoView {
   protected toggleCaption(): void {
     this.captionExpanded.update((v) => !v);
   }
+
+  private readonly caption = viewChild<ElementRef<HTMLElement>>('caption');
+  /**
+   * The clamped caption really hides text. Measured after rendering, not
+   * guessed from `content.length`: that is HTML, and one link's markup put a
+   * two-word post over the old 220-character threshold, so "Show more"
+   * appeared on everything.
+   */
+  protected readonly captionOverflows = signal(false);
+  private readonly measureCaption = afterRenderEffect(() => {
+    this.current();
+    if (this.captionExpanded()) return; // keep the last answer while open
+    const el = this.caption()?.nativeElement;
+    this.captionOverflows.set(!!el && el.scrollHeight > el.clientHeight + 1);
+  });
 
   private applyPatch(updated: Status): void {
     const original = this.current()?.status;

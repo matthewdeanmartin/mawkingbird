@@ -3940,7 +3940,6 @@
     "connections.corsProxy.title": "🔀 CORS प्रॉक्सी",
     "connections.corsProxy.unknownFailure": "अज्ञात कारण से जाँच विफल हुई।",
     "connections.corsProxy.unreachable": "प्रॉक्सी तक बिल्कुल नहीं पहुँच सके। वह बंद हो सकती है, इस ओरिजिन को रोक रही हो सकती है या URL गलत हो सकता है।",
-    "connections.doctor.back": "‹ सभी कनेक्शन",
     "connections.doctor.category.connector": "कनेक्शन",
     "connections.doctor.category.control": "नियंत्रण",
     "connections.doctor.category.core": "आपका सर्वर",

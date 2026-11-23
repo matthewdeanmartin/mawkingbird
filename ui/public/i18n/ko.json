@@ -4311,7 +4311,6 @@
     "connections.corsProxy.title": "🔀 CORS 프록시",
     "connections.corsProxy.unknownFailure": "알 수 없는 이유로 테스트에 실패했습니다.",
     "connections.corsProxy.unreachable": "프록시에 전혀 연결할 수 없습니다. 중지되었거나 이 출처를 차단했거나 URL이 잘못되었을 수 있습니다.",
-    "connections.doctor.back": "‹ 모든 연결",
     "connections.doctor.category.connector": "연결",
     "connections.doctor.category.control": "제어",
     "connections.doctor.category.core": "내 서버",

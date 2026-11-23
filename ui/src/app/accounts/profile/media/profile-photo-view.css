@@ -128,11 +128,6 @@
   background: rgba(255, 255, 255, 0.18);
 }
 
-.photo-load-more {
-  font-size: 0.75rem;
-  overflow-wrap: anywhere;
-}
-
 .photo-arrow:disabled {
   opacity: 0.5;
   cursor: default;
@@ -367,6 +362,8 @@
 
 .photo-cancel {
   margin-top: 4px;
+  /* In line with the composer's own 12px padding, not on the panel's edge. */
+  margin-inline-start: 12px;
   padding: 4px 8px;
   font-size: 0.78rem;
   color: var(--muted);

@@ -846,6 +846,7 @@
       <button
         type="button"
         mbButton
+        class="compose-submit"
         [disabled]="!canSubmit()"
         [title]="gated() ? ('compose.savesToDraftsHint' | transloco) : ''"
         (click)="submit()"

@@ -80,8 +80,9 @@ describe('ProfilePhotoView comments', () => {
     httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });
     const more = vi.fn();
     fixture.componentInstance.wantMore.subscribe(more);
+    // The › arrow at the end of what is loaded fetches the next page.
     const button = () =>
-      fixture.nativeElement.querySelector('.photo-counter button') as HTMLButtonElement;
+      fixture.nativeElement.querySelector('[data-photo-next-page]') as HTMLButtonElement;
     button().click();
     expect(more).toHaveBeenCalledOnce();
     fixture.componentRef.setInput('loadingMore', true);
@@ -109,18 +110,21 @@ describe('ProfilePhotoView comments', () => {
     fixture.componentRef.setInput('moreFailed', true);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.photo-counter [role="alert"]')).not.toBeNull();
-    // The retry is still there.
-    expect(fixture.nativeElement.querySelector('.photo-counter button')).not.toBeNull();
+    // The retry is still there: the › arrow at the end asks again.
+    expect(fixture.nativeElement.querySelector('[data-photo-next-page]')).not.toBeNull();
+    // And there is no separate Load more button cluttering the counter line.
+    expect(fixture.nativeElement.querySelector('.photo-counter button')).toBeNull();
   });
 
-  it('offers Load more in the Next position only at the end of loaded media', () => {
+  it('turns the Next arrow into "load the next page" only at the end of loaded media', () => {
     const fixture = setUp(makeStatus());
     httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });
     const more = vi.fn();
     fixture.componentInstance.wantMore.subscribe(more);
     const next = () =>
       fixture.nativeElement.querySelector('.photo-arrow.next') as HTMLButtonElement | null;
-    expect(next()?.textContent).toContain('Load more');
+    expect(next()?.textContent?.trim()).toBe('›');
+    expect(next()?.getAttribute('aria-label')).toBe('Load more');
     next()!.click();
     expect(more).toHaveBeenCalledOnce();
     fixture.componentRef.setInput('loadingMore', true);
@@ -259,5 +263,21 @@ describe('ProfilePhotoView comments', () => {
     httpMock.expectNone(
       '/api/v1/statuses/bsky:at://did:plc:them/app.bsky.feed.post/photo/bookmark',
     );
+  });
+
+  it('offers Show more only when the caption is really cut off', () => {
+    const fixture = setUp(makeStatus({ content: '<p>Two words</p>' } as Partial<Status>));
+    httpMock.expectOne('/api/v1/statuses/s1/context').flush({ ancestors: [], descendants: [] });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.photo-more-text')).toBeNull();
+
+    // A clamped caption whose text runs past the clamp.
+    const caption = fixture.nativeElement.querySelector('.photo-caption') as HTMLElement;
+    Object.defineProperty(caption, 'scrollHeight', { configurable: true, value: 400 });
+    Object.defineProperty(caption, 'clientHeight', { configurable: true, value: 80 });
+    fixture.componentRef.setInput('items', [makeItem(makeStatus())]);
+    TestBed.tick();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.photo-more-text')).not.toBeNull();
   });
 });

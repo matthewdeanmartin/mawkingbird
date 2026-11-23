@@ -1,4 +1,5 @@
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ReadingBack } from '../../../shell/reading-back';
 import { connectionHelpServer } from '../../../platform/http/host-url';
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -25,7 +26,6 @@ import {
   timingHint,
 } from './connection-doctor-catalog';
 
-// i18n settings.connections.doctor.back: ‹ All connections
 // i18n settings.connections.doctor.title: 🩺 Connection doctor
 // i18n settings.connections.doctor.readable: Readable response
 // i18n settings.connections.doctor.readableViaProxy: Readable response via proxy
@@ -132,7 +132,7 @@ interface DoctorGroup {
 @Component({
   selector: 'app-connection-doctor-page',
   host: { '[class.public-doctor]': 'publicPage' },
-  imports: [RouterLink, TranslocoPipe],
+  imports: [RouterLink, TranslocoPipe, ReadingBack],
   templateUrl: './connection-doctor-page.html',
   styleUrls: ['../connection-page.css', './connection-doctor-page.css'],
 })

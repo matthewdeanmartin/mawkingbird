@@ -63,6 +63,11 @@
               <a [href]="tweetUrl(tweet.id)" target="_blank" rel="noopener">{{
                 'unbird.tools.search.open' | transloco
               }}</a>
+              <!-- Your own old tweet into an unsent draft on Home: you edit and
+                   post it yourself. Likes are other people's words, so not there. -->
+              <a routerLink="/share" [queryParams]="{ text: tweet.text }" data-post-this>{{
+                'unbird.tools.search.postThis' | transloco: { post: words().Post }
+              }}</a>
             </mb-metadata>
             <p class="text">{{ tweet.text }}</p>
           </li>

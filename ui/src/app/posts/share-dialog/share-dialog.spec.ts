@@ -360,9 +360,22 @@ describe('ShareDialog', () => {
     expect(overlap).toEqual([]);
   });
 
-  it('lists every destination together, with no section headings or how-it-works notes', () => {
+  it('groups destinations: social first, then Copy link, with no headings or notes', () => {
     const element = open('', blueskyPost()).nativeElement as HTMLElement;
-    expect(element.querySelectorAll('.destinations')).toHaveLength(1);
+    const groups = [...element.querySelectorAll('[data-share-group]')].map((g) =>
+      g.getAttribute('data-share-group'),
+    );
+    expect(groups.slice(0, 2)).toEqual(['social', 'link']);
+    const social = [...element.querySelectorAll('[data-share-group="social"] .destination')].map(
+      (b) => b.textContent?.trim(),
+    );
+    // Twitter before Reddit before LinkedIn before Hacker News.
+    const order = ['Twitter', 'Reddit', 'LinkedIn', 'Hacker News'].map((name) =>
+      social.findIndex((label) => label?.includes(name)),
+    );
+    expect(order.every((at) => at >= 0)).toBe(true);
+    expect([...order].sort((a, b) => a - b)).toEqual(order);
+    expect(element.querySelector('[data-share-group="link"]')?.textContent).toContain('Copy link');
     expect(element.querySelector('h4')).toBeNull();
     expect(element.textContent).not.toContain('Opens a composer');
     expect(element.textContent).not.toContain('new tab');

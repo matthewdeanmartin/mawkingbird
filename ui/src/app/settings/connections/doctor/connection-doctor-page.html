@@ -1,6 +1,4 @@
-<a class="conn-back" [routerLink]="[publicPage ? '/login/mastodon' : '/settings/connections']">{{
-  (publicPage ? 'connectionHelp.back' : 'settings.connections.doctor.back') | transloco
-}}</a>
+<app-reading-back [fallback]="publicPage ? '/login/mastodon' : '/settings/connections'" />
 
 <div class="spage-head">
   <h1>{{ 'settings.connections.doctor.title' | transloco }}</h1>

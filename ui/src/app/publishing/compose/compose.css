@@ -214,6 +214,12 @@ textarea {
   display: contents;
 }
 
+/* Post / Reply sits at the right end of its line, wherever the toolbar wraps.
+   Without this a reply box (more tools, so it wrapped) put it on the left. */
+.compose-compact .compose-submit {
+  margin-inline-start: auto;
+}
+
 .compose-compact .target-select,
 .compose-compact .visibility-select,
 .compose-compact .visibility-locked,

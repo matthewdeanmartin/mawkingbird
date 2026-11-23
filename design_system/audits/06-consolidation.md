@@ -1,5 +1,15 @@
 # Sprint 6 opening consolidation audit
 
+## Back on Network Doctor, viewer and share tidy-ups, 2026-11-22
+
+Network Doctor opens with the shared `app-reading-back` control. The compact
+composer's submit button is pushed to the end of its toolbar line. The photo
+viewer drops both "Load more" buttons (the end-of-list › arrow loads the next
+page) and shows "Show more" only when the clamped caption overflows; its
+nested reply Cancel is inset 12px. The share dialog groups destinations into
+social, Copy link, and blogs/paste, separated by dividers. Unbird archive
+search adds a "Post this" link. Dispositions unchanged.
+
 ## Observability split into dashboard, API calls and Logs, 2026-11-22
 
 `/observability` keeps charts and summaries; the per-endpoint table moves to

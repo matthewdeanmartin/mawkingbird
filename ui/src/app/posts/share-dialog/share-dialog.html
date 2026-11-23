@@ -128,31 +128,12 @@
            hands off to the site is plumbing; the button says where it goes.
            The post's own network is never here (see homeNetworkOf). -->
       <section class="section">
-        <div class="destinations">
-          @for (target of postTargets(); track target) {
+        <!-- Three groups (owner, 2026-11-22): social networks, then Copy link,
+             then blogs and paste services, which are the uncommon case. -->
+        <div class="destinations" data-share-group="social">
+          @for (target of socialTargets(); track target) {
             <button type="button" class="destination post" (click)="postTo(target)">
               {{ targetLabelKey(target) | transloco }}
-            </button>
-          }
-          @if (canOfferBlog()) {
-            <!-- Your own site, as a destination: queues the boost for it, and
-                 takes it back off on a second press. No request is made. -->
-            <button
-              type="button"
-              class="destination"
-              [class.on]="blogRecorded()"
-              [attr.aria-pressed]="blogRecorded()"
-              [title]="'shareDialog.recordHint' | transloco"
-              (click)="toggleBlog()"
-            >
-              {{
-                (blogRecorded() ? 'shareDialog.myBlogRecorded' : 'shareDialog.myBlog') | transloco
-              }}
-            </button>
-          }
-          @if (canShareUsingDevice) {
-            <button type="button" class="destination native" (click)="shareUsingDevice()">
-              {{ 'shareDialog.shareUsingDevice' | transloco }}
             </button>
           }
           @for (destination of intents(); track destination.id) {
@@ -160,10 +141,44 @@
               {{ destination.labelKey | transloco }}
             </button>
           }
+        </div>
+        <hr class="destinations-divider" />
+        <div class="destinations" data-share-group="link">
           <button type="button" class="destination" (click)="copyLink()">
             {{ (copied() ? 'shareDialog.linkCopied' : 'shareDialog.copyLink') | transloco }}
           </button>
+          @if (canShareUsingDevice) {
+            <button type="button" class="destination native" (click)="shareUsingDevice()">
+              {{ 'shareDialog.shareUsingDevice' | transloco }}
+            </button>
+          }
         </div>
+        @if (publishTargets().length || canOfferBlog()) {
+          <hr class="destinations-divider" />
+          <div class="destinations" data-share-group="publish">
+            @for (target of publishTargets(); track target) {
+              <button type="button" class="destination post" (click)="postTo(target)">
+                {{ targetLabelKey(target) | transloco }}
+              </button>
+            }
+            @if (canOfferBlog()) {
+              <!-- Your own site, as a destination: queues the boost for it, and
+                   takes it back off on a second press. No request is made. -->
+              <button
+                type="button"
+                class="destination"
+                [class.on]="blogRecorded()"
+                [attr.aria-pressed]="blogRecorded()"
+                [title]="'shareDialog.recordHint' | transloco"
+                (click)="toggleBlog()"
+              >
+                {{
+                  (blogRecorded() ? 'shareDialog.myBlogRecorded' : 'shareDialog.myBlog') | transloco
+                }}
+              </button>
+            }
+          </div>
+        }
         <!-- Reddit, LinkedIn and Hacker News take a URL and a title; there is no
              field a highlighted passage could go in. Someone who highlighted a
              paragraph is owed that fact rather than watching it vanish. -->

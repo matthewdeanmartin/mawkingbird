@@ -138,6 +138,16 @@ function blueskyText(text: string, url: string): string {
   return `${shortened(text, Math.max(1, 300 - Array.from(suffix).length))}${suffix}`;
 }
 
+/** Social networks, shown first; blogs and paste services go last. */
+const SOCIAL_TARGETS: ReadonlySet<PostTarget> = new Set<PostTarget>(['fedi', 'bsky']);
+
+/** Hand-off order in the first section (owner, 2026-11-22). */
+const INTENT_ORDER = ['bluesky', 'twitter', 'reddit', 'linkedin', 'hacker-news', 'tumblr'];
+function intentRank(id: string): number {
+  const at = INTENT_ORDER.indexOf(id);
+  return at < 0 ? INTENT_ORDER.length : at;
+}
+
 export const SHARE_DESTINATIONS: ShareDestination[] = [
   {
     // Twitter's own composer. It counts any URL as 23 characters, so the text
@@ -310,6 +320,14 @@ export class ShareDialog {
     const home = homeNetworkOf(this.status().provider).target;
     return postTargetsFor(this.availability.current()).filter((target) => target !== home);
   });
+  /** First section: your connected social accounts (the hand-off sites follow). */
+  protected readonly socialTargets = computed(() =>
+    this.postTargets().filter((target) => SOCIAL_TARGETS.has(target)),
+  );
+  /** Last section: blogs and paste services, the uncommon case. */
+  protected readonly publishTargets = computed(() =>
+    this.postTargets().filter((target) => !SOCIAL_TARGETS.has(target)),
+  );
 
   /** The hand-off destinations left after connectors claimed theirs. */
   protected readonly intents = computed(() => {
@@ -322,7 +340,7 @@ export class ShareDialog {
     const home = homeNetworkOf(this.status().provider).intent;
     return SHARE_DESTINATIONS.filter(
       (destination) => ids.has(destination.id) && destination.id !== home,
-    );
+    ).sort((a, b) => intentRank(a.id) - intentRank(b.id));
   });
 
   /** True when a quote exists but some destination on screen cannot carry it. */

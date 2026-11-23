@@ -3940,7 +3940,6 @@
     "connections.corsProxy.title": "🔀 CORS-proxy",
     "connections.corsProxy.unknownFailure": "Testet misslyckades av okänd anledning.",
     "connections.corsProxy.unreachable": "Det gick inte att nå proxyn alls. Den kan vara nere, blockera detta ursprung eller ha fel webbadress.",
-    "connections.doctor.back": "‹ Alla anslutningar",
     "connections.doctor.category.connector": "Anslutningar",
     "connections.doctor.category.control": "Kontroll",
     "connections.doctor.category.core": "Din server",

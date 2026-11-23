@@ -1,4 +1,6 @@
 import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { Terminology } from '../i18n/terminology';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
@@ -38,6 +40,7 @@ import { websiteZip } from './website-export';
 // i18n unbird.tools.search.count: {{total}} found
 // i18n unbird.tools.search.showing: showing the newest {{shown}}
 // i18n unbird.tools.search.open: Open on Twitter
+// i18n unbird.tools.search.postThis: {{post}} this
 // i18n unbird.tools.search.media: {{count}} photo or video
 // i18n unbird.tools.search.thread: thread
 // i18n unbird.tools.search.reply: reply
@@ -95,11 +98,14 @@ import { websiteZip } from './website-export';
     MbTabs,
     TranslocoPipe,
     UnbirdDrop,
+    RouterLink,
   ],
   templateUrl: './unbird-archive-tools.html',
   styleUrl: './unbird-archive-tools.css',
 })
 export class UnbirdArchiveTools implements OnInit {
+  /** post/tweet/florp vocabulary, for "Post this". */
+  protected readonly words = inject(Terminology).words;
   protected readonly matcher = inject(UnbirdMatcher);
   protected readonly archive = this.matcher.archive;
 

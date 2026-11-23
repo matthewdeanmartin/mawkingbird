@@ -64,16 +64,20 @@
         }
 
         @if (!hasNext() && !exhausted()) {
+          <!-- At the end of what is loaded the arrow fetches the next page, as
+               the → key does. A "Load more" label here was just noise. -->
           <button
             type="button"
-            class="photo-arrow next photo-load-more"
+            class="photo-arrow next"
+            data-photo-next-page
             [disabled]="loadingMore()"
             (click)="loadMore()"
-          >
-            {{
+            [aria-label]="
               (loadingMore() ? 'pages.profile.media.loadingMore' : 'pages.profile.media.loadMore')
                 | transloco
-            }}
+            "
+          >
+            ›
           </button>
         }
 
@@ -84,19 +88,6 @@
           }}
           @if (moreFailed() && !loadingMore()) {
             <span role="alert">{{ 'pages.profile.media.moreFailed' | transloco }}</span>
-          }
-          @if (!exhausted()) {
-            <button
-              class="btn btn-outline btn-sm"
-              type="button"
-              [disabled]="loadingMore()"
-              (click)="loadMore()"
-            >
-              {{
-                (loadingMore() ? 'pages.profile.media.loadingMore' : 'pages.profile.media.loadMore')
-                  | transloco
-              }}
-            </button>
           }
           <span class="photo-hint">{{ 'pages.profile.media.keyboardHint' | transloco }}</span>
         </div>
@@ -138,11 +129,12 @@
           @let captionTr = translationOf(item.status);
           @if (captionTr?.text; as text) {
             <!-- Plain text from a third party: rendered as TEXT, never innerHTML. -->
-            <div class="photo-caption" [class.clamped]="!captionExpanded()">
+            <div #caption class="photo-caption" [class.clamped]="!captionExpanded()">
               <p><app-linked-text [text]="text" /></p>
             </div>
           } @else {
             <div
+              #caption
               class="photo-caption"
               [class.clamped]="!captionExpanded()"
               appRenderedHtmlLinks
@@ -159,7 +151,7 @@
               }}</mb-help>
             </div>
           }
-          @if (item.status.content && item.status.content.length > 220) {
+          @if (captionExpanded() || captionOverflows()) {
             <button type="button" class="photo-more-text" (click)="toggleCaption()">
               {{
                 captionExpanded()

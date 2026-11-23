@@ -217,3 +217,9 @@ h3,
     grid-column: auto;
   }
 }
+
+.destinations-divider {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 12px 0;
+}
