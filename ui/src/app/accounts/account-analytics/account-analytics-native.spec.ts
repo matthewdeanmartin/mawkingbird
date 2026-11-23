@@ -49,6 +49,7 @@ describe('AccountAnalytics in the native app', () => {
       history: vi.fn(),
       postActivity: vi.fn(),
       engagers: vi.fn(),
+      reactions: vi.fn(),
     };
     TestBed.configureTestingModule({
       providers: [

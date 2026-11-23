@@ -98,6 +98,7 @@ import { VerifiedBadge } from '../verified-badge/verified-badge';
 import { BotSignals } from '../bot-signals/bot-signals';
 import { HumanCountPipe } from '../../i18n/human-count.pipe';
 import { PeopleBrowser } from '../people-browser/people-browser';
+import { NewPeoplePanel } from '../new-people-panel/new-people-panel';
 import { AccountAnalytics } from '../account-analytics/account-analytics';
 import { RssProvider } from '../../reading/rss/rss-provider';
 import { RssSubscriptions } from '../../reading/rss/rss-subscriptions';
@@ -357,6 +358,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     BotSignals,
     HumanCountPipe,
     PeopleBrowser,
+    NewPeoplePanel,
     Compose,
     MbDialog,
     AccountAnalytics,
@@ -1159,6 +1161,16 @@ export class Profile implements OnInit, OnDestroy {
   protected followError = signal<string | null>(null);
 
   protected isSelf = computed(() => this.account()?.id === this.auth.account()?.id);
+
+  /** Your own Mastodon followers list, where "New people to meet" belongs. */
+  protected canFindNewPeople = computed(
+    () =>
+      this.isSelf() &&
+      !this.auth.isAnonymous &&
+      !this.auth.lacksMastodonToken &&
+      !this.isBluesky() &&
+      !this.isMisskey(),
+  );
   /**
    * Whether the follow runs both ways.
    *

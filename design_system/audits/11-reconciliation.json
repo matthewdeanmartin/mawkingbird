@@ -3636,6 +3636,21 @@
       "file": "ui/src/app/accounts/engaged-audience-panel/engaged-audience-panel.html",
       "disposition": "adopted scope",
       "nextStep": "Built on MbButton, MbBarList, MbStatGrid and MbHelp. The weekday-by-hour grid is bespoke CSS grid (no shared heatmap primitive); share one with the analytics lawn heatmap if either is reworked."
+    },
+    {
+      "file": "ui/src/app/accounts/discovery-panel/discovery-panel.html",
+      "disposition": "adopted scope",
+      "nextStep": "Built on MbButton, MbProgress, MbStatGrid and MbHelp; the two rankings are plain tables."
+    },
+    {
+      "file": "ui/src/app/accounts/top-boosters-panel/top-boosters-panel.html",
+      "disposition": "adopted scope",
+      "nextStep": "Built on MbButton and MbHelp; the two-way sort is a labelled button group with aria-pressed. Use a shared person row if one is added."
+    },
+    {
+      "file": "ui/src/app/accounts/new-people-panel/new-people-panel.html",
+      "disposition": "adopted scope",
+      "nextStep": "Built on MbBadge, MbButton, MbHelp, MbProgress and the shared follow button. Use a shared person row if one is added."
     }
   ]
 }

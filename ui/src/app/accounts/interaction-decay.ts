@@ -46,8 +46,11 @@ export const MIN_POST_AGE_MS = 7 * DAY;
 /** How many posts the decay looks at. */
 export const DECAY_POST_LIMIT = 40;
 
-/** The notification types to request: likes, boosts, and replies (mentions). */
-export const DECAY_NOTIFICATION_TYPES = ['favourite', 'reblog', 'mention'] as const;
+/**
+ * The notification types to request: likes, boosts, replies (mentions), and
+ * follows, which tell a reaction that came before a follow from one after it.
+ */
+export const DECAY_NOTIFICATION_TYPES = ['favourite', 'reblog', 'mention', 'follow'] as const;
 
 /** One post the curve is measured on. */
 export interface DecayPost {

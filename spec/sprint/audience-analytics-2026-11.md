@@ -1,7 +1,7 @@
 # Audience analytics (November 2026)
 
-Status: Sprints 1–2 pushed 2026-11-23. Sprint 3 implemented locally
-2026-11-23 (uncommitted).
+Status: Sprints 1–3 pushed. Sprints 4–6 implemented locally 2026-11-23
+(uncommitted, web and native).
 
 Owner asks: an interaction decay curve ("when has everyone seen it?") and
 follower analytics for creators (best time to post, language split, active vs
@@ -122,6 +122,75 @@ prettier. The owner runs the full gates on GHA.
   with half and 90% rows.
 - `Account.group` added to the model (optional).
 
+### Sprint 6: new people to meet (2026-11-23)
+
+Owner ask: find _humans_ among recent followers you don't follow, on honest
+signals; the bot flag alone is a lie for malicious bots.
+
+- `accounts/new-people.ts` (pure): three separate verdicts with reasons, no
+  score. **Human**: vouched (2+ people you follow follow them _and_ they talk
+  with 3+ people _and_ get replies), likely, not enough evidence, says it's
+  automated, group. Behavior alone stops at likely; a clockwork poster never
+  passes; bio, avatar and follower counts give nothing; the bot flag is
+  believed only when on. **Lively**: talking (3+ people in 30 days), posting,
+  quiet, not enough evidence. **Spam**: warning, worth a look, nothing found,
+  not enough evidence. Warnings: 500+ follows at 50+ a day; 1,000+ follows
+  with under a tenth following back and no reply to you; 30%+ repeated text;
+  mostly bare links to one unverified site; naming people without replying.
+  Arriving with 3+ other young accounts from one server is only a caution.
+- `accounts/new-people-scan.ts`: followers page, relationships (via
+  `FollowState`), and the new batched `Api.familiarFollowersOf`: about 5
+  requests for 80 followers. Posts are read on request, 20 people a click, one
+  request each. Unknown relationships are left out. "Replied before following"
+  uses the notification read when it has run.
+- "Check their own server" appears only with Settings → Privacy → Fetch from
+  the original server on, because it contacts a server the reader didn't pick.
+- `accounts/new-people-panel/`: on your own Followers tab, linked from own
+  analytics.
+- Known limits: follow counts and join dates of remote accounts are as their
+  server reports; "others reply to them" is the reply count on their posts,
+  not a read of each thread; name similarity in batches was not built.
+
+### Sprint 5: native timed reactions (2026-11-23)
+
+- The archive already stored timed notifications. New command
+  `archive_reactions` returns them (≤ 365 days, ≤ 20,000), with each person and
+  post once and trimmed. No migration.
+- **Collector gap fixed.** It refreshed only the newest two pages per session,
+  so more than 160 notifications while the app was closed left a permanent
+  hole. It now reads until it meets `notifications:newest` (a new
+  `archive_cursor` row), up to 20 pages; if it can't, the backfill restarts
+  there. Existing installs re-read their notification history once, which
+  also fills the post links missing from before migration 6.
+- `archive_reactions` returns only the unbroken stretch and how far back it
+  goes; until the collector has connected, nothing, and the client reads the
+  server as on the web.
+- `InteractionDecayScan` uses the archive in the native app: up to 10 s for a
+  check for new notifications, then the archive. All four panels share it.
+
+### Sprint 4: discovery rate and top boosters (2026-11-23)
+
+- **Paging fix:** the notification read treated any page under 80 as the end.
+  Now only a page with nothing new is; repeats are counted once.
+- `accounts/reaction-log.ts` (pure), from the same read plus `follow`
+  notifications. Discovery = a reaction from someone who doesn't follow you,
+  or who followed later. Overall, by kind, by post (5+ reactions) and hashtag
+  (also 2+ posts).
+- `accounts/discovery-check.ts`: who follows you, by relationships in batches
+  of 40 (Mastodon answers only 40), up to 1,000 people, with Stop.
+- `accounts/discovery-panel/`, `accounts/top-boosters-panel/`.
+
+**Rendered for the first time** (temporary story, deleted): all six panels at
+640 px light and dark and 375 px. Fixed: decay chart text about 5 px on phones
+(now drawn at its real width), bold tile subtext, "1 older posts", "1 automated
+accounts".
+
+Checks run (lightweight, Sprints 4–6): `make test-changed`, `check:i18n`,
+eslint, prettier, `design:inventory-check`, `check:dead-code`, deep-link audit,
+`build:mockingbird`; native `cargo test` (113 passed), clippy (0 warnings),
+fmt, frontend build. **Not run:** the full gates, design-verify, native smoke
+tests, `make deploy-source`, and any real account or real archive.
+
 ### Sprint 3: engaged audience (2026-11-23)
 
 - `accounts/engaged-audience.ts`: `EngagedAccumulator` takes every like,
@@ -143,9 +212,12 @@ prettier. The owner runs the full gates on GHA.
   and bio languages, with the bio caveat. Weekday, hour and language names
   come from `Intl` in the active UI language. The grid uses one hue
   (validated blue) in 4 steps.
-- Native: not changed. The archive has engagers by month but no per-event
-  times, so a native notification-time archive would be needed to go past the
-  server's notification retention. That is listed below.
+- Native: not changed; its panels read the server like web. Correction
+  (2026-11-23): an earlier note here said the archive has no per-event times.
+  It does. `archive_interaction` keeps person, kind, `occurred_at` and (since
+  migration 6) `status_remote_id`, and `archive_collect_notifications`
+  backfills it. `archive_engagers` only aggregates by month. What is missing is
+  a command that returns the timed rows, and the panels using it.
 
 Checks run (lightweight): `make test-changed` (14 affected spec files, 132
 tests pass), `check:i18n`, eslint on the touched files, prettier,
@@ -204,9 +276,9 @@ exposes.
 9. **Media-kit card.** An exportable summary for sponsors and editors:
    followers, effective followers, engaged people, median reach, top
    servers, languages and best times.
-10. **Native notification archive.** Store timed notifications so decay,
-    best times and discovery rate cover months, not just the server's
-    retention.
+10. **Native: use the notification archive.** Timed notifications are already
+    stored (`archive_interaction`). Add a read command and feed decay, best
+    times and discovery rate from it. Not a new archive.
 11. **Journalists: pickup.** Quote notifications (Mastodon 4.5) and mentions
     from large or institutional accounts, plus `/api/v1/trends/links` on major
     servers to see whether a story is trending.

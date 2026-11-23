@@ -5,10 +5,17 @@
   @if (state(); as s) {
     @if (s.phase === 'scanning') {
       <mb-progress
-        [label]="'interactionDecay.progressLabel' | transloco"
+        [label]="
+          (s.source === 'archive'
+            ? 'interactionDecay.progressArchive'
+            : 'interactionDecay.progressLabel'
+          ) | transloco
+        "
         [caption]="
-          'interactionDecay.progressCaption'
-            | transloco: { pages: fmt(s.pages), matched: fmt(s.matched) }
+          s.source === 'archive'
+            ? ''
+            : ('interactionDecay.progressCaption'
+              | transloco: { pages: fmt(s.pages), matched: fmt(s.matched) })
         "
         [value]="progress().value"
         [max]="progress().max"
@@ -40,9 +47,21 @@
           @case ('cancelled') {
             {{ 'interactionDecay.stop.cancelled' | transloco }}
           }
+          @case ('archiveStart') {
+            {{
+              'interactionDecay.stop.archiveStart'
+                | transloco: { date: (reachedBackIso() | humanTime) }
+            }}
+          }
+        }
+        @if (s.source === 'archive') {
+          {{ 'interactionDecay.fromArchive' | transloco }}
         }
         @if (s.excluded) {
-          {{ 'interactionDecay.excluded' | transloco: { count: s.excluded } }}
+          {{
+            (s.excluded === 1 ? 'interactionDecay.excluded.one' : 'interactionDecay.excluded.other')
+              | transloco: { count: s.excluded }
+          }}
         }
       </p>
 
@@ -135,10 +154,10 @@
           }
         </ul>
 
-        <div class="chart-wrap" (mouseleave)="hover.set(null)">
+        <div #chartWrap class="chart-wrap" (mouseleave)="hover.set(null)">
           <svg
             class="chart"
-            [attr.viewBox]="'0 0 ' + W + ' ' + H"
+            [attr.viewBox]="'0 0 ' + W() + ' ' + H"
             role="img"
             [attr.aria-label]="'interactionDecay.chartAria' | transloco"
           >
@@ -146,7 +165,7 @@
               <line
                 class="grid"
                 [attr.x1]="pad.left"
-                [attr.x2]="pad.left + plotW"
+                [attr.x2]="pad.left + plotW()"
                 [attr.y1]="y(g)"
                 [attr.y2]="y(g)"
               />
@@ -155,7 +174,7 @@
               </text>
             }
             @for (m of checkpoints; track m; let i = $index) {
-              @if (checkpointLabel(m); as c) {
+              @if (showTick(i) && checkpointLabel(m); as c) {
                 <text class="axis" [attr.x]="x(i)" [attr.y]="H - 8" text-anchor="middle">
                   {{ 'interactionDecay.unit.' + c.unit | transloco: { value: c.value } }}
                 </text>
@@ -193,9 +212,9 @@
             @for (m of checkpoints; track m; let i = $index) {
               <rect
                 class="hit"
-                [attr.x]="x(i) - colW / 2"
+                [attr.x]="x(i) - colW() / 2"
                 [attr.y]="pad.top"
-                [attr.width]="colW"
+                [attr.width]="colW()"
                 [attr.height]="plotH"
                 (pointerenter)="hover.set(i)"
                 (pointerdown)="hover.set(i)"
@@ -207,7 +226,7 @@
               <div
                 class="tooltip"
                 [class.flip]="hover()! > checkpoints.length / 2"
-                [style.left.%]="(x(hover()!) / W) * 100"
+                [style.left.%]="(x(hover()!) / W()) * 100"
                 aria-hidden="true"
               >
                 <strong>{{
@@ -325,7 +344,7 @@
     @if (targets().length) {
       <p class="muted small">
         {{
-          'interactionDecay.cost'
+          (scan.usesArchive(accountId()) ? 'interactionDecay.costArchive' : 'interactionDecay.cost')
             | transloco: { count: targets().length, pages: maxPages, size: pageSize }
         }}
       </p>

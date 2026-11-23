@@ -1187,6 +1187,9 @@
     @if (
       !isRss() && !isTwitter() && !isMisskey() && (tab() === 'following' || tab() === 'followers')
     ) {
+      @if (tab() === 'followers' && canFindNewPeople()) {
+        <app-new-people-panel [accountId]="a.id" />
+      }
       <app-people-browser
         [accountId]="a.id"
         [mode]="tab() === 'followers' ? 'followers' : 'following'"

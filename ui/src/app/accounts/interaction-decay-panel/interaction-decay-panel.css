@@ -228,3 +228,10 @@ mb-progress {
   display: block;
   margin: 10px 0;
 }
+
+dd small {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
+}

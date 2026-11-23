@@ -1,0 +1,71 @@
+:host {
+  display: block;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.error {
+  color: var(--ds-error-text);
+}
+
+.chart-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 14px 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 6px 0 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+th,
+td {
+  padding: 4px 5px;
+  border-bottom: 1px solid var(--border);
+  text-align: end;
+}
+
+th:first-child {
+  text-align: start;
+}
+
+.post {
+  min-width: 100px;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+mb-progress {
+  display: block;
+  margin: 10px 0;
+}
+
+dd small {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
+}

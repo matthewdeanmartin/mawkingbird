@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbHelp } from '../../design-system/help/help';
@@ -21,6 +30,10 @@ import { DECAY_MAX_PAGES, DECAY_PAGE_SIZE, InteractionDecayScan } from '../inter
 // i18n interactionDecay.heading: When are your posts done?
 // i18n interactionDecay.explain: How quickly likes, boosts and replies arrive after you post, and when they stop. Use it to judge when everyone who will see a post has seen it.
 // i18n interactionDecay.cost: Reads your like, boost and reply notifications back to your last {{count}} posts that are at least 7 days old: up to {{pages}} requests of {{size}}. Nothing is changed.
+// i18n interactionDecay.costArchive: Uses the notifications archived on this device for your last {{count}} posts that are at least 7 days old, after a short check for new ones. If the archive is still filling, it reads your server instead: up to {{pages}} requests. Nothing is changed.
+// i18n interactionDecay.progressArchive: Reading your archive
+// i18n interactionDecay.stop.archiveStart: Your archive goes back to {{date}} so far.
+// i18n interactionDecay.fromArchive: From the archive on this device.
 // i18n interactionDecay.noPosts: No posts old enough yet. Posts need to be 7 days old so their whole curve can be seen.
 // i18n interactionDecay.run: Measure interaction decay
 // i18n interactionDecay.runAgain: Measure again
@@ -32,7 +45,8 @@ import { DECAY_MAX_PAGES, DECAY_PAGE_SIZE, InteractionDecayScan } from '../inter
 // i18n interactionDecay.stop.serverEnd: Your server's notifications only go back to {{date}}.
 // i18n interactionDecay.stop.pageCap: Stopped after {{pages}} requests, before reaching your oldest post.
 // i18n interactionDecay.stop.cancelled: Stopped early.
-// i18n interactionDecay.excluded: {{count}} older posts left out because the notifications read don't reach back to them.
+// i18n interactionDecay.excluded.one: {{count}} older post left out because the notifications read don't reach back to it.
+// i18n interactionDecay.excluded.other: {{count}} older posts left out because the notifications read don't reach back to them.
 // i18n interactionDecay.nothing: No interactions found on these posts in your notifications.
 // i18n interactionDecay.series.likes: Likes
 // i18n interactionDecay.series.boosts: Boosts
@@ -59,11 +73,12 @@ import { DECAY_MAX_PAGES, DECAY_PAGE_SIZE, InteractionDecayScan } from '../inter
 // i18n interactionDecay.tooltipAfter: After {{time}}
 // i18n interactionDecay.postsUsed: {{kind}}: {{posts}} posts, {{events}} interactions
 
-/** SVG geometry, in viewBox units. */
-const W = 640;
+/** Chart geometry, in CSS pixels: the chart is drawn at its real width. */
+const DEFAULT_W = 560;
+/** Narrower than this and only every other time is labelled. */
+const NARROW_W = 480;
 const H = 240;
 const PAD = { left: 40, right: 76, top: 12, bottom: 28 };
-const PLOT_W = W - PAD.left - PAD.right;
 const PLOT_H = H - PAD.top - PAD.bottom;
 /** Smallest vertical gap between two end-of-line labels. */
 const LABEL_GAP = 14;
@@ -95,10 +110,12 @@ export class InteractionDecayPanel {
 
   protected readonly scan = inject(InteractionDecayScan);
 
-  protected readonly W = W;
+  /** The chart's width, measured once it is on the page. */
+  protected readonly W = signal(DEFAULT_W);
+  private readonly chartWrap = viewChild<ElementRef<HTMLElement>>('chartWrap');
   protected readonly H = H;
   protected readonly pad = PAD;
-  protected readonly plotW = PLOT_W;
+  protected readonly plotW = computed(() => this.W() - PAD.left - PAD.right);
   protected readonly plotH = PLOT_H;
   protected readonly series = DECAY_SERIES;
   protected readonly checkpoints = DECAY_CHECKPOINTS_MIN;
@@ -141,8 +158,28 @@ export class InteractionDecayPanel {
   /** Index of the checkpoint under the pointer or focus, for the crosshair. */
   protected readonly hover = signal<number | null>(null);
 
+  constructor() {
+    effect((onCleanup) => {
+      const wrap = this.chartWrap()?.nativeElement;
+      if (!wrap || typeof ResizeObserver === 'undefined') {
+        return;
+      }
+      const observer = new ResizeObserver(() => {
+        const width = Math.round(wrap.clientWidth);
+        if (width > 0) this.W.set(width);
+      });
+      observer.observe(wrap);
+      onCleanup(() => observer.disconnect());
+    });
+  }
+
   protected x(i: number): number {
-    return PAD.left + (i * PLOT_W) / (DECAY_CHECKPOINTS_MIN.length - 1);
+    return PAD.left + (i * this.plotW()) / (DECAY_CHECKPOINTS_MIN.length - 1);
+  }
+
+  /** Every checkpoint when there is room, else every other one. */
+  protected showTick(i: number): boolean {
+    return this.W() >= NARROW_W || i % 2 === 0;
   }
 
   protected y(share: number): number {
@@ -150,7 +187,7 @@ export class InteractionDecayPanel {
   }
 
   /** Width of one checkpoint's hover column. */
-  protected readonly colW = PLOT_W / (DECAY_CHECKPOINTS_MIN.length - 1);
+  protected readonly colW = computed(() => this.plotW() / (DECAY_CHECKPOINTS_MIN.length - 1));
 
   protected readonly lines = computed<LinePath[]>(() => {
     const r = this.result();

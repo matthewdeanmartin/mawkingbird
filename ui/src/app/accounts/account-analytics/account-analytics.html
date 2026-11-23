@@ -866,6 +866,13 @@
     @if (isOwnMastodonAccount()) {
       <app-interaction-decay-panel [accountId]="account().id" [posts]="posts()" />
       <app-engaged-audience-panel [accountId]="account().id" [posts]="posts()" />
+      <app-discovery-panel [accountId]="account().id" [posts]="posts()" />
+      <app-top-boosters-panel [accountId]="account().id" [posts]="posts()" />
+      <p class="section">
+        <a [routerLink]="accountProfilePath(account())" [queryParams]="{ tab: 'followers' }">{{
+          'accountAnalytics.newPeopleLink' | transloco
+        }}</a>
+      </p>
     }
 
     <!-- The one expensive thing on this page. Everything above is computed from

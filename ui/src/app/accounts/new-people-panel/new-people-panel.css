@@ -1,0 +1,95 @@
+:host {
+  display: block;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.small {
+  font-size: 13px;
+}
+
+.error {
+  color: var(--ds-error-text);
+}
+
+ol {
+  margin: 8px 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 4px 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+img {
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  grid-column: 2 / -1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .detail {
+    grid-column: 1 / -1;
+  }
+}
+
+dl {
+  margin: 6px 0;
+}
+
+dl > div {
+  display: flex;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+dt {
+  flex: 0 0 60px;
+  font-size: 13px;
+}
+
+dd {
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+mb-progress {
+  display: block;
+  margin: 10px 0;
+}

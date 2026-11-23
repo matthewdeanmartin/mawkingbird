@@ -27,7 +27,7 @@ import { AudienceEstimate } from '../effective-audience';
 // i18n audienceComposition.tier.regular: 50–499
 // i18n audienceComposition.tier.large: 500–4,999
 // i18n audienceComposition.tier.big: 5,000+
-// i18n audienceComposition.botsGroups: {{bots}} automated accounts, {{groups}} groups.
+// i18n audienceComposition.botsGroups: Automated accounts: {{bots}}. Groups: {{groups}}.
 // i18n audienceComposition.age: Account age
 // i18n audienceComposition.ageBand.new: Under 90 days
 // i18n audienceComposition.ageBand.underYear: 90 days – 1 year

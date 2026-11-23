@@ -48,6 +48,27 @@ export interface NativeEngagerRow {
   count: number;
 }
 
+/**
+ * Timed notifications from the part of the archive that has no gap. People and
+ * posts are listed once and trimmed to the fields analytics read.
+ */
+export interface NativeTimedReactions {
+  /** False until the collector has joined new notifications to older ones. */
+  connected: boolean;
+  /** Every notification since this time is in the archive. */
+  coveredSince: string | null;
+  /** Newest first. `post` is the reply itself for a mention. */
+  events: {
+    id: string;
+    kind: 'favourite' | 'reblog' | 'mention' | 'follow';
+    at: string;
+    actor: string;
+    post: string | null;
+  }[];
+  people: Record<string, Partial<Account> & { id: string }>;
+  posts: Record<string, Partial<Status> & { id: string }>;
+}
+
 /** Native-only analytics over the local archive. Null in web builds. */
 export interface NativeAnalyticsApi {
   /** Read new posts and recount the last 14 days for one account. */
@@ -62,4 +83,6 @@ export interface NativeAnalyticsApi {
   postActivity(handle: string, postId: string): Promise<NativePostActivity>;
   /** Who reacted to the signed-in account in the last `days` days. No requests. */
   engagers(handle: string, days: number): Promise<NativeEngagerRow[]>;
+  /** Timed likes, boosts, mentions and follows (1–365 days). No requests. */
+  reactions(handle: string, days: number): Promise<NativeTimedReactions>;
 }

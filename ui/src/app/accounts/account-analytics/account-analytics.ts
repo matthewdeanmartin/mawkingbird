@@ -67,6 +67,8 @@ import { MbHelp } from '../../design-system/help/help';
 import { EffectiveAudienceDialog } from '../effective-audience-dialog/effective-audience-dialog';
 import { InteractionDecayPanel } from '../interaction-decay-panel/interaction-decay-panel';
 import { EngagedAudiencePanel } from '../engaged-audience-panel/engaged-audience-panel';
+import { DiscoveryPanel } from '../discovery-panel/discovery-panel';
+import { TopBoostersPanel } from '../top-boosters-panel/top-boosters-panel';
 import { AudienceCompositionPanel } from '../audience-composition-panel/audience-composition-panel';
 import { hostOf } from '../audience-composition';
 
@@ -229,6 +231,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.refine.rateLimited: The server asked us to slow down. Reach uses the boosters found so far; try the rest later.
 // i18n accountAnalytics.tiles.liveliness: Liveliness
 // i18n accountAnalytics.tiles.recentPostsPerDay: Recent posts / day
+// i18n accountAnalytics.newPeopleLink: Find new people among your recent followers
 // i18n accountAnalytics.audience.heading: Effective friends & followers
 // i18n accountAnalytics.audience.explain: How much of the audience is still posting. Counts marked ~ are estimated from a partial scan.
 // i18n accountAnalytics.audience.friends: Friends
@@ -301,6 +304,8 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
     EffectiveAudienceDialog,
     InteractionDecayPanel,
     EngagedAudiencePanel,
+    DiscoveryPanel,
+    TopBoostersPanel,
     AudienceCompositionPanel,
     TranslocoPipe,
   ],

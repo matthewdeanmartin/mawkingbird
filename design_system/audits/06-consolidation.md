@@ -1,5 +1,21 @@
 # Sprint 6 opening consolidation audit
 
+## New people to meet, 2026-11-23
+
+Your own Followers tab opens with an opt-in "New people to meet" panel
+(`accounts/new-people-panel`): a person list with three badge-and-reason rows
+each, the shared follow button, and a progress bar for the post check. Built
+from `MbBadge`, `MbButton`, `MbHelp` and `MbProgress`; own-account analytics
+links to it. Profile and analytics lines shift; other dispositions unchanged.
+
+## Discovery rate and top boosters, 2026-11-23
+
+Own-account analytics gains "Discovery rate" (`accounts/discovery-panel`:
+stat tiles, a progress bar for the follow check, two plain tables) and "Top
+boosters" (`accounts/top-boosters-panel`: a sort button group and a person
+list). Built from `MbButton`, `MbProgress`, `MbStatGrid` and `MbHelp`.
+Analytics lines shift; other dispositions unchanged.
+
 ## Engaged audience panel, 2026-11-23
 
 Own-account analytics gains "When your audience is around"

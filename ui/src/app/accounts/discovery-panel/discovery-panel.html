@@ -1,0 +1,194 @@
+<h2>{{ 'discoveryRate.heading' | transloco }}</h2>
+<p class="muted small">{{ 'discoveryRate.explain' | transloco }}</p>
+
+@if (scan.running()) {
+  <p class="muted small" role="status">{{ 'discoveryRate.reading' | transloco }}</p>
+} @else if (log()) {
+  @if (checkState(); as c) {
+    @if (c.phase === 'checking') {
+      <mb-progress
+        [label]="'discoveryRate.checking' | transloco"
+        [caption]="
+          'discoveryRate.checkingCaption'
+            | transloco: { checked: fmt(c.checked), total: fmt(c.total) }
+        "
+        [value]="c.checked"
+        [max]="c.total"
+      />
+      <button mbButton type="button" variant="outline" size="small" (click)="check.cancel()">
+        {{ 'discoveryRate.stop' | transloco }}
+      </button>
+    } @else if (c.phase === 'failed') {
+      <p class="small error" role="alert">
+        {{ 'discoveryRate.failed' | transloco: { error: c.error } }}
+      </p>
+    }
+  }
+
+  @if (discovery(); as d) {
+    <dl mbStatGrid>
+      <div>
+        <dt>
+          {{ 'discoveryRate.tile.overall' | transloco }}
+          <mb-help
+            [label]="
+              'discoveryRate.help.about'
+                | transloco: { stat: ('discoveryRate.tile.overall' | transloco) }
+            "
+            >{{ 'discoveryRate.help.overall' | transloco }}</mb-help
+          >
+        </dt>
+        <dd>
+          @if (d.overall.pct !== null) {
+            {{ 'discoveryRate.pct' | transloco: { pct: d.overall.pct } }}
+          } @else {
+            {{ 'discoveryRate.none' | transloco }}
+          }
+          <small class="muted">{{
+            'discoveryRate.tile.overallSub'
+              | transloco
+                : { discovered: fmt(d.overall.discovered), reactions: fmt(d.overall.reactions) }
+          }}</small>
+        </dd>
+      </div>
+      <div>
+        <dt>{{ 'discoveryRate.tile.newPeople' | transloco }}</dt>
+        <dd>
+          {{ fmt(d.newPeople) }}
+          <small class="muted">{{
+            'discoveryRate.tile.newPeopleSub' | transloco: { people: fmt(d.people) }
+          }}</small>
+        </dd>
+      </div>
+      <div>
+        <dt>{{ 'discoveryRate.tile.followedAfter' | transloco }}</dt>
+        <dd>
+          {{ fmt(d.followedAfter) }}
+          <small class="muted">{{ 'discoveryRate.tile.followedAfterSub' | transloco }}</small>
+        </dd>
+      </div>
+      @for (kind of kinds; track kind) {
+        <div>
+          <dt>
+            {{ 'discoveryRate.tile.overall' | transloco }} ·
+            {{ 'discoveryRate.kind.' + kind | transloco }}
+          </dt>
+          <dd>
+            @if (d.byKind[kind].pct !== null) {
+              {{ 'discoveryRate.pct' | transloco: { pct: d.byKind[kind].pct } }}
+            } @else {
+              {{ 'discoveryRate.none' | transloco }}
+            }
+          </dd>
+        </div>
+      }
+    </dl>
+    <p class="muted small">
+      {{ 'discoveryRate.since' | transloco: { date: (sinceIso() | humanTime) } }}
+      @if (d.unknownPeople) {
+        {{ 'discoveryRate.unknown' | transloco: { count: fmt(d.unknownPeople) } }}
+      }
+    </p>
+
+    <h3 class="chart-title muted">
+      {{ 'discoveryRate.posts' | transloco }}
+      <mb-help
+        [label]="
+          'discoveryRate.help.about' | transloco: { stat: ('discoveryRate.posts' | transloco) }
+        "
+        >{{ 'discoveryRate.help.rows' | transloco }}</mb-help
+      >
+    </h3>
+    @if (d.posts.length) {
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{{ 'discoveryRate.col.post' | transloco }}</th>
+              <th scope="col">{{ 'discoveryRate.col.newPeople' | transloco }}</th>
+              <th scope="col">{{ 'discoveryRate.col.rate' | transloco }}</th>
+              <th scope="col">{{ 'discoveryRate.col.reactions' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of d.posts; track row.key) {
+              <tr>
+                <th scope="row" class="post">
+                  <a [routerLink]="['/statuses', row.key]">{{
+                    excerpt(row.content) || ('discoveryRate.mediaOnly' | transloco)
+                  }}</a>
+                </th>
+                <td>{{ fmt(row.newPeople) }}</td>
+                <td>{{ 'discoveryRate.pct' | transloco: { pct: row.pct } }}</td>
+                <td>{{ fmt(row.reactions) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="muted small">{{ 'discoveryRate.notEnough' | transloco }}</p>
+    }
+
+    <h3 class="chart-title muted">{{ 'discoveryRate.tags' | transloco }}</h3>
+    @if (d.tags.length) {
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">{{ 'discoveryRate.col.tag' | transloco }}</th>
+              <th scope="col">{{ 'discoveryRate.col.newPeople' | transloco }}</th>
+              <th scope="col">{{ 'discoveryRate.col.rate' | transloco }}</th>
+              <th scope="col">{{ 'discoveryRate.col.reactions' | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of d.tags; track row.key) {
+              <tr>
+                <th scope="row">#{{ row.key }}</th>
+                <td>{{ fmt(row.newPeople) }}</td>
+                <td>{{ 'discoveryRate.pct' | transloco: { pct: row.pct } }}</td>
+                <td>{{ fmt(row.reactions) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <p class="muted small">{{ 'discoveryRate.notEnough' | transloco }}</p>
+    }
+  }
+
+  @if (!check.running()) {
+    <p class="muted small">
+      @if (people().length > toCheck()) {
+        {{
+          'discoveryRate.checkCostCapped'
+            | transloco
+              : { checked: fmt(toCheck()), people: fmt(people().length), requests: requests() }
+        }}
+      } @else {
+        {{
+          'discoveryRate.checkCost'
+            | transloco: { people: fmt(people().length), requests: requests() }
+        }}
+      }
+    </p>
+    <button
+      mbButton
+      type="button"
+      variant="outline"
+      [size]="discovery() ? 'small' : 'regular'"
+      (click)="runCheck()"
+    >
+      {{ (discovery() ? 'discoveryRate.checkAgain' : 'discoveryRate.check') | transloco }}
+    </button>
+  }
+} @else if (scanState()?.phase === 'done' || scanState()?.phase === 'cancelled') {
+  <p class="muted small">{{ 'discoveryRate.nothing' | transloco }}</p>
+} @else {
+  <p class="muted small">{{ 'discoveryRate.cta' | transloco }}</p>
+  <button mbButton type="button" variant="outline" (click)="run()">
+    {{ 'discoveryRate.run' | transloco }}
+  </button>
+}

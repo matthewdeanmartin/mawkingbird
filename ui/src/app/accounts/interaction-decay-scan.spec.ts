@@ -56,15 +56,35 @@ describe('InteractionDecayScan', () => {
     expect(s.stop).toBe('reachedOldest');
     expect(notifications).toHaveBeenCalledTimes(2);
     expect(notifications.mock.calls[0][1]).toEqual({
-      types: ['favourite', 'reblog', 'mention'],
+      types: ['favourite', 'reblog', 'mention', 'follow'],
       limit: DECAY_PAGE_SIZE,
     });
     expect(s.result?.series.likes.events).toBe(DECAY_PAGE_SIZE + 3);
     expect(s.excluded).toBe(0);
   });
 
-  it('a short page is the end of the server; posts older than it are left out', async () => {
-    notifications.mockReturnValueOnce(of(likes('p2', T0 + 2 * DAY + 4 * 60_000, 5)));
+  it('keeps paging past short pages; only a page with nothing new is the end', async () => {
+    notifications
+      .mockReturnValueOnce(of(likes('p1', T0 + 2 * DAY, 40)))
+      .mockReturnValueOnce(of(likes('p1', T0 + DAY, 40)))
+      .mockReturnValueOnce(of(likes('p1', T0 - HOUR, 1)));
+    await scan.start('me', posts);
+    expect(notifications).toHaveBeenCalledTimes(3);
+    expect(scan.state()?.stop).toBe('reachedOldest');
+  });
+
+  it('counts a notification that two pages repeat once', async () => {
+    const page = likes('p1', T0 + 2 * DAY, 3);
+    notifications.mockReturnValueOnce(of(page)).mockReturnValueOnce(of(page));
+    await scan.start('me', posts);
+    expect(scan.state()?.stop).toBe('serverEnd');
+    expect(scan.state()?.read).toBe(3);
+  });
+
+  it('at the end of the server, posts older than what it kept are left out', async () => {
+    notifications
+      .mockReturnValueOnce(of(likes('p2', T0 + 2 * DAY + 4 * 60_000, 5)))
+      .mockReturnValueOnce(of([]));
     const both: DecayPost[] = [{ id: 'p2', createdAt: T0 + 2 * DAY, counters: 5 }, ...posts];
     await scan.start('me', both);
     const s = scan.state()!;
@@ -74,13 +94,16 @@ describe('InteractionDecayScan', () => {
   });
 
   it('with no posts old enough, still reads a window for the engaged audience', async () => {
-    notifications.mockReturnValueOnce(of(likes('x', Date.now() - DAY, 4)));
+    notifications
+      .mockReturnValueOnce(of(likes('x', Date.now() - DAY, 4)))
+      .mockReturnValueOnce(of([]));
     await scan.start('me', []);
     const s = scan.state()!;
     expect(s.phase).toBe('done');
     expect(s.result?.posts).toBe(0);
     expect(s.engaged?.reactions).toBe(4);
     expect(s.engaged?.people).toBe(1);
+    expect(s.log?.reactions).toHaveLength(4);
   });
 
   it('respects the page cap', async () => {

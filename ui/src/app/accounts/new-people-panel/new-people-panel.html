@@ -1,0 +1,150 @@
+<h2>
+  {{ 'newPeople.heading' | transloco }}
+  <mb-help
+    [label]="'newPeople.help.about' | transloco: { stat: ('newPeople.heading' | transloco) }"
+    >{{ 'newPeople.help.body' | transloco }}</mb-help
+  >
+</h2>
+<p class="muted small">{{ 'newPeople.explain' | transloco }}</p>
+
+@if (state(); as s) {
+  @if (s.phase === 'loading') {
+    <p class="muted small" role="status">{{ 'newPeople.loading' | transloco }}</p>
+  } @else if (s.phase === 'failed') {
+    <p class="small error" role="alert">
+      {{ 'newPeople.failed' | transloco: { error: s.error } }}
+    </p>
+  } @else if (!s.people.length) {
+    <p class="muted small">{{ 'newPeople.none' | transloco }}</p>
+  }
+
+  @if (s.people.length) {
+    <p class="muted small">
+      {{ 'newPeople.summary' | transloco: { count: fmt(s.people.length), read: fmt(s.read) } }}
+      @if (noFollowTimes()) {
+        {{ 'newPeople.tip' | transloco }}
+      }
+    </p>
+    @if (s.phase === 'checking') {
+      <mb-progress
+        [label]="'newPeople.checking' | transloco"
+        [caption]="
+          'newPeople.checkingCaption' | transloco: { checked: s.checked, total: s.toCheck }
+        "
+        [value]="s.checked"
+        [max]="s.toCheck"
+      />
+      <button mbButton type="button" variant="outline" size="small" (click)="scan.cancel()">
+        {{ 'newPeople.stop' | transloco }}
+      </button>
+    } @else if (nextCheck()) {
+      <button
+        mbButton
+        type="button"
+        size="small"
+        [disabled]="scan.busy()"
+        (click)="scan.checkPosts()"
+      >
+        {{ 'newPeople.check' | transloco: { count: nextCheck() } }}
+      </button>
+    }
+
+    <ol>
+      @for (row of rows(); track row.e.account.id) {
+        <li>
+          <img [src]="row.e.account.avatar_static || row.e.account.avatar" alt="" loading="lazy" />
+          <div class="who">
+            <a [routerLink]="link(row.e.account)"><app-account-name [account]="row.e.account" /></a>
+            <span class="muted small">&#64;{{ row.e.account.acct }}</span>
+            @if (row.e.followedAt; as at) {
+              <span class="muted small">{{
+                'newPeople.followed' | transloco: { time: (iso(at) | humanTime) }
+              }}</span>
+            }
+          </div>
+          <app-follow-button [accountId]="row.e.account.id" [handle]="'@' + row.e.account.acct" />
+          <div class="detail">
+            <dl>
+              @for (dim of row.dims; track dim.id) {
+                <div>
+                  <dt class="muted">{{ 'newPeople.dim.' + dim.id | transloco }}</dt>
+                  <dd>
+                    <mb-badge [tone]="dim.warn ? 'attention' : 'neutral'">{{
+                      'newPeople.' + dim.id + '.' + dim.verdict | transloco
+                    }}</mb-badge>
+                    <span class="small">
+                      @for (r of dim.reasons; track r.key; let last = $last) {
+                        {{ 'newPeople.reason.' + r.key | transloco: params(r)
+                        }}{{ last ? '.' : ';' }}
+                      }
+                    </span>
+                  </dd>
+                </div>
+              }
+            </dl>
+            @if (row.e.behaviorFrom; as server) {
+              <span class="muted small">{{ 'newPeople.fromOrigin' | transloco: { server } }}</span>
+            } @else if (s.unreadable.has(row.e.account.id)) {
+              <span class="muted small">{{ 'newPeople.unreadable' | transloco }}</span>
+            }
+            @if (refused().has(row.e.account.id)) {
+              <span class="muted small" role="status">{{
+                'newPeople.originRefused' | transloco
+              }}</span>
+            } @else if (scan.canAskOrigin(row.e)) {
+              <span>
+                <button
+                  mbButton
+                  type="button"
+                  variant="link"
+                  size="small"
+                  [disabled]="asking().has(row.e.account.id)"
+                  (click)="askOrigin(row.e)"
+                >
+                  {{
+                    (asking().has(row.e.account.id)
+                      ? 'newPeople.askingOrigin'
+                      : 'newPeople.askOrigin'
+                    ) | transloco
+                  }}
+                </button>
+              </span>
+            }
+          </div>
+        </li>
+      }
+    </ol>
+  }
+}
+
+@if (!scan.busy()) {
+  @if (state(); as s) {
+    <div class="actions">
+      @if (s.cursor) {
+        <button
+          mbButton
+          type="button"
+          variant="outline"
+          size="small"
+          (click)="scan.load(accountId(), true)"
+        >
+          {{ 'newPeople.more' | transloco }}
+        </button>
+      }
+      <button
+        mbButton
+        type="button"
+        variant="outline"
+        size="small"
+        (click)="scan.load(accountId())"
+      >
+        {{ 'newPeople.again' | transloco }}
+      </button>
+    </div>
+  } @else {
+    <p class="muted small">{{ 'newPeople.cost' | transloco: { count: page } }}</p>
+    <button mbButton type="button" variant="outline" (click)="scan.load(accountId())">
+      {{ 'newPeople.find' | transloco }}
+    </button>
+  }
+}

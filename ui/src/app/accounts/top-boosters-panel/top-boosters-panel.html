@@ -1,0 +1,79 @@
+<h2>
+  {{ 'topBoosters.heading' | transloco }}
+  <mb-help
+    [label]="'topBoosters.help.about' | transloco: { stat: ('topBoosters.heading' | transloco) }"
+    >{{ 'topBoosters.help.list' | transloco }}</mb-help
+  >
+</h2>
+<p class="muted small">{{ 'topBoosters.explain' | transloco }}</p>
+
+@if (scan.running()) {
+  <p class="muted small" role="status">{{ 'topBoosters.reading' | transloco }}</p>
+} @else if (boosters().length) {
+  <p class="muted small">
+    {{
+      'topBoosters.summary'
+        | transloco
+          : {
+              people: fmt(boosters().length),
+              servers: fmt(servers()),
+              date: (sinceIso() | humanTime),
+            }
+    }}
+  </p>
+  <div class="sorts" role="group" [attr.aria-label]="'topBoosters.sort' | transloco">
+    @for (s of sorts; track s) {
+      <button
+        mbButton
+        type="button"
+        size="small"
+        [variant]="sort() === s ? 'solid' : 'outline'"
+        [attr.aria-pressed]="sort() === s"
+        (click)="sort.set(s)"
+      >
+        {{ 'topBoosters.sort.' + s | transloco }}
+      </button>
+    }
+  </div>
+  <ol>
+    @for (b of boosters().slice(0, limit()); track b.account.id) {
+      <li>
+        <img [src]="b.account.avatar_static || b.account.avatar" alt="" loading="lazy" />
+        <div class="who">
+          <a [routerLink]="link(b.account)"><app-account-name [account]="b.account" /></a>
+          <span class="muted small">&#64;{{ b.account.acct }}</span>
+          <span class="small">
+            {{ 'topBoosters.followers' | transloco: { count: fmt(b.followers) } }} ·
+            {{
+              (b.posts === 1 ? 'topBoosters.posts.one' : 'topBoosters.posts.other')
+                | transloco: { count: fmt(b.posts) }
+            }}
+            · {{ 'topBoosters.last' | transloco: { time: (iso(b.last) | humanTime) } }}
+          </span>
+          @if (notFollowing(b.account) || b.account.bot) {
+            <span class="muted small">
+              @if (notFollowing(b.account)) {
+                {{ 'topBoosters.notFollowing' | transloco }}
+              }
+              @if (b.account.bot) {
+                {{ 'topBoosters.automated' | transloco }}
+              }
+            </span>
+          }
+        </div>
+      </li>
+    }
+  </ol>
+  @if (boosters().length > limit()) {
+    <button mbButton type="button" variant="outline" size="small" (click)="more()">
+      {{ 'topBoosters.more' | transloco }}
+    </button>
+  }
+} @else if (scanState()?.phase === 'done' || scanState()?.phase === 'cancelled') {
+  <p class="muted small">{{ 'topBoosters.nothing' | transloco }}</p>
+} @else {
+  <p class="muted small">{{ 'topBoosters.cta' | transloco }}</p>
+  <button mbButton type="button" variant="outline" (click)="run()">
+    {{ 'topBoosters.run' | transloco }}
+  </button>
+}

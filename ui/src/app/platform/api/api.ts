@@ -310,6 +310,15 @@ export class Api {
       .pipe(map((rows) => rows.find((row) => row.id === id)?.accounts ?? []));
   }
 
+  /** {@link familiarFollowers} for several accounts in one request. */
+  familiarFollowersOf(ids: string[]): Observable<FamiliarFollowers[]> {
+    let params = new HttpParams();
+    for (const id of ids) {
+      params = params.append('id[]', id);
+    }
+    return this.http.get<FamiliarFollowers[]>('/api/v1/accounts/familiar_followers', { params });
+  }
+
   accountEndorsements(id: string): Observable<Account[]> {
     return this.http.get<Account[]>(`/api/v1/accounts/${id}/endorsements`);
   }
