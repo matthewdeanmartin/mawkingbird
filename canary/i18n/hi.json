@@ -5762,7 +5762,6 @@
     "shareElsewhereEllipsis": "कहीं और साझा करें…",
     "shareThisArticle": "यह लेख साझा करें",
     "showAnyway": "फिर भी दिखाएं",
-    "showHeldImages": "धीमा कनेक्शन: तस्वीरें रोकी गईं। दिखाएँ",
     "showLess": "कम दिखाएं",
     "showMore": "और दिखाएं",
     "showSensitiveContent": "संवेदनशील सामग्री दिखाएं",
@@ -5790,7 +5789,6 @@
     "yourServer": "आपका सर्वर"
   },
   "storageDiagnostics": {
-    "backToObservability": "← अवलोकनीयता",
     "colChars": "अक्षर",
     "colDatabase": "डेटाबेस",
     "colKey": "Key",
@@ -6315,7 +6313,6 @@
     "party.tags": "पार्टी के हैशटैग"
   },
   "connection": {
-    "backToObservability": "ऑब्ज़र्वेबिलिटी",
     "blame.server": "दूसरी साइटें जवाब दे रही हैं, इसलिए समस्या आपके कनेक्शन में नहीं, आपके सर्वर में लगती है।",
     "card.details": "कनेक्शन का विवरण →",
     "card.hour": "पिछला घंटा: {{requests}} अनुरोध, {{failed}} बिना जवाब",

@@ -5735,7 +5735,6 @@
     "shareElsewhereEllipsis": "Chia sẻ nơi khác…",
     "shareThisArticle": "Chia sẻ bài viết này",
     "showAnyway": "Vẫn hiển thị",
-    "showHeldImages": "Kết nối chậm: ảnh được giữ lại. Hiện ảnh",
     "showLess": "Thu gọn",
     "showMore": "Xem thêm",
     "showSensitiveContent": "Hiện nội dung nhạy cảm",
@@ -5763,7 +5762,6 @@
     "yourServer": "Máy chủ của bạn"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Khả năng quan sát",
     "colChars": "Ký tự",
     "colDatabase": "Cơ sở dữ liệu",
     "colKey": "Khóa",
@@ -6315,7 +6313,6 @@
     "party.tags": "Hashtag của buổi xem chung"
   },
   "connection": {
-    "backToObservability": "Khả năng quan sát",
     "blame.server": "Các trang khác vẫn trả lời, nên có vẻ vấn đề nằm ở máy chủ của bạn chứ không phải kết nối.",
     "card.details": "Chi tiết kết nối →",
     "card.hour": "Giờ qua: {{requests}} yêu cầu, {{failed}} không có phản hồi",

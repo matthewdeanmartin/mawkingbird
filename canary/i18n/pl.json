@@ -6150,7 +6150,6 @@
     "shareElsewhereEllipsis": "Udostępnij gdzie indziej…",
     "shareThisArticle": "Udostępnij ten artykuł",
     "showAnyway": "Pokaż mimo to",
-    "showHeldImages": "Wolne połączenie: obrazy wstrzymane. Pokaż je",
     "showLess": "Pokaż mniej",
     "showMore": "Pokaż więcej",
     "showSensitiveContent": "Pokaż treść wrażliwą",
@@ -6178,7 +6177,6 @@
     "yourServer": "Twój serwer"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Obserwowalność",
     "colChars": "Znaki",
     "colDatabase": "Baza danych",
     "colKey": "Klucz",
@@ -6315,7 +6313,6 @@
     "step.when": "Teraz czy później?"
   },
   "connection": {
-    "backToObservability": "Obserwowalność",
     "blame.server": "Inne strony odpowiadają, więc problem wygląda na twój serwer, a nie połączenie.",
     "card.details": "Szczegóły połączenia →",
     "card.hour": "Ostatnia godzina: zapytania {{requests}}, bez odpowiedzi {{failed}}",

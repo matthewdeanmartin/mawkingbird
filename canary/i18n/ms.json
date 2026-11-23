@@ -527,7 +527,6 @@
     "cancel": "Batal"
   },
   "connection": {
-    "backToObservability": "Pemantauan sistem",
     "blame.server": "Laman lain memberikan respons. Masalah ini nampaknya berpunca daripada pelayan anda, bukan sambungan anda.",
     "card.details": "Butiran sambungan →",
     "card.hour": "Sejam terakhir: {{requests}} permintaan, {{failed}} tanpa respons",
@@ -2874,7 +2873,6 @@
     "shareThisArticle": "Kongsi artikel ini",
     "showAnyway": "Tunjukkan juga",
     "showFullPost": "Tunjukkan hantaran penuh ({{count}} aksara)",
-    "showHeldImages": "Sambungan perlahan: gambar ditahan. Tunjukkan gambar",
     "showLess": "Tunjukkan kurang",
     "showMore": "Tunjukkan lagi",
     "showReply": "Tunjukkan balasan ini dalam bebenang saya",

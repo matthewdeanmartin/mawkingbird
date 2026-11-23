@@ -355,7 +355,6 @@
     "shareElsewhereEllipsis": "Partager ailleurs…",
     "shareThisArticle": "Partager cet article",
     "showAnyway": "Afficher quand même",
-    "showHeldImages": "Connexion lente : images retenues. Les afficher",
     "showLess": "Afficher moins",
     "showMore": "Afficher plus",
     "showSensitiveContent": "Afficher le contenu sensible",
@@ -5594,7 +5593,6 @@
     "working": "En cours…"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Observabilité",
     "colChars": "Caractères",
     "colDatabase": "Base de données",
     "colKey": "Clé",
@@ -6474,7 +6472,6 @@
     "write.view": "Voir sur ton blog"
   },
   "connection": {
-    "backToObservability": "Observabilité",
     "blame.server": "D’autres sites répondent, donc le problème semble venir de ton serveur plutôt que de ta connexion.",
     "card.details": "Détails de la connexion →",
     "card.hour": "Dernière heure : {{requests}} requêtes, {{failed}} sans réponse",
