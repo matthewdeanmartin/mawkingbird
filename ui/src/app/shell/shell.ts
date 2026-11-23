@@ -193,6 +193,12 @@ function isWideUrl(url: string): boolean {
   // competing with the shell's rails for the same edge of the screen.
   return (
     url.startsWith('/settings') ||
+    // Diagnostics pages: tables, charts and logs that need the width, and the
+    // rails' who-to-follow material is beside the point there.
+    url.startsWith('/observability') ||
+    url === '/connection' ||
+    url.startsWith('/connection?') ||
+    url.startsWith('/storage-diagnostics') ||
     url.startsWith('/conversations') ||
     url.startsWith('/search') ||
     url.startsWith('/write') ||

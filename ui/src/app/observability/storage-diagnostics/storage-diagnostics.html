@@ -1,14 +1,10 @@
 <div class="obs-page">
+  <app-reading-back fallback="/observability" />
   <div class="obs-head">
     <h1>{{ 'storageDiagnostics.title' | transloco }}</h1>
     <p class="muted">
       {{ 'storageDiagnostics.intro' | transloco }}
     </p>
-    <nav class="page-menu">
-      <a class="page-menu-link" routerLink="/observability">{{
-        'storageDiagnostics.backToObservability' | transloco
-      }}</a>
-    </nav>
   </div>
 
   <!-- ========================== Local storage ============================ -->

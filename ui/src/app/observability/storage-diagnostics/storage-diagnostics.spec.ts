@@ -98,10 +98,9 @@ describe('StorageDiagnostics', () => {
     });
   });
 
-  it('links back to Observability', () => {
-    const link: HTMLAnchorElement | null = fixture.nativeElement.querySelector(
-      'a[href="/observability"]',
-    );
-    expect(link).not.toBeNull();
+  it('offers Back at the top, falling back to Observability', () => {
+    const back = fixture.nativeElement.querySelector('app-reading-back');
+    expect(back).not.toBeNull();
+    expect(back.textContent).toContain('Back');
   });
 });

@@ -270,6 +270,7 @@
 
 .error-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 8px;
   padding: 8px 12px;
@@ -309,7 +310,12 @@
 
 .diagnostic-row {
   display: grid;
-  grid-template-columns: 52px minmax(180px, 0.8fr) minmax(220px, 1.4fr) auto;
+  /* Level, event and time on one line; the details (usually a URL) get a full
+     line of their own below and wrap, instead of four squeezed columns. */
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  grid-template-areas:
+    'level event time'
+    '. details details';
   align-items: baseline;
   gap: 8px;
   padding: 8px 12px;
@@ -335,11 +341,21 @@
   color: #e0245e;
 }
 
-.diagnostic-event,
-.diagnostic-details {
+.diagnostic-level {
+  grid-area: level;
+}
+
+.diagnostic-event {
+  grid-area: event;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.diagnostic-details {
+  grid-area: details;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .diagnostic-area {
@@ -351,6 +367,7 @@
 }
 
 .diagnostic-time {
+  grid-area: time;
   white-space: nowrap;
 }
 
@@ -502,4 +519,13 @@
 .tier-tag[data-tier='free'] {
   background: color-mix(in srgb, var(--muted) 18%, transparent);
   color: var(--muted);
+}
+
+.err-endpoint {
+  overflow-wrap: anywhere;
+}
+
+/* "Details →" links from the dashboard to the wide pages. */
+.obs-more {
+  margin: 10px 0 0;
 }

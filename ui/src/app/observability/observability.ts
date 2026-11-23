@@ -4,7 +4,10 @@ import { Auth } from '../platform/session/auth';
 // i18n pages.observability.myAnalytics: My Profile's Analytics
 import { Component, computed, inject, signal } from '@angular/core';
 import { MbButton } from '../design-system/button/button';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { ReadingBack } from '../shell/reading-back';
 import {
   ALL_SCOPES,
   ApiError,
@@ -163,6 +166,11 @@ type RouteSortKey = 'visits' | 'time';
 // i18n pages.observability.scope.combined.one: {{count}} server combined · currently signed in to {{server}}
 // i18n pages.observability.scope.combined.other: {{count}} servers combined · currently signed in to {{server}}
 // i18n pages.observability.storageDiagnostics: Storage Diagnostics →
+// i18n pages.observability.details.api: All API endpoints →
+// i18n pages.observability.details.logs: Open the logs →
+// i18n pages.observability.api.pageTitle: API calls
+// i18n pages.observability.logs.title: Logs
+// i18n pages.observability.logs.summary: {{errors}} recent API errors, plus the diagnostic timeline, client errors and page timings.
 // i18n pages.observability.connection: Connection →
 // i18n pages.observability.connectionTitle: Connection
 // i18n pages.observability.api.title: API calls
@@ -308,14 +316,30 @@ type RouteSortKey = 'visits' | 'time';
 // i18n pages.observability.tooltip.bucket.one: {{time}} · {{count}} call
 // i18n pages.observability.tooltip.bucket.other: {{time}} · {{count}} calls
 // i18n pages.observability.tooltip.bucketErrors: · {{count}} err
+/** The dashboard, the endpoint list, or the logs. */
+export type ObservabilityView = 'dashboard' | 'api' | 'logs';
+
 @Component({
   selector: 'app-observability',
-  imports: [MbButton, RouterLink, TranslocoPipe, ConnectionSummary],
+  imports: [MbButton, RouterLink, TranslocoPipe, ConnectionSummary, ReadingBack],
   templateUrl: './observability.html',
   styleUrls: ['./diagnostics-shared.css', './observability.css'],
 })
 export class Observability {
   private readonly dialogs = inject(AppDialogs);
+  /**
+   * Which page this is. The dashboard keeps the charts and summaries; the full
+   * endpoint list and the logs are too wide for it and get pages of their own
+   * (route data `view`), with Back to the dashboard.
+   */
+  protected readonly view = toSignal(
+    inject(ActivatedRoute).data.pipe(
+      map((data): ObservabilityView =>
+        data['view'] === 'api' || data['view'] === 'logs' ? data['view'] : 'dashboard',
+      ),
+    ),
+    { initialValue: 'dashboard' as ObservabilityView },
+  );
 
   protected readonly auth = inject(Auth);
   protected readonly wellness = inject(Wellness);

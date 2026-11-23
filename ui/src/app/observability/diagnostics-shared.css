@@ -210,3 +210,15 @@
   background: color-mix(in srgb, var(--accent) 10%, transparent);
   text-decoration: none;
 }
+
+/* Section titles and their action buttons: the buttons wrap as a group
+   below the title when room runs out, and a label never breaks mid-word. */
+.section-head,
+.section-actions {
+  flex-wrap: wrap;
+}
+
+.section-actions button,
+.section-actions a {
+  white-space: nowrap;
+}

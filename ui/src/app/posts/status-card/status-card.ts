@@ -244,7 +244,7 @@ const QUOTE_POLICIES = ['public', 'followers', 'nobody'] as const;
 // i18n statusCard.revokeQuotePermission: Revoke quote permission
 // i18n statusCard.revokeQuoteConfirm: Revoke permission for this post to quote your post? The quoted content will no longer be available in this quote.
 // i18n statusCard.playMedia: Play
-// i18n statusCard.showHeldImages: Slow connection: pictures held back. Show them
+// i18n statusCard.showPictures: Show pictures
 // i18n statusCard.viewImage: View image{{description}}
 // i18n statusCard.viewImageNoDescription: View image {{number}} (no description provided)
 // i18n statusCard.noDescriptionProvided: No description provided

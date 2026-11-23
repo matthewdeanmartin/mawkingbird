@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { ReadingBack } from '../../shell/reading-back';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -78,7 +79,6 @@ import {
 // i18n connection.window.15m: Last 15 minutes
 // i18n connection.window.1h: Last hour
 // i18n connection.window.24h: Last 24 hours
-// i18n connection.backToObservability: Observability
 // i18n connection.offlineApp.title: Offline copy
 // i18n connection.offlineApp.ready: Mawkingbird can open on this device without a connection. {{files}} app files are saved; screens you haven't opened yet still need a connection the first time.
 // i18n connection.offlineApp.saving: Mawkingbird is saving the parts of the app you use, so it can open without a connection.
@@ -117,6 +117,7 @@ const COLUMN_WIDTH = 6;
     MbStatGrid,
     MbToolbar,
     MbToolbarButton,
+    ReadingBack,
   ],
   templateUrl: './connection-page.html',
   styleUrl: './connection-page.css',

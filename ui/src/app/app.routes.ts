@@ -1535,6 +1535,19 @@ export const routes: Routes = [
         loadComponent: () => import('./observability/observability').then((m) => m.Observability),
       },
       {
+        // The dashboard's wide material, each on a page of its own.
+        path: 'observability/api',
+        title: 'API calls',
+        data: { view: 'api' },
+        loadComponent: () => import('./observability/observability').then((m) => m.Observability),
+      },
+      {
+        path: 'observability/logs',
+        title: 'Logs',
+        data: { view: 'logs' },
+        loadComponent: () => import('./observability/observability').then((m) => m.Observability),
+      },
+      {
         // Split out of Observability: an inventory of what is stored on this
         // device, where every destructive control on local data now lives.
         path: 'storage-diagnostics',

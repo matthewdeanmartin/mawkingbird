@@ -704,9 +704,10 @@ export class Compose implements OnDestroy {
    * composers pass their own already-translated text.
    */
   readonly placeholder = input('');
-  protected readonly placeholderText = computed(
-    () => this.placeholder() || this.transloco.translate<string>('compose.placeholder'),
-  );
+  // The default is resolved in the template with the transloco pipe, which
+  // updates when the dictionary arrives. A computed calling translate() ran
+  // once, and on Lite (/m/) that was before the dictionary loaded, so the box
+  // showed the raw key "compose.placeholder".
   /** Optional pre-seeded body (e.g. @mentions for a direct reply). */
   readonly initialText = input('');
   /** Isolate drafts for profile mentions and new private chats. */

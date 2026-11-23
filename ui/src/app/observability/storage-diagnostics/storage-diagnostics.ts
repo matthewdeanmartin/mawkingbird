@@ -1,6 +1,6 @@
 import { AppDialogs } from '../../shell/app-dialogs';
+import { ReadingBack } from '../../shell/reading-back';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import {
   DatabaseInfo,
@@ -43,7 +43,6 @@ import { RemoteStorageUsage } from '../remote-storage-usage';
  */
 // i18n storageDiagnostics.title: Storage Diagnostics
 // i18n storageDiagnostics.intro: What this app is keeping on this device, and how much room the browser will give it. Every figure here is a live scan of this browser — nothing on this page is sent anywhere.
-// i18n storageDiagnostics.backToObservability: ← Observability
 // i18n storageDiagnostics.localHeading: Local storage
 // i18n storageDiagnostics.refresh: Refresh
 // i18n storageDiagnostics.tileKeys: keys
@@ -84,7 +83,7 @@ import { RemoteStorageUsage } from '../remote-storage-usage';
 // i18n storageDiagnostics.noObjectStores: no object stores
 @Component({
   selector: 'app-storage-diagnostics',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [TranslocoPipe, ReadingBack],
   templateUrl: './storage-diagnostics.html',
   styleUrls: ['../diagnostics-shared.css', './storage-diagnostics.css'],
 })

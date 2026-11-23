@@ -1,5 +1,21 @@
 # Sprint 6 opening consolidation audit
 
+## Observability split into dashboard, API calls and Logs, 2026-11-22
+
+`/observability` keeps charts and summaries; the per-endpoint table moves to
+`/observability/api`, and the error log, diagnostic timeline, client errors
+and route log to `/observability/logs` (same component, route data `view`).
+These pages, Connection and Storage diagnostics are rails-off wide pages and
+open with the shared `app-reading-back` control instead of a text link.
+Section action buttons no longer wrap mid-word; diagnostic entries put the
+details on their own wrapping line. Dispositions unchanged.
+
+## Composer placeholder and "Show pictures", 2026-11-22
+
+Compose binds its default placeholder through the transloco pipe (it showed
+the raw key on Lite). The status card's held-pictures link now reads "Show
+pictures". Line shifts only; dispositions unchanged.
+
 ## Language-only post search and people language filter, 2026-11-22
 
 Search drops the "search with a common word" outline button (a

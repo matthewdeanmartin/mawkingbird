@@ -1,4 +1,5 @@
 <div class="connection-page">
+  <app-reading-back fallback="/observability" />
   <mb-page-header
     [title]="'connection.title' | transloco"
     [description]="'connection.intro' | transloco"
@@ -9,9 +10,6 @@
       </li>
       <li>
         <a routerLink="/connection-doctor">{{ 'connection.doctor' | transloco }}</a>
-      </li>
-      <li>
-        <a routerLink="/observability">{{ 'connection.backToObservability' | transloco }}</a>
       </li>
     </ul>
   </mb-page-header>

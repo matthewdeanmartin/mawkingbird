@@ -6150,7 +6150,6 @@
     "shareElsewhereEllipsis": "分享到其他地方…",
     "shareThisArticle": "分享此文章",
     "showAnyway": "仍要顯示",
-    "showHeldImages": "連線緩慢：已暫緩顯示圖片。顯示圖片",
     "showLess": "顯示較少",
     "showMore": "顯示更多",
     "showSensitiveContent": "顯示敏感內容",
@@ -6178,7 +6177,6 @@
     "yourServer": "您的伺服器"
   },
   "storageDiagnostics": {
-    "backToObservability": "← 可觀測性",
     "colChars": "字元",
     "colDatabase": "資料庫",
     "colKey": "鍵",
@@ -6315,7 +6313,6 @@
     "step.when": "現在，還是稍後？"
   },
   "connection": {
-    "backToObservability": "可觀測性",
     "blame.server": "其他網站有回應，所以問題看來出在您的伺服器，而不是您的連線。",
     "card.details": "連線詳細資料 →",
     "card.hour": "最近一小時：{{requests}} 個請求，{{failed}} 個沒有回應",

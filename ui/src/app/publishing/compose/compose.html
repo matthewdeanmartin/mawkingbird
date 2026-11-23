@@ -74,7 +74,7 @@
   <textarea
     [ngModel]="text()"
     (ngModelChange)="text.set($event)"
-    [placeholder]="placeholderText()"
+    [placeholder]="placeholder() || ('compose.placeholder' | transloco)"
     [rows]="chatMode() ? 1 : compact() ? 4 : 3"
     (focus)="onBoxFocus(0, $event)"
     (keydown)="onBoxKeydown($event)"

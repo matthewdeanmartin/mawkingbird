@@ -5762,7 +5762,6 @@
     "shareElsewhereEllipsis": "Başka yerde paylaş…",
     "shareThisArticle": "Bu makaleyi paylaş",
     "showAnyway": "Yine de göster",
-    "showHeldImages": "Yavaş bağlantı: resimler bekletiliyor. Göster",
     "showLess": "Daha az göster",
     "showMore": "Daha fazla göster",
     "showSensitiveContent": "Hassas içeriği göster",
@@ -5790,7 +5789,6 @@
     "yourServer": "Sunucunuz"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Gözlemlenebilirlik",
     "colChars": "Karakter",
     "colDatabase": "Veritabanı",
     "colKey": "Anahtar",
@@ -6315,7 +6313,6 @@
     "party.tags": "İzleme partisi etiketleri"
   },
   "connection": {
-    "backToObservability": "Gözlemlenebilirlik",
     "blame.server": "Diğer siteler yanıt veriyor, yani sorun bağlantında değil, sunucunda gibi görünüyor.",
     "card.details": "Bağlantı ayrıntıları →",
     "card.hour": "Son bir saat: {{requests}} istek, {{failed}} yanıtsız",

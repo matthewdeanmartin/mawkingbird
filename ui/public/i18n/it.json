@@ -6151,7 +6151,6 @@
     "shareElsewhereEllipsis": "Condividi altrove…",
     "shareThisArticle": "Condividi questo articolo",
     "showAnyway": "Mostra comunque",
-    "showHeldImages": "Connessione lenta: immagini trattenute. Mostrale",
     "showLess": "Mostra meno",
     "showMore": "Mostra altro",
     "showSensitiveContent": "Mostra contenuto sensibile",
@@ -6179,7 +6178,6 @@
     "yourServer": "Il tuo server"
   },
   "storageDiagnostics": {
-    "backToObservability": "← Osservabilità",
     "colChars": "Caratteri",
     "colDatabase": "Database",
     "colKey": "Chiave",
@@ -6316,7 +6314,6 @@
     "step.when": "Ora o più tardi?"
   },
   "connection": {
-    "backToObservability": "Osservabilità",
     "blame.server": "Altri siti rispondono, quindi il problema sembra il tuo server, non la tua connessione.",
     "card.details": "Dettagli della connessione →",
     "card.hour": "Ultima ora: {{requests}} richieste, {{failed}} senza risposta",

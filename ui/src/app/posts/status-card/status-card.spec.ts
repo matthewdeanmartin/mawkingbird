@@ -3086,7 +3086,7 @@ describe('StatusCard', () => {
       const el = f.nativeElement as HTMLElement;
       expect(el.querySelectorAll('.media-thumb')).toHaveLength(0);
       expect(el.querySelectorAll('.media-alt-row')).toHaveLength(1);
-      expect(el.textContent).toContain('pictures held back');
+      expect(el.textContent).toContain('Show pictures');
     });
 
     it('tap to load shows pictures this tab already loaded', () => {
@@ -3101,7 +3101,7 @@ describe('StatusCard', () => {
       const f = setUp(makeStatus({ media_attachments: [makeMedia('a')] }));
       const el = f.nativeElement as HTMLElement;
       expect(el.querySelectorAll('.media-alt-row')).toHaveLength(1);
-      expect(el.textContent).not.toContain('pictures held back');
+      expect(el.textContent).not.toContain('Show pictures');
       lite({ pictures: 'on' });
       f.detectChanges();
       expect(el.querySelectorAll('.media-thumb')).toHaveLength(1);
@@ -3142,7 +3142,7 @@ describe('StatusCard', () => {
     expect(el.querySelectorAll('.media-thumb')).toHaveLength(0);
     expect(el.querySelectorAll('.media-alt-row')).toHaveLength(1);
     const show = [...el.querySelectorAll('button')].find((b) =>
-      b.textContent!.includes('pictures held back'),
+      b.textContent!.includes('Show pictures'),
     ) as HTMLButtonElement;
     show.click();
     f.detectChanges();
@@ -3160,7 +3160,7 @@ describe('StatusCard', () => {
     TestBed.inject(DataSaver).setMode('always');
     TestBed.inject(ClientPrefs).setShowImages(false);
     const f = setUp(makeStatus({ media_attachments: [makeMedia('a')] }));
-    expect((f.nativeElement as HTMLElement).textContent).not.toContain('pictures held back');
+    expect((f.nativeElement as HTMLElement).textContent).not.toContain('Show pictures');
   });
 
   it('replaces thumbnails with one alt-text row per attachment when images are off', () => {
