@@ -6,7 +6,12 @@
   <p class="muted center">{{ 'favourites.empty' | transloco }}</p>
 } @else {
   @for (s of statuses(); track s.id; let i = $index) {
-    <app-status-card [status]="s" (changed)="onChanged(i, $event)" (deleted)="onDeleted($event)" />
+    <app-status-card
+      [status]="s"
+      (changed)="onChanged(i, $event)"
+      (deleted)="onDeleted($event)"
+      (replaced)="onReplaced($event)"
+    />
   }
   @if (cursor()) {
     <div class="more">

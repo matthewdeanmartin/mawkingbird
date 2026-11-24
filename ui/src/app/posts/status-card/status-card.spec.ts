@@ -2127,17 +2127,44 @@ describe('StatusCard', () => {
     expect(replied[0].id).toBe('99');
   });
 
-  it('onQuoted: closes the quote composer and emits replied with the new quote post', () => {
+  it('onQuoted: closes the quote composer and emits quoted, never replied', () => {
     const replied: Status[] = [];
+    const quoted: Status[] = [];
     const f = setUp();
     f.componentInstance.replied.subscribe((s) => replied.push(s));
+    f.componentInstance.quoted.subscribe((s) => quoted.push(s));
 
     internals(f).quoting.set(true);
     const quotePost = makeStatus({ id: 'qp-1' });
     f.componentInstance.onQuoted(quotePost);
 
     expect(internals(f).quoting()).toBe(false);
-    expect(replied[0].id).toBe('qp-1');
+    expect(quoted[0].id).toBe('qp-1');
+    expect(replied).toHaveLength(0);
+  });
+
+  it('shows a new reply under the post, and keeps it when the post itself updates', () => {
+    const f = setUp(makeStatus({ replies_count: 3 }));
+    f.componentInstance.onReplied(makeStatus({ id: '99', content: '<p>my answer</p>' }));
+    f.detectChanges();
+    const own = () => (f.nativeElement as HTMLElement).querySelector('.own-replies');
+    expect(own()?.textContent).toContain('my answer');
+
+    f.componentRef.setInput('status', makeStatus({ replies_count: 4 }));
+    f.detectChanges();
+    expect(own()?.textContent).toContain('my answer');
+
+    f.componentRef.setInput('status', makeStatus({ id: '2' }));
+    f.detectChanges();
+    expect(own()).toBeNull();
+  });
+
+  it('leaves new replies to a container that lists them itself', () => {
+    const f = setUp();
+    f.componentRef.setInput('showOwnReplies', false);
+    f.componentInstance.onReplied(makeStatus({ id: '99' }));
+    f.detectChanges();
+    expect((f.nativeElement as HTMLElement).querySelector('.own-replies')).toBeNull();
   });
 
   // ---------------------------------------------------------------- toggleFavourite
@@ -3270,6 +3297,35 @@ describe('StatusCard', () => {
       expect((f.nativeElement as HTMLElement).querySelector('.redraft app-compose')).not.toBeNull();
     });
 
+    it('reposts the pictures, content warning and language the post had', async () => {
+      vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+      const media = {
+        id: 'm1',
+        type: 'image',
+        url: 'https://x.example/a.png',
+        preview_url: 'https://x.example/a.png',
+        description: 'a cat',
+      };
+      const f = setUp(makeStatus({ media_attachments: [media], language: 'fi' }));
+      await redraftInternals(f).deleteAndRedraft(fakeEvent());
+      httpMock
+        .expectOne('/api/v1/statuses/1/source')
+        .flush({ id: '1', text: '', spoiler_text: 'cats' });
+      httpMock
+        .expectOne((r) => r.method === 'DELETE' && r.url === '/api/v1/statuses/1')
+        .flush(makeStatus());
+      f.detectChanges();
+
+      const compose = f.debugElement.query((d) => d.name === 'app-compose').componentInstance as {
+        media(): { media: { id: string }; description: string }[];
+        spoilerText(): string;
+        postLanguage(): string;
+      };
+      expect(compose.media().map((m) => [m.media.id, m.description])).toEqual([['m1', 'a cat']]);
+      expect(compose.spoilerText()).toBe('cats');
+      expect(compose.postLanguage()).toBe('fi');
+    });
+
     it('does nothing when the confirmation is declined', async () => {
       vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(false);
       const f = setUp();
@@ -3279,19 +3335,35 @@ describe('StatusCard', () => {
       expect(redraftInternals(f).redrafting()).toBe(false);
     });
 
-    it('emits changed with the reposted status so containers swap it in', async () => {
+    it('shows the repost at once and emits replaced so containers swap it in', async () => {
       const f = setUp();
-      const changed: Status[] = [];
+      const replaced: [string, string][] = [];
       const deleted: Status[] = [];
-      f.componentInstance.changed.subscribe((s) => changed.push(s));
+      f.componentInstance.replaced.subscribe((c) => replaced.push([c.previous.id, c.next.id]));
       f.componentInstance.deleted.subscribe((s) => deleted.push(s));
       await startRedraft(f);
 
-      redraftInternals(f).onRedrafted(makeStatus({ id: '2' }));
+      redraftInternals(f).onRedrafted(makeStatus({ id: '2', content: '<p>second try</p>' }));
+      f.detectChanges();
 
       expect(redraftInternals(f).redrafting()).toBe(false);
-      expect(changed.map((s) => s.id)).toEqual(['2']);
+      expect(replaced).toEqual([['1', '2']]);
       expect(deleted).toHaveLength(0);
+      expect((f.nativeElement as HTMLElement).textContent).toContain('second try');
+    });
+
+    it('says so when the post could not be deleted, and opens no composer', async () => {
+      vi.spyOn(AppDialogs.prototype, 'confirm').mockResolvedValue(true);
+      const f = setUp();
+      await redraftInternals(f).deleteAndRedraft(fakeEvent());
+      httpMock
+        .expectOne('/api/v1/statuses/1/source')
+        .flush({ id: '1', text: 'original text', spoiler_text: '' });
+      httpMock.expectOne('/api/v1/statuses/1').flush('', { status: 500, statusText: 'Error' });
+      f.detectChanges();
+
+      expect(redraftInternals(f).redrafting()).toBe(false);
+      expect((f.nativeElement as HTMLElement).querySelector('.action-error')).not.toBeNull();
     });
 
     it('emits deleted when the redraft is discarded (post is already gone)', async () => {

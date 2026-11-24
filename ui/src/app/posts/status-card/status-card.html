@@ -1829,6 +1829,9 @@
             [initialText]="redraftText()"
             [initialVisibility]="display.visibility"
             [inReplyToId]="display.in_reply_to_id ?? undefined"
+            [quotedStatusId]="display.quote?.quoted_status?.id"
+            [redraft]="redraftSeed()"
+            [draftContext]="'redraft:' + display.id"
             [compact]="true"
             [placeholder]="'statusCard.editAndRepost' | transloco"
             (posted)="onRedrafted($event)"
@@ -1912,6 +1915,23 @@
       <ng-content select="[status-footer]" />
     </div>
   </article>
+
+  @if (ownReplies().length) {
+    <div
+      class="own-replies"
+      style="margin-inline-start: 24px; border-inline-start: 2px solid var(--border)"
+    >
+      @for (reply of ownReplies(); track reply.id) {
+        <app-status-card
+          [status]="reply"
+          [filterContext]="filterContext()"
+          (changed)="onOwnReplyChanged($event)"
+          (deleted)="onOwnReplyDeleted($event)"
+          (replaced)="onOwnReplyReplaced($event)"
+        />
+      }
+    </div>
+  }
 
   @if (showEmbed()) {
     <app-post-embed-dialog [status]="display" (closed)="showEmbed.set(false)" />

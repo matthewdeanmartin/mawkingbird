@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
@@ -305,6 +306,10 @@ export class ServerFeed implements OnInit {
 
   onChanged(index: number, updated: Status): void {
     this.statuses.update((list) => list.map((s, i) => (i === index ? updated : s)));
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.statuses.update((list) => replaceStatus(list, change));
   }
 
   onDeleted(removed: Status): void {

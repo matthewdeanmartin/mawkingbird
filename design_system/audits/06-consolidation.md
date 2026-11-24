@@ -3475,3 +3475,9 @@ Shell CSS budget cleanup (2026-11-24): reviewed the regenerated inventory; all
 Mobile dropdowns inherit their existing logical anchor and link padding instead
 of repeating declarations. The optimized stylesheet is 9,958 bytes (10,000-byte
 budget); no dispositions changed.
+
+Own replies, reposts and report-gate evidence (2026-11-24): reviewed the regenerated
+inventory: 730 candidate files, no added/removed candidates and no changed control
+findings; source offsets only, plus two scanned files without controls. StatusCard
+nests itself for a reply just written, and the report gate adds text and links, so
+no new controls and no disposition changes.

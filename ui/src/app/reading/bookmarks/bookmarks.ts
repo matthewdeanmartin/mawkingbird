@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { MbButton } from '../../design-system/button/button';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -345,6 +346,10 @@ export class Bookmarks implements OnInit {
     this.statuses.update((list) =>
       list.map((status) => (status.id === updated.id ? updated : status)),
     );
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.statuses.update((list) => replaceStatus(list, change));
   }
 
   onDeleted(removed: Status): void {

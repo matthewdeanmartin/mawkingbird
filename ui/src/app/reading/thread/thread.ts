@@ -1,3 +1,4 @@
+import { insertReply, replaceStatus, StatusReplacement } from '../../feeds/reconcile-status';
 import { ReadingBack } from '../../shell/reading-back';
 import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
 import { AccountName } from '../../accounts/account-name';
@@ -498,7 +499,7 @@ export class Thread implements OnInit {
     this.loader.load(id);
   }
 
-  onReply(status: Status): void {
+  onReply(status: Status, parentId = status.in_reply_to_id): void {
     // Local practice replies also draw an Eliza answer into the store, so
     // re-assemble the whole thread rather than only appending the viewer's line.
     const focused = this.status();
@@ -508,7 +509,7 @@ export class Thread implements OnInit {
       this.loader.load(focused.id);
       return;
     }
-    this.descendants.update((d) => [...d, status]);
+    this.descendants.update((d) => insertReply(d, status, parentId));
   }
 
   onChanged(updated: Status): void {
@@ -524,6 +525,17 @@ export class Thread implements OnInit {
       );
     this.ancestors.update(patch);
     this.descendants.update(patch);
+  }
+
+  /** A post here was deleted and reposted: same place, new id. */
+  onReplaced(change: StatusReplacement): void {
+    if (this.status()?.id === change.previous.id) {
+      // The old address is gone, so the page moves to the new post's.
+      void this.router.navigate(['/statuses', change.next.id], { replaceUrl: true });
+      return;
+    }
+    this.ancestors.update((list) => replaceStatus(list, change));
+    this.descendants.update((list) => replaceStatus(list, change));
   }
 
   onContextDeleted(removed: Status): void {

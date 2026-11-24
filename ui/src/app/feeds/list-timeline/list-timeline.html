@@ -59,6 +59,7 @@
         [status]="s"
         (changed)="onChanged(s, $event)"
         (deleted)="onDeleted($event)"
+        (replaced)="onReplaced($event)"
       />
     }
     @if (!exhausted() && !loadFailed()) {

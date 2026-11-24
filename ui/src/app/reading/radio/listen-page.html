@@ -237,7 +237,9 @@
         [threadCwOpen]="threadCwOpen()"
         (cwToggled)="threadCwOpen.set($event)"
         (changed)="loader.status.set($event)"
+        [showOwnReplies]="false"
         (deleted)="loader.status.set(null)"
+        (replaced)="loader.status.set($event.next)"
         (replied)="onReply($event)"
       />
       @if (loader.publicContextUnavailable()) {
@@ -252,7 +254,9 @@
             [threadCwOpen]="threadCwOpen()"
             (cwToggled)="threadCwOpen.set($event)"
             (changed)="onCommentChanged($event)"
+            [showOwnReplies]="false"
             (deleted)="onCommentDeleted($event)"
+            (replaced)="onCommentReplaced($event)"
             (replied)="onReply($event)"
           />
         </div>

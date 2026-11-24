@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import {
   afterNextRender,
   Component,
@@ -161,6 +162,7 @@ export class PartyConversation implements OnDestroy {
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
+  readonly replaced = output<StatusReplacement>();
   /** Asks the page to re-read the root's replies; there is no stream for them. */
   readonly repliesDue = output<void>();
   protected prefs = inject(WatchPartyPrefs);
@@ -644,6 +646,13 @@ export class PartyConversation implements OnDestroy {
             canonicalStatusKey(item) === canonicalStatusKey(status) ? status : item,
           ),
         ]),
+      ),
+    );
+  }
+  protected swap(change: StatusReplacement): void {
+    this.pages.update((pages) =>
+      Object.fromEntries(
+        Object.entries(pages).map(([tag, posts]) => [tag, replaceStatus(posts, change)]),
       ),
     );
   }

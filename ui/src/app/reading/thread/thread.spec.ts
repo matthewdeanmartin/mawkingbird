@@ -453,7 +453,7 @@ describe('Thread', () => {
 
   // ---------------------------------------------------------------- onReply
 
-  it('onReply: appends a new reply to descendants', () => {
+  it('onReply: puts a reply to the focused post first, right under it', () => {
     const fixture = setUpWithId('10');
     httpMock.expectOne('/api/v1/statuses/10').flush(makeStatus('10'));
     httpMock.expectOne('/api/v1/statuses/10/context').flush(makeContext([], [makeStatus('d1')]));
@@ -464,7 +464,50 @@ describe('Thread', () => {
       internals(fixture)
         .descendants()
         .map((s) => s.id),
-    ).toEqual(['d1', 'new-reply']);
+    ).toEqual(['new-reply', 'd1']);
+  });
+
+  it('onReply: puts a nested reply directly under the post it answers', () => {
+    const fixture = setUpWithId('10');
+    httpMock.expectOne('/api/v1/statuses/10').flush(makeStatus('10'));
+    httpMock
+      .expectOne('/api/v1/statuses/10/context')
+      .flush(makeContext([], [makeStatus('d1'), makeStatus('d2')]));
+
+    fixture.componentInstance.onReply(makeStatus('new-reply'), 'd1');
+
+    expect(
+      internals(fixture)
+        .descendants()
+        .map((s) => s.id),
+    ).toEqual(['d1', 'new-reply', 'd2']);
+  });
+
+  it('onReplaced: a reposted reply takes the deleted one’s place', () => {
+    const fixture = setUpWithId('10');
+    httpMock.expectOne('/api/v1/statuses/10').flush(makeStatus('10'));
+    httpMock
+      .expectOne('/api/v1/statuses/10/context')
+      .flush(makeContext([], [makeStatus('d1'), makeStatus('d2')]));
+
+    fixture.componentInstance.onReplaced({ previous: makeStatus('d1'), next: makeStatus('d9') });
+
+    expect(
+      internals(fixture)
+        .descendants()
+        .map((s) => s.id),
+    ).toEqual(['d9', 'd2']);
+  });
+
+  it('onReplaced: a reposted focused post moves the page to the new post', () => {
+    const fixture = setUpWithId('10');
+    httpMock.expectOne('/api/v1/statuses/10').flush(makeStatus('10'));
+    httpMock.expectOne('/api/v1/statuses/10/context').flush(makeContext());
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+
+    fixture.componentInstance.onReplaced({ previous: makeStatus('10'), next: makeStatus('11') });
+
+    expect(navigate).toHaveBeenCalledWith(['/statuses', '11'], { replaceUrl: true });
   });
 
   // ---------------------------------------------------------------- onChanged

@@ -156,7 +156,9 @@
                 [partyTagsEnabled]="true"
                 (partyTagAdded)="addTag($event)"
                 (changed)="changed.emit($event); update($event)"
+                [showOwnReplies]="!root()"
                 (deleted)="deleted.emit($event); erase($event)"
+                (replaced)="replaced.emit($event); swap($event)"
                 (replied)="replied.emit($event)"
               />
             }
@@ -175,7 +177,9 @@
               [partyTagsEnabled]="true"
               (partyTagAdded)="addTag($event)"
               (changed)="changed.emit($event); update($event)"
+              [showOwnReplies]="!root()"
               (deleted)="deleted.emit($event); erase($event)"
+              (replaced)="replaced.emit($event); swap($event)"
               (replied)="replied.emit($event)"
             />
           </div>

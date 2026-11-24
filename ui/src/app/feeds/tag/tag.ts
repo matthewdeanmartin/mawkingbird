@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { TagMedia } from './tag-media';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagActions } from '../../discovery/tag-actions/tag-actions';
@@ -369,6 +370,10 @@ export class Tag implements OnInit {
    */
   onChanged(updated: Status): void {
     this.statuses.update((list) => list.map((s) => (s.id === updated.id ? updated : s)));
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.statuses.update((list) => replaceStatus(list, change));
   }
 
   onDeleted(removed: Status): void {

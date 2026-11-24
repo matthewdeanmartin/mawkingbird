@@ -8,7 +8,7 @@ import { Compose } from '../../publishing/compose/compose';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { accountProfilePath } from '../account-route';
 import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
-import { reconcileStatus } from '../../feeds/reconcile-status';
+import { reconcileStatus, replaceStatus, StatusReplacement } from '../../feeds/reconcile-status';
 import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { BulkFollowConfirmation } from '../bulk-follow-confirmation';
@@ -3161,6 +3161,13 @@ export class Profile implements OnInit, OnDestroy {
   onChanged(updated: Status): void {
     this.statuses.update((list) => reconcileStatus(list, updated, this.auth.account()?.id));
     this.pinnedStatuses.update((list) => reconcileStatus(list, updated, this.auth.account()?.id));
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.statuses.update((list) => replaceStatus(list, change));
+    // A repost is not pinned: the pin went with the deleted post.
+    const gone = (change.previous.reblog ?? change.previous).id;
+    this.pinnedStatuses.update((list) => list.filter((s) => s.id !== gone));
   }
 
   onDeleted(removed: Status): void {

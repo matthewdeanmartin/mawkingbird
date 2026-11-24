@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
@@ -125,6 +126,10 @@ export class Favourites implements OnInit {
       return;
     }
     this.statuses.update((list) => list.map((s, i) => (i === index ? updated : s)));
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.statuses.update((list) => replaceStatus(list, change));
   }
 
   onDeleted(removed: Status): void {

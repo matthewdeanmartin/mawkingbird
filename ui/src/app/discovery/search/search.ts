@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { TagActions } from '../tag-actions/tag-actions';
 import { SimilarHashtagsPanel } from '../similar-hashtags/similar-hashtags-panel';
 import { parseSimilarParam, similarParam } from '../similar-hashtags/similar-hashtags';
@@ -3696,6 +3697,10 @@ export class Search implements OnInit, OnDestroy {
     this.results.update((r) =>
       r ? { ...r, statuses: r.statuses.map((s) => (s.id === updated.id ? updated : s)) } : r,
     );
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.results.update((r) => (r ? { ...r, statuses: replaceStatus(r.statuses, change) } : r));
   }
 
   onDeleted(removed: Status): void {

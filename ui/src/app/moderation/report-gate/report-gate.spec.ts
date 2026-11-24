@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { fedicensusFor, loadFedicensus } from '../jurisdiction/fedicensus';
 import { jurisdictionFor, JurisdictionRecord } from '../jurisdiction/jurisdiction';
 import {
   gateFingerprint,
@@ -29,8 +30,10 @@ describe('jurisdictionFor', () => {
     expect(jurisdictionFor('', file)).toBeUndefined();
   });
 
-  it('ships an empty generated file until the first crawl', () => {
-    expect(jurisdictionFor('mastodon.social')).toBeUndefined();
+  it('ships what mastodon.social says about itself, with the sentence that says it', () => {
+    const record = jurisdictionFor('mastodon.social');
+    expect(record?.jurisdiction).toBe('Germany');
+    expect(record?.quote).toContain('governed by the laws of Germany');
   });
 });
 
@@ -101,6 +104,43 @@ describe('ReportGate', () => {
     expect(text).toContain('has published 1 rule.');
     expect(el.querySelector('a[href$="/terms-of-service"]')).not.toBeNull();
     expect(el.querySelector('a[href$="/about"]')).not.toBeNull();
+  });
+
+  it('falls back on what Fedicensus found, as evidence, with credit', async () => {
+    const model = TestBed.inject(ReportGateModel);
+    (model as unknown as { host: unknown }).host = signal('mastodon.social');
+    (model as unknown as { record: unknown }).record = signal(undefined);
+    const fixture = TestBed.createComponent(ReportGate);
+    model.load();
+    http.expectOne('/api/v1/instance/rules').flush([]);
+    http.expectOne('/api/v1/instance/terms_of_service').flush(null);
+    await loadFedicensus();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    const text = el.textContent ?? '';
+    expect(text).toContain('mastodon.social’s policies mention Germany.');
+    expect(text).toContain('Digital Services Act');
+    expect(text).toContain('Mastodon GmbH');
+    expect(text).toContain('a mention may not mean that law applies');
+    expect(text).not.toContain('We have not recorded');
+    expect(
+      el.querySelector('a[href="https://fedicensus.org/servers/mastodon.social/"]'),
+    ).not.toBeNull();
+    expect(el.querySelector('a[href*="creativecommons.org/licenses/by/4.0"]')).not.toBeNull();
+  });
+
+  it('does not consult Fedicensus when our own extraction has an answer', async () => {
+    const text = render(HELSINKI).textContent ?? '';
+    await loadFedicensus();
+    expect(text).not.toContain('policies mention');
+    expect(TestBed.inject(ReportGateModel).census()).toBeUndefined();
+  });
+
+  it('does not mistake an object property for a server', () => {
+    const file = { date: '2026-09-10', servers: {} };
+    expect(fedicensusFor(file, 'constructor')).toBeUndefined();
   });
 
   it('says when the crawled pages stated no jurisdiction', () => {

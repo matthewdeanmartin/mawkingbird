@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
@@ -132,6 +133,10 @@ export class EndorsedList implements OnInit {
 
   onChanged(index: number, updated: Status): void {
     this.feed.update((list) => list.map((s, i) => (i === index ? updated : s)));
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.feed.update((list) => replaceStatus(list, change));
   }
 
   onDeleted(removed: Status): void {

@@ -109,6 +109,7 @@
               [status]="s"
               (changed)="onChanged($event)"
               (deleted)="onDeleted($event)"
+              (replaced)="onReplaced($event)"
             >
               @if (raindrop.connected()) {
                 <div status-footer class="conversion-row">

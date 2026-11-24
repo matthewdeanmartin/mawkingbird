@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -94,6 +95,10 @@ export class LinkTimeline implements OnInit {
 
   onChanged(index: number, updated: Status): void {
     this.statuses.update((list) => list.map((s, i) => (i === index ? updated : s)));
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.statuses.update((list) => replaceStatus(list, change));
   }
 
   onDeleted(removed: Status): void {

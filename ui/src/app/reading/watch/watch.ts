@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { translatedComputed } from '../../i18n/translated';
 import {
   Component,
@@ -365,6 +366,9 @@ export class Watch {
     this.loader.descendants.update((items) =>
       items.map((item) => (item.id === status.id ? status : item)),
     );
+  }
+  protected onCommentReplaced(change: StatusReplacement): void {
+    this.loader.descendants.update((items) => replaceStatus(items, change));
   }
   protected onCommentDeleted(status: Status): void {
     this.loader.descendants.update((items) => items.filter((item) => item.id !== status.id));

@@ -388,7 +388,9 @@
       [textFocus]="homeTextFocus()"
       (changed)="onChanged(s, $event)"
       (deleted)="onDeleted($event)"
-      (replied)="onPosted($event)"
+      (replaced)="onReplaced($event)"
+      (replied)="onReplied($event)"
+      (quoted)="onPosted($event)"
     />
   } @empty {
     <p class="muted center">{{ 'pages.home.videos.empty' | transloco }}</p>
@@ -539,7 +541,9 @@
         [textFocus]="homeTextFocus()"
         (changed)="onChanged(s, $event)"
         (deleted)="onDeleted($event)"
-        (replied)="onPosted($event)"
+        (replaced)="onReplaced($event)"
+        (replied)="onReplied($event)"
+        (quoted)="onPosted($event)"
       />
       @if (ctas.after(index); as card) {
         <app-discovery-card
@@ -567,7 +571,9 @@
           [status]="s"
           (changed)="onBookmarkChanged(s, $event)"
           (deleted)="onBookmarkDeleted($event)"
-          (replied)="onPosted($event)"
+          (replaced)="onReplaced($event)"
+          (replied)="onReplied($event)"
+          (quoted)="onPosted($event)"
         />
       }
     }

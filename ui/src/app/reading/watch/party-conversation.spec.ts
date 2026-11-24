@@ -32,6 +32,8 @@ class Card {
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
+  readonly replaced = output<{ previous: Status; next: Status }>();
+  readonly showOwnReplies = input(true);
 }
 const post = (id: string): Status =>
   ({

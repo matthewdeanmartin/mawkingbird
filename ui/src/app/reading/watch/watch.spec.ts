@@ -38,6 +38,8 @@ class CardStub {
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
+  readonly replaced = output<{ previous: Status; next: Status }>();
+  readonly showOwnReplies = input(true);
 }
 
 @Component({ selector: 'app-party-conversation', template: '' })
@@ -54,6 +56,7 @@ class PartyStub {
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
+  readonly replaced = output<{ previous: Status; next: Status }>();
 }
 
 @Component({ selector: 'app-watch-video-panel', template: '' })

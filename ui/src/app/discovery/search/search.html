@@ -1589,6 +1589,7 @@
                     [excerptTerms]="excerptTerms()"
                     (changed)="onChanged($event)"
                     (deleted)="onDeleted($event)"
+                    (replaced)="onReplaced($event)"
                   />
                 }
                 <!-- Repeats this row stands in for. The count is the point:
@@ -1627,6 +1628,7 @@
                             [excerptTerms]="excerptTerms()"
                             (changed)="onChanged($event)"
                             (deleted)="onDeleted($event)"
+                            (replaced)="onReplaced($event)"
                           />
                         }
                       </div>

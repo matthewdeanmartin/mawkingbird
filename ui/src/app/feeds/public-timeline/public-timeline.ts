@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbButton } from '../../design-system/button/button';
 import { Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
@@ -129,6 +130,10 @@ export class PublicTimeline implements OnInit, OnDestroy {
 
   onChanged(index: number, updated: Status): void {
     this.statuses.update((list) => list.map((s, i) => (i === index ? updated : s)));
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.statuses.update((list) => replaceStatus(list, change));
   }
 
   onDeleted(removed: Status): void {

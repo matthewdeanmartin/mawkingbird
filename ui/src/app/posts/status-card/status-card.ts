@@ -158,6 +158,8 @@ import { PrivateLikeButton } from '../../accounts/private-like-button';
 import { nitterHost, toNitterUrl } from '../../connections/twitter/nitter';
 import { OriginUnresolvedError, StatusActions } from '../../connections/status-actions';
 import { ReportDialog } from '../../moderation/report-dialog/report-dialog';
+import { reconcileStatus, replaceStatus, StatusReplacement } from '../../feeds/reconcile-status';
+import { redraftSeed, RedraftSeed } from '../../publishing/redraft';
 import { PostEmbedDialog } from '../post-embed/post-embed-dialog';
 import { StatusEditDialog } from '../../publishing/status-edit/status-edit-dialog';
 import { FilterPostDialog } from '../filter-post-dialog/filter-post-dialog';
@@ -957,6 +959,12 @@ export class StatusCard {
   readonly deleted = output<Status>();
   /** Emitted with the newly-created reply when the user replies inline. */
   readonly replied = output<Status>();
+  /** Emitted with a new quote post: a post of the viewer's own, not a reply. */
+  readonly quoted = output<Status>();
+  /** Emitted when a post was deleted and reposted, so containers swap it in place. */
+  readonly replaced = output<StatusReplacement>();
+  /** Off where the container lists replies itself (thread views). */
+  readonly showOwnReplies = input(true);
   /**
    * The thread page answers its focused post with its own composer, outside
    * this card: it needs to know when the post is shown in translation so it
@@ -1759,6 +1767,12 @@ export class StatusCard {
   // --- delete & repost ---
   protected redrafting = signal(false);
   protected redraftText = signal('');
+  protected redraftSeed = signal<RedraftSeed | undefined>(undefined);
+  /** The repost, until the container hands this card another post. */
+  private readonly reposted = linkedSignal({
+    source: () => this.status(),
+    computation: (): Status | null => null,
+  });
 
   /**
    * Delete the post on the server, then reopen its source text in an inline
@@ -1771,18 +1785,29 @@ export class StatusCard {
     ) {
       return;
     }
-    this.api.getStatusSource(this.display.id).subscribe((src) => {
-      this.api.deleteStatus(this.display.id).subscribe(() => {
-        this.redraftText.set(src.text);
-        this.redrafting.set(true);
-      });
+    this.actionError.set(null);
+    const post = this.display;
+    const failed = () => this.actionError.set(this.actionFailureMessage('delete this post'));
+    this.api.getStatusSource(post.id).subscribe({
+      next: (src) =>
+        this.api.deleteStatus(post.id).subscribe({
+          next: () => {
+            this.redraftText.set(src.text);
+            this.redraftSeed.set(redraftSeed(post, src));
+            this.redrafting.set(true);
+          },
+          error: failed,
+        }),
+      error: failed,
     });
   }
 
   /** The redraft was posted: swap the (already deleted) original for the new status. */
   onRedrafted(status: Status): void {
     this.redrafting.set(false);
-    this.changed.emit(status);
+    const previous = this.status();
+    this.reposted.set(status);
+    this.replaced.emit({ previous, next: status });
   }
 
   /** Redraft abandoned: the original is gone from the server, so drop the card. */
@@ -2028,7 +2053,7 @@ export class StatusCard {
 
   get display(): Status {
     const s = this.status();
-    const base = s.reblog ?? s;
+    const base = this.reposted() ?? s.reblog ?? s;
     const pending = this.optimistic();
     if (!pending) {
       return base;
@@ -2483,14 +2508,34 @@ export class StatusCard {
   /** A reply was posted: bump the local count and bubble it up to the container. */
   onReplied(reply: Status): void {
     this.replying.set(false);
+    if (this.showOwnReplies()) this.ownReplies.update((list) => [...list, reply]);
     this.changed.emit({ ...this.display, replies_count: this.display.replies_count + 1 });
     this.replied.emit(reply);
   }
 
-  /** A quote post was created: surface it to the container like a reply. */
+  /** Replies just written here, shown under this post until the list is left. */
+  protected readonly ownReplies = linkedSignal({
+    // A computed, so that an updated copy of the same post keeps them.
+    source: computed(() => this.display.id),
+    computation: (): Status[] => [],
+  });
+
+  protected onOwnReplyChanged(updated: Status): void {
+    this.ownReplies.update((list) => reconcileStatus(list, updated));
+  }
+
+  protected onOwnReplyDeleted(removed: Status): void {
+    this.ownReplies.update((list) => list.filter((s) => s.id !== removed.id));
+  }
+
+  protected onOwnReplyReplaced(change: StatusReplacement): void {
+    this.ownReplies.update((list) => replaceStatus(list, change));
+  }
+
+  /** A quote post was created: the container decides where it belongs. */
   onQuoted(quote: Status): void {
     this.quoting.set(false);
-    this.replied.emit(quote);
+    this.quoted.emit(quote);
   }
 
   /**

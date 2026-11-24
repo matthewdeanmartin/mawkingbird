@@ -29,6 +29,8 @@ class CardStub {
   readonly changed = output<Status>();
   readonly deleted = output<Status>();
   readonly replied = output<Status>();
+  readonly replaced = output<{ previous: Status; next: Status }>();
+  readonly showOwnReplies = input(true);
 }
 @Component({ selector: 'app-external-player', template: '{{ source().label }}' })
 class ExternalStub {

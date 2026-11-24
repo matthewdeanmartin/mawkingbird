@@ -6,7 +6,7 @@ import { HomeSession } from '../home-session';
 import { HomeOrigin, passesHomeOrigin } from '../home-origin';
 import { MbButton } from '../../design-system/button/button';
 import { statusHashtags, normalizeHashtag } from '../../discovery/hashtag';
-import { reconcileStatus } from '../reconcile-status';
+import { reconcileStatus, replaceStatus, StatusReplacement } from '../reconcile-status';
 import { FeedCtaStore } from '../feed-cta-store';
 import { accountScopeSuffix, scopedKey } from '../../platform/session/account-scope';
 import { FeedCta } from '../feed-ctas';
@@ -1982,7 +1982,7 @@ export class Home implements OnInit, OnDestroy {
     this.statuses.update((statuses) => {
       // Sort only incoming items. The held feed is the reader's position, not
       // a candidate pool to be re-dealt each time a source supplies more posts.
-      const incoming = [...more].sort(byNewestFirst);
+      const incoming = more.filter((s) => !this.shownInPlace.has(s.id)).sort(byNewestFirst);
       const candidates =
         placement === 'newer' ? [...incoming, ...statuses] : [...statuses, ...incoming];
       const merged = this.auth.isAnonymous
@@ -2334,6 +2334,24 @@ export class Home implements OnInit, OnDestroy {
     if (!this.prefs.autoShowMiniComposer()) {
       this.miniComposerOpen.set(false);
     }
+  }
+
+  /**
+   * Replies and reposts the reader just made here, already on screen where they
+   * belong. Streaming and paging deliver them again; they are not listed twice.
+   */
+  private readonly shownInPlace = new Set<string>();
+
+  /** The card shows the reply under the post it answers (not at the top). */
+  onReplied(reply: Status): void {
+    this.shownInPlace.add(reply.id);
+    this.statuses.update((list) => list.filter((s) => s.id !== reply.id));
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.shownInPlace.add(change.next.id);
+    this.statuses.update((list) => replaceStatus(list, change));
+    this.bookmarkReview.update((list) => replaceStatus(list, change));
   }
 
   /** A local practice post was made: it (and Eliza's reply) live in the store,

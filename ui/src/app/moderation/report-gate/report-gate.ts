@@ -1,8 +1,15 @@
 import { Component, computed, inject, Injectable, input, signal } from '@angular/core';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbNotice } from '../../design-system/notice/notice';
 import { ServerAbout } from '../../discovery/server-about';
 import { Server } from '../../platform/http/server';
+import {
+  FedicensusFile,
+  fedicensusFor,
+  joinNames,
+  loadFedicensus,
+  placeNames,
+} from '../jurisdiction/fedicensus';
 import {
   jurisdictionFor,
   jurisdictionHost,
@@ -14,6 +21,10 @@ import {
 // i18n report.gate.where: When last crawled ({{date}}), {{server}} said its jurisdiction was {{jurisdiction}}.
 // i18n report.gate.whereNone: When last crawled ({{date}}), {{server}}’s Terms and About pages did not state a jurisdiction.
 // i18n report.gate.whereUnknown: We have not recorded where {{server}} is based.
+// i18n report.gate.census.places: {{server}}’s policies mention {{places}}.
+// i18n report.gate.census.laws: They refer to these laws: {{laws}}.
+// i18n report.gate.census.names: Organizations named: {{names}}.
+// i18n report.gate.census.source: Found by a word search of the server’s pages on {{date}}, so a mention may not mean that law applies. Source:
 // i18n report.gate.quote: What the server wrote
 // i18n report.gate.warning: Read the Terms of Service or About page for the full legal notices, if any.
 // i18n report.gate.rulesCount.one: {{server}} has published {{count}} rule.
@@ -98,8 +109,24 @@ export class ReportGateModel {
       this.about.loading() || this.about.rules() === undefined || this.about.terms() === undefined,
   );
 
+  private readonly censusFile = signal<FedicensusFile | null>(null);
+  /** Fedicensus's evidence, where our own extraction has no answer. */
+  readonly census = computed(() => {
+    const file = this.censusFile();
+    if (!file || this.record()?.jurisdiction) return undefined;
+    const record = fedicensusFor(file, this.host());
+    return record && { ...record, date: file.date };
+  });
+
   load(): void {
     this.about.load();
+    if (this.censusFile() || this.record()?.jurisdiction) return;
+    loadFedicensus().then(
+      (file) => this.censusFile.set(file),
+      () => {
+        // Offline before it was ever loaded: the gate says what it can without it.
+      },
+    );
   }
 
   /**
@@ -123,23 +150,49 @@ export class ReportGateModel {
   template: `
     @let server = model.host();
     <p>{{ 'report.gate.who' | transloco: { server } }}</p>
-    @if (model.record(); as record) {
-      @if (record.jurisdiction) {
-        <p>
-          {{
-            'report.gate.where'
-              | transloco: { server, date: record.crawledAt, jurisdiction: record.jurisdiction }
-          }}
-        </p>
-        @if (record.quote) {
-          <details class="gate-quote">
-            <summary>{{ 'report.gate.quote' | transloco }}</summary>
-            <blockquote>{{ record.quote }}</blockquote>
-          </details>
-        }
-      } @else {
-        <p>{{ 'report.gate.whereNone' | transloco: { server, date: record.crawledAt } }}</p>
+    @let record = model.record();
+    @if (record?.jurisdiction) {
+      <p>
+        {{
+          'report.gate.where'
+            | transloco: { server, date: record!.crawledAt, jurisdiction: record!.jurisdiction }
+        }}
+      </p>
+      @if (record!.quote) {
+        <details class="gate-quote">
+          <summary>{{ 'report.gate.quote' | transloco }}</summary>
+          <blockquote>{{ record!.quote }}</blockquote>
+        </details>
       }
+    } @else if (model.census(); as census) {
+      <div class="gate-census">
+        @if (places(); as places) {
+          <p>{{ 'report.gate.census.places' | transloco: { server, places } }}</p>
+        }
+        @if (laws(); as laws) {
+          <p>{{ 'report.gate.census.laws' | transloco: { laws } }}</p>
+        }
+        @if (names(); as names) {
+          <p>{{ 'report.gate.census.names' | transloco: { names } }}</p>
+        }
+        <p class="muted small">
+          {{ 'report.gate.census.source' | transloco: { date: census.date } }}
+          <a
+            [href]="'https://fedicensus.org/servers/' + server + '/'"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Fedicensus</a
+          >
+          (<a
+            href="https://creativecommons.org/licenses/by/4.0/"
+            target="_blank"
+            rel="noopener noreferrer"
+            >CC BY 4.0</a
+          >)
+        </p>
+      </div>
+    } @else if (record) {
+      <p>{{ 'report.gate.whereNone' | transloco: { server, date: record.crawledAt } }}</p>
     } @else {
       <p>{{ 'report.gate.whereUnknown' | transloco: { server } }}</p>
     }
@@ -214,6 +267,15 @@ export class ReportGateModel {
 export class ReportGate {
   protected readonly model = inject(ReportGateModel);
   protected readonly about = inject(ServerAbout);
+  private readonly transloco = inject(TranslocoService);
+  private join(names: readonly string[] | undefined): string {
+    return names?.length ? joinNames(names, this.transloco.getActiveLang()) : '';
+  }
+  protected readonly places = computed(() =>
+    this.join(placeNames(this.model.census()?.places ?? [], this.transloco.getActiveLang())),
+  );
+  protected readonly laws = computed(() => this.join(this.model.census()?.laws));
+  protected readonly names = computed(() => this.join(this.model.census()?.names));
   /** Mention that mute and block exist (they are offered on the next step). */
   readonly offerAlternatives = input(true);
   protected readonly rulesOpen = signal(false);

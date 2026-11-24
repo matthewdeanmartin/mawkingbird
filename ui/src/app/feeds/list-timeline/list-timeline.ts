@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { AppDialogs } from '../../shell/app-dialogs';
@@ -470,6 +471,10 @@ export class ListTimeline implements OnInit {
         (typeof target === 'number' ? index === target : status === target) ? updated : status,
       ),
     );
+  }
+
+  protected onReplaced(change: StatusReplacement): void {
+    this.statuses.update((list) => replaceStatus(list, change));
   }
 
   onDeleted(removed: Status): void {

@@ -87,7 +87,9 @@
             (partyTagAdded)="party()?.addTag($event)"
             filterContext="thread"
             (changed)="loader.status.set($event)"
+            [showOwnReplies]="false"
             (deleted)="loader.status.set(null)"
+            (replaced)="loader.status.set($event.next)"
             (replied)="onReply($event)"
           />
         </div>
@@ -109,6 +111,7 @@
           (quoted)="onQuoted($event)"
           (changed)="onCommentChanged($event)"
           (deleted)="onCommentDeleted($event)"
+          (replaced)="onCommentReplaced($event)"
           (replied)="onReply($event)"
           (repliesDue)="loader.refreshReplies()"
         />

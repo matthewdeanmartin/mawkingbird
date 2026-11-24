@@ -196,6 +196,7 @@
         [status]="p.status"
         (changed)="onChanged(p, $event)"
         (deleted)="onDeleted($event)"
+        (replaced)="onChanged(p, $event.next)"
       />
     </div>
   }

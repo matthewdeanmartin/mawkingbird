@@ -69,6 +69,9 @@ interface HomeInternals {
   refreshHome(): void;
   setView(view: 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'articles'): void;
   onPosted(status: Status): void;
+  onReplied(status: Status): void;
+  onReplaced(change: { previous: Status; next: Status }): void;
+  mergeStatuses(more: Status[], placement: 'newer'): void;
   startWriting(): void;
 }
 
@@ -1341,6 +1344,28 @@ describe('Home', () => {
     expect(ids).toHaveLength(50);
     expect(ids.filter((id) => id === 'created')).toHaveLength(1);
     expect(fixture.nativeElement.querySelectorAll('app-status-card')).toHaveLength(50);
+  });
+
+  it('never lists a reply or repost already shown in place, whichever of API and stream is first', () => {
+    const fixture = TestBed.createComponent(Home);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/announcements').flush([]);
+    flushHomePage(httpMock.expectOne('/api/v1/timelines/home?limit=20'), [
+      makeStatus('a'),
+      makeStatus('b'),
+    ]);
+    const home = internals(fixture);
+    const ids = () => home.statuses().map((status) => status.id);
+
+    home.mergeStatuses([makeStatus('reply')], 'newer');
+    home.onReplied(makeStatus('reply'));
+    expect(ids()).toEqual(['a', 'b']);
+    home.mergeStatuses([makeStatus('reply')], 'newer');
+    expect(ids()).toEqual(['a', 'b']);
+
+    home.onReplaced({ previous: makeStatus('b'), next: makeStatus('b2') });
+    home.mergeStatuses([makeStatus('b2')], 'newer');
+    expect(ids()).toEqual(['a', 'b2']);
   });
 
   /**

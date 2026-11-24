@@ -111,7 +111,7 @@
         [showSource]="true"
         (changed)="onContextChanged($event)"
         (deleted)="onContextDeleted($event)"
-        (replied)="onReply($event)"
+        (replaced)="onReplaced($event)"
       />
     }
     <app-status-card
@@ -123,8 +123,10 @@
       filterContext="thread"
       [showSource]="true"
       (changed)="onChanged($event)"
+      [showOwnReplies]="false"
       (deleted)="onFocusedDeleted()"
-      (replied)="onReply($event)"
+      (replaced)="onReplaced($event)"
+      (replied)="onReply($event, s.id)"
       (translatedFrom)="focusedTranslatedFrom.set($event)"
     />
   }
@@ -142,9 +144,9 @@
     }}</mb-notice>
   }
   @if (isBluesky(s)) {
-    <app-bsky-reply [replyTo]="s" (posted)="onReply($event)" />
+    <app-bsky-reply [replyTo]="s" (posted)="onReply($event, s.id)" />
   } @else if (isLocal(s)) {
-    <app-local-compose [inReplyTo]="s.id" (posted)="onReply($event)" />
+    <app-local-compose [inReplyTo]="s.id" (posted)="onReply($event, s.id)" />
   } @else if (isTwitter()) {
     <!-- No composer: replying on Twitter needs an authenticated Twitter account, which
          this app never asks for. Ancestors are not fetched either (one
@@ -168,7 +170,7 @@
         [replyTo]="s"
         [compact]="true"
         [placeholder]="'pages.thread.reply.placeholder' | transloco"
-        (posted)="onReply($event)"
+        (posted)="onReply($event, s.id)"
       />
     }
   } @else if (!isRss() && !isAnonymousPublic() && !isMessageStatus()) {
@@ -177,7 +179,7 @@
       [replyToHandle]="s.account.acct"
       [compact]="true"
       [placeholder]="'pages.thread.reply.placeholder' | transloco"
-      (posted)="onReply($event)"
+      (posted)="onReply($event, s.id)"
     />
   }
   @for (d of visibleReplies(threadReader() ? comments() : descendants()); track d.id) {
@@ -194,8 +196,10 @@
       filterContext="thread"
       [showSource]="true"
       (changed)="onContextChanged($event)"
+      [showOwnReplies]="false"
       (deleted)="onContextDeleted($event)"
-      (replied)="onReply($event)"
+      (replaced)="onReplaced($event)"
+      (replied)="onReply($event, d.id)"
     />
   }
   @if (foldedReplyGuyCount(); as count) {

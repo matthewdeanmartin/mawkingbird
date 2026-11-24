@@ -1501,6 +1501,7 @@
             filterContext="account"
             (changed)="onChanged($event)"
             (deleted)="onDeleted($event)"
+            (replaced)="onReplaced($event)"
           />
         } @empty {
           <p class="muted center">{{ 'pages.profile.search.noMatches' | transloco }}</p>
@@ -1515,6 +1516,7 @@
               filterContext="account"
               (changed)="onChanged($event)"
               (deleted)="onDeleted($event)"
+              (replaced)="onReplaced($event)"
             />
           }
         }
@@ -1528,6 +1530,7 @@
               filterContext="account"
               (changed)="onChanged($event)"
               (deleted)="onDeleted($event)"
+              (replaced)="onReplaced($event)"
             />
           } @empty {
             @if (tagged(); as tag) {

@@ -1,3 +1,4 @@
+import type { RedraftSeed } from '../redraft';
 import { POLL_EXPIRY, PollEditor } from '../poll-editor';
 import { ConnectionMeter } from '../../platform/network/connection-meter';
 import { Outbox } from '../outbox/outbox';
@@ -746,6 +747,8 @@ export class Compose implements OnDestroy {
   readonly lockVisibility = input(false);
   /** A saved draft to open in the composer (it is consumed from the drafts list). */
   readonly initialDraft = input<Draft | undefined>(undefined);
+  /** A deleted post being written again: its text, media, poll and settings. */
+  readonly redraft = input<RedraftSeed | undefined>(undefined);
   /**
    * Chat-style compact layout: everything on one toolbar row, preview off by
    * default (toggleable), drafts behind an icon. Used where vertical and
@@ -1051,8 +1054,14 @@ export class Compose implements OnDestroy {
       // opened draft still wins over both.
       const handoff = this.acceptsHandoff() ? this.drafts.takeHandoff() : null;
       this.selfDraftOrigin = handoff?.selfStatusId ?? null;
-      const saved = draft ?? handoff?.snapshot ?? this.drafts.loadAutosave(this.contextKey());
-      if (saved && draftHasContent(saved)) {
+      const redraft = this.redraft();
+      const saved =
+        draft ??
+        redraft?.snapshot ??
+        handoff?.snapshot ??
+        this.drafts.loadAutosave(this.contextKey());
+      // A redraft may be pictures alone; its settings still come back.
+      if (saved && (redraft || draftHasContent(saved))) {
         this.diagnostics.info('Paste', 'draft:restore', {
           context: this.contextKey(),
           source: draft ? 'draft' : handoff ? 'handoff' : 'autosave',
@@ -1061,6 +1070,9 @@ export class Compose implements OnDestroy {
         });
         this.applySnapshot(saved);
         this.seededKey = `${this.contextKey()}|${draft?.id ?? ''}`;
+      }
+      if (redraft?.media.length) {
+        this.media.set(redraft.media);
       }
       if (handoff?.media?.length) {
         this.media.set(handoff.media);

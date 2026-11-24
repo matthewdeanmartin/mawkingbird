@@ -1,3 +1,4 @@
+import { StatusReplacement, replaceStatus } from '../feeds/reconcile-status';
 import {
   Component,
   WritableSignal,
@@ -57,6 +58,7 @@ export function statusPages(load: LitePageLoader): PageLoader<Status> {
         [status]="status"
         [filterContext]="filterContext()"
         (deleted)="drop($event)"
+        (replaced)="swap($event)"
         (changed)="replace($event)"
       />
       @if (status.id === s.gapAfter) {
@@ -148,6 +150,10 @@ export class LiteFeed {
 
   protected drop(status: Status): void {
     this.held().update((s) => ({ ...s, items: s.items.filter((x) => x.id !== status.id) }));
+  }
+
+  protected swap(change: StatusReplacement): void {
+    this.held().update((s) => ({ ...s, items: replaceStatus(s.items, change) }));
   }
 
   protected replace(status: Status): void {
