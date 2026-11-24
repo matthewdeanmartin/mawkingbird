@@ -111,7 +111,6 @@
     "blue.custom.sidebar": "側邊欄卡片",
     "blue.dataSaver": "新嘟文中的圖片",
     "blue.dataSaver.always": "一律暫緩",
-    "blue.dataSaver.auto": "連線緩慢時暫緩",
     "blue.dataSaver.never": "一律顯示",
     "blue.delayedSend": "發佈前等待 30 秒，讓您可以取消（或提前發佈）",
     "blue.favStyle": "最愛項目顯示為",
@@ -1888,7 +1887,8 @@
     "writing.yourWords.and": "與",
     "writing.yourWords.hint.a": "是英文，若不是您的詞，這項功能就沒有用。請設定自己的詞——用逗號分隔，任一詞都會符合。標籤會完整且不分大小寫地比對，因此",
     "writing.yourWords.hint.b": "是相同標籤，但",
-    "writing.yourWords.hint.c": "不是。"
+    "writing.yourWords.hint.c": "不是。",
+    "blue.dataSaver.device": "此裝置的數據節省功能開啟時暫不載入"
   },
   "pages": {
     "algo.empty.anonymous": "首頁與演算法動態消息只會在您要求時擷取內容。",
@@ -6466,7 +6466,11 @@
     "savedCopy": "正在顯示 {{minutes}} 分鐘前儲存的副本。",
     "savedCopyJustNow": "正在顯示剛剛儲存的副本。",
     "trying": "嘗試中…",
-    "tryNow": "立即重試"
+    "tryNow": "立即重試",
+    "serverSaved": "你的伺服器沒有回應。正在顯示{{age}}儲存的副本。",
+    "serverSavedDevice": "你的伺服器沒有回應。正在顯示儲存在此裝置上的嘟文。",
+    "tryAgain": "重試",
+    "dismiss": "關閉"
   },
   "outbox": {
     "delete": "刪除",

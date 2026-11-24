@@ -3645,7 +3645,6 @@
     "blue.custom.sidebar": "Zijbalkkaarten",
     "blue.dataSaver": "Afbeeldingen in nieuwe berichten",
     "blue.dataSaver.always": "Altijd tegengehouden",
-    "blue.dataSaver.auto": "Tegengehouden zolang de verbinding traag is",
     "blue.dataSaver.never": "Altijd getoond",
     "blue.delayedSend": "Wacht 30 seconden vóór publicatie, zodat je kunt annuleren of eerder publiceren",
     "blue.favStyle": "Favorieten zien eruit als",
@@ -5422,7 +5421,8 @@
     "writing.yourWords.and": "en",
     "writing.yourWords.hint.a": "is Engels en deze functie is nutteloos als het woord niet van jou is. Stel je eigen woorden in — gescheiden door komma's; elk ervan levert een overeenkomst op. Tags worden als geheel en hoofdletterongevoelig vergeleken, dus",
     "writing.yourWords.hint.b": "zijn dezelfde tag, maar",
-    "writing.yourWords.hint.c": "niet."
+    "writing.yourWords.hint.c": "niet.",
+    "blue.dataSaver.device": "Vastgehouden als databesparing op dit apparaat aan staat"
   },
   "shareDialog": {
     "articleHint": "Wordt verzonden als <strong>{{host}}</strong>. Kies waar je het naartoe wilt sturen.",
@@ -6466,7 +6466,11 @@
     "savedCopy": "Kopie van {{minutes}} min geleden.",
     "savedCopyJustNow": "Net opgeslagen kopie.",
     "trying": "Bezig…",
-    "tryNow": "Nu proberen"
+    "tryNow": "Nu proberen",
+    "serverSaved": "Je server gaf geen antwoord. Je ziet een kopie die {{age}} is opgeslagen.",
+    "serverSavedDevice": "Je server gaf geen antwoord. Je ziet berichten die op dit apparaat zijn opgeslagen.",
+    "tryAgain": "Opnieuw proberen",
+    "dismiss": "Sluiten"
   },
   "outbox": {
     "delete": "Verwijderen",
