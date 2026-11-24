@@ -61,6 +61,8 @@ export interface NativeSeedReport {
   profiles: number;
   posts: number;
   remaining: number;
+  /** The server is low on allowance: leave bulk reading for later. */
+  rateLimited: boolean;
 }
 export type NativePeopleCategory =
   | 'all'
@@ -76,7 +78,8 @@ export type NativePostBin = 'all' | 'storms' | 'discussions' | 'pictures' | 'vid
 
 export interface NativeProfilesApi {
   collectionStatus(handle: string): Promise<NativeCollectionStatus>;
-  seedRecent(handle: string): Promise<NativeSeedReport>;
+  /** Read the newest page of the next `limit` people due in the bulk queue (at most 10). */
+  seedRecent(handle: string, limit: number): Promise<NativeSeedReport>;
   peoplePosts(
     handle: string,
     category: NativePeopleCategory,

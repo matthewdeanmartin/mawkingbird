@@ -318,14 +318,49 @@ describe('Watch post access and reveal gates', () => {
     expect(fixture.nativeElement.querySelector('video')).toBeNull();
   });
 
-  it('refuses a server-local ID for another server without issuing a post request', () => {
+  it("opens another server's post for a signed-in reader, by author and id", () => {
+    params.next(
+      convertToParamMap({
+        post: '117666574738195063',
+        attachment: '117666575325498892',
+        server: 'https://mastodon.social',
+        acct: 'alice@mastodon.social',
+      }),
+    );
+    mount();
+    expect(loader.load).toHaveBeenCalledWith(
+      anonymousStatusRouteRef({
+        server: 'https://mastodon.social',
+        id: '117666574738195063',
+        originalUrl: 'https://mastodon.social/@alice@mastodon.social/117666574738195063',
+      }),
+    );
+    // This reader's copy has its own attachment id; its one video is the video.
+    loader.status.set({ ...status(), id: 'home-copy' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('video')).not.toBeNull();
+  });
+
+  it('still opens a link made before links carried the author', () => {
     params.next(
       convertToParamMap({ post: '1', attachment: 'v1', server: 'https://elsewhere.test' }),
     );
     mount();
-    expect(loader.load).not.toHaveBeenCalled();
-    expect(fixture.nativeElement.querySelector('[role=alert]').textContent).toContain(
-      'Switch to the server',
+    expect(loader.load).toHaveBeenCalledWith(
+      anonymousStatusRouteRef({ server: 'https://elsewhere.test', id: '1' }),
+    );
+  });
+
+  it('finds the post again when the reader changes account', () => {
+    const base = signal('https://home.test');
+    TestBed.overrideProvider(Server, { useValue: { baseUrl: base } });
+    mount();
+    expect(loader.load).toHaveBeenLastCalledWith('1');
+    loader.status.set(status());
+    base.set('https://other.test');
+    fixture.detectChanges();
+    expect(loader.load).toHaveBeenLastCalledWith(
+      anonymousStatusRouteRef({ server: 'https://home.test', id: '1' }),
     );
     expect(fixture.nativeElement.querySelector('video')).toBeNull();
   });
@@ -468,7 +503,7 @@ describe('Watch post access and reveal gates', () => {
     mount();
     expect(loader.load).not.toHaveBeenCalled();
     expect(fixture.nativeElement.querySelector('[role=alert]').textContent).toContain(
-      'Switch to the server',
+      'unavailable',
     );
   });
 

@@ -111,7 +111,6 @@
     "blue.custom.sidebar": "侧边栏卡片",
     "blue.dataSaver": "新帖子中的图片",
     "blue.dataSaver.always": "一律暂缓",
-    "blue.dataSaver.auto": "连接缓慢时暂缓",
     "blue.dataSaver.never": "一律显示",
     "blue.delayedSend": "发布前等待 30 秒，让你可以取消（或提前发布）",
     "blue.favStyle": "收藏项目显示为",
@@ -1888,7 +1887,8 @@
     "writing.yourWords.and": "与",
     "writing.yourWords.hint.a": "是英文，若不是你的词，这项功能就没有用。请设置自己的词——用逗号分隔，任一词都会符合。标签会完整且不分大小写地比对，因此",
     "writing.yourWords.hint.b": "是相同标签，但",
-    "writing.yourWords.hint.c": "不是。"
+    "writing.yourWords.hint.c": "不是。",
+    "blue.dataSaver.device": "此设备的流量节省功能开启时暂不加载"
   },
   "pages": {
     "algo.empty.anonymous": "首页与算法动态只会在你要求时截取内容。",
@@ -6798,7 +6798,11 @@
     "savedCopy": "正在显示 {{minutes}} 分钟前保存的副本。",
     "savedCopyJustNow": "正在显示刚刚保存的副本。",
     "trying": "尝试中…",
-    "tryNow": "立即重试"
+    "tryNow": "立即重试",
+    "serverSaved": "你的服务器没有响应。正在显示{{age}}保存的副本。",
+    "serverSavedDevice": "你的服务器没有响应。正在显示保存在此设备上的嘟文。",
+    "tryAgain": "重试",
+    "dismiss": "关闭"
   },
   "outbox": {
     "delete": "删除",

@@ -104,6 +104,12 @@ export class ReadCache {
   /** When the newest saved copy shown to the reader was saved, or null. */
   readonly servedSavedAt = signal<number | null>(null);
 
+  /**
+   * A copy shown while online because the server failed to answer that address,
+   * and when it was saved (null: from Native's archive, which is many ages).
+   */
+  readonly stale = signal<{ url: string; savedAt: number | null } | null>(null);
+
   async get(scope: string, url: string): Promise<CachedRead | null> {
     try {
       return await this.store.get(readCacheKey(scope, url));
@@ -150,9 +156,15 @@ export class ReadCache {
     if (current === null || savedAt < current) this.servedSavedAt.set(savedAt);
   }
 
+  /** The server failed to answer `url`, and a copy of it is on screen instead. */
+  noteStale(url: string, savedAt: number | null): void {
+    this.stale.set({ url, savedAt });
+  }
+
   /** A fresh answer arrived: whatever is on screen next is live again. */
-  noteLive(): void {
+  noteLive(url: string): void {
     if (this.servedSavedAt() !== null) this.servedSavedAt.set(null);
+    if (this.stale()?.url === url) this.stale.set(null);
   }
 
   /** Delete one identity's saved reads (sign-out). */

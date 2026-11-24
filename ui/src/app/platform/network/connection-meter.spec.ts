@@ -86,6 +86,17 @@ describe('ConnectionMeter', () => {
     expect(meter.assessment().samples).toBe(1);
   });
 
+  it('ignores giving up on a slow foreign host', () => {
+    vi.useFakeTimers({ toFake: FAKED });
+    http
+      .get('https://feeds.example/rss.xml', { context: externalFetch() })
+      .pipe(timeout(8_000))
+      .subscribe({ error: () => undefined });
+    httpMock.expectOne('https://feeds.example/rss.xml');
+    vi.advanceTimersByTime(8_000);
+    expect(meter.assessment().samples).toBe(0);
+  });
+
   it('records a long abandoned wait, but not a quick navigation cancel', () => {
     vi.useFakeTimers({ toFake: FAKED });
     const quick = http.get('/api/v1/timelines/home').subscribe();

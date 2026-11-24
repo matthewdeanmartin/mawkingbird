@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ThreadLoader } from '../read/thread-loader';
@@ -35,6 +35,7 @@ import {
   parseAnonymousStatusRouteRef,
 } from '../../accounts/anonymous/anonymous-route-ref';
 import { Status } from '../../platform/api/models';
+import { postLoadTarget } from '../../posts/copy-link/deep-links';
 import { PartyConversation } from './party-conversation';
 import { QueueButton } from '../video-player/queue-button';
 import { WatchVideoPanel } from './watch-video-panel';
@@ -53,7 +54,6 @@ import {
 // i18n watch.loading: Opening video…
 // i18n watch.unavailable: This video is unavailable or you don't have access to its post.
 // i18n watch.browseVideos: Browse videos
-// i18n watch.wrongServer: Switch to the server this post belongs to before opening its video.
 // i18n watch.reveal: Show video
 // i18n watch.hiddenMedia: Media is hidden by your reading preferences. You can open this video without changing them.
 // i18n watch.warning: This post has a content warning or sensitive media.
@@ -118,6 +118,9 @@ export class Watch {
   private destroyRef = inject(DestroyRef);
   protected params = signal<Record<string, string>>({});
   protected error = signal('');
+  /** The id handed to the loader: the link's own, or a public ref for another server's post. */
+  private readonly target = signal('');
+  private address: ParamMap | null = null;
   protected direct = signal(false);
   protected revealed = linkedSignal({ source: this.params, computation: () => false });
   protected hidden = computed(() => {
@@ -162,7 +165,7 @@ export class Watch {
     if (params['attachment']) {
       const media =
         status.media_attachments.find((item) => item.id === params['attachment']) ??
-        this.onlyVideoOfForeignPost(status, params['post']);
+        this.onlyVideoOfForeignPost(status);
       return media ? attachmentSource(media) : null;
     }
     const video = statusVideo(status);
@@ -201,65 +204,46 @@ export class Watch {
       this.loader.destroy();
       release();
     });
-    this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      this.loader.destroy();
-      this.loader.status.set(null);
-      this.loader.descendants.set([]);
-      this.loader.loadError.set(null);
-      this.loader.publicContextUnavailable.set(false);
-      this.params.set(Object.fromEntries(params.keys.map((key) => [key, params.get(key) ?? ''])));
-      this.error.set('');
-      const post = params.get('post');
-      this.direct.set(!post);
-      if (!post) {
-        this.loader.loading.set(false);
-        if (!this.source()) this.error.set('watch.unavailable');
-        return;
-      }
-      if (post.length > 4000) {
-        this.error.set('watch.unavailable');
-        return;
-      }
-      const suppliedServer = params.get('server');
-      let target = post;
-      if (!parseAnonymousStatusRouteRef(post) && !post.includes(':')) {
-        try {
-          const url = new URL(suppliedServer ?? '');
-          if (
-            url.username ||
-            url.password ||
-            url.origin !== new URL(this.server.baseUrl() || location.origin).origin
-          ) {
-            // A shared link names its post by the sharer's server-local ID. A
-            // signed-in account cannot fetch that ID from its own server, but
-            // Anonymous reads public posts from any server, so it loads the
-            // post where it lives. This is what makes a shared /watch link work
-            // for a visitor with no account.
-            if (!this.auth.isAnonymous || url.protocol !== 'https:' || !/^\d+$/.test(post)) {
-              this.error.set('watch.wrongServer');
-              return;
-            }
-            target = anonymousStatusRouteRef({ server: url.origin, id: post });
-          }
-        } catch {
-          this.error.set('watch.wrongServer');
-          return;
-        }
-      }
-      this.loader.load(target);
-    });
-    // Account changes invalidate the original authorization and stop the player.
+    this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => this.open(params));
+    // Another account: stop the player and find the post again as that account sees it.
     let identity: string | undefined;
     effect(() => {
       const kind = this.auth.kind();
       const next = `${kind}:${this.auth.token() ?? ''}:${kind === 'bluesky' ? (this.auth.account()?.id ?? '') : ''}:${this.server.baseUrl()}`;
       if (identity !== undefined && identity !== next) {
-        this.loader.destroy();
-        this.loader.status.set(null);
-        this.error.set('watch.unavailable');
+        untracked(() => this.address && this.open(this.address));
       }
       identity = next;
     });
+  }
+
+  /** Load what the address names, for whoever is reading now. */
+  private open(params: ParamMap): void {
+    this.address = params;
+    this.loader.destroy();
+    this.loader.status.set(null);
+    this.loader.descendants.set([]);
+    this.loader.loadError.set(null);
+    this.loader.publicContextUnavailable.set(false);
+    this.params.set(Object.fromEntries(params.keys.map((key) => [key, params.get(key) ?? ''])));
+    this.error.set('');
+    const post = params.get('post');
+    this.direct.set(!post);
+    this.target.set('');
+    if (!post) {
+      this.loader.loading.set(false);
+      if (!this.source()) this.error.set('watch.unavailable');
+      return;
+    }
+    // A shared link names its post by the sharer's server-local id; the loader
+    // finds this reader's copy, whatever account or server they read from.
+    const target = postLoadTarget(this.params(), this.server.baseUrl() || location.origin);
+    if (!target) {
+      this.error.set('watch.unavailable');
+      return;
+    }
+    this.target.set(target);
+    this.loader.load(target);
   }
 
   /** The chat box can reply to the video post only when it lives on the signed-in server. */
@@ -306,8 +290,8 @@ export class Watch {
    * its own attachment ids, so the link's id can't match. Only when there is
    * exactly one video, so the wrong one is never played.
    */
-  private onlyVideoOfForeignPost(status: Status, post: string | undefined) {
-    if (!parseAnonymousStatusRouteRef(post ?? '')) return undefined;
+  private onlyVideoOfForeignPost(status: Status) {
+    if (!parseAnonymousStatusRouteRef(this.target())) return undefined;
     const videos = status.media_attachments.filter((item) => item.type === 'video');
     return videos.length === 1 ? videos[0] : undefined;
   }

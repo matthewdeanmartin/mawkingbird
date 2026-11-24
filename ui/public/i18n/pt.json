@@ -4016,7 +4016,6 @@
     "blue.custom.sidebar": "Cartões da barra lateral",
     "blue.dataSaver": "Imagens em novas publicações",
     "blue.dataSaver.always": "Sempre seguradas",
-    "blue.dataSaver.auto": "Seguradas enquanto a conexão estiver lenta",
     "blue.dataSaver.never": "Sempre mostradas",
     "blue.delayedSend": "Esperar 30 segundos antes de publicar, para que você possa cancelar (ou publicar antes)",
     "blue.favStyle": "Os favoritos parecem",
@@ -5793,7 +5792,8 @@
     "writing.yourWords.and": "e",
     "writing.yourWords.hint.a": "está em inglês, e este recurso não serve para nada se a palavra não for sua. Defina as suas próprias palavras, separadas por vírgulas; qualquer uma delas será identificada. As etiquetas são comparadas por inteiro e sem diferenciar maiúsculas de minúsculas, portanto",
     "writing.yourWords.hint.b": "são a mesma etiqueta, mas",
-    "writing.yourWords.hint.c": "não é."
+    "writing.yourWords.hint.c": "não é.",
+    "blue.dataSaver.device": "Retidas quando a economia de dados deste dispositivo está ativada"
   },
   "shareDialog": {
     "articleHint": "Será enviado como <strong>{{host}}</strong>. Escolha o destino.",
@@ -6466,7 +6466,11 @@
     "savedCopy": "Mostrando uma cópia salva há {{minutes}} min.",
     "savedCopyJustNow": "Mostrando uma cópia salva agora mesmo.",
     "trying": "Tentando…",
-    "tryNow": "Tentar agora"
+    "tryNow": "Tentar agora",
+    "serverSaved": "Seu servidor não respondeu. Mostrando uma cópia salva {{age}}.",
+    "serverSavedDevice": "Seu servidor não respondeu. Mostrando publicações salvas neste dispositivo.",
+    "tryAgain": "Tentar novamente",
+    "dismiss": "Fechar"
   },
   "outbox": {
     "delete": "Excluir",

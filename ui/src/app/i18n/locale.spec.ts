@@ -63,7 +63,7 @@ describe('supportedLocales', () => {
   });
 
   it('offers the same set on test and canary deployments', () => {
-    const reviewLocales = [...shipped, 'vi', 'hi', 'sv', 'ms', 'zh-Hans'];
+    const reviewLocales = [...shipped, 'vi', 'hi', 'sv', 'ms', 'zh-Hans', 'ro', 'da', 'el'];
     expect(supportedLocales('https://mawkingbird.com/test/')).toEqual(reviewLocales);
     expect(supportedLocales('https://mawkingbird.com/canary/')).toEqual(reviewLocales);
     expect(supportedLocales('https://example.github.io/mawkingbird/canary/')).toEqual(
@@ -73,6 +73,17 @@ describe('supportedLocales', () => {
       'ms',
     );
     expect(negotiateLocale(['ms-MY'], supportedLocales('https://mawkingbird.com/'))).toBe('en');
+  });
+
+  it.each([
+    ['ro-RO', 'ro'],
+    ['da-DK', 'da'],
+    ['el-GR', 'el'],
+  ])('offers %s for review while preserving the production fallback', (tag, locale) => {
+    expect(negotiateLocale([tag], supportedLocales('https://mawkingbird.com/canary/'))).toBe(
+      locale,
+    );
+    expect(negotiateLocale([tag], supportedLocales('https://mawkingbird.com/'))).toBe('en');
   });
 
   it('negotiates a production visitor into their browser language', () => {

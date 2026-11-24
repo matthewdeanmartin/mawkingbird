@@ -5,6 +5,8 @@ import { MbButton } from '../design-system/button/button';
 import { RadioPlayer } from '../reading/radio/radio-player';
 import { RadioPlaylists } from '../reading/radio/radio-playlists';
 import { VideoPlayerHost } from '../reading/video-player/video-player-host';
+import { Server } from '../platform/http/server';
+import { postLoadTarget } from '../posts/copy-link/deep-links';
 import { VideoSource, youtubeSource } from '../reading/video-player/media-source';
 import { QueuedVideo, WatchQueue } from '../reading/videos/watch-queue';
 
@@ -138,13 +140,8 @@ export class LiteRadio {
             >
               {{ 'lite.videos.play' | transloco }}
             </button>
-          } @else if (item.params['post']) {
-            <a
-              mbButton
-              variant="link"
-              size="small"
-              [routerLink]="['/m/statuses', item.params['post']]"
-            >
+          } @else if (postFor(item); as post) {
+            <a mbButton variant="link" size="small" [routerLink]="['/m/statuses', post]">
               {{ 'lite.videos.openPost' | transloco }}
             </a>
           }
@@ -169,6 +166,12 @@ export class LiteRadio {
 export class LiteVideos {
   protected readonly queue = inject(WatchQueue);
   protected readonly playing = signal<VideoSource | null>(null);
+  private readonly server = inject(Server);
+
+  /** The queued post as this account's server knows it, or a public ref to it. */
+  protected postFor(item: QueuedVideo): string | null {
+    return postLoadTarget(item.params, this.server.baseUrl() || location.origin);
+  }
 
   protected sourceFor(item: QueuedVideo): VideoSource | null {
     const id = item.params['youtube'];

@@ -107,13 +107,36 @@ describe('readCacheInterceptor', () => {
     expect(TestBed.inject(ReadCache).servedSavedAt()).not.toBeNull();
   });
 
-  it('passes a real server error on instead of hiding it behind a copy', async () => {
-    await TestBed.inject(ReadCache).save(ME, HOME, [{ id: 'saved' }], null);
+  it.each([429, 500, 503])('shows the saved copy, and says so, on a %s', async (code) => {
+    const cache = TestBed.inject(ReadCache);
+    await cache.save(ME, HOME, [{ id: 'saved' }], null);
+    let body: unknown = null;
+    http.get(HOME).subscribe((b) => (body = b));
+    httpMock.expectOne(HOME).flush('', { status: code, statusText: 'Boom' });
+    await vi.waitFor(() => expect(body).toEqual([{ id: 'saved' }]));
+    expect(cache.stale()?.url).toBe(HOME);
+
+    // Another address answering says nothing about this one.
+    http.get('/api/v1/lists').subscribe();
+    httpMock.expectOne('/api/v1/lists').flush([]);
+    expect(cache.stale()).not.toBeNull();
+    http.get(HOME).subscribe();
+    httpMock.expectOne(HOME).flush([]);
+    expect(cache.stale()).toBeNull();
+  });
+
+  it.each([
+    [HOME, 403],
+    [HOME, 404],
+    ['/api/v1/accounts/verify_credentials', 503],
+  ])('passes on what the server really said: %s %s', async (url, code) => {
+    await TestBed.inject(ReadCache).save(ME, url, [{ id: 'saved' }], null);
     let status = -1;
-    http.get(HOME).subscribe({ error: (e) => (status = e.status) });
-    httpMock.expectOne(HOME).flush('', { status: 500, statusText: 'Boom' });
+    http.get(url).subscribe({ error: (e) => (status = e.status) });
+    httpMock.expectOne(url).flush('', { status: code, statusText: 'No' });
     await settle();
-    expect(status).toBe(500);
+    expect(status).toBe(code);
+    expect(TestBed.inject(ReadCache).stale()).toBeNull();
   });
 
   it('skips the network entirely while offline when a copy exists', async () => {

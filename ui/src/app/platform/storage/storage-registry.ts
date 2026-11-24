@@ -1246,7 +1246,7 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     storage: 'local',
     suffix: 'none',
     sensitivity: 'setting',
-    note: 'Whether pictures in new posts wait for a tap: automatically on a slow connection (absent), always, or never.',
+    note: 'Whether pictures in new posts wait for a tap: when the device data saver is on (absent), always, or never.',
   },
   {
     base: 'mockingbird_network_profile',

@@ -25,7 +25,12 @@ describe('seenVideo', () => {
     expect(seenVideo(status, 'https://home.example')).toEqual({
       title: 'Lamps',
       poster: 'https://i.ytimg.com/vi/aaaaaaaaaaa/hq.jpg',
-      params: { post: '42', server: 'https://home.example', youtube: 'aaaaaaaaaaa' },
+      params: {
+        post: '42',
+        server: 'https://home.example',
+        acct: 'u@home.example',
+        youtube: 'aaaaaaaaaaa',
+      },
     });
   });
 
@@ -43,7 +48,12 @@ describe('seenVideo', () => {
       ],
     } as unknown as Status;
     const video = seenVideo(status, 'https://home.example')!;
-    expect(video.params).toEqual({ post: '42', server: 'https://home.example', attachment: 'm1' });
+    expect(video.params).toEqual({
+      post: '42',
+      server: 'https://home.example',
+      acct: 'u@home.example',
+      attachment: 'm1',
+    });
     expect(JSON.stringify(video)).not.toContain('v.mp4');
   });
 

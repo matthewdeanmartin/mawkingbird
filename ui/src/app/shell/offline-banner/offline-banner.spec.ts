@@ -5,6 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConnectionMeter } from '../../platform/network/connection-meter';
+import { ReadCache } from '../../platform/offline/read-cache';
 import { OfflineBanner } from './offline-banner';
 
 describe('OfflineBanner', () => {
@@ -43,6 +44,23 @@ describe('OfflineBanner', () => {
     expect(el.querySelector('a')!.getAttribute('href')).toBe('/connection');
     (el.querySelector('button') as HTMLButtonElement).click();
     await vi.waitFor(() => expect(meter.lastProbe()?.outcome).toBe('unreachable'));
+  });
+
+  it('says when a saved copy stands in for a server that did not answer', () => {
+    const cache = TestBed.inject(ReadCache);
+    const fixture = TestBed.createComponent(OfflineBanner);
+    cache.noteStale('/api/v1/accounts/9/statuses', Date.now() - 2 * 60 * 60_000);
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.textContent).toContain("Your server didn't answer");
+    expect(el.textContent).toContain('2 hours ago');
+    expect(el.textContent).toContain('Try again');
+    cache.noteStale('/api/v1/accounts/9/statuses', null);
+    fixture.detectChanges();
+    expect(el.textContent).toContain('saved on this device');
+    cache.noteLive('/api/v1/accounts/9/statuses');
+    fixture.detectChanges();
+    expect(el.querySelector('.banner')).toBeNull();
   });
 
   it('offers Lite after a couple of slow minutes, and "Not now" hides it', () => {

@@ -55,7 +55,14 @@ describe('Native Home Profiles', () => {
         { provide: Auth, useValue: { token: handle, kind: signal('mastodon') } },
         {
           provide: NATIVE_PROFILES,
-          useValue: { list, postsAfter, markReadBatch, collectionStatus, peopleMembers },
+          useValue: {
+            list,
+            postsAfter,
+            markReadBatch,
+            collectionStatus,
+            peopleMembers,
+            fetchAccountPage: async () => 0,
+          },
         },
       ],
     });
@@ -104,5 +111,122 @@ describe('Native Home Profiles', () => {
     expect(markReadBatch).toHaveBeenCalledTimes(1);
     fixture.destroy();
     expect(rail.left()).toBeNull();
+  });
+
+  describe('what it asks the server for', () => {
+    const row = (id: number) => ({
+      id,
+      remoteId: String(50 + id),
+      acct: `p${id}`,
+      displayName: `P${id}`,
+      lastStatusAt: null,
+      avatar: null,
+      cachedPosts: 0,
+      cachedUnread: 0,
+    });
+    const saved = (localId: number, isRead = false) =>
+      ({ localId, isRead, status: { id: `s${localId}` } }) as NativeProfilePost;
+
+    function open(api: Record<string, unknown>) {
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: Auth,
+            useValue: {
+              token: signal('native-mastodon:a'),
+              kind: signal('mastodon'),
+            },
+          },
+          {
+            provide: NATIVE_PROFILES,
+            useValue: {
+              list: async () => ({
+                following: 3,
+                scanComplete: true,
+                profiles: [1, 2, 3].map(row),
+              }),
+              collectionStatus: async () => ({ seedEligible: 7 }),
+              fetchAccountPage: async () => 0,
+              postsAfter: async () => ({ posts: [], next: null }),
+              ...api,
+            },
+          },
+        ],
+      });
+      TestBed.overrideComponent(HomeProfiles, { set: { template: '' } });
+      const fixture = TestBed.createComponent(HomeProfiles);
+      fixture.detectChanges();
+      return fixture.componentInstance as unknown as {
+        posts: () => NativeProfilePost[];
+        due: () => number;
+        updating: () => { done: number; total: number } | null;
+        updateProblem: () => string;
+        freshening: () => boolean;
+        next: () => void;
+        update: () => Promise<void>;
+        stopUpdate: () => void;
+      };
+    }
+
+    it('shows saved posts, then merges one live page for the person stopped at', async () => {
+      let live = false;
+      const fetchAccountPage = vi.fn(async () => {
+        live = true;
+        return 1;
+      });
+      const page = open({
+        fetchAccountPage,
+        postsAfter: async () => ({
+          posts: live ? [saved(9), saved(1, false)] : [saved(1, true)],
+          next: null,
+        }),
+      });
+      await vi.waitFor(() => expect(page.posts()).toHaveLength(1));
+      page.next();
+      page.next();
+      await vi.waitFor(() => expect(page.posts().map((post) => post.localId)).toEqual([9, 1]));
+      expect(fetchAccountPage).toHaveBeenCalledTimes(1);
+      expect(fetchAccountPage).toHaveBeenCalledWith('native-mastodon:a', '53', false);
+      // Read here meanwhile stays read.
+      expect(page.posts()[1].isRead).toBe(true);
+      await vi.waitFor(() => expect(page.freshening()).toBe(false));
+    });
+
+    it('keeps the saved posts when the live page fails', async () => {
+      const page = open({
+        fetchAccountPage: async () => Promise.reject({ kind: 'network' }),
+        postsAfter: async () => ({ posts: [saved(1)], next: null }),
+      });
+      await vi.waitFor(() => expect(page.posts()).toHaveLength(1));
+      await vi.waitFor(() => expect(page.freshening()).toBe(false), { timeout: 2_000 });
+      expect(page.posts()).toHaveLength(1);
+    });
+
+    it('updates everyone due only when asked, and stops when the server is limiting', async () => {
+      const seedRecent = vi
+        .fn()
+        .mockResolvedValueOnce({ profiles: 5, posts: 9, remaining: 2, rateLimited: false })
+        .mockResolvedValueOnce({ profiles: 1, posts: 1, remaining: 1, rateLimited: true });
+      const page = open({ seedRecent });
+      await vi.waitFor(() => expect(page.due()).toBe(7));
+      expect(seedRecent).not.toHaveBeenCalled();
+      await page.update();
+      expect(seedRecent).toHaveBeenCalledTimes(2);
+      expect(page.updating()).toBeNull();
+      expect(page.updateProblem()).toBe('pages.homeProfiles.updatePaused');
+    });
+
+    it('stops when told to', async () => {
+      let finish!: (report: unknown) => void;
+      const seedRecent = vi.fn(() => new Promise((resolve) => (finish = resolve)));
+      const page = open({ seedRecent });
+      await vi.waitFor(() => expect(page.due()).toBe(7));
+      const run = page.update();
+      page.stopUpdate();
+      finish({ profiles: 5, posts: 9, remaining: 2, rateLimited: false });
+      await run;
+      expect(seedRecent).toHaveBeenCalledTimes(1);
+      expect(page.updating()).toBeNull();
+    });
   });
 });

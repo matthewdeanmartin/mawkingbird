@@ -61,6 +61,8 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const publicWatch =
     link.pathname === '/watch' &&
     (link.searchParams.has('post') || link.searchParams.has('youtube'));
+  // A shared Listen link: a public post's recording, read the same way.
+  const publicListen = link.pathname === '/listen' && link.searchParams.has('post');
   // A shared YouTube channel page: its uploads come from the channel's public
   // feed, so a visitor needs no account (spec/youtube-client.md, S3).
   const publicChannel = /^\/videos\/channel\/UC[\w-]{22}\/?$/.test(link.pathname);
@@ -97,6 +99,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
     projectPage ||
     search ||
     publicWatch ||
+    publicListen ||
     publicChannel ||
     youtuberKits ||
     publicBlueskyPage ||

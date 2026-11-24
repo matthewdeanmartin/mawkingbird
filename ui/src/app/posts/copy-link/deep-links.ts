@@ -1,5 +1,9 @@
 import { UrlMatchResult, UrlSegment } from '@angular/router';
 import { Account, Status } from '../../platform/api/models';
+import {
+  anonymousStatusRouteRef,
+  parseAnonymousStatusRouteRef,
+} from '../../accounts/anonymous/anonymous-route-ref';
 
 /**
  * Copyable mawkingbird.com links to a post or an account, that open for
@@ -140,6 +144,56 @@ function twitterHandle(account: Account): string | null {
   const fromId = id.startsWith('twitter:@') ? id.slice('twitter:@'.length) : '';
   const handle = fromId || (account.acct ?? '').replace(/^@/, '');
   return TWITTER_HANDLE.test(handle) ? handle : null;
+}
+
+// --- Query-string post addresses (Watch, Listen) --------------------------------
+
+/**
+ * The author half of a `?post=&server=&acct=` address, or nothing for a post
+ * whose id is already global (Bluesky, Twitter) or already a public ref.
+ *
+ * Same information as `/<server>/@<acct>/<id>`: enough for a reader on any
+ * server to have their own server look the post up.
+ */
+export function postAcctParam(status: Status, server: string): { acct?: string } {
+  if ((status.provider ?? 'mastodon') !== 'mastodon' || !MASTODON_ID.test(status.id)) return {};
+  const acct = qualifiedAcct(status.account?.acct, serverHost(server));
+  return acct ? { acct } : {};
+}
+
+/**
+ * What ThreadLoader should load for a `?post=&server=&acct=` address, as seen
+ * from `homeServer`. A server-local id is used as is on the server that issued
+ * it, and becomes a public ref everywhere else, which the loader resolves
+ * through the reader's own server. `acct` is optional: links made before it
+ * existed carry only the id and server, and still resolve.
+ *
+ * Null when the address names no post anybody could find.
+ */
+export function postLoadTarget(
+  params: Readonly<Record<string, string | undefined>>,
+  homeServer: string,
+): string | null {
+  const post = params['post'] ?? '';
+  if (!post || post.length > 4000) return null;
+  // Public refs and `bsky:`/`twitter:`/`rss:` ids name the same post everywhere.
+  if (parseAnonymousStatusRouteRef(post) || post.includes(':')) return post;
+  try {
+    const issuer = new URL(params['server'] ?? '');
+    if (issuer.username || issuer.password) return null;
+    if (issuer.origin === new URL(homeServer).origin) return post;
+    if (issuer.protocol !== 'https:' || !MASTODON_ID.test(post)) return null;
+    const acct = params['acct'] ?? '';
+    return anonymousStatusRouteRef({
+      server: issuer.origin,
+      id: post,
+      ...(QUALIFIED_HANDLE.test(acct)
+        ? { originalUrl: `${issuer.origin}/@${encodeURI(acct)}/${post}` }
+        : {}),
+    });
+  } catch {
+    return null;
+  }
 }
 
 // --- Route matchers -----------------------------------------------------------

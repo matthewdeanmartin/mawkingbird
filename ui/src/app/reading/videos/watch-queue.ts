@@ -8,7 +8,7 @@ const QUEUE_KEY_BASE = 'mockingbird_watch_queue';
 export const WATCH_QUEUE_LIMIT = 200;
 
 const VIDEO_ID = /^[A-Za-z0-9_-]{11}$/;
-const PARAM_NAMES = new Set(['post', 'server', 'youtube', 'attachment', 'peertube']);
+const PARAM_NAMES = new Set(['post', 'server', 'acct', 'youtube', 'attachment', 'peertube']);
 
 /**
  * One video waiting to be watched.

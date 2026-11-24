@@ -1,5 +1,16 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { finalize, forkJoin, from, map, Observable, of, Subscription, catchError } from 'rxjs';
+import {
+  catchError,
+  finalize,
+  forkJoin,
+  from,
+  map,
+  Observable,
+  of,
+  Subscription,
+  switchMap,
+  timeout,
+} from 'rxjs';
 import { TranslocoService } from '@jsverse/transloco';
 import { translatedMessage } from '../../i18n/translated';
 import { Api } from '../../platform/api/api';
@@ -28,6 +39,9 @@ import { isElizaId } from '../../chat/eliza/eliza-identity';
 import { messageStatus, parseMessageStatusRouteRef } from '../../connections/paste/message-payload';
 import { ThreadPreload } from './thread-preload';
 import { mergeOriginReplies, OriginReads } from '../origin/origin-reads';
+
+/** Our server fetching a post from another one: longer than this is not coming. */
+const RESOLVE_TIMEOUT_MS = 15_000;
 
 /**
  * Resolving a status id into a post and its conversation, whatever it is a
@@ -354,51 +368,93 @@ export class ThreadLoader {
     // could fetch on our behalf. Bluesky-primary and Anonymous both land here.
     // A separately configured search server is also not ours to ask — it is a
     // host we read anonymously by design.
-    if (this.auth.lacksMastodonToken || this.searchServer.active() || !ref.originalUrl) {
+    if (this.auth.lacksMastodonToken || this.searchServer.active()) {
       this.loadAnonymousPublic(ref);
       return;
     }
-
+    const { originalUrl } = ref;
+    if (!originalUrl) {
+      this.resolveByCanonicalAddress(ref);
+      return;
+    }
     this.sub.add(
-      this.api.search(ref.originalUrl, 'statuses', { resolve: true, limit: 1 }).subscribe({
-        next: (results) => {
-          const resolved = results.statuses[0];
-          if (!resolved) {
-            // Our server does not know it. The remote may still show it.
-            this.loadAnonymousPublic(ref);
-            return;
-          }
-          this.status.set(resolved);
-          this.repliesSource = this.mastodonReplies(resolved.id);
-          this.publicOriginalUrl.set(ref.originalUrl ?? null);
-          this.loading.set(false);
-          // A local id, so the ordinary context endpoint applies — and with it
-          // the replies our server can see and the remote would not have shown.
-          this.sub.add(
-            this.api.getContext(resolved.id).subscribe({
-              next: (ctx) => {
-                this.ancestors.set(ctx.ancestors);
-                this.descendants.set(ctx.descendants);
-                this.homeContextReady = true;
-                this.mergeFromOrigin();
-              },
-              error: () => this.publicContextUnavailable.set(true),
-            }),
-          );
+      this.searchHome(originalUrl).subscribe({
+        next: (resolved) => {
+          if (resolved) this.showResolved(resolved, originalUrl);
+          // Our server does not know it by that address. The remote may say more.
+          else this.resolveByCanonicalAddress(ref);
         },
         error: () => this.loadAnonymousPublic(ref),
       }),
     );
   }
 
+  /** Our server's copy of the post at `url`, or null when it has none to give. */
+  private searchHome(url: string): Observable<Status | null> {
+    return this.api.search(url, 'statuses', { resolve: true, limit: 1 }).pipe(
+      timeout(RESOLVE_TIMEOUT_MS),
+      map((results) => results.statuses[0] ?? null),
+    );
+  }
+
+  /**
+   * The link had no address our server could use (an older link with only an id,
+   * or a server that won't resolve its own post pages), so ask the issuing
+   * server which post it means and look that up here. Failing that, show what
+   * the issuing server makes public.
+   */
+  private resolveByCanonicalAddress(ref: AnonymousPublicRef): void {
+    this.sub.add(
+      this.anonymousPublic
+        .getStatus(ref)
+        .pipe(
+          switchMap((remote) => {
+            const url = remote.uri || remote.url;
+            const lookup = url && url !== ref.originalUrl ? this.searchHome(url) : of(null);
+            return lookup.pipe(
+              catchError(() => of(null)),
+              map((resolved) => ({ remote, resolved })),
+            );
+          }),
+        )
+        .subscribe({
+          next: ({ remote, resolved }) => {
+            if (resolved) this.showResolved(resolved, ref.originalUrl ?? remote.url ?? null);
+            else this.loadAnonymousPublic(ref, remote);
+          },
+          error: () => this.loadAnonymousPublic(ref),
+        }),
+    );
+  }
+
+  private showResolved(resolved: Status, originalUrl: string | null): void {
+    this.status.set(resolved);
+    this.repliesSource = this.mastodonReplies(resolved.id);
+    this.publicOriginalUrl.set(originalUrl);
+    this.loading.set(false);
+    // A local id, so the ordinary context endpoint applies — and with it
+    // the replies our server can see and the remote would not have shown.
+    this.sub.add(
+      this.api.getContext(resolved.id).subscribe({
+        next: (ctx) => {
+          this.ancestors.set(ctx.ancestors);
+          this.descendants.set(ctx.descendants);
+          this.homeContextReady = true;
+          this.mergeFromOrigin();
+        },
+        error: () => this.publicContextUnavailable.set(true),
+      }),
+    );
+  }
+
   /** Public Mastodon status and context; a blocked context never hides the post. */
-  private loadAnonymousPublic(ref: AnonymousPublicRef): void {
+  private loadAnonymousPublic(ref: AnonymousPublicRef, known?: Status): void {
     this.isAnonymousPublic.set(true);
     this.repliesSource = () =>
       this.anonymousPublic.getContext(ref).pipe(map((context) => context.descendants));
     this.publicOriginalUrl.set(ref.originalUrl ?? null);
     this.sub.add(
-      this.anonymousPublic.getStatus(ref).subscribe({
+      (known ? of(known) : this.anonymousPublic.getStatus(ref)).subscribe({
         next: (status) => {
           const saved = this.anonymousBookmarks.has(status);
           this.status.set(saved ? { ...status, bookmarked: true } : status);

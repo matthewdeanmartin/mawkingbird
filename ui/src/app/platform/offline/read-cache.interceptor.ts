@@ -29,9 +29,10 @@ export const ARCHIVE_COPY_HEADER = 'X-Mawkingbird-From-Archive';
  * - **Offline** (the meter or the browser says so): the saved copy at once,
  *   without first waiting for a request that cannot succeed. No copy: the
  *   request goes out and fails as usual.
- * - **Online**: the network, always. Only when that ends with no answer at all
- *   (status 0, including the read policy's timeouts, after its retries) is the
- *   saved copy used. A 4xx/5xx is a real answer and is passed on.
+ * - **Online**: the network, always. Only when the server fails to answer (no
+ *   answer at all, after the read policy's retries; a 429; a 5xx) is the saved
+ *   copy used, and {@link ReadCache.stale} makes the app say so. Any other 4xx
+ *   is a real answer about this reader and is passed on.
  *
  * On Native, a profile's posts that were never saved here are answered from
  * the local archive instead (any page), via `archive-fallback.ts`.
@@ -81,7 +82,7 @@ export const readCacheInterceptor: HttpInterceptorFn = (req, next) => {
     next(req).pipe(
       tap((event) => {
         if (event instanceof HttpResponse && event.ok) {
-          cache.noteLive();
+          cache.noteLive(url);
           if (cacheable && scope)
             void cache.save(scope, url, event.body, event.headers.get('Link'));
         }
@@ -95,15 +96,31 @@ export const readCacheInterceptor: HttpInterceptorFn = (req, next) => {
 
   return live().pipe(
     catchError((error: unknown) => {
-      if (!(error instanceof HttpErrorResponse) || error.status !== 0) {
+      if (!(error instanceof HttpErrorResponse) || !unanswered(error.status, url)) {
         return throwError(() => error);
       }
       return from(fallback()).pipe(
-        mergeMap((answer) => (answer ? [answer] : throwError(() => error))),
+        mergeMap((answer) => {
+          if (!answer) return throwError(() => error);
+          const savedAt = answer.headers.get(SAVED_COPY_HEADER);
+          cache.noteStale(url, savedAt === null ? null : Number(savedAt));
+          return [answer];
+        }),
       );
     }),
   );
 };
+
+/**
+ * Whether this failure is the server not answering, rather than its answer.
+ * Who the reader is signed in as is never guessed from a copy while online.
+ */
+function unanswered(status: number, url: string): boolean {
+  if (status === 0) return true;
+  return (
+    (status === 429 || status >= 500) && !url.startsWith('/api/v1/accounts/verify_credentials')
+  );
+}
 
 /** Posts from the Native archive, marked with {@link ARCHIVE_COPY_HEADER} so callers can tell. */
 function fromArchive(posts: Status[], url: string): HttpResponse<unknown> {

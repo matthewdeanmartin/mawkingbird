@@ -3645,7 +3645,6 @@
     "blue.custom.sidebar": "Thẻ thanh bên",
     "blue.dataSaver": "Ảnh trong bài đăng mới",
     "blue.dataSaver.always": "Luôn giữ lại",
-    "blue.dataSaver.auto": "Giữ lại khi kết nối chậm",
     "blue.dataSaver.never": "Luôn hiện",
     "blue.delayedSend": "Chờ 30 giây trước khi đăng để có thể hủy hoặc đăng sớm",
     "blue.favStyle": "Biểu tượng yêu thích",
@@ -5422,7 +5421,8 @@
     "writing.yourWords.and": "và",
     "writing.yourWords.hint.a": "là tiếng Anh và tính năng này vô dụng nếu từ đó không phải của bạn. Hãy đặt từ riêng — phân tách bằng dấu phẩy và bất kỳ từ nào cũng khớp. Thẻ được khớp toàn bộ, không phân biệt chữ hoa thường, nên",
     "writing.yourWords.hint.b": "là cùng một thẻ nhưng",
-    "writing.yourWords.hint.c": "thì không."
+    "writing.yourWords.hint.c": "thì không.",
+    "blue.dataSaver.device": "Giữ lại khi trình tiết kiệm dữ liệu của thiết bị này đang bật"
   },
   "shell": {
     "account.anonymous": "Ẩn danh",
@@ -6466,7 +6466,11 @@
     "savedCopy": "Đang hiện bản lưu {{minutes}} phút trước.",
     "savedCopyJustNow": "Đang hiện bản vừa lưu.",
     "trying": "Đang thử…",
-    "tryNow": "Thử ngay"
+    "tryNow": "Thử ngay",
+    "serverSaved": "Máy chủ của bạn không phản hồi. Đang hiển thị bản sao đã lưu {{age}}.",
+    "serverSavedDevice": "Máy chủ của bạn không phản hồi. Đang hiển thị các bài đăng đã lưu trên thiết bị này.",
+    "tryAgain": "Thử lại",
+    "dismiss": "Đóng"
   },
   "outbox": {
     "delete": "Xóa",

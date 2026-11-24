@@ -1,4 +1,5 @@
 import { Status } from '../platform/api/models';
+import { postAcctParam } from '../posts/copy-link/deep-links';
 import {
   AnonymousPublicRef,
   anonymousStatusRouteRef,
@@ -48,6 +49,7 @@ export function listenParams(
           })
         : post.id,
     server: new URL(server || location.origin).origin,
+    ...postAcctParam(post, server || location.origin),
     ...(media ? { media } : {}),
   };
 }

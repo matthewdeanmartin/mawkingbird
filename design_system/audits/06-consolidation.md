@@ -1,5 +1,12 @@
 # Sprint 6 opening consolidation audit
 
+## Live by default, 2026-11-23
+
+Native profiles lose their two legacy "Fetch posts" pill buttons. Home > Profiles
+gains Update and Stop (`mbPostAction`), the offline banner gains a saved-copy note
+(`MbButton`), and Listen's failure state gains a text link to the original.
+Line shifts otherwise; dispositions unchanged.
+
 ## Watch chat sign-in, 2026-11-23
 
 Watch's "Sign in with Mastodon to chat here" text becomes a shared button link

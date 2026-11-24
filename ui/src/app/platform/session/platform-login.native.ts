@@ -108,7 +108,7 @@ export const NATIVE_PROFILES = new InjectionToken<NativeProfilesApi | null>('nat
   providedIn: 'root',
   factory: () => ({
     collectionStatus: (handle) => invoke('archive_collection_status', { handle }),
-    seedRecent: (handle) => invoke('archive_seed_recent', { handle }),
+    seedRecent: (handle, limit) => invoke('archive_seed_recent', { handle, limit }),
     peoplePosts: (handle, category, bin, offset) =>
       invoke('archive_people_posts', { handle, category, bin, offset }),
     peopleMembers: (handle, category) => invoke('archive_people_members', { handle, category }),

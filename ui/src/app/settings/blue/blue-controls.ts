@@ -83,7 +83,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.dataSaver: Pictures in new posts
 // i18n settings.blue.lite.hint: On a poor connection, Mawkingbird Lite shows the essentials and loads much less.
 // i18n settings.blue.lite.open: Open Lite
-// i18n settings.blue.dataSaver.auto: Held back while the connection is slow
+// i18n settings.blue.dataSaver.device: Held back when this device's data saver is on
 // i18n settings.blue.dataSaver.always: Always held back
 // i18n settings.blue.dataSaver.never: Always shown
 // i18n settings.blue.minPosts.hint: Auto-loads more until the feed holds at least this many posts (or the timeline runs out).

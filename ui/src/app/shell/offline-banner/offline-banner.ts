@@ -1,9 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, computed, DOCUMENT, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationStart, Router, RouterLink } from '@angular/router';
 import { LiteMode, sustainedBad } from '../../lite/lite-mode';
 import { ConnectionMeter } from '../../platform/network/connection-meter';
 import { Auth } from '../../platform/session/auth';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { ConnectionState } from '../../platform/network/connection-state';
 import { OutboxSummary } from '../../platform/offline/outbox-summary';
@@ -16,6 +17,10 @@ import { ReadCache } from '../../platform/offline/read-cache';
 // i18n offlineBanner.details: Details
 // i18n offlineBanner.savedCopy: Showing a copy saved {{minutes}} min ago.
 // i18n offlineBanner.savedCopyJustNow: Showing a copy saved just now.
+// i18n offlineBanner.serverSaved: Your server didn't answer. Showing a copy saved {{age}}.
+// i18n offlineBanner.serverSavedDevice: Your server didn't answer. Showing posts saved on this device.
+// i18n offlineBanner.tryAgain: Try again
+// i18n offlineBanner.dismiss: Dismiss
 // i18n offlineBanner.queued: Waiting to send: {{count}}
 // i18n offlineBanner.held: Outbox posts waiting for you: {{count}}
 // i18n offlineBanner.review: Review
@@ -66,6 +71,26 @@ import { ReadCache } from '../../platform/offline/read-cache';
             'offlineBanner.details' | transloco
           }}</a>
         </div>
+      } @else if (readCache.stale(); as copy) {
+        <div class="banner" role="status" data-surface="saved">
+          <span>{{
+            copy.savedAt === null
+              ? ('offlineBanner.serverSavedDevice' | transloco)
+              : ('offlineBanner.serverSaved' | transloco: { age: age(copy.savedAt) })
+          }}</span>
+          <button mbButton variant="outline" size="small" type="button" (click)="reload()">
+            {{ 'offlineBanner.tryAgain' | transloco }}
+          </button>
+          <button
+            mbButton
+            variant="link"
+            size="small"
+            type="button"
+            (click)="readCache.stale.set(null)"
+          >
+            {{ 'offlineBanner.dismiss' | transloco }}
+          </button>
+        </div>
       } @else if (liteOffer()) {
         <div class="banner" role="status" data-surface="lite">
           <span>{{ 'offlineBanner.liteOffer' | transloco }}</span>
@@ -111,6 +136,7 @@ import { ReadCache } from '../../platform/offline/read-cache';
     .banner[data-surface='lite'] {
       border-inline-start-color: var(--ds-warning-text);
     }
+    .banner[data-surface='saved'],
     .banner[data-surface='held'] {
       border-inline-start-color: var(--ds-warning-text);
     }
@@ -124,7 +150,7 @@ export class OfflineBanner {
   protected readonly surface = this.state.surface;
   protected readonly trying = signal(false);
   protected readonly outbox = inject(OutboxSummary);
-  private readonly readCache = inject(ReadCache);
+  protected readonly readCache = inject(ReadCache);
   /** Minutes since the oldest saved copy on screen was saved, or null when nothing is a copy. */
   protected readonly savedMinutes = computed(() => {
     const savedAt = this.readCache.servedSavedAt();
@@ -135,6 +161,32 @@ export class OfflineBanner {
   private readonly meter = inject(ConnectionMeter);
   private readonly auth = inject(Auth);
   private readonly router = inject(Router);
+  private readonly transloco = inject(TranslocoService);
+  private readonly document = inject(DOCUMENT);
+
+  constructor() {
+    // The note is about the page it appeared on.
+    this.router.events.pipe(takeUntilDestroyed()).subscribe((event) => {
+      if (event instanceof NavigationStart) this.readCache.stale.set(null);
+    });
+  }
+
+  /** "2 hours ago", in the reader's language. */
+  protected age(savedAt: number): string {
+    const minutes = Math.max(0, Math.round((Date.now() - savedAt) / 60_000));
+    const [value, unit]: [number, Intl.RelativeTimeFormatUnit] =
+      minutes < 60
+        ? [minutes, 'minute']
+        : minutes < 24 * 60
+          ? [Math.round(minutes / 60), 'hour']
+          : [Math.round(minutes / (24 * 60)), 'day'];
+    return new Intl.RelativeTimeFormat(this.transloco.getActiveLang()).format(-value, unit);
+  }
+
+  protected reload(): void {
+    this.document.defaultView?.location.reload();
+  }
+
   /**
    * Offer Lite (moved here from Sprint 3) once the connection has been bad for
    * a couple of minutes running — not on the first slow request — to a

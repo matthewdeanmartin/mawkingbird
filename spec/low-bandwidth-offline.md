@@ -59,6 +59,24 @@ SQLite archive.
 13. **Native in scope:** offline reading from the archive, and an outbox kept by
     Rust that survives closing the app.
 
+## Owner decisions, 2026-11-23: live by default
+
+These replace anything below or above that disagrees. The aim is to support people
+who are sometimes on a bad connection, not to assume everyone is.
+
+1. **One ordinary call is made live.** Home, a thread, a profile, or picking one person
+   in Home > Profiles calls the server. Saved posts may show first while it answers.
+2. **The archive is for bulk.** Work that takes hundreds or thousands of calls, and
+   so risks 429s or a ban, reads the cache. It refreshes by a trickle of about one
+   person a minute (`SEED_DUE` in the host orders the queue, after
+   mastodon_is_my_blog's catch-up) and by **Update posts**, which says how many calls
+   it will make. Both stop while the server's allowance is low.
+3. **A failed live call shows the saved copy, with a note** (no answer, 429 or 5xx):
+   when it was saved, and Try again. Any other 4xx is passed on.
+4. **Pictures are held back only if asked**, by the setting or the device's data
+   saver. A bad connection may offer Lite; it never changes the app by itself.
+   (Sprint 3's automatic mode is gone.)
+
 ## Connection quality model
 
 A verdict comes from a rolling window of real requests (the last 2 minutes, or

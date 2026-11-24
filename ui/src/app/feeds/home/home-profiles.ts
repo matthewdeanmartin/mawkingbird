@@ -24,6 +24,12 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
 // i18n pages.homeProfiles.partial: The following scan is still running. People and posts shown here may be incomplete.
 // i18n pages.homeProfiles.refresh: Refresh people
 // i18n pages.homeProfiles.next: Next profile
+// i18n pages.homeProfiles.fetching: Getting their newest posts…
+// i18n pages.homeProfiles.update: Update posts ({{count}} server calls)
+// i18n pages.homeProfiles.updating: Updated {{done}} of {{total}} people
+// i18n pages.homeProfiles.updateStop: Stop
+// i18n pages.homeProfiles.updatePaused: Stopped early: your server is limiting requests. Try again in a few minutes.
+// i18n pages.homeProfiles.updateFailed: Could not finish updating. Try again.
 // i18n pages.homeProfiles.empty: No followed profiles have been saved yet.
 // i18n pages.homeProfiles.noPosts: No cached posts match this filter.
 // i18n pages.homeProfiles.error: Could not read the local archive. Try again.
@@ -42,7 +48,7 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
 // i18n pages.homeProfiles.dataActivity: Data activity
 // i18n pages.homeProfiles.dataClose: Close
 // i18n pages.homeProfiles.dataRefresh: Refresh status
-// i18n pages.homeProfiles.dataIntro: Background collection saves your following list and interaction evidence. A recent seed fetches one page of up to 40 posts from at most 12 followed profiles per app session, only when their last known post was within 90 days. Each seeded profile rests for seven days. Ordinary reading can save more posts.
+// i18n pages.homeProfiles.dataIntro: While the app is open, it saves the newest posts of about one person you follow each minute, people close to you first. Mutuals are checked again after a day, others after three to seven days, and people who have not posted in 90 days are skipped. Update posts does the same now for everyone who is due. Opening a person always gets their newest posts.
 // i18n pages.homeProfiles.dataRunning: Current job: {{job}}
 // i18n pages.homeProfiles.dataPosts: {{posts}} posts saved from {{profiles}} profiles
 // i18n pages.homeProfiles.dataEligible: {{count}} active profiles waiting for a recent page
@@ -68,6 +74,12 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
 // i18n pages.homeProfiles.job.recent_seed: Recent posts
 // i18n pages.homeProfiles.job.analytics: Analytics
 // i18n pages.homeProfiles.job.idle: Idle
+
+/** A person read this recently is not asked about again when picked. */
+const FRESH_FOR_MS = 5 * 60_000;
+const FRESHEN_DELAY_MS = 400;
+/** People per call to the bulk queue: small, so progress moves and Stop is prompt. */
+const UPDATE_BATCH = 5;
 
 @Component({
   selector: 'app-home-profiles',
@@ -98,6 +110,16 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
         <button type="button" mbPostAction (click)="next()" [disabled]="profiles().length < 2">
           {{ 'pages.homeProfiles.next' | transloco }}
         </button>
+        @if (updating(); as run) {
+          <span role="status">{{ 'pages.homeProfiles.updating' | transloco: run }}</span>
+          <button type="button" mbPostAction (click)="stopUpdate()">
+            {{ 'pages.homeProfiles.updateStop' | transloco }}
+          </button>
+        } @else if (due()) {
+          <button type="button" mbPostAction (click)="update()">
+            {{ 'pages.homeProfiles.update' | transloco: { count: due() } }}
+          </button>
+        }
         <button type="button" mbPostAction (click)="openDataActivity()">
           {{ 'pages.homeProfiles.dataActivity' | transloco }}
         </button>
@@ -191,6 +213,9 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
           </div>
         </mb-dialog>
       }
+      @if (updateProblem(); as problem) {
+        <p role="alert">{{ problem | transloco }}</p>
+      }
       @if (error()) {
         <p role="alert">{{ 'pages.homeProfiles.error' | transloco }}</p>
       }
@@ -233,7 +258,10 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
             @if (postsLoading()) {
               <p role="status">{{ 'pages.homeProfiles.loading' | transloco }}</p>
             }
-            @if (!postsLoading() && !posts().length) {
+            @if (freshening()) {
+              <p role="status">{{ 'pages.homeProfiles.fetching' | transloco }}</p>
+            }
+            @if (!postsLoading() && !freshening() && !posts().length) {
               <p>{{ 'pages.homeProfiles.noPosts' | transloco }}</p>
             }
             @for (post of posts(); track post.localId) {
@@ -342,6 +370,15 @@ export class HomeProfiles {
   protected readonly postsLoading = signal(false);
   protected readonly error = signal(false);
   protected readonly hasMore = signal(false);
+  /** People due in the bulk queue: one server call each. */
+  protected readonly due = signal(0);
+  protected readonly updating = signal<{ done: number; total: number } | null>(null);
+  protected readonly updateProblem = signal('');
+  /** The picked person's newest page is on its way. */
+  protected readonly freshening = signal(false);
+  private freshenTimer: ReturnType<typeof setTimeout> | null = null;
+  /** When each person was last read live here, by handle and remote id. */
+  private readonly freshened = new Map<string, number>();
   protected readonly dataOpen = signal(false);
   protected readonly dataStatus = signal<NativeCollectionStatus | null>(null);
   protected readonly dataError = signal(false);
@@ -371,6 +408,8 @@ export class HomeProfiles {
     inject(DestroyRef).onDestroy(() => {
       this.destroyed = true;
       if (this.readTimer) clearTimeout(this.readTimer);
+      if (this.freshenTimer) clearTimeout(this.freshenTimer);
+      this.updating.set(null);
       void this.flushReads();
       this.closeDataActivity();
       this.rail.release(this.railOwner);
@@ -382,6 +421,9 @@ export class HomeProfiles {
         if (this.pendingReads.size) void this.flushReads();
         this.closeDataActivity();
         this.dataStatus.set(null);
+        this.updating.set(null);
+        this.updateProblem.set('');
+        this.due.set(0);
         this.categoryRequest++;
         this.railState.category.set('all');
         this.railState.members.set(null);
@@ -433,6 +475,7 @@ export class HomeProfiles {
       const result = await this.api.list(handle);
       if (request !== this.listRequest || handle !== this.auth.token()) return;
       this.result.set(result);
+      void this.countDue(handle);
       this.profiles.set(result.profiles);
       if (this.railState.category() !== 'all')
         void this.chooseCategory(this.railState.category(), true);
@@ -456,6 +499,111 @@ export class HomeProfiles {
     this.postRequest++;
     this.postsLoading.set(false);
     if (id !== null) void this.loadMore();
+    this.freshen();
+  }
+
+  /**
+   * The saved posts are on screen at once; the picked person's newest page is
+   * one ordinary server call, so it is fetched and merged in. A short wait
+   * first: paging through people with Next asks only about the one stopped at.
+   */
+  private freshen(): void {
+    if (this.freshenTimer) clearTimeout(this.freshenTimer);
+    this.freshenTimer = null;
+    this.freshening.set(false);
+    const handle = this.auth.token();
+    const person = this.selectedProfile();
+    if (!handle || !person) return;
+    const key = `${handle} ${person.remoteId}`;
+    if (Date.now() - (this.freshened.get(key) ?? 0) < FRESH_FOR_MS) return;
+    const current = () =>
+      !this.destroyed && handle === this.auth.token() && person.id === this.selectedId();
+    this.freshening.set(true);
+    this.freshenTimer = setTimeout(() => {
+      this.freshenTimer = null;
+      void this.api
+        .fetchAccountPage(handle, person.remoteId, false)
+        .then(async () => {
+          this.freshened.set(key, Date.now());
+          if (current()) await this.mergeNewest(handle, person.id, current);
+        })
+        .catch(() => undefined) // The saved posts are still there to read.
+        .finally(() => {
+          if (current()) this.freshening.set(false);
+        });
+    }, FRESHEN_DELAY_MS);
+  }
+
+  private async mergeNewest(handle: string, id: number, current: () => boolean): Promise<void> {
+    const filter = this.filter();
+    const hideRead = this.hideRead();
+    const page = await this.api.postsAfter(handle, id, filter, hideRead, null);
+    while (this.postsLoading()) await new Promise((resolve) => setTimeout(resolve, 100));
+    if (!current() || filter !== this.filter() || hideRead !== this.hideRead()) return;
+    const shown = this.posts();
+    const read = new Set(shown.filter((post) => post.isRead).map((post) => post.localId));
+    const newest = page.posts.map((post) =>
+      read.has(post.localId) ? { ...post, isRead: true } : post,
+    );
+    if (shown.length <= newest.length) {
+      this.posts.set(newest);
+      this.nextCursor = page.next;
+      this.hasMore.set(page.next !== null);
+    } else {
+      const ids = new Set(newest.map((post) => post.localId));
+      this.posts.set([...newest, ...shown.filter((post) => !ids.has(post.localId))]);
+    }
+  }
+
+  private async countDue(handle: string): Promise<void> {
+    const status = await this.api.collectionStatus(handle).catch(() => null);
+    if (status && !this.destroyed && handle === this.auth.token())
+      this.due.set(status.seedEligible);
+  }
+
+  /** Work through everyone due, a batch at a time, at the host's pace. */
+  protected async update(): Promise<void> {
+    const handle = this.auth.token();
+    if (!handle || this.updating()) return;
+    const run = { done: 0, total: this.due() };
+    const going = () => this.updating() !== null && handle === this.auth.token();
+    this.updateProblem.set('');
+    this.updating.set(run);
+    let busy = 0;
+    while (going()) {
+      try {
+        const report = await this.api.seedRecent(handle, UPDATE_BATCH);
+        if (!going()) return;
+        busy = 0;
+        run.done += report.profiles;
+        this.due.set(report.remaining);
+        this.updating.set({ ...run, total: run.done + report.remaining });
+        if (report.rateLimited) this.updateProblem.set('pages.homeProfiles.updatePaused');
+        if (report.rateLimited || !report.profiles || !report.remaining) break;
+      } catch (error) {
+        if (!going()) return;
+        // The background trickle holds the queue for a moment; wait our turn.
+        const kind = (error as { kind?: string } | null)?.kind;
+        if (kind === 'busy' && ++busy <= 10) {
+          await new Promise((resolve) => setTimeout(resolve, 3_000));
+          continue;
+        }
+        this.updateProblem.set(
+          kind === 'rate_limit'
+            ? 'pages.homeProfiles.updatePaused'
+            : 'pages.homeProfiles.updateFailed',
+        );
+        break;
+      }
+    }
+    if (!going()) return;
+    this.updating.set(null);
+    await this.refresh();
+  }
+
+  protected stopUpdate(): void {
+    this.updating.set(null);
+    void this.refresh();
   }
 
   protected next(): void {

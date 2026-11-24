@@ -82,6 +82,9 @@ import {
   NATIVE_PROFILES,
   NativeFollowStatus,
 } from '../platform/session/platform-login';
+/** Between two people read for the bulk archive, and the longest wait when there is nothing to do. */
+const TRICKLE_MS = 60_000;
+const TRICKLE_IDLE_MS = 15 * 60_000;
 // i18n shell.archive.progress: Local people inventory: {{count}} found so far. Reading more in the background.
 // i18n shell.archive.paused: Local people inventory paused after {{count}}. It will resume when you reopen the app.
 // i18n shell.nav.posts: Posts
@@ -312,30 +315,21 @@ export class Shell implements OnInit, AccountSwitcher {
           }
         });
     };
-    const seedRecent = () => {
-      if (cancelled) return;
-      if (!this.nativeProfiles) {
-        collectNotifications();
-        return;
-      }
-      void this.nativeProfiles
-        .seedRecent(handle)
-        .then(() => {
-          if (!cancelled) collectNotifications();
-        })
-        .catch((error: unknown) => {
-          if (cancelled) return;
-          if (
-            typeof error === 'object' &&
-            error !== null &&
-            'kind' in error &&
-            error.kind === 'busy'
-          ) {
-            seedTimer = setTimeout(seedRecent, 30_000);
-          } else {
-            collectNotifications();
-          }
-        });
+    // The bulk archive trickles: one person, one call, about once a minute
+    // (the queue's order is the host's). Backs off while the server struggles.
+    const trickle = (delay: number) => {
+      const profiles = this.nativeProfiles;
+      if (cancelled || !profiles) return;
+      const backOff = () => Math.min(delay * 2, TRICKLE_IDLE_MS);
+      seedTimer = setTimeout(() => {
+        void profiles.seedRecent(handle, 1).then(
+          (report) =>
+            trickle(
+              report.rateLimited ? backOff() : report.profiles ? TRICKLE_MS : TRICKLE_IDLE_MS,
+            ),
+          () => trickle(backOff()),
+        );
+      }, delay);
     };
     const poll = async (startIfNeeded = false) => {
       try {
@@ -352,7 +346,8 @@ export class Shell implements OnInit, AccountSwitcher {
         }
         if (status?.complete && !notificationsStarted) {
           notificationsStarted = true;
-          seedRecent();
+          collectNotifications();
+          trickle(TRICKLE_MS);
         }
         if (!status?.complete && !paused) timeout = setTimeout(() => void poll(), 2000);
       } catch {

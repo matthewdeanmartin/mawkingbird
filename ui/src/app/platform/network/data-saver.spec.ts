@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConnectionMeter } from './connection-meter';
-import { DATA_SAVER_HOLD_MS, DATA_SAVER_KEY, DataSaver } from './data-saver';
+import { DATA_SAVER_KEY, DataSaver } from './data-saver';
 import { ConnectionSample } from './connection-quality';
 
 describe('DataSaver', () => {
@@ -34,29 +34,17 @@ describe('DataSaver', () => {
     expect(TestBed.inject(DataSaver).active()).toBe(false);
   });
 
-  it('turns on when the connection is slow', () => {
-    record('ok', 3_000, 4);
-    expect(TestBed.inject(DataSaver).active()).toBe(true);
+  it('never turns itself on, however bad the connection gets', () => {
+    record('ok', 30_000, 10);
+    expect(TestBed.inject(ConnectionMeter).verdict()).toBe('slow');
+    expect(TestBed.inject(DataSaver).active()).toBe(false);
+    record('unreachable', 10, 10);
+    expect(TestBed.inject(DataSaver).active()).toBe(false);
   });
 
   it('follows the browser data-saver hint', () => {
     TestBed.inject(ConnectionMeter).hints.set({ online: true, saveData: true });
     expect(TestBed.inject(DataSaver).active()).toBe(true);
-  });
-
-  it('stays on for a while after the connection recovers, then turns off', () => {
-    vi.useFakeTimers({ toFake: ['Date'] });
-    const start = Date.now();
-    record('ok', 3_000, 4, start);
-    const saver = TestBed.inject(DataSaver);
-    expect(saver.active()).toBe(true);
-    // Good samples now, but the slow minute is still inside the hold.
-    vi.setSystemTime(start + 3 * 60_000 - 10_000);
-    record('ok', 100, 6);
-    expect(saver.active()).toBe(true);
-    vi.setSystemTime(start + DATA_SAVER_HOLD_MS + 2 * 60_000);
-    record('ok', 100, 6);
-    expect(saver.active()).toBe(false);
   });
 
   it('honours always and never, and remembers the choice', () => {

@@ -2769,7 +2769,6 @@
     "blue.custom.sidebar": "Cartes de la barre latérale",
     "blue.dataSaver": "Images des nouveaux messages",
     "blue.dataSaver.always": "Toujours retenues",
-    "blue.dataSaver.auto": "Retenues tant que la connexion est lente",
     "blue.dataSaver.never": "Toujours affichées",
     "blue.delayedSend": "Attendre 30 secondes avant de publier, pour pouvoir annuler (ou publier plus tôt)",
     "blue.favStyle": "Les favoris ressemblent à",
@@ -4547,7 +4546,8 @@
     "writing.yourWords.and": "et",
     "writing.yourWords.hint.a": "est en anglais, et cette fonctionnalité est inutile si le mot n’est pas le tien. Définis les tiens — séparés par des virgules, et n’importe lequel correspondra. Les tags sont comparés en entier et sans distinction de casse, donc",
     "writing.yourWords.hint.b": "sont le même tag mais",
-    "writing.yourWords.hint.c": "ne l’est pas."
+    "writing.yourWords.hint.c": "ne l’est pas.",
+    "blue.dataSaver.device": "Retenues quand l’économiseur de données de cet appareil est activé"
   },
   "shortener": {
     "proxyConsent.aboutProxy": "À propos de {{proxy}}",
@@ -6625,7 +6625,11 @@
     "savedCopy": "Copie enregistrée il y a {{minutes}} min.",
     "savedCopyJustNow": "Copie enregistrée à l’instant.",
     "trying": "Nouvel essai…",
-    "tryNow": "Réessayer maintenant"
+    "tryNow": "Réessayer maintenant",
+    "serverSaved": "Votre serveur n’a pas répondu. Affichage d’une copie enregistrée {{age}}.",
+    "serverSavedDevice": "Votre serveur n’a pas répondu. Affichage des messages enregistrés sur cet appareil.",
+    "tryAgain": "Réessayer",
+    "dismiss": "Fermer"
   },
   "outbox": {
     "delete": "Supprimer",

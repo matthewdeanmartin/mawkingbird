@@ -1,3 +1,4 @@
+import { parseAnonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
 import { UrlSegment } from '@angular/router';
 import { describe, expect, it } from 'vitest';
 import { Account, Status } from '../../platform/api/models';
@@ -5,6 +6,8 @@ import {
   accountDeepLink,
   accountHandleLinkMatcher,
   mastodonPostLinkMatcher,
+  postAcctParam,
+  postLoadTarget,
   postDeepLink,
   profileDeepLink,
   qualifiedAcct,
@@ -111,6 +114,49 @@ describe('deep links', () => {
     expect(serverHost('not a url')).toBeNull();
     expect(qualifiedAcct('@bob@far.example', null)).toBe('bob@far.example');
     expect(qualifiedAcct('bob', null)).toBeNull();
+  });
+
+  describe('query-string post addresses', () => {
+    const here = 'https://home.example';
+
+    it('uses the id as is on the server that issued it', () => {
+      expect(postLoadTarget({ post: '42', server: here }, here)).toBe('42');
+    });
+
+    it('becomes a public ref anywhere else, with the page address when the author is known', () => {
+      const ref = (params: Record<string, string>) =>
+        parseAnonymousStatusRouteRef(
+          postLoadTarget({ post: '42', server: 'https://far.example', ...params }, here)!,
+        );
+      expect(ref({ acct: 'alice@far.example' })).toEqual({
+        server: 'https://far.example',
+        id: '42',
+        originalUrl: 'https://far.example/@alice@far.example/42',
+      });
+      expect(ref({})).toEqual({ server: 'https://far.example', id: '42' });
+      expect(ref({ acct: 'a/../b' })).toEqual({ server: 'https://far.example', id: '42' });
+    });
+
+    it('leaves ids that mean the same everywhere alone', () => {
+      const bsky = 'bsky:at://did:plc:a/app.bsky.feed.post/1';
+      expect(postLoadTarget({ post: bsky, server: 'https://far.example' }, here)).toBe(bsky);
+    });
+
+    it.each([
+      { post: '42' },
+      { post: '42', server: 'nope' },
+      { post: '42', server: 'http://far.example' },
+      { post: '42', server: 'https://u:p@far.example' },
+      { post: 'a/b', server: 'https://far.example' },
+      { post: 'x'.repeat(4001), server: here },
+    ])('refuses an address that names no post (%#)', (params) => {
+      expect(postLoadTarget(params, here)).toBeNull();
+    });
+
+    it('names the author only for server-local Mastodon posts', () => {
+      expect(postAcctParam(status({ id: '42' }), here)).toEqual({ acct: 'alice@home.example' });
+      expect(postAcctParam(status({ id: 'bsky:x', provider: 'bluesky' }), here)).toEqual({});
+    });
   });
 
   describe('route matchers', () => {

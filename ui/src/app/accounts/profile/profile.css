@@ -804,14 +804,3 @@ h2 {
 .more-options-heading:first-child {
   margin-top: 0;
 }
-.profile-archive-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 8px 12px;
-}
-
-.profile-archive-actions p {
-  margin: 0;
-}

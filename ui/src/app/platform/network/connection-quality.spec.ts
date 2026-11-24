@@ -65,11 +65,20 @@ describe('assess', () => {
 
   it('counts long abandoned waits as failures', () => {
     const a = assess(
-      [s(20, 'ok'), s(15, 'abandoned', 9000), s(10, 'ok'), s(5, 'ok'), s(1, 'ok')],
+      [s(20, 'ok'), s(15, 'abandoned', 9000), s(10, 'abandoned', 9000), s(5, 'ok'), s(1, 'ok')],
       ONLINE,
       NOW,
     );
     expect(a.verdict).toBe('flaky');
+  });
+
+  it('does not call a connection unstable over one lost request', () => {
+    const a = assess(
+      [s(20, 'ok'), s(15, 'unreachable'), s(10, 'ok'), s(5, 'ok'), s(1, 'ok')],
+      ONLINE,
+      NOW,
+    );
+    expect(a.verdict).toBe('good');
   });
 
   it('treats a 5xx as evidence the network works', () => {

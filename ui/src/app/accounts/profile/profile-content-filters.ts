@@ -104,8 +104,6 @@ export class ProfileContentState {
   readonly selected = signal<ProfileContentKind>('all');
   readonly posts = signal<Status[]>([]);
   readonly accountId = signal<string | null>(null);
-  /** Where the posts came from: the coverage note differs. */
-  readonly archived = signal(false);
 
   /** Posts belonging to the author's storms and long posts. */
   readonly longIds = computed(() => {
@@ -158,7 +156,6 @@ export class ProfileContentState {
 // i18n pages.profile.content.code: Code
 // i18n pages.profile.content.discussions: Discussions
 // i18n pages.profile.content.sample: Counts cover the {{count}} posts loaded so far. Load more to look further back.
-// i18n pages.profile.content.archive: Counts cover the {{count}} archived posts. Fetch older posts to look further back.
 
 /**
  * The left-rail widget (under the profile card). Kinds with nothing in them
@@ -192,10 +189,7 @@ export class ProfileContentState {
           }
         </div>
         <p class="muted small">
-          {{
-            (state.archived() ? 'pages.profile.content.archive' : 'pages.profile.content.sample')
-              | transloco: { count: state.counts().all }
-          }}
+          {{ 'pages.profile.content.sample' | transloco: { count: state.counts().all } }}
         </p>
       </div>
     </section>

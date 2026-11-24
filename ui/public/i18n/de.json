@@ -3324,7 +3324,6 @@
     "blue.custom.sidebar": "Seitenleistenkarten",
     "blue.dataSaver": "Bilder in neuen Beiträgen",
     "blue.dataSaver.always": "Immer zurückgehalten",
-    "blue.dataSaver.auto": "Bei langsamer Verbindung zurückgehalten",
     "blue.dataSaver.never": "Immer angezeigt",
     "blue.delayedSend": "30 Sekunden warten, bevor gepostet wird, damit du abbrechen (oder früher senden) kannst",
     "blue.favStyle": "Favoriten sehen aus wie",
@@ -5102,7 +5101,8 @@
     "writing.yourWords.and": "und",
     "writing.yourWords.hint.a": "ist englisch, und diese Funktion nützt nichts, wenn das Wort nicht deins ist. Setz dein eigenes – mit Komma getrennt, und jedes davon greift. Tags werden ganz und ohne Rücksicht auf Groß- und Kleinschreibung verglichen, also",
     "writing.yourWords.hint.b": "sind das gleiche Tag, aber",
-    "writing.yourWords.hint.c": "ist nicht."
+    "writing.yourWords.hint.c": "ist nicht.",
+    "blue.dataSaver.device": "Zurückgehalten, wenn der Datensparmodus dieses Geräts an ist"
   },
   "wizard": {
     "forward.continue": "Weiter",
@@ -6625,7 +6625,11 @@
     "savedCopy": "Zeigt eine vor {{minutes}} Min. gespeicherte Kopie.",
     "savedCopyJustNow": "Zeigt eine gerade gespeicherte Kopie.",
     "trying": "Wird versucht…",
-    "tryNow": "Jetzt versuchen"
+    "tryNow": "Jetzt versuchen",
+    "serverSaved": "Dein Server hat nicht geantwortet. Angezeigt wird eine Kopie, gespeichert {{age}}.",
+    "serverSavedDevice": "Dein Server hat nicht geantwortet. Angezeigt werden auf diesem Gerät gespeicherte Beiträge.",
+    "tryAgain": "Erneut versuchen",
+    "dismiss": "Schließen"
   },
   "outbox": {
     "delete": "Löschen",

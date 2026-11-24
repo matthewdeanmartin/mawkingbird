@@ -1369,47 +1369,6 @@
           </button>
         </div>
       }
-      @if (nativeArchiveMode()) {
-        <div class="profile-archive-actions">
-          <p class="muted small">{{ 'pages.profile.archive.summary' | transloco }}</p>
-          <button
-            type="button"
-            class="btn btn-outline"
-            [disabled]="archiveFetching() || statusesLoading()"
-            (click)="fetchArchivePage(false)"
-          >
-            {{
-              (archiveFetching()
-                ? 'pages.profile.archive.fetching'
-                : 'pages.profile.archive.fetchLatest'
-              ) | transloco
-            }}
-          </button>
-          @if (statuses().length && exhausted()) {
-            <button
-              type="button"
-              class="btn btn-outline"
-              [disabled]="archiveFetching() || loadingMore()"
-              (click)="fetchArchivePage(true)"
-            >
-              {{
-                (archiveFetching()
-                  ? 'pages.profile.archive.fetching'
-                  : 'pages.profile.archive.fetchOlder'
-                ) | transloco
-              }}
-            </button>
-          }
-          @if (archiveFetchCount() !== null) {
-            <p role="status">
-              {{ 'pages.profile.archive.saved' | transloco: { count: archiveFetchCount() } }}
-            </p>
-          }
-          @if (archiveFetchError()) {
-            <p role="alert">{{ 'pages.profile.archive.error' | transloco }}</p>
-          }
-        </div>
-      }
       @if (tagged(); as tag) {
         <p class="profile-tagged small" role="status">
           {{ 'pages.profile.tagged.showing' | transloco: { tag } }}
@@ -1590,12 +1549,7 @@
           @if (statuses().length) {
             <div class="load-more-row">
               @if (exhausted()) {
-                <span class="muted small">{{
-                  (nativeArchiveMode()
-                    ? 'pages.profile.archive.cachedEnd'
-                    : 'pages.profile.posts.noOlder'
-                  ) | transloco
-                }}</span>
+                <span class="muted small">{{ 'pages.profile.posts.noOlder' | transloco }}</span>
               } @else {
                 <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
                   {{

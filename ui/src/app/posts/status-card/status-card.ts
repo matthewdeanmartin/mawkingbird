@@ -794,7 +794,7 @@ export class StatusCard {
   private readonly dataSaver = inject(DataSaver);
   /**
    * Read once, when the card is created: a card whose pictures already loaded
-   * keeps them if the connection then gets worse, and a card created while
+   * keeps them if data saving is then turned on, and a card created while
    * saving data stays text-first until the reader asks (see DataSaver).
    */
   private readonly savingData = this.dataSaver.active();
@@ -822,7 +822,7 @@ export class StatusCard {
       this.pictureUrls().every((url) => this.mediaPolicy.wasLoaded(url))
     );
   });
-  /** Pictures the reader wants but a slow connection or Lite's bar is holding back. */
+  /** Pictures the reader wants but the data saver or Lite's bar is holding back. */
   protected imagesHeldBack = computed(
     () => this.imagesWanted() && !this.imagesVisible() && this.mediaOverride()?.pictures !== 'off',
   );

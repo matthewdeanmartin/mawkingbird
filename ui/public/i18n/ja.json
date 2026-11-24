@@ -3174,7 +3174,6 @@
     "blue.custom.sidebar": "サイドバーのカード",
     "blue.dataSaver": "新しい投稿の画像",
     "blue.dataSaver.always": "常に保留",
-    "blue.dataSaver.auto": "接続が遅いときは保留",
     "blue.dataSaver.never": "常に表示",
     "blue.delayedSend": "投稿前に30秒待つ（キャンセルまたは早期公開が可能）",
     "blue.favStyle": "お気に入りの表示",
@@ -4952,7 +4951,8 @@
     "writing.yourWords.and": "および",
     "writing.yourWords.hint.a": "は英語です。単語が自分のものでなければ、この機能は役に立ちません。自分で設定してください（カンマ区切りで、どれかが一致します）。タグは大文字と小文字を区別せず、全体で一致するため、",
     "writing.yourWords.hint.b": "は同じタグですが、",
-    "writing.yourWords.hint.c": "は異なります。"
+    "writing.yourWords.hint.c": "は異なります。",
+    "blue.dataSaver.device": "このデバイスのデータセーバーがオンのときは保留"
   },
   "shareDialog": {
     "articleHint": "<strong>{{host}}</strong>として共有します。送信先を選んでください。",
@@ -6617,7 +6617,11 @@
     "savedCopy": "{{minutes}}分前に保存したコピーを表示中です。",
     "savedCopyJustNow": "保存したばかりのコピーを表示中です。",
     "trying": "試しています…",
-    "tryNow": "今すぐ試す"
+    "tryNow": "今すぐ試す",
+    "serverSaved": "サーバーが応答しませんでした。{{age}}に保存したコピーを表示しています。",
+    "serverSavedDevice": "サーバーが応答しませんでした。このデバイスに保存した投稿を表示しています。",
+    "tryAgain": "再試行",
+    "dismiss": "閉じる"
   },
   "outbox": {
     "delete": "削除",

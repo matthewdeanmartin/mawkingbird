@@ -7,10 +7,11 @@ import {
   inject,
   linkedSignal,
   signal,
+  untracked,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
 import { postExternalMedia } from '../audio-embeds/providers';
@@ -21,7 +22,7 @@ import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { FollowTrust } from '../../accounts/follow-trust';
 import { Status } from '../../platform/api/models';
-import { parseAnonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
+import { postLoadTarget } from '../../posts/copy-link/deep-links';
 import { Server } from '../../platform/http/server';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { StatusVisibility } from '../../moderation/status-visibility';
@@ -41,7 +42,6 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
 // i18n listen.title: Listen
 // i18n listen.loading: Opening recording…
 // i18n listen.unavailable: This recording is unavailable or you don't have access to its post.
-// i18n listen.wrongServer: Switch to the server this post belongs to before opening its recording.
 // i18n listen.noAudio: This post has no recording to play.
 // i18n listen.reveal: Show recording
 // i18n listen.warning: This post has a content warning or sensitive media.
@@ -109,6 +109,7 @@ export class ListenPage {
   private readonly prefs = inject(ClientPrefs);
   protected readonly params = signal<Record<string, string>>({});
   protected readonly error = signal('');
+  private address: ParamMap | null = null;
   /** Thread-wide CW state, as on the thread page: one toggle opens or closes every warning. */
   protected readonly threadCwOpen = signal<boolean | null>(null);
   protected readonly message = signal('');
@@ -199,52 +200,38 @@ export class ListenPage {
       if (status) this.linked.resolve([status.reblog ?? status]);
     });
     effect(() => this.player.dockSuppressed.set(this.playing()));
-    this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      this.loader.destroy();
-      this.loader.status.set(null);
-      this.loader.descendants.set([]);
-      this.loader.loadError.set(null);
-      this.loader.publicContextUnavailable.set(false);
-      this.threadCwOpen.set(null);
-      this.params.set(Object.fromEntries(params.keys.map((key) => [key, params.get(key) ?? ''])));
-      this.error.set('');
-      this.message.set('');
-      const post = params.get('post');
-      if (!post || post.length > 4000) {
-        this.loader.loading.set(false);
-        this.error.set('listen.unavailable');
-        return;
-      }
-      // As on Watch: a server-local id is only meaningful on the server that issued it.
-      if (!parseAnonymousStatusRouteRef(post) && !post.includes(':')) {
-        try {
-          const url = new URL(params.get('server') ?? '');
-          if (
-            url.username ||
-            url.password ||
-            url.origin !== new URL(this.server.baseUrl() || location.origin).origin
-          ) {
-            this.error.set('listen.wrongServer');
-            return;
-          }
-        } catch {
-          this.error.set('listen.wrongServer');
-          return;
-        }
-      }
-      this.loader.load(post);
-    });
-    // Account changes invalidate the original authorization.
+    this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => this.open(params));
+    // Another account: find the post again as that account sees it.
     let identity: string | undefined;
     effect(() => {
       const next = `${this.auth.kind()}:${this.auth.token() ?? ''}:${this.server.baseUrl()}`;
       if (identity !== undefined && identity !== next) {
-        this.loader.destroy();
-        this.loader.status.set(null);
-        this.error.set('listen.unavailable');
+        untracked(() => this.address && this.open(this.address));
       }
       identity = next;
     });
+  }
+
+  /** Load what the address names, for whoever is reading now. */
+  private open(params: ParamMap): void {
+    this.address = params;
+    this.loader.destroy();
+    this.loader.status.set(null);
+    this.loader.descendants.set([]);
+    this.loader.loadError.set(null);
+    this.loader.publicContextUnavailable.set(false);
+    this.threadCwOpen.set(null);
+    this.params.set(Object.fromEntries(params.keys.map((key) => [key, params.get(key) ?? ''])));
+    this.error.set('');
+    this.message.set('');
+    // As on Watch: a link from another server resolves to this reader's copy.
+    const target = postLoadTarget(this.params(), this.server.baseUrl() || location.origin);
+    if (!target) {
+      this.loader.loading.set(false);
+      this.error.set('listen.unavailable');
+      return;
+    }
+    this.loader.load(target);
   }
 
   protected play(at = 0): void {

@@ -19,7 +19,8 @@ import { ConnectionMeter } from './connection-meter';
  *   from anywhere, though, proves the network carried it.
  * - **Abandonment needs {@link ABANDON_MIN_MS}.** Callers time out with their
  *   own `timeout(...)`, which reaches this chain only as an unsubscribe. A long
- *   unanswered wait is real evidence; a quick cancel is the user navigating.
+ *   unanswered wait is real evidence; a quick cancel is the user navigating. Giving
+ *   up on a foreign host is a foreign-host failure, and ignored with the rest.
  * - **Latency counts only ordinary reads**: GETs of endpoints that are fast by
  *   design (see `latencyFamily`), and only on the home server, whose shape the
  *   endpoint list describes.
@@ -64,7 +65,7 @@ export const connectionMeterInterceptor: HttpInterceptorFn = (req, next) => {
     }),
     finalize(() => {
       if (settled) return;
-      if (performance.now() - started >= ABANDON_MIN_MS) {
+      if (!external && performance.now() - started >= ABANDON_MIN_MS) {
         meter.record(sample('abandoned'));
       }
     }),

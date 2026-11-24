@@ -97,6 +97,8 @@ export const MIN_LATENCY_SAMPLES = 4;
 export const FLAKY_FAILURE_SHARE = 0.2;
 /** Samples needed before the failure share is trusted. */
 export const MIN_FAILURE_SAMPLES = 5;
+/** One lost request is an accident, not a pattern, however few others there were. */
+export const FLAKY_MIN_FAILURES = 2;
 /** Trailing unreachable requests that, with no recent answer, mean `offline`. */
 export const OFFLINE_TRAILING_FAILURES = 3;
 /** "No recent answer" for the offline rule. */
@@ -184,7 +186,11 @@ export function assess(
     return { ...base, verdict: 'offline', reason: 'nothing-gets-through', blame: 'connection' };
   }
 
-  if (failureShare !== null && failureShare >= FLAKY_FAILURE_SHARE) {
+  if (
+    failureShare !== null &&
+    failures >= FLAKY_MIN_FAILURES &&
+    failureShare >= FLAKY_FAILURE_SHARE
+  ) {
     return { ...base, verdict: 'flaky', reason: 'many-failures', blame };
   }
 

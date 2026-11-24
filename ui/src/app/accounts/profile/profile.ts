@@ -18,13 +18,6 @@ import { BulkFollowConfirmation } from '../bulk-follow-confirmation';
 // i18n pages.profile.privateFollow.remove: Remove private follow
 // i18n pages.profile.privateFollow.hint: Adds public posts to Home without following on the network. Kept in this browser only.
 // i18n pages.profile.privateFollow.failed: Could not save this change. Private follows are limited to 50 accounts; check the limit and your browser storage in Pseudonymity settings.
-// i18n pages.profile.archive.summary: Showing posts saved on this device. Fetch a page when you want newer or older posts.
-// i18n pages.profile.archive.fetchLatest: Fetch latest posts
-// i18n pages.profile.archive.fetchOlder: Fetch older posts
-// i18n pages.profile.archive.fetching: Fetching one page…
-// i18n pages.profile.archive.saved: Saved {{count}} posts from this page.
-// i18n pages.profile.archive.error: Could not fetch or read this profile page. Try again.
-// i18n pages.profile.archive.cachedEnd: End of posts currently saved on this device.
 import {
   Component,
   computed,
@@ -154,7 +147,6 @@ import { buildMediaItems, ProfileMediaItem } from './media/profile-media-item';
 import { describeHttpError, PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { FollowLanguagesDialog } from './follow-languages-dialog';
 import { RenderedHtmlLinks } from '../rendered-html-links';
-import { NATIVE_PROFILES } from '../../platform/session/platform-login';
 import { ProfileContentState } from './profile-content-filters';
 import { Wellness } from '../../wellness/wellness';
 
@@ -1113,16 +1105,13 @@ export class Profile implements OnInit, OnDestroy {
    */
   protected visibleStatuses = computed(() => {
     const kind = this.profileContent.selected();
-    const native = this.nativeArchiveMode();
     const bluesky = this.isBluesky();
     const showBoosts = this.showBoosts();
     const showReplies = this.showReplies();
     const matches = this.statuses().filter(
       (post) =>
-        (native
-          ? (showBoosts || !post.reblog) && (showReplies || !post.in_reply_to_id)
-          : !bluesky ||
-            ((showBoosts || !post.reblog) && (showReplies || !isBlueskyReplyToOthers(post)))) &&
+        (!bluesky ||
+          ((showBoosts || !post.reblog) && (showReplies || !isBlueskyReplyToOthers(post)))) &&
         this.profileContent.matches(post, kind),
     );
     if (!this.showPinned()) {
@@ -1188,23 +1177,6 @@ export class Profile implements OnInit, OnDestroy {
   protected isEliza = computed(() => isElizaId(this.account()?.id));
   protected isOpenRouter = computed(() => isOpenRouterId(this.account()?.id));
   protected readonly profileContent = inject(ProfileContentState);
-  private readonly nativeProfiles = inject(NATIVE_PROFILES);
-  private archiveOffset = 0;
-  protected readonly archiveFetching = signal(false);
-  protected readonly archiveFetchError = signal(false);
-  protected readonly archiveFetchCount = signal<number | null>(null);
-  protected readonly nativeArchiveMode = computed(() => {
-    const handle = this.auth.token();
-    return (
-      !!this.nativeProfiles &&
-      !!handle?.startsWith('native-mastodon:') &&
-      /^\d+$/.test(this.account()?.id ?? '') &&
-      !this.isBluesky() &&
-      !this.isMisskey() &&
-      !this.isRss() &&
-      !this.isTwitter()
-    );
-  });
   private contentAccount: string | null = null;
   protected readonly contentRailEnabled = computed(
     () =>
@@ -1250,7 +1222,6 @@ export class Profile implements OnInit, OnDestroy {
         this.profileContent.claim(this);
         this.profileContent.posts.set(posts);
         this.profileContent.accountId.set(account?.id ?? null);
-        this.profileContent.archived.set(this.nativeArchiveMode());
       } else {
         this.profileContent.release(this);
       }
@@ -1529,8 +1500,6 @@ export class Profile implements OnInit, OnDestroy {
     this.routeLoadSub = new Subscription();
     this.statusLoadSub.unsubscribe();
     this.loading.set(true);
-    this.archiveFetchError.set(false);
-    this.archiveFetchCount.set(null);
     this.loadError.set(null);
     this.recovering.set(false);
     this.recoveryFailed.set(false);
@@ -1691,7 +1660,7 @@ export class Profile implements OnInit, OnDestroy {
       }),
     );
     this.loadStatuses(id);
-    if (!this.nativeArchiveHandle(id)) this.loadPinned(id);
+    this.loadPinned(id);
     this.loadCollections(id);
     this.maybeLoadPendingMedia(id);
     if (this.capabilities.canManageRelationships) {
@@ -2331,73 +2300,6 @@ export class Profile implements OnInit, OnDestroy {
   /** Safety cap on the fetch-until-full loop (filtered pages can come back short). */
   private static readonly MAX_PAGES = 8;
 
-  private nativeArchiveHandle(id: string): string | null {
-    const handle = this.auth.token();
-    return this.nativeProfiles &&
-      handle?.startsWith('native-mastodon:') &&
-      /^\d+$/.test(id) &&
-      !this.publicProfileRef &&
-      !this.isBluesky() &&
-      !this.isMisskey() &&
-      !this.isRss() &&
-      !this.isTwitter()
-      ? handle
-      : null;
-  }
-
-  private loadArchiveStatuses(id: string): void {
-    const handle = this.nativeArchiveHandle(id);
-    if (!handle || !this.nativeProfiles) return;
-    this.statusLoadSub.unsubscribe();
-    this.statusLoadSub = new Subscription();
-    const seq = ++this.loadSeq;
-    this.statuses.set([]);
-    this.pinnedStatuses.set([]);
-    this.archiveOffset = 0;
-    this.statusesLoading.set(true);
-    this.loadingMore.set(false);
-    this.exhausted.set(false);
-    void this.nativeProfiles.accountPosts(handle, id, 0).then(
-      (page) => {
-        if (seq !== this.loadSeq || handle !== this.auth.token()) return;
-        this.statuses.set(page.map((item) => item.status));
-        this.archiveOffset = page.length;
-        this.exhausted.set(page.length < 40);
-        this.statusesLoading.set(false);
-      },
-      () => {
-        if (seq === this.loadSeq) {
-          this.statusesLoading.set(false);
-          this.archiveFetchError.set(true);
-        }
-      },
-    );
-  }
-
-  protected async fetchArchivePage(older: boolean): Promise<void> {
-    const id = this.account()?.id;
-    const handle = id ? this.nativeArchiveHandle(id) : null;
-    if (!id || !handle || !this.nativeProfiles || this.archiveFetching()) return;
-    this.archiveFetching.set(true);
-    this.archiveFetchError.set(false);
-    this.archiveFetchCount.set(null);
-    try {
-      const count = await this.nativeProfiles.fetchAccountPage(handle, id, older);
-      if (handle !== this.auth.token() || id !== this.account()?.id) return;
-      this.archiveFetchCount.set(count);
-      if (!older) this.loadArchiveStatuses(id);
-      else if (count > 0) {
-        this.exhausted.set(false);
-        this.loadMore();
-      }
-    } catch {
-      if (handle === this.auth.token() && id === this.account()?.id)
-        this.archiveFetchError.set(true);
-    } finally {
-      this.archiveFetching.set(false);
-    }
-  }
-
   /**
    * Load the account's statuses under the current filter toggles. Mastodon
    * applies exclude_* filtering per page, so filtered pages can return fewer
@@ -2405,10 +2307,6 @@ export class Profile implements OnInit, OnDestroy {
    * the account runs out, or MAX_PAGES is hit.
    */
   private loadStatuses(id: string): void {
-    if (this.nativeArchiveHandle(id)) {
-      this.loadArchiveStatuses(id);
-      return;
-    }
     this.statusLoadSub.unsubscribe();
     this.statusLoadSub = new Subscription();
     const seq = ++this.loadSeq;
@@ -2588,29 +2486,6 @@ export class Profile implements OnInit, OnDestroy {
   }
 
   loadMore(): void {
-    const archiveId = this.account()?.id;
-    const archiveHandle = archiveId ? this.nativeArchiveHandle(archiveId) : null;
-    if (archiveId && archiveHandle && this.nativeProfiles) {
-      if (this.loadingMore() || this.exhausted()) return;
-      const seq = this.loadSeq;
-      this.loadingMore.set(true);
-      void this.nativeProfiles.accountPosts(archiveHandle, archiveId, this.archiveOffset).then(
-        (page) => {
-          if (seq !== this.loadSeq || archiveHandle !== this.auth.token()) return;
-          this.statuses.update((current) => [...current, ...page.map((item) => item.status)]);
-          this.archiveOffset += page.length;
-          this.exhausted.set(page.length < 40);
-          this.loadingMore.set(false);
-        },
-        () => {
-          if (seq === this.loadSeq) {
-            this.archiveFetchError.set(true);
-            this.loadingMore.set(false);
-          }
-        },
-      );
-      return;
-    }
     if (this.isMisskey()) {
       if (this.loadingMore() || this.exhausted() || !this.mkUntil) return;
       this.loadingMore.set(true);

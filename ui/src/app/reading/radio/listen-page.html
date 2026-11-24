@@ -9,6 +9,13 @@
     <p role="status">{{ 'listen.loading' | transloco }}</p>
   } @else if (loader.loadError() || hidden() || !loader.status()) {
     <p role="alert">{{ 'listen.unavailable' | transloco }}</p>
+    @if (loader.publicOriginalUrl(); as originalUrl) {
+      <p>
+        <a [href]="originalUrl" target="_blank" rel="noopener noreferrer">{{
+          'pages.thread.error.openOriginal' | transloco
+        }}</a>
+      </p>
+    }
   } @else {
     @let status = loader.status()!;
     <section class="stage" [attr.aria-label]="'listen.title' | transloco">

@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { BehaviorSubject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExternalPlayerHost } from '../audio-embeds/external-player-host';
+import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { FollowTrust } from '../../accounts/follow-trust';
@@ -73,6 +74,7 @@ describe('ListenPage', () => {
       loading: signal(false),
       loadError: signal<string | null>(null),
       publicContextUnavailable: signal(false),
+      publicOriginalUrl: signal<string | null>(null),
       load: vi.fn(),
       destroy: vi.fn(),
     };
@@ -189,10 +191,28 @@ describe('ListenPage', () => {
     expect(depths).toEqual(['1', '2']);
   });
 
-  it('refuses a server-local id from another server', () => {
-    params.next(convertToParamMap({ post: '7', server: 'https://elsewhere.test' }));
+  it("opens another server's post for a signed-in reader", () => {
+    params.next(
+      convertToParamMap({
+        post: '7',
+        server: 'https://elsewhere.test',
+        acct: 'sea@elsewhere.test',
+      }),
+    );
+    mount();
+    expect(loader['load']).toHaveBeenCalledWith(
+      anonymousStatusRouteRef({
+        server: 'https://elsewhere.test',
+        id: '7',
+        originalUrl: 'https://elsewhere.test/@sea@elsewhere.test/7',
+      }),
+    );
+  });
+
+  it('says a recording is unavailable when the link names no post', () => {
+    params.next(convertToParamMap({ post: '7' }));
     const root = mount(null);
-    expect(root.textContent).toContain('Switch to the server this post belongs to');
+    expect(root.textContent).toContain('unavailable');
     expect(loader['load']).not.toHaveBeenCalled();
   });
 });

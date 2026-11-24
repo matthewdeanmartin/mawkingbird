@@ -87,6 +87,19 @@ describe('shared deep links opened in a fresh browser', () => {
     expect(TestBed.inject(Auth).isAnonymous).toBe(true);
   });
 
+  it.each(['/watch', '/listen'])(
+    'admits a %s link to a Mastodon post without an account',
+    (page) => {
+      const params = new URLSearchParams({
+        post: '42',
+        server: 'https://far.example',
+        acct: 'alice@far.example',
+      });
+      expect(enter(`${page}?${params}`)).toBe(true);
+      expect(TestBed.inject(Auth).isAnonymous).toBe(true);
+    },
+  );
+
   it('opens a shared Bluesky starter pack anonymously', () => {
     const path = TestBed.inject(Router)
       .createUrlTree(starterPackPath('at://did:plc:alice/app.bsky.graph.starterpack/3pack'))
@@ -109,6 +122,7 @@ describe('shared deep links opened in a fresh browser', () => {
     '/settings/profile',
     '/bookmarks',
     '/watch',
+    '/listen',
     '/bsky/profile',
     '/twitter/invalid!/status/1',
   ])('keeps a private or malformed link behind the front door: %s', (url) => {

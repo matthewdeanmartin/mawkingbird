@@ -1,5 +1,6 @@
 import { MediaAttachment, Status } from '../../platform/api/models';
 import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
+import { postAcctParam } from '../../posts/copy-link/deep-links';
 
 export interface VideoSource {
   /**
@@ -173,7 +174,11 @@ export function statusVideo(status: Status): VideoSource | null {
   return null;
 }
 
-/** A reloadable Watch URL resolves the post again; it never grants access to a media URL. */
+/**
+ * A reloadable, shareable Watch URL: it resolves the post again and never grants
+ * access to a media URL. The id is the issuing server's; `server` and `acct` let
+ * a reader on another server find their own copy (see `postLoadTarget`).
+ */
 export function watchParams(
   status: Status,
   source: VideoSource,
@@ -192,6 +197,7 @@ export function watchParams(
   return {
     post,
     server: new URL(server || location.origin).origin,
+    ...postAcctParam(status, server || location.origin),
     ...(attachmentId
       ? { attachment: attachmentId }
       : source.kind === 'peertube'

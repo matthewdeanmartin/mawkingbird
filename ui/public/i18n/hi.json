@@ -3645,7 +3645,6 @@
     "blue.custom.sidebar": "साइडबार कार्ड",
     "blue.dataSaver": "नई पोस्ट में तस्वीरें",
     "blue.dataSaver.always": "हमेशा रोकी जाती हैं",
-    "blue.dataSaver.auto": "कनेक्शन धीमा होने पर रोकी जाती हैं",
     "blue.dataSaver.never": "हमेशा दिखती हैं",
     "blue.delayedSend": "पोस्ट करने से पहले 30 सेकंड रुकें, ताकि आप रद्द कर सकें (या पहले प्रकाशित कर सकें)",
     "blue.favStyle": "पसंदीदा ऐसे दिखें",
@@ -5422,7 +5421,8 @@
     "writing.yourWords.and": "और",
     "writing.yourWords.hint.a": "अंग्रेज़ी है और शब्द आपका न हो तो सुविधा बेकार है। अपने शब्द सेट करें — कॉमा से अलग; कोई भी मेल खाएगा। टैग पूरे और केस की परवाह किए बिना मिलते हैं, इसलिए",
     "writing.yourWords.hint.b": "एक ही टैग हैं, लेकिन",
-    "writing.yourWords.hint.c": "नहीं है।"
+    "writing.yourWords.hint.c": "नहीं है।",
+    "blue.dataSaver.device": "इस डिवाइस का डेटा सेवर चालू होने पर रोकी जाती हैं"
   },
   "shareDialog": {
     "articleHint": "<strong>{{host}}</strong> के रूप में भेजा जा रहा है। गंतव्य चुनें।",
@@ -6466,7 +6466,11 @@
     "savedCopy": "{{minutes}} मिनट पहले सेव की गई कॉपी दिख रही है।",
     "savedCopyJustNow": "अभी-अभी सेव की गई कॉपी दिख रही है।",
     "trying": "कोशिश हो रही है…",
-    "tryNow": "अभी कोशिश करें"
+    "tryNow": "अभी कोशिश करें",
+    "serverSaved": "आपके सर्वर ने जवाब नहीं दिया। {{age}} सहेजी गई प्रति दिखाई जा रही है।",
+    "serverSavedDevice": "आपके सर्वर ने जवाब नहीं दिया। इस डिवाइस पर सहेजी गई पोस्ट दिखाई जा रही हैं।",
+    "tryAgain": "फिर से कोशिश करें",
+    "dismiss": "बंद करें"
   },
   "outbox": {
     "delete": "हटाएँ",

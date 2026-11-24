@@ -15,6 +15,8 @@ import { of, throwError } from 'rxjs';
 
 const ORIGINAL = 'https://graz.social/@publicvoit/117170026233980502';
 
+const REMOTE = 'https://graz.social/api/v1/statuses/117170026233980502';
+
 const REF = {
   server: 'https://graz.social',
   id: '117170026233980502',
@@ -106,11 +108,39 @@ describe('ThreadLoader resolving a remote post through the home server', () => {
       .expectOne((r) => r.url === '/api/v2/search')
       .flush({ accounts: [], statuses: [], hashtags: [] });
 
-    // Two: the status and its context, which is what the public path does.
-    expect(httpMock.match((r) => r.url.startsWith('https://graz.social')).length).toBeGreaterThan(
-      0,
-    );
+    // The remote has no other address for it, so it is shown as the remote has
+    // it, from the one read already made.
+    httpMock.expectOne(REMOTE).flush(localStatus());
+    httpMock.expectOne(`${REMOTE}/context`);
+    httpMock.expectNone(REMOTE);
     expect(loader.isAnonymousPublic()).toBe(true);
+    expect(loader.status()).not.toBeNull();
+  });
+
+  it('looks up the canonical address when the page address does not resolve', () => {
+    const loader = setUp({ mastodonToken: true });
+    loader.load(anonymousStatusRouteRef(REF));
+    httpMock
+      .expectOne((r) => r.url === '/api/v2/search')
+      .flush({ accounts: [], statuses: [], hashtags: [] });
+    const uri = 'https://graz.social/users/publicvoit/statuses/117170026233980502';
+    httpMock.expectOne(REMOTE).flush({ ...localStatus(), uri });
+    const second = httpMock.expectOne((r) => r.url === '/api/v2/search');
+    expect(second.request.params.get('q')).toBe(uri);
+    second.flush({ accounts: [], statuses: [localStatus()], hashtags: [] });
+    expect(loader.status()?.id).toBe('local-9');
+    expect(loader.isAnonymousPublic()).toBe(false);
+  });
+
+  it('resolves a link that carries only an id and its server', () => {
+    const loader = setUp({ mastodonToken: true });
+    loader.load(anonymousStatusRouteRef({ server: REF.server, id: REF.id }));
+    httpMock.expectOne(REMOTE).flush(localStatus('117170026233980502'));
+    const search = httpMock.expectOne((r) => r.url === '/api/v2/search');
+    expect(search.request.params.get('q')).toBe(ORIGINAL);
+    search.flush({ accounts: [], statuses: [localStatus()], hashtags: [] });
+    expect(loader.status()?.id).toBe('local-9');
+    expect(loader.publicOriginalUrl()).toBe(ORIGINAL);
   });
 
   it('falls back when the resolve request itself fails', () => {
