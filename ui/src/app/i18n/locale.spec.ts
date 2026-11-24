@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@jsverse/transloco';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClientPrefs } from '../platform/storage/client-prefs';
+import { PageLanguageState } from './page-language';
 import {
   FALLBACK_LOCALE,
   negotiateLocale,
@@ -15,6 +16,32 @@ import {
 } from './locale';
 
 describe('TranslocoLocaleSync', () => {
+  it('switches Arabic direction live and respects a public page language', () => {
+    const active = signal<SupportedLocale>('ar');
+    const page = document.implementation.createHTMLDocument();
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: DOCUMENT, useValue: page },
+        { provide: UiLocale, useValue: { active } },
+      ],
+    });
+    TestBed.inject(TranslocoLocaleSync);
+    const pinned = TestBed.inject(PageLanguageState);
+    TestBed.tick();
+    expect(page.documentElement.lang).toBe('ar');
+    expect(page.documentElement.dir).toBe('rtl');
+    pinned.lang.set('en');
+    TestBed.tick();
+    expect(page.documentElement.lang).toBe('en');
+    expect(page.documentElement.dir).toBe('ltr');
+    pinned.lang.set(null);
+    TestBed.tick();
+    expect(page.documentElement.dir).toBe('rtl');
+    active.set('fi');
+    TestBed.tick();
+    expect(page.documentElement.lang).toBe('fi');
+    expect(page.documentElement.dir).toBe('ltr');
+  });
   it('updates the document language on bootstrap and on live locale changes', () => {
     const active = signal<SupportedLocale>('zh-Hant');
     const page = document.implementation.createHTMLDocument();
@@ -77,6 +104,12 @@ describe('supportedLocales', () => {
       'lt',
       'et',
       'hu',
+      'fi',
+      'cs',
+      'nb',
+      'th',
+      'ar',
+      'fil',
     ];
     expect(supportedLocales('https://mawkingbird.com/test/')).toEqual(reviewLocales);
     expect(supportedLocales('https://mawkingbird.com/canary/')).toEqual(reviewLocales);
@@ -97,6 +130,15 @@ describe('supportedLocales', () => {
     ['lt-LT', 'lt'],
     ['et-EE', 'et'],
     ['hu-HU', 'hu'],
+    ['fi-FI', 'fi'],
+    ['cs-CZ', 'cs'],
+    ['nb-NO', 'nb'],
+    ['no-NO', 'nb'],
+    ['th-TH', 'th'],
+    ['ar-EG', 'ar'],
+    ['ar-SA', 'ar'],
+    ['fil-PH', 'fil'],
+    ['tl-PH', 'fil'],
   ])('offers %s for review while preserving the production fallback', (tag, locale) => {
     expect(negotiateLocale([tag], supportedLocales('https://mawkingbird.com/canary/'))).toBe(
       locale,

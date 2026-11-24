@@ -520,7 +520,7 @@ a.tab:hover {
   padding-top: 2px;
   font-size: 14px;
   font-weight: 700;
-  text-align: right;
+  text-align: end;
   color: var(--text);
 }
 
@@ -1026,7 +1026,7 @@ a.tab:hover {
   }
 
   .srow > .slabel {
-    text-align: left;
+    text-align: start;
   }
 }
 
@@ -1169,4 +1169,14 @@ html[data-wellness-fade] {
    fixed-position rails and dialogs (it would on body). */
 html[data-wellness-grayscale] {
   filter: grayscale(1);
+}
+
+/* Technical identifiers remain readable inside an Arabic interface. */
+input[type='url'],
+input[type='email'],
+code,
+pre {
+  direction: ltr;
+  unicode-bidi: isolate;
+  text-align: start;
 }

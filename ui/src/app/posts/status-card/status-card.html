@@ -117,7 +117,7 @@
           }
         </span>
         <app-verified-badge [account]="display.account" />
-        <span class="acct muted">&#64;{{ display.account.acct }}</span>
+        <span class="acct muted" dir="ltr">&#64;{{ display.account.acct }}</span>
         @if (replyGuyChip()) {
           <mb-badge class="reply-guy-chip" [title]="'statusCard.replyGuy.chipTitle' | transloco">{{
             'statusCard.replyGuy.chip' | transloco
@@ -232,7 +232,7 @@
           </div>
         } @else if (spoilerText()) {
           <div class="cw-row">
-            <span class="spoiler">{{ spoilerText() }}</span>
+            <span class="spoiler" dir="auto">{{ spoilerText() }}</span>
             <button
               type="button"
               class="btn btn-outline btn-sm cw-toggle"
@@ -260,11 +260,17 @@
           @if (excerpt(); as ex) {
             <!-- A very long search result, compacted to its opening and the
                  passages that matched. Rendered as text, never as HTML. -->
-            <app-search-excerpt class="content" [excerpt]="ex" (expand)="expandExcerpt($event)" />
+            <app-search-excerpt
+              class="content"
+              dir="auto"
+              [excerpt]="ex"
+              (expand)="expandExcerpt($event)"
+            />
           } @else {
             <div class="content-link" (click)="onContentClick($event)">
               <div
                 class="content"
+                dir="auto"
                 [innerHTML]="
                   (appendMode() ? originalContent() : renderedContent())
                     | customEmoji: display.emojis
@@ -278,6 +284,7 @@
             <div class="learner-translation">
               <div
                 class="content"
+                dir="auto"
                 [innerHTML]="md(t.content) | compactLinks | customEmoji: display.emojis"
               ></div>
             </div>
@@ -302,7 +309,7 @@
                first. Model output has been sanitized by nobody. -->
           @if (aiTranslation(); as ai) {
             <div class="ai-translation" (click)="$event.stopPropagation()">
-              <p class="ai-translation-text"><app-linked-text [text]="ai.text" /></p>
+              <p class="ai-translation-text" dir="auto"><app-linked-text [text]="ai.text" /></p>
               <div class="translation-note muted small">
                 <mb-help [label]="'statusCard.translationInfo' | transloco">{{
                   'statusCard.aiTranslationNote' | transloco: { target: ai.target, model: ai.model }
@@ -315,7 +322,7 @@
                model or the browser: rendered as TEXT, like the AI block above. -->
           @if (chainTranslation(); as ct) {
             <div class="ai-translation chain-translation" (click)="$event.stopPropagation()">
-              <p class="ai-translation-text"><app-linked-text [text]="ct.text" /></p>
+              <p class="ai-translation-text" dir="auto"><app-linked-text [text]="ct.text" /></p>
               <div class="translation-note muted small">
                 <mb-help [label]="'statusCard.translationInfo' | transloco">{{
                   (autoTranslated() ? 'statusCard.chain.noteAutomatic' : 'statusCard.chain.note')
@@ -458,13 +465,18 @@
             }
             <span
               class="quote-name"
+              dir="auto"
               [innerHTML]="
                 q.account.display_name || q.account.username | customEmoji: q.account.emojis : true
               "
             ></span>
-            <span class="acct muted">&#64;{{ q.account.acct }}</span>
+            <span class="acct muted" dir="ltr">&#64;{{ q.account.acct }}</span>
           </div>
-          <div class="quote-content" [innerHTML]="q.content | customEmoji: q.emojis"></div>
+          <div
+            class="quote-content"
+            dir="auto"
+            [innerHTML]="q.content | customEmoji: q.emojis"
+          ></div>
         </a>
       } @else if (!cwCollapsed() && quoteUnavailable()) {
         <div class="quote-card quote-unavailable muted">

@@ -89,6 +89,11 @@ describe('adult lexicon', () => {
       'Massaggi erotici a Milano',
       'Erotische massage aan huis',
       'Erotisk massage i Stockholm',
+      'Eroottinen hieronta ajanvarauksella',
+      'Erotická masáž po domluvě',
+      'Erotisk massasje etter avtale',
+      'أقدم خدمات جنسية مدفوعة، راسلني للحجز',
+      'Nagbebenta ng porn, mag-message para bumili',
       'Masaj erotic la domiciliu',
       'Erotiska masāža pēc pieraksta',
       'Erotinis masažas pagal susitarimą',
@@ -106,6 +111,7 @@ describe('adult lexicon', () => {
       '今夜パパ活できる人',
       '台北外送茶line',
       '서울조건만남',
+      'รับงานบริการทางเพศ นัดเจอได้ ติดต่อทางข้อความ',
     ]) {
       expect(postTextMarker(ad), ad).not.toBeNull();
     }
@@ -117,6 +123,11 @@ describe('adult lexicon', () => {
       'Vendo bicicleta usada',
       'Sponsoring für unseren Verein',
       'Massaggio sportivo dopo la corsa',
+      'Urheiluhieronta juoksun jälkeen',
+      'Sportovní masáž po běhu',
+      'Sportsmassasje etter løpeturen',
+      'تدليك رياضي بعد الجري',
+      'Masaheng pang-isports pagkatapos tumakbo',
       'Masaj sportiv după alergare',
       'Sporta masāža pēc skrējiena',
       'Sportinis masažas po bėgimo',
@@ -127,6 +138,7 @@ describe('adult lexicon', () => {
       'Ich gehe heute ins Theater',
       '今日はパパと公園に行った',
       '我们周末一起吃饭',
+      'วันนี้ไปนวดคลายกล้ามเนื้อหลังซ้อมวิ่ง',
     ]) {
       expect(postTextMarker(text), text).toBeNull();
     }

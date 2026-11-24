@@ -4,6 +4,7 @@ import { splitLinkedText } from './content-links';
 /** Untrusted chat/translation text: Angular escapes every part; only HTTP(S) becomes a link. */
 @Component({
   selector: 'app-linked-text',
+  host: { dir: 'auto' },
   template: `@for (part of parts(); track $index) {
     @if (part.href) {
       <a [href]="part.href" (click)="$event.stopPropagation()">{{ part.text }}</a>

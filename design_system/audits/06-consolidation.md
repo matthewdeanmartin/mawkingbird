@@ -3463,3 +3463,9 @@ I18n dictionary reactivity (2026-11-24): reviewed the regenerated inventory: 730
 candidate files, no added/removed candidates and no changed control findings. Four
 source offsets moved as label computations adopted translatedComputed. Control
 semantics, composition and existing dispositions remain the same.
+
+Six-locale expansion and Arabic direction (2026-11-24): reviewed the regenerated
+inventory: 730 candidate files, no added/removed candidates and no changed control
+findings. Three source offsets moved in StatusCard, Compose and Write. Shared
+Checkbox/Field hints now isolate fallback text direction; no controls or
+dispositions changed. Focused widget tests and narrow Arabic browser checks passed.

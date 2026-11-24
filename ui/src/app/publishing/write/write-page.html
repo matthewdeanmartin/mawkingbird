@@ -14,6 +14,7 @@
          focus actually is in this mode, and a keydown handler on a plain div
          is one a keyboard user can never reach. -->
     <textarea
+      dir="auto"
       #zenEditorBox
       class="zen-box"
       spellcheck="true"
@@ -338,6 +339,7 @@
                 <div class="write-box">
                   <div class="write-box-num muted small">{{ i + 1 }}</div>
                   <textarea
+                    dir="auto"
                     class="editor-box editor-box-small"
                     spellcheck="true"
                     [attr.aria-label]="
@@ -374,6 +376,7 @@
             </div>
           } @else {
             <textarea
+              dir="auto"
               #editorBox
               class="editor-box"
               spellcheck="true"

@@ -34,7 +34,7 @@
 .bsky-form {
   display: grid;
   gap: 12px;
-  text-align: left;
+  text-align: start;
 }
 
 .bsky-field {

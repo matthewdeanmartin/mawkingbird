@@ -74,6 +74,12 @@ export const IN_PROGRESS_LOCALES = [
   'lt',
   'et',
   'hu',
+  'fi',
+  'cs',
+  'nb',
+  'th',
+  'ar',
+  'fil',
 ] as const;
 
 export type SupportedLocale =
@@ -128,6 +134,11 @@ export const LOCALE_ENDONYMS: Record<string, string> = {
   et: 'Eesti',
   hu: 'Magyar',
   fi: 'Suomi',
+  cs: 'Čeština',
+  nb: 'Norsk bokmål',
+  th: 'ไทย',
+  ar: 'العربية',
+  fil: 'Filipino',
   is: 'Íslenska',
   ru: 'Русский',
   tr: 'Türkçe',
@@ -150,7 +161,8 @@ function localeCandidate(code: string): string | null {
       }
       return ['TW', 'HK', 'MO'].includes(locale.region ?? '') ? 'zh-Hant' : 'zh-Hans';
     }
-    return locale.language === 'no' ? 'nb' : locale.language;
+    if (locale.language === 'no') return 'nb';
+    return locale.language === 'tl' ? 'fil' : locale.language;
   } catch {
     return null;
   }
@@ -289,7 +301,11 @@ export class TranslocoLocaleSync {
     effect(() => {
       const active = this.locale.active();
       // A public page written in one language keeps <html lang> to itself.
-      this.document.documentElement.lang = this.page.lang() ?? active;
+      const language = this.page.lang() ?? active;
+      this.document.documentElement.lang = language;
+      // The document follows a pinned public page, or the interface in the app shell.
+      // Reset direction too when switching back from Arabic to another language.
+      this.document.documentElement.dir = language.split('-')[0] === 'ar' ? 'rtl' : 'ltr';
       if (this.transloco.getActiveLang() !== active) {
         this.transloco.setActiveLang(active);
       }

@@ -5,6 +5,7 @@ import { CustomEmojiPipe } from '../publishing/custom-emoji.pipe';
 /** Render the name with this account's own server emoji. */
 @Component({
   selector: 'app-account-name',
+  host: { dir: 'auto' },
   imports: [CustomEmojiPipe],
   template: `
     @if (account().emojis?.length && name().includes(':')) {

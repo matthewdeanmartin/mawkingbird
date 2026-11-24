@@ -15,7 +15,8 @@
   <div class="copy">
     <label [for]="controlId">{{ label() }}</label>
     @if (hint()) {
-      <p class="hint" [id]="controlId + '-hint'">{{ hint() }}</p>
+      <!-- A missing translation may be English even inside a right-to-left UI. -->
+      <p class="hint" dir="auto" [id]="controlId + '-hint'">{{ hint() }}</p>
     }
     @if (error()) {
       <p class="error" role="alert" [id]="controlId + '-error'">{{ error() }}</p>

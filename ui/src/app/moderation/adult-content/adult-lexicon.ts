@@ -125,6 +125,11 @@ export const SEX_WORK_PHRASES: Readonly<Record<string, readonly string[]>> = {
   it: ['massaggio erotico', 'massaggi erotici', 'incontri piccanti', 'vendo contenuti'],
   nl: ['escortservice', 'erotische massage', 'sexdate', 'sexdates'],
   sv: ['eskortservice', 'erotisk massage'],
+  fi: ['eroottinen hieronta', 'seksipalvelut'],
+  cs: ['erotická masáž', 'erotické masáže'],
+  nb: ['erotisk massasje', 'eskorttjenester'],
+  ar: ['تدليك إيروتيكي', 'أقدم خدمات جنسية'],
+  fil: ['nagbebenta ng porn'],
   ro: ['masaj erotic', 'masaje erotice', 'servicii sexuale'],
   da: ['erotisk massage', 'eskortservice'],
   lv: ['erotiska masāža', 'seksuālie pakalpojumi'],
@@ -167,6 +172,8 @@ export const SEX_WORK_PHRASES: Readonly<Record<string, readonly string[]>> = {
  * the word-boundary rule above would never let it match.
  */
 export const SEX_WORK_PHRASES_CJK: Readonly<Record<string, readonly string[]>> = {
+  // Thai also needs substring matching: its words are not space-delimited.
+  th: ['รับงานบริการทางเพศ', 'ขายบริการทางเพศนัดเจอได้'],
   ja: ['パパ活', 'デリヘル', '援交', '援助交際', 'エロ垢', '裏垢女子'],
   zh: ['援交', '約砲', '约炮', '外送茶', '全套服務', '全套服务', '包養', '包养'],
   ko: ['조건만남', '출장마사지', '야한 사진 판매'],

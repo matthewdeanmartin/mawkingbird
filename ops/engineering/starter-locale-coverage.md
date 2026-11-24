@@ -8,26 +8,35 @@ public UI dictionaries, and the independent starter control dictionary.
 
 | Language | Packs | App-wide UI |
 | --- | ---: | --- |
-| ar | 1 | Missing |
+| ar | 1 | In progress (test/canary) |
 | ca | 2 | Missing |
-| cs | 4 | Missing |
+| cs | 4 | In progress (test/canary) |
+| da | 0 | In progress (test/canary) |
 | de | 21 | Production |
+| el | 0 | In progress (test/canary) |
 | en | 30 | Production |
 | es | 8 | Production |
-| fi | 3 | Missing |
+| et | 0 | In progress (test/canary) |
+| fi | 3 | In progress (test/canary) |
+| fil | 0 | In progress (test/canary) |
 | fr | 11 | Production |
 | hi | 0 | In progress (test/canary) |
+| hu | 0 | In progress (test/canary) |
 | id | 0 | Production |
 | it | 8 | Production |
 | ja | 7 | Production |
 | ko | 2 | Production |
+| lt | 0 | In progress (test/canary) |
+| lv | 0 | In progress (test/canary) |
 | ms | 0 | In progress (test/canary) |
 | nl | 8 | Production |
-| no | 2 | Missing |
+| no | 2 | In progress (test/canary) |
 | pl | 3 | Production |
 | pt | 3 | Production |
+| ro | 0 | In progress (test/canary) |
 | ru | 5 | Production |
 | sv | 4 | In progress (test/canary) |
+| th | 0 | In progress (test/canary) |
 | tr | 2 | Production |
 | uk | 1 | Production |
 | vi | 0 | In progress (test/canary) |
@@ -35,9 +44,9 @@ public UI dictionaries, and the independent starter control dictionary.
 | zh-Hans | 0 | In progress (test/canary) |
 | zh-Hant | 1 | Production |
 
-- Starter languages without a registered UI dictionary: `ar`, `ca`, `cs`, `fi`, `no`, `zh`.
+- Starter languages without a registered UI dictionary: `ca`, `zh`.
 - Production UI locales without starters: `id`.
-- In-progress UI locales without starters: `vi`, `hi`, `ms`, `zh-Hans`.
+- In-progress UI locales without starters: `vi`, `hi`, `ms`, `zh-Hans`, `ro`, `da`, `el`, `lv`, `lt`, `et`, `hu`, `th`, `fil`.
 - Registered locales missing their dictionary file: None.
 - Dictionary files without locale registration: None.
 - Packs missing their content-language title or description: None.

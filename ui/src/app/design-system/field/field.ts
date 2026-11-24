@@ -41,7 +41,7 @@ export class MbControl {
     </label>
     <ng-content />
     @if (hint()) {
-      <p class="mb-field-hint" [id]="controlId + '-hint'">{{ hint() }}</p>
+      <p class="mb-field-hint" dir="auto" [id]="controlId + '-hint'">{{ hint() }}</p>
     }
     <mb-save-feedback state="error" [message]="error()" [errorId]="controlId + '-error'" />
   `,

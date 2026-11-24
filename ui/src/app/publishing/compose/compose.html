@@ -72,6 +72,7 @@
   }
 
   <textarea
+    dir="auto"
     [ngModel]="text()"
     (ngModelChange)="text.set($event)"
     [placeholder]="placeholder() || ('compose.placeholder' | transloco)"
@@ -172,6 +173,7 @@
       <div class="thread-box-rail" aria-hidden="true"></div>
       <div class="thread-box-body">
         <textarea
+          dir="auto"
           [ngModel]="t"
           (ngModelChange)="setThreadText(i, $event)"
           [placeholder]="'compose.threadPostPlaceholder' | transloco: { index: i + 2 }"
