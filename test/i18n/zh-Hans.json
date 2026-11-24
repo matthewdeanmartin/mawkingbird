@@ -2495,7 +2495,6 @@
     "homeProfiles.partial": "仍在扫描关注列表。此处显示的人员和帖子可能不完整。",
     "homeProfiles.peopleGroups": "筛选人员",
     "homeProfiles.postCount": "{{count}} 条已缓存的帖子",
-    "homeProfiles.refresh": "刷新人员列表",
     "homeProfiles.replies": "回复",
     "homeProfiles.title": "个人资料",
     "homeProfiles.unread": "{{count}} 条未读",
