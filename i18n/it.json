@@ -4016,7 +4016,6 @@
     "blue.custom.sidebar": "Riquadri della barra laterale",
     "blue.dataSaver": "Immagini nei nuovi post",
     "blue.dataSaver.always": "Sempre trattenute",
-    "blue.dataSaver.auto": "Trattenute quando la connessione è lenta",
     "blue.dataSaver.never": "Sempre mostrate",
     "blue.delayedSend": "Attendi 30 secondi prima di pubblicare, così puoi annullare o pubblicare subito",
     "blue.favStyle": "Aspetto dei preferiti",
@@ -5793,7 +5792,8 @@
     "writing.yourWords.and": "e",
     "writing.yourWords.hint.a": "è in inglese e questa funzione è inutile se la parola non è la tua. Imposta le tue parole, separate da virgole: ciascuna produrrà una corrispondenza. I tag vengono confrontati per intero senza distinzione tra maiuscole e minuscole, quindi",
     "writing.yourWords.hint.b": "sono lo stesso tag, ma",
-    "writing.yourWords.hint.c": "non lo è."
+    "writing.yourWords.hint.c": "non lo è.",
+    "blue.dataSaver.device": "Trattenute quando il risparmio dati di questo dispositivo è attivo"
   },
   "shareDialog": {
     "articleHint": "Verrà inviato come <strong>{{host}}</strong>. Scegli dove inviarlo.",
@@ -6467,7 +6467,11 @@
     "savedCopy": "Copia salvata {{minutes}} min fa.",
     "savedCopyJustNow": "Copia salvata proprio ora.",
     "trying": "Nuovo tentativo…",
-    "tryNow": "Riprova ora"
+    "tryNow": "Riprova ora",
+    "serverSaved": "Il tuo server non ha risposto. Viene mostrata una copia salvata {{age}}.",
+    "serverSavedDevice": "Il tuo server non ha risposto. Vengono mostrati i post salvati su questo dispositivo.",
+    "tryAgain": "Riprova",
+    "dismiss": "Chiudi"
   },
   "outbox": {
     "delete": "Elimina",
