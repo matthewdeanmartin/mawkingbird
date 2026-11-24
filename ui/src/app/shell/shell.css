@@ -609,12 +609,9 @@
     display: none;
   }
   .nav-dropdown-panel {
+    /* Inherit logical anchoring and link padding; keep this sheet under 10 kB. */
     top: auto;
     bottom: 100%;
-    left: 0;
-  }
-  .nav-dropdown-panel a {
-    padding: 10px 12px;
   }
   .topbar-inner {
     min-height: 56px;

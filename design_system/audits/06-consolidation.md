@@ -3469,3 +3469,9 @@ inventory: 730 candidate files, no added/removed candidates and no changed contr
 findings. Three source offsets moved in StatusCard, Compose and Write. Shared
 Checkbox/Field hints now isolate fallback text direction; no controls or
 dispositions changed. Focused widget tests and narrow Arabic browser checks passed.
+
+Shell CSS budget cleanup (2026-11-24): reviewed the regenerated inventory; all
+730 candidates and control findings are unchanged, with CSS source offsets only.
+Mobile dropdowns inherit their existing logical anchor and link padding instead
+of repeating declarations. The optimized stylesheet is 9,958 bytes (10,000-byte
+budget); no dispositions changed.
