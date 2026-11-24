@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../../i18n/translated';
 import { ProxyActivity } from '../../../connections/cors-proxy/proxy-activity';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -191,7 +192,7 @@ export class ConnectionCorsProxy implements OnInit {
   protected readonly isCustom = computed(() => this.selectedId() === 'custom');
 
   /** The currently-saved proxy's label, or a translated "no proxy" fallback. */
-  protected readonly currentProxyLabel = computed(
+  protected readonly currentProxyLabel = translatedComputed(
     () =>
       this.settings.chosen()?.label ??
       this.transloco.translate<string>('settings.connections.corsProxy.noProxy'),

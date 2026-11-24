@@ -193,7 +193,7 @@ import {
   BookmarkProviderDialog,
 } from '../bookmark-provider-dialog/bookmark-provider-dialog';
 import { firstExternalLink, RaindropSession } from '../../connections/raindrop/raindrop-session';
-import { TranslatedText } from '../../i18n/translated';
+import { TranslatedText, translatedComputed } from '../../i18n/translated';
 import { Server } from '../../platform/http/server';
 import { RadioHandoff } from '../../reading/radio-handoff';
 import {
@@ -1206,7 +1206,7 @@ export class StatusCard {
   // --- content filters (server-computed `filtered`, applied client-side) ---
 
   /** Matched filters that apply in this timeline's context. */
-  private activeFilters = computed<FilterResult[]>(() =>
+  private activeFilters = translatedComputed<FilterResult[]>(() =>
     this.visibility.activeFilters(this.status(), this.filterContext()),
   );
 
@@ -2544,7 +2544,7 @@ export class StatusCard {
   protected signInFor = signal<'like' | 'reply' | 'boost' | null>(null);
 
   /** The translated phrase the prompt puts in its heading. */
-  protected signInAction = computed(() => {
+  protected signInAction = translatedComputed(() => {
     const action = this.signInFor();
     return action ? this.transloco.translate(`signInPrompt.action.${action}`) : '';
   });

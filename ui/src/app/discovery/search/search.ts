@@ -170,7 +170,7 @@ import { normalizeHostUrl } from '../../platform/http/host-url';
 import { Terminology } from '../../i18n/terminology';
 import { LocalModeration } from '../../moderation/local-moderation';
 import { AuthorModeration } from '../../moderation/author-moderation';
-import { TranslatedText } from '../../i18n/translated';
+import { TranslatedText, translatedComputed } from '../../i18n/translated';
 
 type SearchType = 'accounts' | 'statuses' | 'hashtags';
 
@@ -638,7 +638,7 @@ export class Search implements OnInit, OnDestroy {
     return ability === 'works';
   });
 
-  protected emptyExplanation = computed<string | null>(() => {
+  protected emptyExplanation = translatedComputed<string | null>(() => {
     const host = this.capabilityHost();
     const ability = this.searchCapability.peek(host);
     // Accounts searches are judged on the accounts canary, posts on the post one.
@@ -1147,7 +1147,7 @@ export class Search implements OnInit, OnDestroy {
    * serializer — a joined list of translated phrases, not a joined list of
    * English ones with a key swapped in after the fact.
    */
-  protected webDroppedLabels = computed(() =>
+  protected webDroppedLabels = translatedComputed(() =>
     this.webDropped().map((item) => {
       switch (item.code) {
         case 'after':
@@ -1780,7 +1780,7 @@ export class Search implements OnInit, OnDestroy {
    * one. Rendered into an `aria-live` region so it is also the answer for a
    * reader who cannot see the results appear.
    */
-  protected resultAnnouncement = computed<string | null>(() => {
+  protected resultAnnouncement = translatedComputed<string | null>(() => {
     // Deliberately *not* gated on `searching`. The first page clears that flag
     // and then `maybeAutoFill` pages again to fill the facet corpus, setting it
     // right back — so a "hide while searching" rule would show the count and

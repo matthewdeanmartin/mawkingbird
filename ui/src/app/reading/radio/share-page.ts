@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import {
   Component,
   DestroyRef,
@@ -120,11 +121,11 @@ export class SharePage {
     const track = this.track();
     return track ? this.player.title(track) : '';
   });
-  readonly credit = computed(() => {
+  readonly credit = translatedComputed(() => {
     const track = this.track();
     return track && !this.playlist() ? this.actions.credit(track) : '';
   });
-  readonly links = computed<ShareLink[]>(() => {
+  readonly links = translatedComputed<ShareLink[]>(() => {
     const track = this.track();
     return track && !this.playlist()
       ? shareLinks(track, this.transloco.translate('share.postLink'))
@@ -137,12 +138,25 @@ export class SharePage {
   });
 
   /** Every link and the credit are in by default; #nowplaying is the one tag ticked. */
-  readonly chosenLinks = linkedSignal(() => this.links().map((link) => link.url));
+  readonly chosenLinks = linkedSignal<string[], string[]>({
+    source: () => this.links().map((link) => link.url),
+    computation: (urls, previous) => {
+      // A translated label changing must not reselect links the listener removed.
+      if (
+        previous &&
+        previous.source.length === urls.length &&
+        urls.every((url, index) => url === previous.source[index])
+      ) {
+        return previous.value;
+      }
+      return urls;
+    },
+  });
   readonly includeCredit = signal(true);
   readonly chosenTags = linkedSignal(() => (this.playlist() ? ['fedimusic'] : ['nowplaying']));
   readonly format = signal<'post' | 'thread'>('post');
   readonly visibility = signal('public');
-  readonly formats = computed<RadioOption[]>(() => [
+  readonly formats = translatedComputed<RadioOption[]>(() => [
     {
       value: 'post',
       label: this.transloco.translate('share.format.post'),

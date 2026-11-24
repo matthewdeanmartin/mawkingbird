@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { UiLocale } from '../../i18n/locale';
 import { languageName } from '../../language/language-catalog';
 import { accountProfilePath } from '../../accounts/account-route';
@@ -120,7 +121,7 @@ export class Directory implements OnInit {
   private expanded = signal<Set<string>>(new Set());
 
   /** Named host for the copy. `baseUrl()` is '' for the app's own server. */
-  protected host = computed(
+  protected host = translatedComputed(
     () =>
       this.server.baseUrl().replace(/^https?:\/\//, '') ||
       this.transloco.translate<string>('pages.directory.thisServer'),

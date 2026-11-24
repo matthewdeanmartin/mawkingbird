@@ -1219,10 +1219,10 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
   },
   {
     base: 'mockingbird_lite_offer_dismissed',
-    storage: 'session',
+    storage: 'local',
     suffix: 'none',
     sensitivity: 'setting',
-    note: 'The reader said "Not now" to the switch-to-Lite offer in this tab.',
+    note: 'The reader said "Not now" to the switch-to-Lite offer; it is not made again.',
   },
   {
     base: 'mockingbird_outbox',

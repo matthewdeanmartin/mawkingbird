@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../account-name';
 import { accountProfilePath } from '../account-route';
 import { MbButton } from '../../design-system/button/button';
@@ -966,7 +967,7 @@ export class AccountAnalytics implements OnInit {
   protected readonly heatLevels = [0, 1, 2, 3, 4];
 
   /** The grid is decorative per-cell; this sentence is what screen readers get. */
-  protected heatmapSummary = computed(() => {
+  protected heatmapSummary = translatedComputed(() => {
     const map = this.heatmap();
     return this.transloco.translate<string>('accountAnalytics.heatmapSummary', {
       count: this.posts().length,

@@ -22,28 +22,26 @@
  *
  * ## Using it
  *
- * Read {@link TranslatedText.version} anywhere inside a `computed()` that calls
- * `translate()`. It gives that computed the dependency the imperative API does
- * not, so the label recomputes when the words arrive:
+ * Use {@link translatedComputed} for a derived value that calls `translate()`,
+ * including calls made by nested helpers. It gives that computed the dependency
+ * the imperative API does not, so the label recomputes when the words arrive:
  *
- *     private i18n = inject(TranslatedText);
- *
- *     protected readonly label = computed(() => {
- *       this.i18n.version();
- *       return this.transloco.translate(KEY);
- *     });
+ *     protected readonly label = translatedComputed(
+ *       () => this.transloco.translate(KEY),
+ *     );
  *
  * where `KEY` is the usual key literal. (Spelled as a constant here only so
  * `scripts/check-i18n.mjs`, which scans sources for key references, does not
  * read this example as a real use of a key that has no English behind it.)
  *
- * Template pipes (`| transloco`) already handle this themselves and need
- * nothing. So does a computed whose other dependencies are guaranteed to change
- * after load — an HTTP result, a route param — but relying on that is relying
- * on an accident of ordering, and this is one line.
+ * Reading {@link TranslatedText.version} directly remains useful for other
+ * reactive consumers. Template pipes (`| transloco`) already handle this and
+ * need nothing. Data arriving later is not a substitute: native IPC or a local
+ * cache can settle before a dictionary, and live language changes need their
+ * own dependency regardless of data ordering.
  */
 
-import { computed, inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, CreateComputedOptions, inject, Injectable, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoService } from '@jsverse/transloco';
 
@@ -65,6 +63,23 @@ export class TranslatedText {
       }
     });
   }
+}
+
+/**
+ * A derived label that follows dictionary loading and live language changes.
+ * Capturing the version in the injection context also covers translations made
+ * by nested helpers, without making every helper depend on Angular or timers.
+ * Call in an injection context, such as an injected class's field initializer.
+ */
+export function translatedComputed<T>(
+  calculation: () => T,
+  options?: CreateComputedOptions<T>,
+): Signal<T> {
+  const version = inject(TranslatedText).version;
+  return computed(() => {
+    version();
+    return calculation();
+  }, options);
 }
 
 /** A message held as its key, so it can be translated once the words arrive. */

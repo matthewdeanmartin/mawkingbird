@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { Component, computed, inject, input, OnDestroy, output, signal } from '@angular/core';
@@ -46,7 +47,7 @@ export class SearchServerDiscovery implements OnDestroy {
   private readonly transloco = inject(TranslocoService);
   readonly currentServer = input('');
   readonly startLabel = input('');
-  protected readonly startText = computed(
+  protected readonly startText = translatedComputed(
     () => this.startLabel() || this.transloco.translate<string>('searchServerDiscovery.start'),
   );
   readonly selected = output<string>();

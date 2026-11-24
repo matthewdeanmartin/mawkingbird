@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { MbButton } from '../../design-system/button/button';
@@ -498,7 +499,7 @@ export class FeedAnalytics {
   }
 
   /** The age of the sample, phrased in whatever unit reads best. */
-  protected sampleSpan = computed(() => {
+  protected sampleSpan = translatedComputed(() => {
     const hours = this.report().recency.spanHours;
     if (hours < 1) {
       return this.transloco.translate<string>('feedAnalytics.span.minutes', {

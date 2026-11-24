@@ -1,3 +1,4 @@
+import { translatedComputed } from '../i18n/translated';
 import { Component, computed, effect, inject, OnInit, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -119,7 +120,7 @@ export class UnbirdPosts implements OnInit {
     'oldest',
     'newest',
   ];
-  protected readonly visibilityOptions = computed<RadioOption[]>(() =>
+  protected readonly visibilityOptions = translatedComputed<RadioOption[]>(() =>
     (['unlisted', 'public', 'private'] as const).map((value) => ({
       value,
       label: this.i18n.translate(`unbird.posts.visibility.${value}`),

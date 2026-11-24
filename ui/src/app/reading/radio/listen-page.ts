@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import {
   Component,
@@ -129,7 +130,7 @@ export class ListenPage {
       (status.sensitive && !this.trusted.sensitiveShown(status.account))
     );
   });
-  protected readonly filterWarning = computed(() => {
+  protected readonly filterWarning = translatedComputed(() => {
     const status = this.loader.status();
     return status
       ? this.visibility

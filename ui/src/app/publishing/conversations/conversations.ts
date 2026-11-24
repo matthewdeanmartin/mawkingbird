@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { DataSaver } from '../../platform/network/data-saver';
 import { qualifiedHandle } from '../../accounts/account-handle';
@@ -861,7 +862,7 @@ export class Conversations implements OnInit, OnDestroy {
   }
 
   /** Private + public rows merged, newest activity first. */
-  protected chats = computed<Chat[]>(() => {
+  protected chats = translatedComputed<Chat[]>(() => {
     const me = this.auth.account();
     // The conversations API returns one row per thread; like public chats we
     // group by the people instead, merging every thread with the same set.

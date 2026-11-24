@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import {
   BulkActionId,
@@ -152,7 +153,7 @@ export class BulkActionsDialog implements OnInit {
    */
   private transloco = inject(TranslocoService);
 
-  protected readonly sourceNoun = computed(() => {
+  protected readonly sourceNoun = translatedComputed(() => {
     const kind = this.target()?.kind;
     return this.transloco.translate<string>(
       kind === 'collection'
@@ -173,7 +174,7 @@ export class BulkActionsDialog implements OnInit {
    * English — the exact small lie the note above says makes a confirmation
    * untrustworthy. The title now carries `{{source}}` and the noun is passed in.
    */
-  protected readonly title = computed(() =>
+  protected readonly title = translatedComputed(() =>
     this.transloco.translate<string>(this.spec().titleKey, { source: this.sourceNoun() }),
   );
 
@@ -198,7 +199,7 @@ export class BulkActionsDialog implements OnInit {
    * is a deliberate interim state: ui-i18n-6 replaces these pairs with ICU plural
    * messages, and the keys are already shaped so only the dictionary changes.
    */
-  protected readonly summary = computed(() => {
+  protected readonly summary = translatedComputed(() => {
     const preview = this.preview();
     const spec = this.spec();
     if (!preview || preview.error) {

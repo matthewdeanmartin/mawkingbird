@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { LocalAi } from '../../connections/local-ai/local-ai';
 import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
 import { NgTemplateOutlet } from '@angular/common';
@@ -160,7 +161,7 @@ export class SettingsConnections implements OnInit {
    * of service imports (see the note there). Adding a connector means one entry
    * there and one case here.
    */
-  protected readonly rows = computed<ConnectionCatalogRow[]>(() =>
+  protected readonly rows = translatedComputed<ConnectionCatalogRow[]>(() =>
     CONNECTION_CATALOG.map((original) => {
       const entry =
         this.nativeConnectors && original.id === 'mataroa'

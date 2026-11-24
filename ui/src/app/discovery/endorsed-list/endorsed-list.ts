@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -53,7 +54,7 @@ export class EndorsedList implements OnInit {
   protected tab = signal<'feed' | 'members'>('feed');
 
   protected isSelf = computed(() => this.owner()?.id === this.auth.account()?.id);
-  protected title = computed(() => {
+  protected title = translatedComputed(() => {
     const o = this.owner();
     const who = o ? o.display_name || o.username : 'this account';
     return this.isSelf()

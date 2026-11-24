@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { FeedSyncButton } from '../../accounts/mawkingbird/feed-sync-button';
 import {
@@ -214,7 +215,7 @@ export class RssPage {
   protected readonly failed = signal<string[]>([]);
 
   /** The heading above the right pane. */
-  protected readonly paneTitle = computed(() => {
+  protected readonly paneTitle = translatedComputed(() => {
     const sel = this.selection();
     switch (sel.kind) {
       case 'all':

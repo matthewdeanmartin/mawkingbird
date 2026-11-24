@@ -54,6 +54,25 @@ Replace `de` below with the target locale and give this prompt to the bot:
 For a brand-new locale, also add its native-language name (an endonym, such as `Deutsch`) to
 `LOCALE_ENDONYMS` in `src/app/i18n/locale.ts`.
 
+## Derived labels and early errors
+
+Use `translatedComputed` from `src/app/i18n/translated.ts` for derived labels
+that call `TranslocoService.translate()`, including translations inside helper
+functions. It tracks dictionary loading and live language changes. Ordinary
+`computed()` only tracks application signals, so a fast native/local result can
+leave a raw key cached after English arrives. Store early error messages with
+`translatedMessage`; template Transloco pipes already track loading themselves.
+Do not add sleeps or polling to coordinate translations with data requests.
+
+## Other locale-dependent coverage
+
+When registering a locale, also add a small, specific list to `SEX_WORK_PHRASES`
+in `ui/src/app/moderation/adult-content/adult-lexicon.ts`. The classifier requires
+coverage for both production and in-progress interface languages. Add an explicit
+advertising example and an ordinary-text negative example to the existing classifier
+tests; avoid ambiguous words that could hide ordinary posts. Run the locale and
+adult-content focused tests before the final full gate.
+
 ## Release checklist
 
 - The locale has moved from `IN_PROGRESS_LOCALES` to `PRODUCTION_LOCALES`; this automatically

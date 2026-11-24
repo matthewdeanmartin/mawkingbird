@@ -5,7 +5,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { Auth } from '../../platform/session/auth';
-import { NATIVE_PROFILES } from '../../platform/session/platform-login';
+import { NATIVE_FOLLOW_COLLECT, NATIVE_PROFILES } from '../../platform/session/platform-login';
 import {
   NativeProfileFilter,
   NativeProfilePost,
@@ -22,7 +22,9 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
 
 // i18n pages.homeProfiles.title: Profiles
 // i18n pages.homeProfiles.partial: The following scan is still running. People and posts shown here may be incomplete.
-// i18n pages.homeProfiles.refresh: Refresh people
+// i18n pages.homeProfiles.rescan: Rescan who you follow ({{count}} server calls)
+// i18n pages.homeProfiles.rescanning: Reading who you follow…
+// i18n pages.homeProfiles.scanned: Following list read {{when}}. People you follow or unfollow in this app are updated by themselves; rescan to pick up changes made elsewhere.
 // i18n pages.homeProfiles.next: Next profile
 // i18n pages.homeProfiles.fetching: Getting their newest posts…
 // i18n pages.homeProfiles.update: Update posts ({{count}} server calls)
@@ -104,8 +106,17 @@ const UPDATE_BATCH = 5;
         }
       </header>
       <div class="reader-actions">
-        <button type="button" mbPostAction (click)="refresh()" [disabled]="listLoading()">
-          {{ 'pages.homeProfiles.refresh' | transloco }}
+        <button
+          type="button"
+          mbPostAction
+          (click)="rescan()"
+          [disabled]="rescanning() || !!updating()"
+        >
+          {{
+            rescanning()
+              ? ('pages.homeProfiles.rescanning' | transloco)
+              : ('pages.homeProfiles.rescan' | transloco: { count: rescanCalls() })
+          }}
         </button>
         <button type="button" mbPostAction (click)="next()" [disabled]="profiles().length < 2">
           {{ 'pages.homeProfiles.next' | transloco }}
@@ -115,7 +126,7 @@ const UPDATE_BATCH = 5;
           <button type="button" mbPostAction (click)="stopUpdate()">
             {{ 'pages.homeProfiles.updateStop' | transloco }}
           </button>
-        } @else if (due()) {
+        } @else if (due() && !rescanning()) {
           <button type="button" mbPostAction (click)="update()">
             {{ 'pages.homeProfiles.update' | transloco: { count: due() } }}
           </button>
@@ -212,6 +223,11 @@ const UPDATE_BATCH = 5;
             </button>
           </div>
         </mb-dialog>
+      }
+      @if (scannedAt(); as at) {
+        <p class="muted small">
+          {{ 'pages.homeProfiles.scanned' | transloco: { when: (at * 1000 | date: 'short') } }}
+        </p>
       }
       @if (updateProblem(); as problem) {
         <p role="alert">{{ problem | transloco }}</p>
@@ -374,6 +390,15 @@ export class HomeProfiles {
   protected readonly due = signal(0);
   protected readonly updating = signal<{ done: number; total: number } | null>(null);
   protected readonly updateProblem = signal('');
+  private readonly collectFollowing = inject(NATIVE_FOLLOW_COLLECT);
+  protected readonly rescanning = signal(false);
+  /** When the following list was last read, epoch seconds. */
+  protected readonly scannedAt = signal<number | null>(null);
+  /** Pages of 80 people, then whether each 40 follow back. */
+  protected readonly rescanCalls = computed(() => {
+    const following = Math.max(1, this.result()?.following ?? 0);
+    return Math.ceil(following / 80) + Math.ceil(following / 40);
+  });
   /** The picked person's newest page is on its way. */
   protected readonly freshening = signal(false);
   private freshenTimer: ReturnType<typeof setTimeout> | null = null;
@@ -424,6 +449,7 @@ export class HomeProfiles {
         this.updating.set(null);
         this.updateProblem.set('');
         this.due.set(0);
+        this.scannedAt.set(null);
         this.categoryRequest++;
         this.railState.category.set('all');
         this.railState.members.set(null);
@@ -557,8 +583,48 @@ export class HomeProfiles {
 
   private async countDue(handle: string): Promise<void> {
     const status = await this.api.collectionStatus(handle).catch(() => null);
-    if (status && !this.destroyed && handle === this.auth.token())
-      this.due.set(status.seedEligible);
+    if (!status || this.destroyed || handle !== this.auth.token()) return;
+    this.due.set(status.seedEligible);
+    this.scannedAt.set(status.following?.updatedAt ?? null);
+  }
+
+  /** The background trickle holds the collector for a moment at a time; wait our turn. */
+  private async whenFree<T>(work: () => Promise<T>, going: () => boolean): Promise<T> {
+    for (let busy = 0; ; busy++) {
+      try {
+        return await work();
+      } catch (error) {
+        const kind = (error as { kind?: string } | null)?.kind;
+        if (kind !== 'busy' || busy >= 10 || !going()) throw error;
+        await new Promise((resolve) => setTimeout(resolve, 3_000));
+      }
+    }
+  }
+
+  private reportProblem(error: unknown): void {
+    this.updateProblem.set(
+      (error as { kind?: string } | null)?.kind === 'rate_limit'
+        ? 'pages.homeProfiles.updatePaused'
+        : 'pages.homeProfiles.updateFailed',
+    );
+  }
+
+  /** Read the whole following list again: only ever because the reader asked. */
+  protected async rescan(): Promise<void> {
+    const handle = this.auth.token();
+    const collect = this.collectFollowing;
+    if (!handle || !collect || this.rescanning() || this.updating()) return;
+    const going = () => !this.destroyed && handle === this.auth.token();
+    this.updateProblem.set('');
+    this.rescanning.set(true);
+    try {
+      await this.whenFree(() => collect(handle), going);
+      if (going()) await this.refresh();
+    } catch (error) {
+      if (going()) this.reportProblem(error);
+    } finally {
+      if (!this.destroyed) this.rescanning.set(false);
+    }
   }
 
   /** Work through everyone due, a batch at a time, at the host's pace. */
@@ -569,12 +635,10 @@ export class HomeProfiles {
     const going = () => this.updating() !== null && handle === this.auth.token();
     this.updateProblem.set('');
     this.updating.set(run);
-    let busy = 0;
     while (going()) {
       try {
-        const report = await this.api.seedRecent(handle, UPDATE_BATCH);
+        const report = await this.whenFree(() => this.api.seedRecent(handle, UPDATE_BATCH), going);
         if (!going()) return;
-        busy = 0;
         run.done += report.profiles;
         this.due.set(report.remaining);
         this.updating.set({ ...run, total: run.done + report.remaining });
@@ -582,17 +646,7 @@ export class HomeProfiles {
         if (report.rateLimited || !report.profiles || !report.remaining) break;
       } catch (error) {
         if (!going()) return;
-        // The background trickle holds the queue for a moment; wait our turn.
-        const kind = (error as { kind?: string } | null)?.kind;
-        if (kind === 'busy' && ++busy <= 10) {
-          await new Promise((resolve) => setTimeout(resolve, 3_000));
-          continue;
-        }
-        this.updateProblem.set(
-          kind === 'rate_limit'
-            ? 'pages.homeProfiles.updatePaused'
-            : 'pages.homeProfiles.updateFailed',
-        );
+        this.reportProblem(error);
         break;
       }
     }

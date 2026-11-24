@@ -12,8 +12,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Observable, catchError, map, of } from 'rxjs';
-import { parseAccountRoute } from '../accounts/account-route';
+import { Observable, catchError, map, of, switchMap, throwError } from 'rxjs';
+import { qualifiedHandle } from '../accounts/account-handle';
+import { accountProfilePath, parseAccountRoute } from '../accounts/account-route';
 import { MbButton } from '../design-system/button/button';
 import { Api } from '../platform/api/api';
 import {
@@ -24,6 +25,7 @@ import {
   Status,
   UserList,
 } from '../platform/api/models';
+import { keepPortableAddress } from '../posts/copy-link/portable-address';
 import { StatusCard } from '../posts/status-card/status-card';
 import { Compose } from '../publishing/compose/compose';
 import { LiteFeed, LitePageLoader, statusPages } from './lite-feed';
@@ -402,6 +404,12 @@ export class LiteThread {
     this.fetchContext,
     (key) => ({ savedPath: `/api/v1/statuses/${key.slice('context:'.length)}/context` }),
   );
+  /** Copied from the address bar, the link opens on any server. */
+  private readonly portableAddress = keepPortableAddress(
+    this.id,
+    computed(() => this.focus()().value ?? null),
+    'lite',
+  );
 
   protected retry(): void {
     const id = this.id();
@@ -453,12 +461,41 @@ export class LiteProfile {
   private readonly store = inject(LiteStore);
   private readonly fetch = (key: string): Observable<Account> => {
     const ref = parseAccountRoute(key.slice('profile:'.length).split(' '));
+    const handle = ref?.handle;
     return ref?.id
-      ? this.api.getAccount(ref.id)
-      : ref?.handle
-        ? this.api.lookupAccount(ref.handle)
+      ? this.api.getAccount(ref.id).pipe(
+          // Another server's id can be a different person here: the handle decides.
+          switchMap((account) =>
+            handle && qualifiedHandle(account)?.toLowerCase() !== handle.toLowerCase()
+              ? this.byHandle(handle)
+              : of(account),
+          ),
+          catchError((error: { status?: number }) =>
+            handle && error.status === 404 ? this.byHandle(handle) : throwError(() => error),
+          ),
+        )
+      : handle
+        ? this.byHandle(handle)
         : new Observable<Account>((sub) => sub.error(new Error('not a profile address')));
   };
+  /** This server's copy of the account, fetched from its own server if it has none. */
+  private byHandle(handle: string): Observable<Account> {
+    return this.api.lookupAccount(handle).pipe(
+      catchError((error: { status?: number }) =>
+        error.status !== 404
+          ? throwError(() => error)
+          : this.api.resolveReplyMention(handle).pipe(
+              map((result) => {
+                const found = result.accounts.find(
+                  (a) => qualifiedHandle(a)?.toLowerCase() === handle.toLowerCase(),
+                );
+                if (!found) throw error;
+                return found;
+              }),
+            ),
+      ),
+    );
+  }
   private readonly key = computed(() => `profile:${this.id()} ${this.handle()}`.trim());
   /** The author shows at once from the post that was tapped, or from disk; details refresh when stale. */
   protected readonly profile = heldValue<Account>(this.key, this.fetch, (key) => {
@@ -522,7 +559,7 @@ export class LiteProfile {
           <ul class="lite-rows">
             @for (a of r.accounts; track a.id) {
               <li>
-                <a [routerLink]="['/m/accounts', a.id]">{{ a.display_name || a.username }}</a>
+                <a [routerLink]="profileLink(a)">{{ a.display_name || a.username }}</a>
                 <span class="muted"> &#64;{{ a.acct }}</span>
               </li>
             }
@@ -566,6 +603,9 @@ export class LiteProfile {
 })
 export class LiteSearch {
   protected readonly q = queryParam('q');
+  protected profileLink(account: Account): (string | number)[] {
+    return ['/m/accounts', ...accountProfilePath(account).slice(1)];
+  }
   private readonly api = inject(Api);
   private readonly router = inject(Router);
   private readonly store = inject(LiteStore);

@@ -1,7 +1,8 @@
+import { translatedComputed } from '../../i18n/translated';
 import { accountProfilePath } from '../../accounts/account-route';
 import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AdminApi } from '../admin-api';
@@ -43,7 +44,7 @@ export class AdminAccounts implements OnInit {
 
   protected readonly statuses = STATUSES;
   protected status = signal<string>('active');
-  protected statusLabel = computed(() => this.statusLabelFor(this.status()));
+  protected statusLabel = translatedComputed(() => this.statusLabelFor(this.status()));
 
   statusLabelFor(status: string): string {
     return this.transloco.translate<string>(`adminAccounts.status.${status}`);

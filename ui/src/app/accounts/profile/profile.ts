@@ -30,7 +30,7 @@ import {
   untracked,
 } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { translatedMessage } from '../../i18n/translated';
+import { translatedMessage, translatedComputed } from '../../i18n/translated';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import { PrivateFollows } from '../private-follows';
@@ -2681,7 +2681,7 @@ export class Profile implements OnInit, OnDestroy {
 
   /** Open while asking a visitor who never chose Anonymous to sign in to follow. */
   protected signInToFollowOpen = signal(false);
-  protected signInFollowAction = computed(() =>
+  protected signInFollowAction = translatedComputed(() =>
     this.signInToFollowOpen() ? this.transloco.translate('signInPrompt.action.follow') : '',
   );
 

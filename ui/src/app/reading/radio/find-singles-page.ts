@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { defaultServer } from '../../platform/http/home-server';
 import {
   Component,
@@ -150,7 +151,7 @@ export class FindSinglesPage {
 
   readonly results = computed(() => this.scan.posts());
   /** How far a scan got, so a long one is never silent: posts read, requests sent, matches. */
-  readonly progress = computed(() =>
+  readonly progress = translatedComputed(() =>
     this.transloco.translate(countKey('findSingles.progress', this.scan.requests()), {
       scanned: this.scan.scanned(),
       requests: this.scan.requests(),
@@ -171,7 +172,7 @@ export class FindSinglesPage {
           (saved.search.target === 'hashtags' && !!radioTag(saved.search.hashtag?.text ?? '')),
       ),
   );
-  readonly scopes = computed<RadioOption[]>(() => {
+  readonly scopes = translatedComputed<RadioOption[]>(() => {
     const t = (key: string) => this.transloco.translate(key);
     return [
       {

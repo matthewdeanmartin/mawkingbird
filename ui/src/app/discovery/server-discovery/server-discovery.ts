@@ -1,18 +1,10 @@
+import { translatedComputed } from '../../i18n/translated';
 import { MbDiscoveryCandidate } from '../../design-system/identity/discovery-candidate';
 import { MbSpinner } from '../../design-system/identity/spinner';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
-import {
-  Component,
-  computed,
-  inject,
-  input,
-  OnDestroy,
-  OnInit,
-  output,
-  signal,
-} from '@angular/core';
+import { Component, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MastodonServers, ServerSuggestion } from '../mastodon-servers';
 import { probeServerAvailability } from '../../platform/http/server-availability';
@@ -63,7 +55,7 @@ export class ServerDiscovery implements OnDestroy, OnInit {
    * itself. Callers that pass their own label are unaffected.
    */
   readonly startLabel = input('');
-  protected readonly startText = computed(
+  protected readonly startText = translatedComputed(
     () => this.startLabel() || this.transloco.translate<string>('serverDiscovery.start'),
   );
   /**

@@ -70,12 +70,18 @@ who are sometimes on a bad connection, not to assume everyone is.
    so risks 429s or a ban, reads the cache. It refreshes by a trickle of about one
    person a minute (`SEED_DUE` in the host orders the queue, after
    mastodon_is_my_blog's catch-up) and by **Update posts**, which says how many calls
-   it will make. Both stop while the server's allowance is low.
+   it will make. Both stop while the server's allowance is low. The following list is
+   rescanned only when the reader asks; following, unfollowing or blocking in the app
+   updates it, and a new follow's newest posts are fetched then.
 3. **A failed live call shows the saved copy, with a note** (no answer, 429 or 5xx):
    when it was saved, and Try again. Any other 4xx is passed on.
 4. **Pictures are held back only if asked**, by the setting or the device's data
    saver. A bad connection may offer Lite; it never changes the app by itself.
    (Sprint 3's automatic mode is gone.)
+5. **No means no.** The Lite offer is made once: "Not now" is remembered, and choosing
+   the full app ends it for the visit.
+6. **A link opens as the person sharing it saw it.** A Lite post's link opens in Lite,
+   on any server. A reader Lite cannot serve gets the same post in the full app.
 
 ## Connection quality model
 

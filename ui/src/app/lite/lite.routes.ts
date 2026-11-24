@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { featureFlagGuard } from '../platform/build/feature-flag.guard';
+import { liteStatusRefMatcher, mastodonPostLinkMatcher } from '../posts/copy-link/deep-links';
 
 /**
  * The `/m/` screens. Each is a thin page in `lite-pages.ts` (sharing one chunk
@@ -18,6 +19,21 @@ export const LITE_ROUTES: Routes = [
     path: 'notifications',
     title: 'Notifications',
     loadComponent: () => import('./lite-pages').then((m) => m.LiteNotifications),
+  },
+  // A shared Lite post, `/m/<server>/@<acct>/<id>` (what a Lite thread's address
+  // becomes), or a queued post from another server: found on this reader's
+  // server, then opened in Lite.
+  {
+    matcher: mastodonPostLinkMatcher,
+    title: 'Post',
+    data: { kind: 'mastodon-post', lite: true },
+    loadComponent: () => import('../posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+  },
+  {
+    matcher: liteStatusRefMatcher,
+    title: 'Post',
+    data: { kind: 'post-ref', lite: true },
+    loadComponent: () => import('../posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
   },
   {
     path: 'statuses/:id',

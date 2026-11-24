@@ -255,6 +255,25 @@ describe('Lite pages', () => {
     await request((r) => r.url === '/api/v1/accounts/42/statuses');
   });
 
+  it('trusts the handle over an id from another server', async () => {
+    params.next(convertToParamMap({ id: '42', handle: '@bob@far.example' }));
+    const f = render(LiteProfile);
+    const person = (id: string, acct: string) => ({ ...status('x', '', id).account, id, acct });
+    (await request('/api/v1/accounts/42')).flush(person('42', 'someone@else.example'));
+    (await request((r) => r.url === '/api/v1/accounts/lookup')).flush(
+      { error: 'unknown' },
+      { status: 404, statusText: 'Not Found' },
+    );
+    (await request((r) => r.url === '/api/v2/search')).flush({
+      accounts: [person('77', 'bob@far.example')],
+      hashtags: [],
+      statuses: [],
+    });
+    f.detectChanges();
+    expect((f.nativeElement as HTMLElement).textContent).toContain('bob@far.example');
+    await request((r) => r.url === '/api/v1/accounts/77/statuses');
+  });
+
   it('keeps what it has when a refresh fails, and says so', async () => {
     const f = render(LiteHome);
     (await request(HOME)).flush([status('1')]);

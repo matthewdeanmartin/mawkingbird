@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { POLL_EXPIRY, PollEditor } from '../poll-editor';
 import { PostPermissions, PostPermissionsValue } from '../post-permissions/post-permissions';
 import { CustomEmojiPipe } from '../custom-emoji.pipe';
@@ -1804,7 +1805,7 @@ export class WritePage implements OnInit, OnDestroy {
     this.wizardTargets().filter((target) => !this.targetUnsupportedReason(target)),
   );
 
-  protected qualityFindings = computed(() =>
+  protected qualityFindings = translatedComputed(() =>
     runQualityChecks(this.body(), {
       limit: MAX_POST_CHARS,
       segments: this.segments().map((s) => s.text),

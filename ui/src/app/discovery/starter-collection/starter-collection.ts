@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
@@ -150,7 +151,7 @@ export class StarterCollection implements OnInit, OnDestroy {
   /** Open while asking a visitor who never chose Anonymous to sign in first. */
   protected signInOpen = signal(false);
   private transloco = inject(TranslocoService);
-  protected signInAction = computed(() =>
+  protected signInAction = translatedComputed(() =>
     this.signInOpen() ? this.transloco.translate('signInPrompt.action.follow') : '',
   );
 

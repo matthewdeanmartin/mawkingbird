@@ -1,5 +1,10 @@
 # Sprint 6 opening consolidation audit
 
+## Rescan when asked, 2026-11-24
+
+Home > Profiles swaps "Refresh people" for Rescan (`mbPostAction`, with its call
+count). Line shifts otherwise; dispositions unchanged.
+
 ## Live by default, 2026-11-23
 
 Native profiles lose their two legacy "Fetch posts" pill buttons. Home > Profiles
@@ -3453,3 +3458,9 @@ players when Lite's bar turns previews off, plus initials spans for avatars (not
 controls); outbox-page.ts and settings-writing.html each gain one native select
 for "When the connection comes back", matching their neighbouring selects. No
 shared design widget changed.
+
+
+I18n dictionary reactivity (2026-11-24): reviewed the regenerated inventory: 730
+candidate files, no added/removed candidates and no changed control findings. Four
+source offsets moved as label computations adopted translatedComputed. Control
+semantics, composition and existing dispositions remain the same.

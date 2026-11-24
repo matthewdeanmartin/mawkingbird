@@ -6,7 +6,10 @@ import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
-import { parseAnonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
+import {
+  anonymousStatusRouteRef,
+  parseAnonymousStatusRouteRef,
+} from '../../accounts/anonymous/anonymous-route-ref';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { Api } from '../../platform/api/api';
 import { Status } from '../../platform/api/models';
@@ -35,6 +38,7 @@ describe('DeepLinkPage', () => {
     kind: DeepLinkKind,
     params: Record<string, string>,
     query: Record<string, string> = {},
+    data: Record<string, unknown> = {},
   ) {
     TestBed.configureTestingModule({
       providers: [
@@ -44,7 +48,7 @@ describe('DeepLinkPage', () => {
             snapshot: {
               paramMap: convertToParamMap(params),
               queryParamMap: convertToParamMap(query),
-              data: { kind },
+              data: { kind, ...data },
             },
           },
         },
@@ -141,6 +145,38 @@ describe('DeepLinkPage', () => {
     expect(el.querySelector('a')?.getAttribute('href')).toBe(
       'https://far.example/@bob@far.example/42',
     );
+  });
+
+  it('opens a Lite link in Lite, once this server has the post', async () => {
+    resolveStatusOnHome.mockReturnValue(of({ id: '99' }));
+    await open('mastodon-post', post, {}, { lite: true });
+    expect(navigate).toHaveBeenCalledWith(['/m/statuses', '99'], { replaceUrl: true });
+  });
+
+  it("finds a Lite queue's post from its server and id alone", async () => {
+    getStatus.mockReturnValue(of({ uri: 'https://far.example/users/bob/statuses/42' }));
+    resolveStatusOnHome.mockReturnValue(of({ id: '99' }));
+    const ref = anonymousStatusRouteRef({ server: 'https://far.example', id: '42' });
+    await open('post-ref', { ref }, {}, { lite: true });
+    expect(resolveStatusOnHome).toHaveBeenCalledWith('https://far.example/users/bob/statuses/42');
+    expect(navigate).toHaveBeenCalledWith(['/m/statuses', '99'], { replaceUrl: true });
+  });
+
+  it("shows the post where it lives when the reader's server cannot have it", async () => {
+    resolveStatusOnHome.mockReturnValue(of(null));
+    getStatus.mockReturnValue(of({ uri: 'https://far.example/users/bob/statuses/42' }));
+    await open('mastodon-post', post, {}, { lite: true });
+    const [[path, id]] = navigate.mock.calls[0];
+    expect(path).toBe('/statuses');
+    expect(parseAnonymousStatusRouteRef(id)?.server).toBe('https://far.example');
+  });
+
+  it('shows the public copy to a Bluesky reader with no Mastodon account', async () => {
+    auth.lacksMastodonToken = true;
+    await open('mastodon-post', post);
+    const [[path, id]] = navigate.mock.calls[0];
+    expect(path).toBe('/statuses');
+    expect(parseAnonymousStatusRouteRef(id)?.id).toBe('42');
   });
 
   it('opens accounts by handle through the profile page', async () => {

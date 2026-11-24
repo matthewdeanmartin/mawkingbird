@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../../i18n/translated';
 import { AccountName } from '../../../accounts/account-name';
 import { CustomEmojiPipe } from '../../../publishing/custom-emoji.pipe';
 import {
@@ -250,7 +251,9 @@ export class ReaderCore {
    * observed. Deliberately indistinguishable to the reader — see
    * `observed-failures.ts`.
    */
-  protected readonly fetchWarning = computed(() => this.expansion.beforeFetch(this.articleUrl()));
+  protected readonly fetchWarning = translatedComputed(() =>
+    this.expansion.beforeFetch(this.articleUrl()),
+  );
 
   /** False only for the cases no amount of trying fixes, like a PDF. */
   protected readonly fetchWorthTrying = computed(() => this.fetchWarning()?.worthTrying !== false);
@@ -961,24 +964,26 @@ export class ReaderCore {
    * exists to avoid. Everything else keeps its own URL, because an RSS item's
    * original site is the whole point of the link.
    */
-  protected readonly originalLink = computed<{ url: string; label: string } | null>(() => {
-    const post = this.root();
-    if (!post || serverKnowsStatus(post.provider)) {
-      return null;
-    }
-    if (post.provider === 'twitter') {
-      const url = toNitterUrl(post.url);
-      return url
-        ? {
-            url,
-            label: this.transloco.translate('reader.core.readOn.twitterMirror', {
-              host: nitterHost(),
-            }),
-          }
+  protected readonly originalLink = translatedComputed<{ url: string; label: string } | null>(
+    () => {
+      const post = this.root();
+      if (!post || serverKnowsStatus(post.provider)) {
+        return null;
+      }
+      if (post.provider === 'twitter') {
+        const url = toNitterUrl(post.url);
+        return url
+          ? {
+              url,
+              label: this.transloco.translate('reader.core.readOn.twitterMirror', {
+                host: nitterHost(),
+              }),
+            }
+          : null;
+      }
+      return post.url
+        ? { url: post.url, label: this.transloco.translate('reader.core.readOn.originalSite') }
         : null;
-    }
-    return post.url
-      ? { url: post.url, label: this.transloco.translate('reader.core.readOn.originalSite') }
-      : null;
-  });
+    },
+  );
 }

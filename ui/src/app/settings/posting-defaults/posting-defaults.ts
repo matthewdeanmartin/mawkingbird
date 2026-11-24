@@ -1,4 +1,5 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { translatedComputed } from '../../i18n/translated';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -89,7 +90,7 @@ export class PostingDefaults {
   protected readonly justSaved = signal(false);
   protected readonly error = signal('');
 
-  protected readonly summary = computed(() => {
+  protected readonly summary = translatedComputed(() => {
     const { privacy, quotePolicy } = this.value();
     const t = (key: string) => this.transloco.translate(`settings.postingDefaults.${key}`);
     const followersOnly = privacy === 'private';

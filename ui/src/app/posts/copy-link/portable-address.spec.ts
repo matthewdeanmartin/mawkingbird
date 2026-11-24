@@ -10,7 +10,7 @@ function post(id: string, provider?: Status['provider']): Status {
   return { id, provider, account: { acct: 'alice@far.example' } } as Status;
 }
 
-function watch(routeId: string, view: 'thread' | 'reader' = 'thread') {
+function watch(routeId: string, view: 'thread' | 'reader' | 'lite' = 'thread') {
   const replaceState = vi.fn();
   TestBed.configureTestingModule({
     providers: [
@@ -40,6 +40,13 @@ describe('keepPortableAddress', () => {
     status.set(post('109'));
     TestBed.tick();
     expect(replaceState).toHaveBeenCalledWith('/home.example/@alice@far.example/109', 'read=1');
+  });
+
+  it('keeps a Lite page in Lite', () => {
+    const { status, replaceState } = watch('109', 'lite');
+    status.set(post('109'));
+    TestBed.tick();
+    expect(replaceState).toHaveBeenCalledWith('/m/home.example/@alice@far.example/109', '');
   });
 
   it('leaves already-portable ids and other networks alone', () => {

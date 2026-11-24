@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { Auth } from '../../platform/session/auth';
-import { NATIVE_PROFILES } from '../../platform/session/platform-login';
+import { NATIVE_FOLLOW_COLLECT, NATIVE_PROFILES } from '../../platform/session/platform-login';
 import { NativeProfilePost } from '../../platform/session/native-profile-types';
 import { HomeProfiles } from './home-profiles';
 import { HomeProfilesRailState } from './home-profiles-rail';
@@ -165,6 +165,8 @@ describe('Native Home Profiles', () => {
         next: () => void;
         update: () => Promise<void>;
         stopUpdate: () => void;
+        rescan: () => Promise<void>;
+        rescanCalls: () => number;
       };
     }
 
@@ -214,6 +216,33 @@ describe('Native Home Profiles', () => {
       expect(seedRecent).toHaveBeenCalledTimes(2);
       expect(page.updating()).toBeNull();
       expect(page.updateProblem()).toBe('pages.homeProfiles.updatePaused');
+    });
+
+    it('rescans who you follow only when asked, and waits its turn', async () => {
+      vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+      try {
+        const collect = vi
+          .fn()
+          .mockRejectedValueOnce({ kind: 'busy' })
+          .mockResolvedValue(undefined);
+        TestBed.overrideProvider(NATIVE_FOLLOW_COLLECT, { useValue: collect });
+        const list = vi.fn(async () => ({
+          following: 100,
+          scanComplete: true,
+          profiles: [1].map(row),
+        }));
+        const page = open({ list });
+        await vi.waitFor(() => expect(page.rescanCalls()).toBe(5));
+        expect(collect).not.toHaveBeenCalled();
+        const run = page.rescan();
+        await vi.advanceTimersByTimeAsync(3_000);
+        await run;
+        expect(collect).toHaveBeenCalledTimes(2);
+        expect(list).toHaveBeenCalledTimes(2);
+        expect(page.updateProblem()).toBe('');
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     it('stops when told to', async () => {

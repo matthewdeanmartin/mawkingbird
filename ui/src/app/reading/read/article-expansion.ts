@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { ArticleFetch } from '../article/article-fetch';
@@ -137,7 +138,7 @@ export class ArticleExpansion {
    * Saying so beats rendering nothing, which is indistinguishable from the
    * feature not existing.
    */
-  readonly blocker = computed<string | null>(() =>
+  readonly blocker = translatedComputed<string | null>(() =>
     this.available() ? null : this.transloco.translate('reader.article.blocker'),
   );
 
@@ -205,7 +206,7 @@ export class ArticleExpansion {
    * reasons, and "this publisher requires a subscription" is a different fact
    * from "this page needs JavaScript".
    */
-  readonly note = computed<string | null>(() => {
+  readonly note = translatedComputed<string | null>(() => {
     const result = this.result();
     if (!result) {
       return null;
@@ -222,7 +223,7 @@ export class ArticleExpansion {
    * puts the answer out of reach of exactly the people most likely to report
    * the problem.
    */
-  readonly debug = computed<string[]>(() => {
+  readonly debug = translatedComputed<string[]>(() => {
     const result = this.result();
     const debug = result?.debug;
     if (!result || !debug || result.article) {

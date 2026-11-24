@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../platform/session/auth';
@@ -89,7 +90,7 @@ export class LeaveDialog {
    */
   protected isBluesky = computed(() => this.bluesky() ?? this.auth.isBlueskyPrimary);
 
-  protected who = computed(() => {
+  protected who = translatedComputed(() => {
     if (this.isAnonymous()) {
       return this.transloco.translate<string>('leaveDialog.whoAnonymous');
     }

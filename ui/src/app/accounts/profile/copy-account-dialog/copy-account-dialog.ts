@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../../i18n/translated';
 import { AccountName } from '../../account-name';
 import {
   Component,
@@ -323,7 +324,7 @@ export class CopyAccountDialog implements OnInit {
     Math.max(0, ANONYMOUS_FOLLOW_LIMIT - this.follows.count()),
   );
 
-  protected summary = computed(() => {
+  protected summary = translatedComputed(() => {
     const selection = this.selection();
     if (!selection) {
       return '';

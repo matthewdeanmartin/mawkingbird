@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import {
   Component,
   computed,
@@ -139,7 +140,7 @@ export class Watch {
       (!!this.peertube()?.sensitive && !this.trusted.sensitiveShown(status.account))
     );
   });
-  protected filterWarning = computed(() => {
+  protected filterWarning = translatedComputed(() => {
     const status = this.loader.status();
     return status
       ? this.visibility

@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FocusTrap } from '../../shell/a11y/focus-trap';
 import { AudienceScan, AudienceSide } from '../audience-scan';
@@ -127,7 +128,7 @@ export class EffectiveAudienceDialog {
   }
 
   /** "45s" / "3 min" — the cost in the unit people actually think in. */
-  protected readonly estimatedTime = computed(() => {
+  protected readonly estimatedTime = translatedComputed(() => {
     const seconds = this.estimatedSeconds();
     return seconds < 60
       ? this.transloco.translate<string>('effectiveAudience.seconds', { count: seconds })
@@ -174,7 +175,7 @@ export class EffectiveAudienceDialog {
    * detection pass, which defeats `@for` tracking and re-creates both result
    * blocks each tick.
    */
-  protected readonly resultRows = computed(() => {
+  protected readonly resultRows = translatedComputed(() => {
     const rows: { side: AudienceSide; label: string; result: AudienceEstimate }[] = [];
     const following = this.followingResult();
     if (following) {

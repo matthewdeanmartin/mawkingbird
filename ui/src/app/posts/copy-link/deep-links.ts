@@ -215,6 +215,15 @@ export function mastodonPostLinkMatcher(segments: UrlSegment[]): UrlMatchResult 
   };
 }
 
+/** Lite's `statuses/<public ref>`: a post named by the server that issued its id. */
+export function liteStatusRefMatcher(segments: UrlSegment[]): UrlMatchResult | null {
+  return segments.length === 2 &&
+    segments[0].path === 'statuses' &&
+    parseAnonymousStatusRouteRef(segments[1].path)
+    ? { consumed: segments, posParams: { ref: segments[1] } }
+    : null;
+}
+
 /** `/@user@host`: a fully qualified handle as the only segment. */
 export function accountHandleLinkMatcher(segments: UrlSegment[]): UrlMatchResult | null {
   if (segments.length !== 1) return null;

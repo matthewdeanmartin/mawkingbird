@@ -1,3 +1,4 @@
+import { translatedComputed } from '../i18n/translated';
 import { AppDialogs } from '../shell/app-dialogs';
 import { PublishingMetrics } from './publishing-metrics';
 import { Auth } from '../platform/session/auth';
@@ -803,7 +804,7 @@ export class Observability {
   });
 
   /** Axis ticks for the latency chart, at readable round magnitudes. */
-  protected readonly latencyTicks = computed(() => {
+  protected readonly latencyTicks = translatedComputed(() => {
     const c = this.latencyChart();
     if (!c) {
       return [];

@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
 import { blueskyRouteFor } from '../../accounts/bluesky-links';
 import { starterPackPath } from '../../connections/bluesky/bluesky-starter-packs';
+import { LiteMode } from '../../lite/lite-mode';
 import { SearchServer } from '../../platform/http/search-server';
 import { Server } from '../../platform/http/server';
 import { Status } from '../../platform/api/models';
@@ -99,6 +100,21 @@ describe('shared deep links opened in a fresh browser', () => {
       expect(TestBed.inject(Auth).isAnonymous).toBe(true);
     },
   );
+
+  it('opens a shared Lite post in the full app for a visitor with no account', () => {
+    expect(enter('/m/bookmarks').toString()).toBe('/');
+    const result = enter('/m/far.example/@alice@far.example/42');
+    expect(result.toString()).toBe('/far.example/@alice@far.example/42');
+    expect(enter(result.toString())).toBe(true);
+  });
+
+  it('does not bounce between Lite and the full app for a reader Lite cannot serve', () => {
+    sessionStorage.setItem('mockingbird_lite', 'on');
+    expect(TestBed.inject(LiteMode).on()).toBe(true);
+    enter('/m/statuses/42');
+    expect(TestBed.inject(LiteMode).on()).toBe(false);
+    sessionStorage.clear();
+  });
 
   it('opens a shared Bluesky starter pack anonymously', () => {
     const path = TestBed.inject(Router)

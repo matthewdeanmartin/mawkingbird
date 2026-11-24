@@ -27,7 +27,7 @@ export const READ_PARAM = 'read';
 export function keepPortableAddress(
   routeId: Signal<string>,
   status: Signal<Status | null>,
-  view: 'thread' | 'reader',
+  view: 'thread' | 'reader' | 'lite',
 ): EffectRef {
   const location = inject(Location);
   const server = inject(Server);
@@ -40,6 +40,8 @@ export function keepPortableAddress(
     if (!link?.startsWith(DEEP_LINK_ORIGIN)) return;
     const query = new URLSearchParams(globalThis.location?.search ?? '');
     if (view === 'reader') query.set(READ_PARAM, '1');
-    location.replaceState(link.slice(DEEP_LINK_ORIGIN.length), query.toString());
+    // A Lite page's link opens in Lite, as the person sharing it saw it.
+    const prefix = view === 'lite' ? '/m' : '';
+    location.replaceState(prefix + link.slice(DEEP_LINK_ORIGIN.length), query.toString());
   });
 }

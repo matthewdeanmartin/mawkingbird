@@ -7,7 +7,15 @@ import {
   emptyHistory,
   noteVerdict,
 } from '../platform/network/connection-history';
-import { LITE_KEY, LiteMode, fullUrlFor, isLiteUrl, liteUrlFor, sustainedBad } from './lite-mode';
+import {
+  LITE_KEY,
+  LiteMode,
+  fullUrlFor,
+  isLiteUrl,
+  liteUrlFor,
+  publicTwinOf,
+  sustainedBad,
+} from './lite-mode';
 
 describe('Lite address mapping', () => {
   it('maps full-app screens that Lite has to their /m/ twins', () => {
@@ -42,6 +50,18 @@ describe('Lite address mapping', () => {
     expect(fullUrlFor('/m/search?q=birds')).toBe('/search?q=birds');
     expect(fullUrlFor('/m/videos')).toBe('/videos/queue');
     expect(fullUrlFor('/m/statuses/9')).toBe('/statuses/9');
+  });
+
+  it('knows which Lite links a visitor without an account can open in the full app', () => {
+    expect(publicTwinOf('/m/far.example/@alice@far.example/42')).toBe(
+      '/far.example/@alice@far.example/42',
+    );
+    expect(publicTwinOf('/m/accounts/7/@alice@far.example')).toBe('/accounts/7/@alice@far.example');
+    expect(publicTwinOf('/m/tags/birds')).toBe('/tags/birds');
+    expect(publicTwinOf('/m/search?q=birds')).toBe('/search?q=birds');
+    expect(publicTwinOf('/m/bookmarks')).toBeNull();
+    expect(publicTwinOf('/m/home')).toBeNull();
+    expect(publicTwinOf('/statuses/1')).toBeNull();
   });
 
   it('recognises Lite addresses', () => {
@@ -144,10 +164,18 @@ describe('LiteMode', () => {
     expect(router.url).toBe('/statuses/5');
   });
 
-  it('remembers "Not now" for this tab', () => {
+  it('does not ask again in the visit after the reader chose the full app', async () => {
+    const { router, lite } = setUp();
+    await router.navigateByUrl('/m/home');
+    lite.leave(router.url);
+    expect(lite.offerDismissed()).toBe(true);
+    expect(localStorage.getItem('mockingbird_lite_offer_dismissed')).toBeNull();
+  });
+
+  it('takes "Not now" as no, for good', () => {
     const { lite } = setUp();
     lite.dismissOffer();
     expect(lite.offerDismissed()).toBe(true);
-    expect(sessionStorage.getItem('mockingbird_lite_offer_dismissed')).toBe('1');
+    expect(localStorage.getItem('mockingbird_lite_offer_dismissed')).toBe('1');
   });
 });

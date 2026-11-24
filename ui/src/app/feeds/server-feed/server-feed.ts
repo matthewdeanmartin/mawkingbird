@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
@@ -97,7 +98,7 @@ export class ServerFeed implements OnInit {
   protected tab = signal<'posts' | 'members'>('posts');
 
   protected def = computed(() => serverFeedDef(this.feed()));
-  protected title = computed(
+  protected title = translatedComputed(
     () =>
       (this.def()?.title ?? this.transloco.translate('pagesServerFeed.title.fallback')) +
       (this.remoteHost() ? ` · ${this.remoteHost()}` : ''),

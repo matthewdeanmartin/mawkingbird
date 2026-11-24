@@ -4,7 +4,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { catchError, firstValueFrom, of, timeout } from 'rxjs';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
-import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
+import {
+  anonymousStatusRouteRef,
+  parseAnonymousStatusRouteRef,
+} from '../../accounts/anonymous/anonymous-route-ref';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { MbNotice } from '../../design-system/notice/notice';
 import { Api } from '../../platform/api/api';
@@ -17,9 +20,12 @@ import { isTwitterHandle, serverHost } from './deep-links';
 // i18n deepLink.openOriginal: Open it on {{host}}
 
 /** Which copied-link shape the route matched. Set as route `data.kind`. */
-export type DeepLinkKind = 'mastodon-post' | 'account' | 'bsky-post' | 'bsky-profile' | 'twitter';
+export type DeepLinkKind =
+  'mastodon-post' | 'post-ref' | 'account' | 'bsky-post' | 'bsky-profile' | 'twitter';
 
 const RESOLVE_TIMEOUT_MS = 15_000;
+/** An id the reader's own server issued, as opposed to a public ref. */
+const LOCAL_ID = /^[A-Za-z0-9]+$/;
 
 /**
  * Lands a copied mawkingbird.com link (see deep-links.ts) on the reader's own
@@ -81,7 +87,12 @@ export class DeepLinkPage implements OnInit {
       // the reader, not the thread around it.
       const reader =
         target[0] === '/statuses' && this.route.snapshot.queryParamMap?.get(READ_PARAM) === '1';
-      await this.router.navigate(reader ? ['/read', target[1]] : target, { replaceUrl: true });
+      // A Lite link lands in Lite, when Lite has the post (a home-server id).
+      const lite = this.route.snapshot.data['lite'] === true && LOCAL_ID.test(target[1]);
+      await this.router.navigate(
+        reader ? ['/read', target[1]] : lite ? [`/m${target[0]}`, target[1]] : target,
+        { replaceUrl: true },
+      );
     } else {
       this.failed.set(true);
     }
@@ -93,7 +104,15 @@ export class DeepLinkPage implements OnInit {
   ): Promise<string[] | null> {
     switch (kind) {
       case 'mastodon-post':
-        return this.mastodonPost(param('server'), param('acct'), param('id'));
+        return this.mastodonPost(
+          param('server'),
+          param('id'),
+          `https://${serverHost(param('server'))}/@${param('acct')}/${param('id')}`,
+        );
+      case 'post-ref': {
+        const ref = parseAnonymousStatusRouteRef(param('ref'));
+        return ref ? this.mastodonPost(ref.server, ref.id, ref.originalUrl) : null;
+      }
       case 'account':
         return ['/accounts', `@${param('acct')}`];
       case 'bsky-post':
@@ -124,23 +143,19 @@ export class DeepLinkPage implements OnInit {
     }
   }
 
-  private async mastodonPost(server: string, acct: string, id: string): Promise<string[] | null> {
+  private async mastodonPost(
+    server: string,
+    id: string,
+    original: string | undefined,
+  ): Promise<string[] | null> {
     const host = serverHost(server);
     if (!host) return null;
-    const original = `https://${host}/@${acct}/${id}`;
-    this.setOriginal(original);
-
-    if (this.auth.isAnonymous) {
-      return [
-        '/statuses',
-        anonymousStatusRouteRef({ server: `https://${host}`, id, originalUrl: original }),
-      ];
-    }
-    if (this.auth.lacksMastodonToken) {
-      // Bluesky- or Misskey-primary without a Mastodon connection: nothing here
-      // can resolve a fediverse URL, so offer the original instead.
-      return null;
-    }
+    if (original) this.setOriginal(original);
+    const ref = { server: `https://${host}`, id, ...(original ? { originalUrl: original } : {}) };
+    // The post as its own server shows it to the public: all there is for
+    // Anonymous, and for Bluesky or Misskey without a Mastodon connection.
+    const asPublic = ['/statuses', anonymousStatusRouteRef(ref)];
+    if (this.auth.isAnonymous || this.auth.lacksMastodonToken) return asPublic;
     if (serverHost(this.server.baseUrl()) === host) {
       return ['/statuses', id];
     }
@@ -148,16 +163,16 @@ export class DeepLinkPage implements OnInit {
     // reader's server can fetch and resolve. Some servers (authorized fetch,
     // Misskey forks) refuse that, so fall back to the post's canonical
     // ActivityPub id, read from the issuing server's public API.
-    const viaPage = await this.resolveOnHome(original);
+    const viaPage = original ? await this.resolveOnHome(original) : null;
     if (viaPage) return ['/statuses', viaPage];
     const remote = await firstValueFrom(
-      this.anonymousPublic
-        .getStatus({ server: `https://${host}`, id, originalUrl: original })
-        .pipe(catchError(() => of(null))),
+      this.anonymousPublic.getStatus(ref).pipe(catchError(() => of(null))),
     );
-    const canonical = remote?.uri ?? remote?.url ?? null;
+    if (!remote) return null;
+    const canonical = remote.uri || remote.url;
     const viaUri = canonical && canonical !== original ? await this.resolveOnHome(canonical) : null;
-    return viaUri ? ['/statuses', viaUri] : null;
+    // The reader's server can't have it, but anyone can read it where it lives.
+    return viaUri ? ['/statuses', viaUri] : asPublic;
   }
 
   private async resolveOnHome(url: string): Promise<string | null> {

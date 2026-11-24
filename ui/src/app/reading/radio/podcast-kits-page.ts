@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -254,7 +255,7 @@ export class PodcastKitsPage {
   protected readonly pickerValue = computed(
     () => this.query().get('lang') ?? this.prefs.podcastPackLanguage() ?? 'auto',
   );
-  protected readonly languageOptions = computed(() => [
+  protected readonly languageOptions = translatedComputed(() => [
     {
       value: 'auto',
       label: this.browserLabel(),

@@ -61,7 +61,20 @@ export const PRODUCTION_LOCALES = [
  * A new language lands here first, gets reviewed on canary, then moves up to
  * {@link PRODUCTION_LOCALES}.
  */
-export const IN_PROGRESS_LOCALES = ['vi', 'hi', 'sv', 'ms', 'zh-Hans', 'ro', 'da', 'el'] as const;
+export const IN_PROGRESS_LOCALES = [
+  'vi',
+  'hi',
+  'sv',
+  'ms',
+  'zh-Hans',
+  'ro',
+  'da',
+  'el',
+  'lv',
+  'lt',
+  'et',
+  'hu',
+] as const;
 
 export type SupportedLocale =
   (typeof PRODUCTION_LOCALES)[number] | (typeof IN_PROGRESS_LOCALES)[number];
@@ -110,6 +123,10 @@ export const LOCALE_ENDONYMS: Record<string, string> = {
   ro: 'Română',
   da: 'Dansk',
   el: 'Ελληνικά',
+  lv: 'Latviešu',
+  lt: 'Lietuvių',
+  et: 'Eesti',
+  hu: 'Magyar',
   fi: 'Suomi',
   is: 'Íslenska',
   ru: 'Русский',

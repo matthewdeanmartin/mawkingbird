@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -145,7 +146,7 @@ export class TrackResult {
     return (single ? this.player.title(single) : '') || postTitle(this.post());
   });
   /** Where the recordings play: Mastodon itself, or the services the post links. */
-  readonly sources = computed(() => {
+  readonly sources = translatedComputed(() => {
     const labels = this.singles().map((track) => track.external?.label ?? '');
     const named = [...new Set(labels.filter(Boolean))];
     return labels.some((label) => !label)

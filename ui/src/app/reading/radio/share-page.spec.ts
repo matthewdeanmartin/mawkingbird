@@ -2,6 +2,7 @@ import { Component, input, output, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { TranslocoService } from '@jsverse/transloco';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FollowTrust } from '../../accounts/follow-trust';
 import { TrustedAccounts } from '../../accounts/trusted-accounts';
@@ -139,6 +140,27 @@ describe('SharePage', () => {
     fixture.detectChanges();
     expect(root.querySelector('section.publish')).toBeTruthy();
     expect(root.querySelector('app-compose')).toBeNull();
+  });
+
+  it('updates translated link labels without undoing the chosen links', () => {
+    const track = post(
+      's',
+      '<p>Sea song</p><a href="https://open.spotify.com/track/abc123">Spotify</a>',
+    );
+    TestBed.inject(ShareRequest).offer(TestBed.inject(RadioPlayer).singlesOf(track)[0]);
+    const { page } = render();
+    page.toggleLink('https://open.spotify.com/track/abc123', false);
+    const selected = [...page.chosenLinks()];
+    const transloco = TestBed.inject(TranslocoService);
+    transloco.setTranslation({ 'share.postLink': 'Der Mastodon-Beitrag' }, 'de');
+    try {
+      transloco.setActiveLang('de');
+      expect(page.links()[0].label).toBe('Der Mastodon-Beitrag');
+      expect(page.chosenLinks()).toEqual(selected);
+      expect(page.text()).not.toContain('spotify');
+    } finally {
+      transloco.setActiveLang('en');
+    }
   });
 
   it('offers the thread only to a signed-in Mastodon account', () => {

@@ -20,6 +20,7 @@ import { isBad } from '../platform/network/connection-quality';
  * Lite on every later visit; that old localStorage copy is cleared on start.)
  */
 export const LITE_KEY = 'mockingbird_lite';
+/** Local storage: a reader who said no once is not asked again. */
 export const LITE_OFFER_DISMISSED_KEY = 'mockingbird_lite_offer_dismissed';
 
 /** Sustained means every one of the last this-many complete minutes was bad. */
@@ -95,6 +96,22 @@ function splitQuery(url: string): [string, string] {
   return at === -1 ? [clean, ''] : [clean.slice(0, at), clean.slice(at + 1)];
 }
 
+/**
+ * The full-app address of a Lite link to something public, or null. For a
+ * reader Lite cannot serve (it needs a signed-in Mastodon account), so that the
+ * link still opens what it names.
+ */
+export function publicTwinOf(liteUrl: string): string | null {
+  if (!isLiteUrl(liteUrl)) return null;
+  const full = fullUrlFor(liteUrl);
+  const path = splitQuery(full)[0];
+  return /^\/(statuses|accounts|tags)\/[^/]+/.test(path) ||
+    path === '/search' ||
+    /^\/[^/]+\.[^/]+\/@[^/]+\/[^/]+$/.test(path)
+    ? full
+    : null;
+}
+
 export function isLiteUrl(url: string): boolean {
   return url === '/m' || url.startsWith('/m/') || url.startsWith('/m?');
 }
@@ -119,7 +136,7 @@ export class LiteMode {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   readonly on = signal(read(LITE_KEY, () => sessionStorage) === 'on');
-  readonly offerDismissed = signal(read(LITE_OFFER_DISMISSED_KEY, () => sessionStorage) === '1');
+  readonly offerDismissed = signal(read(LITE_OFFER_DISMISSED_KEY, () => localStorage) === '1');
   private started = false;
 
   /** Watch navigation: entering /m/ turns Lite on; while on, full-app twins open in Lite. */
@@ -142,6 +159,8 @@ export class LiteMode {
   /** The "Full app" link: turn Lite off and open the matching full-app screen. */
   leave(currentUrl: string): void {
     this.setOn(false);
+    // Not asked straight back in, on the same bad connection, for the rest of this visit.
+    this.offerDismissed.set(true);
     void this.router.navigateByUrl(fullUrlFor(currentUrl));
   }
 
@@ -151,9 +170,14 @@ export class LiteMode {
     void this.router.navigateByUrl(liteUrlFor(currentUrl) ?? '/m/home');
   }
 
+  /** Lite cannot serve this reader: stop redirecting into it. */
+  standDown(): void {
+    this.setOn(false);
+  }
+
   dismissOffer(): void {
     this.offerDismissed.set(true);
-    write(LITE_OFFER_DISMISSED_KEY, '1', () => sessionStorage);
+    write(LITE_OFFER_DISMISSED_KEY, '1', () => localStorage);
   }
 
   private setOn(on: boolean): void {

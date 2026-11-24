@@ -1,3 +1,4 @@
+import { translatedComputed } from '../i18n/translated';
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -186,7 +187,7 @@ export class ForumPage {
   ]);
 
   /** What the live region says: the scan starting, or how it ended and what it found. */
-  protected announcement = computed(() => {
+  protected announcement = translatedComputed(() => {
     if (this.scan.scanning()) return this.transloco.translate('forum.scanning');
     const message = this.stateMessage();
     if (!message) return '';

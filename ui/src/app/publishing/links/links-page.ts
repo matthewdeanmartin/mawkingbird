@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -147,7 +148,7 @@ export class LinksPage implements OnInit {
   protected readonly entry = computed(() => shortenerEntry(this.settings.activeId()) ?? null);
 
   /** Why the page cannot shorten anything yet, or null when it can. */
-  protected readonly blocked = computed(() => {
+  protected readonly blocked = translatedComputed(() => {
     const entry = this.settings.chosen();
     if (!entry) {
       return this.transloco.translate('pages.links.blocked.none');

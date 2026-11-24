@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { HOME_PAGING_PROVIDERS } from './home-paging-providers';
 // i18n pages.home.sourceFailed: Could not load the selected Home source. Retry or choose another feed in Settings → Home and Algo.
 import { HomeSource } from '../home-source';
@@ -369,7 +370,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   /** The current window in words, for the end-of-feed note that names it. */
-  protected windowLabel = computed(() =>
+  protected windowLabel = translatedComputed(() =>
     this.transloco.translate<string>(
       this.prefs.homeWindow() === 'today'
         ? 'pages.home.window.lastDay'
@@ -1086,7 +1087,7 @@ export class Home implements OnInit, OnDestroy {
    * reproduces that, so Members and Analytics work off exactly what's on
    * screen: {@link visible}. "Load more" widens them for free.
    */
-  protected feedSource = computed<FeedSource>(() => ({
+  protected feedSource = translatedComputed<FeedSource>(() => ({
     type: 'home',
     query: this.transloco.translate<string>('pages.home.feedSource.query'),
     posts: this.visible(),

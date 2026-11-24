@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { accountProfilePath } from '../../accounts/account-route';
@@ -139,7 +140,7 @@ export class ListTimeline implements OnInit {
    * over the posts already on screen, and the report covers however many that
    * is (see `feed-sample.ts`).
    */
-  protected feedSource = computed<FeedSource>(() => {
+  protected feedSource = translatedComputed<FeedSource>(() => {
     const id = this.listId();
     const name = this.title() || this.transloco.translate<string>('listTimeline.fallbackTitle');
     if (this.auth.isAnonymous) {
@@ -354,7 +355,7 @@ export class ListTimeline implements OnInit {
   protected readonly bulkRunning = this.bulk.running;
   protected readonly pendingBulk = signal<BulkActionId | null>(null);
 
-  protected readonly bulkTarget = computed<BulkTarget>(() => ({
+  protected readonly bulkTarget = translatedComputed<BulkTarget>(() => ({
     listId: this.listId(),
     listTitle: this.title() || this.transloco.translate<string>('listTimeline.fallbackTitle'),
   }));

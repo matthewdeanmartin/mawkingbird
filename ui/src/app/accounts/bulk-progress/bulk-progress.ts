@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { BulkActions, bulkAction, formatEta } from '../bulk-actions';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -50,7 +51,7 @@ export class BulkProgress {
   });
 
   /** The unit noun ("friends", "muted accounts"), already translated. */
-  protected readonly unitLabel = computed(() => {
+  protected readonly unitLabel = translatedComputed(() => {
     const key = this.spec()?.unitKey;
     return key ? this.transloco.translate<string>(key) : '';
   });

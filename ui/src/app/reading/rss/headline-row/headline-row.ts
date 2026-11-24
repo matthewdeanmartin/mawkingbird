@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../../i18n/translated';
 import { Component, computed, inject, input, output } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { HumanTimePipe } from '../../../i18n/human-time.pipe';
@@ -68,7 +69,7 @@ export class HeadlineRow {
    * covers title-less items (some microblog feeds) rather than rendering a blank
    * row.
    */
-  protected readonly title = computed(() => {
+  protected readonly title = translatedComputed(() => {
     const content = this.status().content;
     const strong = /<strong>(.*?)<\/strong>/s.exec(content);
     const text = plainText(strong ? strong[1] : content);

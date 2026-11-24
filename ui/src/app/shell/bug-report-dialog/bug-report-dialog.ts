@@ -1,3 +1,4 @@
+import { translatedComputed } from '../../i18n/translated';
 import {
   Component,
   computed,
@@ -153,11 +154,11 @@ export class BugReportDialog {
   protected readonly pollEnabled = computed(
     () => this.kind() === 'feature' && this.poll() && this.maxPoll() > 0,
   );
-  protected readonly pollAnswers = computed(() => [
+  protected readonly pollAnswers = translatedComputed(() => [
     this.i18n.translate('feedback.yes'),
     this.i18n.translate('feedback.no'),
   ]);
-  protected readonly message = computed(() =>
+  protected readonly message = translatedComputed(() =>
     [
       this.targets.account,
       !this.security() && this.cc() && this.targets.maintainer !== this.targets.account
@@ -209,7 +210,7 @@ export class BugReportDialog {
   }
 
   private readonly categoryKey = computed(() => 'feedback.' + this.kind());
-  private readonly reportInput = computed(() => ({
+  private readonly reportInput = translatedComputed(() => ({
     description: this.description(),
     category: this.kind() === 'bug' ? undefined : this.i18n.translate(this.categoryKey()),
     includeEnvironment: this.kind() === 'bug' && this.includeEnvironment(),
@@ -224,7 +225,7 @@ export class BugReportDialog {
   protected readonly emailNeedsCopy = computed(
     () => this.security() || encodeURIComponent(this.preview()).length > 1800,
   );
-  protected readonly externalUrl = computed(() => {
+  protected readonly externalUrl = translatedComputed(() => {
     if (this.destination() === 'github') {
       if (this.security()) return this.targets.securityUrl;
       return (

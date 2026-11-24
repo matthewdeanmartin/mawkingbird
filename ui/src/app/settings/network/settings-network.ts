@@ -1,4 +1,5 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { translatedComputed } from '../../i18n/translated';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -180,7 +181,7 @@ export class SettingsNetwork implements OnInit {
   protected readonly error = signal<string | null>(null);
   protected readonly savedNote = signal(false);
 
-  protected readonly modes = computed<RadioOption[]>(() => {
+  protected readonly modes = translatedComputed<RadioOption[]>(() => {
     const options: [NativeProxyMode, string][] = [
       ['direct', 'settings.network.mode.direct'],
       ['windows', 'settings.network.mode.windows'],
@@ -197,7 +198,7 @@ export class SettingsNetwork implements OnInit {
   });
 
   /** What is actually in force, in a sentence. */
-  protected readonly stateLine = computed(() => {
+  protected readonly stateLine = translatedComputed(() => {
     const status = this.status();
     if (!status) return '';
     if (status.problem === 'pac') return this.i18n.translate('settings.network.pac');

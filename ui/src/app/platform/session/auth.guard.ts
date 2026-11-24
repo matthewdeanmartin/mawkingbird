@@ -4,6 +4,7 @@ import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
 import { Auth } from './auth';
 import { radioAccount, radioPostRef } from '../../reading/radio-links';
 import { Server } from '../http/server';
+import { LiteMode, publicTwinOf } from '../../lite/lite-mode';
 import {
   accountHandleLinkMatcher,
   isTwitterHandle,
@@ -31,6 +32,13 @@ export const signedInMatch: CanMatchFn = () => {
 export const authGuard: CanActivateFn = (_route, state) => {
   const auth = inject(Auth);
   const router = inject(Router);
+  // Lite needs a signed-in Mastodon account; a link into it still opens what it names.
+  const twin = auth.lacksMastodonToken || auth.isAnonymous ? publicTwinOf(state.url ?? '') : null;
+  if (twin) {
+    // Off first, or Lite would send the full-app address straight back here.
+    inject(LiteMode).standDown();
+    return router.parseUrl(twin);
+  }
   if (auth.isAuthenticated) {
     return true;
   }
