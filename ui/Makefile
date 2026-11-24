@@ -227,6 +227,8 @@ test-seo: build-seo
 security:
 	npm audit --omit=dev --audit-level=high
 
-check: format-check lint design-check storage subpaths i18n starter-catalog-check feedbuilder-check test build security
+# Formatting is optional local upkeep, NEVER a required build/CI gate.
+# Do not add format-check here: whitespace failures waste paid GitHub minutes.
+check: lint design-check storage subpaths i18n starter-catalog-check feedbuilder-check test build security
 
 check-ci: check

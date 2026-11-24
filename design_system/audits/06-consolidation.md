@@ -3459,7 +3459,6 @@ controls); outbox-page.ts and settings-writing.html each gain one native select
 for "When the connection comes back", matching their neighbouring selects. No
 shared design widget changed.
 
-
 I18n dictionary reactivity (2026-11-24): reviewed the regenerated inventory: 730
 candidate files, no added/removed candidates and no changed control findings. Four
 source offsets moved as label computations adopted translatedComputed. Control

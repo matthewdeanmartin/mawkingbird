@@ -75,5 +75,7 @@ jobs:
           cache-dependency-path: ui/package-lock.json
       - run: npm ci
       - run: npm run lint
+      # NEVER fail GitHub builds for formatting: it wastes paid build minutes.
+      # design:check is type checking only; keep Prettier in optional local commands.
       - run: npm run design:check
       - run: npm run design:lint

@@ -1,5 +1,11 @@
 # English-source and raw-key audit — 2026-11-24
 
+Status: fixes implemented and validated. The shared checkout advanced externally
+to `a93c2527d6` during validation and includes the source fixes; this run performed
+no commit or push. The final report update remains uncommitted. Native frontend assets
+were rebuilt; packaged WebView2 acceptance remains. The findings below preserve
+the initial audit, followed by the resolution and verification.
+
 ## Confirmed dictionary findings
 
 | Inventory | Result |
@@ -73,9 +79,8 @@ Evidence (ignored local artifacts):
   36 files without a directly recognized dictionary-version read. These are review
   candidates, not 94 confirmed defects. Some are fed by asynchronous data or may
   obtain reactivity through helpers. Indirect helper calls can also escape this scan.
-- No application fixes, native rebuild, source deployment, full test/build gate,
-  installed-host walkthrough or production-site audit was performed. The audit
-  wrote only this report and ignored local evidence.
+- The initial audit phase changed no application source and did not rebuild native.
+  Subsequent fixes and verification are recorded below.
 
 ## Timing-risk candidate index
 
@@ -176,4 +181,43 @@ Share keeps its selected URLs when only translated labels change; it resets the
 default selection when the actual URL list changes. A regression test switches
 languages after deselecting a link and verifies that the choice is preserved.
 
-Final verification results are recorded below after the gates and native rebuild.
+## Final verification
+
+- `npm run check:i18n`: passed; no English-source gaps, markup/placeholder drift or
+  required Lite omissions. English remains at 10,624 keys.
+- Formatting and targeted lint: passed on all changed application files.
+- Design inventory: passed; 730 candidate files, unchanged control findings and
+  dispositions, four source-offset changes reviewed and recorded.
+- Focused i18n/Network tests: 73 passed. Share tests: 5 passed, including retained
+  user selection while translated link labels change.
+- Final `make test`: source integrity, library boundaries, dead-code and library
+  tests passed; all 11,222 runtime tests passed. The command remains red solely
+  on the existing runtime test-manifest mismatch (476 additions, 18 missing
+  baseline entries). Baselines were not changed or weakened.
+- `npm run build:mockingbird`: passed, including startup and Lite bundle budgets.
+- Native `scripts/build-frontend.mjs` with the explicit shared checkout override:
+  passed. No native host source, source pin or generated public `native/` mirror
+  was edited; no deploy-source, commit, push or release was performed.
+- Native dictionaries after rebuild: zero orphan keys, including both formerly
+  stale `pages.homeProfiles.refresh` entries.
+- Native rebuilt-bundle browser reproduction with mocked typed IPC: passed.
+  English was held by a request gate until both Network controls and native
+  status rendered, then released explicitly. All nine labels recovered without
+  Save/Refresh or an extra native-status read. A German dictionary fixture and
+  return to English updated labels with the same unchanged native data. One
+  native-status read total, zero page errors. This test contains no sleep-based
+  synchronization. Evidence: `log/i18n-native-fixed-repro.json`; screenshot:
+  `%LOCALAPPDATA%/Temp/mawkingbird/i18n-english-audit/native-network-fixed.png`.
+- Storybook build passed. `dialog-migration.browser.mjs` and
+  `adoption-11.browser.mjs`: all 33 affected browser tests passed.
+- `git diff --check`: passed.
+- Not run: SEO build/browser gates, full design-verify browser suite, integration,
+  Rust host checks/tests/build, installed/packaged WebView2 acceptance or a
+  production-site audit. No routes, shared design widgets, transport endpoints
+  or Rust host code changed in this fix.
+
+## Next
+
+Run packaged WebView2 acceptance before release: verify cold English loading,
+unchanged network settings and live locale switching in the installed app. The
+shared source and rebuilt development frontend are fixed; no release was made.

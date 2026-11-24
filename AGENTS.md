@@ -24,6 +24,10 @@ because these were missed.
 
 ## Gates: iterate cheap, gate once
 
+Formatting must NEVER fail GitHub builds or required build/quality gates. Keep
+Prettier checks in optional, manually invoked local commands; never add them to
+CI or aggregate gates. Cosmetic failures waste the owner's paid build minutes.
+
 A full gate costs minutes of compile, so never loop it. While working:
 
 - `cd ui && make test-changed` (`WATCH=1`), or `npm run test:subset -- <spec|dir>`.
