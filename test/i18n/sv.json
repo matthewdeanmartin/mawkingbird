@@ -3645,7 +3645,6 @@
     "blue.custom.sidebar": "Sidofältskort",
     "blue.dataSaver": "Bilder i nya inlägg",
     "blue.dataSaver.always": "Hålls alltid tillbaka",
-    "blue.dataSaver.auto": "Hålls tillbaka när anslutningen är långsam",
     "blue.dataSaver.never": "Visas alltid",
     "blue.delayedSend": "Vänta 30 sekunder före publicering så att du kan avbryta (eller publicera tidigare)",
     "blue.favStyle": "Favoriter visas som",
@@ -5422,7 +5421,8 @@
     "writing.yourWords.and": "och",
     "writing.yourWords.hint.a": "är engelska, och funktionen är värdelös om ordet inte är ditt. Ange ditt eget — avgränsat med kommatecken, och vilket som helst kan matcha. Taggar matchas som hela ord och utan hänsyn till skiftläge, så",
     "writing.yourWords.hint.b": "är samma tagg men",
-    "writing.yourWords.hint.c": "är det inte."
+    "writing.yourWords.hint.c": "är det inte.",
+    "blue.dataSaver.device": "Hålls tillbaka när enhetens databesparing är på"
   },
   "shareDialog": {
     "articleHint": "Skickas som <strong>{{host}}</strong>. Välj vart det ska skickas.",
@@ -6466,7 +6466,11 @@
     "savedCopy": "Visar en kopia sparad för {{minutes}} min sedan.",
     "savedCopyJustNow": "Visar en kopia som sparades nyss.",
     "trying": "Försöker…",
-    "tryNow": "Försök nu"
+    "tryNow": "Försök nu",
+    "serverSaved": "Din server svarade inte. Visar en kopia som sparades {{age}}.",
+    "serverSavedDevice": "Din server svarade inte. Visar inlägg som sparats på den här enheten.",
+    "tryAgain": "Försök igen",
+    "dismiss": "Stäng"
   },
   "outbox": {
     "delete": "Radera",

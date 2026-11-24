@@ -4016,7 +4016,6 @@
     "blue.custom.sidebar": "Karty paska bocznego",
     "blue.dataSaver": "Obrazy w nowych wpisach",
     "blue.dataSaver.always": "Zawsze wstrzymane",
-    "blue.dataSaver.auto": "Wstrzymane, gdy połączenie jest wolne",
     "blue.dataSaver.never": "Zawsze pokazywane",
     "blue.delayedSend": "Odczekaj 30 sekund przed publikacją, aby umożliwić anulowanie (lub wcześniejszą publikację)",
     "blue.favStyle": "Ulubione wyglądają jak",
@@ -5793,7 +5792,8 @@
     "writing.yourWords.and": "i",
     "writing.yourWords.hint.a": "jest po angielsku, a ta funkcja jest bezużyteczna, jeśli to nie twoje słowo. Ustaw własne — rozdzielone przecinkami; każde zostanie dopasowane. Tagi są dopasowywane w całości i bez rozróżniania wielkości liter, więc",
     "writing.yourWords.hint.b": "to ten sam tag, ale",
-    "writing.yourWords.hint.c": "nie."
+    "writing.yourWords.hint.c": "nie.",
+    "blue.dataSaver.device": "Wstrzymywane, gdy oszczędzanie danych na tym urządzeniu jest włączone"
   },
   "shareDialog": {
     "articleHint": "Zostanie wysłane jako <strong>{{host}}</strong>. Wybierz miejsce docelowe.",
@@ -6466,7 +6466,11 @@
     "savedCopy": "Kopia zapisana {{minutes}} min temu.",
     "savedCopyJustNow": "Kopia zapisana przed chwilą.",
     "trying": "Próba…",
-    "tryNow": "Spróbuj teraz"
+    "tryNow": "Spróbuj teraz",
+    "serverSaved": "Twój serwer nie odpowiedział. Wyświetlana jest kopia zapisana {{age}}.",
+    "serverSavedDevice": "Twój serwer nie odpowiedział. Wyświetlane są wpisy zapisane na tym urządzeniu.",
+    "tryAgain": "Spróbuj ponownie",
+    "dismiss": "Zamknij"
   },
   "outbox": {
     "delete": "Usuń",

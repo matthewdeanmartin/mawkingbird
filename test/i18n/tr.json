@@ -3645,7 +3645,6 @@
     "blue.custom.sidebar": "Kenar çubuğu kartları",
     "blue.dataSaver": "Yeni gönderilerdeki resimler",
     "blue.dataSaver.always": "Her zaman bekletilir",
-    "blue.dataSaver.auto": "Bağlantı yavaşken bekletilir",
     "blue.dataSaver.never": "Her zaman gösterilir",
     "blue.delayedSend": "İptal edebilmeniz veya erken yayınlayabilmeniz için göndermeden önce 30 saniye bekle",
     "blue.favStyle": "Favorilerin görünümü",
@@ -5422,7 +5421,8 @@
     "writing.yourWords.and": "ve",
     "writing.yourWords.hint.a": "İngilizcedir ve sözcük size ait değilse bu özellik işe yaramaz. Kendinizinkini ayarlayın; virgülle ayırın, herhangi biri eşleşir. Etiketler tam ve büyük-küçük harf duyarsız eşleşir, dolayısıyla",
     "writing.yourWords.hint.b": "aynı etikettir ancak",
-    "writing.yourWords.hint.c": "değildir."
+    "writing.yourWords.hint.c": "değildir.",
+    "blue.dataSaver.device": "Bu cihazın veri tasarrufu açıkken bekletilir"
   },
   "shareDialog": {
     "articleHint": "<strong>{{host}}</strong> olarak gönderilecek. Nereye gönderileceğini seçin.",
@@ -6466,7 +6466,11 @@
     "savedCopy": "{{minutes}} dk önce kaydedilmiş kopya gösteriliyor.",
     "savedCopyJustNow": "Az önce kaydedilmiş kopya gösteriliyor.",
     "trying": "Deneniyor…",
-    "tryNow": "Şimdi dene"
+    "tryNow": "Şimdi dene",
+    "serverSaved": "Sunucunuz yanıt vermedi. {{age}} kaydedilen kopya gösteriliyor.",
+    "serverSavedDevice": "Sunucunuz yanıt vermedi. Bu cihazda kayıtlı gönderiler gösteriliyor.",
+    "tryAgain": "Yeniden dene",
+    "dismiss": "Kapat"
   },
   "outbox": {
     "delete": "Sil",

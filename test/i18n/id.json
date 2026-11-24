@@ -2400,7 +2400,6 @@
     "blue.custom.sidebar": "Kartu bilah sisi",
     "blue.dataSaver": "Gambar di postingan baru",
     "blue.dataSaver.always": "Selalu ditahan",
-    "blue.dataSaver.auto": "Ditahan saat koneksi lambat",
     "blue.dataSaver.never": "Selalu ditampilkan",
     "blue.delayedSend": "Tunggu 30 detik sebelum memposting, agar kamu bisa membatalkan (atau publikasikan lebih awal)",
     "blue.favStyle": "Favorit terlihat seperti",
@@ -4177,7 +4176,8 @@
     "writing.yourWords.and": "dan",
     "writing.yourWords.hint.a": "berbahasa Inggris, dan fitur ini tidak berguna jika katanya bukan katamu sendiri. Tentukan kata-katamu sendiri — dipisahkan koma, dan salah satunya akan cocok. Tag dicocokkan secara utuh dan tidak peka huruf besar/kecil, jadi",
     "writing.yourWords.hint.b": "adalah tag yang sama tetapi",
-    "writing.yourWords.hint.c": "bukan."
+    "writing.yourWords.hint.c": "bukan.",
+    "blue.dataSaver.device": "Ditahan saat penghemat data perangkat ini aktif"
   },
   "shortener": {
     "proxyConsent.aboutProxy": "Tentang {{proxy}}",
@@ -6466,7 +6466,11 @@
     "savedCopy": "Menampilkan salinan yang disimpan {{minutes}} menit lalu.",
     "savedCopyJustNow": "Menampilkan salinan yang baru saja disimpan.",
     "trying": "Mencoba…",
-    "tryNow": "Coba sekarang"
+    "tryNow": "Coba sekarang",
+    "serverSaved": "Server Anda tidak menjawab. Menampilkan salinan yang disimpan {{age}}.",
+    "serverSavedDevice": "Server Anda tidak menjawab. Menampilkan kiriman yang disimpan di perangkat ini.",
+    "tryAgain": "Coba lagi",
+    "dismiss": "Tutup"
   },
   "outbox": {
     "delete": "Hapus",

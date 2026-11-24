@@ -4016,7 +4016,6 @@
     "blue.custom.sidebar": "사이드바 카드",
     "blue.dataSaver": "새 게시물의 사진",
     "blue.dataSaver.always": "항상 보류",
-    "blue.dataSaver.auto": "연결이 느릴 때 보류",
     "blue.dataSaver.never": "항상 표시",
     "blue.delayedSend": "게시 전 30초 대기하여 취소하거나 일찍 게시하기",
     "blue.favStyle": "즐겨찾기 모양",
@@ -5793,7 +5792,8 @@
     "writing.yourWords.and": "그리고",
     "writing.yourWords.hint.a": "는 영어이며 단어가 내 것이 아니면 이 기능은 쓸모없습니다. 쉼표로 구분해 직접 설정하세요. 어느 하나와 일치하면 됩니다. 태그는 전체 단어로 대소문자를 구분하지 않고 일치하므로",
     "writing.yourWords.hint.b": "은 같은 태그이지만",
-    "writing.yourWords.hint.c": "태그는 다릅니다."
+    "writing.yourWords.hint.c": "태그는 다릅니다.",
+    "blue.dataSaver.device": "이 기기의 데이터 절약 모드가 켜져 있을 때 보류"
   },
   "shareDialog": {
     "articleHint": "<strong>{{host}}</strong>에서 보냅니다. 보낼 위치를 선택하세요.",
@@ -6466,7 +6466,11 @@
     "savedCopy": "{{minutes}}분 전에 저장한 사본을 표시 중입니다.",
     "savedCopyJustNow": "방금 저장한 사본을 표시 중입니다.",
     "trying": "시도하는 중…",
-    "tryNow": "지금 시도"
+    "tryNow": "지금 시도",
+    "serverSaved": "서버가 응답하지 않았습니다. {{age}}에 저장된 사본을 표시합니다.",
+    "serverSavedDevice": "서버가 응답하지 않았습니다. 이 기기에 저장된 게시물을 표시합니다.",
+    "tryAgain": "다시 시도",
+    "dismiss": "닫기"
   },
   "outbox": {
     "delete": "삭제",

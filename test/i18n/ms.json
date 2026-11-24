@@ -1009,7 +1009,11 @@
     "savedCopy": "Memaparkan salinan yang disimpan {{minutes}} minit yang lalu.",
     "savedCopyJustNow": "Memaparkan salinan yang baru sahaja disimpan.",
     "trying": "Sedang mencuba…",
-    "tryNow": "Cuba sekarang"
+    "tryNow": "Cuba sekarang",
+    "serverSaved": "Pelayan anda tidak menjawab. Memaparkan salinan yang disimpan {{age}}.",
+    "serverSavedDevice": "Pelayan anda tidak menjawab. Memaparkan hantaran yang disimpan pada peranti ini.",
+    "tryAgain": "Cuba lagi",
+    "dismiss": "Tutup"
   },
   "otherServers": {
     "back": "← Suapan"
@@ -2288,7 +2292,7 @@
     "accounts.signedIn": "Sudah log masuk",
     "blue.dataSaver": "Gambar dalam hantaran baharu",
     "blue.dataSaver.always": "Sentiasa ditahan",
-    "blue.dataSaver.auto": "Ditahan semasa sambungan perlahan",
+    "blue.dataSaver.device": "Ditahan apabila penjimat data peranti ini dihidupkan",
     "blue.dataSaver.never": "Sentiasa dipaparkan",
     "blue.feed": "Suapan",
     "blue.lite.hint": "Apabila sambungan lemah, Mawkingbird Lite memaparkan perkara penting sahaja dan memuatkan jauh lebih sedikit data.",
