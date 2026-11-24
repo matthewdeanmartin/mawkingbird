@@ -2,9 +2,9 @@
 //! WebView2 smoke test. Deny external resources before they reach the network.
 use tauri::WebviewWindow;
 use webview2_com::{
-    take_pwstr,
+    take_pwstr, ContextMenuRequestedEventHandler,
     Microsoft::Web::WebView2::Win32::{
-        ICoreWebView2_22, COREWEBVIEW2_WEB_RESOURCE_CONTEXT_ALL,
+        ICoreWebView2_11, ICoreWebView2_22, COREWEBVIEW2_WEB_RESOURCE_CONTEXT_ALL,
         COREWEBVIEW2_WEB_RESOURCE_CONTEXT_DOCUMENT,
         COREWEBVIEW2_WEB_RESOURCE_REQUEST_SOURCE_KINDS_ALL,
     },
@@ -90,6 +90,15 @@ fn youtube_resource(raw: &str, referer: &str, destination: &str) -> bool {
     .any(|domain| host == *domain || host.ends_with(&format!(".{domain}")))
 }
 
+/// WebView2's default right-click entries that cannot work in this host
+/// (parity item 6). Downloads are blocked, so "Save image as" and "Save link
+/// as" would fail silently; new windows are denied, so "Open link in new
+/// window" would do nothing. Saving goes through the app's own native save
+/// action instead. Copy, Copy link, Copy image and Paste stay.
+fn removed_menu_item(name: &str) -> bool {
+    matches!(name, "saveImageAs" | "saveLinkAs" | "openLinkInNewWindow")
+}
+
 // The sole unsafe exception: WebView2 exposes only unsafe COM methods for
 // request interception. Do not remove this security boundary to remove unsafe.
 #[allow(unsafe_code)]
@@ -125,6 +134,32 @@ pub fn install(window: &WebviewWindow) -> tauri::Result<()> {
                 &mut 0,
             )
             .expect("could not enforce frame navigation policy");
+
+        // Trim the default context menu to entries that work here.
+        webview
+            .cast::<ICoreWebView2_11>()
+            .expect("WebView2 runtime needs context menu events")
+            .add_ContextMenuRequested(
+                &ContextMenuRequestedEventHandler::create(Box::new(move |_, args| {
+                    let Some(args) = args else {
+                        return Ok(());
+                    };
+                    let items = args.MenuItems()?;
+                    let mut count = 0u32;
+                    items.Count(&mut count)?;
+                    for index in (0..count).rev() {
+                        let item = items.GetValueAtIndex(index)?;
+                        let mut name = PWSTR::null();
+                        item.Name(&mut name)?;
+                        if removed_menu_item(&take_pwstr(name)) {
+                            items.RemoveValueAtIndex(index)?;
+                        }
+                    }
+                    Ok(())
+                })),
+                &mut 0,
+            )
+            .expect("could not install context menu policy");
 
         webview
             .cast::<ICoreWebView2_22>()
@@ -212,6 +247,22 @@ mod tests {
             assert!(!youtube_resource(url, embed, "empty"));
         }
         assert!(!youtube_resource(embed, embed, "iframe"));
+    }
+    #[test]
+    fn context_menu_drops_only_entries_that_cannot_work() {
+        for gone in ["saveImageAs", "saveLinkAs", "openLinkInNewWindow"] {
+            assert!(removed_menu_item(gone), "{gone}");
+        }
+        for kept in [
+            "copy",
+            "paste",
+            "copyLinkLocation",
+            "copyImage",
+            "cut",
+            "selectAll",
+        ] {
+            assert!(!removed_menu_item(kept), "{kept}");
+        }
     }
     #[test]
     fn only_bundled_assets_and_ipc_reach_webview_transport() {

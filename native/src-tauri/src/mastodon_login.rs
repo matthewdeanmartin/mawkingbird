@@ -41,6 +41,19 @@ struct Credential {
     #[serde(default = "read_scopes")]
     scopes: String,
 }
+
+/// Origin, token and granted scopes for the reviewed write table. Rust-only.
+pub(crate) fn account_credential(handle: &str) -> Result<(String, String, String), Failure> {
+    let credential = stored_credential(handle)?;
+    Ok((credential.origin, credential.token, credential.scopes))
+}
+
+/// Internal archive reads use the same OS-held credential as ordinary account
+/// reads. The token is never returned by an IPC command.
+pub(crate) fn archive_auth(handle: &str) -> Result<(String, String), Failure> {
+    let credential = stored_credential(handle)?;
+    Ok((credential.origin, credential.token))
+}
 fn read_scopes() -> String {
     "read".into()
 }
@@ -432,7 +445,7 @@ pub async fn mastodon_feedback(
     }
     Ok(())
 }
-async fn account_read(url: String, handle: String) -> Result<PublicResponse, Failure> {
+pub(crate) async fn account_read(url: String, handle: String) -> Result<PublicResponse, Failure> {
     let credential = stored_credential(&handle)?;
     let target = account_target(&url, &credential.origin)?;
     let response = client_for(&target)
@@ -447,16 +460,36 @@ async fn account_read(url: String, handle: String) -> Result<PublicResponse, Fai
     read_json(response).await
 }
 #[tauri::command]
-pub async fn mastodon_account_get(url: String, handle: String) -> Result<PublicResponse, Failure> {
+pub async fn mastodon_account_get(
+    app: tauri::AppHandle,
+    url: String,
+    handle: String,
+) -> Result<PublicResponse, Failure> {
     let _permit = READS
         .try_acquire()
         .map_err(|_| failure("busy", "Too many account requests; retry shortly."))?;
-    let result = tokio::time::timeout(Duration::from_secs(15), account_read(url, handle))
-        .await
-        .unwrap_or_else(|_| Err(failure("timeout", "Account request timed out.")));
+    let result = tokio::time::timeout(
+        Duration::from_secs(15),
+        account_read(url.clone(), handle.clone()),
+    )
+    .await
+    .unwrap_or_else(|_| Err(failure("timeout", "Account request timed out.")));
     match &result {
         Ok(r) => record("account_read", "complete", Some(r.status)),
         Err(e) => record("account_read", e.kind, None),
+    }
+    if let Ok(response) = &result {
+        if response.status == 200 {
+            let app = app.clone();
+            let url = url.clone();
+            let handle = handle.clone();
+            let body = response.body.clone();
+            if url.contains("/api/v1/accounts/verify_credentials") {
+                crate::archive::observe_read(app, handle, url, body).await;
+            } else {
+                tokio::spawn(crate::archive::observe_read(app, handle, url, body));
+            }
+        }
     }
     result
 }

@@ -37,6 +37,14 @@ try {
       if(command==='connector_forget') {if(window.failForget) throw {kind:'credentials',message:'OS store locked'};return;}
       if(command==='connector_request') return {status:200,headers:{},body:JSON.stringify({data:{limit:10,limit_remaining:8,usage:2}})};
       if(command==='intelligence_public_request') return {status:200,headers:{},body:JSON.stringify({data:[]})};
+      // Local AI (parity item 1): the Rust policy is mirrored here only to drive the UI;
+      // the real allow/deny rules are unit-tested in src-tauri/src/local_ai.rs.
+      if(command==='local_ai_status') return {endpoint:window.localAiEndpoint??null};
+      if(command==='local_ai_set_endpoint') {
+        if(args.endpointUrl&&!/^http:\/\/(127\.0\.0\.1|localhost):\d+\/?$/.test(args.endpointUrl)) throw {kind:'policy',message:'Enter a local address like http://127.0.0.1:11434 or http://localhost:1234.'};
+        window.localAiEndpoint=args.endpointUrl?args.endpointUrl.replace(/\/$/,''):null;return {endpoint:window.localAiEndpoint};
+      }
+      if(command==='local_ai_request'&&args.path==='/v1/models'&&args.method==='GET') return {status:200,body:JSON.stringify({data:[{id:'llama3.2'},{id:'llava'}]})};
       throw new Error('Unexpected IPC '+command);
     }}};
   });
@@ -52,7 +60,17 @@ try {
   assert(await page.getByText('Saved on this device',{exact:true}).isVisible());
   await page.evaluate(()=>{window.failForget=false;});await page.getByRole('button',{name:'Disconnect',exact:true}).click();await key.waitFor();
   await page.getByRole('button',{name:'Connect OpenRouter',exact:true}).click();await page.getByText('Saved on this device',{exact:true}).waitFor();
-  assert.deepEqual(errors,[]);console.log('PASS: compiled OpenRouter key/OAuth connection, OS reference persistence, credits, failed disconnect retention and retry (mocked IPC; no paid inference).');
+  // Local AI: LAN address refused by the native policy, loopback accepted, models listed, switched on.
+  await page.goto(origin+'/settings/connections/local-ai');
+  const address=page.getByRole('textbox',{name:'Local address'});await address.waitFor();
+  await address.fill('http://192.168.1.10:11434');await page.getByRole('button',{name:'Save address',exact:true}).click();
+  await page.getByText('Enter a local address like http://127.0.0.1:11434 or http://localhost:1234.',{exact:true}).waitFor();
+  await page.getByRole('button',{name:'Use Ollama',exact:true}).click();await page.getByRole('button',{name:'Save address',exact:true}).click();
+  await page.getByRole('button',{name:'Load models',exact:true}).click();await page.getByRole('combobox',{name:'Model'}).waitFor();
+  await page.getByText('Local AI is on.',{exact:true}).waitFor();
+  const local=await page.evaluate(()=>localStorage.getItem('mockingbird_local_ai'));assert.equal(JSON.parse(local).model,'llama3.2');
+  assert.equal(await page.getByText(/credits|budget|Plus/i).count(),0,'Local AI shows no cost, budget or upsell copy');
+  assert.deepEqual(errors,[]);console.log('PASS: compiled OpenRouter key/OAuth connection, OS reference persistence, credits, failed disconnect retention and retry; Local AI loopback-only endpoint, model list and switch (mocked IPC; no paid inference).');
 } catch(error) {
   for(const context of browser?.contexts()??[]) for(const page of context.pages()) console.error(page.url(),(await page.locator('body').innerText()).slice(-4000));
   throw error;

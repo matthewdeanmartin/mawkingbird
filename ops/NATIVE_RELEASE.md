@@ -8,39 +8,37 @@ Run the commands below from this repository's root.
 
 ## Prepare a reviewed snapshot
 
-1. Test the private Native build on the platforms you intend to release. Write
-   the release notes yourself in the private Native changelog. Lead with what
-   users can now do or why updating helps; keep implementation chores out of the
-   public notes unless they affect users.
+1. Write the notes with the
+   [changelog runbook](NATIVE_CHANGELOG_RUNBOOK.md). They live in
+   `NATIVE_CHANGELOG.md` here; the private repo holds a copy. Windows is
+   built locally; Actions builds macOS and Linux.
 2. Set the same version in the private `src-tauri/tauri.conf.json`,
    `src-tauri/Cargo.toml`, and its generated `src-tauri/Cargo.lock`. The public
-   workflow checks all three against the `native-v` tag. Version `0.1.0` is
-   already present for the first release.
+   workflow checks all three against the `native-v` tag.
 3. From the private checkout, run `make deploy-source` to copy the chosen
-   source locally into this repository's `native/` mirror. Inspect the public
-   diff. The copy script does not commit or push anything.
-4. Manually copy and edit the private release notes into
-   `NATIVE_CHANGELOG.md` here. This file lives outside the mirror so the next
-   source copy will not erase your wording. Website changes do not need entries.
-5. Install `keepachangelog-manager-fork` if needed (`uv tool install
-keepachangelog-manager-fork`). In this public checkout, validate and promote
-   the notes to the release version:
+   source locally into this repository's `native/` mirror. It deletes whatever is
+   there, so first make sure nobody edited the mirror: every change in
+   `git log <last native-v tag>..HEAD -- native` must also be in the private repo.
+   Afterwards, inspect the public diff and compile it as the workflow does
+   (`cargo test --locked` in `native/src-tauri`, after a frontend build). A file
+   type the script doesn't list is silently left behind. It does not commit or push.
+4. Promote the notes to the release version and copy them back:
 
    ```sh
-   kaclm --component native validate
-   kaclm --component native release --override-version 0.1.0 --dry-run --yes
-   kaclm --component native release --override-version 0.1.0 --yes
+   alias k='uvx --no-build --from keepachangelog-manager-fork==6.10.1 kaclm --component native'
+   k release --override-version 0.1.0 --dry-run --yes
+   k release --override-version 0.1.0 --yes   # then restore the introduction
+   k validate
+   make native-changelog
    RELEASE_TAG=native-v0.1.0 node .github/scripts/check-native-release.mjs
    ```
 
    Replace `0.1.0` with the reviewed version. `kaclm` manages this changelog
    and its `native-v` tag namespace; it does not edit Tauri or Cargo files.
-   Update the direct installer links in `README.md` and
-   `ui/src/app/settings/app/settings-app.ts` for the new version. Check the
-   filenames against the release workflow's expected bundle names, then verify
-   the links after the assets are attached.
+   After the assets are attached, update the direct installer links in `README.md`
+   and `ui/src/app/settings/app/settings-app.ts`; before that they would 404.
 
-6. Review the complete public diff, then commit and push it yourself. The
+5. Review the complete public diff, then commit and push it yourself. The
    source, version files, and numbered changelog section must be on the commit
    selected for the Release. The push refreshes the Native draft Release. No
    workflow commits or pushes code.

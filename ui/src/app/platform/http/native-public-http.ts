@@ -2,6 +2,8 @@ import {
   HttpErrorResponse,
   HttpHeaders,
   HttpInterceptorFn,
+  HttpParams,
+  HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
 import { catchError, defer, from, map, throwError } from 'rxjs';
@@ -36,6 +38,55 @@ export async function nativePublicFetch(url: string, signal: AbortSignal): Promi
   const result = await invokePublic(url);
   signal.throwIfAborted();
   return new Response(result.body, { status: result.status, headers: result.headers });
+}
+
+interface NativeWrite {
+  url: string;
+  method: string;
+  body?: object;
+  form?: [string, string][];
+  idempotencyKey?: string;
+}
+
+/**
+ * A write as Rust takes it, or why it can't be sent. Which writes are permitted
+ * is decided once, by the table in the host's `mastodon_write.rs`.
+ */
+function nativeWrite(request: HttpRequest<unknown>, destination: URL): NativeWrite | string {
+  const write: NativeWrite = { url: destination.href, method: request.method };
+  const key = request.headers.get('Idempotency-Key');
+  if (key) write.idempotencyKey = key;
+  const body = request.body;
+  if (body == null) return write;
+  if (body instanceof FormData) {
+    const form: [string, string][] = [];
+    for (const [name, value] of body.entries()) {
+      if (typeof value !== 'string')
+        return 'Uploading files is not supported by Mawkingbird Native yet.';
+      form.push([name, value]);
+    }
+    return { ...write, form };
+  }
+  if (body instanceof HttpParams)
+    return {
+      ...write,
+      form: body
+        .keys()
+        .flatMap((name) => (body.getAll(name) ?? []).map((v) => [name, v] as [string, string])),
+    };
+  if (typeof body !== 'object' || Array.isArray(body) || body instanceof Blob)
+    return 'This action is not supported by Mawkingbird Native yet.';
+  return { ...write, body };
+}
+
+function invokeWrite(handle: string, input: NativeWrite): Promise<NativeResponse> {
+  const bridge = (
+    window as unknown as {
+      __TAURI__?: { core: { invoke<T>(command: string, args: object): Promise<T> } };
+    }
+  ).__TAURI__;
+  if (!bridge) return Promise.reject(new Error('Native HTTP bridge is unavailable.'));
+  return bridge.core.invoke<NativeResponse>('mastodon_account_write', { handle, input });
 }
 
 /** Native reads and explicitly supported account actions; no generic write tunnel. */
@@ -74,7 +125,21 @@ export const nativePublicInterceptor: HttpInterceptorFn = (request, next) => {
     emptyBody
       ? { server: destination.origin, statusId: match[1], liked: match[2] === 'favourite' }
       : undefined;
-  if ((request.method !== 'GET' && !favourite) || (authorization && !handle)) {
+  const write =
+    request.method !== 'GET' &&
+    !favourite &&
+    handle &&
+    destination.protocol === 'https:' &&
+    !destination.username &&
+    !destination.password &&
+    !destination.port &&
+    !destination.hash
+      ? nativeWrite(request, destination)
+      : undefined;
+  if (
+    (request.method !== 'GET' && !favourite && (!write || typeof write === 'string')) ||
+    (authorization && !handle)
+  ) {
     const bridge = (
       window as unknown as {
         __TAURI__?: { core: { invoke(command: string, args: object): Promise<unknown> } };
@@ -90,12 +155,22 @@ export const nativePublicInterceptor: HttpInterceptorFn = (request, next) => {
           url: request.url,
           error: {
             error:
-              'This action is not supported by the native transport yet. Reading and likes are supported. See Help > Open logs.',
+              typeof write === 'string'
+                ? write
+                : handle
+                  ? 'This action is not supported by Mawkingbird Native yet. See Help > Open logs.'
+                  : 'Sign in again in the native app to do this.',
           },
         }),
     );
   }
-  return defer(() => from(invokePublic(request.urlWithParams, handle, favourite))).pipe(
+  return defer(() =>
+    from(
+      handle && write && typeof write !== 'string'
+        ? invokeWrite(handle, write)
+        : invokePublic(request.urlWithParams, handle, favourite),
+    ),
+  ).pipe(
     map((result) => {
       let body: unknown;
       try {

@@ -1,6 +1,7 @@
 import {
   HttpClient,
   HttpErrorResponse,
+  HttpParams,
   provideHttpClient,
   withInterceptors,
 } from '@angular/common/http';
@@ -162,10 +163,19 @@ it('does not turn the like action into arbitrary writes, query injection, or ano
   const http = TestBed.inject(HttpClient);
   const options = { headers: { Authorization: 'Bearer native-mastodon:reference' } };
   for (const url of [
-    'https://mastodon.social/api/v1/statuses/123/reblog',
     'https://user:secret@mastodon.social/api/v1/statuses/123/favourite',
     'http://mastodon.social/api/v1/statuses/123/favourite',
-    'https://mastodon.social/api/v1/statuses/abc/favourite',
+    'https://mastodon.social:444/api/v1/statuses/123/favourite',
+  ]) {
+    await expect(firstValueFrom(http.post(url, {}, options))).rejects.toMatchObject({
+      status: 403,
+    });
+  }
+  expect(invoke).not.toHaveBeenCalledWith('mastodon_account_write', expect.anything());
+  // Not a plain like: Rust's write table decides, and refuses what it doesn't list.
+  invoke.mockRejectedValue({ kind: 'policy', message: 'Not supported.' });
+  for (const url of [
+    'https://mastodon.social/api/v1/admin/accounts/123/action',
     'https://mastodon.social/api/v1/statuses/123/favourite?access_token=x',
   ]) {
     await expect(firstValueFrom(http.post(url, {}, options))).rejects.toMatchObject({
@@ -185,6 +195,84 @@ it('does not turn the like action into arbitrary writes, query injection, or ano
     firstValueFrom(http.post('https://mastodon.social/api/v1/statuses/123/favourite', {})),
   ).rejects.toMatchObject({ status: 403 });
   expect(invoke).not.toHaveBeenCalledWith('mastodon_favourite', expect.anything());
+});
+
+it('sends every other account write through the reviewed command with the opaque handle', async () => {
+  const http = TestBed.inject(HttpClient);
+  const handle = 'native-mastodon:reference';
+  const headers = { Authorization: `Bearer ${handle}` };
+  const base = 'https://mastodon.social/api/v1';
+  invoke.mockResolvedValue({ status: 200, body: '{"id":"9"}', headers: {} });
+  const sent = () => invoke.mock.lastCall;
+
+  expect(await firstValueFrom(http.delete(`${base}/statuses/9`, { headers }))).toEqual({ id: '9' });
+  expect(sent()).toEqual([
+    'mastodon_account_write',
+    { handle, input: { url: `${base}/statuses/9`, method: 'DELETE' } },
+  ]);
+
+  await firstValueFrom(
+    http.post(
+      `${base}/statuses`,
+      { status: 'hello' },
+      { headers: { ...headers, 'Idempotency-Key': 'key-1' } },
+    ),
+  );
+  expect(sent()).toEqual([
+    'mastodon_account_write',
+    {
+      handle,
+      input: {
+        url: `${base}/statuses`,
+        method: 'POST',
+        body: { status: 'hello' },
+        idempotencyKey: 'key-1',
+      },
+    },
+  ]);
+
+  await firstValueFrom(
+    http.put(`${base}/lists/3`, new HttpParams().set('title', 'A & B'), { headers }),
+  );
+  expect(sent()).toEqual([
+    'mastodon_account_write',
+    { handle, input: { url: `${base}/lists/3`, method: 'PUT', form: [['title', 'A & B']] } },
+  ]);
+
+  const form = new FormData();
+  form.append('domain', 'bad.example');
+  await firstValueFrom(http.post(`${base}/domain_blocks`, form, { headers }));
+  expect(sent()).toEqual([
+    'mastodon_account_write',
+    {
+      handle,
+      input: { url: `${base}/domain_blocks`, method: 'POST', form: [['domain', 'bad.example']] },
+    },
+  ]);
+
+  await firstValueFrom(
+    http.delete(`${base}/domain_blocks`, { headers, params: { domain: 'bad.example' } }),
+  );
+  expect(sent()).toEqual([
+    'mastodon_account_write',
+    { handle, input: { url: `${base}/domain_blocks?domain=bad.example`, method: 'DELETE' } },
+  ]);
+});
+
+it('says plainly that file uploads are not supported, and sends nothing', async () => {
+  const form = new FormData();
+  form.append('file', new File(['x'], 'photo.png', { type: 'image/png' }));
+  await expect(
+    firstValueFrom(
+      TestBed.inject(HttpClient).post('https://mastodon.social/api/v2/media', form, {
+        headers: { Authorization: 'Bearer native-mastodon:reference' },
+      }),
+    ),
+  ).rejects.toMatchObject({
+    status: 403,
+    error: { error: 'Uploading files is not supported by Mawkingbird Native yet.' },
+  });
+  expect(invoke).not.toHaveBeenCalledWith('mastodon_account_write', expect.anything());
 });
 
 it('marks old read-only credentials with an actionable reauthorization error', async () => {

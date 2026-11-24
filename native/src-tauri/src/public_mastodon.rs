@@ -198,11 +198,24 @@ pub(crate) async fn client_for(url: &Url) -> Result<reqwest::Client, Failure> {
     if url.port().is_some() {
         return Err(failure("policy", "Non-default ports are blocked."));
     }
-    let addresses: Vec<SocketAddr> = tokio::net::lookup_host((host, port))
-        .await
-        .map_err(|_| failure("network", "Could not resolve the remote server."))?
-        .collect();
-    if addresses.is_empty() || addresses.iter().any(|a| !address_allowed(host, a.ip())) {
+    // A SOCKS5 proxy (Tor) resolves names itself: looking them up here would
+    // leak every host to the local resolver. Literal addresses and `.local`
+    // names are still checked; the proxy cannot be asked for a private IP.
+    let remote_dns = crate::network::proxy_resolves_names();
+    let addresses: Vec<SocketAddr> = if remote_dns {
+        match host.trim_matches(['[', ']']).parse::<IpAddr>() {
+            Ok(ip) => vec![SocketAddr::new(ip, port)],
+            Err(_) => Vec::new(),
+        }
+    } else {
+        tokio::net::lookup_host((host, port))
+            .await
+            .map_err(|_| failure("network", "Could not resolve the remote server."))?
+            .collect()
+    };
+    if (!remote_dns && addresses.is_empty())
+        || addresses.iter().any(|a| !address_allowed(host, a.ip()))
+    {
         return Err(failure(
             "policy",
             "Private and special-use network destinations are blocked.",
@@ -226,9 +239,15 @@ pub(crate) async fn client_for(url: &Url) -> Result<reqwest::Client, Failure> {
         .with_no_client_auth();
         builder.use_preconfigured_tls(tls)
     };
+    // Direct: `.no_proxy()`. Otherwise the one configured proxy, with no
+    // fallback to a direct connection (parity item 5).
+    let builder = crate::network::apply(builder)?;
+    let builder = if addresses.is_empty() {
+        builder
+    } else {
+        builder.resolve_to_addrs(host, &addresses)
+    };
     builder
-        .no_proxy()
-        .resolve_to_addrs(host, &addresses)
         .redirect(reqwest::redirect::Policy::none())
         // This client also carries publishing writes: even protocol retries are explicit.
         .retry(reqwest::retry::never())

@@ -2,7 +2,7 @@
 use crate::public_mastodon::{client_for, failure, Failure};
 use serde::Serialize;
 use tokio::sync::Semaphore;
-use url::Url;
+use url::{Host, Url};
 
 static REQUESTS: Semaphore = Semaphore::const_new(4);
 const PAGE_LIMIT: usize = 2 * 1024 * 1024;
@@ -24,13 +24,16 @@ pub struct Delivery {
 }
 
 fn target(raw: &str) -> Result<Url, Failure> {
-    if raw.len() > 8192
-        || Url::parse(raw)
-            .map_err(|_| failure("policy", "Invalid webmention URL."))?
-            .fragment()
-            .is_some()
-    {
+    let url = Url::parse(raw).map_err(|_| failure("policy", "Invalid webmention URL."))?;
+    if raw.len() > 8192 || url.fragment().is_some() {
         return Err(failure("policy", "Invalid webmention URL."));
+    }
+    match url.host() {
+        Some(Host::Domain(host))
+            if host != "localhost"
+                && !host.ends_with(".localhost")
+                && !host.ends_with(".local") => {}
+        _ => return Err(failure("policy", "Webmention URLs must use a public host.")),
     }
     crate::feeds::validate_url(raw)
 }

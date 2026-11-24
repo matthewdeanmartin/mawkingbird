@@ -206,7 +206,9 @@ mod tests {
             let address = listener.local_addr().unwrap();
             let server = tokio::spawn(async move {
                 let (mut socket, _) = listener.accept().await.unwrap();
-                let mut request = [0;4096]; socket.read(&mut request).await.unwrap();
+                let mut request = [0;4096];
+                let read = socket.read(&mut request).await.unwrap();
+                assert!(read > 0, "fixture expected a request");
                 socket.write_all(format!("HTTP/1.1 200 OK\r\nContent-Type: application/rss+xml\r\nContent-Encoding: gzip\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",body.len()).as_bytes()).await.unwrap();
                 socket.write_all(&body).await.unwrap();
             });

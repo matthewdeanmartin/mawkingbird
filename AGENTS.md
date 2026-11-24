@@ -1,127 +1,76 @@
 # Mawkingbird contributor notes
 
-Use Git Bash and Make on Windows. The maintained Angular client lives in ui/.
-The sibling mastodon_mock/ui is a frozen legacy fork; do not synchronize changes back.
+Git Bash and Make on Windows; Node 22+; `npm ci`. The client is `ui/`. The sibling
+mastodon_mock/ui is a frozen fork: never sync to it.
 
-For starter catalogue refreshes and language reconciliation, follow
-ops/engineering/starter-catalog.md and regenerate ops/engineering/starter-locale-coverage.md.
-Pack translations and app-wide UI locales are separate; preserve script tags.
+## Don't break Native
 
-Use Node 22 (CI) or a supported newer Node, and npm ci with the committed lockfile.
+The desktop app is this same `ui/` plus a Rust host. 0.1.0 shipped unable to post
+because these were missed.
 
-Gate cadence: iterate cheap, gate once. Every `ng test` pays a fixed compile
-cost (about 70s for the full program, ~2 min more with coverage), so a full gate
-after each edit costs the owner hours. While working, use only:
-- `python -B -X utf8 ui/scripts/audit_deep_links.py` for shareable-route changes
-  (source-only, under a second); it inventories parameterized routes, checks
-  produced links against anonymous entry, and names routes needing review.
-  Run `cd ui && npm run test:deep-links` once after changing the behavior.
-- `cd ui && make test-changed` (specs affected by your uncommitted edits, compiled
-  as a narrowed program; `WATCH=1` keeps it running, rebuilds take seconds),
-- `npm run test:subset -- <spec or dir>` for named specs (also narrowed),
-- `npx prettier --check`/`ng lint --lint-file-patterns` on the files you touched,
-- `npx playwright test --config ../design_system/playwright.config.mjs <file>`
-  for the one design browser file you are working on.
-  Narrowed runs type-check only what they compile, so they never replace the gate.
-  `make test-deep-links-browser` (shared links whose post, profile or server is
-  gone, in a real browser) is an occasional integration check, ~3 minutes with
-  its build: run it once after changing routes, the deep-link resolver or a
-  landing page's error states, or before a release. Never per edit or in a loop.
-  Owner cadence for multi-sprint Native archive work (2026-11-15): complete two
-  sprints before running the exhaustive full gates. Use focused checks within
-  each sprint and record the deferred gates. At the end of the second sprint,
-  run each gate required below once, on the combined final tree,
-  cheapest first (static checks, `make test`, build, SEO, design-verify). If a step
-  fails, fix it and rerun that step plus the affected specs, not the whole chain.
-  Rerun `make test` once more at the end only if source changed after its last
-  green run. Never loop the full gate to "make sure"; report the green runs you have.
-  `make test-quick` is `make test` without coverage, for a full-suite check midway.
+- **Never edit `native/`.** It is generated: the private `../mawkingbird_native`'s
+  `make deploy-source` deletes and replaces it. Change the host there. Run
+  deploy-source only when asked. A new kind of host file (SQL, fixture) must be added
+  to the list in its `scripts/deploy-source.sh`.
+- **Native sends only what Rust lists**, so a new endpoint, method, header, host,
+  upload, download or WebSocket in `ui/` works on the web and fails there. Lists:
+  `mastodon_write.rs`, `public_mastodon.rs`, `bluesky.rs`, `misskey.rs`; any other
+  host needs a typed command (the webview has no network).
+- In the same change, extend the list, or hide the control in Native and add it to
+  `spec/native-transport-gaps.md`. A button that can only fail is a bug.
+- `NATIVE_CHANGELOG.md` lists only what works in Native. Follow
+  `ops/NATIVE_CHANGELOG_RUNBOOK.md`; releases: `ops/NATIVE_RELEASE.md`. Never commit,
+  push, release or move a tag unless told to.
 
-Exception — routine Feed Builder SIG additions/data refreshes (owner reaffirmed
-2026-11-08): use the minimal gate in the sibling
-`mawkingbird_starters/spec/feed-builder/new-topic-playbook.md`. Data-only changes
-need schema/import validation and changed-topic counts/languages plus unchanged
-other snapshots. New topics using existing infrastructure add targeted Feed
-Builder specs, changed-file formatting and design inventory review/check when
-needed. Copy, lazy loader registrations, registry routes and hub mappings are
-routine topic data work: do not run the full unit suite, production/SEO builds,
-full-site SEO browser suite, design-verify or backend integration just for these.
-Use an existing current preview for a focused smoke when available; otherwise
-record it as not run. This exception applies to the broader full-test, runtime
-build and SEO gate instructions below. Shared implementation changes still
-require the relevant full gates. Do not alter protected test baselines.
+## Gates: iterate cheap, gate once
 
-Gate output is summarized: the build chunk table, per-file coverage (see
-ui/coverage/index.html) and the manifest's added-test list are hidden. Set
-VERBOSE=1 (chunk table, every Playwright test) or TEST_MANIFEST_VERBOSE=1 to
-see them; check:i18n counts its advisories unless VERBOSE=1. ui/.npmrc sets
-loglevel=warn, so npm's "notice run" lines are hidden. Agents: redirect long
-gates to a log file and read its summary lines. Put logs in the ignored `log/`
-folder; keep screenshots and scratch files outside the working tree:
-`L=$(node ui/scripts/artifacts.mjs logs); make test > "$L/test.log" 2>&1`
-Test reports and browser screenshots go to OS temp/mawkingbird (or
-`$MAWKINGBIRD_ARTIFACTS`). Set NO_COLOR=1 FORCE_COLOR=0
-on test runs, and grep failures before opening a full dump. A red `make test`
-ends by naming each failed test with its first message line.
-This gate includes design:inventory-check and check:dead-code (knip: unused files and
-undeclared dependencies) before the test inventory and coverage suite. Delete a file
-your change orphans rather than silencing knip; `make dead-code` prints the full,
-advisory report including unused exports.
-For every client change, inspect ui/package.json, ui/Makefile and the applicable
-.github/workflows checks; unit tests and a production build alone do not cover CI.
-The design inventory records source line numbers, so even nonvisual HTML/TS/CSS
-edits can change it. If it is stale, run `cd ui && npm run design:audit-controls`,
-review design_system/audits/06-control-inventory.json, update
-design_system/audits/06-consolidation.md, and reconcile added/removed candidate
-files in design_system/audits/11-reconciliation.json. Then rerun
-`npm run design:inventory-check`. Never bypass the check or regenerate without review.
-Shared design-widget changes also require `cd ui && make design-verify`, including
-the browser assertions. Report exactly which gates passed and which were not run.
-CI runs design-verify on every push. design_system/stories provide fake services
-(`Api`, `BlueskyApi`, …) to real components: when a component starts calling a
-new service method, or its controls change, grep the stories and
-design_system/tests for it and run that browser file. The browser suite uses 4
-workers locally and 2 in CI; set DESIGN_BROWSER_WORKERS to override.
-Do not skip, focus, delete, or weaken tests; preserve the test inventory checks.
-Angular tests run locally; GitHub Actions builds and checks deployment layout.
-For UI runtime changes, also run `cd ui && npm run build:mockingbird` locally.
-Unit tests do not enforce production bundle budgets. Keep optional feature data
-out of root imports and route guards; use the build's size report to verify.
-Do not raise the 1 MB initial error budget to fix an accidental eager import.
-The separate `make test-integration` suite exercises the real client against a
-PyPI-installed mastodon-mock wheel in CI and locally. Never point this suite at
-the sibling source checkout or an editable install. See docs/contributing.md.
+A full gate costs minutes of compile, so never loop it. While working:
 
-In-repo libraries: domain-neutral code (language detection, RSS/OPML, dictionary,
-ELIZA, link cleaning, sentiment, webmention) lives in ui/src/lib, per
-ops/engineering/libraries.md. A library never imports the app or another library; the app
-uses one only through its lib.json entries. `npm run check:libs` enforces this.
-Library specs run in `npm run test:libs` (unchanged libraries are skipped), not
-in the Angular suite.
+- `cd ui && make test-changed` (`WATCH=1`), or `npm run test:subset -- <spec|dir>`.
+  These type-check only what they compile; they don't replace the gate.
+- `npx prettier --check` and `ng lint --lint-file-patterns` on touched files.
+- One design file: `npx playwright test --config ../design_system/playwright.config.mjs <file>`.
+- Shareable routes: `python -B -X utf8 ui/scripts/audit_deep_links.py`, then
+  `npm run test:deep-links` once. `make test-deep-links-browser` (~3 min) once, after
+  changing routes, the resolver or landing error states.
 
-Where documents go: docs/ holds end-user help guides only. Every file there
-must be in the mkdocs.yml nav; it is published to Read the Docs and as static
-pages at mawkingbird.com/help/ by scripts/build_help.py. Active deployment and
-maintainer runbooks go in ops/, with engineering guides in ops/engineering/.
-Feature plans, inventories and sprint evidence go in spec/; retired material goes
-in spec/history/. After editing docs/ or
-mkdocs.yml, run `make help-site-test` and `make help-site` from the repository
-root (uv, wheels only). Public, indexable pages and their sitemaps are described
-in ops/engineering/seo.md; keep a page's client route, server route, sitemap entry and
-SEO checks in sync, and run `cd ui && make test-seo && npm run test:seo:browser`.
+At the end, on the final tree, cheapest first, once each: static checks,
+`make test`, `npm run build:mockingbird` (runtime changes; enforces bundle budgets),
+SEO, design-verify. Fix and rerun only the failed step; rerun `make test` only if
+source changed since it was green. Check ui/package.json, ui/Makefile and the
+workflows for what applies. Native archive roadmap: two sprints per full gate.
 
-Read ops/DEPLOY.md before modifying publishing. Keep all public origins, OAuth
-redirect URLs, and persisted storage key names stable. This repository now hosts
-mawkingbird.com; production must use base href `/`. Do not publish a project-path
-mirror build to this site's root. Docs remain under docs/ and use Read the Docs.
+- Design inventory stale (any HTML/TS/CSS edit can do it): `npm run
+  design:audit-controls`, review design_system/audits/06-control-inventory.json,
+  update 06-consolidation.md and 11-reconciliation.json there, then
+  `npm run design:inventory-check`. Never regenerate without review.
+- Shared design widgets: `make design-verify`. A component that calls a new service
+  method or changes controls: grep design_system/stories and tests for it, run that file.
+- `make test` ends by naming failures. Delete files your change orphans; don't silence knip.
+- Never skip, focus, delete or weaken tests, raise the 1 MB initial budget, or alter
+  test baselines. Keep optional feature data out of root imports and route guards.
+- `make test-integration` uses the PyPI mastodon-mock, never the sibling checkout.
+- Logs go to `log/`, never elsewhere in the tree:
+  `L=$(node ui/scripts/artifacts.mjs logs); make test > "$L/test.log" 2>&1`.
+  Set NO_COLOR=1 FORCE_COLOR=0; `VERBOSE=1` unhides detail; grep before dumping.
+- Report exactly which gates passed and which were not run.
 
-For Native releases, read ops/NATIVE_RELEASE.md and use `kaclm --component native`.
-`kaclm github-release` can draft notes from `[Unreleased]` but does not promote
-the changelog. Before creating or publishing a `native-vX.Y.Z` release, run
-`kaclm --component native release --override-version X.Y.Z --dry-run --yes`,
-then the same command without `--dry-run`. Verify that `NATIVE_CHANGELOG.md`
-contains `## [X.Y.Z]` and run
-`RELEASE_TAG=native-vX.Y.Z node .github/scripts/check-native-release.mjs`.
-The numbered section must be committed at the release tag; changing main after
-publication does not repair a tag that points to older source. Never commit,
-push, or move a tag without explicit user authorization.
+**Feed Builder topics and data refreshes** use only the minimal gate in the sibling
+`mawkingbird_starters/spec/feed-builder/new-topic-playbook.md` (schema and counts; for
+a new topic, its specs, formatting and the design inventory). No full suite, builds,
+SEO, design-verify or integration unless shared code changed.
+
+## Where things go
+
+- `ui/src/lib`: domain-neutral code. Never imports the app or another library; used
+  through lib.json entries (ops/engineering/libraries.md; `npm run check:libs`,
+  `npm run test:libs`).
+- `docs/`: end-user help only, each file in the mkdocs.yml nav; then
+  `make help-site-test help-site`. `ops/`: runbooks. `ops/engineering/`: guides.
+  `spec/`: plans and evidence; retired ones in `spec/history/`.
+- Public pages: keep client route, server route, sitemap and SEO checks in sync
+  (ops/engineering/seo.md); `make test-seo && npm run test:seo:browser`.
+- Starter catalogue and languages: ops/engineering/starter-catalog.md; regenerate
+  starter-locale-coverage.md. Pack translations are not UI locales; keep script tags.
+- Publishing: read ops/DEPLOY.md first. Keep origins, OAuth redirects and storage keys
+  stable. Production base href is `/`; never publish a project-path build to the root.

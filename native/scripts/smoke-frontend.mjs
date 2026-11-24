@@ -92,6 +92,57 @@ try {
   });
   assert.equal(blocked, true);
   console.log('PASS: native frontend boots without remote requests; click/middle-click/keyboard use bridge; file links and remote fetch blocked.');
+
+  const signed = await browser.newPage();
+  const signedErrors = [];
+  signed.on('pageerror', (error) => signedErrors.push(error.message));
+  await signed.addInitScript(() => {
+    try {
+      localStorage.setItem('mastodon_mock_token', 'native-mastodon:fixture');
+      localStorage.setItem('mastodon_mock_account_mode', 'mastodon');
+      localStorage.setItem('mastodon_mock_server', 'https://example.com');
+      localStorage.setItem('mastodon_mock_sessions', JSON.stringify([{ id: 'fixture', kind: 'mastodon', server: 'https://example.com', account: { id: '1', username: 'me', acct: 'me', fields: [] } }]));
+      localStorage.setItem('mastodon_mock_session_tokens', JSON.stringify({ fixture: 'native-mastodon:fixture' }));
+    } catch { /* about:blank has no storage origin */ }
+    window.nativeCalls = [];
+    window.__TAURI__ = { core: { invoke: async (command, payload) => {
+      window.nativeCalls.push({ command, payload });
+      const person = { id: '55', username: 'friend', acct: 'friend', display_name: 'Friend', fields: [], statuses_count: 0, followers_count: 0, following_count: 0, avatar: '', header: '' };
+      if (command === 'archive_profiles') return { following: 1, scanComplete: true, profiles: [{ id: 7, remoteId: '55', acct: 'friend', displayName: 'Friend', lastStatusAt: null, avatar: null, cachedPosts: 0, cachedUnread: 0 }] };
+      if (command === 'archive_profile_posts_after') return { posts: [], next: null };
+      if (command === 'archive_profile_posts' || command === 'archive_account_posts') return [];
+      if (command === 'archive_following_status') return null;
+      if (command === 'archive_collection_status') return { currentJob: 'idle', following: null, cachedPosts: 0, profilesWithPosts: 0, seedEligible: 0, notificationHistoryComplete: false, jobs: [] };
+      if (command === 'archive_fetch_account_page') return 0;
+      if (command === 'mastodon_account_get') {
+        const path = new URL(payload.url).pathname;
+        const data = path.endsWith('verify_credentials') ? { ...person, id: '1', username: 'me', acct: 'me' }
+          : path === '/api/v1/accounts/55' ? person : [];
+        return { status: 200, headers: { 'content-type': 'application/json' }, body: JSON.stringify(data) };
+      }
+      if (command === 'public_mastodon_get') throw { kind: 'network', message: 'Offline fixture' };
+    } } };
+  });
+  await signed.addInitScript({ path: resolve(root, 'src-tauri/src/links.js') });
+  await signed.addInitScript({ path: resolve(root, 'src-tauri/src/images.js') });
+  await signed.addInitScript({ path: resolve(root, 'src-tauri/src/media.js') });
+  await signed.goto(`${origin}/home/profiles`, { waitUntil: 'domcontentloaded' });
+  await signed.locator('app-home-profiles h1').waitFor();
+  assert.equal(await signed.locator('.rail-left app-home-profiles-rail button').count(), 1);
+  await signed.getByRole('button', { name: 'Data activity' }).click();
+  await signed.getByRole('dialog', { name: 'Data activity' }).getByText('0 posts saved from 0 profiles').waitFor();
+  await signed.getByRole('dialog', { name: 'Data activity' }).getByRole('button', { name: 'Close' }).click();
+  await signed.getByRole('link', { name: 'Open full profile' }).click();
+  await signed.locator('app-profile .profile-archive-actions').waitFor();
+  assert.equal(await signed.getByRole('button', { name: 'Fetch latest posts' }).count(), 1);
+  const beforeFetch = await signed.evaluate(() => window.nativeCalls);
+  assert(beforeFetch.some(({ command }) => command === 'archive_account_posts'));
+  assert(!beforeFetch.some(({ command }) => command === 'archive_fetch_account_page'));
+  await signed.getByRole('button', { name: 'Fetch latest posts' }).click();
+  await signed.waitForFunction(() => window.nativeCalls.some(({ command }) => command === 'archive_fetch_account_page'));
+  assert.deepEqual(signedErrors, [], 'signed-in archive routes must not throw');
+  console.log('PASS: signed-in Native Profiles left rail and Data activity dialog work; person-page history fetch waits for its button.');
+  await signed.close();
   console.log('Scope: Chromium with mocked IPC; does not certify actual Tauri/WebView permissions or OS browser launch.');
 } finally {
   await browser?.close();

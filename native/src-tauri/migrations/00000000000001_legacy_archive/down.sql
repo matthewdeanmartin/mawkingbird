@@ -1,0 +1,13 @@
+DROP TRIGGER IF EXISTS archive_post_fts_update;
+DROP TRIGGER IF EXISTS archive_post_fts_delete;
+DROP TRIGGER IF EXISTS archive_post_fts_insert;
+DROP TABLE IF EXISTS archive_post_fts;
+DROP TABLE IF EXISTS archive_cursor;
+DROP TABLE IF EXISTS archive_read;
+DROP TABLE IF EXISTS archive_interaction;
+DROP TABLE IF EXISTS archive_post_access;
+DROP TABLE IF EXISTS archive_post;
+DROP TABLE IF EXISTS archive_follow;
+DROP TABLE IF EXISTS archive_follow_scan;
+DROP TABLE IF EXISTS archive_actor;
+DROP TABLE IF EXISTS archive_identity;

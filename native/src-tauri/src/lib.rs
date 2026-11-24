@@ -4,8 +4,11 @@ use tauri::{webview::NewWindowResponse, WebviewUrl, WebviewWindowBuilder};
 use tauri_plugin_opener::OpenerExt;
 use url::Url;
 mod account_publishing;
+mod archive;
+mod archive_store;
 mod articles;
 mod bluesky;
+mod connectivity;
 mod connectors;
 mod diagnostics;
 mod feed_encoding;
@@ -14,14 +17,24 @@ mod github_reader;
 mod hugo;
 mod images;
 mod intelligence;
+mod local_ai;
 mod mastodon_login;
+mod mastodon_write;
 mod media;
+mod media_save;
 mod misskey;
+mod network;
+mod ocr;
 mod public_mastodon;
 mod publishing;
 mod social;
+mod sponsorblock;
 mod twitter;
+mod updates;
 mod webmentions;
+mod wellness;
+mod wikidata;
+mod youtube;
 
 #[cfg(target_os = "windows")]
 mod windows_network;
@@ -113,6 +126,7 @@ pub fn run() {
                 });
             },
         )
+        .plugin(tauri_plugin_dialog::init())
         .plugin(
             tauri_plugin_opener::Builder::new()
                 .open_js_links_on_click(false)
@@ -146,15 +160,56 @@ pub fn run() {
             public_mastodon::public_mastodon_get,
             feeds::public_feed_get,
             articles::public_article_get,
+            youtube::youtube_innertube,
+            wikidata::wikidata_channel_creator,
+            sponsorblock::sponsorblock_segments,
             diagnostics::open_logs,
             diagnostics::report_native_event,
+            wellness::wellness_activity,
             mastodon_login::mastodon_login,
             mastodon_login::mastodon_account_get,
+            archive::archive_collect_following,
+            archive::archive_collect_notifications,
+            archive::archive_following_status,
+            archive::archive_collection_status,
+            archive::archive_seed_recent,
+            archive::archive_profiles,
+            archive::archive_people_posts,
+            archive::archive_people_members,
+            archive::archive_profile_posts,
+            archive::archive_profile_posts_after,
+            archive::archive_account_posts,
+            archive::archive_fetch_account_page,
+            archive::archive_analytics_catch_up,
+            archive::archive_analytics_posts,
+            archive::archive_post_boosters,
+            archive::archive_analytics_history,
+            archive::archive_post_activity,
+            archive::archive_engagers,
+            archive::archive_reactions,
+            archive::archive_mark_read,
+            archive::archive_mark_read_batch,
             mastodon_login::mastodon_favourite,
-            mastodon_login::forget_mastodon_account
+            mastodon_write::mastodon_account_write,
+            mastodon_login::forget_mastodon_account,
+            network::network_proxy_status,
+            network::network_proxy_refresh,
+            network::network_proxy_set,
+            connectivity::network_connectivity,
+            local_ai::local_ai_status,
+            local_ai::local_ai_set_endpoint,
+            local_ai::local_ai_request,
+            updates::check_for_update,
+            media_save::media_save_image,
+            media_save::media_copy_image,
+            ocr::ocr_available,
+            ocr::ocr_read_image
         ])
         .setup(|app| {
             diagnostics::init(app.handle())?;
+            network::init(app.handle())?;
+            local_ai::init(app.handle())?;
+            archive::init(app.handle())?;
             #[cfg(desktop)]
             {
                 let help = tauri::menu::SubmenuBuilder::new(app, "Help")

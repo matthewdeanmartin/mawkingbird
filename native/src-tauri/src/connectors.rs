@@ -660,7 +660,8 @@ mod tests {
         tokio::spawn(async move {
             let (mut socket, _) = listener.accept().await.unwrap();
             let mut request = [0; 4096];
-            socket.read(&mut request).await.unwrap();
+            let read = socket.read(&mut request).await.unwrap();
+            assert!(read > 0, "fixture expected a request");
             socket.write_all(wire.as_bytes()).await.unwrap();
         });
         reqwest::Client::builder()

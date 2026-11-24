@@ -266,6 +266,15 @@ try {
     } catch (error) { return error; }
   });
   assert.equal(favouriteBoundary.kind, 'policy', 'typed like command is permitted but rejects invalid account references');
+  const writeBoundary = await page.evaluate(async () => {
+    try {
+      await window.__TAURI__.core.invoke('mastodon_account_write', {
+        handle: 'invalid-reference', input: { url: 'https://mastodon.social/api/v1/statuses/1', method: 'DELETE' },
+      });
+      return null;
+    } catch (error) { return error; }
+  });
+  assert.equal(writeBoundary.kind, 'policy', 'account write command is permitted but rejects invalid account references');
   const rejections = await page.evaluate(async () => {
     const invoke = window.__TAURI__.core.invoke;
     const rejected = async (command, args) => {

@@ -14,6 +14,7 @@ help:
 	@echo "Set MOCKINGBIRD_SEO=true to prerender public pages for production publishing."
 	@echo "Set MOCKINGBIRD_HOME_SERVER=https://your.instance to build for one Mastodon server."
 	@echo "make help-site | help-site-test   Static /help/ pages from docs/ (uv, wheels only)"
+	@echo "make native-changelog | native-changelog-check   Copy NATIVE_CHANGELOG.md to the private Native repo"
 	@echo "make news | news-check | news-link   Static /news/ blog from news/posts (fediblog engine)"
 install:
 	cd ui && npm ci
@@ -52,6 +53,16 @@ news-check:
 	cd news && npm ci --no-audit --no-fund && npm run check
 news-link:
 	cd news && npm ci --no-audit --no-fund && npm run link
+# NATIVE_CHANGELOG.md is the source of truth; the private repo keeps a copy
+# (ops/NATIVE_CHANGELOG_RUNBOOK.md).
+.PHONY: native-changelog native-changelog-check
+NATIVE_REPO ?= ../mawkingbird_native
+native-changelog:
+	uvx --no-build --from keepachangelog-manager-fork==6.10.1 kaclm --component native validate
+	test -f "$(NATIVE_REPO)/src-tauri/tauri.conf.json"
+	cp NATIVE_CHANGELOG.md "$(NATIVE_REPO)/CHANGELOG.md"
+native-changelog-check:
+	cmp NATIVE_CHANGELOG.md "$(NATIVE_REPO)/CHANGELOG.md"
 test:
 	$(MAKE) -C ui test
 test-integration:

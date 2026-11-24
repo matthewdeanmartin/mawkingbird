@@ -13,9 +13,9 @@ use url::Url;
 const MAX_BYTES: usize = 8 * 1024 * 1024;
 static QUEUE: Semaphore = Semaphore::const_new(128);
 static WORKERS: Semaphore = Semaphore::const_new(8);
-struct Image {
-    bytes: Vec<u8>,
-    mime: &'static str,
+pub(crate) struct Image {
+    pub(crate) bytes: Vec<u8>,
+    pub(crate) mime: &'static str,
 }
 struct Cached {
     url: String,
@@ -40,7 +40,7 @@ fn destination(raw: &str) -> Result<Url, Failure> {
     url.set_fragment(None);
     Ok(url)
 }
-fn validate_bytes(bytes: &[u8]) -> Result<&'static str, Failure> {
+pub(crate) fn validate_bytes(bytes: &[u8]) -> Result<&'static str, Failure> {
     let mime = if bytes.starts_with(b"\x89PNG\r\n\x1a\n") {
         "image/png"
     } else if bytes.starts_with(&[0xff, 0xd8, 0xff]) {
@@ -123,7 +123,7 @@ async fn download(mut url: Url) -> Result<Arc<Image>, Failure> {
     }
     unreachable!()
 }
-async fn load(raw: &str) -> Result<Arc<Image>, Failure> {
+pub(crate) async fn load(raw: &str) -> Result<Arc<Image>, Failure> {
     let url = destination(raw)?;
     if let Ok(mut cache) = CACHE.lock() {
         cache.retain(|c| c.at.elapsed() < Duration::from_secs(300));

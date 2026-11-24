@@ -317,7 +317,9 @@ mod tests {
                 let wire = format!("HTTP/1.1 {status} Test\r\nContent-Type: {mime}\r\nContent-Range: {range}\r\nContent-Length: {length}\r\nConnection: close\r\n\r\n{body}");
                 let server = tokio::spawn(async move {
                     let (mut socket, _) = listener.accept().await.unwrap();
-                    let mut bytes = [0; 4096]; socket.read(&mut bytes).await.unwrap();
+                    let mut bytes = [0; 4096];
+                    let read = socket.read(&mut bytes).await.unwrap();
+                    assert!(read > 0, "fixture expected a request");
                     socket.write_all(wire.as_bytes()).await.unwrap();
                 });
                 // Only response parsing uses loopback. The production DNS policy
