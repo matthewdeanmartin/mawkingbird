@@ -6995,6 +6995,14 @@
     "post": "Reported post",
     "title": "My reports"
   },
+  "screenShare": {
+    "badge": "Screen share",
+    "badgeTitle": "Private posts, messages and pseudonymous accounts are hidden. Click to stop.",
+    "cover": "Hidden while screen sharing",
+    "coverBody": "This page is private. Turn off screen share mode to see it.",
+    "post": "Not shown while screen sharing",
+    "stop": "Stop screen share mode"
+  },
   "searchServerDiscovery": {
     "accounts": "Accounts",
     "checkedAt": "Directory checked {{date}}.",
@@ -8433,6 +8441,9 @@
     "content.revoke.hint": "Drops to \"trust no one\", turns both switches off, and forgets every account you have trusted. Unlike the choices above, this one throws the list away — there is no undo.",
     "content.revokeAll": "Revoke all trust",
     "content.revokedNote": "These two are off while trust is revoked. Choose another level above to use them.",
+    "content.screenShare.hint": "For streaming or recording: followers-only posts and direct messages, the inbox, drafts, and accounts with Pseudonymity on are hidden. In this browser only; a badge in the header shows it is on and turns it off.",
+    "content.screenShare.label": "Hide what is not public",
+    "content.screenShare.title": "Screen share mode",
     "content.showSensitive": "Auto-show sensitive media",
     "content.showSensitive.note": "Images and video flagged sensitive render without the blur.",
     "content.stopTrusting": "Stop trusting",
@@ -9714,6 +9725,8 @@
     "menu.onboarding": "Onboarding",
     "menu.pastes": "Pastes",
     "menu.scheduled": "Scheduled posts",
+    "menu.screenShareOff": "Stop screen share mode",
+    "menu.screenShareOn": "Start screen share mode",
     "menu.settings": "Settings",
     "menu.waitingToPublish": "Waiting to publish",
     "menu.watchParties": "Watch parties",
