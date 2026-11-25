@@ -14,7 +14,7 @@
       </button>
     }
     @if (queue.items().length) {
-      <a routerLink="/videos/queue">{{
+      <a mbButton variant="link" routerLink="/videos/queue">{{
         'watch.queue.open' | transloco: { count: queue.items().length }
       }}</a>
     }

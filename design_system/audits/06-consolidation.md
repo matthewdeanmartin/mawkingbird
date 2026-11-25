@@ -3487,3 +3487,7 @@ files, one added (watch-actions.ts, native buttons in five candidate presentatio
 for the owner to choose from). The panel's small Buttons and the header's Back,
 Queue and Next Buttons moved into it or became link Buttons and the shared
 ReadingBack. Other changes are source offsets.
+
+Watch action row chosen (2026-11-24): the four other candidates are deleted.
+watch-actions.ts keeps only shared Post actions; the creator's Follow pill became a
+profile link in the same row, and playback Help sits at its end.

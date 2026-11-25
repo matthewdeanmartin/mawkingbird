@@ -32,6 +32,7 @@ import { YoutubeChannelInfo, YoutubeChannelVideo, YoutubeVideoPage } from './you
 // i18n videoChannel.source.confirmed: Linked both ways: their profile links this channel.
 // i18n videoChannel.source.channel: Linked from their YouTube channel.
 // i18n videoChannel.source.wikidata: Listed on Wikidata.
+// i18n videoChannel.source.kit: Listed with this channel in our YouTubers on Mastodon kits.
 // i18n videoChannel.source.channelAndWikidata: Linked from their YouTube channel and listed on Wikidata.
 // i18n videoChannel.unverifiedHint: Their profile doesn't link back to this channel, so check it's really them.
 // i18n videoChannel.signInToFollow: Sign in to follow.
@@ -397,10 +398,11 @@ export class ChannelPage {
 
   protected sourceKey(link: CreatorLink): string {
     if (link.confirmed) return 'videoChannel.source.confirmed';
-    if (link.sources.length > 1) return 'videoChannel.source.channelAndWikidata';
-    return link.sources[0] === 'channel'
-      ? 'videoChannel.source.channel'
-      : 'videoChannel.source.wikidata';
+    const channel = link.sources.includes('channel');
+    const wikidata = link.sources.includes('wikidata');
+    if (channel && wikidata) return 'videoChannel.source.channelAndWikidata';
+    if (channel) return 'videoChannel.source.channel';
+    return wikidata ? 'videoChannel.source.wikidata' : 'videoChannel.source.kit';
   }
 
   /** Follow resolves the handle on the reader's own server when clicked. */

@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from 'vitest';
 import {
   addressesFromLinks,
   CreatorLinks,
+  kitAccountByName,
+  KitCreators,
   mastodonAddress,
   profileLinksChannel,
   wikidataAddresses,
@@ -28,6 +30,19 @@ const sparql = (...addresses: string[]) =>
   });
 
 describe('creator link parsing', () => {
+  it('takes a kit creator by name only when the name is distinctive and exact', () => {
+    const kits = {
+      UC1: ['Technology Connections', 'TechConnectify@mas.to'],
+      UC2: ['Alex', 'alex@mas.to'],
+      UC3: ['Daily Show', 'a@one.example'],
+      UC4: ['Daily Show', 'b@two.example'],
+    } as const;
+    expect(kitAccountByName(kits, 'Technology Connections')).toBe('TechConnectify@mas.to');
+    expect(kitAccountByName(kits, 'technology connections')).toBeNull();
+    expect(kitAccountByName(kits, 'Alex')).toBeNull();
+    expect(kitAccountByName(kits, 'Daily Show')).toBeNull();
+  });
+
   it('normalises Mastodon addresses as Wikidata and profiles write them', () => {
     expect(mastodonAddress('TechConnectify@mas.to')).toBe('TechConnectify@mas.to');
     expect(mastodonAddress('@alice@Social.Example')).toBe('alice@social.example');
@@ -94,6 +109,7 @@ describe('CreatorLinks', () => {
     native?: ((id: string) => Promise<string>) | null;
     wikidataOn?: boolean;
     channel?: { handle: string | null; links: { title: string; url: string }[] } | null;
+    kits?: KitCreators;
   }) {
     TestBed.configureTestingModule({
       providers: [
@@ -118,8 +134,14 @@ describe('CreatorLinks', () => {
         },
       ],
     });
+    const links = TestBed.inject(CreatorLinks);
+    // The bundled kits change; each test says what they hold.
+    vi.spyOn(
+      links as unknown as { kitCreators(): Promise<KitCreators> },
+      'kitCreators',
+    ).mockResolvedValue(options.kits ?? {});
     return {
-      links: TestBed.inject(CreatorLinks),
+      links,
       http: TestBed.inject(HttpTestingController),
     };
   }
@@ -201,6 +223,56 @@ describe('CreatorLinks', () => {
       });
     });
     expect(await found).toMatchObject({ acct: 'real@mas.to', confirmed: true });
+  });
+
+  it('finds a kit channel’s creator with Wikidata off, and confirms it like any other', async () => {
+    const { links, http } = setUp({
+      wikidataOn: false,
+      kits: { [channelId]: ['Technology Connections', 'TechConnectify@mas.to'] },
+    });
+    const found = links.lookupChannel(channelId);
+    await vi.waitFor(() =>
+      flushLookup(http, 'mas.to', {
+        note: `<a href="https://youtube.com/channel/${channelId}">me</a>`,
+      }),
+    );
+    expect(await found).toMatchObject({
+      acct: 'TechConnectify@mas.to',
+      sources: ['kit'],
+      confirmed: true,
+    });
+  });
+
+  it('prefers the reviewed kit account over an unconfirmed Wikidata one, matching case loosely', async () => {
+    const { links, http } = setUp({
+      kits: { [channelId]: ['Technology Connections', 'TechConnectify@mas.to'] },
+    });
+    const found = links.forChannel({ id: channelId });
+    await vi
+      .waitFor(() => http.expectOne((req) => req.url.startsWith('https://query.wikidata.org')))
+      .then((req) => req.flush(sparql('techconnectify@mas.to', 'other@one.example')));
+    await vi.waitFor(() => {
+      flushLookup(http, 'mas.to', {});
+      flushLookup(http, 'one.example', {});
+    });
+    expect(await found).toMatchObject({
+      acct: 'techconnectify@mas.to',
+      sources: ['wikidata', 'kit'],
+    });
+  });
+
+  it('names a creator by channel name alone, making no request', async () => {
+    const { links, http } = setUp({
+      kits: { [channelId]: ['Technology Connections', 'TechConnectify@mas.to'] },
+    });
+    expect(await links.lookupName('Technology Connections')).toEqual({
+      acct: 'TechConnectify@mas.to',
+      sources: ['kitName'],
+      confirmed: false,
+      account: null,
+    });
+    expect(await links.lookupName('Someone Else')).toBeNull();
+    http.expectNone(() => true);
   });
 
   it('ignores invalid channel IDs', async () => {

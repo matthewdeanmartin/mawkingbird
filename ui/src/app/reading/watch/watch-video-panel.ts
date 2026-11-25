@@ -12,7 +12,7 @@ import { MbHelp } from '../../design-system/help/help';
 import { QueuedVideo, WatchQueue } from '../videos/watch-queue';
 import { translatedComputed } from '../../i18n/translated';
 import { Terminology } from '../../i18n/terminology';
-import { WatchAction, WatchActions, WatchActionsLook } from './watch-actions';
+import { WatchAction, WatchActions } from './watch-actions';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbDisclosure } from '../../design-system/disclosure/disclosure';
 import { Compose } from '../../publishing/compose/compose';
@@ -20,12 +20,14 @@ import { stripHtml } from '../../feeds/sentiment';
 import { VideoSource, watchParams } from '../video-player/media-source';
 import { YoutubeFeeds } from '../videos/youtube-feeds';
 import { VideoSubscriptions } from '../videos/video-subscriptions';
+import { channelInput } from '../videos/youtube-channel';
+import { qualifiedHandle } from '../../accounts/account-handle';
+import { accountRoutePath } from '../../accounts/account-route';
 import { VideoPostFinder } from '../videos/video-post-finder';
 import { YoutubeComment, YoutubeVideoDetails } from '../videos/youtube-details';
 import { CreatorLink, CreatorLinks } from '../videos/creator-links';
 import { PeerTubeVideo } from '../videos/peertube';
-import { FollowButton } from '../../accounts/follow-button/follow-button';
-import { Account, Status } from '../../platform/api/models';
+import { Status } from '../../platform/api/models';
 
 // i18n watch.panel.label: Video actions
 // i18n watch.panel.like: Like
@@ -33,6 +35,14 @@ import { Account, Status } from '../../platform/api/models';
 // i18n watch.panel.likeTitle: Like the post this video came from.
 // i18n watch.panel.postedBy: Video posted by {{name}}
 // i18n watch.panel.postedByTitle: See who posted it. They may be the creator or a fan; follow them from their profile.
+// i18n watch.panel.postedByCreator: Video posted by its creator, {{name}}
+// i18n watch.panel.creator: Creator: {{acct}}
+// i18n watch.panel.creatorKnown.confirmed: Their profile links this channel. Opens their profile.
+// i18n watch.panel.creatorKnown.kit: Listed with this channel in our YouTubers on Mastodon kits. Opens their profile.
+// i18n watch.panel.creatorKnown.kitName: A channel of this name is in our YouTubers on Mastodon kits. Check their profile to see it's the same one.
+// i18n watch.panel.creatorKnown.linked: Linked from their channel or Wikidata, not yet from their profile. Opens their profile.
+// i18n watch.panel.peertubeChannel: PeerTube channel: {{name}}
+// i18n watch.panel.peertubeChannelTitle: Follow it from its profile and new videos arrive in Home.
 // i18n watch.panel.subscribeRss: Subscribe (RSS)
 // i18n watch.panel.subscribedRss: Subscribed (RSS)
 // i18n watch.panel.subscribeYoutube: Subscribe on YouTube
@@ -43,9 +53,6 @@ import { Account, Status } from '../../platform/api/models';
 // i18n watch.panel.subscribeFailed: Couldn't find this channel's feed.
 // i18n watch.panel.share: Share
 // i18n watch.panel.channel: Channel
-// i18n watch.panel.followPeertube: Follow the PeerTube channel {{name}}: new videos arrive in Home.
-// i18n watch.panel.followConfirmed: Follow @{{acct}}: their profile links this channel.
-// i18n watch.panel.followUnconfirmed: Follow @{{acct}}: linked from their channel or Wikidata, not yet from their profile.
 // i18n watch.panel.shareTitle: Share this video
 // i18n watch.panel.shareClose: Cancel
 // i18n watch.panel.quoteAuthor: — {{author}}, on YouTube
@@ -136,42 +143,9 @@ export function shareText(options: {
     MbDisclosure,
     Compose,
     RouterLink,
-    FollowButton,
   ],
   template: `
-    <!-- Five candidate rows, for the owner to pick one; see WatchActionsLook. -->
-    @for (look of looks; track look; let i = $index) {
-      <div class="candidate">
-        <span class="muted" aria-hidden="true">{{ i + 1 }}</span>
-        <app-watch-actions
-          [look]="look"
-          [actions]="actions()"
-          [label]="('watch.panel.label' | transloco) + ' ' + (i + 1)"
-        />
-      </div>
-    }
-    <div class="bar">
-      @if (creator(); as link) {
-        <app-follow-button
-          [accountId]="'creator:' + link.acct"
-          [handle]="link.acct"
-          [foreign]="foreignAccount(link)"
-          [title]="
-            (link.confirmed ? 'watch.panel.followConfirmed' : 'watch.panel.followUnconfirmed')
-              | transloco: { acct: link.acct }
-          "
-        />
-      }
-      @if (peertube()?.channel; as acct) {
-        <app-follow-button
-          [accountId]="'creator:' + acct"
-          [handle]="acct"
-          [foreign]="channelAccount(acct)"
-          [title]="
-            'watch.panel.followPeertube' | transloco: { name: peertube()!.channelName || acct }
-          "
-        />
-      }
+    <app-watch-actions [actions]="actions()" [label]="'watch.panel.label' | transloco">
       @if (source().kind === 'youtube') {
         <mb-help [label]="'videoPlayer.help' | transloco">
           <p>{{ 'videoPlayer.external' | transloco }}</p>
@@ -179,7 +153,7 @@ export function shareText(options: {
           <p>{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
         </mb-help>
       }
-    </div>
+    </app-watch-actions>
     @if (postError(); as message) {
       <p role="alert">{{ message }}</p>
     }
@@ -319,20 +293,6 @@ export function shareText(options: {
       display: block;
       margin-block: 0.5rem;
     }
-    .bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .candidate {
-      align-items: baseline;
-      display: flex;
-      gap: 0.5rem;
-      margin-block-end: 0.75rem;
-    }
-    .candidate app-watch-actions {
-      flex: 1;
-    }
     .muted {
       color: var(--muted);
     }
@@ -455,13 +415,6 @@ export class WatchVideoPanel {
   /** This video as a queue entry; null while it can't be queued. */
   readonly entry = input<Omit<QueuedVideo, 'addedAt'> | null>(null);
 
-  protected readonly looks: readonly WatchActionsLook[] = [
-    'columns',
-    'post',
-    'text',
-    'strip',
-    'groups',
-  ];
   protected readonly postError = computed(() => this.post()?.actionError() ?? null);
   private readonly queue = inject(WatchQueue);
   private readonly words = inject(Terminology).words;
@@ -519,8 +472,15 @@ export class WatchVideoPanel {
       if (this.source().kind === 'youtube' && card?.author_url && card.author_name) {
         try {
           const url = new URL(card.author_url);
-          if (url.protocol === 'https:' && /(^|\.)youtube\.com$/.test(url.hostname))
-            return { id: null, title: card.author_name, url: url.href };
+          if (url.protocol === 'https:' && /(^|\.)youtube\.com$/.test(url.hostname)) {
+            // A /channel/UC… address already is the ID; an @handle takes a request to resolve.
+            const known = channelInput(url.href);
+            return {
+              id: known && 'id' in known ? known.id : null,
+              title: card.author_name,
+              url: url.href,
+            };
+          }
         } catch {
           // Not a channel link.
         }
@@ -563,15 +523,28 @@ export class WatchVideoPanel {
           .catch(() => undefined);
       });
     });
-    // Once the channel is known, look for its creator on Mastodon (for Follow).
+    // Once the channel is known, look for its creator on Mastodon.
     effect(() => {
-      const id = this.channel()?.id;
+      const channel = this.channel();
       untracked(() => {
-        if (!id) return;
+        if (!channel) return;
+        const id = channel.id;
         const generation = this.generation;
+        if (!id) {
+          // Only its name is known: the bundled kits may settle it without a request.
+          this.creators
+            .lookupName(channel.title)
+            .then((link) => {
+              if (link && generation === this.generation && !this.channel()?.id)
+                this.creator.set(link);
+            })
+            .catch(() => undefined);
+          return;
+        }
         this.creators
           .lookupChannel(id)
           .then((link) => {
+            // The ID outranks a match by name, including when it says there is none.
             if (generation === this.generation && this.channel()?.id === id) this.creator.set(link);
           })
           .catch(() => undefined);
@@ -599,7 +572,6 @@ export class WatchVideoPanel {
       out.push({
         id: 'like',
         icon: 'like',
-        group: 'post',
         label: this.t(post.favourited ? 'watch.panel.liked' : 'watch.panel.like'),
         title: this.t('watch.panel.likeTitle'),
         pressed: anonymous ? undefined : post.favourited,
@@ -610,7 +582,6 @@ export class WatchVideoPanel {
       out.push({
         id: 'boost',
         icon: 'boost',
-        group: 'post',
         label: post.reblogged ? this.words().Boosted : this.words().Boost,
         run: (event) => card.openRepost(event),
       });
@@ -619,25 +590,65 @@ export class WatchVideoPanel {
       out.push({
         id: 'poster',
         icon: 'person',
-        group: 'post',
-        label: this.t('watch.panel.postedBy', {
-          name: post.account.display_name?.replace(/:\w+:/g, '').trim() || post.account.acct,
-        }),
-        title: this.t('watch.panel.postedByTitle'),
+        label: this.t(
+          this.postedByCreator() ? 'watch.panel.postedByCreator' : 'watch.panel.postedBy',
+          { name: post.account.display_name?.replace(/:\w+:/g, '').trim() || post.account.acct },
+        ),
+        title: this.postedByCreator()
+          ? this.creatorTitle(this.creator()!)
+          : this.t('watch.panel.postedByTitle'),
         link,
       });
     return out;
   }
 
+  /** Whether the post's author is the account known for this channel. */
+  private readonly postedByCreator = computed(() => {
+    const creator = this.creator()?.acct.toLowerCase();
+    const card = this.post();
+    return !!creator && !!card && qualifiedHandle(card.display.account)?.toLowerCase() === creator;
+  });
+
+  /** How the creator is known, said where the link is. */
+  private creatorTitle(link: CreatorLink): string {
+    const known = link.confirmed
+      ? 'confirmed'
+      : link.sources.includes('kit')
+        ? 'kit'
+        : link.sources.includes('kitName')
+          ? 'kitName'
+          : 'linked';
+    return this.t(`watch.panel.creatorKnown.${known}`);
+  }
+
   private videoActions(): WatchAction[] {
     const out: WatchAction[] = [];
+    const creator = this.creator();
+    if (creator && !this.postedByCreator())
+      out.push({
+        id: 'creator',
+        icon: 'creator',
+        label: this.t('watch.panel.creator', { acct: `@${creator.acct}` }),
+        title: this.creatorTitle(creator),
+        link: accountRoutePath({ handle: creator.acct }),
+      });
+    const peertube = this.peertube();
+    if (peertube?.channel)
+      out.push({
+        id: 'peertube',
+        icon: 'creator',
+        label: this.t('watch.panel.peertubeChannel', {
+          name: peertube.channelName || peertube.channel,
+        }),
+        title: this.t('watch.panel.peertubeChannelTitle'),
+        link: accountRoutePath({ handle: peertube.channel }),
+      });
     const channel = this.channel();
     const youtube = this.youtubeSubscribeUrl();
     if (channel)
       out.push({
         id: 'rss',
         icon: 'rss',
-        group: 'video',
         label: this.t(this.subscribed() ? 'watch.panel.subscribedRss' : 'watch.panel.subscribeRss'),
         title: `${channel.title}: ${this.t('watch.panel.subscribeTitle')}`,
         pressed: this.subscribed(),
@@ -648,7 +659,6 @@ export class WatchVideoPanel {
       out.push({
         id: 'youtube',
         icon: 'bell',
-        group: 'video',
         label: this.t('watch.panel.subscribeYoutube'),
         title: this.t('watch.panel.subscribeYoutubeTitle'),
         href: youtube,
@@ -657,7 +667,6 @@ export class WatchVideoPanel {
       out.push({
         id: 'channel',
         icon: 'channel',
-        group: 'video',
         label: this.t('watch.panel.channel'),
         title: channel.title,
         link: ['/videos/channel', channel.id],
@@ -665,7 +674,6 @@ export class WatchVideoPanel {
     out.push({
       id: 'share',
       icon: 'share',
-      group: 'video',
       label: this.t('watch.panel.share'),
       run: () => this.openShare(),
     });
@@ -676,7 +684,6 @@ export class WatchVideoPanel {
       out.push({
         id: 'queue',
         icon: 'queue',
-        group: 'video',
         label: this.t(
           full ? 'videoQueue.full' : queued ? 'watch.panel.queueRemove' : 'watch.panel.queueAdd',
         ),
@@ -688,7 +695,6 @@ export class WatchVideoPanel {
     out.push({
       id: 'open',
       icon: 'open',
-      group: 'video',
       label: this.t(
         this.source().kind === 'youtube' ? 'videoPlayer.openYoutube' : 'videoPlayer.openOriginal',
       ),
@@ -698,7 +704,6 @@ export class WatchVideoPanel {
       out.push({
         id: 'find',
         icon: 'find',
-        group: 'video',
         label: this.t('watch.panel.find'),
         disabled: this.finding(),
         run: () => this.findPosts(),
@@ -731,29 +736,6 @@ export class WatchVideoPanel {
     });
     return current;
   });
-
-  /** A PeerTube channel is an ActivityPub actor: Follow resolves `channel@host`. */
-  protected channelAccount(acct: string): Account {
-    const [username, host] = acct.split('@');
-    return {
-      id: `creator:${acct}`,
-      acct,
-      username,
-      display_name: this.peertube()?.channelName ?? username,
-      url: `https://${host}/c/${username}`,
-    } as Account;
-  }
-
-  protected foreignAccount(link: CreatorLink): Account {
-    const [username, host] = link.acct.split('@');
-    return {
-      ...(link.account ?? {}),
-      id: `creator:${link.acct}`,
-      acct: link.acct,
-      username,
-      url: link.account?.url ?? `https://${host}/@${username}`,
-    } as Account;
-  }
 
   /** Go to a chapter: seek the loaded player, else cue the embed there (paused). */
   protected cue(seconds: number): void {

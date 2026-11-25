@@ -10,7 +10,15 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { build, check, HUBS_FILE, localSlug, validateMember, write } from './import-youtubers.mjs';
+import {
+  build,
+  check,
+  creatorIndex,
+  HUBS_FILE,
+  localSlug,
+  validateMember,
+  write,
+} from './import-youtubers.mjs';
 
 const HUBS = {
   en: { path: 'youtubers-on-mastodon', label: 'YouTubers on Mastodon' },
@@ -140,4 +148,16 @@ test('the real hubs file has a hub for every bundled language', () => {
     assert.ok(hub.label);
   }
   void copyFileSync;
+});
+
+test('the creator index names each channel once and leaves out accounts that repost it', () => {
+  const file = {
+    packs: [
+      { members: [member('bot@a.example', { bot: true }), member('real@a.example')] },
+      { members: [member('real@a.example')] },
+    ],
+  };
+  assert.deepEqual(creatorIndex({ en: file }), {
+    UCy0tKL1T7wFoYcxCe0xjN6Q: ['Channel', 'real@a.example'],
+  });
 });

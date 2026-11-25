@@ -9,6 +9,8 @@
 //   data/<lang>.json                 every kit in one language (lazy-imported)
 //   youtuber-paths.generated.json    paths and counts (small; loads with routes)
 //   youtuber-data.generated.ts       the lazy import per language
+//   youtuber-creators.generated.json channel id -> [channel title, account], for
+//                                    naming a video's creator on Watch (lazy-imported)
 // The same data feeds the public, prerendered kit pages and the in-app kits
 // page. Only languages with a hub in youtuber-hubs.json are bundled.
 // See spec/youtube-client.md (S5-S6) and ops/engineering/seo.md.
@@ -147,6 +149,21 @@ const readHubs = (file = HUBS_FILE) => {
   return hubs;
 };
 
+/** Channel id -> [channel title, account]. Accounts that repost a channel are not its creator. */
+export function creatorIndex(files) {
+  const index = {};
+  for (const file of Object.values(files))
+    for (const pack of file.packs)
+      for (const member of pack.members)
+        if (!member.bot) index[member.channel.id] ??= [member.channel.title, member.acct];
+  return Object.fromEntries(Object.entries(index).sort(([a], [b]) => (a < b ? -1 : 1)));
+}
+
+const creatorText = (files) =>
+  `{\n${Object.entries(creatorIndex(files))
+    .map(([id, entry]) => `${JSON.stringify(id)}:${JSON.stringify(entry)}`)
+    .join(',\n')}\n}\n`;
+
 /** Read starters' catalog/youtubers and build the shipped files. Pure apart from reading. */
 export function build(source, hubs = readHubs()) {
   const index = JSON.parse(readFileSync(join(source, 'index.json'), 'utf8'));
@@ -222,6 +239,7 @@ export async function write({ paths, files }, out = OUT_DIR) {
   for (const [lang, file] of Object.entries(files))
     writeFileSync(join(dataDir, `${lang}.json`), JSON.stringify(file) + '\n');
   writeFileSync(join(out, 'youtuber-paths.generated.json'), JSON.stringify(paths, null, 1) + '\n');
+  writeFileSync(join(out, 'youtuber-creators.generated.json'), creatorText(files));
   const loadersFile = join(out, 'youtuber-data.generated.ts');
   writeFileSync(loadersFile, await formatted(loaders(Object.keys(files)), loadersFile));
 }
@@ -239,6 +257,7 @@ export function check(out = OUT_DIR) {
     assert(name.endsWith('.json') && paths.languages[name.slice(0, -5)], `${name}: not in paths`);
   const loaderText = readFileSync(join(out, 'youtuber-data.generated.ts'), 'utf8');
   let packs = 0;
+  const files = {};
   const seenPaths = new Set();
   for (const lang of Object.keys(paths.languages)) {
     assert(hubs[lang], `${lang}: bundled without a hub`);
@@ -259,7 +278,13 @@ export function check(out = OUT_DIR) {
       pack.members.forEach((m, j) => validateMember(m, `${where} member ${j}`));
     }
     packs += file.packs.length;
+    files[lang] = file;
   }
+  const creators = JSON.parse(readFileSync(join(out, 'youtuber-creators.generated.json'), 'utf8'));
+  assert(
+    JSON.stringify(creators) === JSON.stringify(creatorIndex(files)),
+    'youtuber-creators.generated.json: out of step with the kits',
+  );
   return packs;
 }
 

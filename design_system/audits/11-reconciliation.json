@@ -3424,13 +3424,13 @@
     },
     {
       "file": "ui/src/app/reading/watch/watch-actions.ts",
-      "disposition": "partial adoption",
-      "nextStep": "Five candidate action rows for the owner to choose from (2026-11-24); one uses the shared Post actions, four are local presentations with no pill buttons. Delete the four not chosen, then decide whether the chosen row becomes a shared widget."
+      "disposition": "adopted scope",
+      "nextStep": "Shared Post actions row with words and local line icons, in the action text color. Consider a shared icon set if another row wants these."
     },
     {
       "file": "ui/src/app/reading/watch/watch-video-panel.ts",
       "disposition": "adopted scope",
-      "nextStep": "Subscribe, Share, queue, Like, Boost and links moved to WatchActions. The shared FollowButton for the creator; Help for playback notes; Dialog around the shared Compose for the share sheet; Disclosure for About this video. Found posts, chapter cue links and the description stay local text content. Chapters are native full-width text-row buttons (seek, not a Button presentation), like party chat lines. The SponsorBlock strip is local content, with an MbButton Skip."
+      "nextStep": "Subscribe, Share, queue, Like, Boost and links moved to WatchActions, as did the creator (now a profile link). Help for playback notes; Dialog around the shared Compose for the share sheet; Disclosure for About this video. Found posts, chapter cue links and the description stay local text content. Chapters are native full-width text-row buttons (seek, not a Button presentation), like party chat lines. The SponsorBlock strip is local content, with an MbButton Skip."
     },
     {
       "file": "ui/src/app/reading/watch/youtube-comments.ts",

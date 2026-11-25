@@ -13,9 +13,11 @@ import { YoutubeFeeds } from './youtube-feeds';
  * How a YouTube channel was tied to a Mastodon account (spec/youtube-client.md).
  * - `channel`: the channel's own About page links the account (the creator's claim);
  * - `wikidata`: Wikidata lists it (community-edited, public);
- * Either becomes `confirmed` when the account's profile links back to the channel.
+ * - `kit`: our reviewed YouTuber kits list this channel with this account;
+ * - `kitName`: a kit has exactly one channel of this name, its ID being unknown here.
+ * Any becomes `confirmed` when the account's profile links back to the channel.
  */
-export type CreatorLinkSource = 'channel' | 'wikidata';
+export type CreatorLinkSource = 'channel' | 'wikidata' | 'kit' | 'kitName';
 
 export interface CreatorLink {
   /** `user@host`. */
@@ -25,6 +27,20 @@ export interface CreatorLink {
   confirmed: boolean;
   /** The account as its own server shows it, when it could be looked up. */
   account: Account | null;
+}
+
+/** Kit creators by channel ID: `[channel title, user@host]`. */
+export type KitCreators = Record<string, readonly [title: string, acct: string]>;
+
+/** Short names ("Alex", "ZDF") are too common to stand for one channel. */
+const MIN_NAME = 5;
+
+/** The account of the only kit channel with exactly this name, or null. */
+export function kitAccountByName(kits: KitCreators, name: string): string | null {
+  const wanted = name.trim();
+  if ([...wanted].length < MIN_NAME) return null;
+  const found = Object.values(kits).filter(([title]) => title.trim() === wanted);
+  return found.length === 1 ? found[0][1] : null;
 }
 
 /** The fixed question for one channel; Native's Rust builds the same text. */
@@ -119,8 +135,8 @@ export function profileLinksChannel(
 
 /**
  * Ties a YouTube channel to its creator's Mastodon account, saying how it
- * knows. Sources, best first: the channel's own About links (Native), then
- * Wikidata (P2397 → P4033, behind the Wikidata connection setting). Each
+ * knows. Sources: the YouTuber kits (bundled, so no request), the channel's own
+ * About links (Native), and Wikidata (P2397 → P4033, behind the Wikidata connection setting). Each
  * candidate is looked up on its own server, publicly, to confirm it exists and
  * to see whether its profile links back. Results are kept for this visit only.
  */
@@ -131,6 +147,20 @@ export class CreatorLinks {
   private readonly nativeWikidata = inject(PLATFORM_WIKIDATA);
   private readonly youtube = inject(YoutubeFeeds);
   private readonly cache = new Map<string, Promise<CreatorLink | null>>();
+  private kits?: Promise<KitCreators>;
+
+  /** Loaded on first use; without it the other sources still answer. */
+  protected kitCreators(): Promise<KitCreators> {
+    return (this.kits ??= import('../../public-pages/youtubers/youtuber-creators.generated.json')
+      .then((m) => ((m as { default?: unknown }).default ?? m) as unknown as KitCreators)
+      .catch(() => ({})));
+  }
+
+  /** For a channel known only by its name (a link card on the web). Makes no request. */
+  async lookupName(name: string): Promise<CreatorLink | null> {
+    const acct = kitAccountByName(await this.kitCreators(), name);
+    return acct ? { acct, sources: ['kitName'], confirmed: false, account: null } : null;
+  }
 
   /**
    * For a channel known only by ID (Watch): on Native, read its handle and
@@ -165,26 +195,41 @@ export class CreatorLinks {
     links?: readonly { url: string }[];
   }): Promise<CreatorLink | null> {
     const fromChannel = addressesFromLinks(channel.links ?? []);
-    const fromWikidata = await this.wikidata(channel.id);
+    const [fromWikidata, kits] = await Promise.all([this.wikidata(channel.id), this.kitCreators()]);
+    const kit = Object.hasOwn(kits, channel.id) ? kits[channel.id][1] : null;
     const candidates = new Map<string, CreatorLinkSource[]>();
     for (const acct of fromChannel) candidates.set(acct, ['channel']);
     for (const acct of fromWikidata)
       candidates.set(acct, [...(candidates.get(acct) ?? []), 'wikidata']);
+    if (kit) {
+      // Sources may write the same address in another case.
+      const same = [...candidates.keys()].find((acct) => acct.toLowerCase() === kit.toLowerCase());
+      candidates.set(same ?? kit, [...(same ? candidates.get(same)! : []), 'kit']);
+    }
     if (!candidates.size) return null;
     const links = await Promise.all(
-      [...candidates].slice(0, 3).map(async ([acct, sources]): Promise<CreatorLink> => {
-        const account = await this.lookup(acct);
-        return {
-          acct,
-          sources,
-          account,
-          confirmed: !!account && profileLinksChannel(account, channel.id, channel.handle ?? null),
-        };
-      }),
+      // The kit's account was reviewed by a person, so it is never the one left out.
+      [...candidates]
+        .sort(([, a], [, b]) => Number(b.includes('kit')) - Number(a.includes('kit')))
+        .slice(0, 3)
+        .map(async ([acct, sources]): Promise<CreatorLink> => {
+          const account = await this.lookup(acct);
+          return {
+            acct,
+            sources,
+            account,
+            confirmed:
+              !!account && profileLinksChannel(account, channel.id, channel.handle ?? null),
+          };
+        }),
     );
-    // A confirmed link, then the one more sources agree on, then the channel's own claim.
+    // A confirmed link, then a reviewed one, then the one more sources agree on, then the
+    // channel's own claim.
     const rank = (link: CreatorLink) =>
-      (link.confirmed ? 4 : 0) + link.sources.length + (link.sources.includes('channel') ? 1 : 0);
+      (link.confirmed ? 8 : 0) +
+      (link.sources.includes('kit') ? 3 : 0) +
+      link.sources.length +
+      (link.sources.includes('channel') ? 1 : 0);
     return links.sort((a, b) => rank(b) - rank(a))[0] ?? null;
   }
 

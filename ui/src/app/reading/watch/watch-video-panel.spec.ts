@@ -16,15 +16,6 @@ import { VideoSource } from '../video-player/media-source';
 import { YoutubeVideoDetails } from '../videos/youtube-details';
 import { CreatorLink, CreatorLinks } from '../videos/creator-links';
 import { SponsorBlock, SponsorSegments } from '../videos/sponsor-block';
-import { FollowButton } from '../../accounts/follow-button/follow-button';
-import { Account } from '../../platform/api/models';
-
-@Component({ selector: 'app-follow-button', template: 'follow' })
-class FollowStub {
-  readonly accountId = input('');
-  readonly handle = input('');
-  readonly foreign = input<Account | null>(null);
-}
 
 @Component({ selector: 'app-compose', template: '' })
 class ComposeStub {
@@ -77,12 +68,16 @@ describe('WatchVideoPanel', () => {
     find?: VideoPostFinder['find'];
     start?: number;
     creator?: CreatorLink | null;
+    creatorByName?: CreatorLink | null;
     sponsor?: SponsorSegments;
   }) {
     const sponsorBlock = {
       segments: vi.fn(async () => options.sponsor ?? { segments: [], duration: null }),
     };
-    const creators = { lookupChannel: vi.fn(async () => options.creator ?? null) };
+    const creators = {
+      lookupChannel: vi.fn(async () => options.creator ?? null),
+      lookupName: vi.fn(async () => options.creatorByName ?? null),
+    };
     const feeds = signal<{ id: string; title: string; enabled: boolean }[]>([]);
     const subs = {
       feeds,
@@ -122,8 +117,8 @@ describe('WatchVideoPanel', () => {
       ],
     });
     TestBed.overrideComponent(WatchVideoPanel, {
-      remove: { imports: [Compose, FollowButton] },
-      add: { imports: [ComposeStub, FollowStub] },
+      remove: { imports: [Compose] },
+      add: { imports: [ComposeStub] },
     });
     fixture = TestBed.createComponent(WatchVideoPanel);
     fixture.componentRef.setInput('source', source(options.start));
@@ -254,7 +249,7 @@ describe('WatchVideoPanel', () => {
     expect(subs.add).toHaveBeenCalledWith(channelId, 'Technology Connections');
   });
 
-  it('links the channel page and offers Follow for its creator once the channel is known', async () => {
+  it('links the channel page and its creator’s profile once the channel is known', async () => {
     const { creators } = mount({
       native: true,
       creator: {
@@ -267,13 +262,12 @@ describe('WatchVideoPanel', () => {
     await settle();
     await settle();
     expect(creators.lookupChannel).toHaveBeenCalledWith(channelId);
-    const follow = fixture.debugElement.query((el) => el.name === 'app-follow-button');
-    expect((follow.componentInstance as FollowStub).foreign()).toMatchObject({
-      acct: 'TechConnectify@mas.to',
-    });
-    expect(follow.nativeElement.getAttribute('title')).toContain(
-      'their profile links this channel',
-    );
+    const creator = [...fixture.nativeElement.querySelectorAll('a')].find((a: HTMLElement) =>
+      a.textContent?.includes('Creator:'),
+    ) as HTMLAnchorElement;
+    expect(creator.textContent?.trim()).toBe('Creator: @TechConnectify@mas.to');
+    expect(creator.title).toContain('Their profile links this channel');
+    expect(creator.getAttribute('href')).toContain('TechConnectify');
     const channel = [...fixture.nativeElement.querySelectorAll('a')].find(
       (a: HTMLElement) => a.textContent?.trim() === 'Channel',
     ) as HTMLAnchorElement;
@@ -351,13 +345,62 @@ describe('WatchVideoPanel', () => {
     expect(button('Add to queue')).toBeDefined();
   });
 
-  it('shows all five candidate rows', () => {
-    mount({});
-    expect(
-      [...fixture.nativeElement.querySelectorAll('app-watch-actions')].map((row: HTMLElement) =>
-        row.getAttribute('data-look'),
-      ),
-    ).toEqual(['columns', 'post', 'text', 'strip', 'groups']);
+  const cardFor = (authorUrl: string) =>
+    ({
+      id: '1',
+      url: 'https://home.test/@a/1',
+      card: {
+        url: 'https://www.youtube.com/watch?v=abcdefghijk',
+        author_name: 'Technology Connections',
+        author_url: authorUrl,
+      },
+    }) as unknown as Status;
+
+  it('names the creator on the web from the channel’s name, and says it was by name', async () => {
+    const { creators } = mount({
+      status: cardFor('https://www.youtube.com/@TechnologyConnections'),
+      creatorByName: {
+        acct: 'TechConnectify@mas.to',
+        sources: ['kitName'],
+        confirmed: false,
+        account: null,
+      },
+    });
+    await settle();
+    expect(creators.lookupName).toHaveBeenCalledWith('Technology Connections');
+    expect(creators.lookupChannel).not.toHaveBeenCalled();
+    const link = fixture.nativeElement.querySelector('a[title*="A channel of this name"]');
+    expect(link?.textContent).toContain('@TechConnectify@mas.to');
+  });
+
+  it('reads the channel ID out of a /channel/ link, with no request to resolve it', async () => {
+    const { creators, youtube } = mount({
+      status: cardFor(`https://www.youtube.com/channel/${channelId}`),
+    });
+    await settle();
+    expect(creators.lookupChannel).toHaveBeenCalledWith(channelId);
+    expect(youtube.resolve).not.toHaveBeenCalled();
+  });
+
+  it('says so once when whoever posted the video is its creator', async () => {
+    mount({
+      native: true,
+      creator: { acct: 'Fan@mas.to', sources: ['kit'], confirmed: false, account: null },
+    });
+    fixture.componentRef.setInput('post', {
+      display: {
+        account: { acct: 'fan@mas.to', display_name: 'Kat', url: 'https://mas.to/@fan' },
+      } as unknown as Status,
+      caps: { favourite: false },
+      accountLink: ['/accounts', '9'],
+      actionError: () => null,
+      hasRepostControl: () => false,
+    });
+    await settle();
+    await settle();
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('Video posted by its creator, Kat');
+    expect(text).not.toContain('Creator:');
   });
 
   it('offers no Subscribe when nothing names the channel', () => {
