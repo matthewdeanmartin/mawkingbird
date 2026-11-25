@@ -3010,8 +3010,7 @@
   },
   "videoQueue": {
     "recentAdd": "Tambah",
-    "remove": "Buang",
-    "watch": "Tonton"
+    "remove": "Buang"
   },
   "videoSearch": {
     "searching": "Sedang mencari…",
@@ -3027,18 +3026,15 @@
     "installNative": "Pasang Mawkingbird Native",
     "newest": "Terbaharu dahulu",
     "oldest": "Terlama dahulu",
-    "original": "Buka di YouTube",
     "refresh": "Muat semula",
     "searching": "Sedang mencari…",
     "subscribe": "Langgan",
     "subscribed": "Dilanggan",
     "subscriptions": "Langganan",
-    "subscriptionsHeading": "Langganan",
     "unsubscribe": "Nyahlanggan",
     "videoResults": "Video"
   },
   "watch": {
-    "back": "Kembali",
     "conversation": "Perbualan",
     "noComments": "Belum ada komen.",
     "panel.channel": "Saluran",
