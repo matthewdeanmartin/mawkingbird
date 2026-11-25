@@ -3343,7 +3343,6 @@
     "write.advisoryOnly": "Wszystko ma charakter wskazówek — nic nie blokuje publikacji.",
     "write.aiUnavailable": "Korektor AI niedostępny:",
     "write.allChip": "Wszystko",
-    "write.allDrafts": "Wszystkie wersje robocze →",
     "write.allowMultiple": "Zezwalaj na wiele",
     "write.aria.attachedMedia": "Załączone multimedia",
     "write.aria.clearScheduled": "Wyczyść zaplanowany czas i opublikuj teraz",
@@ -3689,11 +3688,7 @@
     "loading": "Ładowanie…",
     "local": "Lokalne"
   },
-  "radio": {
-    "addPlaylist": "Dodaj do playlisty",
-    "listenProvider": "Słuchaj {{provider}} w Radiu",
-    "playPost": "Odtwórz dźwięk od {{author}}"
-  },
+  "radio": {},
   "reader": {
     "article.blocker": "Pobranie pełnego tekstu wymaga proxy CORS, którego nie skonfigurowano na tym urządzeniu.",
     "article.chooseProxy": "Wybierz proxy",

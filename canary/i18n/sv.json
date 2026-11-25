@@ -1932,7 +1932,6 @@
     "write.advisoryOnly": "Allt är rådgivande — inget hindrar dig från att publicera.",
     "write.aiUnavailable": "AI-korrekturläsaren är inte tillgänglig:",
     "write.allChip": "Alla",
-    "write.allDrafts": "Alla utkast →",
     "write.allowMultiple": "Tillåt flera",
     "write.aria.attachedMedia": "Bifogade medier",
     "write.aria.clearScheduled": "Rensa den schemalagda tiden och publicera nu",
@@ -6260,11 +6259,7 @@
   "pseudonymity": {
     "mediaFailed": "Fotometadata kunde inte tas bort. Inget laddades upp. Använd en stillbild i JPEG eller PNG under 20 MB och 40 megapixlar, eller ändra fotorensning i pseudonyminställningarna."
   },
-  "radio": {
-    "addPlaylist": "Lägg till i spellista",
-    "listenProvider": "Lyssna på {{provider}} i Radio",
-    "playPost": "Spela ljud av {{author}}"
-  },
+  "radio": {},
   "similarTags": {
     "addButton": "Lägg till",
     "addLabel": "Lägg till en hashtagg",

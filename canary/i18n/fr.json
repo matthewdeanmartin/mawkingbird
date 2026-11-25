@@ -2444,7 +2444,6 @@
     "write.advisoryOnly": "Tout est indicatif — rien ici ne t’empêche de publier.",
     "write.aiUnavailable": "Correcteur IA indisponible :",
     "write.allChip": "Tout",
-    "write.allDrafts": "Tous les brouillons →",
     "write.allowMultiple": "Autoriser plusieurs choix",
     "write.aria.attachedMedia": "Médias joints",
     "write.aria.clearScheduled": "Annuler l’heure programmée et publier maintenant",
@@ -5989,11 +5988,7 @@
     "loading": "Chargement…",
     "local": "Local"
   },
-  "radio": {
-    "addPlaylist": "Ajouter à la playlist",
-    "listenProvider": "Écouter {{provider}} dans Radio",
-    "playPost": "Lire l’audio de {{author}}"
-  },
+  "radio": {},
   "listTimeline": {
     "addPeopleByName": "Ajouter des personnes par nom",
     "collection": "collection",

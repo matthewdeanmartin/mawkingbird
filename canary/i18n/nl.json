@@ -3020,7 +3020,6 @@
     "write.advisoryOnly": "Allemaal advies — niets hiervan verhindert publicatie.",
     "write.aiUnavailable": "AI-proeflezer niet beschikbaar:",
     "write.allChip": "Alles",
-    "write.allDrafts": "Alle concepten →",
     "write.allowMultiple": "Meerdere toestaan",
     "write.aria.attachedMedia": "Bijgevoegde media",
     "write.aria.clearScheduled": "Geplande tijd wissen en nu publiceren",
@@ -6260,11 +6259,7 @@
   "pseudonymity": {
     "mediaFailed": "Fotometagegevens konden niet worden verwijderd. Er is niets geüpload. Gebruik een stilstaande JPEG of PNG onder 20 MB en 40 megapixels, of wijzig het opschonen van foto's in de pseudonieminstellingen."
   },
-  "radio": {
-    "addPlaylist": "Toevoegen aan afspeellijst",
-    "listenProvider": "Luister op {{provider}} in Radio",
-    "playPost": "Speel audio van {{author}} af"
-  },
+  "radio": {},
   "similarTags": {
     "addButton": "Toevoegen",
     "addLabel": "Hashtag toevoegen",

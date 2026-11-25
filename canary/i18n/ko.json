@@ -3343,7 +3343,6 @@
     "write.advisoryOnly": "모두 참고용이며, 어느 것도 게시를 막지 않습니다.",
     "write.aiUnavailable": "AI 교정 도구를 사용할 수 없음:",
     "write.allChip": "모두",
-    "write.allDrafts": "모든 초안 →",
     "write.allowMultiple": "복수 선택 허용",
     "write.aria.attachedMedia": "첨부된 미디어",
     "write.aria.clearScheduled": "예약 시간을 지우고 지금 게시",
@@ -3689,11 +3688,7 @@
     "loading": "불러오는 중…",
     "local": "로컬"
   },
-  "radio": {
-    "addPlaylist": "재생 목록에 추가",
-    "listenProvider": "라디오에서 {{provider}} 듣기",
-    "playPost": "{{author}}의 오디오 재생"
-  },
+  "radio": {},
   "reader": {
     "article.blocker": "전체 텍스트를 가져오려면 CORS 프록시가 필요하지만, 이 기기에는 설정되어 있지 않습니다.",
     "article.chooseProxy": "프록시 선택",

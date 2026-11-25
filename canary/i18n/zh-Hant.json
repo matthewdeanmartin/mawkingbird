@@ -3823,7 +3823,6 @@
     "write.advisoryOnly": "這些都只是建議，不會阻止您發佈。",
     "write.aiUnavailable": "AI 校對工具無法使用：",
     "write.allChip": "全部",
-    "write.allDrafts": "所有草稿 →",
     "write.allowMultiple": "允許複選",
     "write.aria.attachedMedia": "已附加的媒體",
     "write.aria.clearScheduled": "清除排程時間並立即發佈",
@@ -5580,11 +5579,7 @@
     "loading": "載入中…",
     "local": "本站"
   },
-  "radio": {
-    "addPlaylist": "加入播放清單",
-    "listenProvider": "在電台收聽 {{provider}}",
-    "playPost": "播放 {{author}} 的音訊"
-  },
+  "radio": {},
   "reader": {
     "article.blocker": "擷取全文需要 CORS 代理伺服器，但此裝置尚未設定。",
     "article.chooseProxy": "選擇代理伺服器",

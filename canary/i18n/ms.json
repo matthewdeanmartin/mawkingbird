@@ -1870,7 +1870,6 @@
     "write.advisoryOnly": "Semua ini sekadar cadangan. Anda masih boleh menerbitkan hantaran.",
     "write.aiUnavailable": "Penyemak teks AI tidak tersedia:",
     "write.allChip": "Semua",
-    "write.allDrafts": "Semua draf →",
     "write.allowMultiple": "Benarkan lebih daripada satu pilihan",
     "write.aria.attachedMedia": "Media dilampirkan",
     "write.aria.clearScheduled": "Buang jadual dan terbitkan sekarang",
@@ -2190,7 +2189,6 @@
     "title": "Petikan"
   },
   "radio": {
-    "addPlaylist": "Tambah pada senarai main",
     "catalogue.add": "Tambah pada senarai main",
     "catalogue.preview": "Mainkan",
     "catalogue.save": "Simpan trek",
