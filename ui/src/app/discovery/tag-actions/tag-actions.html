@@ -1,9 +1,12 @@
-<div class="actions">
+<div
+  class="actions"
+  role="group"
+  [attr.aria-label]="'tagActions.label' | transloco: { tag: name() }"
+>
   @if (auth.isAnonymous || !auth.lacksMastodonToken) {
     <button
       type="button"
-      class="btn btn-sm"
-      [class.btn-outline]="!following()"
+      class="act"
       [disabled]="busy()"
       [attr.aria-pressed]="following()"
       (click)="toggle('follow')"
@@ -14,8 +17,7 @@
   @if (!auth.lacksMastodonToken) {
     <button
       type="button"
-      class="btn btn-sm"
-      [class.btn-outline]="!current()?.featuring"
+      class="act"
       [disabled]="busy()"
       [attr.aria-pressed]="!!current()?.featuring"
       (click)="toggle('feature')"
@@ -23,12 +25,7 @@
       {{ (current()?.featuring ? 'pages.tag.featured' : 'pages.tag.feature') | transloco }}
     </button>
   }
-  <button
-    type="button"
-    class="btn btn-sm btn-outline"
-    [attr.aria-expanded]="picker()"
-    (click)="picker.set(!picker())"
-  >
+  <button type="button" class="act" [attr.aria-expanded]="picker()" (click)="picker.set(!picker())">
     {{
       (memberships()
         ? memberships() === 1
@@ -41,7 +38,7 @@
   @if (offerAdd()) {
     <button
       type="button"
-      class="btn btn-sm btn-outline"
+      class="act"
       [title]="'tagActions.addTitle' | transloco: { tag: name() }"
       (click)="add.emit(name())"
     >
@@ -51,7 +48,7 @@
   @if (canMute()) {
     <button
       type="button"
-      class="btn btn-sm btn-outline"
+      class="act"
       [title]="'tagActions.muteTitle' | transloco: { tag: name() }"
       (click)="openMute()"
     >
@@ -61,12 +58,21 @@
   @if (offerSimilar()) {
     <button
       type="button"
-      class="btn btn-sm btn-outline"
+      class="act"
       [title]="'tagActions.similarTitle' | transloco: { tag: name() }"
       (click)="similar.emit(name())"
     >
       {{ 'tagActions.similar' | transloco }}
     </button>
+  }
+  @if (!auth.lacksMastodonToken) {
+    <a
+      class="act"
+      routerLink="/forum"
+      [queryParams]="{ source: 'tag:' + name() }"
+      [title]="'tagActions.forumTitle' | transloco: { tag: name() }"
+      >{{ 'shell.modeNav.mode.forum' | transloco }}</a
+    >
   }
 </div>
 @if (error(); as error) {

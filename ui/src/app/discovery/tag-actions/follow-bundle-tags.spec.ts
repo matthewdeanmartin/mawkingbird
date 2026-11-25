@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { provideRouter } from '@angular/router';
 import { Auth } from '../../platform/session/auth';
 import { FollowBundleTags } from './follow-bundle-tags';
 import { TagActions } from './tag-actions';
@@ -100,12 +101,25 @@ describe('Shared tag actions', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     });
     TestBed.inject(Auth).setToken('actions-test');
     http = TestBed.inject(HttpTestingController);
   });
   afterEach(() => http.verify());
+
+  it('opens Forum on this hashtag, only where Forum can read it', () => {
+    const fixture = TestBed.createComponent(TagActions);
+    fixture.componentRef.setInput('name', 'neuromancer');
+    fixture.detectChanges();
+    const link = () => fixture.nativeElement.querySelector('a.act') as HTMLAnchorElement | null;
+    expect(link()?.textContent?.trim()).toBe('Forum');
+    expect(link()?.getAttribute('href')).toBe('/forum?source=tag:neuromancer');
+
+    TestBed.inject(Auth).enterAnonymous('https://example.com');
+    fixture.detectChanges();
+    expect(link()).toBeNull();
+  });
 
   it('resolves an unknown relationship on intent and synchronizes other visible controls', async () => {
     const first = TestBed.createComponent(TagActions);

@@ -4,10 +4,46 @@
   font-size: 14px;
   font-weight: 400;
 }
+/* Words and hairlines, not a row of pills. Each action's rule sits in the gap
+   before it, so the row clips the one that would start a line. */
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  overflow: hidden;
+}
+.act {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  margin-inline-start: -1px;
+  padding: 2px 8px;
+  border: 0;
+  border-inline-start: 1px solid var(--border);
+  background: none;
+  color: var(--ds-action-text);
+  font: 500 13px / 1.3 var(--app-font-family);
+  overflow-wrap: anywhere;
+  text-decoration: none;
+  cursor: pointer;
+}
+.act:hover:not(:disabled) {
+  text-decoration: underline;
+}
+.act:focus-visible {
+  outline: 2px solid var(--ds-action-text);
+  outline-offset: -2px;
+}
+.act[aria-pressed='true'] {
+  font-weight: 700;
+}
+.act:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+@media (pointer: coarse) {
+  .act {
+    min-height: 44px;
+  }
 }
 .bundle-picker {
   margin-top: 8px;

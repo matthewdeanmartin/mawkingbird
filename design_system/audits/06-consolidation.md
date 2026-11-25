@@ -3491,3 +3491,8 @@ ReadingBack. Other changes are source offsets.
 Watch action row chosen (2026-11-24): the four other candidates are deleted.
 watch-actions.ts keeps only shared Post actions; the creator's Follow pill became a
 profile link in the same row, and playback Help sits at its end.
+
+Tag actions and party chat font (2026-11-24): reviewed the regenerated inventory:
+731 candidate files unchanged. TagActions' six legacy pills became words with
+hairline dividers plus a Forum link; its bundle picker keeps its pill and stays in
+the backlog. Party chat's compact view uses the app font instead of monospace.

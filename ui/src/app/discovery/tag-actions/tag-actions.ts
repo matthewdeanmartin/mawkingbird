@@ -1,6 +1,7 @@
 import { TagState } from './tag-state';
 import { Component, computed, effect, inject, input, output, signal, Type } from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { catchError, firstValueFrom, of, throwError } from 'rxjs';
@@ -14,6 +15,8 @@ import { Server } from '../../platform/http/server';
 import type { TagFilterDialog } from '../../moderation/tag-filter-dialog/tag-filter-dialog';
 
 // i18n tagActions.failed: Couldn't update this tag. Please try again.
+// i18n tagActions.label: Actions for #{{tag}}
+// i18n tagActions.forumTitle: Read #{{tag}} as discussions in Forum
 // i18n tagActions.similar: Similar
 // i18n tagActions.similarTitle: Hashtags that often appear with #{{tag}}
 // i18n tagActions.add: + Add
@@ -22,7 +25,7 @@ import type { TagFilterDialog } from '../../moderation/tag-filter-dialog/tag-fil
 // i18n tagActions.muteTitle: Hide posts tagged #{{tag}} with a filter on your Mastodon account
 @Component({
   selector: 'app-tag-actions',
-  imports: [FormsModule, NgComponentOutlet, TranslocoPipe],
+  imports: [FormsModule, NgComponentOutlet, RouterLink, TranslocoPipe],
   templateUrl: './tag-actions.html',
   styleUrl: './tag-actions.css',
 })

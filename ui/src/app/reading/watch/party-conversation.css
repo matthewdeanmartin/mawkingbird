@@ -55,7 +55,6 @@
   margin: 0.25rem auto 0.5rem;
 }
 :host([data-view='compact']) .chat-log {
-  font-family: ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace;
   font-size: 0.85rem;
   line-height: 1.35;
 }
@@ -82,7 +81,6 @@
 .line app-status-card {
   display: block;
   margin: 0.25rem 0 0.5rem 1rem;
-  font-family: var(--app-font-family);
   font-size: 1rem;
 }
 .highlighted {
@@ -90,6 +88,7 @@
   border-radius: 3px;
 }
 .time {
+  font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
 /* Each nick keeps one color, mixed toward the text color so it stays legible

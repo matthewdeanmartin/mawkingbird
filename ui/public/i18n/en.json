@@ -10291,6 +10291,8 @@
     "add": "+ Add",
     "addTitle": "Add #{{tag}} to the hashtags compared",
     "failed": "Couldn't update this tag. Please try again.",
+    "forumTitle": "Read #{{tag}} as discussions in Forum",
+    "label": "Actions for #{{tag}}",
     "mute": "Mute",
     "muteTitle": "Hide posts tagged #{{tag}} with a filter on your Mastodon account",
     "similar": "Similar",

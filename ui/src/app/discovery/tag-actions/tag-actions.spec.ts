@@ -2,6 +2,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { Subject } from 'rxjs';
 import { describe, expect, it } from 'vitest';
 import { Api } from '../../platform/api/api';
@@ -12,6 +13,7 @@ describe('TagActions', () => {
   function render(inputs: Record<string, unknown>) {
     TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         provideHttpClient(),
         provideHttpClientTesting(),
         { provide: Api, useValue: { tagChanges: new Subject() } },
