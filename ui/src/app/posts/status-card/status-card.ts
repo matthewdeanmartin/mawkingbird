@@ -62,6 +62,7 @@ import { SaveToLibrary } from '../../reading/read/save-to-library/save-to-librar
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
 import { hashtagNameFrom, profileRouteFor } from '../../accounts/rendered-html-links';
+import { ScreenShare } from '../../shell/screen-share/screen-share';
 import { ClientPrefs, READER_THEMES } from '../../platform/storage/client-prefs';
 import { Wellness } from '../../wellness/wellness';
 import { Terminology } from '../../i18n/terminology';
@@ -675,6 +676,7 @@ export class StatusCard {
   private api = inject(Api);
   protected auth = inject(Auth);
   private prefs = inject(ClientPrefs);
+  private screenShare = inject(ScreenShare);
   protected readerPaper = computed(() =>
     this.prefs.feedReader() ? this.prefs.readerTheme() : null,
   );
@@ -899,6 +901,8 @@ export class StatusCard {
    * signals here means the card disappears the moment the viewer acts.
    */
   protected mutedLocally = computed(() => this.visibility.mutedLocally(this.status()));
+  /** Screen share mode keeps posts with a narrower audience off the screen. */
+  protected screenHidden = computed(() => this.screenShare.hides(this.status()));
 
   /** Whether the viewer has locally blocked this card's author. */
   protected authorBlockedLocally = computed(() => {

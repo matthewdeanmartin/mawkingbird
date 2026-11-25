@@ -5,6 +5,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { AnalyticsTracker, countsForThisSite, sanitizePath } from './analytics-tracker';
 import { ClientPrefs } from '../storage/client-prefs';
+import { Auth } from '../session/auth';
 
 describe('sanitizePath', () => {
   it('removes profile handles and provider URI suffixes', () => {
@@ -128,6 +129,39 @@ describe('AnalyticsTracker opt-out', () => {
     expect(script!.getAttribute('src')).toBe('vendor/count.js');
     expect(script!.getAttribute('src')).not.toContain('//');
     expect(document.head.querySelectorAll('script[data-goatcounter]').length).toBe(1);
+  });
+
+  it('never counts the owner, in any account, ever again on that browser', () => {
+    setUp(true);
+    TestBed.inject(Auth).sessions.set([
+      {
+        id: 's',
+        token: 't',
+        server: 'https://ohai.social',
+        account: { id: '1', username: 'everybodhi', acct: 'everybodhi' } as never,
+      },
+    ]);
+    navigate();
+    expect(injectedScript()).toBeNull();
+    expect(localStorage.getItem('mockingbird_analytics_owner')).toBe('1');
+
+    TestBed.inject(Auth).sessions.set([]);
+    navigate();
+    expect(injectedScript()).toBeNull();
+  });
+
+  it('counts everyone else, signed in or not', () => {
+    setUp(true);
+    TestBed.inject(Auth).sessions.set([
+      {
+        id: 's',
+        token: 't',
+        server: 'https://mastodon.social',
+        account: { id: '1', username: 'everybodhi', acct: 'everybodhi' } as never,
+      },
+    ]);
+    navigate();
+    expect(injectedScript()).not.toBeNull();
   });
 
   it('stops counting as soon as the pref is turned off', () => {

@@ -52,7 +52,9 @@ describe('SettingsContent shared choices', () => {
     expect(trusted.level()).toBe('none');
     expect(trusted.count()).toBe(1);
     const checks = Array.from(
-      (f.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>('input[type="checkbox"]'),
+      (f.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>(
+        '.trust-switches input[type="checkbox"]',
+      ),
     );
     expect(checks.every((c) => c.disabled)).toBe(true);
     expect(checks[0].checked).toBe(true);

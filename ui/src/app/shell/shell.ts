@@ -63,6 +63,8 @@ import { NavFit } from './nav-fit';
 import { AddAccountDialog } from '../accounts/sign-in/add-account-dialog/add-account-dialog';
 import { FirstRunChoice, FirstRunModal } from '../accounts/first-run/first-run-modal';
 import { PreviewSeed } from '../accounts/first-run/preview-seed';
+import { ScreenShare } from './screen-share/screen-share';
+import { ScreenShareBadge, ScreenShareCover } from './screen-share/screen-share-badge';
 import { OnboardingLauncher } from '../accounts/onboarding/onboarding-launcher';
 import { setupRedirectFor } from '../accounts/setup/setup-store';
 import { PlusBadgeEntitlement } from '../accounts/mawkingbird/plus-badge-entitlement';
@@ -145,6 +147,8 @@ const TRICKLE_IDLE_MS = 15 * 60_000;
 // i18n shell.nav.more: More
 // i18n shell.menu.settings: Settings
 // i18n shell.menu.onboarding: Onboarding
+// i18n shell.menu.screenShareOn: Start screen share mode
+// i18n shell.menu.screenShareOff: Stop screen share mode
 // i18n shell.menu.likesBookmarksHistory: Likes, bookmarks, history
 // i18n shell.menu.bookmarksHistory: Bookmarks, history
 // i18n shell.menu.myServer: My server
@@ -237,6 +241,8 @@ const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
   selector: 'app-shell',
   imports: [
     DiscoveryBanner,
+    ScreenShareBadge,
+    ScreenShareCover,
     WellnessTime,
     AddAccountDialog,
     NavFit,
@@ -946,11 +952,16 @@ export class Shell implements OnInit, AccountSwitcher {
    */
   protected readonly accountQuery = signal('');
   protected readonly manyAccounts = computed(
-    () => this.auth.otherSessions().length >= ACCOUNT_FILTER_THRESHOLD,
+    () => this.switchable().length >= ACCOUNT_FILTER_THRESHOLD,
   );
+  protected readonly screenShare = inject(ScreenShare);
+  /** The accounts the switcher offers: not pseudonymous ones while screen sharing. */
+  protected readonly switchable = computed(() => this.screenShare.shown(this.auth.otherSessions()));
   protected readonly visibleOtherSessions = computed(() =>
-    filterAccountChoices(this.auth.otherSessions(), this.accountQuery()),
+    filterAccountChoices(this.switchable(), this.accountQuery()),
   );
+  /** A private page while screen sharing: covered, not shown. */
+  protected readonly screenCovered = computed(() => this.screenShare.covers(this.currentUrl()));
 
   protected setAccountQuery(event: Event): void {
     this.accountQuery.set((event.target as HTMLInputElement).value);

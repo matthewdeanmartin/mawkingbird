@@ -1082,6 +1082,20 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     note: 'Which kind of account was last active: mastodon, bluesky or anonymous.',
   },
   {
+    base: 'mockingbird_screen_share',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: 'Screen share mode is on in this browser: non-public posts, private pages and pseudonymous accounts are hidden.',
+  },
+  {
+    base: 'mockingbird_analytics_owner',
+    storage: 'local',
+    suffix: 'none',
+    sensitivity: 'setting',
+    note: "This browser is the owner's, so its page views are not counted.",
+  },
+  {
     base: 'mastodon_mock_anonymous_implicit',
     storage: 'local',
     suffix: 'none',

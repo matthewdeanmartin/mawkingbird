@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
 import { Server } from '../../platform/http/server';
+import { ScreenShare } from '../../shell/screen-share/screen-share';
 import { TrustedAccounts } from '../../accounts/trusted-accounts';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -22,6 +23,9 @@ import { TranslocoPipe } from '@jsverse/transloco';
  * trusted reader, and these need to work anonymously too.
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
+// i18n settings.content.screenShare.title: Screen share mode
+// i18n settings.content.screenShare.label: Hide what is not public
+// i18n settings.content.screenShare.hint: For streaming or recording: followers-only posts and direct messages, the inbox, drafts, and accounts with Pseudonymity on are hidden. In this browser only; a badge in the header shows it is on and turns it off.
 // i18n settings.content.title: 🙈 Trust: CW/Sensitive
 // i18n settings.content.intro: A content warning is the author's judgement about their audience, not about you. For people you read all the time, clicking through the same warning every day is friction without safety — so you can switch it off, either for everyone or for specific people.
 // i18n settings.content.flipside.before: This is the flipside of
@@ -72,6 +76,7 @@ export class SettingsContent {
   private readonly dialogs = inject(AppDialogs);
 
   protected trusted = inject(TrustedAccounts);
+  protected screenShare = inject(ScreenShare);
   private api = inject(Api);
   private auth = inject(Auth);
   private server = inject(Server);

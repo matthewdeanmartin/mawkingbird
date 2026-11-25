@@ -1,4 +1,6 @@
-@if (mutedLocally()) {
+@if (screenHidden()) {
+  <p class="screen-share-stub muted small">{{ 'screenShare.post' | transloco }}</p>
+} @else if (mutedLocally()) {
   <!-- "Mute this post": the viewer asked to never see this one again. -->
 } @else if (filterCollapsed()) {
   <!-- A warn-action content filter matched: collapse to a stub, Mastodon-style. -->

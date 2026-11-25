@@ -1194,3 +1194,9 @@ pre {
   unicode-bidi: isolate;
   text-align: start;
 }
+
+/* Screen share mode: a private page stays mounted, out of sight. Global because
+   the routed page is not part of the shell's own template. */
+main.screen-covered > router-outlet + * {
+  display: none;
+}

@@ -137,4 +137,13 @@
   <p class="muted small footnote">
     {{ 'settings.content.footnote' | transloco }}
   </p>
+
+  <h2>{{ 'settings.content.screenShare.title' | transloco }}</h2>
+  <mb-checkbox
+    name="screen_share"
+    [label]="'settings.content.screenShare.label' | transloco"
+    [hint]="'settings.content.screenShare.hint' | transloco"
+    [checked]="screenShare.enabled()"
+    (checkedChange)="screenShare.set($event)"
+  />
 </div>

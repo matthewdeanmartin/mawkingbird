@@ -18,6 +18,7 @@ import korean from '../../../../public/i18n/ko.json';
 import { Signal, WritableSignal } from '@angular/core';
 import { provideRouter, Router, RouterLink } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
+import { ScreenShare } from '../../shell/screen-share/screen-share';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { FollowState } from '../../accounts/follow-state';
@@ -164,6 +165,28 @@ describe('StatusCard', () => {
 
   afterEach(() => {
     httpMock.verify();
+  });
+
+  it('keeps followers-only and direct posts, and boosts of them, off a shared screen', () => {
+    const screenShare = TestBed.inject(ScreenShare);
+    screenShare.set(true);
+    for (const visibility of ['private', 'direct']) {
+      const shown = setUp(makeStatus({ visibility })).nativeElement as HTMLElement;
+      expect(shown.querySelector('article.status')).toBeNull();
+      expect(shown.textContent).not.toContain('Hello');
+      expect(shown.querySelector('.screen-share-stub')).not.toBeNull();
+    }
+    const boost = makeStatus({ reblog: makeStatus({ visibility: 'private' }) });
+    expect(setUp(boost).nativeElement.querySelector('article.status')).toBeNull();
+    for (const visibility of ['public', 'unlisted']) {
+      expect(
+        setUp(makeStatus({ visibility })).nativeElement.querySelector('article.status'),
+      ).not.toBeNull();
+    }
+    screenShare.set(false);
+    expect(
+      setUp(makeStatus({ visibility: 'direct' })).nativeElement.querySelector('article.status'),
+    ).not.toBeNull();
   });
 
   it('applies the selected reader paper only while Reader is enabled', () => {

@@ -3551,3 +3551,5 @@ decides its address. Changed otherwise: the first-run modal gains one text butto
 `first-run-back` style), the Mastodon sign-in page a shared Notice with a link Button, the
 Mastodon connection page a leading Button link with the token form inside the shared
 Disclosure, and Unavailable moves from a hand-styled link to two shared Buttons. No new widget.
+
+Screen share mode (same day): one candidate added, `screen-share-badge.ts`, holding the header badge (a pill button styled locally, like the connection chip beside it) and the private-page cover (the existing `btn btn-outline`). The status card gains a one-line stub, the shell menu one row, Settings, Content one shared Checkbox. No new widget.

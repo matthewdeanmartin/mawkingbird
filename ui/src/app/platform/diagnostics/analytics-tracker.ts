@@ -5,6 +5,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { isCanaryBuild, isTestBuild } from '../build/build-flavor';
 import { ClientPrefs } from '../storage/client-prefs';
+import { Auth } from '../session/auth';
+import { includesOwner, isOwnerBrowser } from './analytics-owner';
 
 /** Our own vendored copy of count.js — see scripts/vendor-analytics.mjs. */
 const SCRIPT_URL = 'vendor/count.js';
@@ -51,6 +53,7 @@ export class AnalyticsTracker {
   private readonly runtimePolicy = inject(RUNTIME_POLICY);
   private readonly router = inject(Router);
   private readonly prefs = inject(ClientPrefs);
+  private readonly auth = inject(Auth);
   private loaded = false;
   private pending: string[] = [];
 
@@ -81,13 +84,21 @@ export class AnalyticsTracker {
   private count(path: string): void {
     // Checked per view, not once at startup: turning analytics off stops
     // counting immediately, without a reload.
-    if (!this.prefs.analytics()) {
+    if (!this.prefs.analytics() || this.owner()) {
       this.pending = [];
       return;
     }
     this.pending.push(sanitizePath(path));
     this.ensureScript();
     this.flush();
+  }
+
+  /** The owner's browser: see analytics-owner.ts. */
+  private owner(): boolean {
+    return isOwnerBrowser({
+      sessions: includesOwner(this.auth.sessions()),
+      query: location.search,
+    });
   }
 
   private flush(): void {

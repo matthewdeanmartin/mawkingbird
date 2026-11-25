@@ -7,6 +7,7 @@ import {
   accountLabel,
   filterAccountChoices,
 } from '../../account-switcher';
+import { ScreenShare } from '../../../shell/screen-share/screen-share';
 import { AccountChoice, Auth } from '../../../platform/session/auth';
 import { MbButton } from '../../../design-system/button/button';
 import { MbField, MbControl } from '../../../design-system/field/field';
@@ -71,10 +72,11 @@ export class AccountPicker implements OnInit {
   protected readonly label = accountLabel;
   protected readonly host = accountChoiceHost;
   protected readonly query = signal('');
+  private readonly screenShare = inject(ScreenShare);
+  /** Not pseudonymous accounts while screen sharing. */
+  protected readonly choices = computed(() => this.screenShare.shown(this.auth.otherSessions()));
 
-  protected readonly matches = computed(() =>
-    filterAccountChoices(this.auth.otherSessions(), this.query()),
-  );
+  protected readonly matches = computed(() => filterAccountChoices(this.choices(), this.query()));
 
   ngOnInit(): void {
     if (!this.standalone) void this.replyCounts.refresh();

@@ -328,6 +328,7 @@
         </nav>
 
         <div class="header-actions">
+          <app-screen-share-badge />
           <app-connection-chip />
           <details class="more-menu" (toggle)="onMoreToggle($event)">
             <summary [attr.aria-label]="'shell.nav.moreAria' | transloco">
@@ -347,6 +348,17 @@
               <!-- The setup wizard, for anyone who skipped it or wants to redo it. -->
               <button type="button" class="menu-button" (click)="openOnboarding($event)">
                 {{ 'shell.menu.onboarding' | transloco }}
+              </button>
+              <!-- Here, one click from anywhere: it is switched on as a stream starts. -->
+              <button
+                type="button"
+                class="menu-button"
+                (click)="screenShare.set(!screenShare.enabled()); closeMenu($event)"
+              >
+                {{
+                  (screenShare.enabled() ? 'shell.menu.screenShareOff' : 'shell.menu.screenShareOn')
+                    | transloco
+                }}
               </button>
 
               <!-- Feed-likes -->
@@ -481,7 +493,7 @@
                   </span>
                 </a>
 
-                @if (auth.otherSessions().length) {
+                @if (switchable().length) {
                   <div class="menu-divider"></div>
                   <p class="menu-label">{{ 'shell.account.switch' | transloco }}</p>
                   @if (manyAccounts()) {
@@ -545,7 +557,7 @@
                   </div>
                   @if (manyAccounts()) {
                     <a routerLink="/switch-account" class="switch-all" (click)="closeMenu($event)">
-                      {{ 'shell.account.all' | transloco: { count: auth.otherSessions().length } }}
+                      {{ 'shell.account.all' | transloco: { count: switchable().length } }}
                     </a>
                   }
                 }
@@ -598,11 +610,20 @@
         }
       </aside>
     }
-    <main class="column" id="main" tabindex="-1" #mainColumn>
+    <main
+      class="column"
+      id="main"
+      tabindex="-1"
+      #mainColumn
+      [class.screen-covered]="screenCovered()"
+    >
       <app-proxy-limit-notice />
       <app-account-tab-banner />
       <app-discovery-banner [url]="currentUrl()" />
       <app-wellness-time />
+      @if (screenCovered()) {
+        <app-screen-share-cover />
+      }
       <router-outlet mbReadingOutlet />
       @if (!chromeHidden()) {
         <app-app-footer />

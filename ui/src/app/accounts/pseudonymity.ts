@@ -13,6 +13,16 @@ interface PseudonymityState {
   cleanMedia: boolean;
 }
 
+/** Whether the account with this storage scope has Pseudonymity turned on. */
+export function pseudonymousIn(scopeSuffix: string): boolean {
+  if (!scopeSuffix || scopeSuffix === ANONYMOUS_SCOPE_SUFFIX) return false;
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_BASE + scopeSuffix) ?? 'null')?.enabled === true;
+  } catch {
+    return false;
+  }
+}
+
 /** Local to a social identity. Never included in the global settings sync document. */
 @Injectable({ providedIn: 'root' })
 export class Pseudonymity {

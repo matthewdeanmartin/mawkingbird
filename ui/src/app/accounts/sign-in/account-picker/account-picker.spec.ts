@@ -5,6 +5,8 @@ import { AccountSwitcher } from '../../account-switcher';
 import { AccountChoice, Auth } from '../../../platform/session/auth';
 import { translocoTesting } from '../../../i18n/i18n.testing';
 import { AccountPicker } from './account-picker';
+import { ScreenShare } from '../../../shell/screen-share/screen-share';
+import { scopeSuffixForMastodonAccount } from '../../../platform/session/account-scope';
 import { AccountReplyCounts } from '../../account-reply-counts';
 
 function choice(key: string, username: string, server: string): AccountChoice {
@@ -74,6 +76,19 @@ describe('AccountPicker', () => {
     expect(el.querySelector('.picker-current')?.textContent).toContain('0');
     expect([...el.querySelectorAll('.picker-row')][1].textContent).toContain('3');
     expect(replyCounts.refresh).toHaveBeenCalled();
+  });
+
+  it('leaves pseudonymous accounts out while screen sharing', () => {
+    localStorage.setItem(
+      `mockingbird_pseudonymity${scopeSuffixForMastodonAccount('a', 'https://mastodon.social')}`,
+      JSON.stringify({ enabled: true }),
+    );
+    expect(render().el.querySelectorAll('.picker-row')).toHaveLength(3);
+    TestBed.inject(ScreenShare).set(true);
+    const { el } = render();
+    expect(el.querySelectorAll('.picker-row')).toHaveLength(2);
+    expect(el.textContent).not.toContain('everybodhi');
+    localStorage.clear();
   });
 
   it('narrows by server and switches through the shared switcher', () => {

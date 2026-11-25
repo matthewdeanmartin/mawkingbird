@@ -42,8 +42,8 @@
 
   <p class="muted small picker-count" aria-live="polite">
     {{
-      (auth.otherSessions().length === 1 ? 'accountPicker.count.one' : 'accountPicker.count.other')
-        | transloco: { shown: matches().length, total: auth.otherSessions().length }
+      (choices().length === 1 ? 'accountPicker.count.one' : 'accountPicker.count.other')
+        | transloco: { shown: matches().length, total: choices().length }
     }}
   </p>
 
