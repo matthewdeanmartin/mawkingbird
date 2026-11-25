@@ -2720,7 +2720,6 @@
     "write.advisoryOnly": "すべて参考情報です。投稿を止めるものはありません。",
     "write.aiUnavailable": "AI校正機能を利用できません：",
     "write.allChip": "すべて",
-    "write.allDrafts": "すべての下書き →",
     "write.allowMultiple": "複数選択を許可",
     "write.aria.attachedMedia": "添付メディア",
     "write.aria.clearScheduled": "予約時刻を解除して今すぐ投稿",
@@ -2989,11 +2988,7 @@
     "loading": "読み込み中…",
     "local": "ローカル"
   },
-  "radio": {
-    "addPlaylist": "プレイリストに追加",
-    "listenProvider": "{{provider}} をラジオで聴く",
-    "playPost": "{{author}} さんの音声を再生"
-  },
+  "radio": {},
   "report": {
     "blueskyService": "この通報はBlueskyのモデレーションサービスに送信されます。",
     "cancel": "キャンセル",

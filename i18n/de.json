@@ -2660,7 +2660,6 @@
     "write.advisoryOnly": "Alles nur Hinweise – nichts davon verhindert die Veröffentlichung.",
     "write.aiUnavailable": "KI-Korrektur nicht verfügbar:",
     "write.allChip": "Alle",
-    "write.allDrafts": "Alle Entwürfe →",
     "write.allowMultiple": "Mehrfachauswahl zulassen",
     "write.aria.attachedMedia": "Angehängte Medien",
     "write.aria.clearScheduled": "Geplante Zeit löschen und jetzt veröffentlichen",
@@ -6033,11 +6032,7 @@
     "loading": "Wird geladen…",
     "local": "Lokal"
   },
-  "radio": {
-    "addPlaylist": "Zur Playlist hinzufügen",
-    "listenProvider": "Auf {{provider}} im Radio hören",
-    "playPost": "Audio von {{author}} abspielen"
-  },
+  "radio": {},
   "report": {
     "blueskyService": "Diese Meldung wird an den Moderationsdienst von Bluesky gesendet.",
     "cancel": "Abbrechen",

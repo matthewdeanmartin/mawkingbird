@@ -4047,7 +4047,6 @@
     "write.advisoryOnly": "这些都只是建议，不会阻止你发布。",
     "write.aiUnavailable": "AI 校对工具无法使用：",
     "write.allChip": "全部",
-    "write.allDrafts": "所有草稿 →",
     "write.allowMultiple": "允许复选",
     "write.aria.attachedMedia": "已附加的媒体",
     "write.aria.clearScheduled": "清除调度时间并立即发布",
@@ -5899,11 +5898,7 @@
     "loading": "加载中…",
     "local": "本站"
   },
-  "radio": {
-    "addPlaylist": "加入播放列表",
-    "listenProvider": "在电台收听 {{provider}}",
-    "playPost": "播放 {{author}} 的音频"
-  },
+  "radio": {},
   "reader": {
     "article.blocker": "截取全文需要 CORS 代理服务器，但此设备尚未设置。",
     "article.chooseProxy": "选择代理服务器",

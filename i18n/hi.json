@@ -2496,7 +2496,6 @@
     "write.advisoryOnly": "सभी केवल सुझाव हैं — इनमें से कुछ भी आपको प्रकाशित करने से नहीं रोकता।",
     "write.aiUnavailable": "AI प्रूफ़रीडर उपलब्ध नहीं:",
     "write.allChip": "सभी",
-    "write.allDrafts": "सभी ड्राफ़्ट →",
     "write.allowMultiple": "एक से अधिक की अनुमति दें",
     "write.aria.attachedMedia": "अटैच किया मीडिया",
     "write.aria.clearScheduled": "निर्धारित समय हटाकर अभी प्रकाशित करें",
@@ -6260,11 +6259,7 @@
   "pseudonymity": {
     "mediaFailed": "तस्वीर का मेटाडेटा हट नहीं सका। कुछ अपलोड नहीं हुआ। 20 MB और 40 मेगापिक्सेल से छोटी स्थिर JPEG या PNG लें, या छद्म नाम सेटिंग में तस्वीर सफ़ाई बदलें।"
   },
-  "radio": {
-    "addPlaylist": "प्लेलिस्ट में जोड़ें",
-    "listenProvider": "Radio में {{provider}} पर सुनें",
-    "playPost": "{{author}} का ऑडियो चलाएँ"
-  },
+  "radio": {},
   "similarTags": {
     "addButton": "जोड़ें",
     "addLabel": "हैशटैग जोड़ें",
