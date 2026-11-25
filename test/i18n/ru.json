@@ -2496,7 +2496,6 @@
     "write.advisoryOnly": "Все рекомендации необязательны и не мешают публикации.",
     "write.aiUnavailable": "ИИ-корректор недоступен:",
     "write.allChip": "Все",
-    "write.allDrafts": "Все черновики →",
     "write.allowMultiple": "Разрешить несколько",
     "write.aria.attachedMedia": "Прикреплённые медиа",
     "write.aria.clearScheduled": "Очистить время и опубликовать сейчас",
@@ -6260,11 +6259,7 @@
   "pseudonymity": {
     "mediaFailed": "Не удалось удалить метаданные фото. Ничего не загружено. Используй неподвижное JPEG или PNG до 20 МБ и 40 мегапикселей либо измени очистку фото в настройках псевдонима."
   },
-  "radio": {
-    "addPlaylist": "Добавить в плейлист",
-    "listenProvider": "Слушать на {{provider}} в Радио",
-    "playPost": "Воспроизвести аудио от {{author}}"
-  },
+  "radio": {},
   "similarTags": {
     "addButton": "Добавить",
     "addLabel": "Добавить хештег",

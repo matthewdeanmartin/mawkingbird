@@ -3020,7 +3020,6 @@
     "write.advisoryOnly": "Tất cả chỉ là gợi ý — không mục nào ngăn bạn xuất bản.",
     "write.aiUnavailable": "Trình hiệu đính AI không khả dụng:",
     "write.allChip": "Tất cả",
-    "write.allDrafts": "Tất cả bản nháp →",
     "write.allowMultiple": "Cho phép chọn nhiều",
     "write.aria.attachedMedia": "Phương tiện đính kèm",
     "write.aria.clearScheduled": "Xóa thời gian đã lên lịch và đăng ngay",
@@ -6260,11 +6259,7 @@
   "pseudonymity": {
     "mediaFailed": "Không xóa được siêu dữ liệu ảnh. Chưa tải gì lên. Dùng ảnh tĩnh JPEG hoặc PNG dưới 20 MB và 40 megapixel, hoặc đổi tùy chọn làm sạch ảnh trong thiết lập Bút danh."
   },
-  "radio": {
-    "addPlaylist": "Thêm vào danh sách phát",
-    "listenProvider": "Nghe trên {{provider}} trong Radio",
-    "playPost": "Phát âm thanh của {{author}}"
-  },
+  "radio": {},
   "similarTags": {
     "addButton": "Thêm",
     "addLabel": "Thêm hashtag",

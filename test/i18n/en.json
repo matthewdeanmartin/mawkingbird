@@ -5848,7 +5848,6 @@
     "write.advisoryOnly": "All advisory — none of this stops you publishing.",
     "write.aiUnavailable": "AI proofreader unavailable:",
     "write.allChip": "All",
-    "write.allDrafts": "All drafts →",
     "write.allowMultiple": "Allow multiple",
     "write.aria.attachedMedia": "Attached media",
     "write.aria.clearScheduled": "Clear the scheduled time and publish now",
@@ -6543,7 +6542,6 @@
     "title": "Quotes"
   },
   "radio": {
-    "addPlaylist": "Add to playlist",
     "allow": "Allow {{provider}} in Radio",
     "allowHint": "Radio can load and start {{provider}} players for you. Posts in feeds still load only when you choose.",
     "append.confirm": "Add “{{title}}” to “{{playlist}}”? This will create {{posts}} posts and edit {{edits}} on Mastodon.",
@@ -6626,7 +6624,6 @@
     "keep.saved.other": "Saved {{count}} singles.",
     "limitsUnavailable": "Could not verify this server’s audio limits. Nothing was uploaded. Try again later.",
     "list": "List",
-    "listenProvider": "Listen on {{provider}} in Radio",
     "loading": "Looking for audio…",
     "loadingPlayer": "Loading the {{provider}} player…",
     "more": "Continue scanning",
@@ -6645,7 +6642,6 @@
     "pause": "Pause",
     "paused": "Scan paused. Continue to look for older audio posts.",
     "play": "Play",
-    "playPost": "Play audio by {{author}}",
     "playResults": "Play all results",
     "playTrack": "Play track {{number}}, {{title}}, by {{author}}",
     "position": "Track {{current}} of {{total}}",

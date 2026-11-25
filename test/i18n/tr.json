@@ -3020,7 +3020,6 @@
     "write.advisoryOnly": "Bunların tümü öneridir; hiçbiri yayınlamanızı engellemez.",
     "write.aiUnavailable": "Yapay zekâ düzelticisi kullanılamıyor:",
     "write.allChip": "Tümü",
-    "write.allDrafts": "Tüm taslaklar →",
     "write.allowMultiple": "Birden fazla seçime izin ver",
     "write.aria.attachedMedia": "Eklenen medya",
     "write.aria.clearScheduled": "Zamanlamayı temizle ve şimdi yayınla",
@@ -6260,11 +6259,7 @@
   "pseudonymity": {
     "mediaFailed": "Fotoğrafın üst verileri kaldırılamadı. Hiçbir şey yüklenmedi. 20 MB ve 40 megapikselin altında durağan JPEG veya PNG kullan ya da Takma ad ayarlarından fotoğraf temizlemeyi değiştir."
   },
-  "radio": {
-    "addPlaylist": "Çalma listesine ekle",
-    "listenProvider": "{{provider}} kaynağını Radio içinde dinle",
-    "playPost": "{{author}} tarafından paylaşılan sesi oynat"
-  },
+  "radio": {},
   "similarTags": {
     "addButton": "Ekle",
     "addLabel": "Etiket ekle",
