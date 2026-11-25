@@ -135,7 +135,7 @@ h2:focus {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 14px;
   text-decoration: underline;
 }

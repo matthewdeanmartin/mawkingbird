@@ -19,8 +19,8 @@ for (const theme of ["light", "dark"]) {
     );
     const feed = page.locator(".video-feed");
     const sort = page.getByLabel("Sort videos", { exact: true });
-    await expect(sort).toHaveCSS("appearance", "auto");
-    await expect(sort).toHaveCSS("border-top-style", "solid");
+    // The compact feed select, as on Home and RSS.
+    await expect(sort).toHaveCSS("appearance", "none");
     await expect(page.locator(".youtube-preview").first()).toHaveCSS(
       "border-radius",
       "8px",
@@ -31,9 +31,11 @@ for (const theme of ["light", "dark"]) {
       "All videos",
       "Saved videos",
       "Shorts",
-      "↻ Refresh",
-      "Customize",
+      "",
+      "",
     ]);
+    for (const name of ["Refresh", "Customize"])
+      await expect(toolbar.getByRole("button", { name })).toBeVisible();
     await expect(
       toolbar.getByRole("button", { name: "All videos" }),
     ).toHaveAttribute("aria-pressed", "true");
@@ -52,6 +54,14 @@ for (const theme of ["light", "dark"]) {
     await page
       .getByLabel("Sort videos", { exact: true })
       .selectOption("oldest");
+    // Phone width: the channels fold away until asked for, so the feed comes first.
+    const channels = page.getByRole("button", { name: "Channels (1)" });
+    await expect(channels).toHaveAttribute("aria-expanded", "false");
+    const box = page.getByLabel(/YouTube channel link/);
+    await expect(box).toBeHidden();
+    await channels.click();
+    await expect(box).toBeVisible();
+    await channels.click();
     const card = feed.locator(".video-post").first();
     await expect(card.locator("h3")).toHaveText("How lamps work");
     await expect(

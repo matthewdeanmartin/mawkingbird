@@ -1,0 +1,34 @@
+:host {
+  min-width: 0;
+  padding-block: 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.text {
+  display: flex;
+  flex: 1 1 140px;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.actions:empty {
+  display: none;
+}

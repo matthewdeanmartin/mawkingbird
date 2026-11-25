@@ -41,7 +41,7 @@ li {
   font-size: 0.88rem;
 }
 .free {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 600;
 }
 .more {

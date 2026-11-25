@@ -77,11 +77,11 @@
 }
 .pack-tabs button[aria-pressed='true'] {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .member-link:hover strong {
-  color: var(--accent);
+  color: var(--ds-action-text);
   text-decoration: underline;
 }
 
@@ -89,7 +89,7 @@
   cursor: wait;
 }
 .success {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 .note {
   padding: 16px 20px;

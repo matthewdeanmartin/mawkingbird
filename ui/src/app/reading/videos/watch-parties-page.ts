@@ -6,6 +6,10 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { catchError, forkJoin, map, Observable, of, Subscription } from 'rxjs';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
+import { MbAddBox } from '../../design-system/add-box/add-box';
+import { MbIcon } from '../../design-system/icon/icon';
+import { MbPageHeader } from '../../design-system/page-header/page-header';
+import { MbPagePanel, MbRailPage, MbRailPanel } from '../../design-system/rail-page/rail-page';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
@@ -58,18 +62,28 @@ const PER_TAG = 40;
     MbContentState,
     MbField,
     MbControl,
+    MbAddBox,
+    MbIcon,
+    MbPageHeader,
+    MbPagePanel,
+    MbRailPage,
+    MbRailPanel,
     HumanTimePipe,
     StatusCard,
   ],
   template: `
-    <div class="parties">
-      <aside class="party-rail">
-        <h1>{{ 'watchParties.title' | transloco }}</h1>
-        <p class="muted small">{{ 'watchParties.intro' | transloco }}</p>
-        <form (ngSubmit)="submit()">
+    <mb-rail-page>
+      <aside mbRailPanel>
+        <mb-page-header
+          embedded
+          [title]="'watchParties.title' | transloco"
+          [description]="'watchParties.intro' | transloco"
+        />
+        <form mbAddBox (ngSubmit)="submit()">
           <mb-field
             [label]="'watchParties.tags' | transloco"
             [hint]="'watchParties.tagsHint' | transloco"
+            [error]="invalid() ? ('watchParties.invalid' | transloco) : ''"
           >
             <input
               mbControl
@@ -80,10 +94,14 @@ const PER_TAG = 40;
               (ngModelChange)="draft.set($event); invalid.set(false)"
             />
           </mb-field>
-          @if (invalid()) {
-            <p role="alert">{{ 'watchParties.invalid' | transloco }}</p>
-          }
-          <button mbButton type="submit">{{ 'watchParties.find' | transloco }}</button>
+          <button
+            mbButton
+            type="submit"
+            [attr.aria-label]="'watchParties.find' | transloco"
+            [title]="'watchParties.find' | transloco"
+          >
+            <mb-icon name="find" />
+          </button>
         </form>
         @if (followed().length) {
           <h2>{{ 'watchParties.followed' | transloco }}</h2>
@@ -103,7 +121,7 @@ const PER_TAG = 40;
         }
       </aside>
 
-      <section class="party-results" aria-live="polite">
+      <section mbPagePanel aria-live="polite">
         @if (!tags().length) {
           <mb-content-state
             [title]="'watchParties.start' | transloco"
@@ -138,41 +156,11 @@ const PER_TAG = 40;
           }
         }
       </section>
-    </div>
+    </mb-rail-page>
   `,
   styles: `
     :host {
       display: block;
-    }
-    .parties {
-      display: grid;
-      /* The header's tracks, as on /rss, /videos and /videos/search. */
-      grid-template-columns: 290px minmax(0, 1fr);
-      gap: 16px;
-      padding: 16px 0;
-      align-items: start;
-    }
-    .party-rail,
-    .party-results {
-      padding: 1.2rem;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--col-bg);
-      min-width: 0;
-    }
-    .party-rail {
-      display: grid;
-      gap: 0.75rem;
-      position: sticky;
-      top: 12px;
-    }
-    form {
-      display: grid;
-      gap: 0.75rem;
-    }
-    h1 {
-      font-size: 1.4rem;
-      margin: 0;
     }
     h2 {
       font-size: 1rem;
@@ -195,15 +183,6 @@ const PER_TAG = 40;
     }
     .party app-status-card {
       justify-self: stretch;
-    }
-    @media (max-width: 1000px) {
-      .parties {
-        grid-template-columns: minmax(0, 1fr);
-        padding-inline: 12px;
-      }
-      .party-rail {
-        position: static;
-      }
     }
   `,
 })

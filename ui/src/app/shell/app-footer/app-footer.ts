@@ -151,7 +151,7 @@ import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
     }
     .app-footer a:hover,
     .app-footer .link:hover {
-      color: var(--accent);
+      color: var(--ds-action-text);
     }
     .app-footer .link {
       padding: 0;

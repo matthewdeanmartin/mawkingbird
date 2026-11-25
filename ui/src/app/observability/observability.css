@@ -295,7 +295,7 @@
 
 /* ------------------------------------------------------- diagnostic timeline */
 .diagnostic-notice {
-  color: var(--accent);
+  color: var(--ds-action-text);
   margin: 8px 0;
 }
 
@@ -513,7 +513,7 @@
 
 .tier-tag[data-tier='paid'] {
   background: color-mix(in srgb, var(--accent) 18%, transparent);
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .tier-tag[data-tier='free'] {

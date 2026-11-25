@@ -328,7 +328,7 @@
                   (autoTranslated() ? 'statusCard.chain.noteAutomatic' : 'statusCard.chain.note')
                     | transloco: { from: languageLabel(ct.source), engine: engineName(ct.engine) }
                 }}</mb-help>
-                <button class="link-button" type="button" (click)="changeSource($event)">
+                <button mbButton variant="link" type="button" (click)="changeSource($event)">
                   {{ 'statusCard.chain.change' | transloco }}
                 </button>
               </div>
@@ -364,12 +364,12 @@
             <div class="translation-note translation-error small" role="alert">
               {{ msg }}
               @if (sameLanguageEngine()) {
-                <button class="link-button" type="button" (click)="translateAnyway($event)">
+                <button mbButton variant="link" type="button" (click)="translateAnyway($event)">
                   {{ 'statusCard.translateAnyway' | transloco }}
                 </button>
               }
               @if (suggestConnectors()) {
-                <a class="link-button" routerLink="/settings/connections">
+                <a mbButton variant="link" routerLink="/settings/connections">
                   {{ 'statusCard.chain.connectors' | transloco }}
                 </a>
               }
@@ -1821,7 +1821,7 @@
         <div class="inline-compose redraft" (click)="$event.stopPropagation()">
           <div class="redraft-note muted">
             {{ 'statusCard.postDeletedDiscard' | transloco }}
-            <button type="button" class="linklike" (click)="cancelRedraft()">
+            <button type="button" mbButton variant="link" (click)="cancelRedraft()">
               {{ 'statusCard.discard' | transloco }}</button
             >.
           </div>

@@ -49,7 +49,7 @@
 /* Fixed-width gutter so the labels line up whether or not a row is ticked. */
 .tick {
   flex: 0 0 12px;
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .lang-menu hr {

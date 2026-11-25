@@ -94,7 +94,7 @@
 
 .pill-on {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .spotlight-actions {

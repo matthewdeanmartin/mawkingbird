@@ -10,7 +10,7 @@
 }
 
 .export-status {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 13px;
   font-weight: 600;
 }

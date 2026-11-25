@@ -20,6 +20,8 @@ class CardStub {
 class PlayerStub {
   readonly source = input<unknown>();
   readonly inline = input(false);
+  readonly showLinks = input(true);
+  readonly showTitle = input(true);
 }
 
 describe('VideoSearchPage', () => {

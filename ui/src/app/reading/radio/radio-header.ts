@@ -2,7 +2,8 @@ import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
-import { RadioIcon } from './radio-icon';
+import { MbIcon } from '../../design-system/icon/icon';
+import { MbPageHeader } from '../../design-system/page-header/page-header';
 
 // i18n radio.settingsLink: Radio settings
 
@@ -12,46 +13,24 @@ import { RadioIcon } from './radio-icon';
  */
 @Component({
   selector: 'app-radio-header',
-  imports: [RouterLink, TranslocoPipe, MbButton, RadioIcon],
+  imports: [RouterLink, TranslocoPipe, MbButton, MbIcon, MbPageHeader],
   template: `
-    <header class="radio-header">
-      <h1>{{ heading() }}</h1>
-      <div class="radio-header-actions">
-        <ng-content />
-        <a
-          mbButton
-          variant="outline"
-          size="small"
-          routerLink="/radio/settings"
-          [attr.aria-label]="'radio.settingsLink' | transloco"
-          [title]="'radio.settingsLink' | transloco"
-        >
-          <app-radio-icon name="settings" />
-        </a>
-      </div>
-    </header>
+    <mb-page-header embedded [title]="heading()">
+      <ng-content />
+      <a
+        mbButton
+        variant="compact"
+        routerLink="/radio/settings"
+        [attr.aria-label]="'radio.settingsLink' | transloco"
+        [title]="'radio.settingsLink' | transloco"
+      >
+        <mb-icon name="settings" />
+      </a>
+    </mb-page-header>
   `,
   styles: `
     :host {
       display: block;
-    }
-    .radio-header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px 16px;
-    }
-    h1 {
-      margin: 0;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-    .radio-header-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 8px;
     }
   `,
 })

@@ -90,7 +90,7 @@
 
 .tab.active {
   border-bottom-color: var(--accent);
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .platform-intro {
@@ -234,7 +234,7 @@ select {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 13px;
   text-decoration: underline;
 }

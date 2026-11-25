@@ -127,7 +127,7 @@ import { ClientPrefs } from '../../platform/storage/client-prefs';
       inset: -4px -2px;
     }
     .action:hover {
-      color: var(--accent);
+      color: var(--ds-action-text);
     }
     /* Extend the native Explore link/button over the card. This preserves
        keyboard and modified-click behavior without a second click handler. */

@@ -1,0 +1,23 @@
+:host {
+  display: grid;
+  position: sticky;
+  top: 12px;
+  gap: 12px;
+  align-content: start;
+  min-width: 0;
+  max-height: calc(100vh - 90px);
+  max-height: calc(100dvh - 90px);
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--col-bg);
+  color: var(--text);
+}
+
+@media (max-width: 1000px) {
+  :host {
+    position: static;
+    max-height: none;
+  }
+}

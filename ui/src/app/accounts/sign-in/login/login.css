@@ -136,7 +136,7 @@
   border: 0;
   padding: 0 3px;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: inherit;
   font-weight: 700;
 }
@@ -183,7 +183,7 @@
 }
 
 h1 {
-  color: var(--accent);
+  color: var(--ds-action-text);
   margin: 0;
 }
 
@@ -217,7 +217,7 @@ h1 {
   align-items: center;
   gap: 7px;
   margin-top: 9px;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 800;
   text-decoration: none;
 }
@@ -258,7 +258,7 @@ app-app-footer {
 }
 
 .token-path > summary::marker {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 /* Keep the heading inline with the disclosure marker instead of dropping to a new line. */
@@ -273,7 +273,7 @@ app-app-footer {
 }
 
 .account-token-path > summary {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 13px;
   font-weight: 700;
 }
@@ -308,7 +308,7 @@ app-app-footer {
 }
 
 .tab.active {
-  color: var(--accent);
+  color: var(--ds-action-text);
   border-bottom-color: var(--accent);
 }
 
@@ -363,7 +363,7 @@ input {
 .link {
   border: none;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 13px;
   padding: 0;
 }

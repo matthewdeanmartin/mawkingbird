@@ -51,7 +51,7 @@ import { PrivateLikes } from './private-likes';
       background: var(--border);
     }
     button[aria-pressed='true'] {
-      color: var(--accent);
+      color: var(--ds-action-text);
     }
     [role='alert'] {
       font-size: 0.85rem;

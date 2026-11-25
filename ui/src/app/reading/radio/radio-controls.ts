@@ -12,7 +12,7 @@ import { ReadingZen } from '../reading-zen';
 import { RadioPlayer, RadioTrack } from './radio-player';
 import { Server } from '../../platform/http/server';
 import { listenParams } from '../radio-links';
-import { RadioIcon } from './radio-icon';
+import { MbIcon } from '../../design-system/icon/icon';
 
 // i18n radio.play: Play
 // i18n radio.pause: Pause
@@ -47,7 +47,7 @@ import { RadioIcon } from './radio-icon';
     MbButton,
     MbField,
     MbControl,
-    RadioIcon,
+    MbIcon,
   ],
   templateUrl: './radio-controls.html',
   styleUrl: './radio-controls.css',

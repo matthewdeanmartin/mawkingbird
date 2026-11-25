@@ -4,8 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { firstValueFrom, map } from 'rxjs';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { MbAddBox } from '../../design-system/add-box/add-box';
+import { MbCheckbox } from '../../design-system/checkbox/checkbox';
+import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbField, MbControl } from '../../design-system/field/field';
+import { MbHelp } from '../../design-system/help/help';
+import { MbIcon } from '../../design-system/icon/icon';
+import { MbItemAction, MbItemActions } from '../../design-system/item-actions/item-actions';
+import { MbPagePanel, MbRailPage, MbRailPanel } from '../../design-system/rail-page/rail-page';
+import { translatedComputed } from '../../i18n/translated';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { Compose } from '../../publishing/compose/compose';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -14,6 +22,7 @@ import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { MbButton } from '../../design-system/button/button';
 import { RssReadState } from '../rss/rss-read-state';
 import { VideoSubscriptions } from './video-subscriptions';
+import { queueEntry, WatchQueue } from './watch-queue';
 import { YoutubeFeeds, YoutubeSearchItem } from './youtube-feeds';
 import { VideoPlayer } from '../video-player/video-player';
 import { watchParams, youtubeSource } from '../video-player/media-source';
@@ -32,7 +41,6 @@ import {
   VideoSort,
 } from './video-items';
 
-// i18n videos.subscriptionsHeading: Subscriptions
 // i18n videos.viewLabel: Subscriptions feed
 // i18n videos.shorts: Shorts
 // i18n videos.shortsTitle: Show YouTube Shorts in the feed
@@ -66,12 +74,9 @@ import {
 // i18n videos.back: Back to subscriptions
 // i18n videos.nativeSearch: Search YouTube from the Mawkingbird app for your computer. Here, paste a channel link to follow its videos.
 // i18n videos.installNative: Install Mawkingbird Native
-// i18n videos.original: Open on YouTube
 // i18n videos.saved: Saved videos
 // i18n videos.save: Save for later
-// i18n videos.unsave: Remove from saved
 // i18n videos.read: Mark watched
-// i18n videos.unread: Mark unwatched
 // i18n videos.subscribed: Subscribed
 // i18n videos.proxyNote: Public channel information is retrieved through the Mawkingbird proxy. No YouTube account is needed.
 @Component({
@@ -81,10 +86,19 @@ import {
     FormsModule,
     RouterLink,
     TranslocoPipe,
+    MbAddBox,
     MbButton,
+    MbCheckbox,
+    MbContentState,
     MbField,
     MbControl,
     MbDialog,
+    MbHelp,
+    MbIcon,
+    MbItemActions,
+    MbPagePanel,
+    MbRailPage,
+    MbRailPanel,
     Compose,
     VideoPlayer,
     VideoSubscriptionsPanel,
@@ -106,6 +120,8 @@ export class VideosPage {
   private youtube = inject(YoutubeFeeds);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private queue = inject(WatchQueue);
+  private transloco = inject(TranslocoService);
   private auth = inject(Auth);
   private bsky = inject(BlueskySession);
   protected responseTarget = computed(() =>
@@ -151,6 +167,42 @@ export class VideosPage {
       ),
       this.sort(),
     ),
+  );
+
+  /** The feed's cards, each with everything there is to do with its video. */
+  protected readonly cards = translatedComputed(() =>
+    this.visible().map((item) => ({ item, actions: this.feedActions(item) })),
+  );
+  /** YouTube search results as cards; null while the subscriptions feed shows. */
+  protected readonly resultCards = translatedComputed(
+    () =>
+      this.results()?.map((item) => {
+        const source = this.searchSource(item);
+        const actions: MbItemAction[] = source
+          ? [
+              this.watchAction(source.videoId),
+              this.queueAction(source),
+              this.respondAction({
+                id: source.key,
+                title: item.title,
+                channelTitle: item.channelTitle,
+                source,
+              }),
+              this.openAction(source.url),
+            ]
+          : [];
+        if (item.channelId) {
+          const subscribed = this.subs.has(item.channelId);
+          actions.push({
+            id: 'subscribe',
+            icon: subscribed ? 'check' : 'rss',
+            label: this.t(subscribed ? 'videos.subscribed' : 'videos.subscribe'),
+            disabled: subscribed,
+            run: () => this.subscribe(item),
+          });
+        }
+        return { item, source, actions };
+      }) ?? null,
   );
 
   constructor() {
@@ -250,6 +302,78 @@ export class VideosPage {
   /** Watch a shared video with the post's replies as its conversation. */
   protected watchWith(item: VideoItem, post: Status): Record<string, string> {
     return watchParams(post, item.source, this.server.baseUrl());
+  }
+
+  private t(key: string): string {
+    return this.transloco.translate(key);
+  }
+
+  private feedActions(item: VideoItem): MbItemAction[] {
+    return [
+      this.watchAction(item.source.videoId),
+      this.queueAction(item.source),
+      {
+        id: 'save',
+        icon: 'save',
+        label: this.t('videos.save'),
+        pressed: this.reads.isStarred(item.id),
+        run: () => this.reads.toggleStarred(item.id),
+      },
+      {
+        id: 'watched',
+        icon: 'check',
+        label: this.t('videos.read'),
+        pressed: this.reads.isRead(item.id),
+        run: () => this.toggleRead(item.id),
+      },
+      this.respondAction(item),
+      this.openAction(item.source.url),
+    ];
+  }
+
+  private watchAction(videoId: string | undefined): MbItemAction {
+    return {
+      id: 'watch',
+      icon: 'people',
+      label: this.t('videos.watchParty'),
+      link: '/watch',
+      queryParams: { youtube: videoId },
+    };
+  }
+
+  private queueAction(source: VideoItem['source']): MbItemAction {
+    const entry = queueEntry(source, null);
+    const queued = !!entry && this.queue.has(entry.key);
+    const full = !queued && this.queue.full();
+    return {
+      id: 'queue',
+      icon: 'queue',
+      label: this.t(
+        full ? 'videoQueue.full' : queued ? 'watch.panel.queueRemove' : 'watch.panel.queueAdd',
+      ),
+      pressed: queued,
+      disabled: !entry || full,
+      run: () => {
+        if (!entry) return;
+        if (queued) this.queue.remove(entry.key);
+        else this.queue.add(entry);
+      },
+    };
+  }
+
+  private respondAction(
+    item: Pick<VideoItem, 'id' | 'title' | 'channelTitle' | 'source'>,
+  ): MbItemAction {
+    return {
+      id: 'respond',
+      icon: 'reply',
+      label: this.t('videos.response'),
+      run: () => this.postResponse(item),
+    };
+  }
+
+  private openAction(url: string): MbItemAction {
+    return { id: 'open', icon: 'open', label: this.t('videoPlayer.openYoutube'), href: url };
   }
 
   protected toggleRead(id: string): void {

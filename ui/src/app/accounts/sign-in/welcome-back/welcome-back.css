@@ -25,7 +25,7 @@
 }
 
 h1 {
-  color: var(--accent);
+  color: var(--ds-action-text);
   margin: 0 0 12px;
   font-size: 24px;
 }
@@ -107,7 +107,7 @@ kbd {
 
 .helper a,
 .done a {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .small {

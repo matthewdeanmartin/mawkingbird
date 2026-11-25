@@ -72,6 +72,8 @@ export class VideoPlayer implements OnDestroy {
   readonly compact = input(false);
   /** Off on Watch, whose own row has these links. */
   readonly showLinks = input(true);
+  /** Off where the page already shows the title beside the player. */
+  readonly showTitle = input(true);
   private playback = inject(Playback);
   private prefs = inject(ClientPrefs);
   private sanitizer = inject(DomSanitizer);

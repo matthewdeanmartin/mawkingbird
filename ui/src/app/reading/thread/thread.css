@@ -139,11 +139,11 @@
 }
 
 .raction:hover {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .raction.on {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 600;
   background: var(--accent-soft);
   border: 1px solid var(--accent);

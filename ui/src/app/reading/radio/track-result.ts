@@ -7,7 +7,7 @@ import { MbButton } from '../../design-system/button/button';
 import { Status } from '../../platform/api/models';
 import { Server } from '../../platform/http/server';
 import { listenParams } from '../radio-links';
-import { RadioIcon } from './radio-icon';
+import { MbIcon } from '../../design-system/icon/icon';
 import { isContinuous, RadioPlayer } from './radio-player';
 import { postHasPage } from './single-page';
 import { postTitle } from './track-title';
@@ -26,7 +26,7 @@ import { postTitle } from './track-title';
  */
 @Component({
   selector: 'app-track-result',
-  imports: [AccountName, RouterLink, TranslocoPipe, MbButton, RadioIcon],
+  imports: [AccountName, RouterLink, TranslocoPipe, MbButton, MbIcon],
   template: `
     @let single = singles()[0];
     <article class="result">
@@ -50,7 +50,7 @@ import { postTitle } from './track-title';
         </p>
         <div class="actions">
           <button mbButton size="small" type="button" (click)="playRequest.emit()">
-            <app-radio-icon name="play" />
+            <mb-icon name="play" />
             {{ 'trackResult.play' | transloco }}
           </button>
           @if (canKeep()) {

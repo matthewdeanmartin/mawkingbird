@@ -35,7 +35,7 @@
 }
 
 [mbIdentityRow] .suggestion-name:hover .suggestion-display {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 [mbIdentityRow] .suggestion-display,

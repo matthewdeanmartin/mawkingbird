@@ -1,5 +1,6 @@
 import { translatedComputed } from '../../i18n/translated';
 import { accountProfilePath } from '../../accounts/account-route';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { Component, inject, OnInit, signal } from '@angular/core';
@@ -10,6 +11,7 @@ import { AdminAccount } from '../../platform/api/models';
 
 const STATUSES = ['active', 'pending', 'silenced', 'suspended', 'disabled'] as const;
 
+// i18n adminAccounts.filter: Account status
 // i18n adminAccounts.status.active: active
 // i18n adminAccounts.status.pending: pending
 // i18n adminAccounts.status.silenced: silenced
@@ -31,7 +33,7 @@ const STATUSES = ['active', 'pending', 'silenced', 'suspended', 'disabled'] as c
 // i18n adminAccounts.confirm.delete: Permanently delete @{{username}}? This cannot be undone.
 @Component({
   selector: 'app-admin-accounts',
-  imports: [MbButton, RouterLink, TranslocoPipe],
+  imports: [MbButton, MbToolbar, MbToolbarButton, RouterLink, TranslocoPipe],
   templateUrl: './admin-accounts.html',
   styleUrl: './admin-accounts.css',
 })

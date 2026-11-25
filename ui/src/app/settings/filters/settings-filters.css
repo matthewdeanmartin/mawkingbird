@@ -46,7 +46,7 @@
   padding: 1px 8px;
   border-radius: 999px;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 11.5px;
   font-weight: 700;
 }

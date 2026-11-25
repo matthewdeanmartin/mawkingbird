@@ -64,7 +64,7 @@
 .refine-active-count {
   font-weight: 400;
   font-size: 13px;
-  color: var(--accent);
+  color: var(--ds-action-text);
   white-space: nowrap;
 }
 
@@ -461,7 +461,7 @@
   border: 0;
   padding: 0 4px;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font: inherit;
   font-weight: 700;
   cursor: pointer;

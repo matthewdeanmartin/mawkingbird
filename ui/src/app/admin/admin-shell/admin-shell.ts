@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 
+// i18n adminShell.sections: Server administration
 // i18n adminShell.accounts: Accounts
 // i18n adminShell.reports: Reports
 // i18n adminShell.domainBlocks: Domain blocks
@@ -15,7 +17,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-admin-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslocoPipe],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslocoPipe, MbNavigation, MbNavLink],
   templateUrl: './admin-shell.html',
 })
 export class AdminShell {}

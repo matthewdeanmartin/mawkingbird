@@ -123,7 +123,7 @@ h3,
   padding: 0;
   border: none;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   cursor: pointer;
 }
 
@@ -153,7 +153,7 @@ h3,
 .destination:hover,
 .destination:focus-visible {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .destination.native {
@@ -184,7 +184,7 @@ h3,
    read as the primary action and the hand-offs stay quiet. */
 .destination.post {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 600;
 }
 

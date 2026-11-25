@@ -129,7 +129,7 @@ interface FacetGroup {
       font-variant-numeric: tabular-nums;
     }
     .clear {
-      color: var(--accent);
+      color: var(--ds-action-text);
     }
     .card-note {
       margin: 0;

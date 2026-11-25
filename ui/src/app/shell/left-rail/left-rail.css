@@ -63,7 +63,7 @@
   display: block;
   padding: 10px 14px;
   border-top: 1px solid var(--border);
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 13px;
   font-weight: 700;
 }

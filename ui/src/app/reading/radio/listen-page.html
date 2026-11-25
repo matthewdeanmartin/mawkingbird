@@ -1,8 +1,6 @@
 <section class="listen-page">
   <app-reading-back fallback="/singles" />
-  <header class="listen-header">
-    <h1>{{ 'listen.title' | transloco }}</h1>
-  </header>
+  <mb-page-header embedded [title]="'listen.title' | transloco" />
   @if (error()) {
     <p role="alert">{{ error() | transloco }}</p>
   } @else if (loader.loading()) {
@@ -39,7 +37,7 @@
               <img class="artwork" [src]="track.media.preview_url" alt="" />
             } @else {
               <div class="artwork placeholder" aria-hidden="true">
-                <app-radio-icon name="play" />
+                <mb-icon name="play" />
               </div>
             }
             <div class="meta">
@@ -83,7 +81,7 @@
                 [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
                 (click)="player.toggle()"
               >
-                <app-radio-icon [name]="player.playing() || player.waiting() ? 'pause' : 'play'" />
+                <mb-icon [name]="player.playing() || player.waiting() ? 'pause' : 'play'" />
               </button>
               @if (long()) {
                 <button
@@ -122,7 +120,7 @@
             <div class="actions">
               @if (resumeAt()) {
                 <button mbButton type="button" (click)="play(resumeAt())">
-                  <app-radio-icon name="play" />
+                  <mb-icon name="play" />
                   {{ 'listen.resume' | transloco: { time: clock(resumeAt()) } }}
                 </button>
                 <button mbButton variant="outline" type="button" (click)="play()">
@@ -130,7 +128,7 @@
                 </button>
               } @else {
                 <button mbButton type="button" (click)="play()">
-                  <app-radio-icon name="play" />
+                  <mb-icon name="play" />
                   {{ 'listen.play' | transloco }}
                 </button>
               }

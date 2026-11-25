@@ -103,7 +103,7 @@
 }
 
 .delivery-tick {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 700;
 }
 

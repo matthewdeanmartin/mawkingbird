@@ -69,7 +69,7 @@
   @if (duration()) {
     <span class="duration">{{ duration() }}</span>
   }
-  @if (title() && (source().kind !== 'youtube' || title() !== 'YouTube')) {
+  @if (showTitle() && title() && (source().kind !== 'youtube' || title() !== 'YouTube')) {
     <p class="description">{{ title() }}</p>
   }
   @if (failed()) {
@@ -83,8 +83,7 @@
       @if (watch(); as params) {
         <a
           mbButton
-          variant="outline"
-          size="small"
+          variant="compact"
           routerLink="/watch"
           [queryParams]="params"
           (click)="prepareWatch()"
@@ -95,7 +94,7 @@
       @if (queueItem(); as entry) {
         <app-queue-button [entry]="entry" />
       }
-      <a [href]="source().url" target="_blank" rel="noopener noreferrer">
+      <a mbButton variant="compact" [href]="source().url" target="_blank" rel="noopener noreferrer">
         {{
           (source().kind === 'youtube' ? 'videoPlayer.openYoutube' : 'videoPlayer.openOriginal')
             | transloco

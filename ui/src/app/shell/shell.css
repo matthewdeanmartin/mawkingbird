@@ -82,7 +82,7 @@
 
 .primary-nav a:hover {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .primary-nav a::after {
@@ -149,7 +149,7 @@
 }
 .nav-dropdown summary:hover,
 .nav-dropdown summary.active {
-  color: var(--accent);
+  color: var(--ds-action-text);
   background: var(--accent-soft);
 }
 .nav-dropdown-panel {
@@ -764,7 +764,7 @@
   padding: 0 6px;
   border-radius: 9999px;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 12px;
   font-weight: 700;
   line-height: 18px;

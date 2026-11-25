@@ -65,7 +65,7 @@ form input[type='text'] {
   background: none;
   padding: 0;
   font: inherit;
-  color: var(--accent);
+  color: var(--ds-action-text);
   cursor: pointer;
   text-decoration: underline;
 }

@@ -135,7 +135,7 @@
 
 .confidence-exact .bridge-kind {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .confidence-weak .bridge-kind {

@@ -35,7 +35,7 @@
               }
             }
             @case ('links') {
-              <form class="inline" (ngSubmit)="openLinks()">
+              <form mbAddBox (ngSubmit)="openLinks()">
                 <mb-field [label]="'findSingles.links' | transloco">
                   <textarea
                     mbControl
@@ -45,15 +45,15 @@
                     (ngModelChange)="importText.set($event)"
                   ></textarea>
                 </mb-field>
-                <button mbButton type="submit" [disabled]="importing() || !importText().trim()">
+                <button mbButton type="submit" [disabled]="importing()">
                   {{ 'findSingles.openLinks' | transloco }}
                 </button>
               </form>
             }
             @default {
-              <form class="inline" (ngSubmit)="discover()">
+              <form mbAddBox (ngSubmit)="discover()">
                 @if (scope.value === 'account') {
-                  <mb-field [label]="'radio.handle' | transloco" density="compact">
+                  <mb-field [label]="'radio.handle' | transloco">
                     <input
                       mbControl
                       name="handle"
@@ -63,7 +63,7 @@
                     />
                   </mb-field>
                 } @else if (scope.value === 'tag') {
-                  <mb-field [label]="'radio.hashtag' | transloco" density="compact">
+                  <mb-field [label]="'radio.hashtag' | transloco">
                     <input
                       mbControl
                       name="tag"
@@ -73,7 +73,7 @@
                     />
                   </mb-field>
                 } @else if (scope.value === 'list') {
-                  <mb-field [label]="'radio.list' | transloco" density="compact">
+                  <mb-field [label]="'radio.list' | transloco">
                     <select
                       mbControl
                       name="list"
@@ -88,7 +88,7 @@
                     </select>
                   </mb-field>
                 } @else if (scope.value === 'saved') {
-                  <mb-field [label]="'findSingles.savedSearch' | transloco" density="compact">
+                  <mb-field [label]="'findSingles.savedSearch' | transloco">
                     <select
                       mbControl
                       name="saved"
@@ -103,11 +103,7 @@
                     </select>
                   </mb-field>
                 }
-                <button
-                  mbButton
-                  type="submit"
-                  [disabled]="resolving() || scan.loading() || !searchReady()"
-                >
+                <button mbButton type="submit" [disabled]="resolving() || scan.loading()">
                   {{ 'radio.discover' | transloco }}
                 </button>
               </form>

@@ -63,7 +63,7 @@
   padding: 10px 16px;
   border-bottom: 1px solid var(--border);
   font-size: 0.9em;
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 /* --- per-row conversion menu ---

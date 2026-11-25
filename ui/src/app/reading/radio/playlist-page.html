@@ -25,7 +25,7 @@
     @if (tracks().length) {
       <div class="actions">
         <button mbButton type="button" (click)="play()">
-          <app-radio-icon name="play" />
+          <mb-icon name="play" />
           {{ 'playlist.play' | transloco }}
         </button>
         <button mbButton variant="outline" type="button" (click)="shuffle()">
@@ -36,35 +36,31 @@
         </button>
       </div>
       <ol
-        class="rows"
+        mbItemList
         [attr.aria-label]="
           countKey('playlist.trackCount', tracks().length) | transloco: { count: tracks().length }
         "
       >
         @for (track of tracks(); track track.key; let i = $index) {
           @let title = player.title(track);
-          <li>
-            <div class="row">
-              <span class="track">
-                <span class="track-title">{{ title }}</span>
-                <span class="track-meta"
-                  ><app-account-name
-                    [account]="track.post.account"
-                    [fallback]="track.post.account.acct"
-                /></span>
-              </span>
-              <mb-toolbar class="row-actions" density="compact" embedded [label]="title">
-                <button
-                  mbToolbarButton
-                  type="button"
-                  [attr.aria-label]="'singles.play' | transloco: { title }"
-                  [title]="'singles.play' | transloco: { title }"
-                  (click)="play(i)"
-                >
-                  <app-radio-icon name="play" />
-                </button>
-              </mb-toolbar>
-            </div>
+          <li mbItemRow>
+            <span mbItemTitle>{{ title }}</span>
+            <span mbItemMeta
+              ><app-account-name
+                [account]="track.post.account"
+                [fallback]="track.post.account.acct"
+            /></span>
+            <mb-toolbar density="compact" embedded [label]="title">
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'singles.play' | transloco: { title }"
+                [title]="'singles.play' | transloco: { title }"
+                (click)="play(i)"
+              >
+                <mb-icon name="play" />
+              </button>
+            </mb-toolbar>
           </li>
         }
       </ol>
@@ -94,7 +90,7 @@
     }
     <div class="actions">
       <button mbButton type="button" [disabled]="!tracks().length" (click)="play()">
-        <app-radio-icon name="play" />
+        <mb-icon name="play" />
         {{ 'playlist.play' | transloco }}
       </button>
       <button
@@ -127,95 +123,90 @@
 
     @if (tracks().length) {
       <ol
-        class="rows"
+        mbItemList
         [attr.aria-label]="
           countKey('playlist.trackCount', tracks().length) | transloco: { count: tracks().length }
         "
       >
         @for (track of tracks(); track track.key; let i = $index) {
           @let title = player.title(track);
-          <li>
-            <div class="row">
-              <span class="track">
-                <span class="track-title">{{ title }}</span>
-                <span class="track-meta"
-                  ><app-account-name
-                    [account]="track.post.account"
-                    [fallback]="track.post.account.acct"
-                  />
-                  @if (track.external) {
-                    · {{ track.external.label }}
-                  }
-                  @if (!isContinuous(track)) {
-                    · {{ 'playlist.ownPage' | transloco }}
-                  }
-                </span>
-              </span>
-              <mb-toolbar
-                class="row-actions"
-                density="compact"
-                embedded
-                [label]="'radio.trackActions' | transloco: { number: i + 1 }"
+          <li mbItemRow>
+            <span mbItemTitle>{{ title }}</span>
+            <span mbItemMeta
+              ><app-account-name
+                [account]="track.post.account"
+                [fallback]="track.post.account.acct"
+              />
+              @if (track.external) {
+                · {{ track.external.label }}
+              }
+              @if (!isContinuous(track)) {
+                · {{ 'playlist.ownPage' | transloco }}
+              }
+            </span>
+            <mb-toolbar
+              density="compact"
+              embedded
+              [label]="'radio.trackActions' | transloco: { number: i + 1 }"
+            >
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'radio.play' | transloco"
+                [title]="'radio.play' | transloco"
+                [disabled]="!isContinuous(track)"
+                (click)="play(i)"
               >
-                <button
-                  mbToolbarButton
-                  type="button"
-                  [attr.aria-label]="'radio.play' | transloco"
-                  [title]="'radio.play' | transloco"
-                  [disabled]="!isContinuous(track)"
-                  (click)="play(i)"
-                >
-                  <app-radio-icon name="play" />
-                </button>
-                <button
-                  mbToolbarButton
-                  type="button"
-                  [attr.aria-label]="'radio.catalogue.share' | transloco"
-                  [title]="'radio.catalogue.share' | transloco"
-                  (click)="actions.share(track)"
-                >
-                  <app-radio-icon name="share" />
-                </button>
-                <button
-                  mbToolbarButton
-                  type="button"
-                  [attr.aria-label]="'radio.renameTrack' | transloco"
-                  [title]="'radio.renameTrack' | transloco"
-                  (click)="retitle(i)"
-                >
-                  <app-radio-icon name="edit" />
-                </button>
-                <button
-                  mbToolbarButton
-                  type="button"
-                  [attr.aria-label]="'radio.moveUp' | transloco"
-                  [title]="'radio.moveUp' | transloco"
-                  [disabled]="i === 0"
-                  (click)="move(i, -1)"
-                >
-                  <app-radio-icon name="up" />
-                </button>
-                <button
-                  mbToolbarButton
-                  type="button"
-                  [attr.aria-label]="'radio.moveDown' | transloco"
-                  [title]="'radio.moveDown' | transloco"
-                  [disabled]="i === tracks().length - 1"
-                  (click)="move(i, 1)"
-                >
-                  <app-radio-icon name="down" />
-                </button>
-                <button
-                  mbToolbarButton
-                  type="button"
-                  [attr.aria-label]="'radio.removeTrack' | transloco"
-                  [title]="'radio.removeTrack' | transloco"
-                  (click)="remove(i)"
-                >
-                  <app-radio-icon name="remove" />
-                </button>
-              </mb-toolbar>
-            </div>
+                <mb-icon name="play" />
+              </button>
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'radio.catalogue.share' | transloco"
+                [title]="'radio.catalogue.share' | transloco"
+                (click)="actions.share(track)"
+              >
+                <mb-icon name="share" />
+              </button>
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'radio.renameTrack' | transloco"
+                [title]="'radio.renameTrack' | transloco"
+                (click)="retitle(i)"
+              >
+                <mb-icon name="edit" />
+              </button>
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'radio.moveUp' | transloco"
+                [title]="'radio.moveUp' | transloco"
+                [disabled]="i === 0"
+                (click)="move(i, -1)"
+              >
+                <mb-icon name="up" />
+              </button>
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'radio.moveDown' | transloco"
+                [title]="'radio.moveDown' | transloco"
+                [disabled]="i === tracks().length - 1"
+                (click)="move(i, 1)"
+              >
+                <mb-icon name="down" />
+              </button>
+              <button
+                mbToolbarButton
+                type="button"
+                [attr.aria-label]="'radio.removeTrack' | transloco"
+                [title]="'radio.removeTrack' | transloco"
+                (click)="remove(i)"
+              >
+                <mb-icon name="remove" />
+              </button>
+            </mb-toolbar>
           </li>
         }
       </ol>
@@ -232,30 +223,25 @@
         {{ 'playlist.fromSavedHint' | transloco }}
       </p>
       @if (candidates().length) {
-        <ul class="rows">
+        <ul mbItemList>
           @for (track of candidates(); track track.key) {
             @let title = player.title(track);
-            <li>
-              <div class="row">
-                <span class="track">
-                  <span class="track-title">{{ title }}</span>
-                  <span class="track-meta"
-                    ><app-account-name
-                      [account]="track.post.account"
-                      [fallback]="track.post.account.acct"
-                  /></span>
-                </span>
-                <button
-                  mbButton
-                  size="small"
-                  variant="outline"
-                  type="button"
-                  [attr.aria-label]="'playlist.add' | transloco: { title }"
-                  (click)="add(track)"
-                >
-                  <app-radio-icon name="add" />
-                </button>
-              </div>
+            <li mbItemRow>
+              <span mbItemTitle>{{ title }}</span>
+              <span mbItemMeta
+                ><app-account-name
+                  [account]="track.post.account"
+                  [fallback]="track.post.account.acct"
+              /></span>
+              <button
+                mbButton
+                variant="compact"
+                type="button"
+                [attr.aria-label]="'playlist.add' | transloco: { title }"
+                (click)="add(track)"
+              >
+                <mb-icon name="add" />
+              </button>
             </li>
           }
         </ul>

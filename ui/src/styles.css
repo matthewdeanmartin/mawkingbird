@@ -289,11 +289,18 @@ app-reader-core .reader .reader-search-hit {
 }
 
 a {
-  color: var(--accent);
+  color: var(--ds-action-text);
   text-decoration: none;
 }
 
 a:hover {
+  text-decoration: underline;
+}
+
+/* Paper colors are the article's own, so app-theme link ink may vanish on them:
+   there, links take the article's ink and are told apart by the underline. */
+.reader :is(.reader-post, .reader-article-body, .comment-content) a {
+  color: var(--reader-fg, var(--ds-action-text));
   text-decoration: underline;
 }
 
@@ -423,7 +430,7 @@ textarea {
 }
 
 .tab.active {
-  color: var(--accent);
+  color: var(--ds-action-text);
   border-bottom-color: var(--accent);
 }
 
@@ -600,7 +607,7 @@ a.tab:hover {
 .plan-badge:focus-visible,
 .plan-badge-open {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--ds-action-text);
   text-decoration: none;
 }
 

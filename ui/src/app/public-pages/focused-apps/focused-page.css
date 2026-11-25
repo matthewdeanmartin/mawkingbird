@@ -66,7 +66,7 @@ h1 {
 }
 .steps h2::before {
   content: counter(step) '. ';
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 .steps p {
   margin: 0;

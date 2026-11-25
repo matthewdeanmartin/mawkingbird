@@ -1,7 +1,7 @@
 <section class="page">
   <app-radio-header [heading]="'singles.section' | transloco">
     @if (singles.items().length) {
-      <button mbButton size="small" variant="outline" type="button" (click)="clearAll()">
+      <button mbButton variant="compact" tone="danger" type="button" (click)="clearAll()">
         {{ 'singles.clearAll' | transloco }}
       </button>
     }
@@ -17,87 +17,81 @@
     <p role="alert">{{ 'singles.storageFailed' | transloco }}</p>
   }
   @if (singles.items().length) {
-    <ul class="rows singles-rows" [attr.aria-label]="'singles.title' | transloco">
+    <ul mbItemList class="singles-rows" [attr.aria-label]="'singles.title' | transloco">
       @for (item of singles.items(); track item.track.key) {
         @let track = item.track;
         @let title = player.title(track);
-        <li>
-          <div class="row">
-            <span class="track">
-              <span class="track-title">{{ title }}</span>
-              <span class="track-meta"
-                ><app-account-name
-                  [account]="track.post.account"
-                  [fallback]="track.post.account.acct"
-                />
-                ·
-                {{ source(track) }}
-                @if (!isContinuous(track)) {
-                  · {{ 'singles.ownPage' | transloco }}
-                }
-              </span>
-            </span>
-            <mb-toolbar class="row-actions" density="compact" embedded [label]="title">
-              <button
-                mbToolbarButton
-                type="button"
-                [attr.aria-label]="'singles.play' | transloco: { title }"
-                [title]="'singles.play' | transloco: { title }"
-                [disabled]="!isContinuous(track) && !hasPage(track)"
-                (click)="play(track)"
-              >
-                <app-radio-icon name="play" />
-              </button>
-              @if (hasPage(track)) {
-                <button
-                  mbToolbarButton
-                  type="button"
-                  [attr.aria-label]="'singles.open' | transloco: { title }"
-                  [title]="'singles.open' | transloco: { title }"
-                  routerLink="/listen"
-                  [queryParams]="listen(track)"
-                >
-                  <app-radio-icon name="open" />
+        <li mbItemRow>
+          @if (hasPage(track)) {
+            <a
+              mbItemTitle
+              routerLink="/listen"
+              [queryParams]="listen(track)"
+              [title]="'singles.open' | transloco: { title }"
+              >{{ title }}</a
+            >
+          } @else {
+            <span mbItemTitle>{{ title }}</span>
+          }
+          <span mbItemMeta
+            ><app-account-name
+              [account]="track.post.account"
+              [fallback]="track.post.account.acct"
+            />
+            ·
+            {{ source(track) }}
+            @if (!isContinuous(track)) {
+              · {{ 'singles.ownPage' | transloco }}
+            }
+          </span>
+          <mb-toolbar density="compact" embedded [label]="title">
+            <button
+              mbToolbarButton
+              type="button"
+              [attr.aria-label]="'singles.play' | transloco: { title }"
+              [title]="'singles.play' | transloco: { title }"
+              [disabled]="!isContinuous(track) && !hasPage(track)"
+              (click)="play(track)"
+            >
+              <mb-icon name="play" />
+            </button>
+            <button
+              mbToolbarButton
+              type="button"
+              [attr.aria-label]="'singles.share' | transloco: { title }"
+              [title]="'singles.share' | transloco: { title }"
+              (click)="actions.share(track)"
+            >
+              <mb-icon name="share" />
+            </button>
+            <button
+              mbToolbarButton
+              type="button"
+              [attr.aria-label]="'singles.remove' | transloco: { title }"
+              [title]="'singles.remove' | transloco: { title }"
+              (click)="singles.remove(track)"
+            >
+              <mb-icon name="remove" />
+            </button>
+          </mb-toolbar>
+          @let targets = playlistsFor(track);
+          @if (targets.length || isContinuous(track)) {
+            <mb-post-menu
+              [label]="'singles.addTo' | transloco: { title }"
+              [closeLabel]="'radio.closeMenu' | transloco"
+            >
+              @for (row of targets; track row.id) {
+                <button mbMenuItem type="button" (click)="addTo(track, row.id)">
+                  {{ row.name }}
                 </button>
               }
-              <button
-                mbToolbarButton
-                type="button"
-                [attr.aria-label]="'singles.share' | transloco: { title }"
-                [title]="'singles.share' | transloco: { title }"
-                (click)="actions.share(track)"
-              >
-                <app-radio-icon name="share" />
-              </button>
-              <button
-                mbToolbarButton
-                type="button"
-                [attr.aria-label]="'singles.remove' | transloco: { title }"
-                [title]="'singles.remove' | transloco: { title }"
-                (click)="singles.remove(track)"
-              >
-                <app-radio-icon name="remove" />
-              </button>
-            </mb-toolbar>
-            @let targets = playlistsFor(track);
-            @if (targets.length || isContinuous(track)) {
-              <mb-post-menu
-                [label]="'singles.addTo' | transloco: { title }"
-                [closeLabel]="'radio.closeMenu' | transloco"
-              >
-                @for (row of targets; track row.id) {
-                  <button mbMenuItem type="button" (click)="addTo(track, row.id)">
-                    {{ row.name }}
-                  </button>
-                }
-                @if (isContinuous(track)) {
-                  <button mbMenuItem type="button" (click)="newPlaylist(track)">
-                    {{ 'singles.newPlaylist' | transloco }}
-                  </button>
-                }
-              </mb-post-menu>
-            }
-          </div>
+              @if (isContinuous(track)) {
+                <button mbMenuItem type="button" (click)="newPlaylist(track)">
+                  {{ 'singles.newPlaylist' | transloco }}
+                </button>
+              }
+            </mb-post-menu>
+          }
         </li>
       }
     </ul>

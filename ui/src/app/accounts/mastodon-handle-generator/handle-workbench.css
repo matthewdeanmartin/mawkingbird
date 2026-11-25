@@ -112,7 +112,7 @@
   white-space: nowrap;
 }
 .is-free .status {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 600;
 }
 .is-taken .handle {

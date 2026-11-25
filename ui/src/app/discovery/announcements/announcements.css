@@ -22,7 +22,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--accent);
+  color: var(--ds-action-text);
   margin-bottom: 4px;
 }
 
@@ -73,7 +73,7 @@
 
 .reaction.on {
   border-color: var(--accent);
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .reaction.unused {

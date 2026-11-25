@@ -3496,3 +3496,11 @@ Tag actions and party chat font (2026-11-24): reviewed the regenerated inventory
 731 candidate files unchanged. TagActions' six legacy pills became words with
 hairline dividers plus a Forum link; its bundle picker keeps its pill and stays in
 the backlog. Party chat's compact view uses the app font instead of monospace.
+
+Action rows (2026-11-24): reviewed the regenerated inventory: 736 candidate files.
+Added: admin-shell.html (shared Navigation) and the Add box, Item actions, Item list
+and Rail page implementations, which the scanner now recognizes. Removed:
+watch-actions.ts (now Item actions) and radio-icon.ts (now Icon; never a candidate).
+Videos, its subscriptions panel, the watch queue, video search, watch parties, Radio's
+list pages and admin accounts lose pills, raw inputs and legacy tabs. See
+[20-drift-review.md](20-drift-review.md).

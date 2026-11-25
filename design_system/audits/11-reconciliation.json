@@ -1,5 +1,5 @@
 {
-  "scope": "Candidate-file reconciliation, not per-control completion. Source triage covers every candidate; backlog explicitly requires deeper template/style/runtime review. Evidence lines are in 06-control-inventory.json. Changes to the scanner now include navigation, fields, counts and remaining shared widget names. I18n reactivity review (2026-11-24): 730 candidates unchanged; four source-offset changes, with no changed control findings or dispositions. Six-locale/Arabic review (2026-11-24): 730 candidates unchanged; three source-offset changes only. Checkbox/Field hint direction changes preserve controls and dispositions. Shell CSS budget cleanup (2026-11-24): unchanged candidate/control findings; only source offsets moved after redundant mobile declarations were removed. Own replies, reposts and report-gate evidence (2026-11-24): 730 candidates unchanged; source offsets only. Watch action rows (2026-11-24): one candidate added, watch-actions.ts.",
+  "scope": "Candidate-file reconciliation, not per-control completion. Source triage covers every candidate; backlog explicitly requires deeper template/style/runtime review. Evidence lines are in 06-control-inventory.json. Changes to the scanner now include navigation, fields, counts and remaining shared widget names. I18n reactivity review (2026-11-24): 730 candidates unchanged; four source-offset changes, with no changed control findings or dispositions. Six-locale/Arabic review (2026-11-24): 730 candidates unchanged; three source-offset changes only. Checkbox/Field hint direction changes preserve controls and dispositions. Shell CSS budget cleanup (2026-11-24): unchanged candidate/control findings; only source offsets moved after redundant mobile declarations were removed. Own replies, reposts and report-gate evidence (2026-11-24): 730 candidates unchanged; source offsets only. Watch action rows (2026-11-24): one candidate added, watch-actions.ts. Action rows (2026-11-24): six candidates added (five shared implementations and admin-shell), watch-actions.ts removed; Videos, subscriptions and admin accounts move to adopted, the profile slideshow back to partial.",
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
@@ -200,12 +200,12 @@
     {
       "file": "ui/src/app/reading/videos/watch-parties-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "Field, Control, MbButton and Content State build the watch-party finder; tag suggestions are native links and results reuse StatusCard. Preserve tags in the URL, quiet skipping of invalid tags with an alert only for typed input, Open party links built from validated Watch params, and the plain note when Watch cannot play a post."
+      "nextStep": "Rail page and Add box. Open on each party is still a pill; review with the player batch."
     },
     {
       "file": "ui/src/app/reading/videos/video-search-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "Field, Control, MbButton and Content State build the video search; fediverse results reuse StatusCard and YouTube results reuse the video player controls. Preserve q in the URL, discarding answers to superseded searches, the Plus gate on YouTube, the noopener Google hand-off and the rail/results grid on the header tracks."
+      "nextStep": "Rail page, Add box and Item actions."
     },
     {
       "file": "ui/src/app/connections/misskey/misskey-compose.html",
@@ -225,7 +225,7 @@
     {
       "file": "ui/src/app/reading/videos/watch-queue-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "Page Header, Content State and MbButton cover the queue page; rows are a native ordered list. Preserve play order, disabled Move up/down at the ends, confirmation before Clear, Watch links built only from validated Watch params and the untitled fallback. Recently seen (below the queue) reuses the queue rows with MbButton Add and outline Watch."
+      "nextStep": "Item list rows with linked titles and compact icon toolbars, as on a playlist; no pills in rows."
     },
     {
       "file": "ui/src/app/shell/mode-switch.ts",
@@ -239,8 +239,8 @@
     },
     {
       "file": "ui/src/app/accounts/profile/profile-slideshow.html",
-      "disposition": "adopted scope",
-      "nextStep": "Slideshow playback, speed, fullscreen, history, copy-link and content-warning actions use MbButton. Preserve keyboard access, bounded presentation layout, chronological playback, readable overflow and explicit sensitive-content reveal."
+      "disposition": "partial adoption",
+      "nextStep": "Ten outline pills are a transport, a stepper and commands; see action-rows.md."
     },
     {
       "file": "ui/src/app/feeds/other-servers/other-servers.html",
@@ -384,8 +384,8 @@
     },
     {
       "file": "ui/src/app/admin/accounts/admin-accounts.html",
-      "disposition": "partial adoption",
-      "nextStep": "Button consistency batch: action appearance uses shared buttons/compact actions. Remaining scope: Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "disposition": "adopted scope",
+      "nextStep": "Status filter is a compact Toolbar; row commands are compact Buttons. Filled danger stays in the confirmation dialog."
     },
     {
       "file": "ui/src/app/admin/announcements/admin-announcements.html",
@@ -1559,13 +1559,13 @@
     },
     {
       "file": "ui/src/app/reading/videos/video-subscriptions-panel.ts",
-      "disposition": "partial adoption",
-      "nextStep": "Subscription actions use MbButton; channel text field, enabled checkbox and navigation links retain labelled native semantics. Migrate field, checkbox and navigation presentation in a separate design pass."
+      "disposition": "adopted scope",
+      "nextStep": "Add box, Navigation rows and a Post menu per channel; folds behind one button at rail-stacking widths on Videos."
     },
     {
       "file": "ui/src/app/reading/videos/videos-page.html",
-      "disposition": "partial adoption",
-      "nextStep": "Refresh, search, subscribe, save and watched actions use MbButton and the shared VideoPlayer. Labelled search field/select and channel links retain native semantics; migrate those controls in a separate design pass. The feed header is one compact Toolbar: All videos, Saved and Shorts as pressed buttons, then Refresh and Customize (it replaced a row of outline buttons). The \"shared by\" avatar line under a card is local content."
+      "disposition": "adopted scope",
+      "nextStep": "Rail page, compact Toolbar and select, Add box, Item actions, Content state, Checkbox and Dialog. The shared-by avatars are local content."
     },
     {
       "file": "ui/src/app/publishing/post-permissions/post-permissions.ts",
@@ -3423,11 +3423,6 @@
       "nextStep": "PageHeader for every tab's title and lead; Navigation rows (MbNavLink) for the Start tab's next steps. Page width and gap only stay local."
     },
     {
-      "file": "ui/src/app/reading/watch/watch-actions.ts",
-      "disposition": "adopted scope",
-      "nextStep": "Shared Post actions row with words and local line icons, in the action text color. Consider a shared icon set if another row wants these."
-    },
-    {
       "file": "ui/src/app/reading/watch/watch-video-panel.ts",
       "disposition": "adopted scope",
       "nextStep": "Subscribe, Share, queue, Like, Boost and links moved to WatchActions, as did the creator (now a profile link). Help for playback notes; Dialog around the shared Compose for the share sheet; Disclosure for About this video. Found posts, chapter cue links and the description stay local text content. Chapters are native full-width text-row buttons (seek, not a Button presentation), like party chat lines. The SponsorBlock strip is local content, with an MbButton Skip."
@@ -3656,6 +3651,36 @@
       "file": "ui/src/app/accounts/new-people-panel/new-people-panel.html",
       "disposition": "adopted scope",
       "nextStep": "Built on MbBadge, MbButton, MbHelp, MbProgress and the shared follow button. Use a shared person row if one is added."
+    },
+    {
+      "file": "ui/src/app/design-system/add-box/add-box.css",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, the Actions / Action rows story and behavior tests."
+    },
+    {
+      "file": "ui/src/app/design-system/add-box/add-box.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, the Actions / Action rows story and behavior tests."
+    },
+    {
+      "file": "ui/src/app/design-system/item-actions/item-actions.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, the Actions / Action rows story and behavior tests."
+    },
+    {
+      "file": "ui/src/app/design-system/item-list/item-list.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, the Actions / Action rows story and behavior tests."
+    },
+    {
+      "file": "ui/src/app/design-system/rail-page/rail-page.ts",
+      "disposition": "shared implementation",
+      "nextStep": "Maintain the public widget contract, the Actions / Action rows story and behavior tests."
+    },
+    {
+      "file": "ui/src/app/admin/admin-shell/admin-shell.html",
+      "disposition": "adopted scope",
+      "nextStep": "Wrapping shared Navigation with eleven route links; it replaced one unwrapped row of legacy tabs."
     }
   ]
 }

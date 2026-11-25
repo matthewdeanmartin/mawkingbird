@@ -86,7 +86,7 @@ import { SERVER_FEEDS, ServerFeedDef } from '../lists/server-feeds';
     }
     .pinned-item.active {
       background: var(--accent-soft);
-      color: var(--accent);
+      color: var(--ds-action-text);
     }
   `,
 })

@@ -5,6 +5,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { map } from 'rxjs';
 import { Auth } from '../../platform/session/auth';
 import { Compose } from '../../publishing/compose/compose';
+import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
@@ -47,6 +48,7 @@ import { RadioStudioSession } from './radio-studio-session';
   imports: [
     RouterLink,
     TranslocoPipe,
+    MbPageHeader,
     MbButton,
     MbContentState,
     MbField,

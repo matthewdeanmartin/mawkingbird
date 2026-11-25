@@ -53,7 +53,7 @@ import { isDiscoveryPath, minutesLeft } from './discovery-window-model';
       padding: 0;
       border: 0;
       background: none;
-      color: var(--accent);
+      color: var(--ds-action-text);
       font: inherit;
       text-decoration: underline;
       cursor: pointer;

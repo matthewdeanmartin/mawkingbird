@@ -1,36 +1,91 @@
-<div class="tabs">
-  <a class="tab" routerLink="/admin/accounts" routerLinkActive="active">{{
-    'adminShell.accounts' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/reports" routerLinkActive="active">{{
-    'adminShell.reports' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/domains" routerLinkActive="active">{{
-    'adminShell.domainBlocks' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/domain-allows" routerLinkActive="active">{{
-    'adminShell.domainAllows' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/email-blocks" routerLinkActive="active">{{
-    'adminShell.emailBlocks' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/canonical-blocks" routerLinkActive="active">{{
-    'adminShell.canonicalEmails' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/ip-blocks" routerLinkActive="active">{{
-    'adminShell.ipBlocks' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/announcements" routerLinkActive="active">{{
-    'adminShell.announcements' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/trends" routerLinkActive="active">{{
-    'adminShell.trends' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/hashtags" routerLinkActive="active">{{
-    'adminShell.hashtags' | transloco
-  }}</a>
-  <a class="tab" routerLink="/admin/metrics" routerLinkActive="active">{{
-    'adminShell.metrics' | transloco
-  }}</a>
-</div>
+<nav mbNavigation presentation="tabs" [label]="'adminShell.sections' | transloco">
+  <a
+    mbNavLink
+    routerLink="/admin/accounts"
+    routerLinkActive
+    #l0="routerLinkActive"
+    [current]="l0.isActive"
+    >{{ 'adminShell.accounts' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/reports"
+    routerLinkActive
+    #l1="routerLinkActive"
+    [current]="l1.isActive"
+    >{{ 'adminShell.reports' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/domains"
+    routerLinkActive
+    #l2="routerLinkActive"
+    [current]="l2.isActive"
+    >{{ 'adminShell.domainBlocks' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/domain-allows"
+    routerLinkActive
+    #l3="routerLinkActive"
+    [current]="l3.isActive"
+    >{{ 'adminShell.domainAllows' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/email-blocks"
+    routerLinkActive
+    #l4="routerLinkActive"
+    [current]="l4.isActive"
+    >{{ 'adminShell.emailBlocks' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/canonical-blocks"
+    routerLinkActive
+    #l5="routerLinkActive"
+    [current]="l5.isActive"
+    >{{ 'adminShell.canonicalEmails' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/ip-blocks"
+    routerLinkActive
+    #l6="routerLinkActive"
+    [current]="l6.isActive"
+    >{{ 'adminShell.ipBlocks' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/announcements"
+    routerLinkActive
+    #l7="routerLinkActive"
+    [current]="l7.isActive"
+    >{{ 'adminShell.announcements' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/trends"
+    routerLinkActive
+    #l8="routerLinkActive"
+    [current]="l8.isActive"
+    >{{ 'adminShell.trends' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/hashtags"
+    routerLinkActive
+    #l9="routerLinkActive"
+    [current]="l9.isActive"
+    >{{ 'adminShell.hashtags' | transloco }}</a
+  >
+  <a
+    mbNavLink
+    routerLink="/admin/metrics"
+    routerLinkActive
+    #l10="routerLinkActive"
+    [current]="l10.isActive"
+    >{{ 'adminShell.metrics' | transloco }}</a
+  >
+</nav>
 <router-outlet />

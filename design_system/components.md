@@ -72,6 +72,9 @@ compact. Compact keeps a 44px target on touch screens. Link stays the height of
 its line, as inline links do (WCAG 2.5.8's inline exception), so do not use it
 as the only control in a row on touch layouts: use compact there.
 
+A row of several buttons has its own rules: how many pills a place may hold, and
+what to upgrade the row to when it needs more. See [Action rows](action-rows.md).
+
 Data is not an action. A list of values someone can choose from (facets, people,
 trends) is a list of rows or links, not a grid of buttons of any weight. See
 Forum's rails and **Navigation / Links and tabs**. Stories: **Actions / Button /
@@ -614,3 +617,47 @@ Section for page structure, Toolbar with `pressed` buttons for the People
 activity filter and the Posts suggestions, IdentityRow with Metadata for
 people, Notice, Disclosure, SaveFeedback, RadioGroup, Checkbox hints, Spinner,
 and `compact` Buttons for actions inside rows.
+
+## Icons
+
+`MbIcon` (`mb-icon`) draws one glyph from `icon/icon-paths.ts`, in the current text
+color. It is always decorative: the button or link around it owns the accessible
+name, and an icon-only control also needs a `title`. `size="small"` sits beside 13px
+text. Add a glyph to that file; do not draw one in a page. Glyphs that point along
+a line of text mirror in right-to-left pages; playback keys never do.
+
+## Item list and row
+
+`ul[mbItemList]`/`ol[mbItemList]` hold `li[mbItemRow]`. Project an optional
+`mb-item-picture`, one `mbItemTitle` (`a` or `span`), an optional `mbItemMeta`, and
+the row's actions in the default slot: a compact embedded toolbar for buttons,
+`mb-post-actions` where links are needed. `ol` numbers its rows. Make the title the
+link that opens the item; a linked picture repeats it and stays out of the Tab
+order. The row owns wrapping, dividers and type; the caller owns data and handlers.
+
+## Item actions
+
+`MbItemActions` (`mb-item-actions`) takes a `label` and `actions`
+(`MbItemAction[]`: icon, translated label, and one of `run`, `link` or `href`). Set
+`pressed` on toggles only, and keep a toggle's label the same in both states unless
+the words themselves say the state. `iconsWhenNarrow` shows icons at 480px and below
+and adds the label as a tooltip. Build the list in a `translatedComputed`, not a
+template method. Projected content (such as Help) follows the actions.
+
+## Add box
+
+`form[mbAddBox]` lays out one `mb-field` and one submit button on a line, the
+button level with the control however the label or hint wraps. The button stays
+enabled while the box is empty; pressing it then focuses the box and does not reach
+`ngSubmit`. Disable it only while a request runs. In a rail use an icon button with
+an `aria-label` and `title`. Put errors on the field. Not for a field in a longer form.
+
+## Rail page
+
+`mb-rail-page` places an `aside[mbRailPanel]` under the brand and the content beside
+it, on the shell header's own tracks. `section[mbPagePanel]` is the content's surface.
+Below 1000px the rail stacks and stops sticking. RSS and Read keep their own rails
+for now. `MbPageHeader embedded` drops the header's padding and divider inside a page
+or panel that already has them. Page titles are 19px.
+
+Preview for all five: **Actions / Action rows**.

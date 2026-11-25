@@ -87,11 +87,11 @@
 }
 
 .star:hover {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .star.on {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .muted {

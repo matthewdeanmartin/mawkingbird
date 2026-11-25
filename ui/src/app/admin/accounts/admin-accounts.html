@@ -1,10 +1,10 @@
-<div class="subtabs">
+<mb-toolbar density="compact" [label]="'adminAccounts.filter' | transloco">
   @for (s of statuses; track s) {
-    <button class="subtab" [class.active]="status() === s" (click)="setStatus(s)">
+    <button type="button" mbToolbarButton [pressed]="status() === s" (click)="setStatus(s)">
       {{ statusLabelFor(s) }}
     </button>
   }
-</div>
+</mb-toolbar>
 
 @if (loading()) {
   <p class="muted center">{{ 'adminAccounts.loading' | transloco }}</p>
@@ -26,114 +26,62 @@
       </div>
       <div class="actions">
         @if (status() === 'pending') {
-          <button
-            mbButton
-            size="small"
-            variant="outline"
-            type="button"
-            class="op"
-            (click)="approve(a)"
-          >
+          <button mbButton variant="compact" type="button" (click)="approve(a)">
             {{ 'adminAccounts.actions.approve' | transloco }}
           </button>
-          <button
-            mbButton
-            size="small"
-            tone="danger"
-            type="button"
-            class="op warn"
-            (click)="reject(a)"
-          >
+          <button mbButton variant="compact" tone="danger" type="button" (click)="reject(a)">
             {{ 'adminAccounts.actions.reject' | transloco }}
           </button>
         }
-        <button
-          mbButton
-          size="small"
-          variant="outline"
-          type="button"
-          class="op"
-          (click)="unsensitive(a)"
-        >
+        <button mbButton variant="compact" type="button" (click)="unsensitive(a)">
           {{ 'adminAccounts.actions.unsensitive' | transloco }}
         </button>
         @if (a.silenced) {
-          <button
-            mbButton
-            size="small"
-            variant="outline"
-            type="button"
-            class="op"
-            (click)="unsilence(a)"
-          >
+          <button mbButton variant="compact" type="button" (click)="unsilence(a)">
             {{ 'adminAccounts.actions.unsilence' | transloco }}
           </button>
         } @else {
           <button
             mbButton
-            size="small"
+            variant="compact"
             tone="danger"
             type="button"
-            class="op warn"
             (click)="moderate(a, 'silence')"
           >
             {{ 'adminAccounts.actions.silence' | transloco }}
           </button>
         }
         @if (a.suspended) {
-          <button
-            mbButton
-            size="small"
-            variant="outline"
-            type="button"
-            class="op"
-            (click)="unsuspend(a)"
-          >
+          <button mbButton variant="compact" type="button" (click)="unsuspend(a)">
             {{ 'adminAccounts.actions.unsuspend' | transloco }}
           </button>
         } @else {
           <button
             mbButton
-            size="small"
+            variant="compact"
             tone="danger"
             type="button"
-            class="op warn"
             (click)="moderate(a, 'suspend')"
           >
             {{ 'adminAccounts.actions.suspend' | transloco }}
           </button>
         }
         @if (a.disabled) {
-          <button
-            mbButton
-            size="small"
-            variant="outline"
-            type="button"
-            class="op"
-            (click)="enable(a)"
-          >
+          <button mbButton variant="compact" type="button" (click)="enable(a)">
             {{ 'adminAccounts.actions.enable' | transloco }}
           </button>
         } @else {
           <button
             mbButton
-            size="small"
+            variant="compact"
             tone="danger"
             type="button"
-            class="op warn"
             (click)="moderate(a, 'disable')"
           >
             {{ 'adminAccounts.actions.disable' | transloco }}
           </button>
         }
-        <button
-          mbButton
-          size="small"
-          tone="danger"
-          type="button"
-          class="op warn"
-          (click)="remove(a)"
-        >
+        <button mbButton variant="compact" tone="danger" type="button" (click)="remove(a)">
           {{ 'adminAccounts.actions.delete' | transloco }}
         </button>
       </div>

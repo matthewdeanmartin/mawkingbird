@@ -35,7 +35,7 @@
 }
 
 .donate-link:hover {
-  color: var(--accent);
+  color: var(--ds-action-text);
   text-decoration: none;
 }
 
@@ -172,7 +172,7 @@
 }
 
 .spotlight-cta {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 13px;
   font-weight: 700;
 }
@@ -218,7 +218,7 @@
 }
 
 .server-announcements:hover {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .announcement-count {
@@ -227,13 +227,13 @@
 }
 
 .server-announcements.has-unread .announcement-count {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 600;
 }
 
 .announcement-new {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
   border-radius: 999px;
   padding: 1px 6px;
   margin-left: 4px;

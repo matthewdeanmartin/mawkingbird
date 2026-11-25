@@ -20,6 +20,7 @@ import { postExternalMedia } from '../audio-embeds/providers';
 import { ProviderPreferences } from '../audio-embeds/provider-preferences';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { FollowTrust } from '../../accounts/follow-trust';
@@ -32,7 +33,7 @@ import { TrustedAccounts } from '../../accounts/trusted-accounts';
 import { ThreadLoader } from '../read/thread-loader';
 import { LinkedAudioResolver } from './linked-audio-resolver';
 import { RadioDock } from './radio-dock';
-import { RadioIcon } from './radio-icon';
+import { MbIcon } from '../../design-system/icon/icon';
 import { RadioPlayer, RadioTrack } from './radio-player';
 import { SavedSingles } from './saved-singles';
 import { RadioPlaylists } from './radio-playlists';
@@ -78,12 +79,13 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
     AccountName,
     FormsModule,
     TranslocoPipe,
+    MbPageHeader,
     MbButton,
     MbField,
     MbControl,
     StatusCard,
     ExternalPlayerHost,
-    RadioIcon,
+    MbIcon,
     MbPostMenu,
     MbMenuItem,
     ReadingBack,

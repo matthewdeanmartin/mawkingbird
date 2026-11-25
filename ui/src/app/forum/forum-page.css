@@ -111,7 +111,7 @@ mb-content-state {
 }
 
 .open:hover {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .inline-rail {

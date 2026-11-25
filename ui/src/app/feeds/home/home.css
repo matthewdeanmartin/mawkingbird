@@ -175,7 +175,7 @@
 }
 
 .starter-pack-content > a:hover {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 /* Eliza invite reuses the starter-pack layout with an image avatar + CTA. */
@@ -266,7 +266,7 @@ a.eliza-invite:hover {
   border: none;
   background: none;
   padding: 0;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: inherit;
   cursor: pointer;
 }

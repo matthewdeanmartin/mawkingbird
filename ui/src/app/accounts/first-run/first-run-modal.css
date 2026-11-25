@@ -106,5 +106,5 @@
 }
 
 .first-run-links a:hover {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }

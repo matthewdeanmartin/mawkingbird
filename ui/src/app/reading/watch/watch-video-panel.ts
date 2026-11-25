@@ -12,7 +12,7 @@ import { MbHelp } from '../../design-system/help/help';
 import { QueuedVideo, WatchQueue } from '../videos/watch-queue';
 import { translatedComputed } from '../../i18n/translated';
 import { Terminology } from '../../i18n/terminology';
-import { WatchAction, WatchActions } from './watch-actions';
+import { MbItemAction, MbItemActions } from '../../design-system/item-actions/item-actions';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbDisclosure } from '../../design-system/disclosure/disclosure';
 import { Compose } from '../../publishing/compose/compose';
@@ -138,14 +138,14 @@ export function shareText(options: {
     TranslocoPipe,
     MbButton,
     MbHelp,
-    WatchActions,
+    MbItemActions,
     MbDialog,
     MbDisclosure,
     Compose,
     RouterLink,
   ],
   template: `
-    <app-watch-actions [actions]="actions()" [label]="'watch.panel.label' | transloco">
+    <mb-item-actions [actions]="actions()" [label]="'watch.panel.label' | transloco">
       @if (source().kind === 'youtube') {
         <mb-help [label]="'videoPlayer.help' | transloco">
           <p>{{ 'videoPlayer.external' | transloco }}</p>
@@ -153,7 +153,7 @@ export function shareText(options: {
           <p>{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
         </mb-help>
       }
-    </app-watch-actions>
+    </mb-item-actions>
     @if (postError(); as message) {
       <p role="alert">{{ message }}</p>
     }
@@ -553,7 +553,7 @@ export class WatchVideoPanel {
   }
 
   /** Everything to do with this video and its post, in row order. */
-  protected readonly actions = translatedComputed((): WatchAction[] => [
+  protected readonly actions = translatedComputed((): MbItemAction[] => [
     ...this.postActions(),
     ...this.videoActions(),
   ]);
@@ -562,12 +562,12 @@ export class WatchVideoPanel {
     return this.transloco.translate(key, params);
   }
 
-  private postActions(): WatchAction[] {
+  private postActions(): MbItemAction[] {
     const card = this.post();
     if (!card) return [];
     const post = card.display;
     const anonymous = this.auth.isAnonymous && post.provider !== 'bluesky';
-    const out: WatchAction[] = [];
+    const out: MbItemAction[] = [];
     if (card.caps.favourite || anonymous)
       out.push({
         id: 'like',
@@ -621,8 +621,8 @@ export class WatchVideoPanel {
     return this.t(`watch.panel.creatorKnown.${known}`);
   }
 
-  private videoActions(): WatchAction[] {
-    const out: WatchAction[] = [];
+  private videoActions(): MbItemAction[] {
+    const out: MbItemAction[] = [];
     const creator = this.creator();
     if (creator && !this.postedByCreator())
       out.push({

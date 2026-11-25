@@ -12,6 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { MbItemMeta, MbItemTitle } from '../../design-system/item-list/item-list';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbContentState } from '../../design-system/content-state/content-state';
@@ -82,6 +83,8 @@ import { countKey } from './count-key';
     FormsModule,
     RouterLink,
     TranslocoPipe,
+    MbItemMeta,
+    MbItemTitle,
     MbButton,
     MbCheckbox,
     MbContentState,

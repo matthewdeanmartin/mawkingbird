@@ -18,8 +18,7 @@ import { QueuedVideo, WatchQueue } from '../videos/watch-queue';
     @if (entry(); as video) {
       <button
         mbButton
-        variant="outline"
-        size="small"
+        variant="compact"
         type="button"
         [attr.aria-pressed]="queued()"
         [disabled]="!queued() && queue.full()"

@@ -1,0 +1,40 @@
+/** 24×24 outline glyphs, drawn for one stroke weight. Add here, never per page. */
+export const ICON_PATHS = {
+  add: 'M12 5v14M5 12h14',
+  bell: 'M6 17V11a6 6 0 0 1 12 0v6M4 17h16M10 20h4',
+  boost: 'M5 11V8h11M13 5l3 3-3 3M19 13v3H8M11 19l-3-3 3-3',
+  channel: 'M4 6h16v11H4zM10 9.5v4l3.5-2zM8 20h8',
+  check: 'M5 12.5l4.5 4.5L19 7.5',
+  close: 'M6 6l12 12M18 6 6 18',
+  creator:
+    'M10 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 19c1-4 3.5-5 7-5 1 0 2 .1 2.8.3M16 14v6l5-3z',
+  down: 'M12 5v14M6 13l6 6 6-6',
+  edit: 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4',
+  exitFullscreen: 'M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5',
+  expand: 'M5 15l7-7 7 7',
+  find: 'M11 17a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM20 20l-4.5-4.5',
+  fullscreen: 'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5',
+  like: 'M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10z',
+  list: 'M4 6h16M4 12h16M4 18h10',
+  load: 'M12 4v8M7.5 6.5a7 7 0 1 0 9 0',
+  minimize: 'M5 12h14',
+  next: 'M18 5v14M5 5l10 7-10 7Z',
+  open: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',
+  pause: 'M8 5v14M16 5v14',
+  people:
+    'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 19c.8-3.6 3-5 6.5-5s5.7 1.4 6.5 5M15.5 4.3a3.5 3.5 0 0 1 0 6.4M17.5 14.4c2.2.6 3.5 2 4 4.6',
+  person: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20c1-4 4-5 8-5s7 1 8 5',
+  play: 'M7 4.5v15L19.5 12Z',
+  previous: 'M6 5v14M19 5 9 12l10 7Z',
+  queue: 'M4 6h16M4 11h16M4 16h8M18 14v6M15 17h6',
+  refresh: 'M19 8a8 8 0 1 0 1 6M20 3.5V8h-4.5',
+  remove: 'M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13',
+  reply: 'M9 6l-6 5 6 5M3 11h10a7 7 0 0 1 7 7v1',
+  rss: 'M5 5a14 14 0 0 1 14 14M5 11a8 8 0 0 1 8 8M6 18h.01',
+  save: 'M6 3h12v18l-6-4-6 4z',
+  settings:
+    'M9 3h6l1 3 3 1 2 5-2 5-3 1-1 3H9l-1-3-3-1-2-5 2-5 3-1zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8',
+  share: 'M4 13v7h16v-7M12 3v12M7 8l5-5 5 5',
+  up: 'M12 19V5M6 11l6-6 6 6',
+} as const;
+export type MbIconName = keyof typeof ICON_PATHS;

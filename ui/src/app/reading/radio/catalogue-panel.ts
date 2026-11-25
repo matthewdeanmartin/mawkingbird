@@ -2,6 +2,7 @@ import { Component, computed, inject, input, linkedSignal, signal } from '@angul
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { MbAddBox } from '../../design-system/add-box/add-box';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbControl, MbField } from '../../design-system/field/field';
@@ -56,6 +57,7 @@ import { TrackActions } from './track-actions';
   imports: [
     FormsModule,
     TranslocoPipe,
+    MbAddBox,
     MbButton,
     MbCheckbox,
     MbField,
@@ -65,21 +67,21 @@ import { TrackActions } from './track-actions';
   ],
   template: `
     <p class="hint">{{ 'radio.catalogue.hint' | transloco }}</p>
-    <form class="query" (ngSubmit)="search()">
-      @if (!source()) {
-        <mb-field [label]="'radio.catalogue.source' | transloco">
-          <select
-            mbControl
-            name="catalogue"
-            [ngModel]="chosen()"
-            (ngModelChange)="chosen.set($event)"
-          >
-            @for (item of sources; track item) {
-              <option [value]="item">{{ 'radio.catalogue.' + item | transloco }}</option>
-            }
-          </select>
-        </mb-field>
-      }
+    @if (!source()) {
+      <mb-field [label]="'radio.catalogue.source' | transloco">
+        <select
+          mbControl
+          name="catalogue"
+          [ngModel]="chosen()"
+          (ngModelChange)="chosen.set($event)"
+        >
+          @for (item of sources; track item) {
+            <option [value]="item">{{ 'radio.catalogue.' + item | transloco }}</option>
+          }
+        </select>
+      </mb-field>
+    }
+    <form mbAddBox (ngSubmit)="search()">
       <mb-field
         [label]="'radio.catalogue.query' | transloco"
         [hint]="'radio.catalogue.queryHint' | transloco"
@@ -92,7 +94,7 @@ import { TrackActions } from './track-actions';
           (ngModelChange)="query.set($event)"
         />
       </mb-field>
-      <button mbButton type="submit" [disabled]="busy() || !query().trim()">
+      <button mbButton type="submit" [disabled]="busy()">
         {{ 'radio.catalogue.search' | transloco }}
       </button>
     </form>
@@ -221,16 +223,6 @@ import { TrackActions } from './track-actions';
       color: var(--muted);
       font-size: 13px;
       overflow-wrap: anywhere;
-    }
-    .query {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: start;
-      gap: 12px;
-    }
-    .query mb-field {
-      flex: 1 1 200px;
-      min-width: 0;
     }
     .query > button {
       margin-top: 26px;

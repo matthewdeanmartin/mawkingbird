@@ -44,5 +44,5 @@
 }
 
 :host([data-presentation='rail']:hover) {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }

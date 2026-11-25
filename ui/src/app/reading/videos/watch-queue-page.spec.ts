@@ -54,7 +54,7 @@ describe('WatchQueuePage', () => {
   }
 
   const titles = (host: HTMLElement) =>
-    [...host.querySelectorAll('li strong')].map((el) => el.textContent?.trim());
+    [...host.querySelectorAll('li [mbItemTitle]')].map((el) => el.textContent?.trim());
 
   it('says how to fill an empty queue, briefly', () => {
     const text = mount().textContent!;
@@ -77,7 +77,7 @@ describe('WatchQueuePage', () => {
     const recent = host.querySelector('section.recent')!;
     expect(recent.querySelector('h2')!.textContent).toContain('Recently seen');
     const rows = () =>
-      [...recent.querySelectorAll('li strong')].map((el) => el.textContent?.trim());
+      [...recent.querySelectorAll('li [mbItemTitle]')].map((el) => el.textContent?.trim());
     // A video without a title falls back to the post's text.
     expect(rows()).toEqual(['Lamps', 'Post 3']);
     expect(recent.querySelector('li')!.textContent).toContain('by User 1');

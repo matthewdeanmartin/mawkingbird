@@ -19,7 +19,13 @@ import { CATALOGUE_POST } from './catalogue-search';
 import { LinkedAudioResolver } from './linked-audio-resolver';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
-import { RadioIcon } from './radio-icon';
+import { MbIcon } from '../../design-system/icon/icon';
+import {
+  MbItemList,
+  MbItemMeta,
+  MbItemRow,
+  MbItemTitle,
+} from '../../design-system/item-list/item-list';
 import { isContinuous, RadioPlayer, RadioTrack } from './radio-player';
 import { RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
 import { TrackActions } from './track-actions';
@@ -70,7 +76,11 @@ export function hasSinglePage(track: RadioTrack): boolean {
     MbPostMenu,
     MbMenuItem,
     RadioHeader,
-    RadioIcon,
+    MbIcon,
+    MbItemList,
+    MbItemMeta,
+    MbItemRow,
+    MbItemTitle,
     SinglesTabs,
   ],
   templateUrl: './singles-page.html',

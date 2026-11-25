@@ -1,5 +1,5 @@
 <section class="studio-page">
-  <h1>{{ 'studio.title' | transloco }}</h1>
+  <mb-page-header embedded [title]="'studio.title' | transloco" />
   @if (!signedIn) {
     <mb-content-state [title]="'radio.signIn' | transloco" />
   } @else {

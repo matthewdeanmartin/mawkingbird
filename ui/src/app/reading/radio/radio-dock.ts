@@ -5,7 +5,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { RadioControls } from './radio-controls';
-import { RadioIcon } from './radio-icon';
+import { MbIcon } from '../../design-system/icon/icon';
 import { RadioPlayer } from './radio-player';
 import { ExternalPlayer } from '../audio-embeds/external-player';
 
@@ -29,7 +29,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
     MbToolbarButton,
     ExternalPlayer,
     RadioControls,
-    RadioIcon,
+    MbIcon,
   ],
   host: {
     '[class.full-view]': 'player.fullView()',
@@ -77,7 +77,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
                 [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
                 (click)="player.toggle()"
               >
-                <app-radio-icon [name]="player.playing() || player.waiting() ? 'pause' : 'play'" />
+                <mb-icon [name]="player.playing() || player.waiting() ? 'pause' : 'play'" />
               </button>
               <button
                 mbToolbarButton
@@ -86,7 +86,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
                 [title]="'radio.next' | transloco"
                 (click)="player.next()"
               >
-                <app-radio-icon name="next" />
+                <mb-icon name="next" />
               </button>
               @if (!player.hidden() && track.external && external()?.activated()) {
                 @let frameLabel =
@@ -100,7 +100,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
                   [attr.aria-expanded]="frameOpen()"
                   (click)="frameOpen.set(!frameOpen())"
                 >
-                  <app-radio-icon [name]="frameOpen() ? 'down' : 'expand'" />
+                  <mb-icon [name]="frameOpen() ? 'down' : 'expand'" />
                 </button>
               }
               <button
@@ -110,7 +110,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
                 [title]="'radio.stop' | transloco"
                 (click)="player.stop()"
               >
-                <app-radio-icon name="stop" />
+                <mb-icon name="close" />
               </button>
             </mb-toolbar>
           </div>

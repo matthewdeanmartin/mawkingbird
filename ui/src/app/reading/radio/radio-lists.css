@@ -18,45 +18,6 @@
   align-items: center;
   gap: 8px;
 }
-.rows {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-ol.rows {
-  padding-inline-start: 24px;
-  list-style: decimal;
-}
-.rows li {
-  padding-block: 6px;
-  border-bottom: 1px solid var(--border);
-  overflow-wrap: anywhere;
-}
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 12px;
-}
-.track {
-  display: flex;
-  flex: 1 1 200px;
-  flex-direction: column;
-  min-width: 0;
-}
-.track-title {
-  font-weight: 600;
-}
-.track-meta {
-  color: var(--muted);
-  font-size: 13px;
-}
-.row-actions {
-  flex: none;
-  gap: 6px;
-}
 .singles-rows {
   margin-block-end: 48px;
 }
@@ -65,24 +26,10 @@ ol.rows {
   display: grid;
   gap: 12px;
 }
-form.inline {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  gap: 12px;
-}
-form.inline mb-field {
-  flex: 1 1 220px;
-  min-width: 0;
-}
-form.find-form {
-  display: grid;
-  justify-items: start;
-  gap: 8px;
-}
-form.find-form mb-field {
-  width: 100%;
-}
 app-status-card {
   display: block;
+}
+.scope {
+  display: grid;
+  gap: 12px;
 }

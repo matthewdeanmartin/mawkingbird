@@ -1,0 +1,39 @@
+.mb-add-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+/* The field's label, control and messages join this grid, so the button lines
+   up with the control whatever the label or hint wraps to. */
+.mb-add-box > mb-field {
+  display: contents;
+}
+
+.mb-add-box > mb-field > :is(.mb-field-label, .mb-field-hint, mb-save-feedback) {
+  grid-column: 1 / -1;
+}
+
+.mb-add-box > mb-field > .mb-control {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.mb-add-box > [mbButton] {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+/* An icon-only button: square to the control instead of a wide capsule. */
+.mb-add-box > [mbButton]:has(> mb-icon:only-child) {
+  min-width: 40px;
+  padding-inline: 9px;
+}
+
+/* A choice with nothing to type, such as "Home", leaves the button on its own. */
+.mb-add-box > [mbButton]:only-child {
+  grid-column: 1;
+  justify-self: start;
+}

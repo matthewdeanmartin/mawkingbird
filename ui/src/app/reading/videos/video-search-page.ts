@@ -2,14 +2,21 @@ import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
+import { MbAddBox } from '../../design-system/add-box/add-box';
+import { MbIcon } from '../../design-system/icon/icon';
+import { MbItemAction, MbItemActions } from '../../design-system/item-actions/item-actions';
+import { MbPageHeader } from '../../design-system/page-header/page-header';
+import { MbPagePanel, MbRailPage, MbRailPanel } from '../../design-system/rail-page/rail-page';
+import { translatedComputed } from '../../i18n/translated';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { Status } from '../../platform/api/models';
 import { VideoSearch, withoutSiteOperators } from './video-search';
 import { VideoSubscriptions } from './video-subscriptions';
+import { queueEntry, WatchQueue } from './watch-queue';
 import { YoutubeFeeds, YoutubeSearchItem } from './youtube-feeds';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { VideoSource, youtubeSource } from '../video-player/media-source';
@@ -51,18 +58,25 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
     FormsModule,
     RouterLink,
     TranslocoPipe,
+    MbAddBox,
     MbButton,
     MbContentState,
+    MbIcon,
+    MbItemActions,
+    MbPageHeader,
+    MbPagePanel,
+    MbRailPage,
+    MbRailPanel,
     MbField,
     MbControl,
     StatusCard,
     VideoPlayer,
   ],
   template: `
-    <div class="video-search">
-      <aside class="search-rail">
-        <h1>{{ 'videoSearch.title' | transloco }}</h1>
-        <form (ngSubmit)="submit()">
+    <mb-rail-page>
+      <aside mbRailPanel>
+        <mb-page-header embedded [title]="'videoSearch.title' | transloco" />
+        <form mbAddBox (ngSubmit)="submit()">
           <mb-field [label]="'videoSearch.query' | transloco">
             <input
               mbControl
@@ -74,23 +88,28 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
               (ngModelChange)="draft.set($event)"
             />
           </mb-field>
-          @if (canSearch()) {
-            <mb-field [label]="'videoSearch.youtubeType' | transloco">
-              <select
-                mbControl
-                name="type"
-                [ngModel]="youtubeType()"
-                (ngModelChange)="youtubeType.set($event)"
-              >
-                <option value="video">{{ 'videos.videoResults' | transloco }}</option>
-                <option value="channel">{{ 'videos.channelResults' | transloco }}</option>
-              </select>
-            </mb-field>
-          }
-          <button mbButton type="submit" [disabled]="!draftSearchable()">
-            {{ 'videoSearch.submit' | transloco }}
+          <button
+            mbButton
+            type="submit"
+            [attr.aria-label]="'videoSearch.submit' | transloco"
+            [title]="'videoSearch.submit' | transloco"
+          >
+            <mb-icon name="find" />
           </button>
         </form>
+        @if (canSearch()) {
+          <mb-field [label]="'videoSearch.youtubeType' | transloco">
+            <select
+              mbControl
+              name="type"
+              [ngModel]="youtubeType()"
+              (ngModelChange)="youtubeType.set($event)"
+            >
+              <option value="video">{{ 'videos.videoResults' | transloco }}</option>
+              <option value="channel">{{ 'videos.channelResults' | transloco }}</option>
+            </select>
+          </mb-field>
+        }
         <!-- Hand-offs to other searches, not alternatives to the Search button. -->
         <nav class="elsewhere" [attr.aria-label]="'videoSearch.elsewhere' | transloco">
           <h2>{{ 'videoSearch.elsewhere' | transloco }}</h2>
@@ -125,7 +144,11 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
             "
           />
         } @else {
-          <section [attr.aria-label]="'videoSearch.postsHeading' | transloco" aria-live="polite">
+          <section
+            mbPagePanel
+            [attr.aria-label]="'videoSearch.postsHeading' | transloco"
+            aria-live="polite"
+          >
             <h2>{{ 'videoSearch.postsHeading' | transloco }}</h2>
             @if (tags().length) {
               <p class="muted small">
@@ -143,7 +166,11 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
             }
           </section>
 
-          <section [attr.aria-label]="'videoSearch.youtubeHeading' | transloco" aria-live="polite">
+          <section
+            mbPagePanel
+            [attr.aria-label]="'videoSearch.youtubeHeading' | transloco"
+            aria-live="polite"
+          >
             <h2>{{ 'videoSearch.youtubeHeading' | transloco }}</h2>
             @if (!canSearch()) {
               <p>{{ 'videos.nativeSearch' | transloco }}</p>
@@ -155,7 +182,8 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
             } @else if (youtubeFailed()) {
               <p role="alert">{{ 'videoSearch.youtubeFailed' | transloco }}</p>
             } @else {
-              @for (item of youtube(); track item.id) {
+              @for (card of youtubeCards(); track card.item.id) {
+                @let item = card.item;
                 <article class="video-result">
                   <h3>{{ item.title }}</h3>
                   <p class="muted small">
@@ -167,36 +195,15 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
                       {{ item.channelTitle }}
                     }
                   </p>
-                  @if (sourceFor(item); as source) {
-                    <app-video-player-controls [source]="source" [inline]="true" />
+                  @if (card.source; as source) {
+                    <app-video-player-controls
+                      [source]="source"
+                      [inline]="true"
+                      [showLinks]="false"
+                      [showTitle]="false"
+                    />
                   }
-                  <footer>
-                    @if (item.videoId) {
-                      <a
-                        mbButton
-                        variant="outline"
-                        size="small"
-                        routerLink="/watch"
-                        [queryParams]="{ youtube: item.videoId }"
-                        >{{ 'videoSearch.watch' | transloco }}</a
-                      >
-                    }
-                    @if (item.channelId; as id) {
-                      <button
-                        mbButton
-                        variant="outline"
-                        size="small"
-                        type="button"
-                        [disabled]="subs.has(id)"
-                        (click)="subs.add(id, item.channelTitle)"
-                      >
-                        {{
-                          (subs.has(id) ? 'videoSearch.subscribed' : 'videoSearch.subscribe')
-                            | transloco
-                        }}
-                      </button>
-                    }
-                  </footer>
+                  <mb-item-actions iconsWhenNarrow [actions]="card.actions" [label]="item.title" />
                 </article>
               } @empty {
                 <p class="muted">{{ 'videoSearch.noYoutube' | transloco }}</p>
@@ -205,32 +212,11 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
           </section>
         }
       </div>
-    </div>
+    </mb-rail-page>
   `,
   styles: `
     :host {
       display: block;
-    }
-    .video-search {
-      display: grid;
-      /* The header's first track and gap, as on /rss and /videos. */
-      grid-template-columns: 290px minmax(0, 1fr);
-      gap: 16px;
-      padding: 16px 0;
-      align-items: start;
-    }
-    .search-rail,
-    .search-results section {
-      padding: 1.2rem;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--col-bg);
-    }
-    .search-rail {
-      display: grid;
-      gap: 0.75rem;
-      position: sticky;
-      top: 12px;
     }
     .elsewhere h2 {
       color: var(--muted);
@@ -250,14 +236,6 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
       gap: 16px;
       min-width: 0;
     }
-    form {
-      display: grid;
-      gap: 0.75rem;
-    }
-    h1 {
-      font-size: 1.4rem;
-      margin: 0;
-    }
     h2 {
       font-size: 1.1rem;
       margin: 0 0 0.5rem;
@@ -269,21 +247,6 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
     .video-result h3 {
       font-size: 1rem;
       margin: 0 0 0.25rem;
-    }
-    .video-result footer {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    @media (max-width: 1000px) {
-      .video-search {
-        grid-template-columns: minmax(0, 1fr);
-        padding-inline: 12px;
-      }
-      .search-rail {
-        position: static;
-      }
     }
   `,
 })
@@ -315,6 +278,16 @@ export class VideoSearchPage {
   protected readonly youtube = signal<YoutubeSearchItem[]>([]);
   protected readonly youtubeLoading = signal(false);
   protected readonly youtubeFailed = signal(false);
+
+  private readonly queue = inject(WatchQueue);
+  private readonly transloco = inject(TranslocoService);
+  /** YouTube results with everything there is to do with each. */
+  protected readonly youtubeCards = translatedComputed(() =>
+    this.youtube().map((item) => {
+      const source = this.sourceFor(item);
+      return { item, source, actions: this.actionsFor(item, source) };
+    }),
+  );
 
   private postsRequest?: Subscription;
   private generation = 0;
@@ -355,6 +328,48 @@ export class VideoSearchPage {
           poster: `https://i.ytimg.com/vi/${source.videoId}/hqdefault.jpg`,
         }
       : null;
+  }
+
+  private actionsFor(item: YoutubeSearchItem, source: VideoSource | null): MbItemAction[] {
+    const t = (key: string) => this.transloco.translate(key);
+    const out: MbItemAction[] = [];
+    if (item.videoId)
+      out.push({
+        id: 'watch',
+        icon: 'play',
+        label: t('videoSearch.watch'),
+        link: '/watch',
+        queryParams: { youtube: item.videoId },
+      });
+    const entry = source && queueEntry(source, null);
+    if (entry) {
+      const queued = this.queue.has(entry.key);
+      const full = !queued && this.queue.full();
+      out.push({
+        id: 'queue',
+        icon: 'queue',
+        label: t(
+          full ? 'videoQueue.full' : queued ? 'watch.panel.queueRemove' : 'watch.panel.queueAdd',
+        ),
+        pressed: queued,
+        disabled: full,
+        run: () => (queued ? this.queue.remove(entry.key) : this.queue.add(entry)),
+      });
+    }
+    const channelId = item.channelId;
+    if (channelId) {
+      const subscribed = this.subs.has(channelId);
+      out.push({
+        id: 'subscribe',
+        icon: subscribed ? 'check' : 'rss',
+        label: t(subscribed ? 'videoSearch.subscribed' : 'videoSearch.subscribe'),
+        disabled: subscribed,
+        run: () => this.subs.add(channelId, item.channelTitle),
+      });
+    }
+    if (source)
+      out.push({ id: 'open', icon: 'open', label: t('videoPlayer.openYoutube'), href: source.url });
+    return out;
   }
 
   protected replace(updated: Status): void {

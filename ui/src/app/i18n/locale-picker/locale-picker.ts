@@ -82,7 +82,7 @@ const AUTO = 'auto';
       padding: 1px 4px;
     }
     :host(.in-footer) .locale-picker select:hover {
-      color: var(--accent);
+      color: var(--ds-action-text);
     }
   `,
 })

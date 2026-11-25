@@ -3,12 +3,13 @@
   min-width: 0;
 }
 .studio-page {
+  display: grid;
+  gap: 16px;
   padding: 16px;
 }
 .recording {
   display: grid;
   gap: 12px;
-  margin-block: 16px;
   padding: 16px;
   border: 1px solid var(--border);
   border-radius: 12px;

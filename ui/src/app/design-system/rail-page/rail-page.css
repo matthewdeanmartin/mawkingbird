@@ -1,0 +1,16 @@
+/* The first track and the gap are the shell header's own, so the rail sits under
+   the brand and the content under the tabs. They must move together. */
+:host {
+  display: grid;
+  grid-template-columns: 290px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  padding: 16px 0;
+}
+
+@media (max-width: 1000px) {
+  :host {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: 12px;
+  }
+}

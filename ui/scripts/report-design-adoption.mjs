@@ -19,11 +19,14 @@ await walk(root);
 files.sort();
 const templates = [],
   widgets = [];
+// A localized copy of a public page (name.de.html, name.zh-Hant.html) is not another adopter.
+const localized = /[.][a-z]{2,3}(?:-[A-Za-z]+)?[.]html$/;
 const portable = (path) => relative(root, path).split(sep).join('/');
 for (const path of files) {
   const file = portable(path),
     source = await readFile(path, 'utf8');
   if (path.endsWith('.html')) {
+    if (localized.test(path)) continue;
     templates.push({ file, source });
     continue;
   }

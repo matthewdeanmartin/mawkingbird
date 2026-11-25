@@ -1,12 +1,16 @@
-<div class="videos-page">
-  <aside class="subscriptions">
-    <h1>{{ 'videos.subscriptionsHeading' | transloco }}</h1>
-    <app-video-subscriptions-panel [selected]="selected()" (opened)="results.set(null)" />
+<mb-rail-page>
+  <aside mbRailPanel>
+    <app-video-subscriptions-panel
+      [level]="1"
+      [collapsible]="true"
+      [selected]="selected()"
+      (opened)="results.set(null)"
+    />
   </aside>
-  <section class="video-feed" [attr.aria-label]="'videos.title' | transloco">
+  <section mbPagePanel class="video-feed" [attr.aria-label]="'videos.title' | transloco">
     <header>
       <!-- One toolbar: which videos (pressed), then the page's actions. -->
-      <mb-toolbar density="compact" [label]="'videos.viewLabel' | transloco">
+      <mb-toolbar density="compact" embedded [label]="'videos.viewLabel' | transloco">
         <button
           type="button"
           mbToolbarButton
@@ -32,54 +36,78 @@
         >
           {{ 'videos.shorts' | transloco }}
         </button>
-        <button type="button" mbToolbarButton [disabled]="loading()" (click)="load(true)">
-          ↻ {{ 'videos.refresh' | transloco }}
+        <button
+          type="button"
+          mbToolbarButton
+          [attr.aria-label]="'videos.refresh' | transloco"
+          [title]="'videos.refresh' | transloco"
+          [disabled]="loading()"
+          (click)="load(true)"
+        >
+          <mb-icon name="refresh" size="small" />
         </button>
-        <button type="button" mbToolbarButton (click)="customizing.set(true)">
-          {{ 'videos.customize' | transloco }}
+        <button
+          type="button"
+          mbToolbarButton
+          [attr.aria-label]="'videos.customize' | transloco"
+          [title]="'videos.customize' | transloco"
+          (click)="customizing.set(true)"
+        >
+          <mb-icon name="settings" size="small" />
         </button>
       </mb-toolbar>
-    </header>
-    @if (results() === null) {
-      <div class="sort-bar">
-        <mb-field [label]="'videos.sort' | transloco">
+      @if (results() === null) {
+        <mb-field hideLabel density="compact" [label]="'videos.sort' | transloco">
           <select mbControl [ngModel]="sort()" (ngModelChange)="sort.set($event)">
             @for (option of sortOptions; track option) {
               <option [value]="option">{{ sortLabels[option] | transloco }}</option>
             }
           </select>
         </mb-field>
-      </div>
-    }
+      }
+      <mb-help [label]="'videoPlayer.help' | transloco">
+        <p>{{ 'videoPlayer.external' | transloco }}</p>
+        <p>{{ 'videoPlayer.positionUnavailable' | transloco }}</p>
+        <p>{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
+      </mb-help>
+    </header>
     <div class="search-box">
       @if (canSearch()) {
-        <form (ngSubmit)="search()">
-          <input
-            name="query"
-            [(ngModel)]="query"
-            [attr.aria-label]="'videos.searchQuery' | transloco"
-            [placeholder]="'videos.searchQuery' | transloco"
-            maxlength="200"
-            required
-          />
-          <select
-            name="type"
-            [(ngModel)]="searchType"
-            [attr.aria-label]="'videos.searchType' | transloco"
+        <form mbAddBox (ngSubmit)="search()">
+          <mb-field hideLabel [label]="'videos.searchQuery' | transloco">
+            <input
+              mbControl
+              name="query"
+              type="search"
+              [(ngModel)]="query"
+              [placeholder]="'videos.searchQuery' | transloco"
+              maxlength="200"
+            />
+          </mb-field>
+          <button
+            mbButton
+            type="submit"
+            [attr.aria-label]="(searching() ? 'videos.searching' : 'videos.search') | transloco"
+            [title]="'videos.search' | transloco"
+            [disabled]="searching()"
           >
+            <mb-icon name="find" />
+          </button>
+        </form>
+        <mb-field hideLabel density="compact" [label]="'videos.searchType' | transloco">
+          <select mbControl name="type" [(ngModel)]="searchType">
             <option value="video">{{ 'videos.videoResults' | transloco }}</option>
             <option value="channel">{{ 'videos.channelResults' | transloco }}</option>
           </select>
-          <button mbButton type="submit" [disabled]="searching() || !query.trim()">
-            {{ (searching() ? 'videos.searching' : 'videos.search') | transloco }}
-          </button>
-        </form>
+        </mb-field>
       } @else {
         <!-- YouTube search runs in the app, which asks YouTube directly. -->
-        <p>{{ 'videos.nativeSearch' | transloco }}</p>
-        <a mbButton variant="outline" routerLink="/settings/app">{{
-          'videos.installNative' | transloco
-        }}</a>
+        <p class="muted">
+          {{ 'videos.nativeSearch' | transloco }}
+          <a mbButton variant="link" routerLink="/settings/app">{{
+            'videos.installNative' | transloco
+          }}</a>
+        </p>
       }
       @if (searchError()) {
         <!-- Native has no Plus account to check: YouTube itself refused or was unreachable. -->
@@ -88,63 +116,34 @@
         </p>
       }
     </div>
-    @if (results(); as found) {
-      <button mbButton variant="outline" type="button" (click)="results.set(null)">
-        {{ 'videos.back' | transloco }}
+    @if (resultCards(); as found) {
+      <button mbButton variant="link" type="button" (click)="results.set(null)">
+        <span aria-hidden="true">←</span> {{ 'videos.back' | transloco }}
       </button>
-      @for (item of found; track item.id) {
+      @for (card of found; track card.item.id) {
         <article class="video-post">
-          <h3>{{ item.title }}</h3>
-          <p class="muted">
-            @if (item.channelId) {
-              <a [routerLink]="['/videos/channel', item.channelId]">{{ item.channelTitle }}</a>
+          <h3>{{ card.item.title }}</h3>
+          <p class="byline">
+            @if (card.item.channelId) {
+              <a [routerLink]="['/videos/channel', card.item.channelId]">{{
+                card.item.channelTitle
+              }}</a>
             } @else {
-              {{ item.channelTitle }}
+              {{ card.item.channelTitle }}
             }
           </p>
-          @if (searchSource(item); as source) {
-            <app-video-player-controls [source]="source" [inline]="true" />
-            <footer>
-              <a
-                mbButton
-                variant="outline"
-                size="small"
-                routerLink="/watch"
-                [queryParams]="{ youtube: source.videoId }"
-                >{{ 'videos.watchParty' | transloco }}</a
-              >
-              <button
-                mbButton
-                variant="outline"
-                size="small"
-                type="button"
-                (click)="
-                  postResponse({
-                    id: source.key,
-                    title: item.title,
-                    channelTitle: item.channelTitle,
-                    source,
-                  })
-                "
-              >
-                {{ 'videos.response' | transloco }}
-              </button>
-            </footer>
+          @if (card.source; as source) {
+            <app-video-player-controls
+              [source]="source"
+              [inline]="true"
+              [showLinks]="false"
+              [showTitle]="false"
+            />
           }
-          @if (item.channelId; as id) {
-            <button
-              mbButton
-              variant="outline"
-              type="button"
-              [disabled]="subs.has(id)"
-              (click)="subscribe(item)"
-            >
-              {{ (subs.has(id) ? 'videos.subscribed' : 'videos.subscribe') | transloco }}
-            </button>
-          }
+          <mb-item-actions iconsWhenNarrow [actions]="card.actions" [label]="card.item.title" />
         </article>
       } @empty {
-        <p role="status">{{ 'videos.noResults' | transloco }}</p>
+        <mb-content-state [title]="'videos.noResults' | transloco" announcement="status" />
       }
     } @else {
       @if (failed().length) {
@@ -155,8 +154,10 @@
       @if (loading()) {
         <p role="status">{{ 'videos.loading' | transloco }}</p>
       }
-      @for (item of visible(); track item.id) {
+      @for (card of cards(); track card.item.id) {
+        @let item = card.item;
         <article class="video-post" [class.watched]="reads.isRead(item.id)">
+          <h3>{{ item.title }}</h3>
           <div class="byline">
             @if (item.channelId) {
               <a routerLink="/videos" [queryParams]="{ channel: item.channelId }">{{
@@ -171,10 +172,14 @@
               }}</time>
             }
           </div>
-          <h3>{{ item.title }}</h3>
-          <app-video-player-controls [source]="item.source" [inline]="true" />
+          <app-video-player-controls
+            [source]="item.source"
+            [inline]="true"
+            [showLinks]="false"
+            [showTitle]="false"
+          />
           @if (item.sharedBy?.length) {
-            <p class="shared-by">
+            <p class="byline shared-by">
               @for (post of item.sharedBy!.slice(0, 3); track post.id) {
                 <img
                   [src]="
@@ -192,54 +197,16 @@
               }}</a>
             </p>
           }
-          <footer>
-            <button
-              mbButton
-              variant="outline"
-              size="small"
-              type="button"
-              [attr.aria-pressed]="reads.isStarred(item.id)"
-              (click)="reads.toggleStarred(item.id)"
-            >
-              {{ (reads.isStarred(item.id) ? 'videos.unsave' : 'videos.save') | transloco }}
-            </button>
-            <button
-              mbButton
-              variant="outline"
-              size="small"
-              type="button"
-              [attr.aria-pressed]="reads.isRead(item.id)"
-              (click)="toggleRead(item.id)"
-            >
-              {{ (reads.isRead(item.id) ? 'videos.unread' : 'videos.read') | transloco }}
-            </button>
-            <a
-              mbButton
-              variant="outline"
-              size="small"
-              routerLink="/watch"
-              [queryParams]="{ youtube: item.source.videoId }"
-              >{{ 'videos.watchParty' | transloco }}</a
-            >
-            <button
-              mbButton
-              variant="outline"
-              size="small"
-              type="button"
-              (click)="postResponse(item)"
-            >
-              {{ 'videos.response' | transloco }}
-            </button>
-          </footer>
+          <mb-item-actions iconsWhenNarrow [actions]="card.actions" [label]="item.title" />
         </article>
       } @empty {
         @if (!loading()) {
-          <p class="empty">{{ 'videos.empty' | transloco }}</p>
+          <mb-content-state [title]="'videos.empty' | transloco" />
         }
       }
     }
   </section>
-</div>
+</mb-rail-page>
 
 @if (response(); as draft) {
   <mb-dialog
@@ -264,15 +231,12 @@
     [closeLabel]="'videos.closeDetails' | transloco"
     (dismissed)="customizing.set(false)"
   >
-    <label
-      ><input
-        type="checkbox"
-        [checked]="prefs.autoLoadYoutubeWatch()"
-        (change)="prefs.autoLoadYoutubeWatch.set($any($event.target).checked)"
-      />
-      {{ 'videos.autoLoadWatch' | transloco }}</label
-    >
-    <p>{{ 'videos.autoLoadWatchHint' | transloco }}</p>
+    <mb-checkbox
+      [label]="'videos.autoLoadWatch' | transloco"
+      [hint]="'videos.autoLoadWatchHint' | transloco"
+      [checked]="prefs.autoLoadYoutubeWatch()"
+      (checkedChange)="prefs.autoLoadYoutubeWatch.set($event)"
+    />
     <a routerLink="/settings/rss">{{ 'videos.feedSettings' | transloco }}</a>
   </mb-dialog>
 }

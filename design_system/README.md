@@ -1,5 +1,9 @@
 # Mawkingbird design system
 
+**Adding a button next to other buttons?** Read [Action rows](action-rows.md) first.
+The [2026-11 drift review](audits/20-drift-review.md) ranks what recent features
+built that should become shared.
+
 **Adding a Settings page?** Start with the [Settings page recipe](settings-pages.md)
 and the accepted `settings/profile` layout before consulting individual widgets.
 

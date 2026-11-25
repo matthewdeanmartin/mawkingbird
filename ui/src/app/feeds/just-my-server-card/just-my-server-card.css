@@ -15,7 +15,7 @@
 
 .server-mode-kicker {
   display: block;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -38,7 +38,7 @@
 }
 
 .server-mode-status.ok {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .server-mode-status.fail {

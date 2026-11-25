@@ -34,3 +34,15 @@ p {
 .actions:empty {
   display: none;
 }
+
+/* Inside a page or panel that already supplies its own inset. */
+:host([data-embedded]) {
+  align-items: center;
+  padding: 0;
+  border: 0;
+}
+
+/* A rail is narrow: keep the title and its one or two actions on a line. */
+:host([data-embedded]) .copy {
+  flex-basis: 120px;
+}

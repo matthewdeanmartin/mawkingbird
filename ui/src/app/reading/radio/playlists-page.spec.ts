@@ -96,7 +96,7 @@ describe('PlaylistsPage', () => {
     TestBed.inject(RadioPlaylists).create('Morning');
     const { root } = render();
     expect(root.querySelectorAll('h1')).toHaveLength(1);
-    expect(root.querySelector('ul.rows')?.textContent).toContain('Morning');
+    expect(root.querySelector('ul[mbItemList]')?.textContent).toContain('Morning');
     expect(root.textContent).not.toContain('No playlists yet');
   });
 

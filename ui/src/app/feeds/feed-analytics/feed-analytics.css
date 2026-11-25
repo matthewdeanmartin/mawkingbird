@@ -235,7 +235,7 @@ a.chip:hover {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -320,7 +320,7 @@ a.chip:hover {
   place-items: center;
   border-radius: 50%;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 800;
   margin-top: 10px;
 }

@@ -80,7 +80,7 @@ import { MODE_ENTRIES, suggestedMode } from './mode-nav';
     .mode-switch:hover,
     .mode-switch[aria-expanded='true'] {
       background: var(--accent-soft);
-      color: var(--accent);
+      color: var(--ds-action-text);
     }
     .mode-switch:focus-visible {
       outline: 2px solid var(--text);

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { booleanAttribute, Component, input } from '@angular/core';
 
 @Component({
   selector: 'mb-page-header',
@@ -16,11 +16,14 @@ import { Component, input } from '@angular/core';
     <div class="actions"><ng-content /></div>
   `,
   styleUrl: './page-header.css',
+  host: { '[attr.data-embedded]': 'embedded() || null' },
 })
 export class MbPageHeader {
   readonly title = input.required<string>();
   readonly description = input('');
   readonly level = input<1 | 2>(1);
+  /** The surrounding page or panel supplies the padding and any divider. */
+  readonly embedded = input(false, { transform: booleanAttribute });
 }
 
 let nextId = 0;

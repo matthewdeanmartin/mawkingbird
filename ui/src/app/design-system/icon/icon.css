@@ -1,0 +1,23 @@
+:host {
+  display: inline-flex;
+  flex: none;
+}
+
+svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+:host([data-size='small']) svg {
+  width: 18px;
+  height: 18px;
+}
+
+:host([data-mirror]:dir(rtl)) svg {
+  transform: scaleX(-1);
+}

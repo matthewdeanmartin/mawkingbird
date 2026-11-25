@@ -77,7 +77,7 @@
 
 .follow-tag {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
   border-color: transparent;
 }
 

@@ -402,7 +402,7 @@
 .private-note-edit {
   border: 0;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   cursor: pointer;
   font: inherit;
   font-size: 13px;
@@ -653,7 +653,7 @@ h2 {
 
 .featured-name:hover {
   text-decoration: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 .featured-display {

@@ -1,11 +1,11 @@
 {
   "scope": "Maintained Angular app template call sites; excludes stories, specs and shared internals from direct counts. Repeated runtime rows count once per source node. Integration means source usage, not commit, deployment or full app coverage.",
-  "widgetsAvailable": 40,
-  "widgetsDirectlyUsed": 37,
-  "widgetsUsedThroughCompositionOnly": [],
-  "widgetsWithoutAppUsage": ["MbActionMenu", "MbSection", "MbPopover"],
-  "appTemplateFiles": 88,
-  "directTemplateCallSites": 797,
+  "widgetsAvailable": 60,
+  "widgetsDirectlyUsed": 57,
+  "widgetsUsedThroughCompositionOnly": ["MbMenuSeparator"],
+  "widgetsWithoutAppUsage": ["MbActionMenu", "MbMenuGroup"],
+  "appTemplateFiles": 321,
+  "directTemplateCallSites": 2858,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -15,13 +15,89 @@
       "integrated": false
     },
     {
-      "name": "MbBadge",
-      "selector": "mb-badge",
-      "directCallSites": 3,
+      "name": "MbAddBox",
+      "selector": "form[mbAddBox]",
+      "directCallSites": 9,
       "consumers": [
         {
+          "file": "reading/radio/catalogue-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/find-singles-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbBadge",
+      "selector": "mb-badge",
+      "directCallSites": 22,
+      "consumers": [
+        {
+          "file": "accounts/bot-signals/bot-signals.ts",
+          "count": 2
+        },
+        {
+          "file": "accounts/new-people-panel/new-people-panel.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-page.html",
+          "count": 5
+        },
+        {
+          "file": "feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
+          "count": 1
+        },
+        {
           "file": "feeds/lists/list-dialog/list-dialog.html",
+          "count": 4
+        },
+        {
+          "file": "feeds/notifications/notifications.html",
+          "count": 1
+        },
+        {
+          "file": "forum/forum-members.ts",
           "count": 3
+        },
+        {
+          "file": "forum/forum-page.html",
+          "count": 2
+        },
+        {
+          "file": "posts/account-list-dialog/quotes-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -29,23 +105,147 @@
     {
       "name": "MbButton",
       "selector": "button[mbButton], a[mbButton]",
-      "directCallSites": 272,
+      "directCallSites": 905,
       "consumers": [
         {
           "file": "accounts/account-analytics/account-analytics.html",
-          "count": 1
+          "count": 6
         },
         {
           "file": "accounts/account-hover-card/account-hover-card.ts",
+          "count": 4
+        },
+        {
+          "file": "accounts/account-note-dialog/account-note-dialog.ts",
           "count": 3
         },
         {
-          "file": "accounts/account-hover-card/account-preview.ts",
+          "file": "accounts/annual-report/annual-report.html",
+          "count": 3
+        },
+        {
+          "file": "accounts/anonymous-on-mastodon/anonymous-on-mastodon.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/anonymous-on-mastodon/pseudonymity-workbench.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/bulk-actions-dialog/bulk-actions-dialog.html",
+          "count": 8
+        },
+        {
+          "file": "accounts/discovery-panel/discovery-panel.html",
+          "count": 3
+        },
+        {
+          "file": "accounts/engaged-audience-panel/engaged-audience-panel.html",
           "count": 1
         },
         {
-          "file": "posts/account-list-dialog/account-list-dialog.html",
+          "file": "accounts/first-run/first-run-modal.html",
           "count": 2
+        },
+        {
+          "file": "accounts/follow-button/follow-button.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/interaction-decay-panel/interaction-decay-panel.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/mastodon-analytics/analytics-lookup.ts",
+          "count": 2
+        },
+        {
+          "file": "accounts/mastodon-analytics/mastodon-analytics.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/mastodon-handle-generator/handle-workbench.html",
+          "count": 10
+        },
+        {
+          "file": "accounts/mastodon-handle-generator/mastodon-handle-generator.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/new-people-panel/new-people-panel.html",
+          "count": 6
+        },
+        {
+          "file": "accounts/onboarding/onboarding-card.html",
+          "count": 7
+        },
+        {
+          "file": "accounts/people-browser/people-browser.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/profile-qr/profile-qr-dialog.html",
+          "count": 4
+        },
+        {
+          "file": "accounts/profile/bio-translation/bio-translation.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/profile/follow-languages-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "accounts/profile/profile-slideshow.html",
+          "count": 12
+        },
+        {
+          "file": "accounts/profile/profile.html",
+          "count": 6
+        },
+        {
+          "file": "accounts/setup/account-setup.html",
+          "count": 5
+        },
+        {
+          "file": "accounts/setup/steps/setup-bluesky-intro.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/setup/steps/setup-follow.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-intro.html",
+          "count": 4
+        },
+        {
+          "file": "accounts/setup/steps/setup-profile.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/sign-in/account-picker/account-picker.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/sign-in/bluesky-oauth-callback/bluesky-oauth-callback.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/sign-in/login-bluesky/login-bluesky.html",
+          "count": 3
+        },
+        {
+          "file": "accounts/sign-in/login-misskey/login-misskey.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/sign-in/login/login.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/top-boosters-panel/top-boosters-panel.html",
+          "count": 3
         },
         {
           "file": "admin/accounts/admin-accounts.html",
@@ -77,58 +277,206 @@
         },
         {
           "file": "admin/reports/admin-reports.html",
-          "count": 3
-        },
-        {
-          "file": "admin/trends/admin-trends.html",
           "count": 4
         },
         {
-          "file": "shell/bug-report-dialog/bug-report-dialog.html",
-          "count": 3
+          "file": "admin/tags/admin-tags.ts",
+          "count": 1
         },
         {
-          "file": "accounts/bulk-actions-dialog/bulk-actions-dialog.html",
+          "file": "admin/trends/admin-trends.html",
           "count": 8
         },
         {
-          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
+          "file": "blog/blog-header.ts",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-landing.html",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-page.html",
+          "count": 6
+        },
+        {
+          "file": "blog/blog-post-page.html",
+          "count": 6
+        },
+        {
+          "file": "blog/blog-rail-cards.ts",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-roll-page.html",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-search-page.html",
           "count": 2
         },
         {
-          "file": "publishing/compose/compose.html",
-          "count": 16
-        },
-        {
-          "file": "publishing/compose/translate-dialog/translate-dialog.html",
+          "file": "connections/misskey/misskey-compose.html",
           "count": 5
         },
         {
-          "file": "shell/confirm-dialog/confirm-dialog.html",
+          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+          "count": 5
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-people-list.ts",
+          "count": 1
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-pack-page.html",
           "count": 3
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/directory/directory.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/find-contacts-on-mastodon/find-contacts-on-mastodon.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/find-friends/server-suggestions.ts",
+          "count": 1
+        },
+        {
+          "file": "discovery/find-interactions/find-interactions.html",
+          "count": 3
+        },
+        {
+          "file": "discovery/find-interactions/interactions-workbench.ts",
+          "count": 2
+        },
+        {
+          "file": "discovery/friend-bridge/friend-bridge.html",
+          "count": 3
+        },
+        {
+          "file": "discovery/mastodon-similar-hashtags/mastodon-similar-hashtags.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/mastodon-similar-hashtags/similar-hashtags-workbench.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/misskey-search/misskey-search.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/network-search/network-search.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/network-search/search-launcher.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/search-server-discovery/search-server-discovery.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/search/search.html",
+          "count": 30
+        },
+        {
+          "file": "discovery/server-discovery/server-discovery.html",
+          "count": 4
+        },
+        {
+          "file": "discovery/server-picker/server-picker.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/similar-hashtags/similar-hashtags-panel.html",
+          "count": 4
+        },
+        {
+          "file": "discovery/twitter-archive-tools/twitter-archive-tools.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/twitter-to-mastodon/twitter-to-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/bluesky-feed/bluesky-feed.html",
+          "count": 5
         },
         {
           "file": "feeds/feed-analytics/feed-analytics.html",
           "count": 2
         },
         {
+          "file": "feeds/feed-builder/feed-builder-hub.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-page.html",
+          "count": 13
+        },
+        {
+          "file": "feeds/feed-builder/feed-flooding.html",
+          "count": 6
+        },
+        {
+          "file": "feeds/feed-builder/feed-preview.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/feed-builder/youtube-subscribe.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/youtube-subscribe.ts",
+          "count": 1
+        },
+        {
           "file": "feeds/feed-members/feed-members.html",
           "count": 2
         },
         {
-          "file": "accounts/first-run/first-run-modal.html",
+          "file": "feeds/home/home.html",
+          "count": 10
+        },
+        {
+          "file": "feeds/just-my-server-card/just-my-server-card.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/link-timeline/link-timeline.html",
           "count": 2
         },
         {
-          "file": "accounts/follow-button/follow-button.ts",
+          "file": "feeds/list-timeline/list-timeline.html",
+          "count": 5
+        },
+        {
+          "file": "feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html",
           "count": 1
         },
         {
-          "file": "posts/history-dialog/history-dialog.html",
+          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
           "count": 2
         },
         {
-          "file": "shell/leave-dialog/leave-dialog.html",
+          "file": "feeds/lists/collection-settings-dialog/collection-settings-dialog.html",
           "count": 2
         },
         {
@@ -136,23 +484,27 @@
           "count": 6
         },
         {
-          "file": "accounts/onboarding/onboarding-card.html",
-          "count": 7
+          "file": "feeds/lists/list-settings-dialog/list-settings-dialog.ts",
+          "count": 2
         },
         {
-          "file": "accounts/sign-in/bluesky-oauth-callback/bluesky-oauth-callback.html",
+          "file": "feeds/lists/lists.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/misskey-feed/misskey-feed.ts",
+          "count": 3
+        },
+        {
+          "file": "feeds/misskey-tag/misskey-tag.ts",
           "count": 1
         },
         {
-          "file": "feeds/list-timeline/list-timeline.html",
-          "count": 3
+          "file": "feeds/notifications/notifications.html",
+          "count": 4
         },
         {
-          "file": "accounts/sign-in/login-bluesky/login-bluesky.html",
-          "count": 3
-        },
-        {
-          "file": "accounts/profile/profile.html",
+          "file": "feeds/other-servers/other-servers.html",
           "count": 1
         },
         {
@@ -160,8 +512,456 @@
           "count": 1
         },
         {
-          "file": "discovery/search/search.html",
-          "count": 25
+          "file": "feeds/server-feed/server-feed.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/tag/tag.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/turn-off-boosts-mastodon/boosts-workbench.ts",
+          "count": 2
+        },
+        {
+          "file": "feeds/turn-off-boosts-mastodon/turn-off-boosts-mastodon.html",
+          "count": 2
+        },
+        {
+          "file": "forum/forum-list-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "forum/forum-members.ts",
+          "count": 2
+        },
+        {
+          "file": "forum/forum-page.html",
+          "count": 5
+        },
+        {
+          "file": "language/language-finder/language-finder.ts",
+          "count": 1
+        },
+        {
+          "file": "lite/lite-feed.ts",
+          "count": 1
+        },
+        {
+          "file": "lite/lite-media.ts",
+          "count": 4
+        },
+        {
+          "file": "lite/lite-media.ts",
+          "count": 2
+        },
+        {
+          "file": "lite/lite-new-pill.ts",
+          "count": 1
+        },
+        {
+          "file": "lite/lite-pages.ts",
+          "count": 1
+        },
+        {
+          "file": "lite/lite-pages.ts",
+          "count": 1
+        },
+        {
+          "file": "lite/lite-pages.ts",
+          "count": 1
+        },
+        {
+          "file": "lite/lite-shell.ts",
+          "count": 2
+        },
+        {
+          "file": "lite/lite-status.ts",
+          "count": 1
+        },
+        {
+          "file": "moderation/bulk-words-dialog/bulk-words-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "moderation/mastodon-content-warnings/mastodon-content-warnings.html",
+          "count": 2
+        },
+        {
+          "file": "moderation/mastodon-mute-block-amnesty/amnesty-workbench.ts",
+          "count": 2
+        },
+        {
+          "file": "moderation/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.html",
+          "count": 2
+        },
+        {
+          "file": "moderation/report-dialog/report-dialog.html",
+          "count": 6
+        },
+        {
+          "file": "moderation/tag-filter-dialog/tag-filter-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "observability/connection/connection-page.html",
+          "count": 5
+        },
+        {
+          "file": "observability/observability.html",
+          "count": 1
+        },
+        {
+          "file": "platform/session/account-tab-guard/account-tab-banner.ts",
+          "count": 2
+        },
+        {
+          "file": "posts/account-list-dialog/account-list-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/account-list-dialog/quotes-dialog.ts",
+          "count": 4
+        },
+        {
+          "file": "posts/code-blocks/code-image-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "posts/copy-link/copy-link-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/filter-post-dialog/filter-post-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/history-dialog/history-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/learn/word-lookup-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/media-download/media-download-dialog.ts",
+          "count": 5
+        },
+        {
+          "file": "posts/post-analytics/post-analytics.html",
+          "count": 1
+        },
+        {
+          "file": "posts/post-embed/post-embed-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/sign-in-prompt/sign-in-prompt.html",
+          "count": 3
+        },
+        {
+          "file": "posts/status-card/search-excerpt-view.html",
+          "count": 1
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 15
+        },
+        {
+          "file": "public-pages/create-account/create-account.html",
+          "count": 2
+        },
+        {
+          "file": "public-pages/create-account/create-bluesky-account.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/features/audience-page.html",
+          "count": 3
+        },
+        {
+          "file": "public-pages/features/features.html",
+          "count": 3
+        },
+        {
+          "file": "public-pages/features/follow-hub.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/features/follow-kit.html",
+          "count": 2
+        },
+        {
+          "file": "public-pages/features/public-article.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/language-landing/language-checklist.ts",
+          "count": 4
+        },
+        {
+          "file": "public-pages/language-landing/language-landing.html",
+          "count": 2
+        },
+        {
+          "file": "public-pages/tools/tools-index.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/youtubers/youtuber-hub.ts",
+          "count": 1
+        },
+        {
+          "file": "public-pages/youtubers/youtuber-kit.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/compose/compose.html",
+          "count": 20
+        },
+        {
+          "file": "publishing/compose/translate-dialog/translate-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-group-settings.html",
+          "count": 9
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-join-group.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-new-group.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/conversations/conversations.html",
+          "count": 21
+        },
+        {
+          "file": "publishing/crosspost/crosspost.html",
+          "count": 3
+        },
+        {
+          "file": "publishing/focal-point/focal-point-dialog.ts",
+          "count": 3
+        },
+        {
+          "file": "publishing/github-to-mastodon/github-to-mastodon.html",
+          "count": 2
+        },
+        {
+          "file": "publishing/outbox/outbox-page.ts",
+          "count": 4
+        },
+        {
+          "file": "publishing/post-permissions/bluesky-post-controls-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/post-permissions/post-permissions.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/schedule-mastodon-posts/schedule-mastodon-posts.html",
+          "count": 2
+        },
+        {
+          "file": "publishing/schedule-mastodon-posts/schedule-workbench.html",
+          "count": 6
+        },
+        {
+          "file": "publishing/status-edit/status-edit-dialog.html",
+          "count": 9
+        },
+        {
+          "file": "publishing/write/posting-language-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/write/write-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/bookmarks/bookmarks.html",
+          "count": 1
+        },
+        {
+          "file": "reading/bookmarks/history-panel/history-panel.html",
+          "count": 3
+        },
+        {
+          "file": "reading/download-mastodon-images/download-mastodon-images.html",
+          "count": 2
+        },
+        {
+          "file": "reading/download-mastodon-images/media-download-workbench.html",
+          "count": 2
+        },
+        {
+          "file": "reading/export-mastodon-bookmarks/bookmarks-export-workbench.html",
+          "count": 3
+        },
+        {
+          "file": "reading/export-mastodon-bookmarks/export-mastodon-bookmarks.html",
+          "count": 2
+        },
+        {
+          "file": "reading/favourites/favourites.html",
+          "count": 1
+        },
+        {
+          "file": "reading/mastodon-friends-rss-feeds/friend-feeds-workbench.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/catalogue-panel.ts",
+          "count": 7
+        },
+        {
+          "file": "reading/radio/find-singles-page.html",
+          "count": 6
+        },
+        {
+          "file": "reading/radio/listen-page.html",
+          "count": 12
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 9
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 10
+        },
+        {
+          "file": "reading/radio/podcast-kits-page.ts",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/radio-controls.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/radio-dock.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/radio-header.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/radio-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/radio-settings.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/radio-studio.html",
+          "count": 5
+        },
+        {
+          "file": "reading/radio/share-page.html",
+          "count": 6
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/studio-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/track-result.ts",
+          "count": 4
+        },
+        {
+          "file": "reading/thread/thread.html",
+          "count": 1
+        },
+        {
+          "file": "reading/video-player/queue-button.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/video-player/video-player-host.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/video-player/video-player.html",
+          "count": 4
+        },
+        {
+          "file": "reading/videos/channel-page.ts",
+          "count": 4
+        },
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 3
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 3
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/youtuber-kits-page.ts",
+          "count": 5
+        },
+        {
+          "file": "reading/watch/party-conversation.html",
+          "count": 8
+        },
+        {
+          "file": "reading/watch/watch-video-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/watch/watch.html",
+          "count": 4
+        },
+        {
+          "file": "reading/watch/youtube-comments.ts",
+          "count": 4
+        },
+        {
+          "file": "settings/about/settings-about.ts",
+          "count": 2
+        },
+        {
+          "file": "settings/app/settings-app.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/blog/settings-blog.html",
+          "count": 2
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 11
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
+          "count": 2
         },
         {
           "file": "settings/connections/blogger/connection-blogger.html",
@@ -169,11 +969,15 @@
         },
         {
           "file": "settings/connections/bluesky/connection-bluesky.html",
-          "count": 2
+          "count": 4
         },
         {
           "file": "settings/connections/dropbox/connection-dropbox.html",
           "count": 4
+        },
+        {
+          "file": "settings/connections/free-translator/connection-free-translator.html",
+          "count": 2
         },
         {
           "file": "settings/connections/gist/connection-gist.html",
@@ -188,6 +992,10 @@
           "count": 7
         },
         {
+          "file": "settings/connections/local-ai/connection-local-ai.ts",
+          "count": 4
+        },
+        {
           "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 6
         },
@@ -196,8 +1004,12 @@
           "count": 2
         },
         {
+          "file": "settings/connections/openrouter/connection-openrouter.html",
+          "count": 1
+        },
+        {
           "file": "settings/connections/pastes/connection-pastes.html",
-          "count": 2
+          "count": 1
         },
         {
           "file": "settings/connections/raindrop/connection-raindrop.html",
@@ -212,8 +1024,44 @@
           "count": 5
         },
         {
+          "file": "settings/filters/settings-filter-edit.html",
+          "count": 1
+        },
+        {
+          "file": "settings/home-algo/settings-home-algo.html",
+          "count": 3
+        },
+        {
+          "file": "settings/import-export/bridge-friends-import.html",
+          "count": 4
+        },
+        {
+          "file": "settings/import-export/contact-friends-import.html",
+          "count": 4
+        },
+        {
+          "file": "settings/import-export/github-friends-import.html",
+          "count": 7
+        },
+        {
           "file": "settings/import-export/settings-import-export.html",
-          "count": 39
+          "count": 18
+        },
+        {
+          "file": "settings/import-export/twitter-archive-import.html",
+          "count": 7
+        },
+        {
+          "file": "settings/network/settings-network.ts",
+          "count": 3
+        },
+        {
+          "file": "settings/posting-defaults/posting-defaults.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/profile/profile-bio-dialog.ts",
+          "count": 4
         },
         {
           "file": "settings/profile/profile-link-dialog.html",
@@ -221,43 +1069,31 @@
         },
         {
           "file": "settings/profile/settings-profile.html",
-          "count": 4
+          "count": 7
+        },
+        {
+          "file": "settings/settings-shell.html",
+          "count": 1
         },
         {
           "file": "settings/writing/settings-writing.html",
           "count": 2
         },
         {
-          "file": "publishing/write/posting-language-dialog.ts",
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "count": 6
+        },
+        {
+          "file": "shell/confirm-dialog/confirm-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "shell/fail-whale/fail-whale.html",
           "count": 1
         },
         {
-          "file": "publishing/write/write-page.html",
+          "file": "shell/leave-dialog/leave-dialog.html",
           "count": 2
-        },
-        {
-          "file": "accounts/people-browser/people-browser.html",
-          "count": 1
-        },
-        {
-          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
-          "count": 2
-        },
-        {
-          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
-          "count": 2
-        },
-        {
-          "file": "moderation/report-dialog/report-dialog.html",
-          "count": 1
-        },
-        {
-          "file": "discovery/search-server-discovery/search-server-discovery.html",
-          "count": 4
-        },
-        {
-          "file": "discovery/server-discovery/server-discovery.html",
-          "count": 4
         },
         {
           "file": "shell/left-rail/left-rail.html",
@@ -265,18 +1101,58 @@
         },
         {
           "file": "shell/left-rail/profile-stack/profile-stack.html",
+          "count": 2
+        },
+        {
+          "file": "shell/offline-banner/offline-banner.ts",
+          "count": 7
+        },
+        {
+          "file": "shell/reading-back.ts",
           "count": 1
         },
         {
           "file": "shell/right-rail/right-rail.html",
-          "count": 7
+          "count": 4
         },
         {
           "file": "shell/shell.html",
           "count": 2
         },
         {
-          "file": "posts/sign-in-prompt/sign-in-prompt.html",
+          "file": "translation/ai-budget-prompt.ts",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-drop.html",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-import-points.ts",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-people.html",
+          "count": 6
+        },
+        {
+          "file": "unbird/unbird-posts.html",
+          "count": 7
+        },
+        {
+          "file": "unbird/unbird-profile.html",
+          "count": 6
+        },
+        {
+          "file": "unbird/unbird-servers.html",
+          "count": 3
+        },
+        {
+          "file": "wellness/wellness-time.ts",
           "count": 3
         }
       ],
@@ -285,19 +1161,27 @@
     {
       "name": "MbCheckbox",
       "selector": "mb-checkbox",
-      "directCallSites": 29,
+      "directCallSites": 110,
       "consumers": [
         {
-          "file": "admin/announcements/admin-announcements.html",
+          "file": "accounts/anonymous-on-mastodon/pseudonymity-workbench.html",
           "count": 1
         },
         {
-          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "file": "accounts/profile/follow-languages-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-findable.ts",
+          "count": 3
+        },
+        {
+          "file": "accounts/setup/steps/setup-follow.html",
           "count": 2
         },
         {
-          "file": "feeds/lists/list-dialog/list-dialog.html",
-          "count": 3
+          "file": "accounts/setup/steps/setup-languages.ts",
+          "count": 1
         },
         {
           "file": "accounts/sign-in/login-chooser/login-chooser.html",
@@ -308,19 +1192,123 @@
           "count": 2
         },
         {
-          "file": "settings/connections/blogger/connection-blogger.html",
+          "file": "admin/announcements/admin-announcements.html",
+          "count": 1
+        },
+        {
+          "file": "admin/tags/admin-tags.ts",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-write-panel.ts",
+          "count": 2
+        },
+        {
+          "file": "connections/misskey/misskey-compose.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/server-discovery/server-discovery.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-page.html",
+          "count": 4
+        },
+        {
+          "file": "feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/collection-settings-dialog/collection-settings-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/lists/list-dialog/list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/tag/tag.html",
+          "count": 1
+        },
+        {
+          "file": "moderation/mastodon-content-warnings/content-warnings-workbench.html",
+          "count": 2
+        },
+        {
+          "file": "moderation/report-dialog/report-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "moderation/tag-filter-dialog/tag-filter-dialog.ts",
+          "count": 3
+        },
+        {
+          "file": "posts/media-download/media-download-dialog.ts",
+          "count": 3
+        },
+        {
+          "file": "public-pages/create-account/create-account.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/language-landing/language-checklist.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-group-settings.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/post-permissions/bluesky-post-controls-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/status-edit/status-edit-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/catalogue-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/find-singles-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/radio-settings.ts",
+          "count": 4
+        },
+        {
+          "file": "reading/radio/share-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 1
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 2
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
+          "count": 7
+        },
+        {
+          "file": "settings/connections/free-translator/connection-free-translator.html",
           "count": 1
         },
         {
           "file": "settings/connections/hugo/connection-hugo.html",
-          "count": 2
+          "count": 1
+        },
+        {
+          "file": "settings/connections/local-ai/connection-local-ai.ts",
+          "count": 1
         },
         {
           "file": "settings/connections/mataroa/connection-mataroa.html",
-          "count": 3
-        },
-        {
-          "file": "settings/connections/pastes/connection-pastes.html",
           "count": 1
         },
         {
@@ -332,20 +1320,44 @@
           "count": 2
         },
         {
+          "file": "settings/filters/settings-filter-edit.html",
+          "count": 1
+        },
+        {
+          "file": "settings/home-algo/settings-home-algo.html",
+          "count": 5
+        },
+        {
           "file": "settings/import-export/settings-import-export.html",
           "count": 1
         },
         {
           "file": "settings/privacy/settings-privacy.html",
-          "count": 5
+          "count": 10
+        },
+        {
+          "file": "settings/profile/settings-profile.html",
+          "count": 4
         },
         {
           "file": "settings/writing/settings-writing.html",
           "count": 2
         },
         {
-          "file": "discovery/server-discovery/server-discovery.html",
-          "count": 1
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-posts.html",
+          "count": 3
+        },
+        {
+          "file": "unbird/unbird-profile.html",
+          "count": 5
         }
       ],
       "integrated": true
@@ -353,15 +1365,39 @@
     {
       "name": "MbContentState",
       "selector": "mb-content-state",
-      "directCallSites": 14,
+      "directCallSites": 82,
       "consumers": [
         {
-          "file": "posts/account-list-dialog/account-list-dialog.html",
-          "count": 3
+          "file": "accounts/annual-report/annual-report.html",
+          "count": 5
         },
         {
-          "file": "posts/history-dialog/history-dialog.html",
-          "count": 3
+          "file": "blog/blog-page.html",
+          "count": 5
+        },
+        {
+          "file": "blog/blog-post-page.html",
+          "count": 2
+        },
+        {
+          "file": "blog/blog-roll-page.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-pack-page.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/link-timeline/link-timeline.html",
+          "count": 4
         },
         {
           "file": "feeds/list-timeline/list-timeline.html",
@@ -370,6 +1406,94 @@
         {
           "file": "feeds/public-timeline/public-timeline.html",
           "count": 3
+        },
+        {
+          "file": "forum/forum-page.html",
+          "count": 2
+        },
+        {
+          "file": "posts/account-list-dialog/account-list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "posts/account-list-dialog/quotes-dialog.ts",
+          "count": 3
+        },
+        {
+          "file": "posts/history-dialog/history-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-join-group.ts",
+          "count": 3
+        },
+        {
+          "file": "reading/bookmarks/history-panel/history-panel.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/find-singles-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 4
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/radio-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/radio-studio.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/share-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/studio-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/youtuber-kits-page.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 8
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
+          "count": 3
+        },
+        {
+          "file": "shell/shell.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -377,18 +1501,10 @@
     {
       "name": "MbDialog",
       "selector": "mb-dialog",
-      "directCallSites": 19,
+      "directCallSites": 63,
       "consumers": [
         {
-          "file": "posts/account-list-dialog/account-list-dialog.html",
-          "count": 1
-        },
-        {
-          "file": "posts/bookmark-provider-dialog/bookmark-provider-dialog.html",
-          "count": 1
-        },
-        {
-          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "file": "accounts/account-note-dialog/account-note-dialog.ts",
           "count": 1
         },
         {
@@ -396,39 +1512,19 @@
           "count": 1
         },
         {
-          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
+          "file": "accounts/profile-qr/profile-qr-dialog.html",
           "count": 1
         },
         {
-          "file": "publishing/compose/translate-dialog/translate-dialog.html",
+          "file": "accounts/profile/follow-languages-dialog.ts",
           "count": 1
         },
         {
-          "file": "shell/confirm-dialog/confirm-dialog.html",
-          "count": 1
+          "file": "accounts/profile/profile.html",
+          "count": 2
         },
         {
-          "file": "posts/history-dialog/history-dialog.html",
-          "count": 1
-        },
-        {
-          "file": "shell/leave-dialog/leave-dialog.html",
-          "count": 1
-        },
-        {
-          "file": "feeds/lists/list-dialog/list-dialog.html",
-          "count": 1
-        },
-        {
-          "file": "settings/connections/dropbox/connection-dropbox.html",
-          "count": 1
-        },
-        {
-          "file": "settings/profile/profile-link-dialog.html",
-          "count": 1
-        },
-        {
-          "file": "publishing/write/posting-language-dialog.ts",
+          "file": "accounts/sign-in/add-account-dialog/add-account-dialog.ts",
           "count": 1
         },
         {
@@ -440,15 +1536,211 @@
           "count": 1
         },
         {
+          "file": "discovery/search-server-discovery/search-server-discovery.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-hub.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-page.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/home/home-profiles.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/just-my-server-card/just-my-server-card.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/collection-settings-dialog/collection-settings-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/list-dialog/list-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/list-settings-dialog/list-settings-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "forum/forum-list-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "language/language-finder/language-finder.ts",
+          "count": 1
+        },
+        {
+          "file": "moderation/bulk-words-dialog/bulk-words-dialog.ts",
+          "count": 1
+        },
+        {
           "file": "moderation/report-dialog/report-dialog.html",
           "count": 1
         },
         {
-          "file": "shell/right-rail/right-rail.html",
-          "count": 2
+          "file": "moderation/tag-filter-dialog/tag-filter-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/account-list-dialog/account-list-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "posts/account-list-dialog/quotes-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/bookmark-provider-dialog/bookmark-provider-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "posts/code-blocks/code-image-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/copy-link/copy-link-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "posts/filter-post-dialog/filter-post-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "posts/history-dialog/history-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "posts/media-download/media-download-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/post-embed/post-embed-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "posts/share-dialog/share-compose-dialog.ts",
+          "count": 1
         },
         {
           "file": "posts/sign-in-prompt/sign-in-prompt.html",
+          "count": 1
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/compose/quote-dialog/quote-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/compose/translate-dialog/translate-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-group-settings.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-new-group.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/conversations/conversations.html",
+          "count": 2
+        },
+        {
+          "file": "publishing/focal-point/focal-point-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/post-permissions/bluesky-post-controls-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/post-permissions/post-permissions.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/status-edit/status-edit-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/write/posting-language-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/download-mastodon-images/media-download-workbench.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/watch/party-conversation.html",
+          "count": 1
+        },
+        {
+          "file": "reading/watch/watch-video-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/connections/dropbox/connection-dropbox.html",
+          "count": 1
+        },
+        {
+          "file": "settings/profile/profile-bio-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/profile/profile-link-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "settings/settings-shell.html",
+          "count": 1
+        },
+        {
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "shell/confirm-dialog/confirm-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "shell/leave-dialog/leave-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "shell/right-rail/right-rail.html",
+          "count": 1
+        },
+        {
+          "file": "translation/ai-budget-prompt.ts",
+          "count": 1
+        },
+        {
+          "file": "wellness/wellness-time.ts",
           "count": 1
         }
       ],
@@ -457,10 +1749,38 @@
     {
       "name": "MbDisclosure",
       "selector": "mb-disclosure",
-      "directCallSites": 4,
+      "directCallSites": 22,
       "consumers": [
         {
-          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "file": "accounts/sign-in/connection-help/connection-help.html",
+          "count": 6
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-page.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/tag/tag.html",
+          "count": 1
+        },
+        {
+          "file": "forum/forum-discussion-page.ts",
+          "count": 1
+        },
+        {
+          "file": "forum/forum-page.html",
+          "count": 2
+        },
+        {
+          "file": "posts/poll-results/poll-results.html",
+          "count": 1
+        },
+        {
+          "file": "reading/watch/watch-video-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/app/settings-app.ts",
           "count": 1
         },
         {
@@ -468,11 +1788,27 @@
           "count": 1
         },
         {
+          "file": "settings/connections/bluesky/connection-bluesky.html",
+          "count": 1
+        },
+        {
           "file": "settings/connections/twitter/connection-twitter.html",
           "count": 1
         },
         {
-          "file": "posts/poll-results/poll-results.html",
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-drop.html",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-landing.ts",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-people.html",
           "count": 1
         }
       ],
@@ -481,8 +1817,40 @@
     {
       "name": "MbControl",
       "selector": "input[mbControl], select[mbControl], textarea[mbControl]",
-      "directCallSites": 62,
+      "directCallSites": 220,
       "consumers": [
+        {
+          "file": "accounts/account-note-dialog/account-note-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/mastodon-analytics/analytics-lookup.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/mastodon-handle-generator/handle-workbench.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/setup/steps/setup-bluesky-intro.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-bluesky-profile.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/setup/steps/setup-intro.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-profile.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/sign-in/account-picker/account-picker.html",
+          "count": 1
+        },
         {
           "file": "admin/announcements/admin-announcements.html",
           "count": 1
@@ -508,11 +1876,119 @@
           "count": 3
         },
         {
-          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "file": "admin/reports/admin-reports.html",
           "count": 1
         },
         {
+          "file": "blog/blog-search-page.html",
+          "count": 2
+        },
+        {
+          "file": "blog/blog-write-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "connections/misskey/misskey-compose.html",
+          "count": 4
+        },
+        {
+          "file": "discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+          "count": 5
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
+          "count": 4
+        },
+        {
+          "file": "discovery/find-interactions/interactions-workbench.ts",
+          "count": 2
+        },
+        {
+          "file": "discovery/mastodon-similar-hashtags/similar-hashtags-workbench.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/misskey-search/misskey-search.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/network-search/search-launcher.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/similar-hashtags/similar-hashtags-panel.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-hub.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/home/home.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html",
+          "count": 2
+        },
+        {
           "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/collection-settings-dialog/collection-settings-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/lists/list-dialog/list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/lists/list-settings-dialog/list-settings-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/other-servers/other-servers.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/tag/tag.html",
+          "count": 3
+        },
+        {
+          "file": "forum/forum-list-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "forum/forum-page.html",
+          "count": 2
+        },
+        {
+          "file": "moderation/bulk-words-dialog/bulk-words-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "moderation/report-dialog/report-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "moderation/tag-filter-dialog/tag-filter-dialog.ts",
+          "count": 3
+        },
+        {
+          "file": "posts/copy-link/copy-link-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/filter-post-dialog/filter-post-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/post-embed/post-embed-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/create-account/create-account.html",
           "count": 1
         },
         {
@@ -520,12 +1996,108 @@
           "count": 2
         },
         {
-          "file": "shell/confirm-dialog/confirm-dialog.html",
+          "file": "publishing/conversations/bluesky-group/bluesky-group-settings.html",
+          "count": 2
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-new-group.ts",
+          "count": 3
+        },
+        {
+          "file": "publishing/post-permissions/bluesky-post-controls-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/post-permissions/post-permissions.ts",
+          "count": 4
+        },
+        {
+          "file": "publishing/schedule-mastodon-posts/schedule-workbench.html",
+          "count": 6
+        },
+        {
+          "file": "publishing/status-edit/status-edit-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "publishing/write/posting-language-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/download-mastodon-images/media-download-workbench.html",
           "count": 1
         },
         {
-          "file": "feeds/lists/list-dialog/list-dialog.html",
+          "file": "reading/radio/catalogue-panel.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/find-singles-page.html",
+          "count": 5
+        },
+        {
+          "file": "reading/radio/listen-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/radio-controls.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/radio-settings.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/share-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/studio-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
           "count": 3
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/youtuber-kits-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/watch/party-conversation.html",
+          "count": 3
+        },
+        {
+          "file": "settings/blog/settings-blog.html",
+          "count": 3
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 9
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
+          "count": 2
         },
         {
           "file": "settings/connections/blogger/connection-blogger.html",
@@ -533,7 +2105,11 @@
         },
         {
           "file": "settings/connections/bluesky/connection-bluesky.html",
-          "count": 2
+          "count": 1
+        },
+        {
+          "file": "settings/connections/free-translator/connection-free-translator.html",
+          "count": 1
         },
         {
           "file": "settings/connections/gist/connection-gist.html",
@@ -548,12 +2124,20 @@
           "count": 5
         },
         {
+          "file": "settings/connections/local-ai/connection-local-ai.ts",
+          "count": 2
+        },
+        {
           "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 1
         },
         {
           "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 2
+        },
+        {
+          "file": "settings/connections/openrouter/connection-openrouter.html",
+          "count": 1
         },
         {
           "file": "settings/connections/raindrop/connection-raindrop.html",
@@ -568,12 +2152,28 @@
           "count": 3
         },
         {
+          "file": "settings/home-algo/settings-home-algo.html",
+          "count": 5
+        },
+        {
+          "file": "settings/i18n/settings-i18n.html",
+          "count": 1
+        },
+        {
+          "file": "settings/network/settings-network.ts",
+          "count": 4
+        },
+        {
           "file": "settings/notifications/settings-notification-preferences.html",
           "count": 4
         },
         {
           "file": "settings/privacy/settings-privacy.html",
-          "count": 2
+          "count": 1
+        },
+        {
+          "file": "settings/profile/profile-bio-dialog.ts",
+          "count": 1
         },
         {
           "file": "settings/profile/profile-link-dialog.html",
@@ -581,23 +2181,39 @@
         },
         {
           "file": "settings/profile/settings-profile.html",
-          "count": 2
+          "count": 4
         },
         {
           "file": "settings/writing/settings-writing.html",
           "count": 1
         },
         {
-          "file": "publishing/write/posting-language-dialog.ts",
-          "count": 2
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "count": 3
         },
         {
-          "file": "moderation/report-dialog/report-dialog.html",
-          "count": 2
+          "file": "shell/confirm-dialog/confirm-dialog.html",
+          "count": 1
         },
         {
           "file": "shell/right-rail/right-rail.html",
           "count": 1
+        },
+        {
+          "file": "shell/shell.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 6
+        },
+        {
+          "file": "unbird/unbird-posts.html",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-profile.html",
+          "count": 2
         }
       ],
       "integrated": true
@@ -605,8 +2221,40 @@
     {
       "name": "MbField",
       "selector": "mb-field",
-      "directCallSites": 62,
+      "directCallSites": 220,
       "consumers": [
+        {
+          "file": "accounts/account-note-dialog/account-note-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/mastodon-analytics/analytics-lookup.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/mastodon-handle-generator/handle-workbench.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/setup/steps/setup-bluesky-intro.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-bluesky-profile.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/setup/steps/setup-intro.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-profile.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/sign-in/account-picker/account-picker.html",
+          "count": 1
+        },
         {
           "file": "admin/announcements/admin-announcements.html",
           "count": 1
@@ -632,11 +2280,119 @@
           "count": 3
         },
         {
-          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "file": "admin/reports/admin-reports.html",
           "count": 1
         },
         {
+          "file": "blog/blog-search-page.html",
+          "count": 2
+        },
+        {
+          "file": "blog/blog-write-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "connections/misskey/misskey-compose.html",
+          "count": 4
+        },
+        {
+          "file": "discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+          "count": 5
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
+          "count": 4
+        },
+        {
+          "file": "discovery/find-interactions/interactions-workbench.ts",
+          "count": 2
+        },
+        {
+          "file": "discovery/mastodon-similar-hashtags/similar-hashtags-workbench.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/misskey-search/misskey-search.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/network-search/search-launcher.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/similar-hashtags/similar-hashtags-panel.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-hub.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/home/home.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html",
+          "count": 2
+        },
+        {
           "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/collection-settings-dialog/collection-settings-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/lists/list-dialog/list-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "feeds/lists/list-settings-dialog/list-settings-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/other-servers/other-servers.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/tag/tag.html",
+          "count": 3
+        },
+        {
+          "file": "forum/forum-list-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "forum/forum-page.html",
+          "count": 2
+        },
+        {
+          "file": "moderation/bulk-words-dialog/bulk-words-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "moderation/report-dialog/report-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "moderation/tag-filter-dialog/tag-filter-dialog.ts",
+          "count": 3
+        },
+        {
+          "file": "posts/copy-link/copy-link-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/filter-post-dialog/filter-post-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "posts/post-embed/post-embed-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/create-account/create-account.html",
           "count": 1
         },
         {
@@ -644,12 +2400,108 @@
           "count": 2
         },
         {
-          "file": "shell/confirm-dialog/confirm-dialog.html",
+          "file": "publishing/conversations/bluesky-group/bluesky-group-settings.html",
+          "count": 2
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-new-group.ts",
+          "count": 3
+        },
+        {
+          "file": "publishing/post-permissions/bluesky-post-controls-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/post-permissions/post-permissions.ts",
+          "count": 4
+        },
+        {
+          "file": "publishing/schedule-mastodon-posts/schedule-workbench.html",
+          "count": 6
+        },
+        {
+          "file": "publishing/status-edit/status-edit-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "publishing/write/posting-language-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/download-mastodon-images/media-download-workbench.html",
           "count": 1
         },
         {
-          "file": "feeds/lists/list-dialog/list-dialog.html",
+          "file": "reading/radio/catalogue-panel.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/find-singles-page.html",
+          "count": 5
+        },
+        {
+          "file": "reading/radio/listen-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/radio-controls.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/radio-settings.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/share-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/studio-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
           "count": 3
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/youtuber-kits-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/watch/party-conversation.html",
+          "count": 3
+        },
+        {
+          "file": "settings/blog/settings-blog.html",
+          "count": 3
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 9
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
+          "count": 2
         },
         {
           "file": "settings/connections/blogger/connection-blogger.html",
@@ -657,7 +2509,11 @@
         },
         {
           "file": "settings/connections/bluesky/connection-bluesky.html",
-          "count": 2
+          "count": 1
+        },
+        {
+          "file": "settings/connections/free-translator/connection-free-translator.html",
+          "count": 1
         },
         {
           "file": "settings/connections/gist/connection-gist.html",
@@ -672,12 +2528,20 @@
           "count": 5
         },
         {
+          "file": "settings/connections/local-ai/connection-local-ai.ts",
+          "count": 2
+        },
+        {
           "file": "settings/connections/mastodon/connection-mastodon.html",
           "count": 1
         },
         {
           "file": "settings/connections/mataroa/connection-mataroa.html",
           "count": 2
+        },
+        {
+          "file": "settings/connections/openrouter/connection-openrouter.html",
+          "count": 1
         },
         {
           "file": "settings/connections/raindrop/connection-raindrop.html",
@@ -692,12 +2556,28 @@
           "count": 3
         },
         {
+          "file": "settings/home-algo/settings-home-algo.html",
+          "count": 5
+        },
+        {
+          "file": "settings/i18n/settings-i18n.html",
+          "count": 1
+        },
+        {
+          "file": "settings/network/settings-network.ts",
+          "count": 4
+        },
+        {
           "file": "settings/notifications/settings-notification-preferences.html",
           "count": 4
         },
         {
           "file": "settings/privacy/settings-privacy.html",
-          "count": 2
+          "count": 1
+        },
+        {
+          "file": "settings/profile/profile-bio-dialog.ts",
+          "count": 1
         },
         {
           "file": "settings/profile/profile-link-dialog.html",
@@ -705,23 +2585,239 @@
         },
         {
           "file": "settings/profile/settings-profile.html",
-          "count": 2
+          "count": 4
         },
         {
           "file": "settings/writing/settings-writing.html",
           "count": 1
         },
         {
-          "file": "publishing/write/posting-language-dialog.ts",
-          "count": 2
+          "file": "shell/bug-report-dialog/bug-report-dialog.html",
+          "count": 3
         },
         {
-          "file": "moderation/report-dialog/report-dialog.html",
-          "count": 2
+          "file": "shell/confirm-dialog/confirm-dialog.html",
+          "count": 1
         },
         {
           "file": "shell/right-rail/right-rail.html",
           "count": 1
+        },
+        {
+          "file": "shell/shell.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 6
+        },
+        {
+          "file": "unbird/unbird-posts.html",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-profile.html",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbFileDrop",
+      "selector": "mb-file-drop",
+      "directCallSites": 5,
+      "consumers": [
+        {
+          "file": "accounts/setup/steps/setup-bluesky-profile.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-profile.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-drop.html",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbHelp",
+      "selector": "mb-help",
+      "directCallSites": 80,
+      "consumers": [
+        {
+          "file": "accounts/account-analytics/account-analytics.html",
+          "count": 29
+        },
+        {
+          "file": "accounts/audience-composition-panel/audience-composition-panel.html",
+          "count": 5
+        },
+        {
+          "file": "accounts/bot-signals/bot-signals.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/discovery-panel/discovery-panel.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/engaged-audience-panel/engaged-audience-panel.html",
+          "count": 3
+        },
+        {
+          "file": "accounts/interaction-decay-panel/interaction-decay-panel.html",
+          "count": 3
+        },
+        {
+          "file": "accounts/new-people-panel/new-people-panel.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/profile/media/profile-photo-view.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/top-boosters-panel/top-boosters-panel.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-analytics/feed-analytics.html",
+          "count": 10
+        },
+        {
+          "file": "feeds/list-timeline/list-timeline.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/bulk-add-dialog/bulk-add-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/list-dialog/list-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "moderation/adult-content/adult-explain.ts",
+          "count": 1
+        },
+        {
+          "file": "moderation/adult-content/adult-explain.ts",
+          "count": 1
+        },
+        {
+          "file": "moderation/adult-content/adult-explain.ts",
+          "count": 1
+        },
+        {
+          "file": "moderation/report-history/report-history.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/post-analytics/post-analytics.html",
+          "count": 5
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 3
+        },
+        {
+          "file": "publishing/compose/compose.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/post-permissions/bluesky-post-controls-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/post-permissions/post-permissions.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/schedule-mastodon-posts/schedule-workbench.html",
+          "count": 1
+        },
+        {
+          "file": "reading/video-player/video-player.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/watch/watch-video-panel.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbIcon",
+      "selector": "mb-icon",
+      "directCallSites": 44,
+      "consumers": [
+        {
+          "file": "reading/radio/listen-page.html",
+          "count": 4
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 10
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/radio-controls.html",
+          "count": 7
+        },
+        {
+          "file": "reading/radio/radio-dock.ts",
+          "count": 4
+        },
+        {
+          "file": "reading/radio/radio-header.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/track-result.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 4
         }
       ],
       "integrated": true
@@ -744,11 +2840,11 @@
       "directCallSites": 2,
       "consumers": [
         {
-          "file": "discovery/search-server-discovery/search-server-discovery.html",
+          "file": "discovery/server-discovery/server-discovery.html",
           "count": 1
         },
         {
-          "file": "discovery/server-discovery/server-discovery.html",
+          "file": "public-pages/create-account/create-account.html",
           "count": 1
         }
       ],
@@ -757,10 +2853,18 @@
     {
       "name": "MbIdentityRow",
       "selector": "div[mbIdentityRow]",
-      "directCallSites": 1,
+      "directCallSites": 3,
       "consumers": [
         {
+          "file": "accounts/setup/steps/setup-follow.html",
+          "count": 1
+        },
+        {
           "file": "shell/left-rail/left-rail.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-people.html",
           "count": 1
         }
       ],
@@ -781,8 +2885,40 @@
     {
       "name": "MbRailCard",
       "selector": "section[mbRailCard], article[mbRailCard]",
-      "directCallSites": 8,
+      "directCallSites": 17,
       "consumers": [
+        {
+          "file": "accounts/profile/profile-content-filters.ts",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-rail-cards.ts",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-rail-cards.ts",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-rail-cards.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/just-my-server-card/just-my-server-card.html",
+          "count": 1
+        },
+        {
+          "file": "forum/forum-facets.ts",
+          "count": 3
+        },
+        {
+          "file": "forum/forum-members.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/youtuber-kits-card.ts",
+          "count": 1
+        },
         {
           "file": "shell/left-rail/left-rail.html",
           "count": 2
@@ -793,7 +2929,7 @@
         },
         {
           "file": "shell/right-rail/right-rail.html",
-          "count": 5
+          "count": 4
         }
       ],
       "integrated": true
@@ -801,8 +2937,12 @@
     {
       "name": "MbServerPickerSurface",
       "selector": "div[mbServerPickerSurface]",
-      "directCallSites": 1,
+      "directCallSites": 2,
       "consumers": [
+        {
+          "file": "accounts/sign-in/login/login.html",
+          "count": 1
+        },
         {
           "file": "discovery/server-picker/server-picker.html",
           "count": 1
@@ -816,11 +2956,11 @@
       "directCallSites": 2,
       "consumers": [
         {
-          "file": "discovery/search-server-discovery/search-server-discovery.html",
+          "file": "discovery/server-discovery/server-discovery.html",
           "count": 1
         },
         {
-          "file": "discovery/server-discovery/server-discovery.html",
+          "file": "unbird/unbird-people.html",
           "count": 1
         }
       ],
@@ -832,7 +2972,233 @@
       "directCallSites": 1,
       "consumers": [
         {
-          "file": "shell/right-rail/right-rail.html",
+          "file": "feeds/just-my-server-card/just-my-server-card.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbItemActions",
+      "selector": "mb-item-actions",
+      "directCallSites": 4,
+      "consumers": [
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/watch/watch-video-panel.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbItemList",
+      "selector": "ul[mbItemList], ol[mbItemList]",
+      "directCallSites": 9,
+      "consumers": [
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbItemRow",
+      "selector": "li[mbItemRow]",
+      "directCallSites": 9,
+      "consumers": [
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbItemTitle",
+      "selector": "a[mbItemTitle], span[mbItemTitle]",
+      "directCallSites": 11,
+      "consumers": [
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/share-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbItemMeta",
+      "selector": "span[mbItemMeta]",
+      "directCallSites": 10,
+      "consumers": [
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/share-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbItemPicture",
+      "selector": "a[mbItemPicture], span[mbItemPicture]",
+      "directCallSites": 2,
+      "consumers": [
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 2
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbMenuGroup",
+      "selector": "mb-menu-group",
+      "directCallSites": 0,
+      "consumers": [],
+      "integrated": false
+    },
+    {
+      "name": "MbMenuItem",
+      "selector": "button[mbMenuItem], a[mbMenuItem]",
+      "directCallSites": 60,
+      "consumers": [
+        {
+          "file": "accounts/profile/profile.html",
+          "count": 17
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 23
+        },
+        {
+          "file": "publishing/conversations/conversations.html",
+          "count": 9
+        },
+        {
+          "file": "reading/radio/catalogue-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/listen-page.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 3
+        },
+        {
+          "file": "shell/mode-switch.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbMenuSeparator",
+      "selector": "mb-menu-separator",
+      "directCallSites": 0,
+      "consumers": [],
+      "integrated": true
+    },
+    {
+      "name": "MbPostMenu",
+      "selector": "mb-post-menu",
+      "directCallSites": 9,
+      "consumers": [
+        {
+          "file": "publishing/conversations/conversations.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/catalogue-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/listen-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/singles-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
           "count": 1
         }
       ],
@@ -841,14 +3207,22 @@
     {
       "name": "MbMetadata",
       "selector": "mb-metadata",
-      "directCallSites": 2,
+      "directCallSites": 6,
       "consumers": [
+        {
+          "file": "feeds/client-list/client-list-page.html",
+          "count": 1
+        },
         {
           "file": "posts/history-dialog/history-dialog.html",
           "count": 1
         },
         {
-          "file": "feeds/client-list/client-list-page.html",
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 3
+        },
+        {
+          "file": "unbird/unbird-people.html",
           "count": 1
         }
       ],
@@ -857,15 +3231,215 @@
     {
       "name": "MbContentLink",
       "selector": "a[mbContentLink]",
-      "directCallSites": 52,
+      "directCallSites": 262,
       "consumers": [
+        {
+          "file": "accounts/anonymous-on-mastodon/anonymous-on-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/mastodon-analytics/mastodon-analytics.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/mastodon-handle-generator/mastodon-handle-generator.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/sign-in/connection-help/connection-help.html",
+          "count": 11
+        },
+        {
+          "file": "accounts/sign-in/server-connection-help/server-connection-help.ts",
+          "count": 2
+        },
+        {
+          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "count": 5
+        },
+        {
+          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "count": 3
+        },
+        {
+          "file": "discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-profile-discovery.ts",
+          "count": 1
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-pack-page.html",
+          "count": 4
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/bundled-starter-kits/bundled-starter-kits.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/find-contacts-on-mastodon/find-contacts-on-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/find-friends/find-friends.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/find-interactions/find-interactions.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/friend-bridge/friend-bridge.html",
+          "count": 3
+        },
+        {
+          "file": "discovery/mastodon-similar-hashtags/mastodon-similar-hashtags.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/network-search/network-search.html",
+          "count": 3
+        },
+        {
+          "file": "discovery/twitter-archive-tools/twitter-archive-tools.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/twitter-to-mastodon/twitter-to-mastodon.html",
+          "count": 1
+        },
         {
           "file": "feeds/client-list/client-list-page.html",
           "count": 2
         },
         {
+          "file": "feeds/feed-builder/communities-link.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-hub.html",
+          "count": 13
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-page.html",
+          "count": 20
+        },
+        {
+          "file": "feeds/feed-builder/feed-flooding.html",
+          "count": 6
+        },
+        {
+          "file": "feeds/feed-builder/feed-preview.html",
+          "count": 5
+        },
+        {
+          "file": "feeds/feed-builder/youtube-subscribe.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/turn-off-boosts-mastodon/turn-off-boosts-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "moderation/mastodon-content-warnings/mastodon-content-warnings.html",
+          "count": 1
+        },
+        {
+          "file": "moderation/mastodon-mute-block-amnesty/mastodon-mute-block-amnesty.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/create-account/create-account.html",
+          "count": 9
+        },
+        {
+          "file": "public-pages/create-account/create-bluesky-account.html",
+          "count": 9
+        },
+        {
+          "file": "public-pages/features/audience-page.html",
+          "count": 13
+        },
+        {
+          "file": "public-pages/features/features.html",
+          "count": 28
+        },
+        {
+          "file": "public-pages/features/follow-hub.html",
+          "count": 9
+        },
+        {
+          "file": "public-pages/features/follow-kit.html",
+          "count": 9
+        },
+        {
+          "file": "public-pages/features/public-article.html",
+          "count": 9
+        },
+        {
+          "file": "public-pages/language-landing/language-landing.html",
+          "count": 2
+        },
+        {
+          "file": "public-pages/tools/tools-index.html",
+          "count": 3
+        },
+        {
+          "file": "public-pages/youtubers/youtuber-hub.ts",
+          "count": 8
+        },
+        {
+          "file": "public-pages/youtubers/youtuber-kit.ts",
+          "count": 8
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-join-group.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/crosspost/crosspost.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/github-to-mastodon/github-to-mastodon.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/schedule-mastodon-posts/schedule-mastodon-posts.html",
+          "count": 1
+        },
+        {
+          "file": "reading/download-mastodon-images/download-mastodon-images.html",
+          "count": 1
+        },
+        {
+          "file": "reading/export-mastodon-bookmarks/export-mastodon-bookmarks.html",
+          "count": 1
+        },
+        {
+          "file": "reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.html",
+          "count": 1
+        },
+        {
+          "file": "settings/app/settings-app.ts",
+          "count": 3
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 2
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
+          "count": 2
+        },
+        {
           "file": "settings/connections/blogger/connection-blogger.html",
-          "count": 4
+          "count": 3
         },
         {
           "file": "settings/connections/bluesky/connection-bluesky.html",
@@ -874,6 +3448,10 @@
         {
           "file": "settings/connections/dropbox/connection-dropbox.html",
           "count": 1
+        },
+        {
+          "file": "settings/connections/free-translator/connection-free-translator.html",
+          "count": 2
         },
         {
           "file": "settings/connections/gist/connection-gist.html",
@@ -897,7 +3475,7 @@
         },
         {
           "file": "settings/connections/pastes/connection-pastes.html",
-          "count": 5
+          "count": 4
         },
         {
           "file": "settings/connections/raindrop/connection-raindrop.html",
@@ -908,12 +3486,8 @@
           "count": 7
         },
         {
-          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
-          "count": 5
-        },
-        {
-          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
-          "count": 3
+          "file": "unbird/unbird-people.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -921,8 +3495,40 @@
     {
       "name": "MbNavigation",
       "selector": "nav[mbNavigation]",
-      "directCallSites": 3,
+      "directCallSites": 13,
       "consumers": [
+        {
+          "file": "admin/admin-shell/admin-shell.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-hub.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/lists.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/features/features.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/section-tabs.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/section-tabs.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/studio-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 1
+        },
         {
           "file": "settings/settings-shell.html",
           "count": 1
@@ -930,6 +3536,14 @@
         {
           "file": "shell/right-rail/right-rail.html",
           "count": 2
+        },
+        {
+          "file": "unbird/unbird-more.ts",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-page.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -937,15 +3551,55 @@
     {
       "name": "MbNavLink",
       "selector": "a[mbNavLink]",
-      "directCallSites": 5,
+      "directCallSites": 37,
       "consumers": [
+        {
+          "file": "admin/admin-shell/admin-shell.html",
+          "count": 11
+        },
+        {
+          "file": "feeds/feed-builder/feed-builder-hub.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/lists/lists.html",
+          "count": 1
+        },
+        {
+          "file": "public-pages/features/features.html",
+          "count": 4
+        },
+        {
+          "file": "reading/radio/section-tabs.ts",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/section-tabs.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/studio-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 2
+        },
         {
           "file": "settings/settings-shell.html",
           "count": 1
         },
         {
           "file": "shell/right-rail/right-rail.html",
-          "count": 4
+          "count": 5
+        },
+        {
+          "file": "unbird/unbird-more.ts",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-page.html",
+          "count": 2
         }
       ],
       "integrated": true
@@ -953,14 +3607,106 @@
     {
       "name": "MbNotice",
       "selector": "mb-notice",
-      "directCallSites": 61,
+      "directCallSites": 157,
       "consumers": [
         {
-          "file": "publishing/compose/translate-dialog/translate-dialog.html",
+          "file": "accounts/account-note-dialog/account-note-dialog.ts",
           "count": 1
         },
         {
-          "file": "shell/leave-dialog/leave-dialog.html",
+          "file": "accounts/annual-report/annual-report.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/anonymous-on-mastodon/pseudonymity-workbench.html",
+          "count": 4
+        },
+        {
+          "file": "accounts/mastodon-analytics/analytics-lookup.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/mastodon-handle-generator/handle-workbench.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/profile-qr/profile-qr-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/profile/follow-languages-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/profile/media/profile-photo-view.html",
+          "count": 4
+        },
+        {
+          "file": "accounts/setup/account-setup.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/setup/steps/setup-bluesky-follow.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-bluesky-intro.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-intro.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/sign-in/login/login.html",
+          "count": 1
+        },
+        {
+          "file": "admin/announcements/admin-announcements.html",
+          "count": 1
+        },
+        {
+          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-pack-page.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
+          "count": 3
+        },
+        {
+          "file": "discovery/find-interactions/interactions-workbench.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/bluesky-feed/bluesky-feed.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/home/home.html",
+          "count": 4
+        },
+        {
+          "file": "feeds/list-timeline/list-timeline.html",
+          "count": 4
+        },
+        {
+          "file": "feeds/lists/bluesky-list-dialog/bluesky-list-dialog.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/lists/collection-settings-dialog/collection-settings-dialog.html",
           "count": 1
         },
         {
@@ -968,8 +3714,92 @@
           "count": 3
         },
         {
-          "file": "feeds/list-timeline/list-timeline.html",
+          "file": "feeds/lists/list-settings-dialog/list-settings-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "forum/forum-discussion-page.ts",
+          "count": 1
+        },
+        {
+          "file": "moderation/report-dialog/report-dialog.html",
+          "count": 4
+        },
+        {
+          "file": "moderation/report-gate/report-gate.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/copy-link/deep-link-page.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/filter-post-dialog/filter-post-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 5
+        },
+        {
+          "file": "public-pages/language-landing/language-checklist.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/compose/quote-dialog/quote-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/compose/translate-dialog/translate-dialog.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-group-settings.html",
+          "count": 2
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-join-group.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/conversations/bluesky-group/bluesky-new-group.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/outbox/outbox-page.ts",
+          "count": 2
+        },
+        {
+          "file": "publishing/post-permissions/bluesky-post-controls-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/post-permissions/post-permissions.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/schedule-mastodon-posts/schedule-workbench.html",
+          "count": 4
+        },
+        {
+          "file": "publishing/status-edit/status-edit-dialog.html",
           "count": 3
+        },
+        {
+          "file": "reading/download-mastodon-images/media-download-workbench.html",
+          "count": 1
+        },
+        {
+          "file": "reading/export-mastodon-bookmarks/bookmarks-export-workbench.html",
+          "count": 3
+        },
+        {
+          "file": "reading/thread/thread.html",
+          "count": 2
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 7
         },
         {
           "file": "settings/connections/blogger/connection-blogger.html",
@@ -977,10 +3807,14 @@
         },
         {
           "file": "settings/connections/bluesky/connection-bluesky.html",
-          "count": 1
+          "count": 3
         },
         {
           "file": "settings/connections/dropbox/connection-dropbox.html",
+          "count": 3
+        },
+        {
+          "file": "settings/connections/free-translator/connection-free-translator.html",
           "count": 3
         },
         {
@@ -993,7 +3827,7 @@
         },
         {
           "file": "settings/connections/hugo/connection-hugo.html",
-          "count": 8
+          "count": 9
         },
         {
           "file": "settings/connections/mastodon/connection-mastodon.html",
@@ -1016,20 +3850,28 @@
           "count": 15
         },
         {
-          "file": "connections/shortener/proxy-consent-dialog/proxy-consent-dialog.html",
+          "file": "shell/leave-dialog/leave-dialog.html",
           "count": 1
         },
         {
-          "file": "connections/twitter/twitter-consent-dialog/twitter-consent-dialog.html",
+          "file": "unbird/unbird-archive-tools.html",
           "count": 1
         },
         {
-          "file": "moderation/report-dialog/report-dialog.html",
+          "file": "unbird/unbird-drop.html",
+          "count": 3
+        },
+        {
+          "file": "unbird/unbird-people.html",
           "count": 1
         },
         {
-          "file": "posts/status-card/status-card.html",
+          "file": "unbird/unbird-posts.html",
           "count": 2
+        },
+        {
+          "file": "unbird/unbird-profile.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -1037,14 +3879,98 @@
     {
       "name": "MbPageHeader",
       "selector": "mb-page-header",
-      "directCallSites": 14,
+      "directCallSites": 39,
       "consumers": [
+        {
+          "file": "accounts/annual-report/annual-report.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/sign-in/account-picker/account-picker.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/sign-in/connection-help/connection-help.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-pack-page.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
+          "count": 1
+        },
         {
           "file": "feeds/client-list/client-list-page.html",
           "count": 1
         },
         {
           "file": "feeds/list-timeline/list-timeline.html",
+          "count": 1
+        },
+        {
+          "file": "forum/forum-page.html",
+          "count": 1
+        },
+        {
+          "file": "observability/connection/connection-page.html",
+          "count": 1
+        },
+        {
+          "file": "posts/post-analytics/post-analytics.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/outbox/outbox-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/listen-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/radio-header.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/studio-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/channel-page.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/video-subscriptions-panel.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/youtuber-kits-page.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 1
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
           "count": 1
         },
         {
@@ -1057,6 +3983,10 @@
         },
         {
           "file": "settings/connections/dropbox/connection-dropbox.html",
+          "count": 1
+        },
+        {
+          "file": "settings/connections/free-translator/connection-free-translator.html",
           "count": 1
         },
         {
@@ -1094,6 +4024,10 @@
         {
           "file": "settings/notifications/settings-notification-preferences.html",
           "count": 1
+        },
+        {
+          "file": "unbird/unbird-page.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -1101,16 +4035,98 @@
     {
       "name": "MbSection",
       "selector": "mb-section",
-      "directCallSites": 0,
-      "consumers": [],
-      "integrated": false
+      "directCallSites": 44,
+      "consumers": [
+        {
+          "file": "accounts/annual-report/annual-report.html",
+          "count": 2
+        },
+        {
+          "file": "accounts/sign-in/connection-help/connection-help.html",
+          "count": 4
+        },
+        {
+          "file": "discovery/bluesky-find-contacts/bluesky-find-contacts.html",
+          "count": 3
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-profile-discovery.ts",
+          "count": 2
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-pack-page.html",
+          "count": 2
+        },
+        {
+          "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
+          "count": 4
+        },
+        {
+          "file": "observability/connection/connection-page.html",
+          "count": 4
+        },
+        {
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
+          "count": 8
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
+          "count": 6
+        },
+        {
+          "file": "unbird/unbird-import-points.ts",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-more.ts",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-posts.html",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-profile.html",
+          "count": 4
+        },
+        {
+          "file": "unbird/unbird-servers.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
     },
     {
       "name": "MbPopover",
       "selector": "mb-popover",
-      "directCallSites": 0,
-      "consumers": [],
-      "integrated": false
+      "directCallSites": 6,
+      "consumers": [
+        {
+          "file": "accounts/account-hover-card/account-preview.ts",
+          "count": 1
+        },
+        {
+          "file": "public-pages/focused-apps/language-versions.ts",
+          "count": 1
+        },
+        {
+          "file": "publishing/conversations/conversations.html",
+          "count": 1
+        },
+        {
+          "file": "publishing/pastes/pastes-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/watch/party-conversation.html",
+          "count": 1
+        },
+        {
+          "file": "shell/mode-switch.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
     },
     {
       "name": "MbPostActions",
@@ -1118,15 +4134,15 @@
       "directCallSites": 3,
       "consumers": [
         {
+          "file": "posts/status-card/status-card.html",
+          "count": 1
+        },
+        {
           "file": "publishing/compose/compose.html",
           "count": 1
         },
         {
           "file": "reading/rss/feed-actions/feed-actions.ts",
-          "count": 1
-        },
-        {
-          "file": "posts/status-card/status-card.html",
           "count": 1
         }
       ],
@@ -1134,28 +4150,64 @@
     },
     {
       "name": "MbPostAction",
-      "selector": "button[mbPostAction], a[mbPostAction]",
-      "directCallSites": 94,
+      "selector": "button[mbPostAction], a[mbPostAction], span[mbPostAction]",
+      "directCallSites": 116,
       "consumers": [
         {
-          "file": "feeds/command-bar/command-bar.ts",
+          "file": "accounts/profile/bio-translation/bio-translation.ts",
           "count": 1
         },
         {
-          "file": "publishing/compose/compose.html",
-          "count": 12
+          "file": "accounts/profile/profile-content-filters.ts",
+          "count": 1
         },
         {
-          "file": "feeds/feed-language-picker/feed-language-picker.html",
+          "file": "discovery/server-discovery/server-discovery.html",
           "count": 1
+        },
+        {
+          "file": "discovery/server-picker/server-picker.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/algo/algo-people-native.ts",
+          "count": 5
         },
         {
           "file": "feeds/algo/algo.html",
           "count": 7
         },
         {
+          "file": "feeds/command-bar/command-bar.ts",
+          "count": 1
+        },
+        {
+          "file": "feeds/feed-language-picker/feed-language-picker.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/home/home-profiles.ts",
+          "count": 8
+        },
+        {
+          "file": "feeds/notifications/notifications.html",
+          "count": 1
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 30
+        },
+        {
+          "file": "publishing/compose/compose.html",
+          "count": 15
+        },
+        {
           "file": "publishing/drafts/drafts-page.html",
           "count": 1
+        },
+        {
+          "file": "publishing/write/write-page.html",
+          "count": 5
         },
         {
           "file": "reading/read/document-search/document-search-dialog.html",
@@ -1163,7 +4215,7 @@
         },
         {
           "file": "reading/read/library-panel/library-panel.html",
-          "count": 8
+          "count": 9
         },
         {
           "file": "reading/read/notes-rail/notes-rail.html",
@@ -1190,28 +4242,8 @@
           "count": 5
         },
         {
-          "file": "publishing/write/write-page.html",
-          "count": 5
-        },
-        {
-          "file": "discovery/search-server-discovery/search-server-discovery.html",
-          "count": 2
-        },
-        {
-          "file": "discovery/server-discovery/server-discovery.html",
-          "count": 1
-        },
-        {
-          "file": "discovery/server-picker/server-picker.html",
-          "count": 1
-        },
-        {
           "file": "shell/right-rail/right-rail.html",
           "count": 1
-        },
-        {
-          "file": "posts/status-card/status-card.html",
-          "count": 26
         }
       ],
       "integrated": true
@@ -1219,11 +4251,11 @@
     {
       "name": "MbActionCount",
       "selector": "span[mbActionCount]",
-      "directCallSites": 18,
+      "directCallSites": 12,
       "consumers": [
         {
           "file": "posts/status-card/status-card.html",
-          "count": 18
+          "count": 12
         }
       ],
       "integrated": true
@@ -1231,11 +4263,39 @@
     {
       "name": "MbPostActionLabel",
       "selector": "span[mbPostActionLabel]",
-      "directCallSites": 9,
+      "directCallSites": 7,
       "consumers": [
         {
           "file": "posts/status-card/status-card.html",
-          "count": 9
+          "count": 7
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbProgress",
+      "selector": "mb-progress",
+      "directCallSites": 5,
+      "consumers": [
+        {
+          "file": "accounts/discovery-panel/discovery-panel.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/interaction-decay-panel/interaction-decay-panel.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/new-people-panel/new-people-panel.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/account-setup.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-people.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -1243,8 +4303,44 @@
     {
       "name": "MbRadioGroup",
       "selector": "mb-radio-group",
-      "directCallSites": 5,
+      "directCallSites": 17,
       "consumers": [
+        {
+          "file": "accounts/setup/steps/setup-findable.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-languages.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-movers.ts",
+          "count": 1
+        },
+        {
+          "file": "accounts/setup/steps/setup-purpose.ts",
+          "count": 1
+        },
+        {
+          "file": "blog/blog-landing.html",
+          "count": 1
+        },
+        {
+          "file": "feeds/lists/list-settings-dialog/list-settings-dialog.ts",
+          "count": 1
+        },
+        {
+          "file": "posts/media-download/media-download-dialog.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/export-mastodon-bookmarks/bookmarks-export-workbench.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/share-page.html",
+          "count": 1
+        },
         {
           "file": "settings/connections/blogger/connection-blogger.html",
           "count": 1
@@ -1262,7 +4358,75 @@
           "count": 1
         },
         {
-          "file": "settings/import-export/settings-import-export.html",
+          "file": "settings/import-export/bridge-friends-import.html",
+          "count": 1
+        },
+        {
+          "file": "settings/network/settings-network.ts",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-posts.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbRailPage",
+      "selector": "mb-rail-page",
+      "directCallSites": 3,
+      "consumers": [
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbRailPanel",
+      "selector": "aside[mbRailPanel]",
+      "directCallSites": 3,
+      "consumers": [
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbPagePanel",
+      "selector": "section[mbPagePanel]",
+      "directCallSites": 4,
+      "consumers": [
+        {
+          "file": "reading/videos/video-search-page.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-parties-page.ts",
           "count": 1
         }
       ],
@@ -1323,11 +4487,23 @@
     {
       "name": "MbSaveFeedback",
       "selector": "mb-save-feedback",
-      "directCallSites": 4,
+      "directCallSites": 13,
       "consumers": [
         {
-          "file": "settings/privacy/settings-privacy.html",
+          "file": "settings/bluesky-moderation/settings-bluesky-moderation.html",
           "count": 2
+        },
+        {
+          "file": "settings/bluesky-preferences/settings-bluesky-preferences.html",
+          "count": 5
+        },
+        {
+          "file": "settings/posting-defaults/posting-defaults.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/privacy/settings-privacy.html",
+          "count": 1
         },
         {
           "file": "settings/writing/settings-writing.html",
@@ -1336,6 +4512,10 @@
         {
           "file": "shell/right-rail/right-rail.html",
           "count": 1
+        },
+        {
+          "file": "unbird/unbird-profile.html",
+          "count": 2
         }
       ],
       "integrated": true
@@ -1343,15 +4523,43 @@
     {
       "name": "MbSettingsRow",
       "selector": "mb-settings-row",
-      "directCallSites": 12,
+      "directCallSites": 36,
       "consumers": [
+        {
+          "file": "reading/radio/radio-settings.ts",
+          "count": 3
+        },
+        {
+          "file": "settings/about/settings-about.ts",
+          "count": 1
+        },
+        {
+          "file": "settings/app/settings-app.ts",
+          "count": 5
+        },
+        {
+          "file": "settings/connections/local-ai/connection-local-ai.ts",
+          "count": 2
+        },
+        {
+          "file": "settings/home-algo/settings-home-algo.html",
+          "count": 7
+        },
+        {
+          "file": "settings/network/settings-network.ts",
+          "count": 1
+        },
         {
           "file": "settings/notifications/settings-notification-preferences.html",
           "count": 3
         },
         {
           "file": "settings/privacy/settings-privacy.html",
-          "count": 6
+          "count": 9
+        },
+        {
+          "file": "settings/profile/settings-profile.html",
+          "count": 2
         },
         {
           "file": "settings/writing/settings-writing.html",
@@ -1361,17 +4569,77 @@
       "integrated": true
     },
     {
+      "name": "MbStatGrid",
+      "selector": "dl[mbStatGrid]",
+      "directCallSites": 6,
+      "consumers": [
+        {
+          "file": "accounts/audience-composition-panel/audience-composition-panel.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/discovery-panel/discovery-panel.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/engaged-audience-panel/engaged-audience-panel.html",
+          "count": 1
+        },
+        {
+          "file": "accounts/interaction-decay-panel/interaction-decay-panel.html",
+          "count": 1
+        },
+        {
+          "file": "observability/connection/connection-page.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 1
+        }
+      ],
+      "integrated": true
+    },
+    {
+      "name": "MbBarList",
+      "selector": "mb-bar-list",
+      "directCallSites": 10,
+      "consumers": [
+        {
+          "file": "accounts/audience-composition-panel/audience-composition-panel.html",
+          "count": 4
+        },
+        {
+          "file": "accounts/engaged-audience-panel/engaged-audience-panel.html",
+          "count": 3
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 3
+        }
+      ],
+      "integrated": true
+    },
+    {
       "name": "MbTab",
       "selector": "ng-template[mbTab]",
-      "directCallSites": 3,
+      "directCallSites": 9,
       "consumers": [
         {
           "file": "feeds/client-list/client-list-page.html",
           "count": 2
         },
         {
+          "file": "reading/radio/find-singles-page.html",
+          "count": 1
+        },
+        {
           "file": "settings/connections/settings-connections.html",
           "count": 1
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
+          "count": 5
         }
       ],
       "integrated": true
@@ -1379,14 +4647,22 @@
     {
       "name": "MbTabs",
       "selector": "mb-tabs",
-      "directCallSites": 2,
+      "directCallSites": 4,
       "consumers": [
         {
           "file": "feeds/client-list/client-list-page.html",
           "count": 1
         },
         {
+          "file": "reading/radio/find-singles-page.html",
+          "count": 1
+        },
+        {
           "file": "settings/connections/settings-connections.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-archive-tools.html",
           "count": 1
         }
       ],
@@ -1395,19 +4671,103 @@
     {
       "name": "MbToolbarButton",
       "selector": "button[mbToolbarButton]",
-      "directCallSites": 18,
+      "directCallSites": 86,
       "consumers": [
         {
+          "file": "admin/accounts/admin-accounts.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/misskey-search/misskey-search.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/search/search.html",
+          "count": 1
+        },
+        {
           "file": "feeds/command-bar/command-bar.ts",
-          "count": 13
+          "count": 15
         },
         {
           "file": "feeds/home/home.html",
+          "count": 4
+        },
+        {
+          "file": "feeds/server-feed/server-feed.html",
+          "count": 2
+        },
+        {
+          "file": "observability/connection/connection-page.html",
+          "count": 1
+        },
+        {
+          "file": "observability/fault-injection/fault-injection.html",
+          "count": 1
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 8
+        },
+        {
+          "file": "reading/audio-embeds/external-player-host.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/audio-embeds/external-player.ts",
+          "count": 2
+        },
+        {
+          "file": "reading/bookmarks/bookmarks.html",
+          "count": 5
+        },
+        {
+          "file": "reading/bookmarks/history-panel/history-panel.html",
+          "count": 3
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 7
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/radio-controls.html",
+          "count": 8
+        },
+        {
+          "file": "reading/radio/radio-dock.ts",
+          "count": 4
+        },
+        {
+          "file": "reading/radio/singles-page.html",
           "count": 3
         },
         {
           "file": "reading/reader-toolbar/reader-toolbar.ts",
           "count": 2
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 5
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 3
+        },
+        {
+          "file": "reading/watch/party-conversation.html",
+          "count": 4
+        },
+        {
+          "file": "unbird/unbird-people.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-posts.html",
+          "count": 1
         }
       ],
       "integrated": true
@@ -1415,18 +4775,102 @@
     {
       "name": "MbToolbar",
       "selector": "mb-toolbar",
-      "directCallSites": 5,
+      "directCallSites": 30,
       "consumers": [
+        {
+          "file": "admin/accounts/admin-accounts.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/misskey-search/misskey-search.html",
+          "count": 1
+        },
+        {
+          "file": "discovery/search/search.html",
+          "count": 1
+        },
         {
           "file": "feeds/command-bar/command-bar.ts",
           "count": 3
         },
         {
           "file": "feeds/home/home.html",
+          "count": 2
+        },
+        {
+          "file": "feeds/server-feed/server-feed.html",
+          "count": 1
+        },
+        {
+          "file": "observability/connection/connection-page.html",
+          "count": 1
+        },
+        {
+          "file": "observability/fault-injection/fault-injection.html",
+          "count": 1
+        },
+        {
+          "file": "posts/status-card/status-card.html",
+          "count": 1
+        },
+        {
+          "file": "reading/audio-embeds/external-player-host.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/audio-embeds/external-player.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/bookmarks/bookmarks.html",
+          "count": 1
+        },
+        {
+          "file": "reading/bookmarks/history-panel/history-panel.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/playlist-page.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/playlists-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/radio-controls.html",
+          "count": 2
+        },
+        {
+          "file": "reading/radio/radio-dock.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/radio/singles-page.html",
           "count": 1
         },
         {
           "file": "reading/reader-toolbar/reader-toolbar.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/videos-page.html",
+          "count": 1
+        },
+        {
+          "file": "reading/videos/watch-queue-page.ts",
+          "count": 1
+        },
+        {
+          "file": "reading/watch/party-conversation.html",
+          "count": 2
+        },
+        {
+          "file": "unbird/unbird-people.html",
+          "count": 1
+        },
+        {
+          "file": "unbird/unbird-posts.html",
           "count": 1
         }
       ],

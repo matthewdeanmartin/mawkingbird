@@ -144,7 +144,7 @@
 }
 
 .unread-dot {
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 10px;
 }
 

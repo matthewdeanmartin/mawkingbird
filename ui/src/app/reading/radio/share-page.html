@@ -13,8 +13,8 @@
     <p class="lead">{{ 'share.lead' | transloco }}</p>
 
     <article class="subject">
-      <p class="track-title">{{ title() }}</p>
-      <p class="track-meta">
+      <span mbItemTitle>{{ title() }}</span>
+      <span mbItemMeta>
         @if (row) {
           {{
             countKey('share.trackCount', row.tracks.length)
@@ -23,7 +23,7 @@
         } @else {
           {{ credit() }}
         }
-      </p>
+      </span>
     </article>
 
     <section class="choices" [attr.aria-label]="'share.include' | transloco">

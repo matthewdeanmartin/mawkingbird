@@ -106,7 +106,7 @@ mb-popover .btn {
 }
 
 .paste-notice {
-  color: var(--accent);
+  color: var(--ds-action-text);
 }
 
 /* Proxy controls mirror Settings → RSS exactly: the same decision, made about a

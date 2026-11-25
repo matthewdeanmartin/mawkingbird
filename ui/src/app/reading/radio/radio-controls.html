@@ -17,7 +17,7 @@
             (click)="player.previous()"
             [disabled]="player.selected() === 0"
           >
-            <app-radio-icon name="previous" />
+            <mb-icon name="previous" />
           </button>
           @let label =
             (player.playing() || player.waiting() ? 'radio.pause' : 'radio.play') | transloco;
@@ -30,7 +30,7 @@
             (click)="player.toggle()"
             [disabled]="player.hidden() || (!!track.external && !player.externalReady())"
           >
-            <app-radio-icon [name]="player.playing() || player.waiting() ? 'pause' : 'play'" />
+            <mb-icon [name]="player.playing() || player.waiting() ? 'pause' : 'play'" />
           </button>
           <button
             mbToolbarButton
@@ -39,7 +39,7 @@
             [title]="'radio.next' | transloco"
             (click)="player.next()"
           >
-            <app-radio-icon name="next" />
+            <mb-icon name="next" />
           </button>
           @let screen = (fullscreen() ? 'radio.exitFullscreen' : 'radio.fullscreen') | transloco;
           <button
@@ -49,7 +49,7 @@
             [title]="screen"
             (click)="toggleFullscreen()"
           >
-            <app-radio-icon [name]="fullscreen() ? 'exitFullscreen' : 'fullscreen'" />
+            <mb-icon [name]="fullscreen() ? 'exitFullscreen' : 'fullscreen'" />
           </button>
           <button
             mbToolbarButton
@@ -58,7 +58,7 @@
             [title]="'radio.stop' | transloco"
             (click)="player.stop()"
           >
-            <app-radio-icon name="stop" />
+            <mb-icon name="close" />
           </button>
           @if (!player.hidden() && track.external; as source) {
             @if (externalPlayer()?.activated()) {
@@ -69,7 +69,7 @@
                 [title]="'external.close' | transloco"
                 (click)="externalPlayer()?.close()"
               >
-                <app-radio-icon name="close" />
+                <mb-icon name="minimize" />
               </button>
             }
             @let open = 'external.open' | transloco: { provider: source.label };
@@ -80,7 +80,7 @@
               [title]="open"
               (click)="externalPlayer()?.openOriginal()"
             >
-              <app-radio-icon name="open" />
+              <mb-icon name="open" />
             </button>
           }
         </mb-toolbar>

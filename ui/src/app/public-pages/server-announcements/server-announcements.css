@@ -73,7 +73,7 @@
 
 .announcement-new {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
   border-radius: 999px;
   padding: 1px 7px;
   font-weight: 600;
@@ -97,7 +97,7 @@
 
 .reaction.on {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
   border-color: var(--accent);
 }
 

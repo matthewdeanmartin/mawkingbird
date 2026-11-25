@@ -288,7 +288,7 @@
   place-items: center;
   border-radius: 50%;
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-weight: 800;
   margin-top: 10px;
 }
@@ -409,7 +409,7 @@
 }
 
 a.counted-label {
-  color: var(--accent);
+  color: var(--ds-action-text);
   text-decoration: none;
 }
 

@@ -203,10 +203,72 @@ describe('Video feeds reader', () => {
     fixture.detectChanges();
     expect(youtube.resolve).toHaveBeenCalledWith('@example');
     expect(TestBed.inject(VideoSubscriptions).has(first)).toBe(true);
-    fixture.nativeElement.querySelector('aside .subscription button').click();
+    const commands: HTMLButtonElement[] = [
+      ...fixture.nativeElement.querySelectorAll('aside .subscription button[mbMenuItem]'),
+    ];
+    commands.find((row) => row.textContent?.includes('Unsubscribe'))!.click();
     await fixture.whenStable();
     fixture.detectChanges();
     expect(TestBed.inject(VideoSubscriptions).feeds()).toHaveLength(0);
+  });
+  it('keeps a paused channel listed, says so, and puts every channel command in its menu', async () => {
+    const subs = TestBed.inject(VideoSubscriptions);
+    subs.add(first, 'Example');
+    const fixture = TestBed.createComponent(VideosPage);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const row: HTMLElement = fixture.nativeElement.querySelector('aside .subscription');
+    expect(row.querySelector('.mb-control, input')).toBeNull();
+    expect(row.querySelector('a[mbMenuItem]')?.getAttribute('href')).toBe(
+      '/videos/channel/' + first,
+    );
+    const include = row.querySelector<HTMLButtonElement>('button[mbMenuItem][aria-pressed]')!;
+    expect(include.getAttribute('aria-pressed')).toBe('true');
+    include.click();
+    fixture.detectChanges();
+    expect(subs.enabled()).toEqual([]);
+    expect(include.getAttribute('aria-pressed')).toBe('false');
+    expect(row.textContent).toContain('Not in All videos');
+  });
+  it('keeps Subscribe enabled while empty; pressing it looks nothing up and returns to the box', async () => {
+    const fixture = TestBed.createComponent(VideosPage);
+    document.body.append(fixture.nativeElement);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const form: HTMLFormElement = fixture.nativeElement.querySelector('aside form');
+    const button = form.querySelector('button')!;
+    expect(button.disabled).toBe(false);
+    expect(button.getAttribute('aria-label')).toBe('Subscribe');
+    button.click();
+    await fixture.whenStable();
+    expect(youtube.resolve).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(form.querySelector('input'));
+    fixture.nativeElement.remove();
+  });
+  it('gives each video one row of unboxed actions, with toggles that report their state', async () => {
+    TestBed.inject(VideoSubscriptions).add(first, 'Example');
+    const fixture = TestBed.createComponent(VideosPage);
+    fixture.detectChanges();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelectorAll('.video-post')).toHaveLength(2);
+    });
+    const card: HTMLElement = fixture.nativeElement.querySelector('.video-post');
+    expect(card.querySelectorAll('mb-item-actions')).toHaveLength(1);
+    expect(card.querySelector('[mbButton][data-size="small"]')).toBeNull();
+    // The card's heading is the title; the player does not print it again.
+    expect(card.textContent?.split('Newer')).toHaveLength(2);
+    const action = (label: string) =>
+      [...card.querySelectorAll('button')].find((b) => b.textContent?.includes(label))!;
+    for (const label of ['Save for later', 'Mark watched', 'Add to queue']) {
+      expect(action(label).getAttribute('aria-pressed')).toBe('false');
+      action(label).click();
+      fixture.detectChanges();
+    }
+    expect(action('Save for later').getAttribute('aria-pressed')).toBe('true');
+    expect(action('Mark watched').getAttribute('aria-pressed')).toBe('true');
+    expect(action('In queue').getAttribute('aria-pressed')).toBe('true');
   });
   it('shows diagnostic details and retries the failed input without losing subscriptions', async () => {
     youtube.resolve.mockRejectedValueOnce(new Error('YouTube returned 404'));

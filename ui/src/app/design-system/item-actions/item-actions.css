@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.act:not(:disabled) {
+  color: var(--ds-action-text);
+}
+
+@media (max-width: 480px) {
+  .narrow-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

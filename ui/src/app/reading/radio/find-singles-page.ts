@@ -17,6 +17,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { map, Subscription, tap, timeout } from 'rxjs';
 import { qualifiedHandle } from '../../accounts/account-handle';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
+import { MbAddBox } from '../../design-system/add-box/add-box';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbContentState } from '../../design-system/content-state/content-state';
@@ -93,6 +94,7 @@ const SCAN_SOURCES = ['account', 'tag', 'home', 'list', 'saved'] as const;
     FormsModule,
     RouterLink,
     TranslocoPipe,
+    MbAddBox,
     MbButton,
     MbCheckbox,
     MbContentState,
@@ -343,6 +345,7 @@ export class FindSinglesPage {
   }
 
   discover(): void {
+    if (!this.searchReady()) return;
     const source = this.source();
     if (source === 'saved') {
       const saved = this.savedSearches().find((item) => item.id === this.savedId());

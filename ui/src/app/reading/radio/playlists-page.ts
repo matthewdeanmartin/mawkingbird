@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, timeout } from 'rxjs';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
+import { MbAddBox } from '../../design-system/add-box/add-box';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbControl, MbField } from '../../design-system/field/field';
@@ -18,7 +19,13 @@ import { radioAccount, radioPostRef } from '../radio-links';
 import { PlaylistThread, playlistThreads } from './playlist-thread';
 import { RadioDock } from './radio-dock';
 import { RadioHeader } from './radio-header';
-import { RadioIcon } from './radio-icon';
+import { MbIcon } from '../../design-system/icon/icon';
+import {
+  MbItemList,
+  MbItemMeta,
+  MbItemRow,
+  MbItemTitle,
+} from '../../design-system/item-list/item-list';
 import { RadioPlayer } from './radio-player';
 import { RadioPlaylists, SavedRadioPlaylist } from './radio-playlists';
 import { postTitle } from './track-title';
@@ -64,6 +71,7 @@ const SCAN_PAGES = 5;
     FormsModule,
     RouterLink,
     TranslocoPipe,
+    MbAddBox,
     MbButton,
     MbContentState,
     MbField,
@@ -71,7 +79,11 @@ const SCAN_PAGES = 5;
     MbToolbar,
     MbToolbarButton,
     RadioHeader,
-    RadioIcon,
+    MbIcon,
+    MbItemList,
+    MbItemMeta,
+    MbItemRow,
+    MbItemTitle,
     PlaylistsTabs,
   ],
   templateUrl: './playlists-page.html',

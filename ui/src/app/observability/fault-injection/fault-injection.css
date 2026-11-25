@@ -62,7 +62,7 @@ td {
 .link {
   border: none;
   background: none;
-  color: var(--accent);
+  color: var(--ds-action-text);
   font-size: 13px;
   padding: 0;
 }

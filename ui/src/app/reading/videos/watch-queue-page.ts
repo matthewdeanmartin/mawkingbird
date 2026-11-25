@@ -4,6 +4,15 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
+import { MbIcon } from '../../design-system/icon/icon';
+import {
+  MbItemList,
+  MbItemMeta,
+  MbItemPicture,
+  MbItemRow,
+  MbItemTitle,
+} from '../../design-system/item-list/item-list';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import {
   QueuedVideo,
@@ -18,7 +27,6 @@ import { HistoryEntry, PostHistory } from '../../publishing/post-history';
 export const RECENT_VIDEOS = 6;
 
 // i18n videoQueue.title: Watch queue
-// i18n videoQueue.watch: Watch
 // i18n videoQueue.up: Move up
 // i18n videoQueue.down: Move down
 // i18n videoQueue.remove: Remove
@@ -40,73 +48,88 @@ export const RECENT_VIDEOS = 6;
 /** The account's watch queue, in play order. */
 @Component({
   selector: 'app-watch-queue-page',
-  imports: [RouterLink, TranslocoPipe, MbButton, MbContentState, MbPageHeader],
+  imports: [
+    RouterLink,
+    TranslocoPipe,
+    MbButton,
+    MbContentState,
+    MbIcon,
+    MbItemList,
+    MbItemMeta,
+    MbItemPicture,
+    MbItemRow,
+    MbItemTitle,
+    MbPageHeader,
+    MbToolbar,
+    MbToolbarButton,
+  ],
   template: `
     <mb-page-header
+      embedded
       [title]="'videoQueue.title' | transloco"
       [description]="'videoQueue.lead' | transloco"
-    />
+    >
+      @if (queue.items().length) {
+        <button mbButton variant="compact" tone="danger" type="button" (click)="clear()">
+          {{ 'videoQueue.clear' | transloco }}
+        </button>
+      }
+    </mb-page-header>
     @if (queue.items(); as items) {
       @if (items.length) {
-        <div class="queue-bar">
-          <span class="muted">{{
-            'videoQueue.count' | transloco: { count: items.length, limit: limit }
-          }}</span>
-          <button mbButton variant="outline" size="small" type="button" (click)="clear()">
-            {{ 'videoQueue.clear' | transloco }}
-          </button>
-        </div>
-        <ol class="queue">
+        <p class="muted">
+          {{ 'videoQueue.count' | transloco: { count: items.length, limit: limit } }}
+        </p>
+        <ol mbItemList class="queue">
           @for (item of items; track item.key; let i = $index, first = $first, last = $last) {
+            @let title = titleOf(item);
             <li
-              [attr.aria-label]="
-                'videoQueue.rowAria' | transloco: { position: i + 1, title: titleOf(item) }
-              "
+              mbItemRow
+              [attr.aria-label]="'videoQueue.rowAria' | transloco: { position: i + 1, title }"
             >
-              @if (item.poster) {
-                <img [src]="item.poster" alt="" width="120" height="68" loading="lazy" />
+              @if (item.poster; as poster) {
+                <mb-item-picture
+                  shape="wide"
+                  [src]="poster"
+                  link="/watch"
+                  [queryParams]="item.params"
+                />
               }
-              <div class="queue-text">
-                <strong>{{ titleOf(item) }}</strong>
-                <span class="muted small">{{
-                  (item.params['post'] ? 'videoQueue.fromPost' : 'videoQueue.fromYoutube')
-                    | transloco
-                }}</span>
-              </div>
-              <div class="queue-actions">
-                <a mbButton size="small" routerLink="/watch" [queryParams]="item.params">{{
-                  'videoQueue.watch' | transloco
-                }}</a>
+              <a mbItemTitle routerLink="/watch" [queryParams]="item.params">{{ title }}</a>
+              <span mbItemMeta>{{
+                (item.params['post'] ? 'videoQueue.fromPost' : 'videoQueue.fromYoutube') | transloco
+              }}</span>
+              <mb-toolbar density="compact" embedded [label]="title">
                 <button
-                  mbButton
-                  variant="outline"
-                  size="small"
+                  mbToolbarButton
                   type="button"
+                  [attr.aria-label]="'videoQueue.up' | transloco"
+                  [title]="'videoQueue.up' | transloco"
                   [disabled]="first"
                   (click)="queue.move(item.key, -1)"
                 >
-                  {{ 'videoQueue.up' | transloco }}
+                  <mb-icon name="up" />
                 </button>
                 <button
-                  mbButton
-                  variant="outline"
-                  size="small"
+                  mbToolbarButton
                   type="button"
+                  [attr.aria-label]="'videoQueue.down' | transloco"
+                  [title]="'videoQueue.down' | transloco"
                   [disabled]="last"
                   (click)="queue.move(item.key, 1)"
                 >
-                  {{ 'videoQueue.down' | transloco }}
+                  <mb-icon name="down" />
                 </button>
                 <button
-                  mbButton
-                  variant="outline"
-                  size="small"
+                  mbToolbarButton
                   type="button"
+                  [attr.aria-label]="'videoQueue.remove' | transloco"
+                  [title]="'videoQueue.remove' | transloco"
                   (click)="queue.remove(item.key)"
                 >
-                  {{ 'videoQueue.remove' | transloco }}
+                  <mb-icon name="remove" />
                 </button>
-              </div>
+              </mb-toolbar>
             </li>
           }
         </ol>
@@ -121,42 +144,35 @@ export const RECENT_VIDEOS = 6;
       <!-- Videos in posts you scrolled past, newest first, not already lined up. -->
       <section class="recent" [attr.aria-label]="'videoQueue.recent' | transloco">
         <h2>{{ 'videoQueue.recent' | transloco }}</h2>
-        <ul class="queue">
+        <ul mbItemList>
           @for (entry of recent(); track entry.key) {
-            <li>
-              @if (entry.video!.poster) {
-                <img [src]="entry.video!.poster" alt="" width="120" height="68" loading="lazy" />
-              }
-              <div class="queue-text">
-                <strong>{{
-                  entry.video!.title || entry.text || ('videoQueue.untitledRow' | transloco)
-                }}</strong>
-                <span class="muted small">{{
-                  'videoQueue.by' | transloco: { name: entry.name || entry.author }
-                }}</span>
-              </div>
-              <div class="queue-actions">
-                <button
-                  mbButton
-                  size="small"
-                  type="button"
-                  [attr.aria-label]="
-                    'videoQueue.recentAddAria'
-                      | transloco: { title: entry.video!.title || entry.text || entry.author }
-                  "
-                  (click)="addSeen(entry)"
-                >
-                  {{ 'videoQueue.recentAdd' | transloco }}
-                </button>
-                <a
-                  mbButton
-                  variant="outline"
-                  size="small"
-                  routerLink="/watch"
+            <li mbItemRow>
+              @if (entry.video!.poster; as poster) {
+                <mb-item-picture
+                  shape="wide"
+                  [src]="poster"
+                  link="/watch"
                   [queryParams]="entry.video!.params"
-                  >{{ 'videoQueue.watch' | transloco }}</a
-                >
-              </div>
+                />
+              }
+              <a mbItemTitle routerLink="/watch" [queryParams]="entry.video!.params">{{
+                entry.video!.title || entry.text || ('videoQueue.untitledRow' | transloco)
+              }}</a>
+              <span mbItemMeta>{{
+                'videoQueue.by' | transloco: { name: entry.name || entry.author }
+              }}</span>
+              <button
+                mbButton
+                variant="compact"
+                type="button"
+                [attr.aria-label]="
+                  'videoQueue.recentAddAria'
+                    | transloco: { title: entry.video!.title || entry.text || entry.author }
+                "
+                (click)="addSeen(entry)"
+              >
+                <mb-icon name="add" size="small" /> {{ 'videoQueue.recentAdd' | transloco }}
+              </button>
             </li>
           }
         </ul>
@@ -165,54 +181,17 @@ export const RECENT_VIDEOS = 6;
   `,
   styles: `
     :host {
-      display: block;
-      padding: 1rem;
+      display: grid;
+      gap: 16px;
+      padding: 16px;
+    }
+    .muted {
+      margin: 0;
+      color: var(--muted);
     }
     .recent h2 {
-      font-size: 1.05rem;
-      margin: 1.5rem 0 0.5rem;
-    }
-    .queue-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-    .queue {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      gap: 0.5rem;
-    }
-    li {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-    img {
-      width: 120px;
-      height: 68px;
-      object-fit: cover;
-      border-radius: 4px;
-      flex: 0 0 auto;
-    }
-    .queue-text {
-      display: grid;
-      gap: 2px;
-      flex: 1 1 12rem;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-    .queue-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
+      font-size: 16px;
+      margin: 0 0 8px;
     }
   `,
 })

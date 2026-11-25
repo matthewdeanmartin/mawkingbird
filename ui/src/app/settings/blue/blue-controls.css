@@ -28,7 +28,7 @@
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--col-bg);
-  color: var(--accent);
+  color: var(--ds-action-text);
   font: inherit;
   font-weight: 700;
   cursor: pointer;

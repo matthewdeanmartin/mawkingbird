@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  flex: none;
+}
+
+img {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+:host([data-shape='wide']) img {
+  width: 100px;
+}
