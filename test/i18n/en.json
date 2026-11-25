@@ -2012,6 +2012,7 @@
   "firstRun": {
     "accountQuestion": "Which account do you have?",
     "back": "Back",
+    "backTo": "Back to “{{page}}”",
     "bluesky": "Bluesky",
     "blueskyHintApprove": "Sign in on Bluesky and approve access.",
     "continueAnonymous": "Continue without logging in",
@@ -4228,6 +4229,10 @@
     "login.confirm.sentTo": "Almost there! We sent a confirmation email to",
     "login.confirm.verify": "✉ Verify email & continue",
     "login.confirm.verifying": "Verifying…",
+    "login.connect.notStored": "This browser could not keep the Mastodon sign-in. Check whether site storage is blocked.",
+    "login.connect.notice": "You stay signed in as {{handle}}. Connecting Mastodon adds your Mastodon account to it.",
+    "login.connect.separate": "Use Mastodon as a separate account instead",
+    "login.connect.switched": "The active account changed while you were connecting, so nothing was connected. Start again from this page.",
     "login.connecting": "Signing you in…",
     "login.homeServer.other": "Use another server",
     "login.homeServer.signingIn": "Signing in to {{server}}.",
@@ -4249,6 +4254,7 @@
     "login.notSure.browse": "Browse the full directory on joinmastodon.org ↗",
     "login.notSure.question": "Not sure which server?",
     "login.oauth.accessLegend": "How much access to grant this app",
+    "login.oauth.cancelled": "Sign-in was cancelled. Nothing was changed.",
     "login.oauth.neverSeePassword": "We never see your password.",
     "login.oauth.ownPage": "You'll log in on {{server}}'s own page and come straight back.",
     "login.oauth.redirecting": "Redirecting…",
@@ -8124,6 +8130,8 @@
     "connections.mastodon.signIn": "Sign in",
     "connections.mastodon.signInFailed": "Signing in failed — check the token and the server.",
     "connections.mastodon.signInHeading": "Sign in",
+    "connections.mastodon.signInWith": "Sign in with Mastodon",
+    "connections.mastodon.signInWithNote": "You approve access on your own server and come straight back, still signed in with Bluesky.",
     "connections.mastodon.signOut": "Sign out",
     "connections.mastodon.signOutKeepsReading": "Signing out keeps reading {{server}} anonymously — it drops the token, not the connection.",
     "connections.mastodon.signedInMergeNote": "Mastodon posts from the people you follow are merged into your home timeline.",
@@ -10392,6 +10400,12 @@
     "signIn.action": "Sign in with Mastodon",
     "signIn.body": "Sign in to search your Mastodon server for these {{count}} people and follow the ones who have already moved. The archive files stay in this browser; handle searches go to your Mastodon server.",
     "signIn.title": "Next: find them on Mastodon."
+  },
+  "unavailable": {
+    "body": "It needs a signed-in account: {{feature}}. After signing in you come back here.",
+    "home": "Back to Home",
+    "signIn": "Sign in",
+    "title": "Sign in to open this page"
   },
   "unbird": {
     "drop.choose": "Choose the .zip…",
