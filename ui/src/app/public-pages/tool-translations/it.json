@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Disattivare gli avvisi sul contenuto di Mastodon",
-    "description": "Apri da soli gli avvisi sul contenuto di Mastodon e mostra subito i contenuti sensibili, per tutti o solo per le persone di cui ti fidi.",
+    "description": "Disattivare gli avvisi sul contenuto di Mastodon. Non serve accedere a Mawkingbird.",
     "prerenderCheck": {
       "heading": "Disattivare gli avvisi sul contenuto su Mastodon",
-      "copy": "Mostra i contenuti sensibili"
+      "copy": "Apri le impostazioni di Mastodon"
     }
   },
   "export-bookmarks": {

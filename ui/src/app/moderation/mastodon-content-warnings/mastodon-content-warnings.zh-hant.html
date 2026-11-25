@@ -3,55 +3,83 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/settings/content">開啟 App</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">開啟 App</a>
     </header>
   }
 
   <div class="intro">
     <p class="eyebrow">內容警告</p>
     <h1>如何關閉 Mastodon 的內容警告</h1>
-    <p>
-      每則嘟文都要按「顯示更多」、每張模糊的照片都要點一下，覺得很煩嗎？內容警告可以自動展開，敏感媒體也可以直接顯示。
-      @if (!inShell) {
-        登入後，只要兩個開關。
-      }
-    </p>
-  </div>
-
-  @if (inShell) {
-    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
-    @defer (on immediate) {
-      <app-content-warnings-workbench />
-    } @placeholder {
-      <p class="muted">正在載入您的設定……</p>
-    }
-  } @else {
-    <ol class="steps">
-      <li>
-        <h2>展開內容警告</h2>
-        <p>有內容警告的嘟文會自動展開，警告文字仍然會顯示。</p>
-      </li>
-      <li>
-        <h2>顯示敏感媒體</h2>
-        <p>標示為敏感的照片與影片會直接顯示，不再模糊。</p>
-      </li>
-      <li>
-        <h2>或只對您信任的人</h2>
-        <p>對陌生人保持關閉，對朋友直接展開：信任特定的人，或信任所有您跟隨的人。</p>
-      </li>
-    </ol>
-    <div class="sign-in-choices">
-      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere">用 Mastodon 登入並關閉</a>
-    </div>
-  }
-
-  <section class="questions">
-    <h2>常見問題</h2>
-    <h3>在 Mastodon 網頁版要怎麼設定？</h3>
+    <p>在自己的 Mastodon 網站開啟「偏好設定」→「外觀」。調整後，請按「儲存變更」。</p>
     <p>
       打開伺服器的偏好設定，開啟「永遠展開標有內容警告的嘟文」，並把「媒體顯示」設為「全部顯示」。這些是伺服器的設定，會套用到網頁版與部分
       App。
     </p>
+    <p>
+      不需要登入 Mawkingbird。你可能需要在自己的 Mastodon 伺服器登入。手機 App
+      與其他用戶端可能有各自的設定。
+    </p>
+  </div>
+
+  <section class="panel server-guide" aria-labelledby="cw-settings-title">
+    <h2 id="cw-settings-title">開啟你的 Mastodon 設定</h2>
+    <span hidden #invalidServer>請輸入伺服器網域或完整的 Mastodon 帳號地址。</span>
+    <mb-field
+      label="你的 Mastodon 伺服器或帳號地址"
+      hint="例如：mastodon.social 或 &#64;name&#64;mastodon.social"
+      [error]="serverInput() &amp;&amp; !preferencesUrl() ? invalidServer.textContent || '' : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        [ngModel]="serverInput()"
+        (ngModelChange)="serverInput.set($event)"
+      />
+    </mb-field>
+    @if (preferencesUrl(); as url) {
+      <p>
+        <a mbButton [href]="url" target="_blank" rel="noopener noreferrer"
+          >開啟你的 Mastodon 設定</a
+        >
+      </p>
+      <p class="muted">{{ url }}</p>
+    }
+  </section>
+
+  <section class="panel mawkingbird-option" aria-labelledby="cw-optional-title">
+    <h2 id="cw-optional-title">Mawkingbird</h2>
+    <p>
+      可選：使用獨立的 Mastodon 用戶端 Mawkingbird 閱讀。以下開關只影響這個瀏覽器中的
+      Mawkingbird，不會更改 Mastodon 網站或其他 App。
+    </p>
+    <p>對陌生人保持關閉，對朋友直接展開：信任特定的人，或信任所有您跟隨的人。</p>
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/settings/content">開啟 App</a>
+    </div>
+  }
+
+    @if (inShell) {
+      @defer (on immediate) {
+        <app-content-warnings-workbench />
+      } @placeholder {
+        <p class="muted">正在載入您的設定……</p>
+      }
+    } @else {
+      <div class="sign-in-choices">
+        <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+          >使用 Mastodon 帳號試用 Mawkingbird</a
+        >
+      </div>
+    }
+  </section>
+
+  <section class="questions">
+    <h2>常見問題</h2>
     <h3>為什麼 Mawkingbird 不能改我伺服器的設定？</h3>
     <p>
       Mastodon 只讓 App 讀取這些設定，不能修改，所以 Mawkingbird

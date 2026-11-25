@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Inhaltswarnungen auf Mastodon ausschalten",
-    "description": "Inhaltswarnungen auf Mastodon automatisch aufklappen und heikle Medien sofort zeigen, für alle oder nur für Leute, denen du vertraust. Zwei Schalter.",
+    "description": "Inhaltswarnungen auf Mastodon ausschalten. Keine Anmeldung bei Mawkingbird nötig.",
     "prerenderCheck": {
       "heading": "Inhaltswarnungen auf Mastodon ausschalten",
-      "copy": "Heikle Medien zeigen"
+      "copy": "Mastodon-Einstellungen öffnen"
     }
   },
   "export-bookmarks": {

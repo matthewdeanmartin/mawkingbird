@@ -2,9 +2,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Type } from '@angular/core';
 import { DeferBlockBehavior, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { toolPageLoader } from '../../app.routes';
 import { toolLanguage } from '../focused-tools';
 import { FOCUSED_TOOLS } from '../focused-tools-all';
@@ -24,7 +24,7 @@ describe('Translated tool pages', () => {
     expect(TRANSLATED.filter((tool) => toolLanguage(tool) === 'ja').length).toBeGreaterThan(15);
   });
 
-  for (const tool of TRANSLATED) {
+  for (const tool of FOCUSED_TOOLS) {
     it(`/${tool.path} is in its language and signs in back to itself`, async () => {
       const component = (await toolPageLoader(tool)()) as Type<unknown>;
       TestBed.configureTestingModule({
@@ -51,16 +51,20 @@ describe('Translated tool pages', () => {
         ],
       });
       await TestBed.compileComponents();
+      vi.spyOn(TestBed.inject(Router), 'url', 'get').mockReturnValue('/' + tool.path);
       const fixture = TestBed.createComponent(component);
       fixture.detectChanges();
       const root = fixture.nativeElement as HTMLElement;
 
       expect(root.querySelector('main')?.getAttribute('lang')).toBe(toolLanguage(tool));
       expect(root.querySelector('h1')?.textContent).toContain(tool.prerenderCheck.heading);
-      const english = FOCUSED_TOOLS.find((entry) => entry.id === tool.translationOf)!;
-      expect(root.querySelector(`a[hreflang="en"][href="/${english.path}"]`)?.textContent).toBe(
-        'English',
-      );
+      if (tool.translationOf) {
+        const english = FOCUSED_TOOLS.find((entry) => entry.id === tool.translationOf)!;
+        expect(root.querySelector(`a[hreflang="en"][href="/${english.path}"]`)?.textContent).toBe('English');
+      }
+      for (const link of root.querySelectorAll<HTMLAnchorElement>('header a[mbButton]')) {
+        expect(link.getAttribute('href'), `${tool.path} app entry`).toMatch(/^\/login(?:\/|\?|$)/);
+      }
       const signIns = [...root.querySelectorAll<HTMLAnchorElement>('a[href^="/login/"]')];
       for (const link of signIns) {
         const next = new URL(link.href, 'https://mawkingbird.com').searchParams.get('next');

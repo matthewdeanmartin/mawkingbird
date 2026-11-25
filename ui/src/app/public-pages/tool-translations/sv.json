@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Stäng av innehållsvarningar på Mastodon",
-    "description": "Öppna innehållsvarningar automatiskt och visa känsliga medier direkt, för alla eller bara personer du litar på.",
+    "description": "Stäng av innehållsvarningar på Mastodon. Du behöver inte logga in i Mawkingbird.",
     "prerenderCheck": {
       "heading": "Så stänger du av innehållsvarningar på Mastodon",
-      "copy": "Visa känsliga medier"
+      "copy": "Öppna dina Mastodon-inställningar"
     }
   },
   "export-bookmarks": {

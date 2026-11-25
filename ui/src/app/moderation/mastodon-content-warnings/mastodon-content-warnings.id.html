@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/settings/content">Buka aplikasi</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Buka aplikasi</a>
     </header>
   }
 
@@ -11,54 +11,82 @@
     <p class="eyebrow">Peringatan konten</p>
     <h1>Cara menonaktifkan peringatan konten di Mastodon</h1>
     <p>
-      Bosan menekan Tampilkan lebih banyak di setiap postingan atau membuka foto yang diburamkan?
-      Buka peringatan konten otomatis dan tampilkan media sensitif langsung.
-      @if (!inShell) {
-        Masuk, lalu ubah dua sakelar.
-      }
+      Di situs Mastodon Anda, buka Preferensi → Tampilan. Setelah mengubah pengaturan, klik Simpan
+      perubahan.
     </p>
-  </div>
-
-  @if (inShell) {
-    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
-    @defer (on immediate) {
-      <app-content-warnings-workbench />
-    } @placeholder {
-      <p class="muted">Memuat pengaturanmu…</p>
-    }
-  } @else {
-    <ol class="steps">
-      <li>
-        <h2>Buka peringatan konten otomatis</h2>
-        <p>Postingan berperingatan terbuka sendiri. Teks peringatannya tetap terlihat.</p>
-      </li>
-      <li>
-        <h2>Tampilkan media sensitif</h2>
-        <p>Foto dan video bertanda sensitif ditampilkan tanpa diburamkan.</p>
-      </li>
-      <li>
-        <h2>Atau hanya untuk orang tepercaya</h2>
-        <p>
-          Biarkan peringatan orang asing tertutup dan peringatan teman terbuka. Percayai orang
-          tertentu atau semua orang yang kamu ikuti.
-        </p>
-      </li>
-    </ol>
-    <div class="sign-in-choices">
-      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
-        >Masuk dengan Mastodon untuk menonaktifkannya</a
-      >
-    </div>
-  }
-
-  <section class="questions">
-    <h2>Pertanyaan</h2>
-    <h3>Bagaimana melakukannya di situs Mastodon?</h3>
     <p>
       Buka Pengaturan di servermu, aktifkan opsi untuk selalu membuka postingan berperingatan
       konten, lalu pilih Tampilkan semua pada tampilan media. Pengaturan server itu dipakai situs
       dan beberapa aplikasi.
     </p>
+    <p>
+      Tidak perlu masuk ke Mawkingbird. Anda mungkin perlu masuk ke server Mastodon sendiri.
+      Aplikasi seluler dan klien lain mungkin memiliki pengaturan terpisah.
+    </p>
+  </div>
+
+  <section class="panel server-guide" aria-labelledby="cw-settings-title">
+    <h2 id="cw-settings-title">Buka pengaturan Mastodon Anda</h2>
+    <span hidden #invalidServer>Masukkan domain server atau alamat akun Mastodon lengkap.</span>
+    <mb-field
+      label="Server atau alamat akun Mastodon Anda"
+      hint="Contoh: mastodon.social atau &#64;nama&#64;mastodon.social"
+      [error]="serverInput() &amp;&amp; !preferencesUrl() ? invalidServer.textContent || '' : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        [ngModel]="serverInput()"
+        (ngModelChange)="serverInput.set($event)"
+      />
+    </mb-field>
+    @if (preferencesUrl(); as url) {
+      <p>
+        <a mbButton [href]="url" target="_blank" rel="noopener noreferrer"
+          >Buka pengaturan Mastodon Anda</a
+        >
+      </p>
+      <p class="muted">{{ url }}</p>
+    }
+  </section>
+
+  <section class="panel mawkingbird-option" aria-labelledby="cw-optional-title">
+    <h2 id="cw-optional-title">Mawkingbird</h2>
+    <p>
+      Opsional: baca di Mawkingbird, klien Mastodon independen. Sakelar ini hanya berlaku untuk
+      Mawkingbird di peramban ini, bukan situs Mastodon atau aplikasi lain.
+    </p>
+    <p>
+      Biarkan peringatan orang asing tertutup dan peringatan teman terbuka. Percayai orang tertentu
+      atau semua orang yang kamu ikuti.
+    </p>
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/settings/content">Buka aplikasi</a>
+    </div>
+  }
+
+    @if (inShell) {
+      @defer (on immediate) {
+        <app-content-warnings-workbench />
+      } @placeholder {
+        <p class="muted">Memuat pengaturanmu…</p>
+      }
+    } @else {
+      <div class="sign-in-choices">
+        <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+          >Coba Mawkingbird dengan akun Mastodon Anda</a
+        >
+      </div>
+    }
+  </section>
+
+  <section class="questions">
+    <h2>Pertanyaan</h2>
     <h3>Mengapa Mawkingbird tidak bisa mengubah pengaturan server?</h3>
     <p>
       Mastodon mengizinkan aplikasi membaca pengaturan itu, tetapi tidak mengubahnya. Jadi

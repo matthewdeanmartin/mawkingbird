@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/settings/content">Uygulamayı aç</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Uygulamayı aç</a>
     </header>
   }
 
@@ -11,54 +11,83 @@
     <p class="eyebrow">İçerik uyarıları</p>
     <h1>Mastodon'da içerik uyarıları nasıl kapatılır?</h1>
     <p>
-      Her gönderide “Daha fazla göster”e basmaktan veya bulanık fotoğrafları açmaktan yoruldun mu?
-      İçerik uyarıları kendiliğinden açılabilir, hassas medya hemen gösterilebilir.
-      @if (!inShell) {
-        Oturum aç; iki anahtar yeterli.
-      }
+      Mastodon web sitenizde Tercihler → Görünüm bölümünü açın. Ayarları değiştirdikten sonra
+      Değişiklikleri kaydet düğmesine basın.
     </p>
-  </div>
-
-  @if (inShell) {
-    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
-    @defer (on immediate) {
-      <app-content-warnings-workbench />
-    } @placeholder {
-      <p class="muted">Ayarların yükleniyor…</p>
-    }
-  } @else {
-    <ol class="steps">
-      <li>
-        <h2>İçerik uyarılarını aç</h2>
-        <p>İçerik uyarılı gönderiler kendiliğinden açılır. Uyarı metnini yine görürsün.</p>
-      </li>
-      <li>
-        <h2>Hassas medyayı göster</h2>
-        <p>Hassas işaretli fotoğraf ve videolar bulanıklaştırılmadan gösterilir.</p>
-      </li>
-      <li>
-        <h2>Veya yalnızca güvendiğin kişiler için</h2>
-        <p>
-          Yabancıların uyarılarını kapalı, arkadaşlarınınkini açık tut: tek tek kişilere veya takip
-          ettiğin herkese güven.
-        </p>
-      </li>
-    </ol>
-    <div class="sign-in-choices">
-      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
-        >Kapatmak için Mastodon ile oturum aç</a
-      >
-    </div>
-  }
-
-  <section class="questions">
-    <h2>Sorular</h2>
-    <h3>Bunu Mastodon sitesinde nasıl yaparım?</h3>
     <p>
       Sunucundaki Tercihler'i aç, “İçerik uyarılı gönderileri her zaman aç” seçeneğini etkinleştir
       ve “Medya görünümü”nü “Tümünü göster” yap. Bu ayarlar sunucuna aittir; sitesi ve bazı
       uygulamalar tarafından kullanılır.
     </p>
+    <p>
+      Mawkingbird oturumu açmanız gerekmez. Kendi Mastodon sunucunuzda oturum açmanız gerekebilir.
+      Mobil uygulamaların ve diğer istemcilerin ayrı ayarları olabilir.
+    </p>
+  </div>
+
+  <section class="panel server-guide" aria-labelledby="cw-settings-title">
+    <h2 id="cw-settings-title">Mastodon ayarlarınızı açın</h2>
+    <span hidden #invalidServer>Bir sunucu alan adı veya tam Mastodon hesap adresi girin.</span>
+    <mb-field
+      label="Mastodon sunucunuz veya hesap adresiniz"
+      hint="Örneğin: mastodon.social veya &#64;ad&#64;mastodon.social"
+      [error]="serverInput() &amp;&amp; !preferencesUrl() ? invalidServer.textContent || '' : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        [ngModel]="serverInput()"
+        (ngModelChange)="serverInput.set($event)"
+      />
+    </mb-field>
+    @if (preferencesUrl(); as url) {
+      <p>
+        <a mbButton [href]="url" target="_blank" rel="noopener noreferrer"
+          >Mastodon ayarlarınızı açın</a
+        >
+      </p>
+      <p class="muted">{{ url }}</p>
+    }
+  </section>
+
+  <section class="panel mawkingbird-option" aria-labelledby="cw-optional-title">
+    <h2 id="cw-optional-title">Mawkingbird</h2>
+    <p>
+      İsteğe bağlı: bağımsız bir Mastodon istemcisi olan Mawkingbird ile okuyun. Bu anahtarlar
+      yalnızca bu tarayıcıdaki Mawkingbird için geçerlidir; Mastodon web sitenizi veya diğer
+      uygulamaları değiştirmez.
+    </p>
+    <p>
+      Yabancıların uyarılarını kapalı, arkadaşlarınınkini açık tut: tek tek kişilere veya takip
+      ettiğin herkese güven.
+    </p>
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/settings/content">Uygulamayı aç</a>
+    </div>
+  }
+
+    @if (inShell) {
+      @defer (on immediate) {
+        <app-content-warnings-workbench />
+      } @placeholder {
+        <p class="muted">Ayarların yükleniyor…</p>
+      }
+    } @else {
+      <div class="sign-in-choices">
+        <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+          >Mastodon hesabınızla Mawkingbird uygulamasını deneyin</a
+        >
+      </div>
+    }
+  </section>
+
+  <section class="questions">
+    <h2>Sorular</h2>
     <h3>Mawkingbird neden sunucu ayarımı değiştiremiyor?</h3>
     <p>
       Mastodon uygulamalara bu tercihleri okuma izni verir ama değiştirme izni vermez. Bu yüzden

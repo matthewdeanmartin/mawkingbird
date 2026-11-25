@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Mastodon सामग्री चेतावनियाँ बंद करें",
-    "description": "सामग्री चेतावनियाँ अपने-आप खोलें और संवेदनशील तस्वीरें दिखाएँ — सबके लिए या केवल भरोसेमंद लोगों के लिए।",
+    "description": "Mastodon सामग्री चेतावनियाँ बंद करें. Mawkingbird में लॉगिन ज़रूरी नहीं है।",
     "prerenderCheck": {
       "heading": "Mastodon पर सामग्री चेतावनियाँ कैसे बंद करें",
-      "copy": "संवेदनशील मीडिया दिखाएँ"
+      "copy": "अपनी Mastodon सेटिंग खोलें"
     }
   },
   "export-bookmarks": {

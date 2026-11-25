@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Wyłącz ostrzeżenia o treści na Mastodonie",
-    "description": "Rozwijaj automatycznie ostrzeżenia o treści na Mastodonie i od razu pokazuj wrażliwe multimedia, wszystkim albo tylko zaufanym osobom.",
+    "description": "Wyłącz ostrzeżenia o treści na Mastodonie. Nie musisz logować się do Mawkingbird.",
     "prerenderCheck": {
       "heading": "Jak wyłączyć ostrzeżenia o treści na Mastodonie",
-      "copy": "Pokaż wrażliwe multimedia"
+      "copy": "Otwórz ustawienia Mastodona"
     }
   },
   "export-bookmarks": {

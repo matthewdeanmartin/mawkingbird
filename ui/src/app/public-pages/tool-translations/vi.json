@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Tắt cảnh báo nội dung trên Mastodon",
-    "description": "Tự mở cảnh báo nội dung và hiện nội dung đa phương tiện nhạy cảm, cho mọi người hoặc chỉ người bạn tin tưởng.",
+    "description": "Tắt cảnh báo nội dung trên Mastodon. Không cần đăng nhập Mawkingbird.",
     "prerenderCheck": {
       "heading": "Cách tắt cảnh báo nội dung trên Mastodon",
-      "copy": "Hiện nội dung đa phương tiện nhạy cảm"
+      "copy": "Mở cài đặt Mastodon của bạn"
     }
   },
   "export-bookmarks": {

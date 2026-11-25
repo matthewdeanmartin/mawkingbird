@@ -258,7 +258,7 @@
     "id": "content-warnings",
     "path": "turn-off-content-warnings-mastodon",
     "title": "How to turn off content warnings on Mastodon",
-    "description": "Auto-expand content warnings and show sensitive media on Mastodon, for everyone or only the people you trust. See your server's own setting too.",
+    "description": "Learn how to auto-expand Mastodon content warnings and show sensitive media on your server’s website. No Mawkingbird login needed.",
     "group": "account",
     "sources": "mastodon-content-warnings",
     "signIn": "mastodon",
@@ -269,7 +269,7 @@
     },
     "prerenderCheck": {
       "heading": "How to turn off content warnings on Mastodon",
-      "copy": "Expand content warnings",
+      "copy": "Open your Mastodon settings",
       "tool": "app-content-warnings-workbench"
     }
   },

@@ -89,7 +89,7 @@ export class ContentWarningsWorkbench {
 
   protected readonly serverPrefsUrl = computed(() => {
     try {
-      return `${new URL(this.server.baseUrl()).origin}/settings/preferences/other`;
+      return `${new URL(this.server.baseUrl()).origin}/settings/preferences/appearance`;
     } catch {
       return null;
     }

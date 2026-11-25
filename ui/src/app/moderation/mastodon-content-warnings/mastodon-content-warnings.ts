@@ -1,4 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, PLATFORM_ID, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MbControl, MbField } from '../../design-system/field/field';
+import { Auth } from '../../platform/session/auth';
+import { Server } from '../../platform/http/server';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -11,13 +16,15 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
  * "How to turn off content warnings on Mastodon" as a focused mini-app, at
  * /turn-off-content-warnings-mastodon.
  *
- * Signed out, the answer for the Mastodon website too, then sign-in. Signed in,
- * Mawkingbird's two switches on their own, the server's matching preferences
- * (read-only), and the per-person trust that Mastodon itself does not have.
+ * The Mastodon website guide and server link remain visible for every visitor.
+ * Mawkingbird is an optional, explicitly client-only section below the answer.
  */
 @Component({
   selector: 'app-mastodon-content-warnings',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -26,12 +33,48 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
 })
 export class MastodonContentWarnings {
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
   protected readonly returnHere = { next: '/turn-off-content-warnings-mastodon' };
+  private readonly auth = isPlatformBrowser(inject(PLATFORM_ID)) ? inject(Auth) : null;
+  // Only a connected Mastodon account identifies the visitor's own server.
+  // Anonymous browsing may have selected somebody else's public server.
+  protected readonly serverInput = signal(
+    this.auth && !this.auth.lacksMastodonToken && !this.auth.isAnonymous
+      ? inject(Server).baseUrl()
+      : '',
+  );
+  protected readonly preferencesUrl = computed(() => {
+    let value = this.serverInput().trim();
+    if (!value || /[\s\\]/.test(value)) return null;
+    if (!value.includes('://') && value.includes('@')) {
+      const handle = /^@?[^@/:]+@([^@/:]+)$/.exec(value);
+      if (!handle) return null;
+      value = handle[1];
+    }
+    try {
+      const url = new URL(value.includes('://') ? value : `https://${value}`);
+      if (
+        url.protocol !== 'https:' ||
+        url.username ||
+        url.password ||
+        !url.hostname.includes('.') ||
+        url.search ||
+        url.hash ||
+        (url.pathname !== '/' && url.pathname !== '')
+      )
+        return null;
+      return `${url.origin}/settings/preferences/appearance`;
+    } catch {
+      return null;
+    }
+  });
 }
 
 /**
@@ -42,6 +85,9 @@ export class MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-de',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -50,7 +96,10 @@ export class MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.de.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsDe extends MastodonContentWarnings {
@@ -65,6 +114,9 @@ export class MastodonContentWarningsDe extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-ja',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -73,7 +125,10 @@ export class MastodonContentWarningsDe extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.ja.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsJa extends MastodonContentWarnings {
@@ -88,6 +143,9 @@ export class MastodonContentWarningsJa extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-fr',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -96,7 +154,10 @@ export class MastodonContentWarningsJa extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.fr.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsFr extends MastodonContentWarnings {
@@ -113,6 +174,9 @@ export class MastodonContentWarningsFr extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-es',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -121,7 +185,10 @@ export class MastodonContentWarningsFr extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.es.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsEs extends MastodonContentWarnings {
@@ -138,6 +205,9 @@ export class MastodonContentWarningsEs extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-zh-hant',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -146,7 +216,10 @@ export class MastodonContentWarningsEs extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.zh-hant.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsZhHant extends MastodonContentWarnings {
@@ -161,6 +234,9 @@ export class MastodonContentWarningsZhHant extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-ko',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -169,7 +245,10 @@ export class MastodonContentWarningsZhHant extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.ko.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsKo extends MastodonContentWarnings {
@@ -184,6 +263,9 @@ export class MastodonContentWarningsKo extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-pt',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -192,7 +274,10 @@ export class MastodonContentWarningsKo extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.pt.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsPt extends MastodonContentWarnings {
@@ -207,6 +292,9 @@ export class MastodonContentWarningsPt extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-it',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -215,7 +303,10 @@ export class MastodonContentWarningsPt extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.it.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsIt extends MastodonContentWarnings {
@@ -232,6 +323,9 @@ export class MastodonContentWarningsIt extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-pl',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -240,7 +334,10 @@ export class MastodonContentWarningsIt extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.pl.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsPl extends MastodonContentWarnings {
@@ -251,6 +348,9 @@ export class MastodonContentWarningsPl extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-uk',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -259,7 +359,10 @@ export class MastodonContentWarningsPl extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.uk.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsUk extends MastodonContentWarnings {
@@ -270,6 +373,9 @@ export class MastodonContentWarningsUk extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-hi',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -278,7 +384,10 @@ export class MastodonContentWarningsUk extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.hi.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsHi extends MastodonContentWarnings {
@@ -289,6 +398,9 @@ export class MastodonContentWarningsHi extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-nl',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -297,7 +409,10 @@ export class MastodonContentWarningsHi extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.nl.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsNl extends MastodonContentWarnings {
@@ -308,6 +423,9 @@ export class MastodonContentWarningsNl extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-id',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -316,7 +434,10 @@ export class MastodonContentWarningsNl extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.id.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsId extends MastodonContentWarnings {
@@ -327,6 +448,9 @@ export class MastodonContentWarningsId extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-ru',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -335,7 +459,10 @@ export class MastodonContentWarningsId extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.ru.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsRu extends MastodonContentWarnings {
@@ -346,6 +473,9 @@ export class MastodonContentWarningsRu extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-sv',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -354,7 +484,10 @@ export class MastodonContentWarningsRu extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.sv.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsSv extends MastodonContentWarnings {
@@ -365,6 +498,9 @@ export class MastodonContentWarningsSv extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-vi',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -373,7 +509,10 @@ export class MastodonContentWarningsSv extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.vi.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsVi extends MastodonContentWarnings {
@@ -384,6 +523,9 @@ export class MastodonContentWarningsVi extends MastodonContentWarnings {
 @Component({
   selector: 'app-mastodon-content-warnings-tr',
   imports: [
+    FormsModule,
+    MbField,
+    MbControl,
     RouterLink,
     AppOnlyLinkRel,
     MbButton,
@@ -392,7 +534,10 @@ export class MastodonContentWarningsVi extends MastodonContentWarnings {
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.tr.html',
-  styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  styleUrls: [
+    '../../public-pages/focused-apps/focused-page.css',
+    './mastodon-content-warnings.css',
+  ],
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsTr extends MastodonContentWarnings {

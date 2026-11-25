@@ -58,3 +58,15 @@ Traced by hand when the manifest was refreshed: 23 tests removed by changes from
 - Listen and Watch refusing another server's post (2): they open it now. Links with
   credentials, and non-https servers, are still refused.
 - Search's media-only query (1): Mastodon refuses it, so Home is scanned instead.
+
+## 2026-11-25: Mastodon content-warning guide
+
+- test: src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.spec.ts :: MastodonContentWarnings signed in, shows the switches instead of the pitch
+  reason: replaced
+  now: src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.spec.ts :: MastodonContentWarnings signed in, keeps the Mastodon guide before the optional client switches
+  why: The owner requested that sign-in keep the Mastodon website instructions first, with Mawkingbird controls explicitly optional below them.
+
+- test: src/app/accounts/sign-in/login-bluesky/login-bluesky.spec.ts :: LoginBluesky sends an already signed-in visitor to Home
+  reason: replaced
+  now: src/app/accounts/sign-in/login-bluesky/login-bluesky.spec.ts :: LoginBluesky sends an already signed-in Bluesky visitor to Home
+  why: Only a Bluesky identity satisfies an explicit Bluesky sign-in request. Mastodon and Anonymous visitors now get the form, with separate regression tests preserving their current identity until they choose to sign in.

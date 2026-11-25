@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FeatureFlags } from '../../../platform/build/feature-flags';
@@ -56,7 +56,7 @@ const DOORS: readonly Door[] = [
           <a
             class="door"
             [routerLink]="'/login/' + door.network"
-            [queryParams]="adding() ? { add: 1 } : null"
+            [queryParams]="queryParams()"
           >
             <ng-container *ngTemplateOutlet="body; context: { $implicit: door }" />
           </a>
@@ -76,6 +76,11 @@ const DOORS: readonly Door[] = [
 export class LoginDoors {
   /** Carry `?add=1`, so the login page does not bounce a signed-in user home. */
   readonly adding = input(false);
+  readonly next = input<string | null>(null);
+  protected readonly queryParams = computed(() => ({
+    ...(this.adding() ? { add: 1 } : {}),
+    ...(this.next() ? { next: this.next() } : {}),
+  }));
   readonly reload = input(false);
   private readonly misskey = inject(FeatureFlags).enabled('misskey');
   protected readonly doors = DOORS.filter((door) => door.network !== 'misskey' || this.misskey);

@@ -3,8 +3,15 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/search">ऐप खोलें</a>
+      <a mbButton variant="outline" routerLink="/login" [queryParams]="{ next: root }">ऐप खोलें</a>
     </header>
+  }
+
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/search">ऐप खोलें</a>
+    </div>
   }
 
   <div class="intro">

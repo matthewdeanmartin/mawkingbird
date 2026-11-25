@@ -97,6 +97,46 @@ describe('Login', () => {
     httpMock.expectNone('/oauth/token');
   });
 
+  for (const implicit of [false, true]) {
+    it(`offers explicit Mastodon sign-in to a ${implicit ? 'new implicit' : 'chosen'} Anonymous reader without changing their mode`, () => {
+      const fixture = setUp({ next: '/turn-off-content-warnings-mastodon' });
+      const auth = TestBed.inject(Auth);
+      auth.enterAnonymous(undefined, { implicit });
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+      fixture.detectChanges();
+      httpMock.expectNone('/api/v1/_mock/dev_users');
+      expect(navigate).not.toHaveBeenCalled();
+      expect(fixture.nativeElement.querySelector('input')).not.toBeNull();
+      expect(auth.isAnonymous).toBe(true);
+      expect(auth.token()).toBeNull();
+      httpMock.expectNone('/api/v1/apps');
+      httpMock.expectNone('/oauth/token');
+    });
+  }
+
+  it('offers Mastodon sign-in to a different network identity without a Mastodon token', () => {
+    const fixture = setUp({ next: '/turn-off-content-warnings-mastodon' });
+    const auth = TestBed.inject(Auth);
+    vi.spyOn(auth, 'isAuthenticated', 'get').mockReturnValue(true);
+    vi.spyOn(auth, 'isAnonymous', 'get').mockReturnValue(false);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
+    expect(navigate).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('input')).not.toBeNull();
+  });
+
+  it('returns a saved Mastodon session to the requested guide', () => {
+    const fixture = setUp({ next: '/turn-off-content-warnings-mastodon' });
+    TestBed.inject(Auth).setToken('saved-token');
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    fixture.detectChanges();
+    expect(navigate).toHaveBeenCalledWith('/turn-off-content-warnings-mastodon', {
+      replaceUrl: true,
+    });
+    httpMock.expectNone('/oauth/token');
+  });
+
   it('takes a saved session straight home without showing the login form or verifying twice', () => {
     const fixture = setUp();
     TestBed.inject(Auth).setToken('saved-token');
@@ -663,6 +703,17 @@ describe('Login', () => {
       .flush({ id: '1', username: 'alan', display_name: 'Alan Turing' } as never);
 
     expect(navigateByUrlSpy).toHaveBeenCalledWith('/twitter-to-mastodon', { replaceUrl: true });
+  });
+
+  it('returns a new login to the language landing page instead of dropping them at Home', () => {
+    storePendingOAuth({ next: '/de/mastodon-auf-deutsch' });
+    const fixture = setUp({ code: 'code', state: PENDING_STATE });
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    fixture.detectChanges();
+    httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
+    httpMock.expectOne('/oauth/token').flush({ access_token: 'new-token' });
+    httpMock.expectOne('/api/v1/accounts/verify_credentials').flush({ id: '1', username: 'reader' });
+    expect(navigate).toHaveBeenCalledWith('/de/mastodon-auf-deutsch', { replaceUrl: true });
   });
 
   it('sends every other ?next home, so a crafted link cannot redirect a sign-in', () => {

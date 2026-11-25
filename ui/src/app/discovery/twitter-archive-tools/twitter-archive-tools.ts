@@ -29,6 +29,9 @@ import { UnbirdMore } from '../../unbird/unbird-more';
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class TwitterArchiveTools {
+  protected readonly returnHere = {
+    next: '/' + inject(ActivatedRoute).snapshot.pathFromRoot.map((step) => step.routeConfig?.path).filter(Boolean).join('/'),
+  };
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
 }

@@ -1,11 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { describe, expect, it } from 'vitest';
 import { ENGLISH_TOOLS, FOCUSED_TOOL_GROUPS } from '../focused-tools';
 import { FOCUSED_TOOLS } from '../focused-tools-all';
 import { ToolsIndex } from './tools-index';
+import * as indexes from './tools-index';
 
 describe('ToolsIndex', () => {
+  for (const component of Object.values(indexes)) {
+    it(`${component.name} opens the login chooser rather than an anonymous app screen`, () => {
+      TestBed.configureTestingModule({ imports: [component], providers: [provideRouter([]), { provide: ActivatedRoute, useValue: { snapshot: { data: {}, pathFromRoot: [] } } }] });
+      const fixture = TestBed.createComponent(component);
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('header a[mbButton]')?.getAttribute('href')).toBe('/login');
+    });
+  }
+
   it('links every registered tool once, under its heading', () => {
     TestBed.configureTestingModule({ imports: [ToolsIndex], providers: [provideRouter([])] });
     const fixture = TestBed.createComponent(ToolsIndex);

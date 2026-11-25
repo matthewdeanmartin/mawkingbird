@@ -42,6 +42,36 @@ describe('LoginChooser', () => {
     expect(hrefs).toContain('/login/bluesky');
   });
 
+  for (const implicit of [false, true]) {
+    it(`lets an ${implicit ? 'implicit' : 'explicit'} Anonymous visitor choose sign-in and keeps the return page`, () => {
+      withQuery({ next: '/crosspost' });
+      const auth = TestBed.inject(Auth);
+      auth.enterAnonymous(undefined, { implicit });
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+      const fixture = TestBed.createComponent(LoginChooser);
+      fixture.detectChanges();
+      expect(navigate).not.toHaveBeenCalled();
+      expect(auth.isAnonymous).toBe(true);
+      expect(fixture.nativeElement.querySelector('a[href="/login/mastodon?next=%2Fcrosspost"]')).not.toBeNull();
+      expect(fixture.nativeElement.querySelector('a[href="/login/bluesky?next=%2Fcrosspost"]')).not.toBeNull();
+    });
+  }
+
+  it('returns a signed-in visitor to an allowlisted tool', () => {
+    withQuery({ next: '/crosspost' });
+    TestBed.inject(Auth).setToken('saved');
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    TestBed.createComponent(LoginChooser).detectChanges();
+    expect(navigate).toHaveBeenCalledWith('/crosspost', { replaceUrl: true });
+  });
+
+  it('does not carry an external destination through the network chooser', () => {
+    withQuery({ next: 'https://other.example/' });
+    const fixture = TestBed.createComponent(LoginChooser);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('a[href="/login/mastodon?next=%2Fhome"]')).not.toBeNull();
+  });
+
   it('does not show a server picker — that lives on the Mastodon page now', () => {
     withQuery({});
     const fixture = TestBed.createComponent(LoginChooser);
@@ -155,7 +185,7 @@ describe('LoginChooser', () => {
 
   it('sends an already signed-in visitor home rather than asking again', () => {
     withQuery({});
-    TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
+    TestBed.inject(Auth).setToken('saved-mastodon');
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
 
     TestBed.createComponent(LoginChooser).detectChanges();

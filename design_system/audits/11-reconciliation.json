@@ -1,5 +1,5 @@
 {
-  "scope": "Candidate-file reconciliation, not per-control completion. Source triage covers every candidate; backlog explicitly requires deeper template/style/runtime review. Evidence lines are in 06-control-inventory.json. Changes to the scanner now include navigation, fields, counts and remaining shared widget names. I18n reactivity review (2026-11-24): 730 candidates unchanged; four source-offset changes, with no changed control findings or dispositions. Six-locale/Arabic review (2026-11-24): 730 candidates unchanged; three source-offset changes only. Checkbox/Field hint direction changes preserve controls and dispositions. Shell CSS budget cleanup (2026-11-24): unchanged candidate/control findings; only source offsets moved after redundant mobile declarations were removed. Own replies, reposts and report-gate evidence (2026-11-24): 730 candidates unchanged; source offsets only. Watch action rows (2026-11-24): one candidate added, watch-actions.ts. Action rows (2026-11-24): six candidates added (five shared implementations and admin-shell), watch-actions.ts removed; Videos, subscriptions and admin accounts move to adopted, the profile slideshow back to partial.",
+  "scope": "Candidate-file reconciliation, not per-control completion. Source triage covers every candidate; backlog explicitly requires deeper template/style/runtime review. Evidence lines are in 06-control-inventory.json. Changes to the scanner now include navigation, fields, counts and remaining shared widget names. I18n reactivity review (2026-11-24): 730 candidates unchanged; four source-offset changes, with no changed control findings or dispositions. Six-locale/Arabic review (2026-11-24): 730 candidates unchanged; three source-offset changes only. Checkbox/Field hint direction changes preserve controls and dispositions. Shell CSS budget cleanup (2026-11-24): unchanged candidate/control findings; only source offsets moved after redundant mobile declarations were removed. Own replies, reposts and report-gate evidence (2026-11-24): 730 candidates unchanged; source offsets only. Watch action rows (2026-11-24): one candidate added, watch-actions.ts. Action rows (2026-11-24): six candidates added (five shared implementations and admin-shell), watch-actions.ts removed; Videos, subscriptions and admin accounts move to adopted, the profile slideshow back to partial. Content-warning guide review (2026-11-25): 739 candidate files unchanged; 18 templates gain shared Field/Control and an outbound Button link, with no new widget implementation. Public app-entry review (2026-11-25): existing header Buttons now open explicit login, preserving tool return paths. Anonymous browsing guards remain unchanged. LoginDoors carries the validated return destination through the network choice; no new controls. Post-login continuation review: signed-in landing pages expose the original task destination with existing Button controls; sign-in returns to the landing page first. No automatic settings changes.",
   "owner": "The next contributor changing each surface, with a maintainer-selected reviewer. No unassigned backlog is an approved exception.",
   "entries": [
     {
@@ -1800,12 +1800,12 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.html",
       "disposition": "adopted scope",
-      "nextStep": "Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.de.html",
       "disposition": "adopted scope",
-      "nextStep": "German twin of mastodon-content-warnings.html (/de/ page, same component class): the same controls with German words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/content-warnings-workbench.html",
@@ -1940,7 +1940,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.ja.html",
       "disposition": "adopted scope",
-      "nextStep": "Japanese twin of mastodon-content-warnings.html (/ja/ page, same component class): the same controls with Japanese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.ja.html",
@@ -2025,7 +2025,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.fr.html",
       "disposition": "adopted scope",
-      "nextStep": "French twin of mastodon-content-warnings.html (/fr/ page, same component class): the same controls with French words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.fr.html",
@@ -2110,7 +2110,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.es.html",
       "disposition": "adopted scope",
-      "nextStep": "Spanish twin of mastodon-content-warnings.html (/es/ page, same component class): the same controls with Spanish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.es.html",
@@ -2195,7 +2195,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.zh-hant.html",
       "disposition": "adopted scope",
-      "nextStep": "Traditional Chinese twin of mastodon-content-warnings.html (/zh-hant/ page, same component class): the same controls with Traditional Chinese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.zh-hant.html",
@@ -2280,7 +2280,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.ko.html",
       "disposition": "adopted scope",
-      "nextStep": "Korean twin of mastodon-content-warnings.html (/ko/ page, same component class): the same controls with Korean words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.ko.html",
@@ -2365,7 +2365,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.pt.html",
       "disposition": "adopted scope",
-      "nextStep": "Portuguese twin of mastodon-content-warnings.html (/pt/ page, same component class): the same controls with Portuguese words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.pt.html",
@@ -2455,7 +2455,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.it.html",
       "disposition": "adopted scope",
-      "nextStep": "Italian twin of mastodon-content-warnings.html (/it/ page, same component class): the same controls with Italian words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.it.html",
@@ -2540,7 +2540,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.pl.html",
       "disposition": "adopted scope",
-      "nextStep": "Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.pl.html",
@@ -2625,7 +2625,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.uk.html",
       "disposition": "adopted scope",
-      "nextStep": "Ukrainian translation: Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.uk.html",
@@ -2710,7 +2710,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.hi.html",
       "disposition": "adopted scope",
-      "nextStep": "Hindi translation: Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.hi.html",
@@ -2795,7 +2795,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.nl.html",
       "disposition": "adopted scope",
-      "nextStep": "Dutch translation: Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.nl.html",
@@ -2880,7 +2880,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.id.html",
       "disposition": "adopted scope",
-      "nextStep": "Indonesian translation: Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.id.html",
@@ -2965,7 +2965,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.ru.html",
       "disposition": "adopted scope",
-      "nextStep": "Russian translation: Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.ru.html",
@@ -3050,7 +3050,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.sv.html",
       "disposition": "adopted scope",
-      "nextStep": "Swedish translation: Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.sv.html",
@@ -3135,7 +3135,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.vi.html",
       "disposition": "adopted scope",
-      "nextStep": "Vietnamese SEO localization: Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.vi.html",
@@ -3220,7 +3220,7 @@
     {
       "file": "ui/src/app/moderation/mastodon-content-warnings/mastodon-content-warnings.tr.html",
       "disposition": "adopted scope",
-      "nextStep": "Turkish SEO localization: Polish twin of mastodon-content-warnings.html (/pl/ page, same component class): the same controls with Polish words. Change both together. Public prerendered mini-app page using MbContentLink and MbButton in the feature-page header and sign-in row; the signed-in body is the deferred content-warnings workbench. Keep new controls on shared widgets."
+      "nextStep": "Mastodon website instructions stay first for signed-out and signed-in visitors. Shared Field/Control accepts a domain or handle; a validated HTTPS Button link opens server Appearance preferences without OAuth or changing account mode. Optional Mawkingbird switches follow an explicit browser-only scope notice. Preserve translated copy, keyboard access, validation and mobile URL wrapping."
     },
     {
       "file": "ui/src/app/reading/mastodon-friends-rss-feeds/mastodon-friends-rss-feeds.tr.html",

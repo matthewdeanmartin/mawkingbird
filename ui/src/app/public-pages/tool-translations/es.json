@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Desactivar las advertencias de contenido de Mastodon",
-    "description": "Abre solas las advertencias de contenido de Mastodon y muestra al instante el contenido sensible, para todos o solo para la gente en quien confías.",
+    "description": "Desactivar las advertencias de contenido de Mastodon. No necesitas iniciar sesión en Mawkingbird.",
     "prerenderCheck": {
       "heading": "Desactivar las advertencias de contenido en Mastodon",
-      "copy": "Muestra el contenido sensible"
+      "copy": "Abrir tus ajustes de Mastodon"
     }
   },
   "export-bookmarks": {

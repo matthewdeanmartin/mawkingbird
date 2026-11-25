@@ -2,6 +2,7 @@ import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { loginDestination } from '../../../platform/session/login-destination';
 import { Auth } from '../../../platform/session/auth';
 import { ClientPrefs } from '../../../platform/storage/client-prefs';
 import { LoginDoors } from '../login-doors/login-doors';
@@ -53,6 +54,7 @@ export class LoginChooser implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   protected adding = false;
+  protected next: string | null = null;
   protected redirecting = false;
 
   ngOnInit(): void {
@@ -67,11 +69,12 @@ export class LoginChooser implements OnInit {
       return;
     }
     this.adding = params.has('add');
+    this.next = params.get('next') ? loginDestination(params.get('next')) : null;
     // A signed-in visitor who lands here (bookmark, back button) is not asking
     // to pick a network. Same reasoning as the front page.
-    if (this.auth.isAuthenticated && !this.adding) {
+    if (this.auth.isAuthenticated && !this.auth.isAnonymous && !this.auth.isMisskeyVisitor && !this.adding) {
       this.redirecting = true;
-      void this.router.navigateByUrl('/home', { replaceUrl: true });
+      void this.router.navigateByUrl(this.next ?? '/home', { replaceUrl: true });
     }
   }
 }

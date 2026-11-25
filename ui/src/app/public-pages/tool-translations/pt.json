@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Desativar os avisos de conteúdo do Mastodon",
-    "description": "Abra sozinhos os avisos de conteúdo do Mastodon e mostre na hora a mídia sensível, para todos ou só para quem você confia.",
+    "description": "Desativar os avisos de conteúdo do Mastodon. Não é preciso entrar no Mawkingbird.",
     "prerenderCheck": {
       "heading": "Desativar os avisos de conteúdo no Mastodon",
-      "copy": "Mostre a mídia sensível"
+      "copy": "Abrir as definições do Mastodon"
     }
   },
   "export-bookmarks": {

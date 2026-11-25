@@ -78,6 +78,90 @@ try {
   browser = await chromium.launch({ headless: true });
   const origin = `http://127.0.0.1:${server.address().port}`;
   await mkdir(results, { recursive: true });
+  // The search visitor gets the Mastodon answer before any client pitch, even
+  // without JavaScript. Anonymous is a browsing choice, not a ban on later login.
+  for (const mode of ['no-js', 'fresh', 'anonymous', 'implicit']) {
+    const context = await browser.newContext({ javaScriptEnabled: mode !== 'no-js' });
+    await context.route('**/*', (route) => {
+      const url = new URL(route.request().url());
+      return url.origin === origin ? route.continue() : route.abort();
+    });
+    if (mode === 'anonymous' || mode === 'implicit') {
+      await context.addInitScript((implicit) => {
+        localStorage.setItem('mastodon_mock_account_mode', 'anonymous');
+        if (implicit) localStorage.setItem('mastodon_mock_anonymous_implicit', '1');
+      }, mode === 'implicit');
+    }
+    const page = await context.newPage();
+    await page.goto(`${origin}/turn-off-content-warnings-mastodon/`);
+    assert.match(
+      await page.locator('.intro').innerText(),
+      /Always expand posts marked with content warnings/,
+    );
+    assert.match(await page.locator('.intro').innerText(), /No Mawkingbird login is needed/);
+    assert.equal(await page.locator('.server-guide ~ .mawkingbird-option').count(), 1);
+    if (mode !== 'no-js') {
+      const field = page.getByLabel('Your Mastodon server or handle', { exact: true });
+      assert.equal(
+        await field.inputValue(),
+        '',
+        'do not assume a public reading server is their account',
+      );
+      await field.fill('@reader@example.social');
+      const link = page.locator('.server-guide a');
+      await link.waitFor();
+      assert.equal(
+        await link.getAttribute('href'),
+        'https://example.social/settings/preferences/appearance',
+      );
+      await page.setViewportSize({ width: 390, height: 844 });
+      assert.ok(
+        await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+        'guide fits mobile width',
+      );
+      await page.screenshot({ path: path.join(results, `cw-${mode}-mobile.png`), fullPage: true });
+      await page
+        .getByRole('link', { name: 'Try Mawkingbird with your Mastodon account', exact: true })
+        .click();
+      await page.waitForURL(/\/login\/mastodon\?next=/);
+      await page.locator('app-login .intent-doors button').first().waitFor();
+      assert.match(page.url(), /next=%2Fturn-off-content-warnings-mastodon/);
+      if (mode === 'anonymous' || mode === 'implicit') {
+        assert.equal(
+          await page.evaluate(() => localStorage.getItem('mastodon_mock_account_mode')),
+          'anonymous',
+        );
+      }
+    }
+    await context.close();
+  }
+
+  for (const anonymous of [false, true]) {
+    const context = await browser.newContext();
+    await context.route('**/*', (route) =>
+      new URL(route.request().url()).origin === origin ? route.continue() : route.abort(),
+    );
+    if (anonymous)
+      await context.addInitScript(() =>
+        localStorage.setItem('mastodon_mock_account_mode', 'anonymous'),
+      );
+    const page = await context.newPage();
+    await page.goto(`${origin}/zh-hant/`);
+    await page.locator('header a[mbButton]').click();
+    await page.waitForURL(/\/login$/);
+    await page.locator('app-login-doors a[href="/login/mastodon"]').waitFor();
+    assert.equal(await page.locator('app-language-checklist').count(), 0);
+    // Both entry links on the downloader must reach the form, not return to the tool.
+    for (const selector of ['header a[mbButton]', '.sign-in-choices a']) {
+      await page.goto(`${origin}/download-mastodon-images/`);
+      await page.locator(selector).click();
+      await page.waitForURL(/\/login\/mastodon\?next=/);
+      await page.locator('app-login .intent-doors button').first().waitFor();
+      assert.match(page.url(), /next=%2Fdownload-mastodon-images/);
+    }
+    await context.close();
+  }
+
   for (const javaScriptEnabled of [false, true]) {
     const context = await browser.newContext({ javaScriptEnabled });
     // Exercise the real tracker without sending local test visits to production.

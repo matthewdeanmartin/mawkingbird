@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/settings/content">Öppna appen</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Öppna appen</a>
     </header>
   }
 
@@ -11,54 +11,84 @@
     <p class="eyebrow">Innehållsvarningar</p>
     <h1>Så stänger du av innehållsvarningar på Mastodon</h1>
     <p>
-      Trött på att trycka på Visa mer för varje inlägg eller öppna suddiga foton? Låt
-      innehållsvarningar öppnas automatiskt och känsliga medier visas direkt.
-      @if (!inShell) {
-        Logga in och ändra två reglage.
-      }
+      Öppna Inställningar → Utseende på din Mastodon-webbplats. Klicka på Spara ändringar när du är
+      klar.
     </p>
-  </div>
-
-  @if (inShell) {
-    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
-    @defer (on immediate) {
-      <app-content-warnings-workbench />
-    } @placeholder {
-      <p class="muted">Laddar dina inställningar…</p>
-    }
-  } @else {
-    <ol class="steps">
-      <li>
-        <h2>Öppna innehållsvarningar automatiskt</h2>
-        <p>Inlägg med innehållsvarning öppnas av sig själva. Varningstexten syns fortfarande.</p>
-      </li>
-      <li>
-        <h2>Visa känsliga medier</h2>
-        <p>Foton och videor märkta som känsliga visas utan suddighet.</p>
-      </li>
-      <li>
-        <h2>Eller bara för personer du litar på</h2>
-        <p>
-          Låt varningar från främlingar vara stängda och vänners öppna. Lita på enskilda personer
-          eller alla du följer.
-        </p>
-      </li>
-    </ol>
-    <div class="sign-in-choices">
-      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
-        >Logga in med Mastodon för att stänga av dem</a
-      >
-    </div>
-  }
-
-  <section class="questions">
-    <h2>Frågor</h2>
-    <h3>Hur gör jag på Mastodons webbplats?</h3>
     <p>
       Öppna inställningarna på din server, aktivera att alltid öppna inlägg med innehållsvarningar
       och välj Visa alla för medievisning. Det är serverns inställningar och de används av dess
       webbplats och vissa appar.
     </p>
+    <p>
+      Du behöver inte logga in i Mawkingbird. Du kan behöva logga in på din egen Mastodon-server.
+      Mobilappar och andra klienter kan ha egna inställningar.
+    </p>
+  </div>
+
+  <section class="panel server-guide" aria-labelledby="cw-settings-title">
+    <h2 id="cw-settings-title">Öppna dina Mastodon-inställningar</h2>
+    <span hidden #invalidServer
+      >Ange en serverdomän eller en fullständig Mastodon-kontoadress.</span
+    >
+    <mb-field
+      label="Din Mastodon-server eller kontoadress"
+      hint="Till exempel: mastodon.social eller &#64;namn&#64;mastodon.social"
+      [error]="serverInput() &amp;&amp; !preferencesUrl() ? invalidServer.textContent || '' : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        [ngModel]="serverInput()"
+        (ngModelChange)="serverInput.set($event)"
+      />
+    </mb-field>
+    @if (preferencesUrl(); as url) {
+      <p>
+        <a mbButton [href]="url" target="_blank" rel="noopener noreferrer"
+          >Öppna dina Mastodon-inställningar</a
+        >
+      </p>
+      <p class="muted">{{ url }}</p>
+    }
+  </section>
+
+  <section class="panel mawkingbird-option" aria-labelledby="cw-optional-title">
+    <h2 id="cw-optional-title">Mawkingbird</h2>
+    <p>
+      Valfritt: läs i Mawkingbird, en fristående Mastodon-klient. Dessa reglage gäller bara
+      Mawkingbird i den här webbläsaren, inte din Mastodon-webbplats eller andra appar.
+    </p>
+    <p>
+      Låt varningar från främlingar vara stängda och vänners öppna. Lita på enskilda personer eller
+      alla du följer.
+    </p>
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/settings/content">Öppna appen</a>
+    </div>
+  }
+
+    @if (inShell) {
+      @defer (on immediate) {
+        <app-content-warnings-workbench />
+      } @placeholder {
+        <p class="muted">Laddar dina inställningar…</p>
+      }
+    } @else {
+      <div class="sign-in-choices">
+        <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+          >Prova Mawkingbird med ditt Mastodon-konto</a
+        >
+      </div>
+    }
+  </section>
+
+  <section class="questions">
+    <h2>Frågor</h2>
     <h3>Varför kan Mawkingbird inte ändra serverns inställning?</h3>
     <p>
       Mastodon låter appar läsa inställningarna men inte ändra dem. Därför har Mawkingbird egna

@@ -457,8 +457,10 @@ export class Login implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (redirectToSecureLogin()) return;
-    // Already signed in? Landing on /login/mastodon (bookmark, stale tab, back button)
-    // should go straight home, just like the network chooser. The authenticated
+    // Already signed in to Mastodon? Landing on /login/mastodon (bookmark, stale tab, back button)
+    // should go straight home. An explicit visit to this login page must still
+    // offer sign-in to Anonymous readers and identities without a Mastodon token.
+    // This does not change their browsing mode or initiate OAuth. The authenticated
     // shell handles expired sessions; an extra verification here delays every visit.
     // An OAuth callback (?code=) and the explicit add-account flow (?add=1) still show the
     // page so that a saved session cannot intercept a new sign-in.
@@ -473,7 +475,12 @@ export class Login implements OnInit, OnDestroy {
     }
     const askedServer = params.get('code') ? '' : normalizeDomain(params.get('server') ?? '');
     if (askedServer) this.server.setBaseUrl(`https://${askedServer}`);
-    if (!params.get('code') && !params.get('add') && this.auth.isAuthenticated) {
+    if (
+      !params.get('code') &&
+      !params.get('add') &&
+      !this.auth.lacksMastodonToken &&
+      !this.auth.isAnonymous
+    ) {
       this.enteringHome.set(true);
       void this.router.navigateByUrl(this.destination, { replaceUrl: true });
       return;

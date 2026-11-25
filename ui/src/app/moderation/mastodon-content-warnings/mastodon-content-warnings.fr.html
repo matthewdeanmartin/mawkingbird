@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/settings/content">Ouvrir l’appli</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Ouvrir l’appli</a>
     </header>
   }
 
@@ -11,58 +11,85 @@
     <p class="eyebrow">Avertissements de contenu</p>
     <h1>Désactiver les avertissements de contenu sur Mastodon</h1>
     <p>
-      Marre de cliquer sur « Afficher plus » à chaque message ou de toucher les photos floutées ?
-      Les avertissements de contenu peuvent s’ouvrir tout seuls et les médias sensibles s’afficher
-      directement.
-      @if (!inShell) {
-        Connecte-toi : ce sont deux interrupteurs.
-      }
+      Sur ton site Mastodon, ouvre Préférences → Apparence. Après les modifications, clique sur
+      Enregistrer les modifications.
     </p>
-  </div>
-
-  @if (inShell) {
-    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
-    @defer (on immediate) {
-      <app-content-warnings-workbench />
-    } @placeholder {
-      <p class="muted">Chargement de tes réglages…</p>
-    }
-  } @else {
-    <ol class="steps">
-      <li>
-        <h2>Déplier les avertissements de contenu</h2>
-        <p>
-          Les messages avec un avertissement s’ouvrent tout seuls. Tu vois toujours le texte de
-          l’avertissement.
-        </p>
-      </li>
-      <li>
-        <h2>Afficher les médias sensibles</h2>
-        <p>Les photos et vidéos marquées comme sensibles s’affichent sans flou.</p>
-      </li>
-      <li>
-        <h2>Ou seulement pour les gens de confiance</h2>
-        <p>
-          Garde les avertissements fermés pour les inconnus et ouverts pour tes amis : fais
-          confiance à certaines personnes, ou à tous tes abonnements.
-        </p>
-      </li>
-    </ol>
-    <div class="sign-in-choices">
-      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
-        >Se connecter avec Mastodon et désactiver</a
-      >
-    </div>
-  }
-
-  <section class="questions">
-    <h2>Questions</h2>
-    <h3>Comment faire sur le site de Mastodon ?</h3>
     <p>
       Ouvre les préférences de ton serveur, active « Toujours déplier les messages marqués d’un
       avertissement de contenu » et règle « Affichage des médias » sur « Tout afficher ». Ces
       réglages appartiennent à ton serveur et s’appliquent à son site et à certaines applis.
     </p>
+    <p>
+      Aucune connexion à Mawkingbird nécessaire. Tu devras peut-être te connecter à ton serveur
+      Mastodon. Les applications mobiles et les autres clients peuvent avoir leurs propres réglages.
+    </p>
+  </div>
+
+  <section class="panel server-guide" aria-labelledby="cw-settings-title">
+    <h2 id="cw-settings-title">Ouvrir tes réglages Mastodon</h2>
+    <span hidden #invalidServer
+      >Saisis le domaine du serveur ou ton identifiant Mastodon complet.</span
+    >
+    <mb-field
+      label="Ton serveur ou identifiant Mastodon"
+      hint="Par exemple : mastodon.social ou &#64;nom&#64;mastodon.social"
+      [error]="serverInput() &amp;&amp; !preferencesUrl() ? invalidServer.textContent || '' : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        [ngModel]="serverInput()"
+        (ngModelChange)="serverInput.set($event)"
+      />
+    </mb-field>
+    @if (preferencesUrl(); as url) {
+      <p>
+        <a mbButton [href]="url" target="_blank" rel="noopener noreferrer"
+          >Ouvrir tes réglages Mastodon</a
+        >
+      </p>
+      <p class="muted">{{ url }}</p>
+    }
+  </section>
+
+  <section class="panel mawkingbird-option" aria-labelledby="cw-optional-title">
+    <h2 id="cw-optional-title">Mawkingbird</h2>
+    <p>
+      Facultatif : lis avec Mawkingbird, un client Mastodon indépendant. Ces interrupteurs
+      concernent uniquement Mawkingbird dans ce navigateur, pas ton site Mastodon ni les autres
+      applications.
+    </p>
+    <p>
+      Garde les avertissements fermés pour les inconnus et ouverts pour tes amis : fais confiance à
+      certaines personnes, ou à tous tes abonnements.
+    </p>
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/settings/content">Ouvrir l’appli</a>
+    </div>
+  }
+
+    @if (inShell) {
+      @defer (on immediate) {
+        <app-content-warnings-workbench />
+      } @placeholder {
+        <p class="muted">Chargement de tes réglages…</p>
+      }
+    } @else {
+      <div class="sign-in-choices">
+        <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+          >Essayer Mawkingbird avec ton compte Mastodon</a
+        >
+      </div>
+    }
+  </section>
+
+  <section class="questions">
+    <h2>Questions</h2>
     <h3>Pourquoi Mawkingbird ne peut-il pas changer le réglage de mon serveur ?</h3>
     <p>
       Mastodon laisse les applis lire ces réglages, mais pas les modifier : Mawkingbird a donc ses

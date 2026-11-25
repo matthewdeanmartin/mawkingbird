@@ -3,61 +3,84 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/settings/content">앱 열기</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">앱 열기</a>
     </header>
   }
 
   <div class="intro">
     <p class="eyebrow">콘텐츠 경고</p>
     <h1>Mastodon 콘텐츠 경고 끄는 법</h1>
-    <p>
-      게시물마다 “더 보기”를 누르고 흐린 사진을 일일이 눌러야 해서 번거로우신가요? 콘텐츠 경고는
-      저절로 펼쳐지고 민감한 미디어는 바로 보이게 할 수 있습니다.
-      @if (!inShell) {
-        로그인하면 스위치 두 개면 됩니다.
-      }
-    </p>
-  </div>
-
-  @if (inShell) {
-    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
-    @defer (on immediate) {
-      <app-content-warnings-workbench />
-    } @placeholder {
-      <p class="muted">설정을 불러오는 중…</p>
-    }
-  } @else {
-    <ol class="steps">
-      <li>
-        <h2>콘텐츠 경고 펼치기</h2>
-        <p>콘텐츠 경고가 있는 게시물이 저절로 열립니다. 경고 문구는 계속 보입니다.</p>
-      </li>
-      <li>
-        <h2>민감한 미디어 표시</h2>
-        <p>민감한 것으로 표시된 사진과 동영상이 흐림 없이 보입니다.</p>
-      </li>
-      <li>
-        <h2>또는 신뢰하는 사람에게만</h2>
-        <p>
-          낯선 사람에게는 경고를 닫아 두고 친구에게는 펼치세요. 특정 사람이나 팔로우하는 모든 사람을
-          신뢰할 수 있습니다.
-        </p>
-      </li>
-    </ol>
-    <div class="sign-in-choices">
-      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
-        >Mastodon으로 로그인하고 끄기</a
-      >
-    </div>
-  }
-
-  <section class="questions">
-    <h2>자주 묻는 질문</h2>
-    <h3>Mastodon 웹사이트에서는 어떻게 하나요?</h3>
+    <p>Mastodon 웹사이트에서 환경설정 → 외관을 여세요. 설정을 바꾼 뒤 변경 사항 저장을 누르세요.</p>
     <p>
       서버의 환경설정을 열고 “콘텐츠 경고로 표시된 게시물 항상 펼치기”를 켠 뒤 “미디어 표시”를 “모두
       보기”로 설정하세요. 이 설정은 서버의 것이며, 서버 웹사이트와 일부 앱에 적용됩니다.
     </p>
+    <p>
+      Mawkingbird에 로그인할 필요가 없습니다. 자신의 Mastodon 서버에는 로그인해야 할 수 있습니다.
+      모바일 앱과 다른 클라이언트에는 별도 설정이 있을 수 있습니다.
+    </p>
+  </div>
+
+  <section class="panel server-guide" aria-labelledby="cw-settings-title">
+    <h2 id="cw-settings-title">Mastodon 설정 열기</h2>
+    <span hidden #invalidServer>서버 도메인이나 전체 Mastodon 계정 주소를 입력하세요.</span>
+    <mb-field
+      label="Mastodon 서버 또는 계정 주소"
+      hint="예: mastodon.social 또는 &#64;name&#64;mastodon.social"
+      [error]="serverInput() &amp;&amp; !preferencesUrl() ? invalidServer.textContent || '' : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        [ngModel]="serverInput()"
+        (ngModelChange)="serverInput.set($event)"
+      />
+    </mb-field>
+    @if (preferencesUrl(); as url) {
+      <p>
+        <a mbButton [href]="url" target="_blank" rel="noopener noreferrer">Mastodon 설정 열기</a>
+      </p>
+      <p class="muted">{{ url }}</p>
+    }
+  </section>
+
+  <section class="panel mawkingbird-option" aria-labelledby="cw-optional-title">
+    <h2 id="cw-optional-title">Mawkingbird</h2>
+    <p>
+      선택 사항: 독립 Mastodon 클라이언트인 Mawkingbird에서 읽을 수도 있습니다. 아래 스위치는 이
+      브라우저의 Mawkingbird에만 적용되며 Mastodon 웹사이트나 다른 앱은 바꾸지 않습니다.
+    </p>
+    <p>
+      낯선 사람에게는 경고를 닫아 두고 친구에게는 펼치세요. 특정 사람이나 팔로우하는 모든 사람을
+      신뢰할 수 있습니다.
+    </p>
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/settings/content">앱 열기</a>
+    </div>
+  }
+
+    @if (inShell) {
+      @defer (on immediate) {
+        <app-content-warnings-workbench />
+      } @placeholder {
+        <p class="muted">설정을 불러오는 중…</p>
+      }
+    } @else {
+      <div class="sign-in-choices">
+        <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+          >Mastodon 계정으로 Mawkingbird 사용해 보기</a
+        >
+      </div>
+    }
+  </section>
+
+  <section class="questions">
+    <h2>자주 묻는 질문</h2>
     <h3>Mawkingbird는 왜 서버 설정을 바꾸지 못하나요?</h3>
     <p>
       Mastodon은 앱이 이 설정을 읽을 수만 있고 바꿀 수는 없게 합니다. 그래서 Mawkingbird에는 자체

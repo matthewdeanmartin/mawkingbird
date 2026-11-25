@@ -3,62 +3,87 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/settings/content">Open the app</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Open the app</a>
     </header>
   }
 
   <div class="intro">
     <p class="eyebrow">Content warnings</p>
     <h1>How to turn off content warnings on Mastodon</h1>
+    <p>On your Mastodon website, open Preferences → Appearance.</p>
     <p>
-      Tired of clicking "Show more" on every post, or tapping through blurred photos? You can have
-      content warnings open on their own and sensitive media shown straight away.
-      @if (!inShell) {
-        Sign in and it is two switches.
-      }
+      Turn on "Always expand posts marked with content warnings", and set "Media display" to "Show
+      all", then click "Save changes". Those settings belong to your server and are followed by its
+      website and some apps.
+    </p>
+    <p>
+      No Mawkingbird login is needed. You may need to sign in on your own Mastodon server. Mobile
+      and other apps may have separate settings.
     </p>
   </div>
 
-  @if (inShell) {
-    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
-    @defer (on immediate) {
-      <app-content-warnings-workbench />
-    } @placeholder {
-      <p class="muted">Loading your settings…</p>
+  <section class="panel server-guide" aria-labelledby="cw-settings-title">
+    <h2 id="cw-settings-title">Open your Mastodon settings</h2>
+    <span hidden #invalidServer>Enter a server domain or a full Mastodon handle.</span>
+    <mb-field
+      label="Your Mastodon server or handle"
+      hint="For example: mastodon.social or &#64;name&#64;mastodon.social"
+      [error]="serverInput() &amp;&amp; !preferencesUrl() ? invalidServer.textContent || '' : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        [ngModel]="serverInput()"
+        (ngModelChange)="serverInput.set($event)"
+      />
+    </mb-field>
+    @if (preferencesUrl(); as url) {
+      <p>
+        <a mbButton [href]="url" target="_blank" rel="noopener noreferrer"
+          >Open your Mastodon settings</a
+        >
+      </p>
+      <p class="muted">{{ url }}</p>
     }
-  } @else {
-    <ol class="steps">
-      <li>
-        <h2>Expand content warnings</h2>
-        <p>Posts with a content warning open on their own. You still see the warning text.</p>
-      </li>
-      <li>
-        <h2>Show sensitive media</h2>
-        <p>Photos and video marked sensitive show without the blur.</p>
-      </li>
-      <li>
-        <h2>Or only for people you trust</h2>
-        <p>
-          Keep warnings closed for strangers and open for friends: trust individual people, or
-          everyone you follow.
-        </p>
-      </li>
-    </ol>
-    <div class="sign-in-choices">
-      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
-        >Sign in with Mastodon to turn them off</a
-      >
+  </section>
+
+  <section class="panel mawkingbird-option" aria-labelledby="cw-optional-title">
+    <h2 id="cw-optional-title">Mawkingbird</h2>
+    <p>
+      Optional: read in Mawkingbird, an independent Mastodon client. Its switches affect only
+      Mawkingbird in this browser; they do not change your Mastodon website or other apps.
+    </p>
+    <p>
+      Keep warnings closed for strangers and open for friends: trust individual people, or everyone
+      you follow.
+    </p>
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/settings/content">Open the app</a>
     </div>
   }
 
+    @if (inShell) {
+      @defer (on immediate) {
+        <app-content-warnings-workbench />
+      } @placeholder {
+        <p class="muted">Loading your settings…</p>
+      }
+    } @else {
+      <div class="sign-in-choices">
+        <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+          >Try Mawkingbird with your Mastodon account</a
+        >
+      </div>
+    }
+  </section>
+
   <section class="questions">
     <h2>Questions</h2>
-    <h3>How do I do it on the Mastodon website?</h3>
-    <p>
-      Open Preferences on your server, turn on "Always expand posts marked with content warnings",
-      and set "Media display" to "Show all". Those settings belong to your server and are followed
-      by its website and some apps.
-    </p>
     <h3>Why can't Mawkingbird change my server's setting?</h3>
     <p>
       Mastodon lets apps read those preferences but not change them, so Mawkingbird has switches of

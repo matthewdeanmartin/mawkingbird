@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/settings/content">Abrir o app</a>
+      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Abrir o app</a>
     </header>
   }
 
@@ -11,54 +11,84 @@
     <p class="eyebrow">Avisos de conteúdo</p>
     <h1>Desativar os avisos de conteúdo no Mastodon</h1>
     <p>
-      Cansou de clicar em “Mostrar mais” em toda publicação ou de tocar em fotos borradas? Os avisos
-      de conteúdo podem abrir sozinhos e a mídia sensível pode aparecer na hora.
-      @if (!inShell) {
-        Entre, e são dois interruptores.
-      }
+      No site do teu Mastodon, abre Preferências → Aparência. Depois de alterar as opções, clica em
+      Guardar alterações.
     </p>
-  </div>
-
-  @if (inShell) {
-    <!-- Deferred: the switches belong to your account, so they load only in the browser. -->
-    @defer (on immediate) {
-      <app-content-warnings-workbench />
-    } @placeholder {
-      <p class="muted">Carregando seus ajustes…</p>
-    }
-  } @else {
-    <ol class="steps">
-      <li>
-        <h2>Expanda os avisos de conteúdo</h2>
-        <p>Publicações com aviso abrem sozinhas. Você continua vendo o texto do aviso.</p>
-      </li>
-      <li>
-        <h2>Mostre a mídia sensível</h2>
-        <p>Fotos e vídeos marcados como sensíveis aparecem sem desfoque.</p>
-      </li>
-      <li>
-        <h2>Ou só para quem você confia</h2>
-        <p>
-          Deixe os avisos fechados para desconhecidos e abertos para amigos: confie em pessoas
-          específicas ou em todo mundo que você segue.
-        </p>
-      </li>
-    </ol>
-    <div class="sign-in-choices">
-      <a mbButton routerLink="/login/mastodon" [queryParams]="returnHere"
-        >Entrar com o Mastodon e desativar</a
-      >
-    </div>
-  }
-
-  <section class="questions">
-    <h2>Perguntas</h2>
-    <h3>Como faço isso no site do Mastodon?</h3>
     <p>
       Abra as preferências do seu servidor, ative “Sempre expandir publicações com aviso de
       conteúdo” e coloque “Exibição de mídia” em “Mostrar tudo”. Esses ajustes são do seu servidor e
       valem para o site dele e alguns apps.
     </p>
+    <p>
+      Não é preciso entrar no Mawkingbird. Poderás ter de entrar no teu servidor Mastodon. As
+      aplicações móveis e outros clientes podem ter definições próprias.
+    </p>
+  </div>
+
+  <section class="panel server-guide" aria-labelledby="cw-settings-title">
+    <h2 id="cw-settings-title">Abrir as definições do Mastodon</h2>
+    <span hidden #invalidServer
+      >Introduz o domínio do servidor ou o identificador Mastodon completo.</span
+    >
+    <mb-field
+      label="O teu servidor ou identificador Mastodon"
+      hint="Por exemplo: mastodon.social ou &#64;nome&#64;mastodon.social"
+      [error]="serverInput() &amp;&amp; !preferencesUrl() ? invalidServer.textContent || '' : ''"
+    >
+      <input
+        mbControl
+        type="text"
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        [ngModel]="serverInput()"
+        (ngModelChange)="serverInput.set($event)"
+      />
+    </mb-field>
+    @if (preferencesUrl(); as url) {
+      <p>
+        <a mbButton [href]="url" target="_blank" rel="noopener noreferrer"
+          >Abrir as definições do Mastodon</a
+        >
+      </p>
+      <p class="muted">{{ url }}</p>
+    }
+  </section>
+
+  <section class="panel mawkingbird-option" aria-labelledby="cw-optional-title">
+    <h2 id="cw-optional-title">Mawkingbird</h2>
+    <p>
+      Opcional: lê no Mawkingbird, um cliente Mastodon independente. Estes interruptores só afetam o
+      Mawkingbird neste navegador, não o site do Mastodon nem outras aplicações.
+    </p>
+    <p>
+      Deixe os avisos fechados para desconhecidos e abertos para amigos: confie em pessoas
+      específicas ou em todo mundo que você segue.
+    </p>
+
+  @if (inShell) {
+    <div class="app-destination">
+      <a mbButton variant="outline" routerLink="/settings/content">Abrir o app</a>
+    </div>
+  }
+
+    @if (inShell) {
+      @defer (on immediate) {
+        <app-content-warnings-workbench />
+      } @placeholder {
+        <p class="muted">Carregando seus ajustes…</p>
+      }
+    } @else {
+      <div class="sign-in-choices">
+        <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
+          >Experimentar o Mawkingbird com a tua conta Mastodon</a
+        >
+      </div>
+    }
+  </section>
+
+  <section class="questions">
+    <h2>Perguntas</h2>
     <h3>Por que o Mawkingbird não muda o ajuste do meu servidor?</h3>
     <p>
       O Mastodon deixa os apps lerem esses ajustes, mas não mudarem, então o Mawkingbird tem os

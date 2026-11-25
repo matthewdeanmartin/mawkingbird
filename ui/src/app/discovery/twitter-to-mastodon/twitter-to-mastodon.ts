@@ -34,6 +34,9 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class TwitterToMastodon {
+  protected readonly returnHere = {
+    next: '/' + inject(ActivatedRoute).snapshot.pathFromRoot.map((step) => step.routeConfig?.path).filter(Boolean).join('/'),
+  };
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
 }

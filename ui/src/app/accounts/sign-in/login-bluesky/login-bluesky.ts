@@ -66,7 +66,7 @@ export class LoginBluesky implements OnInit {
     this.adding = this.route.snapshot.queryParamMap.has('add');
     this.destination = loginDestination(this.route.snapshot.queryParamMap.get('next'));
     // Already signed in and not explicitly adding an account: nothing to do here.
-    if (this.auth.isAuthenticated && !this.adding) {
+    if (this.auth.isBlueskyPrimary && !this.adding) {
       void this.router.navigateByUrl(this.destination, { replaceUrl: true });
       return;
     }

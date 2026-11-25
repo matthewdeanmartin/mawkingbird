@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Nonaktifkan peringatan konten di Mastodon",
-    "description": "Buka peringatan konten otomatis dan tampilkan media sensitif langsung, untuk semua orang atau hanya yang dipercaya.",
+    "description": "Nonaktifkan peringatan konten di Mastodon. Tidak perlu masuk ke Mawkingbird.",
     "prerenderCheck": {
       "heading": "Cara menonaktifkan peringatan konten di Mastodon",
-      "copy": "Tampilkan media sensitif"
+      "copy": "Buka pengaturan Mastodon Anda"
     }
   },
   "export-bookmarks": {

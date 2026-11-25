@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Zet inhoudswaarschuwingen uit op Mastodon",
-    "description": "Open inhoudswaarschuwingen automatisch en toon gevoelige afbeeldingen meteen. Voor iedereen of alleen voor mensen die je vertrouwt.",
+    "description": "Zet inhoudswaarschuwingen uit op Mastodon. Inloggen bij Mawkingbird is niet nodig.",
     "prerenderCheck": {
       "heading": "Zo zet je inhoudswaarschuwingen uit op Mastodon",
-      "copy": "Toon gevoelige media"
+      "copy": "Open je Mastodon-instellingen"
     }
   },
   "export-bookmarks": {

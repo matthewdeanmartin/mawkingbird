@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "關閉 Mastodon 的內容警告",
-    "description": "自動展開 Mastodon 的內容警告、直接顯示敏感媒體，可套用到所有人，或只套用到您信任的人。",
+    "description": "關閉 Mastodon 的內容警告. 不需要登入 Mawkingbird。",
     "prerenderCheck": {
       "heading": "如何關閉 Mastodon 的內容警告",
-      "copy": "顯示敏感媒體"
+      "copy": "開啟你的 Mastodon 設定"
     }
   },
   "export-bookmarks": {

@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Mastodon'da içerik uyarılarını kapat",
-    "description": "İçerik uyarılarını otomatik aç, hassas medyayı hemen göster. Herkes veya yalnızca güvendiğin kişiler için.",
+    "description": "Mastodon'da içerik uyarılarını kapat. Mawkingbird oturumu açmanız gerekmez.",
     "prerenderCheck": {
       "heading": "Mastodon'da içerik uyarıları nasıl kapatılır?",
-      "copy": "Hassas medyayı göster"
+      "copy": "Mastodon ayarlarınızı açın"
     }
   },
   "export-bookmarks": {

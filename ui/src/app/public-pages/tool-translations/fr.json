@@ -105,10 +105,10 @@
   },
   "content-warnings": {
     "title": "Désactiver les avertissements de contenu Mastodon",
-    "description": "Ouvre automatiquement les avertissements de contenu Mastodon et affiche directement les médias sensibles, pour tout le monde ou seulement pour les gens de confiance.",
+    "description": "Désactiver les avertissements de contenu Mastodon. Aucune connexion à Mawkingbird nécessaire.",
     "prerenderCheck": {
       "heading": "Désactiver les avertissements de contenu sur Mastodon",
-      "copy": "Afficher les médias sensibles"
+      "copy": "Ouvrir tes réglages Mastodon"
     }
   },
   "export-bookmarks": {

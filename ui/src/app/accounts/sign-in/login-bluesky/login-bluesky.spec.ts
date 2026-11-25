@@ -79,14 +79,31 @@ describe('LoginBluesky', () => {
     httpMock.expectNone(CREATE_SESSION);
   });
 
-  it('sends an already signed-in visitor to Home', () => {
-    TestBed.inject(Auth).setToken('mastodon-token');
+  it('sends an already signed-in Bluesky visitor to Home', () => {
+    vi.spyOn(TestBed.inject(Auth), 'isBlueskyPrimary', 'get').mockReturnValue(true);
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
 
     TestBed.createComponent(LoginBluesky).detectChanges();
 
     expect(navigate).toHaveBeenCalledWith('/home', { replaceUrl: true });
   });
+
+  for (const mode of ['fresh', 'anonymous', 'implicit', 'mastodon']) {
+    it(`offers explicit Bluesky login to a ${mode} visitor without starting OAuth`, () => {
+      const auth = TestBed.inject(Auth);
+      if (mode === 'anonymous' || mode === 'implicit') auth.enterAnonymous(undefined, { implicit: mode === 'implicit' });
+      if (mode === 'mastodon') auth.setToken('saved-mastodon');
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+      const begin = vi.spyOn(TestBed.inject(BlueskySession), 'beginOAuthIdentity');
+      const fixture = TestBed.createComponent(LoginBluesky);
+      fixture.detectChanges();
+      expect(navigate).not.toHaveBeenCalled();
+      expect(begin).not.toHaveBeenCalled();
+      expect(fixture.nativeElement.querySelector('form')).not.toBeNull();
+      if (mode === 'anonymous' || mode === 'implicit') expect(auth.isAnonymous).toBe(true);
+      if (mode === 'mastodon') expect(auth.token()).toBe('saved-mastodon');
+    });
+  }
 
   it('allows an already signed-in visitor to add a Bluesky alt', () => {
     TestBed.inject(Auth).setToken('mastodon-token');

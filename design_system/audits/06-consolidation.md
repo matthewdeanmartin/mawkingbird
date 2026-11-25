@@ -3516,3 +3516,28 @@ public-page layout. StatusCard lost three audio buttons that no screen showed an
 
 Font weight ceiling and German podcast pages (2026-11-25): reviewed the regenerated
 inventory. Source offsets only; no candidate added or removed.
+
+
+### 2026-11-25: Mastodon content-warning guide
+
+Reviewed all 18 translated templates and the regenerated inventory: 739 candidate
+files remain. The server helper uses shared Field/Control and Button; it only
+constructs an HTTPS Appearance-preferences link, with a visible destination and
+local validation. The website answer stays ahead of the optional Mawkingbird
+controls regardless of session. No new shared widget. A page-scoped rule wraps
+long URLs on mobile. Login changes have no control inventory impact.
+
+
+Public app-entry follow-up: reviewed the 289 header destination changes across
+focused tools and language indexes. Existing Button controls now lead to login,
+not account settings or an implicit Anonymous session; task links retain their
+return path. Login chooser/Bluesky predicate changes do not add controls. The
+network doors preserve a validated next destination. Public tool workbenches and
+explicit Anonymous browsing remain available. Inventory differences outside CW
+are source offsets only; no new shared widgets or candidate files.
+
+
+Post-login continuation: the signed-in landing page now offers its original app
+destination explicitly using the existing Button. Header sign-in returns to the
+same translated task page, not Home. Reviewed the additional signed-in Buttons
+and their source offsets in the inventory; no new widget implementations.
