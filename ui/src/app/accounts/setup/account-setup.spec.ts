@@ -36,6 +36,7 @@ describe('AccountSetup page', () => {
       providers: [
         provideRouter([
           { path: 'home', component: HomeStub },
+          { path: 'crosspost', component: HomeStub },
           { path: 'setup', canActivate: [setupGuard], component: AccountSetup },
           { path: 'setup/:step', canActivate: [setupGuard], component: AccountSetup },
         ]),
@@ -98,6 +99,17 @@ describe('AccountSetup page', () => {
     await settle();
     expect(router.url).toBe('/home');
     expect(readSetup()).toMatchObject({ state: 'running', answered: ['welcome', 'purpose'] });
+  });
+
+  it('finishes on the page whose sign-in became a sign-up', async () => {
+    sessionStorage.setItem('mockingbird_login_next', '/crosspost');
+    await signIn();
+    await harness.navigateByUrl('/setup/done');
+    await settle();
+    (harness.routeDebugElement!.componentInstance as any).finish();
+    await settle();
+    expect(router.url).toBe('/crosspost');
+    sessionStorage.clear();
   });
 
   it('finishes on Done and goes Home', async () => {

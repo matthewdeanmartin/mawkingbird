@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login" [queryParams]="returnHere">Öppna appen</a>
+      <app-open-app>Öppna appen</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/unbird">Öppna appen</a>
-    </div>
   }
 
   <div class="intro">
@@ -23,6 +16,10 @@
       inloggning skickas sökningar efter användarnamn som hittats där till din Mastodon-server.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   <!-- Deferred: prerendering shows the placeholder, and the importer's
        services (session, storage, Mastodon API) load only in the browser. -->

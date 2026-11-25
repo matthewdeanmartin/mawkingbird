@@ -78,7 +78,10 @@
       <p class="bsky-error" role="alert">{{ msg }}</p>
     }
     <p class="bsky-out small">
-      <a routerLink="/login">{{ 'pages.loginBluesky.useDifferentNetwork' | transloco }}</a> ·
+      <a routerLink="/login" [queryParams]="returnHere">{{
+        'pages.loginBluesky.useDifferentNetwork' | transloco
+      }}</a>
+      ·
       <!-- `/anonymous`, not `/`: this visitor has already been asked whether they
            want to sign in and is answering "no" right now. `/` would seed the
            preview and ask them the same question over again. -->

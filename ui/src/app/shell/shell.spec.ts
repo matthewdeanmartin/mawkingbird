@@ -1253,6 +1253,43 @@ describe('Shell first-run modal', () => {
     },
   );
 
+  it('records the choice, so the front door does not ask again', () => {
+    const auth = TestBed.inject(Auth);
+    auth.enterAnonymous('https://mastodon.social', { implicit: true });
+    TestBed.inject(PreviewSeed).markEmpty('https://mastodon.social');
+    const fixture = render();
+    expect(auth.choseAnonymous).toBe(false);
+
+    fixture.componentInstance['answerFirstRun']('anonymous');
+
+    expect(auth.choseAnonymous).toBe(true);
+  });
+
+  it('goes back to the page that led here, undecided', () => {
+    const preview = TestBed.inject(PreviewSeed);
+    preview.markEmpty('https://mastodon.social', { url: '/crosspost/', title: 'Crosspost' });
+    const fixture = render();
+    const assigned: string[] = [];
+    stubLocation({ onAssign: (url) => assigned.push(url) });
+
+    fixture.componentInstance['answerFirstRun']('back');
+
+    expect(assigned).toEqual(['crosspost/']);
+    expect(preview.active).toBe(false);
+    expect(TestBed.inject(Auth).isAuthenticated).toBe(false);
+  });
+
+  /** Signing in from a landing page never passes through the modal's own buttons. */
+  it('ends the preview for someone who signed in by another door', () => {
+    const preview = TestBed.inject(PreviewSeed);
+    preview.markEmpty('https://mastodon.social');
+    TestBed.inject(Auth).setToken('token');
+    const host = render().nativeElement as HTMLElement;
+
+    expect(host.querySelector('app-first-run-modal')).toBeNull();
+    expect(preview.active).toBe(false);
+  });
+
   /** Anonymous has to be left behind, or the login page bounces them home. */
   it('leaves the anonymous account when heading for a login page', () => {
     TestBed.inject(PreviewSeed).markEmpty('https://mastodon.social');

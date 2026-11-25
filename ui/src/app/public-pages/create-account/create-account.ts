@@ -6,6 +6,7 @@ import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { MbDiscoveryCandidate } from '../../design-system/identity/discovery-candidate';
 import { MbContentLink } from '../../design-system/metadata/metadata';
+import { Auth } from '../../platform/session/auth';
 import snapshot from './signup-servers.json';
 
 /*
@@ -90,6 +91,11 @@ export class CreateAccount {
       ? defaultSignupLanguage(navigator.languages ?? [navigator.language])
       : 'en',
   );
+  /** A new account beside the one in use, if there is one, like the servers above. */
+  protected readonly anotherServer =
+    isPlatformBrowser(inject(PLATFORM_ID)) && inject(Auth).isAuthenticated
+      ? { intent: 'need', add: 1 }
+      : { intent: 'need' };
   /** Servers that review each new account are hidden unless asked for. */
   protected readonly showApproval = signal(false);
   protected readonly servers = computed(() =>

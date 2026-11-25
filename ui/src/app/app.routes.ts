@@ -12,7 +12,12 @@ import {
   PLATFORM_UPDATES,
 } from './platform/http/platform-http';
 import { CanActivateFn, CanMatchFn, ResolveFn, Route, Router, Routes } from '@angular/router';
-import { authGuard, mastodonSignedInMatch, signedInMatch } from './platform/session/auth.guard';
+import {
+  authGuard,
+  homeGuard,
+  mastodonSignedInMatch,
+  signedInMatch,
+} from './platform/session/auth.guard';
 import { adminGuard } from './admin/admin.guard';
 import {
   anonymousChatGuard,
@@ -613,6 +618,7 @@ export const routes: Routes = [
       {
         path: 'home',
         title: 'Home',
+        canActivate: [homeGuard],
         // The front door dispatches here, so crawlers must not lose its indexability.
         // The tagline titles the page during the first-run preview, which is
         // what a crawler sees; see PageTitleStrategy.

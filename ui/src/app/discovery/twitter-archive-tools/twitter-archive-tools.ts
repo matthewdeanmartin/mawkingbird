@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { LanguageVersions } from '../../public-pages/focused-apps/language-versions';
+import { OpenApp } from '../../public-pages/focused-apps/open-app';
 import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
 import { UnbirdArchiveTools } from '../../unbird/unbird-archive-tools';
 import { UnbirdMore } from '../../unbird/unbird-more';
@@ -19,9 +19,9 @@ import { UnbirdMore } from '../../unbird/unbird-more';
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     UnbirdArchiveTools,
     UnbirdMore,
   ],
@@ -29,9 +29,6 @@ import { UnbirdMore } from '../../unbird/unbird-more';
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class TwitterArchiveTools {
-  protected readonly returnHere = {
-    next: '/' + inject(ActivatedRoute).snapshot.pathFromRoot.map((step) => step.routeConfig?.path).filter(Boolean).join('/'),
-  };
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
 }

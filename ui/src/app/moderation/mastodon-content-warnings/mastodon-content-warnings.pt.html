@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Abrir o app</a>
+      <app-open-app>Abrir o app</app-open-app>
     </header>
   }
 
@@ -66,13 +66,8 @@
       específicas ou em todo mundo que você segue.
     </p>
 
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/content">Abrir o app</a>
-    </div>
-  }
-
     @if (inShell) {
+      <app-open-app />
       @defer (on immediate) {
         <app-content-warnings-workbench />
       } @placeholder {

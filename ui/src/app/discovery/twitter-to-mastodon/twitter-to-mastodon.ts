@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { TwitterArchiveImport } from '../../settings/import-export/twitter-archive-import';
 import { TwitterImportNextSteps } from './twitter-import-next-steps';
 import { UnbirdLanding } from '../../unbird/unbird-landing';
 import { provideRouteLanguage } from '../../i18n/page-language';
 import { LanguageVersions } from '../../public-pages/focused-apps/language-versions';
+import { OpenApp } from '../../public-pages/focused-apps/open-app';
 import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
 
 /**
@@ -23,9 +23,9 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -34,9 +34,6 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class TwitterToMastodon {
-  protected readonly returnHere = {
-    next: '/' + inject(ActivatedRoute).snapshot.pathFromRoot.map((step) => step.routeConfig?.path).filter(Boolean).join('/'),
-  };
   /** Set on the signed-in route, where the shell supplies header and account menu. */
   protected readonly inShell = inject(ActivatedRoute).snapshot.data['inShell'] === true;
 }
@@ -51,9 +48,9 @@ export class TwitterToMastodon {
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -74,9 +71,9 @@ export class TwitterToMastodonDe extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -97,9 +94,9 @@ export class TwitterToMastodonJa extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -120,9 +117,9 @@ export class TwitterToMastodonFr extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -143,9 +140,9 @@ export class TwitterToMastodonEs extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -166,9 +163,9 @@ export class TwitterToMastodonZhHant extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -189,9 +186,9 @@ export class TwitterToMastodonKo extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -212,9 +209,9 @@ export class TwitterToMastodonPt extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -235,9 +232,9 @@ export class TwitterToMastodonIt extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -254,9 +251,9 @@ export class TwitterToMastodonPl extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -273,9 +270,9 @@ export class TwitterToMastodonUk extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -292,9 +289,9 @@ export class TwitterToMastodonHi extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -311,9 +308,9 @@ export class TwitterToMastodonNl extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -330,9 +327,9 @@ export class TwitterToMastodonId extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -349,9 +346,9 @@ export class TwitterToMastodonRu extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -368,9 +365,9 @@ export class TwitterToMastodonSv extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,
@@ -387,9 +384,9 @@ export class TwitterToMastodonVi extends TwitterToMastodon {}
   imports: [
     RouterLink,
     AppOnlyLinkRel,
-    MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     TwitterArchiveImport,
     UnbirdLanding,
     TwitterImportNextSteps,

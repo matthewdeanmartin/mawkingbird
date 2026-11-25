@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Mở ứng dụng</a>
+      <app-open-app>Mở ứng dụng</app-open-app>
     </header>
   }
 
@@ -62,13 +62,8 @@
       Giữ cảnh báo đóng cho người lạ và mở cho bạn bè: tin từng người hoặc mọi người bạn theo dõi.
     </p>
 
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/content">Mở ứng dụng</a>
-    </div>
-  }
-
     @if (inShell) {
+      <app-open-app />
       @defer (on immediate) {
         <app-content-warnings-workbench />
       } @placeholder {

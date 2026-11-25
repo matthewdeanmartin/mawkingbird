@@ -1,4 +1,4 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import { MbButton } from '../../design-system/button/button';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -17,11 +17,15 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n firstRun.misskey: Misskey
 // i18n firstRun.misskeyHint: Sign in on your Misskey server.
 // i18n firstRun.back: Back
+// i18n firstRun.backTo: Back to “{{page}}”
 // i18n firstRun.featuresLink: What can it do? ↗
 // i18n firstRun.helpLink: Read the guides ↗
 
-/** Which network a visitor picked, or that they declined to sign in at all. */
-export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky' | 'misskey';
+/**
+ * Which network a visitor picked, that they declined to sign in at all, or that
+ * they are going back to the page that brought them.
+ */
+export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky' | 'misskey' | 'back';
 
 /**
  * The first-run question, asked over a running app.
@@ -49,6 +53,9 @@ export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky' | 'misskey';
   },
 })
 export class FirstRunModal {
+  /** The title of the page the visitor came from, offered as a way back. */
+  readonly from = input<string | null>(null);
+
   /** Emitted once, when the visitor answers. The host then clears the seed. */
   readonly choose = output<FirstRunChoice>();
 

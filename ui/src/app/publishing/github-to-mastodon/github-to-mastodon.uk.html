@@ -3,19 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere"
-        >Відкрити застосунок</a
-      >
+      <app-open-app>Відкрити застосунок</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/connections/github"
-        >Відкрити застосунок</a
-      >
-    </div>
   }
 
   <div class="intro">
@@ -27,6 +16,10 @@
       зірочкою, і дає змогу підписатися на них у Mastodon.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the connector and finder load only in the browser. -->

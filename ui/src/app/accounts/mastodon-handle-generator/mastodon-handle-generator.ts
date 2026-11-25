@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { HandleWorkbench } from './handle-workbench';
 import { provideRouteLanguage } from '../../i18n/page-language';
 import { LanguageVersions } from '../../public-pages/focused-apps/language-versions';
+import { OpenApp } from '../../public-pages/focused-apps/open-app';
 import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
 
 /**
@@ -17,7 +17,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
  */
 @Component({
   selector: 'app-mastodon-handle-generator',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
@@ -33,7 +33,7 @@ export class MastodonHandleGenerator {
  */
 @Component({
   selector: 'app-mastodon-handle-generator-de',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -47,7 +47,7 @@ export class MastodonHandleGeneratorDe extends MastodonHandleGenerator {}
  */
 @Component({
   selector: 'app-mastodon-handle-generator-ja',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -61,7 +61,7 @@ export class MastodonHandleGeneratorJa extends MastodonHandleGenerator {}
  */
 @Component({
   selector: 'app-mastodon-handle-generator-fr',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -75,7 +75,7 @@ export class MastodonHandleGeneratorFr extends MastodonHandleGenerator {}
  */
 @Component({
   selector: 'app-mastodon-handle-generator-es',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -89,7 +89,7 @@ export class MastodonHandleGeneratorEs extends MastodonHandleGenerator {}
  */
 @Component({
   selector: 'app-mastodon-handle-generator-zh-hant',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -103,7 +103,7 @@ export class MastodonHandleGeneratorZhHant extends MastodonHandleGenerator {}
  */
 @Component({
   selector: 'app-mastodon-handle-generator-ko',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -117,7 +117,7 @@ export class MastodonHandleGeneratorKo extends MastodonHandleGenerator {}
  */
 @Component({
   selector: 'app-mastodon-handle-generator-pt',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -131,7 +131,7 @@ export class MastodonHandleGeneratorPt extends MastodonHandleGenerator {}
  */
 @Component({
   selector: 'app-mastodon-handle-generator-it',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -145,7 +145,7 @@ export class MastodonHandleGeneratorIt extends MastodonHandleGenerator {}
  */
 @Component({
   selector: 'app-mastodon-handle-generator-pl',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -155,7 +155,7 @@ export class MastodonHandleGeneratorPl extends MastodonHandleGenerator {}
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-mastodon-handle-generator-uk',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -165,7 +165,7 @@ export class MastodonHandleGeneratorUk extends MastodonHandleGenerator {}
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-handle-generator-hi',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -175,7 +175,7 @@ export class MastodonHandleGeneratorHi extends MastodonHandleGenerator {}
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-handle-generator-nl',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -185,7 +185,7 @@ export class MastodonHandleGeneratorNl extends MastodonHandleGenerator {}
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-handle-generator-id',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -195,7 +195,7 @@ export class MastodonHandleGeneratorId extends MastodonHandleGenerator {}
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-handle-generator-ru',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -205,7 +205,7 @@ export class MastodonHandleGeneratorRu extends MastodonHandleGenerator {}
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-handle-generator-sv',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -215,7 +215,7 @@ export class MastodonHandleGeneratorSv extends MastodonHandleGenerator {}
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-handle-generator-vi',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -225,7 +225,7 @@ export class MastodonHandleGeneratorVi extends MastodonHandleGenerator {}
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-mastodon-handle-generator-tr',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, HandleWorkbench],
+  imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

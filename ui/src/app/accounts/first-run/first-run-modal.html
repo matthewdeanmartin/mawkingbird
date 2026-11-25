@@ -28,6 +28,11 @@
           {{ 'firstRun.continueAnonymous' | transloco }}
         </button>
       </div>
+      @if (from(); as page) {
+        <button type="button" class="first-run-back" (click)="pick('back')">
+          {{ 'firstRun.backTo' | transloco: { page } }}
+        </button>
+      }
       <!--
         New tabs, so the two buttons stay the only ways out of this modal and the
         preview behind it survives. Plain hrefs relative to <base href>.

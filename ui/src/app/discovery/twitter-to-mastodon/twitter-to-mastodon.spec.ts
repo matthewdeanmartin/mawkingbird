@@ -39,7 +39,7 @@ describe('TwitterToMastodon', () => {
     const root = await render({});
     expect(root.querySelector('header')?.textContent).toContain('Open the app');
     expect(root.querySelector('header a[mbButton]')?.getAttribute('href')).toBe(
-      '/login?next=%2Ftwitter-to-mastodon',
+      '/login/mastodon?next=%2Ftwitter-to-mastodon',
     );
     expect(root.querySelector('h1')?.textContent).toContain('Import your Twitter follows');
   });
@@ -47,7 +47,7 @@ describe('TwitterToMastodon', () => {
   it('leaves header and account menu to the shell when signed in', async () => {
     const root = await render({ inShell: true });
     expect(root.querySelector('header')).toBeNull();
-    expect(root.querySelector('.app-destination a')?.getAttribute('href')).toBe('/unbird');
+    expect(root.querySelector('main > app-open-app a')?.getAttribute('href')).toBe('/unbird');
   });
 });
 

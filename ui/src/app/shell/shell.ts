@@ -683,7 +683,18 @@ export class Shell implements OnInit, AccountSwitcher {
    * plain `localStorage`, and re-reading it mid-session would let an unrelated
    * write re-open a modal the visitor has already answered.
    */
-  private firstRunActive = signal(this.preview.active);
+  private firstRunActive = signal(this.previewRunning());
+
+  /** The preview ends with any sign-in, by whichever door: the question is answered. */
+  private previewRunning(): boolean {
+    if (!this.preview.active) return false;
+    if (this.auth.isAnonymous) return true;
+    this.preview.clear();
+    return false;
+  }
+
+  /** The public page the front door was opened from, if the visitor came from one. */
+  protected readonly firstRunFrom = this.preview.from?.title ?? null;
   protected firstRun = this.firstRunActive.asReadonly();
 
   /**
@@ -720,9 +731,11 @@ export class Shell implements OnInit, AccountSwitcher {
    * thing to put in front of someone who has just been shown an empty feed.
    */
   protected answerFirstRun(choice: FirstRunChoice): void {
+    const from = this.preview.from;
     this.preview.clear();
     this.firstRunActive.set(false);
     if (choice === 'anonymous') {
+      this.auth.chooseAnonymous();
       // Safe now: the app is theirs to navigate. `start()` is idempotent.
       this.hotkeys.start();
       void this.router.navigateByUrl('/bundled-starter-kits');
@@ -731,7 +744,8 @@ export class Shell implements OnInit, AccountSwitcher {
     // Leave Anonymous so the login page opens signed-out, exactly as the
     // header's own Log in button does.
     this.auth.exitAnonymous();
-    location.assign(`login/${choice}`);
+    // Back to the page they came from, as undecided as they were on it.
+    location.assign(choice === 'back' ? (from?.url ?? '/').slice(1) : `login/${choice}`);
   }
 
   /**
@@ -1032,7 +1046,7 @@ export class Shell implements OnInit, AccountSwitcher {
         // account inactive, so the account menu's Log out (which acts on the *active*
         // account) can never reach it, and retrying the switch just fails again.
         if (previousWasAnonymous) {
-          this.auth.enterAnonymous();
+          this.auth.enterAnonymous(undefined, { implicit: true });
         } else if (previousWasBluesky) {
           this.auth.enterBluesky();
         } else if (previousWasMisskey) {

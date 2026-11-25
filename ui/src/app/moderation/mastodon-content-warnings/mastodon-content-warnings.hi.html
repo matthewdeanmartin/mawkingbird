@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">ऐप खोलें</a>
+      <app-open-app>ऐप खोलें</app-open-app>
     </header>
   }
 
@@ -64,13 +64,8 @@
       पर भरोसा करें।
     </p>
 
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/content">ऐप खोलें</a>
-    </div>
-  }
-
     @if (inShell) {
+      <app-open-app />
       @defer (on immediate) {
         <app-content-warnings-workbench />
       } @placeholder {

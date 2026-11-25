@@ -47,6 +47,15 @@ describe('FirstRunModal', () => {
     expect((fixture.nativeElement.textContent ?? '').toLowerCase()).toContain('sample');
   });
 
+  it('offers the way back only to someone who came from a page', () => {
+    const { fixture, chosen } = open();
+    expect(fixture.nativeElement.textContent).not.toContain('Back to');
+    fixture.componentRef.setInput('from', 'Mastodon analytics');
+    fixture.detectChanges();
+    click(fixture, 'Back to “Mastodon analytics”');
+    expect(chosen).toEqual(['back']);
+  });
+
   it('answers anonymous directly from the welcome step', () => {
     const { fixture, chosen } = open();
     click(fixture, 'continue without logging in');

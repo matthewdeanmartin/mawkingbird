@@ -7,6 +7,7 @@ import { provideRouteLanguage } from '../../i18n/page-language';
 import { MediaDownloadWorkbench } from './media-download-workbench';
 import { DOWNLOAD_IMAGES_COPY } from './download-mastodon-images.copy';
 import { LanguageVersions } from '../../public-pages/focused-apps/language-versions';
+import { OpenApp } from '../../public-pages/focused-apps/open-app';
 import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
 
 /**
@@ -29,6 +30,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     MediaDownloadWorkbench,
   ],
   templateUrl: './download-mastodon-images.html',

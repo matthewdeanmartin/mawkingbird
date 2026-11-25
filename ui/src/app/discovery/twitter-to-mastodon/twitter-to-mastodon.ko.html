@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login" [queryParams]="returnHere">앱 열기</a>
+      <app-open-app>앱 열기</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/unbird">앱 열기</a>
-    </div>
   }
 
   <div class="intro">
@@ -23,6 +16,10 @@
       로그인한 뒤 파일에서 찾은 사용자 이름을 Mastodon 서버에 검색 요청으로 보냅니다.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   <!-- Deferred: prerendering shows the placeholder, and the importer's
        services (session, storage, Mastodon API) load only in the browser. -->

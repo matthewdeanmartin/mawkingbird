@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login" [queryParams]="{ next: root }">Відкрити застосунок</a>
+      <app-open-app>Відкрити застосунок</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/search">Відкрити застосунок</a>
-    </div>
   }
 
   <div class="intro">
@@ -25,6 +18,10 @@
       <p>Знаходьте дописи, людей і хештеги в Mastodon із фільтрами пошуку, знайомими з Twitter.</p>
     }
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   <!-- The box comes first. Deferred, because it reads the session; until it
        loads, a plain form does the same job and is what the prerender holds. -->

@@ -10,6 +10,7 @@ anything that went wrong under **Findings**.
 
 | Plan | Covers | Status |
 | --- | --- | --- |
+| [Landing pages and the Mastodon connector](landing-and-connector-2026-11.md) | Connector sign-in, front door, return paths | Not run |
 | [Bluesky connector OAuth](bsky-connector-oauth.md) | OAuth-first Bluesky connection | Not run |
 | [Action row parity](action-row-parity.md) | Bluesky vs Mastodon counts and icons | Not run |
 | [Sprint 1: Bluesky video](bsky-parity-sprint-1-video.md) | Video posts | Not run |

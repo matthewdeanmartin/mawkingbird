@@ -26,7 +26,9 @@ function routeFor(path: string, inShell: boolean, lang: string) {
 describe('LanguageLanding', () => {
   it('returns the visitor to the language guide, then offers the exact settings screen', async () => {
     const root = await render('mastodon-in-english', true, 'en');
-    expect(root.querySelector('.app-destination a')?.getAttribute('href')).toBe('/settings/i18n');
+    expect(root.querySelector('main > app-open-app a')?.getAttribute('href')).toBe(
+      '/settings/i18n',
+    );
   });
 
   async function render(path: string, inShell: boolean, lang: string): Promise<HTMLElement> {

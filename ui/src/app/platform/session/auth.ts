@@ -57,17 +57,23 @@ const SESSIONS_KEY = 'mastodon_mock_sessions';
 const SESSION_TOKENS_KEY = 'mastodon_mock_session_tokens';
 export const ACCOUNT_MODE_KEY = 'mastodon_mock_account_mode';
 /**
- * Set while Anonymous is active only because a public link opened the app
- * (see `authGuard`), not because the visitor chose it. Such a visitor has never
- * been offered a sign-in, so a browser-only follow would not do what they think.
+ * Whether Anonymous was chosen: `1` while it is active only because the app
+ * opened it (a public link, the front-door preview), `0` once the visitor has
+ * asked to read without an account. Someone in the first state has never been
+ * offered a sign-in, so a browser-only follow would not do what they think, and
+ * the front door still owes them the question. Absent before 2026-11-25.
  */
 export const ANONYMOUS_IMPLICIT_KEY = 'mastodon_mock_anonymous_implicit';
 
-function storedAnonymousImplicit(): boolean {
+/** How Anonymous came to be active. `unknown` predates the record. */
+export type AnonymousChoice = 'implicit' | 'chosen' | 'unknown';
+
+function storedAnonymousChoice(): AnonymousChoice {
   try {
-    return localStorage.getItem(ANONYMOUS_IMPLICIT_KEY) === '1';
+    const stored = localStorage.getItem(ANONYMOUS_IMPLICIT_KEY);
+    return stored === '1' ? 'implicit' : stored === '0' ? 'chosen' : 'unknown';
   } catch {
-    return false;
+    return 'unknown';
   }
 }
 
@@ -340,8 +346,8 @@ export class Auth {
   /** The active account's kind. Null when signed out. */
   readonly kind = signal<AccountKind | null>(storedKind());
 
-  /** Anonymous was entered silently by a public link; see {@link ANONYMOUS_IMPLICIT_KEY}. */
-  readonly anonymousImplicit = signal(storedAnonymousImplicit());
+  /** How Anonymous came to be active; see {@link ANONYMOUS_IMPLICIT_KEY}. */
+  readonly anonymousChoice = signal<AnonymousChoice>(storedAnonymousChoice());
 
   /**
    * Following should ask the visitor to sign in instead of keeping the follow in
@@ -349,7 +355,30 @@ export class Auth {
    * who did choose Anonymous keep their browser follows.
    */
   get signInToFollow(): boolean {
-    return this.isAnonymous && this.anonymousImplicit();
+    return this.isAnonymous && this.anonymousChoice() === 'implicit';
+  }
+
+  /**
+   * Reading without an account, and not because the app put them there. Someone
+   * from before the record counts; the front door decides about them itself
+   * (`EntryPage`), with more to go on.
+   */
+  get choseAnonymous(): boolean {
+    return this.isAnonymous && this.anonymousChoice() !== 'implicit';
+  }
+
+  /** The visitor asked to read without an account. */
+  chooseAnonymous(): void {
+    this.recordAnonymousChoice('chosen');
+  }
+
+  private recordAnonymousChoice(choice: 'implicit' | 'chosen'): void {
+    this.anonymousChoice.set(choice);
+    try {
+      localStorage.setItem(ANONYMOUS_IMPLICIT_KEY, choice === 'implicit' ? '1' : '0');
+    } catch {
+      // Storage unavailable: the in-memory record still covers this visit.
+    }
   }
 
   /**
@@ -920,22 +949,17 @@ export class Auth {
   /**
    * Enter the permanent local account without deleting any saved logins.
    *
-   * `implicit` is for the public-link path only: the visitor did not choose
-   * Anonymous. It sticks only for someone who has never used Anonymous here
-   * (or was only ever in it implicitly); every other entry is a choice.
+   * `implicit` is for every path where the visitor did not ask for Anonymous: a
+   * public link, the front-door preview, putting back an identity after a failed
+   * switch. It marks only someone who has never used Anonymous here, and never
+   * undoes a choice; every other entry is one.
    */
   enterAnonymous(server?: string, options: { implicit?: boolean } = {}): void {
     const saved = this.sessions().length;
     // The first activation ever is the Anonymous account's first use here.
     const isNew = !this.anonymous.activated();
-    const implicit = !!options.implicit && (isNew || this.anonymousImplicit());
-    this.anonymousImplicit.set(implicit);
-    try {
-      if (implicit) localStorage.setItem(ANONYMOUS_IMPLICIT_KEY, '1');
-      else localStorage.removeItem(ANONYMOUS_IMPLICIT_KEY);
-    } catch {
-      // Storage unavailable: the in-memory flag still covers this visit.
-    }
+    if (!options.implicit) this.recordAnonymousChoice('chosen');
+    else if (isNew) this.recordAnonymousChoice('implicit');
     this.anonymous.activate(server);
     if (isNew) {
       markOnboardingPending(ANONYMOUS_SCOPE_SUFFIX);

@@ -63,6 +63,7 @@ function mastodonProviders() {
       useValue: {
         current,
         server,
+        token: () => null,
         enableAnonymous: () => {
           server.set("https://mastodon.social");
           current.set({ state: "anonymous" });

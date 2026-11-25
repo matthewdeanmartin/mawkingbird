@@ -5,6 +5,7 @@ import { Auth } from './auth';
 import { radioAccount, radioPostRef } from '../../reading/radio-links';
 import { Server } from '../http/server';
 import { LiteMode, publicTwinOf } from '../../lite/lite-mode';
+import { readPreviewState } from '../../accounts/first-run/preview-state';
 import {
   accountHandleLinkMatcher,
   isTwitterHandle,
@@ -23,11 +24,22 @@ export const mastodonSignedInMatch: CanMatchFn = () => {
   return !auth.lacksMastodonToken && !auth.isAnonymous;
 };
 
-/** Matches any signed-in identity, Mastodon or Bluesky; not Anonymous. Same fall-through. */
+/**
+ * Matches any signed-in identity, Mastodon, Bluesky or Misskey. Reading without
+ * an account, Anonymous or as Misskey's visitor, falls through the same way.
+ */
 export const signedInMatch: CanMatchFn = () => {
   const auth = inject(Auth);
-  return auth.isAuthenticated && !auth.isAnonymous;
+  return auth.isAuthenticated && !auth.isAnonymous && !auth.isMisskeyVisitor;
 };
+
+/**
+ * Home belongs to someone: an account, or a reader who chose to have none. A
+ * visitor the app merely let in to read a public page gets the front door
+ * (and its preview) instead of an empty timeline.
+ */
+export const homeGuard: CanActivateFn = () =>
+  inject(Auth).signInToFollow && !readPreviewState() ? inject(Router).parseUrl('/') : true;
 
 export const authGuard: CanActivateFn = (_route, state) => {
   const auth = inject(Auth);

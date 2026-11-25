@@ -3,17 +3,11 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login" [queryParams]="returnHere">Otwórz aplikację</a>
+      <app-open-app>Otwórz aplikację</app-open-app>
     </header>
   }
 
   <!-- Polish declines the network names, so each direction is written out. -->
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/find-friends">Otwórz aplikację</a>
-    </div>
-  }
 
   <div class="intro">
     @if (copy.source === 'bluesky') {
@@ -38,6 +32,10 @@
       </p>
     }
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->

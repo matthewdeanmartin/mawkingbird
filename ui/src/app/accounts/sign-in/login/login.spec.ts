@@ -8,6 +8,8 @@ import { Server } from '../../../platform/http/server';
 import { sha256Base64Url } from '../../../platform/session/pkce';
 import { stubLocation } from '../../../testing/stub-location';
 import { loginDestination } from '../../../platform/session/login-destination';
+import { saveBlueskyIdentity } from '../../../connections/bluesky/bluesky-identity-store';
+import { MastodonConnector } from '../../../connections/mastodon/mastodon-connector';
 import { Login } from './login';
 
 const OAUTH_APP_KEY = 'mastodon_mock_oauth_app';
@@ -712,8 +714,127 @@ describe('Login', () => {
     fixture.detectChanges();
     httpMock.expectOne('/api/v1/_mock/dev_users').flush([]);
     httpMock.expectOne('/oauth/token').flush({ access_token: 'new-token' });
-    httpMock.expectOne('/api/v1/accounts/verify_credentials').flush({ id: '1', username: 'reader' });
+    httpMock
+      .expectOne('/api/v1/accounts/verify_credentials')
+      .flush({ id: '1', username: 'reader' });
     expect(navigate).toHaveBeenCalledWith('/de/mastodon-auf-deutsch', { replaceUrl: true });
+  });
+
+  it('keeps the page they came for when they refuse access on their server', () => {
+    storePendingOAuth({ next: '/crosspost' });
+    const fixture = setUp({ error: 'access_denied', state: PENDING_STATE });
+    fixture.detectChanges();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Sign-in was cancelled');
+    expect(sessionStorage.getItem(OAUTH_APP_KEY)).toBeNull();
+
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+    const component = fixture.componentInstance as any;
+    component.token.set('pasted');
+    component.submit();
+    httpMock.expectOne('/api/v1/accounts/verify_credentials').flush({ id: '1', username: 'me' });
+    expect(navigate).toHaveBeenCalledWith('/crosspost', { replaceUrl: true });
+  });
+
+  it('ignores a refusal this browser did not ask for', () => {
+    storePendingOAuth({ next: '/crosspost' });
+    const fixture = setUp({ error: 'access_denied', state: 'someone-else' });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).not.toContain('Sign-in was cancelled');
+  });
+
+  describe('under a Bluesky account', () => {
+    const DID = 'did:plc:reader';
+
+    function bluesky(): void {
+      saveBlueskyIdentity(
+        { service: 'https://pds.example', did: DID, handle: 'reader.example' },
+        { authMethod: 'oauth' },
+        true,
+      );
+      localStorage.setItem('mastodon_mock_account_mode', 'bluesky');
+    }
+
+    function answerCallback(): void {
+      for (const req of httpMock.match('/api/v1/_mock/dev_users')) req.flush([]);
+      httpMock.expectOne((r) => r.url.endsWith('/oauth/token')).flush({ access_token: 'mine' });
+    }
+
+    const verify = () =>
+      httpMock.expectOne((r) => r.url.endsWith('/api/v1/accounts/verify_credentials'));
+
+    it('connects Mastodon instead of switching accounts, and returns to the tool', () => {
+      bluesky();
+      storePendingOAuth({ next: '/turn-off-boosts-mastodon', connect: DID });
+      const fixture = setUp({ code: 'code', state: PENDING_STATE });
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
+      fixture.detectChanges();
+      answerCallback();
+      verify().flush({ id: '42', username: 'me', acct: 'me' });
+
+      const auth = TestBed.inject(Auth);
+      expect(auth.kind()).toBe('bluesky');
+      expect(auth.account()?.acct).toBe('reader.example');
+      expect(auth.sessions()).toEqual([]);
+      expect(TestBed.inject(MastodonConnector).current()).toMatchObject({
+        state: 'signed-in',
+        account: { id: '42' },
+      });
+      expect(navigate).toHaveBeenCalledWith('/turn-off-boosts-mastodon', { replaceUrl: true });
+    });
+
+    it('connects nothing when the account changed meanwhile', () => {
+      bluesky();
+      storePendingOAuth({ connect: 'did:plc:someone-else' });
+      const fixture = setUp({ code: 'code', state: PENDING_STATE });
+      fixture.detectChanges();
+      httpMock.expectNone((r) => r.url.endsWith('/oauth/token'));
+      expect(TestBed.inject(Auth).token()).toBeNull();
+      expect((fixture.componentInstance as any).oauthError()).toContain('account changed');
+    });
+
+    it('leaves the account as it was when the server rejects the token', () => {
+      bluesky();
+      storePendingOAuth({ connect: DID });
+      const fixture = setUp({ code: 'code', state: PENDING_STATE });
+      fixture.detectChanges();
+      answerCallback();
+      verify().flush({}, { status: 401, statusText: 'Unauthorized' });
+      const auth = TestBed.inject(Auth);
+      expect(auth.kind()).toBe('bluesky');
+      expect(auth.token()).toBeNull();
+      expect(TestBed.inject(MastodonConnector).optedIn()).toBe(false);
+    });
+
+    it('says so first, offers a separate account, and never "just looking"', () => {
+      bluesky();
+      const fixture = setUp({ next: '/mastodon-analytics' });
+      fixture.detectChanges();
+      const root = fixture.nativeElement as HTMLElement;
+      expect(root.querySelector('.login-connect')?.textContent).toContain('@reader.example');
+      expect(root.querySelectorAll('.intent-door').length).toBe(2);
+
+      (root.querySelector('.login-connect button') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      expect(root.querySelector('.login-connect')).toBeNull();
+      expect(root.querySelectorAll('.intent-door').length).toBe(3);
+    });
+
+    it('adds a separate account when that is what was asked for', () => {
+      bluesky();
+      const fixture = setUp({ add: '1' });
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.login-connect')).toBeNull();
+    });
+
+    it('puts the server of the connector back when nothing was connected', () => {
+      bluesky();
+      const fixture = setUp({ server: 'hachyderm.io' });
+      fixture.detectChanges();
+      expect(TestBed.inject(Server).baseUrl()).toBe('https://hachyderm.io');
+      fixture.destroy();
+      expect(TestBed.inject(Server).baseUrl()).toBe('');
+    });
   });
 
   it('sends every other ?next home, so a crafted link cannot redirect a sign-in', () => {

@@ -3,7 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Ouvrir l’appli</a>
+      <app-open-app>Ouvrir l’appli</app-open-app>
     </header>
   }
 
@@ -67,13 +67,8 @@
       certaines personnes, ou à tous tes abonnements.
     </p>
 
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/content">Ouvrir l’appli</a>
-    </div>
-  }
-
     @if (inShell) {
+      <app-open-app />
       @defer (on immediate) {
         <app-content-warnings-workbench />
       } @placeholder {

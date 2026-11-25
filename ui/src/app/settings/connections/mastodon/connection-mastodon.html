@@ -32,7 +32,13 @@
     {{ 'settings.connections.mastodon.nothingConnected' | transloco }}
   </p>
   <p>
-    <button mbButton type="button" (click)="enableAnonymous()">
+    <a mbButton routerLink="/login/mastodon" [queryParams]="signInParams()">{{
+      'settings.connections.mastodon.signInWith' | transloco
+    }}</a>
+  </p>
+  <p class="muted small">{{ 'settings.connections.mastodon.signInWithNote' | transloco }}</p>
+  <p>
+    <button mbButton type="button" variant="outline" (click)="enableAnonymous()">
       {{
         'settings.connections.mastodon.readWithoutAccount'
           | transloco: { server: defaultServer.replace('https://', '') }
@@ -68,36 +74,44 @@
 
   @if (state() === 'anonymous') {
     <h2>{{ 'settings.connections.mastodon.signInHeading' | transloco }}</h2>
-    <p class="muted">
-      {{ 'settings.connections.mastodon.pasteTokenFor' | transloco }}
-      <strong>{{ serverLabel() }}</strong
-      >{{ 'settings.connections.mastodon.pasteTokenAfter' | transloco }}
+    <p>
+      <a mbButton routerLink="/login/mastodon" [queryParams]="signInParams()">{{
+        'settings.connections.mastodon.signInWith' | transloco
+      }}</a>
     </p>
-    <form class="conn-form" (ngSubmit)="signIn()">
-      <mb-field [label]="'settings.connections.mastodon.tokenPlaceholder' | transloco">
-        <input
-          mbControl
-          type="password"
-          name="mastodonToken"
-          [placeholder]="'settings.connections.mastodon.tokenPlaceholder' | transloco"
-          autocomplete="off"
-          [ngModel]="token()"
-          (ngModelChange)="token.set($event)"
-          [disabled]="signingIn()"
-        />
-      </mb-field>
-      <button mbButton type="submit" [disabled]="!token().trim() || signingIn()">
-        {{
-          (signingIn()
-            ? 'settings.connections.mastodon.checking'
-            : 'settings.connections.mastodon.signIn'
-          ) | transloco
-        }}
-      </button>
-    </form>
-    @if (error(); as msg) {
-      <mb-notice tone="error" announcement="alert">{{ msg }}</mb-notice>
-    }
+    <p class="muted small">{{ 'settings.connections.mastodon.signInWithNote' | transloco }}</p>
+    <mb-disclosure [label]="'pages.login.token.summary' | transloco">
+      <p class="muted">
+        {{ 'settings.connections.mastodon.pasteTokenFor' | transloco }}
+        <strong>{{ serverLabel() }}</strong
+        >{{ 'settings.connections.mastodon.pasteTokenAfter' | transloco }}
+      </p>
+      <form class="conn-form" (ngSubmit)="signIn()">
+        <mb-field [label]="'settings.connections.mastodon.tokenPlaceholder' | transloco">
+          <input
+            mbControl
+            type="password"
+            name="mastodonToken"
+            [placeholder]="'settings.connections.mastodon.tokenPlaceholder' | transloco"
+            autocomplete="off"
+            [ngModel]="token()"
+            (ngModelChange)="token.set($event)"
+            [disabled]="signingIn()"
+          />
+        </mb-field>
+        <button mbButton type="submit" [disabled]="!token().trim() || signingIn()">
+          {{
+            (signingIn()
+              ? 'settings.connections.mastodon.checking'
+              : 'settings.connections.mastodon.signIn'
+            ) | transloco
+          }}
+        </button>
+      </form>
+      @if (error(); as msg) {
+        <mb-notice tone="error" announcement="alert">{{ msg }}</mb-notice>
+      }
+    </mb-disclosure>
   } @else {
     <p>
       <button mbButton type="button" variant="outline" size="small" (click)="signOut()">

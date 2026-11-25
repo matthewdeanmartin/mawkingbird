@@ -14,6 +14,7 @@ import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { Api } from '../platform/api/api';
 import { Server } from '../platform/http/server';
 import { Auth } from '../platform/session/auth';
+import { MastodonMe } from '../connections/mastodon/mastodon-me';
 import {
   planTimes,
   postCount,
@@ -98,6 +99,7 @@ export class UnbirdPosts implements OnInit {
   protected readonly replay = inject(UnbirdReplay);
   private readonly api = inject(Api);
   private readonly auth = inject(Auth);
+  private readonly mastodonMe = inject(MastodonMe);
   private readonly server = inject(Server);
   private readonly i18n = inject(TranslocoService);
 
@@ -161,7 +163,7 @@ export class UnbirdPosts implements OnInit {
 
   constructor() {
     effect(() => {
-      const account = this.auth.account();
+      const account = this.mastodonMe.account();
       if (!this.signedIn() || !account) return;
       const host = (() => {
         try {

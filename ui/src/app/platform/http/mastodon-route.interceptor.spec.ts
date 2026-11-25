@@ -5,6 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it } from 'vitest';
 import { Auth } from '../session/auth';
 import { mastodonRouteInterceptor } from './mastodon-route.interceptor';
+import { signInRequest } from './sign-in-request';
 
 type Kind = 'mastodon' | 'bluesky' | 'misskey' | 'anonymous';
 
@@ -37,6 +38,15 @@ describe('mastodonRouteInterceptor', () => {
       http.get('/api/v1/trends/tags').subscribe({ error: (e) => (status = e.status) });
       http.get('/api/v2/instance').subscribe({ error: () => undefined });
       expect(status).toBe(0);
+    },
+  );
+
+  it.each(['bluesky', 'misskey'] as const)(
+    'lets a %s-only identity sign in to a Mastodon server',
+    (kind) => {
+      const { http, mock } = setup(kind);
+      http.post('/api/v1/apps', {}, { context: signInRequest() }).subscribe();
+      mock.expectOne('/api/v1/apps').flush({});
     },
   );
 

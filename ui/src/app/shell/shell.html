@@ -694,9 +694,9 @@
   }
 
   <!-- The first-run question, asked over a running app with real posts behind it.
-     Blocking: the two buttons are its only exits. -->
+     Blocking: its buttons are the only exits. -->
   @if (firstRun()) {
-    <app-first-run-modal (choose)="answerFirstRun($event)" />
+    <app-first-run-modal [from]="firstRunFrom" (choose)="answerFirstRun($event)" />
   }
   @if (addAccountOpen()) {
     <app-add-account-dialog (closed)="addAccountOpen.set(false)" />

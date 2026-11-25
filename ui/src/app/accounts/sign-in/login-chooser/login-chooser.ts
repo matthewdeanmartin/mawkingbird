@@ -2,7 +2,10 @@ import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { Component, inject, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { loginDestination } from '../../../platform/session/login-destination';
+import {
+  destinationNeedsMastodon,
+  loginDestination,
+} from '../../../platform/session/login-destination';
 import { Auth } from '../../../platform/session/auth';
 import { ClientPrefs } from '../../../platform/storage/client-prefs';
 import { LoginDoors } from '../login-doors/login-doors';
@@ -70,9 +73,27 @@ export class LoginChooser implements OnInit {
     }
     this.adding = params.has('add');
     this.next = params.get('next') ? loginDestination(params.get('next')) : null;
+    // A page only Mastodon opens has no network to choose. Without this, another
+    // network's account would be sent back to a page still asking to sign in.
+    if (
+      destinationNeedsMastodon(this.next) &&
+      (this.auth.lacksMastodonToken || this.auth.isAnonymous)
+    ) {
+      this.redirecting = true;
+      void this.router.navigate(['/login/mastodon'], {
+        queryParams: this.route.snapshot.queryParams,
+        replaceUrl: true,
+      });
+      return;
+    }
     // A signed-in visitor who lands here (bookmark, back button) is not asking
     // to pick a network. Same reasoning as the front page.
-    if (this.auth.isAuthenticated && !this.auth.isAnonymous && !this.auth.isMisskeyVisitor && !this.adding) {
+    if (
+      this.auth.isAuthenticated &&
+      !this.auth.isAnonymous &&
+      !this.auth.isMisskeyVisitor &&
+      !this.adding
+    ) {
       this.redirecting = true;
       void this.router.navigateByUrl(this.next ?? '/home', { replaceUrl: true });
     }

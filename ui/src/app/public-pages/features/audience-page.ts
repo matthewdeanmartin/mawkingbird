@@ -14,13 +14,6 @@ import { AppOnlyLinkRel } from '../public-page-urls';
 export class AudiencePage {
   private readonly audience = inject(ActivatedRoute).snapshot.data['audience'];
   readonly content = audienceContent[this.audience];
-  readonly appRoute =
-    (
-      {
-        readers: '/rss',
-        'twitter-exodus': '/unbird',
-        creators: '/write',
-        'power-users': '/settings/moderation',
-      } as Record<string, string>
-    )[this.audience] ?? '/home';
+  /** The front door, which suits every visitor; Unbird needs no account either. */
+  readonly appRoute = this.audience === 'twitter-exodus' ? '/unbird' : '/';
 }

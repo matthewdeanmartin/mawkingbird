@@ -1,5 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { loginDestination, stashLoginNext, takeLoginNext } from './login-destination';
+import {
+  destinationNeedsMastodon,
+  loginDestination,
+  stashConnectorReturn,
+  stashLoginNext,
+  takeConnectorReturn,
+  takeLoginNext,
+} from './login-destination';
 import { FOCUSED_APPS } from '../../shell/mode-nav';
 
 describe('loginDestination', () => {
@@ -19,6 +26,28 @@ describe('loginDestination', () => {
     expect(loginDestination('/unbird/elsewhere')).toBe('/home');
     expect(loginDestination('/watch?post=1&youtube=abc')).toBe('/watch?post=1&youtube=abc');
     expect(loginDestination('/watch/elsewhere')).toBe('/home');
+  });
+
+  it('returns to a page that turned Anonymous away, but not to settings at large', () => {
+    expect(loginDestination('/settings/moderation')).toBe('/settings/moderation');
+    expect(loginDestination('/analytics')).toBe('/analytics');
+    expect(loginDestination('/settings/storage')).toBe('/home');
+  });
+
+  it('knows which destinations only Mastodon opens', () => {
+    expect(destinationNeedsMastodon('/mastodon-analytics?acct=a')).toBe(true);
+    expect(destinationNeedsMastodon('/twitter-to-mastodon')).toBe(true);
+    expect(destinationNeedsMastodon('/crosspost')).toBe(false);
+    expect(destinationNeedsMastodon('/home')).toBe(false);
+    expect(destinationNeedsMastodon(null)).toBe(false);
+  });
+
+  it('knows a public page by its address-bar form, with a trailing slash', () => {
+    expect(loginDestination('/crosspost/')).toBe('/crosspost');
+    expect(loginDestination('/crosspost/?x=1')).toBe('/crosspost?x=1');
+    expect(loginDestination('//evil.example/')).toBe('/home');
+    stashConnectorReturn('/crosspost/');
+    expect(takeConnectorReturn()).toBe('/crosspost');
   });
 
   it('carries a destination across a redirect exactly once', () => {

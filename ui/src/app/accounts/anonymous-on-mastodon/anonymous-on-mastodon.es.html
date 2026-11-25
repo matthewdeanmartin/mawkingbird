@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Abrir la app</a>
+      <app-open-app>Abrir la app</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/pseudonymity">Abrir la app</a>
-    </div>
   }
 
   <div class="intro">
@@ -25,6 +18,10 @@
       }
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the checklist reads and changes your account, so it loads only in the browser. -->

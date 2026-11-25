@@ -3,7 +3,12 @@ import { firstValueFrom, timeout } from 'rxjs';
 import { Api } from '../../platform/api/api';
 import { Account } from '../../platform/api/models';
 import { AnonymousFollows } from '../anonymous/anonymous-follows';
-import { PREVIEW_KEY, type PreviewState, readPreviewState } from './preview-state';
+import {
+  PREVIEW_KEY,
+  type PreviewOrigin,
+  type PreviewState,
+  readPreviewState,
+} from './preview-state';
 
 /** The server the hardcoded ids below belong to. */
 export const PREVIEW_SERVER = 'https://mastodon.social';
@@ -105,6 +110,11 @@ export class PreviewSeed {
     return this.state() !== null;
   }
 
+  /** The public page the preview was opened from, if any. */
+  get from(): PreviewOrigin | null {
+    return this.state()?.from ?? null;
+  }
+
   private state(): PreviewState | null {
     return readPreviewState();
   }
@@ -116,8 +126,8 @@ export class PreviewSeed {
    * but the modal must still appear and still be answerable, and answering it
    * must still end the preview.
    */
-  markEmpty(server: string): void {
-    localStorage.setItem(PREVIEW_KEY, JSON.stringify({ server, preexisting: [] }));
+  markEmpty(server: string, from?: PreviewOrigin): void {
+    localStorage.setItem(PREVIEW_KEY, JSON.stringify({ server, preexisting: [], from }));
   }
 
   /**
@@ -128,14 +138,14 @@ export class PreviewSeed {
    * replaces them with current avatars and bios. A failed lookup is not an
    * error — it leaves the snapshot in place, which is what it is for.
    */
-  async seed(server: string): Promise<void> {
+  async seed(server: string, from?: PreviewOrigin): Promise<void> {
     // Anything the visitor already followed is theirs, not ours, and must
     // survive cleanup. Recorded before seeding, because afterwards the two are
     // indistinguishable.
     const preexisting = PREVIEW_ACCOUNTS.filter((account) =>
       this.follows.isFollowing(account, server),
     ).map((account) => account.id);
-    localStorage.setItem(PREVIEW_KEY, JSON.stringify({ server, preexisting }));
+    localStorage.setItem(PREVIEW_KEY, JSON.stringify({ server, preexisting, from }));
     for (const account of PREVIEW_ACCOUNTS) {
       this.follows.follow(account, server);
     }

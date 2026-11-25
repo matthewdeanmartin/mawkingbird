@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login" [queryParams]="returnHere">Open the app</a>
+      <app-open-app>Open the app</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/unbird/archive">Open the app</a>
-    </div>
   }
 
   <div class="intro">
@@ -24,6 +17,10 @@
       sign-in.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   <!-- Deferred: prerendering shows the placeholder; the tools read files and
        storage only in the browser. -->

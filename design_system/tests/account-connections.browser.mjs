@@ -50,6 +50,11 @@ for (const direction of ["ltr", "rtl"]) {
       await page
         .getByRole("button", { name: /Read .* without an account/ })
         .click();
+      // Signing in on the server leads; a token waits, closed.
+      await expect(
+        page.getByRole("link", { name: "Sign in with Mastodon", exact: true }),
+      ).toBeVisible();
+      await page.locator("mb-disclosure summary").click();
       const token = page.getByLabel("access token", { exact: true });
       await token.fill("reject");
       await page.getByRole("button", { name: "Sign in", exact: true }).click();

@@ -72,7 +72,10 @@
     }
 
     <p class="mk-out small">
-      <a routerLink="/login">{{ 'pages.loginMisskey.useDifferentNetwork' | transloco }}</a> ·
+      <a routerLink="/login" [queryParams]="returnHere">{{
+        'pages.loginMisskey.useDifferentNetwork' | transloco
+      }}</a>
+      ·
       <a routerLink="/anonymous">{{ 'pages.loginMisskey.lookAround' | transloco }}</a>
     </p>
   </div>

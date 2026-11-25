@@ -10,6 +10,7 @@ import { MbControl, MbField } from '../../design-system/field/field';
 import { MbNotice } from '../../design-system/notice/notice';
 import { Account } from '../../platform/api/models';
 import { Auth } from '../../platform/session/auth';
+import { MastodonMe } from '../../connections/mastodon/mastodon-me';
 import { adaptProfile } from '../../connections/bluesky/bluesky-adapter';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { parsePerson } from './fediverse-handle';
@@ -116,12 +117,13 @@ export class AnalyticsLookup implements OnInit {
   private readonly auth = inject(Auth);
   private readonly anonymousPublic = inject(AnonymousPublicApi);
   private readonly bluesky = inject(BlueskyApi);
+  private readonly mastodonMe = inject(MastodonMe);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   /** The signed-in Mastodon account, when there is one to show "My analytics" for. */
   protected readonly me = computed(() =>
-    this.auth.lacksMastodonToken ? null : (this.auth.account() ?? null),
+    this.auth.lacksMastodonToken ? null : this.mastodonMe.account(),
   );
   protected readonly draft = signal('');
   protected readonly pending = signal('');

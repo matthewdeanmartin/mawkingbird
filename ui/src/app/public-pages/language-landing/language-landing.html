@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">{{ copy.openApp }}</a>
+      <app-open-app>{{ copy.openApp }}</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/i18n">{{ copy.openApp }}</a>
-    </div>
   }
 
   <div class="intro">
@@ -19,6 +12,10 @@
     <h1>{{ copy.heading }}</h1>
     <p>{{ copy.intro }}</p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: it reads the account, so it runs only in the browser. -->

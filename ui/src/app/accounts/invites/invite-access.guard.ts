@@ -25,6 +25,6 @@ export const inviteAccessGuard: CanActivateFn = async (route) => {
   if (result.status !== 'available') {
     return router.parseUrl('/login');
   }
-  auth.enterAnonymous(server);
+  auth.enterAnonymous(server, { implicit: true });
   return true;
 };

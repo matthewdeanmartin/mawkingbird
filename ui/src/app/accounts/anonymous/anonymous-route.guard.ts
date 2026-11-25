@@ -18,12 +18,15 @@ export const anonymousCollectionGuard: CanActivateFn = async (route) => {
 };
 
 /** Redirect authenticated-only pages before their components can issue API calls. */
-export const anonymousUnavailableGuard: CanActivateFn = (route) => {
+export const anonymousUnavailableGuard: CanActivateFn = (route, state) => {
   if (!inject(Auth).isAnonymous) {
     return true;
   }
   const feature = String(route.data?.['anonymousFeature'] ?? 'This feature');
-  return inject(Router).createUrlTree(['/unavailable'], { queryParams: { feature } });
+  // `next`: where signing in from the notice returns (login-destination.ts).
+  return inject(Router).createUrlTree(['/unavailable'], {
+    queryParams: { feature, next: state.url },
+  });
 };
 
 /**
@@ -40,7 +43,7 @@ export const anonymousUnavailableGuard: CanActivateFn = (route) => {
  * empty for an anonymous visitor: with AI features switched off there is no
  * bot, no account, and nothing the page could show.
  */
-export const anonymousChatGuard: CanActivateFn = (route) => {
+export const anonymousChatGuard: CanActivateFn = (route, state) => {
   if (!inject(Auth).isAnonymous) {
     return true;
   }
@@ -48,5 +51,7 @@ export const anonymousChatGuard: CanActivateFn = (route) => {
     return true;
   }
   const feature = String(route.data?.['anonymousFeature'] ?? 'This feature');
-  return inject(Router).createUrlTree(['/unavailable'], { queryParams: { feature } });
+  return inject(Router).createUrlTree(['/unavailable'], {
+    queryParams: { feature, next: state.url },
+  });
 };

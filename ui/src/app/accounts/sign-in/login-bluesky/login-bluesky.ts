@@ -5,7 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../../platform/session/auth';
-import { loginDestination, stashLoginNext } from '../../../platform/session/login-destination';
+import {
+  destinationNeedsMastodon,
+  loginDestination,
+  stashLoginNext,
+} from '../../../platform/session/login-destination';
 import { BlueskySession } from '../../../connections/bluesky/bluesky-session';
 import { environment } from '../../../../environments/environment';
 import { redirectToSecureLogin } from '../../../platform/session/secure-login';
@@ -53,6 +57,8 @@ export class LoginBluesky implements OnInit {
   private adding = false;
   /** Home, or the allowlisted mini-app that sent the visitor here (`?next=`). */
   private destination = '/home';
+  /** The other networks' pages keep it too. */
+  protected returnHere: { next: string } | null = null;
 
   protected brand = environment.brand;
   protected native = inject(NATIVE_SOCIAL);
@@ -65,8 +71,17 @@ export class LoginBluesky implements OnInit {
     if (redirectToSecureLogin()) return;
     this.adding = this.route.snapshot.queryParamMap.has('add');
     this.destination = loginDestination(this.route.snapshot.queryParamMap.get('next'));
+    if (this.destination !== '/home') this.returnHere = { next: this.destination };
     // Already signed in and not explicitly adding an account: nothing to do here.
     if (this.auth.isBlueskyPrimary && !this.adding) {
+      // Going back to a page this account cannot open would only ask again.
+      if (destinationNeedsMastodon(this.destination) && this.auth.lacksMastodonToken) {
+        void this.router.navigate(['/login/mastodon'], {
+          queryParams: this.returnHere,
+          replaceUrl: true,
+        });
+        return;
+      }
       void this.router.navigateByUrl(this.destination, { replaceUrl: true });
       return;
     }
@@ -81,6 +96,7 @@ export class LoginBluesky implements OnInit {
     if (this.working() || this.native) return;
     this.working.set(true);
     this.error.set(null);
+    stashLoginNext(this.destination);
     void this.bsky.beginOAuthSignup(this.adding).catch((err: unknown) => {
       this.working.set(false);
       this.error.set(this.describeOAuth(err));

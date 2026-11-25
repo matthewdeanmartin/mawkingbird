@@ -59,7 +59,7 @@ export class AccountSources {
   private anonymous = inject(AnonymousPublicApi);
 
   private signedIn(): boolean {
-    return this.auth.kind() === 'mastodon' && !!this.auth.token();
+    return !this.auth.isAnonymous && !!this.auth.token();
   }
 
   /** Candidate accounts for what the visitor typed. Empty when nothing matched. */

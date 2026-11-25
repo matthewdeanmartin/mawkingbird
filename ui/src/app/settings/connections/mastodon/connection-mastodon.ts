@@ -1,4 +1,5 @@
 import { MbButton } from '../../../design-system/button/button';
+import { MbDisclosure } from '../../../design-system/disclosure/disclosure';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
@@ -6,11 +7,12 @@ import { MbField, MbControl } from '../../../design-system/field/field';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../../platform/api/api';
 import { Auth } from '../../../platform/session/auth';
 import { Server } from '../../../platform/http/server';
+import { forgetNativeAccount } from '../../../platform/session/platform-login';
 import { normalizeHostUrl } from '../../../platform/http/host-url';
 import { ServerDiscovery } from '../../../discovery/server-discovery/server-discovery';
 import {
@@ -35,6 +37,8 @@ import { CONNECTION_SCOPE_COPY } from '../connection-catalog';
 // i18n settings.connections.mastodon.anonymousReadingNote: Anonymous reading covers Explore, trends and hashtags. Your home timeline stays Bluesky-only: an anonymous connection has no follows, so its "home" is a public firehose of strangers. Signing in merges Mastodon into home.
 // i18n settings.connections.mastodon.signedInMergeNote: Mastodon posts from the people you follow are merged into your home timeline.
 // i18n settings.connections.mastodon.signInHeading: Sign in
+// i18n settings.connections.mastodon.signInWith: Sign in with Mastodon
+// i18n settings.connections.mastodon.signInWithNote: You approve access on your own server and come straight back, still signed in with Bluesky.
 // i18n settings.connections.mastodon.pasteTokenFor: Paste an access token for
 // i18n settings.connections.mastodon.pasteTokenAfter: . On Mastodon you can make one at Preferences → Development → New application.
 // i18n settings.connections.mastodon.tokenPlaceholder: access token
@@ -63,16 +67,16 @@ import { CONNECTION_SCOPE_COPY } from '../connection-catalog';
  * for. So nothing here happens until someone presses a button on this page.
  *
  * Deliberately not a reuse of `pages/login/`. That page is 26KB tightly bound to
- * its own tabs, OAuth callback, registration and mock tooling; the connector
- * needs a server field and a token box, and lifting them out would drag the rest
- * along. Token paste only for now — routing the connector through the OAuth
- * callback at `<base href>login` is a follow-up, and the redirect_uri is
- * load-bearing enough that it deserves its own change.
+ * its own tabs, OAuth callback, registration and mock tooling, and lifting them
+ * out would drag the rest along. Signing in links there instead: under a Bluesky
+ * account that page connects rather than switches (`Login.connectTo`), and comes
+ * back here. Pasting a token stays, for people who have one.
  */
 @Component({
   selector: 'app-connection-mastodon',
   imports: [
     MbButton,
+    MbDisclosure,
     MbNotice,
     MbContentLink,
     MbPageHeader,
@@ -92,6 +96,13 @@ export class ConnectionMastodon {
   protected auth = inject(Auth);
   protected connector = inject(MastodonConnector);
   private server = inject(Server);
+  private router = inject(Router);
+
+  /** The sign-in page, for this connector's server, coming back to this page. */
+  protected readonly signInParams = computed(() => ({
+    next: this.router.url.split(/[?#]/)[0],
+    ...(this.serverLabel() && { server: this.serverLabel() }),
+  }));
   private api = inject(Api);
   private transloco = inject(TranslocoService);
 
@@ -143,6 +154,7 @@ export class ConnectionMastodon {
     if (!normalized) {
       return;
     }
+    forgetNativeAccount(this.connector.token());
     this.connector.setServer(normalized);
     this.server.setBaseUrl(normalized);
     // The old server's token no longer authenticates anything — a token is only
@@ -190,6 +202,8 @@ export class ConnectionMastodon {
 
   /** Drop the credentials, keeping the opt-in. Back to anonymous, not to absent. */
   protected signOut(): void {
+    // Native keeps the credential in the OS store; here it is only a name for it.
+    forgetNativeAccount(this.connector.token());
     this.connector.signOut();
     this.auth.disconnectMastodon();
     this.error.set(null);
@@ -197,6 +211,7 @@ export class ConnectionMastodon {
 
   /** Undo the opt-in entirely. */
   protected disable(): void {
+    forgetNativeAccount(this.connector.token());
     this.connector.disable();
     this.auth.disconnectMastodon();
     this.server.setBaseUrl('');

@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">앱 열기</a>
+      <app-open-app>앱 열기</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/connections/github">앱 열기</a>
-    </div>
   }
 
   <div class="intro">
@@ -22,6 +15,10 @@
       팔로우하는 사람과 별표를 누른 저장소의 주인을 확인해, Mastodon에서 팔로우할 수 있게 해 줍니다.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the connector and finder load only in the browser. -->

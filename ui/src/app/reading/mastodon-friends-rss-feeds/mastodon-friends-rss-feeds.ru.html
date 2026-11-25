@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Открыть приложение</a>
+      <app-open-app>Открыть приложение</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/rss">Открыть приложение</a>
-    </div>
   }
 
   <div class="intro">
@@ -22,6 +15,10 @@
       найденное в один файл OPML для любого RSS-приложения.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->

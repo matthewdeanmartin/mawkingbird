@@ -4,6 +4,9 @@ import { FOCUSED_APPS } from '../../shell/mode-nav';
  * App pages that pick up after sign-in besides the mini-apps: Unbird keeps the
  * reader's archive on the device, so signing up mid-way returns to it. Watch
  * offers sign-in to chat, and its query only names a public post and a video.
+ * The last group are the pages that turn Anonymous away to `/unavailable`,
+ * which offers to sign in and come back, and the Mastodon connection page;
+ * opening one changes nothing.
  */
 const RETURN_PAGES: readonly string[] = [
   '/watch',
@@ -12,7 +15,26 @@ const RETURN_PAGES: readonly string[] = [
   '/unbird/posts',
   '/unbird/archive',
   '/unbird/profile',
+  '/analytics',
+  '/annual-report',
+  '/chat',
+  '/forum',
+  '/notifications',
+  '/settings/blocks',
+  '/settings/bulk-actions',
+  '/settings/connections/mastodon',
+  '/settings/filters',
+  '/settings/follows',
+  '/settings/moderation',
+  '/settings/mutes',
+  '/settings/privacy',
+  '/settings/pseudonymity',
 ];
+
+/** Public pages carry a trailing slash in the address bar; their registry paths do not. */
+function barePath(path: string): string {
+  return path.length > 1 ? path.replace(/\/$/, '') : path;
+}
 
 /**
  * The page to open after signing in: a mini-app's root named in `?next=`, else Home.
@@ -27,12 +49,18 @@ export function loginDestination(next: string | null | undefined): string {
   // is checked against the allowlist; a fragment is dropped, and anything that
   // is not a plain path ("//host", "https:…", "\\host") fails the path test.
   const queryAt = next.indexOf('?');
-  const path = (queryAt < 0 ? next : next.slice(0, queryAt)).split('#')[0];
+  const path = barePath((queryAt < 0 ? next : next.slice(0, queryAt)).split('#')[0]);
   if (!FOCUSED_APPS.some((app) => app.root === path) && !RETURN_PAGES.includes(path))
     return '/home';
   if (queryAt < 0) return path;
   const query = next.slice(queryAt + 1).split('#')[0];
   return query ? `${path}?${new URLSearchParams(query).toString()}` : path;
+}
+
+/** Whether a destination is a mini-app only a Mastodon sign-in opens. */
+export function destinationNeedsMastodon(destination: string | null): boolean {
+  const path = destination?.split('?')[0];
+  return FOCUSED_APPS.some((app) => app.root === path && app.signIn === 'mastodon');
 }
 
 /**
@@ -72,7 +100,8 @@ export const BLUESKY_CONNECTION_PAGE = '/settings/connections/bluesky';
 const CONNECTOR_RETURN_KEY = 'mockingbird_bsky_connector_return';
 
 function connectorDestination(path: string | null | undefined): string {
-  return path && FOCUSED_APPS.some((app) => app.root === path) ? path : BLUESKY_CONNECTION_PAGE;
+  const bare = path && barePath(path);
+  return bare && FOCUSED_APPS.some((app) => app.root === bare) ? bare : BLUESKY_CONNECTION_PAGE;
 }
 
 export function stashConnectorReturn(path: string): void {

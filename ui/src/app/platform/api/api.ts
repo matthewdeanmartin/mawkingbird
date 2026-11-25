@@ -22,6 +22,7 @@ import { PrivateMedia } from '../../publishing/private-media';
 import { Pseudonymity } from '../../accounts/pseudonymity';
 import { cleanPostLinks } from '../../publishing/post-link-cleaning';
 import { SearchServer, searchServerRequest } from '../http/search-server';
+import { signInRequest } from '../http/sign-in-request';
 import { SERVER_ROLE, serverRole } from '../http/server-role';
 import { readPolicy } from '../network/request-policy';
 import {
@@ -163,6 +164,14 @@ export class Api {
   // --- auth / account ---
   verifyCredentials(): Observable<Account> {
     return this.http.get<Account>('/api/v1/accounts/verify_credentials');
+  }
+
+  /** Whose token this is, without making it the active one: for connecting an account. */
+  verifyToken(token: string): Observable<Account> {
+    return this.http.get<Account>('/api/v1/accounts/verify_credentials', {
+      headers: { Authorization: `Bearer ${token}` },
+      context: signInRequest(),
+    });
   }
 
   getAccount(id: string): Observable<Account> {
@@ -1687,11 +1696,11 @@ export class Api {
     redirectUri: string,
     scopes = 'read write follow',
   ): Observable<OAuthApp> {
-    return this.http.post<OAuthApp>('/api/v1/apps', {
-      client_name: clientName,
-      redirect_uris: redirectUri,
-      scopes,
-    });
+    return this.http.post<OAuthApp>(
+      '/api/v1/apps',
+      { client_name: clientName, redirect_uris: redirectUri, scopes },
+      { context: signInRequest() },
+    );
   }
 
   /**

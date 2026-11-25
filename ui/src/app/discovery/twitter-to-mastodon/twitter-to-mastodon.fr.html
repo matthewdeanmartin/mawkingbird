@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login" [queryParams]="returnHere">Ouvrir l’appli</a>
+      <app-open-app>Ouvrir l’appli</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/unbird">Ouvrir l’appli</a>
-    </div>
   }
 
   <div class="intro">
@@ -24,6 +17,10 @@
       trouvés dedans sont envoyées à ton serveur Mastodon.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   <!-- Deferred: prerendering shows the placeholder, and the importer's
        services (session, storage, Mastodon API) load only in the browser. -->

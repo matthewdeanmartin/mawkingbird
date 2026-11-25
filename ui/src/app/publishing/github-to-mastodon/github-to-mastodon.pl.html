@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Otwórz aplikację</a>
+      <app-open-app>Otwórz aplikację</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/settings/connections/github">Otwórz aplikację</a>
-    </div>
   }
 
   <div class="intro">
@@ -23,6 +16,10 @@
       gwiazdką, i pozwala obserwować ich na Mastodonie.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the connector and finder load only in the browser. -->

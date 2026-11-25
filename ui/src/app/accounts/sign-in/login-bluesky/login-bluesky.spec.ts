@@ -64,6 +64,25 @@ describe('LoginBluesky', () => {
     expect(begin).toHaveBeenCalledWith(false);
   });
 
+  it('keeps the page to return to through a sign-up and a change of network', () => {
+    vi.spyOn(TestBed.inject(BlueskySession), 'beginOAuthSignup').mockReturnValue(
+      new Promise<never>(() => undefined),
+    );
+    vi.spyOn(TestBed.inject(ActivatedRoute).snapshot.queryParamMap, 'get').mockImplementation(
+      (key: string) => (key === 'next' ? '/crosspost' : null),
+    );
+    const fixture = TestBed.createComponent(LoginBluesky);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.bsky-out a')?.getAttribute('href')).toBe(
+      '/login?next=%2Fcrosspost',
+    );
+
+    (fixture.nativeElement.querySelector('.bsky-create') as HTMLButtonElement).click();
+
+    expect(sessionStorage.getItem('mockingbird_login_next')).toBe('/crosspost');
+    sessionStorage.clear();
+  });
+
   it('uses targeted OAuth for a specific handle', () => {
     const begin = vi
       .spyOn(TestBed.inject(BlueskySession), 'beginOAuthIdentity')
@@ -91,7 +110,8 @@ describe('LoginBluesky', () => {
   for (const mode of ['fresh', 'anonymous', 'implicit', 'mastodon']) {
     it(`offers explicit Bluesky login to a ${mode} visitor without starting OAuth`, () => {
       const auth = TestBed.inject(Auth);
-      if (mode === 'anonymous' || mode === 'implicit') auth.enterAnonymous(undefined, { implicit: mode === 'implicit' });
+      if (mode === 'anonymous' || mode === 'implicit')
+        auth.enterAnonymous(undefined, { implicit: mode === 'implicit' });
       if (mode === 'mastodon') auth.setToken('saved-mastodon');
       const navigate = vi.spyOn(TestBed.inject(Router), 'navigateByUrl').mockResolvedValue(true);
       const begin = vi.spyOn(TestBed.inject(BlueskySession), 'beginOAuthIdentity');

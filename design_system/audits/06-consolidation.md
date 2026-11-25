@@ -3541,3 +3541,13 @@ Post-login continuation: the signed-in landing page now offers its original app
 destination explicitly using the existing Button. Header sign-in returns to the
 same translated task page, not Home. Reviewed the additional signed-in Buttons
 and their source offsets in the inventory; no new widget implementations.
+
+### 2026-11-25: one way into the app, and the Mastodon connector
+
+Reviewed the regenerated inventory: one candidate added (`open-app.ts`), none removed, 314
+changed. The 309 tool and index templates lose their own header Button (and the signed-in
+"Open the app" one) to `app-open-app`, which renders the same shared outline Button and
+decides its address. Changed otherwise: the first-run modal gains one text button (existing
+`first-run-back` style), the Mastodon sign-in page a shared Notice with a link Button, the
+Mastodon connection page a leading Button link with the token form inside the shared
+Disclosure, and Unavailable moves from a hand-styled link to two shared Buttons. No new widget.

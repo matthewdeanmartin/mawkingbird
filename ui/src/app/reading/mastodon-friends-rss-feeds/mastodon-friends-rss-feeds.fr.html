@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Ouvrir l’appli</a>
+      <app-open-app>Ouvrir l’appli</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/rss">Ouvrir l’appli</a>
-    </div>
   }
 
   <div class="intro">
@@ -23,6 +16,10 @@
       n’importe quel lecteur de flux.
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->

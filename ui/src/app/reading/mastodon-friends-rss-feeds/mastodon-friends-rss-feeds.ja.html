@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">アプリを開く</a>
+      <app-open-app>アプリを開く</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/rss">アプリを開く</a>
-    </div>
   }
 
   <div class="intro">
@@ -23,6 +16,10 @@
       1 つの OPML ファイルにまとめます。どのフィードリーダーでも読み込めます。
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the scan reads your follows, so it loads only in the browser. -->

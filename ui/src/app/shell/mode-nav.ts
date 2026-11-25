@@ -409,6 +409,8 @@ export interface FocusedApp {
   id: string;
   /** Every URL at or below this path belongs to the mini-app. */
   root: string;
+  /** Which account its signed-in version needs. */
+  signIn: 'mastodon' | 'any';
   items: readonly ModeNavItem[];
 }
 
@@ -419,11 +421,13 @@ const INVITE_ICON = 'M3 6h18v12H3zM3 6l9 7 9-7';
 function focusedApp(
   id: string,
   root: string,
+  signIn: FocusedApp['signIn'],
   tool: Pick<ModeNavItem, 'id' | 'labelKey' | 'icon'>,
 ): FocusedApp {
   return {
     id,
     root,
+    signIn,
     items: [
       { ...tool, link: root, active: (url) => pathOf(url).replace(/\/$/, '') === root },
       {
@@ -461,6 +465,7 @@ function feedBuilderApp(topic: string, lang: string, root: string): FocusedApp {
   return {
     id: `feed-builder-${topic}-${lang}`,
     root,
+    signIn: 'mastodon',
     items: [
       {
         id: 'communities',
@@ -495,7 +500,7 @@ function feedBuilderApp(topic: string, lang: string, root: string): FocusedApp {
 }
 
 export const FOCUSED_APPS: readonly FocusedApp[] = [
-  ...TOOL_PAGES.map((tool) => focusedApp(tool.id, `/${tool.path}`, tool.tab)),
+  ...TOOL_PAGES.map((tool) => focusedApp(tool.id, `/${tool.path}`, tool.signIn, tool.tab)),
   ...FEED_BUILDER_PAGES.map((page) => feedBuilderApp(page.topic, page.lang, `/${page.path}`)),
 ];
 

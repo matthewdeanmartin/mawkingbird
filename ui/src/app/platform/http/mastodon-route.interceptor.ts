@@ -4,6 +4,7 @@ import { throwError } from 'rxjs';
 import { Auth } from '../session/auth';
 import { EXTERNAL_FETCH } from './external-fetch';
 import { SEARCH_SERVER_REQUEST, SearchServer } from './search-server';
+import { SIGN_IN_REQUEST } from './sign-in-request';
 import { Server } from './server';
 import { mastodonConnectorServer } from '../../connections/mastodon/mastodon-connector';
 import { normalizeHostUrl } from './host-url';
@@ -31,7 +32,11 @@ export function lacksMastodonServer(auth: Auth, server: Server): boolean {
  * reaches the network, the metrics, or server-health accounting.
  */
 export const mastodonRouteInterceptor: HttpInterceptorFn = (req, next) => {
-  if (!MASTODON_ROUTE.test(req.url) || req.context.get(EXTERNAL_FETCH)) {
+  if (
+    !MASTODON_ROUTE.test(req.url) ||
+    req.context.get(EXTERNAL_FETCH) ||
+    req.context.get(SIGN_IN_REQUEST)
+  ) {
     return next(req);
   }
   if (req.context.get(SEARCH_SERVER_REQUEST) && inject(SearchServer).active()) {

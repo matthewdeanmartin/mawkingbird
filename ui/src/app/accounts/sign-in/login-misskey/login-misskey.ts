@@ -80,6 +80,8 @@ export class LoginMisskey implements OnInit {
   private transloco = inject(TranslocoService);
   private adding = false;
   private destination = '/home';
+  /** The other networks' pages keep it too. */
+  protected returnHere: { next: string } | null = null;
 
   protected brand = environment.brand;
   protected server = signal('');
@@ -116,6 +118,7 @@ export class LoginMisskey implements OnInit {
     const server = params.get('server');
     if (server) this.server.set(server);
     this.destination = loginDestination(params.get('next'));
+    if (this.destination !== '/home') this.returnHere = { next: this.destination };
   }
 
   private async loadSuggestions(): Promise<void> {

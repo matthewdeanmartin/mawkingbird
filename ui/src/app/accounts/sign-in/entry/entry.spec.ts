@@ -109,6 +109,50 @@ describe('EntryPage', () => {
     expect(TestBed.inject(AnonymousFollows).count()).toBe(0);
   });
 
+  it('shows the preview to someone a public page let in, who never chose Anonymous', async () => {
+    probeAnswers({ 'mastodon.social': true });
+    TestBed.inject(Auth).enterAnonymous(PREVIEW_SERVER, { implicit: true });
+    TestBed.createComponent(EntryPage).detectChanges();
+    await settle(http);
+
+    expect(TestBed.inject(PreviewSeed).active).toBe(true);
+    expect(TestBed.inject(Auth).choseAnonymous).toBe(false);
+    expect(navigate).toHaveBeenCalledWith('/home', { replaceUrl: true });
+  });
+
+  /** Browsers from before the choice was recorded hold no answer either way. */
+  it('takes an unrecorded Anonymous reader at their word only if they have made it theirs', async () => {
+    probeAnswers({ 'mastodon.social': true });
+    const auth = TestBed.inject(Auth);
+    auth.enterAnonymous('https://hachyderm.io');
+    auth.anonymousChoice.set('unknown');
+    TestBed.createComponent(EntryPage).detectChanges();
+    await settle(http);
+    expect(TestBed.inject(PreviewSeed).active).toBe(false);
+
+    auth.enterAnonymous(PREVIEW_SERVER);
+    auth.anonymousChoice.set('unknown');
+    TestBed.createComponent(EntryPage).detectChanges();
+    await settle(http);
+    expect(TestBed.inject(PreviewSeed).active).toBe(true);
+  });
+
+  it('remembers which page led to the front door', async () => {
+    probeAnswers({ 'mastodon.social': true });
+    const router = TestBed.inject(Router);
+    vi.spyOn(router, 'getCurrentNavigation').mockReturnValue({
+      previousNavigation: { finalUrl: router.parseUrl('/mastodon-analytics?acct=a') },
+    } as never);
+    document.title = 'Mastodon analytics | Free Mastodon tools | Mawkingbird';
+    TestBed.createComponent(EntryPage).detectChanges();
+    await settle(http);
+
+    expect(TestBed.inject(PreviewSeed).from).toEqual({
+      url: '/mastodon-analytics?acct=a',
+      title: 'Mastodon analytics',
+    });
+  });
+
   it('renders no marketing page while a first-time preview probe is pending', () => {
     vi.stubGlobal(
       'fetch',

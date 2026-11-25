@@ -6,6 +6,7 @@ import { Auth } from '../../../platform/session/auth';
 import { BlueskySession } from '../../../connections/bluesky/bluesky-session';
 import {
   peekConnectorReturn,
+  stashLoginNext,
   takeConnectorReturn,
   takeLoginNext,
 } from '../../../platform/session/login-destination';
@@ -52,10 +53,12 @@ export class BlueskyOAuthCallback implements OnInit {
       if (!this.auth.enterBluesky()) {
         throw new Error('The browser could not store the Bluesky identity.');
       }
+      // Setup comes first for a new account, and returns to the page itself.
+      if (result.signup) stashLoginNext(next);
       if (result.adding) {
         // Recreate account-scoped singletons under the newly active DID. A
         // sign-up's armed setup takes over from Home (the shell redirects).
-        location.assign('home');
+        location.assign(result.signup ? 'home' : next.slice(1));
       } else if (result.signup) {
         await this.router.navigateByUrl('/setup', { replaceUrl: true });
       } else {

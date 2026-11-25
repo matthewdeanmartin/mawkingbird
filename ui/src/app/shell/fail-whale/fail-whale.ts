@@ -147,7 +147,7 @@ export class FailWhale {
    * instance and the whale is gone.
    */
   onServerPicked(baseUrl: string): void {
-    this.auth.enterAnonymous(baseUrl);
+    this.auth.enterAnonymous(baseUrl, { implicit: true });
     this.reload();
   }
 

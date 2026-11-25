@@ -2,7 +2,16 @@ import { MbServerPickerSurface } from '../../../design-system/identity/server-pi
 import { MbButton } from '../../../design-system/button/button';
 import { ServerConnectionHelp } from '../server-connection-help/server-connection-help';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  Injector,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -27,7 +36,12 @@ import { brandLogoSrc } from '../../../platform/build/build-flavor';
 import { AppFooter } from '../../../shell/app-footer/app-footer';
 import { ServerDiscovery } from '../../../discovery/server-discovery/server-discovery';
 import { redirectToSecureLogin } from '../../../platform/session/secure-login';
-import { loginDestination } from '../../../platform/session/login-destination';
+import { loginDestination, stashLoginNext } from '../../../platform/session/login-destination';
+import { blueskyIdentityDid } from '../../../connections/bluesky/bluesky-identity-store';
+import {
+  MastodonConnector,
+  mastodonConnectorServer,
+} from '../../../connections/mastodon/mastodon-connector';
 import { MisskeyAuth } from '../../../connections/misskey/misskey-auth';
 import { FeatureFlags } from '../../../platform/build/feature-flags';
 import {
@@ -73,6 +87,8 @@ interface StoredApp {
   created?: boolean;
   /** Where to land after signing in, already checked by {@link loginDestination}. */
   next?: string;
+  /** Connecting Mastodon under this Bluesky account (its DID), not signing in. */
+  connect?: string;
 }
 
 type Tab = 'signin' | 'mock' | 'init';
@@ -161,6 +177,11 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 // i18n pages.login.intent.change: ← Something else
 // i18n pages.login.path.haveAccount: I have an account
 // i18n pages.login.path.pickServerFirst: Pick your server above, then sign in.
+// i18n pages.login.connect.notice: You stay signed in as {{handle}}. Connecting Mastodon adds your Mastodon account to it.
+// i18n pages.login.connect.separate: Use Mastodon as a separate account instead
+// i18n pages.login.connect.switched: The active account changed while you were connecting, so nothing was connected. Start again from this page.
+// i18n pages.login.connect.notStored: This browser could not keep the Mastodon sign-in. Check whether site storage is blocked.
+// i18n pages.login.oauth.cancelled: Sign-in was cancelled. Nothing was changed.
 // i18n pages.login.oauth.accessLegend: How much access to grant this app
 // i18n pages.login.oauth.redirecting: Redirecting…
 // i18n pages.login.oauth.signInWith: Sign in with {{server}}
@@ -233,6 +254,7 @@ export class Login implements OnInit, OnDestroy {
   private readonly transloco = inject(TranslocoService);
   private mockApi = inject(MockApi);
   private auth = inject(Auth);
+  private injector = inject(Injector);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   protected server = inject(Server);
@@ -263,8 +285,33 @@ export class Login implements OnInit, OnDestroy {
    */
   protected intent = signal<LoginIntent | null>(null);
 
+  /**
+   * The Bluesky account Mastodon is being connected to, or null for a sign-in.
+   *
+   * The default under a Bluesky account: someone asked by a Mastodon tool for
+   * their Mastodon account has not asked to stop being who they are. "Add
+   * account" (`?add=1`) and the link on the page are the way to a separate one.
+   */
+  protected readonly connectTo = signal<{ did: string; handle: string } | null>(null);
+
+  private startConnecting(did: string | null): void {
+    const account = this.auth.account();
+    if (did && account) this.connectTo.set({ did, handle: `@${account.acct}` });
+  }
+
+  protected useSeparateAccount(): void {
+    this.connectTo.set(null);
+  }
+
+  /** Connecting keeps the identity, so "just looking" without one is not on offer. */
+  protected readonly intents = computed(() =>
+    this.connectTo()
+      ? this.intentChoices.filter((choice) => choice.value !== 'look')
+      : this.intentChoices,
+  );
+
   /** The three doors, in the order they are offered. */
-  protected readonly intentChoices: readonly {
+  private readonly intentChoices: readonly {
     value: LoginIntent;
     labelKey: string;
     hintKey: string;
@@ -368,6 +415,11 @@ export class Login implements OnInit, OnDestroy {
    * troubleshooting panel. Only checked after the Mastodon probe fails.
    */
   protected misskeyServer = signal<string | null>(null);
+
+  /** The Misskey page, with the server already typed and the page to return to. */
+  protected misskeyLink(server: string): Record<string, string> {
+    return { server, ...(this.destination !== '/home' && { next: this.destination }) };
+  }
 
   private async detectMisskey(base: string, seq: number): Promise<void> {
     if (!this.flags.enabled('misskey')) return;
@@ -485,6 +537,9 @@ export class Login implements OnInit, OnDestroy {
       void this.router.navigateByUrl(this.destination, { replaceUrl: true });
       return;
     }
+    if (this.auth.isBlueskyPrimary && !params.get('code') && !params.get('add')) {
+      this.startConnecting(blueskyIdentityDid());
+    }
     // Onboarding default: Mocking Bird has no "this server", so rather than greeting
     // a new user with an empty picker, preselect the deployment's home server, or
     // else the biggest general-purpose instance.
@@ -520,10 +575,22 @@ export class Login implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.releaseServer();
     this.probeSeq += 1;
     this.probeController?.abort();
     if (this.serverDebounce) {
       clearTimeout(this.serverDebounce);
+    }
+  }
+
+  /**
+   * Under a Bluesky account the app's server is its connector's. Picking one on
+   * this page is only a question until the connection is made, so an unfinished
+   * one puts the connector's own server (or none) back.
+   */
+  private releaseServer(): void {
+    if (this.auth.isBlueskyPrimary && this.auth.lacksMastodonToken) {
+      this.server.setBaseUrl(mastodonConnectorServer() ?? '');
     }
   }
 
@@ -695,6 +762,10 @@ export class Login implements OnInit, OnDestroy {
     }
     this.error.set(null);
     this.checking.set(true);
+    if (this.connectTo()) {
+      this.connect(value);
+      return;
+    }
     this.auth.setToken(value);
     this.api.verifyCredentials().subscribe({
       next: (acc) => {
@@ -717,9 +788,11 @@ export class Login implements OnInit, OnDestroy {
         }
         this.enteringHome.set(true);
         this.checking.set(false);
-        this.router.navigateByUrl(setupRedirectFor('/home') ?? this.destination, {
-          replaceUrl: true,
-        });
+        const setup = setupRedirectFor('/home');
+        // A new account's setup comes first, then the page that asked to sign
+        // in. Unbird's steps are part of setup, so there is nothing to go back to.
+        if (setup && !this.destination.startsWith('/unbird')) stashLoginNext(this.destination);
+        this.router.navigateByUrl(setup ?? this.destination, { replaceUrl: true });
       },
       error: (error) => {
         this.auth.removeSession(value);
@@ -730,6 +803,40 @@ export class Login implements OnInit, OnDestroy {
             : 'That token was rejected. Check it and try again.',
         );
       },
+    });
+  }
+
+  /**
+   * Attach the token as the Bluesky account's Mastodon connector. Verified
+   * before it is kept, as Settings does: an unverified one would leave the
+   * connector claiming a sign-in that fails on every call.
+   */
+  private connect(token: string): void {
+    const server = this.server.baseUrl();
+    const refuse = (message: string) => {
+      this.checking.set(false);
+      this.intent.set('have');
+      this.oauthError.set(message);
+    };
+    this.api.verifyToken(token).subscribe({
+      next: (account) => {
+        // Only now: it reads the active account's storage when it is created.
+        const connector = this.injector.get(MastodonConnector);
+        connector.signIn(token, server, account);
+        if (!connector.signedIn()) {
+          refuse(this.transloco.translate<string>('pages.login.connect.notStored'));
+          return;
+        }
+        this.auth.connectMastodon(token, account);
+        this.enteringHome.set(true);
+        this.checking.set(false);
+        void this.router.navigateByUrl(this.destination, { replaceUrl: true });
+      },
+      error: (error) =>
+        refuse(
+          (this.nativeLogin && error?.error?.error) ||
+            this.transloco.translate<string>('settings.connections.mastodon.signInFailed'),
+        ),
     });
   }
 
@@ -914,6 +1021,7 @@ export class Login implements OnInit, OnDestroy {
     const params = this.route.snapshot.queryParamMap;
     const code = params.get('code');
     if (!code) {
+      if (params.get('error')) this.handleOAuthRefusal(params.get('state'));
       return;
     }
     const app = this.takePendingOAuth();
@@ -926,13 +1034,24 @@ export class Login implements OnInit, OnDestroy {
     this.destination = loginDestination(app.next);
     // Sign-ups always land in setup; one that began in Unbird opens its
     // Twitter step, because setup now carries Unbird's people matching.
-    if (app.created)
+    if (app.created && !app.connect)
       noteSignupReturn(this.destination.startsWith('/unbird') ? 'twitter' : undefined);
     if (!statesMatch(app.state, params.get('state'))) {
       this.oauthError.set(
         'Sign-in could not be verified (state mismatch) and was stopped. Start again from this page.',
       );
       return;
+    }
+    if (app.connect) {
+      // Another tab may have switched accounts; never attach to the wrong one.
+      if (this.auth.isBlueskyPrimary && blueskyIdentityDid() === app.connect) {
+        this.startConnecting(app.connect);
+      }
+      if (!this.connectTo()) {
+        this.oauthError.set(this.transloco.translate<string>('pages.login.connect.switched'));
+        this.intent.set('have');
+        return;
+      }
     }
     // The code is only redeemable at the instance that issued it; if the
     // selected server drifted (another tab, a restored session), put it back.
@@ -961,6 +1080,17 @@ export class Login implements OnInit, OnDestroy {
           this.oauthError.set('Code exchange failed.');
         },
       });
+  }
+
+  /** They pressed Deny on their server: say so, and keep the page they came for. */
+  private handleOAuthRefusal(state: string | null): void {
+    const app = this.takePendingOAuth();
+    if (!app || !statesMatch(app.state, state)) return;
+    this.destination = loginDestination(app.next);
+    this.server.setBaseUrl(app.server);
+    this.customServer.set(app.server);
+    this.intent.set('have');
+    this.oauthError.set(this.transloco.translate<string>('pages.login.oauth.cancelled'));
   }
 
   /** Read and clear the pending OAuth record; returns null if absent or corrupt. */
@@ -1029,6 +1159,7 @@ export class Login implements OnInit, OnDestroy {
               server,
               ...(this.destination !== '/home' && { next: this.destination }),
               ...(create && { created: true }),
+              ...(this.connectTo() && { connect: this.connectTo()!.did }),
             };
             sessionStorage.setItem(OAUTH_APP_KEY, JSON.stringify(stored));
             if (create) {
@@ -1051,6 +1182,8 @@ export class Login implements OnInit, OnDestroy {
               code_challenge_method: 'S256',
             });
             if (create) params.set('prompt', 'create');
+            // Leaving the page: the record above holds the server for the way back.
+            this.releaseServer();
             // The instance itself handles this redirect in the user's browser, so it works
             // even when redirectUri points back at an unreachable local dev server.
             const authorizeBase = server || window.location.origin;

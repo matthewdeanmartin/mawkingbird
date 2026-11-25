@@ -147,12 +147,19 @@ try {
       );
     const page = await context.newPage();
     await page.goto(`${origin}/zh-hant/`);
-    await page.locator('header a[mbButton]').click();
-    await page.waitForURL(/\/login$/);
-    await page.locator('app-login-doors a[href="/login/mastodon"]').waitFor();
+    // A reader who has chosen Anonymous gets the app; a stranger gets to sign in.
+    if (anonymous) {
+      await page.locator('header app-open-app a[href="/"]').waitFor();
+    } else {
+      await page.locator('header app-open-app a[href="/login"]').click();
+      await page.waitForURL(/\/login$/);
+      await page.locator('app-login-doors a[href="/login/mastodon"]').waitFor();
+    }
     assert.equal(await page.locator('app-language-checklist').count(), 0);
-    // Both entry links on the downloader must reach the form, not return to the tool.
-    for (const selector of ['header a[mbButton]', '.sign-in-choices a']) {
+    // Entry links on the downloader must reach the form, not return to the tool.
+    for (const selector of anonymous
+      ? ['.sign-in-choices a']
+      : ['header app-open-app a', '.sign-in-choices a']) {
       await page.goto(`${origin}/download-mastodon-images/`);
       await page.locator(selector).click();
       await page.waitForURL(/\/login\/mastodon\?next=/);

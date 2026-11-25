@@ -3,13 +3,7 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a
-        mbButton
-        variant="outline"
-        routerLink="/login/mastodon"
-        [queryParams]="{ next: '/sv/skapa-mastodon-anvandarnamn' }"
-        >Öppna appen</a
-      >
+      <app-open-app>Öppna appen</app-open-app>
     </header>
   }
 

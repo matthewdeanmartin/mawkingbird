@@ -1086,7 +1086,7 @@ export const STORAGE_KEYS: readonly StorageKeySpec[] = [
     storage: 'local',
     suffix: 'none',
     sensitivity: 'setting',
-    note: 'Anonymous was opened by a public link rather than chosen, so following asks to sign in.',
+    note: 'Whether Anonymous was chosen (0) or only opened by the app (1); unchosen, following and the front door ask about signing in.',
   },
 
   // ---- cache: refetchable, never exported ----

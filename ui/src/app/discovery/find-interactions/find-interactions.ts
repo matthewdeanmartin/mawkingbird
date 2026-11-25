@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { LanguageVersions } from '../../public-pages/focused-apps/language-versions';
+import { OpenApp } from '../../public-pages/focused-apps/open-app';
 import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
 import { InteractionsWorkbench } from './interactions-workbench';
 
@@ -20,6 +21,7 @@ import { InteractionsWorkbench } from './interactions-workbench';
     MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     InteractionsWorkbench,
   ],
   templateUrl: './find-interactions.html',

@@ -53,6 +53,15 @@
         }
       </div>
 
+      @if (connectTo(); as account) {
+        <mb-notice class="login-connect" announcement="status">
+          {{ 'pages.login.connect.notice' | transloco: { handle: account.handle } }}
+          <button mbButton variant="link" type="button" (click)="useSeparateAccount()">
+            {{ 'pages.login.connect.separate' | transloco }}
+          </button>
+        </mb-notice>
+      }
+
       <!-- ====================== Sign in / Register ====================== -->
       @if (tab() === 'signin' && !intent()) {
         <!--
@@ -63,7 +72,7 @@
       -->
         <h2 class="intent-question">{{ 'pages.login.intent.question' | transloco }}</h2>
         <div class="intent-doors">
-          @for (choice of intentChoices; track choice.value) {
+          @for (choice of intents(); track choice.value) {
             <button type="button" class="intent-door" (click)="intent.set(choice.value)">
               <span class="intent-emoji" aria-hidden="true">{{ choice.emoji }}</span>
               <span class="intent-body">
@@ -239,7 +248,7 @@
             @if (misskeyServer(); as host) {
               <mb-notice class="login-misskey-hint" announcement="status">
                 {{ 'pages.login.server.misskey' | transloco: { server: host } }}
-                <a routerLink="/login/misskey" [queryParams]="{ server: host }">{{
+                <a routerLink="/login/misskey" [queryParams]="misskeyLink(host)">{{
                   'pages.login.server.misskeyLink' | transloco
                 }}</a>
               </mb-notice>

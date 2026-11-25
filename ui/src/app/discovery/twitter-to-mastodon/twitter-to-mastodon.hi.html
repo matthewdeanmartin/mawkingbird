@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login" [queryParams]="returnHere">ऐप खोलें</a>
+      <app-open-app>ऐप खोलें</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/unbird">ऐप खोलें</a>
-    </div>
   }
 
   <div class="intro">
@@ -23,6 +16,10 @@
       होता। साइन इन करने के बाद उसमें मिले यूज़रनेम की खोज आपके Mastodon सर्वर पर भेजी जाती है।
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   <!-- Deferred: prerendering shows the placeholder, and the importer's
        services (session, storage, Mastodon API) load only in the browser. -->

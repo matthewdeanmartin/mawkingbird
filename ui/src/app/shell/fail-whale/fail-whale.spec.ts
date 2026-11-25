@@ -143,7 +143,8 @@ describe('FailWhale', () => {
 
     fixture.componentInstance.onServerPicked('https://mstdn.social');
 
-    expect(enterSpy).toHaveBeenCalledWith('https://mstdn.social');
+    // Moving servers says nothing about whether Anonymous was chosen.
+    expect(enterSpy).toHaveBeenCalledWith('https://mstdn.social', { implicit: true });
     expect(reloadSpy).toHaveBeenCalled();
   });
 

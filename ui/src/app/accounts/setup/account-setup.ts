@@ -7,6 +7,7 @@ import { MbProgress } from '../../design-system/progress/progress';
 import { MbNotice } from '../../design-system/notice/notice';
 import { Auth } from '../../platform/session/auth';
 import { Server } from '../../platform/http/server';
+import { takeLoginNext } from '../../platform/session/login-destination';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { brandLogoSrc } from '../../platform/build/build-flavor';
 import { environment } from '../../../environments/environment';
@@ -157,11 +158,12 @@ export class AccountSetup {
 
   /** Leave setup. Progress stays; Settings → Public profile resumes it. */
   protected exit(): void {
-    void this.router.navigateByUrl('/home');
+    void this.router.navigateByUrl(takeLoginNext());
   }
 
   private finish(): void {
     this.state.save({ state: 'finished' });
-    void this.router.navigateByUrl('/home');
+    // Home, or the page whose sign-in turned into a sign-up.
+    void this.router.navigateByUrl(takeLoginNext());
   }
 }

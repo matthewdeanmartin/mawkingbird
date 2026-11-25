@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../platform/api/api';
-import { Auth } from '../platform/session/auth';
+import { MastodonMe } from '../connections/mastodon/mastodon-me';
 import { FollowState } from './follow-state';
 import { Account, Relationship } from '../platform/api/models';
 import { RateLimitCoordinator } from '../platform/http/rate-limit.interceptor';
@@ -355,7 +355,7 @@ function sleep(ms: number): Promise<void> {
 @Injectable({ providedIn: 'root' })
 export class BulkActions {
   private readonly api = inject(Api);
-  private readonly auth = inject(Auth);
+  private readonly me = inject(MastodonMe);
   private readonly follows = inject(FollowState);
   private readonly rateLimits = inject(RateLimitCoordinator);
 
@@ -894,7 +894,7 @@ export class BulkActions {
 
   /** Every account the signed-in user follows, paged to the ceiling. */
   private async fetchAllFollowing(): Promise<Account[]> {
-    const me = this.auth.account();
+    const me = this.me.account();
     if (!me) {
       throw new Error('Not signed in.');
     }

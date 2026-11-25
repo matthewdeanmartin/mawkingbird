@@ -6,6 +6,7 @@ import { provideRouteLanguage } from '../../i18n/page-language';
 import { LanguageChecklist } from './language-checklist';
 import { LANGUAGE_LANDING_COPY, LanguageLandingCopy } from './language-landing.copy';
 import { LanguageVersions } from '../focused-apps/language-versions';
+import { OpenApp } from '../focused-apps/open-app';
 import { AppOnlyLinkRel } from '../public-page-urls';
 
 /**
@@ -25,6 +26,7 @@ import { AppOnlyLinkRel } from '../public-page-urls';
     MbButton,
     MbContentLink,
     LanguageVersions,
+    OpenApp,
     LanguageChecklist,
   ],
   templateUrl: './language-landing.html',

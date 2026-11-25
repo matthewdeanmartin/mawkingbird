@@ -64,7 +64,7 @@ export class MessagePage implements OnInit {
       // is dropped into anonymous mode, on the default server (mastodon.social),
       // so the shell can render around the post.
       if (!this.auth.isAuthenticated) {
-        this.auth.enterAnonymous();
+        this.auth.enterAnonymous(undefined, { implicit: true });
       }
       this.router.navigate(['/statuses', messageStatusRouteRef(payload)], { replaceUrl: true });
       return;

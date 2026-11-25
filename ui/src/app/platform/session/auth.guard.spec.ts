@@ -2,8 +2,45 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, UrlTree } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from './auth';
-import { authGuard } from './auth.guard';
+import { authGuard, homeGuard } from './auth.guard';
 import { Server } from '../http/server';
+
+describe('homeGuard', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({ providers: [Auth, Server, provideRouter([])] });
+  });
+
+  const run = () => TestBed.runInInjectionContext(() => homeGuard({} as any, {} as any));
+
+  it('sends a visitor a public page let in to the front door', () => {
+    TestBed.inject(Auth).enterAnonymous(undefined, { implicit: true });
+    expect(String(run())).toBe('/');
+  });
+
+  it('opens for the preview, a chosen Anonymous and any account', () => {
+    const auth = TestBed.inject(Auth);
+    auth.enterAnonymous(undefined, { implicit: true });
+    localStorage.setItem(
+      'mockingbird_first_run_preview',
+      JSON.stringify({ server: 'https://mastodon.social', preexisting: [] }),
+    );
+    expect(run()).toBe(true);
+    localStorage.removeItem('mockingbird_first_run_preview');
+    auth.enterAnonymous();
+    expect(run()).toBe(true);
+    auth.setToken('token');
+    expect(run()).toBe(true);
+  });
+
+  it('never turns a choice back into a drop-in', () => {
+    const auth = TestBed.inject(Auth);
+    auth.enterAnonymous();
+    auth.enterAnonymous(undefined, { implicit: true });
+    expect(auth.choseAnonymous).toBe(true);
+    expect(auth.signInToFollow).toBe(false);
+  });
+});
 
 describe('authGuard', () => {
   beforeEach(() => {

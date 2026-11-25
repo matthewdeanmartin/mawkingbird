@@ -36,6 +36,7 @@ describe('ConnectionMastodon shared credential form', () => {
           useValue: {
             current: signal({ state: 'anonymous' }),
             server: () => 'https://example.test',
+            token: () => null,
             signIn,
           },
         },
@@ -58,6 +59,14 @@ describe('ConnectionMastodon shared credential form', () => {
     fixture.detectChanges();
     return { fixture, root, input };
   }
+
+  it('leads with signing in on the server, and comes back to this page', () => {
+    const fixture = TestBed.createComponent(ConnectionMastodon);
+    fixture.detectChanges();
+    const link = fixture.nativeElement.querySelector('a[href^="/login/mastodon"]');
+    expect(link?.getAttribute('href')).toBe('/login/mastodon?next=%2F&server=example.test');
+    expect(fixture.nativeElement.querySelector('details')?.open).toBe(false);
+  });
 
   it('rolls a rejected token out of Auth and preserves the draft for correction', async () => {
     const { fixture, root, input } = await submit();

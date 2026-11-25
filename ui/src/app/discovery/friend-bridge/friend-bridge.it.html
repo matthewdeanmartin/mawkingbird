@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login" [queryParams]="returnHere">Apri l’app</a>
+      <app-open-app>Apri l’app</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/find-friends">Apri l’app</a>
-    </div>
   }
 
   <div class="intro">
@@ -25,6 +18,10 @@
       }
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: the finder reads both of your accounts, so it loads only in the browser. -->

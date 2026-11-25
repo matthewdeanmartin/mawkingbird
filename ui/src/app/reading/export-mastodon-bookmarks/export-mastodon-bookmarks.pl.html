@@ -3,15 +3,8 @@
     <header>
       <a mbContentLink routerLink="/">Mawkingbird</a>
       <app-language-versions />
-      <a mbButton variant="outline" routerLink="/login/mastodon" [queryParams]="returnHere">Otwórz aplikację</a>
+      <app-open-app>Otwórz aplikację</app-open-app>
     </header>
-  }
-
-
-  @if (inShell) {
-    <div class="app-destination">
-      <a mbButton variant="outline" routerLink="/bookmarks">Otwórz aplikację</a>
-    </div>
   }
 
   <div class="intro">
@@ -26,6 +19,10 @@
       }
     </p>
   </div>
+
+  @if (inShell) {
+    <app-open-app />
+  }
 
   @if (inShell) {
     <!-- Deferred: reading bookmarks needs your account, so it loads only in the browser. -->

@@ -12,7 +12,7 @@ import { MbProgress } from '../design-system/progress/progress';
 import { MbToolbar, MbToolbarButton } from '../design-system/toolbar/toolbar';
 import { Api } from '../platform/api/api';
 import { Server } from '../platform/http/server';
-import { Auth } from '../platform/session/auth';
+import { MastodonMe } from '../connections/mastodon/mastodon-me';
 import { saveCsv } from '../settings/import-export/save-csv';
 import { twitterArchiveCsv } from '../settings/import-export/twitter-archive';
 import type { UnbirdPerson } from './unbird-archive';
@@ -100,7 +100,7 @@ export function activeWithin(match: StoredMatch, within: ActiveWithin, now = Dat
 export class UnbirdPeople {
   protected readonly matcher = inject(UnbirdMatcher);
   private readonly api = inject(Api, { optional: true });
-  private readonly auth = inject(Auth, { optional: true });
+  private readonly mastodonMe = inject(MastodonMe, { optional: true });
   private readonly server = inject(Server, { optional: true });
   protected readonly publicServer = PUBLIC_SEARCH_SERVER;
 
@@ -163,7 +163,7 @@ export class UnbirdPeople {
 
   constructor() {
     effect(() => {
-      const me = this.auth?.account();
+      const me = this.mastodonMe?.account();
       const server = this.server?.baseUrl();
       this.alreadyFollowing.set(new Set());
       this.self.set(null);
@@ -199,7 +199,7 @@ export class UnbirdPeople {
    * (80 a page) rather than one relationship lookup per match.
    */
   private async loadFollowing(): Promise<void> {
-    const me = this.auth?.account();
+    const me = this.mastodonMe?.account();
     if (!this.api || !me) return;
     const host = hostOf(this.server?.baseUrl() ?? '');
     const full = (acct: string) => (acct.includes('@') ? acct : `${acct}@${host}`).toLowerCase();
@@ -209,7 +209,10 @@ export class UnbirdPeople {
     for (let page = 0; page < FOLLOWING_PAGES; page++) {
       try {
         const result = await firstValueFrom(this.api.accountFollowingPage(me.id, maxId));
-        if (this.auth?.account()?.id !== me.id || hostOf(this.server?.baseUrl() ?? '') !== host)
+        if (
+          this.mastodonMe?.account()?.id !== me.id ||
+          hostOf(this.server?.baseUrl() ?? '') !== host
+        )
           return;
         for (const account of result.accounts) accts.add(full(account.acct));
         this.alreadyFollowing.set(new Set(accts));

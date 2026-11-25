@@ -27,7 +27,7 @@ describe('anonymousUnavailableGuard', () => {
     return TestBed.runInInjectionContext(() =>
       anonymousUnavailableGuard(
         { data: { anonymousFeature: feature } } as unknown as ActivatedRouteSnapshot,
-        {} as RouterStateSnapshot,
+        { url: '/settings/mutes' } as RouterStateSnapshot,
       ),
     );
   }
@@ -41,7 +41,7 @@ describe('anonymousUnavailableGuard', () => {
     TestBed.inject(Auth).enterAnonymous();
     const result = run('Messages');
     expect(TestBed.inject(Router).serializeUrl(result as ReturnType<Router['createUrlTree']>)).toBe(
-      '/unavailable?feature=Messages',
+      '/unavailable?feature=Messages&next=%2Fsettings%2Fmutes',
     );
   });
 });

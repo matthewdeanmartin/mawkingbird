@@ -5,6 +5,7 @@ import { MbContentLink } from '../../design-system/metadata/metadata';
 import { BoostsWorkbench } from './boosts-workbench';
 import { provideRouteLanguage } from '../../i18n/page-language';
 import { LanguageVersions } from '../../public-pages/focused-apps/language-versions';
+import { OpenApp } from '../../public-pages/focused-apps/open-app';
 import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
 
 /**
@@ -17,7 +18,15 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
@@ -34,7 +43,15 @@ export class TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-de',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -50,7 +67,15 @@ export class TurnOffBoostsMastodonDe extends TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-ja',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -66,7 +91,15 @@ export class TurnOffBoostsMastodonJa extends TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-fr',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -82,7 +115,15 @@ export class TurnOffBoostsMastodonFr extends TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-es',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -98,7 +139,15 @@ export class TurnOffBoostsMastodonEs extends TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-zh-hant',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -114,7 +163,15 @@ export class TurnOffBoostsMastodonZhHant extends TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-ko',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -130,7 +187,15 @@ export class TurnOffBoostsMastodonKo extends TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-pt',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -146,7 +211,15 @@ export class TurnOffBoostsMastodonPt extends TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-it',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -162,7 +235,15 @@ export class TurnOffBoostsMastodonIt extends TurnOffBoostsMastodon {
  */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-pl',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -174,7 +255,15 @@ export class TurnOffBoostsMastodonPl extends TurnOffBoostsMastodon {
 /** Ukrainian public page, with embedded tools pinned to the route language. */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-uk',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -186,7 +275,15 @@ export class TurnOffBoostsMastodonUk extends TurnOffBoostsMastodon {
 /** Hindi public page; embedded tools use the route language. */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-hi',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -198,7 +295,15 @@ export class TurnOffBoostsMastodonHi extends TurnOffBoostsMastodon {
 /** Dutch public page; embedded tools use the route language. */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-nl',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -210,7 +315,15 @@ export class TurnOffBoostsMastodonNl extends TurnOffBoostsMastodon {
 /** Indonesian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-id',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -222,7 +335,15 @@ export class TurnOffBoostsMastodonId extends TurnOffBoostsMastodon {
 /** Russian public page; embedded tools use the route language. */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-ru',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -234,7 +355,15 @@ export class TurnOffBoostsMastodonRu extends TurnOffBoostsMastodon {
 /** Swedish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-sv',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -246,7 +375,15 @@ export class TurnOffBoostsMastodonSv extends TurnOffBoostsMastodon {
 /** Vietnamese public page; embedded tools use the route language. */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-vi',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],
@@ -258,7 +395,15 @@ export class TurnOffBoostsMastodonVi extends TurnOffBoostsMastodon {
 /** Turkish public page; embedded tools use the route language. */
 @Component({
   selector: 'app-turn-off-boosts-mastodon-tr',
-  imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, LanguageVersions, BoostsWorkbench],
+  imports: [
+    RouterLink,
+    AppOnlyLinkRel,
+    MbButton,
+    MbContentLink,
+    LanguageVersions,
+    OpenApp,
+    BoostsWorkbench,
+  ],
   templateUrl: './turn-off-boosts-mastodon.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
   providers: [provideRouteLanguage()],

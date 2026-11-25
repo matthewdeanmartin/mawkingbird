@@ -1,8 +1,14 @@
+import { DOCUMENT } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../../../platform/session/auth';
 import { Server } from '../../../platform/http/server';
+import { AnonymousAccount } from '../../anonymous/anonymous-account';
+import { AnonymousBookmarks } from '../../anonymous/anonymous-bookmarks';
+import { AnonymousFollows } from '../../anonymous/anonymous-follows';
+import { AnonymousTags } from '../../anonymous/anonymous-tags';
 import { PreviewSeed, PREVIEW_SERVER } from '../../first-run/preview-seed';
+import type { PreviewOrigin } from '../../first-run/preview-state';
 import { probeServerAvailability } from '../../../platform/http/server-availability';
 import { UnreachableServerDialog } from '../unreachable-server-dialog/unreachable-server-dialog';
 
@@ -32,6 +38,7 @@ const PREVIEW_SERVERS: readonly string[] = [
  * | signed in (Mastodon or Bluesky) | `/home` |
  * | anonymous, already chosen | `/home`, no modal — the choice was durable |
  * | mid-preview (reloaded with the modal open) | `/home`, modal again |
+ * | anonymous only because a public page opened the app | the preview, as below |
  * | nobody at all | enter Anonymous, seed the preview, `/home` with the modal |
  *
  * Returning signed-in visitors still dispatch straight to Home without a
@@ -55,6 +62,13 @@ export class EntryPage implements OnInit {
   private router = inject(Router);
   private server = inject(Server);
   private preview = inject(PreviewSeed);
+  private anonymous = inject(AnonymousAccount);
+  private follows = inject(AnonymousFollows);
+  private tags = inject(AnonymousTags);
+  private bookmarks = inject(AnonymousBookmarks);
+
+  /** Read now: by the time the preview is seeded, this page is the current one. */
+  private readonly from = this.cameFrom(inject(DOCUMENT).title);
 
   /**
    * The server to report as unreachable, or empty.
@@ -70,7 +84,7 @@ export class EntryPage implements OnInit {
     // how the previous front door annoyed people who had already answered.
     // The mid-preview case is the exception: that account exists because we
     // made it, not because they asked for it, so the question still stands.
-    if (!this.auth.isAuthenticated && !this.preview.active) {
+    if (!this.settled() && !this.preview.active) {
       const entered = await this.startPreview();
       // The dialog is up and owns what happens next; navigating now would
       // unmount it and land on the empty feed it exists to prevent.
@@ -79,6 +93,35 @@ export class EntryPage implements OnInit {
       }
     }
     await this.router.navigateByUrl('/home', { replaceUrl: true });
+  }
+
+  /** Whether the visitor already has an answer: an account, or having chosen none. */
+  private settled(): boolean {
+    if (!this.auth.isAnonymous) return this.auth.isAuthenticated;
+    switch (this.auth.anonymousChoice()) {
+      case 'chosen':
+        return true;
+      case 'implicit':
+        return false;
+      case 'unknown':
+        // From before choices were recorded: someone who has made Anonymous
+        // their own in any way meant it.
+        return (
+          this.follows.count() > 0 ||
+          this.tags.count() > 0 ||
+          this.bookmarks.bookmarks().length > 0 ||
+          !PREVIEW_SERVERS.includes(this.anonymous.server())
+        );
+    }
+  }
+
+  /** The page of this app that led here, by its own title. */
+  private cameFrom(documentTitle: string): PreviewOrigin | undefined {
+    const url = this.router.getCurrentNavigation()?.previousNavigation?.finalUrl?.toString();
+    const title = documentTitle.split(/ [|·] /)[0].trim();
+    return url && title && !/^\/(home|login|anonymous)?([/?#]|$)/.test(url)
+      ? { url, title }
+      : undefined;
   }
 
   /**
@@ -105,8 +148,8 @@ export class EntryPage implements OnInit {
       const result = await probeServerAvailability(candidate);
       if (result.status !== 'unreachable') {
         this.server.setBaseUrl(candidate);
-        this.auth.enterAnonymous(candidate);
-        await this.preview.seed(candidate);
+        this.auth.enterAnonymous(candidate, { implicit: true });
+        await this.preview.seed(candidate, this.from);
         return true;
       }
     }
@@ -118,8 +161,8 @@ export class EntryPage implements OnInit {
   protected async enterWith(server: string): Promise<void> {
     this.unreachableServer.set('');
     this.server.setBaseUrl(server);
-    this.auth.enterAnonymous(server);
-    await this.preview.seed(server);
+    this.auth.enterAnonymous(server, { implicit: true });
+    await this.preview.seed(server, this.from);
     await this.router.navigateByUrl('/home', { replaceUrl: true });
   }
 
@@ -133,8 +176,8 @@ export class EntryPage implements OnInit {
   protected async giveUp(): Promise<void> {
     this.unreachableServer.set('');
     this.server.setBaseUrl(PREVIEW_SERVER);
-    this.auth.enterAnonymous(PREVIEW_SERVER);
-    this.preview.markEmpty(PREVIEW_SERVER);
+    this.auth.enterAnonymous(PREVIEW_SERVER, { implicit: true });
+    this.preview.markEmpty(PREVIEW_SERVER, this.from);
     await this.router.navigateByUrl('/home', { replaceUrl: true });
   }
 }

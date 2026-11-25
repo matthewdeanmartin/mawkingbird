@@ -16,6 +16,22 @@ export const PREVIEW_KEY = 'mockingbird_first_run_preview';
 export interface PreviewState {
   server: string;
   preexisting: string[];
+  /** The public page the front door was opened from, for the way back. */
+  from?: PreviewOrigin;
+}
+
+/** A page of this app: its path and query, and its title as the visitor saw it. */
+export interface PreviewOrigin {
+  url: string;
+  title: string;
+}
+
+/** A stored origin, only if it is a path in this app. */
+function previewOrigin(value: unknown): PreviewOrigin | undefined {
+  const { url, title } = (value ?? {}) as Record<string, unknown>;
+  return typeof url === 'string' && /^\/[^/\\]/.test(url) && typeof title === 'string' && title
+    ? { url, title }
+    : undefined;
 }
 
 /** The stored preview, or null when none is running or storage is unreadable. */
@@ -24,6 +40,7 @@ export function readPreviewState(): PreviewState | null {
     const parsed = JSON.parse(localStorage.getItem(PREVIEW_KEY) ?? 'null') as {
       server?: unknown;
       preexisting?: unknown;
+      from?: unknown;
     } | null;
     if (typeof parsed?.server !== 'string') {
       return null;
@@ -31,7 +48,8 @@ export function readPreviewState(): PreviewState | null {
     const preexisting = Array.isArray(parsed.preexisting)
       ? parsed.preexisting.filter((id): id is string => typeof id === 'string')
       : [];
-    return { server: parsed.server, preexisting };
+    const from = previewOrigin(parsed.from);
+    return { server: parsed.server, preexisting, ...(from && { from }) };
   } catch {
     return null;
   }

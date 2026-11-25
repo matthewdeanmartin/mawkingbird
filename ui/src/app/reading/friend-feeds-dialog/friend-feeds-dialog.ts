@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FocusTrap } from '../../shell/a11y/focus-trap';
 import { Auth } from '../../platform/session/auth';
+import { MastodonMe } from '../../connections/mastodon/mastodon-me';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { ProfileAccountKey } from '../../accounts/mawkingbird/profile-account-key';
 import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
@@ -171,7 +172,7 @@ export class FriendFeedsDialog {
    * file the result under. `auth.account()` settles asynchronously after a cold
    * load, so this is a signal rather than a constructor read.
    */
-  protected readonly me = computed(() => this.auth.account());
+  protected readonly me = inject(MastodonMe).account;
   protected readonly signedIn = computed(() => this.me() !== null);
 
   constructor() {
