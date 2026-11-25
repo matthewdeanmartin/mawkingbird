@@ -1,23 +1,37 @@
 <header class="watch-header">
-  <button type="button" mbButton variant="outline" size="small" (click)="back()">
-    {{ 'watch.back' | transloco }}
-  </button>
   <h1>{{ 'watch.title' | transloco }}</h1>
-  <div class="watch-queue">
-    <app-queue-button [entry]="currentEntry()" />
-    @if (upNext(); as next) {
-      <button mbButton size="small" type="button" (click)="playNext()">
-        {{
-          next.title
-            ? ('watch.queue.next' | transloco: { title: next.title })
-            : ('watch.queue.nextUntitled' | transloco)
-        }}
+  <div class="watch-nav">
+    <app-reading-back />
+    @if (queue.previous(); as previous) {
+      <button
+        mbButton
+        variant="link"
+        type="button"
+        [title]="previous.title || ('watch.queue.previousTitle' | transloco)"
+        (click)="playPrevious()"
+      >
+        <span aria-hidden="true">⏮</span> {{ 'watch.queue.previous' | transloco }}
       </button>
     }
     @if (queue.items().length) {
       <a routerLink="/videos/queue">{{
         'watch.queue.open' | transloco: { count: queue.items().length }
       }}</a>
+    }
+    @if (upNext(); as next) {
+      <button
+        mbButton
+        variant="link"
+        type="button"
+        [title]="
+          next.title
+            ? ('watch.queue.next' | transloco: { title: next.title })
+            : ('watch.queue.nextUntitled' | transloco)
+        "
+        (click)="playNext()"
+      >
+        {{ 'watch.queue.nextShort' | transloco }} <span aria-hidden="true">⏭</span>
+      </button>
     }
   </div>
 </header>
@@ -55,7 +69,7 @@
         </button>
       } @else if (source(); as video) {
         @if (playable(); as stream) {
-          <app-video-player-controls #player [source]="stream" />
+          <app-video-player-controls #player [source]="stream" [showLinks]="false" />
         } @else if (peertubeFailed()) {
           <p role="alert">{{ 'watch.peertube.failed' | transloco }}</p>
           <p>
@@ -74,6 +88,8 @@
           [playhead]="playhead()"
           [seeker]="seeker"
           [peertube]="peertube()"
+          [post]="renderedCard()"
+          [entry]="currentEntry()"
         />
       }
       <!-- The source post sits under the player, like a video's description:
@@ -81,6 +97,7 @@
       @if (loader.status(); as status) {
         <div class="watch-root">
           <app-status-card
+            #postCard
             [status]="status"
             [showMedia]="false"
             [partyTagsEnabled]="true"

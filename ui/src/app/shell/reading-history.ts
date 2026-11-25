@@ -102,6 +102,8 @@ export class ReadingHistory implements RouteReuseStrategy {
   private previous: number | null = null;
   private targetPrevious: number | null = null;
   private replacing = false;
+  /** The navigation asked to stay where it is: a tab inside the mounted page. */
+  private keepScroll = false;
   /** Also tells the shell not to move keyboard focus to the top on return. */
   restoring = false;
 
@@ -134,6 +136,10 @@ export class ReadingHistory implements RouteReuseStrategy {
         this.replacing =
           event.navigationTrigger === 'imperative' &&
           router.currentNavigation()?.extras.replaceUrl === true;
+        this.keepScroll =
+          event.navigationTrigger === 'imperative' &&
+          (router.currentNavigation()?.extras.info as { keepScroll?: boolean } | undefined)
+            ?.keepScroll === true;
         this.targetPrevious = state
           ? sameSession && typeof state['readingPrevious'] === 'number'
             ? state['readingPrevious']
@@ -153,7 +159,9 @@ export class ReadingHistory implements RouteReuseStrategy {
         this.saveHistoryState();
         if (this.restoring)
           this.position = this.positions.get(this.target)?.position ?? this.position;
-        if (this.restoring && this.position) this.restore(this.position);
+        // Restoring re-applies the position while a tab's content loads: the page is
+        // briefly too short to hold it, and the browser would otherwise clamp it.
+        if ((this.restoring || this.keepScroll) && this.position) this.restore(this.position);
         else {
           const win = this.document.defaultView;
           const frame = win?.requestAnimationFrame(() => {

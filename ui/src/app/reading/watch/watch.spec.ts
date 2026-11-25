@@ -30,7 +30,11 @@ import { PeerTubeVideo, PeerTubeVideos } from '../videos/peertube';
 
 @Component({ selector: 'app-status-card', template: '' })
 class CardStub {
-  readonly status = input<Status>();
+  // Required, as on the real card: reading it before it is set throws (NG0950).
+  readonly status = input.required<Status>();
+  get display(): Status {
+    return this.status();
+  }
   readonly showMedia = input(true);
   readonly partyTagsEnabled = input(false);
   readonly partyTagAdded = output<string>();
@@ -59,7 +63,10 @@ class PartyStub {
   readonly replaced = output<{ previous: Status; next: Status }>();
 }
 
-@Component({ selector: 'app-watch-video-panel', template: '' })
+@Component({
+  selector: 'app-watch-video-panel',
+  template: '<span class="panel-post">{{ post()?.display?.id }}</span>',
+})
 class PanelStub {
   readonly source = input<VideoSource>();
   readonly status = input<Status | null>(null);
@@ -67,6 +74,8 @@ class PanelStub {
   readonly playhead = input<number | null>(null);
   readonly seeker = input<((seconds: number) => boolean) | null>(null);
   readonly peertube = input<PeerTubeVideo | null>(null);
+  readonly post = input<{ display: Status } | null>(null);
+  readonly entry = input<{ key: string } | null>(null);
   readonly quote = vi.fn();
 }
 
@@ -201,8 +210,12 @@ describe('Watch post access and reveal gates', () => {
     const A = 'aaaaaaaaaaa';
     const B = 'bbbbbbbbbbb';
     const nextButton = () =>
-      [...(fixture.nativeElement as HTMLElement).querySelectorAll('.watch-queue button')].find(
+      [...(fixture.nativeElement as HTMLElement).querySelectorAll('.watch-nav button')].find(
         (button) => button.textContent?.includes('Next'),
+      ) as HTMLButtonElement | undefined;
+    const previousButton = () =>
+      [...(fixture.nativeElement as HTMLElement).querySelectorAll('.watch-nav button')].find(
+        (button) => button.textContent?.includes('Previous'),
       ) as HTMLButtonElement | undefined;
 
     beforeEach(() => localStorage.clear());
@@ -215,11 +228,42 @@ describe('Watch post access and reveal gates', () => {
       const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
       mount();
 
-      expect(nextButton()?.textContent).toContain('Next: Second');
+      expect(nextButton()?.title).toBe('Next: Second');
+      expect(previousButton()).toBeUndefined();
       nextButton()!.click();
 
       expect(queue.items().map((item) => item.title)).toEqual(['Second']);
-      expect(navigate).toHaveBeenCalledWith(['/watch'], { queryParams: { youtube: B } });
+      // The address is replaced: Back leaves Watch instead of replaying the playlist.
+      expect(navigate).toHaveBeenCalledWith(['/watch'], {
+        queryParams: { youtube: B },
+        replaceUrl: true,
+      });
+
+      params.next(convertToParamMap({ youtube: B }));
+      fixture.detectChanges();
+      previousButton()!.click();
+      expect(navigate).toHaveBeenLastCalledWith(['/watch'], {
+        queryParams: { youtube: A },
+        replaceUrl: true,
+      });
+    });
+
+    it('hands the row the post card only once the card has its post', async () => {
+      params.next(convertToParamMap({ post: '1', server: 'https://home.test', attachment: 'v1' }));
+      mount();
+      loader.status.set(status());
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('.panel-post')?.textContent).toBe('1');
+    });
+
+    it('puts the title first and the shared Back and playlist together after it', () => {
+      params.next(convertToParamMap({ youtube: A }));
+      mount();
+      const header = (fixture.nativeElement as HTMLElement).querySelector('.watch-header')!;
+      expect([...header.children].map((child) => child.tagName)).toEqual(['H1', 'DIV']);
+      expect(header.querySelectorAll('app-reading-back')).toHaveLength(1);
     });
 
     it('hands ?tags= to the party conversation, without counting them in the queue key', () => {
@@ -235,21 +279,16 @@ describe('Watch post access and reveal gates', () => {
       params.next(convertToParamMap({ youtube: A }));
       mount();
       expect(nextButton()).toBeUndefined();
-      expect(fixture.nativeElement.querySelector('.watch-queue a')).toBeNull();
+      expect(fixture.nativeElement.querySelector('.watch-nav a')).toBeNull();
     });
 
-    it('queues the video being watched from the header', () => {
+    it('hands the video to the row as a queue entry, and keeps queueing out of the header', () => {
       params.next(convertToParamMap({ youtube: A }));
       mount();
-      const queueButton = fixture.nativeElement.querySelector(
-        '.watch-queue app-queue-button button',
-      ) as HTMLButtonElement;
-      queueButton.click();
-      fixture.detectChanges();
-      expect(TestBed.inject(WatchQueue).has('youtube:' + A)).toBe(true);
-      expect(queueButton.getAttribute('aria-pressed')).toBe('true');
-      // The stage player does not repeat the control.
-      expect(fixture.nativeElement.querySelectorAll('app-queue-button')).toHaveLength(1);
+      const panel = fixture.debugElement.query(By.directive(PanelStub))
+        .componentInstance as PanelStub;
+      expect(panel.entry()?.key).toBe('youtube:' + A);
+      expect(fixture.nativeElement.querySelectorAll('app-queue-button')).toHaveLength(0);
     });
   });
 

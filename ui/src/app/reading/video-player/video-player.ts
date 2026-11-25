@@ -70,6 +70,8 @@ export class VideoPlayer implements OnDestroy {
   readonly watch = input<Record<string, string> | null>(null);
   readonly inline = input(false);
   readonly compact = input(false);
+  /** Off on Watch, whose own row has these links. */
+  readonly showLinks = input(true);
   private playback = inject(Playback);
   private prefs = inject(ClientPrefs);
   private sanitizer = inject(DomSanitizer);

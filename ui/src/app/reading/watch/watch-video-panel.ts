@@ -8,6 +8,11 @@ import { Auth } from '../../platform/session/auth';
 import { Server } from '../../platform/http/server';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { MbButton } from '../../design-system/button/button';
+import { MbHelp } from '../../design-system/help/help';
+import { QueuedVideo, WatchQueue } from '../videos/watch-queue';
+import { translatedComputed } from '../../i18n/translated';
+import { Terminology } from '../../i18n/terminology';
+import { WatchAction, WatchActions, WatchActionsLook } from './watch-actions';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbDisclosure } from '../../design-system/disclosure/disclosure';
 import { Compose } from '../../publishing/compose/compose';
@@ -23,8 +28,17 @@ import { FollowButton } from '../../accounts/follow-button/follow-button';
 import { Account, Status } from '../../platform/api/models';
 
 // i18n watch.panel.label: Video actions
-// i18n watch.panel.subscribe: Subscribe to {{channel}}
-// i18n watch.panel.subscribed: Subscribed to {{channel}}
+// i18n watch.panel.like: Like
+// i18n watch.panel.liked: Liked
+// i18n watch.panel.likeTitle: Like the post this video came from.
+// i18n watch.panel.postedBy: Video posted by {{name}}
+// i18n watch.panel.postedByTitle: See who posted it. They may be the creator or a fan; follow them from their profile.
+// i18n watch.panel.subscribeRss: Subscribe (RSS)
+// i18n watch.panel.subscribedRss: Subscribed (RSS)
+// i18n watch.panel.subscribeYoutube: Subscribe on YouTube
+// i18n watch.panel.subscribeYoutubeTitle: Opens the channel on YouTube, which asks you to confirm.
+// i18n watch.panel.queueAdd: Add to queue
+// i18n watch.panel.queueRemove: In queue
 // i18n watch.panel.subscribeTitle: New videos from this channel appear in Videos, from its public feed. No YouTube account needed.
 // i18n watch.panel.subscribeFailed: Couldn't find this channel's feed.
 // i18n watch.panel.share: Share
@@ -59,6 +73,18 @@ import { Account, Status } from '../../platform/api/models';
 // i18n watch.sponsor.category.interaction: subscribe reminder
 // i18n watch.sponsor.category.intro: intro
 // i18n watch.sponsor.category.outro: outro
+
+/** What the row needs from the source post's card (StatusCard provides it). */
+export interface WatchPost {
+  readonly display: Status;
+  readonly caps: { favourite: boolean };
+  readonly accountLink: (string | number)[] | null;
+  readonly actionError: () => string | null;
+  hasRepostControl(): boolean;
+  toggleFavourite(event: Event): void;
+  openRepost(event: Event): void;
+  promptSignIn(action: 'like', event: Event): void;
+}
 
 /** `h:mm:ss` or `m:ss`. */
 export function clock(seconds: number): string {
@@ -95,8 +121,8 @@ export function shareText(options: {
  * The video-specific actions under the Watch player (spec/youtube-client.md, S2):
  * subscribe to the channel's RSS, share (a prefilled composer, not a new
  * one), find posts that share a bare video, and on Native the video's details
- * with chapters that re-cue the embed. Like, Boost, Quote and Bookmark stay
- * on the source post's own card, which Watch shows directly beneath.
+ * with chapters that re-cue the embed. Like and Boost act through the source
+ * post's own card, which Watch shows beneath, often off screen.
  */
 @Component({
   selector: 'app-watch-video-panel',
@@ -104,6 +130,8 @@ export function shareText(options: {
     AccountName,
     TranslocoPipe,
     MbButton,
+    MbHelp,
+    WatchActions,
     MbDialog,
     MbDisclosure,
     Compose,
@@ -111,24 +139,18 @@ export function shareText(options: {
     FollowButton,
   ],
   template: `
-    <div class="bar" role="group" [attr.aria-label]="'watch.panel.label' | transloco">
-      @if (channel(); as ch) {
-        <button
-          mbButton
-          type="button"
-          size="small"
-          [variant]="subscribed() ? 'outline' : 'solid'"
-          [attr.aria-pressed]="subscribed()"
-          [title]="'watch.panel.subscribeTitle' | transloco"
-          [disabled]="resolving()"
-          (click)="toggleSubscribe()"
-        >
-          {{
-            (subscribed() ? 'watch.panel.subscribed' : 'watch.panel.subscribe')
-              | transloco: { channel: ch.title }
-          }}
-        </button>
-      }
+    <!-- Five candidate rows, for the owner to pick one; see WatchActionsLook. -->
+    @for (look of looks; track look; let i = $index) {
+      <div class="candidate">
+        <span class="muted" aria-hidden="true">{{ i + 1 }}</span>
+        <app-watch-actions
+          [look]="look"
+          [actions]="actions()"
+          [label]="('watch.panel.label' | transloco) + ' ' + (i + 1)"
+        />
+      </div>
+    }
+    <div class="bar">
       @if (creator(); as link) {
         <app-follow-button
           [accountId]="'creator:' + link.acct"
@@ -150,27 +172,17 @@ export function shareText(options: {
           "
         />
       }
-      @if (channel()?.id; as id) {
-        <a mbButton size="small" variant="outline" [routerLink]="['/videos/channel', id]">{{
-          'watch.panel.channel' | transloco
-        }}</a>
-      }
-      <button mbButton type="button" size="small" variant="outline" (click)="openShare()">
-        {{ 'watch.panel.share' | transloco }}
-      </button>
-      @if (!status() && source().videoId && finder.available()) {
-        <button
-          mbButton
-          type="button"
-          size="small"
-          variant="outline"
-          [disabled]="finding()"
-          (click)="findPosts()"
-        >
-          {{ 'watch.panel.find' | transloco }}
-        </button>
+      @if (source().kind === 'youtube') {
+        <mb-help [label]="'videoPlayer.help' | transloco">
+          <p>{{ 'videoPlayer.external' | transloco }}</p>
+          <p>{{ 'videoPlayer.positionUnavailable' | transloco }}</p>
+          <p>{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
+        </mb-help>
       }
     </div>
+    @if (postError(); as message) {
+      <p role="alert">{{ message }}</p>
+    }
     @if (subscribeFailed()) {
       <p role="alert">{{ 'watch.panel.subscribeFailed' | transloco }}</p>
     }
@@ -312,6 +324,15 @@ export function shareText(options: {
       flex-wrap: wrap;
       gap: 0.5rem;
     }
+    .candidate {
+      align-items: baseline;
+      display: flex;
+      gap: 0.5rem;
+      margin-block-end: 0.75rem;
+    }
+    .candidate app-watch-actions {
+      flex: 1;
+    }
     .muted {
       color: var(--muted);
     }
@@ -429,6 +450,21 @@ export class WatchVideoPanel {
   /** A PeerTube video's details, for following its channel from Mastodon. */
   readonly peertube = input<PeerTubeVideo | null>(null);
 
+  /** The source post's card, which carries out Like and Boost. */
+  readonly post = input<WatchPost | null>(null);
+  /** This video as a queue entry; null while it can't be queued. */
+  readonly entry = input<Omit<QueuedVideo, 'addedAt'> | null>(null);
+
+  protected readonly looks: readonly WatchActionsLook[] = [
+    'columns',
+    'post',
+    'text',
+    'strip',
+    'groups',
+  ];
+  protected readonly postError = computed(() => this.post()?.actionError() ?? null);
+  private readonly queue = inject(WatchQueue);
+  private readonly words = inject(Terminology).words;
   protected readonly finder = inject(VideoPostFinder);
   private readonly youtube = inject(YoutubeFeeds);
   private readonly subs = inject(VideoSubscriptions);
@@ -541,6 +577,148 @@ export class WatchVideoPanel {
           .catch(() => undefined);
       });
     });
+  }
+
+  /** Everything to do with this video and its post, in row order. */
+  protected readonly actions = translatedComputed((): WatchAction[] => [
+    ...this.postActions(),
+    ...this.videoActions(),
+  ]);
+
+  private t(key: string, params: Record<string, unknown> = {}): string {
+    return this.transloco.translate(key, params);
+  }
+
+  private postActions(): WatchAction[] {
+    const card = this.post();
+    if (!card) return [];
+    const post = card.display;
+    const anonymous = this.auth.isAnonymous && post.provider !== 'bluesky';
+    const out: WatchAction[] = [];
+    if (card.caps.favourite || anonymous)
+      out.push({
+        id: 'like',
+        icon: 'like',
+        group: 'post',
+        label: this.t(post.favourited ? 'watch.panel.liked' : 'watch.panel.like'),
+        title: this.t('watch.panel.likeTitle'),
+        pressed: anonymous ? undefined : post.favourited,
+        run: (event) =>
+          anonymous ? card.promptSignIn('like', event) : card.toggleFavourite(event),
+      });
+    if (card.hasRepostControl())
+      out.push({
+        id: 'boost',
+        icon: 'boost',
+        group: 'post',
+        label: post.reblogged ? this.words().Boosted : this.words().Boost,
+        run: (event) => card.openRepost(event),
+      });
+    const link = card.accountLink;
+    if (link)
+      out.push({
+        id: 'poster',
+        icon: 'person',
+        group: 'post',
+        label: this.t('watch.panel.postedBy', {
+          name: post.account.display_name?.replace(/:\w+:/g, '').trim() || post.account.acct,
+        }),
+        title: this.t('watch.panel.postedByTitle'),
+        link,
+      });
+    return out;
+  }
+
+  private videoActions(): WatchAction[] {
+    const out: WatchAction[] = [];
+    const channel = this.channel();
+    const youtube = this.youtubeSubscribeUrl();
+    if (channel)
+      out.push({
+        id: 'rss',
+        icon: 'rss',
+        group: 'video',
+        label: this.t(this.subscribed() ? 'watch.panel.subscribedRss' : 'watch.panel.subscribeRss'),
+        title: `${channel.title}: ${this.t('watch.panel.subscribeTitle')}`,
+        pressed: this.subscribed(),
+        disabled: this.resolving(),
+        run: () => void this.toggleSubscribe(),
+      });
+    if (youtube)
+      out.push({
+        id: 'youtube',
+        icon: 'bell',
+        group: 'video',
+        label: this.t('watch.panel.subscribeYoutube'),
+        title: this.t('watch.panel.subscribeYoutubeTitle'),
+        href: youtube,
+      });
+    if (channel?.id)
+      out.push({
+        id: 'channel',
+        icon: 'channel',
+        group: 'video',
+        label: this.t('watch.panel.channel'),
+        title: channel.title,
+        link: ['/videos/channel', channel.id],
+      });
+    out.push({
+      id: 'share',
+      icon: 'share',
+      group: 'video',
+      label: this.t('watch.panel.share'),
+      run: () => this.openShare(),
+    });
+    const entry = this.entry();
+    if (entry) {
+      const queued = this.queue.has(entry.key);
+      const full = !queued && this.queue.full();
+      out.push({
+        id: 'queue',
+        icon: 'queue',
+        group: 'video',
+        label: this.t(
+          full ? 'videoQueue.full' : queued ? 'watch.panel.queueRemove' : 'watch.panel.queueAdd',
+        ),
+        pressed: queued,
+        disabled: full,
+        run: () => (queued ? this.queue.remove(entry.key) : this.queue.add(entry)),
+      });
+    }
+    out.push({
+      id: 'open',
+      icon: 'open',
+      group: 'video',
+      label: this.t(
+        this.source().kind === 'youtube' ? 'videoPlayer.openYoutube' : 'videoPlayer.openOriginal',
+      ),
+      href: this.source().url,
+    });
+    if (!this.status() && this.source().videoId && this.finder.available())
+      out.push({
+        id: 'find',
+        icon: 'find',
+        group: 'video',
+        label: this.t('watch.panel.find'),
+        disabled: this.finding(),
+        run: () => this.findPosts(),
+      });
+    return out;
+  }
+
+  /** The channel's page with YouTube's own "confirm subscription" prompt. */
+  private youtubeSubscribeUrl(): string | null {
+    if (this.source().kind !== 'youtube') return null;
+    const channel = this.channel();
+    if (!channel) return null;
+    // `channel.url` was checked to be an https youtube.com address.
+    const page = channel.id
+      ? `https://www.youtube.com/channel/${encodeURIComponent(channel.id)}`
+      : channel.url;
+    if (!page) return null;
+    const url = new URL(page);
+    url.searchParams.set('sub_confirmation', '1');
+    return url.href;
   }
 
   /** The chapter the player is cued in, from the `t` cue (the playhead itself is not readable). */

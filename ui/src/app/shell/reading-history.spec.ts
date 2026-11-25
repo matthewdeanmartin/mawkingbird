@@ -297,6 +297,18 @@ describe('reading history across real router navigations', () => {
     expect(home.destroyed).toBe(true);
   });
 
+  it('stays put for an in-page tab that asks to, and still starts other navigations at the top', async () => {
+    await go('/accounts/alice');
+    scroll.scrollToPosition.mockClear();
+    await router.navigateByUrl('/accounts/alice?tab=followers', { info: { keepScroll: true } });
+    await vi.waitFor(() => expect(scroll.scrollToPosition).toHaveBeenCalledWith([0, 720]));
+    expect(scroll.scrollToPosition).not.toHaveBeenCalledWith([0, 0]);
+
+    scroll.scrollToPosition.mockClear();
+    await router.navigateByUrl('/accounts/alice?tab=media&photo=two');
+    await vi.waitFor(() => expect(scroll.scrollToPosition).toHaveBeenCalledWith([0, 0]));
+  });
+
   it('restores the viewport on Back instead of resetting it to the top', async () => {
     await go('/home');
     await go('/statuses/one');

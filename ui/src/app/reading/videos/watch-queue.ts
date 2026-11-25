@@ -155,8 +155,40 @@ export class WatchQueue {
     return items.find((item, index) => index > at && item.key !== key) ?? null;
   }
 
+  /** What was played from the queue, oldest first. This visit only, never stored. */
+  private readonly watched = signal<readonly QueuedVideo[]>([]);
+  readonly previous = computed(() => this.watched().at(-1) ?? null);
+
+  /** Move on from `current`: it leaves the queue and becomes the previous video. */
+  advance(current: Omit<QueuedVideo, 'addedAt'> | null): QueuedVideo | null {
+    const next = this.next(current?.key ?? null);
+    if (!next) return null;
+    if (current) {
+      this.remove(current.key);
+      this.watched.update((list) => [
+        ...list.filter((item) => item.key !== current.key).slice(-49),
+        { ...current, addedAt: Date.now() },
+      ]);
+    }
+    return next;
+  }
+
+  /** Go back one video; `current` returns to the head of the queue, so Next leads to it again. */
+  goBack(current: Omit<QueuedVideo, 'addedAt'> | null): QueuedVideo | null {
+    const previous = this.previous();
+    if (!previous) return null;
+    this.watched.update((list) => list.slice(0, -1));
+    if (current && current.key !== previous.key && !this.has(current.key)) {
+      this.persist(
+        [{ ...current, addedAt: Date.now() }, ...this.items()].slice(0, WATCH_QUEUE_LIMIT),
+      );
+    }
+    return previous;
+  }
+
   clear(): void {
     this.persist([]);
+    this.watched.set([]);
   }
 
   private persist(items: QueuedVideo[]): void {

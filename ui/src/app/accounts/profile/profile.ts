@@ -816,7 +816,7 @@ export class Profile implements OnInit, OnDestroy {
 
   setTab(tab: ProfileTab): void {
     this.tab.set(tab);
-    this.syncMediaUrl({ tab: tab === 'posts' ? null : tab, photo: null });
+    this.syncMediaUrl({ tab: tab === 'posts' ? null : tab, photo: null }, false, true);
     if (tab === 'media' && !this.mediaStatuses().length && !this.mediaLoading()) {
       this.loadMedia();
     }
@@ -1073,8 +1073,10 @@ export class Profile implements OnInit, OnDestroy {
   private syncMediaUrl(
     params: { tab?: string | null; photo?: string | null },
     replaceUrl = false,
+    keepScroll = false,
   ): void {
     void this.router.navigate([], {
+      info: { keepScroll },
       relativeTo: this.route,
       queryParams: params,
       queryParamsHandling: 'merge',

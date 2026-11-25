@@ -1,6 +1,7 @@
 import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { translatedComputed } from '../../i18n/translated';
 import {
+  afterRenderEffect,
   Component,
   computed,
   DestroyRef,
@@ -11,7 +12,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { Location } from '@angular/common';
+import { ReadingBack } from '../../shell/reading-back';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -39,8 +40,7 @@ import {
 import { Status } from '../../platform/api/models';
 import { postLoadTarget } from '../../posts/copy-link/deep-links';
 import { PartyConversation } from './party-conversation';
-import { QueueButton } from '../video-player/queue-button';
-import { WatchVideoPanel } from './watch-video-panel';
+import { WatchPost, WatchVideoPanel } from './watch-video-panel';
 import { PeerTubeVideo, PeerTubeVideos } from '../videos/peertube';
 import { YoutubeComment } from '../videos/youtube-details';
 import {
@@ -52,7 +52,6 @@ import {
 } from '../videos/watch-queue';
 
 // i18n watch.title: Watch
-// i18n watch.back: Back
 // i18n watch.loading: Opening video…
 // i18n watch.unavailable: This video is unavailable or you don't have access to its post.
 // i18n watch.browseVideos: Browse videos
@@ -65,6 +64,9 @@ import {
 // i18n watch.thread: Open full thread
 // i18n watch.queue.next: Next: {{title}}
 // i18n watch.queue.nextUntitled: Next in queue
+// i18n watch.queue.nextShort: Next
+// i18n watch.queue.previous: Previous
+// i18n watch.queue.previousTitle: The video you watched before this one
 // i18n watch.queue.open: Queue ({{count}})
 // i18n watch.peertube.loading: Opening the PeerTube video…
 // i18n watch.peertube.failed: This PeerTube server didn't hand over the video.
@@ -77,7 +79,7 @@ import {
     TranslocoPipe,
     MbButton,
     PartyConversation,
-    QueueButton,
+    ReadingBack,
     RouterLink,
     WatchVideoPanel,
   ],
@@ -87,6 +89,10 @@ import {
 })
 export class Watch {
   protected party = viewChild(PartyConversation);
+  /** The source post's card: Like and Boost in the row go through it. */
+  private postCard = viewChild<WatchPost>('postCard');
+  /** Set after rendering: the card exists a moment before its inputs do. */
+  protected readonly renderedCard = signal<WatchPost | null>(null);
   private panel = viewChild<{ quote(comment: YoutubeComment): void }>('panel');
   private player = viewChild<{
     seekTo(seconds: number): boolean;
@@ -115,7 +121,6 @@ export class Watch {
   private trusted = inject(TrustedAccounts);
   private followTrust = inject(FollowTrust);
   private prefs = inject(ClientPrefs);
-  private location = inject(Location);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
   protected params = signal<Record<string, string>>({});
@@ -178,6 +183,7 @@ export class Watch {
   });
 
   constructor() {
+    afterRenderEffect(() => this.renderedCard.set(this.postCard() ?? null));
     // Resolve a PeerTube link once per video; the player waits for the stream.
     let peertubeKey = '';
     effect(() => {
@@ -330,6 +336,15 @@ export class Watch {
 
   protected readonly upNext = computed(() => this.queue.next(this.currentKey()));
 
+  /** The video on screen, for the playlist; titled only once it has loaded. */
+  private readonly playing = computed<Omit<QueuedVideo, 'addedAt'> | null>(() => {
+    const key = this.currentKey();
+    return (
+      this.currentEntry() ??
+      (key ? { key, title: '', params: pickWatchParams(this.params()) } : null)
+    );
+  });
+
   /**
    * Play the next queued video, retiring this one from the queue.
    *
@@ -337,16 +352,17 @@ export class Watch {
    * video-player.spec.ts), and Watch keeps that promise.
    */
   protected playNext(): void {
-    const next = this.upNext();
-    if (!next) return;
-    const current = this.currentKey();
-    if (current) this.queue.remove(current);
-    void this.router.navigate(['/watch'], { queryParams: next.params });
+    this.play(this.queue.advance(this.playing()));
   }
 
-  protected back(): void {
-    if (history.state?.navigationId > 1) this.location.back();
-    else void this.router.navigate(['/home']);
+  protected playPrevious(): void {
+    this.play(this.queue.goBack(this.playing()));
+  }
+
+  /** Replaces the address, so Back leaves Watch and is not a tour of the playlist. */
+  private play(video: QueuedVideo | null): void {
+    if (!video) return;
+    void this.router.navigate(['/watch'], { queryParams: video.params, replaceUrl: true });
   }
 
   /** The YouTube video ID, for read-only YouTube comments. */

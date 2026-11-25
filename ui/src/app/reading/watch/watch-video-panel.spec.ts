@@ -157,10 +157,10 @@ describe('WatchVideoPanel', () => {
       },
     });
     await settle();
-    button('Subscribe to Technology Connections')!.click();
+    button('Subscribe (RSS)')!.click();
     fixture.detectChanges();
     expect(subs.add).toHaveBeenCalledWith(channelId, 'Technology Connections');
-    expect(button('Subscribed to Technology Connections')).toBeDefined();
+    expect(button('Subscribed (RSS)')).toBeDefined();
     expect(text()).toContain('Length 12:34');
     expect(text()).toContain('not suitable for all ages');
     // Chapters show without opening anything, say where they came from, and
@@ -248,7 +248,7 @@ describe('WatchVideoPanel', () => {
     } as unknown as Status;
     const { subs } = mount({ status, resolve });
     expect(button('About')).toBeUndefined();
-    button('Subscribe to Technology Connections')!.click();
+    button('Subscribe (RSS)')!.click();
     await settle();
     expect(resolve).toHaveBeenCalledWith('https://www.youtube.com/@TechnologyConnections');
     expect(subs.add).toHaveBeenCalledWith(channelId, 'Technology Connections');
@@ -278,6 +278,86 @@ describe('WatchVideoPanel', () => {
       (a: HTMLElement) => a.textContent?.trim() === 'Channel',
     ) as HTMLAnchorElement;
     expect(channel.getAttribute('href')).toBe(`/videos/channel/${channelId}`);
+  });
+
+  it('likes and boosts through the post’s own card, and links whoever posted the video', async () => {
+    mount({});
+    const card = {
+      display: {
+        favourited: false,
+        reblogged: false,
+        account: { acct: 'fan@mas.to', display_name: 'A Fan :verified:' },
+      } as unknown as Status,
+      caps: { favourite: true },
+      accountLink: ['/accounts', '9'],
+      actionError: signal<string | null>(null),
+      hasRepostControl: () => true,
+      toggleFavourite: vi.fn(),
+      openRepost: vi.fn(),
+      promptSignIn: vi.fn(),
+    };
+    fixture.componentRef.setInput('post', card);
+    fixture.detectChanges();
+
+    button('Like')!.click();
+    expect(card.toggleFavourite).toHaveBeenCalledOnce();
+    button('Boost')!.click();
+    expect(card.openRepost).toHaveBeenCalledOnce();
+    const poster = [...fixture.nativeElement.querySelectorAll('a')].find((a: HTMLElement) =>
+      a.textContent?.includes('Video posted by A Fan'),
+    ) as HTMLAnchorElement;
+    expect(poster.textContent?.trim()).toBe('Video posted by A Fan');
+    expect(poster.getAttribute('href')).toBe('/accounts/9');
+
+    // The card, with its own error line, is often off screen.
+    card.actionError.set('Could not like this post.');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent).toContain(
+      'Could not like this post.',
+    );
+  });
+
+  it('offers neither Like nor a poster for a bare video', () => {
+    mount({});
+    expect(button('Like')).toBeUndefined();
+    expect(fixture.nativeElement.textContent).not.toContain('Video posted by');
+  });
+
+  it('links YouTube’s own subscribe prompt and the video, with no YouTube script', async () => {
+    mount({ native: true });
+    await settle();
+    const hrefs = [...fixture.nativeElement.querySelectorAll('a')].map((a: HTMLAnchorElement) =>
+      a.getAttribute('href'),
+    );
+    expect(hrefs).toContain(`https://www.youtube.com/channel/${channelId}?sub_confirmation=1`);
+    expect(hrefs).toContain('https://www.youtube.com/watch?v=abcdefghijk');
+    expect(fixture.nativeElement.querySelector('script, iframe')).toBeNull();
+  });
+
+  it('adds the video to the queue and takes it out again', () => {
+    localStorage.clear();
+    mount({});
+    fixture.componentRef.setInput('entry', {
+      key: 'youtube:abcdefghijk',
+      title: 'How lamps work',
+      params: { youtube: 'abcdefghijk' },
+    });
+    fixture.detectChanges();
+    button('Add to queue')!.click();
+    fixture.detectChanges();
+    expect(button('In queue')!.getAttribute('aria-pressed')).toBe('true');
+    button('In queue')!.click();
+    fixture.detectChanges();
+    expect(button('Add to queue')).toBeDefined();
+  });
+
+  it('shows all five candidate rows', () => {
+    mount({});
+    expect(
+      [...fixture.nativeElement.querySelectorAll('app-watch-actions')].map((row: HTMLElement) =>
+        row.getAttribute('data-look'),
+      ),
+    ).toEqual(['columns', 'post', 'text', 'strip', 'groups']);
   });
 
   it('offers no Subscribe when nothing names the channel', () => {

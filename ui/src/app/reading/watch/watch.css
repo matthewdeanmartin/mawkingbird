@@ -14,14 +14,17 @@
   gap: 1rem;
   padding-bottom: 0.75rem;
 }
-/* Queue controls sit at the far end and wrap rather than squeeze the title. */
-.watch-queue {
+/* Back and the playlist sit at the far end and wrap rather than squeeze the title. */
+.watch-nav {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem 1rem;
   min-width: 0;
   margin-inline-start: auto;
+}
+.watch-nav app-reading-back {
+  padding: 0;
 }
 h1 {
   font-size: 1.4rem;

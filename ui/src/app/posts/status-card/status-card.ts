@@ -1018,7 +1018,7 @@ export class StatusCard {
   }
 
   /** Whether the bar shows a 🔁 at all: something on page 1, or a link to share. */
-  protected hasRepostControl(): boolean {
+  hasRepostControl(): boolean {
     return !!this.repostOptions() || !!this.display.url;
   }
 
@@ -2210,7 +2210,7 @@ export class StatusCard {
    * open. RSS feeds get a synthetic "feed = profile" page (`/accounts/rss:<url>`);
    * per-comment author accounts (`rss:<url>::author::<name>`) have no page.
    */
-  protected get accountLink(): (string | number)[] | null {
+  get accountLink(): (string | number)[] | null {
     const id = this.display.account.id;
     if (!this.foreign) {
       // Handle in the path alongside the id, so the link still finds the right
@@ -2289,7 +2289,7 @@ export class StatusCard {
   }
 
   /** Which interactions this post's network supports (buttons hide per provider). */
-  protected get caps(): ProviderCapabilities {
+  get caps(): ProviderCapabilities {
     if (this.remoteMastodonReadOnly) return { reply: false, favourite: false, reblog: false };
     return this.capabilities.statusCaps(this.display.provider ?? 'mastodon');
   }
@@ -2572,7 +2572,7 @@ export class StatusCard {
    */
   protected actionBusy = computed(() => this.inFlight() !== null);
   /** Last fav/boost failure, shown under the actions row until the next attempt. */
-  protected actionError = signal<string | null>(null);
+  readonly actionError = signal<string | null>(null);
   /** Successful external actions are announced without styling them as failures. */
   protected actionNotice = signal<string | null>(null);
   protected showBookmarkProviders = signal(false);
@@ -2600,7 +2600,7 @@ export class StatusCard {
    * `stopPropagation` because the card itself navigates to the thread on click,
    * and opening a dialog and leaving the page at the same time is neither.
    */
-  protected promptSignIn(action: 'like' | 'reply' | 'boost', event: Event): void {
+  promptSignIn(action: 'like' | 'reply' | 'boost', event: Event): void {
     event.stopPropagation();
     this.signInFor.set(action);
   }

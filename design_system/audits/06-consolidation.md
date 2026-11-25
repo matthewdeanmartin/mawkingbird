@@ -3481,3 +3481,9 @@ inventory: 730 candidate files, no added/removed candidates and no changed contr
 findings; source offsets only, plus two scanned files without controls. StatusCard
 nests itself for a reply just written, and the report gate adds text and links, so
 no new controls and no disposition changes.
+
+Watch action rows (2026-11-24): reviewed the regenerated inventory: 731 candidate
+files, one added (watch-actions.ts, native buttons in five candidate presentations
+for the owner to choose from). The panel's small Buttons and the header's Back,
+Queue and Next Buttons moved into it or became link Buttons and the shared
+ReadingBack. Other changes are source offsets.

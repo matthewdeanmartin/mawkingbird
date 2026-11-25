@@ -78,34 +78,36 @@
       {{ 'videoPlayer.retry' | transloco }}
     </button>
   }
-  <div class="video-links">
-    @if (watch(); as params) {
-      <a
-        mbButton
-        variant="outline"
-        size="small"
-        routerLink="/watch"
-        [queryParams]="params"
-        (click)="prepareWatch()"
-      >
-        {{ 'videoPlayer.openWatch' | transloco }}
+  @if (showLinks()) {
+    <div class="video-links">
+      @if (watch(); as params) {
+        <a
+          mbButton
+          variant="outline"
+          size="small"
+          routerLink="/watch"
+          [queryParams]="params"
+          (click)="prepareWatch()"
+        >
+          {{ 'videoPlayer.openWatch' | transloco }}
+        </a>
+      }
+      @if (queueItem(); as entry) {
+        <app-queue-button [entry]="entry" />
+      }
+      <a [href]="source().url" target="_blank" rel="noopener noreferrer">
+        {{
+          (source().kind === 'youtube' ? 'videoPlayer.openYoutube' : 'videoPlayer.openOriginal')
+            | transloco
+        }}
       </a>
-    }
-    @if (queueItem(); as entry) {
-      <app-queue-button [entry]="entry" />
-    }
-    <a [href]="source().url" target="_blank" rel="noopener noreferrer">
-      {{
-        (source().kind === 'youtube' ? 'videoPlayer.openYoutube' : 'videoPlayer.openOriginal')
-          | transloco
-      }}
-    </a>
-    @if (source().kind === 'youtube') {
-      <mb-help [label]="'videoPlayer.help' | transloco">
-        <p>{{ 'videoPlayer.external' | transloco }}</p>
-        <p>{{ 'videoPlayer.positionUnavailable' | transloco }}</p>
-        <p>{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
-      </mb-help>
-    }
-  </div>
+      @if (source().kind === 'youtube') {
+        <mb-help [label]="'videoPlayer.help' | transloco">
+          <p>{{ 'videoPlayer.external' | transloco }}</p>
+          <p>{{ 'videoPlayer.positionUnavailable' | transloco }}</p>
+          <p>{{ 'videoPlayer.youtubeStopped' | transloco }}</p>
+        </mb-help>
+      }
+    </div>
+  }
 </section>
