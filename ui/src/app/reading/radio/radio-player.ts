@@ -430,11 +430,6 @@ export class RadioPlayer {
         .find((source) => source.type === 'audio' && !!source.embed && !source.controllable);
     return external ? [this.externalTrack(post, external)] : [];
   }
-  /** Play one of a post's continuous players as a Single. */
-  chooseExternal(post: Status, source: ExternalMedia): void {
-    if (!this.radioSources(post).some((s) => s.key === source.key)) return;
-    this.playSingle(this.externalTrack(post, source));
-  }
   installDock(component: Type<unknown>): void {
     this.dock = component;
   }

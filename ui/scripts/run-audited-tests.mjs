@@ -11,7 +11,6 @@ const resultsDirectory = artifactDir('test-results');
 const resultsPath = path.join(resultsDirectory, 'full.json');
 const ng = path.join(root, 'node_modules', '@angular', 'cli', 'bin', 'ng.js');
 const node = process.execPath;
-const update = process.argv.includes('--update');
 const coverage = process.argv.includes('--coverage');
 
 const testArguments = [
@@ -72,9 +71,6 @@ function firstLine(message = '') {
 }
 
 const manifestArguments = [path.join(root, 'scripts', 'check-test-manifest.mjs')];
-if (update) {
-  manifestArguments.push('--update');
-}
 manifestArguments.push(resultsPath);
 
 const manifestCheck = spawnSync(node, manifestArguments, { cwd: root, stdio: 'inherit' });

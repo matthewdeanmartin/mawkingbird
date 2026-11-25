@@ -4,8 +4,8 @@
   "widgetsDirectlyUsed": 57,
   "widgetsUsedThroughCompositionOnly": ["MbMenuSeparator"],
   "widgetsWithoutAppUsage": ["MbActionMenu", "MbMenuGroup"],
-  "appTemplateFiles": 321,
-  "directTemplateCallSites": 2858,
+  "appTemplateFiles": 326,
+  "directTemplateCallSites": 2910,
   "widgets": [
     {
       "name": "MbActionMenu",
@@ -105,7 +105,7 @@
     {
       "name": "MbButton",
       "selector": "button[mbButton], a[mbButton]",
-      "directCallSites": 905,
+      "directCallSites": 921,
       "consumers": [
         {
           "file": "accounts/account-analytics/account-analytics.html",
@@ -197,7 +197,7 @@
         },
         {
           "file": "accounts/profile/profile-slideshow.html",
-          "count": 12
+          "count": 4
         },
         {
           "file": "accounts/profile/profile.html",
@@ -342,6 +342,10 @@
         {
           "file": "discovery/bluesky-starter-packs/bluesky-starter-packs-page.html",
           "count": 2
+        },
+        {
+          "file": "discovery/collection/collection.html",
+          "count": 8
         },
         {
           "file": "discovery/directory/directory.html",
@@ -704,6 +708,14 @@
           "count": 2
         },
         {
+          "file": "public-pages/podcasts/podcast-hub.ts",
+          "count": 1
+        },
+        {
+          "file": "public-pages/podcasts/podcast-kit.ts",
+          "count": 2
+        },
+        {
           "file": "public-pages/tools/tools-index.html",
           "count": 1
         },
@@ -781,7 +793,7 @@
         },
         {
           "file": "publishing/write/write-page.html",
-          "count": 3
+          "count": 12
         },
         {
           "file": "reading/bookmarks/bookmarks.html",
@@ -881,6 +893,10 @@
         },
         {
           "file": "reading/radio/track-result.ts",
+          "count": 4
+        },
+        {
+          "file": "reading/rss/rss-page.html",
           "count": 4
         },
         {
@@ -2765,8 +2781,12 @@
     {
       "name": "MbIcon",
       "selector": "mb-icon",
-      "directCallSites": 44,
+      "directCallSites": 52,
       "consumers": [
+        {
+          "file": "accounts/profile/profile-slideshow.html",
+          "count": 8
+        },
         {
           "file": "reading/radio/listen-page.html",
           "count": 4
@@ -3104,7 +3124,7 @@
     },
     {
       "name": "MbItemPicture",
-      "selector": "a[mbItemPicture], span[mbItemPicture]",
+      "selector": "mb-item-picture",
       "directCallSites": 2,
       "consumers": [
         {
@@ -3231,7 +3251,7 @@
     {
       "name": "MbContentLink",
       "selector": "a[mbContentLink]",
-      "directCallSites": 262,
+      "directCallSites": 278,
       "consumers": [
         {
           "file": "accounts/anonymous-on-mastodon/anonymous-on-mastodon.html",
@@ -3367,7 +3387,7 @@
         },
         {
           "file": "public-pages/features/features.html",
-          "count": 28
+          "count": 30
         },
         {
           "file": "public-pages/features/follow-hub.html",
@@ -3386,12 +3406,24 @@
           "count": 2
         },
         {
+          "file": "public-pages/podcasts/podcast-faq.ts",
+          "count": 1
+        },
+        {
+          "file": "public-pages/podcasts/podcast-hub.ts",
+          "count": 6
+        },
+        {
+          "file": "public-pages/podcasts/podcast-kit.ts",
+          "count": 6
+        },
+        {
           "file": "public-pages/tools/tools-index.html",
           "count": 3
         },
         {
           "file": "public-pages/youtubers/youtuber-hub.ts",
-          "count": 8
+          "count": 9
         },
         {
           "file": "public-pages/youtubers/youtuber-kit.ts",
@@ -4671,8 +4703,12 @@
     {
       "name": "MbToolbarButton",
       "selector": "button[mbToolbarButton]",
-      "directCallSites": 86,
+      "directCallSites": 95,
       "consumers": [
+        {
+          "file": "accounts/profile/profile-slideshow.html",
+          "count": 8
+        },
         {
           "file": "admin/accounts/admin-accounts.html",
           "count": 1
@@ -4707,7 +4743,7 @@
         },
         {
           "file": "posts/status-card/status-card.html",
-          "count": 8
+          "count": 5
         },
         {
           "file": "reading/audio-embeds/external-player-host.ts",
@@ -4750,6 +4786,10 @@
           "count": 2
         },
         {
+          "file": "reading/rss/rss-page.html",
+          "count": 4
+        },
+        {
           "file": "reading/videos/videos-page.html",
           "count": 5
         },
@@ -4775,8 +4815,12 @@
     {
       "name": "MbToolbar",
       "selector": "mb-toolbar",
-      "directCallSites": 30,
+      "directCallSites": 33,
       "consumers": [
+        {
+          "file": "accounts/profile/profile-slideshow.html",
+          "count": 1
+        },
         {
           "file": "admin/accounts/admin-accounts.html",
           "count": 1
@@ -4852,6 +4896,10 @@
         {
           "file": "reading/reader-toolbar/reader-toolbar.ts",
           "count": 1
+        },
+        {
+          "file": "reading/rss/rss-page.html",
+          "count": 2
         },
         {
           "file": "reading/videos/videos-page.html",

@@ -12,6 +12,7 @@ import {
   type StoryObj,
 } from "@storybook/angular";
 import { Observable, of } from "rxjs";
+import { ClientPrefs } from "../../ui/src/app/platform/storage/client-prefs";
 import { Api } from "../../ui/src/app/platform/api/api";
 import { BlueskyApi } from "../../ui/src/app/connections/bluesky/bluesky-api";
 import { BskyRef } from "../../ui/src/app/connections/bluesky/bluesky-types";
@@ -182,6 +183,16 @@ export default {
     applicationConfig({
       providers: [
         Responses,
+        {
+          // The preview's own theme controls stay in charge.
+          provide: ClientPrefs,
+          useFactory: () => {
+            const prefs = new ClientPrefs();
+            Object.defineProperty(prefs, "apply", { value: () => undefined });
+            Object.defineProperty(prefs, "persist", { value: () => undefined });
+            return prefs;
+          },
+        },
         {
           provide: SubmittedReports,
           useValue: { scope: () => "preview", record: () => undefined },

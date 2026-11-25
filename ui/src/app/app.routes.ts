@@ -46,6 +46,7 @@ import {
 import { toolDescription, toolTitle, toolsResolver } from './public-pages/tool-copy';
 import { audienceRoutes } from './public-pages/features/audience-routes';
 import { followRoutes } from './public-pages/features/follow-routes';
+import { podcastRoutes } from './public-pages/podcasts/podcast-routes';
 import { youtuberRoutes } from './public-pages/youtubers/youtuber-routes';
 import {
   feedBuilderPreviewRoutes,
@@ -253,6 +254,8 @@ export const routes: Routes = [
   ...followRoutes,
   // YouTubers on Mastodon: public kit pages per language (ops/engineering/seo.md).
   ...youtuberRoutes,
+  // Podcasts on Mastodon: public pages by topic, likewise.
+  ...podcastRoutes,
   // Topic starter-kit pages are mini-apps too (Home · Builder · Preview):
   // signed in to Mastodon, the trimmed shell; otherwise the public page and its
   // anonymous preview. The twin must come first, as for the focused tools.

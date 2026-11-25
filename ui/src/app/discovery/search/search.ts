@@ -990,6 +990,11 @@ export class Search implements OnInit, OnDestroy {
    */
   protected networkSelection = computed(() => (this.blueskyMode() ? 'bluesky' : 'mastodon'));
 
+  /** A search is running on the network being searched. Only this disables the button. */
+  protected searchBusy = computed(() =>
+    this.blueskyMode() ? (this.blueskyPanel()?.searching() ?? false) : this.searching(),
+  );
+
   /**
    * Whether the shared Search button is unavailable.
    *
@@ -1005,7 +1010,7 @@ export class Search implements OnInit, OnDestroy {
     if (!this.query().trim() && !peopleByLanguage) {
       return true;
     }
-    return this.blueskyMode() ? (this.blueskyPanel()?.searching() ?? false) : this.searching();
+    return this.searchBusy();
   });
 
   /** What the shared box is searching right now, spelled out for the reader. */

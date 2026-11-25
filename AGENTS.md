@@ -51,8 +51,13 @@ workflows for what applies. Native archive roadmap: two sprints per full gate.
 - Shared design widgets: `make design-verify`. A component that calls a new service
   method or changes controls: grep design_system/stories and tests for it, run that file.
 - `make test` ends by naming failures. Delete files your change orphans; don't silence knip.
-- Never skip, focus, delete or weaken tests, raise the 1 MB initial budget, or alter
-  test baselines. Keep optional feature data out of root imports and route guards.
+- Never skip, focus or weaken a test to get a green run, or raise the 1 MB initial
+  budget. Keep optional feature data out of root imports and route guards.
+- **Tests that disappear are reported to the owner, each with its justification**, in
+  your final message, and declared in `ui/test-removals.md`; the run fails otherwise.
+  Renaming a test, or removing one for dead code or because it was poorly conceived, is
+  fine and needs no permission. Say so plainly. Green runs write the test manifests;
+  never edit them.
 - `make test-integration` uses the PyPI mastodon-mock, never the sibling checkout.
 - Logs go to `log/`, never elsewhere in the tree:
   `L=$(node ui/scripts/artifacts.mjs logs); make test > "$L/test.log" 2>&1`.

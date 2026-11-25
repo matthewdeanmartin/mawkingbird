@@ -25,13 +25,17 @@
   padding: 12px 4px;
 }
 
+/* The shared page title (mb-page-header). */
 .write-head h2 {
   margin: 0;
+  font-size: 19px;
+  font-weight: 700;
 }
 
 .write-head-actions {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 4px;
   align-items: center;
 }
 

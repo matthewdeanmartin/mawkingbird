@@ -108,6 +108,28 @@ describe('ProfileSlideshow', () => {
     c.speed(100);
     expect(c.seconds()).toBe(30);
   });
+  it('resumes where it stopped from one play and pause key, and names every icon', () => {
+    const fixture = setup();
+    const c = fixture.componentInstance;
+    const keys = () => [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>(
+        'mb-toolbar button',
+      ),
+    ];
+    expect(keys().every((key) => !!key.getAttribute('aria-label') && !!key.title)).toBe(true);
+    c.last();
+    fixture.detectChanges();
+    keys()
+      .find((key) => key.title === 'Play')!
+      .click();
+    fixture.detectChanges();
+    expect(c.playing()).toBe(true);
+    expect(c.current()?.id).toBe('new');
+    keys()
+      .find((key) => key.title === 'Stop')!
+      .click();
+    expect(c.playing()).toBe(false);
+  });
   it('keeps the selected post when older history arrives and excludes boosts', () => {
     const fixture = setup();
     const c = fixture.componentInstance;

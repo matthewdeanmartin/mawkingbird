@@ -29,6 +29,7 @@
     <!-- autocomplete off: the browser's own form history is shared by every
          account in this browser; the per-account Recent row replaces it. -->
     <input
+      #queryBox
       type="text"
       autocomplete="off"
       [ngModel]="query()"
@@ -67,13 +68,19 @@
         </button>
       }
     </mb-toolbar>
-    <button type="button" mbButton [disabled]="searchDisabled()" (click)="run()">
+    <!-- Enabled while empty: pressing it then returns to the box. -->
+    <button
+      type="button"
+      mbButton
+      [disabled]="searchBusy()"
+      (click)="searchDisabled() ? queryBox.focus() : run()"
+    >
       {{ 'pages.search.action.search' | transloco }}
     </button>
     @if (canUseSearchHelper()) {
       <button
         mbButton
-        variant="outline"
+        variant="compact"
         type="button"
         [title]="'pages.search.action.searchHelperTitle' | transloco"
         [attr.aria-label]="'pages.search.action.helpMeSearch' | transloco"
@@ -84,7 +91,7 @@
     }
     <button
       mbButton
-      variant="outline"
+      variant="compact"
       type="button"
       [title]="'pages.search.action.syntaxHelpTitle' | transloco: { post: words().post }"
       [attr.aria-label]="'pages.search.action.syntaxHelp' | transloco"
@@ -97,9 +104,9 @@
     <button
       type="button"
       mbButton
-      variant="outline"
+      variant="compact"
       class="advanced-toggle"
-      [attr.aria-pressed]="advancedOpen()"
+      [attr.aria-expanded]="advancedOpen()"
       (click)="toggleAdvanced()"
     >
       {{
@@ -152,7 +159,7 @@
       <button
         type="button"
         mbButton
-        variant="outline"
+        variant="compact"
         [disabled]="saved.atLimit()"
         (click)="blueskyPanel()?.requestSave()"
       >
@@ -162,7 +169,7 @@
       <button
         type="button"
         mbButton
-        variant="outline"
+        variant="compact"
         [disabled]="saved.atLimit()"
         (click)="openSaveDialog()"
       >
@@ -172,7 +179,7 @@
     <!-- Share works on both now. Bluesky's criteria round-trip through the query
          box (see bluesky-query-serializer), so a Bluesky link carries its
          operators in `q` rather than needing the Mastodon param encoding. -->
-    <button type="button" mbButton variant="outline" (click)="share()">
+    <button type="button" mbButton variant="compact" (click)="share()">
       {{
         (shareCopied() ? 'pages.search.action.linkCopied' : 'pages.search.action.share') | transloco
       }}

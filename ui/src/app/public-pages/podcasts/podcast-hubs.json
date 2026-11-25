@@ -1,0 +1,5 @@
+{
+  "$comment": "One public hub per language with podcast pages (hand-maintained). Paths are ASCII and never renamed. The importer bundles only languages listed here; each needs its copy in podcast-copy.ts. See ops/engineering/seo.md, Podcasts on Mastodon.",
+  "en": { "path": "podcasts-on-mastodon", "label": "Podcasts on Mastodon" },
+  "de": { "path": "de/podcasts-auf-mastodon", "label": "Podcasts auf Mastodon" }
+}

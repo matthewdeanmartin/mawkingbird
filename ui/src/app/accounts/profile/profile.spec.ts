@@ -321,7 +321,7 @@ describe('self profile local actions', () => {
     fixture.detectChanges();
     expect(el.querySelector('app-profile-slideshow')).not.toBeNull();
     const close = [...el.querySelectorAll<HTMLButtonElement>('app-profile-slideshow button')].find(
-      (button) => button.textContent?.trim() === 'Back to profile',
+      (button) => button.textContent?.trim().endsWith('Back to profile'),
     );
     close!.click();
     fixture.detectChanges();

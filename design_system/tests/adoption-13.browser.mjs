@@ -20,6 +20,11 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }) => expect(errors.get(page)).toEqual([]));
 const click = (page, name) =>
   page.getByRole("button", { name, exact: true }).click();
+/** A Mastodon report starts at the gate; every report then asks what is going on. */
+const triage = async (page, choice, gate = true) => {
+  if (gate) await click(page, "Continue");
+  await page.locator(`[data-triage="${choice}"]`).click();
+};
 const notice = (page) => page.locator("mb-notice").getByRole("alert");
 test("bookmark destinations preserve all three payloads and unavailable-link behavior", async ({
   page,
@@ -62,9 +67,16 @@ for (const [label, destination] of [
     page,
   }) => {
     await click(page, label);
-    await page
-      .getByLabel("Category", { exact: true })
-      .selectOption("violation");
+    const mastodon = destination === "Mastodon";
+    await triage(page, mastodon ? "violation" : "report", mastodon);
+    const chosen = page.locator(".report-chosen");
+    await expect(chosen).toContainText(
+      mastodon ? "It breaks a rule of" : "Report it to moderators",
+    );
+    const reason = page.getByLabel("What's wrong?", { exact: true });
+    if (mastodon) await expect(reason).toHaveCount(0);
+    else await expect(reason).not.toHaveValue("");
+    const reasonValue = mastodon ? null : await reason.inputValue();
     // Mastodon asks which published server rule was broken; Bluesky has none.
     const rule = page.getByRole("checkbox", {
       name: "No spam or unsolicited advertising",
@@ -78,9 +90,8 @@ for (const [label, destination] of [
     await click(page, "Confirm report");
     await expect(notice(page)).toContainText("Could not send this report");
     if (destination === "Mastodon") await expect(rule).toBeChecked();
-    await expect(page.getByLabel("Category", { exact: true })).toHaveValue(
-      "violation",
-    );
+    await expect(chosen).toBeVisible();
+    if (!mastodon) await expect(reason).toHaveValue(reasonValue);
     await expect(
       page.getByLabel("Comment (optional)", { exact: true }),
     ).toHaveValue("Keep this explanation");
@@ -89,6 +100,7 @@ for (const [label, destination] of [
     );
     expect(request.destination).toBe(destination);
     expect(request.args).toContain("Keep this explanation");
+    if (!mastodon) expect(request.args).toContain(reasonValue);
     if (destination === "Bluesky post")
       expect(request.args.slice(0, 2)).toEqual([
         "at://did:plc:preview/app.bsky.feed.post/exact",
@@ -117,6 +129,7 @@ test("held report disables duplicate sends but permits dismissal without cancell
 }) => {
   await click(page, "Hold");
   await click(page, "Mastodon post report");
+  await triage(page, "spam");
   await click(page, "Confirm report");
   await expect(
     page.getByRole("button", { name: "Sending…", exact: true }),
@@ -132,6 +145,7 @@ test("missing exact reference refuses the report before transport", async ({
   page,
 }) => {
   await click(page, "Missing post reference");
+  await triage(page, "report", false);
   await click(page, "Confirm report");
   await expect(notice(page)).toContainText("exact Bluesky post");
   await expect(page.locator("[data-requests]")).toHaveText("0");
@@ -151,6 +165,7 @@ for (const [width, theme, direction] of [
       await click(page, label);
       const dialog = page.getByRole("dialog");
       if (label === "Mastodon post report") {
+        await triage(page, "spam");
         await click(page, "Confirm report");
         await expect(notice(page)).toContainText("Could not send");
       }

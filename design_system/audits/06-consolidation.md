@@ -3504,3 +3504,15 @@ watch-actions.ts (now Item actions) and radio-icon.ts (now Icon; never a candida
 Videos, its subscriptions panel, the watch queue, video search, watch parties, Radio's
 list pages and admin accounts lose pills, raw inputs and legacy tabs. See
 [20-drift-review.md](20-drift-review.md).
+
+Row upgrades (2026-11-25): reviewed the regenerated inventory. Write's header, Search's
+bar, RSS's rail and filters, collections and the profile slide show move from legacy
+pills and segments to Toolbar and quieter Button weights. The slide show returns to
+adopted; collections move from backlog to partial.
+
+Public podcast pages (2026-11-25): reviewed the regenerated inventory. New candidates are
+the podcast hub, kit and questions components, which use Button and Content link over the
+public-page layout. StatusCard lost three audio buttons that no screen showed any more.
+
+Font weight ceiling and German podcast pages (2026-11-25): reviewed the regenerated
+inventory. Source offsets only; no candidate added or removed.

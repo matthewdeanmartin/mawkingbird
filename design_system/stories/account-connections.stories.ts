@@ -127,12 +127,21 @@ export const Bluesky: StoryObj = {
               expiresAt: () => null,
               enforceLifetime: () => undefined,
               unlink: () => session.set(null),
-              login: (handle: string, password: string) =>
-                password === "reject"
-                  ? throwError(() => new Error("Preview rejection"))
-                  : of({ handle, displayName: "Preview account" }).pipe(
-                      delay(500),
-                      tap((value) => session.set(value)),
+              usesAppPassword: () => false,
+              // The app leaves for Bluesky and comes back signed in; here the
+              // return is simulated, and the pending promise never settles.
+              beginOAuthConnector: (identifier: string) =>
+                identifier === "reject"
+                  ? Promise.reject(new Error("Could not resolve handle"))
+                  : new Promise<void>(() =>
+                      setTimeout(
+                        () =>
+                          session.set({
+                            handle: identifier,
+                            displayName: "Preview account",
+                          }),
+                        500,
+                      ),
                     ),
             };
           },

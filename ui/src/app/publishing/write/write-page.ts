@@ -180,7 +180,6 @@ export interface Notice {
 // i18n pages.write.boardButton: ▦ Board
 // i18n pages.write.toggleDrafts: Drafts
 // i18n pages.write.toggleNotes: Notes
-// i18n pages.write.allDrafts: All drafts →
 // i18n pages.write.pageNote: Drafts, editor and notes, side by side. Nothing else.
 // i18n pages.write.aria.drafts: Drafts
 // i18n pages.write.newDraftButton: New

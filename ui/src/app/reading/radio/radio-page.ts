@@ -135,7 +135,6 @@ export class RadioPage {
 // i18n radio.exhausted: Reached the end of the available feed.
 // i18n radio.paused: Scan paused. Continue to look for older audio posts.
 // i18n radio.signIn: Sign in with a Mastodon account to use Radio.
-// i18n radio.listenProvider: Listen on {{provider}} in Radio
 // i18n radio.nativeOnly: Native Mastodon audio only
 // i18n radio.nativeOnlyHint: Otherwise, also find links to supported external audio players.
 // i18n radio.tab.settings: Settings
@@ -172,5 +171,4 @@ export class RadioPage {
 // i18n radio.importing: Importing playlist…
 // i18n radio.importResult: Unsupported or unavailable links skipped: {{count}}
 // i18n radio.saveFailed: Could not save your playlists in this browser.
-// i18n radio.addPlaylist: Add to playlist
 // i18n radio.playResults: Play all results

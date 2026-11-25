@@ -188,7 +188,21 @@ describe('Search', () => {
       expect(button.hasAttribute('mbButton')).toBe(true);
       expect(button.type).toBe('button');
     }
-    expect(buttons.find((button) => button.textContent?.trim() === 'Search')?.disabled).toBe(true);
+  });
+
+  it('keeps Search enabled while empty; pressing it returns to the box and searches nothing', () => {
+    const fixture = setUp();
+    const host = fixture.nativeElement as HTMLElement;
+    document.body.append(host);
+    const run = vi.spyOn(fixture.componentInstance as unknown as { run(): void }, 'run');
+    const button = [...host.querySelectorAll<HTMLButtonElement>('.search-bar > button')].find(
+      (b) => b.textContent?.trim() === 'Search',
+    )!;
+    expect(button.disabled).toBe(false);
+    button.click();
+    expect(run).not.toHaveBeenCalled();
+    expect(document.activeElement).toBe(host.querySelector('.search-bar input'));
+    host.remove();
   });
 
   /** Type a query and run the search (navigation is synchronous in the stub).

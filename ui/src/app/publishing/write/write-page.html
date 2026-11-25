@@ -66,7 +66,7 @@
     <div class="write-head">
       <h2>{{ 'pages.write.heading' | transloco }}</h2>
       @if (posse.count(); as pending) {
-        <a class="btn btn-outline" routerLink="/posse"
+        <a mbButton variant="compact" routerLink="/posse"
           >{{ 'shell.menu.waitingToPublish' | transloco }} ({{ pending }})</a
         >
       }
@@ -99,7 +99,8 @@
       </div>
       <div class="write-head-actions">
         <button
-          class="btn btn-outline btn-sm"
+          mbButton
+          variant="compact"
           type="button"
           [attr.aria-expanded]="boardOpen()"
           (click)="openBoard()"
@@ -108,7 +109,9 @@
         </button>
         @if (tab() === 'write') {
           <button
-            class="btn btn-outline btn-sm pane-toggle"
+            mbButton
+            variant="compact"
+            class="pane-toggle"
             type="button"
             [attr.aria-expanded]="leftOpen()"
             (click)="toggleLeft()"
@@ -116,7 +119,9 @@
             {{ 'pages.write.toggleDrafts' | transloco }}
           </button>
           <button
-            class="btn btn-outline btn-sm pane-toggle"
+            mbButton
+            variant="compact"
+            class="pane-toggle"
             type="button"
             [attr.aria-expanded]="rightOpen()"
             (click)="toggleRight()"
@@ -124,20 +129,15 @@
             {{ 'pages.write.toggleNotes' | transloco }}
           </button>
         }
-        <a class="btn btn-outline btn-sm" routerLink="/drafts">{{
-          'pages.write.allDrafts' | transloco
-        }}</a>
         <!-- Pastes and short links: other things you publish, moved here from the
              ... menu, which had no room left. -->
         @if (pastesEnabled) {
-          <a class="btn btn-outline btn-sm" routerLink="/pastes">{{
+          <a mbButton variant="compact" routerLink="/pastes">{{
             'shell.menu.pastes' | transloco
           }}</a>
         }
         @if (linksEnabled) {
-          <a class="btn btn-outline btn-sm" routerLink="/links">{{
-            'shell.menu.links' | transloco
-          }}</a>
+          <a mbButton variant="compact" routerLink="/links">{{ 'shell.menu.links' | transloco }}</a>
         }
       </div>
     </div>
@@ -152,12 +152,12 @@
       >
         <div class="pane-head">
           <h3>{{ 'pages.write.toggleDrafts' | transloco }}</h3>
-          <button class="btn btn-sm" type="button" (click)="newDraft()">
+          <button mbButton size="small" type="button" (click)="newDraft()">
             {{ 'pages.write.newDraftButton' | transloco }}
           </button>
           <!-- The Drafts page (filters, bulk actions, scheduled posts). It used to
                be a row in the ... menu; this is where people writing look for it. -->
-          <a class="btn btn-sm btn-outline" routerLink="/drafts">{{
+          <a mbButton variant="compact" routerLink="/drafts">{{
             'pages.write.manageDrafts' | transloco
           }}</a>
         </div>
@@ -948,6 +948,7 @@
         <div class="jot">
           <label class="sr-only" for="jot-text">{{ 'pages.write.jotANote' | transloco }}</label>
           <input
+            #jotBox
             id="jot-text"
             class="jot-box"
             type="text"
@@ -969,7 +970,12 @@
               }
             }
           </select>
-          <button class="btn btn-sm" type="button" [disabled]="!jotText().trim()" (click)="jot()">
+          <button
+            mbButton
+            size="small"
+            type="button"
+            (click)="jotText().trim() ? jot() : jotBox.focus()"
+          >
             {{ 'pages.write.saveButton' | transloco }}
           </button>
         </div>

@@ -61,11 +61,7 @@
 .rss-rail-head h1 {
   margin: 0;
   font-size: 19px;
-  font-weight: 800;
-}
-
-.btn-small {
-  white-space: nowrap;
+  font-weight: 700;
 }
 
 /* Two buttons under a heading in a 300px rail: let them wrap rather than
@@ -73,8 +69,7 @@
 .head-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  justify-content: flex-end;
+  gap: 4px;
 }
 
 /* `flex: 0 1 auto` not `flex: 1`: the rail should be as tall as its list, and
@@ -225,33 +220,6 @@
 
 /* Segmented control, matching the one /conversations already uses so the two
    reading surfaces do not invent separate vocabularies for the same idea. */
-.seg {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.seg button {
-  border: none;
-  background: none;
-  color: inherit;
-  font: inherit;
-  font-size: 13px;
-  padding: 4px 12px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.seg button + button {
-  border-left: 1px solid var(--border);
-}
-
-.seg button.active {
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  font-weight: 700;
-}
-
 .mark-all {
   margin-left: auto;
 }

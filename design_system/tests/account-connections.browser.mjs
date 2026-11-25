@@ -72,39 +72,30 @@ for (const direction of ["ltr", "rtl"]) {
       page,
     }, testInfo) => {
       await page.goto(url("bluesky"));
-      // OAuth leads; the app password waits, closed, as the last resort.
-      await expect(page.getByRole("button").first()).toHaveText(
-        /Continue with Bluesky/,
-      );
-      const appPassword = page.locator("mb-disclosure").filter({
-        hasText: "Use an app password instead",
-      });
-      await expect(appPassword.locator("details")).not.toHaveAttribute(
-        "open",
-        "",
-      );
-      await appPassword.getByText("Use an app password instead").click();
-      await appPassword
-        .getByLabel("you.bsky.social", { exact: true })
-        .fill("@preview.bsky.social");
-      const password = appPassword.getByLabel("app password", { exact: true });
-      await password.fill("reject");
-      await page
-        .getByRole("button", { name: "Link Bluesky", exact: true })
-        .click();
+      // Bluesky's own sign-in leads; another server's handle waits, closed. App
+      // passwords were retired, so no password field may come back.
+      const lead = page.getByRole("button").first();
+      await expect(lead).toHaveText(/Continue with Bluesky/);
+      await expect(page.locator('input[type="password"]')).toHaveCount(0);
+      const other = page.locator("mb-disclosure");
+      await expect(other.locator("details")).not.toHaveAttribute("open", "");
+      await other.locator("summary").click();
+      const handle = other.getByLabel("you.bsky.social", { exact: true });
+      const go = other.locator('button[type="submit"]');
+      await handle.fill("@reject");
+      await go.click();
       await expect(page.locator('mb-notice [role="alert"]')).toBeVisible();
-      await expect(password).toHaveValue("reject");
+      await expect(handle).toHaveValue("@reject");
       await page.screenshot({
         path: testInfo.outputPath(`bluesky-${direction}.png`),
         fullPage: true,
       });
-      await password.fill("preview");
-      await page
-        .getByRole("button", { name: "Link Bluesky", exact: true })
-        .click();
-      await expect(password).toBeDisabled();
+      await handle.fill("@preview.example");
+      await go.click();
+      await expect(handle).toBeDisabled();
+      await expect(lead).toBeDisabled();
       await page.getByRole("button", { name: "Unlink", exact: true }).click();
-      await expect(password).toHaveValue("");
+      await expect(handle).toHaveValue("@preview.example");
     });
 
     test("Dropbox modal scroll, focus containment and restoration", async ({

@@ -87,6 +87,13 @@ compact actions use the same readable accent text token. See **Actions / Button 
 Consistency** for shared/legacy states, all accents, narrow layouts and keyboard
 interaction. The review stories use fixture strings and never persist preferences.
 
+### Weight
+
+Nothing is heavier than 700. Arial has no face above bold, so at 800 Windows draws
+Arial Black: another typeface, wider, with rough edges at small sizes. 600 and 700
+look the same there, so do not rely on the difference between them; use size, color
+or a marker as well. `rules/font-weight.test.mjs` enforces the ceiling.
+
 ## Optional help
 
 Use `MbHelp` (`mb-help`) for secondary explanations. It shows a circled question

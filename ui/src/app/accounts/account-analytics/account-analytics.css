@@ -28,7 +28,7 @@
 
 .live-pill {
   font-size: 12.5px;
-  font-weight: 800;
+  font-weight: 700;
   padding: 3px 12px;
   border-radius: 999px;
   color: #fff;
@@ -230,7 +230,7 @@
 .section h2 {
   margin: 0 0 4px;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .fan {
@@ -289,7 +289,7 @@
   border-radius: 50%;
   background: var(--accent-soft);
   color: var(--ds-action-text);
-  font-weight: 800;
+  font-weight: 700;
   margin-top: 10px;
 }
 

@@ -15,7 +15,7 @@
   height: 100dvh;
   min-height: 0;
 }
-.toolbar,
+.bar,
 .details {
   display: flex;
   flex-wrap: wrap;
@@ -27,6 +27,10 @@
   margin-block: 8px;
   justify-content: space-between;
   font-size: 12px;
+}
+.speed {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 .viewport {
   flex: 1;

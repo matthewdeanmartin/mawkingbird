@@ -181,7 +181,7 @@ const LOADING: Group<never> = { items: [], loading: true, failed: false };
     .section-head {
       padding: 14px 16px 6px;
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 700;
       border-top: 1px solid var(--border);
       margin-top: 12px;
     }

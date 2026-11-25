@@ -288,6 +288,13 @@ app-reader-core .reader .reader-search-hit {
   color: inherit;
 }
 
+/* Browsers make these "bolder": 900 inside bold text, which Windows draws in
+   Arial Black (design_system/components.md, "Weight"). */
+b,
+strong {
+  font-weight: 700;
+}
+
 a {
   color: var(--ds-action-text);
   text-decoration: none;
@@ -440,7 +447,7 @@ a.tab:hover {
 
 .page-head {
   padding: 14px 16px;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 18px;
   border-bottom: 1px solid var(--border);
 }
@@ -487,7 +494,7 @@ a.tab:hover {
 .spage-head h1 {
   margin: 0;
   font-size: 19px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .spage-head p {
@@ -512,7 +519,7 @@ a.tab:hover {
 .ssection h2 {
   margin: 6px 0 10px;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 /* Twitter-2018 style row: bold label column left, control column right. */
@@ -577,7 +584,7 @@ a.tab:hover {
 .deployment-label {
   color: var(--muted);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -598,7 +605,7 @@ a.tab:hover {
   color: var(--muted);
   font: inherit;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0;
   cursor: pointer;
 }

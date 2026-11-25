@@ -47,6 +47,10 @@ describe('authGuard', () => {
     // The YouTuber kits page, where public kit pages send visitors to follow.
     '/videos/starters',
     '/videos/starters?lang=de&kit=technology',
+    // The podcast kits page.
+    '/singles/starter-kits',
+    '/singles/starter-kits/',
+    '/singles/starter-kits?lang=de&kit=technology',
     '/app/about',
     '/app/about/',
     '/app/funding/',
@@ -98,13 +102,16 @@ describe('authGuard', () => {
     expect(TestBed.inject(Server).baseUrl()).toBe('https://example.social');
   });
 
-  it.each(['/singles', '/playlists', '/playlists/shared', '/singles/find'])(
-    'keeps Radio pages without a shared link behind the front door: %s',
-    (url) => {
-      const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
-      expect(result).not.toBe(true);
-    },
-  );
+  it.each([
+    '/singles',
+    '/playlists',
+    '/playlists/shared',
+    '/singles/find',
+    '/singles/starter-kits/x',
+  ])('keeps Radio pages without a shared link behind the front door: %s', (url) => {
+    const result = TestBed.runInInjectionContext(() => authGuard({} as any, { url } as any));
+    expect(result).not.toBe(true);
+  });
 
   it('keeps private routes behind the front door', () => {
     const result = TestBed.runInInjectionContext(() =>

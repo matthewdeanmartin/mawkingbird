@@ -58,6 +58,7 @@ import * as toolsIndexPage from './app/public-pages/tools/tools-index';
 import { ToolsIndex } from './app/public-pages/tools/tools-index';
 import { audienceRoutes } from './app/public-pages/features/audience-routes';
 import { followRoutes } from './app/public-pages/features/follow-routes';
+import { podcastRoutes } from './app/public-pages/podcasts/podcast-routes';
 import { youtuberRoutes } from './app/public-pages/youtubers/youtuber-routes';
 import { feedBuilderRoutes } from './app/feeds/feed-builder/feed-builder-routes';
 import { providePublicPageUrls } from './app/public-pages/public-page-urls';
@@ -180,6 +181,7 @@ const publicRoutes: Route[] = [
   ...audienceRoutes,
   ...followRoutes,
   ...youtuberRoutes,
+  ...podcastRoutes,
   ...feedBuilderRoutes,
   { path: '', pathMatch: 'full', component: ClientEntry },
   {
@@ -304,6 +306,10 @@ export default (context: BootstrapContext) =>
                 ),
             },
             ...feedBuilderRoutes.map((route) => ({
+              path: route.path ?? '',
+              renderMode: RenderMode.Prerender as const,
+            })),
+            ...podcastRoutes.map((route) => ({
               path: route.path ?? '',
               renderMode: RenderMode.Prerender as const,
             })),

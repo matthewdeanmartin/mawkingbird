@@ -1,5 +1,5 @@
 {
-  "testCount": 342,
+  "testCount": 344,
   "tests": [
     "src/lib/dictionary/dictionary.spec.ts :: Japanese deinflection accepts a deinflected word only of the class the rule produced",
     "src/lib/dictionary/dictionary.spec.ts :: Japanese deinflection records what was undone",
@@ -325,6 +325,8 @@
     "src/lib/sentiment/sentiment.spec.ts :: rageScore treats a whole-word profanity hit as heated",
     "src/lib/sentiment/sentiment.spec.ts :: rageScore treats strongly negative emoji as heated",
     "src/lib/sentiment/sentiment.spec.ts :: stripHtml drops tags, decodes entities, and collapses whitespace",
+    "src/lib/thread-text/thread-text.spec.ts :: weighted thread text counts a complete URL at the supplied width and an astral character once",
+    "src/lib/thread-text/thread-text.spec.ts :: weighted thread text keeps an oversized URL whole at the start and after prose",
     "src/lib/webmention/webmention-discovery.spec.ts :: endpointFromHtml falls back to <a rel=webmention>",
     "src/lib/webmention/webmention-discovery.spec.ts :: endpointFromHtml ignores a rel with no href at all",
     "src/lib/webmention/webmention-discovery.spec.ts :: endpointFromHtml keeps an empty href, which legally means \"this page\"",

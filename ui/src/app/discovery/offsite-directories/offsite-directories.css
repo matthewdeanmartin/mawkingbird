@@ -46,7 +46,7 @@
   background: var(--accent);
   color: #fff;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .starter-pack-arrow {
@@ -59,7 +59,7 @@
   margin: 0;
   padding: 12px 14px;
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   border-bottom: 1px solid var(--border);
 }
 

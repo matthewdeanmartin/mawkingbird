@@ -78,7 +78,7 @@
 .section h2 {
   margin: 0 0 4px;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .small {
@@ -321,7 +321,7 @@ a.chip:hover {
   border-radius: 50%;
   background: var(--accent-soft);
   color: var(--ds-action-text);
-  font-weight: 800;
+  font-weight: 700;
   margin-top: 10px;
 }
 

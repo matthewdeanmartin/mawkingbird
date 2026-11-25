@@ -1,53 +1,93 @@
-<div class="toolbar" role="group" [attr.aria-label]="'pages.profile.slideshow.open' | transloco">
-  <button mbButton variant="outline" (click)="start()" [disabled]="!slides().length">
-    {{ 'pages.profile.slideshow.start' | transloco }}
-  </button>
-  <button mbButton variant="outline" (click)="step(-1)" [disabled]="!slides().length">
-    {{ 'pages.profile.slideshow.prev' | transloco }}
-  </button>
-  <button mbButton variant="outline" (click)="playing.set(false)" [disabled]="!playing()">
-    {{ 'pages.profile.slideshow.stop' | transloco }}
-  </button>
-  <button mbButton variant="outline" (click)="step(1)" [disabled]="!slides().length">
-    {{ 'pages.profile.slideshow.next' | transloco }}
-  </button>
-  <button mbButton variant="outline" (click)="last()" [disabled]="!slides().length">
-    {{ 'pages.profile.slideshow.last' | transloco }}
-  </button>
-  <button
-    mbButton
-    variant="outline"
-    (click)="speed(0.5)"
-    [disabled]="seconds() >= 30"
-    [attr.aria-label]="'pages.profile.slideshow.slower' | transloco"
-  >
-    −
-  </button>
-  <span>{{ 'pages.profile.slideshow.speed' | transloco: { seconds: seconds() } }}</span>
-  <button
-    mbButton
-    variant="outline"
-    (click)="speed(-0.5)"
-    [disabled]="seconds() <= 0.5"
-    [attr.aria-label]="'pages.profile.slideshow.faster' | transloco"
-  >
-    +
-  </button>
-  <button mbButton variant="outline" (click)="toggleFullscreen()">
-    {{
+<div class="bar">
+  <mb-toolbar density="compact" embedded [label]="'pages.profile.slideshow.open' | transloco">
+    <button
+      mbToolbarButton
+      [attr.aria-label]="'pages.profile.slideshow.start' | transloco"
+      [title]="'pages.profile.slideshow.start' | transloco"
+      [disabled]="!slides().length"
+      (click)="start()"
+    >
+      <mb-icon name="first" />
+    </button>
+    <button
+      mbToolbarButton
+      [attr.aria-label]="'pages.profile.slideshow.prev' | transloco"
+      [title]="'pages.profile.slideshow.prev' | transloco"
+      [disabled]="!slides().length"
+      (click)="step(-1)"
+    >
+      <mb-icon name="previous" />
+    </button>
+    @let play = (playing() ? 'pages.profile.slideshow.stop' : 'radio.play') | transloco;
+    <button
+      mbToolbarButton
+      [attr.aria-label]="play"
+      [title]="play"
+      [disabled]="!slides().length"
+      (click)="playing.set(!playing())"
+    >
+      <mb-icon [name]="playing() ? 'pause' : 'play'" />
+    </button>
+    <button
+      mbToolbarButton
+      [attr.aria-label]="'pages.profile.slideshow.next' | transloco"
+      [title]="'pages.profile.slideshow.next' | transloco"
+      [disabled]="!slides().length"
+      (click)="step(1)"
+    >
+      <mb-icon name="next" />
+    </button>
+    <button
+      mbToolbarButton
+      [attr.aria-label]="'pages.profile.slideshow.last' | transloco"
+      [title]="'pages.profile.slideshow.last' | transloco"
+      [disabled]="!slides().length"
+      (click)="last()"
+    >
+      <mb-icon name="last" />
+    </button>
+    <button
+      mbToolbarButton
+      [attr.aria-label]="'pages.profile.slideshow.slower' | transloco"
+      [title]="'pages.profile.slideshow.slower' | transloco"
+      [disabled]="seconds() >= 30"
+      (click)="speed(0.5)"
+    >
+      <mb-icon name="minimize" size="small" />
+    </button>
+    <span class="speed">{{
+      'pages.profile.slideshow.speed' | transloco: { seconds: seconds() }
+    }}</span>
+    <button
+      mbToolbarButton
+      [attr.aria-label]="'pages.profile.slideshow.faster' | transloco"
+      [title]="'pages.profile.slideshow.faster' | transloco"
+      [disabled]="seconds() <= 0.5"
+      (click)="speed(-0.5)"
+    >
+      <mb-icon name="add" size="small" />
+    </button>
+    @let screen =
       (fullscreen()
         ? 'pages.profile.slideshow.exitFullscreen'
         : 'pages.profile.slideshow.fullscreen'
-      ) | transloco
-    }}
-  </button>
-  <button mbButton variant="outline" (click)="copyLink()" [title]="deepLink()">
+      ) | transloco;
+    <button
+      mbToolbarButton
+      [attr.aria-label]="screen"
+      [title]="screen"
+      (click)="toggleFullscreen()"
+    >
+      <mb-icon [name]="fullscreen() ? 'exitFullscreen' : 'fullscreen'" />
+    </button>
+  </mb-toolbar>
+  <button mbButton variant="compact" type="button" (click)="copyLink()" [title]="deepLink()">
     {{
       (copied() ? 'pages.profile.slideshow.copied' : 'pages.profile.slideshow.copyLink') | transloco
     }}
   </button>
-  <button mbButton variant="outline" (click)="closed.emit()">
-    {{ 'pages.profile.slideshow.close' | transloco }}
+  <button mbButton variant="compact" type="button" (click)="closed.emit()">
+    <span aria-hidden="true">←</span> {{ 'pages.profile.slideshow.close' | transloco }}
   </button>
 </div>
 <div class="details">
@@ -56,7 +96,7 @@
       | transloco: { current: slides().length ? index() + 1 : 0, total: slides().length }
   }}</span>
   @if (!limit() && !exhausted()) {
-    <button mbButton variant="outline" size="small" (click)="older()" [disabled]="loading()">
+    <button mbButton variant="compact" type="button" (click)="older()" [disabled]="loading()">
       {{
         (loading() ? 'pages.profile.slideshow.loading' : 'pages.profile.slideshow.older')
           | transloco

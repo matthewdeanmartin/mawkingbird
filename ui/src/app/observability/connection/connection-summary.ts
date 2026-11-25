@@ -63,7 +63,7 @@ import { percent } from './connection-view';
     }
     .value {
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 700;
     }
     .value .muted {
       margin-inline-start: 6px;

@@ -36,7 +36,7 @@
   background: linear-gradient(135deg, var(--accent), #8a7bff);
   color: #fff;
   font-size: 26px;
-  font-weight: 900;
+  font-weight: 700;
   letter-spacing: 0.04em;
   text-align: center;
   padding: 8px;
@@ -249,7 +249,7 @@
   align-items: center;
   gap: 10px;
   font-size: 19px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .brand-mark {
@@ -261,7 +261,7 @@
   background: var(--accent);
   color: #fff;
   font-size: 22px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .cta-blurb {

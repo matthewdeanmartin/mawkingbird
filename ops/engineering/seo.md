@@ -314,6 +314,33 @@ request (tombstones in `mawkingbird_starters`); each page links
 language, one heading, every creator listed, hub and edition links, `nofollow`
 on YouTube and app links, structured data and sitemap alternates.
 
+## Podcasts on Mastodon: /podcasts-on-mastodon/
+
+A hub per language and one page per topic and language: `/podcasts-on-mastodon/`,
+`/podcasts-on-mastodon/technology/`, `/de/podcasts-auf-mastodon/`,
+`/de/podcasts-auf-mastodon/technologie/`. Languages are listed in `podcast-hubs.json`
+and need their copy in `podcast-copy.ts` and a loader in `podcast-pages.ts`. Pages come
+from the reviewed podcast kits (`mawkingbird_starters`, spec/podcasts/ there) that
+also feed the in-app `/singles/starter-kits`. `npm run podcasts:update` bundles both;
+`node scripts/import-podcasts.mjs --pages` regenerates only these pages' files in
+`src/app/public-pages/podcasts/` from the kits already shipped, and
+`npm run podcasts:check` fails when they disagree.
+
+- A topic gets a page with three shows or more; fewer would be a thin page. Addresses
+  are permanent: a published topic keeps its page and address while it has a show, and
+  the import stops if one would empty. German names are spelled ae, oe, ue, ss. A
+  topic in both languages is an `hreflang` pair; one in a single language has none.
+- Rows show the name, handle, plain-text bio, where the show posts episodes, and its
+  website (`nofollow`). **Never post text or links to posts**, although the in-app kits
+  carry two recent posts each: posts are not made searchable.
+- "See and play episodes" opens `/singles/starter-kits`, which `authGuard` lets a
+  fresh visitor reach anonymously. That page is an app route and stays `noindex`.
+- Consent: as for YouTubers, a self-identified show is a public persona (the catalogue's
+  review policy). Locked, suspended and tombstoned accounts are out. Removal is by
+  request; every page links `@mawkingbird@mastodon.social`.
+- `check-seo-build.mjs` checks every page. The hub is linked from `/features/`, the
+  YouTuber hub and the root `noscript` list.
+
 ## Help site: /help/
 
 The guides in `/docs` are published twice: to Read the Docs (mkdocs) and as

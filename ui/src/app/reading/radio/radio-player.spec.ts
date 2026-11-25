@@ -131,9 +131,7 @@ describe('RadioPlayer', () => {
     ]);
     expect(player.resultTracks()).toHaveLength(1);
     expect(player.resultTracks()[0].external?.provider).toBe('soundcloud');
-    player.chooseExternal(first, player.radioSources(first)[1]);
-    expect(player.queue()).toHaveLength(1);
-    expect(player.current()?.external?.provider).toBe('mixcloud');
+    expect(player.radioSources(first)[1]?.provider).toBe('mixcloud');
     expect(audios).toHaveLength(0);
   });
 

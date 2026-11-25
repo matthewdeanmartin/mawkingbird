@@ -108,7 +108,7 @@
 
 .advanced-options summary {
   padding: 12px 16px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
 }
 
@@ -125,7 +125,7 @@
 
 .field-label {
   font-size: 13px;
-  font-weight: 750;
+  font-weight: 700;
 }
 
 select {

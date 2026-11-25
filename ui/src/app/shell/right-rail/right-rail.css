@@ -52,7 +52,7 @@
 
 .server-title {
   margin: 0;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 14px;
 }
 
@@ -64,7 +64,7 @@
 
 .bsky-handle {
   margin: 0;
-  font-weight: 800;
+  font-weight: 700;
   font-size: 14px;
   overflow-wrap: anywhere;
 }
@@ -150,7 +150,7 @@
 }
 
 .spotlight-title {
-  font-weight: 800;
+  font-weight: 700;
   font-size: 14px;
 }
 

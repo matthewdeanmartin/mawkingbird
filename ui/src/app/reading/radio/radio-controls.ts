@@ -32,7 +32,6 @@ import { MbIcon } from '../../design-system/icon/icon';
 // i18n radio.exitFullscreen: Exit full screen
 // i18n radio.queue: Audio queue
 // i18n radio.playTrack: Play track {{number}}, {{title}}, by {{author}}
-// i18n radio.playPost: Play audio by {{author}}
 // i18n radio.loadingPlayer: Loading the {{provider}} player…
 
 @Component({

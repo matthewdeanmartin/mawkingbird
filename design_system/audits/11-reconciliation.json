@@ -239,8 +239,8 @@
     },
     {
       "file": "ui/src/app/accounts/profile/profile-slideshow.html",
-      "disposition": "partial adoption",
-      "nextStep": "Ten outline pills are a transport, a stepper and commands; see action-rows.md."
+      "disposition": "adopted scope",
+      "nextStep": "Icon Toolbar for transport, speed and full screen; Copy link, Back and older posts are compact Buttons."
     },
     {
       "file": "ui/src/app/feeds/other-servers/other-servers.html",
@@ -729,8 +729,8 @@
     },
     {
       "file": "ui/src/app/discovery/collection/collection.html",
-      "disposition": "backlog",
-      "nextStep": "Review labels, checkbox/radio/select alignment and save/rollback behavior with associated CSS; adopt shared fields/settings controls in a bounded form batch."
+      "disposition": "partial adoption",
+      "nextStep": "Header commands use Button weights: one solid Follow, compact the rest. Tabs, member search and the feed sample stay legacy."
     },
     {
       "file": "ui/src/app/publishing/conversations/conversations.html",
@@ -3681,6 +3681,21 @@
       "file": "ui/src/app/admin/admin-shell/admin-shell.html",
       "disposition": "adopted scope",
       "nextStep": "Wrapping shared Navigation with eleven route links; it replaced one unwrapped row of legacy tabs."
+    },
+    {
+      "file": "ui/src/app/public-pages/podcasts/podcast-faq.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Public podcast page: shared Button and Content link over the public-page layout, as the YouTuber pages."
+    },
+    {
+      "file": "ui/src/app/public-pages/podcasts/podcast-hub.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Public podcast page: shared Button and Content link over the public-page layout, as the YouTuber pages."
+    },
+    {
+      "file": "ui/src/app/public-pages/podcasts/podcast-kit.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Public podcast page: shared Button and Content link over the public-page layout, as the YouTuber pages."
     }
   ]
 }

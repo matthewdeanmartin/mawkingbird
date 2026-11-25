@@ -5,6 +5,7 @@ import { map } from 'rxjs';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { AppOnlyLinkRel } from '../public-page-urls';
+import PODCAST_HUBS from '../podcasts/podcast-hubs.json';
 import type { YoutuberHubPage } from './youtuber-pages';
 
 /**
@@ -78,6 +79,9 @@ import type { YoutuberHubPage } from './youtuber-pages';
           @if (page.lang !== 'en') {
             <a mbContentLink routerLink="/youtubers-on-mastodon">YouTubers on Mastodon (English)</a>
           }
+          @if (podcasts(); as hub) {
+            <a mbContentLink [routerLink]="['/' + hub.path]">{{ hub.label }}</a>
+          }
           <a mbContentLink routerLink="/follow">Mawkingbird · Who to follow</a>
           <a mbContentLink routerLink="/features">Mawkingbird</a>
           <a mbContentLink href="/help/">Help</a>
@@ -92,4 +96,11 @@ export class YoutuberHubPublic {
     initialValue: null,
   });
   protected readonly page = computed(() => this.data() as YoutuberHubPage | null);
+  /** The podcast hub in this language, where there is one. */
+  protected readonly podcasts = computed(
+    () =>
+      (PODCAST_HUBS as unknown as Record<string, { path: string; label: string }>)[
+        this.page()?.lang ?? ''
+      ],
+  );
 }

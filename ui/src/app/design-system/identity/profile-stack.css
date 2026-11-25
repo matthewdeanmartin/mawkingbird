@@ -141,7 +141,7 @@
   margin-top: 2px;
   color: var(--text);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 [mbProfileStack] .profile-handle {
@@ -187,7 +187,7 @@
 
 [mbProfileStack] .stat-value {
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ds-action-text);
 }
 

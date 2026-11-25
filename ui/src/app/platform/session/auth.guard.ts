@@ -76,6 +76,8 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const publicChannel = /^\/videos\/channel\/UC[\w-]{22}\/?$/.test(link.pathname);
   // The YouTuber kits: public kit pages send visitors here to follow and subscribe.
   const youtuberKits = link.pathname === '/videos/starters';
+  // The podcast kits: bundled data, so a link found in a search opens as it is.
+  const podcastKits = /^\/singles\/starter-kits\/?$/.test(link.pathname);
   // A starter pack and a saved Bluesky feed/list are public AppView reads.
   const publicBlueskyPage =
     /^\/bluesky\/starter-packs\/[^/]+\/[^/]+\/?$/.test(link.pathname) ||
@@ -110,6 +112,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
     publicListen ||
     publicChannel ||
     youtuberKits ||
+    podcastKits ||
     publicBlueskyPage ||
     publicBlog ||
     publicUnbird ||

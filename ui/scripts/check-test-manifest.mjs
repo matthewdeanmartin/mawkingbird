@@ -1,12 +1,12 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { checkRemovals, readRemovals, removalReport, REMOVALS_FILE } from './test-removals.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
-const update = process.argv.includes('--update');
 const reportArgument = process.argv.find((argument) => argument.endsWith('.json'));
 if (!reportArgument) {
-  throw new Error('Usage: check-test-manifest.mjs [--update] <vitest-results.json>');
+  throw new Error('Usage: check-test-manifest.mjs <vitest-results.json>');
 }
 
 const reportPath = path.resolve(root, reportArgument);
@@ -33,49 +33,40 @@ if (new Set(testIds).size !== testIds.length) {
   throw new Error('The runtime test manifest contains duplicate file/name identities.');
 }
 
-if (update) {
-  const baseline = { testCount: testIds.length, tests: testIds };
-  await writeFile(baselinePath, `${JSON.stringify(baseline, null, 2)}\n`);
-  console.log(`Updated test manifest with ${testIds.length} runtime test identities.`);
-  process.exit(0);
-}
-
 const baseline = JSON.parse(await readFile(baselinePath, 'utf8'));
-const current = new Set(testIds);
 const protectedIds = new Set(baseline.tests);
-const missing = baseline.tests.filter((testId) => !current.has(testId));
 const added = testIds.filter((testId) => !protectedIds.has(testId));
 
-console.log(
-  `Runtime test manifest: ${testIds.length} present, ${added.length} added, ${missing.length} missing.`,
+const { tests: libTests } = JSON.parse(
+  await readFile(path.join(root, 'lib-test-manifest.json'), 'utf8'),
 );
-// New tests are not a failure, and a long-unrefreshed manifest lists
-// thousands. Show a few; TEST_MANIFEST_VERBOSE=1 lists them all. Missing tests
-// below are the failure and always print in full.
-const shownAdded = process.env.TEST_MANIFEST_VERBOSE ? added : added.slice(0, 10);
-if (shownAdded.length) {
-  console.log(shownAdded.map((testId) => `+ ${testId}`).join('\n'));
-  if (shownAdded.length < added.length) {
-    console.log(
-      `+ …and ${added.length - shownAdded.length} more (TEST_MANIFEST_VERBOSE=1 lists all; npm run test:audit:update protects them)`,
-    );
-  }
-}
-// Missing tests fail the check. A renamed spec can drop dozens at once, so
-// past 20 they are grouped by file; TEST_MANIFEST_VERBOSE=1 lists every one.
-if (missing.length) {
-  if (process.env.TEST_MANIFEST_VERBOSE || missing.length <= 20) {
-    console.error(missing.map((testId) => `- ${testId}`).join('\n'));
-  } else {
-    const byFile = new Map();
-    for (const testId of missing) {
-      const file = testId.slice(0, testId.indexOf(' :: '));
-      byFile.set(file, (byFile.get(file) ?? 0) + 1);
-    }
-    console.error(
-      [...byFile].map(([file, count]) => `- ${file}: ${count} missing`).join('\n') +
-        '\n(TEST_MANIFEST_VERBOSE=1 lists each missing test)',
-    );
-  }
+const { problems, removed } = checkRemovals({
+  baseline: baseline.tests,
+  current: testIds,
+  removals: readRemovals(),
+  elsewhere: libTests,
+});
+
+console.log(
+  `Runtime test manifest: ${testIds.length} present, ${added.length} added, ` +
+    `${removed.length} removed with a reason.`,
+);
+const removedReport = removalReport(removed);
+if (removedReport) console.log(removedReport);
+
+if (problems.length) {
+  console.error(
+    `${problems.length} problem(s) with removed tests:\n` +
+      problems.map((problem) => `- ${problem}`).join('\n') +
+      `\nRemoving a test is fine when it is renamed, replaced, for dead code, or a poor test. ` +
+      `Say which in ${REMOVALS_FILE}, and tell the owner. If it went by accident, restore it.`,
+  );
   process.exitCode = 1;
+} else if ((added.length || removed.length) && !process.env.CI) {
+  // Nobody edits the manifest: a green, explained run is what it records.
+  await writeFile(
+    baselinePath,
+    `${JSON.stringify({ testCount: testIds.length, tests: testIds }, null, 2)}\n`,
+  );
+  console.log('Updated test-manifest.json; commit it with the change.');
 }

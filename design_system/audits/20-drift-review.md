@@ -228,5 +228,18 @@ Steps 1 and 2 of the suggested order, plus defects:
 - Video links under posts (Open Watch, Queue, Open on YouTube) are compact.
 - Find singles' fields, Singles' Open button, and the adoption scanner are fixed.
 
-Still open: item 5 outside Radio, Video and RSS, item 6 for RSS and Read, 7 to 10, most
-of 8 and 11, 12, 13, and steps 3 to 5.
+Step 3 followed (2026-11-25): Write's header, Search's bar, RSS's rail and filters,
+collections and the profile slide show. Pills in view: Write 8 to 3, Search 7 to 3,
+slide show 10 to 0. Search and Write's note box stay enabled while empty. Write's
+"All drafts" link is gone; Manage, beside New, opens the same page. The slide show
+resumes where it stopped, which only the space bar did before.
+
+Thirteen browser tests and `test:radio:browser` described screens that earlier work
+had replaced (report steps, Bluesky sign-in, Inbox digests, Singles and Playlists).
+They now test the current screens.
+
+Still open: item 5 outside Radio, Video, RSS and Write, item 6 for RSS and Read, 7, 9 and
+10, the rest of 8 and 11, 12, 13, and steps 4 and 5. Found on the way:
+
+- StatusCard kept audio inputs and outputs no screen used; they are gone.
+- A fresh visitor's link to `/singles/starter-kits` landed on Home; it opens now.

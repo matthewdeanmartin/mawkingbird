@@ -81,11 +81,7 @@ import { MbButton } from '../../design-system/button/button';
 import { listenParams, radioPostRef } from '../../reading/radio-links';
 import { youtubeMusic } from '../../reading/audio-embeds/youtube-music';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
-import {
-  ExternalMedia,
-  externalMedia,
-  postExternalMedia,
-} from '../../reading/audio-embeds/providers';
+import { externalMedia, postExternalMedia } from '../../reading/audio-embeds/providers';
 import { linkedAudio, locItems } from '../../reading/audio-embeds/linked-audio';
 import { ProviderPreferences } from '../../reading/audio-embeds/provider-preferences';
 import {
@@ -590,13 +586,6 @@ export class StatusCard {
   }
 
   // i18n statusCard.audioActions: Audio actions
-  readonly radioQueue = input(false);
-  /** The keep button's label key where `radioQueue` is set: saving a Single or adding to a playlist. */
-  readonly radioAddLabel = input('radio.addPlaylist');
-  readonly radioSources = input<ExternalMedia[]>([]);
-  readonly playAudio = output<void>();
-  readonly addAudio = output<void>();
-  readonly listenRadio = output<ExternalMedia>();
   readonly externalHosts = viewChildren(ExternalPlayerHost);
   readonly showMedia = input(true);
   // i18n statusCard.openInRadio: Play in Radio

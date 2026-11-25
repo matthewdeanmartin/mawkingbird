@@ -14,6 +14,8 @@ import {
 } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
+import { MbIcon } from '../../design-system/icon/icon';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
 import { Status } from '../../platform/api/models';
 import { ReadingZen } from '../../reading/reading-zen';
@@ -87,7 +89,7 @@ export function slideshowQuery(options: SlideshowOptions): string {
 
 @Component({
   selector: 'app-profile-slideshow',
-  imports: [TranslocoPipe, MbButton, CustomEmojiPipe],
+  imports: [TranslocoPipe, MbButton, MbIcon, MbToolbar, MbToolbarButton, CustomEmojiPipe],
   templateUrl: './profile-slideshow.html',
   styleUrl: './profile-slideshow.css',
   host: {

@@ -1,4 +1,5 @@
 import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
+import { MbButton } from '../../design-system/button/button';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -119,6 +120,7 @@ interface Member {
 @Component({
   selector: 'app-collection',
   imports: [
+    MbButton,
     AccountName,
     FormsModule,
     RouterLink,

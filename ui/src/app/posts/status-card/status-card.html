@@ -753,7 +753,7 @@
         showMedia() &&
         !cwCollapsed() &&
         !mediaBlurred() &&
-        (radioQueue() || radioPost() || singlePost() || externalHosts().length)
+        (radioPost() || singlePost() || externalHosts().length)
       ) {
         <mb-toolbar
           density="compact"
@@ -762,23 +762,7 @@
           [label]="'statusCard.audioActions' | transloco"
           (click)="$event.stopPropagation()"
         >
-          @if (radioQueue()) {
-            <button mbToolbarButton type="button" (click)="addAudio.emit()">
-              {{ radioAddLabel() | transloco }}
-            </button>
-            <button mbToolbarButton (click)="playAudio.emit()">
-              {{
-                'radio.playPost'
-                  | transloco: { author: display.account.display_name || display.account.acct }
-              }}
-            </button>
-          }
-          @for (source of radioSources(); track source.key) {
-            <button mbToolbarButton (click)="listenRadio.emit(source)">
-              {{ 'radio.listenProvider' | transloco: { provider: source.label } }}
-            </button>
-          }
-          @if (!radioQueue() && singlePost(); as postUrl) {
+          @if (singlePost(); as postUrl) {
             <button
               mbToolbarButton
               type="button"

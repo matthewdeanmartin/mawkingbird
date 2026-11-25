@@ -39,7 +39,7 @@
   gap: 10px;
   color: var(--text);
   font-size: 17px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
@@ -98,7 +98,7 @@
 
 .primary-nav a.active {
   color: var(--text);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .primary-nav a.active::after {

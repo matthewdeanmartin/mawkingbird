@@ -3,19 +3,20 @@
 //
 //   node scripts/test-libs.mjs            run changed libraries, reuse cached passes
 //   node scripts/test-libs.mjs --all      run every library (CI always does)
-//   node scripts/test-libs.mjs --update   also accept added tests into lib-test-manifest.json
 //
 // A library's fingerprint covers every file in its folder, the installed
 // versions of its declared dependencies and of the test runner, and this
 // runner's own configuration. Any change reruns that library.
 //
 // lib-test-manifest.json guards the inventory the same way test-manifest.json
-// guards the app suite: a test that disappears fails the run, cached or not.
+// guards the app suite: a test that disappears needs a reason in test-removals.md,
+// cached or not, and a green run rewrites the manifest (see test-removals.mjs).
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { artifactDir } from './artifacts.mjs';
+import { checkRemovals, readRemovals, removalReport, REMOVALS_FILE } from './test-removals.mjs';
 
 const root = path.resolve(import.meta.dirname, '..');
 const libRoot = path.join(root, 'src', 'lib');
@@ -23,7 +24,6 @@ const manifestPath = path.join(root, 'lib-test-manifest.json');
 const cacheDir = artifactDir('lib-tests');
 mkdirSync(cacheDir, { recursive: true });
 const all = process.argv.includes('--all') || !!process.env.CI;
-const update = process.argv.includes('--update');
 const posix = (p) => p.split(path.sep).join('/');
 
 function files(dir) {
@@ -146,40 +146,32 @@ const summary = libraries
   )
   .join(', ');
 
-if (update) {
+const read = (file) => (existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : { tests: [] });
+const baseline = read(manifestPath);
+const before = new Set(baseline.tests);
+const added = current.filter((id) => !before.has(id));
+const { problems, removed } = checkRemovals({
+  baseline: baseline.tests,
+  current,
+  removals: readRemovals(),
+  elsewhere: read(path.join(root, 'test-manifest.json')).tests,
+});
+console.log(
+  `Library tests: ${summary}. ${current.length} present, ${added.length} added, ` +
+    `${removed.length} removed with a reason.`,
+);
+const removedReport = removalReport(removed);
+if (removedReport) console.log(removedReport);
+if (problems.length) {
+  console.error(
+    `${problems.length} problem(s) with removed library tests (see ${REMOVALS_FILE}):\n` +
+      problems.map((problem) => `- ${problem}`).join('\n'),
+  );
+  process.exitCode = 1;
+} else if ((added.length || removed.length) && !process.env.CI) {
   writeFileSync(
     manifestPath,
     `${JSON.stringify({ testCount: current.length, tests: current }, null, 2)}\n`,
   );
-  console.log(
-    `Library tests: ${summary}. Updated lib-test-manifest.json with ${current.length} tests.`,
-  );
-  process.exit(0);
-}
-
-const baseline = existsSync(manifestPath)
-  ? JSON.parse(readFileSync(manifestPath, 'utf8'))
-  : { tests: [] };
-const now = new Set(current);
-const before = new Set(baseline.tests);
-const missing = baseline.tests.filter((id) => !now.has(id));
-const added = current.filter((id) => !before.has(id));
-console.log(
-  `Library tests: ${summary}. ${current.length} present, ${added.length} added, ${missing.length} missing.`,
-);
-if (added.length)
-  console.log(
-    `${added
-      .slice(0, 10)
-      .map((id) => `+ ${id}`)
-      .join(
-        '\n',
-      )}${added.length > 10 ? `\n+ …and ${added.length - 10} more` : ''}\n(npm run test:libs:update protects them)`,
-  );
-if (missing.length) {
-  console.error(missing.map((id) => `- ${id}`).join('\n'));
-  console.error(
-    'Library tests went missing. Restore them, or explain the change and run npm run test:libs:update.',
-  );
-  process.exit(1);
+  console.log('Updated lib-test-manifest.json; commit it with the change.');
 }

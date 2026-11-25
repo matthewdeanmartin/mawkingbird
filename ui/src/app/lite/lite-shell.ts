@@ -142,7 +142,7 @@ export const LITE_NAV: readonly { path: string; label: string }[] = [
       background: var(--col-bg);
     }
     .lite-brand {
-      font-weight: 800;
+      font-weight: 700;
       color: var(--text);
       text-decoration: none;
     }

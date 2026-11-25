@@ -7,19 +7,13 @@
            RSS Manage tab and the mode switcher. The kits toggle stays — it is
            also the pane's way back to the reader. -->
       <span class="head-actions">
-        <button class="btn btn-small" type="button" (click)="openAddDialog()">
+        <button mbButton size="small" type="button" (click)="openAddDialog()">
           {{ 'pages.rss.pasteLink' | transloco }}
         </button>
-        <button
-          class="btn btn-small btn-outline"
-          type="button"
-          [class.active]="showKits()"
-          [attr.aria-pressed]="showKits()"
-          (click)="toggleKits()"
-        >
+        <button mbButton variant="compact" type="button" (click)="toggleKits()">
           {{ (showKits() ? 'pages.rss.readerView' : 'pages.rss.starterKits') | transloco }}
         </button>
-        <button class="btn btn-small btn-outline" type="button" (click)="openFriendFeeds()">
+        <button mbButton variant="compact" type="button" (click)="openFriendFeeds()">
           {{ 'pages.rss.friendFeeds' | transloco }}
         </button>
       </span>
@@ -110,13 +104,8 @@
 
     @if ((statuses().length || readState.starredCount()) && !showKits()) {
       <div class="pane-tools">
-        <span class="seg" role="group" [attr.aria-label]="'pages.rss.filter' | transloco">
-          <button
-            type="button"
-            [class.active]="filter() === 'all'"
-            [attr.aria-pressed]="filter() === 'all'"
-            (click)="setFilter('all')"
-          >
+        <mb-toolbar density="compact" embedded [label]="'pages.rss.filter' | transloco">
+          <button mbToolbarButton [pressed]="filter() === 'all'" (click)="setFilter('all')">
             {{ 'pages.rss.all' | transloco }}
           </button>
           <!-- "Read later", not "Starred". Same store, same gesture, plainer
@@ -124,40 +113,33 @@
                differently, while "read later" says what the list is for. The
                internal id stays `starred` — renaming the persisted key would
                throw away everybody's saved items for a copy change. -->
-          <button
-            type="button"
-            [class.active]="filter() === 'starred'"
-            [attr.aria-pressed]="filter() === 'starred'"
-            (click)="setFilter('starred')"
-          >
+          <button mbToolbarButton [pressed]="filter() === 'starred'" (click)="setFilter('starred')">
             {{ 'pages.rss.readLater' | transloco }}
           </button>
-        </span>
+        </mb-toolbar>
 
-        <span class="seg" role="group" [attr.aria-label]="'pages.rss.density' | transloco">
+        <mb-toolbar density="compact" embedded [label]="'pages.rss.density' | transloco">
           <button
-            type="button"
-            [class.active]="prefs.rssDensity() === 'full'"
-            [attr.aria-pressed]="prefs.rssDensity() === 'full'"
+            mbToolbarButton
+            [pressed]="prefs.rssDensity() === 'full'"
             (click)="setDensity('full')"
           >
             {{ 'pages.rss.full' | transloco }}
           </button>
           <button
-            type="button"
-            [class.active]="prefs.rssDensity() === 'headlines'"
-            [attr.aria-pressed]="prefs.rssDensity() === 'headlines'"
+            mbToolbarButton
+            [pressed]="prefs.rssDensity() === 'headlines'"
             (click)="setDensity('headlines')"
           >
             {{ 'pages.rss.headlines' | transloco }}
           </button>
-        </span>
+        </mb-toolbar>
 
         <!-- Hidden while filtering: "mark all as read" means this pane's items,
              not the subset currently on screen, and offering it next to a
              Starred filter invites exactly that misreading. -->
         @if (filter() === 'all' && unreadCount()) {
-          <button class="link-btn mark-all" type="button" (click)="markAllRead()">
+          <button mbButton variant="compact" class="mark-all" type="button" (click)="markAllRead()">
             {{ 'pages.rss.markReadCount' | transloco: { count: unreadCount() } }}
           </button>
         }

@@ -1,5 +1,7 @@
 import { translatedComputed } from '../../i18n/translated';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
+import { MbButton } from '../../design-system/button/button';
+import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { FeedSyncButton } from '../../accounts/mawkingbird/feed-sync-button';
 import {
   afterNextRender,
@@ -142,6 +144,9 @@ interface RailGroup {
 @Component({
   selector: 'app-rss-page',
   imports: [
+    MbButton,
+    MbToolbar,
+    MbToolbarButton,
     FeedSyncButton,
     RouterLink,
     AddFeedDialog,

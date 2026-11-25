@@ -93,12 +93,19 @@ test("notification dismissal follows compact inline actions on a phone", async (
     name: "Hide notification",
     exact: true,
   });
-  await expect(buttons).toHaveCount(4);
-  for (const button of await buttons.all()) {
-    const box = await button.boundingBox();
-    expect(box.height).toBeLessThanOrEqual(40);
-    expect(box.width).toBeLessThan(180);
-    await expect(button.locator("..")).toHaveClass("mention-actions");
+  // The mention has its own row; likes and boosts share a digest until filtered.
+  for (const [type, count] of [
+    ["all", 1],
+    ["favourite", 2],
+  ]) {
+    await page.locator("select.type-select").selectOption(type);
+    await expect(buttons).toHaveCount(count);
+    for (const button of await buttons.all()) {
+      const box = await button.boundingBox();
+      expect(box.height).toBeLessThanOrEqual(40);
+      expect(box.width).toBeLessThan(180);
+      await expect(button.locator("..")).toHaveClass("mention-actions");
+    }
   }
   await page.screenshot({
     path: testInfo.outputPath("notifications-mobile.png"),

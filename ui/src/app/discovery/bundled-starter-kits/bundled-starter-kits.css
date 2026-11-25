@@ -29,7 +29,7 @@
   border-radius: 12px;
   display: grid;
   place-items: center;
-  font-weight: 800;
+  font-weight: 700;
   background: var(--accent);
   color: #fff;
 }

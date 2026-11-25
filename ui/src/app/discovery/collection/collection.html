@@ -11,7 +11,13 @@
       <span class="badge sensitive-badge">{{ 'pages.collection.sensitive' | transloco }}</span>
     }
     @if (!shipped()) {
-      <button class="btn btn-outline btn-sm" [disabled]="converting()" (click)="convertToList()">
+      <button
+        mbButton
+        variant="compact"
+        type="button"
+        [disabled]="converting()"
+        (click)="convertToList()"
+      >
         {{
           (converting() ? 'pages.collection.converting' : 'pages.collection.convertToList')
             | transloco
@@ -53,7 +59,7 @@
            kit's ids are foreign. Those rows follow one at a time, each
            resolving itself first. -->
       @if (canFollow() && !shipped() && members().length) {
-        <button class="btn btn-outline" [disabled]="bulk.running()" (click)="askFollowAll()">
+        <button mbButton type="button" [disabled]="bulk.running()" (click)="askFollowAll()">
           {{
             (bulk.running()
               ? 'pages.collection.workingFollowAll'
@@ -68,7 +74,8 @@
            visitors too — the follow is a browser-local row. -->
       @if (canFollowKit()) {
         <button
-          class="btn btn-outline"
+          mbButton
+          type="button"
           [disabled]="importer.running() || kitFollowDone() === members().length"
           (click)="followAllShipped()"
         >
@@ -88,18 +95,27 @@
         </button>
       }
       @if (isOwner()) {
-        <button class="btn btn-outline" (click)="editing.set(true)">
+        <button mbButton variant="compact" type="button" (click)="editing.set(true)">
           {{ 'pages.collection.editCollection' | transloco }}
         </button>
-        <button class="btn btn-outline" (click)="showBulk.set(true)">
+        <button mbButton variant="compact" type="button" (click)="showBulk.set(true)">
           {{ 'pages.collection.addPeopleByName' | transloco }}
         </button>
-        <button class="btn btn-outline danger" (click)="showDeleteConfirm.set(true)">
+        <button
+          mbButton
+          variant="compact"
+          tone="danger"
+          type="button"
+          (click)="showDeleteConfirm.set(true)"
+        >
           {{ 'pages.collection.deleteCollection' | transloco }}
         </button>
       } @else if (myItem()) {
         <button
-          class="btn btn-outline danger"
+          mbButton
+          variant="compact"
+          tone="danger"
+          type="button"
           [disabled]="leaving()"
           (click)="showLeaveConfirm.set(true)"
         >
@@ -107,7 +123,13 @@
         </button>
       }
       @if (canReport() && !reported()) {
-        <button class="btn btn-outline danger" (click)="showReport.set(true)">
+        <button
+          mbButton
+          variant="compact"
+          tone="danger"
+          type="button"
+          (click)="showReport.set(true)"
+        >
           {{ 'pages.collection.report' | transloco }}
         </button>
       }

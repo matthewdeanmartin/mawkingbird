@@ -157,6 +157,40 @@ const ytPacks = async (lang) => {
   return ytData.get(lang);
 };
 pages.push(...ytHubs.map((hub) => hub.path), ...ytKits.map((kit) => kit.path));
+// Podcasts on Mastodon (src/app/public-pages/podcasts/): a hub per language and a
+// page per topic and language.
+const podcastDir = path.resolve(import.meta.dirname, '../src/app/public-pages/podcasts');
+const podcastHubs = Object.entries(
+  JSON.parse(await readFile(path.join(podcastDir, 'podcast-hubs.json'), 'utf8')),
+)
+  .filter(([lang]) => lang !== '$comment')
+  .map(([lang, hub]) => ({ lang, path: hub.path }));
+const podcastKits = (
+  await Promise.all(
+    podcastHubs.map(async ({ lang }) =>
+      JSON.parse(await readFile(path.join(podcastDir, 'data', `${lang}.json`), 'utf8')).packs.map(
+        (kit) => ({ ...kit, lang }),
+      ),
+    ),
+  )
+).flat();
+const podcastHubAt = (page) => podcastHubs.find((hub) => hub.path === page);
+const podcastKitAt = (page) => podcastKits.find((kit) => kit.path === page);
+/** A podcast page's editions, itself included. */
+const podcastEditions = (page) =>
+  podcastHubAt(page)
+    ? podcastHubs
+    : podcastKits.filter((kit) => kit.category === podcastKitAt(page).category);
+// The sitemap's own order: each topic's editions together.
+const podcastPaths = Object.values(
+  JSON.parse(await readFile(path.join(podcastDir, 'podcast-paths.generated.json'), 'utf8')).kits,
+).flatMap((editions) => Object.values(editions));
+assert.deepEqual(
+  [...podcastPaths].sort(),
+  podcastKits.map((kit) => kit.path).sort(),
+  'podcast paths and kits agree',
+);
+pages.push(...podcastHubs.map((hub) => hub.path), ...podcastPaths);
 const articles = new Map([
   ['about', /Why I asked a bot to create this/],
   ['funding', /Nothing below is a revenue model/],
@@ -322,6 +356,56 @@ for (const page of pages) {
         doc.querySelector(`a[hreflang="${version.lang}"][href="/${version.path}/"]`),
         `${page} links its ${version.lang} version`,
       );
+  } else if (podcastHubAt(page) || podcastKitAt(page)) {
+    // A podcast hub or topic: its language, its rows, its editions, no post text.
+    const kit = podcastKitAt(page);
+    const { lang } = kit ?? podcastHubAt(page);
+    const hub = podcastHubs.find((entry) => entry.lang === lang);
+    assert.equal(doc.documentElement.lang, lang, `${page} <html lang>`);
+    assert.equal(doc.querySelectorAll('h1').length, 1, `${page} has one heading`);
+    assert.ok(
+      doc.querySelector('a[href^="/singles/starter-kits"][rel~="nofollow"]'),
+      `${page} opens the app (nofollow)`,
+    );
+    assert.ok(
+      doc.querySelector('a[href="/accounts/@mawkingbird@mastodon.social"]'),
+      `${page} says where to ask for help or removal`,
+    );
+    if (kit) {
+      assert.equal(
+        doc.querySelectorAll('.creators > li').length,
+        kit.members.length,
+        `${page} lists every show`,
+      );
+      assert.ok(doc.querySelector(`a[href="/${hub.path}/"]`), `${page} links its hub`);
+      assert.ok(
+        doc.querySelector(`a[href*="kit=${kit.category}"][rel~="nofollow"]`),
+        `${page} opens the kit in the app (nofollow)`,
+      );
+      for (const show of kit.members.filter((member) => member.showUrl))
+        assert.ok(
+          [...doc.querySelectorAll('a[rel~="nofollow"]')].some(
+            (link) => link.getAttribute('href') === show.showUrl,
+          ),
+          `${page} show website is nofollow: ${show.showUrl}`,
+        );
+    } else {
+      for (const own of podcastKits.filter((entry) => entry.lang === lang))
+        assert.ok(doc.querySelector(`a[href="/${own.path}/"]`), `${page} links to ${own.path}`);
+    }
+    const others = podcastEditions(page);
+    assert.deepEqual(
+      [...doc.querySelectorAll('link[rel="alternate"][hreflang]')]
+        .map((link) => `${link.getAttribute('hreflang')} ${link.getAttribute('href')}`)
+        .sort(),
+      ytAlternates(others),
+      `${page} hreflang alternates`,
+    );
+    for (const other of others.filter((entry) => entry.path !== page))
+      assert.ok(
+        doc.querySelector(`a[hreflang="${other.lang}"][href="/${other.path}/"]`),
+        `${page} links its ${other.lang} version`,
+      );
   } else if (page === 'tools') {
     // The index links every English tool page, from the same registry; the
     // translations get their own language's index.
@@ -469,6 +553,23 @@ for (const page of pages) {
       blocks[0].mainEntity.itemListElement.length,
       doc.querySelectorAll('.people li').length,
     );
+  } else if (podcastHubAt(page) || podcastKitAt(page)) {
+    const kit = podcastKitAt(page);
+    const { lang } = kit ?? podcastHubAt(page);
+    const hub = podcastHubs.find((entry) => entry.lang === lang);
+    assert.equal(blocks.length, 1, `${page} has one structured-data block`);
+    assert.equal(blocks[0]['@type'], 'CollectionPage');
+    assert.equal(blocks[0].inLanguage, lang);
+    assert.deepEqual(
+      breadcrumbOf(blocks[0]),
+      kit ? ['/', `/${hub.path}/`, `/${page}/`] : ['/', `/${page}/`],
+      `${page} breadcrumb`,
+    );
+    assert.equal(
+      blocks[0].mainEntity.itemListElement.length,
+      kit ? kit.members.length : podcastKits.filter((entry) => entry.lang === lang).length,
+      `${page} lists every item`,
+    );
   } else if (ytHubAt(page)) {
     const hub = ytHubAt(page);
     assert.equal(blocks.length, 1, `${page} has one structured-data block`);
@@ -577,11 +678,13 @@ for (const url of sitemap.querySelectorAll('url')) {
           ? feedAlternates(feedPageAt(page))
           : hubAt(page) && feedHubs.length > 1
             ? HUB_ALTERNATES
-            : ytHubAt(page)
-              ? ytAlternates(ytHubs)
-              : ytKitAt(page)
-                ? ytAlternates(ytKits.filter((kit) => kit.category === ytKitAt(page).category))
-                : [],
+            : podcastHubAt(page) || podcastKitAt(page)
+              ? ytAlternates(podcastEditions(page))
+              : ytHubAt(page)
+                ? ytAlternates(ytHubs)
+                : ytKitAt(page)
+                  ? ytAlternates(ytKits.filter((kit) => kit.category === ytKitAt(page).category))
+                  : [],
     `sitemap alternates for ${page}`,
   );
 }

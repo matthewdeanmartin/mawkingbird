@@ -14,7 +14,7 @@ built with the app, but written and checked as if it were an npm package.
 | `link-cleaning`      | Tracking-parameter removal with an allowlist                    | `app/publishing/post-link-cleaning.ts`                                               |
 | `sentiment`          | A small VADER-style rage score for social text                  | `app/feeds/sentiment.ts`                                                             |
 | `webmention`         | W3C Webmention endpoint discovery                               | `app/connections/hugo/webmention-send.ts`                                            |
-| `thread-text` | URL-weighted measurement and automatic thread splitting | `app/publishing/compose/post-length.ts` and `app/publishing/write/split-modes.ts` |
+| `thread-text`        | URL-weighted measurement and automatic thread splitting         | `app/publishing/compose/post-length.ts` and `app/publishing/write/split-modes.ts`    |
 
 ## The rules
 
@@ -64,8 +64,8 @@ The cache lives in the artifact folder (`node scripts/artifacts.mjs lib-tests`).
 `npm run test:libs:all` and CI (`CI=1`) always run everything.
 
 `lib-test-manifest.json` protects the library tests the way `test-manifest.json`
-protects the app's. A missing test fails the run, cached or not. Accept added
-tests with `npm run test:libs:update`.
+protects the app's. A missing test needs a reason in `ui/test-removals.md`,
+cached or not. A green local run accepts added tests.
 
 Tests that pin Mawkingbird's own choices stay in the app next to its seam, for
 example "Eliza's FAQ answers boosts" or "invite links keep their campaign tags".
@@ -79,6 +79,5 @@ example "Eliza's FAQ answers boosts" or "invite links keep their campaign tags".
 3. Point the app's imports at the entry point, keeping one small adapter where
    the app needs to add policy.
 4. Move its specs alongside it. Leave app-specific assertions in the app.
-5. Run `npm run check:libs` and `npm run test:libs`. Then accept the moved tests:
-   `npm run test:libs:update`, and remove the same IDs from `test-manifest.json`
-   only after checking that each one reappears in `lib-test-manifest.json`.
+5. Run `npm run check:libs` and `npm run test:libs`, which accepts the moved tests.
+   Declare each in `ui/test-removals.md` with reason `moved` and its new identity.

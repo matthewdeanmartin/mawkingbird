@@ -304,50 +304,63 @@ try {
     await route.fulfill({ json: body });
   };
   await page.route('**/api/**', apiFixture);
-  await page.goto(`${base}/radio`);
-  await page.getByRole('heading', { name: 'Playlist', exact: true }).waitFor();
-  const sourceLabel = await page
-    .locator('app-radio-page form:has(select[name=source]) mb-field label')
-    .nth(0)
+  const nav = (name) => page.locator('nav.primary-nav').getByRole('link', { name, exact: true });
+  const find = page.locator('app-find-singles-page');
+  const progress = find.locator('p.progress');
+  /** Scan an account's posts and wait for the end of its feed. */
+  const findAudio = async (matches) => {
+    await find.getByRole('tab', { name: 'Account', exact: true }).click();
+    await find.getByLabel(/Account handle/).fill('music');
+    await find.getByRole('button', { name: 'Find audio', exact: true }).first().click();
+    await progress.filter({ hasText: `${matches} with music · Reached the end` }).waitFor();
+  };
+  await page.goto(`${base}/singles/find`);
+  await page.getByRole('heading', { name: 'Singles', exact: true }).waitFor();
+  const handleBox = await find.getByLabel(/Account handle/).boundingBox();
+  const findButton = await find
+    .getByRole('button', { name: 'Find audio', exact: true })
+    .first()
     .boundingBox();
-  const handleLabel = await page
-    .locator('app-radio-page form:has(select[name=source]) mb-field label')
-    .nth(1)
-    .boundingBox();
-  assert.ok(Math.abs(sourceLabel.y - handleLabel.y) < 2, 'Radio source labels align');
-  await page.getByLabel(/Account handle/).fill('music');
-  await page.getByRole('button', { name: 'Find audio', exact: true }).click();
-  await page.getByText('Reached the end of the available feed.').waitFor();
-  assert.match(await page.locator('.radio-page').innerText(), /found 2 audio posts/);
-  assert.equal(await page.locator('.radio-page audio').count(), 2);
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Publish', exact: true })
-    .click();
-  await page.getByRole('button', { name: 'Add results to playlist', exact: true }).click();
-  await page.getByLabel('Playlist name', { exact: true }).fill('Sea songs');
-  await page.getByRole('button', { name: 'Save playlist locally', exact: true }).click();
-  await page.getByText('Playlist saved in this browser.', { exact: true }).waitFor();
-  assert.ok(new URL(page.url()).hash.startsWith('#playlist='));
+  const middle = (box) => box.y + box.height / 2;
+  assert.ok(
+    Math.abs(middle(handleBox) - middle(findButton)) < 2,
+    'Find audio lines up with its box',
+  );
+  await findAudio(2);
+  assert.equal(await find.locator('app-track-result').count(), 2);
+  assert.equal(await page.locator('audio[data-radio]').count(), 0, 'Finding never plays');
+  await find.getByRole('button', { name: 'Save all results', exact: true }).click();
+  await find.getByText('Saved 2 singles.').waitFor();
+  await find.getByRole('link', { name: 'Open Saved singles', exact: true }).click();
+  await page.locator('app-singles-page li[mbItemRow]').nth(1).waitFor();
+  await nav('Playlists').click();
+  await page.getByRole('button', { name: 'New playlist', exact: true }).first().click();
+  const playlist = page.locator('app-playlist-page');
+  const tracks = playlist.locator('ol[mbItemList] > li');
+  const name = playlist.getByLabel('Name', { exact: true });
+  await name.fill('Sea songs');
+  await name.press('Tab');
+  await playlist.getByRole('heading', { name: 'Sea songs', exact: true }).waitFor();
+  const candidates = playlist.locator('section.add li button');
+  await candidates.first().click();
+  await candidates.first().click();
+  await tracks.nth(1).waitFor();
   await page.screenshot({ path: `${results}/radio-playlist-desktop.png`, fullPage: true });
   const restored = await page.context().newPage();
   restored.on('pageerror', (error) => errors.push(error.message));
   await restored.route('**/api/**', apiFixture);
   await restored.goto(page.url());
-  await restored.waitForFunction(() => document.querySelectorAll('.playlist > li').length === 2);
-  await restored
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Saved', exact: true })
-    .click();
-  await restored.getByRole('button', { name: 'Load Sea songs', exact: true }).click();
-  await restored.getByLabel('Playlist name', { exact: true }).waitFor();
+  await restored.locator('app-playlist-page ol[mbItemList] > li').nth(1).waitFor();
   assert.equal(
     await restored.locator('audio[data-radio]').count(),
     0,
-    'A shared playlist does not autoplay',
+    'Opening a playlist does not autoplay',
   );
   await restored.close();
-  await page.getByRole('button', { name: 'Play playlist', exact: true }).click();
+  await playlist.getByRole('button', { name: 'Play', exact: true }).first().click();
+  await page.locator('app-radio-dock:not(.full-view)').waitFor();
+  await dockFitsColumn();
+  await page.locator('app-radio-dock a.now').click();
   await page.locator('app-radio-dock.full-view').waitFor();
   assert.equal(await page.locator('app-radio-dock:not(.full-view)').count(), 0);
   await page.waitForFunction(() => {
@@ -368,13 +381,8 @@ try {
   await page.goBack();
   await page.locator('app-radio-dock.full-view').waitFor();
   const startedAt = await page.locator('audio[data-radio]').evaluate((audio) => audio.currentTime);
-  await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
+  await nav('Studio').click();
   await page.getByRole('heading', { name: 'Studio', exact: true }).waitFor();
-  assert.equal(
-    await page.locator('app-radio-page nav').count(),
-    0,
-    'Studio is its own page, not a Radio tab',
-  );
   assert.equal(await page.locator('audio[data-radio]').evaluate((audio) => audio.paused), false);
   assert.ok(
     (await page.locator('audio[data-radio]').evaluate((audio) => audio.currentTime)) >= startedAt,
@@ -431,7 +439,7 @@ try {
     .click();
   assert.equal(await page.locator('audio[data-radio]').count(), 0);
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
+  await nav('Studio').click();
   await page
     .locator('app-studio-page nav')
     .getByRole('link', { name: 'My audio', exact: true })
@@ -452,9 +460,9 @@ try {
   await page.locator('.details').getByText('WAV', { exact: true }).waitFor();
   await composer.fill('Prepared locally');
   assert.equal(uploads, 0, 'Staging never uploads');
-  await page.locator('nav.primary-nav').getByRole('link', { name: 'Radio', exact: true }).click();
-  await page.locator('app-radio-page').waitFor();
-  await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
+  await nav('Singles').click();
+  await page.locator('app-singles-page').waitFor();
+  await nav('Studio').click();
   await page.locator('.filename').getByText('recording.wav', { exact: true }).waitFor();
   assert.equal(await composer.inputValue(), 'Prepared locally');
   await page.setViewportSize({ width: 390, height: 844 });
@@ -490,127 +498,98 @@ try {
   await page.getByText('Your audio post was published.', { exact: true }).waitFor();
   assert.equal(uploads, 1);
   assert.equal(publications, 1);
-  // Find Shareable: search a public catalogue and share a recording into the composer.
-  await page
-    .locator('app-studio-page nav')
-    .getByRole('link', { name: 'Find Shareable', exact: true })
-    .click();
-  await page.getByLabel('Search recordings', { exact: false }).fill('whiskey');
-  await page
-    .locator('app-catalogue-panel')
-    .getByRole('button', { name: 'Search', exact: true })
-    .click();
-  await page.getByText('No known restrictions', { exact: false }).waitFor();
-  await page
-    .locator('app-catalogue-panel')
-    .getByRole('button', { name: 'Share', exact: true })
-    .click();
-  await page.locator('app-studio-page app-compose textarea').first().waitFor();
-  const sharedText = await page
-    .locator('app-studio-page app-compose textarea')
-    .first()
-    .inputValue();
-  assert.match(sharedText, /Whiskey Johnny/);
-  assert.match(sharedText, /https:\/\/www\.loc\.gov\/item\/2017701737\//);
+  // Catalogues: search one and take a recording through Share to the composer.
+  await nav('Singles').click();
+  await page.locator('app-singles-tabs').getByRole('link', { name: 'Find', exact: true }).click();
+  await find.getByRole('tab', { name: 'Catalogues', exact: true }).click();
+  const panel = find.locator('app-catalogue-panel');
+  await panel.getByLabel('Search recordings', { exact: false }).fill('whiskey');
+  await panel.getByRole('button', { name: 'Search', exact: true }).click();
+  await panel.getByText('No known restrictions', { exact: false }).waitFor();
+  await panel.getByRole('button', { name: 'Share', exact: true }).click();
+  const share = page.locator('app-share-page');
+  await share.getByRole('heading', { name: 'Share music', exact: true }).waitFor();
+  const preview = await share.locator('pre').innerText();
+  assert.match(preview, /Whiskey Johnny/);
+  assert.match(preview, /https:\/\/www\.loc\.gov\/item\/2017701737\//);
   assert.ok(catalogueRequests >= 2, 'Search, then the item lookup');
-  await page.locator('app-studio-page app-compose textarea').first().fill('');
+  await share.getByRole('button', { name: 'Write the post', exact: true }).click();
+  const shareBox = share.locator('app-compose textarea').first();
+  await shareBox.waitFor();
+  assert.match(await shareBox.inputValue(), /Whiskey Johnny/);
+  assert.equal(publications, 1, 'Sharing drafts a post; it does not publish one');
+  await shareBox.fill('');
   externalScenario = true;
-  await page
-    .locator('nav.primary-nav')
-    .getByRole('link', { name: 'Playlist', exact: true })
-    .click();
-  await page.getByLabel('Account handle', { exact: false }).fill('music');
-  await page.getByRole('button', { name: 'Find audio', exact: true }).click();
-  await page.getByText('Reached the end of the available feed.').waitFor();
-  assert.match(await page.locator('.radio-page').innerText(), /found 3 audio posts/);
+  await nav('Singles').click();
+  await page.locator('app-singles-tabs').getByRole('link', { name: 'Find', exact: true }).click();
+  await findAudio(3);
+  assert.equal(await find.locator('app-track-result').count(), 3, 'YouTube videos are not audio');
   assert.equal(providerRequests, 0, 'Discovery never contacts providers');
-  await page.getByRole('checkbox', { name: 'Native Mastodon audio only', exact: true }).check();
-  await page.getByRole('button', { name: 'Find audio', exact: true }).click();
-  await page.getByText('Reached the end of the available feed.').waitFor();
-  assert.match(await page.locator('.radio-page').innerText(), /found 0 audio posts/);
-  await page.getByRole('checkbox', { name: 'Native Mastodon audio only', exact: true }).uncheck();
-  await page.getByRole('button', { name: 'Find audio', exact: true }).click();
-  await page.getByText('Reached the end of the available feed.').waitFor();
-  assert.match(await page.locator('.radio-page').innerText(), /found 3 audio posts/);
-  await page.getByRole('checkbox', { name: 'Playlistable only', exact: true }).check();
-  await page.getByText('Scanned 4 posts · found 2 audio posts', { exact: true }).waitFor();
-  assert.match(await page.locator('.radio-page').innerText(), /found 2 audio posts/);
-  await page
-    .getByRole('button', { name: 'Which sources can join a playlist?', exact: true })
-    .click();
-  await page
-    .getByText(/Playlists support native Mastodon audio, SoundCloud, and Mixcloud/)
-    .waitFor();
-  await page.keyboard.press('Escape');
-  await page.getByRole('checkbox', { name: 'Playlistable only', exact: true }).uncheck();
-  await page.getByText('Scanned 4 posts · found 3 audio posts', { exact: true }).waitFor();
+  const nativeOnly = find.getByRole('checkbox', { name: /Only native Mastodon audio/ }).first();
+  await nativeOnly.check();
+  await progress.filter({ hasText: '0 with music · Reached the end' }).waitFor();
+  await nativeOnly.uncheck();
+  await progress.filter({ hasText: '3 with music · Reached the end' }).waitFor();
+  await find.getByRole('button', { name: 'Save all results', exact: true }).click();
+  await find.getByRole('link', { name: 'Open Saved singles', exact: true }).click();
+  // In a feed, a post with several services keeps its players in one toolbar above its actions.
+  await page.goto(`${base}/home`);
   const audioToolbar = page
     .locator('app-status-card mb-toolbar.audio-toolbar')
     .filter({ hasText: 'Load Spotify player' });
+  await audioToolbar.waitFor();
   assert.equal(
     await audioToolbar.evaluate((el) => el.nextElementSibling.tagName),
     'MB-POST-ACTIONS',
   );
-  await audioToolbar
-    .getByRole('button', { name: 'Listen on Mixcloud in Radio', exact: true })
-    .waitFor();
   await audioToolbar.getByRole('button', { name: 'Open on Mixcloud', exact: true }).waitFor();
   await page.screenshot({ path: `${results}/radio-post-toolbar.png`, fullPage: true });
-  await page.getByRole('button', { name: 'Load Spotify player', exact: true }).click();
+  const musicCard = page.locator('app-status-card').filter({ hasText: 'Sea shanty' });
+  assert.equal(
+    await musicCard.locator('app-video-player').count(),
+    0,
+    'Music has one audio embed, not a duplicate video player',
+  );
+  await audioToolbar.getByRole('button', { name: 'Load Spotify player', exact: true }).click();
   await page.locator('iframe[title="Spotify"]').waitFor();
   assert.equal(providerRequests, 1, 'Only the chosen provider loads');
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Publish', exact: true })
-    .click();
-  // Start a new queue by removing the earlier native playlist, then add one source per post.
-  while (
-    await page.locator('.playlist').getByRole('button', { name: 'Remove', exact: true }).count()
-  )
-    await page
-      .locator('.playlist')
-      .getByRole('button', { name: 'Remove', exact: true })
-      .first()
-      .click();
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Build Playlist', exact: true })
-    .click();
-  const addButtons = page
-    .locator('app-status-card')
-    .getByRole('button', { name: 'Add to playlist', exact: true });
-  await addButtons.nth(0).click();
-  await addButtons.nth(1).click();
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Publish', exact: true })
-    .click();
-  // Remove the alternative Mixcloud source to exercise SoundCloud auto-advance.
-  const alternative = page.locator('.playlist li').filter({ hasText: 'Mixcloud' });
-  await alternative.getByRole('button', { name: 'Remove', exact: true }).click();
-  await page
-    .locator('app-radio-page nav')
-    .getByRole('link', { name: 'Build Playlist', exact: true })
-    .click();
-  await page
-    .getByRole('button', { name: 'Listen on SoundCloud in Radio', exact: true })
-    .first()
-    .click();
+  await musicCard.getByRole('button', { name: 'Load YouTube Music player', exact: true }).click();
+  await musicCard.locator('iframe[title="YouTube Music"]').waitFor();
+  const requestsInFeed = providerRequests;
+  // A playlist of the two SoundCloud recordings.
+  await page.goto(`${base}/playlists`);
+  await page.getByRole('button', { name: 'New playlist', exact: true }).first().click();
+  await candidates.first().waitFor();
+  const saved = await candidates.count();
+  for (let added = 1; added <= saved; added++) {
+    await candidates.first().click();
+    await tracks.nth(added - 1).waitFor();
+  }
+  const others = tracks.filter({ hasNotText: 'SoundCloud' });
+  for (let left = await others.count(); left > 0; left--) {
+    await others.first().getByRole('button', { name: 'Remove', exact: true }).click();
+    await others.nth(left - 1).waitFor({ state: 'detached' });
+  }
+  assert.equal(await tracks.count(), 2);
+  await playlist.getByRole('button', { name: 'Play', exact: true }).first().click();
   const dock = page.locator('app-radio-dock');
-  assert.equal(providerRequests, 1, 'Radio asks before contacting a new provider');
+  assert.equal(providerRequests, requestsInFeed, 'Radio asks before contacting a new provider');
   // One consent per provider loads the frame and starts it: no Load, no in-frame Play.
   await dock.getByRole('button', { name: 'Allow SoundCloud in Radio', exact: true }).click();
   await dock.locator('iframe[title="SoundCloud"]').waitFor();
   await dock.getByRole('button', { name: 'Pause', exact: true }).waitFor();
-  await dock.getByRole('heading', { name: 'Widget title false', exact: true }).waitFor();
-  const controls = await dock
-    .locator('mb-toolbar button')
-    .evaluateAll((buttons) => buttons.map((button) => button.getAttribute('aria-label')));
-  assert.equal(controls.indexOf('Close player'), controls.indexOf('Stop Radio') + 1);
+  await dock.locator('a.now .title').filter({ hasText: 'Widget title false' }).waitFor();
+  await dockFitsColumn();
+  await dock.locator('a.now').click();
+  await page.locator('app-radio-dock.full-view').waitFor();
   await dock
     .locator('mb-toolbar')
     .getByRole('button', { name: 'Open on SoundCloud', exact: true })
     .waitFor();
+  const controls = await dock
+    .locator('mb-toolbar button')
+    .evaluateAll((buttons) => buttons.map((button) => button.getAttribute('aria-label')));
+  assert.equal(controls.indexOf('Close player'), controls.indexOf('Stop Radio') + 1);
   await dockFitsColumn();
   await page.setViewportSize({ width: 1100, height: 1000 });
   await dockFitsColumn();
@@ -618,13 +597,8 @@ try {
   await page.setViewportSize({ width: 1440, height: 1000 });
   await dockFitsColumn();
   await dock.getByRole('button', { name: 'Pause', exact: true }).waitFor();
-  assert.equal(
-    await page.locator('iframe[title="Spotify"]').count(),
-    0,
-    'Radio closes an opaque inline player',
-  );
   const requestsBeforeNavigation = providerRequests;
-  await page.locator('nav.primary-nav').getByRole('link', { name: 'Studio', exact: true }).click();
+  await nav('Studio').click();
   await dock.getByRole('button', { name: 'Pause', exact: true }).waitFor();
   assert.equal(
     providerRequests,
@@ -634,7 +608,7 @@ try {
   // The compact bar folds the frame away without unloading it.
   await page.locator('app-radio-dock:not(.full-view)').waitFor();
   assert.equal(
-    await dock.locator('.frame').evaluate((frame) => frame.getBoundingClientRect().height),
+    await dock.locator('aside .frame').evaluate((frame) => frame.getBoundingClientRect().height),
     0,
   );
   await dock.getByRole('button', { name: 'Show SoundCloud player', exact: true }).click();
@@ -653,11 +627,9 @@ try {
   await page.locator('app-radio-dock').waitFor({ state: 'detached' });
   assert.equal(await page.locator('app-radio-dock iframe').count(), 0);
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page
-    .locator('nav.primary-nav')
-    .getByRole('link', { name: 'Settings', exact: true })
-    .click();
-  assert.equal(await page.locator('app-radio-page nav').count(), 0);
+  await nav('Singles').click();
+  await page.getByRole('link', { name: 'Radio settings', exact: true }).click();
+  await page.locator('app-radio-settings').waitFor();
   await page.screenshot({ path: `${results}/radio-settings.png`, fullPage: true });
   await page.getByRole('button', { name: 'Remove SoundCloud', exact: true }).click();
   await page.getByText(/No services are allowed yet/).waitFor();
@@ -671,18 +643,6 @@ try {
     '[]',
     'Revoking a provider is remembered',
   );
-  await page
-    .locator('nav.primary-nav')
-    .getByRole('link', { name: 'Playlist', exact: true })
-    .click();
-  const musicCard = page.locator('app-status-card').filter({ hasText: 'Sea shanty' });
-  assert.equal(
-    await musicCard.locator('app-video-player').count(),
-    0,
-    'Music has one audio embed, not a duplicate video player',
-  );
-  await musicCard.getByRole('button', { name: 'Load YouTube Music player', exact: true }).click();
-  await musicCard.locator('iframe[title="YouTube Music"]').waitFor();
   externalScenario = false;
   const shared = await browser.newPage({ viewport: { width: 390, height: 844 } });
   shared.on('pageerror', (error) => errors.push(error.message));
@@ -692,8 +652,12 @@ try {
   });
   await shared.route('**/api/**', apiFixture);
   await shared.context().grantPermissions(['clipboard-read', 'clipboard-write']);
-  await shared.goto(`${base}/singles/starter-kits`);
-  const podcastKits = shared.locator('app-podcast-kits-page');
+  // Podcast kits open for a visitor who has never been here, as from a search.
+  const kits = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  kits.on('pageerror', (error) => errors.push(error.message));
+  await kits.route('**/api/**', apiFixture);
+  await kits.goto(`${base}/singles/starter-kits`);
+  const podcastKits = kits.locator('app-podcast-kits-page');
   const packLanguages = podcastKits.locator('app-pack-language-picker select');
   await packLanguages.waitFor();
   assert.equal(await packLanguages.inputValue(), 'auto');
@@ -711,55 +675,33 @@ try {
   await podcastKits.getByRole('link', { name: 'All kits' }).click();
   await podcastKits.locator('.kits').waitFor();
   await packLanguages.selectOption('de');
-  await shared.waitForURL(/lang=de/);
-  await shared.reload();
+  await kits.waitForURL(/lang=de/);
+  await kits.reload();
   assert.equal(await packLanguages.inputValue(), 'de');
   await packLanguages.selectOption('auto');
-  await shared.waitForURL(`${base}/singles/starter-kits`);
+  await kits.waitForURL(`${base}/singles/starter-kits`);
+  await kits.close();
+  // Links shared before Singles and Playlists existed open their new homes, and never play.
   await shared.goto(`${base}/radio?post=${encodeURIComponent(audio.url)}`);
-  await shared.getByRole('button', { name: /Play audio by/ }).waitFor();
-  assert.equal(await shared.locator('app-radio-dock').count(), 0, 'Shared links never autoplay');
-  assert.equal(
-    await shared.getByRole('button', { name: 'Copy Radio link', exact: true }).count(),
-    0,
-  );
+  await shared.waitForURL(/\/playlists\/shared\?/);
   assert.equal(new URL(shared.url()).searchParams.get('post'), audio.url);
-  await shared
-    .locator('app-status-card button[mbToolbarButton]')
-    .filter({ hasText: 'Open in Radio' })
-    .waitFor();
-  await shared.locator('app-status-card details.danger-menu summary').click();
-  const open = shared
-    .locator('details.danger-menu')
-    .getByRole('link', { name: 'Open in Radio', exact: true });
-  assert.equal(new URL(await open.getAttribute('href'), base).searchParams.get('post'), audio.url);
-  await open.click();
-  // Open in Radio plays the post in the player view; Back returns to the shared post.
-  await shared.locator('app-radio-dock.full-view').waitFor();
-  assert.equal(new URL(shared.url()).searchParams.get('view'), 'radio');
-  await shared.goBack();
-  await shared.locator('app-status-card a[href*="/accounts/"]').first().click();
-  await shared.locator('details.account-danger-menu summary').click();
-  const accountRadio = shared
-    .locator('details.account-danger-menu')
-    .getByRole('link', { name: 'Open in Radio', exact: true });
-  assert.equal(
-    new URL(await accountRadio.getAttribute('href'), base).searchParams.get('acct'),
-    'music@sea.example',
-  );
-  await accountRadio.click();
-
-  await shared
-    .getByRole('button', { name: /Play audio by/ })
-    .first()
-    .waitFor();
-  assert.equal(await shared.locator('app-radio-dock').count(), 0);
+  await shared.locator('app-playlist-page ol[mbItemList] > li').first().waitFor();
+  assert.equal(await shared.locator('app-radio-dock').count(), 0, 'Shared links never autoplay');
+  await shared.goto(`${base}/radio?acct=music@sea.example`);
+  await shared.waitForURL(/\/singles\/find\?/);
   assert.equal(new URL(shared.url()).searchParams.get('acct'), 'music@sea.example');
-  assert.equal(await shared.getByRole('option', { name: 'Home feed', exact: true }).count(), 0);
+  await shared.locator('app-track-result').first().waitFor();
+  assert.equal(await shared.locator('app-radio-dock').count(), 0);
+  // Home and lists need an account.
+  assert.equal(await shared.getByRole('tab', { name: 'Home', exact: true }).count(), 0);
+  // Play in Radio from a post plays it and drops the post from the address.
+  await shared.goto(`${base}/radio?play=${encodeURIComponent(audio.url)}`);
+  await shared.locator('app-radio-dock.full-view').waitFor();
+  assert.equal(new URL(shared.url()).search, '', 'A reload does not start it again');
   await shared.close();
   assert.deepEqual(errors, []);
   console.log(
-    'Radio browser checks passed: anonymous podcast kits, shareable post/account links, post menu, address-bar sharing, saved playlists, playlistable filter, native audio, aligned labels, Studio, catalogue caching, explicit publication, external discovery, provider-specific consent, YouTube exclusion, persistent widget playback, automatic advance, pause, mobile layout and cleanup; no page errors.',
+    'Radio browser checks passed: anonymous podcast kits, shared post and account links, finding and saving singles, playlists, native audio, aligned forms, Listen, Studio, catalogue caching and sharing, explicit publication, service players in feeds, provider-specific consent, YouTube exclusion, persistent widget playback, automatic advance, pause, mobile layout and cleanup; no page errors.',
   );
 } finally {
   await browser.close();

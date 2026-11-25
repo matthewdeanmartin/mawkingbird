@@ -40,7 +40,10 @@ for (const width of [390, 1280]) {
       "/iframe.html?id=adoption-notification-layout--compact-actions&viewMode=story",
     );
     const links = page.locator(".excerpt-content a");
-    await expect(links).toHaveCount(4);
+    // Likes and boosts of one post fold into a digest; opening it shows the post once.
+    await expect(links).toHaveCount(1);
+    await page.locator("button.digest-toggle").first().click();
+    await expect(links).toHaveCount(2);
     for (const link of await links.all()) {
       await expect(link).toHaveText(label);
       await expect(link).toHaveAttribute("href", url);

@@ -100,8 +100,8 @@ just to make a row fit.
 
 ## Worked examples
 
-Line numbers are from 2026-11-24, before any change. **Done:** the watch queue,
-Videos, admin accounts. The rest are still to do.
+Line numbers are from 2026-11-24, before any change. **Done:** all but
+Listen. Write keeps its own local tabs; Search keeps Saved as an outline menu.
 
 | Today                                                                                                                  | What they are                                      | Instead                                                                                                                                  |
 | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
