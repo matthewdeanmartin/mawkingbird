@@ -3553,3 +3553,12 @@ Mastodon connection page a leading Button link with the token form inside the sh
 Disclosure, and Unavailable moves from a hand-styled link to two shared Buttons. No new widget.
 
 Screen share mode (same day): one candidate added, `screen-share-badge.ts`, holding the header badge (a pill button styled locally, like the connection chip beside it) and the private-page cover (the existing `btn btn-outline`). The status card gains a one-line stub, the shell menu one row, Settings, Content one shared Checkbox. No new widget.
+
+### 2026-11-25: two Latvian starter kits
+
+Reviewed the inventory after adding approved Latvian computing and arts/culture
+pages, their shared page/control copy and a Latvian communities hub. Source files
+increase from 2199 to 2201; all 741 candidate files and control findings are unchanged.
+The only finding offset moves by one line in focused-apps/language-versions.ts
+after adding the Latvian endonym. Existing shared Feed Builder controls are reused;
+there are no new widgets or control dispositions.

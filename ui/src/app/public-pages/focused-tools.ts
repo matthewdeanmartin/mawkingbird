@@ -73,6 +73,10 @@ export interface ToolCopy {
 
 /** Languages a public page can be written in. */
 export type PageLanguage =
+  | 'el'
+  | 'hu'
+  | 'lt'
+  | 'lv'
   | 'ms'
   | 'en'
   | 'de'

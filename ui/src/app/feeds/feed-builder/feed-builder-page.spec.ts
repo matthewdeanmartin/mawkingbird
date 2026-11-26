@@ -50,6 +50,31 @@ const at = (path: string) => feedBuilderPageAt(path) as FeedBuilderEntry;
 describe('Feed Builder topic pages', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  it('renders the approved Latvian computing kit with native controls and seven accounts', async () => {
+    const el = await render(at('lv/tehnologijas-un-atvertais-kods-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('lv');
+    expect(el.querySelector('h1')?.textContent).toContain('Tehnoloģijas un atvērtais kods');
+    expect(el.querySelectorAll('.people li')).toHaveLength(7);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(3);
+    expect(el.querySelector('a[href="/tags/FOSS"]')).not.toBeNull();
+    expect(el.textContent).toContain('Kam sekot');
+    expect(el.textContent).toContain('pašlaik ir klusi');
+  });
+
+  it('renders the approved Latvian culture kit with seven accounts and quiet-tag guidance', async () => {
+    const el = await render(at('lv/maksla-un-kultura-mastodon'));
+    expect(el.querySelector('main')?.getAttribute('lang')).toBe('lv');
+    expect(el.querySelector('h1')?.textContent).toContain('Māksla un kultūra');
+    expect(el.querySelectorAll('.people li')).toHaveLength(7);
+    expect(
+      el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+    ).toHaveLength(3);
+    expect(el.querySelector('a[href="/tags/Kino"]')).not.toBeNull();
+    expect(el.textContent).toContain('Grāmatas pašlaik ir kluss tēmturis');
+  });
+
   it('renders the approved English Literary Fiction edition', async () => {
     const el = await render(at('literary-fiction-on-mastodon'));
     expect(el.querySelector('main')?.getAttribute('lang')).toBe('en');
@@ -609,7 +634,7 @@ describe('Feed Builder hub and routes', () => {
     (el.querySelector('.hub-side nav a:nth-child(2)') as HTMLAnchorElement).click();
     fixture.detectChanges();
     expect(el.querySelector('.hub-category-heading')?.textContent).toContain('Tech');
-    expect(el.querySelectorAll('.hub-content .hub-topic').length).toBe(3);
+    expect(el.querySelectorAll('.hub-content .hub-topic').length).toBe(4);
     expect(el.querySelector('.hub-content .hub-topic p')?.textContent?.trim()).not.toBe('');
   });
 

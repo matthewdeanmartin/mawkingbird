@@ -17,6 +17,10 @@ import { AppOnlyLinkRel } from '../public-page-urls';
 
 /** Each language named in itself, so a reader finds their own. */
 const ENDONYMS: Record<PageLanguage, string> = {
+  el: "Ελληνικά",
+  hu: "Magyar",
+  lt: "Lietuvių",
+  lv: 'Latviešu',
   ms: 'Bahasa Melayu',
   en: 'English',
   de: 'Deutsch',

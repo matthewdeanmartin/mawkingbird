@@ -712,7 +712,79 @@ const uk: FeedControls = {
   close: 'Закрити',
 };
 
+const lv: FeedControls = {
+  builder: 'Izvēle',
+  preview: 'Priekšskatījums',
+  signIn: 'Pieslēgties ar Mastodon',
+  signedOutHint:
+    'Pieslēdzies ar Mastodon, lai vienā reizē sekotu izvēlētajiem profiliem un tēmturiem. Vispirms vari apskatīt plūsmas priekšskatījumu.',
+  include: 'Iekļaut',
+  selectAll: 'Atlasīt visu',
+  selectNone: 'Notīrīt atlasi',
+  followSelectedTags: (n) => `Sekot atlasītajiem tēmturiem (${n})`,
+  followSelectedPeople: (n) => `Sekot atlasītajiem profiliem (${n})`,
+  follow: 'Sekot',
+  following: 'Seko',
+  followFailed: 'Neizdevās sekot',
+  followProgress: (done, total) => `Sekošana ieslēgta: ${done} no ${total}`,
+  previewIntro:
+    'Šeit redzami izvēlēto profilu un tēmturu publiskie ieraksti, sākot ar jaunākajiem. Priekšskatījuma atvēršana neieslēdz sekošanu.',
+  previewEmpty: 'Pagaidām nav ko rādīt. Atlasē izvēlies kādu profilu vai tēmturi.',
+  shuffle: 'Cita izlase',
+  sampleNote: (t, p) => `Nejauša izlase: ${t} tēmturi un ${p} profili vienā reizē.`,
+  sampling: (done, planned) => `Ielādē avotus: ${done} no ${planned}…`,
+  sampleEmpty: 'Šajā izlasē nav nesenu ierakstu. Izmēģini citu izlasi.',
+  backToBuilder: 'Atpakaļ uz atlasi',
+  flooding: 'Pārmērīga aktivitāte',
+  floodingIntro:
+    'Daži profili publicē tik daudz, ka aizēno pārējos. Pārbaudām atlasīto tēmturu jaunākos ierakstus un parādām profilus, kuri aizņem vismaz ceturtdaļu izlases. Ja vēlies, vari tos apklusināt.',
+  checkAgain: 'Pārbaudīt vēlreiz',
+  floodingClear: 'Pašlaik neviens profils nepārslogo šos tēmturus.',
+  floodersHeading: 'Profili ar pārmērīgu aktivitāti',
+  floodEvidence: (pct, tag, count, total) =>
+    `${pct}% tēmturī #${tag} (${count} no ${total} ierakstiem)`,
+  muteTemporary: 'Apklusināt uz 8 stundām',
+  mutePermanent: 'Apklusināt bez termiņa',
+  mutedTemporary: 'Apklusināts uz 8 stundām',
+  mutedPermanent: 'Apklusināts',
+  undoMute: 'Atcelt',
+  loudestHeading: 'Aktīvākais profils katrā tēmturī',
+  loudest: (acct, pct, total) => `@${acct}: ${pct}% no ${total} ierakstiem`,
+  noPosts: 'Nav nesenu ierakstu.',
+  muteNote: 'Apklusinātie profili netiek rādīti tavās Mawkingbird plūsmās šajā ierīcē.',
+  subscribe: 'Abonēt Mawkingbird',
+  subscribed: 'Abonēts',
+  subscribeAll: (n) => `Abonēt visus YouTube kanālus (${n})`,
+  watch: 'Skatīties Mawkingbird',
+  followGroup: (n) => `Sekot (${n})`,
+  followOnMastodon: (n) => `Sekot Mastodon (${n})`,
+  alreadyFollowing: (n) => `Jau seko: ${n}`,
+  noAccount:
+    'Vēl nav konta? Der jebkurš Mastodon serveris. Vari sākt ar mastodon.social vai izvēlēties šīs kopienas serveri:',
+  pickHandle: 'Atrast brīvu lietotājvārdu',
+  makeList: (title) => `Izveidot sarakstu: ${title}`,
+  listExclusive: 'Nerādīt šo profilu ierakstus mājas plūsmā',
+  listDone: (added, title) => `Sarakstam «${title}» pievienoti ${added} profili.`,
+  openList: 'Atvērt sarakstu',
+  listFailed: 'Neizdevās izveidot sarakstu.',
+  peopleAlreadyFollowing: (n) => `Jau seko: ${n}`,
+  bulkRunningTitle: 'Ieslēdz sekošanu…',
+  bulkDoneTitle: 'Gatavs',
+  bulkKeepOpen: 'Atstāj šo lapu atvērtu līdz procesa beigām.',
+  bulkLeaveBlocked: 'Sekošanas iestatīšana vēl turpinās. Uzgaidi vai nospied «Apturēt».',
+  bulkFailed: (n) => `Neizdevās sekot profiliem: ${n}`,
+  stop: 'Apturēt',
+  close: 'Aizvērt',
+};
+
+const el: FeedControls = {...en, "builder":"Επιλογή","preview":"Προεπισκόπηση","signIn":"Σύνδεση με Mastodon","signedOutHint":"Συνδέσου με Mastodon για να ακολουθήσεις μαζί τα επιλεγμένα προφίλ και hashtags. Μπορείς πρώτα να δεις την προεπισκόπηση.","include":"Συμπερίληψη","selectAll":"Επιλογή όλων","selectNone":"Καθαρισμός","followSelectedTags":(n) => `Ακολούθηση επιλεγμένων hashtags (${n})`,"followSelectedPeople":(n) => `Ακολούθηση επιλεγμένων προφίλ (${n})`,"follow":"Ακολούθηση","following":"Ακολουθείς","followFailed":"Η ακολούθηση απέτυχε","followProgress":(done,total) => `Ακολουθείς ${done} από ${total}`,"previewIntro":"Δημόσιες αναρτήσεις από τα επιλεγμένα προφίλ και hashtags, με τις νεότερες πρώτα. Η προεπισκόπηση δεν ενεργοποιεί ακολούθηση.","previewEmpty":"Δεν υπάρχει κάτι για εμφάνιση. Επίλεξε προφίλ ή hashtags.","shuffle":"Άλλο δείγμα","sampleNote":(t,p) => `Τυχαίο δείγμα: ${t} hashtags και ${p} προφίλ κάθε φορά.`,"sampling":(done,planned) => `Ανάγνωση ${done} από ${planned} πηγές…`,"sampleEmpty":"Δεν υπάρχουν πρόσφατες αναρτήσεις σε αυτό το δείγμα. Δοκίμασε άλλο.","backToBuilder":"Πίσω στην επιλογή","flooding":"Υπερβολικά συχνές αναρτήσεις","floodingIntro":"Ορισμένα προφίλ δημοσιεύουν τόσο συχνά που επισκιάζουν τα υπόλοιπα. Ελέγχουμε τις πρόσφατες αναρτήσεις των επιλεγμένων hashtags και δείχνουμε όσα καλύπτουν τουλάχιστον το ένα τέταρτο του δείγματος. Μπορείς να τα θέσεις σε σίγαση.","checkAgain":"Νέος έλεγχος","floodingClear":"Κανένα προφίλ δεν κυριαρχεί σε αυτά τα hashtags τώρα.","floodersHeading":"Προφίλ με υπερβολική δραστηριότητα","floodEvidence":(pct,tag,count,total) => `${pct}% στο #${tag} (${count} από ${total} αναρτήσεις)`,"muteTemporary":"Σίγαση για 8 ώρες","mutePermanent":"Μόνιμη σίγαση","mutedTemporary":"Σε σίγαση για 8 ώρες","mutedPermanent":"Σε σίγαση","undoMute":"Αναίρεση","loudestHeading":"Το πιο ενεργό προφίλ ανά hashtag","loudest":(acct,pct,total) => `@${acct}: ${pct}% από ${total} αναρτήσεις`,"noPosts":"Δεν υπάρχουν πρόσφατες αναρτήσεις.","muteNote":"Η σίγαση κρύβει ένα προφίλ από τις ροές Mawkingbird σε αυτή τη συσκευή.","subscribe":"Εγγραφή στο Mawkingbird","subscribed":"Έγινε εγγραφή","subscribeAll":(n) => `Εγγραφή σε όλα τα κανάλια YouTube (${n})`,"watch":"Παρακολούθηση στο Mawkingbird","followGroup":(n) => `Ακολούθηση (${n})`,"followOnMastodon":(n) => `Ακολούθηση στο Mastodon (${n})`,"alreadyFollowing":(n) => `Ακολουθείς ήδη: ${n}`,"noAccount":"Δεν έχεις λογαριασμό; Μπορείς να χρησιμοποιήσεις οποιονδήποτε διακομιστή Mastodon. Ξεκίνα με το mastodon.social ή διάλεξε έναν από τους διακομιστές της κοινότητας:","pickHandle":"Βρες διαθέσιμο όνομα χρήστη","makeList":(title) => `Δημιουργία λίστας: ${title}`,"listExclusive":"Απόκρυψη των αναρτήσεών τους από την αρχική ροή","listDone":(added,title) => `Προστέθηκαν ${added} προφίλ στη λίστα «${title}».`,"openList":"Άνοιγμα λίστας","listFailed":"Η δημιουργία λίστας απέτυχε.","peopleAlreadyFollowing":(n) => `Ακολουθείς ήδη: ${n}`,"bulkRunningTitle":"Ακολούθηση σε εξέλιξη…","bulkDoneTitle":"Ολοκληρώθηκε","bulkKeepOpen":"Κράτησε αυτή τη σελίδα ανοικτή μέχρι να ολοκληρωθεί.","bulkLeaveBlocked":"Η ακολούθηση συνεχίζεται. Περίμενε ή πάτησε Διακοπή.","bulkFailed":(n) => `Αποτυχία ακολούθησης για ${n} προφίλ`,"stop":"Διακοπή","close":"Κλείσιμο"};
+
+const hu: FeedControls = {...en, "builder":"Válogatás","preview":"Előnézet","signIn":"Bejelentkezés Mastodonnal","signedOutHint":"Jelentkezz be a Mastodonnal a kiválasztott profilok és hashtagek együttes követéséhez. Előbb az előnézetet is megnézheted.","include":"Belevesz","selectAll":"Összes kijelölése","selectNone":"Kijelölés törlése","followSelectedTags":(n) => `Kijelölt hashtagek követése (${n})`,"followSelectedPeople":(n) => `Kijelölt profilok követése (${n})`,"follow":"Követés","following":"Követed","followFailed":"Nem sikerült követni","followProgress":(done,total) => `Követve: ${done} / ${total}`,"previewIntro":"A kiválasztott profilok és hashtagek nyilvános bejegyzései, a legújabbakkal kezdve. Az előnézet nem indít követést.","previewEmpty":"Még nincs mit megjeleníteni. Válassz profilokat vagy hashtageket.","shuffle":"Új minta","sampleNote":(t,p) => `Véletlen minta: egyszerre ${t} hashtag és ${p} profil.`,"sampling":(done,planned) => `Források olvasása: ${done} / ${planned}…`,"sampleEmpty":"Ebben a mintában nincs friss bejegyzés. Próbálj másikat.","backToBuilder":"Vissza a válogatáshoz","flooding":"Túl sok bejegyzés","floodingIntro":"Egyes profilok olyan gyakran írnak, hogy elnyomják a többieket. Átnézzük a kijelölt hashtagek friss bejegyzéseit, és megmutatjuk, ha egy profil legalább a minta negyedét adja. Ha szeretnéd, elnémíthatod.","checkAgain":"Újraellenőrzés","floodingClear":"Jelenleg egy profil sem árasztja el ezeket a hashtageket.","floodersHeading":"Túl gyakran posztoló profilok","floodEvidence":(pct,tag,count,total) => `${pct}% a #${tag} alatt (${count} / ${total} bejegyzés)`,"muteTemporary":"Némítás 8 órára","mutePermanent":"Végleges némítás","mutedTemporary":"Elnémítva 8 órára","mutedPermanent":"Elnémítva","undoMute":"Visszavonás","loudestHeading":"A legaktívabb profil hashtagenként","loudest":(acct,pct,total) => `@${acct}: ${pct}% a ${total} bejegyzésből`,"noPosts":"Nincs friss bejegyzés.","muteNote":"A némítás ezen az eszközön rejti el a profilt a Mawkingbird-hírfolyamokból.","subscribe":"Feliratkozás a Mawkingbirdben","subscribed":"Feliratkozva","subscribeAll":(n) => `Feliratkozás minden YouTube-csatornára (${n})`,"watch":"Megnézem a Mawkingbirdben","followGroup":(n) => `Követés (${n})`,"followOnMastodon":(n) => `Követés a Mastodonon (${n})`,"alreadyFollowing":(n) => `Már követed: ${n}`,"noAccount":"Még nincs fiókod? Bármely Mastodon-szerver megfelel. Kezdheted a mastodon.social oldalon, vagy választhatsz a közösség szerverei közül:","pickHandle":"Szabad felhasználónév keresése","makeList":(title) => `Lista létrehozása: ${title}`,"listExclusive":"Bejegyzéseik elrejtése a kezdőlapi hírfolyamból","listDone":(added,title) => `${added} profil hozzáadva a(z) „${title}” listához.`,"openList":"Lista megnyitása","listFailed":"Nem sikerült létrehozni a listát.","peopleAlreadyFollowing":(n) => `Már követed: ${n}`,"bulkRunningTitle":"Követés folyamatban…","bulkDoneTitle":"Kész","bulkKeepOpen":"Hagyd nyitva ezt az oldalt a befejezésig.","bulkLeaveBlocked":"A követés még folyamatban van. Várj, vagy nyomd meg a Leállítás gombot.","bulkFailed":(n) => `${n} profilt nem sikerült követni`,"stop":"Leállítás","close":"Bezárás"};
+
 export const FEED_CONTROLS: Partial<Record<PageLanguage, FeedControls>> = {
+  hu,
+  el,
+  lv,
   uk,
   nl,
   vi,

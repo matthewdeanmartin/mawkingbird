@@ -26,6 +26,27 @@ export interface HubCopy {
 }
 
 export const HUB_COPY: Partial<Record<PageLanguage, HubCopy>> = {
+  el: {"title":"Κοινότητες Mastodon ανά ενδιαφέρον","heading":"Κοινότητες Mastodon ανά ενδιαφέρον","intro":["Ξεκίνα με μια μικρή επιλογή λογαριασμών για πληροφορική και ανοικτό λογισμικό στα ελληνικά. Η δημόσια προεπισκόπηση διαβάζεται χωρίς λογαριασμό.","Κάθε σελίδα συγκεντρώνει προφίλ και hashtags για ένα θέμα. Διάλεξε όσα σε ενδιαφέρουν και φτιάξε τη δική σου ροή."],"description":"Βρες ελληνόφωνους λογαριασμούς και θέματα στο Mastodon. Δες δημόσιες αναρτήσεις και διάλεξε ποιον και τι θα ακολουθήσεις.","eyebrow":"Κοινότητες","openApp":"Άνοιγμα Mawkingbird","moreHeading":"Περισσότερες επιλογές","allLanguages":"Όλα τα θέματα και οι γλώσσες (στα αγγλικά)","tools":"Δωρεάν εργαλεία Mastodon και Bluesky (στα αγγλικά)","help":"Βοήθεια (στα αγγλικά)","features":"Σχετικά με το Mawkingbird (στα αγγλικά)"},
+  hu: {"title":"Mastodon-közösségek érdeklődés szerint","heading":"Mastodon-közösségek érdeklődés szerint","intro":["Kezdd egy kis válogatással: magyarul is író profilok informatikáról és szabad szoftverről. A nyilvános előnézet fiók nélkül is olvasható.","Az egyes oldalak egy téma profiljait és hashtagjeit gyűjtik össze. Válassz az érdeklődésed szerint, és alakítsd a saját hírfolyamodat."],"description":"Fedezz fel magyarul író profilokat és érdekes témákat a Mastodonon. Olvass bele a nyilvános bejegyzésekbe, és válassz, kit követsz.","eyebrow":"Közösségek","openApp":"Mawkingbird megnyitása","moreHeading":"További lehetőségek","allLanguages":"Minden téma és nyelv (angolul)","tools":"Ingyenes Mastodon- és Bluesky-eszközök (angolul)","help":"Súgó (angolul)","features":"A Mawkingbird bemutatása (angolul)"},
+  lt: {"title":"Mastodon bendruomenės pagal pomėgius","heading":"Mastodon bendruomenės pagal pomėgius","intro":["Pradėk nuo nedidelio profilių rinkinio apie technologijas ir atvirąjį kodą lietuvių kalba. Viešą peržiūrą gali skaityti be paskyros.","Kiekviename puslapyje rasi vienos temos profilius ir grotažymes. Pasirink, kas įdomu, ir kurk savo srautą."],"description":"Atrask lietuviškai rašančius autorius ir įdomias temas Mastodon. Peržiūrėk viešus įrašus ir pasirink, ką sekti.","eyebrow":"Bendruomenės","openApp":"Atverti Mawkingbird","moreHeading":"Daugiau galimybių","allLanguages":"Visos temos ir kalbos (angliškai)","tools":"Nemokami Mastodon ir Bluesky įrankiai (angliškai)","help":"Pagalba (angliškai)","features":"Apie Mawkingbird (angliškai)"},
+
+  lv: {
+    title: 'Mastodon kopienas pēc interesēm',
+    description:
+      'Atrodi latviski rakstošus autorus un sev interesantas tēmas Mastodon. Apskati publiskos ierakstus un izvēlies, kam sekot.',
+    eyebrow: 'Kopienas',
+    openApp: 'Atvērt Mawkingbird',
+    heading: 'Mastodon kopienas pēc interesēm',
+    intro: [
+      'Tehnoloģijas, grāmatas, kino un mūzika: iepazīsti cilvēkus, kuri dalās ar savām interesēm latviski. Publisko priekšskatījumu vari lasīt bez konta.',
+      'Katrā sākuma komplektā ir profilu un tēmturu izlase. Tā nav visas kopienas karte — izvēlies sev interesanto un veido savu plūsmu.',
+    ],
+    moreHeading: 'Vēl citas iespējas',
+    allLanguages: 'Visas tēmas un valodas (angliski)',
+    tools: 'Bezmaksas Mastodon un Bluesky rīki (angliski)',
+    help: 'Palīdzība (angliski)',
+    features: 'Par Mawkingbird (angliski)',
+  },
   uk: {
     title: 'Спільноти Mastodon за інтересами',
     description:

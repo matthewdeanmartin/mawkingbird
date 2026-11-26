@@ -1,0 +1,30 @@
+import { PageLanguage } from '../../../public-pages/focused-tools';
+import { TopicCopy } from './topic-copy';
+
+export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
+  lv: {
+    title: 'Māksla un kultūra Mastodon: kam sekot latviski',
+    description:
+      'Grāmatas, kino, mūzika un vizuālā māksla latviski: septiņu Mastodon profilu izlase ar publisku plūsmas priekšskatījumu.',
+    heading: 'Māksla un kultūra Mastodon',
+    listTitle: 'Māksla un kultūra',
+    intro: [
+      'Ko lasīt, skatīties un klausīties? Šajā nelielajā izlasē ir septiņi profili, kuru autori latviski dalās ar grāmatu, kino, mūzikas un vizuālās mākslas pieredzi. Līdzās ieteikumiem ir arī pašu radošais darbs un ikdienas ieraksti.',
+      'Atver priekšskatījumu, iepazīsti autorus un izvēlies, kam sekot. #Kino un #Kultūra var palīdzēt atrast vēl citas balsis. #Grāmatas pašlaik ir kluss tēmturis; negaidi pastāvīgu jaunu ierakstu plūsmu. Kopīgajos tēmturos var būt arī citas valodas un blakustēmas.',
+    ],
+    faq: [
+      {
+        q: 'Vai vajadzīgs konts?',
+        a: 'Lai iepazītos ar profiliem un lasītu publisko priekšskatījumu, konts nav vajadzīgs. Ar Mastodon kontu vari sekot izvēlētajiem autoriem un tēmturiem vai izveidot atsevišķu sarakstu.',
+      },
+      {
+        q: 'Vai šī ir tikai profesionālu mākslinieku izlase?',
+        a: 'Nē. Te ir gan radošā darba veidotāji, gan lasītāji un skatītāji, kuri dalās savā pieredzē. Autori raksta arī par citām tēmām un dažkārt citās valodās.',
+      },
+      {
+        q: 'Kā pieteikt profilu vai izņemt savu?',
+        a: 'Raksti @mawkingbird@mastodon.social. Vērtējam pašu autoru ierakstus, valodu, neseno aktivitāti un profila atrašanas atļaujas. Savu profilu vari lūgt izņemt.',
+      },
+    ],
+  },
+};
