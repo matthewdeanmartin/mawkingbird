@@ -1699,6 +1699,10 @@
     "group.yours": "You post with these",
     "lede": "Follow a hashtag and posts on that topic come into Home, from people you don’t follow yet.",
     "loading": "Loading…",
+    "more.bundles": "Tag bundles",
+    "more.featured": "Featured",
+    "more.relay": "Tag relay",
+    "moreTabs": "More hashtag tools",
     "noTags.bluesky": "Bluesky has no followed hashtags. Its feeds do the same job: pick topics and read them as one timeline.",
     "noTags.feeds": "Open Feeds",
     "noTags.misskey": "Misskey doesn’t follow hashtags into Home. Antennas and channels do that job.",
@@ -1707,9 +1711,9 @@
     "peopleThisWeek.one": "{{count}} person this week",
     "peopleThisWeek.other": "{{count}} people this week",
     "suggested": "Suggested",
-    "tab.featured": "Featured",
     "tab.more": "More",
     "tab.similar": "Similar",
+    "tab.trending": "Trending",
     "tab.yours": "Yours",
     "tabs": "Hashtag sections",
     "title": "Hashtags"
@@ -2605,6 +2609,22 @@
     "walkingCount": "{{count}} of about {{total}} accounts read · {{links}} websites to check",
     "walkingCountUnknown": "{{count}} accounts read · {{links}} websites to check",
     "walkingSlow": "Big following lists take a while — this reads them 80 at a time."
+  },
+  "friendsFeatured": {
+    "anonymous": "Featured hashtags come from profiles. Sign in to see yours and your friends'.",
+    "by.more": "featured by {{names}} and {{count}} more",
+    "by.one": "featured by {{names}}",
+    "checked": "Checked {{checked}} of {{total}} friends.",
+    "failed": "Couldn't load these.",
+    "friends": "Featured by your friends",
+    "friendsHint": "Hashtags your mutuals pin on their profiles, the most shared first.",
+    "loading": "Loading…",
+    "mine": "Featured on your profile",
+    "mineEmpty": "You don't feature any hashtags on your profile.",
+    "more": "Check {{count}} more friends ({{count}} API calls)",
+    "noFriends": "No mutuals found among your recent follows and followers.",
+    "none": "None of the friends checked so far feature a hashtag.",
+    "posts": "{{count}} posts"
   },
   "funding": {
     "title": "Funding"
@@ -4276,6 +4296,7 @@
     "lists.tagsPub.followRelays.other": "Follow {{count}} relays",
     "lists.tagsPub.hint": "runs a relay account per hashtag that boosts from across the network — following one fills in what this server never saw.",
     "lists.tagsPub.name": "tags.pub",
+    "lists.tagsPub.needsTags": "A tag relay fills in posts on the hashtags you follow that your server never saw. Follow a hashtag first, signed in to Mastodon.",
     "lists.tagsPub.prompt": "Missing posts on these tags?",
     "lists.tagsPub.stop": "Stop",
     "lists.title.backToFeeds": "← Feeds",
