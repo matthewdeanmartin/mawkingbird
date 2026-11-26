@@ -50,6 +50,42 @@ const at = (path: string) => feedBuilderPageAt(path) as FeedBuilderEntry;
 describe('Feed Builder topic pages', () => {
   afterEach(() => vi.restoreAllMocks());
 
+  for (const [lang, path, heading, count, peopleLabel] of [
+    [
+      'el',
+      'el/pliroforiki-kai-anoikto-logismiko-mastodon',
+      'Πληροφορική και ανοικτό λογισμικό',
+      4,
+      'Ποιον να ακολουθήσεις',
+    ],
+    [
+      'hu',
+      'hu/informatika-es-szabad-szoftver-mastodon',
+      'Informatika és szabad szoftver',
+      3,
+      'Kit érdemes követni?',
+    ],
+    [
+      'lt',
+      'lt/technologijos-ir-atvirasis-kodas-mastodon',
+      'Technologijos ir atvirasis kodas',
+      4,
+      'Ką sekti',
+    ],
+  ] as const) {
+    it(`renders the approved ${lang} computing kit with native text and its small selection`, async () => {
+      const el = await render(at(path));
+      expect(el.querySelector('main')?.getAttribute('lang')).toBe(lang);
+      expect(el.querySelector('h1')?.textContent).toContain(heading);
+      expect(el.querySelectorAll('.people li')).toHaveLength(count);
+      expect(
+        el.querySelectorAll('section[aria-labelledby="tags-heading"] .tag-list li'),
+      ).toHaveLength(3);
+      expect(el.textContent).toContain(peopleLabel);
+      expect(el.querySelector('a[href="/tags/FOSS"]')).not.toBeNull();
+    });
+  }
+
   it('renders the approved Latvian computing kit with native controls and seven accounts', async () => {
     const el = await render(at('lv/tehnologijas-un-atvertais-kods-mastodon'));
     expect(el.querySelector('main')?.getAttribute('lang')).toBe('lv');

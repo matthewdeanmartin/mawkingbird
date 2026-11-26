@@ -874,11 +874,236 @@ const lv: FeedChrome = {
   updated: (date) => `Atjaunināts: ${date}`,
 };
 
-const el: FeedChrome = {...en, "eyebrow":"Αφετηρία για το Mastodon","openApp":"Άνοιγμα Mawkingbird","hub":"Όλες οι κοινότητες","tagsHeading":"Hashtags που αξίζει να ακολουθήσεις","tagsIntro":"Στο Mastodon μπορείς να ακολουθείς hashtags: οι δημόσιες αναρτήσεις τους εμφανίζονται στην αρχική σου ροή. Μερικά από αυτά είναι ήσυχα. Δες τις αναρτήσεις πριν ακολουθήσεις.","englishTag":"Αγγλικά","futureHeading":"Βοήθησε αυτά τα hashtags να ξεκινήσουν","futureIntro":"Ορισμένα δημοφιλή αγγλικά hashtags έχουν τοπικές εκδοχές που μόλις ξεκινούν. Ακολούθησε και τις δύο και χρησιμοποίησε την τοπική όταν γράφεις ελληνικά.","futureBeside":(source) => `η τοπική εκδοχή του #${source}`,"futureNew":"νέο","futureStarting":"μόλις ξεκινά","youtube":(band) => band ? `Κανάλι YouTube, συνδρομητές: ${band}` : 'Κανάλι YouTube',"feedCopy":"δημοσιεύει τα νέα του βίντεο","activity":(posts) => `${posts.toLocaleString('el')} αναρτήσεις αυτή την εβδομάδα στο mastodon.social`,"serversHeading":"Πού συναντιέται η κοινότητα","serversIntro":"Μπορείς να ακολουθείς λογαριασμούς σε άλλους διακομιστές από τον δικό σου. Αν διαλέγεις τώρα διακομιστή, δες αυτές τις κοινότητες και τους κανόνες τους.","chooseHeading":"Πώς επιλέγουμε","helpHeading":"Χρειάζεσαι βοήθεια;","help":"Έχεις ερωτήσεις ή θέλεις να αφαιρεθεί το προφίλ σου; Γράψε μας στο Mastodon.","helpLink":"@mawkingbird@mastodon.social","faqHeading":"Συχνές ερωτήσεις","readTag":(tag) => `Διάβασε το #${tag} στο Mawkingbird`,"peopleHeading":"Ποιον να ακολουθήσεις","groupColumn":"Ομάδα","countColumn":"Λογαριασμοί","everyone":"Όλοι","alsoYoutubeHeading":"Επίσης στο YouTube","alsoYoutubeIntro":(n,total) => `${n} από τους ${total} λογαριασμούς έχουν κανάλι YouTube. Ακολούθησέ τους στο Mastodon ή δες τα βίντεο στο Mawkingbird.`,"otherLanguages":"Αυτή η σελίδα σε άλλες γλώσσες","updated":(date) => `Ενημέρωση: ${date}`,"caution":{"spam":"Συχνές διαφημίσεις: δες το περιεχόμενο πριν ακολουθήσεις.","off-topic":"Χρησιμοποιείται και για άλλα θέματα. Δες πρώτα τις αναρτήσεις."},"shelves":{"youtube":{"heading":"Δημιουργοί με κανάλι YouTube","intro":"Δημιουργοί βίντεο που γράφουν και στο Mastodon."},"notable":{"heading":"Δημιουργοί και γνωστά ονόματα","intro":"Συγγραφείς, καλλιτέχνες, εκδόσεις και οργανώσεις του χώρου."},"community":{"heading":"Φωνές της κοινότητας","intro":"Ενεργοί άνθρωποι που γράφουν για το θέμα και επιτρέπουν την ανακάλυψη του προφίλ τους."}},"fame":{"wikidata":"Wikidata","wikipedia":"Wikipedia","youtube-10k":"YouTube: 10 χιλ.+","followers-2500":"2.500+ ακόλουθοι","followers-625":"625+ ακόλουθοι"},"elsewhere":{"bluesky":"Bluesky","youtube":"YouTube","twitch":"Twitch","patreon":"Patreon","podcast":"Podcast","website":"Ιστότοπος"},"choose":["Ελέγχουμε πρόσφατες δημόσιες αναρτήσεις, θέμα και γλώσσα. Επιλέγουμε προφίλ που επιτρέπουν την ανακάλυψη ή δημόσια πρόσωπα με επαληθεύσιμα στοιχεία αναγνωρισιμότητας.","Αποκλείουμε ανενεργά ή μεταφερμένα προφίλ και σεβόμαστε τις ρητές αρνήσεις προτάσεων και τα αιτήματα αφαίρεσης. Εξετάζουμε επίσης τα σήματα ιδιωτικότητας.","Ένα γλωσσικό μοντέλο βοηθά στον έλεγχο με βάση τις αναρτήσεις των ίδιων των δημιουργών. Η επιλογή ελέγχεται πριν δημοσιευτεί, αλλά δεν εγγυάται το θέμα των μελλοντικών αναρτήσεων."]};
+const el: FeedChrome = {
+  ...en,
+  eyebrow: 'Αφετηρία για το Mastodon',
+  openApp: 'Άνοιγμα Mawkingbird',
+  hub: 'Όλες οι κοινότητες',
+  tagsHeading: 'Hashtags που αξίζει να ακολουθήσεις',
+  tagsIntro:
+    'Στο Mastodon μπορείς να ακολουθείς hashtags: οι δημόσιες αναρτήσεις τους εμφανίζονται στην αρχική σου ροή. Μερικά από αυτά είναι ήσυχα. Δες τις αναρτήσεις πριν ακολουθήσεις.',
+  englishTag: 'Αγγλικά',
+  futureHeading: 'Βοήθησε αυτά τα hashtags να ξεκινήσουν',
+  futureIntro:
+    'Ορισμένα δημοφιλή αγγλικά hashtags έχουν τοπικές εκδοχές που μόλις ξεκινούν. Ακολούθησε και τις δύο και χρησιμοποίησε την τοπική όταν γράφεις ελληνικά.',
+  futureBeside: (source) => `η τοπική εκδοχή του #${source}`,
+  futureNew: 'νέο',
+  futureStarting: 'μόλις ξεκινά',
+  youtube: (band) => (band ? `Κανάλι YouTube, συνδρομητές: ${band}` : 'Κανάλι YouTube'),
+  feedCopy: 'δημοσιεύει τα νέα του βίντεο',
+  activity: (posts) =>
+    `${posts.toLocaleString('el')} αναρτήσεις αυτή την εβδομάδα στο mastodon.social`,
+  serversHeading: 'Πού συναντιέται η κοινότητα',
+  serversIntro:
+    'Μπορείς να ακολουθείς λογαριασμούς σε άλλους διακομιστές από τον δικό σου. Αν διαλέγεις τώρα διακομιστή, δες αυτές τις κοινότητες και τους κανόνες τους.',
+  chooseHeading: 'Πώς επιλέγουμε',
+  helpHeading: 'Χρειάζεσαι βοήθεια;',
+  help: 'Έχεις ερωτήσεις ή θέλεις να αφαιρεθεί το προφίλ σου; Γράψε μας στο Mastodon.',
+  helpLink: '@mawkingbird@mastodon.social',
+  faqHeading: 'Συχνές ερωτήσεις',
+  readTag: (tag) => `Διάβασε το #${tag} στο Mawkingbird`,
+  peopleHeading: 'Ποιον να ακολουθήσεις',
+  groupColumn: 'Ομάδα',
+  countColumn: 'Λογαριασμοί',
+  everyone: 'Όλοι',
+  alsoYoutubeHeading: 'Επίσης στο YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} από τους ${total} λογαριασμούς έχουν κανάλι YouTube. Ακολούθησέ τους στο Mastodon ή δες τα βίντεο στο Mawkingbird.`,
+  otherLanguages: 'Αυτή η σελίδα σε άλλες γλώσσες',
+  updated: (date) => `Ενημέρωση: ${date}`,
+  caution: {
+    spam: 'Συχνές διαφημίσεις: δες το περιεχόμενο πριν ακολουθήσεις.',
+    'off-topic': 'Χρησιμοποιείται και για άλλα θέματα. Δες πρώτα τις αναρτήσεις.',
+  },
+  shelves: {
+    youtube: {
+      heading: 'Δημιουργοί με κανάλι YouTube',
+      intro: 'Δημιουργοί βίντεο που γράφουν και στο Mastodon.',
+    },
+    notable: {
+      heading: 'Δημιουργοί και γνωστά ονόματα',
+      intro: 'Συγγραφείς, καλλιτέχνες, εκδόσεις και οργανώσεις του χώρου.',
+    },
+    community: {
+      heading: 'Φωνές της κοινότητας',
+      intro:
+        'Ενεργοί άνθρωποι που γράφουν για το θέμα και επιτρέπουν την ανακάλυψη του προφίλ τους.',
+    },
+  },
+  fame: {
+    wikidata: 'Wikidata',
+    wikipedia: 'Wikipedia',
+    'youtube-10k': 'YouTube: 10 χιλ.+',
+    'followers-2500': '2.500+ ακόλουθοι',
+    'followers-625': '625+ ακόλουθοι',
+  },
+  elsewhere: {
+    bluesky: 'Bluesky',
+    youtube: 'YouTube',
+    twitch: 'Twitch',
+    patreon: 'Patreon',
+    podcast: 'Podcast',
+    website: 'Ιστότοπος',
+  },
+  choose: [
+    'Ελέγχουμε πρόσφατες δημόσιες αναρτήσεις, θέμα και γλώσσα. Επιλέγουμε προφίλ που επιτρέπουν την ανακάλυψη ή δημόσια πρόσωπα με επαληθεύσιμα στοιχεία αναγνωρισιμότητας.',
+    'Αποκλείουμε ανενεργά ή μεταφερμένα προφίλ και σεβόμαστε τις ρητές αρνήσεις προτάσεων και τα αιτήματα αφαίρεσης. Εξετάζουμε επίσης τα σήματα ιδιωτικότητας.',
+    'Ένα γλωσσικό μοντέλο βοηθά στον έλεγχο με βάση τις αναρτήσεις των ίδιων των δημιουργών. Η επιλογή ελέγχεται πριν δημοσιευτεί, αλλά δεν εγγυάται το θέμα των μελλοντικών αναρτήσεων.',
+  ],
+};
 
-const hu: FeedChrome = {...en, "eyebrow":"Mastodon-kezdőcsomag","openApp":"Mawkingbird megnyitása","hub":"Minden közösség","tagsHeading":"Hashtagek, amelyeket érdemes követni","tagsIntro":"A Mastodonon hashtageket is követhetsz: nyilvános bejegyzéseik megjelennek a kezdőlapi hírfolyamodban. Némelyik csendes lehet. Követés előtt nézz bele a bejegyzésekbe.","englishTag":"Angol","futureHeading":"Segíts elindítani ezeket a hashtageket","futureIntro":"Néhány népszerű angol hashtagnek még csak most indul a helyi változata. Kövesd mindkettőt, és magyar bejegyzéseidben használd a helyi címkét.","futureBeside":(source) => `a #${source} helyi változata`,"futureNew":"új","futureStarting":"most indul","youtube":(band) => band ? `YouTube-csatorna, feliratkozók: ${band}` : 'YouTube-csatorna',"feedCopy":"közzéteszi új videóit","activity":(posts) => `${posts.toLocaleString('hu')} bejegyzés ezen a héten a mastodon.social oldalon`,"serversHeading":"Hol találkozik a közösség?","serversIntro":"Saját Mastodon-szerveredről más szerverek profiljait is követheted. Ha most választasz szervert, ismerd meg ezeket a közösségeket és a szabályaikat.","chooseHeading":"Hogyan válogatunk?","helpHeading":"Segítségre van szükséged?","help":"Kérdésed van, vagy szeretnéd eltávolíttatni a profilodat? Írj nekünk a Mastodonon.","helpLink":"@mawkingbird@mastodon.social","faqHeading":"Gyakori kérdések","readTag":(tag) => `#${tag} olvasása a Mawkingbirdben`,"peopleHeading":"Kit érdemes követni?","groupColumn":"Csoport","countColumn":"Profilok","everyone":"Mindenki","alsoYoutubeHeading":"A YouTube-on is","alsoYoutubeIntro":(n,total) => `A ${total} profil közül ${n} YouTube-csatornával is rendelkezik. Követheted őket a Mastodonon, vagy nézheted a videókat a Mawkingbirdben.`,"otherLanguages":"Ez az oldal más nyelveken","updated":(date) => `Frissítve: ${date}`,"caution":{"spam":"Sok reklám lehet itt. Követés előtt nézz bele.","off-topic":"Más témákhoz is használják. Először nézd meg a bejegyzéseket."},"shelves":{"youtube":{"heading":"YouTube-csatornával rendelkező alkotók","intro":"Videósok, akik a Mastodonon is írnak."},"notable":{"heading":"Alkotók és ismert nevek","intro":"A témához kapcsolódó szerzők, művészek, kiadványok és szervezetek."},"community":{"heading":"Közösségi hangok","intro":"Aktív emberek, akik írnak a témáról, és engedélyezik profiljuk felfedezését."}},"fame":{"wikidata":"Wikidata","wikipedia":"Wikipedia","youtube-10k":"YouTube: 10 ezer+","followers-2500":"2500+ követő","followers-625":"625+ követő"},"elsewhere":{"bluesky":"Bluesky","youtube":"YouTube","twitch":"Twitch","patreon":"Patreon","podcast":"Podcast","website":"Weboldal"},"choose":["A friss nyilvános bejegyzések témáját és nyelvét ellenőrizzük. Felfedezhető profilokat vagy igazolhatóan ismert közszereplőket veszünk fel.","Kizárjuk az inaktív és átköltözött profilokat. Tiszteletben tartjuk az ajánlás kifejezett tiltását és az eltávolítási kéréseket; az adatvédelmi jelzéseket is figyelembe vesszük.","Nyelvi modell segít a szerzők saját bejegyzései alapján ellenőrizni a témához illeszkedést. A válogatást megjelenés előtt átnézzük, de a későbbi bejegyzések témáját nem garantáljuk."]};
+const hu: FeedChrome = {
+  ...en,
+  eyebrow: 'Mastodon-kezdőcsomag',
+  openApp: 'Mawkingbird megnyitása',
+  hub: 'Minden közösség',
+  tagsHeading: 'Hashtagek, amelyeket érdemes követni',
+  tagsIntro:
+    'A Mastodonon hashtageket is követhetsz: nyilvános bejegyzéseik megjelennek a kezdőlapi hírfolyamodban. Némelyik csendes lehet. Követés előtt nézz bele a bejegyzésekbe.',
+  englishTag: 'Angol',
+  futureHeading: 'Segíts elindítani ezeket a hashtageket',
+  futureIntro:
+    'Néhány népszerű angol hashtagnek még csak most indul a helyi változata. Kövesd mindkettőt, és magyar bejegyzéseidben használd a helyi címkét.',
+  futureBeside: (source) => `a #${source} helyi változata`,
+  futureNew: 'új',
+  futureStarting: 'most indul',
+  youtube: (band) => (band ? `YouTube-csatorna, feliratkozók: ${band}` : 'YouTube-csatorna'),
+  feedCopy: 'közzéteszi új videóit',
+  activity: (posts) =>
+    `${posts.toLocaleString('hu')} bejegyzés ezen a héten a mastodon.social oldalon`,
+  serversHeading: 'Hol találkozik a közösség?',
+  serversIntro:
+    'Saját Mastodon-szerveredről más szerverek profiljait is követheted. Ha most választasz szervert, ismerd meg ezeket a közösségeket és a szabályaikat.',
+  chooseHeading: 'Hogyan válogatunk?',
+  helpHeading: 'Segítségre van szükséged?',
+  help: 'Kérdésed van, vagy szeretnéd eltávolíttatni a profilodat? Írj nekünk a Mastodonon.',
+  helpLink: '@mawkingbird@mastodon.social',
+  faqHeading: 'Gyakori kérdések',
+  readTag: (tag) => `#${tag} olvasása a Mawkingbirdben`,
+  peopleHeading: 'Kit érdemes követni?',
+  groupColumn: 'Csoport',
+  countColumn: 'Profilok',
+  everyone: 'Mindenki',
+  alsoYoutubeHeading: 'A YouTube-on is',
+  alsoYoutubeIntro: (n, total) =>
+    `A ${total} profil közül ${n} YouTube-csatornával is rendelkezik. Követheted őket a Mastodonon, vagy nézheted a videókat a Mawkingbirdben.`,
+  otherLanguages: 'Ez az oldal más nyelveken',
+  updated: (date) => `Frissítve: ${date}`,
+  caution: {
+    spam: 'Sok reklám lehet itt. Követés előtt nézz bele.',
+    'off-topic': 'Más témákhoz is használják. Először nézd meg a bejegyzéseket.',
+  },
+  shelves: {
+    youtube: {
+      heading: 'YouTube-csatornával rendelkező alkotók',
+      intro: 'Videósok, akik a Mastodonon is írnak.',
+    },
+    notable: {
+      heading: 'Alkotók és ismert nevek',
+      intro: 'A témához kapcsolódó szerzők, művészek, kiadványok és szervezetek.',
+    },
+    community: {
+      heading: 'Közösségi hangok',
+      intro: 'Aktív emberek, akik írnak a témáról, és engedélyezik profiljuk felfedezését.',
+    },
+  },
+  fame: {
+    wikidata: 'Wikidata',
+    wikipedia: 'Wikipedia',
+    'youtube-10k': 'YouTube: 10 ezer+',
+    'followers-2500': '2500+ követő',
+    'followers-625': '625+ követő',
+  },
+  elsewhere: {
+    bluesky: 'Bluesky',
+    youtube: 'YouTube',
+    twitch: 'Twitch',
+    patreon: 'Patreon',
+    podcast: 'Podcast',
+    website: 'Weboldal',
+  },
+  choose: [
+    'A friss nyilvános bejegyzések témáját és nyelvét ellenőrizzük. Felfedezhető profilokat vagy igazolhatóan ismert közszereplőket veszünk fel.',
+    'Kizárjuk az inaktív és átköltözött profilokat. Tiszteletben tartjuk az ajánlás kifejezett tiltását és az eltávolítási kéréseket; az adatvédelmi jelzéseket is figyelembe vesszük.',
+    'Nyelvi modell segít a szerzők saját bejegyzései alapján ellenőrizni a témához illeszkedést. A válogatást megjelenés előtt átnézzük, de a későbbi bejegyzések témáját nem garantáljuk.',
+  ],
+};
 
-const lt: FeedChrome = {...en, "eyebrow":"Mastodon pradžios rinkinys","openApp":"Atverti Mawkingbird","hub":"Visos bendruomenės","tagsHeading":"Grotažymės, kurias verta sekti","tagsIntro":"Mastodon gali sekti ir grotažymes: jų vieši įrašai atsiras tavo pradžios sraute. Kai kurios grotažymės tylios. Prieš sekdamas peržiūrėk jų įrašus.","englishTag":"Angliškai","futureHeading":"Padėk šioms grotažymėms prigyti","futureIntro":"Kai kurios populiarios angliškos grotažymės turi vietinius atitikmenis, kurie tik pradeda gyvuoti. Sek abi ir lietuviškuose įrašuose naudok vietinę grotažymę.","futureBeside":(source) => `vietinis #${source} atitikmuo`,"futureNew":"nauja","futureStarting":"tik pradeda gyvuoti","youtube":(band) => band ? `YouTube kanalas, prenumeratoriai: ${band}` : 'YouTube kanalas',"feedCopy":"skelbia naujus vaizdo įrašus","activity":(posts) => `${posts.toLocaleString('lt')} įrašų šią savaitę mastodon.social serveryje`,"serversHeading":"Kur renkasi bendruomenė","serversIntro":"Iš savo Mastodon serverio gali sekti kitų serverių profilius. Jei dar renkiesi serverį, susipažink su šiomis bendruomenėmis ir jų taisyklėmis.","chooseHeading":"Kaip atrenkame","helpHeading":"Reikia pagalbos?","help":"Turi klausimų ar nori pašalinti savo profilį iš rinkinio? Parašyk mums Mastodon.","helpLink":"@mawkingbird@mastodon.social","faqHeading":"Dažniausi klausimai","readTag":(tag) => `Skaityti #${tag} per Mawkingbird`,"peopleHeading":"Ką sekti","groupColumn":"Grupė","countColumn":"Profiliai","everyone":"Visi","alsoYoutubeHeading":"Taip pat YouTube","alsoYoutubeIntro":(n,total) => `${n} iš ${total} profilių turi YouTube kanalus. Gali sekti autorius Mastodon arba žiūrėti vaizdo įrašus per Mawkingbird.`,"otherLanguages":"Šis puslapis kitomis kalbomis","updated":(date) => `Atnaujinta: ${date}`,"caution":{"spam":"Gali būti daug reklamos. Prieš sekdamas peržiūrėk.","off-topic":"Naudojama ir kitoms temoms. Pirmiausia peržiūrėk įrašus."},"shelves":{"youtube":{"heading":"Autoriai su YouTube kanalais","intro":"Vaizdo kūrėjai, kurie rašo ir Mastodon."},"notable":{"heading":"Autoriai ir žinomi vardai","intro":"Šios srities rašytojai, menininkai, leidiniai ir organizacijos."},"community":{"heading":"Bendruomenės balsai","intro":"Aktyvūs žmonės, rašantys šia tema ir leidžiantys atrasti savo profilį."}},"fame":{"wikidata":"Wikidata","wikipedia":"Wikipedia","youtube-10k":"YouTube: 10 tūkst.+","followers-2500":"2500+ sekėjų","followers-625":"625+ sekėjų"},"elsewhere":{"bluesky":"Bluesky","youtube":"YouTube","twitch":"Twitch","patreon":"Patreon","podcast":"Tinklalaidė","website":"Svetainė"},"choose":["Tikriname naujausių viešų įrašų temą ir kalbą. Įtraukiame atrandamus profilius arba viešus asmenis, kurių žinomumas pagrįstas patikrinamais duomenimis.","Neįtraukiame neaktyvių ar perkeltų profilių. Paisome aiškaus atsisakymo būti siūlomam ir pašalinimo prašymų, taip pat kitų privatumo signalų.","Kalbos modelis padeda tikrinti atitiktį pagal pačių autorių įrašus. Rinkinį peržiūrime prieš skelbdami, tačiau negalime garantuoti būsimų įrašų temos."]};
+const lt: FeedChrome = {
+  ...en,
+  eyebrow: 'Mastodon pradžios rinkinys',
+  openApp: 'Atverti Mawkingbird',
+  hub: 'Visos bendruomenės',
+  tagsHeading: 'Grotažymės, kurias verta sekti',
+  tagsIntro:
+    'Mastodon gali sekti ir grotažymes: jų vieši įrašai atsiras tavo pradžios sraute. Kai kurios grotažymės tylios. Prieš sekdamas peržiūrėk jų įrašus.',
+  englishTag: 'Angliškai',
+  futureHeading: 'Padėk šioms grotažymėms prigyti',
+  futureIntro:
+    'Kai kurios populiarios angliškos grotažymės turi vietinius atitikmenis, kurie tik pradeda gyvuoti. Sek abi ir lietuviškuose įrašuose naudok vietinę grotažymę.',
+  futureBeside: (source) => `vietinis #${source} atitikmuo`,
+  futureNew: 'nauja',
+  futureStarting: 'tik pradeda gyvuoti',
+  youtube: (band) => (band ? `YouTube kanalas, prenumeratoriai: ${band}` : 'YouTube kanalas'),
+  feedCopy: 'skelbia naujus vaizdo įrašus',
+  activity: (posts) => `${posts.toLocaleString('lt')} įrašų šią savaitę mastodon.social serveryje`,
+  serversHeading: 'Kur renkasi bendruomenė',
+  serversIntro:
+    'Iš savo Mastodon serverio gali sekti kitų serverių profilius. Jei dar renkiesi serverį, susipažink su šiomis bendruomenėmis ir jų taisyklėmis.',
+  chooseHeading: 'Kaip atrenkame',
+  helpHeading: 'Reikia pagalbos?',
+  help: 'Turi klausimų ar nori pašalinti savo profilį iš rinkinio? Parašyk mums Mastodon.',
+  helpLink: '@mawkingbird@mastodon.social',
+  faqHeading: 'Dažniausi klausimai',
+  readTag: (tag) => `Skaityti #${tag} per Mawkingbird`,
+  peopleHeading: 'Ką sekti',
+  groupColumn: 'Grupė',
+  countColumn: 'Profiliai',
+  everyone: 'Visi',
+  alsoYoutubeHeading: 'Taip pat YouTube',
+  alsoYoutubeIntro: (n, total) =>
+    `${n} iš ${total} profilių turi YouTube kanalus. Gali sekti autorius Mastodon arba žiūrėti vaizdo įrašus per Mawkingbird.`,
+  otherLanguages: 'Šis puslapis kitomis kalbomis',
+  updated: (date) => `Atnaujinta: ${date}`,
+  caution: {
+    spam: 'Gali būti daug reklamos. Prieš sekdamas peržiūrėk.',
+    'off-topic': 'Naudojama ir kitoms temoms. Pirmiausia peržiūrėk įrašus.',
+  },
+  shelves: {
+    youtube: {
+      heading: 'Autoriai su YouTube kanalais',
+      intro: 'Vaizdo kūrėjai, kurie rašo ir Mastodon.',
+    },
+    notable: {
+      heading: 'Autoriai ir žinomi vardai',
+      intro: 'Šios srities rašytojai, menininkai, leidiniai ir organizacijos.',
+    },
+    community: {
+      heading: 'Bendruomenės balsai',
+      intro: 'Aktyvūs žmonės, rašantys šia tema ir leidžiantys atrasti savo profilį.',
+    },
+  },
+  fame: {
+    wikidata: 'Wikidata',
+    wikipedia: 'Wikipedia',
+    'youtube-10k': 'YouTube: 10 tūkst.+',
+    'followers-2500': '2500+ sekėjų',
+    'followers-625': '625+ sekėjų',
+  },
+  elsewhere: {
+    bluesky: 'Bluesky',
+    youtube: 'YouTube',
+    twitch: 'Twitch',
+    patreon: 'Patreon',
+    podcast: 'Tinklalaidė',
+    website: 'Svetainė',
+  },
+  choose: [
+    'Tikriname naujausių viešų įrašų temą ir kalbą. Įtraukiame atrandamus profilius arba viešus asmenis, kurių žinomumas pagrįstas patikrinamais duomenimis.',
+    'Neįtraukiame neaktyvių ar perkeltų profilių. Paisome aiškaus atsisakymo būti siūlomam ir pašalinimo prašymų, taip pat kitų privatumo signalų.',
+    'Kalbos modelis padeda tikrinti atitiktį pagal pačių autorių įrašus. Rinkinį peržiūrime prieš skelbdami, tačiau negalime garantuoti būsimų įrašų temos.',
+  ],
+};
 
 export const FEED_CHROME: Partial<Record<PageLanguage, FeedChrome>> = {
   lt,

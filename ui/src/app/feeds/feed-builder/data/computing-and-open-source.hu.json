@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "topic": "computing-and-open-source",
+  "lang": "hu",
+  "status": "reviewed",
+  "generatedAt": "2026-11-26T04:05:51+00:00",
+  "tags": [
+    {
+      "name": "FOSS",
+      "lang": "hu",
+      "kind": "tag"
+    },
+    {
+      "name": "SzabadSzoftver",
+      "lang": "hu",
+      "kind": "tag"
+    },
+    {
+      "name": "Programozás",
+      "lang": "hu",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "linuxmint_hun@mastodon.social",
+      "id": "113560595356709633",
+      "url": "https://mastodon.social/@linuxmint_hun",
+      "displayName": "linuxmint_hun",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/560/595/356/709/633/original/f2c6f475cc5e1cb6.jpg",
+      "bio": "A Linux Mint Magyar Közösség fóruma: https:// linuxmint.hu/forum/ A fórumban magyar nyelven tehetsz fel kérdéseket és segíthetsz is másoknak. Ez az önkéntes, nem garantált válaszidejű technikai támog…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "droid242@mastodon.world",
+      "id": "109365684115239731",
+      "url": "https://mastodon.world/@droid242",
+      "displayName": "droID242.design",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/109/365/684/115/239/731/original/6de9fe6e318b302b.png",
+      "bio": "A Végzet Koalája (apokaliptuszt eszek) # magyar # fedi22",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "zilahu@mastodon.laca.dev",
+      "id": "109376491963748618",
+      "url": "https://mastodon.laca.dev/@zilahu",
+      "displayName": "Zilahu",
+      "avatar": "https://mastodon.laca.dev/system/accounts/avatars/109/376/491/963/748/618/original/2505b455c974f413.jpg",
+      "bio": "# turázás # programozás # softwaredeveloper # teamnintendo # teamintrovert # fedi22 # magyar # nobot",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

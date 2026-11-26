@@ -1,1 +1,16 @@
-{"en": {"path": "communities", "label": "Mastodon communities by interest"}, "de": {"path": "de/mastodon-communities", "label": "Mastodon-Communities nach Interessen"}, "fr": {"path": "fr/communautes-mastodon", "label": "Communautés Mastodon par centre d’intérêt"}, "es": {"path": "es/comunidades-de-mastodon", "label": "Comunidades de Mastodon por intereses"}, "it": {"path": "it/comunita-mastodon", "label": "Comunità Mastodon per interesse"}, "ja": {"path": "ja/mastodon-communities", "label": "興味別のMastodonコミュニティ"}, "ms": {"path": "ms/komuniti-mastodon", "label": "Komuniti Mastodon mengikut minat"}, "vi": {"path": "vi/cong-dong-mastodon", "label": "Cộng đồng Mastodon theo sở thích"}, "nl": {"path": "nl/mastodon-gemeenschappen", "label": "Mastodon-gemeenschappen per interesse"}, "uk": {"path": "uk/spilnoty-mastodon", "label": "Спільноти Mastodon за інтересами"}, "lv": {"path": "lv/mastodon-kopienas", "label": "Mastodon kopienas pēc interesēm"}, "el": {"path": "el/koinotites-mastodon", "label": "Κοινότητες Mastodon ανά ενδιαφέρον"}, "hu": {"path": "hu/mastodon-kozossegek", "label": "Mastodon-közösségek érdeklődés szerint"}, "lt": {"path": "lt/mastodon-bendruomenes", "label": "Mastodon bendruomenės pagal pomėgius"}}
+{
+  "en": { "path": "communities", "label": "Mastodon communities by interest" },
+  "de": { "path": "de/mastodon-communities", "label": "Mastodon-Communities nach Interessen" },
+  "fr": { "path": "fr/communautes-mastodon", "label": "Communautés Mastodon par centre d’intérêt" },
+  "es": { "path": "es/comunidades-de-mastodon", "label": "Comunidades de Mastodon por intereses" },
+  "it": { "path": "it/comunita-mastodon", "label": "Comunità Mastodon per interesse" },
+  "ja": { "path": "ja/mastodon-communities", "label": "興味別のMastodonコミュニティ" },
+  "ms": { "path": "ms/komuniti-mastodon", "label": "Komuniti Mastodon mengikut minat" },
+  "vi": { "path": "vi/cong-dong-mastodon", "label": "Cộng đồng Mastodon theo sở thích" },
+  "nl": { "path": "nl/mastodon-gemeenschappen", "label": "Mastodon-gemeenschappen per interesse" },
+  "uk": { "path": "uk/spilnoty-mastodon", "label": "Спільноти Mastodon за інтересами" },
+  "lv": { "path": "lv/mastodon-kopienas", "label": "Mastodon kopienas pēc interesēm" },
+  "el": { "path": "el/koinotites-mastodon", "label": "Κοινότητες Mastodon ανά ενδιαφέρον" },
+  "hu": { "path": "hu/mastodon-kozossegek", "label": "Mastodon-közösségek érdeklődés szerint" },
+  "lt": { "path": "lt/mastodon-bendruomenes", "label": "Mastodon bendruomenės pagal pomėgius" }
+}

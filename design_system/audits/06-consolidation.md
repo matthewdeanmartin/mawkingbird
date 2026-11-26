@@ -3562,3 +3562,11 @@ increase from 2199 to 2201; all 741 candidate files and control findings are unc
 The only finding offset moves by one line in focused-apps/language-versions.ts
 after adding the Latvian endonym. Existing shared Feed Builder controls are reused;
 there are no new widgets or control dispositions.
+
+### 2026-11-25: Greek, Hungarian and Lithuanian computing kits
+
+Reviewed the inventory after adding three native topic editions and communities
+hubs. Source files remain 2201 and candidate files remain 741. The sole inventory
+change from the preceding snapshot moves the shared-control finding in
+focused-apps/language-versions.ts from line 64 to 67 for the three endonyms.
+Existing Feed Builder widgets are reused; no new control dispositions.
