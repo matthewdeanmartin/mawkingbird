@@ -1,0 +1,1 @@
+import{p as t}from"./chunk-B6ZAD6IE.js";import{i as r}from"./chunk-OLJVSNUZ.js";import{i as e}from"./chunk-VKQQLJEI.js";var f=a=>{let o=e(r),n=a.data.featureFlag;return o.enabled(n)?!0:e(t).createUrlTree(["/home"])};export{f as a};
