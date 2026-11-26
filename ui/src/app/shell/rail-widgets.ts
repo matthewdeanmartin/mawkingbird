@@ -38,7 +38,9 @@ export type RailWidget =
   /** Right, Blog, at the bottom: blogs read recently. */
   | 'blogRecent'
   /** Right, Video: starter kits of YouTubers on Mastodon. */
-  | 'youtubers';
+  | 'youtubers'
+  /** Right, Fedi and Explore: your drafts, when there are any. */
+  | 'drafts';
 
 /**
  * The Mastodon reading workflow's finders: things that help you find posts,
@@ -78,6 +80,9 @@ export const RAIL_ONLY: Readonly<Partial<Record<RailWidget, readonly AppMode[]>>
   blogMore: ['blog'],
   blogRecent: ['blog'],
   youtubers: ['video'],
+  // A nudge to write while reading or exploring (spec/sprint/explore-2026-11.md).
+  // Blog has its own Drafts tab; the other modes stay clean.
+  drafts: ['mastodon', 'explore'],
 };
 
 export function railShows(mode: AppMode, widget: RailWidget): boolean {

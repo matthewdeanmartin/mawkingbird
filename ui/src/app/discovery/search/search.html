@@ -51,23 +51,26 @@
     <!-- Three buttons, not a dropdown: readers searched people by default and
          then had to find the select to switch to posts. Web engines live in
          Advanced now; they were never a type. -->
-    <mb-toolbar
-      density="compact"
-      class="type-toolbar"
-      [label]="'pages.search.type.ariaLabel' | transloco"
-    >
-      @for (choice of typeChoices; track choice.value) {
-        <button
-          type="button"
-          mbToolbarButton
-          [pressed]="type() === choice.value"
-          [disabled]="typeUnavailable(choice.value)"
-          (click)="onTypeSelect(choice.value)"
-        >
-          {{ choice.label | transloco }}
-        </button>
-      }
-    </mb-toolbar>
+    <!-- Explore → People holds the search to people: no type tabs there. -->
+    @if (!peopleOnly) {
+      <mb-toolbar
+        density="compact"
+        class="type-toolbar"
+        [label]="'pages.search.type.ariaLabel' | transloco"
+      >
+        @for (choice of typeChoices; track choice.value) {
+          <button
+            type="button"
+            mbToolbarButton
+            [pressed]="type() === choice.value"
+            [disabled]="typeUnavailable(choice.value)"
+            (click)="onTypeSelect(choice.value)"
+          >
+            {{ choice.label | transloco }}
+          </button>
+        }
+      </mb-toolbar>
+    }
     <!-- Enabled while empty: pressing it then returns to the box. -->
     <button
       type="button"

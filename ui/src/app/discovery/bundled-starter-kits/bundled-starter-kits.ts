@@ -74,6 +74,9 @@ interface DiscoverySet {
  * wants *more* people, tags, imports and directories — and it stays exactly as
  * it is, linked from the foot of this page for anyone who needs it.
  */
+// i18n exploreMore.kits.byTopic: By topic, with hashtags and servers as well:
+// i18n exploreMore.kits.communities: Communities
+// i18n exploreMore.kits.starterCollections: Starter collections
 @Component({
   selector: 'app-bundled-starter-kits',
   imports: [MbContentLink, RouterLink, StarterPackTextPipe, TranslocoPipe, PackLanguagePicker],

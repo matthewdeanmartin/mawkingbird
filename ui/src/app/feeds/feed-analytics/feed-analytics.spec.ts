@@ -335,6 +335,24 @@ describe('FeedAnalytics — synthetic feeds', () => {
     expect(html.textContent).toContain('not the whole feed');
   });
 
+  it('points Home, and only Home, at the feed checkup', () => {
+    // Explore Sprint 4 (spec/sprint/explore-2026-11.md): one more way in.
+    const home = mountSupplied([makeStatus('1')]).nativeElement as HTMLElement;
+    expect(home.querySelector('a[href="/feed-doctor"]')?.textContent?.trim()).toBe(
+      'Run a feed checkup',
+    );
+    const fixture = TestBed.createComponent(FeedAnalytics);
+    fixture.componentRef.setInput('source', {
+      type: 'list',
+      query: 'Friends',
+      posts: [makeStatus('1')],
+    });
+    fixture.detectChanges();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('a[href="/feed-doctor"]'),
+    ).toBeNull();
+  });
+
   it('re-analyzes when the supplied posts change', () => {
     const fixture = TestBed.createComponent(FeedAnalytics);
     fixture.componentRef.setInput('source', {

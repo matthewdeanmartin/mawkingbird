@@ -61,6 +61,11 @@
     <a class="find-people-link" routerLink="/find-friends">{{
       'shell.left.findPeople' | transloco
     }}</a>
+    <!-- One more way in (spec/sprint/explore-2026-11.md). Hidden with the card
+         while the discovery window is closed, as is its target. -->
+    <a class="find-people-link more-in-explore" routerLink="/explore/people">{{
+      'shell.left.morePeopleInExplore' | transloco
+    }}</a>
   </section>
 }
 
@@ -75,5 +80,8 @@
         }
       </a>
     }
+    <a class="find-people-link more-in-explore" routerLink="/explore/tags">{{
+      'shell.left.moreTagsInExplore' | transloco
+    }}</a>
   </section>
 }

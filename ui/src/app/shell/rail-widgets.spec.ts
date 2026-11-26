@@ -27,6 +27,14 @@ describe('railShows', () => {
     for (const widget of DISCOVERY) expect(railShows(mode, widget)).toBe(true);
   });
 
+  it('shows drafts in Fedi and Explore only', () => {
+    for (const mode of ['mastodon', 'explore'] as const)
+      expect(railShows(mode, 'drafts')).toBe(true);
+    for (const mode of ['blog', 'rss', 'video', 'radio', 'forum', 'unbird'] as const) {
+      expect(railShows(mode, 'drafts')).toBe(false);
+    }
+  });
+
   it('shows the blog widgets in Blog only', () => {
     for (const widget of BLOG_ONLY) {
       expect(railShows('blog', widget)).toBe(true);

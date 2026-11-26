@@ -3581,3 +3581,14 @@ one-line lede. The page stays in the backlog disposition it already has (adopt
 MbButton for its actions as one change, not piecemeal). `search.ts` only shifts one
 `selects` offset (1186 to 1190) for the Explore → People default. The Explore mode's
 tabs are data in `mode-nav.ts`, rendered by the existing shell nav. No new widget.
+
+### 2026-11-26: Explore mode, Sprints 3–4 (Tags, People, Kits, drafts rail)
+
+Reviewed the regenerated inventory: one candidate added, `explore-tags.html`
+(adopted scope: shared Page Header, Item List rows with a compact Button to follow, then
+the Feeds hub's `Lists` sections embedded unchanged). Two changed, each by shared content
+links only: `bundled-starter-kits.html` (`shared` 1 to 3, Communities and Starter
+collections) and `find-friends.html` (`shared` 1 to 2, Open Explore). The new
+`explore-people.ts` and `drafts-rail-card.ts` reuse Find Friends' rows and the Rail Card
+with plain links, and the left rail, Feeds tag section and feed analytics gain one plain
+link each. No new widget.

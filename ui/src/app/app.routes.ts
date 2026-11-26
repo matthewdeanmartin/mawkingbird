@@ -1725,15 +1725,18 @@ export const routes: Routes = [
         path: 'explore/people',
         title: 'Find people',
         canActivate: [discoveryWindowGuard],
-        data: { defaultType: 'accounts' },
-        loadComponent: () => import('./discovery/search/search').then((m) => m.Search),
+        data: { peopleOnly: true },
+        loadComponent: () =>
+          import('./discovery/explore-people/explore-people').then((m) => m.ExplorePeople),
       },
       {
         path: 'explore/tags',
-        title: 'Tags',
+        title: 'Hashtags',
         canActivate: [discoveryWindowGuard],
+        // `only: 'tags'` filters the Feeds hub's sections the page embeds.
         data: { only: 'tags' },
-        loadComponent: () => import('./feeds/lists/lists').then((m) => m.Lists),
+        loadComponent: () =>
+          import('./discovery/explore-tags/explore-tags').then((m) => m.ExploreTags),
       },
       {
         path: 'find-friends',

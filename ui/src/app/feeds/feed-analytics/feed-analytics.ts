@@ -21,6 +21,8 @@ import { Terminology } from '../../i18n/terminology';
 // i18n feedAnalytics.loading: Sampling the last {{count}} {{posts}}…
 // i18n feedAnalytics.error: Couldn't sample this feed — try again later.
 // i18n feedAnalytics.empty: Nothing to analyze — this feed has no posts yet.
+// i18n feedAnalytics.checkup: Want to know what to change?
+// i18n feedAnalytics.checkupLink: Run a feed checkup
 // i18n feedAnalytics.sample.paged: Analytics for the <strong>{{count}} {{posts}} sampled</strong> from this {{feedType}} feed ({{query}}) — not the whole feed. Spans {{span}}, collected {{collectedAt}} in {{calls}} API {{callsLabel}}.
 // i18n feedAnalytics.sample.supplied: Analytics for the <strong>{{count}} {{posts}} currently loaded</strong> in this {{feedType}} feed ({{query}}) — not the whole feed. Spans {{span}}. Load more posts in the feed to widen it.
 // i18n feedAnalytics.sample.sizeAria: Sample size

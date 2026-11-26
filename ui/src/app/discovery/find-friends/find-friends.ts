@@ -1,4 +1,5 @@
 import { MbContentLink } from '../../design-system/metadata/metadata';
+import { DiscoveryWindow } from '../../wellness/discovery-window';
 import { Component, computed, inject, signal } from '@angular/core';
 import { Auth } from '../../platform/session/auth';
 import { ServerSuggestions } from './server-suggestions';
@@ -16,6 +17,8 @@ import { contactPickerAvailable } from '../../settings/import-export/contact-pic
 // i18n discovery.communities.title: Communities by interest
 // i18n discovery.communities.description: Build a feed around your interests with people and hashtags from the Communities hub.
 // i18n pages.findFriends.intro: Every way this app can help you find people to follow, in one place.
+// i18n pages.findFriends.explore: Building your Home feed? Explore checks it and puts kits, people and hashtags side by side.
+// i18n pages.findFriends.exploreLink: Open Explore
 // i18n pages.findFriends.starterKits.title: Ready-made sets of people
 // i18n pages.findFriends.starterKits.desc: Follow a whole set of accounts at once — the fastest way to get a timeline worth reading. Sets we assembled, and real collections curated by other people.
 // i18n pages.findFriends.interestsHeading: Search for something you're interested in
@@ -46,6 +49,7 @@ import { contactPickerAvailable } from '../../settings/import-export/contact-pic
 export class FindFriends {
   protected readonly level = signal<'basic' | 'advanced'>('basic');
   private readonly auth = inject(Auth);
+  protected readonly discovery = inject(DiscoveryWindow);
   /** Server suggestions need a signed-in Mastodon account to suggest for. */
   protected readonly offersSuggestions = computed(
     () => this.auth.kind() === 'mastodon' && !!this.auth.token(),

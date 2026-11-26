@@ -477,6 +477,13 @@
         {{ 'pages.lists.tags.bulkLink' | transloco }}
       </a>
     </p>
+    <!-- One more way in (spec/sprint/explore-2026-11.md); not on Explore's own
+         Tags page, which embeds this section under its suggestions. -->
+    @if (discovery.open() && !inExploreTags) {
+      <p class="muted center small">
+        <a routerLink="/explore/tags">{{ 'pages.lists.tags.exploreLink' | transloco }}</a>
+      </p>
+    }
   }
 
   @if (shows('tags') && showsSection('tag-bundles')) {

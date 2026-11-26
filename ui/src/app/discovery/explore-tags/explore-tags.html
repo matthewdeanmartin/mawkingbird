@@ -1,0 +1,81 @@
+<mb-page-header
+  [title]="'exploreTags.title' | transloco"
+  [description]="'exploreTags.lede' | transloco"
+/>
+
+@if (noTags(); as kind) {
+  <!-- Bluesky and Misskey: say so once, and point at what does the job there. -->
+  <p class="et-none">
+    {{
+      (kind === 'bluesky' ? 'exploreTags.noTags.bluesky' : 'exploreTags.noTags.misskey') | transloco
+    }}
+    <a routerLink="/feeds">{{ 'exploreTags.noTags.feeds' | transloco }}</a>
+    ·
+    <a routerLink="/search" [queryParams]="{ type: 'statuses' }">{{
+      'exploreTags.noTags.search' | transloco
+    }}</a>
+  </p>
+} @else {
+  <section class="et-suggested" [attr.aria-label]="'exploreTags.suggested' | transloco">
+    @for (group of shown(); track group.id) {
+      @if (group.status === 'loading' || group.status === 'failed' || group.tags.length) {
+        <h2 class="et-group">{{ groupLabel[group.id] | transloco }}</h2>
+        @if (group.status === 'loading') {
+          <p class="muted small" role="status">{{ 'exploreTags.loading' | transloco }}</p>
+        } @else if (group.status === 'failed') {
+          <p class="muted small">{{ 'exploreTags.failed' | transloco }}</p>
+        } @else {
+          <ul mbItemList>
+            @for (tag of group.tags; track tag.name) {
+              <li mbItemRow>
+                <!-- The title peeks: the tag's own page shows its posts first. -->
+                <a mbItemTitle [routerLink]="['/tags', tag.name]">#{{ tag.name }}</a>
+                @if (tag.people !== null) {
+                  <span mbItemMeta>{{
+                    (tag.people === 1
+                      ? 'exploreTags.peopleThisWeek.one'
+                      : 'exploreTags.peopleThisWeek.other'
+                    ) | transloco: { count: tag.people }
+                  }}</span>
+                }
+                <button
+                  mbButton
+                  variant="compact"
+                  type="button"
+                  [disabled]="busy().has(tag.name.toLowerCase()) || isFollowing(tag.name)"
+                  [attr.aria-label]="
+                    isFollowing(tag.name)
+                      ? null
+                      : ('exploreTags.followAria' | transloco: { tag: tag.name })
+                  "
+                  (click)="follow(tag.name)"
+                >
+                  {{
+                    (isFollowing(tag.name) ? 'exploreTags.following' : 'exploreTags.follow')
+                      | transloco
+                  }}
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      }
+    }
+    @if (nothing()) {
+      <p class="muted small">{{ 'exploreTags.none' | transloco }}</p>
+    }
+    @if (failedTag(); as tag) {
+      <p class="small" role="alert">{{ 'exploreTags.followFailed' | transloco: { tag } }}</p>
+    } @else if (error(); as message) {
+      <p class="small" role="alert">{{ message }}</p>
+    }
+    <p class="muted small et-topics">
+      {{ 'exploreTags.byTopic' | transloco }}
+      <a routerLink="/communities">{{ 'exploreTags.byTopicLink' | transloco }}</a>
+    </p>
+  </section>
+
+  <!-- The Feeds hub's own tag sections, filtered by this route's data: followed
+       hashtags with the peek box, tags.pub, tag bundles and featured hashtags. -->
+  <app-lists />
+}

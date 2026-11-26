@@ -3706,6 +3706,11 @@
       "file": "ui/src/app/public-pages/podcasts/podcast-kit.ts",
       "disposition": "adopted scope",
       "nextStep": "Public podcast page: shared Button and Content link over the public-page layout, as the YouTuber pages."
+    },
+    {
+      "file": "ui/src/app/discovery/explore-tags/explore-tags.html",
+      "disposition": "adopted scope",
+      "nextStep": "Explore → Tags: shared Page Header, Item List rows (title link peeks the tag) with a compact Button to follow, over the Feeds hub's own tag sections embedded below. Keep each suggestion source's loading and failure line independent."
     }
   ]
 }

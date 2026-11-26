@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+
+.et-group {
+  margin: 1rem 0 0.25rem;
+  font-size: 0.95rem;
+}
+
+.et-none,
+.et-topics {
+  margin: 0.75rem 0;
+}
+
+.et-suggested {
+  margin-bottom: 1.5rem;
+}

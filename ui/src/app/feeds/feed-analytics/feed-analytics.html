@@ -83,6 +83,14 @@
         </span>
       }
     </div>
+    <!-- Home only: these numbers describe the feed; the checkup says what to
+         change in it (spec/sprint/explore-2026-11.md). -->
+    @if (source().type === 'home') {
+      <p class="muted small">
+        {{ 'feedAnalytics.checkup' | transloco }}
+        <a routerLink="/feed-doctor">{{ 'feedAnalytics.checkupLink' | transloco }}</a>
+      </p>
+    }
 
     @if (report().highlights.length) {
       <ul class="highlights">

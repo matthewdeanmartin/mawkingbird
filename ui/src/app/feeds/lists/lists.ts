@@ -1,4 +1,5 @@
 import { OtherServers } from '../other-servers/other-servers';
+import { DiscoveryWindow } from '../../wellness/discovery-window';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DOCUMENT } from '@angular/common';
 import { MbButton } from '../../design-system/button/button';
@@ -139,6 +140,7 @@ import { MisskeyFeedSections } from './misskey-feed-sections';
 // i18n pages.lists.tags.unfollowTitle: Unfollow
 // i18n pages.lists.tags.bulkPrompt: Arriving with a list?
 // i18n pages.lists.tags.bulkLink: Import or export hashtags in bulk
+// i18n pages.lists.tags.exploreLink: Find more hashtags to follow in Explore
 // i18n pages.lists.tagsPub.prompt: Missing posts on these tags?
 // i18n pages.lists.tagsPub.name: tags.pub
 // i18n pages.lists.tagsPub.hint: runs a relay account per hashtag that boosts from across the network — following one fills in what this server never saw.
@@ -360,6 +362,9 @@ export class Lists implements OnInit {
 
   /** Section filter from the route (`/feeds/lists`, `/feeds/tags`, else all). */
   protected filter: FeedFilter = (this.route.snapshot.data['only'] as FeedFilter) ?? 'all';
+  /** Embedded in Explore → Tags, which is where the "find more" link would go. */
+  protected readonly inExploreTags = this.router.url.split(/[?#]/, 1)[0] === '/explore/tags';
+  protected readonly discovery = inject(DiscoveryWindow);
   /** A given section is shown when we're on the "all" view or it owns the filter. */
   protected shows(section: FeedFilter): boolean {
     return this.filter === 'all' || this.filter === section;
@@ -778,6 +783,15 @@ export class Lists implements OnInit {
     if (this.shows('tags') && mastodon) {
       this.loadTags();
     }
+  }
+
+  /**
+   * Reload followed and featured hashtags. Public for Explore → Tags, which
+   * embeds this page's tag sections under its suggestions and calls this after
+   * a suggestion is followed (spec/sprint/explore-2026-11.md, Sprint 3).
+   */
+  refreshTags(): void {
+    this.loadTags();
   }
 
   /** Followed + featured hashtags (mirrors the retired standalone /tags page). */

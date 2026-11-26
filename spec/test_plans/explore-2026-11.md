@@ -1,6 +1,6 @@
 # Explore mode (November 2026)
 
-Build: the working tree after Explore Sprints 1–2 (2026-11-26). Epic:
+Build: the working tree after Explore Sprints 1–4 (2026-11-26). Epic:
 [spec/sprint/explore-2026-11.md](../sprint/explore-2026-11.md). Later sprints add
 their sections here.
 
@@ -40,6 +40,27 @@ their sections here.
 - [ ] Anonymous: the counts use the browser's follows and hashtags.
 - [ ] Bluesky-only: no hashtag line at all.
 - [ ] False positives: note any human account flagged as automated, and why, under Findings (thresholds are first guesses).
+
+## Sprint 3: the Tags tab
+
+- [ ] Signed-in Mastodon: Suggested shows up to three groups (You post with these, Like the ones you follow, Trending on your server); no hashtag appears twice, none you already follow.
+- [ ] Follow on a suggestion: the button turns to Following, and the tag appears in Followed hashtags below without a reload. Check on the server.
+- [ ] Clicking a suggestion's name opens its tag page (a peek before following).
+- [ ] Below the suggestions: followed hashtags with the peek box, tags.pub, tag bundles and featured hashtags, as on Feeds → Tags.
+- [ ] Feeds → Tags looks as before, plus one "Find more hashtags to follow in Explore" link.
+- [ ] Anonymous: follows go to the browser list (Feed checkup count goes up).
+- [ ] Bluesky-only: one plain line with Open Feeds and Search posts; no suggestions.
+- [ ] Native: Follow works, and nothing on the page shows an error that only Native gets.
+
+## Sprint 4: People, Kits, drafts, more ways in
+
+- [ ] People: no Posts/People/Hashtags tabs; `/explore/people?type=statuses` still searches people; a `#tag` query stays on people. Plain `/search` still has its tabs.
+- [ ] People, signed-in Mastodon: server suggestions, then the four "More ways to find people" rows.
+- [ ] Kits: the Communities and Starter collections links, on `/bundled-starter-kits` too.
+- [ ] Drafts card on the right rail in Fedi and Explore when you have drafts; absent in Blog, RSS, Video, Radio, Forum and Unbird, and with no drafts.
+- [ ] A local draft in the card opens in the Home composer; All drafts opens Drafts.
+- [ ] Moving between pages does not refetch scheduled posts (DevTools → Network).
+- [ ] New links: left rail "More in Explore →" and "More hashtags in Explore →"; Find Friends "Open Explore"; Home analytics "Run a feed checkup". With the discovery window closed the rail and Find Friends links are gone.
 
 ## Findings
 

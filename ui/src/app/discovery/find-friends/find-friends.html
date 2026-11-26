@@ -1,5 +1,14 @@
 <div class="page-head">{{ 'pages.findFriends.heading' | transloco }}</div>
 <p class="intro muted small">{{ 'pages.findFriends.intro' | transloco }}</p>
+<!-- One more way in (spec/sprint/explore-2026-11.md); the rows below stay. -->
+@if (discovery.open()) {
+  <p class="muted small">
+    {{ 'pages.findFriends.explore' | transloco }}
+    <a mbContentLink routerLink="/explore/feed">{{
+      'pages.findFriends.exploreLink' | transloco
+    }}</a>
+  </p>
+}
 <nav class="discovery-tabs" [attr.aria-label]="'pages.findFriends.sections' | transloco">
   <button
     type="button"

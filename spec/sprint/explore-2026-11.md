@@ -1,9 +1,40 @@
 # Explore: a mode for crafting your feed (November 2026)
 
-Status: Sprints 1–2 implemented and uncommitted · 2026-11-26; Sprints 3–4
-and the Sprint 5 side quest (the `…` menu) remain. Run two at a time with light
-checks between them, then a stop for the owner to push and test (two-sprint
-cadence). Manual plan: [test_plans/explore-2026-11.md](../test_plans/explore-2026-11.md).
+Status: Sprints 1–4 implemented · 2026-11-26 (1–2 pushed for testing, 3–4
+uncommitted); the Sprint 5 side quest (the `…` menu) remains. Run two at a time
+with light checks between them, then a stop for the owner to push and test
+(two-sprint cadence). Manual plan:
+[test_plans/explore-2026-11.md](../test_plans/explore-2026-11.md).
+
+### As built (Sprints 3–4)
+
+- **Tags** (`/explore/tags`, `discovery/explore-tags`): suggestions on top, in
+  three groups (You post with these: `featured_tags/suggestions`, Mastodon only;
+  Like the ones you follow: one tag timeline over up to eight followed tags,
+  ranked by co-occurrence; Trending on your server), de-duplicated and with
+  followed tags left out, eight per group, each loading and failing on its own.
+  Below them the page embeds the Feeds hub's **`Lists` component itself**,
+  filtered by the route's `only: 'tags'` data, rather than extracting its tag
+  block. Feeds is unchanged and `lists.spec.ts` untouched; `Lists` gained only a
+  public `refreshTags()`, called after a suggestion is followed. "Tags from your
+  starter kits" became a link to Communities: kit data carries no hashtags, and
+  the Feed Builder topic data is lazy per topic.
+- **People** (`/explore/people`, `discovery/explore-people`): `/search` itself
+  under route data `peopleOnly`, which hides the type tabs and ignores `?type=`
+  and `#tag` guessing (plain `/search` is unchanged), then server suggestions
+  (signed-in Mastodon) and four Find Friends rows (directory, offsite,
+  contacts, import). Misskey primaries still get `MisskeySearch`. The Bluesky
+  panel keeps its own posts/people choice.
+- **Kits**: `/explore/kits` stays the bundled kits page, which now also links
+  Communities and Starter collections, on `/bundled-starter-kits` too.
+- **Drafts card** (`publishing/drafts/drafts-rail-card.ts`): rail widget
+  `drafts`, Fedi and Explore only, under `@defer (on idle)`. Up to three
+  newest drafts (a local draft opens in the Home composer, other kinds open
+  `/drafts`) and All drafts. Server sources load once per account per session.
+- **More ways in**: links in the left rail's who-to-follow (People) and trends
+  (Tags) cards, the Feeds tag section (not on Explore's own Tags page), Find
+  Friends (Open Explore), and Home's feed analytics (Run a feed checkup →
+  `/feed-doctor`). The discovery-gated ones hide while the window is closed.
 
 ### As built (Sprints 1–2)
 

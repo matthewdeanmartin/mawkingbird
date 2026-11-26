@@ -1585,6 +1585,16 @@ export class Api {
       );
   }
 
+  /**
+   * Hashtags the account posts with but does not feature yet
+   * (`GET /api/v1/featured_tags/suggestions`). Explore → Tags offers them to follow.
+   */
+  featuredTagSuggestions(): Observable<Tag[]> {
+    return this.http.get<Tag[]>('/api/v1/featured_tags/suggestions', {
+      context: serverRole('background'),
+    });
+  }
+
   featuredTags(): Observable<FeaturedTag[]> {
     return this.http.get<FeaturedTag[]>('/api/v1/featured_tags', {
       context: serverRole('background'),

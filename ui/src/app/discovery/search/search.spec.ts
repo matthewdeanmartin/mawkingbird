@@ -396,14 +396,31 @@ describe('Search', () => {
    * someone typing a topic got a list of people whose *profile text* matched —
    * a plausible answer to a question nobody asked.
    */
-  it('opens on people under Explore, whatever type was picked last', () => {
+  describe('under Explore → People', () => {
     // Explore → People (spec/sprint/explore-2026-11.md) is the people finder.
-    TestBed.inject(Auth).setToken('seed-token');
-    localStorage.setItem('mockingbird_search_last_type', 'statuses');
-    Object.assign(TestBed.inject(ActivatedRoute), {
-      snapshot: { data: { defaultType: 'accounts' } },
+    beforeEach(() => {
+      Object.assign(TestBed.inject(ActivatedRoute), { snapshot: { data: { peopleOnly: true } } });
     });
-    expect(internals(setUp()).type()).toBe('accounts');
+
+    it('opens on people, whatever type was picked last', () => {
+      TestBed.inject(Auth).setToken('seed-token');
+      localStorage.setItem('mockingbird_search_last_type', 'statuses');
+      expect(internals(setUp()).type()).toBe('accounts');
+    });
+
+    it('offers no type tabs, and a link’s ?type= does not move it', () => {
+      queryParams$.next(convertToParamMap({ q: 'cats', type: 'statuses' }));
+      const fixture = setUp();
+      expect((fixture.nativeElement as HTMLElement).querySelector('.type-toolbar')).toBeNull();
+      expect(internals(fixture).type()).toBe('accounts');
+    });
+
+    it('keeps a #tag query on people rather than guessing hashtags', () => {
+      const fixture = setUp();
+      internals(fixture).query.set('#gardening');
+      internals(fixture).run();
+      expect(internals(fixture).type()).toBe('accounts');
+    });
   });
 
   it('keeps the remembered type on plain /search', () => {

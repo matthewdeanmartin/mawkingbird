@@ -37,6 +37,14 @@
   </section>
 }
 
+<!-- Your drafts (Fedi and Explore), loaded when the page is idle. The card
+     renders nothing without drafts. -->
+@if (rail.shows('drafts')) {
+  @defer (on idle) {
+    <app-drafts-rail-card />
+  }
+}
+
 <!-- Just My Server narrows Home to one Mastodon instance. Bluesky has no
      instances to narrow to, so for a Bluesky-primary account without a Mastodon
      connector this is not merely empty, it is meaningless — and it calls

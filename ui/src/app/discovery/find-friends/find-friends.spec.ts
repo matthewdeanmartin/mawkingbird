@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DiscoveryWindow } from '../../wellness/discovery-window';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from '../../platform/session/auth';
@@ -54,6 +55,31 @@ describe('FindFriends', () => {
     fixture.detectChanges();
     return fixture;
   }
+
+  it('points at Explore while discovery is open, and not while it is closed', () => {
+    // Explore Sprint 4 (spec/sprint/explore-2026-11.md): one more way in; the rows stay.
+    let fixture = setUp();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('a[href="/explore/feed"]')?.textContent,
+    ).toContain('Open Explore');
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        {
+          provide: Auth,
+          useValue: { isAnonymous: true, kind: () => 'anonymous', token: () => null },
+        },
+        { provide: DiscoveryWindow, useValue: { open: () => false } },
+      ],
+    });
+    fixture = TestBed.createComponent(FindFriends);
+    fixture.detectChanges();
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('a[href="/explore/feed"]'),
+    ).toBeNull();
+    expect(rowTitles(fixture).length).toBeGreaterThan(0);
+  });
 
   it('leads with ready-made sets, not with search', () => {
     const fixture = setUp();

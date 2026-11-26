@@ -32,6 +32,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n shell.left.follow: Follow
 // i18n shell.left.boostedByNetwork: {{boosted}} by people across the network
 // i18n shell.left.findPeople: Find people to follow →
+// i18n shell.left.morePeopleInExplore: More in Explore →
+// i18n shell.left.moreTagsInExplore: More hashtags in Explore →
 // i18n shell.left.trendsForYou: Trends for you
 
 interface SuggestionCandidate {

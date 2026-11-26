@@ -773,6 +773,13 @@ export class Search implements OnInit, OnDestroy {
   protected searching = signal(false);
   protected type = signal<SearchType>('accounts');
 
+  /**
+   * Explore → People (spec/sprint/explore-2026-11.md): the same search, held to
+   * people. No type tabs, and neither `?type=` nor a query's shape (`#tag`)
+   * moves it off People. Plain `/search` is unchanged.
+   */
+  protected readonly peopleOnly = this.route.snapshot?.data?.['peopleOnly'] === true;
+
   /** The three tabs, in reading order. Posts first: it is what most searches are for. */
   protected readonly typeChoices: readonly { value: SearchType; label: string }[] = [
     { value: 'statuses', label: 'pages.search.type.posts' },
@@ -792,10 +799,7 @@ export class Search implements OnInit, OnDestroy {
    * should not pay an extra click to leave People on every visit.
    */
   private defaultType(): SearchType {
-    // Explore → People (spec/sprint/explore-2026-11.md) opens on people, whatever
-    // was picked last on /search. The reader can still switch type there.
-    const routed = this.route.snapshot?.data?.['defaultType'];
-    if (routed === 'accounts') return 'accounts';
+    if (this.peopleOnly) return 'accounts';
     let remembered: string | null = null;
     try {
       remembered = localStorage.getItem(LAST_TYPE_KEY);
@@ -863,6 +867,7 @@ export class Search implements OnInit, OnDestroy {
    * search is a *guess* about intent; a leading `@` is a statement of it.
    */
   private inferTypeFor(query: string): SearchType | null {
+    if (this.peopleOnly) return null;
     if (parseMediaQuery(query).types.length) return 'statuses';
     const raw = query.trim();
     if (!raw || /\s/.test(raw)) {
@@ -2060,7 +2065,7 @@ export class Search implements OnInit, OnDestroy {
         return;
       }
 
-      const t = (rawType as SearchType) ?? this.defaultType();
+      const t = this.peopleOnly ? 'accounts' : ((rawType as SearchType) ?? this.defaultType());
       // A `type` in the URL is a decision too — a shared link, a saved search, or
       // the reader's own earlier pick coming back through the history. Inference
       // must not overrule it on the next Search press.

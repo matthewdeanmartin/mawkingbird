@@ -18,7 +18,7 @@ anything that went wrong under **Findings**.
 | [Sprint 3: author controls](bsky-parity-sprint-3-controls.md) | Reply and quote limits, hide replies, pins, quotes | Not run |
 | [Sprint 4: moderation](bsky-parity-sprint-4-moderation.md) | Muted words, mute thread, moderation lists, moderation services | Not run |
 | [Sprint 5: discovery](bsky-parity-sprint-5-discovery.md) | Starter packs, suggestions, show more / less like this | Not run |
-| [Explore mode](explore-2026-11.md) | Explore switcher and tabs, feed checkup (people, hashtags, automated accounts), signed-in unfollow | Not run |
+| [Explore mode](explore-2026-11.md) | Explore switcher and tabs, feed checkup, Tags suggestions, People, drafts rail card, links in | Not run |
 | [Write and Drafts](write-drafts-2026-11.md) | Autosave, versions, shortcuts, quote dialog, scheduling and parking | Not run |
 | [Translation fallback](translation-fallback-2026-11.md) | Pair pre-check, browser translator, MyMemory, Apertium, source-language picker | Not run |
 | [Phanpy parity 1](phanpy-parity-1-mastodon-2026-11.md) | Private account notes, report rules and forwarding, list rename and replies, profile QR, embed post | Not run |
