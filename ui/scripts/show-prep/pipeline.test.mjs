@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { gatherTopic } from './gather.mjs';
-import { onTopic, plainText, rankCandidates, segmentFor } from './rank.mjs';
+import { linkMatches, onTopic, plainText, rankCandidates, segmentFor } from './rank.mjs';
 import { appLink, buildRunSheet, runSheetMarkdown } from './run-sheet.mjs';
 import { checkTopic, loadTopic } from './topic.mjs';
 
@@ -249,5 +249,49 @@ test('links can point at canary instead of production', () => {
   assert.equal(
     appLink({ url: 'https://fosstodon.org/@ana/123' }, 'https://mawkingbird.com/canary/'),
     'https://mawkingbird.com/canary/fosstodon.org/@ana@fosstodon.org/123',
+  );
+});
+
+test('a trending link needs a named project, or a plain keyword plus the fediverse', () => {
+  const link = (title) => ({ title, description: '', provider_name: '' });
+  assert.deepEqual(linkMatches(link('Phanpy 2 review'), pack), ['phanpy']);
+  // The first live run's misses: everyday news that only shares a platform word.
+  assert.deepEqual(
+    linkMatches(link('Nextcloud Office comes to the desktop'), {
+      ...pack,
+      segments: [{ id: 'desktop', title: 'D', keywords: ['desktop'] }, ...pack.segments],
+    }),
+    [],
+  );
+  assert.deepEqual(
+    linkMatches(link('Mastodon on the desktop, finally'), {
+      ...pack,
+      segments: [{ id: 'desktop', title: 'D', keywords: ['desktop'] }, ...pack.segments],
+    }),
+    ['desktop'],
+  );
+  // An ambiguous name alone is not enough.
+  assert.deepEqual(linkMatches(link('Tusky the walrus at the zoo'), pack), []);
+});
+
+test('a seed account still has to be on topic, and not through a catch-all word', async () => {
+  const seedPost = (text) => ({
+    status: post(text),
+    server: 'home.example',
+    tag: 'seed:dev@home.example',
+    seed: true,
+  });
+  const ranked = rankCandidates(
+    [
+      seedPost('Pachli? No: the new Phanpy build is out'),
+      seedPost('Is this the new fediverse meme?'),
+      seedPost('My other client app is out'),
+    ],
+    { ...pack, perAuthor: 5 },
+    NOW,
+  );
+  assert.deepEqual(
+    ranked.map((r) => plainText(r.post.content)),
+    ['Pachli? No: the new Phanpy build is out'],
   );
 });

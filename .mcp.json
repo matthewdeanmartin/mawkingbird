@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "show-prep": {
+      "command": "node",
+      "args": ["ui/scripts/show-prep/mcp-server.mjs"]
+    }
+  }
+}

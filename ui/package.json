@@ -121,6 +121,7 @@
     "@angular/compiler-cli": "21.2.26",
     "@angular/platform-browser-dynamic": "21.2.26",
     "@eslint/js": "^10.0.1",
+    "@modelcontextprotocol/sdk": "1.31.0",
     "@playwright/test": "1.63.0",
     "@storybook/addon-a11y": "10.6.0",
     "@storybook/addon-docs": "10.6.0",
@@ -137,6 +138,7 @@
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.70.0",
     "vitest": "^4.1.9",
+    "zod": "4.3.6",
     "zone.js": "0.16.3"
   }
 }

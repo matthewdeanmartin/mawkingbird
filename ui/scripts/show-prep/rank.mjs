@@ -65,6 +65,62 @@ function wordPattern(keyword) {
   return pattern;
 }
 
+/** A seed account's post is vouched for by the pack: a small lift. */
+const SEED_BONUS = 3;
+
+/**
+ * Seed posts skip the hashtag filter, so they must still be about the topic:
+ * a keyword, or one of the pack's context words. A developer's cat photo is not.
+ */
+function seedOnTopic(post, matched, pack) {
+  // A specific keyword: a named project, or a segment's word other than the
+  // catch-all's ("app" let a developer's other app in; "fediverse" their jokes).
+  // Addresses don't count: a project's own domain (toot.fedilab.app) is in
+  // every post it makes, about anything.
+  const catchAll = new Set(pack.segments.at(-1)?.keywords ?? []);
+  const text = plainText(post.content)
+    .replace(/https?:\/\/\S+/g, ' ')
+    .toLowerCase();
+  const specific = [
+    ...pack.segments.slice(0, -1).flatMap((s) => s.keywords),
+    ...pack.hashtags.map((t) => t.toLowerCase()),
+  ];
+  return specific.some((k) => !catchAll.has(k) && wordPattern(k).test(text));
+}
+
+/** Words that tie an article to the fediverse at all: every episode is about Mastodon. */
+const FEDIVERSE = ['mastodon', 'fediverse', 'fedi', 'activitypub'];
+
+/**
+ * The keywords a trending link matches, or none. Only specific words count:
+ * the segments' keywords except the catch-all's ("app", "client" match the
+ * day's ordinary news), and the pack's hashtags. A link matched only by
+ * ambiguous names needs a context word too, as posts do.
+ *
+ * @param {any} link A trend link: title, description, provider_name.
+ * @param {import('./topic.mjs').TopicPack} pack
+ * @returns {string[]}
+ */
+export function linkMatches(link, pack) {
+  const text = plainText(
+    `${link.title ?? ''} ${link.description ?? ''} ${link.provider_name ?? ''}`,
+  ).toLowerCase();
+  // A named project (one of the pack's hashtags, like "phanpy" or "esp32")
+  // counts on its own, unless the name is ambiguous. A segment's plain word
+  // ("desktop", "android") is everyday news unless the article is about the
+  // fediverse too.
+  const fediverse = FEDIVERSE.some((w) => wordPattern(w).test(text));
+  const named = pack.hashtags
+    .map((t) => t.toLowerCase())
+    .filter((t) => wordPattern(t).test(text) && (!pack.ambiguous?.includes(t) || fediverse));
+  if (named.length) return named;
+  if (!fediverse) return [];
+  return pack.segments
+    .slice(0, -1)
+    .flatMap((s) => s.keywords)
+    .filter((k) => wordPattern(k).test(text));
+}
+
 /** Engagement stops counting past this (log scale): about 400 interactions. */
 const ENGAGEMENT_CAP = 6;
 
@@ -98,7 +154,7 @@ export function score(post, matched, now) {
 export function rankCandidates(candidates, pack, now = Date.now()) {
   const byUri = new Map();
   const texts = new Set();
-  for (const { status, tag } of candidates) {
+  for (const { status, tag, seed } of candidates) {
     const post = status.reblog ?? status;
     const key = post.uri ?? post.url ?? post.id;
     const seen = byUri.get(key);
@@ -112,7 +168,7 @@ export function rankCandidates(candidates, pack, now = Date.now()) {
       continue;
     }
     const { segment, matched } = segmentFor(post, pack.segments);
-    if (!onTopic(post, matched, pack)) {
+    if (!onTopic(post, matched, pack) || (seed && !seedOnTopic(post, matched, pack))) {
       byUri.set(key, { skipped: true, tags: [tag] });
       continue;
     }
@@ -133,7 +189,7 @@ export function rankCandidates(candidates, pack, now = Date.now()) {
       tags: [tag],
       verdict,
       reasons,
-      score: score(post, matched, now),
+      score: score(post, matched, now) + (seed ? SEED_BONUS : 0),
     });
   }
   const ranked = [...byUri.values()].filter((r) => !r.skipped).sort((a, b) => b.score - a.score);

@@ -10,6 +10,26 @@ The maintainer writes and reviews the user-facing notes before each public
 release.
 
 ## [Unreleased]
+### Added
+- Explore: a new app-switcher mode brings Feed checkup, starter kits, people search and hashtags together. The checkup points out a thin Home feed, missing followed hashtags and a high share of automated posts.
+- Explore > Tags: find hashtags from your posts, tags similar to those you follow, server trends and the featured hashtags of your mutuals. Follow them without leaving the page.
+- Your drafts: a sidebar card in Fedi and Explore shows recent unfinished posts and lets you pick one up where you left off.
+- Watch: go back to the previous video in your queue, add or remove the current video, and like its source post from beside the player. Going Back leaves Watch instead of retracing the playlist.
+- More starter kits and Feed Builder topics, including Latvian arts and computing, computing in Greek, Hungarian and Lithuanian, and new reading, cooking, photography and hobby topics.
+
+### Changed
+- Inbox opens on Conversations, with separate Stats, Who and Stream views. Likes and boosts have their own view with faces; they no longer normally light the inbox dot.
+- Home > Profiles: posts refresh gradually while the app is open, with mutuals checked more often. Update posts shows progress and can be stopped; Rescan who you follow picks up follows made in other apps.
+- Mastodon profiles fetch current posts and pinned posts when opened, instead of starting with only the posts saved on this computer.
+- When your server is unavailable or limiting requests, saved pages can keep you reading. A banner says when a saved copy is being shown and offers Try again.
+- The Even more menu gathers less-used tools and shortcuts. Explore keeps its navigation when you open a starter kit or hashtag, and older starter-kit links open their replacement collections.
+
+### Fixed
+- Opening a Mastodon profile or several public reads together no longer immediately refuses requests beyond the connection limit; they wait briefly for a turn.
+- Home > Profiles follows changes made in this app: newly followed people are added and their recent posts collected, while unfollowed or blocked people leave the following list.
+- Feed Doctor now unfollows a signed-in Mastodon account on the server, instead of only changing the anonymous follow list.
+- Shared Watch links can find a public Mastodon post when you are signed in on a different server, instead of asking you to switch servers.
+- After deleting and reposting a text post, the new post replaces the deleted one in the view. Replies you send inline appear beneath the post you answered.
 
 ## [0.2.0] - 2026-11-23
 ### Added

@@ -37,6 +37,11 @@ const EXTRA_CSS = `
 .item label { margin-left: auto; color: var(--muted); }
 body.hide-shown .item.shown, body.hide-review .item.review { display: none; }
 .failures { font-size: 13px; color: var(--muted); }
+.item.link .link-image { float: right; max-width: 200px; max-height: 120px; margin: 0 0 8px 16px; border-radius: 8px; object-fit: cover; }
+.item.link .link-posts { clear: both; margin: 0 0 12px; padding-left: 20px; font-size: 14px; }
+.item.link .actions { clear: both; }
+.item .note { margin: 0 0 10px; padding: 8px 12px; border-radius: 8px; background: #eef3ea; font-size: 14px; }
+.item.pinned h3::after { content: ' · pinned'; color: var(--muted); font-weight: 400; font-size: 13px; }
 .media { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
 .media a { position: relative; display: block; }
 .media img { display: block; max-height: 180px; max-width: 320px; border-radius: 8px; border: 1px solid var(--line); object-fit: cover; }
@@ -82,18 +87,48 @@ function media(list = []) {
     .join('')}</div>`;
 }
 
+/** A trending link: the article, its reach, and a few posts about it. */
+function linkCard(link, index) {
+  const image =
+    link.image && safeHref(link.image) !== '#'
+      ? `<img class="link-image" src="${escapeHtml(safeHref(link.image))}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+      : '';
+  const posts = link.posts.length
+    ? `<ul class="link-posts">${link.posts
+        .map(
+          (p) =>
+            `<li><strong>${escapeHtml(p.author)}</strong>: ${escapeHtml(p.excerpt)} <a href="${escapeHtml(safeHref(p.app ?? p.url))}" target="_blank" rel="noopener">open</a></li>`,
+        )
+        .join('')}</ul>`
+    : '';
+  return `<article class="item link">
+  ${image}
+  <h3>${index + 1}. <a href="${escapeHtml(safeHref(link.url))}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.title)}</a></h3>
+  <p class="meta">${escapeHtml(link.provider)} · shared by ${link.shares} ${link.shares === 1 ? 'person' : 'people'} · ${link.postCount} ${link.postCount === 1 ? 'post' : 'posts'} about it · trending on ${escapeHtml(link.servers.join(', '))}</p>
+  ${link.description ? `<blockquote>${escapeHtml(link.description)}</blockquote>` : ''}
+  ${link.note ? `<p class="note">Note: ${escapeHtml(link.note)}</p>` : ''}
+  ${posts}
+  <p class="actions">
+    <a class="open" href="${escapeHtml(safeHref(link.app))}" target="_blank" rel="noopener">Posts about it in Mawkingbird</a>
+    <a href="${escapeHtml(safeHref(link.url))}" target="_blank" rel="noopener noreferrer">Open the article</a>
+    <label><input type="checkbox" data-id="${escapeHtml(link.url)}"> Shown</label>
+  </p>
+</article>`;
+}
+
 function item(entry, index) {
   const id = escapeHtml(entry.url);
   const flag =
     entry.verdict === 'review'
       ? `<p class="flag">Look first: ${escapeHtml(entry.reasons.join('; '))}</p>`
       : '';
-  return `<article class="item ${entry.verdict}">
+  return `<article class="item ${entry.verdict}${entry.pinned ? ' pinned' : ''}">
   <h3>${index + 1}. ${escapeHtml(entry.author)}</h3>
   <p class="meta">@${escapeHtml(entry.acct)} · ${escapeHtml(entry.created_at.slice(0, 10))} · ${entry.favourites} likes · ${entry.boosts} boosts · ${entry.replies} replies</p>
   <blockquote>${escapeHtml(entry.excerpt)}</blockquote>
   ${media(entry.media)}
   ${flag}
+  ${entry.note ? `<p class="note">Note: ${escapeHtml(entry.note)}</p>` : ''}
   <p class="actions">
     <a class="open" href="${escapeHtml(safeHref(entry.app ?? entry.url))}" target="_blank" rel="noopener">Open in Mawkingbird</a>
     <a href="${escapeHtml(safeHref(entry.url))}" target="_blank" rel="noopener noreferrer">Original</a>
@@ -109,13 +144,17 @@ function item(entry, index) {
 export function runSheetHtml(sheet, assets = {}) {
   const template = assets.template ?? readFileSync(join(SPEC, 'template.html'), 'utf8');
   const css = (assets.css ?? readFileSync(join(SPEC, 'style.css'), 'utf8')) + EXTRA_CSS;
-  const count = sheet.segments.reduce((n, s) => n + s.items.length, 0);
-  const toc = `<ul>${sheet.segments
-    .map(
+  const trending = sheet.trending ?? [];
+  const count = sheet.segments.reduce((n, s) => n + s.items.length, 0) + trending.length;
+  const toc = `<ul>${[
+    ...(trending.length
+      ? [`<li><a href="#trending">Trending on Mastodon</a> (${trending.length})</li>`]
+      : []),
+    ...sheet.segments.map(
       (s) =>
         `<li><a href="#${escapeHtml(s.id)}">${escapeHtml(s.title)}</a> (${s.items.length})</li>`,
-    )
-    .join('')}</ul>`;
+    ),
+  ].join('')}</ul>`;
   const failures = sheet.failures.length
     ? `<details class="failures"><summary>Could not read ${sheet.failures.length}</summary><ul>${sheet.failures
         .map((f) => `<li>${escapeHtml(f)}</li>`)
@@ -137,6 +176,11 @@ ${s.items.map(item).join('\n')}
   <label><input type="checkbox" value="hide-review"> Hide flagged</label>
 </div>
 ${failures}
+${
+  trending.length
+    ? `<section class="segment" id="trending"><h2>Trending on Mastodon</h2>\n${trending.map(linkCard).join('\n')}\n</section>`
+    : ''
+}
 ${segments || '<p>Nothing passed vetting. Widen the window or add hashtags to the pack.</p>'}`;
   const fill = {
     title: escapeHtml(`Show prep: ${sheet.title}`),

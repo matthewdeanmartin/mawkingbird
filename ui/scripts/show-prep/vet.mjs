@@ -4,6 +4,8 @@
 /** @typedef {{ verdict: Verdict, reasons: string[] }} Vetting */
 
 const OPT_OUT = /#(nobot|noindex|nosearch|noarchive)\b/i;
+/** Strong language: fine on Mastodon, the owner's call on a recorded show. */
+const STRONG_LANGUAGE = /\b(fuck\w*|shit\w*|cunt\w*|bitch\w*|asshole\w*|motherfuck\w*)\b/i;
 const DAY = 86_400_000;
 
 /**
@@ -42,6 +44,13 @@ export function vetStatus(status, pack = {}) {
   if ((post.media_attachments ?? []).some((m) => !m.description))
     review.push('media without alt text');
   if (account.bot) review.push('bot account');
+  if (
+    STRONG_LANGUAGE.test(
+      `${post.spoiler_text ?? ''} ${String(post.content ?? '').replace(/<[^>]*>/g, ' ')}`,
+    )
+  ) {
+    review.push('strong language');
+  }
   if (account.created_at && now - Date.parse(account.created_at) < 7 * DAY) {
     review.push('account younger than 7 days');
   }

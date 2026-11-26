@@ -53,3 +53,13 @@ test('vets the boosted post, not the booster', () => {
   const boost = post({ reblog: post({}, { discoverable: false }) });
   assert.equal(vetStatus(boost, pack).verdict, 'skip');
 });
+
+test('flags strong language for the owner, without dropping it', () => {
+  const result = vetStatus(
+    post({ content: '<p>If your app logs people out, ever: f*ck... no, fuck you</p>' }),
+    pack,
+  );
+  assert.equal(result.verdict, 'review');
+  assert.ok(result.reasons.includes('strong language'));
+  assert.equal(vetStatus(post({ content: '<p>Shiitake recipe</p>' }), pack).verdict, 'feature');
+});

@@ -1,6 +1,8 @@
 # Show prep: an agent that finds what's cool on Mastodon and cues it up
 
-Status: Sprint 1 (proof of concept) implemented and uncommitted · 2026-11-26. Owner idea, 2026-11-26.
+Status: Sprints 1–2 implemented and uncommitted · 2026-11-26. Runbook:
+[ops/podcast_topic_finder.md](../ops/podcast_topic_finder.md). Skill:
+`.claude/skills/podcast-topic-finder/SKILL.md`.
 
 ## The scenario
 
@@ -86,12 +88,11 @@ Owner decisions (2026-11-26):
   The page shows thumbnails (linking to the full image, alt text on hover);
   missing alt text is still flagged, to describe aloud.
 
-Still open: **a server blocklist.** Hashtag timelines on big servers carry posts
-federated in from anywhere, including servers many admins have cut off for
-harassment, hate or spam. Recommended: skip authors on servers that the servers
-being read have themselves blocked (their public
-`/api/v1/instance/domain_blocks`, one request per server), with no third-party
-list.
+**No server blocklist** (owner, 2026-11-26): not relevant now; the opt-out and
+vetting rules are enough.
+
+**Seed accounts and trending links: built** (2026-11-26, see "As built:
+seeds and trending" below).
 
 ### Agent interface
 
@@ -118,7 +119,7 @@ tool definitions in Sprint 2 can be generated from them.
 
 Run it: `cd ui && npm run show-prep -- --topic mastodon-clients --open` (opens
 `run-sheet.html`; add `--json` for an agent, or `--fixture <candidates.json>` to
-re-rank a saved run offline, `--app https://mawkingbird.com/canary` to open
+re-rank a saved run offline, `--seed user@host,…` to read accounts for one run, `--app https://mawkingbird.com/canary` to open
 links on canary). Tests: `npm run show-prep:test` (18, fixtures
 only). Output goes to `log/show-prep/<topic>-<date>/`: `run-sheet.html` (the one
 to open), `run-sheet.md`, `run-sheet.json` and the raw `candidates.json`.
@@ -155,7 +156,48 @@ Sprint 1 as planned:
 - Tests on fixtures, no network: `node --test scripts/show-prep/*.test.mjs`.
 - Not in any build or gate: it is an owner tool, run by hand.
 
-### Sprint 2: threads, accounts and tool calls
+### Sprint 2: threads and tool calls (done)
+
+- `session.mjs`: one episode's state (gathered posts, pins, drops, notes, added
+  posts), shared by the CLI and the MCP server so they cannot drift.
+- `gather.mjs`: `fetchPost` and `fetchThread` (root, post, best direct replies;
+  two public requests).
+- `mcp-server.mjs`: a local stdio MCP server (`@modelcontextprotocol/sdk` 1.31.0
+  and `zod` 4.3.6, both already installed by Angular CLI, now declared as pinned
+  dev dependencies). Tools: `list_topics`, `get_topic`, `explain_policy`,
+  `gather_topic`, `shortlist`, `fetch_thread`, `add_post`, `pin`, `drop`,
+  `restore`, `add_note`, `status`, `build_run_sheet`; prompt `produce_episode`.
+  Declared in the repo's `.mcp.json`.
+- The page shows pinned items first and each item's speaker note.
+- Tests: an MCP client drives a whole episode over an in-memory transport
+  against a fake fediverse (21 tests in all).
+- Seed accounts and trending links followed the same day (below).
+
+### As built: seeds and trending (2026-11-26)
+
+- **Seed accounts** (`seedAccounts` in the pack, `--seed a@b,c@d` for one run,
+  or the agent's `suggest_seeds` → owner's yes → `add_seeds`): each account's
+  recent posts, no replies or boosts; two public requests each. A seed post must
+  name something specific (a segment keyword other than the catch-all's, or one
+  of the pack's hashtags, ignoring URLs), then gets a small ranking lift.
+  `suggest_seeds` ranks the gather's authors by on-topic posts; it never edits
+  the pack.
+- **Trending links**: each server's `/api/v1/trends/links`, kept only when the
+  article names one of the pack's hashtags, or has a segment keyword and says
+  Mastodon/fediverse/ActivityPub. Then the posts about it (`/timelines/link`,
+  Mastodon 4.3+). On the sheet: a "Trending on Mastodon" section of link cards
+  (headline, image, shares, top posts, **Posts about it in Mawkingbird** →
+  `/link?url=`, **Open the article**). Saved runs keep `links.json`; links are
+  re-checked against the current rules when read.
+- **Strong language** is now a "review" flag.
+- First live run with both (2026-11-26, seeds `apps@toot.fedilab.app` and
+  `fantinel@hachyderm.io` for that run only): 74 requests. The first link rule
+  let in Nextcloud's desktop app and an Android developer-address story, and the
+  first seed rule a joke and an unrelated app; both rules were tightened, with
+  those cases as tests. Under the final rules: 0 trending links (honestly none
+  that week), 2 seed posts on the sheet (the iPhanpy release, Fedilab's Nitter fix).
+
+Original plan for this sprint:
 
 The MCP server is optional, and only worth building if the owner wants a
 conversational producer: an agent calling `gather_topic`, `fetch_thread`,
@@ -182,7 +224,6 @@ run sheet and its page work without it.
 
 - A second pack ("ESP32 on the fediverse") to prove packs are the only thing that
   changes.
-- Instance blocklist (if the owner wants one).
 
 ## Not in scope
 

@@ -74,5 +74,5 @@
   "perAuthor": 2,
   "perSegment": 8,
   "perTagLimit": 40,
-  "requestBudget": 80
+  "requestBudget": 100
 }

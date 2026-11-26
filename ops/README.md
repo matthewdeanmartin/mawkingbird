@@ -7,6 +7,7 @@ Active maintainer runbooks:
 - [Run it next to your Mastodon instance](MASTODON_INSTANCE.md): built for one home server
 - [Write the Native changelog](NATIVE_CHANGELOG_RUNBOOK.md)
 - [Publish Mawkingbird Native](NATIVE_RELEASE.md)
+- [Podcast topic finder](podcast_topic_finder.md): "What's cool on Mastodon" run sheets, by command or with an agent
 - [Engineering guides](engineering/README.md)
 
 The [source and hosting migration record](../spec/history/MIGRATION.md) is
