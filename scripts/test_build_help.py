@@ -142,6 +142,26 @@ class BuildHelpTest(unittest.TestCase):
         self.assertIn('href="/help/">Help home</a>', radio)
         self.assertNotIn("/help/start/welcome/", radio)
 
+    def test_home_lists_each_group_once_and_a_group_calls_its_own_page_overview(self) -> None:
+        self.mkdocs.write_text(
+            MKDOCS + "  - Radio:\n      - Radio: radio/index.md\n      - Playlists: radio/playlists.md\n",
+            encoding="utf-8",
+        )
+        (self.docs / "radio").mkdir()
+        (self.docs / "radio/index.md").write_text("# Radio\n\nListen.\n", encoding="utf-8")
+        (self.docs / "radio/playlists.md").write_text("# Playlists\n\nPlay.\n", encoding="utf-8")
+        self.build()
+        home = self.read("index.html")
+        # One flat list of groups: no heading repeating the one link under it.
+        self.assertIn('href="/help/radio/">Radio</a>', home)
+        self.assertNotIn("Radio</h2>", home)
+        self.assertNotIn("Start here</h2>", home)
+        self.assertNotIn('href="/help/radio/playlists/"', home)
+        radio = self.read("radio/index.html")
+        self.assertIn("Radio</h2>", radio)
+        self.assertIn('aria-current="page">Overview</a>', radio)
+        self.assertIn('href="/help/radio/playlists/">Playlists</a>', radio)
+
     def test_nested_guide_image_is_copied_and_respects_preview_base(self) -> None:
         assets = self.docs / "assets"
         assets.mkdir()

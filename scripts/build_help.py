@@ -254,16 +254,13 @@ class HelpBuilder:
     # -- HTML -------------------------------------------------------------------
 
     def _nav(self, current: Page) -> str:
+        if not current.book:
+            return self._top_nav(current)
         out: list[str] = []
         section: object = object()
-        seen: set[str] = set()
         for page in self.pages:
-            if page.book and current.book and page.book != current.book:
+            if page.book and page.book != current.book:
                 continue
-            if not current.book and page.book:
-                if page.book in seen:
-                    continue
-                seen.add(page.book)
             if page.section != section:
                 if out:
                     out.append("</ul>")
@@ -272,9 +269,34 @@ class HelpBuilder:
                     out.append(f"<h2>{html.escape(section)}</h2>")
                 out.append("<ul>")
             mark = ' aria-current="page"' if page is current else ""
+            # A group's own page is titled like the group ("Mastodon" under the
+            # Mastodon heading); call it Overview rather than say it twice.
+            label = "Overview" if page.section and page.nav_title == page.section else page.nav_title
             out.append(
-                f'<li><a href="{url_for(self.base, page.slug)}"{mark}>{html.escape(page.nav_title)}</a></li>'
+                f'<li><a href="{url_for(self.base, page.slug)}"{mark}>{html.escape(label)}</a></li>'
             )
+        out.append("</ul>")
+        return "\n".join(out)
+
+    def _top_nav(self, current: Page) -> str:
+        """Pages outside a group (Help home): one list, each group once.
+
+        A group shows as its name, linking to its first page. Heading each group
+        over that single link read as "Mastodon / Mastodon, Radio / Radio" (owner,
+        2026-11-26); a group's own pages are listed once you are inside it.
+        """
+        out = ["<ul>"]
+        seen: set[str] = set()
+        for page in self.pages:
+            if page.book:
+                if page.book in seen:
+                    continue
+                seen.add(page.book)
+                label = page.book
+            else:
+                label = page.nav_title
+            mark = ' aria-current="page"' if page is current else ""
+            out.append(f'<li><a href="{url_for(self.base, page.slug)}"{mark}>{html.escape(label)}</a></li>')
         out.append("</ul>")
         return "\n".join(out)
 
