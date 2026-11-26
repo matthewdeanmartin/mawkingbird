@@ -2659,7 +2659,6 @@
     "notifications.muteFailed": "無法將 @{{acct}} 靜音。",
     "notifications.newAccounts": "尚未認識的帳號",
     "notifications.noMatch": "沒有通知符合篩選條件。",
-    "notifications.notifications": "通知",
     "notifications.noUnfamiliarAccounts": "目前載入的通知中沒有不熟悉的帳號。",
     "notifications.openChat": "💬 在聊天室中開啟",
     "notifications.others.one": "以及其他 {{count}} 位使用者",

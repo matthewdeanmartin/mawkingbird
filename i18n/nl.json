@@ -1855,7 +1855,6 @@
     "notifications.muteFailed": "Kon @{{acct}} niet dempen.",
     "notifications.newAccounts": "Voor mij nieuwe accounts",
     "notifications.noMatch": "Geen meldingen komen overeen met de filters.",
-    "notifications.notifications": "Meldingen",
     "notifications.noUnfamiliarAccounts": "Geen onbekende accounts in de tot nu toe geladen meldingen.",
     "notifications.openChat": "💬 Openen in chat",
     "notifications.others.one": "en {{count}} andere",

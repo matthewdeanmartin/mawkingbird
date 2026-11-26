@@ -1855,7 +1855,6 @@
     "notifications.muteFailed": "@{{acct}} sessize alınamadı.",
     "notifications.newAccounts": "Benim İçin Yeni Hesaplar",
     "notifications.noMatch": "Filtrelerle eşleşen bildirim yok.",
-    "notifications.notifications": "Bildirimler",
     "notifications.noUnfamiliarAccounts": "Şimdiye kadar yüklenen bildirimlerde tanımadığınız hesap yok.",
     "notifications.openChat": "💬 Sohbette aç",
     "notifications.others.one": "ve {{count}} kişi daha",

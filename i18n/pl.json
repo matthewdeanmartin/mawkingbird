@@ -2178,7 +2178,6 @@
     "notifications.muteFailed": "Nie udało się wyciszyć @{{acct}}.",
     "notifications.newAccounts": "Nowe dla mnie konta",
     "notifications.noMatch": "Żadne powiadomienia nie pasują do filtrów.",
-    "notifications.notifications": "Powiadomienia",
     "notifications.noUnfamiliarAccounts": "W dotąd załadowanych powiadomieniach nie ma nieznanych kont.",
     "notifications.openChat": "💬 Otwórz w czacie",
     "notifications.others.one": "i {{count}} inna osoba",
