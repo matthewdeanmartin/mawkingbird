@@ -6439,7 +6439,6 @@
     "search.label": "Rechercher des longs posts",
     "search.mastodon": "Sur Mastodon",
     "search.mastodon.tags": "Sans compte, la recherche porte sur les hashtags : utilise des mots que les gens mettent en hashtag.",
-    "search.mastodon.text": "Parmi ce que ton serveur te laisse chercher : en général tes propres posts, ceux avec lesquels tu as interagi, et les personnes qui autorisent la recherche.",
     "search.none": "Aucune série ni aucun long post trouvé.",
     "search.open": "Ouvrir un blog par son identifiant",
     "search.opened": "Dans les blogs que tu as ouverts",

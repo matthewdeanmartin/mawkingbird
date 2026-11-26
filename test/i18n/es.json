@@ -6431,7 +6431,6 @@
     "search.label": "Buscar publicaciones largas",
     "search.mastodon": "En Mastodon",
     "search.mastodon.tags": "Sin cuenta se buscan hashtags, así que usa palabras que la gente use como hashtag.",
-    "search.mastodon.text": "Entre lo que tu servidor te deja buscar: normalmente tus propias publicaciones, las publicaciones con las que has interactuado y las personas que permiten la búsqueda.",
     "search.none": "No se encontraron series ni publicaciones largas.",
     "search.open": "Abrir un blog por su identificador",
     "search.opened": "En los blogs que has abierto",
