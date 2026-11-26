@@ -1,6 +1,13 @@
 import { translatedComputed } from '../../../i18n/translated';
 import { ProxyActivity } from '../../../connections/cors-proxy/proxy-activity';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -129,6 +136,7 @@ type TestState =
   selector: 'app-connection-cors-proxy',
   imports: [FormsModule, RouterLink, StorageBadge, TranslocoPipe],
   templateUrl: './connection-cors-proxy.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-cors-proxy.css'],
 })
 export class ConnectionCorsProxy implements OnInit {

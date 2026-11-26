@@ -7,6 +7,7 @@ import {
   OnInit,
   output,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -85,6 +86,7 @@ interface PendingFile {
   selector: 'app-misskey-compose',
   imports: [FormsModule, TranslocoPipe, MbButton, MbCheckbox, MbField, MbControl],
   templateUrl: './misskey-compose.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './misskey-compose.css',
 })
 export class MisskeyCompose implements OnInit, OnDestroy {

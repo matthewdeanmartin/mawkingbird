@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbRailCard } from '../../design-system/identity/rail-card';
@@ -66,6 +73,7 @@ export function resetDraftsRailLoads(): void {
       </section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     /* The left rail's card styles do not reach inside this component, so the
        card spaces itself like its neighbours (title, rows, footer link). */

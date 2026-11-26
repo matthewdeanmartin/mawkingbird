@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Meta } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter } from '@angular/router';
@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { PageTitleStrategy } from '../shell/a11y/page-title-strategy';
 import { APP_STRUCTURED_DATA, FEATURES_DESCRIPTION, SHARE_IMAGES, SITE_DESCRIPTION } from './seo';
 
-@Component({ template: 'page' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: 'page' })
 class Page {}
 
 describe('route SEO metadata', () => {

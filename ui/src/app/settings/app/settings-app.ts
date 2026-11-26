@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { AppInstall } from '../../shell/app-install/app-install';
 import { MbButton } from '../../design-system/button/button';
@@ -100,6 +100,7 @@ import { MbSettingsRow } from '../../design-system/settings-row/settings-row';
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .install-note {
       margin: 0;

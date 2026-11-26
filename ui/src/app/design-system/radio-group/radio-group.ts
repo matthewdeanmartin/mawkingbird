@@ -8,6 +8,7 @@ import {
   linkedSignal,
   output,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MbSaveFeedback } from '../save-feedback/save-feedback';
@@ -26,6 +27,7 @@ let nextId = 0;
   imports: [MbSaveFeedback],
   templateUrl: './radio-group.html',
   styleUrl: './radio-group.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MbRadioGroup), multi: true },
   ],

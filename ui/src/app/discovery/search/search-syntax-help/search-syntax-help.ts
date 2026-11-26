@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 interface SyntaxRow {
@@ -325,6 +325,7 @@ const BLUESKY_GROUPS: SyntaxGroup[] = [
       }
     </ng-template>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     /* Embedded: no overlay, no card. The idle search page is already a panel,
        and nesting a second bordered box inside it reads as a modal that failed

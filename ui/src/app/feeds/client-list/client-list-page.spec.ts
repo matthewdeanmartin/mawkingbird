@@ -1,4 +1,4 @@
-import { Component, input, OnDestroy } from '@angular/core';
+import { Component, input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of, Subject } from 'rxjs';
@@ -12,7 +12,11 @@ import { Account, Status } from '../../platform/api/models';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { translocoTesting } from '../../i18n/i18n.testing';
 let mounted = 0;
-@Component({ selector: 'app-status-card', template: 'Post content' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: 'Post content',
+})
 class PostStub implements OnDestroy {
   readonly status = input.required<Status>();
   constructor() {

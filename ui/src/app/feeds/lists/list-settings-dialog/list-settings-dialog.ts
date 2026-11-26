@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../../platform/api/api';
@@ -88,6 +97,7 @@ export function repliesPolicyOptions(transloco: TranslocoService): RadioOption[]
       </ng-container>
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     mb-radio-group {
       display: block;

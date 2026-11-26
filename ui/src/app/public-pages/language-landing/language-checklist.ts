@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../../platform/api/api';
@@ -74,6 +82,7 @@ import { AppOnlyLinkRel } from '../public-page-urls';
     }
   `,
   styleUrl: '../focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     mb-checkbox {
       display: block;

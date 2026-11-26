@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, signal, untracked, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -60,6 +69,7 @@ import { RadioStudioSession } from './radio-studio-session';
     RadioStudio,
   ],
   templateUrl: './studio-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './studio-page.css',
 })
 export class StudioPage {

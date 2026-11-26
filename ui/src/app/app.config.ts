@@ -16,7 +16,7 @@ import {
   withPreloading,
   withRouterConfig,
 } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { providePublicPageUrls } from './public-pages/public-page-urls';
@@ -71,6 +71,7 @@ export const appConfig: ApplicationConfig = {
     // metricsInterceptor is outermost so it times the full round-trip (including
     // the server/auth rewrites) and sees the final response/error.
     provideHttpClient(
+      withXhr(),
       withInterceptors([
         // First: a refused Mastodon route never reaches metrics or the network.
         mastodonRouteInterceptor,

@@ -1,5 +1,5 @@
 import { AppDialogs } from '../../shell/app-dialogs';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AccountDataRef, inspectAccountData } from '../../accounts/account-data';
 import { Auth } from '../../platform/session/auth';
@@ -52,6 +52,7 @@ interface StorageAccount {
   selector: 'app-settings-storage',
   imports: [FormsModule, TranslocoPipe],
   templateUrl: './settings-storage.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-storage.css',
 })
 export class SettingsStorage {

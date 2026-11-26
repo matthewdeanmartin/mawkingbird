@@ -711,7 +711,7 @@
         <a
           (click)="rememberFeed($event)"
           class="list-row"
-          [routerLink]="['/endorsed', auth.account()?.id]"
+          [routerLink]="['/endorsed', $safeNavigationMigration(auth.account()?.id)]"
         >
           <span>
             {{ 'pages.lists.endorsements.accountsYouEndorse' | transloco }}

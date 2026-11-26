@@ -7,6 +7,7 @@ import {
   OnInit,
   output,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -188,6 +189,7 @@ export class FriendsFeaturedCache {
       </section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbHelp } from '../../design-system/help/help';
@@ -72,6 +72,7 @@ interface SideView {
   selector: 'app-audience-composition-panel',
   imports: [MbBarList, MbHelp, MbStatGrid, TranslocoPipe],
   templateUrl: './audience-composition-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './audience-composition-panel.css',
 })
 export class AudienceCompositionPanel {

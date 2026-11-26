@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { Compose } from '../../publishing/compose/compose';
 import { Status } from '../../platform/api/models';
 import { BskyRef } from './bluesky-types';
@@ -15,6 +15,7 @@ import { BskyRef } from './bluesky-types';
   />`,
   // A block, like the bare <app-compose> a Mastodon reply renders: an inline
   // host around the composer left its box laid out differently.
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: ':host { display: block; }',
 })
 export class BskyReply {

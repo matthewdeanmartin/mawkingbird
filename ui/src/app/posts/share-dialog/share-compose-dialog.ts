@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { Status } from '../../platform/api/models';
@@ -19,6 +19,7 @@ import { ComposeShareRequest, POST_TARGET_LABEL_KEYS } from './share-dialog';
 @Component({
   selector: 'app-share-compose-dialog',
   imports: [MbDialog, Compose, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-dialog
       size="wide"

@@ -4,6 +4,7 @@ import {
   importProvidersFrom,
   inject,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import {
@@ -121,6 +122,7 @@ function adminFixture() {
     { provide: AdminApi, useFactory: adminFixture },
     { provide: AppDialogs, useValue: { confirm: async () => false } },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>Forms with labels that stay put.</h1>
     <p class="ds-intro">

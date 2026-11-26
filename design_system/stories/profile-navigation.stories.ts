@@ -5,6 +5,7 @@ import {
   input,
   OnInit,
   ViewChild,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   provideHttpClient,
@@ -29,6 +30,7 @@ import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
     <nav aria-label="App navigation">Home · Search · Feeds</nav>
     <app-profile />
   </div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .profile-layout {
       max-width: 600px;

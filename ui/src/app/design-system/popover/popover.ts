@@ -7,6 +7,7 @@ import {
   output,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { MbButton } from '../button/button';
 import { MbPostAction } from '../post-actions/post-actions';
@@ -90,6 +91,7 @@ let nextId = 0;
     </div>
   `,
   styleUrl: './popover.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '(window:resize)': 'close(false)', '(window:scroll)': 'close(false)' },
 })
 export class MbPopover {

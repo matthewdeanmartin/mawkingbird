@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
@@ -21,6 +21,7 @@ import { AiBudget, formatUsd } from './ai-budget';
 @Component({
   selector: 'app-ai-budget-prompt',
   imports: [MbDialog, MbButton, RouterLink, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (budget.promptOpen()) {
       <mb-dialog

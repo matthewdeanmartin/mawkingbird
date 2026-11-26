@@ -1,4 +1,11 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -44,6 +51,7 @@ const mounted = signal<readonly JustMyServerCard[]>([]);
   selector: 'app-just-my-server-card',
   imports: [MbButton, MbDialog, MbRailCard, MbSwitch, TranslocoPipe],
   templateUrl: './just-my-server-card.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './just-my-server-card.css',
 })
 export class JustMyServerCard {

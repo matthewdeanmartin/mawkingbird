@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { WritableSignal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -84,7 +84,7 @@ describe('StatusCard copy link and translation notes', () => {
       },
     });
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     const auth = TestBed.inject(Auth);
     auth.kind.set('mastodon');

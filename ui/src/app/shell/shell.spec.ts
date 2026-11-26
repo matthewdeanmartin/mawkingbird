@@ -1,9 +1,9 @@
 import { RailOutlet } from './rail-outlet';
 import { PlusCatalogue } from '../accounts/mawkingbird/plus-catalogue';
 import { fakePlusCatalogue } from '../testing/plus-catalogue';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -53,7 +53,7 @@ describe('Shell account switching', () => {
       providers: [
         // Register the real serverInterceptor so requests are prefixed with the active
         // instance — the whole point of this bug.
-        provideHttpClient(withInterceptors([serverInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([serverInterceptor])),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: PlusCatalogue, useFactory: fakePlusCatalogue },
@@ -796,7 +796,11 @@ describe('Shell account switching', () => {
  * writing zen hides a strict superset, so the result must be indistinguishable
  * from writing zen alone.
  */
-@Component({ selector: 'app-page-rail', template: '<p class="page-rail">page rail</p>' })
+@Component({
+  selector: 'app-page-rail',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<p class="page-rail">page rail</p>',
+})
 class PageRail {}
 
 describe('Shell app-mode nav', () => {
@@ -807,7 +811,7 @@ describe('Shell app-mode nav', () => {
     sessionStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([serverInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([serverInterceptor])),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: PlusCatalogue, useFactory: fakePlusCatalogue },
@@ -1020,7 +1024,7 @@ describe('Shell zen modes', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([serverInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([serverInterceptor])),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: PlusCatalogue, useFactory: fakePlusCatalogue },
@@ -1196,7 +1200,7 @@ describe('Shell first-run modal', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([serverInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([serverInterceptor])),
         provideHttpClientTesting(),
         // The anonymous answer navigates to the kits now, so the route has to
         // exist here or every test that answers the modal logs a rejected

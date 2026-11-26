@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../platform/session/auth';
@@ -178,6 +178,7 @@ interface MemberRow {
       <app-forum-list-dialog [accounts]="others()" (closed)="listOpen.set(false)" />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

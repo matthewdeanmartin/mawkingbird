@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { catchError, firstValueFrom, of } from 'rxjs';
@@ -100,6 +107,7 @@ type Shown =
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .lookup {
       display: grid;

@@ -2,7 +2,14 @@ import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
@@ -34,6 +41,7 @@ import { ListFeedResolver, MERGE_MEMBER_CAP } from '../../feeds/lists/list-feed-
   selector: 'app-endorsed-list',
   imports: [AccountName, RouterLink, StatusCard, TranslocoPipe],
   templateUrl: './endorsed-list.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './endorsed-list.css',
 })
 export class EndorsedList implements OnInit {

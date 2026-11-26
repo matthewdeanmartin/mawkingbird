@@ -1,6 +1,14 @@
 import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { MbButton } from '../../design-system/button/button';
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { LibraryKind, LibraryPanel } from '../read/library-panel/library-panel';
@@ -79,6 +87,7 @@ const PAGE_SIZE = 20;
     MbButton,
   ],
   templateUrl: './bookmarks.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bookmarks.css',
 })
 export class Bookmarks implements OnInit {

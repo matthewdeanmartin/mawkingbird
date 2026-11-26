@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { firstValueFrom } from 'rxjs';
 import { beforeEach, afterEach, it, expect, vi } from 'vitest';
@@ -35,7 +35,7 @@ beforeEach(() => {
   });
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(withInterceptors([nativePublishingInterceptor])),
+      provideHttpClient(withXhr(), withInterceptors([nativePublishingInterceptor])),
       provideHttpClientTesting(),
       { provide: PLATFORM_LOCAL_PUBLISHING, useValue: true },
       { provide: PLATFORM_CONNECTORS, useValue: bridge },

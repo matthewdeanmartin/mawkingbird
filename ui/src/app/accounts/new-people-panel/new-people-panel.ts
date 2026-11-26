@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbBadge } from '../../design-system/badge/badge';
@@ -98,6 +98,7 @@ import { CHECK_STEP, NewPeopleScan, PAGE } from '../new-people-scan';
     TranslocoPipe,
   ],
   templateUrl: './new-people-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './new-people-panel.css',
 })
 export class NewPeoplePanel {

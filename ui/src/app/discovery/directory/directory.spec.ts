@@ -1,6 +1,6 @@
 import { Auth } from '../../platform/session/auth';
 import { NATIVE_PROFILES } from '../../platform/session/platform-login';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
@@ -64,7 +64,7 @@ describe('Directory', () => {
     queryParams = new BehaviorSubject(convertToParamMap({}));
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         // Inert unless a test signs in natively and fills `archive`.

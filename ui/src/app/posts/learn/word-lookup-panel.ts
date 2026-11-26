@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { Status } from '../../platform/api/models';
@@ -189,6 +197,7 @@ const LANGUAGE_NAMES: Record<string, string> = {
       </div>
     </section>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

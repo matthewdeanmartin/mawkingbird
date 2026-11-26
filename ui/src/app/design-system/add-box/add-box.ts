@@ -1,4 +1,11 @@
-import { Component, DestroyRef, ElementRef, inject, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 /**
  * A field with its button attached: paste, search, jot. Project one `mb-field`
@@ -14,6 +21,7 @@ import { Component, DestroyRef, ElementRef, inject, ViewEncapsulation } from '@a
   // The projected field and button take no scoped attributes; every selector
   // is namespaced to .mb-add-box.
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-box.css',
 })
 export class MbAddBox {

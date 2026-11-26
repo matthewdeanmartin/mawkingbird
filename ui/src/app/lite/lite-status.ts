@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
 
@@ -39,6 +39,7 @@ import { MbButton } from '../design-system/button/button';
       <p class="lite-status" role="status">{{ 'lite.status.loading' | transloco }}</p>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .lite-status {
       margin: 0;

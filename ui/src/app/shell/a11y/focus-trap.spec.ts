@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FocusTrap } from './focus-trap';
@@ -13,6 +13,7 @@ import { FocusTrap } from './focus-trap';
  */
 @Component({
   imports: [FocusTrap],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <button id="opener" type="button">Open</button>
     <button id="outside" type="button">Outside</button>

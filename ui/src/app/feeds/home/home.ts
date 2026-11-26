@@ -22,6 +22,7 @@ import {
   OnInit,
   signal,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { compareMastodonIds, ReadMarkers } from './read-markers';
 import { SeenInViewport } from './seen-in-viewport';
@@ -314,6 +315,7 @@ const MARKER_SEEK_PAGES = 5;
     SeenInViewport,
   ],
   templateUrl: './home.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './home.css',
 })
 export class Home implements OnInit, OnDestroy {

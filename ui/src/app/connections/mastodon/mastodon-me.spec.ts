@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Account } from '../../platform/api/models';
@@ -10,7 +10,7 @@ import { MastodonMe } from './mastodon-me';
 describe('MastodonMe', () => {
   beforeEach(() => {
     localStorage.clear();
-    TestBed.configureTestingModule({ providers: [provideHttpClient()] });
+    TestBed.configureTestingModule({ providers: [provideHttpClient(withXhr())] });
   });
 
   it('is the identity itself under a Mastodon account', () => {

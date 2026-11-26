@@ -1,5 +1,5 @@
 import { translatedComputed } from '../../i18n/translated';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -150,6 +150,7 @@ import { PLATFORM_NETWORK } from '../../platform/http/platform-http';
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .proxy-fields {
       display: grid;

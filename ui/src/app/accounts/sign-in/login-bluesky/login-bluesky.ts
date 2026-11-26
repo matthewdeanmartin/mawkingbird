@@ -1,6 +1,6 @@
 import { NATIVE_SOCIAL } from '../../../platform/session/platform-login';
 import { MbButton } from '../../../design-system/button/button';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -46,6 +46,7 @@ const BLUESKY_ENTRYWAY = 'https://bsky.social';
   selector: 'app-login-bluesky',
   imports: [MbButton, FormsModule, RouterLink, TranslocoPipe],
   templateUrl: './login-bluesky.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login-bluesky.css',
 })
 export class LoginBluesky implements OnInit {

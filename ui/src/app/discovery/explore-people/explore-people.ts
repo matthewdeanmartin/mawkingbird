@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbTab, MbTabs } from '../../design-system/tabs/tabs';
@@ -85,6 +85,7 @@ export function resetPeopleTab(): void {
     </mb-tabs>
   `,
   // Find Friends' row styles, reused so the two lists look alike.
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../find-friends/find-friends.css',
 })
 export class ExplorePeople {

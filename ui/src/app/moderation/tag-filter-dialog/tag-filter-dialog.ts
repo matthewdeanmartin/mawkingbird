@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DestroyRef } from '@angular/core';
@@ -22,6 +31,7 @@ import { normalizeHashtag } from '../../discovery/hashtag';
 @Component({
   selector: 'app-tag-filter-dialog',
   imports: [FormsModule, TranslocoPipe, MbDialog, MbButton, MbField, MbControl, MbCheckbox],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <mb-dialog
     [title]="'tagFilter.title' | transloco"
     [closeLabel]="'common.cancel' | transloco"

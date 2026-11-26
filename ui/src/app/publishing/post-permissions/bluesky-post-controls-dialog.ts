@@ -1,4 +1,4 @@
-import { Component, input, OnInit, output, signal } from '@angular/core';
+import { Component, input, OnInit, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -47,6 +47,7 @@ import {
     MbHelp,
     MbNotice,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-dialog
       [title]="'bskyControls.title' | transloco"

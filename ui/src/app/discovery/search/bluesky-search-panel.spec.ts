@@ -2,7 +2,7 @@ import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { BlueskyModerationState } from '../../connections/bluesky/bluesky-moderation-state';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
@@ -169,7 +169,7 @@ describe('BlueskySearchPanel', () => {
     TestBed.configureTestingModule({
       imports: [BlueskySearchPanel],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: BlueskySearch, useValue: postSearch },

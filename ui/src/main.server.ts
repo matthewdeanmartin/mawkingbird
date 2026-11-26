@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
 import { provideRouter, Route, RouterOutlet, TitleStrategy } from '@angular/router';
 import { provideServerRendering, RenderMode, withRoutes } from '@angular/ssr';
@@ -65,13 +65,22 @@ import { providePublicPageUrls } from './app/public-pages/public-page-urls';
 // Only public content executes at build time. The browser still bootstraps the
 // normal client, including its existing root dispatcher. No account data or
 // remote instance is needed to produce these pages; hydration is not enabled.
-@Component({ selector: 'app-root', imports: [RouterOutlet], template: '<router-outlet />' })
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<router-outlet />',
+})
 class PublicRoot {}
 
 // Angular's server route map requires a matching router entry for CSR paths.
 // This empty server-only placeholder is never prerendered; the browser uses
 // the real EntryPage and its existing preview dispatcher.
-@Component({ selector: 'app-client-entry', template: '' })
+@Component({
+  selector: 'app-client-entry',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class ClientEntry {}
 
 // Titles match the public browser routes in app.routes.ts. The SEO build keeps

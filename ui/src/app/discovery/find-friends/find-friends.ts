@@ -1,6 +1,6 @@
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { DiscoveryWindow } from '../../wellness/discovery-window';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Auth } from '../../platform/session/auth';
 import { ServerSuggestions } from './server-suggestions';
 import { RouterLink } from '@angular/router';
@@ -44,6 +44,7 @@ import { contactPickerAvailable } from '../../settings/import-export/contact-pic
   selector: 'app-find-friends',
   imports: [MbContentLink, RouterLink, ServerSuggestions, TranslocoPipe],
   templateUrl: './find-friends.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './find-friends.css',
 })
 export class FindFriends {

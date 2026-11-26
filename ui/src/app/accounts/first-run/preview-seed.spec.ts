@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Account } from '../../platform/api/models';
 import { AnonymousFollows } from '../anonymous/anonymous-follows';
@@ -38,7 +38,7 @@ describe('PreviewSeed', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     seed = TestBed.inject(PreviewSeed);
     follows = TestBed.inject(AnonymousFollows);

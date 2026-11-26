@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -6,6 +6,7 @@ import { hashtagNameFrom, mastodonProfileHandle, RenderedHtmlLinks } from './ren
 
 @Component({
   imports: [RenderedHtmlLinks],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<div appRenderedHtmlLinks [innerHTML]="html"></div>`,
 })
 class Host {

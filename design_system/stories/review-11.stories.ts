@@ -8,6 +8,7 @@ import {
   inject,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   applicationConfig,
@@ -156,6 +157,7 @@ function flags() {
 @Component({
   selector: "ds-post-adoption-review",
   imports: [LinkedText, StatusCard, ReaderToolbar, MbToolbar, MbToolbarButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>Real post tools, compact counts.</h1>
     @if (longLinks()) {

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MbCheckbox } from './checkbox';
 
 @Component({
   imports: [MbCheckbox, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<mb-checkbox label="Approve followers" [formControl]="control" />',
 })
 class FormsHost {

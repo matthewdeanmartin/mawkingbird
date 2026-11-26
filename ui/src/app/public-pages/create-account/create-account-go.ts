@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth } from '../../platform/session/auth';
 
@@ -10,7 +10,11 @@ const DOMAIN = /^([a-z0-9-]+\.)+[a-z]{2,}$/i;
  * checks the server and starts the sign-up (`go=1`). Someone already signed in
  * adds an account instead of being sent Home.
  */
-@Component({ selector: 'app-create-account-go', template: '' })
+@Component({
+  selector: 'app-create-account-go',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 export class CreateAccountGo {
   constructor() {
     const server = inject(ActivatedRoute).snapshot.paramMap.get('server') ?? '';

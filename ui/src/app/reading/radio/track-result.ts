@@ -1,6 +1,6 @@
 import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -77,6 +77,7 @@ import { postTitle } from './track-title';
       </div>
     </article>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

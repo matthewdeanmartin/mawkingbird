@@ -1,4 +1,12 @@
-import { Component, computed, inject, Injectable, input, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Injectable,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbNotice } from '../../design-system/notice/notice';
 import { ServerAbout } from '../../discovery/server-about';
@@ -235,6 +243,7 @@ export class ReportGateModel {
       <p class="muted small">{{ 'report.gate.ignore' | transloco }}</p>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

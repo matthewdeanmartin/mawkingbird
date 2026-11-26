@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MbProgress } from '../progress/progress';
 import { MbBarList, MbStatGrid } from './stats';
 
 @Component({
   imports: [MbStatGrid],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<dl mbStatGrid>
     <div>
       <dt>Posts</dt>

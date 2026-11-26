@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { Router, TitleStrategy, provideRouter } from '@angular/router';
@@ -7,7 +7,7 @@ import { PageTitleStrategy } from './page-title-strategy';
 import { environment } from '../../../environments/environment';
 import { PREVIEW_KEY } from '../../accounts/first-run/preview-state';
 
-@Component({ template: 'page' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: 'page' })
 class Page {}
 
 /**

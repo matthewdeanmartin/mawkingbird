@@ -1,5 +1,5 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, computed, input, output, inject } from '@angular/core';
+import { Component, computed, input, output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Account, Relationship, Status } from '../../platform/api/models';
@@ -100,6 +100,7 @@ const INTERACTIVE_SELECTOR = [
     TranslocoPipe,
   ],
   templateUrl: './account-result-card.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './account-result-card.css',
 })
 export class AccountResultCard {

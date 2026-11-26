@@ -1,6 +1,14 @@
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -99,6 +107,7 @@ const DOMAIN_PAGE_SIZE = 100;
   selector: 'app-settings-account-list',
   imports: [AccountName, RouterLink, FormsModule, BulkActionsDialog, BulkProgress, TranslocoPipe],
   templateUrl: './settings-account-list.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-account-list.css',
 })
 export class SettingsAccountList implements OnInit {

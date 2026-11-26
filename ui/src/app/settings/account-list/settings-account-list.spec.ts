@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
@@ -71,7 +71,7 @@ describe('SettingsAccountList', () => {
   function configure(kind: 'mutes' | 'blocks' | 'domains'): void {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { data: of({ kind }) } },
@@ -396,7 +396,7 @@ describe('SettingsAccountList domains tab', () => {
   function configure(): void {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { data: of({ kind: 'domains' }) } },

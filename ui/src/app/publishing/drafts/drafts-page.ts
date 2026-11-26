@@ -1,6 +1,14 @@
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { OutboxSummary } from '../../platform/offline/outbox-summary';
-import { Component, Injector, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  Injector,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -247,6 +255,7 @@ function kindNoun(kind: DraftKind): string {
     TranslocoPipe,
   ],
   templateUrl: './drafts-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './drafts-page.css',
 })
 export class DraftsPage implements OnInit {

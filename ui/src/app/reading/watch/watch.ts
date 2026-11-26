@@ -11,6 +11,7 @@ import {
   signal,
   untracked,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ReadingBack } from '../../shell/reading-back';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
@@ -85,6 +86,7 @@ import {
   ],
   providers: [ThreadLoader],
   templateUrl: './watch.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './watch.css',
 })
 export class Watch {

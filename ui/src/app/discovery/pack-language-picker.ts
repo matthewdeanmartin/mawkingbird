@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 export interface PackLanguageOption {
   value: string;
@@ -20,6 +20,7 @@ export interface PackLanguageOption {
       </select>
     </label>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pack-language-picker.css',
 })
 export class PackLanguagePicker {

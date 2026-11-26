@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -17,13 +17,21 @@ import { StatusVisibility } from '../../moderation/status-visibility';
 import { YoutubeFeeds } from '../videos/youtube-feeds';
 import { YoutubeComments } from './youtube-comments';
 
-@Component({ selector: 'app-youtube-comments', template: '' })
+@Component({
+  selector: 'app-youtube-comments',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class YoutubeCommentsStub {
   readonly videoId = input('');
   readonly quoted = output<unknown>();
 }
 
-@Component({ selector: 'app-status-card', template: '{{status()?.id}}' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '{{status()?.id}}',
+})
 class Card {
   readonly status = input<Status>();
   readonly filterContext = input('thread');

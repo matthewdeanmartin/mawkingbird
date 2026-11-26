@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { describe, expect, it, vi } from 'vitest';
 import { peertubeVideo, PeerTubeVideos, pickStream } from './peertube';
@@ -104,7 +104,7 @@ describe('PeerTube streams', () => {
   it('reads the instance’s public API anonymously', async () => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: PLATFORM_FEED_READ, useValue: vi.fn() },
       ],

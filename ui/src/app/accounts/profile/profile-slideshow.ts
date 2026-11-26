@@ -11,6 +11,7 @@ import {
   output,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -92,6 +93,7 @@ export function slideshowQuery(options: SlideshowOptions): string {
   imports: [TranslocoPipe, MbButton, MbIcon, MbToolbar, MbToolbarButton, CustomEmojiPipe],
   templateUrl: './profile-slideshow.html',
   styleUrl: './profile-slideshow.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '[class.fullscreen]': 'fullscreen()',
     '(document:fullscreenchange)': 'syncFullscreen()',

@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, input } from '@angular/core';
+import { booleanAttribute, Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'mb-page-header',
@@ -16,6 +16,7 @@ import { booleanAttribute, Component, input } from '@angular/core';
     <div class="actions"><ng-content /></div>
   `,
   styleUrl: './page-header.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[attr.data-embedded]': 'embedded() || null' },
 })
 export class MbPageHeader {
@@ -31,6 +32,7 @@ let nextId = 0;
   selector: 'mb-section',
   template:
     '<section [attr.aria-labelledby]="headingId"><h2 [id]="headingId">{{ title() }}</h2><ng-content /></section>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './section.css',
 })
 export class MbSection {

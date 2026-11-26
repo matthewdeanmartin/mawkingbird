@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { IN_PROGRESS_LOCALES, PRODUCTION_LOCALES, UiLocale } from '../../i18n/locale';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -52,6 +60,7 @@ const GROUP_KEYS = {
       <app-language-finder-dialog (picked)="choose($event)" (closed)="finderOpen.set(false)" />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: contents;

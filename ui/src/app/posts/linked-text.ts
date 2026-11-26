@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { splitLinkedText } from './content-links';
 
 /** Untrusted chat/translation text: Angular escapes every part; only HTTP(S) becomes a link. */
@@ -12,6 +12,7 @@ import { splitLinkedText } from './content-links';
       <span>{{ part.text }}</span>
     }
   }`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       /* Chat previews stay single-line; message/translation parents preserve newlines. */

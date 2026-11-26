@@ -136,7 +136,7 @@
 
       @if (failed()) {
         <p class="audience-error">
-          {{ 'effectiveAudience.scanError' | transloco: { error: state()?.error } }}
+          {{ 'effectiveAudience.scanError' | transloco: { error: $safeNavigationMigration(state()?.error) } }}
         </p>
         <p class="muted small">{{ 'effectiveAudience.nothingChanged' | transloco }}</p>
       }

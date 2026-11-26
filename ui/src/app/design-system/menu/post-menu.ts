@@ -1,4 +1,4 @@
-import { Component, input, output, viewChild } from '@angular/core';
+import { Component, input, output, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MbPopover } from '../popover/popover';
 import { MbMenuItem } from './menu-item';
 import { MbMenuSeparator } from './menu-separator';
@@ -27,6 +27,7 @@ import { MB_MENU_SURFACE, MbMenuSurface } from './menu-surface';
     <mb-menu-separator />
     <button type="button" mbMenuItem class="close">{{ closeLabel() }}</button>
   </mb-popover>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '(click)': '$event.stopPropagation()',
     '(keydown)': 'keys($event)',

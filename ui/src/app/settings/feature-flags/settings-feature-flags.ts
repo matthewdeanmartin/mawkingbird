@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -42,6 +42,7 @@ const STATE_KEYS: Record<FeatureFlagState, string> = {
 @Component({
   selector: 'app-settings-feature-flags',
   imports: [FormsModule, RouterLink, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-feature-flags.html',
 })
 export class SettingsFeatureFlags {

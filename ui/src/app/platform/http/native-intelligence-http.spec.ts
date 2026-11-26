@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
@@ -35,7 +35,7 @@ beforeEach(() => {
   native.login.mockResolvedValue(handle);
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(withInterceptors([nativeIntelligenceInterceptor])),
+      provideHttpClient(withXhr(), withInterceptors([nativeIntelligenceInterceptor])),
       provideHttpClientTesting(),
       { provide: PLATFORM_CONNECTORS, useValue: connectors },
       { provide: PLATFORM_INTELLIGENCE, useValue: native },

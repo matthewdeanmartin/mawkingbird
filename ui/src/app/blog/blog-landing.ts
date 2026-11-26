@@ -1,5 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Status } from '../platform/api/models';
@@ -55,6 +62,7 @@ const LIST = 5;
   selector: 'app-blog-landing',
   imports: [DatePipe, RouterLink, TranslocoPipe, MbButton, MbRadioGroup, BlogHeader],
   templateUrl: './blog-landing.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blog-landing.css',
 })
 export class BlogLanding implements OnInit {

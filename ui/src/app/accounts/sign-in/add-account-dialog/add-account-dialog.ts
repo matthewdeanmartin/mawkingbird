@@ -1,4 +1,4 @@
-import { Component, output } from '@angular/core';
+import { Component, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../../design-system/dialog/dialog';
 import { LoginDoors } from '../login-doors/login-doors';
@@ -14,6 +14,7 @@ import { LoginDoors } from '../login-doors/login-doors';
 @Component({
   selector: 'app-add-account-dialog',
   imports: [MbDialog, LoginDoors, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-dialog
       [title]="'addAccount.title' | transloco"

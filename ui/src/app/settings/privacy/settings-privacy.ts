@@ -4,7 +4,7 @@ import { MbSettingsRow } from '../../design-system/settings-row/settings-row';
 import { MbField, MbControl } from '../../design-system/field/field';
 import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -106,6 +106,7 @@ type PrivacyField =
     TranslocoPipe,
   ],
   templateUrl: './settings-privacy.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     mb-field {
       max-inline-size: 24rem;

@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import {
@@ -60,6 +67,7 @@ import { AddAccountDialog } from '../add-account-dialog/add-account-dialog';
   ],
   templateUrl: './account-picker.html',
   styleUrl: './account-picker.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[class.standalone]': 'standalone' },
 })
 export class AccountPicker implements OnInit {

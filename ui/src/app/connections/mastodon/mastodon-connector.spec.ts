@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from '../../platform/session/auth';
@@ -36,7 +36,7 @@ describe('MastodonConnector', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
   });
 
@@ -135,7 +135,7 @@ describe('MastodonConnector', () => {
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
 
       expect(connector().current()).toEqual({
@@ -160,7 +160,7 @@ describe('MastodonConnector', () => {
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
 
       expect(connector().current()).toEqual({
@@ -187,7 +187,7 @@ describe('MastodonConnector', () => {
       seedBlueskyPrimary('did:plc:bob');
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
 
       expect(connector().current()).toEqual({ state: 'absent' });
@@ -237,7 +237,7 @@ describe('MastodonConnector', () => {
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
 
       const auth = TestBed.inject(Auth);
@@ -251,7 +251,7 @@ describe('MastodonConnector', () => {
 
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
 
       // Anonymous means anonymous: a leftover token behind an anonymous record

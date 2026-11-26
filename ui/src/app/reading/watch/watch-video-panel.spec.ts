@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -17,7 +17,11 @@ import { YoutubeVideoDetails } from '../videos/youtube-details';
 import { CreatorLink, CreatorLinks } from '../videos/creator-links';
 import { SponsorBlock, SponsorSegments } from '../videos/sponsor-block';
 
-@Component({ selector: 'app-compose', template: '' })
+@Component({
+  selector: 'app-compose',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class ComposeStub {
   readonly compact = input(false);
   readonly draftContext = input('');

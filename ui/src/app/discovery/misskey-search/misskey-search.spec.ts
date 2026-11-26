@@ -1,5 +1,5 @@
-import { provideHttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { provideHttpClient, withXhr } from '@angular/common/http';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
@@ -24,7 +24,11 @@ const note = (id: string, text = `note ${id}`): MkNote => ({
   visibility: 'public',
 });
 
-@Component({ selector: 'app-other-search', template: '' })
+@Component({
+  selector: 'app-other-search',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class OtherSearch {}
 
 describe('Misskey search (M3)', () => {
@@ -35,7 +39,7 @@ describe('Misskey search (M3)', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([
           { path: 'search', canMatch: [misskeyPrimaryMatch], component: MisskeySearch },

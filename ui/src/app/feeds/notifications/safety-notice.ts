@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MastodonNotification } from '../../platform/api/models';
@@ -116,6 +116,7 @@ const KNOWN_SEVERANCE = new Set(['domain_block', 'user_domain_block', 'account_s
       </div>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .safety-notice {
       border-left: 3px solid var(--warning, #d29922);

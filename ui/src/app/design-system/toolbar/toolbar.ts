@@ -8,12 +8,14 @@ import {
   inject,
   input,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Component({
   selector: 'button[mbToolbarButton]',
   template: '<ng-content />',
   styleUrl: './toolbar-button.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     type: 'button',
     '[disabled]': 'disabled()',
@@ -35,6 +37,7 @@ export class MbToolbarButton {
   selector: 'mb-toolbar',
   template: '<ng-content />',
   styleUrl: './toolbar.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     role: 'toolbar',
     'aria-orientation': 'horizontal',

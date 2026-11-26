@@ -9,6 +9,7 @@ import {
   input,
   output,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -126,6 +127,7 @@ type Phase = 'loading' | 'confirm' | 'following' | 'done' | 'error' | 'hidden';
   selector: 'app-copy-account-dialog',
   imports: [AccountName, RouterLink, FormsModule, TranslocoPipe],
   templateUrl: './copy-account-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './copy-account-dialog.css',
 })
 export class CopyAccountDialog implements OnInit {

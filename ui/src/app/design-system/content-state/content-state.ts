@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 /** Presentation only. Callers own loading, retries, localization and retained content. */
 @Component({
   selector: 'mb-content-state',
@@ -12,6 +12,7 @@ import { Component, input } from '@angular/core';
     <div class="actions"><ng-content /></div>
   `,
   styleUrl: './content-state.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[attr.data-kind]': 'kind()' },
 })
 export class MbContentState {

@@ -4,6 +4,7 @@ import {
   inject,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   applicationConfig,
@@ -89,6 +90,7 @@ class FeedPreview {
       />
     </section>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     section {
       margin-block: 24px;

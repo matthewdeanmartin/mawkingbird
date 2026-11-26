@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { proxyLimitInterceptor } from './proxy-limit.interceptor';
@@ -46,7 +46,7 @@ describe('proxyLimitInterceptor', () => {
     sessionStorage.removeItem(PROXY_PROMPT_KEY);
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([proxyLimitInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([proxyLimitInterceptor])),
         provideHttpClientTesting(),
         {
           provide: CorsProxySettings,

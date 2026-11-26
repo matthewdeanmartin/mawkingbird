@@ -1,5 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -135,6 +142,7 @@ function newRow(): Row {
     MbNotice,
   ],
   templateUrl: './schedule-workbench.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './schedule-workbench.css',
 })
 export class ScheduleWorkbench {

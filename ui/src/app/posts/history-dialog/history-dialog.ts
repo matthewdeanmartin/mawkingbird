@@ -1,5 +1,14 @@
 import { MbMetadata } from '../../design-system/metadata/metadata';
-import { Component, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
 import { StatusEdit } from '../../platform/api/models';
@@ -23,6 +32,7 @@ import { MbContentState } from '../../design-system/content-state/content-state'
   selector: 'app-history-dialog',
   imports: [MbMetadata, MbDialog, MbButton, MbContentState, TranslocoPipe],
   templateUrl: './history-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './history-dialog.css',
 })
 export class HistoryDialog implements OnInit {

@@ -5,7 +5,14 @@ import { MbButton } from '../../../design-system/button/button';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -68,6 +75,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
     TranslocoPipe,
   ],
   templateUrl: './connection-mataroa.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-mataroa.css'],
 })
 export class ConnectionMataroa implements OnInit {

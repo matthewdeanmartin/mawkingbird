@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../../../platform/session/auth';
 import { Server } from '../../../platform/http/server';
@@ -47,6 +47,7 @@ const PREVIEW_SERVERS: readonly string[] = [
 @Component({
   selector: 'app-entry',
   imports: [UnreachableServerDialog],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (unreachableServer(); as server) {
       <app-unreachable-server-dialog

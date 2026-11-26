@@ -1,5 +1,12 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -84,6 +91,7 @@ export function hasSinglePage(track: RadioTrack): boolean {
     SinglesTabs,
   ],
   templateUrl: './singles-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './radio-lists.css',
 })
 export class SinglesPage {

@@ -17,6 +17,7 @@ import {
   untracked,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -353,6 +354,7 @@ export interface Notice {
   ],
   templateUrl: './write-page.html',
   styleUrls: ['./write-workspace.css', './write-editor.css', './write-overlays.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [VisibilityState, LinkShortening, BlueskyPublication, WritePublication, BlogCrossPost],
 })
 export class WritePage implements OnInit, OnDestroy {

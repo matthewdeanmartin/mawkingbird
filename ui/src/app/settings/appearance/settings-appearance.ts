@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MockApi } from '../../mock-api';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -30,6 +30,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 @Component({
   selector: 'app-settings-appearance',
   imports: [FormsModule, BlueControls, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-appearance.html',
 })
 export class SettingsAppearance implements OnInit {

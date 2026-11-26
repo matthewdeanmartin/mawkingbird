@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit } from '@angular/core';
+import { Component, effect, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Announcement } from '../../platform/api/models';
 import {
@@ -24,6 +24,7 @@ import {
   selector: 'app-announcements',
   imports: [TranslocoPipe],
   templateUrl: './announcements.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './announcements.css',
 })
 export class Announcements implements OnInit {

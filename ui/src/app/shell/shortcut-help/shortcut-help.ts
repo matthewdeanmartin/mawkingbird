@@ -1,4 +1,4 @@
-import { Component, computed, inject, output } from '@angular/core';
+import { Component, computed, inject, output, ChangeDetectionStrategy } from '@angular/core';
 import { AnonymousCapabilities } from '../../accounts/anonymous/anonymous-capabilities';
 import { FocusTrap } from '../a11y/focus-trap';
 
@@ -121,6 +121,7 @@ const GROUPS: ShortcutGroup[] = [
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .overlay {
       position: fixed;

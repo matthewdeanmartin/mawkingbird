@@ -1,7 +1,14 @@
 import { DatePipe } from '@angular/common';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { MbSettingsRow } from '../../design-system/settings-row/settings-row';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, map, of, switchMap } from 'rxjs';
@@ -97,6 +104,7 @@ function realImage(url: string | null | undefined): string {
     RouterLink,
   ],
   templateUrl: './settings-profile.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-profile.css',
 })
 export class SettingsProfile implements OnInit {

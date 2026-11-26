@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbPopover } from '../../design-system/popover/popover';
 import {
@@ -80,6 +80,7 @@ interface Version {
       </ul>
     </mb-popover>
   }`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: contents;

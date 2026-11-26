@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbNavigation, MbNavLink } from '../design-system/navigation/navigation';
@@ -68,6 +68,7 @@ const LINKS: Record<UnbirdMoreItem, { link: string; title: string; body: string 
       </mb-section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

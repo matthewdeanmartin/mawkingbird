@@ -8,6 +8,7 @@ import {
   input,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   applicationConfig,
@@ -71,6 +72,7 @@ class ServerPreviewState {
       {{ selected() ? "Selected: " + selected() : "No selection yet" }}
     </p>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

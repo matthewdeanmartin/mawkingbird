@@ -1,6 +1,6 @@
 import { MbField, MbControl } from '../../design-system/field/field';
 import { MbButton } from '../../design-system/button/button';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
@@ -16,6 +16,7 @@ import { DomainAllow } from '../../platform/api/models';
   selector: 'app-admin-domain-allows',
   imports: [MbField, MbControl, MbButton, FormsModule, TranslocoPipe],
   templateUrl: './admin-domain-allows.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./admin-lists.css', '../admin-form.css'],
 })
 export class AdminDomainAllows implements OnInit {

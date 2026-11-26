@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MbActionCount, MbPostAction } from './post-actions';
 
 @Component({
   imports: [MbActionCount],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<span mbActionCount [count]="count" label="boosts" [locale]="locale()"
     >{{ count }} boosts</span
   >`,
@@ -15,6 +16,7 @@ class CountHost {
 
 @Component({
   imports: [MbActionCount, MbPostAction],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<button mbPostAction type="button">
       <span mbActionCount [count]="3" label="likes">3 likes</span></button
     ><span mbPostAction><span mbActionCount [count]="3" label="likes">3 likes</span></span>`,

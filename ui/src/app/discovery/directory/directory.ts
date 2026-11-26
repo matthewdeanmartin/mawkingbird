@@ -2,7 +2,15 @@ import { translatedComputed } from '../../i18n/translated';
 import { UiLocale } from '../../i18n/locale';
 import { languageName } from '../../language/language-catalog';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -91,6 +99,7 @@ const PAGE_SIZE = 80;
     MbButton,
   ],
   templateUrl: './directory.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './directory.css',
 })
 export class Directory implements OnInit {

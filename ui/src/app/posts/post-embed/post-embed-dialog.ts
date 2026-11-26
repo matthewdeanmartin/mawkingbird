@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -32,6 +40,7 @@ footer{margin-top:8px;font-size:13px;color:#555}
   selector: 'app-post-embed-dialog',
   imports: [MbDialog, MbField, MbControl, MbButton, TranslocoPipe],
   templateUrl: './post-embed-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './post-embed-dialog.css',
 })
 export class PostEmbedDialog {

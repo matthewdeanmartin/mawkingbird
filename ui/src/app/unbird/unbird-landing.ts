@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit } from '@angular/core';
+import { Component, computed, inject, input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDisclosure } from '../design-system/disclosure/disclosure';
 import { Auth } from '../platform/session/auth';
@@ -41,6 +41,7 @@ import { UnbirdServers } from './unbird-servers';
       </mb-disclosure>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

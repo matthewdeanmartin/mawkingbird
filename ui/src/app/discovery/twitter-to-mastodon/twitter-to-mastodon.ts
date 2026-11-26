@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { TwitterArchiveImport } from '../../settings/import-export/twitter-archive-import';
@@ -31,6 +31,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     TwitterImportNextSteps,
   ],
   templateUrl: './twitter-to-mastodon.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class TwitterToMastodon {
@@ -57,6 +58,7 @@ export class TwitterToMastodon {
   ],
   templateUrl: './twitter-to-mastodon.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonDe extends TwitterToMastodon {}
@@ -80,6 +82,7 @@ export class TwitterToMastodonDe extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonJa extends TwitterToMastodon {}
@@ -103,6 +106,7 @@ export class TwitterToMastodonJa extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonFr extends TwitterToMastodon {}
@@ -126,6 +130,7 @@ export class TwitterToMastodonFr extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonEs extends TwitterToMastodon {}
@@ -149,6 +154,7 @@ export class TwitterToMastodonEs extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonZhHant extends TwitterToMastodon {}
@@ -172,6 +178,7 @@ export class TwitterToMastodonZhHant extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonKo extends TwitterToMastodon {}
@@ -195,6 +202,7 @@ export class TwitterToMastodonKo extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonPt extends TwitterToMastodon {}
@@ -218,6 +226,7 @@ export class TwitterToMastodonPt extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonIt extends TwitterToMastodon {}
@@ -241,6 +250,7 @@ export class TwitterToMastodonIt extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonPl extends TwitterToMastodon {}
@@ -260,6 +270,7 @@ export class TwitterToMastodonPl extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonUk extends TwitterToMastodon {}
@@ -279,6 +290,7 @@ export class TwitterToMastodonUk extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonHi extends TwitterToMastodon {}
@@ -298,6 +310,7 @@ export class TwitterToMastodonHi extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonNl extends TwitterToMastodon {}
@@ -317,6 +330,7 @@ export class TwitterToMastodonNl extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonId extends TwitterToMastodon {}
@@ -336,6 +350,7 @@ export class TwitterToMastodonId extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonRu extends TwitterToMastodon {}
@@ -355,6 +370,7 @@ export class TwitterToMastodonRu extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonSv extends TwitterToMastodon {}
@@ -374,6 +390,7 @@ export class TwitterToMastodonSv extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonVi extends TwitterToMastodon {}
@@ -393,6 +410,7 @@ export class TwitterToMastodonVi extends TwitterToMastodon {}
   ],
   templateUrl: './twitter-to-mastodon.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TwitterToMastodonTr extends TwitterToMastodon {}

@@ -1,6 +1,6 @@
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
@@ -41,6 +41,7 @@ type ExploreTab = 'posts' | 'hashtags';
   selector: 'app-explore',
   imports: [AccountName, RouterLink, TranslocoPipe],
   templateUrl: './explore.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './explore.css',
 })
 export class Explore implements OnInit {

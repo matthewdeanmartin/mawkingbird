@@ -3,7 +3,7 @@ import { MbButton } from '../../../design-system/button/button';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { VaultBridge } from '../../../connections/vault/vault-bridge';
 import { credentialLocation, StorageBadge } from '../storage-badge';
@@ -50,6 +50,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
     MbPageHeader,
   ],
   templateUrl: './connection-raindrop.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-raindrop.css'],
 })
 export class ConnectionRaindrop implements OnInit {

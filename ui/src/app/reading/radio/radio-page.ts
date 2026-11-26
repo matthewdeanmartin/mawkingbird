@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -32,6 +32,7 @@ import { RadioSettings } from './radio-settings';
   selector: 'app-radio-page',
   imports: [RouterLink, TranslocoPipe, MbButton, MbContentState, RadioHeader, RadioSettings],
   templateUrl: './radio-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './radio-lists.css',
 })
 export class RadioPage {

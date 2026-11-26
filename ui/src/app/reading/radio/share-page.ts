@@ -7,6 +7,7 @@ import {
   inject,
   linkedSignal,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -95,6 +96,7 @@ import { countKey } from './count-key';
     RadioHeader,
   ],
   templateUrl: './share-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./radio-lists.css', './share-page.css'],
 })
 export class SharePage {

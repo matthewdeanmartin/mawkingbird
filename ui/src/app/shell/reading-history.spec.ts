@@ -1,7 +1,14 @@
 import { By } from '@angular/platform-browser';
 import { Location, PlatformLocation, ViewportScroller } from '@angular/common';
 import { MockPlatformLocation } from '@angular/common/testing';
-import { Component, DestroyRef, inject, Injectable, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  Injectable,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRoute,
@@ -32,6 +39,7 @@ class Pages {
       <p>{{ post }}</p>
     }
   </article>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [Pages],
 })
 class Feed {
@@ -58,6 +66,7 @@ class Feed {
 
 @Component({
   imports: [RouterOutlet, ReadingOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<main id="main"><router-outlet mbReadingOutlet /></main>`,
 })
 class Shell {}

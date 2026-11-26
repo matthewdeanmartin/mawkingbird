@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MockApi } from '../../mock-api';
 import { PostDeletionSettings } from '../../platform/api/models';
@@ -23,6 +23,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 @Component({
   selector: 'app-settings-deletion',
   imports: [FormsModule, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-deletion.html',
 })
 export class SettingsDeletion implements OnInit {

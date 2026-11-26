@@ -1,4 +1,13 @@
-import { Component, HostListener, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FocusTrap } from '../../shell/a11y/focus-trap';
 import { ImageDescriber } from '../../publishing/image-describer/image-describer';
@@ -46,6 +55,7 @@ const SWIPE_MIN_PX = 40;
   selector: 'app-lightbox',
   imports: [FocusTrap, TranslocoPipe, VideoPlayer],
   templateUrl: './lightbox.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './lightbox.css',
 })
 export class Lightbox {

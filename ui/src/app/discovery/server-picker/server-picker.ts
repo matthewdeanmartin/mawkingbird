@@ -2,7 +2,16 @@ import { MbButton } from '../../design-system/button/button';
 import { ServerConnectionHelp } from '../../accounts/sign-in/server-connection-help/server-connection-help';
 import { MbServerPickerSurface } from '../../design-system/identity/server-picker';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
-import { Component, DestroyRef, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { MastodonServers, ServerSuggestion } from '../mastodon-servers';
@@ -58,6 +67,7 @@ export type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachabl
     TranslocoPipe,
   ],
   templateUrl: './server-picker.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './server-picker.css',
 })
 export class ServerPicker implements OnInit, OnDestroy {

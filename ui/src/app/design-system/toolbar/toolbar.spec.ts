@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MbToolbar, MbToolbarButton } from './toolbar';
 
 @Component({
   imports: [MbToolbar, MbToolbarButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<mb-toolbar label="Actions">
       <button mbToolbarButton [disabled]="disabled()">First</button>
       <button mbToolbarButton [pressed]="false">Second</button> </mb-toolbar

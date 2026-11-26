@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, RouterOutlet, TitleStrategy, provideRouter } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -10,13 +10,14 @@ import { TranslocoLocaleSync } from './locale';
 import { translocoTesting } from './i18n.testing';
 import { PageLanguageState, provideRouteLanguage, routeTranslate } from './page-language';
 
-@Component({ template: 'page' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: 'page' })
 class Plain {}
 
 /** A page pinned to its route's language, with pipe-rendered and code-built text. */
 @Component({
   imports: [TranslocoPipe],
   providers: [provideRouteLanguage()],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<p class="pipe">{{ 'mediaDownload.title' | transloco }}</p>
     <p class="code">{{ built() }}</p>`,
 })
@@ -125,6 +126,7 @@ describe('page language', () => {
 
 @Component({
   imports: [RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<router-outlet />',
 })
 class RouterHost {}

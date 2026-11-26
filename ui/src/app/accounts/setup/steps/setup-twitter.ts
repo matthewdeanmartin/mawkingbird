@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { UnbirdDrop } from '../../../unbird/unbird-drop';
 import { UnbirdPeople } from '../../../unbird/unbird-people';
 
@@ -18,6 +18,7 @@ import { UnbirdPeople } from '../../../unbird/unbird-people';
     <app-unbird-drop />
     <app-unbird-people />
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './setup-steps.css',
 })
 export class SetupTwitter {}

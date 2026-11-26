@@ -7,7 +7,7 @@ environment, Cloudflare account and domain. **To run your own copy** (on GitHub
 Pages from a fork, or on any static host) **see [SELF_HOSTING.md](SELF_HOSTING.md)**;
 none of the steps below apply to it.
 
-Use Git Bash and Make on Windows, Node 22 or a supported newer version, and
+Use Git Bash and Make on Windows, Node 26, and
 the committed npm lockfiles. The
 [source and hosting migration record](../spec/history/MIGRATION.md) describes
 the superseded cross-repository publishing plan.

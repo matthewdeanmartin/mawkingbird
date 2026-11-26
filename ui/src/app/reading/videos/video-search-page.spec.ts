@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of, Subject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { Status } from '../../platform/api/models';
 import { SupporterStatus } from '../../accounts/mawkingbird/supporter-status';
 import { VideoSearch } from './video-search';
@@ -11,12 +11,20 @@ import { StatusCard } from '../../posts/status-card/status-card';
 import { VideoPlayer } from '../video-player/video-player';
 import { VideoSearchPage } from './video-search-page';
 
-@Component({ selector: 'app-status-card', template: '<p class="card">{{ status().id }}</p>' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<p class="card">{{ status().id }}</p>',
+})
 class CardStub {
   readonly status = input.required<Status>();
 }
 
-@Component({ selector: 'app-video-player-controls', template: '' })
+@Component({
+  selector: 'app-video-player-controls',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class PlayerStub {
   readonly source = input<unknown>();
   readonly inline = input(false);

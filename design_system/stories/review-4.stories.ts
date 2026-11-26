@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, input, signal } from "@angular/core";
+import { Component, DestroyRef, inject, input, signal, ChangeDetectionStrategy } from "@angular/core";
 import { type Meta, type StoryObj } from "@storybook/angular";
 import { MbDialog } from "../../ui/src/app/design-system/dialog/dialog";
 import { MbPopover } from "../../ui/src/app/design-system/popover/popover";
@@ -20,6 +20,7 @@ import { MbField, MbControl } from "../../ui/src/app/design-system/field/field";
     MbField,
     MbControl,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <article class="ds-sheet">
       <h1>Overlays with a clear way back.</h1>

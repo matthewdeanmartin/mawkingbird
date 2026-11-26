@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -76,6 +76,7 @@ export function parseWordList(
       </button>
     </ng-container>
   </mb-dialog>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     textarea {
       min-height: 160px;

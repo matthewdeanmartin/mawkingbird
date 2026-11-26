@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -28,6 +28,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     PseudonymityWorkbench,
   ],
   templateUrl: './anonymous-on-mastodon.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class AnonymousOnMastodon {
@@ -54,6 +55,7 @@ export class AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonDe extends AnonymousOnMastodon {
@@ -78,6 +80,7 @@ export class AnonymousOnMastodonDe extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonJa extends AnonymousOnMastodon {
@@ -102,6 +105,7 @@ export class AnonymousOnMastodonJa extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonFr extends AnonymousOnMastodon {
@@ -126,6 +130,7 @@ export class AnonymousOnMastodonFr extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonEs extends AnonymousOnMastodon {
@@ -150,6 +155,7 @@ export class AnonymousOnMastodonEs extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonZhHant extends AnonymousOnMastodon {
@@ -174,6 +180,7 @@ export class AnonymousOnMastodonZhHant extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonKo extends AnonymousOnMastodon {
@@ -198,6 +205,7 @@ export class AnonymousOnMastodonKo extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonPt extends AnonymousOnMastodon {
@@ -222,6 +230,7 @@ export class AnonymousOnMastodonPt extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonIt extends AnonymousOnMastodon {
@@ -246,6 +255,7 @@ export class AnonymousOnMastodonIt extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonPl extends AnonymousOnMastodon {
@@ -266,6 +276,7 @@ export class AnonymousOnMastodonPl extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonUk extends AnonymousOnMastodon {
@@ -286,6 +297,7 @@ export class AnonymousOnMastodonUk extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonHi extends AnonymousOnMastodon {
@@ -306,6 +318,7 @@ export class AnonymousOnMastodonHi extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonNl extends AnonymousOnMastodon {
@@ -326,6 +339,7 @@ export class AnonymousOnMastodonNl extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonId extends AnonymousOnMastodon {
@@ -346,6 +360,7 @@ export class AnonymousOnMastodonId extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonRu extends AnonymousOnMastodon {
@@ -366,6 +381,7 @@ export class AnonymousOnMastodonRu extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonSv extends AnonymousOnMastodon {
@@ -386,6 +402,7 @@ export class AnonymousOnMastodonSv extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonVi extends AnonymousOnMastodon {
@@ -406,6 +423,7 @@ export class AnonymousOnMastodonVi extends AnonymousOnMastodon {
   ],
   templateUrl: './anonymous-on-mastodon.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class AnonymousOnMastodonTr extends AnonymousOnMastodon {

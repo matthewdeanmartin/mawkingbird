@@ -1,4 +1,4 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { Component, inject, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { joinCodeFrom } from '../../../connections/bluesky/bluesky-group-chat';
 import { FormsModule } from '@angular/forms';
@@ -106,6 +106,7 @@ export function parseHandles(value: string): string[] {
       </form>
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bluesky-group.css',
 })
 export class BlueskyNewGroup {

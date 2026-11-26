@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -17,7 +17,11 @@ import { RadioPlaylists } from './radio-playlists';
 import { SharePage } from './share-page';
 import { ShareRequest } from './share-request';
 
-@Component({ selector: 'app-compose', template: 'composer' })
+@Component({
+  selector: 'app-compose',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: 'composer',
+})
 class ComposeStub {
   readonly draftContext = input('');
   readonly acceptHandoff = input(false);

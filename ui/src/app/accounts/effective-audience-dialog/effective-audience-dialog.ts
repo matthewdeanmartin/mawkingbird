@@ -1,5 +1,13 @@
 import { translatedComputed } from '../../i18n/translated';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FocusTrap } from '../../shell/a11y/focus-trap';
 import { AudienceScan, AudienceSide } from '../audience-scan';
 import {
@@ -79,6 +87,7 @@ const PAGE_SIZE = 80;
   selector: 'app-effective-audience-dialog',
   imports: [FocusTrap, TranslocoPipe],
   templateUrl: './effective-audience-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './effective-audience-dialog.css',
 })
 export class EffectiveAudienceDialog {

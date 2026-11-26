@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { SearchExcerpt } from './search-excerpt';
@@ -13,6 +13,7 @@ import { SearchExcerpt } from './search-excerpt';
   selector: 'app-search-excerpt',
   imports: [MbButton, TranslocoPipe],
   templateUrl: './search-excerpt-view.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './search-excerpt-view.css',
 })
 export class SearchExcerptView {

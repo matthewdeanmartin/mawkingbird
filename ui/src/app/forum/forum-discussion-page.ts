@@ -1,5 +1,13 @@
 import { ReadingBack } from '../shell/reading-back';
-import { Component, computed, DestroyRef, effect, inject, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -41,6 +49,7 @@ import { useForumRails } from './forum-rails';
     }
     <app-thread [showBack]="false" />
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

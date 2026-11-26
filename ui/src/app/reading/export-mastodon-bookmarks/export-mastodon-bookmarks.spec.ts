@@ -1,4 +1,4 @@
-import { HttpHeaders, provideHttpClient } from '@angular/common/http';
+import { HttpHeaders, provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -17,7 +17,7 @@ describe('ExportMastodonBookmarks', () => {
     TestBed.configureTestingModule({
       imports: [ExportMastodonBookmarks],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { snapshot: { data } } },
@@ -73,7 +73,7 @@ describe('BookmarksExportWorkbench', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [BookmarksExportWorkbench],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     TestBed.inject(Server).setBaseUrl(INSTANCE);
     http = TestBed.inject(HttpTestingController);

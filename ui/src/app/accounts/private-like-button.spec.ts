@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { PrivateLikeButton } from './private-like-button';
@@ -11,7 +11,7 @@ describe('PrivateLikeButton', () => {
     localStorage.clear();
     localStorage.setItem('mastodon_mock_token', 'alice');
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
   });
   afterEach(() => {

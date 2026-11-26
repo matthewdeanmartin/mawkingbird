@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -14,7 +14,7 @@ describe('TurnOffBoostsMastodon', () => {
     TestBed.configureTestingModule({
       imports: [TurnOffBoostsMastodon],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { snapshot: { data } } },
@@ -63,7 +63,7 @@ describe('BoostsWorkbench', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [BoostsWorkbench],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
   });
 

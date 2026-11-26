@@ -1,5 +1,5 @@
 import { MbNotice } from '../../design-system/notice/notice';
-import { Component, input, output, signal, OnInit } from '@angular/core';
+import { Component, input, output, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -37,6 +37,7 @@ export interface PostPermissionsValue {
 @Component({
   selector: 'app-post-permissions',
   imports: [FormsModule, TranslocoPipe, MbDialog, MbField, MbControl, MbButton, MbHelp, MbNotice],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-dialog
       [title]="(defaults() ? 'permissions.defaultsTitle' : 'permissions.title') | transloco"

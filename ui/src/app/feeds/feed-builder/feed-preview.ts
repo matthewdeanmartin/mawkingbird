@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -42,6 +42,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     FeedProgress,
   ],
   templateUrl: './feed-preview.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../../public-pages/features/features.css', './feed-builder.css'],
 })
 export class FeedPreview implements OnInit {

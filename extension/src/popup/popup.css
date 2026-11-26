@@ -1,0 +1,86 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #1f2328;
+  --muted: #59636e;
+  --line: #d1d9e0;
+  --hover: #eef0f6;
+  --accent: #4f46e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #2b2a33;
+    --fg: #fbfbfe;
+    --muted: #b0b0bb;
+    --line: #45444f;
+    --hover: #3a3944;
+    --accent: #8b87f7;
+  }
+}
+
+body {
+  width: 300px;
+  margin: 0;
+  padding: 6px 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.35 system-ui, sans-serif;
+}
+
+h1,
+h2 {
+  margin: 6px 12px 2px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+section + section,
+.footer {
+  border-top: 1px solid var(--line);
+  margin-top: 6px;
+  padding-top: 4px;
+}
+
+.actions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.actions button {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actions button:hover,
+.actions button:focus-visible {
+  background: var(--hover);
+  outline: none;
+}
+
+.actions button:focus-visible {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.detail {
+  color: var(--muted);
+}
+
+.note {
+  margin: 6px 12px;
+  color: var(--muted);
+}

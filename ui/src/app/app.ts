@@ -1,5 +1,5 @@
 import { ReadingOutlet } from './shell/reading-outlet';
-import { Component, Injector, inject } from '@angular/core';
+import { Component, Injector, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AnalyticsTracker } from './platform/diagnostics/analytics-tracker';
 import { ClientPrefs } from './platform/storage/client-prefs';
@@ -20,10 +20,13 @@ import { ActionTracker } from './platform/diagnostics/action-tracker';
 @Component({
   selector: 'app-root',
   imports: [ReadingOutlet, RouterOutlet, FailWhale, OfflineBanner, UpdateOverlay],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <router-outlet mbReadingOutlet />
     @if (connection.surface() === 'whale') {
-      <app-fail-whale />
+      @defer (on immediate) {
+        <app-fail-whale />
+      }
     }
     <app-offline-banner />
     <app-update-overlay />

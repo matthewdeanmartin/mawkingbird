@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -9,6 +9,7 @@ import { AppOnlyLinkRel } from '../public-page-urls';
   selector: 'app-audience-page',
   imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink],
   templateUrl: './audience-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './features.css',
 })
 export class AudiencePage {

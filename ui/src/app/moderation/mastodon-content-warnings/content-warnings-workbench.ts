@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
@@ -61,6 +61,7 @@ const MEDIA_DISPLAY: Record<string, string> = {
   imports: [TranslocoPipe, FocusedNextSteps, FormsModule, MbCheckbox, RouterLink, AppOnlyLinkRel],
   templateUrl: './content-warnings-workbench.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .switches {
       display: grid;

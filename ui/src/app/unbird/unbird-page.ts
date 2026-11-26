@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbNavigation, MbNavLink } from '../design-system/navigation/navigation';
@@ -49,6 +49,7 @@ export type UnbirdTab = 'start' | 'people' | 'posts' | 'archive' | 'profile';
     UnbirdServers,
   ],
   templateUrl: './unbird-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unbird-page.css',
 })
 export class UnbirdPage implements OnInit {

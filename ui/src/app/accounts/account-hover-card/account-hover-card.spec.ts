@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Account } from '../../platform/api/models';
@@ -20,6 +20,7 @@ const ACCOUNT = {
 
 @Component({
   imports: [AccountHoverCard],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<span class="hover-anchor"
     ><a href="#profile">Kay</a><app-account-hover-card [account]="account"
   /></span>`,
@@ -32,7 +33,7 @@ describe('AccountHoverCard', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
   });
 

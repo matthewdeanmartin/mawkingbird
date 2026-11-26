@@ -74,7 +74,8 @@
           <p role="alert">{{ 'watch.peertube.failed' | transloco }}</p>
           <p>
             <a [href]="video.url" target="_blank" rel="noopener noreferrer">{{
-              'watch.peertube.open' | transloco: { host: video.peertube?.host }
+              'watch.peertube.open'
+                | transloco: { host: $safeNavigationMigration(video.peertube?.host) }
             }}</a>
           </p>
         } @else {

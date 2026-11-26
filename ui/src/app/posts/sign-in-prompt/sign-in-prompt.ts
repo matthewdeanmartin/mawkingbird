@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -44,6 +44,7 @@ import { Auth } from '../../platform/session/auth';
 @Component({
   selector: 'app-sign-in-prompt',
   imports: [MbDialog, MbButton, RouterLink, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './sign-in-prompt.html',
 })
 export class SignInPrompt {

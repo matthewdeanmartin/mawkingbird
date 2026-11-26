@@ -1,4 +1,12 @@
-import { Component, computed, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -70,6 +78,7 @@ import { CENTRE, FocalPoint, nudge, objectPosition, pointFromClick } from './foc
       </ng-container>
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .focal-layout {
       display: grid;

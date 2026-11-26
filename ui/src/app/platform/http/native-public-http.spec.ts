@@ -4,6 +4,7 @@ import {
   HttpParams,
   provideHttpClient,
   withInterceptors,
+  withXhr,
 } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -18,7 +19,7 @@ beforeEach(() => {
   vi.stubGlobal('__TAURI__', { core: { invoke } });
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(withInterceptors([nativePublicInterceptor])),
+      provideHttpClient(withXhr(), withInterceptors([nativePublicInterceptor])),
       provideHttpClientTesting(),
     ],
   });

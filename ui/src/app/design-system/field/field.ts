@@ -7,6 +7,7 @@ import {
   inject,
   input,
   ViewEncapsulation,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { MbSaveFeedback } from '../save-feedback/save-feedback';
 
@@ -49,6 +50,7 @@ export class MbControl {
   // Every CSS selector is explicitly namespaced to mb-field.
   encapsulation: ViewEncapsulation.None,
   styleUrl: './field.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[attr.data-density]': 'density()' },
 })
 export class MbField {

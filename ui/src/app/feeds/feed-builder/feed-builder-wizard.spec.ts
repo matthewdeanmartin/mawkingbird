@@ -1,6 +1,6 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed, DeferBlockBehavior } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -39,14 +39,22 @@ function route(data: object, path: string) {
   };
 }
 
-@Component({ selector: 'app-follow-button', template: '<button>stub</button>' })
+@Component({
+  selector: 'app-follow-button',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<button>stub</button>',
+})
 class FollowButtonStub {
   readonly accountId = input('');
   readonly handle = input('');
   readonly foreign = input<unknown>(null);
 }
 
-@Component({ selector: 'app-status-card', template: '<article>{{ status().id }}</article>' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<article>{{ status().id }}</article>',
+})
 class StatusCardStub {
   readonly status = input.required<Status>();
 }
@@ -371,7 +379,7 @@ describe('Feed Builder preview', () => {
       imports: [FeedPreview],
       providers: [
         provideRouter([]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         route({ page, lang: ENTRY.lang, inShell }, `${ENTRY.path}/preview`),
       ],

@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, inject, OnDestroy, signal, ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { MbControl, MbField } from '../../../design-system/field/field';
 import { MbFileDrop, type MbPickedFile } from '../../../design-system/file-drop/file-drop';
@@ -23,6 +23,7 @@ const BIO_MAX = 256;
   selector: 'app-setup-bluesky-profile',
   imports: [MbField, MbControl, MbFileDrop],
   templateUrl: './setup-bluesky-profile.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './setup-steps.css',
 })
 export class SetupBlueskyProfile implements OnDestroy {

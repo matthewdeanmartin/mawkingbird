@@ -34,7 +34,10 @@
               {{
                 'pages.rss.kits.addingProgress'
                   | transloco
-                    : { done: installer.progress()?.done, total: installer.progress()?.total }
+                    : {
+                        done: $safeNavigationMigration(installer.progress()?.done),
+                        total: $safeNavigationMigration(installer.progress()?.total),
+                      }
               }}
             } @else {
               {{ 'pages.rss.kits.add' | transloco }}

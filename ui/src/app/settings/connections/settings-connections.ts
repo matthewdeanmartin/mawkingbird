@@ -4,7 +4,7 @@ import { PLATFORM_CONNECTORS } from '../../platform/http/platform-http';
 import { NgTemplateOutlet } from '@angular/common';
 import { MbTab, MbTabs } from '../../design-system/tabs/tabs';
 import { ConnectionSyncButton } from '../../accounts/mawkingbird/connection-sync-button';
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../platform/session/auth';
@@ -110,6 +110,7 @@ export interface ConnectionCatalogRow {
     TranslocoPipe,
   ],
   templateUrl: './settings-connections.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-connections.css',
 })
 export class SettingsConnections implements OnInit {

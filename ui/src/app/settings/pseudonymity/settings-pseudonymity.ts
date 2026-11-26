@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -41,6 +41,7 @@ import {
 @Component({
   selector: 'app-settings-pseudonymity',
   imports: [FormsModule, RouterLink, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-pseudonymity.html',
 })
 export class SettingsPseudonymity {

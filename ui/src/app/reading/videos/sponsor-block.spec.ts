@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { describe, expect, it, vi } from 'vitest';
 import {
@@ -56,7 +56,7 @@ describe('SponsorBlock', () => {
   function setUp(options: { native?: (prefix: string) => Promise<string>; on?: boolean }) {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: FeatureFlags, useValue: { enabled: () => options.on !== false } },
         { provide: PLATFORM_SPONSORBLOCK, useValue: options.native ?? null },

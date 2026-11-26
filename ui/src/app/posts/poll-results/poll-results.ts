@@ -1,5 +1,5 @@
 import { MbDisclosure } from '../../design-system/disclosure/disclosure';
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Poll } from '../../platform/api/models';
@@ -25,6 +25,7 @@ import { pollStatistics } from './poll-statistics';
   selector: 'app-poll-results',
   imports: [MbDisclosure, DecimalPipe, TranslocoPipe],
   templateUrl: './poll-results.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './poll-results.css',
 })
 export class PollResults {

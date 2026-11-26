@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MockApi } from '../../mock-api';
 import { BugReportDialog } from '../../shell/bug-report-dialog/bug-report-dialog';
@@ -17,6 +17,7 @@ import { AuthorizedApp } from '../../platform/api/models';
   selector: 'app-settings-development',
   imports: [BugReportDialog, TranslocoPipe],
   templateUrl: './settings-development.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-development.css',
 })
 export class SettingsDevelopment implements OnInit {

@@ -1,4 +1,10 @@
-import { HttpClient, HttpParams, provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpParams,
+  provideHttpClient,
+  withInterceptors,
+  withXhr,
+} from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
@@ -13,7 +19,10 @@ beforeEach(() => {
   vi.stubGlobal('__TAURI__', { core: { invoke } });
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(withInterceptors([nativePublishingInterceptor, nativeSocialInterceptor])),
+      provideHttpClient(
+        withXhr(),
+        withInterceptors([nativePublishingInterceptor, nativeSocialInterceptor]),
+      ),
       provideHttpClientTesting(),
     ],
   });

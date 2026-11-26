@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-og-preview',
   templateUrl: './og-preview.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './og-preview.css',
 })
 export class OgPreview {

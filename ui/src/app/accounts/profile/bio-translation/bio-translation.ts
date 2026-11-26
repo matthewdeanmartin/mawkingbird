@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AiAvailability } from '../../../platform/build/ai-availability';
 import { MbButton } from '../../../design-system/button/button';
@@ -109,6 +109,7 @@ export function bioAsStatus(account: Account): Status {
     }
   `,
   host: { class: 'bio-translation' },
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

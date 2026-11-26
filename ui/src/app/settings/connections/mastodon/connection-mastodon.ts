@@ -4,7 +4,7 @@ import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { MbField, MbControl } from '../../../design-system/field/field';
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
@@ -88,6 +88,7 @@ import { CONNECTION_SCOPE_COPY } from '../connection-catalog';
     TranslocoPipe,
   ],
   templateUrl: './connection-mastodon.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-mastodon.css'],
 })
 export class ConnectionMastodon {

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -29,7 +29,7 @@ beforeEach(() => {
   TestBed.configureTestingModule({
     providers: [
       provideRouter([]),
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       { provide: PLATFORM_CONNECTORS, useValue: { connect, forget, request } },
     ],

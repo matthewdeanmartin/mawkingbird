@@ -1,5 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { Component, Injectable, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  Injectable,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import {
   NativePeopleCategory,
@@ -107,6 +114,7 @@ export class HomeProfilesRailState {
       }
     </nav>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .profile-list {

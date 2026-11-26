@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReadingBack } from '../../shell/reading-back';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -120,6 +120,7 @@ const COLUMN_WIDTH = 6;
     ReadingBack,
   ],
   templateUrl: './connection-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './connection-page.css',
 })
 export class ConnectionPage {

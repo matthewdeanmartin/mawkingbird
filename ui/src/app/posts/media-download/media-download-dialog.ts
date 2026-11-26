@@ -1,4 +1,13 @@
-import { Component, DestroyRef, computed, effect, inject, input, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { routeTranslate } from '../../i18n/page-language';
@@ -189,6 +198,7 @@ export type MediaPageLoader = (
       }
     </ng-container>
   </mb-dialog>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     fieldset {
       border: 0;

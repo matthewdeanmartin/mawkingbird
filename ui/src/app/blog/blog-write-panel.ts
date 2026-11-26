@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbField, MbControl } from '../design-system/field/field';
 import { MbCheckbox } from '../design-system/checkbox/checkbox';
@@ -102,6 +102,7 @@ export const CROSS_TARGET_LABELS: Record<CrossTarget, string> = {
       }
     </section>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .blog-write {
       display: grid;

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { EMPTY, of, throwError } from 'rxjs';
@@ -24,7 +24,11 @@ import { feedToStatuses } from './rss-adapter';
  * throws in dev mode on the RSS adapter's `data:` avatar (a pre-existing issue
  * unrelated to what these tests are about).
  */
-@Component({ selector: 'app-status-card', template: '{{ status().content }}' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '{{ status().content }}',
+})
 class StatusCardStub {
   readonly status = input.required<Status>();
   readonly filterContext = input<string>();

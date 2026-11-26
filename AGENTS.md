@@ -1,6 +1,6 @@
 # Mawkingbird contributor notes
 
-Git Bash and Make on Windows; Node 22+; `npm ci`. The client is `ui/`. The sibling
+Git Bash and Make on Windows; Node 26; `npm ci`. The client is `ui/`. The sibling
 mastodon_mock/ui is a frozen fork: never sync to it.
 
 ## Don't break Native

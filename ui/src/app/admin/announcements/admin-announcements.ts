@@ -2,7 +2,7 @@ import { MbField, MbControl } from '../../design-system/field/field';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
@@ -35,6 +35,7 @@ import { MbNotice } from '../../design-system/notice/notice';
   selector: 'app-admin-announcements',
   imports: [MbField, MbControl, MbButton, MbCheckbox, MbNotice, FormsModule, TranslocoPipe],
   templateUrl: './admin-announcements.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-announcements.css',
 })
 export class AdminAnnouncements implements OnInit {

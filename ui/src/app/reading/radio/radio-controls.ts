@@ -2,7 +2,16 @@ import { AccountName } from '../../accounts/account-name';
 import type { ExternalPlayer } from '../audio-embeds/external-player';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { DOCUMENT } from '@angular/common';
-import { Component, computed, ElementRef, inject, OnDestroy, input, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  OnDestroy,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -50,6 +59,7 @@ import { MbIcon } from '../../design-system/icon/icon';
   ],
   templateUrl: './radio-controls.html',
   styleUrl: './radio-controls.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[class.fullscreen]': 'fullscreen()', '(document:fullscreenchange)': 'syncFullscreen()' },
 })
 export class RadioControls implements OnDestroy {

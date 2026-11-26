@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { firstValueFrom } from 'rxjs';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
@@ -29,7 +29,7 @@ describe('PA photo cleaning', () => {
     localStorage.clear();
     localStorage.setItem('mastodon_mock_token', 'alice');
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     http = TestBed.inject(HttpTestingController);
     vi.stubGlobal('createImageBitmap', vi.fn().mockResolvedValue({ width: 10, height: 20, close }));

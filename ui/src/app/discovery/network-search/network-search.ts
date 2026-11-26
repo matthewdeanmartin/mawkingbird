@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -29,6 +29,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     SearchLauncher,
   ],
   templateUrl: './network-search.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
 })
 export class NetworkSearch {
@@ -69,6 +70,7 @@ export function networkOf(route: ActivatedRoute): SearchNetwork {
   ],
   templateUrl: './network-search.de.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchDe extends NetworkSearch {}
@@ -87,6 +89,7 @@ export class NetworkSearchDe extends NetworkSearch {}
   ],
   templateUrl: './network-search.ja.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchJa extends NetworkSearch {}
@@ -105,6 +108,7 @@ export class NetworkSearchJa extends NetworkSearch {}
   ],
   templateUrl: './network-search.fr.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchFr extends NetworkSearch {}
@@ -127,6 +131,7 @@ export class NetworkSearchFr extends NetworkSearch {}
   ],
   templateUrl: './network-search.es.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchEs extends NetworkSearch {}
@@ -149,6 +154,7 @@ export class NetworkSearchEs extends NetworkSearch {}
   ],
   templateUrl: './network-search.zh-hant.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchZhHant extends NetworkSearch {}
@@ -171,6 +177,7 @@ export class NetworkSearchZhHant extends NetworkSearch {}
   ],
   templateUrl: './network-search.ko.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchKo extends NetworkSearch {}
@@ -193,6 +200,7 @@ export class NetworkSearchKo extends NetworkSearch {}
   ],
   templateUrl: './network-search.pt.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchPt extends NetworkSearch {}
@@ -215,6 +223,7 @@ export class NetworkSearchPt extends NetworkSearch {}
   ],
   templateUrl: './network-search.it.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchIt extends NetworkSearch {}
@@ -237,6 +246,7 @@ export class NetworkSearchIt extends NetworkSearch {}
   ],
   templateUrl: './network-search.pl.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchPl extends NetworkSearch {}
@@ -255,6 +265,7 @@ export class NetworkSearchPl extends NetworkSearch {}
   ],
   templateUrl: './network-search.uk.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchUk extends NetworkSearch {}
@@ -273,6 +284,7 @@ export class NetworkSearchUk extends NetworkSearch {}
   ],
   templateUrl: './network-search.hi.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchHi extends NetworkSearch {}
@@ -291,6 +303,7 @@ export class NetworkSearchHi extends NetworkSearch {}
   ],
   templateUrl: './network-search.nl.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchNl extends NetworkSearch {}
@@ -309,6 +322,7 @@ export class NetworkSearchNl extends NetworkSearch {}
   ],
   templateUrl: './network-search.id.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchId extends NetworkSearch {}
@@ -327,6 +341,7 @@ export class NetworkSearchId extends NetworkSearch {}
   ],
   templateUrl: './network-search.ru.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchRu extends NetworkSearch {}
@@ -345,6 +360,7 @@ export class NetworkSearchRu extends NetworkSearch {}
   ],
   templateUrl: './network-search.sv.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchSv extends NetworkSearch {}
@@ -363,6 +379,7 @@ export class NetworkSearchSv extends NetworkSearch {}
   ],
   templateUrl: './network-search.vi.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchVi extends NetworkSearch {}
@@ -381,6 +398,7 @@ export class NetworkSearchVi extends NetworkSearch {}
   ],
   templateUrl: './network-search.tr.html',
   styleUrls: ['../../public-pages/focused-apps/focused-page.css', './network-search.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class NetworkSearchTr extends NetworkSearch {}

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -29,6 +29,7 @@ const ARTICLES: Record<PublicArticleKind, PublicArticleContent> = {
   selector: 'app-public-article',
   imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink],
   templateUrl: './public-article.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './features.css',
 })
 export class PublicArticle {

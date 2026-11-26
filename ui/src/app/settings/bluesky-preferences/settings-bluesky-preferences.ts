@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -89,6 +89,7 @@ const LIKE_THRESHOLDS = [0, 2, 5, 10, 25] as const;
     BlueskyPostControlsDialog,
   ],
   templateUrl: './settings-bluesky-preferences.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-bluesky-preferences.css',
 })
 export class SettingsBlueskyPreferences implements OnInit {

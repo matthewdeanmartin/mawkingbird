@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   applicationConfig,
@@ -54,6 +55,7 @@ import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
     }
     <button mbButton type="button" (click)="more()">Load more</button>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     article {
       min-height: 180px;
@@ -85,6 +87,7 @@ class ReadingFixture {
 @Component({
   imports: [RouterOutlet, ReadingOutlet],
   template: `<main id="main"><router-outlet mbReadingOutlet /></main>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     main {
       max-width: 700px;

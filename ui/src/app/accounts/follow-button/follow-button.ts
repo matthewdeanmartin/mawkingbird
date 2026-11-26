@@ -1,5 +1,13 @@
 import { MbButton } from '../../design-system/button/button';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Auth } from '../../platform/session/auth';
 import { FollowState } from '../follow-state';
 import { Account } from '../../platform/api/models';
@@ -46,6 +54,7 @@ import { Account } from '../../platform/api/models';
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .follow-btn {
       white-space: nowrap;

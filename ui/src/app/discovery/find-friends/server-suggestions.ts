@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Api } from '../../platform/api/api';
@@ -73,6 +80,7 @@ const KNOWN_SOURCES = new Set([
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .ff-heading {
       margin: 0;

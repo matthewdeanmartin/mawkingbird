@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { AvatarFallback, initialsAvatar } from './avatar-fallback';
 
 @Component({
   imports: [AvatarFallback],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<img
     src="https://files.mastodon.social/broken.png"
     [alt]="label"

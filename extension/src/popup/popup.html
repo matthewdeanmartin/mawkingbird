@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mawkingbird</title>
+    <link rel="stylesheet" href="popup.css" />
+    <script type="module" src="popup.js"></script>
+  </head>
+  <body>
+    <section aria-labelledby="page-heading">
+      <h1 id="page-heading">This page</h1>
+      <ul id="page-actions" class="actions"></ul>
+    </section>
+    <section id="feeds-section" aria-labelledby="feeds-heading" hidden>
+      <h2 id="feeds-heading">Feeds</h2>
+      <ul id="feed-actions" class="actions"></ul>
+    </section>
+    <section id="authors-section" aria-labelledby="authors-heading" hidden>
+      <h2 id="authors-heading">Author on the fediverse</h2>
+      <ul id="author-actions" class="actions"></ul>
+    </section>
+    <p id="note" class="note" hidden></p>
+    <ul class="actions footer">
+      <li><button type="button" id="sidebar">Open the sidebar</button></li>
+      <li><button type="button" id="open-app">Open Mawkingbird</button></li>
+    </ul>
+  </body>
+</html>

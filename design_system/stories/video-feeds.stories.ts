@@ -1,4 +1,4 @@
-import { Component, inject, importProvidersFrom, signal } from "@angular/core";
+import { Component, inject, importProvidersFrom, signal, ChangeDetectionStrategy } from "@angular/core";
 import {
   applicationConfig,
   type Meta,
@@ -32,6 +32,7 @@ const channels = [
 @Component({
   selector: "ds-video-feeds-review",
   imports: [VideosPage],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<app-videos-page />`,
 })
 class VideoFeedsReview {

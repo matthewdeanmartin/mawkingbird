@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { OnboardingLauncher } from '../../accounts/onboarding/onboarding-launcher';
@@ -77,6 +77,7 @@ import { EVEN_MORE_SECTIONS, EvenMoreLink } from './even-more-links';
       }
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .em-section + .em-section {
       margin-top: 1rem;

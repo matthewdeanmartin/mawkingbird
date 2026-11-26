@@ -1,4 +1,13 @@
-import { Component, ElementRef, computed, effect, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -57,6 +66,7 @@ import { SetupBlueskyIntro } from './steps/setup-bluesky-intro';
   ],
   providers: [SetupState],
   templateUrl: './account-setup.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './account-setup.css',
 })
 export class AccountSetup {

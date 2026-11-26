@@ -3,7 +3,7 @@ import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
 import { MbAccountCard } from '../../design-system/identity/account-card';
 import { MbButton } from '../../design-system/button/button';
 import { RouterLink } from '@angular/router';
-import { effect, untracked } from '@angular/core';
+import { effect, untracked, ChangeDetectionStrategy } from '@angular/core';
 import { accountRoutePath } from '../account-route';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n accountPreview.fullProfile: View full profile
@@ -163,6 +163,7 @@ function didOf(account: Account): string {
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     /* Keep the four-pixel visual gap inside the pointer's hover region. */
     :host:not(.inline)::before {

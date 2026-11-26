@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -27,6 +27,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     GitHubFriendsWorkbench,
   ],
   templateUrl: './github-to-mastodon.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class GithubToMastodon {
@@ -53,6 +54,7 @@ export class GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonDe extends GithubToMastodon {
@@ -77,6 +79,7 @@ export class GithubToMastodonDe extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonJa extends GithubToMastodon {
@@ -101,6 +104,7 @@ export class GithubToMastodonJa extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonFr extends GithubToMastodon {
@@ -125,6 +129,7 @@ export class GithubToMastodonFr extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonEs extends GithubToMastodon {
@@ -149,6 +154,7 @@ export class GithubToMastodonEs extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonZhHant extends GithubToMastodon {
@@ -173,6 +179,7 @@ export class GithubToMastodonZhHant extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonKo extends GithubToMastodon {
@@ -197,6 +204,7 @@ export class GithubToMastodonKo extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonPt extends GithubToMastodon {
@@ -221,6 +229,7 @@ export class GithubToMastodonPt extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonIt extends GithubToMastodon {
@@ -245,6 +254,7 @@ export class GithubToMastodonIt extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonPl extends GithubToMastodon {
@@ -265,6 +275,7 @@ export class GithubToMastodonPl extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonUk extends GithubToMastodon {
@@ -285,6 +296,7 @@ export class GithubToMastodonUk extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonHi extends GithubToMastodon {
@@ -305,6 +317,7 @@ export class GithubToMastodonHi extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonNl extends GithubToMastodon {
@@ -325,6 +338,7 @@ export class GithubToMastodonNl extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonId extends GithubToMastodon {
@@ -345,6 +359,7 @@ export class GithubToMastodonId extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonRu extends GithubToMastodon {
@@ -365,6 +380,7 @@ export class GithubToMastodonRu extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonSv extends GithubToMastodon {
@@ -385,6 +401,7 @@ export class GithubToMastodonSv extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonVi extends GithubToMastodon {
@@ -405,6 +422,7 @@ export class GithubToMastodonVi extends GithubToMastodon {
   ],
   templateUrl: './github-to-mastodon.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class GithubToMastodonTr extends GithubToMastodon {

@@ -1,4 +1,10 @@
-import { booleanAttribute, Component, computed, input } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  input,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ICON_PATHS, MbIconName } from './icon-paths';
 
 /**
@@ -11,6 +17,7 @@ import { ICON_PATHS, MbIconName } from './icon-paths';
     <path [attr.d]="path()" [attr.fill]="solid() ? 'currentColor' : null" />
   </svg>`,
   styleUrl: './icon.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[attr.data-size]': 'size()', '[attr.data-mirror]': 'mirrored() || null' },
 })
 export class MbIcon {

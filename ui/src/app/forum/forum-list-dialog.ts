@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -37,6 +46,7 @@ const NEW_LIST = '__new__';
 @Component({
   selector: 'app-forum-list-dialog',
   imports: [FormsModule, TranslocoPipe, MbButton, MbDialog, MbControl, MbField],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-dialog
       [title]="'forum.listDialog.title' | transloco"

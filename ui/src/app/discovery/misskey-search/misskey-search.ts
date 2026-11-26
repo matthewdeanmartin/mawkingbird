@@ -1,4 +1,12 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -65,6 +73,7 @@ export function parseHandle(query: string): { username: string; host: string | n
     StatusCard,
   ],
   templateUrl: './misskey-search.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './misskey-search.css',
 })
 export class MisskeySearch implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import { Component, importProvidersFrom, signal } from "@angular/core";
+import { Component, importProvidersFrom, signal, ChangeDetectionStrategy } from "@angular/core";
 import {
   applicationConfig,
   type Meta,
@@ -17,6 +17,7 @@ import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
   selector: "ds-home-algo-review",
   imports: [SettingsHomeAlgo],
   template: "<main><app-settings-home-algo /></main>",
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     "main { max-width: 850px; margin: 16px auto; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }",
   ],

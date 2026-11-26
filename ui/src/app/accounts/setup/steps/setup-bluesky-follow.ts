@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { BlueskyStarterPacks } from '../../../connections/bluesky/bluesky-starter-packs';
 import { BskyProfile } from '../../../connections/bluesky/bluesky-types';
@@ -36,6 +36,7 @@ const LIVELY_HOME = 20;
       Followed {{ followed() }} here. About {{ lively }} makes a lively Home.
     </p>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './setup-steps.css',
 })
 export class SetupBlueskyFollow {

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { aboutLink, YoutubeFeeds } from './youtube-feeds';
@@ -24,7 +24,7 @@ describe('YouTube feed transport', () => {
     cache.put.mockClear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: RssCache, useValue: cache },
         { provide: ClientPrefs, useValue: { rssCacheTtlHours: () => 24 } },
@@ -152,7 +152,7 @@ describe('YouTube feeds away from mawkingbird.com', () => {
     pageRead.mockReset();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: RssCache, useValue: cache },
         { provide: ClientPrefs, useValue: { rssCacheTtlHours: () => 24 } },
@@ -228,7 +228,7 @@ describe('YouTube search and details: Native vs web × Plus', () => {
     youtube.mockReset();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: RssCache, useValue: { get: vi.fn(), put: vi.fn() } },
         { provide: ClientPrefs, useValue: { rssCacheTtlHours: () => 24 } },

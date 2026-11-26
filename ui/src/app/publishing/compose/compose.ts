@@ -15,6 +15,7 @@ import {
   OnDestroy,
   output,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { BlueskyModerationState } from '../../connections/bluesky/bluesky-moderation-state';
 import { blueskyImageEmbed, BSKY_GALLERY_MAX } from '../../connections/bluesky/bluesky-image-embed';
@@ -582,6 +583,7 @@ function dragHasFiles(event: DragEvent): boolean {
   ],
   templateUrl: './compose.html',
   styleUrl: './compose.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [VisibilityState, LinkShortening],
 })
 export class Compose implements OnDestroy {

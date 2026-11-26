@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -21,6 +21,7 @@ import { Auth } from '../../platform/session/auth';
   selector: 'app-create-bluesky-account',
   imports: [RouterLink, MbButton, MbContentLink],
   templateUrl: './create-bluesky-account.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './create-account.css',
 })
 export class CreateBlueskyAccount {

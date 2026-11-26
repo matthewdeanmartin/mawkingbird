@@ -5,6 +5,7 @@ import {
   inject,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   applicationConfig,
@@ -67,6 +68,7 @@ class Responses {
   selector: "ds-choice-report-review",
   styles: ["[data-request] { overflow-wrap: anywhere; }"],
   imports: [ReportDialog, BookmarkProviderDialog, MbToolbar, MbToolbarButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>Bookmark choices and report forms.</h1>
     <p class="ds-intro">

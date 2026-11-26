@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
@@ -27,6 +35,7 @@ import { otherServerHost } from '../other-server-url';
   selector: 'app-other-servers',
   imports: [FormsModule, RouterLink, TranslocoPipe, MbButton, MbField, MbControl],
   templateUrl: './other-servers.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './other-servers.css',
 })
 export class OtherServers implements OnInit {
@@ -60,6 +69,7 @@ export class OtherServers implements OnInit {
 @Component({
   selector: 'app-other-servers-page',
   imports: [OtherServers],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<app-other-servers [server]="host()" />`,
 })
 export class OtherServersPage {

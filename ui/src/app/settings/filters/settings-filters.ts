@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
 import { ContentFilter } from '../../platform/api/models';
@@ -19,6 +19,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-settings-filters',
   imports: [RouterLink, TranslocoPipe],
   templateUrl: './settings-filters.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-filters.css',
 })
 export class SettingsFilters implements OnInit {

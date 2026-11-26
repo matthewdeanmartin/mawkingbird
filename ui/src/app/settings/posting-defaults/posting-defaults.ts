@@ -1,5 +1,5 @@
 import { translatedComputed } from '../../i18n/translated';
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -66,6 +66,7 @@ export interface PostingDefaultsValue {
       />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .posting-defaults {
       display: flex;

@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Status } from '../../platform/api/models';
 import { LocalPostStore } from './local-post-store';
@@ -32,6 +32,7 @@ import { LocalPostStore } from './local-post-store';
       </div>
     </form>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .local-compose {

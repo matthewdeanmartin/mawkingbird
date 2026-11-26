@@ -1,5 +1,14 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -126,6 +135,7 @@ function excerpt(html: string): string {
     </mb-dialog>
   `,
   styleUrl: './account-list-dialog.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .reply-guy-chip {
       border-style: dashed;

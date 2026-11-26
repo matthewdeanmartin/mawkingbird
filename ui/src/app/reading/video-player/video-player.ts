@@ -11,6 +11,7 @@ import {
   viewChild,
   untracked,
   OnDestroy,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -63,6 +64,7 @@ export function embedTime(data: unknown): number | null {
   imports: [TranslocoPipe, RouterLink, MbButton, MbHelp, QueueButton],
   templateUrl: './video-player.html',
   styleUrl: './video-player.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '(click)': '$event.stopPropagation()' },
 })
 export class VideoPlayer implements OnDestroy {

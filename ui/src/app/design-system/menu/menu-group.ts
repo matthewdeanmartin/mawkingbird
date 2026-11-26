@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, input } from '@angular/core';
+import { booleanAttribute, Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 let nextId = 0;
 /** Related menu rows under an optional visible caption, which also names the group. */
@@ -9,6 +9,7 @@ let nextId = 0;
     }
     <div class="items"><ng-content /></div>`,
   styleUrl: './menu-group.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     role: 'group',
     '[attr.aria-labelledby]': 'label() ? captionId : null',

@@ -2,7 +2,7 @@ import { RailOutlet } from '../../shell/rail-outlet';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { By } from '@angular/platform-browser';
 import { Compose } from '../../publishing/compose/compose';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
@@ -97,7 +97,7 @@ describe('self profile local actions', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { paramMap: EMPTY } },
@@ -394,7 +394,7 @@ describe('Profile block/unblock', () => {
   function setUp() {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -717,7 +717,7 @@ describe('Profile block/unblock', () => {
   it('follows locally in Anonymous without relationship mutation requests', () => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -780,7 +780,7 @@ describe('Profile block/unblock', () => {
     const routeId = anonymousAccountRouteRef({ server: 'https://social.example', id: '900' });
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -916,7 +916,7 @@ describe('Profile block/unblock', () => {
   it('places the Anonymous login-to-post prompt in the self profile timeline', () => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -944,7 +944,7 @@ describe('Profile block/unblock', () => {
   it('keeps paging older statuses until 20 accumulate (filtered pages come back short)', () => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: '7' })) } },
       ],
@@ -1100,7 +1100,7 @@ describe('Profile — Eliza', () => {
   function setUp() {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -1166,7 +1166,7 @@ describe('Profile — copy account', () => {
   function setUp(options: { anonymous: boolean; followingCount?: number }) {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -1339,7 +1339,7 @@ describe('Profile and connected blogs', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -1422,7 +1422,7 @@ describe('Profile cross-server recovery', () => {
     const queryParamMap = convertToParamMap(handle ? { handle } : {});
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         {
@@ -1651,7 +1651,7 @@ describe('Profile handle-in-path route', () => {
   function setUp(id: string, handle: string) {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         {
@@ -1766,7 +1766,7 @@ describe('Profile account search', () => {
   function setUp() {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -1898,7 +1898,7 @@ describe('Profile private account notes and QR', () => {
   function setUp(note: string, familiar: Partial<Account>[] = [], following = true) {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: ActivatedRoute,
@@ -2030,7 +2030,7 @@ describe('Profile own featured accounts', () => {
     const me = { id: 'me', username: 'me', acct: 'me', fields: [] } as unknown as Account;
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: ActivatedRoute, useValue: { paramMap: of(convertToParamMap({ id: 'me' })) } },
       ],
@@ -2084,7 +2084,7 @@ describe('Profile featured hashtags and tagged posts', () => {
     const queryParamMap = convertToParamMap(query);
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         {
@@ -2179,7 +2179,7 @@ describe('Profile block domain', () => {
     const queryParamMap = convertToParamMap({});
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         {

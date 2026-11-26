@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MbPopover } from '../popover/popover';
 
 /** Optional help, opened explicitly by mouse, touch, Enter or Space. */
@@ -6,6 +6,7 @@ import { MbPopover } from '../popover/popover';
   selector: 'mb-help',
   imports: [MbPopover],
   template: `<mb-popover [label]="label()" icon="help"><ng-content /></mb-popover>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '(click)': '$event.stopPropagation()',
     '(keydown)': 'keys($event)',

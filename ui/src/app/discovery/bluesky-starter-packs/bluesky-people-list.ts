@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -58,6 +66,7 @@ import { BskyProfile } from '../../connections/bluesky/bluesky-types';
       }
     </ul>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bluesky-people-list.css',
 })
 export class BlueskyPeopleList {

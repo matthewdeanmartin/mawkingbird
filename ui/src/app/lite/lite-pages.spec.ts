@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpRequest } from '@angular/common/http';
 import {
   HttpTestingController,
@@ -62,7 +62,7 @@ describe('Lite pages', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: READ_CACHE_STORE, useValue: new MemoryReadCacheStore() },

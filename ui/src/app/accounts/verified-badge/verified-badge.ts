@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../platform/session/auth';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -41,6 +41,7 @@ export const VERIFIED_FOLLOWER_THRESHOLD = 9_728;
       </svg>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: inline-flex;

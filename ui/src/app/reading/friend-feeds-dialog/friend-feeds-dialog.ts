@@ -2,7 +2,14 @@ import { saveBlob } from '../../platform/files/save-file';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { BulkFollowConfirmation } from '../../accounts/bulk-follow-confirmation';
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FocusTrap } from '../../shell/a11y/focus-trap';
@@ -91,6 +98,7 @@ import { firstValueFrom } from 'rxjs';
   selector: 'app-friend-feeds-dialog',
   imports: [DatePipe, FocusTrap, RouterLink, TranslocoPipe],
   templateUrl: './friend-feeds-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './friend-feeds-dialog.css',
 })
 export class FriendFeedsDialog {

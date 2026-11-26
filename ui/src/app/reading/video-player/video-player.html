@@ -34,7 +34,7 @@
       @if (source().poster; as poster) {
         <img [src]="poster" alt="" loading="lazy" />
       }
-      <span>{{ 'videoPlayer.peertube' | transloco: { host: source().peertube?.host } }}</span>
+      <span>{{ 'videoPlayer.peertube' | transloco: { host: $safeNavigationMigration(source().peertube?.host) } }}</span>
     </div>
   } @else if (!activated()) {
     <button

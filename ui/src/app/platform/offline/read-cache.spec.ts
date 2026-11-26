@@ -3,6 +3,7 @@ import {
   HttpResponse,
   provideHttpClient,
   withInterceptors,
+  withXhr,
 } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -65,7 +66,7 @@ describe('readCacheInterceptor', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: READ_CACHE_STORE, useValue: store },
-        provideHttpClient(withInterceptors([readCacheInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([readCacheInterceptor])),
         provideHttpClientTesting(),
       ],
     });

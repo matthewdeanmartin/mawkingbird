@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { Router, NavigationEnd } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -21,7 +21,7 @@ beforeEach(() => {
   TestBed.configureTestingModule({
     providers: [
       { provide: RUNTIME_POLICY, useValue: policy },
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       { provide: Router, useValue: { events } },
     ],
   });

@@ -12,6 +12,7 @@ import {
   linkedSignal,
   OnInit,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -109,6 +110,7 @@ import { keepPortableAddress } from '../../posts/copy-link/portable-address';
   ],
   templateUrl: './thread.html',
   styleUrl: './thread.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ThreadLoader],
 })
 export class Thread implements OnInit {

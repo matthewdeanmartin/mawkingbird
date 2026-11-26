@@ -1,6 +1,13 @@
 import { AccountName } from '../accounts/account-name';
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Status } from '../platform/api/models';
@@ -38,6 +45,7 @@ const ROLL_MAX_OFFSET = 5000;
   selector: 'app-blog-roll-page',
   imports: [AccountName, DatePipe, RouterLink, TranslocoPipe, MbButton, MbContentState, BlogHeader],
   templateUrl: './blog-roll-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blog-page.css',
 })
 export class BlogRollPage implements OnInit {

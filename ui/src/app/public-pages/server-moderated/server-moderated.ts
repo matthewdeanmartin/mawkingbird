@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
@@ -23,6 +23,7 @@ import { ModeratedServer } from '../../platform/api/models';
   selector: 'app-server-moderated',
   imports: [TranslocoPipe],
   templateUrl: './server-moderated.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './server-moderated.css',
 })
 export class ServerModerated implements OnInit {

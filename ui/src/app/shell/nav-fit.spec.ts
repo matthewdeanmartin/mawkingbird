@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { NavFit } from './nav-fit';
 
 @Component({
   imports: [NavFit],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<nav appNavFit><a>Skrzynka odbiorcza</a></nav>`,
 })
 class Host {}

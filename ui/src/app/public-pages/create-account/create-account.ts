@@ -1,5 +1,12 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, computed, inject, PLATFORM_ID, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  PLATFORM_ID,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
@@ -78,6 +85,7 @@ export function activeLabel(users: number): string {
     MbContentLink,
   ],
   templateUrl: './create-account.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './create-account.css',
 })
 export class CreateAccount {

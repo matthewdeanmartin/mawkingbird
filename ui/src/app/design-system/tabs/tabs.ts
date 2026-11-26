@@ -12,6 +12,7 @@ import {
   output,
   signal,
   TemplateRef,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 @Directive({ selector: 'ng-template[mbTab]' })
@@ -28,6 +29,7 @@ let nextId = 0;
   selector: 'mb-tabs',
   imports: [NgTemplateOutlet],
   templateUrl: './tabs.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tabs.css',
 })
 export class MbTabs {

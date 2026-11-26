@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -80,6 +87,7 @@ interface ContactsManager {
     BlueskyPeopleList,
   ],
   templateUrl: './bluesky-find-contacts.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bluesky-find-contacts.css',
 })
 export class BlueskyFindContacts implements OnInit {

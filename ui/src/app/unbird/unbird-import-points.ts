@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
 import { MbSection } from '../design-system/page-header/page-header';
@@ -71,6 +71,7 @@ import { UnbirdMatcher } from './unbird-matcher';
       </mb-section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .muted {
       margin: 0 0 8px;

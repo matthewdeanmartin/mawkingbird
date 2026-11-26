@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 /**
  * Bounded action appearance. Native buttons own type/disabled; links own href/routerLink.
@@ -14,6 +14,7 @@ import { Component, input } from '@angular/core';
 @Component({
   selector: 'button[mbButton], a[mbButton]',
   template: '<ng-content />',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '[attr.data-variant]': 'variant()',
     '[attr.data-size]': 'size()',

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -60,6 +60,7 @@ type TagSwitch = 'usable' | 'trendable' | 'listable';
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .intro {
       margin: 0;

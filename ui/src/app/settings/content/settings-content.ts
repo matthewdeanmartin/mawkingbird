@@ -1,7 +1,7 @@
 import { MbRadioGroup } from '../../design-system/radio-group/radio-group';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
@@ -70,6 +70,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-settings-content',
   imports: [MbRadioGroup, MbCheckbox, RouterLink, TranslocoPipe],
   templateUrl: './settings-content.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-content.css',
 })
 export class SettingsContent {

@@ -19,6 +19,7 @@ import {
   output,
   signal,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -264,6 +265,7 @@ const ACTIVITY_SCAN_CONCURRENCY = 4;
     AdultBadge,
   ],
   templateUrl: './bluesky-search-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./bluesky-search-panel.css', './search-refine.css'],
 })
 export class BlueskySearchPanel {

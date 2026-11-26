@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, RouterLink, Routes } from '@angular/router';
 import { describe, expect, it } from 'vitest';
@@ -9,7 +9,7 @@ import {
   publicRoutePaths,
 } from './public-page-urls';
 
-@Component({ template: '' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: '' })
 class Blank {}
 
 const routes: Routes = [

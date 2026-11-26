@@ -365,7 +365,7 @@
               person.displayName
             }}</a>
             <a mbContentLink [href]="youtubeUrl(person)" rel="noopener">{{
-              chrome.youtube(person.youtube?.band)
+              chrome.youtube($safeNavigationMigration(person.youtube?.band))
             }}</a>
             @if (channel(person); as yt) {
               @defer (on idle) {

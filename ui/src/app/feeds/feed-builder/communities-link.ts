@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
@@ -13,6 +13,7 @@ import { FEED_BUILDER_HUBS } from './feed-builder-registry';
 @Component({
   selector: 'app-communities-link',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (hub(); as hub) {
       <p>

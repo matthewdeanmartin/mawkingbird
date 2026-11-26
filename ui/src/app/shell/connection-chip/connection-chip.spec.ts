@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -10,7 +10,7 @@ describe('ConnectionChip', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [ConnectionChip],
-      providers: [provideHttpClient(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideRouter([])],
     });
     await TestBed.compileComponents();
   });

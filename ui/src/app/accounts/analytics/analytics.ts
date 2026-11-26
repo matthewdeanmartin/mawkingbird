@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../../platform/session/auth';
 import { AccountAnalytics } from '../account-analytics/account-analytics';
@@ -15,6 +15,7 @@ import { AccountAnalytics } from '../account-analytics/account-analytics';
   selector: 'app-analytics',
   imports: [AccountAnalytics, TranslocoPipe],
   templateUrl: './analytics.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './analytics.css',
 })
 export class Analytics {

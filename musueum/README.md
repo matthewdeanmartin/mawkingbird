@@ -1,6 +1,6 @@
 # Museum
 
-Use Node 22 or newer. Install the UI dependencies once with `cd ../ui && npm ci`.
+Use Node 26. Install the UI dependencies once with `cd ../ui && npm ci`.
 Then run `make serve` from this directory and open <http://127.0.0.1:4177>.
 The local server reads the current `ui/` source when you load or refresh the
 page. It does not write a copy of the catalogue. Use the Eyebrows filter for

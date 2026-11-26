@@ -8,6 +8,7 @@ import {
   output,
   signal,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -64,6 +65,7 @@ const FOLLOWED_TAG_PAGES = 5;
   selector: 'app-similar-hashtags-panel',
   imports: [RouterLink, FormsModule, TranslocoPipe, MbButton, MbControl, MbField, TagActions],
   templateUrl: './similar-hashtags-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './similar-hashtags-panel.css',
 })
 export class SimilarHashtagsPanel {

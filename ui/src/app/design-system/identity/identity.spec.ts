@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   MbAccountCard,
@@ -20,6 +20,7 @@ import {
     MbSpinner,
     MbSwitch,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section mbRailCard overflow="visible" tone="accent">
       <h2 class="card-title">People</h2>

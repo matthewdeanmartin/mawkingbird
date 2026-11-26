@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UpdateRecovery } from '../../platform/build/update-recovery';
 
 /**
@@ -56,6 +56,7 @@ import { UpdateRecovery } from '../../platform/build/update-recovery';
       </div>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './update-overlay.css',
 })
 export class UpdateOverlay {

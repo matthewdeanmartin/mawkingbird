@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MbRadioGroup, type RadioOption } from '../../../design-system/radio-group/radio-group';
 import { onSetupNext } from '../setup-state';
 import type { SetupMovers as Movers } from '../setup-store';
@@ -16,6 +16,7 @@ const OPTIONS: readonly RadioOption[] = [
 @Component({
   selector: 'app-setup-movers',
   imports: [MbRadioGroup],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-radio-group
       label="Before Mastodon I was on"

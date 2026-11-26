@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
@@ -140,6 +147,7 @@ const PICKER_ORDER: LangCode[] = [
 @Component({
   selector: 'app-settings-i18n',
   imports: [FormsModule, TranslocoPipe, LocalePicker, RouterLink, MbField, MbControl],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-i18n.html',
 })
 export class SettingsI18n implements OnInit {

@@ -1,7 +1,15 @@
 import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { MbContentState } from '../../design-system/content-state/content-state';
 import { MbButton } from '../../design-system/button/button';
-import { Component, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
 import { Api } from '../../platform/api/api';
@@ -21,6 +29,7 @@ import { Streaming } from '../../platform/api/streaming';
 @Component({
   selector: 'app-public-timeline',
   imports: [MbContentState, MbButton, CommandBar, StatusCard, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './public-timeline.html',
 })
 export class PublicTimeline implements OnInit, OnDestroy {

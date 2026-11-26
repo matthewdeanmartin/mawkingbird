@@ -1,4 +1,11 @@
-import { Component, computed, DOCUMENT, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DOCUMENT,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationStart, Router, RouterLink } from '@angular/router';
 import { LiteMode, sustainedBad } from '../../lite/lite-mode';
@@ -111,6 +118,7 @@ import { ReadCache } from '../../platform/offline/read-cache';
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .banner {
       position: fixed;

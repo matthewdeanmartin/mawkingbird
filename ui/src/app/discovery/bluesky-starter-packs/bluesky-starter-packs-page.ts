@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -65,6 +65,7 @@ import { BlueskyPeopleList } from './bluesky-people-list';
     BlueskyPeopleList,
   ],
   templateUrl: './bluesky-starter-packs-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bluesky-starter-packs.css',
 })
 export class BlueskyStarterPacksPage implements OnInit {

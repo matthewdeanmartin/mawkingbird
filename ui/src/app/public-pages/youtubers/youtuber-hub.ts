@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { map } from 'rxjs';
@@ -89,6 +89,7 @@ import type { YoutuberHubPage } from './youtuber-pages';
       </main>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../features/features.css', '../features/follow.css', './youtuber-public.css'],
 })
 export class YoutuberHubPublic {

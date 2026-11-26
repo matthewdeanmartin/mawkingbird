@@ -1,4 +1,12 @@
-import { Component, computed, inject, OnInit, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MbTab, MbTabs } from '../../design-system/tabs/tabs';
 import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -144,6 +152,7 @@ export function dedupeGroups(
     TranslocoPipe,
   ],
   templateUrl: './explore-tags.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './explore-tags.css',
 })
 export class ExploreTags implements OnInit {

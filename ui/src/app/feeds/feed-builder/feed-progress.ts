@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { SampleProgress } from './feed-sample';
 
 /**
@@ -23,6 +23,7 @@ import { SampleProgress } from './feed-sample';
       ></div>
     </div>
   </div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .sample-progress {
       margin-block: 8px 16px;

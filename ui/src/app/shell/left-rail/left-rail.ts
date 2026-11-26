@@ -6,7 +6,15 @@ import { lacksMastodonServer } from '../../platform/http/mastodon-route.intercep
 import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbIdentityRow } from '../../design-system/identity/identity-row';
 import { MbButton } from '../../design-system/button/button';
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RailWidgets } from '../rail-widgets';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -74,6 +82,7 @@ function accountKey(account: Account): string {
     TranslocoPipe,
   ],
   templateUrl: './left-rail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './left-rail.css',
 })
 export class LeftRail implements OnInit {

@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
@@ -50,6 +57,7 @@ import {
   selector: 'app-server-announcements',
   imports: [DatePipe, TranslocoPipe, RouterLink, JustMyServerCard],
   templateUrl: './server-announcements.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './server-announcements.css',
 })
 export class ServerAnnouncements implements OnInit {

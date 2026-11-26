@@ -3,7 +3,15 @@ import { ReadingBack } from '../../shell/reading-back';
 import { TagMedia } from './tag-media';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagActions } from '../../discovery/tag-actions/tag-actions';
-import { Component, computed, inject, DestroyRef, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  DestroyRef,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -90,6 +98,7 @@ const SAMPLE_PAGE_SIZE = 40;
     MbField,
   ],
   templateUrl: './tag.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tag.css',
 })
 export class Tag implements OnInit {

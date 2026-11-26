@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbBadge } from '../../design-system/badge/badge';
 import { MbHelp } from '../../design-system/help/help';
@@ -58,6 +58,7 @@ import { intervalParts, postingRhythm } from '../account-signals';
       }}</mb-help>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: inline-flex;

@@ -2,7 +2,15 @@ import { translatedComputed } from '../../i18n/translated';
 import { ReadingBack } from '../../shell/reading-back';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  OnDestroy,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StarterPackTextPipe } from '../starter-pack-text';
 import { firstValueFrom, Subscription, from, concatMap, catchError, of, finalize } from 'rxjs';
@@ -57,6 +65,7 @@ import { Wellness } from '../../wellness/wellness';
     SignInPrompt,
   ],
   templateUrl: './starter-collection.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './starter-collection.css',
 })
 export class StarterCollection implements OnInit, OnDestroy {

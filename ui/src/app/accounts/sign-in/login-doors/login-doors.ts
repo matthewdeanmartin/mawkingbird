@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FeatureFlags } from '../../../platform/build/feature-flags';
@@ -53,11 +53,7 @@ const DOORS: readonly Door[] = [
             <ng-container *ngTemplateOutlet="body; context: { $implicit: door }" />
           </a>
         } @else {
-          <a
-            class="door"
-            [routerLink]="'/login/' + door.network"
-            [queryParams]="queryParams()"
-          >
+          <a class="door" [routerLink]="'/login/' + door.network" [queryParams]="queryParams()">
             <ng-container *ngTemplateOutlet="body; context: { $implicit: door }" />
           </a>
         }
@@ -71,6 +67,7 @@ const DOORS: readonly Door[] = [
       </span>
     </ng-template>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login-doors.css',
 })
 export class LoginDoors {

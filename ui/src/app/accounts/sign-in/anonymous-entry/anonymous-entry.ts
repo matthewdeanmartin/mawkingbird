@@ -1,5 +1,5 @@
 import { defaultServer } from '../../../platform/http/home-server';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Auth } from '../../../platform/session/auth';
 import { normalizeHostUrl } from '../../../platform/http/host-url';
@@ -27,6 +27,7 @@ import { UnreachableServerDialog } from '../unreachable-server-dialog/unreachabl
 @Component({
   selector: 'app-anonymous-entry',
   imports: [UnreachableServerDialog],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (unreachableServer(); as server) {
       <app-unreachable-server-dialog

@@ -10,7 +10,7 @@ import { By } from '@angular/platform-browser';
 import { StatusEditDialog } from '../../publishing/status-edit/status-edit-dialog';
 import { Compose } from '../../publishing/compose/compose';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoService } from '@jsverse/transloco';
@@ -156,7 +156,7 @@ describe('StatusCard', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     httpMock = TestBed.inject(HttpTestingController);
     // Mastodon actions require a signed-in account, not just a non-anonymous kind.
@@ -3681,7 +3681,7 @@ describe('StatusCard reader mode (expand all)', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
   });
 
@@ -3786,7 +3786,7 @@ describe('StatusCard — AI translation', () => {
     connected = false;
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         // `targetLanguage` is part of the real service and is consulted before every
@@ -3971,7 +3971,7 @@ describe('StatusCard — link preview', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
   });
 
@@ -4041,7 +4041,7 @@ describe('StatusCard tap a word (L1)', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
   });
 

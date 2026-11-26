@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { AdminApi, AdminCohort, AdminDimension } from '../admin-api';
 import { AdminMeasure } from '../../platform/api/models';
@@ -59,6 +59,7 @@ export function cohortRow(cohort: AdminCohort): CohortRow {
   selector: 'app-admin-metrics',
   imports: [TranslocoPipe],
   templateUrl: './admin-metrics.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-lists.css',
 })
 export class AdminMetrics implements OnInit {

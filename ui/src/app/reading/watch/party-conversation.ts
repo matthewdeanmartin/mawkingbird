@@ -13,6 +13,7 @@ import {
   signal,
   untracked,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -138,6 +139,7 @@ function hue(value: string): number {
   ],
   templateUrl: './party-conversation.html',
   styleUrl: './party-conversation.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[attr.data-view]': 'prefs.view()' },
 })
 export class PartyConversation implements OnDestroy {

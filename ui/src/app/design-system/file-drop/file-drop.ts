@@ -1,4 +1,11 @@
-import { booleanAttribute, Component, input, output, signal } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 /** A picked or dropped file, with its path inside a picked folder when there is one. */
 export interface MbPickedFile {
@@ -55,6 +62,7 @@ let nextId = 0;
       }
     </label>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './file-drop.css',
 })
 export class MbFileDrop {

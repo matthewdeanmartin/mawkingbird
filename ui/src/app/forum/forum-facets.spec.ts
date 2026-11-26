@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -10,7 +10,7 @@ import { Status } from '../platform/api/models';
 import { post, reply } from '../testing/forum-fixtures';
 import { ForumFacets } from './forum-facets';
 
-@Component({ template: '' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: '' })
 class Blank {}
 
 function discussion(root: Status): Discussion {

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
@@ -76,6 +76,7 @@ import { QueuedVideo, WatchQueue } from '../reading/videos/watch-queue';
         <li class="muted">{{ 'lite.radio.none' | transloco }}</li>
       }
     </ul>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .now {
       margin: 0 16px 16px;
@@ -150,6 +151,7 @@ export class LiteRadio {
         <li class="muted">{{ 'lite.videos.none' | transloco }}</li>
       }
     </ul>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .player {
       margin: 0 16px 16px;

@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
@@ -25,7 +25,7 @@ function oldPost(id: string, ageDays: number): Status {
 async function render(posts: Status[]) {
   TestBed.configureTestingModule({
     imports: [InteractionDecayPanel],
-    providers: [provideHttpClient(), provideHttpClientTesting()],
+    providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
   });
   await TestBed.compileComponents();
   const fixture = TestBed.createComponent(InteractionDecayPanel);

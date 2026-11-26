@@ -1,6 +1,6 @@
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
 import { Account } from '../../platform/api/models';
@@ -28,6 +28,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-settings-follows',
   imports: [AccountName, RouterLink, TranslocoPipe],
   templateUrl: './settings-follows.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-follows.css',
 })
 export class SettingsFollows implements OnInit {

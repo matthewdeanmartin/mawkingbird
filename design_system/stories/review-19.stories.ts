@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from "@angular/core";
+import { Component, computed, input, output, signal, ChangeDetectionStrategy } from "@angular/core";
 import { type Meta, type StoryObj } from "@storybook/angular";
 import {
   MbPostAction,
@@ -185,6 +185,7 @@ let nextId = 0;
       </mb-post-actions>
     </article>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     article {
       padding: 12px 16px;
@@ -260,6 +261,7 @@ class ReviewPost {
       (logged)="last.set($event)"
     />
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

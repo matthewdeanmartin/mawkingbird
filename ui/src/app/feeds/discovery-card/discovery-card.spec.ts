@@ -5,7 +5,7 @@ import { FEATURE_CTAS, PLUS_CTAS } from '../feed-ctas';
 import { PlusCatalogue } from '../../accounts/mawkingbird/plus-catalogue';
 import { fakePlusCatalogue } from '../../testing/plus-catalogue';
 import en from '../../../../public/i18n/en.json';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -18,7 +18,7 @@ describe('DiscoveryCard branding', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
   });
   afterEach(() => {
@@ -56,7 +56,7 @@ describe('Discovery cards inserted after runtime translation loading', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         ...provideI18n(),
         { provide: PlusCatalogue, useValue: fakePlusCatalogue() },

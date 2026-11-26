@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -43,6 +43,7 @@ import { FEED_SECTIONS } from '../../feeds/lists/feed-sections';
 @Component({
   selector: 'app-settings-home-algo',
   imports: [FormsModule, TranslocoPipe, MbButton, MbCheckbox, MbSettingsRow, MbField, MbControl],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-home-algo.html',
 })
 export class SettingsHomeAlgo implements OnInit {

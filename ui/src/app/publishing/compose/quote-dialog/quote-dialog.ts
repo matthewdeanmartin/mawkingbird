@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../../design-system/dialog/dialog';
 import { MbNotice } from '../../../design-system/notice/notice';
@@ -57,6 +57,7 @@ import { QuotePreview } from '../quote-preview/quote-preview';
       <app-quote-preview class="quote-dialog-preview" [status]="status()" />
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .reply-guy-warning {
       display: block;

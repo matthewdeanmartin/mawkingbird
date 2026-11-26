@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import {
   FocusedNextSteps,
   toolInviteLink,
@@ -9,6 +9,7 @@ import { TwitterFriendDiscovery } from '../../settings/import-export/twitter-fri
 @Component({
   selector: 'app-twitter-import-next-steps',
   imports: [FocusedNextSteps],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (attempted()) {
       <app-focused-next-steps [inviteLink]="signedIn() ? invite : '/invites'" />

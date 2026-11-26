@@ -1,4 +1,4 @@
-import { Component, signal } from "@angular/core";
+import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
 import { FormControl, ReactiveFormsModule, Validators } from "@angular/forms";
 import { type Meta, type StoryObj } from "@storybook/angular";
 import { MbField, MbControl } from "../../ui/src/app/design-system/field/field";
@@ -19,6 +19,7 @@ import { MbButton } from "../../ui/src/app/design-system/button/button";
     MbSaveFeedback,
     MbButton,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <article class="ds-sheet">
       <h1>Forms that fit together.</h1>

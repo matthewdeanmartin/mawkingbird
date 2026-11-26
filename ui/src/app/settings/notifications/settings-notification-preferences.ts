@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbField, MbControl } from '../../design-system/field/field';
@@ -23,6 +23,7 @@ import { MenuIndicators } from '../../shell/menu-indicators';
 @Component({
   selector: 'app-settings-notification-preferences',
   imports: [FormsModule, TranslocoPipe, MbField, MbControl, MbPageHeader, MbSettingsRow],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-notification-preferences.html',
 })
 export class SettingsNotificationPreferences {

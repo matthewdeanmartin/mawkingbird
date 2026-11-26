@@ -1,4 +1,4 @@
-import { Component, input, model } from '@angular/core';
+import { Component, input, model, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'mb-disclosure',
@@ -6,6 +6,7 @@ import { Component, input, model } from '@angular/core';
     <summary>{{ label() }}</summary>
     <div class="content"><ng-content /></div>
   </details>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './disclosure.css',
 })
 export class MbDisclosure {

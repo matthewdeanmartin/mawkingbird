@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -29,6 +29,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     AnalyticsLookup,
   ],
   templateUrl: './mastodon-analytics.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class MastodonAnalytics {
@@ -56,6 +57,7 @@ export class MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsDe extends MastodonAnalytics {
@@ -81,6 +83,7 @@ export class MastodonAnalyticsDe extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsJa extends MastodonAnalytics {
@@ -106,6 +109,7 @@ export class MastodonAnalyticsJa extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsFr extends MastodonAnalytics {
@@ -131,6 +135,7 @@ export class MastodonAnalyticsFr extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsEs extends MastodonAnalytics {
@@ -156,6 +161,7 @@ export class MastodonAnalyticsEs extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsZhHant extends MastodonAnalytics {
@@ -181,6 +187,7 @@ export class MastodonAnalyticsZhHant extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsKo extends MastodonAnalytics {
@@ -206,6 +213,7 @@ export class MastodonAnalyticsKo extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsPt extends MastodonAnalytics {
@@ -231,6 +239,7 @@ export class MastodonAnalyticsPt extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsIt extends MastodonAnalytics {
@@ -256,6 +265,7 @@ export class MastodonAnalyticsIt extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsPl extends MastodonAnalytics {
@@ -277,6 +287,7 @@ export class MastodonAnalyticsPl extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsUk extends MastodonAnalytics {
@@ -298,6 +309,7 @@ export class MastodonAnalyticsUk extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsHi extends MastodonAnalytics {
@@ -319,6 +331,7 @@ export class MastodonAnalyticsHi extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsNl extends MastodonAnalytics {
@@ -340,6 +353,7 @@ export class MastodonAnalyticsNl extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsId extends MastodonAnalytics {
@@ -361,6 +375,7 @@ export class MastodonAnalyticsId extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsRu extends MastodonAnalytics {
@@ -382,6 +397,7 @@ export class MastodonAnalyticsRu extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsSv extends MastodonAnalytics {
@@ -403,6 +419,7 @@ export class MastodonAnalyticsSv extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsVi extends MastodonAnalytics {
@@ -424,6 +441,7 @@ export class MastodonAnalyticsVi extends MastodonAnalytics {
   ],
   templateUrl: './mastodon-analytics.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonAnalyticsTr extends MastodonAnalytics {

@@ -8,6 +8,7 @@ import {
   inject,
   importProvidersFrom,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   HttpErrorResponse,
@@ -152,6 +153,7 @@ class NavigationReviewState {
 }
 @Component({
   imports: [MbPageHeader],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<mb-page-header [title]="title()" />
     <p class="ds-section">
       Preview destination content. The navigation around it is the real Settings
@@ -181,6 +183,7 @@ class SettingsDestination implements OnDestroy {
     MbNavigation,
     MbNavLink,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>Navigation and timeline states in real pages.</h1>
     <p class="ds-intro">

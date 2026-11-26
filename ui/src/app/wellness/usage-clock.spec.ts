@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { addActive, breakDue, grayLevel, normalizeUsage, wellnessDay } from './usage-clock-model';
 import {
@@ -149,7 +149,7 @@ describe('UsageClock and breaks', () => {
   });
 });
 
-@Component({ template: '' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: '' })
 class Blank {}
 
 describe('WellnessTime check-in', () => {

@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -34,6 +43,7 @@ const NEW_CONTEXTS: FilterContext[] = ['home', 'public', 'thread', 'account'];
 @Component({
   selector: 'app-filter-post-dialog',
   imports: [FormsModule, TranslocoPipe, MbButton, MbControl, MbDialog, MbField, MbNotice],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './filter-post-dialog.html',
 })
 export class FilterPostDialog implements OnInit {

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../../platform/session/auth';
@@ -131,6 +131,7 @@ import { LocalePicker } from '../../i18n/locale-picker/locale-picker';
       <app-bug-report-dialog (closed)="reporting.set(false)" />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .app-footer {
       padding: 20px 16px 28px;

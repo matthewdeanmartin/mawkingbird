@@ -1,6 +1,6 @@
 import { saveFile } from '../../platform/files/save-file';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { DestroyRef } from '@angular/core';
+import { DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { PlusPaywall } from '../../accounts/mawkingbird/plus-paywall';
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -97,6 +97,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   selector: 'app-settings-config',
   imports: [FormsModule, TranslocoPipe],
   templateUrl: './settings-config.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-config.css',
 })
 export class SettingsConfig {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -28,6 +28,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     CrosspostWorkbench,
   ],
   templateUrl: './crosspost.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class Crosspost {
@@ -54,6 +55,7 @@ export class Crosspost {
   ],
   templateUrl: './crosspost.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostDe extends Crosspost {
@@ -78,6 +80,7 @@ export class CrosspostDe extends Crosspost {
   ],
   templateUrl: './crosspost.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostJa extends Crosspost {
@@ -102,6 +105,7 @@ export class CrosspostJa extends Crosspost {
   ],
   templateUrl: './crosspost.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostFr extends Crosspost {
@@ -126,6 +130,7 @@ export class CrosspostFr extends Crosspost {
   ],
   templateUrl: './crosspost.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostEs extends Crosspost {
@@ -150,6 +155,7 @@ export class CrosspostEs extends Crosspost {
   ],
   templateUrl: './crosspost.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostZhHant extends Crosspost {
@@ -174,6 +180,7 @@ export class CrosspostZhHant extends Crosspost {
   ],
   templateUrl: './crosspost.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostKo extends Crosspost {
@@ -198,6 +205,7 @@ export class CrosspostKo extends Crosspost {
   ],
   templateUrl: './crosspost.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostPt extends Crosspost {
@@ -222,6 +230,7 @@ export class CrosspostPt extends Crosspost {
   ],
   templateUrl: './crosspost.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostIt extends Crosspost {
@@ -246,6 +255,7 @@ export class CrosspostIt extends Crosspost {
   ],
   templateUrl: './crosspost.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostPl extends Crosspost {
@@ -266,6 +276,7 @@ export class CrosspostPl extends Crosspost {
   ],
   templateUrl: './crosspost.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostUk extends Crosspost {
@@ -286,6 +297,7 @@ export class CrosspostUk extends Crosspost {
   ],
   templateUrl: './crosspost.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostHi extends Crosspost {
@@ -306,6 +318,7 @@ export class CrosspostHi extends Crosspost {
   ],
   templateUrl: './crosspost.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostNl extends Crosspost {
@@ -326,6 +339,7 @@ export class CrosspostNl extends Crosspost {
   ],
   templateUrl: './crosspost.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostId extends Crosspost {
@@ -346,6 +360,7 @@ export class CrosspostId extends Crosspost {
   ],
   templateUrl: './crosspost.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostRu extends Crosspost {
@@ -366,6 +381,7 @@ export class CrosspostRu extends Crosspost {
   ],
   templateUrl: './crosspost.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostSv extends Crosspost {
@@ -386,6 +402,7 @@ export class CrosspostSv extends Crosspost {
   ],
   templateUrl: './crosspost.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostVi extends Crosspost {
@@ -406,6 +423,7 @@ export class CrosspostVi extends Crosspost {
   ],
   templateUrl: './crosspost.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class CrosspostTr extends Crosspost {

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MbHelp } from './help';
 
 @Component({
   imports: [MbHelp],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<mb-help label="About playback"><p>Playback stays paused.</p></mb-help>
     <mb-help label="About uploads">Uploads are posted separately.</mb-help>`,
 })

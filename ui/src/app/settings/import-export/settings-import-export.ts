@@ -1,6 +1,13 @@
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, computed, inject, Injectable, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Injectable,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { FormsModule } from '@angular/forms';
@@ -171,6 +178,7 @@ export class SuggestedTagImporter extends ImportTags {}
   ],
   providers: [SuggestedTagImporter],
   templateUrl: './settings-import-export.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./friend-finder.css', './settings-import-export.css'],
 })
 export class SettingsImportExport {

@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, Injectable, input, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  Injectable,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FeatureFlags } from '../../platform/build/feature-flags';
@@ -65,6 +74,7 @@ export class PlusPromotions {
       </aside>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

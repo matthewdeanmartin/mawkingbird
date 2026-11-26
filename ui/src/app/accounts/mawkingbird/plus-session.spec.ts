@@ -2,7 +2,7 @@ import { MawkingbirdAccess } from './mawkingbird-access';
 import { PlusCatalogue } from './plus-catalogue';
 import { catalogueOffer } from '../../testing/plus-catalogue';
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PlusSession } from './plus-session';
@@ -35,7 +35,7 @@ describe('PlusSession', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: MawkingbirdAccess, useValue: { enabled: () => true } },
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: MawkingbirdSession, useValue: session },
       ],

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 
 let nextId = 0;
 
@@ -26,6 +26,7 @@ let nextId = 0;
       <progress [attr.aria-labelledby]="labelId"></progress>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './progress.css',
 })
 export class MbProgress {

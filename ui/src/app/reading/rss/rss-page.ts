@@ -13,6 +13,7 @@ import {
   Injector,
   signal,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -167,6 +168,7 @@ interface RailGroup {
     RssFeedActions,
   ],
   templateUrl: './rss-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rss-page.css',
 })
 export class RssPage {

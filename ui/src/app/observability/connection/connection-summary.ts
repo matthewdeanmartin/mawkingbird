@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { summarize } from '../../platform/network/connection-history';
@@ -33,6 +33,7 @@ import { percent } from './connection-view';
       <span class="muted small">{{ 'connection.card.details' | transloco }}</span>
     </a>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

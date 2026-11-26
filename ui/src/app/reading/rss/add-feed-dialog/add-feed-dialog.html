@@ -43,7 +43,8 @@
         <p class="retry-line">
           <button class="btn btn-outline btn-sm" type="button" (click)="retryViaProxy()">
             {{
-              'pages.rss.addFeed.tryAgainVia' | transloco: { proxy: proxySettings.chosen()?.label }
+              'pages.rss.addFeed.tryAgainVia'
+                | transloco: { proxy: $safeNavigationMigration(proxySettings.chosen()?.label) }
             }}
           </button>
         </p>

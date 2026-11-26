@@ -1,4 +1,4 @@
-# Mawkingbird for Firefox. Git Bash + Node 22+. See README.md.
+# Mawkingbird for Firefox. Git Bash + Node 26. See README.md.
 # None of these run in CI.
 
 .PHONY: install test lint check run build sign clean

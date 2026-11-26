@@ -1,4 +1,4 @@
-import { Component, inject, importProvidersFrom, signal } from "@angular/core";
+import { Component, inject, importProvidersFrom, signal, ChangeDetectionStrategy } from "@angular/core";
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
 import { of } from "rxjs";
@@ -72,6 +72,7 @@ const notifications = ["mention", "reblog", "favourite", "favourite"].map(
 @Component({
   selector: "notification-layout",
   imports: [Notifications],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<app-notifications />`,
 })
 class NotificationLayout {

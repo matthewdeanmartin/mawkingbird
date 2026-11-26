@@ -1,5 +1,5 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Component, inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -11,6 +11,7 @@ import { AppOnlyLinkRel } from '../public-page-urls';
   selector: 'app-features',
   imports: [RouterLink, AppOnlyLinkRel, MbButton, MbContentLink, MbNavigation, MbNavLink],
   templateUrl: './features.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './features.css',
 })
 export class Features {

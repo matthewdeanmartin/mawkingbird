@@ -3,7 +3,7 @@ import {
   type Meta,
   type StoryObj,
 } from "@storybook/angular";
-import { Component } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { provideRouter, RouterLink, withHashLocation } from "@angular/router";
 import { MbAddBox } from "../../ui/src/app/design-system/add-box/add-box";
@@ -132,6 +132,7 @@ const picture =
       </section>
     </mb-rail-page>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .icons {
       display: flex;

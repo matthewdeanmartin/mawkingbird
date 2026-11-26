@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { Status } from '../../platform/api/models';
@@ -17,6 +17,7 @@ import { MAWKINGBIRD_ACCOUNT, virtualTweet } from '../docs/static-status';
   selector: 'app-about',
   imports: [StatusCard, TranslocoPipe],
   templateUrl: './about.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './about.css',
 })
 export class About {

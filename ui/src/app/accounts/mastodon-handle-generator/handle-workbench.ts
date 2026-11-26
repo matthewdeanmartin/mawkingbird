@@ -10,6 +10,7 @@ import {
   signal,
   untracked,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -122,6 +123,7 @@ export const STEP_TITLES: Record<HandleStep, string> = {
     MbNotice,
   ],
   templateUrl: './handle-workbench.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './handle-workbench.css',
 })
 export class HandleWorkbench {

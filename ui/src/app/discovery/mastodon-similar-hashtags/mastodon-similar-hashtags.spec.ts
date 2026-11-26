@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -21,7 +21,7 @@ describe('MastodonSimilarHashtags', () => {
     TestBed.configureTestingModule({
       imports: [MastodonSimilarHashtags],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         {
@@ -62,7 +62,7 @@ describe('SimilarHashtagsWorkbench', () => {
     TestBed.configureTestingModule({
       imports: [SimilarHashtagsWorkbench],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { queryParamMap: params.asObservable() } },

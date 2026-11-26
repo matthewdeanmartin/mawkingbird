@@ -10,6 +10,7 @@ import {
   Injector,
   ElementRef,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -56,6 +57,7 @@ import { rssSourceUrl } from '../rss-source';
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: inline-block;

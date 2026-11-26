@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SeenWhenScrolled } from './seen-when-scrolled';
@@ -27,6 +27,7 @@ function entry(options: {
 
 @Component({
   imports: [SeenWhenScrolled],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<div [appSeenWhenScrolled]="enabled()" (seen)="seen = seen + 1">row</div>`,
 })
 class Host {

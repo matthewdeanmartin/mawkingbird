@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "fediblog": "file:vendor/fediblog-0.1.0.tgz"
+  },
+  "engines": {
+    "node": ">=26 <27"
   }
 }

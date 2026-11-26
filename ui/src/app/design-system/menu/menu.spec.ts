@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { MbMenuGroup } from './menu-group';
@@ -10,6 +10,7 @@ import { MbPostMenu } from './post-menu';
   imports: [MbPostMenu, MbMenuItem, MbMenuGroup, MbMenuSeparator],
   // The host stands in for a clickable post card.
   host: { '(click)': 'cardClicks = cardClicks + 1', '(keydown)': 'cardKeys.push($event.key)' },
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-post-menu label="More actions for this post" closeLabel="Close menu">
       <button type="button" mbMenuItem (click)="saved = saved + 1">Save as to-do</button>

@@ -8,6 +8,7 @@ import {
   Injector,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -137,6 +138,7 @@ export class ProxyAccountSignup {
       </aside>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     dialog {
       width: min(32rem, calc(100vw - 2rem));

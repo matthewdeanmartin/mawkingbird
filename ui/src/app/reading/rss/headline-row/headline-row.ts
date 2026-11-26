@@ -1,5 +1,5 @@
 import { translatedComputed } from '../../../i18n/translated';
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { HumanTimePipe } from '../../../i18n/human-time.pipe';
 import { Status } from '../../../platform/api/models';
@@ -40,6 +40,7 @@ function plainText(html: string): string {
   imports: [HumanTimePipe, TranslocoPipe, RouterLink, RssFeedActions],
   templateUrl: './headline-row.html',
   styleUrl: './headline-row.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '[class.unread]': '!read()',
     '[class.expanded]': 'expanded()',

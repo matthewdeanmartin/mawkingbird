@@ -4,7 +4,7 @@ import { AppDialogs } from '../shell/app-dialogs';
 import { PublishingMetrics } from './publishing-metrics';
 import { Auth } from '../platform/session/auth';
 // i18n pages.observability.myAnalytics: My Profile's Analytics
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MbButton } from '../design-system/button/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -325,6 +325,7 @@ export type ObservabilityView = 'dashboard' | 'api' | 'logs';
   selector: 'app-observability',
   imports: [MbButton, RouterLink, TranslocoPipe, ConnectionSummary, ReadingBack],
   templateUrl: './observability.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./diagnostics-shared.css', './observability.css'],
 })
 export class Observability {

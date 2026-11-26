@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Type } from '@angular/core';
 import { DeferBlockBehavior, TestBed } from '@angular/core/testing';
@@ -32,7 +32,7 @@ describe('Translated tool pages', () => {
         deferBlockBehavior: DeferBlockBehavior.Manual,
         imports: [component],
         providers: [
-          provideHttpClient(),
+          provideHttpClient(withXhr()),
           provideHttpClientTesting(),
           provideRouter([]),
           {
@@ -60,7 +60,9 @@ describe('Translated tool pages', () => {
       expect(root.querySelector('h1')?.textContent).toContain(tool.prerenderCheck.heading);
       if (tool.translationOf) {
         const english = FOCUSED_TOOLS.find((entry) => entry.id === tool.translationOf)!;
-        expect(root.querySelector(`a[hreflang="en"][href="/${english.path}"]`)?.textContent).toBe('English');
+        expect(root.querySelector(`a[hreflang="en"][href="/${english.path}"]`)?.textContent).toBe(
+          'English',
+        );
       }
       for (const link of root.querySelectorAll<HTMLAnchorElement>('header a[mbButton]')) {
         expect(link.getAttribute('href'), `${tool.path} app entry`).toMatch(/^\/login(?:\/|\?|$)/);

@@ -1,4 +1,4 @@
-import { HttpParams, provideHttpClient } from '@angular/common/http';
+import { HttpParams, provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WritableSignal } from '@angular/core';
@@ -150,7 +150,7 @@ describe('Search', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         // provideRouter wires up RouterLink + Location; we override only the
         // ActivatedRoute stream so we can control the query params directly.

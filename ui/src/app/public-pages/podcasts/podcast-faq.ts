@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { AppOnlyLinkRel } from '../public-page-urls';
@@ -39,6 +39,7 @@ import type { PodcastVersion } from './podcast-pages';
       </p>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../features/features.css', '../youtubers/youtuber-public.css'],
 })
 export class PodcastFaq {

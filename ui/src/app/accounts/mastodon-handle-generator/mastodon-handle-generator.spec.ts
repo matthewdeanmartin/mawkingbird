@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -15,7 +15,7 @@ describe('MastodonHandleGenerator', () => {
     TestBed.configureTestingModule({
       imports: [MastodonHandleGenerator],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { snapshot: { data: {} } } },
@@ -76,7 +76,7 @@ describe('HandleWorkbench', () => {
     TestBed.configureTestingModule({
       imports: [HandleWorkbench],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([{ path: '**', children: [] }]),
         {

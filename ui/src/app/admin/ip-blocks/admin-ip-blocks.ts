@@ -1,6 +1,6 @@
 import { MbField, MbControl } from '../../design-system/field/field';
 import { MbButton } from '../../design-system/button/button';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { AdminApi } from '../admin-api';
@@ -19,6 +19,7 @@ const SEVERITIES = ['no_access', 'sign_up_requires_approval', 'sign_up_block'] a
   selector: 'app-admin-ip-blocks',
   imports: [MbField, MbControl, MbButton, FormsModule, TranslocoPipe],
   templateUrl: './admin-ip-blocks.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./admin-lists.css', '../admin-form.css'],
 })
 export class AdminIpBlocks implements OnInit {

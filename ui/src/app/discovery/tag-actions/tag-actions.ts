@@ -1,5 +1,15 @@
 import { TagState } from './tag-state';
-import { Component, computed, effect, inject, input, output, signal, Type } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  Type,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -27,6 +37,7 @@ import type { TagFilterDialog } from '../../moderation/tag-filter-dialog/tag-fil
   selector: 'app-tag-actions',
   imports: [FormsModule, NgComponentOutlet, RouterLink, TranslocoPipe],
   templateUrl: './tag-actions.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tag-actions.css',
 })
 export class TagActions {

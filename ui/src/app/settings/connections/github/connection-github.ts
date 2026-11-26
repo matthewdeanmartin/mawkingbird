@@ -3,7 +3,7 @@ import { MbButton } from '../../../design-system/button/button';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -62,6 +62,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
     MbPageHeader,
   ],
   templateUrl: './connection-github.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-github.css'],
 })
 export class ConnectionGitHub implements OnInit {

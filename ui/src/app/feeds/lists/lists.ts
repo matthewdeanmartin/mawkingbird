@@ -6,7 +6,16 @@ import { MbButton } from '../../design-system/button/button';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 import { RecentFeeds } from '../recent-feeds';
 import { FollowBundleTags } from '../../discovery/tag-actions/follow-bundle-tags';
-import { Component, computed, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { filter, firstValueFrom, take } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
@@ -241,6 +250,7 @@ import { MisskeyFeedSections } from './misskey-feed-sections';
     CollectionSettingsDialog,
   ],
   templateUrl: './lists.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './lists.css',
 })
 export class Lists implements OnInit {

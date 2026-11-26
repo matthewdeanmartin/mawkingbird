@@ -1,5 +1,5 @@
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import type { AdoptionChoice } from '../../../accounts/mawkingbird/collection-adoption';
 import type { AdoptableCollection } from '../../../accounts/mawkingbird/collection-adoption-runner';
 
@@ -52,6 +52,7 @@ import type { AdoptableCollection } from '../../../accounts/mawkingbird/collecti
   selector: 'app-adoption-dialog',
   imports: [TranslocoPipe],
   templateUrl: './adoption-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './adoption-dialog.css',
 })
 export class AdoptionDialog {

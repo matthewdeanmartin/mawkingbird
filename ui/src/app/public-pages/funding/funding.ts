@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { Status } from '../../platform/api/models';
@@ -25,6 +25,7 @@ import { MAWKINGBIRD_ACCOUNT, virtualTweet } from '../docs/static-status';
   selector: 'app-funding',
   imports: [StatusCard, TranslocoPipe],
   templateUrl: './funding.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './funding.css',
 })
 export class Funding {

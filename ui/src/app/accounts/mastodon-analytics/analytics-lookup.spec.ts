@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
@@ -13,7 +13,11 @@ import { AnalyticsLookup } from './analytics-lookup';
 import { parseFediverseHandle } from './fediverse-handle';
 
 /** Stands in for the real analytics, which would fetch on init. */
-@Component({ selector: 'app-account-analytics', template: '' })
+@Component({
+  selector: 'app-account-analytics',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class FakeAnalytics {
   readonly account = input.required<Account>();
   readonly publicRef = input<AnonymousPublicRef | null>(null);

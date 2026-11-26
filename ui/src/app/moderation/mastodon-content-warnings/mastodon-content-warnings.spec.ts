@@ -1,5 +1,5 @@
 import { PLATFORM_ID } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import {
   ComponentFixture,
@@ -42,7 +42,7 @@ describe('MastodonContentWarnings', () => {
               },
             ]
           : []),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { snapshot: { data } } },
@@ -164,7 +164,7 @@ describe('ContentWarningsWorkbench', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [ContentWarningsWorkbench],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     TestBed.inject(Server).setBaseUrl('https://mastodon.social');
     // Trust settings are stored per signed-in account.

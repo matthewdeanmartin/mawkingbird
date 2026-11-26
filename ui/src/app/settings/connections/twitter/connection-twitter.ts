@@ -8,7 +8,14 @@ import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DecimalPipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -229,6 +236,7 @@ import { Terminology } from '../../../i18n/terminology';
     TranslocoPipe,
   ],
   templateUrl: './connection-twitter.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-twitter.css'],
 })
 export class ConnectionTwitter implements OnInit {

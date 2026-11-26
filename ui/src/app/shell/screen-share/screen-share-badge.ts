@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ScreenShare } from './screen-share';
 
@@ -29,6 +29,7 @@ import { ScreenShare } from './screen-share';
       </button>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .badge {
       display: inline-flex;
@@ -70,6 +71,7 @@ export class ScreenShareBadge {
       </button>
     </section>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .cover {
       padding: 48px 32px;

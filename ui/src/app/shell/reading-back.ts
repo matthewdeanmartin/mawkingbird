@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
 import { ReadingHistory } from './reading-history';
@@ -10,6 +10,7 @@ import { ReadingHistory } from './reading-history';
   template: `<button mbButton variant="link" type="button" (click)="history.back(fallback())">
     <span aria-hidden="true">←</span> {{ 'pages.profile.actions.backWord' | transloco }}
   </button>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

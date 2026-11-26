@@ -1,4 +1,12 @@
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -87,6 +95,7 @@ const SCAN_PAGES = 5;
     PlaylistsTabs,
   ],
   templateUrl: './playlists-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './radio-lists.css',
 })
 export class PlaylistsPage {

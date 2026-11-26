@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import { MawkingbirdAccess, ownsMawkingbirdServices } from './mawkingbird-access';
@@ -13,7 +13,7 @@ import { PROFILE_SYNC_KEY } from './profile-sync-state';
 
 beforeEach(() => {
   localStorage.clear();
-  TestBed.configureTestingModule({ providers: [provideHttpClient()] });
+  TestBed.configureTestingModule({ providers: [provideHttpClient(withXhr())] });
 });
 afterEach(() => vi.unstubAllGlobals());
 

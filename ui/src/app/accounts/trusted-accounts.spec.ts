@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -19,7 +19,7 @@ function withFollows(...following: string[]): TrustedAccounts {
   TestBed.resetTestingModule();
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       {
         provide: FollowTrust,
@@ -44,7 +44,7 @@ describe('TrustedAccounts', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     trusted = TestBed.inject(TrustedAccounts);
   });
@@ -293,7 +293,7 @@ describe('TrustedAccounts', () => {
       trusted.setLevel('follows-boosts');
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
       expect(TestBed.inject(TrustedAccounts).level()).toBe('follows-boosts');
     });
@@ -311,7 +311,7 @@ describe('TrustedAccounts', () => {
       );
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
       const migrated = TestBed.inject(TrustedAccounts);
 
@@ -327,7 +327,7 @@ describe('TrustedAccounts', () => {
       );
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
       expect(TestBed.inject(TrustedAccounts).level()).toBe('individuals');
     });

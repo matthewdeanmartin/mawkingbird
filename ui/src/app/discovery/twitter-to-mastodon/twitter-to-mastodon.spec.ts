@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -12,7 +12,7 @@ describe('TwitterToMastodon', () => {
     TestBed.configureTestingModule({
       imports: [TwitterToMastodon],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         // As the real route: the tool's path is what its Invite link is built from.
@@ -55,7 +55,7 @@ describe('TwitterImportNextSteps', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         // As on the tool page: its path is what the Invite link is built from.

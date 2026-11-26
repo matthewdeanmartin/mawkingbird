@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { concatMap, from, Observable, of, throwError } from 'rxjs';
@@ -46,6 +46,7 @@ interface BulkResult {
   selector: 'app-bulk-add-dialog',
   imports: [MbDialog, MbButton, MbField, MbControl, MbBadge, MbHelp, FormsModule, TranslocoPipe],
   templateUrl: './bulk-add-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bulk-add-dialog.css',
 })
 export class BulkAddDialog {

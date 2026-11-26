@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -27,6 +27,7 @@ export interface YoutubeWords {
 @Component({
   selector: 'app-youtube-subscribe',
   imports: [MbButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `@if (valid()) {
     <button
       mbButton
@@ -68,6 +69,7 @@ export class YoutubeSubscribe {
       <a mbContentLink routerLink="/videos">{{ words().watch }}</a>
     }
   </div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .youtube-all {
       display: flex;

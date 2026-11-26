@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -13,7 +13,7 @@ describe('BugReport', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [BugReport, ErrorLog, provideHttpClient(), provideHttpClientTesting()],
+      providers: [BugReport, ErrorLog, provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     report = TestBed.inject(BugReport);
     errorLog = TestBed.inject(ErrorLog);

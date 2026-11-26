@@ -1,5 +1,13 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -93,6 +101,7 @@ import { TrackActions } from './track-actions';
     ReadingBack,
   ],
   templateUrl: './playlist-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./radio-lists.css', './playlist-page.css'],
 })
 export class PlaylistPage {

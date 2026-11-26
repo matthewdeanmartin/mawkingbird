@@ -5,7 +5,14 @@ import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { MbDisclosure } from '../../../design-system/disclosure/disclosure';
 import { MbRadioGroup } from '../../../design-system/radio-group/radio-group';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { BloggerApi, BloggerBlog } from '../../../connections/blogger/blogger-api';
@@ -88,6 +95,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
     TranslocoPipe,
   ],
   templateUrl: './connection-blogger.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-blogger.css'],
 })
 export class ConnectionBlogger implements OnInit {

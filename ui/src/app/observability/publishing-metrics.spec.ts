@@ -1,4 +1,4 @@
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -17,7 +17,7 @@ describe('Publishing request diagnostics', () => {
     sessionStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([metricsInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([metricsInterceptor])),
         provideHttpClientTesting(),
         { provide: CorsProxySettings, useValue: { chosen: () => ({ id: 'mawkingbird-plus' }) } },
       ],

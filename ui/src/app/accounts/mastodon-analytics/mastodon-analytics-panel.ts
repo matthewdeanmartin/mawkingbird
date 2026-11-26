@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component, computed, ChangeDetectionStrategy } from '@angular/core';
 import { AnalyticsLookup } from './analytics-lookup';
 import {
   FocusedNextSteps,
@@ -14,6 +14,7 @@ import { routeTranslate } from '../../i18n/page-language';
 @Component({
   selector: 'app-mastodon-analytics-panel',
   imports: [AnalyticsLookup, FocusedNextSteps],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-analytics-lookup />
     <app-focused-next-steps [inviteLink]="invite" [lead]="keepUsing()" />

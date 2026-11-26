@@ -1,4 +1,4 @@
-import { Component, ElementRef, signal, viewChild } from "@angular/core";
+import { Component, ElementRef, signal, viewChild, ChangeDetectionStrategy } from "@angular/core";
 import { type Meta, type StoryObj } from "@storybook/angular";
 import { MbDialog } from "../../ui/src/app/design-system/dialog/dialog";
 import { MbButton } from "../../ui/src/app/design-system/button/button";
@@ -10,6 +10,7 @@ import {
 @Component({
   selector: "mb-drawer-review",
   imports: [MbDialog, MbButton, MbNavigation, MbNavLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <article class="ds-sheet">
       <h1>Navigation drawer</h1>

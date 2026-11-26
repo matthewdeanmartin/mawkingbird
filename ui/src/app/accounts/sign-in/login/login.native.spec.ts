@@ -2,7 +2,7 @@ import {
   NATIVE_FOLLOW_COLLECT,
   NATIVE_MASTODON_LOGIN,
 } from '../../../platform/session/platform-login';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -22,7 +22,7 @@ beforeEach(() => {
     providers: [
       { provide: NATIVE_MASTODON_LOGIN, useValue: nativeLogin },
       { provide: NATIVE_FOLLOW_COLLECT, useValue: nativeCollect },
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap({}) } } },
     ],

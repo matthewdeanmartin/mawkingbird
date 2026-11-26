@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { ConnectionMeter } from '../../platform/network/connection-meter';
 import { readOutbox } from '../../platform/offline/outbox-summary';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal } from '@angular/core';
@@ -134,7 +134,7 @@ describe('Compose', () => {
     // it leaks a connected state into every test that follows.
     sessionStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     // These specs use a third-party proxy as the vehicle for testing proxy
     enableProxyFlags();

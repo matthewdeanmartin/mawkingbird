@@ -1,7 +1,7 @@
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { StarterPackTextPipe, starterPackText } from '../starter-pack-text';
 import { PackLanguagePicker } from '../pack-language-picker';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -80,6 +80,7 @@ interface DiscoverySet {
   selector: 'app-bundled-starter-kits',
   imports: [MbContentLink, RouterLink, StarterPackTextPipe, TranslocoPipe, PackLanguagePicker],
   templateUrl: './bundled-starter-kits.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bundled-starter-kits.css',
 })
 export class BundledStarterKits {

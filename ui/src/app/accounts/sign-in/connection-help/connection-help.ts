@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPageHeader, MbSection } from '../../../design-system/page-header/page-header';
@@ -9,6 +9,7 @@ import { connectionHelpServer, isPrivateNetworkServer } from '../../../platform/
   selector: 'app-connection-help',
   imports: [RouterLink, TranslocoPipe, MbPageHeader, MbSection, MbDisclosure, MbContentLink],
   templateUrl: './connection-help.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './connection-help.css',
 })
 export class ConnectionHelp {

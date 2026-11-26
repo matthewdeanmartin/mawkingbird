@@ -1,4 +1,12 @@
-import { Component, effect, inject, input, signal, Type } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  input,
+  signal,
+  Type,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Status } from '../../platform/api/models';
@@ -44,6 +52,7 @@ import { ImageActions, imageFileName } from './image-actions';
       }
     }`,
   // A row in a ••• menu, matching its other entries (see tag-mute-menu).
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: contents;

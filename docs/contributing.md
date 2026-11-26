@@ -17,7 +17,7 @@ you choose to include before sharing.
 
 ## Get the client running
 
-Use Git, Node.js 22 (the CI version), npm, and Make. On Windows, use Git Bash.
+Use Git, Node.js 26 (the CI version), npm, and Make. On Windows, use Git Bash.
 The client does not require Python or a running mock server.
 
 ```bash

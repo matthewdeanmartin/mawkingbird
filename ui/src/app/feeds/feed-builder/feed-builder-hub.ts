@@ -8,6 +8,7 @@ import {
   inject,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
@@ -72,6 +73,7 @@ interface HubTopicView {
     MbNavLink,
   ],
   templateUrl: './feed-builder-hub.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: [
     '../../public-pages/features/features.css',
     '../../public-pages/features/follow.css',

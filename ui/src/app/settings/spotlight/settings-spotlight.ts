@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { HouseAdStore } from '../../shell/house-ad-store';
 import { HOUSE_ADS_SHOWN } from '../../shell/house-ads';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -43,6 +43,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   imports: [TranslocoPipe],
   selector: 'app-settings-spotlight',
   templateUrl: './settings-spotlight.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-spotlight.css',
 })
 export class SettingsSpotlight {

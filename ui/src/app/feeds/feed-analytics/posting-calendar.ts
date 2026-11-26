@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { postHeatmap } from '../../accounts/account-metrics';
 import { feedSubject } from '../feed-metrics';
@@ -62,6 +62,7 @@ import { Status } from '../../platform/api/models';
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

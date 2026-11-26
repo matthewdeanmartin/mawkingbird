@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
@@ -30,6 +30,7 @@ import { MbButton } from '../design-system/button/button';
       </svg>
     </a>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     svg {
       fill: none;
@@ -59,6 +60,7 @@ export class BlogSettingsLink {}
       </div>
     </header>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

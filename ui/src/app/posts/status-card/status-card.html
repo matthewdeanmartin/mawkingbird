@@ -1815,7 +1815,7 @@
             [initialText]="redraftText()"
             [initialVisibility]="display.visibility"
             [inReplyToId]="display.in_reply_to_id ?? undefined"
-            [quotedStatusId]="display.quote?.quoted_status?.id"
+            [quotedStatusId]="$safeNavigationMigration(display.quote?.quoted_status?.id)"
             [redraft]="redraftSeed()"
             [draftContext]="'redraft:' + display.id"
             [compact]="true"

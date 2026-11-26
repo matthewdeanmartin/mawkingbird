@@ -1,6 +1,14 @@
 import { PlusCatalogue } from '../../accounts/mawkingbird/plus-catalogue';
 import { PlusPrice } from '../../accounts/mawkingbird/plus-price';
-import { Component, computed, inject, Injector, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Injector,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DatePipe, DecimalPipe, NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -208,6 +216,7 @@ import { ArticleReadingTally } from '../../reading/article/article-reading-tally
     AdoptionDialog,
   ],
   templateUrl: './settings-mawkingbird-plus.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-mawkingbird-plus.css',
 })
 export class SettingsMawkingbirdPlus implements OnInit {

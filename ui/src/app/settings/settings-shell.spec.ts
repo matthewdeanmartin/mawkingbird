@@ -1,8 +1,8 @@
 import { PLATFORM_NETWORK } from '../platform/http/platform-http';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -14,7 +14,7 @@ describe('SettingsShell', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
   });
 
@@ -29,7 +29,7 @@ describe('SettingsShell', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: PLATFORM_NETWORK, useValue: {} },
@@ -196,14 +196,17 @@ describe('SettingsShell', () => {
   });
 });
 
-@Component({ template: '<p>Settings destination</p>' })
+@Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<p>Settings destination</p>',
+})
 class SettingsRouteFixture {}
 
 describe('Settings navigation adoption', () => {
   it('keeps native destinations and marks nested and cross-listed active links', async () => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([
           {
@@ -257,7 +260,7 @@ describe('Settings phone drawer', () => {
     }
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([
           {

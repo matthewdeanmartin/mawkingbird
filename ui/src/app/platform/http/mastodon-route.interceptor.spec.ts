@@ -1,4 +1,4 @@
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -20,7 +20,7 @@ function setup(kind: Kind, token: string | null = null) {
           isMisskeyPrimary: kind === 'misskey',
         },
       },
-      provideHttpClient(withInterceptors([mastodonRouteInterceptor])),
+      provideHttpClient(withXhr(), withInterceptors([mastodonRouteInterceptor])),
       provideHttpClientTesting(),
     ],
   });

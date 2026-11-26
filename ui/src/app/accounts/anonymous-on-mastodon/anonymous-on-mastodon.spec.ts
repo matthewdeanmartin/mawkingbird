@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -44,7 +44,7 @@ describe('AnonymousOnMastodon', () => {
     TestBed.configureTestingModule({
       imports: [AnonymousOnMastodon],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: ActivatedRoute, useValue: { snapshot: { data } } },
@@ -84,7 +84,7 @@ describe('PseudonymityWorkbench', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [PseudonymityWorkbench],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     // Pseudonymity mode is stored per signed-in account.
     TestBed.inject(Auth).setToken('pseudonymous-account');
@@ -188,7 +188,7 @@ describe('PseudonymityWorkbench without an account scope', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [PseudonymityWorkbench],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     const http = TestBed.inject(HttpTestingController);
     const fixture = TestBed.createComponent(PseudonymityWorkbench);

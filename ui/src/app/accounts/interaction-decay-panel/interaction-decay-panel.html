@@ -33,7 +33,7 @@
       <p class="muted small status-line">
         @switch (s.stop) {
           @case ('reachedOldest') {
-            {{ 'interactionDecay.stop.reachedOldest' | transloco: { posts: s.result?.posts } }}
+            {{ 'interactionDecay.stop.reachedOldest' | transloco: { posts: $safeNavigationMigration(s.result?.posts) } }}
           }
           @case ('serverEnd') {
             {{

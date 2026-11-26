@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { BulkActionId, BulkActions } from '../../accounts/bulk-actions';
 import { BulkActionsDialog } from '../../accounts/bulk-actions-dialog/bulk-actions-dialog';
 import { BulkProgress } from '../../accounts/bulk-progress/bulk-progress';
@@ -75,6 +75,7 @@ type Amnesty = 'mute-amnesty' | 'block-amnesty';
       <app-focused-next-steps [inviteLink]="invite" />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class AmnestyWorkbench {

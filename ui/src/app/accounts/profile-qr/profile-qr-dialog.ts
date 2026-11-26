@@ -8,6 +8,7 @@ import {
   output,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -56,6 +57,7 @@ const SCAN_INTERVAL_MS = 250;
   selector: 'app-profile-qr-dialog',
   imports: [MbDialog, MbButton, MbNotice, TranslocoPipe],
   templateUrl: './profile-qr-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile-qr-dialog.css',
 })
 export class ProfileQrDialog implements OnInit, OnDestroy {

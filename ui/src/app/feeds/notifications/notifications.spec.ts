@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal, Signal, WritableSignal } from '@angular/core';
@@ -103,7 +103,7 @@ describe('Notifications across primary networks', () => {
     stream = new FakeStreaming();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: BlueskySession, useValue: { linked } },
@@ -433,7 +433,7 @@ describe('Notifications', () => {
     fakeStreaming = new FakeStreaming();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: Streaming, useValue: fakeStreaming },

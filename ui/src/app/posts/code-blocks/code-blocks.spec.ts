@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { decompressFromEncodedURIComponent } from 'lz-string';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -116,6 +116,7 @@ describe('CodeMenuItems', () => {
 
 @Component({
   imports: [HighlightCode],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<div [innerHTML]="html()" [appHighlightCode]="html()"></div>`,
 })
 class HighlightHost {

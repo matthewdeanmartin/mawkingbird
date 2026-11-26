@@ -3,7 +3,15 @@ import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { MbDialog } from '../../../design-system/dialog/dialog';
-import { Component, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DropboxEntry, DropboxSession } from '../../../connections/dropbox/dropbox-session';
@@ -34,6 +42,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   selector: 'app-connection-dropbox',
   imports: [MbButton, MbNotice, MbContentLink, MbPageHeader, MbDialog, RouterLink, TranslocoPipe],
   templateUrl: './connection-dropbox.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-dropbox.css'],
 })
 export class ConnectionDropbox implements OnInit {

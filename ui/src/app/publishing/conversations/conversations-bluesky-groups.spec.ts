@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
@@ -74,7 +74,7 @@ describe('Conversations: Bluesky groups and live updates', () => {
     getLog.mockReset().mockReturnValue(of({ logs: [], cursor: 'c0' }));
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: Streaming, useValue: { open: vi.fn(() => NEVER) } },

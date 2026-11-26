@@ -1,7 +1,14 @@
 import { AccountName } from '../account-name';
 import { NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
@@ -56,6 +63,7 @@ import { reportSections } from './annual-report-sections';
     TranslocoPipe,
   ],
   templateUrl: './annual-report.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './annual-report.css',
 })
 export class AnnualReportPage implements OnInit {

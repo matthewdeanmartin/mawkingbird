@@ -1,3 +1,5 @@
 node_modules/
 web-ext-artifacts/
 .amo-upload-uuid
+# The root .gitignore ignores every lib/ (Python template); this one ships.
+!/src/lib/

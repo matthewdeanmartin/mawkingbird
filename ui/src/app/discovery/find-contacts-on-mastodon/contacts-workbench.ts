@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   FocusedNextSteps,
   toolInviteLink,
@@ -14,6 +14,7 @@ import { ContactFriendsImport } from '../../settings/import-export/contact-frien
 @Component({
   selector: 'app-contacts-workbench',
   imports: [ContactFriendsImport, FocusedNextSteps],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-contact-friends-import />
     @if (discovery.callCount() > 0) {

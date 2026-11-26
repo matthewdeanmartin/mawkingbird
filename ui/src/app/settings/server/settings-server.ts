@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Auth } from '../../platform/session/auth';
 import { MastodonServers } from '../../discovery/mastodon-servers';
@@ -55,6 +62,7 @@ type ConnectionStatus = 'checking' | 'available' | 'degraded' | 'unreachable';
   selector: 'app-settings-server',
   imports: [FormsModule, ServerDiscovery, ServerPicker, SearchServerDiscovery, TranslocoPipe],
   templateUrl: './settings-server.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-server.css',
 })
 export class SettingsServer implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbHelp } from '../../design-system/help/help';
 import { AdultFilter } from '../../platform/storage/client-prefs';
@@ -70,6 +70,7 @@ export function adultReasonKey(reason: AdultReason): string {
     }
     <p class="muted small">{{ 'adult.why.how' | transloco }}</p>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .why-head {
       font-weight: 600;
@@ -109,6 +110,7 @@ export class AdultReasons {
       </button>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .adult-collapsed {
       display: flex;
@@ -165,6 +167,7 @@ export class AdultCollapsed {
       </mb-help>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .adult-badge {
       display: flex;
@@ -224,6 +227,7 @@ export class AdultBadge {
       }}</span>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: flex;

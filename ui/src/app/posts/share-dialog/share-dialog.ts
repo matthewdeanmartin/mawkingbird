@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  linkedSignal,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PostTarget } from '../../publishing/compose/compose';
 import { TargetAvailabilitySource } from '../../publishing/compose/target-availability';
@@ -247,6 +256,7 @@ const QUOTE_CARRYING_INTENTS = new Set(['twitter', 'bluesky', 'tumblr']);
   selector: 'app-share-dialog',
   imports: [FocusTrap, TranslocoPipe],
   templateUrl: './share-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './share-dialog.css',
 })
 export class ShareDialog {

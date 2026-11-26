@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
@@ -8,6 +8,7 @@ import { MbAddBox } from './add-box';
 
 @Component({
   imports: [FormsModule, MbAddBox, MbButton, MbControl, MbField],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <form mbAddBox (ngSubmit)="sent.set(sent() + 1)">
       <mb-field label="Channel"><input mbControl name="channel" [(ngModel)]="value" /></mb-field>

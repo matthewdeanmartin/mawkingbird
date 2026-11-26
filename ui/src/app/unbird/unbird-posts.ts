@@ -1,5 +1,14 @@
 import { translatedComputed } from '../i18n/translated';
-import { Component, computed, effect, inject, OnInit, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -92,6 +101,7 @@ const PAGE = 50;
     TranslocoPipe,
   ],
   templateUrl: './unbird-posts.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unbird-posts.css',
 })
 export class UnbirdPosts implements OnInit {

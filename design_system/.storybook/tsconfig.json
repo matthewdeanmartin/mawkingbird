@@ -21,5 +21,15 @@
     "../stories/**/*.ts",
     "../../ui/src/app/design-system/**/*.ts"
   ],
-  "exclude": ["../../ui/src/**/*.spec.ts"]
+  "exclude": [
+    "../../ui/src/**/*.spec.ts"
+  ],
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "nullishCoalescingNotNullable": "suppress",
+        "optionalChainNotNullable": "suppress"
+      }
+    }
+  }
 }

@@ -1,9 +1,10 @@
-import { Component, input } from "@angular/core";
+import { Component, input, ChangeDetectionStrategy } from "@angular/core";
 import { type Meta, type StoryObj } from "@storybook/angular";
 import { PowerPost } from "../fixtures/power-post";
 @Component({
   selector: "ds-consolidation-review",
   imports: [PowerPost],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>All the tools. Room to wrap.</h1>
     <p class="ds-intro">

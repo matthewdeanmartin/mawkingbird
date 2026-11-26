@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   activeLabel,
@@ -11,7 +11,7 @@ import {
 } from './create-account';
 import { CreateAccountGo } from './create-account-go';
 
-@Component({ template: 'login' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: 'login' })
 class LoginStub {}
 
 describe('create-mastodon-account page', () => {

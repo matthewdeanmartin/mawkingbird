@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -40,6 +40,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-offsite-directories',
   imports: [RouterLink, TranslocoPipe],
   templateUrl: './offsite-directories.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './offsite-directories.css',
 })
 export class OffsiteDirectories {

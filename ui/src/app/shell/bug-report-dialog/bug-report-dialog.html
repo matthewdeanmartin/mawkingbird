@@ -100,7 +100,7 @@
       }
       @if (canPost()) {
         <p>
-          {{ 'feedback.from' | transloco: { account: auth.account()?.acct } }} · {{ length() }} /
+          {{ 'feedback.from' | transloco: { account: $safeNavigationMigration(auth.account()?.acct) } }} · {{ length() }} /
           {{ maxLength() }}
         </p>
       } @else {

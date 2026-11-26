@@ -4,6 +4,7 @@ import {
   importProvidersFrom,
   inject,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
 import {
@@ -110,6 +111,7 @@ class ReviewState {
     },
     { provide: AppDialogs, useValue: { confirm: async () => false } },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>Shared checkboxes in real screens.</h1>
     <p class="ds-intro">

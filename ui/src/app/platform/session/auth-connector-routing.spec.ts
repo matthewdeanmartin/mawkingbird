@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -36,7 +36,7 @@ describe('Bluesky connector request ownership', () => {
     seedBskyIdentity({ did, handle: 'one.bsky.social' });
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([serverInterceptor, authInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([serverInterceptor, authInterceptor])),
         provideHttpClientTesting(),
         provideRouter([]),
       ],

@@ -1,4 +1,11 @@
-import { Component, computed, ElementRef, inject, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { APP_MODES, AppModeService } from '../platform/build/app-mode';
@@ -53,6 +60,7 @@ import { MODE_ENTRIES, suggestedMode } from './mode-nav';
       }
     </mb-popover>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     /* The shell's nav ran out of room even for short labels (NavFit). */
     :host-context(.primary-nav[data-fit='icons']) .label {

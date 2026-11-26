@@ -1,6 +1,6 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, PLATFORM_ID } from '@angular/core';
+import { Component, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -14,7 +14,11 @@ import { Auth } from '../../platform/session/auth';
 import { ENGLISH_TOOLS, ToolPage } from '../focused-tools';
 import { OpenApp } from './open-app';
 
-@Component({ imports: [OpenApp], template: '<app-open-app>Open the app</app-open-app>' })
+@Component({
+  imports: [OpenApp],
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<app-open-app>Open the app</app-open-app>',
+})
 class Host {}
 
 const VISITORS = [
@@ -53,7 +57,7 @@ function setUp(query: Record<string, string>, route: object = {}): void {
   TestBed.configureTestingModule({
     providers: [
       provideRouter([]),
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       {
         provide: ActivatedRoute,

@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Status } from '../../../platform/api/models';
 import { stripHtml } from '../../../feeds/sentiment';
@@ -38,6 +38,7 @@ const EXCERPT_CHARS = 280;
       }
     </figure>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .quote-preview {
       margin: 0;

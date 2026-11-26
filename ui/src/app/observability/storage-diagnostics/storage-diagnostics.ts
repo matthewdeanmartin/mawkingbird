@@ -1,6 +1,6 @@
 import { AppDialogs } from '../../shell/app-dialogs';
 import { ReadingBack } from '../../shell/reading-back';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import {
   DatabaseInfo,
@@ -85,6 +85,7 @@ import { RemoteStorageUsage } from '../remote-storage-usage';
   selector: 'app-storage-diagnostics',
   imports: [TranslocoPipe, ReadingBack],
   templateUrl: './storage-diagnostics.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../diagnostics-shared.css', './storage-diagnostics.css'],
 })
 export class StorageDiagnostics {

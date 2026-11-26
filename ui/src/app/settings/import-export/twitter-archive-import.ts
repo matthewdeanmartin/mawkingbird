@@ -1,5 +1,13 @@
 import { AccountName } from '../../accounts/account-name';
-import { afterNextRender, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  inject,
+  input,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -98,6 +106,7 @@ export function takeTwitterArchive(): TwitterArchiveSummary | null {
   selector: 'app-twitter-archive-import',
   imports: [AccountName, FormsModule, RouterLink, TranslocoPipe, MbButton],
   templateUrl: './twitter-archive-import.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './friend-finder.css',
 })
 export class TwitterArchiveImport {

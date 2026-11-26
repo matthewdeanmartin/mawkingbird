@@ -1,9 +1,9 @@
 # Firefox extension: Mawkingbird for Firefox
 
-Status: sprint 1 built, uncommitted · 2026-11-26 (11 unit tests pass; `web-ext
-lint` 0 errors, 1 accepted Android warning; zip builds). Not run: any real
-Firefox session; the owner's test plan and sidebar spike are pending. Sprints
-2–3 planned.
+Status: sprints 1–2 built, sprint 2 uncommitted · 2026-11-26 (18 unit tests
+pass; `web-ext lint` 0 errors, 1 accepted Android warning; 0.2.0 zip builds).
+Not run: any real Firefox session; the owner's test plans and sidebar spike are
+pending. Sprint 3 planned.
 Code: `extension/` (its own `package.json` and `Makefile`; nothing in `ui/` or
 `native/` changes). Owner decisions are in the next section.
 
@@ -67,14 +67,15 @@ stay Native), and a bundled copy of the Angular app.
       Bash `Makefile` (`make test lint run build`), `.gitignore`, README.
 - [x] Manifest V3, gecko id `mawkingbird@mawkingbird.com`, Firefox 140+,
       `data_collection_permissions: none`. Permissions: `contextMenus`, `tabs`,
-      `storage`. Host access: none.
+      `storage` (sprint 2 adds `activeTab`, `scripting`). Host access: none.
 - [x] Right-click menus:
   - page: **Share this page**, **Posts about this page**, and **Open in
     Mawkingbird** when the page is a Mastodon, Bluesky or Twitter post or profile;
   - selection: **Quote in Mawkingbird** (quoted text + title + URL);
   - link: **Open link in Mawkingbird** for the same shapes, **Posts about this
     link** for any link.
-- [x] Toolbar button and `Alt+Shift+M` toggle the sidebar.
+- [x] Toolbar button and `Alt+Shift+M` toggle the sidebar. (Sprint 2: the
+      toolbar button opens the popup instead.)
 - [x] Sidebar: Lite in a frame, a strip with Share this page / Posts about this
       page / Open Mawkingbird, and the sign-in check ("Spike" below).
 - [x] Options page: which Mawkingbird (production, test, localhost URL).
@@ -106,23 +107,34 @@ checks it. Outcomes:
 - `/link?url=` uses Mastodon's link timeline (4.3+), which only knows links
   that are trending on the reader's server. Most pages will show nothing yet.
 
-## Sprint 2: what's on this page
+## Sprint 2: what's on this page (built 2026-11-26, version 0.2.0)
 
 Uses `activeTab` + `scripting` only when the reader clicks: no standing access to
 any site.
 
-- [ ] Toolbar popup replacing the bare toggle: Share, Quote, Posts about this
-      page, Open sidebar, and what the page offers (next two items).
-- [ ] **Feeds on this page**: `<link rel="alternate">` RSS/Atom/JSON Feed, plus
-      common `/feed`, `/rss.xml` guesses shown as guesses. Subscribe opens
-      `/rss/add?url=<feed>`; with no feed found, offer `/rss/add?url=<page>`
-      anyway, because Paste a link probes the site itself.
-- [ ] **Author on the fediverse**: `<meta name="fediverse:creator">` (Mastodon
-      4.3 author attribution) and `rel="me"` Mastodon links → Follow opens
-      `/@user@host`.
-- [ ] Page scan is one pure function, injected with `scripting.executeScript`,
-      unit-tested against fixture HTML.
-- [ ] Sidebar fallback per the sprint 1 spike result.
+- [x] Toolbar popup (replaces the bare toggle; `Alt+Shift+M` still toggles the
+      sidebar): Share this page, Quote the selection (when text is selected),
+      Open in Mawkingbird (post/profile pages), Posts about this page, Open the
+      sidebar, Open Mawkingbird.
+- [x] **Feeds**: `<link rel="alternate">` RSS/Atom/RDF/JSON Feed, deduplicated,
+      comment feeds last, at most 5. Each opens `/rss/add?url=<feed>`. With none
+      declared, **Look for a feed on this site** opens `/rss/add?url=<page>`
+      (Paste a link probes the site itself, so no guessed paths here).
+- [x] **Author on the fediverse**: `<meta name="fediverse:creator">` first, then
+      `rel="me"` links to Mastodon-shaped profiles; at most 3. Each opens
+      `/@user@host`, where the Follow button is. Nothing is followed from the
+      extension.
+- [x] Right-click: **Subscribe to this site in Mawkingbird** (any page) and
+      **Subscribe to this feed in Mawkingbird** (links that look like feeds).
+- [x] Page scan split into `collectPageFacts` (serialised into the page; reads
+      tags only, capped) and `interpretPageFacts` (pure); both unit-tested.
+- [x] Pages Firefox protects (about:, addons.mozilla.org) say so and keep the
+      actions that need no reading.
+- [ ] Sidebar fallback per the sprint 1 spike result (waiting for the owner's run).
+
+Not run: a real Firefox session. Test plan: `test_plans/firefox-extension-sprint-2.md`.
+`package.json` still says 0.1.0 (left alone during the Node 26 upgrade); the
+manifest's 0.2.0 is the one Firefox and AMO read.
 
 ## Sprint 3: the bridge (extension side)
 

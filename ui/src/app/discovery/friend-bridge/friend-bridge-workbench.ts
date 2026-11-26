@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { Auth } from '../../platform/session/auth';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { FocusedNextSteps } from '../../public-pages/focused-apps/focused-next-steps';
@@ -45,6 +45,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
       <app-focused-next-steps [inviteLink]="root() + '/invite'" />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class FriendBridgeWorkbench {

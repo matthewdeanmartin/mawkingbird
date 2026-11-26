@@ -1,4 +1,4 @@
-import { HttpParams, provideHttpClient } from '@angular/common/http';
+import { HttpParams, provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
@@ -228,7 +228,7 @@ describe('BlueskyModeration', () => {
 describe('BlueskyApi moderation-service header', () => {
   it('asks for subscribed services’ labels on reads, but not on proxied chat calls', () => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     TestBed.inject(BlueskyModerationState).labelers.set(['did:plc:labeler']);
     const api = TestBed.inject(BlueskyApi);

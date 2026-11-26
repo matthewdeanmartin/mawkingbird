@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, signal, DestroyRef } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  signal,
+  DestroyRef,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -21,6 +29,7 @@ import type { Type } from '@angular/core';
       <p role="status">{{ 'videoPlayer.loading' | transloco }}</p>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '(click)': '$event.stopPropagation()' },
 })
 export class VideoPlayerHost {

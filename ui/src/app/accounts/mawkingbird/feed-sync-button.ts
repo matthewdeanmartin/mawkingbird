@@ -1,4 +1,4 @@
-import { Component, inject, Injector, signal } from '@angular/core';
+import { Component, inject, Injector, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PlusPaywall } from './plus-paywall';
 import { FeatureFlags } from '../../platform/build/feature-flags';
@@ -13,6 +13,7 @@ import type { CollectionAdoptionRunner } from './collection-adoption-runner';
 @Component({
   selector: 'app-feed-sync-button',
   imports: [TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `@if (flags.enabled('mawkingbird-plus')) {
     <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="sync()">
       {{ 'plus.feedSync.button' | transloco }}

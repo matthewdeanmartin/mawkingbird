@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../platform/session/auth';
@@ -59,6 +59,7 @@ const TYPES: Record<SearchNetwork, readonly TypeOption[]> = {
   selector: 'app-search-launcher',
   imports: [TranslocoPipe, FormsModule, RouterLink, AppOnlyLinkRel, MbButton, MbControl, MbField],
   templateUrl: './search-launcher.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .launcher {
       display: grid;

@@ -1,5 +1,5 @@
 import { MbButton } from '../../../design-system/button/button';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Router, RouterLink } from '@angular/router';
 import { Auth } from '../../../platform/session/auth';
@@ -22,6 +22,7 @@ import {
   selector: 'app-bluesky-oauth-callback',
   imports: [MbButton, RouterLink, TranslocoPipe],
   templateUrl: './bluesky-oauth-callback.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bluesky-oauth-callback.css',
 })
 export class BlueskyOAuthCallback implements OnInit {

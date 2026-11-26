@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LitePrefs, LitePrefsValue } from './lite-prefs';
 
@@ -90,6 +90,7 @@ import { LitePrefs, LitePrefsValue } from './lite-prefs';
       </details>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .lite-bar-controls {
       display: flex;

@@ -7,6 +7,7 @@ import {
   output,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -143,6 +144,7 @@ let nextBioEditorId = 0;
       </div>
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .tools,
     [mbDialogActions] {

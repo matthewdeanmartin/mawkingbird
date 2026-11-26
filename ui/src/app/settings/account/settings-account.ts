@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Api } from '../../platform/api/api';
 import { Server } from '../../platform/http/server';
@@ -29,6 +29,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 @Component({
   selector: 'app-settings-account',
   imports: [FormsModule, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-account.html',
 })
 export class SettingsAccount implements OnInit {

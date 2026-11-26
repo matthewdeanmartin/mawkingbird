@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
@@ -105,6 +105,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
   ],
   templateUrl: './pseudonymity-workbench.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .switches {
       display: grid;

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AccountDataRef,
@@ -68,6 +68,7 @@ type PendingAction =
   selector: 'app-settings-accounts',
   imports: [ConfirmDialog, TranslocoPipe],
   templateUrl: './settings-accounts.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-accounts.css',
 })
 export class SettingsAccounts {

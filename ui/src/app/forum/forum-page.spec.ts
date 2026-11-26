@@ -1,4 +1,4 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -13,7 +13,11 @@ import { StatusCard } from '../posts/status-card/status-card';
 import { post, reply, who } from '../testing/forum-fixtures';
 import { ForumPage } from './forum-page';
 
-@Component({ selector: 'app-status-card', template: '<p class="card">{{ status().id }}</p>' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<p class="card">{{ status().id }}</p>',
+})
 class CardStub {
   readonly status = input.required<Status>();
 }

@@ -1,6 +1,14 @@
 import { saveFile } from '../../platform/files/save-file';
 import { translatedComputed } from '../../i18n/translated';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Auth } from '../../platform/session/auth';
 import { SessionTeardown } from '../../platform/session/session-teardown';
@@ -57,6 +65,7 @@ export type LeaveChoice = 'leave' | 'anonymous-data' | 'all-data';
   selector: 'app-leave-dialog',
   imports: [MbDialog, MbButton, MbNotice, TranslocoPipe],
   templateUrl: './leave-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './leave-dialog.css',
 })
 export class LeaveDialog {

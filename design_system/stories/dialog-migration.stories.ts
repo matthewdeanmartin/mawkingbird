@@ -4,6 +4,7 @@ import {
   importProvidersFrom,
   inject,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   applicationConfig,
@@ -77,6 +78,7 @@ class DialogFixtures {
 @Component({
   selector: "ds-dialog-migration",
   imports: [BugReportDialog, BulkAddDialog, BulkActionsDialog, MbButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <h1>Shared dialogs: migration batch 1</h1>
     <p>

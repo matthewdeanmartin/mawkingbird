@@ -36,6 +36,7 @@ import {
   isDevMode,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -513,6 +514,7 @@ const SEARCH_TIMEOUT_MS = 20000;
   // The refine layer's styles are shared with the Bluesky panel, so they live in
   // their own file that both components list — see the header of
   // search-refine.css for why a copy would not do.
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./search.css', './search-refine.css'],
 })
 export class Search implements OnInit, OnDestroy {

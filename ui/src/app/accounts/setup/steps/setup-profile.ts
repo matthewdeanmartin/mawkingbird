@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { MbButton } from '../../../design-system/button/button';
 import { MbControl, MbField } from '../../../design-system/field/field';
@@ -25,6 +32,7 @@ function plainNote(account: Account): string {
   selector: 'app-setup-profile',
   imports: [MbField, MbControl, MbButton, MbFileDrop],
   templateUrl: './setup-profile.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './setup-steps.css',
 })
 export class SetupProfile implements OnDestroy {

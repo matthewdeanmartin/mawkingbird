@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -19,7 +19,11 @@ import { ThreadLoader } from '../read/thread-loader';
 import { ListenPage } from './listen-page';
 import { RADIO_AUDIO, RadioPlayer } from './radio-player';
 
-@Component({ selector: 'app-status-card', template: '{{ status()?.id }}' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '{{ status()?.id }}',
+})
 class CardStub {
   readonly status = input<Status>();
   readonly showMedia = input(true);
@@ -32,7 +36,11 @@ class CardStub {
   readonly replaced = output<{ previous: Status; next: Status }>();
   readonly showOwnReplies = input(true);
 }
-@Component({ selector: 'app-external-player', template: '{{ source().label }}' })
+@Component({
+  selector: 'app-external-player',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '{{ source().label }}',
+})
 class ExternalStub {
   readonly source = input.required<ExternalMedia>();
 }

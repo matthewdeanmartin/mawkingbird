@@ -7,6 +7,7 @@ import {
   input,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   provideRouter,
@@ -434,6 +435,7 @@ const providers = [
       <app-right-rail />
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .preview-grid {
       display: grid;

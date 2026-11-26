@@ -11,6 +11,7 @@ import {
   output,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -77,6 +78,7 @@ import { connectWidget, WidgetController, WidgetState } from './widget-api';
       margin-block: 8px;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '(click)': '$event.stopPropagation()' },
 })
 export class ExternalPlayer {

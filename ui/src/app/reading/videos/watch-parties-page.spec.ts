@@ -1,6 +1,6 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -9,7 +9,11 @@ import { Status } from '../../platform/api/models';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { WatchPartiesPage } from './watch-parties-page';
 
-@Component({ selector: 'app-status-card', template: '<p class="card">{{ status().id }}</p>' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<p class="card">{{ status().id }}</p>',
+})
 class CardStub {
   readonly status = input.required<Status>();
 }
@@ -35,7 +39,7 @@ describe('WatchPartiesPage', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [WatchPartiesPage],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     TestBed.overrideComponent(WatchPartiesPage, {
       remove: { imports: [StatusCard] },

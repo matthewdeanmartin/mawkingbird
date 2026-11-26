@@ -3,7 +3,7 @@ import {
   MbToolbarButton,
 } from "../../ui/src/app/design-system/toolbar/toolbar";
 import { MbCheckbox } from "../../ui/src/app/design-system/checkbox/checkbox";
-import { Component, importProvidersFrom, signal, input } from "@angular/core";
+import { Component, importProvidersFrom, signal, input, ChangeDetectionStrategy } from "@angular/core";
 import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
 import {
   applicationConfig,
@@ -70,6 +70,7 @@ function preferences() {
       },
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <article class="ds-sheet">
       <h1>Toolbars in the app</h1>

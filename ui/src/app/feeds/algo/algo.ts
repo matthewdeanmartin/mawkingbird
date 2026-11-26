@@ -1,4 +1,12 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { AlgoFeed, AlgoPost, AlgoSource } from '../algo-feed';
@@ -80,6 +88,7 @@ interface AlgoLink {
   providers: [AlgoFeed],
   imports: [StatusCard, FeedLanguagePicker, TranslocoPipe, MbPostAction, AlgoViewTabs],
   templateUrl: './algo.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './algo.css',
 })
 export class Algo implements OnInit {

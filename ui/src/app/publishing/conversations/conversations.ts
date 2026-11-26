@@ -20,6 +20,7 @@ import {
   inject,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { catchError, forkJoin, map, of, Subscription, timeout } from 'rxjs';
@@ -318,6 +319,7 @@ export function stripLeadingMentions(html: string): string {
     BlueskyGroupSettings,
   ],
   templateUrl: './conversations.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './conversations.css',
 })
 export class Conversations implements OnInit, OnDestroy {

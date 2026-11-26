@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { MbButton } from '../../../design-system/button/button';
 import { MbControl, MbField } from '../../../design-system/field/field';
@@ -23,6 +23,7 @@ const MAX = 500;
   selector: 'app-setup-intro',
   imports: [MbButton, MbField, MbControl, MbNotice],
   templateUrl: './setup-intro.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './setup-steps.css',
 })
 export class SetupIntro {

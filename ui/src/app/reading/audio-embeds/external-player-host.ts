@@ -8,6 +8,7 @@ import {
   signal,
   Type,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
@@ -55,6 +56,7 @@ import { ProviderConsent } from './provider-consent';
       margin-block: 12px;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '(click)': '$event.stopPropagation()', '[class.active]': 'active()' },
 })
 export class ExternalPlayerHost {

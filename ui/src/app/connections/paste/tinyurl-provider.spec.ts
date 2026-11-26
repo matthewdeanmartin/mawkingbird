@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
@@ -17,7 +17,7 @@ const INPUT = {
 describe('TinyurlProvider', () => {
   function setup(): [TinyurlProvider, HttpTestingController] {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     return [TestBed.inject(TinyurlProvider), TestBed.inject(HttpTestingController)];
   }

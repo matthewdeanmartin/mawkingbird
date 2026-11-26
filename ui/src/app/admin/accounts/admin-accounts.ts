@@ -3,7 +3,7 @@ import { accountProfilePath } from '../../accounts/account-route';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { MbButton } from '../../design-system/button/button';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AdminApi } from '../admin-api';
@@ -35,6 +35,7 @@ const STATUSES = ['active', 'pending', 'silenced', 'suspended', 'disabled'] as c
   selector: 'app-admin-accounts',
   imports: [MbButton, MbToolbar, MbToolbarButton, RouterLink, TranslocoPipe],
   templateUrl: './admin-accounts.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-accounts.css',
 })
 export class AdminAccounts implements OnInit {

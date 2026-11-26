@@ -1,4 +1,11 @@
-import { Component, Injectable, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  Injectable,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -57,6 +64,7 @@ export class SubmittedReports {
 @Component({
   selector: 'app-report-history',
   imports: [DatePipe, RouterLink, TranslocoPipe, MbHelp],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <section class="ssection">
       <h2>

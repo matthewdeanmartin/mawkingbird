@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -95,6 +104,7 @@ export function activeWithin(match: StoredMatch, within: ActiveWithin, now = Dat
     TranslocoPipe,
   ],
   templateUrl: './unbird-people.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unbird-people.css',
 })
 export class UnbirdPeople {

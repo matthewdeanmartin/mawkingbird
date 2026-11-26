@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BulkWordsDialog } from '../../moderation/bulk-words-dialog/bulk-words-dialog';
@@ -153,6 +153,7 @@ import { firstValueFrom } from 'rxjs';
     MbSaveFeedback,
   ],
   templateUrl: './settings-bluesky-moderation.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-bluesky-moderation.css',
 })
 export class SettingsBlueskyModeration implements OnInit {

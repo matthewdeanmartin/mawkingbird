@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -112,7 +112,7 @@ describe('DeepLinkPage', () => {
   it('resolves a foreign numeric ID on the signed-in home server over authenticated HTTP', async () => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([serverInterceptor, authInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([serverInterceptor, authInterceptor])),
         provideHttpClientTesting(),
         { provide: Router, useValue: { navigate } },
         {

@@ -1,4 +1,4 @@
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FocusTrap } from '../../../shell/a11y/focus-trap';
 import { ServerDiscovery } from '../../../discovery/server-discovery/server-discovery';
@@ -31,6 +31,7 @@ import { ServerDiscovery } from '../../../discovery/server-discovery/server-disc
   selector: 'app-unreachable-server-dialog',
   imports: [FocusTrap, ServerDiscovery, TranslocoPipe],
   templateUrl: './unreachable-server-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unreachable-server-dialog.css',
 })
 export class UnreachableServerDialog {

@@ -1,5 +1,5 @@
 import { saveFile } from '../../platform/files/save-file';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../../platform/api/api';
@@ -68,6 +68,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
   ],
   templateUrl: './bookmarks-export-workbench.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .actions {
       display: flex;

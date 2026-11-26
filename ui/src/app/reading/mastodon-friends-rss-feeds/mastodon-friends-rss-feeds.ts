@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -27,6 +27,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     FriendFeedsWorkbench,
   ],
   templateUrl: './mastodon-friends-rss-feeds.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class MastodonFriendsRssFeeds {
@@ -53,6 +54,7 @@ export class MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsDe extends MastodonFriendsRssFeeds {
@@ -77,6 +79,7 @@ export class MastodonFriendsRssFeedsDe extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsJa extends MastodonFriendsRssFeeds {
@@ -101,6 +104,7 @@ export class MastodonFriendsRssFeedsJa extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsFr extends MastodonFriendsRssFeeds {
@@ -125,6 +129,7 @@ export class MastodonFriendsRssFeedsFr extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsEs extends MastodonFriendsRssFeeds {
@@ -149,6 +154,7 @@ export class MastodonFriendsRssFeedsEs extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsZhHant extends MastodonFriendsRssFeeds {
@@ -173,6 +179,7 @@ export class MastodonFriendsRssFeedsZhHant extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsKo extends MastodonFriendsRssFeeds {
@@ -197,6 +204,7 @@ export class MastodonFriendsRssFeedsKo extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsPt extends MastodonFriendsRssFeeds {
@@ -221,6 +229,7 @@ export class MastodonFriendsRssFeedsPt extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsIt extends MastodonFriendsRssFeeds {
@@ -245,6 +254,7 @@ export class MastodonFriendsRssFeedsIt extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsPl extends MastodonFriendsRssFeeds {
@@ -265,6 +275,7 @@ export class MastodonFriendsRssFeedsPl extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsUk extends MastodonFriendsRssFeeds {
@@ -285,6 +296,7 @@ export class MastodonFriendsRssFeedsUk extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsHi extends MastodonFriendsRssFeeds {
@@ -305,6 +317,7 @@ export class MastodonFriendsRssFeedsHi extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsNl extends MastodonFriendsRssFeeds {
@@ -325,6 +338,7 @@ export class MastodonFriendsRssFeedsNl extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsId extends MastodonFriendsRssFeeds {
@@ -345,6 +359,7 @@ export class MastodonFriendsRssFeedsId extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsRu extends MastodonFriendsRssFeeds {
@@ -365,6 +380,7 @@ export class MastodonFriendsRssFeedsRu extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsSv extends MastodonFriendsRssFeeds {
@@ -385,6 +401,7 @@ export class MastodonFriendsRssFeedsSv extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsVi extends MastodonFriendsRssFeeds {
@@ -405,6 +422,7 @@ export class MastodonFriendsRssFeedsVi extends MastodonFriendsRssFeeds {
   ],
   templateUrl: './mastodon-friends-rss-feeds.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonFriendsRssFeedsTr extends MastodonFriendsRssFeeds {

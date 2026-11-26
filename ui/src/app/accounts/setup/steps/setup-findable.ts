@@ -1,4 +1,4 @@
-import { Component, effect, signal } from '@angular/core';
+import { Component, effect, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { MbRadioGroup, type RadioOption } from '../../../design-system/radio-group/radio-group';
 import type { ServerField, ServerSettings } from '../../onboarding/onboarding-questions';
@@ -62,6 +62,7 @@ const VISIBILITY: readonly RadioOption[] = [
       <p class="setup-loading">Loading your server settings…</p>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './setup-steps.css',
 })
 export class SetupFindable {

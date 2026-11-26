@@ -1,4 +1,4 @@
-import { Component, signal } from "@angular/core";
+import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
 import { type Meta, type StoryObj } from "@storybook/angular";
 import {
   MbToolbar,
@@ -28,6 +28,7 @@ import { MbButton } from "../../ui/src/app/design-system/button/button";
     MbSection,
     MbButton,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <article class="ds-sheet">
       <h1>Actions belong together.</h1>

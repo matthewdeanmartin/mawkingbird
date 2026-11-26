@@ -1,4 +1,4 @@
-import { Component, OnInit, input, signal } from '@angular/core';
+import { Component, OnInit, input, signal, ChangeDetectionStrategy } from '@angular/core';
 
 /** The server whose public tag history the pages quote; the copy names it. */
 export const ACTIVITY_SERVER = 'mastodon.social';
@@ -25,6 +25,7 @@ export function weeklyUses(history: readonly TagHistoryDay[] | undefined): numbe
   template: `@if (posts(); as count) {
     <span class="activity">{{ format()(count) }}</span>
   }`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .activity {
       color: var(--muted);

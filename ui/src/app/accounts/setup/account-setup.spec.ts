@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -10,7 +10,7 @@ import { AccountSetup } from './account-setup';
 import { setupGuard } from './setup.guard';
 import { armSetup, readSetup } from './setup-store';
 
-@Component({ template: 'home' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: 'home' })
 class HomeStub {}
 
 const SERVER = 'https://mastodon.example';

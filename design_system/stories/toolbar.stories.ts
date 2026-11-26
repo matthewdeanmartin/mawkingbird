@@ -1,4 +1,4 @@
-import { Component, signal } from "@angular/core";
+import { Component, signal, ChangeDetectionStrategy } from "@angular/core";
 import { type Meta, type StoryObj, moduleMetadata } from "@storybook/angular";
 import {
   MbToolbar,
@@ -8,6 +8,7 @@ import {
 @Component({
   selector: "mb-toolbar-demo",
   imports: [MbToolbar, MbToolbarButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-toolbar label="Feed controls">
       <button

@@ -1,10 +1,11 @@
-import { booleanAttribute, Component, inject, input } from '@angular/core';
+import { booleanAttribute, Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 
 /** Native links retain href/routerLink behavior and normal Tab navigation. */
 @Component({
   selector: 'nav[mbNavigation]',
   template: '<ng-content />',
   styleUrl: './navigation.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[attr.aria-label]': 'label()', '[attr.data-presentation]': 'presentation()' },
 })
 export class MbNavigation {
@@ -16,6 +17,7 @@ export class MbNavigation {
   selector: 'a[mbNavLink]',
   template: '<ng-content />',
   styleUrl: './nav-link.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '[attr.aria-current]': 'current() ? "page" : null',
     '[attr.data-presentation]': 'navigation.presentation()',

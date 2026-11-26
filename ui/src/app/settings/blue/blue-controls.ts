@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DataSaver } from '../../platform/network/data-saver';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -95,6 +95,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-blue-controls',
   imports: [FormsModule, RouterLink, TranslocoPipe],
   templateUrl: './blue-controls.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blue-controls.css',
 })
 export class BlueControls {

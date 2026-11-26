@@ -4,12 +4,14 @@ import {
   postsAboutUrl,
   quotedText,
   shareUrl,
+  subscribeUrl,
 } from './lib/links.js';
 import { getBase } from './lib/settings.js';
 
 /**
- * Right-click menus and the toolbar button. Event page (Manifest V3): every
- * listener is registered at the top level so Firefox can wake the page for it.
+ * Right-click menus. Event page (Manifest V3): every listener is registered at
+ * the top level so Firefox can wake the page for it. The toolbar button is a
+ * popup (popup/), and Alt+Shift+M toggles the sidebar through the manifest.
  */
 
 /** Pages and links the app can open as a post or profile (see lib/links.js). */
@@ -21,6 +23,20 @@ const SOCIAL_PATTERNS = [
   '*://mobile.twitter.com/*',
   '*://x.com/*',
   '*://mobile.x.com/*',
+];
+
+/** Links that look like a feed. A guess: Paste a link checks before subscribing. */
+const FEED_LINK_PATTERNS = [
+  '*://*/*.rss',
+  '*://*/*.atom',
+  '*://*/*.xml',
+  '*://*/*/feed',
+  '*://*/*/feed/',
+  '*://*/feed',
+  '*://*/feed/',
+  '*://*/*/rss',
+  '*://*/rss',
+  '*://*/*feed.json',
 ];
 
 const MENUS = [
@@ -40,6 +56,13 @@ const MENUS = [
     targetUrlPatterns: SOCIAL_PATTERNS,
   },
   { id: 'posts-about-link', title: 'Posts about this link', contexts: ['link'] },
+  {
+    id: 'subscribe-link',
+    title: 'Subscribe to this feed in Mawkingbird',
+    contexts: ['link'],
+    targetUrlPatterns: FEED_LINK_PATTERNS,
+  },
+  { id: 'subscribe-page', title: 'Subscribe to this site in Mawkingbird', contexts: ['page'] },
 ];
 
 browser.runtime.onInstalled.addListener(async () => {
@@ -52,12 +75,6 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
   const pageUrl = info.pageUrl ?? tab?.url ?? '';
   const target = menuTarget(base, info, tab, pageUrl);
   if (target) await openBeside(tab, target);
-});
-
-// The toolbar button toggles the sidebar. `toggle()` must run inside the click
-// handler itself (a user action), so nothing is awaited before it.
-browser.action.onClicked.addListener(() => {
-  browser.sidebarAction.toggle();
 });
 
 function menuTarget(base, info, tab, pageUrl) {
@@ -78,6 +95,10 @@ function menuTarget(base, info, tab, pageUrl) {
       return deepLinkFor(base, info.linkUrl) ?? postsAbout(base, info.linkUrl);
     case 'posts-about-link':
       return postsAbout(base, info.linkUrl);
+    case 'subscribe-link':
+      return subscribeUrl(base, info.linkUrl);
+    case 'subscribe-page':
+      return subscribeUrl(base, pageUrl);
     default:
       return null;
   }

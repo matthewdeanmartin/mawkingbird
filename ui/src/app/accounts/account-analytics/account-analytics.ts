@@ -3,7 +3,15 @@ import { AccountName } from '../account-name';
 import { accountProfilePath } from '../account-route';
 import { MbButton } from '../../design-system/button/button';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { map, Observable, of } from 'rxjs';
@@ -311,6 +319,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
     TranslocoPipe,
   ],
   templateUrl: './account-analytics.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './account-analytics.css',
 })
 export class AccountAnalytics implements OnInit {

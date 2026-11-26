@@ -1,4 +1,12 @@
-import { Component, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -41,6 +49,7 @@ import { BlueskyPeopleList } from './bluesky-people-list';
       </mb-section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

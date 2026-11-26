@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { LanguageVersions } from '../../public-pages/focused-apps/language-versions';
@@ -26,6 +26,7 @@ import { UnbirdMore } from '../../unbird/unbird-more';
     UnbirdMore,
   ],
   templateUrl: './twitter-archive-tools.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class TwitterArchiveTools {

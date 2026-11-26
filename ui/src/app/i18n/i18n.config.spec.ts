@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { TranslocoService } from '@jsverse/transloco';
@@ -29,7 +29,7 @@ describe('Runtime translation URLs', () => {
   });
   it('recognizes an explicitly pinned Hindi page without promoting Hindi in production', () => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), ...provideI18n()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), ...provideI18n()],
     });
     const transloco = TestBed.inject(TranslocoService);
     expect(transloco.getAvailableLangs()).toContain('hi');
@@ -38,7 +38,7 @@ describe('Runtime translation URLs', () => {
   });
   it('loads through the release-aware URL helper using the actual deployment base', () => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     vi.spyOn(document, 'baseURI', 'get').mockReturnValue('https://mawkingbird.com/canary/');
     const http = TestBed.inject(HttpTestingController);

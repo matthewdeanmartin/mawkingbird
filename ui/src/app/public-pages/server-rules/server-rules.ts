@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
@@ -20,6 +20,7 @@ import { ServerAbout } from '../../discovery/server-about';
   selector: 'app-server-rules',
   templateUrl: './server-rules.html',
   styleUrl: './server-rules.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [TranslocoPipe],
 })
 export class ServerRules implements OnInit {

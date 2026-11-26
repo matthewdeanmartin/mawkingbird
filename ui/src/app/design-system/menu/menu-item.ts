@@ -1,4 +1,4 @@
-import { booleanAttribute, Component, inject, input } from '@angular/core';
+import { booleanAttribute, Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { MbMenuGroup } from './menu-group';
 import { MB_MENU_SURFACE } from './menu-surface';
 
@@ -12,6 +12,7 @@ import { MB_MENU_SURFACE } from './menu-surface';
   selector: 'button[mbMenuItem], a[mbMenuItem]',
   template: '<ng-content />',
   styleUrl: './menu-item.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '[attr.data-tone]': 'tone()',
     '[attr.aria-pressed]': 'pressed()',

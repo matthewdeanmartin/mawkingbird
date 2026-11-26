@@ -1,4 +1,4 @@
-import { Component, inject, importProvidersFrom } from "@angular/core";
+import { Component, inject, importProvidersFrom, ChangeDetectionStrategy } from "@angular/core";
 import {
   provideHttpClient,
   withInterceptors,
@@ -45,7 +45,8 @@ const status = {
   reblogs_count: 0,
 } as unknown as Status;
 
-@Component({ imports: [Conversations], template: `<app-conversations />` })
+@Component({ imports: [Conversations], changeDetection: ChangeDetectionStrategy.Eager,
+ template: `<app-conversations />` })
 class ChatReview {
   constructor() {
     const auth = inject(Auth);

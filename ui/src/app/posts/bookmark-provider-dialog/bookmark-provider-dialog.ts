@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../design-system/dialog/dialog';
 
@@ -20,6 +20,7 @@ export type BookmarkChoice = 'mastodon' | 'raindrop-post' | 'raindrop-link';
   selector: 'app-bookmark-provider-dialog',
   imports: [MbDialog, TranslocoPipe],
   templateUrl: './bookmark-provider-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bookmark-provider-dialog.css',
 })
 export class BookmarkProviderDialog {

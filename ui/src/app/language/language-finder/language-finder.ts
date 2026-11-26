@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbButton } from '../../design-system/button/button';
@@ -74,6 +82,7 @@ let nextId = 0;
       </p>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;
@@ -160,6 +169,7 @@ export class LanguageFinder {
 @Component({
   selector: 'app-language-finder-dialog',
   imports: [TranslocoPipe, MbDialog, MbButton, LanguageFinder],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-dialog
       [title]="'language.finder.title' | transloco"

@@ -3,7 +3,15 @@ import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbButton } from '../../../design-system/button/button';
 import { MbNotice } from '../../../design-system/notice/notice';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { AiTranslate } from '../../../translation/ai-translate';
 import { POSTING_LANGUAGE_OPTIONS } from '../../../language/language-detect';
 import { ClientPrefs } from '../../../platform/storage/client-prefs';
@@ -49,6 +57,7 @@ export interface TranslateResult {
   selector: 'app-translate-dialog',
   imports: [MbDialog, MbField, MbControl, MbButton, MbNotice, TranslocoPipe],
   templateUrl: './translate-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './translate-dialog.css',
 })
 export class TranslateDialog {

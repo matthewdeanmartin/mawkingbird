@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -28,6 +28,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     ContactsWorkbench,
   ],
   templateUrl: './find-contacts-on-mastodon.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class FindContactsOnMastodon {
@@ -54,6 +55,7 @@ export class FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonDe extends FindContactsOnMastodon {
@@ -78,6 +80,7 @@ export class FindContactsOnMastodonDe extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonJa extends FindContactsOnMastodon {
@@ -102,6 +105,7 @@ export class FindContactsOnMastodonJa extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonFr extends FindContactsOnMastodon {
@@ -126,6 +130,7 @@ export class FindContactsOnMastodonFr extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonEs extends FindContactsOnMastodon {
@@ -150,6 +155,7 @@ export class FindContactsOnMastodonEs extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonZhHant extends FindContactsOnMastodon {
@@ -174,6 +180,7 @@ export class FindContactsOnMastodonZhHant extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonKo extends FindContactsOnMastodon {
@@ -198,6 +205,7 @@ export class FindContactsOnMastodonKo extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonPt extends FindContactsOnMastodon {
@@ -222,6 +230,7 @@ export class FindContactsOnMastodonPt extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonIt extends FindContactsOnMastodon {
@@ -246,6 +255,7 @@ export class FindContactsOnMastodonIt extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonPl extends FindContactsOnMastodon {
@@ -266,6 +276,7 @@ export class FindContactsOnMastodonPl extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonUk extends FindContactsOnMastodon {
@@ -286,6 +297,7 @@ export class FindContactsOnMastodonUk extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonHi extends FindContactsOnMastodon {
@@ -306,6 +318,7 @@ export class FindContactsOnMastodonHi extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonNl extends FindContactsOnMastodon {
@@ -326,6 +339,7 @@ export class FindContactsOnMastodonNl extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonId extends FindContactsOnMastodon {
@@ -346,6 +360,7 @@ export class FindContactsOnMastodonId extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonRu extends FindContactsOnMastodon {
@@ -366,6 +381,7 @@ export class FindContactsOnMastodonRu extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonSv extends FindContactsOnMastodon {
@@ -386,6 +402,7 @@ export class FindContactsOnMastodonSv extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonVi extends FindContactsOnMastodon {
@@ -406,6 +423,7 @@ export class FindContactsOnMastodonVi extends FindContactsOnMastodon {
   ],
   templateUrl: './find-contacts-on-mastodon.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FindContactsOnMastodonTr extends FindContactsOnMastodon {

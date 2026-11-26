@@ -1,5 +1,5 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, inject, signal, viewChild } from '@angular/core';
+import { Component, inject, signal, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -155,6 +155,7 @@ import { ExternalPlayer } from '../audio-embeds/external-player';
       </aside>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       position: sticky;

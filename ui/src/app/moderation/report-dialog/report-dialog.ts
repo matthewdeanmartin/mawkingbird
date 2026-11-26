@@ -1,7 +1,16 @@
 import { accountProfilePath } from '../../accounts/account-route';
 import { Account } from '../../platform/api/models';
 import { SubmittedReports } from '../report-history/report-history';
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -118,6 +127,7 @@ const TRIAGE_KEYS: Record<ReportTriage, { label: string; hint: string }> = {
     ReportGate,
   ],
   templateUrl: './report-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './report-dialog.css',
 })
 export class ReportDialog implements OnInit {

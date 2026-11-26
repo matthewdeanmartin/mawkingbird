@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { booleanAttribute, Component, input } from '@angular/core';
+import { booleanAttribute, Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { Params, RouterLink } from '@angular/router';
 import { MbIcon } from '../icon/icon';
 import { MbIconName } from '../icon/icon-paths';
@@ -78,6 +78,7 @@ export interface MbItemAction {
       <ng-content />
     </mb-post-actions>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-actions.css',
 })
 export class MbItemActions {

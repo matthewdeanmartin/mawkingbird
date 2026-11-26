@@ -1,4 +1,4 @@
-import { Component, inject, Injector, signal } from '@angular/core';
+import { Component, inject, Injector, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PlusPaywall } from './plus-paywall';
@@ -13,6 +13,7 @@ import { FeatureFlags } from '../../platform/build/feature-flags';
 @Component({
   selector: 'app-connection-sync-button',
   imports: [TranslocoPipe, RouterLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `@if (preference.available && flags.enabled('mawkingbird-plus')) {
     <button class="btn btn-outline" type="button" [disabled]="busy()" (click)="sync()">
       {{ 'plus.connectionSync.button' | transloco }}

@@ -1,5 +1,14 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { segmentAt, SponsorBlock, SponsorSegment, SponsorSegments } from '../videos/sponsor-block';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -288,6 +297,7 @@ export function shareText(options: {
       </mb-dialog>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

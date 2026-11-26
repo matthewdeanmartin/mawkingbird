@@ -1,6 +1,6 @@
 import { MbPopover } from '../../design-system/popover/popover';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -52,6 +52,7 @@ import { Terminology } from '../../i18n/terminology';
   selector: 'app-pastes-page',
   imports: [MbPopover, FormsModule, RouterLink, HumanTimePipe, Compose, TranslocoPipe],
   templateUrl: './pastes-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pastes-page.css',
 })
 export class PastesPage {

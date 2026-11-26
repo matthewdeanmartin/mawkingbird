@@ -1,5 +1,13 @@
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Component, HostListener, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { isLive, TagCheck, TagHelper, TagHelperResult } from '../tag-helper';
 import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics';
@@ -38,6 +46,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   selector: 'app-tag-helper-dialog',
   imports: [FormsModule, TranslocoPipe],
   templateUrl: './tag-helper-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tag-helper-dialog.css',
 })
 export class TagHelperDialog {

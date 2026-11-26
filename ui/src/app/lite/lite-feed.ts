@@ -7,6 +7,7 @@ import {
   inject,
   input,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Observable, map } from 'rxjs';
@@ -81,6 +82,7 @@ export function statusPages(load: LitePageLoader): PageLoader<Status> {
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

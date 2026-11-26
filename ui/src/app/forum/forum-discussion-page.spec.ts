@@ -1,6 +1,6 @@
 import { ReadingHistory } from '../shell/reading-history';
 import { By } from '@angular/platform-browser';
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -12,7 +12,11 @@ import { ThreadPreload } from '../reading/read/thread-preload';
 import { Thread } from '../reading/thread/thread';
 import { ForumDiscussionPage } from './forum-discussion-page';
 
-@Component({ selector: 'app-thread', template: '<p class="thread">thread</p>' })
+@Component({
+  selector: 'app-thread',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<p class="thread">thread</p>',
+})
 class ThreadStub {
   readonly showBack = input(true);
 }

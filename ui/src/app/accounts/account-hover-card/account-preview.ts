@@ -1,4 +1,12 @@
-import { Component, DestroyRef, inject, input, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPopover } from '../../design-system/popover/popover';
 import { Account } from '../../platform/api/models';
@@ -38,6 +46,7 @@ import { AccountHoverCard } from './account-hover-card';
       </mb-popover>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

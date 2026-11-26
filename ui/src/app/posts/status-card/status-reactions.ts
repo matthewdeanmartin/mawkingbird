@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { EmojiPicker } from '../../publishing/emoji-picker/emoji-picker';
 import { StatusReaction } from '../../platform/api/models';
@@ -29,6 +29,7 @@ const MAX_SHOWN = 16;
   styleUrl: './status-reactions.css',
   // Clicks in the reaction area (chips, picker) never open the thread behind it.
   host: { '(click)': '$event.stopPropagation()' },
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <ul class="reactions" [attr.aria-label]="'statusCard.reactions' | transloco">
       @for (reaction of shown(); track reaction.name) {

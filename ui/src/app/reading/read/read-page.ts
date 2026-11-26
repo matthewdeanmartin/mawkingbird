@@ -8,6 +8,7 @@ import {
   OnInit,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -66,6 +67,7 @@ const EXIT_FALLBACK_MS = 120;
   imports: [RouterLink, TranslocoPipe, ReaderCore, LibraryPanel, ShareDialog],
   templateUrl: './read-page.html',
   styleUrl: './read-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ThreadLoader],
 })
 export class ReadPage implements OnInit, OnDestroy {

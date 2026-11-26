@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Auth } from '../../platform/session/auth';
@@ -38,6 +38,7 @@ import {
   selector: 'app-message',
   imports: [StatusCard, RouterLink, TranslocoPipe],
   templateUrl: './message.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './message.css',
 })
 export class MessagePage implements OnInit {

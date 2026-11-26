@@ -68,7 +68,7 @@ without one.
 
 ## Build
 
-You need Node 22 or newer and Make (Git Bash on Windows).
+You need Node 26 and Make (Git Bash on Windows).
 
 ```bash
 cd ui && npm ci && cd ..

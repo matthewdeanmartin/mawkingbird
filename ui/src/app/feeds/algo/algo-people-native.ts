@@ -1,4 +1,11 @@
-import { Component, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { StatusCard } from '../../posts/status-card/status-card';
@@ -139,6 +146,7 @@ import {
       }
     </section>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       .people-local {

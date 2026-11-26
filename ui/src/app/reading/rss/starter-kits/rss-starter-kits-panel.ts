@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RSS_STARTER_KITS, RssStarterKit } from '../rss-starter-kits';
 import { KitInstallReport, RssStarterKitInstall } from '../rss-starter-kit-install';
@@ -56,6 +56,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-rss-starter-kits-panel',
   imports: [RouterLink, TranslocoPipe],
   templateUrl: './rss-starter-kits-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rss-starter-kits-panel.css',
 })
 export class RssStarterKitsPanel {

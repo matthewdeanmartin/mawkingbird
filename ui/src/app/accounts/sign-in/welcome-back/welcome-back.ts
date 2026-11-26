@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Server } from '../../../platform/http/server';
@@ -32,6 +32,7 @@ import { AppFooter } from '../../../shell/app-footer/app-footer';
   selector: 'app-welcome-back',
   imports: [AppFooter, TranslocoPipe],
   templateUrl: './welcome-back.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './welcome-back.css',
 })
 export class WelcomeBack {

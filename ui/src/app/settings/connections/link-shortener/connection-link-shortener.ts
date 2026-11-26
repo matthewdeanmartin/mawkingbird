@@ -1,5 +1,5 @@
 import { PLATFORM_LOCAL_PUBLISHING } from '../../../platform/http/platform-http';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { credentialLocation, StorageBadge } from '../storage-badge';
 import { VaultBridge } from '../../../connections/vault/vault-bridge';
@@ -110,6 +110,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   selector: 'app-connection-link-shortener',
   imports: [FormsModule, RouterLink, ProxyConsentDialog, StorageBadge, TranslocoPipe],
   templateUrl: './connection-link-shortener.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-link-shortener.css'],
 })
 export class ConnectionLinkShortener {

@@ -1,5 +1,5 @@
 import { PlusPrice } from '../../accounts/mawkingbird/plus-price';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PROXY_RATE_PLUS_PER_MINUTE } from '../../platform/build/plus-benefits';
@@ -90,6 +90,7 @@ import { FREE_DAILY_ARTICLES } from '../../reading/article/article-quota';
   selector: 'app-plans',
   imports: [PlusPrice, RouterLink, TranslocoPipe],
   templateUrl: './plans.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './plans.css',
 })
 export class Plans {

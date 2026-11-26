@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { NETWORK_PROFILES, NetworkSimulator } from '../../platform/network/network-simulator';
@@ -49,6 +49,7 @@ import { FaultEffectType, FaultRule, FaultRuleDraft } from '../../platform/api/m
   selector: 'app-fault-injection',
   imports: [FormsModule, TranslocoPipe, MbToolbar, MbToolbarButton],
   templateUrl: './fault-injection.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fault-injection.css',
 })
 export class FaultInjection implements OnInit {

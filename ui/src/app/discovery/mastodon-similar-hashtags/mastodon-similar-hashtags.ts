@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -28,6 +28,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     SimilarHashtagsWorkbench,
   ],
   templateUrl: './mastodon-similar-hashtags.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class MastodonSimilarHashtags {
@@ -54,6 +55,7 @@ export class MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsDe extends MastodonSimilarHashtags {
@@ -78,6 +80,7 @@ export class MastodonSimilarHashtagsDe extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsJa extends MastodonSimilarHashtags {
@@ -102,6 +105,7 @@ export class MastodonSimilarHashtagsJa extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsFr extends MastodonSimilarHashtags {
@@ -126,6 +130,7 @@ export class MastodonSimilarHashtagsFr extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsEs extends MastodonSimilarHashtags {
@@ -150,6 +155,7 @@ export class MastodonSimilarHashtagsEs extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsZhHant extends MastodonSimilarHashtags {
@@ -174,6 +180,7 @@ export class MastodonSimilarHashtagsZhHant extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsKo extends MastodonSimilarHashtags {
@@ -198,6 +205,7 @@ export class MastodonSimilarHashtagsKo extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsPt extends MastodonSimilarHashtags {
@@ -222,6 +230,7 @@ export class MastodonSimilarHashtagsPt extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsIt extends MastodonSimilarHashtags {
@@ -246,6 +255,7 @@ export class MastodonSimilarHashtagsIt extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsPl extends MastodonSimilarHashtags {
@@ -266,6 +276,7 @@ export class MastodonSimilarHashtagsPl extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsUk extends MastodonSimilarHashtags {
@@ -286,6 +297,7 @@ export class MastodonSimilarHashtagsUk extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsHi extends MastodonSimilarHashtags {
@@ -306,6 +318,7 @@ export class MastodonSimilarHashtagsHi extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsNl extends MastodonSimilarHashtags {
@@ -326,6 +339,7 @@ export class MastodonSimilarHashtagsNl extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsId extends MastodonSimilarHashtags {
@@ -346,6 +360,7 @@ export class MastodonSimilarHashtagsId extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsRu extends MastodonSimilarHashtags {
@@ -366,6 +381,7 @@ export class MastodonSimilarHashtagsRu extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsSv extends MastodonSimilarHashtags {
@@ -386,6 +402,7 @@ export class MastodonSimilarHashtagsSv extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsVi extends MastodonSimilarHashtags {
@@ -406,6 +423,7 @@ export class MastodonSimilarHashtagsVi extends MastodonSimilarHashtags {
   ],
   templateUrl: './mastodon-similar-hashtags.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonSimilarHashtagsTr extends MastodonSimilarHashtags {

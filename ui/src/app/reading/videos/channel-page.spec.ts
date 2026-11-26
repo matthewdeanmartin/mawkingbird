@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -12,7 +12,11 @@ import { Account } from '../../platform/api/models';
 import { parseFeed } from '../../../lib/rss/rss-parser';
 import { YoutubeChannelInfo } from './youtube-details';
 
-@Component({ selector: 'app-follow-button', template: 'follow' })
+@Component({
+  selector: 'app-follow-button',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: 'follow',
+})
 class FollowStub {
   readonly accountId = input('');
   readonly handle = input('');

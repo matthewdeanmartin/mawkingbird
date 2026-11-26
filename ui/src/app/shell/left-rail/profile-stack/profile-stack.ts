@@ -2,7 +2,14 @@ import { AccountName } from '../../../accounts/account-name';
 import { MbProfileStack } from '../../../design-system/identity/profile-stack';
 import { MbRailCard } from '../../../design-system/identity/rail-card';
 import { MbButton } from '../../../design-system/button/button';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../../platform/session/auth';
 import { HumanCountPipe } from '../../../i18n/human-count.pipe';
@@ -56,6 +63,7 @@ function loadSelected(key: string): string | null {
     TranslocoPipe,
   ],
   templateUrl: './profile-stack.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile-stack.css',
 })
 export class ProfileStack implements OnInit {

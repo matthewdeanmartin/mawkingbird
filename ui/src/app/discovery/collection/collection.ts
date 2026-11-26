@@ -2,7 +2,14 @@ import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
 import { MbButton } from '../../design-system/button/button';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { catchError, forkJoin, of } from 'rxjs';
 import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -139,6 +146,7 @@ interface Member {
   // Component-scoped, so a bulk follow started here tracks this collection only.
   providers: [ImportFollows],
   templateUrl: './collection.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './collection.css',
 })
 export class CollectionPage implements OnInit {

@@ -1,4 +1,12 @@
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ClientPrefs } from '../../../platform/storage/client-prefs';
@@ -53,6 +61,7 @@ import { StatusCard } from '../../../posts/status-card/status-card';
     HumanTimePipe,
   ],
   templateUrl: './history-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './history-panel.css',
 })
 export class HistoryPanel {

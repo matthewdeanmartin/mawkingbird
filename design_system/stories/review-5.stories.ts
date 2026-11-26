@@ -1,5 +1,5 @@
 import { PowerPost } from "../fixtures/power-post";
-import { Component, input, signal } from "@angular/core";
+import { Component, input, signal, ChangeDetectionStrategy } from "@angular/core";
 import { type Meta, type StoryObj } from "@storybook/angular";
 import {
   MbMetadata,
@@ -25,6 +25,7 @@ import { MbButton } from "../../ui/src/app/design-system/button/button";
     MbToolbarButton,
     MbButton,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <article class="ds-sheet">
       <h1>Content that stays readable.</h1>

@@ -1,5 +1,14 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -52,6 +61,7 @@ import { BridgeNetwork } from './bridge-matching';
   selector: 'app-bridge-friends-import',
   imports: [AccountName, FormsModule, RouterLink, TranslocoPipe, MbButton, MbRadioGroup],
   templateUrl: './bridge-friends-import.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./friend-finder.css', './bridge-friends-import.css'],
 })
 export class BridgeFriendsImport {

@@ -2,7 +2,16 @@ import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { MbButton } from '../../design-system/button/button';
 import { AccountPreview } from '../../accounts/account-hover-card/account-preview';
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
@@ -56,6 +65,7 @@ const MAX_RESOLVED_AUTHORS = 80;
   selector: 'app-feed-members',
   imports: [AccountName, MbButton, AccountPreview, RouterLink, FollowButton, TranslocoPipe],
   templateUrl: './feed-members.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './feed-members.css',
 })
 export class FeedMembers {

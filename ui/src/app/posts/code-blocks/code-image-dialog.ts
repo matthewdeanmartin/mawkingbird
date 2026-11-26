@@ -1,4 +1,12 @@
-import { Component, OnDestroy, computed, effect, output, signal } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  computed,
+  effect,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -91,6 +99,7 @@ export interface CodeImageResult {
       </ng-container>
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .field {
       display: flex;

@@ -9,6 +9,7 @@ import {
   inject,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -109,6 +110,7 @@ const SCAN_SOURCES = ['account', 'tag', 'home', 'list', 'saved'] as const;
     ReadingBack,
   ],
   templateUrl: './find-singles-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './radio-lists.css',
 })
 export class FindSinglesPage {

@@ -1,5 +1,5 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -48,6 +48,7 @@ import { GitHubFriendDiscovery, GitHubFriendStatus } from './github-friend-disco
   selector: 'app-github-friends-import',
   imports: [AccountName, FormsModule, RouterLink, TranslocoPipe, MbButton],
   templateUrl: './github-friends-import.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './friend-finder.css',
 })
 export class GitHubFriendsImport {

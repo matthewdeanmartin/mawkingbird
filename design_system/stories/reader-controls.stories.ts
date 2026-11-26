@@ -4,6 +4,7 @@ import {
   importProvidersFrom,
   inject,
   signal,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   provideRouter,
@@ -81,6 +82,7 @@ function library() {
     LibraryPanel,
     DocumentSearchDialog,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <h1>Reader controls, same reader.</h1>
     <p>

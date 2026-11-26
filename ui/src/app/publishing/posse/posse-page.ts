@@ -1,5 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, Injector, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  Injector,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { HugoSettings } from '../../connections/hugo/hugo-settings';
@@ -66,6 +74,7 @@ interface DeliveryReport {
   selector: 'app-posse-page',
   imports: [DatePipe, RouterLink, TranslocoPipe],
   templateUrl: './posse-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './posse-page.css',
 })
 export class PossePage {

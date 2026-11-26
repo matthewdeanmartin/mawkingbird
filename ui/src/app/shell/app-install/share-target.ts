@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Drafts } from '../../publishing/drafts';
@@ -29,6 +29,7 @@ export function sharedText(params: {
  */
 @Component({
   selector: 'app-share-target',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '',
 })
 export class ShareTarget implements OnInit {

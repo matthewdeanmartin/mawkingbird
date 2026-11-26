@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
 import { JustMyServer } from '../just-my-server';
@@ -29,6 +29,7 @@ function fakeJustMyServer() {
 
 @Component({
   imports: [JustMyServerCard],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-just-my-server-card class="rail" />
     @if (page()) {

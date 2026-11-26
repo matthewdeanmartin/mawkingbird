@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbSettingsRow } from '../../design-system/settings-row/settings-row';
@@ -75,6 +75,7 @@ import { PLATFORM_UPDATES } from '../../platform/http/platform-http';
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .update-result {
       margin-block: 0.75rem;

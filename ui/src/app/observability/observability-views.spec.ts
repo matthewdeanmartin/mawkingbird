@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -9,7 +9,7 @@ import { Observability } from './observability';
 function render(view?: 'api' | 'logs'): HTMLElement {
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       provideRouter([]),
       { provide: ActivatedRoute, useValue: { data: of(view ? { view } : {}) } },

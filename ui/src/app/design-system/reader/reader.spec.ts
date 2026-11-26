@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MbReaderLibrary, MbReaderPreferences, MbReaderSearch, MbReaderSurface } from './reader';
 
 @Component({
   imports: [FormsModule, MbReaderLibrary, MbReaderPreferences, MbReaderSearch, MbReaderSurface],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div mbReaderPreferences>
       <label class="typo-row">

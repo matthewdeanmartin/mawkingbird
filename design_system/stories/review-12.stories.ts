@@ -4,6 +4,7 @@ import {
   inject,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   provideRouter,
@@ -90,6 +91,7 @@ class ReadResponses {
   }
 }
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<p>
     Local preview destination: {{ route.snapshot.url.join("/") }}
   </p>`,
@@ -109,6 +111,7 @@ class Destination {
     MbToolbarButton,
     RouterOutlet,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>Post dialogs, one shared shell.</h1>
     <p class="ds-intro">

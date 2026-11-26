@@ -1,5 +1,5 @@
 import { AccountName } from '../accounts/account-name';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbRailCard } from '../design-system/identity/rail-card';
@@ -77,6 +77,7 @@ const CARD_STYLES = `
       </section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles:
     CARD_STYLES +
     `
@@ -119,6 +120,7 @@ export class BlogAuthorCard {
       </section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: CARD_STYLES,
 })
 export class BlogMoreCard {
@@ -181,6 +183,7 @@ export class BlogMoreCard {
       </section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles:
     CARD_STYLES +
     `

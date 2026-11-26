@@ -1,4 +1,12 @@
-import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
@@ -70,6 +78,7 @@ export const ACCOUNT_NOTE_MAX = 2000;
       </ng-container>
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .count {
       margin: 4px 0 0;

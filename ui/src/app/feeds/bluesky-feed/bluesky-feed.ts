@@ -1,4 +1,12 @@
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -59,6 +67,7 @@ const DISCOVER_FEED = 'at://did:plc:z72i7hdynmk6r22z27h6tvur/app.bsky.feed.gener
   selector: 'app-bluesky-feed',
   imports: [MbButton, MbNotice, RouterLink, StatusCard, TranslocoPipe],
   templateUrl: './bluesky-feed.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bluesky-feed.css',
 })
 export class BlueskyFeedPage implements OnInit {

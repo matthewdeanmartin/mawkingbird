@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ThreadLoader } from './thread-loader';
@@ -50,7 +50,7 @@ describe('ThreadLoader resolving a remote post through the home server', () => {
     TestBed.configureTestingModule({
       providers: [
         ThreadLoader,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: Auth,
@@ -204,7 +204,7 @@ describe('ThreadLoader with a preloaded thread', () => {
     TestBed.configureTestingModule({
       providers: [
         ThreadLoader,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: Auth, useValue: { lacksMastodonToken: false } },
         { provide: SearchServer, useValue: { active: () => false } },
@@ -244,7 +244,7 @@ describe('ThreadLoader refreshing replies', () => {
     TestBed.configureTestingModule({
       providers: [
         ThreadLoader,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: Auth, useValue: { lacksMastodonToken: false } },
         { provide: SearchServer, useValue: { active: () => false } },
@@ -306,7 +306,7 @@ describe('ThreadLoader with a Misskey note', () => {
     TestBed.configureTestingModule({
       providers: [
         ThreadLoader,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: Auth,
@@ -409,7 +409,7 @@ describe('ThreadLoader when a shared post cannot be loaded', () => {
     TestBed.configureTestingModule({
       providers: [
         ThreadLoader,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: Auth, useValue: { lacksMastodonToken: true, isAnonymous: true } },
         { provide: SearchServer, useValue: { active: () => false } },

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -45,6 +45,7 @@ const COPY: Record<BridgeNetwork, Omit<BridgeCopy, 'root'>> = {
     FriendBridgeWorkbench,
   ],
   templateUrl: './friend-bridge.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class FriendBridge {
@@ -90,6 +91,7 @@ export function bridgeSourceOf(route: ActivatedRoute): BridgeNetwork {
   ],
   templateUrl: './friend-bridge.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeDe extends FriendBridge {}
@@ -108,6 +110,7 @@ export class FriendBridgeDe extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeJa extends FriendBridge {}
@@ -126,6 +129,7 @@ export class FriendBridgeJa extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeFr extends FriendBridge {}
@@ -148,6 +152,7 @@ export class FriendBridgeFr extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeEs extends FriendBridge {}
@@ -170,6 +175,7 @@ export class FriendBridgeEs extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeZhHant extends FriendBridge {}
@@ -192,6 +198,7 @@ export class FriendBridgeZhHant extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeKo extends FriendBridge {}
@@ -214,6 +221,7 @@ export class FriendBridgeKo extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgePt extends FriendBridge {}
@@ -236,6 +244,7 @@ export class FriendBridgePt extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeIt extends FriendBridge {}
@@ -258,6 +267,7 @@ export class FriendBridgeIt extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgePl extends FriendBridge {}
@@ -276,6 +286,7 @@ export class FriendBridgePl extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeUk extends FriendBridge {}
@@ -294,6 +305,7 @@ export class FriendBridgeUk extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeHi extends FriendBridge {}
@@ -312,6 +324,7 @@ export class FriendBridgeHi extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeNl extends FriendBridge {}
@@ -330,6 +343,7 @@ export class FriendBridgeNl extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeId extends FriendBridge {}
@@ -348,6 +362,7 @@ export class FriendBridgeId extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeRu extends FriendBridge {}
@@ -366,6 +381,7 @@ export class FriendBridgeRu extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeSv extends FriendBridge {}
@@ -384,6 +400,7 @@ export class FriendBridgeSv extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeVi extends FriendBridge {}
@@ -402,6 +419,7 @@ export class FriendBridgeVi extends FriendBridge {}
   ],
   templateUrl: './friend-bridge.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class FriendBridgeTr extends FriendBridge {}

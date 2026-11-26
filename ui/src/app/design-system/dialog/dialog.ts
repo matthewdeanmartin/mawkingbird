@@ -6,6 +6,7 @@ import {
   OnDestroy,
   output,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { MbButton } from '../button/button';
 
@@ -48,6 +49,7 @@ const locks = new WeakMap<HTMLElement, { count: number; overflow: string; gutter
       <footer><ng-content select="[mbDialogActions]" /></footer>
     </dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dialog.css',
 })
 export class MbDialog implements OnDestroy {

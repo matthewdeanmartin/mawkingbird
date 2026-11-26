@@ -1,4 +1,4 @@
-import { Component, importProvidersFrom, signal } from "@angular/core";
+import { Component, importProvidersFrom, signal, ChangeDetectionStrategy } from "@angular/core";
 import {
   applicationConfig,
   type Meta,
@@ -15,6 +15,7 @@ import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 @Component({
   selector: "ds-consent-dialogs",
   imports: [ProxyConsentDialog, TwitterConsentDialog, MbButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <h1>Consent dialogs: shared shell, specific disclosures</h1>
     <p>

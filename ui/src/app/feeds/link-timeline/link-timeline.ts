@@ -1,6 +1,13 @@
 import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -26,6 +33,7 @@ import { StatusCard } from '../../posts/status-card/status-card';
 @Component({
   selector: 'app-link-timeline',
   imports: [MbButton, MbContentState, StatusCard, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './link-timeline.html',
 })
 export class LinkTimeline implements OnInit {

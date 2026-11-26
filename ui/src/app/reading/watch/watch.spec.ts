@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
@@ -28,7 +28,11 @@ import { VideoSource } from '../video-player/media-source';
 import { YoutubeComment } from '../videos/youtube-details';
 import { PeerTubeVideo, PeerTubeVideos } from '../videos/peertube';
 
-@Component({ selector: 'app-status-card', template: '' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class CardStub {
   // Required, as on the real card: reading it before it is set throws (NG0950).
   readonly status = input.required<Status>();
@@ -46,7 +50,11 @@ class CardStub {
   readonly showOwnReplies = input(true);
 }
 
-@Component({ selector: 'app-party-conversation', template: '' })
+@Component({
+  selector: 'app-party-conversation',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class PartyStub {
   readonly root = input<Status | null>(null);
   readonly comments = input<Status[]>([]);
@@ -65,6 +73,7 @@ class PartyStub {
 
 @Component({
   selector: 'app-watch-video-panel',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<span class="panel-post">{{ post()?.display?.id }}</span>',
 })
 class PanelStub {

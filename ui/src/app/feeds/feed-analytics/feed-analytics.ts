@@ -5,7 +5,16 @@ import { MbButton } from '../../design-system/button/button';
 import { MbHelp } from '../../design-system/help/help';
 import { FeatureUseHistory } from '../feature-use-history';
 import { PostingCalendar } from './posting-calendar';
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
@@ -208,6 +217,7 @@ const PREVIEW_ROWS = 8;
     PostingCalendar,
   ],
   templateUrl: './feed-analytics.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './feed-analytics.css',
 })
 export class FeedAnalytics {

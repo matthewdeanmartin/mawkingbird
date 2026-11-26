@@ -1,5 +1,5 @@
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -48,6 +48,7 @@ import { LoginDoors } from '../login-doors/login-doors';
   selector: 'app-login-chooser',
   imports: [MbCheckbox, LoginDoors, RouterLink, TranslocoPipe],
   templateUrl: './login-chooser.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login-chooser.css',
 })
 export class LoginChooser implements OnInit {

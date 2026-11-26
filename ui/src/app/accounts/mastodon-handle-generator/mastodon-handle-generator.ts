@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { HandleWorkbench } from './handle-workbench';
@@ -19,6 +19,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
   selector: 'app-mastodon-handle-generator',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class MastodonHandleGenerator {
@@ -36,6 +37,7 @@ export class MastodonHandleGenerator {
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorDe extends MastodonHandleGenerator {}
@@ -50,6 +52,7 @@ export class MastodonHandleGeneratorDe extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorJa extends MastodonHandleGenerator {}
@@ -64,6 +67,7 @@ export class MastodonHandleGeneratorJa extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorFr extends MastodonHandleGenerator {}
@@ -78,6 +82,7 @@ export class MastodonHandleGeneratorFr extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorEs extends MastodonHandleGenerator {}
@@ -92,6 +97,7 @@ export class MastodonHandleGeneratorEs extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorZhHant extends MastodonHandleGenerator {}
@@ -106,6 +112,7 @@ export class MastodonHandleGeneratorZhHant extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorKo extends MastodonHandleGenerator {}
@@ -120,6 +127,7 @@ export class MastodonHandleGeneratorKo extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorPt extends MastodonHandleGenerator {}
@@ -134,6 +142,7 @@ export class MastodonHandleGeneratorPt extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorIt extends MastodonHandleGenerator {}
@@ -148,6 +157,7 @@ export class MastodonHandleGeneratorIt extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorPl extends MastodonHandleGenerator {}
@@ -158,6 +168,7 @@ export class MastodonHandleGeneratorPl extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorUk extends MastodonHandleGenerator {}
@@ -168,6 +179,7 @@ export class MastodonHandleGeneratorUk extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorHi extends MastodonHandleGenerator {}
@@ -178,6 +190,7 @@ export class MastodonHandleGeneratorHi extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorNl extends MastodonHandleGenerator {}
@@ -188,6 +201,7 @@ export class MastodonHandleGeneratorNl extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorId extends MastodonHandleGenerator {}
@@ -198,6 +212,7 @@ export class MastodonHandleGeneratorId extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorRu extends MastodonHandleGenerator {}
@@ -208,6 +223,7 @@ export class MastodonHandleGeneratorRu extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorSv extends MastodonHandleGenerator {}
@@ -218,6 +234,7 @@ export class MastodonHandleGeneratorSv extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorVi extends MastodonHandleGenerator {}
@@ -228,6 +245,7 @@ export class MastodonHandleGeneratorVi extends MastodonHandleGenerator {}
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, HandleWorkbench],
   templateUrl: './mastodon-handle-generator.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonHandleGeneratorTr extends MastodonHandleGenerator {}

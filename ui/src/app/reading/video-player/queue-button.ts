@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { QueuedVideo, WatchQueue } from '../videos/watch-queue';
@@ -14,6 +14,7 @@ import { QueuedVideo, WatchQueue } from '../videos/watch-queue';
 @Component({
   selector: 'app-queue-button',
   imports: [MbButton, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (entry(); as video) {
       <button

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MbControl, MbField } from './field';
 
 @Component({
   imports: [MbField, MbControl, FormsModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-field label="Name" hint="Public name" [error]="error" [hideLabel]="hideLabel">
       <input mbControl required [(ngModel)]="name" #nameModel="ngModel" />

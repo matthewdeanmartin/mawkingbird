@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 /**
  * A wide page with a tool rail: the rail sits under the brand and the content
@@ -8,6 +8,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'mb-rail-page',
   template: '<ng-content select="[mbRailPanel]" /><ng-content />',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rail-page.css',
 })
 export class MbRailPage {}
@@ -16,6 +17,7 @@ export class MbRailPage {}
 @Component({
   selector: 'aside[mbRailPanel]',
   template: '<ng-content />',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './rail-panel.css',
 })
 export class MbRailPanel {}
@@ -24,6 +26,7 @@ export class MbRailPanel {}
 @Component({
   selector: 'section[mbPagePanel]',
   template: '<ng-content />',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './page-panel.css',
 })
 export class MbPagePanel {}

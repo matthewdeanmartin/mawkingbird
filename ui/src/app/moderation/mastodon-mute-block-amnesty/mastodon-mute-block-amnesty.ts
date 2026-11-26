@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -25,6 +25,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     AmnestyWorkbench,
   ],
   templateUrl: './mastodon-mute-block-amnesty.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class MastodonMuteBlockAmnesty {
@@ -51,6 +52,7 @@ export class MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyDe extends MastodonMuteBlockAmnesty {
@@ -75,6 +77,7 @@ export class MastodonMuteBlockAmnestyDe extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyJa extends MastodonMuteBlockAmnesty {
@@ -99,6 +102,7 @@ export class MastodonMuteBlockAmnestyJa extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyFr extends MastodonMuteBlockAmnesty {
@@ -123,6 +127,7 @@ export class MastodonMuteBlockAmnestyFr extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyEs extends MastodonMuteBlockAmnesty {
@@ -149,6 +154,7 @@ export class MastodonMuteBlockAmnestyEs extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyZhHant extends MastodonMuteBlockAmnesty {
@@ -173,6 +179,7 @@ export class MastodonMuteBlockAmnestyZhHant extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyKo extends MastodonMuteBlockAmnesty {
@@ -197,6 +204,7 @@ export class MastodonMuteBlockAmnestyKo extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyPt extends MastodonMuteBlockAmnesty {
@@ -221,6 +229,7 @@ export class MastodonMuteBlockAmnestyPt extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyIt extends MastodonMuteBlockAmnesty {
@@ -245,6 +254,7 @@ export class MastodonMuteBlockAmnestyIt extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyPl extends MastodonMuteBlockAmnesty {
@@ -267,6 +277,7 @@ export class MastodonMuteBlockAmnestyPl extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyUk extends MastodonMuteBlockAmnesty {
@@ -289,6 +300,7 @@ export class MastodonMuteBlockAmnestyUk extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyHi extends MastodonMuteBlockAmnesty {
@@ -311,6 +323,7 @@ export class MastodonMuteBlockAmnestyHi extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyNl extends MastodonMuteBlockAmnesty {
@@ -333,6 +346,7 @@ export class MastodonMuteBlockAmnestyNl extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyId extends MastodonMuteBlockAmnesty {
@@ -355,6 +369,7 @@ export class MastodonMuteBlockAmnestyId extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyRu extends MastodonMuteBlockAmnesty {
@@ -377,6 +392,7 @@ export class MastodonMuteBlockAmnestyRu extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestySv extends MastodonMuteBlockAmnesty {
@@ -399,6 +415,7 @@ export class MastodonMuteBlockAmnestySv extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyVi extends MastodonMuteBlockAmnesty {
@@ -421,6 +438,7 @@ export class MastodonMuteBlockAmnestyVi extends MastodonMuteBlockAmnesty {
   ],
   templateUrl: './mastodon-mute-block-amnesty.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonMuteBlockAmnestyTr extends MastodonMuteBlockAmnesty {

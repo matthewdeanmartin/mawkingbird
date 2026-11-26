@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { describe, expect, it } from 'vitest';
@@ -10,7 +10,7 @@ import { EngagedAudiencePanel } from './engaged-audience-panel';
 async function render() {
   TestBed.configureTestingModule({
     imports: [EngagedAudiencePanel],
-    providers: [provideHttpClient(), provideHttpClientTesting()],
+    providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
   });
   await TestBed.compileComponents();
   const fixture = TestBed.createComponent(EngagedAudiencePanel);

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { Status } from '../../platform/api/models';
@@ -44,6 +44,7 @@ const CREDITS_BODY = `
   selector: 'app-credits',
   imports: [StatusCard, TranslocoPipe],
   templateUrl: './credits.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './credits.css',
 })
 export class Credits {

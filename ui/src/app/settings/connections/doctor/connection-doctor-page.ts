@@ -1,7 +1,7 @@
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReadingBack } from '../../../shell/reading-back';
 import { connectionHelpServer } from '../../../platform/http/host-url';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { CorsProxy } from '../../../connections/cors-proxy/cors-proxy';
@@ -134,6 +134,7 @@ interface DoctorGroup {
   host: { '[class.public-doctor]': 'publicPage' },
   imports: [RouterLink, TranslocoPipe, ReadingBack],
   templateUrl: './connection-doctor-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-doctor-page.css'],
 })
 export class ConnectionDoctorPage {

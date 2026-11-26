@@ -1,4 +1,12 @@
-import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { filter } from 'rxjs';
@@ -107,6 +115,7 @@ interface Intent {
       </aside>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .intents {
       display: grid;

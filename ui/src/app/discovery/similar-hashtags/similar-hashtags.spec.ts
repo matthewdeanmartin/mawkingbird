@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -78,7 +78,7 @@ describe('HashtagSamples', () => {
     api = { tagTimeline: vi.fn(() => of([])) };
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: Api, useValue: api },
         { provide: Auth, useValue: { kind, token } },
@@ -134,7 +134,7 @@ describe('SimilarHashtagsPanel', () => {
     TestBed.configureTestingModule({
       imports: [SimilarHashtagsPanel],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: HashtagSamples, useValue: { host: () => 'mastodon.social', page } },

@@ -1,4 +1,13 @@
-import { Component, HostListener, Injector, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Injector,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -67,6 +76,7 @@ type TagState = 'idle' | 'busy' | 'following' | 'failed';
     YoutubeSubscribeAll,
   ],
   templateUrl: './feed-builder-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: [
     '../../public-pages/features/features.css',
     '../../public-pages/features/follow.css',

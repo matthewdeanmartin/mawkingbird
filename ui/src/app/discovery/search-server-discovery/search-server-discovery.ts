@@ -1,7 +1,16 @@
 import { translatedComputed } from '../../i18n/translated';
 import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
-import { Component, computed, inject, input, OnDestroy, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnDestroy,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 // i18n searchServerDiscovery.start: Find a search server
@@ -41,6 +50,7 @@ const SNAPSHOT_URL = 'search-servers.json';
   selector: 'app-search-server-discovery',
   imports: [MbButton, MbDialog, TranslocoPipe],
   templateUrl: './search-server-discovery.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './search-server-discovery.css',
 })
 export class SearchServerDiscovery implements OnDestroy {

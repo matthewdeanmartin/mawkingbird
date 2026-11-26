@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { RouterLink } from '@angular/router';
@@ -224,6 +224,7 @@ export type FeedView = 'feed' | 'members' | 'analytics' | 'media' | 'video' | 'a
       }
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .presentation-controls {
       display: flex;

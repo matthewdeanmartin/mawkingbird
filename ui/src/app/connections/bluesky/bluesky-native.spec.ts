@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, afterEach, expect, it, vi } from 'vitest';
@@ -22,7 +22,7 @@ beforeEach(() => {
   });
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       { provide: NATIVE_SOCIAL, useValue: native },
       { provide: BlueskyOAuth, useValue: browser },
@@ -59,7 +59,7 @@ it('restores native connector references after service reconstruction and preser
   TestBed.resetTestingModule();
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       { provide: NATIVE_SOCIAL, useValue: native },
       { provide: BlueskyOAuth, useValue: browser },

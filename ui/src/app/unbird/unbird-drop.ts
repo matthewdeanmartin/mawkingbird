@@ -1,4 +1,11 @@
-import { Component, computed, inject, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
 import { MbDisclosure } from '../design-system/disclosure/disclosure';
@@ -48,6 +55,7 @@ import { UnbirdMatcher } from './unbird-matcher';
   selector: 'app-unbird-drop',
   imports: [MbButton, MbDisclosure, MbFileDrop, MbNotice, TranslocoPipe],
   templateUrl: './unbird-drop.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unbird-drop.css',
 })
 export class UnbirdDrop {

@@ -1,5 +1,5 @@
 import { WritableSignal } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -36,7 +36,7 @@ describe('Bluesky post lifecycle through the API and status card', () => {
     sessionStorage.clear();
     seedBskyIdentity({ did: 'did:plc:me', handle: 'me.bsky.social' });
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     http = TestBed.inject(HttpTestingController);
     api = TestBed.inject(BlueskyApi);

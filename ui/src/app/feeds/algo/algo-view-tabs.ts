@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../../platform/session/auth';
@@ -47,6 +47,7 @@ const ROUTES: Record<AlgoView, string> = {
       </nav>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .views {
       display: flex;

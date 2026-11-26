@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { OutboxSummary } from '../../platform/offline/outbox-summary';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -108,6 +115,7 @@ import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback'
     MbSaveFeedback,
   ],
   templateUrl: './settings-writing.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .vocabulary-field {
       max-width: 375px;

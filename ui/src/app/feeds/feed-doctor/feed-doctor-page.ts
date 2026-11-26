@@ -1,4 +1,11 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { HumanTimePipe } from '../../i18n/human-time.pipe';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -63,6 +70,7 @@ const SAMPLE_SIZE = 140;
   selector: 'app-feed-doctor-page',
   imports: [HumanTimePipe, RouterLink, TranslocoPipe],
   templateUrl: './feed-doctor-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './feed-doctor-page.css',
 })
 export class FeedDoctorPage implements OnInit {

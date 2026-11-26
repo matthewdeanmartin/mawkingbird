@@ -1,4 +1,12 @@
-import { Component, computed, forwardRef, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  forwardRef,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
@@ -13,6 +21,7 @@ import { StudioPage } from './studio-page';
 @Component({
   selector: 'app-compose',
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: Compose, useExisting: forwardRef(() => ComposeStub) }],
 })
 class ComposeStub {
@@ -33,7 +42,11 @@ class ComposeStub {
   }
 }
 
-@Component({ selector: 'app-radio-studio', template: 'catalogue' })
+@Component({
+  selector: 'app-radio-studio',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: 'catalogue',
+})
 class CatalogueStub {}
 
 describe('StudioPage', () => {

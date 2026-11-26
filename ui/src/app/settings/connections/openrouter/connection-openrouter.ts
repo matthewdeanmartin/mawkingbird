@@ -2,7 +2,7 @@ import { PLATFORM_INTELLIGENCE } from '../../../platform/http/platform-http';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbButton } from '../../../design-system/button/button';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { VaultBridge } from '../../../connections/vault/vault-bridge';
 
 /** The registry base this page's credential is stored under. */
@@ -101,6 +101,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
     TranslocoPipe,
   ],
   templateUrl: './connection-openrouter.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-openrouter.css'],
 })
 export class ConnectionOpenRouter implements OnInit {

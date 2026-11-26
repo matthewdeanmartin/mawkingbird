@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -78,6 +87,7 @@ const MAX_MEDIA = 4;
     FocalPointDialog,
   ],
   templateUrl: './status-edit-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './status-edit-dialog.css',
 })
 export class StatusEditDialog implements OnInit {

@@ -4,6 +4,7 @@ import {
   HttpHeaders,
   provideHttpClient,
   withInterceptors,
+  withXhr,
 } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -61,7 +62,10 @@ describe('requestPolicyInterceptor', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([requestPolicyInterceptor, connectionMeterInterceptor])),
+        provideHttpClient(
+          withXhr(),
+          withInterceptors([requestPolicyInterceptor, connectionMeterInterceptor]),
+        ),
         provideHttpClientTesting(),
       ],
     });

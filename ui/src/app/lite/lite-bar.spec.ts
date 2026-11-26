@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -41,7 +41,7 @@ describe('Lite bar and shell', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [LiteBar, LiteShell],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     await TestBed.compileComponents();
     TestBed.inject(Auth).setToken('lite-bar');

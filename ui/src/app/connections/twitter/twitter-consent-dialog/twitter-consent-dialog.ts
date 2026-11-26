@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../../design-system/dialog/dialog';
 import { MbButton } from '../../../design-system/button/button';
@@ -70,6 +70,7 @@ import { TwitterSourceEntry } from '../twitter-source';
   selector: 'app-twitter-consent-dialog',
   imports: [TranslocoPipe, MbDialog, MbButton, MbContentLink, MbNotice],
   templateUrl: './twitter-consent-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../../shortener/proxy-consent-dialog/proxy-consent-dialog.css'],
 })
 export class TwitterConsentDialog {

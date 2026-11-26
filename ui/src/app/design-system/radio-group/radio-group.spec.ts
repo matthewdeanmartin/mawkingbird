@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MbRadioGroup } from './radio-group';
 
 @Component({
   imports: [MbRadioGroup, FormsModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-radio-group label="Reactive choice" [options]="options" [formControl]="choice" />
     <mb-radio-group label="Template choice" [options]="options" [(ngModel)]="templateChoice" />

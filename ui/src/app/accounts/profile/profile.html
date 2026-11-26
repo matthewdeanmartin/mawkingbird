@@ -806,7 +806,7 @@
               <button
                 class="btn"
                 [class.btn-outline]="relationship()?.following || relationship()?.requested"
-                [disabled]="relationship()?.requested"
+                [disabled]="$safeNavigationMigration(relationship()?.requested)"
                 [title]="
                   isMutual()
                     ? ('pages.profile.relationship.mutualUnfollowTitle' | transloco)

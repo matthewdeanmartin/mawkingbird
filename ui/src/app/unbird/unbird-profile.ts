@@ -1,4 +1,13 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -76,6 +85,7 @@ import { UnbirdMatcher } from './unbird-matcher';
     TranslocoPipe,
   ],
   templateUrl: './unbird-profile.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unbird-profile.css',
 })
 export class UnbirdProfile implements OnInit, OnDestroy {

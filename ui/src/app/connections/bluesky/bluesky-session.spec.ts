@@ -8,7 +8,7 @@
  */
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { BlueskySession } from './bluesky-session';
@@ -50,7 +50,7 @@ function sessionWith(vault: unknown): {
   TestBed.resetTestingModule();
   TestBed.configureTestingModule({
     providers: [
-      provideHttpClient(),
+      provideHttpClient(withXhr()),
       provideHttpClientTesting(),
       { provide: VaultService, useValue: vault },
       { provide: VAULT_TEST_ROLLOUT, useValue: true },
@@ -116,7 +116,7 @@ describe('BlueskySession OAuth connector', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: VaultService, useValue: lockedVault() },
         { provide: BlueskyOAuth, useValue: oauth },

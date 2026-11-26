@@ -14,6 +14,7 @@ import {
   signal,
   viewChild,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -152,6 +153,7 @@ const POSITION_SAVE_DELAY_MS = 2_000;
   templateUrl: './reader-core.html',
   styleUrl: './reader-core.css',
   providers: [ArticleExpansion, ReadingTools],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[class.reader-paged]': 'prefs.readerPageFlip()' },
 })
 export class ReaderCore {

@@ -1,4 +1,4 @@
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -17,7 +17,7 @@ describe('dedupeInterceptor', () => {
       providers: [
         Auth,
         Server,
-        provideHttpClient(withInterceptors([dedupeInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([dedupeInterceptor])),
         provideHttpClientTesting(),
       ],
     });

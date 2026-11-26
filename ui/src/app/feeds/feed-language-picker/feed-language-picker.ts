@@ -1,4 +1,12 @@
-import { Component, computed, ElementRef, HostListener, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  HostListener,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ClientPrefs, MAX_FEED_LANGUAGES } from '../../platform/storage/client-prefs';
@@ -40,6 +48,7 @@ import { Terminology } from '../../i18n/terminology';
   selector: 'app-feed-language-picker',
   imports: [TranslocoPipe, MbPostAction],
   templateUrl: './feed-language-picker.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './feed-language-picker.css',
 })
 export class FeedLanguagePicker {

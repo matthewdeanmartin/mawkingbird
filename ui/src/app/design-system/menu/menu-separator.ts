@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 /** A rule between sections of a menu. */
 @Component({
@@ -11,6 +11,7 @@ import { Component } from '@angular/core';
       border-top: 1px solid var(--border);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { role: 'separator' },
 })
 export class MbMenuSeparator {}

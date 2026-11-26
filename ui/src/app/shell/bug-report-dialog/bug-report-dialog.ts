@@ -8,6 +8,7 @@ import {
   linkedSignal,
   output,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -104,6 +105,7 @@ type Destination = 'github' | 'social' | 'email' | 'copy';
     TranslocoPipe,
   ],
   templateUrl: './bug-report-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bug-report-dialog.css',
 })
 export class BugReportDialog {

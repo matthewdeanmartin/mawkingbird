@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { OpenRouterSession } from '../openrouter-session';
 import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics';
@@ -19,6 +19,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
       <p>{{ status() }}</p>
     </main>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       min-height: 100vh;

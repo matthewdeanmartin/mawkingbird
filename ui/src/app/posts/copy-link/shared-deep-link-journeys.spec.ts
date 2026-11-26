@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, UrlTree } from '@angular/router';
@@ -155,7 +155,7 @@ describe('shared post retrieval without a recipient session', () => {
     TestBed.configureTestingModule({
       providers: [
         ThreadLoader,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: Auth, useValue: { lacksMastodonToken: true } },
         { provide: SearchServer, useValue: { active: () => false } },

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../../design-system/button/button';
 import { AccountTabGuard } from './account-tab-guard';
@@ -40,6 +40,7 @@ import { AccountTabGuard } from './account-tab-guard';
       </div>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .account-tab-banner {
       position: sticky;

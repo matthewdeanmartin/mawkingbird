@@ -28,6 +28,7 @@ import {
   OnInit,
   signal,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { translatedMessage, translatedComputed } from '../../i18n/translated';
@@ -361,6 +362,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
     ProfilePhotoView,
   ],
   templateUrl: './profile.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile.css',
 })
 export class Profile implements OnInit, OnDestroy {

@@ -1,5 +1,5 @@
 import { StatusReplacement, replaceStatus } from '../../feeds/reconcile-status';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
 import { Auth } from '../../platform/session/auth';
@@ -26,6 +26,7 @@ function appendNew(current: Status[], incoming: Status[]): Status[] {
   selector: 'app-favourites',
   imports: [StatusCard, TranslocoPipe, MbButton],
   templateUrl: './favourites.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .more {
       display: flex;

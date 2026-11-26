@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -63,6 +63,7 @@ const EXCERPT = 90;
   selector: 'app-discovery-panel',
   imports: [MbButton, MbHelp, MbProgress, MbStatGrid, HumanTimePipe, RouterLink, TranslocoPipe],
   templateUrl: './discovery-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './discovery-panel.css',
 })
 export class DiscoveryPanel {

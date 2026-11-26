@@ -1,4 +1,13 @@
-import { Component, OnDestroy, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { HumanTimePipe } from '../../../i18n/human-time.pipe';
 import { DraftItem } from '../../drafts/draft-items';
@@ -58,6 +67,7 @@ const MENU_WIDTH = 150;
   selector: 'app-write-board',
   imports: [HumanTimePipe, TranslocoPipe],
   templateUrl: './write-board.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './write-board.css',
 })
 export class WriteBoard implements OnDestroy {

@@ -1,5 +1,12 @@
 import { translatedComputed } from '../../i18n/translated';
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { BulkActions, bulkAction, formatEta } from '../bulk-actions';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
@@ -25,6 +32,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   selector: 'app-bulk-progress',
   imports: [TranslocoPipe],
   templateUrl: './bulk-progress.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bulk-progress.css',
 })
 export class BulkProgress {

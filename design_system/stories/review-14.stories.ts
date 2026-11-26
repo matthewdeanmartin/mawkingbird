@@ -5,6 +5,7 @@ import {
   inject,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { HttpErrorResponse } from "../../ui/src/app/testing/http-error";
 import {
@@ -101,6 +102,7 @@ class PreviewState {
   selector: "ds-membership-review",
   imports: [ListDialog, MbDialog, MbButton, MbToolbar, MbToolbarButton],
   styles: ["output { overflow-wrap: anywhere; }"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>List membership, one shared form.</h1>
     <p class="ds-intro">

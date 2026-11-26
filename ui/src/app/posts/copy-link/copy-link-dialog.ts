@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
@@ -21,6 +21,7 @@ import { MbControl, MbField } from '../../design-system/field/field';
   selector: 'app-copy-link-dialog',
   imports: [MbDialog, MbButton, MbField, MbControl, TranslocoPipe],
   templateUrl: './copy-link-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './copy-link-dialog.css',
 })
 export class CopyLinkDialog {

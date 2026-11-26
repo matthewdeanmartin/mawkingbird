@@ -1,5 +1,5 @@
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { FriendFeedsDialog } from '../friend-feeds-dialog/friend-feeds-dialog';
@@ -79,6 +79,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
       <app-focused-next-steps [inviteLink]="invite" />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class FriendFeedsWorkbench {

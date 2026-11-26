@@ -1,6 +1,15 @@
 import { AccountName } from '../account-name';
 import { MbButton } from '../../design-system/button/button';
-import { Component, computed, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { Auth } from '../../platform/session/auth';
@@ -53,6 +62,7 @@ type FollowState = 'idle' | 'busy';
   selector: 'app-people-browser',
   imports: [AccountName, MbButton, RouterLink, VerifiedBadge, RenderedHtmlLinks, TranslocoPipe],
   templateUrl: './people-browser.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './people-browser.css',
 })
 export class PeopleBrowser {

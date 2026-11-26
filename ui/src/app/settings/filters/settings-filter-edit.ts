@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { FilterDraft, FilterWizard } from './filter-wizard';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -87,6 +87,7 @@ interface KeywordRow {
     MbButton,
   ],
   templateUrl: './settings-filter-edit.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-filter-edit.css',
 })
 export class SettingsFilterEdit implements OnInit {

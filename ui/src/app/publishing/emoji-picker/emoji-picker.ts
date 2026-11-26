@@ -1,4 +1,13 @@
-import { Component, effect, ElementRef, inject, OnDestroy, output, viewChild } from '@angular/core';
+import {
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  OnDestroy,
+  output,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { CustomEmojis } from '../custom-emojis';
 
@@ -18,6 +27,7 @@ interface PickedEmoji {
 @Component({
   selector: 'app-emoji-picker',
   template: `<div #host class="emoji-picker-host"></div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;

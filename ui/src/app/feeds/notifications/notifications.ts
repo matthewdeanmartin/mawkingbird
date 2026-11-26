@@ -10,7 +10,16 @@ import { isIncomingConversation } from '../../accounts/reply-guys-model';
 import { firstValueFrom } from 'rxjs';
 import { accountProfilePath } from '../../accounts/account-route';
 import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { StatusActions } from '../../connections/status-actions';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -344,6 +353,7 @@ export function accountsNewToMe(
     HumanTimePipe,
   ],
   templateUrl: './notifications.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './notifications.css',
 })
 export class Notifications implements OnInit, OnDestroy {

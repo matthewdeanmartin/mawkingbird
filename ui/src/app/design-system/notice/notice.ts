@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'mb-notice',
@@ -11,6 +11,7 @@ import { Component, input } from '@angular/core';
     }
     <ng-content />
   </div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './notice.css',
 })
 export class MbNotice {

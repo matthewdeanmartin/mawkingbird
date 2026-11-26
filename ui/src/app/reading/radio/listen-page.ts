@@ -10,6 +10,7 @@ import {
   linkedSignal,
   signal,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -92,6 +93,7 @@ import { MbMenuItem } from '../../design-system/menu/menu-item';
   ],
   providers: [ThreadLoader],
   templateUrl: './listen-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './listen-page.css',
 })
 export class ListenPage {

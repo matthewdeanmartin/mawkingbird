@@ -1,4 +1,12 @@
-import { Component, effect, inject, input, signal, Type } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  input,
+  signal,
+  Type,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgComponentOutlet } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { normalizeHashtag } from '../../discovery/hashtag';
@@ -28,6 +36,7 @@ import { Server } from '../../platform/http/server';
     }`,
   // Rows in the post's ••• menu, so they match its other entries (see
   // private-like-button) instead of rendering as standalone outline pills.
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: contents;

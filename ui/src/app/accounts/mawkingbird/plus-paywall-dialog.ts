@@ -1,4 +1,11 @@
-import { Component, effect, ElementRef, inject, viewChild } from '@angular/core';
+import {
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { PlusPaywall } from './plus-paywall';
@@ -67,6 +74,7 @@ import { ProxyActivity } from '../../connections/cors-proxy/proxy-activity';
       </button>
     }
   </dialog>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       dialog {

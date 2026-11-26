@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Terminology } from '../i18n/terminology';
 import { FormsModule } from '@angular/forms';
@@ -101,6 +109,7 @@ import { websiteZip } from './website-export';
     RouterLink,
   ],
   templateUrl: './unbird-archive-tools.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unbird-archive-tools.css',
 })
 export class UnbirdArchiveTools implements OnInit {

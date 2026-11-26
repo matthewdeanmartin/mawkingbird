@@ -1,4 +1,13 @@
-import { Component, HostListener, inject, input, effect, output, signal } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  input,
+  effect,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { GradedQuery, SearchContext, SearchHelper, SearchHelperResult } from '../search-helper';
@@ -41,6 +50,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   selector: 'app-search-helper-dialog',
   imports: [FormsModule, TranslocoPipe],
   templateUrl: './search-helper-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './search-helper-dialog.css',
 })
 export class SearchHelperDialog {

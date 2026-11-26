@@ -1,9 +1,10 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { MbTabs, MbTab } from './tabs';
 
 @Component({
   imports: [MbTabs, MbTab],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<mb-tabs label="Views" [selected]="selected()" (selectedChange)="changes.push($event)">
     <ng-template mbTab value="a" label="First" [disabled]="disabled()">First panel</ng-template>
     <ng-template mbTab value="b" label="Second">Second panel</ng-template>

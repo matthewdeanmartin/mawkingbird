@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Api } from '../../platform/api/api';
 import {
   BULK_ACTIONS,
@@ -39,6 +46,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-settings-bulk-actions',
   imports: [BulkActionsDialog, BulkProgress, TranslocoPipe],
   templateUrl: './settings-bulk-actions.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-bulk-actions.css',
 })
 export class SettingsBulkActions implements OnInit {

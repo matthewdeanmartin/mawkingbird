@@ -1,6 +1,14 @@
 import { MbReaderLibrary } from '../../../design-system/reader/reader';
 import { MbPostAction } from '../../../design-system/post-actions/post-actions';
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LibraryEntry, ReaderLibrary, Shelf, progressOf } from '../reader-library';
@@ -74,6 +82,7 @@ export function ofKind(id: string, kind: LibraryKind): boolean {
   selector: 'app-library-panel',
   imports: [MbReaderLibrary, MbPostAction, RouterLink, TranslocoPipe],
   templateUrl: './library-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './library-panel.css',
 })
 export class LibraryPanel {

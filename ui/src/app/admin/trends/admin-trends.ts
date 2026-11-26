@@ -1,5 +1,5 @@
 import { MbButton } from '../../design-system/button/button';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { AdminApi, AdminLinkPublisher, AdminTrendLink } from '../admin-api';
@@ -21,6 +21,7 @@ import { StatusCard } from '../../posts/status-card/status-card';
   selector: 'app-admin-trends',
   imports: [MbButton, RouterLink, StatusCard, TranslocoPipe],
   templateUrl: './admin-trends.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './admin-trends.css',
 })
 export class AdminTrends implements OnInit {

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { BlueControls } from './blue-controls';
 
 /**
@@ -9,6 +9,7 @@ import { BlueControls } from './blue-controls';
 @Component({
   selector: 'app-settings-blue',
   imports: [BlueControls],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <div class="spage-head">
       <h1>Mockingbird Blue</h1>

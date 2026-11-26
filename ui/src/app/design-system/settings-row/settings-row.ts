@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 /** A group heading and a responsive content column, not an input label. */
 @Component({
@@ -9,6 +9,7 @@ import { Component, input } from '@angular/core';
       <div class="controls"><ng-content /></div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-row.css',
 })
 export class MbSettingsRow {

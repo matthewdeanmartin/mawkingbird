@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { GitHubSession } from '../../connections/github/github-session';
 import {
   FocusedNextSteps,
@@ -31,6 +31,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
       </section>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class GitHubFriendsWorkbench {

@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MbCheckbox } from '../../../design-system/checkbox/checkbox';
 import { MbRadioGroup } from '../../../design-system/radio-group/radio-group';
 import { KnownLanguages } from '../../../language/trend-language-filter';
@@ -34,6 +41,7 @@ import { onSetupNext } from '../setup-state';
       />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './setup-steps.css',
 })
 export class SetupLanguages {

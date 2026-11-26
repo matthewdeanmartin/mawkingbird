@@ -1,6 +1,6 @@
 import { AccountName } from '../../accounts/account-name';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -48,6 +48,7 @@ export const TEMPORARY_MUTE_SECONDS = 8 * 60 * 60;
     FeedProgress,
   ],
   templateUrl: './feed-flooding.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: [
     '../../public-pages/features/features.css',
     '../../public-pages/features/follow.css',

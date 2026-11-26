@@ -5,6 +5,7 @@ import {
   inject,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import { provideRouter, withDisabledInitialNavigation } from "@angular/router";
 import {
@@ -71,6 +72,7 @@ class SettingsPreview {
   selector: "ds-settings-composition-review",
   imports: [SettingsPrivacy, SettingsContent, MbToolbar, MbToolbarButton],
   styles: ["output { overflow-wrap: anywhere; }"],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>Settings forms with shared controls.</h1>
     <p class="ds-intro">

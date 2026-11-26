@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
@@ -14,6 +14,7 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
 @Component({
   selector: 'app-singles-tabs',
   imports: [RouterLink, TranslocoPipe, MbNavigation, MbNavLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <nav mbNavigation presentation="tabs" [label]="'singles.section' | transloco">
       <a mbNavLink routerLink="/singles" [current]="current() === 'saved'">{{
@@ -36,6 +37,7 @@ export class SinglesTabs {
 @Component({
   selector: 'app-playlists-tabs',
   imports: [RouterLink, TranslocoPipe, MbNavigation, MbNavLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <nav mbNavigation presentation="tabs" [label]="'playlists.title' | transloco">
       <a mbNavLink routerLink="/playlists" [current]="current() === 'mine'">{{

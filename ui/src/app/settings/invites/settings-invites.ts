@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MockApi } from '../../mock-api';
 import { Invite } from '../../platform/api/models';
@@ -35,6 +35,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-settings-invites',
   imports: [FormsModule, TranslocoPipe],
   templateUrl: './settings-invites.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-invites.css',
 })
 export class SettingsInvites implements OnInit {

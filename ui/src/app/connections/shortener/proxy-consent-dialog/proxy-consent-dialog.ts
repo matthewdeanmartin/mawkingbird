@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../../design-system/dialog/dialog';
 import { MbButton } from '../../../design-system/button/button';
@@ -70,6 +70,7 @@ import { ShortenerCatalogEntry } from '../shortener-catalog';
   selector: 'app-proxy-consent-dialog',
   imports: [TranslocoPipe, MbDialog, MbButton, MbContentLink, MbNotice],
   templateUrl: './proxy-consent-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./proxy-consent-dialog.css'],
 })
 export class ProxyConsentDialog {

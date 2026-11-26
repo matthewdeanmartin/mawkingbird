@@ -1,5 +1,12 @@
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Component, computed, inject, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CorsProxySettings } from '../../../connections/cors-proxy/cors-proxy-settings';
 import {
   PLANNED_FEATURES,
@@ -49,6 +56,7 @@ import { VAULT_TEST_ROLLOUT } from '../../../connections/vault/vault-preference'
   selector: 'app-plus-welcome-dialog',
   imports: [TranslocoPipe],
   templateUrl: './plus-welcome-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './plus-welcome-dialog.css',
 })
 export class PlusWelcomeDialog {

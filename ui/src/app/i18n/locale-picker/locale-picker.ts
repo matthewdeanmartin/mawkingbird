@@ -25,7 +25,7 @@
  * own when `SUPPORTED_LOCALES` grows.
  */
 
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LOCALE_ENDONYMS, SupportedLocale, UiLocale } from '../locale';
 
@@ -61,6 +61,7 @@ const AUTO = 'auto';
       </label>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .locale-picker select {
       font: inherit;

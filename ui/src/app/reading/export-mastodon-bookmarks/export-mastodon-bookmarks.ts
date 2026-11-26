@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -26,6 +26,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     BookmarksExportWorkbench,
   ],
   templateUrl: './export-mastodon-bookmarks.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class ExportMastodonBookmarks {
@@ -52,6 +53,7 @@ export class ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksDe extends ExportMastodonBookmarks {
@@ -76,6 +78,7 @@ export class ExportMastodonBookmarksDe extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksJa extends ExportMastodonBookmarks {
@@ -100,6 +103,7 @@ export class ExportMastodonBookmarksJa extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksFr extends ExportMastodonBookmarks {
@@ -124,6 +128,7 @@ export class ExportMastodonBookmarksFr extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksEs extends ExportMastodonBookmarks {
@@ -148,6 +153,7 @@ export class ExportMastodonBookmarksEs extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksZhHant extends ExportMastodonBookmarks {
@@ -172,6 +178,7 @@ export class ExportMastodonBookmarksZhHant extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksKo extends ExportMastodonBookmarks {
@@ -196,6 +203,7 @@ export class ExportMastodonBookmarksKo extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksPt extends ExportMastodonBookmarks {
@@ -220,6 +228,7 @@ export class ExportMastodonBookmarksPt extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksIt extends ExportMastodonBookmarks {
@@ -244,6 +253,7 @@ export class ExportMastodonBookmarksIt extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksPl extends ExportMastodonBookmarks {
@@ -264,6 +274,7 @@ export class ExportMastodonBookmarksPl extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksUk extends ExportMastodonBookmarks {
@@ -284,6 +295,7 @@ export class ExportMastodonBookmarksUk extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksHi extends ExportMastodonBookmarks {
@@ -304,6 +316,7 @@ export class ExportMastodonBookmarksHi extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksNl extends ExportMastodonBookmarks {
@@ -324,6 +337,7 @@ export class ExportMastodonBookmarksNl extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksId extends ExportMastodonBookmarks {
@@ -344,6 +358,7 @@ export class ExportMastodonBookmarksId extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksRu extends ExportMastodonBookmarks {
@@ -364,6 +379,7 @@ export class ExportMastodonBookmarksRu extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksSv extends ExportMastodonBookmarks {
@@ -384,6 +400,7 @@ export class ExportMastodonBookmarksSv extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksVi extends ExportMastodonBookmarks {
@@ -404,6 +421,7 @@ export class ExportMastodonBookmarksVi extends ExportMastodonBookmarks {
   ],
   templateUrl: './export-mastodon-bookmarks.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ExportMastodonBookmarksTr extends ExportMastodonBookmarks {

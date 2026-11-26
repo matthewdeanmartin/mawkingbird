@@ -1,4 +1,4 @@
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -50,7 +50,7 @@ describe('ConnectionState', () => {
     fetchSpy = vi.fn();
     vi.stubGlobal('fetch', fetchSpy);
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
   });
 
@@ -142,7 +142,7 @@ describe('network simulator', () => {
   it('fails requests as unanswered under the offline profile', async () => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([networkSimulatorInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([networkSimulatorInterceptor])),
         provideHttpClientTesting(),
       ],
     });

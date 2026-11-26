@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { BlogPrefs } from '../../blog/blog-prefs';
@@ -35,6 +35,7 @@ import { MbButton } from '../../design-system/button/button';
 @Component({
   selector: 'app-settings-blog',
   imports: [RouterLink, TranslocoPipe, MbField, MbControl, MbButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-blog.html',
 })
 export class SettingsBlog {

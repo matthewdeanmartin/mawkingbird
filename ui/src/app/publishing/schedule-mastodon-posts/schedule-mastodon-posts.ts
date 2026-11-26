@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -29,6 +29,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     ScheduleWorkbench,
   ],
   templateUrl: './schedule-mastodon-posts.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class ScheduleMastodonPosts {
@@ -55,6 +56,7 @@ export class ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsDe extends ScheduleMastodonPosts {
@@ -79,6 +81,7 @@ export class ScheduleMastodonPostsDe extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsJa extends ScheduleMastodonPosts {
@@ -103,6 +106,7 @@ export class ScheduleMastodonPostsJa extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsFr extends ScheduleMastodonPosts {
@@ -127,6 +131,7 @@ export class ScheduleMastodonPostsFr extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsEs extends ScheduleMastodonPosts {
@@ -151,6 +156,7 @@ export class ScheduleMastodonPostsEs extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsZhHant extends ScheduleMastodonPosts {
@@ -175,6 +181,7 @@ export class ScheduleMastodonPostsZhHant extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsKo extends ScheduleMastodonPosts {
@@ -199,6 +206,7 @@ export class ScheduleMastodonPostsKo extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsPt extends ScheduleMastodonPosts {
@@ -223,6 +231,7 @@ export class ScheduleMastodonPostsPt extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsIt extends ScheduleMastodonPosts {
@@ -247,6 +256,7 @@ export class ScheduleMastodonPostsIt extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsPl extends ScheduleMastodonPosts {
@@ -267,6 +277,7 @@ export class ScheduleMastodonPostsPl extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsUk extends ScheduleMastodonPosts {
@@ -287,6 +298,7 @@ export class ScheduleMastodonPostsUk extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsHi extends ScheduleMastodonPosts {
@@ -307,6 +319,7 @@ export class ScheduleMastodonPostsHi extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsNl extends ScheduleMastodonPosts {
@@ -327,6 +340,7 @@ export class ScheduleMastodonPostsNl extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsId extends ScheduleMastodonPosts {
@@ -347,6 +361,7 @@ export class ScheduleMastodonPostsId extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsRu extends ScheduleMastodonPosts {
@@ -367,6 +382,7 @@ export class ScheduleMastodonPostsRu extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsSv extends ScheduleMastodonPosts {
@@ -387,6 +403,7 @@ export class ScheduleMastodonPostsSv extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsVi extends ScheduleMastodonPosts {
@@ -407,6 +424,7 @@ export class ScheduleMastodonPostsVi extends ScheduleMastodonPosts {
   ],
   templateUrl: './schedule-mastodon-posts.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class ScheduleMastodonPostsTr extends ScheduleMastodonPosts {

@@ -8,6 +8,7 @@ import {
   input,
   output,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -59,6 +60,7 @@ import { PeopleLists } from './people-lists';
   selector: 'app-people-lists-panel',
   imports: [DatePipe, FormsModule, TranslocoPipe, FocusTrap],
   templateUrl: './people-lists-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './people-lists-panel.css',
 })
 export class PeopleListsPanel {

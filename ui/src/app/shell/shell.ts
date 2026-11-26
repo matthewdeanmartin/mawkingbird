@@ -25,6 +25,7 @@ import {
   signal,
   Type,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NgComponentOutlet, NgOptimizedImage } from '@angular/common';
@@ -280,6 +281,7 @@ const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
   templateUrl: './shell.html',
   styleUrl: './shell.css',
   // Lets routed pages (the full account picker) reuse this switch flow.
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [{ provide: AccountSwitcher, useExisting: forwardRef(() => Shell) }],
 })
 export class Shell implements OnInit, AccountSwitcher {

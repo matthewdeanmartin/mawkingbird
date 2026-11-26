@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FeatureFlags } from '../../platform/build/feature-flags';
@@ -40,6 +40,7 @@ import { LEGAL_LINKS } from './legal-content';
   selector: 'app-docs',
   imports: [RouterLink, AppOnlyLinkRel, TranslocoPipe],
   templateUrl: './docs.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './docs.css',
 })
 export class Docs implements OnInit {

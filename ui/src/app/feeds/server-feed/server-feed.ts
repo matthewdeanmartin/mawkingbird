@@ -1,7 +1,15 @@
 import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { translatedComputed } from '../../i18n/translated';
 import { AccountName } from '../../accounts/account-name';
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -65,6 +73,7 @@ import { anonymousAccountRouteRef } from '../../accounts/anonymous/anonymous-rou
     MbToolbarButton,
   ],
   templateUrl: './server-feed.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './server-feed.css',
 })
 export class ServerFeed implements OnInit {

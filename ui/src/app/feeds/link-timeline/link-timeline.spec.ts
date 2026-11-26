@@ -1,4 +1,4 @@
-import { HttpRequest, provideHttpClient } from '@angular/common/http';
+import { HttpRequest, provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
@@ -18,7 +18,7 @@ describe('LinkTimeline', () => {
 
   function setUp(url: string | null): ComponentFixture<LinkTimeline> {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     TestBed.overrideProvider(ActivatedRoute, {
       useValue: { queryParamMap: of(convertToParamMap(url === null ? {} : { url })) },

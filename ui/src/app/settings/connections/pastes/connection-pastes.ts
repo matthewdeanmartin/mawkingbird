@@ -3,7 +3,7 @@ import { MbNotice } from '../../../design-system/notice/notice';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { MbRadioGroup } from '../../../design-system/radio-group/radio-group';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { PasteProviderRegistry } from '../../../connections/paste/paste-provider-registry';
@@ -37,6 +37,7 @@ import { PASTE_SERVICES } from '../../../connections/publishing-services';
     TranslocoPipe,
   ],
   templateUrl: './connection-pastes.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-pastes.css'],
 })
 export class ConnectionPastes {

@@ -7,6 +7,7 @@ import {
   input,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -100,6 +101,7 @@ interface LinePath {
   selector: 'app-interaction-decay-panel',
   imports: [MbButton, MbHelp, MbProgress, MbStatGrid, HumanTimePipe, TranslocoPipe],
   templateUrl: './interaction-decay-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './interaction-decay-panel.css',
 })
 export class InteractionDecayPanel {

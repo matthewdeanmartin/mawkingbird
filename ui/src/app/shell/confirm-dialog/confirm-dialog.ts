@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { MbField, MbControl } from '../../design-system/field/field';
@@ -13,6 +13,7 @@ import { MbButton } from '../../design-system/button/button';
 @Component({
   selector: 'app-confirm-dialog',
   imports: [MbDialog, MbField, MbControl, MbButton, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './confirm-dialog.html',
 })
 export class ConfirmDialog {

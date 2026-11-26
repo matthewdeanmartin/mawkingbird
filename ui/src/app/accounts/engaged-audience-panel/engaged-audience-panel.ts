@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -55,6 +55,7 @@ interface Cell {
   selector: 'app-engaged-audience-panel',
   imports: [MbButton, MbBarList, MbHelp, MbStatGrid, TranslocoPipe],
   templateUrl: './engaged-audience-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './engaged-audience-panel.css',
 })
 export class EngagedAudiencePanel {

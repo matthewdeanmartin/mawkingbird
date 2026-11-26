@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
@@ -20,6 +20,7 @@ import { PrivacyPolicy } from '../../platform/api/models';
   selector: 'app-server-privacy',
   imports: [DatePipe, TranslocoPipe],
   templateUrl: './server-privacy.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './server-privacy.css',
 })
 export class ServerPrivacy implements OnInit {

@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -118,7 +118,7 @@ describe('RssFetch', () => {
     cache = new FakeRssCache();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: RssCache, useValue: cache },
       ],
@@ -628,7 +628,7 @@ describe('RssFetch native transport', () => {
     read = vi.fn<(url: string) => Promise<string>>().mockResolvedValue(FEED_XML);
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: RssCache, useValue: cache },
         { provide: PLATFORM_FEED_READ, useValue: read },

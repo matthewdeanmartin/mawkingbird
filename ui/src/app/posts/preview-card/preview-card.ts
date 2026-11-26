@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { PreviewCard } from '../../platform/api/models';
 import { VideoPlayerHost as VideoPlayer } from '../../reading/video-player/video-player-host';
 import { mediaUrl, youtubeSource } from '../../reading/video-player/media-source';
@@ -23,6 +23,7 @@ import { mediaUrl, youtubeSource } from '../../reading/video-player/media-source
   selector: 'app-preview-card',
   imports: [VideoPlayer],
   templateUrl: './preview-card.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './preview-card.css',
 })
 export class PreviewCardComponent {

@@ -1,6 +1,15 @@
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
-import { Component, DestroyRef, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RouterLink } from '@angular/router';
 import { map, Observable, switchMap } from 'rxjs';
@@ -34,6 +43,7 @@ export type AccountListMode = 'favourited_by' | 'reblogged_by';
   selector: 'app-account-list-dialog',
   imports: [AccountName, MbDialog, MbButton, MbContentState, RouterLink, TranslocoPipe],
   templateUrl: './account-list-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './account-list-dialog.css',
 })
 export class AccountListDialog implements OnInit {

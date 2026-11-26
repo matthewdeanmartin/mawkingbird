@@ -1,4 +1,12 @@
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
@@ -32,6 +40,7 @@ const SHOWN = 3;
   selector: 'app-unbird-servers',
   imports: [MbButton, MbSection, RouterLink, TranslocoPipe],
   templateUrl: './unbird-servers.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './unbird-servers.css',
 })
 export class UnbirdServers {

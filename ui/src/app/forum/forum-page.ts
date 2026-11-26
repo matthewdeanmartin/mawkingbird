@@ -1,5 +1,13 @@
 import { translatedComputed } from '../i18n/translated';
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -124,6 +132,7 @@ function asSort(value: string | null): ForumSort {
     ForumMembers,
   ],
   templateUrl: './forum-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './forum-page.css',
 })
 export class ForumPage {

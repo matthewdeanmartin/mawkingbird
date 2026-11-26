@@ -1,4 +1,11 @@
-import { Component, computed, inject, PLATFORM_ID, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  PLATFORM_ID,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MbControl, MbField } from '../../design-system/field/field';
@@ -35,6 +42,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     ContentWarningsWorkbench,
   ],
   templateUrl: './mastodon-content-warnings.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: [
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
@@ -103,6 +111,7 @@ export class MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsDe extends MastodonContentWarnings {
@@ -133,6 +142,7 @@ export class MastodonContentWarningsDe extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsJa extends MastodonContentWarnings {
@@ -163,6 +173,7 @@ export class MastodonContentWarningsJa extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsFr extends MastodonContentWarnings {
@@ -195,6 +206,7 @@ export class MastodonContentWarningsFr extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsEs extends MastodonContentWarnings {
@@ -227,6 +239,7 @@ export class MastodonContentWarningsEs extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsZhHant extends MastodonContentWarnings {
@@ -257,6 +270,7 @@ export class MastodonContentWarningsZhHant extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsKo extends MastodonContentWarnings {
@@ -287,6 +301,7 @@ export class MastodonContentWarningsKo extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsPt extends MastodonContentWarnings {
@@ -317,6 +332,7 @@ export class MastodonContentWarningsPt extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsIt extends MastodonContentWarnings {
@@ -349,6 +365,7 @@ export class MastodonContentWarningsIt extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsPl extends MastodonContentWarnings {
@@ -375,6 +392,7 @@ export class MastodonContentWarningsPl extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsUk extends MastodonContentWarnings {
@@ -401,6 +419,7 @@ export class MastodonContentWarningsUk extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsHi extends MastodonContentWarnings {
@@ -427,6 +446,7 @@ export class MastodonContentWarningsHi extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsNl extends MastodonContentWarnings {
@@ -453,6 +473,7 @@ export class MastodonContentWarningsNl extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsId extends MastodonContentWarnings {
@@ -479,6 +500,7 @@ export class MastodonContentWarningsId extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsRu extends MastodonContentWarnings {
@@ -505,6 +527,7 @@ export class MastodonContentWarningsRu extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsSv extends MastodonContentWarnings {
@@ -531,6 +554,7 @@ export class MastodonContentWarningsSv extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsVi extends MastodonContentWarnings {
@@ -557,6 +581,7 @@ export class MastodonContentWarningsVi extends MastodonContentWarnings {
     '../../public-pages/focused-apps/focused-page.css',
     './mastodon-content-warnings.css',
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class MastodonContentWarningsTr extends MastodonContentWarnings {

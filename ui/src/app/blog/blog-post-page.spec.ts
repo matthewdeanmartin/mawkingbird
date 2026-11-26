@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Compose } from '../publishing/compose/compose';
 import { Auth } from '../platform/session/auth';
@@ -69,6 +69,7 @@ describe('commentsOf', () => {
 /** Stands in for the real composer, which needs the whole posting stack. */
 @Component({
   selector: 'app-compose',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<textarea [placeholder]="placeholder()"></textarea>',
 })
 class StubCompose {

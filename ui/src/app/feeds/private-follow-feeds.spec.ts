@@ -1,4 +1,4 @@
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
@@ -41,7 +41,7 @@ describe('PrivateFollowFeeds', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(withInterceptors([serverInterceptor, authInterceptor])),
+        provideHttpClient(withXhr(), withInterceptors([serverInterceptor, authInterceptor])),
         provideHttpClientTesting(),
         { provide: ProviderRegistry, useValue: { linked: () => [] } },
       ],

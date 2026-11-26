@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -20,7 +20,7 @@ describe('ConnectionTwitter', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [ConnectionTwitter],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     // These specs use a third-party proxy as the vehicle for testing proxy
     enableProxyFlags();

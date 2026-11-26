@@ -1,5 +1,12 @@
 import { AccountName } from '../../accounts/account-name';
-import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -85,6 +92,7 @@ type Phase = 'start' | 'loading' | 'ready' | 'error' | 'finished';
   imports: [AccountName, AlgoViewTabs, DatePipe, StatusCard, TranslocoPipe],
   providers: [FeedAggregator],
   templateUrl: './catch-up.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './catch-up.css',
 })
 export class CatchUp implements OnDestroy {

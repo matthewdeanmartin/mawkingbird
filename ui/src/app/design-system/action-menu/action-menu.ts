@@ -1,4 +1,4 @@
-import { Component, input, output, viewChild } from '@angular/core';
+import { Component, input, output, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MbPopover } from '../popover/popover';
 
 export interface MbMenuAction {
@@ -32,6 +32,7 @@ export interface MbMenuAction {
       </button>
     }
   </mb-popover>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './action-menu.css',
 })
 export class MbActionMenu {

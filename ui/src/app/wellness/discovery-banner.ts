@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { DiscoveryWindow } from './discovery-window';
 import { isDiscoveryPath, minutesLeft } from './discovery-window-model';
@@ -36,6 +36,7 @@ import { isDiscoveryPath, minutesLeft } from './discovery-window-model';
       </div>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .banner {
       display: flex;

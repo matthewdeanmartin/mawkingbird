@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { PlusCatalogue } from './plus-catalogue';
 
@@ -8,6 +8,7 @@ import { PlusCatalogue } from './plus-catalogue';
 @Component({
   selector: 'app-plus-price',
   imports: [TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `@if (catalogue.label(); as price) {
       <span>{{ price }}</span>
     } @else if (catalogue.loading()) {

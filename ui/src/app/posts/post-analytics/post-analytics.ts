@@ -1,6 +1,13 @@
 import { AccountName } from '../../accounts/account-name';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -89,6 +96,7 @@ type LoadError = 'notFound' | 'load' | 'unsupported';
   selector: 'app-post-analytics',
   imports: [AccountName, MbButton, MbHelp, MbPageHeader, RouterLink, StatusCard, TranslocoPipe],
   templateUrl: './post-analytics.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './post-analytics.css',
 })
 export class PostAnalytics {

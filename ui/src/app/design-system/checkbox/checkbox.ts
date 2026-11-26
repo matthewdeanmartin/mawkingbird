@@ -7,6 +7,7 @@ import {
   output,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -17,6 +18,7 @@ let nextId = 0;
   selector: 'mb-checkbox',
   templateUrl: './checkbox.html',
   styleUrl: './checkbox.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MbCheckbox), multi: true },
   ],

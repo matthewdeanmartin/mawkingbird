@@ -41,6 +41,7 @@ import {
   output,
   signal,
   viewChildren,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
@@ -517,6 +518,7 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
   ],
   templateUrl: './status-card.html',
   styleUrl: './status-card.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     // Wellness hides counts with global CSS keyed on <html>; this marks the
     // cards that show them anyway (see `revealCounts`).

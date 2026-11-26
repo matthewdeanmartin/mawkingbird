@@ -1,9 +1,17 @@
-import { Component, computed, inject, input, LOCALE_ID } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  LOCALE_ID,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 /** Mixed links/buttons retain native Tab order; no button-only roving-focus contract. */
 @Component({
   selector: 'mb-post-actions',
   template: '<ng-content />',
   styleUrl: './post-actions.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     role: 'group',
     '[attr.aria-label]': 'label()',
@@ -25,6 +33,7 @@ export class MbPostActions {
   selector: 'button[mbPostAction], a[mbPostAction], span[mbPostAction]',
   template: '<ng-content />',
   styleUrls: ['../toolbar/toolbar-button.css', './post-action.css'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     '[attr.aria-pressed]': 'pressed()',
     '[attr.data-active]': 'active() ? true : null',
@@ -49,6 +58,7 @@ export class MbPostAction {
     }
     <span [class.exact]="count() !== null"><ng-content /></span>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './action-count.css',
 })
 export class MbActionCount {
@@ -64,6 +74,7 @@ export class MbActionCount {
 @Component({
   selector: 'span[mbPostActionLabel]',
   template: '<ng-content />',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './post-action-label.css',
 })
 export class MbPostActionLabel {}

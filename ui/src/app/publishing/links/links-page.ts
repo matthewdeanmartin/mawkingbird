@@ -1,5 +1,12 @@
 import { translatedComputed } from '../../i18n/translated';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -95,6 +102,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
   selector: 'app-links-page',
   imports: [FormsModule, RouterLink, HumanTimePipe, ProxyConsentDialog, TranslocoPipe],
   templateUrl: './links-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './links-page.css',
 })
 export class LinksPage implements OnInit {

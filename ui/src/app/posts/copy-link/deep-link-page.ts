@@ -1,5 +1,5 @@
 import { READ_PARAM } from './portable-address';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { catchError, firstValueFrom, of, timeout } from 'rxjs';
@@ -55,6 +55,7 @@ const LOCAL_ID = /^[A-Za-z0-9]+$/;
       }
     </section>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .deep-link {
       padding: 24px 16px;

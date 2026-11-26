@@ -1,6 +1,15 @@
 import { saveFile } from '../../platform/files/save-file';
 import { translatedComputed } from '../../i18n/translated';
-import { Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   BulkActionId,
   BulkActions,
@@ -78,6 +87,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   selector: 'app-bulk-actions-dialog',
   imports: [MbDialog, MbButton, TranslocoPipe],
   templateUrl: './bulk-actions-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bulk-actions-dialog.css',
 })
 export class BulkActionsDialog implements OnInit {

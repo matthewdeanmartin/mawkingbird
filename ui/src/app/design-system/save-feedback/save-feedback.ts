@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 export type SaveState = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -9,6 +9,7 @@ export type SaveState = 'idle' | 'saving' | 'saved' | 'error';
     <p role="status">{{ state() === 'saving' || state() === 'saved' ? message() : '' }}</p>
     <p role="alert" [id]="errorId() || null">{{ state() === 'error' ? message() : '' }}</p>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './save-feedback.css',
 })
 export class MbSaveFeedback {

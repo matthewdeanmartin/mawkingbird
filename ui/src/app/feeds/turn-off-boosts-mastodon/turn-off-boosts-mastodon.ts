@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentLink } from '../../design-system/metadata/metadata';
@@ -28,6 +28,7 @@ import { AppOnlyLinkRel } from '../../public-pages/public-page-urls';
     BoostsWorkbench,
   ],
   templateUrl: './turn-off-boosts-mastodon.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class TurnOffBoostsMastodon {
@@ -54,6 +55,7 @@ export class TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.de.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonDe extends TurnOffBoostsMastodon {
@@ -78,6 +80,7 @@ export class TurnOffBoostsMastodonDe extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.ja.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonJa extends TurnOffBoostsMastodon {
@@ -102,6 +105,7 @@ export class TurnOffBoostsMastodonJa extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.fr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonFr extends TurnOffBoostsMastodon {
@@ -126,6 +130,7 @@ export class TurnOffBoostsMastodonFr extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.es.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonEs extends TurnOffBoostsMastodon {
@@ -150,6 +155,7 @@ export class TurnOffBoostsMastodonEs extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.zh-hant.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonZhHant extends TurnOffBoostsMastodon {
@@ -174,6 +180,7 @@ export class TurnOffBoostsMastodonZhHant extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.ko.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonKo extends TurnOffBoostsMastodon {
@@ -198,6 +205,7 @@ export class TurnOffBoostsMastodonKo extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.pt.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonPt extends TurnOffBoostsMastodon {
@@ -222,6 +230,7 @@ export class TurnOffBoostsMastodonPt extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.it.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonIt extends TurnOffBoostsMastodon {
@@ -246,6 +255,7 @@ export class TurnOffBoostsMastodonIt extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.pl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonPl extends TurnOffBoostsMastodon {
@@ -266,6 +276,7 @@ export class TurnOffBoostsMastodonPl extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.uk.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonUk extends TurnOffBoostsMastodon {
@@ -286,6 +297,7 @@ export class TurnOffBoostsMastodonUk extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.hi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonHi extends TurnOffBoostsMastodon {
@@ -306,6 +318,7 @@ export class TurnOffBoostsMastodonHi extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.nl.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonNl extends TurnOffBoostsMastodon {
@@ -326,6 +339,7 @@ export class TurnOffBoostsMastodonNl extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.id.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonId extends TurnOffBoostsMastodon {
@@ -346,6 +360,7 @@ export class TurnOffBoostsMastodonId extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.ru.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonRu extends TurnOffBoostsMastodon {
@@ -366,6 +381,7 @@ export class TurnOffBoostsMastodonRu extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.sv.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonSv extends TurnOffBoostsMastodon {
@@ -386,6 +402,7 @@ export class TurnOffBoostsMastodonSv extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.vi.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonVi extends TurnOffBoostsMastodon {
@@ -406,6 +423,7 @@ export class TurnOffBoostsMastodonVi extends TurnOffBoostsMastodon {
   ],
   templateUrl: './turn-off-boosts-mastodon.tr.html',
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [provideRouteLanguage()],
 })
 export class TurnOffBoostsMastodonTr extends TurnOffBoostsMastodon {

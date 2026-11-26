@@ -1,6 +1,14 @@
 import { AccountName } from '../accounts/account-name';
 import { DatePipe } from '@angular/common';
-import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -63,6 +71,7 @@ type BlogError = 'handle' | 'notFound' | 'mine' | null;
     BlogSettingsLink,
   ],
   templateUrl: './blog-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blog-page.css',
 })
 export class BlogPage {

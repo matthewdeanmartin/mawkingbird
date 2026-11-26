@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Auth } from '../../platform/session/auth';
 import { Compose, PostTarget } from '../compose/compose';
 import { BlueskySession } from '../../connections/bluesky/bluesky-session';
@@ -59,6 +59,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 
     <app-focused-next-steps [inviteLink]="invite" />
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: '../../public-pages/focused-apps/focused-page.css',
 })
 export class CrosspostWorkbench {

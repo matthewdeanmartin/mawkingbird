@@ -1,4 +1,11 @@
-import { Component, computed, inject, Injectable, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Injectable,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { MbRailCard } from '../../design-system/identity/rail-card';
@@ -194,6 +201,7 @@ export class ProfileContentState {
       </div>
     </section>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: [
     `
       :host {

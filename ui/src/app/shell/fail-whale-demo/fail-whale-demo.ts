@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { failWhaleArt } from '../../platform/build/build-flavor';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
@@ -44,6 +44,7 @@ import { InstanceStatus } from '../../platform/http/instance-status';
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .whale-page {
       padding: 48px 24px;

@@ -5,7 +5,7 @@ import { MbContentLink } from '../../../design-system/metadata/metadata';
 import { MbPageHeader } from '../../../design-system/page-header/page-header';
 import { MbField, MbControl } from '../../../design-system/field/field';
 import { MbDisclosure } from '../../../design-system/disclosure/disclosure';
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, inject, input, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -58,6 +58,7 @@ const BLUESKY_ENTRYWAY = 'https://bsky.social';
     TranslocoPipe,
   ],
   templateUrl: './connection-bluesky.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-bluesky.css'],
 })
 export class ConnectionBluesky implements OnInit {

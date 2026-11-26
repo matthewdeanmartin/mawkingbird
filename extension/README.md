@@ -1,8 +1,8 @@
 # Mawkingbird for Firefox
 
 A small WebExtension: share the page you're reading, quote a selection, open
-Mastodon/Bluesky/Twitter links in Mawkingbird, and keep Lite (`/m/`) in the
-sidebar. Plan and sprints: [spec/firefox-extension.md](../spec/firefox-extension.md).
+Mastodon/Bluesky/Twitter links in Mawkingbird, subscribe to a site's feed, find
+its author on the fediverse, and keep Lite (`/m/`) in the sidebar. Plan and sprints: [spec/firefox-extension.md](../spec/firefox-extension.md).
 
 No build step: `src/` is exactly what ships. Nothing here touches `ui/` or
 `native/`, and nothing here runs in CI.
@@ -21,7 +21,9 @@ make sign       # signed unlisted .xpi (AMO API keys in WEB_EXT_API_KEY/SECRET)
 | Path | What |
 | --- | --- |
 | `src/manifest.json` | Manifest V3, Firefox 140+ |
-| `src/background.js` | Right-click menus, toolbar button |
+| `src/background.js` | Right-click menus |
+| `src/popup/` | Toolbar popup: actions plus the page's feeds and author |
+| `src/lib/page-scan.js` | Reads a page's feeds and fediverse author, only on a popup click |
 | `src/lib/links.js` | Every Mawkingbird URL the extension opens; mirrors `ui/src/app/posts/copy-link/deep-links.ts` |
 | `src/lib/settings.js` | Which Mawkingbird to open (production, canary, test, localhost) |
 | `src/sidebar/` | Lite in a frame plus a strip acting on the current tab |

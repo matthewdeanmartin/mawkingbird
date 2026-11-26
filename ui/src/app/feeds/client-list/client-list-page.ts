@@ -3,7 +3,14 @@ import { accountProfilePath } from '../../accounts/account-route';
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { MbMetadata, MbContentLink } from '../../design-system/metadata/metadata';
 import { MbTabs, MbTab } from '../../design-system/tabs/tabs';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ClientList, ClientLists } from '../lists/client-lists';
@@ -49,6 +56,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
     TranslocoPipe,
   ],
   templateUrl: './client-list-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './client-list-page.css',
 })
 export class ClientListPage implements OnInit {

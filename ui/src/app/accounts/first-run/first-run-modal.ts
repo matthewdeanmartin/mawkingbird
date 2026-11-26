@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import { MbButton } from '../../design-system/button/button';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -46,6 +46,7 @@ export type FirstRunChoice = 'anonymous' | 'mastodon' | 'bluesky' | 'misskey' | 
   templateUrl: './first-run-modal.html',
   styleUrl: './first-run-modal.css',
   imports: [TranslocoPipe, MbButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     role: 'dialog',
     'aria-modal': 'true',

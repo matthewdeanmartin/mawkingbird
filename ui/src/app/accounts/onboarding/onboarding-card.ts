@@ -9,6 +9,7 @@ import {
   Injector,
   signal,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { Api } from '../../platform/api/api';
@@ -49,6 +50,7 @@ import { MastodonOnboardingServer, NO_SERVER } from './onboarding-server';
   selector: 'app-onboarding-card',
   templateUrl: './onboarding-card.html',
   styleUrl: './onboarding-card.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: {
     role: 'dialog',
     'aria-modal': 'false',

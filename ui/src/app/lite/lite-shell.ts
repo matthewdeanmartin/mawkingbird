@@ -1,4 +1,12 @@
-import { Component, DestroyRef, ViewEncapsulation, computed, effect, inject } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ViewEncapsulation,
+  computed,
+  effect,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../design-system/button/button';
@@ -100,6 +108,7 @@ export const LITE_NAV: readonly { path: string; label: string }[] = [
       </main>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .lite-shell {
       min-height: 100vh;

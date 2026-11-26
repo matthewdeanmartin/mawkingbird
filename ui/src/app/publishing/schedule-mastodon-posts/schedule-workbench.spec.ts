@@ -1,4 +1,4 @@
-import { HttpHeaders, provideHttpClient } from '@angular/common/http';
+import { HttpHeaders, provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal } from '@angular/core';
@@ -50,7 +50,7 @@ describe('ScheduleWorkbench', () => {
     localStorage.clear();
     TestBed.configureTestingModule({
       imports: [ScheduleWorkbench, translocoTesting()],
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(ScheduleWorkbench);

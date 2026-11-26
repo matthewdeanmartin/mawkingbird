@@ -4,6 +4,7 @@ import {
   inject,
   signal,
   importProvidersFrom,
+  ChangeDetectionStrategy
 } from "@angular/core";
 import {
   ActivatedRoute,
@@ -106,6 +107,7 @@ class ListPreview {
       />
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     section {
       max-inline-size: 48rem;

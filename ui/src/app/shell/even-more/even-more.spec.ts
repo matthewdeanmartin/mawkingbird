@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
@@ -18,7 +18,7 @@ describe('EvenMore', () => {
   function setUp(discoveryOpen = true): HTMLElement {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         ...(discoveryOpen ? [] : [{ provide: DiscoveryWindow, useValue: { open: () => false } }]),
@@ -99,7 +99,7 @@ describe('EvenMore', () => {
 
 it('keeps writing in its own section, and Feed Doctor out of Feeds', () => {
   TestBed.configureTestingModule({
-    providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+    providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
   });
   TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
   const fixture = TestBed.createComponent(EvenMore);

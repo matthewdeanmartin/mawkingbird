@@ -1,5 +1,5 @@
 import { AppDialogs } from '../../shell/app-dialogs';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -53,7 +53,7 @@ describe('BridgeFinder', () => {
   function setup(me: Account = account('me')): BridgeFinder {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: Auth, useValue: { account: () => me, kind: () => 'mastodon' } },
       ],

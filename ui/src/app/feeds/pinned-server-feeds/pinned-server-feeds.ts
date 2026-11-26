@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Auth } from '../../platform/session/auth';
 import { FeedCapability } from '../feed-capability';
@@ -55,6 +62,7 @@ import { SERVER_FEEDS, ServerFeedDef } from '../lists/server-feeds';
       </nav>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .pinned-feeds {
       display: flex;

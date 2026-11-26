@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
 import { MbContentState } from '../../design-system/content-state/content-state';
@@ -21,6 +21,7 @@ import { RadioStudioSession } from './radio-studio-session';
   selector: 'app-radio-studio',
   imports: [TranslocoPipe, MbButton, MbContentState, StatusCard],
   templateUrl: './radio-studio.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './radio-studio.css',
 })
 export class RadioStudio {

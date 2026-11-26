@@ -1,10 +1,11 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { LoadMoreWhenVisible } from './load-more-when-visible';
 
 @Component({
   imports: [LoadMoreWhenVisible],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<button [appLoadMoreWhenVisible]="ready()" (visible)="load()">More</button>',
 })
 class Host {

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../../design-system/button/button';
@@ -150,6 +150,7 @@ import { LOCAL_AI_PRESETS, LocalAi } from '../../../connections/local-ai/local-a
       </div>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .presets,
     .actions {

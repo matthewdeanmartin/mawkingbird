@@ -1,6 +1,6 @@
 import { HomeSession } from '../home-session';
 import { FEED_CTA_INTERVAL } from '../feed-ctas';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import {
   HttpTestingController,
   provideHttpClientTesting,
@@ -148,7 +148,7 @@ describe('Home', () => {
     diagnostics = { info: vi.fn(), warn: vi.fn(), error: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: Streaming, useValue: fakeStreaming },
@@ -1943,7 +1943,7 @@ describe('Home, end-of-feed honesty', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: Streaming, useValue: new FakeStreaming() },
@@ -2053,7 +2053,7 @@ describe('Home, bookmark review', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: Streaming, useValue: new FakeStreaming() },
@@ -2197,7 +2197,7 @@ describe('Home, reading break', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: Streaming, useValue: new FakeStreaming() },
@@ -2288,7 +2288,7 @@ describe('Home, first run', () => {
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: Streaming, useValue: new FakeStreaming() },

@@ -1,5 +1,13 @@
 import { translatedComputed } from '../../i18n/translated';
-import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -213,6 +221,7 @@ import { SinglesTabs } from './section-tabs';
       }
     </section>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './podcast-kits-page.css',
 })
 export class PodcastKitsPage {

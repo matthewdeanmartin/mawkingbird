@@ -1,4 +1,4 @@
-import { Component, importProvidersFrom, input, signal } from "@angular/core";
+import { Component, importProvidersFrom, input, signal, ChangeDetectionStrategy } from "@angular/core";
 import { of } from "rxjs";
 import { TagHelper } from "../../ui/src/app/publishing/compose/tag-helper";
 import { AiTranslate } from "../../ui/src/app/translation/ai-translate";
@@ -164,6 +164,7 @@ const providers = [
 @Component({
   selector: "ds-composer-review",
   imports: [Compose],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <h1>Composer: all tools available</h1>
     <p>

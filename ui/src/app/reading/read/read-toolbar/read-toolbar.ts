@@ -1,6 +1,15 @@
 import { MbReaderPreferences } from '../../../design-system/reader/reader';
 import { MbPostAction } from '../../../design-system/post-actions/post-actions';
-import { Component, computed, ElementRef, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  ElementRef,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import {
   ClientPrefs,
@@ -81,6 +90,7 @@ import { DICTIONARIES, DictionaryId } from '../dictionaries';
   selector: 'app-read-toolbar',
   imports: [MbReaderPreferences, MbPostAction, TranslocoPipe],
   templateUrl: './read-toolbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './read-toolbar.css',
 })
 export class ReadToolbar {

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MockApi } from '../../mock-api';
 import { EmailNotificationSettings } from '../../platform/api/models';
@@ -21,6 +21,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 @Component({
   selector: 'app-settings-notifications',
   imports: [FormsModule, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './settings-notifications.html',
 })
 export class SettingsNotifications implements OnInit {

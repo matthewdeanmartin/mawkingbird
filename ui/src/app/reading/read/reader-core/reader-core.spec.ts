@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -19,6 +19,7 @@ import { ReadToolbar } from '../read-toolbar/read-toolbar';
  */
 @Component({
   imports: [ReaderCore],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<app-reader-core [chain]="chain()" [layout]="layout()" [routeId]="routeId()" />`,
 })
 class Host {
@@ -55,7 +56,7 @@ describe('ReaderCore and the library', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     fixture = TestBed.createComponent(Host);
     library = TestBed.inject(ReaderLibrary);
@@ -137,7 +138,7 @@ describe('ReaderCore position saving', () => {
     localStorage.clear();
     vi.useFakeTimers();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     fixture = TestBed.createComponent(Host);
     library = TestBed.inject(ReaderLibrary);
@@ -236,7 +237,7 @@ describe('ReaderCore shelving under the id it was opened with', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     fixture = TestBed.createComponent(Host);
     library = TestBed.inject(ReaderLibrary);
@@ -349,7 +350,7 @@ describe('ReaderCore paging a post chain', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
     });
     fixture = TestBed.createComponent(Host);
   });

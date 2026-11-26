@@ -13,6 +13,7 @@ import {
   signal,
   untracked,
   viewChild,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -142,6 +143,7 @@ interface PhotoTranslation {
     LinkedText,
   ],
   templateUrl: './profile-photo-view.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile-photo-view.css',
 })
 export class ProfilePhotoView {

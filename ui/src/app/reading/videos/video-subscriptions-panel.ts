@@ -1,4 +1,12 @@
-import { booleanAttribute, Component, inject, input, output, signal } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -175,6 +183,7 @@ let nextId = 0;
       }}</a>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host,
     .body {

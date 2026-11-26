@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -62,6 +62,7 @@ function webLink(value: string): string | null {
   selector: 'app-profile-link-dialog',
   imports: [FormsModule, TranslocoPipe, MbButton, MbDialog, MbField, MbControl],
   templateUrl: './profile-link-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .link-fields {
       display: grid;

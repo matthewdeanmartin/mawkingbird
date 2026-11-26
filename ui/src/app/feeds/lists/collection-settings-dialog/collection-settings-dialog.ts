@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
@@ -52,6 +61,7 @@ const DESCRIPTION_MAX = 100;
     TranslocoPipe,
   ],
   templateUrl: './collection-settings-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     mb-checkbox {
       display: block;

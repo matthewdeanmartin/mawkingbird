@@ -1,4 +1,12 @@
-import { Component, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbBadge } from '../../../design-system/badge/badge';
@@ -48,6 +56,7 @@ import {
     MbNotice,
   ],
   templateUrl: './bluesky-list-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bluesky-list-dialog.css',
 })
 export class BlueskyListDialog implements OnInit {

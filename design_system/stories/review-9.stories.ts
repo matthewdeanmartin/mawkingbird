@@ -1,5 +1,5 @@
 import { FocusTrap } from "../../ui/src/app/shell/a11y/focus-trap";
-import { Component, importProvidersFrom, inject, signal } from "@angular/core";
+import { Component, importProvidersFrom, inject, signal, ChangeDetectionStrategy } from "@angular/core";
 import {
   applicationConfig,
   type Meta,
@@ -68,6 +68,7 @@ import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
       },
     },
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<article class="ds-sheet">
     <h1>Shared dialogs in real flows.</h1>
     <p class="ds-intro">

@@ -11,6 +11,7 @@ import {
   OnDestroy,
   OnInit,
   signal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -244,6 +245,7 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
     TranslocoPipe,
   ],
   templateUrl: './login.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './login.css',
 })
 export class Login implements OnInit, OnDestroy {

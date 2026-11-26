@@ -1,7 +1,16 @@
 import { AccountName } from '../../../accounts/account-name';
 import { PLATFORM_FEED_READ } from '../../../platform/http/platform-http';
 import { accountProfilePath } from '../../../accounts/account-route';
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -65,6 +74,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   selector: 'app-add-feed-dialog',
   imports: [AccountName, FormsModule, FocusTrap, TranslocoPipe],
   templateUrl: './add-feed-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-feed-dialog.css',
 })
 export class AddFeedDialog implements OnInit {

@@ -7,7 +7,16 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
 import { MbRailCard } from '../../design-system/identity/rail-card';
 import { MbButton } from '../../design-system/button/button';
 import { PlusPromotion } from '../../accounts/mawkingbird/plus-promotion';
-import { Component, computed, effect, inject, OnInit, linkedSignal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  linkedSignal,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RailWidgets } from '../rail-widgets';
 import { BlogRecentCard } from '../../blog/blog-rail-cards';
 import { YoutuberKitsCard } from '../../reading/videos/youtuber-kits-card';
@@ -90,6 +99,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
     JustMyServerCard,
   ],
   templateUrl: './right-rail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './right-rail.css',
 })
 export class RightRail implements OnInit {

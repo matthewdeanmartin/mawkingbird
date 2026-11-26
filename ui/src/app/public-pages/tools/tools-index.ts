@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MbContentLink } from '../../design-system/metadata/metadata';
 import { LanguageVersions } from '../focused-apps/language-versions';
@@ -21,6 +21,7 @@ import { CommunitiesLink } from '../../feeds/feed-builder/communities-link';
   selector: 'app-tools-index',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndex {
@@ -52,6 +53,7 @@ function groupsIn(titles: Record<FocusedToolGroup, string>) {
   selector: 'app-tools-index-de',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.de.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexDe extends ToolsIndex {
@@ -70,6 +72,7 @@ export class ToolsIndexDe extends ToolsIndex {
   selector: 'app-tools-index-ja',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.ja.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexJa extends ToolsIndex {
@@ -88,6 +91,7 @@ export class ToolsIndexJa extends ToolsIndex {
   selector: 'app-tools-index-fr',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.fr.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexFr extends ToolsIndex {
@@ -106,6 +110,7 @@ export class ToolsIndexFr extends ToolsIndex {
   selector: 'app-tools-index-es',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.es.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexEs extends ToolsIndex {
@@ -124,6 +129,7 @@ export class ToolsIndexEs extends ToolsIndex {
   selector: 'app-tools-index-zh-hant',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.zh-hant.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexZhHant extends ToolsIndex {
@@ -142,6 +148,7 @@ export class ToolsIndexZhHant extends ToolsIndex {
   selector: 'app-tools-index-ko',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.ko.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexKo extends ToolsIndex {
@@ -160,6 +167,7 @@ export class ToolsIndexKo extends ToolsIndex {
   selector: 'app-tools-index-pt',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.pt.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexPt extends ToolsIndex {
@@ -178,6 +186,7 @@ export class ToolsIndexPt extends ToolsIndex {
   selector: 'app-tools-index-it',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.it.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexIt extends ToolsIndex {
@@ -196,6 +205,7 @@ export class ToolsIndexIt extends ToolsIndex {
   selector: 'app-tools-index-pl',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.pl.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexPl extends ToolsIndex {
@@ -214,6 +224,7 @@ export class ToolsIndexPl extends ToolsIndex {
   selector: 'app-tools-index-uk',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.uk.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexUk extends ToolsIndex {
@@ -232,6 +243,7 @@ export class ToolsIndexUk extends ToolsIndex {
   selector: 'app-tools-index-hi',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.hi.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexHi extends ToolsIndex {
@@ -250,6 +262,7 @@ export class ToolsIndexHi extends ToolsIndex {
   selector: 'app-tools-index-nl',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.nl.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexNl extends ToolsIndex {
@@ -268,6 +281,7 @@ export class ToolsIndexNl extends ToolsIndex {
   selector: 'app-tools-index-id',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.id.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexId extends ToolsIndex {
@@ -286,6 +300,7 @@ export class ToolsIndexId extends ToolsIndex {
   selector: 'app-tools-index-ru',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.ru.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexRu extends ToolsIndex {
@@ -304,6 +319,7 @@ export class ToolsIndexRu extends ToolsIndex {
   selector: 'app-tools-index-sv',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.sv.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexSv extends ToolsIndex {
@@ -322,6 +338,7 @@ export class ToolsIndexSv extends ToolsIndex {
   selector: 'app-tools-index-vi',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.vi.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexVi extends ToolsIndex {
@@ -340,6 +357,7 @@ export class ToolsIndexVi extends ToolsIndex {
   selector: 'app-tools-index-tr',
   imports: [RouterLink, AppOnlyLinkRel, MbContentLink, LanguageVersions, OpenApp, CommunitiesLink],
   templateUrl: './tools-index.tr.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../focused-apps/focused-page.css', './tools-index.css'],
 })
 export class ToolsIndexTr extends ToolsIndex {

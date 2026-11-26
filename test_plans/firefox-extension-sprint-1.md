@@ -38,7 +38,8 @@ File…**. Release Firefox ignores that setting.
 ## 2. Toolbar and sidebar
 
 - [ ] The Mawkingbird button is in the toolbar (or the puzzle-piece menu; pin it).
-- [ ] Clicking it opens the sidebar; clicking again closes it.
+- [ ] Clicking it opens the sidebar; clicking again closes it. (From 0.2.0 it
+      opens a popup instead; use the popup's **Open the sidebar**.)
 - [ ] `Alt+Shift+M` does the same. (`about:addons` → gear → Manage Extension
       Shortcuts if it clashes.)
 - [ ] The sidebar shows Mawkingbird Lite.

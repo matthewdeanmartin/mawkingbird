@@ -1,5 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
@@ -125,6 +134,7 @@ interface CollectionRow {
     TranslocoPipe,
   ],
   templateUrl: './list-dialog.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-dialog.css',
 })
 export class ListDialog implements OnInit {

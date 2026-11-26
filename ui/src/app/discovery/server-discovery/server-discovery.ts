@@ -4,7 +4,16 @@ import { MbSpinner } from '../../design-system/identity/spinner';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
 import { MbButton } from '../../design-system/button/button';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
-import { Component, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MastodonServers, ServerSuggestion } from '../mastodon-servers';
 import { probeServerAvailability } from '../../platform/http/server-availability';
@@ -41,6 +50,7 @@ export interface DiscoveredServer extends ServerSuggestion {
   selector: 'app-server-discovery',
   imports: [MbButton, MbPostAction, MbDiscoveryCandidate, MbSpinner, MbCheckbox, TranslocoPipe],
   templateUrl: './server-discovery.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './server-discovery.css',
 })
 export class ServerDiscovery implements OnDestroy, OnInit {

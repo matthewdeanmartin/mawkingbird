@@ -214,7 +214,8 @@
   <p class="muted small" role="status">
     {{
       'settings.connections.corsProxy.pendingSelection'
-        | transloco: { selected: selected()?.label, current: currentProxyLabel() }
+        | transloco
+          : { selected: $safeNavigationMigration(selected()?.label), current: currentProxyLabel() }
     }}
   </p>
 }

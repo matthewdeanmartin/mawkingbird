@@ -2,7 +2,7 @@ import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { AccountPreview } from '../../accounts/account-hover-card/account-preview';
 import { FollowBundleTags } from '../../discovery/tag-actions/follow-bundle-tags';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -55,6 +55,7 @@ import { StatusCard } from '../../posts/status-card/status-card';
     TranslocoPipe,
   ],
   templateUrl: './tag-bundle-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './tag-bundle-page.css',
 })
 export class TagBundlePage implements OnInit {

@@ -1,9 +1,10 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 /** Informational text, never an interactive control or a verification claim. */
 @Component({
   selector: 'mb-badge',
   template: '<ng-content />',
   styleUrl: './badge.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[attr.data-tone]': 'tone()' },
 })
 export class MbBadge {

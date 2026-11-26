@@ -7,6 +7,7 @@ import {
   inject,
   signal,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -134,6 +135,7 @@ function heldValue<T>(
       }
     </div>
     <app-lite-feed key="home" [load]="load" savedPath="/api/v1/timelines/home" />`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .lite-quick-compose {
       padding: 0 16px 12px;
@@ -168,6 +170,7 @@ export class LiteHome {
 @Component({
   selector: 'app-lite-bookmarks',
   imports: [LiteFeed, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<h1 class="lite-title">{{ 'pages.bookmarks.tab.bookmarks' | transloco }}</h1>
     <app-lite-feed key="bookmarks" [load]="load" savedPath="/api/v1/bookmarks" />`,
 })
@@ -179,6 +182,7 @@ export class LiteBookmarks {
 @Component({
   selector: 'app-lite-tag',
   imports: [LiteFeed],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<h1 class="lite-title">#{{ tag() }}</h1>
     <app-lite-feed [key]="'tag:' + tag()" [load]="load()" filterContext="public" />`,
 })
@@ -194,6 +198,7 @@ export class LiteTag {
 @Component({
   selector: 'app-lite-list',
   imports: [LiteFeed],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<h1 class="lite-title">{{ list()().value?.title ?? '' }}</h1>
     <app-lite-feed
       [key]="'list:' + id()"
@@ -217,6 +222,7 @@ export class LiteListTimeline {
 @Component({
   selector: 'app-lite-lists',
   imports: [LiteStatus, RouterLink, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<h1 class="lite-title">{{ 'listDialog.lists' | transloco }}</h1>
     @let s = lists()();
     <app-lite-status
@@ -293,6 +299,7 @@ export class LiteLists {
         </button>
       }
     }`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .line {
       margin: 0;
@@ -375,6 +382,7 @@ export class LiteNotifications {
     } @else if (f.failed) {
       <p class="lite-intro muted">{{ 'lite.notFound' | transloco }}</p>
     }`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .focus {
       border-inline-start: 3px solid var(--accent);
@@ -448,6 +456,7 @@ export class LiteThread {
     } @else if (s.failed) {
       <p class="lite-intro muted">{{ 'lite.notFound' | transloco }}</p>
     }`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .lite-profile p {
       margin: 0 16px 6px;
@@ -583,6 +592,7 @@ export class LiteProfile {
         }
       }
     }`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .lite-search {
       display: flex;
@@ -638,6 +648,7 @@ export class LiteSearch {
 @Component({
   selector: 'app-lite-conversations',
   imports: [LiteNewPill, LiteStatus, MbButton, StatusCard, TranslocoPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<h1 class="lite-title">{{ 'shell.nav.chat' | transloco }}</h1>
     @let s = held();
     <app-lite-status

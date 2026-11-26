@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -11,7 +11,11 @@ import { FollowButton } from '../../accounts/follow-button/follow-button';
 import { Auth } from '../../platform/session/auth';
 import { Account } from '../../platform/api/models';
 
-@Component({ selector: 'app-follow-button', template: '' })
+@Component({
+  selector: 'app-follow-button',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class FollowStub {
   readonly accountId = input('');
   readonly handle = input('');

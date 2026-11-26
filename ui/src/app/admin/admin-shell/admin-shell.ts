@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
@@ -18,6 +18,7 @@ import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigati
 @Component({
   selector: 'app-admin-shell',
   imports: [RouterOutlet, RouterLink, RouterLinkActive, TranslocoPipe, MbNavigation, MbNavLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './admin-shell.html',
 })
 export class AdminShell {}

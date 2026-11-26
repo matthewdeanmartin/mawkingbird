@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { MbRadioGroup, type RadioOption } from '../../../design-system/radio-group/radio-group';
 import { Pseudonymity } from '../../pseudonymity';
 import { onSetupNext } from '../setup-state';
@@ -24,6 +24,7 @@ const OPTIONS: readonly RadioOption[] = [
 @Component({
   selector: 'app-setup-purpose',
   imports: [MbRadioGroup],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <mb-radio-group
       label="This account is for"

@@ -1,4 +1,12 @@
-import { Component, computed, inject, OnInit, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -49,6 +57,7 @@ import { BlueskyPeopleList } from './bluesky-people-list';
     BlueskyPeopleList,
   ],
   templateUrl: './bluesky-starter-pack-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bluesky-starter-packs.css',
 })
 export class BlueskyStarterPackPage implements OnInit {

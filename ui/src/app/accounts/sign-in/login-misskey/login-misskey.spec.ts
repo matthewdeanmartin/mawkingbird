@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
@@ -39,7 +39,7 @@ describe('LoginMisskey', () => {
         Auth,
         Server,
         provideRouter([]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: MisskeyAuth, useValue: misskey },
       ],
@@ -113,7 +113,7 @@ describe('LoginMisskey, opened while signed in', () => {
         Auth,
         Server,
         provideRouter([]),
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         {
           provide: MisskeyAuth,

@@ -1,6 +1,14 @@
 import { AccountName } from '../accounts/account-name';
 import { DatePipe } from '@angular/common';
-import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -76,6 +84,7 @@ interface Comment {
     Compose,
   ],
   templateUrl: './blog-post-page.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blog-post-page.css',
 })
 export class BlogPostPage {

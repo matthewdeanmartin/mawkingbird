@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbButton } from '../../design-system/button/button';
@@ -40,6 +40,7 @@ const STEP = 20;
   selector: 'app-top-boosters-panel',
   imports: [AccountName, MbButton, MbHelp, HumanTimePipe, RouterLink, TranslocoPipe],
   templateUrl: './top-boosters-panel.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './top-boosters-panel.css',
 })
 export class TopBoostersPanel {

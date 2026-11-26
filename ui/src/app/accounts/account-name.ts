@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import type { Account } from '../platform/api/models';
 import { CustomEmojiPipe } from '../publishing/custom-emoji.pipe';
 
@@ -7,6 +7,7 @@ import { CustomEmojiPipe } from '../publishing/custom-emoji.pipe';
   selector: 'app-account-name',
   host: { dir: 'auto' },
   imports: [CustomEmojiPipe],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     @if (account().emojis?.length && name().includes(':')) {
       <span [innerHTML]="name() | customEmoji: account().emojis : true"></span>

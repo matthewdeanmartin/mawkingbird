@@ -1,4 +1,4 @@
-import { Component, importProvidersFrom, signal } from "@angular/core";
+import { Component, importProvidersFrom, signal, ChangeDetectionStrategy } from "@angular/core";
 import { applicationConfig, Meta, StoryObj } from "@storybook/angular";
 import {
   PostPermissions,
@@ -10,6 +10,7 @@ import { translocoTesting } from "../../ui/src/app/i18n/i18n.testing";
 @Component({
   selector: "permissions-preview",
   imports: [PostPermissions, MbButton],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <button mbButton (click)="published.set(false); open.set(true)">
       Draft permissions

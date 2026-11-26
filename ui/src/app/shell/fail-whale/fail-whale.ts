@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { BugReportDialog } from '../bug-report-dialog/bug-report-dialog';
 import { MbButton } from '../../design-system/button/button';
 import { RouterLink } from '@angular/router';
@@ -67,6 +67,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
   selector: 'app-fail-whale',
   imports: [BugReportDialog, MbButton, ServerPicker, RouterLink, TranslocoPipe],
   templateUrl: './fail-whale.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './fail-whale.css',
 })
 export class FailWhale {

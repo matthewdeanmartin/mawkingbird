@@ -1,4 +1,10 @@
-import { Component, computed, input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  computed,
+  input,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 
 /**
  * A grid of headline numbers as a native description list:
@@ -13,6 +19,7 @@ import { Component, computed, input, ViewEncapsulation } from '@angular/core';
   selector: 'dl[mbStatGrid]',
   template: '<ng-content />',
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './stats.css',
 })
 export class MbStatGrid {}
@@ -46,6 +53,7 @@ export interface MbBarItem {
       }
     </ol>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './bar-list.css',
 })
 export class MbBarList {

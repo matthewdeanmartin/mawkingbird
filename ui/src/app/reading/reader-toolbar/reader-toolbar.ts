@@ -1,5 +1,5 @@
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   ClientPrefs,
   ReaderFontFamily,
@@ -48,6 +48,7 @@ import {
       </select>
     </div>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reader-toolbar.css',
 })
 export class ReaderToolbar {

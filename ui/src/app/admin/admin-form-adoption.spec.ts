@@ -1,6 +1,6 @@
 import { Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { AdminIpBlocks } from './ip-blocks/admin-ip-blocks';
 import { AdminDomains } from './domains/admin-domains';
@@ -55,7 +55,7 @@ describe('Admin form adoption', () => {
   for (const entry of cases)
     it(`${entry.path}: native fields preserve payloads, block duplicates and retain input on failure`, async () => {
       TestBed.configureTestingModule({
-        providers: [provideHttpClient(), provideHttpClientTesting()],
+        providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
       });
       const http = TestBed.inject(HttpTestingController);
       const fixture = TestBed.createComponent(entry.component);
@@ -98,7 +98,7 @@ describe('Admin form adoption', () => {
     });
   it('canonical lookup catches failures, retains the email and prevents duplicate requests', async () => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting()],
     });
     const http = TestBed.inject(HttpTestingController);
     const fixture = TestBed.createComponent(AdminCanonicalBlocks);

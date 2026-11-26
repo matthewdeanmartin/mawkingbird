@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -78,6 +78,7 @@ const TESTS: Record<FreeTranslatorId, { input: string; source: string; target: s
     MbPageHeader,
   ],
   templateUrl: './connection-free-translator.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['../connection-page.css', './connection-free-translator.css'],
 })
 export class ConnectionFreeTranslator {

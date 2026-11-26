@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -77,7 +77,7 @@ describe('DownloadMastodonImages page', () => {
     TestBed.configureTestingModule({
       imports: [DownloadMastodonImages],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         {
@@ -160,7 +160,7 @@ describe('AccountSources', () => {
     api = { search: vi.fn(), getAccountStatuses: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         { provide: Api, useValue: api },
         { provide: Auth, useValue: { kind, token } },
@@ -261,7 +261,7 @@ describe('MediaDownloadWorkbench', () => {
     TestBed.configureTestingModule({
       imports: [MediaDownloadWorkbench],
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([]),
         { provide: AccountSources, useValue: sources },

@@ -7,7 +7,15 @@ import { MbContentState } from '../../design-system/content-state/content-state'
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { MbNotice } from '../../design-system/notice/notice';
 import { MbButton } from '../../design-system/button/button';
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
@@ -93,6 +101,7 @@ const SAMPLE_PAGE_SIZE = 40;
     TranslocoPipe,
   ],
   templateUrl: './list-timeline.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-timeline.css',
 })
 export class ListTimeline implements OnInit {

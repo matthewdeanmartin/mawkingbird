@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
@@ -99,6 +106,7 @@ interface InviteCard {
   selector: 'app-invites',
   imports: [RouterLink, TranslocoPipe],
   templateUrl: './invites.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './invites.css',
 })
 export class Invites implements OnInit {

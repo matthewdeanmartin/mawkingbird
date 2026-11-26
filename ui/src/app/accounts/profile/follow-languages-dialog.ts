@@ -1,4 +1,13 @@
-import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
 import { MbButton } from '../../design-system/button/button';
@@ -59,6 +68,7 @@ import { KnownLanguages } from '../../language/trend-language-filter';
       </ng-container>
     </mb-dialog>
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     .follow-languages {
       display: grid;

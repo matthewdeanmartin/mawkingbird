@@ -1,5 +1,5 @@
 import { saveBlob } from '../../platform/files/save-file';
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { CodeBlock, codeFileName, extractCodeBlocks, languageLabel } from './code-fences';
 import { playgroundFor } from './code-playgrounds';
@@ -52,6 +52,7 @@ interface Row {
     }
   `,
   // A row in a ••• menu, matching its other entries (see media-download-menu-item).
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: contents;

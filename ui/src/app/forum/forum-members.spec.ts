@@ -1,4 +1,4 @@
-import { Component, computed, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter, Router } from '@angular/router';
@@ -18,6 +18,7 @@ import { ForumMembers } from './forum-members';
 
 @Component({
   selector: 'app-follow-button',
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<span class="follow">{{ accountId() }}</span>',
 })
 class FollowStub {
@@ -26,13 +27,21 @@ class FollowStub {
   readonly foreign = input<Account | null>(null);
 }
 
-@Component({ template: '' })
+@Component({ changeDetection: ChangeDetectionStrategy.Eager, template: '' })
 class Blank {}
 
-@Component({ selector: 'app-bulk-progress', template: '' })
+@Component({
+  selector: 'app-bulk-progress',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '',
+})
 class ProgressStub {}
 
-@Component({ selector: 'app-bulk-actions-dialog', template: '<p class="bulk-dialog"></p>' })
+@Component({
+  selector: 'app-bulk-actions-dialog',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<p class="bulk-dialog"></p>',
+})
 class BulkDialogStub {
   readonly action = input.required<string>();
   readonly target = input<BulkTarget | undefined>(undefined);
@@ -40,7 +49,11 @@ class BulkDialogStub {
   readonly cancelled = output<void>();
 }
 
-@Component({ selector: 'app-forum-list-dialog', template: '<p class="list-dialog"></p>' })
+@Component({
+  selector: 'app-forum-list-dialog',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '<p class="list-dialog"></p>',
+})
 class ListDialogStub {
   readonly accounts = input.required<Account[]>();
   readonly closed = output<void>();

@@ -1,4 +1,12 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { TrustedAccounts } from '../../trusted-accounts';
 import { ProfileMediaItem } from './profile-media-item';
 import { objectPosition } from '../../../publishing/focal-point/focal-point';
@@ -29,6 +37,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-profile-media-grid',
   imports: [TranslocoPipe],
   templateUrl: './profile-media-grid.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile-media-grid.css',
 })
 export class ProfileMediaGrid {

@@ -1,10 +1,11 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { Params, RouterLink } from '@angular/router';
 
 /** A list of things to act on. `ol` numbers its rows; `ul` does not. */
 @Component({
   selector: 'ul[mbItemList], ol[mbItemList]',
   template: '<ng-content />',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-list.css',
 })
 export class MbItemList {}
@@ -26,6 +27,7 @@ export class MbItemList {}
     </div>
     <div class="actions"><ng-content /></div>
   </div>`,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-row.css',
 })
 export class MbItemRow {}
@@ -35,6 +37,7 @@ export class MbItemRow {}
   selector: 'a[mbItemTitle], span[mbItemTitle]',
   template: '<ng-content />',
   styleUrl: './item-title.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { dir: 'auto' },
 })
 export class MbItemTitle {}
@@ -42,6 +45,7 @@ export class MbItemTitle {}
 @Component({
   selector: 'span[mbItemMeta]',
   template: '<ng-content />',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-meta.css',
 })
 export class MbItemMeta {}
@@ -60,6 +64,7 @@ export class MbItemMeta {}
     }
   `,
   styleUrl: './item-picture.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { '[attr.data-shape]': 'shape()' },
 })
 export class MbItemPicture {

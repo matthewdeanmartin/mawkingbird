@@ -7,6 +7,7 @@ import {
   input,
   signal,
   untracked,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, Scroll } from '@angular/router';
@@ -26,6 +27,7 @@ import { buildMediaItems, ProfileMediaItem } from '../../accounts/profile/media/
 @Component({
   selector: 'app-tag-media',
   imports: [ProfileMediaGrid, ProfilePhotoView],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <app-profile-media-grid
       [items]="items()"

@@ -1,6 +1,6 @@
 import { ShortenerSettings } from '../../connections/shortener/shortener-settings';
 import { AppDialogs } from '../../shell/app-dialogs';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Signal, WritableSignal, signal } from '@angular/core';
@@ -194,7 +194,7 @@ describe('WritePage', () => {
     });
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideRouter([
           { path: 'home', children: [] },

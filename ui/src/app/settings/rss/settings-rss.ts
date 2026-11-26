@@ -1,7 +1,14 @@
 import { saveBlob } from '../../platform/files/save-file';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { FeedSyncButton } from '../../accounts/mawkingbird/feed-sync-button';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -114,6 +121,7 @@ interface ImportReport {
   selector: 'app-settings-rss',
   imports: [FeedSyncButton, FormsModule, FriendFeedsDialog, RouterLink, TranslocoPipe],
   templateUrl: './settings-rss.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-rss.css',
 })
 export class SettingsRss implements OnInit {

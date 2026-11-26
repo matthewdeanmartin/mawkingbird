@@ -6,7 +6,15 @@ import { NgTemplateOutlet } from '@angular/common';
 import { MbButton } from '../design-system/button/button';
 import { MbDialog } from '../design-system/dialog/dialog';
 import { MbNavigation, MbNavLink } from '../design-system/navigation/navigation';
-import { Component, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Auth } from '../platform/session/auth';
@@ -185,6 +193,7 @@ const NAV_GROUPS: SettingsNavGroup[] = [
     TranslocoPipe,
   ],
   templateUrl: './settings-shell.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-shell.css',
 })
 export class SettingsShell {

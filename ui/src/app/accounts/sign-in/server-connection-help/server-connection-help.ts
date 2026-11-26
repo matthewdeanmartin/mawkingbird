@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { MbContentLink } from '../../../design-system/metadata/metadata';
@@ -9,6 +9,7 @@ import { MbContentLink } from '../../../design-system/metadata/metadata';
 @Component({
   selector: 'app-server-connection-help',
   imports: [RouterLink, TranslocoPipe, MbContentLink],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `<p class="small">
     <a mbContentLink routerLink="/connection-help" [queryParams]="{ server: server() }">{{
       'connectionHelp.certificates' | transloco

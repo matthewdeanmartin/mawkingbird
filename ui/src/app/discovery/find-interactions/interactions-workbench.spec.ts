@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -7,7 +7,11 @@ import { StatusCard } from '../../posts/status-card/status-card';
 import { InteractionFinder } from './interaction-finder';
 import { InteractionsWorkbench } from './interactions-workbench';
 
-@Component({ selector: 'app-status-card', template: '{{ status().id }}' })
+@Component({
+  selector: 'app-status-card',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  template: '{{ status().id }}',
+})
 class FakeCard {
   readonly status = input.required<Status>();
 }

@@ -1,4 +1,4 @@
-import { Component, input, signal } from "@angular/core";
+import { Component, input, signal, ChangeDetectionStrategy } from "@angular/core";
 import {
   MbPostActions,
   MbPostAction,
@@ -19,6 +19,7 @@ import { MbActionMenu } from "../../ui/src/app/design-system/action-menu/action-
     MbContentLink,
     MbActionMenu,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <article class="ds-content-card" aria-label="Full-tools post">
       <mb-metadata
