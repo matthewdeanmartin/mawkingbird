@@ -272,3 +272,60 @@
 .digest-person {
   color: inherit;
 }
+
+/* --- Views (spec/sprint/inbox-views-2026-11.md) --- */
+
+.tab-new {
+  margin-left: 0.3rem;
+  color: var(--ds-action-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.inbox-section {
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.who-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.who-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.who-row.is-new {
+  background: var(--accent-soft);
+}
+
+.who-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stats-posts {
+  margin: 0;
+}
+
+.stats-faces {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.stats-faces .face {
+  border-radius: 50%;
+  object-fit: cover;
+}

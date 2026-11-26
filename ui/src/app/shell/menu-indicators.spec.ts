@@ -109,6 +109,12 @@ describe('top menu indicators', () => {
         created_at: new Date().toISOString(),
       },
     });
+    // Likes and boosts never light the Inbox dot (inbox views, 2026-11-26).
+    expect(fresh.ordinary()).toBe(false);
+    streams.get('user:notification')!.next({
+      event: 'notification',
+      payload: { id: 'new-mention', type: 'mention', created_at: new Date().toISOString() },
+    });
     expect(fresh.ordinary()).toBe(true);
     streams.get('direct')!.next({
       event: 'conversation',

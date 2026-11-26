@@ -26,6 +26,13 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-26: Inbox views
+
+- test: src/app/feeds/notifications/notifications.spec.ts :: Notifications collapses every like and boost into one row, with +N since the inbox was last read
+  reason: replaced
+  now: src/app/feeds/notifications/notifications.spec.ts :: Notifications shows likes and boosts in Stats post by post, with faces and +N since last read
+  why: The owner split the Inbox into Conversations | Stats | Who | Stream (2026-11-26); likes and boosts are their own always-open Stats view with faces instead of one collapsed row.
+
 ## 2026-11-26: legacy starter kits and /follow/ retired
 
 - test: src/app/discovery/starter-collection.spec.ts :: STARTER_COLLECTION ships ten themed kits whose account ids came from their home instances

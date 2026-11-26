@@ -1280,7 +1280,6 @@
     "notifications.muteFailed": "Impossible de masquer @{{acct}}.",
     "notifications.newAccounts": "Comptes nouveaux pour moi",
     "notifications.noMatch": "Aucune notification ne correspond aux filtres.",
-    "notifications.notifications": "Notifications",
     "notifications.noUnfamiliarAccounts": "Aucun compte inconnu dans les notifications chargées jusqu’ici.",
     "notifications.openChat": "💬 Ouvrir dans les messages",
     "notifications.others.one": "et {{count}} autre",

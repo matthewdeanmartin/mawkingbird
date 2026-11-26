@@ -9,6 +9,7 @@ import { Streaming } from '../platform/api/streaming';
 import { IndicatorEvents } from './indicator-events';
 import { Wellness } from '../wellness/wellness';
 import { isEngagementNotification } from '../wellness/wellness-model';
+import { lightsInboxDot } from '../feeds/notifications/inbox-scenarios';
 import { ReplyGuys } from '../accounts/reply-guys';
 import { ConversationOrigins } from '../accounts/conversation-origins';
 import { isIncomingConversation } from '../accounts/reply-guys-model';
@@ -74,6 +75,9 @@ export class MenuIndicators {
       this.tick();
       if (this.auth.isAnonymous || event.did !== this.bsky.session()?.did) return;
       if (this.wellness.limitedNotifications() && isEngagementNotification(event.kind)) return;
+      // Inbox views (spec/sprint/inbox-views-2026-11.md): only Conversations and
+      // Who light the Inbox dot; likes and boosts never pull you in.
+      if (event.lane === 'ordinary' && event.kind && !lightsInboxDot(event.kind)) return;
       this.receive(event.id, event.lane, event.at, event.unread, event.group);
     });
     const focus = (): void => {
@@ -265,6 +269,8 @@ export class MenuIndicators {
     const hideReplyGuys = this.wellness.hideReplyGuys();
     for (const row of rows) {
       if (limited && isEngagementNotification(row.type)) continue;
+      // Only Conversations and Who light the Inbox dot (inbox views).
+      if (!lightsInboxDot(row.type)) continue;
       // Wellness: hidden on the page, so no dot for it either. Only when the
       // answer is already known; a first-time stranger may still light it once.
       if (

@@ -3623,3 +3623,11 @@ scope: Item List rows with compact follow Buttons and an outline "check more" Bu
 One changed: `explore-tags.html` (`shared` 9 to 13) gains More's own shared Tabs, Tag
 bundles | Featured | Tag relay, and the top-level Featured tab becomes Trending. No new
 widget.
+
+### 2026-11-26: Inbox views
+
+Reviewed the regenerated inventory: one candidate changed, `notifications.html`
+(`shared` 6 to 8, `nativeButtons` 23 to 19). The Notifications / New accounts switch and
+the digest expand toggles are gone; a shared Navigation tab strip (Conversations | Stats |
+Who | Stream, routed by `?tab=`) sits above the existing filters. Stats and Who reuse
+the existing avatar image and row styles. No new widget.

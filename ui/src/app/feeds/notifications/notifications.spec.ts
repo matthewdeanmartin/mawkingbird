@@ -29,6 +29,7 @@ beforeEach(() => {
 afterEach(() => notFollowed.mockRestore());
 
 interface NotificationsInternals {
+  tab: WritableSignal<'conversations' | 'stats' | 'who' | 'stream'>;
   audience: WritableSignal<'all' | 'friends' | 'followers' | 'mutuals' | 'not-following'>;
   visible: Signal<MastodonNotification[]>;
   items: Signal<MastodonNotification[]>;
@@ -135,6 +136,8 @@ describe('Notifications across primary networks', () => {
     page.mockReturnValue(of({ notifications: bsky, cursor: null }));
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    // Mixed kinds on one list: the Stream view (spec/sprint/inbox-views-2026-11.md).
+    internals(fixture).tab.set('stream');
     http
       .expectOne('/api/v1/notifications')
       .flush(
@@ -189,6 +192,8 @@ describe('Notifications across primary networks', () => {
     );
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    // Mixed kinds on one list: the Stream view (spec/sprint/inbox-views-2026-11.md).
+    internals(fixture).tab.set('stream');
     const c = internals(fixture);
     c.audience.set('not-following');
     fixture.detectChanges();
@@ -231,6 +236,8 @@ describe('Notifications across primary networks', () => {
     );
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    // Mixed kinds on one list: the Stream view (spec/sprint/inbox-views-2026-11.md).
+    internals(fixture).tab.set('stream');
     http.expectOne('/api/v1/notifications').flush([notification('mutual', '2026-09-09T10:00:00Z')]);
     const c = internals(fixture);
     c.audience.set('mutuals');
@@ -298,6 +305,8 @@ describe('Notifications across primary networks', () => {
     page.mockReturnValue(throwError(() => new Error('expired session')));
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    // Mixed kinds on one list: the Stream view (spec/sprint/inbox-views-2026-11.md).
+    internals(fixture).tab.set('stream');
     http.expectOne('/api/v1/notifications').flush([notification('20', '2026-09-09T10:00:00Z')]);
     fixture.detectChanges();
     expect(internals(fixture).source()).toBe('all');
@@ -374,10 +383,12 @@ describe('Notifications across primary networks', () => {
     page.mockReturnValue(of({ notifications: [mention, ...likes], cursor: null }));
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    // Mixed kinds on one list: the Stream view (spec/sprint/inbox-views-2026-11.md).
+    internals(fixture).tab.set('stream');
     http.expectOne('/api/v1/notifications').flush([]);
     fixture.detectChanges();
-    // With no type filter, the likes collapse into the digest row.
-    expect(fixture.nativeElement.querySelector('[data-digest="engagement"]')).not.toBeNull();
+    // In Stream the likes are one row for their post.
+    expect(fixture.nativeElement.querySelector('.notif-group')).not.toBeNull();
     expect(fixture.nativeElement.querySelector('.others-link')).toBeNull();
     const toolbar = fixture.nativeElement.querySelector('.mention-actions') as HTMLElement;
     expect(toolbar.querySelectorAll('a')).toHaveLength(0);
@@ -546,9 +557,10 @@ describe('Notifications', () => {
     },
   );
 
-  it('collapses every like and boost into one row, with +N since the inbox was last read', async () => {
+  it('shows likes and boosts in Stats post by post, with faces and +N since last read', async () => {
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    internals(fixture).tab.set('stats');
     httpMock
       .expectOne((r) => r.url === '/api/v1/markers')
       .flush({
@@ -568,42 +580,70 @@ describe('Notifications', () => {
         at('2026-11-22T10:50:00Z', 'n3', 'favourite', 'ana', 'A'),
         at('2026-11-22T10:40:00Z', 'n2', 'reblog', 'budi', 'B'),
         at('2026-11-22T10:00:00Z', 'n1', 'favourite', 'citra', 'A'),
+        at('2026-11-22T10:55:00Z', 'n4', 'mention', 'dewi', 'C'),
       ]);
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
-    const digest = el.querySelector('[data-digest="engagement"]')!;
-    expect(el.querySelectorAll('.notif').length).toBe(1);
-    expect(digest.textContent).toContain('2 likes · 1 boost on 2 posts');
+    // Always open: one line per post, no toggle, and the mention stays in Conversations.
+    const lines = [...el.querySelectorAll('[data-digest-post]')];
+    expect(lines).toHaveLength(2);
+    expect(el.textContent).not.toContain('post C');
+    expect(lines[0].querySelector('.digest-post-text')?.innerHTML).toContain('<p>post A</p>');
+    expect(lines[0].textContent).toContain('2 likes');
     await vi.waitFor(() => {
       fixture.detectChanges();
-      expect(digest.querySelector('[data-digest-new]')?.textContent).toContain(
-        '+2 since you last looked',
-      );
+      expect(lines[0].textContent).toContain('+1');
     });
-    digest.querySelector<HTMLButtonElement>('.digest-toggle')!.click();
-    fixture.detectChanges();
-    const lines = [...digest.querySelectorAll('[data-digest-post]')].map((li) => li.textContent);
-    expect(lines).toHaveLength(2);
-    expect(lines[0]).toContain('post A');
-    expect(lines[0]).toContain('2 likes');
-    expect(lines[0]).toContain('+1');
-    const first = digest.querySelector('[data-digest-post]')!;
-    // The post reads as a post, then "2 likes · Open post", then who, as profile links.
-    expect(first.querySelector('.digest-post-text')?.innerHTML).toContain('<p>post A</p>');
-    const open = first.querySelector<HTMLAnchorElement>('.digest-open')!;
-    expect(open.textContent?.trim()).toMatch(/^Open /);
+    const open = lines[0].querySelector<HTMLAnchorElement>('.digest-open')!;
     expect(open.getAttribute('href')).toBe('/statuses/A');
-    const people = [...first.querySelectorAll<HTMLAnchorElement>('a.digest-person')];
-    expect(people.map((a) => a.getAttribute('href'))).toEqual(
+    // Faces, so familiar mutuals stand out; each opens its profile.
+    const faces = [...lines[0].querySelectorAll<HTMLAnchorElement>('.stats-faces a')];
+    expect(faces).toHaveLength(2);
+    expect(faces.map((a) => a.getAttribute('href'))).toEqual(
       expect.arrayContaining([expect.stringContaining('ana')]),
     );
-    // Faces stack in the ordinary avatar column, so the text keeps its width.
-    expect(digest.querySelectorAll('.digest-avatars > a').length).toBe(3);
+    expect(lines[0].querySelectorAll('.stats-faces img.face')).toHaveLength(2);
+  });
+
+  it('opens on Conversations, with the view tabs and their new counts', async () => {
+    const fixture = TestBed.createComponent(Notifications);
+    fixture.detectChanges();
+    const mention = makeNotification('m1', 'mention');
+    mention.status = { id: 's1', content: '<p>hello</p>', media_attachments: [] } as never;
+    const like = makeNotification('l1', 'favourite');
+    like.status = { id: 's2', content: '<p>liked</p>', media_attachments: [] } as never;
+    const follow = makeNotification('f1', 'follow');
+    follow.account = makeAccount('fan', 'A Fan');
+    httpMock.expectOne('/api/v1/notifications').flush([mention, like, follow]);
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    const tabs = [...el.querySelectorAll('.inbox-tabs a')].map((a) => a.textContent?.trim());
+    expect(tabs.map((t) => t?.split('+')[0].trim())).toEqual([
+      'Conversations',
+      'Stats',
+      'Who',
+      'Stream',
+    ]);
+    expect(
+      internals(fixture)
+        .visible()
+        .map((n) => n.id),
+    ).toEqual(['m1']);
+    internals(fixture).tab.set('who');
+    fixture.detectChanges();
+    // Who: new followers with their faces.
+    const row = el.querySelector('.who-row')!;
+    expect(row.textContent).toContain('A Fan');
+    expect(row.querySelector('img.notif-avatar')).not.toBeNull();
+    // Who also looks for accounts new to you, which reads relationships.
+    httpMock.match((r) => r.url.includes('/relationships')).forEach((r) => r.flush([]));
   });
 
   it('renders poll bars in both grouped and individual notifications', () => {
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    // Mixed kinds on one list: the Stream view (spec/sprint/inbox-views-2026-11.md).
+    internals(fixture).tab.set('stream');
     const notifications = ['favourite', 'poll', 'mention'].map((type, index) => {
       const notification = makeNotification(`poll-${index}`, type);
       notification.account = makeAccount('voter');
@@ -631,9 +671,9 @@ describe('Notifications', () => {
     httpMock.expectOne('/api/v1/notifications').flush(notifications);
     fixture.detectChanges();
     const element: HTMLElement = fixture.nativeElement;
-    // The like is in the digest row; the poll and the mention render their polls.
-    expect(element.querySelectorAll('app-poll-results')).toHaveLength(2);
-    expect(element.querySelectorAll('.poll-bar')).toHaveLength(4);
+    // In Stream every row renders its poll: the like's post, the poll and the mention.
+    expect(element.querySelectorAll('app-poll-results')).toHaveLength(3);
+    expect(element.querySelectorAll('.poll-bar')).toHaveLength(6);
     // Filtered to likes, the per-post row renders its poll too.
     (
       fixture.componentInstance as unknown as { typeFilter: { set(v: string): void } }
@@ -704,7 +744,8 @@ describe('Notifications', () => {
         media_attachments: [],
       } as unknown as Status;
       httpMock.expectOne('/api/v1/notifications').flush([n]);
-      // A row of its own: likes and boosts only render singly under a type filter.
+      // Stream holds every kind; a type filter gives the row to itself.
+      internals(fixture).tab.set('stream');
       (
         fixture.componentInstance as unknown as { typeFilter: { set(v: string): void } }
       ).typeFilter.set(type);
@@ -819,6 +860,8 @@ describe('Notifications', () => {
   it('shows one profile row per unfamiliar account and excludes followed accounts', () => {
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    // Accounts new to you are a section of Who now.
+    internals(fixture).tab.set('who');
     const first = makeNotification('n1', 'favourite');
     first.account = makeAccount('new', 'New Person');
     first.status = { id: 'post-1', content: '', media_attachments: [] } as unknown as Status;
@@ -830,10 +873,6 @@ describe('Notifications', () => {
     httpMock.expectOne('/api/v1/notifications').flush([first, repeat, followed]);
     fixture.detectChanges();
 
-    const newViewButton = [...fixture.nativeElement.querySelectorAll('button')].find(
-      (button: HTMLButtonElement) => button.textContent?.includes('Accounts New to Me'),
-    ) as HTMLButtonElement;
-    newViewButton.click();
     fixture.detectChanges();
     httpMock
       .expectOne((request) => request.url === '/api/v1/accounts/relationships')
@@ -870,6 +909,8 @@ describe('Notifications', () => {
   it('removes an unfamiliar account from the view immediately after following', () => {
     const fixture = TestBed.createComponent(Notifications);
     fixture.detectChanges();
+    // Accounts new to you are a section of Who now.
+    internals(fixture).tab.set('who');
     const notification = makeNotification('n1', 'mention');
     notification.account = makeAccount('new', 'New Person');
     notification.status = {
@@ -884,10 +925,6 @@ describe('Notifications', () => {
     const buttons = (): HTMLButtonElement[] => [
       ...element.querySelectorAll<HTMLButtonElement>('button'),
     ];
-    buttons()
-      .find((button) => button.textContent?.includes('Accounts New to Me'))!
-      .click();
-    fixture.detectChanges();
     httpMock
       .expectOne((request) => request.url === '/api/v1/accounts/relationships')
       .flush([relationship('new')]);

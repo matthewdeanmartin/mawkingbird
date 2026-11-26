@@ -13,7 +13,7 @@ import { CustomEmojiPipe } from '../../publishing/custom-emoji.pipe';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { StatusActions } from '../../connections/status-actions';
 import { MbPostAction } from '../../design-system/post-actions/post-actions';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PollResults } from '../../posts/poll-results/poll-results';
 import { catchError, forkJoin, from, map, Observable, of, Subscription, timeout } from 'rxjs';
@@ -47,15 +47,20 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { isSafetyNotice, SafetyNotice } from './safety-notice';
 import { ReadMarkers } from '../home/read-markers';
 import { InboxSeen } from './inbox-seen';
+import { digestNotifications, EngagementDigest } from './notification-digest';
 import {
-  digestNotifications,
-  DigestRow,
-  EngagementDigest,
-  FollowDigest,
-} from './notification-digest';
+  FOLLOW_REQUEST_TYPES,
+  inTab,
+  InboxTab,
+  INBOX_TABS,
+  isStatsType,
+  parseInboxTab,
+} from './inbox-scenarios';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
+import { HumanTimePipe } from '../../i18n/human-time.pipe';
 
 type NotifAudience = 'all' | 'friends' | 'followers' | 'mutuals' | 'not-following';
-type NotificationView = 'notifications' | 'new-accounts';
 
 /** Each network keeps its own cursor; rows can be merged by creation time. */
 export type NotificationSource = 'all' | 'mastodon' | 'bluesky' | 'misskey';
@@ -68,6 +73,12 @@ export interface NewAccountCandidate {
 }
 
 /** English source strings; see scripts/extract-i18n.mjs. */
+// i18n pages.notifications.views.label: Inbox views
+// i18n pages.notifications.views.conversations: Conversations
+// i18n pages.notifications.views.stats: Stats
+// i18n pages.notifications.views.who: Who
+// i18n pages.notifications.views.stream: Stream
+// i18n pages.notifications.who.followers: New followers
 // i18n pages.notifications.digest.likes.one: {{count}} like
 // i18n pages.notifications.digest.likes.other: {{count}} likes
 // i18n pages.notifications.digest.boosts.one: {{count}} boost
@@ -88,7 +99,6 @@ export interface NewAccountCandidate {
 // i18n pages.notifications.source.all: Both
 // i18n pages.notifications.mastodonLoadFailed: Could not load Mastodon notifications. Try refreshing.
 // i18n pages.notifications.viewAriaLabel: Notification view
-// i18n pages.notifications.notifications: Notifications
 // i18n pages.notifications.newAccounts: Accounts New to Me
 // i18n pages.notifications.audience.from: From
 // i18n pages.notifications.audience.all: All
@@ -329,6 +339,9 @@ export function accountsNewToMe(
     TranslocoPipe,
     SafetyNotice,
     NgTemplateOutlet,
+    MbNavigation,
+    MbNavLink,
+    HumanTimePipe,
   ],
   templateUrl: './notifications.html',
   styleUrl: './notifications.css',
@@ -502,7 +515,34 @@ export class Notifications implements OnInit, OnDestroy {
   // List filters: who the notification is from, and what kind it is.
   protected audience = signal<NotifAudience>('all');
   protected typeFilter = signal<string>('all');
-  protected view = signal<NotificationView>('notifications');
+
+  // --- Views (spec/sprint/inbox-views-2026-11.md) ---
+
+  /** The open view, from `?tab=`; Conversations when none is named. */
+  protected tab = signal<InboxTab>('conversations');
+  /** Faces shown per post in Stats before "and N more". */
+  protected readonly FACES = 12;
+  protected readonly tabLabel: Record<InboxTab, string> = {
+    conversations: 'pages.notifications.views.conversations',
+    stats: 'pages.notifications.views.stats',
+    who: 'pages.notifications.views.who',
+    stream: 'pages.notifications.views.stream',
+  };
+  /** Stats is left out while Wellness keeps likes and boosts away. */
+  protected shownTabs = computed(() =>
+    INBOX_TABS.filter((t) => t !== 'stats' || !this.wellness.limitedNotifications()),
+  );
+  /** "+N" per view: arrived since the inbox was last read. */
+  protected tabNew = computed(() => {
+    const counts: Record<InboxTab, number> = { conversations: 0, stats: 0, who: 0, stream: 0 };
+    const limited = this.wellness.limitedNotifications();
+    for (const n of this.items()) {
+      if (limited && isEngagementNotification(n.type)) continue;
+      if (!this.isNewNotification(n)) continue;
+      for (const t of INBOX_TABS) if (t !== 'stream' && inTab(t, n.type)) counts[t]++;
+    }
+    return counts;
+  });
 
   /** Relationships for the friends/followers filters; fetched lazily. */
   private rels = signal<Map<string, Relationship>>(new Map());
@@ -513,14 +553,16 @@ export class Notifications implements OnInit, OnDestroy {
   protected accountActionBusy = signal<Set<string>>(new Set());
   protected accountActionError = signal<string | null>(null);
 
-  /** Distinct notification types present, for the type dropdown. */
+  /** Distinct notification types present in this view, for the type dropdown. */
   protected types = computed(() =>
     [...new Set(this.items().map((n) => n.type))]
+      .filter((type) => inTab(this.tab(), type))
       .filter((type) => !(this.wellness.limitedNotifications() && isEngagementNotification(type)))
       .sort(),
   );
 
   protected visible = computed(() => {
+    const tab = this.tab();
     const type = this.typeFilter();
     const audience = this.audience();
     const rels = this.rels();
@@ -534,6 +576,9 @@ export class Notifications implements OnInit, OnDestroy {
       // just put behind a click. Same rule as the guard: the mosh pit stays,
       // and an unanswered lookup leaves them shown.
       if (hideReplyGuys && this.fromReplyGuy(n)) return false;
+      // The view comes first: each is its own page, and the filters below
+      // narrow within it.
+      if (!inTab(tab, n.type)) return false;
       // Account-safety notices (a moderator acted on you, you lost follows) are
       // not engagement: no type or audience filter hides them.
       if (isSafetyNotice(n)) return true;
@@ -559,42 +604,51 @@ export class Notifications implements OnInit, OnDestroy {
   });
 
   /**
-   * What the list renders. With no type filter, the digest: all likes and
-   * boosts in one row, new followers in another. With a type filter, the
-   * per-post grouping, so "only likes" still reads post by post.
+   * Conversations and Stream: notifications lightly grouped by post (likes on
+   * one post read as one row), as the inbox was before the digest.
    */
-  protected rows = computed<(NotifRow | DigestRow)[]>(() =>
-    this.typeFilter() === 'all'
-      ? digestNotifications(this.visible(), this.isNewNotification)
-      : groupNotifications(this.visible()),
+  protected rows = computed<NotifRow[]>(() => groupNotifications(this.visible()));
+
+  /** Stats: likes and boosts post by post, from the digest's per-post tally. */
+  protected statsPosts = computed(() => {
+    const rows = digestNotifications(
+      this.visible().filter((n) => isStatsType(n.type)),
+      this.isNewNotification,
+    );
+    const engagement = rows.find((row): row is EngagementDigest => row.kind === 'engagement');
+    return engagement?.posts ?? [];
+  });
+
+  /** Who: requests (and admin sign-ups) as ordinary rows, they need an answer. */
+  protected whoRequests = computed<NotifRow[]>(() =>
+    groupNotifications(
+      this.visible().filter((n) => FOLLOW_REQUEST_TYPES.has(n.type) || n.type === 'admin.sign_up'),
+    ),
   );
+
+  /** Who: each new follower once, newest first, with a face. */
+  protected newFollowers = computed(() => {
+    const seen = new Set<string>();
+    const out: { account: Account; at: string; isNew: boolean }[] = [];
+    for (const n of this.visible()) {
+      if (n.type !== 'follow' || seen.has(n.account.id)) continue;
+      seen.add(n.account.id);
+      out.push({ account: n.account, at: n.created_at, isNew: this.isNewNotification(n) });
+    }
+    return out;
+  });
 
   // --- Digest: every "number goes up" notification in one row (owner, 2026-11-22) ---
 
   private readonly inboxSeen = inject(InboxSeen);
   /** When the inbox was last read (ms), or null until known / on a first visit. */
   private inboxSince = signal<number | null>(null);
-  /** Digest rows the reader expanded, by key. */
-  private digestOpen = signal<ReadonlySet<string>>(new Set());
 
   /** Arrived after the inbox was last read. */
   private isNewNotification = (n: MastodonNotification): boolean => {
     const since = this.inboxSince();
     return since !== null && Date.parse(n.created_at) > since;
   };
-
-  protected isDigestOpen(key: string): boolean {
-    return this.digestOpen().has(key);
-  }
-
-  protected toggleDigest(key: string): void {
-    this.digestOpen.update((set) => {
-      const next = new Set(set);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  }
 
   private countWord(count: number, one: string, other: string): string {
     return this.transloco.translate<string>(count === 1 ? one : other, { count });
@@ -624,23 +678,6 @@ export class Notifications implements OnInit, OnDestroy {
     return parts.join(' · ');
   }
 
-  /** "38 likes · 9 boosts on 6 posts". */
-  protected engagementSummary(row: EngagementDigest): string {
-    return `${this.tallyText(row.likes, row.boosts)} ${this.countWord(
-      row.posts.length,
-      'pages.notifications.digest.onPosts.one',
-      'pages.notifications.digest.onPosts.other',
-    )}`;
-  }
-
-  protected followSummary(row: FollowDigest): string {
-    return this.countWord(
-      row.accounts.length,
-      'pages.notifications.digest.followers.one',
-      'pages.notifications.digest.followers.other',
-    );
-  }
-
   /** Notification actors the viewer has not followed, deduped to one profile row each. */
   protected newAccounts = computed(() =>
     accountsNewToMe(this.items(), this.rels(), this.dismissedAccounts(), this.auth.account()),
@@ -652,7 +689,7 @@ export class Notifications implements OnInit, OnDestroy {
   constructor() {
     const blueskyApi = inject(BlueskyApi);
     effect(() => {
-      if (this.audience() === 'all' && this.view() !== 'new-accounts') {
+      if (this.audience() === 'all' && this.tab() !== 'who') {
         return;
       }
       const missing = [
@@ -733,6 +770,21 @@ export class Notifications implements OnInit, OnDestroy {
   /** Follow Blue → "Auto-refresh timeline" for as long as this page is open. */
   private readonly liveEffect = effect(() => this.syncLive());
 
+  private route = inject(ActivatedRoute);
+
+  /** The view is the URL's, so Back from a thread returns to it. */
+  private readonly followTab = this.route.queryParamMap
+    ?.pipe(takeUntilDestroyed())
+    .subscribe((params) => {
+      const next = parseInboxTab(params.get('tab'));
+      if (next === this.tab()) return;
+      this.tab.set(next);
+      // A type picked in one view may not exist in the next.
+      this.typeFilter.set('all');
+      this.accountActionError.set(null);
+      this.diagnostics.info('Notifications', 'user:set-view', { view: next });
+    });
+
   ngOnInit(): void {
     this.source.set(
       this.misskeyAvailable()
@@ -786,8 +838,8 @@ export class Notifications implements OnInit, OnDestroy {
     }
     this.source.set(source);
     // Keep the audience filter when moving between networks.
+    // The view stays: Who on Bluesky is still Who.
     this.typeFilter.set('all');
-    this.view.set('notifications');
     // No explicit stop: `syncLive` reads `source()`, so switching to Bluesky
     // closes the stream and switching back reopens it if the pref is on.
     this.diagnostics.info('Notifications', 'user:set-source', { source });
@@ -959,12 +1011,6 @@ export class Notifications implements OnInit, OnDestroy {
         this.mergeItems([payload as MastodonNotification]);
       }
     });
-  }
-
-  setView(view: NotificationView): void {
-    this.view.set(view);
-    this.accountActionError.set(null);
-    this.diagnostics.info('Notifications', 'user:set-view', { view });
   }
 
   newAccountItem(candidate: NewAccountCandidate): AccountWithMatches {

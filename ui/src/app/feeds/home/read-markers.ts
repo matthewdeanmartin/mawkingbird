@@ -1,4 +1,5 @@
 import { DestroyRef, Injectable, inject, signal } from '@angular/core';
+import { DOT_MASTODON_TYPES } from '../notifications/inbox-scenarios';
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Api } from '../../platform/api/api';
@@ -196,7 +197,36 @@ export class ReadMarkers {
     this.server.set(markers);
     const notifications = markers.notifications;
     if (notifications && typeof notifications.unread_count === 'number') {
-      this.indicators.noteServerUnread(notifications.last_read_id, notifications.unread_count);
+      void this.noteDotWorthyUnread(scope, notifications.last_read_id, notifications.unread_count);
     }
+  }
+
+  /**
+   * The marker counts every kind, likes included, but only Conversations and
+   * Who may light the Inbox dot (spec/sprint/inbox-views-2026-11.md). With
+   * something unread, one request for the newest notification of those kinds
+   * says whether any of it is past the marker. If that request fails, the count
+   * is used as before: a missed reply is worse than an extra dot.
+   */
+  private async noteDotWorthyUnread(
+    scope: string,
+    lastReadId: string,
+    unread: number,
+  ): Promise<void> {
+    if (unread <= 0) {
+      this.indicators.noteServerUnread(lastReadId, 0);
+      return;
+    }
+    let count = unread;
+    try {
+      const [newest] = await firstValueFrom(
+        this.api.notifications(undefined, { types: [...DOT_MASTODON_TYPES], limit: 1 }),
+      );
+      count = newest && compareMastodonIds(newest.id, lastReadId) > 0 ? 1 : 0;
+    } catch {
+      // Keep the server's count.
+    }
+    if (scope !== accountScopeSuffix()) return;
+    this.indicators.noteServerUnread(lastReadId, count);
   }
 }

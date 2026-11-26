@@ -1,6 +1,28 @@
 @if (dismissError()) {
   <p role="alert">{{ 'pages.notifications.hideFailed' | transloco }}</p>
 }
+<!-- Views, not filters: each is its own page with its own reason to be here
+     (spec/sprint/inbox-views-2026-11.md). The filters below apply to all four. -->
+<nav
+  mbNavigation
+  presentation="tabs"
+  class="inbox-tabs"
+  [label]="'pages.notifications.views.label' | transloco"
+>
+  @for (t of shownTabs(); track t) {
+    <a
+      mbNavLink
+      [current]="tab() === t"
+      routerLink="."
+      [queryParams]="{ tab: t === 'conversations' ? null : t }"
+      queryParamsHandling="merge"
+      >{{ tabLabel[t] | transloco }}
+      @if (tabNew()[t]; as fresh) {
+        <span class="tab-new" data-tab-new>+{{ fresh }}</span>
+      }
+    </a>
+  }
+</nav>
 <div class="live-toggle">
   <div class="notif-filters">
     <!-- Only configured networks are offered; two networks start on Both. -->
@@ -32,61 +54,43 @@
         }
       </div>
     }
-    <!-- Accounts New to Me reads relationships from the Mastodon server, so it
-         has nothing to say about Bluesky actors. -->
-    @if (source() === 'mastodon') {
-      <div
-        class="seg view-seg"
-        role="group"
-        [attr.aria-label]="'pages.notifications.viewAriaLabel' | transloco"
+    <div
+      class="seg audience-seg"
+      role="group"
+      [attr.aria-label]="'pages.notifications.audience.from' | transloco"
+    >
+      <button [class.active]="audience() === 'all'" (click)="audience.set('all')">
+        {{ 'pages.notifications.audience.all' | transloco }}
+      </button>
+      <button [class.active]="audience() === 'friends'" (click)="audience.set('friends')">
+        {{ 'pages.notifications.audience.following' | transloco }}
+      </button>
+      <button [class.active]="audience() === 'followers'" (click)="audience.set('followers')">
+        {{ 'pages.notifications.audience.followers' | transloco }}
+      </button>
+      <button [class.active]="audience() === 'mutuals'" (click)="audience.set('mutuals')">
+        {{ 'pages.notifications.audience.mutuals' | transloco }}
+      </button>
+      <button
+        [class.active]="audience() === 'not-following'"
+        (click)="audience.set('not-following')"
       >
-        <button [class.active]="view() === 'notifications'" (click)="setView('notifications')">
-          {{ 'pages.notifications.notifications' | transloco }}
-        </button>
-        <button [class.active]="view() === 'new-accounts'" (click)="setView('new-accounts')">
-          {{ 'pages.notifications.newAccounts' | transloco }}
-        </button>
-      </div>
-    }
-    @if (view() === 'notifications') {
-      <div
-        class="seg audience-seg"
-        role="group"
-        [attr.aria-label]="'pages.notifications.audience.from' | transloco"
-      >
-        <button [class.active]="audience() === 'all'" (click)="audience.set('all')">
-          {{ 'pages.notifications.audience.all' | transloco }}
-        </button>
-        <button [class.active]="audience() === 'friends'" (click)="audience.set('friends')">
-          {{ 'pages.notifications.audience.following' | transloco }}
-        </button>
-        <button [class.active]="audience() === 'followers'" (click)="audience.set('followers')">
-          {{ 'pages.notifications.audience.followers' | transloco }}
-        </button>
-        <button [class.active]="audience() === 'mutuals'" (click)="audience.set('mutuals')">
-          {{ 'pages.notifications.audience.mutuals' | transloco }}
-        </button>
-        <button
-          [class.active]="audience() === 'not-following'"
-          (click)="audience.set('not-following')"
-        >
-          {{ 'pages.notifications.audience.notFollowing' | transloco }}
-        </button>
-      </div>
-      <!-- The type dropdown is built from whatever arrived, so it works for
-           either source with no changes. -->
-      <select
-        class="type-select"
-        [ngModel]="typeFilter()"
-        (ngModelChange)="typeFilter.set($event)"
-        [title]="'pages.notifications.type.title' | transloco"
-      >
-        <option value="all">{{ 'pages.notifications.type.all' | transloco }}</option>
-        @for (t of types(); track t) {
-          <option [value]="t">{{ label(t) }}</option>
-        }
-      </select>
-    }
+        {{ 'pages.notifications.audience.notFollowing' | transloco }}
+      </button>
+    </div>
+    <!-- The type dropdown is built from what arrived in this view, so it
+           works for every source with no changes. -->
+    <select
+      class="type-select"
+      [ngModel]="typeFilter()"
+      (ngModelChange)="typeFilter.set($event)"
+      [title]="'pages.notifications.type.title' | transloco"
+    >
+      <option value="all">{{ 'pages.notifications.type.all' | transloco }}</option>
+      @for (t of types(); track t) {
+        <option [value]="t">{{ label(t) }}</option>
+      }
+    </select>
   </div>
   <!-- Live is a Mastodon WebSocket, governed by Blue → "Auto-refresh timeline"
        rather than a button here, so one setting covers every live surface. What
@@ -125,7 +129,7 @@
 @if (misskeyError(); as error) {
   <p class="muted center" role="alert">{{ error }}</p>
 }
-@if (accountActionError() && view() !== 'new-accounts') {
+@if (accountActionError() && tab() !== 'who') {
   <p role="alert">{{ accountActionError() }}</p>
 }
 @if (loading()) {
@@ -134,33 +138,68 @@
   @if (!mastodonError() && !bskyError() && !misskeyError()) {
     <p class="muted center">{{ 'pages.notifications.empty' | transloco }}</p>
   }
-} @else if (view() === 'new-accounts') {
-  @if (accountActionError(); as error) {
-    <p class="new-account-error" role="alert">{{ error }}</p>
+} @else if (tab() === 'who') {
+  <!-- Who: follow requests (they need an answer), new followers with faces,
+       then accounts new to you (Mastodon reads relationships to find them). -->
+  @if (whoRequests().length) {
+    <ng-container *ngTemplateOutlet="rowList; context: { $implicit: whoRequests() }" />
   }
-  @if (relationshipChecksPending() && !newAccounts().length) {
-    <p class="muted center">{{ 'pages.notifications.checkingAccounts' | transloco }}</p>
-  } @else if (relationshipCheckFailed() && !newAccounts().length) {
-    <p class="muted center">{{ 'pages.notifications.relationshipCheckFailed' | transloco }}</p>
-  } @else if (!newAccounts().length) {
-    <p class="muted center">{{ 'pages.notifications.noUnfamiliarAccounts' | transloco }}</p>
-  } @else {
-    <div class="new-account-list">
-      @for (candidate of newAccounts(); track candidate.account.id) {
-        <app-account-result-card
-          [item]="newAccountItem(candidate)"
-          [relationship]="candidate.relationship"
-          [profileLink]="accountProfilePath(candidate.account)"
-          [reason]="newAccountReason(candidate)"
-          [reasonLink]="newAccountReasonLink(candidate)"
-          [followBusy]="isAccountActionBusy(candidate.account.id)"
-          [showModerationMenu]="true"
-          (follow)="followAccount($event)"
-          (muteAccount)="muteAccount($event)"
-          (blockAccount)="blockAccount($event)"
-        />
+  @if (newFollowers().length) {
+    <h2 class="inbox-section">{{ 'pages.notifications.who.followers' | transloco }}</h2>
+    <ul class="who-list">
+      @for (f of newFollowers(); track f.account.id) {
+        <li class="who-row" [class.is-new]="f.isNew">
+          <a [routerLink]="accountProfilePath(f.account)" [attr.aria-label]="f.account.acct">
+            <img
+              class="notif-avatar"
+              [style.filter]="blurAvatar(f.account) ? 'blur(12px)' : null"
+              [ngSrc]="f.account.avatar_static || f.account.avatar || 'favicon-32x32.png'"
+              [alt]="f.account.username"
+              width="40"
+              height="40"
+            />
+          </a>
+          <span class="who-name">
+            <a class="who" [routerLink]="accountProfilePath(f.account)"
+              ><app-account-name [account]="f.account"
+            /></a>
+            <span class="muted small">@{{ f.account.acct }} · {{ f.at | humanTime }}</span>
+          </span>
+        </li>
       }
-    </div>
+    </ul>
+  } @else if (!whoRequests().length && source() !== 'mastodon') {
+    <p class="muted center">{{ 'pages.notifications.noMatch' | transloco }}</p>
+  }
+  @if (source() === 'mastodon') {
+    <h2 class="inbox-section">{{ 'pages.notifications.newAccounts' | transloco }}</h2>
+    @if (accountActionError(); as error) {
+      <p class="new-account-error" role="alert">{{ error }}</p>
+    }
+    @if (relationshipChecksPending() && !newAccounts().length) {
+      <p class="muted center">{{ 'pages.notifications.checkingAccounts' | transloco }}</p>
+    } @else if (relationshipCheckFailed() && !newAccounts().length) {
+      <p class="muted center">{{ 'pages.notifications.relationshipCheckFailed' | transloco }}</p>
+    } @else if (!newAccounts().length) {
+      <p class="muted center">{{ 'pages.notifications.noUnfamiliarAccounts' | transloco }}</p>
+    } @else {
+      <div class="new-account-list">
+        @for (candidate of newAccounts(); track candidate.account.id) {
+          <app-account-result-card
+            [item]="newAccountItem(candidate)"
+            [relationship]="candidate.relationship"
+            [profileLink]="accountProfilePath(candidate.account)"
+            [reason]="newAccountReason(candidate)"
+            [reasonLink]="newAccountReasonLink(candidate)"
+            [followBusy]="isAccountActionBusy(candidate.account.id)"
+            [showModerationMenu]="true"
+            (follow)="followAccount($event)"
+            (muteAccount)="muteAccount($event)"
+            (blockAccount)="blockAccount($event)"
+          />
+        }
+      </div>
+    }
   }
 } @else if (!visible().length) {
   @if (relationshipChecksPending()) {
@@ -172,134 +211,98 @@
   } @else {
     <p class="muted center">{{ 'pages.notifications.noMatch' | transloco }}</p>
   }
+} @else if (tab() === 'stats') {
+  <!-- Stats: likes and boosts post by post, always open, with the faces of
+       the people behind them, so familiar mutuals stand out. -->
+  @if (!statsPosts().length) {
+    <p class="muted center">{{ 'pages.notifications.noMatch' | transloco }}</p>
+  } @else {
+    <ul class="digest-posts stats-posts">
+      @for (t of statsPosts(); track t.status.id) {
+        <li data-digest-post>
+          <div
+            class="excerpt-content digest-post-text"
+            appContentLinks
+            [innerHTML]="t.status.content | compactLinks | customEmoji: t.status.emojis"
+          ></div>
+          @if (t.status.media_attachments?.length && showImages()) {
+            <span class="excerpt-media">
+              @for (m of t.status.media_attachments; track m.id) {
+                <img
+                  [src]="m.preview_url || m.url"
+                  [alt]="m.description || ''"
+                  loading="lazy"
+                  decoding="async"
+                />
+              }
+            </span>
+          }
+          <span class="digest-tally">
+            {{ tallyText(t.likes, t.boosts) }}
+            @if (t.newLikes + t.newBoosts; as fresh) {
+              <span class="digest-new">+{{ fresh }}</span>
+            }
+            <span aria-hidden="true">·</span>
+            <a class="digest-open" [routerLink]="['/statuses', t.status.id]">{{
+              'pages.notifications.digest.openPost' | transloco: { post: words().post }
+            }}</a>
+          </span>
+          <span class="stats-faces">
+            @for (a of t.people.slice(0, FACES); track a.id) {
+              <a [routerLink]="accountProfilePath(a)" [title]="a.display_name || a.acct">
+                <img
+                  class="face"
+                  [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
+                  [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
+                  [alt]="a.display_name || a.username"
+                  width="28"
+                  height="28"
+                />
+              </a>
+            }
+            @if (t.people.length > FACES) {
+              <span class="muted small">{{
+                'pages.notifications.digest.more' | transloco: { count: t.people.length - FACES }
+              }}</span>
+            }
+          </span>
+        </li>
+      }
+    </ul>
+  }
 } @else {
-  @for (row of rows(); track row.key) {
-    @if (row.kind === 'engagement') {
-      <div class="notif notif-digest" data-digest="engagement">
-        <div class="digest-avatars">
-          @for (a of row.people.slice(0, 3); track a.id) {
-            <a [routerLink]="accountProfilePath(a)" [attr.aria-label]="a.acct">
-              <img
-                class="notif-avatar"
-                [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
-                [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
-                [alt]="a.username"
-                width="40"
-                height="40"
-              />
-            </a>
-          }
-        </div>
-        <div class="notif-body">
-          <button
-            type="button"
-            class="digest-toggle"
-            [attr.aria-expanded]="isDigestOpen(row.key)"
-            (click)="toggleDigest(row.key)"
-          >
-            <span class="digest-summary">{{ engagementSummary(row) }}</span>
-            @if (row.newLikes + row.newBoosts; as fresh) {
-              <span class="digest-new" data-digest-new>{{
-                'pages.notifications.digest.sinceLast' | transloco: { count: fresh }
-              }}</span>
-            }
-          </button>
-          <p class="muted small digest-people">
-            <ng-container
-              *ngTemplateOutlet="peopleLinks; context: { $implicit: row.people, max: 3 }"
-            />
-          </p>
-          @if (isDigestOpen(row.key)) {
-            <ul class="digest-posts">
-              @for (t of row.posts; track t.status.id) {
-                <li data-digest-post>
-                  <div
-                    class="excerpt-content digest-post-text"
-                    appContentLinks
-                    [innerHTML]="t.status.content | compactLinks | customEmoji: t.status.emojis"
-                  ></div>
-                  @if (t.status.media_attachments?.length && showImages()) {
-                    <span class="excerpt-media">
-                      @for (m of t.status.media_attachments; track m.id) {
-                        <img
-                          [src]="m.preview_url || m.url"
-                          [alt]="m.description || ''"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      }
-                    </span>
-                  }
-                  <span class="digest-tally">
-                    {{ tallyText(t.likes, t.boosts) }}
-                    @if (t.newLikes + t.newBoosts; as fresh) {
-                      <span class="digest-new">+{{ fresh }}</span>
-                    }
-                    <span aria-hidden="true">·</span>
-                    <a class="digest-open" [routerLink]="['/statuses', t.status.id]">{{
-                      'pages.notifications.digest.openPost' | transloco: { post: words().post }
-                    }}</a>
-                  </span>
-                  <span class="muted small digest-people">
-                    <ng-container
-                      *ngTemplateOutlet="peopleLinks; context: { $implicit: t.people, max: 12 }"
-                    />
-                  </span>
-                </li>
-              }
-            </ul>
-          }
-        </div>
-      </div>
-    } @else if (row.kind === 'follows') {
-      <div class="notif notif-digest" data-digest="follows">
-        <div class="digest-avatars">
-          @for (a of row.accounts.slice(0, 3); track a.id) {
-            <a [routerLink]="accountProfilePath(a)" [attr.aria-label]="a.acct">
-              <img
-                class="notif-avatar"
-                [style.filter]="blurAvatar(a) ? 'blur(12px)' : null"
-                [ngSrc]="a.avatar_static || a.avatar || 'favicon-32x32.png'"
-                [alt]="a.username"
-                width="40"
-                height="40"
-              />
-            </a>
-          }
-        </div>
-        <div class="notif-body">
-          <button
-            type="button"
-            class="digest-toggle"
-            [attr.aria-expanded]="isDigestOpen(row.key)"
-            (click)="toggleDigest(row.key)"
-          >
-            <span class="digest-summary">{{ followSummary(row) }}</span>
-            @if (row.newCount) {
-              <span class="digest-new" data-digest-new>{{
-                'pages.notifications.digest.sinceLast' | transloco: { count: row.newCount }
-              }}</span>
-            }
-          </button>
-          <p class="muted small digest-people">
-            <ng-container
-              *ngTemplateOutlet="peopleLinks; context: { $implicit: row.accounts, max: 3 }"
-            />
-          </p>
-          @if (isDigestOpen(row.key)) {
-            <ul class="digest-posts">
-              @for (a of row.accounts; track a.id) {
-                <li>
-                  <a class="who" [routerLink]="accountProfilePath(a)"
-                    ><app-account-name [account]="a"
-                  /></a>
-                </li>
-              }
-            </ul>
-          }
-        </div>
-      </div>
-    } @else if (row.kind === 'single' && isSafetyNotice(row.notif)) {
+  <ng-container *ngTemplateOutlet="rowList; context: { $implicit: rows() }" />
+}
+
+@if (!loading() && items().length) {
+  <div class="load-more-row">
+    @if (exhausted()) {
+      @if (!mastodonError() && !bskyError() && !misskeyError()) {
+        <span class="muted small">{{ 'pages.notifications.caughtUp' | transloco }}</span>
+      }
+    } @else {
+      <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
+        {{
+          (loadingMore() ? 'pages.notifications.loading' : 'pages.notifications.loadMore')
+            | transloco
+        }}
+      </button>
+    }
+  </div>
+}
+
+@if (listTarget(); as target) {
+  <app-account-list-dialog
+    [statusId]="target.statusId"
+    [mode]="target.mode"
+    (closed)="listTarget.set(null)"
+  />
+}
+
+<!-- One list of notification rows: Conversations, Stream, and the requests in Who. -->
+<ng-template #rowList let-list>
+  @for (row of list; track row.key) {
+    @if (row.kind === 'single' && isSafetyNotice(row.notif)) {
       <app-safety-notice [notification]="row.notif" />
     } @else if (row.kind === 'group') {
       <div class="notif notif-group">
@@ -579,41 +582,5 @@
         </div>
       </div>
     }
-  }
-}
-
-@if (!loading() && items().length) {
-  <div class="load-more-row">
-    @if (exhausted()) {
-      @if (!mastodonError() && !bskyError() && !misskeyError()) {
-        <span class="muted small">{{ 'pages.notifications.caughtUp' | transloco }}</span>
-      }
-    } @else {
-      <button class="btn btn-outline" [disabled]="loadingMore()" (click)="loadMore()">
-        {{
-          (loadingMore() ? 'pages.notifications.loading' : 'pages.notifications.loadMore')
-            | transloco
-        }}
-      </button>
-    }
-  </div>
-}
-
-@if (listTarget(); as target) {
-  <app-account-list-dialog
-    [statusId]="target.statusId"
-    [mode]="target.mode"
-    (closed)="listTarget.set(null)"
-  />
-}
-
-<ng-template #peopleLinks let-people let-max="max">
-  @for (a of people.slice(0, max); track a.id; let last = $last) {
-    <a class="digest-person" [routerLink]="accountProfilePath(a)"
-      ><app-account-name [account]="a" /></a
-    >{{ last ? '' : ', ' }}
-  }
-  @if (people.length > max) {
-    {{ 'pages.notifications.digest.more' | transloco: { count: people.length - max } }}
   }
 </ng-template>

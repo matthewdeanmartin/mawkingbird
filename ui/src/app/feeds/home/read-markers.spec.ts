@@ -168,6 +168,37 @@ describe('ReadMarkers (parity item 7)', () => {
     expect(unread).toHaveBeenCalledWith('77', 0);
   });
 
+  it('lights the Inbox dot only when a conversation or a person is past the marker', async () => {
+    // Inbox views (spec/sprint/inbox-views-2026-11.md): the marker counts likes
+    // too, so one request asks for the newest dot-worthy notification.
+    const unread = vi.spyOn(TestBed.inject(MenuIndicators), 'noteServerUnread');
+    const answer = async (newestId: string | null) => {
+      const read = markers.refresh();
+      httpMock
+        .expectOne((r) => r.url === '/api/v1/markers')
+        .flush({
+          notifications: {
+            last_read_id: '50',
+            version: 1,
+            updated_at: '2026-11-26T00:00:00Z',
+            unread_count: 4,
+          },
+        });
+      await read;
+      await tick();
+      const check = httpMock.expectOne((r) => r.url === '/api/v1/notifications');
+      expect(check.request.params.getAll('types[]')).toContain('mention');
+      expect(check.request.params.getAll('types[]')).not.toContain('favourite');
+      expect(check.request.params.get('limit')).toBe('1');
+      check.flush(newestId ? [{ id: newestId, type: 'mention' }] : []);
+      await tick();
+    };
+    await answer('40'); // only likes are new: the newest mention was already read
+    expect(unread).toHaveBeenLastCalledWith('50', 0);
+    await answer('60');
+    expect(unread).toHaveBeenLastCalledWith('50', 1);
+  });
+
   it('does nothing for the anonymous reader', async () => {
     auth.enterAnonymous();
     expect(await markers.refresh()).toBeNull();

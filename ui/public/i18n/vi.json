@@ -1855,7 +1855,6 @@
     "notifications.muteFailed": "Không thể ẩn @{{acct}}.",
     "notifications.newAccounts": "Tài khoản mới với tôi",
     "notifications.noMatch": "Không có thông báo nào khớp bộ lọc.",
-    "notifications.notifications": "Thông báo",
     "notifications.noUnfamiliarAccounts": "Chưa có tài khoản lạ trong các thông báo đã tải.",
     "notifications.openChat": "💬 Mở trong trò chuyện",
     "notifications.others.one": "và {{count}} người khác",

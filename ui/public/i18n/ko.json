@@ -2178,7 +2178,6 @@
     "notifications.muteFailed": "@{{acct}} 계정을 뮤트할 수 없습니다.",
     "notifications.newAccounts": "새로 알게 된 계정",
     "notifications.noMatch": "필터와 일치하는 알림이 없습니다.",
-    "notifications.notifications": "알림",
     "notifications.noUnfamiliarAccounts": "지금까지 불러온 알림에 처음 보는 계정이 없습니다.",
     "notifications.openChat": "💬 채팅에서 열기",
     "notifications.others.one": "및 다른 {{count}}명",
