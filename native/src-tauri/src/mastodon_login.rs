@@ -465,9 +465,13 @@ pub async fn mastodon_account_get(
     url: String,
     handle: String,
 ) -> Result<PublicResponse, Failure> {
-    let _permit = READS
-        .try_acquire()
-        .map_err(|_| failure("busy", "Too many account requests; retry shortly."))?;
+    // Queue briefly: one profile opens about ten reads at once, and refusing
+    // the ninth would show the reader an empty page on a good connection.
+    let _permit = tokio::time::timeout(Duration::from_secs(10), READS.acquire())
+        .await
+        .ok()
+        .and_then(Result::ok)
+        .ok_or_else(|| failure("busy", "Too many account requests; retry shortly."))?;
     let result = tokio::time::timeout(
         Duration::from_secs(15),
         account_read(url.clone(), handle.clone()),

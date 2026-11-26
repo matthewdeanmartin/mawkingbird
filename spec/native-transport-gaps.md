@@ -25,18 +25,27 @@ the UI agree.
 | --- | --- | --- |
 | Mastodon writes | All except like/unlike | **Fixed in sprint 0** |
 | Uploads | Pictures, video and audio in posts; avatar and header; Unbird photos; Studio recordings | `native-public-http.ts` (files), `mastodon_write.rs` (`/api/v2/media`), Bluesky `uploadBlob` |
-| Saving files | Unbird website/CSV/vCard, settings and CSV exports, code and bookmark downloads | Webview downloads are blocked; only pictures have a native save |
+| Saving files | Generated exports now use the desktop save dialog (32 MiB limit) | Implemented for 0.3.0; OS-dialog acceptance pending |
 | Live updates | Mastodon streaming WebSocket | CSP |
 | Bluesky account | Preferences, lists, bookmarks, drafts, list mutes/blocks, thread mutes, thread/quote controls, starter packs | `bluesky.rs` `operation()`: NSIDs and `repo` collections |
 | Bluesky proxied services | Direct and group chat, reports, moderation inbox, feed feedback | `blueskyFetch` refuses the `atproto-proxy` header; login lacks `transition:chat.bsky` |
 | Bluesky contacts, video | All | NSIDs; `video.bsky.app` is another host |
-| Public Mastodon reads | Boosters/favouriters from the original server; servers with non-numeric ids (GoToSocial, Pleroma) | `public_mastodon.rs` `public_path()` |
+| Public Mastodon reads | Boosters/favouriters and bounded opaque account/post IDs are now permitted | Implemented for 0.3.0; real-server acceptance pending |
 | PeerTube | Opening a video on Watch | `/api/v1/videos/…` is not a listed path |
 | Radio catalogues | Library of Congress, Internet Archive, Openverse, Audius, Wikimedia Commons | CSP; no command |
 | Embedded players | SoundCloud, Mixcloud, Spotify, Bandcamp | CSP `frame-src` lists YouTube only |
 | Already on hold | Dropbox, Blogger, Twitter, Hugo POSSE | Owner hold; not planned here |
 
 Sprint 1 replaces this hand-made table with a generated one. Treat it as a floor.
+
+## 0.3.0 preparation: existing media metadata (2026-11-26)
+
+The private host now permits `PUT /api/v1/media/:id` with `write:media` (or
+umbrella `write`) on the signed-in account's own server. Delete & repost can
+reuse existing attachments and save their descriptions and focal points before
+publishing. This does not enable uploading new files; the uploads row and sprint
+2 above remain open. Coverage includes native IPC, host scope/path boundaries
+and a local socket request; a real-account delete-and-repost remains to be checked.
 
 ## Sprint 0: Mastodon writes (done)
 
@@ -113,3 +122,15 @@ Needs the owner to lift the "media/video uploads" hold.
 ## Order
 
 1 first. Then 2 (a client that can't attach a picture), 3, 4, 5, 6.
+
+### 0.3.0 public reads and generated exports
+
+Public read IDs accept ASCII letters, digits, hyphens and underscores, up to 128
+characters; reserved account routes remain denied. This does not remove the
+background archive's separate numeric-ID assumptions. Generated files use
+`save_export`, a 32 MiB bound, and an OS-selected destination; no renderer path
+is accepted. New media uploads and remote media fetching remain separate gaps.
+
+Native component CSS has its own 16/24 kB warning/error limits. The 1 MB startup
+bundle cap and all web limits stay unchanged. Native connector handlers load on
+the first external request; the initial bundle is 999.61 kB (4.40 kB saved).

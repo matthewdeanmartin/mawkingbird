@@ -1,3 +1,4 @@
+import { saveFile } from '../platform/files/save-file';
 import { translatedComputed } from '../i18n/translated';
 import { AppDialogs } from '../shell/app-dialogs';
 import { PublishingMetrics } from './publishing-metrics';
@@ -615,18 +616,11 @@ export class Observability {
     }
   }
 
-  protected downloadDiagnostics(): void {
+  protected async downloadDiagnostics(): Promise<void> {
     try {
       const blob = new Blob([this.diagnosticLog.toText()], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
       const stamp = new Date().toISOString().replace(/[:.]/g, '-');
-      link.href = url;
-      link.download = `mockingbird-diagnostics-${stamp}.log`;
-      document.body.append(link);
-      link.click();
-      link.remove();
-      URL.revokeObjectURL(url);
+      if (!(await saveFile(blob, `mockingbird-diagnostics-${stamp}.log`))) return;
       this.showDiagnosticNotice(this.transloco.translate('pages.observability.notice.downloaded'));
     } catch (error: unknown) {
       this.diagnosticLog.write(

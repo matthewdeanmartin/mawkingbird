@@ -1,3 +1,4 @@
+import { saveFile } from '../../platform/files/save-file';
 import { translatedComputed } from '../../i18n/translated';
 import { Component, OnInit, computed, inject, input, output, signal } from '@angular/core';
 import {
@@ -303,12 +304,10 @@ export class BulkActionsDialog implements OnInit {
     this.backupError.set('');
     try {
       const { csv, count } = await this.bulk.backupCsv(spec.id);
-      const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${spec.backup}.csv`;
-      link.click();
-      URL.revokeObjectURL(url);
+      if (
+        !(await saveFile(new Blob([csv], { type: 'text/csv;charset=utf-8' }), `${spec.backup}.csv`))
+      )
+        return;
       this.backup.set({ saved: true, count });
     } catch (error: unknown) {
       this.diagnostics.error('BulkActions', 'backup:error', error, { action: this.action() });

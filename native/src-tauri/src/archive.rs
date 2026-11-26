@@ -11,20 +11,18 @@ use crate::{
 };
 use serde::Serialize;
 use serde_json::Value;
-use std::{
-    collections::{HashMap, HashSet},
-    path::PathBuf,
-    sync::Mutex,
-    time::Duration,
-};
+use std::{collections::HashSet, path::PathBuf, sync::Mutex, time::Duration};
 use tauri::Manager;
 use tokio::sync::Semaphore;
 use url::Url;
 
 static ARCHIVE_COLLECTOR: Semaphore = Semaphore::const_new(1);
 static PROFILE_FETCH: Semaphore = Semaphore::const_new(1);
+/// Fills in one newly followed person at a time, in the order they were followed.
+static FOLLOW_FILL: Semaphore = Semaphore::const_new(1);
+/// People followed here whose fill has not finished: (handle, remote id).
+static FOLLOW_PENDING: Mutex<Option<HashSet<(String, String)>>> = Mutex::new(None);
 static COLLECTOR_JOB: Mutex<Option<(String, u8)>> = Mutex::new(None);
-static SEEDED_THIS_SESSION: Mutex<Option<HashMap<String, usize>>> = Mutex::new(None);
 struct ActiveJob(String);
 impl ActiveJob {
     fn start(handle: &str, job: u8) -> Self {
@@ -47,7 +45,13 @@ const FOLLOW_PAGE_SIZE: usize = 80;
 const MAX_FOLLOW_PAGES: usize = 1000;
 const NOTIFICATION_PAGE_SIZE: usize = 80;
 const MAX_NOTIFICATION_PAGES_PER_RUN: usize = 20;
-const RECENT_SEED_PROFILES_PER_SESSION: usize = 12;
+/// Most people one call to the queue reads; the app asks again for more.
+const SEED_BATCH_MAX: usize = 10;
+/// Between two people: 150 calls in five minutes at most, half of the 300 a
+/// Mastodon server allows an account, so ordinary reading keeps the rest.
+const SEED_GAP: Duration = Duration::from_secs(2);
+/// Stop bulk reading while the server reports less headroom than this.
+const SEED_MIN_HEADROOM: u32 = 100;
 
 async fn count_request(
     app: &tauri::AppHandle,
@@ -128,33 +132,45 @@ pub struct SeedReport {
     profiles: usize,
     posts: usize,
     remaining: i64,
+    /// The server is running low on allowance; leave it alone for a while.
+    rate_limited: bool,
 }
 
-/// One bounded recent page for each selected active follow. No unknown or
-/// older-than-90-day account enters this queue, and no older page is followed.
+/// Whether bulk reading should leave the rest of the allowance to the reader.
+/// A server that reports no allowance is paced by [`SEED_GAP`] alone.
+fn low_headroom(response: &PublicResponse) -> bool {
+    response
+        .headers
+        .get("x-ratelimit-remaining")
+        .and_then(|value| value.parse::<u32>().ok())
+        .is_some_and(|remaining| remaining < SEED_MIN_HEADROOM)
+}
+
+/// One recent page for each of the next `limit` people in the queue (see
+/// `SEED_DUE`). No unknown or older-than-90-day account enters it, and no older
+/// page is followed. The app trickles this one person at a time, and asks for
+/// batches when the reader presses Update.
 #[tauri::command]
 pub async fn archive_seed_recent(
     app: tauri::AppHandle,
     handle: String,
+    limit: usize,
 ) -> Result<SeedReport, Failure> {
     let _permit = ARCHIVE_COLLECTOR
         .try_acquire()
         .map_err(|_| failure("busy", "Another archive collection is running."))?;
     let _job = ActiveJob::start(&handle, 3);
     let (origin, token) = archive_auth(&handle)?;
-    let already_seeded = {
-        let mut sessions = SEEDED_THIS_SESSION.lock().map_err(|_| archive_error())?;
-        *sessions
-            .get_or_insert_with(HashMap::new)
-            .get(&handle)
-            .unwrap_or(&0)
-    };
     let db_path = archive_dir(&app)
         .map_err(|_| archive_error())?
         .join("archive.sqlite3");
     let mut profiles = 0;
     let mut posts = 0;
-    for _ in already_seeded..RECENT_SEED_PROFILES_PER_SESSION {
+    let mut rate_limited = false;
+    for step in 0..limit.clamp(1, SEED_BATCH_MAX) {
+        if step > 0 {
+            tokio::time::sleep(SEED_GAP).await;
+        }
         let candidate_path = db_path.clone();
         let candidate_handle = handle.clone();
         let candidate_origin = origin.clone();
@@ -172,8 +188,9 @@ pub async fn archive_seed_recent(
             candidate.remote_id
         ));
         url.query_pairs_mut().append_pair("limit", "40");
-        let value =
-            json_value(get_follow_page(&app, &handle, &origin, "recent_seed", url, &token).await?)?;
+        let response = get_follow_page(&app, &handle, &origin, "recent_seed", url, &token).await?;
+        rate_limited = low_headroom(&response);
+        let value = json_value(response)?;
         let rows = value
             .as_array()
             .ok_or_else(|| failure("response", "Invalid recent profile page."))?;
@@ -209,13 +226,9 @@ pub async fn archive_seed_recent(
         .map_err(|_| archive_error())?;
         profiles += 1;
         posts += saved;
-        if let Ok(mut sessions) = SEEDED_THIS_SESSION.lock() {
-            *sessions
-                .get_or_insert_with(HashMap::new)
-                .entry(handle.clone())
-                .or_default() += 1;
+        if rate_limited {
+            break;
         }
-        tokio::time::sleep(Duration::from_secs(1)).await;
     }
     let status_path = db_path;
     let status_handle = handle;
@@ -234,6 +247,7 @@ pub async fn archive_seed_recent(
         profiles,
         posts,
         remaining,
+        rate_limited,
     })
 }
 
@@ -298,6 +312,130 @@ pub(crate) async fn observe_read(app: tauri::AppHandle, handle: String, url: Str
     if result.is_err() || result.is_ok_and(|value| value.is_err()) {
         diagnostics::record("archive_observe", "paused", None);
     }
+}
+
+fn pending_follow(handle: &str, remote_id: &str, add: bool) -> bool {
+    let Ok(mut pending) = FOLLOW_PENDING.lock() else {
+        return false;
+    };
+    let set = pending.get_or_insert_with(HashSet::new);
+    let key = (handle.to_owned(), remote_id.to_owned());
+    if add {
+        set.insert(key)
+    } else {
+        set.remove(&key)
+    }
+}
+
+/// The account followed, unfollowed or blocked someone in this app. The people
+/// list follows along: a rescan, which costs calls, is the reader's to ask for.
+/// `relationship` is the server's answer, so a follow awaiting approval is not
+/// listed yet.
+pub(crate) async fn observe_follow(
+    app: tauri::AppHandle,
+    handle: String,
+    origin: String,
+    remote_id: String,
+    relationship: String,
+) {
+    let following = serde_json::from_str::<Value>(&relationship)
+        .is_ok_and(|value| value["following"].as_bool() == Some(true));
+    if !valid_remote_id(&remote_id) {
+        return;
+    }
+    let (h, o, r) = (handle.clone(), origin.clone(), remote_id.clone());
+    if !following {
+        pending_follow(&handle, &remote_id, false);
+        if with_archive(&app, move |a| a.note_unfollow(&h, &o, &r))
+            .await
+            .is_err()
+        {
+            diagnostics::record("archive_follow", "paused", None);
+        }
+        return;
+    }
+    let known = with_archive(&app, move |a| a.follows(&h, &o, &r)).await;
+    // Already listed (changing whether their boosts show is also a follow call).
+    if !matches!(known, Ok(false)) || !pending_follow(&handle, &remote_id, true) {
+        return;
+    }
+    tokio::spawn(async move {
+        let Ok(_permit) = FOLLOW_FILL.acquire().await else {
+            return;
+        };
+        if fill_followed(&app, &handle, &origin, &remote_id, &relationship)
+            .await
+            .is_err()
+        {
+            diagnostics::record("archive_follow", "paused", None);
+        }
+        pending_follow(&handle, &remote_id, false);
+    });
+}
+
+/// One call: their newest page, which also carries who they are. A second only
+/// for someone who has never posted.
+async fn fill_followed(
+    app: &tauri::AppHandle,
+    handle: &str,
+    origin: &str,
+    remote_id: &str,
+    relationship: &str,
+) -> Result<(), Failure> {
+    let (auth_origin, token) = archive_auth(handle)?;
+    if auth_origin != origin {
+        return Err(failure("policy", "Follow belongs to another server."));
+    }
+    let mut url = Url::parse(origin).map_err(|_| archive_error())?;
+    url.set_path(&format!("/api/v1/accounts/{remote_id}/statuses"));
+    url.query_pairs_mut().append_pair("limit", "40");
+    let response = get_follow_page(app, handle, origin, "recent_seed", url, &token).await?;
+    let mut pause = if low_headroom(&response) {
+        Duration::from_secs(60)
+    } else {
+        SEED_GAP
+    };
+    let body = json_value(response)?.to_string();
+    let still_wanted = || {
+        FOLLOW_PENDING.lock().is_ok_and(|pending| {
+            pending
+                .as_ref()
+                .is_some_and(|set| set.contains(&(handle.to_owned(), remote_id.to_owned())))
+        })
+    };
+    if !still_wanted() {
+        return Ok(());
+    }
+    let (h, o, r) = (handle.to_owned(), origin.to_owned(), remote_id.to_owned());
+    let listed = with_archive(app, move |a| {
+        a.observe(&h, &o, "profile", &body)?;
+        a.note_follow(&h, &o, &r, None)
+    })
+    .await?;
+    if !listed {
+        let mut url = Url::parse(origin).map_err(|_| archive_error())?;
+        url.set_path(&format!("/api/v1/accounts/{remote_id}"));
+        let response = get_follow_page(app, handle, origin, "recent_seed", url, &token).await?;
+        if low_headroom(&response) {
+            pause = Duration::from_secs(60);
+        }
+        let accounts = parse_following(&Value::Array(vec![json_value(response)?]))?;
+        if !still_wanted() {
+            return Ok(());
+        }
+        let (h, o, r) = (handle.to_owned(), origin.to_owned(), remote_id.to_owned());
+        with_archive(app, move |a| a.note_follow(&h, &o, &r, accounts.first())).await?;
+    }
+    let (h, o, r) = (handle.to_owned(), origin.to_owned(), remote_id.to_owned());
+    let relationships = format!("[{relationship}]");
+    with_archive(app, move |a| {
+        a.note_account_fetched(&h, &o, &r)?;
+        a.observe(&h, &o, "relationships", &relationships)
+    })
+    .await?;
+    // Importing a list of follows runs many of these: keep to the bulk pace.
+    tokio::time::sleep(pause).await;
+    Ok(())
 }
 
 /// The account deleted one of its own posts: drop this identity's saved copy too.
@@ -486,12 +624,16 @@ pub async fn archive_fetch_account_page(
     {
         return Err(failure("policy", "Invalid account id."));
     }
-    let _permit = PROFILE_FETCH.try_acquire().map_err(|_| {
-        failure(
-            "busy",
-            "Another profile page is being fetched. Retry shortly.",
-        )
-    })?;
+    let _permit = tokio::time::timeout(Duration::from_secs(10), PROFILE_FETCH.acquire())
+        .await
+        .ok()
+        .and_then(Result::ok)
+        .ok_or_else(|| {
+            failure(
+                "busy",
+                "Another profile page is being fetched. Retry shortly.",
+            )
+        })?;
     let (origin, _) = archive_auth(&handle)?;
     let path = archive_dir(&app)
         .map_err(|_| archive_error())?
@@ -537,7 +679,12 @@ pub async fn archive_fetch_account_page(
     }
     let body = response.body;
     tokio::task::spawn_blocking(move || {
-        Archive::open(&path)?.observe(&handle, &origin, "profile", &body)
+        let mut archive = Archive::open(&path)?;
+        let saved = archive.observe(&handle, &origin, "profile", &body)?;
+        if !older {
+            archive.note_account_fetched(&handle, &origin, &remote_id)?;
+        }
+        Ok::<_, anyhow::Error>(saved)
     })
     .await
     .map_err(|_| archive_error())?

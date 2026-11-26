@@ -16,6 +16,8 @@ release.
 - Your drafts: a sidebar card in Fedi and Explore shows recent unfinished posts and lets you pick one up where you left off.
 - Watch: go back to the previous video in your queue, add or remove the current video, and like its source post from beside the player. Going Back leaves Watch instead of retracing the playlist.
 - More starter kits and Feed Builder topics, including Latvian arts and computing, computing in Greek, Hungarian and Lithuanian, and new reading, cooking, photography and hobby topics.
+- Screen share mode in Settings > Content or Even more: hide followers-only posts, messages, the Inbox, draft pages and draft previews, and hide pseudonymous accounts from account switchers. A header badge turns it off.
+- Save exports through the desktop save dialog: Unbird files, CSV lists, settings backups, RSS subscriptions, bookmark HTML and code files. Generated files up to 32 MiB are supported.
 
 ### Changed
 - Inbox opens on Conversations, with separate Stats, Who and Stream views. Likes and boosts have their own view with faces; they no longer normally light the inbox dot.
@@ -29,7 +31,8 @@ release.
 - Home > Profiles follows changes made in this app: newly followed people are added and their recent posts collected, while unfollowed or blocked people leave the following list.
 - Feed Doctor now unfollows a signed-in Mastodon account on the server, instead of only changing the anonymous follow list.
 - Shared Watch links can find a public Mastodon post when you are signed in on a different server, instead of asking you to switch servers.
-- After deleting and reposting a text post, the new post replaces the deleted one in the view. Replies you send inline appear beneath the post you answered.
+- Delete & repost preserves existing attachments, their descriptions and focal points, and replaces the deleted post in the view. Replies you send inline appear beneath the post you answered.
+- Public Mastodon reads can show who boosted or liked a post on its original server, and open profiles and posts whose server uses letters as well as digits in their IDs.
 
 ## [0.2.0] - 2026-11-23
 ### Added

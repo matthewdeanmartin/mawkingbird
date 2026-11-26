@@ -151,6 +151,10 @@
               "outputHashing": "all"
             },
             "native": {
+              "budgets": [
+                { "type": "initial", "maximumWarning": "900kB", "maximumError": "1MB" },
+                { "type": "anyComponentStyle", "maximumWarning": "16kB", "maximumError": "24kB" }
+              ],
               "outputPath": "dist-native",
               "baseHref": "/",
               "index": {

@@ -1,3 +1,4 @@
+import { saveFile } from '../../platform/files/save-file';
 import { translatedComputed } from '../../i18n/translated';
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -112,16 +113,14 @@ export class LeaveDialog {
    * before the choice is made, and a backup wider than the deletion costs nothing
    * while a narrower one loses data. Credentials are excluded either way.
    */
-  protected downloadBackup(): void {
+  protected async downloadBackup(): Promise<void> {
     try {
       const config = this.teardown.backup('all');
       const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = `mawkingbird-backup-${new Date().toISOString().slice(0, 10)}.json`;
-      anchor.click();
-      URL.revokeObjectURL(url);
+      if (
+        !(await saveFile(blob, `mawkingbird-backup-${new Date().toISOString().slice(0, 10)}.json`))
+      )
+        return;
       this.exported.set(true);
       this.exportError.set(null);
     } catch (error: unknown) {

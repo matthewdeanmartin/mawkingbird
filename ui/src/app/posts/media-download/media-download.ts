@@ -1,3 +1,4 @@
+import { saveBlob as saveExportBlob } from '../../platform/files/save-file';
 import { MediaAttachment, ProviderId, Status } from '../../platform/api/models';
 import { extractMedia } from '../../accounts/profile/media/profile-media-item';
 
@@ -222,11 +223,5 @@ function uniqueName(name: string, taken: Record<string, unknown>): string {
 
 /** Hand a blob to the browser as a download. */
 export function saveBlob(blob: Blob, filename: string, doc: Document = document): void {
-  const url = URL.createObjectURL(blob);
-  const anchor = doc.createElement('a');
-  anchor.href = url;
-  anchor.download = filename;
-  anchor.click();
-  // Revoking at once can cancel the download in some browsers; give it a moment.
-  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+  saveExportBlob(blob, filename, doc);
 }

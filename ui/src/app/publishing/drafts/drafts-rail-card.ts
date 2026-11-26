@@ -5,6 +5,7 @@ import { MbRailCard } from '../../design-system/identity/rail-card';
 import { HumanTimePipe } from '../../i18n/human-time.pipe';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
 import { Auth } from '../../platform/session/auth';
+import { ScreenShare } from '../../shell/screen-share/screen-share';
 import { DraftItem } from './draft-items';
 import { DraftSources } from './draft-sources';
 
@@ -42,7 +43,7 @@ export function resetDraftsRailLoads(): void {
   selector: 'app-drafts-rail-card',
   imports: [HumanTimePipe, MbRailCard, RouterLink, TranslocoPipe],
   template: `
-    @if (total()) {
+    @if (!screenShare.enabled() && total()) {
       <section mbRailCard class="card">
         <h2 class="card-title">
           {{ 'draftsRail.title' | transloco }}
@@ -119,6 +120,7 @@ export function resetDraftsRailLoads(): void {
   `,
 })
 export class DraftsRailCard {
+  protected readonly screenShare = inject(ScreenShare);
   private sources = inject(DraftSources);
   private auth = inject(Auth);
 

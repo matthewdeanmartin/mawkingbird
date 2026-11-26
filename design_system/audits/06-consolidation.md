@@ -3640,3 +3640,9 @@ the two actions as link-styled buttons. The other edits in this pass (Explore or
 Tags opening on Trending, the RSS and Blog Shelf headings and link, Video Subscriptions
 without the fediverse merge, Radio copy, Blog copy, Stats padding) reuse existing controls
 and leave the inventory's counts unchanged. No new widget.
+
+### 2026-11-26: Native exports and deferred transport
+
+Reviewed the inventory: 743 candidate files remain. Export and Native transport helpers add three source
+files and move source offsets; the existing dialogs preserve their controls.
+No new widget or changed disposition. Native export paths use the OS save dialog.

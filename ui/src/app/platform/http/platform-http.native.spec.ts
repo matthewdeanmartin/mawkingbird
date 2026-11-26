@@ -1,6 +1,9 @@
+import { HttpRequest, HttpResponse } from '@angular/common/http';
+import { firstValueFrom, of } from 'rxjs';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import {
+  PLATFORM_HTTP_INTERCEPTORS,
   CONNECTIVITY_CHECK,
   CONNECTIVITY_PROBE_PATH,
   PLATFORM_ARTICLE_READ,
@@ -124,4 +127,30 @@ it('asks the OS for connectivity instead of probing its own bundled origin', asy
   // An older host without the command, or any failure, means "can't tell".
   invoke.mockRejectedValue(new Error('command not found'));
   await expect(CONNECTIVITY_CHECK!()).resolves.toBe('unknown');
+});
+
+it('loads connector handlers for external requests while bundled assets pass through', async () => {
+  const invoke = vi
+    .fn()
+    .mockResolvedValue({ status: 200, body: 'https://tinyurl.com/short', headers: {} });
+  vi.stubGlobal('__TAURI__', { core: { invoke } });
+  const next = vi.fn(() => of(new HttpResponse({ body: 'asset' })));
+  const intercept = PLATFORM_HTTP_INTERCEPTORS[0];
+  await firstValueFrom(intercept(new HttpRequest('GET', '/i18n/en.json'), next));
+  expect(next).toHaveBeenCalledTimes(1);
+  const result = await firstValueFrom(
+    intercept(
+      new HttpRequest('GET', 'https://tinyurl.com/api-create.php?url=https%3A%2F%2Fexample.com', {
+        responseType: 'text',
+      }),
+      next,
+    ),
+  );
+  expect((result as HttpResponse<string>).body).toBe('https://tinyurl.com/short');
+  expect(invoke).toHaveBeenCalledWith('shorten_link', {
+    provider: 'tinyurl',
+    destination: 'https://example.com',
+    slug: null,
+  });
+  expect(next).toHaveBeenCalledTimes(1);
 });

@@ -250,6 +250,36 @@ struct CountRow {
     count: i64,
 }
 
+/// Followed people whose newest page is due again, closest first.
+///
+/// Bulk reading is the one thing the cache exists for: hundreds or thousands of
+/// people at one call each. Tiers, as in mastodon_is_my_blog's catch-up queue:
+/// 1 mutuals who reacted to you in the last 30 days, 2 other mutuals, 3 active
+/// in the last 30 days, 4 the rest up to 90 days. Closer people rest for less
+/// time before they are asked for again. Binds one identity id.
+const SEED_DUE: &str = "WITH person AS (
+    SELECT a.id AS actor_id, a.remote_id AS remote_id, a.last_status_at AS last_status_at,
+           s.fetched_at AS fetched_at,
+           (SELECT COUNT(*) FROM archive_interaction i
+             WHERE i.identity_id=a.identity_id AND i.actor_id=a.id
+               AND unixepoch(i.occurred_at)>=unixepoch('now','-30 days')) AS notices,
+           EXISTS (SELECT 1 FROM archive_relationship rel
+             WHERE rel.identity_id=a.identity_id AND rel.actor_id=a.id AND rel.followed_by=1) AS mutual
+    FROM archive_follow f
+    JOIN archive_actor a ON a.id=f.actor_id AND a.identity_id=f.identity_id
+    LEFT JOIN archive_seed s ON s.identity_id=f.identity_id AND s.actor_id=f.actor_id
+    WHERE f.identity_id=? AND a.last_status_at IS NOT NULL
+      AND unixepoch(a.last_status_at)>=unixepoch('now','-90 days')
+), tiered AS (
+    SELECT *, CASE WHEN mutual AND notices>0 THEN 1 WHEN mutual THEN 2
+                   WHEN unixepoch(last_status_at)>=unixepoch('now','-30 days') THEN 3 ELSE 4 END AS tier
+    FROM person
+), rested AS (
+    SELECT *, CASE WHEN tier<=2 THEN 86400 WHEN tier=3 THEN 259200 ELSE 604800 END AS rest FROM tiered
+), due AS (
+    SELECT * FROM rested WHERE fetched_at IS NULL OR fetched_at<=unixepoch()-rest
+)";
+
 fn people_category_clause(category: &str) -> Result<String> {
     let followed = "EXISTS (SELECT 1 FROM archive_follow f WHERE f.identity_id=a.identity_id AND f.actor_id=a.id)";
     let mutual = "EXISTS (SELECT 1 FROM archive_relationship rel WHERE rel.identity_id=a.identity_id AND rel.actor_id=a.id AND rel.followed_by=1)";
@@ -820,13 +850,10 @@ impl Archive {
         .bind::<BigInt, _>(account)
         .get_result::<CountRow>(&mut self.db)?
         .count;
-        let seed_eligible = sql_query(
-            "SELECT COUNT(*) AS count FROM archive_follow f JOIN archive_actor a ON a.id=f.actor_id AND a.identity_id=f.identity_id
-             LEFT JOIN archive_seed s ON s.identity_id=f.identity_id AND s.actor_id=f.actor_id
-             WHERE f.identity_id=? AND a.last_status_at IS NOT NULL
-               AND unixepoch(a.last_status_at)>=unixepoch('now','-90 days')
-               AND (s.fetched_at IS NULL OR s.fetched_at<=unixepoch('now','-7 days'))"
-        ).bind::<BigInt, _>(account).get_result::<CountRow>(&mut self.db)?.count;
+        let seed_eligible = sql_query(format!("{SEED_DUE} SELECT COUNT(*) AS count FROM due"))
+            .bind::<BigInt, _>(account)
+            .get_result::<CountRow>(&mut self.db)?
+            .count;
         let jobs = sql_query("SELECT job,api_calls,saved_items,last_outcome,updated_at FROM archive_collector_count WHERE identity_id=? ORDER BY job")
             .bind::<BigInt, _>(account).load::<CollectorCount>(&mut self.db)?;
         Ok(CollectionStatus {
@@ -849,18 +876,118 @@ impl Archive {
         let account = self
             .identity_for_handle(credential, server)?
             .context("archive identity unavailable")?;
-        Ok(sql_query(
-            "SELECT a.id AS actor_id,a.remote_id AS remote_id FROM archive_follow f
-             JOIN archive_actor a ON a.id=f.actor_id AND a.identity_id=f.identity_id
-             LEFT JOIN archive_seed s ON s.identity_id=f.identity_id AND s.actor_id=f.actor_id
-             WHERE f.identity_id=? AND a.last_status_at IS NOT NULL
-               AND unixepoch(a.last_status_at)>=unixepoch('now','-90 days')
-               AND (s.fetched_at IS NULL OR s.fetched_at<=unixepoch('now','-7 days'))
-             ORDER BY a.last_status_at DESC,a.id LIMIT 1",
-        )
+        Ok(sql_query(format!(
+            "{SEED_DUE} SELECT actor_id,remote_id FROM due
+             ORDER BY fetched_at IS NOT NULL,
+                      CASE WHEN fetched_at IS NULL THEN tier ELSE 0 END,
+                      CASE WHEN fetched_at IS NULL THEN -notices ELSE 0 END,
+                      CAST(unixepoch()-fetched_at AS REAL)/rest DESC,
+                      last_status_at DESC, actor_id LIMIT 1"
+        ))
         .bind::<BigInt, _>(account)
         .get_result(&mut self.db)
         .optional()?)
+    }
+
+    pub fn follows(&mut self, credential: &str, server: &str, remote_id: &str) -> Result<bool> {
+        let account = self
+            .identity_for_handle(credential, server)?
+            .context("archive identity unavailable")?;
+        Ok(sql_query(
+            "SELECT COUNT(*) AS count FROM archive_follow f
+             JOIN archive_actor a ON a.id=f.actor_id AND a.identity_id=f.identity_id
+             WHERE f.identity_id=? AND a.remote_id=?",
+        )
+        .bind::<BigInt, _>(account)
+        .bind::<diesel::sql_types::Text, _>(remote_id)
+        .get_result::<CountRow>(&mut self.db)?
+        .count
+            > 0)
+    }
+
+    /// The reader just followed someone: list them without waiting for a rescan.
+    /// False when nobody by that id is known yet and no account was given.
+    pub fn note_follow(
+        &mut self,
+        credential: &str,
+        server: &str,
+        remote: &str,
+        account: Option<&FollowedActor>,
+    ) -> Result<bool> {
+        let identity = self
+            .identity_for_handle(credential, server)?
+            .context("archive identity unavailable")?;
+        self.db.transaction::<_, anyhow::Error, _>(|db| {
+            if let Some(actor) = account {
+                sql_query(
+                    "INSERT INTO archive_actor(identity_id,remote_id,acct,display_name,last_status_at,profile_json)
+                     VALUES(?,?,?,?,?,?)
+                     ON CONFLICT(identity_id,remote_id) DO UPDATE SET acct=excluded.acct,
+                       display_name=excluded.display_name,
+                       last_status_at=COALESCE(excluded.last_status_at,last_status_at),
+                       profile_json=COALESCE(excluded.profile_json,profile_json)",
+                )
+                .bind::<BigInt, _>(identity)
+                .bind::<diesel::sql_types::Text, _>(&actor.remote_id)
+                .bind::<diesel::sql_types::Text, _>(&actor.acct)
+                .bind::<diesel::sql_types::Text, _>(&actor.display_name)
+                .bind::<diesel::sql_types::Nullable<diesel::sql_types::Text>, _>(&actor.last_status_at)
+                .bind::<diesel::sql_types::Nullable<diesel::sql_types::Text>, _>(&actor.profile_json)
+                .execute(db)?;
+            }
+            // The running or last scan's generation, so that scan keeps the row.
+            let added = sql_query(
+                "INSERT INTO archive_follow(identity_id,actor_id,seen_generation)
+                 SELECT a.identity_id,a.id,
+                        COALESCE((SELECT generation FROM archive_follow_scan s WHERE s.identity_id=a.identity_id),1)
+                 FROM archive_actor a WHERE a.identity_id=? AND a.remote_id=?
+                 ON CONFLICT(identity_id,actor_id) DO UPDATE SET seen_generation=excluded.seen_generation",
+            )
+            .bind::<BigInt, _>(identity)
+            .bind::<diesel::sql_types::Text, _>(remote)
+            .execute(db)?;
+            Ok(added > 0)
+        })
+    }
+
+    /// The reader unfollowed or blocked someone. Their saved posts stay.
+    pub fn note_unfollow(&mut self, credential: &str, server: &str, remote: &str) -> Result<()> {
+        let identity = self
+            .identity_for_handle(credential, server)?
+            .context("archive identity unavailable")?;
+        sql_query(
+            "DELETE FROM archive_follow WHERE identity_id=? AND actor_id IN
+             (SELECT id FROM archive_actor WHERE identity_id=? AND remote_id=?)",
+        )
+        .bind::<BigInt, _>(identity)
+        .bind::<BigInt, _>(identity)
+        .bind::<diesel::sql_types::Text, _>(remote)
+        .execute(&mut self.db)?;
+        Ok(())
+    }
+
+    /// A page the reader asked for is as fresh as one the queue fetched, so the
+    /// queue need not ask for it again. Nothing to note for a stranger.
+    pub fn note_account_fetched(
+        &mut self,
+        credential: &str,
+        server: &str,
+        remote_id: &str,
+    ) -> Result<()> {
+        let account = self
+            .identity_for_handle(credential, server)?
+            .context("archive identity unavailable")?;
+        sql_query(
+            "INSERT INTO archive_seed(identity_id,actor_id)
+             SELECT f.identity_id,f.actor_id FROM archive_follow f
+             JOIN archive_actor a ON a.id=f.actor_id AND a.identity_id=f.identity_id
+             WHERE f.identity_id=? AND a.remote_id=?
+             ON CONFLICT(identity_id,actor_id) DO UPDATE SET fetched_at=unixepoch()",
+        )
+        .bind::<BigInt, _>(account)
+        .bind::<diesel::sql_types::Text, _>(remote_id)
+        .execute(&mut self.db)?;
+        Ok(())
     }
 
     pub fn finish_seed_page(
@@ -2657,6 +2784,131 @@ mod tests {
                 .unwrap()
                 .remote_id,
             "10"
+        );
+    }
+
+    #[test]
+    fn follows_made_here_are_listed_at_once_and_survive_a_running_rescan() {
+        let mut archive = Archive::open(Path::new(":memory:")).unwrap();
+        let (handle, origin) = ("native-mastodon:a", "https://example.com");
+        archive
+            .observe(handle, origin, "verify", r#"{"id":"1"}"#)
+            .unwrap();
+        let account = archive
+            .identity_for_handle(handle, origin)
+            .unwrap()
+            .unwrap();
+        // Nobody by that id yet, and nothing to list them by.
+        assert!(!archive.note_follow(handle, origin, "77", None).unwrap());
+        let (generation, _) = archive.follow_scan(account).unwrap();
+        let person = FollowedActor {
+            remote_id: "77".into(),
+            acct: "new@far.example".into(),
+            display_name: "New".into(),
+            last_status_at: None,
+            profile_json: None,
+        };
+        assert!(archive
+            .note_follow(handle, origin, "77", Some(&person))
+            .unwrap());
+        assert!(archive.follows(handle, origin, "77").unwrap());
+        // The scan's last page, read before the follow, does not drop them.
+        archive
+            .save_follow_page(account, generation, origin, &[], None)
+            .unwrap();
+        assert_eq!(archive.profiles(handle, origin).unwrap().profiles.len(), 1);
+        archive.note_unfollow(handle, origin, "77").unwrap();
+        assert!(!archive.follows(handle, origin, "77").unwrap());
+        assert!(archive
+            .profiles(handle, origin)
+            .unwrap()
+            .profiles
+            .is_empty());
+    }
+
+    #[test]
+    fn seed_queue_takes_closest_people_first_and_lets_them_rest_less() {
+        let mut archive = Archive::open(Path::new(":memory:")).unwrap();
+        let (handle, origin) = ("native-mastodon:a", "https://example.com");
+        let now = sql_query("SELECT strftime('%Y-%m-%dT%H:%M:%SZ','now','-1 day') AS value")
+            .get_result::<TextRow>(&mut archive.db)
+            .unwrap()
+            .value;
+        archive
+            .observe(handle, origin, "verify", r#"{"id":"1"}"#)
+            .unwrap();
+        let account = archive
+            .identity_for_handle(handle, origin)
+            .unwrap()
+            .unwrap();
+        let (generation, _) = archive.follow_scan(account).unwrap();
+        let person = |id: &str| FollowedActor {
+            remote_id: id.into(),
+            acct: id.into(),
+            display_name: id.into(),
+            last_status_at: Some(now.clone()),
+            profile_json: None,
+        };
+        archive
+            .save_follow_page(
+                account,
+                generation,
+                origin,
+                &[person("10"), person("11"), person("12")],
+                None,
+            )
+            .unwrap();
+        archive
+            .observe(
+                handle,
+                origin,
+                "relationships",
+                r#"[{"id":"11","followed_by":true},{"id":"12","followed_by":true}]"#,
+            )
+            .unwrap();
+        archive
+            .observe(
+                handle,
+                origin,
+                "notifications",
+                &format!(
+                    r#"[{{"id":"n1","type":"follow","created_at":"{now}","account":{{"id":"12","acct":"12"}}}}]"#
+                ),
+            )
+            .unwrap();
+        let next = |archive: &mut Archive| {
+            archive
+                .next_seed_candidate(handle, origin)
+                .unwrap()
+                .map(|candidate| (candidate.actor_id, candidate.remote_id))
+        };
+        for expected in ["12", "11", "10"] {
+            let (actor, remote) = next(&mut archive).unwrap();
+            assert_eq!(remote, expected);
+            archive.finish_seed_page(handle, origin, actor, 1).unwrap();
+        }
+        assert!(next(&mut archive).is_none());
+        // Two days on, mutuals are due again and the plain follow is not.
+        sql_query("UPDATE archive_seed SET fetched_at=unixepoch('now','-2 days')")
+            .execute(&mut archive.db)
+            .unwrap();
+        assert_eq!(
+            archive
+                .collection_status(handle, origin)
+                .unwrap()
+                .seed_eligible,
+            2
+        );
+        // A page the reader opened counts; a stranger's is nothing to record.
+        archive.note_account_fetched(handle, origin, "11").unwrap();
+        archive.note_account_fetched(handle, origin, "999").unwrap();
+        assert_eq!(next(&mut archive).unwrap().1, "12");
+        assert_eq!(
+            archive
+                .collection_status(handle, origin)
+                .unwrap()
+                .seed_eligible,
+            1
         );
     }
 

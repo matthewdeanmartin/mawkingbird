@@ -1,3 +1,4 @@
+import { saveBlob } from '../../platform/files/save-file';
 import { Component, computed, input, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { CodeBlock, codeFileName, extractCodeBlocks, languageLabel } from './code-fences';
@@ -112,12 +113,7 @@ export class CodeMenuItems {
 
   protected save(row: Row, event: Event): void {
     event.stopPropagation();
-    const url = URL.createObjectURL(new Blob([row.block.code], { type: 'text/plain' }));
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = row.file;
-    anchor.click();
-    setTimeout(() => URL.revokeObjectURL(url), 0);
+    saveBlob(new Blob([row.block.code], { type: 'text/plain' }), row.file);
     this.close(event);
   }
 

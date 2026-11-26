@@ -68,6 +68,7 @@
     "allow-local-ai-set-endpoint",
     "allow-local-ai-request",
     "allow-check-for-update",
+    "allow-save-export",
     "allow-media-save-image",
     "allow-media-copy-image",
     "allow-ocr-available",

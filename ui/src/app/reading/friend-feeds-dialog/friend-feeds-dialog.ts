@@ -1,3 +1,4 @@
+import { saveBlob } from '../../platform/files/save-file';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { BulkFollowConfirmation } from '../../accounts/bulk-follow-confirmation';
 import { DatePipe } from '@angular/common';
@@ -390,12 +391,7 @@ export class FriendFeedsDialog {
       return;
     }
     const blob = new Blob([opml], { type: 'text/x-opml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = opmlFilename();
-    anchor.click();
-    URL.revokeObjectURL(url);
+    saveBlob(blob, opmlFilename());
   }
 
   /**

@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Account } from '../../platform/api/models';
 import { Auth } from '../../platform/session/auth';
+import { ScreenShare } from '../../shell/screen-share/screen-share';
 import { Drafts } from '../drafts';
 import { DraftSources } from './draft-sources';
 import { DraftsRailCard, RAIL_DRAFTS, resetDraftsRailLoads } from './drafts-rail-card';
@@ -65,6 +66,24 @@ describe('DraftsRailCard', () => {
     expect(rows[0].getAttribute('href')).toMatch(/^\/home\?draft=/);
     expect(host.textContent).toContain('5 waiting');
     expect(host.querySelector('a.more')?.getAttribute('href')).toBe('/drafts');
+  });
+
+  it('removes draft previews and counts during screen sharing and restores them afterwards', () => {
+    TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
+    saveDraft('Private unfinished announcement');
+    const screenShare = TestBed.inject(ScreenShare);
+    screenShare.set(true);
+    const fixture = render();
+    const host = fixture.nativeElement as HTMLElement;
+    expect(host.querySelector('section')).toBeNull();
+    expect(host.textContent).not.toContain('Private unfinished announcement');
+    screenShare.set(false);
+    fixture.detectChanges();
+    expect(host.textContent).toContain('Private unfinished announcement');
+    screenShare.set(true);
+    fixture.detectChanges();
+    expect(host.querySelector('section')).toBeNull();
+    expect(host.textContent).not.toContain('Private unfinished announcement');
   });
 
   it('asks Anonymous’s server for nothing', () => {

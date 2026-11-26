@@ -6,7 +6,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { catchError, defer, map, throwError } from 'rxjs';
-import { invokeSocial } from './native-social-http';
+import { invokeSocial } from './native-invoke';
 
 interface Result {
   status: number;

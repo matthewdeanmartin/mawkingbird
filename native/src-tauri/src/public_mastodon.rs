@@ -28,8 +28,16 @@ pub struct PublicResponse {
     pub body: String,
 }
 
-fn numeric(value: &str) -> bool {
-    !value.is_empty() && value.bytes().all(|c| c.is_ascii_digit())
+fn public_id(value: &str) -> bool {
+    !value.is_empty()
+        && !matches!(
+            value,
+            "verify_credentials" | "update_credentials" | "relationships" | "familiar_followers"
+        )
+        && value.len() <= 128
+        && value
+            .bytes()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, b'-' | b'_'))
 }
 
 fn public_path(path: &str) -> bool {
@@ -57,11 +65,13 @@ fn public_path(path: &str) -> bool {
     }
     let parts: Vec<_> = path.trim_start_matches('/').split('/').collect();
     match parts.as_slice() {
-        ["api", "v1", "accounts", id] | ["api", "v1", "statuses", id] => numeric(id),
+        ["api", "v1", "accounts", id] | ["api", "v1", "statuses", id] => public_id(id),
         ["api", "v1", "accounts", id, "statuses" | "followers" | "following" | "featured_tags" | "endorsements"] => {
-            numeric(id)
+            public_id(id)
         }
-        ["api", "v1", "statuses", id, "context"] => numeric(id),
+        ["api", "v1", "statuses", id, "context" | "reblogged_by" | "favourited_by"] => {
+            public_id(id)
+        }
         ["api", "v1", "timelines", "tag", tag] => {
             !tag.is_empty() && !tag.to_ascii_lowercase().contains("%2f")
         }
@@ -340,12 +350,17 @@ pub(crate) async fn read_json(mut response: reqwest::Response) -> Result<PublicR
 pub async fn public_mastodon_get(url: String) -> Result<PublicResponse, Failure> {
     let url = validate_url(&url)
         .inspect_err(|e| crate::diagnostics::record("public_read", e.kind, None))?;
-    let _permit = REQUESTS.try_acquire().map_err(|_| {
-        failure(
-            "busy",
-            "Too many simultaneous public requests; retry shortly.",
-        )
-    })?;
+    // Queue briefly, as account reads do, instead of failing a burst.
+    let _permit = tokio::time::timeout(Duration::from_secs(10), REQUESTS.acquire())
+        .await
+        .ok()
+        .and_then(Result::ok)
+        .ok_or_else(|| {
+            failure(
+                "busy",
+                "Too many simultaneous public requests; retry shortly.",
+            )
+        })?;
     let result = tokio::time::timeout(Duration::from_secs(15), fetch(url))
         .await
         .map_err(|_| failure("network", "Mastodon request timed out."))?;
@@ -465,5 +480,40 @@ mod tests {
         for ip in ["1.1.1.1", "8.8.8.8", "2606:4700:4700::1111"] {
             assert!(public_ip(ip.parse().unwrap()), "{ip}");
         }
+    }
+}
+
+#[cfg(test)]
+mod opaque_id_tests {
+    use super::*;
+    #[test]
+    fn public_lists_and_opaque_ids_stay_scoped() {
+        for id in ["123", "01JABCDEFG123456789", "abc-def_12"] {
+            for suffix in ["", "/context", "/reblogged_by", "/favourited_by"] {
+                assert!(validate_url(&format!(
+                    "https://example.com/api/v1/statuses/{id}{suffix}?limit=20&max_id=01JABC"
+                ))
+                .is_ok());
+            }
+            for suffix in [
+                "",
+                "/statuses",
+                "/followers",
+                "/following",
+                "/featured_tags",
+            ] {
+                assert!(
+                    validate_url(&format!("https://example.com/api/v1/accounts/{id}{suffix}"))
+                        .is_ok()
+                );
+            }
+        }
+        for id in ["a%2Fb", "a%3Fb", "a.b", "%00", ""] {
+            assert!(validate_url(&format!(
+                "https://example.com/api/v1/statuses/{id}/favourited_by"
+            ))
+            .is_err());
+        }
+        assert!(validate_url("https://example.com/api/v1/statuses/abc/delete").is_err());
     }
 }

@@ -13,6 +13,7 @@ mod connectors;
 mod diagnostics;
 mod feed_encoding;
 mod feeds;
+mod file_export;
 mod github_reader;
 mod hugo;
 mod images;
@@ -200,6 +201,7 @@ pub fn run() {
             local_ai::local_ai_set_endpoint,
             local_ai::local_ai_request,
             updates::check_for_update,
+            file_export::save_export,
             media_save::media_save_image,
             media_save::media_copy_image,
             ocr::ocr_available,

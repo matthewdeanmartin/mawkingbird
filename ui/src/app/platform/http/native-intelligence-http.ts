@@ -5,7 +5,7 @@ import {
   HttpResponse,
 } from '@angular/common/http';
 import { defer, map, catchError, throwError } from 'rxjs';
-import { invokeSocial } from './native-social-http';
+import { invokeSocial } from './native-invoke';
 
 /** Translation requests retain the shared chunking, quota and language-pair logic. */
 export const nativeIntelligenceInterceptor: HttpInterceptorFn = (request, next) => {

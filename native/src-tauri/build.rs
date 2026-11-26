@@ -64,6 +64,7 @@ fn main() {
             "local_ai_set_endpoint",
             "local_ai_request",
             "check_for_update",
+            "save_export",
             "media_save_image",
             "media_copy_image",
             "ocr_available",

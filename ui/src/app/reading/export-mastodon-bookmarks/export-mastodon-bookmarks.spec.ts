@@ -65,8 +65,8 @@ describe('BookmarksExportWorkbench', () => {
     readAll(): Promise<void>;
     stop(): void;
     setMode(mode: string): void;
-    download(): void;
-    save(html: string, filename: string): void;
+    download(): Promise<void>;
+    save(html: string, filename: string): Promise<boolean>;
   };
 
   beforeEach(() => {
@@ -109,11 +109,11 @@ describe('BookmarksExportWorkbench', () => {
     fixture.detectChanges();
     expect(root.textContent).toContain('3 bookmarks, 2 sharing a link.');
 
-    const save = vi.spyOn(wb, 'save').mockImplementation(() => undefined);
+    const save = vi.spyOn(wb, 'save').mockResolvedValue(true);
     wb.setMode('links');
     fixture.detectChanges();
     expect(root.textContent).toContain('Download 2 bookmarks');
-    wb.download();
+    await wb.download();
     const [html, filename] = save.mock.calls[0];
     expect(filename).toMatch(/^mastodon-bookmarks-links-\d{4}-\d{2}-\d{2}\.html$/);
     expect(html).toContain('HREF="https://blog.example/a"');

@@ -133,15 +133,13 @@ try {
   await signed.getByRole('dialog', { name: 'Data activity' }).getByText('0 posts saved from 0 profiles').waitFor();
   await signed.getByRole('dialog', { name: 'Data activity' }).getByRole('button', { name: 'Close' }).click();
   await signed.getByRole('link', { name: 'Open full profile' }).click();
-  await signed.locator('app-profile .profile-archive-actions').waitFor();
-  assert.equal(await signed.getByRole('button', { name: 'Fetch latest posts' }).count(), 1);
-  const beforeFetch = await signed.evaluate(() => window.nativeCalls);
-  assert(beforeFetch.some(({ command }) => command === 'archive_account_posts'));
-  assert(!beforeFetch.some(({ command }) => command === 'archive_fetch_account_page'));
-  await signed.getByRole('button', { name: 'Fetch latest posts' }).click();
-  await signed.waitForFunction(() => window.nativeCalls.some(({ command }) => command === 'archive_fetch_account_page'));
+  // One profile is one ordinary request: read from the server, not the archive.
+  await signed.waitForFunction(() => window.nativeCalls.some(({ command, payload }) =>
+    command === 'mastodon_account_get' && new URL(payload.url).pathname === '/api/v1/accounts/55/statuses'));
+  const profileCalls = await signed.evaluate(() => window.nativeCalls);
+  assert(!profileCalls.some(({ command }) => command === 'archive_account_posts'));
   assert.deepEqual(signedErrors, [], 'signed-in archive routes must not throw');
-  console.log('PASS: signed-in Native Profiles left rail and Data activity dialog work; person-page history fetch waits for its button.');
+  console.log('PASS: signed-in Native Profiles left rail and Data activity dialog work; a person page reads the server.');
   await signed.close();
   console.log('Scope: Chromium with mocked IPC; does not certify actual Tauri/WebView permissions or OS browser launch.');
 } finally {

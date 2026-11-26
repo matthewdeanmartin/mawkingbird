@@ -52,6 +52,9 @@ fn name(value: &str) -> bool {
 fn required_scope(method: &str, path: &str) -> Option<&'static str> {
     let parts: Vec<_> = path.strip_prefix("/api/")?.split('/').collect();
     Some(match (method, parts.as_slice()) {
+        // Reuse attachments when redrafting: update their alt text and focal point.
+        // Creating/uploading media remains outside this command.
+        ("PUT", ["v1", "media", m]) if id(m) => "write:media",
         ("POST", ["v1", "statuses"]) => "write:statuses",
         ("PUT" | "DELETE", ["v1", "statuses", s]) if id(s) => "write:statuses",
         ("POST", ["v1", "statuses", s, action]) if id(s) => match *action {
@@ -221,6 +224,16 @@ async fn observe(app: tauri::AppHandle, handle: String, target: &Url, method: &s
             )
             .await;
         }
+        ("POST", ["api", "v1", "accounts", account, "follow" | "unfollow" | "block"]) => {
+            crate::archive::observe_follow(
+                app,
+                handle,
+                target.origin().ascii_serialization(),
+                (*account).to_string(),
+                body.to_string(),
+            )
+            .await;
+        }
         ("POST", ["api", "v1", "statuses"]) | ("PUT", ["api", "v1", "statuses", _]) => {
             let Ok(value) = serde_json::from_str::<Value>(body) else {
                 return;
@@ -310,6 +323,7 @@ mod tests {
         for (method, path) in [
             ("POST", "/api/v1/statuses"),
             ("PUT", "/api/v1/statuses/1"),
+            ("PUT", "/api/v1/media/1"),
             ("DELETE", "/api/v1/statuses/1"),
             ("DELETE", "/api/v1/statuses/01HXYZABC"),
             ("POST", "/api/v1/statuses/1/reblog"),
@@ -381,6 +395,11 @@ mod tests {
             ("POST", "/api/v1/apps"),
             ("POST", "/api/v1/accounts"),
             ("POST", "/api/v2/media"),
+            ("POST", "/api/v1/media"),
+            ("DELETE", "/api/v1/media/1"),
+            ("PUT", "/api/v1/media/"),
+            ("PUT", "/api/v1/media/a%2Fb"),
+            ("PUT", "/api/v1/media/1?access_token=x"),
             ("POST", "/api/v1/admin/accounts/1/action"),
             ("DELETE", "/api/v1/accounts/1"),
             ("DELETE", "/api/v1/statuses"),
@@ -441,6 +460,11 @@ mod tests {
             Some("reauthorize")
         );
         assert_eq!(kind(delete.0, delete.1, "write:statuses"), None);
+        assert_eq!(kind("PUT", "/api/v1/media/1", "write:media"), None);
+        assert_eq!(kind("PUT", "/api/v1/media/1", "write"), None);
+        for scopes in ["read", "write:statuses", "follow"] {
+            assert_eq!(kind("PUT", "/api/v1/media/1", scopes), Some("reauthorize"));
+        }
         assert_eq!(kind(delete.0, delete.1, "follow"), Some("reauthorize"));
         assert_eq!(kind("POST", "/api/v1/accounts/1/follow", "follow"), None);
         assert_eq!(kind("POST", "/api/v1/statuses/1/translate", "read"), None);
@@ -457,7 +481,7 @@ mod tests {
                 let address = listener.local_addr().unwrap();
                 let server = tokio::spawn(async move {
                     let mut seen = Vec::new();
-                    for _ in 0..3 {
+                    for _ in 0..4 {
                         let (mut socket, _) = listener.accept().await.unwrap();
                         let mut bytes = vec![0u8; 8192];
                         let mut filled = 0;
@@ -494,10 +518,13 @@ mod tests {
                 post.idempotency_key = Some("key-1".into());
                 let mut list = input("PUT", "");
                 list.form = Some(vec![("title".into(), "A & B".into())]);
+                let mut media = input("PUT", "");
+                media.body = Some(serde_json::json!({"description":"A fox in snow", "focus":"0.2,-0.3"}));
                 for (write, path) in [
                     (input("DELETE", ""), "/api/v1/statuses/9"),
                     (post, "/api/v1/statuses"),
                     (list, "/api/v1/lists/3"),
+                    (media, "/api/v1/media/7"),
                 ] {
                     let client = reqwest::Client::builder().no_proxy().build().unwrap();
                     let target = Url::parse(&format!("http://{address}{path}")).unwrap();
@@ -518,6 +545,11 @@ mod tests {
                 assert!(seen[1].ends_with(r#"{"status":"hello"}"#));
                 assert!(seen[2].starts_with("PUT /api/v1/lists/3 HTTP/1.1"));
                 assert!(seen[2].ends_with("title=A+%26+B"));
+                assert!(seen[3].starts_with("PUT /api/v1/media/7 HTTP/1.1"));
+                let (_, body) = seen[3].split_once("\r\n\r\n").unwrap();
+                assert_eq!(serde_json::from_str::<Value>(body).unwrap(), serde_json::json!({
+                    "description": "A fox in snow", "focus": "0.2,-0.3"
+                }));
             });
     }
 }

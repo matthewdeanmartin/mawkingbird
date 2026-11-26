@@ -1,3 +1,4 @@
+import { saveFile } from '../../platform/files/save-file';
 import { AppDialogs } from '../../shell/app-dialogs';
 import { DestroyRef } from '@angular/core';
 import { PlusPaywall } from '../../accounts/mawkingbird/plus-paywall';
@@ -246,16 +247,14 @@ export class SettingsConfig {
     return JSON.stringify(exportPortableConfig(localStorage, this.includePrivate()), null, 2);
   }
 
-  protected download(): void {
+  protected async download(): Promise<void> {
     this.clearNotice();
     try {
       const blob = new Blob([this.exportText()], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = `mockingbird-config-${new Date().toISOString().slice(0, 10)}.json`;
-      anchor.click();
-      URL.revokeObjectURL(url);
+      if (
+        !(await saveFile(blob, `mockingbird-config-${new Date().toISOString().slice(0, 10)}.json`))
+      )
+        return;
       this.exportMessage.set('Configuration downloaded.');
     } catch (error: unknown) {
       this.diagnostics.error('Config', 'download:error', error);

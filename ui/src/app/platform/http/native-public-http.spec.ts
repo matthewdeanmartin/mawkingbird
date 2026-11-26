@@ -197,6 +197,26 @@ it('does not turn the like action into arbitrary writes, query injection, or ano
   expect(invoke).not.toHaveBeenCalledWith('mastodon_favourite', expect.anything());
 });
 
+it('carries redraft attachment descriptions and focal points through the native account command', async () => {
+  const url = 'https://mastodon.social/api/v1/media/7';
+  const body = { description: 'A fox in snow', focus: '0.2,-0.3' };
+  invoke.mockResolvedValue({
+    status: 200,
+    body: JSON.stringify({ id: '7', ...body }),
+    headers: {},
+  });
+  const response = await firstValueFrom(
+    TestBed.inject(HttpClient).put(url, body, {
+      headers: { Authorization: 'Bearer native-mastodon:reference' },
+    }),
+  );
+  expect(response).toEqual({ id: '7', ...body });
+  expect(invoke).toHaveBeenCalledWith('mastodon_account_write', {
+    handle: 'native-mastodon:reference',
+    input: { url, method: 'PUT', body },
+  });
+});
+
 it('sends every other account write through the reviewed command with the opaque handle', async () => {
   const http = TestBed.inject(HttpClient);
   const handle = 'native-mastodon:reference';

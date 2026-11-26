@@ -1,3 +1,4 @@
+import { saveBlob } from '../../platform/files/save-file';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { FeedSyncButton } from '../../accounts/mawkingbird/feed-sync-button';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -266,12 +267,7 @@ export class SettingsRss implements OnInit {
     const blob = new Blob([buildOpml(this.subs.feeds())], {
       type: 'text/x-opml+xml;charset=utf-8',
     });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = opmlFilename();
-    anchor.click();
-    URL.revokeObjectURL(url);
+    saveBlob(blob, opmlFilename());
   }
 
   /**

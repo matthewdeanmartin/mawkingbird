@@ -1,3 +1,4 @@
+import { saveFile } from '../../platform/files/save-file';
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
@@ -167,21 +168,20 @@ export class BookmarksExportWorkbench {
     if (value === 'posts' || value === 'unwrapped' || value === 'links') this.mode.set(value);
   }
 
-  protected download(): void {
+  protected async download(): Promise<void> {
     const entries = exportEntries(this.bookmarks(), this.mode(), this.server.baseUrl());
     const html = bookmarkFileHtml(entries, 'Mastodon bookmarks');
     const date = new Date().toISOString().slice(0, 10);
-    this.save(html, `mastodon-bookmarks-${this.mode()}-${date}.html`);
-    this.downloaded.set(true);
+    try {
+      this.downloaded.set(await this.save(html, `mastodon-bookmarks-${this.mode()}-${date}.html`));
+    } catch {
+      this.downloaded.set(false);
+      globalThis.alert('Could not save the bookmarks export.');
+    }
   }
 
   /** Seam so tests can capture the file without the browser downloading it. */
-  protected save(html: string, filename: string): void {
-    const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = filename;
-    anchor.click();
-    URL.revokeObjectURL(url);
+  protected save(html: string, filename: string): Promise<boolean> {
+    return saveFile(new Blob([html], { type: 'text/html;charset=utf-8' }), filename);
   }
 }

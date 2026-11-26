@@ -183,6 +183,9 @@ function services() {
       token: signal<string | null>("preview-token"),
     },
     api: {
+      // The left rail loads its two server-backed draft sources on idle.
+      allScheduledStatuses: () => of([]),
+      getAccountStatuses: () => of([]),
       relationships: () => of([state.relationship()]).pipe(delay(100)),
       follow: () =>
         defer(() => {

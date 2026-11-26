@@ -1,16 +1,19 @@
-import { nativeIntelligenceInterceptor } from './native-intelligence-http';
-import { nativePublishingInterceptor } from './native-publishing-http';
 import { InjectionToken } from '@angular/core';
 import { nativePublicInterceptor, nativePublicFetch } from './native-public-http';
-import { nativeSocialInterceptor, invokeSocial } from './native-social-http';
+import { invokeSocial } from './native-invoke';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { defer, switchMap } from 'rxjs';
 import type { ConnectivityLevel } from './connector-types';
 
-export const PLATFORM_HTTP_INTERCEPTORS = [
-  nativeIntelligenceInterceptor,
-  nativePublishingInterceptor,
-  nativeSocialInterceptor,
-  nativePublicInterceptor,
-];
+/** Optional connector handlers load on the first external request, not at startup. */
+const optionalNativeTransport: HttpInterceptorFn = (request, next) => {
+  if (new URL(request.urlWithParams, location.href).origin === location.origin)
+    return next(request);
+  return defer(() => import('./native-optional-interceptors')).pipe(
+    switchMap(({ intercept }) => intercept(request, next)),
+  );
+};
+export const PLATFORM_HTTP_INTERCEPTORS = [optionalNativeTransport, nativePublicInterceptor];
 
 /** Native live-note updates use bounded polling, with no renderer WebSocket/token. */
 export const PLATFORM_MISSKEY_POLL:
