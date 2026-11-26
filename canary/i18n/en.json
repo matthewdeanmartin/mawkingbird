@@ -1021,11 +1021,10 @@
     "bskyPacks": "Looking for packs people made on Bluesky?",
     "bskyPacksLink": "Bluesky starter packs",
     "byThem": "Curated by {{curator}}",
-    "byUs": "Ours",
+    "byUs": "Mawkingbird curated",
     "filter.label": "Filter these",
     "filter.none": "Nothing here matches “{{query}}”. Clear the filter to see every set.",
     "filter.placeholder": "photography, science, news…",
-    "intro": "Each of these is a ready-made set of accounts. Open one to see who is in it, sample what they post, and follow the whole set in one go — or pick through it.",
     "languageNote": "Browse any language here. This does not change the languages in your settings. Older sets with no language label are also shown.",
     "languages": "Pack languages",
     "moreWays": "Looking for something more specific?",
@@ -1681,8 +1680,11 @@
   "exploreMore": {
     "kits.byTopic": "By topic, with hashtags and servers as well:",
     "kits.communities": "Communities",
-    "kits.starterCollections": "Starter collections",
-    "people.heading": "More ways to find people"
+    "people.directory": "Directory",
+    "people.more": "More",
+    "people.search": "Search",
+    "people.suggested": "Suggested",
+    "people.tabs": "Ways to find people"
   },
   "exploreTags": {
     "byTopic": "Hashtags by topic, with people to follow:",
@@ -1692,7 +1694,7 @@
     "followAria": "Follow #{{tag}}",
     "followFailed": "Couldn’t follow #{{tag}}.",
     "following": "Following",
-    "group.similar": "Like the ones you follow",
+    "group.similar": "Tags similar to what you follow now",
     "group.trending": "Trending on your server",
     "group.yours": "You post with these",
     "lede": "Follow a hashtag and posts on that topic come into Home, from people you don’t follow yet.",
@@ -1701,10 +1703,15 @@
     "noTags.feeds": "Open Feeds",
     "noTags.misskey": "Misskey doesn’t follow hashtags into Home. Antennas and channels do that job.",
     "noTags.search": "Search posts",
-    "none": "No suggestions right now. Try a hashtag you care about in the box below.",
+    "noneHere": "Nothing to suggest here right now.",
     "peopleThisWeek.one": "{{count}} person this week",
     "peopleThisWeek.other": "{{count}} people this week",
     "suggested": "Suggested",
+    "tab.featured": "Featured",
+    "tab.more": "More",
+    "tab.similar": "Similar",
+    "tab.yours": "Yours",
+    "tabs": "Hashtag sections",
     "title": "Hashtags"
   },
   "external": {
@@ -1912,6 +1919,7 @@
     "units.hour": "h"
   },
   "feedDoctor": {
+    "cached": "Checked {{time}}. Results are kept for an hour; Check again takes a fresh sample.",
     "checkAgain": "Check again",
     "checkupLede": "How well your Home is built: enough people, enough hashtags, and not too much written by machines.",
     "checkupTitle": "Feed checkup",
