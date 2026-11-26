@@ -1331,7 +1331,6 @@
     "notifications.muteFailed": "@{{acct}} को म्यूट नहीं कर सके।",
     "notifications.newAccounts": "मेरे लिए नए अकाउंट",
     "notifications.noMatch": "कोई सूचना फ़िल्टर से मेल नहीं खाती।",
-    "notifications.notifications": "सूचनाएँ",
     "notifications.noUnfamiliarAccounts": "अब तक लोड सूचनाओं में कोई अनजान अकाउंट नहीं।",
     "notifications.openChat": "💬 चैट में खोलें",
     "notifications.others.one": "और {{count}} अन्य",

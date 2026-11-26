@@ -1331,7 +1331,6 @@
     "notifications.muteFailed": "Не удалось игнорировать @{{acct}}.",
     "notifications.newAccounts": "Новые для меня учётные записи",
     "notifications.noMatch": "Нет уведомлений, соответствующих фильтрам.",
-    "notifications.notifications": "Уведомления",
     "notifications.noUnfamiliarAccounts": "Среди загруженных уведомлений пока нет незнакомых учётных записей.",
     "notifications.openChat": "💬 Открыть в чате",
     "notifications.others.one": "и ещё {{count}}",

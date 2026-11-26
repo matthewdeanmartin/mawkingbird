@@ -1496,7 +1496,6 @@
     "notifications.muteFailed": "@{{acct}} konnte nicht stummgeschaltet werden.",
     "notifications.newAccounts": "Für mich neue Konten",
     "notifications.noMatch": "Keine Benachrichtigungen entsprechen den Filtern.",
-    "notifications.notifications": "Benachrichtigungen",
     "notifications.noUnfamiliarAccounts": "Unter den bisher geladenen Benachrichtigungen sind keine unbekannten Konten.",
     "notifications.openChat": "💬 Im Chat öffnen",
     "notifications.others.one": "und {{count}} weitere Person",
