@@ -1855,7 +1855,6 @@
     "notifications.muteFailed": "Не вдалося приглушити @{{acct}}.",
     "notifications.newAccounts": "Нові для мене облікові записи",
     "notifications.noMatch": "Жодне сповіщення не відповідає фільтрам.",
-    "notifications.notifications": "Сповіщення",
     "notifications.noUnfamiliarAccounts": "Серед завантажених сповіщень немає незнайомих облікових записів.",
     "notifications.openChat": "💬 Відкрити чат",
     "notifications.others.one": "та ще {{count}}",

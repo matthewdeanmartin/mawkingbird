@@ -1556,7 +1556,6 @@
     "notifications.muteFailed": "@{{acct}}をミュートできませんでした。",
     "notifications.newAccounts": "新しく出会ったアカウント",
     "notifications.noMatch": "フィルターに一致する通知はありません。",
-    "notifications.notifications": "通知",
     "notifications.noUnfamiliarAccounts": "これまでに読み込んだ通知に、見慣れないアカウントはありません。",
     "notifications.openChat": "💬 チャットで開く",
     "notifications.others.one": "と他{{count}}件",

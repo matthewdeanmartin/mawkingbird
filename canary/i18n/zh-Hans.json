@@ -2883,7 +2883,6 @@
     "notifications.muteFailed": "无法将 @{{acct}} 静音。",
     "notifications.newAccounts": "尚未认识的账号",
     "notifications.noMatch": "没有通知符合筛选条件。",
-    "notifications.notifications": "通知",
     "notifications.noUnfamiliarAccounts": "当前加载的通知中没有不熟悉的账号。",
     "notifications.openChat": "💬 在聊天室中打开",
     "notifications.others.one": "以及其他 {{count}} 位用户",

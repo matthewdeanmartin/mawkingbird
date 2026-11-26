@@ -2178,7 +2178,6 @@
     "notifications.muteFailed": "Impossibile silenziare @{{acct}}.",
     "notifications.newAccounts": "Account nuovi per me",
     "notifications.noMatch": "Nessuna notifica corrisponde ai filtri.",
-    "notifications.notifications": "Notifiche",
     "notifications.noUnfamiliarAccounts": "Nessun account sconosciuto tra le notifiche caricate finora.",
     "notifications.openChat": "💬 Apri nella chat",
     "notifications.others.one": "e {{count}} altro",

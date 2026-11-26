@@ -928,7 +928,6 @@
     "notifications.muteFailed": "Tidak dapat membisukan @{{acct}}.",
     "notifications.newAccounts": "Akun Baru buat Saya",
     "notifications.noMatch": "Tidak ada notifikasi yang cocok dengan filter.",
-    "notifications.notifications": "Notifikasi",
     "notifications.noUnfamiliarAccounts": "Tidak ada akun asing di notifikasi yang sudah dimuat.",
     "notifications.openChat": "💬 Buka di chat",
     "notifications.others.one": "dan {{count}} lainnya",

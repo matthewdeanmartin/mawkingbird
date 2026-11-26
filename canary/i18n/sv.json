@@ -768,7 +768,6 @@
     "notifications.muteFailed": "Kunde inte tysta @{{acct}}.",
     "notifications.newAccounts": "Konton som är nya för mig",
     "notifications.noMatch": "Inga aviseringar matchar filtren.",
-    "notifications.notifications": "Aviseringar",
     "notifications.noUnfamiliarAccounts": "Inga okända konton i aviseringarna som lästs in hittills.",
     "notifications.openChat": "💬 Öppna i chatten",
     "notifications.others.one": "och {{count}} annan",
