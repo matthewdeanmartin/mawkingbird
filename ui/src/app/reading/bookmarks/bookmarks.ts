@@ -3,7 +3,7 @@ import { MbButton } from '../../design-system/button/button';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { LibraryPanel } from '../read/library-panel/library-panel';
+import { LibraryKind, LibraryPanel } from '../read/library-panel/library-panel';
 import { firstValueFrom, map, Observable, skip } from 'rxjs';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Api } from '../../platform/api/api';
@@ -37,6 +37,10 @@ const PAGE_SIZE = 20;
 // i18n pages.bookmarks.tab.history: History
 // i18n pages.bookmarks.raindrop: Raindrop
 // i18n pages.bookmarks.readLater: Read Later
+// i18n pages.bookmarks.shelf.rss: Shelf: saved articles
+// i18n pages.bookmarks.shelf.rssHint: Articles saved for later, in progress, and finished. Use the book button on an article to save it here.
+// i18n pages.bookmarks.shelf.posts: Shelf: saved long posts
+// i18n pages.bookmarks.shelf.postsHint: Long posts and storms saved for later, in progress, and finished. Use the book button on a post to save it here.
 // i18n pages.bookmarks.readLaterHint: Your Reader library: articles saved for later, in progress, and finished. Use the book button on an article or long post to save it here.
 // i18n pages.bookmarks.filterLabel: Filter bookmarks
 // i18n pages.bookmarks.filter: Filter
@@ -148,6 +152,9 @@ export class Bookmarks implements OnInit {
     }
   });
 
+  /** A one-kind Shelf (RSS or Blog), shown as its own page rather than a Bookmarks tab. */
+  protected readonly shelfKind = signal<LibraryKind>('all');
+
   ngOnInit(): void {
     // Followed, not read once: the top menu links here as Read later
     // (`?tab=read-later`) and Saved (`?view=video`), and either can be pressed
@@ -175,6 +182,12 @@ export class Bookmarks implements OnInit {
       this.providerChosen = true;
       this.selectProvider(provider);
     }
+    // RSS's Shelf and Blog's Shelf: the Reader library, one kind each
+    // (`?tab=read-later&kind=rss|posts`; owner, 2026-11-26).
+    const kind = params.get('kind');
+    this.shelfKind.set(
+      provider === 'read-later' && (kind === 'rss' || kind === 'posts') ? kind : 'all',
+    );
     // Only `video` is linkable; leaving it falls back to All, other views stay put.
     const view = params.get('view');
     if (view === 'video') this.view.set('video');

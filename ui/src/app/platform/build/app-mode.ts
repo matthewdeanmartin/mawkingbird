@@ -62,11 +62,12 @@ export function modeForUrl(url: string): AppMode | null {
   if (path === '/rss' || path.startsWith('/rss/') || path === '/settings/rss') {
     return 'rss';
   }
-  if (path === '/videos' || path.startsWith('/videos/')) {
+  // Watch is Video's page wherever it was opened from (owner, 2026-11-26): it
+  // gets Video's menu rather than whichever mode was showing before.
+  if (path === '/videos' || path.startsWith('/videos/') || path === '/watch') {
     return 'video';
   }
   if (
-    path === '/watch' ||
     path === '/bookmarks' ||
     path.startsWith('/read/') ||
     // Write and Drafts serve Fedi and Blog alike, so they keep the mode you came from.

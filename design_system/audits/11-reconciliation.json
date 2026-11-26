@@ -3705,7 +3705,7 @@
     {
       "file": "ui/src/app/shell/even-more/even-more.ts",
       "disposition": "adopted scope",
-      "nextStep": "Even more dialog: shared Dialog (Escape, backdrop, focus back to the … menu button) with outline small Buttons for the rarely used tools and plain router links for the sections from even-more-links.ts. New entries are data; keep every control closing the dialog."
+      "nextStep": "Even more dialog: shared Dialog (Escape, backdrop, focus back to the … menu button); every section is a plain list of links, the two tool actions (screen share, onboarding) as link-styled buttons (owner, 2026-11-26). New entries are data in even-more-links.ts; keep every control closing the dialog."
     },
     {
       "file": "ui/src/app/discovery/explore-people/explore-people.ts",

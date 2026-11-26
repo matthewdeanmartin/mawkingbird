@@ -38,8 +38,6 @@ describe('modeForUrl', () => {
   });
 
   it.each([
-    '/watch',
-    '/watch?youtube=abc',
     '/bookmarks?tab=read-later',
     '/bookmarks?view=video',
     '/read/rss:abc',
@@ -77,6 +75,11 @@ describe('modeForUrl', () => {
       expect(modeForUrl(url)).toBeNull();
     },
   );
+
+  it('puts Watch in Video, wherever it was opened from', () => {
+    expect(modeForUrl('/watch')).toBe('video');
+    expect(modeForUrl('/watch?youtube=abc')).toBe('video');
+  });
 
   it('puts Unbird pages in the Unbird mode', () => {
     expect(modeForUrl('/unbird')).toBe('unbird');

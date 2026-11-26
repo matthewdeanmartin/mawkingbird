@@ -718,7 +718,6 @@ describe('Shell account switching', () => {
     expect(moreRows(fixture)).toEqual([
       'Settings',
       'Likes, bookmarks, history',
-      'My server',
       'Videos',
       'Watch parties',
       'Write',
@@ -726,6 +725,7 @@ describe('Shell account switching', () => {
       'Find Friends',
       'Invites',
       'Even more…',
+      'My server',
       'Site News',
       'Help',
       // This test build is not canary, and has the mock server's tooling.
@@ -841,13 +841,13 @@ describe('Shell app-mode nav', () => {
     expect(rows).toEqual([
       'Settings',
       'Bookmarks, history',
-      'My server',
       'Videos',
       'Watch parties',
       'Write',
       'Find Friends',
       'Invites',
       'Even more…',
+      'My server',
       'Site News',
       'Help',
       // This test build is not canary, and has the mock server's tooling.
@@ -892,7 +892,7 @@ describe('Shell app-mode nav', () => {
       '/home',
       '/rss',
       '/rss?filter=starred',
-      '/bookmarks?tab=read-later',
+      '/bookmarks?tab=read-later&kind=rss',
       '/rss?view=kits',
       '/settings/rss',
       ...login,
@@ -938,7 +938,7 @@ describe('Shell app-mode nav', () => {
       // Blog second: the switcher is how people find it (spec/blog-mode.md).
       '/blog',
       // Crafting your feed (spec/sprint/explore-2026-11.md).
-      '/explore/feed',
+      '/explore/tags',
       '/rss',
       '/videos',
       '/singles',

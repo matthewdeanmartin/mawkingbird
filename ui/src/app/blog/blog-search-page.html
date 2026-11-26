@@ -40,9 +40,10 @@
 @if (query()) {
   <section aria-labelledby="blog-search-mastodon">
     <h2 id="blog-search-mastodon" class="section">{{ 'blog.search.mastodon' | transloco }}</h2>
-    <p class="note">
-      {{ (search.byText ? 'blog.search.mastodon.text' : 'blog.search.mastodon.tags') | transloco }}
-    </p>
+    @if (!search.byText) {
+      <!-- Without an account the search is by hashtag: that changes what to type. -->
+      <p class="note">{{ 'blog.search.mastodon.tags' | transloco }}</p>
+    }
     @if (searching()) {
       <p class="coverage" role="status">{{ 'blog.search.searching' | transloco }}</p>
     } @else if (failed()) {

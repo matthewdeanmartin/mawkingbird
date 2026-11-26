@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseFeed } from '../../../lib/rss/rss-parser';
-import { Status } from '../../platform/api/models';
 import {
   feedVideos,
-  mergeFollowedPosts,
   newestVideos,
   sortVideos,
   channelHashtag,
@@ -64,28 +62,13 @@ describe('Video feed chronology', () => {
   });
 });
 
-describe('mergeFollowedPosts', () => {
+describe('feedVideos', () => {
   const channel = { id: 'UCy0tKL1T7wFoYcxCe0xjN6Q', title: 'TC', enabled: true };
   const feed = parseFeed(
     `<feed xmlns="http://www.w3.org/2005/Atom"><title>TC</title>` +
       `<entry><title>Lamps</title><link href="https://www.youtube.com/watch?v=aaaaaaaaaaa"/><published>2026-11-01T00:00:00Z</published></entry>` +
       `<entry><title>A short</title><link href="https://www.youtube.com/shorts/sssssssssss"/><published>2026-11-02T00:00:00Z</published></entry></feed>`,
   );
-  const post = (id: string, videoId: string, at: string, extra: Partial<Status> = {}): Status =>
-    ({
-      id,
-      created_at: at,
-      content: '',
-      media_attachments: [],
-      account: { id: `a${id}`, username: `u${id}`, display_name: `User ${id}` },
-      card: {
-        url: `https://www.youtube.com/watch?v=${videoId}`,
-        title: `Video ${videoId}`,
-        author_name: 'Someone',
-        image: null,
-      },
-      ...extra,
-    }) as unknown as Status;
 
   it('marks Shorts from the feed', () => {
     const items = feedVideos(feed, channel);
@@ -93,38 +76,5 @@ describe('mergeFollowedPosts', () => {
       ['Lamps', false],
       ['A short', true],
     ]);
-  });
-
-  it('adds who shared an upload, and posts about other videos as their own items', () => {
-    const items = feedVideos(feed, channel);
-    const merged = mergeFollowedPosts(items, [
-      post('1', 'aaaaaaaaaaa', '2026-11-03T00:00:00Z'),
-      post('2', 'aaaaaaaaaaa', '2026-11-04T00:00:00Z'),
-      post('3', 'bbbbbbbbbbb', '2026-11-05T00:00:00Z'),
-      { ...post('4', 'zzzzzzzzzzz', '2026-11-06T00:00:00Z'), card: null } as Status,
-    ]);
-    const lamps = merged.find((item) => item.title === 'Lamps')!;
-    expect(lamps.sharedBy!.map((p) => p.id)).toEqual(['2', '1']);
-    const other = merged.find((item) => item.source.videoId === 'bbbbbbbbbbb')!;
-    expect(other).toMatchObject({
-      channelId: '',
-      channelTitle: 'Someone',
-      title: 'Video bbbbbbbbbbb',
-      publishedAt: '2026-11-05T00:00:00Z',
-    });
-    expect(merged).toHaveLength(3);
-    // The input list is not modified.
-    expect(items[0].sharedBy).toBeUndefined();
-  });
-
-  it('reads a boost as the booster sharing the boosted video', () => {
-    const boost = {
-      ...post('9', 'x', '2026-11-07T00:00:00Z'),
-      card: null,
-      reblog: post('8', 'ccccccccccc', '2026-11-06T00:00:00Z'),
-    } as Status;
-    const [item] = mergeFollowedPosts([], [boost]);
-    expect(item.source.videoId).toBe('ccccccccccc');
-    expect(item.sharedBy![0].id).toBe('9');
   });
 });

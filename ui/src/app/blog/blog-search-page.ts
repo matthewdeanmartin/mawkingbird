@@ -15,12 +15,11 @@ import { BlogPost, blogPostId } from './blog-classifier';
 import { BlogHit, BlogSearch } from './blog-search';
 import { parseBlogHandle } from './blog-source';
 
-// i18n blog.search.title: Search
+// i18n blog.search.title: Search for Long Posts
 // i18n blog.search.label: Search long posts
 // i18n blog.search.go: Search
 // i18n blog.search.opened: In blogs you've opened
 // i18n blog.search.mastodon: On Mastodon
-// i18n blog.search.mastodon.text: From what your server lets you search: usually your own posts, posts you've interacted with, and people who allow search.
 // i18n blog.search.mastodon.tags: Without an account this searches hashtags, so use words people tag with.
 // i18n blog.search.searching: Searching…
 // i18n blog.search.none: No storms or long posts found.

@@ -24,8 +24,9 @@ import { blogVerdict, bodyTitle } from './blog-write';
 // i18n blog.landing.glance.loading: Reading your posts…
 // i18n blog.landing.glance.failed: Couldn't read your posts just now.
 // i18n blog.landing.mine: View your blog
+// i18n blog.landing.shelf: Your shelf: saved long posts
 // i18n blog.landing.recent: Your recent posts
-// i18n blog.landing.recent.none: Nothing yet. A storm or a long post will show up here.
+// i18n blog.landing.recent.none: Nothing yet
 // i18n blog.landing.comments: {{count}} comments
 // i18n blog.landing.drafts: Drafts
 // i18n blog.landing.drafts.ready: ready to post as a blog post

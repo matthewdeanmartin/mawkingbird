@@ -27,7 +27,6 @@ import { RadioHeader } from './radio-header';
 import { SinglesTabs } from './section-tabs';
 
 // i18n podcastKits.title: Podcast starter kits
-// i18n podcastKits.lead: Pick a subject to find podcasters on Mastodon. See what they share before you follow.
 // i18n podcastKits.snapshot: Media seen when these kits were built: {{date}}
 // i18n podcastKits.loading: Loading podcast kits…
 // i18n podcastKits.unavailable: Podcast kits are unavailable right now.
@@ -66,12 +65,6 @@ import { SinglesTabs } from './section-tabs';
     <section class="page">
       <app-radio-header [heading]="'podcastKits.title' | transloco" />
       <app-singles-tabs current="starter" />
-      <p class="lead">{{ 'podcastKits.lead' | transloco }}</p>
-      @if (index(); as catalogue) {
-        <p class="snapshot">
-          {{ 'podcastKits.snapshot' | transloco: { date: dateOf(catalogue) } }}
-        </p>
-      }
       @if (failed()) {
         <p role="alert">{{ 'podcastKits.unavailable' | transloco }}</p>
       } @else {
@@ -211,6 +204,12 @@ import { SinglesTabs } from './section-tabs';
             }
           </ul>
         }
+      }
+      <!-- Last, under the final category: when the kits' media was looked at. -->
+      @if (index(); as catalogue) {
+        <p class="snapshot">
+          {{ 'podcastKits.snapshot' | transloco: { date: dateOf(catalogue) } }}
+        </p>
       }
     </section>
   `,

@@ -36,6 +36,14 @@
     </section>
   }
 
+  <!-- Blog's Shelf: long posts saved with the book button (the Reader library's
+       post half; RSS's Shelf holds the articles). -->
+  <p class="shelf-link">
+    <a routerLink="/bookmarks" [queryParams]="{ tab: 'read-later', kind: 'posts' }">{{
+      'blog.landing.shelf' | transloco
+    }}</a>
+  </p>
+
   @if (hasDrafts()) {
     <section class="panel">
       <h2>{{ 'blog.landing.drafts' | transloco }}</h2>

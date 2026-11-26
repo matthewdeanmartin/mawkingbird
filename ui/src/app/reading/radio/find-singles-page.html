@@ -11,12 +11,6 @@
     <app-singles-tabs current="find" />
   }
 
-  @if (!started() && !row) {
-    <p class="lead">
-      <a routerLink="/singles/starter-kits">{{ 'singles.tab.starter' | transloco }}</a>
-    </p>
-  }
-
   <mb-tabs
     [label]="'findSingles.where' | transloco"
     [selected]="source()"

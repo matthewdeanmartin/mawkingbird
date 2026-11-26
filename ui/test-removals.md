@@ -26,6 +26,21 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-26: Video Subscriptions are YouTube only
+
+- test: src/app/reading/videos/video-items.spec.ts :: mergeFollowedPosts adds who shared an upload, and posts about other videos as their own items
+  reason: dead-code
+  why: The owner made Video's Subscriptions YouTube only (2026-11-26); fediverse video posts are the Posts tab's, so the merge that folded them in was removed.
+
+- test: src/app/reading/videos/video-items.spec.ts :: mergeFollowedPosts reads a boost as the booster sharing the boosted video
+  reason: dead-code
+  why: Same removal: no fediverse posts are merged into Subscriptions any more.
+
+- test: src/app/reading/videos/video-items.spec.ts :: mergeFollowedPosts marks Shorts from the feed
+  reason: renamed
+  now: src/app/reading/videos/video-items.spec.ts :: feedVideos marks Shorts from the feed
+  why: It tests feedVideos, not the merge; it moved to a describe named for what it tests.
+
 ## 2026-11-26: Inbox views
 
 - test: src/app/feeds/notifications/notifications.spec.ts :: Notifications collapses every like and boost into one row, with +N since the inbox was last read

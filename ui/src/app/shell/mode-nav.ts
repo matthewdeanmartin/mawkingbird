@@ -169,15 +169,15 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
     },
   ],
   explore: [
-    // Crafting a Home feed worth reading (spec/sprint/explore-2026-11.md): a
-    // checkup of the feed, then the three ways to fix it. Four tabs.
+    // Crafting a Home feed worth reading (spec/sprint/explore-2026-11.md): the
+    // ways to find things to read first (Tags opens the mode), then the
+    // checkup of the feed (owner, 2026-11-26). Four tabs.
     {
-      id: 'feed',
-      labelKey: 'shell.modeNav.explore.feed',
-      // A pulse line: the feed's checkup.
-      icon: 'M3 12h4l2-5 4 10 2-5h6',
-      link: '/explore/feed',
-      active: onPath('/explore/feed'),
+      id: 'tags',
+      labelKey: 'shell.modeNav.explore.tags',
+      icon: 'M5 9h15M4 15h15M10 3 8 21M16 3l-2 18',
+      link: '/explore/tags',
+      active: onPath('/explore/tags'),
     },
     {
       id: 'kits',
@@ -195,11 +195,12 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       active: onPath('/explore/people'),
     },
     {
-      id: 'tags',
-      labelKey: 'shell.modeNav.explore.tags',
-      icon: 'M5 9h15M4 15h15M10 3 8 21M16 3l-2 18',
-      link: '/explore/tags',
-      active: onPath('/explore/tags'),
+      id: 'feed',
+      labelKey: 'shell.modeNav.explore.feed',
+      // A pulse line: the feed's checkup.
+      icon: 'M3 12h4l2-5 4 10 2-5h6',
+      link: '/explore/feed',
+      active: onPath('/explore/feed'),
     },
   ],
   unbird: [
@@ -371,12 +372,13 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
         onPath('/rss')(url) && param(url, 'filter') === 'starred' && param(url, 'view') !== 'kits',
     },
     {
-      // The Reader library (Bookmarks → Read Later), named apart from the list above.
+      // The Reader library's RSS half: saved articles (owner, 2026-11-26). Saved
+      // long posts are Blog's Shelf, linked from Blog's Desk.
       id: 'library',
       labelKey: 'shell.modeNav.rss.library',
       icon: 'M3 5h7a2 2 0 0 1 2 2v13a2 2 0 0 0-2-2H3zM21 5h-7a2 2 0 0 0-2 2v13a2 2 0 0 1 2-2h7z',
       link: '/bookmarks',
-      queryParams: { tab: 'read-later' },
+      queryParams: { tab: 'read-later', kind: 'rss' },
       active: (url) => pathOf(url) === '/bookmarks' && param(url, 'tab') === 'read-later',
     },
     {
@@ -562,7 +564,7 @@ export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
     labelKey: 'shell.modeNav.mode.explore',
     // A compass.
     icon: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M15.5 8.5l-2 5-5 2 2-5z',
-    link: '/explore/feed',
+    link: '/explore/tags',
   },
   unbird: {
     mode: 'unbird',

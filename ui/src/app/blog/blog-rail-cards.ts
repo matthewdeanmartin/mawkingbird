@@ -8,6 +8,8 @@ import { CustomEmojiPipe } from '../publishing/custom-emoji.pipe';
 import { accountRoutePath } from '../accounts/account-route';
 import { BlogContext } from './blog-context';
 import { BlogHistory } from './blog-history';
+import { Auth } from '../platform/session/auth';
+import { qualifiedHandle } from '../accounts/account-handle';
 import { BlogSource } from './blog-source';
 import { blogPostId, BlogPost } from './blog-classifier';
 
@@ -148,12 +150,12 @@ export class BlogMoreCard {
   selector: 'app-blog-recent-card',
   imports: [RouterLink, TranslocoPipe, MbRailCard, MbButton],
   template: `
-    @if (history.visits().length) {
+    @if (others().length) {
       <section mbRailCard class="card">
         <h2 class="card-title">{{ 'blog.rail.recent' | transloco }}</h2>
         <div class="card-body">
           <ul>
-            @for (visit of history.visits(); track visit.handle) {
+            @for (visit of others(); track visit.handle) {
               <li>
                 <a class="row" [routerLink]="['/blog', '@' + visit.handle]">
                   @if (visit.avatar) {
@@ -187,4 +189,11 @@ export class BlogMoreCard {
 })
 export class BlogRecentCard {
   protected readonly history = inject(BlogHistory);
+  private readonly auth = inject(Auth);
+  /** Blogs read lately, without the reader's own: "recently read" means other people's. */
+  protected readonly others = computed(() => {
+    const account = this.auth.account();
+    const own = account ? qualifiedHandle(account)?.toLowerCase() : null;
+    return this.history.visits().filter((visit) => visit.handle !== own);
+  });
 }

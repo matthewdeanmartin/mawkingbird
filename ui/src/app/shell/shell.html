@@ -363,10 +363,6 @@
                   : 'shell.menu.likesBookmarksHistory'
                 ) | transloco
               }}</a>
-              <!-- The server card lives in the right rail, which a phone never shows. -->
-              @if (!auth.isForeignPrimary) {
-                <a routerLink="/server">{{ 'shell.menu.myServer' | transloco }}</a>
-              }
               <!-- Lists and Tags moved to the Feeds landing page's drill-down
                  category list (2 clicks: Feeds -> Lists / Feeds -> Tags) — this
                  menu had no room left. Their routes (/feeds/lists, /feeds/tags)
@@ -418,6 +414,11 @@
               <button type="button" class="menu-button even-more" (click)="openEvenMore($event)">
                 {{ 'shell.menu.evenMore' | transloco }}
               </button>
+              <!-- The server card lives in the right rail, which a phone never shows.
+                   Below Even more, above Site News (owner, 2026-11-26). -->
+              @if (!auth.isForeignPrimary) {
+                <a routerLink="/server">{{ 'shell.menu.myServer' | transloco }}</a>
+              }
 
               <!-- Reading: Site News and Help. ("Docs" next to "Help" read as the same
                thing, so there is no Docs row.) The help site's home links on to

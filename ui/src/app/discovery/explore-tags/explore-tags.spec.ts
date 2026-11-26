@@ -130,11 +130,16 @@ describe('ExploreTags', () => {
       );
       const host = render();
       expect([...host.querySelectorAll('[role="tab"]')].map((t) => t.textContent?.trim())).toEqual([
+        'Trending',
         'Yours',
         'Similar',
-        'Trending',
         'More',
       ]);
+      // It opens on Trending (owner, 2026-11-26).
+      expect(host.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim()).toBe(
+        'Trending',
+      );
+      open('Yours');
       // Yours: your followed hashtags (the Feeds sections), then the ones you post with.
       expect(host.querySelector('app-lists')).not.toBeNull();
       expect(text()).toContain('You post with these');
@@ -161,6 +166,7 @@ describe('ExploreTags', () => {
       vi.spyOn(api, 'featuredTagSuggestions').mockReturnValue(throwError(() => new Error('500')));
       vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
       render();
+      open('Yours');
       expect(text()).toContain('Couldn’t load these.');
       open('Trending');
       expect(names()).toEqual(['#news']);
@@ -174,6 +180,7 @@ describe('ExploreTags', () => {
       const followTag = vi.spyOn(api, 'followTag').mockReturnValue(of(tag('knitting')));
       const refresh = vi.spyOn(Lists.prototype, 'refreshTags');
       render();
+      open('Yours');
       followButton('knitting')!.click();
       expect(followTag).toHaveBeenCalledWith('knitting');
       expect(refresh).toHaveBeenCalled();
@@ -198,11 +205,11 @@ describe('ExploreTags', () => {
       vi.spyOn(api, 'featuredTagSuggestions').mockReturnValue(of([]));
       vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
       render();
-      open('Trending');
+      open('Similar');
       fixture.destroy();
       const host = render();
       expect(host.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim()).toBe(
-        'Trending',
+        'Similar',
       );
     });
   });

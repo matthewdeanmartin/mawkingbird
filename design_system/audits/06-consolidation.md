@@ -3631,3 +3631,12 @@ Reviewed the regenerated inventory: one candidate changed, `notifications.html`
 the digest expand toggles are gone; a shared Navigation tab strip (Conversations | Stats |
 Who | Stream, routed by `?tab=`) sits above the existing filters. Stats and Who reuse
 the existing avatar image and row styles. No new widget.
+
+### 2026-11-26: screen-share clean-up
+
+Reviewed the regenerated inventory: one candidate changed, `even-more.ts` (`shared` 4 to
+1): the Tools row's outline Buttons became a plain list like the other sections, with
+the two actions as link-styled buttons. The other edits in this pass (Explore order,
+Tags opening on Trending, the RSS and Blog Shelf headings and link, Video Subscriptions
+without the fediverse merge, Radio copy, Blog copy, Stats padding) reuse existing controls
+and leave the inventory's counts unchanged. No new widget.

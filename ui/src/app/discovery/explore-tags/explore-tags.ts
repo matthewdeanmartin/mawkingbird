@@ -73,12 +73,12 @@ export type TagsTab = 'yours' | 'similar' | 'trending' | 'more';
 export type MoreTab = 'bundles' | 'featured' | 'relay';
 
 /** The tab last open, kept for the session so Back from a tag page returns to it. */
-let lastTab: TagsTab = 'yours';
+let lastTab: TagsTab = 'trending';
 let lastMoreTab: MoreTab = 'bundles';
 
 /** For tests. */
 export function resetTagsTab(): void {
-  lastTab = 'yours';
+  lastTab = 'trending';
   lastMoreTab = 'bundles';
 }
 
@@ -205,7 +205,7 @@ export class ExploreTags implements OnInit {
   }
 
   /**
-   * Yours | Similar | Trending | More (owner, 2026-11-26): followed hashtags
+   * Trending | Yours | Similar | More (owner, 2026-11-26; opens on Trending): followed hashtags
    * with the ones you post with and bulk import; tags like those; the server's
    * trending ones; then More's own strip, Tag bundles | Featured | Tag relay.
    * "Featured" always means hashtags people pin on their profiles.

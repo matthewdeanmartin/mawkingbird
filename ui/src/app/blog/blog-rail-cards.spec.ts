@@ -1,3 +1,4 @@
+import { Auth } from '../platform/session/auth';
 import { Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -79,5 +80,22 @@ describe('Blog rail cards', () => {
     el.querySelector('button')!.click();
     fixture.detectChanges();
     expect(el.querySelector('section')).toBeNull();
+  });
+
+  it("leaves the reader's own blog out of recently read", async () => {
+    const auth = TestBed.inject(Auth);
+    auth.account.set({
+      id: '9',
+      acct: 'me',
+      username: 'me',
+      url: 'https://home.example/@me',
+    } as Account);
+    const history = TestBed.inject(BlogHistory);
+    history.record({ handle: 'alice@far.example', name: 'Alice', avatar: '' });
+    history.record({ handle: 'me@home.example', name: 'Me', avatar: '' });
+    const { el } = await render(BlogRecentCard);
+    const links = [...el.querySelectorAll('a')].map((a) => a.getAttribute('href'));
+    expect(links).toContain('/blog/@alice@far.example');
+    expect(links).not.toContain('/blog/@me@home.example');
   });
 });

@@ -2020,7 +2020,7 @@ export const routes: Routes = [
       },
       {
         path: 'blog/search',
-        title: 'Search blogs',
+        title: 'Search for Long Posts',
         loadComponent: () => import('./blog/blog-search-page').then((m) => m.BlogSearchPage),
       },
       {

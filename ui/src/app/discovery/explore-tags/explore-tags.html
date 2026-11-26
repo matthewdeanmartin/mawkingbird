@@ -22,6 +22,11 @@
     [selected]="tab()"
     (selectedChange)="select($event)"
   >
+    <ng-template mbTab value="trending" [label]="'exploreTags.tab.trending' | transloco">
+      @if (tab() === 'trending') {
+        <ng-container *ngTemplateOutlet="suggestions; context: { $implicit: group('trending') }" />
+      }
+    </ng-template>
     <ng-template mbTab value="yours" [label]="'exploreTags.tab.yours' | transloco">
       @if (tab() === 'yours') {
         <!-- The Feeds hub's own followed-hashtags list, with its peek box. -->
@@ -37,11 +42,6 @@
     <ng-template mbTab value="similar" [label]="'exploreTags.tab.similar' | transloco">
       @if (tab() === 'similar') {
         <ng-container *ngTemplateOutlet="suggestions; context: { $implicit: group('similar') }" />
-      }
-    </ng-template>
-    <ng-template mbTab value="trending" [label]="'exploreTags.tab.trending' | transloco">
-      @if (tab() === 'trending') {
-        <ng-container *ngTemplateOutlet="suggestions; context: { $implicit: group('trending') }" />
       }
     </ng-template>
     <ng-template mbTab value="more" [label]="'exploreTags.tab.more' | transloco">

@@ -3,7 +3,7 @@ import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { firstValueFrom, map } from 'rxjs';
+import { map } from 'rxjs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { MbAddBox } from '../../design-system/add-box/add-box';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
@@ -25,15 +25,11 @@ import { VideoSubscriptions } from './video-subscriptions';
 import { queueEntry, WatchQueue } from './watch-queue';
 import { YoutubeFeeds, YoutubeSearchItem } from './youtube-feeds';
 import { VideoPlayer } from '../video-player/video-player';
-import { watchParams, youtubeSource } from '../video-player/media-source';
-import { Api } from '../../platform/api/api';
-import { Server } from '../../platform/http/server';
-import { Status } from '../../platform/api/models';
+import { youtubeSource } from '../video-player/media-source';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
 import { VideoSubscriptionsPanel } from './video-subscriptions-panel';
 import {
   feedVideos,
-  mergeFollowedPosts,
   newestVideos,
   sortVideos,
   videoResponseText,
@@ -44,8 +40,6 @@ import {
 // i18n videos.viewLabel: Subscriptions feed
 // i18n videos.shorts: Shorts
 // i18n videos.shortsTitle: Show YouTube Shorts in the feed
-// i18n videos.sharedBy: Shared by {{names}}
-// i18n videos.watchWithReplies: Watch with their replies
 // i18n videos.fromFollows: From people you follow
 // i18n videos.customize: Customize
 // i18n videos.autoLoadWatch: Automatically load YouTube players on Watch
@@ -150,8 +144,6 @@ export class VideosPage {
   protected savedOnly = signal(false);
   /** YouTube Shorts stay out of the feed unless the reader asks (spec/youtube-client.md, S4). */
   protected showShorts = signal(false);
-  private api = inject(Api);
-  private server = inject(Server);
   protected query = '';
   protected searchType: 'video' | 'channel' = 'video';
   protected searching = signal(false);
@@ -235,12 +227,8 @@ export class VideosPage {
     const items: VideoItem[] = [],
       failed: string[] = [];
     let cursor = 0;
-    // Video posts from people you follow join the feed: one page of Home,
-    // signed-in Mastodon only. A failure leaves the subscriptions alone.
-    const followed =
-      this.auth.kind() === 'mastodon' && !this.auth.isAnonymous
-        ? firstValueFrom(this.api.homeTimeline(undefined, 40)).catch((): Status[] => [])
-        : Promise.resolve<Status[]>([]);
+    // YouTube subscriptions only (owner, 2026-11-26): video posts from the
+    // fediverse are the Posts tab's (/videos/fedi), not mixed in here.
     await Promise.all(
       Array.from({ length: Math.min(4, channels.length) }, async () => {
         while (cursor < channels.length) {
@@ -253,9 +241,8 @@ export class VideosPage {
         }
       }),
     );
-    const posts = await followed;
     if (generation !== this.generation) return;
-    this.items.set(newestVideos(mergeFollowedPosts(items, posts)));
+    this.items.set(newestVideos(items));
     this.failed.set(failed);
     this.loading.set(false);
   }
@@ -287,23 +274,6 @@ export class VideosPage {
         }
       : null;
   }
-  /** Up to three people, by display name, who shared this video. */
-  protected sharedNames(item: VideoItem): string {
-    const names = (item.sharedBy ?? []).map((post) => {
-      const account = post.account;
-      return account.display_name || account.username;
-    });
-    const unique = [...new Set(names)];
-    return unique.length > 3
-      ? `${unique.slice(0, 3).join(', ')} +${unique.length - 3}`
-      : unique.join(', ');
-  }
-
-  /** Watch a shared video with the post's replies as its conversation. */
-  protected watchWith(item: VideoItem, post: Status): Record<string, string> {
-    return watchParams(post, item.source, this.server.baseUrl());
-  }
-
   private t(key: string): string {
     return this.transloco.translate(key);
   }

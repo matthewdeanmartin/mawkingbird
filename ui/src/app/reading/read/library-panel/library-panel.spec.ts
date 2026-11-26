@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, RouterLink } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { LibraryPanel } from './library-panel';
+import { LibraryPanel, ofKind } from './library-panel';
 import { ReaderLibrary } from '../reader-library';
 import { ClientPrefs } from '../../../platform/storage/client-prefs';
 
@@ -289,5 +289,37 @@ describe('LibraryPanel navigation and history', () => {
     const link = fixture.debugElement.query(By.directive(RouterLink)).injector.get(RouterLink);
     expect(link.replaceUrl).toBe(false);
     expect(fixture.nativeElement.querySelector('.library-head button')).toBeNull();
+  });
+});
+
+describe('LibraryPanel by kind (RSS Shelf, Blog Shelf)', () => {
+  it('tells saved articles (rss: ids) from saved posts', () => {
+    expect(ofKind('rss:https://feed.example/a.xml::guid', 'rss')).toBe(true);
+    expect(ofKind('rss:https://feed.example/a.xml::guid', 'posts')).toBe(false);
+    expect(ofKind('113456', 'posts')).toBe(true);
+    expect(ofKind('113456', 'rss')).toBe(false);
+    expect(ofKind('113456', 'all')).toBe(true);
+  });
+
+  it('shows one kind, and clearing it leaves the other kind alone', () => {
+    localStorage.clear();
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const library = TestBed.inject(ReaderLibrary);
+    library.open({ id: 'rss:feed::1', url: 'https://example.com/a', title: 'An article' });
+    library.open({ id: '42', url: 'https://social.example/@a/42', title: 'A long post' });
+    const fixture = TestBed.createComponent(LibraryPanel);
+    fixture.componentRef.setInput('kind', 'rss');
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const titles = [...el.querySelectorAll('.rail-feed .name')].map((n) => n.textContent?.trim());
+    expect(titles).toEqual(['An article']);
+    const panel = fixture.componentInstance as unknown as {
+      askClear(t: 'all'): void;
+      confirmClear(): void;
+    };
+    panel.askClear('all');
+    panel.confirmClear();
+    expect(library.has('rss:feed::1')).toBe(false);
+    expect(library.has('42')).toBe(true);
   });
 });

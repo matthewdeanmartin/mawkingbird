@@ -178,25 +178,6 @@
             [showLinks]="false"
             [showTitle]="false"
           />
-          @if (item.sharedBy?.length) {
-            <p class="byline shared-by">
-              @for (post of item.sharedBy!.slice(0, 3); track post.id) {
-                <img
-                  [src]="
-                    (post.reblog ?? post).account.avatar_static ||
-                    (post.reblog ?? post).account.avatar
-                  "
-                  [alt]="''"
-                  width="24"
-                  height="24"
-                />
-              }
-              <span>{{ 'videos.sharedBy' | transloco: { names: sharedNames(item) } }}</span>
-              <a routerLink="/watch" [queryParams]="watchWith(item, item.sharedBy![0])">{{
-                'videos.watchWithReplies' | transloco
-              }}</a>
-            </p>
-          }
           <mb-item-actions iconsWhenNarrow [actions]="card.actions" [label]="item.title" />
         </article>
       } @empty {

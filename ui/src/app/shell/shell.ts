@@ -214,6 +214,9 @@ function isWideUrl(url: string): boolean {
     url === '/watch' ||
     url.startsWith('/watch?') ||
     url.startsWith('/rss') ||
+    // RSS's Shelf keeps RSS's layout (owner, 2026-11-26).
+    (url.startsWith('/bookmarks?') &&
+      new URLSearchParams(url.split('?')[1]?.split('#')[0]).get('kind') === 'rss') ||
     url === '/videos' ||
     url.startsWith('/videos?') ||
     url.startsWith('/videos/search') ||

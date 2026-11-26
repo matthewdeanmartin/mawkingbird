@@ -318,6 +318,12 @@
   margin: 0;
 }
 
+/* Stats sits in the column on its own, not inside a notification row: pad it
+   like the rows so text never touches the column's edge. */
+.stats-posts li {
+  padding: 10px 16px;
+}
+
 .stats-faces {
   display: flex;
   flex-wrap: wrap;

@@ -2,7 +2,6 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { OnboardingLauncher } from '../../accounts/onboarding/onboarding-launcher';
-import { MbButton } from '../../design-system/button/button';
 import { MbDialog } from '../../design-system/dialog/dialog';
 import { FeatureFlags } from '../../platform/build/feature-flags';
 import { Auth } from '../../platform/session/auth';
@@ -12,7 +11,6 @@ import { EVEN_MORE_SECTIONS, EvenMoreLink } from './even-more-links';
 
 // i18n evenMore.title: Even more
 // i18n evenMore.close: Close
-// i18n evenMore.lede: Things used now and then, and direct links to pages that live a few steps down.
 // i18n evenMore.tools: Tools
 
 /**
@@ -26,11 +24,10 @@ import { EVEN_MORE_SECTIONS, EvenMoreLink } from './even-more-links';
  */
 @Component({
   selector: 'app-even-more',
-  imports: [MbButton, MbDialog, RouterLink, TranslocoPipe],
+  imports: [MbDialog, RouterLink, TranslocoPipe],
   template: `
     <mb-dialog
       [title]="'evenMore.title' | transloco"
-      [description]="'evenMore.lede' | transloco"
       [closeLabel]="'evenMore.close' | transloco"
       [closeOnBackdrop]="true"
       [returnFocusTo]="returnFocusTo()"
@@ -38,32 +35,28 @@ import { EVEN_MORE_SECTIONS, EvenMoreLink } from './even-more-links';
     >
       <section class="em-section">
         <h3>{{ 'evenMore.tools' | transloco }}</h3>
-        <div class="em-tools">
-          <button
-            mbButton
-            variant="outline"
-            size="small"
-            type="button"
-            (click)="toggleScreenShare()"
-          >
-            {{
-              (screenShare.enabled() ? 'shell.menu.screenShareOff' : 'shell.menu.screenShareOn')
-                | transloco
-            }}
-          </button>
-          <button mbButton variant="outline" size="small" type="button" (click)="openOnboarding()">
-            {{ 'shell.menu.onboarding' | transloco }}
-          </button>
-          <a
-            mbButton
-            variant="outline"
-            size="small"
-            routerLink="/observability"
-            (click)="closed.emit()"
-          >
-            {{ 'shell.menu.observability' | transloco }}
-          </a>
-        </div>
+        <!-- Plain links, like the sections below (owner, 2026-11-26); the two
+             actions are buttons that look like links. -->
+        <ul class="em-links">
+          <li>
+            <button type="button" class="em-action" (click)="toggleScreenShare()">
+              {{
+                (screenShare.enabled() ? 'shell.menu.screenShareOff' : 'shell.menu.screenShareOn')
+                  | transloco
+              }}
+            </button>
+          </li>
+          <li>
+            <button type="button" class="em-action" (click)="openOnboarding()">
+              {{ 'shell.menu.onboarding' | transloco }}
+            </button>
+          </li>
+          <li>
+            <a routerLink="/observability" (click)="closed.emit()">{{
+              'shell.menu.observability' | transloco
+            }}</a>
+          </li>
+        </ul>
       </section>
       @for (section of sections(); track section.id) {
         <section class="em-section">
@@ -92,10 +85,17 @@ import { EVEN_MORE_SECTIONS, EvenMoreLink } from './even-more-links';
       font-size: 0.95rem;
       margin: 0 0 0.4rem;
     }
-    .em-tools {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+    /* An action in the list reads as a link, like its neighbours. */
+    .em-action {
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--ds-action-text, var(--accent));
+      font: inherit;
+      text-align: left;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+      cursor: pointer;
     }
     .em-links {
       columns: 2 12rem;

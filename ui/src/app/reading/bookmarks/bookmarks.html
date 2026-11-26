@@ -1,36 +1,59 @@
-<mb-toolbar class="provider-tabs" [label]="'pages.bookmarks.provider' | transloco">
-  <button mbToolbarButton [pressed]="provider() === 'native'" (click)="selectProvider('native')">
-    {{ 'pages.bookmarks.tab.bookmarks' | transloco }}
-  </button>
-  @if (!auth.isAnonymous) {
-    <button mbToolbarButton [pressed]="provider() === 'likes'" (click)="selectProvider('likes')">
-      {{ 'pages.bookmarks.tab.likes' | transloco }}
+@if (shelfKind() !== 'all') {
+  <!-- RSS's Shelf or Blog's Shelf: its own page, without the Bookmarks switcher. -->
+  <div class="page-head">
+    {{
+      (shelfKind() === 'rss' ? 'pages.bookmarks.shelf.rss' : 'pages.bookmarks.shelf.posts')
+        | transloco
+    }}
+  </div>
+} @else {
+  <mb-toolbar class="provider-tabs" [label]="'pages.bookmarks.provider' | transloco">
+    <button mbToolbarButton [pressed]="provider() === 'native'" (click)="selectProvider('native')">
+      {{ 'pages.bookmarks.tab.bookmarks' | transloco }}
     </button>
-  }
-  <button mbToolbarButton [pressed]="provider() === 'history'" (click)="selectProvider('history')">
-    {{ 'pages.bookmarks.tab.history' | transloco }}
-  </button>
-  <button
-    mbToolbarButton
-    [pressed]="provider() === 'read-later'"
-    (click)="selectProvider('read-later')"
-  >
-    {{ 'pages.bookmarks.readLater' | transloco }}
-  </button>
-  @if (raindrop.connected()) {
+    @if (!auth.isAnonymous) {
+      <button mbToolbarButton [pressed]="provider() === 'likes'" (click)="selectProvider('likes')">
+        {{ 'pages.bookmarks.tab.likes' | transloco }}
+      </button>
+    }
     <button
       mbToolbarButton
-      [pressed]="provider() === 'raindrop'"
-      (click)="selectProvider('raindrop')"
+      [pressed]="provider() === 'history'"
+      (click)="selectProvider('history')"
     >
-      {{ 'pages.bookmarks.raindrop' | transloco }}
+      {{ 'pages.bookmarks.tab.history' | transloco }}
     </button>
-  }
-</mb-toolbar>
+    <button
+      mbToolbarButton
+      [pressed]="provider() === 'read-later'"
+      (click)="selectProvider('read-later')"
+    >
+      {{ 'pages.bookmarks.readLater' | transloco }}
+    </button>
+    @if (raindrop.connected()) {
+      <button
+        mbToolbarButton
+        [pressed]="provider() === 'raindrop'"
+        (click)="selectProvider('raindrop')"
+      >
+        {{ 'pages.bookmarks.raindrop' | transloco }}
+      </button>
+    }
+  </mb-toolbar>
+}
 
 @if (provider() === 'read-later') {
-  <p class="read-later-intro muted">{{ 'pages.bookmarks.readLaterHint' | transloco }}</p>
-  <app-library-panel [embedded]="true" />
+  <p class="read-later-intro muted">
+    {{
+      (shelfKind() === 'rss'
+        ? 'pages.bookmarks.shelf.rssHint'
+        : shelfKind() === 'posts'
+          ? 'pages.bookmarks.shelf.postsHint'
+          : 'pages.bookmarks.readLaterHint'
+      ) | transloco
+    }}
+  </p>
+  <app-library-panel [embedded]="true" [kind]="shelfKind()" />
 } @else if (provider() === 'likes') {
   <app-favourites />
 } @else if (provider() === 'history') {

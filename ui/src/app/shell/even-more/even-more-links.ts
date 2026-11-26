@@ -29,7 +29,10 @@ export interface EvenMoreSection {
 }
 
 // i18n evenMore.section.explore: Explore
-// i18n evenMore.section.feeds: Feeds and writing
+// i18n evenMore.section.feeds: Feeds
+// i18n evenMore.section.write: Write
+// i18n evenMore.link.write: Write
+// i18n evenMore.link.scheduled: Scheduled posts
 // i18n evenMore.section.diagnostics: Diagnostics
 // i18n evenMore.link.feedCheckup: Feed checkup
 // i18n evenMore.link.kits: Starter kits
@@ -37,7 +40,6 @@ export interface EvenMoreSection {
 // i18n evenMore.link.hashtags: Find hashtags
 // i18n evenMore.link.lists: Lists
 // i18n evenMore.link.followedTags: Followed hashtags
-// i18n evenMore.link.feedDoctor: Feed Doctor
 // i18n evenMore.link.drafts: Drafts
 // i18n evenMore.link.pastes: Pastes
 // i18n evenMore.link.links: Links
@@ -63,8 +65,21 @@ export const EVEN_MORE_SECTIONS: readonly EvenMoreSection[] = [
     links: [
       { id: 'lists', labelKey: 'evenMore.link.lists', link: '/feeds/lists' },
       { id: 'followed-tags', labelKey: 'evenMore.link.followedTags', link: '/feeds/tags' },
-      { id: 'feed-doctor', labelKey: 'evenMore.link.feedDoctor', link: '/feed-doctor' },
+    ],
+  },
+  {
+    // Writing has its own section (owner, 2026-11-26): it is not a kind of feed.
+    id: 'write',
+    titleKey: 'evenMore.section.write',
+    links: [
+      { id: 'write', labelKey: 'evenMore.link.write', link: '/write', flag: 'write' },
       { id: 'drafts', labelKey: 'evenMore.link.drafts', link: '/drafts' },
+      {
+        id: 'scheduled',
+        labelKey: 'evenMore.link.scheduled',
+        link: '/schedule-mastodon-posts',
+        requires: 'mastodon',
+      },
       { id: 'pastes', labelKey: 'evenMore.link.pastes', link: '/pastes', flag: 'pastebin' },
       { id: 'links', labelKey: 'evenMore.link.links', link: '/links', flag: 'links' },
     ],

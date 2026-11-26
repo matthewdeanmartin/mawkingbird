@@ -62,6 +62,14 @@ const SHELVES: readonly { id: Shelf; labelKey: string }[] = [
  * store. Mixing view state into a store that is shaped for a later sync is how
  * a sync conflict becomes "my laptop closed the panel on my phone".
  */
+/** RSS articles, long posts, or both. */
+export type LibraryKind = 'all' | 'rss' | 'posts';
+
+/** Saved RSS articles keep their reader id, `rss:<feed item>`; posts keep theirs. */
+export function ofKind(id: string, kind: LibraryKind): boolean {
+  return kind === 'all' || (kind === 'rss') === id.startsWith('rss:');
+}
+
 @Component({
   selector: 'app-library-panel',
   imports: [MbReaderLibrary, MbPostAction, RouterLink, TranslocoPipe],
@@ -76,6 +84,12 @@ export class LibraryPanel {
   readonly currentId = input('');
   /** A full-width Bookmarks destination, with normal back navigation and no Close action. */
   readonly embedded = input(false);
+  /**
+   * Which saved things to show: RSS articles (ids `rss:…`), long posts (every
+   * other id), or both. RSS's Shelf and Blog's Shelf are this one library,
+   * filtered (owner, 2026-11-26).
+   */
+  readonly kind = input<LibraryKind>('all');
 
   readonly closed = output<void>();
   /** A document was chosen from the list; the reader closes the panel so it can be read. */
@@ -104,10 +118,15 @@ export class LibraryPanel {
     })),
   );
 
-  protected readonly total = this.library.total;
+  /** Saved things of this panel's kind, across shelves. */
+  protected readonly total = computed(() =>
+    this.kind() === 'all'
+      ? this.library.total()
+      : this.shelves().reduce((n, shelf) => n + shelf.rows.length, 0),
+  );
 
   private stableRows(shelf: Shelf): ReturnType<ReaderLibrary['shelf']> {
-    const rows = this.library.shelf(shelf);
+    const rows = this.library.shelf(shelf).filter((row) => ofKind(row.id, this.kind()));
     const byId = new Map(rows.map((row) => [row.id, row]));
     const retained = this.rowOrder[shelf].filter((id) => byId.has(id));
     const retainedIds = new Set(retained);
@@ -193,7 +212,12 @@ export class LibraryPanel {
 
   protected confirmClear(): void {
     const target = this.confirmingClear();
-    if (target === 'all') this.library.clear();
+    if (this.kind() !== 'all') {
+      // A filtered Shelf clears only what it shows; the other kind stays.
+      const shelves =
+        target === 'all' ? this.shelves() : this.shelves().filter((s) => s.id === target);
+      for (const shelf of shelves) for (const row of shelf.rows) this.library.remove(row.id);
+    } else if (target === 'all') this.library.clear();
     else if (target) this.library.clearShelf(target);
     this.confirmingClear.set(null);
   }

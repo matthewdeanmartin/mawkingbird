@@ -43,7 +43,9 @@ describe('EvenMore', () => {
 
   it('offers the rarely used tools on top', () => {
     const host = setUp();
-    const tools = [...host.querySelectorAll('.em-tools > *')].map((el) => el.textContent?.trim());
+    const tools = [...host.querySelectorAll('.em-section:first-of-type li')].map((el) =>
+      el.textContent?.trim(),
+    );
     expect(tools).toEqual(['Start screen share mode', 'Onboarding', 'Observability']);
   });
 
@@ -58,12 +60,7 @@ describe('EvenMore', () => {
   it('lists Explore and the rows squeezed out of the … menu', () => {
     const links = hrefs(setUp());
     expect(links).toEqual(
-      expect.arrayContaining([
-        '/explore/feed',
-        '/feeds/lists',
-        '/feed-doctor',
-        '/storage-diagnostics',
-      ]),
+      expect.arrayContaining(['/explore/feed', '/feeds/lists', '/drafts', '/storage-diagnostics']),
     );
   });
 
@@ -86,7 +83,7 @@ describe('EvenMore', () => {
 
   it('toggles screen share mode and closes', () => {
     const host = setUp();
-    (host.querySelector('.em-tools button') as HTMLButtonElement).click();
+    (host.querySelector('.em-action') as HTMLButtonElement).click();
     expect(TestBed.inject(ScreenShare).enabled()).toBe(true);
     expect(closed).toBe(1);
   });
@@ -98,4 +95,18 @@ describe('EvenMore', () => {
     (host.querySelector('.em-links a') as HTMLAnchorElement).click();
     expect(closed).toBe(1);
   });
+});
+
+it('keeps writing in its own section, and Feed Doctor out of Feeds', () => {
+  TestBed.configureTestingModule({
+    providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+  });
+  TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
+  const fixture = TestBed.createComponent(EvenMore);
+  fixture.detectChanges();
+  const host = fixture.nativeElement as HTMLElement;
+  const titles = [...host.querySelectorAll('.em-section h3')].map((h) => h.textContent?.trim());
+  expect(titles).toEqual(['Tools', 'Explore', 'Feeds', 'Write', 'Diagnostics']);
+  expect(host.querySelector('a[href="/feed-doctor"]')).toBeNull();
+  expect(host.textContent).not.toContain('Things used now and then');
 });

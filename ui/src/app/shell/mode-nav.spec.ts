@@ -92,14 +92,14 @@ describe('MODE_NAV', () => {
   it('marks exactly one Explore tab current, and never the signed-out landing', () => {
     const active = (url: string) =>
       MODE_NAV.explore.filter((item) => item.active(url)).map((item) => item.id);
-    expect(MODE_NAV.explore.map((tab) => tab.id)).toEqual(['feed', 'kits', 'people', 'tags']);
+    expect(MODE_NAV.explore.map((tab) => tab.id)).toEqual(['tags', 'kits', 'people', 'feed']);
     expect(active('/explore/feed')).toEqual(['feed']);
     expect(active('/explore/kits?kind=packs')).toEqual(['kits']);
     expect(active('/explore/people?q=alice&type=accounts')).toEqual(['people']);
     expect(active('/explore/tags')).toEqual(['tags']);
     expect(active('/explore')).toEqual([]);
     expect(active('/explore/feeds')).toEqual([]);
-    expect(MODE_ENTRIES.explore.link).toBe('/explore/feed');
+    expect(MODE_ENTRIES.explore.link).toBe('/explore/tags');
   });
 
   it('marks exactly one Unbird tab current', () => {
