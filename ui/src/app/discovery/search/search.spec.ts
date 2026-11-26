@@ -396,6 +396,22 @@ describe('Search', () => {
    * someone typing a topic got a list of people whose *profile text* matched —
    * a plausible answer to a question nobody asked.
    */
+  it('opens on people under Explore, whatever type was picked last', () => {
+    // Explore → People (spec/sprint/explore-2026-11.md) is the people finder.
+    TestBed.inject(Auth).setToken('seed-token');
+    localStorage.setItem('mockingbird_search_last_type', 'statuses');
+    Object.assign(TestBed.inject(ActivatedRoute), {
+      snapshot: { data: { defaultType: 'accounts' } },
+    });
+    expect(internals(setUp()).type()).toBe('accounts');
+  });
+
+  it('keeps the remembered type on plain /search', () => {
+    TestBed.inject(Auth).setToken('seed-token');
+    localStorage.setItem('mockingbird_search_last_type', 'statuses');
+    expect(internals(setUp()).type()).toBe('statuses');
+  });
+
   describe('picking a search type from the query', () => {
     it('reads a leading @ as a person', () => {
       const fixture = setUp();

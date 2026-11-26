@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Account, Status } from '../../platform/api/models';
@@ -13,6 +13,7 @@ import { FeedAggregator } from '../feed-aggregator';
 import { FeedDoctorPage } from './feed-doctor-page';
 import { HomeTimelineFeed } from '../home-timeline-feed';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
+import { FollowState } from '../../accounts/follow-state';
 
 function account(id: string): Account {
   return {
@@ -240,5 +241,88 @@ describe('FeedDoctorPage', () => {
     expect(text()).toContain('hiding 4 already-loaded posts');
     expect(reset).not.toHaveBeenCalled();
     expect(fetch).not.toHaveBeenCalled();
+  });
+
+  // Explore's Feed tab (spec/sprint/explore-2026-11.md, Sprint 2).
+  describe('as a feed checkup', () => {
+    function buttons(): HTMLButtonElement[] {
+      return [
+        ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button'),
+      ];
+    }
+
+    it('keeps its name at /feed-doctor and is a checkup under Explore', async () => {
+      open([post('p', 'a')], []);
+      expect(text()).toContain('Feed Doctor');
+      fixture.destroy();
+      TestBed.inject(ActivatedRoute).snapshot.data = { explore: true };
+      open([post('p', 'a')], []);
+      expect(text()).toContain('Feed checkup');
+      expect(text()).not.toContain('Feed Doctor');
+    });
+
+    it('points a reader who follows no hashtags at Explore → Tags', async () => {
+      open(
+        Array.from({ length: 12 }, (_, i) => post(`p${i}`, `a${i}`)),
+        [],
+      );
+      await vi.waitFor(() => expect(text()).toContain('You don’t follow any hashtags.'));
+      const link = (fixture.nativeElement as HTMLElement).querySelector('a[href="/explore/tags"]');
+      expect(link?.textContent?.trim()).toBe('Find hashtags');
+    });
+
+    it('unfollows a signed-in reader on the server, not in the browser list', async () => {
+      TestBed.inject(Auth).setToken('a-token');
+      const local = TestBed.inject(AnonymousFollows);
+      const unfollowLocal = vi.spyOn(local, 'unfollow');
+      const state = TestBed.inject(FollowState);
+      vi.spyOn(state, 'resolve').mockResolvedValue();
+      vi.spyOn(state, 'status').mockReturnValue('following');
+      const toggle = vi.spyOn(state, 'toggle').mockResolvedValue(true);
+      const aggregator = TestBed.inject(FeedAggregator);
+      vi.spyOn(aggregator, 'reset').mockImplementation(() => undefined);
+      let served = false;
+      vi.spyOn(aggregator, 'nextPage').mockImplementation(() => {
+        const page = served ? [] : Array.from({ length: 12 }, (_, i) => post(`l${i}`, 'loud'));
+        served = true;
+        return of(page);
+      });
+      fixture = TestBed.createComponent(FeedDoctorPage);
+      fixture.detectChanges();
+
+      await vi.waitFor(() =>
+        expect(buttons().some((b) => b.textContent?.trim() === 'Unfollow')).toBe(true),
+      );
+      buttons()
+        .find((b) => b.textContent?.trim() === 'Unfollow')!
+        .click();
+      await vi.waitFor(() => expect(text()).toContain('Unfollowed.'));
+      expect(toggle).toHaveBeenCalledWith('loud');
+      expect(unfollowLocal).not.toHaveBeenCalled();
+    });
+
+    it('never follows by accident: an account you do not follow is only explained', async () => {
+      TestBed.inject(Auth).setToken('a-token');
+      const state = TestBed.inject(FollowState);
+      vi.spyOn(state, 'resolve').mockResolvedValue();
+      vi.spyOn(state, 'status').mockReturnValue('not-following');
+      const toggle = vi.spyOn(state, 'toggle');
+      const aggregator = TestBed.inject(FeedAggregator);
+      vi.spyOn(aggregator, 'reset').mockImplementation(() => undefined);
+      vi.spyOn(aggregator, 'nextPage')
+        .mockReturnValueOnce(of(Array.from({ length: 12 }, (_, i) => post(`l${i}`, 'loud'))))
+        .mockReturnValue(of([]));
+      fixture = TestBed.createComponent(FeedDoctorPage);
+      fixture.detectChanges();
+
+      await vi.waitFor(() =>
+        expect(buttons().some((b) => b.textContent?.trim() === 'Unfollow')).toBe(true),
+      );
+      buttons()
+        .find((b) => b.textContent?.trim() === 'Unfollow')!
+        .click();
+      await vi.waitFor(() => expect(text()).toContain('You don’t follow this account'));
+      expect(toggle).not.toHaveBeenCalled();
+    });
   });
 });

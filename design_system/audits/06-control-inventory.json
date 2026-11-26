@@ -8239,7 +8239,7 @@
       "findings": [
         {
           "pattern": "selects",
-          "line": 1186
+          "line": 1190
         }
       ]
     },
@@ -9697,47 +9697,59 @@
       "findings": [
         {
           "pattern": "nativeButtons",
-          "line": 16
+          "line": 19
         },
         {
           "pattern": "nativeButtons",
-          "line": 78
+          "line": 81
         },
         {
           "pattern": "nativeButtons",
-          "line": 82
+          "line": 93
         },
         {
           "pattern": "nativeButtons",
-          "line": 86
+          "line": 97
         },
         {
           "pattern": "legacyPills",
-          "line": 16
+          "line": 19
         },
         {
           "pattern": "legacyPills",
-          "line": 68
+          "line": 71
         },
         {
           "pattern": "legacyPills",
-          "line": 70
+          "line": 73
         },
         {
           "pattern": "legacyPills",
-          "line": 72
+          "line": 75
         },
         {
           "pattern": "legacyPills",
-          "line": 78
+          "line": 81
         },
         {
           "pattern": "legacyPills",
-          "line": 82
+          "line": 87
         },
         {
           "pattern": "legacyPills",
-          "line": 86
+          "line": 89
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 91
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 93
+        },
+        {
+          "pattern": "legacyPills",
+          "line": 97
         }
       ]
     },

@@ -792,6 +792,10 @@ export class Search implements OnInit, OnDestroy {
    * should not pay an extra click to leave People on every visit.
    */
   private defaultType(): SearchType {
+    // Explore → People (spec/sprint/explore-2026-11.md) opens on people, whatever
+    // was picked last on /search. The reader can still switch type there.
+    const routed = this.route.snapshot?.data?.['defaultType'];
+    if (routed === 'accounts') return 'accounts';
     let remembered: string | null = null;
     try {
       remembered = localStorage.getItem(LAST_TYPE_KEY);

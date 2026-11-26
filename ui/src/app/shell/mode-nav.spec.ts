@@ -69,6 +69,8 @@ describe('MODE_NAV', () => {
     const slots: Partial<Record<(typeof APP_MODES)[number], number>> = {
       radio: 3,
       blog: 6,
+      // Explore is four by design (spec/sprint/explore-2026-11.md).
+      explore: 4,
     };
     for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(slots[mode] ?? 5);
     expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['singles', 'playlists', 'studio']);
@@ -85,6 +87,19 @@ describe('MODE_NAV', () => {
       expect(active(url)).toEqual(['playlists']);
     expect(active('/radio/studio')).toEqual(['studio']);
     for (const view of ['radio', 'settings']) expect(active('/radio?view=' + view)).toEqual([]);
+  });
+
+  it('marks exactly one Explore tab current, and never the signed-out landing', () => {
+    const active = (url: string) =>
+      MODE_NAV.explore.filter((item) => item.active(url)).map((item) => item.id);
+    expect(MODE_NAV.explore.map((tab) => tab.id)).toEqual(['feed', 'kits', 'people', 'tags']);
+    expect(active('/explore/feed')).toEqual(['feed']);
+    expect(active('/explore/kits?kind=packs')).toEqual(['kits']);
+    expect(active('/explore/people?q=alice&type=accounts')).toEqual(['people']);
+    expect(active('/explore/tags')).toEqual(['tags']);
+    expect(active('/explore')).toEqual([]);
+    expect(active('/explore/feeds')).toEqual([]);
+    expect(MODE_ENTRIES.explore.link).toBe('/explore/feed');
   });
 
   it('marks exactly one Unbird tab current', () => {

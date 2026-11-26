@@ -862,6 +862,8 @@ describe('Shell app-mode nav', () => {
       '/home',
       // Blog second: the switcher is how people find it (spec/blog-mode.md).
       '/blog',
+      // Crafting your feed (spec/sprint/explore-2026-11.md).
+      '/explore/feed',
       '/rss',
       '/videos',
       '/singles',
@@ -870,7 +872,7 @@ describe('Shell app-mode nav', () => {
       '/unbird',
     ]);
     expect(rows.filter((row) => row.getAttribute('aria-current') === 'true')).toHaveLength(1);
-    expect(rows[2].getAttribute('aria-current')).toBe('true');
+    expect(rows[3].getAttribute('aria-current')).toBe('true');
     expect(host.querySelector('.mode-switch')!.getAttribute('aria-label')).toContain('RSS');
   });
 

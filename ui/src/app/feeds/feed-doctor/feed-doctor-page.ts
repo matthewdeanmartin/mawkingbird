@@ -1,6 +1,9 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Api } from '../../platform/api/api';
+import { AnonymousTags } from '../../accounts/anonymous/anonymous-tags';
+import { FollowState } from '../../accounts/follow-state';
 import { Account, ProviderId, Status } from '../../platform/api/models';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { Wellness } from '../../wellness/wellness';
@@ -12,6 +15,7 @@ import { AnonymousAccount } from '../../accounts/anonymous/anonymous-account';
 import { AnonymousFollows } from '../../accounts/anonymous/anonymous-follows';
 import { AnonymousMastodonProvider } from '../../accounts/anonymous/anonymous-mastodon-provider';
 import {
+  DiagnoseOptions,
   DoctorAction,
   FeedBounds,
   FeedDiagnosis,
@@ -28,6 +32,8 @@ import { accountScopeSuffix } from '../../platform/session/account-scope';
 import { HomeTimelineFeed } from '../home-timeline-feed';
 
 // i18n feedDoctor.title: Feed Doctor
+// i18n feedDoctor.checkupTitle: Feed checkup
+// i18n feedDoctor.checkupLede: How well your Home is built: enough people, enough hashtags, and not too much written by machines.
 // i18n feedDoctor.reading: Reading your feed…
 // i18n feedDoctor.checkAgain: Check again
 // i18n feedDoctor.windowHidden.one: Your reading window hid {{count}} older post. Everything below describes what the window let through.
@@ -69,10 +75,32 @@ export class FeedDoctorPage implements OnInit {
   private calm = inject(CalmVerdicts);
   private langFilter = inject(FeedLanguageFilter);
   private homeFeed = inject(HomeTimelineFeed);
+  private api = inject(Api);
+  private anonymousTags = inject(AnonymousTags);
+  private followState = inject(FollowState);
+  /**
+   * Reached as Explore's Feed tab (`/explore/feed`), the page is titled as a
+   * checkup; at `/feed-doctor` it keeps its old name. Same page, two doors.
+   */
+  protected readonly inExplore = !!inject(ActivatedRoute).snapshot?.data?.['explore'];
   protected usingHomeSnapshot = signal(false);
 
   protected loading = signal(true);
-  protected diagnosis = signal<FeedDiagnosis | null>(null);
+  /** The checks' input, without the crafting facts that may arrive later. */
+  private input = signal<DiagnoseOptions | null>(null);
+  /**
+   * Hashtags followed: null where they cannot be followed (Bluesky, Misskey),
+   * and until a signed-in Mastodon count arrives, so the line just appears.
+   */
+  private followedTags = signal<number | null>(null);
+  protected diagnosis = computed<FeedDiagnosis | null>(() => {
+    const input = this.input();
+    if (!input) return null;
+    return diagnoseFeed({
+      ...input,
+      crafting: { following: this.followingCount(), followedTags: this.followedTags() },
+    });
+  });
   protected collectedAt = signal<Date | null>(null);
   /** Per-provider breakdown, signed-in only. */
   protected slices = signal<ProviderSlice[]>([]);
@@ -89,6 +117,7 @@ export class FeedDoctorPage implements OnInit {
   protected isAnonymous = computed(() => this.auth.isAnonymous);
 
   ngOnInit(): void {
+    this.loadFollowedTags();
     const snapshot = this.homeFeed.snapshot();
     if (!this.isAnonymous() && snapshot?.scope === accountScopeSuffix()) {
       this.usingHomeSnapshot.set(true);
@@ -112,7 +141,7 @@ export class FeedDoctorPage implements OnInit {
   protected run(): void {
     this.usingHomeSnapshot.set(false);
     this.loading.set(true);
-    this.diagnosis.set(null);
+    this.input.set(null);
 
     if (this.isAnonymous()) {
       this.provider.reset();
@@ -149,17 +178,15 @@ export class FeedDoctorPage implements OnInit {
   }
 
   private reportAnonymous(posts: Status[]): void {
-    this.report(
-      diagnoseFeed({
-        posts,
-        outcomes: this.provider.lastOutcomes(),
-        // Zero, and not a placeholder: the anonymous stitched feed reads each
-        // follow directly and applies no time window, so nothing can be dropped
-        // by one. `JustMyServer` and `FeedAggregator` are the two that do.
-        bounds: this.bounds(posts, 0),
-        bySource: this.countSources(posts),
-      }),
-    );
+    this.report({
+      posts,
+      outcomes: this.provider.lastOutcomes(),
+      // Zero, and not a placeholder: the anonymous stitched feed reads each
+      // follow directly and applies no time window, so nothing can be dropped
+      // by one. `JustMyServer` and `FeedAggregator` are the two that do.
+      bounds: this.bounds(posts, 0),
+      bySource: this.countSources(posts),
+    });
   }
 
   /**
@@ -231,15 +258,13 @@ export class FeedDoctorPage implements OnInit {
     const slices = sliceByProvider(posts, labels, linked);
     this.slices.set(slices);
     this.droppedByWindow.set(homeBounds?.droppedByWindow ?? this.aggregator.droppedByWindow());
-    this.report(
-      diagnoseFeed({
-        posts,
-        outcomes: [],
-        bounds: homeBounds ?? this.bounds(posts, this.aggregator.droppedByWindow()),
-        bySource: Object.fromEntries(slices.map((slice) => [slice.label, slice.count])),
-        slices,
-      }),
-    );
+    this.report({
+      posts,
+      outcomes: [],
+      bounds: homeBounds ?? this.bounds(posts, this.aggregator.droppedByWindow()),
+      bySource: Object.fromEntries(slices.map((slice) => [slice.label, slice.count])),
+      slices,
+    });
   }
 
   /**
@@ -265,10 +290,30 @@ export class FeedDoctorPage implements OnInit {
     this.run();
   }
 
-  private report(diagnosis: FeedDiagnosis): void {
-    this.diagnosis.set(diagnosis);
+  private report(input: DiagnoseOptions): void {
+    this.input.set(input);
     this.collectedAt.set(new Date());
     this.loading.set(false);
+  }
+
+  /** Accounts followed: the browser's list for Anonymous, the profile count otherwise. */
+  private followingCount(): number | null {
+    if (this.isAnonymous()) return this.follows.follows().length;
+    return this.auth.account()?.following_count ?? null;
+  }
+
+  /** One request, signed-in Mastodon only; the first page is plenty to compare with 5. */
+  private loadFollowedTags(): void {
+    if (this.isAnonymous()) {
+      this.followedTags.set(this.anonymousTags.count());
+      return;
+    }
+    if (this.auth.kind() !== 'mastodon' || this.auth.lacksMastodonToken) return;
+    this.api.followedTags().subscribe({
+      next: (tags) => this.followedTags.set(tags.length),
+      // Unknown stays unknown: no tags line rather than a false "you follow none".
+      error: () => this.followedTags.set(null),
+    });
   }
 
   /**
@@ -334,13 +379,47 @@ export class FeedDoctorPage implements OnInit {
       return;
     }
     if (action.kind === 'unfollow') {
-      this.follows.unfollow(account, this.anonymous.server());
-      this.note(account, 'Unfollowed.');
+      if (this.isAnonymous()) {
+        this.follows.unfollow(account, this.anonymous.server());
+        this.note(account, 'Unfollowed.');
+        return;
+      }
+      void this.unfollowOnServer(account);
     }
+  }
+
+  /**
+   * Signed in, an unfollow is the server's. Feed Doctor used to edit the
+   * browser's Anonymous list here and say "Unfollowed." while nothing changed.
+   * The relationship is resolved first: `toggle` flips whatever it knows, and
+   * flipping an unknown one would *follow*.
+   */
+  private async unfollowOnServer(account: Account): Promise<void> {
+    await this.followState.resolve([account.id]);
+    const status = this.followState.status(account.id);
+    if (status === 'not-following') {
+      this.note(
+        account,
+        'You don’t follow this account; it reaches you through a boost or a hashtag.',
+      );
+      return;
+    }
+    if (status !== 'following' && status !== 'requested') {
+      this.note(account, 'Could not unfollow this account.');
+      return;
+    }
+    const ok = await this.followState.toggle(account.id);
+    this.note(account, ok ? 'Unfollowed.' : 'Could not unfollow this account.');
   }
 
   /** A mute is offered only where this reader can mute that account. */
   protected canAct(action: DoctorAction): boolean {
+    if (action.kind === 'unfollow') {
+      // Signed in, only accounts a server can unfollow: not RSS or other
+      // `provider:` ids (Bluesky's are handled by FollowState).
+      const id = action.account?.id ?? '';
+      return this.isAnonymous() || !id.includes(':') || id.startsWith('bsky:did:');
+    }
     return (
       action.kind !== 'mute' ||
       (!!action.account && this.moderation.route({ account: action.account }) !== null)

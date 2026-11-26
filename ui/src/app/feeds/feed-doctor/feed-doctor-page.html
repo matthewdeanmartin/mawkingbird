@@ -1,7 +1,10 @@
 <section class="fd-page">
   <header class="fd-head">
     <div>
-      <h1>{{ 'feedDoctor.title' | transloco }}</h1>
+      <h1>{{ (inExplore ? 'feedDoctor.checkupTitle' : 'feedDoctor.title') | transloco }}</h1>
+      @if (inExplore) {
+        <p class="small">{{ 'feedDoctor.checkupLede' | transloco }}</p>
+      }
       <!-- The sample is the population. Every claim below is about these posts,
            never about "your feed" as an abstraction — and the Doctor states it
            louder than the analytics page because its claims sound more certain. -->
@@ -78,6 +81,14 @@
                 <button class="btn btn-outline" type="button" (click)="widenWindow()">
                   {{ action.label }}
                 </button>
+              } @else if (action.kind === 'find-kits') {
+                <!-- The fixes for a thin feed live in Explore; linked from the
+                     classic /feed-doctor door too (spec/sprint/explore-2026-11.md). -->
+                <a class="btn btn-outline" routerLink="/explore/kits">{{ action.label }}</a>
+              } @else if (action.kind === 'find-people') {
+                <a class="btn btn-outline" routerLink="/explore/people">{{ action.label }}</a>
+              } @else if (action.kind === 'find-tags') {
+                <a class="btn btn-outline" routerLink="/explore/tags">{{ action.label }}</a>
               } @else if (action.kind === 'show-calm') {
                 <button class="btn btn-outline" type="button" (click)="turnCalmOff()">
                   {{ action.label }}

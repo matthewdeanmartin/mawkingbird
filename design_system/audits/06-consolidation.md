@@ -3570,3 +3570,14 @@ hubs. Source files remain 2201 and candidate files remain 741. The sole inventor
 change from the preceding snapshot moves the shared-control finding in
 focused-apps/language-versions.ts from line 64 to 67 for the three endonyms.
 Existing Feed Builder widgets are reused; no new control dispositions.
+
+### 2026-11-26: Explore mode, Sprints 1–2 (feed checkup)
+
+Reviewed the regenerated inventory: no candidates added or removed, two changed.
+`feed-doctor-page.html` gains three link actions (Browse starter kits, Find people,
+Find hashtags, into Explore's tabs) styled like the page's existing actions
+(`btn btn-outline`), so `legacyPills` goes from 7 to 10. The heading gains an optional
+one-line lede. The page stays in the backlog disposition it already has (adopt
+MbButton for its actions as one change, not piecemeal). `search.ts` only shifts one
+`selects` offset (1186 to 1190) for the Explore → People default. The Explore mode's
+tabs are data in `mode-nav.ts`, rendered by the existing shell nav. No new widget.

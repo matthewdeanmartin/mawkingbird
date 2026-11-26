@@ -38,6 +38,11 @@ import {
 // i18n shell.modeNav.forum.mine: Mine
 // i18n shell.modeNav.forum.joined: Joined
 // i18n shell.modeNav.mode.unbird: Unbird
+// i18n shell.modeNav.mode.explore: Explore
+// i18n shell.modeNav.explore.feed: Feed
+// i18n shell.modeNav.explore.kits: Kits
+// i18n shell.modeNav.explore.people: People
+// i18n shell.modeNav.explore.tags: Tags
 // i18n shell.modeNav.unbird.start: Start
 // i18n shell.modeNav.unbird.people: People
 // i18n shell.modeNav.unbird.archive: Archive
@@ -161,6 +166,40 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       icon: 'M5 4h9l4 4v5M5 4v16h7M8 9h5M8 13h3M17.5 16.5m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M19.6 18.6 22 21',
       link: '/blog/search',
       active: onPath('/blog/search'),
+    },
+  ],
+  explore: [
+    // Crafting a Home feed worth reading (spec/sprint/explore-2026-11.md): a
+    // checkup of the feed, then the three ways to fix it. Four tabs.
+    {
+      id: 'feed',
+      labelKey: 'shell.modeNav.explore.feed',
+      // A pulse line: the feed's checkup.
+      icon: 'M3 12h4l2-5 4 10 2-5h6',
+      link: '/explore/feed',
+      active: onPath('/explore/feed'),
+    },
+    {
+      id: 'kits',
+      labelKey: 'shell.modeNav.explore.kits',
+      // A gift box, not RSS Kits' crate: these are sets of people.
+      icon: 'M3 9h18v4H3zM5 13v8h14v-8M12 9v12M12 9c-2-4-6-4-6-1s4 1 6 1c2 0 6 2 6-1s-4-3-6 1',
+      link: '/explore/kits',
+      active: onPath('/explore/kits'),
+    },
+    {
+      id: 'people',
+      labelKey: 'shell.modeNav.explore.people',
+      icon: 'M10 10a3 3 0 1 0 0-6a3 3 0 1 0 0 6M4 19a6 6 0 0 1 9.5-4.9M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M19.2 19.2 22 22',
+      link: '/explore/people',
+      active: onPath('/explore/people'),
+    },
+    {
+      id: 'tags',
+      labelKey: 'shell.modeNav.explore.tags',
+      icon: 'M5 9h15M4 15h15M10 3 8 21M16 3l-2 18',
+      link: '/explore/tags',
+      active: onPath('/explore/tags'),
     },
   ],
   unbird: [
@@ -518,6 +557,13 @@ export interface ModeEntry {
 }
 
 export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
+  explore: {
+    mode: 'explore',
+    labelKey: 'shell.modeNav.mode.explore',
+    // A compass.
+    icon: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M15.5 8.5l-2 5-5 2 2-5z',
+    link: '/explore/feed',
+  },
   unbird: {
     mode: 'unbird',
     labelKey: 'shell.modeNav.mode.unbird',

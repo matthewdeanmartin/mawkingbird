@@ -63,6 +63,14 @@ describe('modeForUrl', () => {
     expect(modeForUrl('/unbirds')).toBe('mastodon');
   });
 
+  it('puts Explore tabs in Explore, but leaves the signed-out /explore landing in Fedi', () => {
+    expect(modeForUrl('/explore/feed')).toBe('explore');
+    expect(modeForUrl('/explore/people?q=a')).toBe('explore');
+    expect(modeForUrl('/explore')).toBe('mastodon');
+    expect(modeForUrl('/explore/')).toBe('mastodon');
+    expect(modeForUrl('/explorer')).toBe('mastodon');
+  });
+
   it('puts Unbird pages in the Unbird mode', () => {
     expect(modeForUrl('/unbird')).toBe('unbird');
     expect(modeForUrl('/unbird/people?x=1')).toBe('unbird');

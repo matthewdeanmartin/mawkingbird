@@ -1,5 +1,6 @@
 import { Account, Status } from '../platform/api/models';
-import { AuthorRow, feedAuthors, feedSubject } from './feed-metrics';
+import { AuthorRow, feedAuthors, feedSubject, parseContent } from './feed-metrics';
+import { postingRhythm } from '../accounts/account-signals';
 import { SourceOutcome } from '../accounts/anonymous/anonymous-mastodon-provider';
 
 /**
@@ -79,7 +80,11 @@ export interface DoctorAction {
     | 'review-window'
     | 'widen-window'
     | 'show-calm'
-    | 'wait-out-cooldown';
+    | 'wait-out-cooldown'
+    /** Links into Explore (spec/sprint/explore-2026-11.md): the fixes for a thin feed. */
+    | 'find-kits'
+    | 'find-people'
+    | 'find-tags';
   label: string;
   /** The account it applies to, for the account-scoped actions. */
   account?: Account;
@@ -88,7 +93,16 @@ export interface DoctorAction {
 }
 
 export interface Verdict {
-  id: 'flooding' | 'ended' | 'stopped' | 'mixing' | 'sources' | 'timespans';
+  id:
+    | 'flooding'
+    | 'ended'
+    | 'stopped'
+    | 'mixing'
+    | 'sources'
+    | 'timespans'
+    | 'following'
+    | 'tags'
+    | 'automated';
   severity: Severity;
   /** One sentence, already phrased for a human. */
   headline: string;
@@ -613,6 +627,268 @@ export function diagnoseTimespans(slices: ProviderSlice[], now: number = Date.no
   };
 }
 
+// ---------------------------------------------------------------------------
+// Crafting the feed (spec/sprint/explore-2026-11.md, Sprint 2): is Home built
+// from enough people and tags, and how much of it is written by machines?
+// Thresholds are the owner's proposed first guesses, to calibrate with use.
+// ---------------------------------------------------------------------------
+
+/** Following fewer people than this is worth a word. */
+export const FOLLOW_NOTICE = 100;
+/** Following fewer than this, Home is almost certainly thin. */
+export const FOLLOW_WARN = 30;
+/** A full sample reaching back further than this many hours is a quiet feed. */
+export const SPAN_NOTICE_HOURS = 12;
+export const SPAN_WARN_HOURS = 48;
+/**
+ * A sample this many posts or larger is "full" enough for its span to mean
+ * something. A smaller one ran out of posts, which is its own answer.
+ */
+export const SPAN_MIN_POSTS = 40;
+/** Fewer followed hashtags than this is worth a word; none is a warning. */
+export const TAGS_NOTICE = 5;
+/** Never judge an author's replying or rhythm on fewer of their posts than this. */
+export const AUTOMATED_MIN_POSTS = 8;
+/** "Mostly links": the share of an author's posts that carry an outbound link. */
+export const LINK_HEAVY_SHARE = 0.8;
+export const AUTOMATED_NOTICE_SHARE = 0.15;
+export const AUTOMATED_WARN_SHARE = 0.3;
+/** How many automated accounts get their own buttons. */
+const AUTOMATED_LISTED = 5;
+
+const SEVERITY_RANK: Record<Severity, number> = { ok: 0, notice: 1, warn: 2 };
+
+function worse(a: Severity, b: Severity): Severity {
+  return SEVERITY_RANK[a] >= SEVERITY_RANK[b] ? a : b;
+}
+
+/** Hours between the newest and oldest post in the sample; null when under two posts. */
+export function sampleSpanHours(posts: Status[]): number | null {
+  const times = posts.map((p) => new Date(p.created_at).getTime()).filter(Number.isFinite);
+  if (times.length < 2) return null;
+  return (Math.max(...times) - Math.min(...times)) / 3_600_000;
+}
+
+/** "3 hours", "2 days": coarse on purpose, because the thresholds are coarse. */
+export function spanLabel(hours: number): string {
+  if (hours < 1) return 'under an hour';
+  if (hours < 48) {
+    const h = Math.round(hours);
+    return `${h} hour${h === 1 ? '' : 's'}`;
+  }
+  return `${Math.round(hours / 24)} days`;
+}
+
+/**
+ * Are you following enough people for Home to be worth opening?
+ *
+ * Two readings, and the worse one wins. The follow count is the cause; how far
+ * back a full sample reaches is the symptom, and the symptom is what the reader
+ * feels. Someone following 40 chatty people can have a lively Home, and someone
+ * following 300 quiet ones a dead one.
+ *
+ * @param people accounts followed, or null when the count is not known.
+ */
+export function diagnoseFollowing(posts: Status[], people: number | null): Verdict {
+  const span = sampleSpanHours(posts);
+  const countSeverity: Severity =
+    people === null
+      ? 'ok'
+      : people < FOLLOW_WARN
+        ? 'warn'
+        : people < FOLLOW_NOTICE
+          ? 'notice'
+          : 'ok';
+  const spanSeverity: Severity =
+    posts.length < SPAN_MIN_POSTS
+      ? posts.length === 0
+        ? 'warn'
+        : 'notice'
+      : span === null || span <= SPAN_NOTICE_HOURS
+        ? 'ok'
+        : span > SPAN_WARN_HOURS
+          ? 'warn'
+          : 'notice';
+  const severity = worse(countSeverity, spanSeverity);
+
+  const followLine =
+    people === null ? null : `You follow ${people} ${people === 1 ? 'account' : 'accounts'}.`;
+  const reachLine =
+    posts.length === 0
+      ? 'No posts reached your Home.'
+      : posts.length < SPAN_MIN_POSTS
+        ? `Only ${posts.length} posts reached your Home.`
+        : span === null
+          ? null
+          : `The last ${posts.length} posts in your Home go back ${spanLabel(span)}.`;
+  const lines = [followLine, reachLine].filter((line): line is string => !!line);
+
+  if (severity === 'ok') {
+    return {
+      id: 'following',
+      severity,
+      headline: lines.join(' ') || 'Your Home is well supplied.',
+      detail: [],
+      actions: [],
+    };
+  }
+  return {
+    id: 'following',
+    severity,
+    headline: spanSeverity !== 'ok' ? 'Your Home is thin.' : 'You follow only a few accounts.',
+    detail: [
+      ...lines,
+      'Starter kits are the quickest way to fill it: a whole set of active people at once.',
+    ],
+    actions: [
+      { kind: 'find-kits', label: 'Browse starter kits' },
+      { kind: 'find-people', label: 'Find people' },
+    ],
+  };
+}
+
+/**
+ * Are you following hashtags? They are the one source that brings in people
+ * you don't follow yet, and the one the Feeds hub hides best.
+ *
+ * Returns null when hashtags cannot be followed (Bluesky, Misskey): saying
+ * nothing beats a warning the reader cannot act on.
+ */
+export function diagnoseTags(tags: number | null): Verdict | null {
+  if (tags === null) return null;
+  const severity: Severity = tags === 0 ? 'warn' : tags < TAGS_NOTICE ? 'notice' : 'ok';
+  const count = `You follow ${tags} ${tags === 1 ? 'hashtag' : 'hashtags'}.`;
+  if (severity === 'ok') {
+    return { id: 'tags', severity, headline: count, detail: [], actions: [] };
+  }
+  return {
+    id: 'tags',
+    severity,
+    headline: tags === 0 ? 'You don’t follow any hashtags.' : count,
+    detail: [
+      'A followed hashtag brings posts on that topic into Home, from people you don’t follow yet.',
+    ],
+    actions: [{ kind: 'find-tags', label: 'Find hashtags' }],
+  };
+}
+
+/** Why an account reads as automated. At least one is always present. */
+export type AutomatedReason = 'botFlag' | 'schedule' | 'neverReplies';
+
+export interface AutomatedAuthor {
+  account: Account;
+  /** Their posts in the sample, by content author (boosts count for the writer). */
+  count: number;
+  share: number;
+  reasons: AutomatedReason[];
+}
+
+const REASON_TEXT: Record<AutomatedReason, string> = {
+  botFlag: 'says it is a bot',
+  schedule: 'posts on a fixed schedule',
+  neverReplies: 'never replies, mostly links',
+};
+
+/**
+ * Accounts in the sample that read as automated, loudest first.
+ *
+ * Three signals, any one enough:
+ *
+ *  - the account's own **bot setting**;
+ *  - a **fixed schedule** (`postingRhythm` says bot-like);
+ *  - **never replies, mostly links**: RSS cross-posters cannot reply, because
+ *    they only relay a feed (owner, 2026-11-26). "Never replies" alone is not
+ *    enough here: Home hides replies to people the reader doesn't follow, so a
+ *    talkative human can look silent in a Home sample. Pairing it with "mostly
+ *    links" is what makes it the RSS-relay pattern rather than a quirk of the
+ *    timeline.
+ */
+export function automatedAuthors(posts: Status[]): AutomatedAuthor[] {
+  const byAuthor = new Map<string, { account: Account; posts: Status[] }>();
+  const seen = new Set<string>();
+  for (const post of posts) {
+    const subject = feedSubject(post);
+    if (seen.has(subject.id)) continue;
+    seen.add(subject.id);
+    const key = subject.account.acct;
+    const entry = byAuthor.get(key) ?? { account: subject.account, posts: [] };
+    entry.posts.push(subject);
+    byAuthor.set(key, entry);
+  }
+
+  const total = seen.size;
+  const found: AutomatedAuthor[] = [];
+  for (const { account, posts: theirs } of byAuthor.values()) {
+    const reasons: AutomatedReason[] = [];
+    if (account.bot) reasons.push('botFlag');
+    if (theirs.length >= AUTOMATED_MIN_POSTS) {
+      if (postingRhythm(theirs)?.verdict === 'botLike') reasons.push('schedule');
+      const repliesToOthers = theirs.filter(
+        (p) => !!p.in_reply_to_account_id && p.in_reply_to_account_id !== account.id,
+      ).length;
+      const linked = theirs.filter(
+        (p) => !!p.card || parseContent(p.content ?? '').links.length > 0,
+      ).length;
+      if (repliesToOthers === 0 && linked / theirs.length >= LINK_HEAVY_SHARE) {
+        reasons.push('neverReplies');
+      }
+    }
+    if (reasons.length) {
+      found.push({ account, count: theirs.length, share: theirs.length / total, reasons });
+    }
+  }
+  return found.sort((a, b) => b.count - a.count);
+}
+
+/**
+ * How much of Home is written by machines, and by whom.
+ *
+ * Every fix is one account and one click: there is deliberately no "unfollow
+ * every bot" button. Some bots are wanted (a weather feed, a favourite comic),
+ * and a bulk unfollow is a kind of tool this app does not build.
+ */
+export function diagnoseAutomated(posts: Status[]): Verdict {
+  const authors = automatedAuthors(posts);
+  const total = new Set(posts.map((p) => feedSubject(p).id)).size;
+  const share = total ? authors.reduce((sum, a) => sum + a.count, 0) / total : 0;
+
+  if (!authors.length) {
+    return {
+      id: 'automated',
+      severity: 'ok',
+      headline: total ? 'No automated accounts stand out.' : 'Nothing in this sample yet.',
+      detail: [],
+      actions: [],
+    };
+  }
+  const severity: Severity =
+    share >= AUTOMATED_WARN_SHARE ? 'warn' : share >= AUTOMATED_NOTICE_SHARE ? 'notice' : 'ok';
+  const headline = `Automated accounts wrote ${pct(share)}% of this sample.`;
+  if (severity === 'ok') {
+    return { id: 'automated', severity, headline, detail: [], actions: [] };
+  }
+  const listed = authors.slice(0, AUTOMATED_LISTED);
+  const reasons = (a: AutomatedAuthor) => a.reasons.map((r) => REASON_TEXT[r]).join(', ');
+  return {
+    id: 'automated',
+    severity,
+    headline,
+    detail: [
+      ...listed.map((a) => `@${a.account.acct}: ${pct(a.share)}% of the sample; ${reasons(a)}.`),
+      ...(authors.length > listed.length ? [`And ${authors.length - listed.length} more.`] : []),
+    ],
+    actions: listed.flatMap((a): DoctorAction[] => [
+      {
+        kind: 'mute',
+        label: `Mute @${a.account.acct} for 8 hours`,
+        account: a.account,
+        seconds: MUTE_8H,
+      },
+      { kind: 'unfollow', label: `Unfollow @${a.account.acct}`, account: a.account },
+    ]),
+  };
+}
+
 export interface DiagnoseOptions {
   posts: Status[];
   outcomes: SourceOutcome[];
@@ -628,6 +904,12 @@ export interface DiagnoseOptions {
    * answers "why did my feed end" when there are no per-follow outcomes.
    */
   bounds?: FeedBounds;
+  /**
+   * Feed-crafting facts (Explore's Feed tab). `following`: accounts followed;
+   * `followedTags`: hashtags followed, null where hashtags cannot be followed.
+   * Leaving both out keeps the original Feed Doctor checks only.
+   */
+  crafting?: { following: number | null; followedTags: number | null };
   now?: number;
 }
 
@@ -667,6 +949,19 @@ export function diagnoseFeed(options: DiagnoseOptions): FeedDiagnosis {
     verdicts.push(diagnoseEnding(options.outcomes));
   }
   verdicts.push(diagnoseMixing(options.bySource));
+
+  if (options.crafting) {
+    const tags = diagnoseTags(options.crafting.followedTags);
+    verdicts.push(
+      diagnoseFollowing(options.posts, options.crafting.following),
+      ...(tags ? [tags] : []),
+      diagnoseAutomated(options.posts),
+    );
+    // Problems first, worst first; healthy lines collapse at the bottom.
+    // Stable, so equal severities keep the order above. Only for the crafting
+    // page: the classic Doctor keeps its order.
+    verdicts.sort((a, b) => SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity]);
+  }
 
   return { sampleSize: options.posts.length, verdicts };
 }

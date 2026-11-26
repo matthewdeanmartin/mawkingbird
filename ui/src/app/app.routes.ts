@@ -1692,6 +1692,49 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./feeds/link-timeline/link-timeline').then((m) => m.LinkTimeline),
       },
+      // Explore mode (spec/sprint/explore-2026-11.md): four tabs for crafting a
+      // Home feed, each a page that also lives elsewhere. Under /explore/, so
+      // the Wellness discovery window gates the whole mode. Bare /explore is
+      // the signed-out trending landing, outside the shell, and unchanged.
+      {
+        path: 'explore/feed',
+        title: 'Feed checkup',
+        canActivate: [discoveryWindowGuard],
+        data: { explore: true },
+        loadComponent: () =>
+          import('./feeds/feed-doctor/feed-doctor-page').then((m) => m.FeedDoctorPage),
+      },
+      {
+        path: 'explore/kits',
+        title: 'People to follow',
+        canActivate: [discoveryWindowGuard],
+        loadComponent: () =>
+          import('./discovery/bundled-starter-kits/bundled-starter-kits').then(
+            (m) => m.BundledStarterKits,
+          ),
+      },
+      {
+        path: 'explore/people',
+        title: 'Find people',
+        canMatch: [misskeyPrimaryMatch],
+        canActivate: [discoveryWindowGuard],
+        loadComponent: () =>
+          import('./discovery/misskey-search/misskey-search').then((m) => m.MisskeySearch),
+      },
+      {
+        path: 'explore/people',
+        title: 'Find people',
+        canActivate: [discoveryWindowGuard],
+        data: { defaultType: 'accounts' },
+        loadComponent: () => import('./discovery/search/search').then((m) => m.Search),
+      },
+      {
+        path: 'explore/tags',
+        title: 'Tags',
+        canActivate: [discoveryWindowGuard],
+        data: { only: 'tags' },
+        loadComponent: () => import('./feeds/lists/lists').then((m) => m.Lists),
+      },
       {
         path: 'find-friends',
         title: 'Find friends',

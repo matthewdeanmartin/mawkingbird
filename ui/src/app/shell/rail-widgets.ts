@@ -65,6 +65,8 @@ const WINDOWED: readonly RailWidget[] = ['whoToFollow', 'trends', 'blueskyTrends
  */
 export const RAIL_HIDDEN: Readonly<Partial<Record<AppMode, readonly RailWidget[]>>> = {
   blog: DISCOVERY,
+  // In Explore the page is the finder; rail finders would only repeat it.
+  explore: DISCOVERY,
   radio: DISCOVERY,
   unbird: DISCOVERY,
   video: DISCOVERY,

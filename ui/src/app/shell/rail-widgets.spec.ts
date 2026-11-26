@@ -15,7 +15,7 @@ const KEPT: RailWidget[] = ['profile', 'houseAds', 'serverCard', 'blueskyService
 const BLOG_ONLY: RailWidget[] = ['blogAuthor', 'blogMore', 'blogRecent'];
 
 describe('railShows', () => {
-  it.each(['blog', 'radio', 'video'] as const)(
+  it.each(['blog', 'explore', 'radio', 'video'] as const)(
     'drops the finders of posts, feeds and accounts in %s, keeping profile, ads and server',
     (mode) => {
       for (const widget of DISCOVERY) expect(railShows(mode, widget)).toBe(false);

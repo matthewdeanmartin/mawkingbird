@@ -7,7 +7,8 @@ import { filter } from 'rxjs';
  * Which app the primary nav is serving: the social client, the RSS reader, or
  * video. See spec/top_level_menu.md.
  */
-export type AppMode = 'mastodon' | 'blog' | 'rss' | 'video' | 'radio' | 'forum' | 'unbird';
+export type AppMode =
+  'mastodon' | 'blog' | 'explore' | 'rss' | 'video' | 'radio' | 'forum' | 'unbird';
 
 /**
  * Also the switcher's order. Blog sits second because the switcher is how
@@ -16,6 +17,8 @@ export type AppMode = 'mastodon' | 'blog' | 'rss' | 'video' | 'radio' | 'forum' 
 export const APP_MODES: readonly AppMode[] = [
   'mastodon',
   'blog',
+  // Crafting your Home feed (spec/sprint/explore-2026-11.md), next to Fedi and Blog.
+  'explore',
   'rss',
   'video',
   'radio',
@@ -50,6 +53,9 @@ export function modeForUrl(url: string): AppMode | null {
   )
     return 'radio';
   if (path === '/forum' || path.startsWith('/forum/')) return 'forum';
+  // Explore's tabs (spec/sprint/explore-2026-11.md). Bare `/explore` is the
+  // Mastodon-compatible trending landing, outside the shell, and stays Fedi.
+  if (path.startsWith('/explore/') && path.length > '/explore/'.length) return 'explore';
   // Twitter to Mastodon (spec/sprint/unbird-2026-11.md).
   if (path === '/unbird' || path.startsWith('/unbird/')) return 'unbird';
   if (path === '/blog' || path.startsWith('/blog/') || path === '/settings/blog') return 'blog';
