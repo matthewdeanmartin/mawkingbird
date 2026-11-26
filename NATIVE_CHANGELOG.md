@@ -10,6 +10,8 @@ The maintainer writes and reviews the user-facing notes before each public
 release.
 
 ## [Unreleased]
+
+## [0.3.0] - 2026-11-26
 ### Added
 - Explore: a new app-switcher mode brings Feed checkup, starter kits, people search and hashtags together. The checkup points out a thin Home feed, missing followed hashtags and a high share of automated posts.
 - Explore > Tags: find hashtags from your posts, tags similar to those you follow, server trends and the featured hashtags of your mutuals. Follow them without leaving the page.
