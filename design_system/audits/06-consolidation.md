@@ -3615,3 +3615,11 @@ Tabs, Yours | Similar | Featured | More, around the same Item List rows and embe
 Feeds sections; `bundled-starter-kits.html` (`shared` 3 to 2) drops the Starter
 collections link. Tag and kit pages gain the existing Back (`app-reading-back`). No new
 widget.
+
+### 2026-11-26: Explore → Tags, More as its own strip; friends' featured hashtags
+
+Reviewed the regenerated inventory: one candidate added, `friends-featured.ts` (adopted
+scope: Item List rows with compact follow Buttons and an outline "check more" Button).
+One changed: `explore-tags.html` (`shared` 9 to 13) gains More's own shared Tabs, Tag
+bundles | Featured | Tag relay, and the top-level Featured tab becomes Trending. No new
+widget.

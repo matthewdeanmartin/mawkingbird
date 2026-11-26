@@ -14,6 +14,7 @@ import {
 import { MbPageHeader } from '../../design-system/page-header/page-header';
 import { AnonymousTags } from '../../accounts/anonymous/anonymous-tags';
 import { Lists } from '../../feeds/lists/lists';
+import { FriendsFeatured } from './friends-featured';
 import { Api } from '../../platform/api/api';
 import { Tag } from '../../platform/api/models';
 import { Auth } from '../../platform/session/auth';
@@ -29,7 +30,11 @@ import {
 // i18n exploreTags.tabs: Hashtag sections
 // i18n exploreTags.tab.yours: Yours
 // i18n exploreTags.tab.similar: Similar
-// i18n exploreTags.tab.featured: Featured
+// i18n exploreTags.tab.trending: Trending
+// i18n exploreTags.moreTabs: More hashtag tools
+// i18n exploreTags.more.bundles: Tag bundles
+// i18n exploreTags.more.featured: Featured
+// i18n exploreTags.more.relay: Tag relay
 // i18n exploreTags.tab.more: More
 // i18n exploreTags.noneHere: Nothing to suggest here right now.
 // i18n exploreTags.group.yours: You post with these
@@ -64,14 +69,17 @@ interface GroupState {
   tags: TagSuggestion[];
 }
 
-export type TagsTab = 'yours' | 'similar' | 'featured' | 'more';
+export type TagsTab = 'yours' | 'similar' | 'trending' | 'more';
+export type MoreTab = 'bundles' | 'featured' | 'relay';
 
 /** The tab last open, kept for the session so Back from a tag page returns to it. */
 let lastTab: TagsTab = 'yours';
+let lastMoreTab: MoreTab = 'bundles';
 
 /** For tests. */
 export function resetTagsTab(): void {
   lastTab = 'yours';
+  lastMoreTab = 'bundles';
 }
 
 /** Suggestions shown per group: enough to choose from, few enough to read. */
@@ -121,6 +129,7 @@ export function dedupeGroups(
 @Component({
   selector: 'app-explore-tags',
   imports: [
+    FriendsFeatured,
     Lists,
     MbButton,
     MbItemList,
@@ -196,16 +205,28 @@ export class ExploreTags implements OnInit {
   }
 
   /**
-   * Yours | Similar | Featured | More (owner, 2026-11-26): followed hashtags
-   * with the ones you post with; tags like those; the server's trending ones;
-   * then tags.pub, bundles, your profile's featured hashtags and bulk import.
+   * Yours | Similar | Trending | More (owner, 2026-11-26): followed hashtags
+   * with the ones you post with and bulk import; tags like those; the server's
+   * trending ones; then More's own strip, Tag bundles | Featured | Tag relay.
+   * "Featured" always means hashtags people pin on their profiles.
    */
   protected readonly tab = signal<TagsTab>(lastTab);
+  protected readonly moreTab = signal<MoreTab>(lastMoreTab);
 
   protected select(value: string): void {
     lastTab = value as TagsTab;
     this.tab.set(lastTab);
   }
+
+  protected selectMore(value: string): void {
+    lastMoreTab = value as MoreTab;
+    this.moreTab.set(lastMoreTab);
+  }
+
+  /** Every hashtag followed, here or before, for the Featured tab's buttons. */
+  protected readonly followedNow = computed(
+    () => new Set([...this.followed(), ...this.followedHere()]) as ReadonlySet<string>,
+  );
 
   ngOnInit(): void {
     if (this.noTags()) return;

@@ -405,8 +405,25 @@
         </a>
       }
     }
+    @if (tagParts() === 'list') {
+      <!-- The bulk door, kept as a link rather than a paste box inline: this
+       section's whole argument above is "look at one before you follow it",
+       and a textarea that follows fifty at once sitting under that would
+       contradict it. Arriving with a list from elsewhere is a different job,
+       and it has a page. -->
+      <p class="muted center small tag-bulk-link">
+        {{ 'pages.lists.tags.bulkPrompt' | transloco }}
+        <a routerLink="/settings/import-export" fragment="import-tags">
+          {{ 'pages.lists.tags.bulkLink' | transloco }}
+        </a>
+      </p>
+    }
   }
   @if (shows('tags') && showsSection('tags') && tagParts() !== 'list') {
+    @if (tagParts() === 'extras' && (!followedTags().length || auth.isAnonymous)) {
+      <!-- Explore → Tags → Tag relay on its own: say why it is empty. -->
+      <p class="muted small section-note">{{ 'pages.lists.tagsPub.needsTags' | transloco }}</p>
+    }
     <!-- tags.pub: one relay account per hashtag, boosting posts from across the
          network. Following a tag only surfaces what your own server already
          has, which on a small instance is a fraction — this fills the gap.
@@ -469,17 +486,19 @@
       </div>
     }
 
-    <!-- The bulk door, kept as a link rather than a paste box inline: this
+    @if (tagParts() === 'all') {
+      <!-- The bulk door, kept as a link rather than a paste box inline: this
        section's whole argument above is "look at one before you follow it",
        and a textarea that follows fifty at once sitting under that would
        contradict it. Arriving with a list from elsewhere is a different job,
        and it has a page. -->
-    <p class="muted center small tag-bulk-link">
-      {{ 'pages.lists.tags.bulkPrompt' | transloco }}
-      <a routerLink="/settings/import-export" fragment="import-tags">
-        {{ 'pages.lists.tags.bulkLink' | transloco }}
-      </a>
-    </p>
+      <p class="muted center small tag-bulk-link">
+        {{ 'pages.lists.tags.bulkPrompt' | transloco }}
+        <a routerLink="/settings/import-export" fragment="import-tags">
+          {{ 'pages.lists.tags.bulkLink' | transloco }}
+        </a>
+      </p>
+    }
     <!-- One more way in (spec/sprint/explore-2026-11.md); not on Explore's own
          Tags page, which embeds this section under its suggestions. -->
     @if (discovery.open() && !inExploreTags) {

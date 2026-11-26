@@ -33,6 +33,27 @@ Status: all five sprints implemented · 2026-11-26. Sprints 1–4 committed
   the session so Back returns to it. `Lists` gained optional `embedded`,
   `onlySections` and `tagParts` inputs for this; Feeds sets none of them.
 
+### Tags: More gets its own strip; friends' featured hashtags (2026-11-26)
+
+- Tags is **Yours | Similar | Trending | More**: the top-level "Featured" was
+  trending and is renamed, so "Featured" always means hashtags pinned on
+  profiles. Bulk import moved into Yours, under the followed list.
+- **More** has its own strip, **Tag bundles | Featured | Tag relay**, one panel
+  at a time. Tag relay explains itself when there is nothing to relay.
+- **Featured** (`discovery/explore-tags/friends-featured.ts`): your own featured
+  hashtags, then your friends', grouped by hashtag ("#rust, featured by Ana, Bo
+  and 3 more"), the most shared first, each with Follow and a peek link.
+  Friends are **mutuals** among one page each of follows and followers (two
+  requests, as Good stuff does), most recently active first; their featured
+  hashtags load **20 at a time** (one request each) with a "Check N more
+  friends (N API calls)" button, kept for the session. Anonymous gets one line.
+- The Feeds hub's "Your Featured Hashtags" is untouched: it stays the quick way
+  into your own featured feeds.
+- **For the Native repo (owner):** Native could answer friends' featured
+  hashtags from its archive (`/api/v1/accounts/:id/featured_tags` for followed
+  accounts, refreshed in the background) instead of 20 live requests a step.
+  The web path is a plain signed-in read, so it already works in Native today.
+
 ### As built (Sprint 5)
 
 - **Even more** (`shell/even-more/`) is an `mb-dialog` opened by one `…` row,

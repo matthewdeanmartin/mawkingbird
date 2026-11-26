@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2210,
-  "filesWithCandidates": 742,
+  "filesScanned": 2211,
+  "filesWithCandidates": 743,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -5929,19 +5929,73 @@
         },
         {
           "pattern": "shared",
-          "line": 83
+          "line": 50
         },
         {
           "pattern": "shared",
-          "line": 85
+          "line": 55
         },
         {
           "pattern": "shared",
-          "line": 97
+          "line": 60
+        },
+        {
+          "pattern": "shared",
+          "line": 66
+        },
+        {
+          "pattern": "shared",
+          "line": 99
+        },
+        {
+          "pattern": "shared",
+          "line": 101
+        },
+        {
+          "pattern": "shared",
+          "line": 113
         },
         {
           "pattern": "nativeButtons",
-          "line": 96
+          "line": 112
+        }
+      ]
+    },
+    {
+      "file": "ui/src/app/discovery/explore-tags/friends-featured.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 123
+        },
+        {
+          "pattern": "shared",
+          "line": 125
+        },
+        {
+          "pattern": "shared",
+          "line": 149
+        },
+        {
+          "pattern": "shared",
+          "line": 151
+        },
+        {
+          "pattern": "shared",
+          "line": 155
+        },
+        {
+          "pattern": "shared",
+          "line": 177
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 154
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 176
         }
       ]
     },
@@ -10871,11 +10925,11 @@
         },
         {
           "pattern": "shared",
-          "line": 849
+          "line": 868
         },
         {
           "pattern": "shared",
-          "line": 860
+          "line": 879
         },
         {
           "pattern": "nativeButtons",
@@ -10943,51 +10997,51 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 423
+          "line": 440
         },
         {
           "pattern": "nativeButtons",
-          "line": 436
+          "line": 453
         },
         {
           "pattern": "nativeButtons",
-          "line": 451
+          "line": 468
         },
         {
           "pattern": "nativeButtons",
-          "line": 506
+          "line": 525
         },
         {
           "pattern": "nativeButtons",
-          "line": 534
+          "line": 553
         },
         {
           "pattern": "nativeButtons",
-          "line": 589
+          "line": 608
         },
         {
           "pattern": "nativeButtons",
-          "line": 592
+          "line": 611
         },
         {
           "pattern": "nativeButtons",
-          "line": 638
+          "line": 657
         },
         {
           "pattern": "nativeButtons",
-          "line": 656
+          "line": 675
         },
         {
           "pattern": "nativeButtons",
-          "line": 766
+          "line": 785
         },
         {
           "pattern": "nativeButtons",
-          "line": 848
+          "line": 867
         },
         {
           "pattern": "nativeButtons",
-          "line": 859
+          "line": 878
         },
         {
           "pattern": "selects",
@@ -11019,35 +11073,35 @@
         },
         {
           "pattern": "legacyPills",
-          "line": 425
+          "line": 442
         },
         {
           "pattern": "legacyPills",
-          "line": 438
+          "line": 455
         },
         {
           "pattern": "legacyPills",
-          "line": 451
+          "line": 468
         },
         {
           "pattern": "legacyPills",
-          "line": 506
+          "line": 525
         },
         {
           "pattern": "legacyPills",
-          "line": 589
+          "line": 608
         },
         {
           "pattern": "legacyPills",
-          "line": 593
+          "line": 612
         },
         {
           "pattern": "legacyPills",
-          "line": 657
+          "line": 676
         },
         {
           "pattern": "legacyPills",
-          "line": 682
+          "line": 701
         }
       ]
     },

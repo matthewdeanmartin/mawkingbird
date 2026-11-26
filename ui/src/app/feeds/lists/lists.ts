@@ -147,6 +147,7 @@ import { MisskeyFeedSections } from './misskey-feed-sections';
 // i18n pages.lists.tagsPub.checking: Checking…
 // i18n pages.lists.tagsPub.check: Check tags.pub
 // i18n pages.lists.tagsPub.stop: Stop
+// i18n pages.lists.tagsPub.needsTags: A tag relay fills in posts on the hashtags you follow that your server never saw. Follow a hashtag first, signed in to Mastodon.
 // i18n pages.lists.tagsPub.followRelays.one: Follow {{count}} relay
 // i18n pages.lists.tagsPub.followRelays.other: Follow {{count}} relays
 // i18n pages.lists.tagBundles.heading: Tag bundles

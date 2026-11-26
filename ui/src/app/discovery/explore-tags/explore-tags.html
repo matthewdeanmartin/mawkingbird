@@ -39,20 +39,36 @@
         <ng-container *ngTemplateOutlet="suggestions; context: { $implicit: group('similar') }" />
       }
     </ng-template>
-    <ng-template mbTab value="featured" [label]="'exploreTags.tab.featured' | transloco">
-      @if (tab() === 'featured') {
+    <ng-template mbTab value="trending" [label]="'exploreTags.tab.trending' | transloco">
+      @if (tab() === 'trending') {
         <ng-container *ngTemplateOutlet="suggestions; context: { $implicit: group('trending') }" />
       }
     </ng-template>
     <ng-template mbTab value="more" [label]="'exploreTags.tab.more' | transloco">
       @if (tab() === 'more') {
-        <!-- tags.pub and bulk import, tag bundles, and your profile's featured
-             hashtags: the Feeds hub's sections, filtered. -->
-        <app-lists
-          [embedded]="true"
-          [onlySections]="['tags', 'tag-bundles', 'featured-tags']"
-          tagParts="extras"
-        />
+        <!-- A second strip, so More is three short sections, not one long page. -->
+        <mb-tabs
+          [label]="'exploreTags.moreTabs' | transloco"
+          [selected]="moreTab()"
+          (selectedChange)="selectMore($event)"
+        >
+          <ng-template mbTab value="bundles" [label]="'exploreTags.more.bundles' | transloco">
+            @if (moreTab() === 'bundles') {
+              <app-lists [embedded]="true" [onlySections]="['tag-bundles']" />
+            }
+          </ng-template>
+          <ng-template mbTab value="featured" [label]="'exploreTags.more.featured' | transloco">
+            @if (moreTab() === 'featured') {
+              <!-- Not the Feeds hub's "Your Featured Hashtags", which stays as it is. -->
+              <app-friends-featured [followed]="followedNow()" (follow)="follow($event)" />
+            }
+          </ng-template>
+          <ng-template mbTab value="relay" [label]="'exploreTags.more.relay' | transloco">
+            @if (moreTab() === 'relay') {
+              <app-lists [embedded]="true" [onlySections]="['tags']" tagParts="extras" />
+            }
+          </ng-template>
+        </mb-tabs>
         <p class="muted small et-topics">
           {{ 'exploreTags.byTopic' | transloco }}
           <a routerLink="/communities">{{ 'exploreTags.byTopicLink' | transloco }}</a>

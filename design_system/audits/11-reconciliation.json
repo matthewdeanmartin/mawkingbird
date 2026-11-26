@@ -3700,7 +3700,7 @@
     {
       "file": "ui/src/app/discovery/explore-tags/explore-tags.html",
       "disposition": "adopted scope",
-      "nextStep": "Explore → Tags: shared Page Header and Tabs (Yours | Similar | Featured | More, one panel rendered at a time), Item List rows (title link peeks the tag) with a compact Button to follow, and the Feeds hub's own tag sections embedded per tab. Keep each suggestion source's loading and failure line independent."
+      "nextStep": "Explore → Tags: shared Page Header and Tabs (Yours | Similar | Trending | More, with More's own Tabs: Tag bundles | Featured | Tag relay; one panel rendered at a time), Item List rows (title link peeks the tag) with a compact Button to follow, and the Feeds hub's own tag sections embedded per tab. Keep each suggestion source's loading and failure line independent."
     },
     {
       "file": "ui/src/app/shell/even-more/even-more.ts",
@@ -3711,6 +3711,11 @@
       "file": "ui/src/app/discovery/explore-people/explore-people.ts",
       "disposition": "adopted scope",
       "nextStep": "Explore → People: shared Tabs (Search | Suggested | Directory | More, one panel rendered at a time) over the existing Search, Server suggestions and Directory pages, with Find Friends' rows under More."
+    },
+    {
+      "file": "ui/src/app/discovery/explore-tags/friends-featured.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Explore → Tags → More → Featured: Item List rows for your featured hashtags and your mutuals' (grouped by hashtag, compact follow Button), and a small outline Button to check more friends. Follow state stays with the Tags page."
     }
   ]
 }

@@ -84,6 +84,16 @@ their sections here.
 - [ ] Feed checkup: a second visit within the hour is instant and says when it was checked; Check again resamples.
 - [ ] People shows Search | Suggested | Directory | More; Tags shows Yours | Similar | Featured | More. Back from a profile or tag returns to the tab you were on.
 
+## Tags: More strip and friends' featured hashtags
+
+- [ ] Tags shows Yours | Similar | Trending | More; bulk import is under Yours.
+- [ ] More shows its own Tag bundles | Featured | Tag relay strip; each is short.
+- [ ] Featured: your own featured hashtags, then friends' grouped by hashtag, most shared first, with "featured by …".
+- [ ] "Check N more friends" loads the next 20; leaving and returning does not refetch.
+- [ ] Follow on a friend's hashtag works and turns to Following.
+- [ ] Tag relay with no followed hashtags (or Anonymous) says why it is empty.
+- [ ] Feeds → Tags → Your Featured Hashtags looks exactly as before.
+
 ## Findings
 
 _None yet._

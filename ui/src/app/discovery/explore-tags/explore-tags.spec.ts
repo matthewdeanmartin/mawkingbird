@@ -121,7 +121,7 @@ describe('ExploreTags', () => {
       );
     });
 
-    it('splits suggestions over Yours | Similar | Featured | More, without repeats', () => {
+    it('splits suggestions over Yours | Similar | Trending | More, without repeats', () => {
       vi.spyOn(api, 'featuredTagSuggestions').mockReturnValue(
         of([tag('knitting'), tag('gardening')]),
       );
@@ -132,7 +132,7 @@ describe('ExploreTags', () => {
       expect([...host.querySelectorAll('[role="tab"]')].map((t) => t.textContent?.trim())).toEqual([
         'Yours',
         'Similar',
-        'Featured',
+        'Trending',
         'More',
       ]);
       // Yours: your followed hashtags (the Feeds sections), then the ones you post with.
@@ -142,13 +142,19 @@ describe('ExploreTags', () => {
       open('Similar');
       expect(text()).toContain('Tags similar to what you follow now');
       expect(names()).toEqual(['#compost', '#seeds']);
-      open('Featured');
-      // #compost is already in Similar, so Featured shows it once, there.
+      open('Trending');
+      // #compost is already in Similar, so it shows once, there.
       expect(names()).toEqual(['#news']);
       expect(text()).toContain('40 people this week');
       open('More');
-      expect(names()).toEqual([]);
+      // More has its own strip: Tag bundles | Featured | Tag relay.
+      const moreTabs = [...host.querySelectorAll('mb-tabs mb-tabs [role="tab"]')].map((t) =>
+        t.textContent?.trim(),
+      );
+      expect(moreTabs).toEqual(['Tag bundles', 'Featured', 'Tag relay']);
       expect(host.querySelector('app-lists')).not.toBeNull();
+      open('Featured');
+      expect(host.querySelector('app-friends-featured')).not.toBeNull();
     });
 
     it('keeps the other groups when one source fails', () => {
@@ -156,7 +162,7 @@ describe('ExploreTags', () => {
       vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
       render();
       expect(text()).toContain('Couldn’t load these.');
-      open('Featured');
+      open('Trending');
       expect(names()).toEqual(['#news']);
       open('Similar');
       expect(names()).toContain('#compost');
@@ -183,7 +189,7 @@ describe('ExploreTags', () => {
       vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
       vi.spyOn(api, 'followTag').mockReturnValue(throwError(() => new Error('403')));
       render();
-      open('Featured');
+      open('Trending');
       followButton('news')!.click();
       expect(text()).toContain('Couldn’t follow #news.');
     });
@@ -192,11 +198,11 @@ describe('ExploreTags', () => {
       vi.spyOn(api, 'featuredTagSuggestions').mockReturnValue(of([]));
       vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
       render();
-      open('Featured');
+      open('Trending');
       fixture.destroy();
       const host = render();
       expect(host.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim()).toBe(
-        'Featured',
+        'Trending',
       );
     });
   });
@@ -207,7 +213,7 @@ describe('ExploreTags', () => {
     vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
     const followTag = vi.spyOn(api, 'followTag');
     render();
-    open('Featured');
+    open('Trending');
     followButton('news')!.click();
     expect(TestBed.inject(AnonymousTags).has('news')).toBe(true);
     expect(followTag).not.toHaveBeenCalled();
