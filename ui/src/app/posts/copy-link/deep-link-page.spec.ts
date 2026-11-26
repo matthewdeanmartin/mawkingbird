@@ -68,6 +68,20 @@ describe('DeepLinkPage', () => {
 
   const post = { server: 'far.example', acct: 'bob@far.example', id: '42' };
 
+  it("opens a bare-handle link through the post's own address on its server", async () => {
+    resolveStatusOnHome.mockReturnValue(of({ id: 'local-9' } as Status));
+    await open('mastodon-post', { server: 'far.example', acct: 'bob', id: '42' });
+    expect(resolveStatusOnHome).toHaveBeenCalledWith('https://far.example/@bob/42');
+    expect(navigate).toHaveBeenCalledWith(['/statuses', 'local-9'], { replaceUrl: true });
+  });
+
+  it('explains an address it has no view of and links the original, instead of going Home', async () => {
+    const page = await open('foreign', { address: 'far.example/tags/phanpy' });
+    expect(navigate).not.toHaveBeenCalled();
+    expect(page.textContent).toContain('This link could not be opened here.');
+    expect(page.querySelector('a')?.getAttribute('href')).toBe('https://far.example/tags/phanpy');
+  });
+
   it("opens a post from the reader's own server by its id", async () => {
     await open('mastodon-post', { ...post, server: 'home.example' });
     expect(navigate).toHaveBeenCalledWith(['/statuses', '42'], { replaceUrl: true });

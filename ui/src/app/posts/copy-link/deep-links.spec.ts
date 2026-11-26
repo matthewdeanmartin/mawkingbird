@@ -5,6 +5,7 @@ import { Account, Status } from '../../platform/api/models';
 import {
   accountDeepLink,
   accountHandleLinkMatcher,
+  foreignAddressMatcher,
   mastodonPostLinkMatcher,
   postAcctParam,
   postLoadTarget,
@@ -170,7 +171,23 @@ describe('deep links', () => {
     it('never matches app routes, whose first segment is not a hostname', () => {
       expect(mastodonPostLinkMatcher(segments('accounts/@a@b.example/1'))).toBeNull();
       expect(mastodonPostLinkMatcher(segments('accounts/123/@a@b.example'))).toBeNull();
-      expect(mastodonPostLinkMatcher(segments('home.example/@alice/1'))).toBeNull();
+    });
+
+    it('also takes a bare @user, as in a Mastodon URL with mawkingbird.com in front', () => {
+      // Owner, 2026-11-26: such links used to bounce to Home.
+      const match = mastodonPostLinkMatcher(segments('hachyderm.io/@fantinel/115649871234'));
+      expect(match?.posParams?.['server'].path).toBe('hachyderm.io');
+      expect(match?.posParams?.['acct'].path).toBe('fantinel');
+      expect(mastodonPostLinkMatcher(segments('hachyderm.io/@/1'))).toBeNull();
+      expect(mastodonPostLinkMatcher(segments('hachyderm.io/@a b/1'))).toBeNull();
+    });
+
+    it('matches any other address that starts with a server name, and nothing else', () => {
+      expect(
+        foreignAddressMatcher(segments('hachyderm.io/tags/phanpy'))?.posParams?.['address'].path,
+      ).toBe('hachyderm.io/tags/phanpy');
+      expect(foreignAddressMatcher(segments('home'))).toBeNull();
+      expect(foreignAddressMatcher(segments('accounts/1'))).toBeNull();
     });
 
     it('matches only a fully qualified /@user@host', () => {

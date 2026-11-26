@@ -33,6 +33,8 @@ const HOSTNAME =
   /^(?=.{4,253}$)[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)+(?::\d{1,5})?$/i;
 const QUALIFIED_HANDLE = /^[^@\s/]+@[^@\s/]+\.[^@\s/]+$/;
 const MASTODON_ID = /^[A-Za-z0-9]+$/;
+/** A username on the server named by the link: `@ana` in `/<server>/@ana/<id>`. */
+const BARE_USERNAME = /^[A-Za-z0-9_][A-Za-z0-9_.-]{0,63}$/;
 
 /** The host of a server base URL, or of an already-bare host. Null when unusable. */
 export function serverHost(server: string | null | undefined): string | null {
@@ -198,12 +200,19 @@ export function postLoadTarget(
 
 // --- Route matchers -----------------------------------------------------------
 
-/** `/<server>/@<acct>/<id>`: the first segment must look like a hostname, so no app route collides. */
+/**
+ * `/<server>/@<acct>/<id>`: the first segment must look like a hostname, so no
+ * app route collides. `<acct>` is `user@host` (what Copy link writes) or a bare
+ * `user` on `<server>`: a Mastodon post URL with mawkingbird.com put in front,
+ * which is what people and tools build by hand.
+ */
 export function mastodonPostLinkMatcher(segments: UrlSegment[]): UrlMatchResult | null {
   if (segments.length !== 3) return null;
   const [server, acct, id] = segments;
   if (!HOSTNAME.test(server.path)) return null;
-  if (!acct.path.startsWith('@') || !QUALIFIED_HANDLE.test(acct.path.slice(1))) return null;
+  const handle = acct.path.slice(1);
+  if (!acct.path.startsWith('@') || !(QUALIFIED_HANDLE.test(handle) || BARE_USERNAME.test(handle)))
+    return null;
   if (!MASTODON_ID.test(id.path)) return null;
   return {
     consumed: segments,
@@ -212,6 +221,20 @@ export function mastodonPostLinkMatcher(segments: UrlSegment[]): UrlMatchResult 
       acct: new UrlSegment(acct.path.slice(1), {}),
       id: id,
     },
+  };
+}
+
+/**
+ * Any other address that starts with a server name (`/hachyderm.io/…`): someone
+ * put mawkingbird.com in front of a page on another server that this app has no
+ * view of. Matched so the reader is told so and offered the original, rather
+ * than being dropped on Home.
+ */
+export function foreignAddressMatcher(segments: UrlSegment[]): UrlMatchResult | null {
+  if (!segments.length || !HOSTNAME.test(segments[0].path)) return null;
+  return {
+    consumed: segments,
+    posParams: { address: new UrlSegment(segments.map((s) => s.path).join('/'), {}) },
   };
 }
 

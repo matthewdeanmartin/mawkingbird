@@ -9,6 +9,7 @@ import { readPreviewState } from '../../accounts/first-run/preview-state';
 import {
   accountHandleLinkMatcher,
   isTwitterHandle,
+  foreignAddressMatcher,
   mastodonPostLinkMatcher,
 } from '../../posts/copy-link/deep-links';
 
@@ -107,6 +108,8 @@ export const authGuard: CanActivateFn = (_route, state) => {
   const parts = segments.map((segment) => segment.path);
   const copiedLink =
     !!mastodonPostLinkMatcher(segments) ||
+    // Its page explains and links the original; a fresh visitor sees that too.
+    !!foreignAddressMatcher(segments) ||
     !!accountHandleLinkMatcher(segments) ||
     (parts[0] === 'bsky' &&
       parts[1] === 'profile' &&

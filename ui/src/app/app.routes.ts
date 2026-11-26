@@ -28,7 +28,11 @@ import { anonymousOnlyGuard } from './accounts/anonymous/anonymous-only.guard';
 import { featureFlagGuard } from './platform/build/feature-flag.guard';
 import { misskeyPrimaryMatch } from './connections/misskey/misskey-route.guard';
 import { forumThreadGuard } from './forum/forum-thread.guard';
-import { accountHandleLinkMatcher, mastodonPostLinkMatcher } from './posts/copy-link/deep-links';
+import {
+  accountHandleLinkMatcher,
+  foreignAddressMatcher,
+  mastodonPostLinkMatcher,
+} from './posts/copy-link/deep-links';
 import { inviteAccessGuard } from './accounts/invites/invite-access.guard';
 import {
   justMyServerUpdateCanDeactivate,
@@ -1936,6 +1940,15 @@ export const routes: Routes = [
         matcher: accountHandleLinkMatcher,
         title: 'Profile',
         data: { kind: 'account' },
+        loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+      },
+      {
+        // `/<server>/anything else`: another server's page with mawkingbird.com
+        // in front. Says it can't be opened here and links the original,
+        // instead of the catch-all's silent trip to Home.
+        matcher: foreignAddressMatcher,
+        title: 'Link',
+        data: { kind: 'foreign' },
         loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
       },
       {

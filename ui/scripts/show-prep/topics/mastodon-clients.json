@@ -1,0 +1,78 @@
+{
+  "id": "mastodon-clients",
+  "title": "Mastodon clients",
+  "blurb": "Apps for reading and posting on Mastodon: what is new, what people love, what is coming.",
+  "servers": ["mastodon.social", "fosstodon.org", "hachyderm.io", "mastodon.online"],
+  "hashtags": [
+    "MastodonClient",
+    "MastodonApp",
+    "MastodonApps",
+    "FediverseApps",
+    "Phanpy",
+    "Elk",
+    "Ivory",
+    "IceCubes",
+    "Tusky",
+    "Moshidon",
+    "Pachli",
+    "Fedilab",
+    "Mona",
+    "Tokodon",
+    "Megalodon",
+    "Mawkingbird"
+  ],
+  "segments": [
+    {
+      "id": "web",
+      "title": "Web clients",
+      "keywords": ["phanpy", "elk", "mawkingbird", "web client"]
+    },
+    {
+      "id": "ios",
+      "title": "iPhone and Mac",
+      "keywords": ["ivory", "ice cubes", "icecubes", "mona", "ios", "macos"]
+    },
+    {
+      "id": "android",
+      "title": "Android",
+      "keywords": ["tusky", "moshidon", "pachli", "fedilab", "megalodon", "android"]
+    },
+    {
+      "id": "desktop",
+      "title": "Desktop and Linux",
+      "keywords": ["tokodon", "kde", "linux", "desktop"]
+    },
+    {
+      "id": "general",
+      "title": "Clients in general",
+      "keywords": ["client", "app", "apps"]
+    }
+  ],
+  "ambiguous": ["elk", "ivory", "mona", "megalodon", "tusky", "toot"],
+  "contextWords": [
+    "mastodon",
+    "fediverse",
+    "fedi",
+    "client",
+    "app",
+    "apps",
+    "toot",
+    "toots",
+    "instance",
+    "server",
+    "timeline",
+    "ios",
+    "android",
+    "iphone",
+    "ipad",
+    "mac",
+    "desktop"
+  ],
+  "seedAccounts": [],
+  "languages": ["en"],
+  "maxAgeDays": 14,
+  "perAuthor": 2,
+  "perSegment": 8,
+  "perTagLimit": 40,
+  "requestBudget": 80
+}

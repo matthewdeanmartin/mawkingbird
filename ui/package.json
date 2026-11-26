@@ -72,6 +72,8 @@
     "fedicensus:update": "node scripts/import-fedicensus.mjs",
     "fedicensus:check": "node --test scripts/import-fedicensus.test.mjs",
     "podcasts:update": "node scripts/import-podcasts.mjs",
+    "show-prep": "node scripts/show-prep/show-prep.mjs",
+    "show-prep:test": "node --test scripts/show-prep/*.test.mjs",
     "podcasts:check": "node scripts/import-podcasts.mjs --check && node --test scripts/import-podcasts.test.mjs",
     "feedbuilder:check": "node scripts/import-feed-builder.mjs --check",
     "starter-locales:report": "node scripts/starter-locale-coverage.mjs",

@@ -21,7 +21,7 @@ import { isTwitterHandle, serverHost } from './deep-links';
 
 /** Which copied-link shape the route matched. Set as route `data.kind`. */
 export type DeepLinkKind =
-  'mastodon-post' | 'post-ref' | 'account' | 'bsky-post' | 'bsky-profile' | 'twitter';
+  'mastodon-post' | 'post-ref' | 'account' | 'bsky-post' | 'bsky-profile' | 'twitter' | 'foreign';
 
 const RESOLVE_TIMEOUT_MS = 15_000;
 /** An id the reader's own server issued, as opposed to a public ref. */
@@ -138,6 +138,10 @@ export class DeepLinkPage implements OnInit {
         );
         return id ? ['/statuses', `twitter:${id}`] : ['/accounts', `twitter:@${user}`];
       }
+      case 'foreign':
+        // Nothing here to open: say so, and offer the page where it lives.
+        this.setOriginal(`https://${param('address')}`);
+        return null;
       default:
         return null;
     }
