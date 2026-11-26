@@ -1,90 +1,137 @@
-# Publishing Mawkingbird Native
+# Releasing Mawkingbird Native with kaclm and GitHub Actions
 
-The private `mawkingbird_native` repository is the development and test channel.
-This public repository contains a reviewed source snapshot and produces the
-public, unsigned desktop installers. Website deployment stays independent; only
-publishing a `native-v...` GitHub Release starts the desktop distribution job.
-Run the commands below from this repository's root.
+## Agent contract: read before release preparation
 
-## Prepare a reviewed snapshot
+The maintainer owns the decision to publish. GitHub Actions owns release
+versioning, changelog promotion, the version-bump pull request (MR), installer
+builds and release attachments. Updating notes or checking readiness does not
+authorize an agent to perform those automated steps locally.
 
-1. Write the notes with the
-   [changelog runbook](NATIVE_CHANGELOG_RUNBOOK.md). They live in
-   `NATIVE_CHANGELOG.md` here; the private repo holds a copy. Windows is
-   built locally; Actions builds macOS and Linux.
-2. Set the same version in the private `src-tauri/tauri.conf.json`,
-   `src-tauri/Cargo.toml`, and its generated `src-tauri/Cargo.lock`. The public
-   workflow checks all three against the `native-v` tag.
-3. From the private checkout, run `make deploy-source` to copy the chosen
-   source locally into this repository's `native/` mirror. It deletes whatever is
-   there, so first make sure nobody edited the mirror: every change in
-   `git log <last native-v tag>..HEAD -- native` must also be in the private repo.
-   Afterwards, inspect the public diff and compile it as the workflow does
-   (`cargo test --locked` in `native/src-tauri`, after a frontend build). A file
-   type the script doesn't list is silently left behind. It does not commit or push.
-4. Promote the notes to the release version and copy them back:
+- Keep new user-facing notes under `NATIVE_CHANGELOG.md` → `[Unreleased]`.
+- Do not run `kaclm release`, rename or empty Unreleased, or date a release heading
+  as normal preparation. Do not preempt the automation's version-bump PR.
+- Do not manually bump Tauri, Cargo.toml or Cargo.lock, including in the private
+  host checkout. Development version files need not already say the next version.
+- The draft workflow owns the draft. Do not create/update releases locally with
+  `kaclm github-release` or `gh release create` as a substitute.
+- Do not commit, push, dispatch workflows, merge, tag or publish without explicit
+  authorization for the relevant action. Preparing notes does not authorize them.
+- Do not move/delete tags, delete releases or run rollback commands as a workaround.
+  Recovery is a separate, explicitly authorized task.
+- If workflow code contradicts this contract, report the mismatch and repair the
+  automation under an implementation task. Do not compensate with manual bumps
+  or promotion. Old runbooks do not override this contract.
 
-   ```sh
-   alias k='uvx --no-build --from keepachangelog-manager-fork==6.10.1 kaclm --component native'
-   k release --override-version 0.1.0 --dry-run --yes
-   k release --override-version 0.1.0 --yes   # then restore the introduction
-   k validate
-   make native-changelog
-   RELEASE_TAG=native-v0.1.0 node .github/scripts/check-native-release.mjs
-   ```
+The public `native/` directory is a generated snapshot of the private
+`../mawkingbird_native` source. Never hand-edit the mirror.
 
-   Replace `0.1.0` with the reviewed version. `kaclm` manages this changelog
-   and its `native-v` tag namespace; it does not edit Tauri or Cargo files.
-   After the assets are attached, update the direct installer links in `README.md`
-   and `ui/src/app/settings/app/settings-app.ts`; before that they would 404.
+## Intended normal lifecycle
 
-5. Review the complete public diff, then commit and push it yourself. The
-   source, version files, and numbered changelog section must be on the commit
-   selected for the Release. The push refreshes the Native draft Release. No
-   workflow commits or pushes code.
+1. **Development:** maintain reviewed notes in Unreleased using the
+   [changelog runbook](NATIVE_CHANGELOG_RUNBOOK.md). Validate and copy the notes
+   into the private checkout. Prepare/test the shared UI and host.
+2. **Source snapshot:** when deployment is authorized, inspect the mirror for
+   changes to port back, then run `make deploy-source` in the private checkout.
+   Review the public diff. Do not bump versions.
+3. **Draft:** after an authorized push, the draft GitHub Action derives the next
+   Native release from the changelog and creates/updates the draft. The maintainer
+   reviews its proposed version, notes, source commit and `native-v` tag namespace.
+   An authorized manual workflow dispatch can also request the draft job.
+4. **Publish:** the maintainer publishes the reviewed draft GitHub Release.
+   Its `release: published` event starts release automation.
+5. **Automation:** the release job performs the kaclm promotion/version bookkeeping,
+   opens the version-bump PR/MR, builds Windows/macOS/Linux installers with matching
+   embedded versions, and attaches them to that same release. Agents must not create
+   competing local promotion or version-bump commits.
+6. **Finish:** review the automation PR and merge only when authorized. Synchronize
+   its resulting version/changelog state back to the private source before a later
+   mirror deployment overwrites it. Verify installer attachments before updating
+   direct download links in README and Settings > About.
 
-## Create and publish the public Release
+Verify that the published tag, packaged source, embedded version and automation
+PR agree. Opening a PR after publication does not by itself change an existing
+tag; the workflow must have an explicit checkout/build/version strategy.
 
-`.github/workflows/native-draft-release.yml` creates or refreshes a draft on
-`main` when Native source, shared UI, or release notes change. It uses the
-version in `native/src-tauri/tauri.conf.json` and requires the matching numbered
-changelog section. Promote `[Unreleased]` with `kaclm release` and push that
-change before publishing the draft. You can also run it manually from Actions.
-To refresh the draft locally instead, run:
+## Automation and mirror synchronization
+
+The draft workflow asks pinned kaclm for the future version and drafts directly
+from Unreleased. Its optional `version` dispatch input selects a fresh number if
+one was burned. It never changes an already-published release back into a draft.
+The draft targets the reviewed source commit.
+
+Publishing runs kaclm promotion in CI, stamps the application version and saves
+one metadata overlay. Every installer, the SBOM, and the bookkeeping PR use that
+same overlay. The original source tag stays unchanged; the release also attaches
+`native-release-metadata.tar` so its generated changes are reproducible. No agent
+promotes the local working changelog to prepare a release. Pinned kaclm 6.10.1
+replaces the introduction and omits empty Unreleased after promotion; the CI
+helper restores both. Keep the isolated regression test when changing kaclm.
+
+The bookkeeping PR is independent of installer builds. If PR creation fails,
+Actions emits a prominent warning and builds continue. Enable GitHub Actions PR
+creation in the public repository settings; no private repository credentials are
+needed. Review/merge the PR when convenient. Reruns preserve an existing branch.
+
+`make deploy-source` locally synchronizes the latest numbered public changelog
+version into the private Tauri version, Cargo package version and application's
+lock entry, and copies the changelog. It preserves dependency/configuration
+changes. It does not fetch, commit or push. A bounded, read-only GitHub release lookup
+warns when publication is ahead of local notes (often an unmerged bookkeeping
+PR). Lookup failure/offline mode also warns and continues; set
+`NATIVE_RELEASE_OFFLINE=1` when intentionally working offline. A stale public checkout, local mirror
+changes or inconsistent release metadata produce **loud warnings and continue**;
+review the resulting diff. A failed synchronization keeps available private state. A private version newer
+than the published notes is preserved with a warning rather than downgraded.
+An older version buried in Rust source alone is not a reason to undo a release.
+
+If publication/builds go wrong, diagnose and retry when appropriate or use the
+next version number. Never delete/move published tags or roll back a release as
+routine repair. Version numbers are cheap; reversing half a release is not.
+
+These workflows and synchronization helpers were updated for 0.3.0. Local tests
+are evidence of preparation, not evidence that GitHub has run the new workflow.
+
+## Read-only readiness checks
+
+Use Git Bash from the public repository. Python uses UTF-8; installs use wheels.
 
 ```sh
-kaclm --component native github-release \
-  --repository matthewdeanmartin/mawkingbird --version 0.1.0
+uvx --no-build --from keepachangelog-manager-fork==6.10.1 kaclm --component native validate
+make native-changelog-check
+node --test native/scripts/release-version.test.mjs
+node .github/scripts/test-native-release.mjs  # promotes only an isolated fixture
+git status --short
+git -C ../mawkingbird_native status --short
+gh workflow list --repo matthewdeanmartin/mawkingbird
+gh release list --repo matthewdeanmartin/mawkingbird
 ```
 
-The command needs a GitHub token. Open the draft under **Releases**, check that
-its target is the reviewed public commit and its notes clearly say why to
-install this update, then publish it manually. This publication runs
-`.github/workflows/native-release.yml` for Windows, macOS, and Linux. The
-workflow builds from the release tag and attaches `.exe`/`.msi`, `.dmg`, and
-Linux installer files directly to the GitHub Release. Action-run artifacts are
-only temporary transfer files between build and attachment jobs. The attachment
-job also publishes `mawkingbird-native-dependencies.spdx.json`, generated from
-the reviewed UI npm and Native Cargo lockfiles. It records application
-dependencies, including build dependencies; it is not an inventory of host OS
-libraries. GitHub attests each installer with build provenance and this SBOM.
-To verify a downloaded installer against this repository's attestations, run:
+Read the current draft and workflow run, not just local tags: local release tags
+can be missing. Report notes reviewed, snapshot current, automated results,
+owner-confirmed behavior, untested behavior, known unsupported controls and
+workflow discrepancies. Do not interpret a development version as an instruction
+to bump it yourself.
+
+## Artifacts, acceptance and recovery
+
+The installer workflow builds unsigned Windows `.exe`/`.msi`, macOS `.dmg`, and
+Linux `.deb`/`.rpm`/`.AppImage` packages. Verify matrix results and attachments on
+the release, not just temporary Actions artifacts. It also attaches a dependency
+SBOM and attests the installers. For example:
 
 ```sh
 gh attestation verify PATH_TO_INSTALLER -R matthewdeanmartin/mawkingbird
-gh attestation verify PATH_TO_INSTALLER -R matthewdeanmartin/mawkingbird \
-  --predicate-type https://spdx.dev/Document/v2.3
+gh attestation verify PATH_TO_INSTALLER -R matthewdeanmartin/mawkingbird --predicate-type https://spdx.dev/Document/v2.3
 ```
 
-The installers are unsigned, so operating systems may show an untrusted-app
-warning. There is no store listing or paid entitlement in this release path.
-If a build or attachment fails, inspect that workflow run and rerun the failed
-job if the release tag already contains the fix. A tag points to a fixed source
-commit: changing `main` does not change a rerun of that tag. If a release was
-published before the numbered changelog section was committed, preview
-`kaclm --component native release-rollback --tag native-vX.Y.Z --repository
-matthewdeanmartin/mawkingbird --dry-run`. After reviewing that it targets only
-the failed release and tag, remove them with the same command and `--yes`,
-commit and push the promoted changelog, then create and publish a new draft for
-the same version. This removes the published Release temporarily; do not apply
-it to a release with working assets. Verify assets before announcing a release.
+Inspect a failing job and its exact source/tag before proposing recovery. Rerun
+only when the tagged source is already correct. Otherwise prefer a fresh version with the fix; document the affected release,
+cause and proposed changes for the maintainer. A
+failure is not permission to move tags, delete a release, promote notes or bump.
+
+This is a single-maintainer project: do not hold a release merely because every
+feature lacks manual verification. Do not advertise features known to fail.
+
+Free third-party services can be flaky. Record an isolated upstream outage (for
+example Apertium returning HTTP 500 during the live smoke) as a warning, not a
+reason to hold or undo a release. Distinguish it from failures in our own code.

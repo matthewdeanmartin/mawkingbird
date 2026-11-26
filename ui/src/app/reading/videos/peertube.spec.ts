@@ -92,6 +92,15 @@ describe('PeerTube streams', () => {
     expect(peertubeVideo({ ...api, nsfw: true }, 'tube.example', false, 'k').sensitive).toBe(true);
   });
 
+  it('offers no native stream for HLS-only or live videos, leaving the external fallback available', () => {
+    const hlsOnly = { streamingPlaylists: [{ playlistUrl: 'https://tube.example/master.m3u8' }] };
+    expect(pickStream(hlsOnly, 'tube.example', true)).toBeNull();
+    expect(pickStream(hlsOnly, 'tube.example', false)).toBe('https://tube.example/master.m3u8');
+    expect(
+      peertubeVideo({ ...api, isLive: true }, 'tube.example', true, 'live').playable,
+    ).toBeNull();
+  });
+
   it('reads the instance’s public API anonymously', async () => {
     TestBed.configureTestingModule({
       providers: [

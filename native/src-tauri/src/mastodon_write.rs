@@ -7,6 +7,7 @@ use crate::{
     mastodon_login::account_credential,
     public_mastodon::{client_for, failure, read_json, validate_url, Failure, PublicResponse},
 };
+use base64::{engine::general_purpose::STANDARD, Engine};
 use serde::Deserialize;
 use serde_json::Value;
 use std::time::Duration;
@@ -15,6 +16,169 @@ use url::Url;
 
 static WRITES: Semaphore = Semaphore::const_new(8);
 const MAX_BODY: usize = 512 * 1024;
+const MAX_PICTURE: usize = 16 * 1024 * 1024;
+static UPLOADS: Semaphore = Semaphore::const_new(4);
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct PictureUpload {
+    url: String,
+    mime: String,
+    data: String,
+    #[serde(default)]
+    description: String,
+}
+
+fn picture_body(input: &PictureUpload) -> Result<(Vec<u8>, String), Failure> {
+    let denied = || {
+        failure("policy", "Native uploads support PNG, JPEG, GIF and WebP pictures up to 16 MiB. Your server may have a lower limit.")
+    };
+    if input.data.len() > MAX_PICTURE.div_ceil(3) * 4 || input.description.len() > 64 * 1024 {
+        return Err(denied());
+    }
+    let bytes = STANDARD.decode(&input.data).map_err(|_| denied())?;
+    if bytes.is_empty() || bytes.len() > MAX_PICTURE {
+        return Err(denied());
+    }
+    let extension = match input.mime.as_str() {
+        "image/png" if bytes.starts_with(b"\x89PNG\r\n\x1a\n") => "png",
+        "image/jpeg" if bytes.starts_with(b"\xff\xd8\xff") => "jpg",
+        "image/gif" if bytes.starts_with(b"GIF87a") || bytes.starts_with(b"GIF89a") => "gif",
+        "image/webp" if bytes.starts_with(b"RIFF") && bytes.get(8..12) == Some(b"WEBP") => "webp",
+        _ => return Err(denied()),
+    };
+    // Random boundary; never incorporate renderer-controlled header values.
+    let boundary = format!("mawkingbird-{:032x}", rand::random::<u128>());
+    let mut body = format!("--{boundary}\r\nContent-Disposition: form-data; name=\"description\"\r\n\r\n{}\r\n--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"picture.{extension}\"\r\nContent-Type: {}\r\n\r\n", input.description, input.mime).into_bytes();
+    body.extend_from_slice(&bytes);
+    body.extend_from_slice(format!("\r\n--{boundary}--\r\n").as_bytes());
+    Ok((body, format!("multipart/form-data; boundary={boundary}")))
+}
+
+fn picture_target(input: &PictureUpload, origin: &str, scopes: &str) -> Result<Url, Failure> {
+    if input.url.len() > 8192 || input.url.chars().any(char::is_control) {
+        return Err(failure("policy", "Invalid upload destination."));
+    }
+    let mut target =
+        Url::parse(&input.url).map_err(|_| failure("policy", "Invalid upload destination."))?;
+    if target.path() != "/api/v2/media" {
+        return Err(failure(
+            "policy",
+            "Only picture attachment uploads are supported.",
+        ));
+    }
+    // Reuse same-origin, HTTPS, scope and query checks for existing media writes.
+    target.set_path("/api/v1/media/upload");
+    let checked = write_target(
+        &AccountWrite {
+            url: target.into(),
+            method: "PUT".into(),
+            body: None,
+            form: None,
+            idempotency_key: None,
+        },
+        origin,
+        scopes,
+    )?;
+    let mut target = checked;
+    target.set_path("/api/v2/media");
+    Ok(target)
+}
+
+#[tauri::command]
+pub async fn mastodon_picture_upload(
+    handle: String,
+    input: PictureUpload,
+) -> Result<PublicResponse, Failure> {
+    let _permit = UPLOADS.try_acquire().map_err(|_| {
+        failure(
+            "busy",
+            "Four pictures are already uploading. Wait for them to finish and try again.",
+        )
+    })?;
+    let (origin, token, scopes) = account_credential(&handle)?;
+    let target = picture_target(&input, &origin, &scopes)?;
+    let (body, content_type) = picture_body(&input)?;
+    let client = client_for(&target).await?;
+    let response = client
+        .post(target.clone())
+        .bearer_auth(&token)
+        .header("Content-Type", content_type)
+        .header("Accept", "application/json")
+        .header("Accept-Encoding", "identity")
+        .timeout(Duration::from_secs(120))
+        .body(body)
+        .send()
+        .await
+        .map_err(|_| {
+            failure(
+                "network",
+                "Picture upload failed or timed out. Check your connection before trying again.",
+            )
+        })?;
+    let uploaded = read_json(response).await?;
+    tokio::time::timeout(
+        Duration::from_secs(90),
+        finish_picture(&client, &target, &token, uploaded, Duration::from_secs(2)),
+    )
+    .await
+    .unwrap_or_else(|_| {
+        Err(failure(
+            "timeout",
+            "The picture was uploaded but is still processing. Wait before trying again.",
+        ))
+    })
+}
+
+async fn finish_picture(
+    client: &reqwest::Client,
+    target: &Url,
+    token: &str,
+    mut response: PublicResponse,
+    delay: Duration,
+) -> Result<PublicResponse, Failure> {
+    if !(200..300).contains(&response.status) {
+        return Ok(response);
+    }
+    let uploaded: Value = serde_json::from_str(&response.body)
+        .map_err(|_| failure("response", "Invalid picture upload response."))?;
+    if uploaded["url"].as_str().is_some_and(|url| !url.is_empty()) {
+        return Ok(response);
+    }
+    let media_id = uploaded["id"]
+        .as_str()
+        .filter(|value| id(value))
+        .ok_or_else(|| failure("response", "Missing uploaded picture ID."))?;
+    let mut poll = target.clone();
+    poll.set_path(&format!("/api/v1/media/{media_id}"));
+    for _ in 0..30 {
+        tokio::time::sleep(delay).await;
+        let next = client
+            .get(poll.clone())
+            .bearer_auth(token)
+            .header("Accept", "application/json")
+            .timeout(Duration::from_secs(15))
+            .send()
+            .await
+            .map_err(|_| failure("network", "Could not check uploaded picture processing."))?;
+        if next.status().as_u16() == 206 {
+            continue;
+        }
+        response = read_json(next).await?;
+        if !(200..300).contains(&response.status) {
+            return Ok(response);
+        }
+        let value: Value = serde_json::from_str(&response.body)
+            .map_err(|_| failure("response", "Invalid picture processing response."))?;
+        if value["url"].as_str().is_some_and(|url| !url.is_empty()) {
+            return Ok(response);
+        }
+    }
+    Err(failure(
+        "timeout",
+        "The picture was uploaded but is still processing. Wait before trying again.",
+    ))
+}
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -307,6 +471,70 @@ mod tests {
     };
     const ORIGIN: &str = "https://example.com";
     const FULL: &str = "read write follow";
+
+    #[test]
+    fn pictures_are_bounded_typed_and_stay_on_the_authenticated_server() {
+        let mut picture = PictureUpload {
+            url: format!("{ORIGIN}/api/v2/media"),
+            mime: "image/png".into(),
+            data: STANDARD.encode(b"\x89PNG\r\n\x1a\nsynthetic picture bytes"),
+            description: "A fox\r\nin snow".into(),
+        };
+        let (body, content_type) = picture_body(&picture).unwrap();
+        assert!(content_type.starts_with("multipart/form-data; boundary="));
+        assert!(body.windows(8).any(|w| w == b"\x89PNG\r\n\x1a\n"));
+        let text = String::from_utf8_lossy(&body);
+        assert!(text.contains("name=\"description\"\r\n\r\nA fox\r\nin snow"));
+        assert!(text.contains("filename=\"picture.png\""));
+        assert!(picture_target(&picture, ORIGIN, "write:media").is_ok());
+        assert_eq!(
+            picture_target(&picture, ORIGIN, "read").unwrap_err().kind,
+            "reauthorize"
+        );
+        for url in [
+            "https://other.example/api/v2/media",
+            "https://example.com/api/v2/media?token=x",
+            "https://user:pass@example.com/api/v2/media",
+            "https://example.com/api/v1/accounts/update_credentials",
+            "http://example.com/api/v2/media",
+        ] {
+            picture.url = url.into();
+            assert!(picture_target(&picture, ORIGIN, FULL).is_err(), "{url}");
+        }
+        picture.mime = "image/jpeg".into();
+        assert!(picture_body(&picture).is_err());
+        picture.mime = "image/png".into();
+        picture.data = "a".repeat(MAX_PICTURE.div_ceil(3) * 4 + 1);
+        assert!(picture_body(&picture).is_err());
+    }
+
+    #[test]
+    fn picture_processing_polls_after_202_and_handles_empty_206() {
+        tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
+            let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+            let address = listener.local_addr().unwrap();
+            let server = tokio::spawn(async move {
+                for answer in ["HTTP/1.1 206 Partial Content\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".to_string(), {
+                    let body = r#"{"id":"abc","url":"https://cdn.example/p.png"}"#;
+                    format!("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}", body.len())
+                }] {
+                    let (mut socket, _) = listener.accept().await.unwrap();
+                    let mut bytes = vec![0; 8192];
+                    let n = socket.read(&mut bytes).await.unwrap();
+                    let request = String::from_utf8_lossy(&bytes[..n]);
+                    assert!(request.starts_with("GET /api/v1/media/abc HTTP/1.1"));
+                    assert!(request.to_lowercase().contains("authorization: bearer synthetic-token"));
+                    socket.write_all(answer.as_bytes()).await.unwrap();
+                }
+            });
+            let client = reqwest::Client::builder().no_proxy().build().unwrap();
+            let target = Url::parse(&format!("http://{address}/api/v2/media")).unwrap();
+            let response = PublicResponse { status: 202, body: r#"{"id":"abc","url":null}"#.into(), headers: Default::default() };
+            let ready = finish_picture(&client, &target, "synthetic-token", response, Duration::ZERO).await.unwrap();
+            assert_eq!(ready.status, 200);
+            server.await.unwrap();
+        });
+    }
 
     fn input(method: &str, path: &str) -> AccountWrite {
         AccountWrite {

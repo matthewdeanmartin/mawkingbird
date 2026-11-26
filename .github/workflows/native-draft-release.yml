@@ -10,6 +10,11 @@ on:
       - "changelogmanager.toml"
       - ".github/workflows/native-draft-release.yml"
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Optional next version (use a fresh number if one was burned)'
+        required: false
+        type: string
 
 concurrency: native-draft-release
 
@@ -30,12 +35,25 @@ jobs:
           node-version: "22"
       - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
       - name: Validate Native changelog
-        run: uvx --from keepachangelog-manager-fork==6.10.1 kaclm --component native validate
+        run: uvx --no-build --from keepachangelog-manager-fork==6.10.1 kaclm --component native validate
       - name: Create or update Native draft
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+          REQUESTED_VERSION: ${{ inputs.version }}
         run: |
-          VERSION=$(node -p "require('./native/src-tauri/tauri.conf.json').version")
-          RELEASE_TAG="native-v${VERSION}" node .github/scripts/check-native-release.mjs
-          uvx --from keepachangelog-manager-fork==6.10.1 kaclm --component native github-release \
+          VERSION="${REQUESTED_VERSION:-$(uvx --no-build --from keepachangelog-manager-fork==6.10.1 kaclm --component native version --reference future)}"
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Invalid version' >&2; exit 1; }
+          if ! gh api --paginate --slurp "repos/$GITHUB_REPOSITORY/releases?per_page=100" > release-state.json; then
+            echo '::warning::Could not establish published release state. Leaving releases untouched; retry this draft job later or select a fresh version.'
+            exit 0
+          fi
+          export NATIVE_DRAFT_VERSION="$VERSION"
+          state=$(node -e "const releases = require('./release-state.json').flat(); const r = releases.find(r => r.tag_name === 'native-v' + process.env.NATIVE_DRAFT_VERSION); console.log(!r ? 'missing' : r.draft ? 'draft' : 'published')")
+          if [[ "$state" == published ]]; then
+            echo '::warning::This version is already published. Merge the bookkeeping PR or dispatch with a fresh version; never roll back the release.'
+            exit 0
+          fi
+          uvx --no-build --from keepachangelog-manager-fork==6.10.1 kaclm --component native github-release \
             --repository "$GITHUB_REPOSITORY" --version "$VERSION" --draft
+          gh release edit "native-v$VERSION" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA"

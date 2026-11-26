@@ -77,8 +77,8 @@ k validate
 git diff NATIVE_CHANGELOG.md
 ```
 
-`kaclm add` and `kaclm release` replace the introduction at the top of the file with
-their own. Restore it after the last command (the lines above `## [Unreleased]`) and
+`kaclm add` replaces the introduction at the top of the file with
+its own. Restore it after the last command (the lines above `## [Unreleased]`) and
 validate again. Editing wording by hand is fine; validate afterwards.
 
 ## 4. Copy to mawkingbird_native
@@ -88,35 +88,23 @@ make native-changelog         # validate, then copy to ../mawkingbird_native/CHA
 make native-changelog-check   # fails if the two differ
 ```
 
-Run it after every change to the file, including promotion. Set `NATIVE_REPO` if the
+Run it after every change to the file, including an automation-produced promotion once it has been reviewed. Set `NATIVE_REPO` if the
 checkout is elsewhere. It commits nothing.
 
-## 5. Promote and publish
+## 5. Hand off to release automation
 
-Shipping something beats waiting for everything to be proven: there is one
-maintainer, and much of the testing happens on the published build. Don't hold a
-release for untested entries. When one turns out broken, fix it and say so under
-**Fixed** next time. (Don't list what is *known* not to work.)
+Follow [NATIVE_RELEASE.md](NATIVE_RELEASE.md), especially its agent contract and
+automation and mirror synchronization. Keep entries under `[Unreleased]`. The intended
+workflow creates the draft, and publishing that draft triggers automated version
+bookkeeping, a version-bump PR/MR, installer builds and attachments.
 
-GitHub Actions builds, attests and attaches the installers. It does **not** set the
-version or edit the changelog: pushing without these steps only refreshes the
-release for the old version.
-
-1. Set the version in the private `tauri.conf.json`, `Cargo.toml` and `Cargo.lock`
-   (`k version --reference future` suggests one).
-2. `make deploy-source` in the private repo; skim the public diff.
-3. `k release --override-version X.Y.Z --dry-run --yes`, then without `--dry-run`.
-   Restore the introduction and an empty `## [Unreleased]`, then `k validate` and
-   `make native-changelog`.
-4. `RELEASE_TAG=native-vX.Y.Z node .github/scripts/check-native-release.mjs`.
-5. Commit and push both repositories. `git add -A native` matters: new host files
-   are untracked after a deploy.
-6. Publish the draft **native-vX.Y.Z** under Releases. That starts the Windows,
-   macOS and Linux builds; don't build those locally.
-7. When the installers are attached, update the download links in `README.md` and
-   `ui/src/app/settings/app/settings-app.ts` (and its spec). Earlier, they would 404.
+Do not run `kaclm release`, promote Unreleased or bump version files locally as
+normal release preparation. If the workflows still demand those steps, report
+and fix the automation; do not work around it by doing the steps yourself.
 
 ## Asking an agent to do this
 
-Give it this file. It promotes or deploys only when asked, and never tags, commits or
-pushes. It must list what it left out and why.
+Give it this file and `NATIVE_RELEASE.md`. Updating notes authorizes adding,
+editing and validating Unreleased entries and copying the changelog. It does not
+authorize promotion, version bumps, source deployment, tags, commits, pushes,
+workflow dispatch or publication. It must list what it left out and why.

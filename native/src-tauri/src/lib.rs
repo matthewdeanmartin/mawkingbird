@@ -192,6 +192,7 @@ pub fn run() {
             archive::archive_mark_read_batch,
             mastodon_login::mastodon_favourite,
             mastodon_write::mastodon_account_write,
+            mastodon_write::mastodon_picture_upload,
             mastodon_login::forget_mastodon_account,
             network::network_proxy_status,
             network::network_proxy_refresh,

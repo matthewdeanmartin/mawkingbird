@@ -65,6 +65,12 @@ fn public_path(path: &str) -> bool {
     }
     let parts: Vec<_> = path.trim_start_matches('/').split('/').collect();
     match parts.as_slice() {
+        // PeerTube video details only: no search, user, upload or admin routes.
+        ["api", "v1", "videos", id] => {
+            (id.len() == 22 && id.bytes().all(|b| b.is_ascii_alphanumeric()))
+                || (id.split('-').map(str::len).eq([8, 4, 4, 4, 12])
+                    && id.bytes().all(|b| b == b'-' || b.is_ascii_hexdigit()))
+        }
         ["api", "v1", "accounts", id] | ["api", "v1", "statuses", id] => public_id(id),
         ["api", "v1", "accounts", id, "statuses" | "followers" | "following" | "featured_tags" | "endorsements"] => {
             public_id(id)
@@ -97,6 +103,7 @@ pub(crate) fn validate_url(raw: &str) -> Result<Url, Failure> {
         || url.password().is_some()
         || url.fragment().is_some()
         || !public_path(url.path())
+        || (url.path().starts_with("/api/v1/videos/") && url.query().is_some())
     {
         return Err(invalid());
     }
@@ -374,6 +381,31 @@ pub async fn public_mastodon_get(url: String) -> Result<PublicResponse, Failure>
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn peertube_allows_only_public_video_details() {
+        for id in [
+            "9c9de5e8-0a1e-484a-b099-e80766180a6d",
+            "kkGMgK9ZtnKfYAgnEtQxbv",
+        ] {
+            assert!(validate_url(&format!("https://tube.example/api/v1/videos/{id}")).is_ok());
+            assert!(validate_url(&format!(
+                "https://tube.example/api/v1/videos/{id}?access_token=secret"
+            ))
+            .is_err());
+            assert!(
+                validate_url(&format!("https://tube.example/api/v1/videos/{id}/comments")).is_err()
+            );
+        }
+        for path in [
+            "/api/v1/videos",
+            "/api/v1/videos/upload",
+            "/api/v1/users/me",
+            "/api/v1/videos/a%2Fb",
+            "/api/v1/videos/not-a-uuid",
+        ] {
+            assert!(validate_url(&format!("https://tube.example{path}")).is_err());
+        }
+    }
     #[test]
     fn limits_requests_to_public_read_endpoints() {
         for url in [

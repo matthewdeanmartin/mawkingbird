@@ -93,11 +93,14 @@ test("notification dismissal follows compact inline actions on a phone", async (
     name: "Hide notification",
     exact: true,
   });
-  // The mention has its own row; likes and boosts share a digest until filtered.
-  for (const [type, count] of [
-    ["all", 1],
-    ["favourite", 2],
+  // Conversations contains the mention; Stream exposes all rows and its
+  // reaction filter. Likes no longer appear in the Conversations dropdown.
+  for (const [view, type, count] of [
+    ["Conversations", "all", 1],
+    ["Stream", "all", 4],
+    ["Stream", "favourite", 2],
   ]) {
+    await page.getByRole("navigation", { name: "Inbox views" }).getByRole("link", { name: view, exact: true }).click();
     await page.locator("select.type-select").selectOption(type);
     await expect(buttons).toHaveCount(count);
     for (const button of await buttons.all()) {

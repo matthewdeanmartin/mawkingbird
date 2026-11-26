@@ -279,9 +279,9 @@ it('sends every other account write through the reviewed command with the opaque
   ]);
 });
 
-it('says plainly that file uploads are not supported, and sends nothing', async () => {
+it('explains unsupported video uploads and sends nothing', async () => {
   const form = new FormData();
-  form.append('file', new File(['x'], 'photo.png', { type: 'image/png' }));
+  form.append('file', new File(['x'], 'video.mp4', { type: 'video/mp4' }));
   await expect(
     firstValueFrom(
       TestBed.inject(HttpClient).post('https://mastodon.social/api/v2/media', form, {
@@ -290,7 +290,10 @@ it('says plainly that file uploads are not supported, and sends nothing', async 
     ),
   ).rejects.toMatchObject({
     status: 403,
-    error: { error: 'Uploading files is not supported by Mawkingbird Native yet.' },
+    error: {
+      error:
+        'Native uploads support PNG, JPEG, GIF and WebP pictures up to 16 MiB. Your server may have a lower limit.',
+    },
   });
   expect(invoke).not.toHaveBeenCalledWith('mastodon_account_write', expect.anything());
 });
@@ -308,4 +311,31 @@ it('marks old read-only credentials with an actionable reauthorization error', a
       ),
     ),
   ).rejects.toMatchObject({ status: 403, error: { code: 'native_reauthorization_required' } });
+});
+
+it('sends picture bytes and alt text through the dedicated authenticated upload command', async () => {
+  invoke.mockResolvedValue({
+    status: 200,
+    body: '{"id":"picture","url":"https://cdn.example/p.png"}',
+    headers: {},
+  });
+  const form = new FormData();
+  form.append('file', new File(['picture bytes'], 'a.png', { type: 'image/png' }));
+  form.append('description', 'A fox in snow');
+  const result = await firstValueFrom(
+    TestBed.inject(HttpClient).post('https://mastodon.social/api/v2/media', form, {
+      headers: { Authorization: 'Bearer native-mastodon:reference' },
+    }),
+  );
+  expect(result).toMatchObject({ id: 'picture' });
+  expect(invoke).toHaveBeenCalledWith('mastodon_picture_upload', {
+    handle: 'native-mastodon:reference',
+    input: {
+      url: 'https://mastodon.social/api/v2/media',
+      mime: 'image/png',
+      data: btoa('picture bytes'),
+      description: 'A fox in snow',
+    },
+  });
+  expect(invoke).not.toHaveBeenCalledWith('mastodon_account_write', expect.anything());
 });

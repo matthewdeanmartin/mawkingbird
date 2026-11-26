@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mawkingbird for Firefox</title>
+    <link rel="stylesheet" href="options.css" />
+    <script type="module" src="options.js"></script>
+  </head>
+  <body>
+    <form id="form">
+      <fieldset>
+        <legend>Which Mawkingbird to open</legend>
+        <label><input type="radio" name="base" value="production" /> mawkingbird.com</label>
+        <label><input type="radio" name="base" value="canary" /> Canary (mawkingbird.com/canary/)</label>
+        <label><input type="radio" name="base" value="test" /> Test (mawkingbird.com/test/)</label>
+        <label>
+          <input type="radio" name="base" value="custom" /> Another address
+          <input type="url" id="custom" placeholder="http://localhost:4200/" aria-label="Address" />
+        </label>
+      </fieldset>
+      <button type="submit">Save</button>
+      <p id="message" role="status"></p>
+    </form>
+  </body>
+</html>

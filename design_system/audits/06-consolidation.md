@@ -3646,3 +3646,10 @@ and leave the inventory's counts unchanged. No new widget.
 Reviewed the inventory: 743 candidate files remain. Export and Native transport helpers add three source
 files and move source offsets; the existing dialogs preserve their controls.
 No new widget or changed disposition. Native export paths use the OS save dialog.
+
+### 2026-11-26: Native picture uploads and PeerTube fallback
+
+Reviewed the regenerated inventory: scanned source files increase 2215 to 2216
+for the lazily loaded upload helper. All 743 candidate files and dispositions
+remain unchanged. PeerTube reuses Watch's existing external link fallback;
+no controls or shared widgets were added.

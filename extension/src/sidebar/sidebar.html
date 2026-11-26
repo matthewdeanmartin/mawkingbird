@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mawkingbird</title>
+    <link rel="stylesheet" href="sidebar.css" />
+    <script type="module" src="sidebar.js"></script>
+  </head>
+  <body>
+    <nav class="strip" aria-label="This page">
+      <button type="button" id="share" title="Start a post with this page's title and link">
+        Share this page
+      </button>
+      <button type="button" id="posts-about" title="Posts that link to this page">
+        Posts about it
+      </button>
+      <button type="button" id="open-full" class="quiet" title="Open Mawkingbird in a tab">
+        Open in a tab
+      </button>
+    </nav>
+    <p id="status" class="status" role="status" hidden></p>
+    <iframe
+      id="lite"
+      title="Mawkingbird Lite"
+      allow="clipboard-write; autoplay; fullscreen"
+      referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+  </body>
+</html>

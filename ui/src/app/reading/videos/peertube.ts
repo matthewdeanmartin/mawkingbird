@@ -61,7 +61,8 @@ export function pickStream(video: ApiVideo, host: string, preferMp4: boolean): s
       return fit(a.height) - fit(b.height);
     });
   const hls = httpsOn(video.streamingPlaylists?.[0]?.playlistUrl, host);
-  if (preferMp4) return files[0]?.url ?? hls;
+  // HLS-only and live streams use Watch's existing external-browser fallback.
+  if (preferMp4) return video.isLive ? null : (files[0]?.url ?? null);
   return hls ?? files[0]?.url ?? null;
 }
 

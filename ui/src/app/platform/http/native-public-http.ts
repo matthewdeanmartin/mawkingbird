@@ -46,6 +46,7 @@ interface NativeWrite {
   body?: object;
   form?: [string, string][];
   idempotencyKey?: string;
+  picture?: FormData;
 }
 
 /**
@@ -59,6 +60,14 @@ function nativeWrite(request: HttpRequest<unknown>, destination: URL): NativeWri
   const body = request.body;
   if (body == null) return write;
   if (body instanceof FormData) {
+    const file = body.get('file');
+    if (
+      file instanceof File &&
+      request.method === 'POST' &&
+      destination.pathname === '/api/v2/media'
+    ) {
+      return { ...write, picture: body };
+    }
     const form: [string, string][] = [];
     for (const [name, value] of body.entries()) {
       if (typeof value !== 'string')
@@ -79,13 +88,17 @@ function nativeWrite(request: HttpRequest<unknown>, destination: URL): NativeWri
   return { ...write, body };
 }
 
-function invokeWrite(handle: string, input: NativeWrite): Promise<NativeResponse> {
+async function invokeWrite(handle: string, input: NativeWrite): Promise<NativeResponse> {
   const bridge = (
     window as unknown as {
       __TAURI__?: { core: { invoke<T>(command: string, args: object): Promise<T> } };
     }
   ).__TAURI__;
   if (!bridge) return Promise.reject(new Error('Native HTTP bridge is unavailable.'));
+  if (input.picture) {
+    const { uploadPicture } = await import('./native-picture-upload');
+    return uploadPicture(handle, input.url, input.picture);
+  }
   return bridge.core.invoke<NativeResponse>('mastodon_account_write', { handle, input });
 }
 

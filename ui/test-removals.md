@@ -154,3 +154,22 @@ Traced by hand when the manifest was refreshed: 23 tests removed by changes from
   reason: replaced
   now: src/app/accounts/sign-in/login-bluesky/login-bluesky.spec.ts :: LoginBluesky sends an already signed-in Bluesky visitor to Home
   why: Only a Bluesky identity satisfies an explicit Bluesky sign-in request. Mastodon and Anonymous visitors now get the form, with separate regression tests preserving their current identity until they choose to sign in.
+
+## 2026-11-26: Native picture uploads
+
+- test: src/app/platform/http/native-public-http.spec.ts :: says plainly that file uploads are not supported, and sends nothing
+  reason: replaced
+  now: src/app/platform/http/native-public-http.spec.ts :: explains unsupported video uploads and sends nothing
+  why: Picture uploads are now supported. The refusal check remains for unsupported video; a new test verifies picture bytes and alt text use the dedicated authenticated command.
+
+## 2026-11-26: reconcile previously committed Watch mode coverage
+
+- test: src/app/platform/build/app-mode.spec.ts :: modeForUrl /watch keeps the current mode
+  reason: replaced
+  now: src/app/platform/build/app-mode.spec.ts :: modeForUrl puts Watch in Video, wherever it was opened from
+  why: Commit 9a272b53f4 intentionally made Watch enter Video mode. The replacement tests both the plain and query-bearing URL; this records the prior change without deleting coverage.
+
+- test: src/app/platform/build/app-mode.spec.ts :: modeForUrl /watch?youtube=abc keeps the current mode
+  reason: replaced
+  now: src/app/platform/build/app-mode.spec.ts :: modeForUrl puts Watch in Video, wherever it was opened from
+  why: Same already-committed behavior change: the replacement explicitly asserts /watch?youtube=abc selects Video mode.

@@ -40,13 +40,17 @@ for (const width of [390, 1280]) {
       "/iframe.html?id=adoption-notification-layout--compact-actions&viewMode=story",
     );
     const links = page.locator(".excerpt-content a");
-    // Likes and boosts of one post fold into a digest; opening it shows the post once.
-    await expect(links).toHaveCount(1);
-    await page.locator("button.digest-toggle").first().click();
-    await expect(links).toHaveCount(2);
-    for (const link of await links.all()) {
-      await expect(link).toHaveText(label);
-      await expect(link).toHaveAttribute("href", url);
+    // Conversations shows the mention, Stats groups the reactions by post,
+    // and Stream shows each notification. The old digest toggle was retired.
+    for (const [view, count] of [["Conversations", 1], ["Stats", 1], ["Stream", 4]]) {
+      await page.getByRole("navigation", { name: "Inbox views" }).getByRole("link", { name: view, exact: true }).click();
+      await expect(links).toHaveCount(count);
+      for (const link of await links.all()) {
+        await expect(link).toHaveText(label);
+        await expect(link).toHaveAttribute("href", url);
+        const bounds = await link.boundingBox();
+        expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+      }
     }
     expect(
       await page.evaluate(

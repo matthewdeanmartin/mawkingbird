@@ -4,6 +4,8 @@ on:
   release:
     types: [published]
 
+concurrency: native-publish-${{ github.event.release.tag_name }}
+
 permissions:
   contents: read
 
@@ -19,6 +21,19 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - name: Prepare release bookkeeping from the published source snapshot
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_DATE: ${{ github.event.release.published_at }}
+        run: node .github/scripts/prepare-native-release.mjs
+      - name: Save the exact version/changelog overlay for every build and the PR
+        run: tar -cf native-release-metadata.tar NATIVE_CHANGELOG.md native/src-tauri/tauri.conf.json native/src-tauri/Cargo.toml native/src-tauri/Cargo.lock
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-release-metadata
+          path: native-release-metadata.tar
+          retention-days: 90
       - name: Check reviewed Native release
         env:
           RELEASE_TAG: ${{ github.event.release.tag_name }}
@@ -46,6 +61,12 @@ jobs:
         with:
           ref: ${{ github.event.release.tag_name }}
           persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: native-release-metadata
+      - name: Apply automation-owned release metadata
+        shell: bash
+        run: tar -xf native-release-metadata.tar
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
@@ -94,7 +115,7 @@ jobs:
           retention-days: 14
 
   attach:
-    needs: build
+    needs: [preflight, build]
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -105,6 +126,12 @@ jobs:
         with:
           ref: ${{ github.event.release.tag_name }}
           persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: native-release-metadata
+      - name: Apply automation-owned release metadata
+        shell: bash
+        run: tar -xf native-release-metadata.tar
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: mawkingbird-native-*
@@ -142,4 +169,50 @@ jobs:
           set -euo pipefail
           mapfile -d '' assets < <(find dist -type f \( -name '*.deb' -o -name '*.rpm' -o -name '*.AppImage' -o -name '*.dmg' -o -name '*.msi' -o -name '*.exe' \) -print0)
           (( ${#assets[@]} >= 3 )) || { echo 'Expected installers from all three platforms' >&2; exit 1; }
-          gh release upload "$RELEASE_TAG" "${assets[@]}" mawkingbird-native-dependencies.spdx.json --clobber
+          gh release upload "$RELEASE_TAG" "${assets[@]}" mawkingbird-native-dependencies.spdx.json native-release-metadata.tar --clobber
+
+  bookkeeping:
+    needs: preflight
+    runs-on: ubuntu-24.04
+    continue-on-error: true
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: native-release-metadata
+      - name: Apply automation-owned release metadata
+        shell: bash
+        run: tar -xf native-release-metadata.tar
+      - name: Open automation bookkeeping PR without moving the published tag
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="release/$RELEASE_TAG"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null; then
+            echo '::warning::Bookkeeping branch already exists; leaving it intact and retrying PR creation.'
+          else
+            git switch -c "$branch"
+            git add NATIVE_CHANGELOG.md native/src-tauri/tauri.conf.json native/src-tauri/Cargo.toml native/src-tauri/Cargo.lock
+            if ! git diff --cached --quiet; then git commit -m "chore: record $RELEASE_TAG [skip ci]"; fi
+            git -c credential.helper='!gh auth git-credential' push origin "$branch"
+          fi
+          uvx --no-build --from keepachangelog-manager-fork==6.10.1 kaclm --component native github-pr             --repository "$GITHUB_REPOSITORY" --head "$branch" --base main             --title "chore: record $RELEASE_TAG"             --body 'Records the exact version and changelog overlay used by the published installers. Merge when convenient; the next local source deployment synchronizes the released version back to the private checkout. The original release tag stays unchanged.'
+      - name: Explain bookkeeping failure
+        if: failure()
+        run: |
+          echo '::warning::RELEASE BOOKKEEPING PR FAILED. Installer builds proceed independently. Review this job and merge/reconcile bookkeeping before the next release. Do not delete or move the published tag; a fresh version number is fine.'
+          echo '## WARNING: release bookkeeping needs attention' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Installers may still succeed. Repair the PR separately; do not undo the published release.' >> "$GITHUB_STEP_SUMMARY"

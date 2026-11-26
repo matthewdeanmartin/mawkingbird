@@ -1,0 +1,19 @@
+{
+  "name": "mawkingbird-firefox",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mawkingbird for Firefox: share pages, open fediverse links, Lite in the sidebar.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "lint": "web-ext lint --source-dir src",
+    "start": "web-ext run --source-dir src --url https://mawkingbird.com/m/"
+  },
+  "devDependencies": {
+    "web-ext": "10.8.0"
+  }
+}

@@ -18,6 +18,9 @@ release.
 - More starter kits and Feed Builder topics, including Latvian arts and computing, computing in Greek, Hungarian and Lithuanian, and new reading, cooking, photography and hobby topics.
 - Screen share mode in Settings > Content or Even more: hide followers-only posts, messages, the Inbox, draft pages and draft previews, and hide pseudonymous accounts from account switchers. A header badge turns it off.
 - Save exports through the desktop save dialog: Unbird files, CSV lists, settings backups, RSS subscriptions, bookmark HTML and code files. Generated files up to 32 MiB are supported.
+- Mastodon: attach PNG, JPEG, GIF and WebP pictures up to 16 MiB, with descriptions. The app waits for server processing; your server may have a lower limit.
+- Bluesky: save preferences and bookmarks, manage lists and their members, mute or block lists, and mute threads. Delete & repost replaces a post in one transaction.
+- Watch: play PeerTube videos that offer a direct MP4 file. HLS-only and live videos offer a link to open them in your browser.
 
 ### Changed
 - Inbox opens on Conversations, with separate Stats, Who and Stream views. Likes and boosts have their own view with faces; they no longer normally light the inbox dot.

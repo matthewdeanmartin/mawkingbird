@@ -297,6 +297,51 @@ pub async fn bluesky_login(app: tauri::AppHandle, identifier: String) -> Result<
     result
 }
 
+fn writable_collection(collection: Option<&str>) -> bool {
+    matches!(
+        collection,
+        Some(
+            "app.bsky.feed.like"
+                | "app.bsky.feed.repost"
+                | "app.bsky.feed.post"
+                | "app.bsky.graph.follow"
+                | "app.bsky.graph.block"
+                | "app.bsky.graph.list"
+                | "app.bsky.graph.listitem"
+                | "app.bsky.graph.listblock"
+        )
+    )
+}
+
+fn batch_write(value: &Value) -> bool {
+    if !value.is_object() || !writable_collection(value["collection"].as_str()) {
+        return false;
+    }
+    let key = value["rkey"].as_str();
+    if key.is_some_and(|k| {
+        k.is_empty()
+            || k.len() > 512
+            || k == "."
+            || k == ".."
+            || !k
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b"._~:-".contains(&b))
+    }) {
+        return false;
+    }
+    match value["$type"].as_str() {
+        Some("com.atproto.repo.applyWrites#delete") => {
+            key.is_some() && value.get("value").is_none()
+        }
+        Some("com.atproto.repo.applyWrites#create" | "com.atproto.repo.applyWrites#update") => {
+            (value["$type"] != "com.atproto.repo.applyWrites#update" || key.is_some())
+                && value["value"].is_object()
+                && value["value"]["$type"].as_str() == value["collection"].as_str()
+        }
+        _ => false,
+    }
+}
+
 fn operation(
     url: &url::Url,
     method: &str,
@@ -329,6 +374,10 @@ fn operation(
             | "app.bsky.feed.getListFeed"
             | "app.bsky.graph.getList"
             | "app.bsky.graph.getLists"
+            | "app.bsky.graph.getListsWithMembership"
+            | "app.bsky.graph.getListMutes"
+            | "app.bsky.graph.getListBlocks"
+            | "app.bsky.bookmark.getBookmarks"
             | "app.bsky.graph.getFollows"
             | "app.bsky.graph.getFollowers"
             | "app.bsky.graph.getSuggestedFollowsByActor"
@@ -358,7 +407,24 @@ fn operation(
                 "app.bsky.notification.updateSeen"
                     | "app.bsky.graph.muteActor"
                     | "app.bsky.graph.unmuteActor"
+                    | "app.bsky.graph.muteActorList"
+                    | "app.bsky.graph.unmuteActorList"
+                    | "app.bsky.graph.muteThread"
+                    | "app.bsky.graph.unmuteThread"
+                    | "app.bsky.bookmark.createBookmark"
+                    | "app.bsky.bookmark.deleteBookmark"
             ) {
+                return Ok(nsid.into());
+            }
+            if nsid == "app.bsky.actor.putPreferences" && body["preferences"].is_array() {
+                return Ok(nsid.into());
+            }
+            if nsid == "com.atproto.repo.applyWrites"
+                && body["repo"].as_str() == did
+                && body["writes"].as_array().is_some_and(|writes| {
+                    !writes.is_empty() && writes.len() <= 200 && writes.iter().all(batch_write)
+                })
+            {
                 return Ok(nsid.into());
             }
             if matches!(
@@ -367,16 +433,7 @@ fn operation(
                     | "com.atproto.repo.deleteRecord"
                     | "com.atproto.repo.putRecord"
             ) && body["repo"].as_str() == did
-                && matches!(
-                    body["collection"].as_str(),
-                    Some(
-                        "app.bsky.feed.like"
-                            | "app.bsky.feed.repost"
-                            | "app.bsky.feed.post"
-                            | "app.bsky.graph.follow"
-                            | "app.bsky.graph.block"
-                    )
-                )
+                && writable_collection(body["collection"].as_str())
             {
                 return Ok(nsid.into());
             }
@@ -590,5 +647,87 @@ mod tests {
         )
         .is_err());
         assert!(operation(&url, "GET", &None, Some("did:plc:mine")).is_err());
+    }
+
+    #[test]
+    fn supports_preferences_bookmarks_and_list_management_without_service_proxying() {
+        for nsid in [
+            "app.bsky.bookmark.getBookmarks",
+            "app.bsky.graph.getListsWithMembership",
+            "app.bsky.graph.getListBlocks",
+            "app.bsky.graph.getListMutes",
+        ] {
+            let url = url::Url::parse(&format!("https://pds.example/xrpc/{nsid}")).unwrap();
+            assert!(operation(&url, "GET", &None, Some("did:plc:mine")).is_ok());
+        }
+        for (nsid, body) in [
+            ("app.bsky.actor.putPreferences", json!({"preferences": []})),
+            (
+                "app.bsky.bookmark.createBookmark",
+                json!({"uri":"at://did:plc:other/app.bsky.feed.post/abc", "cid":"cid"}),
+            ),
+            (
+                "app.bsky.bookmark.deleteBookmark",
+                json!({"uri":"at://did:plc:other/app.bsky.feed.post/abc"}),
+            ),
+            (
+                "app.bsky.graph.muteActorList",
+                json!({"list":"at://did:plc:other/app.bsky.graph.list/abc"}),
+            ),
+        ] {
+            let url = url::Url::parse(&format!("https://pds.example/xrpc/{nsid}")).unwrap();
+            assert!(
+                operation(&url, "POST", &Some(body.clone()), Some("did:plc:mine")).is_ok(),
+                "{nsid}"
+            );
+            assert!(operation(&url, "POST", &Some(body), None).is_err());
+        }
+        for collection in [
+            "app.bsky.graph.list",
+            "app.bsky.graph.listitem",
+            "app.bsky.graph.listblock",
+        ] {
+            let url =
+                url::Url::parse("https://pds.example/xrpc/com.atproto.repo.createRecord").unwrap();
+            assert!(operation(
+                &url,
+                "POST",
+                &Some(json!({"repo":"did:plc:mine", "collection":collection})),
+                Some("did:plc:mine")
+            )
+            .is_ok());
+        }
+    }
+
+    #[test]
+    fn atomic_replacement_and_list_batches_cannot_escape_owned_reviewed_collections() {
+        let url = url::Url::parse("https://pds.example/xrpc/com.atproto.repo.applyWrites").unwrap();
+        let create = json!({"$type":"com.atproto.repo.applyWrites#create", "collection":"app.bsky.feed.post", "rkey":"new", "value":{"$type":"app.bsky.feed.post", "text":"replacement"}});
+        let delete = json!({"$type":"com.atproto.repo.applyWrites#delete", "collection":"app.bsky.feed.post", "rkey":"old"});
+        let allowed =
+            |body: Value| operation(&url, "POST", &Some(body), Some("did:plc:mine")).is_ok();
+        assert!(allowed(
+            json!({"repo":"did:plc:mine", "writes":[create.clone(), delete.clone()]})
+        ));
+        assert!(!allowed(
+            json!({"repo":"did:plc:other", "writes":[delete.clone()]})
+        ));
+        assert!(!allowed(json!({"repo":"did:plc:mine", "writes":[]})));
+        assert!(!allowed(
+            json!({"repo":"did:plc:mine", "writes":vec![delete.clone();201]})
+        ));
+        for change in [
+            json!({"$type":"com.atproto.repo.applyWrites#delete", "collection":"app.bsky.actor.profile", "rkey":"self"}),
+            json!({"$type":"com.atproto.repo.applyWrites#delete", "collection":"app.bsky.feed.post", "rkey":"../bad"}),
+            json!({"$type":"com.atproto.repo.applyWrites#create", "collection":"app.bsky.feed.post", "value":{"$type":"app.bsky.actor.profile"}}),
+            json!({"$type":"unknown", "collection":"app.bsky.feed.post"}),
+        ] {
+            assert!(!allowed(
+                json!({"repo":"did:plc:mine", "writes":[delete.clone(), change]})
+            ));
+        }
+        assert!(allowed(
+            json!({"repo":"did:plc:mine", "writes":[{"$type":"com.atproto.repo.applyWrites#delete", "collection":"app.bsky.graph.listitem", "rkey":"member"}, {"$type":"com.atproto.repo.applyWrites#delete", "collection":"app.bsky.graph.list", "rkey":"list"}]})
+        ));
     }
 }

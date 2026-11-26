@@ -21,6 +21,10 @@ because these were missed.
 - `NATIVE_CHANGELOG.md` lists only what works in Native. Follow
   `ops/NATIVE_CHANGELOG_RUNBOOK.md`; releases: `ops/NATIVE_RELEASE.md`. Never commit,
   push, release or move a tag unless told to.
+- **Release automation owns version bumps and Unreleased promotion.** Read
+  `ops/NATIVE_RELEASE.md` before release preparation. Do not run `kaclm release`
+  or edit version files locally to compensate for workflow drift; report it.
+
 
 ## Gates: iterate cheap, gate once
 

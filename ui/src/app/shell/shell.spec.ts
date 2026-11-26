@@ -6,7 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { Component, signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../platform/session/auth';
 import { MenuIndicators } from './menu-indicators';
 
@@ -30,6 +30,12 @@ import {
 import { FeatureFlags } from '../platform/build/feature-flags';
 import { AppModeService } from '../platform/build/app-mode';
 import { BUILD_INFO } from '../platform/build/build-info';
+
+// Shell starts this lazy import when onboarding opens. Drain its module graph
+// before Vitest disposes this environment and reuses the worker for another file.
+afterAll(async () => {
+  await import('../accounts/onboarding/onboarding-card');
+});
 
 class FakePlusBadgeEntitlement {
   readonly state = signal<PlusBadgeState>('free');
