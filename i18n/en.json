@@ -2012,6 +2012,7 @@
   "firstRun": {
     "accountQuestion": "Which account do you have?",
     "back": "Back",
+    "backTo": "Back to “{{page}}”",
     "bluesky": "Bluesky",
     "blueskyHintApprove": "Sign in on Bluesky and approve access.",
     "continueAnonymous": "Continue without logging in",
@@ -4228,6 +4229,10 @@
     "login.confirm.sentTo": "Almost there! We sent a confirmation email to",
     "login.confirm.verify": "✉ Verify email & continue",
     "login.confirm.verifying": "Verifying…",
+    "login.connect.notStored": "This browser could not keep the Mastodon sign-in. Check whether site storage is blocked.",
+    "login.connect.notice": "You stay signed in as {{handle}}. Connecting Mastodon adds your Mastodon account to it.",
+    "login.connect.separate": "Use Mastodon as a separate account instead",
+    "login.connect.switched": "The active account changed while you were connecting, so nothing was connected. Start again from this page.",
     "login.connecting": "Signing you in…",
     "login.homeServer.other": "Use another server",
     "login.homeServer.signingIn": "Signing in to {{server}}.",
@@ -4249,6 +4254,7 @@
     "login.notSure.browse": "Browse the full directory on joinmastodon.org ↗",
     "login.notSure.question": "Not sure which server?",
     "login.oauth.accessLegend": "How much access to grant this app",
+    "login.oauth.cancelled": "Sign-in was cancelled. Nothing was changed.",
     "login.oauth.neverSeePassword": "We never see your password.",
     "login.oauth.ownPage": "You'll log in on {{server}}'s own page and come straight back.",
     "login.oauth.redirecting": "Redirecting…",
@@ -6989,6 +6995,14 @@
     "post": "Reported post",
     "title": "My reports"
   },
+  "screenShare": {
+    "badge": "Screen share",
+    "badgeTitle": "Private posts, messages and pseudonymous accounts are hidden. Click to stop.",
+    "cover": "Hidden while screen sharing",
+    "coverBody": "This page is private. Turn off screen share mode to see it.",
+    "post": "Not shown while screen sharing",
+    "stop": "Stop screen share mode"
+  },
   "searchServerDiscovery": {
     "accounts": "Accounts",
     "checkedAt": "Directory checked {{date}}.",
@@ -8124,6 +8138,8 @@
     "connections.mastodon.signIn": "Sign in",
     "connections.mastodon.signInFailed": "Signing in failed — check the token and the server.",
     "connections.mastodon.signInHeading": "Sign in",
+    "connections.mastodon.signInWith": "Sign in with Mastodon",
+    "connections.mastodon.signInWithNote": "You approve access on your own server and come straight back, still signed in with Bluesky.",
     "connections.mastodon.signOut": "Sign out",
     "connections.mastodon.signOutKeepsReading": "Signing out keeps reading {{server}} anonymously — it drops the token, not the connection.",
     "connections.mastodon.signedInMergeNote": "Mastodon posts from the people you follow are merged into your home timeline.",
@@ -8425,6 +8441,9 @@
     "content.revoke.hint": "Drops to \"trust no one\", turns both switches off, and forgets every account you have trusted. Unlike the choices above, this one throws the list away — there is no undo.",
     "content.revokeAll": "Revoke all trust",
     "content.revokedNote": "These two are off while trust is revoked. Choose another level above to use them.",
+    "content.screenShare.hint": "For streaming or recording: followers-only posts and direct messages, the inbox, drafts, and accounts with Pseudonymity on are hidden. In this browser only; a badge in the header shows it is on and turns it off.",
+    "content.screenShare.label": "Hide what is not public",
+    "content.screenShare.title": "Screen share mode",
     "content.showSensitive": "Auto-show sensitive media",
     "content.showSensitive.note": "Images and video flagged sensitive render without the blur.",
     "content.stopTrusting": "Stop trusting",
@@ -9706,6 +9725,8 @@
     "menu.onboarding": "Onboarding",
     "menu.pastes": "Pastes",
     "menu.scheduled": "Scheduled posts",
+    "menu.screenShareOff": "Stop screen share mode",
+    "menu.screenShareOn": "Start screen share mode",
     "menu.settings": "Settings",
     "menu.waitingToPublish": "Waiting to publish",
     "menu.watchParties": "Watch parties",
@@ -10392,6 +10413,12 @@
     "signIn.action": "Sign in with Mastodon",
     "signIn.body": "Sign in to search your Mastodon server for these {{count}} people and follow the ones who have already moved. The archive files stay in this browser; handle searches go to your Mastodon server.",
     "signIn.title": "Next: find them on Mastodon."
+  },
+  "unavailable": {
+    "body": "It needs a signed-in account: {{feature}}. After signing in you come back here.",
+    "home": "Back to Home",
+    "signIn": "Sign in",
+    "title": "Sign in to open this page"
   },
   "unbird": {
     "drop.choose": "Choose the .zip…",
