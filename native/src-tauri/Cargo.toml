@@ -1,6 +1,6 @@
 [package]
 name = "mawkingbird-native"
-version = "0.2.0"
+version = "0.3.0"
 description = "Local desktop host for the shared Mawkingbird Angular application"
 edition = "2021"
 publish = false
