@@ -11,7 +11,6 @@ import { Component, computed, effect, inject, OnInit, linkedSignal, signal } fro
 import { RailWidgets } from '../rail-widgets';
 import { BlogRecentCard } from '../../blog/blog-rail-cards';
 import { YoutuberKitsCard } from '../../reading/videos/youtuber-kits-card';
-import { DraftsRailCard } from '../../publishing/drafts/drafts-rail-card';
 import { RouterLink } from '@angular/router';
 import { Terminology } from '../../i18n/terminology';
 import { AnnouncementStore } from '../../discovery/announcements/announcement-store';
@@ -74,7 +73,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
 @Component({
   selector: 'app-right-rail',
   imports: [
-    DraftsRailCard,
     BlogRecentCard,
     YoutuberKitsCard,
     MbPostAction,

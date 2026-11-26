@@ -1,0 +1,162 @@
+{
+  "version": 1,
+  "topic": "cooking-and-baking",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-26T15:24:06+00:00",
+  "tags": [
+    {
+      "name": "Kochen",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Backen",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Sauerteig",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Cooking",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Baking",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Sourdough",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "herrgruenkocht@mstdn.social",
+      "id": "109380945017043134",
+      "url": "https://mstdn.social/@herrgruenkocht",
+      "displayName": "Herr Grün kocht",
+      "avatar": "https://media.mstdn.social/accounts/avatars/109/380/945/017/043/134/original/8aa6e0979f5df616.jpg",
+      "bio": "Herr Grün kocht und backt leidenschaftlich. Natürlich. Kochbuch bei Grün & Caprese. # Vegetarisch und # vegan . # Foodblogger # Autor # Hamburg http:// HerrGruenkocht.de",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "seitansbraten@chaos.social",
+      "id": "109252274489782662",
+      "url": "https://chaos.social/@Seitansbraten",
+      "displayName": "Seitansbraten",
+      "avatar": "https://assets.chaos.social/accounts/avatars/109/252/274/489/782/662/original/5cb33e8de88878b4.png",
+      "bio": "Ambivalentes Grenzwesen, # fcknzs # VeganForTheAnimals Feminist against TERF # BLM optimistische Pessimistin # Inklusion streitbar # whovian for life, Cooking is my love language & coping mechanism -…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "oekologisch_unterwegs@mastodon.online",
+      "id": "108272720223767841",
+      "url": "https://mastodon.online/@oekologisch_unterwegs",
+      "displayName": "oekologisch_unterwegs",
+      "avatar": "https://files.mastodon.online/accounts/avatars/108/272/720/223/767/841/original/26bc2f0aa1726812.jpg",
+      "bio": "Buchautor Fördermitglieder: https:// steady.page/klimacrew Unterstützen: https:// ko-fi.com/tinoeberl Trötet zu den Themen # Balkongarten , # Küchentipps , # Haushaltstipps , # Backen , # Kochen , #…",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "bevegt@mastodon.social",
+      "id": "114093014912778688",
+      "url": "https://mastodon.social/@beVegt",
+      "displayName": "beVegt",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/093/014/912/778/688/original/851a6690debdf9b2.jpg",
+      "bio": "Katrin und Daniel Wir machen einen # blog und # podcast über das # laufen 🏃‍♀️🏃‍♂️ und die vegane Lebensweise. 🌱 Unsere einfachen veganen Rezepte, Trainings- und Ernährungstipps findest du auf https:…",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-625"],
+      "elsewhere": ["podcast", "website"]
+    },
+    {
+      "acct": "memo@mastodon.online",
+      "id": "107400087386115345",
+      "url": "https://mastodon.online/@memo",
+      "displayName": "Memo",
+      "avatar": "https://files.mastodon.online/accounts/avatars/107/400/087/386/115/345/original/f6d3173b67c468ce.png",
+      "bio": "Ich bin oft draußen in der Natur unterwegs und teile dann hier meine Eindrücke und Bilder. Für die Morgen- und Abendgrüße verwende ich CC0-Fotos.",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "lutz_@bildung.social",
+      "id": "109268017941348937",
+      "url": "https://bildung.social/@lutz_",
+      "displayName": "lutz_",
+      "avatar": "https://storage.gra.cloud.ovh.net/v1/AUTH_91eb37814936490c95da7b85993cc2ff/bildungsocial/accounts/avatars/109/268/017/941/348/937/original/50758c19c75fbb58.jpeg",
+      "bio": "@ lutz_ Lehrer in BW | Hinter dem Horizont geht's weiter | # twlz # FediLZ # moodle # GeoGebra # TeXLaTeX # Lerntheken # phyphox # TaskCards # Verkehrswende # Autokorrektur # Klimakrise # brotbacken…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "applewoi@mastodon.social",
+      "id": "108506261998985214",
+      "url": "https://mastodon.social/@AppleWoi",
+      "displayName": "AppleWoi",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/506/261/998/985/214/original/d5231511a9012069.jpg",
+      "bio": "Irgendwas mit Fahrrad, Garten, Kochen, Reisen, Frankfurt, sozialer Gerechtigkeit. Liberté, Egalité, # FCKAfD . # nocreamincarbonara ! Bevor isch misch uffreesch, isses mir lieber egal. You don't stop…",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "berndchen@dresden.network",
+      "id": "109302579908887069",
+      "url": "https://dresden.network/@berndchen",
+      "displayName": "Bärnchen",
+      "avatar": "https://dresden.s3proxy.de/accounts/avatars/109/302/579/908/887/069/original/ccc7264ae21c73ee.jpg",
+      "bio": "Fotografiert seine Blumen, isst den Honig seiner Bienen, engagiert sich beim Anbau samenfester Tomatensorten, freut sich über die Programmiersprache Rust, schreibt die Dokumentationen mithilfe von Ty…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "baby_lala_vienna@mastodon.social",
+      "id": "114018871187346954",
+      "url": "https://mastodon.social/@baby_lala_vienna",
+      "displayName": "Family Blog",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/018/871/187/346/954/original/81dc5af70de5afd7.jpg",
+      "bio": "👨‍👩‍👧‍👦 Peter’s Familienblog | Tipps & Tricks | Babyglück 👶 | Kinderlachen 😂 | Reisen ✈️ | Rezepte 🍽️ | Authentische Momente ✨",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ideenlabor@mastodon.social",
+      "id": "117392977647899397",
+      "url": "https://mastodon.social/@ideenlabor",
+      "displayName": "doppel-moin",
+      "avatar": "https://files.mastodon.social/accounts/avatars/117/392/977/647/899/397/original/3d253f87ff8b925f.jpeg",
+      "bio": "Kaffeesieren, im Café sitzen, quatschen, diskutieren und labern ist mein Elexir :)) wenn es dabei um geistiges, kulturelles, politisches (in Maßen), gesellschaftliches, künstlerisches oder psychologi…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

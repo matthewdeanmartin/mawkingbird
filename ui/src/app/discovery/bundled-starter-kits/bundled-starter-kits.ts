@@ -1,4 +1,5 @@
 import { MbContentLink } from '../../design-system/metadata/metadata';
+import { BlueskySession } from '../../connections/bluesky/bluesky-session';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Component, computed, inject, signal } from '@angular/core';
 import { StarterPackTextPipe, starterPackText } from '../starter-pack-text';
@@ -19,14 +20,13 @@ import { UiLocale } from '../../i18n/locale';
 // i18n bundledStarterKits.languageNote: Browse any language here. This does not change the languages in your settings. Older sets with no language label are also shown.
 
 // i18n bundledStarterKits.title: People to follow
-// i18n bundledStarterKits.intro: Each of these is a ready-made set of accounts. Open one to see who is in it, sample what they post, and follow the whole set in one go — or pick through it.
 // i18n bundledStarterKits.account.one: {{count}} account
 // i18n bundledStarterKits.account.other: {{count}} accounts
 // i18n bundledStarterKits.open: · open →
 // i18n bundledStarterKits.filter.label: Filter these
 // i18n bundledStarterKits.filter.placeholder: photography, science, news…
 // i18n bundledStarterKits.filter.none: Nothing here matches “{{query}}”. Clear the filter to see every set.
-// i18n bundledStarterKits.byUs: Ours
+// i18n bundledStarterKits.byUs: Mawkingbird curated
 // i18n bundledStarterKits.byThem: Curated by {{curator}}
 // i18n bundledStarterKits.moreWays: Looking for something more specific?
 // i18n bundledStarterKits.moreWaysLink: Every way to find people
@@ -76,7 +76,6 @@ interface DiscoverySet {
  */
 // i18n exploreMore.kits.byTopic: By topic, with hashtags and servers as well:
 // i18n exploreMore.kits.communities: Communities
-// i18n exploreMore.kits.starterCollections: Starter collections
 @Component({
   selector: 'app-bundled-starter-kits',
   imports: [MbContentLink, RouterLink, StarterPackTextPipe, TranslocoPipe, PackLanguagePicker],
@@ -85,6 +84,8 @@ interface DiscoverySet {
 })
 export class BundledStarterKits {
   private readonly route = inject(ActivatedRoute);
+  /** Bluesky starter packs are offered only with a Bluesky connection. */
+  protected readonly bluesky = inject(BlueskySession);
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });

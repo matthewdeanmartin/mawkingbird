@@ -49,7 +49,7 @@ LINKS = (
     Link("Blog post", "blog/:handle/:id", "/blog/@alice@far.example/113", "src/app/blog/blog-page.ts", "postLink", "regex"),
     Link("Hashtag", "tags/:tag", "/tags/birds", "src/app/posts/status-card/status-card.ts", "'/tags'", "regex"),
     Link("Shared message", "message/:id", "/message/message-status.abc", "src/app/connections/paste/message-payload.ts", "/message/", "top-level"),
-    Link("Bundled starter collection", "collections/starter/:slug", "/collections/starter/birds", "src/app/public-pages/features/follow-kit.html", "'/collections/starter'", "regex"),
+    Link("Bundled starter collection", "collections/starter/:slug", "/collections/starter/catalog-en-technology", "src/app/discovery/bundled-starter-kits/bundled-starter-kits.ts", "'/collections/starter'", "regex"),
     Link("Bluesky starter pack", "bluesky/starter-packs/:actor/:rkey", "/bluesky/starter-packs/did:plc:alice/3pack", "src/app/connections/bluesky/bluesky-starter-packs.ts", "starterPackPath", "regex"),
     Link("Bluesky feed or list", "feeds/bluesky/:ref", "/feeds/bluesky/feed:at:%2F%2Fdid:plc:alice%2Fapp.bsky.feed.generator%2Fbirds", "src/app/accounts/bluesky-links.ts", "'/feeds/bluesky'", "regex"),
 )

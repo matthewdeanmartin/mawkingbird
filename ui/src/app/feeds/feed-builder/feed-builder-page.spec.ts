@@ -124,7 +124,7 @@ describe('Feed Builder topic pages', () => {
       FEED_BUILDER_PAGES.filter((page) => page.topic === 'literary-fiction').map(
         (page) => page.lang,
       ),
-    ).toEqual(['en']);
+    ).toEqual(['en', 'es']);
   });
 
   it('renders the approved English Historical Fiction edition', async () => {
@@ -238,7 +238,7 @@ describe('Feed Builder topic pages', () => {
       FEED_BUILDER_PAGES.filter((page) => page.topic === 'mystery-and-crime').map(
         (page) => page.lang,
       ),
-    ).toEqual(['en', 'de']);
+    ).toEqual(['en', 'de', 'fr']);
   });
 
   it('renders the German Krimis edition with native copy', async () => {
@@ -633,7 +633,7 @@ describe('Feed Builder hub and routes', () => {
     const rail = [...el.querySelectorAll('.hub-side nav a')].map((a) => a.textContent?.trim());
     expect(rail[0]).toBe('All topics');
     expect(rail.some((name) => name?.startsWith('Tech'))).toBe(true);
-    expect(rail.some((name) => name?.startsWith('Music'))).toBe(false);
+    expect(rail.some((name) => name?.startsWith('Music'))).toBe(true);
     expect((el.querySelector('select') as HTMLSelectElement).value).toBe('de');
 
     // Compact first page: German pages lead, English stands in where there is none.

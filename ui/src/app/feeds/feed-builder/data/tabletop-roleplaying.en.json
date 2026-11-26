@@ -1,0 +1,195 @@
+{
+  "version": 1,
+  "topic": "tabletop-roleplaying",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-26T15:24:06+00:00",
+  "tags": [
+    {
+      "name": "TTRPG",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "DnD",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Roleplaying",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "tarkabarkaholgy@ohai.social",
+      "id": "109363951543751170",
+      "url": "https://ohai.social/@TarkabarkaHolgy",
+      "displayName": "Zalka Csenge Virág, PhD",
+      "avatar": "https://files.ohai.social/accounts/avatars/109/363/951/543/751/170/original/46188c1e1defbecf.jpeg",
+      "bio": "Professional storyteller and author from Hungary. MA in Archaeology, MA in Storytelling, PhD in Culture Studies. I write about folktales, folklore, mythology, representation, role-playing games, and…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "faerye@pie.gd",
+      "id": "109380492070752750",
+      "url": "https://pie.gd/@faerye",
+      "displayName": "Felicity Shoulders",
+      "avatar": "https://files.pie.gd/accounts/avatars/109/380/492/070/752/750/original/dd618233dba7bc59.jpeg",
+      "bio": "Nebula-nominated speculative fiction writer. Eclectic reader, piemaker, enthusiast of dinosaurs both extinct (🦖) and extant (). Plays and runs TTRPGs with and without dice. Co-protagonist of @ yaypie…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "dmtales@dice.camp",
+      "id": "108200437011003379",
+      "url": "https://dice.camp/@dmtales",
+      "displayName": "DM Tales 🔜 Concoction",
+      "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/108/200/437/011/003/379/original/139a176433af8b19.png",
+      "bio": "TTRPG enthusiast - Running, Playing, Reviewing. Currently running Basic Fantasy RPG and am about to begin a Numenera Campaign. Check out my YouTube channel!",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website", "youtube"]
+    },
+    {
+      "acct": "domille@dice.camp",
+      "id": "109366388748861169",
+      "url": "https://dice.camp/@Domille",
+      "displayName": "Domille",
+      "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/109/366/388/748/861/169/original/009a6c14b0b13a03.png",
+      "bio": "I make phased battle maps on Patreon",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["patreon"]
+    },
+    {
+      "acct": "hatwolf@meow.social",
+      "id": "109366259004898357",
+      "url": "https://meow.social/@Hatwolf",
+      "displayName": "Hatwolf",
+      "avatar": "https://medias.meow.social/accounts/avatars/109/366/259/004/898/357/original/aea5cf3d4a950971.jpg",
+      "bio": "They/Them. The only wolf with a hat. Concept Artist. Creator of After Silence. Lover of kobolds and dragons. Fan of TTRPGs and painting minis. Fulltime furry. Linktree: https:// linktr.ee/hatwolf",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "deinol@dice.camp",
+      "id": "108212387175370863",
+      "url": "https://dice.camp/@deinol",
+      "displayName": "Calico Jesse",
+      "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/108/212/387/175/370/863/original/bbf2741588f78720.png",
+      "bio": "Just another Rpg geek. (he/him) By day I’m a boring computer programmer. I like # ttrpgs and # boardgames I read a lot of # history",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["twitch"]
+    },
+    {
+      "acct": "jendefer@dice.camp",
+      "id": "110998499729341787",
+      "url": "https://dice.camp/@jendefer",
+      "displayName": "jendefer",
+      "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/110/998/499/729/341/787/original/2a027e265cf5261e.png",
+      "bio": "Dicey Stories showrunner. Birder. TTRPG GM/player. Language and nature enthusiast. Writer and sometimes drawer. Ace, cis, white, she/her. Profile pic: A friend's cartoon drawing of me from the early…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "jkramersmyth@digipres.club",
+      "id": "2406",
+      "url": "https://digipres.club/@jkramersmyth",
+      "displayName": "Jeanne (spellboundblog)",
+      "avatar": "https://digipres-club.s3.bhs.io.cloud.ovh.net/accounts/avatars/000/002/406/original/c27a0e225e252313.png",
+      "bio": "Author, artist, & creative geek w/a passion for the intersection of archives & technology. she/her # DigitalPreservation # Archivist # MacroPhotography # WritingFiction # TableTopGames # GraphicDesig…",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "canageek@wandering.shop",
+      "id": "5830",
+      "url": "https://wandering.shop/@Canageek",
+      "displayName": "Canageek",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/000/005/830/original/e9f34c5c2b5ed7d1.png",
+      "bio": "Canadian Geek. Ph.D. in Chemistry. Plays tabletop RPGs, video games and board games. Aspie & ADHD. Not a geek in a can.",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "geeknative@dice.camp",
+      "id": "109407244851609269",
+      "url": "https://dice.camp/@geeknative",
+      "displayName": "Geek Native",
+      "avatar": "https://cdn.masto.host/dicecamp/accounts/avatars/109/407/244/851/609/269/original/0092a100c12279f2.png",
+      "bio": "Geek Native set out to interest people in tabletop roleplaying and did so by showcasing the wide variety of geek culture that gamers are interested in. We care about much more than our level 13 half-…",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "darkpact@brettspiel.space",
+      "id": "109279912061758882",
+      "url": "https://brettspiel.space/@darkpact",
+      "displayName": "Matthias Nagy",
+      "avatar": "https://media.brettspiel.space/brettspielspace-media/accounts/avatars/109/279/912/061/758/882/original/85c74a9fbad482dc.jpg",
+      "bio": "Be Cool - Be Pro - Don’t be a Dick Sei Cool - Sei Professionell - Sei kein Arsch. Spieler im Herzen für alles rund um Brettspiele, Kartenspiele, Würfelspiele, Rollenspiele, Solospiele, Gesellschaftss…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "ollej@hachyderm.io",
+      "id": "109332995465023451",
+      "url": "https://hachyderm.io/@ollej",
+      "displayName": "Lord Doctor Olle W",
+      "avatar": "https://media.hachyderm.io/accounts/avatars/109/332/995/465/023/451/original/2e5647d4f3b40a8e.jpeg",
+      "bio": "Author of the book Game Development in Rust with Macroquad. Making artisanal hand-crafted free-range keyboard-to-screen words. Doctor of Divinity in the field of Rockology at Abide University. Founde…",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "b4ux1t3@hachyderm.io",
+      "id": "109336775143589013",
+      "url": "https://hachyderm.io/@b4ux1t3",
+      "displayName": "b4ux1t3 #1️⃣",
+      "avatar": "https://media.hachyderm.io/accounts/avatars/109/336/775/143/589/013/original/ee2d0c5ea2c24d39.jpeg",
+      "bio": "\"One can believe in a story without believing it happened.\" - Brandon Sanderson, Oathbringer Software Developer, dad, animal person. Maybe not in that order? # opensource You'll mostly see me posting…",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": ["twitch", "website"]
+    },
+    {
+      "acct": "spookygirl@mastodon.scot",
+      "id": "109365828609023752",
+      "url": "https://mastodon.scot/@spookygirl",
+      "displayName": "Lauren McMenemy",
+      "avatar": "https://media.mastodon.scot/accounts/avatars/109/365/828/609/023/752/original/bec05486b3800c25.jpg",
+      "bio": "👻Writes the dark stuff 📣Managing Editor - Online Content at British Fantasy Society 🤘Founder, Society of Ink Slingers 🔮Curator, Writing the Occult 😈Part of the HorrorTree.com family 📝Day job: Editor,…",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

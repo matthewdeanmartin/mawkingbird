@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "topic": "classical-music",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-26T15:24:06+00:00",
+  "tags": [
+    {
+      "name": "Klassik",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "KlassischeMusik",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Kammermusik",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "ChamberMusic",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "ClassicalMusic",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Opera",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "archivfraumusik@openbiblio.social",
+      "id": "109308124431019293",
+      "url": "https://openbiblio.social/@archivfraumusik",
+      "displayName": "Archiv Frau und Musik",
+      "avatar": "https://openbiblio.social/system/accounts/avatars/109/308/124/431/019/293/original/786c361f9e907bc8.jpg",
+      "bio": "Die weltweit größte Sammlung zu Komponistinnen und Dirigentinnen seit 1979 mit über 32.000 Medieneinheiten von über 2.200 Komponistinnen # WomenComposers # WomenConductors # Komponistinnen Es trötet…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCOas-8HNVj9PeIkDz75GhyA",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-05"
+      }
+    },
+    {
+      "acct": "pocketoperacompany@artsandculture.social",
+      "id": "109437847676568091",
+      "url": "https://artsandculture.social/@PocketOperaCompany",
+      "displayName": "Pocket Opera Company",
+      "avatar": "https://artsandculture.social/system/accounts/avatars/109/437/847/676/568/091/original/0da5a91c23c211cc.jpg",
+      "bio": "Deutschlands ältestes freies und mobiles Musiktheater mit Sitz in # Nürnberg . Wir machen Oper an ungewöhnlichen Spielorten. // Germany's oldest independent and mobile opera company, based in # Nurem…",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UC0xHqyVa_LtnhIWPS6ap7ow",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2025-10"
+      }
+    },
+    {
+      "acct": "anjaweinberger@troet.cafe",
+      "id": "110696938747541997",
+      "url": "https://troet.cafe/@AnjaWeinberger",
+      "displayName": "Anja Weinberger",
+      "avatar": "https://media.troet.cafe/troet/accounts/avatars/110/696/938/747/541/997/original/c6a8b0e64d026d3d.jpeg",
+      "bio": "💚Flötistin und Autorin, lebt in der Nähe von # Nürnberg . Immer auf der Suche nach selten gespielter Musik, v. a. von # Komponistinnen . Als # Autorin auf den Spuren unserer Kunst und Kultur. # Kennt…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "lebenslaute@tldr.nettime.org",
+      "id": "112898665432050969",
+      "url": "https://tldr.nettime.org/@lebenslaute",
+      "displayName": "Lebenslaute",
+      "avatar": "https://tldr.nettime.org/system_nettime/accounts/avatars/112/898/665/432/050/969/original/3cead5ae64aa5631.png",
+      "bio": "Klassische Musik – politische Aktion Orchestermusik und Chor an Orten von Unrecht, Zerstörung und Bedrohung. Ziviler Ungehorsam, Antifaschismus, Klimagerechtigkeit und Abrüstung. Gewaltfrei. Aktiv se…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website", "youtube"]
+    },
+    {
+      "acct": "madiko@mastodon.green",
+      "id": "109116726110855306",
+      "url": "https://mastodon.green/@madiko",
+      "displayName": "Franziska Köppe | madiko",
+      "avatar": "https://files.mastodon.green/accounts/avatars/109/116/726/110/855/306/original/08c91caa0ff18c59.jpg",
+      "bio": "Transformationskatalysatorin für Lebens- & Arbeitswelten mit Zukunft (she/her | sie/ihre) Meine Themen: # Humanismus # Aufklärung # Freiheit (Wahlfreiheit, Entscheidungsfreiheit, Grundrechte) # Reson…",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "kulturmensch@bildung.social",
+      "id": "109380841465724319",
+      "url": "https://bildung.social/@kulturmensch",
+      "displayName": "Kulturkramkiste",
+      "avatar": "https://storage.gra.cloud.ovh.net/v1/AUTH_91eb37814936490c95da7b85993cc2ff/bildungsocial/accounts/avatars/109/380/841/465/724/319/original/106756551a73fe60.jpg",
+      "bio": "Lebenskünstlerin und Individualistin, Hobby-Musikerin, bibliophil und musisch, habe eine Schwäche für Bücher, gute Chansons, Kunst, kluge Menschen, leckeres Essen, köstlichen Wein, die Schönheit der…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    }
+  ],
+  "servers": []
+}

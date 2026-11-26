@@ -29,7 +29,7 @@ export function resetDraftsRailLoads(): void {
 }
 
 /**
- * Right rail, Fedi and Explore (spec/sprint/explore-2026-11.md, Sprint 4): your
+ * Left rail under the profile, Fedi and Explore (spec/sprint/explore-2026-11.md): your
  * drafts, as a quiet nudge to finish one. Shows nothing without drafts. No
  * dots, badges or reminders: it is a card, not a notification.
  *
@@ -66,16 +66,24 @@ export function resetDraftsRailLoads(): void {
     }
   `,
   styles: `
+    /* The left rail's card styles do not reach inside this component, so the
+       card spaces itself like its neighbours (title, rows, footer link). */
+    .card {
+      margin-bottom: 12px;
+    }
     .card-title {
-      font-size: 1rem;
-      margin: 0 0 0.5rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 17px;
+      font-weight: 700;
+      margin: 0;
+      padding: 12px 14px;
     }
     ul {
       display: grid;
       gap: 0.35rem;
       list-style: none;
-      margin: 0 0 0.5rem;
-      padding: 0;
+      margin: 0;
+      padding: 10px 14px;
     }
     li a {
       align-items: baseline;
@@ -101,7 +109,12 @@ export function resetDraftsRailLoads(): void {
       font-weight: normal;
     }
     .more {
-      font-size: 0.9rem;
+      border-top: 1px solid var(--border);
+      color: var(--ds-action-text);
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 14px;
     }
   `,
 })

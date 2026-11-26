@@ -1,0 +1,279 @@
+{
+  "version": 1,
+  "topic": "history-and-archaeology",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-26T15:24:06+00:00",
+  "tags": [
+    {
+      "name": "History",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Archaeology",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Histodons",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "bigskytreasure@mastodon.world",
+      "id": "110381601683486755",
+      "url": "https://mastodon.world/@BigSkyTreasure",
+      "displayName": "BigSkyTreasure",
+      "avatar": "https://s3.eu-central-2.wasabisys.com/mastodonworld/accounts/avatars/110/381/601/683/486/755/original/591f4782f967b115.png",
+      "bio": "Step back in time and wander the wild, windswept plains and mountains of Montana, where history whispers through the pines and rivers remember the dreams of pioneers. From the gold rush days in Virgi…",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["bluesky", "youtube"],
+      "youtube": {
+        "channelId": "UCkVgjsO_JMIXmRSeEeJT-Ig",
+        "native": true,
+        "band": "<1k",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "eyeinhand@fosstodon.org",
+      "id": "109294544052445373",
+      "url": "https://fosstodon.org/@eyeinhand",
+      "displayName": "EyeInHand",
+      "avatar": "https://cdn.fosstodon.org/accounts/avatars/109/294/544/052/445/373/original/11153938523a02eb.png",
+      "bio": "Analog Analogies Words & Images Tech, Science, & Humanities Ambient Historian",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website", "youtube"],
+      "youtube": {
+        "channelId": "UCaCeNk443ZUcL4L0b7TgbrQ",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-11"
+      }
+    },
+    {
+      "acct": "mrundkvist@archaeo.social",
+      "id": "109536646346737618",
+      "url": "https://archaeo.social/@mrundkvist",
+      "displayName": "Martin Rundkvist",
+      "avatar": "https://mstdn.archaeo.social/accounts/avatars/109/536/646/346/737/618/original/63eedbc70a21c2dc.png",
+      "bio": "Archaeologist, museum curator, table-top gamer, book worm, punster, science fan, blogger, Leftie, LGBTQ ally, Swede # archaeology # ttrpg # boardgames # books # science # blogging # left # stockholm…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "dehypotheses@fedihum.org",
+      "id": "109352385586529263",
+      "url": "https://fedihum.org/@dehypotheses",
+      "displayName": "de.hypotheses",
+      "avatar": "https://fedihum.s3proxy.de/accounts/avatars/109/352/385/586/529/263/original/969190cb035bcbf2.jpg",
+      "bio": "In den Wissenschaftsblogs bei de.hypotheses berichten Forschende in 450+ Blogs aus der aktuellen geistes- und sozialwissenschaftlichen Forschung in Deutschland, Österreich und der Schweiz. Eine Initi…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "tarkabarkaholgy@ohai.social",
+      "id": "109363951543751170",
+      "url": "https://ohai.social/@TarkabarkaHolgy",
+      "displayName": "Zalka Csenge Virág, PhD",
+      "avatar": "https://files.ohai.social/accounts/avatars/109/363/951/543/751/170/original/46188c1e1defbecf.jpeg",
+      "bio": "Professional storyteller and author from Hungary. MA in Archaeology, MA in Storytelling, PhD in Culture Studies. I write about folktales, folklore, mythology, representation, role-playing games, and…",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": []
+    },
+    {
+      "acct": "dhiparis@wisskomm.social",
+      "id": "110770310781522687",
+      "url": "https://wisskomm.social/@dhiparis",
+      "displayName": "DHI Paris",
+      "avatar": "https://wisskomm.social/system/accounts/avatars/110/770/310/781/522/687/original/f6d302ca15a1ab02.jpg",
+      "bio": "Das Deutsche Historische Institut Paris arbeitet unter dem Motto Forschen - Vermitteln - Qualifizieren. Es ist Teil der @ MaxWeberStiftung . Toots von Mareike König, Theresa Finger, Hannah Miriam Tul…",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "brian_gettler@mas.to",
+      "id": "109268456353185425",
+      "url": "https://mas.to/@brian_gettler",
+      "displayName": "Brian Gettler",
+      "avatar": "https://media.mas.to/accounts/avatars/109/268/456/353/185/425/original/ff5d655fd754e07b.jpg",
+      "bio": "Settler historian. Prof, University of Toronto, member of the Montreal History Group ( https:// ghm.uqam.ca/ ) and Co-Editor, Canadian Historical Review. Thinking about Indigenous peoples, capitalism…",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "anirvan@mastodon.social",
+      "id": "476510",
+      "url": "https://mastodon.social/@anirvan",
+      "displayName": "Anirvan Chatterjee",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/476/510/original/0810d5183670633a.jpg",
+      "bio": "Techie, public historian, and activist from Berkeley, California I curate the monthly Berkeley South Asian radical history walking tour — now celebrating its 14th year.",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["wikidata", "followers-2500"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "globalmuseum@mastodon.online",
+      "id": "109298185928165179",
+      "url": "https://mastodon.online/@globalmuseum",
+      "displayName": "Global Museum",
+      "avatar": "https://files.mastodon.online/accounts/avatars/109/298/185/928/165/179/original/8ed3da9f519c2f00.jpg",
+      "bio": "The International museum site - (formerly as a stand alone website) Serving the profession for 30+ years. Daily Museum News, Job Opportunities, Commentary and much, much more! **POST A MUSEUM JOB [FR…",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["followers-2500"],
+      "elsewhere": ["bluesky"]
+    },
+    {
+      "acct": "heatherrosejones@wandering.shop",
+      "id": "108196054624805721",
+      "url": "https://wandering.shop/@heatherrosejones",
+      "displayName": "Heather Rose Jones",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/108/196/054/624/805/721/original/a0fc3b2b895fb901.jpeg",
+      "bio": "Author, amateur queer historian, podcaster. She/her. Find my blog, podcast, books, and more at Alpennia.com.",
+      "shelf": "notable",
+      "rank": 8,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "teakayb@mathstodon.xyz",
+      "id": "87088",
+      "url": "https://mathstodon.xyz/@TeaKayB",
+      "displayName": "Tommaths (he/him)",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/000/087/088/original/c8e4bb6eb0e1cc95.jpg",
+      "bio": "I'm Tom, a freelance Museum Learning Consultant who wants to help museums & galleries make more of the maths that is fundamental to the stories & objects of each & every one of them. Author of The Ma…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "climatehistories@mastodon.social",
+      "id": "108191409912507109",
+      "url": "https://mastodon.social/@Climatehistories",
+      "displayName": "The Climate Historian",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/191/409/912/507/109/original/03464ebcd8c08d56.jpg",
+      "bio": "Walking, reading, writing. Trying hard to remain human in this age of rage. Environmental scientist by trade, endlessly curious about the messy and often frustrating work of keeping a planet habitabl…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "nellythewillow@mastodon.social",
+      "id": "113894691018209397",
+      "url": "https://mastodon.social/@NellytheWillow",
+      "displayName": "Dr Helen Wilson",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/894/691/018/209/397/original/e6a10c674738bf1a.jpeg",
+      "bio": "All things Devon & Cornwall, especially Dartmoor. Self-published and award-winning biographer of the Pinwill sisters, Arts & Crafts woodcarvers of Devon and Cornwall. Previous life as a field botanis…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "journeysinfilm@hcommons.social",
+      "id": "112676515645174361",
+      "url": "https://hcommons.social/@JourneysInFilm",
+      "displayName": "Journeys In Film",
+      "avatar": "https://spaces.hcommons.social/accounts/avatars/112/676/515/645/174/361/original/7dba766e13f775a6.png",
+      "bio": "Journeys In Film is a non-profit organization dedicated to the use of film to promote a richer understanding of our diverse and complex world. We partner with social impact filmmakers to create free…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "army_talk_fascism@mastodon.social",
+      "id": "115890740692292547",
+      "url": "https://mastodon.social/@army_talk_fascism",
+      "displayName": "Army Talk 64: Fascism",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/890/740/692/292/547/original/af09802c41c08b78.png",
+      "bio": "\"Army Talk Orientation Fact Sheet #64 - Fascism!\" is a document published by the U.S. Department of War on March 24, 1945 as an educational tool for soldiers then fighting World War II. This account…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "aarbrk@mstdn.mx",
+      "id": "109298758483979757",
+      "url": "https://mstdn.mx/@aarbrk",
+      "displayName": "Aaron Brick — אהרן בריק",
+      "avatar": "https://mstdn.mx/system/accounts/avatars/109/298/758/483/979/757/original/33ee1e68a991a5a3.png",
+      "bio": "Historian of Mexico & California; Computer Science educator. Archives, manuscripts, graphics, document pipelines. Degrowth, frisbee, gardening, hi-fi.",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "vibracobra23@mastodon.social",
+      "id": "109248391235510402",
+      "url": "https://mastodon.social/@Vibracobra23",
+      "displayName": "Chris Bond",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/248/391/235/510/402/original/3de96dc89b73db31.png",
+      "bio": "Publisher. Peel Session uploader. Retailer of postcards. Sheffield UK Formerly catalogued historical manuscripts at the Royal Institution of Cornwall and Cornwall Record Office And I'll swear it does…",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "klausblog@mastodon.social",
+      "id": "109313583679608371",
+      "url": "https://mastodon.social/@klausblog",
+      "displayName": "Daniel Prindii",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/313/583/679/608/371/original/fd86b7b9e64b6b03.png",
+      "bio": "Content Strategist. Community Designer. Art historian of Italian Renaissance. Metalhead. Avid reader. Photographer. Co-founder of the content strategy consultancy E&K Interactive Studio. Writing abou…",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "fionnbharr@mastodon.social",
+      "id": "109257697805325192",
+      "url": "https://mastodon.social/@fionnbharr",
+      "displayName": "FinbarrF",
+      "avatar": "https://files.mastodon.social/accounts/avatars/109/257/697/805/325/192/original/0ca742f65633feea.jpg",
+      "bio": "“To be Irish is to know that in the end the world will break your heart.”",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "onthisdaybot@mastodon.social",
+      "id": "115226769784193543",
+      "url": "https://mastodon.social/@onthisdaybot",
+      "displayName": "On This Day",
+      "avatar": "https://files.mastodon.social/accounts/avatars/115/226/769/784/193/543/original/81b81c2465ace92b.jpg",
+      "bio": "I'm an automated bot that will give you random events, births and deaths for today's date every four hours. Operated by @ wesmorgan1",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

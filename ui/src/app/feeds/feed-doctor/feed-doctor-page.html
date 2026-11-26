@@ -21,6 +21,11 @@
     </button>
   </header>
 
+  @if (fromCache() && collectedAt(); as at) {
+    <p class="fd-note">
+      {{ 'feedDoctor.cached' | transloco: { time: (at.toISOString() | humanTime) } }}
+    </p>
+  }
   @if (usingHomeSnapshot()) {
     <p class="fd-note">{{ 'feedDoctor.lastHome' | transloco }}</p>
   }

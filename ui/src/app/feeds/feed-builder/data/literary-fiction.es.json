@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "topic": "literary-fiction",
+  "lang": "es",
+  "status": "reviewed",
+  "generatedAt": "2026-11-26T15:51:34+00:00",
+  "tags": [
+    {
+      "name": "FicciónLiteraria",
+      "lang": "es",
+      "kind": "tag"
+    },
+    {
+      "name": "NovelaLiteraria",
+      "lang": "es",
+      "kind": "tag"
+    },
+    {
+      "name": "NarrativaLiteraria",
+      "lang": "es",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "albertochimal@mstdn.mx",
+      "id": "202660",
+      "url": "https://mstdn.mx/@albertochimal",
+      "displayName": "Alberto Chimal",
+      "avatar": "https://mstdn.mx/system/accounts/avatars/000/202/660/original/1459d601dfd1940a.jpg",
+      "bio": "Escritor mexicano | Mexican writer 🇲🇽 Toots mostly in # Spanish he/him # libros # literatura # citas # artículos # EscrituraCreativa # cine # comics # arte # fotografía # música # actualidad # books…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": ["website", "youtube"]
+    },
+    {
+      "acct": "belenconde@masto.es",
+      "id": "109386693079415377",
+      "url": "https://masto.es/@BelenConde",
+      "displayName": "Belén Conde",
+      "avatar": "https://masto.es/system/accounts/avatars/109/386/693/079/415/377/original/f2587b7ea72762b9.jpg",
+      "bio": "Viajera, filóloga, esgrimista y guía en ciernes. Novelista humana de ficción, narrativa y minorías. Defensora de la literatura sin distinciones. Me gustan los libros, la naturaleza, el espacio, la mú…",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "estergarcia@mastodon.social",
+      "id": "114624202511085278",
+      "url": "https://mastodon.social/@EsterGarcia",
+      "displayName": "Ester García",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/624/202/511/085/278/original/de96ac91e4b66f98.jpeg",
+      "bio": "Si has llegado hasta aquí, es porque eres como yo: un espectador de lo brutal e incoherente, de lo que quema y de lo que se reconstruye a través de las ruinas. Si has llegado hasta aquí es porque te…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "martindelalcor@tkz.one",
+      "id": "109325281376239729",
+      "url": "https://tkz.one/@martindelalcor",
+      "displayName": "Martín Del Alcor",
+      "avatar": "https://media.tkz.one/tkz/accounts/avatars/109/325/281/376/239/729/original/14053c544de8b0b3.jpg",
+      "bio": "Estudié Filología Inglesa en la Universidad de Sevilla. Autor de 'La tierra de las polillas'(2022) y 'Quién puso a Bella en el olmo?' (2024). https:// mybook.to/MyBookMastodon",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "veronica_gp@mastodon.social",
+      "id": "113486083495314909",
+      "url": "https://mastodon.social/@Veronica_GP",
+      "displayName": "Verónica García-Peña",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/486/083/495/314/909/original/3280056fec6f12c4.jpg",
+      "bio": "✍🏼 Escritora | Periodista | Socióloga. Cuento historias y, a veces, ellas me cuentan a mí. https:// linktr.ee/veronica_gp",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

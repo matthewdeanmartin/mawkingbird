@@ -1,5 +1,4 @@
 import { Account } from '../platform/api/models';
-import { BUNDLED_STARTER_KITS } from './bundled-starter-kits.generated';
 import catalog from './starter-catalog.generated.json';
 import { packLanguage } from './starter-pack-text';
 
@@ -105,16 +104,6 @@ export const STARTER_KITS: readonly StarterKit[] = [
       'A general-purpose mix of projects, reporting, art, history, science, and delightful bots — the one to take if you have no idea where to begin.',
     accounts: STARTER_COLLECTION,
   },
-  ...BUNDLED_STARTER_KITS.map((kit) => ({
-    slug: kit.slug,
-    title: kit.title,
-    blurb: kit.blurb,
-    accounts: kit.accounts.map((account) => ({
-      name: account.display_name || account.username,
-      handle: account.acct,
-      account,
-    })),
-  })),
 ];
 
 export const STARTER_CATALOG_UPDATED_AT = catalog.generatedAt;

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readdir, readFile } from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { JSDOM } from 'jsdom';
 import {
@@ -68,13 +68,6 @@ const expectedAlternates = (tool) => {
   ].sort();
 };
 const toolSelectors = focusedTools.map((tool) => tool.prerenderCheck.tool);
-// One prerendered page per published starter kit; follow-kits.ts decides which.
-const kitSlugs = (await readdir(path.join(root, 'follow'), { withFileTypes: true }))
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .sort();
-assert.ok(kitSlugs.length > 0, 'at least one starter kit is published');
-pages.push('follow', ...kitSlugs.map((slug) => `follow/${slug}`));
 // Feed Builder topic pages and their hub (src/app/feeds/feed-builder/).
 const feedPaths = JSON.parse(
   await readFile(
@@ -210,19 +203,7 @@ for (const page of pages) {
     '/',
     'SEO publishing uses root base href',
   );
-  if (page === 'follow') {
-    assert.equal(doc.querySelectorAll('h1').length, 1);
-    for (const slug of kitSlugs)
-      assert.ok(doc.querySelector(`a[href="/follow/${slug}/"]`), `hub links to ${slug}`);
-  } else if (page.startsWith('follow/')) {
-    assert.match(doc.querySelector('h1')?.textContent ?? '', /on Mastodon: \d+ accounts to follow/);
-    assert.ok(doc.querySelectorAll('.people li').length >= 3, `${page} lists its people`);
-    assert.ok(
-      doc.querySelector(`a[href="/collections/starter/${page.slice('follow/'.length)}"]`),
-      `${page} links to the in-app kit`,
-    );
-    assert.ok(doc.querySelector('a[href="/follow/"]'), `${page} links back to the hub`);
-  } else if (hubAt(page)) {
+  if (hubAt(page)) {
     // English lists every topic page; a language's hub lists its own pages and
     // the English hub. All hubs are alternates of one another.
     const hub = hubAt(page);
@@ -632,12 +613,22 @@ for (const page of pages) {
   );
   assert.ok(html.length < 1_000_000, 'Mastodon verification response is below 1 MB');
 }
+// Retired /follow/ starter kits (2026-11-26): each old address refreshes at once
+// to its replacement and names it canonical (prepare-seo-index.mjs MOVED).
+for (const [from, to] of [
+  ['follow', 'communities'],
+  ['follow/sci-fi', 'science-fiction-on-mastodon'],
+]) {
+  const moved = await readFile(path.join(root, from, 'index.html'), 'utf8');
+  assert.match(moved, new RegExp(`<meta http-equiv="refresh" content="0; url=/${to}/">`), from);
+  assert.match(moved, new RegExp(`rel="canonical" href="https://mawkingbird.com/${to}/"`), from);
+}
 assert.equal(titles.size, pages.length, 'each public page has its own title');
 assert.equal(descriptions.size, pages.length, 'each public page has its own description');
 // Each page family shows its own card (seoImage in route data).
 assert.deepEqual(
   [...cards].sort(),
-  ['audience', 'communities', 'default', 'follow', 'tools'].map((name) => `og/${name}.png`),
+  ['audience', 'communities', 'default', 'tools'].map((name) => `og/${name}.png`),
 );
 // Link-preview cards: 1200×630 PNGs, small enough for every unfurler.
 for (const card of cards) {

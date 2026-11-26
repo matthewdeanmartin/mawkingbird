@@ -2,6 +2,31 @@ import { PageLanguage } from '../../../public-pages/focused-tools';
 import { TopicCopy } from './topic-copy';
 
 export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
+  fr: {
+    title: 'Polars et romans policiers sur Mastodon : qui suivre',
+    description:
+      'Découvre des lecteurs, des auteurs et des discussions autour du polar sur Mastodon. Explore les profils et les hashtags avant de créer un compte.',
+    heading: 'Polars et romans policiers sur Mastodon',
+    listTitle: 'Polars et romans policiers',
+    intro: [
+      'Une enquête à résoudre, un roman noir à découvrir ou une lecture à partager : retrouve des lecteurs, des auteurs et des librairies qui parlent de fiction policière. Les recommandations et les échanges autour des livres te donnent des pistes pour tes prochaines lectures.',
+      'Parcours les profils et les hashtags, lis quelques publications et choisis ce qui te plaît. Un compte peut aussi parler d’autres sujets ; les aperçus te permettent de te faire une idée avant de le suivre.',
+    ],
+    faq: [
+      {
+        q: 'Faut-il un compte pour lire ?',
+        a: 'Non. Tu peux consulter cette page et les publications publiques sans compte. Pour suivre des profils ou des hashtags, connecte-toi avec un compte Mastodon.',
+      },
+      {
+        q: 'Est-ce une sélection de faits divers ?',
+        a: 'Cette sélection porte sur la fiction : romans policiers, enquêtes imaginaires et romans noirs. Certains comptes abordent aussi des affaires réelles ou d’autres lectures.',
+      },
+      {
+        q: 'Comment apparaître dans cette liste ?',
+        a: 'Publie régulièrement sur le polar et utilise des hashtags pertinents. Les profils doivent remplir les critères d’activité et d’inclusion du catalogue ; un hashtag ne garantit pas une place.',
+      },
+    ],
+  },
   en: {
     title: 'Mystery and crime books on Mastodon: people and hashtags',
     description:

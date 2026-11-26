@@ -26,6 +26,61 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-26: legacy starter kits and /follow/ retired
+
+- test: src/app/discovery/starter-collection.spec.ts :: STARTER_COLLECTION ships ten themed kits whose account ids came from their home instances
+  reason: replaced
+  now: src/app/discovery/starter-collection.spec.ts :: STARTER_COLLECTION ships the Universal kit as the only one outside the catalogue
+  why: The owner retired the ten hand-picked legacy kits (2026-11-26); the catalogue from mawkingbird_starters replaces them.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages describes a kit as an ordered list of only the people its page shows
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages keeps search descriptions within the snippet length
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages leaves out an account that has not consented to search listing: { discoverable: false }
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages leaves out an account that has not consented to search listing: { discoverable: null }
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages leaves out an account that has not consented to search listing: { discoverable: undefined }
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages leaves out an account that has not consented to search listing: { indexable: false }
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages leaves out an account that has not consented to search listing: { noindex: true }
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages lists an account that is discoverable and has not opted out of indexing
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages omits opted-out people from a published kit
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages publishes every bundled kit today, each with only consenting people
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages publishes no page for a kit that consent filtering leaves too small
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
+- test: src/app/public-pages/features/follow-kits.spec.ts :: public starter-kit pages turns profile HTML into a short plain-text bio
+  reason: dead-code
+  why: The public /follow/ starter-kit pages were retired with the legacy kits (owner, 2026-11-26); their addresses now redirect.
+
 ## 2026-11-26: Even more and a locked … menu
 
 - test: src/app/shell/shell.spec.ts :: Shell account switching opens onboarding from the More menu and closes the menu

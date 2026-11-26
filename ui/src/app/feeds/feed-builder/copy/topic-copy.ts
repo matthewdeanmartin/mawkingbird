@@ -19,6 +19,14 @@ const COPY_LOADERS: Record<
   FeedTopic,
   () => Promise<{ COPY: Partial<Record<PageLanguage, TopicCopy>> }>
 > = {
+  photography: () => import('./photography'),
+  'cooking-and-baking': () => import('./cooking-and-baking'),
+  'history-and-archaeology': () => import('./history-and-archaeology'),
+  'tabletop-roleplaying': () => import('./tabletop-roleplaying'),
+  'linguistics-and-languages': () => import('./linguistics-and-languages'),
+  'classical-music': () => import('./classical-music'),
+  'geology-and-earth-science': () => import('./geology-and-earth-science'),
+  'sewing-and-textile-crafts': () => import('./sewing-and-textile-crafts'),
   'computing-and-open-source': () => import('./computing-and-open-source'),
   'arts-and-culture': () => import('./arts-and-culture'),
   'literary-fiction': () => import('./literary-fiction'),

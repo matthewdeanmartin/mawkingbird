@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "topic": "sewing-and-textile-crafts",
+  "lang": "en",
+  "status": "reviewed",
+  "generatedAt": "2026-11-26T15:24:06+00:00",
+  "tags": [
+    {
+      "name": "Knitting",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Sewing",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Weaving",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "fbz@infosec.exchange",
+      "id": "109327110026492082",
+      "url": "https://infosec.exchange/@fbz",
+      "displayName": "fbz",
+      "avatar": "https://media.infosec.exchange/infosec.exchange/accounts/avatars/109/327/110/026/492/082/original/675e477b6dca3044.jpeg",
+      "bio": "🔧 hardware hacker 🛠️ speaks: fr, de, en. obsessed: algorithmically generated art, textiles, spaaaaaaace, ham radio 73s de K7FP, vintage hardware, food forests, chaos gardening, plant breeding, native…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "aleen@wandering.shop",
+      "id": "109366929251483726",
+      "url": "https://wandering.shop/@aleen",
+      "displayName": "Aleen",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/366/929/251/483/726/original/2b2d42f6bc1a660b.jpeg",
+      "bio": "Aleen [uh-lean], noun: Podcaster, reader, writer, knitter, nerd. Queer. A work in progress. Profile pic: a selfie of a white woman with curlyish brown hair and brown eyes, wearing purple and pink tra…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "gwenbeads@mathstodon.xyz",
+      "id": "109507762413512134",
+      "url": "https://mathstodon.xyz/@gwenbeads",
+      "displayName": "Gwen Fisher",
+      "avatar": "https://media.mathstodon.xyz/accounts/avatars/109/507/762/413/512/134/original/169691ebb9ce0e57.png",
+      "bio": "I teach math. I make art. I make mathematical art. I paint, sew clothes, and weave beads. Author: Beading with Algorithms: Cellular Automata in Peyote Stitch. SF Bay Area. My Erdős number is 3. Find…",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "700sachen@ruhr.social",
+      "id": "109290809877854620",
+      "url": "https://ruhr.social/@700Sachen",
+      "displayName": "700Sachen",
+      "avatar": "https://media.ruhr.social/ruhr-social/accounts/avatars/109/290/809/877/854/620/original/d25a73d4f13415c2.jpeg",
+      "bio": "Herzlich Willkommen in meinem Wohnzimmer! Hier wird heiß diskutiert, viel geliebt, geschimpft, gelacht, auch mal geweint. Außerdem Näh-, Strick-, und Gartencontent und # oepnvgeschichten . Oft politi…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["podcast"]
+    },
+    {
+      "acct": "emkingma@mstdn.social",
+      "id": "108197771273091445",
+      "url": "https://mstdn.social/@emkingma",
+      "displayName": "Emily King",
+      "avatar": "https://media.mstdn.social/accounts/avatars/108/197/771/273/091/445/original/bdefc5a60900fd19.png",
+      "bio": "Writer, knitter, geeky sort in Cornwall, UK. She/Her. I've been learning Danish for over 5 years. Working on a career change to cybersecurity. I helped co-found TECgirls/TECwomen. Helping out on the…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "lia_pas@vis.social",
+      "id": "110245002622534049",
+      "url": "https://vis.social/@lia_pas",
+      "displayName": "Lia Pas",
+      "avatar": "https://cdn.masto.host/vissocial/accounts/avatars/110/245/002/622/534/049/original/770eb33e83d3e198.png",
+      "bio": "Multidisciplinary artist working in image, text, and sound. Current obsessions: # SciArt # anatomy # embroidery and # VisibleMending . Disabled by post-viral # MECFS . (she/her). https:// linktr.ee/l…",
+      "shelf": "community",
+      "rank": 6,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "annaplexis@mastodon.social",
+      "id": "110226881516392067",
+      "url": "https://mastodon.social/@annaplexis",
+      "displayName": "annaplexis",
+      "avatar": "https://files.mastodon.social/accounts/avatars/110/226/881/516/392/067/original/0cf1c05927e5cb60.png",
+      "bio": "Author of Learn to knit in 50 Squares Tutorials and Patterns 🧶🧶🧶 Free knitting course on www.annaplexis.eu",
+      "shelf": "community",
+      "rank": 7,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "apiary@mastodon.social",
+      "id": "38585",
+      "url": "https://mastodon.social/@Apiary",
+      "displayName": "Apiary",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/038/585/original/abfe7466a914cbd6.jpeg",
+      "bio": "Sewing and occasionally complaining. No one is illegal.",
+      "shelf": "community",
+      "rank": 8,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "evehaswords@toot.cat",
+      "id": "112950898227823570",
+      "url": "https://toot.cat/@EveHasWords",
+      "displayName": "Eve",
+      "avatar": "https://pool.jortage.com/tootcat/accounts/avatars/112/950/898/227/823/570/original/ef6030346dcdc649.png",
+      "bio": "They / them. I'm a # writer . I # knit , # cook , # sew , procrastinate on writing, and program very ill. Purportedly a \"privacy extremist.\" I operate the memes and review account @ HabitatRing . On…",
+      "shelf": "community",
+      "rank": 9,
+      "fame": [],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "ansate@social.coop",
+      "id": "109395383788832610",
+      "url": "https://social.coop/@ansate",
+      "displayName": "Melissa Santos",
+      "avatar": "https://social-coop-media.ams3.cdn.digitaloceanspaces.com/accounts/avatars/109/395/383/788/832/610/original/391b9a04c1b909d6.jpg",
+      "bio": "data nerd. community builder. reader, crafter, boardgame player. into sewing and baking.",
+      "shelf": "community",
+      "rank": 10,
+      "fame": [],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "terrymatz@wandering.shop",
+      "id": "109287554301817222",
+      "url": "https://wandering.shop/@terrymatz",
+      "displayName": "Terry Matz",
+      "avatar": "https://stockroom.wandering.shop/accounts/avatars/109/287/554/301/817/222/original/cfa99fe3e9b572d6.jpg",
+      "bio": "Reader especially of sf/f, knitter, digital professional. she/her Married to a former Worldcon chair.",
+      "shelf": "community",
+      "rank": 11,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "permasolarpotter@mastodon.green",
+      "id": "114739575775931833",
+      "url": "https://mastodon.green/@PermaSolarPotter",
+      "displayName": "PermaSolarPotter",
+      "avatar": "https://files.mastodon.green/accounts/avatars/114/739/575/775/931/833/original/293870925783ef2a.jpeg",
+      "bio": "Second account for @potterybyosa where I discuss # gardening , # nativeplants , # composting , # permaculture , etc. Zone 10a. Recently started # spinning native cotton from my garden. Solar powered…",
+      "shelf": "community",
+      "rank": 12,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

@@ -57,7 +57,6 @@ import { PublicArticle, PublicArticleKind } from './app/public-pages/features/pu
 import * as toolsIndexPage from './app/public-pages/tools/tools-index';
 import { ToolsIndex } from './app/public-pages/tools/tools-index';
 import { audienceRoutes } from './app/public-pages/features/audience-routes';
-import { followRoutes } from './app/public-pages/features/follow-routes';
 import { podcastRoutes } from './app/public-pages/podcasts/podcast-routes';
 import { youtuberRoutes } from './app/public-pages/youtubers/youtuber-routes';
 import { feedBuilderRoutes } from './app/feeds/feed-builder/feed-builder-routes';
@@ -179,7 +178,6 @@ const tools = FOCUSED_TOOLS.map((tool) => ({
 
 const publicRoutes: Route[] = [
   ...audienceRoutes,
-  ...followRoutes,
   ...youtuberRoutes,
   ...podcastRoutes,
   ...feedBuilderRoutes,
@@ -294,17 +292,6 @@ export default (context: BootstrapContext) =>
             { path: 'create-mastodon-account', renderMode: RenderMode.Prerender },
             { path: 'create-bluesky-account', renderMode: RenderMode.Prerender },
             ...tools.map(({ path }) => ({ path, renderMode: RenderMode.Prerender as const })),
-            { path: 'follow', renderMode: RenderMode.Prerender },
-            {
-              path: 'follow/:slug',
-              renderMode: RenderMode.Prerender,
-              getPrerenderParams: async () =>
-                (await import('./app/public-pages/features/follow-kits')).PUBLIC_KITS.map(
-                  ({ slug }) => ({
-                    slug,
-                  }),
-                ),
-            },
             ...feedBuilderRoutes.map((route) => ({
               path: route.path ?? '',
               renderMode: RenderMode.Prerender as const,

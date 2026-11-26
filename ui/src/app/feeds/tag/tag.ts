@@ -1,4 +1,5 @@
 import { StatusReplacement, replaceStatus } from '../reconcile-status';
+import { ReadingBack } from '../../shell/reading-back';
 import { TagMedia } from './tag-media';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TagActions } from '../../discovery/tag-actions/tag-actions';
@@ -74,6 +75,7 @@ const SAMPLE_PAGE_SIZE = 40;
 @Component({
   selector: 'app-tag',
   imports: [
+    ReadingBack,
     TagMedia,
     TagActions,
     StatusCard,

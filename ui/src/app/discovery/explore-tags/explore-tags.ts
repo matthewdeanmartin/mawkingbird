@@ -1,4 +1,6 @@
 import { Component, computed, inject, OnInit, signal, viewChild } from '@angular/core';
+import { MbTab, MbTabs } from '../../design-system/tabs/tabs';
+import { NgTemplateOutlet } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Observable, map } from 'rxjs';
@@ -24,8 +26,14 @@ import {
 // i18n exploreTags.title: Hashtags
 // i18n exploreTags.lede: Follow a hashtag and posts on that topic come into Home, from people you don’t follow yet.
 // i18n exploreTags.suggested: Suggested
+// i18n exploreTags.tabs: Hashtag sections
+// i18n exploreTags.tab.yours: Yours
+// i18n exploreTags.tab.similar: Similar
+// i18n exploreTags.tab.featured: Featured
+// i18n exploreTags.tab.more: More
+// i18n exploreTags.noneHere: Nothing to suggest here right now.
 // i18n exploreTags.group.yours: You post with these
-// i18n exploreTags.group.similar: Like the ones you follow
+// i18n exploreTags.group.similar: Tags similar to what you follow now
 // i18n exploreTags.group.trending: Trending on your server
 // i18n exploreTags.loading: Loading…
 // i18n exploreTags.failed: Couldn’t load these.
@@ -35,7 +43,6 @@ import {
 // i18n exploreTags.following: Following
 // i18n exploreTags.followAria: Follow #{{tag}}
 // i18n exploreTags.followFailed: Couldn’t follow #{{tag}}.
-// i18n exploreTags.none: No suggestions right now. Try a hashtag you care about in the box below.
 // i18n exploreTags.byTopic: Hashtags by topic, with people to follow:
 // i18n exploreTags.byTopicLink: Communities
 // i18n exploreTags.noTags.bluesky: Bluesky has no followed hashtags. Its feeds do the same job: pick topics and read them as one timeline.
@@ -55,6 +62,16 @@ export interface TagSuggestion {
 interface GroupState {
   status: 'loading' | 'ready' | 'failed';
   tags: TagSuggestion[];
+}
+
+export type TagsTab = 'yours' | 'similar' | 'featured' | 'more';
+
+/** The tab last open, kept for the session so Back from a tag page returns to it. */
+let lastTab: TagsTab = 'yours';
+
+/** For tests. */
+export function resetTagsTab(): void {
+  lastTab = 'yours';
 }
 
 /** Suggestions shown per group: enough to choose from, few enough to read. */
@@ -111,6 +128,9 @@ export function dedupeGroups(
     MbItemRow,
     MbItemTitle,
     MbPageHeader,
+    MbTab,
+    MbTabs,
+    NgTemplateOutlet,
     RouterLink,
     TranslocoPipe,
   ],
@@ -149,7 +169,7 @@ export class ExploreTags implements OnInit {
   });
 
   protected readonly order: readonly SuggestionGroup[] = ['yours', 'similar', 'trending'];
-  protected readonly groupLabel: Record<SuggestionGroup, string> = {
+  protected readonly groupLabel: Record<string, string> = {
     yours: 'exploreTags.group.yours',
     similar: 'exploreTags.group.similar',
     trending: 'exploreTags.group.trending',
@@ -170,9 +190,22 @@ export class ExploreTags implements OnInit {
     return this.order.map((id) => ({ id, status: groups[id].status, tags: deduped[id] }));
   });
 
-  protected readonly nothing = computed(() =>
-    this.shown().every((group) => group.status !== 'loading' && !group.tags.length),
-  );
+  /** One suggestion group, after de-duplication, for the tab that shows it. */
+  protected group(id: SuggestionGroup) {
+    return this.shown().find((group) => group.id === id)!;
+  }
+
+  /**
+   * Yours | Similar | Featured | More (owner, 2026-11-26): followed hashtags
+   * with the ones you post with; tags like those; the server's trending ones;
+   * then tags.pub, bundles, your profile's featured hashtags and bulk import.
+   */
+  protected readonly tab = signal<TagsTab>(lastTab);
+
+  protected select(value: string): void {
+    lastTab = value as TagsTab;
+    this.tab.set(lastTab);
+  }
 
   ngOnInit(): void {
     if (this.noTags()) return;

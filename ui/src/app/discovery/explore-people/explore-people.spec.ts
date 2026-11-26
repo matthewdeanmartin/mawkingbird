@@ -1,15 +1,18 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { Auth } from '../../platform/session/auth';
-import { ExplorePeople } from './explore-people';
+import { ExplorePeople, resetPeopleTab } from './explore-people';
 
-/** Explore → People (spec/sprint/explore-2026-11.md, Sprint 4). */
+/** Explore → People: Search | Suggested | Directory | More (spec/sprint/explore-2026-11.md). */
 describe('ExplorePeople', () => {
+  let fixture: ComponentFixture<ExplorePeople>;
+
   beforeEach(() => {
     localStorage.clear();
+    resetPeopleTab();
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
@@ -18,30 +21,60 @@ describe('ExplorePeople', () => {
   });
 
   function render(): HTMLElement {
-    const fixture = TestBed.createComponent(ExplorePeople);
+    fixture = TestBed.createComponent(ExplorePeople);
     fixture.detectChanges();
     return fixture.nativeElement as HTMLElement;
   }
 
-  it('searches people only, then lists the other ways to find someone', () => {
+  function tabs(host: HTMLElement): string[] {
+    return [...host.querySelectorAll('[role="tab"]')].map((tab) => tab.textContent?.trim() ?? '');
+  }
+
+  function open(host: HTMLElement, label: string): void {
+    const tab = [...host.querySelectorAll<HTMLButtonElement>('[role="tab"]')].find(
+      (button) => button.textContent?.trim() === label,
+    )!;
+    tab.click();
+    fixture.detectChanges();
+  }
+
+  it('opens on a people-only search, with a tab for each other way', () => {
     TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
     const host = render();
+    expect(tabs(host)).toEqual(['Search', 'Directory', 'More']);
     expect(host.querySelector('app-search')).not.toBeNull();
     expect(host.querySelector('.type-toolbar')).toBeNull();
-    expect(
-      [...host.querySelectorAll('.ep-more .doc-title')].map((el) => el.textContent?.trim()),
-    ).toEqual([
-      'Profile directory',
+    // Only the open tab is rendered, so the directory costs nothing until opened.
+    expect(host.querySelector('app-directory')).toBeNull();
+  });
+
+  it('lists the remaining ways under More', () => {
+    TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
+    const host = render();
+    open(host, 'More');
+    expect(host.querySelector('app-search')).toBeNull();
+    expect([...host.querySelectorAll('.doc-title')].map((el) => el.textContent?.trim())).toEqual([
       'Offsite directories',
       'Look for your contacts',
       'Import a follow list',
     ]);
-    // Suggestions need a signed-in Mastodon account to suggest for.
-    expect(host.querySelector('app-server-suggestions')).toBeNull();
   });
 
-  it('adds the server’s own suggestions for a signed-in Mastodon account', () => {
+  it('adds Suggested for a signed-in Mastodon account', () => {
     TestBed.inject(Auth).setToken('token');
-    expect(render().querySelector('app-server-suggestions')).not.toBeNull();
+    const host = render();
+    expect(tabs(host)).toEqual(['Search', 'Suggested', 'Directory', 'More']);
+    open(host, 'Suggested');
+    expect(host.querySelector('app-server-suggestions')).not.toBeNull();
+  });
+
+  it('comes back on the tab last open, as after Back from a profile', () => {
+    TestBed.inject(Auth).enterAnonymous('https://mastodon.social');
+    open(render(), 'More');
+    fixture.destroy();
+    const host = render();
+    expect(host.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim()).toBe(
+      'More',
+    );
   });
 });

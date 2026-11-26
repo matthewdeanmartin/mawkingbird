@@ -2,6 +2,31 @@ import { PageLanguage } from '../../../public-pages/focused-tools';
 import { TopicCopy } from './topic-copy';
 
 export const COPY: Partial<Record<PageLanguage, TopicCopy>> = {
+  es: {
+    title: 'Narrativa literaria en Mastodon: a quién seguir',
+    description:
+      'Encuentra lectores, autores y conversaciones sobre narrativa literaria en Mastodon. Explora perfiles y etiquetas antes de crear una cuenta.',
+    heading: 'Narrativa literaria en Mastodon',
+    listTitle: 'Narrativa literaria',
+    intro: [
+      'Descubre novelas, relatos y conversaciones sobre cómo se cuentan las historias. Aquí encontrarás lectores y autores que comparten lecturas, fragmentos y reflexiones sobre personajes, lenguaje y creación literaria.',
+      'Explora los perfiles y las etiquetas antes de seguirlos. Las cuentas también pueden hablar de otros temas; sus publicaciones te ayudarán a elegir las voces que quieres leer.',
+    ],
+    faq: [
+      {
+        q: '¿Necesito una cuenta para leer?',
+        a: 'No. Puedes consultar esta página y las publicaciones públicas sin cuenta. Para seguir perfiles o etiquetas, inicia sesión con una cuenta de Mastodon.',
+      },
+      {
+        q: '¿Qué se entiende aquí por narrativa literaria?',
+        a: 'Novelas y relatos que dan lugar a conversaciones sobre el lenguaje, los personajes, la forma de narrar o la mirada sobre la sociedad. También caben obras que cruzan géneros cuando se comentan esas cualidades.',
+      },
+      {
+        q: '¿Cómo puedo aparecer en esta lista?',
+        a: 'Comparte publicaciones sobre narrativa literaria y usa etiquetas relacionadas. Los perfiles deben cumplir los criterios de actividad e inclusión del catálogo; usar una etiqueta no garantiza aparecer.',
+      },
+    ],
+  },
   en: {
     title: 'Literary fiction on Mastodon: people and hashtags to follow',
     description:

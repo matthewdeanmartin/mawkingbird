@@ -1,3 +1,5 @@
+<!-- Opened from Explore → Tags as often as from a post: Back returns there. -->
+<app-reading-back fallback="/feeds/tags" />
 <div class="page-head tag-head">
   <span>#{{ tag() }}</span>
   <app-tag-actions [name]="tag()" [info]="tagInfo()" (changed)="tagInfo.set($event)" />

@@ -11,11 +11,14 @@ import { ProfileContentState } from '../../accounts/profile/profile-content-filt
 describe('LeftRail', () => {
   let http: HttpTestingController;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     localStorage.clear();
     TestBed.configureTestingModule({
+      imports: [LeftRail],
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
+    // The drafts card is deferred, which needs its component compiled first.
+    await TestBed.compileComponents();
     http = TestBed.inject(HttpTestingController);
   });
 

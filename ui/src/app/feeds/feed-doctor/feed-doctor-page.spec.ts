@@ -245,6 +245,29 @@ describe('FeedDoctorPage', () => {
 
   // Explore's Feed tab (spec/sprint/explore-2026-11.md, Sprint 2).
   describe('as a feed checkup', () => {
+    it('keeps a result for an hour, and Check again takes a fresh sample', async () => {
+      const posts = Array.from({ length: 12 }, (_, i) => post(`p${i}`, `a${i}`));
+      open(posts, []);
+      const provider = TestBed.inject(AnonymousMastodonProvider);
+      await vi.waitFor(() => expect(text()).toContain('Based on the last'));
+      const sampled = vi.mocked(provider.fetchPage).mock.calls.length;
+      fixture.destroy();
+
+      // A second visit shows the same result without sampling again.
+      fixture = TestBed.createComponent(FeedDoctorPage);
+      fixture.detectChanges();
+      expect(text()).toContain('Results are kept for an hour');
+      expect(vi.mocked(provider.fetchPage).mock.calls.length).toBe(sampled);
+
+      const again = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+        (b) => b.textContent?.trim() === 'Check again',
+      )!;
+      again.click();
+      await vi.waitFor(() =>
+        expect(vi.mocked(provider.fetchPage).mock.calls.length).toBeGreaterThan(sampled),
+      );
+    });
+
     function buttons(): HTMLButtonElement[] {
       return [
         ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('button'),

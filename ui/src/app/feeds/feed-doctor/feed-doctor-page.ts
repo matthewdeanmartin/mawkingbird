@@ -1,4 +1,5 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { HumanTimePipe } from '../../i18n/human-time.pipe';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Api } from '../../platform/api/api';
@@ -30,9 +31,11 @@ import { feedSubject } from '../feed-metrics';
 import { sampleFeed } from '../feed-sample';
 import { accountScopeSuffix } from '../../platform/session/account-scope';
 import { HomeTimelineFeed } from '../home-timeline-feed';
+import { FeedCheckupCache } from './feed-checkup-cache';
 
 // i18n feedDoctor.title: Feed Doctor
 // i18n feedDoctor.checkupTitle: Feed checkup
+// i18n feedDoctor.cached: Checked {{time}}. Results are kept for an hour; Check again takes a fresh sample.
 // i18n feedDoctor.checkupLede: How well your Home is built: enough people, enough hashtags, and not too much written by machines.
 // i18n feedDoctor.reading: Reading your feed…
 // i18n feedDoctor.checkAgain: Check again
@@ -58,7 +61,7 @@ const SAMPLE_SIZE = 140;
  */
 @Component({
   selector: 'app-feed-doctor-page',
-  imports: [RouterLink, TranslocoPipe],
+  imports: [HumanTimePipe, RouterLink, TranslocoPipe],
   templateUrl: './feed-doctor-page.html',
   styleUrl: './feed-doctor-page.css',
 })
@@ -84,6 +87,9 @@ export class FeedDoctorPage implements OnInit {
    */
   protected readonly inExplore = !!inject(ActivatedRoute).snapshot?.data?.['explore'];
   protected usingHomeSnapshot = signal(false);
+  private cache = inject(FeedCheckupCache);
+  /** Shown from the hour-long cache rather than sampled on this visit. */
+  protected fromCache = signal(false);
 
   protected loading = signal(true);
   /** The checks' input, without the crafting facts that may arrive later. */
@@ -118,11 +124,23 @@ export class FeedDoctorPage implements OnInit {
 
   ngOnInit(): void {
     this.loadFollowedTags();
+    const cached = this.cache.get(accountScopeSuffix());
+    if (cached) {
+      this.fromCache.set(true);
+      this.usingHomeSnapshot.set(cached.usingHomeSnapshot);
+      this.slices.set(cached.slices);
+      this.droppedByWindow.set(cached.droppedByWindow);
+      this.input.set(cached.input);
+      this.collectedAt.set(new Date(cached.at));
+      this.loading.set(false);
+      return;
+    }
     const snapshot = this.homeFeed.snapshot();
     if (!this.isAnonymous() && snapshot?.scope === accountScopeSuffix()) {
       this.usingHomeSnapshot.set(true);
       this.reportAggregated(snapshot.posts, snapshot.bounds);
       this.collectedAt.set(new Date(snapshot.at));
+      this.remember();
       return;
     }
     this.run();
@@ -139,6 +157,7 @@ export class FeedDoctorPage implements OnInit {
    * that actually happens to a connected account.
    */
   protected run(): void {
+    this.fromCache.set(false);
     this.usingHomeSnapshot.set(false);
     this.loading.set(true);
     this.input.set(null);
@@ -294,6 +313,21 @@ export class FeedDoctorPage implements OnInit {
     this.input.set(input);
     this.collectedAt.set(new Date());
     this.loading.set(false);
+    this.remember();
+  }
+
+  /** Keep this result for an hour (see FeedCheckupCache). */
+  private remember(): void {
+    const input = this.input();
+    if (!input) return;
+    this.cache.set({
+      scope: accountScopeSuffix(),
+      at: this.collectedAt()?.getTime() ?? Date.now(),
+      input,
+      slices: this.slices(),
+      droppedByWindow: this.droppedByWindow(),
+      usingHomeSnapshot: this.usingHomeSnapshot(),
+    });
   }
 
   /** Accounts followed: the browser's list for Anonymous, the profile count otherwise. */

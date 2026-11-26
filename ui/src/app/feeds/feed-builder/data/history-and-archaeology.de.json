@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "topic": "history-and-archaeology",
+  "lang": "de",
+  "status": "reviewed",
+  "generatedAt": "2026-11-26T15:24:06+00:00",
+  "tags": [
+    {
+      "name": "Geschichte",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Archäologie",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "Geschichtswissenschaft",
+      "lang": "de",
+      "kind": "tag"
+    },
+    {
+      "name": "History",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Archaeology",
+      "lang": "en",
+      "kind": "tag"
+    },
+    {
+      "name": "Histodons",
+      "lang": "en",
+      "kind": "tag"
+    }
+  ],
+  "people": [
+    {
+      "acct": "dai_weltweit@social.bund.de",
+      "id": "109352916899924216",
+      "url": "https://social.bund.de/@dai_weltweit",
+      "displayName": "DAI",
+      "avatar": "https://social.bund.de/system/accounts/avatars/109/352/916/899/924/216/original/aefbbdfa04d1e008.jpg",
+      "bio": "German Archaeological Institute / Department for Communications tooting here Hier trötet der Arbeitsbereich Kommunikation des Deutschen Archäologischen Instituts (DAI).",
+      "shelf": "youtube",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "youtube-10k", "followers-625"],
+      "elsewhere": [],
+      "youtube": {
+        "channelId": "UCwpwDktEeaQ88dhmoquOcOg",
+        "native": true,
+        "band": "10k+",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "landesarchivbw@bawü.social",
+      "id": "111849713589530333",
+      "url": "https://xn--baw-joa.social/@LandesarchivBW",
+      "displayName": "Landesarchiv Baden-Württemberg",
+      "avatar": "https://xn--baw-joa.social/system/accounts/avatars/111/849/713/589/530/333/original/fd141d272a38943a.jpg",
+      "bio": "Hier trötet der Leitungsstab des Landesarchivs Baden-Württemberg Neues, Interessantes und Wissenswertes aus dem Landesarchiv. Impressum: http:// landesarchiv-bw.de/web/47069",
+      "shelf": "youtube",
+      "rank": 2,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": ["website"],
+      "youtube": {
+        "channelId": "UCHRrWtE15_x0u6xDEJyk9uA",
+        "native": true,
+        "band": "1k+",
+        "lastUpload": "2026-10"
+      }
+    },
+    {
+      "acct": "musermeku@openbiblio.social",
+      "id": "109530357217146017",
+      "url": "https://openbiblio.social/@musermeku",
+      "displayName": "musermeku",
+      "avatar": "https://openbiblio.social/system/accounts/avatars/109/530/357/217/146/017/original/c83a51743dd3b8a4.png",
+      "bio": "Seit 2013 berichten wir bei musermeku.org über News zu Kunst und Kultur sowie über aktuelle Debatten aus dem Kulturbereich. | Zum Kultur-Magazin: 📚 https:// musermeku.org/magazin/ | Zum Kultur-Newsle…",
+      "shelf": "notable",
+      "rank": 1,
+      "fame": ["wikidata", "wikipedia", "followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "sumikai@mstdn.social",
+      "id": "109522449592814781",
+      "url": "https://mstdn.social/@sumikai",
+      "displayName": "Sumikai",
+      "avatar": "https://media.mstdn.social/accounts/avatars/109/522/449/592/814/781/original/e0b89e3e560b6ae6.jpg",
+      "bio": "Offizieller Account von Sumikai: # Magazin rund um # Japan . Aktuelle # Nachrichten , Popkultur, # Reisetipps u. v. m.",
+      "shelf": "notable",
+      "rank": 2,
+      "fame": ["wikidata", "followers-625"],
+      "elsewhere": ["podcast", "website"]
+    },
+    {
+      "acct": "naturhistorisches_museum_nbg@mastodon.social",
+      "id": "114538986725864137",
+      "url": "https://mastodon.social/@Naturhistorisches_Museum_Nbg",
+      "displayName": "Naturhistorisches Museum Nürnb",
+      "avatar": "https://files.mastodon.social/accounts/avatars/114/538/986/725/864/137/original/235acc05cbfb06e2.jpg",
+      "bio": "Die Naturhistorische Gesellschaft wurde 1801 gegründet. Wir sind ein ehrenamtlich arbeitender naturwissenschaftlicher Verein (einer der größten in Deutschland). In 10 Abteilungen arbeiten Fachleute u…",
+      "shelf": "notable",
+      "rank": 3,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "stadt_land_erleben@mastodon.social",
+      "id": "108198544675594774",
+      "url": "https://mastodon.social/@stadt_land_erleben",
+      "displayName": "Stadt-Land-Erleben",
+      "avatar": "https://files.mastodon.social/accounts/avatars/108/198/544/675/594/774/original/507509ab365f7711.png",
+      "bio": "Hier trötet Tanja über mobiles & ortsbezogenes Lernen, Bildung, das Entdecken, die Vielfalt des Landes, Erinnerungskultur, Umweltbildung & Teilhabe. Auf https://www. stadt-land-erleben.de findest du…",
+      "shelf": "notable",
+      "rank": 4,
+      "fame": ["followers-625"],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "ulb_ms_fachinfo@openbiblio.social",
+      "id": "111346019402848431",
+      "url": "https://openbiblio.social/@ULB_MS_FachInfo",
+      "displayName": "ULB Münster › FachInfos",
+      "avatar": "https://openbiblio.social/system/accounts/avatars/111/346/019/402/848/431/original/3dbbba238a54bf4e.png",
+      "bio": "Hier tooten seit 11/2023 die fachlichen Ansprechpartner:innen (aka Fachreferent:innen) und das FachBlog der ULB Münster.",
+      "shelf": "notable",
+      "rank": 5,
+      "fame": ["wikidata", "wikipedia"],
+      "elsewhere": []
+    },
+    {
+      "acct": "lenaoetzel@zirk.us",
+      "id": "115430263135168705",
+      "url": "https://zirk.us/@LenaOetzel",
+      "displayName": "LenaOetzel",
+      "avatar": "https://zirkus-media.fra1.cdn.digitaloceanspaces.com/accounts/avatars/115/430/263/135/168/705/original/b0a2e77877351f62.png",
+      "bio": "Historian of # earlymodern Europe, # emdiplomacy , # peacecongresses , # ElizabethI , # PublicHistory ; occasionally also editing the # autobiography of Karl Brandi. Currently, reading lot's of histo…",
+      "shelf": "notable",
+      "rank": 6,
+      "fame": ["wikidata"],
+      "elsewhere": []
+    },
+    {
+      "acct": "missjonestravel@norden.social",
+      "id": "109366286866302068",
+      "url": "https://norden.social/@MissJonesTravel",
+      "displayName": "Miss Jones",
+      "avatar": "https://media.norden.social/accounts/avatars/109/366/286/866/302/068/original/69a730c3ba252438.jpg",
+      "bio": "# Archäologie # Reisen # Abenteuer ist mein Motto.",
+      "shelf": "notable",
+      "rank": 7,
+      "fame": ["followers-625"],
+      "elsewhere": []
+    },
+    {
+      "acct": "clusterroots@fediscience.org",
+      "id": "109308368456777611",
+      "url": "https://fediscience.org/@clusterroots",
+      "displayName": "Cluster ROOTS",
+      "avatar": "https://fediscience.org/system/accounts/avatars/109/308/368/456/777/611/original/4f96739c59060f16.png",
+      "bio": "»ROOTS« is a # ClusterOfExcellence at @ kieluni funded by @ dfg_public . We explore the roots of social, environmental, and cultural processes that substantially marked past human development. »ROOTS…",
+      "shelf": "community",
+      "rank": 1,
+      "fame": [],
+      "elsewhere": ["bluesky", "website"]
+    },
+    {
+      "acct": "archaeologie_online@mastodon.social",
+      "id": "113489323359085450",
+      "url": "https://mastodon.social/@archaeologie_online",
+      "displayName": "Archäologie Online",
+      "avatar": "https://files.mastodon.social/accounts/avatars/113/489/323/359/085/450/original/440cc974f23efbb5.gif",
+      "bio": "Archäologie Online ist das deutschsprachige Internetportal für die # Archäologie Auf www.archaeologie-online.de gibt es aktuelle Nachrichten & Artikel, interessante Diskussionen im Forum, Mediathek u…",
+      "shelf": "community",
+      "rank": 2,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "andreas_suh1912@chaos.social",
+      "id": "109248932721089743",
+      "url": "https://chaos.social/@Andreas_SuH1912",
+      "displayName": "Andreas ☎️6501",
+      "avatar": "https://assets.chaos.social/accounts/avatars/109/248/932/721/089/743/original/bf409c1f3890219b.png",
+      "bio": "Werktätiger im rechenmaschinengestützten Signal- und Fernmeldewesen, sonst Museumseisenbahner, Funkamateur, CCC, mag alte Computer und versucht zu fotografieren.",
+      "shelf": "community",
+      "rank": 3,
+      "fame": [],
+      "elsewhere": []
+    },
+    {
+      "acct": "kulturmensch@bildung.social",
+      "id": "109380841465724319",
+      "url": "https://bildung.social/@kulturmensch",
+      "displayName": "Kulturkramkiste",
+      "avatar": "https://storage.gra.cloud.ovh.net/v1/AUTH_91eb37814936490c95da7b85993cc2ff/bildungsocial/accounts/avatars/109/380/841/465/724/319/original/106756551a73fe60.jpg",
+      "bio": "Lebenskünstlerin und Individualistin, Hobby-Musikerin, bibliophil und musisch, habe eine Schwäche für Bücher, gute Chansons, Kunst, kluge Menschen, leckeres Essen, köstlichen Wein, die Schönheit der…",
+      "shelf": "community",
+      "rank": 4,
+      "fame": [],
+      "elsewhere": ["website"]
+    },
+    {
+      "acct": "shinjile@mastodon.social",
+      "id": "191746",
+      "url": "https://mastodon.social/@ShinjiLE",
+      "displayName": "RisingEdge 🏳️‍🌈",
+      "avatar": "https://files.mastodon.social/accounts/avatars/000/191/746/original/315f925a9e33d561.png",
+      "bio": "Computer, Linux , Elektronik , Historische Rechentechnik , Mit beim # Rechenwerk Computermuseum in Halle. Das Titelbild wurde von @ senf auf Schwarz-Weiß-Film gemacht . Es sind im Hintergrund die Mag…",
+      "shelf": "community",
+      "rank": 5,
+      "fame": [],
+      "elsewhere": []
+    }
+  ],
+  "servers": []
+}

@@ -6,7 +6,7 @@ import { MbButton } from '../../design-system/button/button';
 import { MbNavigation, MbNavLink } from '../../design-system/navigation/navigation';
 import { RecentFeeds } from '../recent-feeds';
 import { FollowBundleTags } from '../../discovery/tag-actions/follow-bundle-tags';
-import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { filter, firstValueFrom, take } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
@@ -362,6 +362,16 @@ export class Lists implements OnInit {
 
   /** Section filter from the route (`/feeds/lists`, `/feeds/tags`, else all). */
   protected filter: FeedFilter = (this.route.snapshot.data['only'] as FeedFilter) ?? 'all';
+  /**
+   * For a page that embeds these sections (Explore → Tags, spec/sprint/explore-2026-11.md):
+   * render only these sections, without this page's own heading, and split the
+   * followed-hashtags section into its list (`list`) and its extras (`extras`:
+   * tags.pub and bulk import). The Feeds hub sets none of them.
+   */
+  readonly onlySections = input<readonly FeedSection[] | null>(null);
+  readonly embedded = input(false);
+  readonly tagParts = input<'all' | 'list' | 'extras'>('all');
+
   /** Embedded in Explore → Tags, which is where the "find more" link would go. */
   protected readonly inExploreTags = this.router.url.split(/[?#]/, 1)[0] === '/explore/tags';
   protected readonly discovery = inject(DiscoveryWindow);
@@ -432,6 +442,8 @@ export class Lists implements OnInit {
    * Never for a section of a network this account cannot read.
    */
   protected showsSection(section: FeedSection): boolean {
+    const only = this.onlySections();
+    if (only && !only.includes(section)) return false;
     const network = FEED_SECTIONS.find((item) => item.id === section)?.network ?? 'any';
     if (!this.readsNetwork(network)) return false;
     return this.section() === 'all' || this.section() === section;

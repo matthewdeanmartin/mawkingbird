@@ -7,9 +7,9 @@
  *
  * ## Why this file is hand-edited and not generated
  *
- * The account starter kits (`bundled-starter-kits.generated.ts`) are built by a
- * script that fetches all ~132 candidate accounts and re-validates them in
- * `check:static`. That machinery exists for a specific reason: a Mastodon
+ * The retired hand-picked account kits were built by a script that fetched
+ * every candidate account and re-validated them in `check:static` (retired
+ * 2026-11-26). That machinery existed for a specific reason: a Mastodon
  * account can ask not to be listed — `discoverable=false`, `indexable=false`,
  * `noindex=true` — and honouring that opt-out is not optional, so membership has
  * to be re-derived from live data rather than trusted to a stale file.

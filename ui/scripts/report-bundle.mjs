@@ -5,7 +5,6 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(import.meta.dirname, '..');
 export const STARTUP_EXCLUSIONS = [
   'src/app/discovery/starter-kits.ts',
-  'src/app/discovery/bundled-starter-kits.generated.ts',
   // Feed Builder topic pages: data, copy and shared words load with their page.
   'src/app/feeds/feed-builder/data/',
   'src/app/feeds/feed-builder/copy/',

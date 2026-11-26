@@ -31,6 +31,14 @@ export const HUB_CATEGORIES = [
 export type HubCategory = (typeof HUB_CATEGORIES)[number];
 
 export const TOPIC_CATEGORY: Record<FeedTopic, HubCategory> = {
+  photography: 'culture',
+  'cooking-and-baking': 'food-and-drink',
+  'history-and-archaeology': 'culture',
+  'tabletop-roleplaying': 'games-and-sport',
+  'linguistics-and-languages': 'science',
+  'classical-music': 'music',
+  'geology-and-earth-science': 'science',
+  'sewing-and-textile-crafts': 'culture',
   'computing-and-open-source': 'tech',
   'arts-and-culture': 'culture',
   'literary-fiction': 'culture',

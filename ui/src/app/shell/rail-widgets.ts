@@ -39,7 +39,7 @@ export type RailWidget =
   | 'blogRecent'
   /** Right, Video: starter kits of YouTubers on Mastodon. */
   | 'youtubers'
-  /** Right, Fedi and Explore: your drafts, when there are any. */
+  /** Left, under the profile, Fedi and Explore: your drafts, when there are any. */
   | 'drafts';
 
 /**

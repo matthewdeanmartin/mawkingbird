@@ -50,7 +50,6 @@ import {
 } from './public-pages/focused-tools';
 import { toolDescription, toolTitle, toolsResolver } from './public-pages/tool-copy';
 import { audienceRoutes } from './public-pages/features/audience-routes';
-import { followRoutes } from './public-pages/features/follow-routes';
 import { podcastRoutes } from './public-pages/podcasts/podcast-routes';
 import { youtuberRoutes } from './public-pages/youtubers/youtuber-routes';
 import {
@@ -256,7 +255,6 @@ const likesHubRedirect: CanActivateFn = () => inject(Router).parseUrl('/bookmark
 
 export const routes: Routes = [
   ...audienceRoutes,
-  ...followRoutes,
   // YouTubers on Mastodon: public kit pages per language (ops/engineering/seo.md).
   ...youtuberRoutes,
   // Podcasts on Mastodon: public pages by topic, likewise.
@@ -1800,6 +1798,59 @@ export const routes: Routes = [
           import('./discovery/starter-collection/starter-collection').then(
             (m) => m.StarterCollection,
           ),
+      },
+      // The hand-picked legacy kits were retired on 2026-11-26 (owner): links to
+      // them, in old builds and the retired /follow/ pages, open the catalogue
+      // pack or Feed Builder page on the same topic.
+      {
+        path: 'collections/starter/us-journalists',
+        redirectTo: '/collections/starter/catalog-en-news-and-journalism',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/retro-computing',
+        redirectTo: '/collections/starter/catalog-en-retro-computing',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/comics',
+        redirectTo: '/collections/starter/catalog-en-comics',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/visual-arts',
+        redirectTo: '/collections/starter/catalog-en-art-and-illustration',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/infosec',
+        redirectTo: '/collections/starter/catalog-en-security-and-privacy',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/sci-fi',
+        redirectTo: '/collections/starter/catalog-en-science-fiction-and-fantasy',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/canadian-politics',
+        redirectTo: '/canadian-politics-on-mastodon',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/books',
+        redirectTo: '/collections/starter/catalog-en-books-and-writing',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/mastodon-activitypub',
+        redirectTo: '/collections/starter/catalog-en-fediverse',
+        pathMatch: 'full',
+      },
+      {
+        path: 'collections/starter/war-in-ukraine',
+        redirectTo: '/war-in-ukraine-on-mastodon',
+        pathMatch: 'full',
       },
       {
         path: 'collections/starter/:slug',

@@ -4,6 +4,35 @@ Status: all five sprints implemented · 2026-11-26. Sprints 1–4 committed
 ("explore"); Sprint 5 (Even more, the locked `…` menu) uncommitted. Manual plan:
 [test_plans/explore-2026-11.md](../test_plans/explore-2026-11.md).
 
+### Owner feedback round (2026-11-26, after canary)
+
+- **Kits:** "Ours" is now "Mawkingbird curated" (the reader cannot know who
+  "we" are), fixed in the ten pack languages that said "ours". The intro
+  paragraph is gone. Bluesky starter packs show only with a Bluesky
+  connection, and the Starter collections link is dropped from the by-topic line.
+- **Legacy kits retired** (owner): the ten hand-picked kits, their live
+  consent check (`starter-kits:check`, which failed builds when any account
+  changed), the monthly workflow and the public `/follow/` pages. Old
+  `/follow/…` addresses are static moved pages (`prepare-seo-index.mjs`
+  `MOVED`), and old `/collections/starter/<slug>` links redirect to the
+  catalogue pack or Feed Builder page on the topic. Collections still list
+  beside kits; readers need not know the difference.
+- **Drilling in keeps the mode:** kit, collection and tag pages are sticky in
+  `modeForUrl`, so opening one from Explore stays in Explore, and they get Back.
+  Profiles are unchanged (they already have Back).
+- **Drafts card** moved to the left rail under the profile, padded like its
+  neighbours.
+- **Feed checkup** keeps its result for an hour per account, in memory
+  (`FeedCheckupCache`); Check again takes a fresh sample.
+- **Tabs, not long pages** (rule: sections are underline tabs, `mb-tabs`;
+  toolbars are for filters and actions inside a section). People: Search |
+  Suggested | Directory | More. Tags: Yours (followed hashtags, then the ones
+  you post with) | Similar ("Tags similar to what you follow now") | Featured
+  (trending on your server) | More (tags.pub, bulk import, tag bundles, profile
+  featured hashtags). Only the open tab renders; the last tab is remembered for
+  the session so Back returns to it. `Lists` gained optional `embedded`,
+  `onlySections` and `tagParts` inputs for this; Feeds sets none of them.
+
 ### As built (Sprint 5)
 
 - **Even more** (`shell/even-more/`) is an `mb-dialog` opened by one `…` row,

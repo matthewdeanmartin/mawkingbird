@@ -1,4 +1,5 @@
 import { translatedComputed } from '../../i18n/translated';
+import { ReadingBack } from '../../shell/reading-back';
 import { AccountName } from '../../accounts/account-name';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Component, computed, inject, OnInit, OnDestroy, signal } from '@angular/core';
@@ -46,6 +47,7 @@ import { Wellness } from '../../wellness/wellness';
 @Component({
   selector: 'app-starter-collection',
   imports: [
+    ReadingBack,
     AccountName,
     RouterLink,
     StarterPackTextPipe,

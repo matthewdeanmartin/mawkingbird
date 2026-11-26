@@ -73,6 +73,17 @@ their sections here.
 - [ ] Pastes and Links appear only where their features are on.
 - [ ] On a phone: the dialog fits and scrolls.
 
+## Feedback round (2026-11-26)
+
+- [ ] Open a kit from Explore → Kits: the top menu stays Explore, and Back returns to Kits. Same for a #tag from Explore → Tags.
+- [ ] Kit cards say "Mawkingbird curated" (and in another pack language, e.g. Turkish, it names Mawkingbird).
+- [ ] No intro paragraph on the kits page; no Bluesky packs line without a Bluesky connection; by-topic line shows only Communities.
+- [ ] Legacy kits are gone from the list (one Comics, one Retro Computing, …). An old link such as `/collections/starter/comics` opens the catalogue Comics pack.
+- [ ] `/follow/` and `/follow/sci-fi/` on the published site land on Communities and Science fiction.
+- [ ] Drafts card sits under the profile in the left rail, text padded.
+- [ ] Feed checkup: a second visit within the hour is instant and says when it was checked; Check again resamples.
+- [ ] People shows Search | Suggested | Directory | More; Tags shows Yours | Similar | Featured | More. Back from a profile or tag returns to the tab you were on.
+
 ## Findings
 
 _None yet._

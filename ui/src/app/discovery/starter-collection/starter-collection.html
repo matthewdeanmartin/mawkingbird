@@ -1,4 +1,6 @@
 <section [attr.lang]="copyLanguage">
+  <!-- Kits are opened from Explore → Kits and the kits page: Back returns there. -->
+  <app-reading-back fallback="/bundled-starter-kits" />
   @if (kit) {
     <div class="page-head">
       {{ text().title }}

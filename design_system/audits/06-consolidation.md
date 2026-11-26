@@ -3517,7 +3517,6 @@ public-page layout. StatusCard lost three audio buttons that no screen showed an
 Font weight ceiling and German podcast pages (2026-11-25): reviewed the regenerated
 inventory. Source offsets only; no candidate added or removed.
 
-
 ### 2026-11-25: Mastodon content-warning guide
 
 Reviewed all 18 translated templates and the regenerated inventory: 739 candidate
@@ -3527,7 +3526,6 @@ local validation. The website answer stays ahead of the optional Mawkingbird
 controls regardless of session. No new shared widget. A page-scoped rule wraps
 long URLs on mobile. Login changes have no control inventory impact.
 
-
 Public app-entry follow-up: reviewed the 289 header destination changes across
 focused tools and language indexes. Existing Button controls now lead to login,
 not account settings or an implicit Anonymous session; task links retain their
@@ -3535,7 +3533,6 @@ return path. Login chooser/Bluesky predicate changes do not add controls. The
 network doors preserve a validated next destination. Public tool workbenches and
 explicit Anonymous browsing remain available. Inventory differences outside CW
 are source offsets only; no new shared widgets or candidate files.
-
 
 Post-login continuation: the signed-in landing page now offers its original app
 destination explicitly using the existing Button. Header sign-in returns to the
@@ -3600,3 +3597,21 @@ Reviewed the regenerated inventory: one candidate added, `shell/even-more/even-m
 Observability, plain links for its data-driven sections). One changed: `shell.html`
 `nativeButtons` 12 to 11, as Onboarding and Screen share leave the … menu and one
 "Even more…" menu button replaces the Observability link. No new widget.
+
+### 2026-11-26: Eight approved Feed Builder topics
+
+Reviewed the regenerated inventory: scanned files 2208 to 2216, accounting for
+eight native topic-copy modules. All 743 candidate files and their control findings
+are unchanged. Fifteen approved English/German pages reuse the existing topic page
+and hub widgets; the Music category now has content. No new controls or dispositions.
+
+### 2026-11-26: Explore feedback (tabs, kits clean-up, /follow/ retired)
+
+Reviewed the regenerated inventory: one candidate added, `explore-people.ts` (adopted
+scope: shared Tabs over the existing Search, Server suggestions and Directory). Two
+removed with the retired /follow/ pages, `follow-hub.html` and `follow-kit.html`, and
+their dispositions deleted. Changed: `explore-tags.html` (`shared` 4 to 9) now uses shared
+Tabs, Yours | Similar | Featured | More, around the same Item List rows and embedded
+Feeds sections; `bundled-starter-kits.html` (`shared` 3 to 2) drops the Starter
+collections link. Tag and kit pages gain the existing Back (`app-reading-back`). No new
+widget.

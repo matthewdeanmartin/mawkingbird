@@ -27,8 +27,8 @@ describe('communities hub categories', () => {
       [...FEED_BUILDER_TOPICS].sort(),
     );
     expect(filled.every((category) => category.topics.length > 0)).toBe(true);
-    // Declared ahead of their topics, so not shown yet.
-    expect(filled.map((category) => category.id)).not.toContain('music');
+    // Classical music now populates the music category.
+    expect(filled.find((category) => category.id === 'music')?.topics).toContain('classical-music');
     expect(filled.find((category) => category.id === 'games-and-sport')?.topics).toContain(
       'running',
     );

@@ -71,6 +71,13 @@ describe('modeForUrl', () => {
     expect(modeForUrl('/explorer')).toBe('mastodon');
   });
 
+  it.each(['/collections/starter/catalog-en-technology', '/collections/abc', '/tags/gardening'])(
+    '%s keeps the mode it was opened from (kits and tags open from Explore too)',
+    (url) => {
+      expect(modeForUrl(url)).toBeNull();
+    },
+  );
+
   it('puts Unbird pages in the Unbird mode', () => {
     expect(modeForUrl('/unbird')).toBe('unbird');
     expect(modeForUrl('/unbird/people?x=1')).toBe('unbird');

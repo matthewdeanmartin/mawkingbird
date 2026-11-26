@@ -6,6 +6,13 @@
   <app-profile-content-filters />
 }
 
+<!-- Your drafts, under the profile (Fedi and Explore), loaded when the page is
+     idle. The card renders nothing without drafts. -->
+@if (rail.shows('drafts')) {
+  @defer (on idle) {
+    <app-drafts-rail-card />
+  }
+}
 @if (rail.shows('blogAuthor')) {
   <app-blog-author-card />
 }

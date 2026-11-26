@@ -33,18 +33,9 @@ describe('STARTER_COLLECTION', () => {
     );
   });
 
-  it('ships ten themed kits whose account ids came from their home instances', () => {
-    const legacy = STARTER_KITS.filter((kit) => !kit.lang);
-    expect(legacy).toHaveLength(11);
-    for (const kit of legacy.filter((kit) => kit.slug !== 'starter')) {
-      expect(kit.accounts.length).toBeGreaterThanOrEqual(5);
-      for (const item of kit.accounts) {
-        expect(item.account.id).not.toBe('');
-        expect(item.account.discoverable).not.toBe(false);
-        expect(item.account.indexable).not.toBe(false);
-        expect(item.account.noindex).not.toBe(true);
-      }
-    }
+  it('ships the Universal kit as the only one outside the catalogue', () => {
+    // The hand-picked legacy kits were retired on 2026-11-26 (owner).
+    expect(STARTER_KITS.filter((kit) => !kit.lang).map((kit) => kit.slug)).toEqual(['starter']);
   });
 
   it('ships every language pack with stable links and the current profile membership', () => {

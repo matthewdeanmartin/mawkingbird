@@ -1,19 +1,21 @@
-<div class="page-head">
-  @if (filter === 'lists') {
-    {{ 'pages.lists.title.lists' | transloco }}
-  } @else if (filter === 'tags') {
-    {{ 'pages.lists.title.tags' | transloco }}
-  } @else if (showSectionPicker && section() !== 'landing') {
-    <!-- Drilled into one category: a way back to the landing list, not just
+@if (!embedded()) {
+  <div class="page-head">
+    @if (filter === 'lists') {
+      {{ 'pages.lists.title.lists' | transloco }}
+    } @else if (filter === 'tags') {
+      {{ 'pages.lists.title.tags' | transloco }}
+    } @else if (showSectionPicker && section() !== 'landing') {
+      <!-- Drilled into one category: a way back to the landing list, not just
          "Feeds" as an inert label. A <button>, not a link — it changes what
          this page shows rather than navigating anywhere. -->
-    <button class="feeds-back" type="button" (click)="setSection('landing')">
-      {{ 'pages.lists.title.backToFeeds' | transloco }}
-    </button>
-  } @else {
-    {{ 'pages.lists.title.feeds' | transloco }}
-  }
-</div>
+      <button class="feeds-back" type="button" (click)="setSection('landing')">
+        {{ 'pages.lists.title.backToFeeds' | transloco }}
+      </button>
+    } @else {
+      {{ 'pages.lists.title.feeds' | transloco }}
+    }
+  </div>
+}
 
 @if (showSectionPicker && section() === 'landing') {
   @if (recent.entries().length) {
@@ -366,7 +368,7 @@
     <app-other-servers />
   }
 
-  @if (shows('tags') && showsSection('tags')) {
+  @if (shows('tags') && showsSection('tags') && tagParts() !== 'extras') {
     <div class="section-head">{{ 'pages.lists.tags.heading' | transloco }}</div>
 
     <!-- Deliberately "look at it", not "follow it". Following a tag folds it into
@@ -403,7 +405,8 @@
         </a>
       }
     }
-
+  }
+  @if (shows('tags') && showsSection('tags') && tagParts() !== 'list') {
     <!-- tags.pub: one relay account per hashtag, boosting posts from across the
          network. Following a tag only surfaces what your own server already
          has, which on a small instance is a fraction — this fills the gap.

@@ -10,7 +10,7 @@ import { Api } from '../../platform/api/api';
 import { Status, Tag } from '../../platform/api/models';
 import { Auth } from '../../platform/session/auth';
 import { HashtagSamples } from '../similar-hashtags/similar-hashtags';
-import { ExploreTags, PER_GROUP, dedupeGroups, peopleThisWeek } from './explore-tags';
+import { ExploreTags, PER_GROUP, dedupeGroups, peopleThisWeek, resetTagsTab } from './explore-tags';
 
 function tag(name: string, accounts: number[] = []): Tag {
   return {
@@ -69,6 +69,7 @@ describe('ExploreTags', () => {
 
   beforeEach(() => {
     localStorage.clear();
+    resetTagsTab();
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
@@ -88,6 +89,22 @@ describe('ExploreTags', () => {
     return (fixture.nativeElement as HTMLElement).textContent ?? '';
   }
 
+  /** Open one of Yours | Similar | Featured | More. */
+  function open(label: string): void {
+    const tab = [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll<HTMLButtonElement>('[role="tab"]'),
+    ].find((button) => button.textContent?.trim() === label)!;
+    tab.click();
+    fixture.detectChanges();
+  }
+
+  function names(): (string | undefined)[] {
+    fixture.detectChanges();
+    return [
+      ...(fixture.nativeElement as HTMLElement).querySelectorAll('.et-suggested a[mbItemTitle]'),
+    ].map((a) => a.textContent?.trim());
+  }
+
   function followButton(name: string): HTMLButtonElement | undefined {
     fixture.detectChanges();
     return [
@@ -104,7 +121,7 @@ describe('ExploreTags', () => {
       );
     });
 
-    it('suggests from your posts, your tags and trends, without repeats or followed tags', () => {
+    it('splits suggestions over Yours | Similar | Featured | More, without repeats', () => {
       vi.spyOn(api, 'featuredTagSuggestions').mockReturnValue(
         of([tag('knitting'), tag('gardening')]),
       );
@@ -112,13 +129,26 @@ describe('ExploreTags', () => {
         of([tag('compost', [2, 3]), tag('news', [40])]),
       );
       const host = render();
-      const names = [...host.querySelectorAll('.et-suggested a[mbItemTitle]')].map((a) =>
-        a.textContent?.trim(),
-      );
-      expect(names).toEqual(['#knitting', '#compost', '#seeds', '#news']);
+      expect([...host.querySelectorAll('[role="tab"]')].map((t) => t.textContent?.trim())).toEqual([
+        'Yours',
+        'Similar',
+        'Featured',
+        'More',
+      ]);
+      // Yours: your followed hashtags (the Feeds sections), then the ones you post with.
+      expect(host.querySelector('app-lists')).not.toBeNull();
       expect(text()).toContain('You post with these');
-      expect(text()).toContain('Like the ones you follow');
+      expect(names()).toEqual(['#knitting']);
+      open('Similar');
+      expect(text()).toContain('Tags similar to what you follow now');
+      expect(names()).toEqual(['#compost', '#seeds']);
+      open('Featured');
+      // #compost is already in Similar, so Featured shows it once, there.
+      expect(names()).toEqual(['#news']);
       expect(text()).toContain('40 people this week');
+      open('More');
+      expect(names()).toEqual([]);
+      expect(host.querySelector('app-lists')).not.toBeNull();
     });
 
     it('keeps the other groups when one source fails', () => {
@@ -126,22 +156,24 @@ describe('ExploreTags', () => {
       vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
       render();
       expect(text()).toContain('Couldn’t load these.');
-      expect(text()).toContain('#news');
-      expect(text()).toContain('#compost');
+      open('Featured');
+      expect(names()).toEqual(['#news']);
+      open('Similar');
+      expect(names()).toContain('#compost');
     });
 
-    it('follows on the server, turns the row to Following and refreshes the Feeds sections', () => {
-      vi.spyOn(api, 'featuredTagSuggestions').mockReturnValue(of([]));
-      vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
-      const followTag = vi.spyOn(api, 'followTag').mockReturnValue(of(tag('news')));
+    it('follows on the server, turns the row to Following and refreshes Your hashtags', () => {
+      vi.spyOn(api, 'featuredTagSuggestions').mockReturnValue(of([tag('knitting')]));
+      vi.spyOn(api, 'trendingTags').mockReturnValue(of([]));
+      const followTag = vi.spyOn(api, 'followTag').mockReturnValue(of(tag('knitting')));
       const refresh = vi.spyOn(Lists.prototype, 'refreshTags');
       render();
-      followButton('news')!.click();
-      expect(followTag).toHaveBeenCalledWith('news');
+      followButton('knitting')!.click();
+      expect(followTag).toHaveBeenCalledWith('knitting');
       expect(refresh).toHaveBeenCalled();
       fixture.detectChanges();
       const row = [...(fixture.nativeElement as HTMLElement).querySelectorAll('li')].find((li) =>
-        li.textContent?.includes('#news'),
+        li.textContent?.includes('#knitting'),
       );
       expect(row?.querySelector('button')?.textContent?.trim()).toBe('Following');
     });
@@ -151,8 +183,21 @@ describe('ExploreTags', () => {
       vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
       vi.spyOn(api, 'followTag').mockReturnValue(throwError(() => new Error('403')));
       render();
+      open('Featured');
       followButton('news')!.click();
       expect(text()).toContain('Couldn’t follow #news.');
+    });
+
+    it('comes back on the tab last open, as after Back from a tag page', () => {
+      vi.spyOn(api, 'featuredTagSuggestions').mockReturnValue(of([]));
+      vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
+      render();
+      open('Featured');
+      fixture.destroy();
+      const host = render();
+      expect(host.querySelector('[role="tab"][aria-selected="true"]')?.textContent?.trim()).toBe(
+        'Featured',
+      );
     });
   });
 
@@ -162,6 +207,7 @@ describe('ExploreTags', () => {
     vi.spyOn(api, 'trendingTags').mockReturnValue(of([tag('news')]));
     const followTag = vi.spyOn(api, 'followTag');
     render();
+    open('Featured');
     followButton('news')!.click();
     expect(TestBed.inject(AnonymousTags).has('news')).toBe(true);
     expect(followTag).not.toHaveBeenCalled();

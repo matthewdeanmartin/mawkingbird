@@ -9,9 +9,14 @@
 
 .et-none,
 .et-topics {
-  margin: 0.75rem 0;
+  margin: 0.75rem 16px;
 }
 
 .et-suggested {
   margin-bottom: 1.5rem;
+  padding: 0 16px;
+}
+
+.et-error {
+  margin: 0.75rem 16px;
 }

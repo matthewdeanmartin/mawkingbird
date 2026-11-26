@@ -1,6 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
-import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import {
   languageFolder,
@@ -102,7 +102,6 @@ const fallback = `<noscript>
       <li><a href="/for/power-users/">Advanced controls for power users</a></li>
       <li><a href="/compare/">Best Mastodon web clients compared</a></li>
       <li><a href="/help/">Help: short guides, one task at a time</a></li>
-      <li><a href="/follow/">Who to follow on Mastodon: hand-picked starter kits</a></li>
       <li><a href="/communities/">Mastodon communities by interest: hashtags, people and servers</a></li>
       <li><a href="/youtubers-on-mastodon/">YouTubers on Mastodon: creators to follow, by topic</a></li>
       <li><a href="/podcasts-on-mastodon/">Podcasts on Mastodon: shows to follow, by topic</a></li>
@@ -140,7 +139,23 @@ for (const page of ['about', 'funding', 'legal']) {
 // keeps a page that redirects at once and names the new one as canonical; search
 // engines treat that as a permanent move. Not in the sitemap. (/blog → /legal
 // was retired on 2026-11-17: /blog is Blog mode now.)
-const MOVED = {};
+//
+// The hand-picked /follow/ starter kits were retired on 2026-11-26 (owner): the
+// in-app catalogue replaced them. Each goes to its Feed Builder topic page where
+// one exists, otherwise to the communities hub.
+const MOVED = {
+  follow: 'communities',
+  'follow/us-journalists': 'communities',
+  'follow/retro-computing': 'retrocomputing-on-mastodon',
+  'follow/comics': 'communities',
+  'follow/visual-arts': 'communities',
+  'follow/infosec': 'communities',
+  'follow/sci-fi': 'science-fiction-on-mastodon',
+  'follow/canadian-politics': 'canadian-politics-on-mastodon',
+  'follow/books': 'communities',
+  'follow/mastodon-activitypub': 'communities',
+  'follow/war-in-ukraine': 'war-in-ukraine-on-mastodon',
+};
 for (const [from, to] of Object.entries(MOVED)) {
   const target = `https://mawkingbird.com/${to}/`;
   await mkdir(new URL(`${from}/`, root), { recursive: true });
@@ -160,13 +175,8 @@ for (const [from, to] of Object.entries(MOVED)) {
   );
 }
 
-// Tool pages are listed from the registry; starter-kit pages follow the bundled
-// kits, which change with catalogue refreshes, so their entries come from what
-// was actually prerendered. check-seo-build.mjs compares the result exactly.
-const kits = (await readdir(new URL('follow/', root), { withFileTypes: true }))
-  .filter((entry) => entry.isDirectory())
-  .map((entry) => entry.name)
-  .sort();
+// Tool pages are listed from the registry. check-seo-build.mjs compares the
+// result exactly.
 const sitemapUrl = new URL('sitemap.xml', root);
 // A tool page in several languages lists every version, itself included, plus
 // English as x-default: the same set the page's own <link rel="alternate"> has.
@@ -251,8 +261,6 @@ const alternates = (page) => {
 const entries = [
   ...indexPages,
   ...focusedTools.map((tool) => `${tool.path}/`),
-  'follow/',
-  ...kits.map((slug) => `follow/${slug}/`),
   ...feedHubs.map((hub) => `${hub.path}/`),
   ...feedPages.map((entry) => `${entry.path}/`),
   ...ytHubs.map((hub) => `${hub.path}/`),
@@ -271,10 +279,6 @@ await writeFile(sitemapUrl, withLastmod(sitemap));
  */
 function withLastmod(xml) {
   const features = 'src/app/public-pages/features/';
-  const kitData = [
-    `${features}follow-kits.ts`,
-    'src/app/discovery/bundled-starter-kits.generated.ts',
-  ];
   const sources = (page) => {
     if (page === '') return ['src/index.html', 'scripts/prepare-seo-index.mjs'];
     if (page === 'features/') return [`${features}features.html`, `${features}features.ts`];
@@ -303,8 +307,6 @@ function withLastmod(xml) {
         'src/app/public-pages/tool-translations/paths.json',
         ...(tool.lang ? [`src/app/public-pages/tool-translations/${tool.lang}.json`] : []),
       ];
-    if (page === 'follow/') return [`${features}follow-hub.html`, ...kitData];
-    if (page.startsWith('follow/')) return [`${features}follow-kit.html`, ...kitData];
     const yt = 'src/app/public-pages/youtubers/';
     const ytShared = [`${yt}youtuber-copy.ts`, `${yt}youtuber-pages.ts`, `${yt}youtuber-hubs.json`];
     const ytHub = ytHubs.find((hub) => `${hub.path}/` === page);

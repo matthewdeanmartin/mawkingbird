@@ -72,6 +72,11 @@ export function modeForUrl(url: string): AppMode | null {
     // Write and Drafts serve Fedi and Blog alike, so they keep the mode you came from.
     path === '/write' ||
     path === '/drafts' ||
+    // Starter kits, collections and tag pages are opened from Explore as well
+    // as Fedi; drilling into one keeps the mode you were in (owner, 2026-11-26).
+    path === '/collections' ||
+    path.startsWith('/collections/') ||
+    path.startsWith('/tags/') ||
     path.startsWith('/statuses/rss:') ||
     path.startsWith('/accounts/rss:') ||
     path === '/settings' ||

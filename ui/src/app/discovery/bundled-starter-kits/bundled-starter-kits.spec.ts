@@ -159,7 +159,7 @@ describe('BundledStarterKits', () => {
 
     expect(text).toContain(collection.title);
     expect(text).toContain(collection.curatorName || collection.curatorHandle);
-    expect(text).toContain('Ours');
+    expect(text).toContain('Mawkingbird curated');
   });
 
   it('every row links somewhere that opens the set', () => {

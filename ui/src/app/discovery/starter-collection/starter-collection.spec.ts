@@ -17,7 +17,9 @@ describe('StarterCollection', () => {
     const tabs = [...el.querySelectorAll('.pack-tabs button')];
     expect(tabs.map((tab) => tab.textContent?.trim())).toEqual(['Members', 'Posts', 'Analytics']);
     expect(tabs[0].getAttribute('aria-pressed')).toBe('true');
-    expect(el.querySelectorAll('.member')).toHaveLength(8);
+    expect(el.querySelectorAll('.member')).toHaveLength(
+      starterKit('catalog-en-security-and-privacy')!.accounts.length,
+    );
     expect(el.querySelector('.member-bio')?.innerHTML).toBeTruthy();
     httpMock.expectNone((r) => r.url.includes('/api/'));
   });
@@ -46,7 +48,9 @@ describe('StarterCollection', () => {
 
   beforeEach(() => {
     localStorage.clear();
-    routeStub = { snapshot: { paramMap: convertToParamMap({ slug: 'infosec' }) } };
+    routeStub = {
+      snapshot: { paramMap: convertToParamMap({ slug: 'catalog-en-security-and-privacy' }) },
+    };
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(),
@@ -92,8 +96,9 @@ describe('StarterCollection', () => {
     const fixture = TestBed.createComponent(StarterCollection);
     fixture.detectChanges();
 
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('InfoSec');
-    expect(fixture.componentInstance['accounts']).toHaveLength(8);
+    const kit = starterKit('catalog-en-security-and-privacy')!;
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(kit.title);
+    expect(fixture.componentInstance['accounts']).toHaveLength(kit.accounts.length);
   });
 
   it('follows a catalogue kit anonymously using its home-instance snapshots', async () => {
@@ -136,7 +141,12 @@ describe('StarterCollection', () => {
     const fixture = TestBed.createComponent(StarterCollection);
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('nicht mehr verfügbar');
-    expect(fixture.nativeElement.querySelector('button')).toBeNull();
+    // Back is the page's way out, not a follow control.
+    expect(
+      [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].filter(
+        (button) => !button.closest('app-reading-back'),
+      ),
+    ).toEqual([]);
     expect(TestBed.inject(ImportFollows).rows()).toEqual([]);
   });
 
@@ -146,7 +156,12 @@ describe('StarterCollection', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance['copyLanguage']).toBe('zh-Hant');
     expect(fixture.nativeElement.textContent).toContain('此推薦跟隨名單已無法使用');
-    expect(fixture.nativeElement.querySelector('button')).toBeNull();
+    // Back is the page's way out, not a follow control.
+    expect(
+      [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].filter(
+        (button) => !button.closest('app-reading-back'),
+      ),
+    ).toEqual([]);
   });
 
   it('opens and follows a Russian pack in Russian without switching the app language', async () => {

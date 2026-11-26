@@ -1,4 +1,5 @@
 import { AccountName } from '../../accounts/account-name';
+import { DraftsRailCard } from '../../publishing/drafts/drafts-rail-card';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Server } from '../../platform/http/server';
 import { lacksMastodonServer } from '../../platform/http/mastodon-route.interceptor';
@@ -59,6 +60,7 @@ function accountKey(account: Account): string {
 @Component({
   selector: 'app-left-rail',
   imports: [
+    DraftsRailCard,
     AccountName,
     ProfileContentFilters,
     BlogAuthorCard,

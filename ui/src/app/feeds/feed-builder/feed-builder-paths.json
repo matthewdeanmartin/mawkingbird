@@ -1,11 +1,29 @@
 {
-  "literary-fiction": { "en": "literary-fiction-on-mastodon" },
-  "historical-fiction": { "en": "historical-fiction-on-mastodon" },
-  "mystery-and-crime": { "en": "mystery-and-crime-on-mastodon", "de": "de/krimis-auf-mastodon" },
-  "romance-books": { "en": "romance-books-on-mastodon", "de": "de/liebesromane-auf-mastodon" },
-  "buddhism": { "en": "buddhism-on-mastodon" },
-  "war-in-ukraine": { "en": "war-in-ukraine-on-mastodon" },
-  "dmv": { "en": "dc-maryland-virginia-on-mastodon" },
+  "literary-fiction": {
+    "en": "literary-fiction-on-mastodon",
+    "es": "es/narrativa-literaria-en-mastodon"
+  },
+  "historical-fiction": {
+    "en": "historical-fiction-on-mastodon"
+  },
+  "mystery-and-crime": {
+    "en": "mystery-and-crime-on-mastodon",
+    "de": "de/krimis-auf-mastodon",
+    "fr": "fr/polars-et-romans-policiers-sur-mastodon"
+  },
+  "romance-books": {
+    "en": "romance-books-on-mastodon",
+    "de": "de/liebesromane-auf-mastodon"
+  },
+  "buddhism": {
+    "en": "buddhism-on-mastodon"
+  },
+  "war-in-ukraine": {
+    "en": "war-in-ukraine-on-mastodon"
+  },
+  "dmv": {
+    "en": "dc-maryland-virginia-on-mastodon"
+  },
   "retrocomputing": {
     "en": "retrocomputing-on-mastodon",
     "de": "de/retrocomputing-auf-mastodon",
@@ -45,29 +63,82 @@
     "en": "plant-based-living-on-mastodon",
     "de": "de/pflanzlich-leben-auf-mastodon"
   },
-  "uspol": { "en": "us-politics-on-mastodon" },
+  "uspol": {
+    "en": "us-politics-on-mastodon"
+  },
   "canadian-politics": {
     "en": "canadian-politics-on-mastodon",
     "fr": "fr/politique-canadienne-sur-mastodon"
   },
-  "german-politics": { "de": "de/deutsche-politik-auf-mastodon" },
-  "running": { "en": "running-on-mastodon", "de": "de/laufen-auf-mastodon" },
+  "german-politics": {
+    "de": "de/deutsche-politik-auf-mastodon"
+  },
+  "running": {
+    "en": "running-on-mastodon",
+    "de": "de/laufen-auf-mastodon"
+  },
   "bicycling": {
     "en": "bicycling-on-mastodon",
     "de": "de/radfahren-auf-mastodon",
     "fr": "fr/velo-sur-mastodon"
   },
-  "malaysia": { "ms": "ms/malaysia-di-mastodon" },
-  "vietnam": { "vi": "vi/cong-dong-viet-tren-mastodon" },
-  "dutch-culture": { "nl": "nl/nederlandstalige-cultuur-op-mastodon" },
-  "dutch-politics": { "nl": "nl/nederlandse-politiek-op-mastodon" },
-  "ukrainian-technology": { "uk": "uk/tekhnolohii-na-mastodon" },
-  "ukrainian-culture": { "uk": "uk/kultura-ta-zakhoplennia-na-mastodon" },
+  "malaysia": {
+    "ms": "ms/malaysia-di-mastodon"
+  },
+  "vietnam": {
+    "vi": "vi/cong-dong-viet-tren-mastodon"
+  },
+  "dutch-culture": {
+    "nl": "nl/nederlandstalige-cultuur-op-mastodon"
+  },
+  "dutch-politics": {
+    "nl": "nl/nederlandse-politiek-op-mastodon"
+  },
+  "ukrainian-technology": {
+    "uk": "uk/tekhnolohii-na-mastodon"
+  },
+  "ukrainian-culture": {
+    "uk": "uk/kultura-ta-zakhoplennia-na-mastodon"
+  },
   "computing-and-open-source": {
     "lv": "lv/tehnologijas-un-atvertais-kods-mastodon",
     "el": "el/pliroforiki-kai-anoikto-logismiko-mastodon",
     "hu": "hu/informatika-es-szabad-szoftver-mastodon",
     "lt": "lt/technologijos-ir-atvirasis-kodas-mastodon"
   },
-  "arts-and-culture": { "lv": "lv/maksla-un-kultura-mastodon" }
+  "arts-and-culture": {
+    "lv": "lv/maksla-un-kultura-mastodon"
+  },
+  "photography": {
+    "en": "photography-on-mastodon",
+    "de": "de/fotografie-auf-mastodon"
+  },
+  "cooking-and-baking": {
+    "en": "cooking-and-baking-on-mastodon",
+    "de": "de/kochen-und-backen-auf-mastodon"
+  },
+  "history-and-archaeology": {
+    "en": "history-and-archaeology-on-mastodon",
+    "de": "de/geschichte-und-archaeologie-auf-mastodon"
+  },
+  "tabletop-roleplaying": {
+    "en": "tabletop-roleplaying-on-mastodon",
+    "de": "de/pen-and-paper-rollenspiele-auf-mastodon"
+  },
+  "linguistics-and-languages": {
+    "en": "linguistics-and-languages-on-mastodon",
+    "de": "de/linguistik-und-sprachen-auf-mastodon"
+  },
+  "classical-music": {
+    "de": "de/klassische-musik-auf-mastodon",
+    "en": "classical-music-on-mastodon"
+  },
+  "geology-and-earth-science": {
+    "en": "geology-and-earth-science-on-mastodon",
+    "de": "de/geologie-und-geowissenschaften-auf-mastodon"
+  },
+  "sewing-and-textile-crafts": {
+    "en": "sewing-and-textile-crafts-on-mastodon",
+    "de": "de/naehen-und-textile-handarbeiten-auf-mastodon"
+  }
 }

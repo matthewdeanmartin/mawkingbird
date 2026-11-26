@@ -128,25 +128,19 @@ help site). The help home's
 "More from Mawkingbird" section links About & legal and the project pages, and
 the app footer links About & legal next to Privacy.
 
-## Starter kits: /follow/
+## Retired: /follow/ starter kits
 
-`/follow/` and `/follow/<slug>/` are public pages built from the hand-picked
-bundled kits (`bundled-starter-kits.generated.ts`) by `public-pages/features/follow-kits.ts`.
-They are routed outside the shell like `/features`, prerendered once per kit
-(`getPrerenderParams` in `main.server.ts`), and their per-kit titles and
-descriptions come from lazy resolvers so the data stays out of the startup bundle
-(`report-bundle.mjs` enforces this).
+`/follow/` and `/follow/<slug>/` were public pages built from ten hand-picked
+kits. They were retired on 2026-11-26 (owner), with the kits themselves, their
+live consent check and its monthly workflow: the in-app catalogue from
+`mawkingbird_starters` replaced them. `prepare-seo-index.mjs` keeps a `MOVED`
+page at each old address, pointing at the Feed Builder topic page where one
+exists and at `/communities/` otherwise, and `check-seo-build.mjs` checks two.
+In the app, `/collections/starter/<old-slug>` redirects to the catalogue pack or
+Feed Builder page on the same topic (`app.routes.ts`).
 
-Consent: a person appears only when their home-instance snapshot says
-`discoverable: true` and neither `noindex: true` nor `indexable: false`. That is
-stricter than in-app listing, because these pages exist for search engines. A
-kit with fewer than three such people gets no page. The larger multilingual
-starter catalogue and snapshots of other people's collections are never
-published here: the catalogue deliberately does not act on `noindex`, and its
-UI snapshot does not carry the flags. Publishing it would need both changed.
-
-"Follow this kit in Mawkingbird" opens `/collections/starter/<slug>`, which
-`authGuard` lets a fresh visitor reach anonymously.
+The catalogue deliberately does not act on `noindex`, so it is never published
+as public pages. Doing that would need consent flags in its importer first.
 
 ## Topic starter kits: /communities/ (Feed Builder)
 

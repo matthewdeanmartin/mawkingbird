@@ -179,7 +179,7 @@ export const audienceContent: Record<string, AudienceContent> = {
       { label: 'Create a Bluesky account', href: '/create-bluesky-account/' },
       { label: 'Choose a Mastodon server', href: '/help/new-to-mastodon/choose-a-server/' },
       { label: 'Coming to Mastodon from Twitter', href: '/help/new-to-mastodon/coming-from-x/' },
-      { label: 'Who to follow: starter kits', href: '/follow/' },
+      { label: 'Who to follow: communities by interest', href: '/communities/' },
     ],
   },
   instagram: {
