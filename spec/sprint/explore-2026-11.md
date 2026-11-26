@@ -1,10 +1,31 @@
 # Explore: a mode for crafting your feed (November 2026)
 
-Status: Sprints 1–4 implemented · 2026-11-26 (1–2 pushed for testing, 3–4
-uncommitted); the Sprint 5 side quest (the `…` menu) remains. Run two at a time
-with light checks between them, then a stop for the owner to push and test
-(two-sprint cadence). Manual plan:
+Status: all five sprints implemented · 2026-11-26. Sprints 1–4 committed
+("explore"); Sprint 5 (Even more, the locked `…` menu) uncommitted. Manual plan:
 [test_plans/explore-2026-11.md](../test_plans/explore-2026-11.md).
+
+### As built (Sprint 5)
+
+- **Even more** (`shell/even-more/`) is an `mb-dialog` opened by one `…` row,
+  "Even more…", which takes Observability's place. On top are Screen share,
+  Onboarding and Observability. Below are sections from the data table
+  `even-more-links.ts`: Explore (hidden while the discovery window is
+  closed), Feeds and writing (Lists, Followed hashtags, Feed Doctor, Drafts,
+  Pastes and Links behind their flags), and Diagnostics (API calls, Logs,
+  Storage diagnostics). Every control closes it; focus returns to the `…` button.
+- Not deep-linkable: the shell's other dialogs aren't either, and the `…`
+  menu reaches it on phones too.
+- **The `…` menu is locked.** `shell.spec.ts` asserts the exact rows for a
+  signed-in Mastodon account and for Anonymous, and a comment in `shell.html`
+  says rows change only with the owner's say-so. New features go in Even more.
+- Owner, 2026-11-26: the `…` menu serves the most likely readers; Screen share
+  and Observability are the owner's tools and onboarding-again is rare. No
+  multi-level menus: one flat page is easy to maintain and works on phones.
+- Side fix: `starter-kits:check` failed because `noo@comics.town` now returns
+  404 (the check does live lookups). `starter-kits:update` dropped the account
+  and refreshed counts and bios. Its generator wrote a stale
+  `import … from './models'`, which broke the build; it now writes
+  `../platform/api/models`, matching the hand-fixed file.
 
 ### As built (Sprints 3–4)
 

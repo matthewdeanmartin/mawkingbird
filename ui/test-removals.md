@@ -26,6 +26,13 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-26: Even more and a locked … menu
+
+- test: src/app/shell/shell.spec.ts :: Shell account switching opens onboarding from the More menu and closes the menu
+  reason: replaced
+  now: src/app/shell/shell.spec.ts :: Shell account switching opens Even more from the … menu, closing the menu, and onboarding from there
+  why: The owner moved Onboarding, Screen share and Observability out of the … menu into the Even more dialog (spec/sprint/explore-2026-11.md, Sprint 5); the test follows Onboarding there.
+
 ## 2026-11-25: podcast pages speak German
 
 - test: src/app/public-pages/podcasts/podcast-pages.spec.ts :: Podcast pages routes the hub and every kit, each indexable

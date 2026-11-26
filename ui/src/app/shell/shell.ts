@@ -40,6 +40,7 @@ import { environment } from '../../environments/environment';
 import { brandLogoSrc, isCanaryBuild, isTestBuild } from '../platform/build/build-flavor';
 import { Hotkeys } from './hotkeys';
 import { ShortcutHelp } from './shortcut-help/shortcut-help';
+import { EvenMore } from './even-more/even-more';
 import { AppFooter } from './app-footer/app-footer';
 import { LeftRail } from './left-rail/left-rail';
 import { RightRail } from './right-rail/right-rail';
@@ -163,6 +164,7 @@ const TRICKLE_IDLE_MS = 15 * 60_000;
 // i18n shell.menu.findFriends: Find Friends
 // i18n shell.menu.invites: Invites
 // i18n shell.menu.analytics: Analytics
+// i18n shell.menu.evenMore: Even more…
 // i18n shell.menu.observability: Observability
 // i18n shell.menu.help: Help
 // i18n shell.menu.news: Site News
@@ -261,6 +263,7 @@ const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
     RightRail,
     AppFooter,
     ShortcutHelp,
+    EvenMore,
     NgOptimizedImage,
     LeaveDialog,
     FirstRunModal,
@@ -863,10 +866,17 @@ export class Shell implements OnInit, AccountSwitcher {
     this.showToast(this.transloco.translate('shell.toast.removed'));
   }
 
-  /** The … menu's Onboarding entry: close the menu, open the card. */
-  protected openOnboarding(event: Event): void {
-    (event.currentTarget as HTMLElement).closest('details')?.removeAttribute('open');
-    this.onboarding.openFromMenu();
+  /** The "Even more" dialog (spec/sprint/explore-2026-11.md, Sprint 5). */
+  protected readonly evenMoreOpen = signal(false);
+  /** Where focus goes back to when it closes: the … menu's own button. */
+  protected evenMoreReturn: HTMLElement | null = null;
+
+  /** The … menu's Even more entry: close the menu, open the dialog. */
+  protected openEvenMore(event: Event): void {
+    const details = (event.currentTarget as HTMLElement).closest('details');
+    this.evenMoreReturn = details?.querySelector('summary') ?? null;
+    details?.removeAttribute('open');
+    this.evenMoreOpen.set(true);
   }
 
   /** Optional server links are discovered only when the user opens More. */

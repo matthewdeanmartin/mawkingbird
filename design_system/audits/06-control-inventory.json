@@ -1,7 +1,7 @@
 {
   "scope": "All maintained ui/src/app HTML, non-spec TypeScript and CSS. Lexical candidates include comments and inline templates; counts are NOT violations or adoption percentages.",
-  "filesScanned": 2206,
-  "filesWithCandidates": 742,
+  "filesScanned": 2208,
+  "filesWithCandidates": 743,
   "inventory": [
     {
       "file": "ui/src/app/accounts/account-analytics/account-analytics.html",
@@ -28798,6 +28798,36 @@
       ]
     },
     {
+      "file": "ui/src/app/shell/even-more/even-more.ts",
+      "status": "needs semantic review",
+      "findings": [
+        {
+          "pattern": "shared",
+          "line": 31
+        },
+        {
+          "pattern": "shared",
+          "line": 43
+        },
+        {
+          "pattern": "shared",
+          "line": 54
+        },
+        {
+          "pattern": "shared",
+          "line": 58
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 42
+        },
+        {
+          "pattern": "nativeButtons",
+          "line": 54
+        }
+      ]
+    },
+    {
       "file": "ui/src/app/shell/fail-whale-demo/fail-whale-demo.ts",
       "status": "needs semantic review",
       "findings": [
@@ -29189,15 +29219,15 @@
         },
         {
           "pattern": "shared",
-          "line": 500
+          "line": 496
         },
         {
           "pattern": "shared",
-          "line": 507
+          "line": 503
         },
         {
           "pattern": "shared",
-          "line": 583
+          "line": 579
         },
         {
           "pattern": "nativeButtons",
@@ -29209,27 +29239,23 @@
         },
         {
           "pattern": "nativeButtons",
-          "line": 349
+          "line": 418
         },
         {
           "pattern": "nativeButtons",
-          "line": 353
+          "line": 517
         },
         {
           "pattern": "nativeButtons",
-          "line": 521
+          "line": 563
         },
         {
           "pattern": "nativeButtons",
-          "line": 567
+          "line": 570
         },
         {
           "pattern": "nativeButtons",
-          "line": 574
-        },
-        {
-          "pattern": "nativeButtons",
-          "line": 583
+          "line": 579
         },
         {
           "pattern": "nativeButtons",
@@ -29269,7 +29295,7 @@
         },
         {
           "pattern": "disclosure",
-          "line": 459
+          "line": 455
         }
       ]
     },

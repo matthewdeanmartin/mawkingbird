@@ -1,6 +1,6 @@
 # Explore mode (November 2026)
 
-Build: the working tree after Explore Sprints 1–4 (2026-11-26). Epic:
+Build: the working tree after Explore Sprints 1–5 (2026-11-26). Epic:
 [spec/sprint/explore-2026-11.md](../sprint/explore-2026-11.md). Later sprints add
 their sections here.
 
@@ -61,6 +61,17 @@ their sections here.
 - [ ] A local draft in the card opens in the Home composer; All drafts opens Drafts.
 - [ ] Moving between pages does not refetch scheduled posts (DevTools → Network).
 - [ ] New links: left rail "More in Explore →" and "More hashtags in Explore →"; Find Friends "Open Explore"; Home analytics "Run a feed checkup". With the discovery window closed the rail and Find Friends links are gone.
+
+## Sprint 5: Even more
+
+- [ ] The `…` menu no longer has Onboarding, Start screen share mode or Observability; it has **Even more…** where Observability was.
+- [ ] Even more opens a dialog: Tools (screen share, Onboarding, Observability), then Explore, Feeds and writing, and Diagnostics links.
+- [ ] Each control closes the dialog; Esc and the backdrop close it; focus returns to the `…` button.
+- [ ] Start screen share from Even more; the header badge turns it off in one click.
+- [ ] Onboarding from Even more opens the setup card.
+- [ ] With the discovery window closed, the Explore section is gone.
+- [ ] Pastes and Links appear only where their features are on.
+- [ ] On a phone: the dialog fits and scrolls.
 
 ## Findings
 

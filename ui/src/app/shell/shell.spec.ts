@@ -549,7 +549,8 @@ describe('Shell account switching', () => {
       expect(auth.account()?.display_name).toBe('Anonymous');
       expect(fixture.nativeElement.querySelector('.login-nav')).toBeNull();
       expect(fixture.nativeElement.textContent).not.toContain('+ Add an account');
-      expect(fixture.nativeElement.textContent).toContain('Observability');
+      // Observability now sits in Even more, behind this row (Explore, Sprint 5).
+      expect(fixture.nativeElement.textContent).toContain('Even more…');
       const findFriends = fixture.nativeElement.querySelector(
         'a[href="/find-friends"]',
       ) as HTMLAnchorElement;
@@ -697,18 +698,66 @@ describe('Shell account switching', () => {
     expect(menu.querySelector('a[href="/links"]')).toBeNull();
   });
 
-  it('opens onboarding from the More menu and closes the menu', () => {
+  /** The … menu's rows, in order, as a reader scans them. */
+  function moreRows(fixture: ReturnType<typeof createShell>): string[] {
+    const panel = fixture.nativeElement.querySelector(
+      'details.more-menu .menu-panel',
+    ) as HTMLElement;
+    return [...panel.querySelectorAll('a, button')].map((el) =>
+      (el.textContent ?? '').replace(/\s+/g, ' ').trim(),
+    );
+  }
+
+  /**
+   * LOCKED (owner, 2026-11-26; spec/sprint/explore-2026-11.md, Sprint 5). The …
+   * menu is full, and rows were added and removed without asking. Changing
+   * this list needs the owner's say-so; new features go in Even more.
+   */
+  it('keeps the … menu to its agreed rows, signed in', () => {
+    const fixture = createShell();
+    expect(moreRows(fixture)).toEqual([
+      'Settings',
+      'Likes, bookmarks, history',
+      'My server',
+      'Videos',
+      'Watch parties',
+      'Write',
+      'Scheduled posts',
+      'Find Friends',
+      'Invites',
+      'Even more…',
+      'Site News',
+      'Help',
+      // This test build is not canary, and has the mock server's tooling.
+      'Canary ↗',
+      'Faults',
+      'API Docs ↗',
+    ]);
+    drainRailRequests();
+  });
+
+  it('opens Even more from the … menu, closing the menu, and onboarding from there', () => {
     const fixture = createShell();
     const menu = fixture.nativeElement.querySelector('details.more-menu') as HTMLDetailsElement;
     menu.open = true;
     const entry = [...menu.querySelectorAll('button')].find(
+      (b) => b.textContent?.trim() === 'Even more…',
+    ) as HTMLButtonElement;
+    entry.click();
+    fixture.detectChanges();
+    expect(menu.open).toBe(false);
+    const dialog = fixture.nativeElement.querySelector('app-even-more') as HTMLElement;
+    expect(dialog).not.toBeNull();
+    expect(dialog.querySelector('a[href="/observability"]')).not.toBeNull();
+
+    const onboarding = [...dialog.querySelectorAll('button')].find(
       (b) => b.textContent?.trim() === 'Onboarding',
     ) as HTMLButtonElement;
-
-    entry.click();
-
+    onboarding.click();
+    fixture.detectChanges();
     expect(TestBed.inject(OnboardingLauncher).mode()).toBe('menu');
-    expect(menu.open).toBe(false);
+    expect(fixture.nativeElement.querySelector('app-even-more')).toBeNull();
+    drainRailRequests();
   });
   it(
     'hides the old account content throughout a slow verification and restores it on failure',
@@ -781,6 +830,32 @@ describe('Shell app-mode nav', () => {
       child.tagName === 'APP-MODE-SWITCH' ? 'switch' : (child.getAttribute('href') ?? ''),
     );
   }
+
+  it('keeps the … menu to its agreed rows, for Anonymous (locked; see the signed-in case)', () => {
+    const panel = render().nativeElement.querySelector(
+      'details.more-menu .menu-panel',
+    ) as HTMLElement;
+    const rows = [...panel.querySelectorAll('a, button')].map((el) =>
+      (el.textContent ?? '').replace(/\s+/g, ' ').trim(),
+    );
+    expect(rows).toEqual([
+      'Settings',
+      'Bookmarks, history',
+      'My server',
+      'Videos',
+      'Watch parties',
+      'Write',
+      'Find Friends',
+      'Invites',
+      'Even more…',
+      'Site News',
+      'Help',
+      // This test build is not canary, and has the mock server's tooling.
+      'Canary ↗',
+      'Faults',
+      'API Docs ↗',
+    ]);
+  });
 
   it('adds Watch parties to the ... menu and drops Manage RSS feeds and Drafts', () => {
     const host = render().nativeElement as HTMLElement;

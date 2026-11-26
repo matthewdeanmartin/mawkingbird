@@ -3592,3 +3592,11 @@ collections) and `find-friends.html` (`shared` 1 to 2, Open Explore). The new
 `explore-people.ts` and `drafts-rail-card.ts` reuse Find Friends' rows and the Rail Card
 with plain links, and the left rail, Feeds tag section and feed analytics gain one plain
 link each. No new widget.
+
+### 2026-11-26: Even more, and a locked … menu (Explore Sprint 5)
+
+Reviewed the regenerated inventory: one candidate added, `shell/even-more/even-more.ts`
+(adopted scope: shared Dialog, small outline Buttons for screen share, onboarding and
+Observability, plain links for its data-driven sections). One changed: `shell.html`
+`nativeButtons` 12 to 11, as Onboarding and Screen share leave the … menu and one
+"Even more…" menu button replaces the Observability link. No new widget.

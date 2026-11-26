@@ -340,26 +340,18 @@
               <span>{{ 'shell.nav.more' | transloco }}</span>
             </summary>
             <div class="menu-panel">
+              <!-- LOCKED (owner, 2026-11-26): rows here change only with the owner's
+                   say-so, and shell.spec.ts asserts the exact list. A new feature
+                   gets a line in "Even more" (shell/even-more/even-more-links.ts)
+                   instead. See spec/sprint/explore-2026-11.md, Sprint 5. -->
               <!-- "Meet Eliza" used to sit here. She is an easter egg, not a
                headline feature, and this menu is short on room — she is found
                in Chat, or at /eliza by anyone who goes looking. -->
 
               <a routerLink="/settings">{{ 'shell.menu.settings' | transloco }}</a>
-              <!-- The setup wizard, for anyone who skipped it or wants to redo it. -->
-              <button type="button" class="menu-button" (click)="openOnboarding($event)">
-                {{ 'shell.menu.onboarding' | transloco }}
-              </button>
-              <!-- Here, one click from anywhere: it is switched on as a stream starts. -->
-              <button
-                type="button"
-                class="menu-button"
-                (click)="screenShare.set(!screenShare.enabled()); closeMenu($event)"
-              >
-                {{
-                  (screenShare.enabled() ? 'shell.menu.screenShareOff' : 'shell.menu.screenShareOn')
-                    | transloco
-                }}
-              </button>
+              <!-- Onboarding (again) and screen share mode moved to Even more: the
+                   owner uses them, ordinary readers rarely do. Screen share still
+                   turns off in one click from the header badge while it is on. -->
 
               <!-- Feed-likes -->
               <div class="menu-divider"></div>
@@ -421,7 +413,11 @@
                  prominently (page-menu-link, and the storage-summary card). -->
               <!-- Just the link: stats belong on /observability (its connection
                  card shows the typical reply time), not squeezed into this menu. -->
-              <a routerLink="/observability">{{ 'shell.menu.observability' | transloco }}</a>
+              <!-- Observability moved into Even more, which is the door to everything
+                   used now and then (spec/sprint/explore-2026-11.md, Sprint 5). -->
+              <button type="button" class="menu-button even-more" (click)="openEvenMore($event)">
+                {{ 'shell.menu.evenMore' | transloco }}
+              </button>
 
               <!-- Reading: Site News and Help. ("Docs" next to "Help" read as the same
                thing, so there is no Docs row.) The help site's home links on to
@@ -652,6 +648,10 @@
      never over the blocking first-run modal. -->
   @if (onboarding.mode() && !firstRun() && onboardingCard(); as card) {
     <ng-container *ngComponentOutlet="card" />
+  }
+
+  @if (evenMoreOpen()) {
+    <app-even-more [returnFocusTo]="evenMoreReturn" (closed)="evenMoreOpen.set(false)" />
   }
 
   @if (hotkeys.helpOpen()) {
