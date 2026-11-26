@@ -269,7 +269,7 @@
 </div>
 
 @if (showAddDialog()) {
-  <app-add-feed-dialog (closed)="closeAddDialog()" />
+  <app-add-feed-dialog [prefill]="addPrefill()" (closed)="closeAddDialog()" />
 }
 
 @if (showFriendFeeds()) {

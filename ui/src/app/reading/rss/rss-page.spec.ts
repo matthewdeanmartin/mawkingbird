@@ -264,6 +264,35 @@ describe('RssPage', () => {
     expect(textOf(fixture)).toContain('Open as profile');
   });
 
+  it('opens Paste a link filled in from ?add=, then drops it from the URL', async () => {
+    const router = TestBed.inject(Router);
+    await router.navigate(['/rss'], { queryParams: { add: 'https://blog.example/' } });
+    const fixture = setUp();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const dialog = (fixture.nativeElement as HTMLElement).querySelector('app-add-feed-dialog');
+    expect(dialog).not.toBeNull();
+    expect((dialog!.querySelector('input') as HTMLInputElement).value).toBe(
+      'https://blog.example/',
+    );
+    expect(router.url).toBe('/rss');
+    expect(TestBed.inject(RssSubscriptions).feeds()).toEqual([]);
+  });
+
+  it('ignores an ?add= too long to be a link', async () => {
+    const router = TestBed.inject(Router);
+    await router.navigate(['/rss'], {
+      queryParams: { add: `https://a.example/${'x'.repeat(2100)}` },
+    });
+    const fixture = setUp();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-add-feed-dialog')).toBeNull();
+    expect(router.url).toBe('/rss');
+  });
+
   it('merges every feed in a folder, newest first', async () => {
     const subs = TestBed.inject(RssSubscriptions);
     feeds.set('https://a.example.com/f.xml', feed('A', 'Older item', '2026-08-01T00:00:00Z'));

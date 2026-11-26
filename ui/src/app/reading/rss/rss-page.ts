@@ -119,6 +119,14 @@ const KITS_VIEW = 'kits';
 /** `?filter=starred` narrows the pane to starred items. */
 const FILTER_PARAM = 'filter';
 const STARRED_FILTER = 'starred';
+/**
+ * `?add=<site or feed>` (what `/rss/add?url=` redirects to) opens Paste a link
+ * filled in. Read once, then dropped from the URL so Back or a reload does not
+ * reopen it.
+ */
+const ADD_PARAM = 'add';
+/** Longer than any real URL; a pasted essay is not a feed. */
+const MAX_ADD_LENGTH = 2048;
 
 /** One group of feeds in the left rail. `name` is null for the unfiled group. */
 interface RailGroup {
@@ -182,6 +190,12 @@ export class RssPage {
   protected readonly perFeedCap = PER_FEED_ITEM_CAP;
 
   protected showAddDialog = signal(false);
+  /** What Paste a link opens with: a site or feed handed over by `?add=`. */
+  protected addPrefill = signal('');
+  private readonly addInUrl = toSignal(
+    this.route.queryParamMap.pipe(map((params) => params.get(ADD_PARAM))),
+    { initialValue: null },
+  );
 
   /** Which pane content the URL is asking for. */
   private readonly selection = toSignal(
@@ -310,6 +324,24 @@ export class RssPage {
 
   constructor() {
     this.showKits.set(this.subs.feeds().length === 0 && !this.readState.starredCount());
+
+    effect(() => {
+      const handed = this.addInUrl()?.trim();
+      if (!handed) return;
+      untracked(() => {
+        if (handed.length <= MAX_ADD_LENGTH) {
+          this.diagnostics.info('RssPage', 'link:open-add-dialog', {});
+          this.addPrefill.set(handed);
+          this.showAddDialog.set(true);
+        }
+        void this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { [ADD_PARAM]: null },
+          queryParamsHandling: 'merge',
+          replaceUrl: true,
+        });
+      });
+    });
 
     effect(() => {
       const filter = this.filterInUrl();
@@ -651,11 +683,13 @@ export class RssPage {
 
   openAddDialog(): void {
     this.diagnostics.info('RssPage', 'user:open-add-dialog', {});
+    this.addPrefill.set('');
     this.showAddDialog.set(true);
   }
 
   closeAddDialog(): void {
     this.showAddDialog.set(false);
+    this.addPrefill.set('');
   }
 
   rssHost(url: string): string | null {

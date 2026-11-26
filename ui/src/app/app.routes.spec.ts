@@ -1,6 +1,6 @@
-import { Route } from '@angular/router';
+import { provideRouter, Route, Router, UrlTree } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { routes, TOOL_PAGE_MODULES, toolPageLoader } from './app.routes';
 import { NATIVE_PROFILES } from './platform/session/platform-login';
 import { anonymousUnavailableGuard } from './accounts/anonymous/anonymous-route.guard';
@@ -176,6 +176,40 @@ describe('application routes', () => {
   it('keeps both current and legacy message links available to Anonymous', () => {
     expect(routes.find((route) => route.path === 'message/:id')?.canActivate).toBeUndefined();
     expect(routes.find((route) => route.path === 'message')?.canActivate).toBeUndefined();
+  });
+
+  describe('/rss/add (a link offering a subscription)', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    });
+
+    function redirectFor(queryParams: Record<string, unknown>): string {
+      const redirect = shellChild('rss/add')?.redirectTo;
+      expect(typeof redirect).toBe('function');
+      const tree = TestBed.runInInjectionContext(() =>
+        (redirect as (r: { queryParams: Record<string, unknown> }) => UrlTree)({ queryParams }),
+      );
+      return TestBed.inject(Router).serializeUrl(tree);
+    }
+
+    it('opens the RSS page with the site or feed to add', () => {
+      expect(redirectFor({ url: ' https://blog.example/ ' })).toBe(
+        '/rss?add=https:%2F%2Fblog.example%2F',
+      );
+    });
+
+    it('goes to the RSS page alone when there is nothing to add', () => {
+      expect(redirectFor({})).toBe('/rss');
+      expect(redirectFor({ url: ['a', 'b'] })).toBe('/rss');
+      expect(redirectFor({ url: '   ' })).toBe('/rss');
+    });
+
+    it('is declared before /rss', () => {
+      const children = shellRoute()?.children ?? [];
+      const add = children.findIndex((route) => route.path === 'rss/add');
+      expect(add).toBeGreaterThanOrEqual(0);
+      expect(add).toBeLessThan(children.findIndex((route) => route.path === 'rss'));
+    });
   });
 
   it('keeps public hashtag timelines available to Anonymous', () => {

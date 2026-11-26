@@ -1,7 +1,7 @@
 import { AccountName } from '../../../accounts/account-name';
 import { PLATFORM_FEED_READ } from '../../../platform/http/platform-http';
 import { accountProfilePath } from '../../../accounts/account-route';
-import { Component, computed, inject, output, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, output, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -67,7 +67,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
   templateUrl: './add-feed-dialog.html',
   styleUrl: './add-feed-dialog.css',
 })
-export class AddFeedDialog {
+export class AddFeedDialog implements OnInit {
   protected readonly nativeReading = !!inject(PLATFORM_FEED_READ);
   private addFeed = inject(RssAddFeed);
   private resolver = inject(PasteResolve);
@@ -77,6 +77,12 @@ export class AddFeedDialog {
   protected proxySettings = inject(CorsProxySettings);
   private diagnostics = inject(PageDiagnostics);
   private transloco = inject(TranslocoService);
+
+  /**
+   * A site or feed to start with (`/rss/add?url=`). Only fills the box: the
+   * reader still presses Continue, because resolving one clear feed subscribes.
+   */
+  readonly prefill = input('');
 
   readonly closed = output<void>();
   /** Emitted once a feed is actually subscribed, so the host can refresh. */
@@ -121,6 +127,11 @@ export class AddFeedDialog {
     const picked = this.chosen();
     return list.find((f) => f.url === picked) ?? list[0];
   });
+
+  ngOnInit(): void {
+    const value = this.prefill().trim();
+    if (value) this.input.set(value);
+  }
 
   async resolve(): Promise<void> {
     const value = this.input().trim();

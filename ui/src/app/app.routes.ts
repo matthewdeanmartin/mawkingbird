@@ -1321,6 +1321,19 @@ export const routes: Routes = [
       // RSS has its own read/unread and headline/article postures that don't
       // fit the Feeds hub's list-of-lists model. See sprint/rss-0-overview.md.
       {
+        // `/rss/add?url=<site or feed>`: a link that offers a subscription (the
+        // Firefox extension's "Subscribe", spec/firefox-extension.md W-2). Opens
+        // the RSS page's Paste a link with it filled in; nothing is subscribed
+        // until the reader presses the button.
+        path: 'rss/add',
+        redirectTo: ({ queryParams }) => {
+          const url = typeof queryParams['url'] === 'string' ? queryParams['url'] : '';
+          return inject(Router).createUrlTree(['/rss'], {
+            queryParams: url.trim() ? { add: url.trim() } : {},
+          });
+        },
+      },
+      {
         path: 'rss',
         title: 'RSS',
         loadComponent: () => import('./reading/rss/rss-page').then((m) => m.RssPage),

@@ -114,8 +114,9 @@ any site.
 - [ ] Toolbar popup replacing the bare toggle: Share, Quote, Posts about this
       page, Open sidebar, and what the page offers (next two items).
 - [ ] **Feeds on this page**: `<link rel="alternate">` RSS/Atom/JSON Feed, plus
-      common `/feed`, `/rss.xml` guesses shown as guesses. Until W-2 exists the
-      button copies the feed URL and opens Mawkingbird's RSS settings.
+      common `/feed`, `/rss.xml` guesses shown as guesses. Subscribe opens
+      `/rss/add?url=<feed>`; with no feed found, offer `/rss/add?url=<page>`
+      anyway, because Paste a link probes the site itself.
 - [ ] **Author on the fediverse**: `<meta name="fediverse:creator">` (Mastodon
       4.3 author attribution) and `rel="me"` Mastodon links → Follow opens
       `/@user@host`.
@@ -159,8 +160,13 @@ granted; documented, not mitigated.
 
 - **W-1** Lite share: `/m/share` (or `acceptHandoff` on Lite Home's composer) so
   shared text lands in the Lite composer.
-- **W-2** Add a feed by URL: `/rss/add?url=` (today `?feed=` only selects an
-  existing feed).
+- **W-2** ~~Add a feed by URL~~ **Done 2026-11-26.** `/rss/add?url=<site, feed
+  or handle>` redirects to `/rss?add=…`, which opens Paste a link filled in and
+  drops `add` from the URL. Nothing is fetched or subscribed until the reader
+  presses Continue (resolving one clear feed subscribes, so it must not run on
+  arrival). Over 2048 characters is ignored. Tests: `app.routes.spec.ts`,
+  `rss-page.spec.ts`, `add-feed-dialog.spec.ts`. No Native transport change
+  (Paste a link already uses the Native feed read).
 - **W-3** Bridge consumer: when `data-mawkingbird-extension` is present, provide
   `PLATFORM_FEED_READ` / `PLATFORM_ARTICLE_READ` (later YouTube, webmentions,
   Wikidata, SponsorBlock, PeerTube, radio catalogues) from the bridge at runtime,

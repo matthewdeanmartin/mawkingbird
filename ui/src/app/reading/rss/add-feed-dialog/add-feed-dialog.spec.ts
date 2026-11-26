@@ -133,6 +133,19 @@ describe('AddFeedDialog', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('.retry-line')).toBeNull();
   });
 
+  it('fills the box from a handed-over link without fetching or subscribing', async () => {
+    const fixture = TestBed.createComponent(AddFeedDialog);
+    fixture.componentRef.setInput('prefill', '  https://blog.test/  ');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const box = (fixture.nativeElement as HTMLElement).querySelector('input') as HTMLInputElement;
+    expect(box.value).toBe('https://blog.test/');
+    expect(fetchFeed).not.toHaveBeenCalled();
+    expect(httpGet).not.toHaveBeenCalled();
+    expect(TestBed.inject(RssSubscriptions).feeds()).toEqual([]);
+  });
+
   it('subscribes and emits (added) + (closed) on a direct feed url', async () => {
     fetchFeed.mockReturnValue(of(feed('A News', 5)));
     const fixture = setUp();
