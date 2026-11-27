@@ -1,1 +1,0 @@
-import{t as Y}from"./chunk-D2ASP-k_.js";import{Xi as Ge,ls as D,mo as S}from"./main-GICQOAFH.js";function k(){let e=D(Ge),s=D(Y),u=D(S);return{usableMastodon:()=>e.isBlueskyPrimary?u.optedIn():!e.isMisskeyPrimary,usableBluesky:()=>s.linked()}}export{k as t};
