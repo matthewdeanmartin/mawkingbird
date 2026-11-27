@@ -1,0 +1,1 @@
+import{Cs as Jo,Ec as ee,cu as rr}from"./main-BPI77HQM.js";var n=class e{loaded=new rr(1);snapshot=Jo(null);publish(t){this.loaded.next(t)}static ɵfac=function(s){return new(s||e)};static ɵprov=ee({token:e,factory:e.ɵfac,providedIn:`root`})};export{n as t};

@@ -1,1 +1,0 @@
-import{t as Y}from"./chunk-Dlm6vWUm.js";import{Xi as Ge,ls as D,mo as S}from"./main-BQ55S53W.js";function k(){let e=D(Ge),s=D(Y),u=D(S);return{usableMastodon:()=>e.isBlueskyPrimary?u.optedIn():!e.isMisskeyPrimary,usableBluesky:()=>s.linked()}}export{k as t};
