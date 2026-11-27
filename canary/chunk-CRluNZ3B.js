@@ -1,0 +1,3 @@
+import{c as U,n as F}from"./chunk-DX4YgNuu.js";var c=/^\s*blog:\s*/i;function o(t){let n=t.indexOf(`
+`);return n<0?[t,null]:[t.slice(0,n),t.slice(n+1)]}function d(t){return c.test(o(t)[0])}function B(t){return o(t)[0].replace(c,``).trim()}function b(t,n,r){let[,s]=o(t),e=n.replace(/[\r\n]+/g,` `).trim(),i=r?e?`BLOG: ${e}`:`BLOG:`:e;return s===null?i:`${i}
+${s}`}function a(t){return t.replace(/&/g,`&amp;`).replace(/</g,`&lt;`).replace(/>/g,`&gt;`)}function u(t){return t.map(n=>n.trim()).filter(Boolean).map((n,r)=>({id:String(r),content:`<p>${a(n).replace(/\n/g,`<br>`)}</p>`}))}function h(t,n){let r=u(t);return{reason:F(r,n),posts:r.length,words:U(r)}}export{h as i,b as n,d as r,B as t};
