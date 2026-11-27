@@ -19,7 +19,6 @@ import {
 } from '@angular/core';
 import { RailWidgets } from '../rail-widgets';
 import { BlogRecentCard } from '../../blog/blog-rail-cards';
-import { YoutuberKitsCard } from '../../reading/videos/youtuber-kits-card';
 import { RouterLink } from '@angular/router';
 import { Terminology } from '../../i18n/terminology';
 import { AnnouncementStore } from '../../discovery/announcements/announcement-store';
@@ -83,7 +82,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
   selector: 'app-right-rail',
   imports: [
     BlogRecentCard,
-    YoutuberKitsCard,
     MbPostAction,
     MbSaveFeedback,
     MbField,

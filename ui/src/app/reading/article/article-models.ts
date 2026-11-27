@@ -154,4 +154,9 @@ export interface ArticleDebug {
   documentWords?: number;
   /** Whether metadata was recoverable, when extraction itself failed. */
   hadMetadata?: boolean;
+  /**
+   * Mawkingbird for Firefox could read this site once the reader allows it
+   * (its origin). Set only when the read failed without it.
+   */
+  extensionAccess?: string;
 }

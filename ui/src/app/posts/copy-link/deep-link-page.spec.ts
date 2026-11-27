@@ -88,6 +88,14 @@ describe('DeepLinkPage', () => {
     expect(resolveStatusOnHome).not.toHaveBeenCalled();
   });
 
+  it("lands a shared analytics link on the reader's own copy's analytics", async () => {
+    resolveStatusOnHome.mockReturnValue(of({ id: 'local-7' } as Status));
+    await open('mastodon-post', post, {}, { suffix: 'analytics' });
+    expect(navigate).toHaveBeenCalledWith(['/statuses', 'local-7', 'analytics'], {
+      replaceUrl: true,
+    });
+  });
+
   it('reopens the reader when the address came from the reader page', async () => {
     await open('mastodon-post', { ...post, server: 'home.example' }, { read: '1' });
     expect(navigate).toHaveBeenCalledWith(['/read', '42'], { replaceUrl: true });

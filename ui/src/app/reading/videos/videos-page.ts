@@ -1,3 +1,4 @@
+import { YoutubeExtensionAccess } from './youtube-extension-access';
 import {
   Component,
   computed,
@@ -36,6 +37,7 @@ import { YoutubeFeeds, YoutubeSearchItem } from './youtube-feeds';
 import { VideoPlayer } from '../video-player/video-player';
 import { youtubeSource } from '../video-player/media-source';
 import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
+import { YoutuberKitsCard } from './youtuber-kits-card';
 import { VideoSubscriptionsPanel } from './video-subscriptions-panel';
 import {
   feedVideos,
@@ -85,6 +87,7 @@ import {
 @Component({
   selector: 'app-videos-page',
   imports: [
+    YoutubeExtensionAccess,
     DatePipe,
     FormsModule,
     RouterLink,
@@ -105,6 +108,7 @@ import {
     Compose,
     VideoPlayer,
     VideoSubscriptionsPanel,
+    YoutuberKitsCard,
     MbToolbar,
     MbToolbarButton,
   ],

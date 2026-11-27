@@ -22,19 +22,25 @@
     </p>
   } @else if (status(); as s) {
     @if (reach(); as r) {
-      <div class="post">
-        <app-status-card [status]="s" filterContext="thread" />
-        <a class="open-post" [routerLink]="['/statuses', routeId()]">{{
+      <!-- The numbers first: below the post, nobody saw there were any. -->
+      <p class="post-links">
+        <a mbButton variant="link" [routerLink]="['/statuses', routeId()]">{{
           'postAnalytics.openPost' | transloco
         }}</a>
+        @if (shareLink(); as link) {
+          <button mbButton variant="link" type="button" (click)="copyLink(link)">
+            {{ (copied() ? 'postAnalytics.copied' : 'postAnalytics.copyLink') | transloco }}
+          </button>
+        }
         <a
-          class="open-post"
+          mbButton
+          variant="link"
           href="https://mawkingbird.com/help/tools/analytics/"
           target="_blank"
           rel="noopener noreferrer"
           >{{ 'postAnalytics.methodology' | transloco }}</a
         >
-      </div>
+      </p>
 
       @if (r.thread.parts.length > 1) {
         <p class="muted small thread-note">
@@ -253,6 +259,11 @@
           }
         </section>
       }
+
+      <section class="section post">
+        <h2>{{ 'postAnalytics.thePost' | transloco }}</h2>
+        <app-status-card [status]="s" filterContext="thread" />
+      </section>
     }
   }
 </div>

@@ -4,11 +4,20 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
 /**
- * Which app the primary nav is serving: the social client, the RSS reader, or
- * video. See spec/top_level_menu.md.
+ * Which app the primary nav is serving: the social client, the RSS reader,
+ * YouTube, fediverse video… See spec/top_level_menu.md.
+ *
+ * `video` is the YouTube client (the id predates the split and stays for the
+ * tab's remembered mode); `fedivideo` is video posted on the fediverse, which
+ * is sometimes YouTube (owner, 2026-11-27; spec/video-inventory.md).
  */
 export type AppMode =
-  'mastodon' | 'blog' | 'explore' | 'rss' | 'video' | 'radio' | 'forum' | 'unbird';
+  'mastodon' | 'blog' | 'explore' | 'rss' | 'video' | 'fedivideo' | 'radio' | 'forum' | 'unbird';
+
+/** The two video apps, which share Watch and Search. */
+export function isVideoMode(mode: AppMode | null | undefined): boolean {
+  return mode === 'video' || mode === 'fedivideo';
+}
 
 /**
  * Also the switcher's order. Blog sits second because the switcher is how
@@ -21,6 +30,7 @@ export const APP_MODES: readonly AppMode[] = [
   'explore',
   'rss',
   'video',
+  'fedivideo',
   'radio',
   'forum',
   'unbird',
@@ -39,7 +49,7 @@ const MODE_KEY = 'mockingbird_app_mode';
  * Home is always Mastodon: it is the social timeline, and the owner decision is
  * that pressing Home is also the way back out of RSS or Video.
  */
-export function modeForUrl(url: string): AppMode | null {
+export function modeForUrl(url: string, current?: AppMode): AppMode | null {
   const path = url.split(/[?#]/, 1)[0];
   if (
     path === '/radio' ||
@@ -62,9 +72,25 @@ export function modeForUrl(url: string): AppMode | null {
   if (path === '/rss' || path.startsWith('/rss/') || path === '/settings/rss') {
     return 'rss';
   }
-  // Watch is Video's page wherever it was opened from (owner, 2026-11-26): it
-  // gets Video's menu rather than whichever mode was showing before.
-  if (path === '/videos' || path.startsWith('/videos/') || path === '/watch') {
+  // Fediverse video: Home's video posts and the watch-party finder.
+  if (
+    path === '/videos/fedi' ||
+    path.startsWith('/videos/fedi/') ||
+    path === '/videos/parties' ||
+    path.startsWith('/videos/parties/')
+  ) {
+    return 'fedivideo';
+  }
+  // Watch and Search serve both video apps and stay in the one you are in
+  // (owner, 2026-11-27). Opened from elsewhere, Watch still gets a video menu
+  // (owner, 2026-11-26): a post's video is Fedi Video's, a bare YouTube id is
+  // YouTube's.
+  if (path === '/watch' || path === '/videos/search' || path.startsWith('/videos/search/')) {
+    if (isVideoMode(current)) return current!;
+    const query = new URLSearchParams(url.split('#', 1)[0].split('?')[1] ?? '');
+    return path === '/watch' && query.get('post') ? 'fedivideo' : 'video';
+  }
+  if (path === '/videos' || path.startsWith('/videos/')) {
     return 'video';
   }
   if (
@@ -119,7 +145,9 @@ export class AppModeService {
    * as Watch. Only a settled URL gets a say; until then the tab remembers.
    */
   private readonly current = signal<AppMode>(
-    (this.router.navigated ? modeForUrl(this.router.url) : null) ?? readStoredMode() ?? 'mastodon',
+    (this.router.navigated ? modeForUrl(this.router.url, readStoredMode() ?? undefined) : null) ??
+      readStoredMode() ??
+      'mastodon',
   );
   readonly mode = this.current.asReadonly();
 
@@ -130,7 +158,7 @@ export class AppModeService {
         takeUntilDestroyed(),
       )
       .subscribe(() => {
-        const implied = modeForUrl(this.router.url);
+        const implied = modeForUrl(this.router.url, this.current());
         if (implied) {
           this.set(implied);
         }

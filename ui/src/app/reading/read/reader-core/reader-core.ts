@@ -1,3 +1,6 @@
+import type { ArticleResult } from '../../article/article-models';
+import { MbButton } from '../../../design-system/button/button';
+import { siteName } from '../../../platform/extension/extension-bridge';
 import { translatedComputed } from '../../../i18n/translated';
 import { AccountName } from '../../../accounts/account-name';
 import { CustomEmojiPipe } from '../../../publishing/custom-emoji.pipe';
@@ -47,6 +50,8 @@ import { ReadingTools } from '../reading-tools';
 // i18n reader.note.cancel: Cancel
 // i18n reader.article.blocker: This article blocks full-text fetching from a browser. Mawkingbird Native can fetch it directly.
 // i18n reader.article.chooseProxy: Install Mawkingbird Native
+// i18n reader.article.extensionAccess: Mawkingbird for Firefox can read {{site}} for you if you allow it.
+// i18n reader.article.allowExtension: Let Mawkingbird for Firefox read {{site}}
 // i18n reader.article.fetch: Fetch article
 // i18n reader.article.fetchRest: Fetch the rest
 // i18n reader.article.fetching: Fetching article…
@@ -140,6 +145,7 @@ const POSITION_SAVE_DELAY_MS = 2_000;
   imports: [
     AccountName,
     CustomEmojiPipe,
+    MbButton,
     RouterLink,
     TranslocoPipe,
     FormsModule,
@@ -914,7 +920,17 @@ export class ReaderCore {
   }
 
   async expandArticle(force = false): Promise<void> {
-    const result = await this.expansion.expand(this.articleUrl(), force);
+    this.showExpanded(await this.expansion.expand(this.articleUrl(), force));
+  }
+
+  /** "Let Mawkingbird for Firefox read <site>", then the article. */
+  protected async allowExtension(): Promise<void> {
+    this.showExpanded(await this.expansion.allowAndRetry(this.articleUrl()));
+  }
+
+  protected readonly siteName = siteName;
+
+  private showExpanded(result: ArticleResult | null): void {
     if (result?.article) {
       const identity = this.identity();
       if (identity) this.library.open(identity);

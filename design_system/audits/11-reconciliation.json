@@ -114,6 +114,11 @@
       "nextStep": "The share target (/share with title/text/url: system Share menu, Unbird, the Firefox extension): one MbDialog (wide) holding the full Compose, focused at the top of the text. Preserve that nothing posts without Post, that closing unsent hands the text to Home's composer, and that a fresh share clears the share-target autosave slot."
     },
     {
+      "file": "ui/src/app/reading/videos/youtube-extension-access.ts",
+      "disposition": "adopted scope",
+      "nextStep": "The one YouTube permission notice for Mawkingbird for Firefox (Videos, Video search, channel pages, Watch): a bordered note with a small solid MbButton and a muted status line when declined. Renders nothing without the extension or once YouTube is allowed. Preserve that it asks only from the reader's click and that the host reloads on (allowed)."
+    },
+    {
       "file": "ui/src/app/shell/page-panel/page-panel.html",
       "disposition": "adopted scope",
       "nextStep": "The Firefox extension's sidebar panel (/panel, spec/firefox-extension.md): MbButton (primary Write about this page and Continue it, outline Discard it), on a YouTube page anchor MbButtons opening Watch in a new tab (primary Watch with replies to your post, outline Watch in Mawkingbird), the compact Compose, StatusCard rows for the reader's own posts and the embedded LinkTimeline; native headings and status notes only. Preserve the composer mounting on demand (no draft for a glanced page), the single from:me search and that Watch opens in its own tab."
@@ -156,7 +161,7 @@
     {
       "file": "ui/src/app/posts/post-analytics/post-analytics.html",
       "disposition": "adopted scope",
-      "nextStep": "Post analytics page (/statuses/:id/analytics): MbPageHeader, MbHelp (?) explainers on stat tiles, one MbButton for the cost-named booster lookup, native links to the post and booster profiles. Tiles copy account analytics' layout with the .tile-head negative margin for the 32px help trigger; review touch alignment in owner acceptance."
+      "nextStep": "Post analytics page (/statuses/:id/analytics): MbPageHeader, MbHelp (?) explainers on stat tiles, one MbButton for the cost-named booster lookup, link-variant MbButtons for Open the post, Copy link (the shareable /<server>/@<acct>/<id>/analytics) and the method, native links to booster profiles. Stats come first and the post card follows (owner, 2026-11-27). Tiles copy account analytics' layout with the .tile-head negative margin for the 32px help trigger; review touch alignment in owner acceptance."
     },
     {
       "file": "ui/src/app/posts/post-embed/post-embed.ts",

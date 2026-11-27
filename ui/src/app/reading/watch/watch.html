@@ -135,11 +135,18 @@
         />
       } @else {
         <app-party-conversation
+          [root]="partyRoot()"
+          [comments]="partyReplies()"
+          [canReply]="!!partyRoot()"
+          [shareLink]="shareLink()"
           [session]="partySession()"
           [initialTags]="partyTags()"
           [signInNext]="signInNext()"
           [youtubeVideoId]="youtubeVideoId()"
           (quoted)="onQuoted($event)"
+          (started)="onStarted($event)"
+          (replied)="onPartyReply($event)"
+          (repliesDue)="refreshPartyReplies()"
         />
       }
     </aside>

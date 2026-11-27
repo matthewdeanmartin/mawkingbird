@@ -22,6 +22,9 @@
           url: data.url,
           purpose: data.purpose,
           origin: data.origin,
+          endpoint: data.endpoint,
+          body: data.body,
+          headers: data.headers,
         },
       });
     } catch {

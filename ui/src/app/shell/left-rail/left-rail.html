@@ -13,6 +13,13 @@
     <app-drafts-rail-card />
   }
 }
+<!-- YouTube: creator kits (YouTubers on Mastodon) under the profile, where the
+     right rail's bottom put them below the fold (owner, 2026-11-27). -->
+@if (rail.shows('youtubers')) {
+  @defer (on idle) {
+    <app-youtuber-kits-card />
+  }
+}
 @if (rail.shows('blogAuthor')) {
   <app-blog-author-card />
 }

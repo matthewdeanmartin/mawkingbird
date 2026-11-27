@@ -87,6 +87,20 @@
                 @if (expansion.note(); as note) {
                   <p class="reader-expand-note" role="status">{{ note }}</p>
                 }
+                @if (expansion.accessFor(); as origin) {
+                  <p class="reader-expand-note">
+                    {{ 'reader.article.extensionAccess' | transloco: { site: siteName(origin) } }}
+                  </p>
+                  <button
+                    mbButton
+                    size="small"
+                    type="button"
+                    [disabled]="expansion.expanding()"
+                    (click)="allowExtension()"
+                  >
+                    {{ 'reader.article.allowExtension' | transloco: { site: siteName(origin) } }}
+                  </button>
+                }
                 <!-- The why, in the page rather than only in the console. Folded away
                so it costs nothing to ignore, and available without devtools so
                the people most likely to report a problem can say what happened. -->

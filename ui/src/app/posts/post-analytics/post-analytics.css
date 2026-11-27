@@ -11,14 +11,17 @@
   padding: 24px 16px;
 }
 
-.post {
-  border-bottom: 1px solid var(--border);
+.post-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin: 0;
+  padding: 4px 16px 0;
+  font-size: 13px;
 }
 
-.open-post {
-  display: inline-block;
-  margin: 4px 16px 12px;
-  font-size: 13px;
+.post {
+  border-top: 1px solid var(--border);
 }
 
 .thread-note {

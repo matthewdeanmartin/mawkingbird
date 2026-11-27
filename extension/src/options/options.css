@@ -52,3 +52,10 @@ h2 {
   justify-content: space-between;
   gap: 8px;
 }
+
+.switch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}

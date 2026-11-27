@@ -148,8 +148,14 @@ export function liteUrl(base) {
  * beside it. A non-web page gets the bare panel, which says to open one.
  */
 export function panelUrl(base, { url, title } = {}) {
-  if (!isShareablePageUrl(url)) return appUrl(base, 'panel');
-  return appUrl(base, 'panel', { url: withoutHash(url), title: clean(title, 300) });
+  const panel = appUrl(base, 'panel');
+  if (!isShareablePageUrl(url)) return panel;
+  // In the #fragment, which browsers never send to mawkingbird.com's host: the
+  // pages someone reads with the sidebar open stay out of its request logs.
+  const fragment = new URLSearchParams({ url: withoutHash(url) });
+  const name = clean(title, 300);
+  if (name) fragment.set('title', name);
+  return `${panel}#${fragment}`;
 }
 
 /**

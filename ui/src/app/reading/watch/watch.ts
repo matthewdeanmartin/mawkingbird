@@ -15,6 +15,8 @@ import {
 } from '@angular/core';
 import { ReadingBack } from '../../shell/reading-back';
 import { ActivatedRoute, ParamMap, Router, RouterLink } from '@angular/router';
+import { Location } from '@angular/common';
+import { Api } from '../../platform/api/api';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ThreadLoader } from '../read/thread-loader';
@@ -124,6 +126,8 @@ export class Watch {
   private followTrust = inject(FollowTrust);
   private prefs = inject(ClientPrefs);
   private router = inject(Router);
+  private location = inject(Location);
+  private api = inject(Api);
   private destroyRef = inject(DestroyRef);
   protected params = signal<Record<string, string>>({});
   protected error = signal('');
@@ -237,6 +241,8 @@ export class Watch {
     this.loader.publicContextUnavailable.set(false);
     this.params.set(Object.fromEntries(params.keys.map((key) => [key, params.get(key) ?? ''])));
     this.error.set('');
+    this.partyRoot.set(null);
+    this.partyReplies.set([]);
     const post = params.get('post');
     this.direct.set(!post);
     this.target.set('');
@@ -375,6 +381,51 @@ export class Watch {
 
   protected onQuoted(comment: YoutubeComment): void {
     this.panel()?.quote(comment);
+  }
+
+  /**
+   * A bare YouTube video's party has no post to gather replies under, so the
+   * first chat message shares the video (see PartyConversation.shareLink).
+   */
+  protected readonly shareLink = computed(() => {
+    const id = this.youtubeVideoId();
+    return this.direct() && id ? `https://www.youtube.com/watch?v=${id}` : null;
+  });
+  /** The share post a party started here: the chat's root from then on. */
+  protected readonly partyRoot = signal<Status | null>(null);
+  protected readonly partyReplies = signal<Status[]>([]);
+
+  /**
+   * Adopt the share post without reloading the player: the address gains the
+   * post so it is the party's link, but the router is not told, so the video
+   * keeps playing.
+   */
+  protected onStarted(status: Status): void {
+    this.partyRoot.set(status);
+    const query = new URLSearchParams({
+      ...this.params(),
+      post: status.id,
+      server: this.server.baseUrl() || location.origin,
+    });
+    this.location.replaceState('/watch', query.toString());
+  }
+
+  protected refreshPartyReplies(): void {
+    const root = this.partyRoot();
+    if (!root) return;
+    this.api
+      .getContext(root.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (context) => {
+          if (this.partyRoot()?.id === root.id) this.partyReplies.set(context.descendants);
+        },
+        error: () => undefined,
+      });
+  }
+
+  protected onPartyReply(reply: Status): void {
+    this.partyReplies.update((replies) => [...replies, reply]);
   }
 
   protected onReply(reply: Status): void {

@@ -1,8 +1,8 @@
 # Firefox extension: Mawkingbird for Firefox
 
-Status: sprints 1–4 pushed; sprint 4 follow-ups, sprint 5 (bridge) and sprint 6
-(the app uses it for RSS and articles) uncommitted · 2026-11-26. Extension 0.5.0:
-38 unit tests, `web-ext lint` 0 errors. Sprint 7 planned.
+Status: sprints 1–6 committed; sprints 7–8 built, uncommitted · 2026-11-27.
+Extension 0.6.1: 46 unit tests, `web-ext lint` 0 errors. Owner dogfooding next
+(weeks, especially YouTube); no store submission before that.
 Code: `extension/` (its own `package.json` and `Makefile`) plus the web changes
 listed per sprint. Owner decisions are in the next section.
 
@@ -328,15 +328,99 @@ Gates: `make test` (11,555), production build, integration on Node 24 and 26,
 lint and Prettier on touched files, `check:static`, design inventory.
 Not run: a real Firefox session (`test_plans/firefox-extension-sprint-6.md`).
 
-## Sprint 7 (next): ask where reading fails
+## Remaining plan (owner, 2026-11-27)
 
-- [ ] The reader (article expansion) offers the Allow button when the proxy
-      can't read a site the extension could, and offers expansion at all when
-      only the extension can read (no proxy configured).
-- [ ] RSS page: feeds that failed only for lack of permission list their sites,
-      each with Allow, in the "couldn't load" notice.
-- [ ] Then YouTube (Watch's channel lookup on the web), webmentions, Wikidata,
-      SponsorBlock, PeerTube, radio catalogues: one purpose each.
+Sprints are larger from here; each ends with one full gate. Sprints 7 and 8 are
+built; then weeks of owner dogfooding, especially YouTube. **Nothing goes to the
+store before that.** Sprint 9 (publishing and media) and 10 (Chrome, optional)
+after. Decision 1 (an opt-in "any public site" switch): **yes**. Decisions 2
+(relaying API keys for connectors), 3 (local AI) and 4 (Chrome in "done") wait
+for sprint 9.
+
+## Sprint 7: reading everywhere, and store-ready (built 2026-11-27)
+
+- [x] Reader: expansion is offered with only the extension (no proxy). A read
+      the extension wasn't allowed shows "Mawkingbird for Firefox can read
+      <site> for you if you allow it" and **Let Mawkingbird for Firefox read
+      <site>**; allowing re-reads without using up a manual retry. Nothing is
+      cached for that failure.
+- [x] Article quota: reads served on the reader's computer (Native, or the
+      extension for an allowed site) don't count against the free quota, as
+      Native's never did.
+- [x] RSS page: the "couldn't load" notice lists up to three failed feeds' sites
+      the extension may not read yet, each with Allow, plus **…any public
+      site** when several are blocked. Allowing clears those feeds' failure
+      cooldowns and reloads.
+- [x] "Any public site": Options switch (off by default; `*://*/*` optional
+      permission), `allSites` / `requestAllSites` bridge requests, a grant window
+      worded for it. The friends'-blogs scan counts the extension as available
+      only with it on (per-site asking can't cover hundreds of sites) and offers
+      the switch in its dialog. OPML import, starter kits and RSS discovery go
+      through RssFetch / Paste a link, which already try the extension first.
+- [x] Settings → App: a **Mawkingbird for Firefox** row when the extension is
+      detected (and whether it may read any public site). No install link until
+      it is on the store.
+- [x] Privacy: the sidebar passes the page in the panel URL's `#fragment`, which
+      browsers never send to mawkingbird.com's host (`?url=` still works).
+      LinkTimeline takes the link as an input for this.
+- [x] Store package (not submitted): `extension/store/LISTING.md`,
+      `REVIEWER-NOTES.md`, `extension/CHANGELOG.md`.
+- [ ] Owner, before submitting: the data-collection declaration (LISTING.md):
+      the sidebar's searches send the page's address to the reader's own
+      Mastodon server, which Mozilla may count as browsing activity.
+- [ ] Owner: the sidebar sign-in check (sprint 1 test plan, step 4).
+
+## Sprint 8: YouTube without Plus (built 2026-11-27, extension 0.6.0)
+
+- [x] Extension `youtube` request: Native's four anonymous web-client reads
+      (search, browse, player, next) to fixed `www.youtube.com/youtubei/v1/*`
+      URLs, JSON bodies ≤ 64 KiB, only the three identification headers, no
+      cookies or redirects, 8 MiB cap, stream URLs and ads stripped from player
+      answers. Needs the reader's permission for www.youtube.com.
+- [x] Found by testing against YouTube: it answers **403** to
+      `Origin: moz-extension://…` and 200 without an Origin. A
+      declarativeNetRequest session rule (`lib/youtube-rule.js`, permission
+      `declarativeNetRequestWithHostAccess`) drops `Origin` from the extension's
+      own requests to `/youtubei/v1/*` (`tabIds: [-1]`). Replaced a blocking
+      `webRequest` listener (2026-11-27, extension 0.6.1, owner request): the
+      extension can no longer see any request's headers or cookies. Verified in
+      headless Firefox 160 with real YouTube: 200 (29 videos) with the rule, 403
+      without; the extension's request arrived with no Origin, a tab's kept it.
+- [x] App (`YoutubeFeeds`): after Native and before the Plus proxy. Search,
+      channel browsing, video details, chapters and comments work without Plus
+      when the extension is there; channel RSS and @handle pages read through it
+      too, falling back to the proxy until YouTube is allowed. Search keeps the
+      Plus proxy as a fallback for supporters.
+- [x] One notice, `YoutubeExtensionAccess`, on Videos, Video search, channel
+      pages and Watch: "Let Mawkingbird for Firefox read YouTube"; the page
+      reloads what it couldn't read once allowed. Renders nothing without the
+      extension or once allowed.
+- [x] Tests: the extension's YouTube rules and header policy; the app's search
+      through the extension end to end (youtubei.js parsing the answer), feeds
+      through the extension and the proxy fallback, the notice.
+
+Size after sprints 7–8: startup 938.03 kB; Lite total 2128.28 of 2140 kB (about
+12 kB headroom).
+
+Gates: `make test` (11,584), production build, integration on Node 24 and 26,
+`npm run lint`, Prettier on changed files, `check:static`, design inventory.
+Not run: a real Firefox session (`test_plans/firefox-extension-sprint-7.md`,
+`firefox-extension-sprint-8.md`).
+
+## Sprint 9 (after dogfooding): publishing and media
+
+- [ ] Bridge returns response headers (webmention discovery reads `Link`).
+- [ ] Webmentions: discover and send through the extension.
+- [ ] Image bytes for Save with alt text and Copy image where media servers
+      block cross-site reads.
+- [ ] Decision 2: shorteners, Mataroa, Raindrop, Gist, GitHub as fixed
+      per-provider requests carrying the reader's key per request (never stored).
+- [ ] Decision 3: local AI on one opt-in loopback address.
+
+## Sprint 10 (optional): Chrome and Edge
+
+- [ ] `sidePanel` for the sidebar, service-worker background, Chrome Web Store.
+- [ ] Automated smoke test in real Firefox.
 
 ## Web changes waiting (owner to schedule; not during Native 0.3.0)
 
@@ -348,13 +432,13 @@ Not run: a real Firefox session (`test_plans/firefox-extension-sprint-6.md`).
   arrival). Over 2048 characters is ignored. Tests: `app.routes.spec.ts`,
   `rss-page.spec.ts`, `add-feed-dialog.spec.ts`. No Native transport change
   (Paste a link already uses the Native feed read).
-- **W-3** (sprint 6, RSS and articles done; the rest in sprint 7) Bridge consumer: when `data-mawkingbird-extension` is present, provide
+- **W-3** (done in sprints 6–8 for RSS, articles, bulk RSS and YouTube; webmentions in sprint 9) Bridge consumer: when `data-mawkingbird-extension` is present, provide
   `PLATFORM_FEED_READ` / `PLATFORM_ARTICLE_READ` (later YouTube, webmentions,
   Wikidata, SponsorBlock, PeerTube, radio catalogues) from the bridge at runtime,
   keeping the CORS proxy as fallback. Optional feature code stays out of root
   imports; the 1 MB budget is unchanged.
-- **W-4** Settings → App: "Add to Firefox" beside Install Native, shown on
-  Firefox, hidden once the extension is detected.
+- **W-4** Settings → App: sprint 7 shows the extension's status when detected;
+  the "Add to Firefox" link waits for the store listing.
 - **W-5** Help page in `docs/` (another developer owns `docs/`; coordinate).
 
 ## Release (owner)

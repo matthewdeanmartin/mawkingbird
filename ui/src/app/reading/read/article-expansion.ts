@@ -8,6 +8,7 @@ import { ArticleDiagnosis, ArticleResult } from '../article/article-models';
 import { inspectUrl } from '../article/article-diagnosis';
 import { ObservedFailures } from '../article/observed-failures';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 
 /**
  * Expanding one linked article: the fetch, the quota, and the sentence that
@@ -92,6 +93,7 @@ export class ArticleExpansion {
   private transloco = inject(TranslocoService);
   private log = inject(PageDiagnostics);
   private observed = inject(ObservedFailures);
+  private bridge = inject(ExtensionBridge);
 
   readonly quota = inject(ArticleQuota);
 
@@ -141,6 +143,31 @@ export class ArticleExpansion {
   readonly blocker = translatedComputed<string | null>(() =>
     this.available() ? null : this.transloco.translate('reader.article.blocker'),
   );
+
+  /**
+   * A site Mawkingbird for Firefox could read once the reader allows it, when
+   * the last read failed for that reason. The reader shows the Allow button.
+   */
+  readonly accessFor = computed(() => {
+    const result = this.result();
+    return result && !result.article ? (result.debug?.extensionAccess ?? null) : null;
+  });
+
+  /**
+   * "Let Mawkingbird for Firefox read <site>": ask the reader in the
+   * extension's window, then read the article again. Not a manual retry, so it
+   * doesn't use one up.
+   */
+  async allowAndRetry(url: string | null): Promise<ArticleResult | null> {
+    const origin = this.accessFor();
+    if (!url || !origin || this.expanding()) return null;
+    const granted = await this.bridge.requestAccess(origin);
+    this.log.info('Reader', 'article:extension-access', { granted });
+    if (!granted) return null;
+    await this.articles.forget(url);
+    this.result.set(null);
+    return this.expand(url);
+  }
 
   /** The host an expanded article came from, for the attribution line. */
   readonly host = computed(() => {
@@ -300,7 +327,11 @@ export class ArticleExpansion {
       // deliberately not persisted. Settle it before enforcing the local
       // counter; otherwise an exhausted subscriber is refused before the
       // request that could discover their subscription is ever made.
-      if (!(await this.quota.authorize())) {
+      // A read on the reader's own computer (Native, or the extension for an
+      // allowed site) costs no proxy request, so the free quota doesn't apply.
+      const local = await this.articles.servesLocally(url);
+      if (generation !== this.generation) return null;
+      if (!local && !(await this.quota.authorize())) {
         return null;
       }
       if (generation !== this.generation) return null;
@@ -309,7 +340,7 @@ export class ArticleExpansion {
         await this.articles.forget(url);
       }
       if (generation !== this.generation) return null;
-      this.quota.recordFetch();
+      if (!local) this.quota.recordFetch();
       const result = await this.articles.expand(url, force);
       if (generation !== this.generation) return null;
       this.result.set(result);

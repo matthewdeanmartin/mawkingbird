@@ -1,3 +1,4 @@
+import { YoutubeExtensionAccess } from '../videos/youtube-extension-access';
 import { AccountName } from '../../accounts/account-name';
 import {
   Component,
@@ -143,6 +144,7 @@ export function shareText(options: {
 @Component({
   selector: 'app-watch-video-panel',
   imports: [
+    YoutubeExtensionAccess,
     AccountName,
     TranslocoPipe,
     MbButton,
@@ -154,6 +156,9 @@ export function shareText(options: {
     RouterLink,
   ],
   template: `
+    @if (source().kind === 'youtube') {
+      <app-youtube-extension-access (allowed)="retryDetails.update((n) => n + 1)" />
+    }
     <mb-item-actions [actions]="actions()" [label]="'watch.panel.label' | transloco">
       @if (source().kind === 'youtube') {
         <mb-help [label]="'videoPlayer.help' | transloco">
@@ -503,9 +508,13 @@ export class WatchVideoPanel {
     return !!id && this.subs.feeds().some((feed) => feed.id === id);
   });
 
+  /** Bumped when YouTube is allowed for Mawkingbird for Firefox: read details again. */
+  protected readonly retryDetails = signal(0);
+
   constructor() {
     effect(() => {
       const videoId = this.source().kind === 'youtube' ? this.source().videoId : undefined;
+      this.retryDetails();
       untracked(() => {
         const generation = ++this.generation;
         this.details.set(null);

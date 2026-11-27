@@ -1,4 +1,4 @@
-import { originPattern } from '../lib/bridge.js';
+import { ALL_SITES, originPattern } from '../lib/bridge.js';
 import { MAWKINGBIRD_BASES, normalizeBase } from '../lib/links.js';
 import { getBase, setBase } from '../lib/settings.js';
 
@@ -76,5 +76,19 @@ async function listSites() {
   noSites.hidden = granted.length > 0;
 }
 
+const allSites = document.getElementById('all-sites');
+allSites.addEventListener('change', () => {
+  // In the change event itself: Firefox grants only from a user action.
+  const request = allSites.checked
+    ? browser.permissions.request({ origins: [ALL_SITES] })
+    : browser.permissions.remove({ origins: [ALL_SITES] }).then(() => false);
+  void request.then(showAllSites, showAllSites);
+});
+
+async function showAllSites() {
+  allSites.checked = await browser.permissions.contains({ origins: [ALL_SITES] });
+}
+
 await showCustomBridge(current);
+await showAllSites();
 await listSites();

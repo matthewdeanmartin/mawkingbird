@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 
 /**
  * Mawkingbird for Firefox's bridge, seen from the app (spec/firefox-extension.md,
@@ -25,6 +25,13 @@ export type ExtensionRead =
       detail?: string;
       origin?: string;
     };
+
+/** YouTube's site, for the one permission all YouTube reads need. */
+export const YOUTUBE_SITE = 'https://www.youtube.com';
+
+export type ExtensionYoutubeRead =
+  | { ok: true; status: number; body: string }
+  | { ok: false; error: string; detail?: string; origin?: string; status?: number };
 
 /** Answers can wait on the reader (the grant window), so allow them time. */
 const ANSWER_TIMEOUT_MS = 120_000;
@@ -58,6 +65,12 @@ export function extensionAccessOrigin(error: unknown): string | null {
 export class ExtensionBridge {
   private counter = 0;
 
+  /**
+   * Whether the reader turned on "any public site" in the extension, for bulk
+   * features (friends'-blogs scan). Null until {@link refreshAllSites} asked.
+   */
+  readonly allSites = signal<boolean | null>(null);
+
   /** Whether the extension's content script marked this page. */
   present(): boolean {
     return (
@@ -69,6 +82,46 @@ export class ExtensionBridge {
   /** A public page or feed, read by the extension. Never rejects. */
   read(url: string, purpose: ExtensionPurpose): Promise<ExtensionRead> {
     return this.ask({ op: 'fetch', url, purpose }) as Promise<ExtensionRead>;
+  }
+
+  /** Whether the reader already lets the extension read `origin`. */
+  async hasAccess(origin: string): Promise<boolean> {
+    const answer = (await this.ask({ op: 'hasAccess', origin })) as { granted?: boolean };
+    return answer.granted === true;
+  }
+
+  /** Asks the extension whether "any public site" is on, and remembers it. */
+  async refreshAllSites(): Promise<boolean> {
+    if (!this.present()) {
+      this.allSites.set(false);
+      return false;
+    }
+    const answer = (await this.ask({ op: 'allSites' })) as { granted?: boolean };
+    this.allSites.set(answer.granted === true);
+    return answer.granted === true;
+  }
+
+  /** Opens the extension's "Let Mawkingbird read any public site?" window. From a click only. */
+  async requestAllSites(): Promise<boolean> {
+    const answer = (await this.ask({ op: 'requestAllSites' })) as {
+      ok?: boolean;
+      granted?: boolean;
+    };
+    const granted = answer.ok ? answer.granted === true : await this.refreshAllSites();
+    this.allSites.set(granted);
+    return granted;
+  }
+
+  /**
+   * One anonymous YouTube web-client read (`search`, `browse`, `player`,
+   * `next`), the same as Native's. Never rejects.
+   */
+  youtube(
+    endpoint: string,
+    body: string,
+    headers: [string, string][],
+  ): Promise<ExtensionYoutubeRead> {
+    return this.ask({ op: 'youtube', endpoint, body, headers }) as Promise<ExtensionYoutubeRead>;
   }
 
   /**
@@ -87,7 +140,7 @@ export class ExtensionBridge {
     return recheck.granted === true;
   }
 
-  private ask(request: Record<string, string>): Promise<unknown> {
+  private ask(request: Record<string, unknown>): Promise<unknown> {
     if (!this.present()) {
       return Promise.resolve({ ok: false, error: 'unavailable', detail: 'No extension.' });
     }

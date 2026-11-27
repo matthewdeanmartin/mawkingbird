@@ -99,6 +99,54 @@ describe('ExtensionBridge', () => {
   });
 });
 
+describe('ExtensionBridge access and YouTube requests', () => {
+  beforeEach(() => TestBed.configureTestingModule({}));
+  afterEach(() => {
+    delete document.documentElement.dataset['mawkingbirdExtension'];
+    vi.restoreAllMocks();
+  });
+
+  it('remembers whether "any public site" is on', async () => {
+    fakeExtension((request) => ({ ok: true, granted: request['op'] === 'allSites' }));
+    const bridge = TestBed.inject(ExtensionBridge);
+    expect(bridge.allSites()).toBeNull();
+    expect(await bridge.refreshAllSites()).toBe(true);
+    expect(bridge.allSites()).toBe(true);
+  });
+
+  it('asks for "any public site" and records the answer', async () => {
+    const received = fakeExtension(() => ({ ok: true, granted: true }));
+    const bridge = TestBed.inject(ExtensionBridge);
+    expect(await bridge.requestAllSites()).toBe(true);
+    expect(bridge.allSites()).toBe(true);
+    expect(received[0]['op']).toBe('requestAllSites');
+  });
+
+  it('sends YouTube reads with their endpoint, body and headers', async () => {
+    const received = fakeExtension(() => ({ ok: true, status: 200, body: '{}' }));
+    const bridge = TestBed.inject(ExtensionBridge);
+    expect(
+      await bridge.youtube('search', '{"query":"x"}', [['X-YouTube-Client-Name', '1']]),
+    ).toEqual({
+      ok: true,
+      status: 200,
+      body: '{}',
+    });
+    expect(received[0]).toMatchObject({
+      op: 'youtube',
+      endpoint: 'search',
+      body: '{"query":"x"}',
+      headers: [['X-YouTube-Client-Name', '1']],
+    });
+  });
+
+  it('reports no access and no all-sites without the extension', async () => {
+    const bridge = TestBed.inject(ExtensionBridge);
+    expect(await bridge.hasAccess('https://blog.example')).toBe(false);
+    expect(await bridge.refreshAllSites()).toBe(false);
+  });
+});
+
 describe('extensionAccessOrigin and siteName', () => {
   it('finds the site in the error or its causes', () => {
     const needed = new ExtensionAccessNeeded('https://blog.example', 'Allow it.');

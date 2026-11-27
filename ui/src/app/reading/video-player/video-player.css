@@ -42,12 +42,20 @@ iframe {
   flex-wrap: wrap;
   gap: 4px;
 }
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  min-width: 0;
+}
 .speed {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
 }
 .description {
+  flex: 1 1 12rem;
+  min-width: 0;
   margin: 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;

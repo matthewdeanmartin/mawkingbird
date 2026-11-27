@@ -171,6 +171,21 @@
           {{ 'pages.rss.corsWarning' | transloco }}
         }
       </p>
+      @if (blockedSites().length) {
+        <p class="pane-warning pane-allow">
+          {{ 'pages.rss.extensionCanRead' | transloco }}
+          @for (origin of blockedSites(); track origin) {
+            <button mbButton size="small" type="button" (click)="allowSite(origin)">
+              {{ 'pages.rss.addFeed.allowSite' | transloco: { site: siteName(origin) } }}
+            </button>
+          }
+          @if (offerAllSites()) {
+            <button mbButton size="small" variant="outline" type="button" (click)="allowAllSites()">
+              {{ 'pages.rss.allowAllSites' | transloco }}
+            </button>
+          }
+        </p>
+      }
     }
 
     <!-- The pane shows one thing at a time: the kits, or what you are reading.

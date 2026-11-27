@@ -184,3 +184,81 @@ test('hello, hasAccess and unknown requests', async () => {
   assert.equal((await handleBridgeRequest({ op: 'post', url: 'x' }, d)).error, 'refused');
   assert.equal((await handleBridgeRequest(null, d)).error, 'refused');
 });
+
+const ytBody = JSON.stringify({ context: { client: { clientName: 'WEB' } }, query: 'mastodon' });
+
+test('youtube reads only the four web-client endpoints, with only identification headers', async () => {
+  const d = deps({ granted: ['https://www.youtube.com/*'] });
+  assert.equal((await handleBridgeRequest({ op: 'youtube', endpoint: 'upload', body: ytBody }, d)).error, 'refused');
+  assert.equal(
+    (await handleBridgeRequest({ op: 'youtube', endpoint: 'search', body: '[1]' }, d)).error,
+    'refused',
+  );
+  assert.equal(
+    (await handleBridgeRequest({ op: 'youtube', endpoint: 'search', body: `{"q":"${'x'.repeat(70_000)}"}` }, d)).error,
+    'refused',
+  );
+  for (const header of [['Cookie', 'SID=1'], ['Authorization', 'Bearer x'], ['X-YouTube-Client-Name', 'WEB']]) {
+    const result = await handleBridgeRequest({ op: 'youtube', endpoint: 'search', body: ytBody, headers: [header] }, d);
+    assert.equal(result.error, 'refused', header[0]);
+  }
+  assert.equal(d.calls.fetch.length, 0);
+});
+
+test('youtube asks for YouTube access before reading', async () => {
+  const d = deps({ granted: [] });
+  assert.deepEqual(await handleBridgeRequest({ op: 'youtube', endpoint: 'search', body: ytBody }, d), {
+    ok: false,
+    error: 'needs-access',
+    origin: 'https://www.youtube.com',
+  });
+});
+
+test('youtube posts to the fixed API without credentials and strips stream URLs', async () => {
+  const d = deps({
+    granted: ['https://www.youtube.com/*'],
+    respond: () =>
+      new Response(JSON.stringify({ videoDetails: { title: 'T' }, streamingData: { url: 'x' }, playerAds: [] }), {
+        headers: { 'content-type': 'application/json' },
+      }),
+  });
+  const result = await handleBridgeRequest(
+    {
+      op: 'youtube',
+      endpoint: 'player',
+      body: ytBody,
+      headers: [['X-YouTube-Client-Name', '1'], ['X-YouTube-Client-Version', '2.20261117.01.00']],
+    },
+    d,
+  );
+  assert.equal(result.ok, true);
+  assert.deepEqual(JSON.parse(result.body), { videoDetails: { title: 'T' } });
+  const { url, init } = d.calls.fetch[0];
+  assert.equal(url, 'https://www.youtube.com/youtubei/v1/player?prettyPrint=false');
+  assert.equal(init.method, 'POST');
+  assert.equal(init.credentials, 'omit');
+  assert.equal(init.redirect, 'error');
+  assert.equal(init.headers['X-YouTube-Client-Name'], '1');
+});
+
+test('youtube passes on YouTube refusals as failures', async () => {
+  const d = deps({
+    granted: ['https://www.youtube.com/*'],
+    respond: () => new Response('{}', { status: 403, headers: { 'content-type': 'application/json' } }),
+  });
+  const result = await handleBridgeRequest({ op: 'youtube', endpoint: 'search', body: ytBody }, d);
+  assert.equal(result.ok, false);
+  assert.equal(result.status, 403);
+});
+
+test('allSites reads and requests the any-public-site permission', async () => {
+  const off = deps({ granted: [], ask: async () => false });
+  off.requestAllSites = async () => true;
+  assert.deepEqual(await handleBridgeRequest({ op: 'allSites' }, off), { ok: true, granted: false });
+  assert.deepEqual(await handleBridgeRequest({ op: 'requestAllSites' }, off), { ok: true, granted: true });
+  const on = deps({ granted: ['*://*/*'] });
+  on.requestAllSites = async () => {
+    throw new Error('must not ask again');
+  };
+  assert.deepEqual(await handleBridgeRequest({ op: 'requestAllSites' }, on), { ok: true, granted: true });
+});

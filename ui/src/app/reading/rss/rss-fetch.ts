@@ -231,6 +231,18 @@ export class RssFetch {
   }
 
   /**
+   * Forget recent failures of these feeds, so the next read tries again now.
+   * For a change that makes the failure moot: the reader just allowed
+   * Mawkingbird for Firefox to read the site.
+   */
+  forgetFailures(urls: readonly string[]): void {
+    for (const url of urls) {
+      this.cache.clearCooldown(routeKey(url, false));
+      this.cache.clearCooldown(routeKey(url, true));
+    }
+  }
+
+  /**
    * Whether a recent failure means this feed should be left alone for now.
    *
    * A cooldown only ever suppresses a *repeat of the route that failed*. The

@@ -1,3 +1,4 @@
+import { YoutubeExtensionAccess } from './youtube-extension-access';
 import { DatePipe } from '@angular/common';
 import {
   Component,
@@ -86,8 +87,18 @@ function pageUploads(videos: YoutubeChannelVideo[]): Upload[] {
  */
 @Component({
   selector: 'app-channel-page',
-  imports: [AccountName, TranslocoPipe, RouterLink, DatePipe, MbButton, MbPageHeader, FollowButton],
+  imports: [
+    AccountName,
+    TranslocoPipe,
+    RouterLink,
+    DatePipe,
+    MbButton,
+    MbPageHeader,
+    FollowButton,
+    YoutubeExtensionAccess,
+  ],
   template: `
+    <app-youtube-extension-access (allowed)="reload()" />
     @if (!valid()) {
       <mb-page-header [title]="'videoChannel.title' | transloco" />
       <p role="alert">{{ 'videoChannel.invalid' | transloco }}</p>
@@ -341,6 +352,11 @@ export class ChannelPage {
       const id = this.channelId();
       untracked(() => void this.load(id));
     });
+  }
+
+  /** YouTube was just allowed for Mawkingbird for Firefox: read the channel again. */
+  protected reload(): void {
+    void this.load(this.channelId());
   }
 
   private async load(id: string): Promise<void> {

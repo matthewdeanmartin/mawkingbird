@@ -3,6 +3,7 @@ import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { aboutLink, YoutubeFeeds } from './youtube-feeds';
+import { ExtensionBridge, extensionAccessOrigin } from '../../platform/extension/extension-bridge';
 import { RssCache } from '../rss/rss-cache';
 import { ClientPrefs } from '../../platform/storage/client-prefs';
 import { FeatureFlags } from '../../platform/build/feature-flags';
@@ -504,5 +505,127 @@ describe('aboutLink', () => {
     expect(aboutLink('https://example.org/x')).toBe('https://example.org/x');
     expect(aboutLink('javascript:alert(1)')).toBeNull();
     expect(aboutLink('  ')).toBeNull();
+  });
+});
+
+describe('YouTube through Mawkingbird for Firefox', () => {
+  const channelSearch = JSON.stringify({
+    contents: {
+      twoColumnSearchResultsRenderer: {
+        primaryContents: {
+          sectionListRenderer: {
+            contents: [
+              {
+                itemSectionRenderer: {
+                  contents: [
+                    {
+                      channelRenderer: {
+                        channelId: id,
+                        title: { simpleText: 'Example' },
+                        navigationEndpoint: { browseEndpoint: { browseId: id } },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+  });
+  let bridge: {
+    present: () => boolean;
+    youtube: ReturnType<typeof vi.fn>;
+    read: ReturnType<typeof vi.fn>;
+  };
+
+  function setUp() {
+    bridge = { present: () => true, youtube: vi.fn(), read: vi.fn() };
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+        { provide: RssCache, useValue: { get: vi.fn(), put: vi.fn() } },
+        { provide: ClientPrefs, useValue: { rssCacheTtlHours: () => 24 } },
+        { provide: FeatureFlags, useValue: { enabled: () => true } },
+        { provide: PlusTokenSource, useValue: { token: vi.fn() } },
+        { provide: ExtensionBridge, useValue: bridge },
+      ],
+    });
+    return TestBed.inject(YoutubeFeeds);
+  }
+
+  it('offers search, details and comments without Plus', () => {
+    const feeds = setUp();
+    expect(TestBed.inject(SupporterStatus).isSupporter()).toBe(false);
+    expect(feeds.canSearch()).toBe(true);
+    expect(feeds.canReadDetails()).toBe(true);
+  });
+
+  it('searches through the extension with only the web-client headers, never the proxy', async () => {
+    const feeds = setUp();
+    bridge.youtube.mockResolvedValue({ ok: true, status: 200, body: channelSearch });
+    expect(await feeds.search('Example', 'channel')).toEqual([
+      { id, title: 'Example', channelId: id, channelTitle: 'Example' },
+    ]);
+    const [endpoint, body, headers] = bridge.youtube.mock.calls[0] as [
+      string,
+      string,
+      [string, string][],
+    ];
+    expect(endpoint).toBe('search');
+    expect(body).toContain('Example');
+    for (const [name] of headers) {
+      expect(['x-youtube-client-name', 'x-youtube-client-version', 'x-goog-visitor-id']).toContain(
+        name.toLowerCase(),
+      );
+    }
+    expect(TestBed.inject(PlusTokenSource).token).not.toHaveBeenCalled();
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  it('names YouTube to allow when the extension may not read it yet', async () => {
+    const feeds = setUp();
+    bridge.youtube.mockResolvedValue({
+      ok: false,
+      error: 'needs-access',
+      origin: 'https://www.youtube.com',
+    });
+    const error = await feeds.search('Example', 'video').catch((e: unknown) => e);
+    expect(extensionAccessOrigin(error)).toBe('https://www.youtube.com');
+  });
+
+  it('reads channel feeds through the extension when YouTube is allowed', async () => {
+    const feeds = setUp();
+    bridge.read.mockResolvedValue({
+      ok: true,
+      status: 200,
+      finalUrl: 'x',
+      contentType: 'application/atom+xml',
+      body: '<feed xmlns="http://www.w3.org/2005/Atom"><title>Example</title></feed>',
+    });
+    expect((await feeds.feed(id)).title).toBe('Example');
+    expect(bridge.read).toHaveBeenCalledWith(
+      `https://www.youtube.com/feeds/videos.xml?channel_id=${id}`,
+      'feed',
+    );
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  it('falls back to the proxy for feeds while YouTube is not allowed', async () => {
+    const feeds = setUp();
+    bridge.read.mockResolvedValue({
+      ok: false,
+      error: 'needs-access',
+      origin: 'https://www.youtube.com',
+    });
+    const request = feeds.feed(id);
+    await vi.waitFor(() =>
+      TestBed.inject(HttpTestingController)
+        .expectOne((req) => new URL(req.url).searchParams.get('route') === 'youtube')
+        .flush('<feed xmlns="http://www.w3.org/2005/Atom"><title>Proxied</title></feed>'),
+    );
+    expect((await request).title).toBe('Proxied');
   });
 });

@@ -1,3 +1,4 @@
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
@@ -70,6 +71,7 @@ describe('RssPage', () => {
         {
           provide: RssFetch,
           useValue: {
+            forgetFailures: vi.fn(),
             fetchFeed: vi.fn((url: string) => {
               const parsed = feeds.get(url);
               return parsed ? of(parsed) : throwError(() => new Error('nope'));
@@ -266,6 +268,39 @@ describe('RssPage', () => {
 
     expect(textOf(fixture)).toContain('Deep linked');
     expect(textOf(fixture)).toContain('Open as profile');
+  });
+
+  it('offers to let Mawkingbird for Firefox read the sites of feeds that failed', async () => {
+    const requestAccess = vi.fn(async () => true);
+    TestBed.overrideProvider(ExtensionBridge, {
+      useValue: {
+        present: () => true,
+        hasAccess: vi.fn(async () => false),
+        refreshAllSites: vi.fn(async () => false),
+        allSites: () => false,
+        requestAccess,
+      },
+    });
+    const url = 'https://blocked.example/feed.xml';
+    TestBed.inject(RssSubscriptions).add(url, 'Blocked');
+    const fixture = setUp();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(textOf(fixture)).toContain('Let Mawkingbird for Firefox read blocked.example');
+    });
+    feeds.set(url, feed('Blocked', 'Now readable', '2026-08-20T10:00:00Z'));
+    const allow = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Let Mawkingbird for Firefox read blocked.example'),
+    )!;
+    allow.click();
+    await vi.waitFor(() => {
+      fixture.detectChanges();
+      expect(textOf(fixture)).toContain('Now readable');
+    });
+    expect(requestAccess).toHaveBeenCalledWith('https://blocked.example');
+    expect(TestBed.inject(RssFetch).forgetFailures).toHaveBeenCalledWith([url]);
   });
 
   it('opens Paste a link filled in from ?add=, then drops it from the URL', async () => {

@@ -296,3 +296,10 @@
   border-bottom: 1px solid var(--border);
   padding-left: 17px;
 }
+
+.pane-allow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}

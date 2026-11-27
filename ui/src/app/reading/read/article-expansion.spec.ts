@@ -1,3 +1,4 @@
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ArticleExpansion } from './article-expansion';
@@ -27,7 +28,14 @@ export const cachedStory: ArticleResult = {
 };
 
 describe('ArticleExpansion cache and navigation', () => {
-  const fetch = { cached: vi.fn(), expand: vi.fn(), forget: vi.fn(), available: () => true };
+  const fetch = {
+    cached: vi.fn(),
+    expand: vi.fn(),
+    forget: vi.fn(),
+    servesLocally: vi.fn(),
+    available: () => true,
+  };
+  const bridge = { requestAccess: vi.fn() };
   const quota = { allowed: () => false, authorize: vi.fn(), recordFetch: vi.fn() };
   const tally = { recordOne: vi.fn() };
   let expansion: ArticleExpansion;
@@ -37,6 +45,7 @@ describe('ArticleExpansion cache and navigation', () => {
     fetch.cached.mockResolvedValue(null);
     fetch.expand.mockResolvedValue({ ...cachedStory, fromCache: false });
     quota.authorize.mockResolvedValue(true);
+    fetch.servesLocally.mockResolvedValue(false);
     TestBed.configureTestingModule({
       providers: [
         ArticleExpansion,
@@ -45,9 +54,41 @@ describe('ArticleExpansion cache and navigation', () => {
         { provide: ArticleReadingTally, useValue: tally },
         { provide: ObservedFailures, useValue: { record: vi.fn(), warnFor: () => null } },
         { provide: PageDiagnostics, useValue: { info: vi.fn() } },
+        { provide: ExtensionBridge, useValue: bridge },
       ],
     });
     expansion = TestBed.inject(ArticleExpansion);
+  });
+
+  it('reads on this computer without spending the free quota', async () => {
+    fetch.servesLocally.mockResolvedValue(true);
+    quota.authorize.mockResolvedValue(false);
+    expect((await expansion.expand(cachedStory.requestedUrl))?.article).not.toBeNull();
+    expect(quota.authorize).not.toHaveBeenCalled();
+    expect(quota.recordFetch).not.toHaveBeenCalled();
+  });
+
+  it('offers Mawkingbird for Firefox for a site it may not read yet, then reads it once allowed', async () => {
+    const blocked = {
+      ...cachedStory,
+      article: null,
+      diagnosis: 'network' as const,
+      debug: { extensionAccess: 'https://publisher.example' },
+    };
+    fetch.expand.mockResolvedValueOnce(blocked).mockResolvedValueOnce({
+      ...cachedStory,
+      fromCache: false,
+    });
+    await expansion.expand(cachedStory.requestedUrl);
+    expect(expansion.accessFor()).toBe('https://publisher.example');
+    bridge.requestAccess.mockResolvedValue(true);
+    const result = await expansion.allowAndRetry(cachedStory.requestedUrl);
+    expect(bridge.requestAccess).toHaveBeenCalledWith('https://publisher.example');
+    expect(fetch.forget).toHaveBeenCalledWith(cachedStory.requestedUrl);
+    expect(result?.article).not.toBeNull();
+    expect(expansion.accessFor()).toBeNull();
+    // Allowing is not a manual retry.
+    expect(expansion.retriesLeft()).toBeGreaterThan(0);
   });
 
   it('restores a successful extraction without authorizing or fetching', async () => {

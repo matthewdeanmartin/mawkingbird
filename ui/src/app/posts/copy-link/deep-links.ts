@@ -72,6 +72,18 @@ function anonymousStatusId(status: Status): string | null {
   return typeof ref?.statusId === 'string' ? ref.statusId : null;
 }
 
+/**
+ * The shareable link to a Mastodon post's analytics page: the post's own link
+ * plus `/analytics`. Null where the post link is (and for non-Mastodon posts,
+ * which have no analytics page).
+ */
+export function postAnalyticsDeepLink(status: Status, viewerServer: string): string | null {
+  const provider = status.provider ?? 'mastodon';
+  if (provider !== 'mastodon' && provider !== 'anonymous-mastodon') return null;
+  const link = postDeepLink(status, viewerServer);
+  return link ? `${link}/analytics` : null;
+}
+
 /** A shareable mawkingbird.com link to a post, or null when the post has none. */
 export function postDeepLink(status: Status, viewerServer: string): string | null {
   const provider = status.provider ?? 'mastodon';
@@ -207,7 +219,17 @@ export function postLoadTarget(
  * which is what people and tools build by hand.
  */
 export function mastodonPostLinkMatcher(segments: UrlSegment[]): UrlMatchResult | null {
-  if (segments.length !== 3) return null;
+  return segments.length === 3 ? postLinkMatch(segments) : null;
+}
+
+/** `/<server>/@<acct>/<id>/analytics`: the post link's analytics page. */
+export function mastodonPostAnalyticsLinkMatcher(segments: UrlSegment[]): UrlMatchResult | null {
+  if (segments.length !== 4 || segments[3].path !== 'analytics') return null;
+  const match = postLinkMatch(segments.slice(0, 3));
+  return match ? { ...match, consumed: segments } : null;
+}
+
+function postLinkMatch(segments: UrlSegment[]): UrlMatchResult | null {
   const [server, acct, id] = segments;
   if (!HOSTNAME.test(server.path)) return null;
   const handle = acct.path.slice(1);

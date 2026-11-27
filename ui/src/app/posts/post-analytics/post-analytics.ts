@@ -31,15 +31,20 @@ import { arrivalBuckets } from '../../accounts/analytics-history';
 import { Account, Context, Status } from '../../platform/api/models';
 import { parseAnonymousFeedId } from '../../reading/read/thread-loader';
 import { StatusCard } from '../status-card/status-card';
+import { Server } from '../../platform/http/server';
+import { postAnalyticsDeepLink } from '../copy-link/deep-links';
 
 // i18n postAnalytics.title: Post analytics
 // i18n postAnalytics.description: Reach and engagement for one post and the thread it belongs to.
 // i18n postAnalytics.loading: Loading the post…
 // i18n postAnalytics.unsupported: Post analytics covers Mastodon posts for now.
-// i18n postAnalytics.error.notFound: This post is not on the server, or is not public.
+// i18n postAnalytics.error.notFound: Your server can't find this post, or it isn't public. Post numbers only work on the server that gave them out, so to share analytics, use Copy link on this page.
 // i18n postAnalytics.error.load: Couldn't load this post. Try again later.
 // i18n postAnalytics.openPost: Open the post
 // i18n postAnalytics.methodology: How these numbers work
+// i18n postAnalytics.copyLink: Copy link
+// i18n postAnalytics.copied: Link copied
+// i18n postAnalytics.thePost: The post
 // i18n postAnalytics.about: About {{stat}}
 // i18n postAnalytics.tiles.reach: Est. reach
 // i18n postAnalytics.tiles.potential: Could have reached
@@ -105,6 +110,7 @@ export class PostAnalytics {
   private destroyRef = inject(DestroyRef);
   private auth = inject(Auth);
   private native = inject(NATIVE_ANALYTICS);
+  private server = inject(Server);
   protected boosters = inject(BoosterLookup);
   protected readonly accountProfilePath = accountProfilePath;
   protected readonly typicalBoosterAudience = REACH_MODEL.typicalBoosterAudience;
@@ -232,6 +238,23 @@ export class PostAnalytics {
   protected lookUpBoosters(): void {
     const reach = this.reach();
     if (reach) this.boosters.refine(reach.thread.parts, this.publicRef);
+  }
+
+  /** This page's address for anyone, on any server or none: `/<server>/@<acct>/<id>/analytics`. */
+  protected shareLink = computed(() => {
+    const status = this.status();
+    return status ? postAnalyticsDeepLink(status, this.server.baseUrl()) : null;
+  });
+  protected copied = signal(false);
+
+  protected async copyLink(link: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(link);
+      this.copied.set(true);
+      setTimeout(() => this.copied.set(false), 2000);
+    } catch {
+      /* Clipboard refused (insecure context, permissions): nothing to recover. */
+    }
   }
 
   /** Compact display for tile values: 12,345 → 12.3K. */

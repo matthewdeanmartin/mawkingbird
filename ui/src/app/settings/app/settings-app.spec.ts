@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 import { AppInstall, InstallRoute } from '../../shell/app-install/app-install';
 import { SettingsApp } from './settings-app';
 
@@ -40,5 +41,44 @@ describe('SettingsApp', () => {
     const { el } = setUp('prompt', true);
     expect(el.querySelector('button')).toBeNull();
     expect(el.textContent).toContain("You're using Mawkingbird as an app right now.");
+  });
+});
+
+describe('SettingsApp with Mawkingbird for Firefox', () => {
+  afterEach(() => TestBed.resetTestingModule());
+
+  function setUp(present: boolean, allSites: boolean) {
+    const fake = {
+      installed: signal(false),
+      canPrompt: signal(false),
+      route: () => 'manual' as InstallRoute,
+      prompt: vi.fn(),
+    };
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: AppInstall, useValue: fake },
+        {
+          provide: ExtensionBridge,
+          useValue: {
+            present: () => present,
+            allSites: signal(allSites),
+            refreshAllSites: vi.fn(async () => allSites),
+          },
+        },
+      ],
+    });
+    const fixture = TestBed.createComponent(SettingsApp);
+    fixture.detectChanges();
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('says it is installed, and whether it may read any public site', () => {
+    const el = setUp(true, true);
+    expect(el.textContent).toContain('Mawkingbird for Firefox');
+    expect(el.textContent).toContain('It may read any public site.');
+  });
+
+  it('offers nothing about it before it is installed (not on the store yet)', () => {
+    expect(setUp(false, false).textContent).not.toContain('Mawkingbird for Firefox');
   });
 });

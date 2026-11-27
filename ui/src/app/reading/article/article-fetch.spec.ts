@@ -367,3 +367,58 @@ describe('article expansion through Mawkingbird for Firefox', () => {
     expect((await pending).article).not.toBeNull();
   });
 });
+
+describe('article expansion with Mawkingbird for Firefox and no proxy', () => {
+  const url = 'https://publisher.example/story';
+  let read: ReturnType<typeof vi.fn>;
+  let hasAccess: ReturnType<typeof vi.fn>;
+  let service: ArticleFetch;
+
+  beforeEach(() => {
+    read = vi.fn();
+    hasAccess = vi.fn(async () => false);
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+        { provide: ExtensionBridge, useValue: { present: () => true, read, hasAccess } },
+        {
+          provide: CorsProxy,
+          useValue: {
+            available: () => false,
+            label: () => 'none',
+            proxyRequest: () => {
+              throw new Error('No proxy here');
+            },
+          },
+        },
+        { provide: ArticleCache, useValue: { get: async () => null, put: vi.fn() } },
+      ],
+    });
+    service = TestBed.inject(ArticleFetch);
+  });
+
+  it('offers expansion with only the extension', () => {
+    expect(service.available()).toBe(true);
+  });
+
+  it('names the site to allow, and caches nothing so a retry after allowing reads it', async () => {
+    read.mockResolvedValue({
+      ok: false,
+      error: 'needs-access',
+      origin: 'https://publisher.example',
+    });
+    const result = await service.expand(url);
+    expect(result.article).toBeNull();
+    expect(result.debug?.extensionAccess).toBe('https://publisher.example');
+    expect(TestBed.inject(ArticleCache).put).not.toHaveBeenCalled();
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  it('treats a read of an allowed site as local, outside the proxy quota', async () => {
+    expect(await service.servesLocally(url)).toBe(false);
+    hasAccess.mockResolvedValue(true);
+    expect(await service.servesLocally(url)).toBe(true);
+    expect(hasAccess).toHaveBeenLastCalledWith('https://publisher.example');
+  });
+});

@@ -1,3 +1,5 @@
+import { signal } from '@angular/core';
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
@@ -126,6 +128,40 @@ describe('FriendFeedScan', () => {
     }
     return promise;
   }
+
+  it('runs with Mawkingbird for Firefox only when "any public site" is on, without the proxy', async () => {
+    TestBed.resetTestingModule();
+    const allSites = signal<boolean | null>(false);
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Api, useValue: api },
+        { provide: PasteResolve, useValue: resolver },
+        { provide: FriendFeedCache, useValue: cache },
+        { provide: PageDiagnostics, useValue: diagnostics },
+        { provide: ExtensionBridge, useValue: { present: () => true, allSites } },
+        {
+          provide: CorsProxy,
+          useValue: {
+            available: () => false,
+            batchCapacity() {
+              throw new Error('The extension must not use proxy batches');
+            },
+          },
+        },
+      ],
+    });
+    scan = TestBed.inject(FriendFeedScan);
+    // Per-site permission can't cover hundreds of friends' sites.
+    expect(scan.available()).toBe(false);
+    allSites.set(true);
+    expect(scan.available()).toBe(true);
+    api.accountFollowingPage.mockReturnValue(
+      of({ accounts: [account('alice', 'https://blog.test')], nextMaxId: null, source: 'link' }),
+    );
+    resolver.resolve.mockResolvedValue(feedFound('https://blog.test'));
+    expect((await run())?.feeds.length).toBeGreaterThan(0);
+    expect(resolver.resolve).toHaveBeenCalled();
+  });
 
   it('runs native discovery without consulting proxy availability or batch capacity', async () => {
     TestBed.resetTestingModule();

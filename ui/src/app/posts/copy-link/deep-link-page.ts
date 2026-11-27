@@ -90,8 +90,11 @@ export class DeepLinkPage implements OnInit {
         target[0] === '/statuses' && this.route.snapshot.queryParamMap?.get(READ_PARAM) === '1';
       // A Lite link lands in Lite, when Lite has the post (a home-server id).
       const lite = this.route.snapshot.data['lite'] === true && LOCAL_ID.test(target[1]);
+      // `/<server>/@<acct>/<id>/analytics` lands on that post's analytics.
+      const suffix = this.route.snapshot.data['suffix'] as string | undefined;
+      const full = suffix && target[0] === '/statuses' ? [...target, suffix] : target;
       await this.router.navigate(
-        reader ? ['/read', target[1]] : lite ? [`/m${target[0]}`, target[1]] : target,
+        reader ? ['/read', target[1]] : lite ? [`/m${target[0]}`, target[1]] : full,
         { replaceUrl: true },
       );
     } else {

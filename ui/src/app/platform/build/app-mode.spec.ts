@@ -76,9 +76,28 @@ describe('modeForUrl', () => {
     },
   );
 
-  it('puts Watch in Video, wherever it was opened from', () => {
+  it('puts Watch in a video app, wherever it was opened from', () => {
     expect(modeForUrl('/watch')).toBe('video');
     expect(modeForUrl('/watch?youtube=abc')).toBe('video');
+    expect(modeForUrl('/watch?youtube=abc', 'mastodon')).toBe('video');
+    // A post's video is fediverse video, even when it is a YouTube link.
+    expect(modeForUrl('/watch?post=1&youtube=abc', 'rss')).toBe('fedivideo');
+  });
+
+  it('keeps Watch and Search in whichever video app you are in', () => {
+    expect(modeForUrl('/watch?post=1', 'video')).toBe('video');
+    expect(modeForUrl('/watch?youtube=abc', 'fedivideo')).toBe('fedivideo');
+    expect(modeForUrl('/videos/search?q=a', 'fedivideo')).toBe('fedivideo');
+    expect(modeForUrl('/videos/search?q=a', 'video')).toBe('video');
+    expect(modeForUrl('/videos/search', 'mastodon')).toBe('video');
+  });
+
+  it('splits fediverse video from the YouTube client', () => {
+    expect(modeForUrl('/videos/fedi')).toBe('fedivideo');
+    expect(modeForUrl('/videos/parties')).toBe('fedivideo');
+    expect(modeForUrl('/videos/fedi', 'video')).toBe('fedivideo');
+    expect(modeForUrl('/videos/channel/UC1', 'fedivideo')).toBe('video');
+    expect(modeForUrl('/videos/starters')).toBe('video');
   });
 
   it('puts Unbird pages in the Unbird mode', () => {

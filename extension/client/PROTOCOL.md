@@ -36,6 +36,9 @@ back the same way with `direction: 'to-page'`, the same `id`, and `result`.
 | `fetch` | `url`, `purpose` (`feed`, `article`, `json`) | `{ ok: true, status, finalUrl, contentType, body }` |
 | `hasAccess` | `origin` | `{ ok: true, granted }` |
 | `requestAccess` | `origin` | `{ ok: true, granted }` after the reader answers the grant window |
+| `allSites` | — | `{ ok: true, granted }`: whether "any public site" is on |
+| `requestAllSites` | — | `{ ok: true, granted }` after the reader answers the "any public site" window |
+| `youtube` | `endpoint` (`search`, `browse`, `player`, `next`), `body` (JSON object, ≤ 64 KiB), `headers` (`[name, value]` pairs) | `{ ok: true, status, body }` |
 
 Failures are `{ ok: false, error, detail?, origin? }`:
 
@@ -61,3 +64,20 @@ Failures are `{ ok: false, error, detail?, origin? }`:
   tab's URL, and the content script accepts messages only from its own window
   and origin.
 - Nothing is cached or stored by the extension. The app decides what to keep.
+
+## YouTube
+
+`youtube` is the same four anonymous web-client reads Native allows
+(`native/src-tauri/src/youtube.rs`): a POST to
+`https://www.youtube.com/youtubei/v1/<endpoint>?prettyPrint=false`, no cookies,
+no redirects, 8 MiB response cap. Only `X-YouTube-Client-Name`,
+`X-YouTube-Client-Version` and `X-Goog-Visitor-Id` headers are accepted; any
+other header refuses the request. `player` answers lose `streamingData` and ad
+fields. It needs the reader's permission for `https://www.youtube.com`
+(`needs-access` names it).
+
+YouTube answers 403 to a request whose `Origin` is the extension's own
+(`moz-extension://…`), so a declarativeNetRequest session rule removes `Origin`
+from the extension's own requests to `/youtubei/v1/*` (`tabIds: [-1]`), and only
+those. Firefox applies it; the extension never sees request headers. Verified in
+Firefox 160: 200 with the rule, 403 without; tabs keep their Origin.

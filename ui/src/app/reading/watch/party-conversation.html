@@ -223,7 +223,7 @@
         >{{ 'watch.party.signInToChat' | transloco }}</a
       >
     </p>
-  } @else if (!chatTag() && !chatReplies()) {
+  } @else if (!chatTag() && !chatReplies() && !startsParty()) {
     <p class="party-note muted">{{ 'watch.party.needTarget' | transloco }}</p>
   } @else {
     <form class="chat-box" (ngSubmit)="send()">
@@ -237,9 +237,11 @@
           [ngModel]="chat()"
           (ngModelChange)="chat.set($event); sendFailed.set(false)"
           [placeholder]="
-            chatTag()
-              ? ('watch.party.chatPlaceholderTag' | transloco: { tag: chatTag() })
-              : ('watch.party.chatPlaceholderReply' | transloco)
+            startsParty()
+              ? ('watch.party.chatPlaceholderStart' | transloco)
+              : chatTag() && !chatReplies()
+                ? ('watch.party.chatPlaceholderTag' | transloco: { tag: chatTag() })
+                : ('watch.party.chatPlaceholderReply' | transloco)
           "
         ></textarea>
       </mb-field>
@@ -247,6 +249,9 @@
         {{ 'watch.party.send' | transloco }}
       </button>
     </form>
+    @if (startsParty()) {
+      <p class="party-note muted">{{ 'watch.party.startNote' | transloco }}</p>
+    }
     @if (sendFailed()) {
       <p role="alert" class="party-note">{{ 'watch.party.sendFailed' | transloco }}</p>
     }

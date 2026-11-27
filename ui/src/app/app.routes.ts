@@ -31,6 +31,7 @@ import { forumThreadGuard } from './forum/forum-thread.guard';
 import {
   accountHandleLinkMatcher,
   foreignAddressMatcher,
+  mastodonPostAnalyticsLinkMatcher,
   mastodonPostLinkMatcher,
 } from './posts/copy-link/deep-links';
 import { inviteAccessGuard } from './accounts/invites/invite-access.guard';
@@ -1967,6 +1968,14 @@ export const routes: Routes = [
       },
       // Copied "Copy link" deep links (posts/copy-link/deep-links.ts). Each lands
       // on the reader's own view of the post or account and replaces its URL.
+      {
+        // `/<server>/@<acct>/<id>/analytics`: a post's analytics, shareable the
+        // same way as the post (Copy link on the analytics page writes it).
+        matcher: mastodonPostAnalyticsLinkMatcher,
+        title: 'Post analytics',
+        data: { kind: 'mastodon-post', suffix: 'analytics' },
+        loadComponent: () => import('./posts/copy-link/deep-link-page').then((m) => m.DeepLinkPage),
+      },
       {
         // `/<server>/@<acct>/<id>`, Elk's shape: ids belong to `<server>`.
         matcher: mastodonPostLinkMatcher,

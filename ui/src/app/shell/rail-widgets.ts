@@ -72,6 +72,7 @@ export const RAIL_HIDDEN: Readonly<Partial<Record<AppMode, readonly RailWidget[]
   radio: DISCOVERY,
   unbird: DISCOVERY,
   video: DISCOVERY,
+  fedivideo: DISCOVERY,
 };
 
 /** Widgets that belong to some modes only, and show nowhere else. */

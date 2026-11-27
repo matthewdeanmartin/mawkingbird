@@ -33,7 +33,7 @@ export const PAGE_PANEL_DRAFT_CONTEXT = 'page-panel';
 const MINE_LIMIT = 5;
 
 /**
- * `/panel?url=&title=`: Mawkingbird beside another page, for the Firefox
+ * `/panel#url=&title=` (or `?url=`): Mawkingbird beside another page, for the Firefox
  * extension's sidebar (spec/firefox-extension.md). No app chrome: write about
  * the page, see whether you already did, and see who else is talking about it.
  *
@@ -59,8 +59,23 @@ export class PagePanel {
   private readonly auth = inject(Auth);
   private readonly drafts = inject(Drafts);
   private readonly server = inject(Server);
-  private readonly params = toSignal(inject(ActivatedRoute).queryParamMap, {
-    requireSync: true,
+  private readonly route = inject(ActivatedRoute);
+  private readonly query = toSignal(this.route.queryParamMap, { requireSync: true });
+  /**
+   * The extension passes the page in the #fragment (`#url=…&title=…`), which
+   * browsers never send to mawkingbird.com's host, so the pages someone browses
+   * with the sidebar open stay out of its request logs. `?url=` still works.
+   */
+  private readonly fragment = toSignal(this.route.fragment, { initialValue: null });
+  private readonly params = computed(() => {
+    const fragment = new URLSearchParams(this.fragment() ?? '');
+    return fragment.has('url') ? fragment : new URLSearchParams(this.queryString());
+  });
+  private readonly queryString = computed(() => {
+    const query = this.query();
+    const pairs = new URLSearchParams();
+    for (const key of query.keys) pairs.set(key, query.get(key) ?? '');
+    return pairs.toString();
   });
 
   protected readonly url = computed(() => {

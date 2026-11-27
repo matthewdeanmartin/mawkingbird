@@ -136,8 +136,11 @@ test('panelUrl follows the page without its #fragment', async () => {
   const { panelUrl, withoutHash } = await import('../src/lib/links.js');
   const url = new URL(panelUrl(BASE, { url: 'https://news.example/a?b=1#c', title: ' Story ' }));
   assert.equal(url.pathname, '/panel');
-  assert.equal(url.searchParams.get('url'), 'https://news.example/a?b=1');
-  assert.equal(url.searchParams.get('title'), 'Story');
+  // The page travels in the fragment, never in the request to mawkingbird.com.
+  assert.equal(url.search, '');
+  const fragment = new URLSearchParams(url.hash.slice(1));
+  assert.equal(fragment.get('url'), 'https://news.example/a?b=1');
+  assert.equal(fragment.get('title'), 'Story');
   assert.equal(panelUrl(BASE, { url: 'about:newtab' }), 'https://mawkingbird.com/panel');
   assert.equal(withoutHash('https://a.example/#x'), 'https://a.example/');
 });

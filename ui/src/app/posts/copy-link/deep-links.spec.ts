@@ -6,7 +6,9 @@ import {
   accountDeepLink,
   accountHandleLinkMatcher,
   foreignAddressMatcher,
+  mastodonPostAnalyticsLinkMatcher,
   mastodonPostLinkMatcher,
+  postAnalyticsDeepLink,
   postAcctParam,
   postLoadTarget,
   postDeepLink,
@@ -35,6 +37,18 @@ function segments(path: string): UrlSegment[] {
 }
 
 describe('deep links', () => {
+  describe('post analytics', () => {
+    it('is the post link plus /analytics, for Mastodon posts only', () => {
+      expect(postAnalyticsDeepLink(status(), 'https://home.example')).toBe(
+        'https://mawkingbird.com/home.example/@alice@home.example/111/analytics',
+      );
+      expect(postAnalyticsDeepLink(status({ provider: 'twitter' }), 'https://home.example')).toBe(
+        null,
+      );
+      expect(postAnalyticsDeepLink(status(), '')).toBeNull();
+    });
+  });
+
   describe('Mastodon posts', () => {
     it("names the viewer's server as the issuer of the id, Elk-style", () => {
       expect(postDeepLink(status(), 'https://home.example')).toBe(
@@ -166,6 +180,20 @@ describe('deep links', () => {
       expect(match?.posParams?.['server'].path).toBe('mastodon.art');
       expect(match?.posParams?.['acct'].path).toBe('berna@sharkey.pimi.es');
       expect(match?.posParams?.['id'].path).toBe('116987');
+    });
+
+    it('matches a post link with /analytics, which only the analytics matcher takes', () => {
+      const path = 'mastodon.art/@berna@sharkey.pimi.es/116987/analytics';
+      const match = mastodonPostAnalyticsLinkMatcher(segments(path));
+      expect(match?.consumed).toHaveLength(4);
+      expect(match?.posParams?.['server'].path).toBe('mastodon.art');
+      expect(match?.posParams?.['acct'].path).toBe('berna@sharkey.pimi.es');
+      expect(match?.posParams?.['id'].path).toBe('116987');
+      expect(mastodonPostLinkMatcher(segments(path))).toBeNull();
+      expect(
+        mastodonPostAnalyticsLinkMatcher(segments('mastodon.art/@berna/116987/replies')),
+      ).toBeNull();
+      expect(mastodonPostAnalyticsLinkMatcher(segments('statuses/116987/analytics'))).toBeNull();
     });
 
     it('never matches app routes, whose first segment is not a hostname', () => {

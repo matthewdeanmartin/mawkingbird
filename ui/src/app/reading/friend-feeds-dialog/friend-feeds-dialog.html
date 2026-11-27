@@ -30,6 +30,11 @@
 
       @if (!signedIn()) {
         <p class="muted small">{{ 'friendFeeds.signedOut' | transloco }}</p>
+      } @else if (!available() && bridge.present()) {
+        <p class="muted small">{{ 'friendFeeds.extensionAllSites' | transloco }}</p>
+        <button class="btn" type="button" (click)="allowAllSites()">
+          {{ 'friendFeeds.allowAllSites' | transloco }}
+        </button>
       } @else if (!available()) {
         <p class="muted small">{{ 'friendFeeds.noProxy' | transloco }}</p>
         <a routerLink="/settings/app" (click)="forceClose()">{{

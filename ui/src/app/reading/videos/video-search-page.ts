@@ -1,3 +1,4 @@
+import { YoutubeExtensionAccess } from './youtube-extension-access';
 import {
   Component,
   computed,
@@ -62,6 +63,7 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
 @Component({
   selector: 'app-video-search-page',
   imports: [
+    YoutubeExtensionAccess,
     FormsModule,
     RouterLink,
     TranslocoPipe,
@@ -80,6 +82,7 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
     VideoPlayer,
   ],
   template: `
+    <app-youtube-extension-access />
     <mb-rail-page>
       <aside mbRailPanel>
         <mb-page-header embedded [title]="'videoSearch.title' | transloco" />

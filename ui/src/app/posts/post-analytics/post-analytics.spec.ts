@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Auth } from '../../platform/session/auth';
 import { NATIVE_ANALYTICS } from '../../platform/session/platform-login';
 import { anonymousStatusRouteRef } from '../../accounts/anonymous/anonymous-route-ref';
+import { Server } from '../../platform/http/server';
 import { PostAnalytics } from './post-analytics';
 
 const ME = { id: 'me', username: 'me', acct: 'me', display_name: 'Me', followers_count: 1000 };
@@ -119,6 +120,29 @@ describe('PostAnalytics', () => {
     expect(names).toEqual(['Big', 'Small']);
   });
 
+  it('shows the numbers before the post, and copies a link that opens on any server', async () => {
+    TestBed.inject(Server).baseUrl.set('https://home.example');
+    const writeText = vi.fn(() => Promise.resolve());
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } });
+    const { fixture, root } = render();
+    http.expectOne('/api/v1/statuses/2').flush(raw('2'));
+    http.expectOne('/api/v1/statuses/2/context').flush({ ancestors: [], descendants: [] });
+    fixture.detectChanges();
+
+    const tiles = root.querySelector('.tiles')!;
+    const post = root.querySelector('section.post app-status-card')!;
+    expect(tiles.compareDocumentPosition(post) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+    const copy = [...root.querySelectorAll('.post-links button')].find((b) =>
+      b.textContent?.includes('Copy link'),
+    ) as HTMLButtonElement;
+    copy.click();
+    await fixture.whenStable();
+    expect(writeText).toHaveBeenCalledWith(
+      'https://mawkingbird.com/home.example/@me@home.example/2/analytics',
+    );
+  });
+
   it('reads an anonymous public post from its own server', () => {
     params.next(
       convertToParamMap({
@@ -145,7 +169,9 @@ describe('PostAnalytics', () => {
     const { fixture, root } = render();
     http.expectOne('/api/v1/statuses/2').flush(null, { status: 404, statusText: 'Not Found' });
     fixture.detectChanges();
-    expect(root.querySelector('[role="alert"]')?.textContent).toContain('not on the server');
+    expect(root.querySelector('[role="alert"]')?.textContent).toContain(
+      "Your server can't find this post",
+    );
   });
 });
 

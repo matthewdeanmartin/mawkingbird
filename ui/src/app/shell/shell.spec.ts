@@ -692,9 +692,6 @@ describe('Shell account switching', () => {
 
     expect(link.textContent).toContain('Find Friends');
     expect(canary.textContent).toContain('Canary');
-    expect(
-      fixture.nativeElement.querySelector('.more-menu a[href="/videos"]').textContent,
-    ).toContain('Videos');
   });
 
   it('lists Site News just above Help, and leaves Pastes and Links to Write', () => {
@@ -730,8 +727,6 @@ describe('Shell account switching', () => {
     expect(moreRows(fixture)).toEqual([
       'Settings',
       'Likes, bookmarks, history',
-      'Videos',
-      'Watch parties',
       'Write',
       'Scheduled posts',
       'Find Friends',
@@ -857,8 +852,6 @@ describe('Shell app-mode nav', () => {
     expect(rows).toEqual([
       'Settings',
       'Bookmarks, history',
-      'Videos',
-      'Watch parties',
       'Write',
       'Find Friends',
       'Invites',
@@ -873,10 +866,12 @@ describe('Shell app-mode nav', () => {
     ]);
   });
 
-  it('adds Watch parties to the ... menu and drops Manage RSS feeds and Drafts', () => {
+  it('leaves Videos, Watch parties, Manage RSS feeds and Drafts out of the ... menu', () => {
     const host = render().nativeElement as HTMLElement;
     const links = [...host.querySelectorAll('.menu-panel a')].map((a) => a.getAttribute('href'));
-    expect(links).toContain('/videos/parties');
+    // The YouTube and Fedi Video apps, in the switcher (owner, 2026-11-27).
+    expect(links).not.toContain('/videos');
+    expect(links).not.toContain('/videos/parties');
     // Manage is RSS's tab; Drafts is Write's Manage button.
     expect(links).not.toContain('/settings/rss');
     expect(links).not.toContain('/drafts');
@@ -922,10 +917,20 @@ describe('Shell app-mode nav', () => {
       '/home',
       // Subscriptions, the mode's landing, comes first (spec/youtube-client.md, S4).
       '/videos',
-      '/videos/fedi',
       '/videos/queue',
-      '/videos/search',
       '/bookmarks?view=video',
+      '/videos/search',
+      ...login,
+      'switch',
+    ]);
+
+    mode.set('fedivideo');
+    fixture.detectChanges();
+    expect(tabs(fixture)).toEqual([
+      '/home',
+      '/videos/fedi',
+      '/videos/parties',
+      '/videos/search',
       ...login,
       'switch',
     ]);
@@ -956,7 +961,9 @@ describe('Shell app-mode nav', () => {
       // Crafting your feed (spec/sprint/explore-2026-11.md).
       '/explore/tags',
       '/rss',
+      // YouTube, then video on the fediverse (owner, 2026-11-27).
       '/videos',
+      '/videos/fedi',
       '/singles',
       '/forum',
       // Twitter to Mastodon, last (spec/sprint/unbird-2026-11.md).

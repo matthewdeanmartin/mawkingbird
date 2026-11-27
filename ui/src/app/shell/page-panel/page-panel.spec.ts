@@ -29,7 +29,9 @@ class StatusCardStub {
 }
 
 @Component({ selector: 'app-link-timeline', template: '' })
-class LinkTimelineStub {}
+class LinkTimelineStub {
+  readonly link = input<string | null>(null);
+}
 
 const PAGE = 'https://news.example/story';
 const VIDEO = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
@@ -53,7 +55,10 @@ describe('PagePanel', () => {
     auth = { isAnonymous: false, isForeignPrimary: false };
   });
 
-  function setUp(params: Record<string, string>): ComponentFixture<PagePanel> {
+  function setUp(
+    params: Record<string, string>,
+    fragment: string | null = null,
+  ): ComponentFixture<PagePanel> {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -61,7 +66,10 @@ describe('PagePanel', () => {
         { provide: Server, useValue: { baseUrl: () => 'https://home.example' } },
         { provide: Auth, useValue: auth },
         { provide: Drafts, useValue: { loadAutosave, clearAutosave } },
-        { provide: ActivatedRoute, useValue: { queryParamMap: of(convertToParamMap(params)) } },
+        {
+          provide: ActivatedRoute,
+          useValue: { queryParamMap: of(convertToParamMap(params)), fragment: of(fragment) },
+        },
       ],
     });
     TestBed.overrideComponent(PagePanel, {
@@ -76,6 +84,17 @@ describe('PagePanel', () => {
   const el = (f: ComponentFixture<PagePanel>) => f.nativeElement as HTMLElement;
   const button = (f: ComponentFixture<PagePanel>, label: string) =>
     [...el(f).querySelectorAll('button')].find((b) => b.textContent?.includes(label))!;
+
+  it('reads the page from the #fragment, which never reaches the server', () => {
+    const f = setUp({}, `url=${encodeURIComponent(PAGE)}&title=A%20story`);
+    expect(search).toHaveBeenCalledWith(`from:me ${PAGE}`, 'statuses', {
+      limit: 5,
+      homeServer: true,
+    });
+    const timeline = f.debugElement.query((d) => d.name === 'app-link-timeline')
+      .componentInstance as LinkTimelineStub;
+    expect(timeline.link()).toBe(PAGE);
+  });
 
   it('asks for a web page when given none, and makes no request', () => {
     const f = setUp({ url: 'about:blank' });

@@ -1,4 +1,5 @@
 import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 /**
  * Finds the feeds behind the links on the profiles of everyone you follow, and
  * compiles them into an OPML file.
@@ -199,6 +200,7 @@ export class FriendFeedScan {
   private resolver = inject(PasteResolve);
   private proxy = inject(CorsProxy);
   private nativePageRead = inject(PLATFORM_ARTICLE_READ);
+  private bridge = inject(ExtensionBridge);
   private diagnostics = inject(PageDiagnostics);
 
   /** Live progress, or null before anything has run. */
@@ -237,7 +239,15 @@ export class FriendFeedScan {
 
   /** Whether a scan can run at all: it needs somewhere to send its fetches. */
   available(): boolean {
-    return !!this.nativePageRead || this.proxy.available();
+    return !!this.nativePageRead || this.proxy.available() || this.readsLocally();
+  }
+
+  /**
+   * Mawkingbird for Firefox with "any public site" on reads every friend's site
+   * from the reader's computer; per-site permission can't cover hundreds.
+   */
+  private readsLocally(): boolean {
+    return this.bridge.present() && this.bridge.allSites() === true;
   }
 
   /** Ask a running scan to stop. Keeps whatever it has found. */
@@ -387,7 +397,10 @@ export class FriendFeedScan {
       let spent = 0;
       let gaveUp = false;
 
-      const batchSize = this.nativePageRead ? 4 : Math.max(1, this.proxy.batchCapacity('article'));
+      const batchSize =
+        this.nativePageRead || this.readsLocally()
+          ? 4
+          : Math.max(1, this.proxy.batchCapacity('article'));
       for (let index = 0; index < budget.length; index += batchSize) {
         if (this.cancelRequested) {
           break;

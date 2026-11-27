@@ -157,6 +157,11 @@ import { externalFetch } from '../../platform/http/external-fetch';
 import { RssCache } from '../rss/rss-cache';
 import { QUIET_PROXY_LIMIT } from '../../connections/cors-proxy/proxy-limit-details';
 import { ParsedFeed, parseFeed } from '../../../lib/rss/rss-parser';
+import {
+  ExtensionAccessNeeded,
+  ExtensionBridge,
+  YOUTUBE_SITE,
+} from '../../platform/extension/extension-bridge';
 import { channelFromHtml, channelInput } from './youtube-channel';
 import { CHANNEL_ID, videoFeedUrl } from './video-subscriptions';
 
@@ -181,6 +186,11 @@ export class YoutubeFeeds {
   private nativePageRead = inject(PLATFORM_ARTICLE_READ);
   /** Native's direct, allow-listed YouTube web-client reads; null in browsers. */
   private nativeYoutube = inject(PLATFORM_YOUTUBE);
+  /**
+   * Mawkingbird for Firefox: the same four YouTube reads as Native, from the
+   * reader's computer, once they allow YouTube. After Native, before the proxy.
+   */
+  private bridge = inject(ExtensionBridge);
 
   /**
    * Whether the web build may use the Mawkingbird proxy from this address. A
@@ -191,7 +201,10 @@ export class YoutubeFeeds {
     return canUseHostedProxy();
   }
 
-  /** A channel's RSS: directly on Native, through the Mawkingbird proxy on the web. */
+  /**
+   * A channel's RSS: directly on Native; through Mawkingbird for Firefox when
+   * YouTube is allowed; else through the Mawkingbird proxy.
+   */
   private async readFeed(url: string): Promise<string> {
     if (this.nativeFeedRead) {
       if (!this.flags.enabled('connector-rss')) {
@@ -199,7 +212,43 @@ export class YoutubeFeeds {
       }
       return this.nativeFeedRead(url);
     }
-    return this.request(url);
+    return this.viaExtension(url, 'feed', () => this.request(url));
+  }
+
+  /**
+   * Read a YouTube page or feed through the extension when it may, falling back
+   * to `proxied`. When the extension only lacked permission and the fallback
+   * fails too, the error names YouTube so the screen can offer Allow.
+   */
+  private async viaExtension(
+    url: string,
+    purpose: 'feed' | 'article',
+    proxied: () => Promise<string>,
+  ): Promise<string> {
+    if (!this.bridge.present()) return proxied();
+    if (!this.flags.enabled('connector-rss')) {
+      throw new Error('Video feeds are disabled in connection settings.');
+    }
+    const read = await this.bridge.read(url, purpose);
+    if (read.ok) {
+      if (read.status === 404) throw new HttpErrorResponse({ status: 404, url });
+      if (read.status >= 400) throw new Error(`YouTube answered ${read.status}.`);
+      return read.body;
+    }
+    try {
+      return await proxied();
+    } catch (error) {
+      if (read.error === 'needs-access') throw this.accessNeeded(error);
+      throw error;
+    }
+  }
+
+  private accessNeeded(cause?: unknown): ExtensionAccessNeeded {
+    return new ExtensionAccessNeeded(
+      YOUTUBE_SITE,
+      'Mawkingbird for Firefox can read YouTube for you if you allow it.',
+      { cause },
+    );
   }
 
   /** A channel page, for resolving @handles: directly on Native, else proxied. */
@@ -213,7 +262,7 @@ export class YoutubeFeeds {
       if (page.status >= 400) throw new Error(`YouTube answered ${page.status}.`);
       return page.body;
     }
-    return this.request(url);
+    return this.viaExtension(url, 'article', () => this.request(url));
   }
 
   private async request(
@@ -320,12 +369,15 @@ export class YoutubeFeeds {
    * proxy. Native must not be gated on Plus (spec/youtube-client.md, S1).
    */
   canSearch(): boolean {
-    return !!this.nativeYoutube || this.supporter.isSupporter();
+    return !!this.nativeYoutube || this.bridge.present() || this.supporter.isSupporter();
   }
 
-  /** Video details (duration, chapters, family-safe flag) need Native's direct reads. */
+  /**
+   * Video details (duration, chapters, family-safe flag) and comments need
+   * direct reads: Native's, or Mawkingbird for Firefox's.
+   */
   canReadDetails(): boolean {
-    return !!this.nativeYoutube;
+    return !!this.nativeYoutube || this.bridge.present();
   }
 
   private innertube: Promise<import('youtubei.js/web').Innertube> | null = null;
@@ -374,12 +426,44 @@ export class YoutubeFeeds {
           return value ? [[name, value] as [string, string]] : [];
         }),
       );
+    } else if (this.bridge.present()) {
+      json = await this.extensionRead(endpoint, init.body, headers, url.href);
     } else if (endpoint === 'search') {
       json = await this.request(url.href, true, init.body, headers);
     } else {
       throw new Error('This YouTube feature needs the Mawkingbird app.');
     }
     return new Response(json, { headers: { 'Content-Type': 'application/json' } });
+  }
+
+  /**
+   * One web-client read through Mawkingbird for Firefox. Search still has the
+   * Plus proxy to fall back on; the other reads exist only on direct transports,
+   * so their failure is the answer (naming YouTube when it needs allowing).
+   */
+  private async extensionRead(
+    endpoint: YoutubeEndpoint,
+    body: string,
+    headers: Headers,
+    href: string,
+  ): Promise<string> {
+    if (!this.flags.enabled('connector-rss')) {
+      throw new Error('Video feeds are disabled in connection settings.');
+    }
+    const read = await this.bridge.youtube(
+      endpoint,
+      body,
+      YOUTUBE_CLIENT_HEADERS.flatMap((name) => {
+        const value = headers.get(name);
+        return value ? [[name, value] as [string, string]] : [];
+      }),
+    );
+    if (read.ok) return read.body;
+    if (endpoint === 'search' && this.supporter.isSupporter()) {
+      return this.request(href, true, body, headers);
+    }
+    if (read.error === 'needs-access') throw this.accessNeeded();
+    throw new Error(read.detail ?? 'YouTube could not be reached.');
   }
 
   async details(videoId: string): Promise<YoutubeVideoDetails> {

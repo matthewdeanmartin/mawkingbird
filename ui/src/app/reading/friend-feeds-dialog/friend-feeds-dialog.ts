@@ -1,5 +1,6 @@
 import { saveBlob } from '../../platform/files/save-file';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 import { BulkFollowConfirmation } from '../../accounts/bulk-follow-confirmation';
 import { DatePipe } from '@angular/common';
 import {
@@ -60,6 +61,8 @@ import { firstValueFrom } from 'rxjs';
 // i18n friendFeeds.budgetSites: {{count}} sites
 // i18n friendFeeds.cost: Each site is one request, so this is up to <strong>{{count}}</strong> of them. Sites checked in an earlier run are free, and you can stop at any point.
 // i18n friendFeeds.noProxy: This browser needs a proxy to check websites. Mawkingbird Native checks them directly.
+// i18n friendFeeds.extensionAllSites: Mawkingbird for Firefox can check your friends' sites from this computer if you let it read any public site.
+// i18n friendFeeds.allowAllSites: Let Mawkingbird for Firefox read any public site
 // i18n friendFeeds.start: Start checking
 // i18n friendFeeds.cancel: Cancel
 // i18n friendFeeds.close: Close
@@ -174,7 +177,16 @@ export class FriendFeedsDialog {
   protected readonly failed = computed(() => this.progress()?.phase === 'failed');
 
   /** Whether a scan can run at all: it needs a proxy and an account to read. */
-  protected readonly available = computed(() => this.scan.available());
+  protected readonly available = computed(() => {
+    this.bridge.allSites();
+    return this.scan.available();
+  });
+  protected readonly bridge = inject(ExtensionBridge);
+
+  /** The "any public site" switch, from the reader's click; the scan can run after. */
+  protected async allowAllSites(): Promise<void> {
+    await this.bridge.requestAllSites();
+  }
 
   /**
    * The scan needs an account id to walk the following list of, and a key to
@@ -185,6 +197,7 @@ export class FriendFeedsDialog {
   protected readonly signedIn = computed(() => this.me() !== null);
 
   constructor() {
+    if (this.bridge.present()) void this.bridge.refreshAllSites();
     // Reopening the dialog after a scan should show what was found rather than
     // asking again — the result is the expensive part and it is already paid
     // for. Loading is cheap and idempotent.

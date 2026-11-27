@@ -145,6 +145,7 @@ const TRICKLE_IDLE_MS = 15 * 60_000;
 // i18n shell.navShort.search: Search
 // i18n shell.navShort.feeds: Feeds
 // i18n shell.navShort.login: Login
+// i18n shell.navShort.subscriptions: Subs
 // i18n shell.nav.moreAria: More navigation
 // i18n shell.nav.more: More
 // i18n shell.menu.settings: Settings
@@ -155,7 +156,6 @@ const TRICKLE_IDLE_MS = 15 * 60_000;
 // i18n shell.menu.bookmarksHistory: Bookmarks, history
 // i18n shell.menu.myServer: My server
 // i18n shell.menu.manageRss: Manage RSS feeds
-// i18n shell.menu.watchParties: Watch parties
 // i18n shell.menu.write: Write
 // i18n shell.menu.drafts: Drafts
 // i18n shell.menu.scheduled: Scheduled posts
@@ -241,6 +241,7 @@ const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
   'shell.nav.search': 'shell.navShort.search',
   'shell.nav.feeds': 'shell.navShort.feeds',
   'shell.nav.login': 'shell.navShort.login',
+  'shell.modeNav.video.subscriptions': 'shell.navShort.subscriptions',
 };
 
 @Component({

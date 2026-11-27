@@ -1,5 +1,6 @@
 import { AccountName } from '../../accounts/account-name';
 import { DraftsRailCard } from '../../publishing/drafts/drafts-rail-card';
+import { YoutuberKitsCard } from '../../reading/videos/youtuber-kits-card';
 import { accountProfilePath } from '../../accounts/account-route';
 import { Server } from '../../platform/http/server';
 import { lacksMastodonServer } from '../../platform/http/mastodon-route.interceptor';
@@ -69,6 +70,7 @@ function accountKey(account: Account): string {
   selector: 'app-left-rail',
   imports: [
     DraftsRailCard,
+    YoutuberKitsCard,
     AccountName,
     ProfileContentFilters,
     BlogAuthorCard,

@@ -18,23 +18,16 @@
         (error)="failed.set(true)"
       ></video>
     }
-    @if (!compact()) {
-      <label class="speed"
-        >{{ 'videoPlayer.speed' | transloco }}
-        <select [value]="rate()" (change)="setRate($event)">
-          @for (speed of [0.5, 0.75, 1, 1.25, 1.5, 2]; track speed) {
-            <option [value]="speed" [selected]="speed === rate()">{{ speed }}×</option>
-          }
-        </select>
-      </label>
-    }
   } @else if (source().kind === 'peertube') {
     <!-- A PeerTube link: Watch resolves and plays it; feeds show its poster. -->
     <div class="peertube-preview">
       @if (source().poster; as poster) {
         <img [src]="poster" alt="" loading="lazy" />
       }
-      <span>{{ 'videoPlayer.peertube' | transloco: { host: $safeNavigationMigration(source().peertube?.host) } }}</span>
+      <span>{{
+        'videoPlayer.peertube'
+          | transloco: { host: $safeNavigationMigration(source().peertube?.host) }
+      }}</span>
     </div>
   } @else if (!activated()) {
     <button
@@ -66,11 +59,30 @@
       <p role="status">{{ 'videoPlayer.loading' | transloco }}</p>
     }
   }
-  @if (duration()) {
-    <span class="duration">{{ duration() }}</span>
-  }
-  @if (showTitle() && title() && (source().kind !== 'youtube' || title() !== 'YouTube')) {
-    <p class="description">{{ title() }}</p>
+  <!-- Speed, length and description share one line: stacked, they took three
+       rows under every video (owner, 2026-11-27). -->
+  @let showSpeed = source().kind === 'native' && !compact();
+  @let showDescription =
+    showTitle() && title() && (source().kind !== 'youtube' || title() !== 'YouTube');
+  @if (showSpeed || duration() || showDescription) {
+    <div class="meta">
+      @if (showSpeed) {
+        <label class="speed">
+          <span class="sr-only">{{ 'videoPlayer.speed' | transloco }}</span>
+          <select [value]="rate()" (change)="setRate($event)">
+            @for (speed of [0.5, 0.75, 1, 1.25, 1.5, 2]; track speed) {
+              <option [value]="speed" [selected]="speed === rate()">{{ speed }}×</option>
+            }
+          </select>
+        </label>
+      }
+      @if (duration()) {
+        <span class="duration">{{ duration() }}</span>
+      }
+      @if (showDescription) {
+        <p class="description">{{ title() }}</p>
+      }
+    </div>
   }
   @if (failed()) {
     <p role="alert">{{ 'videoPlayer.failed' | transloco }}</p>

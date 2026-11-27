@@ -26,6 +26,26 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-27: YouTube and Fedi Video apps; watch-party replies
+
+- test: src/app/platform/build/app-mode.spec.ts :: modeForUrl puts Watch in Video, wherever it was opened from
+  reason: renamed
+  now: src/app/platform/build/app-mode.spec.ts :: modeForUrl puts Watch in a video app, wherever it was opened from
+  why: Video is now two apps, YouTube and Fedi Video.
+- test: src/app/shell/mode-nav.spec.ts :: MODE_NAV marks exactly one Video tab current
+  reason: renamed
+  now: src/app/shell/mode-nav.spec.ts :: MODE_NAV marks exactly one YouTube tab current
+  now: src/app/shell/mode-nav.spec.ts :: MODE_NAV marks exactly one Fedi Video tab current, sharing Search with YouTube
+  why: Video's tabs are split between the two apps.
+- test: src/app/shell/shell.spec.ts :: Shell app-mode nav adds Watch parties to the ... menu and drops Manage RSS feeds and Drafts
+  reason: replaced
+  now: src/app/shell/shell.spec.ts :: Shell app-mode nav leaves Videos, Watch parties, Manage RSS feeds and Drafts out of the ... menu
+  why: The owner asked (2026-11-27) for Videos and Watch parties to leave the … menu; they are the YouTube and Fedi Video apps in the switcher.
+- test: src/app/reading/watch/party-conversation.spec.ts :: Temporary party conversations chat room controls posts chat publicly with the show hashtag, and as a reply when replies are shown
+  reason: replaced
+  now: src/app/reading/watch/party-conversation.spec.ts :: Temporary party conversations chat room controls replies unlisted without the tag, and posts hashtag chat publicly with it
+  why: The owner decided (2026-11-27) that party replies stay unlisted and untagged, since the post they answer gives the context.
+
 ## 2026-11-26: Shared pages open the composer in a dialog
 
 - test: src/app/shell/app-install/app-install.spec.ts :: ShareTarget parks the shared link in an unsent post and goes Home without posting

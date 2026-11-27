@@ -26,7 +26,9 @@ import {
 // i18n shell.modeNav.blog.roll: Roll
 // i18n shell.modeNav.blog.search: Search
 // i18n shell.modeNav.mode.rss: RSS
-// i18n shell.modeNav.mode.video: Video
+// i18n shell.modeNav.mode.video: YouTube
+// i18n shell.modeNav.mode.fedivideo: Fedi Video
+// i18n shell.modeNav.fedivideo.parties: Parties
 // i18n shell.modeNav.mode.radio: Radio
 // i18n shell.modeNav.radio.singles: Singles
 // i18n shell.modeNav.radio.playlists: Playlists
@@ -115,6 +117,18 @@ function param(url: string, name: string): string | null {
   const query = url.split('#', 1)[0].split('?')[1] ?? '';
   return new URLSearchParams(query).get(name);
 }
+
+/**
+ * Both video apps' Search: one page, fediverse posts and YouTube together.
+ * Its own glyph (a play mark inside) because it is its own search.
+ */
+const VIDEO_SEARCH: ModeNavItem = {
+  id: 'search',
+  labelKey: 'shell.modeNav.video.search',
+  icon: 'M4 10.5a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0-13 0M15.5 15.5l5 5M9.2 8.2v4.6l3.8-2.3z',
+  link: '/videos/search',
+  active: onPath('/videos/search'),
+};
 
 /** Home is not here: it is the fixed first slot of every mode (rule 1). */
 export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
@@ -408,27 +422,11 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       active: (url) => pathOf(url) === '/videos',
     },
     {
-      id: 'fedi',
-      labelKey: 'shell.modeNav.video.fedi',
-      icon: 'M4 4h16v16H4zM8 4v16M16 4v16M4 8h4M4 12h4M4 16h4M16 8h4M16 12h4M16 16h4',
-      link: '/videos/fedi',
-      active: onPath('/videos/fedi'),
-    },
-    {
       id: 'queue',
       labelKey: 'shell.modeNav.video.queue',
       icon: 'M4 6h11M4 12h11M4 18h7M17 14v6l5-3z',
       link: '/videos/queue',
       active: onPath('/videos/queue'),
-    },
-    {
-      // Slot 4, where Search is in Mastodon, so the magnifier stays put across
-      // modes. Its own glyph (a play mark inside) because it is its own search.
-      id: 'search',
-      labelKey: 'shell.modeNav.video.search',
-      icon: 'M4 10.5a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0-13 0M15.5 15.5l5 5M9.2 8.2v4.6l3.8-2.3z',
-      link: '/videos/search',
-      active: onPath('/videos/search'),
     },
     {
       id: 'saved',
@@ -438,6 +436,27 @@ export const MODE_NAV: Record<AppMode, readonly ModeNavItem[]> = {
       queryParams: { view: 'video' },
       active: (url) => pathOf(url) === '/bookmarks' && param(url, 'view') === 'video',
     },
+    // Slot 4, where Search is in Mastodon, so the magnifier stays put.
+    VIDEO_SEARCH,
+  ],
+  // Video posted on the fediverse, sometimes YouTube (owner, 2026-11-27).
+  fedivideo: [
+    {
+      id: 'fedi',
+      labelKey: 'shell.modeNav.video.fedi',
+      icon: 'M4 4h16v16H4zM8 4v16M16 4v16M4 8h4M4 12h4M4 16h4M16 8h4M16 12h4M16 16h4',
+      link: '/videos/fedi',
+      active: onPath('/videos/fedi'),
+    },
+    {
+      // The watch-party finder, out of the … menu (owner, 2026-11-27).
+      id: 'parties',
+      labelKey: 'shell.modeNav.fedivideo.parties',
+      icon: 'M5 8a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0-5 0M2 19a5.5 5.5 0 0 1 11 0M15 8v7l6-3.5z',
+      link: '/videos/parties',
+      active: onPath('/videos/parties'),
+    },
+    VIDEO_SEARCH,
   ],
 };
 
@@ -608,6 +627,12 @@ export const MODE_ENTRIES: Record<AppMode, ModeEntry> = {
     labelKey: 'shell.modeNav.mode.video',
     icon: 'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0M10 8.5v7l5.5-3.5z',
     link: '/videos',
+  },
+  fedivideo: {
+    mode: 'fedivideo',
+    labelKey: 'shell.modeNav.mode.fedivideo',
+    icon: 'M3 5h18v12H3zM10 8v6l5-3zM8 21h8M12 17v4',
+    link: '/videos/fedi',
   },
 };
 

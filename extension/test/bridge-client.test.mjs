@@ -41,7 +41,15 @@ test('the client reaches the background through the content script and gets its 
   assert.deepEqual(result, { ok: true, echoed: 'fetch' });
   assert.deepEqual(sent.at(-1), {
     type: 'bridge',
-    request: { op: 'fetch', url: 'https://blog.example/feed', purpose: 'feed', origin: undefined },
+    request: {
+      op: 'fetch',
+      url: 'https://blog.example/feed',
+      purpose: 'feed',
+      origin: undefined,
+      endpoint: undefined,
+      body: undefined,
+      headers: undefined,
+    },
   });
 });
 
@@ -66,4 +74,18 @@ test('without the extension the client answers unavailable at once', async () =>
   const client = await import(`../client/bridge-client.js?${Math.random()}`);
   assert.equal(client.extensionPresent(), false);
   assert.equal((await client.extensionFetch('https://blog.example/', 'feed')).error, 'unavailable');
+});
+
+test('the client relays YouTube reads with their endpoint, body and headers', async () => {
+  const { client, sent } = await setUp(async () => ({ ok: true, body: '{}' }));
+  await client.youtube('search', '{"query":"x"}', [['X-YouTube-Client-Name', '1']]);
+  assert.deepEqual(sent.at(-1).request, {
+    op: 'youtube',
+    url: undefined,
+    purpose: undefined,
+    origin: undefined,
+    endpoint: 'search',
+    body: '{"query":"x"}',
+    headers: [['X-YouTube-Client-Name', '1']],
+  });
 });

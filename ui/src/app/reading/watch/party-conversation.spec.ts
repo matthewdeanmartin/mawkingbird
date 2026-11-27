@@ -385,7 +385,7 @@ describe('Temporary party conversations', () => {
       expect(due).toHaveBeenCalledTimes(1);
     });
 
-    it('posts chat publicly with the show hashtag, and as a reply when replies are shown', async () => {
+    it('replies unlisted without the tag, and posts hashtag chat publicly with it', async () => {
       fixture.componentRef.setInput('canReply', true);
       fixture.componentInstance.addTag('Show');
       fixture.detectChanges();
@@ -399,9 +399,10 @@ describe('Temporary party conversations', () => {
       box.value = 'here we go\non two lines';
       box.dispatchEvent(new Event('input'));
       box.form!.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      // A reply's context is the post it answers: no tag, out of public timelines.
       expect(api.postStatus).toHaveBeenCalledWith(
-        'here we go\non two lines #Show',
-        { inReplyToId: 'root', visibility: 'public' },
+        'here we go\non two lines',
+        { inReplyToId: 'root', visibility: 'unlisted' },
         expect.any(String),
       );
       posted.next(post('5'));
@@ -412,6 +413,41 @@ describe('Temporary party conversations', () => {
       state().send();
       expect(api.postStatus).toHaveBeenLastCalledWith(
         'already #show tagged',
+        { visibility: 'public' },
+        expect.any(String),
+      );
+    });
+
+    it('starts a party without a post by sharing the video, then reports the share post', () => {
+      fixture.componentRef.setInput('root', null);
+      fixture.componentRef.setInput('shareLink', 'https://www.youtube.com/watch?v=abc');
+      fixture.componentInstance.addTag('Show');
+      fixture.detectChanges();
+      const started = vi.fn();
+      fixture.componentInstance.started.subscribe(started);
+      const box = fixture.nativeElement.querySelector(
+        'textarea[name="chat"]',
+      ) as HTMLTextAreaElement;
+      expect(box.placeholder).toBe('Share the video and start the chat');
+      state().chat.set('this is great');
+      state().send();
+      expect(api.postStatus).toHaveBeenCalledWith(
+        'this is great\n\nhttps://www.youtube.com/watch?v=abc #Show',
+        { visibility: 'public' },
+        expect.any(String),
+      );
+      posted.next(post('7'));
+      expect(started).toHaveBeenCalledWith(post('7'));
+    });
+
+    it('starts a party from a share link even with no hashtag', () => {
+      fixture.componentRef.setInput('root', null);
+      fixture.componentRef.setInput('shareLink', 'https://www.youtube.com/watch?v=abc');
+      fixture.detectChanges();
+      state().chat.set('hello');
+      state().send();
+      expect(api.postStatus).toHaveBeenCalledWith(
+        'hello\n\nhttps://www.youtube.com/watch?v=abc',
         { visibility: 'public' },
         expect.any(String),
       );

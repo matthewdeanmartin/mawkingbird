@@ -37,6 +37,8 @@ import { rssSourceUrl } from './rss-source';
 import { RssCache } from './rss-cache';
 import { feedToStatuses } from './rss-adapter';
 import { ProxyActivity } from '../../connections/cors-proxy/proxy-activity';
+import { ExtensionBridge, siteName } from '../../platform/extension/extension-bridge';
+import { RssFetch } from './rss-fetch';
 
 // i18n pages.rss.subscriptions: Subscriptions
 // i18n pages.rss.title: 📡 RSS
@@ -69,6 +71,8 @@ import { ProxyActivity } from '../../connections/cors-proxy/proxy-activity';
 // i18n pages.rss.couldntLoadFeeds: Couldn't load {{count}} feeds.
 // i18n pages.rss.checkInSettings: Check them in settings
 // i18n pages.rss.corsWarning:  — a feed that fails here usually needs a CORS proxy.
+// i18n pages.rss.extensionCanRead: Mawkingbird for Firefox can read these sites for you if you allow it:
+// i18n pages.rss.allowAllSites: Let Mawkingbird for Firefox read any public site
 // i18n pages.rss.loadingItems: Loading items…
 // i18n pages.rss.saved: ★ Saved
 // i18n pages.rss.markUnread: Mark unread
@@ -234,6 +238,18 @@ export class RssPage {
   protected readonly statuses = signal<Status[]>([]);
   /** Feeds in the current selection that would not load, by URL. */
   protected readonly failed = signal<string[]>([]);
+  private readonly bridge = inject(ExtensionBridge);
+  private readonly rssFetch = inject(RssFetch);
+  protected readonly siteName = siteName;
+  /**
+   * Sites of failed feeds that Mawkingbird for Firefox hasn't been allowed to
+   * read (at most three), each offered an Allow button. Empty without it.
+   */
+  protected readonly blockedSites = signal<string[]>([]);
+  /** Several sites blocked and "any public site" is off: offer that once. */
+  protected readonly offerAllSites = computed(
+    () => this.blockedSites().length > 1 && this.bridge.allSites() !== true,
+  );
 
   /** The heading above the right pane. */
   protected readonly paneTitle = translatedComputed(() => {
@@ -326,6 +342,11 @@ export class RssPage {
 
   constructor() {
     this.showKits.set(this.subs.feeds().length === 0 && !this.readState.starredCount());
+
+    effect(() => {
+      const failed = this.failed();
+      untracked(() => void this.findBlockedSites(failed));
+    });
 
     effect(() => {
       const handed = this.addInUrl()?.trim();
@@ -683,6 +704,40 @@ export class RssPage {
     }
   }
 
+  /** Which failed feeds' sites the extension could read once allowed. */
+  private async findBlockedSites(failed: readonly string[]): Promise<void> {
+    if (!failed.length || !this.bridge.present()) {
+      this.blockedSites.set([]);
+      return;
+    }
+    const origins = [...new Set(failed.map((url) => originOf(url)).filter(Boolean))];
+    const blocked: string[] = [];
+    for (const origin of origins) {
+      if (!(await this.bridge.hasAccess(origin))) blocked.push(origin);
+    }
+    if (blocked.length > 1) await this.bridge.refreshAllSites();
+    // Still the same failures? A newer load may have replaced them meanwhile.
+    if (this.failed() === failed) this.blockedSites.set(blocked.slice(0, 3));
+  }
+
+  /** "Let Mawkingbird for Firefox read <site>", then read the feeds again. */
+  protected async allowSite(origin: string): Promise<void> {
+    if (await this.bridge.requestAccess(origin)) this.retryFailed();
+  }
+
+  /** "Let Mawkingbird for Firefox read any public site", then read again. */
+  protected async allowAllSites(): Promise<void> {
+    if (await this.bridge.requestAllSites()) this.retryFailed();
+  }
+
+  private retryFailed(): void {
+    this.diagnostics.info('RssPage', 'pane:retry-after-extension-access', {
+      feeds: this.failed().length,
+    });
+    this.rssFetch.forgetFailures(this.failed());
+    this.load([...this.previousUrls]);
+  }
+
   openAddDialog(): void {
     this.diagnostics.info('RssPage', 'user:open-add-dialog', {});
     this.addPrefill.set('');
@@ -705,6 +760,14 @@ export class RssPage {
 }
 
 /** Read the pane selection out of the query string. */
+function originOf(url: string): string {
+  try {
+    return new URL(url).origin;
+  } catch {
+    return '';
+  }
+}
+
 function readSelection(
   feed: string | null,
   folder: string | null,

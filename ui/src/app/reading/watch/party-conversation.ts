@@ -93,6 +93,8 @@ import { YoutubeComments } from './youtube-comments';
 // i18n watch.party.sendFailed: Couldn't send. Your message is still in the box.
 // i18n watch.party.signInToChat: Sign in with Mastodon to chat here.
 // i18n watch.party.needTarget: Add a hashtag to chat.
+// i18n watch.party.chatPlaceholderStart: Share the video and start the chat
+// i18n watch.party.startNote: Your first message is shared as a public post with the video link. Everything after that replies to it.
 
 /** A chat message as the compact view shows it. */
 interface ChatLine {
@@ -157,6 +159,14 @@ export class PartyConversation implements OnDestroy {
   readonly signInNext = input('/home');
   /** Whether the chat box may reply to {@link root} (a post on the signed-in server). */
   readonly canReply = input(false);
+  /**
+   * The video's address, when there is no post to reply to (a YouTube video
+   * from RSS or a subscription). The first message shares it as a public post,
+   * which then roots the chat, so nothing lands in a home feed without context.
+   */
+  readonly shareLink = input<string | null>(null);
+  /** The share post a first message made: the page makes it the {@link root}. */
+  readonly started = output<Status>();
   /** The YouTube video being watched, for the read-only YouTube comments mode (Native). */
   readonly youtubeVideoId = input<string | null>(null);
   /** A YouTube comment the reader wants to quote in a post. */
@@ -316,6 +326,8 @@ export class PartyConversation implements OnDestroy {
   /** Where the chat box posts: the first party tag and/or a reply to the video post. */
   protected chatTag = computed(() => (this.showsTags() ? (this.tags()[0] ?? null) : null));
   protected chatReplies = computed(() => this.showsReplies() && this.canReply() && !!this.root());
+  /** No post yet but a video to share: the next message starts the party. */
+  protected startsParty = computed(() => !this.root() && !!this.shareLink());
   protected canPost = computed(() => this.auth.kind() === 'mastodon' && !this.auth.isAnonymous);
 
   /** `add` keeps the login page open for someone signed in to another network. */
@@ -523,11 +535,15 @@ export class PartyConversation implements OnDestroy {
     const text = this.chat().trim();
     const tag = this.chatTag();
     const reply = this.chatReplies() ? this.root() : null;
-    if (!text || this.sending() || !this.canPost() || (!tag && !reply)) return;
+    const start = !reply && this.startsParty() ? this.shareLink() : null;
+    if (!text || this.sending() || !this.canPost() || (!tag && !reply && !start)) return;
     const mentioned = this.tags().some((item) =>
       new RegExp(`(^|\\s)#${item}(?![\\p{L}\\p{N}_])`, 'iu').test(text),
     );
-    const body = tag && !mentioned ? `${text} #${tag}` : text;
+    // A reply has its context in the post it answers, so it skips the tag and
+    // stays unlisted: out of public and hashtag timelines (owner, 2026-11-27).
+    const tagged = !reply && tag && !mentioned ? ` #${tag}` : '';
+    const body = start ? `${text}\n\n${start}${tagged}` : `${text}${tagged}`;
     this.sending.set(true);
     this.sendFailed.set(false);
     this.send$ = this.api
@@ -535,8 +551,9 @@ export class PartyConversation implements OnDestroy {
         body,
         {
           ...(reply ? { inReplyToId: reply.id } : {}),
-          // A hashtag only reaches the party's tag timelines when public.
-          ...(tag ? { visibility: 'public' } : {}),
+          // A hashtag only reaches the party's tag timelines when public; the
+          // share post is what others find the party by.
+          ...(reply ? { visibility: 'unlisted' } : tag || start ? { visibility: 'public' } : {}),
         },
         `watch-party:${Date.now()}:${Math.random().toString(36).slice(2)}`,
       )
@@ -546,7 +563,12 @@ export class PartyConversation implements OnDestroy {
           this.chat.set('');
           this.following = true;
           if (reply) this.replied.emit(status);
-          if (tag)
+          if (start) {
+            this.started.emit(status);
+            // Keep the hashtag chat in view beside the new post's replies.
+            this.chosen.set(this.tags().length ? 'both' : 'replies');
+          }
+          if (tag && !reply)
             this.pages.update((pages) => ({ ...pages, [tag]: [status, ...(pages[tag] ?? [])] }));
         },
         error: () => {

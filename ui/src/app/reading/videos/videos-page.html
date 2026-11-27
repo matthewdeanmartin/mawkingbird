@@ -1,3 +1,4 @@
+<app-youtube-extension-access (allowed)="load(true)" />
 <mb-rail-page>
   <aside mbRailPanel>
     <app-video-subscriptions-panel
@@ -6,6 +7,10 @@
       [selected]="selected()"
       (opened)="results.set(null)"
     />
+    <!-- This page has no shell rails, so the creator kits sit under its own. -->
+    @defer (on idle) {
+      <app-youtuber-kits-card />
+    }
   </aside>
   <section mbPagePanel class="video-feed" [attr.aria-label]="'videos.title' | transloco">
     <header>

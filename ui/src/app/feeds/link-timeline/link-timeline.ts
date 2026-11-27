@@ -1,6 +1,6 @@
 import { StatusReplacement, replaceStatus } from '../reconcile-status';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -59,14 +59,26 @@ export class LinkTimeline implements OnInit {
   /** The list came from post search, not the server's link timeline. */
   protected fromSearch = signal(false);
 
+  /** The link, when a host page passes it (the sidebar panel); otherwise `?url=`. */
+  readonly link = input<string | null>(null);
+
   ngOnInit(): void {
     this.destroyRef.onDestroy(() => this.sub?.unsubscribe());
-    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const url = (params.get('url') ?? '').trim();
-      this.url.set(url);
-      this.host.set(hostOf(url));
-      this.load();
-    });
+    const given = this.link();
+    if (given !== null) {
+      this.show(given);
+      return;
+    }
+    this.route.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => this.show(params.get('url') ?? ''));
+  }
+
+  private show(raw: string): void {
+    const url = raw.trim();
+    this.url.set(url);
+    this.host.set(hostOf(url));
+    this.load();
   }
 
   load(): void {

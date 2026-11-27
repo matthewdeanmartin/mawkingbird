@@ -48,6 +48,28 @@ export async function requestAccess(origin) {
   return answer.ok === true && answer.granted === true;
 }
 
+/** Whether the reader turned on "any public site" (for bulk features). */
+export async function allSites() {
+  const answer = await ask({ op: 'allSites' });
+  return answer.ok === true && answer.granted === true;
+}
+
+/** Asks the reader to turn on "any public site". From a click only. */
+export async function requestAllSites() {
+  const answer = await ask({ op: 'requestAllSites' });
+  return answer.ok === true && answer.granted === true;
+}
+
+/**
+ * One anonymous YouTube web-client read (`search`, `browse`, `player`, `next`):
+ * `body` is the JSON request, `headers` only the X-YouTube-Client-Name,
+ * X-YouTube-Client-Version and X-Goog-Visitor-Id pairs. Resolves
+ * `{ ok: true, body }` or a failure as for {@link extensionFetch}.
+ */
+export function youtube(endpoint, body, headers = []) {
+  return ask({ op: 'youtube', endpoint, body, headers });
+}
+
 let counter = 0;
 
 function ask(request, win = globalThis.window) {

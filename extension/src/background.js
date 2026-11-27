@@ -8,7 +8,14 @@ import {
   watchUrl,
   youtubeVideoId,
 } from './lib/links.js';
-import { fromMawkingbird, handleBridgeRequest, originPattern } from './lib/bridge.js';
+import { YOUTUBE_ORIGIN_RULE_ID, youtubeOriginRule } from './lib/youtube-rule.js';
+import {
+  ALL_SITES,
+  YOUTUBE_ORIGIN,
+  fromMawkingbird,
+  handleBridgeRequest,
+  originPattern,
+} from './lib/bridge.js';
 import { getBase, onBaseChanged } from './lib/settings.js';
 
 /**
@@ -159,10 +166,32 @@ async function answerBridge(request, sender) {
     fetch: (url, init) => fetch(url, init),
     hasPermission: (pattern) => browser.permissions.contains({ origins: [pattern] }),
     requestAccess: (origin) => askForAccess(origin),
+    requestAllSites: () => askForAccess('*'),
   });
 }
 
-/** Opens the grant window and resolves with the reader's answer (false if closed). */
+// YouTube's web-client API refuses requests whose Origin is the extension's
+// own (moz-extension://…), answering 403; without an Origin it answers as it
+// does for Native. A declarativeNetRequest rule drops that one header: Firefox
+// applies it itself, so the extension never sees any request's headers or
+// cookies. `tabIds: [-1]` limits it to requests from no tab (the extension's
+// own), so the reader's YouTube tabs are never touched; and with host access
+// only, it works only once the reader has allowed YouTube.
+
+async function installYoutubeOriginRule() {
+  await browser.declarativeNetRequest.updateSessionRules({
+    removeRuleIds: [YOUTUBE_ORIGIN_RULE_ID],
+    addRules: [youtubeOriginRule()],
+  });
+}
+
+// Session rules last until Firefox restarts; set them whenever this page loads.
+void installYoutubeOriginRule();
+
+/**
+ * Opens the grant window and resolves with the reader's answer (false if
+ * closed). `origin` is a site, or `*` for the "any public site" switch.
+ */
 async function askForAccess(origin) {
   const id = crypto.randomUUID();
   const url = browser.runtime.getURL(

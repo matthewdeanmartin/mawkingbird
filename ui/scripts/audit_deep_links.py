@@ -33,6 +33,7 @@ class Link:
 # the guard's source regexes, not a second implementation of the Angular app.
 LINKS = (
     Link("Mastodon post", "matcher:mastodonPostLinkMatcher", "/far.example/@alice@far.example/42", "src/app/posts/copy-link/deep-links.ts", "postDeepLink", "copied"),
+    Link("Mastodon post analytics", "matcher:mastodonPostAnalyticsLinkMatcher", "/far.example/@alice@far.example/42/analytics", "src/app/posts/copy-link/deep-links.ts", "postAnalyticsDeepLink", "copied"),
     Link("Mastodon account", "matcher:accountHandleLinkMatcher", "/@alice@far.example", "src/app/posts/copy-link/deep-links.ts", "accountDeepLink", "copied"),
     Link("Bluesky post", "bsky/profile/:actor/post/:rkey", "/bsky/profile/did:plc:alice/post/3kxyz", "src/app/posts/copy-link/deep-links.ts", "bsky/profile/", "copied"),
     Link("Bluesky account", "bsky/profile/:actor", "/bsky/profile/did:plc:alice", "src/app/posts/copy-link/deep-links.ts", "bsky/profile/", "copied"),

@@ -227,7 +227,22 @@ export class ArticleFetch {
 
   /** Whether expansion can be offered at all. */
   available(): boolean {
-    return !!this.nativeRead || this.proxy.available();
+    return !!this.nativeRead || this.proxy.available() || this.bridge.present();
+  }
+
+  /**
+   * Whether this read happens on the reader's own computer (Native, or
+   * Mawkingbird for Firefox for a site they allowed), costing no proxy request,
+   * so the free article quota doesn't apply.
+   */
+  async servesLocally(url: string): Promise<boolean> {
+    if (this.nativeRead) return true;
+    if (!this.bridge.present()) return false;
+    try {
+      return await this.bridge.hasAccess(new URL(url).origin);
+    } catch {
+      return false;
+    }
   }
 
   /** Read locally without authorizing or making a network request. */
@@ -281,6 +296,23 @@ export class ArticleFetch {
       return empty('network', { detail: 'No CORS proxy is configured.' });
     }
 
+    // Mawkingbird for Firefox first, for a site the reader allowed. Without
+    // permission and with no proxy, say which site to allow rather than fail.
+    let extensionAccess: string | undefined;
+    if (!this.nativeRead && this.bridge.present()) {
+      const viaExtension = await this.fetchViaExtension(url);
+      if ('outcome' in viaExtension) {
+        return this.finish(url, viaExtension.outcome, startedAt, empty);
+      }
+      if ('needsAccess' in viaExtension) extensionAccess = viaExtension.needsAccess;
+      if (!this.proxy.available()) {
+        return empty('network', {
+          detail: 'Mawkingbird for Firefox has not been allowed to read this site.',
+          ...(extensionAccess ? { extensionAccess } : {}),
+        });
+      }
+    }
+
     // The `article` route rather than `feeds`: it caps smaller, allows only
     // page content types, caches longer, and — the reason it exists — replaces
     // a failed upstream's body with a document we can actually parse. `feeds`
@@ -288,7 +320,7 @@ export class ArticleFetch {
     // plain relay is all that is wanted.
     let fetched = this.nativeRead
       ? await this.fetchNative(url)
-      : ((await this.fetchViaExtension(url)) ?? (await this.fetchVia('article', url)));
+      : await this.fetchVia('article', url);
 
     // Deploy-order tolerance: the app can ship before the Worker does. Falling
     // back keeps expansion working through that window instead of failing
@@ -298,6 +330,17 @@ export class ArticleFetch {
       fetched = await this.fetchVia('feeds', url);
     }
 
+    return this.finish(url, fetched, startedAt, empty, extensionAccess);
+  }
+
+  /** Turn fetched bytes (or a failure) into the cached, logged result. */
+  private async finish(
+    url: string,
+    fetched: FetchOutcome,
+    startedAt: number,
+    empty: (diagnosis: ArticleDiagnosis, debug?: ArticleDebug) => ArticleResult,
+    extensionAccess?: string,
+  ): Promise<ArticleResult> {
     if (!fetched.ok) {
       const { failure } = fetched;
       // `warn`, not `info`: this is the event someone is trying to explain
@@ -316,6 +359,8 @@ export class ArticleFetch {
         source: failure.source,
         upstreamStatus: failure.upstreamStatus ?? undefined,
         detail: failure.detail ?? undefined,
+        // The proxy couldn't read it either; the extension might, if allowed.
+        ...(extensionAccess ? { extensionAccess } : {}),
       });
       await this.cache.put(url, result);
       return result;
@@ -380,31 +425,39 @@ export class ArticleFetch {
    */
   /**
    * Mawkingbird for Firefox reads the page from the reader's computer, for a
-   * site they've allowed: no proxy, no quota. Null (use the proxy) when the
-   * extension isn't here, hasn't been allowed this site, or couldn't read it.
+   * site they've allowed: no proxy, no quota. `outcome` when it read (or the
+   * site answered with an error); `needsAccess` when the reader hasn't allowed
+   * the site; neither when it couldn't read for another reason.
    */
-  private async fetchViaExtension(url: string): Promise<FetchOutcome | null> {
-    if (!this.bridge.present()) return null;
+  private async fetchViaExtension(
+    url: string,
+  ): Promise<{ outcome: FetchOutcome } | { needsAccess: string } | { skipped: true }> {
     const read = await this.bridge.read(url, 'article');
     if (!read.ok) {
       this.diagnostics.info('Article', 'extension did not read', { url, reason: read.error });
-      return null;
+      return read.error === 'needs-access' && read.origin
+        ? { needsAccess: read.origin }
+        : { skipped: true };
     }
     if (read.status < 200 || read.status >= 300) {
       return {
-        ok: false,
-        failure: diagnoseHttpError(
-          new HttpErrorResponse({
-            status: read.status,
-            headers: new HttpHeaders({
-              'X-Proxy-Source': 'upstream',
-              'X-Proxy-Upstream-Status': String(read.status),
+        outcome: {
+          ok: false,
+          failure: diagnoseHttpError(
+            new HttpErrorResponse({
+              status: read.status,
+              headers: new HttpHeaders({
+                'X-Proxy-Source': 'upstream',
+                'X-Proxy-Upstream-Status': String(read.status),
+              }),
             }),
-          }),
-        ),
+          ),
+        },
       };
     }
-    return { ok: true, html: read.body, finalUrl: read.finalUrl, status: read.status };
+    return {
+      outcome: { ok: true, html: read.body, finalUrl: read.finalUrl, status: read.status },
+    };
   }
 
   private async fetchNative(url: string): Promise<FetchOutcome> {

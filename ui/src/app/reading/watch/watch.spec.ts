@@ -2,7 +2,9 @@ import { Component, input, output, signal, ChangeDetectionStrategy } from '@angu
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
+import { Location } from '@angular/common';
+import { Api } from '../../platform/api/api';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { WatchQueue } from '../videos/watch-queue';
 import { Watch } from './watch';
@@ -63,6 +65,8 @@ class PartyStub {
   readonly signInNext = input('');
   readonly canReply = input(false);
   readonly youtubeVideoId = input<string | null>(null);
+  readonly shareLink = input<string | null>(null);
+  readonly started = output<Status>();
   readonly quoted = output<YoutubeComment>();
   readonly repliesDue = output<void>();
   readonly changed = output<Status>();
@@ -109,6 +113,7 @@ describe('Watch post access and reveal gates', () => {
   let blocked: ReturnType<typeof signal<boolean>>;
   const peertubeGet = vi.fn<PeerTubeVideos['get']>();
   let images: ReturnType<typeof signal<boolean>>;
+  let getContext: ReturnType<typeof vi.fn>;
   const status = (): Status =>
     ({
       id: '1',
@@ -152,6 +157,7 @@ describe('Watch post access and reveal gates', () => {
     };
     blocked = signal(false);
     images = signal(true);
+    getContext = vi.fn(() => of({ ancestors: [], descendants: [] as Status[] }));
     TestBed.configureTestingModule({
       imports: [Watch],
       providers: [
@@ -166,6 +172,7 @@ describe('Watch post access and reveal gates', () => {
           },
         },
         { provide: Server, useValue: { baseUrl: signal('https://home.test') } },
+        { provide: Api, useValue: { getContext: getContext } },
         {
           provide: ClientPrefs,
           useValue: {
@@ -636,6 +643,29 @@ describe('Watch post access and reveal gates', () => {
       params.next(convertToParamMap({ youtube: 'abcdefghijk', t: 'soon' }));
       fixture.detectChanges();
       expect(panel.source()?.start).toBe(0);
+    });
+
+    it('adopts the share post a bare video party starts, without reloading the video', () => {
+      params.next(convertToParamMap({ youtube: 'abcdefghijk' }));
+      mount();
+      expect(party().shareLink()).toBe('https://www.youtube.com/watch?v=abcdefghijk');
+      expect(party().root()).toBeNull();
+      const replace = vi.spyOn(TestBed.inject(Location), 'replaceState');
+      const share = { id: '77', account: { id: 'me' } } as unknown as Status;
+      party().started.emit(share);
+      fixture.detectChanges();
+      expect(party().root()).toBe(share);
+      expect(party().canReply()).toBe(true);
+      expect(replace).toHaveBeenCalledWith(
+        '/watch',
+        'youtube=abcdefghijk&post=77&server=https%3A%2F%2Fhome.test',
+      );
+      const reply = { id: '78', account: { id: 'friend' } } as unknown as Status;
+      getContext.mockReturnValue(of({ ancestors: [], descendants: [reply] }));
+      party().repliesDue.emit();
+      fixture.detectChanges();
+      expect(getContext).toHaveBeenCalledWith('77');
+      expect(party().comments()).toEqual([reply]);
     });
 
     it('plays a PeerTube link from its instance, waiting like sensitive media when NSFW', async () => {

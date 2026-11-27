@@ -51,16 +51,26 @@ describe('MODE_NAV', () => {
     expect(active('/settings/rss')).toEqual(['manage']);
   });
 
-  it('marks exactly one Video tab current', () => {
+  it('marks exactly one YouTube tab current', () => {
     const active = (url: string) =>
       MODE_NAV.video.filter((item) => item.active(url)).map((item) => item.id);
     expect(active('/videos')).toEqual(['youtube']);
     expect(active('/videos?channel=UC123')).toEqual(['youtube']);
-    expect(active('/videos/fedi')).toEqual(['fedi']);
+    expect(active('/videos/fedi')).toEqual([]);
     expect(active('/videos/queue')).toEqual(['queue']);
     expect(active('/videos/search?q=cats')).toEqual(['search']);
     expect(active('/bookmarks?view=video')).toEqual(['saved']);
     expect(active('/bookmarks?view=media')).toEqual([]);
+  });
+
+  it('marks exactly one Fedi Video tab current, sharing Search with YouTube', () => {
+    const active = (url: string) =>
+      MODE_NAV.fedivideo.filter((item) => item.active(url)).map((item) => item.id);
+    expect(active('/videos/fedi')).toEqual(['fedi']);
+    expect(active('/videos/parties')).toEqual(['parties']);
+    expect(active('/videos/search?q=cats')).toEqual(['search']);
+    expect(active('/videos')).toEqual([]);
+    expect(MODE_NAV.fedivideo.at(-1)).toBe(MODE_NAV.video[3]);
   });
 
   it('keeps the mode navigation slots, with Singles, Playlists and Studio in Radio', () => {
@@ -71,6 +81,10 @@ describe('MODE_NAV', () => {
       blog: 6,
       // Explore is four by design (spec/sprint/explore-2026-11.md).
       explore: 4,
+      // Split from one Video mode (owner, 2026-11-27): five tabs drove the
+      // labels off the menu; Search is shared.
+      video: 4,
+      fedivideo: 3,
     };
     for (const mode of APP_MODES) expect(MODE_NAV[mode]).toHaveLength(slots[mode] ?? 5);
     expect(MODE_NAV.radio.map((tab) => tab.id)).toEqual(['singles', 'playlists', 'studio']);

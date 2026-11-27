@@ -3693,3 +3693,31 @@ and `settings/rss/settings-rss.html` each gain one small solid MbButton, "Let
 Mawkingbird for Firefox read <site>", beside their error line. Both stay backlog
 for their older buttons; the new control is the shared widget. No shared widget
 changed.
+
+### 2026-11-27: Firefox extension sprints 7–8 (reading, YouTube)
+
+Reviewed the regenerated inventory: scanned files 2224 to 2225, candidates 745
+to 746. One candidate is added, adopted scope:
+`reading/videos/youtube-extension-access.ts` (a note with one small MbButton),
+placed at the top of Videos, Video search, channel pages and Watch's panel.
+Existing candidates: `reading/read/reader-core/reader-core.html` and
+`reading/rss/rss-page.html` gain small MbButtons "Let Mawkingbird for Firefox
+read <site>" (and "…any public site" as outline) beside their failure notes;
+`reading/friend-feeds-dialog/friend-feeds-dialog.html` gains one legacy `.btn`
+matching its neighbours; `settings/app/settings-app.ts` gains an MbSettingsRow
+shown only when the extension is present. Backlog files stay backlog; adopted
+ones keep their scope. No shared widget changed.
+
+### 2026-11-27: YouTube and Fedi Video apps, post analytics first
+
+Reviewed the regenerated inventory: 2,225 files scanned, 746 candidates, no
+candidate added or removed. `posts/post-analytics/post-analytics.html` puts the
+stat tiles first. Its links to the post and the method are now link-variant
+MbButtons in one row, with a new Copy link MbButton beside them, and the post
+card follows under "The post". `reading/video-player/video-player.html` puts
+speed, length and description on one line, and the speed select keeps its
+label for screen readers. `reading/watch/party-conversation.html` gains a
+muted note under the chat box. The YouTubers card moves from the right rail to
+the left rail and the Videos page's own panel. The shell's … menu loses its
+Videos and Watch parties rows. The rest are line shifts. No shared widget
+changed.

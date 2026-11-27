@@ -27,6 +27,7 @@ onBaseChanged((next) => {
   void follow(0);
 });
 
+
 browser.tabs.onActivated.addListener(() => void follow());
 browser.tabs.onUpdated.addListener((_id, change, tab) => {
   if (tab.active && (change.url || change.status === 'complete')) void follow();
@@ -43,8 +44,17 @@ async function follow(delay = FOLLOW_DELAY_MS) {
     label.textContent = page ? hostOf(page) : '';
     if (page === shownFor) return;
     shownFor = page;
-    frame.src = panelUrl(base, { url: page, title: tab?.title });
+    show(panelUrl(base, { url: page, title: tab?.title }));
   }, delay);
+}
+
+/**
+ * The page travels in the panel URL's #fragment, and a fragment-only change
+ * doesn't reload a frame. Blank it first so each page gets a fresh panel.
+ */
+function show(url) {
+  frame.addEventListener('load', () => (frame.src = url), { once: true });
+  frame.src = 'about:blank';
 }
 
 async function currentTab() {

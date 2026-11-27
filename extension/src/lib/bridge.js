@@ -9,6 +9,21 @@ import { allowedType, checkTarget, MAX_BODY_BYTES, TIMEOUT_MS } from './fetch-gu
 
 export const PROTOCOL = 'mawkingbird-extension/1';
 
+/** Every public site, for the opt-in "any public site" switch (bulk RSS features). */
+export const ALL_SITES = '*://*/*';
+
+/**
+ * YouTube's own web-client API, the same four anonymous reads Native allows
+ * (native/src-tauri/src/youtube.rs): search, browse (channels), player
+ * (details), next (comments, chapters). Fixed host and paths; JSON bodies.
+ */
+export const YOUTUBE_ORIGIN = 'https://www.youtube.com';
+const YOUTUBE_ENDPOINTS = new Set(['search', 'browse', 'player', 'next']);
+const YOUTUBE_MAX_REQUEST_BYTES = 64 * 1024;
+const YOUTUBE_MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
+/** Stream URLs and ads never reach the app: it plays through YouTube's embed. */
+const PLAYER_STRIPPED = ['streamingData', 'playerAds', 'adPlacements', 'adSlots'];
+
 /** Only the configured Mawkingbird, never another site the content script is on. */
 export function fromMawkingbird(senderUrl, base) {
   try {
@@ -27,7 +42,7 @@ export function originPattern(origin) {
 
 /**
  * @param {object} message `{ op, url?, purpose?, origin? }` from the page.
- * @param {object} deps `{ fetch, hasPermission(pattern), requestAccess(origin) }`.
+ * @param {object} deps `{ fetch, hasPermission(pattern), requestAccess(origin), requestAllSites() }`.
  */
 export async function handleBridgeRequest(message, deps) {
   switch (message?.op) {
@@ -46,6 +61,13 @@ export async function handleBridgeRequest(message, deps) {
     }
     case 'fetch':
       return bridgeFetch(message, deps);
+    case 'allSites':
+      return { ok: true, granted: await deps.hasPermission(ALL_SITES) };
+    case 'requestAllSites':
+      if (await deps.hasPermission(ALL_SITES)) return { ok: true, granted: true };
+      return { ok: true, granted: await deps.requestAllSites() };
+    case 'youtube':
+      return youtubeRead(message, deps);
     default:
       return refused('Unknown request.');
   }
@@ -94,6 +116,81 @@ async function bridgeFetch(message, deps) {
     contentType,
     body,
   };
+}
+
+/**
+ * One anonymous YouTube web-client read. Refuses (rather than drops) any header
+ * but the three web-client identification ones, so an app bug can't pass a
+ * cookie or authorization through unnoticed.
+ */
+async function youtubeRead(message, deps) {
+  const endpoint = String(message.endpoint ?? '');
+  if (!YOUTUBE_ENDPOINTS.has(endpoint)) return refused('This YouTube request is not allowed.');
+  const body = typeof message.body === 'string' ? message.body : '';
+  if (new TextEncoder().encode(body).length > YOUTUBE_MAX_REQUEST_BYTES) {
+    return refused('YouTube request is too large.');
+  }
+  try {
+    const parsed = JSON.parse(body);
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error();
+  } catch {
+    return refused('YouTube request must be a JSON object.');
+  }
+  const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
+  for (const pair of Array.isArray(message.headers) ? message.headers : []) {
+    const [name, value] = Array.isArray(pair) ? pair.map(String) : ['', ''];
+    if (!youtubeHeaderAllowed(name, value)) return refused('This YouTube request header is not allowed.');
+    headers[name] = value;
+  }
+  if (!(await deps.hasPermission(originPattern(YOUTUBE_ORIGIN)))) {
+    return { ok: false, error: 'needs-access', origin: YOUTUBE_ORIGIN };
+  }
+  let response;
+  try {
+    response = await deps.fetch(`${YOUTUBE_ORIGIN}/youtubei/v1/${endpoint}?prettyPrint=false`, {
+      method: 'POST',
+      credentials: 'omit',
+      cache: 'no-store',
+      redirect: 'error',
+      referrerPolicy: 'no-referrer',
+      headers,
+      body,
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+  } catch (error) {
+    return {
+      ok: false,
+      error: error?.name === 'TimeoutError' ? 'timeout' : 'network',
+      detail: 'YouTube did not answer.',
+    };
+  }
+  const text = await readCapped(response, YOUTUBE_MAX_RESPONSE_BYTES);
+  if (text === null) return { ok: false, error: 'too-large', detail: 'YouTube answered too much.' };
+  if (!response.ok) {
+    return { ok: false, error: 'network', detail: `YouTube answered ${response.status}.`, status: response.status };
+  }
+  if (endpoint !== 'player') return { ok: true, status: response.status, body: text };
+  try {
+    const value = JSON.parse(text);
+    for (const key of PLAYER_STRIPPED) delete value[key];
+    return { ok: true, status: response.status, body: JSON.stringify(value) };
+  } catch {
+    return { ok: false, error: 'type', detail: 'YouTube returned unreadable video details.' };
+  }
+}
+
+/** The same rules as Native's `client_header`. */
+export function youtubeHeaderAllowed(name, value) {
+  switch (name.toLowerCase()) {
+    case 'x-youtube-client-name':
+      return value.length <= 4 && /^\d+$/.test(value);
+    case 'x-youtube-client-version':
+      return value.length <= 32 && /^[\d.]+$/.test(value);
+    case 'x-goog-visitor-id':
+      return value.length <= 128 && /^[A-Za-z0-9\-_%=]+$/.test(value);
+    default:
+      return false;
+  }
 }
 
 /** The response text, or null once it passes `limit` bytes (read stops there). */
