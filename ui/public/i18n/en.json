@@ -9864,6 +9864,7 @@
     "menu.screenShareOff": "Stop screen share mode",
     "menu.screenShareOn": "Start screen share mode",
     "menu.settings": "Settings",
+    "menu.tools": "Tools…",
     "menu.waitingToPublish": "Waiting to publish",
     "menu.write": "Write",
     "modeNav.algo.goodStuff": "Good stuff",
@@ -10500,6 +10501,11 @@
     "failed": "Could not load posts. Try again.",
     "retry": "Retry"
   },
+  "toolsMenu": {
+    "all": "Every tool, with what it does",
+    "close": "Close",
+    "title": "Tools"
+  },
   "topBoosters": {
     "automated": "Says it's automated",
     "cta": "Uses the same read as \"When are your posts done?\" above. Nothing is changed.",
@@ -10868,6 +10874,8 @@
   "videoSearch": {
     "allPosts": "All posts, not only ones with video",
     "elsewhere": "Search elsewhere",
+    "fediQuery": "Search the fediverse",
+    "fediSubmit": "Search fediverse video posts",
     "googleYoutube": "YouTube, on Google ↗",
     "noPosts": "No fediverse posts with video matched. Try a single word, which is searched as a hashtag.",
     "noYoutube": "No YouTube results.",
@@ -10880,11 +10888,16 @@
     "submit": "Search",
     "subscribe": "Subscribe",
     "subscribed": "Subscribed",
+    "switchFedi": "Search the fediverse for “{{query}}” instead",
+    "switchYoutube": "Search YouTube for “{{query}}” instead",
     "tagsNote": "Fediverse video comes from the hashtags {{tags}}, plus your server's post search when you are signed in. Only posts with a video are kept.",
     "title": "Search video",
     "watch": "Watch",
     "youtubeFailed": "Couldn't search YouTube. Try again later.",
     "youtubeHeading": "YouTube",
+    "youtubeNeedsApp": "YouTube search runs in the Mawkingbird app.",
+    "youtubeQuery": "Search YouTube",
+    "youtubeSubmit": "Search YouTube",
     "youtubeType": "YouTube results"
   },
   "videos": {

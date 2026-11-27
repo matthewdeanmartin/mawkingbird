@@ -8,11 +8,6 @@
   line-height: 1.5;
 }
 
-.folder-tabs {
-  margin-bottom: 1rem;
-  overflow-x: auto;
-}
-
 .conversion-row {
   display: flex;
   justify-content: flex-end;

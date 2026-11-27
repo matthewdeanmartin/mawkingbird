@@ -9,6 +9,7 @@ import { VideoSearch } from './video-search';
 import { YoutubeFeeds } from './youtube-feeds';
 import { StatusCard } from '../../posts/status-card/status-card';
 import { VideoPlayer } from '../video-player/video-player';
+import { AppModeService } from '../../platform/build/app-mode';
 import { VideoSearchPage } from './video-search-page';
 
 @Component({
@@ -66,8 +67,8 @@ describe('VideoSearchPage', () => {
 
   afterEach(() => vi.unstubAllGlobals());
 
-  async function mount(q?: string): Promise<HTMLElement> {
-    if (q) await TestBed.inject(Router).navigate([], { queryParams: { q } });
+  async function mount(q?: string, side?: 'fedi' | 'youtube'): Promise<HTMLElement> {
+    if (q) await TestBed.inject(Router).navigate([], { queryParams: { q, in: side } });
     fixture = TestBed.createComponent(VideoSearchPage);
     fixture.detectChanges();
     await fixture.whenStable();
@@ -82,11 +83,26 @@ describe('VideoSearchPage', () => {
     expect(youtube.search).not.toHaveBeenCalled();
   });
 
-  it('searches fediverse posts from ?q= and points to the app for YouTube search', async () => {
+  it('shows fediverse results alone, with a way to the YouTube ones', async () => {
     const host = await mount('tape');
     expect(posts).toHaveBeenCalledWith('tape');
     expect(host.querySelector('.card')?.textContent).toBe('p1');
     expect(youtube.search).not.toHaveBeenCalled();
+    expect(host.querySelector('.video-result')).toBeNull();
+    expect(host.textContent).not.toContain('Install Mawkingbird Native');
+    const other = [...host.querySelectorAll('button')].find((b) =>
+      b.textContent?.includes('Search YouTube for “tape” instead'),
+    )!;
+    other.click();
+    await fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/?q=tape&in=youtube');
+  });
+
+  it('gives the YouTube side to the app on the web, saying so where the results go', async () => {
+    const host = await mount('tape', 'youtube');
+    expect(posts).not.toHaveBeenCalled();
+    expect(youtube.search).not.toHaveBeenCalled();
+    expect(host.querySelector('.card')).toBeNull();
     expect(host.textContent).toContain('Search YouTube from the Mawkingbird app');
     expect(host.textContent).not.toContain('Plus');
     const install = [...host.querySelectorAll('a')].find((a) =>
@@ -97,7 +113,8 @@ describe('VideoSearchPage', () => {
 
   it('searches YouTube for Plus subscribers, with Watch links', async () => {
     TestBed.inject(SupporterStatus).isSupporter.set(true);
-    const host = await mount('site:youtube.com tape');
+    const host = await mount('site:youtube.com tape', 'youtube');
+    expect(posts).not.toHaveBeenCalled();
     await vi.waitFor(() => {
       fixture.detectChanges();
       expect(host.querySelector('.video-result h3')?.textContent).toBe('Tape');
@@ -117,10 +134,31 @@ describe('VideoSearchPage', () => {
     input.dispatchEvent(new Event('input'));
     (host.querySelector('form') as HTMLFormElement).dispatchEvent(new Event('submit'));
     await fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe('/?q=new');
+    expect(TestBed.inject(Router).url).toBe('/?q=new&in=fedi');
     slow.next([{ id: 'stale' } as Status]);
     fixture.detectChanges();
     expect(host.querySelector('.card')?.textContent).toBe('p1');
+  });
+
+  it('searches YouTube from its own box', async () => {
+    const host = await mount('tape');
+    const box = host.querySelector('input[name="youtubeQ"]') as HTMLInputElement;
+    box.value = 'cats';
+    box.dispatchEvent(new Event('input'));
+    (box.form as HTMLFormElement).dispatchEvent(new Event('submit'));
+    await fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe('/?q=cats&in=youtube');
+  });
+
+  it('opens on the side of the video app you are in, until ?in= says otherwise', async () => {
+    await TestBed.inject(Router).navigate([], { queryParams: { q: 'tape' } });
+    // After navigating: the test URL is `/`, which would read as Fedi.
+    TestBed.inject(AppModeService).set('video');
+    await mount();
+    expect(posts).not.toHaveBeenCalled();
+    await TestBed.inject(Router).navigate([], { queryParams: { q: 'tape', in: 'fedi' } });
+    await fixture.whenStable();
+    expect(posts).toHaveBeenCalledWith('tape');
   });
 
   it('lists Google and all-post search as hand-offs under Search elsewhere, without site: for posts', async () => {

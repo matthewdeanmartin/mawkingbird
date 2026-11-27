@@ -30,9 +30,17 @@ import { StatusCard } from '../../posts/status-card/status-card';
 import { VideoSource, youtubeSource } from '../video-player/media-source';
 import { VideoPlayer } from '../video-player/video-player';
 import { webSearchUrl } from '../../discovery/search/web-query-serializer';
+import { AppModeService } from '../../platform/build/app-mode';
 
 // i18n videoSearch.title: Search video
 // i18n videoSearch.query: Search for
+// i18n videoSearch.fediQuery: Search the fediverse
+// i18n videoSearch.fediSubmit: Search fediverse video posts
+// i18n videoSearch.youtubeQuery: Search YouTube
+// i18n videoSearch.youtubeSubmit: Search YouTube
+// i18n videoSearch.youtubeNeedsApp: YouTube search runs in the Mawkingbird app.
+// i18n videoSearch.switchYoutube: Search YouTube for “{{query}}” instead
+// i18n videoSearch.switchFedi: Search the fediverse for “{{query}}” instead
 // i18n videoSearch.submit: Search
 // i18n videoSearch.youtubeType: YouTube results
 // i18n videoSearch.elsewhere: Search elsewhere
@@ -60,6 +68,8 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
  * query lives in `?q=`, so Back, reload and shared links repeat the search.
  * See spec/top_level_menu.md, Sprint 3.
  */
+type SearchSide = 'fedi' | 'youtube';
+
 @Component({
   selector: 'app-video-search-page',
   imports: [
@@ -86,8 +96,10 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
     <mb-rail-page>
       <aside mbRailPanel>
         <mb-page-header embedded [title]="'videoSearch.title' | transloco" />
-        <form mbAddBox (ngSubmit)="submit()">
-          <mb-field [label]="'videoSearch.query' | transloco">
+        <!-- Two searches, one result set at a time (owner, 2026-11-27): with both
+             on one page, YouTube's results sat below the fold under the posts. -->
+        <form mbAddBox class="side-search" (ngSubmit)="submit('fedi')">
+          <mb-field [label]="'videoSearch.fediQuery' | transloco">
             <input
               mbControl
               name="q"
@@ -101,14 +113,37 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
           <button
             mbButton
             type="submit"
-            [attr.aria-label]="'videoSearch.submit' | transloco"
-            [title]="'videoSearch.submit' | transloco"
+            [variant]="side() === 'fedi' ? 'solid' : 'outline'"
+            [attr.aria-label]="'videoSearch.fediSubmit' | transloco"
+            [title]="'videoSearch.fediSubmit' | transloco"
+          >
+            <mb-icon name="find" />
+          </button>
+        </form>
+        <form mbAddBox class="side-search" (ngSubmit)="submit('youtube')">
+          <mb-field [label]="'videoSearch.youtubeQuery' | transloco">
+            <input
+              mbControl
+              name="youtubeQ"
+              type="search"
+              autocomplete="off"
+              maxlength="200"
+              [ngModel]="youtubeDraft()"
+              (ngModelChange)="youtubeDraft.set($event)"
+            />
+          </mb-field>
+          <button
+            mbButton
+            type="submit"
+            [variant]="side() === 'youtube' ? 'solid' : 'outline'"
+            [attr.aria-label]="'videoSearch.youtubeSubmit' | transloco"
+            [title]="'videoSearch.youtubeSubmit' | transloco"
           >
             <mb-icon name="find" />
           </button>
         </form>
         @if (canSearch()) {
-          <mb-field [label]="'videoSearch.youtubeType' | transloco">
+          <mb-field density="compact" [label]="'videoSearch.youtubeType' | transloco">
             <select
               mbControl
               name="type"
@@ -119,6 +154,8 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
               <option value="channel">{{ 'videos.channelResults' | transloco }}</option>
             </select>
           </mb-field>
+        } @else {
+          <p class="muted small">{{ 'videoSearch.youtubeNeedsApp' | transloco }}</p>
         }
         <!-- Hand-offs to other searches, not alternatives to the Search button. -->
         <nav class="elsewhere" [attr.aria-label]="'videoSearch.elsewhere' | transloco">
@@ -153,13 +190,16 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
                 | transloco
             "
           />
-        } @else {
+        } @else if (side() === 'fedi') {
           <section
             mbPagePanel
             [attr.aria-label]="'videoSearch.postsHeading' | transloco"
             aria-live="polite"
           >
             <h2>{{ 'videoSearch.postsHeading' | transloco }}</h2>
+            <button mbButton variant="link" type="button" (click)="switchSide('youtube')">
+              {{ 'videoSearch.switchYoutube' | transloco: { query: query() } }}
+            </button>
             @if (tags().length) {
               <p class="muted small">
                 {{ 'videoSearch.tagsNote' | transloco: { tags: tagList() } }}
@@ -175,13 +215,16 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
               }
             }
           </section>
-
+        } @else {
           <section
             mbPagePanel
             [attr.aria-label]="'videoSearch.youtubeHeading' | transloco"
             aria-live="polite"
           >
             <h2>{{ 'videoSearch.youtubeHeading' | transloco }}</h2>
+            <button mbButton variant="link" type="button" (click)="switchSide('fedi')">
+              {{ 'videoSearch.switchFedi' | transloco: { query: query() } }}
+            </button>
             @if (!canSearch()) {
               <p>{{ 'videos.nativeSearch' | transloco }}</p>
               <a mbButton variant="outline" routerLink="/settings/app">{{
@@ -229,6 +272,9 @@ import { webSearchUrl } from '../../discovery/search/web-query-serializer';
     :host {
       display: block;
     }
+    .side-search + .side-search {
+      margin-top: 0.5rem;
+    }
     .elsewhere h2 {
       color: var(--muted);
       font-size: 0.85rem;
@@ -272,7 +318,14 @@ export class VideoSearchPage {
 
   /** What the box holds; `query` is what was last searched (the URL's). */
   protected readonly draft = signal('');
+  protected readonly youtubeDraft = signal('');
   protected readonly query = signal('');
+  /**
+   * Which results show: one set at a time. `?in=` once searched; otherwise
+   * the video app you are in (owner, 2026-11-27).
+   */
+  protected readonly side = signal<SearchSide>('fedi');
+  private readonly mode = inject(AppModeService).mode;
   protected readonly youtubeType = signal<'video' | 'channel'>('video');
 
   protected readonly draftWords = computed(() => withoutSiteOperators(this.draft()));
@@ -306,20 +359,38 @@ export class VideoSearchPage {
   constructor() {
     this.route.queryParamMap.pipe(takeUntilDestroyed()).subscribe((params) => {
       const q = (params.get('q') ?? '').slice(0, 200);
+      const given = params.get('in');
+      const side: SearchSide =
+        given === 'fedi' || given === 'youtube'
+          ? given
+          : this.mode() === 'video'
+            ? 'youtube'
+            : 'fedi';
       this.draft.set(q);
-      this.run(q);
+      this.youtubeDraft.set(q);
+      const changed = side !== this.side();
+      this.side.set(side);
+      this.run(q, changed);
     });
     inject(DestroyRef).onDestroy(() => this.postsRequest?.unsubscribe());
   }
 
-  protected submit(): void {
-    if (!this.draftSearchable()) return;
-    const q = this.draft().trim();
-    if (q === this.query()) {
+  protected submit(side: SearchSide): void {
+    const q = (side === 'fedi' ? this.draft() : this.youtubeDraft()).trim();
+    if (!withoutSiteOperators(q)) return;
+    if (q === this.query() && side === this.side()) {
       this.run(q, true);
       return;
     }
-    void this.router.navigate([], { relativeTo: this.route, queryParams: { q } });
+    void this.router.navigate([], { relativeTo: this.route, queryParams: { q, in: side } });
+  }
+
+  /** The other result set for the same words. */
+  protected switchSide(side: SearchSide): void {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { q: this.query(), in: side },
+    });
   }
 
   protected searchGoogle(): void {
@@ -387,7 +458,7 @@ export class VideoSearchPage {
     this.posts.update((posts) => posts.map((post) => (post.id === updated.id ? updated : post)));
   }
 
-  /** Both sources at once; a newer search discards whatever an older one returns. */
+  /** The active source only; a newer search discards whatever an older one returns. */
   private run(q: string, force = false): void {
     if (!force && q === this.query()) return;
     this.query.set(q);
@@ -401,12 +472,17 @@ export class VideoSearchPage {
       this.youtubeLoading.set(false);
       return;
     }
-    this.postsLoading.set(true);
-    this.postsRequest = this.search.posts(q).subscribe((posts) => {
-      if (generation !== this.generation) return;
-      this.posts.set(posts);
-      this.postsLoading.set(false);
-    });
+    if (this.side() === 'fedi') {
+      this.youtubeLoading.set(false);
+      this.postsLoading.set(true);
+      this.postsRequest = this.search.posts(q).subscribe((posts) => {
+        if (generation !== this.generation) return;
+        this.posts.set(posts);
+        this.postsLoading.set(false);
+      });
+      return;
+    }
+    this.postsLoading.set(false);
     if (!this.youtubeFeeds.canSearch()) return;
     this.youtubeLoading.set(true);
     this.youtubeFeeds

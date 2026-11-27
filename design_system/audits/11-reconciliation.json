@@ -221,7 +221,7 @@
     {
       "file": "ui/src/app/reading/videos/video-search-page.ts",
       "disposition": "adopted scope",
-      "nextStep": "Rail page, Add box and Item actions."
+      "nextStep": "Rail page, two Add boxes (fediverse, YouTube; owner, 2026-11-27) whose submit MbButton is solid on the active side, link-variant MbButtons to switch sides, and Item actions."
     },
     {
       "file": "ui/src/app/connections/misskey/misskey-compose.html",
@@ -696,7 +696,7 @@
     {
       "file": "ui/src/app/reading/bookmarks/bookmarks.html",
       "disposition": "backlog",
-      "nextStep": "Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
+      "nextStep": "The provider switch and both view strips (Native views, Raindrop folders) are MbTabs (owner, 2026-11-27). Review ordinary versus compact actions with associated CSS; adopt MbButton, MbToolbar or native-link navigation according to behavior, retaining loading and provider gates."
     },
     {
       "file": "ui/src/app/reading/bookmarks/history-panel/history-panel.html",
@@ -3717,6 +3717,11 @@
       "file": "ui/src/app/discovery/explore-tags/explore-tags.html",
       "disposition": "adopted scope",
       "nextStep": "Explore → Tags: shared Page Header and Tabs (Yours | Similar | Trending | More, with More's own Tabs: Tag bundles | Featured | Tag relay; one panel rendered at a time), Item List rows (title link peeks the tag) with a compact Button to follow, and the Feeds hub's own tag sections embedded per tab. Keep each suggestion source's loading and failure line independent."
+    },
+    {
+      "file": "ui/src/app/shell/tools-menu/tools-menu.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Tools dialog (owner, 2026-11-27): shared Dialog like Even more, opened from the … menu's Tools row; a plain list of links to every English focused tool page, grouped as on /tools, plus a link to /tools. Data comes from the focused-tools registry; every link closes the dialog."
     },
     {
       "file": "ui/src/app/shell/even-more/even-more.ts",

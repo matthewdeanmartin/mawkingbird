@@ -731,6 +731,7 @@ describe('Shell account switching', () => {
       'Scheduled posts',
       'Find Friends',
       'Invites',
+      'Tools…',
       'Even more…',
       'My server',
       'Site News',
@@ -741,6 +742,22 @@ describe('Shell account switching', () => {
       'API Docs ↗',
     ]);
     drainRailRequests();
+  });
+
+  it('opens Tools from the … menu, closing the menu', () => {
+    const fixture = createShell();
+    const menu = fixture.nativeElement.querySelector('details.more-menu') as HTMLDetailsElement;
+    menu.open = true;
+    const entry = [...menu.querySelectorAll('button')].find(
+      (b) => b.textContent?.trim() === 'Tools…',
+    ) as HTMLButtonElement;
+    entry.click();
+    fixture.detectChanges();
+    expect(menu.open).toBe(false);
+    // The dialog itself is deferred and has its own spec (tools-menu.spec.ts).
+    expect((fixture.componentInstance as unknown as { toolsOpen(): boolean }).toolsOpen()).toBe(
+      true,
+    );
   });
 
   it('opens Even more from the … menu, closing the menu, and onboarding from there', () => {
@@ -855,6 +872,7 @@ describe('Shell app-mode nav', () => {
       'Write',
       'Find Friends',
       'Invites',
+      'Tools…',
       'Even more…',
       'My server',
       'Site News',

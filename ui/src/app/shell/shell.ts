@@ -42,6 +42,7 @@ import { brandLogoSrc, isCanaryBuild, isTestBuild } from '../platform/build/buil
 import { Hotkeys } from './hotkeys';
 import { ShortcutHelp } from './shortcut-help/shortcut-help';
 import { EvenMore } from './even-more/even-more';
+import { ToolsMenu } from './tools-menu/tools-menu';
 import { AppFooter } from './app-footer/app-footer';
 import { LeftRail } from './left-rail/left-rail';
 import { RightRail } from './right-rail/right-rail';
@@ -166,6 +167,7 @@ const TRICKLE_IDLE_MS = 15 * 60_000;
 // i18n shell.menu.invites: Invites
 // i18n shell.menu.analytics: Analytics
 // i18n shell.menu.evenMore: Even more…
+// i18n shell.menu.tools: Tools…
 // i18n shell.menu.observability: Observability
 // i18n shell.menu.help: Help
 // i18n shell.menu.news: Site News
@@ -269,6 +271,7 @@ const NAV_SHORT_KEYS: Readonly<Record<string, string>> = {
     AppFooter,
     ShortcutHelp,
     EvenMore,
+    ToolsMenu,
     NgOptimizedImage,
     LeaveDialog,
     FirstRunModal,
@@ -876,6 +879,17 @@ export class Shell implements OnInit, AccountSwitcher {
   protected readonly evenMoreOpen = signal(false);
   /** Where focus goes back to when it closes: the … menu's own button. */
   protected evenMoreReturn: HTMLElement | null = null;
+
+  /** The Tools dialog: every focused tool page (owner, 2026-11-27). */
+  protected readonly toolsOpen = signal(false);
+  protected toolsReturn: HTMLElement | null = null;
+
+  protected openTools(event: Event): void {
+    const details = (event.currentTarget as HTMLElement).closest('details');
+    this.toolsReturn = details?.querySelector('summary') ?? null;
+    details?.removeAttribute('open');
+    this.toolsOpen.set(true);
+  }
 
   /** The … menu's Even more entry: close the menu, open the dialog. */
   protected openEvenMore(event: Event): void {

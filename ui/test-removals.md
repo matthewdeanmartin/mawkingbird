@@ -26,6 +26,22 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-27: Video search sides, Bookmarks tabs, Watch header
+
+- test: src/app/reading/bookmarks/bookmarks.spec.ts :: Bookmarks switches views with a toolbar, not a row of tabs
+  reason: replaced
+  now: src/app/reading/bookmarks/bookmarks.spec.ts :: Bookmarks switches sections with the underline tab strip, like All | By author below
+  why: The owner asked (2026-11-27) for Bookmarks · Likes · History · Read Later to use the same tab strip as the views under it; toolbars are for actions inside a section.
+- test: src/app/reading/videos/video-search-page.spec.ts :: VideoSearchPage searches fediverse posts from ?q= and points to the app for YouTube search
+  reason: replaced
+  now: src/app/reading/videos/video-search-page.spec.ts :: VideoSearchPage shows fediverse results alone, with a way to the YouTube ones
+  now: src/app/reading/videos/video-search-page.spec.ts :: VideoSearchPage gives the YouTube side to the app on the web, saying so where the results go
+  why: The owner asked (2026-11-27) for two search boxes and one result set at a time, so YouTube results are no longer stacked below the fold under the posts.
+- test: src/app/reading/watch/watch.spec.ts :: Watch post access and reveal gates holds the full viewport while open and releases the app chrome on leaving
+  reason: replaced
+  now: src/app/reading/watch/watch.spec.ts :: Watch post access and reveal gates hides the rails while open, keeps the header and its menu, and lets go on leaving
+  why: The owner asked (2026-11-27) for Watch to show its video app's top menu.
+
 ## 2026-11-27: YouTube and Fedi Video apps; watch-party replies
 
 - test: src/app/platform/build/app-mode.spec.ts :: modeForUrl puts Watch in Video, wherever it was opened from

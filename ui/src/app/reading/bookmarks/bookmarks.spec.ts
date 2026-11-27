@@ -133,7 +133,7 @@ describe('Bookmarks', () => {
       .expectOne('/api/v1/bookmarks?limit=20')
       .flush({}, { status: 503, statusText: 'Offline' });
     const tabs = [
-      ...fixture.nativeElement.querySelectorAll('.provider-tabs button'),
+      ...fixture.nativeElement.querySelectorAll('.provider-tabs > .tabs > [role="tab"]'),
     ] as HTMLButtonElement[];
     expect(tabs.map((button) => button.textContent?.trim())).toEqual([
       'Bookmarks',
@@ -171,13 +171,28 @@ describe('Bookmarks', () => {
     httpMock.expectNone((request) => request.url.includes('/bookmarks'));
   });
 
-  it('switches views with a toolbar, not a row of tabs', () => {
+  it('switches sections with the underline tab strip, like All | By author below', () => {
     const fixture = setUp();
     httpMock.expectOne('/api/v1/bookmarks?limit=20').flush([]);
-    const toolbar = fixture.nativeElement.querySelector('mb-toolbar.provider-tabs') as HTMLElement;
-    expect(toolbar.getAttribute('role')).toBe('toolbar');
-    const pressed = [...toolbar.querySelectorAll('button[aria-pressed="true"]')];
-    expect(pressed.map((b) => b.textContent?.trim())).toEqual(['Bookmarks']);
+    const strip = fixture.nativeElement.querySelector('mb-tabs.provider-tabs') as HTMLElement;
+    expect(strip.querySelector('[role="tablist"]')).not.toBeNull();
+    const selected = [...strip.querySelectorAll('[role="tab"][aria-selected="true"]')];
+    expect(selected.map((b) => b.textContent?.trim())).toEqual(['Bookmarks']);
+    expect(fixture.nativeElement.querySelector('mb-toolbar.provider-tabs')).toBeNull();
+  });
+
+  it('switches views with the same tab strip as the sections', () => {
+    const fixture = setUp();
+    httpMock.expectOne('/api/v1/bookmarks?limit=20').flush([makeStatus('1')]);
+    fixture.detectChanges();
+    const tabs = [
+      ...fixture.nativeElement.querySelectorAll('mb-tabs.folder-tabs > .tabs > [role="tab"]'),
+    ] as HTMLButtonElement[];
+    expect(tabs.map((tab) => tab.textContent?.trim())).toContain('By author');
+    expect(fixture.nativeElement.querySelector('nav.folder-tabs')).toBeNull();
+    tabs.find((tab) => tab.textContent?.trim() === 'By author')!.click();
+    fixture.detectChanges();
+    expect(internals(fixture).view()).toBe('authors');
   });
 
   it('opens History from ?tab=history without fetching Native bookmarks', () => {
@@ -198,9 +213,9 @@ describe('Bookmarks', () => {
     );
     const fixture = setUp();
     expect(internals(fixture).provider()).toBe('native');
-    const labels = [...fixture.nativeElement.querySelectorAll('.provider-tabs button')].map(
-      (b: Element) => b.textContent?.trim(),
-    );
+    const labels = [
+      ...fixture.nativeElement.querySelectorAll('.provider-tabs > .tabs > [role="tab"]'),
+    ].map((b: Element) => b.textContent?.trim());
     expect(labels).toEqual(['Bookmarks', 'History', 'Read Later']);
   });
 
@@ -364,7 +379,7 @@ describe('Bookmarks', () => {
     fixture.detectChanges();
 
     const text = fixture.nativeElement.textContent as string;
-    const folderTabs = fixture.nativeElement.querySelectorAll('.folder-tabs .tab');
+    const folderTabs = fixture.nativeElement.querySelectorAll('.folder-tabs [role="tab"]');
     expect(text).toContain('Bookmarks');
     expect(text).toContain('Raindrop');
     expect(folderTabs).toHaveLength(4);

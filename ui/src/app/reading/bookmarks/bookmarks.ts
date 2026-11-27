@@ -29,7 +29,8 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { BlueskyApi } from '../../connections/bluesky/bluesky-api';
 import { adaptPost } from '../../connections/bluesky/bluesky-adapter';
 import { BskyRef, isBskyPostView } from '../../connections/bluesky/bluesky-types';
-import { MbToolbar, MbToolbarButton } from '../../design-system/toolbar/toolbar';
+import { MbTab, MbTabs } from '../../design-system/tabs/tabs';
+import { NgTemplateOutlet } from '@angular/common';
 import { Favourites } from '../favourites/favourites';
 import { HistoryPanel } from './history-panel/history-panel';
 import { isVideoStatus } from '../video-player/video-discovery';
@@ -82,8 +83,9 @@ const PAGE_SIZE = 20;
     LibraryPanel,
     Favourites,
     HistoryPanel,
-    MbToolbar,
-    MbToolbarButton,
+    MbTab,
+    MbTabs,
+    NgTemplateOutlet,
     MbButton,
   ],
   templateUrl: './bookmarks.html',

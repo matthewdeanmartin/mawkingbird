@@ -410,6 +410,11 @@
                  card shows the typical reply time), not squeezed into this menu. -->
               <!-- Observability moved into Even more, which is the door to everything
                    used now and then (spec/sprint/explore-2026-11.md, Sprint 5). -->
+              <!-- The tool pages, which the nav barely reached (owner, 2026-11-27:
+                   an approved exception to the locked menu). -->
+              <button type="button" class="menu-button tools-menu" (click)="openTools($event)">
+                {{ 'shell.menu.tools' | transloco }}
+              </button>
               <button type="button" class="menu-button even-more" (click)="openEvenMore($event)">
                 {{ 'shell.menu.evenMore' | transloco }}
               </button>
@@ -650,6 +655,11 @@
     <ng-container *ngComponentOutlet="card" />
   }
 
+  @if (toolsOpen()) {
+    @defer {
+      <app-tools-menu [returnFocusTo]="toolsReturn" (closed)="toolsOpen.set(false)" />
+    }
+  }
   @if (evenMoreOpen()) {
     <app-even-more [returnFocusTo]="evenMoreReturn" (closed)="evenMoreOpen.set(false)" />
   }

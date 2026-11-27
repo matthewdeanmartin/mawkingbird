@@ -24,7 +24,7 @@ describe('SettingsApp', () => {
   it('offers the install button where the browser allows it', async () => {
     const { fixture, fake, el } = setUp('prompt');
     expect(el.textContent).toContain('Download Mawkingbird for your computer');
-    expect(el.querySelectorAll('a[href*="native-v0.1.0"]')).toHaveLength(6);
+    expect(el.querySelectorAll('a[href*="native-v0.3.0"]')).toHaveLength(6);
     const advanced = el.querySelector('mb-disclosure details')!;
     expect(advanced.hasAttribute('open')).toBe(false);
     advanced.querySelector('summary')!.click();

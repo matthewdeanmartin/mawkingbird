@@ -134,31 +134,31 @@ export class SettingsApp {
     windows: [
       {
         label: 'settings.app.windowsInstaller',
-        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_x64-setup.exe',
+        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.3.0/Mawkingbird.Native_0.3.0_x64-setup.exe',
       },
       {
         label: 'settings.app.windowsMsi',
-        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_x64_en-US.msi',
+        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.3.0/Mawkingbird.Native_0.3.0_x64_en-US.msi',
       },
     ],
     mac: [
       {
         label: 'settings.app.macDmg',
-        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_aarch64.dmg',
+        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.3.0/Mawkingbird.Native_0.3.0_aarch64.dmg',
       },
     ],
     linux: [
       {
         label: 'settings.app.linuxAppImage',
-        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_amd64.AppImage',
+        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.3.0/Mawkingbird.Native_0.3.0_amd64.AppImage',
       },
       {
         label: 'settings.app.linuxDeb',
-        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native_0.1.0_amd64.deb',
+        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.3.0/Mawkingbird.Native_0.3.0_amd64.deb',
       },
       {
         label: 'settings.app.linuxRpm',
-        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.1.0/Mawkingbird.Native-0.1.0-1.x86_64.rpm',
+        href: 'https://github.com/matthewdeanmartin/mawkingbird/releases/download/native-v0.3.0/Mawkingbird.Native-0.3.0-1.x86_64.rpm',
       },
     ],
   };

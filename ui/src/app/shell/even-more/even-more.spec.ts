@@ -64,6 +64,13 @@ describe('EvenMore', () => {
     );
   });
 
+  it('files Feed checkup under Diagnostics, not Explore', () => {
+    const links = (id: string) =>
+      EVEN_MORE_SECTIONS.find((section) => section.id === id)!.links.map((item) => item.link);
+    expect(links('diagnostics')).toContain('/explore/feed');
+    expect(links('explore')).not.toContain('/explore/feed');
+  });
+
   it('offers a link only where its feature is on', () => {
     const host = setUp();
     const flags = TestBed.inject(FeatureFlags);

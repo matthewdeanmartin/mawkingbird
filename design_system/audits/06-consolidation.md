@@ -3721,3 +3721,21 @@ muted note under the chat box. The YouTubers card moves from the right rail to
 the left rail and the Videos page's own panel. The shell's … menu loses its
 Videos and Watch parties rows. The rest are line shifts. No shared widget
 changed.
+
+### 2026-11-27: Video search sides, Bookmarks tabs, Tools dialog
+
+Reviewed the regenerated inventory: scanned files 2225 to 2226, candidates 746
+to 747. One candidate is added, adopted scope: `shell/tools-menu/tools-menu.ts`
+(an MbDialog of tool-page links, like Even more). `reading/bookmarks/bookmarks.html`
+swaps its provider MbToolbar for MbTabs, so it matches the view strip beneath
+it; it stays backlog for its older buttons. `reading/videos/video-search-page.ts`
+has two Add boxes and link-variant MbButtons to switch sides. `shell/shell.html`
+gains a Tools… menu button styled like Even more. No shared widget changed.
+
+### 2026-11-27: Bookmarks view strips
+
+Reviewed the regenerated inventory: 2,226 files scanned, 747 candidates, none
+added or removed. `reading/bookmarks/bookmarks.html` replaces its two legacy
+`.tabs` strips (Native views; Raindrop folders) with MbTabs, the same widget as
+the section switcher above them. It stays backlog for its older `.btn`
+buttons. No shared widget changed.

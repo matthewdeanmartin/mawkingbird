@@ -52,7 +52,6 @@ export const EVEN_MORE_SECTIONS: readonly EvenMoreSection[] = [
     id: 'explore',
     titleKey: 'evenMore.section.explore',
     links: [
-      { id: 'feed', labelKey: 'evenMore.link.feedCheckup', link: '/explore/feed', discovery: true },
       { id: 'kits', labelKey: 'evenMore.link.kits', link: '/explore/kits', discovery: true },
       { id: 'people', labelKey: 'evenMore.link.people', link: '/explore/people', discovery: true },
       { id: 'tags', labelKey: 'evenMore.link.hashtags', link: '/explore/tags', discovery: true },
@@ -88,6 +87,8 @@ export const EVEN_MORE_SECTIONS: readonly EvenMoreSection[] = [
     id: 'diagnostics',
     titleKey: 'evenMore.section.diagnostics',
     links: [
+      // A checkup of your own feed, not a finder (owner, 2026-11-27).
+      { id: 'feed', labelKey: 'evenMore.link.feedCheckup', link: '/explore/feed', discovery: true },
       { id: 'api', labelKey: 'evenMore.link.apiCalls', link: '/observability/api' },
       { id: 'logs', labelKey: 'evenMore.link.logs', link: '/observability/logs' },
       { id: 'storage', labelKey: 'evenMore.link.storage', link: '/storage-diagnostics' },

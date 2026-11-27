@@ -213,7 +213,9 @@ export class Watch {
           });
       });
     });
-    const release = inject(ReadingZen).hold('full');
+    // Rails only: Watch keeps the header, so its video app's menu is on top
+    // (owner, 2026-11-27).
+    const release = inject(ReadingZen).hold('rails');
     this.destroyRef.onDestroy(() => {
       this.loader.destroy();
       release();

@@ -348,11 +348,11 @@ describe('Watch post access and reveal gates', () => {
     expect(fixture.componentInstance['playhead']()).toBe(93.5);
   });
 
-  it('holds the full viewport while open and releases the app chrome on leaving', () => {
+  it('hides the rails while open, keeps the header and its menu, and lets go on leaving', () => {
     const zen = TestBed.inject(ReadingZen);
     mount();
     expect(zen.active()).toBe(true);
-    expect(zen.chromeHidden()).toBe(true);
+    expect(zen.chromeHidden()).toBe(false);
     fixture.destroy();
     expect(zen.active()).toBe(false);
     expect(zen.chromeHidden()).toBe(false);
