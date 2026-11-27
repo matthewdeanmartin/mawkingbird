@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { BlueskySignInRequiredError } from './bluesky-auth-error';
-import type { BrowserOAuthClient, OAuthSession } from '@atproto/oauth-client-browser';
+import type { OAuthClient, OAuthSession } from '@atproto/oauth-client-browser';
 import {
   blueskyOAuthClientMetadata,
   blueskyOAuthRedirectUri,
@@ -51,15 +51,14 @@ interface ProfileResponse {
  */
 @Injectable({ providedIn: 'root' })
 export class BlueskyOAuth {
-  private clientValue: Promise<BrowserOAuthClient> | null = null;
+  private clientValue: Promise<OAuthClient> | null = null;
   private readonly diagnostics = inject(PageDiagnostics);
 
   /**
    * The SDK's own account of a session ending or being refreshed, for the
    * diagnostic timeline. Sign-outs used to leave no trace there, so "why does
-   * Bluesky keep signing me out?" had no answer. The SDK store is per origin
-   * and keyed by DID, while each deployment path (/, /canary/, /test/) is its
-   * own OAuth client; `client` says which path's client saw the event.
+   * Bluesky keep signing me out?" had no answer. Storage is isolated by OAuth client ID
+   * and keyed by DID within that client; `client` says which path's client saw the event.
    */
   private readonly sessionHooks = {
     onSessionDeleted: (sub: string, cause: unknown) => {
@@ -87,7 +86,8 @@ export class BlueskyOAuth {
       location.replace(loopback.href);
       return new Promise<never>(() => undefined);
     }
-    return (await this.client()).signInRedirect(identifier, {
+    const client = await this.client();
+    const url = await client.authorize(identifier, {
       state: intent,
       redirect_uri: blueskyOAuthRedirectUri(),
       // The authorization server shows its own sign-up form, then finishes
@@ -95,11 +95,27 @@ export class BlueskyOAuth {
       // bsky.social lists `create` in prompt_values_supported (checked 2026-11-20).
       ...(isSignupIntent(intent) && { prompt: 'create' as const }),
     });
+    location.assign(url.href);
+    // Match the browser SDK's back/forward-cache cancellation: returning to the
+    // login page must release its busy state and discard the abandoned PKCE flow.
+    return new Promise<never>((_resolve, reject) => {
+      setTimeout(() => {
+        const error = new Error('User navigated back');
+        void client.abortRequest(url).then(
+          () => reject(error),
+          (cause: unknown) => reject(new AggregateError([error, cause])),
+        );
+      }, 5_000);
+    });
   }
 
   /** Exchange the callback, then fetch enough profile data to populate the picker. */
   async callback(): Promise<BlueskyOAuthResult> {
-    const result = await (await this.client()).initCallback(undefined, blueskyOAuthRedirectUri());
+    const params = new URLSearchParams(location.hash.slice(1));
+    history.replaceState(null, '', location.pathname + location.search);
+    const result = await (
+      await this.client()
+    ).callback(params, { redirect_uri: blueskyOAuthRedirectUri() });
     const profile = await this.profile(result.session);
     return { profile, state: result.state };
   }
@@ -138,29 +154,37 @@ export class BlueskyOAuth {
 
   /** Revoke and remove one SDK-owned session. */
   async revoke(did: string): Promise<void> {
+    this.diagnostics.info('Bluesky OAuth', 'revoke:requested', {
+      account: shortDid(did),
+      client: clientPath(),
+    });
     await (await this.client()).revoke(did);
   }
 
-  private client(): Promise<BrowserOAuthClient> {
+  private client(): Promise<OAuthClient> {
     if (!this.clientValue) {
-      this.clientValue = import('@atproto/oauth-client-browser').then(
-        ({ BrowserOAuthClient, buildLoopbackClientId }) => {
-          if (isBlueskyOAuthLoopback()) {
-            const callback = new URL(blueskyOAuthRedirectUri());
-            return BrowserOAuthClient.load({
-              ...this.sessionHooks,
-              handleResolver: HANDLE_RESOLVER,
-              clientId: buildLoopbackClientId({
-                hostname: location.hostname,
-                port: location.port,
-                pathname: callback.pathname,
-              }),
-            });
-          }
-          return new BrowserOAuthClient({
+      this.clientValue = Promise.all([
+        import('@atproto/oauth-client-browser'),
+        import('./bluesky-oauth-client'),
+      ]).then(
+        ([
+          { buildLoopbackClientId, atprotoLoopbackClientMetadata },
+          { createBlueskyOAuthClient },
+        ]) => {
+          const callback = new URL(blueskyOAuthRedirectUri());
+          const clientMetadata = isBlueskyOAuthLoopback()
+            ? atprotoLoopbackClientMetadata(
+                buildLoopbackClientId({
+                  hostname: location.hostname,
+                  port: location.port,
+                  pathname: callback.pathname,
+                }),
+              )
+            : blueskyOAuthClientMetadata();
+          return createBlueskyOAuthClient({
             ...this.sessionHooks,
             handleResolver: HANDLE_RESOLVER,
-            clientMetadata: blueskyOAuthClientMetadata(),
+            clientMetadata,
           });
         },
       );

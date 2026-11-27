@@ -466,6 +466,26 @@ describe('Auth account kinds', () => {
       expect(auth.blueskyAccounts().some((choice) => choice.did === 'did:plc:oauth')).toBe(false);
     });
 
+    it('keeps the connector grant when its primary identity is removed', () => {
+      saveBlueskyIdentity(
+        { service: 'https://pds.example', did: 'did:plc:oauth', handle: 'oauth.example' },
+        { authMethod: 'oauth' },
+      );
+      localStorage.setItem(
+        'mockingbird_bsky_profile_mastodon_saved',
+        JSON.stringify({ did: 'did:plc:oauth' }),
+      );
+      localStorage.setItem(
+        'mockingbird_bsky_credentials_mastodon_saved',
+        JSON.stringify({ authMethod: 'oauth' }),
+      );
+      rebuild();
+      const revoke = vi.spyOn(TestBed.inject(BlueskyOAuth), 'revoke').mockResolvedValue(undefined);
+      auth.removeBlueskyIdentity('did:plc:oauth');
+      expect(revoke).not.toHaveBeenCalled();
+      expect(auth.blueskyAccounts().some((choice) => choice.did === 'did:plc:oauth')).toBe(false);
+    });
+
     it('does not offer a Bluesky row when no identity exists', () => {
       auth.setToken('art-token');
       expect(auth.otherSessions().some((c) => c.kind === 'bluesky')).toBe(false);

@@ -1,3 +1,4 @@
+import { hasBlueskyOAuthConnector } from './bluesky-oauth-owners';
 import { NATIVE_SOCIAL, forgetNativeAccount } from '../../platform/session/platform-login';
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
@@ -550,7 +551,8 @@ export class BlueskySession implements ExpiringConnection {
     if (
       !this.native &&
       current?.authMethod === 'oauth' &&
-      (this.isIdentity || !blueskyIdentity(current.did))
+      (this.isIdentity || !blueskyIdentity(current.did)) &&
+      !hasBlueskyOAuthConnector(current.did, this.isIdentity ? undefined : this.profileKey)
     ) {
       // Revocation is best effort: local removal must still work offline.
       void this.oauth.revoke(current.did).catch(() => undefined);

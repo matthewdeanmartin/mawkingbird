@@ -46,3 +46,47 @@ linked (Unlink if one is).
 ## Findings
 
 _None yet._
+
+
+## Cross-deployment session loss (2026-11-26)
+
+Production report: build 421d7da0e91278e15c260721df925c2315184497,
+repeated `The session was deleted by another process` on preferences, profile,
+and notifications. Operator regularly rotates between `/`, `/canary/`, `/test/`.
+The log establishes missing storage, not which earlier operation deleted it.
+Cloudflare beacon CSP rejection is unrelated to the OAuth storage path.
+
+Confirmed in installed oauth-client-browser 0.5.9: BrowserOAuthClient hardcodes
+`@atproto-oauth-client`, keyed only by DID. Our deployments have distinct client
+IDs, so their callbacks overwrite each other's credentials. Refresh with another
+client's grant can fail and delete that shared row. Upstream source inspected:
+https://github.com/bluesky-social/atproto/blob/main/packages/oauth/oauth-client-browser/src/browser-oauth-client.ts
+
+Local fix: use the SDK public OAuthClient with IndexedDB and Web Locks scoped by
+full client ID. Keep one shared session per DID *within* a client. PKCE, DPoP,
+refresh and protocol validation remain SDK-owned. Removing an identity or one
+connector preserves the grant when another connector/identity owns it.
+`revoke:requested` now distinguishes explicit app revocation from SDK failures.
+
+Migration deliberately does not copy ambiguous old rows (they have no client-ID
+provenance). Expect one new authorization per DID per deployment after release.
+Reload old tabs; old builds still collide with each other in the old store, but
+cannot delete new storage. No OAuth client IDs or callback URLs changed. No
+production deployment or real-account authorization was performed in this fix.
+
+Regression: `cd ui && npm run test:bluesky-oauth:browser` uses real Chromium
+IndexedDB and CryptoKeys across three paths, same-DID isolation, deletion isolation,
+same-client tab sharing, and concurrent real SDK refresh with a fixture issuer.
+The normal client-build workflow runs it in Chromium and Firefox
+(`OAUTH_TEST_BROWSER=firefox`); both passed locally. The test also reproduces
+the overwrite/deletion using the installed old browser wrapper before checking
+the replacement. Unit tests cover identity removal while
+a connector remains, connector removal while an identity remains, and two
+connectors sharing a DID. No existing tests removed.
+
+Release smoke test: sign into the same DID on all three deployments, use it as
+primary and as a Mastodon connector, rotate tabs and load notifications/profile.
+Repeat after access-token expiry and after unlinking only one role. Verify the
+other role remains usable and no unexpected `revoke:requested` occurs. These
+real-PDS checks remain necessary; fixture refresh does not certify external
+provider behavior or prove the exact historical deletion event.

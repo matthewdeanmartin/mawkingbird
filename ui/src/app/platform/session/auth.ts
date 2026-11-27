@@ -1,3 +1,4 @@
+import { hasBlueskyOAuthConnector } from '../../connections/bluesky/bluesky-oauth-owners';
 import { forgetNativeAccount } from './platform-login';
 import { forgetSavedReads } from '../offline/read-cache';
 import { Injectable, computed, inject, linkedSignal, signal } from '@angular/core';
@@ -1340,7 +1341,11 @@ export class Auth {
   /** Revoke only SDK-owned OAuth sessions; legacy app passwords are revoked at bsky.app. */
   private revokeBlueskyOAuth(did: string): void {
     const credentials = blueskyIdentity(did)?.credentials;
-    if (credentials?.authMethod === 'oauth' && !credentials.nativeHandle) {
+    if (
+      credentials?.authMethod === 'oauth' &&
+      !credentials.nativeHandle &&
+      !hasBlueskyOAuthConnector(did)
+    ) {
       // Forgetting the local account must still complete while offline.
       void this.blueskyOAuth.revoke(did).catch(() => undefined);
     }

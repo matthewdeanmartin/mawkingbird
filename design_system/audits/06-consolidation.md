@@ -1,5 +1,10 @@
 # Sprint 6 opening consolidation audit
 
+## OAuth isolation, 2026-11-26
+
+Reviewed regenerated inventory: 2222 to 2224 scanned files, all 745 control
+candidates unchanged. Two storage/ownership helpers added; no controls changed.
+
 ## Rescan when asked, 2026-11-24
 
 Home > Profiles swaps "Refresh people" for Rescan (`mbPostAction`, with its call

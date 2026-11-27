@@ -25,6 +25,12 @@ jobs:
           cache-dependency-path: ui/package-lock.json
       - name: Build standalone client
         run: make mockingbird MOCKINGBIRD_BASE_HREF=/
+      - name: Check Bluesky OAuth isolation across deployment paths
+        working-directory: ui
+        run: |
+          npx playwright install --with-deps chromium firefox
+          npm run test:bluesky-oauth:browser
+          OAUTH_TEST_BROWSER=firefox npm run test:bluesky-oauth:browser
       - name: Check deployment contracts
         working-directory: ui
         run: |

@@ -27,6 +27,7 @@
     "test:seo:browser": "node scripts/check-seo-browser.mjs",
     "test:deep-links:browser": "node scripts/check-deep-link-browser.mjs",
     "readme:screenshot": "node scripts/capture-readme-screenshot.mjs",
+    "test:bluesky-oauth:browser": "node scripts/check-bluesky-oauth-browser.mjs",
     "test:radio:browser": "node scripts/check-radio-browser.mjs",
     "test:forum:browser": "node scripts/check-forum-browser.mjs",
     "postbuild:seo": "node scripts/prepare-seo-index.mjs && node scripts/stamp-preview-seo.mjs && node scripts/check-mock-leakage.mjs && node scripts/report-bundle.mjs --check && node scripts/check-seo-build.mjs",

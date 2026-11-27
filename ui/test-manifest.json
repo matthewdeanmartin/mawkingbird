@@ -1,5 +1,5 @@
 {
-  "testCount": 11555,
+  "testCount": 11561,
   "tests": [
     "src/app/accounts/account-analytics/account-analytics-native.spec.ts :: AccountAnalytics in the native app compares periods, lists months and shows your own follower history",
     "src/app/accounts/account-analytics/account-analytics-native.spec.ts :: AccountAnalytics in the native app falls back to the web sampler when the archive is empty and the server is unreachable",
@@ -2029,6 +2029,10 @@
     "src/app/connections/bluesky/bluesky-oauth-transport.spec.ts :: Bluesky OAuth transport routes writes through DPoP fetch with the original JSON body",
     "src/app/connections/bluesky/bluesky-oauth-transport.spec.ts :: Bluesky OAuth transport starts a sign-up at bsky.social with the sign-up intent",
     "src/app/connections/bluesky/bluesky-oauth-transport.spec.ts :: Bluesky OAuth transport upgrades the identity to OAuth as itself, returning Home afterwards",
+    "src/app/connections/bluesky/bluesky-oauth.spec.ts :: Bluesky OAuth browser shell passes the fragment and exact deployment redirect to the SDK before loading the profile",
+    "src/app/connections/bluesky/bluesky-oauth.spec.ts :: Bluesky OAuth browser shell preserves connector:link authorization intent and cancels the pending flow on back navigation",
+    "src/app/connections/bluesky/bluesky-oauth.spec.ts :: Bluesky OAuth browser shell preserves identity:add authorization intent and cancels the pending flow on back navigation",
+    "src/app/connections/bluesky/bluesky-oauth.spec.ts :: Bluesky OAuth browser shell preserves identity:signup authorization intent and cancels the pending flow on back navigation",
     "src/app/connections/bluesky/bluesky-post-controls.spec.ts :: BlueskyPostControls deletes a gate that would only restate the defaults",
     "src/app/connections/bluesky/bluesky-post-controls.spec.ts :: BlueskyPostControls detaches the post from a quote without changing whether it may be quoted",
     "src/app/connections/bluesky/bluesky-post-controls.spec.ts :: BlueskyPostControls hides and shows a reply in the thread, keeping the reply rules",
@@ -2077,6 +2081,7 @@
     "src/app/connections/bluesky/bluesky-search.spec.ts :: BlueskySearch sends every set criterion as its own typed param",
     "src/app/connections/bluesky/bluesky-search.spec.ts :: BlueskySearch turns BadQueryString into advice the reader can act on",
     "src/app/connections/bluesky/bluesky-session.spec.ts :: BlueskySession OAuth connector keeps an identity signed in when a connector for the same DID is unlinked",
+    "src/app/connections/bluesky/bluesky-session.spec.ts :: BlueskySession OAuth connector keeps another connector for the same DID when one is unlinked",
     "src/app/connections/bluesky/bluesky-session.spec.ts :: BlueskySession OAuth connector reloads an OAuth connector from storage on the next boot",
     "src/app/connections/bluesky/bluesky-session.spec.ts :: BlueskySession OAuth connector revokes the grant when an OAuth connector is unlinked",
     "src/app/connections/bluesky/bluesky-session.spec.ts :: BlueskySession OAuth connector starts the redirect with the connector intent",
@@ -7170,6 +7175,7 @@
     "src/app/platform/session/auth.spec.ts :: Auth account kinds surfaces the Bluesky identity as the active account",
     "src/app/platform/session/auth.spec.ts :: Auth account kinds survives a reload",
     "src/app/platform/session/auth.spec.ts :: Auth account kinds switching does not offer a Bluesky row when no identity exists",
+    "src/app/platform/session/auth.spec.ts :: Auth account kinds switching keeps the connector grant when its primary identity is removed",
     "src/app/platform/session/auth.spec.ts :: Auth account kinds switching offers the Bluesky identity in the switcher only when it is not active",
     "src/app/platform/session/auth.spec.ts :: Auth account kinds switching removes one inactive Bluesky alt without touching the active identity",
     "src/app/platform/session/auth.spec.ts :: Auth account kinds switching revokes the SDK session when an OAuth alt is removed",

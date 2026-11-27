@@ -174,6 +174,18 @@ describe('BlueskySession OAuth connector', () => {
     expect(stored('bsky_credentials')).toBe('');
   });
 
+  it('keeps another connector for the same DID when one is unlinked', async () => {
+    const { session, oauth } = oauthSession('connector:link');
+    await session.finishOAuth();
+    localStorage.setItem('mockingbird_bsky_profile_mastodon_other', JSON.stringify(profile));
+    localStorage.setItem(
+      'mockingbird_bsky_credentials_mastodon_other',
+      JSON.stringify({ authMethod: 'oauth' }),
+    );
+    session.unlink();
+    expect(oauth.revoke).not.toHaveBeenCalled();
+  });
+
   it('keeps an identity signed in when a connector for the same DID is unlinked', async () => {
     saveBlueskyIdentity(profile, { authMethod: 'oauth' });
     const { session, oauth } = oauthSession('connector:link');
