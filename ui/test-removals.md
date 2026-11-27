@@ -62,6 +62,25 @@ result. CI checks without writing. Entries stay as history, newest first.
   now: src/app/reading/watch/party-conversation.spec.ts :: Temporary party conversations chat room controls replies unlisted without the tag, and posts hashtag chat publicly with it
   why: The owner decided (2026-11-27) that party replies stay unlisted and untagged, since the post they answer gives the context.
 
+## 2026-11-27: The sidebar panel follows pages by message, with actions on empty tabs
+
+- test: src/app/shell/page-panel/page-panel.spec.ts :: PagePanel asks for a web page when given none, and makes no request
+  reason: replaced
+  now: src/app/shell/page-panel/page-panel.spec.ts :: PagePanel offers actions, not a sentence, beside a tab with no web page
+  why: The owner asked (2026-11-27) for actions instead of the "Open a web page" sentence.
+
+- test: src/app/shell/page-panel/page-panel.spec.ts :: PagePanel reads the page from the #fragment, which never reaches the server
+  reason: replaced
+  now: src/app/shell/page-panel/page-panel.spec.ts :: PagePanel in the Firefox extension sidebar follows each page in place, searching once per page
+  why: GitHub Pages' 404 redirect turns the #fragment into ?spa=, so it did reach the server; the sidebar now sends the page by postMessage (owner approved 2026-11-27).
+
+## 2026-11-27: Cancelling a shared post discards it
+
+- test: src/app/shell/app-install/app-install.spec.ts :: ShareTarget closed unsent, hands what was in the box to Home so nothing is lost
+  reason: replaced
+  now: src/app/shell/app-install/app-install.spec.ts :: ShareTarget cancel discards the shared post, leaving Home's composer empty
+  why: The owner decided (2026-11-27) that cancel means cancel; autosave is only for an accidental browser close.
+
 ## 2026-11-26: Shared pages open the composer in a dialog
 
 - test: src/app/shell/app-install/app-install.spec.ts :: ShareTarget parks the shared link in an unsent post and goes Home without posting

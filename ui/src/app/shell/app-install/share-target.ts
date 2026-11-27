@@ -45,8 +45,8 @@ export function sharedText(params: {
  * Opens the composer in a dialog, filled in and focused at the top so a comment
  * goes above the link. It used to park the text and send the reader to Home,
  * where the small composer sat wherever Home was last scrolled, off screen.
- * Posted: Home. Closed unsent: the text goes to Home's composer as before, so
- * nothing is lost. Nothing is ever posted without the reader pressing Post.
+ * Posted: Home. Closed: discarded, and Home's composer is left as it was
+ * (owner, 2026-11-27: cancel means cancel). Nothing is ever posted without the reader pressing Post.
  */
 @Component({
   selector: 'app-share-target',
@@ -96,17 +96,16 @@ export class ShareTarget implements OnInit {
     this.home();
   }
 
-  /** Closed unsent: keep what's in the box by handing it to Home's composer. */
+  /**
+   * Cancel means cancel: nothing carries over to Home. The autosave slot exists
+   * for a closed browser or a crash mid-share, not for a deliberate Close.
+   */
   protected close(): void {
-    // Removing the composer flushes its autosave; read it once that has run.
+    // Removing the composer flushes its autosave; clear it once that has run.
     this.text.set('');
     afterNextRender(
       () => {
-        const saved = this.drafts.loadAutosave(SHARE_TARGET_DRAFT_CONTEXT);
         this.drafts.clearAutosave(SHARE_TARGET_DRAFT_CONTEXT);
-        if (saved && saved.segments.some((segment) => segment.trim())) {
-          this.drafts.handoff(saved);
-        }
         this.home();
       },
       { injector: this.injector },

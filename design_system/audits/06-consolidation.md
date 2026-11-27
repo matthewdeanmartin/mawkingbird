@@ -3739,3 +3739,17 @@ added or removed. `reading/bookmarks/bookmarks.html` replaces its two legacy
 `.tabs` strips (Native views; Raindrop folders) with MbTabs, the same widget as
 the section switcher above them. It stays backlog for its older `.btn`
 buttons. No shared widget changed.
+
+### 2026-11-27: Sidebar panel follows pages in place
+
+Reviewed the regenerated inventory: 2225 files, 746 candidates, both unchanged.
+`shell/page-panel/page-panel.html` gains a plain page header, Write a post, and
+for tabs with no web page an MbAddBox with MbField/MbControl and an outline
+MbButton for Search (the same pattern as Video search). Its disposition is
+updated. `shell/app-install/share-target.ts` is unchanged in markup (Close now
+discards). No shared widget changed.
+`feeds/link-timeline/link-timeline.html` (same day): the title gains a muted
+"| Trending" or "| Search" source; the long not-trending sentence and the search
+note become two short muted lines; the "open the link" line is hidden when the
+page is beside it (sidebar). The panel's composer gains an outline small MbButton
+Cancel. Dispositions unchanged.

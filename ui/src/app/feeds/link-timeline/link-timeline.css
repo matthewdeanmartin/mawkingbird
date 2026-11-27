@@ -2,3 +2,13 @@
   padding: 0 16px 8px;
   margin: 0;
 }
+
+.source {
+  font-weight: normal;
+}
+
+.empty-notes {
+  list-style: none;
+  margin: 0;
+  padding: 4px 16px 0;
+}

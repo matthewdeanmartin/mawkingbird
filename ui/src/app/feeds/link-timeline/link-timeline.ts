@@ -16,13 +16,14 @@ import { searchPostsForLink } from './link-search';
 // i18n pages.linkTimeline.open: Open the link
 // i18n pages.linkTimeline.loading: Loading…
 // i18n pages.linkTimeline.loadMore: Load more
-// i18n pages.linkTimeline.empty: Nobody has shared this link in a post your server can see yet.
-// i18n pages.linkTimeline.notTrending: Your server keeps a list of posts only for links that are trending there now, and this one isn't.
-// i18n pages.linkTimeline.unsupported: Your server doesn't offer posts-about-a-link lists (it needs Mastodon 4.3 or newer).
+// i18n pages.linkTimeline.trending: Trending
+// i18n pages.linkTimeline.searched: Search
+// i18n pages.linkTimeline.notTrending: Not trending
+// i18n pages.linkTimeline.unsupported: Your server can't list trending links
+// i18n pages.linkTimeline.searchNone: Search found no results
 // i18n pages.linkTimeline.failed: Could not load posts about this link. Try again.
 // i18n pages.linkTimeline.retry: Retry
 // i18n pages.linkTimeline.missingUrl: No link was given.
-// i18n pages.linkTimeline.fromSearch: This link isn't trending on your server, so these are posts found by searching for it.
 // i18n pages.linkTimeline.searchSite: Search posts mentioning {{host}}
 
 /**
@@ -55,11 +56,19 @@ export class LinkTimeline implements OnInit {
   protected hasMore = signal(false);
   /** A plain explanation instead of a feed (not trending, unsupported, no URL). */
   protected notice = signal('');
+  /**
+   * Where the list came from, shown after the title ("Posts about this link |
+   * Trending"); null while loading or when nothing was found.
+   */
+  protected source = signal<'trending' | 'search' | null>(null);
+  /** Why there's no trending list (not trending, or an older server); shown only if search finds nothing too. */
+  protected trendingNote = signal<'notTrending' | 'unsupported'>('notTrending');
   protected failed = signal(false);
-  /** The list came from post search, not the server's link timeline. */
-  protected fromSearch = signal(false);
 
-  /** The link, when a host page passes it (the sidebar panel); otherwise `?url=`. */
+  /**
+   * The link, when a host page passes it (the sidebar panel); otherwise `?url=`.
+   * Given one, the page is beside it already, so the "open the link" line goes.
+   */
   readonly link = input<string | null>(null);
 
   ngOnInit(): void {
@@ -86,7 +95,8 @@ export class LinkTimeline implements OnInit {
     this.statuses.set([]);
     this.hasMore.set(false);
     this.failed.set(false);
-    this.fromSearch.set(false);
+    this.source.set(null);
+    this.trendingNote.set('notTrending');
     this.notice.set('');
     if (!/^https?:\/\//i.test(this.url())) {
       this.notice.set(this.transloco.translate('pages.linkTimeline.missingUrl'));
@@ -111,9 +121,8 @@ export class LinkTimeline implements OnInit {
       .subscribe({
         next: ({ page, searched }) => {
           this.statuses.set(page);
-          this.fromSearch.set(searched && page.length > 0);
+          this.source.set(page.length ? (searched ? 'search' : 'trending') : null);
           this.hasMore.set(!searched && page.length > 0);
-          if (page.length) this.notice.set('');
           this.loading.set(false);
         },
         error: () => {
@@ -157,18 +166,12 @@ export class LinkTimeline implements OnInit {
     this.statuses.update((list) => list.filter((s) => s.id !== removed.id));
   }
 
-  /** Keeps the not-trending or unsupported sentence, shown only if search finds nothing. */
+  /** Which short note explains the missing trending list, if search finds nothing too. */
   private rememberNotTrending(error: HttpErrorResponse): void {
     // 404 is both "not trending here" (4.3+) and "no such endpoint" (older);
     // a 404 whose body names the record is the former.
     const body = JSON.stringify(error.error ?? '');
-    this.notice.set(
-      this.transloco.translate(
-        /record not found/i.test(body)
-          ? 'pages.linkTimeline.notTrending'
-          : 'pages.linkTimeline.unsupported',
-      ),
-    );
+    this.trendingNote.set(/record not found/i.test(body) ? 'notTrending' : 'unsupported');
   }
 
   private searchForLink(): Observable<{ page: Status[]; searched: boolean }> {

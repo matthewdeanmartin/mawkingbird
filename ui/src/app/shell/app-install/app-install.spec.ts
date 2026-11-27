@@ -131,19 +131,21 @@ describe('ShareTarget', () => {
     expect(handoff).not.toHaveBeenCalled();
   });
 
-  it('closed unsent, hands what was in the box to Home so nothing is lost', async () => {
+  it("cancel discards the shared post, leaving Home's composer empty", async () => {
     const saved = {
       ...emptyDraftSnapshot('public'),
       segments: [`My take${'\n\n'}https://ex.com/p`],
     };
-    const { fixture, navigate, handoff } = open({ url: 'https://ex.com/p' }, saved);
+    const { fixture, navigate, handoff, clear } = open({ url: 'https://ex.com/p' }, saved);
     await fixture.whenStable();
+    clear.mockClear();
     fixture.debugElement
       .query((d) => d.name === 'mb-dialog')
       .triggerEventHandler('dismissed', 'escape');
     await fixture.whenStable();
     expect(compose(fixture)).toBeUndefined();
-    expect(handoff).toHaveBeenCalledWith(saved);
+    expect(handoff).not.toHaveBeenCalled();
+    expect(clear).toHaveBeenCalledWith(SHARE_TARGET_DRAFT_CONTEXT);
     expect(navigate).toHaveBeenCalledWith(['/home'], { replaceUrl: true });
   });
 

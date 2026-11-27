@@ -51,6 +51,7 @@ describe('LinkTimeline', () => {
     f.detectChanges();
 
     expect(text(f)).toContain('Posts about this link');
+    expect(f.nativeElement.querySelector('.source')?.textContent).toContain('Trending');
     expect(text(f)).toContain('news.example');
     expect(f.nativeElement.querySelectorAll('app-status-card')).toHaveLength(2);
 
@@ -79,8 +80,9 @@ describe('LinkTimeline', () => {
 
     // Search matches words loosely; a post that doesn't link the page is dropped.
     expect(f.nativeElement.querySelectorAll('app-status-card')).toHaveLength(1);
-    expect(text(f)).toContain('posts found by searching for it');
-    expect(text(f)).not.toContain("this one isn't");
+    // The title says where the list came from; no sentence explains it.
+    expect(f.nativeElement.querySelector('.source')?.textContent).toContain('Search');
+    expect(text(f)).not.toContain('Not trending');
     expect(text(f)).not.toContain('Load more');
     // The whole-site search is offered second, never run on its own.
     expect(text(f)).toContain('Search posts mentioning news.example');
@@ -106,7 +108,9 @@ describe('LinkTimeline', () => {
     http.expectOne(search('news.example/story')).flush(noResults);
     f.detectChanges();
 
-    expect(text(f)).toContain("this one isn't");
+    expect(text(f)).toContain('Not trending');
+    expect(text(f)).toContain('Search found no results');
+    expect(f.nativeElement.querySelector('.source')).toBeNull();
     expect(text(f)).toContain('Search posts mentioning news.example');
     const link = f.nativeElement.querySelector('a[href*="/search"]') as HTMLAnchorElement;
     expect(link.getAttribute('href')).toBe('/search?q=news.example&type=statuses');
@@ -122,7 +126,7 @@ describe('LinkTimeline', () => {
       .flush('nope', { status: 503, statusText: 'Unavailable' });
     f.detectChanges();
 
-    expect(text(f)).toContain("this one isn't");
+    expect(text(f)).toContain('Not trending');
     expect(f.nativeElement.querySelector('[role="alert"]')).toBeNull();
   });
 
@@ -133,7 +137,8 @@ describe('LinkTimeline', () => {
     http.expectOne(search('news.example/story')).flush(noResults);
     f.detectChanges();
 
-    expect(text(f)).toContain('Mastodon 4.3 or newer');
+    expect(text(f)).toContain("Your server can't list trending links");
+    expect(text(f)).toContain('Search found no results');
   });
 
   it('shows an error for failures other than not trending', () => {
@@ -142,6 +147,23 @@ describe('LinkTimeline', () => {
     f.detectChanges();
 
     expect(text(f)).toContain('Could not load posts about this link');
+  });
+
+  it('drops the link to the page when the page is beside it (the sidebar)', () => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
+    });
+    TestBed.overrideProvider(ActivatedRoute, {
+      useValue: { queryParamMap: of(convertToParamMap({})) },
+    });
+    http = TestBed.inject(HttpTestingController);
+    const f = TestBed.createComponent(LinkTimeline);
+    f.componentRef.setInput('link', URL_);
+    f.detectChanges();
+    http.expectOne(page()).flush([post('2', 'ann')]);
+    f.detectChanges();
+    expect(text(f)).not.toContain('Open the link');
+    expect(f.nativeElement.querySelectorAll('app-status-card')).toHaveLength(1);
   });
 
   it('makes no request without an http(s) link', () => {

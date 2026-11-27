@@ -1,7 +1,7 @@
 # Firefox extension: Mawkingbird for Firefox
 
 Status: sprints 1–6 committed; sprints 7–8 built, uncommitted · 2026-11-27.
-Extension 0.6.1: 46 unit tests, `web-ext lint` 0 errors. Owner dogfooding next
+Extension 0.7.0: 46 unit tests, `web-ext lint` 0 errors. Owner dogfooding next
 (weeks, especially YouTube); no store submission before that.
 Code: `extension/` (its own `package.json` and `Makefile`) plus the web changes
 listed per sprint. Owner decisions are in the next section.
@@ -360,9 +360,28 @@ for sprint 9.
 - [x] Settings → App: a **Mawkingbird for Firefox** row when the extension is
       detected (and whether it may read any public site). No install link until
       it is on the store.
-- [x] Privacy: the sidebar passes the page in the panel URL's `#fragment`, which
-      browsers never send to mawkingbird.com's host (`?url=` still works).
-      LinkTimeline takes the link as an input for this.
+- [x] ~~Privacy: the sidebar passes the page in the panel URL's `#fragment`~~.
+      Wrong: GitHub Pages' 404 redirect re-encodes the fragment into `?spa=…`,
+      so it reached the host. Replaced in the follow-up below.
+
+### Follow-up (2026-11-27, extension 0.7.0, owner feedback)
+
+- Production ran the `?url=` panel while 0.6.x sent `#url=`, so the sidebar said
+  "Open a web page…" beside every page. And the sentence offered nothing to do.
+- [x] The sidebar loads `/panel` once and sends each page by `postMessage`
+      (`mawkingbird-panel/1`: panel → parent `ready`; sidebar → panel `page`
+      with `url`/`title`, or `url: null`). The panel accepts it only from its
+      parent frame on a `moz-extension:`/`chrome-extension:` origin, and updates
+      in place: header with the page's title and site, searches re-run, the
+      link list re-keyed. No reload, no blink; the page never appears in a URL.
+      `?url=&title=` links still work.
+- [x] The sidebar's strip (site name, **Open Mawkingbird**) is gone: Mawkingbird
+      opens when an action needs the full app, not as a goal of its own.
+- [x] A tab with no web page: **Write a post** (unseeded composer) and **Search
+      Mawkingbird** (results in a new tab). While waiting for the first page the
+      panel renders nothing.
+- [x] Share dialog: Close discards the post (cancel means cancel); autosave is
+      for a closed browser, not a deliberate cancel.
 - [x] Store package (not submitted): `extension/store/LISTING.md`,
       `REVIEWER-NOTES.md`, `extension/CHANGELOG.md`.
 - [ ] Owner, before submitting: the data-collection declaration (LISTING.md):

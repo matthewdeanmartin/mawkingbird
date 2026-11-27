@@ -23,8 +23,13 @@ and Native. Nothing has been published to addons.mozilla.org yet (dogfooding).
 
 ### Changed
 
+- 0.7.0: The sidebar loads Mawkingbird once and follows your tabs in place: no
+  reload or blink, and the page's address is never put in a URL. Its "Open
+  Mawkingbird" strip is gone; on a tab with no web page it offers Write a post
+  and Search instead of a sentence.
+- 0.7.0 (web): Cancelling a shared post discards it.
 - 0.6.1: YouTube's header fix is a declarative rule Firefox applies; the add-on
   no longer asks for `webRequest`, so it can't see any request's headers or
   cookies.
-- 0.6.0: The sidebar passes the page in the address's fragment, which isn't sent
-  to mawkingbird.com's host.
+- 0.6.0: The sidebar passed the page in the address's fragment. (It reached the
+  server anyway, through the site's 404 redirect; fixed in 0.7.0.)

@@ -1,5 +1,17 @@
-<div class="page-head">{{ 'pages.linkTimeline.title' | transloco }}</div>
-@if (host()) {
+<div class="page-head">
+  {{ 'pages.linkTimeline.title' | transloco }}
+  @if (source(); as from) {
+    <span class="muted source"
+      >|
+      {{
+        (from === 'trending' ? 'pages.linkTimeline.trending' : 'pages.linkTimeline.searched')
+          | transloco
+      }}</span
+    >
+  }
+</div>
+<!-- Beside the page itself (the sidebar), a link to it would only reopen it. -->
+@if (host() && link() === null) {
   <p class="muted small page-sub">
     <a [href]="url()" target="_blank" rel="noopener noreferrer">{{ host() }}</a>
     ·
@@ -15,14 +27,8 @@
     announcement="status"
     [title]="'pages.linkTimeline.loading' | transloco"
   />
-} @else if (notice() && !statuses().length) {
-  <mb-content-state [title]="notice()">
-    @if (host()) {
-      <a mbButton variant="outline" routerLink="/search" [queryParams]="siteSearchParams()">{{
-        'pages.linkTimeline.searchSite' | transloco: { host: host() }
-      }}</a>
-    }
-  </mb-content-state>
+} @else if (notice()) {
+  <mb-content-state [title]="notice()" />
 } @else if (failed()) {
   <mb-content-state
     kind="error"
@@ -34,17 +40,25 @@
     </button>
   </mb-content-state>
 } @else if (!statuses().length) {
-  <mb-content-state [title]="'pages.linkTimeline.empty' | transloco">
-    @if (host()) {
+  <ul class="empty-notes muted">
+    <li>
+      {{
+        (trendingNote() === 'unsupported'
+          ? 'pages.linkTimeline.unsupported'
+          : 'pages.linkTimeline.notTrending'
+        ) | transloco
+      }}
+    </li>
+    <li>{{ 'pages.linkTimeline.searchNone' | transloco }}</li>
+  </ul>
+  @if (host()) {
+    <div class="load-more-row">
       <a mbButton variant="outline" routerLink="/search" [queryParams]="siteSearchParams()">{{
         'pages.linkTimeline.searchSite' | transloco: { host: host() }
       }}</a>
-    }
-  </mb-content-state>
-} @else {
-  @if (fromSearch()) {
-    <p class="muted small page-sub">{{ 'pages.linkTimeline.fromSearch' | transloco }}</p>
+    </div>
   }
+} @else {
   @for (s of statuses(); track s.id; let i = $index) {
     <app-status-card
       [status]="s"

@@ -144,18 +144,11 @@ export function liteUrl(base) {
 }
 
 /**
- * `/panel?url=&title=`: the sidebar's content, Mawkingbird about the page
- * beside it. A non-web page gets the bare panel, which says to open one.
+ * `/panel`: the sidebar's content. The page beside it is sent by
+ * `postMessage`, never in the address (see sidebar/sidebar.js).
  */
-export function panelUrl(base, { url, title } = {}) {
-  const panel = appUrl(base, 'panel');
-  if (!isShareablePageUrl(url)) return panel;
-  // In the #fragment, which browsers never send to mawkingbird.com's host: the
-  // pages someone reads with the sidebar open stay out of its request logs.
-  const fragment = new URLSearchParams({ url: withoutHash(url) });
-  const name = clean(title, 300);
-  if (name) fragment.set('title', name);
-  return `${panel}#${fragment}`;
+export function panelUrl(base) {
+  return appUrl(base, 'panel');
 }
 
 /**

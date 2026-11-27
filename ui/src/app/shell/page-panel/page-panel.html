@@ -1,6 +1,54 @@
-@if (!url()) {
-  <p class="muted panel-note">{{ 'pages.pagePanel.noPage' | transloco }}</p>
-} @else {
+@if (page() === null) {
+  <!-- A tab with no web page: things to do, not a sentence about it. -->
+  <section class="panel-write">
+    @if (strayDraft()) {
+      <p class="panel-note" role="status">{{ 'pages.pagePanel.strayDraft' | transloco }}</p>
+      <div class="panel-row">
+        <button mbButton type="button" (click)="continueDraft()">
+          {{ 'pages.pagePanel.continueDraft' | transloco }}
+        </button>
+        <button mbButton variant="outline" type="button" (click)="discardDraft()">
+          {{ 'pages.pagePanel.discardDraft' | transloco }}
+        </button>
+      </div>
+    } @else if (writing()) {
+      <app-compose [compact]="true" draftContext="page-panel" (posted)="posted($event)" />
+      <button mbButton variant="outline" size="small" type="button" (click)="cancel()">
+        {{ 'pages.pagePanel.cancel' | transloco }}
+      </button>
+    } @else {
+      <button mbButton type="button" (click)="write()">
+        {{ 'pages.pagePanel.writeAny' | transloco }}
+      </button>
+      @if (justPosted()) {
+        <p class="panel-note" role="status">{{ 'pages.pagePanel.posted' | transloco }}</p>
+      }
+    }
+  </section>
+  <form mbAddBox class="panel-search" role="search" (ngSubmit)="search()">
+    <mb-field [label]="'pages.pagePanel.searchLabel' | transloco">
+      <input
+        mbControl
+        name="q"
+        type="search"
+        autocomplete="off"
+        maxlength="200"
+        [(ngModel)]="searchQuery"
+        [attr.placeholder]="'pages.pagePanel.searchPlaceholder' | transloco"
+      />
+    </mb-field>
+    <button mbButton variant="outline" type="submit">
+      {{ 'pages.pagePanel.search' | transloco }}
+    </button>
+  </form>
+} @else if (page(); as current) {
+  <header class="panel-page">
+    @if (current.title) {
+      <p class="panel-title">{{ current.title }}</p>
+    }
+    <p class="muted small panel-host">{{ host() }}</p>
+  </header>
+
   <section class="panel-write">
     @if (strayDraft()) {
       <p class="panel-note" role="status">{{ 'pages.pagePanel.strayDraft' | transloco }}</p>
@@ -19,6 +67,9 @@
         [initialText]="continuing() ? '' : seedText()"
         (posted)="posted($event)"
       />
+      <button mbButton variant="outline" size="small" type="button" (click)="cancel()">
+        {{ 'pages.pagePanel.cancel' | transloco }}
+      </button>
     } @else {
       <button mbButton type="button" (click)="write()">
         {{ 'pages.pagePanel.write' | transloco }}
@@ -64,5 +115,8 @@
     </section>
   }
 
-  <app-link-timeline [link]="url()" />
+  <!-- Keyed on the page, so a new page gets a fresh list rather than the last one's. -->
+  @for (link of [current.url]; track link) {
+    <app-link-timeline [link]="link" />
+  }
 }

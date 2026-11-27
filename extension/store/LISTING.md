@@ -58,9 +58,11 @@ The manifest says `data_collection_permissions: { required: ["none"] }`. Review
 against Mozilla's definitions before submitting:
 
 - The add-on sends nothing to its author and has no server.
-- Pages you share, and pages open while the sidebar is open, go to
-  mawkingbird.com's page in your browser. Since sprint 7 the sidebar passes the
-  page in the URL fragment, which isn't sent to mawkingbird.com's host.
+- Pages you share go to mawkingbird.com's share page in your browser (in its
+  address, because you asked to share them). Pages open while the sidebar is
+  open are passed to the panel by `postMessage` and never appear in a URL, so
+  mawkingbird.com's host doesn't see them. (0.6.0's `#fragment` approach did
+  reach the host through GitHub Pages' 404 redirect; fixed in 0.7.0.)
 - The sidebar's "You posted about this page" searches **your own Mastodon
   server** for the page's address, and "Posts about this page" asks your server
   too. Mozilla may count that as transmitting browsing activity. If so, declare
