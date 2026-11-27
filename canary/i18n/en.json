@@ -5222,6 +5222,7 @@
     "profile.twitter.stopShowing": "Stop showing this account on your Feeds page",
     "profile.zoomAvatar": "View full-size profile photo",
     "profile.zoomHeader": "View full-size header image",
+    "rss.addFeed.allowSite": "Let Mawkingbird for Firefox read {{site}}",
     "rss.addFeed.checking": "Checking…",
     "rss.addFeed.continue": "Continue",
     "rss.addFeed.couldNotFollow": "Could not follow that account.",
@@ -5233,6 +5234,7 @@
     "rss.addFeed.ifRatherRead": ", if you would rather read them than follow them.",
     "rss.addFeed.intro": "A site, a feed, or a fediverse handle — paste whatever you have and Mawkingbird works out the rest.",
     "rss.addFeed.looking": "Looking…",
+    "rss.addFeed.notAllowed": "Not allowed. Mawkingbird for Firefox won't read {{site}}.",
     "rss.addFeed.or": "Or",
     "rss.addFeed.pasteLink": "Paste a link",
     "rss.addFeed.question": "?",
@@ -9786,6 +9788,10 @@
     "share": "Share",
     "shareUsingDevice": "Share using device…",
     "thisPost": "This post"
+  },
+  "shareTarget": {
+    "close": "Close",
+    "title": "Share"
   },
   "shell": {
     "account.add": "+ Add account",

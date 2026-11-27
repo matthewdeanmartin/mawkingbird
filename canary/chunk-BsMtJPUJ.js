@@ -1,1 +1,0 @@
-import{Sc as ee,ys as Jo}from"./main-3PGOJAXI.js";var e=class o{author=Jo(null);postId=Jo(null);show(n,t=null){this.author.set(n),this.postId.set(t)}clear(){this.show(null)}static ɵfac=function(t){return new(t||o)};static ɵprov=ee({token:o,factory:o.ɵfac,providedIn:`root`})};export{e as t};
