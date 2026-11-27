@@ -1,1 +1,0 @@
-import{C as l,d as r}from"./chunk-VKQQLJEI.js";var e=class o{author=l(null);postId=l(null);show(n,t=null){this.author.set(n),this.postId.set(t)}clear(){this.show(null)}static \u0275fac=function(t){return new(t||o)};static \u0275prov=r({token:o,factory:o.\u0275fac,providedIn:"root"})};export{e as a};

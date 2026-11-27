@@ -1,0 +1,1 @@
+import{n as d,r as l,t as c}from"./chunk-fgF4Kz25.js";export{l as youtuberCopy};

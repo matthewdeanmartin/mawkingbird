@@ -1,0 +1,1 @@
+import{t as Y}from"./chunk-B3-EsYr0.js";import{do as S,os as D,qi as Ge}from"./main-SRROLEAN.js";function k(){let e=D(Ge),s=D(Y),u=D(S);return{usableMastodon:()=>e.isBlueskyPrimary?u.optedIn():!e.isMisskeyPrimary,usableBluesky:()=>s.linked()}}export{k as t};

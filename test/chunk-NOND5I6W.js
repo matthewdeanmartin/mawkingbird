@@ -1,1 +1,0 @@
-import{b as n}from"./chunk-3OB3HJXW.js";import{a as e}from"./chunk-ZW5NV4UO.js";function f(r){if(r.provider!=="anonymous-mastodon")return r.id;let o=r.providerRef;if(!o?.server||!o.statusId)return r.id;let i=e({server:o.server,id:o.statusId},r.url?{originalUrl:r.url}:{});try{return n(i)}catch{return r.id}}export{f as a};

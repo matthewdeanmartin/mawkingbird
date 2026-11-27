@@ -1,0 +1,1 @@
+import{t as c}from"./chunk-B5LhIL9p.js";function i(o,e){c(new Blob([o],{type:`text/csv`}),e)}export{i as t};

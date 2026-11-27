@@ -1,0 +1,1 @@
+import{n as k,t as g}from"./chunk-B7AMOHM6.js";import"./main-SRROLEAN.js";export{g as graphemeLength};

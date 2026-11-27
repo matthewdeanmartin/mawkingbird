@@ -1,0 +1,1 @@
+function r(t){if(!t||typeof t!=`object`)return!1;let e=t;return typeof e.uri==`string`&&typeof e.cid==`string`&&!!e.author&&!!e.record}var i=`app.bsky.graph.defs#curatelist`;var s=`chat.bsky.convo.defs#deletedMessageView`;export{r as n,s as r,i as t};
