@@ -1,0 +1,1 @@
+import{n as i,r as p,t as c}from"./chunk-DRycNNCJ.js";export{p as shippedStarterKit};
