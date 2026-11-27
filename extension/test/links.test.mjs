@@ -141,3 +141,14 @@ test('panelUrl follows the page without its #fragment', async () => {
   assert.equal(panelUrl(BASE, { url: 'about:newtab' }), 'https://mawkingbird.com/panel');
   assert.equal(withoutHash('https://a.example/#x'), 'https://a.example/');
 });
+
+test('isMawkingbirdPage recognises the configured deployment only', async () => {
+  const { isMawkingbirdPage } = await import('../src/lib/links.js');
+  assert.equal(isMawkingbirdPage(BASE, 'https://mawkingbird.com/watch?youtube=x'), true);
+  assert.equal(isMawkingbirdPage(BASE, 'https://news.example/'), false);
+  const test = 'https://mawkingbird.com/test/';
+  assert.equal(isMawkingbirdPage(test, 'https://mawkingbird.com/test/watch'), true);
+  // Production pages are ordinary pages while testing the /test/ deployment.
+  assert.equal(isMawkingbirdPage(test, 'https://mawkingbird.com/watch'), false);
+  assert.equal(isMawkingbirdPage(BASE, 'about:blank'), false);
+});

@@ -3664,3 +3664,10 @@ and an outline MbButton link to search the site's name in its empty and
 not-trending MbContentState; its disposition is updated. The RSS page's add-feed
 dialog gains a `prefill` input only. No shared widget changed; other entries move
 by line offset only.
+
+### 2026-11-26: Panel Watch links (Firefox extension sprint 4)
+
+Reviewed the regenerated inventory: 2221 files scanned and 744 candidates, both
+unchanged. `shell/page-panel/page-panel.html` gains two anchor MbButtons that open
+Watch in a new tab on YouTube pages (primary with replies, outline plain); its
+disposition is updated. No shared widget changed.

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Mawkingbird",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Share the page you are reading to Mastodon and Bluesky, open fediverse links in Mawkingbird, and keep Mawkingbird Lite in your sidebar.",
   "homepage_url": "https://mawkingbird.com/",
   "author": "Matthew Martin",

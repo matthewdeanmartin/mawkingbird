@@ -1,11 +1,12 @@
-import { isShareablePageUrl, panelUrl, withoutHash } from '../lib/links.js';
+import { isMawkingbirdPage, isShareablePageUrl, panelUrl, withoutHash } from '../lib/links.js';
 import { getBase, onBaseChanged } from '../lib/settings.js';
 
 /**
  * The sidebar: Mawkingbird's /panel about the tab beside it (write about the
  * page, your posts about it, other people's). It follows the active tab, but
  * reloads only when the page itself changes (not its #fragment), after a short
- * pause, so flicking through tabs doesn't fire a burst of API calls.
+ * pause, so flicking through tabs doesn't fire a burst of API calls. Tabs on
+ * Mawkingbird itself leave the panel alone.
  */
 
 const FOLLOW_DELAY_MS = 700;
@@ -36,6 +37,8 @@ async function follow(delay = FOLLOW_DELAY_MS) {
   clearTimeout(timer);
   timer = setTimeout(async () => {
     const tab = await currentTab();
+    // Mawkingbird's own tabs (Watch opened from the panel) keep the panel as is.
+    if (tab && isMawkingbirdPage(base, tab.url) && shownFor !== null) return;
     const page = tab && isShareablePageUrl(tab.url) ? withoutHash(tab.url) : '';
     label.textContent = page ? hostOf(page) : '';
     if (page === shownFor) return;

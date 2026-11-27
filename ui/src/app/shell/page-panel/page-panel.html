@@ -29,6 +29,30 @@
     }
   </section>
 
+  @if (videoId()) {
+    <section class="panel-watch">
+      <div class="panel-row">
+        @if (repliesParams(); as params) {
+          <a mbButton routerLink="/watch" [queryParams]="params" target="_blank" rel="noopener">{{
+            'pages.pagePanel.watchReplies' | transloco
+          }}</a>
+        }
+        <a
+          mbButton
+          variant="outline"
+          routerLink="/watch"
+          [queryParams]="watchParams()"
+          target="_blank"
+          rel="noopener"
+          >{{ 'pages.pagePanel.watch' | transloco }}</a
+        >
+      </div>
+      @if (!repliesParams() && canSearchMine) {
+        <p class="muted small panel-hint">{{ 'pages.pagePanel.watchHint' | transloco }}</p>
+      }
+    </section>
+  }
+
   @if (mine().length) {
     <section class="panel-mine" aria-labelledby="panel-mine-heading">
       <h2 id="panel-mine-heading" class="panel-heading">

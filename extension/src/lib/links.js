@@ -117,6 +117,23 @@ export function panelUrl(base, { url, title } = {}) {
   return appUrl(base, 'panel', { url: withoutHash(url), title: clean(title, 300) });
 }
 
+/**
+ * Whether `url` is Mawkingbird itself (the configured deployment). The sidebar
+ * keeps the page it was showing rather than a panel about Mawkingbird, so
+ * opening Watch from the panel leaves the video's panel in place.
+ */
+export function isMawkingbirdPage(base, url) {
+  const root = normalizeBase(base);
+  if (!root) return false;
+  try {
+    const page = new URL(url);
+    const home = new URL(root);
+    return page.origin === home.origin && page.pathname.startsWith(home.pathname);
+  } catch {
+    return false;
+  }
+}
+
 /** The page address the sidebar follows: a #fragment is the same page. */
 export function withoutHash(url) {
   try {

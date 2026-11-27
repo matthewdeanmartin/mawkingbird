@@ -11,6 +11,9 @@ const URL_ = 'https://news.example/story';
 const search = (q: string) => (r: HttpRequest<unknown>) =>
   r.url === '/api/v2/search' && r.params.get('q') === q && r.params.get('type') === 'statuses';
 const noResults = { accounts: [], statuses: [], hashtags: [] };
+/** A post that links to `url`, as search would return it. */
+const linking = (id: string, author: string, url: string) =>
+  post(id, author, { content: `<p>Read <a href="${url}">this</a></p>` });
 const page = (maxId?: string) => (r: HttpRequest<unknown>) =>
   r.url === '/api/v1/timelines/link' &&
   r.params.get('url') === URL_ &&
@@ -69,9 +72,12 @@ describe('LinkTimeline', () => {
   it('falls back to searching for the link when it is not trending', () => {
     const f = setUp(URL_);
     notTrending();
-    http.expectOne(search(URL_)).flush({ ...noResults, statuses: [post('9', 'cy')] });
+    http
+      .expectOne(search(URL_))
+      .flush({ ...noResults, statuses: [linking('9', 'cy', URL_), post('10', 'dd')] });
     f.detectChanges();
 
+    // Search matches words loosely; a post that doesn't link the page is dropped.
     expect(f.nativeElement.querySelectorAll('app-status-card')).toHaveLength(1);
     expect(text(f)).toContain('posts found by searching for it');
     expect(text(f)).not.toContain("this one isn't");
@@ -79,12 +85,13 @@ describe('LinkTimeline', () => {
   });
 
   it('searches again without the scheme when the full link finds nothing', () => {
-    const f = setUp('https://www.news.example/story/?utm=x#top');
+    const f = setUp('https://www.news.example/story/?utm_source=x#top');
     http.expectOne((r) => r.url === '/api/v1/timelines/link').flush([]);
-    http.expectOne(search('https://www.news.example/story/?utm=x#top')).flush(noResults);
-    http
-      .expectOne(search('news.example/story'))
-      .flush({ ...noResults, statuses: [post('8', 'di')] });
+    http.expectOne(search('https://www.news.example/story/?utm_source=x#top')).flush(noResults);
+    http.expectOne(search('news.example/story')).flush({
+      ...noResults,
+      statuses: [linking('8', 'di', 'https://news.example/story')],
+    });
     f.detectChanges();
 
     expect(f.nativeElement.querySelectorAll('app-status-card')).toHaveLength(1);

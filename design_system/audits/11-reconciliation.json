@@ -110,7 +110,7 @@
     {
       "file": "ui/src/app/shell/page-panel/page-panel.html",
       "disposition": "adopted scope",
-      "nextStep": "The Firefox extension's sidebar panel (/panel, spec/firefox-extension.md): MbButton (primary Write about this page and Continue it, outline Discard it), the compact Compose, StatusCard rows for the reader's own posts and the embedded LinkTimeline; native headings and status notes only. Preserve the composer mounting on demand (no draft for a glanced page) and the single from:me search."
+      "nextStep": "The Firefox extension's sidebar panel (/panel, spec/firefox-extension.md): MbButton (primary Write about this page and Continue it, outline Discard it), on a YouTube page anchor MbButtons opening Watch in a new tab (primary Watch with replies to your post, outline Watch in Mawkingbird), the compact Compose, StatusCard rows for the reader's own posts and the embedded LinkTimeline; native headings and status notes only. Preserve the composer mounting on demand (no draft for a glanced page), the single from:me search and that Watch opens in its own tab."
     },
     {
       "file": "ui/src/app/feeds/lists/collection-settings-dialog/collection-settings-dialog.html",

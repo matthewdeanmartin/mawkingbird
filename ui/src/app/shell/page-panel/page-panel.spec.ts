@@ -1,10 +1,11 @@
 import { Component, input, output } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LinkTimeline } from '../../feeds/link-timeline/link-timeline';
 import { Api } from '../../platform/api/api';
+import { Server } from '../../platform/http/server';
 import { Status } from '../../platform/api/models';
 import { Auth } from '../../platform/session/auth';
 import { StatusCard } from '../../posts/status-card/status-card';
@@ -31,6 +32,13 @@ class StatusCardStub {
 class LinkTimelineStub {}
 
 const PAGE = 'https://news.example/story';
+const VIDEO = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+/** Search results must actually link the page; the panel drops the rest. */
+const mineAbout = (url: string) => ({
+  accounts: [],
+  statuses: [post('7', 'me', { content: `<p><a href="${url}">${url}</a></p>` })],
+  hashtags: [],
+});
 
 describe('PagePanel', () => {
   let search: ReturnType<typeof vi.fn>;
@@ -39,7 +47,7 @@ describe('PagePanel', () => {
   let auth: { isAnonymous: boolean; isForeignPrimary: boolean };
 
   beforeEach(() => {
-    search = vi.fn(() => of({ accounts: [], statuses: [post('7', 'me')], hashtags: [] }));
+    search = vi.fn((q: string) => of(mineAbout(q.replace(/^from:me /, ''))));
     loadAutosave = vi.fn(() => null);
     clearAutosave = vi.fn(() => ({ durable: true }));
     auth = { isAnonymous: false, isForeignPrimary: false };
@@ -48,7 +56,9 @@ describe('PagePanel', () => {
   function setUp(params: Record<string, string>): ComponentFixture<PagePanel> {
     TestBed.configureTestingModule({
       providers: [
+        provideRouter([]),
         { provide: Api, useValue: { search } },
+        { provide: Server, useValue: { baseUrl: () => 'https://home.example' } },
         { provide: Auth, useValue: auth },
         { provide: Drafts, useValue: { loadAutosave, clearAutosave } },
         { provide: ActivatedRoute, useValue: { queryParamMap: of(convertToParamMap(params)) } },
@@ -84,6 +94,50 @@ describe('PagePanel', () => {
     expect(el(f).textContent).toContain('You posted about this page');
     expect(el(f).querySelectorAll('.panel-mine app-status-card')).toHaveLength(1);
     expect(el(f).querySelector('app-link-timeline')).not.toBeNull();
+  });
+
+  it('offers no Watch for a page that is not a video', () => {
+    const f = setUp({ url: PAGE });
+    expect(el(f).querySelector('.panel-watch')).toBeNull();
+  });
+
+  it("offers Watch for a YouTube video, and Watch with the replies to the reader's post", () => {
+    const f = setUp({ url: VIDEO });
+    const links = [...el(f).querySelectorAll('.panel-watch a')] as HTMLAnchorElement[];
+    expect(links.map((a) => a.textContent?.trim())).toEqual([
+      'Watch with replies to your post',
+      'Watch in Mawkingbird',
+    ]);
+    const replies = new URL(links[0].href, 'https://x.invalid');
+    expect(replies.pathname).toBe('/watch');
+    expect(Object.fromEntries(replies.searchParams)).toEqual({
+      post: '7',
+      server: 'https://home.example',
+      youtube: 'dQw4w9WgXcQ',
+    });
+    expect(new URL(links[1].href, 'https://x.invalid').search).toBe('?youtube=dQw4w9WgXcQ');
+    expect(links.every((a) => a.target === '_blank')).toBe(true);
+  });
+
+  it('explains how to get the replies chat before the reader has posted about the video', () => {
+    search.mockReturnValue(of({ accounts: [], statuses: [], hashtags: [] }));
+    const f = setUp({ url: VIDEO });
+    expect(el(f).textContent).not.toContain('Watch with replies to your post');
+    expect(el(f).textContent).toContain('Post about this video to watch it');
+  });
+
+  it('offers the replies chat as soon as the reader posts from the panel', () => {
+    search.mockReturnValue(of({ accounts: [], statuses: [], hashtags: [] }));
+    const f = setUp({ url: VIDEO });
+    button(f, 'Write about this page').click();
+    f.detectChanges();
+    const compose = f.debugElement.query((d) => d.name === 'app-compose')
+      .componentInstance as ComposeStub;
+    compose.posted.emit(post('42', 'me'));
+    f.detectChanges();
+    expect(el(f).textContent).toContain('Posted.');
+    const first = el(f).querySelector('.panel-watch a') as HTMLAnchorElement;
+    expect(new URL(first.href, 'https://x.invalid').searchParams.get('post')).toBe('42');
   });
 
   it('does not search for its own posts without a Mastodon sign-in', () => {
