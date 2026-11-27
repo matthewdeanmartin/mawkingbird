@@ -1,0 +1,1 @@
+import{Sc as ee,iu as rr,ys as Jo}from"./main-XTOUJIQM.js";var n=class e{loaded=new rr(1);snapshot=Jo(null);publish(t){this.loaded.next(t)}static ɵfac=function(s){return new(s||e)};static ɵprov=ee({token:e,factory:e.ɵfac,providedIn:`root`})};export{n as t};

@@ -1,1 +1,0 @@
-import{n as i,r as p,t as c}from"./chunk-B0WzZLM5.js";export{p as shippedStarterKit};
