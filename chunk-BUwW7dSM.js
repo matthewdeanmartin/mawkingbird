@@ -1,1 +1,0 @@
-import{ar as Q,mr as j,nr as $,oo as k,rr as C,sr as V}from"./main-WQWQJGMV.js";export{V as ACCOUNT_ORIGIN,Q as AUTH_ORIGIN,C as MawkingbirdSession,$ as accountOrigin,j as authOrigin,k as corsProxyOrigin};

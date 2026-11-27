@@ -1,1 +1,0 @@
-import{Cs as Jo,Ec as ee}from"./main-WQWQJGMV.js";var n=class e{on=Jo(!1);active=this.on.asReadonly();enter(){this.on.set(!0)}exit(){this.on.set(!1)}toggle(){this.on.update(t=>!t)}static ɵfac=function(i){return new(i||e)};static ɵprov=ee({token:e,factory:e.ɵfac,providedIn:`root`})};export{n as t};
