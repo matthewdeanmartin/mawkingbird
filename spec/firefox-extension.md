@@ -213,19 +213,35 @@ Gate fixes found on the way (from the Angular 22 upgrade, not this work):
 Gates on the final tree: production SEO build (exit 0, SEO checks passed),
 `npm run lint`, `make test` (11,522 tests), `check:static`, design inventory.
 
-## Sprint 4: YouTube and your post's replies (planned)
+## Sprint 4: YouTube and your post's replies (built 2026-11-26, extension 0.4.0)
 
-- [ ] On a YouTube video page, the panel offers **Watch in Mawkingbird** (Watch
-      mode for that video) beside Write about this page.
-- [ ] Post about a video, then **watch with replies**: Watch with the replies to
-      your post as its chat. "Your post" is the root post found by the panel's
-      `from:me` search or the one just posted.
-- [ ] New replies while watching: re-read that one post's context
-      (`/api/v1/statuses/:id/context`, one call) on a slow interval only while
-      Watch is open and visible, stopping when hidden. A live view of one thread,
-      not a notification: nothing outside the page, no badge, no sound.
-- [ ] Decide with the owner where the root post lives once found (remember it per
-      URL in the panel, so a revisit skips the search; never a scan).
+Watch already had what this needed: `/watch?youtube=<id>` plays a video with no
+post, `/watch?post=&server=&youtube=` makes that post the watch party's root,
+and its **Post replies** chat refreshes on its own timer (5 s to 1 min, or Live)
+and skips refreshes while the tab is hidden. So this sprint is wiring:
+
+- [x] On a YouTube video (any link shape, via `youtubeSource`), the panel shows
+      **Watch in Mawkingbird** and, once there is a post of yours about it,
+      **Watch with replies to your post** (primary). Both open in a new tab.
+- [x] "Your post" is the newest `from:me` result or the post just written in the
+      panel: no extra call to find it. Before you've posted, the panel says to
+      post about the video to get the replies chat.
+- [x] Search precision: a YouTube link is searched by its video id (it matches
+      youtu.be, watch?v= and shorts links alike); every search result must
+      actually contain the link (text or preview card), since Mastodon search
+      matches words loosely. A page's own query (`?id=5`) is kept; tracking
+      parameters (`utm_*`, `fbclid`, …) are dropped. Applies to `/link` too.
+- [x] The sidebar ignores tabs on Mawkingbird itself, so opening Watch leaves the
+      video's panel in place.
+- [ ] Owner decision (not built): remember your post per URL so a revisit skips
+      the search. One search per page shown is cheap; a cache would add a storage
+      key. Left out until it proves needed.
+
+Also fixed: `make test-integration` failed on Node 26 (Node 25+'s own global
+`localStorage` hid jsdom's); `vitest.integration.config.ts` passes
+`--no-experimental-webstorage`. Passes on Node 26 and 24.
+
+Test plan: `test_plans/firefox-extension-sprint-4.md`.
 
 ## Sprint 5: the bridge (extension side)
 
