@@ -1,1 +1,0 @@
-import{t as j}from"./chunk-DnJa_42y.js";import{ea as Ge,ps as D,yo as S}from"./main-BNJ4P544.js";function k(){let e=D(Ge),s=D(j),u=D(S);return{usableMastodon:()=>e.isBlueskyPrimary?u.optedIn():!e.isMisskeyPrimary,usableBluesky:()=>s.linked()}}export{k as t};
