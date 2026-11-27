@@ -1,0 +1,1 @@
+import{Sc as ee,ys as Jo}from"./main-U6SXRBRL.js";var t=class n{component=Jo(null);static ɵfac=function(a){return new(a||n)};static ɵprov=ee({token:n,factory:n.ɵfac,providedIn:`root`})};export{t};
