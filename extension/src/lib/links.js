@@ -103,6 +103,41 @@ export function accountUrl(base, handle) {
   return normalized ? appUrl(base, `@${normalized}`) : null;
 }
 
+const YOUTUBE_HOSTS = new Set(['youtube.com', 'www.youtube.com', 'm.youtube.com', 'music.youtube.com']);
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/;
+
+/**
+ * The video id of a YouTube video page, or null. Mirrors the app's
+ * youtubeSource (ui/src/app/reading/video-player/media-source.ts).
+ */
+export function youtubeVideoId(pageUrl) {
+  let url;
+  try {
+    url = new URL(pageUrl);
+  } catch {
+    return null;
+  }
+  const host = url.hostname.toLowerCase();
+  let id = null;
+  if (host === 'youtu.be' || host === 'www.youtu.be') {
+    id = /^\/([^/]+)\/?$/.exec(url.pathname)?.[1] ?? null;
+  } else if (YOUTUBE_HOSTS.has(host)) {
+    id =
+      url.pathname === '/watch'
+        ? url.searchParams.get('v')
+        : (/^\/(?:shorts|live|embed)\/([^/]+)\/?$/.exec(url.pathname)?.[1] ?? null);
+  }
+  return id && YOUTUBE_ID.test(id) ? id : null;
+}
+
+/**
+ * `/watch?youtube=<id>`: the video in Mawkingbird's Watch, whose channel panel
+ * subscribes to the channel's feed (a video page lists no feed of its own).
+ */
+export function watchUrl(base, videoId) {
+  return YOUTUBE_ID.test(videoId ?? '') ? appUrl(base, 'watch', { youtube: videoId }) : null;
+}
+
 /** Lite (`/m/`). */
 export function liteUrl(base) {
   return appUrl(base, 'm/');

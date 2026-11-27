@@ -1,5 +1,11 @@
 import { saveBlob } from '../../platform/files/save-file';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
+import { MbButton } from '../../design-system/button/button';
+import {
+  ExtensionBridge,
+  extensionAccessOrigin,
+  siteName,
+} from '../../platform/extension/extension-bridge';
 import { FeedSyncButton } from '../../accounts/mawkingbird/feed-sync-button';
 import {
   Component,
@@ -119,7 +125,7 @@ interface ImportReport {
 // i18n settings.rss.noFeeds: No feeds yet.
 @Component({
   selector: 'app-settings-rss',
-  imports: [FeedSyncButton, FormsModule, FriendFeedsDialog, RouterLink, TranslocoPipe],
+  imports: [FeedSyncButton, FormsModule, FriendFeedsDialog, MbButton, RouterLink, TranslocoPipe],
   templateUrl: './settings-rss.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings-rss.css',
@@ -161,6 +167,10 @@ export class SettingsRss implements OnInit {
    * can offer the one-click retry instead of leaving the user to guess.
    */
   protected retryable = signal<string | null>(null);
+  /** A site Mawkingbird for Firefox could read once allowed, with the feed to retry. */
+  protected accessFor = signal<{ origin: string; url: string; useProxy: boolean } | null>(null);
+  protected readonly siteName = siteName;
+  private bridge = inject(ExtensionBridge);
 
   /** The configured proxy's name, or null when there is none. */
   protected readonly proxyLabel = computed(() =>
@@ -215,10 +225,27 @@ export class SettingsRss implements OnInit {
    * proves the proxy works for this feed before the subscription records that
    * it should be used.
    */
+  /** "Let Mawkingbird for Firefox read …": ask the reader, then retry the feed. */
+  async allowSite(): Promise<void> {
+    const pending = this.accessFor();
+    if (!pending || this.adding()) return;
+    const granted = await this.bridge.requestAccess(pending.origin);
+    if (!granted) {
+      this.error.set(
+        this.transloco.translate('pages.rss.addFeed.notAllowed', {
+          site: siteName(pending.origin),
+        }),
+      );
+      return;
+    }
+    this.attemptAdd(pending.url, pending.useProxy);
+  }
+
   private attemptAdd(url: string, useProxy: boolean): void {
     this.adding.set(true);
     this.error.set(null);
     this.retryable.set(null);
+    this.accessFor.set(null);
 
     this.addFeedService.add(url, useProxy).subscribe({
       next: () => {
@@ -236,6 +263,8 @@ export class SettingsRss implements OnInit {
           return;
         }
         this.error.set(err.message);
+        const origin = extensionAccessOrigin(err);
+        if (origin) this.accessFor.set({ origin, url, useProxy });
         // Only offer the retry when it could plausibly help: a direct attempt
         // that failed, with a working proxy standing by.
         if (!this.nativeReading && !useProxy && this.proxySettings.usable()) {

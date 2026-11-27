@@ -6,6 +6,8 @@ import {
   quotedText,
   shareUrl,
   subscribeUrl,
+  watchUrl,
+  youtubeVideoId,
 } from '../lib/links.js';
 import { collectPageFacts, interpretPageFacts } from '../lib/page-scan.js';
 import { getBase } from '../lib/settings.js';
@@ -56,7 +58,16 @@ async function render() {
   addAction(pageActions, 'Posts about this page', postsAboutUrl(base, page.url));
 
   show('feeds-section');
-  if (page.feeds.length) {
+  const video = youtubeVideoId(page.url);
+  if (video) {
+    // A video page lists no feed; Watch finds the channel and subscribes to it.
+    addAction(
+      feedActions,
+      'Subscribe to this channel',
+      watchUrl(base, video),
+      'Opens the video in Watch, where you can subscribe to its channel',
+    );
+  } else if (page.feeds.length) {
     for (const feed of page.feeds) {
       addAction(feedActions, `Subscribe: ${feed.title || hostOf(feed.url)}`, subscribeUrl(base, feed.url), feed.url);
     }

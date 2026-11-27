@@ -1,7 +1,23 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  ElementRef,
+  inject,
+  Injector,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ClientPrefs } from '../../platform/storage/client-prefs';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { MbDialog } from '../../design-system/dialog/dialog';
+import { Compose } from '../../publishing/compose/compose';
 import { Drafts } from '../../publishing/drafts';
+
+// i18n shareTarget.title: Share
+// i18n shareTarget.close: Close
+
+/** The composer's autosave slot for a shared page, separate from Home's. */
+export const SHARE_TARGET_DRAFT_CONTEXT = 'share-target';
 
 /**
  * One post's text from what another app shared. Android often repeats the
@@ -23,20 +39,39 @@ export function sharedText(params: {
 }
 
 /**
- * `/share`: the manifest's `share_target`. The system Share menu opens this
- * route with `title`, `text` and `url`; it parks them in an unsent draft and
- * sends the reader to Home's composer. Nothing is ever posted from here.
+ * `/share` with something to post: the manifest's `share_target`, Unbird's
+ * "post this" and the Firefox extension's Share and Quote.
+ *
+ * Opens the composer in a dialog, filled in and focused at the top so a comment
+ * goes above the link. It used to park the text and send the reader to Home,
+ * where the small composer sat wherever Home was last scrolled, off screen.
+ * Posted: Home. Closed unsent: the text goes to Home's composer as before, so
+ * nothing is lost. Nothing is ever posted without the reader pressing Post.
  */
 @Component({
   selector: 'app-share-target',
-  changeDetection: ChangeDetectionStrategy.Eager,
-  template: '',
+  imports: [Compose, MbDialog, TranslocoPipe],
+  template: `
+    @if (text()) {
+      <mb-dialog
+        size="wide"
+        [title]="'shareTarget.title' | transloco"
+        [closeLabel]="'shareTarget.close' | transloco"
+        (dismissed)="close()"
+      >
+        <app-compose draftContext="share-target" [initialText]="text()" (posted)="posted()" />
+      </mb-dialog>
+    }
+  `,
 })
 export class ShareTarget implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly drafts = inject(Drafts);
-  private readonly prefs = inject(ClientPrefs);
+  private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly injector = inject(Injector);
+
+  protected readonly text = signal('');
 
   ngOnInit(): void {
     const query = this.route.snapshot.queryParamMap;
@@ -45,15 +80,49 @@ export class ShareTarget implements OnInit {
       text: query.get('text'),
       url: query.get('url'),
     });
-    if (text) {
-      this.drafts.handoff({
-        segments: [text],
-        spoilerText: '',
-        sensitive: false,
-        visibility: this.prefs.defaultVisibility(),
-        poll: null,
-      });
+    if (!text) {
+      this.home();
+      return;
     }
+    // A fresh share always wins over a leftover from an earlier one.
+    this.drafts.clearAutosave(SHARE_TARGET_DRAFT_CONTEXT);
+    this.text.set(text);
+    afterNextRender(() => this.focusText(), { injector: this.injector });
+  }
+
+  protected posted(): void {
+    this.drafts.clearAutosave(SHARE_TARGET_DRAFT_CONTEXT);
+    this.text.set('');
+    this.home();
+  }
+
+  /** Closed unsent: keep what's in the box by handing it to Home's composer. */
+  protected close(): void {
+    // Removing the composer flushes its autosave; read it once that has run.
+    this.text.set('');
+    afterNextRender(
+      () => {
+        const saved = this.drafts.loadAutosave(SHARE_TARGET_DRAFT_CONTEXT);
+        this.drafts.clearAutosave(SHARE_TARGET_DRAFT_CONTEXT);
+        if (saved && saved.segments.some((segment) => segment.trim())) {
+          this.drafts.handoff(saved);
+        }
+        this.home();
+      },
+      { injector: this.injector },
+    );
+  }
+
+  /** Caret at the start, so the reader's own words go above the shared link. */
+  private focusText(): void {
+    const box = (this.host.nativeElement as HTMLElement).querySelector('textarea');
+    if (!box) return;
+    box.focus();
+    box.setSelectionRange(0, 0);
+    box.scrollTop = 0;
+  }
+
+  private home(): void {
     // Replace /share in history so Back does not re-run the share.
     void this.router.navigate(['/home'], { replaceUrl: true });
   }

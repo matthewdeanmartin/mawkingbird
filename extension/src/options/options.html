@@ -20,6 +20,19 @@
       </fieldset>
       <button type="submit">Save</button>
       <p id="message" role="status"></p>
+      <p id="custom-bridge" hidden>
+        <button type="button" id="allow-custom">Let this address use the extension</button>
+        <span class="muted">Needed once for a local copy of Mawkingbird.</span>
+      </p>
     </form>
+    <section aria-labelledby="sites-heading">
+      <h2 id="sites-heading">Sites Mawkingbird may read</h2>
+      <p class="muted">
+        Mawkingbird asks before reading a site's feeds or pages for you. It never
+        sends your cookies.
+      </p>
+      <ul id="sites"></ul>
+      <p id="no-sites" class="muted">None yet.</p>
+    </section>
   </body>
 </html>

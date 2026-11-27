@@ -1,9 +1,8 @@
 # Firefox extension: Mawkingbird for Firefox
 
-Status: sprints 1–3 built and pushed · 2026-11-26 (extension 0.3.0:
-19 unit tests, `web-ext lint` 0 errors). Sprint 3 needs the web app deployed
-(`/panel`, the `/share` fix, link search); until production builds, test against
-Canary (Options → Canary). Sprints 4–5 planned.
+Status: sprints 1–4 pushed; sprint 4 follow-ups, sprint 5 (bridge) and sprint 6
+(the app uses it for RSS and articles) uncommitted · 2026-11-26. Extension 0.5.0:
+38 unit tests, `web-ext lint` 0 errors. Sprint 7 planned.
 Code: `extension/` (its own `package.json` and `Makefile`) plus the web changes
 listed per sprint. Owner decisions are in the next section.
 
@@ -243,37 +242,101 @@ Also fixed: `make test-integration` failed on Node 26 (Node 25+'s own global
 
 Test plan: `test_plans/firefox-extension-sprint-4.md`.
 
-## Sprint 5: the bridge (extension side)
+## Owner feedback on sprints 3–4 (2026-11-26, production on sprint 3)
 
-- [ ] Content script on the configured Mawkingbird origin only (static match for
-      mawkingbird.com; `scripting.registerContentScripts` for test/localhost).
-      It marks `document.documentElement.dataset.mawkingbirdExtension` with the
-      protocol version and relays `window.postMessage` requests.
-- [ ] Protocol `mawkingbird-extension/1` documented in
-      `extension/src/bridge/PROTOCOL.md`: `hello`, `fetch`, `requestAccess`,
-      `hasAccess`. Messages are accepted only from the page's own window and the
-      configured origin.
-- [ ] Background fetch guard, unit-tested:
-  - GET only; `credentials: 'omit'`; no request headers from the page except
-    `Accept`;
-  - `http:`/`https:` only; refuses `localhost`, `.local`, `.internal`,
-    `.home.arpa`, single-label hosts and literal private/loopback/link-local
-    IPv4/IPv6 addresses;
-  - per-purpose content types (`feed`, `article`, `json`), 5 MiB cap streamed,
-    20 s timeout;
-  - only hosts the reader granted (`optional_host_permissions`), checked with
-    `permissions.contains` before fetching.
-- [ ] **Asking per site**: `requestAccess(origin)` opens a small extension window
-      ("Let Mawkingbird read feeds and pages from example.com?") whose Allow button
-      calls `permissions.request`. Firefox only accepts that from a click in an
-      extension page, which is why it is a window and not a prompt in the app.
-      Options lists granted sites with Remove.
-- [ ] A dev harness page served on localhost exercises the bridge without the app.
-- [ ] `bridge-client.js`: a dependency-free client the app can adopt in W-3.
+- The page sidebar is much better.
+- A YouTube video's "posts about this page" listed every post about youtube.com:
+  production still had sprint 3's bare-link search (query dropped). Sprint 4's
+  video-id search and must-contain-the-link filter fix it once deployed. The
+  owner wants the whole URL first and the site second: the site search is now
+  offered after every result list (a link to Search, never run on its own).
+- "Look for one on this site" on a YouTube video can't work (a video page lists
+  no feed, and the site blocks the browser). On a YouTube video the popup and the
+  page right-click now offer **Subscribe to this channel**, which opens the video
+  in Watch, whose channel panel subscribes by RSS.
+- Share opened Home with its small composer wherever Home was last scrolled, and
+  the text was off screen or hidden under the composer. `/share` now opens the
+  full composer in a dialog, focused at the top; posting goes Home, closing
+  unsent hands the text to Home's composer as before.
+
+## Sprint 5: the bridge, extension side (built 2026-11-26, extension 0.5.0)
+
+- [x] Content script `src/bridge/content.js` on `https://mawkingbird.com/*`
+      (production, canary, test) at `document_start`; on a custom address only
+      after Options → **Let this address use the extension**
+      (`scripting.registerContentScripts`). It marks
+      `data-mawkingbird-extension` and relays only its own window's, own
+      origin's messages.
+- [x] Protocol `mawkingbird-extension/1`: `extension/client/PROTOCOL.md`
+      (`hello`, `fetch`, `hasAccess`, `requestAccess`).
+- [x] `src/lib/fetch-guard.js`: http(s) only; no credentials in URLs; no
+      loopback, private, link-local, CGNAT, multicast or IPv4-mapped private
+      addresses (also numeric spellings such as `2130706433`); no `localhost`,
+      `.local`, `.internal`, `.home.arpa`, `.lan`, `.corp` or single-label
+      names; purposes `feed`, `article`, `json` with their content types.
+- [x] `src/lib/bridge.js`: requests only from the configured Mawkingbird tab;
+      GET, `credentials: 'omit'`, no referrer, `Accept` set by purpose, 20 s
+      timeout, 5 MiB streamed cap, charset honoured. A redirect's destination is
+      re-checked, and a different site needs its own permission.
+- [x] Asking per site: `requestAccess(origin)` opens `src/grant/` (Allow / Not
+      now; `permissions.request` runs in that click). Closing the window answers
+      no. `optional_host_permissions: *://*/*`; nothing but mawkingbird.com is
+      granted at install. Options lists allowed sites, each with Remove.
+- [x] `extension/client/bridge-client.js` for the app (W-3): `extensionPresent`,
+      `extensionFetch`, `hasAccess`, `requestAccess`.
+- [x] Harness: `make harness` serves `http://localhost:4300/dev/harness.html`.
+- [x] Tests: guard, handler (faked fetch and permissions, redirects, types, size,
+      network), client and content script end to end in one fake window.
+
+Not run: a real Firefox session (`test_plans/firefox-extension-sprint-5.md`).
+Known: Firefox may suspend the background while a grant window waits; the app
+should treat `unavailable` after a grant as "check `hasAccess` again".
 
 Known residual risk: DNS rebinding a granted hostname to a private address. Host
 permissions are per hostname, so this needs a hostile site the reader already
 granted; documented, not mitigated.
+
+## Sprint 6: the app uses the bridge for RSS and articles (built 2026-11-26)
+
+Web only; the extension is unchanged (0.5.0).
+
+- [x] `platform/extension/extension-bridge.ts`: `ExtensionBridge` (`present`,
+      `read`, `requestAccess`), the app's copy of `extension/client/bridge-client.js`.
+      `requestAccess` re-checks `hasAccess` when the grant window's answer is
+      lost. `ExtensionAccessNeeded` carries the site to allow. In Native and in
+      browsers without the extension, `present()` is false and nothing is sent.
+- [x] RSS feed reads (`RssFetch.buildRequest`): with the extension, the site is
+      read through it first. Not allowed yet, or it failed: the ordinary route as
+      before (direct, or the proxy the subscription chose). If that fails too and
+      the extension only lacked permission, the error says "Mawkingbird for
+      Firefox can read <site> if you allow it" and names the site.
+- [x] Paste a link (`PasteResolve.probePage`): reads the site's page through the
+      extension when allowed. Not allowed, with no proxy to fall back on: "Mawkingbird
+      for Firefox can check <site> for feeds if you allow it" instead of "install
+      Native". With a proxy, the proxy as before.
+- [x] **Let Mawkingbird for Firefox read <site>** beside the error in Paste a
+      link and in Settings → RSS's add form. It opens the extension's Allow
+      window; yes retries what failed, no says so.
+- [x] Article reads (`ArticleFetch`): the extension first for allowed sites, then
+      the proxy as before. When expansion is offered is unchanged.
+- [x] Native: no change (no content script, so `present()` is false).
+
+Size: startup 934.49 → 936.56 kB (RssFetch is in the startup bundle); Lite total
+2126.81 of 2140 kB, about 13 kB headroom.
+
+Gates: `make test` (11,555), production build, integration on Node 24 and 26,
+lint and Prettier on touched files, `check:static`, design inventory.
+Not run: a real Firefox session (`test_plans/firefox-extension-sprint-6.md`).
+
+## Sprint 7 (next): ask where reading fails
+
+- [ ] The reader (article expansion) offers the Allow button when the proxy
+      can't read a site the extension could, and offers expansion at all when
+      only the extension can read (no proxy configured).
+- [ ] RSS page: feeds that failed only for lack of permission list their sites,
+      each with Allow, in the "couldn't load" notice.
+- [ ] Then YouTube (Watch's channel lookup on the web), webmentions, Wikidata,
+      SponsorBlock, PeerTube, radio catalogues: one purpose each.
 
 ## Web changes waiting (owner to schedule; not during Native 0.3.0)
 
@@ -285,7 +348,7 @@ granted; documented, not mitigated.
   arrival). Over 2048 characters is ignored. Tests: `app.routes.spec.ts`,
   `rss-page.spec.ts`, `add-feed-dialog.spec.ts`. No Native transport change
   (Paste a link already uses the Native feed read).
-- **W-3** Bridge consumer: when `data-mawkingbird-extension` is present, provide
+- **W-3** (sprint 6, RSS and articles done; the rest in sprint 7) Bridge consumer: when `data-mawkingbird-extension` is present, provide
   `PLATFORM_FEED_READ` / `PLATFORM_ARTICLE_READ` (later YouTube, webmentions,
   Wikidata, SponsorBlock, PeerTube, radio catalogues) from the bridge at runtime,
   keeping the CORS proxy as fallback. Optional feature code stays out of root

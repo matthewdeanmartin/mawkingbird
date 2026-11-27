@@ -1,7 +1,7 @@
 # Mawkingbird for Firefox. Git Bash + Node 26. See README.md.
 # None of these run in CI.
 
-.PHONY: install test lint check run build sign clean
+.PHONY: install test lint check run build sign clean harness
 
 # Built packages go outside the tree (see ../ui/scripts/artifacts.mjs).
 OUT = $(shell node ../ui/scripts/artifacts.mjs extension)
@@ -31,6 +31,10 @@ build:
 # from addons.mozilla.org > Developer Hub > Manage API Keys).
 sign:
 	npx web-ext sign --source-dir src --artifacts-dir "$(OUT)" --channel unlisted
+
+# The bridge's local test page (spec sprint 5): http://localhost:4300/dev/harness.html
+harness:
+	node dev/serve.mjs
 
 clean:
 	rm -rf node_modules

@@ -28,3 +28,27 @@ input[type='url'] {
 #message {
   min-height: 1.4em;
 }
+
+h2 {
+  font-size: 14px;
+  margin: 20px 0 4px;
+}
+
+.muted {
+  color: GrayText;
+}
+
+#sites {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  display: grid;
+  gap: 6px;
+}
+
+#sites li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}

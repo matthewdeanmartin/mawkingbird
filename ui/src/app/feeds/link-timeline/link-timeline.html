@@ -54,6 +54,13 @@
       (replaced)="onReplaced($event)"
     />
   }
+  @if (host() && !hasMore()) {
+    <div class="load-more-row">
+      <a mbButton variant="outline" routerLink="/search" [queryParams]="siteSearchParams()">{{
+        'pages.linkTimeline.searchSite' | transloco: { host: host() }
+      }}</a>
+    </div>
+  }
   @if (hasMore()) {
     <div class="load-more-row">
       <button

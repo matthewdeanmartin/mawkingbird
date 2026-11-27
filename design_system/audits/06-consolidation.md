@@ -3671,3 +3671,20 @@ Reviewed the regenerated inventory: 2221 files scanned and 744 candidates, both
 unchanged. `shell/page-panel/page-panel.html` gains two anchor MbButtons that open
 Watch in a new tab on YouTube pages (primary with replies, outline plain); its
 disposition is updated. No shared widget changed.
+
+### 2026-11-26: Share dialog, site search second
+
+Reviewed the regenerated inventory: candidates 744 to 745. One candidate is
+added, adopted scope: `shell/app-install/share-target.ts` (an MbDialog around
+the full Compose; it used to render nothing and redirect). The link timeline's
+outline MbButton "Search posts mentioning <site>" now also follows a list of
+results; its disposition already covers it. No shared widget changed.
+
+### 2026-11-26: Firefox extension bridge in RSS (sprint 6)
+
+Reviewed the regenerated inventory: scanned files 2221 to 2222 (the new
+`platform/extension/extension-bridge.ts`, no controls). `reading/rss/add-feed-dialog/add-feed-dialog.html`
+and `settings/rss/settings-rss.html` each gain one small solid MbButton, "Let
+Mawkingbird for Firefox read <site>", beside their error line. Both stay backlog
+for their older buttons; the new control is the shared widget. No shared widget
+changed.

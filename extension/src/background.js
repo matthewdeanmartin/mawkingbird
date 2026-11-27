@@ -5,8 +5,11 @@ import {
   quotedText,
   shareUrl,
   subscribeUrl,
+  watchUrl,
+  youtubeVideoId,
 } from './lib/links.js';
-import { getBase } from './lib/settings.js';
+import { fromMawkingbird, handleBridgeRequest, originPattern } from './lib/bridge.js';
+import { getBase, onBaseChanged } from './lib/settings.js';
 
 /**
  * Right-click menus. Event page (Manifest V3): every listener is registered at
@@ -98,7 +101,8 @@ function menuTarget(base, info, tab, pageUrl) {
     case 'subscribe-link':
       return subscribeUrl(base, info.linkUrl);
     case 'subscribe-page':
-      return subscribeUrl(base, pageUrl);
+      // A YouTube video subscribes through Watch's channel panel.
+      return watchUrl(base, youtubeVideoId(pageUrl)) ?? subscribeUrl(base, pageUrl);
     default:
       return null;
   }
@@ -118,3 +122,92 @@ async function openBeside(tab, url) {
   }
   await browser.tabs.create(options);
 }
+
+// --- Bridge (spec/firefox-extension.md, sprint 5) ----------------------------
+// mawkingbird.com asks, through bridge/content.js, for public pages its own
+// requests can't reach. The background decides: fetch-guard rules, then the
+// reader's per-site permission, which only a click in grant/ can give.
+
+/** Requests waiting for the reader in a grant window: id → { resolve, windowId }. */
+const pendingGrants = new Map();
+
+browser.runtime.onMessage.addListener((message, sender) => {
+  if (sender.id !== browser.runtime.id) return undefined;
+  if (message?.type === 'bridge') return answerBridge(message.request, sender);
+  if (message?.type === 'grant-answer') {
+    // Only the grant window itself, an extension page with no tab.
+    if (!sender.url?.startsWith(browser.runtime.getURL('grant/'))) return undefined;
+    settleGrant(message.request, message.granted === true);
+    return Promise.resolve(true);
+  }
+  return undefined;
+});
+
+browser.windows.onRemoved.addListener((windowId) => {
+  for (const [id, pending] of pendingGrants) {
+    if (pending.windowId === windowId) settleGrant(id, false);
+  }
+});
+
+async function answerBridge(request, sender) {
+  const base = await getBase();
+  // A content script on any page but the configured Mawkingbird is ignored.
+  if (!sender.tab || !fromMawkingbird(sender.url ?? '', base)) {
+    return { ok: false, error: 'refused', detail: 'Not from Mawkingbird.' };
+  }
+  return handleBridgeRequest(request, {
+    fetch: (url, init) => fetch(url, init),
+    hasPermission: (pattern) => browser.permissions.contains({ origins: [pattern] }),
+    requestAccess: (origin) => askForAccess(origin),
+  });
+}
+
+/** Opens the grant window and resolves with the reader's answer (false if closed). */
+async function askForAccess(origin) {
+  const id = crypto.randomUUID();
+  const url = browser.runtime.getURL(
+    `grant/grant.html?${new URLSearchParams({ origin, request: id })}`,
+  );
+  const answer = new Promise((resolve) => pendingGrants.set(id, { resolve, windowId: null }));
+  const created = await browser.windows.create({ type: 'popup', url, width: 440, height: 320 });
+  const pending = pendingGrants.get(id);
+  if (pending) pending.windowId = created.id;
+  return answer;
+}
+
+function settleGrant(id, granted) {
+  const pending = pendingGrants.get(id);
+  if (!pending) return;
+  pendingGrants.delete(id);
+  pending.resolve(granted);
+}
+
+// The manifest covers https://mawkingbird.com (production, canary, test). A
+// custom address (a local dev server) gets the bridge only once the reader has
+// allowed that address in Options.
+const CUSTOM_SCRIPT_ID = 'bridge-custom-base';
+
+async function registerBridgeFor(base) {
+  try {
+    await browser.scripting.unregisterContentScripts({ ids: [CUSTOM_SCRIPT_ID] });
+  } catch {
+    // nothing registered yet
+  }
+  const origin = new URL(base).origin;
+  if (origin === 'https://mawkingbird.com') return;
+  if (!(await browser.permissions.contains({ origins: [originPattern(origin)] }))) return;
+  await browser.scripting.registerContentScripts([
+    {
+      id: CUSTOM_SCRIPT_ID,
+      matches: [originPattern(origin)],
+      js: ['bridge/content.js'],
+      runAt: 'document_start',
+      persistAcrossSessions: true,
+    },
+  ]);
+}
+
+browser.runtime.onStartup.addListener(async () => registerBridgeFor(await getBase()));
+browser.runtime.onInstalled.addListener(async () => registerBridgeFor(await getBase()));
+browser.permissions.onAdded.addListener(async () => registerBridgeFor(await getBase()));
+onBaseChanged((base) => void registerBridgeFor(base));

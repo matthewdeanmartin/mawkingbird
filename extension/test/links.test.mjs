@@ -152,3 +152,20 @@ test('isMawkingbirdPage recognises the configured deployment only', async () => 
   assert.equal(isMawkingbirdPage(test, 'https://mawkingbird.com/watch'), false);
   assert.equal(isMawkingbirdPage(BASE, 'about:blank'), false);
 });
+
+test('youtubeVideoId and watchUrl, for subscribing through Watch', async () => {
+  const { youtubeVideoId, watchUrl } = await import('../src/lib/links.js');
+  for (const url of [
+    'https://www.youtube.com/watch?v=ahd8i70p5Hw&t=4',
+    'https://youtu.be/ahd8i70p5Hw',
+    'https://m.youtube.com/shorts/ahd8i70p5Hw',
+    'https://www.youtube.com/live/ahd8i70p5Hw',
+  ]) {
+    assert.equal(youtubeVideoId(url), 'ahd8i70p5Hw', url);
+  }
+  for (const url of ['https://www.youtube.com/@someone', 'https://www.youtube.com/watch?v=short', 'https://example.com/watch?v=ahd8i70p5Hw']) {
+    assert.equal(youtubeVideoId(url), null, url);
+  }
+  assert.equal(watchUrl(BASE, 'ahd8i70p5Hw'), 'https://mawkingbird.com/watch?youtube=ahd8i70p5Hw');
+  assert.equal(watchUrl(BASE, null), null);
+});

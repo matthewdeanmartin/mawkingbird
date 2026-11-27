@@ -13,6 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { enableProxyFlags } from '../../testing/enable-proxy-flags';
+import { ExtensionAccessNeeded, ExtensionBridge } from '../../platform/extension/extension-bridge';
 
 const FEED_XML = `<?xml version="1.0"?><rss><channel><title>A Feed</title></channel></rss>`;
 
@@ -685,5 +686,69 @@ describe('RssFetch native transport', () => {
     ).rejects.toThrow();
     expect(cache.putCount).toBe(0);
     http.verify();
+  });
+});
+
+describe('RssFetch through Mawkingbird for Firefox', () => {
+  let http: HttpTestingController;
+  let read: ReturnType<typeof vi.fn>;
+
+  function setUp(present = true): RssFetch {
+    localStorage.clear();
+    read = vi.fn();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+        { provide: RssCache, useValue: new FakeRssCache() },
+        { provide: ExtensionBridge, useValue: { present: () => present, read } },
+      ],
+    });
+    http = TestBed.inject(HttpTestingController);
+    return TestBed.inject(RssFetch);
+  }
+
+  it('reads an allowed site through the extension, with no request of its own', async () => {
+    const fetcher = setUp();
+    read.mockResolvedValue({
+      ok: true,
+      status: 200,
+      finalUrl: 'https://blog.example/feed',
+      contentType: 'application/rss+xml',
+      body: FEED_XML,
+    });
+    const feed = await firstValueFrom(fetcher.fetchFeed('https://blog.example/feed'));
+    expect(feed.title).toBe('A Feed');
+    expect(read).toHaveBeenCalledWith('https://blog.example/feed', 'feed');
+    http.verify();
+  });
+
+  it('falls back to the ordinary route, and names the site to allow when that fails', async () => {
+    const fetcher = setUp();
+    read.mockResolvedValue({ ok: false, error: 'needs-access', origin: 'https://blog.example' });
+    const result = firstValueFrom(fetcher.fetchFeed('https://blog.example/feed')).catch((e) => e);
+    await settle();
+    http.expectOne('https://blog.example/feed').error(new ProgressEvent('error'), { status: 0 });
+    const error = await result;
+    expect(error).toBeInstanceOf(ExtensionAccessNeeded);
+    expect((error as ExtensionAccessNeeded).origin).toBe('https://blog.example');
+    expect((error as Error).message).toContain('Mawkingbird for Firefox can read blog.example');
+  });
+
+  it('still succeeds by the ordinary route when the site allows it directly', async () => {
+    const fetcher = setUp();
+    read.mockResolvedValue({ ok: false, error: 'needs-access', origin: 'https://blog.example' });
+    const result = firstValueFrom(fetcher.fetchFeed('https://blog.example/feed'));
+    await settle();
+    http.expectOne('https://blog.example/feed').flush(FEED_XML);
+    expect((await result).title).toBe('A Feed');
+  });
+
+  it('never asks the extension when it is not installed', async () => {
+    const fetcher = setUp(false);
+    fetcher.fetchFeed('https://blog.example/feed').subscribe();
+    await settle();
+    http.expectOne('https://blog.example/feed').flush(FEED_XML);
+    expect(read).not.toHaveBeenCalled();
   });
 });

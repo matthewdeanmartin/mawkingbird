@@ -26,6 +26,14 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-26: Shared pages open the composer in a dialog
+
+- test: src/app/shell/app-install/app-install.spec.ts :: ShareTarget parks the shared link in an unsent post and goes Home without posting
+  reason: replaced
+  now: src/app/shell/app-install/app-install.spec.ts :: ShareTarget opens the shared text in a composer dialog, focused at the top, without posting
+  now: src/app/shell/app-install/app-install.spec.ts :: ShareTarget closed unsent, hands what was in the box to Home so nothing is lost
+  why: The owner asked (2026-11-26) for a shared page to open a focused composer dialog instead of Home's composer wherever Home was scrolled; closing unsent still parks the text in Home.
+
 ## 2026-11-26: Posts about a link searches when the link isn't trending
 
 - test: src/app/feeds/link-timeline/link-timeline.spec.ts :: LinkTimeline explains a link the server is not trending instead of showing an error

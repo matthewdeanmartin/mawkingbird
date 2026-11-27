@@ -5,6 +5,7 @@ import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { CorsProxyRoute } from '../../connections/cors-proxy/cors-proxy-catalog';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { PLATFORM_ARTICLE_READ } from '../../platform/http/platform-http';
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 import { ArticleCache } from './article-cache';
 import { countWords, inspectUrl } from './article-diagnosis';
 import { extractArticle } from './article-extract';
@@ -222,6 +223,7 @@ export class ArticleFetch {
   private proxy = inject(CorsProxy);
   private cache = inject(ArticleCache);
   private diagnostics = inject(PageDiagnostics);
+  private bridge = inject(ExtensionBridge);
 
   /** Whether expansion can be offered at all. */
   available(): boolean {
@@ -286,7 +288,7 @@ export class ArticleFetch {
     // plain relay is all that is wanted.
     let fetched = this.nativeRead
       ? await this.fetchNative(url)
-      : await this.fetchVia('article', url);
+      : ((await this.fetchViaExtension(url)) ?? (await this.fetchVia('article', url)));
 
     // Deploy-order tolerance: the app can ship before the Worker does. Falling
     // back keeps expansion working through that window instead of failing
@@ -376,6 +378,35 @@ export class ArticleFetch {
    * Never throws: a failure is a value, because every failure here is one the
    * reader is meant to see rather than one to handle.
    */
+  /**
+   * Mawkingbird for Firefox reads the page from the reader's computer, for a
+   * site they've allowed: no proxy, no quota. Null (use the proxy) when the
+   * extension isn't here, hasn't been allowed this site, or couldn't read it.
+   */
+  private async fetchViaExtension(url: string): Promise<FetchOutcome | null> {
+    if (!this.bridge.present()) return null;
+    const read = await this.bridge.read(url, 'article');
+    if (!read.ok) {
+      this.diagnostics.info('Article', 'extension did not read', { url, reason: read.error });
+      return null;
+    }
+    if (read.status < 200 || read.status >= 300) {
+      return {
+        ok: false,
+        failure: diagnoseHttpError(
+          new HttpErrorResponse({
+            status: read.status,
+            headers: new HttpHeaders({
+              'X-Proxy-Source': 'upstream',
+              'X-Proxy-Upstream-Status': String(read.status),
+            }),
+          }),
+        ),
+      };
+    }
+    return { ok: true, html: read.body, finalUrl: read.finalUrl, status: read.status };
+  }
+
   private async fetchNative(url: string): Promise<FetchOutcome> {
     try {
       const result = await this.nativeRead!(url);

@@ -105,6 +105,13 @@
   @if (error(); as msg) {
     <p class="feed-error">{{ msg }}</p>
   }
+  @if (accessFor(); as pending) {
+    <p class="retry-line">
+      <button mbButton size="small" type="button" [disabled]="adding()" (click)="allowSite()">
+        {{ 'pages.rss.addFeed.allowSite' | transloco: { site: siteName(pending.origin) } }}
+      </button>
+    </p>
+  }
   @if (retryable()) {
     <p class="retry-line">
       <button class="btn btn-outline btn-sm" type="button" (click)="retryViaProxy()">

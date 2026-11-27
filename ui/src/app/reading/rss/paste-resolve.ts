@@ -10,6 +10,7 @@ import { CorsProxySettings } from '../../connections/cors-proxy/cors-proxy-setti
 import { FeedCandidate, collapseFormats, rankFeeds } from '../../../lib/rss/feed-ranking';
 import { feedLinksIn } from './rss-discovery';
 import { PLATFORM_ARTICLE_READ, PLATFORM_FEED_READ } from '../../platform/http/platform-http';
+import { ExtensionBridge, siteName } from '../../platform/extension/extension-bridge';
 import { RssFetch } from './rss-fetch';
 
 /**
@@ -38,7 +39,18 @@ export type PasteResolution =
    * is the only layer that sees the status code — below it the failure is an
    * empty body, and above it there is nothing left to distinguish.
    */
-  | { kind: 'none'; reason: string; reached?: boolean; rateLimited?: boolean };
+  | {
+      kind: 'none';
+      reason: string;
+      reached?: boolean;
+      rateLimited?: boolean;
+      /**
+       * Mawkingbird for Firefox could check this site once the reader allows
+       * it: the site's origin, for the "Let Mawkingbird for Firefox read …"
+       * button. Retrying after that click resolves again (none is never cached).
+       */
+      needsAccess?: string;
+    };
 
 /** URL shapes that are probably already a feed, so try fetching one first. */
 const FEEDISH = /(\.(xml|rss|atom)(\?|$))|(\/(feed|rss|atom|feeds)\/?(\?|$))/i;
@@ -91,6 +103,7 @@ export class PasteResolve {
   private api = inject(Api);
   private feeds = inject(RssFetch);
   private diagnostics = inject(PageDiagnostics);
+  private bridge = inject(ExtensionBridge);
 
   readonly running = signal(false);
 
@@ -289,6 +302,25 @@ export class PasteResolve {
 
   /** Fetch a page and rank the feeds it declares. */
   private async probePage(pageUrl: string): Promise<PasteResolution> {
+    // Mawkingbird for Firefox reads the page from the reader's computer, for
+    // sites they've allowed. Without permission, and with no proxy to fall back
+    // on, the answer is the Allow button rather than "install Native".
+    let needsAccess: string | undefined;
+    if (this.bridge.present()) {
+      const read = await this.bridge.read(pageUrl, 'article');
+      if (read.ok && read.status >= 200 && read.status < 300) {
+        return this.feedsDeclaredIn(read.body, read.finalUrl, pageUrl);
+      }
+      if (!read.ok && read.error === 'needs-access') needsAccess = read.origin;
+    }
+    if (needsAccess && !this.proxy.available() && !this.proxySettings.missingEntitledProxy()) {
+      return {
+        kind: 'none',
+        reached: false,
+        needsAccess,
+        reason: `Mawkingbird for Firefox can check ${siteName(needsAccess)} for feeds if you allow it.`,
+      };
+    }
     // A Plus subscriber who has never configured a proxy is entitled to one, and
     // "needs a CORS proxy" is a dead end for someone who already paid for it.
     // The add path does the same adoption on a failed fetch; doing it here too
@@ -327,6 +359,15 @@ export class PasteResolve {
       };
     }
 
+    return this.feedsDeclaredIn(html, pageUrl, pageUrl);
+  }
+
+  /** The feeds a fetched page declares, ranked; or the page itself when it is one. */
+  private async feedsDeclaredIn(
+    html: string,
+    finalUrl: string,
+    pageUrl: string,
+  ): Promise<PasteResolution> {
     // The response may itself be a feed — a URL with no feed-ish extension that
     // serves XML anyway. Hand it to the feed path rather than parsing XML as
     // HTML and finding no <link> elements.
@@ -337,7 +378,7 @@ export class PasteResolve {
       }
     }
 
-    const found = feedLinksIn(html, pageUrl);
+    const found = feedLinksIn(html, finalUrl);
     if (!found.length) {
       // Reached, read, and it declares nothing — the one `none` a bulk caller
       // may safely remember, because asking again would get the same answer.
@@ -355,7 +396,7 @@ export class PasteResolve {
       // in two formats each becomes a three-way choice rather than a six-way
       // one — and one section in two formats stops being a choice at all.
       feeds: collapseFormats(rankFeeds(found, titleOf(html))),
-      siteUrl: pageUrl,
+      siteUrl: finalUrl,
       // These came off a page we could only read through the proxy, but the feed
       // itself may well be CORS-friendly — the subscribe path tries direct first.
       needsProxy: false,

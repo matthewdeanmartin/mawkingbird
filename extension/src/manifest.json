@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Mawkingbird",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Share the page you are reading to Mastodon and Bluesky, open fediverse links in Mawkingbird, and keep Mawkingbird Lite in your sidebar.",
   "homepage_url": "https://mawkingbird.com/",
   "author": "Matthew Martin",
@@ -17,15 +17,39 @@
       "id": "mawkingbird@mawkingbird.com",
       "strict_min_version": "140.0",
       "data_collection_permissions": {
-        "required": ["none"]
+        "required": [
+          "none"
+        ]
       }
     }
   },
-  "permissions": ["activeTab", "contextMenus", "scripting", "storage", "tabs"],
+  "permissions": [
+    "activeTab",
+    "contextMenus",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "optional_host_permissions": [
+    "*://*/*"
+  ],
   "background": {
-    "scripts": ["background.js"],
+    "scripts": [
+      "background.js"
+    ],
     "type": "module"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://mawkingbird.com/*"
+      ],
+      "js": [
+        "bridge/content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
   "action": {
     "default_title": "Mawkingbird",
     "default_popup": "popup/popup.html",

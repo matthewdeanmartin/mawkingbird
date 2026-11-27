@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Bridge harness</title>
+    <style>
+      body { font: 14px/1.4 system-ui, sans-serif; margin: 16px; }
+      input { min-width: 28em; }
+      pre { white-space: pre-wrap; background: #8881; padding: 8px; max-height: 60vh; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <h1>Mawkingbird bridge harness</h1>
+    <p id="presence"></p>
+    <p>
+      <input id="url" value="https://blog.mozilla.org/en/feed/" aria-label="URL" />
+      <select id="purpose" aria-label="Purpose">
+        <option>feed</option>
+        <option>article</option>
+        <option>json</option>
+      </select>
+      <button id="fetch">Fetch</button>
+      <button id="access">Request access</button>
+    </p>
+    <pre id="out"></pre>
+    <script type="module">
+      import { extensionFetch, extensionPresent, requestAccess } from '../client/bridge-client.js';
+      const out = document.getElementById('out');
+      const show = (value) => (out.textContent = JSON.stringify(value, null, 2).slice(0, 20000));
+      document.getElementById('presence').textContent = extensionPresent()
+        ? 'Extension present.'
+        : 'No extension here: set Options to http://localhost:4300/ and allow this address.';
+      document.getElementById('fetch').onclick = async () =>
+        show(await extensionFetch(document.getElementById('url').value, document.getElementById('purpose').value));
+      document.getElementById('access').onclick = async () =>
+        show({ granted: await requestAccess(new URL(document.getElementById('url').value).origin) });
+    </script>
+  </body>
+</html>

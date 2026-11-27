@@ -19,6 +19,11 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { CorsProxyUsageStore, toResponse } from '../../connections/cors-proxy/cors-proxy-usage';
 import { PLATFORM_FEED_READ } from '../../platform/http/platform-http';
+import {
+  ExtensionAccessNeeded,
+  ExtensionBridge,
+  siteName,
+} from '../../platform/extension/extension-bridge';
 import { externalFetch } from '../../platform/http/external-fetch';
 import { FAILURE_COOLDOWN_MS, RssCache } from './rss-cache';
 import { ParsedFeed, parseFeed } from '../../../lib/rss/rss-parser';
@@ -75,6 +80,7 @@ const LOG_QUIET_MS = 60_000;
 export class RssFetch {
   private http = inject(HttpClient);
   private nativeFeedRead = inject(PLATFORM_FEED_READ);
+  private bridge = inject(ExtensionBridge);
   private corsProxy = inject(CorsProxy);
   private proxyUsage = inject(CorsProxyUsageStore);
   private cache = inject(RssCache);
@@ -311,11 +317,51 @@ export class RssFetch {
     const nativeRead = this.nativeFeedRead;
     if (nativeRead) return defer(() => nativeRead(url)).pipe(map((xml) => parseFeed(xml)));
 
-    if (viaProxy && this.corsProxy.batchCapacity('feeds') > 1) {
-      return this.buildBatchedRequest(url);
-    }
+    const web = () =>
+      viaProxy && this.corsProxy.batchCapacity('feeds') > 1
+        ? this.buildBatchedRequest(url)
+        : this.buildSingleRequest(url, viaProxy);
 
-    return this.buildSingleRequest(url, viaProxy);
+    if (!this.bridge.present()) return web();
+    return this.viaExtension(url, web);
+  }
+
+  /**
+   * Mawkingbird for Firefox reads the feed from the reader's own computer: no
+   * CORS, no proxy, for sites the reader has allowed. Any other answer falls
+   * back to the ordinary route (direct, or the proxy the subscription chose).
+   * When that fails too and the extension only lacked permission, the error
+   * says so and names the site, so the screen can offer the Allow button.
+   */
+  private viaExtension(url: string, web: () => Observable<ParsedFeed>): Observable<ParsedFeed> {
+    return defer(() => this.bridge.read(url, 'feed')).pipe(
+      switchMap((read) => {
+        if (read.ok) {
+          if (read.status < 200 || read.status >= 300) {
+            return throwError(
+              () => new Error(`The feed's site answered with an error (HTTP ${read.status}).`),
+            );
+          }
+          return of(parseFeed(read.body));
+        }
+        const origin = read.error === 'needs-access' ? read.origin : undefined;
+        if (!origin) return web();
+        return web().pipe(
+          catchError((error: unknown) =>
+            throwError(() =>
+              isConfigurationError(error)
+                ? error
+                : new ExtensionAccessNeeded(
+                    origin,
+                    `${error instanceof Error ? error.message : "Couldn't read this feed."} ` +
+                      `Mawkingbird for Firefox can read ${siteName(origin)} if you allow it.`,
+                    { cause: error },
+                  ),
+            ),
+          ),
+        );
+      }),
+    );
   }
 
   /**

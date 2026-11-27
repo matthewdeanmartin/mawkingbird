@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Mawkingbird: allow a site</title>
+    <link rel="stylesheet" href="grant.css" />
+    <script type="module" src="grant.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Let Mawkingbird read <span id="site"></span>?</h1>
+      <p>
+        Mawkingbird will read feeds and pages from this site for you, from your own
+        computer, without sending your cookies or signing in. Your browser blocks
+        websites from doing this themselves.
+      </p>
+      <p class="muted">You can remove it any time in the extension's settings.</p>
+      <div class="actions">
+        <button type="button" id="allow">Allow</button>
+        <button type="button" id="deny" class="quiet">Not now</button>
+      </div>
+      <p id="message" role="status"></p>
+    </main>
+  </body>
+</html>

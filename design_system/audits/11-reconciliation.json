@@ -108,6 +108,11 @@
       "nextStep": "Posts about a link (Mastodon parity 1): page-head title with native links to the story, MbContentState for loading, empty, not-trending/unsupported and error (with an MbButton Retry), StatusCard rows and an outline MbButton for Load more; when the link timeline is empty, post-search results under a muted note, and an outline MbButton link to search the site's name inside the empty and not-trending states. Preserve the http(s)-only guard, the 404 split between not trending and an old server, and at most two search calls."
     },
     {
+      "file": "ui/src/app/shell/app-install/share-target.ts",
+      "disposition": "adopted scope",
+      "nextStep": "The share target (/share with title/text/url: system Share menu, Unbird, the Firefox extension): one MbDialog (wide) holding the full Compose, focused at the top of the text. Preserve that nothing posts without Post, that closing unsent hands the text to Home's composer, and that a fresh share clears the share-target autosave slot."
+    },
+    {
       "file": "ui/src/app/shell/page-panel/page-panel.html",
       "disposition": "adopted scope",
       "nextStep": "The Firefox extension's sidebar panel (/panel, spec/firefox-extension.md): MbButton (primary Write about this page and Continue it, outline Discard it), on a YouTube page anchor MbButtons opening Watch in a new tab (primary Watch with replies to your post, outline Watch in Mawkingbird), the compact Compose, StatusCard rows for the reader's own posts and the embedded LinkTimeline; native headings and status notes only. Preserve the composer mounting on demand (no draft for a glanced page), the single from:me search and that Watch opens in its own tab."

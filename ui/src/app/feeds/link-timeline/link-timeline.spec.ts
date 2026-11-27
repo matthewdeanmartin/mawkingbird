@@ -82,6 +82,8 @@ describe('LinkTimeline', () => {
     expect(text(f)).toContain('posts found by searching for it');
     expect(text(f)).not.toContain("this one isn't");
     expect(text(f)).not.toContain('Load more');
+    // The whole-site search is offered second, never run on its own.
+    expect(text(f)).toContain('Search posts mentioning news.example');
   });
 
   it('searches again without the scheme when the full link finds nothing', () => {

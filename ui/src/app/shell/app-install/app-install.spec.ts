@@ -1,9 +1,12 @@
-import { TestBed } from '@angular/core/testing';
+import { Component, input, output } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Drafts } from '../../publishing/drafts';
+import { Status } from '../../platform/api/models';
+import { Compose } from '../../publishing/compose/compose';
+import { DraftSnapshot, Drafts, emptyDraftSnapshot } from '../../publishing/drafts';
 import { AppInstall, installRouteFor } from './app-install';
-import { sharedText, ShareTarget } from './share-target';
+import { SHARE_TARGET_DRAFT_CONTEXT, sharedText, ShareTarget } from './share-target';
 
 describe('installRouteFor', () => {
   it('uses the real prompt whenever the browser offered one', () => {
@@ -69,7 +72,14 @@ describe('sharedText', () => {
 describe('ShareTarget', () => {
   afterEach(() => TestBed.resetTestingModule());
 
-  function open(params: Record<string, string>) {
+  @Component({ selector: 'app-compose', template: '<textarea></textarea>' })
+  class ComposeStub {
+    readonly draftContext = input('');
+    readonly initialText = input('');
+    readonly posted = output<Status>();
+  }
+
+  function open(params: Record<string, string>, saved: DraftSnapshot | null = null) {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -79,23 +89,68 @@ describe('ShareTarget', () => {
         },
       ],
     });
+    TestBed.overrideComponent(ShareTarget, {
+      remove: { imports: [Compose] },
+      add: { imports: [ComposeStub] },
+    });
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    const handoff = vi.spyOn(TestBed.inject(Drafts), 'handoff').mockImplementation(() => undefined);
-    TestBed.createComponent(ShareTarget).detectChanges();
-    return { navigate, handoff };
+    const drafts = TestBed.inject(Drafts);
+    const handoff = vi.spyOn(drafts, 'handoff').mockImplementation(() => undefined);
+    const clear = vi.spyOn(drafts, 'clearAutosave');
+    const load = vi.spyOn(drafts, 'loadAutosave').mockReturnValue(saved);
+    const fixture = TestBed.createComponent(ShareTarget);
+    fixture.autoDetectChanges();
+    return { fixture, navigate, handoff, clear, load };
   }
 
-  it('parks the shared link in an unsent post and goes Home without posting', () => {
-    const { navigate, handoff } = open({ title: 'A post', url: 'https://ex.com/p' });
-    expect(handoff).toHaveBeenCalledWith(
-      expect.objectContaining({ segments: ['A post\n\nhttps://ex.com/p'], poll: null }),
-    );
+  const compose = (fixture: ComponentFixture<ShareTarget>) =>
+    fixture.debugElement.query((d) => d.name === 'app-compose')?.componentInstance as
+      ComposeStub | undefined;
+
+  it('opens the shared text in a composer dialog, focused at the top, without posting', async () => {
+    const { fixture, navigate, clear } = open({ title: 'A post', url: 'https://ex.com/p' });
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('mb-dialog')).not.toBeNull();
+    expect(compose(fixture)?.initialText()).toBe(`A post${'\n\n'}https://ex.com/p`);
+    expect(compose(fixture)?.draftContext()).toBe(SHARE_TARGET_DRAFT_CONTEXT);
+    // A fresh share replaces any leftover from an earlier one.
+    expect(clear).toHaveBeenCalledWith(SHARE_TARGET_DRAFT_CONTEXT);
+    const box = el.querySelector('textarea')!;
+    expect(document.activeElement).toBe(box);
+    expect(box.selectionStart).toBe(0);
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it('goes Home once posted', async () => {
+    const { fixture, navigate, handoff } = open({ url: 'https://ex.com/p' });
+    await fixture.whenStable();
+    compose(fixture)!.posted.emit({} as Status);
+    await fixture.whenStable();
+    expect(navigate).toHaveBeenCalledWith(['/home'], { replaceUrl: true });
+    expect(handoff).not.toHaveBeenCalled();
+  });
+
+  it('closed unsent, hands what was in the box to Home so nothing is lost', async () => {
+    const saved = {
+      ...emptyDraftSnapshot('public'),
+      segments: [`My take${'\n\n'}https://ex.com/p`],
+    };
+    const { fixture, navigate, handoff } = open({ url: 'https://ex.com/p' }, saved);
+    await fixture.whenStable();
+    fixture.debugElement
+      .query((d) => d.name === 'mb-dialog')
+      .triggerEventHandler('dismissed', 'escape');
+    await fixture.whenStable();
+    expect(compose(fixture)).toBeUndefined();
+    expect(handoff).toHaveBeenCalledWith(saved);
     expect(navigate).toHaveBeenCalledWith(['/home'], { replaceUrl: true });
   });
 
   it('just goes Home when nothing usable was shared', () => {
-    const { navigate, handoff } = open({});
+    const { fixture, navigate, handoff } = open({});
+    expect((fixture.nativeElement as HTMLElement).querySelector('mb-dialog')).toBeNull();
     expect(handoff).not.toHaveBeenCalled();
-    expect(navigate).toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalledWith(['/home'], { replaceUrl: true });
   });
 });

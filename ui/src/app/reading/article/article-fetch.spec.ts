@@ -1,3 +1,4 @@
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 import { HttpErrorResponse, HttpHeaders, withXhr } from '@angular/common/http';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
@@ -303,5 +304,66 @@ describe('native article expansion', () => {
       expect(result.debug?.detail).toBe('Native refusal detail');
     }
     TestBed.inject(HttpTestingController).verify();
+  });
+});
+
+describe('article expansion through Mawkingbird for Firefox', () => {
+  const url = 'https://publisher.example/story';
+  const paragraph =
+    '<p>' + 'The extension reads this page from the reader’s own computer. '.repeat(12) + '</p>';
+  let read: ReturnType<typeof vi.fn>;
+  let service: ArticleFetch;
+
+  beforeEach(() => {
+    read = vi.fn();
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withXhr()),
+        provideHttpClientTesting(),
+        { provide: ExtensionBridge, useValue: { present: () => true, read } },
+        {
+          provide: CorsProxy,
+          useValue: {
+            available: () => true,
+            label: () => 'Test proxy',
+            proxyRequest: (target: string) => ({ url: `https://proxy.example/?u=${target}` }),
+          },
+        },
+        {
+          provide: ArticleCache,
+          useValue: { get: async () => null, put: async () => undefined },
+        },
+      ],
+    });
+    service = TestBed.inject(ArticleFetch);
+  });
+
+  it('reads an allowed site through the extension instead of the proxy', async () => {
+    read.mockResolvedValue({
+      ok: true,
+      status: 200,
+      finalUrl: url,
+      contentType: 'text/html',
+      body: `<html><head><title>Story</title></head><body><article>${paragraph.repeat(4)}</article></body></html>`,
+    });
+    const result = await service.expand(url);
+    expect(result.article?.markdown).toContain('reads this page');
+    expect(read).toHaveBeenCalledWith(url, 'article');
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  it('uses the proxy as before for a site the reader has not allowed', async () => {
+    read.mockResolvedValue({
+      ok: false,
+      error: 'needs-access',
+      origin: 'https://publisher.example',
+    });
+    const pending = service.expand(url);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    const http = TestBed.inject(HttpTestingController);
+    const request = http.match((r) => r.url.startsWith('https://proxy.example/'));
+    expect(request.length).toBe(1);
+    request[0].flush(`<html><body><article>${paragraph.repeat(4)}</article></body></html>`);
+    expect((await pending).article).not.toBeNull();
   });
 });

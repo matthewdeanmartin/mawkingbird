@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ExtensionBridge } from '../../../platform/extension/extension-bridge';
 import { enableProxyFlags } from '../../../testing/enable-proxy-flags';
 import { Api } from '../../../platform/api/api';
 import { FeatureFlags } from '../../../platform/build/feature-flags';
@@ -144,6 +145,66 @@ describe('AddFeedDialog', () => {
     expect(fetchFeed).not.toHaveBeenCalled();
     expect(httpGet).not.toHaveBeenCalled();
     expect(TestBed.inject(RssSubscriptions).feeds()).toEqual([]);
+  });
+
+  it('offers to let Mawkingbird for Firefox read a site, then tries again', async () => {
+    let allowed = false;
+    const requestAccess = vi.fn(async () => (allowed = true));
+    TestBed.overrideProvider(ExtensionBridge, {
+      useValue: {
+        present: () => true,
+        requestAccess,
+        read: vi.fn(async (url: string) =>
+          allowed
+            ? {
+                ok: true,
+                status: 200,
+                finalUrl: url,
+                contentType: 'text/html',
+                body: '<link rel="alternate" type="application/rss+xml" title="Blog" href="/feed">',
+              }
+            : { ok: false, error: 'needs-access', origin: 'https://blog.test' },
+        ),
+      },
+    });
+    fetchFeed.mockReturnValue(of(feed('Blog', 1)));
+    const fixture = setUp();
+    const closed = vi.fn();
+    fixture.componentInstance.closed.subscribe(closed);
+
+    typeUrl(fixture, 'https://blog.test/');
+    await submit(fixture);
+    expect(text(fixture)).toContain('Mawkingbird for Firefox can check blog.test for feeds');
+    const allow = buttonLabelled(fixture, 'Let Mawkingbird for Firefox read blog.test')!;
+    expect(allow).toBeDefined();
+
+    allow.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(requestAccess).toHaveBeenCalledWith('https://blog.test');
+    expect(TestBed.inject(RssSubscriptions).has('https://blog.test/feed')).toBe(true);
+    expect(closed).toHaveBeenCalled();
+  });
+
+  it('says so when the reader declines', async () => {
+    TestBed.overrideProvider(ExtensionBridge, {
+      useValue: {
+        present: () => true,
+        requestAccess: vi.fn(async () => false),
+        read: vi.fn(async () => ({
+          ok: false,
+          error: 'needs-access',
+          origin: 'https://blog.test',
+        })),
+      },
+    });
+    const fixture = setUp();
+    typeUrl(fixture, 'https://blog.test/');
+    await submit(fixture);
+    buttonLabelled(fixture, 'Let Mawkingbird for Firefox read blog.test')!.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(text(fixture)).toContain("Not allowed. Mawkingbird for Firefox won't read blog.test.");
   });
 
   it('subscribes and emits (added) + (closed) on a direct feed url', async () => {

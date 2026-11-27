@@ -1,5 +1,11 @@
 import { AccountName } from '../../../accounts/account-name';
 import { PLATFORM_FEED_READ } from '../../../platform/http/platform-http';
+import { MbButton } from '../../../design-system/button/button';
+import {
+  ExtensionBridge,
+  extensionAccessOrigin,
+  siteName,
+} from '../../../platform/extension/extension-bridge';
 import { accountProfilePath } from '../../../accounts/account-route';
 import {
   Component,
@@ -46,6 +52,8 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n pages.rss.addFeed.looking: Looking…
 // i18n pages.rss.addFeed.continue: Continue
 // i18n pages.rss.addFeed.couldNotFollow: Could not follow that account.
+// i18n pages.rss.addFeed.allowSite: Let Mawkingbird for Firefox read {{site}}
+// i18n pages.rss.addFeed.notAllowed: Not allowed. Mawkingbird for Firefox won't read {{site}}.
 
 /**
  * "Paste a link" — the front door to subscribing.
@@ -72,7 +80,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
  */
 @Component({
   selector: 'app-add-feed-dialog',
-  imports: [AccountName, FormsModule, FocusTrap, TranslocoPipe],
+  imports: [AccountName, FormsModule, FocusTrap, MbButton, TranslocoPipe],
   templateUrl: './add-feed-dialog.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './add-feed-dialog.css',
@@ -87,6 +95,15 @@ export class AddFeedDialog implements OnInit {
   protected proxySettings = inject(CorsProxySettings);
   private diagnostics = inject(PageDiagnostics);
   private transloco = inject(TranslocoService);
+  private bridge = inject(ExtensionBridge);
+
+  /**
+   * A site Mawkingbird for Firefox could read once the reader allows it, and
+   * what to try again after they do. Shown as a button beside the error.
+   */
+  protected accessFor = signal<string | null>(null);
+  private retryAfterAccess: (() => Promise<void>) | null = null;
+  protected readonly siteName = siteName;
 
   /**
    * A site or feed to start with (`/rss/add?url=`). Only fills the box: the
@@ -155,6 +172,7 @@ export class AddFeedDialog implements OnInit {
       this.resolution.set(result);
       if (result.kind === 'none') {
         this.error.set(result.reason);
+        if (result.needsAccess) this.offerAccess(result.needsAccess, () => this.resolve());
       }
       // One clear feed and nothing to choose between: subscribing right away is
       // what the user asked for by pressing the button. Several candidates get
@@ -231,7 +249,32 @@ export class AddFeedDialog implements OnInit {
     }
   }
 
+  /** The reader pressed "Let Mawkingbird for Firefox read …": ask, then retry. */
+  async allowSite(): Promise<void> {
+    const origin = this.accessFor();
+    const retry = this.retryAfterAccess;
+    if (!origin || this.busy()) return;
+    const granted = await this.bridge.requestAccess(origin);
+    this.diagnostics.info('RSS', 'add-feed-dialog:extension-access', { granted });
+    if (!granted) {
+      this.error.set(
+        this.transloco.translate('pages.rss.addFeed.notAllowed', { site: siteName(origin) }),
+      );
+      return;
+    }
+    this.accessFor.set(null);
+    this.retryAfterAccess = null;
+    await retry?.();
+  }
+
+  private offerAccess(origin: string, retry: () => Promise<void>): void {
+    this.accessFor.set(origin);
+    this.retryAfterAccess = retry;
+  }
+
   private reset(): void {
+    this.accessFor.set(null);
+    this.retryAfterAccess = null;
     this.error.set(null);
     this.retryable.set(null);
     this.resolution.set(null);
@@ -244,6 +287,7 @@ export class AddFeedDialog implements OnInit {
     this.adding.set(true);
     this.error.set(null);
     this.retryable.set(null);
+    this.accessFor.set(null);
 
     try {
       await firstValueFrom(this.addFeed.add(url, useProxy));
@@ -266,6 +310,8 @@ export class AddFeedDialog implements OnInit {
         return;
       }
       this.error.set(message);
+      const origin = extensionAccessOrigin(err);
+      if (origin) this.offerAccess(origin, () => this.attempt(url, useProxy));
       if (!this.nativeReading && !useProxy && this.proxySettings.usable()) {
         this.retryable.set(url);
       }

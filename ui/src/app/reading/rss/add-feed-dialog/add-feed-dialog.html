@@ -39,6 +39,14 @@
         <p class="feed-error">{{ msg }}</p>
       }
 
+      @if (accessFor(); as origin) {
+        <p class="retry-line">
+          <button mbButton size="small" type="button" [disabled]="busy()" (click)="allowSite()">
+            {{ 'pages.rss.addFeed.allowSite' | transloco: { site: siteName(origin) } }}
+          </button>
+        </p>
+      }
+
       @if (retryable()) {
         <p class="retry-line">
           <button class="btn btn-outline btn-sm" type="button" (click)="retryViaProxy()">

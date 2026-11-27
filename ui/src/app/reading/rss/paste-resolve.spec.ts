@@ -4,6 +4,7 @@ import { of, throwError } from 'rxjs';
 import { Api } from '../../platform/api/api';
 import { CorsProxy } from '../../connections/cors-proxy/cors-proxy';
 import { CorsProxyBatchFetch } from '../../connections/cors-proxy/cors-proxy-batch-fetch';
+import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 import { handleIn, PasteResolve, youtubeFeedFor } from './paste-resolve';
 import { PLATFORM_ARTICLE_READ, PLATFORM_FEED_READ } from '../../platform/http/platform-http';
 import { RssFetch } from './rss-fetch';
@@ -113,6 +114,49 @@ describe('PasteResolve', () => {
         .map((h) => `<link rel="alternate" type="application/rss+xml" href="${h}">`)
         .join('')}</head><body>hi</body></html>`,
     );
+
+  describe('with Mawkingbird for Firefox', () => {
+    function withExtension(answer: (url: string) => unknown) {
+      const read = vi.fn(async (url: string) => answer(url));
+      TestBed.overrideProvider(ExtensionBridge, { useValue: { present: () => true, read } });
+      return read;
+    }
+
+    it('reads the page through the extension and offers the feeds it declares', async () => {
+      const read = withExtension(() => ({
+        ok: true,
+        status: 200,
+        finalUrl: 'https://blog.test/',
+        contentType: 'text/html',
+        body: '<html><head><title>The Blog</title><link rel="alternate" type="application/rss+xml" href="/feed"></head></html>',
+      }));
+      proxyAvailable = false;
+      expect(await resolver().resolve('https://blog.test/')).toMatchObject({
+        kind: 'feeds',
+        feeds: [{ url: 'https://blog.test/feed' }],
+        siteUrl: 'https://blog.test/',
+      });
+      expect(read).toHaveBeenCalledWith('https://blog.test/', 'article');
+      expect(httpGet).not.toHaveBeenCalled();
+    });
+
+    it('offers to allow the site when there is no proxy to fall back on', async () => {
+      withExtension(() => ({ ok: false, error: 'needs-access', origin: 'https://blog.test' }));
+      proxyAvailable = false;
+      expect(await resolver().resolve('https://blog.test/')).toMatchObject({
+        kind: 'none',
+        needsAccess: 'https://blog.test',
+        reason: 'Mawkingbird for Firefox can check blog.test for feeds if you allow it.',
+      });
+    });
+
+    it('uses the proxy as before for a site not yet allowed', async () => {
+      withExtension(() => ({ ok: false, error: 'needs-access', origin: 'https://blog.test' }));
+      page('https://blog.test/', '/feed');
+      expect(await resolver().resolve('https://blog.test/')).toMatchObject({ kind: 'feeds' });
+      expect(httpGet).toHaveBeenCalled();
+    });
+  });
 
   it('resolves native feeds without filename hints and never probes through the proxy', async () => {
     TestBed.overrideProvider(PLATFORM_FEED_READ, { useValue: vi.fn() });
