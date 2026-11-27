@@ -80,6 +80,10 @@ section + section,
   color: var(--muted);
 }
 
+li.detail {
+  padding: 4px 12px 2px;
+}
+
 .note {
   margin: 6px 12px;
   color: var(--muted);

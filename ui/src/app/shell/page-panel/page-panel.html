@@ -1,0 +1,44 @@
+@if (!url()) {
+  <p class="muted panel-note">{{ 'pages.pagePanel.noPage' | transloco }}</p>
+} @else {
+  <section class="panel-write">
+    @if (strayDraft()) {
+      <p class="panel-note" role="status">{{ 'pages.pagePanel.strayDraft' | transloco }}</p>
+      <div class="panel-row">
+        <button mbButton type="button" (click)="continueDraft()">
+          {{ 'pages.pagePanel.continueDraft' | transloco }}
+        </button>
+        <button mbButton variant="outline" type="button" (click)="discardDraft()">
+          {{ 'pages.pagePanel.discardDraft' | transloco }}
+        </button>
+      </div>
+    } @else if (writing()) {
+      <app-compose
+        [compact]="true"
+        draftContext="page-panel"
+        [initialText]="continuing() ? '' : seedText()"
+        (posted)="posted($event)"
+      />
+    } @else {
+      <button mbButton type="button" (click)="write()">
+        {{ 'pages.pagePanel.write' | transloco }}
+      </button>
+      @if (justPosted()) {
+        <p class="panel-note" role="status">{{ 'pages.pagePanel.posted' | transloco }}</p>
+      }
+    }
+  </section>
+
+  @if (mine().length) {
+    <section class="panel-mine" aria-labelledby="panel-mine-heading">
+      <h2 id="panel-mine-heading" class="panel-heading">
+        {{ 'pages.pagePanel.mine' | transloco }}
+      </h2>
+      @for (s of mine(); track s.id) {
+        <app-status-card [status]="s" filterContext="account" />
+      }
+    </section>
+  }
+
+  <app-link-timeline />
+}

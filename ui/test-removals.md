@@ -26,6 +26,14 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-26: Posts about a link searches when the link isn't trending
+
+- test: src/app/feeds/link-timeline/link-timeline.spec.ts :: LinkTimeline explains a link the server is not trending instead of showing an error
+  reason: replaced
+  now: src/app/feeds/link-timeline/link-timeline.spec.ts :: LinkTimeline explains a link nobody found and offers a search for the site
+  now: src/app/feeds/link-timeline/link-timeline.spec.ts :: LinkTimeline falls back to searching for the link when it is not trending
+  why: A not-trending 404 now falls back to post search (owner request, 2026-11-26); the sentence shows only when search also finds nothing.
+
 ## 2026-11-26: Video Subscriptions are YouTube only
 
 - test: src/app/reading/videos/video-items.spec.ts :: mergeFollowedPosts adds who shared an upload, and posts about other videos as their own items

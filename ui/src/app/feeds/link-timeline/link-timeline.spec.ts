@@ -8,6 +8,9 @@ import { post } from '../../testing/forum-fixtures';
 import { LinkTimeline } from './link-timeline';
 
 const URL_ = 'https://news.example/story';
+const search = (q: string) => (r: HttpRequest<unknown>) =>
+  r.url === '/api/v2/search' && r.params.get('q') === q && r.params.get('type') === 'statuses';
+const noResults = { accounts: [], statuses: [], hashtags: [] };
 const page = (maxId?: string) => (r: HttpRequest<unknown>) =>
   r.url === '/api/v1/timelines/link' &&
   r.params.get('url') === URL_ &&
@@ -57,11 +60,57 @@ describe('LinkTimeline', () => {
     expect(text(f)).not.toContain('Load more');
   });
 
-  it('explains a link the server is not trending instead of showing an error', () => {
-    const f = setUp(URL_);
+  function notTrending(): void {
     http
       .expectOne(page())
       .flush({ error: 'Record not found' }, { status: 404, statusText: 'Not Found' });
+  }
+
+  it('falls back to searching for the link when it is not trending', () => {
+    const f = setUp(URL_);
+    notTrending();
+    http.expectOne(search(URL_)).flush({ ...noResults, statuses: [post('9', 'cy')] });
+    f.detectChanges();
+
+    expect(f.nativeElement.querySelectorAll('app-status-card')).toHaveLength(1);
+    expect(text(f)).toContain('posts found by searching for it');
+    expect(text(f)).not.toContain("this one isn't");
+    expect(text(f)).not.toContain('Load more');
+  });
+
+  it('searches again without the scheme when the full link finds nothing', () => {
+    const f = setUp('https://www.news.example/story/?utm=x#top');
+    http.expectOne((r) => r.url === '/api/v1/timelines/link').flush([]);
+    http.expectOne(search('https://www.news.example/story/?utm=x#top')).flush(noResults);
+    http
+      .expectOne(search('news.example/story'))
+      .flush({ ...noResults, statuses: [post('8', 'di')] });
+    f.detectChanges();
+
+    expect(f.nativeElement.querySelectorAll('app-status-card')).toHaveLength(1);
+  });
+
+  it('explains a link nobody found and offers a search for the site', () => {
+    const f = setUp(URL_);
+    notTrending();
+    http.expectOne(search(URL_)).flush(noResults);
+    http.expectOne(search('news.example/story')).flush(noResults);
+    f.detectChanges();
+
+    expect(text(f)).toContain("this one isn't");
+    expect(text(f)).toContain('Search posts mentioning news.example');
+    const link = f.nativeElement.querySelector('a[href*="/search"]') as HTMLAnchorElement;
+    expect(link.getAttribute('href')).toBe('/search?q=news.example&type=statuses');
+    expect(f.nativeElement.querySelector('[role="alert"]')).toBeNull();
+  });
+
+  it('treats a failing search as nothing found, not an error', () => {
+    const f = setUp(URL_);
+    notTrending();
+    http.expectOne(search(URL_)).flush('nope', { status: 503, statusText: 'Unavailable' });
+    http
+      .expectOne(search('news.example/story'))
+      .flush('nope', { status: 503, statusText: 'Unavailable' });
     f.detectChanges();
 
     expect(text(f)).toContain("this one isn't");
@@ -71,9 +120,19 @@ describe('LinkTimeline', () => {
   it('says so when the server has no link timelines at all', () => {
     const f = setUp(URL_);
     http.expectOne(page()).flush('Not Found', { status: 404, statusText: 'Not Found' });
+    http.expectOne(search(URL_)).flush(noResults);
+    http.expectOne(search('news.example/story')).flush(noResults);
     f.detectChanges();
 
     expect(text(f)).toContain('Mastodon 4.3 or newer');
+  });
+
+  it('shows an error for failures other than not trending', () => {
+    const f = setUp(URL_);
+    http.expectOne(page()).flush('boom', { status: 500, statusText: 'Server Error' });
+    f.detectChanges();
+
+    expect(text(f)).toContain('Could not load posts about this link');
   });
 
   it('makes no request without an http(s) link', () => {

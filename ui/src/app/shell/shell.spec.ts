@@ -73,7 +73,13 @@ describe('Shell account switching', () => {
     auth.switchTo('art-token');
   });
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    // Angular 22 renders the rails a tick later than 21 did, so their metadata
+    // reads can arrive after a test's own drain. They are the same rail noise
+    // drainRailRequests() already absorbs; anything else still fails verify().
+    drainRailRequests();
+    httpMock.verify();
+  });
 
   function createShell() {
     const fixture = TestBed.createComponent(Shell);

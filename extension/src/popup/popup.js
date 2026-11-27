@@ -62,7 +62,8 @@ async function render() {
     }
   } else {
     // Paste a link probes the site itself (common feed paths, the home page).
-    addAction(feedActions, 'Look for a feed on this site', subscribeUrl(base, page.url));
+    addNote(feedActions, "This page doesn't list a feed.");
+    addAction(feedActions, 'Look for one on this site', subscribeUrl(base, page.url));
   }
 
   if (page.authors.length) {
@@ -96,6 +97,13 @@ function addAction(list, label, url, detail) {
   if (detail) button.title = detail;
   button.addEventListener('click', () => open(url));
   item.append(button);
+  list.append(item);
+}
+
+function addNote(list, text) {
+  const item = document.createElement('li');
+  item.className = 'detail';
+  item.textContent = text;
   list.append(item);
 }
 

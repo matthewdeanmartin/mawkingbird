@@ -131,3 +131,13 @@ test('deepLinkFor builds on the configured base', () => {
   );
   assert.equal(deepLinkFor(BASE, 'https://example.com/'), null);
 });
+
+test('panelUrl follows the page without its #fragment', async () => {
+  const { panelUrl, withoutHash } = await import('../src/lib/links.js');
+  const url = new URL(panelUrl(BASE, { url: 'https://news.example/a?b=1#c', title: ' Story ' }));
+  assert.equal(url.pathname, '/panel');
+  assert.equal(url.searchParams.get('url'), 'https://news.example/a?b=1');
+  assert.equal(url.searchParams.get('title'), 'Story');
+  assert.equal(panelUrl(BASE, { url: 'about:newtab' }), 'https://mawkingbird.com/panel');
+  assert.equal(withoutHash('https://a.example/#x'), 'https://a.example/');
+});

@@ -105,7 +105,12 @@
     {
       "file": "ui/src/app/feeds/link-timeline/link-timeline.html",
       "disposition": "adopted scope",
-      "nextStep": "Posts about a link (Mastodon parity 1): page-head title with native links to the story, MbContentState for loading, empty, not-trending/unsupported and error (with an MbButton Retry), StatusCard rows and an outline MbButton for Load more. Preserve the http(s)-only guard and the 404 split between not trending and an old server."
+      "nextStep": "Posts about a link (Mastodon parity 1): page-head title with native links to the story, MbContentState for loading, empty, not-trending/unsupported and error (with an MbButton Retry), StatusCard rows and an outline MbButton for Load more; when the link timeline is empty, post-search results under a muted note, and an outline MbButton link to search the site's name inside the empty and not-trending states. Preserve the http(s)-only guard, the 404 split between not trending and an old server, and at most two search calls."
+    },
+    {
+      "file": "ui/src/app/shell/page-panel/page-panel.html",
+      "disposition": "adopted scope",
+      "nextStep": "The Firefox extension's sidebar panel (/panel, spec/firefox-extension.md): MbButton (primary Write about this page and Continue it, outline Discard it), the compact Compose, StatusCard rows for the reader's own posts and the embedded LinkTimeline; native headings and status notes only. Preserve the composer mounting on demand (no draft for a glanced page) and the single from:me search."
     },
     {
       "file": "ui/src/app/feeds/lists/collection-settings-dialog/collection-settings-dialog.html",

@@ -9,14 +9,20 @@
   </p>
 }
 
-@if (notice()) {
-  <mb-content-state [title]="notice()" />
-} @else if (loading()) {
+@if (loading()) {
   <mb-content-state
     kind="loading"
     announcement="status"
     [title]="'pages.linkTimeline.loading' | transloco"
   />
+} @else if (notice() && !statuses().length) {
+  <mb-content-state [title]="notice()">
+    @if (host()) {
+      <a mbButton variant="outline" routerLink="/search" [queryParams]="siteSearchParams()">{{
+        'pages.linkTimeline.searchSite' | transloco: { host: host() }
+      }}</a>
+    }
+  </mb-content-state>
 } @else if (failed()) {
   <mb-content-state
     kind="error"
@@ -28,8 +34,17 @@
     </button>
   </mb-content-state>
 } @else if (!statuses().length) {
-  <mb-content-state [title]="'pages.linkTimeline.empty' | transloco" />
+  <mb-content-state [title]="'pages.linkTimeline.empty' | transloco">
+    @if (host()) {
+      <a mbButton variant="outline" routerLink="/search" [queryParams]="siteSearchParams()">{{
+        'pages.linkTimeline.searchSite' | transloco: { host: host() }
+      }}</a>
+    }
+  </mb-content-state>
 } @else {
+  @if (fromSearch()) {
+    <p class="muted small page-sub">{{ 'pages.linkTimeline.fromSearch' | transloco }}</p>
+  }
   @for (s of statuses(); track s.id; let i = $index) {
     <app-status-card
       [status]="s"

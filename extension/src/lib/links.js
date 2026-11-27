@@ -103,9 +103,29 @@ export function accountUrl(base, handle) {
   return normalized ? appUrl(base, `@${normalized}`) : null;
 }
 
-/** Lite (`/m/`), the sidebar's content. */
+/** Lite (`/m/`). */
 export function liteUrl(base) {
   return appUrl(base, 'm/');
+}
+
+/**
+ * `/panel?url=&title=`: the sidebar's content, Mawkingbird about the page
+ * beside it. A non-web page gets the bare panel, which says to open one.
+ */
+export function panelUrl(base, { url, title } = {}) {
+  if (!isShareablePageUrl(url)) return appUrl(base, 'panel');
+  return appUrl(base, 'panel', { url: withoutHash(url), title: clean(title, 300) });
+}
+
+/** The page address the sidebar follows: a #fragment is the same page. */
+export function withoutHash(url) {
+  try {
+    const parsed = new URL(url);
+    parsed.hash = '';
+    return parsed.href;
+  } catch {
+    return url;
+  }
 }
 
 // --- Deep links ---------------------------------------------------------------

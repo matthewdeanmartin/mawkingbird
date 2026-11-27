@@ -20,6 +20,12 @@ module.exports = defineConfig([
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+      // New in angular-eslint 22's recommended set. The Angular 22 migration
+      // marked ~900 existing components ChangeDetectionStrategy.Eager on purpose,
+      // so they behave exactly as they did under 21; moving each to OnPush is a
+      // behavior change to make (and test) component by component, not a lint
+      // fix. New components get OnPush by default anyway. (2026-11-26)
+      '@angular-eslint/prefer-on-push-component-change-detection': 'off',
     },
   },
   {

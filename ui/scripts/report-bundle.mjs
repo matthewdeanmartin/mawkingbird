@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises';
+import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -57,8 +57,8 @@ export function summarizeBundle(stats) {
 }
 
 /**
- * Lite (/m/) must stay light: everything its routes can load, beyond the
- * startup bundle, is held to {@link LITE_BUDGET_BYTES}, and it must never pull
+ * Lite (/m/) must stay light: startup plus everything its routes can load is
+ * held to {@link LITE_TOTAL_BUDGET_BYTES}, and it must never pull
  * in the full pages it replaces. A Lite page that imports one of those by
  * accident would quietly turn the low-bandwidth app back into the full one.
  */
@@ -67,14 +67,17 @@ export const LITE_SOURCE = 'src/app/lite/';
 const LITE_STARTUP = new Set(['src/app/lite/lite-mode.ts']);
 const LITE_ROUTES = 'src/app/lite/lite.routes.ts';
 /**
- * Everything /m/ can load beyond startup, including the full-app screens its
- * routes open lazily (the blog-style writer, the Outbox page, the players).
- * Measured at 1,090 kB on 2026-11-21 after the check started counting those
- * lazy screens (it previously reported ~900 kB by missing them), with Lite's
- * load-control bar and saved-first reading included. Raise only with a reason
- * in the commit.
+ * Everything a phone on /m/ can download: the startup bundle plus everything
+ * Lite's routes can load, including the full-app screens they open lazily (the
+ * blog-style writer, the Outbox page, the players).
+ *
+ * Total, not "beyond startup": Angular 22 moved ~56 kB from startup into shared
+ * lazy chunks (startup 990.48 → 934.25 kB, beyond 1126.40 → 1190.24 kB, total
+ * 2116.88 → 2124.49 kB), which failed the old 1,150 kB beyond-startup budget
+ * though Lite barely grew. 2,140 kB is that old allowance (990 + 1,150) carried
+ * over; owner decision 2026-11-26. Raise only with a reason in the commit.
  */
-export const LITE_BUDGET_BYTES = 1_150_000;
+export const LITE_TOTAL_BUDGET_BYTES = 2_140_000;
 export const LITE_EXCLUSIONS = [
   'src/app/feeds/home/home.ts',
   'src/app/feeds/notifications/notifications.ts',
@@ -133,10 +136,29 @@ export function summarizeLite(stats) {
   };
 }
 
+/**
+ * `--stats-json` output. Angular 22 always writes `browser-stats.json` (plus
+ * `server-stats.json` for the SEO build); Angular 21 wrote `stats.json` for a
+ * browser-only build. Either is accepted so a stale local dist still reports.
+ */
+async function defaultStatsFile() {
+  const candidates = ['browser-stats.json', 'stats.json'].map((name) =>
+    path.join(root, 'dist-mockingbird', name),
+  );
+  for (const candidate of candidates) {
+    try {
+      await access(candidate);
+      return candidate;
+    } catch {
+      // try the next name
+    }
+  }
+  return candidates[0];
+}
+
 async function main() {
   const args = process.argv.slice(2);
-  const filename =
-    args.find((arg) => !arg.startsWith('--')) ?? path.join(root, 'dist-mockingbird/stats.json');
+  const filename = args.find((arg) => !arg.startsWith('--')) ?? (await defaultStatsFile());
   const summary = summarizeBundle(JSON.parse(await readFile(filename, 'utf8')));
   const config = JSON.parse(await readFile(path.join(root, 'angular.json'), 'utf8'));
   const budget = config.projects.ui.architect.build.configurations.mockingbird.budgets.find(
@@ -157,12 +179,13 @@ async function main() {
   const lite = summarizeLite(JSON.parse(await readFile(filename, 'utf8')));
   if (lite.found) {
     console.log(
-      `Lite (/m/) beyond startup: ${(lite.bytes / 1000).toFixed(2)} kB (budget ${(LITE_BUDGET_BYTES / 1000).toFixed(0)} kB).`,
+      `Lite (/m/) total: ${((lite.startupBytes + lite.bytes) / 1000).toFixed(2)} kB = startup ${(lite.startupBytes / 1000).toFixed(2)} + beyond ${(lite.bytes / 1000).toFixed(2)} (budget ${(LITE_TOTAL_BUDGET_BYTES / 1000).toFixed(0)} kB).`,
     );
-    if (lite.bytes > LITE_BUDGET_BYTES || lite.violations.length) {
+    const over = lite.startupBytes + lite.bytes > LITE_TOTAL_BUDGET_BYTES;
+    if (over || lite.violations.length) {
       if (lite.violations.length)
         console.error(`Lite pulled in full-app pages: ${lite.violations.join(', ')}`);
-      if (lite.bytes > LITE_BUDGET_BYTES) console.error('Lite is over its budget.');
+      if (over) console.error('Lite is over its budget.');
       if (args.includes('--check')) process.exitCode = 1;
     }
   }

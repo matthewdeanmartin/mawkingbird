@@ -2,7 +2,13 @@ import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  convertToParamMap,
+  PartialMatchRouteSnapshot,
+  provideRouter,
+  Router,
+} from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { LoginBluesky } from '../../accounts/sign-in/login-bluesky/login-bluesky';
 import { LoginChooser } from '../../accounts/sign-in/login-chooser/login-chooser';
@@ -187,7 +193,12 @@ describe('OpenApp', () => {
         setUp({});
         arrive(visitor);
         const matches = TestBed.runInInjectionContext(() =>
-          (tool.signIn === 'any' ? signedInMatch : mastodonSignedInMatch)({}, []),
+          // Angular 22 added the partial snapshot; these guards don't read it.
+          (tool.signIn === 'any' ? signedInMatch : mastodonSignedInMatch)(
+            {},
+            [],
+            {} as PartialMatchRouteSnapshot,
+          ),
         );
         if (matches) continue;
         const next = encodeURIComponent(`/${tool.path}`);

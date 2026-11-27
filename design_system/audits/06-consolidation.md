@@ -3653,3 +3653,14 @@ Reviewed the regenerated inventory: scanned source files increase 2215 to 2216
 for the lazily loaded upload helper. All 743 candidate files and dispositions
 remain unchanged. PeerTube reuses Watch's existing external link fallback;
 no controls or shared widgets were added.
+
+### 2026-11-26: Firefox extension panel, link search fallback, /rss/add
+
+Reviewed the regenerated inventory: scanned source files 2216 to 2221, candidates
+743 to 744. One candidate is added, adopted scope: `shell/page-panel/page-panel.html`
+(MbButton Write/Continue/Discard, compact Compose, StatusCard, embedded
+LinkTimeline). `feeds/link-timeline/link-timeline.html` gains a muted search note
+and an outline MbButton link to search the site's name in its empty and
+not-trending MbContentState; its disposition is updated. The RSS page's add-feed
+dialog gains a `prefill` input only. No shared widget changed; other entries move
+by line offset only.

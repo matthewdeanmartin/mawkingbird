@@ -53,7 +53,7 @@ test('refuses an unrecognized build rather than reporting zero bytes', () => {
 });
 
 test('measures what Lite loads beyond startup and flags full pages it pulls in', async () => {
-  const { summarizeLite, LITE_BUDGET_BYTES } = await import('./report-bundle.mjs');
+  const { summarizeLite, LITE_TOTAL_BUDGET_BYTES } = await import('./report-bundle.mjs');
   const stats = {
     outputs: {
       'main.js': {
@@ -93,7 +93,9 @@ test('measures what Lite loads beyond startup and flags full pages it pulls in',
   // Startup (main, shared) is not counted; every Lite chunk and its static imports are.
   assert.equal(lite.bytes, 300 + 200 + 40 + 5);
   assert.deepEqual(lite.violations, ['src/app/feeds/home/home.ts']);
-  assert.ok(LITE_BUDGET_BYTES > 0);
+  // The budget covers startup too: what a phone on /m/ downloads in all.
+  assert.equal(lite.startupBytes, 100 + 50);
+  assert.ok(LITE_TOTAL_BUDGET_BYTES > 2_000_000);
 });
 
 test('counts the screens Lite routes load lazily from outside src/app/lite', async () => {

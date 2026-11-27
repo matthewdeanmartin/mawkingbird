@@ -1,65 +1,47 @@
-import { isShareablePageUrl, liteUrl, postsAboutUrl, shareUrl } from '../lib/links.js';
+import { isShareablePageUrl, panelUrl, withoutHash } from '../lib/links.js';
 import { getBase, onBaseChanged } from '../lib/settings.js';
 
 /**
- * The sidebar: Lite in a frame, and a strip that acts on the tab beside it.
- *
- * Share and Posts about it load in the frame, so the reader stays in the
- * sidebar. /share lands on the full app's Home composer (Lite's quick composer
- * does not take a shared draft yet: spec/firefox-extension.md, W-1).
+ * The sidebar: Mawkingbird's /panel about the tab beside it (write about the
+ * page, your posts about it, other people's). It follows the active tab, but
+ * reloads only when the page itself changes (not its #fragment), after a short
+ * pause, so flicking through tabs doesn't fire a burst of API calls.
  */
 
-const frame = document.getElementById('lite');
-const status = document.getElementById('status');
-const shareButton = document.getElementById('share');
-const postsButton = document.getElementById('posts-about');
-const openFullButton = document.getElementById('open-full');
+const FOLLOW_DELAY_MS = 700;
 
-let base = await getBase();
-frame.src = liteUrl(base);
-
-onBaseChanged((next) => {
-  base = next;
-  frame.src = liteUrl(base);
-});
-
-shareButton.addEventListener('click', async () => {
-  const tab = await activeTab();
-  if (!tab) return;
-  frame.src = shareUrl(base, { title: tab.title, url: tab.url });
-});
-
-postsButton.addEventListener('click', async () => {
-  const tab = await activeTab();
-  if (!tab) return;
-  frame.src = postsAboutUrl(base, tab.url);
-});
-
-openFullButton.addEventListener('click', () => {
+const frame = document.getElementById('panel');
+const label = document.getElementById('page-label');
+document.getElementById('open-full').addEventListener('click', () => {
   void browser.tabs.create({ url: base });
 });
 
-// Keep the buttons honest about the tab beside the sidebar.
-browser.tabs.onActivated.addListener(() => void refresh());
-browser.tabs.onUpdated.addListener((_id, change) => {
-  if (change.url || change.status === 'complete') void refresh();
+let base = await getBase();
+let shownFor = null;
+let timer = null;
+
+onBaseChanged((next) => {
+  base = next;
+  shownFor = null;
+  void follow(0);
 });
-void refresh();
 
-async function refresh() {
-  const tab = await currentTab();
-  const usable = Boolean(tab && isShareablePageUrl(tab.url));
-  shareButton.disabled = !usable;
-  postsButton.disabled = !usable;
-  setStatus(usable ? '' : 'Open a web page to share it.');
-}
+browser.tabs.onActivated.addListener(() => void follow());
+browser.tabs.onUpdated.addListener((_id, change, tab) => {
+  if (tab.active && (change.url || change.status === 'complete')) void follow();
+});
+void follow(0);
 
-/** The tab beside the sidebar, if it is a page that can be shared. */
-async function activeTab() {
-  const tab = await currentTab();
-  if (tab && isShareablePageUrl(tab.url)) return tab;
-  setStatus('Open a web page to share it.');
-  return null;
+async function follow(delay = FOLLOW_DELAY_MS) {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const tab = await currentTab();
+    const page = tab && isShareablePageUrl(tab.url) ? withoutHash(tab.url) : '';
+    label.textContent = page ? hostOf(page) : '';
+    if (page === shownFor) return;
+    shownFor = page;
+    frame.src = panelUrl(base, { url: page, title: tab?.title });
+  }, delay);
 }
 
 async function currentTab() {
@@ -71,7 +53,10 @@ async function currentTab() {
   }
 }
 
-function setStatus(text) {
-  status.textContent = text;
-  status.hidden = !text;
+function hostOf(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
 }

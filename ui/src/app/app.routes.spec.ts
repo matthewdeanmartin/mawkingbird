@@ -1,8 +1,9 @@
 import { provideRouter, Route, Router, UrlTree } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { routes, TOOL_PAGE_MODULES, toolPageLoader } from './app.routes';
+import { carriesSharedContent, routes, TOOL_PAGE_MODULES, toolPageLoader } from './app.routes';
 import { NATIVE_PROFILES } from './platform/session/platform-login';
+import { LITE_ROUTES } from './lite/lite.routes';
 import { anonymousUnavailableGuard } from './accounts/anonymous/anonymous-route.guard';
 import {
   TRANSLATED_PATHS,
@@ -176,6 +177,81 @@ describe('application routes', () => {
   it('keeps both current and legacy message links available to Anonymous', () => {
     expect(routes.find((route) => route.path === 'message/:id')?.canActivate).toBeUndefined();
     expect(routes.find((route) => route.path === 'message')?.canActivate).toBeUndefined();
+  });
+
+  describe('/share: Radio Share music and the share target', () => {
+    function sharedContent(queryParams: Record<string, unknown> | null): boolean {
+      TestBed.configureTestingModule({
+        providers: [
+          {
+            provide: Router,
+            useValue: {
+              currentNavigation: () => (queryParams ? { extractedUrl: { queryParams } } : null),
+            },
+          },
+        ],
+      });
+      return TestBed.runInInjectionContext(() => carriesSharedContent());
+    }
+
+    it('sends title/text/url to the share target, which stays after Radio', () => {
+      const shares = shellChildren('share');
+      expect(shares).toHaveLength(2);
+      expect(shares[0].title).toBe('Share music');
+      expect(shares[0].canMatch).toHaveLength(1);
+      expect(shares[1].title).toBe('Share');
+      expect(shares[1].canMatch).toBeUndefined();
+    });
+
+    it('recognises shared content', () => {
+      expect(sharedContent({ url: 'https://example.com/' })).toBe(true);
+    });
+
+    it('recognises shared text alone (Unbird)', () => {
+      expect(sharedContent({ text: 'a tweet' })).toBe(true);
+    });
+
+    it('leaves a playlist share to Radio', () => {
+      expect(sharedContent({ playlist: 'abc' })).toBe(false);
+    });
+
+    it('leaves a bare /share and blank values to Radio', () => {
+      expect(sharedContent({ title: '  ' })).toBe(false);
+    });
+
+    it('leaves Radio in place with no navigation in progress', () => {
+      expect(sharedContent(null)).toBe(false);
+    });
+  });
+
+  // Two siblings with one path: the router takes the first and the second is
+  // unreachable. That is how Radio's Share music silently took over the share
+  // target's /share for ten days (2026-11-16 to 11-26). A shared path is allowed
+  // only when every earlier route has a canMatch to step aside, or when the
+  // earlier one matches the path exactly and the later one only as a prefix of
+  // its children (the root dispatcher and the shell).
+  it('never gives two sibling routes the same path without a canMatch to tell them apart', () => {
+    const problems: string[] = [];
+    const walk = (list: Route[], where: string) => {
+      const seen = new Map<string, Route[]>();
+      for (const route of list) {
+        if (route.path !== undefined && !route.matcher) {
+          const earlier = seen.get(route.path) ?? [];
+          const blocked = earlier.find(
+            (prior) =>
+              !prior.canMatch?.length &&
+              !(prior.pathMatch === 'full' && route.pathMatch !== 'full' && route.children),
+          );
+          if (blocked) problems.push(`${where}/${route.path || '(empty)'}`);
+          seen.set(route.path, [...earlier, route]);
+        }
+        if (route.children) walk(route.children, `${where}/${route.path ?? ''}`);
+      }
+    };
+    walk(routes, '');
+    // Lazily loaded tables are separate arrays the router reads the same way.
+    walk(LITE_ROUTES, '/m');
+    expect(problems).toEqual([]);
   });
 
   describe('/rss/add (a link offering a subscription)', () => {

@@ -84,6 +84,20 @@ import {
  * meets the tool before being asked to sign in — and the Invite tab sends them
  * back to it.
  */
+/**
+ * Whether the navigation in progress is a `/share` with something to post
+ * (`title`, `text` or `url`), as opposed to Radio's Share music (`?playlist=` or
+ * nothing). Both live at `/share`: the manifest's share_target, Unbird's links
+ * and Radio's links all predate the clash, so neither may move.
+ */
+export function carriesSharedContent(): boolean {
+  const params = inject(Router).currentNavigation()?.extractedUrl.queryParams ?? {};
+  return ['title', 'text', 'url'].some((key) => {
+    const value: unknown = params[key];
+    return typeof value === 'string' && value.trim() !== '';
+  });
+}
+
 function focusedAppRoutes(app: {
   path: string;
   /** A translated page's title and description resolve lazily (tool-copy.ts). */
@@ -593,6 +607,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadComponent: () => import('./lite/lite-shell').then((m) => m.LiteShell),
     loadChildren: () => import('./lite/lite.routes').then((m) => m.LITE_ROUTES),
+  },
+  {
+    // `/panel?url=&title=`: Mawkingbird beside another page, for the Firefox
+    // extension's sidebar (spec/firefox-extension.md). Outside the shell on
+    // purpose: no navigation, just this page's posts and a composer.
+    path: 'panel',
+    canActivate: [authGuard],
+    title: 'This page',
+    loadComponent: () => import('./shell/page-panel/page-panel').then((m) => m.PagePanel),
   },
   {
     path: 'fail-whale',
@@ -1386,7 +1409,10 @@ export const routes: Routes = [
       },
       {
         // Telling followers about someone else's music: a recording or a playlist.
+        // Steps aside for a `/share` that carries title/text/url, which is the
+        // share target below (system Share menu, Unbird, the Firefox extension).
         path: 'share',
+        canMatch: [() => !carriesSharedContent()],
         title: 'Share music',
         loadComponent: () => import('./reading/radio/share-page').then((m) => m.SharePage),
       },

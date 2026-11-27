@@ -1,22 +1,21 @@
 # Firefox extension: Mawkingbird for Firefox
 
-Status: sprints 1–2 built, sprint 2 uncommitted · 2026-11-26 (18 unit tests
-pass; `web-ext lint` 0 errors, 1 accepted Android warning; 0.2.0 zip builds).
-Not run: any real Firefox session; the owner's test plans and sidebar spike are
-pending. Sprint 3 planned.
-Code: `extension/` (its own `package.json` and `Makefile`; nothing in `ui/` or
-`native/` changes). Owner decisions are in the next section.
+Status: sprints 1–3 built and pushed · 2026-11-26 (extension 0.3.0:
+19 unit tests, `web-ext lint` 0 errors). Sprint 3 needs the web app deployed
+(`/panel`, the `/share` fix, link search); until production builds, test against
+Canary (Options → Canary). Sprints 4–5 planned.
+Code: `extension/` (its own `package.json` and `Makefile`) plus the web changes
+listed per sprint. Owner decisions are in the next section.
 
 ## What it is
 
 A small WebExtension that puts Mawkingbird beside whatever page you are reading,
 and later carries the requests a web page cannot make. Two layers:
 
-1. **Companion** (sprints 1–2). Share, quote, "Open in Mawkingbird" and "Posts
-   about this page", plus a sidebar showing Lite (`/m/`). Every action opens a
-   Mawkingbird URL that already exists; the extension holds no account, token or
-   post data.
-2. **Bridge** (sprint 3, extension side only). A content script on
+1. **Companion** (sprints 1–4). Share, quote, "Open in Mawkingbird", feeds and
+   authors, and a sidebar about the page beside it (`/panel`). Every action opens
+   a Mawkingbird URL; the extension holds no account, token or post data.
+2. **Bridge** (sprint 5, extension side only). A content script on
    mawkingbird.com that lets the web app ask the extension to fetch a public URL
    the browser's CORS rules block (RSS feeds, articles, webmentions, the
    catalogues Native carries). It is the browser's version of the
@@ -32,7 +31,16 @@ stay Native), and a bundled copy of the Angular app.
 
 - Host access is **asked per site**, at the moment it is needed. Install asks
   only for mawkingbird.com.
-- The sidebar is the **Lite composer** (`/m/`) for now.
+- ~~The sidebar is the Lite composer~~ (superseded the same evening): the sidebar
+  is **about the current page only**. Write about it, see where you already
+  posted about it, see who else is talking about it. The rest of Mawkingbird in a
+  sidebar is a distraction.
+- **Posts about this page** must work for untrending links (nearly all of them):
+  search is the fallback. "Is it trending" is rare and not worth its own place.
+- **Finding your own post about a page** must be API-cheap: one search, never a
+  scan of the reader's posts.
+- YouTube is the first special case: post a video, then watch it with the replies
+  to that post as its chat (sprint 4).
 - **Firefox first.** Manifest V3, standard `browser.*` APIs; Firefox-only APIs
   (`sidebarAction`) stay in one place so a Chrome port swaps them for
   `sidePanel`.
@@ -136,7 +144,90 @@ Not run: a real Firefox session. Test plan: `test_plans/firefox-extension-sprint
 `package.json` still says 0.1.0 (left alone during the Node 26 upgrade); the
 manifest's 0.2.0 is the one Firefox and AMO read.
 
-## Sprint 3: the bridge (extension side)
+## Owner feedback on sprints 1–2 (2026-11-26, before a Firefox test of sprint 2)
+
+- Share this page opened Radio's **Share music**. Cause: since 2026-11-16 two
+  shell routes share `/share`, and Radio's came first, so the system Share menu,
+  Unbird's "post this" and the extension all landed on Radio. Fixed in sprint 3.
+- Quote selection: same cause.
+- Posts about this link: no left padding under the title; and empty for any
+  untrending link, while `/search?q=<site>&type=statuses` finds posts. Fixed in
+  sprint 3.
+- Look for a feed on a page with none: "blinks" with no feedback. Cause:
+  production had not deployed `/rss/add` (the unknown URL redirects Home); and
+  the popup said nothing about the page having no feed. The popup now says so.
+- The Lite sidebar doesn't make sense; see the owner decisions above.
+- Production failed to build after the Angular 22 / Node 26 upgrade (see sprint 3).
+
+## Sprint 3: the page panel (built 2026-11-26, extension 0.3.0)
+
+Web:
+
+- [x] `/share` dispatch: Radio's route has `canMatch: !carriesSharedContent()`, so
+      a `/share` carrying `title`, `text` or `url` reaches the share target;
+      `?playlist=` and a bare `/share` stay Radio's. Neither address moved.
+- [x] `/link` falls back to post search when the link timeline is empty or 404s:
+      the full URL, then `host/path` without scheme, `www.`, query or fragment (at
+      most two calls, only then). Results carry a note saying they came from
+      search; with nothing found, the not-trending sentence offers **Search posts
+      mentioning <site>**. Left padding fixed. Shared helper `link-search.ts`.
+- [x] `/panel?url=&title=`: outside the shell, no chrome. **Write about this
+      page** mounts the compact composer seeded with title and link (autosave slot
+      `page-panel`; an unsent post about another page offers Continue / Discard
+      instead of silently replacing it). **You posted about this page**: one
+      `from:me <url>` search on the home server (a second with `host/path` only if
+      the first is empty), Mastodon sign-ins only. Below, the `/link` list.
+- [x] Native: no transport change (signed-in GETs already reach the account's
+      server; `/api/v2/search` is listed for public reads).
+
+Extension:
+
+- [x] Sidebar shows `/panel` for the active tab and follows it: reloads only when
+      the page (not its `#fragment`) changes, after 700 ms, so flicking through
+      tabs doesn't fire a burst of calls. The strip shows the site and Open
+      Mawkingbird.
+- [x] Popup: a page with no declared feed says "This page doesn't list a feed."
+      above **Look for one on this site**.
+
+Gate fixes found on the way (from the Angular 22 upgrade, not this work):
+
+- [x] `report-bundle.mjs` reads `browser-stats.json` (Angular 22's name) or
+      `stats.json`. This was production's ENOENT.
+- [x] `open-app.spec.ts` passes `CanMatchFn`'s new third argument (type error that
+      stopped `make test` compiling).
+- [x] Lite's budget is now its **total** download (startup + beyond) against
+      2,140 kB, the old 990 + 1,150 kB allowance (owner decision 2026-11-26).
+      Angular 22 had moved ~56 kB out of startup into shared lazy chunks, failing
+      the old beyond-startup budget (1190 kB of 1150) while the total grew 0.36%.
+      Now 2124.81 kB: ~15 kB headroom.
+- [x] `shell.spec.ts`: Angular 22 renders the rails a tick later, so their
+      metadata reads arrived after a test's drain and the leak cascaded through
+      44 tests. `afterEach` drains the same rail requests before `verify()`.
+- [x] `@angular-eslint/prefer-on-push-component-change-detection` (new in
+      angular-eslint 22's recommended set) is off: the migration marked ~900
+      components `Eager` on purpose; moving them to OnPush is a behaviour change.
+- [x] A route test fails when two sibling routes share a path without a
+      `canMatch` to tell them apart (main and Lite tables). It catches the
+      `/share` clash when Radio's `canMatch` is removed.
+
+Gates on the final tree: production SEO build (exit 0, SEO checks passed),
+`npm run lint`, `make test` (11,522 tests), `check:static`, design inventory.
+
+## Sprint 4: YouTube and your post's replies (planned)
+
+- [ ] On a YouTube video page, the panel offers **Watch in Mawkingbird** (Watch
+      mode for that video) beside Write about this page.
+- [ ] Post about a video, then **watch with replies**: Watch with the replies to
+      your post as its chat. "Your post" is the root post found by the panel's
+      `from:me` search or the one just posted.
+- [ ] New replies while watching: re-read that one post's context
+      (`/api/v1/statuses/:id/context`, one call) on a slow interval only while
+      Watch is open and visible, stopping when hidden. A live view of one thread,
+      not a notification: nothing outside the page, no badge, no sound.
+- [ ] Decide with the owner where the root post lives once found (remember it per
+      URL in the panel, so a revisit skips the search; never a scan).
+
+## Sprint 5: the bridge (extension side)
 
 - [ ] Content script on the configured Mawkingbird origin only (static match for
       mawkingbird.com; `scripting.registerContentScripts` for test/localhost).
@@ -170,8 +261,7 @@ granted; documented, not mitigated.
 
 ## Web changes waiting (owner to schedule; not during Native 0.3.0)
 
-- **W-1** Lite share: `/m/share` (or `acceptHandoff` on Lite Home's composer) so
-  shared text lands in the Lite composer.
+- **W-1** ~~Lite share~~ Superseded by `/panel`, which has its own composer.
 - **W-2** ~~Add a feed by URL~~ **Done 2026-11-26.** `/rss/add?url=<site, feed
   or handle>` redirects to `/rss?add=…`, which opens Paste a link filled in and
   drops `add` from the URL. Nothing is fetched or subscribed until the reader
