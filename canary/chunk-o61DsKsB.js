@@ -1,1 +1,0 @@
-import{I as p,kc as ee}from"./main-YTS2TZ76.js";var i=class r{post=null;offer(o){this.post=o}take(o){let t=this.post;return this.post=null,t&&p(t.url??null)?.originalUrl===o?t:null}static ɵfac=function(t){return new(t||r)};static ɵprov=ee({token:r,factory:r.ɵfac,providedIn:`root`})};export{i as t};
