@@ -1,1 +1,0 @@
-import{o as n$1}from"./main-OQZOGLIM.js";function n(r){return{"@type":`BreadcrumbList`,itemListElement:r.map((t,i)=>({"@type":`ListItem`,position:i+1,name:t.name,item:`${n$1}/${t.path?`${t.path}/`:``}`}))}}export{n as t};

@@ -1,0 +1,1 @@
+import{Os as Jo,jc as ee}from"./main-PTUCW3UR.js";var t=class n{component=Jo(null);static ɵfac=function(a){return new(a||n)};static ɵprov=ee({token:n,factory:n.ɵfac,providedIn:`root`})};export{t};

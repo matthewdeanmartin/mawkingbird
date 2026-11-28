@@ -6239,8 +6239,7 @@
     "tagCount": "{{count}} tag su {{max}}"
   },
   "tagFilter": {
-    "failed": "Impossibile creare il filtro. Le tue scelte sono ancora qui; riprova.",
-    "muteTags": "Silenzia tag…"
+    "failed": "Impossibile creare il filtro. Le tue scelte sono ancora qui; riprova."
   },
   "terms": {
     "byMastodon": "Condizioni pubblicate da questo server Mastodon.",

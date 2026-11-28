@@ -6283,8 +6283,7 @@
     "similarTitle": "Tagar yang sering muncul bersama #{{tag}}"
   },
   "tagFilter": {
-    "failed": "Filter tidak bisa dibuat. Pilihanmu masih di sini; coba lagi.",
-    "muteTags": "Bisukan tagar…"
+    "failed": "Filter tidak bisa dibuat. Pilihanmu masih di sini; coba lagi."
   },
   "twitterImport": {
     "signIn.action": "Masuk dengan Mastodon",

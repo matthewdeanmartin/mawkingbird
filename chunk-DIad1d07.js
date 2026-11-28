@@ -1,1 +1,0 @@
-import"./main-OQZOGLIM.js";function o(r,s){let n=window.__TAURI__;return n?n.core.invoke(r,s):Promise.reject(/* @__PURE__ */ new Error(`Native social transport is unavailable.`))}export{o as invokeSocial};

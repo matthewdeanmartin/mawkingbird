@@ -6283,8 +6283,7 @@
     "similarTitle": "Hashtags die vaak samen met #{{tag}} voorkomen"
   },
   "tagFilter": {
-    "failed": "Het filter kon niet worden gemaakt. Je keuzes staan hier nog. Probeer het opnieuw.",
-    "muteTags": "Hashtags dempen…"
+    "failed": "Het filter kon niet worden gemaakt. Je keuzes staan hier nog. Probeer het opnieuw."
   },
   "twitterImport": {
     "signIn.action": "Log in met Mastodon",
