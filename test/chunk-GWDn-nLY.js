@@ -1,0 +1,1 @@
+import{Dl as r,X as g}from"./main-4O45FS3E.js";function f(r$1){if(r$1.provider!==`anonymous-mastodon`)return r$1.id;let o=r$1.providerRef;if(!o?.server||!o.statusId)return r$1.id;let i=r({server:o.server,id:o.statusId},r$1.url?{originalUrl:r$1.url}:{});try{return g(i)}catch{return r$1.id}}export{f as t};
