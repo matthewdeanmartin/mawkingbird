@@ -5542,8 +5542,7 @@
     "tagCount": "{{count}} von {{max}} Tags"
   },
   "tagFilter": {
-    "failed": "Der Filter konnte nicht erstellt werden. Deine Auswahl ist noch da; versuche es erneut.",
-    "muteTags": "Hashtags stummschalten…"
+    "failed": "Der Filter konnte nicht erstellt werden. Deine Auswahl ist noch da; versuche es erneut."
   },
   "adminReports": {
     "actions.assignToMe": "Mir zuweisen",

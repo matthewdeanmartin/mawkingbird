@@ -6283,8 +6283,7 @@
     "similarTitle": "Hashtaggar som ofta förekommer med #{{tag}}"
   },
   "tagFilter": {
-    "failed": "Kunde inte skapa filtret. Dina val finns kvar här; försök igen.",
-    "muteTags": "Tysta hashtaggar…"
+    "failed": "Kunde inte skapa filtret. Dina val finns kvar här; försök igen."
   },
   "twitterImport": {
     "signIn.action": "Logga in med Mastodon",

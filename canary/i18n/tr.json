@@ -6283,8 +6283,7 @@
     "similarTitle": "#{{tag}} ile sık görülen etiketler"
   },
   "tagFilter": {
-    "failed": "Filtre oluşturulamadı. Seçimlerin burada duruyor; yeniden dene.",
-    "muteTags": "Etiketleri sessize al…"
+    "failed": "Filtre oluşturulamadı. Seçimlerin burada duruyor; yeniden dene."
   },
   "twitterImport": {
     "signIn.action": "Mastodon ile oturum aç",

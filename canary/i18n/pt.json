@@ -6238,8 +6238,7 @@
     "tagCount": "{{count}} de {{max}} etiquetas"
   },
   "tagFilter": {
-    "failed": "Não deu para criar o filtro. Suas escolhas continuam aqui; tente de novo.",
-    "muteTags": "Silenciar tags…"
+    "failed": "Não deu para criar o filtro. Suas escolhas continuam aqui; tente de novo."
   },
   "terms": {
     "byMastodon": "Termos publicados por este servidor Mastodon.",
