@@ -60,6 +60,43 @@ describe('TranslationRouter', () => {
   const pairs = (answer: Awaited<ReturnType<TranslationPairCatalog['serverPair']>>) =>
     vi.spyOn(TestBed.inject(TranslationPairCatalog), 'serverPair').mockResolvedValue(answer);
 
+  it('also uses server auto-detection when an untagged post has a local language', async () => {
+    detected = { language: 'ms', candidates: ['ms'] };
+    const server = pairs({ ok: true, lang: 'en' });
+    const pending = router.translate(request({ mode: 'auto', status: status({ language: null }) }));
+    const req = await vi.waitFor(() => http.expectOne('/api/v1/statuses/42/translate'));
+    expect(server).toHaveBeenCalledWith('und', 'en');
+    req.flush({ content: '<p>A book</p>', detected_source_language: 'ms', provider: 'DeepL' });
+    await expect(pending).resolves.toMatchObject({ kind: 'server', source: 'ms' });
+  });
+
+  it('uses advertised server auto-detection for untagged foreign text', async () => {
+    vi.spyOn(TestBed.inject(FeedLanguageFilter), 'languageAssessment').mockReturnValue({
+      language: null,
+      candidates: ['id', 'ms'],
+      candidatesComplete: true,
+    } as never);
+    const server = pairs({ ok: true, lang: 'en-GB' });
+    const pending = router.translate(request({ mode: 'auto', status: status({ language: null }) }));
+    const req = await vi.waitFor(() => http.expectOne('/api/v1/statuses/42/translate'));
+    expect(server).toHaveBeenCalledWith('und', 'en');
+    req.flush({ content: '<p>A book</p>', detected_source_language: 'ms', provider: 'DeepL' });
+    await expect(pending).resolves.toMatchObject({ kind: 'server', source: 'und', target: 'en' });
+  });
+  it('does not assume an old server supports source auto-detection', async () => {
+    vi.spyOn(TestBed.inject(FeedLanguageFilter), 'languageAssessment').mockReturnValue({
+      language: null,
+      candidates: ['id', 'ms'],
+      candidatesComplete: true,
+    } as never);
+    pairs({ ok: null });
+    const outcome = await router.translate(
+      request({ mode: 'auto', status: status({ language: null }) }),
+    );
+    expect(outcome).toMatchObject({ kind: 'failed' });
+    http.expectNone('/api/v1/statuses/42/translate');
+  });
+
   it('uses the server first when it lists the pair, sending the matched target', async () => {
     pairs({ ok: true, lang: 'en-GB' });
     const pending = router.translate(request());

@@ -91,7 +91,7 @@
     {
       "file": "ui/src/app/posts/filter-post-dialog/filter-post-dialog.html",
       "disposition": "adopted scope",
-      "nextStep": "Filter this post (Mastodon parity 12): MbDialog, Field/Control select of filters plus a new-filter name input, MbButton actions and MbNotice errors. Preserve that a new filter hides on home, public, thread and account, and that the card receives the result as a server-shaped filtered entry."
+      "nextStep": "Filter this post (Mastodon parity 12), now the Advanced mode of Build filter for post… with the shared Simple | Advanced Toolbar when the post has tags: MbDialog, Field/Control select of filters plus a new-filter name input, MbButton actions and MbNotice errors. Preserve that a new filter hides on home, public, thread and account, and that the card receives the result as a server-shaped filtered entry."
     },
     {
       "file": "ui/src/app/shell/menu-budget.ts",
@@ -276,12 +276,17 @@
     {
       "file": "ui/src/app/moderation/tag-filter-dialog/tag-filter-dialog.ts",
       "disposition": "adopted scope",
-      "nextStep": "Account filter creation uses Dialog, Field/Control, Checkbox and Button. The post's hashtags are Checkboxes; the chosen ones become keywords of one filter. Preserve focus return, explicit confirmation, nothing preselected when there are several tags, a title the reader typed, context selection, validation and retry choices."
+      "nextStep": "Account filter creation uses Dialog, Field/Control, Checkbox and Button. The post's hashtags are Checkboxes; the chosen ones become keywords of one filter. As the Simple mode of Build filter for post…, it carries the shared Simple | Advanced Toolbar when Advanced applies. Preserve focus return, explicit confirmation, nothing preselected when there are several tags, a title the reader typed, context selection, validation and retry choices."
     },
     {
-      "file": "ui/src/app/moderation/tag-filter-dialog/tag-mute-menu.ts",
+      "file": "ui/src/app/moderation/tag-filter-dialog/post-filter-menu.ts",
       "disposition": "partial adoption",
-      "nextStep": "One Mute tags… row lazily loads the shared dialog, where the hashtags are picked. The row is a native button styled as an entry of the post's ••• menu, no longer Button, so it matches the other menu items. Migrate to a shared menu-item control when one exists; keep case-insensitive tag deduplication and prevent parent card navigation."
+      "nextStep": "One Build filter for post… row (replacing Mute tags… and Filter this post…) opens Simple (the lazily loaded hashtag dialog) when the post has tags, else Advanced (filter-post-dialog). The row is a native button styled as an entry of the post's ••• menu, so it matches the other menu items. Migrate to a shared menu-item control when one exists; keep case-insensitive tag deduplication, the menu open while a dialog shows, and prevent parent card navigation."
+    },
+    {
+      "file": "ui/src/app/moderation/tag-filter-dialog/filter-mode-switch.ts",
+      "disposition": "adopted scope",
+      "nextStep": "Simple | Advanced at the top of both filter dialogs: a compact Toolbar of pressed ToolbarButtons, shown only when the post offers both modes. Preserve the toolbar label and the pressed state of the current mode."
     },
     {
       "file": "ui/src/app/posts/media-download/media-download-dialog.ts",
@@ -291,7 +296,7 @@
     {
       "file": "ui/src/app/posts/media-download/media-download-menu-item.ts",
       "disposition": "partial adoption",
-      "nextStep": "Download media… row in post and profile ••• menus lazily loads the dialog. Native button styled as a menu entry like tag-mute-menu. Migrate to a shared menu-item control when one exists; keep the menu open while the dialog shows and prevent parent card navigation."
+      "nextStep": "Download media… row in post and profile ••• menus lazily loads the dialog. Native button styled as a menu entry like post-filter-menu. Migrate to a shared menu-item control when one exists; keep the menu open while the dialog shows and prevent parent card navigation."
     },
     {
       "file": "ui/src/app/feeds/feed-builder/communities-link.ts",

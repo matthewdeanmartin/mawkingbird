@@ -2,6 +2,8 @@ import { computed, inject, Injectable, Signal } from '@angular/core';
 import { ClientPrefs } from '../platform/storage/client-prefs';
 import {
   detectScriptCandidates,
+  excludesLanguages,
+  languageIdentity,
   LangCode,
   LanguageAnalysis,
   LanguageDecision,
@@ -26,7 +28,7 @@ export const UI_LANGUAGE = 'en';
 
 /** Normalize a possibly-regioned tag ("en-US", "pt_BR") to a bare ISO 639-1 code. */
 function bare(code: string): string {
-  return code.toLowerCase().split(/[-_]/)[0];
+  return languageIdentity(code);
 }
 
 /**
@@ -280,21 +282,24 @@ export class FeedLanguageFilter {
     return statuses.filter((s) => this.shouldShow(s));
   }
 
-  /** Legacy metadata-first language for automatic translation preferences.
+  /** Text-first language for automatic translation preferences.
    * Use languageAssessment for readability, candidates and diagnostic evidence.
    */
   effectiveLanguage(status: Status): string | null {
     const target = status.reblog ?? status;
     const declared = target.language?.toLowerCase().split(/[-_]/)[0] || null;
-    // Reuse the same pure analysis while retaining this accessor's metadata policy.
-    return declared ?? this.analysisFor(target).language;
+    // Text evidence wins; a contradicted declaration cannot suppress autorun.
+    const analysis = this.analysisFor(target);
+    if (analysis.language) return analysis.language;
+    if (!declared || declared === 'und' || excludesLanguages(analysis, [declared])) return null;
+    return bare(declared);
   }
 
   /**
    * What the *text* looks like, ignoring what the post claims — or null when the
    * detector will not commit.
    *
-   * Deliberately separate from {@link effectiveLanguage}, which prefers the
+   * Deliberately separate from {@link effectiveLanguage}, which can fall back to an uncontradicted
    * declaration. A caller that needs to know whether a declaration is credible
    * has to be able to ask the two questions apart; see
    * `AutoTranslateEligibility.isAlreadyTargetLanguage`, where a wrong `en` tag on
@@ -327,9 +332,8 @@ export type SkipReason =
  *
  *   1. **Mode off** ⇒ never. The default, and the only state that costs nothing.
  *   2. **All possibilities known** ⇒ never, unless a candidate is being learned.
- *   3. **Undetermined** ⇒ never. `FeedLanguageFilter` already refuses to guess below
- *      its evidence requirements, and this inherits that refusal. Unknown is
- *      never assumed to be English.
+ *   3. **Foreign alternatives/exclusions** ⇒ translate-all, without a source guess.
+ *      Undetermined text without that evidence is skipped; unknown is not English.
  *   4. **Learning** ⇒ yes. The point of the feature.
  *   5. **Known** ⇒ never. You already read it.
  *   6. Anything else ⇒ only when the `$$$` translate-all switch is on.
@@ -353,6 +357,9 @@ export class AutoTranslateEligibility {
       return 'known';
     const language = this.filter.effectiveLanguage(status);
     if (!language) {
+      if (excludesLanguages(assessment, [...this.known.codes()])) {
+        return this.prefs.translateAllForeign() ? null : 'not-learning';
+      }
       return 'undetermined';
     }
     // Learning is checked before known so that a language somehow in both lists still

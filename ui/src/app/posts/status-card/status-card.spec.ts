@@ -241,20 +241,22 @@ describe('StatusCard', () => {
     expect(stub?.classList.contains('mutual')).toBe(true);
   });
 
-  it('keeps private likes in the post menu and out of the toolbar with PA both off and on', () => {
+  it('puts Private like in the post menu in Pseudonymity mode and in More tools otherwise', () => {
     localStorage.setItem('mastodon_mock_token', 'private-like-test');
     const pa = TestBed.inject(Pseudonymity);
-    for (const enabled of [false, true]) {
+    for (const enabled of [true, false]) {
       pa.setEnabled(enabled);
       const fixture = setUp(makeStatus({ url: 'https://social.example/@pizza/1' }));
       const el = fixture.nativeElement as HTMLElement;
+      const inMenu = el.querySelectorAll('.danger-menu-panel app-private-like-button');
+      expect(inMenu).toHaveLength(enabled ? 1 : 0);
+      if (!enabled) openTools(fixture);
       const controls = Array.from(el.querySelectorAll('app-private-like-button'));
       expect(controls).toHaveLength(1);
-      expect(controls[0].closest('.danger-menu-panel')).not.toBeNull();
-      const button = controls[0].querySelector('button')!;
-      button.click();
+      expect(controls[0].closest(enabled ? '.danger-menu-panel' : '.post-tools')).not.toBeNull();
+      controls[0].querySelector('button')!.click();
       fixture.detectChanges();
-      expect(TestBed.inject(PrivateLikes).current()!.likes()).toHaveLength(enabled ? 0 : 1);
+      expect(TestBed.inject(PrivateLikes).current()!.likes()).toHaveLength(enabled ? 1 : 0);
       httpMock.expectNone((request) => request.method === 'POST');
       fixture.destroy();
     }
@@ -290,12 +292,59 @@ describe('StatusCard', () => {
     return !!more;
   }
 
+  it('leaves out Open on original site for a signed-in reader when that is their own server', () => {
+    const auth = TestBed.inject(Auth);
+    auth.kind.set('mastodon');
+    auth.token.set('home-token');
+    TestBed.inject(Server).baseUrl.set('https://social.example');
+    const links = (status: Status) => {
+      const fixture = setUp(status);
+      const found = [
+        ...(fixture.nativeElement as HTMLElement).querySelectorAll('.danger-menu-panel a'),
+      ]
+        .map((a) => a.textContent?.trim())
+        .filter((label) => label?.includes('original site'));
+      fixture.destroy();
+      return found;
+    };
+    const local = makeStatus({ url: 'https://social.example/@pizza/1' });
+    expect(
+      links({ ...local, account: { ...local.account, url: 'https://social.example/@pizza' } }),
+    ).toEqual([]);
+    const remote = makeStatus({ url: 'https://far.example/@zoe/1' });
+    expect(
+      links({ ...remote, account: { ...remote.account, url: 'https://far.example/@zoe' } }),
+    ).toEqual(['Open post on original site ↗', 'Open profile on original site ↗']);
+    auth.kind.set('anonymous');
+    expect(
+      links({ ...local, account: { ...local.account, url: 'https://social.example/@pizza' } }),
+    ).toHaveLength(2);
+  });
+
+  it('keeps Post analytics in the post menu and Hide for 30 days in More tools', () => {
+    const fixture = setUp(makeStatus({ url: 'https://social.example/@pizza/1' }));
+    const el = fixture.nativeElement as HTMLElement;
+    const menuLabels = () =>
+      [...el.querySelectorAll('.danger-menu-panel button, .danger-menu-panel a')].map((b) =>
+        b.textContent?.trim(),
+      );
+    expect(menuLabels()).toContain('Post analytics');
+    expect(menuLabels()).not.toContain('Hide this post for 30 days');
+    expect(openTools(fixture)).toBe(true);
+    const hide = [...el.querySelectorAll<HTMLButtonElement>('.post-tools button')].find(
+      (b) => b.textContent?.trim() === 'Hide this post for 30 days',
+    );
+    expect(hide).toBeTruthy();
+    expect(
+      [...el.querySelectorAll('.post-tools a')].map((a) => a.textContent?.trim()),
+    ).not.toContain('Post analytics');
+  });
+
   it('offers Download media in the post menu only when the post carries media', () => {
     const rows = (status: Status) => {
       const fixture = setUp(status);
-      openTools(fixture);
       const found = (fixture.nativeElement as HTMLElement).querySelectorAll(
-        '.post-tools app-media-download-menu-item',
+        '.danger-menu-panel app-media-download-menu-item',
       ).length;
       fixture.destroy();
       return found;
@@ -2841,6 +2890,26 @@ describe('StatusCard', () => {
   });
 
   // ---------------------------------------------------------------- isOwn
+
+  it('offers Turn off notifications on your own Mastodon post but not on a Misskey one', () => {
+    const auth = TestBed.inject(Auth);
+    auth.setAccount(makeAccount('42') as never);
+    const rows = (status: Status) => {
+      const f = setUp(status);
+      const el = f.nativeElement as HTMLElement;
+      const panel = el.querySelector('.danger-menu-panel');
+      const labels = [...el.querySelectorAll('.danger-menu-panel button')].map((b) =>
+        b.textContent?.trim(),
+      );
+      f.destroy();
+      return { panel: !!panel, labels };
+    };
+    expect(rows(makeStatus({ account: makeAccount('42') })).labels).toContain(
+      'Turn off notifications',
+    );
+    const misskey = rows(makeStatus({ account: makeAccount('42'), provider: 'misskey' }));
+    expect(misskey.labels).not.toContain('Turn off notifications');
+  });
 
   it('isOwn is true when the logged-in user owns the status', () => {
     // Inject Auth before creating any component to avoid "TestBed already instantiated" errors.

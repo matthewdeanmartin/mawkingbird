@@ -247,7 +247,7 @@ export class FriendFeedScan {
    * from the reader's computer; per-site permission can't cover hundreds.
    */
   private readsLocally(): boolean {
-    return this.bridge.present() && this.bridge.allSites() === true;
+    return this.bridge.supports('allSites') && this.bridge.allSites() === true;
   }
 
   /** Ask a running scan to stop. Keeps whatever it has found. */

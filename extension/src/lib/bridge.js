@@ -7,7 +7,9 @@ import { allowedType, checkTarget, MAX_BODY_BYTES, TIMEOUT_MS } from './fetch-gu
  * it. Protocol: extension/client/PROTOCOL.md.
  */
 
-export const PROTOCOL = 'mawkingbird-extension/1';
+import { BRIDGE_OPS, BRIDGE_PROTOCOL, BRIDGE_VERSION } from './protocol.js';
+
+export const PROTOCOL = BRIDGE_PROTOCOL;
 
 /** Every public site, for the opt-in "any public site" switch (bulk RSS features). */
 export const ALL_SITES = '*://*/*';
@@ -47,7 +49,15 @@ export function originPattern(origin) {
 export async function handleBridgeRequest(message, deps) {
   switch (message?.op) {
     case 'hello':
-      return { ok: true, protocol: PROTOCOL };
+      // What this add-on speaks, so the app can use what's here and say when
+      // the add-on needs updating instead of failing (protocol.json).
+      return {
+        ok: true,
+        protocol: PROTOCOL,
+        version: BRIDGE_VERSION,
+        ops: [...BRIDGE_OPS],
+        extension: deps.extensionVersion ?? null,
+      };
     case 'hasAccess': {
       const origin = siteOrigin(message.origin);
       if (!origin) return refused('Not a site.');

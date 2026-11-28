@@ -1,4 +1,8 @@
-@if (page() === null) {
+@if (sidebarOutdated()) {
+  <p class="panel-note panel-update" role="status">
+    {{ 'pages.pagePanel.updateExtension' | transloco }}
+  </p>
+} @else if (page() === null) {
   <!-- A tab with no web page: things to do, not a sentence about it. -->
   <section class="panel-write">
     @if (strayDraft()) {

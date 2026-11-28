@@ -38,6 +38,12 @@ export type LangCode =
   | 'eo'
   | 'cs'
   | 'ca'
+  | 'ms'
+  | 'tl'
+  | 'et'
+  | 'hu'
+  | 'lv'
+  | 'lt'
   | 'id'
   | 'vi'
   | 'bn'
@@ -45,10 +51,6 @@ export type LangCode =
   | 'te'
   | 'fa'
   | 'ro'
-  // Nameable and selectable, but with no lexical rules below: the detector has never
-  // claimed to identify it, and adding the name does not change that. An Icelandic post
-  // therefore stays "undetermined" unless it declares `is` — which is the safe way
-  // round, since undetermined is never hidden.
   | 'is'
   | 'und';
 
@@ -88,6 +90,12 @@ export const LANG_NAMES: Record<LangCode, string> = {
   cs: 'Czech',
   ca: 'Catalan',
   id: 'Indonesian',
+  ms: 'Malay',
+  tl: 'Filipino / Tagalog',
+  et: 'Estonian',
+  hu: 'Hungarian',
+  lv: 'Latvian',
+  lt: 'Lithuanian',
   vi: 'Vietnamese',
   bn: 'Bengali',
   ta: 'Tamil',
@@ -172,13 +180,32 @@ function scriptFor(ch: string): LangCode | null {
  * hand-pruned set that must be re-audited whenever a language is added.
  */
 export const STOP_WORDS: Partial<Record<LangCode, string[]>> = {
+  ms: 'yang dan untuk dengan adalah dari ini itu tidak saya kami kita mereka juga dalam akan sudah boleh kerana sahaja apabila bahawa belum nak tak awak anda sangat sedang hanya'.split(
+    ' ',
+  ),
+  tl: 'ang mga ng nang ito iyon hindi ako ikaw siya tayo sila namin natin kanilang isang walang ngayon bakit kumusta salamat'.split(
+    ' ',
+  ),
+  et: 'mina sina tema meie teie nemad ning või väga täna homme seda selle mulle pole kuidas'.split(
+    ' ',
+  ),
+  hu: 'hogy nem egy vagy van vannak vagyok vagyunk mert pedig nagyon most akkor már még csak köszönöm'.split(
+    ' ',
+  ),
+  lv: 'es tu viņš viņa mēs jūs viņi viņas ir nav bet vai arī ļoti šodien rīt kāpēc paldies'.split(
+    ' ',
+  ),
+  lt: 'aš tu jis ji mes jūs jie jos yra nėra bet arba labai šiandien rytoj kodėl ačiū'.split(' '),
+  is: 'ég þú hann hún við þið þeir þær það ekki og sem fyrir með þetta þessi mjög vegna því'.split(
+    ' ',
+  ),
   cs: 'je jsou jsem jsme není nebo protože který která také velmi dnes tento tato všechno ještě'.split(
     ' ',
   ),
   ca: 'els les amb per una que aquest aquesta això però perquè també nosaltres vosaltres molt avui'.split(
     ' ',
   ),
-  id: 'yang dan untuk dengan adalah dari ini itu tidak saya kami kita mereka karena juga dalam akan sudah bisa'.split(
+  id: 'yang dan untuk dengan adalah dari ini itu tidak saya kami kita mereka karena juga dalam akan sudah bisa nggak enggak banget bikin gimana kalian sedang hanya boleh belum tak anda sangat apabila'.split(
     ' ',
   ),
   vi: 'và là của tôi bạn những một không được người trong có cho với này chúng đang tiếng rất'.split(
@@ -193,7 +220,7 @@ export const STOP_WORDS: Partial<Record<LangCode, string[]>> = {
   no: 'og er det en et som på ikke jeg vi til med den har men også dette denne fordi fra eller noe noen mye gjøre etter'.split(
     ' ',
   ),
-  da: 'og er det en et som på ikke jeg vi til med den har men også dette denne fordi fra eller'.split(
+  da: 'og er det en et som på ikke jeg vi til med den har men også dette denne fordi fra eller noget nogen meget gøre efter'.split(
     ' ',
   ),
   tr: 'bir bu ve için ile değil çok daha ben sen biz olan olarak ama gibi bugün çünkü var'.split(
@@ -804,7 +831,7 @@ function normalizeIso(code: string | null | undefined): LangCode | null {
   if (!code) {
     return null;
   }
-  const base = code.toLowerCase().split(/[-_]/)[0];
+  const base = languageIdentity(code);
   return Object.hasOwn(LANG_NAMES, base) ? (base as LangCode) : null;
 }
 
@@ -855,7 +882,19 @@ function latinEvidence(text: string): {
   return { unique, evidence };
 }
 
+/** Shared grammar establishes the pair; a separate clue can resolve it. */
+function malayIndonesian(text: string): LangCode[] {
+  const { unique, evidence } = latinEvidence(text);
+  if ([...evidence.keys()].some((lang) => lang !== 'ms' && lang !== 'id')) return [];
+  const shared = STOP_WORDS.ms!.filter((word) => STOP_WORDS.id!.includes(word));
+  if (shared.filter((word) => unique.has(word)).length < MIN_DISTINCT_WORDS) return [];
+  const distinctive = ['id', 'ms'].filter((lang) => evidence.has(lang as LangCode)) as LangCode[];
+  return distinctive.length === 1 ? distinctive : ['id', 'ms'];
+}
+
 function latinLanguage(text: string): LangCode | null {
+  const pair = malayIndonesian(text);
+  if (pair.length) return pair.length === 1 ? pair[0] : null;
   const { unique, evidence } = latinEvidence(text);
   const ranked = [...evidence].sort((a, b) => b[1].size - a[1].size);
   const [leader] = ranked;
@@ -981,8 +1020,12 @@ function detectPlainLanguage(text: string, metaHint?: string | null): LangShare[
     if (latinCount) {
       // Metadata cannot certify accented Latin text as English when text clues abstain.
       const englishHintConflicts = meta === 'en' && /[^a-z]/i.test(latin.replace(/[^\p{L}]/gu, ''));
+      const pair = malayIndonesian(latin);
+      const compatibleHint = !pair.length || (meta !== null && pair.includes(meta));
       add(
-        latinLanguage(latin) ?? (!scripts.size && !englishHintConflicts ? meta : null) ?? 'und',
+        latinLanguage(latin) ??
+          (!scripts.size && !englishHintConflicts && compatibleHint ? meta : null) ??
+          'und',
         latinCount,
       );
     }
@@ -1171,6 +1214,19 @@ function explainLatin(text: string): LanguageDecision {
   for (const { re, candidates } of SHARED_SPELLINGS) {
     if (re.test(text))
       evidence.push({ kind: 'spelling', value: text.match(re)![0], candidates: [...candidates] });
+  }
+  const pair = malayIndonesian(text);
+  if (pair.length === 2) {
+    const unique = new Set(words(text));
+    return {
+      language: null,
+      candidates: pair,
+      candidatesComplete: true,
+      reasons: ['shared-script'],
+      evidence: STOP_WORDS.ms!.filter(
+        (word) => STOP_WORDS.id!.includes(word) && unique.has(word),
+      ).map((value) => ({ kind: 'word', value, candidates: pair })),
+    };
   }
   const language = latinLanguage(text);
   if (language)
@@ -1379,6 +1435,12 @@ const LATIN_LETTERS: Partial<Record<LangCode, string>> = {
   cs: 'áčďéěíňóřšťúůýž',
   ca: 'àçéèíïòóúü',
   id: 'é',
+  ms: 'é',
+  tl: 'ñ',
+  et: 'äöõüšž',
+  hu: 'áéíóöőúüű',
+  lv: 'āčēģīķļņšūž',
+  lt: 'ąčęėįšųūž',
   ro: 'ăâîșțşţ',
   is: 'áðéíóúýþæö',
 };
@@ -1543,4 +1605,32 @@ export function detectScriptCandidates(text: string): LangCode[] {
     } else return [];
   }
   return [...candidates];
+}
+
+/** Reading identity aliases; keep provider-specific codes at the transport boundary. */
+export function languageIdentity(code: string | null | undefined): string {
+  const base = (code ?? '').trim().toLowerCase().split(/[-_]/)[0];
+  return ({ nb: 'no', fil: 'tl' } as Record<string, string>)[base] ?? base;
+}
+
+/** Unknown alone is not foreign. Require complete candidates or positive exclusions. */
+export function excludesLanguages(
+  result: {
+    language: string | null;
+    candidates: readonly string[];
+    candidatesComplete?: boolean;
+    ruledOut?: readonly string[];
+    reasons?: readonly string[];
+  },
+  languages: readonly string[],
+): boolean {
+  if (!languages.length || result.reasons?.includes('truncated')) return false;
+  const known = languages.map(languageIdentity);
+  if (result.language && result.language !== 'und')
+    return !known.includes(languageIdentity(result.language));
+  if (result.candidatesComplete && result.candidates.length) {
+    return result.candidates.every((code) => !known.includes(languageIdentity(code)));
+  }
+  const excluded = result.ruledOut?.map(languageIdentity) ?? [];
+  return known.every((code) => excluded.includes(code));
 }

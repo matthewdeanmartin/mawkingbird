@@ -26,6 +26,49 @@ Do not edit test-manifest.json or lib-test-manifest.json. A green local run upda
 them: new tests are accepted as they are, and explained removals leave. Commit the
 result. CI checks without writing. Entries stay as history, newest first.
 
+## 2026-11-27: Post ••• menu budget 11, Build filter for post, Private like by mode
+
+- test: src/app/accounts/profile/menu-budget.spec.ts :: profile ••• menu budget stays within 10 options: someone you don't follow
+  reason: renamed
+  now: src/app/accounts/profile/menu-budget.spec.ts :: profile ••• menu budget stays within 11 options: someone you don't follow
+  why: The owner raised the ••• menu budget from 10 to 11 options (2026-11-27); the count is in the test name.
+- test: src/app/accounts/profile/menu-budget.spec.ts :: profile ••• menu budget stays within 10 options: someone you follow who follows you
+  reason: renamed
+  now: src/app/accounts/profile/menu-budget.spec.ts :: profile ••• menu budget stays within 11 options: someone you follow who follows you
+  why: The owner raised the ••• menu budget from 10 to 11 options (2026-11-27); the count is in the test name.
+- test: src/app/accounts/profile/menu-budget.spec.ts :: profile ••• menu budget stays within 10 options: your own profile
+  reason: renamed
+  now: src/app/accounts/profile/menu-budget.spec.ts :: profile ••• menu budget stays within 11 options: your own profile
+  why: The owner raised the ••• menu budget from 10 to 11 options (2026-11-27); the count is in the test name.
+- test: src/app/posts/status-card/menu-budget.spec.ts :: post ••• menu budget stays within 10 options: someone else's post
+  reason: renamed
+  now: src/app/posts/status-card/menu-budget.spec.ts :: post ••• menu budget stays within 11 options: someone else's post
+  why: The owner raised the ••• menu budget from 10 to 11 options (2026-11-27); the count is in the test name.
+- test: src/app/posts/status-card/menu-budget.spec.ts :: post ••• menu budget stays within 10 options: someone else's post with a recording
+  reason: renamed
+  now: src/app/posts/status-card/menu-budget.spec.ts :: post ••• menu budget stays within 11 options: someone else's post with a recording
+  why: The owner raised the ••• menu budget from 10 to 11 options (2026-11-27); the count is in the test name.
+- test: src/app/posts/status-card/menu-budget.spec.ts :: post ••• menu budget stays within 10 options: your own post
+  reason: renamed
+  now: src/app/posts/status-card/menu-budget.spec.ts :: post ••• menu budget stays within 11 options: your own post
+  why: The owner raised the ••• menu budget from 10 to 11 options (2026-11-27); the count is in the test name.
+- test: src/app/posts/status-card/menu-budget.spec.ts :: post ••• menu budget stays within 10 options: your own post with a recording
+  reason: renamed
+  now: src/app/posts/status-card/menu-budget.spec.ts :: post ••• menu budget stays within 11 options: your own post with a recording
+  why: The owner raised the ••• menu budget from 10 to 11 options (2026-11-27); the count is in the test name.
+- test: src/app/moderation/tag-filter-dialog/tag-mute-menu.spec.ts :: TagMuteMenu offers a single Mute tags row however many tags the post has
+  reason: replaced
+  now: src/app/moderation/tag-filter-dialog/post-filter-menu.spec.ts :: PostFilterMenu offers a single Build filter row however many tags the post has
+  why: The owner asked (2026-11-27) to merge Mute tags and Filter this post into one Build filter for post row with Simple and Advanced modes.
+- test: src/app/moderation/tag-filter-dialog/tag-mute-menu.spec.ts :: TagMuteMenu hands the picker each valid tag once, ignoring case
+  reason: renamed
+  now: src/app/moderation/tag-filter-dialog/post-filter-menu.spec.ts :: PostFilterMenu hands the Simple picker each valid tag once, ignoring case
+  why: The tag picker is now the Simple mode of the merged filter row.
+- test: src/app/posts/status-card/status-card.spec.ts :: StatusCard keeps private likes in the post menu and out of the toolbar with PA both off and on
+  reason: replaced
+  now: src/app/posts/status-card/status-card.spec.ts :: StatusCard puts Private like in the post menu in Pseudonymity mode and in More tools otherwise
+  why: The owner asked (2026-11-27) for Private like in the ••• menu only in Pseudonymity mode, and in More tools otherwise.
+
 ## 2026-11-27: Video search sides, Bookmarks tabs, Watch header
 
 - test: src/app/reading/bookmarks/bookmarks.spec.ts :: Bookmarks switches views with a toolbar, not a row of tabs
@@ -244,3 +287,10 @@ Traced by hand when the manifest was refreshed: 23 tests removed by changes from
   reason: replaced
   now: src/app/platform/build/app-mode.spec.ts :: modeForUrl puts Watch in Video, wherever it was opened from
   why: Same already-committed behavior change: the replacement explicitly asserts /watch?youtube=abc selects Video mode.
+
+## 2026-11-27: language coverage
+
+- test: src/lib/language-detection/language-analysis.spec.ts :: ruling languages out by their letters never rules out a Latin language by spelling without its word table
+  reason: replaced
+  now: src/lib/language-detection/language-analysis.spec.ts :: ruling languages out by their letters uses Icelandic word support before excluding it by spelling
+  why: Icelandic now has a word table. The replacement checks exclusion on foreign spelling and preservation of actual Icelandic prose; the old no-table premise no longer applies.

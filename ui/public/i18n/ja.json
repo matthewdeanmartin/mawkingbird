@@ -5335,8 +5335,7 @@
     "tagCount": "{{max}}件中{{count}}件のタグ"
   },
   "tagFilter": {
-    "failed": "フィルターを作成できませんでした。選んだ内容は残っています。もう一度お試しください。",
-    "muteTags": "タグをミュート…"
+    "failed": "フィルターを作成できませんでした。選んだ内容は残っています。もう一度お試しください。"
   },
   "shortener": {
     "proxyConsent.aboutProxy": "{{proxy}}について",

@@ -160,15 +160,14 @@ import { reconcileStatus, replaceStatus, StatusReplacement } from '../../feeds/r
 import { redraftSeed, RedraftSeed } from '../../publishing/redraft';
 import { PostEmbedDialog } from '../post-embed/post-embed-dialog';
 import { StatusEditDialog } from '../../publishing/status-edit/status-edit-dialog';
-import { FilterPostDialog } from '../filter-post-dialog/filter-post-dialog';
+import { Pseudonymity } from '../../accounts/pseudonymity';
 import { MbDialog } from '../../design-system/dialog/dialog';
-import { extractCodeBlocks } from '../code-blocks/code-fences';
 import { focalPointOf, objectPosition } from '../../publishing/focal-point/focal-point';
 import { canEmbedPost } from '../post-embed/post-embed';
 import { SpeechReader, speechText } from '../../reading/speech/speech-reader';
 import { readerRouteId } from '../../reading/read/reader-route-id';
 import { statusHashtags } from '../../discovery/hashtag';
-import { TagMuteMenu } from '../../moderation/tag-filter-dialog/tag-mute-menu';
+import { PostFilterMenu } from '../../moderation/tag-filter-dialog/post-filter-menu';
 import { MediaDownloadMenuItem } from '../media-download/media-download-menu-item';
 import { hasDownloadableMedia } from '../media-download/media-download';
 // i18n watch.addPostTag: Add #{{tag}} to party
@@ -490,9 +489,8 @@ const CHAIN_REASON_KEYS: Record<SkipReason, string> = {
     ReportDialog,
     PostEmbedDialog,
     StatusEditDialog,
-    FilterPostDialog,
     MbDialog,
-    TagMuteMenu,
+    PostFilterMenu,
     MediaDownloadMenuItem,
     AccountListDialog,
     BlueskyPostControlsDialog,
@@ -533,6 +531,8 @@ export class StatusCard {
    */
   readonly revealCounts = input(false);
   protected wellness = inject(Wellness);
+  /** Pseudonymity mode puts Private like in the ••• menu; otherwise it is in More tools. */
+  protected pseudonymity = inject(Pseudonymity);
   /** "Copy link": mawkingbird.com links to the post and its author (see deep-links.ts). */
   protected copyLinkOpen = signal(false);
   protected postCopyLink = computed(() => postDeepLink(this.display, this.server.baseUrl()));
@@ -1481,22 +1481,7 @@ export class StatusCard {
     return home && /^[A-Za-z0-9_-]+$/.test(post.id) ? post.id : null;
   });
 
-  /** Whether "More tools…" would have anything in it for this post. */
-  protected hasPostTools = computed(
-    () =>
-      !!this.analyticsRouteId() ||
-      !!this.radioPost() ||
-      !!this.listenLink() ||
-      !!this.downloadable() ||
-      this.todosEnabled() ||
-      this.canEmbed ||
-      this.canReadAloud ||
-      extractCodeBlocks(this.display.content ?? '').length > 0,
-  );
-
-  // i18n statusCard.filterPost: Filter this post…
-  /** "Filter this post…": someone else's post on the signed-in Mastodon server. */
-  protected filterPostOpen = signal(false);
+  /** Advanced "Build filter for post…": someone else's post on the signed-in Mastodon server. */
 
   protected get canFilterPost(): boolean {
     return (
@@ -1507,14 +1492,8 @@ export class StatusCard {
     );
   }
 
-  protected openFilterPost(event: Event): void {
-    this.closeMenu(event);
-    this.filterPostOpen.set(true);
-  }
-
   /** The post joined a server filter: apply it now rather than on the next load. */
   protected onPostFiltered(result: FilterResult): void {
-    this.filterPostOpen.set(false);
     const status = this.status();
     const add = (s: Status): Status => ({ ...s, filtered: [...(s.filtered ?? []), result] });
     this.changed.emit(status.reblog ? { ...add(status), reblog: add(status.reblog) } : add(status));
@@ -2102,6 +2081,16 @@ export class StatusCard {
    * have no server-side account/thread to link to, and their interactions are
    * capability-gated — RSS is read-only, so it gets "Open original" instead.
    */
+  /**
+   * A signed-in Mastodon reader's own server already is the "original site" for
+   * this address, so the ••• menu leaves out the open-original row for it.
+   */
+  protected onHomeServer(address: string): boolean {
+    if (this.auth.isAnonymous || !this.auth.token() || this.foreign) return false;
+    const home = serverHost(this.server.baseUrl());
+    return !!home && serverHost(address) === home;
+  }
+
   protected get foreign(): boolean {
     return (this.display.provider ?? 'mastodon') !== 'mastodon';
   }

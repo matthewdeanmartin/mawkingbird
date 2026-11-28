@@ -6056,8 +6056,7 @@
     "tagCount": "{{count}} sur {{max}} tags"
   },
   "tagFilter": {
-    "failed": "Impossible de créer le filtre. Tes choix sont toujours là ; réessaie.",
-    "muteTags": "Masquer des tags…"
+    "failed": "Impossible de créer le filtre. Tes choix sont toujours là ; réessaie."
   },
   "docs": {
     "credits.detail": "Le logiciel que ce client embarque, et comment il traite les données.",

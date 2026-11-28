@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 
 /**
  * Mawkingbird for Firefox's bridge, seen from the app (spec/firefox-extension.md,
@@ -13,6 +13,32 @@ import { Injectable, signal } from '@angular/core';
  * sends a message.
  */
 export const EXTENSION_PROTOCOL = 'mawkingbird-extension/1';
+/**
+ * The bridge version this app expects (extension/protocol.json;
+ * ui/scripts/check-extension-protocol.mjs keeps them in step). 1: 0.5–0.7,
+ * whose `hello` lists nothing. 2: `hello` lists its ops and the add-on's version.
+ */
+export const EXTENSION_BRIDGE_VERSION = 2;
+export const EXTENSION_OPS = [
+  'hello',
+  'fetch',
+  'hasAccess',
+  'requestAccess',
+  'allSites',
+  'requestAllSites',
+  'youtube',
+] as const;
+export type ExtensionOp = (typeof EXTENSION_OPS)[number];
+/** What a version-1 add-on (0.7) could do, since its `hello` didn't say. */
+const VERSION_1_OPS: readonly ExtensionOp[] = EXTENSION_OPS;
+
+/** What the add-on says it speaks. */
+export interface ExtensionCapabilities {
+  version: number;
+  ops: readonly string[];
+  /** The add-on's own version, e.g. `0.8.0`; null from version-1 add-ons. */
+  extension: string | null;
+}
 
 export type ExtensionPurpose = 'feed' | 'article' | 'json';
 
@@ -70,6 +96,48 @@ export class ExtensionBridge {
    * features (friends'-blogs scan). Null until {@link refreshAllSites} asked.
    */
   readonly allSites = signal<boolean | null>(null);
+
+  /** The add-on's answer to `hello`; null until it answers (or if it never does). */
+  readonly capabilities = signal<ExtensionCapabilities | null>(null);
+  /** The add-on is older than this app expects: features it lacks use their old route. */
+  readonly outdated = computed(() => {
+    const caps = this.capabilities();
+    return caps !== null && caps.version < EXTENSION_BRIDGE_VERSION;
+  });
+
+  constructor() {
+    if (this.present()) void this.hello();
+  }
+
+  /**
+   * Whether the add-on can do `op`. Until `hello` answers, assume what the
+   * oldest supported add-on (0.7) could, so the first screen doesn't flicker.
+   */
+  supports(op: ExtensionOp): boolean {
+    if (!this.present()) return false;
+    const caps = this.capabilities();
+    return (caps ? caps.ops : VERSION_1_OPS).includes(op);
+  }
+
+  /** Ask the add-on what it speaks, and remember it. */
+  async hello(): Promise<ExtensionCapabilities | null> {
+    const answer = (await this.ask({ op: 'hello' })) as {
+      ok?: boolean;
+      version?: unknown;
+      ops?: unknown;
+      extension?: unknown;
+    };
+    if (!answer.ok) return null;
+    const caps: ExtensionCapabilities = {
+      version: typeof answer.version === 'number' ? answer.version : 1,
+      ops: Array.isArray(answer.ops)
+        ? answer.ops.filter((op): op is string => typeof op === 'string')
+        : VERSION_1_OPS,
+      extension: typeof answer.extension === 'string' ? answer.extension : null,
+    };
+    this.capabilities.set(caps);
+    return caps;
+  }
 
   /** Whether the extension's content script marked this page. */
   present(): boolean {

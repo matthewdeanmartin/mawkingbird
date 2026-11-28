@@ -6238,8 +6238,7 @@
     "tagCount": "{{count}} 個／共 {{max}} 個標籤"
   },
   "tagFilter": {
-    "failed": "無法建立過濾器。您的選擇還在，請再試一次。",
-    "muteTags": "靜音標籤……"
+    "failed": "無法建立過濾器。您的選擇還在，請再試一次。"
   },
   "terms": {
     "byMastodon": "此 Mastodon 伺服器發佈的條款。",

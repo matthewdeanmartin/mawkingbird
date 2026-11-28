@@ -369,7 +369,7 @@ export class YoutubeFeeds {
    * proxy. Native must not be gated on Plus (spec/youtube-client.md, S1).
    */
   canSearch(): boolean {
-    return !!this.nativeYoutube || this.bridge.present() || this.supporter.isSupporter();
+    return !!this.nativeYoutube || this.bridge.supports('youtube') || this.supporter.isSupporter();
   }
 
   /**
@@ -377,7 +377,7 @@ export class YoutubeFeeds {
    * direct reads: Native's, or Mawkingbird for Firefox's.
    */
   canReadDetails(): boolean {
-    return !!this.nativeYoutube || this.bridge.present();
+    return !!this.nativeYoutube || this.bridge.supports('youtube');
   }
 
   private innertube: Promise<import('youtubei.js/web').Innertube> | null = null;
@@ -426,7 +426,7 @@ export class YoutubeFeeds {
           return value ? [[name, value] as [string, string]] : [];
         }),
       );
-    } else if (this.bridge.present()) {
+    } else if (this.bridge.supports('youtube')) {
       json = await this.extensionRead(endpoint, init.body, headers, url.href);
     } else if (endpoint === 'search') {
       json = await this.request(url.href, true, init.body, headers);

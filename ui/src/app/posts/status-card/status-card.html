@@ -1391,27 +1391,28 @@
                         {{ 'copyLink.title' | transloco }}
                       </button>
                     }
-                    @if (canMuteTags() && postTags().length) {
-                      <app-tag-mute-menu [tags]="postTags()" />
-                    }
+                    <ng-container [ngTemplateOutlet]="menuFilter" />
                     @if (display.provider !== 'bluesky') {
-                      <button
-                        type="button"
-                        mbMenuItem
-                        (click)="
-                          applyPermissions({
-                            visibility: display.visibility,
-                            muteNotifications: !display.muted,
-                          })
-                        "
-                      >
-                        {{
-                          (display.muted
-                            ? 'statusCard.notificationsOn'
-                            : 'statusCard.notificationsOff'
-                          ) | transloco
-                        }}
-                      </button>
+                      <!-- The Mastodon mute call has no Misskey route; its thread mute isn't wired here. -->
+                      @if (display.provider !== 'misskey') {
+                        <button
+                          type="button"
+                          mbMenuItem
+                          (click)="
+                            applyPermissions({
+                              visibility: display.visibility,
+                              muteNotifications: !display.muted,
+                            })
+                          "
+                        >
+                          {{
+                            (display.muted
+                              ? 'statusCard.notificationsOn'
+                              : 'statusCard.notificationsOff'
+                            ) | transloco
+                          }}
+                        </button>
+                      }
                       <button
                         type="button"
                         mbMenuItem
@@ -1441,11 +1442,8 @@
                         }}
                       </button>
                     }
-                    <button type="button" mbMenuItem (click)="mutePost($event)">
-                      {{ 'statusCard.muteThisPost' | transloco }}
-                    </button>
-                    <app-private-like-button [status]="display" />
-                    @if (display.url) {
+                    <ng-container [ngTemplateOutlet]="menuPrivateLike" />
+                    @if (display.url && !onHomeServer(display.url)) {
                       <a
                         [href]="display.url"
                         target="_blank"
@@ -1455,7 +1453,7 @@
                         {{ 'statusCard.openPostOriginal' | transloco }}
                       </a>
                     }
-                    @if (display.account.url) {
+                    @if (display.account.url && !onHomeServer(display.account.url)) {
                       <a
                         [href]="display.account.url"
                         target="_blank"
@@ -1465,11 +1463,7 @@
                         {{ 'statusCard.openProfileOriginal' | transloco }}
                       </a>
                     }
-                    @if (hasPostTools()) {
-                      <button type="button" mbMenuItem (click)="openTools($event)">
-                        {{ 'statusCard.tools.open' | transloco }}
-                      </button>
-                    }
+                    <ng-container [ngTemplateOutlet]="menuTail" />
                     <button type="button" class="menu-close" (click)="closeMenu($event)">
                       {{ 'statusCard.closeMenu' | transloco }}
                     </button>
@@ -1541,11 +1535,9 @@
                       }}
                     </button>
                   }
-                  @if (canMuteTags() && postTags().length) {
-                    <app-tag-mute-menu [tags]="postTags()" />
-                  }
-                  <app-private-like-button [status]="display" />
-                  @if (display.url) {
+                  <ng-container [ngTemplateOutlet]="menuFilter" />
+                  <ng-container [ngTemplateOutlet]="menuPrivateLike" />
+                  @if (display.url && !onHomeServer(display.url)) {
                     <a
                       [href]="display.url"
                       target="_blank"
@@ -1555,7 +1547,7 @@
                       {{ 'statusCard.openPostOriginal' | transloco }}
                     </a>
                   }
-                  @if (display.account.url) {
+                  @if (display.account.url && !onHomeServer(display.account.url)) {
                     <a
                       [href]="display.account.url"
                       target="_blank"
@@ -1564,18 +1556,6 @@
                     >
                       {{ 'statusCard.openProfileOriginal' | transloco }}
                     </a>
-                  }
-                  <button
-                    type="button"
-                    (click)="mutePost($event)"
-                    [title]="'Hide this ' + words().post + ' for 30 days'"
-                  >
-                    {{ 'statusCard.muteThisPost' | transloco }}
-                  </button>
-                  @if (canFilterPost) {
-                    <button type="button" mbMenuItem (click)="openFilterPost($event)">
-                      {{ 'statusCard.filterPost' | transloco }}
-                    </button>
                   }
                   <!-- Author mute/block: the Anonymous account's browser list, or the
                        reader's own server. Not offered where neither applies. -->
@@ -1612,11 +1592,7 @@
                       {{ 'statusCard.revokeQuotePermission' | transloco }}
                     </button>
                   }
-                  @if (hasPostTools()) {
-                    <button type="button" mbMenuItem (click)="openTools($event)">
-                      {{ 'statusCard.tools.open' | transloco }}
-                    </button>
-                  }
+                  <ng-container [ngTemplateOutlet]="menuTail" />
                   <button type="button" class="menu-close" (click)="closeMenu($event)">
                     {{ 'statusCard.closeMenu' | transloco }}
                   </button>
@@ -1651,11 +1627,9 @@
                     {{ 'copyLink.title' | transloco }}
                   </button>
                 }
-                @if (canMuteTags() && postTags().length) {
-                  <app-tag-mute-menu [tags]="postTags()" />
-                }
-                <app-private-like-button [status]="display" />
-                @if (display.url) {
+                <ng-container [ngTemplateOutlet]="menuFilter" />
+                <ng-container [ngTemplateOutlet]="menuPrivateLike" />
+                @if (display.url && !onHomeServer(display.url)) {
                   <a
                     [href]="display.url"
                     target="_blank"
@@ -1665,7 +1639,7 @@
                     {{ 'statusCard.openPostOriginal' | transloco }}
                   </a>
                 }
-                @if (display.account.url) {
+                @if (display.account.url && !onHomeServer(display.account.url)) {
                   <a
                     [href]="display.account.url"
                     target="_blank"
@@ -1675,13 +1649,6 @@
                     {{ 'statusCard.openProfileOriginal' | transloco }}
                   </a>
                 }
-                <button
-                  type="button"
-                  (click)="mutePost($event)"
-                  [title]="'Hide this ' + words().post + ' for 30 days'"
-                >
-                  {{ 'statusCard.muteThisPost' | transloco }}
-                </button>
                 @if (authorBlockedLocally() || authorMutedLocally()) {
                   <button type="button" (click)="unsuppressAuthorLocally($event)">
                     {{
@@ -1710,11 +1677,7 @@
                     {{ 'statusCard.reportPost' | transloco }}
                   </button>
                 }
-                @if (hasPostTools()) {
-                  <button type="button" mbMenuItem (click)="openTools($event)">
-                    {{ 'statusCard.tools.open' | transloco }}
-                  </button>
-                }
+                <ng-container [ngTemplateOutlet]="menuTail" />
                 <button type="button" class="menu-close" (click)="closeMenu($event)">
                   {{ 'statusCard.closeMenu' | transloco }}
                 </button>
@@ -1932,6 +1895,13 @@
       (dismissed)="toolsOpen.set(false)"
     >
       <div class="post-tools" (click)="$event.stopPropagation()">
+        <button type="button" mbMenuItem (click)="toolsOpen.set(false); mutePost($event)">
+          {{ 'statusCard.muteThisPost' | transloco }}
+        </button>
+        <!-- Outside Pseudonymity mode a real like is one tap away, so this waits here. -->
+        @if (!pseudonymity.enabled()) {
+          <app-private-like-button [status]="display" />
+        }
         @if (radioPost(); as postUrl) {
           <a
             mbMenuItem
@@ -1947,15 +1917,6 @@
             {{ 'statusCard.openInListen' | transloco }}
           </a>
         }
-        @if (!wellness.hideAnalytics() && analyticsRouteId(); as routeId) {
-          <a
-            mbMenuItem
-            [routerLink]="['/statuses', routeId, 'analytics']"
-            (click)="toolsOpen.set(false)"
-          >
-            {{ 'statusCard.postAnalytics' | transloco }}
-          </a>
-        }
         <app-code-menu-items [content]="display.content" />
         @if (canEmbed) {
           <button type="button" mbMenuItem (click)="toolsOpen.set(false); openEmbed($event)">
@@ -1967,9 +1928,6 @@
             {{ (isReadingAloud() ? 'statusCard.stopReading' : 'statusCard.readAloud') | transloco }}
           </button>
         }
-        @if (downloadable(); as posts) {
-          <app-media-download-menu-item [statuses]="posts" [archiveName]="'media-' + display.id" />
-        }
         <!-- "Reply to this later." Parks a local draft; publishes nothing, so it
              works anonymously too. -->
         @if (todosEnabled()) {
@@ -1979,13 +1937,6 @@
         }
       </div>
     </mb-dialog>
-  }
-  @if (filterPostOpen()) {
-    <app-filter-post-dialog
-      [status]="display"
-      (filtered)="onPostFiltered($event)"
-      (closed)="filterPostOpen.set(false)"
-    />
   }
   @if (fullEdit()) {
     <app-status-edit-dialog
@@ -2215,3 +2166,32 @@
     (saved)="applyPermissions($event)"
   />
 }
+
+<!-- Rows shared by every ••• menu on the card. -->
+<ng-template #menuFilter>
+  <app-post-filter-menu
+    [tags]="canMuteTags() ? postTags() : []"
+    [status]="display"
+    [advanced]="canFilterPost"
+    (filtered)="onPostFiltered($event)"
+  />
+</ng-template>
+<ng-template #menuPrivateLike>
+  <!-- Pseudonymity mode keeps likes off the network, so the local one is up front. -->
+  @if (pseudonymity.enabled()) {
+    <app-private-like-button [status]="display" />
+  }
+</ng-template>
+<ng-template #menuTail>
+  @if (downloadable(); as posts) {
+    <app-media-download-menu-item [statuses]="posts" [archiveName]="'media-' + display.id" />
+  }
+  @if (!wellness.hideAnalytics() && analyticsRouteId(); as routeId) {
+    <a mbMenuItem [routerLink]="['/statuses', routeId, 'analytics']" (click)="closeMenu($event)">
+      {{ 'statusCard.postAnalytics' | transloco }}
+    </a>
+  }
+  <button type="button" mbMenuItem (click)="openTools($event)">
+    {{ 'statusCard.tools.open' | transloco }}
+  </button>
+</ng-template>

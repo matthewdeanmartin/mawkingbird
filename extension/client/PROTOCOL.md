@@ -4,6 +4,34 @@ How mawkingbird.com asks Mawkingbird for Firefox to read public pages its own
 requests can't reach (CORS). Client: [bridge-client.js](bridge-client.js). Spec:
 [spec/firefox-extension.md](../../spec/firefox-extension.md), sprint 5.
 
+## Versions and deploy order
+
+The web app and the add-on ship separately (manual production deploys, add-on
+updates), so they are often at different versions. Both conversations carry
+versions; the record is [../protocol.json](../protocol.json), and
+`ui/scripts/check-extension-protocol.mjs` (in `check:static` and `make test`)
+fails when any copy drifts from it.
+
+**Rule: bump a version when a message changes shape, and keep accepting the
+version before it.** Then either side can deploy first.
+
+| Conversation | Version | What changed | Accepts |
+| --- | --- | --- | --- |
+| Bridge (`mawkingbird-extension/1`) | 2 | `hello` lists `ops`, `version` and the add-on's `extension` version | 1 (0.5–0.7: `hello` lists nothing; the app assumes 0.7's ops) |
+| Panel (`mawkingbird-panel/1`) | 2 | `ready` carries `version`; `page` carries `sidebarVersion` | 1 (0.7.0: no versions) |
+
+What each side does with them:
+
+- The app asks `hello` once. It uses a feature only if the add-on lists it
+  (`supports(op)`), so an older add-on's missing feature keeps its old route
+  (proxy, Plus) instead of a broken button. Settings → App shows the add-on's
+  version and says when it is older than expected.
+- The sidebar waits up to 8 s for the panel's `ready`. No `ready` (a site older
+  than the sidebar, or mid-deploy) or a panel older than `minPanelVersion`:
+  "Mawkingbird is updating…" with **Try again**.
+- The panel shows "This sidebar needs a newer Mawkingbird for Firefox" when the
+  sidebar is older than `minSidebarVersion`.
+
 ## Presence
 
 The content script (`src/bridge/content.js`) runs at `document_start` on

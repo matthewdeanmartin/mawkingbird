@@ -154,3 +154,36 @@
 .activity-table th:first-child {
   text-align: left;
 }
+
+.details {
+  border-bottom: 1px solid var(--border);
+}
+
+.details-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Label beside value where there is room; stacked on a phone. */
+.details-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr;
+  gap: 2px 12px;
+}
+
+.details-row dt,
+.details-row dd {
+  margin: 0;
+}
+
+.details-row dd {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .details-row {
+    grid-template-columns: 1fr;
+  }
+}

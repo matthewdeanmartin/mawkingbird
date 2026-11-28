@@ -30,7 +30,7 @@
 
       @if (!signedIn()) {
         <p class="muted small">{{ 'friendFeeds.signedOut' | transloco }}</p>
-      } @else if (!available() && bridge.present()) {
+      } @else if (!available() && bridge.supports('allSites')) {
         <p class="muted small">{{ 'friendFeeds.extensionAllSites' | transloco }}</p>
         <button class="btn" type="button" (click)="allowAllSites()">
           {{ 'friendFeeds.allowAllSites' | transloco }}

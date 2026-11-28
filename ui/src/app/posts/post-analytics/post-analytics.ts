@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { accountProfilePath } from '../../accounts/account-route';
 import { AnonymousPublicApi } from '../../accounts/anonymous/anonymous-public-api';
@@ -33,6 +33,7 @@ import { parseAnonymousFeedId } from '../../reading/read/thread-loader';
 import { StatusCard } from '../status-card/status-card';
 import { Server } from '../../platform/http/server';
 import { postAnalyticsDeepLink } from '../copy-link/deep-links';
+import { postDetails } from './post-details';
 
 // i18n postAnalytics.title: Post analytics
 // i18n postAnalytics.description: Reach and engagement for one post and the thread it belongs to.
@@ -111,6 +112,7 @@ export class PostAnalytics {
   private auth = inject(Auth);
   private native = inject(NATIVE_ANALYTICS);
   private server = inject(Server);
+  private transloco = inject(TranslocoService);
   protected boosters = inject(BoosterLookup);
   protected readonly accountProfilePath = accountProfilePath;
   protected readonly typicalBoosterAudience = REACH_MODEL.typicalBoosterAudience;
@@ -141,6 +143,7 @@ export class PostAnalytics {
     this.status.set(null);
     this.context.set({ ancestors: [], descendants: [] });
     this.activity.set(null);
+    this.editCount.set(null);
     if (!this.publicRef && !/^[A-Za-z0-9_-]+$/.test(id)) {
       this.fail('unsupported');
       return;
@@ -157,6 +160,7 @@ export class PostAnalytics {
           this.status.set(status.reblog ?? status);
           this.context.set(context);
           this.loading.set(false);
+          this.countEdits(ref ? null : (status.reblog ?? status));
           // Native keeps boosters in the archive, so Full reach is the default there.
           const handle = this.auth.token();
           if (!ref && this.native && handle?.startsWith('native-mastodon:')) {
@@ -190,6 +194,33 @@ export class PostAnalytics {
       any: activity.events.length > 0,
       rows: boosts.map((b, i) => ({ key: b.key, boosts: b, likes: likes[i] })),
     };
+  });
+
+  /** How many times the post was edited: one history call, only for an edited home post. */
+  protected editCount = signal<number | null>(null);
+
+  private countEdits(status: Status | null): void {
+    if (!status?.edited_at) return;
+    this.api
+      .statusHistory(status.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        // The history lists the original first, then each edit.
+        next: (history) => this.editCount.set(Math.max(0, history.length - 1)),
+        error: () => undefined,
+      });
+  }
+
+  /** Posted with, language, audience and the rest the card does not show. */
+  protected details = computed(() => {
+    const status = this.status();
+    if (!status) return [];
+    return postDetails(
+      status,
+      this.transloco.getActiveLang() || 'en',
+      this.editCount(),
+      !this.publicRef,
+    );
   });
 
   private fail(reason: LoadError): void {

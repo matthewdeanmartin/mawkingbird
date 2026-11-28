@@ -138,6 +138,30 @@
         }
       </div>
 
+      <section class="section details">
+        <h2>{{ 'postAnalytics.details.heading' | transloco }}</h2>
+        <dl class="details-list">
+          @for (row of details(); track row.label) {
+            <div class="details-row">
+              <dt class="muted">{{ 'postAnalytics.details.' + row.label | transloco }}</dt>
+              <dd>
+                @if (row.href) {
+                  <a [href]="row.href" target="_blank" rel="noopener noreferrer">{{
+                    row.literal
+                      ? row.value
+                      : ('postAnalytics.details.' + row.value | transloco: row.params)
+                  }}</a>
+                } @else if (row.literal) {
+                  {{ row.value }}
+                } @else {
+                  {{ 'postAnalytics.details.' + row.value | transloco: row.params }}
+                }
+              </dd>
+            </div>
+          }
+        </dl>
+      </section>
+
       <section class="section boosters">
         <h2>{{ 'postAnalytics.boosters.heading' | transloco }}</h2>
         @if (r.thread.boosts === 0) {

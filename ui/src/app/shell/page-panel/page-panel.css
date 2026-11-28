@@ -66,3 +66,7 @@
 .panel-write app-compose + button {
   margin-top: 8px;
 }
+
+.panel-update {
+  padding: 16px;
+}

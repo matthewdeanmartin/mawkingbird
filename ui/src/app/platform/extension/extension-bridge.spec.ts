@@ -67,7 +67,7 @@ describe('ExtensionBridge', () => {
     expect(bridge.present()).toBe(true);
     const read = await bridge.read('https://blog.example/feed', 'feed');
     expect(read).toMatchObject({ ok: true, body: '<rss/>' });
-    expect(received[0]).toMatchObject({
+    expect(received.find((r) => r['op'] === 'fetch')).toMatchObject({
       channel: EXTENSION_PROTOCOL,
       op: 'fetch',
       url: 'https://blog.example/feed',
@@ -95,7 +95,10 @@ describe('ExtensionBridge', () => {
         : { ok: true, granted: true },
     );
     expect(await TestBed.inject(ExtensionBridge).requestAccess('https://blog.example')).toBe(true);
-    expect(received.map((r) => r['op'])).toEqual(['requestAccess', 'hasAccess']);
+    expect(received.map((r) => r['op']).filter((op) => op !== 'hello')).toEqual([
+      'requestAccess',
+      'hasAccess',
+    ]);
   });
 });
 
@@ -119,7 +122,7 @@ describe('ExtensionBridge access and YouTube requests', () => {
     const bridge = TestBed.inject(ExtensionBridge);
     expect(await bridge.requestAllSites()).toBe(true);
     expect(bridge.allSites()).toBe(true);
-    expect(received[0]['op']).toBe('requestAllSites');
+    expect(received.some((r) => r['op'] === 'requestAllSites')).toBe(true);
   });
 
   it('sends YouTube reads with their endpoint, body and headers', async () => {
@@ -132,7 +135,7 @@ describe('ExtensionBridge access and YouTube requests', () => {
       status: 200,
       body: '{}',
     });
-    expect(received[0]).toMatchObject({
+    expect(received.find((r) => r['op'] === 'youtube')).toMatchObject({
       op: 'youtube',
       endpoint: 'search',
       body: '{"query":"x"}',
@@ -160,5 +163,54 @@ describe('extensionAccessOrigin and siteName', () => {
 
   it('names a site without its scheme or www.', () => {
     expect(siteName('https://www.blog.example')).toBe('blog.example');
+  });
+});
+
+describe('ExtensionBridge version handshake', () => {
+  beforeEach(() => TestBed.configureTestingModule({}));
+  afterEach(() => {
+    delete document.documentElement.dataset['mawkingbirdExtension'];
+    vi.restoreAllMocks();
+  });
+
+  it('learns what a current add-on speaks, and uses only that', async () => {
+    fakeExtension((request) =>
+      request['op'] === 'hello'
+        ? {
+            ok: true,
+            protocol: EXTENSION_PROTOCOL,
+            version: 2,
+            ops: ['hello', 'fetch'],
+            extension: '0.8.0',
+          }
+        : { ok: true },
+    );
+    const bridge = TestBed.inject(ExtensionBridge);
+    await vi.waitFor(() => expect(bridge.capabilities()).not.toBeNull());
+    expect(bridge.capabilities()).toEqual({
+      version: 2,
+      ops: ['hello', 'fetch'],
+      extension: '0.8.0',
+    });
+    expect(bridge.supports('fetch')).toBe(true);
+    expect(bridge.supports('youtube')).toBe(false);
+    expect(bridge.outdated()).toBe(false);
+  });
+
+  it('treats a version-1 add-on (0.7) as having what 0.7 had, and as outdated', async () => {
+    fakeExtension((request) =>
+      request['op'] === 'hello' ? { ok: true, protocol: EXTENSION_PROTOCOL } : { ok: true },
+    );
+    const bridge = TestBed.inject(ExtensionBridge);
+    await vi.waitFor(() => expect(bridge.capabilities()).not.toBeNull());
+    expect(bridge.capabilities()?.version).toBe(1);
+    expect(bridge.supports('youtube')).toBe(true);
+    expect(bridge.outdated()).toBe(true);
+  });
+
+  it('supports nothing without the add-on', () => {
+    const bridge = TestBed.inject(ExtensionBridge);
+    expect(bridge.supports('fetch')).toBe(false);
+    expect(bridge.outdated()).toBe(false);
   });
 });

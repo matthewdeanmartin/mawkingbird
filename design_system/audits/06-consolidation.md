@@ -3753,3 +3753,23 @@ discards). No shared widget changed.
 note become two short muted lines; the "open the link" line is hidden when the
 page is beside it (sidebar). The panel's composer gains an outline small MbButton
 Cancel. Dispositions unchanged.
+
+### 2026-11-27: Extension version handshake
+
+Reviewed the regenerated inventory: 747 candidates, no new file or control.
+`shell/page-panel/page-panel.html` gains a status paragraph (add-on too old);
+`settings/app/settings-app.ts` gains version and outdated notes in its existing
+row. Line offsets move; dispositions unchanged.
+
+### 2026-11-27: Post ••• menu reshuffle
+
+Reviewed the regenerated inventory: 748 candidates. `tag-mute-menu.ts` is renamed
+`post-filter-menu.ts` (one "Build filter for post…" row replacing Mute tags… and
+Filter this post…; partial adoption as before). New `filter-mode-switch.ts` is a
+compact Toolbar of pressed ToolbarButtons (Simple | Advanced), adopted; it appears
+in `tag-filter-dialog.ts` and `filter-post-dialog.html`. In `status-card.html`,
+Hide for 30 days moves into the More tools dialog as an MbMenuItem, Download media
+and Post analytics move into the ••• menus, and the plain menu buttons inherit the
+menu font. `post-analytics.html` gains a native definition list of post details. The open-original links are left out for a signed-in reader's own server, and Turn off
+notifications on Misskey posts; line offsets only.
+Dispositions otherwise unchanged.

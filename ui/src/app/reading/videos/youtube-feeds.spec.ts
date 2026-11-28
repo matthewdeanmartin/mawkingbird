@@ -536,12 +536,13 @@ describe('YouTube through Mawkingbird for Firefox', () => {
   });
   let bridge: {
     present: () => boolean;
+    supports: () => boolean;
     youtube: ReturnType<typeof vi.fn>;
     read: ReturnType<typeof vi.fn>;
   };
 
   function setUp() {
-    bridge = { present: () => true, youtube: vi.fn(), read: vi.fn() };
+    bridge = { present: () => true, supports: () => true, youtube: vi.fn(), read: vi.fn() };
     TestBed.configureTestingModule({
       providers: [
         provideHttpClient(withXhr()),

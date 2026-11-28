@@ -4,6 +4,9 @@
   [busy]="saving()"
   (dismissed)="close()"
 >
+  @if (switchMode(); as change) {
+    <app-filter-mode-switch mode="advanced" (changed)="change($event)" />
+  }
   <p class="muted small">{{ 'filterPost.intro' | transloco }}</p>
 
   @if (loading()) {

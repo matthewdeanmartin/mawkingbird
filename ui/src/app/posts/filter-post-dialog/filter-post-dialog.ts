@@ -18,6 +18,10 @@ import { MbControl, MbField } from '../../design-system/field/field';
 import { MbNotice } from '../../design-system/notice/notice';
 import { ContentFilter, FilterContext, FilterResult, Status } from '../../platform/api/models';
 import { describeHttpError } from '../../platform/diagnostics/page-diagnostics';
+import {
+  FilterBuilderMode,
+  FilterModeSwitch,
+} from '../../moderation/tag-filter-dialog/filter-mode-switch';
 
 // i18n filterPost.title: Filter this post
 // i18n filterPost.intro: Add this post to one of your server filters. It is hidden or put behind a warning wherever that filter applies, on every app you use. Remove it later from the filter in Settings → Filters.
@@ -42,7 +46,16 @@ const NEW_CONTEXTS: FilterContext[] = ['home', 'public', 'thread', 'account'];
  */
 @Component({
   selector: 'app-filter-post-dialog',
-  imports: [FormsModule, TranslocoPipe, MbButton, MbControl, MbDialog, MbField, MbNotice],
+  imports: [
+    FormsModule,
+    TranslocoPipe,
+    MbButton,
+    MbControl,
+    MbDialog,
+    MbField,
+    MbNotice,
+    FilterModeSwitch,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './filter-post-dialog.html',
 })
@@ -54,6 +67,8 @@ export class FilterPostDialog implements OnInit {
   /** The filter the post now belongs to, shaped like a server `filtered` entry. */
   readonly filtered = output<FilterResult>();
   readonly closed = output<void>();
+  /** Set when the post's hashtags can be muted instead: Simple | Advanced. */
+  readonly switchMode = input<((mode: FilterBuilderMode) => void) | null>(null);
 
   protected readonly newValue = NEW;
   protected readonly filters = signal<ContentFilter[]>([]);

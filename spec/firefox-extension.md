@@ -1,7 +1,7 @@
 # Firefox extension: Mawkingbird for Firefox
 
 Status: sprints 1–6 committed; sprints 7–8 built, uncommitted · 2026-11-27.
-Extension 0.7.0: 46 unit tests, `web-ext lint` 0 errors. Owner dogfooding next
+Extension 0.8.0: 48 unit tests, `web-ext lint` 0 errors. Owner dogfooding next
 (weeks, especially YouTube); no store submission before that.
 Code: `extension/` (its own `package.json` and `Makefile`) plus the web changes
 listed per sprint. Owner decisions are in the next section.
@@ -425,6 +425,27 @@ Gates: `make test` (11,584), production build, integration on Node 24 and 26,
 `npm run lint`, Prettier on changed files, `check:static`, design inventory.
 Not run: a real Firefox session (`test_plans/firefox-extension-sprint-7.md`,
 `firefox-extension-sprint-8.md`).
+
+## Version handshake (built 2026-11-27, extension 0.8.0, owner request)
+
+Production lagged a commit behind (manual deploy), and the add-on and the site
+each assumed the other was current, so a mismatch surfaced as wrong text with no
+explanation. Now:
+
+- [x] `extension/protocol.json` records both conversations' versions;
+      `ui/scripts/check-extension-protocol.mjs` (+ tests) compares every copy
+      (extension constants, content script, reference client, the bridge's
+      handled ops, the app's bridge and panel) and enforces "accept the version
+      before", in `check:static` and `make test`.
+- [x] Bridge v2: `hello` returns `version`, `ops`, `extension`. The app's
+      `ExtensionBridge.supports(op)` gates YouTube, the any-public-site switch
+      and the YouTube notice; a v1 add-on (0.7) is assumed to have 0.7's ops and
+      is shown as outdated in Settings → App (with its version).
+- [x] Panel v2: `ready` carries `version`, `page` carries `sidebarVersion`. The
+      sidebar shows "Mawkingbird is updating…" + Try again when no `ready`
+      arrives in 8 s or the panel is too old; the panel shows an update note when
+      the sidebar is too old. Both accept the previous version (0.7.0's
+      unversioned messages).
 
 ## Sprint 9 (after dogfooding): publishing and media
 

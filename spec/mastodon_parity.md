@@ -194,7 +194,7 @@ Sources: [Mastodon domain-block modal](../../REFERENCE/mastodon/app/javascript/m
 
 **Completion criterion:** Add a post to a filter from the post menu, list a filter's posts in its editor, and remove them. The filter's context and action (warn, hide, blur) apply to that post the same way they apply to keyword matches.
 
-**Implemented:** "Filter this post…" in the ••• menu of other people's Mastodon posts opens `FilterPostDialog`: pick an existing v2 filter or name a new one (hide action; Home, public, threads, profiles), then `POST /api/v2/filters/:id/statuses`. The card applies the result straight away. Settings → Filters → a filter now lists its "Filtered posts" with View post and Remove (`DELETE /api/v2/filters/statuses/:id`).
+**Implemented:** "Build filter for post…" → Advanced (or the only mode, when the post has no hashtags) in the ••• menu of other people's Mastodon posts opens `FilterPostDialog`: pick an existing v2 filter or name a new one (hide action; Home, public, threads, profiles), then `POST /api/v2/filters/:id/statuses`. The card applies the result straight away. Settings → Filters → a filter now lists its "Filtered posts" with View post and Remove (`DELETE /api/v2/filters/statuses/:id`).
 
 Sources: [Mastodon filter modal](../../REFERENCE/mastodon/app/javascript/mastodon/features/ui/components/filter_modal.jsx), [filter actions](../../REFERENCE/mastodon/app/javascript/mastodon/actions/filters.js); [mawkingbird filter settings](../ui/src/app/pages/settings), [API](../ui/src/app/api.ts).
 

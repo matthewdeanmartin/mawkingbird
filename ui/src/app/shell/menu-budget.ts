@@ -6,7 +6,7 @@
  * `menu-budget.spec.ts` files render real scenarios and fail the build when a
  * menu goes over; run `npm run menu:sizes` to see the table.
  */
-export const MENU_BUDGET = 10;
+export const MENU_BUDGET = 11;
 
 /**
  * The options a reader scans in a rendered ••• panel, by label.

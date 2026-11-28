@@ -690,6 +690,9 @@ summary.action {
   border-radius: 6px;
   background: none;
   color: var(--text);
+  /* Plain rows (mute durations, Block, Report) otherwise take the browser's
+     button font and stand out from the other menu rows. */
+  font: inherit;
   text-align: left;
   cursor: pointer;
 }

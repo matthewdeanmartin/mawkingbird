@@ -6,6 +6,24 @@ const none = { language: null, candidates: [] };
 const sure = (language: string) => ({ language, candidates: [language] });
 
 describe('resolveSource', () => {
+  it('requests source auto-detection only when evidence excludes the target', () => {
+    const pair = { language: null, candidates: ['id', 'ms'], candidatesComplete: true };
+    for (const tag of [null, 'und', 'en', 'de']) {
+      expect(resolveSource(tag, pair, 'en')).toEqual({ kind: 'auto' });
+    }
+    expect(resolveSource(null, pair, 'ms')).toEqual({ kind: 'ask', candidates: ['id'] });
+    expect(resolveSource('ms', pair, 'en')).toEqual({
+      kind: 'source',
+      source: 'ms',
+      fromTag: true,
+    });
+    expect(resolveSource(null, { ...pair, candidatesComplete: false }, 'en').kind).toBe('ask');
+    expect(resolveSource(null, { ...pair, reasons: ['truncated'] }, 'en').kind).toBe('ask');
+    expect(
+      resolveSource(null, { language: null, candidates: [], ruledOut: ['en'] }, 'en').kind,
+    ).toBe('auto');
+  });
+
   it('uses the declared tag when nothing contradicts it (server allowed)', () => {
     expect(resolveSource('de', none, 'en')).toEqual({
       kind: 'source',

@@ -138,7 +138,10 @@ describe('FriendFeedScan', () => {
         { provide: PasteResolve, useValue: resolver },
         { provide: FriendFeedCache, useValue: cache },
         { provide: PageDiagnostics, useValue: diagnostics },
-        { provide: ExtensionBridge, useValue: { present: () => true, allSites } },
+        {
+          provide: ExtensionBridge,
+          useValue: { present: () => true, supports: () => true, allSites },
+        },
         {
           provide: CorsProxy,
           useValue: {

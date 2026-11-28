@@ -47,7 +47,11 @@ describe('SettingsApp', () => {
 describe('SettingsApp with Mawkingbird for Firefox', () => {
   afterEach(() => TestBed.resetTestingModule());
 
-  function setUp(present: boolean, allSites: boolean) {
+  function setUp(
+    present: boolean,
+    allSites: boolean,
+    capabilities: { version: number; ops: string[]; extension: string | null } | null = null,
+  ) {
     const fake = {
       installed: signal(false),
       canPrompt: signal(false),
@@ -63,6 +67,8 @@ describe('SettingsApp with Mawkingbird for Firefox', () => {
             present: () => present,
             allSites: signal(allSites),
             refreshAllSites: vi.fn(async () => allSites),
+            capabilities: signal(capabilities),
+            outdated: () => capabilities !== null && capabilities.version < 2,
           },
         },
       ],
@@ -76,6 +82,15 @@ describe('SettingsApp with Mawkingbird for Firefox', () => {
     const el = setUp(true, true);
     expect(el.textContent).toContain('Mawkingbird for Firefox');
     expect(el.textContent).toContain('It may read any public site.');
+  });
+
+  it('shows the add-on version, and says when it is older than the site expects', () => {
+    const current = setUp(true, false, { version: 2, ops: [], extension: '0.8.0' });
+    expect(current.textContent).toContain('Version 0.8.0.');
+    expect(current.textContent).not.toContain('older than Mawkingbird expects');
+    TestBed.resetTestingModule();
+    const old = setUp(true, false, { version: 1, ops: [], extension: null });
+    expect(old.textContent).toContain('older than Mawkingbird expects');
   });
 
   it('offers nothing about it before it is installed (not on the store yet)', () => {

@@ -29,6 +29,8 @@ import { ExtensionBridge } from '../../platform/extension/extension-bridge';
 // i18n settings.app.firefox: Mawkingbird for Firefox
 // i18n settings.app.firefoxInstalled: Installed. It shares pages, keeps Mawkingbird in Firefox's sidebar, and reads feeds, articles and YouTube for you from this computer. Which sites it may read is in its own settings: Firefox menu → Add-ons and themes → Mawkingbird → Preferences.
 // i18n settings.app.firefoxAllSites: It may read any public site.
+// i18n settings.app.firefoxVersion: Version {{version}}.
+// i18n settings.app.firefoxOutdated: This version is older than Mawkingbird expects, so some features use slower routes until it updates. Firefox updates add-ons on its own; to update now, open Add-ons and themes, choose the gear menu, then Check for Updates.
 // i18n settings.app.shareRow: Sharing into Mawkingbird
 // i18n settings.app.share: Once installed (Android, or Chrome and Edge on a computer), Mawkingbird appears in the Share menu. Sharing a link or text opens a new post with it filled in; nothing is posted until you press Post.
 
@@ -77,6 +79,16 @@ import { ExtensionBridge } from '../../platform/extension/extension-bridge';
             <p class="install-note">{{ 'settings.app.firefoxInstalled' | transloco }}</p>
             @if (extension.allSites()) {
               <p class="install-note">{{ 'settings.app.firefoxAllSites' | transloco }}</p>
+            }
+            @if (extension.capabilities()?.extension; as version) {
+              <p class="install-note">
+                {{ 'settings.app.firefoxVersion' | transloco: { version: version } }}
+              </p>
+            }
+            @if (extension.outdated()) {
+              <p class="install-note" role="status">
+                {{ 'settings.app.firefoxOutdated' | transloco }}
+              </p>
             }
           </mb-settings-row>
         }

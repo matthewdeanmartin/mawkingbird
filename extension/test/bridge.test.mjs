@@ -176,7 +176,14 @@ test('requestAccess asks the reader only when the site is not already allowed', 
 
 test('hello, hasAccess and unknown requests', async () => {
   const d = deps();
-  assert.deepEqual(await handleBridgeRequest({ op: 'hello' }, d), { ok: true, protocol: 'mawkingbird-extension/1' });
+  d.extensionVersion = '0.8.0';
+  assert.deepEqual(await handleBridgeRequest({ op: 'hello' }, d), {
+    ok: true,
+    protocol: 'mawkingbird-extension/1',
+    version: 2,
+    ops: ['hello', 'fetch', 'hasAccess', 'requestAccess', 'allSites', 'requestAllSites', 'youtube'],
+    extension: '0.8.0',
+  });
   assert.deepEqual(await handleBridgeRequest({ op: 'hasAccess', origin: 'https://blog.example' }, d), {
     ok: true,
     granted: true,

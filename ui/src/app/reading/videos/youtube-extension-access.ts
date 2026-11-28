@@ -59,7 +59,7 @@ export class YoutubeExtensionAccess implements OnInit {
   protected readonly declined = signal(false);
 
   async ngOnInit(): Promise<void> {
-    if (!this.bridge.present()) return;
+    if (!this.bridge.supports('youtube')) return;
     this.needed.set(!(await this.bridge.hasAccess(YOUTUBE_SITE)));
   }
 

@@ -1,0 +1,14 @@
+{
+  "$comment": "How mawkingbird.com and Mawkingbird for Firefox talk. The single record of versions: ui/scripts/check-extension-protocol.mjs fails when either side's constants drift from it. Bump a version when a message changes shape; each side keeps accepting the version before it (see client/PROTOCOL.md).",
+  "bridge": {
+    "protocol": "mawkingbird-extension/1",
+    "version": 2,
+    "ops": ["hello", "fetch", "hasAccess", "requestAccess", "allSites", "requestAllSites", "youtube"]
+  },
+  "panel": {
+    "channel": "mawkingbird-panel/1",
+    "version": 2,
+    "minSidebarVersion": 1,
+    "minPanelVersion": 1
+  }
+}

@@ -15,12 +15,20 @@ describe('YoutubeExtensionAccess', () => {
   const text = (el: HTMLElement) => el.textContent ?? '';
 
   it('renders nothing without the extension', async () => {
-    const fixture = await setUp({ present: () => false, hasAccess: vi.fn() });
+    const fixture = await setUp({
+      present: () => false,
+      supports: () => false,
+      hasAccess: vi.fn(),
+    });
     expect(text(fixture.nativeElement)).toBe('');
   });
 
   it('renders nothing once YouTube is allowed', async () => {
-    const fixture = await setUp({ present: () => true, hasAccess: vi.fn(async () => true) });
+    const fixture = await setUp({
+      present: () => true,
+      supports: () => true,
+      hasAccess: vi.fn(async () => true),
+    });
     expect(text(fixture.nativeElement)).toBe('');
   });
 
@@ -28,6 +36,7 @@ describe('YoutubeExtensionAccess', () => {
     const requestAccess = vi.fn(async () => true);
     const fixture = await setUp({
       present: () => true,
+      supports: () => true,
       hasAccess: vi.fn(async () => false),
       requestAccess,
     });
@@ -45,6 +54,7 @@ describe('YoutubeExtensionAccess', () => {
   it('says so when the reader declines', async () => {
     const fixture = await setUp({
       present: () => true,
+      supports: () => true,
       hasAccess: vi.fn(async () => false),
       requestAccess: vi.fn(async () => false),
     });
@@ -52,5 +62,22 @@ describe('YoutubeExtensionAccess', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(text(fixture.nativeElement)).toContain('Not allowed');
+  });
+});
+
+describe('YoutubeExtensionAccess with an add-on that predates YouTube', () => {
+  it('renders nothing, so YouTube keeps its old route', async () => {
+    TestBed.configureTestingModule({
+      providers: [
+        {
+          provide: ExtensionBridge,
+          useValue: { present: () => true, supports: () => false, hasAccess: vi.fn() },
+        },
+      ],
+    });
+    const fixture = TestBed.createComponent(YoutubeExtensionAccess);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect((fixture.nativeElement as HTMLElement).textContent).toBe('');
   });
 });

@@ -167,6 +167,7 @@ async function answerBridge(request, sender) {
     hasPermission: (pattern) => browser.permissions.contains({ origins: [pattern] }),
     requestAccess: (origin) => askForAccess(origin),
     requestAllSites: () => askForAccess('*'),
+    extensionVersion: browser.runtime.getManifest().version,
   });
 }
 

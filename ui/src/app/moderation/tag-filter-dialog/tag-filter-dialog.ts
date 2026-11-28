@@ -21,6 +21,7 @@ import { MbButton } from '../../design-system/button/button';
 import { MbControl, MbField } from '../../design-system/field/field';
 import { MbCheckbox } from '../../design-system/checkbox/checkbox';
 import { normalizeHashtag } from '../../discovery/hashtag';
+import { FilterBuilderMode, FilterModeSwitch } from './filter-mode-switch';
 
 // i18n tagFilter.title: Mute tags
 // i18n tagFilter.hint: Pick the hashtags to mute. They are saved together as one keyword filter on your current Mastodon account. Choose where it applies and when it expires. Refresh loaded feeds after saving to see the server's filter results.
@@ -30,7 +31,16 @@ import { normalizeHashtag } from '../../discovery/hashtag';
 // i18n tagFilter.expiry: Filter expires
 @Component({
   selector: 'app-tag-filter-dialog',
-  imports: [FormsModule, TranslocoPipe, MbDialog, MbButton, MbField, MbControl, MbCheckbox],
+  imports: [
+    FormsModule,
+    TranslocoPipe,
+    MbDialog,
+    MbButton,
+    MbField,
+    MbControl,
+    MbCheckbox,
+    FilterModeSwitch,
+  ],
   changeDetection: ChangeDetectionStrategy.Eager,
   template: ` <mb-dialog
     [title]="'tagFilter.title' | transloco"
@@ -39,6 +49,9 @@ import { normalizeHashtag } from '../../discovery/hashtag';
     [busy]="saving()"
     (dismissed)="finish()()"
   >
+    @if (switchMode(); as change) {
+      <app-filter-mode-switch mode="simple" (changed)="change($event)" />
+    }
     <fieldset>
       <legend>{{ 'tagFilter.pick' | transloco }}</legend>
       @for (tag of tags(); track tag) {
@@ -103,6 +116,8 @@ import { normalizeHashtag } from '../../discovery/hashtag';
 export class TagFilterDialog {
   readonly tags = input.required<string[]>();
   readonly finish = input.required<() => void>();
+  /** Set when the post can also go to a server filter: Simple | Advanced. */
+  readonly switchMode = input<((mode: FilterBuilderMode) => void) | null>(null);
   private api = inject(Api);
   private auth = inject(Auth);
   private server = inject(Server);

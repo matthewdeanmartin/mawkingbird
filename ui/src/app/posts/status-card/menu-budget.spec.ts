@@ -14,6 +14,7 @@ import {
 } from '../../shell/menu-budget';
 import { Account, MediaAttachment, Status } from '../../platform/api/models';
 import { SpeechReader } from '../../reading/speech/speech-reader';
+import { Pseudonymity } from '../../accounts/pseudonymity';
 import { StatusCard } from './status-card';
 
 /**
@@ -90,6 +91,8 @@ const measured: MenuMeasure[] = [];
 describe('post ••• menu budget', () => {
   beforeEach(() => {
     localStorage.clear();
+    // Private likes are scoped to the stored account, as in a signed-in browser.
+    localStorage.setItem('mastodon_mock_token', 'menu-budget-token');
     vi.spyOn(FollowTrust.prototype, 'isMutual').mockReturnValue(false);
     TestBed.configureTestingModule({
       providers: [provideHttpClient(withXhr()), provideHttpClientTesting(), provideRouter([])],
@@ -136,4 +139,15 @@ describe('post ••• menu budget', () => {
     const row = measure(scenario, make());
     expect(row.options.length, overBudgetMessage(row)).toBeLessThanOrEqual(MENU_BUDGET);
   });
+
+  // Pseudonymity mode brings Private like up from More tools.
+  it.each(scenarios)(
+    `stays within ${MENU_BUDGET} options in Pseudonymity mode: %s`,
+    (scenario, make) => {
+      TestBed.inject(Pseudonymity).setEnabled(true);
+      const row = measure(`${scenario}, Pseudonymity on`, make());
+      expect(row.options).toContain('Private like');
+      expect(row.options.length, overBudgetMessage(row)).toBeLessThanOrEqual(MENU_BUDGET);
+    },
+  );
 });

@@ -232,10 +232,13 @@ describe('ruling languages out by their letters', () => {
     expect(analyzeLanguage(text).ruledOut).not.toContain('en');
   });
 
-  it('never rules out a Latin language by spelling without its word table', () => {
+  it('uses Icelandic word support before excluding it by spelling', () => {
     expect(
       analyzeLanguage('não sei, mas é muito bom\nestoy feliz com a atenção').ruledOut,
-    ).not.toContain('is');
+    ).toContain('is');
+    expect(analyzeLanguage('Ég les þetta vegna þess að það er mjög gott.').ruledOut).not.toContain(
+      'is',
+    );
     expect(analyzeLanguage('Москва Киев Минск').ruledOut).toContain('is');
   });
 

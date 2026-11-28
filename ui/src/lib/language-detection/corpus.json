@@ -3,7 +3,10 @@
     "lang": "en",
     "text": "We are reading this book because it is full of stories that you can share with your friends."
   },
-  { "lang": "ja", "text": "今日は図書館で新しい本を読んでいます。とても面白いです。" },
+  {
+    "lang": "ja",
+    "text": "今日は図書館で新しい本を読んでいます。とても面白いです。"
+  },
   {
     "lang": "de",
     "text": "Das ist ein neues Buch und ich möchte es heute mit meinen Freunden lesen."
@@ -32,8 +35,14 @@
     "lang": "pl",
     "text": "To jest bardzo ciekawa książka i nie wiem czy już ją czytaliście oraz co o niej myślicie."
   },
-  { "lang": "ko", "text": "오늘 도서관에서 친구들과 함께 새로운 책을 읽고 있습니다." },
-  { "lang": "zh", "text": "這是一段繁體中文，我們今天一起閱讀這本書，因為它非常有趣。" },
+  {
+    "lang": "ko",
+    "text": "오늘 도서관에서 친구들과 함께 새로운 책을 읽고 있습니다."
+  },
+  {
+    "lang": "zh",
+    "text": "這是一段繁體中文，我們今天一起閱讀這本書，因為它非常有趣。"
+  },
   {
     "lang": "ru",
     "text": "Привет друзья, сегодня мы читаем этот текст на русском языке и обсуждаем его вместе."
@@ -70,13 +79,22 @@
     "lang": "id",
     "text": "Saya membaca buku ini dengan teman karena ada banyak cerita yang menarik untuk kita semua."
   },
-  { "lang": "hi", "text": "यह एक नई किताब है और हम इसे अपने दोस्तों के साथ पढ़ रहे हैं।" },
+  {
+    "lang": "hi",
+    "text": "यह एक नई किताब है और हम इसे अपने दोस्तों के साथ पढ़ रहे हैं।"
+  },
   {
     "lang": "vi",
     "text": "Tôi đang đọc một cuốn sách với những người bạn và chúng tôi rất thích câu chuyện này."
   },
-  { "lang": "ar", "text": "هذا كتاب جديد ونحن نقرأ هذه القصة مع أصدقائنا في المكتبة اليوم." },
-  { "lang": "bn", "text": "আমি আজ আমার বন্ধুদের সঙ্গে একটি নতুন বই পড়ছি এবং গল্পটি খুব ভালো।" },
+  {
+    "lang": "ar",
+    "text": "هذا كتاب جديد ونحن نقرأ هذه القصة مع أصدقائنا في المكتبة اليوم."
+  },
+  {
+    "lang": "bn",
+    "text": "আমি আজ আমার বন্ধুদের সঙ্গে একটি নতুন বই পড়ছি এবং গল্পটি খুব ভালো।"
+  },
   {
     "lang": "ta",
     "text": "இன்று நான் என் நண்பர்களுடன் நூலகத்தில் ஒரு புதிய புத்தகத்தைப் படிக்கிறேன்."
@@ -89,13 +107,22 @@
     "lang": "fa",
     "text": "این کتاب برای من بسیار جالب است و ما در کتابخانه آن را با دوستان خود می‌خوانیم."
   },
-  { "lang": "he", "text": "זה ספר חדש ואנחנו קוראים את הסיפור הזה עם החברים שלנו בספרייה היום." },
-  { "lang": "th", "text": "วันนี้ฉันอ่านหนังสือเล่มใหม่กับเพื่อนที่ห้องสมุดและเรื่องนี้สนุกมาก" },
+  {
+    "lang": "he",
+    "text": "זה ספר חדש ואנחנו קוראים את הסיפור הזה עם החברים שלנו בספרייה היום."
+  },
+  {
+    "lang": "th",
+    "text": "วันนี้ฉันอ่านหนังสือเล่มใหม่กับเพื่อนที่ห้องสมุดและเรื่องนี้สนุกมาก"
+  },
   {
     "lang": "ro",
     "text": "Aceasta este o carte foarte bună pentru noi și avem multe povești care sunt interesante."
   },
-  { "lang": "zh", "text": "这是一个测试，我们今天阅读一本新书，因为这个故事很有趣。" },
+  {
+    "lang": "zh",
+    "text": "这是一个测试，我们今天阅读一本新书，因为这个故事很有趣。"
+  },
   {
     "lang": "en",
     "text": "This is a story about São Paulo and Łódź that we can read with our friends."
@@ -108,37 +135,168 @@
     "lang": "fr",
     "text": "Je suis un développeur avec des jeux vidéo et des animaux dans mon jardin."
   },
-  { "lang": "eo", "text": "Mi ŝatas la libron kaj ĝi estas tre bona por ĉiuj homoj en la mondo." },
-  { "lang": "und", "text": "Linux user" },
-  { "lang": "und", "text": "Le chat est sur la table" },
-  { "lang": "und", "text": "ã õ" },
-  { "lang": "und", "text": "jeux animaux cheveux mieux aux linux" },
-  { "lang": "und", "text": "Foto e arte, la natura e il mare" },
-  { "lang": "und", "text": "la casa con un libro" },
-  { "lang": "und", "text": "café résumé portfolio photography" },
-  { "lang": "und", "text": "ten men do an encore over there" },
-  { "lang": "und", "text": "the the the the the the the the" },
-  { "lang": "und", "text": "zebra quartz the zephyr nebula" },
-  { "lang": "und", "text": "Kumusta kaayo ka karon nga adlaw diri" },
-  { "lang": "und", "text": "東京" },
-  { "lang": "und", "text": "中" },
-  { "lang": "und", "text": "Москва" },
-  { "lang": "und", "text": "Това е български текст за приятелите" },
-  { "lang": "und", "text": "Ово је српски текст" },
-  { "lang": "und", "text": "یہ اردو زبان کا متن ہے" },
-  { "lang": "und", "text": "ৰৱ" },
-  { "lang": "und", "text": "ꦲꦤꦕꦫꦏ" },
-  { "lang": "und", "text": "@これはテスト https://example.com/это/тест :polish_flag:" },
-  { "lang": "und", "text": "https://example.com/the/and/with?language=english" },
-  { "lang": "und", "text": "`for the of and with`" },
-  { "lang": "und", "text": "α = 5; β = 3; 12345" },
-  { "lang": "ar", "text": "ما هذا النص ومن يقرأ هذه القصة في المكتبة مع أصدقائنا" },
-  { "lang": "und", "text": "हे मराठी पुस्तक आहे आणि आम्ही ते वाचतो" },
-  { "lang": "und", "text": "यो नेपाली किताब हो र यो धेरै राम्रो छ" },
-  { "lang": "und", "text": "Jeg er her og vi er ikke alene" },
-  { "lang": "und", "text": "the und avec porque sono" },
+  {
+    "lang": "eo",
+    "text": "Mi ŝatas la libron kaj ĝi estas tre bona por ĉiuj homoj en la mondo."
+  },
+  {
+    "lang": "und",
+    "text": "Linux user"
+  },
+  {
+    "lang": "und",
+    "text": "Le chat est sur la table"
+  },
+  {
+    "lang": "und",
+    "text": "ã õ"
+  },
+  {
+    "lang": "und",
+    "text": "jeux animaux cheveux mieux aux linux"
+  },
+  {
+    "lang": "und",
+    "text": "Foto e arte, la natura e il mare"
+  },
+  {
+    "lang": "und",
+    "text": "la casa con un libro"
+  },
+  {
+    "lang": "und",
+    "text": "café résumé portfolio photography"
+  },
+  {
+    "lang": "und",
+    "text": "ten men do an encore over there"
+  },
+  {
+    "lang": "und",
+    "text": "the the the the the the the the"
+  },
+  {
+    "lang": "und",
+    "text": "zebra quartz the zephyr nebula"
+  },
+  {
+    "lang": "und",
+    "text": "Kumusta kaayo ka karon nga adlaw diri"
+  },
+  {
+    "lang": "und",
+    "text": "東京"
+  },
+  {
+    "lang": "und",
+    "text": "中"
+  },
+  {
+    "lang": "und",
+    "text": "Москва"
+  },
+  {
+    "lang": "und",
+    "text": "Това е български текст за приятелите"
+  },
+  {
+    "lang": "und",
+    "text": "Ово је српски текст"
+  },
+  {
+    "lang": "und",
+    "text": "یہ اردو زبان کا متن ہے"
+  },
+  {
+    "lang": "und",
+    "text": "ৰৱ"
+  },
+  {
+    "lang": "und",
+    "text": "ꦲꦤꦕꦫꦏ"
+  },
+  {
+    "lang": "und",
+    "text": "@これはテスト https://example.com/это/тест :polish_flag:"
+  },
+  {
+    "lang": "und",
+    "text": "https://example.com/the/and/with?language=english"
+  },
+  {
+    "lang": "und",
+    "text": "`for the of and with`"
+  },
+  {
+    "lang": "und",
+    "text": "α = 5; β = 3; 12345"
+  },
+  {
+    "lang": "ar",
+    "text": "ما هذا النص ومن يقرأ هذه القصة في المكتبة مع أصدقائنا"
+  },
+  {
+    "lang": "und",
+    "text": "हे मराठी पुस्तक आहे आणि आम्ही ते वाचतो"
+  },
+  {
+    "lang": "und",
+    "text": "यो नेपाली किताब हो र यो धेरै राम्रो छ"
+  },
+  {
+    "lang": "und",
+    "text": "Jeg er her og vi er ikke alene"
+  },
+  {
+    "lang": "und",
+    "text": "the und avec porque sono"
+  },
   {
     "lang": "de",
     "text": "7 von 10 Unternehmen scheitern an KI-Integration – weil Insellösungen Ziele blockieren.\n\nSouveräne Unternehmens-KI braucht *Rollen statt Tool-Sammlung* und nachvollziehbaren Proof: Bei Ascensus Vertex definieren wir Prozesse von Datensammlung bis Analyse so, dass Entscheidungen direkt an Ihren Zielen andocken.\n\nWelche Rolle fehlt in Ihrem KI-Prozess, um Insellösungen zu vermeiden?"
+  },
+  {
+    "lang": "ms",
+    "text": "Saya nak membaca buku ini kerana cerita ini sangat menarik."
+  },
+  {
+    "lang": "id",
+    "text": "Aku nggak tahu gimana kalian bisa bikin ini."
+  },
+  {
+    "lang": "und",
+    "text": "Saya membaca buku ini dengan mereka."
+  },
+  {
+    "lang": "da",
+    "text": "Jeg læser noget meget spændende efter arbejde."
+  },
+  {
+    "lang": "is",
+    "text": "Ég les þetta vegna þess að það er mjög gott."
+  },
+  {
+    "lang": "tl",
+    "text": "Ang mga kaibigan namin ay hindi nandito ngayon."
+  },
+  {
+    "lang": "et",
+    "text": "Täna loeme seda raamatut ning homme räägime sellest väga pikalt."
+  },
+  {
+    "lang": "hu",
+    "text": "Most egy könyvet olvasok mert nagyon érdekes és még nem vagyok fáradt."
+  },
+  {
+    "lang": "lv",
+    "text": "Šodien mēs lasām ļoti labu grāmatu un rīt arī lasīsim."
+  },
+  {
+    "lang": "lt",
+    "text": "Šiandien mes skaitome labai gerą knygą nes ji yra įdomi."
+  },
+  {
+    "lang": "el",
+    "text": "Σήμερα διαβάζουμε ένα βιβλίο μαζί με τους φίλους μας."
   }
 ]

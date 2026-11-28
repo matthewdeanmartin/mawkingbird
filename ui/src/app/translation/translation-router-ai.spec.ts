@@ -1,3 +1,6 @@
+import { TranslationConnectors } from './translation-connectors';
+import { TranslationPairCatalog } from './pair-catalog';
+import { FreeTranslators } from './free-translators';
 import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -60,6 +63,43 @@ describe('TranslationRouter AI step', () => {
     serverCanTranslate: false,
     aiAvailable: true,
     ...extra,
+  });
+
+  it('routes unidentified foreign text only through source-detecting engines', async () => {
+    vi.spyOn(TestBed.inject(FeedLanguageFilter), 'languageAssessment').mockReturnValue({
+      language: null,
+      candidates: ['id', 'ms'],
+      candidatesComplete: true,
+    } as never);
+    TestBed.inject(ClientPrefs).setAutoTranslateUsesAi(true);
+    TestBed.inject(TranslationConnectors).setMyMemoryEnabled(true);
+    TestBed.inject(TranslationConnectors).setApertiumEnabled(true);
+    const myMemory = vi.spyOn(TestBed.inject(FreeTranslators), 'myMemory');
+    const apertium = vi.spyOn(TestBed.inject(FreeTranslators), 'apertium');
+    const browser = vi.spyOn(TestBed.inject(BrowserTranslator), 'availability');
+    const server = vi.spyOn(TestBed.inject(TranslationPairCatalog), 'serverPair');
+    const outcome = await router.translate(
+      request({
+        mode: 'auto',
+        serverCanTranslate: true,
+        status: post('Saya membaca buku ini dengan mereka.', { language: 'en' }),
+      }),
+    );
+    expect(outcome).toMatchObject({ kind: 'text', engine: 'openrouter', source: 'und' });
+    expect(batched).toHaveBeenCalled();
+    expect(myMemory).not.toHaveBeenCalled();
+    expect(apertium).not.toHaveBeenCalled();
+    expect(browser).not.toHaveBeenCalled();
+    expect(server).not.toHaveBeenCalled();
+  });
+  it('keeps unknown-source AI subject to automatic opt-in', async () => {
+    vi.spyOn(TestBed.inject(FeedLanguageFilter), 'languageAssessment').mockReturnValue({
+      language: null,
+      candidates: ['id', 'ms'],
+      candidatesComplete: true,
+    } as never);
+    expect(await router.translate(request({ mode: 'auto' }))).toMatchObject({ kind: 'failed' });
+    expect(batched).not.toHaveBeenCalled();
   });
 
   it('translates a pressed post alone and records its cost', async () => {

@@ -23,6 +23,9 @@ and Native. Nothing has been published to addons.mozilla.org yet (dogfooding).
 
 ### Changed
 
+- 0.8.0: The add-on and Mawkingbird check each other's versions. A site that's
+  mid-update shows "Mawkingbird is updating" with Try again instead of a
+  confusing panel; features an older add-on lacks keep their old route.
 - 0.7.0: The sidebar loads Mawkingbird once and follows your tabs in place: no
   reload or blink, and the page's address is never put in a URL. Its "Open
   Mawkingbird" strip is gone; on a tab with no web page it offers Write a post

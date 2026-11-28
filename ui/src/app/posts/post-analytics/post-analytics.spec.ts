@@ -143,6 +143,33 @@ describe('PostAnalytics', () => {
     );
   });
 
+  it('lists the client, language, audience and edit count under Details', () => {
+    const { fixture, root } = render();
+    http.expectOne('/api/v1/statuses/2').flush(
+      raw('2', {
+        language: 'de',
+        application: { name: 'Tusky', website: 'https://tusky.app' },
+        visibility: 'unlisted',
+        edited_at: '2026-11-02T00:00:00Z',
+        uri: 'https://home.example/users/me/statuses/2',
+      }),
+    );
+    http.expectOne('/api/v1/statuses/2/context').flush({ ancestors: [], descendants: [] });
+    http.expectOne('/api/v1/statuses/2/history').flush([{}, {}, {}]);
+    fixture.detectChanges();
+    const value = (label: string) =>
+      [...root.querySelectorAll('.details-row')]
+        .find((row) => row.querySelector('dt')?.textContent?.trim() === label)
+        ?.querySelector('dd')
+        ?.textContent?.trim();
+    expect(value('Posted with')).toBe('Tusky');
+    expect(value('Language')).toBe('German (de)');
+    expect(value('Visibility')).toBe('Quiet public');
+    expect(value('Edits')).toBe('2');
+    expect(value('Original server')).toBe('home.example');
+    expect(value('Post number on your server')).toBe('2');
+  });
+
   it('reads an anonymous public post from its own server', () => {
     params.next(
       convertToParamMap({

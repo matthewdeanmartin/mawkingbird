@@ -38,3 +38,25 @@ iframe {
   width: 100%;
   border: 0;
 }
+
+.mismatch {
+  padding: 16px;
+}
+
+.mismatch p {
+  margin: 0 0 10px;
+}
+
+.mismatch button {
+  font: inherit;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+  cursor: pointer;
+}
+
+[hidden] {
+  display: none !important;
+}

@@ -141,6 +141,7 @@ export class TranslationRouter {
     if (misskeyServer && !this.misskeyUnavailable.has(misskeyServer)) {
       if (await this.misskeyServerTranslates(misskeyServer)) return true;
     }
+    if (source === 'und') return false;
     if (this.connectors.myMemoryEnabled()) return true;
     const target = bareLanguage(this.ai.targetLanguage());
     if (this.connectors.apertiumEnabled() && (await this.pairs.apertiumPair(source, target))) {
@@ -206,6 +207,9 @@ export class TranslationRouter {
             ? { kind: 'ask', candidates: [...detected.candidates], target }
             : { kind: 'failed', attempts: [], source: '', target };
         }
+      } else if (decision.kind === 'auto') {
+        source = 'und';
+        fromTag = !declared || declared === 'und';
       } else if (decision.kind === 'ask') {
         // A Misskey note can still go to its server, whose DeepL detects the
         // language itself: the kanji-only (Japanese or Chinese?) case needs no
@@ -290,12 +294,19 @@ export class TranslationRouter {
   ): Promise<RouteOutcome | SkipReason> {
     const { request, status, text, source, target } = job;
     const auto = request.mode === 'auto';
+    if (source === 'und' && ['browser', 'mymemory', 'apertium'].includes(engine))
+      return 'unsupported';
     switch (engine) {
       case 'mastodon': {
         if (!request.serverCanTranslate) return 'no-server';
-        if (!job.fromTag) return 'wrong-tag';
-        const pair = await this.pairs.serverPair(source, target);
+        const tag = bareLanguage(status.language);
+        const untagged = !tag || tag === 'und';
+        if (!job.fromTag && (!untagged || request.source)) return 'wrong-tag';
+        // The server sees its stored tag, never our local source decision.
+        const serverSource = untagged ? 'und' : source;
+        const pair = await this.pairs.serverPair(serverSource, target);
         if (pair.ok === false) return pair.reason;
+        if (serverSource === 'und' && pair.ok !== true) return 'unsupported';
         if (!this.usage.canSpend('mastodon')) return 'budget';
         this.usage.record('mastodon');
         try {
@@ -305,7 +316,7 @@ export class TranslationRouter {
         } catch (error) {
           // 403: the pair (or the post) is not translatable here; don't ask again.
           if (error instanceof HttpErrorResponse && error.status === 403) {
-            this.pairs.markRefused('mastodon', source, target);
+            this.pairs.markRefused('mastodon', serverSource, target);
             return 'unsupported';
           }
           if (error instanceof HttpErrorResponse && error.status === 404) return 'no-provider';

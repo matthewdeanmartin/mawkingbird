@@ -197,7 +197,7 @@ export class FriendFeedsDialog {
   protected readonly signedIn = computed(() => this.me() !== null);
 
   constructor() {
-    if (this.bridge.present()) void this.bridge.refreshAllSites();
+    if (this.bridge.supports('allSites')) void this.bridge.refreshAllSites();
     // Reopening the dialog after a scan should show what was found rather than
     // asking again — the result is the expensive part and it is already paid
     // for. Loading is cheap and idempotent.

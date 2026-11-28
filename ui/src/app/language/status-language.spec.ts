@@ -1,3 +1,6 @@
+import { PRODUCTION_LOCALES, IN_PROGRESS_LOCALES } from '../i18n/locale';
+import corpus from '../../lib/language-detection/corpus.json';
+import { languageIdentity } from './language-detect';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { analyzeStatusLanguage } from './status-language';
@@ -66,6 +69,45 @@ describe('reader language assessment', () => {
     vi.spyOn(known, 'codes').mockImplementation(
       () => new Set(TestBed.inject(ClientPrefs).knownLanguages()),
     );
+  });
+
+  it('covers every production and canary locale', () => {
+    for (const locale of [...PRODUCTION_LOCALES, ...IN_PROGRESS_LOCALES]) {
+      expect(
+        corpus.some((c) => c.lang === languageIdentity(locale)),
+        locale,
+      ).toBe(true);
+    }
+  });
+  it('autoruns foreign evidence despite a missing, undetermined, or English tag', () => {
+    const prefs = TestBed.inject(ClientPrefs);
+    prefs.setKnownLanguages(['en', 'de']);
+    prefs.setAutoTranslateMode('view');
+    prefs.setTranslateAllForeign(true);
+    const eligibility = TestBed.inject(AutoTranslateEligibility);
+    for (const tag of [null, 'und', 'en']) {
+      for (const text of [
+        'Saya nak membaca buku ini kerana cerita ini sangat menarik.',
+        'Aku nggak tahu gimana kalian bisa bikin ini.',
+        'Saya membaca buku ini dengan mereka.',
+        'Ang mga kaibigan namin ay hindi nandito ngayon.',
+        'Москва Киев Минск',
+      ])
+        expect(eligibility.shouldTranslate(status(text, tag)), `${tag}: ${text}`).toBe(true);
+    }
+    for (const text of ['ok lol', 'saya', ENGLISH]) {
+      expect(eligibility.shouldTranslate(status(text, 'en')), text).toBe(false);
+    }
+    prefs.setKnownLanguages(['en', 'de', 'ms']);
+    expect(eligibility.shouldTranslate(status('Saya membaca buku ini dengan mereka.', 'en'))).toBe(
+      false,
+    );
+    prefs.setKnownLanguages(['en', 'de']);
+    prefs.setTranslateAllForeign(false);
+    expect(eligibility.shouldTranslate(status('Saya membaca buku ini dengan mereka.'))).toBe(false);
+    prefs.setTranslateAllForeign(true);
+    prefs.setAutoTranslateMode('off');
+    expect(eligibility.shouldTranslate(status('Saya membaca buku ini dengan mereka.'))).toBe(false);
   });
 
   it('knows ambiguous Dutch/English only when both possibilities are known', () => {

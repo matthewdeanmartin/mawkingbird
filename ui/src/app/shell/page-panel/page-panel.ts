@@ -36,6 +36,7 @@ import { youtubeSource } from '../../reading/video-player/media-source';
 // i18n pages.pagePanel.discardDraft: Discard it
 // i18n pages.pagePanel.posted: Posted.
 // i18n pages.pagePanel.cancel: Cancel
+// i18n pages.pagePanel.updateExtension: This sidebar needs a newer Mawkingbird for Firefox. Firefox updates add-ons on its own; to update now, open Add-ons and themes, choose the gear menu, then Check for Updates.
 // i18n pages.pagePanel.mine: You posted about this page
 // i18n pages.pagePanel.searchLabel: Search Mawkingbird
 // i18n pages.pagePanel.searchPlaceholder: Posts, people, hashtags
@@ -50,9 +51,18 @@ export const PAGE_PANEL_DRAFT_CONTEXT = 'page-panel';
 /**
  * How the Firefox extension's sidebar tells the panel which page is beside it:
  * `postMessage({ channel, type: 'page', url, title })` from the parent frame.
- * The panel says `{ channel, type: 'ready' }` to its parent once it can listen.
+ * The panel says `{ channel, type: 'ready', version }` to its parent once it
+ * can listen; each `page` carries the sidebar's `sidebarVersion`.
  */
 export const PANEL_CHANNEL = 'mawkingbird-panel/1';
+/**
+ * Versions (extension/protocol.json; ui/scripts/check-extension-protocol.mjs
+ * keeps them in step). 1: 0.7.0, no versions in messages. 2: `ready` says the
+ * panel's version, `page` the sidebar's. Accept the version before ours, so the
+ * site and the add-on can update in either order.
+ */
+export const PANEL_VERSION = 2;
+export const MIN_SIDEBAR_VERSION = 1;
 
 /** How many of the reader's own posts about the page to show. */
 const MINE_LIMIT = 5;
@@ -115,6 +125,8 @@ export class PagePanel {
    * with no web page.
    */
   protected readonly page = signal<PanelPage | null | undefined>(this.initialPage());
+  /** The sidebar speaks an older version than this panel accepts. */
+  protected readonly sidebarOutdated = signal(false);
 
   protected readonly url = computed(() => this.page()?.url ?? '');
   protected readonly title = computed(() => this.page()?.title ?? '');
@@ -160,7 +172,12 @@ export class PagePanel {
       window.removeEventListener('message', onMessage);
       this.mineSearch?.unsubscribe();
     });
-    if (this.embedded()) window.parent.postMessage({ channel: PANEL_CHANNEL, type: 'ready' }, '*');
+    if (this.embedded()) {
+      window.parent.postMessage(
+        { channel: PANEL_CHANNEL, type: 'ready', version: PANEL_VERSION },
+        '*',
+      );
+    }
 
     // A new page: start over, without the last page's composer or results.
     effect(() => {
@@ -240,8 +257,12 @@ export class PagePanel {
       type?: unknown;
       url?: unknown;
       title?: unknown;
+      sidebarVersion?: unknown;
     };
     if (data?.channel !== PANEL_CHANNEL || data.type !== 'page') return;
+    // 0.7.0's sidebar sent no version: that is version 1.
+    const version = Number.isInteger(data.sidebarVersion) ? (data.sidebarVersion as number) : 1;
+    this.sidebarOutdated.set(version < MIN_SIDEBAR_VERSION);
     this.page.set(pageFrom(data.url, data.title));
   }
 

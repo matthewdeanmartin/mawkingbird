@@ -12,7 +12,13 @@ import { StatusCard } from '../../posts/status-card/status-card';
 import { Compose } from '../../publishing/compose/compose';
 import { Drafts } from '../../publishing/drafts';
 import { post } from '../../testing/forum-fixtures';
-import { PAGE_PANEL_DRAFT_CONTEXT, PANEL_CHANNEL, PagePanel } from './page-panel';
+import {
+  MIN_SIDEBAR_VERSION,
+  PAGE_PANEL_DRAFT_CONTEXT,
+  PANEL_CHANNEL,
+  PANEL_VERSION,
+  PagePanel,
+} from './page-panel';
 
 @Component({ selector: 'app-compose', template: '' })
 class ComposeStub {
@@ -293,7 +299,10 @@ describe('PagePanel in the Firefox extension sidebar', () => {
 
   it('tells the sidebar it is ready, and shows nothing until it hears which page', () => {
     const f = setUp();
-    expect(parent.postMessage).toHaveBeenCalledWith({ channel: PANEL_CHANNEL, type: 'ready' }, '*');
+    expect(parent.postMessage).toHaveBeenCalledWith(
+      { channel: PANEL_CHANNEL, type: 'ready', version: PANEL_VERSION },
+      '*',
+    );
     expect(text(f).trim()).toBe('');
     expect(search).not.toHaveBeenCalled();
   });
@@ -323,6 +332,20 @@ describe('PagePanel in the Firefox extension sidebar', () => {
     send(f, page(PAGE));
     send(f, page(null));
     expect(text(f)).toContain('Write a post');
+  });
+
+  it('accepts a sidebar one version older (0.7.0 sent no version)', () => {
+    const f = setUp();
+    send(f, page(PAGE, 'A story'));
+    expect(text(f)).toContain('A story');
+    expect(text(f)).not.toContain('needs a newer Mawkingbird for Firefox');
+  });
+
+  it('asks for an add-on update when the sidebar is older than it accepts', () => {
+    const f = setUp();
+    send(f, { ...page(PAGE, 'A story'), sidebarVersion: MIN_SIDEBAR_VERSION - 1 });
+    expect(text(f)).toContain('needs a newer Mawkingbird for Firefox');
+    expect(text(f)).not.toContain('A story');
   });
 
   it('ignores messages from anywhere but the extension page framing it', () => {

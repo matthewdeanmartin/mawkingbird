@@ -172,6 +172,7 @@ i18n-traps:
 
 test:
 	npm run design:inventory-check
+	npm run check:extension-protocol
 	npm run test:source-integrity
 	npm run check:libs
 	npm run check:dead-code
@@ -184,6 +185,7 @@ test-ci: test
 # costs about two minutes. The runtime test manifest is still checked.
 test-quick:
 	npm run design:inventory-check
+	npm run check:extension-protocol
 	npm run test:source-integrity
 	npm run check:libs
 	npm run check:dead-code
