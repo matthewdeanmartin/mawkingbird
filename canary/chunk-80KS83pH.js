@@ -1,1 +1,0 @@
-import{Os as Jo,jc as ee,pu as rr}from"./main-RTG6TWM2.js";var n=class e{loaded=new rr(1);snapshot=Jo(null);publish(t){this.loaded.next(t)}static ɵfac=function(s){return new(s||e)};static ɵprov=ee({token:e,factory:e.ɵfac,providedIn:`root`})};export{n as t};

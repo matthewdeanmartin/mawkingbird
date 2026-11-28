@@ -45,6 +45,7 @@
 <h2>Reading</h2>
 <ul>
 <li><a href="/canary/help/reading/home-feed/">Understand your Home feed</a></li>
+<li><a href="/canary/help/reading/people-lists/">Sort the people you follow into lists</a></li>
 </ul>
 <h2>Finding people</h2>
 <ul>
@@ -55,6 +56,7 @@
 <li><a href="/canary/help/finding-people/search-people/">Search for a particular person</a></li>
 <li><a href="/canary/help/finding-people/profiles-handles/">Understand profiles and handles</a></li>
 <li><a href="/canary/help/finding-people/follow-unfollow/">Follow, request, or unfollow</a></li>
+<li><a href="/canary/help/finding-people/new-people/">Size up new followers</a></li>
 <li><a href="/canary/help/finding-people/directories/">Find people through directories</a></li>
 </ul>
 <h2>Posting</h2>
@@ -109,6 +111,7 @@
 <h2>Reading</h2>
 <ul>
 <li><a href="/canary/help/reading/home-feed/">Understand your Home feed</a></li>
+<li><a href="/canary/help/reading/people-lists/">Sort the people you follow into lists</a></li>
 </ul>
 <h2>Finding people</h2>
 <ul>
@@ -119,6 +122,7 @@
 <li><a href="/canary/help/finding-people/search-people/">Search for a particular person</a></li>
 <li><a href="/canary/help/finding-people/profiles-handles/">Understand profiles and handles</a></li>
 <li><a href="/canary/help/finding-people/follow-unfollow/">Follow, request, or unfollow</a></li>
+<li><a href="/canary/help/finding-people/new-people/">Size up new followers</a></li>
 <li><a href="/canary/help/finding-people/directories/">Find people through directories</a></li>
 </ul>
 <h2>Posting</h2>
@@ -181,6 +185,27 @@
 </ol>
 <p>A successful page load does not always mean Mawkingbird can read the service. The result may tell you that a <a href="/canary/help/connections/cors-proxy/">CORS proxy</a> is needed.</p>
 <p>Do not install an extension that disables browser security checks just to make a connection work. Such an extension can affect unrelated sites you visit, including mail and banking sites.</p>
+<h2 id="how-the-check-works">How the check works<a class="headerlink" href="#how-the-check-works" title="Link to this section">#</a></h2>
+<p>Each service is checked in up to three steps:</p>
+<ol>
+<li><strong>Reachable.</strong> Do the bytes arrive at all? If not, a firewall, DNS filter,
+   extension or outage is in the way, and a proxy or extension can't fix it. The time
+   shown helps: a refusal comes back in milliseconds, while blocked traffic takes
+   seconds to give up.</li>
+<li><strong>Readable.</strong> Will the service let Mawkingbird read the reply? If not, the service
+   has chosen to block browser apps. Only the service can change that, so Mawkingbird
+   reads it through a <a href="/canary/help/connections/cors-proxy/">CORS proxy</a> instead.</li>
+<li><strong>Through your proxy.</strong> If you have a proxy, services that fail step 2 are tried
+   through it. If the proxy works but the connection still fails, check your API key,
+   your credit balance, or a permission you haven't granted yet.</li>
+</ol>
+<p>A browser doesn't tell a web page why a request failed. That's why Connection Doctor
+asks you to open the service in a tab and say what you see.</p>
+<p>If the tab shows a "verify you are human" check, your network is fine. The service
+blocks traffic it can't identify, and clearing the check in the tab won't make the
+connection work.</p>
+<p>Status-page links go to each service's own status page where it has one. Third-party
+outage sites are often out of date for small services, so some rows have no link.</p>
 <h2 id="results-can-change">Results can change<a class="headerlink" href="#results-can-change" title="Link to this section">#</a></h2>
 <p>Run the check again after changing networks, disabling a suspected blocker, configuring a proxy, or waiting out a service outage. A result describes this browser on this network at that moment.</p>
 <p>Related: <a href="/canary/help/connections/">Connections</a>.</p>
