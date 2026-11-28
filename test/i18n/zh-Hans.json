@@ -6569,8 +6569,7 @@
     "tagCount": "{{count}} 个／共 {{max}} 个标签"
   },
   "tagFilter": {
-    "failed": "无法创建过滤器。你的选择还在，请再试一次。",
-    "muteTags": "静音标签……"
+    "failed": "无法创建过滤器。你的选择还在，请再试一次。"
   },
   "terms": {
     "byMastodon": "此 Mastodon 服务器发布的条款。",

@@ -6283,8 +6283,7 @@
     "similarTitle": "Hashtag thường đi cùng #{{tag}}"
   },
   "tagFilter": {
-    "failed": "Không tạo được bộ lọc. Các lựa chọn vẫn còn đây; hãy thử lại.",
-    "muteTags": "Ẩn hashtag…"
+    "failed": "Không tạo được bộ lọc. Các lựa chọn vẫn còn đây; hãy thử lại."
   },
   "twitterImport": {
     "signIn.action": "Đăng nhập bằng Mastodon",

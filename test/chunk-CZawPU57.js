@@ -1,1 +1,0 @@
-import{n as i,r as p,t as c}from"./chunk-xhPNXteL.js";export{p as shippedStarterKit};

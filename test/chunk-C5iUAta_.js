@@ -1,1 +1,0 @@
-import{Es as Jo,kc as ee}from"./main-ABSYSBMD.js";var t=class n{component=Jo(null);static ɵfac=function(a){return new(a||n)};static ɵprov=ee({token:n,factory:n.ɵfac,providedIn:`root`})};export{t};

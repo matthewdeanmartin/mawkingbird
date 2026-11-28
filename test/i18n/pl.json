@@ -6238,8 +6238,7 @@
     "tagCount": "{{count}} z {{max}} tagów"
   },
   "tagFilter": {
-    "failed": "Nie udało się utworzyć filtra. Twoje wybory nadal tu są; spróbuj ponownie.",
-    "muteTags": "Wycisz tagi…"
+    "failed": "Nie udało się utworzyć filtra. Twoje wybory nadal tu są; spróbuj ponownie."
   },
   "terms": {
     "byMastodon": "Warunki opublikowane przez ten serwer Mastodona.",
