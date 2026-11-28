@@ -26,7 +26,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 // i18n pagesClientList.header.member.other: Client list · kept in this browser · {{count}} members
 // i18n pagesClientList.tabs.posts: Posts
 // i18n pagesClientList.tabs.members: Members
-// i18n pagesClientList.capped.note: Showing posts from the first {{shown}} of {{total}} members — merging every member's timeline is slow against a real server.
+// i18n pagesClientList.capped.note: Showing posts from the first {{shown}} of {{total}} members.
 // i18n pagesClientList.unresolved.note: This server couldn't find {{count}} of these accounts, so they aren't in the feed: {{handles}}
 // i18n pagesClientList.loading: Loading…
 // i18n pagesClientList.members.empty: No members yet — add accounts to this list from their profile.

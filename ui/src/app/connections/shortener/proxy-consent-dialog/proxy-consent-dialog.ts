@@ -10,22 +10,22 @@ import { ShortenerCatalogEntry } from '../shortener-catalog';
 // i18n shortener.proxyConsent.titleNoCredential: Send this link through {{proxy}}?
 // i18n shortener.proxyConsent.titleSelfHosted: Send your {{shortener}} key through your own proxy?
 // i18n shortener.proxyConsent.titleWarn: {{proxy}} will be able to read your {{shortener}} key
-// i18n shortener.proxyConsent.bodyCarriesCredential: {{shortener}}'s API refuses to answer web browsers directly, so Mawkingbird cannot reach it from this page. The only way to use it here is to route the request through the CORS proxy you have configured — and the request carries your {{keyLabel}}.
-// i18n shortener.proxyConsent.bodyNoCredential: The browser could not reach {{shortener}} directly. Retrying through {{proxy}} would let its operator see the destination URL you are shortening. No {{shortener}} account or API key is involved, but Mawkingbird still needs your permission before sending the URL to another service.
+// i18n shortener.proxyConsent.bodyCarriesCredential: {{shortener}} doesn't answer browsers directly. To use it here, the request goes through your CORS proxy and carries your {{keyLabel}}.
+// i18n shortener.proxyConsent.bodyNoCredential: The browser couldn't reach {{shortener}} directly. Retrying through {{proxy}} lets its operator see the link you're shortening.
 // i18n shortener.proxyConsent.aboutProxy: About {{proxy}}
 // i18n shortener.proxyConsent.shortenerPrivacyPolicy: {{shortener}}'s privacy policy
-// i18n shortener.proxyConsent.selfHostedBody: Your proxy is <strong>your own server</strong>. Your key goes to a machine you run, so nothing is being disclosed to anyone else. Just make sure the template you configured points where you think it does.
+// i18n shortener.proxyConsent.selfHostedBody: Your proxy is <strong>your own server</strong>, so your key only goes to a machine you run.
 // i18n shortener.proxyConsent.whoHeading: Who you would be trusting
 // i18n shortener.proxyConsent.theirWebsite: Their website
-// i18n shortener.proxyConsent.readTermsHint: Read their terms before you decide. A CORS proxy is a machine-in-the-middle by design: it sees every request it relays, including the headers.
+// i18n shortener.proxyConsent.readTermsHint: Read their terms before you decide. The proxy sees every request it relays, including your key.
 // i18n shortener.proxyConsent.riskHeading: What could go wrong
 // i18n shortener.proxyConsent.riskIntro: If {{proxy}} logged or misused what passes through it, whoever holds your key could:
 // i18n shortener.proxyConsent.riskCreateLinks: Create short links on your {{shortener}} account, pointing anywhere
 // i18n shortener.proxyConsent.riskDeleteLinks: Delete or re-point the links you have already made
 // i18n shortener.proxyConsent.riskReadLinks: Read the list of links in your account, and their destinations
-// i18n shortener.proxyConsent.riskReputation: Links made with your key carry your domain and your reputation. A rogue or breached proxy could use that to send people somewhere you would never send them.
+// i18n shortener.proxyConsent.riskReputation: Links made with your key carry your domain. A misbehaving proxy could point them anywhere.
 // i18n shortener.proxyConsent.scopeHeading: What this does not cover
-// i18n shortener.proxyConsent.scopeIntro: Only your {{shortener}} key. Mawkingbird still refuses to send your Mastodon session, or any other connected account, through a proxy. If you would rather not take this risk, you can run
+// i18n shortener.proxyConsent.scopeIntro: Only your {{shortener}} key. Your Mastodon session and other accounts never go through a proxy. To keep the key to yourself, you can run
 // i18n shortener.proxyConsent.runYourOwnProxy: your own proxy
 // i18n shortener.proxyConsent.scopeOutro: and select it under CORS proxy instead.
 // i18n shortener.proxyConsent.decline: No, don't send it

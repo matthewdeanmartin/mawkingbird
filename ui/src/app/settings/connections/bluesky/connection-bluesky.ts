@@ -21,7 +21,7 @@ const BLUESKY_ENTRYWAY = 'https://bsky.social';
 // i18n settings.connections.backLink: ‹ All connections
 // i18n settings.connections.bluesky.title: 🦋 Bluesky
 // i18n settings.connections.bluesky.intro: Your Bluesky timeline is merged into home, and replies, likes and reposts on 🦋 posts go back to Bluesky.
-// i18n settings.connections.bluesky.anonymousNoteSignIn: This works while you're browsing anonymously — you approve access on Bluesky itself, which doesn't involve a Mastodon account. Your Bluesky posts merge into home, and you can reply, like and repost them. Bluesky DMs are the exception: those live in Chat, which anonymous sessions don't have.
+// i18n settings.connections.bluesky.anonymousNoteSignIn: Works while browsing anonymously; you approve access on Bluesky. Your Bluesky posts merge into Home, and you can reply, like and repost. Bluesky DMs need Chat, which anonymous sessions don't have.
 // i18n settings.connections.bluesky.unlink: Unlink
 // i18n settings.connections.bluesky.unlinkNote: Unlinking forgets the tokens here — you can also revoke the app password on bsky.app.
 // i18n settings.connections.bluesky.unlinkNoteOAuth: Unlinking forgets this connection here and asks Bluesky to revoke Mawkingbird's access.
@@ -34,7 +34,7 @@ const BLUESKY_ENTRYWAY = 'https://bsky.social';
 // i18n settings.connections.bluesky.handleUnresolved: Couldn't find that Bluesky handle. Check the spelling, or try the full handle such as you.bsky.social.
 // i18n settings.connections.bluesky.oauthStartFailed: Couldn't open Bluesky to approve access. Try again in a moment.
 // i18n settings.connections.bluesky.handlePlaceholder: you.bsky.social
-// i18n settings.connections.bluesky.upgradeNotice: This link uses an app password. Switch to Bluesky's own sign-in: it is safer, you approve it on Bluesky's page, and nothing else changes. The app password is then deleted here.
+// i18n settings.connections.bluesky.upgradeNotice: This link uses an app password. Switch to Bluesky's own sign-in, where you approve access on Bluesky's page. The app password is then deleted here.
 // i18n settings.connections.bluesky.upgrade: Switch to Bluesky sign-in
 // i18n settings.connections.bluesky.upgradeFailed: Couldn't open Bluesky's sign-in. Try again in a moment.
 /**

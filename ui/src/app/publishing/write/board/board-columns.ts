@@ -77,7 +77,7 @@ export function columnLabel(column: WriteColumn): string {
 // i18n pages.write.board.column.ideas.hint: Anything jotted down but not started.
 // i18n pages.write.board.column.writing.hint: In progress — a draft you are still adding to.
 // i18n pages.write.board.column.editing.hint: Written, and waiting to be read back.
-// i18n pages.write.board.column.scheduled.hint: Parked or scheduled. Cards arrive here by being scheduled, not by being moved.
+// i18n pages.write.board.column.scheduled.hint: Parked or scheduled. Scheduling a post puts it here.
 /**
  * Translation key for what belongs in a column, for its empty state.
  *

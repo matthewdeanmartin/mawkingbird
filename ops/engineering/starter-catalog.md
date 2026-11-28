@@ -86,7 +86,7 @@ intentional uncommitted changes; do not reset it or recrawl just to update UI da
    Preserve `zh-Hant` throughout import, copy lookup, filtering and removed links.
 5. Run `npm run starter-locales:report -- --write` after any translation or locale
    registration changes, then `make starter-catalog-check`, targeted starter specs,
-   `make i18n`, and the required full `make test` gate. Build the UI before release.
+   and `make i18n`. `make test` and the UI build run in GitHub Actions on the push.
    The catalogue check is offline and rejects stale reports, missing content-language
    copy, missing controls, placeholder drift and registered locales without files.
 6. Review and commit taxonomy/generated copy changes in the source repository,

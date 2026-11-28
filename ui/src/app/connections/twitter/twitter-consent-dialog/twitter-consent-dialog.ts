@@ -47,19 +47,19 @@ import { TwitterSourceEntry } from '../twitter-source';
  */
 // i18n twitter.consent.titleSelfHosted: Send your {{source}} key through your own proxy?
 // i18n twitter.consent.titleWarn: {{proxy}} will be able to read your {{source}} key
-// i18n twitter.consent.intro: {{source}} refuses to answer web browsers directly — you just saw that test fail. To read tweets with this browser connection, requests go through the CORS proxy you configured, and those requests carry your API key.
-// i18n twitter.consent.selfHostedBody: Your proxy is <strong>your own server</strong>. Your key and your reading go to a machine you run, so nothing is being disclosed to anyone else. Just make sure the template you configured points where you think it does.
+// i18n twitter.consent.intro: {{source}} doesn't answer browsers directly. To read tweets here, requests go through your CORS proxy and carry your API key.
+// i18n twitter.consent.selfHostedBody: Your proxy is <strong>your own server</strong>, so your key and reading only go to a machine you run.
 // i18n twitter.consent.whoHeading: Who you would be trusting
 // i18n twitter.consent.theirWebsite: Their website
 // i18n twitter.consent.aboutSource: About {{source}}
-// i18n twitter.consent.readTermsHint: Read their terms before you decide. A CORS proxy is a machine-in-the-middle by design: it sees every request it relays, including the headers.
+// i18n twitter.consent.readTermsHint: Read their terms before you decide. The proxy sees every request it relays, including your key.
 // i18n twitter.consent.riskHeading: What could go wrong
 // i18n twitter.consent.riskIntro: If {{proxy}} logged or misused what passes through it, whoever holds your key could:
-// i18n twitter.consent.riskSpendCredits: <strong>Spend your credits.</strong> {{source}} bills per request, so a stolen key draws down the balance you paid for until you notice and rotate it.
+// i18n twitter.consent.riskSpendCredits: <strong>Spend your credits.</strong> {{source}} bills per request, so anyone with your key can spend your balance.
 // i18n twitter.consent.riskLookup: Look up any public Twitter account, post or search using your account's quota
-// i18n twitter.consent.riskReadingHistory: And separately from the key itself: because <em>every</em> X request goes through the proxy, its operator can see <strong>which accounts you read and what you search for</strong>. That is your reading history, not something you published.
+// i18n twitter.consent.riskReadingHistory: Because <em>every</em> Twitter request goes through the proxy, its operator can see <strong>which accounts you read and what you search for</strong>.
 // i18n twitter.consent.scopeHeading: What this does not cover
-// i18n twitter.consent.scopeBody: Only your {{source}} key and the Twitter content you look up. Mawkingbird still refuses to send your Mastodon session, your Bluesky account, or any other connected service through a proxy. No Twitter account password or session cookie is involved — this app never asks for one, and reading public Twitter data does not require it.
+// i18n twitter.consent.scopeBody: Only your {{source}} key and the Twitter content you look up. Your Mastodon, Bluesky and other accounts never go through a proxy, and no Twitter password is needed.
 // i18n twitter.consent.scopeRunOwnIntro: If you would rather not take this risk, you can run
 // i18n twitter.consent.runYourOwnProxy: your own proxy
 // i18n twitter.consent.scopeRunOwnOutro: and select it under CORS proxy instead.

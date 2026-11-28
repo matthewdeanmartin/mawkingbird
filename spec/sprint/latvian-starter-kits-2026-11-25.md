@@ -50,5 +50,5 @@ Browser/visual smoke was unavailable. No production/SEO build, full application
 suite, full-site browser loop, design-verify or integration was run; the routine
 Feed Builder registration/copy gate in the source playbook applies.
 
-Manual follow-up: [Latvian Feed Builder check plan](../../test_plans/feed-builder-lv.md).
+Manual follow-up: [Latvian Feed Builder check plan](../test_plans/feed-builder-lv.md).
 Changes remain uncommitted. No push, release or deployment occurred.

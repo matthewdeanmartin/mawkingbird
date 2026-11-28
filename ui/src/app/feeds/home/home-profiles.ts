@@ -59,7 +59,7 @@ import { LoadMoreWhenVisible } from './load-more-when-visible';
 // i18n pages.homeProfiles.dataActivity: Data activity
 // i18n pages.homeProfiles.dataClose: Close
 // i18n pages.homeProfiles.dataRefresh: Refresh status
-// i18n pages.homeProfiles.dataIntro: While the app is open, it saves the newest posts of about one person you follow each minute, people close to you first. Mutuals are checked again after a day, others after three to seven days, and people who have not posted in 90 days are skipped. Update posts does the same now for everyone who is due. Opening a person always gets their newest posts.
+// i18n pages.homeProfiles.dataIntro: While the app is open, it saves the newest posts of people you follow, a few at a time, closest people first. Update posts catches everyone up now. Opening a person always shows their newest posts.
 // i18n pages.homeProfiles.dataRunning: Current job: {{job}}
 // i18n pages.homeProfiles.dataPosts: {{posts}} posts saved from {{profiles}} profiles
 // i18n pages.homeProfiles.dataEligible: {{count}} active profiles waiting for a recent page

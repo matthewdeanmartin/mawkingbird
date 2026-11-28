@@ -32,8 +32,8 @@ import { Terminology } from '../../i18n/terminology';
 // i18n feedAnalytics.empty: Nothing to analyze — this feed has no posts yet.
 // i18n feedAnalytics.checkup: Want to know what to change?
 // i18n feedAnalytics.checkupLink: Run a feed checkup
-// i18n feedAnalytics.sample.paged: Analytics for the <strong>{{count}} {{posts}} sampled</strong> from this {{feedType}} feed ({{query}}) — not the whole feed. Spans {{span}}, collected {{collectedAt}} in {{calls}} API {{callsLabel}}.
-// i18n feedAnalytics.sample.supplied: Analytics for the <strong>{{count}} {{posts}} currently loaded</strong> in this {{feedType}} feed ({{query}}) — not the whole feed. Spans {{span}}. Load more posts in the feed to widen it.
+// i18n feedAnalytics.sample.paged: Analytics for the <strong>{{count}} {{posts}} sampled</strong> from this {{feedType}} feed ({{query}}), not the whole feed. Spans {{span}}, collected {{collectedAt}} in {{calls}} API {{callsLabel}}.
+// i18n feedAnalytics.sample.supplied: Analytics for the <strong>{{count}} {{posts}} currently loaded</strong> in this {{feedType}} feed ({{query}}), not the whole feed. Spans {{span}}. Load more posts in the feed to widen it.
 // i18n feedAnalytics.sample.sizeAria: Sample size
 // i18n feedAnalytics.sample.label: Sample:
 // i18n feedAnalytics.sample.optionTitle: Sample {{count}} {{posts}}
@@ -51,7 +51,7 @@ import { Terminology } from '../../i18n/terminology';
 // i18n feedAnalytics.tiles.noEngagement: No engagement
 // i18n feedAnalytics.tiles.medianPostAge: Median post age
 // i18n feedAnalytics.help.about: About {{stat}}
-// i18n feedAnalytics.help.postsAnalyzed: Posts in this sample, boosts included. Every number here describes the sample, not the whole feed.
+// i18n feedAnalytics.help.postsAnalyzed: Posts in this sample, boosts included. Every number here describes this sample.
 // i18n feedAnalytics.help.uniqueAuthors: Different people who wrote the sampled posts. For a boost, the original author counts.
 // i18n feedAnalytics.help.instances: Different servers the sampled posts were written on.
 // i18n feedAnalytics.help.topAuthorsShare: Share of the sampled posts written by the five most frequent authors. High means a few accounts fill this feed.
@@ -122,7 +122,7 @@ import { Terminology } from '../../i18n/terminology';
 // i18n feedAnalytics.engagement.byType: Average engagement by post type
 // i18n feedAnalytics.engagement.mostEngaged: Most engaged posts
 // i18n feedAnalytics.conversations.title: Conversations
-// i18n feedAnalytics.conversations.description: Inferred from reply links already present in the sample — no conversation contexts were fetched, so threads reaching outside the sample are only partly visible.
+// i18n feedAnalytics.conversations.description: Worked out from replies in the sample, so threads that reach outside it are only partly shown.
 // i18n feedAnalytics.conversations.distinct: Distinct conversations
 // i18n feedAnalytics.conversations.multiple: With more than one sampled post
 // i18n feedAnalytics.conversations.postsPer: Sampled posts per conversation

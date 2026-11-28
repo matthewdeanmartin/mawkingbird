@@ -32,29 +32,26 @@ import {
 // i18n settings.connections.doctor.intro.a: Some networks — offices, schools, hotels, some countries — block whole categories of site. This checks every service Mawkingbird can talk to and tells you which ones this network will let your browser reach, so you find out
 // i18n settings.connections.doctor.intro.before: before
 // i18n settings.connections.doctor.intro.b: making an account and paying for an API key, rather than after.
-// i18n settings.connections.doctor.noCredentials: Nothing here needs a key or a login, and no credential you have already saved is used or sent. Every request is an unauthenticated public URL.
+// i18n settings.connections.doctor.noCredentials: No keys or logins needed. Your saved credentials aren't used.
 // i18n settings.connections.doctor.checking: Checking…
 // i18n settings.connections.doctor.checkAgain: Check again
 // i18n settings.connections.doctor.checkAll: Check all connections
 // i18n settings.connections.doctor.summary.working: {{count}} working
 // i18n settings.connections.doctor.summary.needsSetup: {{count}} need a proxy
 // i18n settings.connections.doctor.summary.blocked: {{count}} blocked or unreachable
-// i18n settings.connections.doctor.controlFailed: The control host failed too, and nobody blocks that one on purpose. Your browser is probably offline, or something is blocking everything — treat the rest of this page as untrustworthy until that row is green.
+// i18n settings.connections.doctor.controlFailed: The control check failed too. Your browser is probably offline, or something is blocking everything. Treat the rest of this page as unreliable until that row is green.
 // i18n settings.connections.doctor.thirdParty: third-party
-// i18n settings.connections.doctor.followup.explain: Your browser could not fetch this in the background — but that alone cannot tell a network block from a CORS rule or an ad blocker. Opening it in a tab can, because a normal page load shows you the real reason.
+// i18n settings.connections.doctor.followup.explain: Your browser couldn't fetch this in the background. Open it in a tab to see why.
 // i18n settings.connections.doctor.followup.openLabel: Open
 // i18n settings.connections.doctor.followup.openSuffix: in a tab ↗
 // i18n settings.connections.doctor.followup.statusIntro: If it reports everything operational, the problem is more likely on your side than theirs — worth ruling out an outage first:
-// i18n settings.connections.doctor.followup.noStatus: This service publishes no status page, so there is no way to check whether it is having an outage — the tab test above is the only signal available.
+// i18n settings.connections.doctor.followup.noStatus: This service has no status page, so the tab test above is the only check.
 // i18n settings.connections.doctor.report.legend: What did that tab show you?
 // i18n settings.connections.doctor.corsSection.title: About "just disable CORS"
 // i18n settings.connections.doctor.corsSection.intro: These hosts answer your browser but will not let this app read the reply:
-// i18n settings.connections.doctor.corsSection.badTrade: It is tempting to reach for a browser extension that turns CORS off, and you will find people recommending exactly that. It is a bad trade: those extensions cannot be scoped to a couple of domains in any meaningful way, so you would be disabling a protection that applies to your bank and your webmail in order to read a timeline — and the moment you forget it is on, every site you visit is running with it.
-// i18n settings.connections.doctor.corsSection.whitelist.a: There is also nothing to whitelist. Refusing is the
-// i18n settings.connections.doctor.corsSection.hosts: host's
-// i18n settings.connections.doctor.corsSection.whitelist.b: decision, made on their server; nothing installed on this side changes their mind. That is exactly what a
+// i18n settings.connections.doctor.corsSection.whitelist.a: Only the host can change this. A
 // i18n settings.connections.doctor.corsProxyLink: CORS proxy
-// i18n settings.connections.doctor.corsSection.whitelist.c: is for — it fetches on your behalf from somewhere the rule does not apply, and it is scoped to this app instead of to your whole browser.
+// i18n settings.connections.doctor.corsSection.whitelist.c: reads these services for you, and only for this app.
 // i18n settings.connections.doctor.corsSection.noProxy.a: These services cannot be read in this browser without a proxy.
 // i18n settings.connections.doctor.setOneUp: Install Mawkingbird Native
 // i18n settings.connections.doctor.corsSection.noProxy.b: to connect directly.
@@ -63,17 +60,7 @@ import {
 // i18n settings.connections.doctor.proxyRefused.fix.a: Some services block datacentre addresses used by proxies. You can connect from your computer with
 // i18n settings.connections.doctor.differentProxyLink: Mawkingbird Native
 // i18n settings.connections.doctor.proxyRefused.fix.b: .
-// i18n settings.connections.doctor.explain.title: What this can and cannot tell you
-// i18n settings.connections.doctor.explain.p1: A background request that fails reports nothing at all to JavaScript — not a status, not a reason. That is the browser's own privacy rule, not a gap in this page: a site is not allowed to learn what else your network can reach. So a red row means only "this did not answer", and the cause could be a firewall, DNS filtering, an extension, a bot check, or a service having a bad day.
-// i18n settings.connections.doctor.explain.p2: Opening the host in a tab is the missing half. A top-level page load isn't subject to those rules, so the browser will show you the block page, the certificate warning or the DNS error directly. Those pages are privileged and unreadable from script, which is why the page has to ask you what you saw rather than detecting it.
-// i18n settings.connections.doctor.explain.p3: It also catches the case that isn't an error at all: if a service greets you with "verify you are human", your network is fine and the service simply doesn't want traffic it can't identify. Worth knowing, because clearing that challenge in a tab does not make the connector start working.
-// i18n settings.connections.doctor.explain.p4a: Each row is checked twice, which is why "reachable" and "readable" are reported separately. The first request only asks whether the bytes arrive; the second asks whether this app is allowed to look at them. A red row failed the
-// i18n settings.connections.doctor.first: first
-// i18n settings.connections.doctor.explain.p4b: question, so CORS was never involved and no browser extension can rescue it — the traffic isn't getting through at all. How long a row took is shown for the same reason: a refusal comes back in milliseconds, while traffic being silently discarded takes seconds to give up.
-// i18n settings.connections.doctor.explain.p5a: There is a third question this page cannot answer at all: whether the service is simply having a bad day. A failed probe proves the bytes didn't arrive
-// i18n settings.connections.doctor.here: here
-// i18n settings.connections.doctor.explain.p5b: , not whose fault that is — so each row links to the vendor's own status page where one exists. Read those as the authority on their own incidents, and anything marked third-party as a hint rather than a verdict: outage aggregators covering small services are often stale, and were observed calling is.gd down while it was demonstrably serving requests. That is why a few rows link nowhere.
-// i18n settings.connections.doctor.explain.p6: Anything that is reachable but unreadable gets a third check through your CORS proxy, if you have one. That is the one that tells you whether a service is actually usable — and if the proxy fetches it fine while the connector still fails, the problem is past the network entirely and worth looking for in your API key, your credit balance or a consent you haven't given.
+// i18n settings.connections.doctor.explain.more: How Connection Doctor works
 
 /** A target joined to its verdict and whatever the user reported about it. */
 export interface DoctorRow {

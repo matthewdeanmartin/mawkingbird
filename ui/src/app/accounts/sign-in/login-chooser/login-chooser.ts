@@ -23,7 +23,7 @@ import { LoginDoors } from '../login-doors/login-doors';
 // i18n loginChooser.anonymousLink: Look around without an account
 // i18n loginChooser.instead: instead.
 // i18n loginChooser.countViews: Count my page views
-// i18n loginChooser.privacy: Anonymous page counts only — which kinds of page get used, never which account, post or tag you looked at. Unchecking this means the analytics script is never loaded: nothing is fetched, counted or sent. You can change it later in Settings.
+// i18n loginChooser.privacy: Anonymous page counts only. Accounts, posts, tags and searches are never recorded. You can change this later in Settings.
 
 /**
  * "Which network are you on?" — the two-door chooser at `/login`.

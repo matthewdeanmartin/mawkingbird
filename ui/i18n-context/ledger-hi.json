@@ -52,8 +52,8 @@
     "translation": "db8f173e1485afcc48a9373074159449c8dbd8c1b62193d3fa2640cddb472a5b"
   },
   "accountAnalytics.audience.explainCta": {
-    "source": "5721557cfe237a10d3cfb68538facd225c60bd754508890ac7be1f288dc2c6da",
-    "translation": "5a89bf2ba150237a4e5361b9823e31921de1e7fa1e3f08995455188f15cc3b96"
+    "source": "987cb7318ee494c390fe89a24e664da0d0fe20d0a26b816e97bdb41047038891",
+    "translation": "69b9f846a078c3abac63ed154757e5fb476386fccb2d25475cd715427d981bf3"
   },
   "accountAnalytics.audience.followers": {
     "source": "02e5529943b5e30c194fb21a475f078a88883d55f04148cc4edf1c28b344cb42",
@@ -172,8 +172,8 @@
     "translation": "74500de82e09293b2a4a8fb797e86fbd8b10de105d5f0b2e647ab7d69f605c6d"
   },
   "accountAnalytics.languages.explain": {
-    "source": "d263ad6aed6087ba22ac1ed391df319865b19d2a0853cf6487346893aa078d8e",
-    "translation": "576292dd75e2f684b80cd5ee0bf47cc781dc228c6321def61a340537d140813f"
+    "source": "ae006d59499f3999e2fc9e4fa57b01aa2c32eb9ecd063f7f73d6a7f98412e24b",
+    "translation": "4936d15b96224af322fb69a7e0a4814ec1a69902b3b818d6da79318ae6d7088e"
   },
   "accountAnalytics.languages.heading": {
     "source": "f6c59d16328ecc24f10c969e96409cfbf1dfd9a8a73c8d9c670a051277f0801a",
@@ -348,8 +348,8 @@
     "translation": "dcc28cccd479aa56f0e8005439e42e234aca92017f7b206e95a8d71490c4e096"
   },
   "accountAnalytics.whenTheyPost.explain": {
-    "source": "c8e6f80312400398778d44242c1cf9b360cb3519e9c165dd590eab81da48b039",
-    "translation": "f3fb0a269449417e667fe2cd754924636ce952014a720c0e3a31d1f433f8faf9"
+    "source": "1165b28641112b9099bb3113ed82bd5b8fb82d906c47a3427f9593b4411d180b",
+    "translation": "873344616869b68048da8ff2ef9e31f8932adb3614a96c001026aa41d92626fb"
   },
   "accountAnalytics.whenTheyPost.heading": {
     "source": "96829e73817ed5cc250207fb6c6c59c6e57fdd1a7d70cfb5998ff5eb79cd582f",
@@ -1896,8 +1896,8 @@
     "translation": "2529392fcd414caf02ae0cf17a16783754de894f6d9cd4d8e8bede2136ede55f"
   },
   "compose.translateDialog.intro": {
-    "source": "93c6db7b6e32c22d3598b8ef3af13438bdbf9ca94cf65117dc0144e764e55866",
-    "translation": "00b0af1137a8f00647d05fbe9e44bb881c061ef66d5da650c379d5da264546ba"
+    "source": "e1a92ce6fbf6735516e255088af8ff8044c76efb9de66f376a00ae8f1a66c01a",
+    "translation": "c29c07b4484a40edbaf359fd08fc139a2f33ad58baf53d9e8d24f4c4b7de2511"
   },
   "compose.translateDialog.replace": {
     "source": "903366bedb3e7136987a54bd7e93fa4b78a3535bc524f853030fe3d131e0f070",
@@ -2584,8 +2584,8 @@
     "translation": "ed7db025216f2d1c079dc9c9b8ec068806c36405e0c9817de8ba6d0cba49a035"
   },
   "pages.directory.blurb": {
-    "source": "86fbe56ca4553224dbd15a35a0c07d4e851e024a8afe5a9e12903d109e243f01",
-    "translation": "5917ebdadd73f0c90b44833cc5d9d5be6208b962c0c9a436cee0674162e3d735"
+    "source": "9f796deb70c58c8ec4906b7b55c08dffe35875d7d3e9523f49d05a1b1652989c",
+    "translation": "f79cc33475e65bbbb9e696603082e6a347dae508650011dffe624f8438d8e64a"
   },
   "pages.directory.errorMessage": {
     "source": "3f18d1bd763e2433beb67b175b646a2789e08c8c0d1cf978015bda2ddf8566bd",
@@ -2616,8 +2616,8 @@
     "translation": "12ec2805bd07deaff4d14dd49d061c556aefcb5f18caf1d6df1e25f86b9aaadc"
   },
   "pages.directory.remoteNote": {
-    "source": "b08780ba52aa194f07054ec6638a1cd5a39546a361b0f5f527426f355a4439f1",
-    "translation": "1a4a4cb07fbd0dca3801bc2411c549812c5e3debd6e4e3ffbc91261fbee61b1a"
+    "source": "9cc55ed9b0c281bf175a1853cac5119a1884359cf452362318b06b66a37e4ca2",
+    "translation": "1b269ca97d05d4b9ed27937b0dec164918e13e4c711d88a136597ebf80803873"
   },
   "pages.directory.searchFallback.a": {
     "source": "d29cdec7c731766816e6e53fc4c16cd8fcc909c678e5213afd0f17e0a715dec1",
@@ -2832,8 +2832,8 @@
     "translation": "1bb89205369a826b9ce080ae9032bde5d5051e76ca1d9fae8a51b3f1b1913f7f"
   },
   "pages.drafts.intro": {
-    "source": "2de7bd5407726d5deb21d6450f295ceb6e81118e5f2d962500b84f3e96bbdc56",
-    "translation": "6c7a6d16191f4dd387716eb6cb0023986649616ad946a9e02a71ced144d7da08"
+    "source": "c0fcea723b23bdae737e856bcae5da0f1255ca03dd94f0e1274b3ca65d98fee6",
+    "translation": "fceafad26a93434940fe00711226c1a58430a3b7a7f6fb6a5cb4f741446d2bd6"
   },
   "pages.drafts.kind.originalDraft": {
     "source": "ca47b25ef7daf6e0df39c073c6d3973083ebd3876d9ccd64b1267c26467598dd",
@@ -3508,8 +3508,8 @@
     "translation": "089e8d7c4135cba61de39ce738dee06ff72d12828add4837df7f1980c02d47a6"
   },
   "pages.home.filters.calm.title": {
-    "source": "f5bdb685bbf128ecfcdaabff72e2dd24f09650f876c84694c62da5d86208d3c4",
-    "translation": "4a7da4e9aa46ba0257cd24ab09651ff973f7f7e516a44cc8ad5dad7455c9b308"
+    "source": "ddadd896d02b6fa1aa1e8d2afb9d220e769e6430e28eac5dc9e9c17a86cc4394",
+    "translation": "7ee27639df8d24add8e7085ca96d33106764d8f6d0918d91fa31aeeba7dc67dc"
   },
   "pages.home.filters.replies": {
     "source": "9d54b171d138ada8c1a683fd6df9274e946c5ba33a5351c00aaa19d2e8ac747d",
@@ -4168,8 +4168,8 @@
     "translation": "c82d8bec3de8afedb21718adfd9b4d85ac99e9fb97616b48e32d4d6420cd3f23"
   },
   "effectiveAudience.how.zombies": {
-    "source": "8aa14e7fb42926adfd690d432ca25e2dae337183a88ef83c509cad2dc8fd97e0",
-    "translation": "a91a435d85d458100ba8ace44faf46d591527cdb87521311ec611ed9fb22a6b4"
+    "source": "fe7e6fb42125924a4a653fbcd153d317d7fa312cdc857fb3858302a1314e20d3",
+    "translation": "2802bec3e7a2ffcb77de8480030af8952caa58e40f8bf591fa669ddb4cc48054"
   },
   "effectiveAudience.howTitle": {
     "source": "80764d923b66072a7617f702c46c9a17eaadd5270772fad94f2bc474152aa23c",
@@ -4228,12 +4228,12 @@
     "translation": "fff71a84ff6ec9a8945f9685ad6c3abe2d66431524d57a2538d81284db49dee8"
   },
   "effectiveAudience.reading": {
-    "source": "8a1d683afec1995a8915c014cd2cc155ac51cc8257790ee493cb6b842236ad9e",
-    "translation": "e60a70ceebdb11c583950d2b48577ab7fa49b75f6ff8fb9a3f6ed472d9731788"
+    "source": "75813bb73212a7b8b55cc342476620ebde957a7586f9015e0c055c95fd028486",
+    "translation": "a763da1188014ce30d69adae6d64a24e3f764a519541c2217440964883e24e1d"
   },
   "effectiveAudience.sampled": {
-    "source": "3d657e044fddb074480115311dfa9ee37e662abffd689c218b54509b84ea5957",
-    "translation": "ff121d0825b6821c4fa29616038b0ec3a6c5d6bb390986bd017e5035a09f7c7f"
+    "source": "c71f9c1c5db526b93087cd776aab3e7f9208ffb95100794091a9cee1e2871651",
+    "translation": "51b03acc0b8c6751fcb9ba39d00d2b0beb33ef78c161d11df6a3f482ec219ef3"
   },
   "effectiveAudience.scan.one": {
     "source": "0cf958b9ebb5791843f969a9492103384013de6f1af085c67a68f7249100bb41",
@@ -4376,12 +4376,12 @@
     "translation": "0582b7fd29541a0d7d5547751a77a0cd0b684d501ce121628686e57d930698cc"
   },
   "failWhale.notServerHint": {
-    "source": "0644adcc9324419407a3d41254b0894d0b5d639de442a5c3d8357c38ca86602b",
-    "translation": "38c429e0400b8cf9a218661fe4fa9b7be1f78ca8490611c85e8b0bfe12fd50fc"
+    "source": "335fa3825be1bba9034b5c9b7d130c6d205253083f5ee463724ebb951015f202",
+    "translation": "c84bd63d7b6f0374fc2e7e966211d3d71e6dcbff3cbd682c82a6b6cd46bf14c1"
   },
   "failWhale.offlineNote": {
-    "source": "46e6ef6da9875243f4220f2318cd419a254ced4d86f6c78d744a646b62f37df0",
-    "translation": "cd6198debc78cf9314e470d229737a09df57da6f9a2b3844bf827ae74aed1973"
+    "source": "ff871d771b5ded98585a61f67371698a512b83e2f75f5ca5fcac8ecaf863cd61",
+    "translation": "c597582161bd744c0108941dad9d20be855d4efab5930fe506f5b09880dbd5a5"
   },
   "failWhale.openDoctor": {
     "source": "f2aa1f64732a252f623873c4fe90c4a391e2020292b4c09a9a372d6d90a36e09",
@@ -4560,8 +4560,8 @@
     "translation": "8af758c4f3099cdc0d98214f1d9adef6ca791ad3c3afce3983e5da2215d9b6c9"
   },
   "feedAnalytics.conversations.description": {
-    "source": "c7330c837c20d9a8c08c580d72b03e714c6c4b7c316d6d4308e93f3806b4fa05",
-    "translation": "cd33ead6b17cae4bdac7b946925609101ad95d2abc4cde70702667c10a1d6b05"
+    "source": "287f9c82121b671bdf9486a0eb81e13f0de5aa1931c332c8e9eb877fb3ab4db1",
+    "translation": "f319a516dd4fea2555f4e354b3d060085e0647bf2115c599f82b9a1cbd3a5ee7"
   },
   "feedAnalytics.conversations.distinct": {
     "source": "fcf8435675fe4bf267b83c29feb596b498720a3e0ccf66babe7b466f13f14d87",
@@ -4888,8 +4888,8 @@
     "translation": "082997764e7fa0341e9a1da27a89dea240deca595d7e2663200b19a51cc1771c"
   },
   "feedAnalytics.sample.paged": {
-    "source": "2cc1a4b3125b4b2790ef47b7103635ea509df97073276d399709a634b6d40b25",
-    "translation": "afb72d28bf999da0ea37a6186041295002dcbef64906ad3f91ad14a98fc789b3"
+    "source": "a507febc86dee85af533a7e8bd706eb09f7a9ce4b03c74ce974351301bb8015c",
+    "translation": "6af38fe5b6ce206e78c968dcf065abd4902b07725aa607e7a9f3233932473ec8"
   },
   "feedAnalytics.sample.refresh": {
     "source": "6874c699c87caba27661c21ebc4e1a469947b52062b2081e2568f3a7e8a1623a",
@@ -4900,8 +4900,8 @@
     "translation": "560e42e59ad2aa7efbd761145122c464c06270872449baa59283b09f8d93870e"
   },
   "feedAnalytics.sample.supplied": {
-    "source": "92ef3f93f7909301a1ecb85d0dc72fc808168a2a5bea79be49cec5236ae86c4e",
-    "translation": "3639991f9bd400dbd3deba4429451e97245e7d1680b221a91924175236339d8c"
+    "source": "6b2438684e0847b1f83786ef4ccb9590766355492480acf33dd08d20c677b513",
+    "translation": "5fa312048021f15f19ec9eca8bee029cfa5425d48d63eb98e4d6aeb5e0b69172"
   },
   "feedAnalytics.span.days": {
     "source": "efde02b1d30208b5c7c37fb10ef5c4caa24878755ee79e0b6ba39e39ccaf6869",
@@ -5120,12 +5120,12 @@
     "translation": "b7e10900e26ec645ae4c124ae09753a8547e8d3bea4f3a5a2deae8f627a9652a"
   },
   "feedMembers.summary.one": {
-    "source": "21b49fd153c52078be1263125876e0215eb5d36c56bd9e32229d68e6ff452863",
-    "translation": "7f1c7d07e4433889c967ec05e1f10455ec8f644725b9207fe8aefe5263a7d2e6"
+    "source": "0beb1d6df8a5891099a8449fc2c9c34f8536cf0883036fcbec4b9730d4009430",
+    "translation": "c6d1d233a8c0d33ea2beb4ad9434a81e49f085f4e834d28ddd09cb89781864ca"
   },
   "feedMembers.summary.other": {
-    "source": "853152d97ea69b10e16dde3b7592f746402ed8c672cb83d59345b1e9d8fdff0b",
-    "translation": "fd54a81776d86654dc3c9ee7782cdc22df4d593fe2ca724c028a1554c47f614d"
+    "source": "5ce8ae12ca12d3215d5c8778f3c4371d792ef2bd9c9c913bb1b59fa2459dc160",
+    "translation": "94d79ad58269d691a1f0117441220be6ec6b6630de7b6b821505c533da30c7db"
   },
   "firstRun.accountQuestion": {
     "source": "1ccc13fc7b853748cf0d25e814c1167b9a0b822a4fc165ae2387d88bb0a9e5f5",
@@ -5892,8 +5892,8 @@
     "translation": "8dbee1f296d71d52958914b724f25b6a0f5676cef42c4d92e35d8b4ac7799d7a"
   },
   "loginChooser.privacy": {
-    "source": "4de49932afdd74f52e91668cad362afc14b73188088ca763486d1f4a80b9d8e6",
-    "translation": "53aaced589fb7ffb830deee9db3dc6c85f1b6f4f54c4f03fa3081e7f9d7b3f17"
+    "source": "173d6c749682e4ee06015dc94df1c94fe2a00836012828641e3fca8f131e67f4",
+    "translation": "b08baebca789b43b0fcbaf7ce46e091a46a69331f41e0a4949833b15e0da3b76"
   },
   "loginChooser.subtitle": {
     "source": "d44bf5a734e1f4f59e612f2c2d28e5ca297a51d905ef23a66c8593c9223c58b0",
@@ -5952,8 +5952,8 @@
     "translation": "47f9112ae32cd382c47ebe1ce7ea6c5695957a5f14d4541f5968187dfac6eeb7"
   },
   "pages.algo.filter.calmTitle": {
-    "source": "cb90c03a76a366f18bb2c040a73c1d5c5c734a6c6b7e5314ce48c0aa08b5a3ed",
-    "translation": "41798328d29db7f3d97a39566cd24addb512609a2dfdad2d4f5293440084a00d"
+    "source": "6d2057c1af7311567219c55ca457818c7aded0a07bb58edaefc1f5ba8a74e568",
+    "translation": "3588bff63f9e702e9ca6329a42919cb3d9bbfe90b2ee70eb3123ff88f21a66ab"
   },
   "pages.algo.filter.friends": {
     "source": "964daf82bd9ccf04588f37f23f2f5a4984d7c568718e2cc33f61075f75f01072",
@@ -6328,8 +6328,8 @@
     "translation": "564a99b39a9fed2505a493a7b1742d2f5449ff505b3190e013a04068a455dcec"
   },
   "pages.lists.profileList.hint": {
-    "source": "cf69478fc24b030c62aecd427e34a00f1dfed918dd2a606a05a577e7b8c826b7",
-    "translation": "0e3938723b0a7f35aff2b989122f71d70c0d1c112caab7dfca6f602f2019315b"
+    "source": "fa092e837ab8372ed9a89c8f40ac2923e2be5957e0645873c5a0edcb10a72d87",
+    "translation": "512947ce390bf13bd389c544e9948ab357a484c3512d4e57533bb23f2a801920"
   },
   "pages.lists.profileList.newNamePlaceholder": {
     "source": "bed6fde2b40670b84bb6d274806332e6a7f0c792c5c486d2df71c05b47c8ddc3",
@@ -6724,8 +6724,8 @@
     "translation": "c1f3ab91f5434b3632b887ad41ef0c258b6a03b2fc7d1b63cec64c67fabf7c5b"
   },
   "pages.login.privacy.explain": {
-    "source": "4de49932afdd74f52e91668cad362afc14b73188088ca763486d1f4a80b9d8e6",
-    "translation": "2b604b4f4da4106813f89e5a702dd6acfb42c206b67859fc34a331f31b650568"
+    "source": "173d6c749682e4ee06015dc94df1c94fe2a00836012828641e3fca8f131e67f4",
+    "translation": "b08baebca789b43b0fcbaf7ce46e091a46a69331f41e0a4949833b15e0da3b76"
   },
   "pages.login.register.agree": {
     "source": "ef1c9dc9022f872dcab385e80aaad583e6c3cdef6e2c38d3d2a42a3a28382828",
@@ -7216,8 +7216,8 @@
     "translation": "5111b8eacf72a3e0b0dc4ecb056f3bb0a09f13a835e4bfc9f41bb69d9dc0b17b"
   },
   "pages.observability.chart.responseNote": {
-    "source": "102e0d254efc03731cb543be7531bd2bbe93b0f03764efba71af839a8e9e4e68",
-    "translation": "a822c9891ec40227f0a35799bed77015d59d3c548ba3220ed28133c23e81671c"
+    "source": "38b390707cab1ef4d0180c07bc229aebcf6d3c89562bbc7a4be343cb0015623c",
+    "translation": "03181b5d270dfac17f1238c31fa383df988614d599ed6870a95e8d5ad3dd4b30"
   },
   "pages.observability.chart.searchMedia": {
     "source": "385a0976e7d42feecbbaa7e2b7270a07eb42b675f9cd852572f2d2b805c26520",
@@ -7284,8 +7284,8 @@
     "translation": "525297579f270c643a4250a0af9c8b3d9c08d85b00abb9e18d865b6b85261d77"
   },
   "pages.observability.clientErrors.note": {
-    "source": "c00eacafe1179441f07a3dd73be3b1fa7d2ff261c54ef6736f445aef2fddc259",
-    "translation": "b705c44e2463aa80d76f1150218ff66b97fa8dccb2464bd050c8e00320571e10"
+    "source": "725c1c9d7d4b4a003f5ceb738eb34da3581688a552e95b1dd19a73ab697dc3fa",
+    "translation": "d3eb071b7e645bf80d599fe458f4c01c4fe5137b90e55980e7f3ee8a0b2552a5"
   },
   "pages.observability.clientErrors.occurrence.one": {
     "source": "82a85893d3c79789514cdbd4918868e43217f93dddf83f727b4f0090a3a16511",
@@ -7328,8 +7328,8 @@
     "translation": "9e3c92281ba9db56716282d8ef57d1ff5c9889dcdaeb1a1222405eeb1a545063"
   },
   "pages.observability.cors.note": {
-    "source": "3df4ddde0953bc4850d25f4081b4a9944564013fcfedef4b3ca875f6e5c3d5cf",
-    "translation": "81e39ce2648c5eaa1b7569d74cd46e3ec3e9cd22adaa22213ff30dd72194b986"
+    "source": "ea501e15ef4861a57e94e9a16f2f628b74ee545f12981d8f6a41cb0412049e72",
+    "translation": "d6a2527b9648c2f3f5e1d1e7432b1ba4c3032339d6f993fd7f7671cbb74c7ebb"
   },
   "pages.observability.cors.requests": {
     "source": "9c98422006c9e96b545e48bad213ebfa4fe04d54d049c3cb67e2f7f2c6faca1e",
@@ -7364,8 +7364,8 @@
     "translation": "c6925966173b0bc1f7b3ce9dd36f9e8c5bb97669b08f70420e97143ae40046e1"
   },
   "pages.observability.diagnostics.note": {
-    "source": "086ddb23cf2c4f385ba139dc9f968fd65f734488a5176bb62eac2090f4724bff",
-    "translation": "ca7c2c27ab05c327cea900d5f4c40ff813a1c3c9bf097744023f0bc7b2ab7839"
+    "source": "ca68cbbc7cee76f7eca334a45965f1a2e1b04c1c3cac04710ab40a3c4301fca2",
+    "translation": "ff8a50c027b229a2e74327ee11a49c771e42740825277009fe0f96e8c0a79744"
   },
   "pages.observability.diagnostics.retained": {
     "source": "a8d7f35f9794398237af6e9196f02a26bc10907da0521bb52c957470f259de45",
@@ -7444,8 +7444,8 @@
     "translation": "97f3c5a68605209d95c22f8c79cbb93354657d55eb178bdd9d9df20189aae03a"
   },
   "pages.observability.intro": {
-    "source": "c489498abe7770bb7f944ae9006f1b6b83d28087f8d4fc3cd084f7ea79d2046f",
-    "translation": "0f1348ce303ca7b882fc55ee3f88ca53bc92ba82166d42456e142843af7cd945"
+    "source": "603a14234a088d99cd244c3d8e39a3afa3431146e4daaa178c086db7fef9b702",
+    "translation": "eea745e3ec1ebb667f100abda029166af7924f6be08f45c3a31cfb77e1a2122a"
   },
   "pages.observability.mawkingbird.avg": {
     "source": "5d11cf36735d64508f1e812e0a43ac8226dbe62951c7ca98750c0b423791d947",
@@ -7476,8 +7476,8 @@
     "translation": "9c07a48e6040263cc2070d9750ae13b1cb625420cac1078ecf0fdde950af7636"
   },
   "pages.observability.mawkingbird.note": {
-    "source": "be4bcf7b8ef537f7b0558119d14d72dbfee616138ca18d2fcdc8bcc8df1d5340",
-    "translation": "0ccff32cc9955c44b0703b72d14c97edb423888a803688ef6192da1a962881c2"
+    "source": "2902718df6a87894b41d68885f4d63cf17ebf86c3f0e5f20ad102323e10b48b2",
+    "translation": "89c0aa7507054d61b49a6502f9a7c8c15a13afe1240838febc9f86ad94b6154f"
   },
   "pages.observability.mawkingbird.paid": {
     "source": "bdaf636febb04f68d517a42217f47434b454b25c692ac4cba50fa64959275d87",
@@ -7540,8 +7540,8 @@
     "translation": "eb8323855879aa2790cd87f2da0aa1d7857662690aceb31cb871a6d10bea9a6c"
   },
   "pages.observability.route.noteA": {
-    "source": "2a2aa0dea1bb3a5bab1528b754d46cb32fc0557d6b72c3e4aee88632e6d9d651",
-    "translation": "1adac2d61f1c1a0014bf49dd48d95bcb8c62f3d5f4d1221179f3273c939fb4ce"
+    "source": "00dc603c365b0dba6cd48c884e37f03c0ab16d6710809743257df9a7559c75cb",
+    "translation": "5055d49c59329b2d7e73ab71721bad384eb6fe988a3f8200f1425c635b5d16d5"
   },
   "pages.observability.route.noteB": {
     "source": "c1ad7bea80dd5814c550243cc2126e56c19cf2044c1b05cce435fec1eeff11a4",
@@ -7756,8 +7756,8 @@
     "translation": "1de679d63edbc133b810f664f58ffba8c222f2c1041ce64d2533449dab9f0ccd"
   },
   "pages.observability.twitter.note": {
-    "source": "7d0c428766584a3a511d772901c9065e0b9e58066db3c1543f69e82e46c536b1",
-    "translation": "a1c9bb90cad86ed020dda256470153804196ef5623ab277dc42e2e8330eb1911"
+    "source": "f34cf912771d31e2a21707068aafdbacaa17062887aedbc040f57a861df465f4",
+    "translation": "f86de4c1935fd4c3f0aaf3aff15c1636c16d87d9f8426c13c69b3a977713534e"
   },
   "pages.observability.twitter.remaining": {
     "source": "921d8ac863258cd93195247626e1f6cffc5afe535716e47b75f454e84d27af93",
@@ -8160,16 +8160,16 @@
     "translation": "0d492fa73b5ae18be205fe155c403fa20583426223914ea6efa23d04eb4efcfc"
   },
   "pages.plans.devices.footnote1": {
-    "source": "499721ae3e43c1291c684994b47287b4921726ea5ec678d23442ef2901c71ad9",
-    "translation": "d9413a6ec9430215180612bd5b04e0f2465a08efb314ecdb2d957ab5e783520c"
+    "source": "92237bd4a3a5380f58e2acf73042d66111fc24d091784480fc39fc6dad4d20fe",
+    "translation": "a9b9f083e78673ce12bc8fe63554956f0f6d73ae1334b9c5c0e3d76567e172d1"
   },
   "pages.plans.devices.footnote2": {
     "source": "a1fb727475f4010a271198b31d5f39467dc6f592b497583a1b6504019175a8de",
     "translation": "98ff66009e6d9c6a34f301060ef2e6d8add9f686398972361eb5b604d1e90f69"
   },
   "pages.plans.devices.intro": {
-    "source": "65ced80e60785b094cf34bf42d526a025435997f08e9dc02edeb9dea15b3a3ce",
-    "translation": "6e97825e2d5408bdaa2e70eb9b5dccba4201fbce5f6145ec1890d66ffd1a1812"
+    "source": "e5753b863e3e01ec13893ad9025ba1a30f32be40a2669bb91205efd129818063",
+    "translation": "a5e7f0fffd5525c811b1b63b7162c326b11728a7546c9c06427f71f7d693ca28"
   },
   "pages.plans.devices.row.accounts": {
     "source": "aa8feddac8184e5d0142fba7825235709319b97a9c633251417ccfa6259f8545",
@@ -8228,12 +8228,12 @@
     "translation": "d0fd0226207fd8f4b5ab346a59ad7958d691a76acd82003bdd3f810fe428c3f8"
   },
   "pages.plans.reading.footnote": {
-    "source": "b7ad7a419e0284eae2ed51dedd3f17923b90489b91aecea581250b5566ff1345",
-    "translation": "1b89b208476b33b22210bb74cdb061f831274dea72aad157114734abef0d7d73"
+    "source": "70d4165ae20488548103b321e13748f7edabda381109c322d9190baca5df78c8",
+    "translation": "6119fd1ac973fe1ca26cb4364a1482b1ebba3aa4e3eb963206901281fb70a42e"
   },
   "pages.plans.reading.intro.a": {
-    "source": "7f3272937d6b0674f9a0aed857da86ebf99d28e63fa79b422c99b2aabfa3ae00",
-    "translation": "88375cf0947847c7d581f6d0c93f4e8d8906e22549999df6e07852067ad64460"
+    "source": "45ef9bf2d0cd162fb4fc5600d339b37bf92278887b1dcf53f4bd4aff3244c676",
+    "translation": "8c34ae8cc2cf217190540f405391da5fc2de7d0d745492b0bd5c72b1b17bd945"
   },
   "pages.plans.reading.intro.b": {
     "source": "e141a37cd1e8e21b0296ab13575b75dd1967bf59c7269bf358b6f8144dcb4f57",
@@ -8260,8 +8260,8 @@
     "translation": "f9c07e001d3441140ec21a9a7824aa2e164e732152d618c031fa5351fce66b99"
   },
   "pages.plans.stop.body": {
-    "source": "75b820119245c83e1c101ed3d66305377e18ffba42e38716d58308668fb69b09",
-    "translation": "7a833beb8a92474f941a4ec097cc17780c894ad1e79ddcacea4b77d9bf10502a"
+    "source": "ed95467cd0ac6869302017750b6a330fb69e18abe2dafc48057d84fd4f760055",
+    "translation": "8e1d2841fcd776eeffb3be4571752e4e47603397bea3d53c666dc276ea3ed58a"
   },
   "pages.plans.stop.title": {
     "source": "eccebdfb9d83bbd72dcd8fb088c47a7998daa9482223180336fcd795e555f719",
@@ -8712,8 +8712,8 @@
     "translation": "412c225f4340bd6429308919293dbdd5efa8213cd9e0a4e12cda54cad667e5e8"
   },
   "pages.profile.errors.idOnlyLink": {
-    "source": "17d50a0ee116f11d839b6f134e72b1c13649b62dbf1403ff21b10d888bc7c7cc",
-    "translation": "fba688ecc1dca61bf2419ed0f43b048e2963cf0f6ca19ef584ca70d77dc7bebe"
+    "source": "f165e1fe0c335d05665ad6172fbe555a8f1134f0b46653b87ee5dcacfdb5f649",
+    "translation": "67431e740afb64cfb3930feb280991d734d3e1079db9a9670382d5e0e30a07f2"
   },
   "pages.profile.errors.mediaLoadFailed": {
     "source": "ba2f4e2e37844ed2a473c673c761414c35b65cfbd82a5365288ea5fbba14700c",
@@ -9704,12 +9704,12 @@
     "translation": "7f176fc93286680980ce0b6ffcbf5e9d77dfbbfb08e6f806c509eb5af921db19"
   },
   "pages.search.accountSearchDescription": {
-    "source": "0b10d5ea09b557c6256e15e74851ad438b601324f9ff008a25e6cd3493013d6b",
-    "translation": "6caa8273e33021b8ada1ba02c3702c5e9fab4f80dff1144929cba557427e29c8"
+    "source": "d41b9ae35754b11d44dc46320cc46583e7463512c64bf08aef5ae15e960529da",
+    "translation": "5f6cf0f84e80afe30966c9cd609a62964a57b2b6085a2c57be9927b84be62b6d"
   },
   "pages.search.accountSearchWorksWithoutLink": {
-    "source": "a859dbde61c0d832cfc7190cf26566401b9fe75628e91bbca0cc504b54edea35",
-    "translation": "2f46f492d0eee637103a95d38cb0e1512a4e13462c22bbb9539b24b6cb196ae4"
+    "source": "19c9dd0733c013bc054b460c53d8f0601d9b667dca8dee4184972906a250ae22",
+    "translation": "17c14a9afc3d5d106bd96da8b7d3008294905ea847c02cff1e57d3fc33570627"
   },
   "pages.search.accountSource.bioAndPosts": {
     "source": "d79304ae8b35e5942f3884ba454a6844ff8be6268d9b7c9d0d6f908569de75f1",
@@ -9812,8 +9812,8 @@
     "translation": "7e254d979d09aca98085837d504ca35781ac617e356e652d00a569908f9b5c94"
   },
   "pages.search.anonymousPostSearch": {
-    "source": "b8cef0610737be0829d902f226bb82462b0259e0690f5283cc396ad969d03db9",
-    "translation": "47bad26e0c811241e2505ac17a22e7f873c62c0a91f1d89a0da8c9a6c126d71d"
+    "source": "e82f5e578f11055ca29d8821c972a1179e36f2cbc2fa120ba232b7b12b040ad1",
+    "translation": "bc274a5e812ffc299e9f20bb734d35684ab9a3f1a8375faa0a73f40d9863fcf5"
   },
   "pages.search.bluesky.aboutMatches": {
     "source": "ae51da670b476f9d787f49f903896ac8a41c155f0b75e5ce3e12e2706012eafd",
@@ -9840,12 +9840,12 @@
     "translation": "aafd6461fecd3efad09c14d76378e5f5f46377dd610adfe985cfea1548bff43d"
   },
   "pages.search.bluesky.advancedAccountsDescription": {
-    "source": "bfdfe7972666f760e1ee2dfb734844f94c01903b24902cc57b3097ed3480239f",
-    "translation": "1b57513a9ad81da4835f361d53e1a40bdd1a3aac9567db2c08155b5aa66a449a"
+    "source": "4142e434206a966fed5367561f4fe6943a0f5dd12f7ba57131aae937f3241daa",
+    "translation": "7b84a0daef9c60e9011e0cb52c39d87aa968d7495c46887e397bb575bb233c6a"
   },
   "pages.search.bluesky.advancedPostsDescription": {
-    "source": "c45e6e6ee3c8f26d862f5dbced9b35fabfbb4b86d8d51632a618c93c411ae9dd",
-    "translation": "f377eb9ccdd49954e82444a8d3656c37e39adc1abc42d5c959faa953e23d0143"
+    "source": "dc667b9d359fd43a2c1d70c5a83b9fbee1bf99d9640b2f9cf4e9695c292f6418",
+    "translation": "b8fd34941cebc771f11b59c0340bf4c27e6e6313704c0f5902c05a040616c14c"
   },
   "pages.search.bluesky.anonymousFollowLimit": {
     "source": "634ea555bc80f9bbaf9d08170e43c7c6136fbf2e1d97f774b71e7d44005419f9",
@@ -10120,8 +10120,8 @@
     "translation": "982a3c10c2d49a36b69b1bde5dc7fa9365fd50bd54a819d054d99649dd2de1a3"
   },
   "pages.search.bluesky.postSearchIntro": {
-    "source": "bba650b3eba54cbb61d716c3a8e05d6c73364f3cf298e3123c5c00e9bfd8f4e4",
-    "translation": "b0c1539578e784606e1827c0e187dfe35fe1e16b56b5b5170233744b272c98b7"
+    "source": "51b5a6937a4d3cd876fc12003489be84b636c8595adb505e5b7df5c892cfa0f2",
+    "translation": "58633a791278fd26a7c64c42cc366fe2c3a814bb988618795afea240cba164fb"
   },
   "pages.search.bluesky.postedAfter": {
     "source": "01e1f1a185a2a97151fbb4966a60396df3b7574fe893492d0896ab7a5791e0f5",
@@ -10588,8 +10588,8 @@
     "translation": "daf5576f1e4ceeaf177c0fb6178eb85af407b6deabac93154109f81b078cd6c7"
   },
   "pages.search.empty.postsUnavailable": {
-    "source": "4c7f6b58c7028afc443e2c02956d08e089207c276cfbfd9fced25bf6814ad464",
-    "translation": "bf3fee56aeb8d0c78760d3d5e585b3e26b1d33f695d174506afec656a589d850"
+    "source": "a8063554f1b285f5365456af84948cb52093ae25c62d7f5758d34010f0a1970b",
+    "translation": "95b3b9780d0df790317e17c7244965ca274fa8ac3aa2e361f75ec80ecb2edbd2"
   },
   "pages.search.empty.refused": {
     "source": "8d2bf38bdfe68609e5997d9f5481a774de5c79cf06dca7b93d5b742ceea4785a",
@@ -10912,8 +10912,8 @@
     "translation": "e7587426e9070ac0b6c3fdd24e457a12d9bfbee101afccdfc8114b02607e6e61"
   },
   "pages.search.hashtagsMastodonOnly": {
-    "source": "bebb93a74db15ce46b23df96b6bee0d46878bbd78030a249b445b0f702b16cca",
-    "translation": "bee60bb0494b048dc90d4487e8ee95c0d735978f0164ccac85de7186f6059e60"
+    "source": "3bd3851c518213fa11740d2b438b16f098211339ca771c071b729b33af7976f8",
+    "translation": "0579733ea21cbe66f6a32c4736ce068dffa01aad81e5cb7cc22002cd7eddef17"
   },
   "pages.search.helper.busyStatus": {
     "source": "1cfdc2beed05c0dc9c1fec9c9b19b605e54eac6efb9c1f617c3c1d545987f42e",
@@ -11612,8 +11612,8 @@
     "translation": "5af3fce96c6f2977b70ea53d08f8eff3da149e8ba990083edc15b7a73a56815d"
   },
   "pages.search.syntax.blueskyFooter": {
-    "source": "299731bf2b05809c3c221e5c993165498687eb89c46c22016263f531371804f3",
-    "translation": "c7f5649b65be2e8a0fa1d2d932b5ef2fd4ae40d83a48deb1de6da1cf8650e416"
+    "source": "54b4100a52354971cbc3ec0420a79d40a7822e2b7734d6826d28e0def95838ac",
+    "translation": "fb5ca8169a5adc21f2ae6a413997eabf3f07fd972a6f51479dca1ae7eb74e8af"
   },
   "pages.search.syntax.blueskyTitle": {
     "source": "00b186502c2be12710b8584a492d64b29816b266013c10ec1c3b8521ba1b8363",
@@ -11636,8 +11636,8 @@
     "translation": "2cbd7110dd2567f3e0fb27cdd29ef631767b2588498d6a73deb3f3235d58f633"
   },
   "pages.search.syntax.intro": {
-    "source": "78bf94521f6d1453a4d16d0c36c5f697596429e32eb587ea3a60f33a2fcd38ff",
-    "translation": "85f7108dbfcf265bee29aa2367f085a1d9fa4e5ad34c22506fce4bf510251d6a"
+    "source": "29d324a27b91045a229071333c467ee1b8aa7855829cfaac4de25d4850acbe4b",
+    "translation": "0a0542133690f2ce5a77e100fa11fc3eda68573fb3fb7c0803ed1492d9d6ed22"
   },
   "pages.search.syntax.isNotReply": {
     "source": "df1affdd610e6aa45d5dd2ca42acb5dc51e64b2ee76f45c02f53d72e2bfe76b3",
@@ -11664,8 +11664,8 @@
     "translation": "000db79754e2a3a2a7d7b9b05b2692b8e6b4a45838b7a6801c014da599bd9f3d"
   },
   "pages.search.syntax.mastodonFooter": {
-    "source": "fbdd3c09f514254a69e2cd723127484c3dbc556bb352214d077f8a06ff745961",
-    "translation": "632f5c8f5b78432e83e00046739f8b3ac07caceafe79a79201676d0d3ca38a3d"
+    "source": "09a7f3e438a97bb8d5b78e446930618a15152e819b24a8f7ce31f6467bc8ed47",
+    "translation": "615deb7672d4244e5a43a266710a4753aba2bed26426fce71b7ea5364021b8da"
   },
   "pages.search.syntax.mastodonTitle": {
     "source": "97b75e2949efeae2ea2d006621380e802b2ad1450ef22dbebec910e75aa6f0f4",
@@ -12128,8 +12128,8 @@
     "translation": "cfe810d245504b1befc5eb0ffddf16fe538ae1ca862705cf7471c659970da5ec"
   },
   "pages.write.board.column.scheduled.hint": {
-    "source": "3f33037b05d8d1d13930a5c02586a126a7fd1cc118f663db157ab66809ce4f41",
-    "translation": "58a9d5ef0350e6b4b4bfeffa816051b021535d607b11a4e28baa9cc1d81f67c4"
+    "source": "2e7d3f29ed492390e511a0f5b9f45a0a260453e2675b9088beaaedee1e8af0d3",
+    "translation": "43a9331216b4e4e8e52e0eee9acabd5647637c7346abe8715dfc347a042a07cc"
   },
   "pages.write.board.column.scheduled.label": {
     "source": "af1c872fdcca8e1d48c04c1d992f940771aa2bf0a6e565d401d64e9c160df767",
@@ -12444,8 +12444,8 @@
     "translation": "5f280139cf48e545eb055f514598c98cf98cd9736b7ef11d34e7cf19000bc6b1"
   },
   "pages.write.pageNote": {
-    "source": "d2b13c30d18cf0dfa5abf5aebe2498adb840a6e93e732b781d6a23e9d4fbdeb0",
-    "translation": "c463e93a1794373249e58617bf6066de604dc4d3ec0da1f3ff171fde1711ec15"
+    "source": "f97f74fe9c3f2c97383a46161e5c624a012d0808bb0e7d208e3c6187990d3510",
+    "translation": "080361c92850ca68353af43ccc429bee397ba3d3ddf7e17de91bbc8583d850d3"
   },
   "pages.write.pickADraft": {
     "source": "906494c7a303467f77d0e0287912a6511c1f58ff15015f9f9958a355cd746d15",
@@ -12572,8 +12572,8 @@
     "translation": "55cbe3e26985f89e02f12fc458e871b17e7ca9a9f91a9a0d049fdb429f8542e1"
   },
   "pages.write.scheduleUnavailable": {
-    "source": "9ad1a0583e7351cf56406c6f8f3592e1fc03da8cf27a9ca0cb9bf526ca70a8ee",
-    "translation": "54a764979091fdd42977b94f99929f358858c40f106a95c3e41da4f4dffc808f"
+    "source": "905392acc7a739e3a6c992d90bb46a2b169c8e1b14efe777ab7c83c4e2f2299e",
+    "translation": "11c6b82912faf79203174a3a12f629f3419fed211c0de42e901bd131aaaf8519"
   },
   "pages.write.segmentCount.one": {
     "source": "be054b7c42895c2bcf9367125c050e2ec5a466f121ee68376fed40b8c2f3a831",
@@ -12764,8 +12764,8 @@
     "translation": "e42663f968976454c383cae31c14b3fba19c58ee055231a62673306936cb8a98"
   },
   "pagesClientList.capped.note": {
-    "source": "03d348a666637950f160adb1dae5f8338e6d9367741317fc2403abb8ae0792a0",
-    "translation": "7a40a79fd1353df4f8d897c3df991a61dfc07763f9a9014eec1b78990bfbc851"
+    "source": "b6c4bf7440dc747d85fb36c857b476c869e88844083fa5063f11e203b7583961",
+    "translation": "ab2ca8b5ec4336a7947db6b5699ce06784c5120c3d7facc6f8d568e6c917458b"
   },
   "pagesClientList.header.member.one": {
     "source": "70a9ed3495a177510d828014f3417b7e94625d6c7da4f490701b290a5ccd6a3f",
@@ -12896,8 +12896,8 @@
     "translation": "60d52fd5ee78e1279123482f725a5c947d9e317ee8624747158ff9e3dacb9fc7"
   },
   "pagesWelcomeBack.lead": {
-    "source": "602a1b0be5cbb82d6003b9fa7813f817aa958e66cfc4cc1df76bafcb9c62995f",
-    "translation": "f0ffc4355ddb2e5b08472046706c46971a82e4c55e4cc5f24d2a43a9292778df"
+    "source": "d6c86e0c6c6cc6b2eff2c258c3cd315b0a59de64f0f9df6bfeb37fcc128f7066",
+    "translation": "09d58778f8d7fe67a99f416611c3c15a1f1c686d794249e76debaf10a3b27a51"
   },
   "pagesWelcomeBack.step1.body": {
     "source": "cdff6d320801799d30a01528c36e1b19dbf2af1bcbe96b6d41b0aa897ba83468",
@@ -12992,8 +12992,8 @@
     "translation": "1f940082f6205153528fdf85c63cc5626bd92f9c38d8d583de2b10ce2e5b47a3"
   },
   "posse.building": {
-    "source": "8352e96f1276cf6245eccc20276c26e170bd721524b8f577ce00c2416f7f1fdc",
-    "translation": "e2ef85a7e451abdcbe59d956ffa1999a01110a090cac9143af435b230abcecf5"
+    "source": "14e8b1595d978175b329497b3f510a51f5cec37c74755762f485cf4bdaa41463",
+    "translation": "2b068bb9f9590c352ed0a58a42e69cb86241abc3debb18976da3ff9422a6b72e"
   },
   "posse.cantSend": {
     "source": "e0bb3b763760fe7caada5ceeae6e26018539048e4abce9fa6dc9d1405892f43b",
@@ -13048,8 +13048,8 @@
     "translation": "34cc3c53e27d93077b9dd59a8c11336836c5ff3b5526e68430a6e5d55fbebec9"
   },
   "posse.note": {
-    "source": "f4e7128b2978ea939fb35d0cca83f0c58ea74952e44bbf615f15817de11f1365",
-    "translation": "9c3597b06fba63bdec7a5a0576db1f8f4430e403e664fa577b01bfda22737e4a"
+    "source": "1911aeb9dd5f4799c82f4fe41f9f94b7e854d21a15c461544e35e52875a4be81",
+    "translation": "aacd490127238b294bccfd9c246deb09b16a544a86f5502c7392659c1f57f8ea"
   },
   "posse.notified": {
     "source": "46b0ad030c970c034ef10fce8cdf319870deed7a8f6613ce95016bbe92570a57",
@@ -13060,8 +13060,8 @@
     "translation": "9009037dda7c66d7dfafd4183b4d9458e0d8b457a6ba8edf65fa600103659a0a"
   },
   "posse.notifyNote": {
-    "source": "8b3e9f540eabf6fb656d1fc6d993c782a2469a9af3ae81d5c50acbb28dbad365",
-    "translation": "979ffb040867f6ee4466c0ece56252ffeae339c6af12f9e6c9ec93223fed0b8b"
+    "source": "6e4d04198914c3aafebf09555a8f41bd43ce95708d9cbfcaddf262fabc46b3ef",
+    "translation": "e7c466fc1fbd23182a76e24e30b20afe1add40af8a620d641b78a6358432676d"
   },
   "posse.original": {
     "source": "ccd4f6be3a046229d0ba787d12c6f618885760ea401330b14e04cccbe42e526e",
@@ -14024,8 +14024,8 @@
     "translation": "577d2a772dd169c95de4527ab5748c66cea1ce2afbbc873c90abf3dde13ce8b8"
   },
   "settings.account.password.hint": {
-    "source": "6af9bc26a4e41e34df00b2302ea5b29fc7b2f232e8caba2f94dcaaff300be286",
-    "translation": "8a0c64d3018ccfec831da1e11cbbbc4526b7c550c229aa592fb61d200effc22a"
+    "source": "d4965d9d9a17d559183a73a5bd8f86d7a525a0108014ce045b3d4c1c5e982bfd",
+    "translation": "7f36cdc10cf424591ddc84d93bc2e6f4880223757dd300bedf207abe8026c3b4"
   },
   "settings.account.password.link": {
     "source": "911733adb65f8fbd448c4e0461a711cf556746ff62f967973764506ec46832b0",
@@ -14036,8 +14036,8 @@
     "translation": "63ade868d6c0e4d08f9dca83a4cdfa4f32ebd95f404c0fcdd53589fc39b45159"
   },
   "settings.account.sessions.hint": {
-    "source": "cf758d7a8cef42264cc228449c2c64bb38fb27c1cbb63b1668f373ea98d5644d",
-    "translation": "f13494fdbee388b467227bf6eb7ecb4b8acf78759ffa06be9883f59296521e6b"
+    "source": "76ed76cf8fae3ea4195b9c6ea15f86e054501d9ca8c203ce817fe25d3edae629",
+    "translation": "9cafa4c6c27114a10d1a61b6bd6722437855b327653ad522285ad55443632118"
   },
   "settings.account.sessions.link": {
     "source": "3471fcf7fe2d497a421f4135a0cb23b4c2931ad49dcf810e2dc254332c63a644",
@@ -14224,8 +14224,8 @@
     "translation": "2de2faee4c15aab9697fa820526c70c383d01ffaa334925075fcd1b3a6917030"
   },
   "settings.accounts.footnote.before": {
-    "source": "e869c5ddd8ce8a380471347bedcefae171285d0d10cae5fd5d205def25a753f0",
-    "translation": "e5a73712caadb3d75603f70dae0d6eb7490ae4a832eb9ad390459a7d72e5cb3f"
+    "source": "7adf1abba7cfa72df020b49b09edda2dcbbfdf1c49947c11aae05a03a6ce4922",
+    "translation": "a82f86a537d1a33c39286ff31af17fd78e06b5d951dd590f118de3825a43fac1"
   },
   "settings.accounts.footnote.link": {
     "source": "bfe44150b8076fbf25459607b2ba89939aadc7f886005ed8ccbc16cd47cd916c",
@@ -14356,8 +14356,8 @@
     "translation": "5b73c0660d6889c57709e26a43432baf6f0907920c0d61d21b098708fa8737f9"
   },
   "settings.blue.ai.hint": {
-    "source": "8448bda6150435281a83e4dcd8063144900b552b5e239e0ed64e08ed4ca6aba6",
-    "translation": "958933f6a9c9d25d04d9d42066d25681089c848980fb9ee7f0b9bb0873cc5e37"
+    "source": "601623721fd237f82708f49e8a8b0d530781368343aa15406880fd6a48be7066",
+    "translation": "43e6578d8a605db9976520e16740f036320d93f657773496c8d08c49e23b7d95"
   },
   "settings.blue.ai.show": {
     "source": "f6ec234f30ef6f28b65af111fb3665c6f57d949aacf146c195e307a4be775fbc",
@@ -14372,8 +14372,8 @@
     "translation": "e8a49db952c7992ca187323b73b3de1ba7d65287bd193bbaeff36df3d16b2f7b"
   },
   "settings.blue.analytics.hint": {
-    "source": "c97bf3310591c2bb8cd18187babcb887e8f32469958d1700c0a39fa820733781",
-    "translation": "658803ed60a79dacdb6f9ab7af707da84cc403254299acefe3bd2fbe82ea88f5"
+    "source": "4718be0f183f4683d05d9199d1bdcc0d8f40d563ea5af4a4629dc648a36b630d",
+    "translation": "3d3411c1975023c6b9adfb0110848f4f7e0d624ec8c01b341ed3cac4e213abca"
   },
   "settings.blue.art": {
     "source": "24f53b4cb2e03591084a5f074af0987f0503565b8459d5588417a476c29d9397",
@@ -14388,16 +14388,16 @@
     "translation": "8dabe2cdf07a08aa4d8701185c4d8f3a801c577b8865b82681615efab4ba7217"
   },
   "settings.blue.art.hint": {
-    "source": "c96924098ca1f71b28bbc62e6daf9ba68545c9fb3557dbc0d5348de91733a874",
-    "translation": "799e223e404a4961cccd28baa6b81d9aa838f8384363c2175c3a07606bd10c90"
+    "source": "dfdbe6c170d7bf1c4037ce46652c95c241dbe1f4d9f402b7de3c55712540ec31",
+    "translation": "c4ee7bcfe8a79d78f596795707cab49c7c8489e312ef11c1e41ec4d1e26718ca"
   },
   "settings.blue.autoRefresh": {
     "source": "edd2e4686796a6f6115dd4b0c09501534737c088a6fe545a1b358472710b587d",
     "translation": "645b7ec8265e24cd147c1dd08189f683d57a0a6ceaad1c3b9bba8e335a64cdf1"
   },
   "settings.blue.autoRefresh.hint": {
-    "source": "dac09a9d9f226c0804dc55f08bf73e3c36f1a8f3fa251e0abe8f0a945437f22e",
-    "translation": "1152e1f655cede41adc6b1173a1fc11c0e3591df5a6316d401676767743a11af"
+    "source": "46d6222a62cf83bf909a2e2f54d9e4d7ccd82ba2059d7b489c8c9585606f0da1",
+    "translation": "1b5a15f9bd3ab8957b197fd64cc682422ea96063998f12fa14c038f2a5f3b15c"
   },
   "settings.blue.checks": {
     "source": "412e3001322035f5023d080bf5600efbc59354ad97dde7b186b84c744493f487",
@@ -14484,8 +14484,8 @@
     "translation": "afbade7156d5265b5030a65e3b9135d0a2b69a7d5c9d0c3fb69b542555da7627"
   },
   "settings.blue.ignoreCooldown.hint": {
-    "source": "a4a480f46857b1500c03d8b96a863db9106de2799175313a4c840ecbfe06b414",
-    "translation": "d9cdca6f7569834caedf7da0e729d06286f985ab9c9de3b13d2e35a4bdba6ad5"
+    "source": "a87c4fca08f96323e8d13aa825e85484aaaba4a77660eb4dd82c52dee2e18e57",
+    "translation": "84046d9c7e617c21b9709f1a830cd392a6e0e8f84462b9caaca64693d436596a"
   },
   "settings.blue.maxPosts.hint": {
     "source": "f5b7047df30e80482c1500f03e905a70938c3486dff22718889cd66abf24d0d4",
@@ -14556,8 +14556,8 @@
     "translation": "276813c89637e799a2dfac3d391da056de9b480f7a1e47b01a6baba843aaada2"
   },
   "settings.blue.thoughtful.hint": {
-    "source": "d53800fc4a18188e57320d6985adb5f748ab69476257fc2c888803cdbb280196",
-    "translation": "8cbf8eaf445f10fcb3273add24dd72e0de6738ac1188bbf873ea7e170ee2803f"
+    "source": "5e7069b02f4088d5e2900513461845e2bb8c58740c8e6eef5e1950895261eedf",
+    "translation": "9b8e203fc9ed864f24a915ee6ad6b54cf3179a7ad5e588c372531c0defb3ec58"
   },
   "settings.blue.timeline": {
     "source": "cef2a88e0bcc05c7cd65ba864cc5aa9b59b6e5f875becfe7ea9238d2fe3506c4",
@@ -14608,8 +14608,8 @@
     "translation": "0d6219f80c89a193ffeaff8fb4edbe1e0b03fcde4b75db87f063aed6fce1ac83"
   },
   "settings.bulk.intro": {
-    "source": "e0867cb1e484f074cfe2ad4380497d2e86c72a604e363badedabe68bf6601bbe",
-    "translation": "30df601bad3e5005e12232097320f1a733c9869682b8d0166cd8b49a5f7a53c8"
+    "source": "025e5d0124d30db7d1aa1ab41ac5cacfa3f89ae893e7e438dad74886b393b7aa",
+    "translation": "a98adcf581aa7c366c71b760c93561487906d99d3134ffbf2b6511fcd374908e"
   },
   "settings.bulk.loadingLists": {
     "source": "f060b5393efcb5853f74e64379f8194d19556c224b08727bb296795c2d5fed9e",
@@ -14724,8 +14724,8 @@
     "translation": "44a0e77306829b476ea9a775298b32165ce1219d3de4bd643b35f34871568577"
   },
   "settings.config.includePrivate.hint": {
-    "source": "6053777d150c4b42776cc5bbaefc765f2bd4ea118dc0faf92462337a327db452",
-    "translation": "6b989dd2f0d76fbbf85ee751bd52cdb3a526245eb38db0861643572e6a9fa9a3"
+    "source": "555f61981c08f19053f930336142ecbb112becdb96659583f858f7b231956ab7",
+    "translation": "f9eb6f3b16be1f59a15f6cb71ed948406fc05e0c33bcb6f95bc20c1ee558528a"
   },
   "settings.config.intro": {
     "source": "37a65a779756e254a2f58af6b3e032528d5fb1cd6ba4814a754df1ecf9047550",
@@ -14856,8 +14856,8 @@
     "translation": "262f7d052281a94d0c3e4bd1a8b84d8c9b0c96f8b4f26e3da8bf9f5c4b7317ef"
   },
   "settings.config.remote.hint": {
-    "source": "b59bad71760a212d3dbd7fb41a8ae8a26425e08623e397b3d9353e80ab7980bc",
-    "translation": "de35ede8075d142477cfdc5ac65ef5adc7a81729dd167262dc22fe03c7e504a5"
+    "source": "20948909152378e9bdb529df3417babdcf8f48bb12f350f86604e5551c595910",
+    "translation": "1624967df7f9a58ed2af613bbbbe0ada764ef09d7055766b59acf29a9ddc8fb6"
   },
   "settings.config.remoteStable": {
     "source": "0edca4815b46c565f0ceb6dc79b4e8ca28f888d0b6ea16cf90f5c61f5cf99020",
@@ -15020,8 +15020,8 @@
     "translation": "76669d6868b9cd886d75eca4ffc485ed4113ff5d171c8038bf38fd28087011e7"
   },
   "settings.connections.blogger.intro": {
-    "source": "54d319c0f182ac110131975f26e8aca3c48765b381257aa6d36c6fa5c764476b",
-    "translation": "b1bc409321a3a0e1b252bd5fd0e0d10190d825e141013131bcb9be589efef166"
+    "source": "1e847915202589d01799ffddc650b7a715e01f42abed5d102303e8e043a5d1f2",
+    "translation": "e8a94de4325ab2bd4f57cdc343eadc817e7ff3620e4964c1e4cad0ab16f9139d"
   },
   "settings.connections.blogger.loading": {
     "source": "818d77509ead6004221bae3780fe9ad3b9f86255fcab218969d97680dd5a22f4",
@@ -15072,8 +15072,8 @@
     "translation": "18ab2fc6ccb4e01b995d30464d2e73907c6e809376d51c9dda4eb5bb8b152a50"
   },
   "settings.connections.blogger.own.intro": {
-    "source": "502a05bf440b11762bdc1664502c9e345b646a07e421ad1f6174b37d7aff2f7d",
-    "translation": "a718022eaa13440b113260acff1b6d68a08e387449bf2017fe2f3ba3421aa3a5"
+    "source": "e3c6aa1a5a9e4d6e2ee773bcd736d372e868e35b710bbe8dd88113503a3fccb8",
+    "translation": "11735f020bc2f668d97aff719331392d7c55027238a172c63ab53c23da26334d"
   },
   "settings.connections.blogger.own.redirectUris": {
     "source": "c9c9b4b8301f8f954e1b38660c46c2ebb0c35ef47c7e0cfe79e7e5940f4deef5",
@@ -15108,8 +15108,8 @@
     "translation": "c6d9959a5d9f65db2bed0992ac943acad8263f3cd6c3c1e01c5a06312d312e7e"
   },
   "settings.connections.blogger.permissionNote": {
-    "source": "bffba04a58e9131d07e337e958fc79089f4e1e2455eb461ba10141cb4d6a8874",
-    "translation": "5e102eea15324c1991650b01e1a87eebe59ff9a176fb7c4e3307980b098e5087"
+    "source": "832f7805d5d01d2d4e949b0e3c2054c2d720dca74d2a8febdc6093fab48d8659",
+    "translation": "036acf02342bfde891eae855ab24a8a6f408ae7b0aaa30890aa2ec53eed0bb14"
   },
   "settings.connections.blogger.postsGoTo.a": {
     "source": "8d6eda317f8a90d1e910eb410aab6cd17d2d3d37c2e02845a72fd405cec140d1",
@@ -15184,8 +15184,8 @@
     "translation": "45448a23dcbdf885d7f5cf6e46cb02572dbe230b83130935d351f66438bab41c"
   },
   "settings.connections.blogger.unverified": {
-    "source": "d99b9192b00f8fa5e4bc2f1410d8eeca171f12015eb4686983b1c8bd97fd63a2",
-    "translation": "23e3bae8edcb21831b32d9f90f0699fb9b44fb65f260633a061a0f7042498e4a"
+    "source": "2e014d45cff10ec2cc0c755dc5246c9430758acfefd02e99298b76089c1cd0a0",
+    "translation": "f3a7728fac604262f89ba52603624acdf736c1304c3a459e2c35d737bbc6c8f5"
   },
   "settings.connections.bluesky.anonymousNote": {
     "source": "d59b25db73d6cc4739d44bb2c109309c6d1b1c17bbf2429c5516ed7b5e08265e",
@@ -15336,8 +15336,8 @@
     "translation": "e45ab256b624bec9112dc733a4706127f1795c35e61101b55a990fc6466cc25a"
   },
   "settings.connections.catalog.gist.enables.edit": {
-    "source": "3b3bd7653894d0be828f6e40d2ee1751b9fb624327713fe1b37f7b50ea0e4913",
-    "translation": "1d82e31e7a1b66c8a1151cc0a5fa544105da656fb9ca1a9f54235671a4579182"
+    "source": "aac791fb74e9c55be0d2540ca5a4909e33e074f159ff237f0a1e72ea087283e8",
+    "translation": "90164cfa1042c03afa95b5f91bc8406d94bff0b6f8fda435e4928da04be9f1b3"
   },
   "settings.connections.catalog.gist.enables.option": {
     "source": "8bb66cdaf48c9f4d2e6bf81b269dd9a8f40885f86e1a66ac9890f777582987e1",
@@ -15516,8 +15516,8 @@
     "translation": "ca99be1e29efc47ccfff3671419a33f28a20d62a9f1ff4ced9f5483d39b50ddf"
   },
   "settings.connections.corsProxy.credentialWarning": {
-    "source": "c78be169dd43c099f9ec4d1ad86d89082071e853cc5d12fe896c634c48db96e9",
-    "translation": "7f68772c057dfb6b7300be32ec8dcb7e516b3929f15b7602583d545d9a381825"
+    "source": "7553e7fd70d79eb22256dbb1b473e18de6434b41239ee1ce00d64394c3a6ed3f",
+    "translation": "4c87c622219bc6a343b26f5eec5d349a47afb0bd6a0c1925c384817e96ae1a2c"
   },
   "settings.connections.corsProxy.customUrlNeedsPlaceholder": {
     "source": "4fcd1dd0c3ca7edbf780978a10685ee55f956738863cdc8ee5f0b69253558f6e",
@@ -15596,16 +15596,16 @@
     "translation": "e05a5bcbd7a09a6bed755e9a89a07d517fe2d54027648eb3aa42dadd3aad47c5"
   },
   "settings.connections.corsProxy.ownProxyNote": {
-    "source": "cbe7cce4dde292a2e34ee8e745848daf3def7e019bfcb7263d6390c36caf94bd",
-    "translation": "98339d17e2194c0f6791efdced5696984abbc49058fe4c68bff62dfaa8341517"
+    "source": "939e735f6c40d5d6332f6555a15856d6869b95fd67ca87c3ca8ade7b32ee44f5",
+    "translation": "ec46cdb18474a37fb4dd13f15bd20d7c8c928d807f8d44a4ee8388452ecfe612"
   },
   "settings.connections.corsProxy.pasteKeyPlaceholder": {
     "source": "781c1e8f1b255b3a55c2cb83af752fc0ce8f877bcdb68148fc7193dcca1fe3ae",
     "translation": "4aeea654688e9aec4e20151738c6f8e574e42b82b1307b7d15c00c2866c70787"
   },
   "settings.connections.corsProxy.pendingSelection": {
-    "source": "f68454258e1fa95b6a6eaef98298e6dc61d969b519af909e616023ba576d56ce",
-    "translation": "382317471f179c8042a2d59093400337b5f3fabd00c9d9d18e26349b0ee84ec7"
+    "source": "890a9ad341aead8e4e39475eccbfceca669726ec29db9ca78c2c27d60b94e93a",
+    "translation": "6bb49b2c4bf6ac8ed848317408a959a92126e698739a0f31bf8f0b9c7ca2ab72"
   },
   "settings.connections.corsProxy.percentEncodeLabel": {
     "source": "f0f5bf9384dc75ac96309e50a39d67e569fb930964abbca6a0af761fce2ae0e9",
@@ -15640,8 +15640,8 @@
     "translation": "5bd359fa5e7af4803798051952939d29ec36461b81828bfabc8fc398ec8267d3"
   },
   "settings.connections.corsProxy.rejected403": {
-    "source": "26ca17bea59141dee1cdf1b29579131ee65b5b02be95bb76fe5e07fdab54aa88",
-    "translation": "0c730b2234d239e99f8ac63f6f72f3a3afaf23d19a99ecd0ac31fec959d92e6a"
+    "source": "b71024456fb12406a371b6d79a801d4327b48900c3215c1b3a3bd1b5fa9a1c4d",
+    "translation": "b78c3ae3bf73e90d7006abc5e41c167b07f6b1e08549ac7ba0bf7124a81f9ecb"
   },
   "settings.connections.corsProxy.removeKey": {
     "source": "6383c430ed8e8e8abec67367b84dd0a104095836c059d5987367122feef36b74",
@@ -15748,12 +15748,12 @@
     "translation": "edb4fbe865d755487af27ac33ed655067e89b336462d62295901cfa95d0cee81"
   },
   "settings.connections.doctor.controlFailed": {
-    "source": "55d743e75434b42d33ec6fbcb9d594888f3ddc6590f7bed06aebb30497bf51dc",
-    "translation": "8efea14c442297bf59a616010f02487b78f2472bbace41681367c599a0c31c9d"
+    "source": "76d04fc68ce0ac57ebe810962258f5209036c6e078415867ae0f140804759f6e",
+    "translation": "bf346c4744a592aa33e31f5d9ae02a3741e3419b1f9d5ba78a9fb30d895c051c"
   },
   "settings.connections.doctor.cors.blocked": {
-    "source": "d54155e3706a471559f9831cb71390c50381ccf1a8fd26361cf138400f1114bc",
-    "translation": "e41ab786910f7ec2eea01042f02e8bbc98da3b0978ff156d29f23085bdecce2c"
+    "source": "9660660c2aebcf000be2a8a1c9eed02cd41f8dc9146b9c9d51e0e40ec643a266",
+    "translation": "9551466ee484a8487ca6f03bda61a25df9cb7ab6fda825cb94701f4760dd667b"
   },
   "settings.connections.doctor.cors.blockedViaProxy": {
     "source": "791e9f9682741c3a71ccbafb8f33cc472ec77179a92ed3dff55c0a3022a33ceb",
@@ -15766,14 +15766,6 @@
   "settings.connections.doctor.corsProxyLink": {
     "source": "6dbef392f43afb3c6cf80fb8021453acc189c920bb7c70198a0b39b4e4261ee8",
     "translation": "f0f1272cb4a1aa70a64da82670380c2029888a239cff41a90b44bb40aa8b3326"
-  },
-  "settings.connections.doctor.corsSection.badTrade": {
-    "source": "7f0358805b06ddfe27a741d2ceb6ba8a7d514f4cf5a3309a4a610c2dd86375b6",
-    "translation": "706972465cee0fbfbd67de355b6f073241f0ab1f2aaf77b46175dfd00b52fd23"
-  },
-  "settings.connections.doctor.corsSection.hosts": {
-    "source": "f20fa01a0b0a3057f77cb16ea4af3194800b0be3ca387c314d2548c0278d3fff",
-    "translation": "0578e2af8d2a5521a2d1b948e9a86ca9dd4e8e14f3a878ef3638456aeb80386b"
   },
   "settings.connections.doctor.corsSection.intro": {
     "source": "a43203db5a436ff10ba35ee1893141fcf8d791fcab17df705c78de9942b2711a",
@@ -15792,68 +15784,24 @@
     "translation": "103041d4afc3d7f738b9a47d6e6eb051d47868f4dc6526770ac1d324ee00dbca"
   },
   "settings.connections.doctor.corsSection.whitelist.a": {
-    "source": "9b25f6361120ed9b5e9e2961a057c5e479343143aeb50e20219caa253f8e5467",
-    "translation": "a6dc5a4e39f16eedf3b8d2b9dfb2768220f6d2c276c0b4fa08dcc9d288a32934"
-  },
-  "settings.connections.doctor.corsSection.whitelist.b": {
-    "source": "ddf0ea09c9d84ccfb30b816edec4f2b252b3694f22e84bde7329fa7ec794055f",
-    "translation": "7afa31d3cedb88ea2b1b5b9bada29d789d43b94692070ec6d5348bbdf86d02bf"
+    "source": "0ffa5d011492347c56f7a435610eb1c4e81851fe5baa8d61448cda393a30d268",
+    "translation": "1da5d6505bf150bb8bd563dc88856253851ace0c5e4594427ad90348793c7bcf"
   },
   "settings.connections.doctor.corsSection.whitelist.c": {
-    "source": "6fa7e8314c400a858af2a6f98ef97907af6a8965e73a57d1f2312c53b10a63b9",
-    "translation": "68abefbaed84b633ffeea7bca57d5b6f726d4075424658bf93cca35b849ac3c9"
+    "source": "e6a35cec86172f90551281e06f1fbe1815ec0b447d26b2b4d6dcfb285b961c10",
+    "translation": "a5ff3cd6216b981398e67e6225ff5b85d5f022fb6e8f57f885772aed947bc0fa"
   },
   "settings.connections.doctor.differentProxyLink": {
     "source": "fe001488b74efa1dca8136aa73981ca5e062cac37d1a1248923de259fc3d5b93",
     "translation": "c3bb4040b75e4fa4e1e5878abf2a369c0b48e0643b934f141f74de2e5e3eb0ba"
   },
-  "settings.connections.doctor.explain.p1": {
-    "source": "0e0b8eb6c89d9d8006c0ba6e2f36ee4096c2a8a3d002f7023c1f1abca9067ac7",
-    "translation": "a7be613ea8f8fd5d322abebae99d28f7f5a4ef278973a85dda43fe0eecfd2b94"
-  },
-  "settings.connections.doctor.explain.p2": {
-    "source": "31d65d66ac9fc195e973483505e9bb422d7544c784e2b454fa7f638faada80b6",
-    "translation": "b1b1e532d8932618364f0d875b81383fb5cec95e09fe53f0fbcc6fc4acb17446"
-  },
-  "settings.connections.doctor.explain.p3": {
-    "source": "beab290b07a9dcdc94d8b5dd0fcf72ebc3300ec3602b17f272dde18eeefad38c",
-    "translation": "87bb69407975e50081b6d1350740da02e009eb024773c913871bc4073a3ad1eb"
-  },
-  "settings.connections.doctor.explain.p4a": {
-    "source": "e44a0a0cd30129fdd13c9d708961d93e48a0593f631f674926ca6b8f88dbc802",
-    "translation": "19cab0c73d0e9e795776ae3493a74ab652bb696a505ac48ab853ce9409900546"
-  },
-  "settings.connections.doctor.explain.p4b": {
-    "source": "3038752eb406dcdaeb0a6d2582ac75c67115205e40506fa8fa4d6705bf8191bb",
-    "translation": "eeb7222b60d89f61482dcd65d8d0d5dd9598169bfe205047c0baae79424a94aa"
-  },
-  "settings.connections.doctor.explain.p5a": {
-    "source": "d6f6c6d87afda7bfc079934239fb9cbb44d179648f10e78fc512587c12d5e019",
-    "translation": "46cc3e64378a3ea2ad5b8b6ed4aed322901132be777a7e9e1d5eef8750ab59e7"
-  },
-  "settings.connections.doctor.explain.p5b": {
-    "source": "dcb47f1fd0af23656708ac1dc79629df66fe3fb3b9b78fd1b92c70322a031cfa",
-    "translation": "9514ee6e85489df67fbb11e7f53fdfafc4ac727f9414d4437f8350e671415d80"
-  },
-  "settings.connections.doctor.explain.p6": {
-    "source": "9f256115d8e8ceebf7b2731f1dd0e03c84e544c6739eabe904f5f3718307fbea",
-    "translation": "57e96bff3efbc0ae5abc6cc99ba63a2afbb502a57bb6baf7f2e414888af78fbc"
-  },
-  "settings.connections.doctor.explain.title": {
-    "source": "ef7a35684883541dd0257682cbd2d44990b58000ce07f1b56ce7154d94742a8f",
-    "translation": "aa07112536bcad5136d394b91810c46ce7234a9a05dbaeb5ab68ad73c86c34ec"
-  },
-  "settings.connections.doctor.first": {
-    "source": "1f378d8ca4c120e25b9b10b9157fb03de3364b3964279c21d1c38d03e3d861a2",
-    "translation": "3f4e61ee2f2ab9275c0888d4a5238ddb43b49cc1b8510acb67478f1fac0f9b1a"
-  },
   "settings.connections.doctor.followup.explain": {
-    "source": "44b4d77ace62aa4a4960c163550c3bb0771b91902424b1496c3ad52469ce9559",
-    "translation": "e93b2e20be9ba029e382db601851dcf5db1b871e11ab2fa08b1e5ea4e346c2d7"
+    "source": "61ff42c82ac632a469fed857ebbafb261f334b8a9b96eff68a4be892556947fa",
+    "translation": "e27aafebc5918f133d562feee8bfd2de4f5fe10ac5274a39216b4acff223672c"
   },
   "settings.connections.doctor.followup.noStatus": {
-    "source": "7b6107e908462e9166c8fc27c69039519f53c064874c2d10b33387e39209cd98",
-    "translation": "0fe791e9c43c3536b9a3635d95917b1bceaf71ae6d9688994467bc7fff5302db"
+    "source": "acbfaaf55adfaf50d17e53762fc5ff43fca750eb66c5a22dee27e7d38f4a7135",
+    "translation": "f6872de9a0d12b164bc94f0c46b29ac00f4b80f270b28b2ad11daed1469350ba"
   },
   "settings.connections.doctor.followup.openLabel": {
     "source": "ead18c4f98444dc6dc46bd67bef1066f83979a2465dc6e707aa2a04ee1eeccc7",
@@ -15867,33 +15815,29 @@
     "source": "cd969d2219eecb68f3f0c76941bf317dd76cc04540a0a955b71d8731fdd5be04",
     "translation": "2bdb03225b0ddc5b89c7f3345a4702ae914efcd00f015f7885f92f12930071af"
   },
-  "settings.connections.doctor.here": {
-    "source": "52fd10e6584366e4d3d637b9095944170d8fd31f06205f7e177bfd2ff1e0921b",
-    "translation": "188f61226448b57dc60253a380c72e3235226625b3a9b9eae8f889f3983b30b7"
-  },
   "settings.connections.doctor.interpret.blockPage": {
-    "source": "bd5fe27c2a81e2fe7b9f7f3f6814029635b01adeba70a6ad601be959c719602f",
-    "translation": "158bd627942c3d83feb8595fd822edc6e5d8bd5b651f2581e75ddeeef2630d0f"
+    "source": "3df1f5f067f2ce1fc124d37841a1b6ea523dc20871026cd4f33b1f00618e126f",
+    "translation": "e80890ae5cdfcea0fff5130096c80be2d3c794db00be68bd3ca9210e87eff99c"
   },
   "settings.connections.doctor.interpret.botCheck.jsFailed": {
-    "source": "cf36e2e61f1fe46f13d35b3bd46d94a66bbef92041220d17f25a82a7bd5e54e4",
-    "translation": "0a98c3cf4471453310012cc5e8fbbb08df791e3bf671537883332941719d387e"
+    "source": "8c08c525ee46ca8682b9b9f30437b29ae0c489bac500cfa56e8c96b82881b5ce",
+    "translation": "b97e879b22c145f057a1639bd50761eb28661fd00459bda88a8f08d2ab6b9b65"
   },
   "settings.connections.doctor.interpret.botCheck.worked": {
-    "source": "de0473f63f9a0d2e3681f9722da3f3ed760ce337139018b5dfbe8d4efa06715c",
-    "translation": "2585c6abd557829445726d571134d6ea4dedc322bdfe2b6543db828cd333fc13"
+    "source": "51914b174f78f0264d89f33d85006dda187d5b81485d05a835a1b2e244ed782b",
+    "translation": "85fe832b6c3124996039c00d8ff9f9e78282e7562e690637f10954a14f6c2139"
   },
   "settings.connections.doctor.interpret.certWarning": {
-    "source": "da9889b545475bfc6416b07bb9cfd46a74597e38f271763390cf8e79a817346b",
-    "translation": "3190d802608ff24af254c6382078834dc047c88106ed34678aceeffd89b8bb1c"
+    "source": "e8fd4a7ac571b0f3e65b76f1b7194b81a1384783bdd41e73653aa39072e63799",
+    "translation": "f6588ac7dfcef08e124ecbcfa12f235e0d8d34b659bc51d0d5658a9ace1361e7"
   },
   "settings.connections.doctor.interpret.dnsError": {
     "source": "0a0467c321f1829cab375b06f05552f85fadbf87ecdb62cea5697d10db97429d",
     "translation": "15856a80f860760842ea7416029e402346b0d00b9959015ee5b701d06f1c7aec"
   },
   "settings.connections.doctor.interpret.loaded.jsFailed": {
-    "source": "1d4d73eb1a80e772408a42337b3b5b830b2205004f4b497498742764ceb11477",
-    "translation": "ddaa7eb41c2fa3364ad715a93d21b15aa016956333585d2fd4e0da5043edcfe2"
+    "source": "b1fb96db8c4f88ddb4197bc98642d4c76ef3728a0279b44a43c5ea0ffbe1926c",
+    "translation": "12a5d041a40feaf45ac73c4dec497d7e468d9bf0a7fadd7c167e1ed5e3ea6e6b"
   },
   "settings.connections.doctor.interpret.loaded.worked": {
     "source": "2644185143566aae6adb1dca100cb6e18d90008f39ec1af291bfefedc612a3d2",
@@ -15904,12 +15848,12 @@
     "translation": "faf6e030274191bc2997b920ba72bb7c84a2b138ba6a38e385fb48467459c6ed"
   },
   "settings.connections.doctor.interpret.other.worked": {
-    "source": "27931e916b67406893877a333152632001dfea817af011adaf3ae93a90044aec",
-    "translation": "97a1ea433e500e3ea870eb1e2dbe97dc25c031c1c85fd98a24b07eb4dfb927a4"
+    "source": "fdae6e53ddc617e51bf08f0ae8da8eda0518a393db2102a21e79847ac55ac439",
+    "translation": "df8d5b09c6cf97af223d29fafb82145964338823f5c38479a1610021fe792c0f"
   },
   "settings.connections.doctor.interpret.timedOut": {
-    "source": "fb3b498f5590a65999eaf705d917b8ec4ab3ab597c02635e56f9a059aefa03dc",
-    "translation": "ae6742e5e17c5a36b6e4f4356cd6ab1481cb93ed292aca7b59e675712360516e"
+    "source": "c5658b7f8020c927a5ad08820f374aee74d9ca69c841656b8cb6faf0408ac53b",
+    "translation": "c9df81a78a9351fd35b917fddeb45c91325bd864d52c63a8939d30aad2755d3d"
   },
   "settings.connections.doctor.intro.a": {
     "source": "f0f2fe33b6475350e54a215952cba6e2bfcb027ef6316e73733d059b3f9765b0",
@@ -15924,8 +15868,8 @@
     "translation": "3f4e61ee2f2ab9275c0888d4a5238ddb43b49cc1b8510acb67478f1fac0f9b1a"
   },
   "settings.connections.doctor.noCredentials": {
-    "source": "dc936bfa75cacb295deb287c1f6a2fffedbc495103cb70100d7a42563d929947",
-    "translation": "88edcf17a6bc4f64e54698c8789ca04b3016643d5809ec4f22d70302cdc24840"
+    "source": "36b168dba8b0bbaf6c1fcb4fc585638a316c1711f40724c449e1426c9a7e0812",
+    "translation": "7756e92218abd72b621a1cc6d618f021c17dbe25c3365a4144a52be0d19fed46"
   },
   "settings.connections.doctor.outcome.blockedOrUnreachable": {
     "source": "a84463808f33e5d9d25bb55a71e7fec6b13009829ebf9a76bb46b6d14939c044",
@@ -15964,24 +15908,24 @@
     "translation": "7e1aa1d536182bc1fa7d465950b9ef9540f3ea9777e95862fa3576aacbad4ff6"
   },
   "settings.connections.doctor.proxy.notRoutable": {
-    "source": "045bddcdb86a40edb0ad3bdcf2e7b747cbbea91dc7f17a5ccadca067812a7203",
-    "translation": "7774f88c228e8003c4cc2ca077d3f09b3a58440174e59b9f7c05b95b6aa26436"
+    "source": "7a071badf98ee40e57e5442aff14be55ec8aa82f58ff851e1d5159b202d97fea",
+    "translation": "63a9227cda516177152984880aeac3b3850e9cbd863fefcccf9da9d154ba6c20"
   },
   "settings.connections.doctor.proxy.proxyUnreachable": {
-    "source": "dc5548e9dbb2709690261d0d05001ba3db5f35b1efe1771dfc0a3733e4b364a7",
-    "translation": "a81b6122fe2567aa1c0f90716f44b93b923602d13633d01cc87175068120974a"
+    "source": "7ab830fbe2df3d077651c776d22e139e1875c2f369f16e2ae4f77c5d3536991e",
+    "translation": "f995864e93b9f919305bd8cb8922b2f0d66e06e9ca09dd1a35996b12c8126e40"
   },
   "settings.connections.doctor.proxy.targetRefused": {
-    "source": "796061e78d7e1c92dd90c658ffd59a26408a63f7a36de3756c15a63f97f50640",
-    "translation": "364377a1c0ff3379888a879c22b5b015797552a03b06852bcd8be19afd535e20"
+    "source": "f6f71a88e8417b81c462deca3673e0f0162a9801bc1499328d5de069479d3971",
+    "translation": "4916ab34582106312a43feb0979490cb0f960d39bb23925444e1f7e15dac75e6"
   },
   "settings.connections.doctor.proxy.worksDirect": {
-    "source": "a5f82fbe1925d349839573b6d96cb99bdf7e860045333a06a3bb443b3da0dfe3",
-    "translation": "5ea3b1f686d83311458fae19e57f52e83a71cc7d37ab868105ba4f335f36b2e2"
+    "source": "0fdc9774984b0ccca04175718fc81dc706433329f08cfdbc97f053d47b3d737e",
+    "translation": "07c049831841c8d1e28a16a068c2c3721799c643c4617edeea28f891d675646c"
   },
   "settings.connections.doctor.proxy.worksIndirect": {
-    "source": "f83635b0365296d08c9d482dd8202cfa2e0503804b77ab9171524e9393b57f83",
-    "translation": "f66ec0ec4f76956e68f85f97aece909b2627ee265003c2ac418a09cbcdff2c05"
+    "source": "62e8f156b07f4091174b7dbfecfa6957a9a6b06b28921a1184958344f2c12579",
+    "translation": "664fa610fd4b38487b19b3ac95e92a25fb0dfe1d7d4294e26ba2c0b854e98b6c"
   },
   "settings.connections.doctor.proxyRefused.fix.a": {
     "source": "9fc7c59850bdd46813749e0862b6053eef6345c6b3abadea897453254db0be2f",
@@ -16240,24 +16184,24 @@
     "translation": "5a0f7737bc746d927a7ebd22d045511b1fd03450a02d73f9aa4ddb37c1d1fa3c"
   },
   "settings.connections.doctor.timing.instant": {
-    "source": "fa5a1fb3749b613391f583932b6a72fb6edd39b6714d4606b5d18c1ec0b1087f",
-    "translation": "e92f03e2e41e7d83d438cededd9ea8d5a9243701b27b962713d4ef517ec2926c"
+    "source": "87ce3123119ef03cd63d83da261b707675a78a36bf341f19fcf11b68962ee7d1",
+    "translation": "ff14748ca0f6aa5a1ca48565df80080ebb589d5854a0d410eadf56c67ac61f50"
   },
   "settings.connections.doctor.timing.roundTrip": {
-    "source": "46edaa3f9f4ce52906f15ecac3de84a183f5ea411742ada0d20772c385c9feb8",
-    "translation": "ed7ae8e50aba96ca7387fc477e0d1d582eeaf8b2bf64ca78aac338c5cbeda66a"
+    "source": "672e6cddf279af88daeb9bc788a55bbf2dcfc68a6dd53e341df7c04f576f4711",
+    "translation": "8c472286cd29be9660087688d4f867a1edc4ff32f3db6cc3d478e6d95f965830"
   },
   "settings.connections.doctor.timing.slow": {
     "source": "ebd60ce2e9e8a6a6d7390898b1889341b8dda15e0ff56546f9c3e9c39e8fd53f",
     "translation": "d151fda3230519bcc0afacec6e2c320360cc07230823a75e0e2ef802a227608c"
   },
   "settings.connections.doctor.timing.slowFailure": {
-    "source": "e4f5889755758d9793480cebbbc51649fa9d4c390bc973bc5d439476760df2f6",
-    "translation": "c69444b074690504a9aaa431f64145fbff5491e879cd9f1de98db396475b8001"
+    "source": "9e3bbc0613a077e391bff34ec9e63a819af63db44dd9d96ba79fa0526e862eae",
+    "translation": "6665125180d5308041cc8af13d10a7e54d79360cdf613c7a84200df0cc977069"
   },
   "settings.connections.doctor.timing.timedOut": {
-    "source": "6df8a04d133f3b3473ecaeb2fafe1efd931cf547fa8879ba8a48f382409ef804",
-    "translation": "995cd27d75a62d1b0f674d33860e7bb2e07c1c2d4374801eeaa11ba4951c03e4"
+    "source": "c93fd298c16f0217169465c6cca441de9d9b5ae4f1714b63c80c8f51b19d3686",
+    "translation": "fe8fb2131a7e7246a2cd7bdc22d154ef8716112ff571ddb73142569ba39e5a74"
   },
   "settings.connections.doctor.title": {
     "source": "8dc99cf67c70d81c88f6d1727fb3f0c332ba91031060ee18c735619d5692a65d",
@@ -16268,8 +16212,8 @@
     "translation": "ea54751fbc873361b51504d6a6b924a5b50b2370b07fa020a50b4d760f3e5cd6"
   },
   "settings.connections.doctorBody": {
-    "source": "f21fb50fd8776f919cfc840986134ae2600e00352a5f5e456ef6c57e895237cd",
-    "translation": "0bc88741dd2d361cbb067a08ed53baa4f6389c8015a29e4f8f3ec4827e1d2113"
+    "source": "175379d4e7081d75e48ded1953524ee742c6f6968e3d3ab15b9ed51267e7753d",
+    "translation": "d6b92f2e7f16a41354076b05ed09e93d5c22a57429b75f940c1c4d7153054d7a"
   },
   "settings.connections.doctorHeading": {
     "source": "8dc99cf67c70d81c88f6d1727fb3f0c332ba91031060ee18c735619d5692a65d",
@@ -16308,8 +16252,8 @@
     "translation": "4083cc26bb1a6fff3fdff7d4891aa321df704ff8160b6b188423fcfe39c77451"
   },
   "settings.connections.dropbox.intro": {
-    "source": "653669929255ac874d3402349bc4e933cf7bfe149bd0df62608d6f1df9049a1e",
-    "translation": "1e3e8e626cdaed314b817b24797e1b897263a3f2fe78574db8e5b7feb12e8d28"
+    "source": "54434bd93b58c807abfab739f00fc8ead778fdc9f0c0def1aace7bc9178d751f",
+    "translation": "6c035e5bb722027844b9834b106a114ebe7fa658972680fc9dd8b237e517811d"
   },
   "settings.connections.dropbox.list": {
     "source": "d8959709946c64fdc9623753483b060495430c9c1af20ee97b609ad9aee51004",
@@ -16376,16 +16320,16 @@
     "translation": "1772787b0c08ce9f7e2afacd24af1d4bef35c873746e2b512cf9652d8177fd11"
   },
   "settings.connections.gist.editingWorks": {
-    "source": "66cddb89387d75864c3577b85887ffe0eb86faf389f697a4289c5e91a2d33fd6",
-    "translation": "e63ce2a107bc71ed067fa4973e016a729620f7c2c8f458c548f365385db5c010"
+    "source": "8ec82e42bd0a6b8a973f74b0147b1aa4ef3d01e652e167f39cc5f3a8b4ed225b",
+    "translation": "995b3576f744bfcd4ff0f3741bcd662ddcecf47b156832946ebf9931c93f1cdb"
   },
   "settings.connections.gist.error.noToken": {
     "source": "f41fd778a7251c836f8e3868566f9b89730d0c47daf80fd0fc97ce1ad4c45f2f",
     "translation": "4330fa015269f52cf8a5d2c9a4c4ca02fa74088ab4f3a614e5157dfd2ed8b465"
   },
   "settings.connections.gist.error.rejected": {
-    "source": "b730039e9883dc71e7f4b7bfa07d3509ab6cb4d17b18dfdde372cd6b0424430b",
-    "translation": "38ed4c2347121ce52de796eaf415dc6c8ed95be10732b497c61a79e13bc38ff9"
+    "source": "6e8fa685304cda7e38867c1d8c177e3ac9b60bfaec17c77fa6dfbd4198d3a4f5",
+    "translation": "f7c8e35d4bad3b7b4f6a7b040bcfc581ee9dac8e0786dfbd0c7939c17478da40"
   },
   "settings.connections.gist.error.saveFailed": {
     "source": "284d6d5e7bfc2f18864354e91ee4a036f16090e59b3f8fe8221c6e34cddfb506",
@@ -16400,8 +16344,8 @@
     "translation": "3c0693b4ba967ca378f9c4fd0690a3a8711f45ca3318e76437c325f76c38d5f8"
   },
   "settings.connections.gist.intro.a": {
-    "source": "47e591e2357d0372bf27f90eba90e7ccdb82cf3f0f2c4e01895c783fb19a23b4",
-    "translation": "a7cb671ae921e29ed11e39582e0918de740771a4d192a0e4c036f9cbd80eb80b"
+    "source": "b1e678a5630197bed393152adf0d3f4463a88fcadbb77eab2639629f9a58e676",
+    "translation": "0f11543092189e01e19668e75a254632c96c9c7939763e9f7e95bfbb5e1f2ed2"
   },
   "settings.connections.gist.intro.b": {
     "source": "83b31fb7d532bde977a3976adc66bcdf0e198e448e40088c6eb43bd463716a3a",
@@ -16432,8 +16376,8 @@
     "translation": "7d5a6886681b4746957c0a1c40198668ac2ac22bc302aebea9b3cce886cdf18f"
   },
   "settings.connections.gist.singleFileOnly": {
-    "source": "3d561ab9fa4527538000ba6235bcd647e2abaf4b63c8c20d0a67e473022828a3",
-    "translation": "f1c395d845ed077eae8e17f1f188fb3a7d797763185016d95647016c1db81fd5"
+    "source": "0c4c217b94c8a2e2779ae84d96a5b2b86a2bc424aa28b1450719d50b8c243cb0",
+    "translation": "10dd9fe5919820ea8306ce3f9e2b52a281b437e93fe0665a7859c6f2be05be95"
   },
   "settings.connections.gist.step1.after": {
     "source": "6b656e9199a197d213726005813894827326e4af3d7fe481c9d0cdb7d7a423cb",
@@ -16532,8 +16476,8 @@
     "translation": "a04ced33540718265d8790bb9bfdfebab0e4d9fba63152dd2d5e3e1a949e94f5"
   },
   "settings.connections.github.credentialWarning": {
-    "source": "c6849b7132a7539a7f983497e7d96c0815198ace987e2035b8838ffcc930cd94",
-    "translation": "e7ae2046f9435a60d208ee28bcb4e00df2795575266d1a73a4f1752659c33c47"
+    "source": "a96d39c8f8a6718794fcb4d0ba3e1cf4ad02d2eb0727e95bd55767bb3bb41184",
+    "translation": "4294310c4c73a787d9a18b53d6ade25fa438b73f5d3ab95071e0472f0976f4b5"
   },
   "settings.connections.github.directlyFrom": {
     "source": "850284dc666d6fa0271376bfec80b3d043a432eeaeb26efa283abc481526238e",
@@ -16560,8 +16504,8 @@
     "translation": "b03a568f122be146800587a88711eb325324c9fbd6207b772a9cbad46ab58d7f"
   },
   "settings.connections.github.intro": {
-    "source": "a5d5ab03a11678720ed922a0523614f73e8ac456f1bafe32da6550c346e04835",
-    "translation": "1c9cc0a0c7c6b4de92bd6b57dfa270cb70eea90b50e8ef2b500ebe796a1a372d"
+    "source": "079fe311e9383e0e36009ddc01336ff1fcdf418615f431e6970f283d5f8a0770",
+    "translation": "4072f23c46622d4102a94b5055c100c470e2ecdd6d5758657a5ae191747b4ff1"
   },
   "settings.connections.github.lookingForFriends": {
     "source": "8950cb9db5b3798d82d7a9e0cc0107398a977312eda8fc36d02dcbe49765d85b",
@@ -16712,8 +16656,8 @@
     "translation": "f6d69dda0135ce8e69795959d9258747693dde1c77179e6e6cdccb2e47a069d9"
   },
   "settings.connections.hugo.intro": {
-    "source": "5f61707699b4270643dd377ff2120c4c5d91cb236c71d8d32b6a0410197d4aa7",
-    "translation": "9fb19be23e5da85e0727e8c507d109fa5b512f834beb0fdf1305656c1c5a212c"
+    "source": "b1cbfd97add5e1e65f6b5468f288cd14b38b1ba21af83c68e073bc0e84c49b9c",
+    "translation": "9989407ebd1576cb825705e1354add401aefcc475df08ecba98696e125305b12"
   },
   "settings.connections.hugo.loadMoreTitles": {
     "source": "4df5dcd2c298de985a3b6dd966835d465eca45c3ec61ab773f4626b528ae5c29",
@@ -16724,8 +16668,8 @@
     "translation": "6e5b224ff2f89dfc68e7d0694f013bff256a9a259c0be53376a2d686fa7f4ab6"
   },
   "settings.connections.hugo.needsToken": {
-    "source": "04729051cb5b5c83769c8a23c1c53650d006d41a4fd24e76c07b618d44ae1c02",
-    "translation": "2242fbbaac6261f8405f636f8e56937d423b06e3a51675c00a5dc1bd717a41ca"
+    "source": "231346541f2f963301b5f1317d51222df590422093fb7798d28fa791dfd220ce",
+    "translation": "c567dcdfec5f08b0fa71cc57289203c4a2411bafcea3b81f4fdc8d52b115875f"
   },
   "settings.connections.hugo.noPostsYet.a": {
     "source": "79d38bac38fd5cab28ae482440ce1b160fb490dd0fc5bcda18769d4833e8b78c",
@@ -16772,8 +16716,8 @@
     "translation": "8a23d79340c3dcd3e5aba2c92c0d6d8b6b1e5552a4857b9883ca9a690a4afe7a"
   },
   "settings.connections.hugo.posse.hintA": {
-    "source": "0fa7adc46a2e82269f0b3817c8db9e537c06bda545c2485fd0258d42aee7256b",
-    "translation": "2e7c6be25ceabd096546370e250388c2e6133aefa667233e079b9bdb8fc36857"
+    "source": "ffc70824de07b7bd343b8dbeedcc8cf611e29fda8806040bff2f79a91670a3e3",
+    "translation": "60ddf7024b1703c1d0b55966b479e7cf135133612a4a853c52c58d6895916087"
   },
   "settings.connections.hugo.posse.hintB": {
     "source": "cfbb305af6d29ce3c44e390d9b5b7b3e35bcdef421615d09f280f73cbaae9cf8",
@@ -16820,8 +16764,8 @@
     "translation": "71171eb08b6577f78593cc0bd241a7b19b2303c6fbd2302bb47e20678b1e154a"
   },
   "settings.connections.hugo.readBack.body": {
-    "source": "77bda694045155745d93fb7403f330c227eeef1f371aedd8f771000329bc0744",
-    "translation": "7797e0e85dc677df19ccfc2a05eb308b5e1e94d44cb26a6378070277b0b36b06"
+    "source": "b9219aea8189d576905bd802056e4f63ea49057a2f503bea47dc06e74a18bc6e",
+    "translation": "e5b47722fb48d84bfc067bb71bb6316329b2c02b229651fd52c32f43726db004"
   },
   "settings.connections.hugo.readBack.title": {
     "source": "2b36dcd7d5cea15f09cd1be9c74c70d631921b261744620f5387a73c24fdef2a",
@@ -16952,20 +16896,16 @@
     "translation": "4c923d806524604b17a858605f55a243c6c0e0680a504414771ebd852e07c2ee"
   },
   "settings.connections.hugo.warning.a": {
-    "source": "6a2439b91f5e64d4b78cf6ae6665381d801e05b89efd9d97b41f6db250e1816e",
-    "translation": "dae43ccc95cd92517e803ef4cf863f85319ece82664b017f09c60d5aaf6c0a90"
-  },
-  "settings.connections.hugo.warning.b": {
-    "source": "59d7e7c145afd522fb6fbcd5d9ac8c301c431501c366218d9e96da785820fbfb",
-    "translation": "0b9816d1ddfe9acee2ae72ea429d9f87a6151aa4cccc509e037500ad381e27f4"
+    "source": "7d967b033ea3b247ba045f1fa4497294617c8b698fdc460c0f1beb2ddb2db31e",
+    "translation": "b371306107b0173077a1138a8abc27aa4e953ee04474f7899ca5c1f22b34b716"
   },
   "settings.connections.hugo.warning.notHugo": {
     "source": "93b417dc1975ecae115654e7d56c0957c9edb3ab35685d6bd5c76d1622fcab9d",
     "translation": "b4e056035508330784116f38d0ee6b5c21141a0955454c6dcfc1851c230f9f4d"
   },
   "settings.connections.intro": {
-    "source": "8b91bf5afc89f2dfdefbb721dc52b72fdd8209dc97560a69c558f2aee3f9ec4a",
-    "translation": "f60467c961ca65abbf0ce822046e0c256e6180358de274b757bf8b52f8cf6bf5"
+    "source": "140d5b7fec9c21d69fab1f49ca5e4172864b694d52397904544f03a267d7fc1d",
+    "translation": "86a46595e2c60c6c5e2082432b13097722bd094c31b1c1cece1aecbd0ea3867a"
   },
   "settings.connections.linkShortener.activePill": {
     "source": "de565b5530e089bbed4a7b0ae6e6a24401dce2d15f3110b69cc86bd39b5b97a6",
@@ -17004,8 +16944,8 @@
     "translation": "dd6dc3d9e9070111756a1b5817a5acb64566d39c0734cd7b1608261ab5e47e42"
   },
   "settings.connections.linkShortener.credentialWarning": {
-    "source": "52e74685437a431e4ff79795fd9afabe9a3f5b8f0addd7cb3c105ed254098200",
-    "translation": "a104340300bd2d4d393414b62755a2fa747fc2ffc25beed1fe29881e10e56b1e"
+    "source": "d2967d99cdee1bf0dea47f4a21bb967c72f227b8f1dcd722d6481d26ca8d2210",
+    "translation": "91e45c1807fe8a768aec162c92fa633b554b33d9e6c210e7bddc04651149da77"
   },
   "settings.connections.linkShortener.disconnect": {
     "source": "e80191d799fe8672728fa7d422737c71c36921303eb3987079c6f5f64433d1ae",
@@ -17044,8 +16984,8 @@
     "translation": "6ac059024705c11c359c8a8a64ca7ecfb58beba080e4e09e40c72f24f28f660e"
   },
   "settings.connections.linkShortener.needsProxy": {
-    "source": "5269ab566865909e1a243f8b780ce86dd178b909f620299237c57af772427f24",
-    "translation": "a675cf5cb95ac14863d569a2c93b6b9afa6aeaa70f1756a2bdece508b73e7170"
+    "source": "4e7a480e98617a99f6e5f762f1e7c984dbe378297eaf6455fdd617be58644025",
+    "translation": "9a3530f2cdb676cb65fa259443eafc4502e97ecd9a77d8cf952911068a2341d8"
   },
   "settings.connections.linkShortener.noAccountNeeded": {
     "source": "76cd1ca45f6a350949beb32ca726cc7c119d4d5aa25a7a1111ae69129375a7d6",
@@ -17160,8 +17100,8 @@
     "translation": "1b28a88a239234d6147d0d814d789b549dde21bf4a364358e33ae6fad368d204"
   },
   "settings.connections.mastodon.anonymousReadingNote": {
-    "source": "de83108b57a8267011ccfe8b498c22aeb4c2fa5434b3609b63bc4b576a9799d9",
-    "translation": "028527bcf454413ba19ce4a8b720ec13c08040a7277da28f6048dcc729c561aa"
+    "source": "89c70405b737204378c13c48013022c6de45fdb9e1400bd8910d6b01f6a7c6a1",
+    "translation": "405d15df0cf4ea37c188c7d44210d0a0de847042f9ba54bd4b64f5bc0daef6bf"
   },
   "settings.connections.mastodon.anonymousSettingsLink": {
     "source": "75c7d74f4b3281d3a4667394658698bacb044d1215b0f186083fb31262c30908",
@@ -17200,12 +17140,12 @@
     "translation": "8e1edce39aae338e7077359da61ef66706a178a1e54452c00cf2c8fa623eb215"
   },
   "settings.connections.mastodon.noAccountNeeded": {
-    "source": "85cecb182a4e8cc9461d43d65eafdb0446372e7a635982478948c9c74ea696c3",
-    "translation": "4047ab34b81f5e049d0407b84951ffaebb71881c9377ea3c2d50d085cae6d17a"
+    "source": "38fe7674bbfa6afec488e95e28d3a4e3f71554a795a09832d8234ed01d586af0",
+    "translation": "2683fe3975993ab3280726e281aebbfe230ae5d1f854710fc266457b86044e36"
   },
   "settings.connections.mastodon.nothingConnected": {
-    "source": "d1243424cd3dc30a2b04e1456802ba71b915bd5cd2efbc60e5a19c6ffefc4767",
-    "translation": "437ba6b012165550da289e75918a945ecf771e668be6409b7c0c950a5a4c2c25"
+    "source": "f82fb8463e0b28fcc2109f3a5f1b41c39cff81c10d796702125187e3708ea61c",
+    "translation": "fb817ae2e8ab8dfc23a4db90928e46704cdf7ba8b86d3d75ea74d727798f3d72"
   },
   "settings.connections.mastodon.pasteTokenAfter": {
     "source": "dc38b7126e48ef5b0218e51cfdcfdad16865349e7e3a10cabaf27b773ff3291a",
@@ -17248,8 +17188,8 @@
     "translation": "0d791868c69d4c31bfe17886f37eaefd95d6f222e56d2b88da03122b24b85f59"
   },
   "settings.connections.mastodon.signOutKeepsReading": {
-    "source": "5fa059bc6e70850714f280d3507143d1c7fe10a974b8b93b111c767beab1d30c",
-    "translation": "f31686b58b7ceaa9162d6ff209187e6b108f385408d4fb6050a6534515170bb5"
+    "source": "878153f190bd902c5d5cbb618b82153ce86da5ef620b63c9ce39301de311b718",
+    "translation": "c907d552f0cca6c374dd433acb68337a044905b6493e7cf27773d28fd4f413c4"
   },
   "settings.connections.mastodon.signedInMergeNote": {
     "source": "724ddf441dc31af14a0872c4d75756773dbc6ad6b02871b76fbbd85501a9dc02",
@@ -17320,8 +17260,8 @@
     "translation": "e18c743a7e1b2e3a66209abbec27b13d9d967b346bccf18a46aa45bff430f119"
   },
   "settings.connections.mataroa.credentialWarning": {
-    "source": "ba893d2d90d575644e54add96bfd838b58b0418899bcc543544178086bb30a36",
-    "translation": "98ea812f08a235370efcafb6c96a6de3350e81eed674bcb4386f0073a7a6c045"
+    "source": "39b9fd4cdc3a53c1ec415908bf99729ec561ab42654131b556637ac764c3107e",
+    "translation": "ffdc0ebbbd6a25bd549ce401892757ccc14aa1924e14f69898417084cfad97ec"
   },
   "settings.connections.mataroa.disconnect": {
     "source": "e80191d799fe8672728fa7d422737c71c36921303eb3987079c6f5f64433d1ae",
@@ -17468,8 +17408,8 @@
     "translation": "7288c1a934cb059d1939b7d31c2d6ef39d50a9b70b1f52c299c48eb1f12c482f"
   },
   "settings.connections.openrouter.expiry.cleared.b": {
-    "source": "a8e4507b4d980de05a816a84640d0d9b8e04ff61a5f44e2828d6b6e9a002f326",
-    "translation": "025d10e17817d833555b9461bc672f522be02788b66769de7d181e7471e886da"
+    "source": "a5f6622a4c06c28a525d82af7f1db07956e768f80af037a6771278322dc855eb",
+    "translation": "7110d4df6a8117986964041f7c24c56e6643540e355af9f6097d8c82236450f5"
   },
   "settings.connections.openrouter.expiry.deleted.a": {
     "source": "aa2c6cb28a27e76d59631a9453c3550aa092e887d929fe18045f33e2c97147c7",
@@ -17480,16 +17420,12 @@
     "translation": "bf33d51a0117ed2771d3030dee6252131b0ad02837990f5675c125f71adb5998"
   },
   "settings.connections.openrouter.intro": {
-    "source": "8639128cc8017ab7e5a4b0ea98b99a65a3a27704bc6b0199813e36369d6a406f",
-    "translation": "bae5904571e5aedbf008bcf4102a30b1d20fff9d397d49945772ccfaf3aa55d1"
+    "source": "c4e0a38a726130b9dc779f50c990e4b0616112a30b2207d9bf9c5ecf0c145167",
+    "translation": "ff3603f8ba7997d301dc670962760392cf4a5995a38564bc0299fe0939833783"
   },
   "settings.connections.openrouter.keyWarning.a": {
-    "source": "699a53dddf4b5abfd73e092428c135ff6dccf5474398932362462072974d1659",
-    "translation": "3b3b915fd8f3b09eb0727459df8d38ac0153a2410c177278ae88ec31dbc6bb6a"
-  },
-  "settings.connections.openrouter.keyWarning.b": {
-    "source": "a11c0d70233728ad3a84a1dc82a9a8c38fd292888175f261743bbf9cd1e49626",
-    "translation": "b5d8649d1e114dd5b66c01d252581448ed837a03e71391d2a672fe546624998a"
+    "source": "1bc90beefd7c160135a419898f28e6b0345efe9a91b62ac882a9a4b7b360c310",
+    "translation": "4629458f9f1eae0a64cecdd387613679ac9def06eb3300530238679ca3c96761"
   },
   "settings.connections.openrouter.model": {
     "source": "c820b93516ff203603ed60a227ea14ad662f6ca472bb143e0987a574f55d0eba",
@@ -17564,12 +17500,12 @@
     "translation": "dbb926acb34f520f9b6d863c1533d8f368ed216ece5dff2bf0a69870a7d71924"
   },
   "settings.connections.openrouter.prompts.intro.a": {
-    "source": "89c1772beac6c057ce2ab9fdbf83a0e638c71a6ec1b9a46754a2c912c3543715",
-    "translation": "a1011ceeb36dbb9c5012dc44d5c8c36c74396feaa3b95133e05e27d64e6a4a37"
+    "source": "43391dcb810536f9530ea359279343b304938c3320728c70a40dd62772e84b85",
+    "translation": "4014549550a74c0cfb3214f4297088c2e92ed1e6d1c3ad8e84d2800ee5e49bc2"
   },
   "settings.connections.openrouter.prompts.intro.b": {
-    "source": "e6893d6f5bd395a6deb7fcc1c1c253841a7d0b2c4e7e5970d9d7b374659022b6",
-    "translation": "3072397b92c6562a3e3f5d0eaf506b03ef98c2a1d1ee0025de5a3949fa9538fc"
+    "source": "9d44139c6e220f0441396e89fa4153af35298ce2df8660f3c33955a15df63428",
+    "translation": "09630055d74514939a6430dc361902d9e556b6df6ea1b0bd3dcbe2a8101493c2"
   },
   "settings.connections.openrouter.prompts.placeholderNote.a": {
     "source": "f36ecf41f7bd9cb83867741a60517f05ab9160d7a1fb7b68935f740407eae760",
@@ -17612,12 +17548,12 @@
     "translation": "a3ed090e031601352d371c893f2c68d8372dd36a41c834b70d9dc07b797485d2"
   },
   "settings.connections.openrouter.translation.anonNote": {
-    "source": "be30588c50d1f2bc66d32b6ad7c0f844760675167a8de162a56ae31b5f0a1b8e",
-    "translation": "fd02561e19b0496dc3b7d6e0de802e7a5fd48db6948b21bb1fe54aaf1b8318b4"
+    "source": "fdb0157ff8344dd26ec5580c39cadd848a1195921bfce4b35824ab7e3a0aafed",
+    "translation": "264f30a3970f8f2dce1cd746805982e4e542b333763778860ee752bd910578c4"
   },
   "settings.connections.openrouter.translation.intro": {
-    "source": "dbba34b6d450855c22230143ff263667532d74b28a053c7bc2f95b96a7464ef6",
-    "translation": "7abec7b89579773e7e50d4717decda5eb9b5b575b92fc522430cf473217c5321"
+    "source": "d13abd6eb5d1a74eadb86274a85ddbd67a1937dd8e46c9f3b0cdd5620af0635c",
+    "translation": "51070a296864abefb4c1817aed94b1145d46567a7c97482ffe11ddcaf9ac74f1"
   },
   "settings.connections.pillConnected": {
     "source": "ae82e8f9d92c89997da4af128bfc741f339548036fc90526727db4606087f9bc",
@@ -17652,8 +17588,8 @@
     "translation": "a78a0c86159ae28930a2f2658d8b06e5d56e1d0688c992f22d122f6c5809d1cc"
   },
   "settings.connections.raindrop.credentialWarning": {
-    "source": "8b9930a8adbcb7f369ca309e030fa977913f5d27dfdf155ef5f3f45ea7930a34",
-    "translation": "6fb8838015518c474c6a1b03667569a7eaa34eeed27fc87f5a179b6e150135d3"
+    "source": "ebc5d2fa1b3dc316bdb1b1beee60567b7323490e541643e20887a99036407d37",
+    "translation": "90d5959cdbc750ecbc54be4d906c75f2806d9ab22244442c5c37a007814aa142"
   },
   "settings.connections.raindrop.disconnect": {
     "source": "e80191d799fe8672728fa7d422737c71c36921303eb3987079c6f5f64433d1ae",
@@ -17664,8 +17600,8 @@
     "translation": "ceca8885f341c3159ef67169fd9b13454667dd68c491b5481244322d65d2bc17"
   },
   "settings.connections.raindrop.oauthNote": {
-    "source": "b1186a12d377d8687a04cc9a3b4bdbca76470414afb2dbe452324057333d6a6e",
-    "translation": "8ec5d735bd2ebc2a391f0e695aece0a67dda261669b29b3b728ddf960d11aff1"
+    "source": "9c0400ab1cc4cc6353a0ef7f7e9fb93f9457c6fe83143b01879683e45d901e26",
+    "translation": "5145e4b06660136f6997f6932e10586be0e2c299979c4eb5e505e20a3ed821dc"
   },
   "settings.connections.raindrop.save": {
     "source": "a05d444f27d80762d2f193ccfd88c177daf93752ae0a6dabd6076a33aa4c25b8",
@@ -17708,12 +17644,8 @@
     "translation": "6441ba22ae733ace7199b31e80ed69da07b572febb471ae18d9d83466c4d1546"
   },
   "settings.connections.retentionBody": {
-    "source": "9d84b200df6aed7617f338002f1bd656185d388aedc1d382be019c84bc8aa277",
-    "translation": "fb158f193892e4e092f4401086909f0129c237da42cd434f35a7701c9ef52eea"
-  },
-  "settings.connections.retentionDropboxNote": {
-    "source": "d476ef5ce8619018cea0e50ea99563e6cc10cc0d1fa0a099326182b53959dffa",
-    "translation": "f2515f3ab9365af73ede625fe938b4ed063f4cbac10e6b38499cca6ec14b509b"
+    "source": "0fb4e947cea33aba469c49c39140ed1e7dff3c2a28125760a283d4b1c8efb30f",
+    "translation": "ef4d4cfc4b7e68280a07bb57c678d1e163a419203006449149c796a7c7ea782e"
   },
   "settings.connections.retentionHeading": {
     "source": "4d38df7f4e2564edace6babbdd5d881f99ae5cf5a8f897f25c2d339d94266caa",
@@ -17740,8 +17672,8 @@
     "translation": "4f86ed874af177c252e2d38e84234e89d7d3024ecfaa1d74c88e1bf6d81df751"
   },
   "settings.connections.scope.browser.detail": {
-    "source": "cf2c6fbe85f5a01f1d6744c0a0a0f3db11dab8583f2e61ede98044be97240afd",
-    "translation": "3ed307ffcd25fd3852de4486647c6653dbb4ea26d8f5b365e800931e6d4d1ace"
+    "source": "4f4ffa7dfd61164125c0f0c2fd128579af0bf3a1d35e80ba20610709d51c34ff",
+    "translation": "89941d7f1f6d5d1d9011951fe7720aacc66f103eb0ea1296e8134b660a6f4755"
   },
   "settings.connections.scope.browser.label": {
     "source": "60fa2d02c3065a0f0a05e6881dab498a66d0f9acd042f3c4294435d768fe0a5f",
@@ -17776,8 +17708,8 @@
     "translation": "fbd7fc12877950964074b79dd80eaeeba8a74f5e2b683d96112ebfe0fdf743cb"
   },
   "settings.connections.twitter.balanceFree": {
-    "source": "aed03a023b107c6a4a204feae23841d6699326e7af5d476a1d5f91125f83b085",
-    "translation": "f2a098ca23f65be5c5b05f24b0e9d3e0677f2f60d2c1ea9500087672d7154aa7"
+    "source": "bfe0378d5ca203363c634f1980f7dd3725dc346e00372da56148ca5b5b84e216",
+    "translation": "c9dd0bf928ec67d32e20c9266484cef96d8bf4c3290af9a8171c2e17a92699db"
   },
   "settings.connections.twitter.cancel": {
     "source": "ee3eb6e02cd8772be8786b7d714f54bf90abe5d0f0523aebf9c292a1e48c7d3d",
@@ -17792,8 +17724,8 @@
     "translation": "4976e714003a4bb410bb4c49c9280e7208b172ad513248d20325768e8fa1ad28"
   },
   "settings.connections.twitter.credentialWarning": {
-    "source": "5e809c45fdc4471053f4d3057a64d9e3c769298a2f88a608ca61193525e0af58",
-    "translation": "42e16e7ce475e4c9b5862ace93e1dfe46799f7488c2510e2bec0bfb72cad0edd"
+    "source": "03337f11c04a78089f7671a0efa03e6fc23b6fe15a3943c2eb6458e2d96194ce",
+    "translation": "8f2259d7f709494c9d46400a98fb157f5a083aa04039bc8d2ee0ddddaad4dab8"
   },
   "settings.connections.twitter.disconnect": {
     "source": "e80191d799fe8672728fa7d422737c71c36921303eb3987079c6f5f64433d1ae",
@@ -17864,8 +17796,8 @@
     "translation": "803723d236c846083559de5d49247304b30ee4ee926604a74d818ac45418446f"
   },
   "settings.connections.twitter.follows.slowRefresh.b": {
-    "source": "241896d50113fb8fd3d9817e35608e636f5476e85c0eb7665e46d461c63c3ebe",
-    "translation": "f288c04dc9a4e30c5e35b39855560e05b68d19bb3726e3261ae8e8379d3a34ff"
+    "source": "6fbb2b6920629a13e390036b975cdb437fa9635af2c9999595e03bc3dd18d821",
+    "translation": "7281bcad26b08983f2b64d45a46a8227d7cc91d368c96df3554429d8ccf4beed"
   },
   "settings.connections.twitter.follows.title": {
     "source": "2dd10049cee063d5438612830068e4539e9803dbb4de1fa9c1f46e250e667b64",
@@ -17900,8 +17832,8 @@
     "translation": "9b0a1f9ea61555c566a05315d1e2426f4b12ed31d21f1e45274b3156a8fc8706"
   },
   "settings.connections.twitter.honesty.readOnly.body": {
-    "source": "88c809e8ca48fd68edff6359491dfd88989d4ab0ae4fc6199d05330fb18c7923",
-    "translation": "24bcd704010af41a6afaa6e6bd80deb69839c6f750a047c5dc591b7d63a033bc"
+    "source": "6b69499bcc9d645eff394530ed0331259964aece35de3b31b2f54b83a3da2753",
+    "translation": "73089e36963373380097730b318f5f97be83a2c0e131e3a365ee864d53d186d0"
   },
   "settings.connections.twitter.honesty.readOnly.lead": {
     "source": "7a74b6ca79a5065d6d1d3f9e8dcdc4a32e5804cf2b1d1c43d32ce808ecf18a7f",
@@ -17948,8 +17880,8 @@
     "translation": "1d1e15edd7f704a1399ad3df0da5b15d218f24ecf13b6b2f09e682820da6cd49"
   },
   "settings.connections.twitter.importer.checkingNote": {
-    "source": "6dc003cc64a6c56d921446eb00f948064c34c8e1c536d483288ca08bfbe9673a",
-    "translation": "5933d218d41f5e6dc6a518496a87c6752d4372d6b3db42e8257126a7c23ca8f7"
+    "source": "180e3d65b32b1c47f8d36dd753c1d6eafbc8d43d267b72663a80bd0159e65d7b",
+    "translation": "6a9395bc7c60197b569112994df68e4fb8070bb5ee65afe92de68239f0042ecb"
   },
   "settings.connections.twitter.importer.clear": {
     "source": "d0dddaa11febd494eb53803cf438d13b9fd1f0011d636fecbca55fdd4a30f302",
@@ -18016,8 +17948,8 @@
     "translation": "7c62e2cb59acc31528b2105971ae414a50b9522ab6d79201f7c90dea37ea4cae"
   },
   "settings.connections.twitter.intro": {
-    "source": "3c7ecaadf6abdf22c0d37bdad1a949af7f0e36e8e8e96340d5730c1a4e4d3d15",
-    "translation": "70093cc085d428d492d56820a4822fdb9869c5571644e41981379cf72e8cf5ad"
+    "source": "d717754583704d6fa255a4bad047481b7c09a64041a07d06ab1b498dd3341a99",
+    "translation": "1d267dd2b5f412c7339a7c01b03187c4edf56fe15e712484e3731252fef2121c"
   },
   "settings.connections.twitter.keyExpiry": {
     "source": "04d4a3794ca2d3be8e08fc3d39105376d4033c3c3ff03d639c397d3f6e307899",
@@ -18036,8 +17968,8 @@
     "translation": "12f1fa50c4dcdcba6654c7055e4e6aa071eeeb9c2774f652dd9820a70ee64f71"
   },
   "settings.connections.twitter.limits.intro": {
-    "source": "604d9fdb2dc82243e1dfdc05e000efa75601b58cc56ecef0afd831d3b6102852",
-    "translation": "9e3ca97c4de61315ae8443c67f65fa29d40b258e7107416ff497909c1a36650d"
+    "source": "b1e75b8669ef87f85f5efa5676e6de89a40005143d98437b4e8cc0706f9e1751",
+    "translation": "b051407c1723ef488d950a68a3f3eb481df76a86316a05574a9f29e32985fc44"
   },
   "settings.connections.twitter.limits.reset": {
     "source": "e2cfc36ce0ddadc977bd68ebed4ff6720eec04ce9dbe389511b4108507c7048b",
@@ -18068,8 +18000,8 @@
     "translation": "c526545098e655d03efbb56b8210acda1fb844fb09753caa0ad51bc8ff7c8ff2"
   },
   "settings.connections.twitter.paste.hint": {
-    "source": "c2e62b6e1ba49e791bb1ada33e8560893f0a798e927b539cae983676b0ab5012",
-    "translation": "a8f06f4eb9a923aafd7bf0a759c42bd3e75d7333fb832a764fabdbb3dc232c60"
+    "source": "f894eea2ac80da68bc17352df6ccf7ce7f54dc3ec732d98f714c8b7398a86abf",
+    "translation": "1fd161d5700db2cba5abf3abf48cda0bdcfe87f5ca08e19bfda02d2e18fb82ff"
   },
   "settings.connections.twitter.paste.readyToFollow": {
     "source": "d8d7eb29de194bd05012f8d4aa6ba033bbd68330b7a87ebf5fb1ef8615808c93",
@@ -18196,8 +18128,8 @@
     "translation": "9f04605667540579b60123d6324ed232ccb6673615f85bda2913eb46231ffc78"
   },
   "settings.connections.twitter.spend.past.b": {
-    "source": "c9f6b1c23a3e54a05394ce0682061e30c6367bc330a54675e1db243c7085b0bf",
-    "translation": "18104ac51619facbb8e6719fa5740f0e968578cb5d265ab2a1dfd3dbfae8b484"
+    "source": "840b19be2c595b6a2f57f31d8aa95f24bdc40df01feae36aea594befcd6d179d",
+    "translation": "13dde0cba906589bd0f05c90b061d3c123da6ad983179458af8e59fac0a3ce44"
   },
   "settings.connections.twitter.spend.remaining": {
     "source": "fd58b596cef6db436d1fa3084649b198cf825b911dbc92a87ef2a620da933fde",
@@ -18252,8 +18184,8 @@
     "translation": "0fc231efcd94444e611493f2d72ff3181c92c381deb8b33b7428e9cfaf0456a1"
   },
   "settings.content.everyone.hint": {
-    "source": "0399a30ebc12105610a275d6a17ef2561836531c142f3da01b765b01c0d339ca",
-    "translation": "05f78ec169acb8da0013a0bf0cb354a0da43675b70ea48cbb3e4805bfe2f7a1b"
+    "source": "59ba373eeab240d239578a0b869dcb8bc28f149709c21e01b65a409d316883cd",
+    "translation": "6ffdb73dae3b2ca1ea86962942be7d6087e57024c2f1db8ad671b290223ff0fe"
   },
   "settings.content.expandCw": {
     "source": "c0743602134066186003582cfe46214974942764aa3c011093f5f430c9d03cf9",
@@ -18276,24 +18208,24 @@
     "translation": "ce015868ee3d8e1f794ed9eaf37a8ecfdc9874cf6d3084a325381742e6f1b05a"
   },
   "settings.content.footnote": {
-    "source": "97f201592505fb4a50bea9539909a19a344a0a52b1654dc9b4711d83e9cb0a0b",
-    "translation": "4889c86ee7899e3e307fece77d18c6668a3134183b994f60ef2610cdd19b6e25"
+    "source": "dcb9e1934087db31535111ece5a3caeb0921fe2cf4e35fb40a9ab2dec29fca97",
+    "translation": "14b734e21f2ee16ac1a7a0b4dd0e5bcd5b2664368b7755841ffba7a15bd57f22"
   },
   "settings.content.howFar": {
     "source": "9d0f8571588c1970b14bee7f6d55d27e801c1d0e6c621b7f26ea57eda0e39831",
     "translation": "112da487bc5eceddb4a194b1dab27f4e15be4803bbeafcae3f15ca083a0f09e8"
   },
   "settings.content.howFar.hint": {
-    "source": "7bb82aaeaeb7e5f1368458aae7281150d6810e29136d14c16a4c004ad55ec244",
-    "translation": "1b4825923aa4a96ea877db8fa9405e1c57f1fe96d24522c2aa37dc4028efcd1a"
+    "source": "b54fef32476a781353ebe226a5ca68aef40221549ef98b56b2cf248b289457ee",
+    "translation": "c85f43d661a1cb050f5317ce80acfaee81cebc74b47586f40eac20b8acb383c0"
   },
   "settings.content.independent": {
     "source": "dd5116330cdf1429cbcf678eb1a23672e09acf86f5dffffea59fb7ff3532bdb8",
     "translation": "bf9976923efe3d38c41fb9eb3c7b6a61e58b8c77f7b06a99d7ec757237fccbbb"
   },
   "settings.content.intro": {
-    "source": "f1a1cdaf0b4888f96c124ec9703adb86781bcb4936308239ed54673d5d836b36",
-    "translation": "4599252e2747e19f85d3d82ccf3e7ca4e8ba3371f80276703be09533d9e96053"
+    "source": "d3e1df03eaee1de98d36f9996172f753fc72c2774afe84abf4bf8b29c704149f",
+    "translation": "7f7b774d9e08476dbda6e1e3c1516780dedbfdedc0bf8e8268ba0c8ec8abadd0"
   },
   "settings.content.keptNote": {
     "source": "2d80727ddf19c48afb2e600768a2180c2f79621da453a5f70819f86e4d17e781",
@@ -18304,8 +18236,8 @@
     "translation": "668398663662d3b67300612e953d46b48e47174b646344b1041cdc31051d8eae"
   },
   "settings.content.level.follows.note": {
-    "source": "1f11ac6c8bad24414ab97e98a885ba3fb57a362fdce66d770e676ee53b65b186",
-    "translation": "3f872e4c563cc03483988f9e2cfe59b838e0935f8830ee33fce60cc789bf1080"
+    "source": "8ec9cab950d3f3f0c2660bb48050406fabc1f03cbe5c5e172ff0ecc0052f145c",
+    "translation": "e8091df2c15063c1de22041a85a15679095366c52c8436877179640261528987"
   },
   "settings.content.level.followsBoosts": {
     "source": "0e2aa26e089d82013ff8fba61861d6d018d00f1a2a4ac4bb4703562737deea60",
@@ -18344,8 +18276,8 @@
     "translation": "c4f17790d797be032012d2a1b3479935d64a30379c3780730f8bd064c9c74bfe"
   },
   "settings.content.onServer.after": {
-    "source": "b9b644fee116b35194730c9c945287080ec8abefda66068bbdc7a8e7ef2f6b8f",
-    "translation": "029b106838525481d9fcf929474aced77b6bbf3ad829c786dcbe01ff8dfe6cf1"
+    "source": "34b3df89a7b383173517b8e3850b5fe4bbec696443a9e329b8015212adf3173f",
+    "translation": "11972565991d5f65d689361aadd87c2c3cda5c5a0ac76f3b810e308a6c283364"
   },
   "settings.content.onServer.before": {
     "source": "dd4d3c0dfd965d4232a345c6804f4655a247a64ebf093da1041e633136ec4a92",
@@ -18656,8 +18588,8 @@
     "translation": "8dc2741a18e8346f66e894fe7e1e8762449688dc56d468ebf03e5b27a6f39a2a"
   },
   "settings.flags.connectors.hint.before": {
-    "source": "13e44aa405021378a26b8b91626361f8c92fd67db2671155a1721a319348a807",
-    "translation": "d4d49194908dec2a4c23d8b4eb2c67d41da134d77e46d6f62022051c2e4c8658"
+    "source": "f5ba72bf8bad564a9b72d9bed0df3a64a8ddc4497b4c341f137384ddd4f09684",
+    "translation": "df0247a64f0537e6eeaee6a149f99e32b77e17988783e74fa8527b1ce11606a8"
   },
   "settings.flags.connectors.link": {
     "source": "3a8626d91cfea48bc1cba998430bcd2d84c491d5f57926dd0586260f3a33d7f6",
@@ -18692,8 +18624,8 @@
     "translation": "b44cebda339ab2dea3ef87197a53fbf3610ee40a41c5d962c884093de468c026"
   },
   "settings.flags.proxies.hint.after": {
-    "source": "4b96193a87d0c2a603baa5465c8e9878fe32af1f0ba4d12582342e4db6725e51",
-    "translation": "57300043e4262840f0f054b8b8824faceed1c9a1d6908cb53bd75e73c050bf48"
+    "source": "abb9c58d4d0f1edb141e3e1da9a6557d358c83c1320860cb41eadc86e942eeb5",
+    "translation": "eac267670f3ffdf61c32d1b1f79fd905e2dea90f2f1a1c82399d5e2d984f99f4"
   },
   "settings.flags.proxies.hint.before": {
     "source": "a52deca83da9295568749e78652d47628be14b9dbdea7bb2071101f0eb3951be",
@@ -18816,8 +18748,8 @@
     "translation": "b9d064324b4306cf29d39fc7b67041900d0be65de5268a4d0c313ac61fc41a3a"
   },
   "settings.i18n.appendTranslation.hint": {
-    "source": "ec27c5488210fd250f013b006fc57efef304176714a81a3ece2641ce61e65645",
-    "translation": "1d75cc67417849af19312ae8b7b5d5d15378d1aea3d4f3d54eeba63afda234ff"
+    "source": "50b0917b8fe741dd137401ce9e33222348e849becd639ff46f701aa4180ae4b0",
+    "translation": "77dee2737d5f61f23fab721658953bf8d7053b389c0de0dfdef84617a5f06bcc"
   },
   "settings.i18n.auto": {
     "source": "0f1da754ee455aa5d359da8eab3428db8dfa457cddbe187c75c0381018695af4",
@@ -18860,8 +18792,8 @@
     "translation": "b6f56049c5c9355c1b18d916b619362e5f04b17d8fbc7da6f9fa9ac6303682d5"
   },
   "settings.i18n.budget.hint": {
-    "source": "5b388c909c0a88e269aff4d8a6723891950d8ceae63ef356cff62e7efcf1f29d",
-    "translation": "4e9c7c17b13f96c484dfbcca2fb208343c01572e4415dbdc8aba2886fb831601"
+    "source": "ac21009a286a37edb6595c88aedcc27bb0b5ddc8cdb8ac7545f16548d63c5171",
+    "translation": "960e23dc8f55510169fad69c57aaa68d4c113f589bfbc9422844e9d12d9a3917"
   },
   "settings.i18n.budget.reset": {
     "source": "fa6271638cdd8280af232f09b9177513730ab34a01054c5be16a503a71366810",
@@ -18992,8 +18924,8 @@
     "translation": "c20a07ac7bef7ec65e2d38e68bf7f0ba82e30284cf31a9be5d2b82671c68e4f4"
   },
   "settings.i18n.skipSame.hint": {
-    "source": "b8f5f7da09ac8e8d688aa2a558219d5c727b3605d836edd65e32e2e4f388a3d3",
-    "translation": "e266500e819902d01869d275b35366ae82047971d2b723c8570453fdf30f3670"
+    "source": "1cb983a7a022add2329a44f579b3833ba9a2ae3c1d849e1808945b2fa52ba33d",
+    "translation": "7ac7345e0e4f88198d9d1e04a0fbefea1367b25a15bc8ccde5f0e26b223cd29f"
   },
   "settings.i18n.stopLearning": {
     "source": "29ca7092bf9ef606d66f3f6efdce2f126a28df96172f8d6c61074a9ecba1d3b4",
@@ -19016,8 +18948,8 @@
     "translation": "633fb41edc5d95a060ed2df1ea733f06390773ff74fc06f2dc7c90e5b195b07c"
   },
   "settings.i18n.translateAll.hint": {
-    "source": "00803fd8d6612a69f082b50ddc5fd7eab6743c9bc70213546e52870089f98977",
-    "translation": "7221186976996488b20d2afef23c835fee16b35e25e12590051eb07f67b8d3cf"
+    "source": "e9ddab5b7948fe49dcbba703c2a1a3633ebf03e01120b173e57042a89c5decd7",
+    "translation": "95cb280460c5ddc1549b468391e7e4b1663266dc0c0d1da745c5064093a2ed04"
   },
   "settings.i18n.trending": {
     "source": "c43592bb8de2d59bc5312ce5685334b5562404d855bee3e55009de8236db2697",
@@ -19028,8 +18960,8 @@
     "translation": "dad1b99865e8a6ddbb2581627493007345d7f7240708170c055d95482ad596ee"
   },
   "settings.i18n.useAi.hint": {
-    "source": "d76862a92d07207d4bfd68bf8e010a17e77e46557dd6a3527b8fa63e7d9418a0",
-    "translation": "7ee73b45137082681fd3344a81c2cb97f74d8fa58170abdde7d9610e8ee6e7cc"
+    "source": "1a3ae426a7a95fd4fff7260f5577e609ceefd0ae75d2644c9697b6d1188cfbb1",
+    "translation": "70deffc1f20368bc5df699b3b60c89ca16b6772c74c196c179c769f5191c5639"
   },
   "settings.importExport.account.approvalBadge": {
     "source": "523f6b02d6b5ce0245595ab46aba38374f9474a470389f1f2bae1b065959284f",
@@ -19224,8 +19156,8 @@
     "translation": "b8704fd9ee562b28e82e645d5fd5307c72e2ad4addcdaa23cff97aa2dfd9ad24"
   },
   "settings.importExport.contacts.intro": {
-    "source": "d7b4f30c77f975274a4dcd17c3a223a152a9ee5527a1d91343021f6b1b8af3fa",
-    "translation": "41d127fdddd94f07dc57543850d3c812293c269be584084573f5e042200920b8"
+    "source": "773f825530fe30dba7c613618604e5bb89db0a419a88f53d5e1ea9a7f90f7d53",
+    "translation": "991765076a631a2f7b27bd20505feab196df5891822816da131aa67ff7242a1e"
   },
   "settings.importExport.contacts.loadedNote": {
     "source": "b8faca6b12c62f9e9b0aebf53d1333fa0c053a619e5dfcdef41c070146212785",
@@ -19244,8 +19176,8 @@
     "translation": "3ac11d08423e05722ac834c9bac3f01e12f9ca1071c3d0c508736e7fad81140a"
   },
   "settings.importExport.contacts.pickerNote": {
-    "source": "f78744dc6b5a787da4bd955e82f1b4f7e02600e09389b2dca05ecf15194731c5",
-    "translation": "bf94609c8da8956e3e65337790e63620cc66dd1838aafa332ea5cd978ce3ace9"
+    "source": "564b5d3621be6303cb629638af002027451b6858d03e0d4f364a71adc2c3c1eb",
+    "translation": "a4fb12f2a01a5a5c5d312f46b8b34d723bcadef22cef839271a3c131bfe006a9"
   },
   "settings.importExport.contacts.readyToSearch": {
     "source": "2cb059afd9fc5ccd0b8e7d606bfc6a8fff88c492281e6389827ee6f78f900566",
@@ -19424,8 +19356,8 @@
     "translation": "3a799ae9252618c27ffe547c2cd50b82e2622cc09382d763107252e68598a9be"
   },
   "settings.importExport.github.starred.body": {
-    "source": "06608d86faf7e68d389ed0b9f742db5055f8026af6da5b814995f6d266d4b4aa",
-    "translation": "35388004e59f765535d03b14b17b0a754cb7776766ad4d5a5c8d69866076cd9a"
+    "source": "3c5500e490f817f5ab0da7ed454ce7aecfd892c136be9f0ad2280d884dccda85",
+    "translation": "85fe0761487c2693c440c81785db28932358fd7faf75d8a3dfe0f722f6552443"
   },
   "settings.importExport.github.starred.title": {
     "source": "f709ebd85891a9d87e8995fcd3467e8ec154f5a0f3f34c76531dbe06362887f7",
@@ -19848,8 +19780,8 @@
     "translation": "4c15c25a024a1c446a83e764d3b349259216543bccd628d5e5adbc197eee74d6"
   },
   "settings.importExport.twitter.searchNote": {
-    "source": "ab38b4c265a7f50bfa38504ce1d798d444665fe8a26cdefbfa6154155cedaad0",
-    "translation": "805ee569c949ecc1b17b02cc0ce0a4b86efc517c040aec0eb505c81d640fa67a"
+    "source": "6d0c5fc1ee1959d1ca4d0d4a7baf05531a32c3bbc3a89885aba53077bc7a5a90",
+    "translation": "dd9f8f6617ab163bb7f06e4a21eac7f99fd5ee5d6bbceb7dbbe609ddce8dd897"
   },
   "settings.importExport.twitter.seenIn": {
     "source": "f534f682525bcbee2624aa41ed6a195fc29c5a84afee78e4c46ebb00907c3355",
@@ -20204,12 +20136,12 @@
     "translation": "bee58939dfb1d96a31ba6e98c594904af2d0f38bf81a76ed2c8c179a5f08f0da"
   },
   "settings.plus.adoption.noReplace": {
-    "source": "adc80c9292c6dedda1f5413034092cb09b698d007a647106d0cfa69fe0ce0c72",
-    "translation": "f0a3b8498d54b76ca0f6fc7f495c33348592b701a570b7862c59ddc307b9c3ef"
+    "source": "cef7e56281d6abc16cc8278a6699a1b58c24dc268e1289f94464d3bc2df2d9ee",
+    "translation": "f5293cd5e712c29c9bf078874c4b6ff5ab2fb3304b6ac2d02cd19c46e3cef2fe"
   },
   "settings.plus.adoption.reassure": {
-    "source": "88d47761f5498aa8aeddd5b171c5ceb4efb30b56190ee7fde6d2aef519cc2b5f",
-    "translation": "b8fb92cbf27edcc18fc0a3f688398ac3b76c46e1d742abb8caf154a9acb1867a"
+    "source": "35ce86425dbc6f2e9fe2d6843ca90a7a96b0568e5afa9283f0794ced327ad083",
+    "translation": "53bb10615b715e964659ebaac4db4757b6b34bb7f8a2bbdaa220976c122d50cb"
   },
   "settings.plus.adoption.summaryLead": {
     "source": "51764b32aa583f2ad76752857915530e8c90ceee056f084ca5214e73bc24ae20",
@@ -20268,8 +20200,8 @@
     "translation": "0b847eff33d3a1c532819b6a150c76afffe758a9227b326d023e1f2860915194"
   },
   "settings.plus.diagnostics.intro": {
-    "source": "3bf032bc1f240b1515efdb6115da43b1958f6b925cff09374929a431ca2c9fc7",
-    "translation": "1b62747d9c30be55be34c54089f66a93c7d4ad7cd5a3879f4dccc2d86c99b91b"
+    "source": "3c32667d8429f138b47e0808ff4630020e4195280b488ae15d716001177cae25",
+    "translation": "69a1af266628e9614f8bbc2add94d530535b21c199cda2df5066fee0725c1ee6"
   },
   "settings.plus.diagnostics.keysOpen": {
     "source": "cb5ae73e604c96e36c8c61dc81414c0f863b95e0692547f2ed1fe3c48d1dcea0",
@@ -20396,8 +20328,8 @@
     "translation": "e2af2e470fcd7a134bb8da0860fe36fb16d82488ac06b1c17328e8aa9145fad9"
   },
   "settings.plus.intro.free": {
-    "source": "224b8d33a6d7ed110032926cb9b597f5f8f359d76113c2dc4babcdc1541b845e",
-    "translation": "b011836735f9784c9b381fd716812d615dbef4f3a3b93367e4f820586831b863"
+    "source": "ed04c678006a9198f3391019bafbec1774e2ee092d9667deefd40c39e298eb16",
+    "translation": "bb1f212379d9b71f26fb770d97f6a47723c8bd9efebd0ffe5a2fb5fc97133f5b"
   },
   "settings.plus.intro.supporter": {
     "source": "f6ec0dc561d0cdb30a79edba2717b49079056dcb3470b26c45d14be50cabf044",
@@ -20416,8 +20348,8 @@
     "translation": "60887de8a4b289ebbee13243604a3971275f3a85ec8995f56149d9113bdf6ad4"
   },
   "settings.plus.offer.moreMayFollow": {
-    "source": "875447d27cfe29a534cf0d2cda5ae64c20016ec35f2f30d02d55b638160a7d8a",
-    "translation": "c79fd2790f3194d33754c43a17d8cfee8c02c66d88896f4cd100dcd0ae96f1e8"
+    "source": "37ced70b3aa0d6a2bc07ef57e77a7aca96adca84290a31efd89f583bee676398",
+    "translation": "27c25a5dcc9c6c084180957ed0c39b5d518eab0ce7d768ea7d6e9fa65bb8e4c6"
   },
   "settings.plus.offer.plus": {
     "source": "e5141edfbd300cc481693e04a5e94f410596dd61cd084dfaff1d2e183f1b3d29",
@@ -20432,12 +20364,12 @@
     "translation": "9631e9c2a8e9c3619bd35939a029c0b287b4a51f76ba9eb8645e072c1e41de63"
   },
   "settings.plus.offer.staysFree": {
-    "source": "c0a2ee0c360b28c78479e65c36c95d482a8d27fbef90b36ddc207f1a9db40305",
-    "translation": "c02838e6e3281fe3dd8810d0079a9c12d9a2bc34d1fbd876010f703b0e13f60e"
+    "source": "4184e73f9bf6678689ed1f8d8b19a9fa32010018d9e2c92afa0409aab81641c9",
+    "translation": "524b34ee47d04ab9b81f8aeacf34c4328cb8e889c2bb7544aed30cd83ce7195c"
   },
   "settings.plus.offer.stripeNote": {
-    "source": "7ca1b642c6b85ad3486472a7811d9b7307e46fec8b7dfc968a5ffa40e2757062",
-    "translation": "7d4ce688296c4425cf92824392f653fb4692876b504328001534eb086a9b5b2b"
+    "source": "35f27aebafff15a6c1b5620e48130c7bb8f09a194003954e92a66695d715bc0c",
+    "translation": "1fc5c72630edf850b7590eaa8f0712e5fd979053da28642b752c4e7658ebecd3"
   },
   "settings.plus.offer.title": {
     "source": "ec7cc71546347e5b2fae257472089a41c43d439c7ffc0adc24b4548de0765bc1",
@@ -20452,16 +20384,16 @@
     "translation": "6fd21ff605b2648d9c373b62419b3cff5a3a6d4f31a8b743627025da1254564d"
   },
   "settings.plus.signin.intro": {
-    "source": "b7d72262935333f96266af61b0050f920407884490e7e546af60454db1378bd4",
-    "translation": "9aefd77d54950d7f6de44272dbdb7d8aced4f36fc95b60f7569cbf74df054521"
+    "source": "41bdf816b97177e270faa1cccf519f29396707413b766bcdf1c842dc59985fc7",
+    "translation": "5145223f776b2efa6e48569c92350bbe740caaa2e464cb7036243b69e83fd4e6"
   },
   "settings.plus.signin.linkSent": {
     "source": "37f4996c751073d8794bdffbaa72107e279921b0596cd031201aebe0692156c8",
     "translation": "28810850df1c2bc439dfc20c2cb77c190517ab7fdf95fccbb1e63c21fdab536f"
   },
   "settings.plus.signin.noPassword": {
-    "source": "435d1b34189701fcf20e9e27074768fd8379a91168ae5f937dfc646e8aa631bd",
-    "translation": "5be876c6b86af8b6bfd6debc34731fd40c3dea6b6ac4746b29ee77837ed79663"
+    "source": "1605b49c15a4e1d264c7a127a34eeca35f80aa2d154eee44fb7f2f5dfed9f8a9",
+    "translation": "9327b52d40c3c52ef31142ff4249e2b43d790f35923b4c1d975ea05ce4ce882e"
   },
   "settings.plus.signin.seeInclude": {
     "source": "f3dd62a918dfc39d551d47d118cb0b04c0ddc45263be3180da435c6a18174726",
@@ -20632,8 +20564,8 @@
     "translation": "36b4c36a2d0911ed6fe8e0038e700bedfe189b009eb55aee9e0a09539371ff5d"
   },
   "settings.plus.vault.lockedNote": {
-    "source": "8df02cf947b9bf677ff32f1c89ce5aa3725db23d4cbed0cbf40da9ee4136736d",
-    "translation": "d50182c8fabf3f0d868c6bdd909ab1262285d75e7105791df443594db7dabd0b"
+    "source": "672def79e18e663cd5f88ba2a26578a90fea1d27d5ab205240d3a6c7b62c0351",
+    "translation": "c7500e87b4d1f4ed580729eaa1e881e2061c2b01d3e8cafeb8195b80eb4cc3c0"
   },
   "settings.plus.vault.newPassphrase": {
     "source": "0cc6be8f32dffc172146777afcaa7b3e24fa81764c8f2ebac87cc9e06b0fda2d",
@@ -20776,8 +20708,8 @@
     "translation": "fd32e36c108f2e934d42e1d194d7f707a69e47f2ab0f996c5c591704639602a0"
   },
   "settings.privacy.analytics.hint": {
-    "source": "d3f841941847425347541fb6924e76bf43e65db2452ed809209bf289e56dd967",
-    "translation": "bb235888be519273f187e4a8aeabbbc10e3058e61c83f6f91769329c026b60b0"
+    "source": "4718be0f183f4683d05d9199d1bdcc0d8f40d563ea5af4a4629dc648a36b630d",
+    "translation": "3d3411c1975023c6b9adfb0110848f4f7e0d624ec8c01b341ed3cac4e213abca"
   },
   "settings.privacy.analytics.label": {
     "source": "01271d13f3bba2c6be175c3128081300023f3235088c5e7267c48f8c762b7bcf",
@@ -20972,8 +20904,8 @@
     "translation": "f5bc901a64151e9b6144a86b2ac1124b329b72cacb80f3cbaffe381a553cf11d"
   },
   "settings.rss.cache.hint": {
-    "source": "06c099893be6482c6b3a3d1eddf6a424278db3077080325751de342cbcc27f59",
-    "translation": "422801660ebd975279404c389f9fcc65568ab30f4cb112949558e580eba99077"
+    "source": "e49dfee19b06088ada0da48d0fa570dcedd4d8f291cd2072694641c5449ccdc1",
+    "translation": "057268b1350102a750c0e945fd6603e652a56c76365e751dc93e7de504cef957"
   },
   "settings.rss.cachedNone": {
     "source": "3d4c101d000ec30d3afb2dad5bc1f94f003dfc8c4231a94b202108c250a7ee42",
@@ -21064,16 +20996,16 @@
     "translation": "542843f8acd4c5676c6df5a6f7667c7f849c522f95b81e7de2db92b750108081"
   },
   "settings.rss.intro": {
-    "source": "6e452c9beb8b3cd21eba6fe94de0115a15bb581574a1802c8200161fbb11a2a6",
-    "translation": "3d7ce2f50d1bb2bb49a78bdcb4b6c824befa7c4d10aa4a76b2d09e6e87fa3e0c"
+    "source": "873d36d5edfa026a312cddf4ce464fd6ad18cb8123b10a2e74692575d8a22715",
+    "translation": "1417eb64b4cbefb41c59bd56159da5227921922206e566938ba81f5a95b759ae"
   },
   "settings.rss.maxFeeds": {
     "source": "6c575b2e8dd905749f6917a9d52ca6ecbbc9b9b2ffef896ee20bff66d6e6b261",
     "translation": "965e125a9a36a0ced08b280bb3ad4a1bf3fc39ecf94de28ba1ae0f7375da438b"
   },
   "settings.rss.maxFeeds.hint": {
-    "source": "77bc5220435bd36b0b4328e74b415e6766dc9f6e8f5b5526d0c6089fef947691",
-    "translation": "7335163c42dfc2c8613897019f05f9eb2bb8a2f7444defbd9d5b8b5be896a647"
+    "source": "72d8f2aeb68e3b3f669c4d12937e987a5ab7b791023c6818372ac3c0d1222f97",
+    "translation": "efe58e00a6c0e5ce7ff0305ca6c2a5c4d26d758218a5bd6f761fc8c5d28f15bd"
   },
   "settings.rss.noFeeds": {
     "source": "579eba22ed1ce27c159286ff39e2f160d7aadb1d8bee2172ddaf4be83d7d9267",
@@ -21092,8 +21024,8 @@
     "translation": "ebb899f13cbefa44792f2b51681eaf649849802a31219e2bc778955336e3c5c9"
   },
   "settings.rss.opml.hint": {
-    "source": "399ab09652f7402698babda33a050c52fd894e8d8481ddaf47e43d146dd79cfe",
-    "translation": "37d76ad9708b0d52672b859f5d7af29770cb2f07b525d107d506b56fc8e2c959"
+    "source": "24712b3c004290026d5a5fb13edaaf34da1f945a45a89277299242f927894d99",
+    "translation": "3520fce7b61b825ffb29f3c194e54bf450c98b92023d04a7c5b8ecbd4ff66ad6"
   },
   "settings.rss.proxy": {
     "source": "9fb5a7b26bfc54203e256cdc4b950fffefd37b01ecc4f4ca03cecaddbe3de383",
@@ -21172,8 +21104,8 @@
     "translation": "5f6be977e1ee2bd4e381abba581012a465c8a670f17bc07e018aa2e62679d60a"
   },
   "settings.rss.scrollRead.hint": {
-    "source": "02f0f55352b8d3de016da52e22435709eb480662f955ece07d358fe0a97c51e3",
-    "translation": "6860359b3f4c4379d21b6eb99ed9ba46a890aa19173088d70867ef22e32e45ca"
+    "source": "2d988c39c7c54198db33c03a926cff96caee0e70f0170a3e9d06f2de513fe7ac",
+    "translation": "bbf89bf6672a7f53998d733f3ebeca92da720592c1094dd2b19bf52b08153084"
   },
   "settings.rss.title": {
     "source": "c3c132108c3917b89cb7867746dc0cf4358f069acfaea9f0868235fd8436aa6e",
@@ -21244,8 +21176,8 @@
     "translation": "dc898e2c923c9f860f3ff3649fbfcfc9f3c9de50ed43ad9ebc495ecc640fee64"
   },
   "settings.server.rejects.hint": {
-    "source": "7acc76b284d7aad4d28ae64f8651aeb6741bba960500fadea00623511e337804",
-    "translation": "89df277694fd21f3cabcbed0766a88758087c431dad89c0e5bb4d4b9a0d16046"
+    "source": "e8e7b472ef912873d3804c2b2841e2915566a25a5252fe99bbad787fcd49e65f",
+    "translation": "2a5058956f5ccde0f873b6c6f1655709b8f7815563ba5a2025f582e27c214138"
   },
   "settings.server.rejects.one": {
     "source": "c88ee686e2f1dc51a1d72ae3ac001c51f2a3208af0c49ef3443dbf01d4b0b513",
@@ -21264,8 +21196,8 @@
     "translation": "26d01d69630561cbc7cd9bdf4b9f2cd21102b86178b9a8f6e87f47fa716ac26a"
   },
   "settings.server.search.hint": {
-    "source": "ecb52b5a31b0d9354521e58367e4baee514c4e00391f90e45d2d4302037122aa",
-    "translation": "a4937fcdacb958bbc81f073ff6773ffb2c5c316cc49328f0fbb64c5e486a500f"
+    "source": "53b1512d78cf90a263470bbfa8c86e780c15b54e73b92e9e65cd175f1a7b9eff",
+    "translation": "2c97c07a63b5010e9b2dfbe5a75f04e3aeb3ee94c4e8d5faa93fdfbb32210697"
   },
   "settings.server.search.none": {
     "source": "fbc7510741cdf72ac8f66635152c77aae1c8ca39516a4af03c4c98a43e45fae8",
@@ -21320,8 +21252,8 @@
     "translation": "83b6e3aa52c6f17d1a1fed333446144d04b33d417dd4977d7a408300064d4ac8"
   },
   "settings.spotlight.clicks.explain": {
-    "source": "ca184c5c85c252c1003099270e7cc4e6fdc0e2fe921a7c958cff209abd773610",
-    "translation": "71ef6ce8ba2dfdf95386cb0b2b35407c90a67102de0978c6cd1b294f609875ef"
+    "source": "204645319e02427afaa44236cc368e8941510ad42d87bf6eee34328e52e01166",
+    "translation": "67423c373b5b853ff4d2367717d00b476b4fb1b8e8a79711d2560cc4e2b6090e"
   },
   "settings.spotlight.each": {
     "source": "f1f25a464a5ce305fc6a70451e98c16ffc8225d6d15e5a96e47a375f2aa84ac1",
@@ -21340,8 +21272,8 @@
     "translation": "a33ff8b4913de65e995a58e80f38b7b590284100551f8b12c5fc3e25251aa4f4"
   },
   "settings.spotlight.intro": {
-    "source": "b1d1387f897fb173cf31f75a6682f337e5ad22f83e39ca4c205913b0b48400cf",
-    "translation": "bb0e8ccc06dd777a06399c7153e7924cc54d8ccb2bbec3d65509354c805265af"
+    "source": "68707668b58d62df7d756a18090b6f7439a781d01b304a1a9f343fa7d4f34f1f",
+    "translation": "064c4e42948e76f6153fe54857261d46276c3ee2727395f803bba0ad5f1781d1"
   },
   "settings.spotlight.lastClicked": {
     "source": "d14d782ecd8e97cf0b965eb303de82e70ed4110d98f76f1a37c0aa81b0ff790c",
@@ -21504,8 +21436,8 @@
     "translation": "a4310e0485b7b40fd47d8d2434a2ce8c3b01d7d23cc547278963cac086a063a2"
   },
   "settings.writing.miniComposer.hint.c": {
-    "source": "8c47e1bf73918c63f2ee0ac329983e2add9d8f2aba90dd7d72af128f90e81f38",
-    "translation": "e9d15e3c7d656babd6f0e77e1ee05c8a5809e1ec4731ebfba1ae7fec82488495"
+    "source": "9bdaddf4cf383d630228d221c2e66bc15d04dbd7d36b162cecfbb6532017c223",
+    "translation": "315027aaea54fad662c7d58f84beec7af8960bd0252effed4733d5d9c6203d2b"
   },
   "settings.writing.notes": {
     "source": "fa5cbe4ad05b82cc330e835e38b95fa18f81a013d4071015c1cc1143044c5ebd",
@@ -21576,8 +21508,8 @@
     "translation": "d099569776116b99e1ab6a673cdbeb96e87e63b0786f885bba260f94807fe869"
   },
   "settings.writing.thoughtful.hint": {
-    "source": "bf9358b06db2b2c723efcbf8f73e7e86adb9cd8db55545dd6281d455dd51a871",
-    "translation": "53ad0865d3c3ae5d33f1774cfb0efbd3622f214c2297374f553b44a24de581aa"
+    "source": "0c621b982aa1e4a607273efa238999a353108ec9b03e21788cf88579c4f34a7f",
+    "translation": "c593675a8671a747c2c50fe9988d5865222ac5c8b72f38f38f72e2d017b2b82b"
   },
   "settings.writing.title": {
     "source": "ed9745559d22fcbf82ba14dbbebbebec5b1e9a8211096c2d0866a10f1d6f197f",
@@ -21592,8 +21524,8 @@
     "translation": "5ea96a464892746537200dab1f7b0046b38a88d964ab5dc97d37bc21693d4331"
   },
   "settings.writing.warnPkm.hint": {
-    "source": "9b440fd309d7c9be1705ebd2eeeafb1d3dc0b5247fdbaa6c593b5b8cf9551c29",
-    "translation": "0772fc07fda20d34d1c6985f39ae5703c7afe9949326ad1cbec9311b9c9cf179"
+    "source": "09ecc6519fcbb8c022c08db81cb411ddc1e01982c258bea7f5345d5eda3f09cb",
+    "translation": "0779cd993fc967dca0f12889eca67859d2eac5d0e7a7c6f0045758da60084d55"
   },
   "settings.writing.whereStarts": {
     "source": "1f5325edb43731b98275fb4e5c7e244aa2f05936c841aa56bdc9b385c45f4be1",
@@ -21604,8 +21536,8 @@
     "translation": "504cd52f75cec10fff2810b28d8d46b5f99a3c1dc73e9846b9b41c6f2a4dc97e"
   },
   "settings.writing.wizard.allOff": {
-    "source": "0bf95ed70bcab8a3ae3fa13d472663d8d335a6878da3cd3bdeec2d3de5888667",
-    "translation": "4f94f14c08f736c44f8b020dd6e6386b0d6c5fd84492cc1e76590773d2a02b41"
+    "source": "bcb97ff6779199f8f089e2e21fa1e36f6d86f02f8b8547c5e09dfff1908382ef",
+    "translation": "e3bf063ed94dfb71b29c44883539f7fea2ba39f1c8d4849c33cadd363959a212"
   },
   "settings.writing.wizard.hint.after": {
     "source": "40f7eea89060b24b0b1c4f0ebf73ac209ea1ca61ee3e746df2cf9b95bc384547",
@@ -21632,8 +21564,8 @@
     "translation": "ce06ff093862352dab925d46c61da9cbb834c646b97ada5c66a0024a1a1999fb"
   },
   "settings.writing.yourWords.hint.a": {
-    "source": "e64c60dfa22cfc53e54a38eedc7ab85f8f48fe28273c4f9c25eb4e375ba1b0e4",
-    "translation": "a61500337a51ae9a7e9dbc69cc339f48a32f7a751886dbc48c8a5bbdca68c62d"
+    "source": "745fdf897cab2ecf0d22ac5ebbbdca18bd888ce6ddf4c2b08be6502b99efdda2",
+    "translation": "c38c825125b08696a29f5ce91760e0827d00c2119041b47435ea93cfd15cf00e"
   },
   "settings.writing.yourWords.hint.b": {
     "source": "c7d9a3cb25676f6b31a0cae3eb16879d2a4814c0c4370f746e2092af051be353",
@@ -22328,20 +22260,20 @@
     "translation": "2d38ec9b4e779f0b46c9c35ef59a3bfeed379f9c39989b596bb17f028455599e"
   },
   "shortener.proxyConsent.bodyCarriesCredential": {
-    "source": "4841a603389dbf54fae5c461001695b72eb712348091548026f8fbaad1631367",
-    "translation": "b6131211db803bddd726143f9f214c92029d1beeb40a410e86981a486caf35b2"
+    "source": "f49245839447517e25dae6a2d6092036fae119370e353d60ddb3275681b54095",
+    "translation": "ef4ced64add1b7e05aa03de8cdc5ec61bf4b5d603cf336f7885f688943df2768"
   },
   "shortener.proxyConsent.bodyNoCredential": {
-    "source": "c22d238f1c938b4b67df2773e9893c10aa24dc7594d0bc8ca44abcbe835123c0",
-    "translation": "be1e3c138883da6d4f8475c42ec95ec384a32d18c262a411c60fd9e20ce27184"
+    "source": "c2d4b328fe1df8d5a2b03b868183068996923b63cba998d247611c8fc1ebd788",
+    "translation": "bc976334a3ee972e10c9e403c099a44b4f0f92bc329dbdd50bfb56e61ba7cdc2"
   },
   "shortener.proxyConsent.decline": {
     "source": "1ede560241d52b3a83999a4992a40f6b5228fa41c73216ccef637fdce764bc9c",
     "translation": "82246e751bc69946348899d5665d82001054ba55b1e0b1ccbebc72d4815bb2bb"
   },
   "shortener.proxyConsent.readTermsHint": {
-    "source": "72a0600f59aee4614b27ec6dc645a4dec0e54051af591c4ef50bbe7bcf77cd01",
-    "translation": "ee9e2aeeb558b1c1a0236e5ddac486f185a0f7478b571d4d0f120b8fcd9a83e4"
+    "source": "e1dc4e22be3d795a0dbfa185fc894b7750c723038fa5a4dc662814aa27b8de07",
+    "translation": "51d3b317f2a5fdee01ef641c805d7cbd10bf44a5bf68cb48acce8205f535a57f"
   },
   "shortener.proxyConsent.riskCreateLinks": {
     "source": "1b4a9f784162a252495e471407ceca83a3d4c2e308f742ba39723c61e7988a25",
@@ -22364,8 +22296,8 @@
     "translation": "9effc7f5d266255e0b8c6f1e88af582071ed448661ca879273afe56a97ba5d26"
   },
   "shortener.proxyConsent.riskReputation": {
-    "source": "08eec4139a894a980619435d3a11478517a93d8483370fe64b0f735a37cbc727",
-    "translation": "31c474a7482c61473267b5e96715d4a62735cc46387fd5fef5973976ffff546c"
+    "source": "efec272600d9684b5a2cbd3a3f76ca5a9d8957426c5ed7551be5f3d7b1f89e02",
+    "translation": "2939871171f5cb979021df44fa99606c4e83f5d4780e964e301761dfc3b468a6"
   },
   "shortener.proxyConsent.runYourOwnProxy": {
     "source": "949de6c862bb4fdd5fb8e97bb1cf537df4ffacfc3cecb51a9726f38815899536",
@@ -22376,16 +22308,16 @@
     "translation": "414dc45ea2cbbaeb634bc9422f19f1cfd05f58d600d0c781178d1b9e36da28a7"
   },
   "shortener.proxyConsent.scopeIntro": {
-    "source": "831b902e04cbf6548bf950b9cc2b259dc3149fc8eb293f6c31e084e5180011b5",
-    "translation": "528834a1aca19bf83563546278ca2ce9e155d40fb22652e32b0864a467c3bdb6"
+    "source": "71528660795e1bb7062142ee289a6f6d92687bf70f9caf014939bf2a86d8cd1e",
+    "translation": "b2cd837bd26d942a48730a04218dec0534119a3e6258d69ee31fef9dba6acbe5"
   },
   "shortener.proxyConsent.scopeOutro": {
     "source": "19e175088acf081894975b88f25652bedbe3234486ec80c153d3af798092ec19",
     "translation": "fa8893308d2f4ea3c90f8c58b44b389b9b8d5923c065b14069f4bcfd3d8965d1"
   },
   "shortener.proxyConsent.selfHostedBody": {
-    "source": "e8aeb0c51489d10534baa019ed3a25c1eae0dae4d594192ee1485b5025f7c08e",
-    "translation": "f21c3896dbcd8808598d8bd6d149b486e7a6ab0bf4bdb08b5357d961fd0e54c8"
+    "source": "e180da8799418254d903922774463d641609907fa1ddffc42e8c18d081a39245",
+    "translation": "c7006f6927d732289219727ad079e0832ea74ad958ff7244d1e219b99041283a"
   },
   "shortener.proxyConsent.shortenerPrivacyPolicy": {
     "source": "100834603105df4fd85a7944f3a357e30fcbfcdf0deb311d1dd8c1d23245f830",
@@ -22432,8 +22364,8 @@
     "translation": "05508c2c0077d2196fbfb5629b170dc8ea2ffe5283985e021e8cf92fb7e32e30"
   },
   "signInPrompt.body": {
-    "source": "e348402c70ddc35764a9e6c6e840868b6d8cddeeb96dc82ffc12049732cef8f5",
-    "translation": "3b3f1e83e67570b0dbf26aa20bf902114161e4c33040f9787d0f81101c08aad3"
+    "source": "e058c00752cc1a045d369cb92db855cb92c03e774ab62fb52b8c505c63b9efca",
+    "translation": "2d6fd6c85ed6219a6bc3c18141e8a7c9d4d2a5613054dae9e8ebf0fd7d121763"
   },
   "signInPrompt.createAccount": {
     "source": "577b673f84fedf1066c551a65998e8538cb70c06414e5539c2ae16ec6d2f3567",
@@ -22568,8 +22500,8 @@
     "translation": "39c6d93dd8c350208943eb4e208c57926cf1213b4531c386fd6e213a2801dba8"
   },
   "statusCard.aiTranslationDescription": {
-    "source": "4835f23d2ede53b855913c2bbae5a66c97d14e67a51789514157853ee8cf284c",
-    "translation": "5ac226649d173f2768d53dfc7b68fa0b65ca9a84fbd6b922e0eb5ac12df8823e"
+    "source": "7abb782816bace64362231c2fe8adc4d6dc1f649ad1afd1713110eba4e58b1bf",
+    "translation": "d2e90b2b7372b9023f174757efb671ed528f038b1119c25cf6f1b7c956c48040"
   },
   "statusCard.aiTranslationNote": {
     "source": "3d0c638d8a968ece0d41d779485b72bcba11989fe06fd567d92278fb2f96319f",
@@ -23088,16 +23020,16 @@
     "translation": "0d36c7b2cd80bf0b1fd47eb0632e21627bfa694978f4ddaaf48cdc981cbcf693"
   },
   "storageDiagnostics.idbNote": {
-    "source": "758f1253a099ad3eff356b713eaa6ec0b57001bfb5be0b1b38c4380556bb47cb",
-    "translation": "06bff68ff613e8b2b0162f3a4ef221b0141d50f07113076e4cd8cdbbec66b443"
+    "source": "11b21c2a44155e6fd8e72531053e6cdb05cd3d5001d2d98f18d84380f8126687",
+    "translation": "5310919ed0d58ea9603fe6571a776c43911da357307fefeca84ddbda8bd12f9e"
   },
   "storageDiagnostics.idbPersistent": {
     "source": "a46f2987cf6cc5d8d25549df02b93bf2f5fecba86874ca1f5ddfd151307d92b7",
     "translation": "92144241efb1e87364b5d5cb098673d6a00dba85deb8c8bf047561f0ed0a61d2"
   },
   "storageDiagnostics.intro": {
-    "source": "4a12cdfe13930ab938b6ae0b0337c005139240c155968854a98d98cd29b86228",
-    "translation": "ddc0e33595091febe0cee1b078221289949d60084ea0916d04bbd34bf401db07"
+    "source": "921f98858ce86bbe7edd943cc10cdee49226d7dcf18dd28c6b49d8d6559842b2",
+    "translation": "d357d982627d53906a45b87e998d383e955ee969c35c22805a0137b01c35ad13"
   },
   "storageDiagnostics.keyNoteApiMetrics": {
     "source": "5345d2e9f764f9d5fd6eef9734f9566f13b29f35b7d2d55c8e6164c21e3bfcc3",
@@ -23124,8 +23056,8 @@
     "translation": "aebbb5d8064177dd9c3ef56fd789ca4fa37754b50d7d519fe1f66a6650b6a1c6"
   },
   "storageDiagnostics.localNote": {
-    "source": "825f2591f5d2df261dcf124103cf3278e9d04c704475f286a42154650b0c77a4",
-    "translation": "f5b154855999eace8a1219cf258edf1f19b4ec2e350209e74309616902af89df"
+    "source": "596dd4a211e24620e1766ba19f563944b95643b639ac9064d00cc697b5b8de9b",
+    "translation": "4f7751263ecdeedee0ac422e8b3bd7e66458e352874c3eeae4fb5ed2cc1cc376"
   },
   "storageDiagnostics.noObjectStores": {
     "source": "ec60b130b73c2bf31f621a9c35471fdfd613c4f8b2251b97756d1eb4103555d4",
@@ -23220,8 +23152,8 @@
     "translation": "79cd20c38ffe6e7151d8640d361a28ee85281c3f19168342c7a76bf63ae405b4"
   },
   "tagBundle.fullAt": {
-    "source": "1267be4ae3de5e9e2cdb3ab4efaad8bf87ad8b07658924415c70b08360b07915",
-    "translation": "ffb46dc0727a696b7ce2699f895efa9128d6e6a7b852a870e6f1357647121e6f"
+    "source": "0a6269d3b1dc3010377bfb19a2ec14a85d822a3144de933728528464e94b1395",
+    "translation": "6f834bd60eade19114976b6cc7e366af0a9a34bd1344ae61396f40db1247f91e"
   },
   "tagBundle.headerPrefix": {
     "source": "357fbe597f50f206d725b989b6863ba25f548c24d5cd2b92a09b0fdaf94031dd",
@@ -23232,8 +23164,8 @@
     "translation": "7b7611072c43ce540745be4234208f3360c6c402b821c2627000b3a214cf21c5"
   },
   "tagBundle.membersNote": {
-    "source": "10c78fd231de586f42c4df0fc5524324a4f93ad5de4fe750dc297cdf39d5da8d",
-    "translation": "8928975ffbb94ab4544d71ca549095f11dfe634c41c683cb1e8e8fea6aaf1f29"
+    "source": "be1ae26470743f526a621bb14d1e5ed3545992165571365547628a3731c45b72",
+    "translation": "fae73475b3cf291081268be7f8f6ad646342d315014774a14cceef9247ecf5d1"
   },
   "tagBundle.noRecentPosts": {
     "source": "d8f859340cb4d66085ff430683a17cd5ba660ee697843facc4f2fbf1a0f1fed3",
@@ -23304,12 +23236,12 @@
     "translation": "82246e751bc69946348899d5665d82001054ba55b1e0b1ccbebc72d4815bb2bb"
   },
   "twitter.consent.intro": {
-    "source": "da8202d8fd70068b7fe163ef81b56bf7b88f5f87dea1af3c2098f43ed5d5227d",
-    "translation": "b2233dfdff077f3578e37df3d31ce8640d0f135fc6b157c8b6b48b8de2fdb1c1"
+    "source": "c8ac6a2821527645313bcdf3ee4d3bc2616f02e769fb91c03d24f4eca7c36ec7",
+    "translation": "52b7d4f3a986fbcbb67e5cf5ad5f7ea1617c26630dce3985dc1d612ce506965a"
   },
   "twitter.consent.readTermsHint": {
-    "source": "72a0600f59aee4614b27ec6dc645a4dec0e54051af591c4ef50bbe7bcf77cd01",
-    "translation": "ee9e2aeeb558b1c1a0236e5ddac486f185a0f7478b571d4d0f120b8fcd9a83e4"
+    "source": "e1dc4e22be3d795a0dbfa185fc894b7750c723038fa5a4dc662814aa27b8de07",
+    "translation": "51d3b317f2a5fdee01ef641c805d7cbd10bf44a5bf68cb48acce8205f535a57f"
   },
   "twitter.consent.riskHeading": {
     "source": "cac90b39904982f504fe2d55057b5426aba2200b90b21e24a2e692aaa97c1d5e",
@@ -23324,20 +23256,20 @@
     "translation": "cee856c6b84007680b62fd158436da978220c273cbf7e04e573bf2321ec1cb52"
   },
   "twitter.consent.riskReadingHistory": {
-    "source": "cc9a4d298349d31c92ec581dca0fd046da789a9dd18a46b6ad4d2c8841ee0529",
-    "translation": "a3fa0d81c9fde21d62c8a0372563254109adf007261e2491f9b91f261519e85b"
+    "source": "57ff131a548053c3c19e917c014c35966394dee42e695fecab57cb2b014cca64",
+    "translation": "f8be5777cf7274a3702fb407cc89971854015916298f51913e3317c6ab718345"
   },
   "twitter.consent.riskSpendCredits": {
-    "source": "b46235c2f9aabf9193119da5b715a51659f305efbea1978861825a2f64d82ae5",
-    "translation": "78330912b99305a707aea557c270820a1f006d3cd4893cf16f5c9cc7a6e89c22"
+    "source": "90f5211920e0b7ac7fb61abf8418d1509376c36ffa0f5526392a06d2b93f34de",
+    "translation": "8b751b2c85aef987ebe3db3d0ce82b0a847140e0fe737d3c6682757f9aa2bb21"
   },
   "twitter.consent.runYourOwnProxy": {
     "source": "949de6c862bb4fdd5fb8e97bb1cf537df4ffacfc3cecb51a9726f38815899536",
     "translation": "6bcb428a4325459cc1e5b23d24b1812dbf06fc72f235420c91bdb8ae5c5292c7"
   },
   "twitter.consent.scopeBody": {
-    "source": "cb053b1743ac1ec5d82b194539a1118187a6a7cf213d264632c1df3aea74ace6",
-    "translation": "4fa945e833dae184d0b5b395e0fe3ee498de390a230fea6f401b65a5c125eb99"
+    "source": "226e0182d45908bfef76b770f5bc6b55f6ea9e92384ad9c3a900d19b4dcf4ec9",
+    "translation": "42dcea598988db3a8016e595ed88776f4ceaeda76284c2369d960d17623fb29c"
   },
   "twitter.consent.scopeHeading": {
     "source": "6655ef26801dd8acef43b9aa2f7677f6e0ebcbb43b1f4f4a84ff98ba92791722",
@@ -23352,8 +23284,8 @@
     "translation": "fa8893308d2f4ea3c90f8c58b44b389b9b8d5923c065b14069f4bcfd3d8965d1"
   },
   "twitter.consent.selfHostedBody": {
-    "source": "6d0d77744ac7ec95f36679ba6ef3443d1a45bec975d2ba94d5bcd31bcfa5bcae",
-    "translation": "5985d5f91c8852b60bc919170b7203a48c832c4ae17ec4dea6f3c305a6e6e0f1"
+    "source": "81ab9ec291d1ae86bd444d25fcc76e5e961fd676f17c7d4684eabb4a9ba7bc4d",
+    "translation": "4d76687dcbcc5624d6dc7669b3100840bc02a851e41d63dd3ea6223299f11421"
   },
   "twitter.consent.theirWebsite": {
     "source": "4213450f93aab943e66066081abb9709806e7918006e9e9a2a59af6afa3955f0",
@@ -23540,8 +23472,8 @@
     "translation": "c3ff0f4ed65b57dcc214c40f5b359300bb19a39f248d081de35aeaf837b58636"
   },
   "connection.intro": {
-    "source": "22bb8f1054bcfc498c8b9b936293debbcb26138e57551a2cc847962b5b58aae9",
-    "translation": "9fbf224afaa35c36ee5fd6efc7099db901da3ccda5aa8aed31d52e262c59d775"
+    "source": "27749055b046b5bc1850974b72b3005005b49c42798e4eb9f45ca0ebf9a740d7",
+    "translation": "6e171c5cd0c20f06ebabe09419bae6da73a1e8a355038b8f004c699553b9fff4"
   },
   "connection.lastProbe": {
     "source": "52b9dd845f2d49e6be1c97c74d23b5b9a687f657e4417dcd4e902bc06e2fbb78",
@@ -24230,5 +24162,253 @@
   "lite.feed.gap": {
     "source": "0c4190bde1fc1d00856f7dc0f59ffda9c2f2b7522709108378aeee26b2aeeaf9",
     "translation": "4604047172c8cf15528ff469c79a6932abceffe20ac20d564b364869e9fab0f2"
+  },
+  "accountAnalytics.help.reach": {
+    "source": "feaf07086367492a6e91cb19fda6b86f41e76b079d1b43010194cf0981fec770",
+    "translation": "97c267211b86b763f2fe1e6b573e98462160de1326f3263746cb17b2c3eb7dd2"
+  },
+  "accountAnalytics.people.explain": {
+    "source": "243c7e5cc080d7cab321ee98735c0f81554a5088f7052a05ed0e71dcb92ba452",
+    "translation": "4d26e6c0b8e95edc31526c70983626f7e2bdff19ff8c5892452d6c041638c053"
+  },
+  "accountAnalytics.style.help": {
+    "source": "2c87fa750ad6f969c393965626d941a9fcfeea3853631cf708f0613b19a9e7d4",
+    "translation": "277edbd52d9621886029f28d72d9cd3aa33e0349fd1b0344cf346adc12bb8e3c"
+  },
+  "accountAnalytics.style.rhythmHelp": {
+    "source": "a4d0f869d98a3242fa154a8de2a5226afe14224e6b541f9c31d02a0471bc3f2a",
+    "translation": "a4eb7af37976210ca3bedcbf276ad233fca0971ce74f8cf88ed22ed0c14cf4c7"
+  },
+  "adminAnnouncements.webOnly": {
+    "source": "58c8d843d627d1486cdf73cf93463b9f863b5af393bcad78ea87f74134aca8a2",
+    "translation": "2044d6c6fb022a8ef924cbf608a6a1577e137124f0ad5adec20d1b2e90520154"
+  },
+  "adult.why.how": {
+    "source": "288fde1627f84333e006702af78b0cbd2379d23819672be00b5258c60dfd9bfc",
+    "translation": "91e9f0ebe3f2b39ed822820a1f1307ae5896ad997f74d0eb93c0f62f3177aed7"
+  },
+  "audienceComposition.help.cadence": {
+    "source": "5f1a8e33ef8c04c5c303983216df4df302e0b3fa005f9be6d9cea7eac363ad14",
+    "translation": "07b04932bc8c56c20d082d216cfc12f6090776a956fe231610e6a64a7ca19347"
+  },
+  "compose.confirmPrivate": {
+    "source": "7a4b72d244ccf0609d634d52bff10783e74c803fd1dbcc31be04b969a6e75a5b",
+    "translation": "23260a37b6e6ce32bad2389da47b55a6bd568fc89695457267fd579af7d1828a"
+  },
+  "connectionHelp.diagnosis": {
+    "source": "a6404744fdeb45a60990b6fe146ac9c50ff9af4185c174ef3f9fec770d7892b9",
+    "translation": "1f37ee08ed4c22b3a8401596a486ed08c524a6acc81d2d964212ff73d14f719f"
+  },
+  "connectionHelp.finishSteps": {
+    "source": "098c609dda3624ccd57bfd4583271d72ad937ef6cb89c0853b68f88e9c719aff",
+    "translation": "0fa4b91a3047705d8a608a8abbda27a71898cd9caf2a4e273561a1e22b943dec"
+  },
+  "connectionHelp.firewall": {
+    "source": "8faee9cd0e66703dd10b17cebbbb56eaf6f3abcc368f39d647c7910649e05d23",
+    "translation": "47c1664a80f616218a0f868c8bc5e8b4c34d2708c283a0a171ea158cec6fb442"
+  },
+  "connectionHelp.localNames": {
+    "source": "0bb63f13a1d0c3ec17cc367bdd1a05d6c615754b21b03e2fd3bea20a43fc6280",
+    "translation": "f7511e30ab274443eb04149928199a4aa73f32ba0659a33b710bcad12cf0a6b1"
+  },
+  "connectionHelp.permission": {
+    "source": "7b07555663d98b51597cdcd7ccc79764967f092232766b5ed6c3255ead16a313",
+    "translation": "207a3b42fd92827ed904511ebbdeeda843c70703bd0cb3790b555c73aa381b08"
+  },
+  "connectionHelp.verify": {
+    "source": "845c8185309e67aa6babe1d829f5b6fbf80d39028b57090ee7a20822258fce67",
+    "translation": "fa17df52b1e47491871da67b2d407807e4e4cd7fd99efb6d51dd4929e8e906c6"
+  },
+  "discoveryRate.cta": {
+    "source": "783eb7f9fa4b0f15d783fd7514344a8f4b57e1b90670c462e0c126592291bdb8",
+    "translation": "46e987b45098435cc797640bbc089ec7f2f4c51cfa5c686e91ff039ec55dcaa8"
+  },
+  "discoveryRate.help.overall": {
+    "source": "3e195bc46d5ac6c2c2049061a1fc3d6a6e38c36a82295662cae1b552110d7181",
+    "translation": "d0818aee483390888e51ac443748361dce6be54f7725c5c0c1927be26121ec44"
+  },
+  "engagedAudience.cta": {
+    "source": "783eb7f9fa4b0f15d783fd7514344a8f4b57e1b90670c462e0c126592291bdb8",
+    "translation": "46e987b45098435cc797640bbc089ec7f2f4c51cfa5c686e91ff039ec55dcaa8"
+  },
+  "engagedAudience.explain": {
+    "source": "0aff6a8e440e2107ffdc6302eff97e7e885a1a489750a3d3dc06ca77f5b1d286",
+    "translation": "da7a8ac40591dc033dfc893d6f5cd6d0764f845430d781caa02b479d522c86ca"
+  },
+  "engagedAudience.help.grid": {
+    "source": "7eafd4a191724d133b8ee63d02c142271220d6f567990244cb11c130ac219617",
+    "translation": "cb9e03bdbfc8b980ef66fb2eb96e8156872a570e7720d7fe65e4a50a17470948"
+  },
+  "feedAnalytics.help.postsAnalyzed": {
+    "source": "1b03a7238b96a8cdf71d738ef7903a030af0166c80cce34654809e03c0ca3b7f",
+    "translation": "9df45b6fc0b8f68142a243717c2d7f5095bd86fc86419118fe0f57f5f7114d0a"
+  },
+  "interactionDecay.cost": {
+    "source": "fce38f8ab23bfebbcaae5915cc0bf985e44f76e1768605aab59b85e0ccffb177",
+    "translation": "359f0eb7ab7cf8cbc41fa2c16850da2501b0de9f187a03452339c20a132bb768"
+  },
+  "interactionDecay.costArchive": {
+    "source": "d48b32023ba4344f5b74cca18803bd6be6d26546f513e4dc70a6ab41413d3fea",
+    "translation": "7ff85f4c8761d46c2fa8484aeb430228c31f8d4f0cc797f25e69bcb9c13f4dd5"
+  },
+  "newPeople.help.body": {
+    "source": "9282fc3620d33c68d347739569c581ea57fa36f46c6fa1013ce17b3892171b92",
+    "translation": "b39c450d4c0b612e72e2a7efba0621e52d05667a5b47ef7910537ae51d415d43"
+  },
+  "pages.algoPeople.why.reading": {
+    "source": "00f9cbad7b7d3d190566f87ea7648f5cfd158cbddf50c6d7537ac4b865f8c83b",
+    "translation": "48ea3105b457e482902571747b96fdcf6ddfd6c11b7a50d47c84b8d323aa09e0"
+  },
+  "pages.conversations.liveDiag.summary": {
+    "source": "d8e4e0718c350361903862a93c6cc777bdcb392ba20362531c49f833c42ccec2",
+    "translation": "8fddc41fa1d8c147d8967246c43594b9da32cceff966003bcba00d68cd30b73d"
+  },
+  "pages.home.misskey.noEngine.body": {
+    "source": "8f9faa97c98a67dc87d4c07a1fb05f8cce1874df4c89d75f1f14ddc70e4c5b55",
+    "translation": "f26148f902c0705a93f17762c7da673a266265efee8482a038d561d736a35090"
+  },
+  "pages.homeProfiles.dataIntro": {
+    "source": "b340577e3b3507d16ebede2136b591dec8be5e1bf870da0cc0d4d8a39f586b74",
+    "translation": "82db7dfe95d9445d6be909fdb9f80105b5cd8b4c058bf1e7ea6ccfddfe0e7ea8"
+  },
+  "pages.observability.publishing.note": {
+    "source": "719791e279c0aeae34eee887b5d48d1db9160a645dd00ab5778d8b50c8b1650c",
+    "translation": "df7322a82cadcd580f8fc31c583bd0be69b59e603418e7d570d02bc23c078e2e"
+  },
+  "pages.rss.proxyRefreshPaused": {
+    "source": "77cc384946d9382aa44fd6c4a80c8a2a5ac7fc41fe5b763d363d005c9c605d75",
+    "translation": "af65496c04f303bc93fe32182cafe29188a1de8b3ae4cb9e30c9445ab3e8bed3"
+  },
+  "pages.search.syntax.syntheticMediaNote": {
+    "source": "74adde085c57255d40dbed1ed079bceebec7d8698446783481bd8e9d5787ab2e",
+    "translation": "1e7580d7ccf6d72ffeac1b753b7eccb9885085ebe451e6acfd6fcd44e6f5fce5"
+  },
+  "peopleLists.dialog.following": {
+    "source": "239340eebb3b614562003ae89c9bc2520cbc471cc42c067a23b2bb0aa3e14857",
+    "translation": "6fb6ccbf2140bd80ad3b274f77af9630cd79e5ef26b994d8cff56d9d748e257d"
+  },
+  "permissions.explanation": {
+    "source": "3918ff6512748808abdcb939db47e4192f38ec7127b6c40df2da13a26d8f6e22",
+    "translation": "caa9ae1fe4cffd2e7dac55aaf7a43bb43946db26fbdde1797fe210c33f214835"
+  },
+  "plus.billing.cancelled": {
+    "source": "b047bd704fda8547f759fa35107f531df507819137b97b86cafc26c92f02a7ab",
+    "translation": "fe06e78a6bb7b6943c2718427af4018cdb87ff26a5821d1d847f0eb1755ab028"
+  },
+  "plus.billing.stripe": {
+    "source": "77f72ffff596363b4490c603842a627e964d89feed9709fba034c5d1aa3b234d",
+    "translation": "bccb26f091b7fb0f801c229990f0532fda0c05df8e1d0935113707e4a4463c37"
+  },
+  "pollResults.method": {
+    "source": "11ea6696d52d4f770e3f76d9ef0ff903eb4f8c9c2e82f88396ff5a8645a58ccb",
+    "translation": "38ca111b6158f3112dfd9f3a4dbd9be64ff1e1d7ad15c254c1288a44d293eb54"
+  },
+  "postAnalytics.help.reach": {
+    "source": "ccf24eae9119b907a64ddbe64ac12d7dd8edd00cc2a3616ff9b5e36971c5126f",
+    "translation": "4e537b58d8e8dc871454f13b9208186c6e094a2a1b75ce190c479161db393c30"
+  },
+  "pseudonymity.postReminder": {
+    "source": "f2fbbbfba68fcdc2772ab3ca1c9c927fe8986be6faa0b09bdfd02c9090f8f8b0",
+    "translation": "547ad6ae5acc961ae48399cf4eb172d00a17e77c73b46296b454698fd729f966"
+  },
+  "pseudonymity.postingHint": {
+    "source": "81fb11a6316e36663b44058447415d5ba6c9d0040186387969aef9d799fd976c",
+    "translation": "b9aa99d502d72243b2c70fcb6e6fed170113fce9a78afba2b8e0c24359b10bbb"
+  },
+  "reportHistory.explanation": {
+    "source": "e46dbec97269d8c2015a4eb210b616e653d268aeb7b7423e7b0c290b4dfa2fba",
+    "translation": "18a4ad5e16f348a5921dbe7f3ddfd64ddb83adcc74c1988413ae00f535bc45b4"
+  },
+  "settings.connections.bluesky.anonymousNoteSignIn": {
+    "source": "e280bb1d9b6dd068aaad0ba5201a45b5358d81ce1fbdb444eb4ae1d948c44af3",
+    "translation": "09551f8308ce45199e7a278e535d97cb1db98eb47a6865ef2f5a86facc2fd9e1"
+  },
+  "settings.connections.bluesky.upgradeNotice": {
+    "source": "bda0380ea9c4feee5bca062c2df31060ad6eebd9b22d118c817144e76ab97505",
+    "translation": "5540cb6d31720d6cc08f681cce93cf6932509202afafe4374987ba25248c96a7"
+  },
+  "settings.connections.doctor.publishingScope": {
+    "source": "3d5a3013c3dfb0275f33e4dbbd87c4b838ab5f600b96895e7ba15fdef089258e",
+    "translation": "b2336324b95bd9d67f05329ca8147534722f0286499c8432337f539ba5a5184c"
+  },
+  "settings.connections.freeTranslator.apertium.quota": {
+    "source": "722720bbfc1a27fc5ea758c5784cdffac542061b7c8f0cd14ccb88ffdf007632",
+    "translation": "932741611df554285380a745e7e5aafb6acc610c0a5faa3fbf5bbb7cbaabbcd0"
+  },
+  "settings.connections.hugo.nativeWarning": {
+    "source": "4623732269b7ac6fd68d7bb4bfbb8bea43d69be5d1ba0f5f476d1f40b9310607",
+    "translation": "3a19ce8e99806bc9f27b66724855c5f39180c2df46af2fe2a3e0028322a5959c"
+  },
+  "settings.connections.localAi.intro": {
+    "source": "803a543b8d888b8c079feab7a6c8365cdddcc411f55c8d168489d77233317a04",
+    "translation": "d6abbf74ca1742e49f3114879c52d4eacbac7684f37073b21e6d690905782031"
+  },
+  "settings.connections.openrouter.nativeWarning": {
+    "source": "c6354deda3229391e78f939e01e2532f2d99411e034cf8f9d94c6b00788fbbb4",
+    "translation": "6a6b7553f159c469f866ebfe9e62695c113b001f5dafba183c5bbb9070c83560"
+  },
+  "settings.i18n.browserTranslator.hint": {
+    "source": "b09b252c589106dc6370555b14d5a8818f55a8af9b03d44427fd6bb06d72ccc3",
+    "translation": "a09e7f0921310532322c9b06498b53138c52dec9339c72b305f798b9123e425c"
+  },
+  "settings.privacy.history.hint": {
+    "source": "70739a97dc4cec4f2642ebfcccf9a9c3652582961d8f8a6feddba3f44eb65163",
+    "translation": "942001c3f8de477c14b8a8813ff9edec1911a2b012927a3f011df931140369e7"
+  },
+  "settings.privacy.origin.hint": {
+    "source": "b57226f270c2f59cd4dac1ffc46bf0a9521117328eff0af3788951f25662dcc5",
+    "translation": "7e7e215511aa7345a18f3d2e9b3f1649310d10716ccd533b379fe1a1441e676d"
+  },
+  "settings.pseudonymity.mediaHint": {
+    "source": "51c55f76340c7a8c82491acada0a75a5163f030433ca5af225891a6c2e9572db",
+    "translation": "8e75f2a427993c1ad49f99323f843b4b367fafdff0f2a9dd2567ea2739f0b11a"
+  },
+  "settings.wellness.intro": {
+    "source": "2ef5ecf80241f528f33f5f4a6a07e7b2ed4a5ce771495913cf0fa26a63454ce0",
+    "translation": "af84d1964835d1c95c4ff89f4e87b0f189597ddcbfc3c3cf246ece2c33e47bc2"
+  },
+  "settings.wellness.key.hideReplyGuys.hint": {
+    "source": "1822a72eebc3083fe775e130d1b67373667e7b04d8583198c479331b2a35439e",
+    "translation": "89d21eca9874a5b6cd28eaf5652bcf5cf2cf83ddb71096a30e0034b6e22d993c"
+  },
+  "settings.wellness.replyGuys.cw.hint": {
+    "source": "527e0d8e0d0922188b1b458ea1b43f6e039e673222f3799954d1aa82309ccaa8",
+    "translation": "e2ea2b44d0823ec349873119c94999d927be2f0552ee74bb117a51a317eeb8b8"
+  },
+  "settings.wellness.replyGuys.intro": {
+    "source": "f1903318f5eea71451cfe3d55640b7e4d1983da7a78080f7b72f7f1c274df055",
+    "translation": "308e5a286155f6c54379b971e0c8e662082239e374992d53f0aad71e5d486163"
+  },
+  "topBoosters.cta": {
+    "source": "783eb7f9fa4b0f15d783fd7514344a8f4b57e1b90670c462e0c126592291bdb8",
+    "translation": "46e987b45098435cc797640bbc089ec7f2f4c51cfa5c686e91ff039ec55dcaa8"
+  },
+  "unbird.tools.contacts.reopen": {
+    "source": "70420add79f7c65411bd64e7a704bd07d07cd21d2e7b4610bcff14929045e9d3",
+    "translation": "c33ffe8c795695248d6c4a894d5ddc4a233dbe09f9c50f555377094585649955"
+  },
+  "watch.party.temporary": {
+    "source": "148a65aa74d4e05ce81ceb3aab0efefd3c5b97090a599d5a47db18f5a43244ff",
+    "translation": "f6c23e7c026b0b51325b4290658f646d56089c24313369a61d4c580e2c56f9bc"
+  },
+  "watchParties.intro": {
+    "source": "eb8cdd974c284b0c05be150d69dbfdc1ad74dc04fe521a7b7bf0d153aa527d83",
+    "translation": "fae3d686a09dcc9e8ae6639e6f97ce43fd122fc1a5edb1ca873168faba196536"
+  },
+  "newPeople.help.more": {
+    "source": "16709594850660b422b5fd09717177c32c23f8886528accc363cbfe2b6b36227",
+    "translation": "5cc0211e89348570d9ed69042097b8c3fe2cf5a33a0f4fd9c4d8fd34000c3bbe"
+  },
+  "peopleLists.dialog.help": {
+    "source": "fad5fc7675c10106fcc1d3dd39b85cd415dd5e504d0a788db06bfe4baa919c12",
+    "translation": "f5d3e74f12fe3a264fc81c8771e5e9707bee7d0425431de228cb482df3c0521f"
+  },
+  "settings.connections.doctor.explain.more": {
+    "source": "028b111ba30fc9c60409747fe782f93792c60034f082fa8e058e1202a57deeec",
+    "translation": "141771c193e723b9494ab075907b8039bb3c3b348745c324ec96dd591b096ac1"
+  },
+  "settings.connections.retentionHelp": {
+    "source": "a2cd829318604b8abaaecc69a581d1dbfcfd4dc01d32c6e1b2e42a080f92437c",
+    "translation": "9036093ee9155a9a28d665658637097c786dcb450daa6065481495e85a29a4f3"
   }
 }

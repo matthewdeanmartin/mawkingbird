@@ -42,7 +42,7 @@ const FRIEND_SOURCES: readonly AlgoSource[] = ['mutual', 'original'];
 // i18n pages.algo.filter.tags: Tags
 // i18n pages.algo.filter.tagsTitle: Include popular recent {{posts}} from hashtags you follow
 // i18n pages.algo.filter.calm: 😌 Calm
-// i18n pages.algo.filter.calmTitle: Hide {{posts}} that read as inflammatory: heated wording, quote-dunks, and ratioed {{posts}} (all detected on-device — no server involved)
+// i18n pages.algo.filter.calmTitle: Hide {{posts}} that read as inflammatory: heated wording, quote-dunks, and ratioed {{posts}} (detected on this device)
 // i18n pages.algo.filter.links: 🔗 Links
 // i18n pages.algo.filter.linksTitle: Show only the link previews from these ranked {{posts}}
 // i18n pages.algo.filter.shuffle: 🔀 Shuffle

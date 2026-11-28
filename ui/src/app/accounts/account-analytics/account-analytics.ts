@@ -129,7 +129,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.tiles.potentialAudience: Could have reached
 // i18n accountAnalytics.help.about: About {{stat}}
 // i18n accountAnalytics.methodology: How these numbers work
-// i18n accountAnalytics.help.reach: People who probably saw these {{count}} threads. Modelled from followers, boosts, quotes, likes and replies with the FediWings method, which was fitted to Instagram story views. Never more than “Could have reached”, never fewer than the people who reacted.
+// i18n accountAnalytics.help.reach: People who probably saw these {{count}} threads, estimated from followers, boosts, quotes, likes and replies. Never more than “Could have reached”, never fewer than the people who reacted.
 // i18n accountAnalytics.help.reachQuick: Quick estimate: each boost counts as one typical booster with {{audience}} followers. No extra API calls.
 // i18n accountAnalytics.help.reachFull: Uses the real boosters' follower counts.
 // i18n accountAnalytics.help.reachMixed: Real boosters for {{looked}} of {{boosted}} boosted threads; other boosts count {{audience}} followers each.
@@ -162,7 +162,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.style.name.broadcaster: Broadcaster
 // i18n accountAnalytics.style.name.balanced: Balanced
 // i18n accountAnalytics.style.tooFew: Too few posts to say
-// i18n accountAnalytics.style.help: The first that fits: Curator (boosts are half or more), Conversationalist (replies to others are half or more), Link sharer (half their own posts are mostly a link), Thread writer (30% of their own posts continue a thread), Broadcaster (under 10% replies and under 30% boosts), otherwise Balanced. Needs 20 statuses.
+// i18n accountAnalytics.style.help: The first style that fits: Curator, Conversationalist, Link sharer, Thread writer, Broadcaster, otherwise Balanced. Needs 20 posts.
 // i18n accountAnalytics.style.own: Own vs boosted
 // i18n accountAnalytics.style.ownValue: {{pct}}% own
 // i18n accountAnalytics.style.ownSub: {{boosts}} of {{total}} are boosts
@@ -179,7 +179,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.style.rhythmName.botLike: Bot-like
 // i18n accountAnalytics.style.rhythmSub: {{pct}}% on a schedule
 // i18n accountAnalytics.style.rhythmEvery: every {{interval}}
-// i18n accountAnalytics.style.rhythmHelp: Looks for runs of 4 or more posts with the same gap between them (within 2 minutes or 1%), like a bot or scheduler posting every hour or every 24 hours. Under 10% of posts in runs: Human. 10% to under 60%: Partly scheduled. 60% or more: Bot-like. Thread posts and boosts are left out; gaps under 5 minutes are not a schedule. Needs 8 posts.
+// i18n accountAnalytics.style.rhythmHelp: Looks for posts at the same regular gap, like a scheduler posting every hour. Rated Human, Partly scheduled or Bot-like. Needs 8 posts.
 // i18n accountAnalytics.style.botSetting: Bot setting
 // i18n accountAnalytics.style.botOn: On
 // i18n accountAnalytics.style.botOff: Off
@@ -188,7 +188,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.style.unit.hours: {{value}} h
 // i18n accountAnalytics.style.unit.days: {{value}} d
 // i18n accountAnalytics.people.heading: People who react
-// i18n accountAnalytics.people.explain: From your notifications in the last 90 days: favourites, boosts, quotes, replies and mentions. Counted, not estimated.
+// i18n accountAnalytics.people.explain: Counted from your notifications in the last 90 days: favourites, boosts, quotes, replies and mentions.
 // i18n accountAnalytics.people.people: People
 // i18n accountAnalytics.people.peopleHelp: Different accounts that reacted to you in the last 90 days.
 // i18n accountAnalytics.people.reactions: Reactions
@@ -253,13 +253,13 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.audience.effectiveFollowers: Effective followers
 // i18n accountAnalytics.audience.zombieFollowers: Zombie followers
 // i18n accountAnalytics.audience.scanAgain: Scan again
-// i18n accountAnalytics.audience.explainCta: A follower count includes everyone who ever clicked follow. This walks the list and works out how many are still posting — the only thing on this page that costs more than a few requests, so it asks first.
+// i18n accountAnalytics.audience.explainCta: A follower count includes everyone who ever clicked follow. This works out how many are still posting. It takes more requests than anything else here, so it asks first.
 // i18n accountAnalytics.audience.cta: Get effective friends/followers
 // i18n accountAnalytics.pctOf: {{pct}}% of {{total}}
 // i18n accountAnalytics.zombieRate: {{pct}}% zombie rate
 // i18n accountAnalytics.ofScannedRead: of {{scanned}} read
 // i18n accountAnalytics.whenTheyPost.heading: When they post
-// i18n accountAnalytics.whenTheyPost.explain: Posting activity over time (posting times, not location). Estimated reach in each bucket.
+// i18n accountAnalytics.whenTheyPost.explain: When posts were made, with estimated reach in each time slot.
 // i18n accountAnalytics.byWeek: By week
 // i18n accountAnalytics.byMonth: By month
 // i18n accountAnalytics.byWeekday: By day of week
@@ -269,7 +269,7 @@ const LOAD_MORE_CHOICES = [1, 3, 5, 10] as const;
 // i18n accountAnalytics.barTitle: {{label}}: {{count}} {{posts}}, ~{{reach}} reach
 // i18n accountAnalytics.weekdayBarTitle: {{label}}: {{count}} {{posts}}
 // i18n accountAnalytics.languages.heading: Languages
-// i18n accountAnalytics.languages.explain: Inferred from the sample's text and each post's declared language — script, accents and common words, not a full model. A rough read.
+// i18n accountAnalytics.languages.explain: A rough guess from each post's text and declared language.
 // i18n accountAnalytics.langTitle: {{lang}} ~{{pct}}%
 // i18n accountAnalytics.topFollower.heading: Top follower
 // i18n accountAnalytics.topFollower.explain: The follower with the biggest audience of their own.

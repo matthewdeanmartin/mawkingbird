@@ -82,8 +82,7 @@
     @if (native) {
       {{ 'settings.connections.openrouter.nativeWarning' | transloco }}
     } @else {
-      {{ 'settings.connections.openrouter.keyWarning.a' | transloco }} <code>openrouter.ai</code
-      >{{ 'settings.connections.openrouter.keyWarning.b' | transloco }}
+      {{ 'settings.connections.openrouter.keyWarning.a' | transloco }}
     }
   </p>
   <button class="btn" type="button" [disabled]="connectionBusy()" (click)="connect()">

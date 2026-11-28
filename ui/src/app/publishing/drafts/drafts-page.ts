@@ -131,7 +131,7 @@ function kindNoun(kind: DraftKind): string {
 // i18n pages.drafts.outbox: Outbox ({{count}} waiting to send) →
 // i18n pages.drafts.title: Drafts
 // i18n pages.drafts.openWrite: Open in Write →
-// i18n pages.drafts.intro: Everything you've written but not published — wherever you parked it. Mastodon has no drafts API, so each of these lives somewhere different.
+// i18n pages.drafts.intro: Everything you've written but not published, wherever you parked it.
 // i18n pages.drafts.write.close: Close
 // i18n pages.drafts.write.button: ✍ Write
 // i18n pages.drafts.filter.ariaLabel: Filter drafts by kind

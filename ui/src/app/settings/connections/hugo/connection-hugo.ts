@@ -43,7 +43,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 
 // i18n settings.connections.hugo.back: ‹ All connections
 // i18n settings.connections.hugo.title: ✍️ Blog (Hugo)
-// i18n settings.connections.hugo.intro: Publish Markdown posts to your own Hugo site on GitHub. A post is a file: Mawkingbird commits it to your repository, and GitHub builds the site. Nobody else hosts your writing, and there is no blog service that can close your account.
+// i18n settings.connections.hugo.intro: Publish Markdown posts to your own Hugo site on GitHub. Mawkingbird commits each post to your repository as a file, and GitHub builds the site.
 // i18n settings.connections.hugo.step1.a: Have a Hugo site in a GitHub repository. Starting from scratch?
 // i18n settings.connections.hugo.step1.link: Hugo's quick start ↗
 // i18n settings.connections.hugo.step1.b: — or fork any Hugo theme's example site, then turn on GitHub Pages for it.
@@ -61,10 +61,9 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.hugo.readOnly: Read-only
 // i18n settings.connections.hugo.step2.g: (that one is for showing build status later).
 // i18n settings.connections.hugo.step3: Paste it below with your repository details, then save. We check them before storing.
-// i18n settings.connections.hugo.nativeWarning: This token can write posts to your selected repository. It is stored in your operating system’s credential store and sent only to GitHub. Revoke it in GitHub to invalidate it.
+// i18n settings.connections.hugo.nativeWarning: This token can write posts to your selected repository.
 // i18n settings.connections.hugo.nativeNeedsToken: Your repository details are saved. Reconnect with a token to publish again.
-// i18n settings.connections.hugo.warning.a: This token can commit files to the repository you scope it to. It is stored in this browser's localStorage, never sent to Mawkingbird, and sent only to
-// i18n settings.connections.hugo.warning.b: — no CORS proxy is involved, because GitHub's API accepts browser requests directly. Scope it to the one blog repository, and revoke it in GitHub to invalidate it.
+// i18n settings.connections.hugo.warning.a: This token can commit files to the repository you choose. Limit it to your blog repository.
 // i18n settings.connections.hugo.connected: Connected
 // i18n settings.connections.hugo.viewSite: View site ↗
 // i18n settings.connections.hugo.disconnect: Disconnect
@@ -72,7 +71,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.hugo.on: on
 // i18n settings.connections.hugo.deletedOn: This token is deleted from this browser on {{date}}.
 // i18n settings.connections.hugo.readBack.title: Read your blog back
-// i18n settings.connections.hugo.readBack.body: Your Hugo site publishes an RSS feed, so Mawkingbird can read your own posts the same way it reads any other feed — no special handling, and no CORS proxy if your site is on GitHub Pages.
+// i18n settings.connections.hugo.readBack.body: Your Hugo site publishes an RSS feed, so Mawkingbird reads your own posts like any other feed. Sites on GitHub Pages need no CORS proxy.
 // i18n settings.connections.hugo.inHomeTimeline: In your home timeline
 // i18n settings.connections.hugo.removeFromFeeds: Remove from feeds
 // i18n settings.connections.hugo.lookingForFeed: Looking for your feed…
@@ -80,7 +79,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.hugo.addSiteFirst: Add your site address above first.
 // i18n settings.connections.hugo.posse.title: Record what you like and boost
 // i18n settings.connections.hugo.posse.label: Record interactions on my blog
-// i18n settings.connections.hugo.posse.hintA: Liking or boosting a post also keeps a record of it on your own site, so it survives whether or not the other server does. The post is still liked normally — this is additional. Records collect under
+// i18n settings.connections.hugo.posse.hintA: Liking or boosting a post also keeps a record of it on your own site, so you keep it even if the other server goes away. Records collect under
 // i18n settings.connections.hugo.waitingToPublish: Waiting to publish
 // i18n settings.connections.hugo.posse.hintB: and are committed when you say so, not one commit per like.
 // i18n settings.connections.hugo.posse.hintC: Turn this on once your blog is set up to receive: a webmention endpoint, a template that renders these records, and the scheduled job that pulls mentions in. Before that, it writes files nothing displays.
@@ -96,7 +95,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.hugo.reading2: Reading…
 // i18n settings.connections.hugo.loadMoreTitles: Load more titles
 // i18n settings.connections.hugo.titlesHint: Titles and dates are read one file at a time, so only the newest are loaded up front.
-// i18n settings.connections.hugo.needsToken: Your repository details are saved, but the token is gone — either it aged out under the retention policy, or these settings were imported from another browser. Paste a token to publish again.
+// i18n settings.connections.hugo.needsToken: Your repository details are saved, but the token has expired or wasn't imported. Paste a token to publish again.
 // i18n settings.connections.hugo.githubTokenLabel: GitHub token
 // i18n settings.connections.hugo.tokenPlaceholder: github_pat_…
 // i18n settings.connections.hugo.repositoryLabel: Repository

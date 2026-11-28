@@ -583,13 +583,26 @@ for (const code of localeCodes) {
   }
 }
 
-// ---- Rule 2b: Lite is complete in every locale ----
+// ---- Rule 2b: core screens are translated in every shipped locale ----
 //
-// Owner decision (2026-11-21): every language the main app supports, Lite
-// (/m/) must support. It is the part of the app most likely to be used abroad
-// on a bad connection, by readers who chose their language for a reason.
-// Elsewhere a missing key falls back to English; for these keys it fails the
-// check, so new Lite copy ships translated or not at all.
+// Owner workflow (2026-11-28, spec/sprint/i18n-catchup-2026-11.md): new features
+// ship in English; core screens are kept translated in every shipped language;
+// everything else is caught up when there is time. Lite (/m/) is part of the
+// core and is already complete everywhere, so its keys are fatal now. The rest
+// of the core is reported, and becomes fatal (CORE_FATAL) once sprint I2 has
+// caught every locale up.
+const CORE_FATAL = false;
+const CORE_PREFIXES = [
+  'shell.',
+  'pages.home.',
+  'pages.conversations.',
+  'pages.profile.',
+  'pages.notifications.',
+  'pages.search.',
+  'pages.write.',
+  'pages.login',
+  'settings.profile.',
+];
 const LITE_PREFIXES = ['lite.', 'offlineBanner.', 'shell.connection.', 'outbox.', 'connection.'];
 const LITE_KEYS = [
   // The Lite nav and headings reuse the full app's short names.
@@ -621,15 +634,33 @@ const LITE_KEYS = [
 const liteKeys = Object.keys(en).filter(
   (key) => LITE_KEYS.includes(key) || LITE_PREFIXES.some((prefix) => key.startsWith(prefix)),
 );
+const liteKeySet = new Set(liteKeys);
+const coreKeys = Object.keys(en).filter(
+  (key) => !liteKeySet.has(key) && CORE_PREFIXES.some((prefix) => key.startsWith(prefix)),
+);
+const coreGaps = [];
 for (const code of localeCodes) {
   const dict = loadLocale(code) ?? {};
   const missing = liteKeys.filter((key) => !(key in dict));
   if (missing.length > 0) {
     problems.push(
       `${code}.json is missing ${missing.length} Lite key(s): ${missing.slice(0, 8).join(', ')}` +
-        `${missing.length > 8 ? ', …' : ''} (Lite must be translated in every locale; see Rule 2b)`,
+        `${missing.length > 8 ? ', …' : ''} (core screens are translated in every locale; see Rule 2b)`,
     );
   }
+  const coreMissing = coreKeys.filter((key) => !(key in dict)).length;
+  if (coreMissing > 0) {
+    if (CORE_FATAL) {
+      problems.push(`${code}.json is missing ${coreMissing} core-screen key(s) (Rule 2b)`);
+    } else {
+      coreGaps.push(`${code} ${coreMissing}`);
+    }
+  }
+}
+if (coreGaps.length > 0) {
+  console.log(
+    `Core-screen keys missing (Rule 2b, not yet fatal; ${coreKeys.length} keys): ${coreGaps.join(', ')}`,
+  );
 }
 
 if (problems.length > 0) {
@@ -641,7 +672,7 @@ if (problems.length > 0) {
     '\nMove user-visible text into a `// i18n <key>: <English>` declaration and\n' +
       "reference it by key: {{ 'area.thing' | transloco }}. Run `npm run i18n:extract`\n" +
       'to regenerate en.json. A placeholder or tag lost in translation renders a blank\n' +
-      'where real content belongs — see .claude/skills/translate-ui/SKILL.md.\n' +
+      'where real content belongs; see the translate-ui skill (.claude/skills/translate-ui).\n' +
       'If a string genuinely is not interface language, add a justified entry to\n' +
       'ALLOWED in scripts/check-i18n.mjs.\n',
   );

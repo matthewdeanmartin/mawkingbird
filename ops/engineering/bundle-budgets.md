@@ -10,8 +10,9 @@ The 1 MB failure threshold is unchanged.
 
 ## Local check
 
-After UI runtime changes, run both `make test` and `npm run build:mockingbird`
-from ui/. Tests use the development build and cannot check production budgets.
+After UI runtime changes, `npm run build:mockingbird` (from ui/) checks the
+budgets. It's a heavy gate: GitHub Actions runs it on push, or run it locally
+when the owner asks. Tests use the development build and cannot check production budgets.
 The production command also checks mock leakage and startup import boundaries.
 CI already uses this same production command through the root Makefile.
 

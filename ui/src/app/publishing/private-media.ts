@@ -17,7 +17,7 @@ export function photoFromEncodedPixels(blob: Blob): File {
 }
 
 // i18n pseudonymity.mediaFailed: Photo metadata could not be removed. Nothing was uploaded. Use a still JPEG or PNG under 20 MB and 40 megapixels, or change photo cleaning in Pseudonymity settings.
-// i18n pseudonymity.postingHint: Pseudonymity is on. Known tracking parameters are removed when link cleaning is enabled. Photo cleaning supports new still JPEG and PNG uploads only; reattach older attachments after enabling it. Check the image, post text and alt text for personal information. Your server may still identify the client application.
+// i18n pseudonymity.postingHint: Pseudonymity is on. Tracking parameters are removed from links if link cleaning is on, and new JPEG and PNG photos are cleaned. Check images, text and alt text for personal details.
 
 /** Validate PNG chunks before decoding so an animation is never silently flattened. */
 function stillPng(bytes: Uint8Array): boolean {

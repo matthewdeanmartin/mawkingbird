@@ -55,7 +55,7 @@ import { postDetails } from './post-details';
 // i18n postAnalytics.tiles.replies: Replies
 // i18n postAnalytics.tiles.parts: Thread posts
 // i18n postAnalytics.repliesVisible: {{count}} visible here
-// i18n postAnalytics.help.reach: People who probably saw this thread. Modelled from followers, boosts, quotes, favourites and replies with the FediWings method, which was fitted to Instagram story views. Never more than “Could have reached”, never fewer than the people who reacted.
+// i18n postAnalytics.help.reach: People who probably saw this thread, estimated from followers, boosts, quotes, favourites and replies. Never more than “Could have reached”, never fewer than the people who reacted.
 // i18n postAnalytics.help.reachQuick: Quick estimate: each boost counts as one typical booster with {{audience}} followers. No extra API calls.
 // i18n postAnalytics.help.reachFull: Uses the real boosters' follower counts.
 // i18n postAnalytics.help.potential: The author's {{followers}} followers plus the followers of everyone who boosted. The upper limit for Est. reach; people who follow both are counted twice.

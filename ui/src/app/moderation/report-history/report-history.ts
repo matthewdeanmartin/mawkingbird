@@ -57,7 +57,7 @@ export class SubmittedReports {
 }
 // i18n reportHistory.title: My reports
 // i18n reportHistory.help: About report history
-// i18n reportHistory.explanation: Reports successfully submitted through this app in this browser are listed here. Mastodon's API cannot retrieve older reports or their moderation outcomes. Report comments are not stored here.
+// i18n reportHistory.explanation: Reports you sent from this browser. Older reports and their outcomes aren't available here.
 // i18n reportHistory.empty: No reports saved for this account yet.
 // i18n reportHistory.post: Reported post
 // i18n reportHistory.account: Reported account

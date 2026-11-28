@@ -10,6 +10,14 @@ Open **Settings → Connections**, then find **How long to keep credentials**. C
 
 The timer starts again when you reconnect. Dropbox manages its own short-lived sign-in and is not controlled by this choice.
 
+## What is kept
+
+GitHub and Raindrop.io use a long-lived token that you paste in. With Bluesky, the app
+password you enter is swapped for session tokens that refresh themselves, and the app
+password itself isn't kept. Saved credentials stay in this browser. With Mawkingbird
+Plus, some credentials also get an end-to-end encrypted copy. Bluesky session tokens
+never do.
+
 ## When time runs out
 
 A browser-only connection is disconnected and its saved credential is removed. A protected, synchronized credential may instead become locked until it is needed again. The badge on each connection card explains where that connection is kept.

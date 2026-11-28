@@ -81,7 +81,7 @@ import { RssFetch } from './rss-fetch';
 // i18n pages.rss.nothingSaved: Nothing saved for later yet.
 // i18n pages.rss.nothingToRead: Nothing to read here.
 // i18n pages.rss.subscribeToRead: Subscribe to a feed to start reading.
-// i18n pages.rss.proxyRefreshPaused: RSS refresh is paused because the proxy request allowance was reached. Your subscriptions and saved items are still here. Refreshing many feeds at once can use the allowance; you do not need to unsubscribe.
+// i18n pages.rss.proxyRefreshPaused: RSS refresh is paused because you've used today's proxy allowance. Your subscriptions and saved items are still here.
 // i18n pages.rss.proxyDomainPaused: Some RSS feeds need Mawkingbird Plus because their sites are outside the free proxy domain list. Your subscriptions and saved items are still here.
 // i18n pages.rss.proxyOptions: Review proxy options
 

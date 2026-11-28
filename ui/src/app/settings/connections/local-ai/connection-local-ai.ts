@@ -8,7 +8,7 @@ import { MbSettingsRow } from '../../../design-system/settings-row/settings-row'
 import { LOCAL_AI_PRESETS, LocalAi } from '../../../connections/local-ai/local-ai';
 
 // i18n settings.connections.localAi.title: 💻 Local AI
-// i18n settings.connections.localAi.intro: Connect an AI model through a local address you choose, such as Ollama, LM Studio or a llama.cpp server. Mawkingbird sends AI requests to that address. The model and any data it sends onward are outside Mawkingbird's control.
+// i18n settings.connections.localAi.intro: Connect an AI model running at an address you choose, such as Ollama, LM Studio or a llama.cpp server. Mawkingbird sends AI requests there.
 // i18n settings.connections.localAi.runsHere: Local model connection
 // i18n settings.connections.localAi.server: Server
 // i18n settings.connections.localAi.endpoint: Local address

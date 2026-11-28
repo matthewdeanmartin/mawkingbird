@@ -229,7 +229,7 @@ type ServerStatus = 'idle' | 'checking' | 'ok' | 'degraded' | 'unreachable';
 // i18n pages.login.seed.hint.a: After seeding, head to
 // i18n pages.login.seed.hint.b: to sign in as one of the new accounts.
 // i18n pages.login.privacy.checkbox: Count my page views
-// i18n pages.login.privacy.explain: Anonymous page counts only — which kinds of page get used, never which account, post or tag you looked at. Unchecking this means the analytics script is never loaded: nothing is fetched, counted or sent. You can change it later in Settings.
+// i18n pages.login.privacy.explain: Anonymous page counts only. Accounts, posts, tags and searches are never recorded. You can change this later in Settings.
 @Component({
   selector: 'app-login',
   imports: [

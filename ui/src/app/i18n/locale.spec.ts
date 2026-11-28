@@ -83,6 +83,7 @@ describe('supportedLocales', () => {
     'pl',
     'ru',
     'tr',
+    'vi',
   ];
 
   it('ships every translated locale to the production root', () => {
@@ -92,7 +93,6 @@ describe('supportedLocales', () => {
   it('offers the same set on test and canary deployments', () => {
     const reviewLocales = [
       ...shipped,
-      'vi',
       'hi',
       'sv',
       'ms',

@@ -24,8 +24,8 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.raindrop.testToken: Test token
 // i18n settings.connections.raindrop.shownInSettings: shown in that app's settings.
 // i18n settings.connections.raindrop.step3: Paste the Test token below and choose "Save connection".
-// i18n settings.connections.raindrop.oauthNote: Client ID/secret OAuth is intentionally not used here: Raindrop's OAuth token exchange does not permit browser CORS. Their Test token is the supported shortcut when an app only accesses its owner's account; bookmark API calls still go directly from this browser to Raindrop.io.
-// i18n settings.connections.raindrop.credentialWarning: The Test token grants access to your Raindrop.io account and is stored in this browser's localStorage. Only use this on a device and browser profile you trust. You can replace the token in Raindrop.io to revoke access.
+// i18n settings.connections.raindrop.oauthNote: Use Raindrop's Test token. Bookmarks go straight from this browser to Raindrop.io.
+// i18n settings.connections.raindrop.credentialWarning: The Test token gives access to your Raindrop.io account.
 // i18n settings.connections.raindrop.connected: Connected
 // i18n settings.connections.raindrop.disconnect: Disconnect
 // i18n settings.connections.raindrop.tokenDeletedOn: This token is deleted from this browser on {{date}}.

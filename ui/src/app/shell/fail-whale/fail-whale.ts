@@ -44,7 +44,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 // i18n failWhale.tryAgain: Try again
 // i18n failWhale.reportThis: Report this
 // i18n failWhale.switchAccount: Switch account
-// i18n failWhale.offlineNote: Your browser reports that this device is <strong>offline</strong>. Check your network connection before blaming the server.
+// i18n failWhale.offlineNote: Your browser reports that this device is <strong>offline</strong>. Check your network connection.
 // i18n failWhale.orBrowse: Or browse a different instance:
 // i18n failWhale.whatWentWrong: What went wrong?
 // i18n failWhale.error: Error
@@ -59,7 +59,7 @@ import { PageDiagnostics } from '../../platform/diagnostics/page-diagnostics';
 // i18n failWhale.reportedOffline: Browser reported offline
 // i18n failWhale.build: Build
 // i18n failWhale.noDetails: No error details were recorded. The server was marked unreachable without a specific failure to report.
-// i18n failWhale.notServerHint: It may not be the server at all — a proxy, DNS, or browser extension can produce exactly this. The connection doctor checks each of those in turn.
+// i18n failWhale.notServerHint: It may not be the server: a proxy, DNS or browser extension can cause this too. Connection Doctor checks each of those.
 // i18n failWhale.openDoctor: Open connection doctor
 // i18n failWhale.copied: Copied
 // i18n failWhale.copyDetails: Copy details

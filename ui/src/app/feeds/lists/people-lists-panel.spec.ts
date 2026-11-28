@@ -45,8 +45,8 @@ describe('PeopleListsPanel', () => {
     const dialog = fixture.nativeElement.querySelector('[role="dialog"]') as HTMLElement;
     expect(dialog.getAttribute('aria-modal')).toBe('true');
     expect(dialog.querySelectorAll('li')).toHaveLength(11);
-    expect(dialog.textContent).toContain('Only people you currently follow');
-    expect(dialog.textContent).toContain('Older interactions may be missed');
+    expect(dialog.textContent).toContain('Only people you follow');
+    expect(dialog.querySelector('a[href*="/help/reading/people-lists/"]')).not.toBeNull();
     expect((dialog.querySelector('input[type="checkbox"]') as HTMLInputElement).checked).toBe(
       false,
     );

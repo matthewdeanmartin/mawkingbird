@@ -37,8 +37,8 @@ import type { AdoptableCollection } from '../../../accounts/mawkingbird/collecti
 // i18n settings.plus.adoption.leaveOff.hint.a: Keeps this browser's
 // i18n settings.plus.adoption.leaveOff.hint.b: exactly as they are and changes nothing on your account. You can switch this on again whenever you like, and you'll be asked this same question.
 // i18n settings.plus.adoption.leaveOff: Leave it off for now
-// i18n settings.plus.adoption.noReplace: There's no option to replace your account's copy with this browser's — that would delete things from your other devices, and working out which change came first isn't something this app tries to guess.
-// i18n settings.plus.adoption.reassure: Nothing has gone wrong, and you can't lose anything by picking either one — this only decides what this browser shows from now on.
+// i18n settings.plus.adoption.noReplace: There's no option to replace your account's copy with this browser's, because that would delete things from your other devices.
+// i18n settings.plus.adoption.reassure: You can't lose anything either way. This only decides what this browser shows from now on.
 // i18n settings.plus.adoption.titleTrust: You have trusted accounts here and on your account
 // i18n settings.plus.adoption.titleFeeds: You have feed subscriptions here and on your account
 // i18n settings.plus.adoption.titleLists: You have lists here and on your account

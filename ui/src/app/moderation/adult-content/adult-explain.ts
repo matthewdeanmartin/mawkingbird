@@ -20,7 +20,7 @@ import { AdultReason, AdultVerdict } from './adult-classifier';
 // i18n adult.why.label: Why this was classified as adult
 // i18n adult.why.decided: Why:
 // i18n adult.why.weak: Also seen, not enough on its own:
-// i18n adult.why.how: Mawkingbird guesses this from the profile, content warnings, hashtags and labels of what is loaded. Mastodon’s “sensitive” flag alone never counts: people use it for food, politics and spoilers too. Guesses can be wrong.
+// i18n adult.why.how: Mawkingbird guesses this from the profile, content warnings, hashtags and labels of what is loaded. Mastodon’s “sensitive” flag alone never counts. Guesses can be wrong.
 // i18n adult.filter.label: Adult content
 // i18n adult.filter.either: Show all
 // i18n adult.filter.hide: Hide adult

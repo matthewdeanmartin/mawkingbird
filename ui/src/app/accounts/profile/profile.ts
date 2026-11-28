@@ -286,7 +286,7 @@ type ProfileTab = 'posts' | 'media' | 'following' | 'followers' | 'collections' 
 // i18n pages.profile.confirm.removeFollowerExplain: They will stop following you, but they will not be blocked.
 // i18n pages.profile.errors.notFederated: They may simply not have federated here yet. Searching can pull them in.
 // i18n pages.profile.errors.searchFor: Search for @{{handle}}
-// i18n pages.profile.errors.idOnlyLink: This link carries only an account id, and ids belong to the server that issued them — there is no name in it to look up. Links made from here on include the handle, so they survive switching servers.
+// i18n pages.profile.errors.idOnlyLink: This link has only an account number, which works only on the server that issued it. New links from here include the handle.
 // i18n pages.profile.errors.accountNotFound: Account not found.
 // i18n pages.profile.errors.openOnHome: Open the profile on {{host}}
 // i18n pages.profile.errors.notOnServer: This profile is not on the server you are browsing.

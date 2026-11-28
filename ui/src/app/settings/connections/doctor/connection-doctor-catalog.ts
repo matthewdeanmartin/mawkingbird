@@ -64,7 +64,7 @@ export type Translate = (key: string, params?: Record<string, unknown>) => strin
 
 /** Groups the probe list so a blocked *category* is visible at a glance. */
 // i18n settings.connections.doctor.category.paste: Paste services
-// i18n settings.connections.doctor.publishingScope: Tests a read-only URL without your credentials. A readable reply does not verify authentication, quota or publishing support; a homepage may have different CORS rules from its API.
+// i18n settings.connections.doctor.publishingScope: Tests a public URL without your credentials, so it can't check sign-in, quota or publishing.
 import { PUBLISHING_ENDPOINTS } from '../../../connections/publishing-services';
 
 export type ProbeCategory = 'paste' | 'core' | 'connector' | 'proxy' | 'shortener' | 'control';
@@ -667,14 +667,14 @@ export function interpret(
 }
 
 // i18n settings.connections.doctor.interpret.loaded.worked: Both worked. This host is fine on this network.
-// i18n settings.connections.doctor.interpret.loaded.jsFailed: The page loads but the background request does not. That points at CORS, a browser extension or an ad blocker rather than a network block — the host itself is reachable from here.
-// i18n settings.connections.doctor.interpret.botCheck.worked: The service is putting a bot check in front of its website, but the background request still went through — so this is about their front door, not about your connection. Nothing to do.
-// i18n settings.connections.doctor.interpret.botCheck.jsFailed: Good news and bad news: your network is fine — the host answered, it just refused to trust the visitor. A bot check cannot be passed by a background request, because there is nobody there to click it, so the connector will keep failing even after you clear the challenge in that tab. This is the service deciding it does not want browser traffic it cannot identify. A CORS proxy sometimes gets past it, and often gets the same check pointed at the proxy instead.
-// i18n settings.connections.doctor.interpret.blockPage: Your network or workplace is filtering this host on purpose. Nothing in the app can work around that; it needs to be allowed by whoever runs the network.
-// i18n settings.connections.doctor.interpret.certWarning: Something is intercepting the connection — usually corporate TLS inspection, sometimes a captive portal. Background requests fail even when you can click through the warning, because scripts get no such choice.
+// i18n settings.connections.doctor.interpret.loaded.jsFailed: The page loads but the app can't read it. A CORS rule, browser extension or ad blocker is the likely cause; the host itself is reachable.
+// i18n settings.connections.doctor.interpret.botCheck.worked: The website has a bot check, but the background request still went through. Nothing to do.
+// i18n settings.connections.doctor.interpret.botCheck.jsFailed: The host answered, so your network is fine. It shows a bot check the connector can't pass, so it will keep failing even after you clear the challenge in the tab. A CORS proxy sometimes gets through.
+// i18n settings.connections.doctor.interpret.blockPage: Your network is filtering this host on purpose. Whoever runs the network has to allow it.
+// i18n settings.connections.doctor.interpret.certWarning: Something is intercepting the connection, usually a workplace network filter or a Wi-Fi sign-in page. The app can't connect even if you click through the warning.
 // i18n settings.connections.doctor.interpret.dnsError: The name does not resolve here. That is typically DNS-level filtering, though it also looks like this when a host has genuinely gone away.
-// i18n settings.connections.doctor.interpret.timedOut: The connection is being dropped rather than refused, which usually means a firewall is discarding the traffic silently. A slow or overloaded host looks the same from here.
-// i18n settings.connections.doctor.interpret.other.worked: The background request succeeded, so the host is reachable — whatever the tab showed is about that page, not about connectivity.
+// i18n settings.connections.doctor.interpret.timedOut: The connection is being dropped, usually by a firewall. A slow or overloaded host looks the same.
+// i18n settings.connections.doctor.interpret.other.worked: The background request succeeded, so the host is reachable. Whatever the tab showed is about that page only.
 // i18n settings.connections.doctor.interpret.other.jsFailed: The background request failed too. Worth a second run: if the control row at the bottom also failed, the problem is the whole network rather than this host.
 
 /**
@@ -734,11 +734,11 @@ export function timingHint(result: ProbeResult, translate: Translate): string | 
   return translate('settings.connections.doctor.timing.slowFailure', { ms: formatMs(ms) });
 }
 
-// i18n settings.connections.doctor.timing.timedOut: Nothing answered before the deadline. Traffic to this host is most likely being discarded silently rather than refused — the usual signature of a firewall blocklist.
+// i18n settings.connections.doctor.timing.timedOut: Nothing answered in time. A firewall is probably discarding the traffic.
 // i18n settings.connections.doctor.timing.slow: Reachable, but slow — {{ms}}. Features using this host will feel sluggish even though nothing is blocked.
-// i18n settings.connections.doctor.timing.instant: Failed instantly ({{ms}}) — too fast for anything to have gone out over the network. That points at something inside the browser: an extension, an ad blocker, or a DNS failure already cached.
-// i18n settings.connections.doctor.timing.roundTrip: Failed after {{ms}}, which is about one round trip — so it reached something that refused it, rather than being ignored. A host declining browser traffic looks like this, as does a filter that answers rather than drops.
-// i18n settings.connections.doctor.timing.slowFailure: Failed after {{ms}}, without running out the clock. Something along the path took its time before giving up, which is more typical of a filtering proxy than of a host that is simply down.
+// i18n settings.connections.doctor.timing.instant: Failed instantly ({{ms}}), too fast for anything to have gone out over the network. Something in the browser stopped it: an extension, an ad blocker, or a cached DNS failure.
+// i18n settings.connections.doctor.timing.roundTrip: Failed after {{ms}}, so something answered and refused it. The host may block browser apps, or a filter refused the request.
+// i18n settings.connections.doctor.timing.slowFailure: Failed after {{ms}}. Something along the way gave up slowly, often a filtering proxy.
 
 function formatMs(ms: number): string {
   return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
@@ -888,7 +888,7 @@ export function corsHint(result: ProbeResult, translate: Translate): string | nu
 
 // i18n settings.connections.doctor.cors.readable: This app can read its replies directly — no proxy needed.
 // i18n settings.connections.doctor.cors.blockedViaProxy: This host does not answer browsers directly, which is why the request goes through your proxy.
-// i18n settings.connections.doctor.cors.blocked: Reachable, but this one URL did not let the app read its reply — no `Access-Control-Allow-Origin` came back. That is the host's policy, not a fault on your network, and no browser setting can grant it. Mawkingbird routes these through a CORS proxy instead. One caveat worth knowing: this tests a single URL, and an API can answer differently per path — if the connector itself works, believe the connector, not this row.
+// i18n settings.connections.doctor.cors.blocked: Reachable, but the host's policy doesn't let the app read its reply, and no browser setting can grant it. Mawkingbird uses a CORS proxy for these. This tests one URL; if the connector itself works, believe the connector.
 
 /**
  * What the proxied attempt means — including the case where everything works
@@ -934,9 +934,9 @@ export function proxyHint(
 }
 
 // i18n settings.connections.doctor.yourCorsProxy: your CORS proxy
-// i18n settings.connections.doctor.proxy.worksIndirect: Your browser could not reach this host directly, but {{via}} did{{took}}. The connector will work — every request to this service goes through the proxy, so it depends on the proxy staying available.
-// i18n settings.connections.doctor.proxy.worksDirect: Confirmed working through {{via}}{{took}}. Everything between you and this service is fine — so if the feature still fails, the cause is past connectivity: an API key, a plan or credit limit, or a consent not yet given.
-// i18n settings.connections.doctor.proxy.targetRefused: {{via}} is reachable and answered, but this service refused the request coming from it. Proxies run in datacentres, and plenty of services block those ranges outright while allowing home connections — so the proxy is healthy and still cannot help here. A different proxy, or one you run yourself, may work where this one does not.
-// i18n settings.connections.doctor.proxy.proxyUnreachable: {{via}} could not be reached at all, so this host could not be tested through it. Fix the proxy first — the row above is about the proxy, not about this service.
+// i18n settings.connections.doctor.proxy.worksIndirect: Your browser couldn't reach this host directly, but {{via}} did{{took}}. The connector will work as long as the proxy does.
+// i18n settings.connections.doctor.proxy.worksDirect: Confirmed working through {{via}}{{took}}. If the feature still fails, look for an API key, a plan or credit limit, or a consent not yet given.
+// i18n settings.connections.doctor.proxy.targetRefused: {{via}} works, but this service refused the request coming from it. Many services block datacentres. A different proxy, or your own, may work.
+// i18n settings.connections.doctor.proxy.proxyUnreachable: {{via}} could not be reached at all, so this host wasn't tested through it. Fix the proxy first.
 // i18n settings.connections.doctor.proxy.none: This host needs a CORS proxy and none is configured, so it cannot work yet. Setting one up is what makes it reachable.
-// i18n settings.connections.doctor.proxy.notRoutable: {{via}} only reaches the specific services it was built for, and this is not one of them — it was not tried. That is deliberate: a proxy sees everything it relays, so the ones carrying your accounts and keys are kept off it. Choose a general-purpose proxy if you need this host proxied.
+// i18n settings.connections.doctor.proxy.notRoutable: {{via}} only relays the services it was built for, so this one wasn't tried. Choose a general-purpose proxy for this host.

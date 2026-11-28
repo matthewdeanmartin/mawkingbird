@@ -52,8 +52,8 @@ is not an independent fallback.
 2. Record the exact source SHA, current `gh-pages` SHA, current Worker versions,
    and any migration prerequisite. Check `gh auth status` and the proxy's
    `npx wrangler whoami`. Never print credential values.
-3. For app runtime changes, run `cd ui && npm ci`, targeted specs, `make test`,
-   `npm run lint`, and `npm run build:mockingbird`. Preserve the test inventory
+3. For app runtime changes, the pushed commit needs a green GitHub Actions run (it
+   runs `make test` and `npm run build:mockingbird`); locally, targeted specs and lint. Preserve the test inventory
    and the 1 MB initial bundle budget. Check storage, i18n and subpath contracts.
    If controls changed, regenerate `npm run design:audit-controls`, review
    `design_system/audits/06-control-inventory.json`, classify new candidate files
@@ -171,8 +171,8 @@ The CORS proxy also needs its rollout gate/CPU/JWKS fixes if a prior release
 lacks `MAWKINGBIRD_PLUS_ENABLED`; a recent video release alone is insufficient.
 
 Publish the client identity gate, auth cooldowns, shared mints and self-host
-restrictions together. Run `cd ui && make test`, `npm run lint`, storage/i18n/
-subpath checks and `npm run build:mockingbird`. Preserve the 1 MB budget.
+restrictions together. Locally run lint and
+`npm run check:static`; `make test` and `npm run build:mockingbird` run on the push. Preserve the 1 MB budget.
 Preflight integration dependencies with published wheels only before dispatching
 CI (`uv pip compile ui/integration/requirements.txt --only-binary :all:
 --python-version 3.13 --python-platform x86_64-manylinux_2_28 --no-cache`).

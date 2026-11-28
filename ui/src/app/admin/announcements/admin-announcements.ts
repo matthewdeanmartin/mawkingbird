@@ -21,7 +21,7 @@ import { MbNotice } from '../../design-system/notice/notice';
 // i18n adminAnnouncements.publish: Publish
 // i18n adminAnnouncements.delete: Delete
 
-// i18n adminAnnouncements.webOnly: Mastodon manages announcements only on its own admin pages; there is no API an app can use. Open them on your server:
+// i18n adminAnnouncements.webOnly: Announcements are managed on your server's admin pages:
 // i18n adminAnnouncements.openOnServer: Open announcements on {{host}} ↗
 
 /**

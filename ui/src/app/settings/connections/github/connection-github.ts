@@ -20,7 +20,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.github.title: 🐙 GitHub
 // i18n settings.connections.github.nativeIntro: Read your GitHub notifications and find people you follow using a personal access token.
 // i18n settings.connections.github.nativeProofCompleted: GitHub connection checked.
-// i18n settings.connections.github.intro: GitHub's REST API works directly from this browser. GitHub's OAuth and device-flow token endpoints do not allow browser CORS, so a serverless connection must use a token you create and paste here.
+// i18n settings.connections.github.intro: Connect GitHub with a token you create and paste here.
 // i18n settings.connections.github.disconnect: Disconnect
 // i18n settings.connections.github.tokenPlaceholder: GitHub token (ghp_…)
 // i18n settings.connections.github.calling: Calling GitHub…
@@ -39,7 +39,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.github.createTokenLink: Create a classic personal access token
 // i18n settings.connections.github.tokenScopes: with <code>notifications</code> and <code>read:user</code>.
 // i18n settings.connections.github.validatesWith: Paste it below. Mawkingbird validates it with <code>GET /user</code>.
-// i18n settings.connections.github.credentialWarning: This token can read your GitHub notifications. It is stored in this browser's localStorage, never sent to Mawkingbird, and sent only to <code>api.github.com</code>. Use a browser profile and device you trust; revoke the token in GitHub to invalidate it.
+// i18n settings.connections.github.credentialWarning: This token can read your GitHub notifications.
 // i18n settings.connections.github.checking: Checking…
 // i18n settings.connections.github.connect: Connect GitHub
 // i18n settings.connections.github.connectedAs: GitHub connected as @{{login}}.

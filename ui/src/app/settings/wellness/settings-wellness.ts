@@ -15,7 +15,7 @@ import {
 
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n settings.wellness.title: 🌱 Wellness
-// i18n settings.wellness.intro: What the app counts, shows and invites. Nothing here is a judgement: pick a level, then move any switch you like. Your choices sync with your other settings.
+// i18n settings.wellness.intro: What the app counts, shows and invites. Pick a level, then move any switch you like. Your choices sync with your other settings.
 // i18n settings.wellness.notZen: Looking for fewer widgets on screen? That's Zen mode, under Appearance.
 // i18n settings.wellness.level: Level
 // i18n settings.wellness.preset.off: Off
@@ -38,12 +38,12 @@ import {
 // i18n settings.wellness.key.limitedNotifications: Limited notifications
 // i18n settings.wellness.key.limitedNotifications.hint: Favourites, boosts and new followers stop arriving. Replies, mentions and messages still do.
 // i18n settings.wellness.key.hideReplyGuys: Hide replies from people I don't follow
-// i18n settings.wellness.key.hideReplyGuys.hint: Their replies, mentions and quotes no longer reach your notifications. Nothing in any level turns this on: it's yours to choose.
+// i18n settings.wellness.key.hideReplyGuys.hint: Their replies, mentions and quotes no longer reach your notifications. No level turns this on for you.
 // i18n settings.wellness.replyGuys: Replies from people you don't follow
-// i18n settings.wellness.replyGuys.intro: Following someone is how you say you want to hear from them. Everyone else can still reply, mention and quote you; these settings decide how close they get.
+// i18n settings.wellness.replyGuys.intro: Choose how close people you don't follow get when they reply to, mention or quote you.
 // i18n settings.wellness.replyGuys.label: In your conversations
 // i18n settings.wellness.replyGuys.cw: One click before replies from people I don't follow
-// i18n settings.wellness.replyGuys.cw.hint: Under your own posts and in notifications, their words wait behind a Show button, with a quiet "you don't follow" tag. Nothing is hidden for good. To remove them from notifications entirely, use the switch above.
+// i18n settings.wellness.replyGuys.cw.hint: Under your own posts and in notifications, their words wait behind a Show button, with a quiet "you don't follow" tag. To remove them from notifications entirely, use the switch above.
 // i18n settings.wellness.key.hideAnalytics: Hide analytics
 // i18n settings.wellness.key.hideAnalytics.hint: Removes the ways into post, account and feed analytics. A bookmarked analytics address still works.
 // i18n settings.wellness.key.forceCalm: Always use Calm

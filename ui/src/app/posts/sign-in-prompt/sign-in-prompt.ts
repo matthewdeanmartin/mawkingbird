@@ -6,7 +6,7 @@ import { MbButton } from '../../design-system/button/button';
 import { Auth } from '../../platform/session/auth';
 
 // i18n signInPrompt.title: Sign in to {{action}}
-// i18n signInPrompt.body: This one needs an account on a server — it happens there, not in this browser. Reading, bookmarking and sharing keep working without one.
+// i18n signInPrompt.body: This needs an account on a server. Reading, bookmarking and sharing work without one.
 // i18n signInPrompt.signIn: Sign in
 // i18n signInPrompt.createAccount: Create an account
 // i18n signInPrompt.notNow: Not now

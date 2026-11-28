@@ -12,12 +12,12 @@ import { contactPickerAvailable, pickContacts } from './contact-picker';
 // i18n settings.importExport.contacts.chooseCsv: Choose contacts CSV…
 // i18n settings.importExport.contacts.clues.one: {{count}} matching clue
 // i18n settings.importExport.contacts.clues.other: {{count}} matching clues
-// i18n settings.importExport.contacts.intro: Look for the people in your contacts through your home server. Your contacts stay in this browser; only derived search terms are sent to your server. Nobody is followed automatically. Names, usernames, domains, and profile links are clues—not proof of identity.
+// i18n settings.importExport.contacts.intro: Look for the people in your contacts on your home server. Your contacts stay in this browser; only search terms go to your server. Check each match before you follow.
 // i18n settings.importExport.contacts.loadedNote: only in this browser.
 // i18n settings.importExport.contacts.noCandidate: searched contacts had no candidate match:
 // i18n settings.importExport.contacts.pick: Pick from my contacts…
 // i18n settings.importExport.contacts.pickedNote: Picked from your contacts. Nothing was saved — closing this page forgets them.
-// i18n settings.importExport.contacts.pickerNote: On this phone you can pick contacts directly — no export, no file. Your browser shows the picker and this page only ever sees the people you tap.
+// i18n settings.importExport.contacts.pickerNote: On this phone you can pick contacts directly. This page sees only the people you tap.
 // i18n settings.importExport.contacts.readyToSearch: contacts ready to search
 // i18n settings.importExport.contacts.skipped.a: skipped because they had no full person name or Mastodon handle. Up to
 // i18n settings.importExport.contacts.skipped.b: calls total; this run stops at

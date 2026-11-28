@@ -55,7 +55,7 @@
 function proseOnly(value) {
   return value
     .replace(/<code>[\s\S]*?<\/code>/g, ' ')
-    .replace(/https?:\/\/\S+/g, ' ')
+    .replace(/https?:\/\/\S*/g, ' ')
     .replace(/&(?:[a-zA-Z]+|#[0-9]+);/g, ' ')
     .replace(/\{\{\s*[\w.]+\s*\}\}/g, ' ');
 }

@@ -2,7 +2,10 @@
   {{ 'newPeople.heading' | transloco }}
   <mb-help
     [label]="'newPeople.help.about' | transloco: { stat: ('newPeople.heading' | transloco) }"
-    >{{ 'newPeople.help.body' | transloco }}</mb-help
+    >{{ 'newPeople.help.body' | transloco }}
+    <a href="https://mawkingbird.com/help/finding-people/new-people/" target="_blank" rel="noopener">{{
+      'newPeople.help.more' | transloco
+    }}</a></mb-help
   >
 </h2>
 <p class="muted small">{{ 'newPeople.explain' | transloco }}</p>

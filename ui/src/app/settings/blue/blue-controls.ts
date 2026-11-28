@@ -23,11 +23,11 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.ai: AI features
 // i18n settings.blue.ai.show: Show them
 // i18n settings.blue.ai.hide: Hide them all
-// i18n settings.blue.ai.hint: Hides Eliza, the OpenRouter chat, AI translation and the search and hashtag suggestions. Nothing is deleted — your OpenRouter key and your conversations stay where they are, and turning this back on restores them.
+// i18n settings.blue.ai.hint: Hides Eliza, the OpenRouter chat, AI translation and the search and hashtag suggestions. Your OpenRouter key and conversations are kept, and turning this back on restores them.
 // i18n settings.blue.art: Illustrations
 // i18n settings.blue.art.hand: Hand-drawn
 // i18n settings.blue.art.ai: Generated
-// i18n settings.blue.art.hint: Which bird and which fail whale the app draws. The hand-drawn set is the default — they were drawn for this app, by hand, on paper. The generated ones are the originals, kept for anyone who prefers them.
+// i18n settings.blue.art.hint: Which bird and which fail whale the app draws. Hand-drawn is the default; the generated set is the original artwork.
 // i18n settings.blue.theme: Theme
 // i18n settings.blue.theme.auto: Automatic
 // i18n settings.blue.theme.light: Light
@@ -49,7 +49,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.posting: Posting
 // i18n settings.blue.confirmPost: Ask "do you really want to post that?" before posting
 // i18n settings.blue.delayedSend: Wait 30 seconds before posting, so you can cancel (or publish early)
-// i18n settings.blue.thoughtful.hint: Home drops the Quick post button, leaving only Write, and that editor only saves. You post later, from Drafts. Replies, chats and paste shares are never held back — they're urgent, or already deliberate.
+// i18n settings.blue.thoughtful.hint: Home drops the Quick post button, leaving only Write, and that editor only saves. You post later, from Drafts. Replies, chats and paste shares post right away.
 // i18n settings.blue.miniComposer: Open the mini composer on Home automatically
 // i18n settings.blue.miniComposer.hint: Off by default: Home offers Write and Quick post, and the small box appears when you ask for it. Turn this on to have it open on arrival. Thoughtful posting, above, overrides this. These also live on
 // i18n settings.writing.title.plain: Writing
@@ -59,7 +59,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.checks.everyone: Everyone, because everyone deserves a blue check mark
 // i18n settings.blue.timeline: Timeline
 // i18n settings.blue.autoRefresh: Auto-refresh timeline — new posts arrive continually, without you asking
-// i18n settings.blue.autoRefresh.hint: Off by default, and worth leaving off: a feed that rewrites itself moves the post you were halfway through reading. Mastodon only — Twitter, Bluesky and RSS are polled and are not affected.
+// i18n settings.blue.autoRefresh.hint: Off by default. A feed that refreshes itself can move the post you're reading. Mastodon only; Twitter, Bluesky and RSS aren't affected.
 // i18n settings.blue.typography: Reader typography
 // i18n settings.blue.fontFamily: Font family
 // i18n settings.blue.fontWeight: Font weight
@@ -89,8 +89,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.blue.minPosts.hint: Auto-loads more until the feed holds at least this many posts (or the timeline runs out).
 // i18n settings.blue.maxPosts.hint: “You’ve had enough for now.” Load more is disabled once the feed reaches this size; it lifts after about an hour or when you reload.
 // i18n settings.blue.ignoreCooldown: Ignore the reading break
-// i18n settings.blue.ignoreCooldown.hint: Keeps “Load more” working past the maximum, with no cooldown. The break is a health guard, not a technical limit — this is here because it is your call, and it lives in Settings rather than at the end of the feed so that turning it off is a decision rather than a reflex.
-// i18n settings.blue.analytics.hint: Anonymous page counts only — which kinds of page get used, never which account, post or tag you looked at, and never a query string. Turn this off and the analytics script is never loaded at all: nothing is fetched, counted or sent. The script is served from this site, not from a third party.
+// i18n settings.blue.ignoreCooldown.hint: Keeps “Load more” working past the maximum, with no cooldown.
+// i18n settings.blue.analytics.hint: Anonymous page counts only. Accounts, posts, tags and searches are never recorded. Turn this off and the analytics script never loads.
 @Component({
   selector: 'app-blue-controls',
   imports: [FormsModule, RouterLink, TranslocoPipe],

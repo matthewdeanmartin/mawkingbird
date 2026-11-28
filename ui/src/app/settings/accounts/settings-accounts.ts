@@ -60,7 +60,7 @@ type PendingAction =
 // i18n settings.accounts.deleteData: Delete data
 // i18n settings.accounts.deleteAndLeave: Delete data & leave
 // i18n settings.accounts.deleteAndLogout: Delete data & log out
-// i18n settings.accounts.footnote.before: Deleting data removes this browser's saved settings for that account — RSS feeds, linked accounts, local moderation and similar. It never touches anything on the server. For a key-by-key view of the current account, see
+// i18n settings.accounts.footnote.before: Deleting data removes this browser's saved settings for that account, such as RSS feeds, linked accounts and local moderation. Your server keeps everything it has. For a key-by-key view of the current account, see
 // i18n settings.accounts.footnote.link: Local storage
 // i18n settings.accounts.footnote.after: .
 // i18n common.delete: Delete

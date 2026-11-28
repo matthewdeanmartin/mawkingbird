@@ -14,7 +14,7 @@ import { BoosterSort, topBoosters } from '../reaction-log';
 
 // i18n topBoosters.heading: Top boosters
 // i18n topBoosters.explain: The people who pass your posts on, and how many people they can reach.
-// i18n topBoosters.cta: Uses the same read as "When are your posts done?" above. Nothing is changed.
+// i18n topBoosters.cta: Uses the same read as "When are your posts done?" above.
 // i18n topBoosters.run: Read my notifications
 // i18n topBoosters.reading: Reading notifications… progress is shown above.
 // i18n topBoosters.nothing: No boosts in the notifications read.

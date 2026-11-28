@@ -51,8 +51,8 @@ const PAGE_SIZE = 80;
 // i18n effectiveAudience.how.effective: <strong>Effective</strong> — posted in the last {{days}} days. The people who would plausibly see your next {{post}}.
 // i18n effectiveAudience.how.dormant: <strong>Dormant</strong> — silent for more than {{days}} days.
 // i18n effectiveAudience.how.lowCadence: <strong>Low-cadence</strong> — fewer than {{rate}} {{posts}} per day averaged over the account's whole life. The ones who technically post, but at a drizzle.
-// i18n effectiveAudience.how.zombies: <strong>Zombies</strong> — both dormant <em>and</em> low-cadence. Deliberately strict: someone who drizzles but posted yesterday is still there, and someone who posts a lot but took a month off is on a break.
-// i18n effectiveAudience.reading: Reading the list. Nothing is being changed.
+// i18n effectiveAudience.how.zombies: <strong>Zombies</strong>: dormant accounts that <em>also</em> post infrequently over the lifetime of the account.
+// i18n effectiveAudience.reading: Reading the list…
 // i18n effectiveAudience.progress.running.one: {{scanned}} of {{total}} read · {{calls}} request
 // i18n effectiveAudience.progress.running.other: {{scanned}} of {{total}} read · {{calls}} requests
 // i18n effectiveAudience.progress.done.one: {{scanned}} read · {{calls}} request · done
@@ -73,7 +73,7 @@ const PAGE_SIZE = 80;
 // i18n effectiveAudience.underPerDay: under {{rate}}/day
 // i18n effectiveAudience.readBias.one: Read {{scanned}} account, but the server's count says {{statedTotal}}. Each account was counted once, so the figures below are based on what was actually read.
 // i18n effectiveAudience.readBias.other: Read {{scanned}} accounts, but the server's count says {{statedTotal}}. Each account was counted once, so the figures below are based on what was actually read.
-// i18n effectiveAudience.sampled: Estimated by scaling up a {{percent}}% sample. Lists come back newest-first and recent accounts skew active, so the real effective count is likely a little lower than this.
+// i18n effectiveAudience.sampled: Estimated by scaling up a {{percent}}% sample. The real count is likely a little lower.
 // i18n effectiveAudience.coverage.complete: {{count}} scanned
 // i18n effectiveAudience.coverage.partial: {{scanned}} of {{total}} ({{percent}}%)
 // i18n effectiveAudience.cancel: Cancel

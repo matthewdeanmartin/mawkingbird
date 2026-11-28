@@ -91,12 +91,12 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.learning.hint.after: by the filter above, even when it's switched on — they're the ones you're here to read.
 // i18n settings.i18n.appendTranslation: Show translation under the original
 // i18n settings.i18n.stopLearning: Stop learning {{lang}}
-// i18n settings.i18n.appendTranslation.hint: Unchecked, the translation replaces the original. Checked, you get both — which is the point of learning, but costs one translation per language on a post.
+// i18n settings.i18n.appendTranslation.hint: Unchecked, the translation replaces the original. Checked, you get both, which uses one translation per language on a post.
 // i18n settings.i18n.learning.none: Not learning any languages yet.
 // i18n settings.i18n.addLearning: Add a language you're learning…
 // i18n settings.i18n.dontWaste: Don't waste calls
 // i18n settings.i18n.skipSame: Don't translate a post that's already in my language
-// i18n settings.i18n.skipSame.hint: Skips the request when the text clearly reads as your language — translating it would hand back the same text and still spend a call. Uncertain posts are translated when you ask. You can also choose “Translate anyway?” on an individual post.
+// i18n settings.i18n.skipSame.hint: Skips translating posts that are clearly already in your language. Uncertain posts are translated when you ask, and any post has “Translate anyway?”.
 // i18n settings.i18n.autoTranslate: Translate automatically
 // i18n settings.i18n.auto.off: Off — translate only when I press 🌐
 // i18n settings.i18n.auto.view: When a post scrolls into view
@@ -106,9 +106,9 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.translateAll.before: Translate
 // i18n settings.i18n.translateAll.every: every
 // i18n settings.i18n.translateAll.after: foreign post, not just languages I'm learning
-// i18n settings.i18n.translateAll.hint: Unbounded, and priced accordingly: every post in a language you don't read becomes a translation. Useful for reading a timeline you share no language with. Watch the daily count below.
+// i18n settings.i18n.translateAll.hint: Translates every post in a language you don't read. Useful for a timeline you share no language with. Watch the daily count below.
 // i18n settings.i18n.useAi: Let automatic translation spend OpenRouter credit ($$$)
-// i18n settings.i18n.useAi.hint: Off by default. Choosing AI for the 🌐 button is one press you decided on; this is a loop that runs while you scroll, so it's a separate choice. Left off, automatic translation uses {{engine}} only.
+// i18n settings.i18n.useAi.hint: Off by default. Translates with AI automatically as you scroll. Left off, automatic translation uses {{engine}} only.
 // i18n settings.i18n.engines: Translators
 // i18n settings.i18n.engines.hint: Pressing 🌐 tries these in order until one can translate the post. Automatic translation uses the free ones only (AI only if you allow it below).
 // i18n settings.i18n.engines.setUp: Set up
@@ -128,9 +128,9 @@ const PICKER_ORDER: LangCode[] = [
 // i18n settings.i18n.engines.aiLast: Connected; used last, because it spends credits
 // i18n settings.i18n.engines.notConnected: Not connected
 // i18n settings.i18n.browserTranslator: Use this browser's built-in translator
-// i18n settings.i18n.browserTranslator.hint: Uses your browser's built-in translator. Its model downloads and data handling depend on your browser; check its privacy information. Mawkingbird does not provide this AI service.
+// i18n settings.i18n.browserTranslator.hint: Uses your browser's built-in translator. Check your browser's privacy information for how it handles text.
 // i18n settings.i18n.budget: Translation budget
-// i18n settings.i18n.budget.hint: Translations are counted per day and per service, and each service has its own budget — running out on one never blocks the others. Counts reset at midnight, your time. Only the number of translations is stored, never what was translated.
+// i18n settings.i18n.budget.hint: Translations are counted per day and per service, and each service has its own budget. Counts reset at midnight, your time.
 // i18n settings.i18n.budget.count: {{today}} today · {{left}} left
 // i18n settings.i18n.budget.usedUp: Today's limit is used up. Translation with this service resumes at midnight, or raise the limit below.
 // i18n settings.i18n.budget.warned: Past the point where you asked to be warned. Still working, up to the limit.

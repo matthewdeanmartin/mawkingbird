@@ -85,3 +85,20 @@ The client tests protect the pre-existing corpus as well as the new cases.
 The old Icelandic test asserted the absence of a word table. It is replaced by a
 test of Icelandic word support and exclusion, recorded in `ui/test-removals.md`.
 No other test is removed by this change.
+
+## Final validation
+
+- `make test`: passed on the final tree; 11,638 application tests and 380 library
+  tests in the manifest (272 language-detection tests). Includes source integrity,
+  library isolation, dead-code and design-inventory checks.
+- Targeted Angular lint: passed.
+- `npm run build:mockingbird`: passed on the final tree; startup 941.93 kB under
+  1 MB, Lite 2134.22 kB under 2140 kB. No mock leakage.
+- `git diff --check`: passed.
+- SEO and browser design/integration suites not run: no routes, templates, styles,
+  native commands or network endpoints changed. Translation requests were mocked;
+  no paid API calls were made.
+- Logs: `log/language-final-test.log`, `log/language-final-build.log`,
+  `log/language-libs.log`, `log/language-lint.log`.
+
+All work remains uncommitted and unpushed.

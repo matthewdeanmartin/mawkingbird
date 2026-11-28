@@ -19,13 +19,13 @@ import { TranslocoPipe } from '@jsverse/transloco';
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n settings.spotlight.title: Endorsements
-// i18n settings.spotlight.intro: The cards in the right rail are house endorsements — our own projects, and things we think are worth your time. Nobody pays for them, no third party is involved, and nothing about you leaves this browser.
+// i18n settings.spotlight.intro: The cards in the right rail are our own picks: our projects and things we think are worth your time.
 // i18n settings.spotlight.rotation: Only {{shown}} are shown at a time, and they change every half hour. The donate links further down the rail are not endorsements and stay put.
 // i18n settings.spotlight.show: Show endorsements
 // i18n settings.spotlight.show.label: Show house endorsements in the right rail
 // i18n settings.spotlight.show.hint: Off means none at all, whatever the individual switches below say. Those keep their settings for when you turn it back on.
 // i18n settings.spotlight.each: Each one
-// i18n settings.spotlight.clicks.explain: Clicks are counted here and nowhere else — there is no server to report them to and no request is made. They're here so you can see which of these you actually found useful.
+// i18n settings.spotlight.clicks.explain: Clicks are counted only in this browser, so you can see which of these you found useful.
 // i18n settings.spotlight.showOne: Show “{{title}}”
 // i18n settings.spotlight.pill.allOff: All endorsements off
 // i18n settings.spotlight.pill.off: Off

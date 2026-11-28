@@ -36,7 +36,7 @@ interface DeliveryReport {
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n posse.head: Waiting to publish
-// i18n posse.note: Likes, boosts and replies recorded for your own site. They stay here until you publish them, so a session of reading is one commit rather than twenty.
+// i18n posse.note: Likes, boosts and replies recorded for your own site. They stay here until you publish them.
 // i18n posse.notConnected: No Hugo blog is connected.
 // i18n posse.connectOne: Connect one
 // i18n posse.toPublishThese: to publish these.
@@ -55,10 +55,10 @@ interface DeliveryReport {
 // i18n posse.removeThisReply: Remove this reply
 // i18n posse.original: Original ↗
 // i18n posse.remove: Remove
-// i18n posse.building: Recorded. Waiting for your site to rebuild before letting anyone know — a webmention points at a page that has to exist first.
+// i18n posse.building: Recorded. Waiting for your site to rebuild before sending notifications.
 // i18n posse.notifyHeading: Letting the other sites know
 // i18n posse.checking: checking…
-// i18n posse.notifyNote: Most sites cannot be notified — Mastodon and Bluesky use their own systems and have no webmention endpoint. That is expected, and your records are published either way.
+// i18n posse.notifyNote: Most sites can't be notified, including Mastodon and Bluesky. Your records are published either way.
 // i18n posse.notified: Notified
 // i18n posse.noEndpoint: No endpoint
 // i18n posse.cantSend: Can't send

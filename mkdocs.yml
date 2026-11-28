@@ -78,6 +78,7 @@ nav:
           - A quick tour of the screen: start/screen-tour.md
       - Reading:
           - Understand your Home feed: reading/home-feed.md
+          - Sort the people you follow into lists: reading/people-lists.md
       - Finding people:
           - Find people to follow: finding-people/find-people.md
           - Start with a Mawkingbird Starter Kit: finding-people/starter-kits.md
@@ -86,6 +87,7 @@ nav:
           - Search for a particular person: finding-people/search-people.md
           - Understand profiles and handles: finding-people/profiles-handles.md
           - Follow, request, or unfollow: finding-people/follow-unfollow.md
+          - Size up new followers: finding-people/new-people.md
           - Find people through directories: finding-people/directories.md
       - Posting:
           - Write and publish a basic post: posting/basic-post.md

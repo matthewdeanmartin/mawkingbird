@@ -22,7 +22,7 @@ export type FreeTranslatorId = 'mymemory' | 'apertium';
 // i18n settings.connections.freeTranslator.apertium.title: 🔤 Apertium translation
 // i18n settings.connections.freeTranslator.apertium.intro: An open-source translator run by the Apertium project, strongest for closely related and minority languages (Spanish, Catalan, Galician, Occitan, Basque and more). It is used when the engines before it can't translate a post.
 // i18n settings.connections.freeTranslator.apertium.privacy: The text of each post you translate is sent to apertium.org, straight from this browser. Nothing else is sent.
-// i18n settings.connections.freeTranslator.apertium.quota: Free, with no published limit. Mawkingbird stops at 500 translations a day to be a good guest; change it in Settings → Internationalization.
+// i18n settings.connections.freeTranslator.apertium.quota: Free, with no published limit. Mawkingbird stops at 500 translations a day; change it in Settings → Internationalization.
 // i18n settings.connections.freeTranslator.apertium.pairs: Language pairs Apertium supports
 // i18n settings.connections.freeTranslator.enable: Use it when other translators can't
 // i18n settings.connections.freeTranslator.enableHint: Off until you turn it on. Your server and this browser's own translator are always tried first.

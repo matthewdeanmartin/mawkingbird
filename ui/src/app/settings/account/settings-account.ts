@@ -19,11 +19,11 @@ import { TranslocoPipe } from '@jsverse/transloco';
 // i18n settings.account.confirmPassword: Confirm new password
 // i18n settings.account.mockNote: Password changes are simulated in this mock — nothing is stored.
 // i18n settings.account.password: Password
-// i18n settings.account.password.hint: Mastodon has no client API for changing passwords — that happens on your instance's own website.
+// i18n settings.account.password.hint: Change your password on your server's own website.
 // i18n settings.account.password.link: Change your password on {{host}} ↗
 // i18n settings.account.sessions: Sessions
 // i18n settings.account.sessions.mock: Session management is not implemented in the mock.
-// i18n settings.account.sessions.hint: Mastodon has no client API for listing or revoking sessions — manage them on your instance's own website.
+// i18n settings.account.sessions.hint: Manage your signed-in sessions on your server's own website.
 // i18n settings.account.sessions.link: Manage sessions on {{host}} ↗
 // i18n settings.account.changePassword: Change password
 @Component({

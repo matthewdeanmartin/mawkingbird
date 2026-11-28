@@ -73,7 +73,7 @@ export interface ConnectionCatalogRow {
 // i18n settings.connections.basic: Basic
 // i18n settings.connections.advanced: Advanced
 // i18n settings.connections.title: Connections
-// i18n settings.connections.intro: Follow your people wherever they post. Mastodon is home — a connection is one account somewhere else, merged in as a guest. Credentials work from this browser first; supported low-churn keys can also be encrypted with Mawkingbird Plus and synced to your other devices. Each connected card says which is true.
+// i18n settings.connections.intro: Follow your people wherever they post. Mastodon is home; each connection adds one account from somewhere else. Each card says whether its key stays in this browser or syncs with Mawkingbird Plus.
 // i18n settings.connections.rssBefore: Subscribing to many feeds at once isn't a connection — that lives under
 // i18n settings.connections.rssLink: RSS feeds
 // i18n settings.connections.vaultClosed: The encrypted inventory is closed, so some badges cannot be verified.
@@ -86,11 +86,11 @@ export interface ConnectionCatalogRow {
 // i18n settings.connections.pillNotConnected: Not connected
 // i18n settings.connections.turnBackOn: Turn it back on in feature flags
 // i18n settings.connections.doctorHeading: 🩺 Connection doctor
-// i18n settings.connections.doctorBody: Some networks block whole categories of site. Rather than finding that out after making an account, buying credits and pasting in a key, check first: the doctor asks every service above whether this network will let your browser reach it. It needs no keys and uses none of the ones you have saved.
+// i18n settings.connections.doctorBody: Check whether this network lets your browser reach each service before you sign up or pay for one. No keys needed.
 // i18n settings.connections.doctorLink: Check what this network allows
 // i18n settings.connections.retentionHeading: 🔑 How long to keep credentials
-// i18n settings.connections.retentionBody: GitHub and Raindrop.io use a pasted long-lived token. Bluesky exchanges the one-time login secret you enter for rotating session tokens, then discards that secret. There is no unencrypted server copy: credentials sit in this browser until something removes them. Supported low-churn credentials may also have an end-to-end encrypted Mawkingbird Plus copy; Bluesky's rotating session tokens do not. The badges above report the difference. Pick how long the local copy should remain — a Plus-backed credential locks here at the limit, while a browser-only credential disconnects. Reconnecting restarts the clock.
-// i18n settings.connections.retentionDropboxNote: This does not apply to Dropbox, which uses a proper OAuth flow with short-lived tokens that expire on their own.
+// i18n settings.connections.retentionBody: Choose how long this browser keeps saved keys and tokens. Reconnecting restarts the clock. Dropbox isn't affected.
+// i18n settings.connections.retentionHelp: How saved credentials work
 // i18n settings.connections.retentionAriaLabel: Credential retention
 // i18n settings.connections.retentionNeverWarning: Nothing will expire on its own. Revoke tokens at the provider when you stop using a connection.
 // i18n settings.connections.mastodonAnonymousActive: Anonymous browsing already reads a Mastodon server — change it in Settings → Anonymous.

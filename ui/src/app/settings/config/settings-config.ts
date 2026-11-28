@@ -65,7 +65,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n settings.config.savedFrom: Saved from this browser:
 // i18n settings.config.export: Export
 // i18n settings.config.includePrivate: Include potentially private settings
-// i18n settings.config.includePrivate.hint: Adds your home server, custom CORS proxy address, and branded link-shortener setup. Never includes credentials, account-scoped settings, follows, blocks or mutes, RSS feeds, lists, bookmarks, saved searches, local moderation, activity history, drafts, or authored content.
+// i18n settings.config.includePrivate.hint: Adds your home server, custom CORS proxy address and branded link-shortener setup. Credentials and your personal data are never included.
 // i18n settings.config.previewJson: Preview JSON
 // i18n settings.config.downloadJson: Download JSON
 // i18n settings.config.copyJson: Copy JSON
@@ -86,7 +86,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 // i18n settings.config.freq.weekly: Weekly
 // i18n settings.config.saveSource: Save source
 // i18n settings.config.removeSource: remove
-// i18n settings.config.remote.hint: Automatic checks compare the remote file's SHA-256 hash and ignore local UI changes. A changed remote file prompts before import. Every remote response is immediately fetched again; a source that cannot return the same hash twice is limited to on-demand checks.
+// i18n settings.config.remote.hint: Automatic checks look for changes to the remote file and ask before importing them. A source that keeps changing is checked only when you ask.
 // i18n settings.config.importPreview: Import preview
 // i18n settings.config.schemaLine: Schema {{schema}} · {{privacy}} profile · exported {{exported}}
 // i18n settings.config.privacy.private: potentially private

@@ -283,8 +283,8 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.recent.clear: Clear
 // i18n pages.search.blueskyNeedsLink: Bluesky post search needs a linked account —
 // i18n pages.search.linkOneInSettings: link one in Settings
-// i18n pages.search.accountSearchWorksWithoutLink: Account search works without one. Hashtags are Mastodon-only: Bluesky has no hashtag index to search, only a hashtag filter inside post search.
-// i18n pages.search.hashtagsMastodonOnly: Hashtags are Mastodon-only — Bluesky has no hashtag index, only a hashtag filter inside post search (set it under Advanced).
+// i18n pages.search.accountSearchWorksWithoutLink: Account search works without one. Hashtag search is Mastodon-only; Bluesky has a hashtag filter inside post search.
+// i18n pages.search.hashtagsMastodonOnly: Hashtags are Mastodon-only. On Bluesky, use the hashtag filter in post search (under Advanced).
 // i18n pages.search.server.searching: 🔍 Searching: <strong>{{host}}</strong>
 // i18n pages.search.server.publicResults: Public results only. Feeds and profiles still come from {{host}}.
 // i18n pages.search.server.browsing: The server you are browsing. Point search elsewhere if it has search turned off.
@@ -318,7 +318,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.budget.tenPages: 10 pages (~400 posts)
 // i18n pages.search.placeholder.exactPhrase: change detection
 // i18n pages.search.placeholder.excludeWords: react vue
-// i18n pages.search.anonymousPostSearch: Anonymous post search uses hashtags — Mastodon doesn’t offer anonymous full-text search. Fields below are applied to loaded results.
+// i18n pages.search.anonymousPostSearch: Signed out, post search uses hashtags. Fields below filter the loaded results.
 // i18n pages.search.fullTextSignIn: Sign in
 // i18n pages.search.fullTextPostSearch: for full-text post search.
 // i18n pages.search.field.exactPhrase: Exact phrase
@@ -340,7 +340,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.field.publicAndLibrary: Public and my library
 // i18n pages.search.field.public: Public
 // i18n pages.search.field.myLibrary: My library
-// i18n pages.search.accountSearchDescription: Mastodon’s account search only matches names & bios. “What they post” runs a post search and condenses the results down to the people who posted — good for finding, say, economists rather than one specific person.
+// i18n pages.search.accountSearchDescription: Mastodon’s account search only matches names and bios. “What they post” searches posts and lists the people who wrote them, which is good for finding, say, economists.
 // i18n pages.search.accountField.matchOn: Match on
 // i18n pages.search.accountField.followers: Followers
 // i18n pages.search.accountField.following: Following
@@ -471,7 +471,7 @@ const SEARCH_TIMEOUT_MS = 20000;
 // i18n pages.search.empty.refused: {{host}} refused this search. The server may restrict search, or your login may not have search permission.
 // i18n pages.search.empty.unreachable: Couldn’t reach {{host}} to check whether search is working. Your connection or the server may be having trouble.
 // i18n pages.search.empty.tagsOnly: {{host}} recognises the hashtag but won’t serve the posts behind it. A different search server would fix this.
-// i18n pages.search.empty.postsUnavailable: Post search isn't available on {{host}}. It can find accounts, but returns no posts even for a common hashtag — anonymous full-text search is off on almost every server. A different search server would fix this.
+// i18n pages.search.empty.postsUnavailable: Post search isn't available on {{host}}. It can find accounts but returns no posts, which is normal for logged-out search. A different search server would fix this.
 // i18n pages.search.empty.notWorking: Search doesn’t appear to be working on {{host}}. A different search server would fix this.
 // i18n pages.search.chip.sentToServer: Sent to the server with your search
 // i18n pages.search.chip.appliedToLoaded: Applied in this browser to the results already loaded

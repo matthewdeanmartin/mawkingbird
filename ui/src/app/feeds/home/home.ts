@@ -196,7 +196,7 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.filters.origin.all: All servers
 // i18n pages.home.filters.origin.local: This server
 // i18n pages.home.filters.origin.remote: Other servers
-// i18n pages.home.filters.calm.title: Calm mode: hide {{posts}} that read as inflammatory — heated wording, quote-dunks, and ratioed {{posts}} (all detected on-device)
+// i18n pages.home.filters.calm.title: Calm mode: hide {{posts}} that read as inflammatory: heated wording, quote-dunks, and ratioed {{posts}} (detected on this device)
 // i18n pages.home.filters.calm.label: Calm
 // i18n pages.home.articles.ariaLabel: Articles from the loaded feed
 // i18n pages.home.articles.empty: No article links in the posts currently loaded.
@@ -250,7 +250,7 @@ const VIDEO_FILL_PAGES = 5;
 // i18n pages.home.misskey.approve.body: Mawkingbird can now post, react and follow on Misskey. Your sign-in from before only allowed reading, so {{server}} needs to approve once more.
 // i18n pages.home.misskey.approve.button: Approve on Misskey
 // i18n pages.home.misskey.noEngine.title: Nothing can translate yet
-// i18n pages.home.misskey.noEngine.body: Automatic translation is on, but {{server}} has no translator of its own and no free translator is switched on. Turn on MyMemory (free, about 5,000 characters a day; post text is sent to translated.net), or press 🌐 Translate on any post once to download this browser's own translator, if it has one.
+// i18n pages.home.misskey.noEngine.body: Automatic translation is on, but {{server}} has no translator. Turn on MyMemory (free, about 5,000 characters a day, sent to translated.net), or press 🌐 Translate on a post to use this browser's own translator, if it has one.
 // i18n pages.home.misskey.noEngine.myMemory: Turn on MyMemory
 // i18n pages.home.misskey.noEngine.useAi: Use AI (OpenRouter), up to {{cap}} a day
 // i18n pages.home.misskey.noEngine.settings: Choose a translator

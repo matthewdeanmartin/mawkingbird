@@ -81,7 +81,8 @@ import { CHECK_STEP, NewPeopleScan, PAGE } from '../new-people-scan';
 // i18n newPeople.reason.nothingFound: {{count}} posts looked at
 // i18n newPeople.reason.fewPosts: too few posts to tell
 // i18n newPeople.help.about: About {{stat}}
-// i18n newPeople.help.body: These are three separate answers, not a score. Most weight goes to what other people did: people you follow who follow them, and people who answer them. Behavior counts for less, because software can imitate it, so it never earns "Vouched for" alone. Bios, pictures and follower counts count for nothing. An "automated" label is believed, but its absence means nothing. Quiet is not a warning: plenty of people mostly read. Your server may hold few posts from people on other servers, and follow counts and join dates of remote accounts are what their server reports. Warning signs are reasons to look, not a verdict.
+// i18n newPeople.help.body: Three separate answers. What other people did counts most. Warning signs are reasons to take a closer look.
+// i18n newPeople.help.more: How this works
 
 /** Recent followers you don't follow, with honest signals and their reasons. */
 @Component({

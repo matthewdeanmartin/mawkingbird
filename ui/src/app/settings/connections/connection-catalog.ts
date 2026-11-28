@@ -68,7 +68,7 @@ export type ConnectionScope = 'account' | 'browser' | 'session';
 // i18n settings.connections.scope.account.label: One per account
 // i18n settings.connections.scope.account.detail: Stored against the account you are signed in as — including Anonymous. Each of your accounts links its own, or none.
 // i18n settings.connections.scope.browser.label: All accounts
-// i18n settings.connections.scope.browser.detail: Shared by every account in this browser, including Anonymous — it belongs to you, not to one profile.
+// i18n settings.connections.scope.browser.detail: Shared by every account in this browser, including Anonymous.
 // i18n settings.connections.scope.session.label: All accounts, this tab
 // i18n settings.connections.scope.session.detail: Shared by every account in this browser, but never written to long-term storage — closing the tab disconnects it.
 
@@ -185,7 +185,7 @@ export const CONNECTION_FLAGS: Record<ConnectionId, FeatureFlagId> = {
 // i18n settings.connections.catalog.gist.pitch: Publish pastes as gists on your GitHub account.
 // i18n settings.connections.catalog.gist.enables.option: A "GitHub Gist" option wherever you can post a paste
 // i18n settings.connections.catalog.gist.enables.drafts: Gists you create appear in Drafts and in Write, like any other paste
-// i18n settings.connections.catalog.gist.enables.edit: Edit and delete them later — they belong to your account, not to this browser
+// i18n settings.connections.catalog.gist.enables.edit: Edit and delete them later from any device
 // i18n settings.connections.catalog.dropbox.label: Dropbox
 // i18n settings.connections.catalog.dropbox.pitch: An app-specific folder in your Dropbox.
 // i18n settings.connections.catalog.dropbox.enables.browse: Browse those files from Mawkingbird

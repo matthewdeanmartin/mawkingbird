@@ -44,7 +44,7 @@ export interface TranslateResult {
 // i18n compose.translateDialog.cancel: Cancel
 // i18n compose.translateDialog.close: Close
 // i18n compose.translateDialog.into: Translate into
-// i18n compose.translateDialog.intro: Writes your post in another language. The result is editable — check it before you post, especially anything the model could take literally.
+// i18n compose.translateDialog.intro: Writes your post in another language. The result is editable; check it before you post.
 // i18n compose.translateDialog.replace: Replace
 // i18n compose.translateDialog.retry: Try again
 // i18n compose.translateDialog.title: 🤖🌐 Translate this post

@@ -38,6 +38,8 @@ anything that went wrong under **Findings**.
 | [Low bandwidth S4–S5](low-bandwidth-s4-s5-offline-app-and-outbox-2026-11.md) | Opens offline (service worker), saved reads offline, Outbox for posts written offline | Not run |
 | [Low bandwidth S6–S7](low-bandwidth-s6-s7-lite-and-native-2026-11.md) | Lite (/m/) screens, staying in Lite, the switch-to-Lite offer, Native offline banner/whale and archived profiles | Not run |
 | [Lite: the next hour](lite-next-hour-2026-11.md) | Load-control bar, saved-first threads/profiles, keep-my-place refresh, Outbox in Lite, send-on-reconnect choice | Not run |
+| [Latvian starter kits](feed-builder-lv.md) | Latvian communities hub and two kits, signed-out preview, sign-in return | Not run |
+| Firefox extension sprints [1](firefox-extension-sprint-1.md) · [2](firefox-extension-sprint-2.md) · [3](firefox-extension-sprint-3.md) · [4](firefox-extension-sprint-4.md) · [5](firefox-extension-sprint-5.md) · [6](firefox-extension-sprint-6.md) · [7](firefox-extension-sprint-7.md) · [8](firefox-extension-sprint-8.md) | The browser extension in a real Firefox session | Not run |
 
 The roadmap these come from is `sprint/november_2026_bsky_parity.md`.
 

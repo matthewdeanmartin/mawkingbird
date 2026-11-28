@@ -29,7 +29,7 @@ import { GitHubFriendDiscovery, GitHubFriendStatus } from './github-friend-disco
 // i18n settings.importExport.github.requests.other: {{count}} GitHub GraphQL requests
 // i18n settings.importExport.github.resolved.one: and resolved {{count}} exact linked profile through your server.
 // i18n settings.importExport.github.resolved.other: and resolved {{count}} exact linked profiles through your server.
-// i18n settings.importExport.github.starred.body: The longer, lower-confidence list. Checks each unique repository owner for a direct Mastodon profile link. Contributors and stargazers are never loaded.
+// i18n settings.importExport.github.starred.body: The longer, lower-confidence list. Checks each unique repository owner for a direct Mastodon profile link.
 // i18n settings.importExport.github.starred.title: Owners of repositories you starred
 // i18n settings.importExport.github.starredMatches.one: {{count}} starred-owner match
 // i18n settings.importExport.github.starredMatches.other: {{count}} starred-owner matches

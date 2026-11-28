@@ -70,7 +70,7 @@ import { YoutubeComments } from './youtube-comments';
 // i18n watch.party.dialog.join: Join
 // i18n watch.party.tags: Hashtag for this show
 // i18n watch.party.placeholder: Hashtag for this show
-// i18n watch.party.temporary: Posts with these hashtags join the chat for this visit only. Nothing is followed or saved.
+// i18n watch.party.temporary: Posts with these hashtags join the chat for this visit only.
 // i18n watch.party.remove: Remove #{{tag}} from party
 // i18n watch.party.invalid: Use valid hashtags, with up to eight different tags per party.
 // i18n watch.party.failed: Couldn't load: {{tags}}. Refresh to try again.

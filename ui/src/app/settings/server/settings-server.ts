@@ -40,14 +40,14 @@ type ConnectionStatus = 'checking' | 'available' | 'degraded' | 'unreachable';
 // i18n settings.server.specific: Use a specific server
 // i18n settings.server.specific.hint: Enter a server domain if you already know where you want to browse.
 // i18n settings.server.search: Search server
-// i18n settings.server.search.hint: Many servers disable search for logged-out visitors, and practically none will full-text search posts without an account — the best you get is the posts behind a hashtag, and not every server serves those either. Search — and only search — can be sent to one that does.
+// i18n settings.server.search.hint: Most servers won't search posts for logged-out visitors. Choose a server that does, and searches go there.
 // i18n settings.server.search.here: Searches go here. Everything else uses your own server.
 // i18n settings.server.search.own: Your own server
 // i18n settings.server.search.none: No separate search server configured.
 // i18n settings.server.search.useOwn: Use my own server
 // i18n settings.server.rejects.one: {{count}} server checked and rejected
 // i18n settings.server.rejects.other: {{count}} servers checked and rejected
-// i18n settings.server.rejects.hint: These are skipped when hunting for a search server, so a second hunt doesn't re-probe the same servers. A server that turns search on later won't be found again until you forget them.
+// i18n settings.server.rejects.hint: These servers are skipped when looking for a search server. Forget them to try them again.
 // i18n settings.server.rejects.forget: Forget all {{count}} and re-check
 // i18n settings.server.anonymous: Anonymous browsing
 // i18n settings.anonymous.maxAge: Maximum age of posts from followed accounts

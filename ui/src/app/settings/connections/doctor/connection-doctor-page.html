@@ -205,12 +205,7 @@
       }
     </ul>
     <p class="muted small">
-      {{ 'settings.connections.doctor.corsSection.badTrade' | transloco }}
-    </p>
-    <p class="muted small">
       {{ 'settings.connections.doctor.corsSection.whitelist.a' | transloco }}
-      <em>{{ 'settings.connections.doctor.corsSection.hosts' | transloco }}</em>
-      {{ 'settings.connections.doctor.corsSection.whitelist.b' | transloco }}
       <a [routerLink]="['/settings/connections/cors-proxy']">{{
         'settings.connections.doctor.corsProxyLink' | transloco
       }}</a>
@@ -257,28 +252,8 @@
   </section>
 }
 
-<section class="doc-group">
-  <h2 class="section-title">{{ 'settings.connections.doctor.explain.title' | transloco }}</h2>
-  <p class="muted small">
-    {{ 'settings.connections.doctor.explain.p1' | transloco }}
-  </p>
-  <p class="muted small">
-    {{ 'settings.connections.doctor.explain.p2' | transloco }}
-  </p>
-  <p class="muted small">
-    {{ 'settings.connections.doctor.explain.p3' | transloco }}
-  </p>
-  <p class="muted small">
-    {{ 'settings.connections.doctor.explain.p4a' | transloco }}
-    <em>{{ 'settings.connections.doctor.first' | transloco }}</em>
-    {{ 'settings.connections.doctor.explain.p4b' | transloco }}
-  </p>
-  <p class="muted small">
-    {{ 'settings.connections.doctor.explain.p5a' | transloco }}
-    <em>{{ 'settings.connections.doctor.here' | transloco }}</em
-    >{{ 'settings.connections.doctor.explain.p5b' | transloco }}
-  </p>
-  <p class="muted small">
-    {{ 'settings.connections.doctor.explain.p6' | transloco }}
-  </p>
-</section>
+<p class="muted small">
+  <a href="https://mawkingbird.com/help/connections/connection-doctor/" target="_blank" rel="noopener">{{
+    'settings.connections.doctor.explain.more' | transloco
+  }}</a>
+</p>

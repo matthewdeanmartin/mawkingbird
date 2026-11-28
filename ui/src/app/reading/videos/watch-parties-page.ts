@@ -31,7 +31,7 @@ import { Server } from '../../platform/http/server';
 import { StatusCard } from '../../posts/status-card/status-card';
 
 // i18n watchParties.title: Watch parties
-// i18n watchParties.intro: A watch party is a hashtag: people post under the same tag while they watch the same video. Pick a tag to see the videos shared under it, then open one on Watch with the tag's conversation beside it. Nothing is created or followed, and the tags last only for that visit.
+// i18n watchParties.intro: A watch party is a hashtag: people post under the same tag while they watch the same video. Pick a tag to see the videos shared under it, then open one on Watch with the tag's conversation beside it.
 // i18n watchParties.tags: Party hashtags
 // i18n watchParties.tagsHint: One or more, separated by spaces or commas (up to 8).
 // i18n watchParties.find: Find parties

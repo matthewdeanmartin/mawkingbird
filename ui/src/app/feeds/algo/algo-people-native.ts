@@ -47,7 +47,7 @@ import {
 // i18n pages.algoPeople.why.all: Posts by people you follow.
 // i18n pages.algoPeople.why.social: Mutual follows with an observed mention, favourite, boost, quote or status notification.
 // i18n pages.algoPeople.why.mutuals: People you follow who currently follow you back, where checked.
-// i18n pages.algoPeople.why.reading: Followed people observed not following you back. This says nothing about future interaction.
+// i18n pages.algoPeople.why.reading: People you follow who don't follow you back.
 // i18n pages.algoPeople.why.readers: People who boosted your posts, including people you do not follow.
 // i18n pages.algoPeople.why.bots: Followed accounts explicitly marked as bots.
 // i18n pages.algoPeople.why.lively: Followed accounts whose latest known post is within 30 days.

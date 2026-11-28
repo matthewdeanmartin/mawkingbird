@@ -87,7 +87,7 @@ export function takeTwitterArchive(): TwitterArchiveSummary | null {
 // i18n settings.importExport.twitter.readyToSearch: Twitter handles ready to search ·
 // i18n settings.importExport.twitter.repliedTo: people replied to in
 // i18n settings.importExport.twitter.replies: replies ·
-// i18n settings.importExport.twitter.searchNote: username-search calls used. Same-handle accounts are likely matches, not confirmed identities; a matching display name or profile link back to Twitter is shown as extra evidence.
+// i18n settings.importExport.twitter.searchNote: username-search calls used. Same-handle accounts are likely matches; a matching display name or a profile link back to Twitter is shown as extra evidence.
 // i18n settings.importExport.twitter.seenIn: people seen in
 // i18n settings.importExport.twitter.title: Extract contacts from Twitter
 // i18n twitterImport.signIn.title: Next: find them on Mastodon.

@@ -20,7 +20,7 @@ const GIST_KEY = 'mockingbird_gist_credentials';
 
 // i18n settings.connections.gist.back: ‹ All connections
 // i18n settings.connections.gist.title: 📝 GitHub Gist
-// i18n settings.connections.gist.intro.a: Publish pastes as gists on your GitHub account. Gist becomes one more option wherever you can post a paste — and because every paste service is also a draft source, anything you create shows up in
+// i18n settings.connections.gist.intro.a: Publish pastes as gists on your GitHub account. Gist becomes one more paste option, and your gists show up in
 // i18n settings.connections.gist.drafts: Drafts
 // i18n settings.connections.gist.intro.b: and in
 // i18n settings.connections.gist.write: Write
@@ -51,11 +51,11 @@ const GIST_KEY = 'mockingbird_gist_credentials';
 // i18n settings.connections.gist.unlisted: Unlisted
 // i18n settings.connections.gist.unlistedDesc: ones are GitHub's "secret" gists — not listed anywhere, but anyone with the link can read them. Neither is private.
 // i18n settings.connections.gist.noExpiry: Gists never expire. There is no burn-after-reading and no time limit.
-// i18n settings.connections.gist.editingWorks: Editing works from here, unlike the anonymous paste services: the gist belongs to your account rather than to an edit code saved in this browser. Losing this browser does not lose the gist.
-// i18n settings.connections.gist.singleFileOnly: Only gists with a single file are listed back — a multi-file gist is a project, not a note.
+// i18n settings.connections.gist.editingWorks: You can edit gists from here, and they stay on your GitHub account if you lose this browser.
+// i18n settings.connections.gist.singleFileOnly: Only single-file gists are listed.
 // i18n settings.connections.gist.error.noToken: Paste a GitHub personal access token with the gist scope.
 // i18n settings.connections.gist.error.saveFailed: Couldn't save this token.
-// i18n settings.connections.gist.error.rejected: GitHub rejected that token. Check it is active and has the gist scope — nothing else.
+// i18n settings.connections.gist.error.rejected: GitHub rejected that token. Check it is active and has the gist scope.
 // i18n settings.connections.gist.notice.connected: Connected as @{{login}}. Gist is now an option wherever you post a paste.
 // i18n settings.connections.gist.notice.disconnected: Disconnected. Gists you already created are untouched on GitHub.
 

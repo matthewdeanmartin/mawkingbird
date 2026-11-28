@@ -180,7 +180,7 @@ describe('FeedMembers', () => {
   it('says plainly that membership here is emergent, not a roster', () => {
     const fixture = mount(supplied([makeStatus('1')]));
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
-      "There's no membership list",
+      'the people posting in it right now',
     );
   });
 

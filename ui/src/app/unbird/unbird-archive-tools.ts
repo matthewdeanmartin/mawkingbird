@@ -81,7 +81,7 @@ import { websiteZip } from './website-export';
 // i18n unbird.tools.contacts.export: Export contacts (.vcf)
 // i18n unbird.tools.contacts.ready: {{count}} contacts saved to your downloads.
 // i18n unbird.tools.contacts.none: This archive has no address book.
-// i18n unbird.tools.contacts.reopen: To read the address book, choose your archive again. Only that one file is opened, and nothing is kept.
+// i18n unbird.tools.contacts.reopen: To read the address book, choose your archive again.
 // i18n unbird.tools.contacts.choose: Choose the archive…
 
 /**

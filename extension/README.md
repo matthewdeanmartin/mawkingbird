@@ -40,7 +40,7 @@ make harness    # bridge test page at http://localhost:4300/dev/harness.html
 
 ## Installing without the store
 
-See [test_plans/firefox-extension-sprint-1.md](../test_plans/firefox-extension-sprint-1.md).
+See [spec/test_plans/firefox-extension-sprint-1.md](../spec/test_plans/firefox-extension-sprint-1.md).
 In short: `about:debugging` → This Firefox → Load Temporary Add-on → pick
 `src/manifest.json` (gone after a restart), or `make sign` for a signed `.xpi`
 that stays installed.

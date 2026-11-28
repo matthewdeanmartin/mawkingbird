@@ -45,7 +45,7 @@ import { AudienceEstimate } from '../effective-audience';
 // i18n audienceComposition.help.servers: The server each account is on, from its handle. The 8 biggest are listed and the rest are grouped as Other. Many accounts on one server means a local audience. A long tail means your posts travel across the fediverse.
 // i18n audienceComposition.help.size: The account's own follower count. Big accounts can carry a boost far; most people on the fediverse have under 50 followers.
 // i18n audienceComposition.help.age: When the account was created. Many new accounts can mean a recent wave of sign-ups or a burst of attention.
-// i18n audienceComposition.help.cadence: Lifetime posts per day: the account's post count divided by its age. Accounts younger than 14 days count as unknown, because their average doesn't mean anything yet. Under 0.1 is about three posts a month.
+// i18n audienceComposition.help.cadence: Lifetime posts per day: the account's post count divided by its age. Accounts younger than 14 days count as unknown. Under 0.1 is about three posts a month.
 // i18n audienceComposition.help.overlap: Compares the two lists by account. Needs both lists read in full; a part of each would undercount the people in both.
 // i18n audienceComposition.mutuals: Mutuals
 // i18n audienceComposition.notFollowedBack: You don't follow back

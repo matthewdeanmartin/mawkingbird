@@ -47,14 +47,14 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.blogger.back: ‹ All connections
 // i18n settings.connections.blogger.chooseBlog: Choose a blog before posting — nothing can publish until you do.
 // i18n settings.connections.blogger.forget: Forget this blog
-// i18n settings.connections.blogger.intro: Publish posts to a Google Blogger blog from the composer, live or as a draft. This is separate from the Mataroa connector — both can be connected, and the composer offers whichever are.
+// i18n settings.connections.blogger.intro: Publish posts to a Google Blogger blog from the composer, live or as a draft.
 // i18n settings.connections.blogger.loading: Loading…
 // i18n settings.connections.blogger.notConfigured: Blogger has not been configured for this build. It needs a Google OAuth client id — either from whoever built this copy, or your own, below.
 // i18n settings.connections.blogger.own.bloggerApi: Blogger API
 // i18n settings.connections.blogger.own.clientIdLabel: Your OAuth client id
 // i18n settings.connections.blogger.own.console: Google Cloud console ↗
 // i18n settings.connections.blogger.own.inUse: Using your own Google project.
-// i18n settings.connections.blogger.own.intro: Optional. This app ships with a shared Google project, which is enough for most people. Bring your own if you hit its limits — Google caps an unverified app at 100 users, and everyone using the shared project shares its Blogger quota. Your own project also skips the unverified-app warning, since you own it.
+// i18n settings.connections.blogger.own.intro: Optional. The shared Google project works for most people. Use your own if you hit its limits: Google allows an unverified app 100 users, and everyone shares its Blogger quota. Your own project also skips the unverified-app warning.
 // i18n settings.connections.blogger.own.redirectUris: Authorized redirect URIs
 // i18n settings.connections.blogger.own.step1.a: In the
 // i18n settings.connections.blogger.own.step1.b: , create a project and enable the
@@ -63,7 +63,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.blogger.own.step4: Paste the client id below. The client secret is not needed — leave it in Google.
 // i18n settings.connections.blogger.own.title: Use my own Google project
 // i18n settings.connections.blogger.own.webApplication: Web application
-// i18n settings.connections.blogger.permissionNote: Signing in grants this app permission to read and publish to your Blogger blogs. The permission lasts until you close this tab — nothing is stored long-term, so you will sign in again next session. Google may warn that this app is unverified; that is about Google's review process, not about what the app does.
+// i18n settings.connections.blogger.permissionNote: Signing in lets Mawkingbird read and publish to your Blogger blogs until you close this tab. Google may say the app is unverified; you can continue past that.
 // i18n settings.connections.blogger.postsGoTo.a: Posts go to
 // i18n settings.connections.blogger.postsGoTo.b: . Pick another below to change it.
 // i18n settings.connections.blogger.publishTo: Publish to
@@ -78,7 +78,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.blogger.stillRemembered: is still remembered. Sign in again to publish.
 // i18n settings.connections.blogger.title: ✍️ Blog (Blogger)
 
-// i18n settings.connections.blogger.unverified: Google may warn that <strong>“Google hasn't verified this app”</strong> before asking for permission. That refers to Google's review of this app, not to anything being wrong with it; continue past it via <em>Advanced</em>. Using your own Google project, below, removes the warning entirely.
+// i18n settings.connections.blogger.unverified: Google may say <strong>“Google hasn't verified this app”</strong>. Continue via <em>Advanced</em>. Using your own Google project, below, removes the warning.
 
 @Component({
   selector: 'app-connection-blogger',

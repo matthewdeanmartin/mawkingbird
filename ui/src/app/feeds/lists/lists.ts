@@ -123,7 +123,7 @@ import { MisskeyFeedSections } from './misskey-feed-sections';
 // i18n pages.lists.clientList.members.one: {{count}} member
 // i18n pages.lists.clientList.members.other: {{count}} members
 // i18n pages.lists.profileList.heading: Mawkingbird lists
-// i18n pages.lists.profileList.hint: Kept on your Mawkingbird account, so they follow you to your other browsers. Private lists (above) stay in this browser. A list lives in one place — nothing is copied between them unless you ask.
+// i18n pages.lists.profileList.hint: Kept on your Mawkingbird account, so they follow you to your other browsers. Private lists (above) stay in this browser.
 // i18n pages.lists.profileList.newNamePlaceholder: New Mawkingbird list name
 // i18n pages.lists.profileList.readOnly: These are read-only right now.
 // i18n pages.lists.copyOffer.summary.one: This browser has {{lists}} private list ({{accounts}} account). Copy it to your Mawkingbird account?

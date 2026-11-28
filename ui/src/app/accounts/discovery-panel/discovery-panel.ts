@@ -15,7 +15,7 @@ import { REACTION_KINDS, computeDiscovery } from '../reaction-log';
 
 // i18n discoveryRate.heading: Discovery rate
 // i18n discoveryRate.explain: How many of the reactions to your posts come from people who don't follow you. This is how new people find you.
-// i18n discoveryRate.cta: Uses the same read as "When are your posts done?" above. Nothing is changed.
+// i18n discoveryRate.cta: Uses the same read as "When are your posts done?" above.
 // i18n discoveryRate.run: Read my notifications
 // i18n discoveryRate.reading: Reading notifications… progress is shown above.
 // i18n discoveryRate.nothing: No reactions to your posts in the notifications read.
@@ -50,7 +50,7 @@ import { REACTION_KINDS, computeDiscovery } from '../reaction-log';
 // i18n discoveryRate.mediaOnly: (no text)
 // i18n discoveryRate.notEnough: Not enough reactions to rank any yet.
 // i18n discoveryRate.help.about: About {{stat}}
-// i18n discoveryRate.help.overall: Likes, boosts and replies from people who weren't following you when they reacted, out of all reactions whose follow state is known. Someone who reacted and then followed counts as new only if their follow notification was read; otherwise they look like a follower, so the real rate may be a little higher. Someone who followed, reacted and later left counts as new.
+// i18n discoveryRate.help.overall: Likes, boosts and replies from people who weren't following you when they reacted, out of all reactions where that's known. The real rate may be a little higher.
 // i18n discoveryRate.help.rows: Ranked by how many different new people reacted. Posts need at least 5 reactions. Hashtags also need at least 2 posts.
 
 /** Rows shown in each ranking. */

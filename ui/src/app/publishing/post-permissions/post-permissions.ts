@@ -31,7 +31,7 @@ export interface PostPermissionsValue {
 // i18n permissions.on: On
 // i18n permissions.off: Off
 // i18n permissions.help: About these permissions
-// i18n permissions.explanation: Unlisted posts are still public. This does not guarantee exclusion from search engines. Mentioned-only posts are not end-to-end encrypted. Turning off notifications does not prevent replies. Quote and notification controls apply to Mastodon. Quote controls require Mastodon 4.5 or newer and do not revoke existing quotes.
+// i18n permissions.explanation: Unlisted posts are still public. Mentioned-only posts aren't encrypted. Quote and notification controls apply to Mastodon; quote controls need Mastodon 4.5 or newer and don't remove existing quotes.
 // i18n permissions.published: Mastodon cannot change a published post's audience or public-timeline visibility. Choose these before publishing; quote and notification settings can still be changed.
 // i18n permissions.unsupported: Quote and notification controls here apply to Mastodon. Other publishing destinations keep their own permissions.
 @Component({

@@ -81,7 +81,7 @@ type TestState =
 // i18n settings.connections.corsProxy.title: 🔀 CORS proxy
 // i18n settings.connections.corsProxy.intro: Some sites block requests from a browser. Mawkingbird Native fetches directly; if you use the web app, you can configure a CORS proxy here.
 // i18n settings.connections.corsProxy.installNative: Install Mawkingbird Native
-// i18n settings.connections.corsProxy.credentialWarning: A proxy can read every address you ask it for and every byte it sends back, and it can change the response. Only ever use one for public things — Mawkingbird refuses to send your Mastodon instance, any connected account, or anything carrying a login through a proxy, but a private feed URL with a key baked into it would still be exposed. Never point a proxy at one of those.
+// i18n settings.connections.corsProxy.credentialWarning: A proxy can read and change everything it relays. Mawkingbird never sends logins or connected accounts through one, but a private feed URL with a key in it would be exposed.
 // i18n settings.connections.corsProxy.droppedSelection: Your previous proxy only works on localhost, so it has been cleared for this site. Choose one that works here.
 // i18n settings.connections.corsProxy.chooseHeading: Choose a proxy
 // i18n settings.connections.corsProxy.devOnlyHidden: Proxies whose free tier only answers <code>localhost</code> are hidden here, because they cannot work on this site. Run Mawkingbird locally to see them.
@@ -110,12 +110,12 @@ type TestState =
 // i18n settings.connections.corsProxy.testing: Testing…
 // i18n settings.connections.corsProxy.testProxy: Test proxy
 // i18n settings.connections.corsProxy.stopUsing: Stop using a proxy
-// i18n settings.connections.corsProxy.pendingSelection: Save {{selected}} before testing it. Until you do, {{current}} is still the one feeds use — so a test now would tell you about the wrong service.
+// i18n settings.connections.corsProxy.pendingSelection: Save {{selected}} before testing it. Until you do, {{current}} is still the one feeds use.
 // i18n settings.connections.corsProxy.noProxy: no proxy
 // i18n settings.connections.corsProxy.testWorked: Works — a test feed came back in {{ms}} ms.
 // i18n settings.connections.corsProxy.testSlow: That is slow enough that feeds will feel sluggish.
 // i18n settings.connections.corsProxy.runningYourOwn: Running your own
-// i18n settings.connections.corsProxy.ownProxyNote: Free proxies are rate-limited, and they close down — of the well-known ones, most now refuse anything that is not <code>localhost</code>. A twenty-line Cloudflare Worker that only accepts your own origin is free, faster, and cannot read anything you would not have handed it anyway. It is the only option here that nobody else controls.
+// i18n settings.connections.corsProxy.ownProxyNote: Free proxies are rate-limited and often shut down. A small Cloudflare Worker that accepts only your own site is free, faster, and yours alone.
 // i18n settings.connections.corsProxy.nowActive: {{label}} is now the active proxy.
 // i18n settings.connections.corsProxy.chooseProxyFirst: Choose a proxy first.
 // i18n settings.connections.corsProxy.customUrlNeedsPlaceholder: A custom proxy URL must contain {url} where the address being fetched should go.
@@ -127,7 +127,7 @@ type TestState =
 // i18n settings.connections.corsProxy.notAFeed: The proxy answered, but not with a feed. It may have returned its own error page — check any key or quota.
 // i18n settings.connections.corsProxy.unreachable: Couldn't reach the proxy at all. It may be down, blocking this origin, or the URL may be wrong.
 // i18n settings.connections.corsProxy.rejected401: The proxy rejected the request (401). It needs a key, or the key is wrong.
-// i18n settings.connections.corsProxy.rejected403: A 403 came back. Either the proxy refused this request — a missing, wrong, or out-of-quota key, or an origin it has not been told to allow — or the test feed refused the proxy, which some sites do to any request from a datacentre. If your feeds still load, the proxy is fine.
+// i18n settings.connections.corsProxy.rejected403: The proxy or the test feed refused the request. Check the proxy's key, quota and allowed sites. Some sites refuse all proxies. If your feeds still load, the proxy is fine.
 // i18n settings.connections.corsProxy.rateLimited: The proxy is rate-limiting this browser right now.
 // i18n settings.connections.corsProxy.answeredStatus: The proxy answered {{status}}.
 // i18n settings.connections.corsProxy.timedOut: The proxy did not answer within 15 seconds. It is up but too slow to read feeds through.

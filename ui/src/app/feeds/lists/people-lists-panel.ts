@@ -30,10 +30,8 @@ import { PeopleLists } from './people-lists';
 // i18n peopleLists.lastSync: Last successful update:
 // i18n peopleLists.dialog.title: Generate or update your people lists
 // i18n peopleLists.dialog.scope: Creates eleven private Mastodon lists, each prefixed “Mawkingbird:”. A person can belong to more than one category. Existing generated lists are reused and missing ones recreated.
-// i18n peopleLists.dialog.following: Only people you currently follow can belong to these server lists. Readers you do not follow are left out; nobody is automatically followed, unfollowed, muted, or notified.
-// i18n peopleLists.dialog.sample: Relationships use your complete follow list. Interactions use up to ten recent pages each of notifications, your posts, and Home, plus evidence remembered in this browser. Older interactions may be missed. Chatty and Broadcasters need at least five observed posts; nobody’s individual timeline is downloaded.
-// i18n peopleLists.dialog.snapshot: This is a snapshot, not automatic upkeep. After seven days, a changed follow count, or missing lists, we offer a refresh. You can update sooner. Closing this dialog or visiting another page keeps the job running; reloading or switching accounts stops it. Reopen this dialog to see progress.
-// i18n peopleLists.dialog.sync: A full update adds matching people and removes nonmatching members, including manual additions, from these generated lists. Other lists are untouched. If stopped halfway, changes already made stay; run Update again to finish.
+// i18n peopleLists.dialog.following: Only people you follow are sorted. Nobody is followed, unfollowed or notified.
+// i18n peopleLists.dialog.help: How people lists work
 // i18n peopleLists.onlyAdd: Only add, don’t remove from lists
 // i18n peopleLists.start: Generate / update lists
 // i18n peopleLists.category.top_friends: Top friends — mutuals who have mentioned, liked, boosted, or triggered a post notification for you.

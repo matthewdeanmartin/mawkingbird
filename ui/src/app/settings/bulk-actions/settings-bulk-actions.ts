@@ -34,7 +34,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n settings.bulk.title: Bulk moderation
-// i18n settings.bulk.intro: Changes applied to everyone at once. Mastodon has no bulk API for any of these, so each one is applied account by account — a big list takes a while, and the server may pause us along the way. You can leave this page while a job runs; it keeps going.
+// i18n settings.bulk.intro: Apply a change to everyone at once. Each account is updated one by one, so a big list takes a while. You can leave this page while it runs.
 // i18n settings.bulk.groupAccounts: Everyone you follow, mute or block
 // i18n settings.bulk.groupLists: One of your lists
 // i18n settings.bulk.loadingLists: Loading your lists…

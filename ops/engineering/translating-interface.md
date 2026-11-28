@@ -10,7 +10,7 @@ From `ui/`, require these to pass:
 
 ```bash
 make i18n
-make test
+npm run check:static
 ```
 
 Do not dispatch translation work while the English dictionary or i18n gate is broken. Bots need a
@@ -25,13 +25,18 @@ so a language done as ~5 large dispatches is far cheaper than the same language 
 small ones. Use [the translation context](../../ui/i18n-context/README.md), the locale's
 glossary in `i18n-context/`, and the generated work order to keep each batch consistent.
 
-## Lite is translated in every locale
+## When to translate
 
-Lite (`/m/`) and its offline strings are the exception to "English first,
-translate when settled": every locale the app ships must have them. `make i18n`
-(`npm run check:i18n`, Rule 2b in `scripts/check-i18n.mjs`) fails when any key
-under `LITE_PREFIXES` or in `LITE_KEYS` is missing from a locale. Translate new
-Lite copy into every locale in the same change, through `make i18n-merge`
+New features ship in English. Core screens are kept translated in every shipped
+language, in a batch when the owner asks. Everything else is caught up when there is
+time, common languages first (`spec/sprint/i18n-catchup-2026-11.md`). Existing
+languages stay. A new one needs a reason (a starter kit, Feed Builder page or real
+traffic) and the owner's say-so.
+
+`check:i18n` Rule 2b (`scripts/check-i18n.mjs`) enforces it. Lite keys
+(`LITE_PREFIXES`, `LITE_KEYS`) are fatal in every locale. The rest of the core
+(`CORE_PREFIXES`) is reported as one line, and becomes fatal (`CORE_FATAL`) once
+every locale has caught up. Merge new core copy through `make i18n-merge`
 (tracked locales need a `--source=` snapshot, as `make i18n-batch` writes).
 
 ## Bot work order
@@ -44,7 +49,7 @@ Replace `de` below with the target locale and give this prompt to the bot:
 > `public/i18n/de.json`, preserving every placeholder and markup tag. Add `de` to
 > `IN_PROGRESS_LOCALES` in `src/app/i18n/locale.ts` so the footer picker is available on `/test/`
 > and `/canary/` while you work. Move it to `PRODUCTION_LOCALES` only when it is ready for root
-> branch. Run `make i18n`, the relevant i18n/locale tests, and `make test`. Force German in the
+> branch. Run `make i18n` and the relevant i18n/locale tests. Force German in the
 > footer and walk home, a post, compose, settings, first-run, login, and an error state. Fix
 > clipping, overflow, untranslated hardcoded UI, and bad terminology you find. Record
 > language-specific lessons in the locale's glossary. An incomplete locale may remain on `/test/` and
@@ -79,7 +84,7 @@ adult-content focused tests before the final full gate.
   surfaces the global footer picker and enables browser negotiation (`de-AT` becomes `de`).
 - `make i18n` passes. Coverage is reported; placeholder, markup, orphan-key, and English-source
   failures are fatal.
-- `make test` and the production build pass.
+- GitHub Actions (`make test`, production build) is green on the push.
 - The locale has been visually walked through at narrow and wide widths.
 - Dictionaries load from `/`, `/_ui/`, `/canary/`, and published subpaths.
 - Machine-translation provenance and the bad-translation reporting path are visible to users.

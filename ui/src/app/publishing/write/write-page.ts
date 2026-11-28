@@ -181,7 +181,7 @@ export interface Notice {
 // i18n pages.write.boardButton: ▦ Board
 // i18n pages.write.toggleDrafts: Drafts
 // i18n pages.write.toggleNotes: Notes
-// i18n pages.write.pageNote: Drafts, editor and notes, side by side. Nothing else.
+// i18n pages.write.pageNote: Drafts, editor and notes, side by side.
 // i18n pages.write.aria.drafts: Drafts
 // i18n pages.write.newDraftButton: New
 // i18n pages.write.manageDrafts: Manage
@@ -285,7 +285,7 @@ export interface Notice {
 // i18n pages.write.wizardStep: Step {{position}} of {{total}}
 // i18n pages.write.aria.publishTo: Publish to
 // i18n pages.write.scheduleAvailable: Mastodon can hold this post server-side. You can choose a publishing time next.
-// i18n pages.write.scheduleUnavailable: This publishes now. Scheduling is offered only for a single Mastodon post; Mawkingbird does not rely on a browser or phone staying open.
+// i18n pages.write.scheduleUnavailable: This publishes now. Scheduling works only for a single Mastodon post.
 // i18n pages.write.noTargets.before: Nothing is connected that this could be published to. Link a service under
 // i18n pages.write.noTargets.after: , or sign in.
 // i18n pages.write.connections: Connections

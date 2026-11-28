@@ -9,7 +9,7 @@ import { pollStatistics } from './poll-statistics';
 // i18n pollResults.sample: Sample: {{count}} voters
 // i18n pollResults.assumption: Population estimates below assume independent random sampling. Online polls are usually self-selected; these intervals do not account for selection bias.
 // i18n pollResults.interval: 95% interval: {{low}}–{{high}}%
-// i18n pollResults.method: Error bars are individual 95% Wilson confidence intervals. Ranking uses more conservative simultaneous 95% Hoeffding bounds across all options; overlapping bounds do not prove a tie. These are fixed-sample estimates, not guarantees when repeatedly checking a live poll.
+// i18n pollResults.method: Error bars are 95% Wilson confidence intervals. Ranking uses stricter 95% Hoeffding bounds; overlapping bounds don't prove a tie. Checking a live poll repeatedly makes these less reliable.
 // i18n pollResults.lead: Observed lead over second place: {{count}} percentage points
 // i18n pollResults.clearLeader: Under random sampling, the lead for “{{name}}” is distinguishable at 95% confidence.
 // i18n pollResults.unclearLeader: Under random sampling, a distinct leader is not established at 95% confidence.

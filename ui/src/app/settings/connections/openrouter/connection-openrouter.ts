@@ -49,12 +49,11 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.openrouter.credits: Credits
 // i18n settings.connections.openrouter.disconnect: Disconnect
 // i18n settings.connections.openrouter.expiry.cleared.a: This key is cleared from this browser on
-// i18n settings.connections.openrouter.expiry.cleared.b: , and fetched back from your vault the next time it is needed. The retention policy of the account you are signed in as is the one that applies.
+// i18n settings.connections.openrouter.expiry.cleared.b: , and fetched back from your vault the next time it is needed.
 // i18n settings.connections.openrouter.expiry.deleted.a: This key is deleted from this browser on
 // i18n settings.connections.openrouter.expiry.deleted.b: . The retention policy of the account you are signed in as is the one that applies.
-// i18n settings.connections.openrouter.intro: One key, hundreds of AI models, billed by usage. Authorization happens directly between this browser and OpenRouter — Mawkingbird never sees a client secret, and the key it issues is yours.
-// i18n settings.connections.openrouter.keyWarning.a: The key OpenRouter issues can spend your OpenRouter credits. It is stored in this browser's localStorage, never sent to Mawkingbird, and sent only to
-// i18n settings.connections.openrouter.keyWarning.b: . Use a browser profile and device you trust; revoke the key at OpenRouter to invalidate it.
+// i18n settings.connections.openrouter.intro: One key, hundreds of AI models, billed by usage. You approve access on OpenRouter, and the key is yours.
+// i18n settings.connections.openrouter.keyWarning.a: This key can spend your OpenRouter credits.
 // i18n settings.connections.openrouter.model.default.a: The model the search and tag helpers use. The default is
 // i18n settings.connections.openrouter.model.default.b: — cheap, fast, and able to return structured JSON, which is all these features ask of it.
 // i18n settings.connections.openrouter.model.in: · in
@@ -72,8 +71,8 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.openrouter.model: Model
 // i18n settings.connections.openrouter.notChecked: Not checked yet.
 // i18n settings.connections.openrouter.prompts.customised: Customised
-// i18n settings.connections.openrouter.prompts.intro.a: What the model is actually asked. The search and tag helpers work in two passes — the model proposes, the Mastodon API grades the proposals, and the model gets one chance to improve them — so those two have a
-// i18n settings.connections.openrouter.prompts.intro.b: slot that is empty on the first pass. The translator has no second pass: there is nothing to grade a translation against.
+// i18n settings.connections.openrouter.prompts.intro.a: What the model is asked. The search and tag helpers make two passes, improving their suggestions once, so those two have a
+// i18n settings.connections.openrouter.prompts.intro.b: slot that is empty on the first pass.
 // i18n settings.connections.openrouter.prompts.placeholderNote.a: Each prompt lists the placeholders it accepts. An unknown one is left visible in the sent prompt rather than silently dropped, so a typo shows up as a stray
 // i18n settings.connections.openrouter.prompts.placeholderNote.b: instead of quietly producing worse answers.
 // i18n settings.connections.openrouter.prompts.placeholders: Placeholders:
@@ -84,8 +83,8 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.openrouter.search: Search
 // i18n settings.connections.openrouter.searching: Searching…
 // i18n settings.connections.openrouter.title: 🧠 OpenRouter
-// i18n settings.connections.openrouter.translation.anonNote: Browsing without an account, this choice doesn't apply — server translation needs a login, so AI is the only translator available and the 🤖🌐 button goes straight to it.
-// i18n settings.connections.openrouter.translation.intro: Which translator the 🌐 button on a post uses. Your server's own translation is the default: it costs you nothing and it is what you already had. AI translation is opt-in.
+// i18n settings.connections.openrouter.translation.anonNote: Without an account, AI is the only translator, so the 🤖🌐 button goes straight to it.
+// i18n settings.connections.openrouter.translation.intro: Which translator the 🌐 button on a post uses. Your server's own translation is the default and free. AI translation is opt-in.
 // i18n settings.connections.openrouter.translation: Translation
 
 @Component({
@@ -312,6 +311,6 @@ function describeError(error: unknown, fallback: string): string {
 }
 
 // i18n settings.connections.openrouter.nativeStorage: Saved on this device
-// i18n settings.connections.openrouter.nativeWarning: Your key is kept in your operating system credential store until you disconnect. Requests go directly to OpenRouter and use your OpenRouter credits.
+// i18n settings.connections.openrouter.nativeWarning: This key spends your OpenRouter credits. It's kept in your operating system's credential store until you disconnect.
 // i18n settings.connections.openrouter.nativeKey: Or paste an OpenRouter API key
 // i18n settings.connections.openrouter.nativeSaveKey: Connect with this key

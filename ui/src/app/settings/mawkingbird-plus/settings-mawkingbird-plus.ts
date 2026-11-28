@@ -82,7 +82,7 @@ import { ArticleReadingTally } from '../../reading/article/article-reading-tally
 // i18n settings.plus.diagnostics.couldNotRead: Could not read
 // i18n settings.plus.diagnostics.current: (current)
 // i18n settings.plus.diagnostics.data: Data
-// i18n settings.plus.diagnostics.intro: See everything your Mawkingbird Plus account stores, including collections kept separately for each Mastodon account. Nothing is changed by looking.
+// i18n settings.plus.diagnostics.intro: See everything your Mawkingbird Plus account stores, including collections kept separately for each Mastodon account.
 // i18n settings.plus.diagnostics.keysOpen: keys (
 // i18n settings.plus.diagnostics.lastUpdated: Account last updated
 // i18n settings.plus.diagnostics.lists: Lists
@@ -114,23 +114,23 @@ import { ArticleReadingTally } from '../../reading/article/article-reading-tally
 // i18n settings.plus.diagnostics.whatStored: What is stored
 // i18n settings.plus.features.intro: Turn any of these off and back on whenever you like. Turning one off stops it syncing — nothing stored on your account is deleted.
 // i18n settings.plus.features.title: What's switched on
-// i18n settings.plus.intro.free: A free Mawkingbird account. It is optional and always will be — feeds, posting and the CORS proxy all work signed out, exactly as they do today.
+// i18n settings.plus.intro.free: A free Mawkingbird account. It's optional: feeds, posting and the CORS proxy all work signed out.
 // i18n settings.plus.intro.supporter: Thank you for supporting Mawkingbird. Here is what your subscription is doing.
 // i18n settings.plus.offer.aYear: a year.
 // i18n settings.plus.offer.buysTwoThings: A subscription buys two things: articles open here instead of in another tab, and everything you set up shows up on your other devices. The free column is what you keep either way.
 // i18n settings.plus.offer.free: Free
-// i18n settings.plus.offer.moreMayFollow: More may follow; none of it is promised. Anything already stored on your account stays readable and exportable whether or not you keep subscribing.
+// i18n settings.plus.offer.moreMayFollow: Anything stored on your account stays readable and exportable whether or not you keep subscribing.
 // i18n settings.plus.offer.plus: Plus
 // i18n settings.plus.offer.seeExactly.after: — every limit, and what changes when you sign in.
 // i18n settings.plus.offer.seeExactly: See exactly what free and Plus include
-// i18n settings.plus.offer.staysFree: Mawkingbird itself stays free: every feed, timeline, list and post works without an account, and nothing you have made is taken away if you never subscribe or if you stop.
-// i18n settings.plus.offer.stripeNote: Payment is handled by Stripe. This browser never sees your card details, and Mawkingbird stores nothing beyond which account is a supporter and when the year ends.
+// i18n settings.plus.offer.staysFree: Mawkingbird itself stays free: every feed, timeline, list and post works without an account, and you keep everything you made if you stop.
+// i18n settings.plus.offer.stripeNote: Payment is handled by Stripe. Mawkingbird never sees your card details.
 // i18n settings.plus.offer.title: Support Mawkingbird
 // i18n settings.plus.offer.what: What
 // i18n settings.plus.signin.emailLabel: Email address
-// i18n settings.plus.signin.intro: Signing in is optional — Mawkingbird works without an account. What it adds is somewhere to keep what you set up, so it is waiting for you on your phone and your other computers instead of only here. Everything already in this browser stays here either way.
+// i18n settings.plus.signin.intro: Signing in is optional. It keeps your setup on your account, so it's waiting on your phone and other computers too. Everything in this browser stays here either way.
 // i18n settings.plus.signin.linkSent: If that address can receive mail, a sign-in link is on its way. It expires in 15 minutes and can only be used once.
-// i18n settings.plus.signin.noPassword: There is no password. Mawkingbird sends a one-time link instead, so there is nothing to remember and nothing for us to lose. Your address is used to identify the account and to send that link — nothing else.
+// i18n settings.plus.signin.noPassword: There's no password. Mawkingbird emails you a one-time sign-in link.
 // i18n settings.plus.signin.seeInclude: See what free and Plus each include.
 // i18n settings.plus.signin.sendLink: Email me a sign-in link
 // i18n settings.plus.signin.sending: Sending…
@@ -170,7 +170,7 @@ import { ArticleReadingTally } from '../../reading/article/article-reading-tally
 // i18n settings.plus.vault.error.unreachable: The profile Worker or vault binding could not be reached
 // i18n settings.plus.vault.expiry: Stored-copy expiry
 // i18n settings.plus.vault.gettingTitle: What you are getting
-// i18n settings.plus.vault.lockedNote: A stored copy exists, but its credential count and connector names are encrypted. Unlock it to see them — the server genuinely cannot.
+// i18n settings.plus.vault.lockedNote: A stored copy exists, but its credential count and connector names are encrypted. Unlock it to see them.
 // i18n settings.plus.vault.newPassphrase: New vault passphrase
 // i18n settings.plus.vault.noExpiry: No expiry while subscribed
 // i18n settings.plus.vault.noneStored: No connection credentials are stored yet.
@@ -924,4 +924,4 @@ const VAULT_POLICIES: Record<
 
 // i18n plus.billing.portal: Manage billing
 // i18n plus.billing.manage: Manage or cancel your subscription from the receipt email Stripe sent you. Cancelling stops renewal; you keep Plus until the end of the billing period you paid for.
-// i18n plus.billing.stripe: Payment is handled by Stripe. This browser never sees your card details. Your account records your subscription status and when the current billing period ends.
+// i18n plus.billing.stripe: Payment is handled by Stripe. Mawkingbird never sees your card details. Your account records your subscription status and when the billing period ends.

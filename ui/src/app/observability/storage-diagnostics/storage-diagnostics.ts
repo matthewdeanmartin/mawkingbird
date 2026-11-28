@@ -42,13 +42,13 @@ import { RemoteStorageUsage } from '../remote-storage-usage';
  * Everything here is a live scan of this browser. Nothing is sent anywhere.
  */
 // i18n storageDiagnostics.title: Storage Diagnostics
-// i18n storageDiagnostics.intro: What this app is keeping on this device, and how much room the browser will give it. Every figure here is a live scan of this browser — nothing on this page is sent anywhere.
+// i18n storageDiagnostics.intro: What this app is keeping on this device, and how much room the browser will give it.
 // i18n storageDiagnostics.localHeading: Local storage
 // i18n storageDiagnostics.refresh: Refresh
 // i18n storageDiagnostics.tileKeys: keys
 // i18n storageDiagnostics.tileTotalSize: total size
 // i18n storageDiagnostics.tileLargestKey: largest key
-// i18n storageDiagnostics.localNote: This is where the app actually keeps its data — settings, feeds, lists and the metrics behind the Observability page. Deleting a key here is immediate and permanent; the app will rebuild what it can and forget the rest.
+// i18n storageDiagnostics.localNote: Where the app keeps its data: settings, feeds, lists and Observability metrics. Deleting a key is immediate and permanent.
 // i18n storageDiagnostics.colKey: Key
 // i18n storageDiagnostics.colSize: Size
 // i18n storageDiagnostics.colChars: Chars
@@ -63,7 +63,7 @@ import { RemoteStorageUsage } from '../remote-storage-usage';
 // i18n storageDiagnostics.remoteNote: {{label}} — as counted by the profile service itself, read {{when}}. The figure updates whenever settings sync talks to the service, so it can lag a recent change until the next sync.
 // i18n storageDiagnostics.remoteEmpty: Nothing synced from this browser yet. Turn on settings sync to store settings on the profile service and see the figure here.
 // i18n storageDiagnostics.idbHeading: IndexedDB &amp; quota
-// i18n storageDiagnostics.idbNote: This app keeps its data in local storage, not IndexedDB — so an entry here is something else on this origin. The quota figure covers <em>all</em> browser storage for this site, which is what the browser actually checks before evicting anything.
+// i18n storageDiagnostics.idbNote: Mawkingbird keeps its data in local storage, so anything listed here belongs to something else on this site. The quota covers <em>all</em> browser storage for this site.
 // i18n storageDiagnostics.idbPersistent: Storage is persistent: this origin is exempt from automatic eviction.
 // i18n storageDiagnostics.colDatabase: Database
 // i18n storageDiagnostics.colVersion: Version

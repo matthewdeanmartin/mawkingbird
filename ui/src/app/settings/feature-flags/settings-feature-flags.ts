@@ -24,12 +24,12 @@ const STATE_KEYS: Record<FeatureFlagState, string> = {
 // i18n settings.flags.features: Features
 // i18n settings.flags.connectors: Connectors
 // i18n settings.flags.connectors.link: Connections
-// i18n settings.flags.connectors.hint.before: One switch per service, because that is how they break — when a third-party API goes down or starts refusing browsers, turning that one off stops people setting it up and hitting the failure. A turned-off connector still appears under
+// i18n settings.flags.connectors.hint.before: One switch per service. If a service goes down or starts refusing browsers, turn it off so nobody sets it up. A turned-off connector still appears under
 // i18n settings.flags.connectors.hint.after: , greyed out. Anything you have already connected keeps its credential; it just stops being offered.
 // i18n settings.flags.proxies: CORS proxies
 // i18n settings.flags.proxies.link: Connections → CORS proxy
 // i18n settings.flags.proxies.hint.before: Which public CORS proxies are offered under
-// i18n settings.flags.proxies.hint.after: . All four are off by default: each one failed often enough in testing — stripped API keys, aggressive rate limits, domain registration required, or simply very slow — that recommending them made setup look broken. What remains is the Mawkingbird proxy and any proxy you run yourself. Turning one on here adds it back to the picker, with its measured limitations written on the card. Turning one off also stops it being used if it was already selected.
+// i18n settings.flags.proxies.hint.after: . All four are off by default because they often failed in testing. Turning one on adds it to the picker, with its limits noted on the card. Turning one off also stops it being used.
 // i18n settings.flags.state.production: Production
 // i18n settings.flags.state.canary: Canary and test
 // i18n settings.flags.state.test: Test only

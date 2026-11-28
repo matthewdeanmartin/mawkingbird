@@ -54,10 +54,10 @@ export type SyntaxNetwork = 'mastodon' | 'bluesky';
 // i18n pages.search.syntax.linksToExactUrl: Links to this exact URL
 // i18n pages.search.syntax.mastodonTitle: Mastodon search syntax
 // i18n pages.search.syntax.blueskyTitle: Bluesky search syntax
-// i18n pages.search.syntax.intro: These work in a <strong>post</strong> search — and in an <strong>account</strong> search, which runs this same post search as one of its two halves and groups the hits by author (they narrow that half only; names and bios are matched as plain text). Hashtag search matches plain text only.
+// i18n pages.search.syntax.intro: These work in a <strong>post</strong> search, and in an <strong>account</strong> search, where they narrow the post half. Hashtag search matches plain text only.
 // i18n pages.search.syntax.close: Close
-// i18n pages.search.syntax.blueskyFooter: Combine them freely, separated by spaces — everything you write must match: <code>rust from:pfrazee.com since:2026-01-01 #compiler</code>. An operator Bluesky doesn't recognise is treated as a <em>search word</em> rather than ignored, so a misspelled one usually returns nothing at all.
-// i18n pages.search.syntax.mastodonFooter: Combine them freely, separated by spaces — everything you write must match: <code>+rust from:&#64;a&#64;b.social after:2026-01-01 -is:reply</code>. Anything the server doesn't recognise is quietly ignored, so if a query returns more than you expected, check the spelling of the operator.
+// i18n pages.search.syntax.blueskyFooter: Combine them with spaces; everything must match: <code>rust from:pfrazee.com since:2026-01-01 #compiler</code>. A misspelled operator is searched as a word, so it usually finds nothing.
+// i18n pages.search.syntax.mastodonFooter: Combine them with spaces; everything must match: <code>+rust from:&#64;a&#64;b.social after:2026-01-01 -is:reply</code>. Unknown operators are ignored, so check spelling if you get too many results.
 
 /**
  * The operator reference, sourced from `mastodon-query-serializer.ts`.
@@ -69,7 +69,7 @@ export type SyntaxNetwork = 'mastodon' | 'bluesky';
  * `sprint/search-2-serializer-and-explain.md`).
  */
 // i18n pages.search.syntax.syntheticMedia: Media types (post search only)
-// i18n pages.search.syntax.syntheticMediaNote: Mawkingbird checks attachments and recognized external links locally within your request budget. Without keywords, audio, video and embed filters scan your home feed. Load more continues the scan. Multiple types must all be present; GIFs are separate from video and YouTube is always video.
+// i18n pages.search.syntax.syntheticMediaNote: Without keywords, audio, video and embed filters scan your Home feed; Load more scans further. Picking several types finds posts with all of them. GIFs count separately from video, and YouTube counts as video.
 const GROUPS: SyntaxGroup[] = [
   {
     title: 'pages.search.syntax.syntheticMedia',

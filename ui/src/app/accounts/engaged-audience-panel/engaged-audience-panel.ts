@@ -11,8 +11,8 @@ import { decayTargets } from '../interaction-decay';
 import { InteractionDecayScan } from '../interaction-decay-scan';
 
 // i18n engagedAudience.heading: When your audience is around
-// i18n engagedAudience.explain: From the people who liked, boosted, replied to or mentioned you, read from your notifications. These are the people you actually reach, not every follower.
-// i18n engagedAudience.cta: Uses the same read as "When are your posts done?" above. Nothing is changed.
+// i18n engagedAudience.explain: The people who liked, boosted, replied to or mentioned you, from your notifications. These are the people you actually reach.
+// i18n engagedAudience.cta: Uses the same read as "When are your posts done?" above.
 // i18n engagedAudience.run: Read my notifications
 // i18n engagedAudience.reading: Reading notifications… progress is shown above.
 // i18n engagedAudience.nothing: No likes, boosts or mentions in the notifications read.
@@ -33,7 +33,7 @@ import { InteractionDecayScan } from '../interaction-decay-scan';
 // i18n engagedAudience.languages.biosNote: From {{count}} bios. A bio is short and often mixed, so this is a rough guide.
 // i18n engagedAudience.languages.none: Not enough text to tell.
 // i18n engagedAudience.help.about: About {{stat}}
-// i18n engagedAudience.help.grid: Each square is an hour of the week. Darker means more different people reacted then. Each person counts once per square, however often they reacted, so one fan can't fill a square alone. People react to posts, so these hours lean toward the hours you post in. Compare with your own posting hours below: a busy square where you rarely post is a strong hint.
+// i18n engagedAudience.help.grid: Each square is an hour of the week. Darker means more different people reacted then; each person counts once per square. A busy square where you rarely post is a good time to try.
 // i18n engagedAudience.help.best: The three squares with the most different people reacting.
 // i18n engagedAudience.help.languages: Detected from the text of replies and mentions, using the language the writer declared when there is one. Bios use detection only.
 // i18n engagedAudience.share: {{pct}}%

@@ -28,6 +28,31 @@ A successful page load does not always mean Mawkingbird can read the service. Th
 
 Do not install an extension that disables browser security checks just to make a connection work. Such an extension can affect unrelated sites you visit, including mail and banking sites.
 
+## How the check works
+
+Each service is checked in up to three steps:
+
+1. **Reachable.** Do the bytes arrive at all? If not, a firewall, DNS filter,
+   extension or outage is in the way, and a proxy or extension can't fix it. The time
+   shown helps: a refusal comes back in milliseconds, while blocked traffic takes
+   seconds to give up.
+2. **Readable.** Will the service let Mawkingbird read the reply? If not, the service
+   has chosen to block browser apps. Only the service can change that, so Mawkingbird
+   reads it through a [CORS proxy](cors-proxy.md) instead.
+3. **Through your proxy.** If you have a proxy, services that fail step 2 are tried
+   through it. If the proxy works but the connection still fails, check your API key,
+   your credit balance, or a permission you haven't granted yet.
+
+A browser doesn't tell a web page why a request failed. That's why Connection Doctor
+asks you to open the service in a tab and say what you see.
+
+If the tab shows a "verify you are human" check, your network is fine. The service
+blocks traffic it can't identify, and clearing the check in the tab won't make the
+connection work.
+
+Status-page links go to each service's own status page where it has one. Third-party
+outage sites are often out of date for small services, so some rows have no link.
+
 ## Results can change
 
 Run the check again after changing networks, disabling a suspected blocker, configuring a proxy, or waiting out a service outage. A result describes this browser on this network at that moment.

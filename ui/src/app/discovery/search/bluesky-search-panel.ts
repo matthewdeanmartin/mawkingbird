@@ -92,7 +92,7 @@ import { Terminology } from '../../i18n/terminology';
 
 // i18n pages.search.bluesky.maximumApiCalls: Maximum API calls
 // i18n pages.search.bluesky.budget: {{count}} page (~{{items}})
-// i18n pages.search.bluesky.advancedPostsDescription: These are Bluesky's own filters. There is deliberately no media/reply/sensitive filter — <code>searchPosts</code> has no such parameter, and offering one would mean silently ignoring it. Everything here can also be typed straight into the search box.
+// i18n pages.search.bluesky.advancedPostsDescription: These are Bluesky's own filters. Bluesky doesn't offer media, reply or sensitive filters. Everything here can also be typed straight into the search box.
 // i18n pages.search.bluesky.postedBy: Posted by
 // i18n pages.search.bluesky.mentioning: Mentioning
 // i18n pages.search.bluesky.hashtags: Hashtags
@@ -120,7 +120,7 @@ import { Terminology } from '../../i18n/terminology';
 // i18n pages.search.bluesky.any: any
 // i18n pages.search.bluesky.applyAndSearch: Apply & search
 // i18n pages.search.bluesky.clear: Clear
-// i18n pages.search.bluesky.advancedAccountsDescription: Bluesky's account search takes no parameters beyond the words themselves, so these gates filter the people it already found rather than changing the search.
+// i18n pages.search.bluesky.advancedAccountsDescription: These filter the people Bluesky's account search already found.
 // i18n pages.search.bluesky.followers: Followers
 // i18n pages.search.bluesky.following: Following
 // i18n pages.search.bluesky.posts: Posts
@@ -171,7 +171,7 @@ import { Terminology } from '../../i18n/terminology';
 // i18n pages.search.bluesky.searching: Searching Bluesky…
 // i18n pages.search.bluesky.searchingTitle: Searching Bluesky
 // i18n pages.search.bluesky.accountSearchIntro: Matches handles, display names and bios. Works without a linked account.
-// i18n pages.search.bluesky.postSearchIntro: Type words to match, or use Bluesky's operators: <code>from:handle</code>, <code>mentions:handle</code>, <code>#tag</code>, <code>lang:en</code>, <code>domain:github.com</code>, <code>since:2026-01-01</code>, <code>until:2026-07-01</code>. Press <strong>Syntax?</strong> above for the full list, or fill in <strong>Advanced</strong> and the box will show you the query it built.
+// i18n pages.search.bluesky.postSearchIntro: Type words to match, or use operators such as <code>from:handle</code>, <code>#tag</code>, <code>lang:en</code> and <code>since:2026-01-01</code>. Press <strong>Syntax?</strong> for the full list, or fill in <strong>Advanced</strong> to build a query.
 // i18n pages.search.bluesky.noAccountsMatched: No Bluesky accounts matched that search.
 // i18n pages.search.bluesky.noPostsMatched: No Bluesky {{postType}} matched that search.
 // i18n pages.search.bluesky.people: People

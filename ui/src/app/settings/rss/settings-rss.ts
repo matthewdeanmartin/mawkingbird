@@ -68,7 +68,7 @@ interface ImportReport {
  */
 /** English source strings; see scripts/extract-i18n.mjs. */
 // i18n settings.rss.title: 📡 RSS feeds
-// i18n settings.rss.intro: Any RSS or Atom feed becomes posts in your home feed, read-only, with an "Open original" link. No account, no credential — a feed URL is all it takes.
+// i18n settings.rss.intro: Any RSS or Atom feed becomes posts in your home feed, with an "Open original" link. All you need is the feed URL.
 // i18n settings.rss.cors: Reading a feed directly in the browser requires its site to allow browser (CORS) access. If it blocks access, you can use a configured proxy or the Native app. Adding a feed checks whether it can be fetched.
 // i18n settings.rss.saved: {{count}} of {{limit}} feeds saved in this browser.
 // i18n settings.rss.proxy.before: Feeds that block browser access can be routed through
@@ -79,12 +79,12 @@ interface ImportReport {
 // i18n settings.rss.proxy.change: Change
 // i18n settings.rss.proxy.setUp: Set one up
 // i18n settings.rss.scrollRead: Mark items read as I scroll past them
-// i18n settings.rss.scrollRead.hint: Off by default. Opening an item always marks it read regardless of this setting; this only covers items you scrolled past without opening, and waits until one has been on screen for a moment so a fast scroll to the bottom does not mark everything on the way.
+// i18n settings.rss.scrollRead.hint: Off by default. Opening an item always marks it read. This also marks items you scroll past, once they've been on screen for a moment.
 // i18n settings.rss.readOne: {{count}} item marked read, {{starred}} starred.
 // i18n settings.rss.readOther: {{count}} items marked read, {{starred}} starred.
 // i18n settings.rss.clearHistory: Clear reading history
 // i18n settings.rss.reuseFor: Reuse a fetched feed for
-// i18n settings.rss.cache.hint: Feeds are re-read by every view that shows them. Without a cache that is a request per visit — enough to exhaust a free CORS proxy's rate limit just by reading. Cached feeds are kept in this browser's IndexedDB, which has room for feeds far too large for ordinary settings storage.
+// i18n settings.rss.cache.hint: Saves feeds in this browser so each view doesn't fetch them again, which keeps you under free CORS proxy limits.
 // i18n settings.rss.cachedOne: {{count}} feed cached in this browser.
 // i18n settings.rss.cachedOther: {{count}} feeds cached in this browser.
 // i18n settings.rss.cachedNone: Nothing cached yet.
@@ -95,10 +95,10 @@ interface ImportReport {
 // i18n settings.rss.retryVia: Try again via {{proxy}}
 // i18n settings.rss.proxyWarning: The proxy will see this feed's address and its contents.
 // i18n settings.rss.opml: 📄 Import & export (OPML)
-// i18n settings.rss.opml.hint: OPML is the subscription-list format every feed reader speaks. Export yours to move it somewhere else, or import a file from a reader you are leaving. Folders in an imported file are flattened — Mawkingbird has no folders yet.
+// i18n settings.rss.opml.hint: OPML is the subscription-list format feed readers use. Export yours to move it, or import one from another reader. Folders are flattened.
 // i18n settings.rss.maxFeeds: Maximum feeds
 // i18n settings.rss.save: Save
-// i18n settings.rss.maxFeeds.hint: We suggest no more than {{recommended}}. Every feed is re-read by every view that shows them, so a long list opens slower and uses more of a free CORS proxy's quota — but it is your reading list, so set it where you want it. Lowering this never deletes a feed you already have.
+// i18n settings.rss.maxFeeds.hint: We suggest no more than {{recommended}}. Each feed is re-read by every view that shows it, so a long list opens slower and uses more proxy quota. Lowering this never deletes a feed.
 // i18n settings.rss.exportOpml: Export OPML
 // i18n settings.rss.friendFeeds: Find friends’ blogs
 // i18n settings.rss.importing: Importing…

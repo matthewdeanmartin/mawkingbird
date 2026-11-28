@@ -70,11 +70,11 @@ const PAGE_SIZE = 80;
 // i18n pages.directory.check: Check their recent posts ({{count}} requests)
 // i18n pages.directory.checking: Checking…
 // i18n pages.directory.noneInLanguage: Nobody loaded so far posts in {{language}}. Load more, or check the people we can’t tell yet.
-// i18n pages.directory.blurb: Accounts on {{host}} that chose to appear in the public directory. Opting out is the default on some servers, so this is a slice of the membership, not a roster.
+// i18n pages.directory.blurb: Accounts on {{host}} that chose to appear in the public directory. Some servers leave people out unless they opt in.
 // i18n pages.directory.tabs.active: Recently active
 // i18n pages.directory.tabs.new: Recently joined
 // i18n pages.directory.thisServerOnly: This server only
-// i18n pages.directory.remoteNote: Including remote accounts {{host}} has seen — that depends on who its members follow, not on the whole network.
+// i18n pages.directory.remoteNote: Including remote accounts {{host}} has seen through its members' follows.
 // i18n pages.directory.searchFallback.a: You can still
 // i18n pages.directory.searchFallback.b: search for accounts
 // i18n pages.directory.searchFallback.c: by name or handle.

@@ -1,5 +1,5 @@
 {
-  "testCount": 11637,
+  "testCount": 11638,
   "tests": [
     "src/app/accounts/account-analytics/account-analytics-native.spec.ts :: AccountAnalytics in the native app compares periods, lists months and shows your own follower history",
     "src/app/accounts/account-analytics/account-analytics-native.spec.ts :: AccountAnalytics in the native app falls back to the web sampler when the archive is empty and the server is unreachable",
@@ -11514,6 +11514,7 @@
     "src/app/translation/translation-router-misskey.spec.ts :: TranslationRouter with Misskey notes translates afresh when the text changed (an edit)",
     "src/app/translation/translation-router-misskey.spec.ts :: plainText adds image descriptions and poll choices as marked lines",
     "src/app/translation/translation-router-misskey.spec.ts :: plainText is unchanged for a post with neither",
+    "src/app/translation/translation-router.spec.ts :: TranslationRouter also uses server auto-detection when an untagged post has a local language",
     "src/app/translation/translation-router.spec.ts :: TranslationRouter asks for the source when the label says English and detection cannot tell",
     "src/app/translation/translation-router.spec.ts :: TranslationRouter counts MyMemory in characters, and stops for the day when its quota runs out",
     "src/app/translation/translation-router.spec.ts :: TranslationRouter does not ask the server for a mis-tagged post: it would translate from the wrong tag",

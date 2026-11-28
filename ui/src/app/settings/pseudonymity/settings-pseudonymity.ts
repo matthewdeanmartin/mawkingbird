@@ -36,7 +36,7 @@ import {
 // i18n settings.pseudonymity.cleanLinks: Remove known tracking parameters from posted links
 // i18n settings.pseudonymity.linksHint: Applies to Mastodon and Bluesky posts. Unknown parameters, fragments, signed links and shortened URLs are preserved; they can still contain identifiers. Review links before posting.
 // i18n settings.pseudonymity.cleanMedia: Remove metadata from new photo uploads
-// i18n settings.pseudonymity.mediaHint: Still JPEG and PNG only, up to 20 MB and 40 megapixels. Photos are re-encoded in this browser with a neutral filename; JPEG quality and colors may change. Animation, video, audio and other formats are blocked while this is enabled. Previously uploaded media is unchanged: remove it and attach it again. Visible details and alt text can still identify you.
+// i18n settings.pseudonymity.mediaHint: Still JPEG and PNG only, up to 20 MB. Photos are re-encoded with a neutral filename, so quality and colors may change. Other formats are blocked while this is on. To clean media you already attached, attach it again.
 // i18n settings.pseudonymity.saveFailed: This setting could not be saved in your browser. Free some local storage and try again.
 @Component({
   selector: 'app-settings-pseudonymity',

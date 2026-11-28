@@ -238,7 +238,7 @@ export function stripLeadingMentions(html: string): string {
 // i18n pages.conversations.live.diagnose: Still not live. Click to see why.
 // i18n pages.conversations.liveDiag.title: Why live updates are not working
 // i18n pages.conversations.liveDiag.close: Close
-// i18n pages.conversations.liveDiag.summary: Live updates have not connected for {{seconds}} seconds. This is what Mawkingbird knows. Browsers hide the details of a failed live connection, so the server's own reason may be missing.
+// i18n pages.conversations.liveDiag.summary: Live updates have not connected for {{seconds}} seconds. Here's what Mawkingbird knows; the server's own reason may be missing.
 // i18n pages.conversations.liveDiag.offline: Your browser says it is offline. Check your network connection first.
 // i18n pages.conversations.liveDiag.streamDirect: Private messages
 // i18n pages.conversations.liveDiag.streamUser: Mentions and replies

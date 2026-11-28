@@ -4,10 +4,10 @@ import { TranslocoService } from '@jsverse/transloco';
 import { ClientPrefs } from '../platform/storage/client-prefs';
 import { Pseudonymity } from '../accounts/pseudonymity';
 
-// i18n pseudonymity.postReminder: Pseudonymity mode is on for {{account}}. Before posting, check that your text and attachments don't reveal personal information. Do you want to post? You can disable this reminder in Settings → Advanced → Pseudonymity.
+// i18n pseudonymity.postReminder: Pseudonymity mode is on for {{account}}. Check your text and attachments for personal information. Post now? You can turn this reminder off in Settings → Advanced → Pseudonymity.
 // i18n pseudonymity.postConfirm: Do you really want to post that?
 // i18n pseudonymity.currentAccount: this account
-// i18n compose.confirmPrivate: Send this private message? Private messages on the fediverse are not end-to-end encrypted: the admins of your server and of each recipient's server can read them. Only the people @-mentioned in it receive it, and mentioning someone new later adds them to the conversation. Recipients can copy or screenshot it.
+// i18n compose.confirmPrivate: Send this private message? Only the people @-mentioned get it. Fediverse messages aren't encrypted, so server admins can read them.
 
 /** One confirmation per publish attempt, shared by Write and the reply composer. */
 @Injectable({ providedIn: 'root' })

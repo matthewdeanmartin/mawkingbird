@@ -6,7 +6,7 @@ import { AppFooter } from '../../../shell/app-footer/app-footer';
 
 // i18n pagesWelcomeBack.eyebrow: Almost there
 // i18n pagesWelcomeBack.heading: Create your account on <strong>{{server}}</strong>
-// i18n pagesWelcomeBack.lead: Your account is created on the server itself — a client like this should never handle your email or password. That means <strong>{{server}}</strong> won't send you back here automatically. Here's the two-step plan:
+// i18n pagesWelcomeBack.lead: You create your account on the server itself, so <strong>{{server}}</strong> won't send you back here automatically. Here's the two-step plan:
 // i18n pagesWelcomeBack.step1.title: Keep this page
 // i18n pagesWelcomeBack.step1.body: Press <kbd>{{hint}}</kbd> now so you can find your way back after signing up. This is the page you'll return to.
 // i18n pagesWelcomeBack.step1.bodyTouch: Keep this tab open — the next step opens in a new one, so you can come back to this. Bookmarking it from your browser's menu works too.

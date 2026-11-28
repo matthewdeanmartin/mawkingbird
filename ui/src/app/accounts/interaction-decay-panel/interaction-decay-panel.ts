@@ -30,8 +30,8 @@ import { DECAY_MAX_PAGES, DECAY_PAGE_SIZE, InteractionDecayScan } from '../inter
 
 // i18n interactionDecay.heading: When are your posts done?
 // i18n interactionDecay.explain: How quickly likes, boosts and replies arrive after you post, and when they stop. Use it to judge when everyone who will see a post has seen it.
-// i18n interactionDecay.cost: Reads your like, boost and reply notifications back to your last {{count}} posts that are at least 7 days old: up to {{pages}} requests of {{size}}. Nothing is changed.
-// i18n interactionDecay.costArchive: Uses the notifications archived on this device for your last {{count}} posts that are at least 7 days old, after a short check for new ones. If the archive is still filling, it reads your server instead: up to {{pages}} requests. Nothing is changed.
+// i18n interactionDecay.cost: Reads your like, boost and reply notifications back to your last {{count}} posts that are at least 7 days old: up to {{pages}} requests of {{size}}.
+// i18n interactionDecay.costArchive: Uses the notifications saved on this device for your last {{count}} posts that are at least 7 days old. If those are still loading, it reads your server instead: up to {{pages}} requests.
 // i18n interactionDecay.progressArchive: Reading your archive
 // i18n interactionDecay.stop.archiveStart: Your archive goes back to {{date}} so far.
 // i18n interactionDecay.fromArchive: From the archive on this device.

@@ -33,13 +33,13 @@ import { StatusCard } from '../../posts/status-card/status-card';
 // i18n tagBundle.noTagsYet: No tags yet — add one below to build the feed.
 // i18n tagBundle.addPlaceholder: Add a hashtag…
 // i18n tagBundle.add: Add
-// i18n tagBundle.fullAt: Full at {{max}} tags. Each tag is one request every time this feed opens, so the cap keeps a bundle from hammering the server.
+// i18n tagBundle.fullAt: Full at {{max}} tags. Each tag is one request every time this feed opens.
 // i18n tagBundle.tabPosts: Posts
 // i18n tagBundle.tabPeople: People
 // i18n tagBundle.loading: Loading…
 // i18n tagBundle.addATag: Add a tag to see posts.
 // i18n tagBundle.noRecentPosts: No recent posts in these tags.
-// i18n tagBundle.membersNote: Everyone who wrote a post in this feed. A bundle has no real membership, so this is whoever is posting in these tags right now.
+// i18n tagBundle.membersNote: Everyone posting in these tags right now.
 // i18n tagBundle.nobodyYet: Nobody yet.
 // i18n tagBundle.bundleFullError: A bundle holds at most {{max}} tags — each one is a request every time the feed opens. Remove one first.
 // i18n tagBundle.tagAlreadyIn: That tag is already in this bundle.

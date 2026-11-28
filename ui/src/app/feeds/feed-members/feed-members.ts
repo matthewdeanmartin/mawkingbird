@@ -50,8 +50,8 @@ const MAX_RESOLVED_AUTHORS = 80;
 // i18n feedMembers.loading: Looking at who's posting…
 // i18n feedMembers.error: Couldn't sample this feed — try again later.
 // i18n feedMembers.empty: Nobody has posted here yet.
-// i18n feedMembers.summary.one: The {{accountCount}} account that wrote the {{postCount}} {{posts}} sampled from this feed. There's no membership list for a feed like this — these are just the people posting in it right now.
-// i18n feedMembers.summary.other: The {{accountCount}} accounts that wrote the {{postCount}} {{posts}} sampled from this feed. There's no membership list for a feed like this — these are just the people posting in it right now.
+// i18n feedMembers.summary.one: The {{accountCount}} account that wrote the {{postCount}} {{posts}} sampled from this feed: the people posting in it right now.
+// i18n feedMembers.summary.other: The {{accountCount}} accounts that wrote the {{postCount}} {{posts}} sampled from this feed: the people posting in it right now.
 // i18n feedMembers.sample.sizeAria: Sample size
 // i18n feedMembers.sample.label: Sample:
 // i18n feedMembers.sample.optionTitle: Sample {{count}} {{posts}}

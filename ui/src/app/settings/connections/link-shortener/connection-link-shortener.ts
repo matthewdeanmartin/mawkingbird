@@ -62,7 +62,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.linkShortener.nativeAnonymous: No account is needed. Links created here cannot be edited or deleted later.
 // i18n settings.connections.linkShortener.title: 🔗 Link shortener
 // i18n settings.connections.linkShortener.intro: Shorten the URLs you post, and keep track of the links you have made. Choose one active service, as with your CORS proxy. Saved keys stay available when you switch services.
-// i18n settings.connections.linkShortener.credentialWarning: These API keys are stored in this browser's localStorage for this connection. A key here can create and delete links in your account, so use a key scoped to link management if the service offers one, and only on a device you trust. You can revoke it on the provider's own site at any time.
+// i18n settings.connections.linkShortener.credentialWarning: This key can create and delete links in your account.
 // i18n settings.connections.linkShortener.servicesHeading: Services
 // i18n settings.connections.linkShortener.activePill: Active
 // i18n settings.connections.linkShortener.connectedPill: Connected
@@ -101,7 +101,7 @@ import { PageDiagnostics } from '../../../platform/diagnostics/page-diagnostics'
 // i18n settings.connections.linkShortener.needsDomain: {{label}} needs the short domain from your account.
 // i18n settings.connections.linkShortener.connectedFull: Connected to {{label}}. Your key works from this browser.
 // i18n settings.connections.linkShortener.couldNotReach: Couldn't reach {{label}}.
-// i18n settings.connections.linkShortener.needsProxy: {{label}}'s API doesn't answer web browsers directly. Mawkingbird Native connects from your computer; install it under Settings → Install app, then test again.
+// i18n settings.connections.linkShortener.needsProxy: {{label}} doesn't answer browsers directly. Install Mawkingbird Native under Settings → Install app, then test again.
 // i18n settings.connections.linkShortener.notSentThroughProxy: Not sent through {{proxy}}. The direct attempt also failed. Retry later, or choose a different CORS proxy.
 // i18n settings.connections.linkShortener.probeResult: {{label}}: {{message}}
 // i18n settings.connections.linkShortener.consentWithdrawn: Consent withdrawn. You will be asked again next time.

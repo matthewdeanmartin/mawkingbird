@@ -54,6 +54,7 @@ export const PRODUCTION_LOCALES = [
   'pl',
   'ru',
   'tr',
+  'vi',
 ] as const;
 /**
  * Locales shipped only to `/test/` and `/canary/`.
@@ -62,7 +63,6 @@ export const PRODUCTION_LOCALES = [
  * {@link PRODUCTION_LOCALES}.
  */
 export const IN_PROGRESS_LOCALES = [
-  'vi',
   'hi',
   'sv',
   'ms',

@@ -27,14 +27,14 @@ import { CONNECTION_SCOPE_COPY } from '../connection-catalog';
 // i18n settings.connections.mastodon.anonymousActiveBefore: You're browsing anonymously, which already reads a Mastodon server — change it in
 // i18n settings.connections.mastodon.anonymousSettingsLink: Settings → Anonymous
 // i18n settings.connections.mastodon.alreadySignedIn: You're signed in to Mastodon already, so it's your account here rather than a connector. This page is for accounts whose identity lives on Bluesky.
-// i18n settings.connections.mastodon.nothingConnected: Nothing is connected, so Mawkingbird isn't calling Mastodon at all and no Mastodon widgets take up space in your sidebar. Turning it on adds Explore, trends and hashtag timelines.
+// i18n settings.connections.mastodon.nothingConnected: Turn this on to add Mastodon's Explore, trends and hashtag timelines to your sidebar.
 // i18n settings.connections.mastodon.readWithoutAccount: Read {{server}} without an account
-// i18n settings.connections.mastodon.noAccountNeeded: No account, no token, nothing to sign up for — it reads what that server shows the public. You can point it at a different server, or sign in, afterwards.
+// i18n settings.connections.mastodon.noAccountNeeded: No account needed: it reads what that server shows the public. You can switch servers or sign in afterwards.
 // i18n settings.connections.mastodon.signedInToBefore: Signed in to
 // i18n settings.connections.mastodon.signedInToAfter: .
 // i18n settings.connections.mastodon.readingAnonymouslyBefore: Reading
 // i18n settings.connections.mastodon.readingAnonymouslyAfter: anonymously.
-// i18n settings.connections.mastodon.anonymousReadingNote: Anonymous reading covers Explore, trends and hashtags. Your home timeline stays Bluesky-only: an anonymous connection has no follows, so its "home" is a public firehose of strangers. Signing in merges Mastodon into home.
+// i18n settings.connections.mastodon.anonymousReadingNote: Anonymous reading covers Explore, trends and hashtags. Home stays Bluesky-only until you sign in to Mastodon.
 // i18n settings.connections.mastodon.signedInMergeNote: Mastodon posts from the people you follow are merged into your home timeline.
 // i18n settings.connections.mastodon.signInHeading: Sign in
 // i18n settings.connections.mastodon.signInWith: Sign in with Mastodon
@@ -45,7 +45,7 @@ import { CONNECTION_SCOPE_COPY } from '../connection-catalog';
 // i18n settings.connections.mastodon.checking: Checking…
 // i18n settings.connections.mastodon.signIn: Sign in
 // i18n settings.connections.mastodon.signOut: Sign out
-// i18n settings.connections.mastodon.signOutKeepsReading: Signing out keeps reading {{server}} anonymously — it drops the token, not the connection.
+// i18n settings.connections.mastodon.signOutKeepsReading: Signing out keeps reading {{server}} anonymously.
 // i18n settings.connections.mastodon.serverHeading: Server
 // i18n settings.connections.mastodon.cancel: Cancel
 // i18n settings.connections.mastodon.changeServer: Change server

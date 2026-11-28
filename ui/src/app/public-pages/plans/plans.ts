@@ -13,7 +13,7 @@ import { FREE_DAILY_ARTICLES } from '../../reading/article/article-quota';
 // i18n pages.plans.intro.b: . This page lists everything that differs between the three, including the exact limits.
 // i18n pages.plans.lede: Your timelines, subscriptions, saved items, lists and posts remain readable and exportable on this device. Proxy access has the allowances listed below.
 // i18n pages.plans.reading.title: Reading articles
-// i18n pages.plans.reading.intro.a: A link in a feed can always be opened in a new browser tab, on every plan, as many times as you like. That costs nothing and needs nothing from us. What the limit below covers is opening the article
+// i18n pages.plans.reading.intro.a: A link in a feed can always be opened in a new browser tab, on every plan. The limit below covers opening the article
 // i18n pages.plans.reading.intro.b: inside Mawkingbird
 // i18n pages.plans.reading.intro.c: — pulled in, stripped of navigation and adverts, and laid out to read next to the feed you found it in.
 // i18n pages.plans.table.what: What
@@ -26,7 +26,7 @@ import { FREE_DAILY_ARTICLES } from '../../reading/article/article-quota';
 // i18n pages.plans.perDay: {{count}} a day
 // i18n pages.plans.reading.row.reopen: Re-open an article you already read
 // i18n pages.plans.table.freeNoCount: Free, does not count
-// i18n pages.plans.reading.footnote: The count resets at midnight, by your computer's clock. An article already fetched is kept in this browser and stays free to reopen forever, so re-reading something never costs an expansion.
+// i18n pages.plans.reading.footnote: The count resets at midnight, by your computer's clock. Articles you've already opened stay free to reopen.
 // i18n pages.plans.connecting.title: Connecting to other sites
 // i18n pages.plans.connecting.intro: Some feeds and services need our CORS relay. Free access is a small daily allowance on five domains; Plus keeps the higher per-minute allowance and wider destination access.
 // i18n pages.plans.connecting.row.requests: Requests through the relay
@@ -37,7 +37,7 @@ import { FREE_DAILY_ARTICLES } from '../../reading/article/article-quota';
 // i18n pages.plans.connecting.footnote1: Free proxy requests reset at midnight UTC: 1 per network address anonymously, or 5 per signed-in account, shared across all routes.
 // i18n pages.plans.connecting.footnote2: Free domains are wikipedia.org, wikimedia.org, wikisource.org, gutenberg.org and archive.org, including subdomains. Each feed refresh and batch member counts as one request. Home uses saved RSS content; open RSS to refresh feeds.
 // i18n pages.plans.devices.title: Your things on your other devices
-// i18n pages.plans.devices.intro: Everything you set up in Mawkingbird is kept in the browser you set it up in. That is true on every plan and it is why the app works signed out at all. What a subscription adds is a copy kept on your account, so opening Mawkingbird on your phone finds the same setup as your computer.
+// i18n pages.plans.devices.intro: Mawkingbird keeps your setup in the browser where you made it, on every plan. A subscription adds a copy on your account, so your phone and computer share the same setup.
 // i18n pages.plans.devices.row.feeds: Feeds you subscribe to
 // i18n pages.plans.devices.thisBrowser: This browser
 // i18n pages.plans.devices.everyDevice: Every device you sign in on
@@ -47,10 +47,10 @@ import { FREE_DAILY_ARTICLES } from '../../reading/article/article-quota';
 // i18n pages.plans.devices.row.howMany: How many of each you can have
 // i18n pages.plans.devices.row.moveByFile: Move them yourself with a file
 // i18n pages.plans.table.yes: Yes
-// i18n pages.plans.devices.footnote1: There is no cap on any of these, on any plan — a free list is not a smaller list, it is a list kept somewhere else. Export and import by file works on every plan, so a subscription buys not having to do it by hand, not permission to do it at all.
+// i18n pages.plans.devices.footnote1: There is no cap on any of these, on any plan. Export and import by file works on every plan; a subscription does it for you.
 // i18n pages.plans.devices.footnote2: Lists, feeds and trust are stored separately for each Mastodon account you sign in with, so an alt never inherits your main account's decisions. Settings are shared across the whole Mawkingbird account.
 // i18n pages.plans.stop.title: If you stop
-// i18n pages.plans.stop.body: A cancelled subscription runs to the end of the year you paid for. After that, the copies on your account stay readable and exportable, and everything in this browser is untouched — the app returns to keeping things locally, which is how it works for everyone who never subscribed.
+// i18n pages.plans.stop.body: A cancelled subscription runs to the end of the paid year. After that, the copies on your account stay readable and exportable, and this browser keeps working as before.
 // i18n pages.plans.backLink: Back to your plan
 
 /**
@@ -98,4 +98,4 @@ export class Plans {
   protected readonly proxyPlusRate = PROXY_RATE_PLUS_PER_MINUTE;
 }
 
-// i18n plus.billing.cancelled: A cancelled subscription runs to the end of the billing period you paid for. After that, your account copies stay readable and exportable, and everything in this browser is untouched. The app returns to keeping things locally.
+// i18n plus.billing.cancelled: A cancelled subscription runs to the end of the paid period. After that, the copies on your account stay readable and exportable, and this browser keeps working as before.

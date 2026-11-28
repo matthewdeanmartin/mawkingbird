@@ -62,9 +62,9 @@ import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback'
 // i18n settings.writing.quickPostButton: Quick post
 // i18n settings.writing.miniComposer.hint.a: Off by default. Home shows a
 // i18n settings.writing.miniComposer.hint.b: button, which opens the full editor, next to a
-// i18n settings.writing.miniComposer.hint.c: button that expands the small box for that visit only. Turn this on to have the box already open every time, the way it used to be.
+// i18n settings.writing.miniComposer.hint.c: button that expands the small box for that visit only. Turn this on to have the box open every time.
 // i18n settings.writing.thoughtful: Thoughtful posting: nothing publishes straight from a box
-// i18n settings.writing.thoughtful.hint: Stronger than the setting above, and it wins over it: Home offers no Quick post at all, and the editor only saves. You post later, from Drafts. Replies, chats and paste shares are never held back — they're urgent, or already deliberate.
+// i18n settings.writing.thoughtful.hint: Stronger than the setting above, and wins over it: Home has no Quick post, and the editor only saves. You post later, from Drafts. Replies, chats and paste shares post right away.
 // i18n settings.writing.askedAtPublish: Asked at the moment you publish
 // i18n settings.writing.alsoOn.before: Also on
 // i18n settings.writing.alsoOn.link: Privacy
@@ -77,9 +77,9 @@ import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback'
 // i18n settings.writing.wizard.safety: Safety check
 // i18n settings.writing.wizard.hint.before: What
 // i18n settings.writing.wizard.hint.after: shows you between hitting Publish and the post going out. Turn off the steps you don't want; the ones left run in this order.
-// i18n settings.writing.wizard.allOff: ⚠ Every step is off, so Publish goes straight to the composer — which is exactly how it behaved before this wizard existed.
+// i18n settings.writing.wizard.allOff: ⚠ Every step is off, so Publish goes straight to the composer.
 // i18n settings.writing.warnPkm: Warn me before publishing something tagged as a note or a to-do
-// i18n settings.writing.warnPkm.hint: A note to yourself and a post to your followers look identical in the composer. This is the one thing standing between them.
+// i18n settings.writing.warnPkm.hint: A note to yourself and a post to your followers look the same in the composer. This warns you before a note goes out as a post.
 // i18n settings.writing.notes: Notes and to-dos
 // i18n settings.writing.notes.hint.a: Tag a draft or a private post
 // i18n settings.writing.notes.or: or
@@ -89,7 +89,7 @@ import { MbSaveFeedback } from '../../design-system/save-feedback/save-feedback'
 // i18n settings.writing.words.todo: Tasks
 // i18n settings.writing.words.note: Notes
 // i18n settings.writing.words.cal: Appointments
-// i18n settings.writing.yourWords.hint.a: is English, and this feature is useless if the word isn't yours. Set your own — comma-separated, and any of them will match. Tags are matched whole and case-insensitively, so
+// i18n settings.writing.yourWords.hint.a: is English. Set your own: comma-separated, and any of them will match. Tags are matched whole and case-insensitively, so
 // i18n settings.writing.yourWords.and: and
 // i18n settings.writing.yourWords.hint.b: are the same tag but
 // i18n settings.writing.yourWords.hint.c: is not.

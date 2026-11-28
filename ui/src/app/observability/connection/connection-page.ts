@@ -26,7 +26,7 @@ import {
 } from './connection-view';
 
 // i18n connection.title: Connection
-// i18n connection.intro: How well your network is carrying Mawkingbird right now, and over the last day. Measured on this device from the app's own requests; nothing is sent anywhere.
+// i18n connection.intro: How well your network is carrying Mawkingbird right now, and over the last day, measured on this device.
 // i18n connection.now: Right now
 // i18n connection.verdict.unknown: Not enough activity to judge yet
 // i18n connection.verdict.good: Working normally
